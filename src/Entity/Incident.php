@@ -85,9 +85,25 @@ class Incident
     #[ORM\ManyToMany(targetEntity: Control::class, inversedBy: 'incidents')]
     private Collection $relatedControls;
 
+    /**
+     * @var Collection<int, Asset>
+     */
+    #[ORM\ManyToMany(targetEntity: Asset::class, inversedBy: 'incidents')]
+    #[ORM\JoinTable(name: 'incident_asset')]
+    private Collection $affectedAssets;
+
+    /**
+     * @var Collection<int, Risk>
+     */
+    #[ORM\ManyToMany(targetEntity: Risk::class, inversedBy: 'incidents')]
+    #[ORM\JoinTable(name: 'incident_risk')]
+    private Collection $realizedRisks;
+
     public function __construct()
     {
         $this->relatedControls = new ArrayCollection();
+        $this->affectedAssets = new ArrayCollection();
+        $this->realizedRisks = new ArrayCollection();
         $this->createdAt = new \DateTime();
         $this->detectedAt = new \DateTime();
     }
@@ -348,5 +364,89 @@ class Incident
     {
         $this->relatedControls->removeElement($relatedControl);
         return $this;
+    }
+
+    /**
+     * @return Collection<int, Asset>
+     */
+    public function getAffectedAssets(): Collection
+    {
+        return $this->affectedAssets;
+    }
+
+    public function addAffectedAsset(Asset $asset): static
+    {
+        if (!$this->affectedAssets->contains($asset)) {
+            $this->affectedAssets->add($asset);
+        }
+        return $this;
+    }
+
+    public function removeAffectedAsset(Asset $asset): static
+    {
+        $this->affectedAssets->removeElement($asset);
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Risk>
+     */
+    public function getRealizedRisks(): Collection
+    {
+        return $this->realizedRisks;
+    }
+
+    public function addRealizedRisk(Risk $risk): static
+    {
+        if (!$this->realizedRisks->contains($risk)) {
+            $this->realizedRisks->add($risk);
+        }
+        return $this;
+    }
+
+    public function removeRealizedRisk(Risk $risk): static
+    {
+        $this->realizedRisks->removeElement($risk);
+        return $this;
+    }
+
+    /**
+     * Check if any critical/high-risk assets were affected
+     * Data Reuse: Uses Asset risk scoring
+     */
+    public function hasCriticalAssetsAffected(): bool
+    {
+        return $this->affectedAssets->exists(fn($k, $asset) => $asset->isHighRisk());
+    }
+
+    /**
+     * Get count of realized risks
+     * Data Reuse: Links incidents to pre-defined risks
+     */
+    public function getRealizedRiskCount(): int
+    {
+        return $this->realizedRisks->count();
+    }
+
+    /**
+     * Get total impact value from affected assets
+     * Data Reuse: Aggregates CIA values from affected assets
+     */
+    public function getTotalAssetImpact(): int
+    {
+        $total = 0;
+        foreach ($this->affectedAssets as $asset) {
+            $total += $asset->getTotalValue();
+        }
+        return $total;
+    }
+
+    /**
+     * Check if this incident validated a previously identified risk
+     * Data Reuse: Validates risk assessment accuracy
+     */
+    public function isRiskValidated(): bool
+    {
+        return !$this->realizedRisks->isEmpty();
     }
 }

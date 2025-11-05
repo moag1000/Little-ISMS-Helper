@@ -79,9 +79,17 @@ class BusinessProcess
     #[ORM\JoinTable(name: 'business_process_asset')]
     private Collection $supportingAssets;
 
+    /**
+     * @var Collection<int, Risk>
+     */
+    #[ORM\ManyToMany(targetEntity: Risk::class)]
+    #[ORM\JoinTable(name: 'business_process_risk')]
+    private Collection $identifiedRisks;
+
     public function __construct()
     {
         $this->supportingAssets = new ArrayCollection();
+        $this->identifiedRisks = new ArrayCollection();
         $this->createdAt = new \DateTime();
     }
 
@@ -324,5 +332,135 @@ class BusinessProcess
         } else {
             return 1; // Sehr niedrig
         }
+    }
+
+    /**
+     * @return Collection<int, Risk>
+     */
+    public function getIdentifiedRisks(): Collection
+    {
+        return $this->identifiedRisks;
+    }
+
+    public function addIdentifiedRisk(Risk $risk): static
+    {
+        if (!$this->identifiedRisks->contains($risk)) {
+            $this->identifiedRisks->add($risk);
+        }
+        return $this;
+    }
+
+    public function removeIdentifiedRisk(Risk $risk): static
+    {
+        $this->identifiedRisks->removeElement($risk);
+        return $this;
+    }
+
+    /**
+     * Calculate aggregated risk level for this process
+     * Data Reuse: Combines BIA criticality with actual identified risks
+     */
+    public function getProcessRiskLevel(): string
+    {
+        if ($this->identifiedRisks->isEmpty()) {
+            return 'unknown';
+        }
+
+        $totalInherentRisk = 0;
+        $totalResidualRisk = 0;
+        $count = 0;
+
+        foreach ($this->identifiedRisks as $risk) {
+            if ($risk->getStatus() === 'active') {
+                $totalInherentRisk += $risk->getInherentRiskLevel();
+                $totalResidualRisk += $risk->getResidualRiskLevel();
+                $count++;
+            }
+        }
+
+        if ($count === 0) {
+            return 'low';
+        }
+
+        $avgResidualRisk = $totalResidualRisk / $count;
+
+        if ($avgResidualRisk >= 16) {
+            return 'critical';
+        } elseif ($avgResidualRisk >= 9) {
+            return 'high';
+        } elseif ($avgResidualRisk >= 4) {
+            return 'medium';
+        } else {
+            return 'low';
+        }
+    }
+
+    /**
+     * Validate if BIA criticality matches actual risk assessment
+     * Data Reuse: Cross-validate BIA with risk data
+     */
+    public function isCriticalityAligned(): bool
+    {
+        if ($this->identifiedRisks->isEmpty()) {
+            return true; // Cannot validate without risk data
+        }
+
+        $processRiskLevel = $this->getProcessRiskLevel();
+
+        // Check alignment between BIA criticality and risk assessment
+        if ($this->criticality === 'critical' && !in_array($processRiskLevel, ['critical', 'high'])) {
+            return false; // Critical process should have high risks
+        }
+
+        if ($this->criticality === 'low' && in_array($processRiskLevel, ['critical', 'high'])) {
+            return false; // Low criticality process shouldn't have high risks
+        }
+
+        return true;
+    }
+
+    /**
+     * Get suggested RTO based on risk assessment
+     * Data Reuse: Risk data can suggest better RTO values
+     */
+    public function getSuggestedRTO(): int
+    {
+        $riskLevel = $this->getProcessRiskLevel();
+
+        switch ($riskLevel) {
+            case 'critical':
+                return 1; // 1 hour
+            case 'high':
+                return 4; // 4 hours
+            case 'medium':
+                return 24; // 1 day
+            case 'low':
+                return 72; // 3 days
+            default:
+                return $this->rto; // Keep current if unknown
+        }
+    }
+
+    /**
+     * Get count of active risks affecting this process
+     * Data Reuse: Quick risk overview
+     */
+    public function getActiveRiskCount(): int
+    {
+        return $this->identifiedRisks->filter(fn($r) => $r->getStatus() === 'active')->count();
+    }
+
+    /**
+     * Check if process has unmitigated high risks
+     * Data Reuse: Automatic alert for critical situations
+     */
+    public function hasUnmitigatedHighRisks(): bool
+    {
+        foreach ($this->identifiedRisks as $risk) {
+            if ($risk->getStatus() === 'active' && $risk->getResidualRiskLevel() >= 16) {
+                return true;
+            }
+        }
+        return false;
     }
 }
