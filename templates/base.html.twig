@@ -73,6 +73,9 @@
             <li><a href="{{ path('app_audit_index') }}" data-turbo-action="advance">{{ 'nav.audits'|trans }}</a></li>
             <li><a href="{{ path('app_compliance_index') }}" data-turbo-action="advance">{{ 'nav.compliance'|trans }}</a></li>
             <li><a href="{{ path('app_audit_log_index') }}" data-turbo-action="advance">Audit Log</a></li>
+            {% if is_granted('ROLE_ADMIN') %}
+            <li><a href="{{ path('user_management_index') }}" data-turbo-action="advance"><i class="bi bi-people"></i> Users</a></li>
+            {% endif %}
         </ul>
     </nav>
 

@@ -1,0 +1,168 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Neuer Benutzer{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="bi bi-person-plus"></i> Neuer Benutzer</h1>
+        <a href="{{ path('user_management_index') }}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Zurück
+        </a>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Benutzer erstellen</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="{{ path('user_management_new') }}">
+                        <input type="hidden" name="_token" value="{{ csrf_token('user_new') }}">
+
+                        {# Basic Information #}
+                        <h5 class="mb-3"><i class="bi bi-info-circle"></i> Grundinformationen</h5>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="firstName" class="form-label">Vorname *</label>
+                                <input type="text" class="form-control" id="firstName" name="firstName" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="lastName" class="form-label">Nachname *</label>
+                                <input type="text" class="form-control" id="lastName" name="lastName" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="email" class="form-label">E-Mail *</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                            <div class="form-text">Wird als Benutzername verwendet</div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="department" class="form-label">Abteilung</label>
+                                <input type="text" class="form-control" id="department" name="department">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="jobTitle" class="form-label">Position</label>
+                                <input type="text" class="form-control" id="jobTitle" name="jobTitle">
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="phoneNumber" class="form-label">Telefonnummer</label>
+                            <input type="tel" class="form-control" id="phoneNumber" name="phoneNumber">
+                        </div>
+
+                        <hr class="my-4">
+
+                        {# Authentication #}
+                        <h5 class="mb-3"><i class="bi bi-shield-lock"></i> Authentifizierung</h5>
+
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Passwort</label>
+                            <input type="password" class="form-control" id="password" name="password">
+                            <div class="form-text">
+                                Optional für lokale Authentifizierung. Leer lassen für Azure-Authentifizierung.
+                            </div>
+                        </div>
+
+                        <hr class="my-4">
+
+                        {# Roles & Permissions #}
+                        <h5 class="mb-3"><i class="bi bi-shield"></i> Rollen & Berechtigungen</h5>
+
+                        <div class="mb-3">
+                            <label class="form-label">Systemrollen</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="roles[]" value="ROLE_USER" id="roleUser" checked>
+                                <label class="form-check-label" for="roleUser">
+                                    <span class="badge bg-secondary">ROLE_USER</span> - Standard Benutzer
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="roles[]" value="ROLE_AUDITOR" id="roleAuditor">
+                                <label class="form-check-label" for="roleAuditor">
+                                    <span class="badge bg-primary">ROLE_AUDITOR</span> - Auditor (Leserechte)
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="roles[]" value="ROLE_MANAGER" id="roleManager">
+                                <label class="form-check-label" for="roleManager">
+                                    <span class="badge bg-info">ROLE_MANAGER</span> - Manager (Erweiterte Rechte)
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="roles[]" value="ROLE_ADMIN" id="roleAdmin">
+                                <label class="form-check-label" for="roleAdmin">
+                                    <span class="badge bg-warning text-dark">ROLE_ADMIN</span> - Administrator
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="roles[]" value="ROLE_SUPER_ADMIN" id="roleSuperAdmin">
+                                <label class="form-check-label" for="roleSuperAdmin">
+                                    <span class="badge bg-danger">ROLE_SUPER_ADMIN</span> - Super Administrator
+                                </label>
+                            </div>
+                        </div>
+
+                        {% if availableRoles|length > 0 %}
+                        <div class="mb-3">
+                            <label class="form-label">Benutzerdefinierte Rollen</label>
+                            {% for role in availableRoles %}
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="customRoles[]" value="{{ role.id }}" id="customRole{{ role.id }}">
+                                <label class="form-check-label" for="customRole{{ role.id }}">
+                                    <strong>{{ role.name }}</strong>
+                                    {% if role.description %}
+                                        <br><small class="text-muted">{{ role.description }}</small>
+                                    {% endif %}
+                                </label>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+
+                        <hr class="my-4">
+
+                        {# Status #}
+                        <h5 class="mb-3"><i class="bi bi-toggle-on"></i> Status</h5>
+
+                        <div class="mb-3">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" name="isActive" value="1" id="isActive" checked>
+                                <label class="form-check-label" for="isActive">
+                                    Benutzer ist aktiv
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" name="isVerified" value="1" id="isVerified">
+                                <label class="form-check-label" for="isVerified">
+                                    E-Mail ist verifiziert
+                                </label>
+                            </div>
+                        </div>
+
+                        <hr class="my-4">
+
+                        {# Submit #}
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ path('user_management_index') }}" class="btn btn-secondary">
+                                <i class="bi bi-x"></i> Abbrechen
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check"></i> Benutzer erstellen
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
