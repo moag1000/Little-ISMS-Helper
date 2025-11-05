@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Upload Document{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="page-header">
+        <h1>Upload New Document</h1>
+        <a href="{{ path('app_document_index') }}" class="btn btn-secondary">Back to Documents</a>
+    </div>
+
+    <div class="card">
+        <div class="card-content">
+            {{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
+                <div class="form-group">
+                    {{ form_label(form.name) }}
+                    {{ form_widget(form.name) }}
+                    {{ form_errors(form.name) }}
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.description) }}
+                    {{ form_widget(form.description) }}
+                    {{ form_errors(form.description) }}
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.documentType) }}
+                    {{ form_widget(form.documentType) }}
+                    {{ form_errors(form.documentType) }}
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.file) }}
+                    {{ form_widget(form.file) }}
+                    {{ form_errors(form.file) }}
+                    <small class="help-text">Max file size: 10MB. Allowed formats: PDF, Word, Excel, Images, Text</small>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Upload Document</button>
+                    <a href="{{ path('app_document_index') }}" class="btn btn-secondary">Cancel</a>
+                </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>
+{% endblock %}
