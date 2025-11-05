@@ -1,0 +1,66 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Documents{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="page-header">
+        <h1>Document Management</h1>
+        <a href="{{ path('app_document_new') }}" class="btn btn-primary">Upload Document</a>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <h3>Total Documents</h3>
+            <p class="stat-value">{{ stats.total }}</p>
+        </div>
+        <div class="stat-card">
+            <h3>Total Size</h3>
+            <p class="stat-value">{{ (stats.total_size / 1024 / 1024)|number_format(2) }} MB</p>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h2>Documents</h2>
+        </div>
+        <div class="card-content">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Size</th>
+                        <th>Uploaded By</th>
+                        <th>Uploaded At</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for document in documents %}
+                        <tr>
+                            <td>
+                                <a href="{{ path('app_document_show', {id: document.id}) }}">
+                                    {{ document.name }}
+                                </a>
+                            </td>
+                            <td><span class="badge">{{ document.documentType|upper }}</span></td>
+                            <td>{{ document.fileSizeFormatted }}</td>
+                            <td>{{ document.uploadedBy.fullName }}</td>
+                            <td>{{ document.uploadedAt|date('d.m.Y H:i') }}</td>
+                            <td>
+                                <a href="{{ path('app_document_download', {id: document.id}) }}" class="btn btn-sm btn-secondary">Download</a>
+                                <a href="{{ path('app_document_edit', {id: document.id}) }}" class="btn btn-sm btn-primary">Edit</a>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="6" class="text-center">No documents found</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

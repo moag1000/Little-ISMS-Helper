@@ -1,0 +1,134 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ risk.name }}{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="page-header">
+        <h1>{{ risk.name }}</h1>
+        <div class="actions">
+            <a href="{{ path('app_risk_edit', {id: risk.id}) }}" class="btn btn-primary">Edit</a>
+            <a href="{{ path('app_risk_index') }}" class="btn btn-secondary">Back to List</a>
+            {% if is_granted('ROLE_ADMIN') %}
+                <form method="post" action="{{ path('app_risk_delete', {id: risk.id}) }}" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this risk?');">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ risk.id) }}">
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h2>Risk Details</h2>
+            <span class="badge badge-{{ risk.inherentRiskLevel }}">{{ risk.inherentRiskLevel|upper }}</span>
+        </div>
+        <div class="card-content">
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <span class="label">Category:</span>
+                    <span class="value">{{ risk.category|capitalize }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Status:</span>
+                    <span class="value">{{ risk.status|upper|replace({'_': ' '}) }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Identified:</span>
+                    <span class="value">{{ risk.identifiedDate|date('d.m.Y') }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Identified By:</span>
+                    <span class="value">{{ risk.identifiedBy ?? 'N/A' }}</span>
+                </div>
+            </div>
+
+            {% if risk.description %}
+                <div class="detail-section">
+                    <h3>Description</h3>
+                    <p>{{ risk.description }}</p>
+                </div>
+            {% endif %}
+
+            <div class="risk-assessment-grid">
+                <div class="assessment-card">
+                    <h3>Inherent Risk</h3>
+                    <div class="risk-matrix-mini">
+                        <div class="risk-score risk-level-{{ risk.inherentRiskLevel }}">
+                            {{ risk.inherentRiskScore }}
+                        </div>
+                        <div class="risk-components">
+                            <div>Probability: {{ risk.inherentProbability }}/5</div>
+                            <div>Impact: {{ risk.inherentImpact }}/5</div>
+                        </div>
+                    </div>
+                    <p class="risk-level-text">Level: <strong>{{ risk.inherentRiskLevel|upper }}</strong></p>
+                </div>
+
+                {% if risk.residualProbability and risk.residualImpact %}
+                <div class="assessment-card">
+                    <h3>Residual Risk</h3>
+                    <div class="risk-matrix-mini">
+                        <div class="risk-score risk-level-{{ risk.residualRiskLevel }}">
+                            {{ risk.residualRiskScore }}
+                        </div>
+                        <div class="risk-components">
+                            <div>Probability: {{ risk.residualProbability }}/5</div>
+                            <div>Impact: {{ risk.residualImpact }}/5</div>
+                        </div>
+                    </div>
+                    <p class="risk-level-text">Level: <strong>{{ risk.residualRiskLevel|upper }}</strong></p>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="detail-section">
+                <h3>Treatment Strategy</h3>
+                <p><strong>{{ risk.treatmentStrategy|upper|replace({'_': ' '}) }}</strong></p>
+
+                {% if risk.reviewDate %}
+                    <p>Next Review: {{ risk.reviewDate|date('d.m.Y') }}</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.risk-assessment-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin: 2rem 0;
+}
+.assessment-card {
+    background: #f9fafb;
+    padding: 1.5rem;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+}
+.risk-matrix-mini {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 1rem 0;
+}
+.risk-score {
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    font-weight: bold;
+    border-radius: 8px;
+    color: white;
+}
+.risk-level-low { background: #10b981; }
+.risk-level-medium { background: #f59e0b; }
+.risk-level-high { background: #f97316; }
+.risk-level-critical { background: #dc2626; }
+.risk-components { font-size: 0.9rem; color: #666; }
+.risk-level-text { margin-top: 1rem; font-size: 1.1rem; }
+</style>
+{% endblock %}
