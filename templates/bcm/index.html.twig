@@ -1,0 +1,234 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Business Continuity Management{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="page-header">
+        <div>
+            <h1>Business Continuity Management</h1>
+            <p class="text-muted">Business Impact Analysis & Process Management</p>
+        </div>
+        <div class="button-group">
+            <a href="{{ path('app_bcm_data_reuse') }}" class="btn btn-secondary">
+                <span class="icon">🔗</span> Data Reuse Insights
+            </a>
+            <a href="#" class="btn btn-primary">
+                <span class="icon">➕</span> Add Business Process
+            </a>
+        </div>
+    </div>
+
+    {# KPI Overview Cards #}
+    <div class="kpi-grid">
+        <div class="kpi-card">
+            <div class="kpi-icon" style="background: var(--gradient-primary);">📊</div>
+            <div class="kpi-content">
+                <div class="kpi-value">{{ stats.total }}</div>
+                <div class="kpi-label">Total Processes</div>
+            </div>
+        </div>
+
+        <div class="kpi-card">
+            <div class="kpi-icon" style="background: var(--gradient-danger);">🔴</div>
+            <div class="kpi-content">
+                <div class="kpi-value">{{ stats.critical }}</div>
+                <div class="kpi-label">Critical Processes</div>
+            </div>
+        </div>
+
+        <div class="kpi-card">
+            <div class="kpi-icon" style="background: var(--gradient-warning);">🟠</div>
+            <div class="kpi-content">
+                <div class="kpi-value">{{ stats.high }}</div>
+                <div class="kpi-label">High Priority</div>
+            </div>
+        </div>
+
+        <div class="kpi-card">
+            <div class="kpi-icon" style="background: var(--gradient-success);">⏱️</div>
+            <div class="kpi-content">
+                <div class="kpi-value">{{ stats.avg_rto|number_format(1) }}h</div>
+                <div class="kpi-label">Avg RTO</div>
+            </div>
+        </div>
+
+        <div class="kpi-card">
+            <div class="kpi-icon" style="background: var(--gradient-info);">📅</div>
+            <div class="kpi-content">
+                <div class="kpi-value">{{ stats.avg_mtpd|number_format(1) }}h</div>
+                <div class="kpi-label">Avg MTPD</div>
+            </div>
+        </div>
+    </div>
+
+    {# Business Processes Table #}
+    <div class="card"
+         data-controller="filter"
+         data-filter-filterable-columns-value="{{ ['name', 'description', 'criticality']|json_encode }}">
+
+        <div class="card-header">
+            <h2>Business Processes</h2>
+            <div class="filter-panel">
+                <input type="text"
+                       class="search-input"
+                       placeholder="Search processes..."
+                       data-filter-target="searchInput"
+                       data-action="input->filter#filterRows">
+
+                <select class="filter-select" data-action="change->filter#filterByCategory">
+                    <option value="">All Criticality Levels</option>
+                    <option value="critical">Critical</option>
+                    <option value="high">High</option>
+                    <option value="medium">Medium</option>
+                    <option value="low">Low</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Process Name</th>
+                        <th>Owner</th>
+                        <th>Criticality</th>
+                        <th>RTO</th>
+                        <th>RPO</th>
+                        <th>MTPD</th>
+                        <th>Impact</th>
+                        <th>Assets</th>
+                        <th class="actions-column">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for process in processes %}
+                        <tr data-filter-target="filterableRow"
+                            data-category="{{ process.criticality }}">
+                            <td>
+                                <strong>{{ process.name }}</strong>
+                                {% if process.description %}
+                                    <br><small class="text-muted">{{ process.description|u.truncate(60, '...') }}</small>
+                                {% endif %}
+                            </td>
+                            <td>{{ process.processOwner ?? '-' }}</td>
+                            <td>
+                                {% set criticality_colors = {
+                                    'critical': 'danger',
+                                    'high': 'warning',
+                                    'medium': 'info',
+                                    'low': 'success'
+                                } %}
+                                <span class="badge badge-{{ criticality_colors[process.criticality] ?? 'secondary' }}">
+                                    {{ process.criticality|upper }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="metric-value">{{ process.rto }}h</span>
+                            </td>
+                            <td>
+                                <span class="metric-value">{{ process.rpo }}h</span>
+                            </td>
+                            <td>
+                                <span class="metric-value">{{ process.mtpd }}h</span>
+                            </td>
+                            <td>
+                                <div class="impact-scores">
+                                    <span class="tooltip-trigger" title="Financial Impact">💰 {{ process.financialImpact }}/10</span>
+                                    <span class="tooltip-trigger" title="Reputational Impact">⭐ {{ process.reputationalImpact }}/10</span>
+                                    <span class="tooltip-trigger" title="Operational Impact">⚙️ {{ process.operationalImpact }}/10</span>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge badge-info">
+                                    {{ process.supportingAssets|length }} Assets
+                                </span>
+                            </td>
+                            <td class="actions-column">
+                                <a href="#" class="btn-icon" title="Edit">✏️</a>
+                                <a href="#" class="btn-icon" title="View Details">👁️</a>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="9" class="text-center text-muted">
+                                No business processes defined yet. Start by adding your first critical process.
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div data-filter-target="noResults" class="no-results" style="display: none;">
+            <p>No processes match your search criteria.</p>
+        </div>
+    </div>
+
+    {# Help Section #}
+    <div class="card" style="margin-top: var(--spacing-lg);">
+        <div class="card-header">
+            <h3>Understanding BCM & BIA</h3>
+        </div>
+        <div class="card-body">
+            <div class="info-grid">
+                <div class="info-item">
+                    <strong>RTO (Recovery Time Objective)</strong>
+                    <p>The maximum acceptable time that a business process can be down after a disaster before unacceptable consequences occur.</p>
+                </div>
+                <div class="info-item">
+                    <strong>RPO (Recovery Point Objective)</strong>
+                    <p>The maximum acceptable amount of data loss measured in time before the disaster.</p>
+                </div>
+                <div class="info-item">
+                    <strong>MTPD (Maximum Tolerable Period of Disruption)</strong>
+                    <p>The absolute maximum time a critical function can be unavailable before the organization faces catastrophic consequences.</p>
+                </div>
+                <div class="info-item">
+                    <strong>Data Reuse</strong>
+                    <p>BCM data automatically influences asset availability ratings. Low RTO processes suggest high availability requirements for supporting assets.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.impact-scores {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 0.85rem;
+}
+
+.metric-value {
+    font-weight: 600;
+    color: var(--color-primary);
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing-md);
+}
+
+.info-item {
+    padding: var(--spacing-md);
+    background: var(--color-background);
+    border-radius: var(--border-radius);
+    border-left: 3px solid var(--color-primary);
+}
+
+.info-item strong {
+    display: block;
+    margin-bottom: var(--spacing-xs);
+    color: var(--color-primary);
+}
+
+.info-item p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+}
+</style>
+{% endblock %}
