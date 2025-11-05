@@ -1,0 +1,113 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Audit Checklist - {{ audit.title }}{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="page-header">
+        <div>
+            <h1>Audit Checklist</h1>
+            <p class="text-muted">{{ audit.title }} - {{ audit.scopeDescription }}</p>
+        </div>
+        <div class="button-group">
+            <a href="{{ path('app_audit_index') }}" class="btn btn-secondary">
+                ← Zurück
+            </a>
+            <button class="btn btn-success" id="saveProgress">
+                Fortschritt speichern
+            </button>
+        </div>
+    </div>
+
+    {# Quick Progress Bar #}
+    <div class="progress-card">
+        <div class="progress-info">
+            <span>Fortschritt: {{ stats.verified }}/{{ stats.total }} Anforderungen geprüft</span>
+            <span class="progress-percent">{{ ((stats.verified / stats.total) * 100)|number_format(0) }}%</span>
+        </div>
+        <div class="progress-bar">
+            <div class="progress-fill" style="width: {{ ((stats.verified / stats.total) * 100) }}%;"></div>
+        </div>
+        <div class="progress-stats">
+            <span class="stat-success">✓ {{ stats.compliant }} Konform</span>
+            <span class="stat-warning">⚠ {{ stats.partial }} Teilweise</span>
+            <span class="stat-danger">✗ {{ stats.non_compliant }} Nicht konform</span>
+        </div>
+    </div>
+
+    {# Checklist Items - Grouped by Framework if applicable #}
+    {% if audit.isComplianceAudit() %}
+        {# Single Framework Audit #}
+        <div class="checklist-section">
+            <h2>{{ audit.scopedFramework.name }}</h2>
+            {% include 'audit/_checklist_items.html.twig' with {items: checklist_items} %}
+        </div>
+    {% else %}
+        {# Multiple Frameworks - Use Tabs #}
+        <div class="tabs" data-controller="toggle">
+            <div class="tab-nav">
+                {% for framework_name, items in grouped_items %}
+                    <button class="tab-button {{ loop.first ? 'active' : '' }}"
+                            data-action="click->toggle#switchTab"
+                            data-tab="framework-{{ loop.index }}">
+                        {{ framework_name }} ({{ items|length }})
+                    </button>
+                {% endfor %}
+            </div>
+
+            {% for framework_name, items in grouped_items %}
+                <div class="tab-content {{ loop.first ? 'active' : '' }}"
+                     data-tab-content="framework-{{ loop.index }}">
+                    {% include 'audit/_checklist_items.html.twig' with {items: items} %}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+
+<style>
+.progress-card {
+    background: white;
+    padding: var(--spacing-lg);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-sm);
+    margin-bottom: var(--spacing-lg);
+}
+
+.progress-info {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: var(--spacing-sm);
+    font-weight: 600;
+}
+
+.progress-percent {
+    color: var(--color-primary);
+    font-size: 1.2rem;
+}
+
+.progress-bar {
+    height: 12px;
+    background: var(--color-background);
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: var(--spacing-md);
+}
+
+.progress-fill {
+    height: 100%;
+    background: var(--gradient-success);
+    transition: width 0.3s;
+}
+
+.progress-stats {
+    display: flex;
+    gap: var(--spacing-lg);
+    font-size: 0.9rem;
+}
+
+.stat-success { color: var(--color-success); }
+.stat-warning { color: var(--color-warning); }
+.stat-danger { color: var(--color-danger); }
+</style>
+{% endblock %}
