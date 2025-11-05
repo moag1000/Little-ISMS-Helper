@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background: #dc2626; color: white; padding: 20px; text-align: center; }
+        .content { background: #f9fafb; padding: 20px; margin: 20px 0; }
+        .field { margin: 10px 0; }
+        .label { font-weight: bold; color: #666; }
+        .value { color: #000; }
+        .footer { text-align: center; color: #666; font-size: 12px; padding: 20px; }
+        .severity-critical { color: #dc2626; font-weight: bold; }
+        .severity-high { color: #ea580c; font-weight: bold; }
+        .severity-medium { color: #d97706; font-weight: bold; }
+        .severity-low { color: #059669; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚨 New Security Incident Reported</h1>
+        </div>
+
+        <div class="content">
+            <div class="field">
+                <span class="label">Incident Title:</span>
+                <span class="value">{{ incident.title }}</span>
+            </div>
+
+            <div class="field">
+                <span class="label">Severity:</span>
+                <span class="value severity-{{ incident.severity|lower }}">{{ incident.severity|upper }}</span>
+            </div>
+
+            <div class="field">
+                <span class="label">Category:</span>
+                <span class="value">{{ incident.category }}</span>
+            </div>
+
+            <div class="field">
+                <span class="label">Reported:</span>
+                <span class="value">{{ incident.reportedDate|date('d.m.Y H:i') }}</span>
+            </div>
+
+            {% if incident.description %}
+            <div class="field">
+                <span class="label">Description:</span>
+                <p class="value">{{ incident.description }}</p>
+            </div>
+            {% endif %}
+
+            <div class="field">
+                <span class="label">Status:</span>
+                <span class="value">{{ incident.status|upper }}</span>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>This is an automated notification from Little ISMS Helper</p>
+            <p>Please take appropriate action based on the incident severity</p>
+        </div>
+    </div>
+</body>
+</html>
