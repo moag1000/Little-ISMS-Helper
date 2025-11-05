@@ -2,62 +2,71 @@
 
 namespace App\Controller;
 
+use App\Repository\AssetRepository;
+use App\Repository\ControlRepository;
+use App\Repository\IncidentRepository;
+use App\Repository\RiskRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 class HomeController extends AbstractController
 {
+    public function __construct(
+        private AssetRepository $assetRepository,
+        private RiskRepository $riskRepository,
+        private IncidentRepository $incidentRepository,
+        private ControlRepository $controlRepository
+    ) {}
+
     #[Route('/', name: 'app_home')]
     public function index(): Response
     {
-        return $this->render('home/index.html.twig', [
-            'controller_name' => 'HomeController',
-        ]);
+        return $this->render('home/index.html.twig');
     }
 
     #[Route('/dashboard', name: 'app_dashboard')]
     public function dashboard(): Response
     {
-        return $this->render('home/dashboard.html.twig', [
-            'kpis' => $this->getExampleKPIs(),
-        ]);
-    }
+        $assetCount = count($this->assetRepository->findActiveAssets());
+        $riskCount = count($this->riskRepository->findAll());
+        $openIncidentCount = count($this->incidentRepository->findOpenIncidents());
 
-    /**
-     * Beispiel-KPIs für das ISMS Dashboard
-     */
-    private function getExampleKPIs(): array
-    {
-        return [
+        $applicableControls = $this->controlRepository->findApplicableControls();
+        $implementedControls = array_filter($applicableControls, fn($c) => $c->getImplementationStatus() === 'implemented');
+        $compliancePercentage = count($applicableControls) > 0
+            ? round((count($implementedControls) / count($applicableControls)) * 100)
+            : 0;
+
+        $kpis = [
             [
                 'name' => 'Erfasste Assets',
-                'value' => 0,
+                'value' => $assetCount,
                 'unit' => 'Stück',
                 'icon' => '🖥️',
-                'trend' => 'neutral',
             ],
             [
                 'name' => 'Identifizierte Risiken',
-                'value' => 0,
+                'value' => $riskCount,
                 'unit' => 'Stück',
                 'icon' => '⚠️',
-                'trend' => 'neutral',
             ],
             [
                 'name' => 'Offene Vorfälle',
-                'value' => 0,
+                'value' => $openIncidentCount,
                 'unit' => 'Stück',
                 'icon' => '🚨',
-                'trend' => 'neutral',
             ],
             [
                 'name' => 'Compliance-Status',
-                'value' => 0,
+                'value' => $compliancePercentage,
                 'unit' => '%',
                 'icon' => '✅',
-                'trend' => 'neutral',
             ],
         ];
+
+        return $this->render('home/dashboard.html.twig', [
+            'kpis' => $kpis,
+        ]);
     }
 }

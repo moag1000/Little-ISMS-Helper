@@ -1,0 +1,73 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Control bearbeiten - {{ control.controlId }} - Small ISMS Helper{% endblock %}
+
+{% block body %}
+<h1>Control bearbeiten: {{ control.controlId }}</h1>
+
+<div class="info-box" style="margin-bottom: 2rem;">
+    <h3>{{ control.name }}</h3>
+    <p style="margin-top: 0.5rem;">{{ control.description }}</p>
+</div>
+
+<form method="post">
+    <div style="margin-bottom: 1.5rem;">
+        <label style="display: block; margin-bottom: 0.5rem; font-weight: bold;">
+            <input type="checkbox" name="applicable" value="1" {% if control.applicable %}checked{% endif %}>
+            Control ist anwendbar
+        </label>
+    </div>
+
+    <div style="margin-bottom: 1.5rem;">
+        <label style="display: block; margin-bottom: 0.5rem; font-weight: bold;">
+            Begründung für Anwendbarkeit/Nicht-Anwendbarkeit:
+        </label>
+        <textarea name="justification" rows="4" style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">{{ control.justification }}</textarea>
+    </div>
+
+    <div style="margin-bottom: 1.5rem;">
+        <label style="display: block; margin-bottom: 0.5rem; font-weight: bold;">
+            Implementierungsstatus:
+        </label>
+        <select name="implementationStatus" style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+            <option value="not_started" {% if control.implementationStatus == 'not_started' %}selected{% endif %}>Nicht begonnen</option>
+            <option value="in_progress" {% if control.implementationStatus == 'in_progress' %}selected{% endif %}>In Arbeit</option>
+            <option value="implemented" {% if control.implementationStatus == 'implemented' %}selected{% endif %}>Implementiert</option>
+            <option value="not_applicable" {% if control.implementationStatus == 'not_applicable' %}selected{% endif %}>Nicht anwendbar</option>
+        </select>
+    </div>
+
+    <div style="margin-bottom: 1.5rem;">
+        <label style="display: block; margin-bottom: 0.5rem; font-weight: bold;">
+            Implementierungsgrad (%):
+        </label>
+        <input type="number" name="implementationPercentage" min="0" max="100" value="{{ control.implementationPercentage }}" style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+    </div>
+
+    <div style="margin-bottom: 1.5rem;">
+        <label style="display: block; margin-bottom: 0.5rem; font-weight: bold;">
+            Implementierungsnotizen:
+        </label>
+        <textarea name="implementationNotes" rows="6" style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">{{ control.implementationNotes }}</textarea>
+    </div>
+
+    <div style="margin-bottom: 1.5rem;">
+        <label style="display: block; margin-bottom: 0.5rem; font-weight: bold;">
+            Verantwortliche Person:
+        </label>
+        <input type="text" name="responsiblePerson" value="{{ control.responsiblePerson }}" style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+    </div>
+
+    <div style="margin-bottom: 1.5rem;">
+        <label style="display: block; margin-bottom: 0.5rem; font-weight: bold;">
+            Zieldatum:
+        </label>
+        <input type="date" name="targetDate" value="{{ control.targetDate ? control.targetDate|date('Y-m-d') : '' }}" style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+    </div>
+
+    <div style="display: flex; gap: 1rem;">
+        <button type="submit" class="btn">Speichern</button>
+        <a href="{{ path('app_soa_show', {id: control.id}) }}" class="btn btn-secondary">Abbrechen</a>
+    </div>
+</form>
+{% endblock %}
