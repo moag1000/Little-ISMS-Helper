@@ -1,0 +1,59 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Willkommen - Small ISMS Helper{% endblock %}
+
+{% block body %}
+<h1>Willkommen beim Small ISMS Helper</h1>
+
+<div class="info-box">
+    <p><strong>Small ISMS Helper</strong> unterstützt kleine und mittelständische Unternehmen bei der Implementierung und Verwaltung ihres Informationssicherheitsmanagementsystems (ISMS) nach ISO/IEC 27001.</p>
+</div>
+
+<h2 style="margin-top: 2rem;">Funktionsmodule</h2>
+
+<div class="module-grid">
+    <div class="module-card">
+        <h3>Asset Management</h3>
+        <p>Verwalten Sie Ihre IT-Assets und Informationswerte systematisch und vollständig.</p>
+        <a href="#" class="btn">Zu den Assets</a>
+    </div>
+
+    <div class="module-card">
+        <h3>Risikobewertung</h3>
+        <p>Identifizieren, bewerten und behandeln Sie Informationssicherheitsrisiken.</p>
+        <a href="#" class="btn">Risiken verwalten</a>
+    </div>
+
+    <div class="module-card">
+        <h3>Vorfallsmanagement</h3>
+        <p>Dokumentieren und verfolgen Sie Sicherheitsvorfälle und deren Behandlung.</p>
+        <a href="#" class="btn">Vorfälle erfassen</a>
+    </div>
+
+    <div class="module-card">
+        <h3>Compliance Tracking</h3>
+        <p>Überwachen Sie die Einhaltung der ISO 27001 Anforderungen.</p>
+        <a href="#" class="btn">Compliance prüfen</a>
+    </div>
+
+    <div class="module-card">
+        <h3>KPI Dashboard</h3>
+        <p>Visualisieren Sie wichtige Kennzahlen Ihres ISMS auf einen Blick.</p>
+        <a href="{{ path('app_dashboard') }}" class="btn">Zum Dashboard</a>
+    </div>
+
+    <div class="module-card">
+        <h3>Richtlinien</h3>
+        <p>Verwalten Sie Ihre Sicherheitsrichtlinien und -dokumentation zentral.</p>
+        <a href="#" class="btn">Richtlinien verwalten</a>
+    </div>
+</div>
+
+<div class="warning-box" style="margin-top: 2rem;">
+    <strong>Hinweis:</strong> Dieses System befindet sich in der Entwicklung. Einige Funktionen sind noch nicht vollständig implementiert.
+</div>
+
+<div style="margin-top: 2rem;">
+    <a href="{{ path('app_dashboard') }}" class="btn">Zum Dashboard</a>
+</div>
+{% endblock %}
