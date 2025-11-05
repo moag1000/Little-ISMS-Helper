@@ -394,11 +394,11 @@ Bei Fragen oder Problemen erstellen Sie bitte ein Issue im Repository.
 - [x] Audit Logging für alle Änderungen (Doctrine Event Listener)
 - [x] Multi-Language Support (DE, EN)
 
-### Phase 4: CRUD & Workflows (🚧 In Planung)
-- [ ] Vollständige CRUD-Operationen für alle Module
-- [ ] Formulare mit Validierung
-- [ ] Risk Assessment Matrix Visualisierung
-- [ ] Workflow-Engine für Genehmigungsprozesse
+### Phase 4: CRUD & Workflows (✅ Abgeschlossen)
+- [x] Vollständige CRUD-Operationen für alle Module
+- [x] Formulare mit Validierung (InternalAuditType, TrainingType, ControlType, ManagementReviewType, ISMSContextType)
+- [x] Risk Assessment Matrix Visualisierung (5x5 Matrix)
+- [x] Workflow-Engine für Genehmigungsprozesse (Workflow, WorkflowStep, WorkflowInstance, WorkflowService)
 
 ### Phase 5: Reporting & Integration (📋 Backlog)
 - [ ] Erweiterte Reporting & Export Funktionen (PDF, Excel)
