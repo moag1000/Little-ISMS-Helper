@@ -74,13 +74,16 @@ Der **Small ISMS Helper** ist eine PHP-basierte Webanwendung, die Organisationen
   - Verknüpfung mit unterstützenden IT-Assets
 
 - **Multi-Framework Compliance Management**: Mehrere Normen parallel verwalten
-  - **TISAX (VDA ISA)**: Informationssicherheitsbewertung für die Automobilindustrie
-  - **EU-DORA**: Digital Operational Resilience Act für Finanzdienstleister
+  - **TISAX (VDA ISA)**: Informationssicherheitsbewertung für die Automobilindustrie (32 Requirements)
+  - **EU-DORA**: Digital Operational Resilience Act für Finanzdienstleister (30 Requirements)
+  - **Hierarchische Requirements**: Core-Anforderungen mit detaillierten Sub-Requirements für granulare Audits
   - **Cross-Framework-Mappings**: Zeigt, wie Anforderungen verschiedener Normen sich gegenseitig erfüllen
   - **Transitive Compliance**: Berechnet automatisch, wie die Erfüllung einer Norm andere Normen unterstützt
   - **Mapping-Typen**: Vollständig, Teilweise, Übererfüllt mit Prozentangaben
   - **Automatische Fulfillment-Berechnung**: Nutzt bestehende ISO 27001-Daten für andere Frameworks
   - **Gap-Analyse**: Identifiziert Lücken und priorisiert Maßnahmen
+  - **Flexible Audit-Scopes**: Audits können auf Frameworks, Assets, Standorte oder Abteilungen beschränkt werden
+  - **Audit-Checklisten**: Automatische Generierung von Prüfchecklisten mit Verifizierungsstatus
 
 - **KPI Dashboard**: Echtzeit-Kennzahlen
   - Asset-Anzahl
@@ -88,6 +91,33 @@ Der **Small ISMS Helper** ist eine PHP-basierte Webanwendung, die Organisationen
   - Offene Vorfälle
   - Compliance-Status (implementierte Controls)
   - **Data Reuse Value**: Zeigt eingesparte Arbeitsstunden durch Datenwiederverwendung
+
+## Moderne Benutzeroberfläche (Progressive Disclosure UI)
+
+Das Tool implementiert das **Progressive Disclosure Pattern** für eine aufgeräumte, intuitive Bedienung ohne Funktionalitätsverlust:
+
+### UI-Designprinzipien
+
+- **Weniger ist mehr**: Essenzielle Informationen immer sichtbar, Details auf Abruf
+- **Tab-basierte Navigation**: Logische Gruppierung von Informationen (Übersicht, Details, Lücken, Datennutzung)
+- **Collapsible Sections**: Detailanforderungen unter Core-Anforderungen einklappbar
+- **Circular Progress Charts**: Visuell ansprechende Compliance-Fortschrittsindikatoren
+- **Interaktive Elemente**: Stimulus-Controller für dynamische Inhalte ohne Seitenneuladung
+- **Responsive Layout**: Optimiert für Desktop und Tablet
+
+### Implementierte UI-Features
+
+- **Framework Dashboard**: Tab-Navigation mit Always-Visible Stats Bar (5 Key Metrics)
+- **Compliance Overview**: Circular SVG Progress Charts mit Farbcodierung (grün ≥75%, gelb ≥50%, rot <50%)
+- **Expandable Requirements**: Hierarchische Anforderungen mit Expand/Collapse-Funktionalität
+- **Filter Panels**: Versteckt standardmäßig, auf Anfrage einblendbar
+- **Minimale Buttons**: Reduktion von 9 auf 2 primäre Aktionen pro Card (~70% weniger visuelles Rauschen)
+
+### Technologie
+
+- **Symfony UX Stimulus**: Client-side Interaktivität ohne JavaScript-Framework
+- **Symfony UX Turbo**: Schnelle Navigation ohne Full-Page-Reloads
+- **CSS3 Animations**: Smooth Transitions für bessere UX
 
 ## Intelligente Datenwiederverwendung (Data Reuse Architecture)
 
@@ -100,31 +130,65 @@ Ein Kernprinzip des Small ISMS Helper ist die **maximale Wertschöpfung aus einm
    - Automatische Ableitung von Verfügbarkeitsanforderungen für IT-Assets
    - Beispiel: Prozess mit RTO ≤ 1h → Asset-Verfügbarkeit "Very High" (5)
 
-2. **Incidents → Risk Assessment**
-   - Historische Vorfälle als Threat Intelligence
-   - Automatische Risikovorschläge basierend auf Incident-Mustern
-   - Control-Empfehlungen aus erfolgreichen Incident-Responses
+2. **Incident ↔ Asset (Betroffene Assets)**
+   - Verknüpfung von Incidents mit betroffenen Assets (`Incident.affectedAssets`, `Asset.incidents`)
+   - **Automatische Asset-Risikobewertung**: `Asset.getRiskScore()` kombiniert CIA-Werte, Incidents, Risiken und Control-Coverage
+   - **Impact-Analyse**: `Incident.getTotalAssetImpact()` aggregiert CIA-Werte aller betroffenen Assets
+   - **Kritische Assets erkennen**: `Incident.hasCriticalAssetsAffected()` identifiziert Hochrisiko-Vorfälle
 
-3. **Controls → Residual Risk Calculation**
-   - Implementierungsstatus und -prozentsatz von Controls
-   - Automatische Berechnung der Risikoreduktion
-   - Residual Risk = Inherent Risk × (1 - Total Reduction)
+3. **Incident ↔ Risk (Realisierte Risiken)**
+   - Verknüpfung von Incidents mit materialisierten Risiken (`Incident.realizedRisks`, `Risk.incidents`)
+   - **Risikovalidierung**: `Risk.wasAssessmentAccurate()` vergleicht Risikobewertung mit tatsächlichen Incidents
+   - **Realisierungsfrequenz**: `Risk.getRealizationCount()` zeigt wie oft ein Risiko eingetreten ist
+   - **Lerneffekt**: Risikobewertungen werden durch echte Vorfälle validiert und kalibriert
 
-4. **ISO 27001 → Multi-Framework Compliance**
+4. **Control ↔ Asset (Geschützte Assets)**
+   - Verknüpfung von Controls mit geschützten Assets (`Control.protectedAssets`, `Asset.protectingControls`)
+   - **Control-Effektivität**: `Control.getEffectivenessScore()` misst Wirksamkeit durch Incident-Reduktion
+   - **Schutzstatus**: `Asset.getProtectionStatus()` zeigt ob Assets adequately_protected, under_protected oder unprotected sind
+   - **Automatische Reviews**: `Control.needsReview()` triggert bei Incidents auf geschützten Assets
+
+5. **Training ↔ Control (Abgedeckte Controls)**
+   - Verknüpfung von Trainings mit ISO 27001 Controls (`Training.coveredControls`, `Control.trainings`)
+   - **Training-Effektivität**: `Training.getTrainingEffectiveness()` korreliert mit Control-Implementierungsstatus
+   - **Gap-Analyse**: `Control.getTrainingStatus()` identifiziert fehlende oder veraltete Schulungen
+   - **Priorisierung**: `Training.addressesCriticalControls()` zeigt Training-Bedarf für kritische Controls
+
+6. **BusinessProcess ↔ Risk (Prozessrisiken)**
+   - Verknüpfung von Geschäftsprozessen mit identifizierten Risiken (`BusinessProcess.identifiedRisks`)
+   - **BIA-Risiko-Alignment**: `BusinessProcess.isCriticalityAligned()` validiert Konsistenz zwischen BIA und Risikobewertung
+   - **RTO-Empfehlungen**: `BusinessProcess.getSuggestedRTO()` leitet aus Risiken optimale Recovery-Zeiten ab
+   - **Alerts**: `BusinessProcess.hasUnmitigatedHighRisks()` warnt bei kritischen ungeklärten Risiken
+
+7. **ISO 27001 → Multi-Framework Compliance**
    - ISO 27001 Controls mappen auf TISAX- und DORA-Anforderungen
    - Cross-Framework-Mappings zeigen Überschneidungen
    - Transitive Compliance-Berechnung
 
-5. **Audit Findings → Risk Management**
+8. **Audit Findings → Risk Management**
    - Audit-Ergebnisse fließen in Risikobewertung ein
    - Non-Conformities triggern Risiko-Reviews
 
 ### Vorteile der Data Reuse Architecture
 
-- **Zeitersparnis**: Hunderte Stunden durch Vermeidung von Doppelerfassung
+- **Zeitersparnis**: ~10,5 Stunden (95%) pro Audit-Zyklus durch automatisierte Datenaggregation
 - **Konsistenz**: Einheitliche Datenbasis für alle Compliance-Anforderungen
 - **Nachvollziehbarkeit**: Transparente Datenflüsse für Audits
 - **Proaktive Insights**: Automatische Empfehlungen basierend auf vorhandenen Daten
+- **Validierung**: Risikobewertungen werden durch reale Incidents validiert
+- **Automatisierung**: Manuelle Analysen werden durch berechnete Metriken ersetzt
+
+### Neue automatische KPIs
+
+Die vollständige Entity-Vernetzung ermöglicht **automatische Berechnungen**, die vorher manuell durchgeführt werden mussten:
+
+- **Asset Risk Score**: `Asset.getRiskScore()` - Kombiniert CIA-Werte, Incident-Historie, aktive Risiken und Control-Coverage
+- **Risk Assessment Accuracy**: `Risk.wasAssessmentAccurate()` - Validiert Risikobewertungen mit tatsächlichen Incidents
+- **Control Effectiveness**: `Control.getEffectivenessScore()` - Misst Wirksamkeit durch Incident-Reduktion nach Implementation
+- **Training Effectiveness**: `Training.getTrainingEffectiveness()` - Korreliert Training-Teilnahme mit Control-Implementierung
+- **BIA-Risk Alignment**: `BusinessProcess.isCriticalityAligned()` - Prüft Konsistenz zwischen Business-Impact und Risikobewertung
+- **Asset Protection Status**: `Asset.getProtectionStatus()` - Identifiziert ungeschützte oder untergeschützte Assets
+- **Training Coverage**: `Control.getTrainingStatus()` - Zeigt Training-Lücken (no_training, training_outdated, training_current)
 
 ### Services für Data Reuse
 
@@ -136,14 +200,15 @@ Ein Kernprinzip des Small ISMS Helper ist die **maximale Wertschöpfung aus einm
 ## Technologie-Stack
 
 - **Framework**: Symfony 7.3 (neueste Version)
-- **PHP**: 8.2 oder höher
+- **PHP**: 8.4 (empfohlen) oder 8.2+
 - **Datenbank**: PostgreSQL/MySQL (über Doctrine ORM)
 - **Frontend**: Twig Templates, Symfony UX (Stimulus, Turbo)
+- **UI/UX**: Progressive Disclosure Pattern, CSS3 Animations
 - **Testing**: PHPUnit
 
 ## Voraussetzungen
 
-- PHP 8.2 oder höher
+- PHP 8.4 (empfohlen) oder mindestens PHP 8.2
 - Composer
 - Eine Datenbank (PostgreSQL, MySQL oder SQLite)
 - Symfony CLI (optional, für lokale Entwicklung)
@@ -303,23 +368,52 @@ Bei Fragen oder Problemen erstellen Sie bitte ein Issue im Repository.
 
 ## Roadmap
 
+### Phase 1: Core ISMS (✅ Abgeschlossen)
 - [x] Basis-Setup und Projektstruktur
 - [x] Alle ISMS Kernentities (Asset, Risk, Control, Incident, etc.)
 - [x] Statement of Applicability mit allen 93 Annex A Controls
 - [x] Grundlegende Controller und Views für alle Module
 - [x] KPI Dashboard mit Echtzeit-Daten
-- [x] Datenbank-Migration
+- [x] Datenbank-Migrationen
+
+### Phase 2: Data Reuse & Multi-Framework (✅ Abgeschlossen)
+- [x] Business Continuity Management (BCM) Modul
+- [x] Multi-Framework Compliance (TISAX, DORA)
+- [x] Hierarchische Compliance Requirements
+- [x] Cross-Framework Mappings & Transitive Compliance
+- [x] Flexible Audit-Scopes & Audit-Checklisten
+- [x] Vollständige Entity-Beziehungen (Incident↔Asset, Incident↔Risk, Control↔Asset, Training↔Control, BusinessProcess↔Risk)
+- [x] Automatische KPIs (Asset Risk Score, Control Effectiveness, Training Effectiveness, etc.)
+- [x] Progressive Disclosure UI Pattern
+- [x] Circular Progress Charts & Tab-Navigation
+- [x] Symfony UX Integration (Stimulus, Turbo)
+
+### Phase 3: User Management & Security (🚧 In Planung)
 - [ ] User Authentication & Authorization (Symfony Security)
+- [ ] Role-Based Access Control (RBAC)
+- [ ] Audit Logging für alle Änderungen
+- [ ] Multi-Language Support (DE, EN)
+
+### Phase 4: CRUD & Workflows (🚧 In Planung)
 - [ ] Vollständige CRUD-Operationen für alle Module
 - [ ] Formulare mit Validierung
 - [ ] Risk Assessment Matrix Visualisierung
+- [ ] Workflow-Engine für Genehmigungsprozesse
+
+### Phase 5: Reporting & Integration (📋 Backlog)
 - [ ] Erweiterte Reporting & Export Funktionen (PDF, Excel)
 - [ ] Datei-Uploads für Nachweise und Dokumentation
 - [ ] E-Mail-Benachrichtigungen für Vorfälle und Fälligkeiten
 - [ ] API für Integration mit anderen Systemen
+- [ ] Webhook-Support
+
+### Phase 6: Enterprise Features (📋 Backlog)
 - [ ] Multi-Tenancy Support (für MSPs)
-- [ ] Responsive Design Optimierung
-- [ ] Automatisierte Tests (Unit, Integration)
+- [ ] Advanced Analytics & Dashboards
+- [ ] Mobile App (Progressive Web App)
+- [ ] Automatisierte Tests (Unit, Integration, E2E)
+- [ ] CI/CD Pipeline
+- [ ] Docker & Kubernetes Deployment
 
 ## Autoren
 
