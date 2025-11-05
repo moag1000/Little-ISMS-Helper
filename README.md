@@ -66,11 +66,72 @@ Der **Small ISMS Helper** ist eine PHP-basierte Webanwendung, die Organisationen
   - Gesetzliche Anforderungen
   - ISMS-Ziele mit KPIs
 
+- **Business Continuity Management (BCM)**: Business Impact Analysis und Kontinuitätsplanung
+  - Geschäftsprozess-Verwaltung mit BIA-Daten
+  - Recovery Time Objective (RTO), Recovery Point Objective (RPO), MTPD
+  - Kritikalitätsbewertung und Impact-Scores
+  - **Intelligente Datenwiederverwendung**: BCM-Daten fließen automatisch in Asset-Verfügbarkeitsanforderungen ein
+  - Verknüpfung mit unterstützenden IT-Assets
+
+- **Multi-Framework Compliance Management**: Mehrere Normen parallel verwalten
+  - **TISAX (VDA ISA)**: Informationssicherheitsbewertung für die Automobilindustrie
+  - **EU-DORA**: Digital Operational Resilience Act für Finanzdienstleister
+  - **Cross-Framework-Mappings**: Zeigt, wie Anforderungen verschiedener Normen sich gegenseitig erfüllen
+  - **Transitive Compliance**: Berechnet automatisch, wie die Erfüllung einer Norm andere Normen unterstützt
+  - **Mapping-Typen**: Vollständig, Teilweise, Übererfüllt mit Prozentangaben
+  - **Automatische Fulfillment-Berechnung**: Nutzt bestehende ISO 27001-Daten für andere Frameworks
+  - **Gap-Analyse**: Identifiziert Lücken und priorisiert Maßnahmen
+
 - **KPI Dashboard**: Echtzeit-Kennzahlen
   - Asset-Anzahl
   - Risiko-Übersicht
   - Offene Vorfälle
   - Compliance-Status (implementierte Controls)
+  - **Data Reuse Value**: Zeigt eingesparte Arbeitsstunden durch Datenwiederverwendung
+
+## Intelligente Datenwiederverwendung (Data Reuse Architecture)
+
+Ein Kernprinzip des Small ISMS Helper ist die **maximale Wertschöpfung aus einmal erfassten Daten**. Daten werden nicht isoliert in Silos gespeichert, sondern intelligent über Module hinweg wiederverwendet:
+
+### Implementierte Data Reuse-Muster
+
+1. **BCM → Asset Protection Requirements**
+   - RTO/RPO/MTPD-Daten aus der Business Impact Analysis
+   - Automatische Ableitung von Verfügbarkeitsanforderungen für IT-Assets
+   - Beispiel: Prozess mit RTO ≤ 1h → Asset-Verfügbarkeit "Very High" (5)
+
+2. **Incidents → Risk Assessment**
+   - Historische Vorfälle als Threat Intelligence
+   - Automatische Risikovorschläge basierend auf Incident-Mustern
+   - Control-Empfehlungen aus erfolgreichen Incident-Responses
+
+3. **Controls → Residual Risk Calculation**
+   - Implementierungsstatus und -prozentsatz von Controls
+   - Automatische Berechnung der Risikoreduktion
+   - Residual Risk = Inherent Risk × (1 - Total Reduction)
+
+4. **ISO 27001 → Multi-Framework Compliance**
+   - ISO 27001 Controls mappen auf TISAX- und DORA-Anforderungen
+   - Cross-Framework-Mappings zeigen Überschneidungen
+   - Transitive Compliance-Berechnung
+
+5. **Audit Findings → Risk Management**
+   - Audit-Ergebnisse fließen in Risikobewertung ein
+   - Non-Conformities triggern Risiko-Reviews
+
+### Vorteile der Data Reuse Architecture
+
+- **Zeitersparnis**: Hunderte Stunden durch Vermeidung von Doppelerfassung
+- **Konsistenz**: Einheitliche Datenbasis für alle Compliance-Anforderungen
+- **Nachvollziehbarkeit**: Transparente Datenflüsse für Audits
+- **Proaktive Insights**: Automatische Empfehlungen basierend auf vorhandenen Daten
+
+### Services für Data Reuse
+
+- `ProtectionRequirementService`: Intelligente CIA-Berechnung aus BCM/Incidents
+- `RiskIntelligenceService`: Risiko-Empfehlungen aus Incident-History
+- `ComplianceMappingService`: Cross-Framework Daten-Mapping
+- `ComplianceAssessmentService`: Automatische Fulfillment-Berechnung
 
 ## Technologie-Stack
 
@@ -123,7 +184,7 @@ php bin/console doctrine:database:create
 php bin/console doctrine:migrations:migrate
 ```
 
-### 5. ISO 27001 Annex A Controls laden
+### 5. Compliance-Frameworks und Controls laden
 
 Laden Sie alle 93 Controls aus ISO 27001:2022 Annex A in die Datenbank:
 
@@ -132,6 +193,18 @@ php bin/console isms:load-annex-a-controls
 ```
 
 Dies ist die Grundlage für Ihr Statement of Applicability.
+
+**Optional**: Laden Sie zusätzliche Compliance-Frameworks:
+
+```bash
+# TISAX (VDA ISA) für die Automobilindustrie
+php bin/console app:load-tisax-requirements
+
+# EU-DORA für Finanzdienstleister
+php bin/console app:load-dora-requirements
+```
+
+Diese Frameworks nutzen automatisch Ihre bestehenden ISO 27001-Daten durch intelligente Mappings.
 
 ### 6. Assets installieren
 
