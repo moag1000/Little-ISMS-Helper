@@ -1,0 +1,136 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modul-Abhängigkeiten - Little ISMS Helper{% endblock %}
+
+{% block body %}
+<div class="container-fluid mt-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <a href="{{ path('module_management_index') }}" class="btn btn-outline-secondary mb-3">
+                <i class="fas fa-arrow-left me-2"></i>
+                Zurück zur Übersicht
+            </a>
+
+            <h1>
+                <i class="fas fa-project-diagram me-2"></i>
+                Modul-Abhängigkeiten
+            </h1>
+            <p class="lead text-muted">
+                Visualisierung der Modul-Abhängigkeiten
+            </p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Abhängigkeits-Graph</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Modul</th>
+                                    <th>Status</th>
+                                    <th>Typ</th>
+                                    <th>Benötigt</th>
+                                    <th>Benötigt von</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for key, graph in dependency_graph %}
+                                    <tr class="{{ key in active_modules ? 'table-success' : '' }}">
+                                        <td>
+                                            <strong>{{ graph.name }}</strong>
+                                        </td>
+                                        <td>
+                                            {% if key in active_modules %}
+                                                <span class="badge bg-success">Aktiv</span>
+                                            {% else %}
+                                                <span class="badge bg-secondary">Inaktiv</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if graph.required %}
+                                                <span class="badge bg-warning text-dark">Erforderlich</span>
+                                            {% else %}
+                                                <span class="badge bg-info">Optional</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if graph.dependencies|length > 0 %}
+                                                {% for dep in graph.dependencies %}
+                                                    <span class="badge bg-warning text-dark me-1">{{ dependency_graph[dep].name }}</span>
+                                                {% endfor %}
+                                            {% else %}
+                                                <span class="text-muted">-</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if graph.dependents|length > 0 %}
+                                                {% for dep in graph.dependents %}
+                                                    <span class="badge bg-info me-1">{{ dependency_graph[dep].name }}</span>
+                                                {% endfor %}
+                                            {% else %}
+                                                <span class="text-muted">-</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card mb-3">
+                <div class="card-header bg-primary text-white">
+                    <h6 class="mb-0">Legende</h6>
+                </div>
+                <div class="card-body">
+                    <dl class="mb-0">
+                        <dt><span class="badge bg-success">Aktiv</span></dt>
+                        <dd>Modul ist derzeit aktiviert</dd>
+
+                        <dt><span class="badge bg-secondary">Inaktiv</span></dt>
+                        <dd>Modul ist derzeit deaktiviert</dd>
+
+                        <dt><span class="badge bg-warning text-dark">Erforderlich</span></dt>
+                        <dd>Modul ist Pflicht und kann nicht deaktiviert werden</dd>
+
+                        <dt><span class="badge bg-info">Optional</span></dt>
+                        <dd>Modul kann aktiviert/deaktiviert werden</dd>
+
+                        <dt>Benötigt</dt>
+                        <dd>Module, die vorher aktiviert sein müssen</dd>
+
+                        <dt>Benötigt von</dt>
+                        <dd>Module, die dieses Modul benötigen</dd>
+                    </dl>
+                </div>
+            </div>
+
+            <div class="card border-info">
+                <div class="card-header bg-info text-white">
+                    <h6 class="mb-0">
+                        <i class="fas fa-lightbulb me-2"></i>
+                        Hinweise
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <ul class="mb-0 small">
+                        <li>Abhängigkeiten werden automatisch aufgelöst</li>
+                        <li>Beim Aktivieren werden alle benötigten Module mit aktiviert</li>
+                        <li>Module können nur deaktiviert werden, wenn keine anderen Module davon abhängen</li>
+                        <li>Erforderliche Module können nie deaktiviert werden</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

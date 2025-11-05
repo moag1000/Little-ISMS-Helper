@@ -1,0 +1,140 @@
+business_processes:
+  - name: 'Kundenauftragsabwicklung'
+    description: 'Prozess von Auftragseingang bis zur Auslieferung an den Kunden'
+    owner: 'Vertriebsleitung'
+    criticality: 'critical'
+    rto: 4
+    rpo: 1
+    mtpd: 8
+    impact_financial: 9
+    impact_reputational: 8
+    impact_regulatory: 6
+    impact_operational: 9
+    dependencies: 'CRM-System, ERP-System, Warenwirtschaft'
+    recovery_strategy: 'Manuelle Bearbeitung mit Backup-System, Auslagerung an Partnerunternehmen'
+
+  - name: 'E-Mail-Kommunikation'
+    description: 'Interne und externe E-Mail-Kommunikation'
+    owner: 'IT-Leitung'
+    criticality: 'high'
+    rto: 8
+    rpo: 4
+    mtpd: 24
+    impact_financial: 6
+    impact_reputational: 7
+    impact_regulatory: 4
+    impact_operational: 8
+    dependencies: 'E-Mail-Server, Internet-Anbindung, Active Directory'
+    recovery_strategy: 'Failover auf Backup-Mail-Server, Nutzung von Webmail'
+
+  - name: 'Gehaltsabrechnung'
+    description: 'Monatliche Gehaltsabrechnung für alle Mitarbeiter'
+    owner: 'Personalleitung'
+    criticality: 'high'
+    rto: 48
+    rpo: 24
+    mtpd: 120
+    impact_financial: 7
+    impact_reputational: 8
+    impact_regulatory: 9
+    impact_operational: 6
+    dependencies: 'Personalverwaltungssystem, Zeiterfassung, Bankverbindung'
+    recovery_strategy: 'Manuelle Abrechnung, Auslagerung an externen Dienstleister'
+
+  - name: 'Online-Shop Betrieb'
+    description: 'Betrieb des Online-Shops für Endkunden'
+    owner: 'E-Commerce Manager'
+    criticality: 'critical'
+    rto: 2
+    rpo: 1
+    mtpd: 4
+    impact_financial: 10
+    impact_reputational: 9
+    impact_regulatory: 5
+    impact_operational: 10
+    dependencies: 'Webserver, Datenbank, Zahlungsdienstleister, Warenwirtschaft'
+    recovery_strategy: 'Automatischer Failover auf Cloud-Infrastruktur'
+
+  - name: 'Buchhaltung und Rechnungswesen'
+    description: 'Finanzielle Buchungen, Rechnungsstellung und Reporting'
+    owner: 'Finanzleitung'
+    criticality: 'high'
+    rto: 24
+    rpo: 8
+    mtpd: 72
+    impact_financial: 8
+    impact_reputational: 6
+    impact_regulatory: 9
+    impact_operational: 7
+    dependencies: 'ERP-System, Buchhaltungssoftware, Bankverbindung'
+    recovery_strategy: 'Wiederherstellung aus Backup, manuelle Buchungen'
+
+  - name: 'IT-Support und Helpdesk'
+    description: 'Technischer Support für Mitarbeiter bei IT-Problemen'
+    owner: 'IT-Leitung'
+    criticality: 'medium'
+    rto: 8
+    rpo: 24
+    mtpd: 48
+    impact_financial: 5
+    impact_reputational: 5
+    impact_operational: 7
+    impact_regulatory: 3
+    dependencies: 'Ticketsystem, Fernwartungs-Tools, Wissensdatenbank'
+    recovery_strategy: 'Manuelle Ticketerfassung, Priorisierung kritischer Anfragen'
+
+  - name: 'Produktentwicklung'
+    description: 'Entwicklung neuer Produkte und Features'
+    owner: 'Entwicklungsleitung'
+    criticality: 'medium'
+    rto: 48
+    rpo: 8
+    mtpd: 168
+    impact_financial: 6
+    impact_reputational: 5
+    impact_regulatory: 2
+    impact_operational: 5
+    dependencies: 'Entwicklungsumgebung, Versionskontrolle, Testumgebung'
+    recovery_strategy: 'Arbeit von alternativen Standorten, Cloud-Entwicklungsumgebung'
+
+  - name: 'Backup und Disaster Recovery'
+    description: 'Regelmäßige Datensicherung und Notfallwiederherstellung'
+    owner: 'IT-Leitung'
+    criticality: 'critical'
+    rto: 4
+    rpo: 2
+    mtpd: 12
+    impact_financial: 8
+    impact_reputational: 7
+    impact_regulatory: 8
+    impact_operational: 10
+    dependencies: 'Backup-Server, Backup-Software, Offsite-Storage'
+    recovery_strategy: 'Sekundäres Backup-System, Cloud-Backup als Fallback'
+
+  - name: 'Kundenservice und Support'
+    description: 'Bearbeitung von Kundenanfragen und Beschwerden'
+    owner: 'Kundenservice-Leitung'
+    criticality: 'high'
+    rto: 4
+    rpo: 2
+    mtpd: 16
+    impact_financial: 7
+    impact_reputational: 9
+    impact_regulatory: 5
+    impact_operational: 8
+    dependencies: 'CRM-System, Telefonie, E-Mail-System'
+    recovery_strategy: 'Umleitung an externes Call-Center, Mobiltelefone als Backup'
+
+  - name: 'Datenschutz-Management'
+    description: 'Überwachung und Sicherstellung der DSGVO-Compliance'
+    owner: 'Datenschutzbeauftragter'
+    criticality: 'high'
+    rto: 24
+    rpo: 8
+    mtpd: 72
+    impact_financial: 6
+    impact_reputational: 8
+    impact_regulatory: 10
+    impact_operational: 6
+    dependencies: 'Datenschutz-Management-Tool, Dokumentenmanagementsystem'
+    recovery_strategy: 'Manuelle Bearbeitung, Priorisierung gesetzlicher Fristen'
