@@ -270,6 +270,9 @@
             "templates/base.html.twig"
         ]
     },
+    "symfony/ux-chartjs": {
+        "version": "v2.31.0"
+    },
     "symfony/ux-turbo": {
         "version": "2.31",
         "recipe": {

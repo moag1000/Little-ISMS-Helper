@@ -3,33 +3,51 @@
 {% block title %}Control bearbeiten - {{ control.controlId }} - Small ISMS Helper{% endblock %}
 
 {% block body %}
-<h1>Control bearbeiten: {{ control.controlId }}</h1>
+<div class="d-flex justify-between align-center mb-4">
+    <h1>Control bearbeiten: {{ control.controlId }}</h1>
+    <a href="{{ path('app_soa_index') }}" class="btn btn-secondary">← Zurück zur Übersicht</a>
+</div>
 
-<div class="info-box" style="margin-bottom: 2rem;">
+<div class="info-box mb-4">
     <h3>{{ control.name }}</h3>
-    <p style="margin-top: 0.5rem;">{{ control.description }}</p>
+    <p style="margin-top: var(--spacing-sm); color: var(--color-text-light);">{{ control.description }}</p>
+    <div class="mt-2">
+        <span class="badge badge-info">{{ control.category }}</span>
+    </div>
 </div>
 
 <form method="post">
-    <div style="margin-bottom: 1.5rem;">
-        <label style="display: block; margin-bottom: 0.5rem; font-weight: bold;">
-            <input type="checkbox" name="applicable" value="1" {% if control.applicable %}checked{% endif %}>
-            Control ist anwendbar
+    <div class="form-group">
+        <label class="form-label" style="display: flex; align-items: center; gap: var(--spacing-sm); cursor: pointer;">
+            <input type="checkbox" name="applicable" value="1" {% if control.applicable %}checked{% endif %} style="width: 20px; height: 20px;">
+            <span>Control ist anwendbar für diese Organisation</span>
         </label>
+        <small style="color: var(--color-text-muted); margin-top: var(--spacing-xs); display: block;">
+            Markieren Sie dieses Control als anwendbar, wenn es für Ihr ISMS relevant ist.
+        </small>
     </div>
 
-    <div style="margin-bottom: 1.5rem;">
-        <label style="display: block; margin-bottom: 0.5rem; font-weight: bold;">
-            Begründung für Anwendbarkeit/Nicht-Anwendbarkeit:
+    <div class="form-group">
+        <label class="form-label" for="justification">
+            Begründung für Anwendbarkeit/Nicht-Anwendbarkeit *
         </label>
-        <textarea name="justification" rows="4" style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">{{ control.justification }}</textarea>
+        <textarea
+            name="justification"
+            id="justification"
+            rows="4"
+            class="form-control"
+            placeholder="Erklären Sie, warum dieses Control anwendbar oder nicht anwendbar ist..."
+        >{{ control.justification }}</textarea>
+        <small style="color: var(--color-text-muted); margin-top: var(--spacing-xs); display: block;">
+            Eine klare Begründung ist für Audits und Compliance-Nachweise wichtig.
+        </small>
     </div>
 
-    <div style="margin-bottom: 1.5rem;">
-        <label style="display: block; margin-bottom: 0.5rem; font-weight: bold;">
-            Implementierungsstatus:
+    <div class="form-group">
+        <label class="form-label" for="implementationStatus">
+            Implementierungsstatus
         </label>
-        <select name="implementationStatus" style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+        <select name="implementationStatus" id="implementationStatus" class="form-control">
             <option value="not_started" {% if control.implementationStatus == 'not_started' %}selected{% endif %}>Nicht begonnen</option>
             <option value="in_progress" {% if control.implementationStatus == 'in_progress' %}selected{% endif %}>In Arbeit</option>
             <option value="implemented" {% if control.implementationStatus == 'implemented' %}selected{% endif %}>Implementiert</option>
@@ -37,37 +55,97 @@
         </select>
     </div>
 
-    <div style="margin-bottom: 1.5rem;">
-        <label style="display: block; margin-bottom: 0.5rem; font-weight: bold;">
-            Implementierungsgrad (%):
+    <div class="form-group">
+        <label class="form-label" for="implementationPercentage">
+            Implementierungsgrad (%)
         </label>
-        <input type="number" name="implementationPercentage" min="0" max="100" value="{{ control.implementationPercentage }}" style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+        <div style="display: flex; align-items: center; gap: var(--spacing-md);">
+            <input
+                type="range"
+                name="implementationPercentage"
+                id="implementationPercentage"
+                min="0"
+                max="100"
+                value="{{ control.implementationPercentage }}"
+                style="flex: 1;"
+                oninput="document.getElementById('percentageValue').textContent = this.value + '%'"
+            >
+            <span id="percentageValue" class="badge badge-info" style="font-size: 1rem; padding: var(--spacing-sm) var(--spacing-md);">
+                {{ control.implementationPercentage }}%
+            </span>
+        </div>
+        <div class="progress mt-2">
+            <div class="progress-bar" style="width: {{ control.implementationPercentage }}%">
+                {{ control.implementationPercentage }}%
+            </div>
+        </div>
     </div>
 
-    <div style="margin-bottom: 1.5rem;">
-        <label style="display: block; margin-bottom: 0.5rem; font-weight: bold;">
-            Implementierungsnotizen:
+    <div class="form-group">
+        <label class="form-label" for="implementationNotes">
+            Implementierungsnotizen
         </label>
-        <textarea name="implementationNotes" rows="6" style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">{{ control.implementationNotes }}</textarea>
+        <textarea
+            name="implementationNotes"
+            id="implementationNotes"
+            rows="6"
+            class="form-control"
+            placeholder="Beschreiben Sie, wie dieses Control implementiert wurde oder wird..."
+        >{{ control.implementationNotes }}</textarea>
+        <small style="color: var(--color-text-muted); margin-top: var(--spacing-xs); display: block;">
+            Dokumentieren Sie technische Details, verwendete Tools, Prozesse, etc.
+        </small>
     </div>
 
-    <div style="margin-bottom: 1.5rem;">
-        <label style="display: block; margin-bottom: 0.5rem; font-weight: bold;">
-            Verantwortliche Person:
+    <div class="form-group">
+        <label class="form-label" for="responsiblePerson">
+            Verantwortliche Person
         </label>
-        <input type="text" name="responsiblePerson" value="{{ control.responsiblePerson }}" style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+        <input
+            type="text"
+            name="responsiblePerson"
+            id="responsiblePerson"
+            value="{{ control.responsiblePerson }}"
+            class="form-control"
+            placeholder="z.B. Max Mustermann (IT-Sicherheitsbeauftragter)"
+        >
     </div>
 
-    <div style="margin-bottom: 1.5rem;">
-        <label style="display: block; margin-bottom: 0.5rem; font-weight: bold;">
-            Zieldatum:
+    <div class="form-group">
+        <label class="form-label" for="targetDate">
+            Zieldatum für vollständige Implementierung
         </label>
-        <input type="date" name="targetDate" value="{{ control.targetDate ? control.targetDate|date('Y-m-d') : '' }}" style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+        <input
+            type="date"
+            name="targetDate"
+            id="targetDate"
+            value="{{ control.targetDate ? control.targetDate|date('Y-m-d') : '' }}"
+            class="form-control"
+        >
     </div>
 
-    <div style="display: flex; gap: 1rem;">
-        <button type="submit" class="btn">Speichern</button>
-        <a href="{{ path('app_soa_show', {id: control.id}) }}" class="btn btn-secondary">Abbrechen</a>
+    <div class="d-flex gap-2 mt-4">
+        <button type="submit" class="btn btn-success">
+            💾 Änderungen speichern
+        </button>
+        <a href="{{ path('app_soa_show', {id: control.id}) }}" class="btn btn-secondary">
+            ❌ Abbrechen
+        </a>
     </div>
 </form>
+
+<script>
+// Update range input value display in real-time
+document.addEventListener('DOMContentLoaded', function() {
+    const rangeInput = document.getElementById('implementationPercentage');
+    const progressBar = document.querySelector('.progress-bar');
+
+    rangeInput.addEventListener('input', function() {
+        const value = this.value;
+        document.getElementById('percentageValue').textContent = value + '%';
+        progressBar.style.width = value + '%';
+        progressBar.textContent = value + '%';
+    });
+});
+</script>
 {% endblock %}
