@@ -9,6 +9,7 @@ use App\Repository\RiskRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class HomeController extends AbstractController
 {
@@ -16,7 +17,8 @@ class HomeController extends AbstractController
         private AssetRepository $assetRepository,
         private RiskRepository $riskRepository,
         private IncidentRepository $incidentRepository,
-        private ControlRepository $controlRepository
+        private ControlRepository $controlRepository,
+        private TranslatorInterface $translator
     ) {}
 
     #[Route('/', name: 'app_home')]
@@ -40,27 +42,27 @@ class HomeController extends AbstractController
 
         $kpis = [
             [
-                'name' => 'Erfasste Assets',
+                'name' => $this->translator->trans('kpi.registered_assets'),
                 'value' => $assetCount,
-                'unit' => 'Stück',
+                'unit' => $this->translator->trans('kpi.unit_pieces'),
                 'icon' => '🖥️',
             ],
             [
-                'name' => 'Identifizierte Risiken',
+                'name' => $this->translator->trans('kpi.identified_risks'),
                 'value' => $riskCount,
-                'unit' => 'Stück',
+                'unit' => $this->translator->trans('kpi.unit_pieces'),
                 'icon' => '⚠️',
             ],
             [
-                'name' => 'Offene Vorfälle',
+                'name' => $this->translator->trans('kpi.open_incidents'),
                 'value' => $openIncidentCount,
-                'unit' => 'Stück',
+                'unit' => $this->translator->trans('kpi.unit_pieces'),
                 'icon' => '🚨',
             ],
             [
-                'name' => 'Compliance-Status',
+                'name' => $this->translator->trans('kpi.compliance_status'),
                 'value' => $compliancePercentage,
-                'unit' => '%',
+                'unit' => $this->translator->trans('kpi.unit_percent'),
                 'icon' => '✅',
             ],
         ];
