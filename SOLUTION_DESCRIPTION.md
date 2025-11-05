@@ -172,6 +172,8 @@ Die Software implementiert ein **datenzentrisches ISMS-Managementsystem**, bei d
 - Audit-Ergebnisse werden berücksichtigt
 - Offene Maßnahmen aus vorherigen Reviews werden getrackt
 
+**Hinweis:** Die Entity und Data-Reuse-Logik sind vollständig implementiert. Web-Interface ist in Vorbereitung.
+
 #### **3.8 Training & Awareness**
 
 **Zweck:** Schulungsmanagement für ISMS-relevante Themen
@@ -186,6 +188,8 @@ Die Software implementiert ein **datenzentrisches ISMS-Managementsystem**, bei d
 - Training-Abdeckung wird für Controls nachgewiesen
 - Schulungseffektivität kann mit Control-Implementierungsgrad korreliert werden
 - Kritische Controls mit niedriger Schulungsabdeckung werden identifiziert
+
+**Hinweis:** Die Entity und Data-Reuse-Logik sind vollständig implementiert. Web-Interface ist in Vorbereitung.
 
 #### **3.9 ISMS Context & Objectives**
 
