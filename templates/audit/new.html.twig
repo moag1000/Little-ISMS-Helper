@@ -1,0 +1,245 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'audit.new'|trans }} - {{ parent() }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid py-4">
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{{ path('app_audit_index') }}" data-turbo-action="advance">
+                    <i class="bi bi-clipboard-check"></i> {{ 'audit.title'|trans }}
+                </a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">{{ 'audit.new'|trans }}</li>
+        </ol>
+    </nav>
+
+    <div class="row">
+        <div class="col-lg-10 col-xl-9 mx-auto">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">
+                        <i class="bi bi-plus-circle"></i> {{ 'audit.new'|trans }}
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info mb-4" role="alert">
+                        <h6 class="alert-heading">
+                            <i class="bi bi-info-circle-fill"></i> {{ 'audit.iso_27001_requirement'|trans }}
+                        </h6>
+                        <p class="mb-0 small">
+                            {{ 'audit.iso_27001_clause_info'|trans }}
+                        </p>
+                    </div>
+
+                    {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+
+                    {# Basic Information Section #}
+                    <div class="card mb-4">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0"><i class="bi bi-info-square"></i> {{ 'audit.section.basic_info'|trans }}</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12 mb-3">
+                                    {{ form_row(form.title) }}
+                                </div>
+                                <div class="col-md-12 mb-3">
+                                    {{ form_row(form.scope) }}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    {{ form_row(form.scopeType) }}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    {{ form_row(form.auditType) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {# Framework & Standards Section #}
+                    <div class="card mb-4">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0"><i class="bi bi-shield-check"></i> {{ 'audit.section.frameworks'|trans }}</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    {{ form_row(form.framework) }}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    {{ form_row(form.standard) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {# Schedule Section #}
+                    <div class="card mb-4">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0"><i class="bi bi-calendar-event"></i> {{ 'audit.section.schedule'|trans }}</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    {{ form_row(form.plannedDate) }}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    {{ form_row(form.actualDate) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {# Team & Responsibilities Section #}
+                    <div class="card mb-4">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0"><i class="bi bi-people"></i> {{ 'audit.section.team'|trans }}</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    {{ form_row(form.leadAuditor) }}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    {{ form_row(form.auditTeam) }}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    {{ form_row(form.auditee) }}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    {{ form_row(form.department) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {# Status & Results Section #}
+                    <div class="card mb-4">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0"><i class="bi bi-flag"></i> {{ 'audit.section.status'|trans }}</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    {{ form_row(form.status) }}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    {{ form_row(form.overallResult) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {# Objectives & Criteria Section #}
+                    <div class="card mb-4">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0"><i class="bi bi-bullseye"></i> {{ 'audit.section.objectives'|trans }}</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12 mb-3">
+                                    {{ form_row(form.objectives) }}
+                                </div>
+                                <div class="col-md-12 mb-3">
+                                    {{ form_row(form.auditCriteria) }}
+                                </div>
+                                <div class="col-md-12 mb-3">
+                                    {{ form_row(form.methodology) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {# Findings Section #}
+                    <div class="card mb-4">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0"><i class="bi bi-exclamation-triangle"></i> {{ 'audit.section.findings'|trans }}</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12 mb-3">
+                                    {{ form_row(form.findings) }}
+                                </div>
+                                <div class="col-md-12 mb-3">
+                                    {{ form_row(form.nonconformities) }}
+                                </div>
+                                <div class="col-md-12 mb-3">
+                                    {{ form_row(form.observations) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {# Recommendations & Follow-up Section #}
+                    <div class="card mb-4">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0"><i class="bi bi-lightbulb"></i> {{ 'audit.section.recommendations'|trans }}</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12 mb-3">
+                                    {{ form_row(form.recommendations) }}
+                                </div>
+                                <div class="col-md-12 mb-3">
+                                    {{ form_row(form.correctiveActions) }}
+                                </div>
+                                <div class="col-md-12 mb-3">
+                                    {{ form_row(form.followUpActions) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {# Documentation Section #}
+                    <div class="card mb-4">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0"><i class="bi bi-file-earmark-text"></i> {{ 'audit.section.documentation'|trans }}</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12 mb-3">
+                                    {{ form_row(form.evidenceCollected) }}
+                                </div>
+                                <div class="col-md-12 mb-3">
+                                    {{ form_row(form.summary) }}
+                                </div>
+                                <div class="col-md-12 mb-3">
+                                    {{ form_row(form.notes) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {# Form Actions #}
+                    <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+                        <a href="{{ path('app_audit_index') }}"
+                           class="btn btn-outline-secondary"
+                           data-turbo-action="advance">
+                            <i class="bi bi-arrow-left"></i> {{ 'common.back'|trans }}
+                        </a>
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="bi bi-save"></i> {{ 'audit.create'|trans }}
+                        </button>
+                    </div>
+
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .form-check-input {
+        cursor: pointer;
+    }
+    .form-check-label {
+        cursor: pointer;
+    }
+    select[multiple] {
+        min-height: 150px;
+    }
+</style>
+{% endblock %}
