@@ -35,6 +35,19 @@ class ComplianceRequirement
     #[ORM\Column(length: 50)]
     private ?string $priority = null; // critical, high, medium, low
 
+    #[ORM\Column(length: 50)]
+    private string $requirementType = 'core'; // core, detailed, sub_requirement
+
+    #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'detailedRequirements')]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
+    private ?ComplianceRequirement $parentRequirement = null;
+
+    /**
+     * @var Collection<int, ComplianceRequirement>
+     */
+    #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parentRequirement', cascade: ['persist', 'remove'])]
+    private Collection $detailedRequirements;
+
     #[ORM\Column]
     private ?bool $applicable = true;
 
@@ -78,6 +91,7 @@ class ComplianceRequirement
     public function __construct()
     {
         $this->mappedControls = new ArrayCollection();
+        $this->detailedRequirements = new ArrayCollection();
         $this->createdAt = new \DateTime();
     }
 
@@ -342,5 +356,113 @@ class ComplianceRequirement
         } else {
             return 'danger';
         }
+    }
+
+    public function getRequirementType(): string
+    {
+        return $this->requirementType;
+    }
+
+    public function setRequirementType(string $requirementType): static
+    {
+        $this->requirementType = $requirementType;
+        return $this;
+    }
+
+    public function getParentRequirement(): ?self
+    {
+        return $this->parentRequirement;
+    }
+
+    public function setParentRequirement(?self $parentRequirement): static
+    {
+        $this->parentRequirement = $parentRequirement;
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ComplianceRequirement>
+     */
+    public function getDetailedRequirements(): Collection
+    {
+        return $this->detailedRequirements;
+    }
+
+    public function addDetailedRequirement(ComplianceRequirement $detailedRequirement): static
+    {
+        if (!$this->detailedRequirements->contains($detailedRequirement)) {
+            $this->detailedRequirements->add($detailedRequirement);
+            $detailedRequirement->setParentRequirement($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDetailedRequirement(ComplianceRequirement $detailedRequirement): static
+    {
+        if ($this->detailedRequirements->removeElement($detailedRequirement)) {
+            if ($detailedRequirement->getParentRequirement() === $this) {
+                $detailedRequirement->setParentRequirement(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * Check if this is a core requirement (has no parent)
+     */
+    public function isCoreRequirement(): bool
+    {
+        return $this->parentRequirement === null && $this->requirementType === 'core';
+    }
+
+    /**
+     * Check if this requirement has detailed sub-requirements
+     */
+    public function hasDetailedRequirements(): bool
+    {
+        return !$this->detailedRequirements->isEmpty();
+    }
+
+    /**
+     * Get fulfillment including detailed requirements
+     * Aggregates fulfillment from all detailed requirements
+     */
+    public function getAggregatedFulfillment(): float
+    {
+        if ($this->detailedRequirements->isEmpty()) {
+            return $this->fulfillmentPercentage;
+        }
+
+        $totalFulfillment = $this->fulfillmentPercentage;
+        $count = 1;
+
+        foreach ($this->detailedRequirements as $detailed) {
+            if ($detailed->isApplicable()) {
+                $totalFulfillment += $detailed->getFulfillmentPercentage();
+                $count++;
+            }
+        }
+
+        return round($totalFulfillment / $count, 2);
+    }
+
+    /**
+     * Get count of applicable detailed requirements
+     */
+    public function getApplicableDetailedCount(): int
+    {
+        return $this->detailedRequirements->filter(fn($req) => $req->isApplicable())->count();
+    }
+
+    /**
+     * Get count of fulfilled detailed requirements (>= 100%)
+     */
+    public function getFulfilledDetailedCount(): int
+    {
+        return $this->detailedRequirements->filter(
+            fn($req) => $req->isApplicable() && $req->getFulfillmentPercentage() >= 100
+        )->count();
     }
 }

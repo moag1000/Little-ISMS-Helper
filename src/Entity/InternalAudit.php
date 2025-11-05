@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\InternalAuditRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -22,6 +24,39 @@ class InternalAudit
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $scope = null;
+
+    /**
+     * Type of audit scope:
+     * - full_isms: Complete ISMS audit
+     * - compliance_framework: Specific framework (TISAX, DORA, etc.)
+     * - asset: Specific assets
+     * - asset_type: Type of assets (IT, personal, etc.)
+     * - asset_group: Logical grouping of assets
+     * - location: Physical location/site
+     * - department: Organizational unit
+     */
+    #[ORM\Column(length: 50, nullable: true)]
+    private ?string $scopeType = 'full_isms';
+
+    /**
+     * JSON data containing scope details
+     * For asset_type: {type: "IT", subtype: "server"}
+     * For location: {location: "Munich Office", building: "HQ"}
+     * For personnel: {group: "management", department: "IT"}
+     */
+    #[ORM\Column(type: Types::JSON, nullable: true)]
+    private ?array $scopeDetails = null;
+
+    /**
+     * @var Collection<int, Asset>
+     */
+    #[ORM\ManyToMany(targetEntity: Asset::class)]
+    #[ORM\JoinTable(name: 'internal_audit_asset')]
+    private Collection $scopedAssets;
+
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?ComplianceFramework $scopedFramework = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $objectives = null;
@@ -70,6 +105,7 @@ class InternalAudit
 
     public function __construct()
     {
+        $this->scopedAssets = new ArrayCollection();
         $this->createdAt = new \DateTime();
     }
 
@@ -274,5 +310,96 @@ class InternalAudit
     {
         $this->updatedAt = $updatedAt;
         return $this;
+    }
+
+    public function getScopeType(): ?string
+    {
+        return $this->scopeType;
+    }
+
+    public function setScopeType(?string $scopeType): static
+    {
+        $this->scopeType = $scopeType;
+        return $this;
+    }
+
+    public function getScopeDetails(): ?array
+    {
+        return $this->scopeDetails;
+    }
+
+    public function setScopeDetails(?array $scopeDetails): static
+    {
+        $this->scopeDetails = $scopeDetails;
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Asset>
+     */
+    public function getScopedAssets(): Collection
+    {
+        return $this->scopedAssets;
+    }
+
+    public function addScopedAsset(Asset $asset): static
+    {
+        if (!$this->scopedAssets->contains($asset)) {
+            $this->scopedAssets->add($asset);
+        }
+
+        return $this;
+    }
+
+    public function removeScopedAsset(Asset $asset): static
+    {
+        $this->scopedAssets->removeElement($asset);
+        return $this;
+    }
+
+    public function getScopedFramework(): ?ComplianceFramework
+    {
+        return $this->scopedFramework;
+    }
+
+    public function setScopedFramework(?ComplianceFramework $scopedFramework): static
+    {
+        $this->scopedFramework = $scopedFramework;
+        return $this;
+    }
+
+    /**
+     * Get human-readable scope description
+     */
+    public function getScopeDescription(): string
+    {
+        return match($this->scopeType) {
+            'full_isms' => 'Vollständiges ISMS Audit',
+            'compliance_framework' => $this->scopedFramework
+                ? 'Compliance Audit: ' . $this->scopedFramework->getName()
+                : 'Compliance Framework Audit',
+            'asset' => sprintf('Asset Audit (%d Assets)', $this->scopedAssets->count()),
+            'asset_type' => 'Asset-Typ Audit: ' . ($this->scopeDetails['type'] ?? 'N/A'),
+            'asset_group' => 'Asset-Gruppe Audit: ' . ($this->scopeDetails['group'] ?? 'N/A'),
+            'location' => 'Standort Audit: ' . ($this->scopeDetails['location'] ?? 'N/A'),
+            'department' => 'Abteilungs Audit: ' . ($this->scopeDetails['department'] ?? 'N/A'),
+            default => 'Unbekannter Scope',
+        };
+    }
+
+    /**
+     * Check if audit is scoped to specific assets
+     */
+    public function hasAssetScope(): bool
+    {
+        return in_array($this->scopeType, ['asset', 'asset_type', 'asset_group']);
+    }
+
+    /**
+     * Check if audit is compliance framework specific
+     */
+    public function isComplianceAudit(): bool
+    {
+        return $this->scopeType === 'compliance_framework' && $this->scopedFramework !== null;
     }
 }
