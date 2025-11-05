@@ -9,6 +9,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\RateLimiter\RateLimiterFactory;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -21,7 +22,8 @@ class DocumentController extends AbstractController
     public function __construct(
         private DocumentRepository $documentRepository,
         private EntityManagerInterface $entityManager,
-        private string $projectDir
+        private string $projectDir,
+        private RateLimiterFactory $documentUploadLimiter
     ) {}
 
     #[Route('/', name: 'app_document_index')]
@@ -47,6 +49,18 @@ class DocumentController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // Security: Rate limit document uploads to prevent abuse
+            $limiter = $this->documentUploadLimiter->create($request->getClientIp());
+
+            if (false === $limiter->consume(1)->isAccepted()) {
+                $this->addFlash('error', 'Too many document uploads. Please try again in 1 hour.');
+
+                return $this->render('document/new.html.twig', [
+                    'document' => $document,
+                    'form' => $form,
+                ]);
+            }
+
             $document->setUploadedBy($this->getUser());
             $this->entityManager->persist($document);
             $this->entityManager->flush();
