@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Risk;
 use App\Form\RiskType;
 use App\Repository\RiskRepository;
+use App\Service\RiskMatrixService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,7 +18,8 @@ class RiskController extends AbstractController
 {
     public function __construct(
         private RiskRepository $riskRepository,
-        private EntityManagerInterface $entityManager
+        private EntityManagerInterface $entityManager,
+        private RiskMatrixService $riskMatrixService
     ) {}
 
     #[Route('/', name: 'app_risk_index')]
@@ -96,5 +98,19 @@ class RiskController extends AbstractController
         }
 
         return $this->redirectToRoute('app_risk_index');
+    }
+
+    #[Route('/matrix', name: 'app_risk_matrix')]
+    public function matrix(): Response
+    {
+        $matrixData = $this->riskMatrixService->generateMatrix();
+        $statistics = $this->riskMatrixService->getRiskStatistics();
+        $risksByLevel = $this->riskMatrixService->getRisksByLevel();
+
+        return $this->render('risk/matrix.html.twig', [
+            'matrixData' => $matrixData,
+            'statistics' => $statistics,
+            'risksByLevel' => $risksByLevel,
+        ]);
     }
 }
