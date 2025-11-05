@@ -9,7 +9,7 @@ use App\Entity\User;
 use App\Repository\WorkflowRepository;
 use App\Repository\WorkflowInstanceRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Security\Core\Security;
+use Symfony\Bundle\SecurityBundle\Security;
 
 class WorkflowService
 {
