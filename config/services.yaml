@@ -23,3 +23,18 @@ services:
     App\Security\AzureSamlAuthenticator:
         arguments:
             $projectDir: '%kernel.project_dir%'
+
+    # Configure Data Import Service
+    App\Service\DataImportService:
+        arguments:
+            $projectDir: '%kernel.project_dir%'
+
+    # Configure Module Configuration Service
+    App\Service\ModuleConfigurationService:
+        arguments:
+            $projectDir: '%kernel.project_dir%'
+
+    # Configure System Requirements Checker
+    App\Service\SystemRequirementsChecker:
+        arguments:
+            $projectDir: '%kernel.project_dir%'
