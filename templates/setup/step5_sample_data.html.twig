@@ -1,0 +1,135 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Schritt 5: Beispiel-Daten - Deployment Wizard{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            {# Progress Bar #}
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h6 class="mb-0">Setup-Fortschritt</h6>
+                        <small class="text-muted">Schritt 5 von 6</small>
+                    </div>
+                    <div class="progress" style="height: 10px;">
+                        <div class="progress-bar" role="progressbar" style="width: 83%;" aria-valuenow="83" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-lg">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="mb-0">
+                        <i class="fas fa-file-code me-2"></i>
+                        Schritt 5: Beispiel-Daten (Optional)
+                    </h2>
+                </div>
+                <div class="card-body p-4">
+                    <p class="lead mb-4">
+                        Möchten Sie Beispiel-Daten importieren? Diese helfen Ihnen, das System kennenzulernen.
+                    </p>
+
+                    <div class="alert alert-warning" role="alert">
+                        <h6 class="alert-heading">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            Hinweis zu Beispiel-Daten
+                        </h6>
+                        <ul class="mb-0">
+                            <li>Beispiel-Daten sind optional und dienen nur zu Demonstrationszwecken</li>
+                            <li>Sie können später in einem Produktivsystem gelöscht werden</li>
+                            <li>Wählen Sie nur die Beispiel-Daten, die Sie testen möchten</li>
+                        </ul>
+                    </div>
+
+                    {% if sample_data|length > 0 %}
+                        <form method="post" action="{{ path('setup_step5_sample_data_import') }}">
+                            <h5 class="mb-3 mt-4">
+                                <i class="fas fa-toggle-on me-2"></i>
+                                Verfügbare Beispiel-Daten
+                            </h5>
+
+                            {% for key, data in sample_data %}
+                                <div class="card mb-3">
+                                    <div class="card-body">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="samples[{{ key }}]" value="1" id="sample_{{ key }}">
+                                            <label class="form-check-label w-100" for="sample_{{ key }}">
+                                                <div class="d-flex align-items-start">
+                                                    <div class="flex-grow-1">
+                                                        <h6 class="mb-1">{{ data.name }}</h6>
+                                                        <p class="text-muted mb-2">{{ data.description }}</p>
+                                                        {% if data.command is defined %}
+                                                            <small class="text-muted">
+                                                                <i class="fas fa-terminal me-1"></i>
+                                                                Command: <code>{{ data.command }}</code>
+                                                            </small>
+                                                        {% elseif data.file is defined %}
+                                                            <small class="text-muted">
+                                                                <i class="fas fa-file me-1"></i>
+                                                                File: <code>{{ data.file }}</code>
+                                                            </small>
+                                                        {% endif %}
+                                                        {% if data.required_modules is defined %}
+                                                            <div class="mt-2">
+                                                                <small class="text-muted">
+                                                                    <i class="fas fa-puzzle-piece me-1"></i>
+                                                                    Module:
+                                                                    {% for module in data.required_modules %}
+                                                                        <span class="badge bg-secondary">{{ module }}</span>
+                                                                    {% endfor %}
+                                                                </small>
+                                                            </div>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+
+                            <div class="d-flex justify-content-between mt-4">
+                                <a href="{{ path('setup_step4_base_data') }}" class="btn btn-outline-secondary">
+                                    <i class="fas fa-arrow-left me-2"></i>
+                                    Zurück
+                                </a>
+                                <div>
+                                    <button type="button" class="btn btn-outline-secondary me-2" onclick="document.getElementById('skip-form').submit()">
+                                        <i class="fas fa-forward me-2"></i>
+                                        Überspringen
+                                    </button>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-download me-2"></i>
+                                        Ausgewählte Daten importieren
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+
+                        <form id="skip-form" method="post" action="{{ path('setup_step5_sample_data_skip') }}" style="display: none;">
+                        </form>
+                    {% else %}
+                        <div class="alert alert-info" role="alert">
+                            <i class="fas fa-info-circle me-2"></i>
+                            Keine Beispiel-Daten für die ausgewählten Module verfügbar.
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="{{ path('setup_step4_base_data') }}" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>
+                                Zurück
+                            </a>
+                            <a href="{{ path('setup_step6_complete') }}" class="btn btn-primary">
+                                Weiter zu Schritt 6: Abschluss
+                                <i class="fas fa-arrow-right ms-2"></i>
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

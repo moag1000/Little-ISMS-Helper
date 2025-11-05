@@ -1,0 +1,134 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Audit Log Statistiken - Small ISMS Helper{% endblock %}
+
+{% block body %}
+<h1>Audit Log Statistiken</h1>
+
+<p>
+    <a href="{{ path('app_audit_log_index') }}" style="color: #007bff; text-decoration: none;">« Zurück zur Übersicht</a>
+</p>
+
+<div class="info-box">
+    <h3>Gesamtstatistik</h3>
+    <p><strong>Gesamt Protokolleinträge:</strong> {{ totalLogs }}</p>
+</div>
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 2rem;">
+    <div class="info-box">
+        <h3>Aktionen</h3>
+        {% if actionStats|length > 0 %}
+        <table style="width: 100%; border-collapse: collapse; margin-top: 1rem;">
+            <thead>
+                <tr style="background: #f0f0f0;">
+                    <th style="padding: 0.5rem; text-align: left; border: 1px solid #ddd;">Aktion</th>
+                    <th style="padding: 0.5rem; text-align: right; border: 1px solid #ddd;">Anzahl</th>
+                    <th style="padding: 0.5rem; text-align: right; border: 1px solid #ddd;">Anteil</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for stat in actionStats %}
+                <tr>
+                    <td style="padding: 0.5rem; border: 1px solid #ddd;">
+                        <span class="badge badge-{{ stat.action }}">{{ stat.action|capitalize }}</span>
+                    </td>
+                    <td style="padding: 0.5rem; text-align: right; border: 1px solid #ddd;">
+                        {{ stat.count }}
+                    </td>
+                    <td style="padding: 0.5rem; text-align: right; border: 1px solid #ddd;">
+                        {{ ((stat.count / totalLogs) * 100)|number_format(1) }}%
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>Keine Daten verfügbar</p>
+        {% endif %}
+    </div>
+
+    <div class="info-box">
+        <h3>Entitätstypen</h3>
+        {% if entityTypeStats|length > 0 %}
+        <table style="width: 100%; border-collapse: collapse; margin-top: 1rem;">
+            <thead>
+                <tr style="background: #f0f0f0;">
+                    <th style="padding: 0.5rem; text-align: left; border: 1px solid #ddd;">Entitätstyp</th>
+                    <th style="padding: 0.5rem; text-align: right; border: 1px solid #ddd;">Anzahl</th>
+                    <th style="padding: 0.5rem; text-align: right; border: 1px solid #ddd;">Anteil</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for stat in entityTypeStats %}
+                <tr>
+                    <td style="padding: 0.5rem; border: 1px solid #ddd;">
+                        {{ stat.entityType }}
+                    </td>
+                    <td style="padding: 0.5rem; text-align: right; border: 1px solid #ddd;">
+                        {{ stat.count }}
+                    </td>
+                    <td style="padding: 0.5rem; text-align: right; border: 1px solid #ddd;">
+                        {{ ((stat.count / totalLogs) * 100)|number_format(1) }}%
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>Keine Daten verfügbar</p>
+        {% endif %}
+    </div>
+</div>
+
+<div class="info-box" style="margin-top: 2rem;">
+    <h3>Aktivität der letzten 30 Tage</h3>
+    {% if activityByDay|length > 0 %}
+    <div style="margin-top: 1rem; position: relative; height: 300px;">
+        <svg viewBox="0 0 900 300" style="width: 100%; height: 100%;">
+            {% set maxValue = max(activityByDay) %}
+            {% set barWidth = 900 / activityByDay|length %}
+            {% set i = 0 %}
+            {% for date, count in activityByDay %}
+                {% set barHeight = maxValue > 0 ? (count / maxValue * 250) : 0 %}
+                {% set x = i * barWidth %}
+                {% set y = 250 - barHeight %}
+
+                <rect x="{{ x + 2 }}" y="{{ y }}" width="{{ barWidth - 4 }}" height="{{ barHeight }}"
+                      fill="#007bff" opacity="0.8">
+                    <title>{{ date }}: {{ count }} Einträge</title>
+                </rect>
+
+                {% if i % 5 == 0 %}
+                    <text x="{{ x + barWidth/2 }}" y="280" text-anchor="middle" font-size="10" fill="#666">
+                        {{ date|slice(5) }}
+                    </text>
+                {% endif %}
+
+                {% set i = i + 1 %}
+            {% endfor %}
+
+            <line x1="0" y1="250" x2="900" y2="250" stroke="#ccc" stroke-width="1"/>
+        </svg>
+    </div>
+    {% else %}
+    <p>Keine Daten verfügbar</p>
+    {% endif %}
+</div>
+
+<style>
+.badge {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 3px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+.badge-create { background: #28a745; color: white; }
+.badge-update { background: #ffc107; color: #000; }
+.badge-delete { background: #dc3545; color: white; }
+.badge-view { background: #17a2b8; color: white; }
+.badge-export { background: #6c757d; color: white; }
+.badge-import { background: #6f42c1; color: white; }
+</style>
+
+{% endblock %}

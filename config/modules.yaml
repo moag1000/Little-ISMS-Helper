@@ -1,0 +1,201 @@
+modules:
+  core:
+    name: 'Core ISMS'
+    description: 'Basis-Funktionalität für ISO 27001 ISMS'
+    required: true
+    icon: 'shield-check'
+    entities:
+      - ISMSContext
+      - ISMSObjective
+    routes:
+      - /context
+    dependencies: []
+
+  assets:
+    name: 'Asset Management'
+    description: 'Verwaltung von Informationswerten und Assets'
+    required: false
+    icon: 'database'
+    entities:
+      - Asset
+    routes:
+      - /asset
+    dependencies: []
+
+  risks:
+    name: 'Risk Management'
+    description: 'Risikobewertung und -behandlung'
+    required: false
+    icon: 'exclamation-triangle'
+    entities:
+      - Risk
+    routes:
+      - /risk
+    dependencies:
+      - assets
+
+  controls:
+    name: 'Control Management (SoA)'
+    description: 'ISO 27001 Annex A Controls und Statement of Applicability'
+    required: false
+    icon: 'list-check'
+    entities:
+      - Control
+    routes:
+      - /soa
+    dependencies: []
+
+  incidents:
+    name: 'Incident Management'
+    description: 'Verwaltung von Sicherheitsvorfällen'
+    required: false
+    icon: 'bell'
+    entities:
+      - Incident
+    routes:
+      - /incident
+    dependencies:
+      - controls
+
+  audits:
+    name: 'Audit Management'
+    description: 'Interne Audits und Prüfungen'
+    required: false
+    icon: 'clipboard-check'
+    entities:
+      - InternalAudit
+      - AuditChecklist
+    routes:
+      - /audit
+    dependencies:
+      - controls
+
+  training:
+    name: 'Training & Awareness'
+    description: 'Schulungen und Sensibilisierung'
+    required: false
+    icon: 'graduation-cap'
+    entities:
+      - Training
+    routes:
+      - /training
+    dependencies: []
+
+  reviews:
+    name: 'Management Review'
+    description: 'Management-Bewertungen des ISMS'
+    required: false
+    icon: 'users'
+    entities:
+      - ManagementReview
+    routes:
+      - /review
+    dependencies:
+      - audits
+
+  bcm:
+    name: 'Business Continuity Management'
+    description: 'Geschäftsprozesse und BCM/BIA'
+    required: false
+    icon: 'rotate'
+    entities:
+      - BusinessProcess
+    routes:
+      - /bcm
+    dependencies:
+      - assets
+
+  compliance:
+    name: 'Multi-Framework Compliance'
+    description: 'Compliance-Management für ISO 27001, TISAX, DORA'
+    required: false
+    icon: 'scale-balanced'
+    entities:
+      - ComplianceFramework
+      - ComplianceRequirement
+      - ComplianceMapping
+    routes:
+      - /compliance
+    dependencies:
+      - controls
+
+# Basis-Daten die immer importiert werden
+base_data:
+  - name: 'ISO 27001 Annex A Controls'
+    description: 'Alle 93 ISO 27001:2022 Annex A Kontrollen'
+    command: 'isms:load-annex-a-controls'
+    required_modules:
+      - controls
+
+# Optionale Beispieldaten
+sample_data:
+  - name: 'Beispiel-Assets'
+    description: 'Vordefinierte Asset-Beispiele (Server, Datenbanken, etc.)'
+    file: 'fixtures/sample_assets.yaml'
+    required_modules:
+      - assets
+
+  - name: 'Beispiel-Risiken'
+    description: 'Typische Risiko-Szenarien'
+    file: 'fixtures/sample_risks.yaml'
+    required_modules:
+      - risks
+      - assets
+
+  - name: 'Beispiel-Geschäftsprozesse'
+    description: 'Typische Geschäftsprozesse mit BIA-Daten'
+    file: 'fixtures/sample_business_processes.yaml'
+    required_modules:
+      - bcm
+
+  - name: 'TISAX Requirements'
+    description: 'TISAX (VDA ISA) Anforderungen für Automobilindustrie'
+    command: 'app:load-tisax-requirements'
+    required_modules:
+      - compliance
+
+  - name: 'DORA Requirements'
+    description: 'EU-DORA Anforderungen für Finanzsektor'
+    command: 'app:load-dora-requirements'
+    required_modules:
+      - compliance
+
+  - name: 'Beispiel-Incidents'
+    description: 'Beispiel-Sicherheitsvorfälle'
+    file: 'fixtures/sample_incidents.yaml'
+    required_modules:
+      - incidents
+
+# System-Anforderungen
+requirements:
+  php:
+    version: '8.2.0'
+    extensions:
+      - pdo
+      - pdo_mysql
+      - mbstring
+      - intl
+      - xml
+      - json
+      - zip
+      - opcache
+
+  symfony:
+    version: '7.3.0'
+
+  database:
+    supported:
+      - mysql: '8.0'
+      - mariadb: '10.6'
+      - postgresql: '14.0'
+      - sqlite: '3.35'
+
+  permissions:
+    writable_directories:
+      - var/cache
+      - var/log
+      - var/sessions
+      - public/uploads
+
+  memory_limit: '256M'
+  max_execution_time: 300
