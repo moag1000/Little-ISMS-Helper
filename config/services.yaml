@@ -24,22 +24,22 @@ services:
         arguments:
             $projectDir: '%kernel.project_dir%'
 
-    # Configure DataImportService
+    # Configure Data Import Service
     App\Service\DataImportService:
         arguments:
             $projectDir: '%kernel.project_dir%'
 
-    # Configure ModuleConfigurationService
+    # Configure Module Configuration Service
     App\Service\ModuleConfigurationService:
         arguments:
             $projectDir: '%kernel.project_dir%'
 
-    # Configure SystemRequirementsChecker
+    # Configure System Requirements Checker
     App\Service\SystemRequirementsChecker:
         arguments:
             $projectDir: '%kernel.project_dir%'
 
-    # Configure DocumentController
+    # Configure Document Controller
     App\Controller\DocumentController:
         arguments:
             $projectDir: '%kernel.project_dir%'
