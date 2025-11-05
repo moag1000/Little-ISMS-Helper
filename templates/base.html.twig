@@ -198,10 +198,12 @@
         <ul>
             <li><a href="{{ path('app_home') }}">Home</a></li>
             <li><a href="{{ path('app_dashboard') }}">Dashboard</a></li>
-            <li><a href="#">Assets</a></li>
-            <li><a href="#">Risiken</a></li>
-            <li><a href="#">Vorfälle</a></li>
-            <li><a href="#">Compliance</a></li>
+            <li><a href="{{ path('app_context_index') }}">ISMS Kontext</a></li>
+            <li><a href="{{ path('app_soa_index') }}">SoA</a></li>
+            <li><a href="{{ path('app_asset_index') }}">Assets</a></li>
+            <li><a href="{{ path('app_risk_index') }}">Risiken</a></li>
+            <li><a href="{{ path('app_incident_index') }}">Vorfälle</a></li>
+            <li><a href="{{ path('app_audit_index') }}">Audits</a></li>
         </ul>
     </nav>
 

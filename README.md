@@ -14,16 +14,63 @@ Der **Small ISMS Helper** ist eine PHP-basierte Webanwendung, die Organisationen
 
 ## Funktionsumfang
 
-### Geplante Module
+### Implementierte Kernmodule
+
+- **Statement of Applicability (SoA)**: Vollständige Verwaltung aller 93 ISO 27001:2022 Annex A Controls
+  - Festlegung der Anwendbarkeit pro Control
+  - Begründung für Anwendbarkeit/Nicht-Anwendbarkeit
+  - Implementierungsstatus und -fortschritt
+  - Verantwortlichkeiten und Zieldaten
+  - Export-Funktion für Compliance-Nachweise
 
 - **Asset Management**: Verwaltung von IT-Assets und Informationswerten
-- **Risk Assessment**: Risikobewertung und -behandlung
-- **Compliance Tracking**: Überwachung der Einhaltung von ISO 27001 Anforderungen
-- **Incident Management**: Dokumentation von Sicherheitsvorfällen
-- **KPI Dashboard**: Visualisierung von Sicherheitskennzahlen
-- **Audit Management**: Planung und Durchführung von internen Audits
-- **Policy Management**: Verwaltung von Sicherheitsrichtlinien
-- **Training Records**: Dokumentation von Awareness-Schulungen
+  - Erfassung mit CIA-Bewertung (Confidentiality, Integrity, Availability)
+  - Asset-Typen und Eigentümer
+  - Verknüpfung mit Risiken
+
+- **Risk Assessment & Treatment**: Vollständiges Risikomanagement
+  - Risikoidentifikation mit Bedrohungen und Schwachstellen
+  - Risikobewertung (Wahrscheinlichkeit × Auswirkung)
+  - Restrisiko-Berechnung nach Behandlung
+  - Risikobehandlungsstrategien
+  - Verknüpfung mit Assets und Controls
+
+- **Incident Management**: Strukturierte Vorfallsbehandlung
+  - Vorfallsdokumentation und -kategorisierung
+  - Schweregrad-Bewertung
+  - Sofortmaßnahmen und Root Cause Analysis
+  - Korrektur- und Präventivmaßnahmen
+  - Lessons Learned
+  - Datenschutzverletzungen (Data Breach) Tracking
+
+- **Internal Audit Management**: Audit-Planung und -Durchführung
+  - Audit-Planung mit Geltungsbereich und Zielen
+  - Audit-Team Verwaltung
+  - Findings und Nichtkonformitäten
+  - Beobachtungen und Empfehlungen
+
+- **Management Review**: Managementbewertung des ISMS
+  - Strukturierte Review-Dokumentation
+  - Performance-Bewertung
+  - Entscheidungen und Maßnahmen
+  - Follow-up vorheriger Reviews
+
+- **Training & Awareness**: Schulungsmanagement
+  - Schulungsplanung und -durchführung
+  - Teilnehmerverwaltung
+  - Feedback-Erfassung
+
+- **ISMS Context & Objectives**: Organisationskontext
+  - ISMS-Geltungsbereich
+  - Interessierte Parteien
+  - Gesetzliche Anforderungen
+  - ISMS-Ziele mit KPIs
+
+- **KPI Dashboard**: Echtzeit-Kennzahlen
+  - Asset-Anzahl
+  - Risiko-Übersicht
+  - Offene Vorfälle
+  - Compliance-Status (implementierte Controls)
 
 ## Technologie-Stack
 
@@ -76,13 +123,23 @@ php bin/console doctrine:database:create
 php bin/console doctrine:migrations:migrate
 ```
 
-### 5. Assets installieren
+### 5. ISO 27001 Annex A Controls laden
+
+Laden Sie alle 93 Controls aus ISO 27001:2022 Annex A in die Datenbank:
+
+```bash
+php bin/console isms:load-annex-a-controls
+```
+
+Dies ist die Grundlage für Ihr Statement of Applicability.
+
+### 6. Assets installieren
 
 ```bash
 php bin/console importmap:install
 ```
 
-### 6. Entwicklungsserver starten
+### 7. Entwicklungsserver starten
 
 Mit Symfony CLI:
 
@@ -173,15 +230,23 @@ Bei Fragen oder Problemen erstellen Sie bitte ein Issue im Repository.
 
 ## Roadmap
 
-- [ ] Basis-Setup und Projektstruktur
-- [ ] User Authentication & Authorization
-- [ ] Asset Management Modul
-- [ ] Risk Assessment Modul
-- [ ] KPI Dashboard
-- [ ] Compliance Tracking
-- [ ] Incident Management
-- [ ] Reporting & Export Funktionen
+- [x] Basis-Setup und Projektstruktur
+- [x] Alle ISMS Kernentities (Asset, Risk, Control, Incident, etc.)
+- [x] Statement of Applicability mit allen 93 Annex A Controls
+- [x] Grundlegende Controller und Views für alle Module
+- [x] KPI Dashboard mit Echtzeit-Daten
+- [x] Datenbank-Migration
+- [ ] User Authentication & Authorization (Symfony Security)
+- [ ] Vollständige CRUD-Operationen für alle Module
+- [ ] Formulare mit Validierung
+- [ ] Risk Assessment Matrix Visualisierung
+- [ ] Erweiterte Reporting & Export Funktionen (PDF, Excel)
+- [ ] Datei-Uploads für Nachweise und Dokumentation
+- [ ] E-Mail-Benachrichtigungen für Vorfälle und Fälligkeiten
+- [ ] API für Integration mit anderen Systemen
 - [ ] Multi-Tenancy Support (für MSPs)
+- [ ] Responsive Design Optimierung
+- [ ] Automatisierte Tests (Unit, Integration)
 
 ## Autoren
 

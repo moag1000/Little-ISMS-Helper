@@ -1,0 +1,100 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Statement of Applicability - Small ISMS Helper{% endblock %}
+
+{% block body %}
+<h1>Statement of Applicability (SoA)</h1>
+
+<p style="color: #666; margin-bottom: 2rem;">
+    ISO/IEC 27001:2022 Annex A Controls - Übersicht und Anwendbarkeitserklärung
+</p>
+
+<div class="info-box">
+    <h3 style="margin-bottom: 1rem;">Statistik</h3>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+        <div>
+            <strong>Gesamt Controls:</strong> {{ controls|length }}
+        </div>
+        <div>
+            <strong>Anwendbare Controls:</strong>
+            {{ controls|filter(c => c.applicable)|length }}
+        </div>
+        <div>
+            <strong>Nicht anwendbar:</strong>
+            {{ controls|filter(c => not c.applicable)|length }}
+        </div>
+    </div>
+</div>
+
+<h2 style="margin-top: 2rem;">Nach Kategorie</h2>
+
+<div class="module-grid">
+    {% set categories = ['Organizational', 'People', 'Physical', 'Technological'] %}
+    {% for category in categories %}
+    <div class="module-card">
+        <h3>{{ category }} Controls</h3>
+        <p>
+            {% set cat_controls = controls|filter(c => c.category == category) %}
+            {{ cat_controls|length }} Controls
+            ({{ cat_controls|filter(c => c.applicable)|length }} anwendbar)
+        </p>
+        <a href="{{ path('app_soa_by_category', {category: category}) }}" class="btn">Details anzeigen</a>
+    </div>
+    {% endfor %}
+</div>
+
+<h2 style="margin-top: 2rem;">Implementierungsstatus</h2>
+
+<div style="overflow-x: auto;">
+    <table style="width: 100%; border-collapse: collapse; margin-top: 1rem;">
+        <thead>
+            <tr style="background-color: #f5f5f5;">
+                <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid #ddd;">Control ID</th>
+                <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid #ddd;">Name</th>
+                <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid #ddd;">Kategorie</th>
+                <th style="padding: 0.75rem; text-align: center; border-bottom: 2px solid #ddd;">Anwendbar</th>
+                <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid #ddd;">Status</th>
+                <th style="padding: 0.75rem; text-align: center; border-bottom: 2px solid #ddd;">Aktionen</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for control in controls|sort((a, b) => a.controlId <=> b.controlId) %}
+            <tr style="border-bottom: 1px solid #eee;">
+                <td style="padding: 0.75rem;"><strong>{{ control.controlId }}</strong></td>
+                <td style="padding: 0.75rem;">{{ control.name }}</td>
+                <td style="padding: 0.75rem;">{{ control.category }}</td>
+                <td style="padding: 0.75rem; text-align: center;">
+                    {% if control.applicable %}
+                        <span style="color: green;">✓ Ja</span>
+                    {% else %}
+                        <span style="color: #999;">✗ Nein</span>
+                    {% endif %}
+                </td>
+                <td style="padding: 0.75rem;">
+                    {% if control.applicable %}
+                        {% if control.implementationStatus == 'implemented' %}
+                            <span style="color: green;">Implementiert</span>
+                        {% elseif control.implementationStatus == 'in_progress' %}
+                            <span style="color: orange;">In Arbeit ({{ control.implementationPercentage }}%)</span>
+                        {% else %}
+                            <span style="color: #999;">Nicht begonnen</span>
+                        {% endif %}
+                    {% else %}
+                        <span style="color: #999;">N/A</span>
+                    {% endif %}
+                </td>
+                <td style="padding: 0.75rem; text-align: center;">
+                    <a href="{{ path('app_soa_show', {id: control.id}) }}" style="color: #3498db; text-decoration: none;">Details</a>
+                    |
+                    <a href="{{ path('app_soa_edit', {id: control.id}) }}" style="color: #3498db; text-decoration: none;">Bearbeiten</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div style="margin-top: 2rem;">
+    <a href="{{ path('app_soa_export') }}" class="btn">SoA Exportieren</a>
+</div>
+{% endblock %}

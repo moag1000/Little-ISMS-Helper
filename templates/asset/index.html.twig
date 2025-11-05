@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Asset Management - Small ISMS Helper{% endblock %}
+
+{% block body %}
+<h1>Asset Management</h1>
+
+<p style="color: #666; margin-bottom: 2rem;">
+    Verwaltung von IT-Assets und Informationswerten gemäß ISO 27001
+</p>
+
+<div class="info-box">
+    <h3>Statistik</h3>
+    <p><strong>Aktive Assets:</strong> {{ assets|length }}</p>
+    {% if typeStats|length > 0 %}
+    <p><strong>Verteilung nach Typ:</strong></p>
+    <ul>
+        {% for stat in typeStats %}
+        <li>{{ stat.assetType }}: {{ stat.count }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+</div>
+
+<p style="margin-top: 2rem;">
+    <em>Detailansicht und Erfassungsformulare werden in der nächsten Phase implementiert.</em>
+</p>
+{% endblock %}

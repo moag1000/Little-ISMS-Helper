@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Risikomanagement - Small ISMS Helper{% endblock %}
+
+{% block body %}
+<h1>Risikomanagement</h1>
+
+<p style="color: #666; margin-bottom: 2rem;">
+    Identifikation, Bewertung und Behandlung von Informationssicherheitsrisiken
+</p>
+
+<div class="warning-box">
+    <strong>Hochrisiken:</strong> {{ highRisks|length }} Risiken mit Risikowert ≥ 12
+</div>
+
+<div class="info-box" style="margin-top: 1rem;">
+    <h3>Übersicht</h3>
+    <p><strong>Gesamt identifizierte Risiken:</strong> {{ risks|length }}</p>
+</div>
+
+<p style="margin-top: 2rem;">
+    <em>Risikoregister und Behandlungspläne werden in der nächsten Phase implementiert.</em>
+</p>
+{% endblock %}

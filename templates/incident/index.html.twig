@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Vorfallsmanagement - Small ISMS Helper{% endblock %}
+
+{% block body %}
+<h1>Vorfallsmanagement</h1>
+
+<p style="color: #666; margin-bottom: 2rem;">
+    Dokumentation und Behandlung von Informationssicherheitsvorfällen
+</p>
+
+<div class="warning-box">
+    <strong>Offene Vorfälle:</strong> {{ openIncidents|length }}
+</div>
+
+<div class="info-box" style="margin-top: 1rem;">
+    <h3>Übersicht</h3>
+    <p><strong>Gesamt erfasste Vorfälle:</strong> {{ allIncidents|length }}</p>
+</div>
+
+<p style="margin-top: 2rem;">
+    <em>Detaillierte Vorfallsdokumentation und Workflows werden in der nächsten Phase implementiert.</em>
+</p>
+{% endblock %}
