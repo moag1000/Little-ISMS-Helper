@@ -8,6 +8,7 @@ knpu_oauth2_client:
             redirect_params: {}
 
             # Azure specific options
-            url_authorize: 'https://login.microsoftonline.com/%env(AZURE_TENANT_ID)%/oauth2/v2.0/authorize'
-            url_access_token: 'https://login.microsoftonline.com/%env(AZURE_TENANT_ID)%/oauth2/v2.0/token'
-            url_resource_owner_details: 'https://graph.microsoft.com/v1.0/me'
+            tenant: '%env(AZURE_TENANT_ID)%'
+            url_login: 'https://login.microsoftonline.com'
+            url_api: 'https://graph.microsoft.com/v1.0/'
+            api_version: 'v2.0'
