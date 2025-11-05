@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\InternalAudit;
+use App\Form\InternalAuditType;
 use App\Repository\InternalAuditRepository;
 use App\Service\PdfExportService;
 use App\Service\ExcelExportService;
@@ -40,15 +41,10 @@ class AuditController extends AbstractController
     public function new(Request $request): Response
     {
         $audit = new InternalAudit();
+        $form = $this->createForm(InternalAuditType::class, $audit);
+        $form->handleRequest($request);
 
-        if ($request->isMethod('POST')) {
-            $audit->setTitle($request->request->get('title'));
-            $audit->setScope($request->request->get('scope'));
-            $audit->setScopeType($request->request->get('scopeType', 'full'));
-            $audit->setObjectives($request->request->get('objectives'));
-            $audit->setPlannedDate(new \DateTimeImmutable($request->request->get('plannedDate')));
-            $audit->setStatus('planned');
-
+        if ($form->isSubmitted() && $form->isValid()) {
             $this->entityManager->persist($audit);
             $this->entityManager->flush();
 
@@ -58,6 +54,7 @@ class AuditController extends AbstractController
 
         return $this->render('audit/new.html.twig', [
             'audit' => $audit,
+            'form' => $form,
         ]);
     }
 
@@ -73,24 +70,10 @@ class AuditController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function edit(Request $request, InternalAudit $audit): Response
     {
-        if ($request->isMethod('POST')) {
-            $audit->setTitle($request->request->get('title'));
-            $audit->setScope($request->request->get('scope'));
-            $audit->setScopeType($request->request->get('scopeType'));
-            $audit->setObjectives($request->request->get('objectives'));
-            $audit->setStatus($request->request->get('status'));
+        $form = $this->createForm(InternalAuditType::class, $audit);
+        $form->handleRequest($request);
 
-            if ($request->request->get('plannedDate')) {
-                $audit->setPlannedDate(new \DateTimeImmutable($request->request->get('plannedDate')));
-            }
-
-            if ($request->request->get('actualDate')) {
-                $audit->setActualDate(new \DateTimeImmutable($request->request->get('actualDate')));
-            }
-
-            $audit->setFindings($request->request->get('findings'));
-            $audit->setRecommendations($request->request->get('recommendations'));
-
+        if ($form->isSubmitted() && $form->isValid()) {
             $this->entityManager->flush();
 
             $this->addFlash('success', 'Audit updated successfully.');
@@ -99,6 +82,7 @@ class AuditController extends AbstractController
 
         return $this->render('audit/edit.html.twig', [
             'audit' => $audit,
+            'form' => $form,
         ]);
     }
 
