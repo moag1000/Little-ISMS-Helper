@@ -1,0 +1,40 @@
+{# Turbo Stream response for deleting a BusinessProcess #}
+
+{# Remove the deleted process row from the list #}
+<turbo-stream action="remove" target="business-process-{{ business_process_id }}">
+</turbo-stream>
+
+{# Update the stats counter #}
+<turbo-stream action="update" target="bcm-total-count">
+    <template>
+        {{ total_count }}
+    </template>
+</turbo-stream>
+
+{# Update critical count if applicable #}
+{% if was_critical %}
+<turbo-stream action="update" target="bcm-critical-count">
+    <template>
+        {{ critical_count }}
+    </template>
+</turbo-stream>
+{% endif %}
+
+{# Update high count if applicable #}
+{% if was_high %}
+<turbo-stream action="update" target="bcm-high-count">
+    <template>
+        {{ high_count }}
+    </template>
+</turbo-stream>
+{% endif %}
+
+{# Show success notification #}
+<turbo-stream action="append" target="notifications">
+    <template>
+        <div class="alert alert-info alert-dismissible fade show" role="alert">
+            <i class="bi bi-info-circle"></i> <strong>Gelöscht!</strong> Der Geschäftsprozess wurde erfolgreich gelöscht.
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    </template>
+</turbo-stream>
