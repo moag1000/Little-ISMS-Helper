@@ -1,0 +1,161 @@
+# German translations
+app:
+  title: 'Small ISMS Helper'
+  subtitle: 'Informationssicherheitsmanagement nach ISO 27001'
+  footer: 'Small ISMS Helper - Ihr Partner für Informationssicherheit nach ISO 27001'
+  powered_by: 'Powered by Symfony %version%'
+
+# Navigation
+nav:
+  home: 'Home'
+  dashboard: 'Dashboard'
+  context: 'ISMS Kontext'
+  assets: 'Assets'
+  risks: 'Risiken'
+  incidents: 'Vorfälle'
+  audits: 'Audits'
+  compliance: 'Compliance'
+
+# Dashboard
+dashboard:
+  title: 'ISMS Dashboard'
+  subtitle: 'Überblick über die wichtigsten Kennzahlen Ihres Informationssicherheitsmanagementsystems'
+  kpis: 'Key Performance Indicators (KPIs)'
+  compliance_status: 'ISO 27001 Compliance Status'
+  implementation_status: 'Implementierungsstatus nach Kapiteln'
+  quick_access: 'Schnellzugriff'
+  next_steps: 'Nächste Schritte'
+
+# KPIs
+kpi:
+  registered_assets: 'Erfasste Assets'
+  identified_risks: 'Identifizierte Risiken'
+  open_incidents: 'Offene Vorfälle'
+  compliance_status: 'Compliance-Status'
+  unit_pieces: 'Stück'
+  unit_percent: '%'
+
+# ISO 27001 Clauses
+clause:
+  4: 'Kontext der Organisation'
+  5: 'Führung'
+  6: 'Planung'
+  7: 'Unterstützung'
+  8: 'Betrieb'
+  9: 'Bewertung der Leistung'
+  10: 'Verbesserung'
+
+# Status
+status:
+  in_progress: 'In Bearbeitung'
+  not_started: 'Nicht begonnen'
+  completed: 'Abgeschlossen'
+  open: 'Offen'
+  closed: 'Geschlossen'
+
+# Actions
+action:
+  new_asset: 'Neues Asset erfassen'
+  assess_risk: 'Risiko bewerten'
+  report_incident: 'Vorfall melden'
+  save: 'Speichern'
+  cancel: 'Abbrechen'
+  edit: 'Bearbeiten'
+  delete: 'Löschen'
+  add: 'Hinzufügen'
+  back: 'Zurück'
+  search: 'Suchen'
+  filter: 'Filtern'
+  export: 'Exportieren'
+  import: 'Importieren'
+
+# Common terms
+common:
+  name: 'Name'
+  description: 'Beschreibung'
+  date: 'Datum'
+  status: 'Status'
+  priority: 'Priorität'
+  category: 'Kategorie'
+  responsible: 'Verantwortlich'
+  created_at: 'Erstellt am'
+  updated_at: 'Aktualisiert am'
+  details: 'Details'
+  overview: 'Übersicht'
+  settings: 'Einstellungen'
+  language: 'Sprache'
+
+# Context module
+context:
+  title: 'ISMS Kontext'
+  internal_issues: 'Interne Themen'
+  external_issues: 'Externe Themen'
+  stakeholders: 'Interessierte Parteien'
+  scope: 'Geltungsbereich'
+
+# Asset module
+asset:
+  title: 'Assets'
+  list: 'Asset-Inventar'
+  add_new: 'Neues Asset hinzufügen'
+  type: 'Asset-Typ'
+  owner: 'Eigentümer'
+  value: 'Wert'
+
+# Risk module
+risk:
+  title: 'Risiken'
+  assessment: 'Risikoanalyse'
+  treatment: 'Risikobehandlung'
+  likelihood: 'Eintrittswahrscheinlichkeit'
+  impact: 'Auswirkung'
+  level: 'Risikostufe'
+  register: 'Risikoregister'
+
+# Incident module
+incident:
+  title: 'Vorfälle'
+  report: 'Vorfall melden'
+  management: 'Vorfallsmanagement'
+  severity: 'Schweregrad'
+  occurred_at: 'Vorfallzeitpunkt'
+
+# Audit module
+audit:
+  title: 'Audits'
+  schedule: 'Auditplanung'
+  findings: 'Feststellungen'
+  checklist: 'Prüfliste'
+  result: 'Auditergebnis'
+  internal: 'Internes Audit'
+  external: 'Externes Audit'
+
+# Compliance module
+compliance:
+  title: 'Compliance'
+  frameworks: 'Frameworks'
+  requirements: 'Anforderungen'
+  mapping: 'Zuordnung'
+  status: 'Compliance-Status'
+
+# BCM module
+bcm:
+  title: 'BCM'
+  business_continuity: 'Business Continuity Management'
+  bia: 'Business Impact Analyse'
+  recovery: 'Wiederherstellung'
+  plan: 'Kontinuitätsplan'
+
+# Form labels
+form:
+  complete_asset_inventory: 'Asset-Inventar vervollständigen'
+  conduct_risk_analysis: 'Risikoanalyse durchführen'
+  document_policies: 'Sicherheitsrichtlinien dokumentieren'
+  plan_awareness_training: 'Mitarbeiter-Awareness-Schulungen planen'
+
+# Messages
+message:
+  success: 'Erfolgreich gespeichert'
+  error: 'Ein Fehler ist aufgetreten'
+  confirm_delete: 'Möchten Sie diesen Eintrag wirklich löschen?'
+  no_data: 'Keine Daten verfügbar'

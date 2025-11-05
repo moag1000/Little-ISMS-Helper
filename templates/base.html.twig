@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="{{ app.request.locale }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Small ISMS Helper{% endblock %}</title>
+    <title>{% block title %}{{ 'app.title'|trans }}{% endblock %}</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>🔒</text></svg>">
 
     {% block stylesheets %}
@@ -13,22 +13,32 @@
 </head>
 <body>
     <header class="header">
-        <h1>Small ISMS Helper</h1>
-        <p>Informationssicherheitsmanagement nach ISO 27001</p>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <h1>{{ 'app.title'|trans }}</h1>
+                <p>{{ 'app.subtitle'|trans }}</p>
+            </div>
+            <div class="language-switcher">
+                <a href="{{ path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')|merge({'_locale': 'de'})) }}"
+                   class="lang-btn {% if app.request.locale == 'de' %}active{% endif %}">DE</a>
+                <a href="{{ path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')|merge({'_locale': 'en'})) }}"
+                   class="lang-btn {% if app.request.locale == 'en' %}active{% endif %}">EN</a>
+            </div>
+        </div>
     </header>
 
     <nav class="nav">
         <ul>
-            <li><a href="{{ path('app_home') }}">Home</a></li>
-            <li><a href="{{ path('app_dashboard') }}">Dashboard</a></li>
-            <li><a href="{{ path('app_context_index') }}">ISMS Kontext</a></li>
+            <li><a href="{{ path('app_home') }}">{{ 'nav.home'|trans }}</a></li>
+            <li><a href="{{ path('app_dashboard') }}">{{ 'nav.dashboard'|trans }}</a></li>
+            <li><a href="{{ path('app_context_index') }}">{{ 'nav.context'|trans }}</a></li>
             <li><a href="{{ path('app_soa_index') }}">SoA</a></li>
-            <li><a href="{{ path('app_asset_index') }}">Assets</a></li>
-            <li><a href="{{ path('app_risk_index') }}">Risiken</a></li>
+            <li><a href="{{ path('app_asset_index') }}">{{ 'nav.assets'|trans }}</a></li>
+            <li><a href="{{ path('app_risk_index') }}">{{ 'nav.risks'|trans }}</a></li>
             <li><a href="{{ path('app_bcm_index') }}">BCM</a></li>
-            <li><a href="{{ path('app_incident_index') }}">Vorfälle</a></li>
-            <li><a href="{{ path('app_audit_index') }}">Audits</a></li>
-            <li><a href="{{ path('app_compliance_index') }}">Compliance</a></li>
+            <li><a href="{{ path('app_incident_index') }}">{{ 'nav.incidents'|trans }}</a></li>
+            <li><a href="{{ path('app_audit_index') }}">{{ 'nav.audits'|trans }}</a></li>
+            <li><a href="{{ path('app_compliance_index') }}">{{ 'nav.compliance'|trans }}</a></li>
         </ul>
     </nav>
 
@@ -39,8 +49,8 @@
     </div>
 
     <footer class="footer">
-        <p>Small ISMS Helper - Ihr Partner für Informationssicherheit nach ISO 27001</p>
-        <p style="font-size: 0.9rem; margin-top: 0.5rem;">Powered by Symfony {{ constant('Symfony\\Component\\HttpKernel\\Kernel::VERSION') }}</p>
+        <p>{{ 'app.footer'|trans }}</p>
+        <p style="font-size: 0.9rem; margin-top: 0.5rem;">{{ 'app.powered_by'|trans({'%version%': constant('Symfony\\Component\\HttpKernel\\Kernel::VERSION')}) }}</p>
     </footer>
 
     {% block javascripts %}

@@ -513,6 +513,36 @@ textarea.form-control {
     100% { transform: rotate(360deg); }
 }
 
+/* Language Switcher */
+.language-switcher {
+    display: flex;
+    gap: var(--spacing-xs);
+    background: rgba(255, 255, 255, 0.1);
+    padding: var(--spacing-xs);
+    border-radius: var(--border-radius-sm);
+}
+
+.lang-btn {
+    padding: var(--spacing-xs) var(--spacing-md);
+    color: var(--color-white);
+    text-decoration: none;
+    border-radius: var(--border-radius-sm);
+    font-weight: 600;
+    font-size: 0.875rem;
+    transition: all var(--transition-normal);
+    opacity: 0.7;
+}
+
+.lang-btn:hover {
+    opacity: 1;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.lang-btn.active {
+    background: var(--color-secondary);
+    opacity: 1;
+}
+
 /* Footer */
 .footer {
     text-align: center;

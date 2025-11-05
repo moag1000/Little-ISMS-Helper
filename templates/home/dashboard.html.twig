@@ -1,15 +1,15 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Dashboard - Small ISMS Helper{% endblock %}
+{% block title %}{{ 'nav.dashboard'|trans }} - {{ 'app.title'|trans }}{% endblock %}
 
 {% block body %}
-<h1>ISMS Dashboard</h1>
+<h1>{{ 'dashboard.title'|trans }}</h1>
 
 <p style="color: #666; margin-bottom: 2rem;">
-    Überblick über die wichtigsten Kennzahlen Ihres Informationssicherheitsmanagementsystems
+    {{ 'dashboard.subtitle'|trans }}
 </p>
 
-<h2>Key Performance Indicators (KPIs)</h2>
+<h2>{{ 'dashboard.kpis'|trans }}</h2>
 
 <div class="kpi-grid">
     {% for kpi in kpis %}
@@ -24,48 +24,48 @@
     {% endfor %}
 </div>
 
-<h2 style="margin-top: 3rem;">ISO 27001 Compliance Status</h2>
+<h2 style="margin-top: 3rem;">{{ 'dashboard.compliance_status'|trans }}</h2>
 
 <div class="info-box">
-    <h3 style="margin-bottom: 1rem;">Implementierungsstatus nach Kapiteln</h3>
+    <h3 style="margin-bottom: 1rem;">{{ 'dashboard.implementation_status'|trans }}</h3>
     <div style="margin-bottom: 0.5rem;">
-        <strong>Clause 4 - Kontext der Organisation:</strong> <span style="color: #e67e22;">In Bearbeitung</span>
+        <strong>Clause 4 - {{ 'clause.4'|trans }}:</strong> <span style="color: #e67e22;">{{ 'status.in_progress'|trans }}</span>
     </div>
     <div style="margin-bottom: 0.5rem;">
-        <strong>Clause 5 - Führung:</strong> <span style="color: #95a5a6;">Nicht begonnen</span>
+        <strong>Clause 5 - {{ 'clause.5'|trans }}:</strong> <span style="color: #95a5a6;">{{ 'status.not_started'|trans }}</span>
     </div>
     <div style="margin-bottom: 0.5rem;">
-        <strong>Clause 6 - Planung:</strong> <span style="color: #95a5a6;">Nicht begonnen</span>
+        <strong>Clause 6 - {{ 'clause.6'|trans }}:</strong> <span style="color: #95a5a6;">{{ 'status.not_started'|trans }}</span>
     </div>
     <div style="margin-bottom: 0.5rem;">
-        <strong>Clause 7 - Unterstützung:</strong> <span style="color: #95a5a6;">Nicht begonnen</span>
+        <strong>Clause 7 - {{ 'clause.7'|trans }}:</strong> <span style="color: #95a5a6;">{{ 'status.not_started'|trans }}</span>
     </div>
     <div style="margin-bottom: 0.5rem;">
-        <strong>Clause 8 - Betrieb:</strong> <span style="color: #95a5a6;">Nicht begonnen</span>
+        <strong>Clause 8 - {{ 'clause.8'|trans }}:</strong> <span style="color: #95a5a6;">{{ 'status.not_started'|trans }}</span>
     </div>
     <div style="margin-bottom: 0.5rem;">
-        <strong>Clause 9 - Bewertung der Leistung:</strong> <span style="color: #95a5a6;">Nicht begonnen</span>
+        <strong>Clause 9 - {{ 'clause.9'|trans }}:</strong> <span style="color: #95a5a6;">{{ 'status.not_started'|trans }}</span>
     </div>
     <div style="margin-bottom: 0.5rem;">
-        <strong>Clause 10 - Verbesserung:</strong> <span style="color: #95a5a6;">Nicht begonnen</span>
+        <strong>Clause 10 - {{ 'clause.10'|trans }}:</strong> <span style="color: #95a5a6;">{{ 'status.not_started'|trans }}</span>
     </div>
 </div>
 
-<h2 style="margin-top: 3rem;">Schnellzugriff</h2>
+<h2 style="margin-top: 3rem;">{{ 'dashboard.quick_access'|trans }}</h2>
 
 <div style="display: flex; gap: 1rem; margin-top: 1rem;">
-    <a href="#" class="btn">Neues Asset erfassen</a>
-    <a href="#" class="btn btn-secondary">Risiko bewerten</a>
-    <a href="#" class="btn btn-secondary">Vorfall melden</a>
+    <a href="#" class="btn">{{ 'action.new_asset'|trans }}</a>
+    <a href="#" class="btn btn-secondary">{{ 'action.assess_risk'|trans }}</a>
+    <a href="#" class="btn btn-secondary">{{ 'action.report_incident'|trans }}</a>
 </div>
 
 <div class="warning-box" style="margin-top: 3rem;">
-    <p><strong>Nächste Schritte:</strong></p>
+    <p><strong>{{ 'dashboard.next_steps'|trans }}:</strong></p>
     <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
-        <li>Asset-Inventar vervollständigen</li>
-        <li>Risikoanalyse durchführen</li>
-        <li>Sicherheitsrichtlinien dokumentieren</li>
-        <li>Mitarbeiter-Awareness-Schulungen planen</li>
+        <li>{{ 'form.complete_asset_inventory'|trans }}</li>
+        <li>{{ 'form.conduct_risk_analysis'|trans }}</li>
+        <li>{{ 'form.document_policies'|trans }}</li>
+        <li>{{ 'form.plan_awareness_training'|trans }}</li>
     </ul>
 </div>
 {% endblock %}
