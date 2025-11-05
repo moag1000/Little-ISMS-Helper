@@ -25,6 +25,7 @@ class IncidentController extends AbstractController
     ) {}
 
     #[Route('/', name: 'app_incident_index')]
+    #[IsGranted('ROLE_USER')]
     public function index(): Response
     {
         $openIncidents = $this->incidentRepository->findOpenIncidents();
@@ -67,6 +68,7 @@ class IncidentController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_incident_show', requirements: ['id' => '\d+'])]
+    #[IsGranted('ROLE_USER')]
     public function show(Incident $incident): Response
     {
         return $this->render('incident/show.html.twig', [

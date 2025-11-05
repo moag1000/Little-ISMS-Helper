@@ -21,6 +21,7 @@ class RiskController extends AbstractController
     ) {}
 
     #[Route('/', name: 'app_risk_index')]
+    #[IsGranted('ROLE_USER')]
     public function index(): Response
     {
         $risks = $this->riskRepository->findAll();
@@ -57,6 +58,7 @@ class RiskController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_risk_show', requirements: ['id' => '\d+'])]
+    #[IsGranted('ROLE_USER')]
     public function show(Risk $risk): Response
     {
         return $this->render('risk/show.html.twig', [

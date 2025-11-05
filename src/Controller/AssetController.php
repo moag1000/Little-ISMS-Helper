@@ -25,6 +25,7 @@ class AssetController extends AbstractController
     ) {}
 
     #[Route('/', name: 'app_asset_index')]
+    #[IsGranted('ROLE_USER')]
     public function index(): Response
     {
         $assets = $this->assetRepository->findActiveAssets();
@@ -74,6 +75,7 @@ class AssetController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_asset_show', requirements: ['id' => '\d+'])]
+    #[IsGranted('ROLE_USER')]
     public function show(Asset $asset): Response
     {
         $analysis = $this->protectionRequirementService->getCompleteProtectionRequirementAnalysis($asset);
@@ -121,6 +123,7 @@ class AssetController extends AbstractController
     }
 
     #[Route('/{id}/bcm-insights', name: 'app_asset_bcm_insights', requirements: ['id' => '\d+'])]
+    #[IsGranted('ROLE_USER')]
     public function bcmInsights(int $id): Response
     {
         $asset = $this->assetRepository->find($id);

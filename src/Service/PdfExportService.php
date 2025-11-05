@@ -19,7 +19,8 @@ class PdfExportService
 
         $pdfOptions = new Options();
         $pdfOptions->set('defaultFont', 'DejaVu Sans');
-        $pdfOptions->set('isRemoteEnabled', true);
+        // Security: Disable remote resources to prevent SSRF attacks (OWASP Top 10 #10)
+        $pdfOptions->set('isRemoteEnabled', false);
         $pdfOptions->set('isHtml5ParserEnabled', true);
 
         if (isset($options['orientation'])) {
@@ -38,8 +39,11 @@ class PdfExportService
     {
         $pdf = $this->generatePdf($template, $data, $options);
 
+        // Security: Sanitize filename to prevent header injection (OWASP Top 10 #3)
+        $safeFilename = preg_replace('/[^\w\s\.\-]/', '', $filename);
+
         header('Content-Type: application/pdf');
-        header('Content-Disposition: attachment; filename="' . $filename . '"');
+        header('Content-Disposition: attachment; filename="' . $safeFilename . '"');
         header('Content-Length: ' . strlen($pdf));
 
         echo $pdf;
@@ -49,8 +53,11 @@ class PdfExportService
     {
         $pdf = $this->generatePdf($template, $data, $options);
 
+        // Security: Sanitize filename to prevent header injection (OWASP Top 10 #3)
+        $safeFilename = preg_replace('/[^\w\s\.\-]/', '', $filename);
+
         header('Content-Type: application/pdf');
-        header('Content-Disposition: inline; filename="' . $filename . '"');
+        header('Content-Disposition: inline; filename="' . $safeFilename . '"');
         header('Content-Length: ' . strlen($pdf));
 
         echo $pdf;
