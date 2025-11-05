@@ -1,0 +1,63 @@
+{# Turbo Stream response for creating a new BusinessProcess #}
+
+{# Append the new process to the list #}
+<turbo-stream action="append" target="business-processes-table-body">
+    <template>
+        <tr id="business-process-{{ business_process.id }}" class="table-row-highlight">
+            <td>
+                <a href="{{ path('app_business_process_show', {'id': business_process.id}) }}"
+                   data-turbo-frame="_top">
+                    {{ business_process.name }}
+                </a>
+            </td>
+            <td>
+                <span class="badge bg-{% if business_process.criticality == 'critical' %}danger{% elseif business_process.criticality == 'high' %}warning{% elseif business_process.criticality == 'medium' %}info{% else %}secondary{% endif %}">
+                    {{ business_process.criticality }}
+                </span>
+            </td>
+            <td>{{ business_process.rto }}h</td>
+            <td>{{ business_process.rpo }}h</td>
+            <td>{{ business_process.businessImpactScore }}/5</td>
+            <td>{{ business_process.supportingAssets|length }}</td>
+            <td>{{ business_process.identifiedRisks|length }}</td>
+            <td>
+                <a href="{{ path('app_business_process_show', {'id': business_process.id}) }}"
+                   class="btn btn-sm btn-primary" data-turbo-frame="_top">
+                    <i class="bi bi-eye"></i>
+                </a>
+                <a href="{{ path('app_business_process_edit', {'id': business_process.id}) }}"
+                   class="btn btn-sm btn-secondary" data-turbo-frame="_top">
+                    <i class="bi bi-pencil"></i>
+                </a>
+            </td>
+        </tr>
+    </template>
+</turbo-stream>
+
+{# Update the stats counter #}
+<turbo-stream action="update" target="bcm-total-count">
+    <template>
+        {{ total_count }}
+    </template>
+</turbo-stream>
+
+{# Show success notification #}
+<turbo-stream action="append" target="notifications">
+    <template>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle"></i> <strong>Erfolg!</strong> Geschäftsprozess "{{ business_process.name }}" wurde erstellt.
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    </template>
+</turbo-stream>
+
+<style>
+.table-row-highlight {
+    animation: highlightRow 2s ease-in-out;
+}
+
+@keyframes highlightRow {
+    0% { background-color: #d4edda; }
+    100% { background-color: transparent; }
+}
+</style>

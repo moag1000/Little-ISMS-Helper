@@ -3,15 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="turbo-cache-control" content="no-preview">
     <title>{% block title %}{{ 'app.title'|trans }}{% endblock %}</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>🔒</text></svg>">
 
     {% block stylesheets %}
         <link rel="stylesheet" href="{{ asset('styles/app.css') }}">
         <link rel="stylesheet" href="{{ asset('styles/components.css') }}">
+        <style>
+            /* Turbo Progress Bar */
+            .turbo-progress-bar {
+                position: fixed;
+                display: block;
+                top: 0;
+                left: 0;
+                height: 3px;
+                background: #0d6efd;
+                z-index: 2147483647;
+                transition: width 300ms ease-out, opacity 150ms 150ms ease-in;
+                transform: translate3d(0, 0, 0);
+            }
+
+            /* Loading state for body */
+            body.turbo-loading {
+                cursor: wait;
+            }
+
+            body.turbo-loading * {
+                pointer-events: none;
+            }
+
+            /* Alert auto-fade */
+            #notifications .alert {
+                transition: opacity 0.15s linear;
+            }
+
+            #notifications .alert.fade:not(.show) {
+                opacity: 0;
+            }
+        </style>
     {% endblock %}
 </head>
-<body>
+<body data-turbo="true">
     <header class="header">
         <div style="display: flex; justify-content: space-between; align-items: center;">
             <div>
@@ -27,23 +60,23 @@
         </div>
     </header>
 
-    <nav class="nav">
+    <nav class="nav" data-turbo-permanent>
         <ul>
-            <li><a href="{{ path('app_home') }}">{{ 'nav.home'|trans }}</a></li>
-            <li><a href="{{ path('app_dashboard') }}">{{ 'nav.dashboard'|trans }}</a></li>
-            <li><a href="{{ path('app_context_index') }}">{{ 'nav.context'|trans }}</a></li>
-            <li><a href="{{ path('app_soa_index') }}">SoA</a></li>
-            <li><a href="{{ path('app_asset_index') }}">{{ 'nav.assets'|trans }}</a></li>
-            <li><a href="{{ path('app_risk_index') }}">{{ 'nav.risks'|trans }}</a></li>
-            <li><a href="{{ path('app_bcm_index') }}">BCM</a></li>
-            <li><a href="{{ path('app_incident_index') }}">{{ 'nav.incidents'|trans }}</a></li>
-            <li><a href="{{ path('app_audit_index') }}">{{ 'nav.audits'|trans }}</a></li>
-            <li><a href="{{ path('app_compliance_index') }}">{{ 'nav.compliance'|trans }}</a></li>
-            <li><a href="{{ path('app_audit_log_index') }}">Audit Log</a></li>
+            <li><a href="{{ path('app_home') }}" data-turbo-action="advance">{{ 'nav.home'|trans }}</a></li>
+            <li><a href="{{ path('app_dashboard') }}" data-turbo-action="advance">{{ 'nav.dashboard'|trans }}</a></li>
+            <li><a href="{{ path('app_context_index') }}" data-turbo-action="advance">{{ 'nav.context'|trans }}</a></li>
+            <li><a href="{{ path('app_soa_index') }}" data-turbo-action="advance">SoA</a></li>
+            <li><a href="{{ path('app_asset_index') }}" data-turbo-action="advance">{{ 'nav.assets'|trans }}</a></li>
+            <li><a href="{{ path('app_risk_index') }}" data-turbo-action="advance">{{ 'nav.risks'|trans }}</a></li>
+            <li><a href="{{ path('app_business_process_index') }}" data-turbo-action="advance">BCM</a></li>
+            <li><a href="{{ path('app_incident_index') }}" data-turbo-action="advance">{{ 'nav.incidents'|trans }}</a></li>
+            <li><a href="{{ path('app_audit_index') }}" data-turbo-action="advance">{{ 'nav.audits'|trans }}</a></li>
+            <li><a href="{{ path('app_compliance_index') }}" data-turbo-action="advance">{{ 'nav.compliance'|trans }}</a></li>
+            <li><a href="{{ path('app_audit_log_index') }}" data-turbo-action="advance">Audit Log</a></li>
         </ul>
     </nav>
 
-    <div class="container">
+    <div class="container" data-controller="turbo">
         <div class="content">
             {% block body %}{% endblock %}
         </div>
