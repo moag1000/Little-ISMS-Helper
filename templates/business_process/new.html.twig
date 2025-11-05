@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Neuer Geschäftsprozess{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{{ path('app_business_process_index') }}">BCM</a></li>
+            <li class="breadcrumb-item active">Neu</li>
+        </ol>
+    </nav>
+
+    <h1>Neuer Geschäftsprozess</h1>
+
+    <div class="card">
+        <div class="card-body">
+            {{ form_start(form) }}
+                {% include 'business_process/_form.html.twig' %}
+                <div class="d-flex justify-content-between mt-4">
+                    <a href="{{ path('app_business_process_index') }}" class="btn btn-secondary">
+                        <i class="bi bi-x-circle"></i> Abbrechen
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-check-circle"></i> Speichern
+                    </button>
+                </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>
+{% endblock %}
