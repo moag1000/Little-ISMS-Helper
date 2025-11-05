@@ -70,9 +70,16 @@ class Risk
     #[ORM\ManyToMany(targetEntity: Control::class, mappedBy: 'risks')]
     private Collection $controls;
 
+    /**
+     * @var Collection<int, Incident>
+     */
+    #[ORM\ManyToMany(targetEntity: Incident::class, mappedBy: 'realizedRisks')]
+    private Collection $incidents;
+
     public function __construct()
     {
         $this->controls = new ArrayCollection();
+        $this->incidents = new ArrayCollection();
         $this->createdAt = new \DateTime();
     }
 
@@ -295,5 +302,98 @@ class Risk
     public function getRiskReduction(): int
     {
         return $this->getInherentRiskLevel() - $this->getResidualRiskLevel();
+    }
+
+    /**
+     * @return Collection<int, Incident>
+     */
+    public function getIncidents(): Collection
+    {
+        return $this->incidents;
+    }
+
+    public function addIncident(Incident $incident): static
+    {
+        if (!$this->incidents->contains($incident)) {
+            $this->incidents->add($incident);
+            $incident->addRealizedRisk($this);
+        }
+        return $this;
+    }
+
+    public function removeIncident(Incident $incident): static
+    {
+        if ($this->incidents->removeElement($incident)) {
+            $incident->removeRealizedRisk($this);
+        }
+        return $this;
+    }
+
+    /**
+     * Check if this risk has been realized (incident occurred)
+     * Data Reuse: Validates risk assessment with real-world incidents
+     */
+    public function hasBeenRealized(): bool
+    {
+        return !$this->incidents->isEmpty();
+    }
+
+    /**
+     * Get realization count
+     * Data Reuse: Frequency analysis for risk assessment calibration
+     */
+    public function getRealizationCount(): int
+    {
+        return $this->incidents->count();
+    }
+
+    /**
+     * Check if risk assessment was accurate based on incidents
+     * Data Reuse: Compare predicted impact vs actual incident severity
+     */
+    public function wasAssessmentAccurate(): ?bool
+    {
+        if ($this->incidents->isEmpty()) {
+            return null; // Cannot validate without incidents
+        }
+
+        $predictedLevel = $this->getInherentRiskLevel();
+
+        // Compare with average incident severity
+        $criticalIncidents = 0;
+        foreach ($this->incidents as $incident) {
+            if (in_array($incident->getSeverity(), ['critical', 'high'])) {
+                $criticalIncidents++;
+            }
+        }
+
+        // High predicted risk should correlate with critical incidents
+        if ($predictedLevel >= 16) { // High risk (4x4 or higher)
+            return $criticalIncidents > 0;
+        } elseif ($predictedLevel >= 9) { // Medium risk
+            return $criticalIncidents === 0; // Should NOT have critical incidents
+        }
+
+        return true; // Low risk is accurate if few/no critical incidents
+    }
+
+    /**
+     * Get most recent incident for this risk
+     * Data Reuse: Track latest realization
+     */
+    public function getMostRecentIncident(): ?Incident
+    {
+        if ($this->incidents->isEmpty()) {
+            return null;
+        }
+
+        $latest = null;
+        foreach ($this->incidents as $incident) {
+            if ($latest === null || $incident->getDetectedAt() > $latest->getDetectedAt()) {
+                $latest = $incident;
+            }
+        }
+
+        return $latest;
     }
 }

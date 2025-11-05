@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\TrainingRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -59,8 +61,16 @@ class Training
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $updatedAt = null;
 
+    /**
+     * @var Collection<int, Control>
+     */
+    #[ORM\ManyToMany(targetEntity: Control::class)]
+    #[ORM\JoinTable(name: 'training_control')]
+    private Collection $coveredControls;
+
     public function __construct()
     {
+        $this->coveredControls = new ArrayCollection();
         $this->createdAt = new \DateTime();
     }
 
@@ -232,5 +242,84 @@ class Training
     {
         $this->updatedAt = $updatedAt;
         return $this;
+    }
+
+    /**
+     * @return Collection<int, Control>
+     */
+    public function getCoveredControls(): Collection
+    {
+        return $this->coveredControls;
+    }
+
+    public function addCoveredControl(Control $control): static
+    {
+        if (!$this->coveredControls->contains($control)) {
+            $this->coveredControls->add($control);
+        }
+        return $this;
+    }
+
+    public function removeCoveredControl(Control $control): static
+    {
+        $this->coveredControls->removeElement($control);
+        return $this;
+    }
+
+    /**
+     * Get count of ISO 27001 controls covered
+     * Data Reuse: Shows training impact on compliance
+     */
+    public function getControlCoverageCount(): int
+    {
+        return $this->coveredControls->count();
+    }
+
+    /**
+     * Calculate training effectiveness based on control implementation
+     * Data Reuse: Training completion should correlate with control implementation
+     */
+    public function getTrainingEffectiveness(): ?float
+    {
+        if ($this->status !== 'completed' || $this->coveredControls->isEmpty()) {
+            return null; // Cannot measure until training completed
+        }
+
+        $totalImplementation = 0;
+        foreach ($this->coveredControls as $control) {
+            $totalImplementation += $control->getImplementationPercentage() ?? 0;
+        }
+
+        return round($totalImplementation / $this->coveredControls->count(), 2);
+    }
+
+    /**
+     * Get list of control categories covered
+     * Data Reuse: Shows training scope
+     */
+    public function getCoveredCategories(): array
+    {
+        $categories = [];
+        foreach ($this->coveredControls as $control) {
+            $category = $control->getCategory();
+            if (!in_array($category, $categories)) {
+                $categories[] = $category;
+            }
+        }
+        return $categories;
+    }
+
+    /**
+     * Check if training addresses high-priority controls
+     * Data Reuse: Links training to critical security areas
+     */
+    public function addressesCriticalControls(): bool
+    {
+        foreach ($this->coveredControls as $control) {
+            if (!$control->isApplicable() || $control->getImplementationPercentage() < 50) {
+                return true; // Training addresses controls that need attention
+            }
+        }
+        return false;
     }
 }

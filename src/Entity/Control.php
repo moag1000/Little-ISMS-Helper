@@ -73,10 +73,25 @@ class Control
     #[ORM\ManyToMany(targetEntity: Incident::class, mappedBy: 'relatedControls')]
     private Collection $incidents;
 
+    /**
+     * @var Collection<int, Asset>
+     */
+    #[ORM\ManyToMany(targetEntity: Asset::class, inversedBy: 'protectingControls')]
+    #[ORM\JoinTable(name: 'control_asset')]
+    private Collection $protectedAssets;
+
+    /**
+     * @var Collection<int, Training>
+     */
+    #[ORM\ManyToMany(targetEntity: Training::class, mappedBy: 'coveredControls')]
+    private Collection $trainings;
+
     public function __construct()
     {
         $this->risks = new ArrayCollection();
         $this->incidents = new ArrayCollection();
+        $this->protectedAssets = new ArrayCollection();
+        $this->trainings = new ArrayCollection();
         $this->createdAt = new \DateTime();
     }
 
@@ -295,5 +310,188 @@ class Control
             $incident->removeRelatedControl($this);
         }
         return $this;
+    }
+
+    /**
+     * @return Collection<int, Asset>
+     */
+    public function getProtectedAssets(): Collection
+    {
+        return $this->protectedAssets;
+    }
+
+    public function addProtectedAsset(Asset $asset): static
+    {
+        if (!$this->protectedAssets->contains($asset)) {
+            $this->protectedAssets->add($asset);
+        }
+        return $this;
+    }
+
+    public function removeProtectedAsset(Asset $asset): static
+    {
+        $this->protectedAssets->removeElement($asset);
+        return $this;
+    }
+
+    /**
+     * Get total value of protected assets
+     * Data Reuse: Aggregates asset CIA values to show control importance
+     */
+    public function getProtectedAssetValue(): int
+    {
+        $total = 0;
+        foreach ($this->protectedAssets as $asset) {
+            $total += $asset->getTotalValue();
+        }
+        return $total;
+    }
+
+    /**
+     * Get count of high-risk assets protected
+     * Data Reuse: Uses Asset risk scoring
+     */
+    public function getHighRiskAssetCount(): int
+    {
+        return $this->protectedAssets->filter(fn($asset) => $asset->isHighRisk())->count();
+    }
+
+    /**
+     * Calculate control effectiveness based on incidents
+     * Data Reuse: Compare protected assets' incidents before/after control
+     */
+    public function getEffectivenessScore(): float
+    {
+        if ($this->implementationPercentage < 100) {
+            return 0; // Not fully implemented yet
+        }
+
+        // Count incidents on protected assets after control implementation
+        $incidentsAfterControl = 0;
+        $implementationDate = $this->lastReviewDate ?? $this->createdAt;
+
+        foreach ($this->protectedAssets as $asset) {
+            foreach ($asset->getIncidents() as $incident) {
+                if ($incident->getDetectedAt() >= $implementationDate) {
+                    $incidentsAfterControl++;
+                }
+            }
+        }
+
+        // Fewer incidents = higher effectiveness
+        $assetCount = $this->protectedAssets->count();
+        if ($assetCount === 0) {
+            return 100; // No assets to protect
+        }
+
+        // Score: 100 - (incidents per asset * 20)
+        $incidentsPerAsset = $incidentsAfterControl / $assetCount;
+        return max(0, min(100, 100 - ($incidentsPerAsset * 20)));
+    }
+
+    /**
+     * Check if control needs review based on recent incidents
+     * Data Reuse: Automatic review trigger from incident data
+     */
+    public function needsReview(): bool
+    {
+        // Check if there are recent incidents affecting protected assets
+        $threeMonthsAgo = new \DateTime('-3 months');
+
+        foreach ($this->protectedAssets as $asset) {
+            foreach ($asset->getIncidents() as $incident) {
+                if ($incident->getDetectedAt() >= $threeMonthsAgo) {
+                    return true; // Recent incident = needs review
+                }
+            }
+        }
+
+        // Also check regular review schedule
+        if ($this->nextReviewDate && $this->nextReviewDate < new \DateTime()) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @return Collection<int, Training>
+     */
+    public function getTrainings(): Collection
+    {
+        return $this->trainings;
+    }
+
+    public function addTraining(Training $training): static
+    {
+        if (!$this->trainings->contains($training)) {
+            $this->trainings->add($training);
+            $training->addCoveredControl($this);
+        }
+        return $this;
+    }
+
+    public function removeTraining(Training $training): static
+    {
+        if ($this->trainings->removeElement($training)) {
+            $training->removeCoveredControl($this);
+        }
+        return $this;
+    }
+
+    /**
+     * Check if control has adequate training coverage
+     * Data Reuse: Training status affects control implementation
+     */
+    public function hasTrainingCoverage(): bool
+    {
+        foreach ($this->trainings as $training) {
+            if ($training->getStatus() === 'completed') {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Get training gap analysis
+     * Data Reuse: Identifies missing or outdated training
+     */
+    public function getTrainingStatus(): string
+    {
+        if ($this->trainings->isEmpty()) {
+            return 'no_training';
+        }
+
+        $hasCompleted = false;
+        $hasPlanned = false;
+        $mostRecentDate = null;
+
+        foreach ($this->trainings as $training) {
+            if ($training->getStatus() === 'completed') {
+                $hasCompleted = true;
+                $completionDate = $training->getCompletionDate();
+                if ($completionDate && (!$mostRecentDate || $completionDate > $mostRecentDate)) {
+                    $mostRecentDate = $completionDate;
+                }
+            } elseif ($training->getStatus() === 'planned') {
+                $hasPlanned = true;
+            }
+        }
+
+        if ($hasCompleted) {
+            // Check if training is outdated (>1 year old)
+            $oneYearAgo = new \DateTime('-1 year');
+            if ($mostRecentDate && $mostRecentDate < $oneYearAgo) {
+                return 'training_outdated';
+            }
+            return 'training_current';
+        }
+
+        if ($hasPlanned) {
+            return 'training_planned';
+        }
+
+        return 'training_incomplete';
     }
 }

@@ -55,9 +55,23 @@ class Asset
     #[ORM\OneToMany(targetEntity: Risk::class, mappedBy: 'asset')]
     private Collection $risks;
 
+    /**
+     * @var Collection<int, Incident>
+     */
+    #[ORM\ManyToMany(targetEntity: Incident::class, mappedBy: 'affectedAssets')]
+    private Collection $incidents;
+
+    /**
+     * @var Collection<int, Control>
+     */
+    #[ORM\ManyToMany(targetEntity: Control::class, mappedBy: 'protectedAssets')]
+    private Collection $protectingControls;
+
     public function __construct()
     {
         $this->risks = new ArrayCollection();
+        $this->incidents = new ArrayCollection();
+        $this->protectingControls = new ArrayCollection();
         $this->createdAt = new \DateTime();
     }
 
@@ -214,8 +228,116 @@ class Asset
         return $this;
     }
 
+    /**
+     * @return Collection<int, Incident>
+     */
+    public function getIncidents(): Collection
+    {
+        return $this->incidents;
+    }
+
+    public function addIncident(Incident $incident): static
+    {
+        if (!$this->incidents->contains($incident)) {
+            $this->incidents->add($incident);
+            $incident->addAffectedAsset($this);
+        }
+        return $this;
+    }
+
+    public function removeIncident(Incident $incident): static
+    {
+        if ($this->incidents->removeElement($incident)) {
+            $incident->removeAffectedAsset($this);
+        }
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Control>
+     */
+    public function getProtectingControls(): Collection
+    {
+        return $this->protectingControls;
+    }
+
+    public function addProtectingControl(Control $control): static
+    {
+        if (!$this->protectingControls->contains($control)) {
+            $this->protectingControls->add($control);
+            $control->addProtectedAsset($this);
+        }
+        return $this;
+    }
+
+    public function removeProtectingControl(Control $control): static
+    {
+        if ($this->protectingControls->removeElement($control)) {
+            $control->removeProtectedAsset($this);
+        }
+        return $this;
+    }
+
     public function getTotalValue(): int
     {
         return max($this->confidentialityValue, $this->integrityValue, $this->availabilityValue);
+    }
+
+    /**
+     * Get Asset Risk Score based on multiple factors
+     * Data Reuse: Combines Risks, Incidents, Control Coverage
+     */
+    public function getRiskScore(): float
+    {
+        $score = 0;
+
+        // Base score from CIA values
+        $score += $this->getTotalValue() * 10;
+
+        // Risks impact
+        $activeRisks = $this->risks->filter(fn($r) => $r->getStatus() === 'active')->count();
+        $score += $activeRisks * 5;
+
+        // Incidents impact (recent incidents = higher risk)
+        $recentIncidents = $this->incidents->filter(function($i) {
+            $sixMonthsAgo = new \DateTime('-6 months');
+            return $i->getDetectedAt() >= $sixMonthsAgo;
+        })->count();
+        $score += $recentIncidents * 10;
+
+        // Control coverage (more controls = lower risk)
+        $controlCount = $this->protectingControls->count();
+        $score -= min($controlCount * 3, 30); // Max 30 points reduction
+
+        return max(0, min(100, $score));
+    }
+
+    /**
+     * Check if asset is high-risk (many incidents, high value)
+     * Data Reuse: Automated risk classification
+     */
+    public function isHighRisk(): bool
+    {
+        return $this->getRiskScore() >= 70;
+    }
+
+    /**
+     * Get protection status
+     * Data Reuse: Shows if asset is adequately protected
+     */
+    public function getProtectionStatus(): string
+    {
+        $controlCount = $this->protectingControls->count();
+        $riskCount = $this->risks->filter(fn($r) => $r->getStatus() === 'active')->count();
+
+        if ($controlCount === 0 && $riskCount > 0) {
+            return 'unprotected';
+        } elseif ($controlCount < $riskCount) {
+            return 'under_protected';
+        } elseif ($controlCount >= $riskCount) {
+            return 'adequately_protected';
+        }
+
+        return 'unknown';
     }
 }
