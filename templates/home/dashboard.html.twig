@@ -1,0 +1,71 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Dashboard - Small ISMS Helper{% endblock %}
+
+{% block body %}
+<h1>ISMS Dashboard</h1>
+
+<p style="color: #666; margin-bottom: 2rem;">
+    Überblick über die wichtigsten Kennzahlen Ihres Informationssicherheitsmanagementsystems
+</p>
+
+<h2>Key Performance Indicators (KPIs)</h2>
+
+<div class="kpi-grid">
+    {% for kpi in kpis %}
+    <div class="kpi-card">
+        <div class="icon">{{ kpi.icon }}</div>
+        <div class="label">{{ kpi.name }}</div>
+        <div>
+            <span class="value">{{ kpi.value }}</span>
+            <span class="unit">{{ kpi.unit }}</span>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<h2 style="margin-top: 3rem;">ISO 27001 Compliance Status</h2>
+
+<div class="info-box">
+    <h3 style="margin-bottom: 1rem;">Implementierungsstatus nach Kapiteln</h3>
+    <div style="margin-bottom: 0.5rem;">
+        <strong>Clause 4 - Kontext der Organisation:</strong> <span style="color: #e67e22;">In Bearbeitung</span>
+    </div>
+    <div style="margin-bottom: 0.5rem;">
+        <strong>Clause 5 - Führung:</strong> <span style="color: #95a5a6;">Nicht begonnen</span>
+    </div>
+    <div style="margin-bottom: 0.5rem;">
+        <strong>Clause 6 - Planung:</strong> <span style="color: #95a5a6;">Nicht begonnen</span>
+    </div>
+    <div style="margin-bottom: 0.5rem;">
+        <strong>Clause 7 - Unterstützung:</strong> <span style="color: #95a5a6;">Nicht begonnen</span>
+    </div>
+    <div style="margin-bottom: 0.5rem;">
+        <strong>Clause 8 - Betrieb:</strong> <span style="color: #95a5a6;">Nicht begonnen</span>
+    </div>
+    <div style="margin-bottom: 0.5rem;">
+        <strong>Clause 9 - Bewertung der Leistung:</strong> <span style="color: #95a5a6;">Nicht begonnen</span>
+    </div>
+    <div style="margin-bottom: 0.5rem;">
+        <strong>Clause 10 - Verbesserung:</strong> <span style="color: #95a5a6;">Nicht begonnen</span>
+    </div>
+</div>
+
+<h2 style="margin-top: 3rem;">Schnellzugriff</h2>
+
+<div style="display: flex; gap: 1rem; margin-top: 1rem;">
+    <a href="#" class="btn">Neues Asset erfassen</a>
+    <a href="#" class="btn btn-secondary">Risiko bewerten</a>
+    <a href="#" class="btn btn-secondary">Vorfall melden</a>
+</div>
+
+<div class="warning-box" style="margin-top: 3rem;">
+    <p><strong>Nächste Schritte:</strong></p>
+    <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+        <li>Asset-Inventar vervollständigen</li>
+        <li>Risikoanalyse durchführen</li>
+        <li>Sicherheitsrichtlinien dokumentieren</li>
+        <li>Mitarbeiter-Awareness-Schulungen planen</li>
+    </ul>
+</div>
+{% endblock %}
