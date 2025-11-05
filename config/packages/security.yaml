@@ -2,28 +2,76 @@ security:
     # https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
     password_hashers:
         Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
+        App\Entity\User:
+            algorithm: auto
+
     # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
     providers:
-        users_in_memory: { memory: null }
+        app_user_provider:
+            entity:
+                class: App\Entity\User
+                property: email
+
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
+
         main:
             lazy: true
-            provider: users_in_memory
+            provider: app_user_provider
 
-            # activate different ways to authenticate
-            # https://symfony.com/doc/current/security.html#the-firewall
+            # Form login for local users
+            form_login:
+                login_path: app_login
+                check_path: app_login
+                enable_csrf: true
+                default_target_path: app_home
+                always_use_default_target_path: false
 
-            # https://symfony.com/doc/current/security/impersonating_user.html
-            # switch_user: true
+            # Logout
+            logout:
+                path: app_logout
+                target: app_login
+
+            # Custom authenticators for Azure OAuth and SAML
+            custom_authenticators:
+                - App\Security\AzureOAuthAuthenticator
+                - App\Security\AzureSamlAuthenticator
+
+            # Entry point (what to do when authentication is required)
+            entry_point: App\Security\AzureOAuthAuthenticator
+
+            # Remember me functionality
+            remember_me:
+                secret: '%kernel.secret%'
+                lifetime: 604800 # 1 week in seconds
+                path: /
+                always_remember_me: false
+
+            # Allow user impersonation
+            switch_user: true
+
+    # Role hierarchy - higher roles inherit permissions from lower roles
+    role_hierarchy:
+        ROLE_AUDITOR:       ROLE_USER
+        ROLE_MANAGER:       [ROLE_USER, ROLE_AUDITOR]
+        ROLE_ADMIN:         [ROLE_USER, ROLE_AUDITOR, ROLE_MANAGER]
+        ROLE_SUPER_ADMIN:   [ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
 
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
+        # Public routes
+        - { path: ^/login, roles: PUBLIC_ACCESS }
+        - { path: ^/oauth, roles: PUBLIC_ACCESS }
+        - { path: ^/saml, roles: PUBLIC_ACCESS }
+
+        # Admin routes
+        - { path: ^/admin, roles: ROLE_ADMIN }
+
+        # All other routes require authentication
+        - { path: ^/, roles: ROLE_USER }
 
 when@test:
     security:
