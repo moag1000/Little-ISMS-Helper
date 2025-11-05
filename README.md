@@ -388,11 +388,11 @@ Bei Fragen oder Problemen erstellen Sie bitte ein Issue im Repository.
 - [x] Circular Progress Charts & Tab-Navigation
 - [x] Symfony UX Integration (Stimulus, Turbo)
 
-### Phase 3: User Management & Security (🚧 In Planung)
-- [ ] User Authentication & Authorization (Symfony Security)
-- [ ] Role-Based Access Control (RBAC)
-- [ ] Audit Logging für alle Änderungen
-- [ ] Multi-Language Support (DE, EN)
+### Phase 3: User Management & Security (✅ Abgeschlossen)
+- [x] User Authentication & Authorization (Symfony Security)
+- [x] Role-Based Access Control (RBAC) with User/Role/Permission entities
+- [x] Audit Logging für alle Änderungen (Doctrine Event Listener)
+- [x] Multi-Language Support (DE, EN)
 
 ### Phase 4: CRUD & Workflows (🚧 In Planung)
 - [ ] Vollständige CRUD-Operationen für alle Module
