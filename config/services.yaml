@@ -38,3 +38,8 @@ services:
     App\Service\SystemRequirementsChecker:
         arguments:
             $projectDir: '%kernel.project_dir%'
+
+    # Configure DocumentController
+    App\Controller\DocumentController:
+        arguments:
+            $projectDir: '%kernel.project_dir%'
