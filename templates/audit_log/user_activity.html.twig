@@ -1,0 +1,85 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Benutzeraktivität - Small ISMS Helper{% endblock %}
+
+{% block body %}
+<h1>Benutzeraktivität</h1>
+
+<p>
+    <a href="{{ path('app_audit_log_index') }}" style="color: #007bff; text-decoration: none;">« Zurück zur Übersicht</a>
+</p>
+
+<div class="info-box">
+    <h3>Benutzer: {{ userName }}</h3>
+    <p><strong>Anzahl Aktivitäten:</strong> {{ auditLogs|length }}</p>
+</div>
+
+{% if auditLogs|length > 0 %}
+<div style="margin-top: 2rem;">
+    <h2>Aktivitätsverlauf</h2>
+
+    <table class="table" style="width: 100%; border-collapse: collapse; margin-top: 1rem;">
+        <thead>
+            <tr style="background: #f0f0f0;">
+                <th style="padding: 0.75rem; text-align: left; border: 1px solid #ddd;">Zeitstempel</th>
+                <th style="padding: 0.75rem; text-align: left; border: 1px solid #ddd;">Aktion</th>
+                <th style="padding: 0.75rem; text-align: left; border: 1px solid #ddd;">Entität</th>
+                <th style="padding: 0.75rem; text-align: left; border: 1px solid #ddd;">Beschreibung</th>
+                <th style="padding: 0.75rem; text-align: left; border: 1px solid #ddd;">Details</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for log in auditLogs %}
+            <tr>
+                <td style="padding: 0.75rem; border: 1px solid #ddd; font-size: 0.9rem;">
+                    {{ log.createdAt|date('d.m.Y H:i:s') }}
+                </td>
+                <td style="padding: 0.75rem; border: 1px solid #ddd;">
+                    <span class="badge badge-{{ log.action }}">{{ log.action|capitalize }}</span>
+                </td>
+                <td style="padding: 0.75rem; border: 1px solid #ddd;">
+                    {{ log.entityType }}
+                    {% if log.entityId %}
+                        <a href="{{ path('app_audit_log_entity', {entityType: log.entityType, entityId: log.entityId}) }}"
+                           style="color: #007bff; text-decoration: none;">
+                            (#{{ log.entityId }})
+                        </a>
+                    {% endif %}
+                </td>
+                <td style="padding: 0.75rem; border: 1px solid #ddd; font-size: 0.9rem;">
+                    {{ log.description|default('-') }}
+                </td>
+                <td style="padding: 0.75rem; border: 1px solid #ddd;">
+                    <a href="{{ path('app_audit_log_detail', {id: log.id}) }}"
+                       style="color: #007bff; text-decoration: none;">
+                        Details anzeigen
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="info-box" style="margin-top: 2rem;">
+    <p>Keine Aktivitäten für diesen Benutzer gefunden.</p>
+</div>
+{% endif %}
+
+<style>
+.badge {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 3px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+.badge-create { background: #28a745; color: white; }
+.badge-update { background: #ffc107; color: #000; }
+.badge-delete { background: #dc3545; color: white; }
+.badge-view { background: #17a2b8; color: white; }
+.badge-export { background: #6c757d; color: white; }
+.badge-import { background: #6f42c1; color: white; }
+</style>
+
+{% endblock %}
