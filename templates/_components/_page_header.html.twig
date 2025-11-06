@@ -1,0 +1,42 @@
+{#
+  Reusable Page Header Component
+
+  Usage:
+  {% include '_components/_page_header.html.twig' with {
+      title: 'Asset Management',
+      subtitle: 'Verwaltung von IT-Assets und Informationswerten',
+      icon: 'bi-server',
+      actions: [
+          { label: 'Neu', url: path('app_asset_new'), variant: 'primary', icon: 'bi-plus-circle' },
+          { label: 'Export', url: path('app_asset_export'), variant: 'secondary', icon: 'bi-download' }
+      ]
+  } %}
+#}
+
+<div class="page-header">
+    <div class="page-header-content">
+        <h1 class="page-header-title">
+            {% if icon is defined %}
+                <i class="bi {{ icon }}"></i>
+            {% endif %}
+            {{ title }}
+        </h1>
+        {% if subtitle is defined %}
+            <p class="page-header-subtitle">{{ subtitle }}</p>
+        {% endif %}
+    </div>
+    {% if actions is defined and actions|length > 0 %}
+        <div class="page-header-actions">
+            {% for action in actions %}
+                <a href="{{ action.url }}"
+                   class="btn btn-{{ action.variant|default('secondary') }}"
+                   data-turbo-action="advance">
+                    {% if action.icon is defined %}
+                        <i class="bi {{ action.icon }}"></i>
+                    {% endif %}
+                    {{ action.label }}
+                </a>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>

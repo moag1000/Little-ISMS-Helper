@@ -1,0 +1,67 @@
+{#
+  Floating Toolbar Component
+  Sticky action bar for detail pages
+
+  Usage:
+  {% include '_components/_floating_toolbar.html.twig' with {
+      entityType: 'Asset',
+      entityId: asset.id,
+      actions: [
+          { label: 'Bearbeiten', action: 'edit', url: path('app_asset_edit', {id: asset.id}), icon: 'bi-pencil', shortcut: '⌘E' },
+          { label: 'Duplizieren', action: 'duplicate', url: path('app_asset_duplicate', {id: asset.id}), icon: 'bi-files' },
+          { label: 'Exportieren', action: 'export', url: path('app_asset_export', {id: asset.id}), icon: 'bi-download' },
+          { label: 'Löschen', action: 'delete', url: path('app_asset_delete', {id: asset.id}), icon: 'bi-trash', variant: 'danger' }
+      ]
+  } %}
+#}
+
+<div class="floating-toolbar">
+    <div class="floating-toolbar-content">
+        {% if actions is defined and actions|length > 0 %}
+            {# Primary Action (first in list) #}
+            {% set primaryAction = actions|first %}
+            <a href="{{ primaryAction.url }}"
+               class="btn btn-{{ primaryAction.variant|default('primary') }}"
+               data-turbo-action="advance">
+                <i class="bi {{ primaryAction.icon }}"></i>
+                {{ primaryAction.label }}
+                {% if primaryAction.shortcut is defined %}
+                    <kbd class="shortcut-hint">{{ primaryAction.shortcut }}</kbd>
+                {% endif %}
+            </a>
+
+            {# More Actions Dropdown #}
+            {% if actions|length > 1 %}
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle"
+                            type="button"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                        <i class="bi bi-three-dots-vertical"></i>
+                        Mehr
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        {% for action in actions|slice(1) %}
+                            <li>
+                                <a class="dropdown-item {% if action.variant == 'danger' %}text-danger{% endif %}"
+                                   href="{{ action.url }}"
+                                   {% if action.action == 'delete' %}
+                                       data-turbo-method="delete"
+                                       data-turbo-confirm="Möchten Sie dieses {{ entityType }} wirklich löschen?"
+                                   {% else %}
+                                       data-turbo-action="advance"
+                                   {% endif %}>
+                                    <i class="bi {{ action.icon }}"></i>
+                                    {{ action.label }}
+                                    {% if action.shortcut is defined %}
+                                        <kbd class="ms-auto">{{ action.shortcut }}</kbd>
+                                    {% endif %}
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+        {% endif %}
+    </div>
+</div>

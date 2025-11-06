@@ -1,0 +1,98 @@
+{#
+  Skeleton Loader Component
+  Shows placeholder content during loading
+
+  Usage:
+  {% include '_components/_skeleton.html.twig' with {
+      type: 'kpi-grid',
+      count: 4
+  } %}
+
+  Types: 'kpi-grid', 'table', 'list', 'card', 'form'
+#}
+
+{% set type = type|default('card') %}
+{% set count = count|default(3) %}
+
+<div class="skeleton-container">
+    {% if type == 'kpi-grid' %}
+        <div class="skeleton-grid">
+            {% for i in 1..count %}
+                <div class="skeleton-kpi-card">
+                    <div class="skeleton skeleton-kpi-icon"></div>
+                    <div class="skeleton-kpi-content">
+                        <div class="skeleton skeleton-text skeleton-text-sm" style="width: 70%;"></div>
+                        <div class="skeleton skeleton-heading" style="width: 50%; height: 32px;"></div>
+                        <div class="skeleton skeleton-text-sm" style="width: 40%;"></div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+    {% elseif type == 'table' %}
+        <div class="skeleton-card">
+            <div class="skeleton skeleton-heading" style="margin-bottom: 24px;"></div>
+            <div class="skeleton-table">
+                {% for i in 1..count %}
+                    <div class="skeleton-table-row">
+                        <div class="skeleton-table-cell">
+                            <div class="skeleton skeleton-text"></div>
+                        </div>
+                        <div class="skeleton-table-cell">
+                            <div class="skeleton skeleton-badge"></div>
+                        </div>
+                        <div class="skeleton-table-cell">
+                            <div class="skeleton skeleton-text" style="width: 60%;"></div>
+                        </div>
+                        <div class="skeleton-table-cell">
+                            <div class="skeleton skeleton-button" style="width: 80px;"></div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+    {% elseif type == 'list' %}
+        <div class="skeleton-card">
+            <ul class="skeleton-list">
+                {% for i in 1..count %}
+                    <li class="skeleton-list-item">
+                        <div class="skeleton skeleton-avatar"></div>
+                        <div style="flex: 1;">
+                            <div class="skeleton skeleton-text" style="width: 70%;"></div>
+                            <div class="skeleton skeleton-text-sm" style="width: 50%;"></div>
+                        </div>
+                        <div class="skeleton skeleton-badge"></div>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+    {% elseif type == 'card' %}
+        {% for i in 1..count %}
+            <div class="skeleton-card" style="margin-bottom: var(--spacing-lg);">
+                <div class="skeleton skeleton-heading"></div>
+                <div class="skeleton skeleton-text"></div>
+                <div class="skeleton skeleton-text"></div>
+                <div class="skeleton skeleton-text" style="width: 80%;"></div>
+                <div style="margin-top: var(--spacing-md);">
+                    <div class="skeleton skeleton-button"></div>
+                </div>
+            </div>
+        {% endfor %}
+
+    {% elseif type == 'form' %}
+        <div class="skeleton-card">
+            {% for i in 1..count %}
+                <div style="margin-bottom: var(--spacing-lg);">
+                    <div class="skeleton skeleton-text-sm" style="width: 30%; margin-bottom: 8px;"></div>
+                    <div class="skeleton skeleton-text-lg" style="height: 40px; width: 100%;"></div>
+                </div>
+            {% endfor %}
+            <div style="margin-top: var(--spacing-xl);">
+                <div class="skeleton skeleton-button"></div>
+            </div>
+        </div>
+
+    {% endif %}
+</div>

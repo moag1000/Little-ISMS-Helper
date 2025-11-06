@@ -1,0 +1,180 @@
+/* ============================================
+   Toast Notification Styles
+   Modern, unobtrusive notifications
+   ============================================ */
+
+/* Container */
+.toast-container {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    pointer-events: none;
+    max-width: 420px;
+}
+
+/* Toast */
+.toast {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    padding: 16px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    min-width: 320px;
+    pointer-events: all;
+    opacity: 0;
+    transform: translateX(400px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border-left: 4px solid;
+}
+
+.toast.toast-visible {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.toast.toast-exit {
+    opacity: 0;
+    transform: translateX(400px);
+}
+
+/* Toast Types */
+.toast-success {
+    border-left-color: var(--color-success);
+    background: linear-gradient(to right, rgba(39, 174, 96, 0.05) 0%, white 10%);
+}
+
+.toast-error {
+    border-left-color: var(--color-danger);
+    background: linear-gradient(to right, rgba(231, 76, 60, 0.05) 0%, white 10%);
+}
+
+.toast-warning {
+    border-left-color: var(--color-warning);
+    background: linear-gradient(to right, rgba(243, 156, 18, 0.05) 0%, white 10%);
+}
+
+.toast-info {
+    border-left-color: var(--color-info);
+    background: linear-gradient(to right, rgba(52, 152, 219, 0.05) 0%, white 10%);
+}
+
+/* Toast Content */
+.toast-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    flex: 1;
+}
+
+.toast-icon {
+    font-size: 20px;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.toast-success .toast-icon {
+    color: var(--color-success);
+}
+
+.toast-error .toast-icon {
+    color: var(--color-danger);
+}
+
+.toast-warning .toast-icon {
+    color: var(--color-warning);
+}
+
+.toast-info .toast-icon {
+    color: var(--color-info);
+}
+
+.toast-message {
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--color-text);
+    word-wrap: break-word;
+}
+
+/* Close Button */
+.toast-close {
+    background: none;
+    border: none;
+    padding: 4px;
+    cursor: pointer;
+    color: var(--color-text-muted);
+    transition: color 0.2s ease;
+    flex-shrink: 0;
+    border-radius: 4px;
+}
+
+.toast-close:hover {
+    color: var(--color-text);
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.toast-close i {
+    font-size: 18px;
+    display: block;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .toast-container {
+        bottom: 16px;
+        right: 16px;
+        left: 16px;
+        max-width: none;
+    }
+
+    .toast {
+        min-width: auto;
+        width: 100%;
+    }
+}
+
+/* Stacking animation */
+.toast:not(:last-child) {
+    margin-bottom: 0;
+}
+
+/* Progress bar (optional, for timed toasts) */
+.toast::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: currentColor;
+    opacity: 0.2;
+    transform-origin: left;
+    animation: toastProgress 5s linear forwards;
+}
+
+.toast-error::after {
+    animation-duration: 7s;
+}
+
+.toast-warning::after {
+    animation-duration: 6s;
+}
+
+@keyframes toastProgress {
+    from {
+        transform: scaleX(1);
+    }
+    to {
+        transform: scaleX(0);
+    }
+}
+
+/* Hide default flash messages (we convert them to toasts) */
+#flash-messages .alert {
+    display: none;
+}
