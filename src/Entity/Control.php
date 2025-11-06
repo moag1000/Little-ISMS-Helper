@@ -479,7 +479,7 @@ class Control
      * Data Reuse: Automatic review trigger from incident data
      */
     #[Groups(['control:read'])]
-    public function needsReview(): bool
+    public function isReviewNeeded(): bool
     {
         // Check if there are recent incidents affecting protected assets
         $threeMonthsAgo = new \DateTime('-3 months');
