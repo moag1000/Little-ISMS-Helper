@@ -18,6 +18,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: InternalAuditRepository::class)]
 #[ApiResource(
@@ -45,10 +46,14 @@ class InternalAudit
 
     #[ORM\Column(length: 50)]
     #[Groups(['audit:read', 'audit:write'])]
+    #[Assert\NotBlank(message: 'Audit number is required')]
+    #[Assert\Length(max: 50, maxMessage: 'Audit number cannot exceed {{ limit }} characters')]
     private ?string $auditNumber = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(['audit:read', 'audit:write'])]
+    #[Assert\NotBlank(message: 'Audit title is required')]
+    #[Assert\Length(max: 255, maxMessage: 'Title cannot exceed {{ limit }} characters')]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -67,6 +72,10 @@ class InternalAudit
      */
     #[ORM\Column(length: 50, nullable: true)]
     #[Groups(['audit:read', 'audit:write'])]
+    #[Assert\Choice(
+        choices: ['full_isms', 'compliance_framework', 'asset', 'asset_type', 'asset_group', 'location', 'department'],
+        message: 'Scope type must be one of: {{ choices }}'
+    )]
     private ?string $scopeType = 'full_isms';
 
     /**
@@ -98,6 +107,7 @@ class InternalAudit
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     #[Groups(['audit:read', 'audit:write'])]
+    #[Assert\NotNull(message: 'Planned date is required')]
     private ?\DateTimeInterface $plannedDate = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
@@ -106,6 +116,8 @@ class InternalAudit
 
     #[ORM\Column(length: 100)]
     #[Groups(['audit:read', 'audit:write'])]
+    #[Assert\NotBlank(message: 'Lead auditor is required')]
+    #[Assert\Length(max: 100, maxMessage: 'Lead auditor name cannot exceed {{ limit }} characters')]
     private ?string $leadAuditor = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -118,6 +130,11 @@ class InternalAudit
 
     #[ORM\Column(length: 50)]
     #[Groups(['audit:read', 'audit:write'])]
+    #[Assert\NotBlank(message: 'Status is required')]
+    #[Assert\Choice(
+        choices: ['planned', 'in_progress', 'completed', 'reported'],
+        message: 'Status must be one of: {{ choices }}'
+    )]
     private ?string $status = 'planned';
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]

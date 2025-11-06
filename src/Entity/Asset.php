@@ -17,6 +17,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: AssetRepository::class)]
 #[ApiResource(
@@ -43,6 +44,8 @@ class Asset
 
     #[ORM\Column(length: 255)]
     #[Groups(['asset:read', 'asset:write', 'risk:read'])]
+    #[Assert\NotBlank(message: 'Asset name is required')]
+    #[Assert\Length(max: 255, maxMessage: 'Asset name cannot exceed {{ limit }} characters')]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -51,30 +54,46 @@ class Asset
 
     #[ORM\Column(length: 100)]
     #[Groups(['asset:read', 'asset:write'])]
+    #[Assert\NotBlank(message: 'Asset type is required')]
+    #[Assert\Length(max: 100, maxMessage: 'Asset type cannot exceed {{ limit }} characters')]
     private ?string $assetType = null;
 
     #[ORM\Column(length: 100)]
     #[Groups(['asset:read', 'asset:write'])]
+    #[Assert\NotBlank(message: 'Asset owner is required')]
+    #[Assert\Length(max: 100, maxMessage: 'Owner cannot exceed {{ limit }} characters')]
     private ?string $owner = null;
 
     #[ORM\Column(length: 100, nullable: true)]
     #[Groups(['asset:read', 'asset:write'])]
+    #[Assert\Length(max: 100, maxMessage: 'Location cannot exceed {{ limit }} characters')]
     private ?string $location = null;
 
     #[ORM\Column(type: Types::INTEGER)]
     #[Groups(['asset:read', 'asset:write'])]
+    #[Assert\NotNull(message: 'Confidentiality value is required')]
+    #[Assert\Range(min: 1, max: 5, notInRangeMessage: 'Confidentiality value must be between {{ min }} and {{ max }}')]
     private ?int $confidentialityValue = null;
 
     #[ORM\Column(type: Types::INTEGER)]
     #[Groups(['asset:read', 'asset:write'])]
+    #[Assert\NotNull(message: 'Integrity value is required')]
+    #[Assert\Range(min: 1, max: 5, notInRangeMessage: 'Integrity value must be between {{ min }} and {{ max }}')]
     private ?int $integrityValue = null;
 
     #[ORM\Column(type: Types::INTEGER)]
     #[Groups(['asset:read', 'asset:write'])]
+    #[Assert\NotNull(message: 'Availability value is required')]
+    #[Assert\Range(min: 1, max: 5, notInRangeMessage: 'Availability value must be between {{ min }} and {{ max }}')]
     private ?int $availabilityValue = null;
 
     #[ORM\Column(length: 50)]
     #[Groups(['asset:read', 'asset:write'])]
+    #[Assert\NotBlank(message: 'Status is required')]
+    #[Assert\Choice(
+        choices: ['active', 'inactive', 'retired', 'disposed'],
+        message: 'Status must be one of: {{ choices }}'
+    )]
     private ?string $status = 'active';
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]

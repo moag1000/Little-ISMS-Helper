@@ -19,6 +19,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ControlRepository::class)]
 #[ApiResource(
@@ -47,22 +48,34 @@ class Control
 
     #[ORM\Column(length: 20)]
     #[Groups(['control:read', 'control:write', 'risk:read'])]
+    #[Assert\NotBlank(message: 'Control ID is required')]
+    #[Assert\Length(max: 20, maxMessage: 'Control ID cannot exceed {{ limit }} characters')]
+    #[Assert\Regex(
+        pattern: '/^\d+\.\d+(\.\d+)?$/',
+        message: 'Control ID must follow ISO 27001 format (e.g., 5.1, 8.3)'
+    )]
     private ?string $controlId = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(['control:read', 'control:write'])]
+    #[Assert\NotBlank(message: 'Control name is required')]
+    #[Assert\Length(max: 255, maxMessage: 'Control name cannot exceed {{ limit }} characters')]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT)]
     #[Groups(['control:read', 'control:write'])]
+    #[Assert\NotBlank(message: 'Control description is required')]
     private ?string $description = null;
 
     #[ORM\Column(length: 100)]
     #[Groups(['control:read', 'control:write'])]
+    #[Assert\NotBlank(message: 'Control category is required')]
+    #[Assert\Length(max: 100, maxMessage: 'Category cannot exceed {{ limit }} characters')]
     private ?string $category = null;
 
     #[ORM\Column(type: Types::BOOLEAN)]
     #[Groups(['control:read', 'control:write'])]
+    #[Assert\NotNull(message: 'Applicable flag is required')]
     private ?bool $applicable = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -75,14 +88,25 @@ class Control
 
     #[ORM\Column(length: 50)]
     #[Groups(['control:read', 'control:write'])]
+    #[Assert\NotBlank(message: 'Implementation status is required')]
+    #[Assert\Choice(
+        choices: ['not_started', 'planned', 'in_progress', 'implemented', 'verified'],
+        message: 'Implementation status must be one of: {{ choices }}'
+    )]
     private ?string $implementationStatus = 'not_started';
 
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
     #[Groups(['control:read', 'control:write'])]
+    #[Assert\Range(
+        min: 0,
+        max: 100,
+        notInRangeMessage: 'Implementation percentage must be between {{ min }} and {{ max }}'
+    )]
     private ?int $implementationPercentage = 0;
 
     #[ORM\Column(length: 100, nullable: true)]
     #[Groups(['control:read', 'control:write'])]
+    #[Assert\Length(max: 100, maxMessage: 'Responsible person cannot exceed {{ limit }} characters')]
     private ?string $responsiblePerson = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
