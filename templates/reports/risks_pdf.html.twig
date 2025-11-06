@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Risk Register</title>
+    <style>
+        body { font-family: 'DejaVu Sans', sans-serif; font-size: 10pt; }
+        .header { text-align: center; margin-bottom: 20px; border-bottom: 3px solid #dc2626; padding-bottom: 10px; }
+        .header h1 { color: #991b1b; margin: 0; font-size: 20pt; }
+        .header .date { color: #666; font-size: 9pt; margin-top: 5px; }
+        table { width: 100%; border-collapse: collapse; margin: 10px 0; }
+        th { background: #fee2e2; padding: 8px; text-align: left; font-size: 9pt; border: 1px solid #fca5a5; }
+        td { padding: 8px; border: 1px solid #ddd; font-size: 9pt; }
+        tr:nth-child(even) { background: #f9fafb; }
+        .risk-critical { background: #fee2e2; font-weight: bold; }
+        .risk-high { background: #fed7aa; }
+        .risk-medium { background: #fef3c7; }
+        .risk-low { background: #d1fae5; }
+        .score-badge { display: inline-block; padding: 2px 8px; border-radius: 3px; font-weight: bold; color: white; }
+        .score-critical { background: #dc2626; }
+        .score-high { background: #f59e0b; }
+        .score-medium { background: #eab308; color: #000; }
+        .score-low { background: #10b981; }
+        .footer { position: fixed; bottom: 20px; text-align: center; font-size: 8pt; color: #666; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Risk Register</h1>
+        <div class="date">Generated: {{ generated_at|date('d.m.Y H:i') }} | Total Risks: {{ risks|length }}</div>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Category</th>
+                <th>L</th>
+                <th>I</th>
+                <th>Score</th>
+                <th>Level</th>
+                <th>Treatment</th>
+                <th>Status</th>
+                <th>Owner</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for risk in risks %}
+            {% set riskLevel = risk.riskScore >= 20 ? 'critical' : (risk.riskScore >= 12 ? 'high' : (risk.riskScore >= 6 ? 'medium' : 'low')) %}
+            <tr class="risk-{{ riskLevel }}">
+                <td>{{ risk.id }}</td>
+                <td>{{ risk.title|slice(0, 40) }}{% if risk.title|length > 40 %}...{% endif %}</td>
+                <td>{{ risk.category }}</td>
+                <td>{{ risk.likelihood }}</td>
+                <td>{{ risk.impact }}</td>
+                <td><span class="score-badge score-{{ riskLevel }}">{{ risk.riskScore }}</span></td>
+                <td>{{ riskLevel|upper }}</td>
+                <td>{{ risk.treatmentPlan|slice(0, 25)|default('-') }}{% if risk.treatmentPlan|length > 25 %}...{% endif %}</td>
+                <td>{{ risk.status }}</td>
+                <td>{{ risk.owner ? risk.owner.email|slice(0, 20) : '-' }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div style="margin-top: 30px; padding: 15px; background: #fef3c7; border-left: 4px solid #f59e0b;">
+        <strong>Risk Matrix Legend:</strong><br>
+        Critical (≥20): Immediate action required | High (12-19): High priority | Medium (6-11): Monitor closely | Low (<6): Acceptable
+    </div>
+
+    <div class="footer">
+        <p>Confidential - Risk Register | Page {PAGE_NUM}</p>
+    </div>
+</body>
+</html>
