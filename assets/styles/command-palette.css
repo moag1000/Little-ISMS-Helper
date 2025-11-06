@@ -1,0 +1,240 @@
+/* ============================================
+   Command Palette Styles (⌘K)
+   Modern command interface for power users
+   ============================================ */
+
+/* Modal Backdrop */
+.command-palette-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0);
+    display: none;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 15vh;
+    z-index: 9999;
+    transition: background 0.2s ease;
+}
+
+.command-palette-modal.command-palette-open {
+    display: flex;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+}
+
+/* Container */
+.command-palette-container {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    width: 640px;
+    max-width: 90vw;
+    max-height: 70vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transform: scale(0.95);
+    opacity: 0;
+    animation: commandPaletteIn 0.15s ease forwards;
+}
+
+@keyframes commandPaletteIn {
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Search Section */
+.command-palette-search {
+    display: flex;
+    align-items: center;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--color-border);
+    gap: 12px;
+}
+
+.command-palette-search-icon {
+    font-size: 20px;
+    color: var(--color-text-muted);
+}
+
+.command-palette-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    color: var(--color-text);
+    background: transparent;
+}
+
+.command-palette-input::placeholder {
+    color: var(--color-text-muted);
+}
+
+.command-palette-hint {
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    padding: 4px 8px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", monospace;
+}
+
+/* Results Section */
+.command-palette-results {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px;
+    max-height: 400px;
+}
+
+/* Category */
+.command-category {
+    margin-bottom: 8px;
+}
+
+.command-category:last-child {
+    margin-bottom: 0;
+}
+
+.command-category-label {
+    padding: 8px 12px 4px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--color-text-muted);
+}
+
+/* Command Item */
+.command-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.1s ease;
+    margin-bottom: 2px;
+}
+
+.command-item:hover,
+.command-item.selected {
+    background: var(--color-secondary);
+    color: white;
+}
+
+.command-item.selected .command-item-icon {
+    color: white;
+}
+
+.command-item-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.command-item-icon {
+    font-size: 16px;
+    color: var(--color-text-light);
+    transition: color 0.1s ease;
+}
+
+.command-item-label {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* No Results */
+.command-palette-no-results {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 24px;
+    color: var(--color-text-muted);
+    text-align: center;
+}
+
+.command-palette-no-results i {
+    font-size: 48px;
+    margin-bottom: 16px;
+    opacity: 0.3;
+}
+
+.command-palette-no-results p {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.command-palette-no-results small {
+    font-size: 13px;
+}
+
+/* Footer */
+.command-palette-footer {
+    padding: 12px 20px;
+    border-top: 1px solid var(--color-border);
+    background: var(--color-bg);
+}
+
+.command-palette-shortcuts {
+    display: flex;
+    gap: 20px;
+    font-size: 12px;
+    color: var(--color-text-muted);
+}
+
+.command-palette-shortcuts kbd {
+    background: white;
+    border: 1px solid var(--color-border);
+    border-radius: 3px;
+    padding: 2px 6px;
+    font-size: 11px;
+    font-weight: 600;
+    margin: 0 2px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", monospace;
+}
+
+/* Utility */
+.hidden {
+    display: none !important;
+}
+
+/* Scrollbar */
+.command-palette-results::-webkit-scrollbar {
+    width: 8px;
+}
+
+.command-palette-results::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.command-palette-results::-webkit-scrollbar-thumb {
+    background: var(--color-border);
+    border-radius: 4px;
+}
+
+.command-palette-results::-webkit-scrollbar-thumb:hover {
+    background: var(--color-text-muted);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .command-palette-container {
+        width: 100%;
+        max-width: calc(100vw - 32px);
+        max-height: 80vh;
+    }
+
+    .command-palette-modal {
+        padding-top: 10vh;
+    }
+}

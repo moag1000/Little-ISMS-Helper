@@ -1,0 +1,63 @@
+{#
+  Related Items Component
+  Shows connections to other entities
+
+  Usage:
+  {% include '_components/_related_items.html.twig' with {
+      sections: [
+          {
+              title: 'Verbundene Risiken',
+              icon: 'bi-exclamation-triangle',
+              items: asset.risks,
+              route: 'app_risk_show',
+              emptyMessage: 'Keine Risiken verknüpft',
+              viewAllUrl: path('app_asset_risks', {id: asset.id})
+          }
+      ]
+  } %}
+#}
+
+<div class="card related-items-card">
+    <div class="card-header">
+        <h5>
+            <i class="bi bi-link-45deg"></i>
+            Zusammenhänge
+        </h5>
+    </div>
+    <div class="card-body">
+        {% for section in sections %}
+            <div class="related-section {% if not loop.last %}mb-4{% endif %}">
+                <h6 class="related-section-title">
+                    <i class="bi {{ section.icon }}"></i>
+                    {{ section.title }}
+                    <span class="badge bg-secondary">{{ section.items|length }}</span>
+                </h6>
+
+                {% if section.items|length > 0 %}
+                    <ul class="related-list">
+                        {% for item in section.items|slice(0, 3) %}
+                            <li class="related-list-item">
+                                <a href="{{ path(section.route, {id: item.id}) }}"
+                                   data-turbo-action="advance">
+                                    {{ item.name ?? item.title }}
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+
+                    {% if section.items|length > 3 %}
+                        <a href="{{ section.viewAllUrl }}"
+                           class="related-view-all"
+                           data-turbo-action="advance">
+                            Alle {{ section.items|length }} anzeigen →
+                        </a>
+                    {% endif %}
+                {% else %}
+                    <p class="related-empty">
+                        {{ section.emptyMessage|default('Keine Verknüpfungen') }}
+                    </p>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+</div>

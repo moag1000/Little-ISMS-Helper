@@ -1,0 +1,47 @@
+{#
+  Reusable KPI Card Component
+
+  Usage:
+  {% include '_components/_kpi_card.html.twig' with {
+      icon: 'bi-server',
+      label: 'Total Assets',
+      value: 42,
+      unit: '',
+      trend: '+12%',
+      variant: 'primary'
+  } %}
+
+  Variants: primary, success, warning, danger, info
+#}
+
+{% set variant = variant|default('primary') %}
+{% set icon = icon|default('bi-graph-up') %}
+{% set trend = trend|default(null) %}
+{% set unit = unit|default('') %}
+{% set link = link|default(null) %}
+
+<div class="kpi-card kpi-card-{{ variant }}">
+    <div class="kpi-card-icon">
+        <i class="bi {{ icon }}"></i>
+    </div>
+    <div class="kpi-card-content">
+        <div class="kpi-card-label">{{ label }}</div>
+        <div class="kpi-card-value">
+            {{ value }}
+            {% if unit %}
+                <span class="kpi-card-unit">{{ unit }}</span>
+            {% endif %}
+        </div>
+        {% if trend %}
+            <div class="kpi-card-trend {{ trend starts with '+' ? 'trend-up' : 'trend-down' }}">
+                <i class="bi {{ trend starts with '+' ? 'bi-arrow-up' : 'bi-arrow-down' }}"></i>
+                {{ trend }}
+            </div>
+        {% endif %}
+    </div>
+    {% if link %}
+        <a href="{{ link }}" class="kpi-card-link" data-turbo-action="advance">
+            <i class="bi bi-arrow-right"></i>
+        </a>
+    {% endif %}
+</div>
