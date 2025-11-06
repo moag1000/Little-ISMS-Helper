@@ -1,0 +1,86 @@
+services:
+  # PHP-FPM + Nginx
+  app:
+    build:
+      context: .
+      target: development
+      dockerfile: Dockerfile
+    container_name: isms-app
+    restart: unless-stopped
+    working_dir: /var/www/html
+    volumes:
+      - ./:/var/www/html
+      - ./docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
+    environment:
+      - APP_ENV=${APP_ENV:-dev}
+      - APP_SECRET=${APP_SECRET:-changeMe}
+      - DATABASE_URL=postgresql://isms_user:isms_password@db:5432/little_isms?serverVersion=16&charset=utf8
+      - MAILER_DSN=smtp://mailhog:1025
+    ports:
+      - "8000:80"
+    networks:
+      - isms-network
+    depends_on:
+      - db
+      - mailhog
+
+  # PostgreSQL Database
+  db:
+    image: postgres:16-alpine
+    container_name: isms-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: little_isms
+      POSTGRES_USER: isms_user
+      POSTGRES_PASSWORD: isms_password
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - isms-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U isms_user -d little_isms"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # MailHog for email testing
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: isms-mailhog
+    restart: unless-stopped
+    ports:
+      - "1025:1025"  # SMTP
+      - "8025:8025"  # Web UI
+    networks:
+      - isms-network
+
+  # pgAdmin for database management (optional)
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: isms-pgadmin
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@isms.local
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    ports:
+      - "5050:80"
+    networks:
+      - isms-network
+    depends_on:
+      - db
+
+networks:
+  isms-network:
+    driver: bridge
+
+volumes:
+  db-data:
+    driver: local
+  pgadmin-data:
+    driver: local
