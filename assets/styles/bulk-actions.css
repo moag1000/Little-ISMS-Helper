@@ -1,0 +1,230 @@
+/* ============================================
+   Bulk Actions Styles
+   Multi-select and bulk operations UI
+   ============================================ */
+
+/* Action Bar */
+.bulk-action-bar {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    z-index: 1000;
+    background: var(--color-primary);
+    color: white;
+    border-radius: var(--border-radius-lg);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+    padding: var(--spacing-lg) var(--spacing-xl);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-lg);
+    min-width: 500px;
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.bulk-action-bar[hidden] {
+    display: none !important;
+}
+
+/* Selection Info */
+.bulk-selection-info {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    flex: 1;
+}
+
+.bulk-selection-count {
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+.bulk-selection-label {
+    font-size: 0.875rem;
+    opacity: 0.9;
+}
+
+/* Divider */
+.bulk-action-divider {
+    width: 1px;
+    height: 32px;
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* Actions */
+.bulk-actions {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+.bulk-action-btn {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: none;
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--border-radius-sm);
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+}
+
+.bulk-action-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-1px);
+}
+
+.bulk-action-btn:active {
+    transform: translateY(0);
+}
+
+.bulk-action-btn-danger {
+    background: var(--color-danger);
+}
+
+.bulk-action-btn-danger:hover {
+    background: #c0392b;
+}
+
+.bulk-action-btn-success {
+    background: var(--color-success);
+}
+
+.bulk-action-btn-success:hover {
+    background: #229954;
+}
+
+/* Close Button */
+.bulk-action-close {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.bulk-action-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* Checkbox Styles */
+input[type="checkbox"][data-bulk-actions-target="item"],
+input[type="checkbox"][data-action*="selectAll"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: var(--color-secondary);
+}
+
+/* Indeterminate state (for select all) */
+input[type="checkbox"]:indeterminate {
+    accent-color: var(--color-warning);
+}
+
+/* Table with bulk selection */
+.table-bulk-selectable tbody tr {
+    transition: background-color 0.2s;
+}
+
+.table-bulk-selectable tbody tr:has(input[type="checkbox"]:checked) {
+    background-color: rgba(52, 152, 219, 0.1);
+}
+
+.table-bulk-selectable tbody tr:hover {
+    background-color: rgba(0, 0, 0, 0.02);
+}
+
+.table-bulk-selectable tbody tr:has(input[type="checkbox"]:checked):hover {
+    background-color: rgba(52, 152, 219, 0.15);
+}
+
+/* Selection Column */
+.bulk-select-column {
+    width: 40px;
+    text-align: center;
+}
+
+/* Animations */
+@keyframes slideUpFade {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+/* Badge for selected count in header */
+.bulk-selected-badge {
+    background: var(--color-secondary);
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 12px;
+    margin-left: var(--spacing-xs);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .bulk-action-bar {
+        bottom: 16px;
+        left: 16px;
+        right: 16px;
+        transform: translateY(20px);
+        min-width: auto;
+        flex-direction: column;
+        align-items: stretch;
+        gap: var(--spacing-md);
+    }
+
+    .bulk-selection-info {
+        justify-content: center;
+    }
+
+    .bulk-actions {
+        flex-direction: column;
+    }
+
+    .bulk-action-btn {
+        justify-content: center;
+    }
+
+    .bulk-action-divider {
+        display: none;
+    }
+}
+
+/* Loading state */
+.bulk-action-btn.loading {
+    opacity: 0.6;
+    pointer-events: none;
+    position: relative;
+}
+
+.bulk-action-btn.loading::after {
+    content: '';
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border: 2px solid white;
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}

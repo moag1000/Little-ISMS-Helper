@@ -1,0 +1,89 @@
+{#
+  Bulk Action Bar Component
+  Floating action bar for bulk operations
+
+  Usage:
+  <div data-controller="bulk-actions" data-bulk-actions-endpoint-value="/assets">
+    <table>
+      <thead>
+        <tr>
+          <th>
+            <input type="checkbox"
+                   data-action="bulk-actions#selectAll"
+                   data-bulk-actions-target="selectAllCheckbox">
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <input type="checkbox"
+                   data-bulk-actions-target="item"
+                   data-action="bulk-actions#selectItem"
+                   value="{{ item.id }}">
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    {% include '_components/_bulk_action_bar.html.twig' with {
+        actions: ['delete', 'export', 'tag']
+    } %}
+  </div>
+#}
+
+{% set actions = actions|default(['delete', 'export']) %}
+
+<div class="bulk-action-bar" data-bulk-actions-target="actionBar" hidden>
+    <div class="bulk-selection-info">
+        <span class="bulk-selection-count" data-bulk-actions-target="count">0</span>
+        <span class="bulk-selection-label">ausgewählt</span>
+    </div>
+
+    <div class="bulk-action-divider"></div>
+
+    <div class="bulk-actions">
+        {% if 'export' in actions %}
+            <button type="button"
+                    class="bulk-action-btn bulk-action-btn-success"
+                    data-action="click->bulk-actions#bulkExport">
+                <i class="bi bi-download"></i>
+                Export
+            </button>
+        {% endif %}
+
+        {% if 'tag' in actions %}
+            <button type="button"
+                    class="bulk-action-btn"
+                    data-action="click->bulk-actions#bulkTag">
+                <i class="bi bi-tag"></i>
+                Tag hinzufügen
+            </button>
+        {% endif %}
+
+        {% if 'assign' in actions %}
+            <button type="button"
+                    class="bulk-action-btn"
+                    data-action="click->bulk-actions#bulkAssign">
+                <i class="bi bi-person"></i>
+                Zuweisen
+            </button>
+        {% endif %}
+
+        {% if 'delete' in actions %}
+            <button type="button"
+                    class="bulk-action-btn bulk-action-btn-danger"
+                    data-action="click->bulk-actions#bulkDelete">
+                <i class="bi bi-trash"></i>
+                Löschen
+            </button>
+        {% endif %}
+    </div>
+
+    <button type="button"
+            class="bulk-action-close"
+            data-action="click->bulk-actions#deselectAll"
+            title="Auswahl aufheben">
+        <i class="bi bi-x-lg"></i>
+    </button>
+</div>
