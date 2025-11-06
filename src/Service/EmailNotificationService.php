@@ -5,6 +5,8 @@ namespace App\Service;
 use App\Entity\Incident;
 use App\Entity\InternalAudit;
 use App\Entity\Training;
+use App\Entity\Control;
+use App\Entity\WorkflowInstance;
 use App\Entity\User;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\MailerInterface;
@@ -93,6 +95,38 @@ class EmailNotificationService
                 ->subject($subject)
                 ->htmlTemplate($template)
                 ->context($context);
+
+            $this->mailer->send($email);
+        }
+    }
+
+    public function sendControlDueNotification(Control $control, array $recipients): void
+    {
+        foreach ($recipients as $recipient) {
+            $email = (new TemplatedEmail())
+                ->from(new Address($this->fromEmail, $this->fromName))
+                ->to($recipient instanceof User ? $recipient->getEmail() : $recipient)
+                ->subject('[ISMS Reminder] Control Target Date Approaching: ' . $control->getControlId())
+                ->htmlTemplate('emails/control_due_notification.html.twig')
+                ->context([
+                    'control' => $control,
+                ]);
+
+            $this->mailer->send($email);
+        }
+    }
+
+    public function sendWorkflowOverdueNotification(WorkflowInstance $instance, array $recipients): void
+    {
+        foreach ($recipients as $recipient) {
+            $email = (new TemplatedEmail())
+                ->from(new Address($this->fromEmail, $this->fromName))
+                ->to($recipient instanceof User ? $recipient->getEmail() : $recipient)
+                ->subject('[ISMS Alert] Overdue Workflow Approval: ' . $instance->getWorkflow()->getName())
+                ->htmlTemplate('emails/workflow_overdue_notification.html.twig')
+                ->context([
+                    'instance' => $instance,
+                ]);
 
             $this->mailer->send($email);
         }
