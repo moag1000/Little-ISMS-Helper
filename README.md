@@ -490,18 +490,20 @@ Bei Fragen oder Problemen erstellen Sie bitte ein Issue im Repository.
 **Implementierte Features:**
 
 **1. Automated Testing (PHPUnit 12.4)**
-- **Test Status**: **83 tests, 151 assertions** - 81 passing (97.6%), 2 errors
-- **Entity Tests** (75 tests, 100% passing):
+- **Test Status**: **125 tests, 257 assertions** - 123 passing (98.4%), 2 errors
+- **Entity Tests** (117 tests, 215 assertions, 100% passing):
   - Asset: 14 tests (CIA values, risk scoring, protection status)
   - Control: 28 tests (effectiveness scoring, review triggers, training status)
   - Incident: 18 tests (impact analysis, risk validation, critical asset detection)
+  - InternalAudit: 22 tests (scope descriptions, compliance audit detection, asset scope handling)
   - Risk: 15 tests (risk calculations, assessment accuracy, control coverage)
+  - Training: 20 tests (training effectiveness, control coverage, critical controls detection)
 - **Service Tests** (5 tests, 100% passing):
   - ExcelExportService: 3 tests (spreadsheet creation, array export, Excel generation)
   - PdfExportService: 2 tests (PDF generation with/without options)
 - **Repository Tests** (2 tests, 2 errors):
   - DocumentRepository: 2 tests (fehlt SQLite-Treiber für In-Memory-Tests)
-- **Fehlende Tests**: InternalAudit entity, Training entity (2 von 6 API-Entities ohne Tests)
+- **API Coverage**: **Alle 6 API Platform Entities vollständig getestet** ✅
 - **Test Coverage**: Computed properties, business logic, entity relationships, collection management, export services
 - **Continuous Testing**: Integriert in CI/CD Pipeline mit automatischer Ausführung
 
