@@ -1,0 +1,35 @@
+api_platform:
+    title: 'Little ISMS Helper API'
+    description: 'REST API for Information Security Management System (ISO 27001:2022)'
+    version: '1.0.0'
+
+    # Enable Swagger UI documentation
+    enable_swagger_ui: true
+    enable_re_doc: true
+
+    # API path configuration
+    defaults:
+        stateless: false  # Use session-based auth (already configured)
+        cache_headers:
+            vary: ['Content-Type', 'Authorization', 'Origin']
+        pagination_enabled: true
+        pagination_items_per_page: 30
+
+    # OpenAPI documentation
+    openapi:
+        contact:
+            name: 'Little ISMS Helper'
+            email: 'support@little-isms.local'
+        license:
+            name: 'Proprietary'
+
+    # Formats
+    formats:
+        jsonld: ['application/ld+json']
+        json: ['application/json']
+        html: ['text/html']
+
+    # Error handling
+    exception_to_status:
+        Symfony\Component\Serializer\Exception\ExceptionInterface: 400
+        ApiPlatform\Exception\InvalidArgumentException: 400

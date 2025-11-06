@@ -15,6 +15,6 @@ return [
     Symfony\Bundle\MakerBundle\MakerBundle::class => ['dev' => true],
     Symfony\UX\Chartjs\ChartjsBundle::class => ['all' => true],
     KnpU\OAuth2ClientBundle\KnpUOAuth2ClientBundle::class => ['all' => true],
-    // ApiPlatform\Symfony\Bundle\ApiPlatformBundle::class => ['all' => true], // Not installed yet
+    ApiPlatform\Symfony\Bundle\ApiPlatformBundle::class => ['all' => true],
     // Vich\UploaderBundle\VichUploaderBundle::class => ['all' => true], // Not installed yet
 ];
