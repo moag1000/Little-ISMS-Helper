@@ -17,7 +17,8 @@ class AssetTest extends TestCase
         $asset->setIntegrityValue(4);
         $asset->setAvailabilityValue(5);
 
-        $this->assertEquals(12, $asset->getTotalValue());
+        // getTotalValue returns max(C, I, A)
+        $this->assertEquals(5, $asset->getTotalValue());
     }
 
     public function testGetTotalValueWithMinimumValues(): void
@@ -27,7 +28,8 @@ class AssetTest extends TestCase
         $asset->setIntegrityValue(1);
         $asset->setAvailabilityValue(1);
 
-        $this->assertEquals(3, $asset->getTotalValue());
+        // All values are 1, so max is 1
+        $this->assertEquals(1, $asset->getTotalValue());
     }
 
     public function testGetTotalValueWithMaximumValues(): void
@@ -37,7 +39,8 @@ class AssetTest extends TestCase
         $asset->setIntegrityValue(5);
         $asset->setAvailabilityValue(5);
 
-        $this->assertEquals(15, $asset->getTotalValue());
+        // All values are 5, so max is 5
+        $this->assertEquals(5, $asset->getTotalValue());
     }
 
     public function testGetRiskScoreWithNoRisksOrIncidents(): void
@@ -47,12 +50,13 @@ class AssetTest extends TestCase
         $asset->setIntegrityValue(3);
         $asset->setAvailabilityValue(3);
 
-        // Base score = totalValue * 10 = 9 * 10 = 90
-        // No active risks = -0
-        // No incidents = -0
-        // No controls = +0
-        // Result: max(0, min(100, 90)) = 90
-        $this->assertEquals(90.0, $asset->getRiskScore());
+        // getTotalValue() = max(3, 3, 3) = 3
+        // Base score = 3 * 10 = 30
+        // No active risks = +0
+        // No incidents = +0
+        // No controls = -0
+        // Result: max(0, min(100, 30)) = 30
+        $this->assertEquals(30.0, $asset->getRiskScore());
     }
 
     public function testGetRiskScoreWithActiveRisks(): void
@@ -60,7 +64,7 @@ class AssetTest extends TestCase
         $asset = new Asset();
         $asset->setConfidentialityValue(2);
         $asset->setIntegrityValue(2);
-        $asset->setAvailabilityValue(2); // totalValue = 6
+        $asset->setAvailabilityValue(2);
 
         $risk1 = new Risk();
         $risk1->setStatus('active');
@@ -73,10 +77,11 @@ class AssetTest extends TestCase
         $asset->addRisk($risk2);
         $asset->addRisk($risk3);
 
-        // Base score = 6 * 10 = 60
+        // getTotalValue() = max(2, 2, 2) = 2
+        // Base score = 2 * 10 = 20
         // Active risks = 2 * 5 = +10
-        // Result: 60 + 10 = 70
-        $this->assertEquals(70.0, $asset->getRiskScore());
+        // Result: 20 + 10 = 30
+        $this->assertEquals(30.0, $asset->getRiskScore());
     }
 
     public function testGetRiskScoreWithControls(): void
@@ -84,7 +89,7 @@ class AssetTest extends TestCase
         $asset = new Asset();
         $asset->setConfidentialityValue(3);
         $asset->setIntegrityValue(3);
-        $asset->setAvailabilityValue(3); // totalValue = 9
+        $asset->setAvailabilityValue(3);
 
         $control1 = new Control();
         $control1->setImplementationPercentage(100);
@@ -94,36 +99,74 @@ class AssetTest extends TestCase
         $asset->addProtectingControl($control1);
         $asset->addProtectingControl($control2);
 
-        // Base score = 9 * 10 = 90
-        // 2 controls, avg implementation = (100 + 80) / 2 = 90
-        // Control reduction = 2 * (90 / 100) * 10 = 18
-        // Result: max(0, min(100, 90 - 18)) = 72
-        $this->assertEquals(72.0, $asset->getRiskScore());
+        // getTotalValue() = max(3, 3, 3) = 3
+        // Base score = 3 * 10 = 30
+        // No active risks = +0
+        // No incidents = +0
+        // Control reduction = 2 * 3 = -6
+        // Result: max(0, min(100, 30 - 6)) = 24
+        $this->assertEquals(24.0, $asset->getRiskScore());
     }
 
     public function testIsHighRisk(): void
     {
         $asset = new Asset();
 
-        // High risk score (> 70)
+        // High risk score (>= 70) - high value + active risks
         $asset->setConfidentialityValue(5);
         $asset->setIntegrityValue(5);
-        $asset->setAvailabilityValue(5); // score = 15 * 10 = 150 -> clamped to 100
+        $asset->setAvailabilityValue(5);
+
+        $risk1 = new Risk();
+        $risk1->setStatus('active');
+        $risk2 = new Risk();
+        $risk2->setStatus('active');
+        $risk3 = new Risk();
+        $risk3->setStatus('active');
+        $risk4 = new Risk();
+        $risk4->setStatus('active');
+
+        $asset->addRisk($risk1);
+        $asset->addRisk($risk2);
+        $asset->addRisk($risk3);
+        $asset->addRisk($risk4);
+
+        // getTotalValue() = max(5, 5, 5) = 5
+        // Base = 5 * 10 = 50
+        // Active risks = 4 * 5 = 20
+        // Total = 70 >= 70
         $this->assertTrue($asset->isHighRisk());
 
         // Low risk score
-        $asset->setConfidentialityValue(2);
-        $asset->setIntegrityValue(2);
-        $asset->setAvailabilityValue(2); // score = 6 * 10 = 60
-        $this->assertFalse($asset->isHighRisk());
+        $asset2 = new Asset();
+        $asset2->setConfidentialityValue(2);
+        $asset2->setIntegrityValue(2);
+        $asset2->setAvailabilityValue(2);
+        // score = 2 * 10 = 20 < 70
+        $this->assertFalse($asset2->isHighRisk());
 
-        // Boundary case: exactly 70
-        // Need specific conditions to get exactly 70
-        $asset = new Asset();
-        $asset->setConfidentialityValue(3);
-        $asset->setIntegrityValue(2);
-        $asset->setAvailabilityValue(2); // totalValue = 7, score = 70
-        $this->assertFalse($asset->isHighRisk()); // Should be > 70, not >= 70
+        // Boundary case: just below 70
+        $asset3 = new Asset();
+        $asset3->setConfidentialityValue(5);
+        $asset3->setIntegrityValue(3);
+        $asset3->setAvailabilityValue(3);
+
+        $risk5 = new Risk();
+        $risk5->setStatus('active');
+        $risk6 = new Risk();
+        $risk6->setStatus('active');
+        $risk7 = new Risk();
+        $risk7->setStatus('active');
+
+        $asset3->addRisk($risk5);
+        $asset3->addRisk($risk6);
+        $asset3->addRisk($risk7);
+
+        // getTotalValue() = max(5, 3, 3) = 5
+        // Base = 5 * 10 = 50
+        // Active risks = 3 * 5 = 15
+        // Total = 65 < 70
+        $this->assertFalse($asset3->isHighRisk());
     }
 
     public function testGetProtectionStatusUnprotected(): void
