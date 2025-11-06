@@ -18,6 +18,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: RiskRepository::class)]
 #[ApiResource(
@@ -45,10 +46,13 @@ class Risk
 
     #[ORM\Column(length: 255)]
     #[Groups(['risk:read', 'risk:write'])]
+    #[Assert\NotBlank(message: 'Risk title is required')]
+    #[Assert\Length(max: 255, maxMessage: 'Risk title cannot exceed {{ limit }} characters')]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT)]
     #[Groups(['risk:read', 'risk:write'])]
+    #[Assert\NotBlank(message: 'Risk description is required')]
     private ?string $description = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -61,26 +65,38 @@ class Risk
 
     #[ORM\ManyToOne(inversedBy: 'risks')]
     #[Groups(['risk:read', 'risk:write'])]
+    #[Assert\NotNull(message: 'Risk must be associated with an asset')]
     private ?Asset $asset = null;
 
     #[ORM\Column(type: Types::INTEGER)]
     #[Groups(['risk:read', 'risk:write'])]
+    #[Assert\NotNull(message: 'Probability is required')]
+    #[Assert\Range(min: 1, max: 5, notInRangeMessage: 'Probability must be between {{ min }} and {{ max }}')]
     private ?int $probability = null;
 
     #[ORM\Column(type: Types::INTEGER)]
     #[Groups(['risk:read', 'risk:write'])]
+    #[Assert\NotNull(message: 'Impact is required')]
+    #[Assert\Range(min: 1, max: 5, notInRangeMessage: 'Impact must be between {{ min }} and {{ max }}')]
     private ?int $impact = null;
 
     #[ORM\Column(type: Types::INTEGER)]
     #[Groups(['risk:read', 'risk:write'])]
+    #[Assert\Range(min: 1, max: 5, notInRangeMessage: 'Residual probability must be between {{ min }} and {{ max }}')]
     private ?int $residualProbability = null;
 
     #[ORM\Column(type: Types::INTEGER)]
     #[Groups(['risk:read', 'risk:write'])]
+    #[Assert\Range(min: 1, max: 5, notInRangeMessage: 'Residual impact must be between {{ min }} and {{ max }}')]
     private ?int $residualImpact = null;
 
     #[ORM\Column(length: 50)]
     #[Groups(['risk:read', 'risk:write'])]
+    #[Assert\NotBlank(message: 'Treatment strategy is required')]
+    #[Assert\Choice(
+        choices: ['accept', 'mitigate', 'transfer', 'avoid'],
+        message: 'Treatment strategy must be one of: {{ choices }}'
+    )]
     private ?string $treatmentStrategy = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -89,10 +105,16 @@ class Risk
 
     #[ORM\Column(length: 100, nullable: true)]
     #[Groups(['risk:read', 'risk:write'])]
+    #[Assert\Length(max: 100, maxMessage: 'Risk owner cannot exceed {{ limit }} characters')]
     private ?string $riskOwner = null;
 
     #[ORM\Column(length: 50)]
     #[Groups(['risk:read', 'risk:write'])]
+    #[Assert\NotBlank(message: 'Status is required')]
+    #[Assert\Choice(
+        choices: ['identified', 'assessed', 'treated', 'monitored', 'closed', 'accepted'],
+        message: 'Status must be one of: {{ choices }}'
+    )]
     private ?string $status = 'identified';
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]

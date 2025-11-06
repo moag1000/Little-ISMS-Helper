@@ -19,6 +19,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: TrainingRepository::class)]
 #[ApiResource(
@@ -47,6 +48,8 @@ class Training
 
     #[ORM\Column(length: 255)]
     #[Groups(['training:read', 'training:write'])]
+    #[Assert\NotBlank(message: 'Training title is required')]
+    #[Assert\Length(max: 255, maxMessage: 'Title cannot exceed {{ limit }} characters')]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -55,18 +58,24 @@ class Training
 
     #[ORM\Column(length: 100)]
     #[Groups(['training:read', 'training:write'])]
+    #[Assert\NotBlank(message: 'Training type is required')]
+    #[Assert\Length(max: 100, maxMessage: 'Training type cannot exceed {{ limit }} characters')]
     private ?string $trainingType = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     #[Groups(['training:read', 'training:write'])]
+    #[Assert\NotNull(message: 'Scheduled date is required')]
     private ?\DateTimeInterface $scheduledDate = null;
 
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
     #[Groups(['training:read', 'training:write'])]
+    #[Assert\Positive(message: 'Duration must be a positive number')]
     private ?int $durationMinutes = null;
 
     #[ORM\Column(length: 100)]
     #[Groups(['training:read', 'training:write'])]
+    #[Assert\NotBlank(message: 'Trainer name is required')]
+    #[Assert\Length(max: 100, maxMessage: 'Trainer name cannot exceed {{ limit }} characters')]
     private ?string $trainer = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -79,10 +88,16 @@ class Training
 
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
     #[Groups(['training:read', 'training:write'])]
+    #[Assert\PositiveOrZero(message: 'Attendee count must be zero or positive')]
     private ?int $attendeeCount = 0;
 
     #[ORM\Column(length: 50)]
     #[Groups(['training:read', 'training:write'])]
+    #[Assert\NotBlank(message: 'Status is required')]
+    #[Assert\Choice(
+        choices: ['planned', 'scheduled', 'in_progress', 'completed', 'cancelled'],
+        message: 'Status must be one of: {{ choices }}'
+    )]
     private ?string $status = 'planned';
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
