@@ -23,6 +23,12 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: IncidentRepository::class)]
+#[ORM\Index(columns: ['incident_number'], name: 'idx_incident_number')]
+#[ORM\Index(columns: ['severity'], name: 'idx_incident_severity')]
+#[ORM\Index(columns: ['status'], name: 'idx_incident_status')]
+#[ORM\Index(columns: ['category'], name: 'idx_incident_category')]
+#[ORM\Index(columns: ['detected_at'], name: 'idx_incident_detected_at')]
+#[ORM\Index(columns: ['data_breach_occurred'], name: 'idx_incident_data_breach')]
 #[ApiResource(
     operations: [
         new Get(security: "is_granted('ROLE_USER')"),

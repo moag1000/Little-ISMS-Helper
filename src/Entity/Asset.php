@@ -21,6 +21,9 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: AssetRepository::class)]
+#[ORM\Index(columns: ['asset_type'], name: 'idx_asset_type')]
+#[ORM\Index(columns: ['status'], name: 'idx_asset_status')]
+#[ORM\Index(columns: ['created_at'], name: 'idx_asset_created_at')]
 #[ApiResource(
     operations: [
         new Get(security: "is_granted('ROLE_USER')"),

@@ -22,6 +22,10 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: InternalAuditRepository::class)]
+#[ORM\Index(columns: ['audit_number'], name: 'idx_audit_number')]
+#[ORM\Index(columns: ['status'], name: 'idx_audit_status')]
+#[ORM\Index(columns: ['scope_type'], name: 'idx_audit_scope_type')]
+#[ORM\Index(columns: ['planned_date'], name: 'idx_audit_planned_date')]
 #[ApiResource(
     operations: [
         new Get(security: "is_granted('ROLE_USER')"),

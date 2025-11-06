@@ -14,6 +14,14 @@ api_platform:
             vary: ['Content-Type', 'Authorization', 'Origin']
         pagination_enabled: true
         pagination_items_per_page: 30
+        pagination_client_items_per_page: true
+        pagination_client_enabled: true
+        pagination_maximum_items_per_page: 100
+        normalization_context:
+            enable_max_depth: true
+            skip_null_values: false
+        denormalization_context:
+            enable_max_depth: true
 
     # OpenAPI documentation
     openapi:
