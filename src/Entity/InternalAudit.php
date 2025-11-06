@@ -2,6 +2,10 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
@@ -25,22 +29,30 @@ use Symfony\Component\Serializer\Annotation\Groups;
         new Delete(security: "is_granted('ROLE_ADMIN')"),
     ],
     normalizationContext: ['groups' => ['audit:read']],
-    denormalizationContext: ['groups' => ['audit:write']]
+    denormalizationContext: ['groups' => ['audit:write']],
+    paginationItemsPerPage: 30
 )]
+#[ApiFilter(SearchFilter::class, properties: ['title' => 'partial', 'auditNumber' => 'exact', 'status' => 'exact', 'scopeType' => 'exact'])]
+#[ApiFilter(OrderFilter::class, properties: ['plannedDate', 'actualDate', 'status'])]
+#[ApiFilter(DateFilter::class, properties: ['plannedDate', 'actualDate'])]
 class InternalAudit
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['audit:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
+    #[Groups(['audit:read', 'audit:write'])]
     private ?string $auditNumber = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['audit:read', 'audit:write'])]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['audit:read', 'audit:write'])]
     private ?string $scope = null;
 
     /**
@@ -54,6 +66,7 @@ class InternalAudit
      * - department: Organizational unit
      */
     #[ORM\Column(length: 50, nullable: true)]
+    #[Groups(['audit:read', 'audit:write'])]
     private ?string $scopeType = 'full_isms';
 
     /**
@@ -63,6 +76,7 @@ class InternalAudit
      * For personnel: {group: "management", department: "IT"}
      */
     #[ORM\Column(type: Types::JSON, nullable: true)]
+    #[Groups(['audit:read', 'audit:write'])]
     private ?array $scopeDetails = null;
 
     /**
@@ -70,55 +84,72 @@ class InternalAudit
      */
     #[ORM\ManyToMany(targetEntity: Asset::class)]
     #[ORM\JoinTable(name: 'internal_audit_asset')]
+    #[Groups(['audit:read'])]
     private Collection $scopedAssets;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: true)]
+    #[Groups(['audit:read'])]
     private ?ComplianceFramework $scopedFramework = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['audit:read', 'audit:write'])]
     private ?string $objectives = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Groups(['audit:read', 'audit:write'])]
     private ?\DateTimeInterface $plannedDate = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    #[Groups(['audit:read', 'audit:write'])]
     private ?\DateTimeInterface $actualDate = null;
 
     #[ORM\Column(length: 100)]
+    #[Groups(['audit:read', 'audit:write'])]
     private ?string $leadAuditor = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['audit:read', 'audit:write'])]
     private ?string $auditTeam = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['audit:read', 'audit:write'])]
     private ?string $auditedDepartments = null;
 
     #[ORM\Column(length: 50)]
+    #[Groups(['audit:read', 'audit:write'])]
     private ?string $status = 'planned';
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['audit:read', 'audit:write'])]
     private ?string $findings = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['audit:read', 'audit:write'])]
     private ?string $nonConformities = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['audit:read', 'audit:write'])]
     private ?string $observations = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['audit:read', 'audit:write'])]
     private ?string $recommendations = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['audit:read', 'audit:write'])]
     private ?string $conclusion = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    #[Groups(['audit:read', 'audit:write'])]
     private ?\DateTimeInterface $reportDate = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Groups(['audit:read'])]
     private ?\DateTimeInterface $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[Groups(['audit:read'])]
     private ?\DateTimeInterface $updatedAt = null;
 
     public function __construct()
