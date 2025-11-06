@@ -2,6 +2,9 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
@@ -25,64 +28,82 @@ use Symfony\Component\Serializer\Annotation\Groups;
         new Delete(security: "is_granted('ROLE_ADMIN')"),
     ],
     normalizationContext: ['groups' => ['asset:read']],
-    denormalizationContext: ['groups' => ['asset:write']]
+    denormalizationContext: ['groups' => ['asset:write']],
+    paginationItemsPerPage: 30
 )]
+#[ApiFilter(SearchFilter::class, properties: ['name' => 'partial', 'assetType' => 'exact', 'owner' => 'partial', 'status' => 'exact'])]
+#[ApiFilter(OrderFilter::class, properties: ['name', 'assetType', 'createdAt'])]
 class Asset
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['asset:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['asset:read', 'asset:write', 'risk:read'])]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['asset:read', 'asset:write'])]
     private ?string $description = null;
 
     #[ORM\Column(length: 100)]
+    #[Groups(['asset:read', 'asset:write'])]
     private ?string $assetType = null;
 
     #[ORM\Column(length: 100)]
+    #[Groups(['asset:read', 'asset:write'])]
     private ?string $owner = null;
 
     #[ORM\Column(length: 100, nullable: true)]
+    #[Groups(['asset:read', 'asset:write'])]
     private ?string $location = null;
 
     #[ORM\Column(type: Types::INTEGER)]
+    #[Groups(['asset:read', 'asset:write'])]
     private ?int $confidentialityValue = null;
 
     #[ORM\Column(type: Types::INTEGER)]
+    #[Groups(['asset:read', 'asset:write'])]
     private ?int $integrityValue = null;
 
     #[ORM\Column(type: Types::INTEGER)]
+    #[Groups(['asset:read', 'asset:write'])]
     private ?int $availabilityValue = null;
 
     #[ORM\Column(length: 50)]
+    #[Groups(['asset:read', 'asset:write'])]
     private ?string $status = 'active';
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Groups(['asset:read'])]
     private ?\DateTimeInterface $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[Groups(['asset:read'])]
     private ?\DateTimeInterface $updatedAt = null;
 
     /**
      * @var Collection<int, Risk>
      */
     #[ORM\OneToMany(targetEntity: Risk::class, mappedBy: 'asset')]
+    #[Groups(['asset:read'])]
     private Collection $risks;
 
     /**
      * @var Collection<int, Incident>
      */
     #[ORM\ManyToMany(targetEntity: Incident::class, mappedBy: 'affectedAssets')]
+    #[Groups(['asset:read'])]
     private Collection $incidents;
 
     /**
      * @var Collection<int, Control>
      */
     #[ORM\ManyToMany(targetEntity: Control::class, mappedBy: 'protectedAssets')]
+    #[Groups(['asset:read'])]
     private Collection $protectingControls;
 
     public function __construct()
@@ -296,6 +317,7 @@ class Asset
         return $this;
     }
 
+    #[Groups(['asset:read'])]
     public function getTotalValue(): int
     {
         return max($this->confidentialityValue, $this->integrityValue, $this->availabilityValue);
@@ -305,6 +327,7 @@ class Asset
      * Get Asset Risk Score based on multiple factors
      * Data Reuse: Combines Risks, Incidents, Control Coverage
      */
+    #[Groups(['asset:read'])]
     public function getRiskScore(): float
     {
         $score = 0;
@@ -334,6 +357,7 @@ class Asset
      * Check if asset is high-risk (many incidents, high value)
      * Data Reuse: Automated risk classification
      */
+    #[Groups(['asset:read'])]
     public function isHighRisk(): bool
     {
         return $this->getRiskScore() >= 70;
@@ -343,6 +367,7 @@ class Asset
      * Get protection status
      * Data Reuse: Shows if asset is adequately protected
      */
+    #[Groups(['asset:read'])]
     public function getProtectionStatus(): string
     {
         $controlCount = $this->protectingControls->count();

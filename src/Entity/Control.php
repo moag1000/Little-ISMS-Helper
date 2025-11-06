@@ -2,6 +2,11 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Doctrine\Orm\Filter\BooleanFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
@@ -25,70 +30,93 @@ use Symfony\Component\Serializer\Annotation\Groups;
         new Delete(security: "is_granted('ROLE_ADMIN')"),
     ],
     normalizationContext: ['groups' => ['control:read']],
-    denormalizationContext: ['groups' => ['control:write']]
+    denormalizationContext: ['groups' => ['control:write']],
+    paginationItemsPerPage: 30
 )]
+#[ApiFilter(SearchFilter::class, properties: ['controlId' => 'exact', 'name' => 'partial', 'category' => 'exact', 'implementationStatus' => 'exact'])]
+#[ApiFilter(BooleanFilter::class, properties: ['applicable'])]
+#[ApiFilter(OrderFilter::class, properties: ['controlId', 'category', 'implementationPercentage', 'targetDate'])]
+#[ApiFilter(DateFilter::class, properties: ['targetDate', 'lastReviewDate'])]
 class Control
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['control:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 20)]
+    #[Groups(['control:read', 'control:write', 'risk:read'])]
     private ?string $controlId = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['control:read', 'control:write'])]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups(['control:read', 'control:write'])]
     private ?string $description = null;
 
     #[ORM\Column(length: 100)]
+    #[Groups(['control:read', 'control:write'])]
     private ?string $category = null;
 
     #[ORM\Column(type: Types::BOOLEAN)]
+    #[Groups(['control:read', 'control:write'])]
     private ?bool $applicable = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['control:read', 'control:write'])]
     private ?string $justification = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['control:read', 'control:write'])]
     private ?string $implementationNotes = null;
 
     #[ORM\Column(length: 50)]
+    #[Groups(['control:read', 'control:write'])]
     private ?string $implementationStatus = 'not_started';
 
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
+    #[Groups(['control:read', 'control:write'])]
     private ?int $implementationPercentage = 0;
 
     #[ORM\Column(length: 100, nullable: true)]
+    #[Groups(['control:read', 'control:write'])]
     private ?string $responsiblePerson = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    #[Groups(['control:read', 'control:write'])]
     private ?\DateTimeInterface $targetDate = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    #[Groups(['control:read', 'control:write'])]
     private ?\DateTimeInterface $lastReviewDate = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    #[Groups(['control:read', 'control:write'])]
     private ?\DateTimeInterface $nextReviewDate = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Groups(['control:read'])]
     private ?\DateTimeInterface $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[Groups(['control:read'])]
     private ?\DateTimeInterface $updatedAt = null;
 
     /**
      * @var Collection<int, Risk>
      */
     #[ORM\ManyToMany(targetEntity: Risk::class, inversedBy: 'controls')]
+    #[Groups(['control:read'])]
     private Collection $risks;
 
     /**
      * @var Collection<int, Incident>
      */
     #[ORM\ManyToMany(targetEntity: Incident::class, mappedBy: 'relatedControls')]
+    #[Groups(['control:read'])]
     private Collection $incidents;
 
     /**
@@ -96,12 +124,14 @@ class Control
      */
     #[ORM\ManyToMany(targetEntity: Asset::class, inversedBy: 'protectingControls')]
     #[ORM\JoinTable(name: 'control_asset')]
+    #[Groups(['control:read'])]
     private Collection $protectedAssets;
 
     /**
      * @var Collection<int, Training>
      */
     #[ORM\ManyToMany(targetEntity: Training::class, mappedBy: 'coveredControls')]
+    #[Groups(['control:read'])]
     private Collection $trainings;
 
     public function __construct()
@@ -356,6 +386,7 @@ class Control
      * Get total value of protected assets
      * Data Reuse: Aggregates asset CIA values to show control importance
      */
+    #[Groups(['control:read'])]
     public function getProtectedAssetValue(): int
     {
         $total = 0;
@@ -369,6 +400,7 @@ class Control
      * Get count of high-risk assets protected
      * Data Reuse: Uses Asset risk scoring
      */
+    #[Groups(['control:read'])]
     public function getHighRiskAssetCount(): int
     {
         return $this->protectedAssets->filter(fn($asset) => $asset->isHighRisk())->count();
@@ -378,6 +410,7 @@ class Control
      * Calculate control effectiveness based on incidents
      * Data Reuse: Compare protected assets' incidents before/after control
      */
+    #[Groups(['control:read'])]
     public function getEffectivenessScore(): float
     {
         if ($this->implementationPercentage < 100) {
@@ -411,6 +444,7 @@ class Control
      * Check if control needs review based on recent incidents
      * Data Reuse: Automatic review trigger from incident data
      */
+    #[Groups(['control:read'])]
     public function needsReview(): bool
     {
         // Check if there are recent incidents affecting protected assets
@@ -461,6 +495,7 @@ class Control
      * Check if control has adequate training coverage
      * Data Reuse: Training status affects control implementation
      */
+    #[Groups(['control:read'])]
     public function hasTrainingCoverage(): bool
     {
         foreach ($this->trainings as $training) {
@@ -475,6 +510,7 @@ class Control
      * Get training gap analysis
      * Data Reuse: Identifies missing or outdated training
      */
+    #[Groups(['control:read'])]
     public function getTrainingStatus(): string
     {
         if ($this->trainings->isEmpty()) {
