@@ -2,6 +2,10 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
@@ -25,73 +29,96 @@ use Symfony\Component\Serializer\Annotation\Groups;
         new Delete(security: "is_granted('ROLE_ADMIN')"),
     ],
     normalizationContext: ['groups' => ['risk:read']],
-    denormalizationContext: ['groups' => ['risk:write']]
+    denormalizationContext: ['groups' => ['risk:write']],
+    paginationItemsPerPage: 30
 )]
+#[ApiFilter(SearchFilter::class, properties: ['title' => 'partial', 'status' => 'exact', 'riskOwner' => 'partial'])]
+#[ApiFilter(OrderFilter::class, properties: ['title', 'createdAt', 'status'])]
+#[ApiFilter(DateFilter::class, properties: ['createdAt', 'reviewDate'])]
 class Risk
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['risk:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['risk:read', 'risk:write'])]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups(['risk:read', 'risk:write'])]
     private ?string $description = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['risk:read', 'risk:write'])]
     private ?string $threat = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['risk:read', 'risk:write'])]
     private ?string $vulnerability = null;
 
     #[ORM\ManyToOne(inversedBy: 'risks')]
+    #[Groups(['risk:read', 'risk:write'])]
     private ?Asset $asset = null;
 
     #[ORM\Column(type: Types::INTEGER)]
+    #[Groups(['risk:read', 'risk:write'])]
     private ?int $probability = null;
 
     #[ORM\Column(type: Types::INTEGER)]
+    #[Groups(['risk:read', 'risk:write'])]
     private ?int $impact = null;
 
     #[ORM\Column(type: Types::INTEGER)]
+    #[Groups(['risk:read', 'risk:write'])]
     private ?int $residualProbability = null;
 
     #[ORM\Column(type: Types::INTEGER)]
+    #[Groups(['risk:read', 'risk:write'])]
     private ?int $residualImpact = null;
 
     #[ORM\Column(length: 50)]
+    #[Groups(['risk:read', 'risk:write'])]
     private ?string $treatmentStrategy = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['risk:read', 'risk:write'])]
     private ?string $treatmentDescription = null;
 
     #[ORM\Column(length: 100, nullable: true)]
+    #[Groups(['risk:read', 'risk:write'])]
     private ?string $riskOwner = null;
 
     #[ORM\Column(length: 50)]
+    #[Groups(['risk:read', 'risk:write'])]
     private ?string $status = 'identified';
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    #[Groups(['risk:read', 'risk:write'])]
     private ?\DateTimeInterface $reviewDate = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Groups(['risk:read'])]
     private ?\DateTimeInterface $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[Groups(['risk:read'])]
     private ?\DateTimeInterface $updatedAt = null;
 
     /**
      * @var Collection<int, Control>
      */
     #[ORM\ManyToMany(targetEntity: Control::class, mappedBy: 'risks')]
+    #[Groups(['risk:read'])]
     private Collection $controls;
 
     /**
      * @var Collection<int, Incident>
      */
     #[ORM\ManyToMany(targetEntity: Incident::class, mappedBy: 'realizedRisks')]
+    #[Groups(['risk:read'])]
     private Collection $incidents;
 
     public function __construct()
@@ -307,16 +334,19 @@ class Risk
         return $this;
     }
 
+    #[Groups(['risk:read'])]
     public function getInherentRiskLevel(): int
     {
         return $this->probability * $this->impact;
     }
 
+    #[Groups(['risk:read'])]
     public function getResidualRiskLevel(): int
     {
         return $this->residualProbability * $this->residualImpact;
     }
 
+    #[Groups(['risk:read'])]
     public function getRiskReduction(): int
     {
         return $this->getInherentRiskLevel() - $this->getResidualRiskLevel();
@@ -351,6 +381,7 @@ class Risk
      * Check if this risk has been realized (incident occurred)
      * Data Reuse: Validates risk assessment with real-world incidents
      */
+    #[Groups(['risk:read'])]
     public function hasBeenRealized(): bool
     {
         return !$this->incidents->isEmpty();
@@ -360,6 +391,7 @@ class Risk
      * Get realization count
      * Data Reuse: Frequency analysis for risk assessment calibration
      */
+    #[Groups(['risk:read'])]
     public function getRealizationCount(): int
     {
         return $this->incidents->count();
@@ -369,6 +401,7 @@ class Risk
      * Check if risk assessment was accurate based on incidents
      * Data Reuse: Compare predicted impact vs actual incident severity
      */
+    #[Groups(['risk:read'])]
     public function wasAssessmentAccurate(): ?bool
     {
         if ($this->incidents->isEmpty()) {
@@ -399,6 +432,7 @@ class Risk
      * Get most recent incident for this risk
      * Data Reuse: Track latest realization
      */
+    #[Groups(['risk:read'])]
     public function getMostRecentIncident(): ?Incident
     {
         if ($this->incidents->isEmpty()) {
