@@ -478,13 +478,38 @@ Bei Fragen oder Problemen erstellen Sie bitte ein Issue im Repository.
 
 **Dokumentation:** Siehe [docs/PHASE5_COMPLETENESS_REPORT.md](docs/PHASE5_COMPLETENESS_REPORT.md)
 
-### Phase 6: Enterprise Features (📋 Backlog)
+### Phase 6: Enterprise Features (🚧 In Progress)
 - [ ] Multi-Tenancy Support (für MSPs)
 - [ ] Advanced Analytics & Dashboards
 - [ ] Mobile App (Progressive Web App)
-- [ ] Automatisierte Tests (Unit, Integration, E2E)
-- [ ] CI/CD Pipeline
-- [ ] Docker & Kubernetes Deployment
+- [x] Automatisierte Tests (Unit, Integration, E2E) - **Teilweise abgeschlossen**
+- [x] CI/CD Pipeline - **✅ Abgeschlossen**
+- [x] Docker Deployment - **✅ Abgeschlossen**
+- [ ] Kubernetes Deployment
+
+**Implementierte Features:**
+
+**1. Automated Testing (PHPUnit 12.4)**
+- **Unit Tests**: 4 core entities fully tested - **75 tests, 137 assertions, 100% passing**
+  - Asset entity: 14 tests (CIA values, risk scoring, protection status)
+  - Control entity: 28 tests (effectiveness scoring, review triggers, training status)
+  - Incident entity: 18 tests (impact analysis, risk validation, critical asset detection)
+  - Risk entity: 15 tests (risk calculations, assessment accuracy, control coverage)
+- **Test Coverage**: Computed properties, business logic, entity relationships, collection management
+- **Continuous Testing**: Integriert in CI/CD Pipeline mit automatischer Ausführung
+
+**2. CI/CD Pipeline (GitHub Actions)**
+- **4 Parallel Jobs**: Tests (PHP 8.4), Code Quality (PHPStan, PHP CS Fixer), Security Checks, Docker Build
+- **PostgreSQL 16** Test-Datenbank mit Health Checks
+- **Automated Triggers**: Push auf main/develop/claude/**, Pull Requests
+- **Code Coverage**: Codecov-Integration
+
+**3. Docker Development & Production Environment**
+- **Multi-Stage Builds**: Optimierte Production-Images, Development mit Xdebug
+- **4 Services**: PHP 8.4-FPM + Nginx, PostgreSQL 16, MailHog (Email Testing), pgAdmin (DB GUI)
+- **One-Command Setup**: `docker-compose up -d`
+- **Production-Ready**: OPcache, optimierter Autoloader, Health Checks
+- **Documentation**: Comprehensive setup guide (398 lines) in docs/DOCKER_SETUP.md
 
 ## Autoren
 
