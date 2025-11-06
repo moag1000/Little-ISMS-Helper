@@ -204,6 +204,10 @@ Die vollständige Entity-Vernetzung ermöglicht **automatische Berechnungen**, d
 - **Datenbank**: PostgreSQL/MySQL (über Doctrine ORM)
 - **Frontend**: Twig Templates, Symfony UX (Stimulus, Turbo)
 - **UI/UX**: Progressive Disclosure Pattern, CSS3 Animations
+- **REST API**: API Platform 4.2.3 (OpenAPI 3.0, Swagger UI, ReDoc)
+- **PDF Generation**: Dompdf 3.1.4
+- **Excel Export**: PhpSpreadsheet 5.2.0
+- **Email**: Symfony Mailer with TemplatedEmail
 - **Testing**: PHPUnit
 
 ## Voraussetzungen
@@ -420,12 +424,59 @@ Bei Fragen oder Problemen erstellen Sie bitte ein Issue im Repository.
 
 **Dokumentation:** Siehe [docs/PHASE4_COMPLETENESS_REPORT.md](docs/PHASE4_COMPLETENESS_REPORT.md)
 
-### Phase 5: Reporting & Integration (📋 Backlog)
-- [ ] Erweiterte Reporting & Export Funktionen (PDF, Excel)
-- [ ] Datei-Uploads für Nachweise und Dokumentation
-- [ ] E-Mail-Benachrichtigungen für Vorfälle und Fälligkeiten
-- [ ] API für Integration mit anderen Systemen
-- [ ] Webhook-Support
+### Phase 5: Reporting & Integration (✅ Abgeschlossen)
+- [x] Erweiterte Reporting & Export Funktionen (PDF, Excel)
+- [x] E-Mail-Benachrichtigungen für Vorfälle und Fälligkeiten (Automated Notification Scheduler)
+- [x] REST API für Integration mit anderen Systemen (API Platform 4.2)
+- [⏸️] Datei-Uploads für Nachweise und Dokumentation (Foundation gelegt, deferred)
+
+**Implementierte Features:**
+
+**1. Professional Export System (PDF/Excel)**
+- **5 PDF Reports**: Dashboard Summary, Risk Register, Statement of Applicability (Landscape), Incident Log, Training Log
+- **5 Excel Reports**: Alle Reports als XLSX mit professioneller Formatierung
+- **ReportController** mit 11 Export-Endpoints (/reports/*)
+- **PdfExportService** (Dompdf 3.1.4) - Professional PDF generation mit DejaVu Sans Font
+- **ExcelExportService** (PhpSpreadsheet 5.2.0) - Styled headers, zebra striping, auto-sizing
+- **Color-coded Reports**: Risk levels (Critical/High/Medium/Low), Progress bars, Status badges
+
+**2. Automated Notification Scheduler**
+- **Symfony Console Command**: `app:send-notifications` für Cron-Execution
+- **5 Notification Types**: Upcoming Audits, Upcoming Trainings, Open Incidents, Controls Nearing Target Date, Overdue Workflow Approvals
+- **Configurable**: `--type` (audits/trainings/incidents/controls/workflows/all), `--days-ahead` (default: 7), `--dry-run`
+- **Professional Email Templates**: 6 responsive HTML templates mit Branding
+- **Cron-Ready**: Empfohlen täglich um 8 Uhr (`0 8 * * * php bin/console app:send-notifications --type=all`)
+
+**3. REST API (API Platform 4.2)**
+- **6 API Resources**: Assets, Risks, Controls, Incidents, Internal Audits, Trainings
+- **30 CRUD Endpoints** mit Role-based Security (ROLE_USER für GET/POST/PUT, ROLE_ADMIN für DELETE)
+- **Interactive Documentation**: Swagger UI (/api/docs) und ReDoc (/api/docs?ui=re-doc)
+- **OpenAPI 3.0 Spec**: /api/docs.json für Postman/Insomnia Import
+- **Formats**: JSON-LD (default), JSON, HTML
+- **Pagination**: 30 items per page, Hypermedia links
+- **Session-based Auth**: Integriert mit bestehendem Symfony Security (upgrade auf JWT möglich)
+
+**4. Document Management (Foundation)**
+- **Document Entity** mit polymorphen Relationships (entityType + entityId)
+- **File Integrity**: SHA-256 hash für Verifizierung
+- **DocumentRepository** mit Custom Queries (findByEntity, findByUploader, findRecent)
+- **Status**: Basis-Implementation vorhanden, full CRUD deferred per user request
+
+**Technologie:**
+- Dompdf 3.1.4 (PDF generation)
+- PhpSpreadsheet 5.2.0 (Excel export)
+- API Platform 4.2.3 (REST framework)
+- Symfony Mailer (Email notifications)
+- Symfony Console (CLI commands)
+
+**Statistiken:**
+- ~2,050 neue Zeilen Code
+- 16 neue/modifizierte Dateien
+- 11 Report-Endpoints
+- 30 API-Endpoints
+- 5 Notification-Typen
+
+**Dokumentation:** Siehe [docs/PHASE5_COMPLETENESS_REPORT.md](docs/PHASE5_COMPLETENESS_REPORT.md)
 
 ### Phase 6: Enterprise Features (📋 Backlog)
 - [ ] Multi-Tenancy Support (für MSPs)
