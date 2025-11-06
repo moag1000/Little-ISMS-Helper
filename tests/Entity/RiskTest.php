@@ -124,7 +124,7 @@ class RiskTest extends TestCase
         $risk->setImpact(5);
 
         // No incidents = cannot validate
-        $this->assertNull($risk->wasAssessmentAccurate());
+        $this->assertNull($risk->isAssessmentAccurate());
     }
 
     public function testWasAssessmentAccurateWithHighRiskAndIncidents(): void
@@ -142,7 +142,7 @@ class RiskTest extends TestCase
         $risk->addIncident($incident2);
 
         // High risk assessment was accurate (incidents did occur)
-        $this->assertTrue($risk->wasAssessmentAccurate());
+        $this->assertTrue($risk->isAssessmentAccurate());
     }
 
     public function testWasAssessmentAccurateWithLowRiskAndNoIncidents(): void
@@ -154,7 +154,7 @@ class RiskTest extends TestCase
         // Low risk, no incidents = accurate assessment
         // But wait, we need at least one incident to evaluate
         // So this returns null
-        $this->assertNull($risk->wasAssessmentAccurate());
+        $this->assertNull($risk->isAssessmentAccurate());
     }
 
     public function testWasAssessmentAccurateWithLowRiskButCriticalIncident(): void
@@ -169,7 +169,7 @@ class RiskTest extends TestCase
         $risk->addIncident($incident);
 
         // Low risk assessment was NOT accurate (critical incident occurred)
-        $this->assertFalse($risk->wasAssessmentAccurate());
+        $this->assertFalse($risk->isAssessmentAccurate());
     }
 
     public function testWasAssessmentAccurateWithHighRiskButOnlyLowIncidents(): void
@@ -184,7 +184,7 @@ class RiskTest extends TestCase
         $risk->addIncident($incident);
 
         // High risk but only low-severity incident = overassessed
-        $this->assertFalse($risk->wasAssessmentAccurate());
+        $this->assertFalse($risk->isAssessmentAccurate());
     }
 
     public function testAddAndRemoveControl(): void

@@ -437,7 +437,7 @@ class Risk
      * Data Reuse: Compare predicted impact vs actual incident severity
      */
     #[Groups(['risk:read'])]
-    public function wasAssessmentAccurate(): ?bool
+    public function isAssessmentAccurate(): ?bool
     {
         if ($this->incidents->isEmpty()) {
             return null; // Cannot validate without incidents
