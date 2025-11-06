@@ -376,9 +376,15 @@ class Risk
     }
 
     #[Groups(['risk:read'])]
-    public function getRiskReduction(): int
+    public function getRiskReduction(): float
     {
-        return $this->getInherentRiskLevel() - $this->getResidualRiskLevel();
+        $inherent = $this->getInherentRiskLevel();
+        if ($inherent === 0) {
+            return 0.0;
+        }
+
+        $residual = $this->getResidualRiskLevel();
+        return round((($inherent - $residual) / $inherent) * 100, 2);
     }
 
     /**
@@ -452,9 +458,9 @@ class Risk
             return $criticalIncidents > 0;
         } elseif ($predictedLevel >= 9) { // Medium risk
             return $criticalIncidents === 0; // Should NOT have critical incidents
+        } else { // Low risk
+            return $criticalIncidents === 0; // Low risk should NOT have critical incidents
         }
-
-        return true; // Low risk is accurate if few/no critical incidents
     }
 
     /**
@@ -476,5 +482,35 @@ class Risk
         }
 
         return $latest;
+    }
+
+    /**
+     * Check if this is a high-risk item
+     * Data Reuse: Risk classification for prioritization
+     */
+    #[Groups(['risk:read'])]
+    public function isHighRisk(): bool
+    {
+        return $this->getInherentRiskLevel() >= 15;
+    }
+
+    /**
+     * Get count of controls mitigating this risk
+     * Data Reuse: Control coverage metric
+     */
+    #[Groups(['risk:read'])]
+    public function getControlCoverageCount(): int
+    {
+        return $this->controls->count();
+    }
+
+    /**
+     * Get count of incidents related to this risk
+     * Data Reuse: Realization frequency (alias for getRealizationCount)
+     */
+    #[Groups(['risk:read'])]
+    public function getIncidentCount(): int
+    {
+        return $this->getRealizationCount();
     }
 }
