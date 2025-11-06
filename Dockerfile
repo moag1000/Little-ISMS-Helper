@@ -89,8 +89,9 @@ RUN echo "xdebug.mode=debug,coverage" >> "$PHP_INI_DIR/conf.d/docker-php-ext-xde
     echo "xdebug.start_with_request=yes" >> "$PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini"
 
 # Use development PHP configuration
-RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini-production.bak" && \
-    mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"
+# Note: Production stage already moved php.ini-production to php.ini
+# So we just need to replace it with the development version
+RUN cp "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"
 
 # Install all dependencies including dev
 RUN composer install --optimize-autoloader --no-scripts --no-interaction
