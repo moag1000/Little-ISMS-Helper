@@ -382,7 +382,7 @@ class Training
      * Data Reuse: Links training to critical security areas
      */
     #[Groups(['training:read'])]
-    public function addressesCriticalControls(): bool
+    public function hasCriticalControls(): bool
     {
         foreach ($this->coveredControls as $control) {
             if (!$control->isApplicable() || $control->getImplementationPercentage() < 50) {

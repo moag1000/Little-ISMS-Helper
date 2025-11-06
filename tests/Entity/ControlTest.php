@@ -185,7 +185,7 @@ class ControlTest extends TestCase
         $asset = new Asset();
         $control->addProtectedAsset($asset);
 
-        $this->assertFalse($control->needsReview());
+        $this->assertFalse($control->isReviewNeeded());
     }
 
     public function testNeedsReviewWithRecentIncident(): void
@@ -200,7 +200,7 @@ class ControlTest extends TestCase
         $control->addProtectedAsset($asset);
 
         // Recent incident (< 3 months) should trigger review
-        $this->assertTrue($control->needsReview());
+        $this->assertTrue($control->isReviewNeeded());
     }
 
     public function testNeedsReviewWithOldIncident(): void
@@ -215,7 +215,7 @@ class ControlTest extends TestCase
         $control->addProtectedAsset($asset);
 
         // Old incident (> 3 months) should not trigger review
-        $this->assertFalse($control->needsReview());
+        $this->assertFalse($control->isReviewNeeded());
     }
 
     public function testNeedsReviewWithPastDueReviewDate(): void
@@ -224,7 +224,7 @@ class ControlTest extends TestCase
         $control->setNextReviewDate(new \DateTime('-1 day'));
 
         // Past due review date should trigger review
-        $this->assertTrue($control->needsReview());
+        $this->assertTrue($control->isReviewNeeded());
     }
 
     public function testNeedsReviewWithFutureReviewDate(): void
@@ -233,7 +233,7 @@ class ControlTest extends TestCase
         $control->setNextReviewDate(new \DateTime('+1 month'));
 
         // Future review date should not trigger review
-        $this->assertFalse($control->needsReview());
+        $this->assertFalse($control->isReviewNeeded());
     }
 
     public function testHasTrainingCoverageWithNoTrainings(): void
