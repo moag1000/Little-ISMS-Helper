@@ -1,0 +1,38 @@
+{#
+  Reusable Breadcrumb Component
+
+  Usage:
+  {% include '_components/_breadcrumb.html.twig' with {
+      breadcrumbs: [
+          { label: 'Home', url: path('app_home') },
+          { label: 'Assets', url: path('app_asset_index') },
+          { label: asset.name }
+      ]
+  } %}
+#}
+
+{% if breadcrumbs is defined and breadcrumbs|length > 0 %}
+<nav aria-label="breadcrumb" class="breadcrumb-nav">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="{{ path('app_home') }}" data-turbo-action="advance">
+                <i class="bi bi-house-door"></i>
+                <span class="breadcrumb-label">Home</span>
+            </a>
+        </li>
+        {% for crumb in breadcrumbs %}
+            {% if not loop.last %}
+                <li class="breadcrumb-item">
+                    <a href="{{ crumb.url }}" data-turbo-action="advance">
+                        {{ crumb.label }}
+                    </a>
+                </li>
+            {% else %}
+                <li class="breadcrumb-item active" aria-current="page">
+                    {{ crumb.label }}
+                </li>
+            {% endif %}
+        {% endfor %}
+    </ol>
+</nav>
+{% endif %}
