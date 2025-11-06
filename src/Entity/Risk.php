@@ -18,6 +18,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: RiskRepository::class)]
@@ -66,6 +67,7 @@ class Risk
     #[ORM\ManyToOne(inversedBy: 'risks')]
     #[Groups(['risk:read', 'risk:write'])]
     #[Assert\NotNull(message: 'Risk must be associated with an asset')]
+    #[MaxDepth(1)]
     private ?Asset $asset = null;
 
     #[ORM\Column(type: Types::INTEGER)]
@@ -134,6 +136,7 @@ class Risk
      */
     #[ORM\ManyToMany(targetEntity: Control::class, mappedBy: 'risks')]
     #[Groups(['risk:read'])]
+    #[MaxDepth(1)]
     private Collection $controls;
 
     /**
@@ -141,6 +144,7 @@ class Risk
      */
     #[ORM\ManyToMany(targetEntity: Incident::class, mappedBy: 'realizedRisks')]
     #[Groups(['risk:read'])]
+    #[MaxDepth(1)]
     private Collection $incidents;
 
     public function __construct()

@@ -18,6 +18,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: InternalAuditRepository::class)]
@@ -94,11 +95,13 @@ class InternalAudit
     #[ORM\ManyToMany(targetEntity: Asset::class)]
     #[ORM\JoinTable(name: 'internal_audit_asset')]
     #[Groups(['audit:read'])]
+    #[MaxDepth(1)]
     private Collection $scopedAssets;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: true)]
     #[Groups(['audit:read'])]
+    #[MaxDepth(1)]
     private ?ComplianceFramework $scopedFramework = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]

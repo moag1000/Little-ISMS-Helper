@@ -19,6 +19,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ControlRepository::class)]
@@ -134,6 +135,7 @@ class Control
      */
     #[ORM\ManyToMany(targetEntity: Risk::class, inversedBy: 'controls')]
     #[Groups(['control:read'])]
+    #[MaxDepth(1)]
     private Collection $risks;
 
     /**
@@ -141,6 +143,7 @@ class Control
      */
     #[ORM\ManyToMany(targetEntity: Incident::class, mappedBy: 'relatedControls')]
     #[Groups(['control:read'])]
+    #[MaxDepth(1)]
     private Collection $incidents;
 
     /**
@@ -149,6 +152,7 @@ class Control
     #[ORM\ManyToMany(targetEntity: Asset::class, inversedBy: 'protectingControls')]
     #[ORM\JoinTable(name: 'control_asset')]
     #[Groups(['control:read'])]
+    #[MaxDepth(1)]
     private Collection $protectedAssets;
 
     /**
@@ -156,6 +160,7 @@ class Control
      */
     #[ORM\ManyToMany(targetEntity: Training::class, mappedBy: 'coveredControls')]
     #[Groups(['control:read'])]
+    #[MaxDepth(1)]
     private Collection $trainings;
 
     public function __construct()
