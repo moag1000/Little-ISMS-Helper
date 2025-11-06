@@ -43,6 +43,9 @@ COPY . .
 # Install dependencies (production)
 RUN composer install --no-dev --optimize-autoloader --no-scripts --no-interaction
 
+# Create Symfony required directories
+RUN mkdir -p var/cache var/log
+
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html && \
     chmod -R 755 /var/www/html/var
