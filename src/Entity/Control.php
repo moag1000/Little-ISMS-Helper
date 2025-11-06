@@ -23,6 +23,11 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ControlRepository::class)]
+#[ORM\Index(columns: ['control_id'], name: 'idx_control_control_id')]
+#[ORM\Index(columns: ['category'], name: 'idx_control_category')]
+#[ORM\Index(columns: ['implementation_status'], name: 'idx_control_impl_status')]
+#[ORM\Index(columns: ['target_date'], name: 'idx_control_target_date')]
+#[ORM\Index(columns: ['applicable'], name: 'idx_control_applicable')]
 #[ApiResource(
     operations: [
         new Get(security: "is_granted('ROLE_USER')"),
