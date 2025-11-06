@@ -17,6 +17,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: AssetRepository::class)]
@@ -109,6 +110,7 @@ class Asset
      */
     #[ORM\OneToMany(targetEntity: Risk::class, mappedBy: 'asset')]
     #[Groups(['asset:read'])]
+    #[MaxDepth(1)]
     private Collection $risks;
 
     /**
@@ -116,6 +118,7 @@ class Asset
      */
     #[ORM\ManyToMany(targetEntity: Incident::class, mappedBy: 'affectedAssets')]
     #[Groups(['asset:read'])]
+    #[MaxDepth(1)]
     private Collection $incidents;
 
     /**
@@ -123,6 +126,7 @@ class Asset
      */
     #[ORM\ManyToMany(targetEntity: Control::class, mappedBy: 'protectedAssets')]
     #[Groups(['asset:read'])]
+    #[MaxDepth(1)]
     private Collection $protectingControls;
 
     public function __construct()
