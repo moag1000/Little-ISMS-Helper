@@ -7,7 +7,29 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 /**
- * Voter for User-specific permissions
+ * User Voter
+ *
+ * Implements fine-grained authorization for User entity operations.
+ * Enforces permission-based access control with self-service capabilities.
+ *
+ * Supported Permissions:
+ * - user.view: View other users
+ * - user.view_all: View all users in the system
+ * - user.create: Create new users
+ * - user.edit: Edit other users
+ * - user.delete: Delete users
+ * - user.manage_roles: Assign/revoke roles
+ * - user.manage_permissions: Manage user permissions
+ *
+ * Security Rules:
+ * - Inactive users cannot perform any actions
+ * - ROLE_ADMIN bypasses all permission checks
+ * - Users can always view and edit themselves
+ * - Users cannot delete themselves
+ * - Permission checks via hasPermission() method
+ *
+ * Multi-tenancy:
+ * - Users can only view/edit users in their tenant
  */
 class UserVoter extends Voter
 {
