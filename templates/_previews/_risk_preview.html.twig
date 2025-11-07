@@ -1,0 +1,114 @@
+{# Risk Quick View Preview #}
+<div class="preview-content">
+    <div class="preview-section">
+        <h6 class="preview-section-title">
+            <i class="bi-exclamation-triangle text-warning"></i>
+            Risiko-Informationen
+        </h6>
+        <dl class="row mb-0">
+            <dt class="col-sm-4">Titel:</dt>
+            <dd class="col-sm-8">{{ risk.title }}</dd>
+
+            <dt class="col-sm-4">Status:</dt>
+            <dd class="col-sm-8">
+                <span class="badge bg-{{ risk.status == 'closed' ? 'success' : 'warning' }}">
+                    {{ risk.status|trans }}
+                </span>
+            </dd>
+
+            {% if risk.asset %}
+            <dt class="col-sm-4">Asset:</dt>
+            <dd class="col-sm-8">
+                <a href="{{ path('app_asset_show', {id: risk.asset.id}) }}">
+                    {{ risk.asset.name }}
+                </a>
+            </dd>
+            {% endif %}
+
+            {% if risk.riskOwner %}
+            <dt class="col-sm-4">Eigentümer:</dt>
+            <dd class="col-sm-8">{{ risk.riskOwner }}</dd>
+            {% endif %}
+        </dl>
+    </div>
+
+    <div class="preview-section">
+        <h6 class="preview-section-title">
+            <i class="bi-bar-chart"></i>
+            Risikobewertung
+        </h6>
+        <div class="row g-3">
+            <div class="col-6">
+                <div class="risk-metric">
+                    <div class="risk-metric-label">Inhärentes Risiko</div>
+                    <div class="risk-metric-value text-danger">
+                        {{ risk.inherentRiskLevel }}
+                    </div>
+                    <div class="risk-metric-detail">
+                        {{ risk.probability }} × {{ risk.impact }}
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="risk-metric">
+                    <div class="risk-metric-label">Restrisiko</div>
+                    <div class="risk-metric-value text-warning">
+                        {{ risk.residualRiskLevel }}
+                    </div>
+                    <div class="risk-metric-detail">
+                        {{ risk.residualProbability }} × {{ risk.residualImpact }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% if risk.riskReduction > 0 %}
+        <div class="mt-2">
+            <small class="text-success">
+                <i class="bi-arrow-down"></i>
+                Risikoreduktion: {{ risk.riskReduction }}%
+            </small>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="preview-section">
+        <h6 class="preview-section-title">
+            <i class="bi-file-text"></i>
+            Beschreibung
+        </h6>
+        <p class="mb-0">{{ risk.description }}</p>
+    </div>
+
+    <div class="preview-section">
+        <h6 class="preview-section-title">
+            <i class="bi-shield"></i>
+            Behandlungsstrategie
+        </h6>
+        <div class="mb-2">
+            <span class="badge bg-primary">{{ risk.treatmentStrategy|trans }}</span>
+        </div>
+        {% if risk.treatmentDescription %}
+        <p class="mb-0 small text-muted">{{ risk.treatmentDescription }}</p>
+        {% endif %}
+    </div>
+
+    <div class="preview-section">
+        <h6 class="preview-section-title">
+            <i class="bi-graph-up"></i>
+            Maßnahmen
+        </h6>
+        <div class="stat-mini">
+            <div class="stat-mini-value">{{ risk.controls|length }}</div>
+            <div class="stat-mini-label">Verknüpfte Controls</div>
+        </div>
+    </div>
+
+    <div class="preview-actions">
+        <a href="{{ path('app_risk_show', {id: risk.id}) }}" class="btn btn-primary btn-sm">
+            <i class="bi-arrow-right"></i> Details anzeigen
+        </a>
+        <a href="{{ path('app_risk_edit', {id: risk.id}) }}" class="btn btn-outline-secondary btn-sm">
+            <i class="bi-pencil"></i> Bearbeiten
+        </a>
+    </div>
+</div>
