@@ -7,5 +7,6 @@ import './stimulus_bootstrap.js';
  */
 import './styles/app.css';
 import './styles/premium.css'; // Phase 5: Premium Features
+import './styles/dark-mode.css'; // Phase 5: Paket C - Dark Mode
 
 console.log('This log comes from assets/app.js - welcome to AssetMapper! 🎉');
