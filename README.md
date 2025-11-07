@@ -176,6 +176,24 @@ symfony serve
 
 ⚠️ **WICHTIG:** Ändern Sie das Admin-Passwort nach dem ersten Login!
 
+### Setup Validierung
+
+Sie können die Setup-Anweisungen automatisch validieren:
+
+```bash
+chmod +x test-setup.sh
+./test-setup.sh
+```
+
+Dieser Test überprüft:
+- ✅ Alle Command-Namen und -Pfade
+- ✅ Datenbank-Konfiguration
+- ✅ Migrations und Entities
+- ✅ APP_SECRET Generierung
+- ✅ Command-Abhängigkeiten
+
+Siehe [SETUP_VALIDATION.md](SETUP_VALIDATION.md) für Details.
+
 ### Troubleshooting
 
 **Problem: "APP_SECRET is empty"**
