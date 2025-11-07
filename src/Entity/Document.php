@@ -7,6 +7,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: DocumentRepository::class)]
+#[ORM\Index(columns: ['tenant_id'], name: 'idx_document_tenant')]
 #[ORM\HasLifecycleCallbacks]
 class Document
 {
@@ -14,6 +15,10 @@ class Document
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
+
+    #[ORM\ManyToOne(targetEntity: Tenant::class)]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Tenant $tenant = null;
 
     #[ORM\Column(length: 255)]
     private ?string $filename = null;
@@ -61,6 +66,9 @@ class Document
     #[ORM\Column(type: Types::BOOLEAN)]
     private bool $isArchived = false;
 
+    #[ORM\Column(length: 50)]
+    private string $status = 'active';
+
     public function __construct()
     {
         $this->uploadedAt = new \DateTime();
@@ -75,6 +83,18 @@ class Document
 
     // Getters and Setters
     public function getId(): ?int { return $this->id; }
+
+    public function getTenant(): ?Tenant
+    {
+        return $this->tenant;
+    }
+
+    public function setTenant(?Tenant $tenant): static
+    {
+        $this->tenant = $tenant;
+        return $this;
+    }
+
     public function getFilename(): ?string { return $this->filename; }
     public function setFilename(string $filename): static { $this->filename = $filename; return $this; }
     public function getOriginalFilename(): ?string { return $this->originalFilename; }
@@ -118,6 +138,8 @@ class Document
     public function setIsPublic(bool $isPublic): static { $this->isPublic = $isPublic; return $this; }
     public function isArchived(): bool { return $this->isArchived; }
     public function setIsArchived(bool $isArchived): static { $this->isArchived = $isArchived; return $this; }
+    public function getStatus(): string { return $this->status; }
+    public function setStatus(string $status): static { $this->status = $status; return $this; }
 
     public function getFileExtension(): string
     {

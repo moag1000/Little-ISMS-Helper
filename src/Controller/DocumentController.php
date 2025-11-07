@@ -85,8 +85,11 @@ class DocumentController extends AbstractController
                 );
 
                 // Store file information
-                $document->setFileName($safeFilename);
-                $document->setOriginalName($uploadedFile->getClientOriginalName());
+                $document->setFilename($safeFilename);
+                $document->setOriginalFilename($uploadedFile->getClientOriginalName());
+                $document->setMimeType($uploadedFile->getMimeType());
+                $document->setFileSize($uploadedFile->getSize());
+                $document->setFilePath('/uploads/documents/' . $safeFilename);
                 $document->setUploadedBy($this->getUser());
 
                 $this->entityManager->persist($document);
