@@ -28,6 +28,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Index(columns: ['implementation_status'], name: 'idx_control_impl_status')]
 #[ORM\Index(columns: ['target_date'], name: 'idx_control_target_date')]
 #[ORM\Index(columns: ['applicable'], name: 'idx_control_applicable')]
+#[ORM\Index(columns: ['tenant_id'], name: 'idx_control_tenant')]
 #[ApiResource(
     operations: [
         new Get(security: "is_granted('ROLE_USER')"),
@@ -51,6 +52,11 @@ class Control
     #[ORM\Column]
     #[Groups(['control:read'])]
     private ?int $id = null;
+
+    #[ORM\ManyToOne(targetEntity: Tenant::class)]
+    #[ORM\JoinColumn(nullable: true)]
+    #[Groups(['control:read'])]
+    private ?Tenant $tenant = null;
 
     #[ORM\Column(length: 20)]
     #[Groups(['control:read', 'control:write', 'risk:read'])]
@@ -180,6 +186,17 @@ class Control
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getTenant(): ?Tenant
+    {
+        return $this->tenant;
+    }
+
+    public function setTenant(?Tenant $tenant): static
+    {
+        $this->tenant = $tenant;
+        return $this;
     }
 
     public function getControlId(): ?string

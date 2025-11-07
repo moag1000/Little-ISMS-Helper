@@ -29,6 +29,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Index(columns: ['category'], name: 'idx_incident_category')]
 #[ORM\Index(columns: ['detected_at'], name: 'idx_incident_detected_at')]
 #[ORM\Index(columns: ['data_breach_occurred'], name: 'idx_incident_data_breach')]
+#[ORM\Index(columns: ['tenant_id'], name: 'idx_incident_tenant')]
 #[ApiResource(
     operations: [
         new Get(security: "is_granted('ROLE_USER')"),
@@ -52,6 +53,11 @@ class Incident
     #[ORM\Column]
     #[Groups(['incident:read'])]
     private ?int $id = null;
+
+    #[ORM\ManyToOne(targetEntity: Tenant::class)]
+    #[ORM\JoinColumn(nullable: true)]
+    #[Groups(['incident:read'])]
+    private ?Tenant $tenant = null;
 
     #[ORM\Column(length: 50)]
     #[Groups(['incident:read', 'incident:write'])]
@@ -198,6 +204,17 @@ class Incident
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getTenant(): ?Tenant
+    {
+        return $this->tenant;
+    }
+
+    public function setTenant(?Tenant $tenant): static
+    {
+        $this->tenant = $tenant;
+        return $this;
     }
 
     public function getIncidentNumber(): ?string

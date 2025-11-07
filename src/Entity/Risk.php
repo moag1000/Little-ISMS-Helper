@@ -25,6 +25,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Index(columns: ['status'], name: 'idx_risk_status')]
 #[ORM\Index(columns: ['created_at'], name: 'idx_risk_created_at')]
 #[ORM\Index(columns: ['review_date'], name: 'idx_risk_review_date')]
+#[ORM\Index(columns: ['tenant_id'], name: 'idx_risk_tenant')]
 #[ApiResource(
     operations: [
         new Get(security: "is_granted('ROLE_USER')"),
@@ -47,6 +48,11 @@ class Risk
     #[ORM\Column]
     #[Groups(['risk:read'])]
     private ?int $id = null;
+
+    #[ORM\ManyToOne(targetEntity: Tenant::class)]
+    #[ORM\JoinColumn(nullable: true)]
+    #[Groups(['risk:read'])]
+    private ?Tenant $tenant = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(['risk:read', 'risk:write'])]
@@ -160,6 +166,17 @@ class Risk
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getTenant(): ?Tenant
+    {
+        return $this->tenant;
+    }
+
+    public function setTenant(?Tenant $tenant): static
+    {
+        $this->tenant = $tenant;
+        return $this;
     }
 
     public function getTitle(): ?string

@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{# Security: Custom 500 Internal Server Error page (prevents information disclosure) #}
+
+{% block title %}Server Error{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+            <div class="error-template">
+                <h1 class="display-1">500</h1>
+                <h2>Internal Server Error</h2>
+                <div class="error-details mt-4">
+                    <p class="lead">Something went wrong on our end. We're working to fix it.</p>
+                    <p>Please try again later.</p>
+                </div>
+                <div class="error-actions mt-4">
+                    <a href="{{ path('app_home') }}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-home"></i> Go to Homepage
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .error-template {
+        padding: 40px 15px;
+        text-align: center;
+    }
+    .error-template h1 {
+        font-size: 10em;
+        color: #ffc107;
+    }
+</style>
+{% endblock %}
