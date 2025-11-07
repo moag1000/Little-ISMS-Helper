@@ -7,7 +7,16 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
+ * Workflow Repository
+ *
+ * Repository for querying Workflow entities with custom business logic queries.
+ *
  * @extends ServiceEntityRepository<Workflow>
+ *
+ * @method Workflow|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Workflow|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Workflow[]    findAll()
+ * @method Workflow[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class WorkflowRepository extends ServiceEntityRepository
 {
@@ -17,7 +26,10 @@ class WorkflowRepository extends ServiceEntityRepository
     }
 
     /**
-     * Find active workflows for a specific entity type
+     * Find active workflows for a specific entity type.
+     *
+     * @param string $entityType Entity class name (e.g., 'Risk', 'Control', 'Asset')
+     * @return Workflow[] Array of active Workflow entities sorted by name
      */
     public function findActiveByEntityType(string $entityType): array
     {
@@ -31,7 +43,9 @@ class WorkflowRepository extends ServiceEntityRepository
     }
 
     /**
-     * Find all active workflows
+     * Find all active workflows across all entity types.
+     *
+     * @return Workflow[] Array of active Workflow entities sorted by name
      */
     public function findAllActive(): array
     {
