@@ -1,4 +1,28 @@
 # English translations for ISMS Helper
+
+# App
+app:
+  title: Small ISMS Helper
+  subtitle: Information Security Management according to ISO 27001
+  footer: Small ISMS Helper - Your Partner for Information Security according to ISO 27001
+  powered_by: 'Powered by Symfony %version%'
+
+# Navigation
+nav:
+  home: Home
+  dashboard: Dashboard
+  context: ISMS Context
+  analytics: Analytics
+  assets: Assets
+  risks: Risks
+  controls: Controls
+  incidents: Incidents
+  audits: Audits
+  compliance: Compliance
+  audit_log: Audit Log
+  users: Users
+  bcm: BCM
+
 # Security & Authentication
 login: Login
 logout: Logout
@@ -9,7 +33,7 @@ remember_me: Remember Me
 login_title: Login
 welcome_back: Welcome Back
 
-# Navigation
+# Legacy (for backwards compatibility)
 home: Home
 dashboard: Dashboard
 assets: Assets
@@ -40,6 +64,16 @@ close: Close
 confirm: Confirm
 back: Back
 
+# Common
+common:
+  overview: Overview
+  name: Name
+  description: Description
+  status: Status
+  date: Date
+  created_at: Created at
+  updated_at: Updated at
+
 # ISMS Core
 asset: Asset
 risk: Risk
@@ -58,3 +92,78 @@ roles:
   ROLE_MANAGER: Manager
   ROLE_ADMIN: Administrator
   ROLE_SUPER_ADMIN: Super Administrator
+
+# Asset Management
+asset_management:
+  title: Asset Management
+  description: Management of IT assets and information values according to ISO 27001
+  statistics: Statistics
+  active_assets: Active Assets
+  distribution_by_type: Distribution by Type
+  detail_view_coming: Detailed view and entry forms will be implemented in the next phase.
+
+# Risk Management
+risk_management:
+  title: Risk Management
+  description: Identification, assessment and treatment of information security risks
+  high_risks: High Risks
+  risk_value_threshold: Risks with risk value ≥ 12
+  total_identified: Total Identified Risks
+  register_coming: Risk register and treatment plans will be implemented in the next phase.
+
+# Incident Management
+incident_management:
+  title: Incident Management
+  description: Documentation and handling of information security incidents
+  open_incidents: Open Incidents
+  closed_incidents: Closed Incidents
+  total_recorded: Total Recorded Incidents
+  detail_workflows_coming: Detailed incident documentation and workflows will be implemented in the next phase.
+
+# Context Management
+context_management:
+  title: ISMS Context
+  description: Definition of organizational context, scope and ISMS objectives
+  isms_scope: ISMS Scope
+  no_context_defined: No ISMS context defined yet. Please define the organizational context first.
+  isms_objectives: ISMS Objectives
+  active_objectives: Active Objectives
+  no_objectives: No ISMS objectives defined yet.
+  forms_coming: Entry forms and detailed management will be implemented in the next phase.
+
+# Audit Management
+audit_management:
+  title: Internal Audit
+  description: Planning and execution of internal ISMS audits according to ISO 27001
+  planned_audits: Planned Audits
+  total_audits: Total Audits
+  audit_planning_coming: Audit planning, checklists and reports will be implemented in the next phase.
+
+# BCM
+bcm:
+  title: Business Continuity Management
+  description: Business continuity management and emergency preparedness
+
+# Compliance
+compliance_management:
+  title: Compliance Management
+  description: Management of compliance requirements
+
+# KPIs
+kpi:
+  registered_assets: Registered Assets
+  identified_risks: Identified Risks
+  open_incidents: Open Incidents
+  compliance_status: Compliance Status
+  unit_pieces: Items
+  unit_percent: '%'
+
+# Activity Feed
+activity:
+  asset_added: Asset added
+  risk_identified: Risk identified
+  recently: recently
+  minutes_ago: '%d minutes'
+  system: System
+  security_team: Security Team
+  new_risk: New Risk
