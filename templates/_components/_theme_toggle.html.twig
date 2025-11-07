@@ -1,0 +1,17 @@
+{# Theme Toggle Component
+   Usage: {% include '_components/_theme_toggle.html.twig' %}
+   
+   Features:
+   - Toggle between light and dark mode
+   - Persists preference in localStorage
+   - Auto-detects system preference
+#}
+
+<div class="theme-toggle" data-controller="theme">
+    <button type="button"
+            class="theme-toggle-btn"
+            data-action="click->theme#toggle"
+            title="Dark Mode umschalten (Aktuell: {{ app.request.cookies.get('theme', 'light')|default('light') }})">
+        <i class="bi-moon-fill"></i>
+    </button>
+</div>

@@ -1,0 +1,100 @@
+{# Asset Quick View Preview #}
+<div class="preview-content">
+    <div class="preview-section">
+        <h6 class="preview-section-title">
+            <i class="bi-server text-primary"></i>
+            Asset-Informationen
+        </h6>
+        <dl class="row mb-0">
+            <dt class="col-sm-4">Name:</dt>
+            <dd class="col-sm-8">{{ asset.name }}</dd>
+
+            <dt class="col-sm-4">Typ:</dt>
+            <dd class="col-sm-8">
+                <span class="badge bg-secondary">{{ asset.assetType }}</span>
+            </dd>
+
+            <dt class="col-sm-4">Eigentümer:</dt>
+            <dd class="col-sm-8">{{ asset.owner }}</dd>
+
+            {% if asset.location %}
+            <dt class="col-sm-4">Standort:</dt>
+            <dd class="col-sm-8">{{ asset.location }}</dd>
+            {% endif %}
+
+            <dt class="col-sm-4">Status:</dt>
+            <dd class="col-sm-8">
+                <span class="badge bg-{{ asset.status == 'active' ? 'success' : 'secondary' }}">
+                    {{ asset.status|trans }}
+                </span>
+            </dd>
+        </dl>
+    </div>
+
+    {% if asset.description %}
+    <div class="preview-section">
+        <h6 class="preview-section-title">
+            <i class="bi-file-text"></i>
+            Beschreibung
+        </h6>
+        <p class="mb-0">{{ asset.description }}</p>
+    </div>
+    {% endif %}
+
+    <div class="preview-section">
+        <h6 class="preview-section-title">
+            <i class="bi-shield-check"></i>
+            Schutzbedarf (CIA)
+        </h6>
+        <div class="row">
+            <div class="col-4">
+                <div class="cia-badge">
+                    <div class="cia-value">{{ asset.confidentialityValue }}</div>
+                    <div class="cia-label">Vertraulichkeit</div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="cia-badge">
+                    <div class="cia-value">{{ asset.integrityValue }}</div>
+                    <div class="cia-label">Integrität</div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="cia-badge">
+                    <div class="cia-value">{{ asset.availabilityValue }}</div>
+                    <div class="cia-label">Verfügbarkeit</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="preview-section">
+        <h6 class="preview-section-title">
+            <i class="bi-graph-up"></i>
+            Statistiken
+        </h6>
+        <div class="row g-2">
+            <div class="col-6">
+                <div class="stat-mini">
+                    <div class="stat-mini-value">{{ asset.risks|length }}</div>
+                    <div class="stat-mini-label">Risiken</div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="stat-mini">
+                    <div class="stat-mini-value">{{ asset.protectingControls|length }}</div>
+                    <div class="stat-mini-label">Maßnahmen</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="preview-actions">
+        <a href="{{ path('app_asset_show', {id: asset.id}) }}" class="btn btn-primary btn-sm">
+            <i class="bi-arrow-right"></i> Details anzeigen
+        </a>
+        <a href="{{ path('app_asset_edit', {id: asset.id}) }}" class="btn btn-outline-secondary btn-sm">
+            <i class="bi-pencil"></i> Bearbeiten
+        </a>
+    </div>
+</div>

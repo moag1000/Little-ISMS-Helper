@@ -1,0 +1,46 @@
+{# Quick View Modal Component
+   Usage: Add data-controller="quick-view" and data-quick-view-url-value to list items
+   
+   Keyboard Shortcut: Space
+   Features:
+   - Preview without navigation
+   - ESC to close
+#}
+
+<div class="quick-view-modal d-none"
+     data-quick-view-target="modal"
+     data-action="click->quick-view#handleBackdropClick keydown->quick-view#handleModalKeydown">
+    
+    <div class="quick-view-container">
+        {# Modal Header #}
+        <div class="quick-view-header">
+            <h5 class="quick-view-title" data-quick-view-target="title">
+                Vorschau
+            </h5>
+            <button type="button"
+                    class="btn-close"
+                    data-action="click->quick-view#close"
+                    aria-label="Close"></button>
+        </div>
+
+        {# Modal Body #}
+        <div class="quick-view-body" data-quick-view-target="body">
+            {# Content will be loaded here #}
+        </div>
+
+        {# Modal Footer #}
+        <div class="quick-view-footer">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="text-muted small">
+                    <kbd>ESC</kbd> Schließen
+                    <span class="ms-3"><kbd>Space</kbd> auf Listen-Items öffnet Vorschau</span>
+                </div>
+                <button type="button"
+                        class="btn btn-sm btn-outline-secondary"
+                        data-action="click->quick-view#close">
+                    Schließen
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

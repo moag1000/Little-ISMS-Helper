@@ -1,0 +1,421 @@
+/* ===================================
+   Paket C: Dark Mode Styles
+   =================================== */
+
+/* ===============================
+   CSS Variables (Light Mode Default)
+   =============================== */
+:root {
+    /* Colors */
+    --color-primary: #667eea;
+    --color-primary-dark: #764ba2;
+    --color-success: #2ecc71;
+    --color-warning: #f39c12;
+    --color-danger: #e74c3c;
+    --color-info: #3498db;
+
+    /* Background */
+    --bg-primary: #ffffff;
+    --bg-secondary: #f8f9fa;
+    --bg-tertiary: #e9ecef;
+    --bg-elevated: #ffffff;
+
+    /* Text */
+    --text-primary: #2c3e50;
+    --text-secondary: #6c757d;
+    --text-muted: #95a5a6;
+    --text-inverse: #ffffff;
+
+    /* Borders */
+    --border-color: #dee2e6;
+    --border-color-light: #f0f0f0;
+
+    /* Shadows */
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.15);
+
+    /* Overlays */
+    --overlay-bg: rgba(0, 0, 0, 0.5);
+
+    /* Transitions */
+    --transition-speed: 0.3s;
+}
+
+/* ===============================
+   Dark Mode Variables
+   =============================== */
+[data-theme="dark"] {
+    /* Colors stay vibrant */
+    --color-primary: #7c8ff0;
+    --color-primary-dark: #8b5fc7;
+    --color-success: #3edb81;
+    --color-warning: #ffa724;
+    --color-danger: #f15b4d;
+    --color-info: #4daef7;
+
+    /* Dark Backgrounds */
+    --bg-primary: #1a1d23;
+    --bg-secondary: #23262d;
+    --bg-tertiary: #2c2f38;
+    --bg-elevated: #2c2f38;
+
+    /* Dark Text */
+    --text-primary: #e9ecef;
+    --text-secondary: #adb5bd;
+    --text-muted: #6c757d;
+    --text-inverse: #1a1d23;
+
+    /* Dark Borders */
+    --border-color: #3a3d46;
+    --border-color-light: #2c2f38;
+
+    /* Dark Shadows (stronger) */
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
+
+    /* Dark Overlay */
+    --overlay-bg: rgba(0, 0, 0, 0.7);
+}
+
+/* ===============================
+   Apply Variables to Elements
+   =============================== */
+
+body {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    transition: background-color var(--transition-speed), color var(--transition-speed);
+}
+
+/* Headers */
+.header {
+    background-color: var(--bg-elevated);
+    border-bottom: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
+}
+
+/* Navigation */
+.nav {
+    background-color: var(--bg-secondary);
+    border-right: 1px solid var(--border-color);
+}
+
+.nav a {
+    color: var(--text-secondary);
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.nav a:hover,
+.nav a.active {
+    background-color: var(--bg-tertiary);
+    color: var(--color-primary);
+}
+
+/* Cards */
+.card,
+.stat-card,
+.widget-card,
+.feature-card {
+    background-color: var(--bg-elevated);
+    border-color: var(--border-color);
+    box-shadow: var(--shadow-sm);
+}
+
+/* Tables */
+table {
+    background-color: var(--bg-elevated);
+    color: var(--text-primary);
+}
+
+thead {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+tbody tr {
+    border-bottom: 1px solid var(--border-color-light);
+}
+
+tbody tr:hover {
+    background-color: var(--bg-secondary);
+}
+
+/* Forms */
+input,
+textarea,
+select,
+.form-control {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+}
+
+input:focus,
+textarea:focus,
+select:focus,
+.form-control:focus {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+/* Buttons */
+.btn {
+    transition: all 0.2s;
+}
+
+.btn-outline-secondary {
+    color: var(--text-secondary);
+    border-color: var(--border-color);
+}
+
+.btn-outline-secondary:hover {
+    background-color: var(--bg-tertiary);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+/* Modals */
+.modal-content,
+.global-search-container,
+.quick-view-container {
+    background-color: var(--bg-elevated);
+    color: var(--text-primary);
+}
+
+.modal-header,
+.modal-footer,
+.global-search-header,
+.quick-view-header,
+.quick-view-footer {
+    border-color: var(--border-color);
+    background-color: var(--bg-secondary);
+}
+
+/* Badges */
+.badge {
+    color: var(--text-inverse);
+}
+
+/* Alerts */
+.alert {
+    background-color: var(--bg-secondary);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+/* Code & Pre */
+code,
+pre,
+kbd {
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+}
+
+/* Footer */
+.footer {
+    background-color: var(--bg-secondary);
+    color: var(--text-secondary);
+    border-top: 1px solid var(--border-color);
+}
+
+/* Dropdowns */
+.dropdown-menu {
+    background-color: var(--bg-elevated);
+    border-color: var(--border-color);
+    box-shadow: var(--shadow-md);
+}
+
+.dropdown-item {
+    color: var(--text-primary);
+}
+
+.dropdown-item:hover {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+/* Toast Notifications */
+.toast {
+    background-color: var(--bg-elevated);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+    box-shadow: var(--shadow-lg);
+}
+
+/* Search Results */
+.search-result-item {
+    color: var(--text-primary);
+}
+
+.search-result-item:hover {
+    background-color: var(--bg-secondary);
+}
+
+.search-category-header {
+    background-color: var(--bg-secondary);
+    color: var(--text-secondary);
+}
+
+.search-result-icon {
+    background-color: var(--bg-tertiary);
+}
+
+/* Activity Feed */
+.activity-item:hover {
+    background-color: var(--bg-secondary);
+}
+
+/* Preview Content */
+.preview-section {
+    border-bottom: 1px solid var(--border-color-light);
+}
+
+.cia-badge,
+.stat-mini,
+.risk-metric {
+    background-color: var(--bg-secondary);
+}
+
+/* Filter Presets */
+.filter-presets {
+    background-color: var(--bg-elevated);
+    border-color: var(--border-color);
+}
+
+.filter-preset-btn {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+}
+
+.filter-preset-btn:hover {
+    background-color: var(--bg-secondary);
+}
+
+/* ===============================
+   Dark Mode Toggle Button
+   =============================== */
+.theme-toggle {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+.theme-toggle-btn {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    box-shadow: var(--shadow-lg);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.theme-toggle-btn:hover {
+    transform: scale(1.1) rotate(15deg);
+    box-shadow: 0 12px 32px rgba(102, 126, 234, 0.4);
+}
+
+.theme-toggle-btn:active {
+    transform: scale(0.95);
+}
+
+/* Icon rotation animation */
+.theme-toggle-btn i {
+    transition: transform 0.5s ease;
+}
+
+.theme-toggle-btn:hover i {
+    transform: rotate(180deg);
+}
+
+/* ===============================
+   Smooth Transitions for Theme Switch
+   =============================== */
+* {
+    transition-property: background-color, border-color, color, box-shadow;
+    transition-duration: var(--transition-speed);
+    transition-timing-function: ease;
+}
+
+/* Disable transitions for certain elements */
+a,
+button,
+input,
+.btn {
+    transition-property: background-color, border-color, color, box-shadow, transform;
+}
+
+/* ===============================
+   Dark Mode Specific Adjustments
+   =============================== */
+
+/* Hero Section in Dark Mode */
+[data-theme="dark"] .hero-section {
+    background: linear-gradient(135deg, #7c8ff0 0%, #8b5fc7 100%);
+}
+
+/* Ensure text is visible in Dark Mode */
+[data-theme="dark"] .hero-section::before {
+    opacity: 0.2;
+}
+
+/* Stat Cards in Dark Mode */
+[data-theme="dark"] .stat-card-icon {
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+}
+
+/* Charts adjustments for Dark Mode */
+[data-theme="dark"] canvas {
+    filter: brightness(0.9);
+}
+
+/* Image adjustments for Dark Mode */
+[data-theme="dark"] img:not([src*=".svg"]) {
+    opacity: 0.9;
+}
+
+/* ===============================
+   Accessibility - Reduced Motion
+   =============================== */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+
+    .theme-toggle-btn i {
+        transition: none;
+    }
+}
+
+/* ===============================
+   Print Styles (Force Light Mode)
+   =============================== */
+@media print {
+    [data-theme="dark"] {
+        --bg-primary: #ffffff;
+        --bg-secondary: #f8f9fa;
+        --bg-tertiary: #e9ecef;
+        --text-primary: #2c3e50;
+        --text-secondary: #6c757d;
+        --border-color: #dee2e6;
+    }
+
+    .theme-toggle {
+        display: none !important;
+    }
+}
