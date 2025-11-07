@@ -1,4 +1,28 @@
 # German translations for ISMS Helper
+
+# App
+app:
+  title: Small ISMS Helper
+  subtitle: Informationssicherheitsmanagement nach ISO 27001
+  footer: Small ISMS Helper - Ihr Partner für Informationssicherheit nach ISO 27001
+  powered_by: 'Powered by Symfony %version%'
+
+# Navigation
+nav:
+  home: Startseite
+  dashboard: Dashboard
+  context: ISMS Kontext
+  analytics: Analytics
+  assets: Assets
+  risks: Risiken
+  controls: Maßnahmen
+  incidents: Vorfälle
+  audits: Audits
+  compliance: Compliance
+  audit_log: Audit Log
+  users: Benutzer
+  bcm: BCM
+
 # Security & Authentication
 login: Anmelden
 logout: Abmelden
@@ -9,7 +33,7 @@ remember_me: Angemeldet bleiben
 login_title: Anmeldung
 welcome_back: Willkommen zurück
 
-# Navigation
+# Legacy (for backwards compatibility)
 home: Startseite
 dashboard: Dashboard
 assets: Assets
@@ -124,3 +148,22 @@ bcm:
 compliance_management:
   title: Compliance-Management
   description: Verwaltung von Compliance-Anforderungen
+
+# KPIs
+kpi:
+  registered_assets: Erfasste Assets
+  identified_risks: Identifizierte Risiken
+  open_incidents: Offene Vorfälle
+  compliance_status: Compliance-Status
+  unit_pieces: Stück
+  unit_percent: '%'
+
+# Activity Feed
+activity:
+  asset_added: Asset hinzugefügt
+  risk_identified: Risiko identifiziert
+  recently: kürzlich
+  minutes_ago: '%d Minuten'
+  system: System
+  security_team: Security Team
+  new_risk: Neues Risiko

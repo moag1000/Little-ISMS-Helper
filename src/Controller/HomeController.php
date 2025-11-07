@@ -106,25 +106,31 @@ class HomeController extends AbstractController
         // Beispiel-Aktivitäten (später durch echte Daten ersetzen)
         $recentAssets = array_slice($this->assetRepository->findActiveAssets(), 0, 3);
         foreach ($recentAssets as $asset) {
+            $createdAt = $asset->getCreatedAt();
+            $timeAgo = $createdAt ? sprintf($this->translator->trans('activity.minutes_ago'), $createdAt->diff(new \DateTime())->i) : $this->translator->trans('activity.recently');
+
             $activities[] = [
                 'icon' => 'bi-server',
                 'color' => 'primary',
-                'title' => 'Asset hinzugefügt',
+                'title' => $this->translator->trans('activity.asset_added'),
                 'description' => $asset->getName(),
-                'time' => $asset->getCreatedAt() ? $asset->getCreatedAt()->diff(new \DateTime())->format('%i Minuten') : 'kürzlich',
-                'user' => $asset->getOwner() ?? 'System',
+                'time' => $timeAgo,
+                'user' => $asset->getOwner() ?? $this->translator->trans('activity.system'),
             ];
         }
 
         $recentRisks = array_slice($this->riskRepository->findAll(), 0, 3);
         foreach ($recentRisks as $risk) {
+            $createdAt = $risk->getCreatedAt();
+            $timeAgo = $createdAt ? sprintf($this->translator->trans('activity.minutes_ago'), $createdAt->diff(new \DateTime())->i) : $this->translator->trans('activity.recently');
+
             $activities[] = [
                 'icon' => 'bi-exclamation-triangle',
                 'color' => 'warning',
-                'title' => 'Risiko identifiziert',
-                'description' => $risk->getDescription() ?? 'Neues Risiko',
-                'time' => $risk->getCreatedAt() ? $risk->getCreatedAt()->diff(new \DateTime())->format('%i Minuten') : 'kürzlich',
-                'user' => 'Security Team',
+                'title' => $this->translator->trans('activity.risk_identified'),
+                'description' => $risk->getDescription() ?? $this->translator->trans('activity.new_risk'),
+                'time' => $timeAgo,
+                'user' => $this->translator->trans('activity.security_team'),
             ];
         }
 
