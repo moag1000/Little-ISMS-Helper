@@ -8,6 +8,24 @@ use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Style\Font;
 
+/**
+ * Excel Export Service
+ *
+ * Provides secure Excel file generation using PhpSpreadsheet.
+ * Implements security controls to prevent CSV/Excel formula injection attacks.
+ *
+ * Features:
+ * - Spreadsheet creation with metadata
+ * - Styled header rows with auto-sizing
+ * - Data rows with zebra striping
+ * - Formula injection prevention (OWASP #3)
+ * - Multiple output formats (XLSX, CSV)
+ * - Download and streaming support
+ *
+ * Security:
+ * - Automatic sanitization of cell values to prevent formula injection
+ * - Prefixing of dangerous characters (=, +, -, @, \t, \r)
+ */
 class ExcelExportService
 {
     public function createSpreadsheet(string $title = 'Export'): Spreadsheet

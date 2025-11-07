@@ -6,6 +6,23 @@ use Dompdf\Dompdf;
 use Dompdf\Options;
 use Twig\Environment;
 
+/**
+ * PDF Export Service
+ *
+ * Provides secure PDF generation from Twig templates using DomPDF.
+ * Implements security controls to prevent SSRF and header injection attacks.
+ *
+ * Features:
+ * - Template-based PDF generation
+ * - Download and inline streaming support
+ * - Configurable page orientation and paper size
+ * - UTF-8 support with DejaVu Sans font
+ *
+ * Security:
+ * - Remote resources disabled (SSRF prevention - OWASP #10)
+ * - Filename sanitization (Header injection prevention - OWASP #3)
+ * - HTML5 parser enabled for safe rendering
+ */
 class PdfExportService
 {
     public function __construct(
