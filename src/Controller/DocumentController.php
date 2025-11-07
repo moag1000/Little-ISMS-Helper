@@ -5,8 +5,11 @@ namespace App\Controller;
 use App\Entity\Document;
 use App\Form\DocumentType;
 use App\Repository\DocumentRepository;
+use App\Service\FileUploadSecurityService;
+use App\Service\SecurityEventLogger;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\RateLimiter\RateLimiterFactory;
@@ -23,7 +26,9 @@ class DocumentController extends AbstractController
         private DocumentRepository $documentRepository,
         private EntityManagerInterface $entityManager,
         private string $projectDir,
-        private RateLimiterFactory $documentUploadLimiter
+        private RateLimiterFactory $documentUploadLimiter,
+        private FileUploadSecurityService $fileUploadSecurity,
+        private SecurityEventLogger $securityLogger
     ) {}
 
     #[Route('/', name: 'app_document_index')]
@@ -53,6 +58,9 @@ class DocumentController extends AbstractController
             $limiter = $this->documentUploadLimiter->create($request->getClientIp());
 
             if (false === $limiter->consume(1)->isAccepted()) {
+                // Security: Log rate limit hit for monitoring
+                $this->securityLogger->logRateLimitHit('document_upload');
+
                 $this->addFlash('error', 'Too many document uploads. Please try again in 1 hour.');
 
                 return $this->render('document/new_modern.html.twig', [
@@ -61,12 +69,60 @@ class DocumentController extends AbstractController
                 ]);
             }
 
-            $document->setUploadedBy($this->getUser());
-            $this->entityManager->persist($document);
-            $this->entityManager->flush();
+            // Security: Validate uploaded file (MIME type, magic bytes, size, extension)
+            $uploadedFile = $form->get('file')->getData();
 
-            $this->addFlash('success', 'Document uploaded successfully.');
-            return $this->redirectToRoute('app_document_show', ['id' => $document->getId()]);
+            try {
+                $this->fileUploadSecurity->validateUploadedFile($uploadedFile);
+
+                // Security: Generate safe filename to prevent path traversal and overwrites
+                $safeFilename = $this->fileUploadSecurity->generateSafeFilename($uploadedFile);
+
+                // Move file to secure upload directory
+                $uploadedFile->move(
+                    $this->projectDir . '/public/uploads/documents',
+                    $safeFilename
+                );
+
+                // Store file information
+                $document->setFileName($safeFilename);
+                $document->setOriginalName($uploadedFile->getClientOriginalName());
+                $document->setUploadedBy($this->getUser());
+
+                $this->entityManager->persist($document);
+                $this->entityManager->flush();
+
+                // Security: Log successful file upload
+                $this->securityLogger->logFileUpload(
+                    $safeFilename,
+                    $uploadedFile->getMimeType(),
+                    $uploadedFile->getSize(),
+                    true
+                );
+
+                // Security: Log data change
+                $this->securityLogger->logDataChange('Document', $document->getId(), 'CREATE');
+
+                $this->addFlash('success', 'Document uploaded successfully.');
+                return $this->redirectToRoute('app_document_show', ['id' => $document->getId()]);
+
+            } catch (FileException $e) {
+                // Security: Log failed upload attempt (potential attack)
+                $this->securityLogger->logFileUpload(
+                    $uploadedFile->getClientOriginalName(),
+                    $uploadedFile->getMimeType() ?? 'unknown',
+                    $uploadedFile->getSize(),
+                    false,
+                    $e->getMessage()
+                );
+
+                $this->addFlash('error', 'File upload failed: ' . $e->getMessage());
+
+                return $this->render('document/new_modern.html.twig', [
+                    'document' => $document,
+                    'form' => $form,
+                ]);
+            }
         }
 
         return $this->render('document/new_modern.html.twig', [
