@@ -27,15 +27,29 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Index(columns: ['tenant_id'], name: 'idx_asset_tenant')]
 #[ApiResource(
     operations: [
-        new Get(security: "is_granted('ROLE_USER')"),
-        new GetCollection(security: "is_granted('ROLE_USER')"),
-        new Post(security: "is_granted('ROLE_USER')"),
-        new Put(security: "is_granted('ROLE_USER')"),
-        new Delete(security: "is_granted('ROLE_ADMIN')"),
+        new Get(
+            security: "is_granted('ROLE_USER')",
+            description: 'Retrieve a specific asset by ID'
+        ),
+        new GetCollection(
+            security: "is_granted('ROLE_USER')",
+            description: 'Retrieve the collection of assets with pagination and filtering'
+        ),
+        new Post(
+            security: "is_granted('ROLE_USER')",
+            description: 'Create a new asset with protection requirements'
+        ),
+        new Put(
+            security: "is_granted('ROLE_USER')",
+            description: 'Update an existing asset'
+        ),
+        new Delete(
+            security: "is_granted('ROLE_ADMIN')",
+            description: 'Delete an asset (Admin only)'
+        ),
     ],
     normalizationContext: ['groups' => ['asset:read']],
-    denormalizationContext: ['groups' => ['asset:write']],
-    paginationItemsPerPage: 30
+    denormalizationContext: ['groups' => ['asset:write']]
 )]
 #[ApiFilter(SearchFilter::class, properties: ['name' => 'partial', 'assetType' => 'exact', 'owner' => 'partial', 'status' => 'exact'])]
 #[ApiFilter(OrderFilter::class, properties: ['name', 'assetType', 'createdAt'])]

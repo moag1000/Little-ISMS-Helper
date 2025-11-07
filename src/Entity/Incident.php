@@ -32,15 +32,29 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Index(columns: ['tenant_id'], name: 'idx_incident_tenant')]
 #[ApiResource(
     operations: [
-        new Get(security: "is_granted('ROLE_USER')"),
-        new GetCollection(security: "is_granted('ROLE_USER')"),
-        new Post(security: "is_granted('ROLE_USER')"),
-        new Put(security: "is_granted('ROLE_USER')"),
-        new Delete(security: "is_granted('ROLE_ADMIN')"),
+        new Get(
+            security: "is_granted('ROLE_USER')",
+            description: 'Retrieve a specific security incident by ID'
+        ),
+        new GetCollection(
+            security: "is_granted('ROLE_USER')",
+            description: 'Retrieve the collection of security incidents with filtering by severity, status, and category'
+        ),
+        new Post(
+            security: "is_granted('ROLE_USER')",
+            description: 'Create a new security incident report'
+        ),
+        new Put(
+            security: "is_granted('ROLE_USER')",
+            description: 'Update an existing security incident'
+        ),
+        new Delete(
+            security: "is_granted('ROLE_ADMIN')",
+            description: 'Delete a security incident (Admin only)'
+        ),
     ],
     normalizationContext: ['groups' => ['incident:read']],
-    denormalizationContext: ['groups' => ['incident:write']],
-    paginationItemsPerPage: 30
+    denormalizationContext: ['groups' => ['incident:write']]
 )]
 #[ApiFilter(SearchFilter::class, properties: ['title' => 'partial', 'incidentNumber' => 'exact', 'severity' => 'exact', 'status' => 'exact', 'category' => 'exact'])]
 #[ApiFilter(BooleanFilter::class, properties: ['dataBreachOccurred', 'notificationRequired'])]

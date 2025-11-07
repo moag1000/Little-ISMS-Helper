@@ -28,15 +28,29 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Index(columns: ['scheduled_date'], name: 'idx_training_scheduled_date')]
 #[ApiResource(
     operations: [
-        new Get(security: "is_granted('ROLE_USER')"),
-        new GetCollection(security: "is_granted('ROLE_USER')"),
-        new Post(security: "is_granted('ROLE_USER')"),
-        new Put(security: "is_granted('ROLE_USER')"),
-        new Delete(security: "is_granted('ROLE_ADMIN')"),
+        new Get(
+            security: "is_granted('ROLE_USER')",
+            description: 'Retrieve a specific security awareness training by ID'
+        ),
+        new GetCollection(
+            security: "is_granted('ROLE_USER')",
+            description: 'Retrieve the collection of security awareness trainings with filtering by type, status, and date'
+        ),
+        new Post(
+            security: "is_granted('ROLE_USER')",
+            description: 'Create a new security awareness training event'
+        ),
+        new Put(
+            security: "is_granted('ROLE_USER')",
+            description: 'Update an existing training event'
+        ),
+        new Delete(
+            security: "is_granted('ROLE_ADMIN')",
+            description: 'Delete a training event (Admin only)'
+        ),
     ],
     normalizationContext: ['groups' => ['training:read']],
-    denormalizationContext: ['groups' => ['training:write']],
-    paginationItemsPerPage: 30
+    denormalizationContext: ['groups' => ['training:write']]
 )]
 #[ApiFilter(SearchFilter::class, properties: ['title' => 'partial', 'trainingType' => 'exact', 'status' => 'exact'])]
 #[ApiFilter(BooleanFilter::class, properties: ['mandatory'])]
