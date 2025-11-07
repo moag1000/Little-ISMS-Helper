@@ -28,11 +28,26 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Index(columns: ['tenant_id'], name: 'idx_risk_tenant')]
 #[ApiResource(
     operations: [
-        new Get(security: "is_granted('ROLE_USER')"),
-        new GetCollection(security: "is_granted('ROLE_USER')"),
-        new Post(security: "is_granted('ROLE_USER')"),
-        new Put(security: "is_granted('ROLE_USER')"),
-        new Delete(security: "is_granted('ROLE_ADMIN')"),
+        new Get(
+            security: "is_granted('ROLE_USER')",
+            description: 'Retrieve a specific risk assessment by ID'
+        ),
+        new GetCollection(
+            security: "is_granted('ROLE_USER')",
+            description: 'Retrieve the collection of risk assessments with filtering by status and date'
+        ),
+        new Post(
+            security: "is_granted('ROLE_USER')",
+            description: 'Create a new risk assessment with probability and impact analysis'
+        ),
+        new Put(
+            security: "is_granted('ROLE_USER')",
+            description: 'Update an existing risk assessment'
+        ),
+        new Delete(
+            security: "is_granted('ROLE_ADMIN')",
+            description: 'Delete a risk assessment (Admin only)'
+        ),
     ],
     normalizationContext: ['groups' => ['risk:read']],
     denormalizationContext: ['groups' => ['risk:write']],

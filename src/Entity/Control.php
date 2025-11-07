@@ -31,11 +31,26 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Index(columns: ['tenant_id'], name: 'idx_control_tenant')]
 #[ApiResource(
     operations: [
-        new Get(security: "is_granted('ROLE_USER')"),
-        new GetCollection(security: "is_granted('ROLE_USER')"),
-        new Post(security: "is_granted('ROLE_USER')"),
-        new Put(security: "is_granted('ROLE_USER')"),
-        new Delete(security: "is_granted('ROLE_ADMIN')"),
+        new Get(
+            security: "is_granted('ROLE_USER')",
+            description: 'Retrieve a specific ISO 27001 control by ID'
+        ),
+        new GetCollection(
+            security: "is_granted('ROLE_USER')",
+            description: 'Retrieve the collection of ISO 27001 controls with filtering by category, status, and applicability'
+        ),
+        new Post(
+            security: "is_granted('ROLE_USER')",
+            description: 'Create a new control implementation'
+        ),
+        new Put(
+            security: "is_granted('ROLE_USER')",
+            description: 'Update an existing control implementation status'
+        ),
+        new Delete(
+            security: "is_granted('ROLE_ADMIN')",
+            description: 'Delete a control (Admin only)'
+        ),
     ],
     normalizationContext: ['groups' => ['control:read']],
     denormalizationContext: ['groups' => ['control:write']],
