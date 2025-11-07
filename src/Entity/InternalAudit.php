@@ -28,15 +28,29 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Index(columns: ['planned_date'], name: 'idx_audit_planned_date')]
 #[ApiResource(
     operations: [
-        new Get(security: "is_granted('ROLE_USER')"),
-        new GetCollection(security: "is_granted('ROLE_USER')"),
-        new Post(security: "is_granted('ROLE_USER')"),
-        new Put(security: "is_granted('ROLE_USER')"),
-        new Delete(security: "is_granted('ROLE_ADMIN')"),
+        new Get(
+            security: "is_granted('ROLE_USER')",
+            description: 'Retrieve a specific internal audit by ID'
+        ),
+        new GetCollection(
+            security: "is_granted('ROLE_USER')",
+            description: 'Retrieve the collection of internal ISMS audits with filtering by status, scope, and date'
+        ),
+        new Post(
+            security: "is_granted('ROLE_USER')",
+            description: 'Create a new internal audit plan'
+        ),
+        new Put(
+            security: "is_granted('ROLE_USER')",
+            description: 'Update an existing internal audit'
+        ),
+        new Delete(
+            security: "is_granted('ROLE_ADMIN')",
+            description: 'Delete an internal audit (Admin only)'
+        ),
     ],
     normalizationContext: ['groups' => ['audit:read']],
-    denormalizationContext: ['groups' => ['audit:write']],
-    paginationItemsPerPage: 30
+    denormalizationContext: ['groups' => ['audit:write']]
 )]
 #[ApiFilter(SearchFilter::class, properties: ['title' => 'partial', 'auditNumber' => 'exact', 'status' => 'exact', 'scopeType' => 'exact'])]
 #[ApiFilter(OrderFilter::class, properties: ['plannedDate', 'actualDate', 'status'])]

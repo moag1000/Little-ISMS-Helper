@@ -4,6 +4,21 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
+    # Application Configuration Parameters
+    # Following Symfony Best Practice: Use 'app.' prefix for application parameters
+
+    # Internationalization
+    app.supported_locales: ['de', 'en']
+    app.default_locale: 'de'
+
+    # Pagination
+    app.pagination_items_per_page: 30
+
+    # Session Configuration
+    app.session_lifetime: 86400  # 24 hours in seconds
+
+    # Password Reset
+    app.password_reset_token_lifetime: 3600  # 1 hour in seconds
 
 services:
     # default configuration for services in *this* file
