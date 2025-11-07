@@ -1,0 +1,72 @@
+{# Incident Quick View Preview #}
+<div class="preview-content">
+    <div class="preview-section">
+        <h6 class="preview-section-title">
+            <i class="bi-exclamation-circle text-danger"></i>
+            Vorfalls-Informationen
+        </h6>
+        <dl class="row mb-0">
+            <dt class="col-sm-4">Titel:</dt>
+            <dd class="col-sm-8">{{ incident.title }}</dd>
+
+            <dt class="col-sm-4">Schweregrad:</dt>
+            <dd class="col-sm-8">
+                {% set severityClass = incident.severity == 'critical' ? 'danger' : (incident.severity == 'high' ? 'warning' : 'info') %}
+                <span class="badge bg-{{ severityClass }}">{{ incident.severity|trans }}</span>
+            </dd>
+
+            <dt class="col-sm-4">Status:</dt>
+            <dd class="col-sm-8">
+                <span class="badge bg-{{ incident.status == 'closed' ? 'success' : 'warning' }}">
+                    {{ incident.status|trans }}
+                </span>
+            </dd>
+
+            <dt class="col-sm-4">Erkannt am:</dt>
+            <dd class="col-sm-8">{{ incident.detectedAt|date('d.m.Y H:i') }}</dd>
+
+            {% if incident.reportedBy %}
+            <dt class="col-sm-4">Gemeldet von:</dt>
+            <dd class="col-sm-8">{{ incident.reportedBy }}</dd>
+            {% endif %}
+        </dl>
+    </div>
+
+    <div class="preview-section">
+        <h6 class="preview-section-title">
+            <i class="bi-file-text"></i>
+            Beschreibung
+        </h6>
+        <p class="mb-0">{{ incident.description }}</p>
+    </div>
+
+    {% if incident.affectedAssets|length > 0 %}
+    <div class="preview-section">
+        <h6 class="preview-section-title">
+            <i class="bi-server"></i>
+            Betroffene Assets ({{ incident.affectedAssets|length }})
+        </h6>
+        <ul class="list-unstyled mb-0">
+            {% for asset in incident.affectedAssets|slice(0, 3) %}
+            <li class="mb-1">
+                <a href="{{ path('app_asset_show', {id: asset.id}) }}">
+                    <i class="bi-server text-primary"></i> {{ asset.name }}
+                </a>
+            </li>
+            {% endfor %}
+            {% if incident.affectedAssets|length > 3 %}
+            <li class="text-muted small">+ {{ incident.affectedAssets|length - 3 }} weitere</li>
+            {% endif %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <div class="preview-actions">
+        <a href="{{ path('app_incident_show', {id: incident.id}) }}" class="btn btn-primary btn-sm">
+            <i class="bi-arrow-right"></i> Details anzeigen
+        </a>
+        <a href="{{ path('app_incident_edit', {id: incident.id}) }}" class="btn btn-outline-secondary btn-sm">
+            <i class="bi-pencil"></i> Bearbeiten
+        </a>
+    </div>
+</div>
