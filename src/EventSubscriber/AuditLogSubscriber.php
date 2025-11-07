@@ -12,7 +12,39 @@ use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Events;
 
 /**
- * Doctrine Event Subscriber that automatically logs entity changes
+ * Audit Log Subscriber
+ *
+ * Doctrine Event Listener that automatically logs all entity lifecycle changes for compliance and forensic analysis.
+ * Implements OWASP A9: Security Logging and Monitoring Failures prevention.
+ *
+ * Monitored Events:
+ * - postPersist: Entity creation - logs new entity with all field values
+ * - preUpdate: Before entity update - captures old values for change tracking
+ * - postUpdate: After entity update - logs changes with old/new value comparison
+ * - postRemove: Entity deletion - logs final state before removal
+ *
+ * Security Features:
+ * - Infinite loop prevention: Skips AuditLog entities
+ * - Selective auditing: Only logs configured entity types
+ * - Change set tracking: Captures field-level changes
+ * - Temporal storage: Uses pendingUpdates array for pre/post update coordination
+ *
+ * Audited Entities:
+ * - Core ISMS: Asset, Risk, Control, Incident
+ * - Governance: ISMSContext, ISMSObjective, ManagementReview
+ * - Compliance: ComplianceFramework, ComplianceRequirement, ComplianceMapping
+ * - Operations: Training, BusinessProcess, InternalAudit, AuditChecklist
+ *
+ * ISO 27001 Compliance:
+ * - A.12.4.1: Event logging - Complete audit trail
+ * - A.12.4.3: Administrator and operator logs
+ * - A.16.1.7: Collection of evidence
+ *
+ * Workflow (Update):
+ * 1. preUpdate: Captures old values and stores in pendingUpdates
+ * 2. Entity is persisted to database
+ * 3. postUpdate: Retrieves stored values and creates audit log entry
+ * 4. Cleanup: Removes temporary data from pendingUpdates
  */
 #[AsDoctrineListener(event: Events::postPersist)]
 #[AsDoctrineListener(event: Events::preUpdate)]
