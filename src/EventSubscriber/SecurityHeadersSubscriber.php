@@ -79,8 +79,14 @@ class SecurityHeadersSubscriber implements EventSubscriberInterface
 
         // Security: Strict-Transport-Security (HSTS)
         // Forces HTTPS connections (only if request is HTTPS)
+        // WARNING: This header tells browsers to ONLY use HTTPS for this domain
+        // - max-age: How long browsers should remember (in seconds)
+        // - includeSubDomains: Also applies to all subdomains (can break dev/staging!)
+        // - preload: For inclusion in browser HSTS preload lists (use with extreme caution!)
         if ($event->getRequest()->isSecure()) {
-            $response->headers->set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+            // Use shorter max-age initially (6 months), increase to 2 years after testing
+            // Remove includeSubDomains if you have HTTP-only subdomains (dev, staging, etc.)
+            $response->headers->set('Strict-Transport-Security', 'max-age=15768000');
         }
     }
 }
