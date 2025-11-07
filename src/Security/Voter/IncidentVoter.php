@@ -8,9 +8,31 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 /**
- * Security: Incident Access Control Voter
+ * Incident Voter
  *
- * Implements fine-grained access control for Incident entities with multi-tenancy support.
+ * Implements fine-grained authorization for security Incident entity operations.
+ * Enforces strict multi-tenancy isolation for incident response and forensics.
+ *
+ * Supported Operations:
+ * - VIEW: View security incident details and investigation data
+ * - EDIT: Modify incident status, severity, and response actions
+ * - DELETE: Remove incident records (admin only)
+ *
+ * Security Rules:
+ * - ROLE_ADMIN bypasses all checks
+ * - Users can only access incidents from their own tenant
+ * - Tenant isolation strictly enforced
+ * - Only admins can delete incident records
+ *
+ * Multi-tenancy:
+ * - Implements OWASP A1: Broken Access Control prevention
+ * - Tenant validation on all operations
+ * - Prevents cross-tenant incident data leakage
+ * - Future: Can be extended with reporter/assigned user checks
+ *
+ * Incident Response:
+ * - Supports ISO 27001 A.16: Information security incident management
+ * - Enables proper access control for incident lifecycle tracking
  */
 class IncidentVoter extends Voter
 {
