@@ -7,7 +7,32 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 /**
- * Generic voter for entity-based permissions
+ * Entity Voter
+ *
+ * Generic fallback voter providing dynamic permission checking for any entity.
+ * Implements convention-based authorization using entity name and action patterns.
+ *
+ * Supported Operations:
+ * - VIEW: View entity details
+ * - CREATE: Create new entities
+ * - EDIT: Modify existing entities
+ * - DELETE: Remove entities
+ * - APPROVE: Approve entity workflows
+ * - EXPORT: Export entity data
+ *
+ * Security Rules:
+ * - ROLE_ADMIN bypasses all checks
+ * - Inactive users cannot perform any actions
+ * - Dynamic permission resolution: {entity_name}.{action}
+ * - Works with any entity object through reflection
+ *
+ * Permission Resolution:
+ * Example: Checking 'edit' on a Training entity resolves to 'training.edit' permission
+ * This provides flexible authorization without creating entity-specific voters
+ *
+ * Best Practice:
+ * - Use specific voters (AssetVoter, RiskVoter, etc.) for complex entity-specific logic
+ * - Use this voter as a fallback for simple entities without special authorization rules
  */
 class EntityVoter extends Voter
 {
