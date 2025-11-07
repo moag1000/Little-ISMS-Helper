@@ -51,12 +51,14 @@ COPY . .
 # Now run Symfony scripts (bin/console is now available)
 RUN composer run-script --no-dev auto-scripts || true
 
-# Create Symfony required directories
-RUN mkdir -p var/cache var/log
+# Create required directories for logs and cache
+RUN mkdir -p var/cache var/log /var/log/supervisor /var/log/nginx && \
+    chmod -R 755 var/cache var/log /var/log/supervisor /var/log/nginx
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html && \
-    chmod -R 755 /var/www/html/var
+    chmod -R 755 /var/www/html/var && \
+    chown -R root:root /var/log/supervisor /var/log/nginx
 
 # Configure PHP for production
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" && \
@@ -66,6 +68,9 @@ RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" && \
     echo "opcache.interned_strings_buffer=16" >> "$PHP_INI_DIR/conf.d/opcache.ini" && \
     echo "opcache.max_accelerated_files=20000" >> "$PHP_INI_DIR/conf.d/opcache.ini" && \
     echo "opcache.validate_timestamps=0" >> "$PHP_INI_DIR/conf.d/opcache.ini"
+
+# Configure PHP-FPM to listen on TCP port instead of socket (required for nginx config)
+RUN sed -i 's/listen = .*/listen = 127.0.0.1:9000/' /usr/local/etc/php-fpm.d/www.conf
 
 # Configure Nginx
 COPY docker/nginx/default.conf /etc/nginx/http.d/default.conf
