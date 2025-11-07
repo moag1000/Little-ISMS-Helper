@@ -6,6 +6,24 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
+/**
+ * Locale Subscriber
+ *
+ * Handles automatic locale detection and persistence across requests.
+ * Implements Symfony Best Practice for locale management.
+ *
+ * Features:
+ * - Locale detection from routing parameters (_locale)
+ * - Session-based locale persistence
+ * - Fallback to configured default locale
+ * - Priority-based event listener (runs before default Locale listener)
+ *
+ * Workflow:
+ * 1. Check for explicit _locale in route
+ * 2. Store locale in session if found
+ * 3. Fall back to session locale if no explicit locale
+ * 4. Fall back to default locale as last resort
+ */
 class LocaleSubscriber implements EventSubscriberInterface
 {
     public function __construct(private string $defaultLocale = 'de')
