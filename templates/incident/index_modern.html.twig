@@ -131,7 +131,7 @@
         action: { label: 'Vorfall melden', url: path('app_incident_new'), icon: 'bi-exclamation-circle' }
     } %}
 {% else %}
-<div class="card">
+<div class="card" data-controller="bulk-actions" data-bulk-actions-endpoint-value="/incident">
     <div class="card-header d-flex justify-content-between align-items-center">
         <h5 class="mb-0"><i class="bi bi-list"></i> Alle Vorfälle ({{ allIncidents|length }})</h5>
         <div class="d-flex gap-2">
@@ -160,6 +160,13 @@
         <table class="table table-hover mb-0">
             <thead>
                 <tr>
+                    <th style="width: 40px;">
+                        <input type="checkbox"
+                               class="form-check-input"
+                               data-action="bulk-actions#selectAll"
+                               data-bulk-actions-target="selectAllCheckbox"
+                               title="Alle auswählen">
+                    </th>
                     <th>Titel</th>
                     <th>Kategorie</th>
                     <th class="text-center">Schweregrad</th>
@@ -175,6 +182,13 @@
                 <tr data-incident-id="{{ incident.id }}"
                     data-incident-status="{{ incident.status }}"
                     data-incident-severity="{{ incident.severity }}">
+                    <td>
+                        <input type="checkbox"
+                               class="form-check-input"
+                               data-bulk-actions-target="item"
+                               data-action="bulk-actions#selectItem"
+                               value="{{ incident.id }}">
+                    </td>
                     <td>
                         <strong>{{ incident.title }}</strong>
                         {% if incident.description %}
@@ -266,6 +280,11 @@
             </tbody>
         </table>
     </div>
+
+    {# Bulk Action Bar #}
+    {% include '_components/_bulk_action_bar.html.twig' with {
+        actions: ['export', 'delete']
+    } %}
 </div>
 {% endif %}
 

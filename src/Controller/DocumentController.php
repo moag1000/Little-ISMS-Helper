@@ -33,7 +33,7 @@ class DocumentController extends AbstractController
         );
         $stats = $this->documentRepository->getStatistics();
 
-        return $this->render('document/index.html.twig', [
+        return $this->render('document/index_modern.html.twig', [
             'documents' => $documents,
             'stats' => $stats,
         ]);
@@ -55,7 +55,7 @@ class DocumentController extends AbstractController
             return $this->redirectToRoute('app_document_show', ['id' => $document->getId()]);
         }
 
-        return $this->render('document/new.html.twig', [
+        return $this->render('document/new_modern.html.twig', [
             'document' => $document,
             'form' => $form,
         ]);
