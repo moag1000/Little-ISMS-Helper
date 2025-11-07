@@ -1,0 +1,170 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Analytics Dashboard - {{ 'app.title'|trans }}{% endblock %}
+
+{% block body %}
+<div class="analytics-dashboard" data-controller="analytics">
+    {# Page Header #}
+    <div class="page-header">
+        <div>
+            <h1>
+                <i class="bi-graph-up"></i>
+                Analytics Dashboard
+            </h1>
+            <p class="text-muted">Advanced data analysis and visualizations</p>
+        </div>
+        <div class="page-header-actions">
+            {# Time Period Filter #}
+            <select class="form-select"
+                    data-analytics-target="periodFilter"
+                    data-action="change->analytics#changePeriod">
+                <option value="6">Last 6 Months</option>
+                <option value="12" selected>Last 12 Months</option>
+                <option value="24">Last 24 Months</option>
+            </select>
+
+            {# Export Dropdown #}
+            <div class="dropdown">
+                <button class="btn btn-outline-primary dropdown-toggle"
+                        type="button"
+                        data-bs-toggle="dropdown">
+                    <i class="bi-download"></i> Export
+                </button>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a class="dropdown-item"
+                           href="{{ path('app_analytics_export', {type: 'risks'}) }}">
+                            <i class="bi-exclamation-triangle"></i> Export Risks CSV
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item"
+                           href="{{ path('app_analytics_export', {type: 'assets'}) }}">
+                            <i class="bi-server"></i> Export Assets CSV
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item"
+                           href="{{ path('app_analytics_export', {type: 'compliance'}) }}">
+                            <i class="bi-shield-check"></i> Export Compliance CSV
+                        </a>
+                    </li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li>
+                        <a class="dropdown-item"
+                           href="#"
+                           data-action="click->analytics#printDashboard">
+                            <i class="bi-printer"></i> Print Dashboard
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    {# Tab Navigation #}
+    <ul class="nav nav-tabs analytics-tabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active"
+                    data-bs-toggle="tab"
+                    data-bs-target="#overview-tab"
+                    type="button"
+                    role="tab">
+                <i class="bi-speedometer2"></i> Overview
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link"
+                    data-bs-toggle="tab"
+                    data-bs-target="#heat-map-tab"
+                    type="button"
+                    role="tab">
+                <i class="bi-grid-3x3-gap"></i> Risk Heat Map
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link"
+                    data-bs-toggle="tab"
+                    data-bs-target="#compliance-tab"
+                    type="button"
+                    role="tab">
+                <i class="bi-diagram-3"></i> Compliance Radar
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link"
+                    data-bs-toggle="tab"
+                    data-bs-target="#trends-tab"
+                    type="button"
+                    role="tab">
+                <i class="bi-graph-up-arrow"></i> Trends
+            </button>
+        </li>
+    </ul>
+
+    {# Tab Content #}
+    <div class="tab-content analytics-content">
+        {# Overview Tab #}
+        <div class="tab-pane fade show active"
+             id="overview-tab"
+             role="tabpanel">
+            <div class="row">
+                {# Risk Heat Map Card #}
+                <div class="col-md-6 mb-4">
+                    {% include 'analytics/_risk_heat_map.html.twig' %}
+                </div>
+
+                {# Compliance Radar Card #}
+                <div class="col-md-6 mb-4">
+                    {% include 'analytics/_compliance_radar.html.twig' %}
+                </div>
+            </div>
+
+            {# Trend Charts Row #}
+            <div class="row">
+                <div class="col-12">
+                    {% include 'analytics/_trend_charts.html.twig' %}
+                </div>
+            </div>
+        </div>
+
+        {# Risk Heat Map Tab #}
+        <div class="tab-pane fade"
+             id="heat-map-tab"
+             role="tabpanel">
+            <div class="row">
+                <div class="col-12">
+                    {% include 'analytics/_risk_heat_map.html.twig' with {expanded: true} %}
+                </div>
+            </div>
+        </div>
+
+        {# Compliance Tab #}
+        <div class="tab-pane fade"
+             id="compliance-tab"
+             role="tabpanel">
+            <div class="row">
+                <div class="col-12">
+                    {% include 'analytics/_compliance_radar.html.twig' with {expanded: true} %}
+                </div>
+            </div>
+        </div>
+
+        {# Trends Tab #}
+        <div class="tab-pane fade"
+             id="trends-tab"
+             role="tabpanel">
+            <div class="row">
+                <div class="col-12">
+                    {% include 'analytics/_trend_charts.html.twig' with {expanded: true} %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+{% endblock %}

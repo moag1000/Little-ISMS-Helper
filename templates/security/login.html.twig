@@ -1,0 +1,107 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Login - {{ parent() }}{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow">
+                <div class="card-body p-5">
+                    <h1 class="h3 mb-4 text-center">Anmelden</h1>
+
+                    {% if error %}
+                        <div class="alert alert-danger">
+                            {{ error.messageKey|trans(error.messageData, 'security') }}
+                        </div>
+                    {% endif %}
+
+                    {% if app.user %}
+                        <div class="alert alert-info">
+                            Sie sind bereits als {{ app.user.userIdentifier }} angemeldet.
+                            <a href="{{ path('app_home') }}">Zur Startseite</a>
+                        </div>
+                    {% else %}
+                        {# Local Login Form #}
+                        <form method="post" action="{{ path('app_login') }}">
+                            <div class="mb-3">
+                                <label for="username" class="form-label">E-Mail</label>
+                                <input type="email"
+                                       class="form-control"
+                                       id="username"
+                                       name="_username"
+                                       value="{{ last_username }}"
+                                       required
+                                       autofocus
+                                       placeholder="ihre-email@example.com">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="password" class="form-label">Passwort</label>
+                                <input type="password"
+                                       class="form-control"
+                                       id="password"
+                                       name="_password"
+                                       required
+                                       placeholder="Ihr Passwort">
+                            </div>
+
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input" id="remember_me" name="_remember_me">
+                                <label class="form-check-label" for="remember_me">
+                                    Angemeldet bleiben
+                                </label>
+                            </div>
+
+                            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+                            <button class="btn btn-primary w-100 mb-3" type="submit">
+                                <i class="bi bi-box-arrow-in-right"></i> Anmelden
+                            </button>
+                        </form>
+
+                        <hr class="my-4">
+
+                        {# Azure OAuth Login #}
+                        <div class="d-grid gap-2">
+                            <a href="{{ path('oauth_azure_connect') }}" class="btn btn-outline-primary">
+                                <svg width="20" height="20" class="me-2" viewBox="0 0 23 23">
+                                    <path fill="#f3f3f3" d="M0 0h23v23H0z"/>
+                                    <path fill="#f35325" d="M1 1h10v10H1z"/>
+                                    <path fill="#81bc06" d="M12 1h10v10H12z"/>
+                                    <path fill="#05a6f0" d="M1 12h10v10H1z"/>
+                                    <path fill="#ffba08" d="M12 12h10v10H12z"/>
+                                </svg>
+                                Mit Microsoft Azure anmelden (OAuth)
+                            </a>
+
+                            <a href="{{ path('saml_login') }}" class="btn btn-outline-secondary">
+                                <svg width="20" height="20" class="me-2" viewBox="0 0 23 23">
+                                    <path fill="#f3f3f3" d="M0 0h23v23H0z"/>
+                                    <path fill="#f35325" d="M1 1h10v10H1z"/>
+                                    <path fill="#81bc06" d="M12 1h10v10H12z"/>
+                                    <path fill="#05a6f0" d="M1 12h10v10H1z"/>
+                                    <path fill="#ffba08" d="M12 12h10v10H12z"/>
+                                </svg>
+                                Mit Microsoft Azure anmelden (SAML)
+                            </a>
+                        </div>
+
+                        <div class="text-center mt-4">
+                            <small class="text-muted">
+                                Haben Sie noch kein Konto? Kontaktieren Sie Ihren Administrator.
+                            </small>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="text-center mt-3">
+                <small class="text-muted">
+                    Small ISMS Helper &copy; {{ 'now'|date('Y') }}
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,105 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Incident{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="page-header">
+        <h1>Edit Incident: {{ incident.title }}</h1>
+        <a href="{{ path('app_incident_show', {id: incident.id}) }}" class="btn btn-secondary">Back</a>
+    </div>
+
+    <div class="card">
+        <div class="card-content">
+            {{ form_start(form) }}
+                <div class="form-row">
+                    <div class="form-group">
+                        {{ form_label(form.title) }}
+                        {{ form_widget(form.title) }}
+                        {{ form_errors(form.title) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.category) }}
+                        {{ form_widget(form.category) }}
+                        {{ form_errors(form.category) }}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.description) }}
+                    {{ form_widget(form.description) }}
+                    {{ form_errors(form.description) }}
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        {{ form_label(form.severity) }}
+                        {{ form_widget(form.severity) }}
+                        {{ form_errors(form.severity) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.status) }}
+                        {{ form_widget(form.status) }}
+                        {{ form_errors(form.status) }}
+                        <small class="help-text">Status changes will trigger email notifications</small>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        {{ form_label(form.reportedDate) }}
+                        {{ form_widget(form.reportedDate) }}
+                        {{ form_errors(form.reportedDate) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.reportedBy) }}
+                        {{ form_widget(form.reportedBy) }}
+                        {{ form_errors(form.reportedBy) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.detectedDate) }}
+                        {{ form_widget(form.detectedDate) }}
+                        {{ form_errors(form.detectedDate) }}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.affectedSystems) }}
+                    {{ form_widget(form.affectedSystems) }}
+                    {{ form_errors(form.affectedSystems) }}
+                </div>
+
+                <h3>Analysis & Resolution</h3>
+                <div class="form-group">
+                    {{ form_label(form.rootCause) }}
+                    {{ form_widget(form.rootCause) }}
+                    {{ form_errors(form.rootCause) }}
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.correctiveActions) }}
+                    {{ form_widget(form.correctiveActions) }}
+                    {{ form_errors(form.correctiveActions) }}
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.lessonsLearned) }}
+                    {{ form_widget(form.lessonsLearned) }}
+                    {{ form_errors(form.lessonsLearned) }}
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.closedDate) }}
+                    {{ form_widget(form.closedDate) }}
+                    {{ form_errors(form.closedDate) }}
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Update Incident</button>
+                    <a href="{{ path('app_incident_show', {id: incident.id}) }}" class="btn btn-secondary">Cancel</a>
+                </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>
+{% endblock %}

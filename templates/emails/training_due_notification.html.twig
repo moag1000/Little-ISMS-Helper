@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background: #059669; color: white; padding: 20px; text-align: center; }
+        .content { background: #f9fafb; padding: 20px; margin: 20px 0; }
+        .field { margin: 10px 0; }
+        .label { font-weight: bold; color: #666; }
+        .value { color: #000; }
+        .training-date { background: #d1fae5; border: 1px solid #059669; padding: 10px; margin: 15px 0; border-radius: 4px; }
+        .footer { text-align: center; color: #666; font-size: 12px; padding: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎓 Training Reminder</h1>
+        </div>
+
+        <div class="content">
+            <div class="field">
+                <span class="label">Training:</span>
+                <span class="value">{{ training.title }}</span>
+            </div>
+
+            <div class="training-date">
+                <strong>📅 Scheduled:</strong>
+                {{ training.trainingDate|date('d.m.Y') }}
+                {% if training.durationMinutes %}
+                    <br><strong>Duration:</strong> {{ training.durationMinutes }} minutes
+                {% endif %}
+            </div>
+
+            {% if training.description %}
+            <div class="field">
+                <span class="label">Description:</span>
+                <p class="value">{{ training.description }}</p>
+            </div>
+            {% endif %}
+
+            <div class="field">
+                <span class="label">Type:</span>
+                <span class="value">{{ training.trainingType }}</span>
+            </div>
+
+            <div class="field">
+                <span class="label">Status:</span>
+                <span class="value">{{ training.status|upper }}</span>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>This is an automated reminder from Little ISMS Helper</p>
+            <p>Please mark your calendar and prepare for the training session</p>
+        </div>
+    </div>
+</body>
+</html>

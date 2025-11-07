@@ -1,0 +1,223 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ module.name }} - Modul-Details{% endblock %}
+
+{% block body %}
+<div class="container-fluid mt-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <a href="{{ path('module_management_index') }}" class="btn btn-outline-secondary mb-3">
+                <i class="fas fa-arrow-left me-2"></i>
+                Zurück zur Übersicht
+            </a>
+
+            <div class="d-flex justify-content-between align-items-center">
+                <h1>
+                    <i class="fas fa-{{ module.icon }} me-2"></i>
+                    {{ module.name }}
+                </h1>
+                <div>
+                    {% if is_active %}
+                        <span class="badge bg-success fs-5">Aktiv</span>
+                    {% else %}
+                        <span class="badge bg-secondary fs-5">Inaktiv</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            {# Module Info #}
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-info-circle me-2"></i>
+                        Modul-Informationen
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-3">Beschreibung</dt>
+                        <dd class="col-sm-9">{{ module.description }}</dd>
+
+                        <dt class="col-sm-3">Status</dt>
+                        <dd class="col-sm-9">
+                            {% if module.required %}
+                                <span class="badge bg-warning text-dark">Erforderlich</span>
+                            {% else %}
+                                <span class="badge bg-info">Optional</span>
+                            {% endif %}
+                            {% if is_active %}
+                                <span class="badge bg-success">Aktiv</span>
+                            {% else %}
+                                <span class="badge bg-secondary">Inaktiv</span>
+                            {% endif %}
+                        </dd>
+
+                        <dt class="col-sm-3">Entities</dt>
+                        <dd class="col-sm-9">
+                            {% for entity in module.entities %}
+                                <span class="badge bg-secondary me-1">{{ entity }}</span>
+                            {% endfor %}
+                        </dd>
+
+                        <dt class="col-sm-3">Routen</dt>
+                        <dd class="col-sm-9">
+                            {% for route in module.routes %}
+                                <code class="me-2">{{ route }}</code>
+                            {% endfor %}
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+
+            {# Dependencies #}
+            {% if graph.dependencies|length > 0 or graph.dependents|length > 0 %}
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-project-diagram me-2"></i>
+                            Abhängigkeiten
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        {% if graph.dependencies|length > 0 %}
+                            <h6 class="mb-2">
+                                <i class="fas fa-link text-warning me-2"></i>
+                                Benötigt folgende Module:
+                            </h6>
+                            <div class="mb-4">
+                                {% for dep in graph.dependencies %}
+                                    <span class="badge bg-warning text-dark fs-6 me-2 mb-2">{{ dep }}</span>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                        {% if graph.dependents|length > 0 %}
+                            <h6 class="mb-2">
+                                <i class="fas fa-arrow-right text-info me-2"></i>
+                                Wird benötigt von:
+                            </h6>
+                            <div>
+                                {% for dep in graph.dependents %}
+                                    <span class="badge bg-info fs-6 me-2 mb-2">{{ dep }}</span>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                        {% if graph.dependencies|length == 0 and graph.dependents|length == 0 %}
+                            <p class="text-muted mb-0">
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                Dieses Modul hat keine Abhängigkeiten.
+                            </p>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+
+            {# Sample Data #}
+            {% if sample_data|length > 0 and is_active %}
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-file-code me-2"></i>
+                            Verfügbare Beispiel-Daten
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" action="{{ path('module_management_import_data', {moduleKey: module_key}) }}">
+                            {% for key, data in sample_data %}
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="checkbox" name="samples[{{ key }}]" value="1" id="sample_{{ key }}">
+                                    <label class="form-check-label" for="sample_{{ key }}">
+                                        <strong>{{ data.name }}</strong>
+                                        <br>
+                                        <small class="text-muted">{{ data.description }}</small>
+                                    </label>
+                                </div>
+                            {% endfor %}
+                            <button type="submit" class="btn btn-primary mt-3">
+                                <i class="fas fa-download me-2"></i>
+                                Ausgewählte Daten importieren
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="col-lg-4">
+            {# Actions #}
+            <div class="card mb-4 border-primary">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-cogs me-2"></i>
+                        Aktionen
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        {% if is_active %}
+                            {% if not module.required %}
+                                <form method="post" action="{{ path('module_management_deactivate', {moduleKey: module_key}) }}">
+                                    <button type="submit" class="btn btn-danger w-100"
+                                        onclick="return confirm('Modul {{ module.name }} wirklich deaktivieren?')">
+                                        <i class="fas fa-times me-2"></i>
+                                        Modul deaktivieren
+                                    </button>
+                                </form>
+                            {% else %}
+                                <button type="button" class="btn btn-secondary" disabled>
+                                    <i class="fas fa-lock me-2"></i>
+                                    Modul ist erforderlich
+                                </button>
+                            {% endif %}
+
+                            <a href="{{ path('module_management_export', {moduleKey: module_key}) }}" class="btn btn-outline-primary">
+                                <i class="fas fa-file-export me-2"></i>
+                                Daten exportieren
+                            </a>
+                        {% else %}
+                            <form method="post" action="{{ path('module_management_activate', {moduleKey: module_key}) }}">
+                                <button type="submit" class="btn btn-success w-100">
+                                    <i class="fas fa-check me-2"></i>
+                                    Modul aktivieren
+                                </button>
+                            </form>
+                        {% endif %}
+
+                        <a href="{{ path('module_management_graph') }}" class="btn btn-outline-info">
+                            <i class="fas fa-project-diagram me-2"></i>
+                            Dependency-Graph
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            {# Quick Info #}
+            <div class="card border-info">
+                <div class="card-header bg-info text-white">
+                    <h6 class="mb-0">
+                        <i class="fas fa-lightbulb me-2"></i>
+                        Hinweise
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <ul class="mb-0 small">
+                        {% if module.required %}
+                            <li>Dieses Modul ist erforderlich und kann nicht deaktiviert werden</li>
+                        {% endif %}
+                        {% if graph.dependents|length > 0 %}
+                            <li>Andere Module hängen von diesem Modul ab</li>
+                        {% endif %}
+                        <li>Beim Deaktivieren werden keine Daten gelöscht</li>
+                        <li>Sie können das Modul jederzeit wieder aktivieren</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

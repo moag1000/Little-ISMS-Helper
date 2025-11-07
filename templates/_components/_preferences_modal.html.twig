@@ -1,0 +1,136 @@
+{# User Preferences Modal Component
+   Usage: {% include '_components/_preferences_modal.html.twig' %}
+   
+   Features:
+   - View density settings
+   - Animation preferences
+   - Keyboard shortcuts toggle
+   - Export/Import settings
+#}
+
+<div class="preferences-modal d-none"
+     data-controller="preferences"
+     data-preferences-target="modal"
+     data-action="click->preferences#handleBackdropClick">
+    
+    <div class="preferences-container">
+        {# Modal Header #}
+        <div class="preferences-header">
+            <h5 class="preferences-title">
+                <i class="bi-gear"></i>
+                Einstellungen
+            </h5>
+            <button type="button"
+                    class="btn-close"
+                    data-action="click->preferences#close"
+                    aria-label="Close"></button>
+        </div>
+
+        {# Modal Body #}
+        <div class="preferences-body">
+            {# View Density #}
+            <div class="preference-section">
+                <h6 class="preference-section-title">
+                    <i class="bi-layout-three-columns"></i>
+                    Ansichtsdichte
+                </h6>
+                <select class="form-select"
+                        data-preferences-target="viewDensity"
+                        data-action="change->preferences#setViewDensity">
+                    <option value="compact">Kompakt</option>
+                    <option value="comfortable" selected>Komfortabel</option>
+                </select>
+                <small class="text-muted">Bestimmt, wie viel Abstand zwischen Elementen ist</small>
+            </div>
+
+            {# Animations #}
+            <div class="preference-section">
+                <h6 class="preference-section-title">
+                    <i class="bi-stars"></i>
+                    Animationen
+                </h6>
+                <div class="form-check form-switch">
+                    <input class="form-check-input"
+                           type="checkbox"
+                           data-preferences-target="animations"
+                           data-action="change->preferences#toggleAnimations"
+                           checked>
+                    <label class="form-check-label">
+                        Animationen aktivieren
+                    </label>
+                </div>
+                <small class="text-muted">Deaktivieren für bessere Performance</small>
+            </div>
+
+            {# Keyboard Shortcuts #}
+            <div class="preference-section">
+                <h6 class="preference-section-title">
+                    <i class="bi-keyboard"></i>
+                    Tastaturkürzel
+                </h6>
+                <div class="form-check form-switch">
+                    <input class="form-check-input"
+                           type="checkbox"
+                           data-preferences-target="keyboardShortcuts"
+                           data-action="change->preferences#toggleKeyboardShortcuts"
+                           checked>
+                    <label class="form-check-label">
+                        Tastaturkürzel aktivieren
+                    </label>
+                </div>
+                <small class="text-muted">Cmd+K für Suche, Space für Vorschau, etc.</small>
+            </div>
+
+            {# Language Preference #}
+            <div class="preference-section">
+                <h6 class="preference-section-title">
+                    <i class="bi-translate"></i>
+                    Sprache
+                </h6>
+                <select class="form-select"
+                        data-preferences-target="language"
+                        data-action="change->preferences#setLanguage">
+                    <option value="de" {% if app.request.locale == 'de' %}selected{% endif %}>Deutsch</option>
+                    <option value="en" {% if app.request.locale == 'en' %}selected{% endif %}>English</option>
+                </select>
+            </div>
+
+            {# Export/Import #}
+            <div class="preference-section">
+                <h6 class="preference-section-title">
+                    <i class="bi-download"></i>
+                    Einstellungen sichern
+                </h6>
+                <div class="d-flex gap-2">
+                    <button type="button"
+                            class="btn btn-sm btn-outline-primary"
+                            data-action="click->preferences#exportPreferences">
+                        <i class="bi-download"></i> Exportieren
+                    </button>
+                    <label class="btn btn-sm btn-outline-secondary">
+                        <i class="bi-upload"></i> Importieren
+                        <input type="file"
+                               accept=".json"
+                               class="d-none"
+                               data-action="change->preferences#importPreferences">
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        {# Modal Footer #}
+        <div class="preferences-footer">
+            <button type="button"
+                    class="btn btn-sm btn-outline-danger"
+                    data-action="click->preferences#resetToDefaults">
+                <i class="bi-arrow-counterclockwise"></i>
+                Zurücksetzen
+            </button>
+            <button type="button"
+                    class="btn btn-sm btn-primary"
+                    data-action="click->preferences#close">
+                Schließen
+            </button>
+        </div>
+    </div>
+</div>

@@ -2,63 +2,126 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Doctrine\Orm\Filter\BooleanFilter;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
+use ApiPlatform\Metadata\Delete;
 use App\Repository\TrainingRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: TrainingRepository::class)]
+#[ORM\Index(columns: ['training_type'], name: 'idx_training_type')]
+#[ORM\Index(columns: ['status'], name: 'idx_training_status')]
+#[ORM\Index(columns: ['scheduled_date'], name: 'idx_training_scheduled_date')]
+#[ApiResource(
+    operations: [
+        new Get(security: "is_granted('ROLE_USER')"),
+        new GetCollection(security: "is_granted('ROLE_USER')"),
+        new Post(security: "is_granted('ROLE_USER')"),
+        new Put(security: "is_granted('ROLE_USER')"),
+        new Delete(security: "is_granted('ROLE_ADMIN')"),
+    ],
+    normalizationContext: ['groups' => ['training:read']],
+    denormalizationContext: ['groups' => ['training:write']],
+    paginationItemsPerPage: 30
+)]
+#[ApiFilter(SearchFilter::class, properties: ['title' => 'partial', 'trainingType' => 'exact', 'status' => 'exact'])]
+#[ApiFilter(BooleanFilter::class, properties: ['mandatory'])]
+#[ApiFilter(OrderFilter::class, properties: ['scheduledDate', 'status'])]
+#[ApiFilter(DateFilter::class, properties: ['scheduledDate', 'completionDate'])]
 class Training
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['training:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['training:read', 'training:write'])]
+    #[Assert\NotBlank(message: 'Training title is required')]
+    #[Assert\Length(max: 255, maxMessage: 'Title cannot exceed {{ limit }} characters')]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['training:read', 'training:write'])]
     private ?string $description = null;
 
     #[ORM\Column(length: 100)]
+    #[Groups(['training:read', 'training:write'])]
+    #[Assert\NotBlank(message: 'Training type is required')]
+    #[Assert\Length(max: 100, maxMessage: 'Training type cannot exceed {{ limit }} characters')]
     private ?string $trainingType = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Groups(['training:read', 'training:write'])]
+    #[Assert\NotNull(message: 'Scheduled date is required')]
     private ?\DateTimeInterface $scheduledDate = null;
 
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
+    #[Groups(['training:read', 'training:write'])]
+    #[Assert\Positive(message: 'Duration must be a positive number')]
     private ?int $durationMinutes = null;
 
     #[ORM\Column(length: 100)]
+    #[Groups(['training:read', 'training:write'])]
+    #[Assert\NotBlank(message: 'Trainer name is required')]
+    #[Assert\Length(max: 100, maxMessage: 'Trainer name cannot exceed {{ limit }} characters')]
     private ?string $trainer = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['training:read', 'training:write'])]
     private ?string $targetAudience = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['training:read', 'training:write'])]
     private ?string $participants = null;
 
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
+    #[Groups(['training:read', 'training:write'])]
+    #[Assert\PositiveOrZero(message: 'Attendee count must be zero or positive')]
     private ?int $attendeeCount = 0;
 
     #[ORM\Column(length: 50)]
+    #[Groups(['training:read', 'training:write'])]
+    #[Assert\NotBlank(message: 'Status is required')]
+    #[Assert\Choice(
+        choices: ['planned', 'scheduled', 'in_progress', 'completed', 'cancelled'],
+        message: 'Status must be one of: {{ choices }}'
+    )]
     private ?string $status = 'planned';
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['training:read', 'training:write'])]
     private ?string $materials = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['training:read', 'training:write'])]
     private ?string $feedback = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    #[Groups(['training:read', 'training:write'])]
     private ?\DateTimeInterface $completionDate = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Groups(['training:read'])]
     private ?\DateTimeInterface $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[Groups(['training:read'])]
     private ?\DateTimeInterface $updatedAt = null;
 
     /**
@@ -66,6 +129,8 @@ class Training
      */
     #[ORM\ManyToMany(targetEntity: Control::class)]
     #[ORM\JoinTable(name: 'training_control')]
+    #[Groups(['training:read'])]
+    #[MaxDepth(1)]
     private Collection $coveredControls;
 
     public function __construct()
@@ -270,6 +335,7 @@ class Training
      * Get count of ISO 27001 controls covered
      * Data Reuse: Shows training impact on compliance
      */
+    #[Groups(['training:read'])]
     public function getControlCoverageCount(): int
     {
         return $this->coveredControls->count();
@@ -279,6 +345,7 @@ class Training
      * Calculate training effectiveness based on control implementation
      * Data Reuse: Training completion should correlate with control implementation
      */
+    #[Groups(['training:read'])]
     public function getTrainingEffectiveness(): ?float
     {
         if ($this->status !== 'completed' || $this->coveredControls->isEmpty()) {
@@ -297,6 +364,7 @@ class Training
      * Get list of control categories covered
      * Data Reuse: Shows training scope
      */
+    #[Groups(['training:read'])]
     public function getCoveredCategories(): array
     {
         $categories = [];
@@ -313,7 +381,8 @@ class Training
      * Check if training addresses high-priority controls
      * Data Reuse: Links training to critical security areas
      */
-    public function addressesCriticalControls(): bool
+    #[Groups(['training:read'])]
+    public function hasCriticalControls(): bool
     {
         foreach ($this->coveredControls as $control) {
             if (!$control->isApplicable() || $control->getImplementationPercentage() < 50) {

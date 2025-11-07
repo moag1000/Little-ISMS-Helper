@@ -1,0 +1,92 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Asset{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="page-header">
+        <h1>Edit Asset: {{ asset.name }}</h1>
+        <a href="{{ path('app_asset_show', {id: asset.id}) }}" class="btn btn-secondary">Back</a>
+    </div>
+
+    <div class="card">
+        <div class="card-content">
+            {{ form_start(form) }}
+                <div class="form-row">
+                    <div class="form-group">
+                        {{ form_label(form.name) }}
+                        {{ form_widget(form.name) }}
+                        {{ form_errors(form.name) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.assetType) }}
+                        {{ form_widget(form.assetType) }}
+                        {{ form_errors(form.assetType) }}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.description) }}
+                    {{ form_widget(form.description) }}
+                    {{ form_errors(form.description) }}
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        {{ form_label(form.owner) }}
+                        {{ form_widget(form.owner) }}
+                        {{ form_errors(form.owner) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.location) }}
+                        {{ form_widget(form.location) }}
+                        {{ form_errors(form.location) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.criticalityLevel) }}
+                        {{ form_widget(form.criticalityLevel) }}
+                        {{ form_errors(form.criticalityLevel) }}
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        {{ form_label(form.acquisitionValue) }}
+                        {{ form_widget(form.acquisitionValue) }}
+                        {{ form_errors(form.acquisitionValue) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.currentValue) }}
+                        {{ form_widget(form.currentValue) }}
+                        {{ form_errors(form.currentValue) }}
+                    </div>
+                </div>
+
+                <h3>CIA Triad Values (1-5)</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        {{ form_label(form.confidentialityValue) }}
+                        {{ form_widget(form.confidentialityValue) }}
+                        {{ form_errors(form.confidentialityValue) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.integrityValue) }}
+                        {{ form_widget(form.integrityValue) }}
+                        {{ form_errors(form.integrityValue) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.availabilityValue) }}
+                        {{ form_widget(form.availabilityValue) }}
+                        {{ form_errors(form.availabilityValue) }}
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Update Asset</button>
+                    <a href="{{ path('app_asset_show', {id: asset.id}) }}" class="btn btn-secondary">Cancel</a>
+                </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>
+{% endblock %}

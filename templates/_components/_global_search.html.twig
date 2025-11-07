@@ -1,0 +1,65 @@
+{# Global Search Component
+   Usage: {% include '_components/_global_search.html.twig' %}
+   
+   Keyboard Shortcut: Cmd+K / Ctrl+K
+   Features:
+   - Instant search across all entities
+   - Keyboard navigation
+   - Categorized results
+#}
+
+<div data-controller="search"
+     data-search-search-url-value="{{ path('app_api_search') }}"
+     data-search-min-chars-value="2"
+     data-search-debounce-delay-value="300">
+    
+    {# Search Modal #}
+    <div class="global-search-modal d-none"
+         data-search-target="modal"
+         data-action="click->search#handleBackdropClick keydown->search#handleKeydown">
+        
+        <div class="global-search-container">
+            {# Search Header #}
+            <div class="global-search-header">
+                <i class="bi-search text-muted"></i>
+                <input type="text"
+                       class="global-search-input"
+                       placeholder="Suche nach Assets, Risiken, Controls..."
+                       data-search-target="input"
+                       data-action="input->search#search keydown->search#handleKeydown"
+                       autocomplete="off"
+                       spellcheck="false">
+                <div class="global-search-shortcuts">
+                    <kbd>↑↓</kbd> Navigation
+                    <kbd>↵</kbd> Auswählen
+                    <kbd>ESC</kbd> Schließen
+                </div>
+            </div>
+
+            {# Search Results #}
+            <div class="global-search-results" data-search-target="results">
+                {# Results will be dynamically inserted here #}
+            </div>
+
+            {# Search Footer #}
+            <div class="global-search-footer">
+                <div class="text-muted small">
+                    <i class="bi-lightning"></i>
+                    Tipp: Drücke <kbd>Cmd</kbd>+<kbd>K</kbd> um die Suche zu öffnen
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{# Search Trigger Button (visible in navbar) #}
+<button type="button"
+        class="btn btn-outline-secondary btn-sm global-search-trigger"
+        data-action="click->search#open"
+        title="Suche (Cmd+K)">
+    <i class="bi-search"></i>
+    <span class="d-none d-md-inline ms-2">Suche</span>
+    <span class="d-none d-lg-inline ms-2">
+        <kbd class="bg-light">⌘K</kbd>
+    </span>
+</button>

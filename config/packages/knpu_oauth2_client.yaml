@@ -1,0 +1,14 @@
+knpu_oauth2_client:
+    clients:
+        azure:
+            type: azure
+            client_id: '%env(AZURE_CLIENT_ID)%'
+            client_secret: '%env(AZURE_CLIENT_SECRET)%'
+            redirect_route: oauth_azure_check
+            redirect_params: {}
+
+            # Azure specific options
+            tenant: '%env(AZURE_TENANT_ID)%'
+            url_login: 'https://login.microsoftonline.com'
+            url_api: 'https://graph.microsoft.com/v1.0/'
+            api_version: 'v2.0'

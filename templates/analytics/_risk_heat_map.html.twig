@@ -1,0 +1,87 @@
+{# Risk Heat Map Component
+   Usage: {% include 'analytics/_risk_heat_map.html.twig' %}
+
+   Features:
+   - 5x5 Matrix (Probability × Impact)
+   - Color-coded cells
+   - Interactive tooltips
+   - Click to view risks
+#}
+
+<div class="card analytics-card heat-map-card {{ expanded is defined and expanded ? 'expanded' : '' }}"
+     data-controller="heat-map"
+     data-heat-map-url-value="{{ path('app_analytics_heat_map_data') }}">
+    <div class="card-header">
+        <h5 class="card-title">
+            <i class="bi-grid-3x3-gap text-danger"></i>
+            Risk Heat Map
+        </h5>
+        <div class="card-actions">
+            <button class="btn btn-sm btn-outline-secondary"
+                    data-action="click->heat-map#refresh"
+                    title="Refresh">
+                <i class="bi-arrow-clockwise"></i>
+            </button>
+            <button class="btn btn-sm btn-outline-secondary"
+                    data-action="click->heat-map#exportImage"
+                    title="Export as PNG">
+                <i class="bi-image"></i>
+            </button>
+        </div>
+    </div>
+    <div class="card-body">
+        {# Loading State #}
+        <div class="heat-map-loading d-none" data-heat-map-target="loading">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-2 text-muted">Loading heat map data...</p>
+        </div>
+
+        {# Heat Map Container #}
+        <div class="heat-map-container" data-heat-map-target="container">
+            {# Legend #}
+            <div class="heat-map-legend">
+                <div class="legend-item">
+                    <span class="legend-color" style="background: #2ecc71;"></span>
+                    <span class="legend-label">Low (1-6)</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-color" style="background: #f39c12;"></span>
+                    <span class="legend-label">Medium (7-14)</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-color" style="background: #e74c3c;"></span>
+                    <span class="legend-label">High (15-25)</span>
+                </div>
+            </div>
+
+            {# Axis Labels #}
+            <div class="heat-map-axes">
+                <div class="y-axis-label">
+                    <span>Impact</span>
+                </div>
+                <div class="x-axis-label">
+                    <span>Probability</span>
+                </div>
+            </div>
+
+            {# Heat Map Grid #}
+            <div class="heat-map-grid" data-heat-map-target="grid">
+                {# Will be rendered by JavaScript #}
+            </div>
+        </div>
+
+        {# Risk Details Modal #}
+        <div class="heat-map-details d-none" data-heat-map-target="details">
+            <div class="details-header">
+                <h6 data-heat-map-target="detailsTitle">Risks in this cell</h6>
+                <button class="btn-close btn-sm"
+                        data-action="click->heat-map#closeDetails"></button>
+            </div>
+            <div class="details-body" data-heat-map-target="detailsList">
+                {# Will be populated by JavaScript #}
+            </div>
+        </div>
+    </div>
+</div>

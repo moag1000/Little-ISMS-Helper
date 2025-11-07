@@ -1,0 +1,105 @@
+<?php
+
+namespace App\Controller;
+
+use App\Entity\Training;
+use App\Form\TrainingType;
+use App\Repository\TrainingRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
+
+#[Route('/training')]
+class TrainingController extends AbstractController
+{
+    public function __construct(
+        private TrainingRepository $trainingRepository,
+        private EntityManagerInterface $entityManager
+    ) {}
+
+    #[Route('/', name: 'app_training_index')]
+    public function index(): Response
+    {
+        $trainings = $this->trainingRepository->findAll();
+        $upcoming = $this->trainingRepository->findUpcoming();
+        $statistics = [
+            'total' => count($trainings),
+            'upcoming' => count($upcoming),
+            'completed' => count($this->trainingRepository->findBy(['status' => 'completed'])),
+            'mandatory' => count($this->trainingRepository->findBy(['mandatory' => true])),
+        ];
+
+        return $this->render('training/index.html.twig', [
+            'trainings' => $trainings,
+            'upcoming' => $upcoming,
+            'statistics' => $statistics,
+        ]);
+    }
+
+    #[Route('/new', name: 'app_training_new')]
+    #[IsGranted('ROLE_USER')]
+    public function new(Request $request): Response
+    {
+        $training = new Training();
+        $form = $this->createForm(TrainingType::class, $training);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->entityManager->persist($training);
+            $this->entityManager->flush();
+
+            $this->addFlash('success', 'Training erfolgreich erstellt.');
+            return $this->redirectToRoute('app_training_show', ['id' => $training->getId()]);
+        }
+
+        return $this->render('training/new.html.twig', [
+            'training' => $training,
+            'form' => $form,
+        ]);
+    }
+
+    #[Route('/{id}', name: 'app_training_show', requirements: ['id' => '\d+'])]
+    public function show(Training $training): Response
+    {
+        return $this->render('training/show.html.twig', [
+            'training' => $training,
+        ]);
+    }
+
+    #[Route('/{id}/edit', name: 'app_training_edit', requirements: ['id' => '\d+'])]
+    #[IsGranted('ROLE_USER')]
+    public function edit(Request $request, Training $training): Response
+    {
+        $form = $this->createForm(TrainingType::class, $training);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->entityManager->flush();
+
+            $this->addFlash('success', 'Training erfolgreich aktualisiert.');
+            return $this->redirectToRoute('app_training_show', ['id' => $training->getId()]);
+        }
+
+        return $this->render('training/edit.html.twig', [
+            'training' => $training,
+            'form' => $form,
+        ]);
+    }
+
+    #[Route('/{id}/delete', name: 'app_training_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[IsGranted('ROLE_ADMIN')]
+    public function delete(Request $request, Training $training): Response
+    {
+        if ($this->isCsrfTokenValid('delete'.$training->getId(), $request->request->get('_token'))) {
+            $this->entityManager->remove($training);
+            $this->entityManager->flush();
+
+            $this->addFlash('success', 'Training erfolgreich gelöscht.');
+        }
+
+        return $this->redirectToRoute('app_training_index');
+    }
+}

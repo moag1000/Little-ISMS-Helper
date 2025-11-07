@@ -1,0 +1,130 @@
+risks:
+  - name: 'Ausfall des Datenbankservers'
+    description: 'Hardwareausfall oder Softwarefehler führt zu Ausfall des Produktions-Datenbankservers'
+    category: 'availability'
+    probability: 3
+    impact: 5
+    inherent_risk_level: 15
+    treatment_strategy: 'mitigate'
+    residual_probability: 2
+    residual_impact: 3
+    residual_risk_level: 6
+    status: 'identified'
+    identified_date: '2024-01-15'
+
+  - name: 'Ransomware-Angriff'
+    description: 'Verschlüsselung von Unternehmensdaten durch Ransomware-Malware'
+    category: 'confidentiality'
+    probability: 4
+    impact: 5
+    inherent_risk_level: 20
+    treatment_strategy: 'mitigate'
+    residual_probability: 2
+    residual_impact: 4
+    residual_risk_level: 8
+    status: 'assessed'
+    identified_date: '2024-01-10'
+
+  - name: 'Datenverlust durch fehlende Backups'
+    description: 'Kritische Daten gehen verloren, da keine funktionierenden Backups vorhanden sind'
+    category: 'integrity'
+    probability: 2
+    impact: 5
+    inherent_risk_level: 10
+    treatment_strategy: 'mitigate'
+    residual_probability: 1
+    residual_impact: 3
+    residual_risk_level: 3
+    status: 'mitigated'
+    identified_date: '2023-12-01'
+
+  - name: 'Unbefugter Zugriff auf Kundendaten'
+    description: 'Externe oder interne Angreifer erlangen unbefugten Zugriff auf sensible Kundendaten'
+    category: 'confidentiality'
+    probability: 3
+    impact: 5
+    inherent_risk_level: 15
+    treatment_strategy: 'mitigate'
+    residual_probability: 2
+    residual_impact: 3
+    residual_risk_level: 6
+    status: 'assessed'
+    identified_date: '2024-01-20'
+
+  - name: 'DDoS-Angriff auf Webserver'
+    description: 'Distributed Denial of Service Angriff macht Webserver für Kunden nicht erreichbar'
+    category: 'availability'
+    probability: 3
+    impact: 3
+    inherent_risk_level: 9
+    treatment_strategy: 'mitigate'
+    residual_probability: 2
+    residual_impact: 2
+    residual_risk_level: 4
+    status: 'mitigated'
+    identified_date: '2024-02-01'
+
+  - name: 'Ausfall eines kritischen Mitarbeiters'
+    description: 'Verlust von Wissen durch Ausfall (Kündigung/Krankheit) eines Schlüsselmitarbeiters'
+    category: 'availability'
+    probability: 4
+    impact: 3
+    inherent_risk_level: 12
+    treatment_strategy: 'accept'
+    residual_probability: 4
+    residual_impact: 3
+    residual_risk_level: 12
+    status: 'accepted'
+    identified_date: '2023-11-15'
+
+  - name: 'Phishing-Angriff auf Mitarbeiter'
+    description: 'Mitarbeiter fallen auf Phishing-E-Mails herein und geben Zugangsdaten preis'
+    category: 'confidentiality'
+    probability: 5
+    impact: 4
+    inherent_risk_level: 20
+    treatment_strategy: 'mitigate'
+    residual_probability: 3
+    residual_impact: 3
+    residual_risk_level: 9
+    status: 'mitigated'
+    identified_date: '2024-01-05'
+
+  - name: 'Stromausfall im Rechenzentrum'
+    description: 'Langanhaltender Stromausfall führt zu Ausfall der IT-Infrastruktur'
+    category: 'availability'
+    probability: 2
+    impact: 4
+    inherent_risk_level: 8
+    treatment_strategy: 'transfer'
+    residual_probability: 1
+    residual_impact: 2
+    residual_risk_level: 2
+    status: 'mitigated'
+    identified_date: '2023-10-20'
+
+  - name: 'Datenpanne bei Cloud-Provider'
+    description: 'Sicherheitsverletzung beim Cloud-Provider führt zu Offenlegung von Daten'
+    category: 'confidentiality'
+    probability: 2
+    impact: 5
+    inherent_risk_level: 10
+    treatment_strategy: 'transfer'
+    residual_probability: 1
+    residual_impact: 4
+    residual_risk_level: 4
+    status: 'assessed'
+    identified_date: '2024-02-10'
+
+  - name: 'SQL Injection in Webanwendung'
+    description: 'Angreifer nutzen SQL-Injection-Schwachstellen in Webanwendungen aus'
+    category: 'integrity'
+    probability: 3
+    impact: 4
+    inherent_risk_level: 12
+    treatment_strategy: 'mitigate'
+    residual_probability: 1
+    residual_impact: 2
+    residual_risk_level: 2
+    status: 'mitigated'
+    identified_date: '2024-01-25'

@@ -1,0 +1,189 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop, 'claude/**' ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  tests:
+    name: Tests (PHP ${{ matrix.php-version }})
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        php-version: ['8.4']
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: isms_test
+          POSTGRES_USER: isms_user
+          POSTGRES_PASSWORD: isms_password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          extensions: intl, pdo, pdo_pgsql, pgsql, gd, zip, opcache, mbstring, xml
+          coverage: xdebug
+          tools: composer:v2
+
+      - name: Get Composer cache directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress --no-interaction
+
+      - name: Check PHP syntax
+        run: find src tests -name "*.php" -print0 | xargs -0 -n1 php -l
+
+      - name: Run PHPUnit tests
+        env:
+          DATABASE_URL: postgresql://isms_user:isms_password@127.0.0.1:5432/isms_test?serverVersion=16&charset=utf8
+          APP_ENV: test
+        run: php bin/phpunit --coverage-text
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        if: matrix.php-version == '8.4'
+        with:
+          files: ./coverage.xml
+          fail_ci_if_error: false
+
+  code-quality:
+    name: Code Quality
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: intl, pdo, pdo_pgsql, gd, zip
+          tools: composer:v2, phpstan, php-cs-fixer
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress --no-interaction
+
+      - name: Run PHP CS Fixer (dry-run)
+        run: |
+          composer require --dev friendsofphp/php-cs-fixer || true
+          if [ -f vendor/bin/php-cs-fixer ]; then
+            vendor/bin/php-cs-fixer fix --dry-run --diff
+          else
+            echo "PHP CS Fixer not available, skipping"
+          fi
+        continue-on-error: true
+
+      - name: Run PHPStan
+        run: |
+          composer require --dev phpstan/phpstan || true
+          if [ -f vendor/bin/phpstan ]; then
+            vendor/bin/phpstan analyse src --level=1 || true
+          else
+            echo "PHPStan not available, skipping"
+          fi
+        continue-on-error: true
+
+  security:
+    name: Security Checks
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          tools: composer:v2
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress --no-interaction
+
+      - name: Security Check
+        uses: symfonycorp/security-checker-action@v5
+
+  docker:
+    name: Docker Build
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker image (development)
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          target: development
+          tags: little-isms-helper:dev-${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          push: false
+
+      - name: Build Docker image (production)
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          target: production
+          tags: little-isms-helper:prod-${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          push: false
+
+      - name: Test Docker Compose
+        run: |
+          docker compose config
+          docker compose up -d --wait
+
+          # Wait a bit more to ensure container is fully ready
+          echo "Waiting for services to be fully ready..."
+          sleep 10
+
+          # Show container status
+          docker compose ps
+
+          # Show logs if app container is having issues
+          if ! docker compose exec -T app php --version 2>/dev/null; then
+            echo "App container check failed. Showing logs:"
+            docker compose logs app
+
+            # Retry once after showing logs
+            echo "Retrying after 5 seconds..."
+            sleep 5
+            docker compose exec -T app php --version
+          fi
+
+          docker compose down -v
