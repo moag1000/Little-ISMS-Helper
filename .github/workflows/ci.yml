@@ -165,7 +165,7 @@ jobs:
 
       - name: Test Docker Compose
         run: |
-          docker-compose config
-          docker-compose up -d --wait
-          docker-compose exec -T app php --version
-          docker-compose down -v
+          docker compose config
+          docker compose up -d --wait
+          docker compose exec -T app php --version
+          docker compose down -v
