@@ -1,524 +1,421 @@
-# Small ISMS Helper
+# 🛡️ Little ISMS Helper
 
-Ein webbasiertes Tool zur Unterstützung des Informationssicherheitsmanagements (ISMS) nach ISO 27001 für kleine und mittelständische Unternehmen.
+<div align="center">
 
-## Überblick
+**Eine moderne, webbasierte ISMS-Lösung für kleine und mittelständische Unternehmen**
 
-Der **Small ISMS Helper** ist eine PHP-basierte Webanwendung, die Organisationen bei der Implementierung und Verwaltung ihres Informationssicherheitsmanagementsystems (ISMS) nach ISO/IEC 27001 unterstützt. Das Tool hilft dabei:
+[![PHP Version](https://img.shields.io/badge/PHP-8.4%2B-777BB4?logo=php&logoColor=white)](https://www.php.net/)
+[![Symfony Version](https://img.shields.io/badge/Symfony-7.3-000000?logo=symfony&logoColor=white)](https://symfony.com/)
+[![License](https://img.shields.io/badge/License-Proprietary-red)](LICENSE)
+[![ISO 27001:2022](https://img.shields.io/badge/ISO-27001%3A2022-blue)](https://www.iso.org/standard/27001)
+[![Tests](https://img.shields.io/badge/Tests-122%20passing-success)](tests/)
 
-- Unverzichtbare Kerndaten des ISMS zu erfassen
-- Sicherheitsrelevante Informationen zu dokumentieren
-- Key Performance Indicators (KPIs) für das ISMS zu generieren und zu überwachen
-- Den Compliance-Status zu verfolgen
-- Audits und Reviews zu unterstützen
+[Funktionen](#-funktionen) • [Quick Start](#-quick-start) • [Dokumentation](#-dokumentation) • [Roadmap](#-roadmap) • [Beitragen](#-beitragen)
 
-## Funktionsumfang
+</div>
 
-### Implementierte Kernmodule
+---
 
-- **Statement of Applicability (SoA)**: Vollständige Verwaltung aller 93 ISO 27001:2022 Annex A Controls
-  - Festlegung der Anwendbarkeit pro Control
-  - Begründung für Anwendbarkeit/Nicht-Anwendbarkeit
-  - Implementierungsstatus und -fortschritt
-  - Verantwortlichkeiten und Zieldaten
-  - Export-Funktion für Compliance-Nachweise
+## 📖 Über das Projekt
 
-- **Asset Management**: Verwaltung von IT-Assets und Informationswerten
-  - Erfassung mit CIA-Bewertung (Confidentiality, Integrity, Availability)
-  - Asset-Typen und Eigentümer
-  - Verknüpfung mit Risiken
+Little ISMS Helper unterstützt Organisationen bei der **Implementierung und Verwaltung ihres ISMS nach ISO/IEC 27001:2022**. Die Anwendung hilft dabei, Compliance-Anforderungen zu erfüllen, Risiken zu managen, Audits durchzuführen und KPIs zu überwachen – alles in einer zentralen, benutzerfreundlichen Plattform.
 
-- **Risk Assessment & Treatment**: Vollständiges Risikomanagement
-  - Risikoidentifikation mit Bedrohungen und Schwachstellen
-  - Risikobewertung (Wahrscheinlichkeit × Auswirkung)
-  - Restrisiko-Berechnung nach Behandlung
-  - Risikobehandlungsstrategien
-  - Verknüpfung mit Assets und Controls
+### 🎯 Warum Little ISMS Helper?
 
-- **Incident Management**: Strukturierte Vorfallsbehandlung
-  - Vorfallsdokumentation und -kategorisierung
-  - Schweregrad-Bewertung
-  - Sofortmaßnahmen und Root Cause Analysis
-  - Korrektur- und Präventivmaßnahmen
-  - Lessons Learned
-  - Datenschutzverletzungen (Data Breach) Tracking
+- ✅ **ISO 27001:2022 konform** - Alle 93 Annex A Controls integriert
+- 🔄 **Intelligente Datenwiederverwendung** - Einmal erfasst, mehrfach genutzt
+- 📊 **Multi-Framework Support** - ISO 27001, TISAX, DORA parallel verwalten
+- 🚀 **Modern & schnell** - Symfony 7.3, PHP 8.4, Progressive UI
+- 🔓 **Open Architecture** - REST API für Integrationen
+- 📈 **Automatische KPIs** - Echtzeit-Metriken ohne manuelle Berechnung
 
-- **Internal Audit Management**: Audit-Planung und -Durchführung
-  - Audit-Planung mit Geltungsbereich und Zielen
-  - Audit-Team Verwaltung
-  - Findings und Nichtkonformitäten
-  - Beobachtungen und Empfehlungen
+---
 
-- **Management Review**: Managementbewertung des ISMS
-  - Strukturierte Review-Dokumentation
-  - Performance-Bewertung
-  - Entscheidungen und Maßnahmen
-  - Follow-up vorheriger Reviews
+## ✨ Funktionen
 
-- **Training & Awareness**: Schulungsmanagement
-  - Schulungsplanung und -durchführung
-  - Teilnehmerverwaltung
-  - Feedback-Erfassung
+<table>
+<tr>
+<td width="50%">
 
-- **ISMS Context & Objectives**: Organisationskontext
-  - ISMS-Geltungsbereich
-  - Interessierte Parteien
-  - Gesetzliche Anforderungen
-  - ISMS-Ziele mit KPIs
+### 📋 Compliance Management
+- **Statement of Applicability** - 93 ISO 27001:2022 Controls
+- **Multi-Framework Support** - TISAX, DORA
+- **Cross-Framework Mappings** - Transitive Compliance
+- **Audit Management** - ISO 27001 Clause 9.2
+- **Management Review** - ISO 27001 Clause 9.3
 
-- **Business Continuity Management (BCM)**: Business Impact Analysis und Kontinuitätsplanung
-  - Geschäftsprozess-Verwaltung mit BIA-Daten
-  - Recovery Time Objective (RTO), Recovery Point Objective (RPO), MTPD
-  - Kritikalitätsbewertung und Impact-Scores
-  - **Intelligente Datenwiederverwendung**: BCM-Daten fließen automatisch in Asset-Verfügbarkeitsanforderungen ein
-  - Verknüpfung mit unterstützenden IT-Assets
+</td>
+<td width="50%">
 
-- **Multi-Framework Compliance Management**: Mehrere Normen parallel verwalten
-  - **TISAX (VDA ISA)**: Informationssicherheitsbewertung für die Automobilindustrie (32 Requirements)
-  - **EU-DORA**: Digital Operational Resilience Act für Finanzdienstleister (30 Requirements)
-  - **Hierarchische Requirements**: Core-Anforderungen mit detaillierten Sub-Requirements für granulare Audits
-  - **Cross-Framework-Mappings**: Zeigt, wie Anforderungen verschiedener Normen sich gegenseitig erfüllen
-  - **Transitive Compliance**: Berechnet automatisch, wie die Erfüllung einer Norm andere Normen unterstützt
-  - **Mapping-Typen**: Vollständig, Teilweise, Übererfüllt mit Prozentangaben
-  - **Automatische Fulfillment-Berechnung**: Nutzt bestehende ISO 27001-Daten für andere Frameworks
-  - **Gap-Analyse**: Identifiziert Lücken und priorisiert Maßnahmen
-  - **Flexible Audit-Scopes**: Audits können auf Frameworks, Assets, Standorte oder Abteilungen beschränkt werden
-  - **Audit-Checklisten**: Automatische Generierung von Prüfchecklisten mit Verifizierungsstatus
+### 🔐 Risk & Asset Management
+- **Asset Management** - CIA-Bewertung
+- **Risk Assessment** - 5x5 Matrix Visualisierung
+- **Risk Treatment** - Strategien & Restrisiko
+- **Incident Management** - Vorfallsbehandlung
+- **Data Breach Tracking** - GDPR-konform
 
-- **KPI Dashboard**: Echtzeit-Kennzahlen
-  - Asset-Anzahl
-  - Risiko-Übersicht
-  - Offene Vorfälle
-  - Compliance-Status (implementierte Controls)
-  - **Data Reuse Value**: Zeigt eingesparte Arbeitsstunden durch Datenwiederverwendung
+</td>
+</tr>
+<tr>
+<td width="50%">
 
-## Moderne Benutzeroberfläche (Progressive Disclosure UI)
+### 🏢 Business Continuity
+- **BCM Module** - BIA mit RTO/RPO/MTPD
+- **Process Management** - Geschäftsprozesse
+- **Impact Analysis** - Kritikalitätsbewertung
+- **Recovery Planning** - Kontinuitätsplanung
 
-Das Tool implementiert das **Progressive Disclosure Pattern** für eine aufgeräumte, intuitive Bedienung ohne Funktionalitätsverlust:
+</td>
+<td width="50%">
 
-### UI-Designprinzipien
+### 👥 User & Training Management
+- **RBAC** - Role-Based Access Control
+- **Multi-Auth** - Local, Azure OAuth, SAML
+- **Training Management** - Schulungsplanung
+- **Audit Logging** - Vollständige Änderungsverfolgung
 
-- **Weniger ist mehr**: Essenzielle Informationen immer sichtbar, Details auf Abruf
-- **Tab-basierte Navigation**: Logische Gruppierung von Informationen (Übersicht, Details, Lücken, Datennutzung)
-- **Collapsible Sections**: Detailanforderungen unter Core-Anforderungen einklappbar
-- **Circular Progress Charts**: Visuell ansprechende Compliance-Fortschrittsindikatoren
-- **Interaktive Elemente**: Stimulus-Controller für dynamische Inhalte ohne Seitenneuladung
-- **Responsive Layout**: Optimiert für Desktop und Tablet
+</td>
+</tr>
+<tr>
+<td width="50%">
 
-### Implementierte UI-Features
+### 📊 Reporting & Integration
+- **PDF/Excel Export** - 5 professionelle Reports
+- **REST API** - 30 Endpoints, OpenAPI 3.0
+- **Email Notifications** - Automatisierte Benachrichtigungen
+- **Workflow Engine** - Genehmigungsprozesse
 
-- **Framework Dashboard**: Tab-Navigation mit Always-Visible Stats Bar (5 Key Metrics)
-- **Compliance Overview**: Circular SVG Progress Charts mit Farbcodierung (grün ≥75%, gelb ≥50%, rot <50%)
-- **Expandable Requirements**: Hierarchische Anforderungen mit Expand/Collapse-Funktionalität
-- **Filter Panels**: Versteckt standardmäßig, auf Anfrage einblendbar
-- **Minimale Buttons**: Reduktion von 9 auf 2 primäre Aktionen pro Card (~70% weniger visuelles Rauschen)
+</td>
+<td width="50%">
 
-### Technologie
+### 🎨 Modern UI/UX
+- **Progressive Disclosure** - Aufgeräumte Oberfläche
+- **Dark Mode** - Theme-Switching
+- **Quick View** - Modal-Previews (Space)
+- **Global Search** - Cmd+K/Ctrl+K
+- **Keyboard Shortcuts** - Power-User-Features
 
-- **Symfony UX Stimulus**: Client-side Interaktivität ohne JavaScript-Framework
-- **Symfony UX Turbo**: Schnelle Navigation ohne Full-Page-Reloads
-- **CSS3 Animations**: Smooth Transitions für bessere UX
+</td>
+</tr>
+</table>
 
-## Intelligente Datenwiederverwendung (Data Reuse Architecture)
+### 🔄 Intelligente Datenwiederverwendung
 
-Ein Kernprinzip des Small ISMS Helper ist die **maximale Wertschöpfung aus einmal erfassten Daten**. Daten werden nicht isoliert in Silos gespeichert, sondern intelligent über Module hinweg wiederverwendet:
+Ein Kernprinzip: **Maximale Wertschöpfung aus einmal erfassten Daten**
 
-### Implementierte Data Reuse-Muster
+- **BCM → Asset Protection** - RTO/RPO leiten Verfügbarkeitsanforderungen ab
+- **Incident → Risk Validation** - Risikobewertungen werden durch echte Vorfälle validiert
+- **Control → Effectiveness** - Incident-Reduktion misst Control-Wirksamkeit
+- **Training → Coverage** - Training-Lücken werden automatisch identifiziert
+- **Process → Risk Alignment** - BIA und Risikobewertung werden konsistent gehalten
 
-1. **BCM → Asset Protection Requirements**
-   - RTO/RPO/MTPD-Daten aus der Business Impact Analysis
-   - Automatische Ableitung von Verfügbarkeitsanforderungen für IT-Assets
-   - Beispiel: Prozess mit RTO ≤ 1h → Asset-Verfügbarkeit "Very High" (5)
+**Zeitersparnis:** ~10,5 Stunden (95%) pro Audit-Zyklus durch automatisierte Analysen
 
-2. **Incident ↔ Asset (Betroffene Assets)**
-   - Verknüpfung von Incidents mit betroffenen Assets (`Incident.affectedAssets`, `Asset.incidents`)
-   - **Automatische Asset-Risikobewertung**: `Asset.getRiskScore()` kombiniert CIA-Werte, Incidents, Risiken und Control-Coverage
-   - **Impact-Analyse**: `Incident.getTotalAssetImpact()` aggregiert CIA-Werte aller betroffenen Assets
-   - **Kritische Assets erkennen**: `Incident.hasCriticalAssetsAffected()` identifiziert Hochrisiko-Vorfälle
+---
 
-3. **Incident ↔ Risk (Realisierte Risiken)**
-   - Verknüpfung von Incidents mit materialisierten Risiken (`Incident.realizedRisks`, `Risk.incidents`)
-   - **Risikovalidierung**: `Risk.wasAssessmentAccurate()` vergleicht Risikobewertung mit tatsächlichen Incidents
-   - **Realisierungsfrequenz**: `Risk.getRealizationCount()` zeigt wie oft ein Risiko eingetreten ist
-   - **Lerneffekt**: Risikobewertungen werden durch echte Vorfälle validiert und kalibriert
+## 🚀 Quick Start
 
-4. **Control ↔ Asset (Geschützte Assets)**
-   - Verknüpfung von Controls mit geschützten Assets (`Control.protectedAssets`, `Asset.protectingControls`)
-   - **Control-Effektivität**: `Control.getEffectivenessScore()` misst Wirksamkeit durch Incident-Reduktion
-   - **Schutzstatus**: `Asset.getProtectionStatus()` zeigt ob Assets adequately_protected, under_protected oder unprotected sind
-   - **Automatische Reviews**: `Control.needsReview()` triggert bei Incidents auf geschützten Assets
+### Voraussetzungen
 
-5. **Training ↔ Control (Abgedeckte Controls)**
-   - Verknüpfung von Trainings mit ISO 27001 Controls (`Training.coveredControls`, `Control.trainings`)
-   - **Training-Effektivität**: `Training.getTrainingEffectiveness()` korreliert mit Control-Implementierungsstatus
-   - **Gap-Analyse**: `Control.getTrainingStatus()` identifiziert fehlende oder veraltete Schulungen
-   - **Priorisierung**: `Training.addressesCriticalControls()` zeigt Training-Bedarf für kritische Controls
+- **PHP** 8.4 (empfohlen) oder 8.2+
+- **Composer** 2.x
+- **PostgreSQL** 16+ oder MySQL 8.0+
+- **Symfony CLI** (optional)
 
-6. **BusinessProcess ↔ Risk (Prozessrisiken)**
-   - Verknüpfung von Geschäftsprozessen mit identifizierten Risiken (`BusinessProcess.identifiedRisks`)
-   - **BIA-Risiko-Alignment**: `BusinessProcess.isCriticalityAligned()` validiert Konsistenz zwischen BIA und Risikobewertung
-   - **RTO-Empfehlungen**: `BusinessProcess.getSuggestedRTO()` leitet aus Risiken optimale Recovery-Zeiten ab
-   - **Alerts**: `BusinessProcess.hasUnmitigatedHighRisks()` warnt bei kritischen ungeklärten Risiken
-
-7. **ISO 27001 → Multi-Framework Compliance**
-   - ISO 27001 Controls mappen auf TISAX- und DORA-Anforderungen
-   - Cross-Framework-Mappings zeigen Überschneidungen
-   - Transitive Compliance-Berechnung
-
-8. **Audit Findings → Risk Management**
-   - Audit-Ergebnisse fließen in Risikobewertung ein
-   - Non-Conformities triggern Risiko-Reviews
-
-### Vorteile der Data Reuse Architecture
-
-- **Zeitersparnis**: ~10,5 Stunden (95%) pro Audit-Zyklus durch automatisierte Datenaggregation
-- **Konsistenz**: Einheitliche Datenbasis für alle Compliance-Anforderungen
-- **Nachvollziehbarkeit**: Transparente Datenflüsse für Audits
-- **Proaktive Insights**: Automatische Empfehlungen basierend auf vorhandenen Daten
-- **Validierung**: Risikobewertungen werden durch reale Incidents validiert
-- **Automatisierung**: Manuelle Analysen werden durch berechnete Metriken ersetzt
-
-### Neue automatische KPIs
-
-Die vollständige Entity-Vernetzung ermöglicht **automatische Berechnungen**, die vorher manuell durchgeführt werden mussten:
-
-- **Asset Risk Score**: `Asset.getRiskScore()` - Kombiniert CIA-Werte, Incident-Historie, aktive Risiken und Control-Coverage
-- **Risk Assessment Accuracy**: `Risk.wasAssessmentAccurate()` - Validiert Risikobewertungen mit tatsächlichen Incidents
-- **Control Effectiveness**: `Control.getEffectivenessScore()` - Misst Wirksamkeit durch Incident-Reduktion nach Implementation
-- **Training Effectiveness**: `Training.getTrainingEffectiveness()` - Korreliert Training-Teilnahme mit Control-Implementierung
-- **BIA-Risk Alignment**: `BusinessProcess.isCriticalityAligned()` - Prüft Konsistenz zwischen Business-Impact und Risikobewertung
-- **Asset Protection Status**: `Asset.getProtectionStatus()` - Identifiziert ungeschützte oder untergeschützte Assets
-- **Training Coverage**: `Control.getTrainingStatus()` - Zeigt Training-Lücken (no_training, training_outdated, training_current)
-
-### Services für Data Reuse
-
-- `ProtectionRequirementService`: Intelligente CIA-Berechnung aus BCM/Incidents
-- `RiskIntelligenceService`: Risiko-Empfehlungen aus Incident-History
-- `ComplianceMappingService`: Cross-Framework Daten-Mapping
-- `ComplianceAssessmentService`: Automatische Fulfillment-Berechnung
-
-## Technologie-Stack
-
-- **Framework**: Symfony 7.3 (neueste Version)
-- **PHP**: 8.4 (empfohlen) oder 8.2+
-- **Datenbank**: PostgreSQL/MySQL (über Doctrine ORM)
-- **Frontend**: Twig Templates, Symfony UX (Stimulus, Turbo)
-- **UI/UX**: Progressive Disclosure Pattern, CSS3 Animations
-- **REST API**: API Platform 4.2.3 (OpenAPI 3.0, Swagger UI, ReDoc)
-- **PDF Generation**: Dompdf 3.1.4
-- **Excel Export**: PhpSpreadsheet 5.2.0
-- **Email**: Symfony Mailer with TemplatedEmail
-- **Testing**: PHPUnit
-
-## Voraussetzungen
-
-- PHP 8.4 (empfohlen) oder mindestens PHP 8.2
-- Composer
-- Eine Datenbank (PostgreSQL, MySQL oder SQLite)
-- Symfony CLI (optional, für lokale Entwicklung)
-
-## Installation
-
-### 1. Repository klonen
+### Installation (5 Minuten)
 
 ```bash
-git clone <repository-url>
+# 1. Repository klonen
+git clone https://github.com/moag1000/Little-ISMS-Helper.git
 cd Little-ISMS-Helper
-```
 
-### 2. Abhängigkeiten installieren
-
-```bash
+# 2. Dependencies installieren
 composer install
-```
+php bin/console importmap:install
 
-### 3. Umgebungskonfiguration
-
-Kopieren Sie die `.env` Datei und passen Sie die Datenbankverbindung an:
-
-```bash
+# 3. Umgebung konfigurieren
 cp .env .env.local
-```
+# Bearbeiten Sie .env.local mit Ihrer Datenbank-URL
 
-Bearbeiten Sie `.env.local` und konfigurieren Sie die Datenbankverbindung:
-
-```
-DATABASE_URL="postgresql://user:password@localhost:5432/isms_helper?serverVersion=16&charset=utf8"
-```
-
-### 4. Datenbank erstellen
-
-```bash
+# 4. Datenbank setup
 php bin/console doctrine:database:create
 php bin/console doctrine:migrations:migrate
-```
 
-### 5. Compliance-Frameworks und Controls laden
-
-Laden Sie alle 93 Controls aus ISO 27001:2022 Annex A in die Datenbank:
-
-```bash
+# 5. ISO 27001 Controls laden
 php bin/console isms:load-annex-a-controls
+
+# 6. Server starten
+symfony serve
+# oder: php -S localhost:8000 -t public/
 ```
 
-Dies ist die Grundlage für Ihr Statement of Applicability.
+**Fertig!** 🎉 Öffnen Sie http://localhost:8000
 
-**Optional**: Laden Sie zusätzliche Compliance-Frameworks:
+### Optional: Weitere Frameworks laden
 
 ```bash
-# TISAX (VDA ISA) für die Automobilindustrie
+# TISAX (VDA ISA) für Automobilindustrie
 php bin/console app:load-tisax-requirements
 
 # EU-DORA für Finanzdienstleister
 php bin/console app:load-dora-requirements
 ```
 
-Diese Frameworks nutzen automatisch Ihre bestehenden ISO 27001-Daten durch intelligente Mappings.
-
-### 6. Assets installieren
+### Optional: Benachrichtigungen einrichten
 
 ```bash
-php bin/console importmap:install
+# Crontab bearbeiten
+crontab -e
+
+# Täglich um 8 Uhr Benachrichtigungen versenden
+0 8 * * * cd /path/to/Little-ISMS-Helper && php bin/console app:send-notifications --type=all
 ```
 
-### 7. Entwicklungsserver starten
+---
 
-Mit Symfony CLI:
+## 📚 Dokumentation
+
+### Setup & Deployment
+
+| Dokument | Beschreibung |
+|----------|--------------|
+| [API Setup Guide](docs/API_SETUP.md) | REST API Konfiguration, Swagger UI, Postman |
+| [Docker Setup](docs/DOCKER_SETUP.md) | Docker Compose, Entwicklung & Produktion |
+| [Authentication Setup](docs/AUTHENTICATION_SETUP.md) | RBAC, Azure OAuth/SAML, Multi-Provider |
+| [Audit Logging](docs/AUDIT_LOGGING.md) | Automatische Änderungsverfolgung |
+| [Deployment Wizard](DEPLOYMENT_WIZARD.md) | Schritt-für-Schritt Produktionssetup |
+
+### Architecture & Design
+
+| Dokument | Beschreibung |
+|----------|--------------|
+| [Solution Description](SOLUTION_DESCRIPTION.md) | Architektur-Übersicht, Design-Entscheidungen |
+| [Data Reuse Analysis](docs/DATA_REUSE_ANALYSIS.md) | Intelligente Datenwiederverwendung |
+| [Verification Report](VERIFICATION_REPORT.md) | Code-Nachweis für alle Features |
+
+### Phase Reports (Vollständigkeitsprüfungen)
+
+| Phase | Status | Dokument |
+|-------|--------|----------|
+| Phase 2 | ✅ 100% | [BCM, Multi-Framework, Data Reuse](docs/PHASE2_COMPLETENESS_REPORT.md) |
+| Phase 3 | ✅ 100% | [User Management, Security, RBAC](docs/PHASE3_COMPLETENESS_REPORT.md) |
+| Phase 4 | ✅ 100% | [CRUD, Workflows, Risk Matrix](docs/PHASE4_COMPLETENESS_REPORT.md) |
+| Phase 5 | ✅ 100% | [Reports, API, Notifications](docs/PHASE5_COMPLETENESS_REPORT.md) |
+
+### UI/UX
+
+| Dokument | Beschreibung |
+|----------|--------------|
+| [UI/UX Quick Start](docs/UI_UX_QUICK_START.md) | Keyboard Shortcuts, Command Palette (⌘K) |
+| [UI/UX Implementation](docs/UI_UX_IMPLEMENTATION.md) | Progressive Disclosure, Components |
+| [Paket B: Quick View](docs/PHASE5_PAKET_B.md) | Global Search, Quick Preview, Filters |
+| [Paket C: Dark Mode](docs/PHASE5_PAKET_C.md) | Theme Toggle, User Preferences, Notifications |
+
+### Quickstart Guides
+
+| Dokument | Beschreibung |
+|----------|--------------|
+| [Audit Logging Quickstart](docs/AUDIT_LOGGING_QUICKSTART.md) | 3-Schritte Setup für Audit-Logging |
+
+---
+
+## 🛠️ Technologie-Stack
+
+<table>
+<tr>
+<td><b>Backend</b></td>
+<td>PHP 8.4, Symfony 7.3, Doctrine ORM</td>
+</tr>
+<tr>
+<td><b>Frontend</b></td>
+<td>Twig, Bootstrap 5, Stimulus, Turbo</td>
+</tr>
+<tr>
+<td><b>Database</b></td>
+<td>PostgreSQL 16 / MySQL 8.0+</td>
+</tr>
+<tr>
+<td><b>API</b></td>
+<td>API Platform 4.2, OpenAPI 3.0, Swagger UI</td>
+</tr>
+<tr>
+<td><b>Export</b></td>
+<td>Dompdf 3.1 (PDF), PhpSpreadsheet 5.2 (Excel)</td>
+</tr>
+<tr>
+<td><b>Email</b></td>
+<td>Symfony Mailer, TemplatedEmail</td>
+</tr>
+<tr>
+<td><b>Testing</b></td>
+<td>PHPUnit 12.4 (122 tests passing)</td>
+</tr>
+<tr>
+<td><b>CI/CD</b></td>
+<td>GitHub Actions (4 parallel jobs)</td>
+</tr>
+<tr>
+<td><b>Deployment</b></td>
+<td>Docker, Docker Compose, Nginx</td>
+</tr>
+</table>
+
+---
+
+## 🗺️ Roadmap
+
+### ✅ Phase 1: Core ISMS (Abgeschlossen)
+- ✅ 9 Core Entities (Asset, Risk, Control, Incident, etc.)
+- ✅ Statement of Applicability mit 93 ISO 27001:2022 Controls
+- ✅ Grundlegende Controller & Views
+- ✅ KPI Dashboard
+
+### ✅ Phase 2: Data Reuse & Multi-Framework (Abgeschlossen)
+- ✅ Business Continuity Management (BCM)
+- ✅ Multi-Framework Compliance (ISO 27001, TISAX, DORA)
+- ✅ Cross-Framework Mappings & Transitive Compliance
+- ✅ Vollständige Entity-Beziehungen
+- ✅ Automatische KPIs
+- ✅ Progressive Disclosure UI
+- ✅ Symfony UX Integration (Stimulus, Turbo)
+
+### ✅ Phase 3: User Management & Security (Abgeschlossen)
+- ✅ Multi-Provider Authentication (Local, Azure OAuth/SAML)
+- ✅ RBAC mit 5 System-Rollen & 29 Permissions
+- ✅ Automatisches Audit Logging
+- ✅ Multi-Language Support (DE, EN)
+- ✅ User Management UI
+
+### ✅ Phase 4: CRUD & Workflows (Abgeschlossen)
+- ✅ Vollständige CRUD für alle Module
+- ✅ 5 Form Types mit Validierung
+- ✅ Workflow-Engine (Approval, Rejection, Cancellation)
+- ✅ Risk Assessment Matrix (5x5 Visualisierung)
+- ✅ 30+ Professional Templates
+
+### ✅ Phase 5: Reporting & Integration (Abgeschlossen)
+- ✅ PDF/Excel Export System (5 Report-Typen)
+- ✅ REST API (30 Endpoints, OpenAPI 3.0)
+- ✅ Automated Notification Scheduler (5 Typen)
+- ✅ Premium Features (Dark Mode, Global Search, Quick View)
+- ⏸️ Document Management (Foundation, deferred)
+
+### 🚧 Phase 6: Enterprise Features (In Entwicklung)
+- ✅ Automated Testing (122 tests, 100% passing)
+- ✅ CI/CD Pipeline (GitHub Actions)
+- ✅ Docker Deployment
+- 🔄 Multi-Tenancy Support (MSPs)
+- 🔄 Advanced Analytics Dashboards
+- 🔄 Mobile PWA
+- 📅 Kubernetes Deployment
+
+### 📅 Zukünftige Phasen
+- JWT Authentication für Mobile Apps
+- Real-time Notifications (WebSocket/Mercure)
+- Advanced API Filters & Search
+- Custom Report Builder
+- Integration Marketplace (Slack, Teams, JIRA)
+
+**Legende:** ✅ Abgeschlossen | 🚧 In Entwicklung | 🔄 Geplant | 📅 Backlog | ⏸️ Deferred
+
+---
+
+## 🤝 Beitragen
+
+Wir freuen uns über Beiträge! Bitte lesen Sie unsere [Contributing Guidelines](CONTRIBUTING.md) für Details zu:
+
+- Code-Standards (PSR-12, Symfony Best Practices)
+- Commit-Konventionen (Conventional Commits)
+- Pull Request Prozess
+- Testing-Anforderungen
+- Entwicklungsworkflow
+
+### Schnelleinstieg für Contributor
 
 ```bash
-symfony server:start
-```
+# Fork & Clone
+git clone https://github.com/YOUR-USERNAME/Little-ISMS-Helper.git
 
-Oder mit PHP Built-in Server:
+# Branch erstellen
+git checkout -b feature/your-feature
 
-```bash
-php -S localhost:8000 -t public/
-```
-
-Die Anwendung ist dann unter `http://localhost:8000` erreichbar.
-
-## Entwicklung
-
-### Code-Generierung
-
-Das Projekt verwendet Symfony MakerBundle für die Code-Generierung:
-
-```bash
-# Entity erstellen
-php bin/console make:entity
-
-# Controller erstellen
-php bin/console make:controller
-
-# Form erstellen
-php bin/console make:form
-
-# CRUD erstellen
-php bin/console make:crud
-```
-
-### Tests ausführen
-
-```bash
+# Entwickeln & Testen
 php bin/phpunit
+
+# Commit & Push
+git commit -m "feat(module): add awesome feature"
+git push origin feature/your-feature
+
+# Pull Request erstellen
 ```
 
-### Cache leeren
+Siehe auch: [CHANGELOG.md](CHANGELOG.md) für detaillierte Versionshistorie
 
-```bash
-php bin/console cache:clear
-```
+---
 
-## Projektstruktur
+## 📊 Projekt-Statistiken
 
-```
-├── config/             # Konfigurationsdateien
-├── public/             # Öffentlich zugängliche Dateien
-│   └── index.php      # Entry Point
-├── src/
-│   ├── Controller/    # Controller
-│   ├── Entity/        # Doctrine Entities
-│   ├── Form/          # Formulare
-│   ├── Repository/    # Doctrine Repositories
-│   └── Service/       # Business Logic Services
-├── templates/         # Twig Templates
-├── tests/            # Tests
-└── var/              # Cache, Logs, etc.
-```
+- **Codezeilen:** ~31,650+ LOC
+- **Entities:** 20+ Doctrine Entities
+- **Controllers:** 15+ Controllers
+- **Templates:** 80+ Twig Templates
+- **Services:** 12+ Business Logic Services
+- **Commands:** 5+ Console Commands
+- **Tests:** 122 tests, 228 assertions (100% passing)
+- **API Endpoints:** 30 REST Endpoints
+- **Report Types:** 10 (5 PDF + 5 Excel)
+- **Notification Types:** 5 automatisierte Typen
+- **Compliance Frameworks:** 3 (ISO 27001, TISAX, DORA)
 
-## ISO 27001 Konformität
+---
 
-Dieses Tool orientiert sich an den Anforderungen der ISO/IEC 27001:2022 und unterstützt insbesondere:
+## 📄 ISO 27001:2022 Compliance
 
-- **Clause 4**: Kontext der Organisation
-- **Clause 5**: Führung
-- **Clause 6**: Planung
-- **Clause 7**: Unterstützung
-- **Clause 8**: Betrieb
-- **Clause 9**: Bewertung der Leistung
-- **Clause 10**: Verbesserung
+Das Tool orientiert sich an den Anforderungen der **ISO/IEC 27001:2022** und unterstützt:
 
-## Lizenz
+- ✅ **Clause 4** - Kontext der Organisation
+- ✅ **Clause 5** - Führung
+- ✅ **Clause 6** - Planung (inkl. 6.2 ISMS Objectives)
+- ✅ **Clause 7** - Unterstützung
+- ✅ **Clause 8** - Betrieb (inkl. 8.2 Risk Assessment, 8.3 Risk Treatment)
+- ✅ **Clause 9** - Bewertung (inkl. 9.2 Internal Audit, 9.3 Management Review)
+- ✅ **Clause 10** - Verbesserung
+- ✅ **Annex A** - Alle 93 Controls vollständig integriert
 
-Proprietary - Alle Rechte vorbehalten
+Zusätzliche Frameworks:
+- **TISAX (VDA ISA)** - 32 Anforderungen für Automobilindustrie
+- **EU-DORA** - 30 Anforderungen für Finanzdienstleister
 
-## Beitragen
+---
 
-Dieses Projekt befindet sich in der Entwicklung. Contribution Guidelines werden zu einem späteren Zeitpunkt hinzugefügt.
+## 📞 Support & Community
 
-## Support
+- **Bugs & Feature Requests:** [GitHub Issues](https://github.com/moag1000/Little-ISMS-Helper/issues)
+- **Diskussionen:** [GitHub Discussions](https://github.com/moag1000/Little-ISMS-Helper/discussions)
+- **Dokumentation:** [docs/](docs/) Verzeichnis
 
-Bei Fragen oder Problemen erstellen Sie bitte ein Issue im Repository.
+---
 
-## Roadmap
+## 📜 Lizenz
 
-### Phase 1: Core ISMS (✅ Abgeschlossen)
-- [x] Basis-Setup und Projektstruktur
-- [x] Alle ISMS Kernentities (Asset, Risk, Control, Incident, etc.)
-- [x] Statement of Applicability mit allen 93 Annex A Controls
-- [x] Grundlegende Controller und Views für alle Module
-- [x] KPI Dashboard mit Echtzeit-Daten
-- [x] Datenbank-Migrationen
+**Proprietary** - Alle Rechte vorbehalten
 
-### Phase 2: Data Reuse & Multi-Framework (✅ Abgeschlossen)
-- [x] Business Continuity Management (BCM) Modul
-- [x] Multi-Framework Compliance (TISAX, DORA)
-- [x] Hierarchische Compliance Requirements
-- [x] Cross-Framework Mappings & Transitive Compliance
-- [x] Flexible Audit-Scopes & Audit-Checklisten
-- [x] Vollständige Entity-Beziehungen (Incident↔Asset, Incident↔Risk, Control↔Asset, Training↔Control, BusinessProcess↔Risk)
-- [x] Automatische KPIs (Asset Risk Score, Control Effectiveness, Training Effectiveness, etc.)
-- [x] Progressive Disclosure UI Pattern
-- [x] Circular Progress Charts & Tab-Navigation
-- [x] Symfony UX Integration (Stimulus, Turbo)
+Siehe [LICENSE](LICENSE) für Details.
 
-### Phase 3: User Management & Security (✅ Abgeschlossen)
-- [x] User Authentication & Authorization (Symfony Security)
-- [x] Role-Based Access Control (RBAC) with User/Role/Permission entities
-- [x] Audit Logging für alle Änderungen (Doctrine Event Listener)
-- [x] Multi-Language Support (DE, EN)
+---
 
-### Phase 4: CRUD & Workflows (✅ Abgeschlossen)
-- [x] Vollständige CRUD-Operationen für alle Module
-- [x] Formulare mit Validierung (InternalAuditType, TrainingType, ControlType, ManagementReviewType, ISMSContextType)
-- [x] Risk Assessment Matrix Visualisierung (5x5 Matrix)
-- [x] Workflow-Engine für Genehmigungsprozesse (Workflow, WorkflowStep, WorkflowInstance, WorkflowService)
+## 🙏 Danksagungen
 
-**Implementierte Module:**
-- **Training Management** - Vollständiges CRUD mit Schulungsplanung, Teilnehmerverwaltung, Verknüpfung mit ISO 27001 Controls
-- **Internal Audit Management** - Form-basierte Audit-Dokumentation nach ISO 27001 Clause 9.2 mit Findings, Recommendations, Evidence
-- **Management Review** - ISO 27001 Clause 9.3 konforme Reviews mit strukturierten Inputs (9.3.2) und Outputs (9.3.3)
-- **ISMS Objectives** - KPI-Tracking mit messbaren Zielen, Progress Bars, Target vs. Current Value Monitoring (ISO 27001 Clause 6.2)
-- **ISMS Context** - Organisationskontext-Editor für Clause 4.1 & 4.2 (External/Internal Issues, Interested Parties)
-- **Workflow Approval System** - Flexible Workflow-Engine für Genehmigungsprozesse auf beliebigen Entities mit Role-based Approval
+- Entwickelt für kleine und mittelständische Unternehmen
+- Built with ❤️ using Symfony 7.3
+- Unterstützt durch Claude AI (Anthropic)
 
-**Features:**
-- 5 Symfony Form Types mit vollständiger Validierung
-- 30+ Professional Bootstrap 5 Templates mit Turbo Integration
-- Workflow-Engine mit Approval/Reject/Cancel Actions und Permission-based Access
-- Risk Assessment Matrix (5x5) mit Color-coded Risk Levels (Critical, High, Medium, Low)
-- CSRF Protection auf allen Mutations
-- Role-based Security (ROLE_USER, ROLE_ADMIN)
-- Flash Messages für User Feedback
-- Comprehensive ISO 27001 Compliance Coverage
+---
 
-**Dokumentation:** Siehe [docs/PHASE4_COMPLETENESS_REPORT.md](docs/PHASE4_COMPLETENESS_REPORT.md)
+<div align="center">
 
-### Phase 5: Reporting & Integration (✅ Abgeschlossen)
-- [x] Erweiterte Reporting & Export Funktionen (PDF, Excel)
-- [x] E-Mail-Benachrichtigungen für Vorfälle und Fälligkeiten (Automated Notification Scheduler)
-- [x] REST API für Integration mit anderen Systemen (API Platform 4.2)
-- [⏸️] Datei-Uploads für Nachweise und Dokumentation (Foundation gelegt, deferred)
+**[⬆ Zurück nach oben](#-little-isms-helper)**
 
-**Implementierte Features:**
+Made with 🛡️ for better Information Security Management
 
-**1. Professional Export System (PDF/Excel)**
-- **5 PDF Reports**: Dashboard Summary, Risk Register, Statement of Applicability (Landscape), Incident Log, Training Log
-- **5 Excel Reports**: Alle Reports als XLSX mit professioneller Formatierung
-- **ReportController** mit 11 Export-Endpoints (/reports/*)
-- **PdfExportService** (Dompdf 3.1.4) - Professional PDF generation mit DejaVu Sans Font
-- **ExcelExportService** (PhpSpreadsheet 5.2.0) - Styled headers, zebra striping, auto-sizing
-- **Color-coded Reports**: Risk levels (Critical/High/Medium/Low), Progress bars, Status badges
-
-**2. Automated Notification Scheduler**
-- **Symfony Console Command**: `app:send-notifications` für Cron-Execution
-- **5 Notification Types**: Upcoming Audits, Upcoming Trainings, Open Incidents, Controls Nearing Target Date, Overdue Workflow Approvals
-- **Configurable**: `--type` (audits/trainings/incidents/controls/workflows/all), `--days-ahead` (default: 7), `--dry-run`
-- **Professional Email Templates**: 6 responsive HTML templates mit Branding
-- **Cron-Ready**: Empfohlen täglich um 8 Uhr (`0 8 * * * php bin/console app:send-notifications --type=all`)
-
-**3. REST API (API Platform 4.2)**
-- **6 API Resources**: Assets, Risks, Controls, Incidents, Internal Audits, Trainings
-- **30 CRUD Endpoints** mit Role-based Security (ROLE_USER für GET/POST/PUT, ROLE_ADMIN für DELETE)
-- **Interactive Documentation**: Swagger UI (/api/docs) und ReDoc (/api/docs?ui=re-doc)
-- **OpenAPI 3.0 Spec**: /api/docs.json für Postman/Insomnia Import
-- **Formats**: JSON-LD (default), JSON, HTML
-- **Pagination**: 30 items per page, Hypermedia links
-- **Session-based Auth**: Integriert mit bestehendem Symfony Security (upgrade auf JWT möglich)
-
-**4. Document Management (Foundation)**
-- **Document Entity** mit polymorphen Relationships (entityType + entityId)
-- **File Integrity**: SHA-256 hash für Verifizierung
-- **DocumentRepository** mit Custom Queries (findByEntity, findByUploader, findRecent)
-- **Status**: Basis-Implementation vorhanden, full CRUD deferred per user request
-
-**Technologie:**
-- Dompdf 3.1.4 (PDF generation)
-- PhpSpreadsheet 5.2.0 (Excel export)
-- API Platform 4.2.3 (REST framework)
-- Symfony Mailer (Email notifications)
-- Symfony Console (CLI commands)
-
-**Statistiken:**
-- ~2,050 neue Zeilen Code
-- 16 neue/modifizierte Dateien
-- 11 Report-Endpoints
-- 30 API-Endpoints
-- 5 Notification-Typen
-
-**Dokumentation:** Siehe [docs/PHASE5_COMPLETENESS_REPORT.md](docs/PHASE5_COMPLETENESS_REPORT.md)
-
-### Phase 6: Enterprise Features (🚧 In Progress)
-- [ ] Multi-Tenancy Support (für MSPs)
-- [ ] Advanced Analytics & Dashboards
-- [ ] Mobile App (Progressive Web App)
-- [x] Automatisierte Tests (Unit, Integration, E2E) - **Teilweise abgeschlossen**
-- [x] CI/CD Pipeline - **✅ Abgeschlossen**
-- [x] Docker Deployment - **✅ Abgeschlossen**
-- [ ] Kubernetes Deployment
-
-**Implementierte Features:**
-
-**1. Automated Testing (PHPUnit 12.4)**
-- **Test Status**: **122 tests, 228 assertions** - 100% passing ✅
-- **Entity Tests** (117 tests, 215 assertions, 100% passing):
-  - Asset: 14 tests (CIA values, risk scoring, protection status)
-  - Control: 28 tests (effectiveness scoring, review triggers, training status)
-  - Incident: 18 tests (impact analysis, risk validation, critical asset detection)
-  - InternalAudit: 22 tests (scope descriptions, compliance audit detection, asset scope handling)
-  - Risk: 15 tests (risk calculations, assessment accuracy, control coverage)
-  - Training: 20 tests (training effectiveness, control coverage, critical controls detection)
-- **Service Tests** (5 tests, 13 assertions, 100% passing):
-  - ExcelExportService: 3 tests (spreadsheet creation, array export, Excel generation)
-  - PdfExportService: 2 tests (PDF generation with/without options)
-- **API Coverage**: **Alle 6 API Platform Entities vollständig getestet** ✅
-- **Test Coverage**: Computed properties, business logic, entity relationships, collection management, export services
-- **Continuous Testing**: Integriert in CI/CD Pipeline mit automatischer Ausführung
-- **Note**: Repository/Integration tests deferred (require database fixtures)
-
-**2. CI/CD Pipeline (GitHub Actions)**
-- **4 Parallel Jobs**: Tests (PHP 8.4), Code Quality (PHPStan, PHP CS Fixer), Security Checks, Docker Build
-- **PostgreSQL 16** Test-Datenbank mit Health Checks
-- **Automated Triggers**: Push auf main/develop/claude/**, Pull Requests
-- **Code Coverage**: Codecov-Integration
-
-**3. Docker Development & Production Environment**
-- **Multi-Stage Builds**: Optimierte Production-Images, Development mit Xdebug
-- **4 Services**: PHP 8.4-FPM + Nginx, PostgreSQL 16, MailHog (Email Testing), pgAdmin (DB GUI)
-- **One-Command Setup**: `docker-compose up -d`
-- **Production-Ready**: OPcache, optimierter Autoloader, Health Checks
-- **Documentation**: Comprehensive setup guide (398 lines) in docs/DOCKER_SETUP.md
-
-## Autoren
-
-Entwickelt für kleine und mittelständische Unternehmen, die ein pragmatisches und effizientes Tool für ihr ISMS benötigen.
+</div>
