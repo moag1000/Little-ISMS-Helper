@@ -75,17 +75,20 @@ class SecurityHeadersSubscriber implements EventSubscriberInterface
 
         // Security: Content-Security-Policy
         // Restricts resource loading to prevent XSS attacks
-        // Using a permissive policy to avoid breaking functionality
+        // Hardened policy: removed unsafe-eval, kept unsafe-inline for existing inline scripts
+        // Future: Migrate to nonce-based CSP for maximum security
         $csp = implode('; ', [
             "default-src 'self'",
-            "script-src 'self' 'unsafe-inline' 'unsafe-eval'", // Allow inline scripts for Stimulus
-            "style-src 'self' 'unsafe-inline'", // Allow inline styles
-            "img-src 'self' data: https:",
-            "font-src 'self' data:",
-            "connect-src 'self'",
-            "frame-ancestors 'self'",
-            "base-uri 'self'",
-            "form-action 'self'",
+            "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net", // Stimulus + CDN, removed unsafe-eval
+            "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com", // Bootstrap + Fonts
+            "img-src 'self' data: https: blob:", // Allow images from any HTTPS source and data URIs
+            "font-src 'self' data: https://fonts.gstatic.com", // Local + Google Fonts
+            "connect-src 'self'", // API calls only to same origin
+            "frame-ancestors 'self'", // Prevent embedding in iframes (clickjacking protection)
+            "base-uri 'self'", // Prevent base tag injection
+            "form-action 'self'", // Forms can only submit to same origin
+            "object-src 'none'", // Block plugins (Flash, Java, etc.)
+            "upgrade-insecure-requests", // Automatically upgrade HTTP to HTTPS
         ]);
         $response->headers->set('Content-Security-Policy', $csp);
 
