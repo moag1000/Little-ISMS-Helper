@@ -15,7 +15,8 @@ RUN apk add --no-cache \
     libjpeg-turbo-dev \
     libxml2-dev \
     nginx \
-    supervisor
+    supervisor \
+    curl
 
 # Install PHP extensions
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg && \
