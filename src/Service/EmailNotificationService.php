@@ -24,10 +24,13 @@ class EmailNotificationService
     public function sendIncidentNotification(Incident $incident, array $recipients): void
     {
         foreach ($recipients as $recipient) {
+            // Security: Sanitize subject to prevent email header injection (OWASP #3 - Injection)
+            $safeTitle = $this->sanitizeEmailSubject($incident->getTitle());
+
             $email = (new TemplatedEmail())
                 ->from(new Address($this->fromEmail, $this->fromName))
                 ->to($recipient instanceof User ? $recipient->getEmail() : $recipient)
-                ->subject('[ISMS Alert] New Incident: ' . $incident->getTitle())
+                ->subject('[ISMS Alert] New Incident: ' . $safeTitle)
                 ->htmlTemplate('emails/incident_notification.html.twig')
                 ->context([
                     'incident' => $incident,
@@ -40,10 +43,13 @@ class EmailNotificationService
     public function sendIncidentUpdateNotification(Incident $incident, array $recipients, string $changeDescription): void
     {
         foreach ($recipients as $recipient) {
+            // Security: Sanitize subject to prevent email header injection (OWASP #3 - Injection)
+            $safeTitle = $this->sanitizeEmailSubject($incident->getTitle());
+
             $email = (new TemplatedEmail())
                 ->from(new Address($this->fromEmail, $this->fromName))
                 ->to($recipient instanceof User ? $recipient->getEmail() : $recipient)
-                ->subject('[ISMS Update] Incident Updated: ' . $incident->getTitle())
+                ->subject('[ISMS Update] Incident Updated: ' . $safeTitle)
                 ->htmlTemplate('emails/incident_update.html.twig')
                 ->context([
                     'incident' => $incident,
@@ -57,10 +63,13 @@ class EmailNotificationService
     public function sendAuditDueNotification(InternalAudit $audit, array $recipients): void
     {
         foreach ($recipients as $recipient) {
+            // Security: Sanitize subject to prevent email header injection (OWASP #3 - Injection)
+            $safeTitle = $this->sanitizeEmailSubject($audit->getTitle());
+
             $email = (new TemplatedEmail())
                 ->from(new Address($this->fromEmail, $this->fromName))
                 ->to($recipient instanceof User ? $recipient->getEmail() : $recipient)
-                ->subject('[ISMS Reminder] Upcoming Audit: ' . $audit->getTitle())
+                ->subject('[ISMS Reminder] Upcoming Audit: ' . $safeTitle)
                 ->htmlTemplate('emails/audit_due_notification.html.twig')
                 ->context([
                     'audit' => $audit,
@@ -73,10 +82,13 @@ class EmailNotificationService
     public function sendTrainingDueNotification(Training $training, array $recipients): void
     {
         foreach ($recipients as $recipient) {
+            // Security: Sanitize subject to prevent email header injection (OWASP #3 - Injection)
+            $safeTitle = $this->sanitizeEmailSubject($training->getTitle());
+
             $email = (new TemplatedEmail())
                 ->from(new Address($this->fromEmail, $this->fromName))
                 ->to($recipient instanceof User ? $recipient->getEmail() : $recipient)
-                ->subject('[ISMS Reminder] Upcoming Training: ' . $training->getTitle())
+                ->subject('[ISMS Reminder] Upcoming Training: ' . $safeTitle)
                 ->htmlTemplate('emails/training_due_notification.html.twig')
                 ->context([
                     'training' => $training,
@@ -89,10 +101,13 @@ class EmailNotificationService
     public function sendGenericNotification(string $subject, string $template, array $context, array $recipients): void
     {
         foreach ($recipients as $recipient) {
+            // Security: Sanitize subject to prevent email header injection (OWASP #3 - Injection)
+            $safeSubject = $this->sanitizeEmailSubject($subject);
+
             $email = (new TemplatedEmail())
                 ->from(new Address($this->fromEmail, $this->fromName))
                 ->to($recipient instanceof User ? $recipient->getEmail() : $recipient)
-                ->subject($subject)
+                ->subject($safeSubject)
                 ->htmlTemplate($template)
                 ->context($context);
 
@@ -103,10 +118,13 @@ class EmailNotificationService
     public function sendControlDueNotification(Control $control, array $recipients): void
     {
         foreach ($recipients as $recipient) {
+            // Security: Sanitize subject to prevent email header injection (OWASP #3 - Injection)
+            $safeControlId = $this->sanitizeEmailSubject($control->getControlId());
+
             $email = (new TemplatedEmail())
                 ->from(new Address($this->fromEmail, $this->fromName))
                 ->to($recipient instanceof User ? $recipient->getEmail() : $recipient)
-                ->subject('[ISMS Reminder] Control Target Date Approaching: ' . $control->getControlId())
+                ->subject('[ISMS Reminder] Control Target Date Approaching: ' . $safeControlId)
                 ->htmlTemplate('emails/control_due_notification.html.twig')
                 ->context([
                     'control' => $control,
@@ -119,10 +137,13 @@ class EmailNotificationService
     public function sendWorkflowOverdueNotification(WorkflowInstance $instance, array $recipients): void
     {
         foreach ($recipients as $recipient) {
+            // Security: Sanitize subject to prevent email header injection (OWASP #3 - Injection)
+            $safeWorkflowName = $this->sanitizeEmailSubject($instance->getWorkflow()->getName());
+
             $email = (new TemplatedEmail())
                 ->from(new Address($this->fromEmail, $this->fromName))
                 ->to($recipient instanceof User ? $recipient->getEmail() : $recipient)
-                ->subject('[ISMS Alert] Overdue Workflow Approval: ' . $instance->getWorkflow()->getName())
+                ->subject('[ISMS Alert] Overdue Workflow Approval: ' . $safeWorkflowName)
                 ->htmlTemplate('emails/workflow_overdue_notification.html.twig')
                 ->context([
                     'instance' => $instance,
@@ -130,5 +151,20 @@ class EmailNotificationService
 
             $this->mailer->send($email);
         }
+    }
+
+    /**
+     * Security: Sanitize email subject to prevent header injection
+     * Removes newlines, carriage returns, and other control characters
+     */
+    private function sanitizeEmailSubject(string $subject): string
+    {
+        // Remove newlines, carriage returns, and control characters
+        $subject = preg_replace('/[\r\n\x00-\x1F\x7F]/', '', $subject);
+
+        // Limit length to prevent overly long subjects
+        $subject = mb_substr($subject, 0, 255);
+
+        return trim($subject);
     }
 }

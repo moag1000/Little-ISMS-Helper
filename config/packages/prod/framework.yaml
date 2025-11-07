@@ -1,0 +1,24 @@
+# Production-only framework configuration
+# Security: Enhanced session security settings
+
+framework:
+    # Security: Secure session cookie configuration
+    session:
+        # Security: Prevent JavaScript access to session cookies (XSS protection)
+        cookie_httponly: true
+
+        # Security: Only send cookies over HTTPS in production
+        cookie_secure: true
+
+        # Security: Strict SameSite policy to prevent CSRF
+        # 'lax' allows cookies on top-level navigation (good for authentication)
+        # 'strict' would block all cross-site requests (might break OAuth flows)
+        cookie_samesite: 'lax'
+
+        # Security: Session cookie lifetime (1 hour)
+        cookie_lifetime: 3600
+
+        # Security: Garbage collection
+        gc_probability: 1
+        gc_divisor: 100
+        gc_maxlifetime: 3600

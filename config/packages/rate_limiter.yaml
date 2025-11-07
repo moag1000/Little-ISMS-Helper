@@ -1,0 +1,25 @@
+framework:
+    rate_limiter:
+        # Security: Login rate limiting to prevent brute force attacks
+        login:
+            policy: 'sliding_window'
+            limit: 5
+            interval: '15 minutes'
+
+        # Security: API rate limiting to prevent abuse
+        api:
+            policy: 'token_bucket'
+            limit: 100
+            rate: { interval: '1 minute', amount: 100 }
+
+        # Security: Password reset rate limiting
+        password_reset:
+            policy: 'sliding_window'
+            limit: 3
+            interval: '1 hour'
+
+        # Security: Document upload rate limiting
+        document_upload:
+            policy: 'sliding_window'
+            limit: 20
+            interval: '1 hour'
