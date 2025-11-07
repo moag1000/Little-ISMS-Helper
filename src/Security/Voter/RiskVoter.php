@@ -8,9 +8,26 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 /**
- * Security: Risk Access Control Voter
+ * Risk Voter
  *
- * Implements fine-grained access control for Risk entities with multi-tenancy support.
+ * Implements fine-grained authorization for Risk entity operations.
+ * Enforces strict multi-tenancy isolation for risk assessments.
+ *
+ * Supported Operations:
+ * - VIEW: View risk assessment details
+ * - EDIT: Modify risk assessments and treatment plans
+ * - DELETE: Remove risk assessments (admin only)
+ *
+ * Security Rules:
+ * - ROLE_ADMIN bypasses all checks
+ * - Users can only access risks from their own tenant
+ * - Tenant isolation strictly enforced
+ * - Only admins can delete risk assessments
+ *
+ * Multi-tenancy:
+ * - Implements OWASP A1: Broken Access Control prevention
+ * - Tenant validation on all operations
+ * - Future: Can be extended with risk owner checks
  */
 class RiskVoter extends Voter
 {
