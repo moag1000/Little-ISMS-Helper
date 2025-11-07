@@ -10,7 +10,24 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
 
 /**
+ * User Repository
+ *
+ * Repository for querying User entities with support for Azure SSO integration.
+ * Implements PasswordUpgraderInterface for automatic password rehashing.
+ *
+ * Features:
+ * - Azure OAuth/SAML user synchronization
+ * - User search by name, email, role
+ * - Active user filtering
+ * - User statistics and analytics
+ * - Recently active user tracking
+ *
  * @extends ServiceEntityRepository<User>
+ *
+ * @method User|null find($id, $lockMode = null, $lockVersion = null)
+ * @method User|null findOneBy(array $criteria, array $orderBy = null)
+ * @method User[]    findAll()
+ * @method User[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class UserRepository extends ServiceEntityRepository implements PasswordUpgraderInterface
 {

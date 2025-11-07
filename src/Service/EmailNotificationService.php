@@ -12,6 +12,25 @@ use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
 
+/**
+ * Email Notification Service
+ *
+ * Centralized service for sending ISMS-related email notifications.
+ * Implements security best practices including email header injection prevention (OWASP #3).
+ *
+ * Features:
+ * - Incident notifications (creation and updates)
+ * - Audit reminders
+ * - Training reminders
+ * - Control target date warnings
+ * - Workflow approval notifications
+ * - Generic templated email support
+ *
+ * Security:
+ * - Automatic email subject sanitization to prevent header injection
+ * - Length limits on email subjects
+ * - Control character removal
+ */
 class EmailNotificationService
 {
     public function __construct(

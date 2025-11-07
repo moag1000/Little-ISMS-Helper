@@ -7,10 +7,33 @@ use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
- * Security: Add security headers to all responses
+ * Security Headers Subscriber
  *
- * This subscriber adds important security headers to prevent common attacks.
- * Headers are only added in production to avoid interfering with development.
+ * Automatically adds security-related HTTP headers to all responses to prevent common attacks.
+ * Implements multiple OWASP Top 10 mitigations through HTTP security headers.
+ *
+ * Security Headers:
+ * - X-Content-Type-Options: Prevents MIME-type sniffing (OWASP A3: Injection prevention)
+ * - X-Frame-Options: Prevents clickjacking attacks (OWASP A1: Broken Access Control)
+ * - X-XSS-Protection: Legacy XSS protection for older browsers
+ * - Referrer-Policy: Controls referrer information leakage
+ * - Content-Security-Policy: Restricts resource loading (OWASP A3: XSS prevention)
+ * - Permissions-Policy: Disables unnecessary browser features
+ * - Strict-Transport-Security (HSTS): Enforces HTTPS (OWASP A2: Cryptographic Failures)
+ *
+ * Environment Behavior:
+ * - Production: All security headers enabled
+ * - Development: Headers disabled to avoid interfering with debugging tools
+ *
+ * CSP Configuration:
+ * - Permissive policy to support Symfony UX Stimulus
+ * - Allows inline scripts and styles (unsafe-inline, unsafe-eval)
+ * - Future: Consider stricter CSP with nonces for production hardening
+ *
+ * HSTS Configuration:
+ * - max-age: 15768000 seconds (6 months)
+ * - Only enabled on HTTPS requests
+ * - Note: Consider includeSubDomains after testing all subdomains support HTTPS
  */
 class SecurityHeadersSubscriber implements EventSubscriberInterface
 {

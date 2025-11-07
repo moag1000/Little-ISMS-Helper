@@ -5,6 +5,26 @@ namespace App\Service;
 use App\Entity\Risk;
 use App\Repository\RiskRepository;
 
+/**
+ * Risk Matrix Service
+ *
+ * Provides risk assessment matrix generation and visualization for ISO 27001 compliance.
+ * Implements a 5x5 risk matrix (likelihood × impact) with automatic risk level calculation.
+ *
+ * Features:
+ * - Risk matrix generation with visual representation
+ * - Automatic risk level calculation (critical, high, medium, low)
+ * - Statistical analysis and grouping by risk level
+ * - Chart.js heatmap data generation
+ * - Localized likelihood and impact labels
+ * - CSS class and color mappings for visualization
+ *
+ * Risk Scoring:
+ * - Critical: Score >= 20 (Red)
+ * - High: Score >= 12 (Orange)
+ * - Medium: Score >= 6 (Yellow)
+ * - Low: Score < 6 (Green)
+ */
 class RiskMatrixService
 {
     private const MATRIX_SIZE = 5;

@@ -7,6 +7,36 @@ use App\Entity\User;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
+/**
+ * Document Voter
+ *
+ * Implements fine-grained authorization for Document entity operations.
+ * Enforces ownership-based access control with multi-tenancy support.
+ *
+ * Supported Operations:
+ * - VIEW: View document metadata and content
+ * - DOWNLOAD: Download document files
+ * - EDIT: Modify document metadata (owner only)
+ * - DELETE: Remove documents (admin only)
+ *
+ * Security Rules:
+ * - ROLE_ADMIN bypasses all checks
+ * - Users can view/download their own documents
+ * - Users can view/download documents from their tenant
+ * - Only the uploader can edit document metadata
+ * - Only admins can delete documents
+ *
+ * Multi-tenancy:
+ * - Implements OWASP A1: Broken Access Control prevention
+ * - Dual-layer isolation: ownership + tenant validation
+ * - Prevents horizontal privilege escalation within tenant
+ * - Prevents cross-tenant document access
+ *
+ * Document Security:
+ * - Ownership tracking through uploadedBy relationship
+ * - Tenant-based sharing within organization
+ * - Future: Can be extended with document classification and access levels
+ */
 class DocumentVoter extends Voter
 {
     public const VIEW = 'view';

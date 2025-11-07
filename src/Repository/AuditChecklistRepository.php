@@ -9,7 +9,16 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
+ * Audit Checklist Repository
+ *
+ * Repository for querying AuditChecklist entities with comprehensive audit statistics and verification tracking.
+ *
  * @extends ServiceEntityRepository<AuditChecklist>
+ *
+ * @method AuditChecklist|null find($id, $lockMode = null, $lockVersion = null)
+ * @method AuditChecklist|null findOneBy(array $criteria, array $orderBy = null)
+ * @method AuditChecklist[]    findAll()
+ * @method AuditChecklist[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class AuditChecklistRepository extends ServiceEntityRepository
 {
@@ -19,7 +28,10 @@ class AuditChecklistRepository extends ServiceEntityRepository
     }
 
     /**
-     * Find checklist items for an audit
+     * Find all checklist items for a specific internal audit.
+     *
+     * @param InternalAudit $audit Internal audit entity
+     * @return AuditChecklist[] Array of checklist items sorted by creation date
      */
     public function findByAudit(InternalAudit $audit): array
     {
@@ -32,7 +44,11 @@ class AuditChecklistRepository extends ServiceEntityRepository
     }
 
     /**
-     * Find checklist items for a specific framework within an audit
+     * Find checklist items for a specific framework within an audit.
+     *
+     * @param InternalAudit $audit Internal audit entity
+     * @param ComplianceFramework $framework Compliance framework to filter by
+     * @return AuditChecklist[] Array of checklist items sorted by requirement ID
      */
     public function findByAuditAndFramework(InternalAudit $audit, ComplianceFramework $framework): array
     {
@@ -48,7 +64,18 @@ class AuditChecklistRepository extends ServiceEntityRepository
     }
 
     /**
-     * Get audit statistics
+     * Get comprehensive audit statistics for dashboard and reporting.
+     *
+     * @param InternalAudit $audit Internal audit entity
+     * @return array<string, int|float> Statistics array containing:
+     *   - total: Total checklist items
+     *   - compliant: Count of compliant items
+     *   - partial: Count of partially compliant items
+     *   - non_compliant: Count of non-compliant items
+     *   - not_checked: Count of items not yet verified
+     *   - verified: Count of items with verification date
+     *   - with_findings: Count of items with documented findings
+     *   - average_score: Average compliance score (0-100)
      */
     public function getAuditStatistics(InternalAudit $audit): array
     {
@@ -129,7 +156,10 @@ class AuditChecklistRepository extends ServiceEntityRepository
     }
 
     /**
-     * Find items with non-compliances
+     * Find checklist items with non-compliances for corrective action planning.
+     *
+     * @param InternalAudit $audit Internal audit entity
+     * @return AuditChecklist[] Array of non-compliant items sorted by score (worst first)
      */
     public function findNonCompliances(InternalAudit $audit): array
     {
@@ -144,7 +174,10 @@ class AuditChecklistRepository extends ServiceEntityRepository
     }
 
     /**
-     * Find items not yet checked
+     * Find checklist items not yet verified for audit progress tracking.
+     *
+     * @param InternalAudit $audit Internal audit entity
+     * @return AuditChecklist[] Array of unchecked items
      */
     public function findNotChecked(InternalAudit $audit): array
     {
@@ -158,7 +191,10 @@ class AuditChecklistRepository extends ServiceEntityRepository
     }
 
     /**
-     * Get checklist grouped by framework
+     * Get checklist items organized by compliance framework for structured reporting.
+     *
+     * @param InternalAudit $audit Internal audit entity
+     * @return array<string, AuditChecklist[]> Associative array with framework names as keys
      */
     public function getGroupedByFramework(InternalAudit $audit): array
     {
@@ -185,7 +221,10 @@ class AuditChecklistRepository extends ServiceEntityRepository
     }
 
     /**
-     * Get checklist items for detailed requirements only
+     * Find checklist items for detailed requirements only (excluding high-level categories).
+     *
+     * @param InternalAudit $audit Internal audit entity
+     * @return AuditChecklist[] Array of detailed requirement items sorted by requirement ID
      */
     public function findDetailedRequirements(InternalAudit $audit): array
     {
