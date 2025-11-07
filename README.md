@@ -93,6 +93,8 @@ Little ISMS Helper unterstützt Organisationen bei der **Implementierung und Ver
 - **Dark Mode** - Theme-Switching
 - **Quick View** - Modal-Previews (Space)
 - **Global Search** - Cmd+K/Ctrl+K
+- **Drag & Drop** - Dashboard & File Upload ✨ NEW!
+- **Bulk Actions** - Multi-Select für 4 Module
 - **Keyboard Shortcuts** - Power-User-Features
 
 </td>
