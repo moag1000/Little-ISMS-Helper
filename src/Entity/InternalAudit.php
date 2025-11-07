@@ -50,8 +50,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         ),
     ],
     normalizationContext: ['groups' => ['audit:read']],
-    denormalizationContext: ['groups' => ['audit:write']],
-    paginationItemsPerPage: 30
+    denormalizationContext: ['groups' => ['audit:write']]
 )]
 #[ApiFilter(SearchFilter::class, properties: ['title' => 'partial', 'auditNumber' => 'exact', 'status' => 'exact', 'scopeType' => 'exact'])]
 #[ApiFilter(OrderFilter::class, properties: ['plannedDate', 'actualDate', 'status'])]

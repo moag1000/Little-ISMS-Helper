@@ -54,8 +54,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         ),
     ],
     normalizationContext: ['groups' => ['incident:read']],
-    denormalizationContext: ['groups' => ['incident:write']],
-    paginationItemsPerPage: 30
+    denormalizationContext: ['groups' => ['incident:write']]
 )]
 #[ApiFilter(SearchFilter::class, properties: ['title' => 'partial', 'incidentNumber' => 'exact', 'severity' => 'exact', 'status' => 'exact', 'category' => 'exact'])]
 #[ApiFilter(BooleanFilter::class, properties: ['dataBreachOccurred', 'notificationRequired'])]

@@ -50,8 +50,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         ),
     ],
     normalizationContext: ['groups' => ['training:read']],
-    denormalizationContext: ['groups' => ['training:write']],
-    paginationItemsPerPage: 30
+    denormalizationContext: ['groups' => ['training:write']]
 )]
 #[ApiFilter(SearchFilter::class, properties: ['title' => 'partial', 'trainingType' => 'exact', 'status' => 'exact'])]
 #[ApiFilter(BooleanFilter::class, properties: ['mandatory'])]

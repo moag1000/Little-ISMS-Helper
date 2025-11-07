@@ -50,8 +50,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         ),
     ],
     normalizationContext: ['groups' => ['risk:read']],
-    denormalizationContext: ['groups' => ['risk:write']],
-    paginationItemsPerPage: 30
+    denormalizationContext: ['groups' => ['risk:write']]
 )]
 #[ApiFilter(SearchFilter::class, properties: ['title' => 'partial', 'status' => 'exact', 'riskOwner' => 'partial'])]
 #[ApiFilter(OrderFilter::class, properties: ['title', 'createdAt', 'status'])]
