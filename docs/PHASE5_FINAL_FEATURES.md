@@ -143,8 +143,8 @@ Phase 5 implementiert die verbleibenden high-impact Features zur Vervollständig
 - Dark Mode Support
 
 **Dateien:**
-- Controller: `assets/controllers/file_upload_controller.js` (NEU, 385 Zeilen)
-- Template: `templates/document/new_modern.html.twig` (NEU, 420 Zeilen)
+- Controller: `assets/controllers/file_upload_controller.js` (NEU, 346 Zeilen)
+- Template: `templates/document/new_modern.html.twig` (NEU, 378 Zeilen)
 - Controller Update: `src/Controller/DocumentController.php` (geändert)
 
 **Technische Details:**
@@ -201,7 +201,7 @@ Phase 5 implementiert die verbleibenden high-impact Features zur Vervollständig
 assets/controllers/
 ├── bulk_actions_controller.js          (250 Zeilen, existiert bereits)
 ├── dashboard_customizer_controller.js  (276 Zeilen, erweitert mit Drag & Drop)
-├── file_upload_controller.js           (385 Zeilen, NEU)
+├── file_upload_controller.js           (346 Zeilen, NEU)
 ├── heat_map_controller.js             (172 Zeilen, Paket D)
 ├── radar_chart_controller.js          (197 Zeilen, Paket D)
 └── trend_chart_controller.js          (369 Zeilen, Paket D)
@@ -513,8 +513,8 @@ templates/
 | Audit Timeline | ~450 | 🔥🔥 | 1h |
 | Dashboard Customization | ~105 (toggle) | 🔥🔥 | 0.5h |
 | Dashboard Drag & Drop | ~120 (erweiterung) | 🔥🔥🔥 | 1h |
-| File Upload Drag & Drop | ~805 (controller + template) | 🔥🔥🔥 | 2h |
-| **Total** | **~1,580** | **Sehr High** | **5.5h** |
+| File Upload Drag & Drop | ~724 (controller + template) | 🔥🔥🔥 | 2h |
+| **Total** | **~1,499** | **Sehr High** | **5.5h** |
 
 **ROI:** Exzellent - Sehr hoher Impact mit moderatem Aufwand
 **Completion:** 🎉 100% - Alle Features implementiert!
@@ -558,7 +558,7 @@ Mit Phase 5 ist das Little-ISMS-Helper System zu **100% feature-complete** und v
 
 ### 📈 Statistiken
 
-- **Gesamt Lines of Code:** ~1,580 Zeilen (neu/geändert)
+- **Gesamt Lines of Code:** ~1,499 Zeilen (neu/geändert)
 - **Neue Stimulus Controllers:** 2 (dashboard_customizer erweitert, file_upload neu)
 - **Neue Templates:** 2 (audit_timeline, new_modern)
 - **Entwicklungszeit:** ~5.5 Stunden
