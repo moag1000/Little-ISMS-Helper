@@ -7,14 +7,32 @@ use OneLogin\Saml2\Auth;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\RateLimiter\RateLimiterFactory;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class SecurityController extends AbstractController
 {
+    public function __construct(
+        private readonly RateLimiterFactory $loginLimiter
+    ) {}
+
     #[Route('/login', name: 'app_login')]
-    public function login(AuthenticationUtils $authenticationUtils): Response
+    public function login(Request $request, AuthenticationUtils $authenticationUtils): Response
     {
+        // Security: Rate limit login attempts to prevent brute force attacks
+        $limiter = $this->loginLimiter->create($request->getClientIp());
+
+        if (false === $limiter->consume(1)->isAccepted()) {
+            $this->addFlash('error', 'Too many login attempts. Please try again in 15 minutes.');
+
+            return $this->render('security/login.html.twig', [
+                'last_username' => '',
+                'error' => null,
+                'rate_limited' => true,
+            ]);
+        }
+
         // If user is already logged in, redirect to home
         if ($this->getUser()) {
             return $this->redirectToRoute('app_home');
@@ -29,6 +47,7 @@ class SecurityController extends AbstractController
         return $this->render('security/login.html.twig', [
             'last_username' => $lastUsername,
             'error' => $error,
+            'rate_limited' => false,
         ]);
     }
 
