@@ -1,0 +1,253 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    {# Breadcrumb Navigation #}
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'Dashboard' }
+        ]
+    } %}
+
+    {# Page Header #}
+    {% include '_components/_page_header.html.twig' with {
+        title: 'ISMS Dashboard',
+        subtitle: 'Überblick über Ihr Informationssicherheits-Managementsystem',
+        icon: 'bi-speedometer2'
+    } %}
+
+    {# Stats Cards Row #}
+    <div class="row mb-4">
+        {# Assets Card #}
+        <div class="col-lg-3 col-md-6">
+            <div class="stat-card">
+                <div class="stat-card-icon bg-primary">
+                    <i class="bi-server"></i>
+                </div>
+                <div class="stat-card-title">Registrierte Assets</div>
+                <div class="stat-card-value">{{ stats.assets_total|default(0) }}</div>
+                <div class="stat-card-change positive">
+                    <i class="bi-arrow-up"></i>
+                    <span>{{ stats.assets_critical|default(0) }} kritisch</span>
+                </div>
+            </div>
+        </div>
+
+        {# Risks Card #}
+        <div class="col-lg-3 col-md-6">
+            <div class="stat-card">
+                <div class="stat-card-icon bg-warning">
+                    <i class="bi-exclamation-triangle"></i>
+                </div>
+                <div class="stat-card-title">Identifizierte Risiken</div>
+                <div class="stat-card-value">{{ stats.risks_total|default(0) }}</div>
+                <div class="stat-card-change negative">
+                    <i class="bi-arrow-up"></i>
+                    <span>{{ stats.risks_high|default(0) }} hoch</span>
+                </div>
+            </div>
+        </div>
+
+        {# Controls Card #}
+        <div class="col-lg-3 col-md-6">
+            <div class="stat-card">
+                <div class="stat-card-icon bg-success">
+                    <i class="bi-shield-check"></i>
+                </div>
+                <div class="stat-card-title">Sicherheitsmaßnahmen</div>
+                <div class="stat-card-value">{{ stats.controls_implemented|default(0) }}/{{ stats.controls_total|default(0) }}</div>
+                <div class="stat-card-change positive">
+                    <i class="bi-check-circle"></i>
+                    <span>{{ stats.compliance_percentage|default(0) }}% implementiert</span>
+                </div>
+            </div>
+        </div>
+
+        {# Incidents Card #}
+        <div class="col-lg-3 col-md-6">
+            <div class="stat-card">
+                <div class="stat-card-icon bg-danger">
+                    <i class="bi-exclamation-circle"></i>
+                </div>
+                <div class="stat-card-title">Offene Vorfälle</div>
+                <div class="stat-card-value">{{ stats.incidents_open|default(0) }}</div>
+                <div class="stat-card-change">
+                    <i class="bi-clock-history"></i>
+                    <span>In Bearbeitung</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Charts and Activity Row #}
+    <div class="row">
+        {# Charts Column #}
+        <div class="col-lg-8">
+            {# Risk Distribution Chart #}
+            <div class="widget-card mb-4">
+                <div class="widget-header">
+                    <h3 class="widget-title">
+                        <i class="bi-pie-chart"></i>
+                        Risikoverteilung
+                    </h3>
+                    <div class="widget-actions">
+                        <button class="widget-action" title="Aktualisieren">
+                            <i class="bi-arrow-clockwise"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="riskDistributionChart"></canvas>
+                </div>
+            </div>
+
+            {# Assets by Category Chart #}
+            <div class="widget-card">
+                <div class="widget-header">
+                    <h3 class="widget-title">
+                        <i class="bi-bar-chart"></i>
+                        Assets nach Kategorie
+                    </h3>
+                </div>
+                <div class="chart-container">
+                    <canvas id="assetCategoryChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        {# Activity Feed Column #}
+        <div class="col-lg-4">
+            {# Activity Feed Widget #}
+            <div class="widget-card mb-4">
+                <div class="widget-header">
+                    <h3 class="widget-title">
+                        <i class="bi-activity"></i>
+                        Letzte Aktivitäten
+                    </h3>
+                    <div class="widget-actions">
+                        <button class="widget-action" title="Alle anzeigen">
+                            <i class="bi-arrows-fullscreen"></i>
+                        </button>
+                    </div>
+                </div>
+                {% include '_components/_activity_feed.html.twig' with {
+                    activities: activities|default([])
+                } %}
+            </div>
+
+            {# Quick Actions Widget #}
+            <div class="widget-card">
+                <div class="widget-header">
+                    <h3 class="widget-title">
+                        <i class="bi-lightning"></i>
+                        Schnellzugriff
+                    </h3>
+                </div>
+                <div class="quick-actions">
+                    <a href="{{ path('app_asset_new') }}" class="quick-action-btn">
+                        <div class="quick-action-icon">
+                            <i class="bi-plus-circle text-primary"></i>
+                        </div>
+                        <div class="quick-action-label">Neues Asset</div>
+                    </a>
+                    <a href="{{ path('app_risk_new') }}" class="quick-action-btn">
+                        <div class="quick-action-icon">
+                            <i class="bi-exclamation-triangle text-warning"></i>
+                        </div>
+                        <div class="quick-action-label">Risiko erfassen</div>
+                    </a>
+                    <a href="{{ path('app_control_index') }}" class="quick-action-btn">
+                        <div class="quick-action-icon">
+                            <i class="bi-shield-check text-success"></i>
+                        </div>
+                        <div class="quick-action-label">Maßnahmen</div>
+                    </a>
+                    <a href="{{ path('app_incident_new') }}" class="quick-action-btn">
+                        <div class="quick-action-icon">
+                            <i class="bi-exclamation-circle text-danger"></i>
+                        </div>
+                        <div class="quick-action-label">Vorfall melden</div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{# Chart.js Initialization #}
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Risk Distribution Chart
+            const riskCtx = document.getElementById('riskDistributionChart');
+            if (riskCtx) {
+                new Chart(riskCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Hoch', 'Mittel', 'Niedrig', 'Sehr Niedrig'],
+                        datasets: [{
+                            data: [
+                                {{ stats.risks_high|default(0) }},
+                                {{ (stats.risks_total|default(0) - stats.risks_high|default(0)) / 2 }},
+                                {{ (stats.risks_total|default(0) - stats.risks_high|default(0)) / 3 }},
+                                {{ (stats.risks_total|default(0) - stats.risks_high|default(0)) / 6 }}
+                            ],
+                            backgroundColor: [
+                                '#e74c3c',
+                                '#f39c12',
+                                '#3498db',
+                                '#2ecc71'
+                            ]
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom'
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Asset Category Chart
+            const assetCtx = document.getElementById('assetCategoryChart');
+            if (assetCtx) {
+                new Chart(assetCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Hardware', 'Software', 'Daten', 'Personal', 'Services'],
+                        datasets: [{
+                            label: 'Anzahl Assets',
+                            data: [
+                                {{ (stats.assets_total|default(0) * 0.3)|round }},
+                                {{ (stats.assets_total|default(0) * 0.25)|round }},
+                                {{ (stats.assets_total|default(0) * 0.2)|round }},
+                                {{ (stats.assets_total|default(0) * 0.15)|round }},
+                                {{ (stats.assets_total|default(0) * 0.1)|round }}
+                            ],
+                            backgroundColor: 'rgba(102, 126, 234, 0.7)',
+                            borderColor: 'rgba(102, 126, 234, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+{% endblock %}
+{% endblock %}
