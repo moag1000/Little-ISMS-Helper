@@ -38,11 +38,14 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 # Set working directory
 WORKDIR /var/www/html
 
+# Copy composer files first for better caching
+COPY composer.json composer.lock ./
+
+# Install dependencies (production) - this layer will be cached if composer files don't change
+RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist --verbose
+
 # Copy application files
 COPY . .
-
-# Install dependencies (production)
-RUN composer install --no-dev --optimize-autoloader --no-scripts --no-interaction
 
 # Create Symfony required directories
 RUN mkdir -p var/cache var/log
@@ -80,8 +83,8 @@ RUN apk add --no-cache \
     linux-headers \
     $PHPIZE_DEPS
 
-# Install Xdebug for development
-RUN pecl install xdebug && docker-php-ext-enable xdebug
+# Install Xdebug for development with verbose output
+RUN pecl install -v xdebug && docker-php-ext-enable xdebug
 
 # Configure Xdebug
 RUN echo "xdebug.mode=debug,coverage" >> "$PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini" && \
@@ -94,8 +97,9 @@ RUN echo "xdebug.mode=debug,coverage" >> "$PHP_INI_DIR/conf.d/docker-php-ext-xde
 # So we just need to replace it with the development version
 RUN cp "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"
 
-# Install all dependencies including dev
-RUN composer install --optimize-autoloader --no-scripts --no-interaction
+# Clean vendor from production stage and install all dependencies including dev
+RUN rm -rf vendor/ && \
+    composer install --optimize-autoloader --no-interaction --verbose
 
 # Enable opcache validation in development
 RUN echo "opcache.validate_timestamps=1" >> "$PHP_INI_DIR/conf.d/opcache.ini" && \
