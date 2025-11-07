@@ -53,8 +53,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         ),
     ],
     normalizationContext: ['groups' => ['control:read']],
-    denormalizationContext: ['groups' => ['control:write']],
-    paginationItemsPerPage: 30
+    denormalizationContext: ['groups' => ['control:write']]
 )]
 #[ApiFilter(SearchFilter::class, properties: ['controlId' => 'exact', 'name' => 'partial', 'category' => 'exact', 'implementationStatus' => 'exact'])]
 #[ApiFilter(BooleanFilter::class, properties: ['applicable'])]

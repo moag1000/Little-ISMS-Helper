@@ -49,8 +49,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         ),
     ],
     normalizationContext: ['groups' => ['asset:read']],
-    denormalizationContext: ['groups' => ['asset:write']],
-    paginationItemsPerPage: 30
+    denormalizationContext: ['groups' => ['asset:write']]
 )]
 #[ApiFilter(SearchFilter::class, properties: ['name' => 'partial', 'assetType' => 'exact', 'owner' => 'partial', 'status' => 'exact'])]
 #[ApiFilter(OrderFilter::class, properties: ['name', 'assetType', 'createdAt'])]
