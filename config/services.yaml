@@ -44,26 +44,12 @@ services:
         arguments:
             $projectDir: '%kernel.project_dir%'
 
-    # Configure Rate Limiters for Security
-    # Login rate limiter to prevent brute force attacks
-    Symfony\Component\RateLimiter\RateLimiterFactory $loginLimiter:
-        factory: ['@limiter', 'create']
-        arguments: ['login']
-
-    # API rate limiter to prevent API abuse
-    Symfony\Component\RateLimiter\RateLimiterFactory $apiLimiter:
-        factory: ['@limiter', 'create']
-        arguments: ['api']
-
-    # Password reset rate limiter
-    Symfony\Component\RateLimiter\RateLimiterFactory $passwordResetLimiter:
-        factory: ['@limiter', 'create']
-        arguments: ['password_reset']
-
-    # Document upload rate limiter
-    Symfony\Component\RateLimiter\RateLimiterFactory $documentUploadLimiter:
-        factory: ['@limiter', 'create']
-        arguments: ['document_upload']
+    # Bind rate limiter factories for autowiring
+    # Symfony automatically creates services named limiter.<name> from rate_limiter.yaml
+    Symfony\Component\RateLimiter\RateLimiterFactory $loginLimiter: '@limiter.login'
+    Symfony\Component\RateLimiter\RateLimiterFactory $apiLimiter: '@limiter.api'
+    Symfony\Component\RateLimiter\RateLimiterFactory $passwordResetLimiter: '@limiter.password_reset'
+    Symfony\Component\RateLimiter\RateLimiterFactory $documentUploadLimiter: '@limiter.document_upload'
 
     # Configure Security Headers Subscriber
     App\EventSubscriber\SecurityHeadersSubscriber:
