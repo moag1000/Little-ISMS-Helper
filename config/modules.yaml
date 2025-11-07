@@ -119,6 +119,33 @@ modules:
     dependencies:
       - controls
 
+  authentication:
+    name: 'User & Role Management'
+    description: 'Benutzerverwaltung, Rollen und Berechtigungen mit Azure AD Integration'
+    required: true
+    icon: 'user-shield'
+    entities:
+      - User
+      - Role
+      - Permission
+    routes:
+      - /security/login
+      - /admin/users
+      - /admin/roles
+    dependencies: []
+
+  audit_logging:
+    name: 'Audit Logging'
+    description: 'Umfassendes Audit-Logging für alle System-Aktivitäten'
+    required: false
+    icon: 'file-lines'
+    entities:
+      - AuditLog
+    routes:
+      - /audit-log
+    dependencies:
+      - authentication
+
 # Basis-Daten die immer importiert werden
 base_data:
   - name: 'ISO 27001 Annex A Controls'
@@ -126,6 +153,12 @@ base_data:
     command: 'isms:load-annex-a-controls'
     required_modules:
       - controls
+
+  - name: 'System Permissions'
+    description: 'Basis-Berechtigungen für Rollen- und Benutzerverwaltung'
+    command: 'app:setup-permissions'
+    required_modules:
+      - authentication
 
 # Optionale Beispieldaten
 sample_data:
@@ -179,6 +212,8 @@ requirements:
       - json
       - zip
       - opcache
+      - curl
+      - openssl
 
   symfony:
     version: '7.3.0'
