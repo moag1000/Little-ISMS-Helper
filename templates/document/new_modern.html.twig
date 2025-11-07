@@ -1,0 +1,378 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Dokument hochladen{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    {# Breadcrumb Navigation #}
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'Dashboard', url: path('app_dashboard') },
+            { label: 'Document Management', url: path('app_document_index') },
+            { label: 'Hochladen' }
+        ]
+    } %}
+
+    {# Page Header #}
+    {% include '_components/_page_header.html.twig' with {
+        title: 'Dokument hochladen',
+        subtitle: 'Laden Sie neue Dokumente in das ISMS hoch',
+        icon: 'bi-cloud-upload'
+    } %}
+
+    <div class="row">
+        <div class="col-lg-8 offset-lg-2">
+            {# Drag & Drop Upload Zone #}
+            <div class="card mb-4" data-controller="file-upload">
+                <div class="card-header">
+                    <h2 class="mb-0">
+                        <i class="bi-cloud-arrow-up"></i>
+                        Dateien auswählen
+                    </h2>
+                </div>
+                <div class="card-body">
+                    {# Drag & Drop Zone #}
+                    <div class="dropzone"
+                         data-file-upload-target="dropzone"
+                         data-action="click->file-upload#triggerFileInput">
+                        <div class="dropzone-content">
+                            <i class="bi-cloud-arrow-up-fill dropzone-icon"></i>
+                            <h3 class="dropzone-title">Dateien hierher ziehen</h3>
+                            <p class="dropzone-subtitle">oder klicken Sie hier, um Dateien auszuwählen</p>
+                            <div class="dropzone-info">
+                                <small class="text-muted">
+                                    <i class="bi-info-circle me-1"></i>
+                                    Max. Dateigröße: 10 MB | Erlaubte Formate: PDF, Word, Excel, Bilder, Text
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+
+                    {# Hidden File Input #}
+                    <input type="file"
+                           data-file-upload-target="fileInput"
+                           data-action="change->file-upload#handleFileInputChange"
+                           style="display: none;"
+                           multiple
+                           accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png,.gif,.webp,.txt">
+
+                    {# Selected Files List #}
+                    <div class="mt-4" data-file-upload-target="fileList">
+                        <p class="text-muted">Keine Dateien ausgewählt</p>
+                    </div>
+                </div>
+            </div>
+
+            {# Upload Form #}
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="mb-0">
+                        <i class="bi-list-ul"></i>
+                        Dokumentdetails
+                    </h2>
+                </div>
+                <div class="card-body">
+                    {{ form_start(form, {
+                        'attr': {
+                            'enctype': 'multipart/form-data',
+                            'data-file-upload-target': 'form'
+                        }
+                    }) }}
+
+                    {# Name Field #}
+                    <div class="mb-4">
+                        {{ form_label(form.name, null, {
+                            'label_attr': {'class': 'form-label fw-bold'}
+                        }) }}
+                        {{ form_widget(form.name, {
+                            'attr': {'class': 'form-control', 'placeholder': 'z.B. Sicherheitsrichtlinie 2025'}
+                        }) }}
+                        {{ form_errors(form.name) }}
+                        <small class="form-text text-muted">
+                            Geben Sie einen aussagekräftigen Namen für das Dokument ein
+                        </small>
+                    </div>
+
+                    {# Description Field #}
+                    <div class="mb-4">
+                        {{ form_label(form.description, null, {
+                            'label_attr': {'class': 'form-label fw-bold'}
+                        }) }}
+                        {{ form_widget(form.description, {
+                            'attr': {
+                                'class': 'form-control',
+                                'rows': 4,
+                                'placeholder': 'Kurze Beschreibung des Dokumentinhalts...'
+                            }
+                        }) }}
+                        {{ form_errors(form.description) }}
+                        <small class="form-text text-muted">
+                            Optional: Beschreiben Sie den Inhalt und Zweck des Dokuments
+                        </small>
+                    </div>
+
+                    {# Document Type Field #}
+                    <div class="mb-4">
+                        {{ form_label(form.documentType, null, {
+                            'label_attr': {'class': 'form-label fw-bold'}
+                        }) }}
+                        {{ form_widget(form.documentType, {
+                            'attr': {'class': 'form-select'}
+                        }) }}
+                        {{ form_errors(form.documentType) }}
+                        <small class="form-text text-muted">
+                            Wählen Sie die passende Kategorie für das Dokument
+                        </small>
+                    </div>
+
+                    {# File Field (Hidden - controlled by drag & drop) #}
+                    <div style="display: none;">
+                        {{ form_widget(form.file) }}
+                    </div>
+
+                    {# Form Actions #}
+                    <div class="d-flex gap-3 justify-content-between mt-5">
+                        <a href="{{ path('app_document_index') }}" class="btn btn-outline-secondary">
+                            <i class="bi-x-circle me-2"></i>
+                            Abbrechen
+                        </a>
+                        <button type="submit"
+                                class="btn btn-primary"
+                                data-file-upload-target="uploadButton"
+                                disabled>
+                            <i class="bi-cloud-upload me-2"></i>
+                            Dateien hochladen
+                        </button>
+                    </div>
+
+                    {{ form_end(form) }}
+                </div>
+            </div>
+
+            {# Help Card #}
+            <div class="card mt-4 border-info">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi-lightbulb text-info"></i>
+                        Tipps zum Hochladen
+                    </h5>
+                    <ul class="mb-0">
+                        <li>Sie können mehrere Dateien gleichzeitig hochladen</li>
+                        <li>Unterstützte Formate: PDF, Word (.doc, .docx), Excel (.xls, .xlsx), Bilder (JPG, PNG, GIF, WebP), Text (.txt)</li>
+                        <li>Maximale Dateigröße pro Datei: 10 MB</li>
+                        <li>Ziehen Sie Dateien direkt aus dem Datei-Explorer in die blaue Drop-Zone</li>
+                        <li>Alle hochgeladenen Dokumente werden sicher verschlüsselt gespeichert</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Drag & Drop Zone Styles */
+.dropzone {
+    border: 3px dashed var(--color-border);
+    border-radius: var(--border-radius);
+    background: var(--color-bg-secondary);
+    padding: 3rem 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-height: 250px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dropzone:hover {
+    border-color: var(--color-primary);
+    background: rgba(102, 126, 234, 0.05);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.dropzone.drag-over {
+    border-color: var(--color-primary);
+    background: rgba(102, 126, 234, 0.1);
+    border-style: solid;
+    box-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
+    transform: scale(1.02);
+}
+
+.dropzone-content {
+    pointer-events: none;
+}
+
+.dropzone-icon {
+    font-size: 4rem;
+    color: var(--color-primary);
+    opacity: 0.7;
+    margin-bottom: 1rem;
+    display: block;
+    transition: all 0.3s ease;
+}
+
+.dropzone:hover .dropzone-icon {
+    opacity: 1;
+    transform: translateY(-5px);
+}
+
+.dropzone.drag-over .dropzone-icon {
+    opacity: 1;
+    transform: scale(1.2);
+    color: var(--color-success);
+}
+
+.dropzone-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--color-text);
+    margin-bottom: 0.5rem;
+}
+
+.dropzone-subtitle {
+    color: var(--color-text-muted);
+    margin-bottom: 1rem;
+}
+
+.dropzone-info {
+    margin-top: 1rem;
+    padding: 0.75rem 1rem;
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: calc(var(--border-radius) / 2);
+    display: inline-block;
+}
+
+/* Selected Files List */
+.selected-files-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.file-item {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    transition: all 0.2s ease;
+}
+
+.file-item:hover {
+    border-color: var(--color-primary);
+    box-shadow: var(--shadow-sm);
+}
+
+.file-icon {
+    flex-shrink: 0;
+}
+
+.file-info {
+    flex-grow: 1;
+}
+
+.file-name {
+    font-weight: 600;
+    color: var(--color-text);
+    display: block;
+    word-break: break-word;
+}
+
+.file-size {
+    font-size: 0.875rem;
+    display: block;
+    margin-top: 0.25rem;
+}
+
+/* Form Styles */
+.form-label.fw-bold {
+    color: var(--color-text);
+    margin-bottom: 0.5rem;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+/* Dark Mode Support */
+[data-theme="dark"] .dropzone {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+[data-theme="dark"] .dropzone:hover {
+    background: rgba(102, 126, 234, 0.1);
+}
+
+[data-theme="dark"] .dropzone.drag-over {
+    background: rgba(102, 126, 234, 0.15);
+}
+
+[data-theme="dark"] .dropzone-info {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+[data-theme="dark"] .file-item {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+/* Animation */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.file-item {
+    animation: slideIn 0.3s ease;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .dropzone {
+        padding: 2rem 1rem;
+        min-height: 200px;
+    }
+
+    .dropzone-icon {
+        font-size: 3rem;
+    }
+
+    .dropzone-title {
+        font-size: 1.25rem;
+    }
+}
+</style>
+
+<script>
+// Additional client-side enhancements
+document.addEventListener('DOMContentLoaded', function() {
+    // Sync file input with form file field
+    const fileUploadController = document.querySelector('[data-controller="file-upload"]');
+    const formFileInput = document.querySelector('input[type="file"]:not([data-file-upload-target])');
+
+    if (fileUploadController && formFileInput) {
+        // Listen for changes on the drag & drop file input
+        const dragDropInput = fileUploadController.querySelector('[data-file-upload-target="fileInput"]');
+
+        if (dragDropInput) {
+            dragDropInput.addEventListener('change', function() {
+                // Sync files to the form's file input
+                if (this.files.length > 0) {
+                    formFileInput.files = this.files;
+                }
+            });
+        }
+    }
+});
+</script>
+{% endblock %}
