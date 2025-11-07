@@ -1,0 +1,68 @@
+{# Smart Filter Presets Component
+   Usage: {% include '_components/_filter_presets.html.twig' with {
+       entity: 'risk',
+       presets: [...]
+   } %}
+   
+   Features:
+   - One-click filtering
+   - Visual indicators
+   - Customizable presets
+#}
+
+{% set defaultPresets = {
+    'risk': [
+        { id: 'high', label: 'Hohe Risiken', icon: 'bi-exclamation-triangle-fill', color: 'danger', filter: 'level:high' },
+        { id: 'unmitigated', label: 'Unbehandelt', icon: 'bi-shield-x', color: 'warning', filter: 'status:identified' },
+        { id: 'overdue', label: 'Überfällige Reviews', icon: 'bi-clock-history', color: 'danger', filter: 'overdue:true' },
+        { id: 'critical', label: 'Kritisch', icon: 'bi-exclamation-octagon', color: 'danger', filter: 'level:critical' }
+    ],
+    'asset': [
+        { id: 'critical', label: 'Kritische Assets', icon: 'bi-star-fill', color: 'danger', filter: 'criticality:high' },
+        { id: 'unprotected', label: 'Ungeschützt', icon: 'bi-shield-slash', color: 'warning', filter: 'protected:false' },
+        { id: 'high_risk', label: 'Hohes Risiko', icon: 'bi-exclamation-triangle', color: 'danger', filter: 'risk:high' },
+        { id: 'recent', label: 'Neu hinzugefügt', icon: 'bi-plus-circle', color: 'success', filter: 'recent:7d' }
+    ],
+    'incident': [
+        { id: 'open', label: 'Offen', icon: 'bi-exclamation-circle-fill', color: 'danger', filter: 'status:open' },
+        { id: 'critical', label: 'Kritisch', icon: 'bi-exclamation-octagon', color: 'danger', filter: 'severity:critical' },
+        { id: 'recent', label: 'Letzte 7 Tage', icon: 'bi-clock', color: 'warning', filter: 'recent:7d' },
+        { id: 'unresolved', label: 'Ungelöst', icon: 'bi-hourglass-split', color: 'warning', filter: 'resolved:false' }
+    ],
+    'training': [
+        { id: 'upcoming', label: 'Anstehend', icon: 'bi-calendar-event', color: 'primary', filter: 'upcoming:true' },
+        { id: 'overdue', label: 'Überfällig', icon: 'bi-exclamation-triangle', color: 'danger', filter: 'overdue:true' },
+        { id: 'completed', label: 'Abgeschlossen', icon: 'bi-check-circle', color: 'success', filter: 'status:completed' },
+        { id: 'mandatory', label: 'Pflicht', icon: 'bi-star', color: 'warning', filter: 'mandatory:true' }
+    ]
+} %}
+
+{% set activePresets = presets|default(defaultPresets[entity]|default([])) %}
+
+{% if activePresets|length > 0 %}
+<div class="filter-presets">
+    <div class="filter-presets-header">
+        <i class="bi-funnel"></i>
+        <span>Schnellfilter:</span>
+    </div>
+    <div class="filter-presets-items">
+        {% for preset in activePresets %}
+        <button type="button"
+                class="filter-preset-btn"
+                data-filter="{{ preset.filter }}"
+                data-preset-id="{{ preset.id }}"
+                title="{{ preset.label }}">
+            <i class="{{ preset.icon }} text-{{ preset.color }}"></i>
+            <span>{{ preset.label }}</span>
+        </button>
+        {% endfor %}
+        <button type="button"
+                class="filter-preset-btn filter-preset-clear"
+                data-action="click->filter#clear"
+                title="Alle Filter zurücksetzen">
+            <i class="bi-x-circle"></i>
+            <span>Zurücksetzen</span>
+        </button>
+    </div>
+</div>
+{% endif %}

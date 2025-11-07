@@ -1,0 +1,12 @@
+twig:
+    file_name_pattern: '*.twig'
+    form_themes: ['bootstrap_5_layout.html.twig']
+
+    # Security: Auto-escaping is enabled by default in Symfony to prevent XSS attacks
+
+    # Security: Use strict variables in development to catch errors early
+    # strict_variables: true  # Enable in dev if needed
+
+when@test:
+    twig:
+        strict_variables: true

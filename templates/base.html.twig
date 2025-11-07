@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="{{ app.request.locale }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="turbo-cache-control" content="no-preview">
+    <title>{% block title %}{{ 'app.title'|trans }}{% endblock %}</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>🔒</text></svg>">
+
+    {% block stylesheets %}
+        <link rel="stylesheet" href="{{ asset('styles/app.css') }}">
+        <link rel="stylesheet" href="{{ asset('styles/components.css') }}">
+        {# Modern UI/UX Components - Phase 1 #}
+        <link rel="stylesheet" href="{{ asset('styles/ui-components.css') }}">
+        <link rel="stylesheet" href="{{ asset('styles/command-palette.css') }}">
+        <link rel="stylesheet" href="{{ asset('styles/toast.css') }}">
+        <link rel="stylesheet" href="{{ asset('styles/keyboard-shortcuts.css') }}">
+        {# Modern UI/UX Components - Phase 2 #}
+        <link rel="stylesheet" href="{{ asset('styles/skeleton.css') }}">
+        <link rel="stylesheet" href="{{ asset('styles/bulk-actions.css') }}">
+        <style>
+            /* Turbo Progress Bar */
+            .turbo-progress-bar {
+                position: fixed;
+                display: block;
+                top: 0;
+                left: 0;
+                height: 3px;
+                background: #0d6efd;
+                z-index: 2147483647;
+                transition: width 300ms ease-out, opacity 150ms 150ms ease-in;
+                transform: translate3d(0, 0, 0);
+            }
+
+            /* Loading state for body */
+            body.turbo-loading {
+                cursor: wait;
+            }
+
+            body.turbo-loading * {
+                pointer-events: none;
+            }
+
+            /* Alert auto-fade */
+            #notifications .alert {
+                transition: opacity 0.15s linear;
+            }
+
+            #notifications .alert.fade:not(.show) {
+                opacity: 0;
+            }
+        </style>
+    {% endblock %}
+</head>
+<body data-turbo="true">
+    <header class="header">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <h1>{{ 'app.title'|trans }}</h1>
+                <p>{{ 'app.subtitle'|trans }}</p>
+            </div>
+            <div class="language-switcher">
+                <a href="{{ path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')|merge({'_locale': 'de'})) }}"
+                   class="lang-btn {% if app.request.locale == 'de' %}active{% endif %}">DE</a>
+                <a href="{{ path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')|merge({'_locale': 'en'})) }}"
+                   class="lang-btn {% if app.request.locale == 'en' %}active{% endif %}">EN</a>
+            </div>
+        </div>
+    </header>
+
+    {% set current_route = app.request.get('_route') %}
+    <nav class="nav" data-turbo-permanent>
+        <ul>
+            <li><a href="{{ path('app_home') }}" class="{% if current_route starts with 'app_home' %}active{% endif %}" data-turbo-action="advance">{{ 'nav.home'|trans }}</a></li>
+            <li><a href="{{ path('app_dashboard') }}" class="{% if current_route starts with 'app_dashboard' %}active{% endif %}" data-turbo-action="advance">{{ 'nav.dashboard'|trans }}</a></li>
+            <li><a href="{{ path('app_analytics_dashboard') }}" class="{% if current_route starts with 'app_analytics_' %}active{% endif %}" data-turbo-action="advance"><i class="bi bi-graph-up"></i> Analytics</a></li>
+            <li><a href="{{ path('app_context_index') }}" class="{% if current_route starts with 'app_context_' %}active{% endif %}" data-turbo-action="advance">{{ 'nav.context'|trans }}</a></li>
+            <li><a href="{{ path('app_soa_index') }}" class="{% if current_route starts with 'app_soa_' %}active{% endif %}" data-turbo-action="advance">SoA</a></li>
+            <li><a href="{{ path('app_asset_index') }}" class="{% if current_route starts with 'app_asset_' %}active{% endif %}" data-turbo-action="advance">{{ 'nav.assets'|trans }}</a></li>
+            <li><a href="{{ path('app_risk_index') }}" class="{% if current_route starts with 'app_risk_' %}active{% endif %}" data-turbo-action="advance">{{ 'nav.risks'|trans }}</a></li>
+            <li><a href="{{ path('app_business_process_index') }}" class="{% if current_route starts with 'app_business_process_' %}active{% endif %}" data-turbo-action="advance">BCM</a></li>
+            <li><a href="{{ path('app_incident_index') }}" class="{% if current_route starts with 'app_incident_' %}active{% endif %}" data-turbo-action="advance">{{ 'nav.incidents'|trans }}</a></li>
+            <li><a href="{{ path('app_audit_index') }}" class="{% if current_route starts with 'app_audit_' and not current_route starts with 'app_audit_log_' %}active{% endif %}" data-turbo-action="advance">{{ 'nav.audits'|trans }}</a></li>
+            <li><a href="{{ path('app_compliance_index') }}" class="{% if current_route starts with 'app_compliance_' %}active{% endif %}" data-turbo-action="advance">{{ 'nav.compliance'|trans }}</a></li>
+            <li><a href="{{ path('app_audit_log_index') }}" class="{% if current_route starts with 'app_audit_log_' %}active{% endif %}" data-turbo-action="advance">Audit Log</a></li>
+            {% if is_granted('ROLE_ADMIN') %}
+            <li><a href="{{ path('user_management_index') }}" class="{% if current_route starts with 'user_management_' %}active{% endif %}" data-turbo-action="advance"><i class="bi bi-people"></i> Users</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+
+    <div class="container" data-controller="turbo">
+        <div class="content">
+            {# Flash Messages Container (will be converted to toasts) #}
+            <div id="flash-messages" style="display: none;">
+                {% for label, messages in app.flashes %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ label }}" role="alert">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+            </div>
+
+            {% block body %}{% endblock %}
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>{{ 'app.footer'|trans }}</p>
+        <p style="font-size: 0.9rem; margin-top: 0.5rem;">
+            {{ 'app.powered_by'|trans({'%version%': constant('Symfony\\Component\\HttpKernel\\Kernel::VERSION')}) }}
+            <span style="opacity: 0.5;">• Press <kbd>?</kbd> for shortcuts • <kbd>⌘K</kbd> to search</span>
+        </p>
+    </footer>
+
+    {# ==================== Modern UI/UX Components ==================== #}
+
+    {# Command Palette (⌘K) #}
+    {% include '_components/_command_palette.html.twig' %}
+
+    {# Global Search (Paket B - Premium) #}
+    {% include '_components/_global_search.html.twig' %}
+
+    {# Quick View Modal (Paket B - Premium) #}
+    {% include '_components/_quick_view_modal.html.twig' %}
+
+    {# Theme Toggle (Paket C - Premium) #}
+    {% include '_components/_theme_toggle.html.twig' %}
+
+    {# Preferences Modal (Paket C - Premium) #}
+    {% include '_components/_preferences_modal.html.twig' %}
+
+    {# Notification Center (Paket C - Premium) #}
+    {% include '_components/_notification_center.html.twig' %}
+
+    {# Toast Notifications Container #}
+    <div class="toast-container" data-controller="toast" data-toast-target="container"></div>
+
+    {# Keyboard Shortcuts Help #}
+    {% include '_components/_keyboard_shortcuts.html.twig' %}
+
+    {% block javascripts %}
+        {% block importmap %}{{ importmap('app') }}{% endblock %}
+    {% endblock %}
+</body>
+</html>

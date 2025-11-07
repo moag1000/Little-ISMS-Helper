@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'context_management.title'|trans }} - {{ 'app.title'|trans }}{% endblock %}
+
+{% block body %}
+<h1>{{ 'context_management.title'|trans }}</h1>
+
+<p style="color: #666; margin-bottom: 2rem;">
+    {{ 'context_management.description'|trans }}
+</p>
+
+{% if context %}
+<div class="info-box">
+    <h3>{{ context.organizationName }}</h3>
+    {% if context.ismsScope %}
+    <p><strong>{{ 'context_management.isms_scope'|trans }}:</strong></p>
+    <p>{{ context.ismsScope }}</p>
+    {% endif %}
+</div>
+{% else %}
+<div class="warning-box">
+    <p>{{ 'context_management.no_context_defined'|trans }}</p>
+</div>
+{% endif %}
+
+<h2 style="margin-top: 2rem;">{{ 'context_management.isms_objectives'|trans }}</h2>
+
+{% if objectives|length > 0 %}
+<p><strong>{{ 'context_management.active_objectives'|trans }}:</strong> {{ objectives|length }}</p>
+{% else %}
+<p><em>{{ 'context_management.no_objectives'|trans }}</em></p>
+{% endif %}
+
+<p style="margin-top: 2rem;">
+    <em>{{ 'context_management.forms_coming'|trans }}</em>
+</p>
+{% endblock %}

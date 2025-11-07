@@ -1,0 +1,381 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Cross-Framework Mappings{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="page-header">
+        <div>
+            <h1>🔗 Cross-Framework Mappings</h1>
+            <p class="text-muted">How Requirements Map Across Different Standards</p>
+        </div>
+        <div class="button-group">
+            <a href="{{ path('app_compliance_index') }}" class="btn btn-secondary">
+                ← Back to Compliance
+            </a>
+        </div>
+    </div>
+
+    {# Coverage Matrix #}
+    {% if coverage_matrix is not empty %}
+        <div class="card">
+            <div class="card-header">
+                <h2>📊 Framework Coverage Matrix</h2>
+                <p class="text-muted">Shows how much of each target framework is covered by fulfilling the source framework</p>
+            </div>
+            <div class="card-body">
+                <div class="coverage-matrix">
+                    <table class="matrix-table">
+                        <thead>
+                            <tr>
+                                <th>Source Framework ↓ / Target Framework →</th>
+                                {% for framework in frameworks %}
+                                    <th>{{ framework.code }}</th>
+                                {% endfor %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for sourceFramework in frameworks %}
+                                <tr>
+                                    <td><strong>{{ sourceFramework.code }}</strong></td>
+                                    {% for targetFramework in frameworks %}
+                                        <td class="matrix-cell">
+                                            {% if sourceFramework.id == targetFramework.id %}
+                                                <span class="matrix-value self">100%</span>
+                                            {% elseif coverage_matrix[sourceFramework.code][targetFramework.code] is defined %}
+                                                {% set coverage = coverage_matrix[sourceFramework.code][targetFramework.code] %}
+                                                <span class="matrix-value coverage-{{ coverage.coverage_percentage >= 75 ? 'high' : (coverage.coverage_percentage >= 50 ? 'medium' : 'low') }}">
+                                                    {{ coverage.coverage_percentage }}%
+                                                </span>
+                                                <small class="matrix-detail">
+                                                    {{ coverage.covered_requirements }}/{{ coverage.total_target_requirements }}
+                                                </small>
+                                            {% else %}
+                                                <span class="matrix-value coverage-none">—</span>
+                                            {% endif %}
+                                        </td>
+                                    {% endfor %}
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="matrix-legend">
+                    <div class="legend-item">
+                        <span class="legend-color coverage-high"></span>
+                        <span>≥75% Coverage (High)</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color coverage-medium"></span>
+                        <span>50-74% Coverage (Medium)</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color coverage-low"></span>
+                        <span><50% Coverage (Low)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    {# Detailed Mappings #}
+    {% for mapping_group in cross_mappings %}
+        <div class="card" style="margin-top: var(--spacing-lg);">
+            <div class="card-header">
+                <h3>
+                    {{ mapping_group.source.code }} → {{ mapping_group.target.code }}
+                </h3>
+                <p class="text-muted">
+                    {{ mapping_group.coverage.covered_requirements }} of {{ mapping_group.coverage.total_target_requirements }}
+                    requirements covered ({{ mapping_group.coverage.coverage_percentage }}%)
+                </p>
+            </div>
+
+            <div class="mapping-summary">
+                <div class="summary-stat">
+                    <div class="summary-icon" style="background: var(--color-success);">✓</div>
+                    <div class="summary-content">
+                        <div class="summary-value">{{ mapping_group.coverage.strong_mappings }}</div>
+                        <div class="summary-label">Full/Exceeds (≥100%)</div>
+                    </div>
+                </div>
+                <div class="summary-stat">
+                    <div class="summary-icon" style="background: var(--color-warning);">⚠</div>
+                    <div class="summary-content">
+                        <div class="summary-value">{{ mapping_group.coverage.partial_mappings }}</div>
+                        <div class="summary-label">Partial (50-99%)</div>
+                    </div>
+                </div>
+                <div class="summary-stat">
+                    <div class="summary-icon" style="background: var(--color-secondary);">◐</div>
+                    <div class="summary-content">
+                        <div class="summary-value">{{ mapping_group.coverage.weak_mappings }}</div>
+                        <div class="summary-label">Weak (<50%)</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Source Requirement</th>
+                            <th>Target Requirement</th>
+                            <th>Mapping Type</th>
+                            <th>Strength</th>
+                            <th>Bidirectional</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for mapping in mapping_group.mappings|slice(0, 20) %}
+                            <tr>
+                                <td>
+                                    <strong>{{ mapping.sourceRequirement.requirementId }}</strong><br>
+                                    <small>{{ mapping.sourceRequirement.title|u.truncate(60, '...') }}</small>
+                                </td>
+                                <td>
+                                    <strong>{{ mapping.targetRequirement.requirementId }}</strong><br>
+                                    <small>{{ mapping.targetRequirement.title|u.truncate(60, '...') }}</small>
+                                </td>
+                                <td>
+                                    <span class="badge badge-{{ mapping.mappingBadgeClass }}">
+                                        {{ mapping.mappingType|upper }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="mapping-strength">
+                                        <div class="strength-bar">
+                                            <div class="strength-fill" style="width: {{ mapping.mappingPercentage }}%; background: {{ mapping.mappingPercentage >= 100 ? 'var(--color-success)' : (mapping.mappingPercentage >= 50 ? 'var(--color-warning)' : 'var(--color-secondary)') }};"></div>
+                                        </div>
+                                        <span class="strength-value">{{ mapping.mappingPercentage }}%</span>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    {% if mapping.bidirectional %}
+                                        <span class="badge badge-success">🔄 Yes</span>
+                                    {% else %}
+                                        <span class="badge badge-secondary">→</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            {% if mapping_group.mappings|length > 20 %}
+                <div class="card-footer text-center">
+                    Showing 20 of {{ mapping_group.mappings|length }} mappings
+                </div>
+            {% endif %}
+        </div>
+    {% endfor %}
+
+    {# Explanation #}
+    <div class="card" style="margin-top: var(--spacing-lg);">
+        <div class="card-header">
+            <h2>Understanding Cross-Framework Mappings</h2>
+        </div>
+        <div class="card-body">
+            <div class="explanation-grid">
+                <div class="explanation-item">
+                    <h4>🎯 What are Mappings?</h4>
+                    <p>Mappings show how requirements from one framework relate to requirements in another framework. For example, a TISAX requirement might fully satisfy a DORA requirement.</p>
+                </div>
+                <div class="explanation-item">
+                    <h4>📊 Mapping Types</h4>
+                    <ul>
+                        <li><strong>Exceeds (>100%):</strong> Source requirement goes beyond target</li>
+                        <li><strong>Full (100%):</strong> Source fully satisfies target</li>
+                        <li><strong>Partial (50-99%):</strong> Source partially satisfies target</li>
+                        <li><strong>Weak (<50%):</strong> Source has weak relationship to target</li>
+                    </ul>
+                </div>
+                <div class="explanation-item">
+                    <h4>🔄 Bidirectional Mappings</h4>
+                    <p>Some requirements mutually satisfy each other. This means work done for one framework automatically benefits the other framework as well.</p>
+                </div>
+                <div class="explanation-item">
+                    <h4>💡 Strategic Value</h4>
+                    <p>Use these mappings to identify which frameworks have the most overlap and prioritize compliance efforts for maximum multi-framework benefit.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.coverage-matrix {
+    overflow-x: auto;
+}
+
+.matrix-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 600px;
+}
+
+.matrix-table th,
+.matrix-table td {
+    padding: var(--spacing-md);
+    border: 1px solid var(--color-border);
+    text-align: center;
+}
+
+.matrix-table th {
+    background: var(--color-background);
+    font-weight: 600;
+}
+
+.matrix-cell {
+    position: relative;
+}
+
+.matrix-value {
+    display: block;
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.matrix-value.self {
+    color: var(--color-secondary);
+}
+
+.matrix-value.coverage-high {
+    color: var(--color-success);
+}
+
+.matrix-value.coverage-medium {
+    color: var(--color-warning);
+}
+
+.matrix-value.coverage-low {
+    color: var(--color-danger);
+}
+
+.matrix-value.coverage-none {
+    color: var(--color-text-tertiary);
+}
+
+.matrix-detail {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--color-text-secondary);
+}
+
+.matrix-legend {
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-lg);
+    margin-top: var(--spacing-md);
+    padding: var(--spacing-md);
+    background: var(--color-background);
+    border-radius: var(--border-radius);
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+}
+
+.legend-color {
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+}
+
+.legend-color.coverage-high {
+    background: var(--color-success);
+}
+
+.legend-color.coverage-medium {
+    background: var(--color-warning);
+}
+
+.legend-color.coverage-low {
+    background: var(--color-danger);
+}
+
+.mapping-summary {
+    display: flex;
+    justify-content: space-around;
+    padding: var(--spacing-lg);
+    background: var(--color-background);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.summary-stat {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.summary-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: white;
+}
+
+.summary-value {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--color-primary);
+}
+
+.summary-label {
+    font-size: 0.85rem;
+    color: var(--color-text-secondary);
+}
+
+.mapping-strength {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.strength-bar {
+    flex: 1;
+    height: 8px;
+    background: var(--color-background);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.strength-fill {
+    height: 100%;
+    transition: width 0.3s;
+}
+
+.strength-value {
+    font-weight: 600;
+    min-width: 50px;
+    text-align: right;
+}
+
+.explanation-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--spacing-lg);
+}
+
+.explanation-item h4 {
+    color: var(--color-primary);
+    margin-bottom: var(--spacing-sm);
+}
+
+.explanation-item ul {
+    margin: 0;
+    padding-left: var(--spacing-lg);
+}
+
+.explanation-item li {
+    margin-bottom: var(--spacing-xs);
+}
+</style>
+{% endblock %}

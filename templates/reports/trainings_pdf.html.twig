@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Training Log</title>
+    <style>
+        body { font-family: 'DejaVu Sans', sans-serif; font-size: 10pt; }
+        .header { text-align: center; margin-bottom: 20px; border-bottom: 3px solid #3b82f6; padding-bottom: 10px; }
+        .header h1 { color: #1e40af; margin: 0; font-size: 20pt; }
+        table { width: 100%; border-collapse: collapse; margin: 10px 0; }
+        th { background: #dbeafe; padding: 8px; text-align: left; font-size: 9pt; border: 1px solid #93c5fd; }
+        td { padding: 8px; border: 1px solid #ddd; font-size: 9pt; }
+        tr:nth-child(even) { background: #f9fafb; }
+        .mandatory { background: #fef3c7; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Training Log</h1>
+        <div style="color: #666; font-size: 9pt; margin-top: 5px;">Generated: {{ generated_at|date('d.m.Y H:i') }} | Total Trainings: {{ trainings|length }}</div>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Type</th>
+                <th>Date</th>
+                <th>Duration</th>
+                <th>Participants</th>
+                <th>Mandatory</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for training in trainings %}
+            <tr {% if training.mandatory %}class="mandatory"{% endif %}>
+                <td>{{ training.id }}</td>
+                <td>{{ training.title|slice(0, 35) }}{% if training.title|length > 35 %}...{% endif %}</td>
+                <td>{{ training.trainingType }}</td>
+                <td>{{ training.scheduledDate|date('Y-m-d') }}</td>
+                <td>{{ training.duration }} min</td>
+                <td>{{ training.participants|length }}</td>
+                <td>{{ training.mandatory ? 'YES' : 'No' }}</td>
+                <td>{{ training.status }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

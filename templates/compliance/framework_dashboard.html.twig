@@ -1,0 +1,546 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ framework.name }}{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="page-header">
+        <div>
+            <h1>{{ framework.name }}</h1>
+            <p class="text-muted">{{ framework.description|u.truncate(100, '...') }}</p>
+        </div>
+        <div class="button-group">
+            <a href="{{ path('app_compliance_index') }}" class="btn btn-secondary">
+                ← Zurück
+            </a>
+            <a href="{{ path('app_compliance_assess', {id: framework.id}) }}" class="btn btn-success">
+                Neu bewerten
+            </a>
+        </div>
+    </div>
+
+    {# Quick Stats Bar - Always Visible #}
+    <div class="stats-bar">
+        <div class="stat-item">
+            <div class="stat-label">Compliance</div>
+            <div class="stat-value">{{ dashboard.compliance_percentage }}%</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-label">Anforderungen</div>
+            <div class="stat-value">{{ dashboard.statistics.applicable }}/{{ dashboard.statistics.total }}</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-label">Erfüllt</div>
+            <div class="stat-value" style="color: var(--color-success);">{{ dashboard.statistics.fulfilled }}</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-label">Lücken</div>
+            <div class="stat-value" style="color: var(--color-danger);">{{ dashboard.gaps.total }}</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-label">Zeitersparnis</div>
+            <div class="stat-value">{{ dashboard.data_reuse.total_days_saved }} Tage</div>
+        </div>
+    </div>
+
+    {# Tab Navigation - Clean and Simple #}
+    <div class="tabs" data-controller="toggle">
+        <div class="tab-nav">
+            <button class="tab-button active" data-action="click->toggle#switchTab" data-tab="overview">
+                Übersicht
+            </button>
+            <button class="tab-button" data-action="click->toggle#switchTab" data-tab="requirements">
+                Anforderungen
+            </button>
+            <button class="tab-button" data-action="click->toggle#switchTab" data-tab="gaps">
+                Lücken ({{ dashboard.gaps.total }})
+            </button>
+            <button class="tab-button" data-action="click->toggle#switchTab" data-tab="data-reuse">
+                Datennutzung
+            </button>
+        </div>
+
+        {# Tab: Overview #}
+        <div class="tab-content active" data-tab-content="overview">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Framework-Informationen</h2>
+                </div>
+                <div class="card-body">
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="label">Code:</span>
+                            <span class="value">{{ framework.code }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Version:</span>
+                            <span class="value">{{ framework.version }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Branche:</span>
+                            <span class="value">{{ framework.applicableIndustry|replace({'_': ' '})|title }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Regulierungsbehörde:</span>
+                            <span class="value">{{ framework.regulatoryBody }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Verpflichtend:</span>
+                            <span class="value">
+                                {% if framework.mandatory %}
+                                    <span class="badge badge-danger">Ja</span>
+                                {% else %}
+                                    <span class="badge badge-success">Nein</span>
+                                {% endif %}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {# Recommendations - Only if there are any #}
+            {% if dashboard.recommendations is not empty %}
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Empfehlungen</h2>
+                    </div>
+                    <div class="card-body">
+                        {% for recommendation in dashboard.recommendations %}
+                            <div class="recommendation-item priority-{{ recommendation.priority }}">
+                                <div class="recommendation-header">
+                                    <span class="badge badge-{{ recommendation.priority == 'high' ? 'danger' : (recommendation.priority == 'medium' ? 'warning' : 'info') }}">
+                                        {{ recommendation.priority|upper }}
+                                    </span>
+                                    <strong>{{ recommendation.title }}</strong>
+                                </div>
+                                <p>{{ recommendation.description }}</p>
+                                <div class="recommendation-action">
+                                    <small>👉 {{ recommendation.action }}</small>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+
+        {# Tab: Requirements - Grouped by Type #}
+        <div class="tab-content" data-tab-content="requirements">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Anforderungen</h2>
+                    <div class="filter-toggle">
+                        <button class="btn btn-sm btn-secondary" data-action="click->toggle#toggleFilter">
+                            Filter
+                        </button>
+                    </div>
+                </div>
+
+                {# Filter Panel - Hidden by Default #}
+                <div class="filter-panel" data-toggle-target="filterPanel" style="display: none;">
+                    <input type="text" class="search-input" placeholder="Suchen..." id="reqSearch">
+                    <select id="reqPriority">
+                        <option value="">Alle Prioritäten</option>
+                        <option value="critical">Critical</option>
+                        <option value="high">High</option>
+                        <option value="medium">Medium</option>
+                        <option value="low">Low</option>
+                    </select>
+                    <select id="reqStatus">
+                        <option value="">Alle Status</option>
+                        <option value="fulfilled">Erfüllt (≥100%)</option>
+                        <option value="partial">Teilweise (50-99%)</option>
+                        <option value="gap">Lücke (<50%)</option>
+                    </select>
+                </div>
+
+                <div class="requirements-list">
+                    {% set core_requirements = requirements|filter(r => r.requirementType == 'core') %}
+                    {% for requirement in core_requirements %}
+                        <div class="requirement-item" data-controller="toggle">
+                            <div class="requirement-header" data-action="click->toggle#toggleContent">
+                                <div class="requirement-info">
+                                    <span class="requirement-id">{{ requirement.requirementId }}</span>
+                                    <span class="requirement-title">{{ requirement.title }}</span>
+                                    {% if requirement.hasDetailedRequirements() %}
+                                        <span class="badge badge-info">
+                                            {{ requirement.detailedRequirements|length }} Details
+                                        </span>
+                                    {% endif %}
+                                </div>
+                                <div class="requirement-status">
+                                    <span class="badge badge-{{ requirement.priority == 'critical' ? 'danger' : (requirement.priority == 'high' ? 'warning' : 'secondary') }}">
+                                        {{ requirement.priority|upper }}
+                                    </span>
+                                    <div class="progress-mini">
+                                        <div class="progress-fill" style="width: {{ requirement.fulfillmentPercentage }}%; background: {{ requirement.fulfillmentPercentage >= 75 ? 'var(--color-success)' : (requirement.fulfillmentPercentage >= 50 ? 'var(--color-warning)' : 'var(--color-danger)') }};"></div>
+                                    </div>
+                                    <span class="percentage">{{ requirement.fulfillmentPercentage }}%</span>
+                                    {% if requirement.hasDetailedRequirements() %}
+                                        <span class="expand-icon" data-toggle-target="expandIcon">▼</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            {# Detailed Requirements - Hidden by Default #}
+                            {% if requirement.hasDetailedRequirements() %}
+                                <div class="requirement-details" data-toggle-target="content" style="display: none;">
+                                    <div class="detailed-requirements">
+                                        {% for detailed in requirement.detailedRequirements %}
+                                            <div class="detailed-requirement">
+                                                <div class="detailed-header">
+                                                    <span class="detailed-id">{{ detailed.requirementId }}</span>
+                                                    <span class="detailed-title">{{ detailed.title }}</span>
+                                                </div>
+                                                <div class="detailed-status">
+                                                    <div class="progress-mini">
+                                                        <div class="progress-fill" style="width: {{ detailed.fulfillmentPercentage }}%;"></div>
+                                                    </div>
+                                                    <span class="percentage-small">{{ detailed.fulfillmentPercentage }}%</span>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        {# Tab: Gaps - Only show critical information #}
+        <div class="tab-content" data-tab-content="gaps">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Compliance-Lücken</h2>
+                </div>
+                <div class="card-body">
+                    {% if dashboard.gaps.total > 0 %}
+                        {% for gap in dashboard.gaps.list %}
+                            <div class="gap-item priority-{{ gap.priority }}">
+                                <div class="gap-header">
+                                    <div>
+                                        <span class="requirement-id">{{ gap.requirementId }}</span>
+                                        <strong>{{ gap.title }}</strong>
+                                    </div>
+                                    <span class="badge badge-{{ gap.priority == 'critical' ? 'danger' : 'warning' }}">
+                                        {{ gap.priority|upper }}
+                                    </span>
+                                </div>
+                                <div class="gap-progress">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: {{ gap.fulfillmentPercentage }}%; background: var(--color-danger);"></div>
+                                    </div>
+                                    <span>{{ gap.fulfillmentPercentage }}% erfüllt</span>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="text-center" style="padding: var(--spacing-xl);">
+                            <div style="font-size: 3rem; margin-bottom: var(--spacing-md);">✅</div>
+                            <h3>Keine Lücken gefunden!</h3>
+                            <p class="text-muted">Alle anwendbaren Anforderungen sind vollständig erfüllt.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        {# Tab: Data Reuse #}
+        <div class="tab-content" data-tab-content="data-reuse">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Datenwiederverwendung</h2>
+                </div>
+                <div class="card-body">
+                    <div class="value-highlight">
+                        <div class="value-icon">💎</div>
+                        <div class="value-content">
+                            <h3>{{ dashboard.data_reuse.total_hours_saved }} Stunden gespart</h3>
+                            <p>Das entspricht {{ dashboard.data_reuse.total_days_saved }} Arbeitstagen durch intelligente Datenwiederverwendung</p>
+                        </div>
+                    </div>
+                    <a href="{{ path('app_compliance_data_reuse', {id: framework.id}) }}" class="btn btn-primary">
+                        Details anzeigen →
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.stats-bar {
+    display: flex;
+    gap: var(--spacing-md);
+    padding: var(--spacing-lg);
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-sm);
+    margin-bottom: var(--spacing-lg);
+    flex-wrap: wrap;
+}
+
+.stat-item {
+    flex: 1;
+    min-width: 120px;
+    text-align: center;
+}
+
+.stat-label {
+    font-size: 0.85rem;
+    color: var(--color-text-secondary);
+    margin-bottom: var(--spacing-xs);
+}
+
+.stat-value {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: var(--color-primary);
+}
+
+.tabs {
+    margin-top: var(--spacing-lg);
+}
+
+.tab-nav {
+    display: flex;
+    gap: var(--spacing-sm);
+    border-bottom: 2px solid var(--color-border);
+    margin-bottom: var(--spacing-lg);
+}
+
+.tab-button {
+    padding: var(--spacing-md) var(--spacing-lg);
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    transition: all 0.2s;
+}
+
+.tab-button:hover {
+    color: var(--color-primary);
+}
+
+.tab-button.active {
+    color: var(--color-primary);
+    border-bottom-color: var(--color-primary);
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing-md);
+}
+
+.info-item {
+    display: flex;
+    justify-content: space-between;
+    padding: var(--spacing-sm) 0;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.info-item .label {
+    font-weight: 600;
+    color: var(--color-text-secondary);
+}
+
+.recommendation-item {
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+    background: var(--color-background);
+    border-radius: var(--border-radius);
+    border-left: 4px solid var(--color-primary);
+}
+
+.recommendation-item.priority-high {
+    border-left-color: var(--color-danger);
+}
+
+.recommendation-header {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-sm);
+}
+
+.recommendation-action {
+    margin-top: var(--spacing-sm);
+    padding-top: var(--spacing-sm);
+    border-top: 1px solid var(--color-border);
+}
+
+.requirements-list {
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+.requirement-item {
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    margin-bottom: var(--spacing-sm);
+    overflow: hidden;
+}
+
+.requirement-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-md);
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.requirement-header:hover {
+    background: var(--color-background);
+}
+
+.requirement-info {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    flex: 1;
+}
+
+.requirement-id {
+    font-weight: bold;
+    color: var(--color-primary);
+    min-width: 80px;
+}
+
+.requirement-status {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.progress-mini {
+    width: 100px;
+    height: 8px;
+    background: var(--color-background);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    transition: width 0.3s;
+}
+
+.percentage {
+    min-width: 45px;
+    text-align: right;
+    font-weight: 600;
+}
+
+.expand-icon {
+    transition: transform 0.2s;
+    font-size: 0.8rem;
+}
+
+.requirement-item.expanded .expand-icon {
+    transform: rotate(180deg);
+}
+
+.requirement-details {
+    padding: 0 var(--spacing-md) var(--spacing-md);
+    background: var(--color-background);
+}
+
+.detailed-requirements {
+    border-left: 2px solid var(--color-primary);
+    padding-left: var(--spacing-md);
+}
+
+.detailed-requirement {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-sm) 0;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.detailed-requirement:last-child {
+    border-bottom: none;
+}
+
+.detailed-id {
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    margin-right: var(--spacing-sm);
+}
+
+.detailed-status {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.percentage-small {
+    font-size: 0.85rem;
+    min-width: 40px;
+    text-align: right;
+}
+
+.gap-item {
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+    background: white;
+    border-radius: var(--border-radius);
+    border-left: 4px solid var(--color-warning);
+}
+
+.gap-item.priority-critical {
+    border-left-color: var(--color-danger);
+}
+
+.gap-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-sm);
+}
+
+.gap-progress {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.value-highlight {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-lg);
+    padding: var(--spacing-xl);
+    background: var(--gradient-success);
+    color: white;
+    border-radius: var(--border-radius);
+    margin-bottom: var(--spacing-lg);
+}
+
+.value-icon {
+    font-size: 4rem;
+}
+
+.value-content h3 {
+    margin: 0 0 var(--spacing-xs) 0;
+}
+
+.value-content p {
+    margin: 0;
+    opacity: 0.9;
+}
+</style>
+{% endblock %}

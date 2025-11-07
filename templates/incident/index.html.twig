@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'incident_management.title'|trans }} - {{ 'app.title'|trans }}{% endblock %}
+
+{% block body %}
+<h1>{{ 'incident_management.title'|trans }}</h1>
+
+<p style="color: #666; margin-bottom: 2rem;">
+    {{ 'incident_management.description'|trans }}
+</p>
+
+<div class="warning-box">
+    <strong>{{ 'incident_management.open_incidents'|trans }}:</strong> {{ openIncidents|length }}
+</div>
+
+<div class="info-box" style="margin-top: 1rem;">
+    <h3>{{ 'common.overview'|trans }}</h3>
+    <p><strong>{{ 'incident_management.total_recorded'|trans }}:</strong> {{ allIncidents|length }}</p>
+</div>
+
+<p style="margin-top: 2rem;">
+    <em>{{ 'incident_management.detail_workflows_coming'|trans }}</em>
+</p>
+{% endblock %}

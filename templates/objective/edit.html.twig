@@ -1,0 +1,80 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit {{ objective.title }} - {{ parent() }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid py-4">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white"><h4 class="mb-0">Edit: {{ objective.title }}</h4></div>
+        <div class="card-body">
+            <form method="post">
+                <div class="row">
+                    <div class="col-md-8 mb-3">
+                        <label class="form-label">Title *</label>
+                        <input type="text" name="title" class="form-control" value="{{ objective.title }}" required>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Category *</label>
+                        <select name="category" class="form-control" required>
+                            <option value="availability" {{ objective.category == 'availability' ? 'selected' : '' }}>Availability</option>
+                            <option value="confidentiality" {{ objective.category == 'confidentiality' ? 'selected' : '' }}>Confidentiality</option>
+                            <option value="integrity" {{ objective.category == 'integrity' ? 'selected' : '' }}>Integrity</option>
+                            <option value="compliance" {{ objective.category == 'compliance' ? 'selected' : '' }}>Compliance</option>
+                            <option value="risk_management" {{ objective.category == 'risk_management' ? 'selected' : '' }}>Risk Management</option>
+                            <option value="incident_response" {{ objective.category == 'incident_response' ? 'selected' : '' }}>Incident Response</option>
+                            <option value="awareness" {{ objective.category == 'awareness' ? 'selected' : '' }}>Awareness & Training</option>
+                            <option value="continual_improvement" {{ objective.category == 'continual_improvement' ? 'selected' : '' }}>Continual Improvement</option>
+                        </select>
+                    </div>
+                    <div class="col-md-12 mb-3">
+                        <label class="form-label">Description *</label>
+                        <textarea name="description" class="form-control" rows="3" required>{{ objective.description }}</textarea>
+                    </div>
+                    <div class="col-md-12 mb-3">
+                        <label class="form-label">Measurable Indicators</label>
+                        <textarea name="measurable_indicators" class="form-control" rows="2">{{ objective.measurableIndicators }}</textarea>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="form-label">Target Value</label>
+                        <input type="number" step="0.01" name="target_value" value="{{ objective.targetValue }}" class="form-control">
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="form-label">Current Value</label>
+                        <input type="number" step="0.01" name="current_value" value="{{ objective.currentValue }}" class="form-control">
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="form-label">Unit</label>
+                        <input type="text" name="unit" value="{{ objective.unit }}" class="form-control">
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="form-label">Status *</label>
+                        <select name="status" class="form-control" required>
+                            <option value="planned" {{ objective.status == 'planned' ? 'selected' : '' }}>Planned</option>
+                            <option value="in_progress" {{ objective.status == 'in_progress' ? 'selected' : '' }}>In Progress</option>
+                            <option value="achieved" {{ objective.status == 'achieved' ? 'selected' : '' }}>Achieved</option>
+                            <option value="delayed" {{ objective.status == 'delayed' ? 'selected' : '' }}>Delayed</option>
+                            <option value="cancelled" {{ objective.status == 'cancelled' ? 'selected' : '' }}>Cancelled</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Responsible Person *</label>
+                        <input type="text" name="responsible_person" value="{{ objective.responsiblePerson }}" class="form-control" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Target Date *</label>
+                        <input type="date" name="target_date" value="{{ objective.targetDate|date('Y-m-d') }}" class="form-control" required>
+                    </div>
+                    <div class="col-md-12 mb-3">
+                        <label class="form-label">Progress Notes</label>
+                        <textarea name="progress_notes" class="form-control" rows="3">{{ objective.progressNotes }}</textarea>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <a href="{{ path('app_objective_show', {id: objective.id}) }}" class="btn btn-outline-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

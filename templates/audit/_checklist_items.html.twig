@@ -1,0 +1,243 @@
+{# Partial template for audit checklist items #}
+<div class="checklist-items">
+    {% for item in items %}
+        <div class="checklist-item {{ item.verificationStatus }}" data-controller="toggle">
+            {# Compact View - Always Visible #}
+            <div class="checklist-header" data-action="click->toggle#toggleContent">
+                <div class="requirement-info">
+                    <span class="req-id">{{ item.requirement.requirementId }}</span>
+                    <span class="req-title">{{ item.requirement.title|u.truncate(80, '...') }}</span>
+                </div>
+                <div class="checklist-controls">
+                    <select class="status-select" data-item-id="{{ item.id }}" onclick="event.stopPropagation();">
+                        <option value="not_checked" {{ item.verificationStatus == 'not_checked' ? 'selected' : '' }}>
+                            Nicht geprüft
+                        </option>
+                        <option value="compliant" {{ item.verificationStatus == 'compliant' ? 'selected' : '' }}>
+                            ✓ Konform
+                        </option>
+                        <option value="partial" {{ item.verificationStatus == 'partial' ? 'selected' : '' }}>
+                            ⚠ Teilweise
+                        </option>
+                        <option value="non_compliant" {{ item.verificationStatus == 'non_compliant' ? 'selected' : '' }}>
+                            ✗ Nicht konform
+                        </option>
+                        <option value="not_applicable" {{ item.verificationStatus == 'not_applicable' ? 'selected' : '' }}>
+                            N/A
+                        </option>
+                    </select>
+                    <span class="expand-icon" data-toggle-target="expandIcon">▼</span>
+                </div>
+            </div>
+
+            {# Detailed View - Expandable #}
+            <div class="checklist-details" data-toggle-target="content" style="display: none;">
+                <div class="detail-section">
+                    <label>Anforderungsbeschreibung:</label>
+                    <p>{{ item.requirement.description }}</p>
+                </div>
+
+                <div class="detail-section">
+                    <label>Audit-Notizen:</label>
+                    <textarea class="form-control" data-item-id="{{ item.id }}" data-field="auditNotes" rows="2">{{ item.auditNotes }}</textarea>
+                </div>
+
+                <div class="detail-section">
+                    <label>Gefundene Nachweise:</label>
+                    <textarea class="form-control" data-item-id="{{ item.id }}" data-field="evidenceFound" rows="2">{{ item.evidenceFound }}</textarea>
+                </div>
+
+                {% if item.verificationStatus in ['non_compliant', 'partial'] %}
+                    <div class="detail-section alert-warning">
+                        <label>Feststellungen:</label>
+                        <textarea class="form-control" data-item-id="{{ item.id }}" data-field="findings" rows="2">{{ item.findings }}</textarea>
+                    </div>
+
+                    <div class="detail-section">
+                        <label>Empfehlungen:</label>
+                        <textarea class="form-control" data-item-id="{{ item.id }}" data-field="recommendations" rows="2">{{ item.recommendations }}</textarea>
+                    </div>
+                {% endif %}
+
+                <div class="detail-section">
+                    <label>Compliance Score (0-100):</label>
+                    <input type="range" min="0" max="100" value="{{ item.complianceScore }}"
+                           class="score-slider" data-item-id="{{ item.id }}"
+                           oninput="this.nextElementSibling.textContent = this.value + '%'">
+                    <span class="score-value">{{ item.complianceScore }}%</span>
+                </div>
+
+                {% if item.requirement.hasDetailedRequirements() %}
+                    <div class="detail-section">
+                        <label>Detailanforderungen ({{ item.requirement.detailedRequirements|length }}):</label>
+                        <div class="detailed-requirements-list">
+                            {% for detailed in item.requirement.detailedRequirements %}
+                                <div class="detailed-req">
+                                    <span class="detailed-id">{{ detailed.requirementId }}</span>
+                                    <span class="detailed-title">{{ detailed.title }}</span>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+<style>
+.checklist-items {
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-sm);
+}
+
+.checklist-item {
+    border-bottom: 1px solid var(--color-border);
+}
+
+.checklist-item:last-child {
+    border-bottom: none;
+}
+
+.checklist-item.compliant {
+    background: rgba(40, 167, 69, 0.05);
+}
+
+.checklist-item.non_compliant {
+    background: rgba(220, 53, 69, 0.05);
+}
+
+.checklist-item.partial {
+    background: rgba(255, 193, 7, 0.05);
+}
+
+.checklist-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-md);
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.checklist-header:hover {
+    background: rgba(0, 0, 0, 0.02);
+}
+
+.requirement-info {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    flex: 1;
+}
+
+.req-id {
+    font-weight: bold;
+    color: var(--color-primary);
+    min-width: 100px;
+    font-size: 0.9rem;
+}
+
+.req-title {
+    flex: 1;
+}
+
+.checklist-controls {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.status-select {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    background: white;
+    cursor: pointer;
+    min-width: 150px;
+}
+
+.expand-icon {
+    transition: transform 0.2s;
+    font-size: 0.8rem;
+    color: var(--color-text-secondary);
+}
+
+.checklist-item.expanded .expand-icon {
+    transform: rotate(180deg);
+}
+
+.checklist-details {
+    padding: 0 var(--spacing-md) var(--spacing-md);
+}
+
+.detail-section {
+    margin-bottom: var(--spacing-md);
+}
+
+.detail-section label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: var(--spacing-xs);
+    color: var(--color-text-secondary);
+    font-size: 0.9rem;
+}
+
+.detail-section p {
+    margin: 0;
+    padding: var(--spacing-sm);
+    background: var(--color-background);
+    border-radius: var(--border-radius);
+    font-size: 0.9rem;
+}
+
+.detail-section.alert-warning {
+    background: rgba(255, 193, 7, 0.1);
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius);
+}
+
+.form-control {
+    width: 100%;
+    padding: var(--spacing-sm);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    font-family: inherit;
+    font-size: 0.9rem;
+}
+
+.score-slider {
+    width: calc(100% - 60px);
+    margin-right: var(--spacing-sm);
+}
+
+.score-value {
+    font-weight: bold;
+    color: var(--color-primary);
+    min-width: 50px;
+    display: inline-block;
+}
+
+.detailed-requirements-list {
+    background: var(--color-background);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-sm);
+}
+
+.detailed-req {
+    padding: var(--spacing-xs) 0;
+    border-bottom: 1px solid var(--color-border);
+    font-size: 0.85rem;
+}
+
+.detailed-req:last-child {
+    border-bottom: none;
+}
+
+.detailed-id {
+    font-weight: 600;
+    color: var(--color-primary);
+    margin-right: var(--spacing-sm);
+}
+</style>

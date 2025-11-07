@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Incident Log</title>
+    <style>
+        body { font-family: 'DejaVu Sans', sans-serif; font-size: 10pt; }
+        .header { text-align: center; margin-bottom: 20px; border-bottom: 3px solid #f59e0b; padding-bottom: 10px; }
+        .header h1 { color: #d97706; margin: 0; font-size: 20pt; }
+        table { width: 100%; border-collapse: collapse; margin: 10px 0; }
+        th { background: #fef3c7; padding: 8px; text-align: left; font-size: 9pt; border: 1px solid #fde68a; }
+        td { padding: 8px; border: 1px solid #ddd; font-size: 9pt; }
+        tr:nth-child(even) { background: #f9fafb; }
+        .severity-critical { background: #fee2e2; }
+        .severity-high { background: #fed7aa; }
+        .severity-medium { background: #fef3c7; }
+        .severity-low { background: #d1fae5; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Incident Log</h1>
+        <div style="color: #666; font-size: 9pt; margin-top: 5px;">Generated: {{ generated_at|date('d.m.Y H:i') }} | Total Incidents: {{ incidents|length }}</div>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Severity</th>
+                <th>Category</th>
+                <th>Detected</th>
+                <th>Resolved</th>
+                <th>Status</th>
+                <th>Reporter</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for incident in incidents %}
+            <tr class="severity-{{ incident.severity }}">
+                <td>{{ incident.id }}</td>
+                <td>{{ incident.title|slice(0, 30) }}{% if incident.title|length > 30 %}...{% endif %}</td>
+                <td><strong>{{ incident.severity|upper }}</strong></td>
+                <td>{{ incident.category }}</td>
+                <td>{{ incident.detectedDate|date('Y-m-d') }}</td>
+                <td>{{ incident.resolvedDate ? incident.resolvedDate|date('Y-m-d') : 'Open' }}</td>
+                <td>{{ incident.status }}</td>
+                <td>{{ incident.reportedBy ? incident.reportedBy.email|slice(0, 20) : '-' }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

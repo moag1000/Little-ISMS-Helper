@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'audit_management.title'|trans }} - {{ 'app.title'|trans }}{% endblock %}
+
+{% block body %}
+<h1>{{ 'audit_management.title'|trans }}</h1>
+
+<p style="color: #666; margin-bottom: 2rem;">
+    {{ 'audit_management.description'|trans }}
+</p>
+
+<div class="info-box">
+    <h3>{{ 'common.overview'|trans }}</h3>
+    <p><strong>{{ 'audit_management.planned_audits'|trans }}:</strong> {{ upcoming|length }}</p>
+    <p><strong>{{ 'audit_management.total_audits'|trans }}:</strong> {{ audits|length }}</p>
+</div>
+
+<p style="margin-top: 2rem;">
+    <em>{{ 'audit_management.audit_planning_coming'|trans }}</em>
+</p>
+{% endblock %}

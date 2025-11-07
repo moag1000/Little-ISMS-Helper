@@ -1,0 +1,226 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Asset Management - {{ 'app.title'|trans }}{% endblock %}
+
+{% block body %}
+{# Breadcrumb Navigation #}
+{% include '_components/_breadcrumb.html.twig' with {
+    breadcrumbs: [
+        { label: 'Assets' }
+    ]
+} %}
+
+{# Page Header with Actions #}
+{% include '_components/_page_header.html.twig' with {
+    title: 'Asset Management',
+    subtitle: 'Verwaltung von IT-Assets und Informationswerten gemäß ISO 27001',
+    icon: 'bi-server',
+    actions: [
+        { label: 'Neues Asset', url: path('app_asset_new'), variant: 'primary', icon: 'bi-plus-circle' },
+        { label: 'Export', url: path('app_asset_export'), variant: 'secondary', icon: 'bi-download' }
+    ]
+} %}
+
+{# KPI Cards Grid #}
+<div class="kpi-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin: 2rem 0;">
+    {% include '_components/_kpi_card.html.twig' with {
+        icon: 'bi-server',
+        label: 'Total Assets',
+        value: assets|length,
+        variant: 'primary',
+        link: '#all-assets'
+    } %}
+
+    {% set criticalAssets = assets|filter(a => a.confidentiality >= 4 or a.integrity >= 4 or a.availability >= 4)|length %}
+    {% include '_components/_kpi_card.html.twig' with {
+        icon: 'bi-shield-exclamation',
+        label: 'Critical Assets',
+        value: criticalAssets,
+        variant: 'danger',
+        link: '#filter-critical'
+    } %}
+
+    {% set avgCIA = (assets|reduce((carry, asset) => carry + asset.confidentiality + asset.integrity + asset.availability, 0) / (assets|length * 3))|round(1) %}
+    {% include '_components/_kpi_card.html.twig' with {
+        icon: 'bi-bar-chart',
+        label: 'Avg CIA Score',
+        value: avgCIA,
+        unit: '/ 5',
+        variant: 'info'
+    } %}
+
+    {% set assetsWithRisks = assets|filter(a => a.risks|length > 0)|length %}
+    {% include '_components/_kpi_card.html.twig' with {
+        icon: 'bi-exclamation-triangle',
+        label: 'Assets with Risks',
+        value: assetsWithRisks,
+        unit: '/ ' ~ assets|length,
+        variant: 'warning'
+    } %}
+</div>
+
+{# Type Distribution Chart #}
+{% if typeStats|length > 0 %}
+<div class="card mb-4">
+    <div class="card-header">
+        <h5><i class="bi bi-pie-chart"></i> Verteilung nach Asset-Typ</h5>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            {% for stat in typeStats %}
+            <div class="col-md-3 mb-3">
+                <div class="stat-item">
+                    <strong>{{ stat.assetType }}</strong>
+                    <div class="progress mt-2" style="height: 8px;">
+                        <div class="progress-bar"
+                             style="width: {{ (stat.count / assets|length * 100)|round }}%"
+                             title="{{ stat.count }} Assets">
+                        </div>
+                    </div>
+                    <small class="text-muted">{{ stat.count }} Assets ({{ (stat.count / assets|length * 100)|round }}%)</small>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{# Assets Table or Empty State #}
+{% if assets|length == 0 %}
+    {% include '_components/_empty_state.html.twig' with {
+        icon: 'bi-server',
+        title: 'Noch keine Assets vorhanden',
+        description: 'Legen Sie Ihr erstes Asset an, um mit dem Asset Management zu beginnen. Assets sind die Grundlage für Ihr ISMS.',
+        action: { label: 'Erstes Asset erstellen', url: path('app_asset_new'), icon: 'bi-plus-circle' }
+    } %}
+{% else %}
+<div class="card" data-controller="bulk-actions" data-bulk-actions-endpoint-value="/asset">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0"><i class="bi bi-list"></i> Alle Assets ({{ assets|length }})</h5>
+        <div>
+            <input type="search"
+                   class="form-control form-control-sm"
+                   placeholder="Suche..."
+                   style="width: 200px;"
+                   id="asset-search">
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th style="width: 40px;">
+                        <input type="checkbox"
+                               class="form-check-input"
+                               data-action="bulk-actions#selectAll"
+                               data-bulk-actions-target="selectAllCheckbox"
+                               title="Alle auswählen">
+                    </th>
+                    <th>Name</th>
+                    <th>Typ</th>
+                    <th class="text-center">Confidentiality</th>
+                    <th class="text-center">Integrity</th>
+                    <th class="text-center">Availability</th>
+                    <th class="text-center">Risiken</th>
+                    <th class="text-center">Controls</th>
+                    <th class="text-center">Aktionen</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for asset in assets %}
+                <tr data-asset-id="{{ asset.id }}">
+                    <td>
+                        <input type="checkbox"
+                               class="form-check-input"
+                               data-bulk-actions-target="item"
+                               data-action="bulk-actions#selectItem"
+                               value="{{ asset.id }}">
+                    </td>
+                    <td>
+                        <strong>{{ asset.name }}</strong>
+                        {% if asset.description %}
+                        <br><small class="text-muted">{{ asset.description|u.truncate(50, '...') }}</small>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <span class="badge bg-secondary">{{ asset.assetType }}</span>
+                    </td>
+                    <td class="text-center">
+                        <span class="badge bg-{{ asset.confidentiality >= 4 ? 'danger' : (asset.confidentiality >= 3 ? 'warning' : 'success') }}">
+                            {{ asset.confidentiality }}/5
+                        </span>
+                    </td>
+                    <td class="text-center">
+                        <span class="badge bg-{{ asset.integrity >= 4 ? 'danger' : (asset.integrity >= 3 ? 'warning' : 'success') }}">
+                            {{ asset.integrity }}/5
+                        </span>
+                    </td>
+                    <td class="text-center">
+                        <span class="badge bg-{{ asset.availability >= 4 ? 'danger' : (asset.availability >= 3 ? 'warning' : 'success') }}">
+                            {{ asset.availability }}/5
+                        </span>
+                    </td>
+                    <td class="text-center">
+                        {% if asset.risks|length > 0 %}
+                            <a href="{{ path('app_asset_risks', {id: asset.id}) }}" class="badge bg-warning text-dark">
+                                {{ asset.risks|length }}
+                            </a>
+                        {% else %}
+                            <span class="text-muted">0</span>
+                        {% endif %}
+                    </td>
+                    <td class="text-center">
+                        {% if asset.protectingControls|length > 0 %}
+                            <a href="{{ path('app_asset_controls', {id: asset.id}) }}" class="badge bg-success">
+                                {{ asset.protectingControls|length }}
+                            </a>
+                        {% else %}
+                            <span class="text-muted">0</span>
+                        {% endif %}
+                    </td>
+                    <td class="text-center">
+                        <div class="btn-group btn-group-sm">
+                            <a href="{{ path('app_asset_show', {id: asset.id}) }}"
+                               class="btn btn-outline-primary"
+                               data-turbo-action="advance"
+                               title="Anzeigen">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                            {% if is_granted('ROLE_USER') %}
+                            <a href="{{ path('app_asset_edit', {id: asset.id}) }}"
+                               class="btn btn-outline-secondary"
+                               data-turbo-action="advance"
+                               title="Bearbeiten">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {# Bulk Action Bar #}
+    {% include '_components/_bulk_action_bar.html.twig' with {
+        actions: ['export', 'assign', 'delete']
+    } %}
+</div>
+{% endif %}
+
+{# Search functionality #}
+<script>
+document.getElementById('asset-search')?.addEventListener('input', function(e) {
+    const query = e.target.value.toLowerCase();
+    const rows = document.querySelectorAll('tbody tr[data-asset-id]');
+
+    rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(query) ? '' : 'none';
+    });
+});
+</script>
+
+{% endblock %}

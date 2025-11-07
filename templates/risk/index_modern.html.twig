@@ -1,0 +1,428 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Risikomanagement - {{ 'app.title'|trans }}{% endblock %}
+
+{% block body %}
+{# Breadcrumb Navigation #}
+{% include '_components/_breadcrumb.html.twig' with {
+    breadcrumbs: [
+        { label: 'Risikomanagement' }
+    ]
+} %}
+
+{# Page Header with Actions #}
+{% include '_components/_page_header.html.twig' with {
+    title: 'Risikomanagement',
+    subtitle: 'Identifikation, Bewertung und Behandlung von Informationssicherheitsrisiken',
+    icon: 'bi-exclamation-triangle',
+    actions: [
+        { label: 'Neues Risiko', url: path('app_risk_new'), variant: 'primary', icon: 'bi-plus-circle' },
+        { label: 'Risikomatrix', url: path('app_risk_matrix'), variant: 'info', icon: 'bi-grid-3x3' },
+        { label: 'Export', url: path('app_risk_export'), variant: 'secondary', icon: 'bi-download' }
+    ]
+} %}
+
+{# KPI Cards Grid #}
+<div class="kpi-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin: 2rem 0;">
+    {% include '_components/_kpi_card.html.twig' with {
+        icon: 'bi-exclamation-triangle',
+        label: 'Identifizierte Risiken',
+        value: risks|length,
+        variant: 'primary',
+        link: '#all-risks'
+    } %}
+
+    {% set criticalRisks = risks|filter(r => r.getRiskScore() >= 12)|length %}
+    {% include '_components/_kpi_card.html.twig' with {
+        icon: 'bi-shield-fill-exclamation',
+        label: 'Kritische Risiken',
+        value: criticalRisks,
+        variant: 'danger',
+        trend: criticalRisks > 0 ? '-' : '+0',
+        link: '#filter-critical'
+    } %}
+
+    {% set highRisks = risks|filter(r => r.getRiskScore() >= 8 and r.getRiskScore() < 12)|length %}
+    {% include '_components/_kpi_card.html.twig' with {
+        icon: 'bi-exclamation-circle',
+        label: 'Hohe Risiken',
+        value: highRisks,
+        variant: 'warning',
+        link: '#filter-high'
+    } %}
+
+    {% set avgResidualRisk = (risks|reduce((carry, risk) => carry + risk.getResidualRisk(), 0) / risks|length)|round(1) %}
+    {% include '_components/_kpi_card.html.twig' with {
+        icon: 'bi-graph-down',
+        label: 'Durchschn. Restrisiko',
+        value: avgResidualRisk,
+        unit: '/ 25',
+        variant: avgResidualRisk < 8 ? 'success' : 'warning'
+    } %}
+</div>
+
+{# Risk Matrix Overview #}
+<div class="card mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0"><i class="bi bi-grid-3x3"></i> Risikomatrix-Übersicht</h5>
+        <a href="{{ path('app_risk_matrix') }}" class="btn btn-sm btn-outline-primary">
+            Vollständige Matrix anzeigen <i class="bi bi-arrow-right"></i>
+        </a>
+    </div>
+    <div class="card-body">
+        <div class="risk-matrix-preview">
+            {# Risk Distribution by Severity #}
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="risk-level-card risk-critical">
+                        <div class="risk-level-icon">🔴</div>
+                        <div class="risk-level-label">Kritisch (15-25)</div>
+                        <div class="risk-level-count">{{ risks|filter(r => r.getRiskScore() >= 15)|length }}</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="risk-level-card risk-high">
+                        <div class="risk-level-icon">🟠</div>
+                        <div class="risk-level-label">Hoch (8-14)</div>
+                        <div class="risk-level-count">{{ risks|filter(r => r.getRiskScore() >= 8 and r.getRiskScore() < 15)|length }}</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="risk-level-card risk-medium">
+                        <div class="risk-level-icon">🟡</div>
+                        <div class="risk-level-label">Mittel (4-7)</div>
+                        <div class="risk-level-count">{{ risks|filter(r => r.getRiskScore() >= 4 and r.getRiskScore() < 8)|length }}</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="risk-level-card risk-low">
+                        <div class="risk-level-icon">🟢</div>
+                        <div class="risk-level-label">Niedrig (1-3)</div>
+                        <div class="risk-level-count">{{ risks|filter(r => r.getRiskScore() < 4)|length }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{# Treatment Status #}
+<div class="card mb-4">
+    <div class="card-header">
+        <h5 class="mb-0"><i class="bi bi-shield-check"></i> Behandlungsstatus</h5>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            {% set treatments = {
+                'mitigate': { label: 'Mindern', icon: 'bi-shield-check', color: 'success' },
+                'accept': { label: 'Akzeptieren', icon: 'bi-check-circle', color: 'info' },
+                'transfer': { label: 'Übertragen', icon: 'bi-arrow-right-circle', color: 'warning' },
+                'avoid': { label: 'Vermeiden', icon: 'bi-x-circle', color: 'danger' }
+            } %}
+            {% for strategy, data in treatments %}
+                {% set count = risks|filter(r => r.treatmentStrategy == strategy)|length %}
+                <div class="col-md-3 mb-3">
+                    <div class="treatment-stat">
+                        <div class="treatment-icon text-{{ data.color }}">
+                            <i class="bi {{ data.icon }}"></i>
+                        </div>
+                        <div class="treatment-info">
+                            <div class="treatment-label">{{ data.label }}</div>
+                            <div class="treatment-count">{{ count }}</div>
+                            {% if risks|length > 0 %}
+                                <div class="treatment-percent">{{ (count / risks|length * 100)|round }}%</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+{# Risks Table or Empty State #}
+{% if risks|length == 0 %}
+    {% include '_components/_empty_state.html.twig' with {
+        icon: 'bi-exclamation-triangle',
+        title: 'Noch keine Risiken identifiziert',
+        description: 'Beginnen Sie mit der Risikoidentifikation, um potenzielle Bedrohungen für Ihr ISMS zu erfassen und zu bewerten.',
+        action: { label: 'Erstes Risiko erfassen', url: path('app_risk_new'), icon: 'bi-plus-circle' }
+    } %}
+{% else %}
+<div class="card" data-controller="bulk-actions" data-bulk-actions-endpoint-value="/risk">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0"><i class="bi bi-list"></i> Alle Risiken ({{ risks|length }})</h5>
+        <div class="d-flex gap-2">
+            <select class="form-select form-select-sm" id="risk-filter" style="width: 150px;">
+                <option value="">Alle Risiken</option>
+                <option value="critical">Kritisch</option>
+                <option value="high">Hoch</option>
+                <option value="medium">Mittel</option>
+                <option value="low">Niedrig</option>
+            </select>
+            <input type="search"
+                   class="form-control form-control-sm"
+                   placeholder="Suche..."
+                   style="width: 200px;"
+                   id="risk-search">
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th style="width: 40px;">
+                        <input type="checkbox"
+                               class="form-check-input"
+                               data-action="bulk-actions#selectAll"
+                               data-bulk-actions-target="selectAllCheckbox"
+                               title="Alle auswählen">
+                    </th>
+                    <th>Titel</th>
+                    <th>Bedrohung</th>
+                    <th class="text-center">Wahrscheinlichkeit</th>
+                    <th class="text-center">Auswirkung</th>
+                    <th class="text-center">Risikoscore</th>
+                    <th class="text-center">Restrisiko</th>
+                    <th>Behandlung</th>
+                    <th class="text-center">Betroffene Assets</th>
+                    <th class="text-center">Aktionen</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for risk in risks %}
+                {% set riskScore = risk.getRiskScore() %}
+                {% set residual = risk.getResidualRisk() %}
+                <tr data-risk-id="{{ risk.id }}"
+                    data-risk-level="{{ riskScore >= 15 ? 'critical' : (riskScore >= 8 ? 'high' : (riskScore >= 4 ? 'medium' : 'low')) }}">
+                    <td>
+                        <input type="checkbox"
+                               class="form-check-input"
+                               data-bulk-actions-target="item"
+                               data-action="bulk-actions#selectItem"
+                               value="{{ risk.id }}">
+                    </td>
+                    <td>
+                        <strong>{{ risk.title }}</strong>
+                        {% if risk.description %}
+                        <br><small class="text-muted">{{ risk.description|u.truncate(60, '...') }}</small>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <span class="badge bg-secondary">{{ risk.threat }}</span>
+                    </td>
+                    <td class="text-center">
+                        <span class="badge bg-{{ risk.likelihood >= 4 ? 'danger' : (risk.likelihood >= 3 ? 'warning' : 'success') }}">
+                            {{ risk.likelihood }}/5
+                        </span>
+                    </td>
+                    <td class="text-center">
+                        <span class="badge bg-{{ risk.impact >= 4 ? 'danger' : (risk.impact >= 3 ? 'warning' : 'success') }}">
+                            {{ risk.impact }}/5
+                        </span>
+                    </td>
+                    <td class="text-center">
+                        <span class="risk-score risk-score-{{ riskScore >= 15 ? 'critical' : (riskScore >= 8 ? 'high' : (riskScore >= 4 ? 'medium' : 'low')) }}">
+                            {{ riskScore }}
+                        </span>
+                    </td>
+                    <td class="text-center">
+                        {% if residual < riskScore %}
+                            <span class="risk-score risk-score-improved">
+                                {{ residual }}
+                                <i class="bi bi-arrow-down text-success"></i>
+                            </span>
+                        {% else %}
+                            <span class="risk-score">{{ residual }}</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if risk.treatmentStrategy %}
+                            <span class="badge bg-info">{{ risk.treatmentStrategy|replace({'_': ' '})|title }}</span>
+                        {% else %}
+                            <span class="text-muted">Nicht definiert</span>
+                        {% endif %}
+                    </td>
+                    <td class="text-center">
+                        {% if risk.affectedAssets|length > 0 %}
+                            <a href="{{ path('app_risk_assets', {id: risk.id}) }}" class="badge bg-warning text-dark">
+                                {{ risk.affectedAssets|length }}
+                            </a>
+                        {% else %}
+                            <span class="text-muted">0</span>
+                        {% endif %}
+                    </td>
+                    <td class="text-center">
+                        <div class="btn-group btn-group-sm">
+                            <a href="{{ path('app_risk_show', {id: risk.id}) }}"
+                               class="btn btn-outline-primary"
+                               data-turbo-action="advance"
+                               title="Anzeigen">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                            {% if is_granted('ROLE_USER') %}
+                            <a href="{{ path('app_risk_edit', {id: risk.id}) }}"
+                               class="btn btn-outline-secondary"
+                               data-turbo-action="advance"
+                               title="Bearbeiten">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {# Bulk Action Bar #}
+    {% include '_components/_bulk_action_bar.html.twig' with {
+        actions: ['export', 'assign', 'delete']
+    } %}
+</div>
+{% endif %}
+
+<style>
+/* Risk Level Cards */
+.risk-level-card {
+    text-align: center;
+    padding: var(--spacing-lg);
+    background: white;
+    border-radius: var(--border-radius);
+    border: 2px solid var(--color-border);
+    transition: all 0.2s;
+}
+
+.risk-level-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+}
+
+.risk-level-card.risk-critical { border-color: var(--color-danger); }
+.risk-level-card.risk-high { border-color: #ff9800; }
+.risk-level-card.risk-medium { border-color: var(--color-warning); }
+.risk-level-card.risk-low { border-color: var(--color-success); }
+
+.risk-level-icon {
+    font-size: 2.5rem;
+    margin-bottom: var(--spacing-sm);
+}
+
+.risk-level-label {
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    margin-bottom: var(--spacing-xs);
+}
+
+.risk-level-count {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--color-primary);
+}
+
+/* Treatment Stats */
+.treatment-stat {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+    background: var(--color-bg);
+    border-radius: var(--border-radius);
+}
+
+.treatment-icon {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    background: white;
+    border-radius: 50%;
+}
+
+.treatment-label {
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+}
+
+.treatment-count {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-primary);
+}
+
+.treatment-percent {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+}
+
+/* Risk Score Badges */
+.risk-score {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 36px;
+    height: 36px;
+    font-weight: 700;
+    font-size: 1rem;
+    border-radius: 8px;
+    padding: 0 8px;
+}
+
+.risk-score-critical {
+    background: var(--color-danger);
+    color: white;
+}
+
+.risk-score-high {
+    background: #ff9800;
+    color: white;
+}
+
+.risk-score-medium {
+    background: var(--color-warning);
+    color: white;
+}
+
+.risk-score-low {
+    background: var(--color-success);
+    color: white;
+}
+
+.risk-score-improved {
+    background: #e8f5e9;
+    color: var(--color-success);
+}
+</style>
+
+{# Search & Filter functionality #}
+<script>
+// Search
+document.getElementById('risk-search')?.addEventListener('input', function(e) {
+    const query = e.target.value.toLowerCase();
+    const rows = document.querySelectorAll('tbody tr[data-risk-id]');
+
+    rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(query) ? '' : 'none';
+    });
+});
+
+// Filter by level
+document.getElementById('risk-filter')?.addEventListener('change', function(e) {
+    const level = e.target.value;
+    const rows = document.querySelectorAll('tbody tr[data-risk-id]');
+
+    rows.forEach(row => {
+        if (!level || row.dataset.riskLevel === level) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    });
+});
+</script>
+
+{% endblock %}

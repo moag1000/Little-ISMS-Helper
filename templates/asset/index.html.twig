@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'asset_management.title'|trans }} - {{ 'app.title'|trans }}{% endblock %}
+
+{% block body %}
+<h1>{{ 'asset_management.title'|trans }}</h1>
+
+<p style="color: #666; margin-bottom: 2rem;">
+    {{ 'asset_management.description'|trans }}
+</p>
+
+<div class="info-box">
+    <h3>{{ 'asset_management.statistics'|trans }}</h3>
+    <p><strong>{{ 'asset_management.active_assets'|trans }}:</strong> {{ assets|length }}</p>
+    {% if typeStats|length > 0 %}
+    <p><strong>{{ 'asset_management.distribution_by_type'|trans }}:</strong></p>
+    <ul>
+        {% for stat in typeStats %}
+        <li>{{ stat.assetType }}: {{ stat.count }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+</div>
+
+<p style="margin-top: 2rem;">
+    <em>{{ 'asset_management.detail_view_coming'|trans }}</em>
+</p>
+{% endblock %}

@@ -1,0 +1,151 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Control bearbeiten - {{ control.controlId }} - Small ISMS Helper{% endblock %}
+
+{% block body %}
+<div class="d-flex justify-between align-center mb-4">
+    <h1>Control bearbeiten: {{ control.controlId }}</h1>
+    <a href="{{ path('app_soa_index') }}" class="btn btn-secondary">← Zurück zur Übersicht</a>
+</div>
+
+<div class="info-box mb-4">
+    <h3>{{ control.name }}</h3>
+    <p style="margin-top: var(--spacing-sm); color: var(--color-text-light);">{{ control.description }}</p>
+    <div class="mt-2">
+        <span class="badge badge-info">{{ control.category }}</span>
+    </div>
+</div>
+
+<form method="post">
+    <div class="form-group">
+        <label class="form-label" style="display: flex; align-items: center; gap: var(--spacing-sm); cursor: pointer;">
+            <input type="checkbox" name="applicable" value="1" {% if control.applicable %}checked{% endif %} style="width: 20px; height: 20px;">
+            <span>Control ist anwendbar für diese Organisation</span>
+        </label>
+        <small style="color: var(--color-text-muted); margin-top: var(--spacing-xs); display: block;">
+            Markieren Sie dieses Control als anwendbar, wenn es für Ihr ISMS relevant ist.
+        </small>
+    </div>
+
+    <div class="form-group">
+        <label class="form-label" for="justification">
+            Begründung für Anwendbarkeit/Nicht-Anwendbarkeit *
+        </label>
+        <textarea
+            name="justification"
+            id="justification"
+            rows="4"
+            class="form-control"
+            placeholder="Erklären Sie, warum dieses Control anwendbar oder nicht anwendbar ist..."
+        >{{ control.justification }}</textarea>
+        <small style="color: var(--color-text-muted); margin-top: var(--spacing-xs); display: block;">
+            Eine klare Begründung ist für Audits und Compliance-Nachweise wichtig.
+        </small>
+    </div>
+
+    <div class="form-group">
+        <label class="form-label" for="implementationStatus">
+            Implementierungsstatus
+        </label>
+        <select name="implementationStatus" id="implementationStatus" class="form-control">
+            <option value="not_started" {% if control.implementationStatus == 'not_started' %}selected{% endif %}>Nicht begonnen</option>
+            <option value="in_progress" {% if control.implementationStatus == 'in_progress' %}selected{% endif %}>In Arbeit</option>
+            <option value="implemented" {% if control.implementationStatus == 'implemented' %}selected{% endif %}>Implementiert</option>
+            <option value="not_applicable" {% if control.implementationStatus == 'not_applicable' %}selected{% endif %}>Nicht anwendbar</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label class="form-label" for="implementationPercentage">
+            Implementierungsgrad (%)
+        </label>
+        <div style="display: flex; align-items: center; gap: var(--spacing-md);">
+            <input
+                type="range"
+                name="implementationPercentage"
+                id="implementationPercentage"
+                min="0"
+                max="100"
+                value="{{ control.implementationPercentage }}"
+                style="flex: 1;"
+                oninput="document.getElementById('percentageValue').textContent = this.value + '%'"
+            >
+            <span id="percentageValue" class="badge badge-info" style="font-size: 1rem; padding: var(--spacing-sm) var(--spacing-md);">
+                {{ control.implementationPercentage }}%
+            </span>
+        </div>
+        <div class="progress mt-2">
+            <div class="progress-bar" style="width: {{ control.implementationPercentage }}%">
+                {{ control.implementationPercentage }}%
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="form-label" for="implementationNotes">
+            Implementierungsnotizen
+        </label>
+        <textarea
+            name="implementationNotes"
+            id="implementationNotes"
+            rows="6"
+            class="form-control"
+            placeholder="Beschreiben Sie, wie dieses Control implementiert wurde oder wird..."
+        >{{ control.implementationNotes }}</textarea>
+        <small style="color: var(--color-text-muted); margin-top: var(--spacing-xs); display: block;">
+            Dokumentieren Sie technische Details, verwendete Tools, Prozesse, etc.
+        </small>
+    </div>
+
+    <div class="form-group">
+        <label class="form-label" for="responsiblePerson">
+            Verantwortliche Person
+        </label>
+        <input
+            type="text"
+            name="responsiblePerson"
+            id="responsiblePerson"
+            value="{{ control.responsiblePerson }}"
+            class="form-control"
+            placeholder="z.B. Max Mustermann (IT-Sicherheitsbeauftragter)"
+        >
+    </div>
+
+    <div class="form-group">
+        <label class="form-label" for="targetDate">
+            Zieldatum für vollständige Implementierung
+        </label>
+        <input
+            type="date"
+            name="targetDate"
+            id="targetDate"
+            value="{{ control.targetDate ? control.targetDate|date('Y-m-d') : '' }}"
+            class="form-control"
+        >
+    </div>
+
+    <div class="d-flex gap-2 mt-4">
+        <button type="submit" class="btn btn-success">
+            💾 Änderungen speichern
+        </button>
+        <a href="{{ path('app_soa_show', {id: control.id}) }}" class="btn btn-secondary">
+            ❌ Abbrechen
+        </a>
+    </div>
+</form>
+
+<script>
+// Update range input value display in real-time
+document.addEventListener('DOMContentLoaded', function() {
+    const rangeInput = document.getElementById('implementationPercentage');
+    const progressBar = document.querySelector('.progress-bar');
+
+    rangeInput.addEventListener('input', function() {
+        const value = this.value;
+        document.getElementById('percentageValue').textContent = value + '%';
+        progressBar.style.width = value + '%';
+        progressBar.textContent = value + '%';
+    });
+});
+</script>
+{% endblock %}

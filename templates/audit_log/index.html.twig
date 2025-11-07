@@ -1,0 +1,237 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Audit Log - Small ISMS Helper{% endblock %}
+
+{% block body %}
+<h1>Audit Log - Revisionssicheres Protokoll</h1>
+
+<p style="color: #666; margin-bottom: 2rem;">
+    Vollständige Protokollierung aller Aktivitäten im ISMS zur Sicherstellung der Revisionssicherheit
+</p>
+
+<div class="info-box">
+    <h3>Statistik</h3>
+    <p><strong>Gesamt Protokolleinträge:</strong> {{ totalLogs }}</p>
+    <p><strong>Letzte 24 Stunden:</strong> {{ recentActivity|length }} Aktivitäten</p>
+
+    {% if actionStats|length > 0 %}
+    <p><strong>Aktionen:</strong></p>
+    <ul>
+        {% for stat in actionStats %}
+        <li>{{ stat.action|capitalize }}: {{ stat.count }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    {% if entityTypeStats|length > 0 %}
+    <p><strong>Entitätstypen:</strong></p>
+    <ul>
+        {% for stat in entityTypeStats %}
+        <li>{{ stat.entityType }}: {{ stat.count }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+</div>
+
+<div style="margin: 2rem 0; padding: 1rem; background: #f5f5f5; border-radius: 4px;">
+    <h3>Filter</h3>
+    <form method="get" action="{{ path('app_audit_log_index') }}">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1rem;">
+            <div>
+                <label for="entityType">Entitätstyp:</label>
+                <select name="entityType" id="entityType" style="width: 100%; padding: 0.5rem;">
+                    <option value="">Alle</option>
+                    {% for entityType in entityTypes %}
+                    <option value="{{ entityType }}" {% if filters.entityType == entityType %}selected{% endif %}>
+                        {{ entityType }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div>
+                <label for="action">Aktion:</label>
+                <select name="action" id="action" style="width: 100%; padding: 0.5rem;">
+                    <option value="">Alle</option>
+                    {% for action in actions %}
+                    <option value="{{ action }}" {% if filters.action == action %}selected{% endif %}>
+                        {{ action|capitalize }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div>
+                <label for="userName">Benutzer:</label>
+                <input type="text" name="userName" id="userName" value="{{ filters.userName ?? '' }}" style="width: 100%; padding: 0.5rem;">
+            </div>
+
+            <div>
+                <label for="dateFrom">Von Datum:</label>
+                <input type="date" name="dateFrom" id="dateFrom" value="{{ filters.dateFrom ?? '' }}" style="width: 100%; padding: 0.5rem;">
+            </div>
+
+            <div>
+                <label for="dateTo">Bis Datum:</label>
+                <input type="date" name="dateTo" id="dateTo" value="{{ filters.dateTo ?? '' }}" style="width: 100%; padding: 0.5rem;">
+            </div>
+        </div>
+
+        <div style="display: flex; gap: 1rem;">
+            <button type="submit" class="btn btn-primary">Filtern</button>
+            <a href="{{ path('app_audit_log_index') }}" class="btn">Filter zurücksetzen</a>
+            <a href="{{ path('app_audit_log_statistics') }}" class="btn">Statistiken</a>
+        </div>
+    </form>
+</div>
+
+{% if auditLogs|length > 0 %}
+<div style="margin-top: 2rem;">
+    <h2>Protokolleinträge</h2>
+
+    {# Tab Navigation #}
+    <ul class="nav nav-tabs" role="tablist" style="margin-top: 1rem;">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active"
+                    data-bs-toggle="tab"
+                    data-bs-target="#table-view"
+                    type="button"
+                    role="tab">
+                <i class="bi-table"></i> Tabelle
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link"
+                    data-bs-toggle="tab"
+                    data-bs-target="#timeline-view"
+                    type="button"
+                    role="tab">
+                <i class="bi-clock-history"></i> Timeline
+            </button>
+        </li>
+    </ul>
+
+    {# Tab Content #}
+    <div class="tab-content" style="margin-top: 1rem;">
+        {# Table View #}
+        <div class="tab-pane fade show active" id="table-view" role="tabpanel">
+            <table class="table" style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="background: #f0f0f0;">
+                        <th style="padding: 0.75rem; text-align: left; border: 1px solid #ddd;">Zeitstempel</th>
+                        <th style="padding: 0.75rem; text-align: left; border: 1px solid #ddd;">Aktion</th>
+                        <th style="padding: 0.75rem; text-align: left; border: 1px solid #ddd;">Entität</th>
+                        <th style="padding: 0.75rem; text-align: left; border: 1px solid #ddd;">Benutzer</th>
+                        <th style="padding: 0.75rem; text-align: left; border: 1px solid #ddd;">Beschreibung</th>
+                        <th style="padding: 0.75rem; text-align: left; border: 1px solid #ddd;">Details</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for log in auditLogs %}
+                    <tr>
+                        <td style="padding: 0.75rem; border: 1px solid #ddd; font-size: 0.9rem;">
+                            {{ log.createdAt|date('d.m.Y H:i:s') }}
+                        </td>
+                        <td style="padding: 0.75rem; border: 1px solid #ddd;">
+                            <span class="badge badge-{{ log.action }}">{{ log.action|capitalize }}</span>
+                        </td>
+                        <td style="padding: 0.75rem; border: 1px solid #ddd;">
+                            {{ log.entityType }}
+                            {% if log.entityId %}
+                                <a href="{{ path('app_audit_log_entity', {entityType: log.entityType, entityId: log.entityId}) }}"
+                                   style="color: #007bff; text-decoration: none;">
+                                    (#{{ log.entityId }})
+                                </a>
+                            {% endif %}
+                        </td>
+                        <td style="padding: 0.75rem; border: 1px solid #ddd;">
+                            <a href="{{ path('app_audit_log_user', {userName: log.userName}) }}"
+                               style="color: #007bff; text-decoration: none;">
+                                {{ log.userName }}
+                            </a>
+                        </td>
+                        <td style="padding: 0.75rem; border: 1px solid #ddd; font-size: 0.9rem;">
+                            {{ log.description|default('-') }}
+                        </td>
+                        <td style="padding: 0.75rem; border: 1px solid #ddd;">
+                            <a href="{{ path('app_audit_log_detail', {id: log.id}) }}"
+                               style="color: #007bff; text-decoration: none;">
+                                Details anzeigen
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {# Timeline View #}
+        <div class="tab-pane fade" id="timeline-view" role="tabpanel">
+            {% include '_components/_audit_timeline.html.twig' with {
+                auditLogs: auditLogs
+            } %}
+        </div>
+    </div>
+
+    {% if totalPages > 1 %}
+    <div style="margin-top: 2rem; text-align: center;">
+        <div class="pagination">
+            {% if currentPage > 1 %}
+                <a href="{{ path('app_audit_log_index', filters|merge({page: currentPage - 1})) }}">« Zurück</a>
+            {% endif %}
+
+            <span style="margin: 0 1rem;">Seite {{ currentPage }} von {{ totalPages }}</span>
+
+            {% if currentPage < totalPages %}
+                <a href="{{ path('app_audit_log_index', filters|merge({page: currentPage + 1})) }}">Weiter »</a>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% else %}
+<div class="info-box" style="margin-top: 2rem;">
+    <p>Keine Protokolleinträge gefunden.</p>
+</div>
+{% endif %}
+
+<style>
+.badge {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 3px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+.badge-create { background: #28a745; color: white; }
+.badge-update { background: #ffc107; color: #000; }
+.badge-delete { background: #dc3545; color: white; }
+.badge-view { background: #17a2b8; color: white; }
+.badge-export { background: #6c757d; color: white; }
+.badge-import { background: #6f42c1; color: white; }
+
+.btn {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+}
+.btn-primary { background: #007bff; }
+.btn:hover { opacity: 0.9; }
+
+.pagination a {
+    padding: 0.5rem 1rem;
+    background: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    margin: 0 0.25rem;
+}
+.pagination a:hover { opacity: 0.9; }
+</style>
+
+{% endblock %}

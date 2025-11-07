@@ -1,0 +1,225 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Statement of Applicability - Small ISMS Helper{% endblock %}
+
+{% block body %}
+<div class="d-flex justify-between align-center mb-4">
+    <div>
+        <h1>Statement of Applicability (SoA)</h1>
+        <p style="color: var(--color-text-light); margin-top: var(--spacing-sm);">
+            ISO/IEC 27001:2022 Annex A Controls - Übersicht und Anwendbarkeitserklärung
+        </p>
+    </div>
+    <div>
+        <a href="{{ path('app_soa_export') }}" class="btn btn-success">
+            📊 SoA Exportieren
+        </a>
+    </div>
+</div>
+
+{# KPI Cards #}
+<div class="kpi-grid">
+    <div class="kpi-card">
+        <div class="icon">📋</div>
+        <div class="label">Gesamt Controls</div>
+        <div>
+            <span class="value">{{ controls|length }}</span>
+        </div>
+    </div>
+
+    <div class="kpi-card">
+        <div class="icon">✅</div>
+        <div class="label">Anwendbare Controls</div>
+        <div>
+            <span class="value">{{ controls|filter(c => c.applicable)|length }}</span>
+        </div>
+    </div>
+
+    <div class="kpi-card">
+        <div class="icon">🚀</div>
+        <div class="label">Implementierte Controls</div>
+        <div>
+            {% set implemented = controls|filter(c => c.applicable and c.implementationStatus == 'implemented')|length %}
+            {% set applicable = controls|filter(c => c.applicable)|length %}
+            <span class="value">{{ implemented }}</span>
+            <span class="unit">von {{ applicable }}</span>
+        </div>
+    </div>
+
+    <div class="kpi-card">
+        <div class="icon">📈</div>
+        <div class="label">Compliance-Rate</div>
+        <div>
+            {% set applicable = controls|filter(c => c.applicable)|length %}
+            {% set implemented = controls|filter(c => c.applicable and c.implementationStatus == 'implemented')|length %}
+            {% set percentage = applicable > 0 ? (implemented / applicable * 100)|round : 0 %}
+            <span class="value">{{ percentage }}</span>
+            <span class="unit">%</span>
+        </div>
+    </div>
+</div>
+
+{# Category Overview #}
+<h2>Nach Kategorie</h2>
+
+<div class="module-grid">
+    {% set categories = {
+        'Organizational': '🏢',
+        'People': '👥',
+        'Physical': '🏠',
+        'Technological': '💻'
+    } %}
+
+    {% for category, icon in categories %}
+        {% set cat_controls = controls|filter(c => c.category == category) %}
+        {% set applicable_controls = cat_controls|filter(c => c.applicable) %}
+        {% set implemented_controls = applicable_controls|filter(c => c.implementationStatus == 'implemented') %}
+
+        <div class="card">
+            <div style="font-size: 2rem; margin-bottom: var(--spacing-sm);">{{ icon }}</div>
+            <h3>{{ category }} Controls</h3>
+            <div class="stats-grid mt-2">
+                <div class="stat-item">
+                    <strong>{{ cat_controls|length }}</strong>
+                    <span>Gesamt</span>
+                </div>
+                <div class="stat-item">
+                    <strong>{{ applicable_controls|length }}</strong>
+                    <span>Anwendbar</span>
+                </div>
+                <div class="stat-item">
+                    <strong>{{ implemented_controls|length }}</strong>
+                    <span>Implementiert</span>
+                </div>
+            </div>
+
+            {% set impl_percentage = applicable_controls|length > 0 ? (implemented_controls|length / applicable_controls|length * 100)|round : 0 %}
+            <div class="progress mt-2">
+                <div class="progress-bar" style="width: {{ impl_percentage }}%">
+                    {{ impl_percentage }}%
+                </div>
+            </div>
+
+            <div class="mt-2">
+                <a href="{{ path('app_soa_by_category', {category: category}) }}" class="btn btn-sm">Details anzeigen</a>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+{# Filter and Table #}
+<h2>Alle Controls</h2>
+
+<div class="filter-panel" data-controller="filter">
+    <div class="filter-controls">
+        <div class="filter-control">
+            <label for="search">Suche</label>
+            <div class="search-box">
+                <input
+                    type="text"
+                    id="search"
+                    placeholder="Control ID, Name oder Beschreibung durchsuchen..."
+                    data-filter-target="searchInput"
+                    data-action="input->filter#filterRows"
+                >
+            </div>
+        </div>
+
+        <div class="filter-control">
+            <label for="category-filter">Kategorie</label>
+            <select id="category-filter" class="form-control" data-action="change->filter#filterByCategory">
+                <option value="">Alle Kategorien</option>
+                <option value="Organizational">Organizational</option>
+                <option value="People">People</option>
+                <option value="Physical">Physical</option>
+                <option value="Technological">Technological</option>
+            </select>
+        </div>
+
+        <div class="filter-control">
+            <label for="status-filter">Status</label>
+            <select id="status-filter" class="form-control" data-action="change->filter#filterByStatus">
+                <option value="">Alle Status</option>
+                <option value="implemented">Implementiert</option>
+                <option value="in_progress">In Arbeit</option>
+                <option value="not_started">Nicht begonnen</option>
+                <option value="not_applicable">Nicht anwendbar</option>
+            </select>
+        </div>
+
+        <div class="filter-control" style="justify-content: flex-end;">
+            <button type="button" class="btn btn-secondary" data-action="click->filter#reset">
+                🔄 Filter zurücksetzen
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Control ID</th>
+                <th>Name</th>
+                <th>Kategorie</th>
+                <th style="text-align: center;">Anwendbar</th>
+                <th>Implementierungsstatus</th>
+                <th style="text-align: center;">Fortschritt</th>
+                <th style="text-align: center;">Aktionen</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for control in controls|sort((a, b) => a.controlId <=> b.controlId) %}
+            <tr data-filter-target="filterableRow" data-category="{{ control.category }}" data-status="{{ control.implementationStatus }}">
+                <td><strong>{{ control.controlId }}</strong></td>
+                <td>{{ control.name }}</td>
+                <td>
+                    <span class="badge badge-info">{{ control.category }}</span>
+                </td>
+                <td style="text-align: center;">
+                    {% if control.applicable %}
+                        <span class="badge badge-success">✓ Ja</span>
+                    {% else %}
+                        <span class="badge" style="background: #f0f0f0; color: #666;">✗ Nein</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if control.applicable %}
+                        {% if control.implementationStatus == 'implemented' %}
+                            <span class="badge badge-success">✅ Implementiert</span>
+                        {% elseif control.implementationStatus == 'in_progress' %}
+                            <span class="badge badge-warning">🔄 In Arbeit</span>
+                        {% elseif control.implementationStatus == 'not_started' %}
+                            <span class="badge badge-danger">⏸ Nicht begonnen</span>
+                        {% else %}
+                            <span class="badge" style="background: #f0f0f0; color: #666;">N/A</span>
+                        {% endif %}
+                    {% else %}
+                        <span class="badge" style="background: #f0f0f0; color: #666;">Nicht anwendbar</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if control.applicable %}
+                        <div class="progress" style="height: 20px; width: 100px; margin: 0 auto;">
+                            <div class="progress-bar" style="width: {{ control.implementationPercentage }}%; font-size: 0.75rem;">
+                                {{ control.implementationPercentage }}%
+                            </div>
+                        </div>
+                    {% else %}
+                        <span style="text-align: center; display: block; color: #999;">-</span>
+                    {% endif %}
+                </td>
+                <td style="text-align: center;">
+                    <a href="{{ path('app_soa_show', {id: control.id}) }}" class="btn btn-sm" style="margin-right: 0.25rem;">👁 Details</a>
+                    <a href="{{ path('app_soa_edit', {id: control.id}) }}" class="btn btn-sm btn-secondary">✏️ Bearbeiten</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div data-filter-target="noResults" class="hidden" style="text-align: center; padding: var(--spacing-xl); color: var(--color-text-muted);">
+        <p>Keine Controls gefunden, die den Filterkriterien entsprechen.</p>
+    </div>
+</div>
+{% endblock %}

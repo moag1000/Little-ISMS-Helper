@@ -1,0 +1,322 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}BCM Data Reuse Insights{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="page-header">
+        <div>
+            <h1>🔗 Data Reuse Insights</h1>
+            <p class="text-muted">How BCM Data Enhances Asset Protection Requirements</p>
+        </div>
+        <div class="button-group">
+            <a href="{{ path('app_bcm_index') }}" class="btn btn-secondary">
+                ← Back to BCM
+            </a>
+        </div>
+    </div>
+
+    {# Summary Cards #}
+    <div class="kpi-grid">
+        <div class="kpi-card">
+            <div class="kpi-icon" style="background: var(--gradient-primary);">📊</div>
+            <div class="kpi-content">
+                <div class="kpi-value">{{ total_processes }}</div>
+                <div class="kpi-label">Business Processes</div>
+            </div>
+        </div>
+
+        <div class="kpi-card">
+            <div class="kpi-icon" style="background: var(--gradient-success);">✓</div>
+            <div class="kpi-content">
+                <div class="kpi-value">{{ assets_influenced }}</div>
+                <div class="kpi-label">Assets Influenced</div>
+            </div>
+        </div>
+
+        <div class="kpi-card">
+            <div class="kpi-icon" style="background: var(--gradient-info);">🔄</div>
+            <div class="kpi-content">
+                <div class="kpi-value">{{ insights|length }}</div>
+                <div class="kpi-label">Recommendations</div>
+            </div>
+        </div>
+
+        <div class="kpi-card">
+            <div class="kpi-icon" style="background: var(--gradient-warning);">💡</div>
+            <div class="kpi-content">
+                <div class="kpi-value">{{ (assets_influenced > 0 ? (assets_influenced / total_processes * 100)|number_format(0) : 0) }}%</div>
+                <div class="kpi-label">Data Reuse Rate</div>
+            </div>
+        </div>
+    </div>
+
+    {# Explanation Card #}
+    <div class="card" style="margin-bottom: var(--spacing-lg);">
+        <div class="card-header">
+            <h2>How Data Reuse Works</h2>
+        </div>
+        <div class="card-body">
+            <p>
+                <strong>The BCM module performs Business Impact Analysis (BIA)</strong> to determine how quickly business processes need to be recovered after a disruption (RTO - Recovery Time Objective).
+            </p>
+            <p>
+                <strong>This data is automatically reused</strong> to inform the availability protection requirements of supporting IT assets.
+                A business process with a low RTO (e.g., 1 hour) indicates that supporting assets need high availability ratings.
+            </p>
+            <div class="info-grid">
+                <div class="info-item">
+                    <strong>RTO ≤ 1 hour</strong>
+                    <p>Suggests Availability: <span class="badge badge-danger">5 - Very High</span></p>
+                </div>
+                <div class="info-item">
+                    <strong>RTO ≤ 4 hours</strong>
+                    <p>Suggests Availability: <span class="badge badge-warning">4 - High</span></p>
+                </div>
+                <div class="info-item">
+                    <strong>RTO ≤ 24 hours</strong>
+                    <p>Suggests Availability: <span class="badge badge-info">3 - Medium</span></p>
+                </div>
+                <div class="info-item">
+                    <strong>RTO ≤ 72 hours</strong>
+                    <p>Suggests Availability: <span class="badge badge-success">2 - Low</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Insights Table #}
+    <div class="card">
+        <div class="card-header">
+            <h2>Asset Recommendations Based on BCM Data</h2>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Business Process</th>
+                        <th>Supporting Asset</th>
+                        <th>RTO/MTPD</th>
+                        <th>Current Availability</th>
+                        <th>Suggested Availability</th>
+                        <th>Recommendation</th>
+                        <th>Confidence</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for insight in insights %}
+                        {% set availability = insight.analysis.availability %}
+                        {% set matchStatus = insight.current_availability == insight.suggested_availability ? 'match' : 'mismatch' %}
+                        <tr class="insight-row insight-{{ matchStatus }}">
+                            <td>
+                                <strong>{{ insight.process.name }}</strong>
+                                <br>
+                                {% set criticality_colors = {
+                                    'critical': 'danger',
+                                    'high': 'warning',
+                                    'medium': 'info',
+                                    'low': 'success'
+                                } %}
+                                <span class="badge badge-{{ criticality_colors[insight.process.criticality] ?? 'secondary' }}">
+                                    {{ insight.process.criticality|upper }}
+                                </span>
+                            </td>
+                            <td>
+                                <strong>{{ insight.asset.name }}</strong>
+                                <br>
+                                <small class="text-muted">{{ insight.asset.type|default('N/A') }}</small>
+                            </td>
+                            <td>
+                                <div class="metric-stack">
+                                    <span class="metric-value">RTO: {{ insight.process.rto }}h</span>
+                                    <span class="metric-value">MTPD: {{ insight.process.mtpd }}h</span>
+                                </div>
+                            </td>
+                            <td class="text-center">
+                                {% set availability_labels = {
+                                    1: 'Very Low',
+                                    2: 'Low',
+                                    3: 'Medium',
+                                    4: 'High',
+                                    5: 'Very High'
+                                } %}
+                                {% set availability_colors = {
+                                    1: 'success',
+                                    2: 'info',
+                                    3: 'warning',
+                                    4: 'warning',
+                                    5: 'danger'
+                                } %}
+                                <span class="badge badge-{{ availability_colors[insight.current_availability] ?? 'secondary' }}">
+                                    {{ insight.current_availability }} - {{ availability_labels[insight.current_availability] ?? 'N/A' }}
+                                </span>
+                            </td>
+                            <td class="text-center">
+                                <span class="badge badge-{{ availability_colors[availability.value] ?? 'secondary' }}">
+                                    {{ availability.value }} - {{ availability_labels[availability.value] ?? 'N/A' }}
+                                </span>
+                            </td>
+                            <td>
+                                {% if matchStatus == 'match' %}
+                                    <div class="recommendation recommendation-match">
+                                        ✓ Current rating aligns with BCM data
+                                    </div>
+                                {% else %}
+                                    <div class="recommendation recommendation-mismatch">
+                                        <strong>Consider updating:</strong><br>
+                                        {{ availability.recommendation }}
+                                    </div>
+                                {% endif %}
+                                <small class="text-muted">{{ availability.reasoning }}</small>
+                            </td>
+                            <td class="text-center">
+                                {% set confidence_colors = {
+                                    'high': 'success',
+                                    'medium': 'warning',
+                                    'low': 'secondary'
+                                } %}
+                                <span class="badge badge-{{ confidence_colors[availability.confidence] ?? 'secondary' }}">
+                                    {{ availability.confidence|upper }}
+                                </span>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="7" class="text-center text-muted">
+                                No BCM-based recommendations available.
+                                <br>
+                                Start by creating business processes and linking them to assets.
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    {# Benefits Section #}
+    <div class="card" style="margin-top: var(--spacing-lg);">
+        <div class="card-header">
+            <h2>Benefits of Data Reuse</h2>
+        </div>
+        <div class="card-body">
+            <div class="benefits-grid">
+                <div class="benefit-item">
+                    <div class="benefit-icon">⏱️</div>
+                    <strong>Time Savings</strong>
+                    <p>No need to manually determine availability requirements - BCM data provides evidence-based suggestions.</p>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon">📊</div>
+                    <strong>Consistency</strong>
+                    <p>Ensures alignment between business continuity requirements and technical protection measures.</p>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon">✓</div>
+                    <strong>Audit Evidence</strong>
+                    <p>Demonstrates traceable links between business requirements and security controls for ISO 27001 compliance.</p>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon">💡</div>
+                    <strong>Informed Decisions</strong>
+                    <p>Data-driven recommendations based on actual business impact analysis rather than assumptions.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.insight-row.insight-match {
+    background-color: rgba(40, 167, 69, 0.05);
+}
+
+.insight-row.insight-mismatch {
+    background-color: rgba(255, 193, 7, 0.05);
+}
+
+.recommendation {
+    padding: var(--spacing-xs);
+    border-radius: var(--border-radius);
+    font-size: 0.9rem;
+}
+
+.recommendation-match {
+    color: var(--color-success);
+    background: rgba(40, 167, 69, 0.1);
+}
+
+.recommendation-mismatch {
+    color: var(--color-warning);
+    background: rgba(255, 193, 7, 0.1);
+}
+
+.metric-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.metric-value {
+    font-weight: 600;
+    color: var(--color-primary);
+    font-size: 0.9rem;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-md);
+}
+
+.info-item {
+    padding: var(--spacing-md);
+    background: var(--color-background);
+    border-radius: var(--border-radius);
+    border-left: 3px solid var(--color-primary);
+}
+
+.info-item strong {
+    display: block;
+    margin-bottom: var(--spacing-xs);
+    color: var(--color-primary);
+}
+
+.info-item p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+}
+
+.benefits-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing-lg);
+}
+
+.benefit-item {
+    text-align: center;
+    padding: var(--spacing-lg);
+}
+
+.benefit-icon {
+    font-size: 3rem;
+    margin-bottom: var(--spacing-md);
+}
+
+.benefit-item strong {
+    display: block;
+    margin-bottom: var(--spacing-sm);
+    color: var(--color-primary);
+    font-size: 1.1rem;
+}
+
+.benefit-item p {
+    margin: 0;
+    color: var(--color-text-secondary);
+    font-size: 0.9rem;
+}
+</style>
+{% endblock %}

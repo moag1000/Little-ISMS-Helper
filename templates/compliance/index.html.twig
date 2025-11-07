@@ -1,0 +1,419 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Multi-Framework Compliance{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="page-header">
+        <div>
+            <h1>🎯 Multi-Framework Compliance</h1>
+            <p class="text-muted">Maximizing Data Value Across Standards</p>
+        </div>
+        <div class="button-group">
+            <a href="{{ path('app_compliance_cross_framework') }}" class="btn btn-secondary">
+                <span class="icon">🔗</span> Cross-Framework Mappings
+            </a>
+            <a href="{{ path('app_compliance_transitive') }}" class="btn btn-secondary">
+                <span class="icon">📊</span> Transitive Compliance
+            </a>
+            <a href="{{ path('app_compliance_compare') }}" class="btn btn-info">
+                <span class="icon">⚖️</span> Compare Frameworks
+            </a>
+        </div>
+    </div>
+
+    {# Data Reuse Value Highlight #}
+    <div class="alert alert-success" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white; border: none; margin-bottom: var(--spacing-lg);">
+        <h3 style="margin: 0 0 var(--spacing-sm) 0;">💎 Data Reuse Value</h3>
+        <p style="font-size: 1.1rem; margin: 0;">
+            By reusing existing ISMS data across multiple frameworks, you save an estimated
+            <strong>{{ total_time_savings }} hours ({{ total_days_savings }} days)</strong>
+            of manual compliance work!
+        </p>
+    </div>
+
+    {# Framework Overview Cards - Simplified #}
+    <div class="framework-grid">
+        {% for item in overview %}
+            {% set framework = frameworks|filter(f => f.id == item.id)|first %}
+            <div class="framework-card">
+                <div class="framework-header" style="background: {{ framework.mandatory ? 'var(--gradient-danger)' : 'var(--gradient-primary)' }};">
+                    <div>
+                        <h3>{{ item.code }}</h3>
+                        <p class="framework-subtitle">{{ item.name|u.truncate(40, '...') }}</p>
+                    </div>
+                    {% if framework.mandatory %}
+                        <span class="badge badge-light">Verpflichtend</span>
+                    {% endif %}
+                </div>
+
+                <div class="framework-body">
+                    {# Main Metric - Compliance #}
+                    <div class="compliance-circle">
+                        <svg viewBox="0 0 36 36" class="circular-chart">
+                            <path class="circle-bg"
+                                  d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                            />
+                            <path class="circle"
+                                  stroke="{{ item.compliance_percentage >= 75 ? '#28a745' : (item.compliance_percentage >= 50 ? '#ffc107' : '#dc3545') }}"
+                                  stroke-dasharray="{{ item.compliance_percentage }}, 100"
+                                  d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                            />
+                            <text x="18" y="20.35" class="percentage">{{ item.compliance_percentage }}%</text>
+                        </svg>
+                        <div class="compliance-label">Compliance</div>
+                    </div>
+
+                    {# Quick Stats - Minimal #}
+                    <div class="quick-stats">
+                        <div class="quick-stat">
+                            <span class="quick-value">{{ item.fulfilled_requirements }}/{{ item.applicable_requirements }}</span>
+                            <span class="quick-label">Erfüllt</span>
+                        </div>
+                        <div class="quick-stat">
+                            <span class="quick-value" style="color: var(--color-danger);">{{ item.applicable_requirements - item.fulfilled_requirements }}</span>
+                            <span class="quick-label">Lücken</span>
+                        </div>
+                    </div>
+
+                    {# Single Action Button #}
+                    <a href="{{ path('app_compliance_framework', {id: item.id}) }}" class="btn btn-block btn-primary">
+                        Dashboard öffnen →
+                    </a>
+                </div>
+            </div>
+        {% else %}
+            <div class="col-span-all text-center" style="padding: var(--spacing-xl);">
+                <p class="text-muted">No compliance frameworks loaded yet.</p>
+                <p>Run the following commands to load frameworks:</p>
+                <code>php bin/console app:load-tisax-requirements</code><br>
+                <code>php bin/console app:load-dora-requirements</code>
+            </div>
+        {% endfor %}
+    </div>
+
+    {# Cross-Framework Mapping Statistics #}
+    {% if mapping_stats.total_mappings > 0 %}
+        <div class="card" style="margin-top: var(--spacing-lg);">
+            <div class="card-header">
+                <h2>🔗 Cross-Framework Mapping Statistics</h2>
+            </div>
+            <div class="card-body">
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <div class="stat-icon">📊</div>
+                        <div class="stat-number">{{ mapping_stats.total_mappings }}</div>
+                        <div class="stat-text">Total Mappings</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-number">{{ mapping_stats.full_mappings + mapping_stats.exceeds_mappings }}</div>
+                        <div class="stat-text">Full/Exceeds</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-icon">⚠️</div>
+                        <div class="stat-number">{{ mapping_stats.partial_mappings }}</div>
+                        <div class="stat-text">Partial Mappings</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-icon">🔄</div>
+                        <div class="stat-number">{{ mapping_stats.bidirectional_mappings }}</div>
+                        <div class="stat-text">Bidirectional</div>
+                    </div>
+                </div>
+                <p class="text-center" style="margin-top: var(--spacing-md);">
+                    <a href="{{ path('app_compliance_cross_framework') }}" class="btn btn-primary">
+                        Explore Cross-Framework Mappings →
+                    </a>
+                </p>
+            </div>
+        </div>
+    {% endif %}
+
+    {# Benefits Explanation #}
+    <div class="card" style="margin-top: var(--spacing-lg);">
+        <div class="card-header">
+            <h2>Why Multi-Framework Compliance Matters</h2>
+        </div>
+        <div class="card-body">
+            <div class="benefits-grid">
+                <div class="benefit-item">
+                    <div class="benefit-icon">🔄</div>
+                    <strong>Maximum Data Reuse</strong>
+                    <p>Enter data once in your ISMS and automatically leverage it for TISAX, DORA, and other frameworks.</p>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon">⏱️</div>
+                    <strong>Time Efficiency</strong>
+                    <p>Save hundreds of hours by avoiding duplicate data entry and evidence gathering across different standards.</p>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon">📊</div>
+                    <strong>Transparency</strong>
+                    <p>See exactly how requirements from different frameworks relate to each other and to your existing controls.</p>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon">🎯</div>
+                    <strong>Strategic Compliance</strong>
+                    <p>Identify which frameworks overlap the most and prioritize implementation based on multi-framework benefits.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.framework-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
+}
+
+.framework-card {
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.framework-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+}
+
+.framework-header {
+    padding: var(--spacing-lg);
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.framework-header h3 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.framework-subtitle {
+    margin: var(--spacing-xs) 0 0 0;
+    opacity: 0.9;
+    font-size: 0.9rem;
+}
+
+.framework-body {
+    padding: var(--spacing-xl);
+    text-align: center;
+}
+
+/* Circular Progress Chart */
+.compliance-circle {
+    margin: var(--spacing-lg) auto;
+    max-width: 150px;
+}
+
+.circular-chart {
+    display: block;
+    margin: 0 auto;
+    max-height: 150px;
+}
+
+.circle-bg {
+    fill: none;
+    stroke: #eee;
+    stroke-width: 3.8;
+}
+
+.circle {
+    fill: none;
+    stroke-width: 2.8;
+    stroke-linecap: round;
+    animation: progress 1s ease-out forwards;
+}
+
+@keyframes progress {
+    0% { stroke-dasharray: 0 100; }
+}
+
+.circular-chart .percentage {
+    fill: var(--color-primary);
+    font-size: 0.5em;
+    font-weight: bold;
+    text-anchor: middle;
+}
+
+.compliance-label {
+    text-align: center;
+    margin-top: var(--spacing-sm);
+    color: var(--color-text-secondary);
+    font-size: 0.9rem;
+}
+
+/* Quick Stats */
+.quick-stats {
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-xl);
+    margin: var(--spacing-lg) 0;
+    padding: var(--spacing-md);
+    background: var(--color-background);
+    border-radius: var(--border-radius);
+}
+
+.quick-stat {
+    text-align: center;
+}
+
+.quick-value {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--color-primary);
+    margin-bottom: var(--spacing-xs);
+}
+
+.quick-label {
+    font-size: 0.85rem;
+    color: var(--color-text-secondary);
+}
+
+.btn-block {
+    display: block;
+    width: 100%;
+    text-align: center;
+}
+
+.framework-info {
+    margin-bottom: var(--spacing-md);
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    padding: var(--spacing-xs) 0;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.info-row .label {
+    font-weight: 600;
+    color: var(--color-text-secondary);
+}
+
+.compliance-progress {
+    margin: var(--spacing-md) 0;
+}
+
+.progress-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: var(--spacing-xs);
+    font-weight: 600;
+}
+
+.progress-value {
+    color: var(--color-primary);
+    font-size: 1.2rem;
+}
+
+.progress-bar {
+    height: 24px;
+    background: var(--color-background);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    transition: width 0.3s ease;
+}
+
+.framework-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-md);
+    margin: var(--spacing-md) 0;
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--color-primary);
+}
+
+.stat-label {
+    font-size: 0.85rem;
+    color: var(--color-text-secondary);
+}
+
+.framework-actions {
+    display: flex;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-md);
+    flex-wrap: wrap;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--spacing-lg);
+}
+
+.stat-box {
+    text-align: center;
+    padding: var(--spacing-lg);
+    background: var(--color-background);
+    border-radius: var(--border-radius);
+}
+
+.stat-icon {
+    font-size: 3rem;
+    margin-bottom: var(--spacing-sm);
+}
+
+.stat-number {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: var(--color-primary);
+}
+
+.stat-text {
+    color: var(--color-text-secondary);
+    margin-top: var(--spacing-xs);
+}
+
+.benefits-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing-lg);
+}
+
+.benefit-item {
+    text-align: center;
+    padding: var(--spacing-md);
+}
+
+.benefit-icon {
+    font-size: 3rem;
+    margin-bottom: var(--spacing-md);
+}
+
+.benefit-item strong {
+    display: block;
+    margin-bottom: var(--spacing-sm);
+    color: var(--color-primary);
+    font-size: 1.1rem;
+}
+
+.benefit-item p {
+    margin: 0;
+    color: var(--color-text-secondary);
+    font-size: 0.9rem;
+}
+</style>
+{% endblock %}
