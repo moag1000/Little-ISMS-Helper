@@ -5,11 +5,12 @@ import { Controller } from '@hotwired/stimulus';
  *
  * Features:
  * - Widget toggle (show/hide)
+ * - Widget drag & drop reordering
  * - LocalStorage persistence
  * - Reset to defaults
  */
 export default class extends Controller {
-    static targets = ['widget', 'settingsModal', 'toggleButton'];
+    static targets = ['widget', 'settingsModal', 'toggleButton', 'widgetContainer'];
     static values = {
         storageKey: { type: String, default: 'dashboard_widget_preferences' }
     };
@@ -17,6 +18,117 @@ export default class extends Controller {
     connect() {
         this.loadPreferences();
         this.applyPreferences();
+        this.enableDragAndDrop();
+    }
+
+    // Enable drag and drop for widgets
+    enableDragAndDrop() {
+        this.widgetTargets.forEach((widget, index) => {
+            widget.draggable = true;
+            widget.dataset.originalIndex = index;
+
+            widget.addEventListener('dragstart', this.handleDragStart.bind(this));
+            widget.addEventListener('dragend', this.handleDragEnd.bind(this));
+            widget.addEventListener('dragover', this.handleDragOver.bind(this));
+            widget.addEventListener('drop', this.handleDrop.bind(this));
+            widget.addEventListener('dragenter', this.handleDragEnter.bind(this));
+            widget.addEventListener('dragleave', this.handleDragLeave.bind(this));
+
+            // Add drag handle styling
+            widget.style.cursor = 'move';
+        });
+    }
+
+    handleDragStart(event) {
+        this.draggedWidget = event.currentTarget;
+        event.currentTarget.classList.add('dragging');
+        event.dataTransfer.effectAllowed = 'move';
+        event.dataTransfer.setData('text/html', event.currentTarget.innerHTML);
+    }
+
+    handleDragEnd(event) {
+        event.currentTarget.classList.remove('dragging');
+
+        // Remove all drag-over classes
+        this.widgetTargets.forEach(widget => {
+            widget.classList.remove('drag-over');
+        });
+    }
+
+    handleDragOver(event) {
+        if (event.preventDefault) {
+            event.preventDefault();
+        }
+        event.dataTransfer.dropEffect = 'move';
+        return false;
+    }
+
+    handleDragEnter(event) {
+        if (event.currentTarget !== this.draggedWidget) {
+            event.currentTarget.classList.add('drag-over');
+        }
+    }
+
+    handleDragLeave(event) {
+        event.currentTarget.classList.remove('drag-over');
+    }
+
+    handleDrop(event) {
+        if (event.stopPropagation) {
+            event.stopPropagation();
+        }
+
+        const dropTarget = event.currentTarget;
+
+        if (this.draggedWidget !== dropTarget) {
+            // Get parent container
+            const container = this.draggedWidget.parentNode;
+
+            // Get positions
+            const draggedIndex = Array.from(container.children).indexOf(this.draggedWidget);
+            const dropIndex = Array.from(container.children).indexOf(dropTarget);
+
+            // Reorder in DOM
+            if (draggedIndex < dropIndex) {
+                dropTarget.parentNode.insertBefore(this.draggedWidget, dropTarget.nextSibling);
+            } else {
+                dropTarget.parentNode.insertBefore(this.draggedWidget, dropTarget);
+            }
+
+            // Save new order
+            this.saveWidgetOrder();
+        }
+
+        return false;
+    }
+
+    saveWidgetOrder() {
+        const order = [];
+        this.widgetTargets.forEach(widget => {
+            const widgetId = widget.dataset.widgetId;
+            if (widgetId) {
+                order.push(widgetId);
+            }
+        });
+
+        // Save order to preferences
+        this.preferences._widgetOrder = order;
+        this.savePreferences();
+    }
+
+    applyWidgetOrder() {
+        if (!this.preferences._widgetOrder) return;
+
+        const container = this.widgetTargets[0]?.parentNode;
+        if (!container) return;
+
+        // Reorder widgets based on saved order
+        this.preferences._widgetOrder.forEach(widgetId => {
+            const widget = this.widgetTargets.find(w => w.dataset.widgetId === widgetId);
+            if (widget) {
+                container.appendChild(widget);
+            }
+        });
     }
 
     // Load preferences from LocalStorage
@@ -65,6 +177,9 @@ export default class extends Controller {
                 }
             }
         });
+
+        // Apply saved widget order
+        this.applyWidgetOrder();
     }
 
     // Save preferences to LocalStorage
@@ -118,6 +233,9 @@ export default class extends Controller {
             checkboxes.forEach(checkbox => {
                 checkbox.checked = true;
             });
+
+            // Reload page to reset widget order
+            location.reload();
         }
     }
 
