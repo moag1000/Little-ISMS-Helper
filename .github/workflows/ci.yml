@@ -143,42 +143,59 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build Docker image (development)
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          target: development
-          tags: little-isms-helper:dev-${{ github.sha }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-          push: false
-
       - name: Build Docker image (production)
         uses: docker/build-push-action@v5
+        timeout-minutes: 15
         with:
           context: .
           target: production
           tags: little-isms-helper:prod-${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          load: true
           push: false
+          build-args: |
+            BUILDKIT_PROGRESS=plain
+
+      - name: Build Docker image (development)
+        uses: docker/build-push-action@v5
+        timeout-minutes: 15
+        with:
+          context: .
+          target: development
+          tags: little-isms-helper:dev-${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          load: true
+          push: false
+          build-args: |
+            BUILDKIT_PROGRESS=plain
 
       - name: Test Docker Compose
+        timeout-minutes: 10
         run: |
+          # Validate compose configuration
           docker compose config
-          docker compose up -d --wait
+
+          # Build and start services (this will reuse cached layers from previous builds)
+          echo "Starting Docker Compose services..."
+          COMPOSE_HTTP_TIMEOUT=200 docker compose up -d --wait
 
           # Wait a bit more to ensure container is fully ready
           echo "Waiting for services to be fully ready..."
           sleep 10
 
           # Show container status
+          echo "Container status:"
           docker compose ps
 
           # Show logs if app container is having issues
+          echo "Testing app container..."
           if ! docker compose exec -T app php --version 2>/dev/null; then
             echo "App container check failed. Showing logs:"
             docker compose logs app
+            docker compose logs database
+            docker compose logs mailer
 
             # Retry once after showing logs
             echo "Retrying after 5 seconds..."
@@ -186,4 +203,5 @@ jobs:
             docker compose exec -T app php --version
           fi
 
+          echo "Docker Compose test successful!"
           docker compose down -v
