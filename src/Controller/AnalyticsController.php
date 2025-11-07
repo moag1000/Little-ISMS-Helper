@@ -332,7 +332,7 @@ class AnalyticsController extends AbstractController
             $data[] = [
                 $asset->getId(),
                 $asset->getName(),
-                $asset->getType(),
+                $asset->getAssetType(),
                 $asset->getConfidentialityValue() . '/' . $asset->getIntegrityValue() . '/' . $asset->getAvailabilityValue(),
                 $asset->getOwner() ?? 'N/A',
                 $asset->getCreatedAt()->format('Y-m-d')
@@ -354,7 +354,7 @@ class AnalyticsController extends AbstractController
                 $control->getControlId(),
                 $control->getName(),
                 $control->getImplementationStatus(),
-                $control->getImplementationDate() ? $control->getImplementationDate()->format('Y-m-d') : 'N/A'
+                $control->getLastReviewDate() ? $control->getLastReviewDate()->format('Y-m-d') : 'N/A'
             ];
         }
 
