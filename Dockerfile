@@ -40,12 +40,16 @@ WORKDIR /var/www/html
 
 # Copy composer files first for better caching
 COPY composer.json composer.lock ./
+COPY symfony.lock ./
 
-# Install dependencies (production) - this layer will be cached if composer files don't change
-RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist --verbose
+# Install dependencies (production) WITHOUT running scripts (bin/console doesn't exist yet)
+RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist --no-scripts --verbose
 
 # Copy application files
 COPY . .
+
+# Now run Symfony scripts (bin/console is now available)
+RUN composer run-script --no-dev auto-scripts || true
 
 # Create Symfony required directories
 RUN mkdir -p var/cache var/log
@@ -98,8 +102,10 @@ RUN echo "xdebug.mode=debug,coverage" >> "$PHP_INI_DIR/conf.d/docker-php-ext-xde
 RUN cp "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"
 
 # Clean vendor from production stage and install all dependencies including dev
+# Use --no-scripts first since we already have bin/console but need to reinstall vendor
 RUN rm -rf vendor/ && \
-    composer install --optimize-autoloader --no-interaction --verbose
+    composer install --optimize-autoloader --no-interaction --no-scripts --verbose && \
+    composer run-script auto-scripts || true
 
 # Enable opcache validation in development
 RUN echo "opcache.validate_timestamps=1" >> "$PHP_INI_DIR/conf.d/opcache.ini" && \
