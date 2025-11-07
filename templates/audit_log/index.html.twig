@@ -89,54 +89,89 @@
 <div style="margin-top: 2rem;">
     <h2>Protokolleinträge</h2>
 
-    <table class="table" style="width: 100%; border-collapse: collapse; margin-top: 1rem;">
-        <thead>
-            <tr style="background: #f0f0f0;">
-                <th style="padding: 0.75rem; text-align: left; border: 1px solid #ddd;">Zeitstempel</th>
-                <th style="padding: 0.75rem; text-align: left; border: 1px solid #ddd;">Aktion</th>
-                <th style="padding: 0.75rem; text-align: left; border: 1px solid #ddd;">Entität</th>
-                <th style="padding: 0.75rem; text-align: left; border: 1px solid #ddd;">Benutzer</th>
-                <th style="padding: 0.75rem; text-align: left; border: 1px solid #ddd;">Beschreibung</th>
-                <th style="padding: 0.75rem; text-align: left; border: 1px solid #ddd;">Details</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for log in auditLogs %}
-            <tr>
-                <td style="padding: 0.75rem; border: 1px solid #ddd; font-size: 0.9rem;">
-                    {{ log.createdAt|date('d.m.Y H:i:s') }}
-                </td>
-                <td style="padding: 0.75rem; border: 1px solid #ddd;">
-                    <span class="badge badge-{{ log.action }}">{{ log.action|capitalize }}</span>
-                </td>
-                <td style="padding: 0.75rem; border: 1px solid #ddd;">
-                    {{ log.entityType }}
-                    {% if log.entityId %}
-                        <a href="{{ path('app_audit_log_entity', {entityType: log.entityType, entityId: log.entityId}) }}"
-                           style="color: #007bff; text-decoration: none;">
-                            (#{{ log.entityId }})
-                        </a>
-                    {% endif %}
-                </td>
-                <td style="padding: 0.75rem; border: 1px solid #ddd;">
-                    <a href="{{ path('app_audit_log_user', {userName: log.userName}) }}"
-                       style="color: #007bff; text-decoration: none;">
-                        {{ log.userName }}
-                    </a>
-                </td>
-                <td style="padding: 0.75rem; border: 1px solid #ddd; font-size: 0.9rem;">
-                    {{ log.description|default('-') }}
-                </td>
-                <td style="padding: 0.75rem; border: 1px solid #ddd;">
-                    <a href="{{ path('app_audit_log_detail', {id: log.id}) }}"
-                       style="color: #007bff; text-decoration: none;">
-                        Details anzeigen
-                    </a>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    {# Tab Navigation #}
+    <ul class="nav nav-tabs" role="tablist" style="margin-top: 1rem;">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active"
+                    data-bs-toggle="tab"
+                    data-bs-target="#table-view"
+                    type="button"
+                    role="tab">
+                <i class="bi-table"></i> Tabelle
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link"
+                    data-bs-toggle="tab"
+                    data-bs-target="#timeline-view"
+                    type="button"
+                    role="tab">
+                <i class="bi-clock-history"></i> Timeline
+            </button>
+        </li>
+    </ul>
+
+    {# Tab Content #}
+    <div class="tab-content" style="margin-top: 1rem;">
+        {# Table View #}
+        <div class="tab-pane fade show active" id="table-view" role="tabpanel">
+            <table class="table" style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="background: #f0f0f0;">
+                        <th style="padding: 0.75rem; text-align: left; border: 1px solid #ddd;">Zeitstempel</th>
+                        <th style="padding: 0.75rem; text-align: left; border: 1px solid #ddd;">Aktion</th>
+                        <th style="padding: 0.75rem; text-align: left; border: 1px solid #ddd;">Entität</th>
+                        <th style="padding: 0.75rem; text-align: left; border: 1px solid #ddd;">Benutzer</th>
+                        <th style="padding: 0.75rem; text-align: left; border: 1px solid #ddd;">Beschreibung</th>
+                        <th style="padding: 0.75rem; text-align: left; border: 1px solid #ddd;">Details</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for log in auditLogs %}
+                    <tr>
+                        <td style="padding: 0.75rem; border: 1px solid #ddd; font-size: 0.9rem;">
+                            {{ log.createdAt|date('d.m.Y H:i:s') }}
+                        </td>
+                        <td style="padding: 0.75rem; border: 1px solid #ddd;">
+                            <span class="badge badge-{{ log.action }}">{{ log.action|capitalize }}</span>
+                        </td>
+                        <td style="padding: 0.75rem; border: 1px solid #ddd;">
+                            {{ log.entityType }}
+                            {% if log.entityId %}
+                                <a href="{{ path('app_audit_log_entity', {entityType: log.entityType, entityId: log.entityId}) }}"
+                                   style="color: #007bff; text-decoration: none;">
+                                    (#{{ log.entityId }})
+                                </a>
+                            {% endif %}
+                        </td>
+                        <td style="padding: 0.75rem; border: 1px solid #ddd;">
+                            <a href="{{ path('app_audit_log_user', {userName: log.userName}) }}"
+                               style="color: #007bff; text-decoration: none;">
+                                {{ log.userName }}
+                            </a>
+                        </td>
+                        <td style="padding: 0.75rem; border: 1px solid #ddd; font-size: 0.9rem;">
+                            {{ log.description|default('-') }}
+                        </td>
+                        <td style="padding: 0.75rem; border: 1px solid #ddd;">
+                            <a href="{{ path('app_audit_log_detail', {id: log.id}) }}"
+                               style="color: #007bff; text-decoration: none;">
+                                Details anzeigen
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {# Timeline View #}
+        <div class="tab-pane fade" id="timeline-view" role="tabpanel">
+            {% include '_components/_audit_timeline.html.twig' with {
+                auditLogs: auditLogs
+            } %}
+        </div>
+    </div>
 
     {% if totalPages > 1 %}
     <div style="margin-top: 2rem; text-align: center;">

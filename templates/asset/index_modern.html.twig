@@ -95,7 +95,7 @@
         action: { label: 'Erstes Asset erstellen', url: path('app_asset_new'), icon: 'bi-plus-circle' }
     } %}
 {% else %}
-<div class="card">
+<div class="card" data-controller="bulk-actions" data-bulk-actions-endpoint-value="/asset">
     <div class="card-header d-flex justify-content-between align-items-center">
         <h5 class="mb-0"><i class="bi bi-list"></i> Alle Assets ({{ assets|length }})</h5>
         <div>
@@ -110,6 +110,13 @@
         <table class="table table-hover mb-0">
             <thead>
                 <tr>
+                    <th style="width: 40px;">
+                        <input type="checkbox"
+                               class="form-check-input"
+                               data-action="bulk-actions#selectAll"
+                               data-bulk-actions-target="selectAllCheckbox"
+                               title="Alle auswählen">
+                    </th>
                     <th>Name</th>
                     <th>Typ</th>
                     <th class="text-center">Confidentiality</th>
@@ -123,6 +130,13 @@
             <tbody>
                 {% for asset in assets %}
                 <tr data-asset-id="{{ asset.id }}">
+                    <td>
+                        <input type="checkbox"
+                               class="form-check-input"
+                               data-bulk-actions-target="item"
+                               data-action="bulk-actions#selectItem"
+                               value="{{ asset.id }}">
+                    </td>
                     <td>
                         <strong>{{ asset.name }}</strong>
                         {% if asset.description %}
@@ -188,6 +202,11 @@
             </tbody>
         </table>
     </div>
+
+    {# Bulk Action Bar #}
+    {% include '_components/_bulk_action_bar.html.twig' with {
+        actions: ['export', 'assign', 'delete']
+    } %}
 </div>
 {% endif %}
 

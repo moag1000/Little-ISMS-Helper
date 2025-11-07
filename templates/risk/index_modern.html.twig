@@ -149,7 +149,7 @@
         action: { label: 'Erstes Risiko erfassen', url: path('app_risk_new'), icon: 'bi-plus-circle' }
     } %}
 {% else %}
-<div class="card">
+<div class="card" data-controller="bulk-actions" data-bulk-actions-endpoint-value="/risk">
     <div class="card-header d-flex justify-content-between align-items-center">
         <h5 class="mb-0"><i class="bi bi-list"></i> Alle Risiken ({{ risks|length }})</h5>
         <div class="d-flex gap-2">
@@ -171,6 +171,13 @@
         <table class="table table-hover mb-0">
             <thead>
                 <tr>
+                    <th style="width: 40px;">
+                        <input type="checkbox"
+                               class="form-check-input"
+                               data-action="bulk-actions#selectAll"
+                               data-bulk-actions-target="selectAllCheckbox"
+                               title="Alle auswählen">
+                    </th>
                     <th>Titel</th>
                     <th>Bedrohung</th>
                     <th class="text-center">Wahrscheinlichkeit</th>
@@ -188,6 +195,13 @@
                 {% set residual = risk.getResidualRisk() %}
                 <tr data-risk-id="{{ risk.id }}"
                     data-risk-level="{{ riskScore >= 15 ? 'critical' : (riskScore >= 8 ? 'high' : (riskScore >= 4 ? 'medium' : 'low')) }}">
+                    <td>
+                        <input type="checkbox"
+                               class="form-check-input"
+                               data-bulk-actions-target="item"
+                               data-action="bulk-actions#selectItem"
+                               value="{{ risk.id }}">
+                    </td>
                     <td>
                         <strong>{{ risk.title }}</strong>
                         {% if risk.description %}
@@ -261,6 +275,11 @@
             </tbody>
         </table>
     </div>
+
+    {# Bulk Action Bar #}
+    {% include '_components/_bulk_action_bar.html.twig' with {
+        actions: ['export', 'assign', 'delete']
+    } %}
 </div>
 {% endif %}
 
