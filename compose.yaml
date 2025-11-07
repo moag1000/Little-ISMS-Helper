@@ -25,6 +25,12 @@ services:
         condition: service_healthy
       mailer:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD", "php", "--version"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
 
   # PostgreSQL Database
   database:

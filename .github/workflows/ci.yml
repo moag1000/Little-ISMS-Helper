@@ -167,5 +167,23 @@ jobs:
         run: |
           docker compose config
           docker compose up -d --wait
-          docker compose exec -T app php --version
+
+          # Wait a bit more to ensure container is fully ready
+          echo "Waiting for services to be fully ready..."
+          sleep 10
+
+          # Show container status
+          docker compose ps
+
+          # Show logs if app container is having issues
+          if ! docker compose exec -T app php --version 2>/dev/null; then
+            echo "App container check failed. Showing logs:"
+            docker compose logs app
+
+            # Retry once after showing logs
+            echo "Retrying after 5 seconds..."
+            sleep 5
+            docker compose exec -T app php --version
+          fi
+
           docker compose down -v
