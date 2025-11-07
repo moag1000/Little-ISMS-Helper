@@ -80,9 +80,9 @@ class HomeController extends AbstractController
         // Statistiken für moderne Widgets
         $stats = [
             'assets_total' => $assetCount,
-            'assets_critical' => count(array_filter($this->assetRepository->findActiveAssets(), fn($a) => $a->getConfidentiality() === 'high')),
+            'assets_critical' => count(array_filter($this->assetRepository->findActiveAssets(), fn($a) => $a->getConfidentialityValue() >= 4)),
             'risks_total' => $riskCount,
-            'risks_high' => count(array_filter($this->riskRepository->findAll(), fn($r) => $r->getRiskLevel() >= 12)),
+            'risks_high' => count(array_filter($this->riskRepository->findAll(), fn($r) => $r->getInherentRiskLevel() >= 12)),
             'controls_total' => count($applicableControls),
             'controls_implemented' => count($implementedControls),
             'incidents_open' => $openIncidentCount,
