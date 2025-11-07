@@ -1,6 +1,15 @@
 twig:
     file_name_pattern: '*.twig'
 
+    # Security: Enable auto-escaping to prevent XSS attacks (enabled by default, but explicit is better)
+    autoescape: 'html'
+
+    # Security: Use strict variables in development to catch errors early
+    # strict_variables: true  # Enable in dev if needed
+
+    # Security: Charset for proper encoding
+    charset: 'UTF-8'
+
 when@test:
     twig:
         strict_variables: true

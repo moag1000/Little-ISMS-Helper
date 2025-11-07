@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{# Security: Generic error page for all other errors (prevents information disclosure) #}
+
+{% block title %}Error{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+            <div class="error-template">
+                <h1 class="display-1">Oops!</h1>
+                <h2>Something Went Wrong</h2>
+                <div class="error-details mt-4">
+                    <p class="lead">We encountered an error while processing your request.</p>
+                    <p>Please try again or contact support if the problem persists.</p>
+                </div>
+                <div class="error-actions mt-4">
+                    <a href="{{ path('app_home') }}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-home"></i> Go to Homepage
+                    </a>
+                    <a href="javascript:history.back()" class="btn btn-outline-secondary btn-lg">
+                        <i class="fas fa-arrow-left"></i> Go Back
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .error-template {
+        padding: 40px 15px;
+        text-align: center;
+    }
+    .error-template h1 {
+        font-size: 8em;
+        color: #dc3545;
+    }
+</style>
+{% endblock %}
