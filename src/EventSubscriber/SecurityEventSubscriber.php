@@ -13,9 +13,29 @@ use Symfony\Component\Security\Http\Event\LoginSuccessEvent;
 use Symfony\Component\Security\Http\Event\LogoutEvent;
 
 /**
- * Security: Automatic security event logging subscriber
+ * Security Event Subscriber
  *
- * Automatically logs security-relevant events using the SecurityEventLogger
+ * Automatically logs security-relevant events for compliance and forensic analysis.
+ * Implements OWASP A9: Security Logging and Monitoring Failures prevention.
+ *
+ * Features:
+ * - Login success/failure tracking
+ * - Logout event logging
+ * - Access denied event tracking
+ * - Authentication exception monitoring
+ * - Automatic integration with SecurityEventLogger service
+ *
+ * Events Monitored:
+ * - LoginSuccessEvent: Successful authentication
+ * - LoginFailureEvent: Failed login attempts
+ * - LogoutEvent: User logout
+ * - AccessDeniedException: Authorization failures
+ * - AuthenticationException: Authentication errors
+ *
+ * Security Benefits:
+ * - Brute force attack detection
+ * - Unauthorized access monitoring
+ * - Audit trail for compliance (ISO 27001, GDPR)
  */
 class SecurityEventSubscriber implements EventSubscriberInterface
 {

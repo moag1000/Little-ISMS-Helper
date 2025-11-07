@@ -7,7 +7,16 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
+ * Business Process Repository
+ *
+ * Repository for querying BusinessProcess entities with business continuity and criticality queries.
+ *
  * @extends ServiceEntityRepository<BusinessProcess>
+ *
+ * @method BusinessProcess|null find($id, $lockMode = null, $lockVersion = null)
+ * @method BusinessProcess|null findOneBy(array $criteria, array $orderBy = null)
+ * @method BusinessProcess[]    findAll()
+ * @method BusinessProcess[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class BusinessProcessRepository extends ServiceEntityRepository
 {
@@ -17,7 +26,9 @@ class BusinessProcessRepository extends ServiceEntityRepository
     }
 
     /**
-     * Find processes with critical or high criticality
+     * Find processes with critical or high criticality for BCP/BCM prioritization.
+     *
+     * @return BusinessProcess[] Array of critical processes sorted by criticality (critical first) then name
      */
     public function findCriticalProcesses(): array
     {
@@ -31,7 +42,10 @@ class BusinessProcessRepository extends ServiceEntityRepository
     }
 
     /**
-     * Find processes with low RTO (high availability requirement)
+     * Find processes with low RTO (Recovery Time Objective) indicating high availability requirements.
+     *
+     * @param int $maxRto Maximum RTO in hours (default: 4 hours)
+     * @return BusinessProcess[] Array of processes sorted by RTO (lowest first)
      */
     public function findHighAvailabilityProcesses(int $maxRto = 4): array
     {
@@ -44,7 +58,10 @@ class BusinessProcessRepository extends ServiceEntityRepository
     }
 
     /**
-     * Find processes that support a specific asset
+     * Find processes that depend on a specific supporting asset.
+     *
+     * @param int $assetId Asset identifier
+     * @return BusinessProcess[] Array of processes sorted by name
      */
     public function findByAsset(int $assetId): array
     {
@@ -58,7 +75,14 @@ class BusinessProcessRepository extends ServiceEntityRepository
     }
 
     /**
-     * Get statistics about business processes
+     * Get comprehensive statistics about business processes for dashboard/reporting.
+     *
+     * @return array<string, int|float> Statistics array containing:
+     *   - total: Total process count
+     *   - critical: Count of critical processes
+     *   - high: Count of high-criticality processes
+     *   - avg_rto: Average Recovery Time Objective in hours
+     *   - avg_mtpd: Average Maximum Tolerable Period of Disruption in hours
      */
     public function getStatistics(): array
     {
@@ -96,7 +120,10 @@ class BusinessProcessRepository extends ServiceEntityRepository
     }
 
     /**
-     * Find processes with impact scores above threshold
+     * Find processes with high impact scores (financial, reputational, or operational).
+     *
+     * @param int $threshold Minimum impact score (1-10 scale, default: 8)
+     * @return BusinessProcess[] Array of processes sorted by impact (financial, reputational, operational)
      */
     public function findHighImpactProcesses(int $threshold = 8): array
     {

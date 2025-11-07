@@ -7,7 +7,16 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
+ * Compliance Framework Repository
+ *
+ * Repository for querying ComplianceFramework entities with industry and status filtering.
+ *
  * @extends ServiceEntityRepository<ComplianceFramework>
+ *
+ * @method ComplianceFramework|null find($id, $lockMode = null, $lockVersion = null)
+ * @method ComplianceFramework|null findOneBy(array $criteria, array $orderBy = null)
+ * @method ComplianceFramework[]    findAll()
+ * @method ComplianceFramework[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class ComplianceFrameworkRepository extends ServiceEntityRepository
 {
@@ -17,7 +26,9 @@ class ComplianceFrameworkRepository extends ServiceEntityRepository
     }
 
     /**
-     * Find all active frameworks
+     * Find all active compliance frameworks.
+     *
+     * @return ComplianceFramework[] Array of active frameworks sorted by name
      */
     public function findActiveFrameworks(): array
     {
@@ -30,7 +41,9 @@ class ComplianceFrameworkRepository extends ServiceEntityRepository
     }
 
     /**
-     * Find mandatory frameworks
+     * Find mandatory compliance frameworks (required by regulation or policy).
+     *
+     * @return ComplianceFramework[] Array of mandatory active frameworks sorted by name
      */
     public function findMandatoryFrameworks(): array
     {
@@ -45,7 +58,10 @@ class ComplianceFrameworkRepository extends ServiceEntityRepository
     }
 
     /**
-     * Find frameworks by industry
+     * Find frameworks applicable to a specific industry.
+     *
+     * @param string $industry Industry identifier (e.g., 'healthcare', 'finance', 'manufacturing')
+     * @return ComplianceFramework[] Array of applicable active frameworks sorted by name
      */
     public function findByIndustry(string $industry): array
     {
@@ -61,7 +77,9 @@ class ComplianceFrameworkRepository extends ServiceEntityRepository
     }
 
     /**
-     * Get compliance overview statistics
+     * Get compliance overview with statistics for all active frameworks.
+     *
+     * @return array<array{id: int, code: string, name: string, mandatory: bool, total_requirements: int, applicable_requirements: int, fulfilled_requirements: int, compliance_percentage: float}>
      */
     public function getComplianceOverview(): array
     {

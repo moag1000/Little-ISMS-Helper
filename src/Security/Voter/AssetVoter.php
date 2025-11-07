@@ -8,9 +8,26 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 /**
- * Security: Asset Access Control Voter
+ * Asset Voter
  *
- * Implements fine-grained access control for Asset entities with multi-tenancy support.
+ * Implements fine-grained authorization for Asset entity operations.
+ * Enforces strict multi-tenancy isolation to prevent cross-tenant data access.
+ *
+ * Supported Operations:
+ * - VIEW: View asset details
+ * - EDIT: Modify asset information
+ * - DELETE: Remove asset (admin only)
+ *
+ * Security Rules:
+ * - ROLE_ADMIN bypasses all checks (can access all tenants)
+ * - Users can only access assets from their own tenant
+ * - Tenant isolation is strictly enforced (tenant !== null required)
+ * - Only admins can delete assets
+ *
+ * Multi-tenancy:
+ * - Implements OWASP A1: Broken Access Control prevention
+ * - Tenant validation on all operations
+ * - Prevents horizontal privilege escalation
  */
 class AssetVoter extends Voter
 {

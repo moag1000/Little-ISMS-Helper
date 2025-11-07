@@ -9,9 +9,27 @@ use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\RateLimiter\RateLimiterFactory;
 
 /**
- * Security: API Rate Limiting to prevent abuse
+ * API Rate Limit Subscriber
  *
- * Applies rate limiting to all API Platform endpoints (/api/*)
+ * Protects API endpoints from abuse and DoS attacks through IP-based rate limiting.
+ * Implements OWASP API Security Top 10: API4:2023 Unrestricted Resource Consumption.
+ *
+ * Features:
+ * - IP-based rate limiting (100 requests/minute default)
+ * - Automatic 429 Too Many Requests responses
+ * - RFC-compliant rate limit headers
+ * - Retry-After header for client guidance
+ * - Applies only to /api/* routes
+ *
+ * Rate Limit Headers:
+ * - X-RateLimit-Limit: Maximum requests allowed
+ * - X-RateLimit-Remaining: Requests remaining in window
+ * - X-RateLimit-Reset: Unix timestamp when limit resets
+ * - Retry-After: Seconds until retry allowed
+ *
+ * Configuration:
+ * - Limiter: apiLimiter (configured in rate_limiter.yaml)
+ * - Strategy: Token bucket with 100 tokens/minute
  */
 class ApiRateLimitSubscriber implements EventSubscriberInterface
 {

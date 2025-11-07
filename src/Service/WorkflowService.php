@@ -11,6 +11,28 @@ use App\Repository\WorkflowInstanceRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 
+/**
+ * Workflow Management Service
+ *
+ * Manages the lifecycle of approval workflows for ISMS entities.
+ * Supports multi-step approval processes with configurable approvers and SLA tracking.
+ *
+ * Features:
+ * - Workflow instance creation and management
+ * - Step-by-step approval tracking
+ * - SLA-based due date calculation
+ * - Approval/rejection with history tracking
+ * - Role-based and user-based approver assignment
+ * - Overdue workflow detection
+ * - Pending approval queries per user
+ *
+ * Workflow States:
+ * - pending: Workflow created but not started
+ * - in_progress: Actively being processed
+ * - approved: Successfully completed all steps
+ * - rejected: Rejected at any step
+ * - cancelled: Manually cancelled
+ */
 class WorkflowService
 {
     public function __construct(
