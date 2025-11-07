@@ -137,21 +137,90 @@ php bin/console importmap:install
 
 # 3. Umgebung konfigurieren
 cp .env .env.local
-# Bearbeiten Sie .env.local mit Ihrer Datenbank-URL
 
-# 4. Datenbank setup
+# 3.1. APP_SECRET generieren
+echo "APP_SECRET=$(openssl rand -hex 32)" >> .env.local
+
+# 3.2. Datenbank-URL konfigurieren (wählen Sie eine Option):
+# Option A: SQLite (Standard, ideal für Tests/Entwicklung):
+# DATABASE_URL="sqlite:///%kernel.project_dir%/var/data.db"
+
+# Option B: PostgreSQL (Empfohlen für Produktion):
+# echo 'DATABASE_URL="postgresql://dbuser:dbpassword@127.0.0.1:5432/little_isms?serverVersion=16&charset=utf8"' >> .env.local
+
+# Option C: MySQL:
+# echo 'DATABASE_URL="mysql://dbuser:dbpassword@127.0.0.1:3306/little_isms?serverVersion=8.0.32&charset=utf8mb4"' >> .env.local
+
+# 4. Datenbank einrichten
 php bin/console doctrine:database:create
-php bin/console doctrine:migrations:migrate
+php bin/console doctrine:migrations:migrate --no-interaction
 
-# 5. ISO 27001 Controls laden
+# 5. Rollen & Berechtigungen einrichten + Admin-User erstellen
+php bin/console app:setup-permissions \
+  --admin-email=admin@example.com \
+  --admin-password=admin123
+
+# 6. ISO 27001 Controls laden
 php bin/console isms:load-annex-a-controls
 
-# 6. Server starten
+# 7. Server starten
 symfony serve
 # oder: php -S localhost:8000 -t public/
 ```
 
 **Fertig!** 🎉 Öffnen Sie http://localhost:8000
+
+**Standard Login-Daten:**
+- Email: `admin@example.com`
+- Passwort: `admin123`
+
+⚠️ **WICHTIG:** Ändern Sie das Admin-Passwort nach dem ersten Login!
+
+### Troubleshooting
+
+**Problem: "APP_SECRET is empty"**
+```bash
+# Generieren Sie einen neuen Secret:
+php bin/console secret:generate-keys
+# oder manuell:
+echo "APP_SECRET=$(openssl rand -hex 32)" >> .env.local
+```
+
+**Problem: "Could not create database"**
+```bash
+# Stellen Sie sicher, dass die DATABASE_URL in .env.local korrekt ist
+# Prüfen Sie, ob der Datenbankserver läuft (PostgreSQL/MySQL)
+# Für SQLite: Stellen Sie sicher, dass das var/ Verzeichnis beschreibbar ist
+chmod -R 777 var/
+```
+
+**Problem: "No admin user found"**
+```bash
+# Erstellen Sie manuell einen Admin-User:
+php bin/console app:setup-permissions \
+  --admin-email=admin@example.com \
+  --admin-password=SecurePassword123!
+```
+
+**Problem: "Permission denied" beim Login**
+```bash
+# Führen Sie das Setup-Permissions Command erneut aus:
+php bin/console app:setup-permissions
+```
+
+### Produktions-Deployment
+
+Für Produktions-Deployments beachten Sie bitte:
+
+1. **Sichere Konfiguration**: Verwenden Sie starke, einzigartige Werte für `APP_SECRET`
+2. **Datenbank**: Verwenden Sie PostgreSQL 16+ oder MySQL 8.0+ statt SQLite
+3. **HTTPS**: Konfigurieren Sie SSL/TLS-Verschlüsselung
+4. **Umgebung**: Setzen Sie `APP_ENV=prod` in `.env.local`
+5. **Cache**: Führen Sie `php bin/console cache:clear --env=prod` aus
+
+Detaillierte Anweisungen finden Sie in:
+- [DEPLOYMENT_WIZARD.md](DEPLOYMENT_WIZARD.md) - Schritt-für-Schritt Produktionssetup
+- [docs/DOCKER_SETUP.md](docs/DOCKER_SETUP.md) - Docker Compose Setup
 
 ### Optional: Weitere Frameworks laden
 
