@@ -60,7 +60,9 @@ class ExcelExportService
         foreach ($data as $rowData) {
             $col = 'A';
             foreach ($rowData as $value) {
-                $sheet->setCellValue($col . $row, $value);
+                // Security: Prevent CSV/Excel Formula Injection (OWASP #3 - Injection)
+                $safeValue = $this->sanitizeFormulaInjection($value);
+                $sheet->setCellValue($col . $row, $safeValue);
                 $col++;
             }
             $row++;
@@ -94,8 +96,11 @@ class ExcelExportService
     {
         $content = $this->generateExcel($spreadsheet);
 
+        // Security: Sanitize filename to prevent header injection (OWASP #3 - Injection)
+        $safeFilename = preg_replace('/[^\w\s\.\-]/', '', $filename);
+
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Disposition: attachment; filename="' . $filename . '"');
+        header('Content-Disposition: attachment; filename="' . $safeFilename . '"');
         header('Content-Length: ' . strlen($content));
 
         echo $content;
@@ -110,5 +115,31 @@ class ExcelExportService
         $this->addDataRows($spreadsheet, $data);
 
         return $spreadsheet;
+    }
+
+    /**
+     * Security: Prevent CSV/Excel Formula Injection
+     *
+     * Formula injection occurs when spreadsheet applications interpret cell values
+     * starting with =, +, -, @, or tab as formulas. This can lead to:
+     * - Remote code execution
+     * - Data exfiltration
+     * - Local file inclusion
+     *
+     * @param mixed $value The cell value to sanitize
+     * @return string The sanitized value
+     */
+    private function sanitizeFormulaInjection(mixed $value): string
+    {
+        // Convert to string
+        $value = (string) $value;
+
+        // Check if value starts with dangerous characters
+        if (preg_match('/^[\=\+\-\@\t\r]/', $value)) {
+            // Prefix with a single quote to force text interpretation
+            $value = "'" . $value;
+        }
+
+        return $value;
     }
 }

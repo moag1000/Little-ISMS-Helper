@@ -24,6 +24,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Index(columns: ['asset_type'], name: 'idx_asset_type')]
 #[ORM\Index(columns: ['status'], name: 'idx_asset_status')]
 #[ORM\Index(columns: ['created_at'], name: 'idx_asset_created_at')]
+#[ORM\Index(columns: ['tenant_id'], name: 'idx_asset_tenant')]
 #[ApiResource(
     operations: [
         new Get(security: "is_granted('ROLE_USER')"),
@@ -45,6 +46,11 @@ class Asset
     #[ORM\Column]
     #[Groups(['asset:read'])]
     private ?int $id = null;
+
+    #[ORM\ManyToOne(targetEntity: Tenant::class)]
+    #[ORM\JoinColumn(nullable: true)]
+    #[Groups(['asset:read'])]
+    private ?Tenant $tenant = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(['asset:read', 'asset:write', 'risk:read'])]
@@ -143,6 +149,17 @@ class Asset
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getTenant(): ?Tenant
+    {
+        return $this->tenant;
+    }
+
+    public function setTenant(?Tenant $tenant): static
+    {
+        $this->tenant = $tenant;
+        return $this;
     }
 
     public function getName(): ?string
