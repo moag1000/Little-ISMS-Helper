@@ -1,0 +1,194 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'training.new'|trans }} - {{ parent() }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid py-4">
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{{ path('app_training_index') }}" data-turbo-action="advance">
+                    <i class="bi bi-mortarboard"></i> {{ 'training.title'|trans }}
+                </a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">{{ 'training.new'|trans }}</li>
+        </ol>
+    </nav>
+
+    <div class="row">
+        <div class="col-lg-10 col-xl-9 mx-auto">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">
+                        <i class="bi bi-plus-circle"></i> {{ 'training.new'|trans }}
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted mb-4">
+                        <i class="bi bi-info-circle"></i> {{ 'training.new_help'|trans }}
+                    </p>
+
+                    {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+
+                    {# Basic Information Section #}
+                    <div class="card mb-4">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0"><i class="bi bi-info-square"></i> {{ 'training.section.basic_info'|trans }}</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12 mb-3">
+                                    {{ form_row(form.title) }}
+                                </div>
+                                <div class="col-md-12 mb-3">
+                                    {{ form_row(form.description) }}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    {{ form_row(form.trainingType) }}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    {{ form_row(form.deliveryMethod) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {# Schedule & Location Section #}
+                    <div class="card mb-4">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0"><i class="bi bi-calendar-event"></i> {{ 'training.section.schedule'|trans }}</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    {{ form_row(form.scheduledDate) }}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    {{ form_row(form.duration) }}
+                                </div>
+                                <div class="col-md-12 mb-3">
+                                    {{ form_row(form.location) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {# Trainer & Participants Section #}
+                    <div class="card mb-4">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0"><i class="bi bi-people"></i> {{ 'training.section.people'|trans }}</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    {{ form_row(form.trainer) }}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    {{ form_row(form.targetAudience) }}
+                                </div>
+                                <div class="col-md-12 mb-3">
+                                    {{ form_row(form.participants) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {# Status & Requirements Section #}
+                    <div class="card mb-4">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0"><i class="bi bi-flag"></i> {{ 'training.section.status'|trans }}</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    {{ form_row(form.status) }}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    {{ form_row(form.mandatory) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {# ISO 27001 Controls Section #}
+                    <div class="card mb-4">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0"><i class="bi bi-shield-check"></i> {{ 'training.section.controls'|trans }}</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12 mb-3">
+                                    {{ form_row(form.relatedControls) }}
+                                    <div class="form-text">
+                                        <i class="bi bi-lightbulb"></i> {{ 'training.controls_help'|trans }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {# Materials & Feedback Section #}
+                    <div class="card mb-4">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0"><i class="bi bi-file-earmark-text"></i> {{ 'training.section.materials'|trans }}</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12 mb-3">
+                                    {{ form_row(form.materials) }}
+                                </div>
+                                <div class="col-md-12 mb-3">
+                                    {{ form_row(form.feedback) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {# Form Actions #}
+                    <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+                        <a href="{{ path('app_training_index') }}"
+                           class="btn btn-outline-secondary"
+                           data-turbo-action="advance">
+                            <i class="bi bi-arrow-left"></i> {{ 'common.back'|trans }}
+                        </a>
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="bi bi-save"></i> {{ 'training.create'|trans }}
+                        </button>
+                    </div>
+
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .form-check-input {
+        cursor: pointer;
+    }
+    .form-check-label {
+        cursor: pointer;
+    }
+    select[multiple] {
+        min-height: 200px;
+    }
+</style>
+
+<script>
+    document.addEventListener('turbo:load', function() {
+        // Add visual feedback for mandatory checkbox
+        const mandatoryInputs = document.querySelectorAll('input[name*="[mandatory]"]');
+        mandatoryInputs.forEach(function(input) {
+            input.addEventListener('change', function() {
+                const card = this.closest('.card');
+                if (this.value === '1') {
+                    card.classList.add('border-warning');
+                } else {
+                    card.classList.remove('border-warning');
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

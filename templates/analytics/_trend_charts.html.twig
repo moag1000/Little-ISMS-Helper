@@ -1,0 +1,131 @@
+{# Trend Charts Component
+   Usage: {% include 'analytics/_trend_charts.html.twig' %}
+
+   Features:
+   - Risk trends over time
+   - Asset growth trends
+   - Incident trends
+   - Time period filtering
+#}
+
+<div class="card analytics-card trend-card {{ expanded is defined and expanded ? 'expanded' : '' }}"
+     data-controller="trend-chart"
+     data-trend-chart-url-value="{{ path('app_analytics_trends_data') }}">
+    <div class="card-header">
+        <h5 class="card-title">
+            <i class="bi-graph-up-arrow text-info"></i>
+            Trend Analysis
+        </h5>
+        <div class="card-actions">
+            <button class="btn btn-sm btn-outline-secondary"
+                    data-action="click->trend-chart#refresh"
+                    title="Refresh">
+                <i class="bi-arrow-clockwise"></i>
+            </button>
+            <button class="btn btn-sm btn-outline-secondary"
+                    data-action="click->trend-chart#exportImage"
+                    title="Export as PNG">
+                <i class="bi-image"></i>
+            </button>
+        </div>
+    </div>
+    <div class="card-body">
+        {# Loading State #}
+        <div class="trend-loading d-none" data-trend-chart-target="loading">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-2 text-muted">Loading trend data...</p>
+        </div>
+
+        {# Trend Charts Container #}
+        <div class="trend-container" data-trend-chart-target="container">
+            {# Chart Selector Tabs #}
+            <ul class="nav nav-pills trend-tabs mb-3">
+                <li class="nav-item">
+                    <button class="nav-link active"
+                            data-action="click->trend-chart#showRiskTrend"
+                            data-trend-chart-target="riskTab">
+                        <i class="bi-exclamation-triangle"></i> Risks
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link"
+                            data-action="click->trend-chart#showAssetTrend"
+                            data-trend-chart-target="assetTab">
+                        <i class="bi-server"></i> Assets
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link"
+                            data-action="click->trend-chart#showIncidentTrend"
+                            data-trend-chart-target="incidentTab">
+                        <i class="bi-exclamation-circle"></i> Incidents
+                    </button>
+                </li>
+            </ul>
+
+            {# Risk Trend Chart #}
+            <div class="trend-chart-wrapper" data-trend-chart-target="riskChart">
+                <h6 class="chart-title">Risk Trends (Last 12 Months)</h6>
+                <canvas data-trend-chart-target="riskCanvas"
+                        width="800"
+                        height="300"></canvas>
+                <div class="chart-stats mt-3">
+                    <div class="stat-item">
+                        <span class="stat-label">Total Risks:</span>
+                        <span class="stat-value" data-trend-chart-target="riskTotal">--</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">High Risk:</span>
+                        <span class="stat-value text-danger" data-trend-chart-target="riskHigh">--</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Trend:</span>
+                        <span class="stat-value" data-trend-chart-target="riskTrend">--</span>
+                    </div>
+                </div>
+            </div>
+
+            {# Asset Trend Chart #}
+            <div class="trend-chart-wrapper d-none" data-trend-chart-target="assetChart">
+                <h6 class="chart-title">Asset Growth (Last 12 Months)</h6>
+                <canvas data-trend-chart-target="assetCanvas"
+                        width="800"
+                        height="300"></canvas>
+                <div class="chart-stats mt-3">
+                    <div class="stat-item">
+                        <span class="stat-label">Total Assets:</span>
+                        <span class="stat-value" data-trend-chart-target="assetTotal">--</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Growth:</span>
+                        <span class="stat-value" data-trend-chart-target="assetGrowth">--</span>
+                    </div>
+                </div>
+            </div>
+
+            {# Incident Trend Chart #}
+            <div class="trend-chart-wrapper d-none" data-trend-chart-target="incidentChart">
+                <h6 class="chart-title">Incident Trends (Last 12 Months)</h6>
+                <canvas data-trend-chart-target="incidentCanvas"
+                        width="800"
+                        height="300"></canvas>
+                <div class="chart-stats mt-3">
+                    <div class="stat-item">
+                        <span class="stat-label">Total Incidents:</span>
+                        <span class="stat-value" data-trend-chart-target="incidentTotal">--</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Critical:</span>
+                        <span class="stat-value text-danger" data-trend-chart-target="incidentCritical">--</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Avg/Month:</span>
+                        <span class="stat-value" data-trend-chart-target="incidentAvg">--</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

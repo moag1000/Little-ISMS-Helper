@@ -1,0 +1,57 @@
+<div class="row">
+    <div class="col-md-6">
+        <h4 class="mb-3">Grundinformationen</h4>
+        {{ form_row(form.name) }}
+        {{ form_row(form.description) }}
+        {{ form_row(form.processOwner) }}
+        {{ form_row(form.criticality) }}
+    </div>
+    <div class="col-md-6">
+        <h4 class="mb-3">Recovery-Ziele (BIA)</h4>
+        {{ form_row(form.rto) }}
+        {{ form_row(form.rpo) }}
+        {{ form_row(form.mtpd) }}
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        <h4 class="mb-3">Finanzielle Auswirkungen</h4>
+        {{ form_row(form.financialImpactPerHour) }}
+        {{ form_row(form.financialImpactPerDay) }}
+    </div>
+    <div class="col-md-6">
+        <h4 class="mb-3">Impact-Bewertung</h4>
+        {{ form_row(form.reputationalImpact) }}
+        {{ form_row(form.regulatoryImpact) }}
+        {{ form_row(form.operationalImpact) }}
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-12">
+        <h4 class="mb-3">Abhängigkeiten</h4>
+        {{ form_row(form.dependenciesUpstream) }}
+        {{ form_row(form.dependenciesDownstream) }}
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-12">
+        <h4 class="mb-3">Wiederherstellung</h4>
+        {{ form_row(form.recoveryStrategy) }}
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        <h4 class="mb-3">Unterstützende Assets</h4>
+        {{ form_row(form.supportingAssets) }}
+    </div>
+    <div class="col-md-6">
+        <h4 class="mb-3">Identifizierte Risiken</h4>
+        {{ form_row(form.identifiedRisks) }}
+    </div>
+</div>
+
+{{ form_rest(form) }}

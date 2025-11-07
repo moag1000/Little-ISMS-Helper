@@ -1,0 +1,101 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Risk{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="page-header">
+        <h1>Edit Risk: {{ risk.name }}</h1>
+        <a href="{{ path('app_risk_show', {id: risk.id}) }}" class="btn btn-secondary">Back</a>
+    </div>
+
+    <div class="card">
+        <div class="card-content">
+            {{ form_start(form) }}
+                <div class="form-row">
+                    <div class="form-group">
+                        {{ form_label(form.name) }}
+                        {{ form_widget(form.name) }}
+                        {{ form_errors(form.name) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.category) }}
+                        {{ form_widget(form.category) }}
+                        {{ form_errors(form.category) }}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.description) }}
+                    {{ form_widget(form.description) }}
+                    {{ form_errors(form.description) }}
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        {{ form_label(form.identifiedDate) }}
+                        {{ form_widget(form.identifiedDate) }}
+                        {{ form_errors(form.identifiedDate) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.identifiedBy) }}
+                        {{ form_widget(form.identifiedBy) }}
+                        {{ form_errors(form.identifiedBy) }}
+                    </div>
+                </div>
+
+                <h3>Inherent Risk Assessment</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        {{ form_label(form.inherentProbability) }}
+                        {{ form_widget(form.inherentProbability) }}
+                        {{ form_errors(form.inherentProbability) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.inherentImpact) }}
+                        {{ form_widget(form.inherentImpact) }}
+                        {{ form_errors(form.inherentImpact) }}
+                    </div>
+                </div>
+
+                <h3>Residual Risk Assessment</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        {{ form_label(form.residualProbability) }}
+                        {{ form_widget(form.residualProbability) }}
+                        {{ form_errors(form.residualProbability) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.residualImpact) }}
+                        {{ form_widget(form.residualImpact) }}
+                        {{ form_errors(form.residualImpact) }}
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        {{ form_label(form.treatmentStrategy) }}
+                        {{ form_widget(form.treatmentStrategy) }}
+                        {{ form_errors(form.treatmentStrategy) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.status) }}
+                        {{ form_widget(form.status) }}
+                        {{ form_errors(form.status) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.reviewDate) }}
+                        {{ form_widget(form.reviewDate) }}
+                        {{ form_errors(form.reviewDate) }}
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Update Risk</button>
+                    <a href="{{ path('app_risk_show', {id: risk.id}) }}" class="btn btn-secondary">Cancel</a>
+                </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>
+{% endblock %}

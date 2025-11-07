@@ -1,0 +1,36 @@
+{# Keyboard Shortcuts Help Modal #}
+<div data-controller="keyboard-shortcuts">
+    <div class="keyboard-shortcuts-modal" data-keyboard-shortcuts-target="modal">
+        <div class="keyboard-shortcuts-container">
+            <div class="keyboard-shortcuts-header">
+                <h2>
+                    <i class="bi bi-keyboard"></i>
+                    Keyboard Shortcuts
+                </h2>
+                <button class="modal-close"
+                        data-action="click->keyboard-shortcuts#close"
+                        aria-label="Close">
+                    <i class="bi bi-x"></i>
+                </button>
+            </div>
+
+            <div class="keyboard-shortcuts-content">
+                {# Dynamically populated by controller #}
+            </div>
+
+            <div class="keyboard-shortcuts-footer">
+                <p class="text-muted">
+                    <i class="bi bi-lightbulb"></i>
+                    Tipp: Drücken Sie <kbd>?</kbd> um diese Hilfe jederzeit anzuzeigen
+                </p>
+            </div>
+        </div>
+    </div>
+
+    {# Floating Help Button #}
+    <button class="keyboard-shortcuts-trigger"
+            data-action="click->keyboard-shortcuts#show"
+            title="Keyboard Shortcuts (?)">
+        <i class="bi bi-keyboard"></i>
+    </button>
+</div>

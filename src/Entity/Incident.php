@@ -2,87 +2,170 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Doctrine\Orm\Filter\BooleanFilter;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
+use ApiPlatform\Metadata\Delete;
 use App\Repository\IncidentRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: IncidentRepository::class)]
+#[ORM\Index(columns: ['incident_number'], name: 'idx_incident_number')]
+#[ORM\Index(columns: ['severity'], name: 'idx_incident_severity')]
+#[ORM\Index(columns: ['status'], name: 'idx_incident_status')]
+#[ORM\Index(columns: ['category'], name: 'idx_incident_category')]
+#[ORM\Index(columns: ['detected_at'], name: 'idx_incident_detected_at')]
+#[ORM\Index(columns: ['data_breach_occurred'], name: 'idx_incident_data_breach')]
+#[ApiResource(
+    operations: [
+        new Get(security: "is_granted('ROLE_USER')"),
+        new GetCollection(security: "is_granted('ROLE_USER')"),
+        new Post(security: "is_granted('ROLE_USER')"),
+        new Put(security: "is_granted('ROLE_USER')"),
+        new Delete(security: "is_granted('ROLE_ADMIN')"),
+    ],
+    normalizationContext: ['groups' => ['incident:read']],
+    denormalizationContext: ['groups' => ['incident:write']],
+    paginationItemsPerPage: 30
+)]
+#[ApiFilter(SearchFilter::class, properties: ['title' => 'partial', 'incidentNumber' => 'exact', 'severity' => 'exact', 'status' => 'exact', 'category' => 'exact'])]
+#[ApiFilter(BooleanFilter::class, properties: ['dataBreachOccurred', 'notificationRequired'])]
+#[ApiFilter(OrderFilter::class, properties: ['detectedAt', 'severity', 'status'])]
+#[ApiFilter(DateFilter::class, properties: ['detectedAt', 'resolvedAt', 'closedAt'])]
 class Incident
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['incident:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
+    #[Groups(['incident:read', 'incident:write'])]
+    #[Assert\NotBlank(message: 'Incident number is required')]
+    #[Assert\Length(max: 50, maxMessage: 'Incident number cannot exceed {{ limit }} characters')]
     private ?string $incidentNumber = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['incident:read', 'incident:write'])]
+    #[Assert\NotBlank(message: 'Incident title is required')]
+    #[Assert\Length(max: 255, maxMessage: 'Title cannot exceed {{ limit }} characters')]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups(['incident:read', 'incident:write'])]
+    #[Assert\NotBlank(message: 'Incident description is required')]
     private ?string $description = null;
 
     #[ORM\Column(length: 100)]
+    #[Groups(['incident:read', 'incident:write'])]
+    #[Assert\NotBlank(message: 'Incident category is required')]
+    #[Assert\Length(max: 100, maxMessage: 'Category cannot exceed {{ limit }} characters')]
     private ?string $category = null;
 
     #[ORM\Column(length: 50)]
+    #[Groups(['incident:read', 'incident:write'])]
+    #[Assert\NotBlank(message: 'Severity is required')]
+    #[Assert\Choice(
+        choices: ['low', 'medium', 'high', 'critical'],
+        message: 'Severity must be one of: {{ choices }}'
+    )]
     private ?string $severity = null;
 
     #[ORM\Column(length: 50)]
+    #[Groups(['incident:read', 'incident:write'])]
+    #[Assert\NotBlank(message: 'Status is required')]
+    #[Assert\Choice(
+        choices: ['open', 'investigating', 'resolved', 'closed'],
+        message: 'Status must be one of: {{ choices }}'
+    )]
     private ?string $status = 'open';
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Groups(['incident:read', 'incident:write'])]
+    #[Assert\NotNull(message: 'Detection date is required')]
     private ?\DateTimeInterface $detectedAt = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[Groups(['incident:read', 'incident:write'])]
     private ?\DateTimeInterface $occurredAt = null;
 
     #[ORM\Column(length: 100)]
+    #[Groups(['incident:read', 'incident:write'])]
+    #[Assert\NotBlank(message: 'Reporter name is required')]
+    #[Assert\Length(max: 100, maxMessage: 'Reporter name cannot exceed {{ limit }} characters')]
     private ?string $reportedBy = null;
 
     #[ORM\Column(length: 100, nullable: true)]
+    #[Groups(['incident:read', 'incident:write'])]
+    #[Assert\Length(max: 100, maxMessage: 'Assignee name cannot exceed {{ limit }} characters')]
     private ?string $assignedTo = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['incident:read', 'incident:write'])]
     private ?string $immediateActions = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['incident:read', 'incident:write'])]
     private ?string $rootCause = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['incident:read', 'incident:write'])]
     private ?string $correctiveActions = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['incident:read', 'incident:write'])]
     private ?string $preventiveActions = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['incident:read', 'incident:write'])]
     private ?string $lessonsLearned = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[Groups(['incident:read', 'incident:write'])]
     private ?\DateTimeInterface $resolvedAt = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[Groups(['incident:read', 'incident:write'])]
     private ?\DateTimeInterface $closedAt = null;
 
     #[ORM\Column(type: Types::BOOLEAN)]
+    #[Groups(['incident:read', 'incident:write'])]
+    #[Assert\NotNull(message: 'Data breach flag is required')]
     private ?bool $dataBreachOccurred = false;
 
     #[ORM\Column(type: Types::BOOLEAN)]
+    #[Groups(['incident:read', 'incident:write'])]
+    #[Assert\NotNull(message: 'Notification required flag is required')]
     private ?bool $notificationRequired = false;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Groups(['incident:read'])]
     private ?\DateTimeInterface $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[Groups(['incident:read'])]
     private ?\DateTimeInterface $updatedAt = null;
 
     /**
      * @var Collection<int, Control>
      */
     #[ORM\ManyToMany(targetEntity: Control::class, inversedBy: 'incidents')]
+    #[Groups(['incident:read'])]
+    #[MaxDepth(1)]
     private Collection $relatedControls;
 
     /**
@@ -90,6 +173,8 @@ class Incident
      */
     #[ORM\ManyToMany(targetEntity: Asset::class, inversedBy: 'incidents')]
     #[ORM\JoinTable(name: 'incident_asset')]
+    #[Groups(['incident:read'])]
+    #[MaxDepth(1)]
     private Collection $affectedAssets;
 
     /**
@@ -97,6 +182,8 @@ class Incident
      */
     #[ORM\ManyToMany(targetEntity: Risk::class, inversedBy: 'incidents')]
     #[ORM\JoinTable(name: 'incident_risk')]
+    #[Groups(['incident:read'])]
+    #[MaxDepth(1)]
     private Collection $realizedRisks;
 
     public function __construct()
@@ -414,6 +501,7 @@ class Incident
      * Check if any critical/high-risk assets were affected
      * Data Reuse: Uses Asset risk scoring
      */
+    #[Groups(['incident:read'])]
     public function hasCriticalAssetsAffected(): bool
     {
         return $this->affectedAssets->exists(fn($k, $asset) => $asset->isHighRisk());
@@ -423,6 +511,7 @@ class Incident
      * Get count of realized risks
      * Data Reuse: Links incidents to pre-defined risks
      */
+    #[Groups(['incident:read'])]
     public function getRealizedRiskCount(): int
     {
         return $this->realizedRisks->count();
@@ -432,6 +521,7 @@ class Incident
      * Get total impact value from affected assets
      * Data Reuse: Aggregates CIA values from affected assets
      */
+    #[Groups(['incident:read'])]
     public function getTotalAssetImpact(): int
     {
         $total = 0;
@@ -445,6 +535,7 @@ class Incident
      * Check if this incident validated a previously identified risk
      * Data Reuse: Validates risk assessment accuracy
      */
+    #[Groups(['incident:read'])]
     public function isRiskValidated(): bool
     {
         return !$this->realizedRisks->isEmpty();

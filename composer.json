@@ -9,11 +9,16 @@
         "php": ">=8.2",
         "ext-ctype": "*",
         "ext-iconv": "*",
+        "api-platform/core": "^4.0",
         "doctrine/dbal": "^3",
         "doctrine/doctrine-bundle": "^2.18",
         "doctrine/doctrine-migrations-bundle": "^3.5",
         "doctrine/orm": "^3.5",
+        "dompdf/dompdf": "*",
+        "knpuniversity/oauth2-client-bundle": "^2.19",
+        "onelogin/php-saml": "^4.0",
         "phpdocumentor/reflection-docblock": "^5.6",
+        "phpoffice/phpspreadsheet": "*",
         "phpstan/phpdoc-parser": "^2.3",
         "symfony/asset": "7.3.*",
         "symfony/asset-mapper": "7.3.*",
@@ -30,6 +35,7 @@
         "symfony/mime": "7.3.*",
         "symfony/monolog-bundle": "^3.0",
         "symfony/notifier": "7.3.*",
+        "symfony/password-hasher": "7.3.*",
         "symfony/process": "7.3.*",
         "symfony/property-access": "7.3.*",
         "symfony/property-info": "7.3.*",
@@ -45,8 +51,10 @@
         "symfony/validator": "7.3.*",
         "symfony/web-link": "7.3.*",
         "symfony/yaml": "7.3.*",
+        "thenetworg/oauth2-azure": "^2.2",
         "twig/extra-bundle": "^2.12|^3.0",
-        "twig/twig": "^2.12|^3.0"
+        "twig/twig": "^2.12|^3.0",
+        "vich/uploader-bundle": "*"
     },
     "config": {
         "allow-plugins": {

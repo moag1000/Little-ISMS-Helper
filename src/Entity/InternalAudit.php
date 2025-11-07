@@ -2,27 +2,67 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
+use ApiPlatform\Metadata\Delete;
 use App\Repository\InternalAuditRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: InternalAuditRepository::class)]
+#[ORM\Index(columns: ['audit_number'], name: 'idx_audit_number')]
+#[ORM\Index(columns: ['status'], name: 'idx_audit_status')]
+#[ORM\Index(columns: ['scope_type'], name: 'idx_audit_scope_type')]
+#[ORM\Index(columns: ['planned_date'], name: 'idx_audit_planned_date')]
+#[ApiResource(
+    operations: [
+        new Get(security: "is_granted('ROLE_USER')"),
+        new GetCollection(security: "is_granted('ROLE_USER')"),
+        new Post(security: "is_granted('ROLE_USER')"),
+        new Put(security: "is_granted('ROLE_USER')"),
+        new Delete(security: "is_granted('ROLE_ADMIN')"),
+    ],
+    normalizationContext: ['groups' => ['audit:read']],
+    denormalizationContext: ['groups' => ['audit:write']],
+    paginationItemsPerPage: 30
+)]
+#[ApiFilter(SearchFilter::class, properties: ['title' => 'partial', 'auditNumber' => 'exact', 'status' => 'exact', 'scopeType' => 'exact'])]
+#[ApiFilter(OrderFilter::class, properties: ['plannedDate', 'actualDate', 'status'])]
+#[ApiFilter(DateFilter::class, properties: ['plannedDate', 'actualDate'])]
 class InternalAudit
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['audit:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
+    #[Groups(['audit:read', 'audit:write'])]
+    #[Assert\NotBlank(message: 'Audit number is required')]
+    #[Assert\Length(max: 50, maxMessage: 'Audit number cannot exceed {{ limit }} characters')]
     private ?string $auditNumber = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['audit:read', 'audit:write'])]
+    #[Assert\NotBlank(message: 'Audit title is required')]
+    #[Assert\Length(max: 255, maxMessage: 'Title cannot exceed {{ limit }} characters')]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['audit:read', 'audit:write'])]
     private ?string $scope = null;
 
     /**
@@ -36,6 +76,11 @@ class InternalAudit
      * - department: Organizational unit
      */
     #[ORM\Column(length: 50, nullable: true)]
+    #[Groups(['audit:read', 'audit:write'])]
+    #[Assert\Choice(
+        choices: ['full_isms', 'compliance_framework', 'asset', 'asset_type', 'asset_group', 'location', 'department'],
+        message: 'Scope type must be one of: {{ choices }}'
+    )]
     private ?string $scopeType = 'full_isms';
 
     /**
@@ -45,6 +90,7 @@ class InternalAudit
      * For personnel: {group: "management", department: "IT"}
      */
     #[ORM\Column(type: Types::JSON, nullable: true)]
+    #[Groups(['audit:read', 'audit:write'])]
     private ?array $scopeDetails = null;
 
     /**
@@ -52,55 +98,82 @@ class InternalAudit
      */
     #[ORM\ManyToMany(targetEntity: Asset::class)]
     #[ORM\JoinTable(name: 'internal_audit_asset')]
+    #[Groups(['audit:read'])]
+    #[MaxDepth(1)]
     private Collection $scopedAssets;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: true)]
+    #[Groups(['audit:read'])]
+    #[MaxDepth(1)]
     private ?ComplianceFramework $scopedFramework = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['audit:read', 'audit:write'])]
     private ?string $objectives = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Groups(['audit:read', 'audit:write'])]
+    #[Assert\NotNull(message: 'Planned date is required')]
     private ?\DateTimeInterface $plannedDate = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    #[Groups(['audit:read', 'audit:write'])]
     private ?\DateTimeInterface $actualDate = null;
 
     #[ORM\Column(length: 100)]
+    #[Groups(['audit:read', 'audit:write'])]
+    #[Assert\NotBlank(message: 'Lead auditor is required')]
+    #[Assert\Length(max: 100, maxMessage: 'Lead auditor name cannot exceed {{ limit }} characters')]
     private ?string $leadAuditor = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['audit:read', 'audit:write'])]
     private ?string $auditTeam = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['audit:read', 'audit:write'])]
     private ?string $auditedDepartments = null;
 
     #[ORM\Column(length: 50)]
+    #[Groups(['audit:read', 'audit:write'])]
+    #[Assert\NotBlank(message: 'Status is required')]
+    #[Assert\Choice(
+        choices: ['planned', 'in_progress', 'completed', 'reported'],
+        message: 'Status must be one of: {{ choices }}'
+    )]
     private ?string $status = 'planned';
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['audit:read', 'audit:write'])]
     private ?string $findings = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['audit:read', 'audit:write'])]
     private ?string $nonConformities = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['audit:read', 'audit:write'])]
     private ?string $observations = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['audit:read', 'audit:write'])]
     private ?string $recommendations = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['audit:read', 'audit:write'])]
     private ?string $conclusion = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    #[Groups(['audit:read', 'audit:write'])]
     private ?\DateTimeInterface $reportDate = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Groups(['audit:read'])]
     private ?\DateTimeInterface $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[Groups(['audit:read'])]
     private ?\DateTimeInterface $updatedAt = null;
 
     public function __construct()

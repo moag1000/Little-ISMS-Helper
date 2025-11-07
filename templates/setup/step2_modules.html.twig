@@ -1,0 +1,180 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Schritt 2: Module auswählen - Deployment Wizard{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            {# Progress Bar #}
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h6 class="mb-0">Setup-Fortschritt</h6>
+                        <small class="text-muted">Schritt 2 von 6</small>
+                    </div>
+                    <div class="progress" style="height: 10px;">
+                        <div class="progress-bar" role="progressbar" style="width: 33%;" aria-valuenow="33" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-lg">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="mb-0">
+                        <i class="fas fa-puzzle-piece me-2"></i>
+                        Schritt 2: Module auswählen
+                    </h2>
+                </div>
+                <div class="card-body p-4">
+                    <p class="lead mb-4">
+                        Wählen Sie die Module aus, die Sie in Ihrem ISMS verwenden möchten.
+                        Abhängigkeiten werden automatisch aufgelöst.
+                    </p>
+
+                    <form method="post" action="{{ path('setup_step2_modules_save') }}">
+                        {# Required Modules #}
+                        <h5 class="mb-3">
+                            <i class="fas fa-star text-warning me-2"></i>
+                            Erforderliche Module
+                        </h5>
+
+                        {% for key, module in all_modules if module.required %}
+                            <div class="card mb-3 border-primary bg-light">
+                                <div class="card-body">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="modules[]" value="{{ key }}" id="module_{{ key }}" checked disabled>
+                                        <input type="hidden" name="modules[]" value="{{ key }}">
+                                        <label class="form-check-label w-100" for="module_{{ key }}">
+                                            <div class="d-flex justify-content-between align-items-start">
+                                                <div>
+                                                    <h6 class="mb-1">
+                                                        <i class="fas fa-{{ module.icon }} me-2"></i>
+                                                        {{ module.name }}
+                                                        <span class="badge bg-warning text-dark ms-2">Erforderlich</span>
+                                                    </h6>
+                                                    <p class="text-muted mb-1">{{ module.description }}</p>
+                                                    <small class="text-muted">
+                                                        <strong>Entities:</strong>
+                                                        {% for entity in module.entities %}
+                                                            <span class="badge bg-secondary">{{ entity }}</span>
+                                                        {% endfor %}
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+
+                        {# Optional Modules #}
+                        <h5 class="mb-3 mt-4">
+                            <i class="fas fa-toggle-on text-info me-2"></i>
+                            Optionale Module
+                        </h5>
+
+                        <div id="optional-modules">
+                            {% for key, module in optional_modules %}
+                                <div class="card mb-3 module-card" data-module="{{ key }}" data-dependencies="{{ module.dependencies|json_encode }}">
+                                    <div class="card-body">
+                                        <div class="form-check">
+                                            <input class="form-check-input module-checkbox" type="checkbox" name="modules[]" value="{{ key }}" id="module_{{ key }}"
+                                                {{ key in selected_modules ? 'checked' : '' }}>
+                                            <label class="form-check-label w-100" for="module_{{ key }}">
+                                                <div class="d-flex justify-content-between align-items-start">
+                                                    <div class="flex-grow-1">
+                                                        <h6 class="mb-1">
+                                                            <i class="fas fa-{{ module.icon }} me-2"></i>
+                                                            {{ module.name }}
+                                                        </h6>
+                                                        <p class="text-muted mb-1">{{ module.description }}</p>
+                                                        <small class="text-muted">
+                                                            <strong>Entities:</strong>
+                                                            {% for entity in module.entities %}
+                                                                <span class="badge bg-secondary">{{ entity }}</span>
+                                                            {% endfor %}
+                                                        </small>
+                                                        {% if module.dependencies|length > 0 %}
+                                                            <div class="mt-2">
+                                                                <small class="text-warning">
+                                                                    <i class="fas fa-link me-1"></i>
+                                                                    <strong>Abhängigkeiten:</strong>
+                                                                    {% for dep in module.dependencies %}
+                                                                        <span class="badge bg-warning text-dark">{{ all_modules[dep].name }}</span>
+                                                                    {% endfor %}
+                                                                </small>
+                                                            </div>
+                                                        {% endif %}
+                                                        {% if dependency_graph[key].dependents|length > 0 %}
+                                                            <div class="mt-1">
+                                                                <small class="text-info">
+                                                                    <i class="fas fa-arrow-right me-1"></i>
+                                                                    <strong>Wird benötigt von:</strong>
+                                                                    {% for dep in dependency_graph[key].dependents %}
+                                                                        <span class="badge bg-info">{{ all_modules[dep].name }}</span>
+                                                                    {% endfor %}
+                                                                </small>
+                                                            </div>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                        {# Summary #}
+                        <div class="card bg-light mt-4 mb-4">
+                            <div class="card-body">
+                                <h6 class="mb-2">
+                                    <i class="fas fa-chart-pie me-2"></i>
+                                    Zusammenfassung
+                                </h6>
+                                <div id="module-summary">
+                                    <p class="mb-0">
+                                        <span id="selected-count">0</span> von {{ all_modules|length }} Modulen ausgewählt
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        {# Navigation #}
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ path('setup_step1_requirements') }}" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>
+                                Zurück
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                Weiter zu Schritt 3: Datenbank
+                                <i class="fas fa-arrow-right ms-2"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const checkboxes = document.querySelectorAll('.module-checkbox');
+    const selectedCount = document.getElementById('selected-count');
+
+    function updateCount() {
+        const checked = document.querySelectorAll('.module-checkbox:checked').length;
+        const required = {{ required_modules|length }};
+        selectedCount.textContent = checked + required;
+    }
+
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', updateCount);
+    });
+
+    updateCount();
+});
+</script>
+{% endblock %}

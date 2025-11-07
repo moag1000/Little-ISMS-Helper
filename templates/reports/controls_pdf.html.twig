@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Statement of Applicability</title>
+    <style>
+        @page { size: A4 landscape; margin: 15mm; }
+        body { font-family: 'DejaVu Sans', sans-serif; font-size: 9pt; }
+        .header { text-align: center; margin-bottom: 20px; border-bottom: 2px solid #16a34a; padding-bottom: 8px; }
+        .header h1 { color: #15803d; margin: 0; font-size: 18pt; }
+        .header .subtitle { color: #666; font-size: 9pt; margin-top: 5px; }
+        table { width: 100%; border-collapse: collapse; margin: 10px 0; }
+        th { background: #dcfce7; padding: 6px 4px; text-align: left; font-size: 8pt; border: 1px solid #86efac; }
+        td { padding: 6px 4px; border: 1px solid #ddd; font-size: 8pt; }
+        tr:nth-child(even) { background: #f9fafb; }
+        .applicable { color: #16a34a; font-weight: bold; }
+        .not-applicable { color: #dc2626; }
+        .progress-bar { background: #e5e7eb; height: 12px; border-radius: 3px; position: relative; }
+        .progress-fill { background: #16a34a; height: 100%; border-radius: 3px; }
+        .footer { position: fixed; bottom: 10px; left: 0; right: 0; text-align: center; font-size: 7pt; color: #666; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Statement of Applicability (SoA)</h1>
+        <div class="subtitle">ISO/IEC 27001:2022 Annex A Controls | Generated: {{ generated_at|date('d.m.Y H:i') }}</div>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 8%;">Control ID</th>
+                <th style="width: 22%;">Name</th>
+                <th style="width: 10%;">Category</th>
+                <th style="width: 12%;">Applicability</th>
+                <th style="width: 12%;">Status</th>
+                <th style="width: 8%;">Progress</th>
+                <th style="width: 18%;">Justification</th>
+                <th style="width: 10%;">Target Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for control in controls %}
+            <tr>
+                <td>{{ control.controlId }}</td>
+                <td>{{ control.name|slice(0, 40) }}{% if control.name|length > 40 %}...{% endif %}</td>
+                <td>{{ control.category }}</td>
+                <td class="{% if control.applicability == 'applicable' %}applicable{% else %}not-applicable{% endif %}">
+                    {{ control.applicability }}
+                </td>
+                <td>{{ control.implementationStatus }}</td>
+                <td>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: {{ control.implementationProgress }}%;"></div>
+                    </div>
+                    {{ control.implementationProgress }}%
+                </td>
+                <td>{{ control.justification|slice(0, 35)|default('-') }}{% if control.justification|length > 35 %}...{% endif %}</td>
+                <td>{{ control.targetDate ? control.targetDate|date('Y-m-d') : '-' }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="footer">
+        <p>Confidential - ISO 27001:2022 SoA | Page {PAGE_NUM}</p>
+    </div>
+</body>
+</html>
