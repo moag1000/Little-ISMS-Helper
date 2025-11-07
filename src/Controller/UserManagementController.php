@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Entity\Role;
+use App\Form\UserType;
 use App\Repository\UserRepository;
 use App\Repository\RoleRepository;
 use App\Security\Voter\UserVoter;
@@ -37,45 +38,32 @@ class UserManagementController extends AbstractController
     public function new(
         Request $request,
         EntityManagerInterface $entityManager,
-        UserPasswordHasherInterface $passwordHasher,
-        RoleRepository $roleRepository
+        UserPasswordHasherInterface $passwordHasher
     ): Response {
         $this->denyAccessUnlessGranted(UserVoter::CREATE);
 
         $user = new User();
-        $availableRoles = $roleRepository->findAll();
+        $user->setAuthProvider('local');
 
-        if ($request->isMethod('POST')) {
-            $user->setEmail($request->request->get('email'));
-            $user->setFirstName($request->request->get('firstName'));
-            $user->setLastName($request->request->get('lastName'));
-            $user->setDepartment($request->request->get('department'));
-            $user->setJobTitle($request->request->get('jobTitle'));
-            $user->setPhoneNumber($request->request->get('phoneNumber'));
-            $user->setAuthProvider('local');
+        $form = $this->createForm(UserType::class, $user, [
+            'is_edit' => false,
+        ]);
+        $form->handleRequest($request);
 
-            // Set password if provided
-            $password = $request->request->get('password');
-            if ($password) {
-                $hashedPassword = $passwordHasher->hashPassword($user, $password);
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Hash password if provided
+            $plainPassword = $form->get('plainPassword')->getData();
+            if ($plainPassword) {
+                $hashedPassword = $passwordHasher->hashPassword($user, $plainPassword);
                 $user->setPassword($hashedPassword);
             }
 
-            // Set roles
-            $selectedRoles = $request->request->all('roles') ?? [];
-            $user->setRoles($selectedRoles);
-
-            // Set custom roles
-            $customRoleIds = $request->request->all('customRoles') ?? [];
-            foreach ($customRoleIds as $roleId) {
-                $role = $roleRepository->find($roleId);
-                if ($role) {
-                    $user->addCustomRole($role);
-                }
+            // Ensure ROLE_USER is always included
+            $roles = $user->getRoles();
+            if (!in_array('ROLE_USER', $roles)) {
+                $roles[] = 'ROLE_USER';
+                $user->setRoles($roles);
             }
-
-            $user->setIsActive($request->request->get('isActive', false) === '1');
-            $user->setIsVerified($request->request->get('isVerified', false) === '1');
 
             $entityManager->persist($user);
             $entityManager->flush();
@@ -87,7 +75,7 @@ class UserManagementController extends AbstractController
 
         return $this->render('user_management/new.html.twig', [
             'user' => $user,
-            'availableRoles' => $availableRoles,
+            'form' => $form,
         ]);
     }
 
@@ -106,46 +94,31 @@ class UserManagementController extends AbstractController
         User $user,
         Request $request,
         EntityManagerInterface $entityManager,
-        UserPasswordHasherInterface $passwordHasher,
-        RoleRepository $roleRepository
+        UserPasswordHasherInterface $passwordHasher
     ): Response {
         $this->denyAccessUnlessGranted(UserVoter::EDIT, $user);
 
-        $availableRoles = $roleRepository->findAll();
+        $form = $this->createForm(UserType::class, $user, [
+            'is_edit' => true,
+        ]);
+        $form->handleRequest($request);
 
-        if ($request->isMethod('POST')) {
-            $user->setEmail($request->request->get('email'));
-            $user->setFirstName($request->request->get('firstName'));
-            $user->setLastName($request->request->get('lastName'));
-            $user->setDepartment($request->request->get('department'));
-            $user->setJobTitle($request->request->get('jobTitle'));
-            $user->setPhoneNumber($request->request->get('phoneNumber'));
-
+        if ($form->isSubmitted() && $form->isValid()) {
             // Update password only if provided
-            $password = $request->request->get('password');
-            if ($password) {
-                $hashedPassword = $passwordHasher->hashPassword($user, $password);
+            $plainPassword = $form->get('plainPassword')->getData();
+            if ($plainPassword) {
+                $hashedPassword = $passwordHasher->hashPassword($user, $plainPassword);
                 $user->setPassword($hashedPassword);
             }
 
-            // Update roles
-            $selectedRoles = $request->request->all('roles') ?? [];
-            $user->setRoles($selectedRoles);
-
-            // Update custom roles
-            $user->getCustomRoles()->clear();
-            $customRoleIds = $request->request->all('customRoles') ?? [];
-            foreach ($customRoleIds as $roleId) {
-                $role = $roleRepository->find($roleId);
-                if ($role) {
-                    $user->addCustomRole($role);
-                }
+            // Ensure ROLE_USER is always included
+            $roles = $user->getRoles();
+            if (!in_array('ROLE_USER', $roles)) {
+                $roles[] = 'ROLE_USER';
+                $user->setRoles($roles);
             }
 
-            $user->setIsActive($request->request->get('isActive', false) === '1');
-            $user->setIsVerified($request->request->get('isVerified', false) === '1');
             $user->setUpdatedAt(new \DateTimeImmutable());
-
             $entityManager->flush();
 
             $this->addFlash('success', 'Benutzer erfolgreich aktualisiert.');
@@ -155,7 +128,7 @@ class UserManagementController extends AbstractController
 
         return $this->render('user_management/edit.html.twig', [
             'user' => $user,
-            'availableRoles' => $availableRoles,
+            'form' => $form,
         ]);
     }
 
