@@ -28,7 +28,7 @@ This PR implements **defensive security improvements** that strengthen the appli
 
 **Security Impact**:
 - Mitigates **Session Hijacking** attacks
-- Prevents **Session Fixation** attacks
+- Prevents **Session Fixation** attacks (via automatic session regeneration)
 - Reduces **CSRF** attack surface
 - Protects against **XSS-based session theft**
 
@@ -37,8 +37,8 @@ This PR implements **defensive security improvements** that strengthen the appli
 **File**: `config/packages/security.yaml`
 
 **Improvements**:
-- ✅ `invalidate_session: true` on login - Regenerates session ID on authentication
-- ✅ `invalidate_session: true` on logout - Invalidates session completely
+- ✅ **Automatic Session Regeneration on Login**: Symfony's authentication system automatically regenerates the session ID upon successful login, preventing session fixation attacks
+- ✅ `invalidate_session: true` on logout - Completely invalidates session on logout
 
 **Security Impact**:
 - Prevents attackers from pre-setting session IDs
