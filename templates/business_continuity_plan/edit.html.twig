@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit {{ bc_plan.name }}{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="page-header">
+        <h1>Edit BC Plan: {{ bc_plan.name }}</h1>
+        <div class="actions">
+            <a href="{{ path('app_bc_plan_show', {id: bc_plan.id}) }}" class="btn btn-secondary">View</a>
+            <a href="{{ path('app_bc_plan_index') }}" class="btn btn-secondary">Back</a>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-content">
+            {{ form_start(form) }}
+                {{ form_row(form.name) }}
+                {{ form_row(form.businessProcess) }}
+                {{ form_row(form.description) }}
+                {{ form_row(form.planOwner) }}
+                {{ form_row(form.bcTeam) }}
+                {{ form_row(form.status) }}
+                {{ form_row(form.activationCriteria) }}
+                {{ form_row(form.rolesAndResponsibilities) }}
+                {{ form_row(form.recoveryProcedures) }}
+                {{ form_row(form.communicationPlan) }}
+                {{ form_row(form.internalCommunication) }}
+                {{ form_row(form.externalCommunication) }}
+                {{ form_row(form.alternativeSite) }}
+                {{ form_row(form.alternativeSiteAddress) }}
+                {{ form_row(form.alternativeSiteCapacity) }}
+                {{ form_row(form.backupProcedures) }}
+                {{ form_row(form.restoreProcedures) }}
+                {{ form_row(form.version) }}
+                {{ form_row(form.lastTested) }}
+                {{ form_row(form.nextTestDate) }}
+                {{ form_row(form.lastReviewDate) }}
+                {{ form_row(form.nextReviewDate) }}
+                {{ form_row(form.reviewNotes) }}
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Update BC Plan</button>
+                    <a href="{{ path('app_bc_plan_show', {id: bc_plan.id}) }}" class="btn btn-secondary">Cancel</a>
+                </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>
+{% endblock %}

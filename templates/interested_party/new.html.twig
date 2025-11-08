@@ -1,0 +1,127 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Interested Party{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="page-header">
+        <h1>Add New Interested Party</h1>
+        <a href="{{ path('app_interested_party_index') }}" class="btn btn-secondary">Back to List</a>
+    </div>
+
+    <div class="card">
+        <div class="card-content">
+            {{ form_start(form) }}
+                <h3>Basic Information</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        {{ form_label(form.name) }}
+                        {{ form_widget(form.name) }}
+                        {{ form_errors(form.name) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.partyType) }}
+                        {{ form_widget(form.partyType) }}
+                        {{ form_errors(form.partyType) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.importance) }}
+                        {{ form_widget(form.importance) }}
+                        {{ form_errors(form.importance) }}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.description) }}
+                    {{ form_widget(form.description) }}
+                    {{ form_errors(form.description) }}
+                </div>
+
+                <h3>Contact Information</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        {{ form_label(form.contactPerson) }}
+                        {{ form_widget(form.contactPerson) }}
+                        {{ form_errors(form.contactPerson) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.email) }}
+                        {{ form_widget(form.email) }}
+                        {{ form_errors(form.email) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.phone) }}
+                        {{ form_widget(form.phone) }}
+                        {{ form_errors(form.phone) }}
+                    </div>
+                </div>
+
+                <h3>Requirements & Expectations</h3>
+                <div class="form-group">
+                    {{ form_label(form.requirements) }}
+                    {{ form_widget(form.requirements) }}
+                    {{ form_errors(form.requirements) }}
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.howAddressed) }}
+                    {{ form_widget(form.howAddressed) }}
+                    {{ form_errors(form.howAddressed) }}
+                </div>
+
+                <h3>Communication</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        {{ form_label(form.communicationFrequency) }}
+                        {{ form_widget(form.communicationFrequency) }}
+                        {{ form_errors(form.communicationFrequency) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.communicationMethod) }}
+                        {{ form_widget(form.communicationMethod) }}
+                        {{ form_errors(form.communicationMethod) }}
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        {{ form_label(form.lastCommunication) }}
+                        {{ form_widget(form.lastCommunication) }}
+                        {{ form_errors(form.lastCommunication) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.nextCommunication) }}
+                        {{ form_widget(form.nextCommunication) }}
+                        {{ form_errors(form.nextCommunication) }}
+                    </div>
+                </div>
+
+                <h3>Feedback & Satisfaction</h3>
+                <div class="form-group">
+                    {{ form_label(form.feedback) }}
+                    {{ form_widget(form.feedback) }}
+                    {{ form_errors(form.feedback) }}
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        {{ form_label(form.satisfactionLevel) }}
+                        {{ form_widget(form.satisfactionLevel) }}
+                        {{ form_errors(form.satisfactionLevel) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.issues) }}
+                        {{ form_widget(form.issues) }}
+                        {{ form_errors(form.issues) }}
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Create Interested Party</button>
+                    <a href="{{ path('app_interested_party_index') }}" class="btn btn-secondary">Cancel</a>
+                </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>
+{% endblock %}
