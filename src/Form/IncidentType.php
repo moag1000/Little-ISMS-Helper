@@ -84,13 +84,14 @@ class IncidentType extends AbstractType
                 ],
                 'required' => true,
             ])
-            ->add('affectedSystems', TextType::class, [
+            ->add('affectedSystems', TextareaType::class, [
                 'label' => 'incident.field.affected_systems',
                 'required' => false,
                 'attr' => [
-                    'maxlength' => 255,
+                    'rows' => 3,
                     'placeholder' => 'incident.placeholder.affected_systems',
                 ],
+                'help' => 'incident.help.affected_systems',
             ])
             ->add('rootCause', TextareaType::class, [
                 'label' => 'incident.field.root_cause',
