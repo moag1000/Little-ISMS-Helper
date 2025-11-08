@@ -13,9 +13,23 @@ export default class extends Controller {
     connect() {
         console.log('[ModalManager] Connected');
 
+        // Close any modals that are accidentally open on page load
+        setTimeout(() => {
+            this.closeAllModals();
+        }, 100);
+
         // Centralized ESC handler - highest priority
         this.boundHandleEscape = this.handleEscape.bind(this);
         document.addEventListener('keydown', this.boundHandleEscape, true); // Use capture phase
+    }
+
+    closeAllModals() {
+        console.log('[ModalManager] Checking for modals to close on page load...');
+        const openModals = this.findOpenModals();
+        if (openModals.length > 0) {
+            console.log('[ModalManager] Found', openModals.length, 'open modals on page load! Closing them...');
+            openModals.forEach(modal => this.closeModal(modal));
+        }
     }
 
     disconnect() {
