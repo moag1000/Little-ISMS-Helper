@@ -1,19 +1,20 @@
 /* ============================================
-   Bulk Actions Styles
+   Bulk Actions Styles - Cyberpunk Fairy
    Multi-select and bulk operations UI
    ============================================ */
 
-/* Action Bar */
+/* Action Bar - Cyberpunk Style */
 .bulk-action-bar {
     position: fixed;
     bottom: 24px;
     left: 50%;
     transform: translateX(-50%) translateY(20px);
     z-index: 1000;
-    background: var(--color-primary);
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
     color: white;
     border-radius: var(--border-radius-lg);
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4), 0 0 30px rgba(6, 182, 212, 0.4);
+    border: 2px solid var(--color-secondary);
     padding: var(--spacing-lg) var(--spacing-xl);
     display: flex;
     align-items: center;
@@ -21,6 +22,19 @@
     min-width: 500px;
     opacity: 0;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.bulk-action-bar::before {
+    content: '🧚‍♀️';
+    position: absolute;
+    left: -20px;
+    font-size: 24px;
+    animation: float 2s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
 }
 
 .bulk-action-bar[hidden] {

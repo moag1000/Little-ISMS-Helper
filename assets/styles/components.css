@@ -1,4 +1,4 @@
-/* Modal Styles */
+/* Modal Styles - Cyberpunk */
 .modal {
     display: none;
     position: fixed;
@@ -27,7 +27,8 @@
 }
 
 .modal-backdrop.modal-backdrop-show {
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(4px);
 }
 
 .modal-content {
@@ -38,12 +39,13 @@
     width: 90%;
     max-height: 90vh;
     overflow-y: auto;
-    box-shadow: var(--shadow-lg);
+    box-shadow: var(--shadow-lg), 0 0 30px rgba(6, 182, 212, 0.3);
     position: relative;
     z-index: 1001;
     transform: scale(0.9);
     opacity: 0;
     transition: all 0.3s ease;
+    border: 2px solid var(--color-secondary);
 }
 
 .modal.modal-open .modal-content {
@@ -57,13 +59,15 @@
     align-items: center;
     margin-bottom: var(--spacing-lg);
     padding-bottom: var(--spacing-md);
-    border-bottom: 1px solid var(--color-border);
+    border-bottom: 2px solid transparent;
+    border-image: linear-gradient(90deg, var(--color-secondary), var(--color-accent-pink)) 1;
 }
 
 .modal-title {
     font-size: 1.5rem;
     font-weight: 600;
     color: var(--color-primary);
+    text-shadow: 0 0 20px rgba(6, 182, 212, 0.2);
 }
 
 .modal-close {
@@ -95,7 +99,7 @@
     background: white;
     border-radius: var(--border-radius);
     padding: var(--spacing-md) var(--spacing-lg);
-    box-shadow: var(--shadow-lg);
+    box-shadow: var(--shadow-lg), 0 0 20px rgba(6, 182, 212, 0.3);
     min-width: 300px;
     max-width: 400px;
     pointer-events: all;
@@ -103,6 +107,7 @@
     transform: translateX(400px);
     transition: all 0.3s ease;
     border-left: 4px solid;
+    border: 2px solid;
 }
 
 .notification.notification-visible {
@@ -117,22 +122,26 @@
 
 .notification-success {
     border-color: var(--color-success);
-    background-color: #d4edda;
+    background: linear-gradient(135deg, #d1fae5 0%, #d4edda 100%);
+    box-shadow: var(--shadow-lg), var(--glow-green);
 }
 
 .notification-error {
     border-color: var(--color-danger);
-    background-color: #f8d7da;
+    background: linear-gradient(135deg, #fee2e2 0%, #f8d7da 100%);
+    box-shadow: var(--shadow-lg), 0 0 20px rgba(239, 68, 68, 0.3);
 }
 
 .notification-warning {
     border-color: var(--color-warning);
-    background-color: #fff3cd;
+    background: linear-gradient(135deg, #fef3c7 0%, #fff3cd 100%);
+    box-shadow: var(--shadow-lg), 0 0 20px rgba(245, 158, 11, 0.3);
 }
 
 .notification-info {
     border-color: var(--color-info);
-    background-color: #d1ecf1;
+    background: linear-gradient(135deg, #cffafe 0%, #d1ecf1 100%);
+    box-shadow: var(--shadow-lg), var(--glow-cyan);
 }
 
 .notification-header {
