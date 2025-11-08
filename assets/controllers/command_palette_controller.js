@@ -45,31 +45,32 @@ export default class extends Controller {
     selectedIndex = 0;
 
     connect() {
-        // Global keyboard shortcut: Cmd/Ctrl + K
-        document.addEventListener('keydown', this.handleGlobalShortcut.bind(this));
+        // Global keyboard shortcut: Cmd/Ctrl + P
+        this.boundHandleGlobalShortcut = this.handleGlobalShortcut.bind(this);
+        document.addEventListener('keydown', this.boundHandleGlobalShortcut);
 
         // ESC to close
-        this.modalTarget.addEventListener('keydown', this.handleModalKeydown.bind(this));
+        this.boundHandleModalKeydown = this.handleModalKeydown.bind(this);
+        this.modalTarget.addEventListener('keydown', this.boundHandleModalKeydown);
 
         // Click outside to close
-        this.modalTarget.addEventListener('click', this.handleBackdropClick.bind(this));
+        this.boundHandleBackdropClick = this.handleBackdropClick.bind(this);
+        this.modalTarget.addEventListener('click', this.boundHandleBackdropClick);
 
         this.filteredCommands = this.commands;
     }
 
     disconnect() {
-        document.removeEventListener('keydown', this.handleGlobalShortcut.bind(this));
+        document.removeEventListener('keydown', this.boundHandleGlobalShortcut);
+        if (this.hasModalTarget) {
+            this.modalTarget.removeEventListener('keydown', this.boundHandleModalKeydown);
+            this.modalTarget.removeEventListener('click', this.boundHandleBackdropClick);
+        }
     }
 
     handleGlobalShortcut(event) {
-        // Cmd+K (Mac) or Ctrl+K (Windows/Linux)
-        if ((event.metaKey || event.ctrlKey) && event.key === 'k') {
-            event.preventDefault();
-            this.open();
-        }
-
-        // Also support "?" for help
-        if (event.key === '?' && !this.isInputFocused()) {
+        // Cmd+P (Mac) or Ctrl+P (Windows/Linux) - like VS Code
+        if ((event.metaKey || event.ctrlKey) && event.key === 'p') {
             event.preventDefault();
             this.open();
         }
