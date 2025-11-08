@@ -2,8 +2,22 @@
 framework:
     secret: '%env(APP_SECRET)%'
 
-    # Note that the session will be started ONLY if you read or write from it.
-    session: true
+    # Security: Comprehensive session configuration
+    # Protects against session hijacking and fixation attacks (OWASP A07:2021)
+    session:
+        # Session cookie security settings
+        cookie_secure: 'auto'        # Only send cookie over HTTPS in production
+        cookie_httponly: true         # Prevent JavaScript access to session cookie (XSS protection)
+        cookie_samesite: 'strict'     # CSRF protection - cookie only sent with same-site requests
+
+        # Session management
+        gc_maxlifetime: 3600          # Session lifetime: 1 hour
+        gc_probability: 1
+        gc_divisor: 100
+
+        # Session ID security
+        sid_length: 48                # Longer session IDs are harder to guess (default: 32)
+        sid_bits_per_character: 6     # More entropy per character (default: 4)
 
     #esi: true
     #fragments: true
