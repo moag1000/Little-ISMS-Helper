@@ -68,7 +68,7 @@ class SupplierType extends AbstractType
                 'choices' => [
                     'Active' => 'active',
                     'Inactive' => 'inactive',
-                    'Under Review' => 'under_review',
+                    'Evaluation' => 'evaluation',
                     'Terminated' => 'terminated',
                 ],
                 'required' => true,
