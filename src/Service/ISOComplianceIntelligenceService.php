@@ -144,7 +144,7 @@ class ISOComplianceIntelligenceService
     {
         $risks = $this->riskRepository->findAll();
         $acceptedRisks = array_filter($risks, fn($r) => $r->getTreatmentStrategy() === 'accept');
-        $pendingApproval = array_filter($acceptedRisks, fn($r) => $r->requiresAcceptanceApproval());
+        $pendingApproval = array_filter($acceptedRisks, fn($r) => $r->isAcceptanceApprovalRequired());
 
         $score = 100;
 
@@ -271,7 +271,7 @@ class ISOComplianceIntelligenceService
 
         // Risk acceptance actions
         $risks = $this->riskRepository->findAll();
-        $pendingApproval = array_filter($risks, fn($r) => $r->requiresAcceptanceApproval());
+        $pendingApproval = array_filter($risks, fn($r) => $r->isAcceptanceApprovalRequired());
         foreach ($pendingApproval as $risk) {
             $actions[] = [
                 'priority' => 'high',

@@ -619,9 +619,18 @@ class Risk
      * ISO 27005 compliant: Risk acceptance must be formally approved
      */
     #[Groups(['risk:read'])]
-    public function requiresAcceptanceApproval(): bool
+    public function isAcceptanceApprovalRequired(): bool
     {
         return $this->treatmentStrategy === 'accept' && !$this->formallyAccepted;
+    }
+
+    /**
+     * Alias for backward compatibility
+     * @deprecated Use isAcceptanceApprovalRequired() instead
+     */
+    public function requiresAcceptanceApproval(): bool
+    {
+        return $this->isAcceptanceApprovalRequired();
     }
 
     /**
