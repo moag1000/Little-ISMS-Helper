@@ -13,15 +13,20 @@ nav:
   dashboard: Dashboard
   context: ISMS Context
   analytics: Analytics
+  interested_parties: Interested Parties
+  soa: SoA
   assets: Assets
+  suppliers: Suppliers
   risks: Risks
-  controls: Controls
+  change_requests: Change Requests
+  bcm: BCM
+  bc_plans: BC Plans
+  bc_exercises: BC Exercises
   incidents: Incidents
   audits: Audits
   compliance: Compliance
   audit_log: Audit Log
   users: Users
-  bcm: BCM
 
 # Security & Authentication
 login: Login
@@ -167,3 +172,72 @@ activity:
   system: System
   security_team: Security Team
   new_risk: New Risk
+
+# Incident Management (Form Fields)
+incident:
+  field:
+    title: Incident Title
+    description: Description
+    category: Category
+    severity: Severity
+    detected_at: Detected At
+    occurred_at: Occurred At
+    reported_by: Reported By
+    status: Status
+    affected_systems: Affected Systems
+    root_cause: Root Cause
+    corrective_actions: Corrective Actions
+    lessons_learned: Lessons Learned
+    closed_date: Closed Date
+  placeholder:
+    title: e.g. Data breach customer data
+    description: Detailed description of the incident...
+    reported_by: Name of reporter
+    affected_systems: e.g. CRM system, database
+    root_cause: Root cause analysis...
+    corrective_actions: Corrective actions taken...
+    lessons_learned: What did we learn?
+  help:
+    severity: Assessment of incident severity (1=Low, 4=Critical)
+  category:
+    data_breach: Data Breach
+    security_incident: Security Incident
+    system_outage: System Outage
+    compliance_violation: Compliance Violation
+    physical_security: Physical Security
+    other: Other
+  severity:
+    low: Low
+    medium: Medium
+    high: High
+    critical: Critical
+  status:
+    reported: Reported
+    in_investigation: In Investigation
+    in_resolution: In Resolution
+    resolved: Resolved
+    closed: Closed
+
+# Document Management (Form Fields)
+document:
+  field:
+    name: Document Name
+    description: Description
+    document_type: Document Type
+    file: File
+  placeholder:
+    name: e.g. Information Security Policy 2024
+    description: Brief description of the document...
+  help:
+    file: Maximum 10 MB. Allowed formats PDF, Word, Excel, images, text
+  validation:
+    mime_types: Please upload a valid document (PDF, Word, Excel, Image or Text file)
+  type:
+    asset: Asset Documentation
+    risk: Risk Assessment
+    incident: Incident Report
+    control: Control Evidence
+    audit: Audit Documentation
+    compliance: Compliance Evidence
+    training: Training Material
+    general: General

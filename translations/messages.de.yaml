@@ -13,15 +13,20 @@ nav:
   dashboard: Dashboard
   context: ISMS Kontext
   analytics: Analytics
+  interested_parties: Interessierte Parteien
+  soa: SoA
   assets: Assets
+  suppliers: Lieferanten
   risks: Risiken
-  controls: Maßnahmen
+  change_requests: Änderungsanträge
+  bcm: BCM
+  bc_plans: BC-Pläne
+  bc_exercises: BC-Übungen
   incidents: Vorfälle
   audits: Audits
   compliance: Compliance
   audit_log: Audit Log
   users: Benutzer
-  bcm: BCM
 
 # Security & Authentication
 login: Anmelden
@@ -167,3 +172,72 @@ activity:
   system: System
   security_team: Security Team
   new_risk: Neues Risiko
+
+# Incident Management (Form Fields)
+incident:
+  field:
+    title: Vorfallstitel
+    description: Beschreibung
+    category: Kategorie
+    severity: Schweregrad
+    detected_at: Erkannt am
+    occurred_at: Aufgetreten am
+    reported_by: Gemeldet von
+    status: Status
+    affected_systems: Betroffene Systeme
+    root_cause: Grundursache
+    corrective_actions: Korrekturmaßnahmen
+    lessons_learned: Erkenntnisse
+    closed_date: Abschlussdatum
+  placeholder:
+    title: z.B. Datenschutzvorfall Kundendaten
+    description: Detaillierte Beschreibung des Vorfalls...
+    reported_by: Name des Meldenden
+    affected_systems: z.B. CRM-System, Datenbank
+    root_cause: Analyse der Grundursache...
+    corrective_actions: Durchgeführte Korrekturmaßnahmen...
+    lessons_learned: Was haben wir gelernt?
+  help:
+    severity: Bewertung der Schwere des Vorfalls (1=Niedrig, 4=Kritisch)
+  category:
+    data_breach: Datenschutzvorfall
+    security_incident: Sicherheitsvorfall
+    system_outage: Systemausfall
+    compliance_violation: Compliance-Verstoß
+    physical_security: Physische Sicherheit
+    other: Sonstiges
+  severity:
+    low: Niedrig
+    medium: Mittel
+    high: Hoch
+    critical: Kritisch
+  status:
+    reported: Gemeldet
+    in_investigation: In Untersuchung
+    in_resolution: In Behebung
+    resolved: Behoben
+    closed: Geschlossen
+
+# Document Management (Form Fields)
+document:
+  field:
+    name: Dokumentname
+    description: Beschreibung
+    document_type: Dokumenttyp
+    file: Datei
+  placeholder:
+    name: z.B. Informationssicherheitsrichtlinie 2024
+    description: Kurze Beschreibung des Dokuments...
+  help:
+    file: Maximal 10 MB. Erlaubte Formate PDF, Word, Excel, Bilder, Text
+  validation:
+    mime_types: Bitte laden Sie ein gültiges Dokument hoch (PDF, Word, Excel, Bild oder Textdatei)
+  type:
+    asset: Asset-Dokumentation
+    risk: Risikobewertung
+    incident: Vorfallsbericht
+    control: Kontrollnachweis
+    audit: Audit-Dokumentation
+    compliance: Compliance-Nachweis
+    training: Schulungsmaterial
+    general: Allgemein
