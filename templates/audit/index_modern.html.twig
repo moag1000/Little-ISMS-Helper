@@ -208,7 +208,7 @@
                                 </a>
                                 {% if audit.scope %}
                                 <br>
-                                <small class="text-muted">{{ audit.scope|u.truncate(60, '...') }}</small>
+                                <small class="text-muted">{{ audit.scope|length > 60 ? audit.scope|slice(0, 60) ~ '...' : audit.scope }}</small>
                                 {% endif %}
                             </td>
                             <td>
