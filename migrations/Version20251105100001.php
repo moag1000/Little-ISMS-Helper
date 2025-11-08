@@ -11,98 +11,12 @@ final class Version20251105100001 extends AbstractMigration
 {
     public function getDescription(): string
     {
-        return 'Create User, Role, and Permission tables for authentication and RBAC';
+        return 'Add default system roles and permissions for RBAC';
     }
 
     public function up(Schema $schema): void
     {
-        // Users table
-        $this->addSql('CREATE TABLE IF NOT EXISTS users (
-            id INT AUTO_INCREMENT NOT NULL,
-            email VARCHAR(180) NOT NULL,
-            roles JSON NOT NULL,
-            password VARCHAR(255) DEFAULT NULL,
-            first_name VARCHAR(100) NOT NULL,
-            last_name VARCHAR(100) NOT NULL,
-            is_active TINYINT(1) NOT NULL DEFAULT 1,
-            is_verified TINYINT(1) NOT NULL DEFAULT 0,
-            auth_provider VARCHAR(20) DEFAULT NULL,
-            azure_object_id VARCHAR(255) DEFAULT NULL,
-            azure_tenant_id VARCHAR(255) DEFAULT NULL,
-            azure_metadata JSON DEFAULT NULL,
-            created_at DATETIME NOT NULL COMMENT \'(DC2Type:datetime_immutable)\',
-            last_login_at DATETIME DEFAULT NULL COMMENT \'(DC2Type:datetime_immutable)\',
-            updated_at DATETIME DEFAULT NULL COMMENT \'(DC2Type:datetime_immutable)\',
-            department VARCHAR(255) DEFAULT NULL,
-            job_title VARCHAR(255) DEFAULT NULL,
-            phone_number VARCHAR(50) DEFAULT NULL,
-            profile_picture LONGTEXT DEFAULT NULL,
-            language VARCHAR(10) DEFAULT \'de\',
-            timezone VARCHAR(50) DEFAULT \'Europe/Berlin\',
-            UNIQUE INDEX UNIQ_IDENTIFIER_EMAIL (email),
-            UNIQUE INDEX UNIQ_AZURE_OBJECT_ID (azure_object_id),
-            PRIMARY KEY(id)
-        ) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
-
-        // Roles table
-        $this->addSql('CREATE TABLE IF NOT EXISTS roles (
-            id INT AUTO_INCREMENT NOT NULL,
-            name VARCHAR(100) NOT NULL,
-            description VARCHAR(255) DEFAULT NULL,
-            is_system_role TINYINT(1) NOT NULL DEFAULT 0,
-            created_at DATETIME NOT NULL COMMENT \'(DC2Type:datetime_immutable)\',
-            updated_at DATETIME DEFAULT NULL COMMENT \'(DC2Type:datetime_immutable)\',
-            UNIQUE INDEX UNIQ_NAME (name),
-            PRIMARY KEY(id)
-        ) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
-
-        // Permissions table
-        $this->addSql('CREATE TABLE IF NOT EXISTS permissions (
-            id INT AUTO_INCREMENT NOT NULL,
-            name VARCHAR(100) NOT NULL,
-            description VARCHAR(255) DEFAULT NULL,
-            resource VARCHAR(100) NOT NULL,
-            action VARCHAR(50) NOT NULL,
-            is_system_permission TINYINT(1) NOT NULL DEFAULT 0,
-            created_at DATETIME NOT NULL COMMENT \'(DC2Type:datetime_immutable)\',
-            UNIQUE INDEX UNIQ_NAME (name),
-            UNIQUE INDEX UNIQ_RESOURCE_ACTION (resource, action),
-            PRIMARY KEY(id)
-        ) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
-
-        // User-Role junction table
-        $this->addSql('CREATE TABLE IF NOT EXISTS user_roles (
-            user_id INT NOT NULL,
-            role_id INT NOT NULL,
-            INDEX IDX_USER (user_id),
-            INDEX IDX_ROLE (role_id),
-            PRIMARY KEY(user_id, role_id)
-        ) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
-
-        $this->addSql('ALTER TABLE user_roles
-            ADD CONSTRAINT FK_UR_USER FOREIGN KEY (user_id)
-            REFERENCES users (id) ON DELETE CASCADE');
-
-        $this->addSql('ALTER TABLE user_roles
-            ADD CONSTRAINT FK_UR_ROLE FOREIGN KEY (role_id)
-            REFERENCES roles (id) ON DELETE CASCADE');
-
-        // Role-Permission junction table
-        $this->addSql('CREATE TABLE IF NOT EXISTS role_permissions (
-            role_id INT NOT NULL,
-            permission_id INT NOT NULL,
-            INDEX IDX_ROLE (role_id),
-            INDEX IDX_PERMISSION (permission_id),
-            PRIMARY KEY(role_id, permission_id)
-        ) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
-
-        $this->addSql('ALTER TABLE role_permissions
-            ADD CONSTRAINT FK_RP_ROLE FOREIGN KEY (role_id)
-            REFERENCES roles (id) ON DELETE CASCADE');
-
-        $this->addSql('ALTER TABLE role_permissions
-            ADD CONSTRAINT FK_RP_PERMISSION FOREIGN KEY (permission_id)
-            REFERENCES permissions (id) ON DELETE CASCADE');
+        // NOTE: Tables are created by Version20251105000004, this migration only adds default data
 
         // Insert default system roles
         $this->addSql("INSERT IGNORE INTO roles (name, description, is_system_role, created_at) VALUES
@@ -113,7 +27,7 @@ final class Version20251105100001 extends AbstractMigration
             ('ROLE_USER', 'Regular user', 1, NOW())");
 
         // Insert default system permissions
-        $this->addSql("INSERT IGNORE INTO permissions (name, description, resource, action, is_system_permission, created_at) VALUES
+        $this->addSql("INSERT IGNORE INTO permissions (name, description, category, action, is_system_permission, created_at) VALUES
             ('asset.view', 'View assets', 'asset', 'view', 1, NOW()),
             ('asset.create', 'Create assets', 'asset', 'create', 1, NOW()),
             ('asset.edit', 'Edit assets', 'asset', 'edit', 1, NOW()),
@@ -147,15 +61,8 @@ final class Version20251105100001 extends AbstractMigration
 
     public function down(Schema $schema): void
     {
-        $this->addSql('ALTER TABLE user_roles DROP FOREIGN KEY FK_UR_USER');
-        $this->addSql('ALTER TABLE user_roles DROP FOREIGN KEY FK_UR_ROLE');
-        $this->addSql('ALTER TABLE role_permissions DROP FOREIGN KEY FK_RP_ROLE');
-        $this->addSql('ALTER TABLE role_permissions DROP FOREIGN KEY FK_RP_PERMISSION');
-
-        $this->addSql('DROP TABLE IF EXISTS role_permissions');
-        $this->addSql('DROP TABLE IF EXISTS user_roles');
-        $this->addSql('DROP TABLE IF EXISTS permissions');
-        $this->addSql('DROP TABLE IF EXISTS roles');
-        $this->addSql('DROP TABLE IF EXISTS users');
+        // Delete default data (tables are managed by Version20251105000004)
+        $this->addSql('DELETE FROM permissions WHERE is_system_permission = 1');
+        $this->addSql('DELETE FROM roles WHERE is_system_role = 1');
     }
 }
