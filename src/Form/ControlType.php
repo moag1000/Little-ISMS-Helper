@@ -3,7 +3,6 @@
 namespace App\Form;
 
 use App\Entity\Control;
-use App\Entity\User;
 use App\Entity\Asset;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -65,7 +64,7 @@ class ControlType extends AbstractType
                     new NotBlank(),
                 ],
             ])
-            ->add('isApplicable', ChoiceType::class, [
+            ->add('applicable', ChoiceType::class, [
                 'label' => 'Anwendbarkeit',
                 'choices' => [
                     'Anwendbar' => true,
@@ -95,7 +94,7 @@ class ControlType extends AbstractType
                 ],
                 'attr' => ['class' => 'form-select'],
             ])
-            ->add('implementationProgress', IntegerType::class, [
+            ->add('implementationPercentage', IntegerType::class, [
                 'label' => 'Fortschritt (%)',
                 'attr' => [
                     'class' => 'form-control',
@@ -107,7 +106,7 @@ class ControlType extends AbstractType
                 ],
                 'help' => 'Implementierungsfortschritt in Prozent (0-100)',
             ])
-            ->add('implementationDetails', TextareaType::class, [
+            ->add('implementationNotes', TextareaType::class, [
                 'label' => 'Implementierungsdetails',
                 'required' => false,
                 'attr' => [
@@ -116,15 +115,14 @@ class ControlType extends AbstractType
                 ],
                 'help' => 'Beschreiben Sie wie das Control implementiert ist.',
             ])
-            ->add('responsiblePerson', EntityType::class, [
+            ->add('responsiblePerson', TextType::class, [
                 'label' => 'Verantwortliche Person',
-                'class' => User::class,
-                'choice_label' => function (User $user) {
-                    return $user->getFirstName() . ' ' . $user->getLastName();
-                },
-                'placeholder' => '-- Bitte wählen --',
                 'required' => false,
-                'attr' => ['class' => 'form-select'],
+                'attr' => [
+                    'class' => 'form-control',
+                    'maxlength' => 100,
+                    'placeholder' => 'Name der verantwortlichen Person',
+                ],
             ])
             ->add('targetDate', DateType::class, [
                 'label' => 'Zieldatum',
@@ -146,7 +144,7 @@ class ControlType extends AbstractType
                 'attr' => ['class' => 'form-control'],
                 'help' => 'Wann soll das Control das nächste Mal überprüft werden?',
             ])
-            ->add('relatedAssets', EntityType::class, [
+            ->add('protectedAssets', EntityType::class, [
                 'label' => 'Verknüpfte Assets',
                 'class' => Asset::class,
                 'choice_label' => 'name',
@@ -158,7 +156,7 @@ class ControlType extends AbstractType
                 ],
                 'help' => 'Welche Assets werden durch dieses Control geschützt?',
             ])
-            ->add('evidenceDocumentation', TextareaType::class, [
+            ->add('evidenceDescription', TextareaType::class, [
                 'label' => 'Nachweisdokumentation',
                 'required' => false,
                 'attr' => [
