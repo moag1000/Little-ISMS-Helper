@@ -49,16 +49,6 @@ class AssetType extends AbstractType
                 'required' => false,
                 'attr' => ['maxlength' => 100],
             ])
-            ->add('criticalityLevel', ChoiceType::class, [
-                'label' => 'Criticality Level',
-                'choices' => [
-                    'Low' => 'low',
-                    'Medium' => 'medium',
-                    'High' => 'high',
-                    'Critical' => 'critical',
-                ],
-                'required' => true,
-            ])
             ->add('acquisitionValue', NumberType::class, [
                 'label' => 'Acquisition Value',
                 'required' => false,
