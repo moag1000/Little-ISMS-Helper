@@ -30,8 +30,6 @@ export default class extends Controller {
         document.addEventListener('turbo:submit-end', this.boundHandleSubmitEnd);
         document.addEventListener('turbo:before-fetch-request', this.boundHandleBeforeFetchRequest);
         document.addEventListener('turbo:before-fetch-response', this.boundHandleBeforeFetchResponse);
-
-        console.log('Turbo controller connected');
     }
 
     disconnect() {
@@ -48,21 +46,19 @@ export default class extends Controller {
     }
 
     handleBeforeVisit(event) {
-        console.log('Turbo: Before Visit', event.detail.url);
         // Add loading class to body
         document.body.classList.add('turbo-loading');
     }
 
     handleVisit(event) {
-        console.log('Turbo: Visit started', event.detail.url);
+        // Visit started
     }
 
     handleBeforeRender(event) {
-        console.log('Turbo: Before Render');
+        // Before render
     }
 
     handleRender(event) {
-        console.log('Turbo: Rendered');
         // Remove loading class from body
         document.body.classList.remove('turbo-loading');
 
@@ -71,7 +67,6 @@ export default class extends Controller {
     }
 
     handleBeforeStreamRender(event) {
-        console.log('Turbo: Before Stream Render', event.detail);
 
         // Customize stream rendering if needed
         const { newStream } = event.detail;
@@ -81,7 +76,6 @@ export default class extends Controller {
     }
 
     handleSubmitStart(event) {
-        console.log('Turbo: Form submission started');
         const submitter = event.detail.formSubmission.submitter;
 
         if (submitter) {
@@ -93,7 +87,6 @@ export default class extends Controller {
     }
 
     handleSubmitEnd(event) {
-        console.log('Turbo: Form submission ended', event.detail.success);
         const submitter = event.detail.formSubmission.submitter;
 
         if (submitter) {
@@ -116,17 +109,14 @@ export default class extends Controller {
         const { fetchOptions } = event.detail;
 
         // You can modify fetch options here
-        console.log('Turbo: Before Fetch Request', fetchOptions.url);
     }
 
     handleBeforeFetchResponse(event) {
         const { fetchResponse } = event.detail;
 
-        console.log('Turbo: Before Fetch Response', fetchResponse.statusCode);
-
-        // Handle error responses
+        // Handle error responses (silently)
         if (!fetchResponse.succeeded) {
-            console.error('Turbo: Fetch failed', fetchResponse.statusCode);
+            // Could dispatch an event here if needed
         }
     }
 
