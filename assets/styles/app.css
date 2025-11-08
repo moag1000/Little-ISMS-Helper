@@ -71,16 +71,21 @@ body {
     font-size: 16px;
 }
 
-/* Header - Cyberpunk Style */
+/* Header - Cyberpunk Style with Dark Mode Support */
 .header {
-    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
-    color: var(--color-white);
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    color: white;
     padding: var(--spacing-lg) var(--spacing-xl);
     box-shadow: var(--shadow-md), 0 1px 0 var(--color-secondary);
     position: sticky;
     top: 0;
     z-index: 100;
     border-bottom: 2px solid var(--color-secondary);
+}
+
+[data-theme="dark"] .header {
+    background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+    border-bottom-color: var(--border-color);
 }
 
 .header img[alt*="Logo"] {
@@ -104,14 +109,19 @@ body {
     opacity: 0.9;
 }
 
-/* Navigation - Cyberpunk Style */
+/* Navigation - Cyberpunk Style with Dark Mode Support */
 .nav {
-    background: linear-gradient(180deg, var(--color-primary-light) 0%, var(--color-primary) 100%);
+    background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
     box-shadow: 0 2px 8px rgba(6, 182, 212, 0.2);
     position: sticky;
     top: 0;
     z-index: 99;
     border-top: 1px solid rgba(6, 182, 212, 0.3);
+}
+
+[data-theme="dark"] .nav {
+    background: linear-gradient(180deg, var(--bg-tertiary) 0%, var(--bg-secondary) 100%);
+    border-top-color: var(--border-color);
 }
 
 .nav ul {
@@ -125,7 +135,7 @@ body {
 }
 
 .nav a {
-    color: var(--color-white);
+    color: white;
     text-decoration: none;
     padding: var(--spacing-md) var(--spacing-sm);
     display: block;
@@ -133,6 +143,10 @@ body {
     border-bottom: 3px solid transparent;
     font-weight: 500;
     position: relative;
+}
+
+[data-theme="dark"] .nav a {
+    color: var(--text-secondary);
 }
 
 .nav a::before {
@@ -157,11 +171,17 @@ body {
     text-shadow: var(--glow-cyan);
 }
 
+[data-theme="dark"] .nav a:hover,
+[data-theme="dark"] .nav a.active {
+    color: var(--color-primary);
+    background: var(--bg-tertiary);
+}
+
 .nav a.active::before {
     width: 100%;
 }
 
-/* Container & Content */
+/* Container & Content with Dark Mode Support */
 .container {
     max-width: 1400px;
     margin: var(--spacing-xl) auto;
@@ -169,11 +189,16 @@ body {
 }
 
 .content {
-    background: var(--color-white);
+    background: white;
     padding: var(--spacing-xl);
     border-radius: var(--border-radius);
     box-shadow: var(--shadow-sm);
     animation: fadeIn var(--transition-slow);
+}
+
+[data-theme="dark"] .content {
+    background: var(--bg-elevated);
+    color: var(--text-primary);
 }
 
 @keyframes fadeIn {
@@ -181,18 +206,18 @@ body {
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* Typography */
+/* Typography with Dark Mode Support */
 h1 {
     font-size: 2rem;
     font-weight: 700;
-    color: var(--color-primary);
+    color: #0f172a;
     margin-bottom: var(--spacing-lg);
 }
 
 h2 {
     font-size: 1.5rem;
     font-weight: 600;
-    color: var(--color-primary);
+    color: #0f172a;
     margin-top: var(--spacing-2xl);
     margin-bottom: var(--spacing-md);
 }
@@ -200,20 +225,32 @@ h2 {
 h3 {
     font-size: 1.25rem;
     font-weight: 600;
-    color: var(--color-primary);
+    color: #0f172a;
     margin-bottom: var(--spacing-md);
 }
 
-/* Cards - Cyberpunk Style */
+[data-theme="dark"] h1,
+[data-theme="dark"] h2,
+[data-theme="dark"] h3 {
+    color: var(--text-primary);
+}
+
+/* Cards - Cyberpunk Style with Dark Mode Support */
 .card {
-    background: var(--color-white);
-    border: 1px solid var(--color-border);
+    background: white;
+    border: 1px solid #e2e8f0;
     border-radius: var(--border-radius);
     padding: var(--spacing-lg);
     box-shadow: var(--shadow-sm);
     transition: all var(--transition-normal);
     position: relative;
     overflow: hidden;
+}
+
+[data-theme="dark"] .card {
+    background: var(--bg-elevated);
+    border-color: var(--border-color);
+    color: var(--text-primary);
 }
 
 .card::before {
@@ -454,7 +491,7 @@ h3 {
     color: #721c24;
 }
 
-/* Tables */
+/* Tables with Dark Mode Support */
 .table-container {
     overflow-x: auto;
     margin: var(--spacing-xl) 0;
@@ -465,14 +502,24 @@ h3 {
 table {
     width: 100%;
     border-collapse: collapse;
-    background: var(--color-white);
+    background: white;
+}
+
+[data-theme="dark"] table {
+    background: var(--bg-elevated);
+    color: var(--text-primary);
 }
 
 thead {
-    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
-    color: var(--color-white);
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    color: white;
     border-bottom: 2px solid var(--color-secondary);
     box-shadow: 0 2px 0 rgba(6, 182, 212, 0.3);
+}
+
+[data-theme="dark"] thead {
+    background: var(--bg-secondary);
+    border-bottom-color: var(--border-color);
 }
 
 thead th {
@@ -485,12 +532,20 @@ thead th {
 }
 
 tbody tr {
-    border-bottom: 1px solid var(--color-border-light);
+    border-bottom: 1px solid #f1f5f9;
     transition: background-color var(--transition-fast);
+}
+
+[data-theme="dark"] tbody tr {
+    border-bottom-color: var(--border-color-light);
 }
 
 tbody tr:hover {
     background-color: #fafafa;
+}
+
+[data-theme="dark"] tbody tr:hover {
+    background-color: var(--bg-secondary);
 }
 
 tbody td {
@@ -526,7 +581,7 @@ tbody td {
     color: var(--color-info);
 }
 
-/* Forms */
+/* Forms with Dark Mode Support */
 .form-group {
     margin-bottom: var(--spacing-lg);
 }
@@ -535,16 +590,28 @@ tbody td {
     display: block;
     margin-bottom: var(--spacing-sm);
     font-weight: 600;
-    color: var(--color-text);
+    color: #1e293b;
+}
+
+[data-theme="dark"] .form-label {
+    color: var(--text-primary);
 }
 
 .form-control {
     width: 100%;
     padding: var(--spacing-sm);
-    border: 1px solid var(--color-border);
+    border: 1px solid #e2e8f0;
     border-radius: var(--border-radius-sm);
     font-size: 1rem;
     transition: all var(--transition-normal);
+    background: white;
+    color: #1e293b;
+}
+
+[data-theme="dark"] .form-control {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    border-color: var(--border-color);
 }
 
 .form-control:focus {
@@ -552,6 +619,11 @@ tbody td {
     border-color: var(--color-secondary);
     box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.2), var(--glow-cyan);
     background: linear-gradient(135deg, rgba(6, 182, 212, 0.02), rgba(236, 72, 153, 0.02));
+}
+
+[data-theme="dark"] .form-control:focus {
+    border-color: var(--color-primary);
+    background: var(--bg-primary);
 }
 
 textarea.form-control {
@@ -690,13 +762,18 @@ textarea.form-control {
     box-shadow: var(--glow-cyan);
 }
 
-/* Footer */
+/* Footer with Dark Mode Support */
 .footer {
     text-align: center;
     padding: var(--spacing-xl);
-    color: var(--color-text-light);
+    color: #64748b;
     margin-top: var(--spacing-2xl);
-    border-top: 1px solid var(--color-border);
+    border-top: 1px solid #e2e8f0;
+}
+
+[data-theme="dark"] .footer {
+    color: var(--text-secondary);
+    border-top-color: var(--border-color);
 }
 
 .footer p {
