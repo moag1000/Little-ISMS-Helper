@@ -101,11 +101,23 @@ class SupplierRepository extends ServiceEntityRepository
             ->getQuery()
             ->getSingleScalarResult();
 
+        $nonCompliant = $this->createQueryBuilder('s')
+            ->select('COUNT(s.id)')
+            ->where('s.hasISO27001 = :false OR s.hasDPA = :false')
+            ->andWhere('s.status = :active')
+            ->andWhere('s.criticality IN (:criticalities)')
+            ->setParameter('false', false)
+            ->setParameter('active', 'active')
+            ->setParameter('criticalities', ['critical', 'high'])
+            ->getQuery()
+            ->getSingleScalarResult();
+
         return [
             'total' => $total,
             'critical' => $critical,
             'iso27001_certified' => $iso27001,
-            'assessments_overdue' => $overdue,
+            'overdue_assessments' => $overdue,
+            'non_compliant' => $nonCompliant,
             'compliance_rate' => $total > 0 ? round(($iso27001 / $total) * 100, 2) : 0
         ];
     }

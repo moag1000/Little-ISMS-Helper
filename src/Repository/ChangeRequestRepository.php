@@ -62,6 +62,13 @@ class ChangeRequestRepository extends ServiceEntityRepository
             ->getQuery()
             ->getSingleScalarResult();
 
+        $inImplementation = $this->createQueryBuilder('c')
+            ->select('COUNT(c.id)')
+            ->where('c.status IN (:statuses)')
+            ->setParameter('statuses', ['approved', 'scheduled'])
+            ->getQuery()
+            ->getSingleScalarResult();
+
         $implemented = $this->createQueryBuilder('c')
             ->select('COUNT(c.id)')
             ->where('c.status IN (:statuses)')
@@ -69,10 +76,21 @@ class ChangeRequestRepository extends ServiceEntityRepository
             ->getQuery()
             ->getSingleScalarResult();
 
+        $overdue = $this->createQueryBuilder('c')
+            ->select('COUNT(c.id)')
+            ->where('c.plannedImplementationDate < :now')
+            ->andWhere('c.status IN (:statuses)')
+            ->setParameter('now', new \DateTime())
+            ->setParameter('statuses', ['approved', 'scheduled'])
+            ->getQuery()
+            ->getSingleScalarResult();
+
         return [
             'total' => $total,
             'pending_approval' => $pending,
-            'implemented' => $implemented
+            'in_implementation' => $inImplementation,
+            'implemented' => $implemented,
+            'overdue' => $overdue
         ];
     }
 }

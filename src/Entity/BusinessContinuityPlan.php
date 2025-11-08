@@ -14,10 +14,12 @@ use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Delete;
 
 use App\Repository\BusinessContinuityPlanRepository;
+use App\Entity\Tenant;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -39,18 +41,28 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Index(columns: ['status'], name: 'idx_bc_plan_status')]
 #[ORM\Index(columns: ['last_tested'], name: 'idx_bc_plan_last_tested')]
 #[ORM\Index(columns: ['next_review_date'], name: 'idx_bc_plan_next_review')]
+#[ORM\Index(columns: ['tenant_id'], name: 'idx_bc_plan_tenant')]
+#[ORM\HasLifecycleCallbacks]
 class BusinessContinuityPlan
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['bc_plan:read'])]
     private ?int $id = null;
+
+    #[ORM\ManyToOne(targetEntity: Tenant::class)]
+    #[ORM\JoinColumn(nullable: true)]
+    #[Groups(['bc_plan:read'])]
+    private ?Tenant $tenant = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message: 'Plan name is required')]
+    #[Groups(['bc_plan:read', 'bc_plan:write'])]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['bc_plan:read', 'bc_plan:write'])]
     private ?string $description = null;
 
     /**
@@ -59,6 +71,7 @@ class BusinessContinuityPlan
     #[ORM\ManyToOne(targetEntity: BusinessProcess::class)]
     #[ORM\JoinColumn(nullable: false)]
     #[Assert\NotNull(message: 'Business process is required')]
+    #[Groups(['bc_plan:read'])]
     private ?BusinessProcess $businessProcess = null;
 
     /**
@@ -66,12 +79,14 @@ class BusinessContinuityPlan
      */
     #[ORM\Column(length: 100)]
     #[Assert\NotBlank]
+    #[Groups(['bc_plan:read', 'bc_plan:write'])]
     private ?string $planOwner = null;
 
     /**
      * BC Team members
      */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['bc_plan:read', 'bc_plan:write'])]
     private ?string $bcTeam = null;
 
     /**
@@ -79,6 +94,7 @@ class BusinessContinuityPlan
      */
     #[ORM\Column(length: 50)]
     #[Assert\Choice(choices: ['draft', 'active', 'under_review', 'archived'])]
+    #[Groups(['bc_plan:read', 'bc_plan:write'])]
     private ?string $status = 'draft';
 
     /**
@@ -86,12 +102,14 @@ class BusinessContinuityPlan
      */
     #[ORM\Column(type: Types::TEXT)]
     #[Assert\NotBlank(message: 'Activation criteria must be defined')]
+    #[Groups(['bc_plan:read', 'bc_plan:write'])]
     private ?string $activationCriteria = null;
 
     /**
      * Roles and responsibilities during incident
      */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['bc_plan:read', 'bc_plan:write'])]
     private ?string $rolesAndResponsibilities = null;
 
     /**
@@ -104,6 +122,7 @@ class BusinessContinuityPlan
      * }
      */
     #[ORM\Column(type: Types::JSON, nullable: true)]
+    #[Groups(['bc_plan:read', 'bc_plan:write'])]
     private ?array $responseTeam = null;
 
     /**
@@ -111,60 +130,70 @@ class BusinessContinuityPlan
      */
     #[ORM\Column(type: Types::TEXT)]
     #[Assert\NotBlank(message: 'Recovery procedures must be documented')]
+    #[Groups(['bc_plan:read', 'bc_plan:write'])]
     private ?string $recoveryProcedures = null;
 
     /**
      * Communication plan
      */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['bc_plan:read', 'bc_plan:write'])]
     private ?string $communicationPlan = null;
 
     /**
      * Internal communication procedures
      */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['bc_plan:read', 'bc_plan:write'])]
     private ?string $internalCommunication = null;
 
     /**
      * External communication procedures
      */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['bc_plan:read', 'bc_plan:write'])]
     private ?string $externalCommunication = null;
 
     /**
      * Stakeholder notification list (JSON)
      */
     #[ORM\Column(type: Types::JSON, nullable: true)]
+    #[Groups(['bc_plan:read', 'bc_plan:write'])]
     private ?array $stakeholderContacts = null;
 
     /**
      * Alternative site/workaround location
      */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['bc_plan:read', 'bc_plan:write'])]
     private ?string $alternativeSite = null;
 
     /**
      * Alternative site address
      */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['bc_plan:read', 'bc_plan:write'])]
     private ?string $alternativeSiteAddress = null;
 
     /**
      * Alternative site capacity/readiness
      */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['bc_plan:read', 'bc_plan:write'])]
     private ?string $alternativeSiteCapacity = null;
 
     /**
      * Backup procedures
      */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['bc_plan:read', 'bc_plan:write'])]
     private ?string $backupProcedures = null;
 
     /**
      * Restore procedures
      */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['bc_plan:read', 'bc_plan:write'])]
     private ?string $restoreProcedures = null;
 
     /**
@@ -176,6 +205,7 @@ class BusinessContinuityPlan
      * }
      */
     #[ORM\Column(type: Types::JSON, nullable: true)]
+    #[Groups(['bc_plan:read', 'bc_plan:write'])]
     private ?array $requiredResources = null;
 
     /**
@@ -183,6 +213,7 @@ class BusinessContinuityPlan
      */
     #[ORM\ManyToMany(targetEntity: Supplier::class)]
     #[ORM\JoinTable(name: 'bc_plan_supplier')]
+    #[Groups(['bc_plan:read'])]
     private Collection $criticalSuppliers;
 
     /**
@@ -190,6 +221,7 @@ class BusinessContinuityPlan
      */
     #[ORM\ManyToMany(targetEntity: Asset::class)]
     #[ORM\JoinTable(name: 'bc_plan_asset')]
+    #[Groups(['bc_plan:read'])]
     private Collection $criticalAssets;
 
     /**
@@ -197,33 +229,42 @@ class BusinessContinuityPlan
      */
     #[ORM\ManyToMany(targetEntity: Document::class)]
     #[ORM\JoinTable(name: 'bc_plan_document')]
+    #[Groups(['bc_plan:read'])]
     private Collection $documents;
 
     /**
      * Version number
      */
     #[ORM\Column(length: 20)]
+    #[Groups(['bc_plan:read', 'bc_plan:write'])]
     private ?string $version = '1.0';
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    #[Groups(['bc_plan:read', 'bc_plan:write'])]
     private ?\DateTimeInterface $lastTested = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    #[Groups(['bc_plan:read', 'bc_plan:write'])]
     private ?\DateTimeInterface $nextTestDate = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    #[Groups(['bc_plan:read', 'bc_plan:write'])]
     private ?\DateTimeInterface $lastReviewDate = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    #[Groups(['bc_plan:read', 'bc_plan:write'])]
     private ?\DateTimeInterface $nextReviewDate = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['bc_plan:read', 'bc_plan:write'])]
     private ?string $reviewNotes = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Groups(['bc_plan:read'])]
     private ?\DateTimeInterface $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[Groups(['bc_plan:read'])]
     private ?\DateTimeInterface $updatedAt = null;
 
     public function __construct()
@@ -234,9 +275,30 @@ class BusinessContinuityPlan
         $this->createdAt = new \DateTime();
     }
 
+    #[ORM\PrePersist]
+    #[ORM\PreUpdate]
+    public function updateTimestamps(): void
+    {
+        $this->updatedAt = new \DateTimeImmutable();
+        if ($this->createdAt === null) {
+            $this->createdAt = new \DateTimeImmutable();
+        }
+    }
+
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getTenant(): ?Tenant
+    {
+        return $this->tenant;
+    }
+
+    public function setTenant(?Tenant $tenant): static
+    {
+        $this->tenant = $tenant;
+        return $this;
     }
 
     public function getName(): ?string
