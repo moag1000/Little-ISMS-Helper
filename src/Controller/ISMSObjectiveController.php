@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\ISMSObjective;
+use App\Form\ISMSObjectiveType;
 use App\Repository\ISMSObjectiveRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -42,35 +43,28 @@ class ISMSObjectiveController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'app_objective_new')]
+    #[Route('/new', name: 'app_objective_new', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function new(Request $request): Response
     {
         $objective = new ISMSObjective();
+        $form = $this->createForm(ISMSObjectiveType::class, $objective);
 
-        if ($request->isMethod('POST')) {
-            $objective->setTitle($request->request->get('title'));
-            $objective->setDescription($request->request->get('description'));
-            $objective->setCategory($request->request->get('category'));
-            $objective->setMeasurableIndicators($request->request->get('measurable_indicators'));
-            $objective->setTargetValue($request->request->get('target_value'));
-            $objective->setCurrentValue($request->request->get('current_value'));
-            $objective->setUnit($request->request->get('unit'));
-            $objective->setResponsiblePerson($request->request->get('responsible_person'));
-            $objective->setTargetDate(new \DateTime($request->request->get('target_date')));
-            $objective->setStatus($request->request->get('status') ?? 'in_progress');
-            $objective->setProgressNotes($request->request->get('progress_notes'));
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
             $objective->setUpdatedAt(new \DateTime());
 
             $this->entityManager->persist($objective);
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'ISMS Objective created successfully.');
+            $this->addFlash('success', 'ISMS-Ziel erfolgreich erstellt.');
             return $this->redirectToRoute('app_objective_show', ['id' => $objective->getId()]);
         }
 
         return $this->render('objective/new.html.twig', [
             'objective' => $objective,
+            'form' => $form,
         ]);
     }
 
@@ -82,36 +76,31 @@ class ISMSObjectiveController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_objective_edit', requirements: ['id' => '\d+'])]
+    #[Route('/{id}/edit', name: 'app_objective_edit', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_ADMIN')]
     public function edit(Request $request, ISMSObjective $objective): Response
     {
-        if ($request->isMethod('POST')) {
-            $objective->setTitle($request->request->get('title'));
-            $objective->setDescription($request->request->get('description'));
-            $objective->setCategory($request->request->get('category'));
-            $objective->setMeasurableIndicators($request->request->get('measurable_indicators'));
-            $objective->setTargetValue($request->request->get('target_value'));
-            $objective->setCurrentValue($request->request->get('current_value'));
-            $objective->setUnit($request->request->get('unit'));
-            $objective->setResponsiblePerson($request->request->get('responsible_person'));
-            $objective->setTargetDate(new \DateTime($request->request->get('target_date')));
-            $objective->setStatus($request->request->get('status'));
-            $objective->setProgressNotes($request->request->get('progress_notes'));
+        $form = $this->createForm(ISMSObjectiveType::class, $objective);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
             $objective->setUpdatedAt(new \DateTime());
 
-            if ($request->request->get('status') === 'achieved' && !$objective->getAchievedDate()) {
+            // Automatically set achieved date when status changes to achieved
+            if ($objective->getStatus() === 'achieved' && !$objective->getAchievedDate()) {
                 $objective->setAchievedDate(new \DateTime());
             }
 
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'ISMS Objective updated successfully.');
+            $this->addFlash('success', 'ISMS-Ziel erfolgreich aktualisiert.');
             return $this->redirectToRoute('app_objective_show', ['id' => $objective->getId()]);
         }
 
         return $this->render('objective/edit.html.twig', [
             'objective' => $objective,
+            'form' => $form,
         ]);
     }
 
