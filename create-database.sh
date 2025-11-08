@@ -102,56 +102,68 @@ fi
 
 echo ""
 
-# Check if database already exists (without dropping it)
-DB_EXISTS=0
+# Check if database already exists and handle accordingly
+echo ""
+info "Checking if database exists..."
+
 if [ "$DB_TYPE" = "sqlite" ]; then
+    # For SQLite, check if file exists
     if [ -f "$DB_FILE" ]; then
-        DB_EXISTS=1
-    fi
-else
-    # Try to execute a simple query to check if database exists
-    # If it succeeds, database exists
-    if php bin/console dbal:run-sql "SELECT 1" &>/dev/null; then
-        DB_EXISTS=1
-    fi
-fi
+        warning "Database file already exists: $DB_FILE"
+        echo ""
+        read -p "Delete and recreate? (y/N): " -n 1 -r
+        echo
 
-if [ $DB_EXISTS -eq 1 ]; then
-    warning "Database already exists!"
-    echo ""
-    echo "Options:"
-    echo "  1. Delete existing database and create fresh (RESET)"
-    echo "  2. Keep existing database and exit"
-    echo ""
-    read -p "Your choice (1/2): " -n 1 -r
-    echo
-
-    if [[ $REPLY == "1" ]]; then
-        info "Resetting database..."
-
-        if [ "$DB_TYPE" = "sqlite" ]; then
+        if [[ $REPLY =~ ^[Yy]$ ]]; then
             rm -f "$DB_FILE"
             success "SQLite database deleted"
         else
-            php bin/console doctrine:database:drop --if-exists --force
-            success "Database dropped"
+            warning "Keeping existing database. Exiting."
+            exit 0
         fi
+    fi
+
+    # Ensure var/ directory exists
+    mkdir -p "$(dirname "$DB_FILE")"
+else
+    # For MySQL/PostgreSQL, try to create and handle error if exists
+    # This is the safest approach - let Doctrine handle it
+    :  # No pre-check needed
+fi
+
+info "Creating database..."
+CREATE_OUTPUT=$(php bin/console doctrine:database:create 2>&1)
+CREATE_EXIT=$?
+
+if [ $CREATE_EXIT -eq 0 ]; then
+    success "Database created"
+elif echo "$CREATE_OUTPUT" | grep -qi "already exists\|database exists"; then
+    # Database already exists
+    warning "Database already exists!"
+    echo ""
+    echo "→ The database is already set up."
+    echo ""
+    read -p "Drop and recreate? (y/N): " -n 1 -r
+    echo
+
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+        info "Dropping existing database..."
+        php bin/console doctrine:database:drop --force
+        success "Database dropped"
+
+        info "Creating fresh database..."
+        php bin/console doctrine:database:create
+        success "Database created"
     else
         warning "Keeping existing database. Exiting."
         exit 0
     fi
+else
+    # Some other error occurred
+    error "Failed to create database"
+    echo "$CREATE_OUTPUT"
+    exit 1
 fi
-
-echo ""
-info "Creating database..."
-
-if [ "$DB_TYPE" = "sqlite" ]; then
-    # Ensure var/ directory exists
-    mkdir -p "$(dirname "$DB_FILE")"
-fi
-
-php bin/console doctrine:database:create
-success "Database created"
 
 echo ""
 info "Running migrations..."
