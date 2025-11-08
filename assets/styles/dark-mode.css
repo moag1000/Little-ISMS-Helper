@@ -3,80 +3,82 @@
    =================================== */
 
 /* ===============================
-   CSS Variables (Light Mode Default)
+   CSS Variables (Light Mode Default - Cyberpunk Theme)
    =============================== */
 :root {
-    /* Colors */
-    --color-primary: #667eea;
-    --color-primary-dark: #764ba2;
-    --color-success: #2ecc71;
-    --color-warning: #f39c12;
-    --color-danger: #e74c3c;
-    --color-info: #3498db;
+    /* Cyberpunk Colors */
+    --color-primary: #06b6d4;
+    --color-primary-dark: #0891b2;
+    --color-success: #10b981;
+    --color-warning: #f59e0b;
+    --color-danger: #ef4444;
+    --color-info: #06b6d4;
 
     /* Background */
     --bg-primary: #ffffff;
-    --bg-secondary: #f8f9fa;
-    --bg-tertiary: #e9ecef;
+    --bg-secondary: #f8fafc;
+    --bg-tertiary: #f1f5f9;
     --bg-elevated: #ffffff;
 
     /* Text */
-    --text-primary: #2c3e50;
-    --text-secondary: #6c757d;
-    --text-muted: #95a5a6;
+    --text-primary: #1e293b;
+    --text-secondary: #64748b;
+    --text-muted: #94a3b8;
     --text-inverse: #ffffff;
 
     /* Borders */
-    --border-color: #dee2e6;
-    --border-color-light: #f0f0f0;
+    --border-color: #e2e8f0;
+    --border-color-light: #f1f5f9;
 
-    /* Shadows */
-    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
-    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
-    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.15);
+    /* Shadows with Cyberpunk Glow */
+    --shadow-sm: 0 2px 4px rgba(6, 182, 212, 0.08);
+    --shadow-md: 0 4px 12px rgba(6, 182, 212, 0.12);
+    --shadow-lg: 0 8px 24px rgba(6, 182, 212, 0.16);
 
     /* Overlays */
-    --overlay-bg: rgba(0, 0, 0, 0.5);
+    --overlay-bg: rgba(15, 23, 42, 0.5);
 
     /* Transitions */
     --transition-speed: 0.3s;
 }
 
 /* ===============================
-   Dark Mode Variables
+   Dark Mode Variables - Enhanced Cyberpunk
    =============================== */
 [data-theme="dark"] {
-    /* Colors stay vibrant */
-    --color-primary: #7c8ff0;
-    --color-primary-dark: #8b5fc7;
-    --color-success: #3edb81;
-    --color-warning: #ffa724;
-    --color-danger: #f15b4d;
-    --color-info: #4daef7;
+    /* Vibrant Cyberpunk Colors */
+    --color-primary: #06b6d4;
+    --color-primary-dark: #0891b2;
+    --color-accent-pink: #ec4899;
+    --color-accent-purple: #8b5cf6;
+    --color-success: #10b981;
+    --color-warning: #f59e0b;
+    --color-danger: #ef4444;
+    --color-info: #06b6d4;
 
-    /* Dark Backgrounds */
-    --bg-primary: #1a1d23;
-    --bg-secondary: #23262d;
-    --bg-tertiary: #2c2f38;
-    --bg-elevated: #2c2f38;
+    /* Dark Cyberpunk Backgrounds */
+    --bg-primary: #0f172a;
+    --bg-secondary: #1e293b;
+    --bg-tertiary: #334155;
+    --bg-elevated: #1e293b;
 
-    /* Dark Text */
-    --text-primary: #e9ecef;
-    --text-secondary: #adb5bd;
-    --text-muted: #6c757d;
-    --text-inverse: #1a1d23;
+    /* Dark Text with Glow */
+    --text-primary: #e2e8f0;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    --text-inverse: #0f172a;
 
-    /* Dark Borders */
-    --border-color: #3a3d46;
-    --border-color-light: #2c2f38;
+    /* Dark Borders with Neon Accent */
+    --border-color: #334155;
+    --border-color-light: #1e293b;
 
-    /* Dark Shadows (stronger) */
-    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
-    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
-    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
+    /* Dark Shadows with Neon Glow */
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.4), 0 0 8px rgba(6, 182, 212, 0.1);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5), 0 0 12px rgba(6, 182, 212, 0.15);
+    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.6), 0 0 20px rgba(6, 182, 212, 0.2);
 
     /* Dark Overlay */
-    --overlay-bg: rgba(0, 0, 0, 0.7);
+    --overlay-bg: rgba(15, 23, 42, 0.9);
 }
 
 /* ===============================
