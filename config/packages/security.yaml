@@ -22,6 +22,8 @@ security:
             provider: app_user_provider
 
             # Form login for local users
+            # Note: Symfony automatically regenerates the session on successful authentication
+            # to prevent session fixation attacks (OWASP A07:2021)
             form_login:
                 login_path: app_login
                 check_path: app_login
@@ -34,6 +36,8 @@ security:
             logout:
                 path: app_logout
                 target: app_login
+                # Security: Invalidate session on logout (default: true)
+                invalidate_session: true
 
             # Custom authenticators for Azure OAuth and SAML
             custom_authenticators:
@@ -50,8 +54,12 @@ security:
                 lifetime: 604800 # 1 week in seconds
                 path: /
                 always_remember_me: false
+                # Security: Use secure and httponly cookies
+                secure: true
+                httponly: true
+                samesite: 'strict'
 
-            # Allow user impersonation
+            # Allow user impersonation (for admins)
             switch_user: true
 
     # Role hierarchy - higher roles inherit permissions from lower roles
