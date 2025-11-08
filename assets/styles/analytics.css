@@ -1,9 +1,9 @@
 /* ===================================
-   Paket D: Analytics Styles
+   Paket D: Analytics Styles - Cyberpunk Fairy
    =================================== */
 
 /* ===============================
-   Analytics Dashboard
+   Analytics Dashboard - Cyberpunk
    =============================== */
 .analytics-dashboard {
     padding: 20px;
@@ -15,7 +15,18 @@
     align-items: center;
     margin-bottom: 30px;
     padding-bottom: 20px;
-    border-bottom: 2px solid var(--border-color, #dee2e6);
+    border-bottom: 3px solid transparent;
+    border-image: linear-gradient(90deg, var(--color-secondary), var(--color-accent-pink)) 1;
+    position: relative;
+}
+
+.page-header::after {
+    content: '✨';
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-size: 24px;
+    opacity: 0.3;
 }
 
 .page-header h1 {
@@ -42,15 +53,36 @@
     font-weight: 500;
     padding: 12px 20px;
     transition: all 0.2s;
+    position: relative;
+}
+
+.analytics-tabs .nav-link::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--color-secondary), var(--color-accent-pink));
+    transition: width 0.3s ease;
 }
 
 .analytics-tabs .nav-link:hover {
-    color: var(--color-primary, #667eea);
+    color: var(--color-secondary);
+    text-shadow: var(--glow-cyan);
+}
+
+.analytics-tabs .nav-link:hover::before {
+    width: 100%;
 }
 
 .analytics-tabs .nav-link.active {
-    color: var(--color-primary, #667eea);
-    border-bottom: 3px solid var(--color-primary, #667eea);
+    color: var(--color-secondary);
+    text-shadow: var(--glow-cyan);
+}
+
+.analytics-tabs .nav-link.active::before {
+    width: 100%;
 }
 
 .analytics-tabs .nav-link i {
@@ -66,11 +98,17 @@
    =============================== */
 .analytics-card {
     margin-bottom: 20px;
-    border: 1px solid var(--border-color, #dee2e6);
+    border: 2px solid rgba(6, 182, 212, 0.2);
     border-radius: 12px;
-    box-shadow: var(--shadow-sm, 0 2px 8px rgba(0,0,0,0.1));
+    box-shadow: var(--shadow-sm, 0 2px 8px rgba(0,0,0,0.1)), 0 0 15px rgba(6, 182, 212, 0.05);
     background: var(--bg-elevated, #ffffff);
     overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.analytics-card:hover {
+    border-color: var(--color-secondary);
+    box-shadow: var(--shadow-md), var(--glow-cyan);
 }
 
 .analytics-card .card-header {
@@ -329,10 +367,12 @@
 .overall-compliance {
     display: inline-block;
     padding: 20px 40px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, var(--color-secondary) 0%, var(--color-accent-purple) 100%);
     border-radius: 12px;
     color: white;
     margin-bottom: 20px;
+    box-shadow: var(--glow-cyan), var(--shadow-lg);
+    border: 2px solid var(--color-accent-pink);
 }
 
 .compliance-label {
@@ -384,8 +424,9 @@
 }
 
 .trend-tabs .nav-link.active {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, var(--color-secondary) 0%, var(--color-accent-purple) 100%);
     color: white;
+    box-shadow: var(--glow-cyan);
 }
 
 .trend-tabs .nav-link i {
