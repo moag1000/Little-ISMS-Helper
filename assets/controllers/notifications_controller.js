@@ -33,10 +33,21 @@ export default class extends Controller {
         // Listen for new notifications
         this.boundHandleNewNotification = this.handleNewNotification.bind(this);
         window.addEventListener('new-notification', this.boundHandleNewNotification);
+
+        // ESC to close panel
+        this.boundHandleKeydown = this.handleKeydown.bind(this);
+        document.addEventListener('keydown', this.boundHandleKeydown);
     }
 
     disconnect() {
         window.removeEventListener('new-notification', this.boundHandleNewNotification);
+        document.removeEventListener('keydown', this.boundHandleKeydown);
+    }
+
+    handleKeydown(event) {
+        if (event.key === 'Escape' && this.hasPanelTarget && this.panelTarget.classList.contains('show')) {
+            this.close();
+        }
     }
 
     loadNotifications() {
