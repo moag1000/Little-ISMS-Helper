@@ -205,7 +205,7 @@
                     <td>
                         <strong>{{ risk.title }}</strong>
                         {% if risk.description %}
-                        <br><small class="text-muted">{{ risk.description|u.truncate(60, '...') }}</small>
+                        <br><small class="text-muted">{{ risk.description|length > 60 ? risk.description|slice(0, 60) ~ '...' : risk.description }}</small>
                         {% endif %}
                     </td>
                     <td>

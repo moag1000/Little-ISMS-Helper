@@ -216,7 +216,7 @@
                                 </a>
                                 {% if document.description %}
                                 <br>
-                                <small class="text-muted">{{ document.description|u.truncate(60, '...') }}</small>
+                                <small class="text-muted">{{ document.description|length > 60 ? document.description|slice(0, 60) ~ '...' : document.description }}</small>
                                 {% endif %}
                             </td>
                             <td>

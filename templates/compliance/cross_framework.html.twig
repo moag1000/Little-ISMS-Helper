@@ -131,11 +131,11 @@
                             <tr>
                                 <td>
                                     <strong>{{ mapping.sourceRequirement.requirementId }}</strong><br>
-                                    <small>{{ mapping.sourceRequirement.title|u.truncate(60, '...') }}</small>
+                                    <small>{{ mapping.sourceRequirement.title|length > 60 ? mapping.sourceRequirement.title|slice(0, 60) ~ '...' : mapping.sourceRequirement.title }}</small>
                                 </td>
                                 <td>
                                     <strong>{{ mapping.targetRequirement.requirementId }}</strong><br>
-                                    <small>{{ mapping.targetRequirement.title|u.truncate(60, '...') }}</small>
+                                    <small>{{ mapping.targetRequirement.title|length > 60 ? mapping.targetRequirement.title|slice(0, 60) ~ '...' : mapping.targetRequirement.title }}</small>
                                 </td>
                                 <td>
                                     <span class="badge badge-{{ mapping.mappingBadgeClass }}">

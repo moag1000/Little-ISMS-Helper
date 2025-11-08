@@ -6,7 +6,7 @@
             <div class="checklist-header" data-action="click->toggle#toggleContent">
                 <div class="requirement-info">
                     <span class="req-id">{{ item.requirement.requirementId }}</span>
-                    <span class="req-title">{{ item.requirement.title|u.truncate(80, '...') }}</span>
+                    <span class="req-title">{{ item.requirement.title|length > 80 ? item.requirement.title|slice(0, 80) ~ '...' : item.requirement.title }}</span>
                 </div>
                 <div class="checklist-controls">
                     <select class="status-select" data-item-id="{{ item.id }}" onclick="event.stopPropagation();">
