@@ -1,12 +1,12 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Upload Document{% endblock %}
+{% block title %}{{ 'document.new'|trans }} - {{ parent() }}{% endblock %}
 
 {% block body %}
 <div class="container">
     <div class="page-header">
-        <h1>Upload New Document</h1>
-        <a href="{{ path('app_document_index') }}" class="btn btn-secondary">Back to Documents</a>
+        <h1><i class="bi bi-plus-circle"></i> {{ 'document.new'|trans }}</h1>
+        <a href="{{ path('app_document_index') }}" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> {{ 'common.back'|trans }}</a>
     </div>
 
     <div class="card">
@@ -34,12 +34,12 @@
                     {{ form_label(form.file) }}
                     {{ form_widget(form.file) }}
                     {{ form_errors(form.file) }}
-                    <small class="help-text">Max file size: 10MB. Allowed formats: PDF, Word, Excel, Images, Text</small>
+                    <small class="help-text">{{ 'document.file_help'|trans }}</small>
                 </div>
 
                 <div class="form-actions">
-                    <button type="submit" class="btn btn-primary">Upload Document</button>
-                    <a href="{{ path('app_document_index') }}" class="btn btn-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-primary"><i class="bi bi-upload"></i> {{ 'document.upload'|trans }}</button>
+                    <a href="{{ path('app_document_index') }}" class="btn btn-secondary"><i class="bi bi-x-circle"></i> {{ 'common.cancel'|trans }}</a>
                 </div>
             {{ form_end(form) }}
         </div>
