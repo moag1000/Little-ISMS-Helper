@@ -35,6 +35,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     ]
 )]
 #[ORM\Entity(repositoryClass: BCExerciseRepository::class)]
+#[ORM\Table(name: 'bc_exercise')]
 #[ORM\Index(columns: ['exercise_type'], name: 'idx_bc_exercise_type')]
 #[ORM\Index(columns: ['exercise_date'], name: 'idx_bc_exercise_date')]
 #[ORM\Index(columns: ['status'], name: 'idx_bc_exercise_status')]
