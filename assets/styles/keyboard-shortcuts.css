@@ -1,9 +1,9 @@
 /* ============================================
-   Keyboard Shortcuts Styles
+   Keyboard Shortcuts Styles - Cyberpunk Fairy
    Help overlay and trigger button
    ============================================ */
 
-/* Floating Trigger Button */
+/* Floating Trigger Button - Cyberpunk Fairy */
 .keyboard-shortcuts-trigger {
     position: fixed;
     bottom: 24px;
@@ -11,10 +11,10 @@
     width: 48px;
     height: 48px;
     border-radius: 50%;
-    background: var(--color-primary);
+    background: linear-gradient(135deg, var(--color-secondary), var(--color-accent-purple));
     color: white;
-    border: none;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border: 2px solid var(--color-accent-pink);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15), var(--glow-cyan);
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -24,10 +24,18 @@
     z-index: 1000;
 }
 
+.keyboard-shortcuts-trigger::after {
+    content: '✨';
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    font-size: 14px;
+}
+
 .keyboard-shortcuts-trigger:hover {
-    background: var(--color-primary-light);
-    transform: scale(1.05);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+    background: linear-gradient(135deg, var(--color-accent-pink), var(--color-accent-purple));
+    transform: scale(1.1) rotate(5deg);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2), 0 0 25px rgba(6, 182, 212, 0.6);
 }
 
 /* Modal */
@@ -48,15 +56,16 @@
 
 .keyboard-shortcuts-modal.keyboard-shortcuts-open {
     display: flex;
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(4px);
+    background: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(8px);
 }
 
-/* Container */
+/* Container - Cyberpunk Fairy */
 .keyboard-shortcuts-container {
     background: white;
     border-radius: 12px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4), 0 0 40px rgba(6, 182, 212, 0.3);
+    border: 2px solid var(--color-secondary);
     width: 900px;
     max-width: 90vw;
     max-height: 85vh;
