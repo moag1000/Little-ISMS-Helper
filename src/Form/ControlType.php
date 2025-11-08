@@ -45,10 +45,13 @@ class ControlType extends AbstractType
             ])
             ->add('description', TextareaType::class, [
                 'label' => 'Beschreibung',
-                'required' => false,
+                'required' => true,
                 'attr' => [
                     'class' => 'form-control',
                     'rows' => 4,
+                ],
+                'constraints' => [
+                    new NotBlank(),
                 ],
             ])
             ->add('category', ChoiceType::class, [
