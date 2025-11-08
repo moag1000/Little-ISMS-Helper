@@ -195,6 +195,8 @@ export default class extends Controller {
     // Show/Hide Help Modal
     show() {
         if (this.hasModalTarget) {
+            // Remove inline style that modal manager might have set
+            this.modalTarget.style.display = '';
             this.modalTarget.classList.add('keyboard-shortcuts-open');
             this.renderShortcuts();
         }

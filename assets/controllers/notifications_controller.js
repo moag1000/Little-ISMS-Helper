@@ -91,6 +91,9 @@ export default class extends Controller {
 
     open() {
         if (this.hasPanelTarget) {
+            // Remove inline style that modal manager might have set
+            this.panelTarget.style.display = '';
+
             this.panelTarget.classList.add('show');
             this.panelTarget.classList.remove('d-none');
 
