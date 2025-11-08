@@ -380,7 +380,28 @@ class Asset
         return max($this->confidentialityValue, $this->integrityValue, $this->availabilityValue);
     }
 
-    // Note: Risk calculation methods moved to AssetRiskCalculator service (Symfony best practice)
-    // Computed properties (riskScore, isHighRisk, protectionStatus) are added during
-    // serialization via AssetNormalizer for API Platform compatibility
+    // Note: Full risk calculation logic moved to AssetRiskCalculator service (Symfony best practice)
+    // Computed properties (riskScore, protectionStatus) are added during serialization via AssetNormalizer
+
+    /**
+     * Simple high-risk check for entity filtering
+     *
+     * This method provides a quick high-risk classification for use in Collection filtering
+     * (e.g., Control::getHighRiskAssetCount(), Incident::hasCriticalAssetsAffected()).
+     *
+     * For full risk score calculation, use AssetRiskCalculator service.
+     *
+     * Threshold: Total CIA value >= 4 OR has active risks
+     */
+    public function isHighRisk(): bool
+    {
+        // High CIA value assets are considered high-risk
+        if ($this->getTotalValue() >= 4) {
+            return true;
+        }
+
+        // Assets with active risks are high-risk
+        $activeRisks = $this->risks->filter(fn($r) => $r->getStatus() === 'active')->count();
+        return $activeRisks > 0;
+    }
 }
