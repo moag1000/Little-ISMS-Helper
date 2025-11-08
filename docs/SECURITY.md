@@ -32,9 +32,8 @@ bin/console debug:voter AssetVoter
   - `cookie_secure: 'auto'` - HTTPS only in production
   - `cookie_httponly: true` - Prevents JavaScript access to session cookie (XSS protection)
   - `cookie_samesite: 'strict'` - Strict CSRF protection (cookie only sent with same-site requests)
-  - `use_strict_mode: true` - Rejects uninitialized session IDs
-  - `sid_length: 48` - Longer session IDs (harder to guess/brute force)
-  - `sid_bits_per_character: 6` - More entropy per character
+  - `sid_length: 48` - Longer session IDs (harder to guess/brute force, default: 32)
+  - `sid_bits_per_character: 6` - More entropy per character (default: 4)
   - `gc_maxlifetime: 3600` - Session lifetime: 1 hour
 
 - **Session Fixation Protection** (`config/packages/security.yaml`):
@@ -135,9 +134,9 @@ symfony check:security
 - **Session Security** (see A02 above):
   - 1-hour session lifetime with garbage collection
   - Secure, HttpOnly, SameSite=strict cookies
-  - 48-character session IDs with high entropy
+  - 48-character session IDs with high entropy (50% longer than default)
+  - 6 bits per character (maximum entropy, 50% more than default)
   - Session fixation protection (regenerate on login)
-  - Strict mode (rejects uninitialized session IDs)
 
 - **Password Security**:
   - Automatic bcrypt/argon2 hashing

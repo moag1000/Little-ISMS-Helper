@@ -15,10 +15,9 @@ framework:
         gc_probability: 1
         gc_divisor: 100
 
-        # Session security
-        use_strict_mode: true         # Reject uninitialized session IDs
-        sid_length: 48                # Longer session IDs are harder to guess
-        sid_bits_per_character: 6     # More entropy per character
+        # Session ID security
+        sid_length: 48                # Longer session IDs are harder to guess (default: 32)
+        sid_bits_per_character: 6     # More entropy per character (default: 4)
 
     #esi: true
     #fragments: true
