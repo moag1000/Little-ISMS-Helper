@@ -159,10 +159,13 @@ class AuditLogListener
         $auditLog->setEntityId($this->getEntityId($entity));
         $auditLog->setAction($changeset['action']);
 
-        // Set user
+        // Set user (use email as username, or "system" for CLI operations)
         $user = $this->security->getUser();
         if ($user instanceof User) {
-            $auditLog->setUser($user);
+            $auditLog->setUserName($user->getEmail());
+        } else {
+            // For CLI operations (e.g., setup commands, migrations)
+            $auditLog->setUserName('system');
         }
 
         // Set values (serialize arrays to JSON strings)
@@ -182,13 +185,7 @@ class AuditLogListener
             );
         }
 
-        if (isset($changeset['changed_fields'])) {
-            $auditLog->setChangedFields(
-                is_array($changeset['changed_fields'])
-                    ? json_encode($changeset['changed_fields'], JSON_UNESCAPED_UNICODE)
-                    : $changeset['changed_fields']
-            );
-        }
+        // Note: changed_fields is not stored as a separate column, it's part of the description or can be derived from old/new values
 
         // Set request information
         $request = $this->requestStack->getCurrentRequest();
