@@ -28,4 +28,7 @@ return [
     'chart.js' => [
         'version' => '3.9.1',
     ],
+    'bootstrap' => [
+        'version' => '5.3.3',
+    ],
 ];
