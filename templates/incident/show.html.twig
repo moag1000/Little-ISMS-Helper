@@ -33,17 +33,17 @@
                     <span class="value">{{ incident.category|upper|replace({'_': ' '}) }}</span>
                 </div>
                 <div class="detail-item">
-                    <span class="label">Reported:</span>
-                    <span class="value">{{ incident.reportedDate|date('d.m.Y H:i') }}</span>
+                    <span class="label">Detected:</span>
+                    <span class="value">{{ incident.detectedAt ? incident.detectedAt|date('d.m.Y H:i') : 'N/A' }}</span>
                 </div>
                 <div class="detail-item">
                     <span class="label">Reported By:</span>
                     <span class="value">{{ incident.reportedBy ?? 'N/A' }}</span>
                 </div>
-                {% if incident.detectedDate %}
+                {% if incident.occurredAt %}
                 <div class="detail-item">
-                    <span class="label">Detected:</span>
-                    <span class="value">{{ incident.detectedDate|date('d.m.Y H:i') }}</span>
+                    <span class="label">Occurred:</span>
+                    <span class="value">{{ incident.occurredAt|date('d.m.Y H:i') }}</span>
                 </div>
                 {% endif %}
             </div>
