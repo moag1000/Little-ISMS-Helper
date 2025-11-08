@@ -18,31 +18,37 @@ class DocumentType extends AbstractType
     {
         $builder
             ->add('name', TextType::class, [
-                'label' => 'Document Name',
+                'label' => 'document.field.name',
                 'required' => true,
-                'attr' => ['maxlength' => 255],
+                'attr' => [
+                    'maxlength' => 255,
+                    'placeholder' => 'document.placeholder.name',
+                ],
             ])
             ->add('description', TextareaType::class, [
-                'label' => 'Description',
+                'label' => 'document.field.description',
                 'required' => false,
-                'attr' => ['rows' => 3],
+                'attr' => [
+                    'rows' => 3,
+                    'placeholder' => 'document.placeholder.description',
+                ],
             ])
             ->add('documentType', ChoiceType::class, [
-                'label' => 'Document Type',
+                'label' => 'document.field.document_type',
                 'choices' => [
-                    'Asset Documentation' => 'asset',
-                    'Risk Assessment' => 'risk',
-                    'Incident Report' => 'incident',
-                    'Control Evidence' => 'control',
-                    'Audit Documentation' => 'audit',
-                    'Compliance Evidence' => 'compliance',
-                    'Training Material' => 'training',
-                    'General' => 'general',
+                    'document.type.asset' => 'asset',
+                    'document.type.risk' => 'risk',
+                    'document.type.incident' => 'incident',
+                    'document.type.control' => 'control',
+                    'document.type.audit' => 'audit',
+                    'document.type.compliance' => 'compliance',
+                    'document.type.training' => 'training',
+                    'document.type.general' => 'general',
                 ],
                 'required' => true,
             ])
             ->add('file', FileType::class, [
-                'label' => 'File',
+                'label' => 'document.field.file',
                 'required' => true,
                 'constraints' => [
                     new File([
@@ -58,12 +64,13 @@ class DocumentType extends AbstractType
                             'image/gif',
                             'text/plain',
                         ],
-                        'mimeTypesMessage' => 'Please upload a valid document (PDF, Word, Excel, Image, or Text file)',
+                        'mimeTypesMessage' => 'document.validation.mime_types',
                     ]),
                 ],
                 'attr' => [
                     'accept' => '.pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png,.gif,.txt',
                 ],
+                'help' => 'document.help.file',
             ])
         ;
     }
