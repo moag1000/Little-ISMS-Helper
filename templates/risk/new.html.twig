@@ -1,12 +1,12 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New Risk{% endblock %}
+{% block title %}{{ 'risk.new'|trans }} - {{ parent() }}{% endblock %}
 
 {% block body %}
 <div class="container">
     <div class="page-header">
-        <h1>Register New Risk</h1>
-        <a href="{{ path('app_risk_index') }}" class="btn btn-secondary">Back to Risks</a>
+        <h1><i class="bi bi-plus-circle"></i> {{ 'risk.new'|trans }}</h1>
+        <a href="{{ path('app_risk_index') }}" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> {{ 'common.back'|trans }}</a>
     </div>
 
     <div class="card">
@@ -44,33 +44,37 @@
                     </div>
                 </div>
 
-                <h3>Inherent Risk Assessment</h3>
+                <h3><i class="bi bi-exclamation-diamond"></i> {{ 'risk.inherent_assessment'|trans }}</h3>
+                <p class="text-muted small">{{ 'risk.inherent_help'|trans }}</p>
                 <div class="form-row">
                     <div class="form-group">
                         {{ form_label(form.inherentProbability) }}
                         {{ form_widget(form.inherentProbability) }}
                         {{ form_errors(form.inherentProbability) }}
-                        <small>1 = Very Low, 5 = Very High</small>
+                        <small class="help-text">{{ 'risk.probability_help'|trans }}</small>
                     </div>
                     <div class="form-group">
                         {{ form_label(form.inherentImpact) }}
                         {{ form_widget(form.inherentImpact) }}
                         {{ form_errors(form.inherentImpact) }}
-                        <small>1 = Negligible, 5 = Catastrophic</small>
+                        <small class="help-text">{{ 'risk.impact_help'|trans }}</small>
                     </div>
                 </div>
 
-                <h3>Residual Risk Assessment</h3>
+                <h3><i class="bi bi-shield-check"></i> {{ 'risk.residual_assessment'|trans }}</h3>
+                <p class="text-muted small">{{ 'risk.residual_help'|trans }}</p>
                 <div class="form-row">
                     <div class="form-group">
                         {{ form_label(form.residualProbability) }}
                         {{ form_widget(form.residualProbability) }}
                         {{ form_errors(form.residualProbability) }}
+                        <small class="help-text">{{ 'risk.probability_help'|trans }}</small>
                     </div>
                     <div class="form-group">
                         {{ form_label(form.residualImpact) }}
                         {{ form_widget(form.residualImpact) }}
                         {{ form_errors(form.residualImpact) }}
+                        <small class="help-text">{{ 'risk.impact_help'|trans }}</small>
                     </div>
                 </div>
 
@@ -93,8 +97,8 @@
                 </div>
 
                 <div class="form-actions">
-                    <button type="submit" class="btn btn-primary">Register Risk</button>
-                    <a href="{{ path('app_risk_index') }}" class="btn btn-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> {{ 'risk.create'|trans }}</button>
+                    <a href="{{ path('app_risk_index') }}" class="btn btn-secondary"><i class="bi bi-x-circle"></i> {{ 'common.cancel'|trans }}</a>
                 </div>
             {{ form_end(form) }}
         </div>
