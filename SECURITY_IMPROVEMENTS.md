@@ -20,8 +20,7 @@ This PR implements **defensive security improvements** that strengthen the appli
 
 - ✅ **Session ID Security**:
   - `sid_length: 48` - Increased from default 32 (50% more entropy)
-  - `sid_bits_per_character: 6` - Maximum entropy per character
-  - `use_strict_mode: true` - Rejects uninitialized session IDs
+  - `sid_bits_per_character: 6` - Maximum entropy per character (increased from default 4)
 
 - ✅ **Session Management**:
   - `gc_maxlifetime: 3600` - 1-hour session lifetime (reduces exposure window)
