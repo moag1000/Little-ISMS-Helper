@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="{{ app.request.locale }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{{ 'app.title'|trans }}{% endblock %}</title>
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
+
+    {% block stylesheets %}
+        <link rel="stylesheet" href="{{ asset('styles/app.css') }}">
+        <link rel="stylesheet" href="{{ asset('styles/components.css') }}">
+        <style>
+            /* Minimal auth page styling */
+            body {
+                min-height: 100vh;
+                display: flex;
+                flex-direction: column;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            }
+
+            .auth-container {
+                flex: 1;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 2rem 1rem;
+            }
+
+            .auth-footer {
+                text-align: center;
+                padding: 1.5rem;
+                color: rgba(255, 255, 255, 0.8);
+                font-size: 0.875rem;
+            }
+        </style>
+    {% endblock %}
+</head>
+<body>
+    <div class="auth-container">
+        {% block body %}{% endblock %}
+    </div>
+
+    <footer class="auth-footer">
+        <p>{{ 'app.footer'|trans }}</p>
+    </footer>
+
+    {# No JavaScript needed for authentication pages #}
+    {% block javascripts %}{% endblock %}
+</body>
+</html>

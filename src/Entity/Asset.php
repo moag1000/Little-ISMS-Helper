@@ -157,7 +157,7 @@ class Asset
         $this->risks = new ArrayCollection();
         $this->incidents = new ArrayCollection();
         $this->protectingControls = new ArrayCollection();
-        $this->createdAt = new \DateTime();
+        $this->createdAt = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -380,64 +380,28 @@ class Asset
         return max($this->confidentialityValue, $this->integrityValue, $this->availabilityValue);
     }
 
-    /**
-     * Get Asset Risk Score based on multiple factors
-     * Data Reuse: Combines Risks, Incidents, Control Coverage
-     */
-    #[Groups(['asset:read'])]
-    public function getRiskScore(): float
-    {
-        $score = 0;
-
-        // Base score from CIA values
-        $score += $this->getTotalValue() * 10;
-
-        // Risks impact
-        $activeRisks = $this->risks->filter(fn($r) => $r->getStatus() === 'active')->count();
-        $score += $activeRisks * 5;
-
-        // Incidents impact (recent incidents = higher risk)
-        $recentIncidents = $this->incidents->filter(function($i) {
-            $sixMonthsAgo = new \DateTime('-6 months');
-            return $i->getDetectedAt() >= $sixMonthsAgo;
-        })->count();
-        $score += $recentIncidents * 10;
-
-        // Control coverage (more controls = lower risk)
-        $controlCount = $this->protectingControls->count();
-        $score -= min($controlCount * 3, 30); // Max 30 points reduction
-
-        return max(0, min(100, $score));
-    }
+    // Note: Full risk calculation logic moved to AssetRiskCalculator service (Symfony best practice)
+    // Computed properties (riskScore, protectionStatus) are added during serialization via AssetNormalizer
 
     /**
-     * Check if asset is high-risk (many incidents, high value)
-     * Data Reuse: Automated risk classification
+     * Simple high-risk check for entity filtering
+     *
+     * This method provides a quick high-risk classification for use in Collection filtering
+     * (e.g., Control::getHighRiskAssetCount(), Incident::hasCriticalAssetsAffected()).
+     *
+     * For full risk score calculation, use AssetRiskCalculator service.
+     *
+     * Threshold: Total CIA value >= 4 OR has active risks
      */
-    #[Groups(['asset:read'])]
     public function isHighRisk(): bool
     {
-        return $this->getRiskScore() >= 70;
-    }
-
-    /**
-     * Get protection status
-     * Data Reuse: Shows if asset is adequately protected
-     */
-    #[Groups(['asset:read'])]
-    public function getProtectionStatus(): string
-    {
-        $controlCount = $this->protectingControls->count();
-        $riskCount = $this->risks->filter(fn($r) => $r->getStatus() === 'active')->count();
-
-        if ($controlCount === 0 && $riskCount > 0) {
-            return 'unprotected';
-        } elseif ($controlCount < $riskCount) {
-            return 'under_protected';
-        } elseif ($controlCount >= $riskCount) {
-            return 'adequately_protected';
+        // High CIA value assets are considered high-risk
+        if ($this->getTotalValue() >= 4) {
+            return true;
         }
 
-        return 'unknown';
+        // Assets with active risks are high-risk
+        $activeRisks = $this->risks->filter(fn($r) => $r->getStatus() === 'active')->count();
+        return $activeRisks > 0;
     }
 }
