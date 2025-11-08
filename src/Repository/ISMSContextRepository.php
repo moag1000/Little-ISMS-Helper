@@ -34,6 +34,7 @@ class ISMSContextRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('c')
             ->orderBy('c.updatedAt', 'DESC')
+            ->addOrderBy('c.createdAt', 'DESC')
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();

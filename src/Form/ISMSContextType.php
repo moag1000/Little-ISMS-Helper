@@ -4,12 +4,12 @@ namespace App\Form;
 
 use App\Entity\ISMSContext;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class ISMSContextType extends AbstractType
 {
@@ -18,101 +18,37 @@ class ISMSContextType extends AbstractType
         $builder
             ->add('organizationName', TextType::class, [
                 'label' => 'Organisationsname',
-                'attr' => ['class' => 'form-control'],
-                'constraints' => [
-                    new NotBlank(),
+                'attr' => [
+                    'class' => 'form-control',
+                    'placeholder' => 'Name der Organisation'
                 ],
+                'constraints' => [
+                    new Assert\NotBlank(['message' => 'Bitte geben Sie einen Organisationsnamen ein.']),
+                    new Assert\Length([
+                        'max' => 255,
+                        'maxMessage' => 'Der Name darf maximal {{ limit }} Zeichen lang sein.'
+                    ])
+                ]
             ])
-            ->add('scope', TextareaType::class, [
+            ->add('ismsScope', TextareaType::class, [
                 'label' => 'ISMS-Geltungsbereich',
+                'required' => false,
                 'attr' => [
                     'class' => 'form-control',
                     'rows' => 5,
-                    'placeholder' => 'Definieren Sie den Geltungsbereich des ISMS...',
+                    'placeholder' => 'Definieren Sie den Geltungsbereich des ISMS (z.B. Abteilungen, Standorte, Prozesse)...'
                 ],
-                'help' => 'ISO 27001 Clause 4.3: Definieren Sie Grenzen und Anwendbarkeit des ISMS',
-                'constraints' => [
-                    new NotBlank(),
-                ],
+                'help' => 'ISO 27001 Clause 4.3: Definieren Sie Grenzen und Anwendbarkeit des ISMS'
             ])
-            ->add('contextType', ChoiceType::class, [
-                'label' => 'Kontext-Typ',
-                'choices' => [
-                    'Interner Kontext' => 'internal',
-                    'Externer Kontext' => 'external',
-                    'Interessierte Partei' => 'interested_party',
-                    'Rechtliche Anforderung' => 'legal_requirement',
-                    'Regulatorische Anforderung' => 'regulatory_requirement',
-                    'Vertragliche Anforderung' => 'contractual_requirement',
-                ],
-                'attr' => ['class' => 'form-select'],
-            ])
-            ->add('name', TextType::class, [
-                'label' => 'Name / Titel',
-                'attr' => [
-                    'class' => 'form-control',
-                    'placeholder' => 'z.B. DSGVO, Cloud-Computing Strategie, etc.',
-                ],
-                'constraints' => [
-                    new NotBlank(),
-                ],
-            ])
-            ->add('description', TextareaType::class, [
-                'label' => 'Beschreibung',
-                'required' => false,
-                'attr' => [
-                    'class' => 'form-control',
-                    'rows' => 4,
-                ],
-                'help' => 'Detaillierte Beschreibung des Kontexts oder der Anforderung',
-            ])
-            ->add('requirements', TextareaType::class, [
-                'label' => 'Anforderungen',
-                'required' => false,
-                'attr' => [
-                    'class' => 'form-control',
-                    'rows' => 4,
-                ],
-                'help' => 'Spezifische Anforderungen die sich aus diesem Kontext ergeben',
-            ])
-            ->add('impact', ChoiceType::class, [
-                'label' => 'Auswirkung auf ISMS',
-                'choices' => [
-                    'Sehr hoch' => 'very_high',
-                    'Hoch' => 'high',
-                    'Mittel' => 'medium',
-                    'Niedrig' => 'low',
-                    'Sehr niedrig' => 'very_low',
-                ],
-                'attr' => ['class' => 'form-select'],
-            ])
-            ->add('status', ChoiceType::class, [
-                'label' => 'Status',
-                'choices' => [
-                    'Aktiv' => 'active',
-                    'In Bearbeitung' => 'in_progress',
-                    'Abgeschlossen' => 'completed',
-                    'Überholt' => 'obsolete',
-                ],
-                'attr' => ['class' => 'form-select'],
-            ])
-            ->add('interestedPartyName', TextType::class, [
-                'label' => 'Name der interessierten Partei',
-                'required' => false,
-                'attr' => [
-                    'class' => 'form-control',
-                    'placeholder' => 'z.B. Kunden, Regulierungsbehörden, Lieferanten, etc.',
-                ],
-                'help' => 'Relevant wenn contextType = "interested_party"',
-            ])
-            ->add('interestedPartyExpectations', TextareaType::class, [
-                'label' => 'Erwartungen der interessierten Partei',
+            ->add('scopeExclusions', TextareaType::class, [
+                'label' => 'Ausschlüsse vom Geltungsbereich',
                 'required' => false,
                 'attr' => [
                     'class' => 'form-control',
                     'rows' => 3,
+                    'placeholder' => 'Bereiche, die ausdrücklich vom ISMS ausgeschlossen sind...'
                 ],
-                'help' => 'Was erwartet diese Partei vom ISMS?',
+                'help' => 'Begründen Sie, warum bestimmte Bereiche ausgeschlossen werden'
             ])
             ->add('externalIssues', TextareaType::class, [
                 'label' => 'Externe Themen',
@@ -120,8 +56,9 @@ class ISMSContextType extends AbstractType
                 'attr' => [
                     'class' => 'form-control',
                     'rows' => 4,
+                    'placeholder' => 'Gesetzliche, technologische, wettbewerbliche, kulturelle und wirtschaftliche Themen...'
                 ],
-                'help' => 'ISO 27001 Clause 4.1: Externe Themen (gesetzlich, technologisch, wettbewerblich, etc.)',
+                'help' => 'ISO 27001 Clause 4.1: Externe Faktoren, die das ISMS beeinflussen'
             ])
             ->add('internalIssues', TextareaType::class, [
                 'label' => 'Interne Themen',
@@ -129,17 +66,99 @@ class ISMSContextType extends AbstractType
                 'attr' => [
                     'class' => 'form-control',
                     'rows' => 4,
+                    'placeholder' => 'Organisationskultur, Werte, Wissen, Performance, Ressourcen...'
                 ],
-                'help' => 'ISO 27001 Clause 4.1: Interne Themen (Werte, Kultur, Wissen, Performance, etc.)',
+                'help' => 'ISO 27001 Clause 4.1: Interne Faktoren, die das ISMS beeinflussen'
             ])
-            ->add('notes', TextareaType::class, [
-                'label' => 'Notizen',
+            ->add('interestedParties', TextareaType::class, [
+                'label' => 'Interessierte Parteien',
+                'required' => false,
+                'attr' => [
+                    'class' => 'form-control',
+                    'rows' => 4,
+                    'placeholder' => 'Kunden, Regulierungsbehörden, Lieferanten, Mitarbeiter, Aktionäre...'
+                ],
+                'help' => 'ISO 27001 Clause 4.2: Stakeholder, die Anforderungen an das ISMS stellen'
+            ])
+            ->add('interestedPartiesRequirements', TextareaType::class, [
+                'label' => 'Anforderungen interessierter Parteien',
+                'required' => false,
+                'attr' => [
+                    'class' => 'form-control',
+                    'rows' => 4,
+                    'placeholder' => 'Welche Anforderungen stellen die interessierten Parteien?'
+                ],
+                'help' => 'Spezifische Anforderungen der Stakeholder bezüglich Informationssicherheit'
+            ])
+            ->add('legalRequirements', TextareaType::class, [
+                'label' => 'Rechtliche Anforderungen',
                 'required' => false,
                 'attr' => [
                     'class' => 'form-control',
                     'rows' => 3,
+                    'placeholder' => 'DSGVO, IT-Sicherheitsgesetz, KRITIS, etc.'
                 ],
-            ]);
+                'help' => 'Gesetzliche Verpflichtungen und rechtliche Rahmenbedingungen'
+            ])
+            ->add('regulatoryRequirements', TextareaType::class, [
+                'label' => 'Regulatorische Anforderungen',
+                'required' => false,
+                'attr' => [
+                    'class' => 'form-control',
+                    'rows' => 3,
+                    'placeholder' => 'Branchenspezifische Vorschriften, Standards, etc.'
+                ],
+                'help' => 'Regulatorische Vorgaben und Branchenstandards'
+            ])
+            ->add('contractualObligations', TextareaType::class, [
+                'label' => 'Vertragliche Verpflichtungen',
+                'required' => false,
+                'attr' => [
+                    'class' => 'form-control',
+                    'rows' => 3,
+                    'placeholder' => 'SLAs, Vertraulichkeitsvereinbarungen, Kundenverträge...'
+                ],
+                'help' => 'Vertragliche Anforderungen an Informationssicherheit'
+            ])
+            ->add('ismsPolicy', TextareaType::class, [
+                'label' => 'ISMS-Richtlinie',
+                'required' => false,
+                'attr' => [
+                    'class' => 'form-control',
+                    'rows' => 6,
+                    'placeholder' => 'Übergeordnete Informationssicherheitsrichtlinie der Organisation...'
+                ],
+                'help' => 'ISO 27001 Clause 5.2: Festlegung der Informationssicherheitsrichtlinie'
+            ])
+            ->add('rolesAndResponsibilities', TextareaType::class, [
+                'label' => 'Rollen und Verantwortlichkeiten',
+                'required' => false,
+                'attr' => [
+                    'class' => 'form-control',
+                    'rows' => 5,
+                    'placeholder' => 'ISMS-Verantwortlicher, Informationssicherheitsbeauftragter, etc.'
+                ],
+                'help' => 'ISO 27001 Clause 5.3: Definition von Rollen und Verantwortlichkeiten im ISMS'
+            ])
+            ->add('lastReviewDate', DateType::class, [
+                'label' => 'Letztes Überprüfungsdatum',
+                'required' => false,
+                'widget' => 'single_text',
+                'attr' => [
+                    'class' => 'form-control'
+                ],
+                'help' => 'Wann wurde der ISMS-Kontext zuletzt überprüft?'
+            ])
+            ->add('nextReviewDate', DateType::class, [
+                'label' => 'Nächstes Überprüfungsdatum',
+                'required' => false,
+                'widget' => 'single_text',
+                'attr' => [
+                    'class' => 'form-control'
+                ],
+                'help' => 'Wann soll die nächste Überprüfung stattfinden? (Empfohlen: jährlich)'
+            ])
+        ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void

@@ -132,12 +132,9 @@ class ISMSObjectiveType extends AbstractType
                     'class' => 'form-control',
                 ],
                 'constraints' => [
-                    new Assert\NotBlank(['message' => 'Bitte geben Sie ein Zieldatum an.']),
-                    new Assert\GreaterThan([
-                        'value' => 'today',
-                        'message' => 'Das Zieldatum sollte in der Zukunft liegen.'
-                    ])
-                ]
+                    new Assert\NotBlank(['message' => 'Bitte geben Sie ein Zieldatum an.'])
+                ],
+                'help' => 'Zieldatum für die Erreichung des Ziels'
             ])
             ->add('status', ChoiceType::class, [
                 'label' => 'Status',
