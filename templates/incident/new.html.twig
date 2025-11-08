@@ -1,12 +1,12 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Report New Incident{% endblock %}
+{% block title %}{{ 'incident.new'|trans }} - {{ parent() }}{% endblock %}
 
 {% block body %}
 <div class="container">
     <div class="page-header">
-        <h1>Report New Incident</h1>
-        <a href="{{ path('app_incident_index') }}" class="btn btn-secondary">Back to Incidents</a>
+        <h1><i class="bi bi-plus-circle"></i> {{ 'incident.new'|trans }}</h1>
+        <a href="{{ path('app_incident_index') }}" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> {{ 'common.back'|trans }}</a>
     </div>
 
     <div class="card">
@@ -36,7 +36,7 @@
                         {{ form_label(form.severity) }}
                         {{ form_widget(form.severity) }}
                         {{ form_errors(form.severity) }}
-                        <small class="help-text">Critical/High incidents will trigger email notifications</small>
+                        <small class="help-text">{{ 'incident.severity_help'|trans }}</small>
                     </div>
                     <div class="form-group">
                         {{ form_label(form.status) }}
@@ -75,8 +75,8 @@
                 </div>
 
                 <div class="form-actions">
-                    <button type="submit" class="btn btn-primary">Report Incident</button>
-                    <a href="{{ path('app_incident_index') }}" class="btn btn-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> {{ 'incident.create'|trans }}</button>
+                    <a href="{{ path('app_incident_index') }}" class="btn btn-secondary"><i class="bi bi-x-circle"></i> {{ 'common.cancel'|trans }}</a>
                 </div>
             {{ form_end(form) }}
         </div>
