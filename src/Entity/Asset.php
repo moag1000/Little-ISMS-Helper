@@ -157,7 +157,7 @@ class Asset
         $this->risks = new ArrayCollection();
         $this->incidents = new ArrayCollection();
         $this->protectingControls = new ArrayCollection();
-        $this->createdAt = new \DateTime();
+        $this->createdAt = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -398,7 +398,7 @@ class Asset
 
         // Incidents impact (recent incidents = higher risk)
         $recentIncidents = $this->incidents->filter(function($i) {
-            $sixMonthsAgo = new \DateTime('-6 months');
+            $sixMonthsAgo = new \DateTimeImmutable('-6 months');
             return $i->getDetectedAt() >= $sixMonthsAgo;
         })->count();
         $score += $recentIncidents * 10;

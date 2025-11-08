@@ -211,8 +211,8 @@ class Incident
         $this->relatedControls = new ArrayCollection();
         $this->affectedAssets = new ArrayCollection();
         $this->realizedRisks = new ArrayCollection();
-        $this->createdAt = new \DateTime();
-        $this->detectedAt = new \DateTime();
+        $this->createdAt = new \DateTimeImmutable();
+        $this->detectedAt = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
