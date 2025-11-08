@@ -21,6 +21,10 @@ security:
             lazy: true
             provider: app_user_provider
 
+            # Security: Session fixation protection
+            # Regenerate session ID on login to prevent session fixation attacks (OWASP A07:2021)
+            invalidate_session: true
+
             # Form login for local users
             form_login:
                 login_path: app_login
@@ -34,6 +38,8 @@ security:
             logout:
                 path: app_logout
                 target: app_login
+                # Security: Invalidate session on logout
+                invalidate_session: true
 
             # Custom authenticators for Azure OAuth and SAML
             custom_authenticators:
@@ -50,8 +56,12 @@ security:
                 lifetime: 604800 # 1 week in seconds
                 path: /
                 always_remember_me: false
+                # Security: Use secure and httponly cookies
+                secure: true
+                httponly: true
+                samesite: 'strict'
 
-            # Allow user impersonation
+            # Allow user impersonation (for admins)
             switch_user: true
 
     # Role hierarchy - higher roles inherit permissions from lower roles
