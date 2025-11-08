@@ -333,6 +333,7 @@ crontab -e
 | Phase 3 | ✅ 100% | [User Management, Security, RBAC](docs/PHASE3_COMPLETENESS_REPORT.md) |
 | Phase 4 | ✅ 100% | [CRUD, Workflows, Risk Matrix](docs/PHASE4_COMPLETENESS_REPORT.md) |
 | Phase 5 | ✅ 100% | [Reports, API, Notifications](docs/PHASE5_COMPLETENESS_REPORT.md) |
+| **Phase 6** | 🚧 ~70% | **[Module Completeness Audit](docs/MODULE_COMPLETENESS_AUDIT.md)** |
 
 ### UI/UX
 
@@ -432,7 +433,52 @@ crontab -e
 - ✅ Premium Features (Dark Mode, Global Search, Quick View)
 - ⏸️ Document Management (Foundation, deferred)
 
-### 🚧 Phase 6: Enterprise Features (In Entwicklung)
+### 🚧 Phase 6: Module Completeness & Quality Assurance (In Entwicklung)
+
+**Status:** Vollständigkeitsaudit durchgeführt am 2025-11-08
+- **Durchschnittliche Vollständigkeit:** ~70%
+- **Kritische Lücken identifiziert:** 8 fehlende Form Types, 70% Module ohne Tests
+- **Siehe:** [MODULE_COMPLETENESS_AUDIT.md](docs/MODULE_COMPLETENESS_AUDIT.md)
+
+#### 🔥 Phase 6A: Form Types (Priorität KRITISCH)
+- 🔄 ISMSObjectiveType (Controller existiert bereits)
+- 🔄 WorkflowType, WorkflowInstanceType
+- 🔄 ComplianceFrameworkType, ComplianceRequirementType, ComplianceMappingType
+- 📋 **Aufwand:** 1-2 Tage | **Impact:** Hoch
+
+#### 🧪 Phase 6B: Test Coverage (Priorität KRITISCH)
+- 🔄 Entity Tests für 17 Module ohne Tests
+- 🔄 Controller Tests für kritische Module
+- 🔄 Service Tests für Business Logic
+- 🔄 Ziel: Test Coverage von 26% auf 80%+
+- 📋 **Aufwand:** 3-4 Tage | **Impact:** Sehr hoch
+
+#### 🔧 Phase 6C: Workflow-Management (Priorität WICHTIG)
+- 🔄 Workflow CRUD vervollständigen (aktuell nur 35%)
+- 🔄 WorkflowInstance CRUD vervollständigen (aktuell nur 30%)
+- 🔄 Templates erstellen (6+ neue Templates)
+- 🔄 Tests implementieren
+- 📋 **Aufwand:** 2-3 Tage | **Impact:** Hoch
+
+#### 📊 Phase 6D: Compliance-Detail-Management (Priorität WICHTIG)
+- 🔄 ComplianceFrameworkController (dediziert, vollständiges CRUD)
+- 🔄 ComplianceRequirementController (dediziert, vollständiges CRUD)
+- 🔄 ComplianceMappingController (dediziert, vollständiges CRUD)
+- 🔄 Templates erstellen (12+ neue Templates)
+- 📋 **Aufwand:** 2-3 Tage | **Impact:** Mittel
+
+#### ✨ Phase 6E: Polish & Optimization (Priorität OPTIONAL)
+- 📅 Code-Review und Refactoring
+- 📅 Dokumentation vervollständigen
+- 📅 UX-Verbesserungen
+- 📋 **Aufwand:** 1-2 Tage | **Impact:** Niedrig
+
+**Gesamt-Aufwand Phase 6:** 9-14 Tage
+**Erwartete Vollständigkeit nach Phase 6:** ~95%
+
+---
+
+### 🚀 Phase 7: Enterprise Features (Geplant)
 - ✅ Automated Testing (122 tests, 100% passing)
 - ✅ CI/CD Pipeline (GitHub Actions)
 - ✅ Docker Deployment
@@ -488,16 +534,19 @@ Siehe auch: [CHANGELOG.md](CHANGELOG.md) für detaillierte Versionshistorie
 ## 📊 Projekt-Statistiken
 
 - **Codezeilen:** ~31,650+ LOC
-- **Entities:** 20+ Doctrine Entities
-- **Controllers:** 15+ Controllers
+- **Entities:** 23 Doctrine Entities
+- **Controllers:** 18+ Controllers
 - **Templates:** 80+ Twig Templates
 - **Services:** 12+ Business Logic Services
 - **Commands:** 5+ Console Commands
 - **Tests:** 122 tests, 228 assertions (100% passing)
+  - **Test Coverage:** ~26% (Ziel: 80%+)
+  - **Module mit Tests:** 6/23 (26%)
 - **API Endpoints:** 30 REST Endpoints
 - **Report Types:** 10 (5 PDF + 5 Excel)
 - **Notification Types:** 5 automatisierte Typen
 - **Compliance Frameworks:** 3 (ISO 27001, TISAX, DORA)
+- **Module Vollständigkeit:** ~70% durchschnittlich (siehe [Audit](docs/MODULE_COMPLETENESS_AUDIT.md))
 
 ---
 
