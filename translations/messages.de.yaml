@@ -78,12 +78,13 @@ common:
   date: Datum
   created_at: Erstellt am
   updated_at: Aktualisiert am
+  cancel: Abbrechen
+  back: Zurück
 
-# ISMS Core
+# ISMS Core Terms
 asset: Asset
 risk: Risiko
 control: Maßnahme
-incident: Vorfall
 audit: Audit
 framework: Framework
 requirement: Anforderung
