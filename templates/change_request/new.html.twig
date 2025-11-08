@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Change Request{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="page-header">
+        <h1>Create New Change Request</h1>
+        <a href="{{ path('app_change_request_index') }}" class="btn btn-secondary">Back</a>
+    </div>
+
+    <div class="card">
+        <div class="card-content">
+            {{ form_start(form) }}
+                {{ form_row(form.changeNumber) }}
+                {{ form_row(form.title) }}
+                {{ form_row(form.changeType) }}
+                {{ form_row(form.description) }}
+                {{ form_row(form.justification) }}
+                {{ form_row(form.requestedBy) }}
+                {{ form_row(form.requestedDate) }}
+                {{ form_row(form.priority) }}
+                {{ form_row(form.status) }}
+                {{ form_row(form.ismsImpact) }}
+                {{ form_row(form.riskAssessment) }}
+                {{ form_row(form.implementationPlan) }}
+                {{ form_row(form.rollbackPlan) }}
+                {{ form_row(form.testingRequirements) }}
+                {{ form_row(form.plannedImplementationDate) }}
+                {{ form_row(form.actualImplementationDate) }}
+                {{ form_row(form.approvedBy) }}
+                {{ form_row(form.approvedDate) }}
+                {{ form_row(form.approvalComments) }}
+                {{ form_row(form.implementedBy) }}
+                {{ form_row(form.implementationNotes) }}
+                {{ form_row(form.verifiedBy) }}
+                {{ form_row(form.verifiedDate) }}
+                {{ form_row(form.verificationResults) }}
+                {{ form_row(form.closedDate) }}
+                {{ form_row(form.closureNotes) }}
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Create Change Request</button>
+                    <a href="{{ path('app_change_request_index') }}" class="btn btn-secondary">Cancel</a>
+                </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>
+{% endblock %}
