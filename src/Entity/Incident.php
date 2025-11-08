@@ -176,6 +176,49 @@ class Incident
     #[Assert\NotNull(message: 'Notification required flag is required')]
     private ?bool $notificationRequired = false;
 
+    /**
+     * NIS2 Art. 23 - Early Warning Report (within 24 hours)
+     */
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    #[Groups(['incident:read', 'incident:write'])]
+    private ?\DateTimeImmutable $earlyWarningReportedAt = null;
+
+    /**
+     * NIS2 Art. 23 - Detailed Notification (within 72 hours)
+     */
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    #[Groups(['incident:read', 'incident:write'])]
+    private ?\DateTimeImmutable $detailedNotificationReportedAt = null;
+
+    /**
+     * NIS2 Art. 23 - Final Report (within 1 month)
+     */
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    #[Groups(['incident:read', 'incident:write'])]
+    private ?\DateTimeImmutable $finalReportSubmittedAt = null;
+
+    /**
+     * NIS2 Incident Category
+     * - operational: Operational disruption
+     * - security: Security breach/compromise
+     * - privacy: Privacy/data protection incident
+     * - availability: Availability incident
+     */
+    #[ORM\Column(length: 30, nullable: true)]
+    #[Groups(['incident:read', 'incident:write'])]
+    #[Assert\Choice(
+        choices: ['operational', 'security', 'privacy', 'availability'],
+        message: 'NIS2 category must be one of: {{ choices }}'
+    )]
+    private ?string $nis2Category = null;
+
+    /**
+     * NIS2 - Does this incident have cross-border impact?
+     */
+    #[ORM\Column(type: Types::BOOLEAN)]
+    #[Groups(['incident:read', 'incident:write'])]
+    private bool $crossBorderImpact = false;
+
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Groups(['incident:read'])]
     private ?\DateTimeInterface $createdAt = null;
@@ -541,6 +584,120 @@ class Incident
     {
         $this->realizedRisks->removeElement($risk);
         return $this;
+    }
+
+    public function getEarlyWarningReportedAt(): ?\DateTimeImmutable
+    {
+        return $this->earlyWarningReportedAt;
+    }
+
+    public function setEarlyWarningReportedAt(?\DateTimeImmutable $earlyWarningReportedAt): static
+    {
+        $this->earlyWarningReportedAt = $earlyWarningReportedAt;
+        return $this;
+    }
+
+    public function getDetailedNotificationReportedAt(): ?\DateTimeImmutable
+    {
+        return $this->detailedNotificationReportedAt;
+    }
+
+    public function setDetailedNotificationReportedAt(?\DateTimeImmutable $detailedNotificationReportedAt): static
+    {
+        $this->detailedNotificationReportedAt = $detailedNotificationReportedAt;
+        return $this;
+    }
+
+    public function getFinalReportSubmittedAt(): ?\DateTimeImmutable
+    {
+        return $this->finalReportSubmittedAt;
+    }
+
+    public function setFinalReportSubmittedAt(?\DateTimeImmutable $finalReportSubmittedAt): static
+    {
+        $this->finalReportSubmittedAt = $finalReportSubmittedAt;
+        return $this;
+    }
+
+    public function getNis2Category(): ?string
+    {
+        return $this->nis2Category;
+    }
+
+    public function setNis2Category(?string $nis2Category): static
+    {
+        $this->nis2Category = $nis2Category;
+        return $this;
+    }
+
+    public function isCrossBorderImpact(): bool
+    {
+        return $this->crossBorderImpact;
+    }
+
+    public function setCrossBorderImpact(bool $crossBorderImpact): static
+    {
+        $this->crossBorderImpact = $crossBorderImpact;
+        return $this;
+    }
+
+    /**
+     * Check NIS2 Art. 23 compliance - Early Warning (24h)
+     */
+    #[Groups(['incident:read'])]
+    public function isEarlyWarningCompliant(): bool
+    {
+        if ($this->earlyWarningReportedAt === null) {
+            return false;
+        }
+
+        $deadline = $this->detectedAt->modify('+24 hours');
+        return $this->earlyWarningReportedAt <= $deadline;
+    }
+
+    /**
+     * Check NIS2 Art. 23 compliance - Detailed Notification (72h)
+     */
+    #[Groups(['incident:read'])]
+    public function isDetailedNotificationCompliant(): bool
+    {
+        if ($this->detailedNotificationReportedAt === null) {
+            return false;
+        }
+
+        $deadline = $this->detectedAt->modify('+72 hours');
+        return $this->detailedNotificationReportedAt <= $deadline;
+    }
+
+    /**
+     * Check NIS2 Art. 23 compliance - Final Report (1 month)
+     */
+    #[Groups(['incident:read'])]
+    public function isFinalReportCompliant(): bool
+    {
+        if ($this->finalReportSubmittedAt === null) {
+            return false;
+        }
+
+        $deadline = $this->detectedAt->modify('+1 month');
+        return $this->finalReportSubmittedAt <= $deadline;
+    }
+
+    /**
+     * Get NIS2 reporting status
+     */
+    #[Groups(['incident:read'])]
+    public function getNis2ReportingStatus(): string
+    {
+        if ($this->finalReportSubmittedAt !== null) {
+            return $this->isFinalReportCompliant() ? 'complete' : 'late';
+        } elseif ($this->detailedNotificationReportedAt !== null) {
+            return $this->isDetailedNotificationCompliant() ? 'detailed_submitted' : 'late';
+        } elseif ($this->earlyWarningReportedAt !== null) {
+            return $this->isEarlyWarningCompliant() ? 'early_warning_submitted' : 'late';
+        } else {
+            return 'pending';
+        }
     }
 
     /**
