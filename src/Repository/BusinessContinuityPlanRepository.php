@@ -54,4 +54,44 @@ class BusinessContinuityPlanRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * Get BC plan statistics
+     */
+    public function getStatistics(): array
+    {
+        $total = $this->createQueryBuilder('p')
+            ->select('COUNT(p.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        $active = $this->createQueryBuilder('p')
+            ->select('COUNT(p.id)')
+            ->where('p.status = :active')
+            ->setParameter('active', 'active')
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        $overdueTests = $this->createQueryBuilder('p')
+            ->select('COUNT(p.id)')
+            ->where('p.nextTestDate < :now OR (p.lastTested IS NULL AND p.status = :active)')
+            ->setParameter('now', new \DateTime())
+            ->setParameter('active', 'active')
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        $overdueReviews = $this->createQueryBuilder('p')
+            ->select('COUNT(p.id)')
+            ->where('p.nextReviewDate < :now')
+            ->setParameter('now', new \DateTime())
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        return [
+            'total' => $total,
+            'active' => $active,
+            'overdue_tests' => $overdueTests,
+            'overdue_reviews' => $overdueReviews
+        ];
+    }
 }
