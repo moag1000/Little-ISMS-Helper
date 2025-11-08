@@ -150,7 +150,7 @@ class Training
     public function __construct()
     {
         $this->coveredControls = new ArrayCollection();
-        $this->createdAt = new \DateTime();
+        $this->createdAt = new \DateTimeImmutable();
     }
 
     public function getId(): ?int

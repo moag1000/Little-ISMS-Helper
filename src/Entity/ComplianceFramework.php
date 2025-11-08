@@ -58,7 +58,7 @@ class ComplianceFramework
     public function __construct()
     {
         $this->requirements = new ArrayCollection();
-        $this->createdAt = new \DateTime();
+        $this->createdAt = new \DateTimeImmutable();
     }
 
     public function getId(): ?int

@@ -92,7 +92,7 @@ class ComplianceRequirement
     {
         $this->mappedControls = new ArrayCollection();
         $this->detailedRequirements = new ArrayCollection();
-        $this->createdAt = new \DateTime();
+        $this->createdAt = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
