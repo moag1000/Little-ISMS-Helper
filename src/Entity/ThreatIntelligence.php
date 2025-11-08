@@ -9,6 +9,8 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Delete;
 use App\Repository\ThreatIntelligenceRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -67,9 +69,17 @@ class ThreatIntelligence
     #[Groups(['threat:read', 'threat:write'])]
     private ?string $cveId = null;
 
+    // Legacy field - kept for backward compatibility
+    // @deprecated Use $affectedAssets instead
     #[ORM\Column(type: Types::JSON, nullable: true)]
     #[Groups(['threat:read', 'threat:write'])]
     private ?array $affectedSystems = null;
+
+    // New relationship for data reuse
+    #[ORM\ManyToMany(targetEntity: Asset::class)]
+    #[ORM\JoinTable(name: 'threat_intelligence_affected_assets')]
+    #[Groups(['threat:read', 'threat:write'])]
+    private Collection $affectedAssets;
 
     #[ORM\Column(type: Types::JSON, nullable: true)]
     #[Groups(['threat:read', 'threat:write'])]
@@ -129,6 +139,7 @@ class ThreatIntelligence
     {
         $this->createdAt = new \DateTime();
         $this->detectionDate = new \DateTime();
+        $this->affectedAssets = new ArrayCollection();
     }
 
     // Getters and Setters
@@ -355,6 +366,30 @@ class ThreatIntelligence
     public function setTenant(?Tenant $tenant): static
     {
         $this->tenant = $tenant;
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Asset>
+     */
+    public function getAffectedAssets(): Collection
+    {
+        return $this->affectedAssets;
+    }
+
+    public function addAffectedAsset(Asset $asset): static
+    {
+        if (!$this->affectedAssets->contains($asset)) {
+            $this->affectedAssets->add($asset);
+        }
+
+        return $this;
+    }
+
+    public function removeAffectedAsset(Asset $asset): static
+    {
+        $this->affectedAssets->removeElement($asset);
+
         return $this;
     }
 }

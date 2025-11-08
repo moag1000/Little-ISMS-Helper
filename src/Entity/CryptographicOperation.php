@@ -65,6 +65,12 @@ class CryptographicOperation
     #[Groups(['crypto:read'])]
     private ?User $user = null;
 
+    // New relationship for data reuse
+    #[ORM\ManyToOne(targetEntity: Asset::class)]
+    #[ORM\JoinColumn(nullable: true)]
+    #[Groups(['crypto:read', 'crypto:write'])]
+    private ?Asset $relatedAsset = null;
+
     #[ORM\Column(length: 255, nullable: true)]
     #[Groups(['crypto:read', 'crypto:write'])]
     private ?string $applicationComponent = null;
@@ -270,6 +276,17 @@ class CryptographicOperation
     public function setTenant(?Tenant $tenant): static
     {
         $this->tenant = $tenant;
+        return $this;
+    }
+
+    public function getRelatedAsset(): ?Asset
+    {
+        return $this->relatedAsset;
+    }
+
+    public function setRelatedAsset(?Asset $relatedAsset): static
+    {
+        $this->relatedAsset = $relatedAsset;
         return $this;
     }
 }
