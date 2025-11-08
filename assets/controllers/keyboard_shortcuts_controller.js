@@ -64,17 +64,9 @@ export default class extends Controller {
             return;
         }
 
-        // Handle ? key for help
-        if (event.key === '?' && !this.isInputFocused()) {
-            event.preventDefault();
-            this.show();
-            return;
-        }
-
-        // Handle Escape
+        // Handle Escape (handled by ModalManager, so we can skip this)
         if (event.key === 'Escape') {
-            this.closeModals();
-            return;
+            return;  // Let ModalManager handle it
         }
 
         // Single key shortcuts (when not in input)
