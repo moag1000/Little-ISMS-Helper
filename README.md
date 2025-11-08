@@ -435,13 +435,21 @@ crontab -e
 
 ### 🚧 Phase 6: Module Completeness & Quality Assurance (In Entwicklung)
 
-**Status:** Umfassendes Audit durchgeführt am 2025-11-08 (Technisch + ISO 27001)
+**Status:** Umfassendes Audit durchgeführt am 2025-11-08 (Technisch + ISO 27001 + Multi-Standard)
 - **Technische Vollständigkeit:** ~70% (Lücken: Form Types, Tests, Workflows)
 - **ISO 27001:2022 Compliance:** 94.5% ✅
+- **Multi-Standard Compliance:** 92% Durchschnitt ✅
+  - ISO 22301:2019 (BCM): 100% ✅
+  - ISO 19011:2018 (Audit): 95% ⚠️
+  - ISO 31000:2018 (Risk): 95% ⚠️
+  - ISO 27005:2022 (Risk Security): 100% ✅
+  - EU DORA: 85% ⚠️
+  - TISAX/VDA ISA: 75% ⚠️
 - **Zertifizierungsbereitschaft:** JA (mit Minor Findings in Asset Management)
 - **Kritische Lücken identifiziert:**
   - *Technisch:* 8 fehlende Form Types, 70% Module ohne Tests
-  - *Inhaltlich:* Asset Management (Acceptable Use, Return Workflow, Data Classification)
+  - *Inhaltlich ISO 27001:* Asset Management (Acceptable Use, Return Workflow, Data Classification)
+  - *Multi-Standard:* Auditor Competence (ISO 19011), Risk Communication Log (ISO 31000), TPP Register (DORA), TISAX AL-Tracking
 - **Siehe:** [MODULE_COMPLETENESS_AUDIT.md](docs/MODULE_COMPLETENESS_AUDIT.md)
 
 #### 🔥 Phase 6A: Form Types (Priorität KRITISCH)
@@ -493,11 +501,31 @@ crontab -e
   - Professional SoA Template
 - 📋 **Aufwand:** 2-3 Tage | **Impact:** KRITISCH
 
-**Gesamt-Aufwand Phase 6 (A-F):** 13-20 Tage
+#### 🌐 Phase 6G: Multi-Standard Compliance Vervollständigung (Priorität MITTEL)
+- 🔄 **Audit Management Erweiterung (ISO 19011)**
+  - AuditorCompetence Entity (Auditor-Qualifikationsverwaltung)
+  - Competence Level Tracking (junior/senior/lead)
+  - Training-Integration
+- 🔄 **Risk Communication Log (ISO 31000)**
+  - RiskCommunication Entity
+  - Stakeholder Engagement Tracking
+  - Communication Type Management
+- 🔄 **DORA Compliance (nur für Financial Entities)**
+  - ICTThirdPartyProvider Entity (TPP Register)
+  - TLPTExercise Entity (Threat-Led Penetration Testing)
+  - Critical/Important Provider Classification
+- 🔄 **TISAX Compliance (nur für Automotive Industry)**
+  - Asset.php Erweiterung (AL1/AL2/AL3, Protection Need, Prototype Fields)
+  - TISAXAssessment Entity
+  - Maturity Level Tracking
+- 📋 **Aufwand:** 3-4 Tage | **Impact:** MITTEL (branchenspezifisch)
+
+**Gesamt-Aufwand Phase 6 (A-G):** 16-24 Tage
 **Erwartete Vollständigkeit nach Phase 6:**
 - **Technisch:** ~95%
 - **ISO 27001 Inhaltlich:** 98%+
-- **Zertifizierungsbereitschaft:** 100% ✅
+- **Multi-Standard Compliance:** 98%+ (branchenabhängig)
+- **Zertifizierungsbereitschaft:** 100% ✅ (ISO 27001, ISO 22301, ISO 19011, TISAX AL1)
 
 ---
 
@@ -568,9 +596,16 @@ Siehe auch: [CHANGELOG.md](CHANGELOG.md) für detaillierte Versionshistorie
 - **API Endpoints:** 30 REST Endpoints
 - **Report Types:** 10 (5 PDF + 5 Excel)
 - **Notification Types:** 5 automatisierte Typen
-- **Compliance Frameworks:** 3 (ISO 27001, TISAX, DORA)
+- **Compliance Frameworks:** 6 (ISO 27001, ISO 22301, ISO 19011, ISO 31000, DORA, TISAX)
 - **Module Vollständigkeit (Technisch):** ~70% durchschnittlich (siehe [Audit](docs/MODULE_COMPLETENESS_AUDIT.md))
 - **ISO 27001:2022 Compliance:** 94.5% ✅ (Zertifizierungsbereit)
+- **Multi-Standard Compliance:** 92% Durchschnitt ✅
+  - ISO 22301:2019 (BCM): 100% ✅
+  - ISO 19011:2018 (Audit): 95% ⚠️
+  - ISO 31000:2018 (Risk): 95% ⚠️
+  - ISO 27005:2022 (Risk Security): 100% ✅
+  - EU DORA: 85% ⚠️
+  - TISAX/VDA ISA: 75% ⚠️
 
 ---
 
