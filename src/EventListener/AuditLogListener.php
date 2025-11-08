@@ -165,17 +165,29 @@ class AuditLogListener
             $auditLog->setUser($user);
         }
 
-        // Set values
+        // Set values (serialize arrays to JSON strings)
         if (isset($changeset['old_values'])) {
-            $auditLog->setOldValues($changeset['old_values']);
+            $auditLog->setOldValues(
+                is_array($changeset['old_values'])
+                    ? json_encode($changeset['old_values'], JSON_UNESCAPED_UNICODE)
+                    : $changeset['old_values']
+            );
         }
 
         if (isset($changeset['new_values'])) {
-            $auditLog->setNewValues($changeset['new_values']);
+            $auditLog->setNewValues(
+                is_array($changeset['new_values'])
+                    ? json_encode($changeset['new_values'], JSON_UNESCAPED_UNICODE)
+                    : $changeset['new_values']
+            );
         }
 
         if (isset($changeset['changed_fields'])) {
-            $auditLog->setChangedFields($changeset['changed_fields']);
+            $auditLog->setChangedFields(
+                is_array($changeset['changed_fields'])
+                    ? json_encode($changeset['changed_fields'], JSON_UNESCAPED_UNICODE)
+                    : $changeset['changed_fields']
+            );
         }
 
         // Set request information
