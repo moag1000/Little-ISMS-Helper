@@ -1,4 +1,17 @@
-controllers:
+# Security routes WITHOUT locale prefix (for cleaner URLs and better access control)
+security_routes:
+    resource:
+        path: ../src/Controller/SecurityController.php
+        namespace: App\Controller
+    type: attribute
+
+# Root redirect - smart locale detection
+root:
+    path: /
+    controller: App\Controller\HomeController::index
+
+# App routes WITH locale prefix
+app_routes:
     resource:
         path: ../src/Controller/
         namespace: App\Controller
@@ -8,3 +21,4 @@ controllers:
         _locale: de|en
     defaults:
         _locale: de
+    exclude: '../src/Controller/SecurityController.php'
