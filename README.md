@@ -292,6 +292,9 @@ crontab -e
 | [Authentication Setup](docs/AUTHENTICATION_SETUP.md) | RBAC, Azure OAuth/SAML, Multi-Provider |
 | [Audit Logging](docs/AUDIT_LOGGING.md) | Automatische Änderungsverfolgung |
 | [Deployment Wizard](DEPLOYMENT_WIZARD.md) | Schritt-für-Schritt Produktionssetup |
+| [Setup Validation](SETUP_VALIDATION.md) | Automatische Validierung der Installation (25 Tests) |
+| [Migration Fix Report](MIGRATION_FIX.md) | Dokumentation von 4 behobenen kritischen Migrations-Fehlern |
+| [Entity-Table Mapping](ENTITY_TABLE_MAPPING.md) | Vollständige Zuordnung aller 23 Entities zu Datenbank-Tabellen |
 
 ### Architecture & Design
 
