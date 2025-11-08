@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="turbo-cache-control" content="no-preview">
     <title>{% block title %}{{ 'app.title'|trans }}{% endblock %}</title>
     <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
 
@@ -11,19 +10,6 @@
         <link rel="stylesheet" href="{{ asset('styles/app.css') }}">
         <link rel="stylesheet" href="{{ asset('styles/components.css') }}">
         <style>
-            /* Turbo Progress Bar */
-            .turbo-progress-bar {
-                position: fixed;
-                display: block;
-                top: 0;
-                left: 0;
-                height: 3px;
-                background: #0d6efd;
-                z-index: 2147483647;
-                transition: width 300ms ease-out, opacity 150ms 150ms ease-in;
-                transform: translate3d(0, 0, 0);
-            }
-
             /* Minimal auth page styling */
             body {
                 min-height: 100vh;
@@ -49,7 +35,7 @@
         </style>
     {% endblock %}
 </head>
-<body data-turbo="true">
+<body>
     <div class="auth-container">
         {% block body %}{% endblock %}
     </div>
@@ -58,8 +44,7 @@
         <p>{{ 'app.footer'|trans }}</p>
     </footer>
 
-    {% block javascripts %}
-        {% block importmap %}{{ importmap('app') }}{% endblock %}
-    {% endblock %}
+    {# No JavaScript needed for authentication pages #}
+    {% block javascripts %}{% endblock %}
 </body>
 </html>
