@@ -56,6 +56,9 @@ export default class extends Controller {
             event.preventDefault();
         }
 
+        // Remove inline style that modal manager might have set
+        this.modalTarget.style.display = '';
+
         // Show modal
         this.modalTarget.classList.remove('d-none');
         this.modalTarget.classList.add('show');
