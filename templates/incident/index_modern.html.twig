@@ -192,7 +192,7 @@
                     <td>
                         <strong>{{ incident.title }}</strong>
                         {% if incident.description %}
-                        <br><small class="text-muted">{{ incident.description|u.truncate(60, '...') }}</small>
+                        <br><small class="text-muted">{{ incident.description|length > 60 ? incident.description|slice(0, 60) ~ '...' : incident.description }}</small>
                         {% endif %}
                         {% if incident.status == 'open' %}
                             <span class="badge bg-danger ms-2">NEU</span>
