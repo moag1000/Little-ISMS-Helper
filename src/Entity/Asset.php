@@ -66,6 +66,12 @@ class Asset
     #[Groups(['asset:read'])]
     private ?Tenant $tenant = null;
 
+    // New relationship for data reuse
+    #[ORM\ManyToOne(targetEntity: Location::class, inversedBy: 'assets')]
+    #[ORM\JoinColumn(nullable: true)]
+    #[Groups(['asset:read', 'asset:write'])]
+    private ?Location $physicalLocation = null;
+
     #[ORM\Column(length: 255)]
     #[Groups(['asset:read', 'asset:write', 'risk:read'])]
     #[Assert\NotBlank(message: 'Asset name is required')]
@@ -88,6 +94,8 @@ class Asset
     #[Assert\Length(max: 100, maxMessage: 'Owner cannot exceed {{ limit }} characters')]
     private ?string $owner = null;
 
+    // Legacy field - kept for backward compatibility
+    // @deprecated Use $physicalLocation instead
     #[ORM\Column(length: 100, nullable: true)]
     #[Groups(['asset:read', 'asset:write'])]
     #[Assert\Length(max: 100, maxMessage: 'Location cannot exceed {{ limit }} characters')]
@@ -433,5 +441,30 @@ class Asset
         // Assets with active risks are high-risk
         $activeRisks = $this->risks->filter(fn($r) => $r->getStatus() === 'active')->count();
         return $activeRisks > 0;
+    }
+
+    public function getPhysicalLocation(): ?Location
+    {
+        return $this->physicalLocation;
+    }
+
+    public function setPhysicalLocation(?Location $physicalLocation): static
+    {
+        $this->physicalLocation = $physicalLocation;
+
+        // Sync legacy field for backward compatibility
+        if ($physicalLocation) {
+            $this->location = $physicalLocation->getName();
+        }
+
+        return $this;
+    }
+
+    /**
+     * Get effective location (from Location entity or legacy field)
+     */
+    public function getEffectiveLocation(): ?string
+    {
+        return $this->physicalLocation?->getName() ?? $this->location;
     }
 }
