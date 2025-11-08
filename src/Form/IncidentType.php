@@ -26,7 +26,7 @@ class IncidentType extends AbstractType
             ])
             ->add('description', TextareaType::class, [
                 'label' => 'incident.field.description',
-                'required' => false,
+                'required' => true,
                 'attr' => [
                     'rows' => 5,
                     'placeholder' => 'incident.placeholder.description',
@@ -67,7 +67,7 @@ class IncidentType extends AbstractType
             ])
             ->add('reportedBy', TextType::class, [
                 'label' => 'incident.field.reported_by',
-                'required' => false,
+                'required' => true,
                 'attr' => [
                     'maxlength' => 100,
                     'placeholder' => 'incident.placeholder.reported_by',
