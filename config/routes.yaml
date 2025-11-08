@@ -6,12 +6,12 @@ security_routes:
     type: attribute
 
 # Root redirect - smart locale detection (without locale)
-root:
+app_home:
     path: /
     controller: App\Controller\HomeController::index
 
-# Dashboard route WITH locale prefix
-dashboard:
+# Dashboard route WITH locale prefix (must match #[Route] name in HomeController)
+app_dashboard:
     path: /{_locale}/dashboard
     controller: App\Controller\HomeController::dashboard
     requirements:
