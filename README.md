@@ -2,6 +2,8 @@
 
 <div align="center">
 
+<img src="public/logo.svg" alt="Little ISMS Helper - Cyberpunk Security Fairy" width="300" />
+
 **Eine moderne, webbasierte ISMS-Lösung für kleine und mittelständische Unternehmen**
 
 [![PHP Version](https://img.shields.io/badge/PHP-8.4%2B-777BB4?logo=php&logoColor=white)](https://www.php.net/)
@@ -28,6 +30,10 @@ Little ISMS Helper unterstützt Organisationen bei der **Implementierung und Ver
 - 🚀 **Modern & schnell** - Symfony 7.3, PHP 8.4, Progressive UI
 - 🔓 **Open Architecture** - REST API für Integrationen
 - 📈 **Automatische KPIs** - Echtzeit-Metriken ohne manuelle Berechnung
+
+### 🎨 Design & Branding
+
+Das **Little ISMS Helper Logo** zeigt eine freundliche Cyberpunk-Fee, die die Mission der Anwendung verkörpert: Ein zugänglicher, moderner Helfer für Cyber Security und ISMS-Management. Die Fee trägt einen leuchtenden Sicherheits-Shield und kombiniert niedliche Elemente mit technischen Details wie Neon-Flügeln, Binärcode und digitalen Effekten – die perfekte Metapher für die Verbindung von Benutzerfreundlichkeit und professioneller Sicherheitstechnologie.
 
 ---
 
