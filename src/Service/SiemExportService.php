@@ -248,8 +248,8 @@ class SiemExportService
 
         $extensions = sprintf(
             'suser=%s cs1=%s cs1Label=Location cs2=%s cs2Label=AccessType cs3=%s cs3Label=AuthMethod outcome=%s rt=%s',
-            $this->sanitizeCefField($access->getPersonName() ?? 'unknown'),
-            $this->sanitizeCefField($access->getLocation() ?? 'unknown'),
+            $this->sanitizeCefField($access->getEffectivePersonName() ?? 'unknown'),
+            $this->sanitizeCefField($access->getEffectiveLocation() ?? 'unknown'),
             $access->getAccessType() ?? 'unknown',
             $access->getAuthenticationMethod() ?? 'unknown',
             $access->isAuthorized() ? 'success' : 'failure',
@@ -364,8 +364,10 @@ class SiemExportService
         return [
             'event_type' => 'physical_access',
             'id' => $access->getId(),
-            'person_name' => $access->getPersonName(),
-            'location' => $access->getLocation(),
+            'person_name' => $access->getEffectivePersonName(),
+            'person_type' => $access->getPerson()?->getPersonType(),
+            'location' => $access->getEffectiveLocation(),
+            'location_type' => $access->getLocationEntity()?->getLocationType(),
             'access_type' => $access->getAccessType(),
             'authentication_method' => $access->getAuthenticationMethod(),
             'authorized' => $access->isAuthorized(),
@@ -441,8 +443,8 @@ class SiemExportService
             ),
             'physical_access' => sprintf('PHYSICAL_ACCESS id=%d person="%s" location="%s" type=%s authorized=%s',
                 $event->getId(),
-                $this->sanitizeSyslogField($event->getPersonName()),
-                $this->sanitizeSyslogField($event->getLocation()),
+                $this->sanitizeSyslogField($event->getEffectivePersonName()),
+                $this->sanitizeSyslogField($event->getEffectiveLocation()),
                 $event->getAccessType(),
                 $event->isAuthorized() ? 'true' : 'false'
             ),

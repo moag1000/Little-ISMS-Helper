@@ -34,18 +34,31 @@ class PhysicalAccessLog
     #[Groups(['physical_access:read'])]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
+    // New relationships for data reuse
+    #[ORM\ManyToOne(targetEntity: Person::class, inversedBy: 'accessLogs')]
+    #[ORM\JoinColumn(nullable: true)]
     #[Groups(['physical_access:read', 'physical_access:write'])]
-    #[Assert\NotBlank]
+    private ?Person $person = null;
+
+    #[ORM\ManyToOne(targetEntity: Location::class, inversedBy: 'accessLogs')]
+    #[ORM\JoinColumn(nullable: true)]
+    #[Groups(['physical_access:read', 'physical_access:write'])]
+    private ?Location $locationEntity = null;
+
+    // Legacy fields - kept for backward compatibility
+    // @deprecated Use $person instead
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['physical_access:read', 'physical_access:write'])]
     private ?string $personName = null;
 
+    // @deprecated Use $person->getBadgeId() instead
     #[ORM\Column(length: 100, nullable: true)]
     #[Groups(['physical_access:read', 'physical_access:write'])]
     private ?string $badgeId = null;
 
-    #[ORM\Column(length: 255)]
+    // @deprecated Use $locationEntity instead
+    #[ORM\Column(length: 255, nullable: true)]
     #[Groups(['physical_access:read', 'physical_access:write'])]
-    #[Assert\NotBlank]
     private ?string $location = null;
 
     #[ORM\Column(length: 50)]
@@ -321,5 +334,57 @@ class PhysicalAccessLog
     {
         $this->createdAt = $createdAt;
         return $this;
+    }
+
+    public function getPerson(): ?Person
+    {
+        return $this->person;
+    }
+
+    public function setPerson(?Person $person): static
+    {
+        $this->person = $person;
+
+        // Sync legacy field for backward compatibility
+        if ($person) {
+            $this->personName = $person->getFullName();
+            $this->badgeId = $person->getBadgeId();
+            $this->company = $person->getCompany();
+        }
+
+        return $this;
+    }
+
+    public function getLocationEntity(): ?Location
+    {
+        return $this->locationEntity;
+    }
+
+    public function setLocationEntity(?Location $locationEntity): static
+    {
+        $this->locationEntity = $locationEntity;
+
+        // Sync legacy field for backward compatibility
+        if ($locationEntity) {
+            $this->location = $locationEntity->getName();
+        }
+
+        return $this;
+    }
+
+    /**
+     * Get effective person name (from Person entity or legacy field)
+     */
+    public function getEffectivePersonName(): ?string
+    {
+        return $this->person?->getFullName() ?? $this->personName;
+    }
+
+    /**
+     * Get effective location name (from Location entity or legacy field)
+     */
+    public function getEffectiveLocation(): ?string
+    {
+        return $this->locationEntity?->getName() ?? $this->location;
     }
 }
