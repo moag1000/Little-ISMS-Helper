@@ -140,7 +140,7 @@
                     <td>
                         <strong>{{ asset.name }}</strong>
                         {% if asset.description %}
-                        <br><small class="text-muted">{{ asset.description|u.truncate(50, '...') }}</small>
+                        <br><small class="text-muted">{{ asset.description|length > 50 ? asset.description|slice(0, 50) ~ '...' : asset.description }}</small>
                         {% endif %}
                     </td>
                     <td>

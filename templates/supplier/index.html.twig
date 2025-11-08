@@ -1,0 +1,120 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Supplier Management{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="page-header">
+        <h1>Supplier Management</h1>
+        <a href="{{ path('app_supplier_new') }}" class="btn btn-primary">Add New Supplier</a>
+    </div>
+
+    {% if statistics %}
+    <div class="info-box">
+        <h3>Statistics</h3>
+        <div class="stats-grid">
+            <div class="stat-item">
+                <span class="stat-label">Total Suppliers:</span>
+                <span class="stat-value">{{ statistics.total }}</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Critical Suppliers:</span>
+                <span class="stat-value critical">{{ statistics.critical }}</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Overdue Assessments:</span>
+                <span class="stat-value warning">{{ statistics.overdue_assessments }}</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Non-Compliant:</span>
+                <span class="stat-value danger">{{ statistics.non_compliant }}</span>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if overdueAssessments|length > 0 %}
+    <div class="alert alert-warning">
+        <h4>⚠️ Overdue Security Assessments</h4>
+        <ul>
+            {% for supplier in overdueAssessments %}
+            <li>
+                <a href="{{ path('app_supplier_show', {id: supplier.id}) }}">{{ supplier.name }}</a>
+                - Next assessment: {{ supplier.nextAssessmentDate ? supplier.nextAssessmentDate|date('Y-m-d') : 'Not scheduled' }}
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    {% if nonCompliant|length > 0 %}
+    <div class="alert alert-danger">
+        <h4>🚨 Non-Compliant Suppliers</h4>
+        <ul>
+            {% for supplier in nonCompliant %}
+            <li>
+                <a href="{{ path('app_supplier_show', {id: supplier.id}) }}">{{ supplier.name }}</a>
+                - Risk Score: {{ supplier.calculateRiskScore() }}
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <div class="card">
+        <div class="card-header">
+            <h2>Suppliers ({{ suppliers|length }})</h2>
+        </div>
+        <div class="card-content">
+            {% if suppliers|length > 0 %}
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Service Provided</th>
+                        <th>Criticality</th>
+                        <th>Status</th>
+                        <th>Risk Score</th>
+                        <th>ISO 27001</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for supplier in suppliers %}
+                    <tr>
+                        <td><a href="{{ path('app_supplier_show', {id: supplier.id}) }}">{{ supplier.name }}</a></td>
+                        <td>{{ supplier.serviceProvided|slice(0, 50) }}...</td>
+                        <td><span class="badge badge-{{ supplier.criticality }}">{{ supplier.criticality|upper }}</span></td>
+                        <td><span class="badge badge-{{ supplier.status }}">{{ supplier.status }}</span></td>
+                        <td>
+                            {% set riskScore = supplier.calculateRiskScore() %}
+                            <span class="badge badge-{{ riskScore > 70 ? 'critical' : (riskScore > 50 ? 'high' : (riskScore > 30 ? 'medium' : 'low')) }}">
+                                {{ riskScore }}
+                            </span>
+                        </td>
+                        <td>{{ supplier.hasISO27001 ? '✓' : '✗' }}</td>
+                        <td>
+                            <a href="{{ path('app_supplier_show', {id: supplier.id}) }}" class="btn btn-sm btn-secondary">View</a>
+                            <a href="{{ path('app_supplier_edit', {id: supplier.id}) }}" class="btn btn-sm btn-primary">Edit</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p>No suppliers found. <a href="{{ path('app_supplier_new') }}">Add your first supplier</a>.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem; }
+.stat-item { display: flex; flex-direction: column; padding: 1rem; background: #f9fafb; border-radius: 4px; }
+.stat-label { font-size: 0.875rem; color: #6b7280; }
+.stat-value { font-size: 1.5rem; font-weight: bold; color: #111827; }
+.stat-value.critical { color: #dc2626; }
+.stat-value.warning { color: #f59e0b; }
+.stat-value.danger { color: #dc2626; }
+</style>
+{% endblock %}

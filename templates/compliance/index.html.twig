@@ -40,7 +40,7 @@
                 <div class="framework-header" style="background: {{ framework.mandatory ? 'var(--gradient-danger)' : 'var(--gradient-primary)' }};">
                     <div>
                         <h3>{{ item.code }}</h3>
-                        <p class="framework-subtitle">{{ item.name|u.truncate(40, '...') }}</p>
+                        <p class="framework-subtitle">{{ item.name|length > 40 ? item.name|slice(0, 40) ~ '...' : item.name }}</p>
                     </div>
                     {% if framework.mandatory %}
                         <span class="badge badge-light">Verpflichtend</span>
