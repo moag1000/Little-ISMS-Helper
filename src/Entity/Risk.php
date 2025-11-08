@@ -174,7 +174,7 @@ class Risk
     {
         $this->controls = new ArrayCollection();
         $this->incidents = new ArrayCollection();
-        $this->createdAt = new \DateTime();
+        $this->createdAt = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
