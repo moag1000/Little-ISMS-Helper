@@ -4,6 +4,15 @@
 
 {% block body %}
 <div class="container">
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{{ path('app_risk_index') }}"><i class="bi bi-exclamation-triangle"></i> {{ 'nav.risks'|trans }}</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">{{ 'risk.new'|trans }}</li>
+        </ol>
+    </nav>
+
     <div class="page-header">
         <h1><i class="bi bi-plus-circle"></i> {{ 'risk.new'|trans }}</h1>
         <a href="{{ path('app_risk_index') }}" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> {{ 'common.back'|trans }}</a>
