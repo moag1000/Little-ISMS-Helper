@@ -3,35 +3,271 @@
 {% block title %}{{ 'context_management.title'|trans }} - {{ 'app.title'|trans }}{% endblock %}
 
 {% block body %}
-<h1>{{ 'context_management.title'|trans }}</h1>
+<div class="container-fluid py-4">
+    {# Page Header #}
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 mb-1">{{ 'context_management.title'|trans }}</h1>
+            <p class="text-muted mb-0">{{ 'context_management.description'|trans }}</p>
+        </div>
+        <div>
+            {% if is_granted('ROLE_ADMIN') %}
+                <a href="{{ path('app_context_edit') }}" class="btn btn-primary">
+                    <i class="bi bi-pencil"></i> ISMS-Kontext bearbeiten
+                </a>
+                <a href="{{ path('app_objective_new') }}" class="btn btn-success">
+                    <i class="bi bi-plus-circle"></i> Neues Ziel
+                </a>
+            {% endif %}
+        </div>
+    </div>
 
-<p style="color: #666; margin-bottom: 2rem;">
-    {{ 'context_management.description'|trans }}
-</p>
+    {# ISO 27001 Info Box #}
+    <div class="alert alert-info mb-4">
+        <i class="bi bi-info-circle"></i>
+        <strong>ISO 27001 Kapitel 4:</strong> Verstehen der Organisation und ihres Kontexts
+        - Definition von Geltungsbereich, Kontext und strategischen Zielen des ISMS.
+    </div>
 
-{% if context %}
-<div class="info-box">
-    <h3>{{ context.organizationName }}</h3>
-    {% if context.ismsScope %}
-    <p><strong>{{ 'context_management.isms_scope'|trans }}:</strong></p>
-    <p>{{ context.ismsScope }}</p>
-    {% endif %}
+    {# KPI Cards #}
+    <div class="row mb-4">
+        {# Completeness Card #}
+        <div class="col-md-3 mb-3">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h6 class="text-muted mb-2">Vollständigkeit</h6>
+                    <h2 class="mb-0">{{ completeness }}%</h2>
+                    <div class="progress mt-2" style="height: 6px;">
+                        <div class="progress-bar {% if completeness >= 80 %}bg-success{% elseif completeness >= 50 %}bg-warning{% else %}bg-danger{% endif %}"
+                             role="progressbar"
+                             style="width: {{ completeness }}%"
+                             aria-valuenow="{{ completeness }}"
+                             aria-valuemin="0"
+                             aria-valuemax="100"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# Active Objectives Card #}
+        <div class="col-md-3 mb-3">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h6 class="text-muted mb-2">Aktive Ziele</h6>
+                    <h2 class="mb-0">{{ statistics.active }}</h2>
+                    <small class="text-muted">von {{ statistics.total }} gesamt</small>
+                </div>
+            </div>
+        </div>
+
+        {# Achieved Objectives Card #}
+        <div class="col-md-3 mb-3">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h6 class="text-muted mb-2">Erreichte Ziele</h6>
+                    <h2 class="mb-0 text-success">{{ statistics.achieved }}</h2>
+                    {% if statistics.total > 0 %}
+                        <small class="text-muted">{{ ((statistics.achieved / statistics.total) * 100)|round }}% Erfolgsrate</small>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        {# Review Status Card #}
+        <div class="col-md-3 mb-3">
+            <div class="card shadow-sm h-100 {% if isReviewDue %}border-warning{% endif %}">
+                <div class="card-body">
+                    <h6 class="text-muted mb-2">Nächste Überprüfung</h6>
+                    {% if daysUntilReview is not null %}
+                        {% if daysUntilReview > 0 %}
+                            <h2 class="mb-0">{{ daysUntilReview }}</h2>
+                            <small class="text-muted">Tage verbleibend</small>
+                        {% elseif daysUntilReview == 0 %}
+                            <h2 class="mb-0 text-warning">Heute</h2>
+                            <small class="text-warning">Überprüfung fällig</small>
+                        {% else %}
+                            <h2 class="mb-0 text-danger">{{ daysUntilReview|abs }}</h2>
+                            <small class="text-danger">Tage überfällig</small>
+                        {% endif %}
+                    {% else %}
+                        <h2 class="mb-0 text-muted">—</h2>
+                        <small class="text-muted">Nicht geplant</small>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Main Content Grid #}
+    <div class="row">
+        {# ISMS Context Section #}
+        <div class="col-lg-8 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">ISMS-Kontext</h5>
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <a href="{{ path('app_context_edit') }}" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-pencil"></i> Bearbeiten
+                        </a>
+                    {% endif %}
+                </div>
+                <div class="card-body">
+                    {% if context and context.organizationName %}
+                        <div class="mb-3">
+                            <h6 class="text-muted">Organisation</h6>
+                            <p class="mb-0">{{ context.organizationName }}</p>
+                        </div>
+
+                        {% if context.ismsScope %}
+                            <div class="mb-3">
+                                <h6 class="text-muted">{{ 'context_management.isms_scope'|trans }}</h6>
+                                <p class="mb-0">{{ context.ismsScope|nl2br }}</p>
+                            </div>
+                        {% endif %}
+
+                        {% if context.scopeExclusions %}
+                            <div class="mb-3">
+                                <h6 class="text-muted">Ausschlüsse</h6>
+                                <p class="mb-0">{{ context.scopeExclusions|nl2br }}</p>
+                            </div>
+                        {% endif %}
+
+                        {% if context.ismsPolicy %}
+                            <div class="mb-3">
+                                <h6 class="text-muted">ISMS-Richtlinie</h6>
+                                <p class="mb-0">{{ context.ismsPolicy|length > 200 ? context.ismsPolicy|slice(0, 200) ~ '...' : context.ismsPolicy|nl2br }}</p>
+                            </div>
+                        {% endif %}
+                    {% else %}
+                        <div class="alert alert-warning">
+                            <i class="bi bi-exclamation-triangle"></i>
+                            {{ 'context_management.no_context_defined'|trans }}
+                            {% if is_granted('ROLE_ADMIN') %}
+                                <a href="{{ path('app_context_edit') }}" class="alert-link">Jetzt erfassen</a>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        {# Objectives Summary Section #}
+        <div class="col-lg-4 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">{{ 'context_management.isms_objectives'|trans }}</h5>
+                    <a href="{{ path('app_objective_index') }}" class="btn btn-sm btn-outline-secondary">
+                        Alle anzeigen <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="text-muted">Gesamt</span>
+                            <strong>{{ statistics.total }}</strong>
+                        </div>
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="text-muted">Aktiv</span>
+                            <span class="badge bg-primary">{{ statistics.active }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="text-muted">Erreicht</span>
+                            <span class="badge bg-success">{{ statistics.achieved }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="text-muted">Verzögert</span>
+                            <span class="badge bg-danger">{{ statistics.delayed }}</span>
+                        </div>
+                        {% if statistics.at_risk is defined %}
+                            <div class="d-flex justify-content-between mb-1">
+                                <span class="text-muted">Gefährdet</span>
+                                <span class="badge bg-warning">{{ statistics.at_risk }}</span>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <div class="d-grid mt-3">
+                            <a href="{{ path('app_objective_new') }}" class="btn btn-success">
+                                <i class="bi bi-plus-circle"></i> Neues Ziel erstellen
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Additional Context Information #}
+    <div class="row">
+        {% if context %}
+            {# External Issues #}
+            {% if context.externalIssues %}
+                <div class="col-md-6 mb-4">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-header bg-white">
+                            <h6 class="mb-0">Externe Themen</h6>
+                        </div>
+                        <div class="card-body">
+                            <p class="mb-0">{{ context.externalIssues|nl2br }}</p>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+            {# Internal Issues #}
+            {% if context.internalIssues %}
+                <div class="col-md-6 mb-4">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-header bg-white">
+                            <h6 class="mb-0">Interne Themen</h6>
+                        </div>
+                        <div class="card-body">
+                            <p class="mb-0">{{ context.internalIssues|nl2br }}</p>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+            {# Interested Parties #}
+            {% if context.interestedParties %}
+                <div class="col-md-6 mb-4">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-header bg-white">
+                            <h6 class="mb-0">Interessierte Parteien</h6>
+                        </div>
+                        <div class="card-body">
+                            <p class="mb-0">{{ context.interestedParties|nl2br }}</p>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+            {# Requirements #}
+            {% if context.legalRequirements or context.regulatoryRequirements or context.contractualObligations %}
+                <div class="col-md-6 mb-4">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-header bg-white">
+                            <h6 class="mb-0">Anforderungen</h6>
+                        </div>
+                        <div class="card-body">
+                            {% if context.legalRequirements %}
+                                <h6 class="text-muted small">Rechtliche Anforderungen</h6>
+                                <p class="mb-2">{{ context.legalRequirements|nl2br }}</p>
+                            {% endif %}
+                            {% if context.regulatoryRequirements %}
+                                <h6 class="text-muted small">Regulatorische Anforderungen</h6>
+                                <p class="mb-2">{{ context.regulatoryRequirements|nl2br }}</p>
+                            {% endif %}
+                            {% if context.contractualObligations %}
+                                <h6 class="text-muted small">Vertragliche Verpflichtungen</h6>
+                                <p class="mb-0">{{ context.contractualObligations|nl2br }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        {% endif %}
+    </div>
 </div>
-{% else %}
-<div class="warning-box">
-    <p>{{ 'context_management.no_context_defined'|trans }}</p>
-</div>
-{% endif %}
-
-<h2 style="margin-top: 2rem;">{{ 'context_management.isms_objectives'|trans }}</h2>
-
-{% if objectives|length > 0 %}
-<p><strong>{{ 'context_management.active_objectives'|trans }}:</strong> {{ objectives|length }}</p>
-{% else %}
-<p><em>{{ 'context_management.no_objectives'|trans }}</em></p>
-{% endif %}
-
-<p style="margin-top: 2rem;">
-    <em>{{ 'context_management.forms_coming'|trans }}</em>
-</p>
 {% endblock %}
