@@ -550,7 +550,8 @@ tbody td {
 .form-control:focus {
     outline: none;
     border-color: var(--color-secondary);
-    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+    box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.2), var(--glow-cyan);
+    background: linear-gradient(135deg, rgba(6, 182, 212, 0.02), rgba(236, 72, 153, 0.02));
 }
 
 textarea.form-control {
@@ -619,19 +620,38 @@ textarea.form-control {
     margin-bottom: var(--spacing-xs);
 }
 
-/* Loading Spinner */
+/* Loading Spinner - Cyberpunk Fairy Style */
 .spinner {
-    border: 3px solid #f3f3f3;
+    border: 3px solid rgba(6, 182, 212, 0.1);
     border-top: 3px solid var(--color-secondary);
+    border-right: 3px solid var(--color-accent-pink);
+    border-bottom: 3px solid var(--color-accent-purple);
     border-radius: 50%;
     width: 40px;
     height: 40px;
     animation: spin 1s linear infinite;
+    box-shadow: var(--glow-cyan);
+    position: relative;
+}
+
+.spinner::after {
+    content: '✨';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 14px;
+    animation: sparkle 2s ease-in-out infinite;
 }
 
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+}
+
+@keyframes sparkle {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
 }
 
 /* Language Switcher - Cyberpunk Style */

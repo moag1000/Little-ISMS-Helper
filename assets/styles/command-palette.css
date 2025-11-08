@@ -1,5 +1,5 @@
 /* ============================================
-   Command Palette Styles (⌘K)
+   Command Palette Styles (⌘K) - Cyberpunk Fairy
    Modern command interface for power users
    ============================================ */
 
@@ -21,15 +21,16 @@
 
 .command-palette-modal.command-palette-open {
     display: flex;
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(4px);
+    background: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(8px);
 }
 
 /* Container */
 .command-palette-container {
     background: white;
     border-radius: 12px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4), 0 0 40px rgba(6, 182, 212, 0.3);
+    border: 2px solid var(--color-secondary);
     width: 640px;
     max-width: 90vw;
     max-height: 70vh;
@@ -39,6 +40,22 @@
     transform: scale(0.95);
     opacity: 0;
     animation: commandPaletteIn 0.15s ease forwards;
+    position: relative;
+}
+
+.command-palette-container::before {
+    content: '🧚‍♀️';
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    font-size: 20px;
+    opacity: 0.6;
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-8px); }
 }
 
 @keyframes commandPaletteIn {
@@ -59,7 +76,8 @@
 
 .command-palette-search-icon {
     font-size: 20px;
-    color: var(--color-text-muted);
+    color: var(--color-secondary);
+    text-shadow: var(--glow-cyan);
 }
 
 .command-palette-input {
@@ -112,7 +130,7 @@
     color: var(--color-text-muted);
 }
 
-/* Command Item */
+/* Command Item - Cyberpunk Style */
 .command-item {
     display: flex;
     align-items: center;
@@ -120,18 +138,43 @@
     padding: 10px 12px;
     border-radius: 6px;
     cursor: pointer;
-    transition: all 0.1s ease;
+    transition: all 0.15s ease;
     margin-bottom: 2px;
+    position: relative;
+    border: 1px solid transparent;
+}
+
+.command-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(180deg, var(--color-secondary), var(--color-accent-purple));
+    opacity: 0;
+    transition: opacity 0.15s ease;
+}
+
+.command-item:hover::before,
+.command-item.selected::before {
+    opacity: 1;
 }
 
 .command-item:hover,
 .command-item.selected {
-    background: var(--color-secondary);
-    color: white;
+    background: linear-gradient(90deg, rgba(6, 182, 212, 0.1), rgba(139, 92, 246, 0.05));
+    border-color: var(--color-secondary);
+    box-shadow: 0 0 15px rgba(6, 182, 212, 0.2);
+}
+
+.command-item.selected {
+    background: linear-gradient(90deg, rgba(6, 182, 212, 0.15), rgba(236, 72, 153, 0.1));
 }
 
 .command-item.selected .command-item-icon {
-    color: white;
+    color: var(--color-secondary);
+    text-shadow: var(--glow-cyan);
 }
 
 .command-item-content {
@@ -193,14 +236,16 @@
 }
 
 .command-palette-shortcuts kbd {
-    background: white;
-    border: 1px solid var(--color-border);
+    background: linear-gradient(135deg, rgba(6, 182, 212, 0.1), rgba(236, 72, 153, 0.1));
+    border: 1px solid var(--color-secondary);
     border-radius: 3px;
     padding: 2px 6px;
     font-size: 11px;
     font-weight: 600;
     margin: 0 2px;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", monospace;
+    color: var(--color-secondary);
+    box-shadow: 0 0 8px rgba(6, 182, 212, 0.2);
 }
 
 /* Utility */
