@@ -25,9 +25,33 @@ export default class extends Controller {
 
     closeAllModals() {
         console.log('[ModalManager] Checking for modals to close on page load...');
+
+        // Force hide ALL modal elements regardless of their class state
+        const allModalElements = [
+            ...document.querySelectorAll('.command-palette-modal'),
+            ...document.querySelectorAll('.keyboard-shortcuts-modal'),
+            ...document.querySelectorAll('.global-search-modal'),
+            ...document.querySelectorAll('.preferences-modal'),
+            ...document.querySelectorAll('.quick-view-modal'),
+            ...document.querySelectorAll('.notification-panel')
+        ];
+
+        console.log('[ModalManager] Found', allModalElements.length, 'modal elements total');
+
+        allModalElements.forEach(modal => {
+            console.log('[ModalManager] Force hiding:', modal.className);
+            // Force hide with inline style (highest priority)
+            modal.style.display = 'none';
+            // Also add d-none class
+            modal.classList.add('d-none');
+            // Remove any open classes
+            modal.classList.remove('command-palette-open', 'keyboard-shortcuts-open', 'show');
+        });
+
+        // Also check the normal way
         const openModals = this.findOpenModals();
         if (openModals.length > 0) {
-            console.log('[ModalManager] Found', openModals.length, 'open modals on page load! Closing them...');
+            console.log('[ModalManager] Found', openModals.length, 'modals that report as open');
             openModals.forEach(modal => this.closeModal(modal));
         }
     }
@@ -66,45 +90,58 @@ export default class extends Controller {
         // Debug: Log all potential modal elements
         console.log('[ModalManager] Searching for open modals...');
 
+        // Helper function to check if modal is actually visible
+        const isVisible = (element) => {
+            if (!element) return false;
+            const style = window.getComputedStyle(element);
+            return style.display !== 'none' && style.visibility !== 'hidden' && style.opacity !== '0';
+        };
+
         // Command Palette
         const commandPalette = document.querySelector('.command-palette-modal');
-        console.log('[ModalManager] Command Palette found:', commandPalette, 'Classes:', commandPalette?.className);
-        if (commandPalette && commandPalette.classList.contains('command-palette-open')) {
+        const cpVisible = isVisible(commandPalette);
+        console.log('[ModalManager] Command Palette:', commandPalette, 'Visible:', cpVisible, 'Classes:', commandPalette?.className);
+        if (commandPalette && cpVisible) {
             modals.push(commandPalette);
         }
 
         // Keyboard Shortcuts
         const keyboardShortcuts = document.querySelector('.keyboard-shortcuts-modal');
-        console.log('[ModalManager] Keyboard Shortcuts found:', keyboardShortcuts, 'Classes:', keyboardShortcuts?.className);
-        if (keyboardShortcuts && keyboardShortcuts.classList.contains('keyboard-shortcuts-open')) {
+        const ksVisible = isVisible(keyboardShortcuts);
+        console.log('[ModalManager] Keyboard Shortcuts:', keyboardShortcuts, 'Visible:', ksVisible, 'Classes:', keyboardShortcuts?.className);
+        if (keyboardShortcuts && ksVisible) {
             modals.push(keyboardShortcuts);
         }
 
         // Global Search
         const globalSearch = document.querySelector('.global-search-modal');
-        console.log('[ModalManager] Global Search found:', globalSearch, 'Classes:', globalSearch?.className);
-        if (globalSearch && !globalSearch.classList.contains('d-none')) {
+        const gsVisible = isVisible(globalSearch);
+        console.log('[ModalManager] Global Search:', globalSearch, 'Visible:', gsVisible, 'Classes:', globalSearch?.className);
+        if (globalSearch && gsVisible) {
             modals.push(globalSearch);
         }
 
         // Preferences
         const preferences = document.querySelector('.preferences-modal');
-        console.log('[ModalManager] Preferences found:', preferences, 'Classes:', preferences?.className);
-        if (preferences && !preferences.classList.contains('d-none')) {
+        const prefVisible = isVisible(preferences);
+        console.log('[ModalManager] Preferences:', preferences, 'Visible:', prefVisible, 'Classes:', preferences?.className);
+        if (preferences && prefVisible) {
             modals.push(preferences);
         }
 
         // Quick View
         const quickView = document.querySelector('.quick-view-modal');
-        console.log('[ModalManager] Quick View found:', quickView, 'Classes:', quickView?.className);
-        if (quickView && !quickView.classList.contains('d-none')) {
+        const qvVisible = isVisible(quickView);
+        console.log('[ModalManager] Quick View:', quickView, 'Visible:', qvVisible, 'Classes:', quickView?.className);
+        if (quickView && qvVisible) {
             modals.push(quickView);
         }
 
         // Notification Panel
         const notificationPanel = document.querySelector('.notification-panel');
-        console.log('[ModalManager] Notification Panel found:', notificationPanel, 'Classes:', notificationPanel?.className);
-        if (notificationPanel && !notificationPanel.classList.contains('d-none')) {
+        const npVisible = isVisible(notificationPanel);
+        console.log('[ModalManager] Notification Panel:', notificationPanel, 'Visible:', npVisible, 'Classes:', notificationPanel?.className);
+        if (notificationPanel && npVisible) {
             modals.push(notificationPanel);
         }
 
@@ -122,16 +159,17 @@ export default class extends Controller {
     closeModal(modal) {
         console.log('[ModalManager] Closing modal:', modal.className);
 
+        // FORCE hide with inline style (overrides everything)
+        modal.style.display = 'none';
+        modal.classList.add('d-none');
+
         // Bootstrap modals
         if (modal.classList.contains('modal')) {
             const bsModal = bootstrap?.Modal?.getInstance(modal);
             if (bsModal) {
                 bsModal.hide();
-                return;
             }
-            // Fallback
             modal.classList.remove('show');
-            modal.style.display = 'none';
             document.body.classList.remove('modal-open');
             const backdrop = document.querySelector('.modal-backdrop');
             if (backdrop) backdrop.remove();
