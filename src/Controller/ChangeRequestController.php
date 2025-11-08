@@ -1,0 +1,105 @@
+<?php
+
+namespace App\Controller;
+
+use App\Entity\ChangeRequest;
+use App\Form\ChangeRequestType;
+use App\Repository\ChangeRequestRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
+
+#[Route('/change-request')]
+class ChangeRequestController extends AbstractController
+{
+    public function __construct(
+        private ChangeRequestRepository $changeRequestRepository,
+        private EntityManagerInterface $entityManager
+    ) {}
+
+    #[Route('/', name: 'app_change_request_index')]
+    #[IsGranted('ROLE_USER')]
+    public function index(): Response
+    {
+        $changeRequests = $this->changeRequestRepository->findAll();
+        $statistics = $this->changeRequestRepository->getStatistics();
+        $pendingApproval = $this->changeRequestRepository->findPendingApproval();
+        $overdue = $this->changeRequestRepository->findOverdue();
+
+        return $this->render('change_request/index.html.twig', [
+            'change_requests' => $changeRequests,
+            'statistics' => $statistics,
+            'pending_approval' => $pendingApproval,
+            'overdue' => $overdue,
+        ]);
+    }
+
+    #[Route('/new', name: 'app_change_request_new')]
+    #[IsGranted('ROLE_USER')]
+    public function new(Request $request): Response
+    {
+        $changeRequest = new ChangeRequest();
+        $form = $this->createForm(ChangeRequestType::class, $changeRequest);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->entityManager->persist($changeRequest);
+            $this->entityManager->flush();
+
+            $this->addFlash('success', 'Change request created successfully.');
+            return $this->redirectToRoute('app_change_request_show', ['id' => $changeRequest->getId()]);
+        }
+
+        return $this->render('change_request/new.html.twig', [
+            'change_request' => $changeRequest,
+            'form' => $form,
+        ]);
+    }
+
+    #[Route('/{id}', name: 'app_change_request_show', requirements: ['id' => '\d+'])]
+    #[IsGranted('ROLE_USER')]
+    public function show(ChangeRequest $changeRequest): Response
+    {
+        return $this->render('change_request/show.html.twig', [
+            'change_request' => $changeRequest,
+        ]);
+    }
+
+    #[Route('/{id}/edit', name: 'app_change_request_edit', requirements: ['id' => '\d+'])]
+    #[IsGranted('ROLE_USER')]
+    public function edit(Request $request, ChangeRequest $changeRequest): Response
+    {
+        $form = $this->createForm(ChangeRequestType::class, $changeRequest);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $changeRequest->setUpdatedAt(new \DateTime());
+            $this->entityManager->flush();
+
+            $this->addFlash('success', 'Change request updated successfully.');
+            return $this->redirectToRoute('app_change_request_show', ['id' => $changeRequest->getId()]);
+        }
+
+        return $this->render('change_request/edit.html.twig', [
+            'change_request' => $changeRequest,
+            'form' => $form,
+        ]);
+    }
+
+    #[Route('/{id}/delete', name: 'app_change_request_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[IsGranted('ROLE_ADMIN')]
+    public function delete(Request $request, ChangeRequest $changeRequest): Response
+    {
+        if ($this->isCsrfTokenValid('delete'.$changeRequest->getId(), $request->request->get('_token'))) {
+            $this->entityManager->remove($changeRequest);
+            $this->entityManager->flush();
+
+            $this->addFlash('success', 'Change request deleted successfully.');
+        }
+
+        return $this->redirectToRoute('app_change_request_index');
+    }
+}

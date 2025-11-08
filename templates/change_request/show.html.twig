@@ -1,0 +1,173 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ change_request.changeNumber }}{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="page-header">
+        <h1>{{ change_request.changeNumber }}: {{ change_request.title }}</h1>
+        <div class="actions">
+            <a href="{{ path('app_change_request_edit', {id: change_request.id}) }}" class="btn btn-primary">Edit</a>
+            <a href="{{ path('app_change_request_index') }}" class="btn btn-secondary">Back</a>
+            {% if is_granted('ROLE_ADMIN') %}
+                <form method="post" action="{{ path('app_change_request_delete', {id: change_request.id}) }}" style="display:inline;" onsubmit="return confirm('Are you sure?');">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ change_request.id) }}">
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h2>Change Request Details</h2>
+            <div>
+                <span class="badge badge-{{ change_request.changeType }}">{{ change_request.changeType }}</span>
+                <span class="badge badge-{{ change_request.priority }}">{{ change_request.priority }}</span>
+                <span class="badge badge-{{ change_request.status }}">{{ change_request.status }}</span>
+            </div>
+        </div>
+        <div class="card-content">
+            <div class="alert alert-info">
+                <strong>Complexity Score: {{ change_request.getComplexityScore() }}</strong>
+            </div>
+
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <span class="label">Requested By:</span>
+                    <span class="value">{{ change_request.requestedBy }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Requested Date:</span>
+                    <span class="value">{{ change_request.requestedDate|date('Y-m-d') }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Planned Implementation:</span>
+                    <span class="value">{{ change_request.plannedImplementationDate ? change_request.plannedImplementationDate|date('Y-m-d') : 'Not scheduled' }}</span>
+                </div>
+            </div>
+
+            <div class="detail-section">
+                <h3>Description</h3>
+                <p>{{ change_request.description|nl2br }}</p>
+            </div>
+
+            <div class="detail-section">
+                <h3>Justification</h3>
+                <p>{{ change_request.justification|nl2br }}</p>
+            </div>
+
+            {% if change_request.ismsImpact %}
+            <div class="detail-section alert-info">
+                <h3>ISMS Impact</h3>
+                <p>{{ change_request.ismsImpact|nl2br }}</p>
+            </div>
+            {% endif %}
+
+            {% if change_request.riskAssessment %}
+            <div class="detail-section">
+                <h3>Risk Assessment</h3>
+                <p>{{ change_request.riskAssessment|nl2br }}</p>
+            </div>
+            {% endif %}
+
+            {% if change_request.implementationPlan %}
+            <div class="detail-section">
+                <h3>Implementation Plan</h3>
+                <p>{{ change_request.implementationPlan|nl2br }}</p>
+            </div>
+            {% endif %}
+
+            {% if change_request.rollbackPlan %}
+            <div class="detail-section">
+                <h3>Rollback Plan</h3>
+                <p>{{ change_request.rollbackPlan|nl2br }}</p>
+            </div>
+            {% endif %}
+
+            {% if change_request.testingRequirements %}
+            <div class="detail-section">
+                <h3>Testing Requirements</h3>
+                <p>{{ change_request.testingRequirements|nl2br }}</p>
+            </div>
+            {% endif %}
+
+            {% if change_request.approvedBy %}
+            <div class="detail-section alert-success">
+                <h3>Approval Information</h3>
+                <p><strong>Approved By:</strong> {{ change_request.approvedBy }}</p>
+                <p><strong>Approval Date:</strong> {{ change_request.approvedDate|date('Y-m-d H:i') }}</p>
+                {% if change_request.approvalComments %}
+                <p><strong>Comments:</strong> {{ change_request.approvalComments }}</p>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            {% if change_request.implementedBy %}
+            <div class="detail-section">
+                <h3>Implementation</h3>
+                <p><strong>Implemented By:</strong> {{ change_request.implementedBy }}</p>
+                <p><strong>Implementation Date:</strong> {{ change_request.actualImplementationDate|date('Y-m-d') }}</p>
+                {% if change_request.implementationNotes %}
+                <p><strong>Notes:</strong> {{ change_request.implementationNotes|nl2br }}</p>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            {% if change_request.verifiedBy %}
+            <div class="detail-section alert-success">
+                <h3>Verification</h3>
+                <p><strong>Verified By:</strong> {{ change_request.verifiedBy }}</p>
+                <p><strong>Verification Date:</strong> {{ change_request.verifiedDate|date('Y-m-d') }}</p>
+                {% if change_request.verificationResults %}
+                <p><strong>Results:</strong> {{ change_request.verificationResults|nl2br }}</p>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            {% if change_request.status == 'closed' %}
+            <div class="detail-section">
+                <h3>Closure</h3>
+                <p><strong>Closed Date:</strong> {{ change_request.closedDate|date('Y-m-d') }}</p>
+                {% if change_request.closureNotes %}
+                <p><strong>Notes:</strong> {{ change_request.closureNotes }}</p>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            {% if change_request.affectedAssets|length > 0 %}
+            <div class="detail-section">
+                <h3>Affected Assets ({{ change_request.affectedAssets|length }})</h3>
+                <ul>
+                    {% for asset in change_request.affectedAssets %}
+                    <li><a href="{{ path('app_asset_show', {id: asset.id}) }}">{{ asset.name }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+
+            {% if change_request.affectedControls|length > 0 %}
+            <div class="detail-section">
+                <h3>Affected Controls ({{ change_request.affectedControls|length }})</h3>
+                <ul>
+                    {% for control in change_request.affectedControls %}
+                    <li><a href="{{ path('app_control_show', {id: control.id}) }}">{{ control.controlId }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+
+            {% if change_request.affectedRisks|length > 0 %}
+            <div class="detail-section">
+                <h3>Affected Risks ({{ change_request.affectedRisks|length }})</h3>
+                <ul>
+                    {% for risk in change_request.affectedRisks %}
+                    <li><a href="{{ path('app_risk_show', {id: risk.id}) }}">{{ risk.title }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

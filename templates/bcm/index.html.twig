@@ -108,7 +108,7 @@
                             <td>
                                 <strong>{{ process.name }}</strong>
                                 {% if process.description %}
-                                    <br><small class="text-muted">{{ process.description|u.truncate(60, '...') }}</small>
+                                    <br><small class="text-muted">{{ process.description|length > 60 ? process.description|slice(0, 60) ~ '...' : process.description }}</small>
                                 {% endif %}
                             </td>
                             <td>{{ process.processOwner ?? '-' }}</td>

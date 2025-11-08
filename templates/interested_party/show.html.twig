@@ -1,0 +1,133 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ interested_party.name }}{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="page-header">
+        <h1>{{ interested_party.name }}</h1>
+        <div class="actions">
+            <a href="{{ path('app_interested_party_edit', {id: interested_party.id}) }}" class="btn btn-primary">Edit</a>
+            <a href="{{ path('app_interested_party_index') }}" class="btn btn-secondary">Back to List</a>
+            {% if is_granted('ROLE_ADMIN') %}
+                <form method="post" action="{{ path('app_interested_party_delete', {id: interested_party.id}) }}" style="display:inline;" onsubmit="return confirm('Are you sure?');">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ interested_party.id) }}">
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h2>Interested Party Details</h2>
+            <div>
+                <span class="badge badge-{{ interested_party.partyType }}">{{ interested_party.partyType }}</span>
+                <span class="badge badge-{{ interested_party.importance }}">{{ interested_party.importance|upper }}</span>
+            </div>
+        </div>
+        <div class="card-content">
+            <div class="alert alert-info">
+                <strong>Engagement Score: {{ interested_party.getEngagementScore() }}</strong>
+            </div>
+
+            {% if interested_party.description %}
+            <div class="detail-section">
+                <h3>Description</h3>
+                <p>{{ interested_party.description }}</p>
+            </div>
+            {% endif %}
+
+            <div class="detail-section">
+                <h3>Contact Information</h3>
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <span class="label">Contact Person:</span>
+                        <span class="value">{{ interested_party.contactPerson ?? 'N/A' }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">Email:</span>
+                        <span class="value">{{ interested_party.email ?? 'N/A' }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">Phone:</span>
+                        <span class="value">{{ interested_party.phone ?? 'N/A' }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="detail-section">
+                <h3>Requirements & Expectations</h3>
+                <p>{{ interested_party.requirements }}</p>
+                {% if interested_party.howAddressed %}
+                <h4>How Addressed</h4>
+                <p>{{ interested_party.howAddressed }}</p>
+                {% endif %}
+            </div>
+
+            <div class="detail-section">
+                <h3>Communication</h3>
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <span class="label">Frequency:</span>
+                        <span class="value">{{ interested_party.communicationFrequency ?? 'N/A' }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">Method:</span>
+                        <span class="value">{{ interested_party.communicationMethod ?? 'N/A' }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">Last Communication:</span>
+                        <span class="value">{{ interested_party.lastCommunication ? interested_party.lastCommunication|date('Y-m-d') : 'Never' }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">Next Communication:</span>
+                        <span class="value {{ interested_party.isCommunicationOverdue() ? 'text-danger' : '' }}">
+                            {{ interested_party.nextCommunication ? interested_party.nextCommunication|date('Y-m-d') : 'Not scheduled' }}
+                            {{ interested_party.isCommunicationOverdue() ? '⚠️ OVERDUE' : '' }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            {% if interested_party.feedback %}
+            <div class="detail-section">
+                <h3>Feedback</h3>
+                <p>{{ interested_party.feedback }}</p>
+            </div>
+            {% endif %}
+
+            {% if interested_party.satisfactionLevel %}
+            <div class="detail-section">
+                <h3>Satisfaction Level</h3>
+                <div class="value-bar">
+                    <div class="bar" style="width: {{ (interested_party.satisfactionLevel / 5 * 100) }}%"></div>
+                </div>
+                <span>{{ interested_party.satisfactionLevel }}/5</span>
+            </div>
+            {% endif %}
+
+            {% if interested_party.issues %}
+            <div class="alert alert-warning">
+                <strong>Issues/Concerns:</strong>
+                <p>{{ interested_party.issues }}</p>
+            </div>
+            {% endif %}
+
+            <div class="detail-section">
+                <p class="text-muted">
+                    Created: {{ interested_party.createdAt|date('Y-m-d H:i') }}
+                    {% if interested_party.updatedAt %}| Last updated: {{ interested_party.updatedAt|date('Y-m-d H:i') }}{% endif %}
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.text-danger { color: #dc2626; font-weight: bold; }
+.text-muted { color: #6b7280; font-size: 0.875rem; }
+.value-bar { height: 24px; background: #e5e7eb; border-radius: 4px; overflow: hidden; margin: 0.5rem 0; }
+.value-bar .bar { height: 100%; background: linear-gradient(90deg, #10b981, #059669); }
+</style>
+{% endblock %}

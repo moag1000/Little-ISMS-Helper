@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Repository\AssetRepository;
 use App\Repository\RiskRepository;
 use App\Service\DashboardStatisticsService;
+use App\Service\ISOComplianceIntelligenceService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,6 +17,7 @@ class HomeController extends AbstractController
 {
     public function __construct(
         private readonly DashboardStatisticsService $statisticsService,
+        private readonly ISOComplianceIntelligenceService $isoComplianceService,
         private readonly AssetRepository $assetRepository,
         private readonly RiskRepository $riskRepository,
         private readonly TranslatorInterface $translator
@@ -74,10 +76,14 @@ class HomeController extends AbstractController
         // Activity Feed Daten
         $activities = $this->getRecentActivities();
 
+        // ISO Compliance Dashboard - zusätzliche Compliance-Informationen
+        $isoCompliance = $this->isoComplianceService->getComplianceDashboard();
+
         return $this->render('home/dashboard_modern.html.twig', [
             'kpis' => $kpis,
             'stats' => $stats,
             'activities' => $activities,
+            'iso_compliance' => $isoCompliance,
         ]);
     }
 

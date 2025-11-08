@@ -22,7 +22,7 @@
     <div class="card">
         <div class="card-header">
             <h2>Asset Details</h2>
-            <span class="badge badge-{{ asset.criticalityLevel }}">{{ asset.criticalityLevel|upper }}</span>
+            <span class="badge badge-{{ asset.status }}">{{ asset.status|upper }}</span>
         </div>
         <div class="card-content">
             <div class="detail-grid">
@@ -39,8 +39,8 @@
                     <span class="value">{{ asset.location }}</span>
                 </div>
                 <div class="detail-item">
-                    <span class="label">Criticality:</span>
-                    <span class="value">{{ asset.criticalityLevel|upper }}</span>
+                    <span class="label">Status:</span>
+                    <span class="value">{{ asset.status|upper }}</span>
                 </div>
             </div>
 

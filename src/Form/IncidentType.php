@@ -48,20 +48,20 @@ class IncidentType extends AbstractType
                 ],
                 'required' => true,
             ])
-            ->add('reportedDate', DateTimeType::class, [
-                'label' => 'Reported Date',
+            ->add('detectedAt', DateTimeType::class, [
+                'label' => 'Detected At',
                 'widget' => 'single_text',
                 'required' => true,
+            ])
+            ->add('occurredAt', DateTimeType::class, [
+                'label' => 'Occurred At',
+                'widget' => 'single_text',
+                'required' => false,
             ])
             ->add('reportedBy', TextType::class, [
                 'label' => 'Reported By',
                 'required' => false,
                 'attr' => ['maxlength' => 100],
-            ])
-            ->add('detectedDate', DateTimeType::class, [
-                'label' => 'Detected Date',
-                'widget' => 'single_text',
-                'required' => false,
             ])
             ->add('status', ChoiceType::class, [
                 'label' => 'Status',
