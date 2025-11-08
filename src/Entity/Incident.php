@@ -73,6 +73,12 @@ class Incident
     #[Groups(['incident:read'])]
     private ?Tenant $tenant = null;
 
+    // New relationship for threat tracking
+    #[ORM\ManyToOne(targetEntity: ThreatIntelligence::class, inversedBy: 'resultingIncidents')]
+    #[ORM\JoinColumn(nullable: true)]
+    #[Groups(['incident:read', 'incident:write'])]
+    private ?ThreatIntelligence $originatingThreat = null;
+
     #[ORM\Column(length: 50)]
     #[Groups(['incident:read', 'incident:write'])]
     #[Assert\NotBlank(message: 'Incident number is required')]
@@ -210,11 +216,21 @@ class Incident
     #[MaxDepth(1)]
     private Collection $realizedRisks;
 
+    /**
+     * @var Collection<int, Control>
+     */
+    #[ORM\ManyToMany(targetEntity: Control::class)]
+    #[ORM\JoinTable(name: 'incident_failed_controls')]
+    #[Groups(['incident:read', 'incident:write'])]
+    #[MaxDepth(1)]
+    private Collection $failedControls;
+
     public function __construct()
     {
         $this->relatedControls = new ArrayCollection();
         $this->affectedAssets = new ArrayCollection();
         $this->realizedRisks = new ArrayCollection();
+        $this->failedControls = new ArrayCollection();
         $this->createdAt = new \DateTimeImmutable();
         $this->detectedAt = new \DateTimeImmutable();
     }
@@ -540,6 +556,39 @@ class Incident
     public function removeRealizedRisk(Risk $risk): static
     {
         $this->realizedRisks->removeElement($risk);
+        return $this;
+    }
+
+    public function getOriginatingThreat(): ?ThreatIntelligence
+    {
+        return $this->originatingThreat;
+    }
+
+    public function setOriginatingThreat(?ThreatIntelligence $originatingThreat): static
+    {
+        $this->originatingThreat = $originatingThreat;
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Control>
+     */
+    public function getFailedControls(): Collection
+    {
+        return $this->failedControls;
+    }
+
+    public function addFailedControl(Control $control): static
+    {
+        if (!$this->failedControls->contains($control)) {
+            $this->failedControls->add($control);
+        }
+        return $this;
+    }
+
+    public function removeFailedControl(Control $control): static
+    {
+        $this->failedControls->removeElement($control);
         return $this;
     }
 
