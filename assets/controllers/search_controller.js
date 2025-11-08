@@ -27,7 +27,11 @@ export default class extends Controller {
 
     connect() {
         // Register keyboard shortcut: Cmd+K / Ctrl+K
-        this.boundHandleKeydown = this.handleGlobalKeydown.bind(this);
+        this.boundHandleGlobalKeydown = this.handleGlobalKeydown.bind(this);
+        document.addEventListener('keydown', this.boundHandleGlobalKeydown);
+
+        // Register modal keydown handler (ESC, arrows, etc.)
+        this.boundHandleKeydown = this.handleKeydown.bind(this);
         document.addEventListener('keydown', this.boundHandleKeydown);
 
         // Debounced search function
@@ -36,6 +40,7 @@ export default class extends Controller {
     }
 
     disconnect() {
+        document.removeEventListener('keydown', this.boundHandleGlobalKeydown);
         document.removeEventListener('keydown', this.boundHandleKeydown);
         if (this.searchTimeout) {
             clearTimeout(this.searchTimeout);
@@ -79,6 +84,11 @@ export default class extends Controller {
     }
 
     handleKeydown(event) {
+        // Only handle keys when modal is open
+        if (!this.hasModalTarget || this.modalTarget.classList.contains('d-none')) {
+            return;
+        }
+
         switch (event.key) {
             case 'Escape':
                 event.preventDefault();
