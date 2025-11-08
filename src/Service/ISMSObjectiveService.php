@@ -194,12 +194,6 @@ class ISMSObjectiveService
             $errors[] = 'Zieldatum ist erforderlich.';
         }
 
-        if ($objective->getTargetValue() && $objective->getCurrentValue()) {
-            if ((float)$objective->getCurrentValue() > (float)$objective->getTargetValue()) {
-                $errors[] = 'Aktueller Wert kann nicht größer als Zielwert sein (außer bei Übererfüllung).';
-            }
-        }
-
         return $errors;
     }
 
