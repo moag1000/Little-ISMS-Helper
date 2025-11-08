@@ -37,8 +37,8 @@ bin/console debug:voter AssetVoter
   - `gc_maxlifetime: 3600` - Session lifetime: 1 hour
 
 - **Session Fixation Protection** (`config/packages/security.yaml`):
-  - `invalidate_session: true` - Regenerates session ID on login
-  - Invalidates session on logout
+  - Symfony automatically regenerates session ID on successful authentication (built-in protection)
+  - `invalidate_session: true` on logout - Completely invalidates session on logout
 
 - **Remember Me Cookie Security**:
   - `secure: true` - HTTPS only
@@ -136,7 +136,8 @@ symfony check:security
   - Secure, HttpOnly, SameSite=strict cookies
   - 48-character session IDs with high entropy (50% longer than default)
   - 6 bits per character (maximum entropy, 50% more than default)
-  - Session fixation protection (regenerate on login)
+  - Session fixation protection (automatic session regeneration on login)
+  - Session invalidation on logout
 
 - **Password Security**:
   - Automatic bcrypt/argon2 hashing
