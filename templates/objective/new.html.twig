@@ -1,69 +1,55 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New ISMS Objective - {{ parent() }}{% endblock %}
+{% block title %}Neues ISMS-Ziel - {{ parent() }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid py-4">
     <div class="card shadow">
-        <div class="card-header bg-primary text-white"><h4 class="mb-0">New ISMS Objective</h4></div>
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">Neues ISMS-Ziel erstellen</h4>
+        </div>
         <div class="card-body">
-            <form method="post">
+            {{ form_start(form) }}
                 <div class="row">
                     <div class="col-md-8 mb-3">
-                        <label class="form-label">Title *</label>
-                        <input type="text" name="title" class="form-control" required>
+                        {{ form_row(form.title) }}
                     </div>
                     <div class="col-md-4 mb-3">
-                        <label class="form-label">Category *</label>
-                        <select name="category" class="form-control" required>
-                            <option value="availability">Availability</option>
-                            <option value="confidentiality">Confidentiality</option>
-                            <option value="integrity">Integrity</option>
-                            <option value="compliance">Compliance</option>
-                            <option value="risk_management">Risk Management</option>
-                            <option value="incident_response">Incident Response</option>
-                            <option value="awareness">Awareness & Training</option>
-                            <option value="continual_improvement">Continual Improvement</option>
-                        </select>
+                        {{ form_row(form.category) }}
                     </div>
                     <div class="col-md-12 mb-3">
-                        <label class="form-label">Description *</label>
-                        <textarea name="description" class="form-control" rows="3" required></textarea>
+                        {{ form_row(form.description) }}
                     </div>
                     <div class="col-md-12 mb-3">
-                        <label class="form-label">Measurable Indicators</label>
-                        <textarea name="measurable_indicators" class="form-control" rows="2"></textarea>
+                        {{ form_row(form.measurableIndicators) }}
                     </div>
                     <div class="col-md-4 mb-3">
-                        <label class="form-label">Target Value</label>
-                        <input type="number" step="0.01" name="target_value" class="form-control">
+                        {{ form_row(form.targetValue) }}
                     </div>
                     <div class="col-md-4 mb-3">
-                        <label class="form-label">Current Value</label>
-                        <input type="number" step="0.01" name="current_value" class="form-control">
+                        {{ form_row(form.currentValue) }}
                     </div>
                     <div class="col-md-4 mb-3">
-                        <label class="form-label">Unit</label>
-                        <input type="text" name="unit" class="form-control" placeholder="%, days, incidents">
+                        {{ form_row(form.unit) }}
                     </div>
                     <div class="col-md-6 mb-3">
-                        <label class="form-label">Responsible Person *</label>
-                        <input type="text" name="responsible_person" class="form-control" required>
+                        {{ form_row(form.responsiblePerson) }}
                     </div>
                     <div class="col-md-6 mb-3">
-                        <label class="form-label">Target Date *</label>
-                        <input type="date" name="target_date" class="form-control" required>
+                        {{ form_row(form.targetDate) }}
                     </div>
                     <div class="col-md-12 mb-3">
-                        <label class="form-label">Progress Notes</label>
-                        <textarea name="progress_notes" class="form-control" rows="3"></textarea>
+                        {{ form_row(form.status) }}
+                    </div>
+                    <div class="col-md-12 mb-3">
+                        {{ form_row(form.progressNotes) }}
                     </div>
                 </div>
-                <div class="d-flex justify-content-between">
-                    <a href="{{ path('app_objective_index') }}" class="btn btn-outline-secondary">Cancel</a>
-                    <button type="submit" class="btn btn-primary">Create Objective</button>
+                <div class="d-flex justify-content-between mt-4">
+                    <a href="{{ path('app_objective_index') }}" class="btn btn-outline-secondary">Abbrechen</a>
+                    <button type="submit" class="btn btn-primary">Ziel erstellen</button>
                 </div>
-            </form>
+            {{ form_end(form) }}
         </div>
     </div>
 </div>
