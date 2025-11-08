@@ -209,7 +209,13 @@ class AuditLogSubscriber
             'AuditChecklist',
             'ComplianceRequirement',
             'ComplianceFramework',
-            'ComplianceMapping'
+            'ComplianceMapping',
+            // New entities for 100% ISO compliance
+            'Supplier',
+            'InterestedParty',
+            'BusinessContinuityPlan',
+            'BCExercise',
+            'ChangeRequest'
         ];
 
         return in_array($className, $auditedEntities);
