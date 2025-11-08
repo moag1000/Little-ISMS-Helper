@@ -10,7 +10,7 @@ app_home:
     path: /
     controller: App\Controller\HomeController::index
 
-# Dashboard route WITH locale prefix (must match #[Route] name in HomeController)
+# Dashboard route WITH locale prefix
 app_dashboard:
     path: /{_locale}/dashboard
     controller: App\Controller\HomeController::dashboard
