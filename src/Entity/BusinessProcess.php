@@ -90,7 +90,7 @@ class BusinessProcess
     {
         $this->supportingAssets = new ArrayCollection();
         $this->identifiedRisks = new ArrayCollection();
-        $this->createdAt = new \DateTime();
+        $this->createdAt = new \DateTimeImmutable();
     }
 
     public function getId(): ?int

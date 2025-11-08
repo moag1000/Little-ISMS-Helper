@@ -194,7 +194,7 @@ class Control
         $this->incidents = new ArrayCollection();
         $this->protectedAssets = new ArrayCollection();
         $this->trainings = new ArrayCollection();
-        $this->createdAt = new \DateTime();
+        $this->createdAt = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -513,7 +513,7 @@ class Control
     public function isReviewNeeded(): bool
     {
         // Check if there are recent incidents affecting protected assets
-        $threeMonthsAgo = new \DateTime('-3 months');
+        $threeMonthsAgo = new \DateTimeImmutable('-3 months');
 
         foreach ($this->protectedAssets as $asset) {
             foreach ($asset->getIncidents() as $incident) {
@@ -524,7 +524,7 @@ class Control
         }
 
         // Also check regular review schedule
-        if ($this->nextReviewDate && $this->nextReviewDate < new \DateTime()) {
+        if ($this->nextReviewDate && $this->nextReviewDate < new \DateTimeImmutable()) {
             return true;
         }
 
@@ -600,7 +600,7 @@ class Control
 
         if ($hasCompleted) {
             // Check if training is outdated (>1 year old)
-            $oneYearAgo = new \DateTime('-1 year');
+            $oneYearAgo = new \DateTimeImmutable('-1 year');
             if ($mostRecentDate && $mostRecentDate < $oneYearAgo) {
                 return 'training_outdated';
             }

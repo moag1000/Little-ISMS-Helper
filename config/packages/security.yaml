@@ -26,7 +26,8 @@ security:
                 login_path: app_login
                 check_path: app_login
                 enable_csrf: true
-                default_target_path: app_dashboard
+                # Use custom success handler for locale-aware redirects
+                success_handler: App\Security\LoginSuccessHandler
                 always_use_default_target_path: false
 
             # Logout
@@ -39,9 +40,9 @@ security:
                 - App\Security\AzureOAuthAuthenticator
                 - App\Security\AzureSamlAuthenticator
 
-            # Entry point (what to do when authentication is required)
-            # Use form_login as default, OAuth/SAML explicitly via their routes
-            entry_point: form_login.authenticator
+            # Entry point: use form_login for unauthenticated users
+            # OAuth/SAML accessible via their explicit routes
+            entry_point: form_login
 
             # Remember me functionality
             remember_me:
@@ -69,11 +70,11 @@ security:
         - { path: ^/oauth, roles: PUBLIC_ACCESS }
         - { path: ^/saml, roles: PUBLIC_ACCESS }
 
-        # Admin routes (with locale prefix)
-        - { path: ^/[a-z]{2}/admin, roles: ROLE_ADMIN }
+        # Admin routes (with locale prefix) - specific locale pattern for better security
+        - { path: '^/(de|en)/admin', roles: ROLE_ADMIN }
 
-        # All other routes require authentication (with locale prefix)
-        - { path: ^/[a-z]{2}/, roles: ROLE_USER }
+        # All other routes require authentication (with locale prefix) - specific locale pattern
+        - { path: '^/(de|en)/', roles: ROLE_USER }
 
 when@test:
     security:
