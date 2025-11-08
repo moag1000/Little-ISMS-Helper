@@ -14,10 +14,12 @@ use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Delete;
 
 use App\Repository\ChangeRequestRepository;
+use App\Entity\Tenant;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -40,19 +42,29 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Index(columns: ['priority'], name: 'idx_change_priority')]
 #[ORM\Index(columns: ['status'], name: 'idx_change_status')]
 #[ORM\Index(columns: ['planned_implementation_date'], name: 'idx_change_planned_date')]
+#[ORM\Index(columns: ['tenant_id'], name: 'idx_change_request_tenant')]
+#[ORM\HasLifecycleCallbacks]
 class ChangeRequest
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['change_request:read'])]
     private ?int $id = null;
+
+    #[ORM\ManyToOne(targetEntity: Tenant::class)]
+    #[ORM\JoinColumn(nullable: true)]
+    #[Groups(['change_request:read'])]
+    private ?Tenant $tenant = null;
 
     #[ORM\Column(length: 50)]
     #[Assert\NotBlank]
+    #[Groups(['change_request:read', 'change_request:write'])]
     private ?string $changeNumber = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message: 'Change title is required')]
+    #[Groups(['change_request:read', 'change_request:write'])]
     private ?string $title = null;
 
     /**
@@ -65,14 +77,17 @@ class ChangeRequest
         'isms_policy', 'isms_scope', 'control', 'asset', 'process',
         'technology', 'supplier', 'organizational', 'other'
     ])]
+    #[Groups(['change_request:read', 'change_request:write'])]
     private ?string $changeType = 'other';
 
     #[ORM\Column(type: Types::TEXT)]
     #[Assert\NotBlank(message: 'Description is required')]
+    #[Groups(['change_request:read', 'change_request:write'])]
     private ?string $description = null;
 
     #[ORM\Column(type: Types::TEXT)]
     #[Assert\NotBlank(message: 'Justification is required')]
+    #[Groups(['change_request:read', 'change_request:write'])]
     private ?string $justification = null;
 
     /**
@@ -80,10 +95,12 @@ class ChangeRequest
      */
     #[ORM\Column(length: 100)]
     #[Assert\NotBlank]
+    #[Groups(['change_request:read', 'change_request:write'])]
     private ?string $requestedBy = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     #[Assert\NotNull]
+    #[Groups(['change_request:read', 'change_request:write'])]
     private ?\DateTimeInterface $requestedDate = null;
 
     /**
@@ -92,6 +109,7 @@ class ChangeRequest
     #[ORM\Column(length: 50)]
     #[Assert\NotBlank]
     #[Assert\Choice(choices: ['critical', 'high', 'medium', 'low'])]
+    #[Groups(['change_request:read', 'change_request:write'])]
     private ?string $priority = 'medium';
 
     /**
@@ -103,12 +121,14 @@ class ChangeRequest
         'draft', 'submitted', 'under_review', 'approved', 'rejected',
         'scheduled', 'implemented', 'verified', 'closed', 'cancelled'
     ])]
+    #[Groups(['change_request:read', 'change_request:write'])]
     private ?string $status = 'draft';
 
     /**
      * Impact on ISMS
      */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['change_request:read', 'change_request:write'])]
     private ?string $ismsImpact = null;
 
     /**
@@ -116,6 +136,7 @@ class ChangeRequest
      */
     #[ORM\ManyToMany(targetEntity: Asset::class)]
     #[ORM\JoinTable(name: 'change_request_asset')]
+    #[Groups(['change_request:read'])]
     private Collection $affectedAssets;
 
     /**
@@ -123,6 +144,7 @@ class ChangeRequest
      */
     #[ORM\ManyToMany(targetEntity: Control::class)]
     #[ORM\JoinTable(name: 'change_request_control')]
+    #[Groups(['change_request:read'])]
     private Collection $affectedControls;
 
     /**
@@ -130,6 +152,7 @@ class ChangeRequest
      */
     #[ORM\ManyToMany(targetEntity: BusinessProcess::class)]
     #[ORM\JoinTable(name: 'change_request_business_process')]
+    #[Groups(['change_request:read'])]
     private Collection $affectedProcesses;
 
     /**
@@ -137,84 +160,101 @@ class ChangeRequest
      */
     #[ORM\ManyToMany(targetEntity: Risk::class)]
     #[ORM\JoinTable(name: 'change_request_risk')]
+    #[Groups(['change_request:read'])]
     private Collection $associatedRisks;
 
     /**
      * Risk assessment for the change
      */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['change_request:read', 'change_request:write'])]
     private ?string $riskAssessment = null;
 
     /**
      * Implementation plan
      */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['change_request:read', 'change_request:write'])]
     private ?string $implementationPlan = null;
 
     /**
      * Rollback plan
      */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['change_request:read', 'change_request:write'])]
     private ?string $rollbackPlan = null;
 
     /**
      * Testing requirements
      */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['change_request:read', 'change_request:write'])]
     private ?string $testingRequirements = null;
 
     /**
      * Planned implementation date
      */
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    #[Groups(['change_request:read', 'change_request:write'])]
     private ?\DateTimeInterface $plannedImplementationDate = null;
 
     /**
      * Actual implementation date
      */
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    #[Groups(['change_request:read', 'change_request:write'])]
     private ?\DateTimeInterface $actualImplementationDate = null;
 
     /**
      * Approver
      */
     #[ORM\Column(length: 100, nullable: true)]
+    #[Groups(['change_request:read', 'change_request:write'])]
     private ?string $approvedBy = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    #[Groups(['change_request:read', 'change_request:write'])]
     private ?\DateTimeInterface $approvedDate = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['change_request:read', 'change_request:write'])]
     private ?string $approvalComments = null;
 
     /**
      * Implementer
      */
     #[ORM\Column(length: 100, nullable: true)]
+    #[Groups(['change_request:read', 'change_request:write'])]
     private ?string $implementedBy = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['change_request:read', 'change_request:write'])]
     private ?string $implementationNotes = null;
 
     /**
      * Verification
      */
     #[ORM\Column(length: 100, nullable: true)]
+    #[Groups(['change_request:read', 'change_request:write'])]
     private ?string $verifiedBy = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    #[Groups(['change_request:read', 'change_request:write'])]
     private ?\DateTimeInterface $verifiedDate = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['change_request:read', 'change_request:write'])]
     private ?string $verificationResults = null;
 
     /**
      * Closure
      */
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    #[Groups(['change_request:read', 'change_request:write'])]
     private ?\DateTimeInterface $closedDate = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['change_request:read', 'change_request:write'])]
     private ?string $closureNotes = null;
 
     /**
@@ -222,12 +262,15 @@ class ChangeRequest
      */
     #[ORM\ManyToMany(targetEntity: Document::class)]
     #[ORM\JoinTable(name: 'change_request_document')]
+    #[Groups(['change_request:read'])]
     private Collection $documents;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Groups(['change_request:read'])]
     private ?\DateTimeInterface $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[Groups(['change_request:read'])]
     private ?\DateTimeInterface $updatedAt = null;
 
     public function __construct()
@@ -241,9 +284,30 @@ class ChangeRequest
         $this->requestedDate = new \DateTime();
     }
 
+    #[ORM\PrePersist]
+    #[ORM\PreUpdate]
+    public function updateTimestamps(): void
+    {
+        $this->updatedAt = new \DateTimeImmutable();
+        if ($this->createdAt === null) {
+            $this->createdAt = new \DateTimeImmutable();
+        }
+    }
+
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getTenant(): ?Tenant
+    {
+        return $this->tenant;
+    }
+
+    public function setTenant(?Tenant $tenant): static
+    {
+        $this->tenant = $tenant;
+        return $this;
     }
 
     public function getChangeNumber(): ?string
