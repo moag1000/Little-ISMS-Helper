@@ -70,10 +70,10 @@ security:
         - { path: ^/saml, roles: PUBLIC_ACCESS }
 
         # Admin routes (with locale prefix)
-        - { path: ^/[a-z]{2}/admin, roles: ROLE_ADMIN }
+        - { path: '^/[a-z]{2}/admin', roles: ROLE_ADMIN }
 
         # All other routes require authentication (with locale prefix)
-        - { path: ^/[a-z]{2}/, roles: ROLE_USER }
+        - { path: '^/[a-z]{2}/', roles: ROLE_USER }
 
 when@test:
     security:
