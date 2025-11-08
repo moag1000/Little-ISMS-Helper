@@ -112,7 +112,10 @@
                     </div>
                 </div>
                 <div class="chart-container">
-                    <canvas id="riskDistributionChart"></canvas>
+                    <canvas data-controller="chart"
+                            data-chart-type-value="doughnut"
+                            data-chart-data-value='{"labels":["Hoch","Mittel","Niedrig","Sehr Niedrig"],"datasets":[{"data":[{{ stats.risks_high|default(0) }},{{ (stats.risks_total|default(0) - stats.risks_high|default(0)) / 2 }},{{ (stats.risks_total|default(0) - stats.risks_high|default(0)) / 3 }},{{ (stats.risks_total|default(0) - stats.risks_high|default(0)) / 6 }}],"backgroundColor":["#e74c3c","#f39c12","#3498db","#2ecc71"]}]}'
+                            data-chart-options-value='{"plugins":{"legend":{"position":"bottom"}}}'></canvas>
                 </div>
             </div>
 
@@ -127,7 +130,10 @@
                     </h3>
                 </div>
                 <div class="chart-container">
-                    <canvas id="assetCategoryChart"></canvas>
+                    <canvas data-controller="chart"
+                            data-chart-type-value="bar"
+                            data-chart-data-value='{"labels":["Hardware","Software","Daten","Personal","Services"],"datasets":[{"label":"Anzahl Assets","data":[{{ (stats.assets_total|default(0) * 0.3)|round }},{{ (stats.assets_total|default(0) * 0.25)|round }},{{ (stats.assets_total|default(0) * 0.2)|round }},{{ (stats.assets_total|default(0) * 0.15)|round }},{{ (stats.assets_total|default(0) * 0.1)|round }}],"backgroundColor":"rgba(102, 126, 234, 0.7)","borderColor":"rgba(102, 126, 234, 1)","borderWidth":1}]}'
+                            data-chart-options-value='{"scales":{"y":{"beginAtZero":true}}}'></canvas>
                 </div>
             </div>
         </div>
@@ -197,79 +203,4 @@
     {# Dashboard Settings Modal #}
     {% include '_components/_dashboard_settings_modal.html.twig' %}
 </div>
-
-{# Chart.js Initialization #}
-{% block javascripts %}
-    {{ parent() }}
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Risk Distribution Chart
-            const riskCtx = document.getElementById('riskDistributionChart');
-            if (riskCtx) {
-                new Chart(riskCtx, {
-                    type: 'doughnut',
-                    data: {
-                        labels: ['Hoch', 'Mittel', 'Niedrig', 'Sehr Niedrig'],
-                        datasets: [{
-                            data: [
-                                {{ stats.risks_high|default(0) }},
-                                {{ (stats.risks_total|default(0) - stats.risks_high|default(0)) / 2 }},
-                                {{ (stats.risks_total|default(0) - stats.risks_high|default(0)) / 3 }},
-                                {{ (stats.risks_total|default(0) - stats.risks_high|default(0)) / 6 }}
-                            ],
-                            backgroundColor: [
-                                '#e74c3c',
-                                '#f39c12',
-                                '#3498db',
-                                '#2ecc71'
-                            ]
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                position: 'bottom'
-                            }
-                        }
-                    }
-                });
-            }
-
-            // Asset Category Chart
-            const assetCtx = document.getElementById('assetCategoryChart');
-            if (assetCtx) {
-                new Chart(assetCtx, {
-                    type: 'bar',
-                    data: {
-                        labels: ['Hardware', 'Software', 'Daten', 'Personal', 'Services'],
-                        datasets: [{
-                            label: 'Anzahl Assets',
-                            data: [
-                                {{ (stats.assets_total|default(0) * 0.3)|round }},
-                                {{ (stats.assets_total|default(0) * 0.25)|round }},
-                                {{ (stats.assets_total|default(0) * 0.2)|round }},
-                                {{ (stats.assets_total|default(0) * 0.15)|round }},
-                                {{ (stats.assets_total|default(0) * 0.1)|round }}
-                            ],
-                            backgroundColor: 'rgba(102, 126, 234, 0.7)',
-                            borderColor: 'rgba(102, 126, 234, 1)',
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                            y: {
-                                beginAtZero: true
-                            }
-                        }
-                    }
-                });
-            }
-        });
-    </script>
-{% endblock %}
 {% endblock %}

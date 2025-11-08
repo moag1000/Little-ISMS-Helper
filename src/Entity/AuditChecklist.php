@@ -58,7 +58,7 @@ class AuditChecklist
 
     public function __construct()
     {
-        $this->createdAt = new \DateTime();
+        $this->createdAt = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -234,7 +234,7 @@ class AuditChecklist
     public function markAsVerified(string $auditor): static
     {
         $this->auditor = $auditor;
-        $this->verifiedAt = new \DateTime();
+        $this->verifiedAt = new \DateTimeImmutable();
         return $this;
     }
 
