@@ -22,6 +22,9 @@ export default class extends Controller {
         this.mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
         this.boundHandleSystemThemeChange = this.handleSystemThemeChange.bind(this);
         this.mediaQuery.addEventListener('change', this.boundHandleSystemThemeChange);
+
+        // Initialize debounce timestamp
+        this.lastToggleTime = 0;
     }
 
     disconnect() {
@@ -43,7 +46,21 @@ export default class extends Controller {
         }
     }
 
-    toggle() {
+    toggle(event) {
+        // Prevent event propagation and default behavior
+        if (event) {
+            event.preventDefault();
+            event.stopPropagation();
+            event.stopImmediatePropagation();
+        }
+
+        // Debounce: prevent multiple rapid calls (within 300ms)
+        const now = Date.now();
+        if (now - this.lastToggleTime < 300) {
+            return;
+        }
+        this.lastToggleTime = now;
+
         const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
         const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
 
