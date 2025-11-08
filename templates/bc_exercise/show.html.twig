@@ -1,0 +1,157 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ bc_exercise.name }}{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="page-header">
+        <h1>{{ bc_exercise.name }}</h1>
+        <div class="actions">
+            <a href="{{ path('app_bc_exercise_edit', {id: bc_exercise.id}) }}" class="btn btn-primary">Edit</a>
+            <a href="{{ path('app_bc_exercise_index') }}" class="btn btn-secondary">Back</a>
+            {% if is_granted('ROLE_ADMIN') %}
+                <form method="post" action="{{ path('app_bc_exercise_delete', {id: bc_exercise.id}) }}" style="display:inline;" onsubmit="return confirm('Are you sure?');">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ bc_exercise.id) }}">
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h2>Exercise Details</h2>
+            <div>
+                <span class="badge badge-{{ bc_exercise.exerciseType }}">{{ bc_exercise.exerciseType }}</span>
+                <span class="badge badge-{{ bc_exercise.status }}">{{ bc_exercise.status }}</span>
+            </div>
+        </div>
+        <div class="card-content">
+            {% if bc_exercise.status == 'completed' %}
+                {% set effectiveness = bc_exercise.getEffectivenessScore() %}
+                <div class="alert alert-{{ effectiveness >= 80 ? 'success' : (effectiveness >= 60 ? 'info' : 'warning') }}">
+                    <strong>Effectiveness Score: {{ effectiveness }}%</strong>
+                </div>
+            {% endif %}
+
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <span class="label">Exercise Date:</span>
+                    <span class="value">{{ bc_exercise.exerciseDate|date('Y-m-d') }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Duration:</span>
+                    <span class="value">{{ bc_exercise.durationHours ?? 'N/A' }} hours</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Facilitator:</span>
+                    <span class="value">{{ bc_exercise.facilitator }}</span>
+                </div>
+                {% if bc_exercise.successRating %}
+                <div class="detail-item">
+                    <span class="label">Success Rating:</span>
+                    <span class="value">{{ bc_exercise.successRating }}/5</span>
+                </div>
+                {% endif %}
+            </div>
+
+            {% if bc_exercise.description %}
+            <div class="detail-section">
+                <h3>Description</h3>
+                <p>{{ bc_exercise.description }}</p>
+            </div>
+            {% endif %}
+
+            <div class="detail-section">
+                <h3>Scope & Objectives</h3>
+                <p><strong>Scope:</strong> {{ bc_exercise.scope }}</p>
+                <p><strong>Objectives:</strong> {{ bc_exercise.objectives|nl2br }}</p>
+            </div>
+
+            {% if bc_exercise.scenario %}
+            <div class="detail-section">
+                <h3>Exercise Scenario</h3>
+                <p>{{ bc_exercise.scenario|nl2br }}</p>
+            </div>
+            {% endif %}
+
+            <div class="detail-section">
+                <h3>Participants</h3>
+                <p>{{ bc_exercise.participants|nl2br }}</p>
+                {% if bc_exercise.observers %}
+                <p><strong>Observers:</strong> {{ bc_exercise.observers|nl2br }}</p>
+                {% endif %}
+            </div>
+
+            {% if bc_exercise.status == 'completed' %}
+                {% if bc_exercise.results %}
+                <div class="detail-section">
+                    <h3>Results</h3>
+                    <p>{{ bc_exercise.results|nl2br }}</p>
+                </div>
+                {% endif %}
+
+                {% if bc_exercise.whatWentWell %}
+                <div class="detail-section alert-success">
+                    <h3>✅ What Went Well (WWW)</h3>
+                    <p>{{ bc_exercise.whatWentWell|nl2br }}</p>
+                </div>
+                {% endif %}
+
+                {% if bc_exercise.areasForImprovement %}
+                <div class="detail-section alert-warning">
+                    <h3>📋 Areas for Improvement (AFI)</h3>
+                    <p>{{ bc_exercise.areasForImprovement|nl2br }}</p>
+                </div>
+                {% endif %}
+
+                {% if bc_exercise.findings %}
+                <div class="detail-section">
+                    <h3>Findings</h3>
+                    <p>{{ bc_exercise.findings|nl2br }}</p>
+                </div>
+                {% endif %}
+
+                {% if bc_exercise.actionItems %}
+                <div class="detail-section">
+                    <h3>Action Items</h3>
+                    <p>{{ bc_exercise.actionItems|nl2br }}</p>
+                </div>
+                {% endif %}
+
+                {% if bc_exercise.lessonsLearned %}
+                <div class="detail-section">
+                    <h3>Lessons Learned</h3>
+                    <p>{{ bc_exercise.lessonsLearned|nl2br }}</p>
+                </div>
+                {% endif %}
+
+                {% if bc_exercise.planUpdatesRequired %}
+                <div class="detail-section alert-info">
+                    <h3>Plan Updates Required</h3>
+                    <p>{{ bc_exercise.planUpdatesRequired|nl2br }}</p>
+                </div>
+                {% endif %}
+
+                <div class="detail-section">
+                    <p><strong>Report Completed:</strong> {{ bc_exercise.reportCompleted ? '✅ Yes' : '❌ No' }}</p>
+                    {% if bc_exercise.reportDate %}
+                    <p><strong>Report Date:</strong> {{ bc_exercise.reportDate|date('Y-m-d') }}</p>
+                    {% endif %}
+                </div>
+            {% endif %}
+
+            {% if bc_exercise.relatedBCPlans|length > 0 %}
+            <div class="detail-section">
+                <h3>Related BC Plans ({{ bc_exercise.relatedBCPlans|length }})</h3>
+                <ul>
+                    {% for plan in bc_exercise.relatedBCPlans %}
+                    <li><a href="{{ path('app_bc_plan_show', {id: plan.id}) }}">{{ plan.name }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

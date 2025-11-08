@@ -1,0 +1,111 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}BC Exercises{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="page-header">
+        <h1>BC Exercises & Testing</h1>
+        <a href="{{ path('app_bc_exercise_new') }}" class="btn btn-primary">Add New Exercise</a>
+    </div>
+
+    {% if statistics %}
+    <div class="info-box">
+        <h3>Statistics</h3>
+        <div class="stats-grid">
+            <div class="stat-item">
+                <span class="stat-label">Total Exercises:</span>
+                <span class="stat-value">{{ statistics.total }}</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Completed:</span>
+                <span class="stat-value">{{ statistics.completed }}</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Planned:</span>
+                <span class="stat-value">{{ statistics.planned }}</span>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if upcoming|length > 0 %}
+    <div class="info-box">
+        <h3>Upcoming Exercises</h3>
+        <ul>
+            {% for exercise in upcoming %}
+            <li>
+                <a href="{{ path('app_bc_exercise_show', {id: exercise.id}) }}">{{ exercise.name }}</a>
+                - {{ exercise.exerciseDate|date('Y-m-d') }} ({{ exercise.exerciseType }})
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    {% if incomplete_reports|length > 0 %}
+    <div class="alert alert-warning">
+        <h4>⚠️ Incomplete Reports</h4>
+        <ul>
+            {% for exercise in incomplete_reports %}
+            <li>
+                <a href="{{ path('app_bc_exercise_show', {id: exercise.id}) }}">{{ exercise.name }}</a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <div class="card">
+        <div class="card-header">
+            <h2>BC Exercises ({{ bc_exercises|length }})</h2>
+        </div>
+        <div class="card-content">
+            {% if bc_exercises|length > 0 %}
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Effectiveness</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for exercise in bc_exercises %}
+                    <tr>
+                        <td><a href="{{ path('app_bc_exercise_show', {id: exercise.id}) }}">{{ exercise.name }}</a></td>
+                        <td><span class="badge badge-info">{{ exercise.exerciseType }}</span></td>
+                        <td>{{ exercise.exerciseDate|date('Y-m-d') }}</td>
+                        <td><span class="badge badge-{{ exercise.status }}">{{ exercise.status }}</span></td>
+                        <td>
+                            {% if exercise.status == 'completed' %}
+                                {{ exercise.getEffectivenessScore() }}%
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{{ path('app_bc_exercise_show', {id: exercise.id}) }}" class="btn btn-sm btn-secondary">View</a>
+                            <a href="{{ path('app_bc_exercise_edit', {id: exercise.id}) }}" class="btn btn-sm btn-primary">Edit</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p>No BC exercises found. <a href="{{ path('app_bc_exercise_new') }}">Schedule your first exercise</a>.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem; }
+.stat-item { display: flex; flex-direction: column; padding: 1rem; background: #f9fafb; border-radius: 4px; }
+.stat-label { font-size: 0.875rem; color: #6b7280; }
+.stat-value { font-size: 1.5rem; font-weight: bold; color: #111827; }
+</style>
+{% endblock %}
