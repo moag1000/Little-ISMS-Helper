@@ -102,15 +102,16 @@ fi
 
 echo ""
 
-# Check if database already exists
+# Check if database already exists (without dropping it)
 DB_EXISTS=0
 if [ "$DB_TYPE" = "sqlite" ]; then
     if [ -f "$DB_FILE" ]; then
         DB_EXISTS=1
     fi
 else
-    if php bin/console doctrine:database:drop --if-exists --force --no-interaction &>/dev/null; then
-        # Database existed and was dropped
+    # Try to execute a simple query to check if database exists
+    # If it succeeds, database exists
+    if php bin/console dbal:run-sql "SELECT 1" &>/dev/null; then
         DB_EXISTS=1
     fi
 fi
@@ -132,7 +133,7 @@ if [ $DB_EXISTS -eq 1 ]; then
             rm -f "$DB_FILE"
             success "SQLite database deleted"
         else
-            php bin/console doctrine:database:drop --force
+            php bin/console doctrine:database:drop --if-exists --force
             success "Database dropped"
         fi
     else
