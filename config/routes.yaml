@@ -1,13 +1,17 @@
-# Root redirect to default locale
+# Security routes WITHOUT locale prefix (for cleaner URLs and better access control)
+security_routes:
+    resource:
+        path: ../src/Controller/SecurityController.php
+        namespace: App\Controller
+    type: attribute
+
+# Root redirect - smart locale detection
 root:
     path: /
-    controller: Symfony\Bundle\FrameworkBundle\Controller\RedirectController
-    defaults:
-        route: 'app_home'
-        _locale: 'de'
-        permanent: true
+    controller: App\Controller\HomeController::index
 
-controllers:
+# App routes WITH locale prefix
+app_routes:
     resource:
         path: ../src/Controller/
         namespace: App\Controller
@@ -17,3 +21,4 @@ controllers:
         _locale: de|en
     defaults:
         _locale: de
+    exclude: '../src/Controller/SecurityController.php'

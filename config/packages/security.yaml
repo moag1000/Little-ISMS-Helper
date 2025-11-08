@@ -26,7 +26,7 @@ security:
                 login_path: app_login
                 check_path: app_login
                 enable_csrf: true
-                default_target_path: app_home
+                default_target_path: app_dashboard
                 always_use_default_target_path: false
 
             # Logout
@@ -40,7 +40,8 @@ security:
                 - App\Security\AzureSamlAuthenticator
 
             # Entry point (what to do when authentication is required)
-            entry_point: App\Security\AzureOAuthAuthenticator
+            # Use form_login as default, OAuth/SAML explicitly via their routes
+            entry_point: form_login.authenticator
 
             # Remember me functionality
             remember_me:
@@ -62,16 +63,17 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        # Public routes
-        - { path: ^/login, roles: PUBLIC_ACCESS }
+        # Public routes (security routes are now WITHOUT locale prefix)
+        - { path: ^/login$, roles: PUBLIC_ACCESS }
+        - { path: ^/logout$, roles: PUBLIC_ACCESS }
         - { path: ^/oauth, roles: PUBLIC_ACCESS }
         - { path: ^/saml, roles: PUBLIC_ACCESS }
 
-        # Admin routes
-        - { path: ^/admin, roles: ROLE_ADMIN }
+        # Admin routes (with locale prefix)
+        - { path: ^/[a-z]{2}/admin, roles: ROLE_ADMIN }
 
-        # All other routes require authentication
-        - { path: ^/, roles: ROLE_USER }
+        # All other routes require authentication (with locale prefix)
+        - { path: ^/[a-z]{2}/, roles: ROLE_USER }
 
 when@test:
     security:

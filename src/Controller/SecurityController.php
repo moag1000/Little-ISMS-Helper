@@ -33,9 +33,18 @@ class SecurityController extends AbstractController
             ]);
         }
 
-        // If user is already logged in, redirect to home
+        // Store locale preference from query parameter or browser preference
+        $locale = $request->query->get('locale')
+            ?? $request->getSession()->get('_locale')
+            ?? $request->getPreferredLanguage(['de', 'en'])
+            ?? 'de';
+
+        $request->getSession()->set('_locale', $locale);
+        $request->setLocale($locale);
+
+        // If user is already logged in, redirect to dashboard with locale
         if ($this->getUser()) {
-            return $this->redirectToRoute('app_home');
+            return $this->redirectToRoute('app_dashboard', ['_locale' => $locale]);
         }
 
         // Get the login error if there is one

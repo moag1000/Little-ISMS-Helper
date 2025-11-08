@@ -34,16 +34,23 @@ class LocaleSubscriber implements EventSubscriberInterface
     {
         $request = $event->getRequest();
 
-        if (!$request->hasPreviousSession()) {
+        // Skip subrequests
+        if (!$event->isMainRequest()) {
             return;
         }
 
         // Try to see if the locale has been set as a _locale routing parameter
         if ($locale = $request->attributes->get('_locale')) {
+            // Locale in URL → save to session and set
             $request->getSession()->set('_locale', $locale);
+            $request->setLocale($locale);
         } else {
-            // If no explicit locale has been set on this request, use one from the session
-            $request->setLocale($request->getSession()->get('_locale', $this->defaultLocale));
+            // No locale in URL → use session, browser preference, or default
+            $locale = $request->getSession()->get('_locale')
+                ?? $request->getPreferredLanguage(['de', 'en'])
+                ?? $this->defaultLocale;
+
+            $request->setLocale($locale);
         }
     }
 
