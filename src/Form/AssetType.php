@@ -110,6 +110,17 @@ class AssetType extends AbstractType
                 ],
                 'help' => 'asset.help.availability',
             ])
+            ->add('status', ChoiceType::class, [
+                'label' => 'asset.field.status',
+                'choices' => [
+                    'asset.status.active' => 'active',
+                    'asset.status.inactive' => 'inactive',
+                    'asset.status.retired' => 'retired',
+                    'asset.status.disposed' => 'disposed',
+                ],
+                'required' => true,
+                'help' => 'asset.help.status',
+            ])
         ;
     }
 

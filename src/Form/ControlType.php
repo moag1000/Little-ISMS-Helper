@@ -90,7 +90,7 @@ class ControlType extends AbstractType
                     'In Planung' => 'planned',
                     'In Umsetzung' => 'in_progress',
                     'Implementiert' => 'implemented',
-                    'Nicht anwendbar' => 'not_applicable',
+                    'Verifiziert' => 'verified',
                 ],
                 'attr' => ['class' => 'form-select'],
             ])
@@ -155,15 +155,6 @@ class ControlType extends AbstractType
                     'size' => 5,
                 ],
                 'help' => 'Welche Assets werden durch dieses Control geschützt?',
-            ])
-            ->add('evidenceDescription', TextareaType::class, [
-                'label' => 'Nachweisdokumentation',
-                'required' => false,
-                'attr' => [
-                    'class' => 'form-control',
-                    'rows' => 3,
-                ],
-                'help' => 'Links oder Verweise auf Nachweisdokumente.',
             ]);
     }
 
