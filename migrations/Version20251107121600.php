@@ -11,11 +11,16 @@ final class Version20251107121600 extends AbstractMigration
 {
     public function getDescription(): string
     {
-        return 'Add tenant_id relations to Asset, Risk, Incident, Control, and Document entities. Add status field to Document entity.';
+        return 'Add tenant_id relations to User, Asset, Risk, Incident, Control, and Document entities. Add status field to Document entity.';
     }
 
     public function up(Schema $schema): void
     {
+        // Add tenant_id column to users table
+        $this->addSql('ALTER TABLE users ADD COLUMN tenant_id INT DEFAULT NULL');
+        $this->addSql('CREATE INDEX idx_users_tenant ON users (tenant_id)');
+        $this->addSql('ALTER TABLE users ADD CONSTRAINT FK_1483A5E9178D3548 FOREIGN KEY (tenant_id) REFERENCES tenant (id)');
+
         // Add tenant_id column to asset table
         $this->addSql('ALTER TABLE asset ADD COLUMN tenant_id INT DEFAULT NULL');
         $this->addSql('CREATE INDEX idx_asset_tenant ON asset (tenant_id)');
@@ -49,6 +54,11 @@ final class Version20251107121600 extends AbstractMigration
     {
         // Remove status column from document table
         $this->addSql('ALTER TABLE document DROP COLUMN status');
+
+        // Remove tenant_id from users table
+        $this->addSql('ALTER TABLE users DROP FOREIGN KEY FK_1483A5E9178D3548');
+        $this->addSql('DROP INDEX idx_users_tenant ON users');
+        $this->addSql('ALTER TABLE users DROP COLUMN tenant_id');
 
         // Remove tenant_id from document table
         $this->addSql('ALTER TABLE document DROP FOREIGN KEY FK_D8698A76178D3548');
