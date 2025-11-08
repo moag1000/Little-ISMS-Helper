@@ -36,16 +36,21 @@ export default class extends Controller {
     sequenceTimeout = null;
 
     connect() {
-        document.addEventListener('keydown', this.handleKeydown.bind(this));
+        this.boundHandleKeydown = this.handleKeydown.bind(this);
+        document.addEventListener('keydown', this.boundHandleKeydown);
 
         // Close modal on ESC
         if (this.hasModalTarget) {
-            this.modalTarget.addEventListener('click', this.handleBackdropClick.bind(this));
+            this.boundHandleBackdropClick = this.handleBackdropClick.bind(this);
+            this.modalTarget.addEventListener('click', this.boundHandleBackdropClick);
         }
     }
 
     disconnect() {
-        document.removeEventListener('keydown', this.handleKeydown.bind(this));
+        document.removeEventListener('keydown', this.boundHandleKeydown);
+        if (this.hasModalTarget && this.boundHandleBackdropClick) {
+            this.modalTarget.removeEventListener('click', this.boundHandleBackdropClick);
+        }
     }
 
     handleKeydown(event) {
