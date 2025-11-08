@@ -14,10 +14,12 @@ use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Delete;
 
 use App\Repository\BCExerciseRepository;
+use App\Entity\Tenant;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -39,15 +41,24 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Index(columns: ['exercise_type'], name: 'idx_bc_exercise_type')]
 #[ORM\Index(columns: ['exercise_date'], name: 'idx_bc_exercise_date')]
 #[ORM\Index(columns: ['status'], name: 'idx_bc_exercise_status')]
+#[ORM\Index(columns: ['tenant_id'], name: 'idx_bc_exercise_tenant')]
+#[ORM\HasLifecycleCallbacks]
 class BCExercise
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['bc_exercise:read'])]
     private ?int $id = null;
+
+    #[ORM\ManyToOne(targetEntity: Tenant::class)]
+    #[ORM\JoinColumn(nullable: true)]
+    #[Groups(['bc_exercise:read'])]
+    private ?Tenant $tenant = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message: 'Exercise name is required')]
+    #[Groups(['bc_exercise:read', 'bc_exercise:write'])]
     private ?string $name = null;
 
     /**
@@ -61,9 +72,11 @@ class BCExercise
     #[ORM\Column(length: 50)]
     #[Assert\NotBlank]
     #[Assert\Choice(choices: ['tabletop', 'walkthrough', 'simulation', 'full_test', 'component_test'])]
+    #[Groups(['bc_exercise:read', 'bc_exercise:write'])]
     private ?string $exerciseType = 'tabletop';
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['bc_exercise:read', 'bc_exercise:write'])]
     private ?string $description = null;
 
     /**
@@ -71,6 +84,7 @@ class BCExercise
      */
     #[ORM\ManyToMany(targetEntity: BusinessContinuityPlan::class)]
     #[ORM\JoinTable(name: 'bc_exercise_plan')]
+    #[Groups(['bc_exercise:read'])]
     private Collection $testedPlans;
 
     /**
@@ -78,16 +92,19 @@ class BCExercise
      */
     #[ORM\Column(type: Types::TEXT)]
     #[Assert\NotBlank(message: 'Scope must be defined')]
+    #[Groups(['bc_exercise:read', 'bc_exercise:write'])]
     private ?string $scope = null;
 
     #[ORM\Column(type: Types::TEXT)]
     #[Assert\NotBlank(message: 'Objectives must be defined')]
+    #[Groups(['bc_exercise:read', 'bc_exercise:write'])]
     private ?string $objectives = null;
 
     /**
      * Exercise scenario
      */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['bc_exercise:read', 'bc_exercise:write'])]
     private ?string $scenario = null;
 
     /**
@@ -95,6 +112,7 @@ class BCExercise
      */
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     #[Assert\NotNull]
+    #[Groups(['bc_exercise:read', 'bc_exercise:write'])]
     private ?\DateTimeInterface $exerciseDate = null;
 
     /**
@@ -102,6 +120,7 @@ class BCExercise
      */
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
     #[Assert\Range(min: 1, max: 168)]
+    #[Groups(['bc_exercise:read', 'bc_exercise:write'])]
     private ?int $durationHours = null;
 
     /**
@@ -109,6 +128,7 @@ class BCExercise
      */
     #[ORM\Column(type: Types::TEXT)]
     #[Assert\NotBlank(message: 'Participants must be documented')]
+    #[Groups(['bc_exercise:read', 'bc_exercise:write'])]
     private ?string $participants = null;
 
     /**
@@ -116,12 +136,14 @@ class BCExercise
      */
     #[ORM\Column(length: 100)]
     #[Assert\NotBlank]
+    #[Groups(['bc_exercise:read', 'bc_exercise:write'])]
     private ?string $facilitator = null;
 
     /**
      * Observers
      */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['bc_exercise:read', 'bc_exercise:write'])]
     private ?string $observers = null;
 
     /**
@@ -129,48 +151,56 @@ class BCExercise
      */
     #[ORM\Column(length: 50)]
     #[Assert\Choice(choices: ['planned', 'in_progress', 'completed', 'cancelled'])]
+    #[Groups(['bc_exercise:read', 'bc_exercise:write'])]
     private ?string $status = 'planned';
 
     /**
      * Results and observations
      */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['bc_exercise:read', 'bc_exercise:write'])]
     private ?string $results = null;
 
     /**
      * What went well (WWW)
      */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['bc_exercise:read', 'bc_exercise:write'])]
     private ?string $whatWentWell = null;
 
     /**
      * Areas for improvement (AFI)
      */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['bc_exercise:read', 'bc_exercise:write'])]
     private ?string $areasForImprovement = null;
 
     /**
      * Findings (issues discovered)
      */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['bc_exercise:read', 'bc_exercise:write'])]
     private ?string $findings = null;
 
     /**
      * Action items resulting from exercise
      */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['bc_exercise:read', 'bc_exercise:write'])]
     private ?string $actionItems = null;
 
     /**
      * Lessons learned
      */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['bc_exercise:read', 'bc_exercise:write'])]
     private ?string $lessonsLearned = null;
 
     /**
      * Plan updates required (based on findings)
      */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['bc_exercise:read', 'bc_exercise:write'])]
     private ?string $planUpdatesRequired = null;
 
     /**
@@ -183,6 +213,7 @@ class BCExercise
      * }
      */
     #[ORM\Column(type: Types::JSON, nullable: true)]
+    #[Groups(['bc_exercise:read', 'bc_exercise:write'])]
     private ?array $successCriteria = null;
 
     /**
@@ -190,15 +221,18 @@ class BCExercise
      */
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
     #[Assert\Range(min: 1, max: 5)]
+    #[Groups(['bc_exercise:read', 'bc_exercise:write'])]
     private ?int $successRating = null;
 
     /**
      * Report completed
      */
     #[ORM\Column(type: Types::BOOLEAN)]
+    #[Groups(['bc_exercise:read', 'bc_exercise:write'])]
     private bool $reportCompleted = false;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    #[Groups(['bc_exercise:read', 'bc_exercise:write'])]
     private ?\DateTimeInterface $reportDate = null;
 
     /**
@@ -206,12 +240,15 @@ class BCExercise
      */
     #[ORM\ManyToMany(targetEntity: Document::class)]
     #[ORM\JoinTable(name: 'bc_exercise_document')]
+    #[Groups(['bc_exercise:read'])]
     private Collection $documents;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Groups(['bc_exercise:read'])]
     private ?\DateTimeInterface $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[Groups(['bc_exercise:read'])]
     private ?\DateTimeInterface $updatedAt = null;
 
     public function __construct()
@@ -221,9 +258,30 @@ class BCExercise
         $this->createdAt = new \DateTime();
     }
 
+    #[ORM\PrePersist]
+    #[ORM\PreUpdate]
+    public function updateTimestamps(): void
+    {
+        $this->updatedAt = new \DateTimeImmutable();
+        if ($this->createdAt === null) {
+            $this->createdAt = new \DateTimeImmutable();
+        }
+    }
+
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getTenant(): ?Tenant
+    {
+        return $this->tenant;
+    }
+
+    public function setTenant(?Tenant $tenant): static
+    {
+        $this->tenant = $tenant;
+        return $this;
     }
 
     public function getName(): ?string

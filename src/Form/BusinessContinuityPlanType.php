@@ -49,7 +49,6 @@ class BusinessContinuityPlanType extends AbstractType
                 'choices' => [
                     'Draft' => 'draft',
                     'Under Review' => 'under_review',
-                    'Approved' => 'approved',
                     'Active' => 'active',
                     'Archived' => 'archived',
                 ],

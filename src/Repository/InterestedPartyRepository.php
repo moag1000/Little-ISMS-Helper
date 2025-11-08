@@ -54,4 +54,42 @@ class InterestedPartyRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * Get interested party statistics
+     */
+    public function getStatistics(): array
+    {
+        $total = $this->createQueryBuilder('p')
+            ->select('COUNT(p.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        $highImportance = $this->createQueryBuilder('p')
+            ->select('COUNT(p.id)')
+            ->where('p.importance IN (:importance)')
+            ->setParameter('importance', ['critical', 'high'])
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        $overdueCommunications = $this->createQueryBuilder('p')
+            ->select('COUNT(p.id)')
+            ->where('p.nextCommunication < :now')
+            ->setParameter('now', new \DateTime())
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        $avgEngagement = $this->createQueryBuilder('p')
+            ->select('AVG(p.satisfactionLevel)')
+            ->where('p.satisfactionLevel IS NOT NULL')
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        return [
+            'total' => $total,
+            'high_importance' => $highImportance,
+            'overdue_communications' => $overdueCommunications,
+            'avg_satisfaction' => round($avgEngagement ?? 0, 2)
+        ];
+    }
 }
