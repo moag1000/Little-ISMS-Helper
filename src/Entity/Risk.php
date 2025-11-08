@@ -155,6 +155,29 @@ class Risk
     private ?\DateTimeInterface $updatedAt = null;
 
     /**
+     * Risk Acceptance Approval (ISO 27005)
+     * Required when treatmentStrategy = 'accept'
+     */
+    #[ORM\Column(length: 100, nullable: true)]
+    #[Groups(['risk:read', 'risk:write'])]
+    private ?string $acceptanceApprovedBy = null;
+
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    #[Groups(['risk:read', 'risk:write'])]
+    private ?\DateTimeInterface $acceptanceApprovedAt = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['risk:read', 'risk:write'])]
+    private ?string $acceptanceJustification = null;
+
+    /**
+     * Formal approval for risk acceptance
+     */
+    #[ORM\Column(type: Types::BOOLEAN)]
+    #[Groups(['risk:read'])]
+    private bool $formallyAccepted = false;
+
+    /**
      * @var Collection<int, Control>
      */
     #[ORM\ManyToMany(targetEntity: Control::class, mappedBy: 'risks')]
@@ -543,5 +566,98 @@ class Risk
     public function getIncidentCount(): int
     {
         return $this->getRealizationCount();
+    }
+
+    // Risk Acceptance Approval Getters/Setters (ISO 27005)
+
+    public function getAcceptanceApprovedBy(): ?string
+    {
+        return $this->acceptanceApprovedBy;
+    }
+
+    public function setAcceptanceApprovedBy(?string $acceptanceApprovedBy): static
+    {
+        $this->acceptanceApprovedBy = $acceptanceApprovedBy;
+        return $this;
+    }
+
+    public function getAcceptanceApprovedAt(): ?\DateTimeInterface
+    {
+        return $this->acceptanceApprovedAt;
+    }
+
+    public function setAcceptanceApprovedAt(?\DateTimeInterface $acceptanceApprovedAt): static
+    {
+        $this->acceptanceApprovedAt = $acceptanceApprovedAt;
+        return $this;
+    }
+
+    public function getAcceptanceJustification(): ?string
+    {
+        return $this->acceptanceJustification;
+    }
+
+    public function setAcceptanceJustification(?string $acceptanceJustification): static
+    {
+        $this->acceptanceJustification = $acceptanceJustification;
+        return $this;
+    }
+
+    public function isFormallyAccepted(): bool
+    {
+        return $this->formallyAccepted;
+    }
+
+    public function setFormallyAccepted(bool $formallyAccepted): static
+    {
+        $this->formallyAccepted = $formallyAccepted;
+        return $this;
+    }
+
+    /**
+     * Check if risk acceptance requires approval
+     * ISO 27005 compliant: Risk acceptance must be formally approved
+     */
+    #[Groups(['risk:read'])]
+    public function requiresAcceptanceApproval(): bool
+    {
+        return $this->treatmentStrategy === 'accept' && !$this->formallyAccepted;
+    }
+
+    /**
+     * Check if risk acceptance is properly documented
+     */
+    #[Groups(['risk:read'])]
+    public function isAcceptanceComplete(): bool
+    {
+        if ($this->treatmentStrategy !== 'accept') {
+            return true; // Not applicable
+        }
+
+        return $this->formallyAccepted
+            && $this->acceptanceApprovedBy !== null
+            && $this->acceptanceApprovedAt !== null
+            && $this->acceptanceJustification !== null;
+    }
+
+    /**
+     * Get risk acceptance status
+     */
+    #[Groups(['risk:read'])]
+    public function getAcceptanceStatus(): string
+    {
+        if ($this->treatmentStrategy !== 'accept') {
+            return 'not_applicable';
+        }
+
+        if (!$this->formallyAccepted) {
+            return 'pending_approval';
+        }
+
+        if (!$this->isAcceptanceComplete()) {
+            return 'incomplete_documentation';
+        }
+
+        return 'approved';
     }
 }
