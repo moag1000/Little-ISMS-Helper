@@ -71,6 +71,11 @@ security:
         - { path: ^/oauth, roles: PUBLIC_ACCESS }
         - { path: ^/saml, roles: PUBLIC_ACCESS }
 
+        # Defensive safeguard: Prevent locale-prefixed security routes from requiring authentication
+        # These routes should NEVER exist (SecurityController is excluded from locale routing),
+        # but if accidentally created, this ensures they remain public to prevent redirect loops
+        - { path: '^/(de|en)/(login|logout)$', roles: PUBLIC_ACCESS }
+
         # Admin routes (with locale prefix) - specific locale pattern for better security
         - { path: '^/(de|en)/admin', roles: ROLE_ADMIN }
 
