@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import * as bootstrap from 'bootstrap';
 
 /**
  * Dashboard Customizer Controller
