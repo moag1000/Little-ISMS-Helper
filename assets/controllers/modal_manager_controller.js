@@ -13,9 +13,23 @@ export default class extends Controller {
     connect() {
         console.log('[ModalManager] Connected');
 
+        // Close any modals that are accidentally open on page load
+        setTimeout(() => {
+            this.closeAllModals();
+        }, 100);
+
         // Centralized ESC handler - highest priority
         this.boundHandleEscape = this.handleEscape.bind(this);
         document.addEventListener('keydown', this.boundHandleEscape, true); // Use capture phase
+    }
+
+    closeAllModals() {
+        console.log('[ModalManager] Checking for modals to close on page load...');
+        const openModals = this.findOpenModals();
+        if (openModals.length > 0) {
+            console.log('[ModalManager] Found', openModals.length, 'open modals on page load! Closing them...');
+            openModals.forEach(modal => this.closeModal(modal));
+        }
     }
 
     disconnect() {
@@ -49,35 +63,80 @@ export default class extends Controller {
     findOpenModals() {
         const modals = [];
 
+        // Debug: Log all potential modal elements
+        console.log('[ModalManager] Searching for open modals...');
+
         // Command Palette
-        const commandPalette = document.querySelector('.command-palette-modal.command-palette-open');
-        if (commandPalette) modals.push(commandPalette);
+        const commandPalette = document.querySelector('.command-palette-modal');
+        console.log('[ModalManager] Command Palette found:', commandPalette, 'Classes:', commandPalette?.className);
+        if (commandPalette && commandPalette.classList.contains('command-palette-open')) {
+            modals.push(commandPalette);
+        }
 
         // Keyboard Shortcuts
-        const keyboardShortcuts = document.querySelector('.keyboard-shortcuts-modal.keyboard-shortcuts-open');
-        if (keyboardShortcuts) modals.push(keyboardShortcuts);
+        const keyboardShortcuts = document.querySelector('.keyboard-shortcuts-modal');
+        console.log('[ModalManager] Keyboard Shortcuts found:', keyboardShortcuts, 'Classes:', keyboardShortcuts?.className);
+        if (keyboardShortcuts && keyboardShortcuts.classList.contains('keyboard-shortcuts-open')) {
+            modals.push(keyboardShortcuts);
+        }
 
         // Global Search
-        const globalSearch = document.querySelector('.global-search-modal:not(.d-none)');
-        if (globalSearch && globalSearch.classList.contains('show')) modals.push(globalSearch);
+        const globalSearch = document.querySelector('.global-search-modal');
+        console.log('[ModalManager] Global Search found:', globalSearch, 'Classes:', globalSearch?.className);
+        if (globalSearch && !globalSearch.classList.contains('d-none')) {
+            modals.push(globalSearch);
+        }
 
         // Preferences
-        const preferences = document.querySelector('.preferences-modal:not(.d-none)');
-        if (preferences && preferences.classList.contains('show')) modals.push(preferences);
+        const preferences = document.querySelector('.preferences-modal');
+        console.log('[ModalManager] Preferences found:', preferences, 'Classes:', preferences?.className);
+        if (preferences && !preferences.classList.contains('d-none')) {
+            modals.push(preferences);
+        }
 
         // Quick View
-        const quickView = document.querySelector('.quick-view-modal:not(.d-none)');
-        if (quickView && quickView.classList.contains('show')) modals.push(quickView);
+        const quickView = document.querySelector('.quick-view-modal');
+        console.log('[ModalManager] Quick View found:', quickView, 'Classes:', quickView?.className);
+        if (quickView && !quickView.classList.contains('d-none')) {
+            modals.push(quickView);
+        }
 
-        // Notification Panel (lower priority, don't auto-close with ESC)
-        // const notificationPanel = document.querySelector('.notification-panel.show');
-        // if (notificationPanel) modals.push(notificationPanel);
+        // Notification Panel
+        const notificationPanel = document.querySelector('.notification-panel');
+        console.log('[ModalManager] Notification Panel found:', notificationPanel, 'Classes:', notificationPanel?.className);
+        if (notificationPanel && !notificationPanel.classList.contains('d-none')) {
+            modals.push(notificationPanel);
+        }
+
+        // Check for ANY Bootstrap modals
+        const bootstrapModals = document.querySelectorAll('.modal.show');
+        console.log('[ModalManager] Bootstrap modals found:', bootstrapModals.length);
+        bootstrapModals.forEach(m => {
+            console.log('[ModalManager] Bootstrap modal:', m.className);
+            modals.push(m);
+        });
 
         return modals;
     }
 
     closeModal(modal) {
         console.log('[ModalManager] Closing modal:', modal.className);
+
+        // Bootstrap modals
+        if (modal.classList.contains('modal')) {
+            const bsModal = bootstrap?.Modal?.getInstance(modal);
+            if (bsModal) {
+                bsModal.hide();
+                return;
+            }
+            // Fallback
+            modal.classList.remove('show');
+            modal.style.display = 'none';
+            document.body.classList.remove('modal-open');
+            const backdrop = document.querySelector('.modal-backdrop');
+            if (backdrop) backdrop.remove();
+            return;
+        }
 
         // Command Palette
         if (modal.classList.contains('command-palette-modal')) {
