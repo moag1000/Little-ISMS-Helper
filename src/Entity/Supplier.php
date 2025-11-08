@@ -2,11 +2,23 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
+use ApiPlatform\Metadata\Delete;
 use App\Repository\SupplierRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -18,6 +30,35 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Index(columns: ['criticality'], name: 'idx_supplier_criticality')]
 #[ORM\Index(columns: ['next_assessment_date'], name: 'idx_supplier_next_assessment')]
 #[ORM\Index(columns: ['status'], name: 'idx_supplier_status')]
+#[ApiResource(
+    operations: [
+        new Get(
+            security: "is_granted('ROLE_USER')",
+            description: 'Retrieve a specific supplier by ID'
+        ),
+        new GetCollection(
+            security: "is_granted('ROLE_USER')",
+            description: 'Retrieve the collection of suppliers with filtering'
+        ),
+        new Post(
+            security: "is_granted('ROLE_USER')",
+            description: 'Create a new supplier'
+        ),
+        new Put(
+            security: "is_granted('ROLE_USER')",
+            description: 'Update an existing supplier'
+        ),
+        new Delete(
+            security: "is_granted('ROLE_ADMIN')",
+            description: 'Delete a supplier (Admin only)'
+        ),
+    ],
+    normalizationContext: ['groups' => ['supplier:read']],
+    denormalizationContext: ['groups' => ['supplier:write']]
+)]
+#[ApiFilter(SearchFilter::class, properties: ['name' => 'partial', 'status' => 'exact', 'criticality' => 'exact'])]
+#[ApiFilter(OrderFilter::class, properties: ['name', 'criticality', 'nextAssessmentDate'])]
+#[ApiFilter(DateFilter::class, properties: ['nextAssessmentDate', 'lastSecurityAssessment'])]
 class Supplier
 {
     #[ORM\Id]
