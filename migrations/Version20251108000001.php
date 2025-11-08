@@ -309,6 +309,44 @@ final class Version20251108000001 extends AbstractMigration
             PRIMARY KEY(change_request_id, document_id)
         ) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
 
+        // Add Foreign Key Constraints
+        // Business Continuity Plan
+        $this->addSql('ALTER TABLE business_continuity_plan ADD CONSTRAINT FK_BC_PLAN_BUSINESS_PROCESS FOREIGN KEY (business_process_id) REFERENCES business_process (id)');
+
+        // Supplier junction tables
+        $this->addSql('ALTER TABLE supplier_asset ADD CONSTRAINT FK_SUPPLIER_ASSET_SUPPLIER FOREIGN KEY (supplier_id) REFERENCES supplier (id) ON DELETE CASCADE');
+        $this->addSql('ALTER TABLE supplier_asset ADD CONSTRAINT FK_SUPPLIER_ASSET_ASSET FOREIGN KEY (asset_id) REFERENCES asset (id) ON DELETE CASCADE');
+        $this->addSql('ALTER TABLE supplier_risk ADD CONSTRAINT FK_SUPPLIER_RISK_SUPPLIER FOREIGN KEY (supplier_id) REFERENCES supplier (id) ON DELETE CASCADE');
+        $this->addSql('ALTER TABLE supplier_risk ADD CONSTRAINT FK_SUPPLIER_RISK_RISK FOREIGN KEY (risk_id) REFERENCES risk (id) ON DELETE CASCADE');
+        $this->addSql('ALTER TABLE supplier_document ADD CONSTRAINT FK_SUPPLIER_DOCUMENT_SUPPLIER FOREIGN KEY (supplier_id) REFERENCES supplier (id) ON DELETE CASCADE');
+        $this->addSql('ALTER TABLE supplier_document ADD CONSTRAINT FK_SUPPLIER_DOCUMENT_DOCUMENT FOREIGN KEY (document_id) REFERENCES document (id) ON DELETE CASCADE');
+
+        // Business Continuity Plan junction tables
+        $this->addSql('ALTER TABLE bc_plan_supplier ADD CONSTRAINT FK_BC_PLAN_SUPPLIER_PLAN FOREIGN KEY (business_continuity_plan_id) REFERENCES business_continuity_plan (id) ON DELETE CASCADE');
+        $this->addSql('ALTER TABLE bc_plan_supplier ADD CONSTRAINT FK_BC_PLAN_SUPPLIER_SUPPLIER FOREIGN KEY (supplier_id) REFERENCES supplier (id) ON DELETE CASCADE');
+        $this->addSql('ALTER TABLE bc_plan_asset ADD CONSTRAINT FK_BC_PLAN_ASSET_PLAN FOREIGN KEY (business_continuity_plan_id) REFERENCES business_continuity_plan (id) ON DELETE CASCADE');
+        $this->addSql('ALTER TABLE bc_plan_asset ADD CONSTRAINT FK_BC_PLAN_ASSET_ASSET FOREIGN KEY (asset_id) REFERENCES asset (id) ON DELETE CASCADE');
+        $this->addSql('ALTER TABLE bc_plan_document ADD CONSTRAINT FK_BC_PLAN_DOCUMENT_PLAN FOREIGN KEY (business_continuity_plan_id) REFERENCES business_continuity_plan (id) ON DELETE CASCADE');
+        $this->addSql('ALTER TABLE bc_plan_document ADD CONSTRAINT FK_BC_PLAN_DOCUMENT_DOCUMENT FOREIGN KEY (document_id) REFERENCES document (id) ON DELETE CASCADE');
+
+        // BC Exercise junction tables
+        $this->addSql('ALTER TABLE bc_exercise_plan ADD CONSTRAINT FK_BC_EXERCISE_PLAN_EXERCISE FOREIGN KEY (bc_exercise_id) REFERENCES bc_exercise (id) ON DELETE CASCADE');
+        $this->addSql('ALTER TABLE bc_exercise_plan ADD CONSTRAINT FK_BC_EXERCISE_PLAN_PLAN FOREIGN KEY (business_continuity_plan_id) REFERENCES business_continuity_plan (id) ON DELETE CASCADE');
+        $this->addSql('ALTER TABLE bc_exercise_document ADD CONSTRAINT FK_BC_EXERCISE_DOCUMENT_EXERCISE FOREIGN KEY (bc_exercise_id) REFERENCES bc_exercise (id) ON DELETE CASCADE');
+        $this->addSql('ALTER TABLE bc_exercise_document ADD CONSTRAINT FK_BC_EXERCISE_DOCUMENT_DOCUMENT FOREIGN KEY (document_id) REFERENCES document (id) ON DELETE CASCADE');
+
+        // Change Request junction tables
+        $this->addSql('ALTER TABLE change_request_asset ADD CONSTRAINT FK_CHANGE_REQUEST_ASSET_CHANGE FOREIGN KEY (change_request_id) REFERENCES change_request (id) ON DELETE CASCADE');
+        $this->addSql('ALTER TABLE change_request_asset ADD CONSTRAINT FK_CHANGE_REQUEST_ASSET_ASSET FOREIGN KEY (asset_id) REFERENCES asset (id) ON DELETE CASCADE');
+        $this->addSql('ALTER TABLE change_request_control ADD CONSTRAINT FK_CHANGE_REQUEST_CONTROL_CHANGE FOREIGN KEY (change_request_id) REFERENCES change_request (id) ON DELETE CASCADE');
+        $this->addSql('ALTER TABLE change_request_control ADD CONSTRAINT FK_CHANGE_REQUEST_CONTROL_CONTROL FOREIGN KEY (control_id) REFERENCES control (id) ON DELETE CASCADE');
+        $this->addSql('ALTER TABLE change_request_business_process ADD CONSTRAINT FK_CHANGE_REQUEST_PROCESS_CHANGE FOREIGN KEY (change_request_id) REFERENCES change_request (id) ON DELETE CASCADE');
+        $this->addSql('ALTER TABLE change_request_business_process ADD CONSTRAINT FK_CHANGE_REQUEST_PROCESS_PROCESS FOREIGN KEY (business_process_id) REFERENCES business_process (id) ON DELETE CASCADE');
+        $this->addSql('ALTER TABLE change_request_risk ADD CONSTRAINT FK_CHANGE_REQUEST_RISK_CHANGE FOREIGN KEY (change_request_id) REFERENCES change_request (id) ON DELETE CASCADE');
+        $this->addSql('ALTER TABLE change_request_risk ADD CONSTRAINT FK_CHANGE_REQUEST_RISK_RISK FOREIGN KEY (risk_id) REFERENCES risk (id) ON DELETE CASCADE');
+        $this->addSql('ALTER TABLE change_request_document ADD CONSTRAINT FK_CHANGE_REQUEST_DOCUMENT_CHANGE FOREIGN KEY (change_request_id) REFERENCES change_request (id) ON DELETE CASCADE');
+        $this->addSql('ALTER TABLE change_request_document ADD CONSTRAINT FK_CHANGE_REQUEST_DOCUMENT_DOCUMENT FOREIGN KEY (document_id) REFERENCES document (id) ON DELETE CASCADE');
+
         // Add Risk Acceptance Approval fields to risk table
         $this->addSql('ALTER TABLE risk ADD acceptance_approved_by VARCHAR(100) DEFAULT NULL');
         $this->addSql('ALTER TABLE risk ADD acceptance_approved_at DATE DEFAULT NULL');
@@ -323,6 +361,44 @@ final class Version20251108000001 extends AbstractMigration
         $this->addSql('ALTER TABLE risk DROP acceptance_approved_at');
         $this->addSql('ALTER TABLE risk DROP acceptance_justification');
         $this->addSql('ALTER TABLE risk DROP formally_accepted');
+
+        // Drop Foreign Keys first
+        // Change Request junction tables
+        $this->addSql('ALTER TABLE change_request_document DROP FOREIGN KEY FK_CHANGE_REQUEST_DOCUMENT_CHANGE');
+        $this->addSql('ALTER TABLE change_request_document DROP FOREIGN KEY FK_CHANGE_REQUEST_DOCUMENT_DOCUMENT');
+        $this->addSql('ALTER TABLE change_request_risk DROP FOREIGN KEY FK_CHANGE_REQUEST_RISK_CHANGE');
+        $this->addSql('ALTER TABLE change_request_risk DROP FOREIGN KEY FK_CHANGE_REQUEST_RISK_RISK');
+        $this->addSql('ALTER TABLE change_request_business_process DROP FOREIGN KEY FK_CHANGE_REQUEST_PROCESS_CHANGE');
+        $this->addSql('ALTER TABLE change_request_business_process DROP FOREIGN KEY FK_CHANGE_REQUEST_PROCESS_PROCESS');
+        $this->addSql('ALTER TABLE change_request_control DROP FOREIGN KEY FK_CHANGE_REQUEST_CONTROL_CHANGE');
+        $this->addSql('ALTER TABLE change_request_control DROP FOREIGN KEY FK_CHANGE_REQUEST_CONTROL_CONTROL');
+        $this->addSql('ALTER TABLE change_request_asset DROP FOREIGN KEY FK_CHANGE_REQUEST_ASSET_CHANGE');
+        $this->addSql('ALTER TABLE change_request_asset DROP FOREIGN KEY FK_CHANGE_REQUEST_ASSET_ASSET');
+
+        // BC Exercise junction tables
+        $this->addSql('ALTER TABLE bc_exercise_document DROP FOREIGN KEY FK_BC_EXERCISE_DOCUMENT_EXERCISE');
+        $this->addSql('ALTER TABLE bc_exercise_document DROP FOREIGN KEY FK_BC_EXERCISE_DOCUMENT_DOCUMENT');
+        $this->addSql('ALTER TABLE bc_exercise_plan DROP FOREIGN KEY FK_BC_EXERCISE_PLAN_EXERCISE');
+        $this->addSql('ALTER TABLE bc_exercise_plan DROP FOREIGN KEY FK_BC_EXERCISE_PLAN_PLAN');
+
+        // Business Continuity Plan junction tables
+        $this->addSql('ALTER TABLE bc_plan_document DROP FOREIGN KEY FK_BC_PLAN_DOCUMENT_PLAN');
+        $this->addSql('ALTER TABLE bc_plan_document DROP FOREIGN KEY FK_BC_PLAN_DOCUMENT_DOCUMENT');
+        $this->addSql('ALTER TABLE bc_plan_asset DROP FOREIGN KEY FK_BC_PLAN_ASSET_PLAN');
+        $this->addSql('ALTER TABLE bc_plan_asset DROP FOREIGN KEY FK_BC_PLAN_ASSET_ASSET');
+        $this->addSql('ALTER TABLE bc_plan_supplier DROP FOREIGN KEY FK_BC_PLAN_SUPPLIER_PLAN');
+        $this->addSql('ALTER TABLE bc_plan_supplier DROP FOREIGN KEY FK_BC_PLAN_SUPPLIER_SUPPLIER');
+
+        // Business Continuity Plan FK to business_process
+        $this->addSql('ALTER TABLE business_continuity_plan DROP FOREIGN KEY FK_BC_PLAN_BUSINESS_PROCESS');
+
+        // Supplier junction tables
+        $this->addSql('ALTER TABLE supplier_document DROP FOREIGN KEY FK_SUPPLIER_DOCUMENT_SUPPLIER');
+        $this->addSql('ALTER TABLE supplier_document DROP FOREIGN KEY FK_SUPPLIER_DOCUMENT_DOCUMENT');
+        $this->addSql('ALTER TABLE supplier_risk DROP FOREIGN KEY FK_SUPPLIER_RISK_SUPPLIER');
+        $this->addSql('ALTER TABLE supplier_risk DROP FOREIGN KEY FK_SUPPLIER_RISK_RISK');
+        $this->addSql('ALTER TABLE supplier_asset DROP FOREIGN KEY FK_SUPPLIER_ASSET_SUPPLIER');
+        $this->addSql('ALTER TABLE supplier_asset DROP FOREIGN KEY FK_SUPPLIER_ASSET_ASSET');
 
         // Drop Change Request tables
         $this->addSql('DROP TABLE change_request_document');
