@@ -18,61 +18,97 @@ class AssetType extends AbstractType
     {
         $builder
             ->add('name', TextType::class, [
-                'label' => 'Asset Name',
+                'label' => 'asset.field.name',
                 'required' => true,
-                'attr' => ['maxlength' => 255],
+                'attr' => [
+                    'maxlength' => 255,
+                    'placeholder' => 'asset.placeholder.name',
+                ],
             ])
             ->add('description', TextareaType::class, [
-                'label' => 'Description',
+                'label' => 'asset.field.description',
                 'required' => false,
-                'attr' => ['rows' => 4],
+                'attr' => [
+                    'rows' => 4,
+                    'placeholder' => 'asset.placeholder.description',
+                ],
+                'help' => 'asset.help.description',
             ])
             ->add('assetType', ChoiceType::class, [
-                'label' => 'Asset Type',
+                'label' => 'asset.field.type',
                 'choices' => [
-                    'Information' => 'Information',
-                    'Software' => 'Software',
-                    'Hardware' => 'Hardware',
-                    'Service' => 'Service',
-                    'Personnel' => 'Personnel',
-                    'Physical' => 'Physical',
+                    'asset.type.information' => 'Information',
+                    'asset.type.software' => 'Software',
+                    'asset.type.hardware' => 'Hardware',
+                    'asset.type.service' => 'Service',
+                    'asset.type.personnel' => 'Personnel',
+                    'asset.type.physical' => 'Physical',
                 ],
                 'required' => true,
             ])
             ->add('owner', TextType::class, [
-                'label' => 'Owner',
+                'label' => 'asset.field.owner',
                 'required' => false,
-                'attr' => ['maxlength' => 100],
+                'attr' => [
+                    'maxlength' => 100,
+                    'placeholder' => 'asset.placeholder.owner',
+                ],
+                'help' => 'asset.help.owner',
             ])
             ->add('location', TextType::class, [
-                'label' => 'Location',
+                'label' => 'asset.field.location',
                 'required' => false,
-                'attr' => ['maxlength' => 100],
+                'attr' => [
+                    'maxlength' => 100,
+                    'placeholder' => 'asset.placeholder.location',
+                ],
             ])
             ->add('acquisitionValue', NumberType::class, [
-                'label' => 'Acquisition Value',
+                'label' => 'asset.field.acquisition_value',
                 'required' => false,
-                'attr' => ['step' => '0.01', 'min' => '0'],
+                'attr' => [
+                    'step' => '0.01',
+                    'min' => '0',
+                    'placeholder' => '0.00',
+                ],
+                'help' => 'asset.help.acquisition_value',
             ])
             ->add('currentValue', NumberType::class, [
-                'label' => 'Current Value',
+                'label' => 'asset.field.current_value',
                 'required' => false,
-                'attr' => ['step' => '0.01', 'min' => '0'],
+                'attr' => [
+                    'step' => '0.01',
+                    'min' => '0',
+                    'placeholder' => '0.00',
+                ],
+                'help' => 'asset.help.current_value',
             ])
             ->add('confidentialityValue', IntegerType::class, [
-                'label' => 'Confidentiality (1-5)',
+                'label' => 'asset.field.confidentiality',
                 'required' => true,
-                'attr' => ['min' => 1, 'max' => 5],
+                'attr' => [
+                    'min' => 1,
+                    'max' => 5,
+                ],
+                'help' => 'asset.help.confidentiality',
             ])
             ->add('integrityValue', IntegerType::class, [
-                'label' => 'Integrity (1-5)',
+                'label' => 'asset.field.integrity',
                 'required' => true,
-                'attr' => ['min' => 1, 'max' => 5],
+                'attr' => [
+                    'min' => 1,
+                    'max' => 5,
+                ],
+                'help' => 'asset.help.integrity',
             ])
             ->add('availabilityValue', IntegerType::class, [
-                'label' => 'Availability (1-5)',
+                'label' => 'asset.field.availability',
                 'required' => true,
-                'attr' => ['min' => 1, 'max' => 5],
+                'attr' => [
+                    'min' => 1,
+                    'max' => 5,
+                ],
+                'help' => 'asset.help.availability',
             ])
         ;
     }

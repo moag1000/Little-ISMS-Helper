@@ -8,6 +8,12 @@
     <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
 
     {% block stylesheets %}
+        {# Bootstrap CSS - Required for Bootstrap classes used throughout the app #}
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+        {# Bootstrap Icons - Required for all bi bi-* icon classes #}
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+        {# Custom styles - Override Bootstrap where needed #}
         <link rel="stylesheet" href="{{ asset('styles/app.css') }}">
         <link rel="stylesheet" href="{{ asset('styles/components.css') }}">
         {# Modern UI/UX Components - Phase 1 #}
@@ -74,23 +80,23 @@
     {% set current_route = app.request.get('_route') %}
     <nav class="nav" data-turbo-permanent>
         <ul>
-            <li><a href="{{ path('app_home') }}" class="{% if current_route starts with 'app_home' %}active{% endif %}" data-turbo-action="advance">{{ 'nav.home'|trans }}</a></li>
-            <li><a href="{{ path('app_dashboard') }}" class="{% if current_route starts with 'app_dashboard' %}active{% endif %}" data-turbo-action="advance">{{ 'nav.dashboard'|trans }}</a></li>
+            <li><a href="{{ path('app_home') }}" class="{% if current_route starts with 'app_home' %}active{% endif %}" data-turbo-action="advance"><i class="bi bi-house"></i> {{ 'nav.home'|trans }}</a></li>
+            <li><a href="{{ path('app_dashboard') }}" class="{% if current_route starts with 'app_dashboard' %}active{% endif %}" data-turbo-action="advance"><i class="bi bi-speedometer2"></i> {{ 'nav.dashboard'|trans }}</a></li>
             <li><a href="{{ path('app_analytics_dashboard') }}" class="{% if current_route starts with 'app_analytics_' %}active{% endif %}" data-turbo-action="advance"><i class="bi bi-graph-up"></i> Analytics</a></li>
-            <li><a href="{{ path('app_context_index') }}" class="{% if current_route starts with 'app_context_' %}active{% endif %}" data-turbo-action="advance">{{ 'nav.context'|trans }}</a></li>
-            <li><a href="{{ path('app_interested_party_index') }}" class="{% if current_route starts with 'app_interested_party_' %}active{% endif %}" data-turbo-action="advance">Interested Parties</a></li>
-            <li><a href="{{ path('app_soa_index') }}" class="{% if current_route starts with 'app_soa_' %}active{% endif %}" data-turbo-action="advance">SoA</a></li>
-            <li><a href="{{ path('app_asset_index') }}" class="{% if current_route starts with 'app_asset_' %}active{% endif %}" data-turbo-action="advance">{{ 'nav.assets'|trans }}</a></li>
-            <li><a href="{{ path('app_supplier_index') }}" class="{% if current_route starts with 'app_supplier_' %}active{% endif %}" data-turbo-action="advance">Suppliers</a></li>
-            <li><a href="{{ path('app_risk_index') }}" class="{% if current_route starts with 'app_risk_' %}active{% endif %}" data-turbo-action="advance">{{ 'nav.risks'|trans }}</a></li>
-            <li><a href="{{ path('app_change_request_index') }}" class="{% if current_route starts with 'app_change_request_' %}active{% endif %}" data-turbo-action="advance">Change Requests</a></li>
-            <li><a href="{{ path('app_business_process_index') }}" class="{% if current_route starts with 'app_business_process_' %}active{% endif %}" data-turbo-action="advance">BCM</a></li>
-            <li><a href="{{ path('app_bc_plan_index') }}" class="{% if current_route starts with 'app_bc_plan_' %}active{% endif %}" data-turbo-action="advance">BC Plans</a></li>
-            <li><a href="{{ path('app_bc_exercise_index') }}" class="{% if current_route starts with 'app_bc_exercise_' %}active{% endif %}" data-turbo-action="advance">BC Exercises</a></li>
-            <li><a href="{{ path('app_incident_index') }}" class="{% if current_route starts with 'app_incident_' %}active{% endif %}" data-turbo-action="advance">{{ 'nav.incidents'|trans }}</a></li>
-            <li><a href="{{ path('app_audit_index') }}" class="{% if current_route starts with 'app_audit_' and not current_route starts with 'app_audit_log_' %}active{% endif %}" data-turbo-action="advance">{{ 'nav.audits'|trans }}</a></li>
-            <li><a href="{{ path('app_compliance_index') }}" class="{% if current_route starts with 'app_compliance_' %}active{% endif %}" data-turbo-action="advance">{{ 'nav.compliance'|trans }}</a></li>
-            <li><a href="{{ path('app_audit_log_index') }}" class="{% if current_route starts with 'app_audit_log_' %}active{% endif %}" data-turbo-action="advance">Audit Log</a></li>
+            <li><a href="{{ path('app_context_index') }}" class="{% if current_route starts with 'app_context_' %}active{% endif %}" data-turbo-action="advance"><i class="bi bi-diagram-3"></i> {{ 'nav.context'|trans }}</a></li>
+            <li><a href="{{ path('app_interested_party_index') }}" class="{% if current_route starts with 'app_interested_party_' %}active{% endif %}" data-turbo-action="advance"><i class="bi bi-people-fill"></i> Interested Parties</a></li>
+            <li><a href="{{ path('app_soa_index') }}" class="{% if current_route starts with 'app_soa_' %}active{% endif %}" data-turbo-action="advance"><i class="bi bi-shield-check"></i> SoA</a></li>
+            <li><a href="{{ path('app_asset_index') }}" class="{% if current_route starts with 'app_asset_' %}active{% endif %}" data-turbo-action="advance"><i class="bi bi-cpu"></i> {{ 'nav.assets'|trans }}</a></li>
+            <li><a href="{{ path('app_supplier_index') }}" class="{% if current_route starts with 'app_supplier_' %}active{% endif %}" data-turbo-action="advance"><i class="bi bi-truck"></i> Suppliers</a></li>
+            <li><a href="{{ path('app_risk_index') }}" class="{% if current_route starts with 'app_risk_' %}active{% endif %}" data-turbo-action="advance"><i class="bi bi-exclamation-triangle"></i> {{ 'nav.risks'|trans }}</a></li>
+            <li><a href="{{ path('app_change_request_index') }}" class="{% if current_route starts with 'app_change_request_' %}active{% endif %}" data-turbo-action="advance"><i class="bi bi-arrow-left-right"></i> Change Requests</a></li>
+            <li><a href="{{ path('app_business_process_index') }}" class="{% if current_route starts with 'app_business_process_' %}active{% endif %}" data-turbo-action="advance"><i class="bi bi-diagram-2"></i> BCM</a></li>
+            <li><a href="{{ path('app_bc_plan_index') }}" class="{% if current_route starts with 'app_bc_plan_' %}active{% endif %}" data-turbo-action="advance"><i class="bi bi-file-earmark-text"></i> BC Plans</a></li>
+            <li><a href="{{ path('app_bc_exercise_index') }}" class="{% if current_route starts with 'app_bc_exercise_' %}active{% endif %}" data-turbo-action="advance"><i class="bi bi-flag"></i> BC Exercises</a></li>
+            <li><a href="{{ path('app_incident_index') }}" class="{% if current_route starts with 'app_incident_' %}active{% endif %}" data-turbo-action="advance"><i class="bi bi-bug"></i> {{ 'nav.incidents'|trans }}</a></li>
+            <li><a href="{{ path('app_audit_index') }}" class="{% if current_route starts with 'app_audit_' and not current_route starts with 'app_audit_log_' %}active{% endif %}" data-turbo-action="advance"><i class="bi bi-clipboard-check"></i> {{ 'nav.audits'|trans }}</a></li>
+            <li><a href="{{ path('app_compliance_index') }}" class="{% if current_route starts with 'app_compliance_' %}active{% endif %}" data-turbo-action="advance"><i class="bi bi-check-circle"></i> {{ 'nav.compliance'|trans }}</a></li>
+            <li><a href="{{ path('app_audit_log_index') }}" class="{% if current_route starts with 'app_audit_log_' %}active{% endif %}" data-turbo-action="advance"><i class="bi bi-journal-text"></i> Audit Log</a></li>
             {% if is_granted('ROLE_ADMIN') %}
             <li><a href="{{ path('user_management_index') }}" class="{% if current_route starts with 'user_management_' %}active{% endif %}" data-turbo-action="advance"><i class="bi bi-people"></i> Users</a></li>
             {% endif %}
