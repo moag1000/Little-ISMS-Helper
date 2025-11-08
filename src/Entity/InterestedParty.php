@@ -33,6 +33,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     ]
 )]
 #[ORM\Entity(repositoryClass: InterestedPartyRepository::class)]
+#[ORM\Table(name: 'interested_party')]
 #[ORM\Index(columns: ['party_type'], name: 'idx_party_type')]
 #[ORM\Index(columns: ['importance'], name: 'idx_party_importance')]
 class InterestedParty

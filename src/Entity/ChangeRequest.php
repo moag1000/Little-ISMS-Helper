@@ -35,6 +35,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     ]
 )]
 #[ORM\Entity(repositoryClass: ChangeRequestRepository::class)]
+#[ORM\Table(name: 'change_request')]
 #[ORM\Index(columns: ['change_type'], name: 'idx_change_type')]
 #[ORM\Index(columns: ['priority'], name: 'idx_change_priority')]
 #[ORM\Index(columns: ['status'], name: 'idx_change_status')]
