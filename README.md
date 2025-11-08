@@ -226,6 +226,19 @@ php bin/console app:setup-permissions \
 php bin/console app:setup-permissions
 ```
 
+**Problem: Migration-Fehler "Column not found" oder "already exists"**
+```bash
+# Datenbank komplett zurücksetzen und neu aufsetzen:
+chmod +x reset-database.sh
+./reset-database.sh
+
+# Oder manuell:
+php bin/console doctrine:database:drop --force
+php bin/console doctrine:database:create
+php bin/console doctrine:migrations:migrate --no-interaction
+php bin/console app:setup-permissions --admin-email=admin@example.com --admin-password=admin123
+```
+
 ### Produktions-Deployment
 
 Für Produktions-Deployments beachten Sie bitte:
