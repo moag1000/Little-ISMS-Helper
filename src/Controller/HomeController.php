@@ -7,6 +7,7 @@ use App\Repository\ControlRepository;
 use App\Repository\IncidentRepository;
 use App\Repository\RiskRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -23,15 +24,20 @@ class HomeController extends AbstractController
     ) {}
 
     #[Route('/', name: 'app_home')]
-    public function index(): Response
+    public function index(Request $request): Response
     {
-        // Redirect to login if not authenticated
+        // Get preferred locale from session, browser preference, or default to 'de'
+        $locale = $request->getSession()->get('_locale')
+            ?? $request->getPreferredLanguage(['de', 'en'])
+            ?? 'de';
+
+        // Not authenticated → redirect to login (without locale)
         if (!$this->getUser()) {
             return $this->redirectToRoute('app_login');
         }
 
-        // If authenticated, redirect to dashboard
-        return $this->redirectToRoute('app_dashboard');
+        // Authenticated → redirect to dashboard (with locale)
+        return $this->redirectToRoute('app_dashboard', ['_locale' => $locale]);
     }
 
     #[Route('/dashboard', name: 'app_dashboard')]
