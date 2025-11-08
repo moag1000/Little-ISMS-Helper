@@ -2,8 +2,8 @@
 
 namespace App\Controller;
 
+use App\Security\SamlAuthFactory;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
-use OneLogin\Saml2\Auth;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,7 +14,8 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 class SecurityController extends AbstractController
 {
     public function __construct(
-        private readonly RateLimiterFactory $loginLimiter
+        private readonly RateLimiterFactory $loginLimiter,
+        private readonly SamlAuthFactory $samlAuthFactory
     ) {}
 
     #[Route('/login', name: 'app_login')]
@@ -99,7 +100,7 @@ class SecurityController extends AbstractController
     public function samlLogin(Request $request): Response
     {
         try {
-            $samlAuth = $this->createSamlAuth($request);
+            $samlAuth = $this->samlAuthFactory->createAuth($request);
             $samlAuth->login();
 
             // This will never be reached as login() redirects
@@ -127,7 +128,7 @@ class SecurityController extends AbstractController
     public function samlMetadata(Request $request): Response
     {
         try {
-            $samlAuth = $this->createSamlAuth($request);
+            $samlAuth = $this->samlAuthFactory->createAuth($request);
             $settings = $samlAuth->getSettings();
             $metadata = $settings->getSPMetadata();
             $errors = $settings->validateMetadata($metadata);
@@ -152,7 +153,7 @@ class SecurityController extends AbstractController
     public function samlSls(Request $request): Response
     {
         try {
-            $samlAuth = $this->createSamlAuth($request);
+            $samlAuth = $this->samlAuthFactory->createAuth($request);
             $samlAuth->processSLO();
 
             $errors = $samlAuth->getErrors();
@@ -167,52 +168,6 @@ class SecurityController extends AbstractController
         }
     }
 
-    private function createSamlAuth(Request $request): Auth
-    {
-        $baseUrl = $request->getSchemeAndHttpHost();
-
-        $samlSettings = [
-            'strict' => true,
-            'debug' => $_ENV['APP_ENV'] === 'dev',
-            'sp' => [
-                'entityId' => $baseUrl . '/saml/metadata',
-                'assertionConsumerService' => [
-                    'url' => $baseUrl . $this->generateUrl('saml_acs'),
-                    'binding' => 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST',
-                ],
-                'singleLogoutService' => [
-                    'url' => $baseUrl . $this->generateUrl('saml_sls'),
-                    'binding' => 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect',
-                ],
-                'NameIDFormat' => 'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress',
-                'x509cert' => $_ENV['SAML_SP_CERT'] ?? '',
-                'privateKey' => $_ENV['SAML_SP_PRIVATE_KEY'] ?? '',
-            ],
-            'idp' => [
-                'entityId' => $_ENV['SAML_IDP_ENTITY_ID'] ?? 'https://sts.windows.net/' . ($_ENV['AZURE_TENANT_ID'] ?? '') . '/',
-                'singleSignOnService' => [
-                    'url' => $_ENV['SAML_IDP_SSO_URL'] ?? 'https://login.microsoftonline.com/' . ($_ENV['AZURE_TENANT_ID'] ?? '') . '/saml2',
-                    'binding' => 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect',
-                ],
-                'singleLogoutService' => [
-                    'url' => $_ENV['SAML_IDP_SLO_URL'] ?? 'https://login.microsoftonline.com/' . ($_ENV['AZURE_TENANT_ID'] ?? '') . '/saml2',
-                    'binding' => 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect',
-                ],
-                'x509cert' => $_ENV['SAML_IDP_CERT'] ?? '',
-            ],
-            'security' => [
-                'nameIdEncrypted' => false,
-                'authnRequestsSigned' => true,
-                'logoutRequestSigned' => true,
-                'logoutResponseSigned' => true,
-                'signMetadata' => true,
-                'wantMessagesSigned' => true,
-                'wantAssertionsSigned' => true,
-                'wantNameIdEncrypted' => false,
-                'requestedAuthnContext' => false,
-            ],
-        ];
-
-        return new Auth($samlSettings);
-    }
+    // Note: SAML Auth creation moved to SamlAuthFactory service (Symfony best practice)
+    // This separates configuration logic from controller and enables proper parameter injection
 }

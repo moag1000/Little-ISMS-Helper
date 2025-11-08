@@ -26,7 +26,8 @@ security:
                 login_path: app_login
                 check_path: app_login
                 enable_csrf: true
-                default_target_path: app_dashboard
+                # Use custom success handler for locale-aware redirects
+                success_handler: App\Security\LoginSuccessHandler
                 always_use_default_target_path: false
 
             # Logout
@@ -39,8 +40,8 @@ security:
                 - App\Security\AzureOAuthAuthenticator
                 - App\Security\AzureSamlAuthenticator
 
-            # Entry point (what to do when authentication is required)
-            # Use form_login as default, OAuth/SAML explicitly via their routes
+            # Entry point: use form_login for unauthenticated users
+            # OAuth/SAML accessible via their explicit routes
             entry_point: form_login
 
             # Remember me functionality
@@ -64,16 +65,22 @@ security:
     # Note: Only the *first* access control that matches will be used
     access_control:
         # Public routes (security routes are now WITHOUT locale prefix)
-        - { path: '^/login$', roles: PUBLIC_ACCESS }
-        - { path: '^/logout$', roles: PUBLIC_ACCESS }
-        - { path: '^/oauth', roles: PUBLIC_ACCESS }
-        - { path: '^/saml', roles: PUBLIC_ACCESS }
+        - { path: ^/$, roles: PUBLIC_ACCESS }
+        - { path: ^/login$, roles: PUBLIC_ACCESS }
+        - { path: ^/logout$, roles: PUBLIC_ACCESS }
+        - { path: ^/oauth, roles: PUBLIC_ACCESS }
+        - { path: ^/saml, roles: PUBLIC_ACCESS }
 
-        # Admin routes (with locale prefix)
-        - { path: '^/[a-z]{2}/admin', roles: ROLE_ADMIN }
+        # Defensive safeguard: Prevent locale-prefixed security routes from requiring authentication
+        # These routes should NEVER exist (SecurityController is excluded from locale routing),
+        # but if accidentally created, this ensures they remain public to prevent redirect loops
+        - { path: '^/(de|en)/(login|logout)$', roles: PUBLIC_ACCESS }
 
-        # All other routes require authentication (with locale prefix)
-        - { path: '^/[a-z]{2}/', roles: ROLE_USER }
+        # Admin routes (with locale prefix) - specific locale pattern for better security
+        - { path: '^/(de|en)/admin', roles: ROLE_ADMIN }
+
+        # All other routes require authentication (with locale prefix) - specific locale pattern
+        - { path: '^/(de|en)/', roles: ROLE_USER }
 
 when@test:
     security:

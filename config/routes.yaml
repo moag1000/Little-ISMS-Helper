@@ -5,10 +5,19 @@ security_routes:
         namespace: App\Controller
     type: attribute
 
-# Root redirect - smart locale detection
-root:
+# Root redirect - smart locale detection (without locale)
+app_home:
     path: /
     controller: App\Controller\HomeController::index
+
+# Dashboard route WITH locale prefix
+app_dashboard:
+    path: /{_locale}/dashboard
+    controller: App\Controller\HomeController::dashboard
+    requirements:
+        _locale: de|en
+    defaults:
+        _locale: de
 
 # App routes WITH locale prefix
 app_routes:
@@ -21,4 +30,6 @@ app_routes:
         _locale: de|en
     defaults:
         _locale: de
-    exclude: '../src/Controller/SecurityController.php'
+    exclude:
+        - '../src/Controller/SecurityController.php'
+        - '../src/Controller/HomeController.php'
