@@ -71,14 +71,14 @@ class Document
 
     public function __construct()
     {
-        $this->uploadedAt = new \DateTime();
+        $this->uploadedAt = new \DateTimeImmutable();
     }
 
     #[ORM\PrePersist]
     #[ORM\PreUpdate]
     public function updateTimestamp(): void
     {
-        $this->updatedAt = new \DateTime();
+        $this->updatedAt = new \DateTimeImmutable();
     }
 
     // Getters and Setters
