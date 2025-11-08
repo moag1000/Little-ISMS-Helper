@@ -1,3 +1,12 @@
+# Root redirect to default locale
+root:
+    path: /
+    controller: Symfony\Bundle\FrameworkBundle\Controller\RedirectController
+    defaults:
+        route: 'app_home'
+        _locale: 'de'
+        permanent: true
+
 controllers:
     resource:
         path: ../src/Controller/
