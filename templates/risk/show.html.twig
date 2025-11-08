@@ -1,11 +1,11 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ risk.name }}{% endblock %}
+{% block title %}{{ risk.title }}{% endblock %}
 
 {% block body %}
 <div class="container">
     <div class="page-header">
-        <h1>{{ risk.name }}</h1>
+        <h1>{{ risk.title }}</h1>
         <div class="actions">
             <a href="{{ path('app_risk_edit', {id: risk.id}) }}" class="btn btn-primary">Edit</a>
             <a href="{{ path('app_risk_index') }}" class="btn btn-secondary">Back to List</a>
