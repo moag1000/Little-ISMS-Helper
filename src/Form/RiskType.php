@@ -115,6 +115,30 @@ class RiskType extends AbstractType
                 ],
                 'help' => 'risk.help.treatment_description',
             ])
+            ->add('acceptanceApprovedBy', TextType::class, [
+                'label' => 'risk.field.acceptance_approved_by',
+                'required' => false,
+                'attr' => [
+                    'maxlength' => 100,
+                    'placeholder' => 'risk.placeholder.acceptance_approved_by',
+                ],
+                'help' => 'risk.help.acceptance_approved_by',
+            ])
+            ->add('acceptanceApprovedAt', DateType::class, [
+                'label' => 'risk.field.acceptance_approved_at',
+                'widget' => 'single_text',
+                'required' => false,
+                'help' => 'risk.help.acceptance_approved_at',
+            ])
+            ->add('acceptanceJustification', TextareaType::class, [
+                'label' => 'risk.field.acceptance_justification',
+                'required' => false,
+                'attr' => [
+                    'rows' => 3,
+                    'placeholder' => 'risk.placeholder.acceptance_justification',
+                ],
+                'help' => 'risk.help.acceptance_justification',
+            ])
             ->add('status', ChoiceType::class, [
                 'label' => 'risk.field.status',
                 'choices' => [
