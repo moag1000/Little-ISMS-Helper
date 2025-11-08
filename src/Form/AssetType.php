@@ -48,7 +48,7 @@ class AssetType extends AbstractType
             ])
             ->add('owner', TextType::class, [
                 'label' => 'asset.field.owner',
-                'required' => false,
+                'required' => true,
                 'attr' => [
                     'maxlength' => 100,
                     'placeholder' => 'asset.placeholder.owner',
