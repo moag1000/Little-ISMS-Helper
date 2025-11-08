@@ -2,7 +2,9 @@
 
 namespace App\Form;
 
+use App\Entity\Asset;
 use App\Entity\Risk;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -34,39 +36,40 @@ class RiskType extends AbstractType
                 ],
                 'help' => 'risk.help.description',
             ])
-            ->add('category', ChoiceType::class, [
-                'label' => 'risk.field.category',
-                'choices' => [
-                    'risk.category.strategic' => 'strategic',
-                    'risk.category.operational' => 'operational',
-                    'risk.category.financial' => 'financial',
-                    'risk.category.compliance' => 'compliance',
-                    'risk.category.reputational' => 'reputational',
-                    'risk.category.technology' => 'technology',
-                ],
-                'required' => true,
-            ])
-            ->add('identifiedDate', DateType::class, [
-                'label' => 'risk.field.identified_date',
-                'widget' => 'single_text',
-                'required' => true,
-            ])
-            ->add('identifiedBy', TextType::class, [
-                'label' => 'risk.field.identified_by',
+            ->add('threat', TextareaType::class, [
+                'label' => 'risk.field.threat',
                 'required' => false,
                 'attr' => [
-                    'maxlength' => 100,
-                    'placeholder' => 'risk.placeholder.identified_by',
+                    'rows' => 3,
+                    'placeholder' => 'risk.placeholder.threat',
                 ],
+                'help' => 'risk.help.threat',
             ])
-            ->add('inherentProbability', IntegerType::class, [
-                'label' => 'risk.field.inherent_probability',
+            ->add('vulnerability', TextareaType::class, [
+                'label' => 'risk.field.vulnerability',
+                'required' => false,
+                'attr' => [
+                    'rows' => 3,
+                    'placeholder' => 'risk.placeholder.vulnerability',
+                ],
+                'help' => 'risk.help.vulnerability',
+            ])
+            ->add('asset', EntityType::class, [
+                'label' => 'risk.field.asset',
+                'class' => Asset::class,
+                'choice_label' => 'name',
+                'placeholder' => 'risk.placeholder.asset',
+                'required' => true,
+                'help' => 'risk.help.asset',
+            ])
+            ->add('probability', IntegerType::class, [
+                'label' => 'risk.field.probability',
                 'required' => true,
                 'attr' => ['min' => 1, 'max' => 5],
                 'help' => 'risk.help.probability',
             ])
-            ->add('inherentImpact', IntegerType::class, [
-                'label' => 'risk.field.inherent_impact',
+            ->add('impact', IntegerType::class, [
+                'label' => 'risk.field.impact',
                 'required' => true,
                 'attr' => ['min' => 1, 'max' => 5],
                 'help' => 'risk.help.impact',
@@ -83,6 +86,15 @@ class RiskType extends AbstractType
                 'attr' => ['min' => 1, 'max' => 5],
                 'help' => 'risk.help.impact',
             ])
+            ->add('riskOwner', TextType::class, [
+                'label' => 'risk.field.risk_owner',
+                'required' => false,
+                'attr' => [
+                    'maxlength' => 100,
+                    'placeholder' => 'risk.placeholder.risk_owner',
+                ],
+                'help' => 'risk.help.risk_owner',
+            ])
             ->add('treatmentStrategy', ChoiceType::class, [
                 'label' => 'risk.field.treatment_strategy',
                 'choices' => [
@@ -94,14 +106,24 @@ class RiskType extends AbstractType
                 'required' => true,
                 'help' => 'risk.help.treatment',
             ])
+            ->add('treatmentDescription', TextareaType::class, [
+                'label' => 'risk.field.treatment_description',
+                'required' => false,
+                'attr' => [
+                    'rows' => 4,
+                    'placeholder' => 'risk.placeholder.treatment_description',
+                ],
+                'help' => 'risk.help.treatment_description',
+            ])
             ->add('status', ChoiceType::class, [
                 'label' => 'risk.field.status',
                 'choices' => [
                     'risk.status.identified' => 'identified',
                     'risk.status.assessed' => 'assessed',
-                    'risk.status.in_treatment' => 'in_treatment',
+                    'risk.status.treated' => 'treated',
                     'risk.status.monitored' => 'monitored',
                     'risk.status.closed' => 'closed',
+                    'risk.status.accepted' => 'accepted',
                 ],
                 'required' => true,
             ])
