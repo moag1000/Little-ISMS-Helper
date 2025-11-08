@@ -26,7 +26,8 @@ security:
                 login_path: app_login
                 check_path: app_login
                 enable_csrf: true
-                default_target_path: app_dashboard
+                # Use custom success handler for locale-aware redirects
+                success_handler: App\Security\LoginSuccessHandler
                 always_use_default_target_path: false
 
             # Logout
@@ -39,9 +40,8 @@ security:
                 - App\Security\AzureOAuthAuthenticator
                 - App\Security\AzureSamlAuthenticator
 
-            # Entry point (what to do when authentication is required)
-            # Use form_login as default, OAuth/SAML explicitly via their routes
-            entry_point: form_login.authenticator
+            # Entry point: removed - Symfony will use first authenticator (form_login)
+            # OAuth/SAML accessible via their explicit routes
 
             # Remember me functionality
             remember_me:
