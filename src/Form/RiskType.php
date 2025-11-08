@@ -18,82 +18,98 @@ class RiskType extends AbstractType
     {
         $builder
             ->add('name', TextType::class, [
-                'label' => 'Risk Name',
+                'label' => 'risk.field.name',
                 'required' => true,
-                'attr' => ['maxlength' => 255],
+                'attr' => [
+                    'maxlength' => 255,
+                    'placeholder' => 'risk.placeholder.name',
+                ],
             ])
             ->add('description', TextareaType::class, [
-                'label' => 'Description',
+                'label' => 'risk.field.description',
                 'required' => false,
-                'attr' => ['rows' => 4],
+                'attr' => [
+                    'rows' => 4,
+                    'placeholder' => 'risk.placeholder.description',
+                ],
+                'help' => 'risk.help.description',
             ])
             ->add('category', ChoiceType::class, [
-                'label' => 'Category',
+                'label' => 'risk.field.category',
                 'choices' => [
-                    'Strategic' => 'strategic',
-                    'Operational' => 'operational',
-                    'Financial' => 'financial',
-                    'Compliance' => 'compliance',
-                    'Reputational' => 'reputational',
-                    'Technology' => 'technology',
+                    'risk.category.strategic' => 'strategic',
+                    'risk.category.operational' => 'operational',
+                    'risk.category.financial' => 'financial',
+                    'risk.category.compliance' => 'compliance',
+                    'risk.category.reputational' => 'reputational',
+                    'risk.category.technology' => 'technology',
                 ],
                 'required' => true,
             ])
             ->add('identifiedDate', DateType::class, [
-                'label' => 'Identified Date',
+                'label' => 'risk.field.identified_date',
                 'widget' => 'single_text',
                 'required' => true,
             ])
             ->add('identifiedBy', TextType::class, [
-                'label' => 'Identified By',
+                'label' => 'risk.field.identified_by',
                 'required' => false,
-                'attr' => ['maxlength' => 100],
+                'attr' => [
+                    'maxlength' => 100,
+                    'placeholder' => 'risk.placeholder.identified_by',
+                ],
             ])
             ->add('inherentProbability', IntegerType::class, [
-                'label' => 'Inherent Probability (1-5)',
+                'label' => 'risk.field.inherent_probability',
                 'required' => true,
                 'attr' => ['min' => 1, 'max' => 5],
+                'help' => 'risk.help.probability',
             ])
             ->add('inherentImpact', IntegerType::class, [
-                'label' => 'Inherent Impact (1-5)',
+                'label' => 'risk.field.inherent_impact',
                 'required' => true,
                 'attr' => ['min' => 1, 'max' => 5],
+                'help' => 'risk.help.impact',
             ])
             ->add('residualProbability', IntegerType::class, [
-                'label' => 'Residual Probability (1-5)',
+                'label' => 'risk.field.residual_probability',
                 'required' => false,
                 'attr' => ['min' => 1, 'max' => 5],
+                'help' => 'risk.help.probability',
             ])
             ->add('residualImpact', IntegerType::class, [
-                'label' => 'Residual Impact (1-5)',
+                'label' => 'risk.field.residual_impact',
                 'required' => false,
                 'attr' => ['min' => 1, 'max' => 5],
+                'help' => 'risk.help.impact',
             ])
             ->add('treatmentStrategy', ChoiceType::class, [
-                'label' => 'Treatment Strategy',
+                'label' => 'risk.field.treatment_strategy',
                 'choices' => [
-                    'Mitigate' => 'mitigate',
-                    'Transfer' => 'transfer',
-                    'Accept' => 'accept',
-                    'Avoid' => 'avoid',
+                    'risk.treatment.mitigate' => 'mitigate',
+                    'risk.treatment.transfer' => 'transfer',
+                    'risk.treatment.accept' => 'accept',
+                    'risk.treatment.avoid' => 'avoid',
                 ],
                 'required' => true,
+                'help' => 'risk.help.treatment',
             ])
             ->add('status', ChoiceType::class, [
-                'label' => 'Status',
+                'label' => 'risk.field.status',
                 'choices' => [
-                    'Identified' => 'identified',
-                    'Assessed' => 'assessed',
-                    'In Treatment' => 'in_treatment',
-                    'Monitored' => 'monitored',
-                    'Closed' => 'closed',
+                    'risk.status.identified' => 'identified',
+                    'risk.status.assessed' => 'assessed',
+                    'risk.status.in_treatment' => 'in_treatment',
+                    'risk.status.monitored' => 'monitored',
+                    'risk.status.closed' => 'closed',
                 ],
                 'required' => true,
             ])
             ->add('reviewDate', DateType::class, [
-                'label' => 'Review Date',
+                'label' => 'risk.field.review_date',
                 'widget' => 'single_text',
                 'required' => false,
+                'help' => 'risk.help.review_date',
             ])
         ;
     }
