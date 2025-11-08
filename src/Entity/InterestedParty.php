@@ -14,8 +14,10 @@ use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Delete;
 
 use App\Repository\InterestedPartyRepository;
+use App\Entity\Tenant;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -36,15 +38,24 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Table(name: 'interested_party')]
 #[ORM\Index(columns: ['party_type'], name: 'idx_party_type')]
 #[ORM\Index(columns: ['importance'], name: 'idx_party_importance')]
+#[ORM\Index(columns: ['tenant_id'], name: 'idx_interested_party_tenant')]
+#[ORM\HasLifecycleCallbacks]
 class InterestedParty
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['interested_party:read'])]
     private ?int $id = null;
+
+    #[ORM\ManyToOne(targetEntity: Tenant::class)]
+    #[ORM\JoinColumn(nullable: true)]
+    #[Groups(['interested_party:read'])]
+    private ?Tenant $tenant = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message: 'Party name is required')]
+    #[Groups(['interested_party:read', 'interested_party:write'])]
     private ?string $name = null;
 
     /**
@@ -57,19 +68,24 @@ class InterestedParty
         'customer', 'shareholder', 'employee', 'regulator', 'supplier',
         'partner', 'public', 'media', 'government', 'competitor', 'other'
     ])]
+    #[Groups(['interested_party:read', 'interested_party:write'])]
     private ?string $partyType = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['interested_party:read', 'interested_party:write'])]
     private ?string $description = null;
 
     #[ORM\Column(length: 100, nullable: true)]
+    #[Groups(['interested_party:read', 'interested_party:write'])]
     private ?string $contactPerson = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     #[Assert\Email]
+    #[Groups(['interested_party:read', 'interested_party:write'])]
     private ?string $email = null;
 
     #[ORM\Column(length: 50, nullable: true)]
+    #[Groups(['interested_party:read', 'interested_party:write'])]
     private ?string $phone = null;
 
     /**
@@ -78,6 +94,7 @@ class InterestedParty
     #[ORM\Column(length: 50)]
     #[Assert\NotBlank]
     #[Assert\Choice(choices: ['critical', 'high', 'medium', 'low'])]
+    #[Groups(['interested_party:read', 'interested_party:write'])]
     private ?string $importance = 'medium';
 
     /**
@@ -85,18 +102,21 @@ class InterestedParty
      */
     #[ORM\Column(type: Types::TEXT)]
     #[Assert\NotBlank(message: 'Requirements must be documented')]
+    #[Groups(['interested_party:read', 'interested_party:write'])]
     private ?string $requirements = null;
 
     /**
      * Legal/Regulatory/Contractual requirements (JSON)
      */
     #[ORM\Column(type: Types::JSON, nullable: true)]
+    #[Groups(['interested_party:read', 'interested_party:write'])]
     private ?array $legalRequirements = null;
 
     /**
      * How their requirements are addressed
      */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['interested_party:read', 'interested_party:write'])]
     private ?string $howAddressed = null;
 
     /**
@@ -104,24 +124,29 @@ class InterestedParty
      */
     #[ORM\Column(length: 100, nullable: true)]
     #[Assert\Choice(choices: ['daily', 'weekly', 'monthly', 'quarterly', 'annually', 'as_needed'])]
+    #[Groups(['interested_party:read', 'interested_party:write'])]
     private ?string $communicationFrequency = 'as_needed';
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['interested_party:read', 'interested_party:write'])]
     private ?string $communicationMethod = null;
 
     /**
      * Last communication date
      */
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    #[Groups(['interested_party:read', 'interested_party:write'])]
     private ?\DateTimeInterface $lastCommunication = null;
 
     /**
      * Next planned communication
      */
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    #[Groups(['interested_party:read', 'interested_party:write'])]
     private ?\DateTimeInterface $nextCommunication = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['interested_party:read', 'interested_party:write'])]
     private ?string $feedback = null;
 
     /**
@@ -129,18 +154,22 @@ class InterestedParty
      */
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
     #[Assert\Range(min: 1, max: 5)]
+    #[Groups(['interested_party:read', 'interested_party:write'])]
     private ?int $satisfactionLevel = null;
 
     /**
      * Issues/Concerns
      */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['interested_party:read', 'interested_party:write'])]
     private ?string $issues = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Groups(['interested_party:read'])]
     private ?\DateTimeInterface $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[Groups(['interested_party:read'])]
     private ?\DateTimeInterface $updatedAt = null;
 
     public function __construct()
@@ -148,9 +177,30 @@ class InterestedParty
         $this->createdAt = new \DateTime();
     }
 
+    #[ORM\PrePersist]
+    #[ORM\PreUpdate]
+    public function updateTimestamps(): void
+    {
+        $this->updatedAt = new \DateTimeImmutable();
+        if ($this->createdAt === null) {
+            $this->createdAt = new \DateTimeImmutable();
+        }
+    }
+
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getTenant(): ?Tenant
+    {
+        return $this->tenant;
+    }
+
+    public function setTenant(?Tenant $tenant): static
+    {
+        $this->tenant = $tenant;
+        return $this;
     }
 
     public function getName(): ?string
