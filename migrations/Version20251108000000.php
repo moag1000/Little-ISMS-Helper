@@ -45,7 +45,7 @@ final class Version20251108000000 extends AbstractMigration
         ) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
 
         $this->addSql('ALTER TABLE cryptographic_operation
-            ADD CONSTRAINT FK_CRYPTO_USER FOREIGN KEY (user_id) REFERENCES user (id)');
+            ADD CONSTRAINT FK_CRYPTO_USER FOREIGN KEY (user_id) REFERENCES users (id)');
         $this->addSql('ALTER TABLE cryptographic_operation
             ADD CONSTRAINT FK_CRYPTO_TENANT FOREIGN KEY (tenant_id) REFERENCES tenant (id)');
 
@@ -82,7 +82,7 @@ final class Version20251108000000 extends AbstractMigration
         ) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
 
         $this->addSql('ALTER TABLE threat_intelligence
-            ADD CONSTRAINT FK_THREAT_ASSIGNED_TO FOREIGN KEY (assigned_to_id) REFERENCES user (id)');
+            ADD CONSTRAINT FK_THREAT_ASSIGNED_TO FOREIGN KEY (assigned_to_id) REFERENCES users (id)');
         $this->addSql('ALTER TABLE threat_intelligence
             ADD CONSTRAINT FK_THREAT_TENANT FOREIGN KEY (tenant_id) REFERENCES tenant (id)');
 
@@ -117,7 +117,7 @@ final class Version20251108000000 extends AbstractMigration
         ) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
 
         $this->addSql('ALTER TABLE physical_access_log
-            ADD CONSTRAINT FK_PHYSICAL_USER FOREIGN KEY (user_id) REFERENCES user (id)');
+            ADD CONSTRAINT FK_PHYSICAL_USER FOREIGN KEY (user_id) REFERENCES users (id)');
         $this->addSql('ALTER TABLE physical_access_log
             ADD CONSTRAINT FK_PHYSICAL_TENANT FOREIGN KEY (tenant_id) REFERENCES tenant (id)');
     }
