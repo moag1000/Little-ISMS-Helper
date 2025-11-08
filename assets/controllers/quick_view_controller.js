@@ -28,6 +28,10 @@ export default class extends Controller {
         this.boundHandleKeydown = this.handleKeydown.bind(this);
         this.element.addEventListener('keydown', this.boundHandleKeydown);
 
+        // Register ESC key handler for modal
+        this.boundHandleModalKeydown = this.handleModalKeydown.bind(this);
+        document.addEventListener('keydown', this.boundHandleModalKeydown);
+
         // Make element focusable
         if (!this.element.hasAttribute('tabindex')) {
             this.element.setAttribute('tabindex', '0');
@@ -36,6 +40,7 @@ export default class extends Controller {
 
     disconnect() {
         this.element.removeEventListener('keydown', this.boundHandleKeydown);
+        document.removeEventListener('keydown', this.boundHandleModalKeydown);
     }
 
     handleKeydown(event) {
@@ -92,7 +97,7 @@ export default class extends Controller {
     }
 
     handleModalKeydown(event) {
-        if (event.key === 'Escape') {
+        if (event.key === 'Escape' && this.hasModalTarget && !this.modalTarget.classList.contains('d-none')) {
             event.preventDefault();
             this.close();
         }
