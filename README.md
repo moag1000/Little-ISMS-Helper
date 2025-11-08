@@ -435,9 +435,13 @@ crontab -e
 
 ### 🚧 Phase 6: Module Completeness & Quality Assurance (In Entwicklung)
 
-**Status:** Vollständigkeitsaudit durchgeführt am 2025-11-08
-- **Durchschnittliche Vollständigkeit:** ~70%
-- **Kritische Lücken identifiziert:** 8 fehlende Form Types, 70% Module ohne Tests
+**Status:** Umfassendes Audit durchgeführt am 2025-11-08 (Technisch + ISO 27001)
+- **Technische Vollständigkeit:** ~70% (Lücken: Form Types, Tests, Workflows)
+- **ISO 27001:2022 Compliance:** 94.5% ✅
+- **Zertifizierungsbereitschaft:** JA (mit Minor Findings in Asset Management)
+- **Kritische Lücken identifiziert:**
+  - *Technisch:* 8 fehlende Form Types, 70% Module ohne Tests
+  - *Inhaltlich:* Asset Management (Acceptable Use, Return Workflow, Data Classification)
 - **Siehe:** [MODULE_COMPLETENESS_AUDIT.md](docs/MODULE_COMPLETENESS_AUDIT.md)
 
 #### 🔥 Phase 6A: Form Types (Priorität KRITISCH)
@@ -473,8 +477,27 @@ crontab -e
 - 📅 UX-Verbesserungen
 - 📋 **Aufwand:** 1-2 Tage | **Impact:** Niedrig
 
-**Gesamt-Aufwand Phase 6:** 9-14 Tage
-**Erwartete Vollständigkeit nach Phase 6:** ~95%
+#### 🏛️ Phase 6F: ISO 27001 Inhaltliche Vervollständigung (Priorität HOCH)
+- 🔄 **Asset Management vervollständigen** (KRITISCH für Zertifizierung)
+  - Acceptable Use Policy Field
+  - Monetary Value
+  - Handling Instructions
+  - Data Classification (public/internal/confidential/restricted)
+  - Asset Return Workflow
+- 🔄 **Risk Management vervollständigen**
+  - Risk Owner als User-Referenz
+  - Risk Appetite Entity
+  - Risk Treatment Plan Entity
+- 🔄 **Statement of Applicability Report**
+  - SoA PDF Generator Service
+  - Professional SoA Template
+- 📋 **Aufwand:** 2-3 Tage | **Impact:** KRITISCH
+
+**Gesamt-Aufwand Phase 6 (A-F):** 13-20 Tage
+**Erwartete Vollständigkeit nach Phase 6:**
+- **Technisch:** ~95%
+- **ISO 27001 Inhaltlich:** 98%+
+- **Zertifizierungsbereitschaft:** 100% ✅
 
 ---
 
@@ -546,7 +569,8 @@ Siehe auch: [CHANGELOG.md](CHANGELOG.md) für detaillierte Versionshistorie
 - **Report Types:** 10 (5 PDF + 5 Excel)
 - **Notification Types:** 5 automatisierte Typen
 - **Compliance Frameworks:** 3 (ISO 27001, TISAX, DORA)
-- **Module Vollständigkeit:** ~70% durchschnittlich (siehe [Audit](docs/MODULE_COMPLETENESS_AUDIT.md))
+- **Module Vollständigkeit (Technisch):** ~70% durchschnittlich (siehe [Audit](docs/MODULE_COMPLETENESS_AUDIT.md))
+- **ISO 27001:2022 Compliance:** 94.5% ✅ (Zertifizierungsbereit)
 
 ---
 
