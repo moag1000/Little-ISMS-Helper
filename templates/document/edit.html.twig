@@ -1,12 +1,24 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit Document{% endblock %}
+{% block title %}{{ 'document.edit'|trans }} - {{ parent() }}{% endblock %}
 
 {% block body %}
 <div class="container">
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{{ path('app_document_index') }}"><i class="bi bi-file-earmark-text"></i> {{ 'nav.documents'|trans }}</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{{ path('app_document_show', {id: document.id}) }}">{{ document.name }}</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">{{ 'document.edit'|trans }}</li>
+        </ol>
+    </nav>
+
     <div class="page-header">
-        <h1>Edit Document: {{ document.name }}</h1>
-        <a href="{{ path('app_document_show', {id: document.id}) }}" class="btn btn-secondary">Back</a>
+        <h1><i class="bi bi-pencil"></i> {{ 'document.edit'|trans }}: {{ document.name }}</h1>
+        <a href="{{ path('app_document_show', {id: document.id}) }}" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> {{ 'common.back'|trans }}</a>
     </div>
 
     <div class="card">
@@ -34,12 +46,12 @@
                     {{ form_label(form.file) }}
                     {{ form_widget(form.file) }}
                     {{ form_errors(form.file) }}
-                    <small class="help-text">Leave empty to keep current file. Max file size: 10MB.</small>
+                    <small class="help-text">{{ 'document.edit_file_help'|trans }}</small>
                 </div>
 
                 <div class="form-actions">
-                    <button type="submit" class="btn btn-primary">Update Document</button>
-                    <a href="{{ path('app_document_show', {id: document.id}) }}" class="btn btn-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> {{ 'document.update'|trans }}</button>
+                    <a href="{{ path('app_document_show', {id: document.id}) }}" class="btn btn-secondary"><i class="bi bi-x-circle"></i> {{ 'common.cancel'|trans }}</a>
                 </div>
             {{ form_end(form) }}
         </div>

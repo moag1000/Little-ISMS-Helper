@@ -17,85 +17,107 @@ class IncidentType extends AbstractType
     {
         $builder
             ->add('title', TextType::class, [
-                'label' => 'Incident Title',
+                'label' => 'incident.field.title',
                 'required' => true,
-                'attr' => ['maxlength' => 255],
+                'attr' => [
+                    'maxlength' => 255,
+                    'placeholder' => 'incident.placeholder.title',
+                ],
             ])
             ->add('description', TextareaType::class, [
-                'label' => 'Description',
+                'label' => 'incident.field.description',
                 'required' => false,
-                'attr' => ['rows' => 5],
+                'attr' => [
+                    'rows' => 5,
+                    'placeholder' => 'incident.placeholder.description',
+                ],
             ])
             ->add('category', ChoiceType::class, [
-                'label' => 'Category',
+                'label' => 'incident.field.category',
                 'choices' => [
-                    'Data Breach' => 'data_breach',
-                    'Security Incident' => 'security_incident',
-                    'System Outage' => 'system_outage',
-                    'Compliance Violation' => 'compliance_violation',
-                    'Physical Security' => 'physical_security',
-                    'Other' => 'other',
+                    'incident.category.data_breach' => 'data_breach',
+                    'incident.category.security_incident' => 'security_incident',
+                    'incident.category.system_outage' => 'system_outage',
+                    'incident.category.compliance_violation' => 'compliance_violation',
+                    'incident.category.physical_security' => 'physical_security',
+                    'incident.category.other' => 'other',
                 ],
                 'required' => true,
             ])
             ->add('severity', ChoiceType::class, [
-                'label' => 'Severity',
+                'label' => 'incident.field.severity',
                 'choices' => [
-                    'Low' => 'low',
-                    'Medium' => 'medium',
-                    'High' => 'high',
-                    'Critical' => 'critical',
+                    'incident.severity.low' => 'low',
+                    'incident.severity.medium' => 'medium',
+                    'incident.severity.high' => 'high',
+                    'incident.severity.critical' => 'critical',
                 ],
                 'required' => true,
+                'help' => 'incident.help.severity',
             ])
             ->add('detectedAt', DateTimeType::class, [
-                'label' => 'Detected At',
+                'label' => 'incident.field.detected_at',
                 'widget' => 'single_text',
                 'required' => true,
             ])
             ->add('occurredAt', DateTimeType::class, [
-                'label' => 'Occurred At',
+                'label' => 'incident.field.occurred_at',
                 'widget' => 'single_text',
                 'required' => false,
             ])
             ->add('reportedBy', TextType::class, [
-                'label' => 'Reported By',
+                'label' => 'incident.field.reported_by',
                 'required' => false,
-                'attr' => ['maxlength' => 100],
+                'attr' => [
+                    'maxlength' => 100,
+                    'placeholder' => 'incident.placeholder.reported_by',
+                ],
             ])
             ->add('status', ChoiceType::class, [
-                'label' => 'Status',
+                'label' => 'incident.field.status',
                 'choices' => [
-                    'Reported' => 'reported',
-                    'In Investigation' => 'in_investigation',
-                    'In Resolution' => 'in_resolution',
-                    'Resolved' => 'resolved',
-                    'Closed' => 'closed',
+                    'incident.status.reported' => 'reported',
+                    'incident.status.in_investigation' => 'in_investigation',
+                    'incident.status.in_resolution' => 'in_resolution',
+                    'incident.status.resolved' => 'resolved',
+                    'incident.status.closed' => 'closed',
                 ],
                 'required' => true,
             ])
             ->add('affectedSystems', TextType::class, [
-                'label' => 'Affected Systems',
+                'label' => 'incident.field.affected_systems',
                 'required' => false,
-                'attr' => ['maxlength' => 255],
+                'attr' => [
+                    'maxlength' => 255,
+                    'placeholder' => 'incident.placeholder.affected_systems',
+                ],
             ])
             ->add('rootCause', TextareaType::class, [
-                'label' => 'Root Cause',
+                'label' => 'incident.field.root_cause',
                 'required' => false,
-                'attr' => ['rows' => 3],
+                'attr' => [
+                    'rows' => 3,
+                    'placeholder' => 'incident.placeholder.root_cause',
+                ],
             ])
             ->add('correctiveActions', TextareaType::class, [
-                'label' => 'Corrective Actions',
+                'label' => 'incident.field.corrective_actions',
                 'required' => false,
-                'attr' => ['rows' => 3],
+                'attr' => [
+                    'rows' => 3,
+                    'placeholder' => 'incident.placeholder.corrective_actions',
+                ],
             ])
             ->add('lessonsLearned', TextareaType::class, [
-                'label' => 'Lessons Learned',
+                'label' => 'incident.field.lessons_learned',
                 'required' => false,
-                'attr' => ['rows' => 3],
+                'attr' => [
+                    'rows' => 3,
+                    'placeholder' => 'incident.placeholder.lessons_learned',
+                ],
             ])
             ->add('closedDate', DateTimeType::class, [
-                'label' => 'Closed Date',
+                'label' => 'incident.field.closed_date',
                 'widget' => 'single_text',
                 'required' => false,
             ])
