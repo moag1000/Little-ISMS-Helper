@@ -1,12 +1,12 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit Incident{% endblock %}
+{% block title %}{{ 'incident.edit'|trans }} - {{ parent() }}{% endblock %}
 
 {% block body %}
 <div class="container">
     <div class="page-header">
-        <h1>Edit Incident: {{ incident.title }}</h1>
-        <a href="{{ path('app_incident_show', {id: incident.id}) }}" class="btn btn-secondary">Back</a>
+        <h1><i class="bi bi-pencil"></i> {{ 'incident.edit'|trans }}: {{ incident.title }}</h1>
+        <a href="{{ path('app_incident_show', {id: incident.id}) }}" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> {{ 'common.back'|trans }}</a>
     </div>
 
     <div class="card">
@@ -41,7 +41,7 @@
                         {{ form_label(form.status) }}
                         {{ form_widget(form.status) }}
                         {{ form_errors(form.status) }}
-                        <small class="help-text">Status changes will trigger email notifications</small>
+                        <small class="help-text">{{ 'incident.status_help'|trans }}</small>
                     </div>
                 </div>
 
@@ -74,7 +74,7 @@
                     {{ form_errors(form.affectedSystems) }}
                 </div>
 
-                <h3>Analysis & Resolution</h3>
+                <h3><i class="bi bi-search"></i> {{ 'incident.analysis_resolution'|trans }}</h3>
                 <div class="form-group">
                     {{ form_label(form.rootCause) }}
                     {{ form_widget(form.rootCause) }}
@@ -100,8 +100,8 @@
                 </div>
 
                 <div class="form-actions">
-                    <button type="submit" class="btn btn-primary">Update Incident</button>
-                    <a href="{{ path('app_incident_show', {id: incident.id}) }}" class="btn btn-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> {{ 'incident.update'|trans }}</button>
+                    <a href="{{ path('app_incident_show', {id: incident.id}) }}" class="btn btn-secondary"><i class="bi bi-x-circle"></i> {{ 'common.cancel'|trans }}</a>
                 </div>
             {{ form_end(form) }}
         </div>
