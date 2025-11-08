@@ -128,6 +128,42 @@ class Asset
     )]
     private ?string $status = 'active';
 
+    /**
+     * ISO 27001 Control 5.12 - Data Classification
+     * - public: Publicly available information
+     * - internal: Internal use only
+     * - confidential: Confidential information
+     * - restricted: Highly sensitive, restricted access
+     */
+    #[ORM\Column(length: 30, nullable: true)]
+    #[Groups(['asset:read', 'asset:write'])]
+    #[Assert\Choice(
+        choices: ['public', 'internal', 'confidential', 'restricted'],
+        message: 'Data classification must be one of: {{ choices }}'
+    )]
+    private ?string $dataClassification = null;
+
+    /**
+     * ISO 27001 Control 5.13 - Handling Instructions
+     */
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['asset:read', 'asset:write'])]
+    private ?string $handlingInstructions = null;
+
+    /**
+     * ISO 27001 Control 5.10 - Acceptable Use Policy
+     */
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['asset:read', 'asset:write'])]
+    private ?string $acceptableUsePolicy = null;
+
+    /**
+     * Monetary value for business impact assessment
+     */
+    #[ORM\Column(type: Types::DECIMAL, precision: 12, scale: 2, nullable: true)]
+    #[Groups(['asset:read', 'asset:write'])]
+    private ?string $monetaryValue = null;
+
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Groups(['asset:read'])]
     private ?\DateTimeInterface $createdAt = null;
@@ -324,6 +360,50 @@ class Asset
     public function setUpdatedAt(?\DateTimeInterface $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
+        return $this;
+    }
+
+    public function getDataClassification(): ?string
+    {
+        return $this->dataClassification;
+    }
+
+    public function setDataClassification(?string $dataClassification): static
+    {
+        $this->dataClassification = $dataClassification;
+        return $this;
+    }
+
+    public function getHandlingInstructions(): ?string
+    {
+        return $this->handlingInstructions;
+    }
+
+    public function setHandlingInstructions(?string $handlingInstructions): static
+    {
+        $this->handlingInstructions = $handlingInstructions;
+        return $this;
+    }
+
+    public function getAcceptableUsePolicy(): ?string
+    {
+        return $this->acceptableUsePolicy;
+    }
+
+    public function setAcceptableUsePolicy(?string $acceptableUsePolicy): static
+    {
+        $this->acceptableUsePolicy = $acceptableUsePolicy;
+        return $this;
+    }
+
+    public function getMonetaryValue(): ?string
+    {
+        return $this->monetaryValue;
+    }
+
+    public function setMonetaryValue(?string $monetaryValue): static
+    {
+        $this->monetaryValue = $monetaryValue;
         return $this;
     }
 

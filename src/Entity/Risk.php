@@ -128,10 +128,55 @@ class Risk
     #[Groups(['risk:read', 'risk:write'])]
     private ?string $treatmentDescription = null;
 
+    /**
+     * @deprecated Use owner (User relation) instead for structured risk ownership
+     */
     #[ORM\Column(length: 100, nullable: true)]
     #[Groups(['risk:read', 'risk:write'])]
     #[Assert\Length(max: 100, maxMessage: 'Risk owner cannot exceed {{ limit }} characters')]
     private ?string $riskOwner = null;
+
+    /**
+     * ISO 27001:2022 - Risk Owner (structured User relation)
+     * The person accountable for managing this risk
+     */
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    #[Groups(['risk:read', 'risk:write'])]
+    private ?User $owner = null;
+
+    /**
+     * ISO 27001:2022 - Risk Category
+     * Categories: operational, financial, strategic, compliance, reputational, technical
+     */
+    #[ORM\Column(length: 50, nullable: true)]
+    #[Groups(['risk:read', 'risk:write'])]
+    #[Assert\Choice(
+        choices: ['operational', 'financial', 'strategic', 'compliance', 'reputational', 'technical'],
+        message: 'Risk category must be one of: {{ choices }}'
+    )]
+    private ?string $category = null;
+
+    /**
+     * ISO 27005 - Risk Severity (auto-calculated from inherent risk level)
+     * - critical: 20-25 (5x4, 5x5)
+     * - high: 12-19 (3x4, 4x4, 4x5, etc.)
+     * - medium: 6-11 (2x3, 3x3, 3x4, etc.)
+     * - low: 1-5 (1x1, 1x2, 2x2, etc.)
+     */
+    #[ORM\Column(length: 20, nullable: true)]
+    #[Groups(['risk:read'])]
+    private ?string $severity = null;
+
+    /**
+     * ISO 27005 - Risk Appetite
+     * Links this risk to the organization's risk appetite statement
+     */
+    #[ORM\ManyToOne(targetEntity: RiskAppetite::class, inversedBy: 'risks')]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    #[Groups(['risk:read', 'risk:write'])]
+    #[MaxDepth(1)]
+    private ?RiskAppetite $riskAppetite = null;
 
     #[ORM\Column(length: 50)]
     #[Groups(['risk:read', 'risk:write'])]
@@ -279,6 +324,7 @@ class Risk
     public function setProbability(int $probability): static
     {
         $this->probability = $probability;
+        $this->calculateSeverity(); // Auto-update severity
         return $this;
     }
 
@@ -290,6 +336,7 @@ class Risk
     public function setImpact(int $impact): static
     {
         $this->impact = $impact;
+        $this->calculateSeverity(); // Auto-update severity
         return $this;
     }
 
@@ -346,6 +393,105 @@ class Risk
     {
         $this->riskOwner = $riskOwner;
         return $this;
+    }
+
+    public function getOwner(): ?User
+    {
+        return $this->owner;
+    }
+
+    public function setOwner(?User $owner): static
+    {
+        $this->owner = $owner;
+        return $this;
+    }
+
+    public function getCategory(): ?string
+    {
+        return $this->category;
+    }
+
+    public function setCategory(?string $category): static
+    {
+        $this->category = $category;
+        return $this;
+    }
+
+    public function getSeverity(): ?string
+    {
+        return $this->severity;
+    }
+
+    public function setSeverity(?string $severity): static
+    {
+        $this->severity = $severity;
+        return $this;
+    }
+
+    /**
+     * Auto-calculate and set severity based on inherent risk level
+     * Called automatically when probability or impact changes
+     */
+    public function calculateSeverity(): static
+    {
+        if ($this->probability === null || $this->impact === null) {
+            $this->severity = null;
+            return $this;
+        }
+
+        $level = $this->getInherentRiskLevel();
+
+        $this->severity = match(true) {
+            $level >= 20 => 'critical',  // 5x4, 5x5
+            $level >= 12 => 'high',      // 3x4, 4x4, 4x5, etc.
+            $level >= 6 => 'medium',     // 2x3, 3x3, 3x4, etc.
+            default => 'low',            // 1x1, 1x2, 2x2, etc.
+        };
+
+        return $this;
+    }
+
+    public function getRiskAppetite(): ?RiskAppetite
+    {
+        return $this->riskAppetite;
+    }
+
+    public function setRiskAppetite(?RiskAppetite $riskAppetite): static
+    {
+        $this->riskAppetite = $riskAppetite;
+        return $this;
+    }
+
+    /**
+     * Check if this risk is within the organization's risk appetite
+     * ISO 27005: Risks exceeding appetite require escalation/treatment
+     */
+    #[Groups(['risk:read'])]
+    public function isWithinAppetite(): ?bool
+    {
+        if ($this->riskAppetite === null) {
+            return null; // Cannot determine without appetite definition
+        }
+
+        $inherentLevel = $this->getInherentRiskLevel();
+        return $this->riskAppetite->isRiskLevelAcceptable($inherentLevel, $this->category);
+    }
+
+    /**
+     * Check if this risk requires escalation based on appetite
+     */
+    #[Groups(['risk:read'])]
+    public function requiresEscalation(): bool
+    {
+        $withinAppetite = $this->isWithinAppetite();
+
+        // If we can determine appetite and risk is NOT within appetite, escalation required
+        if ($withinAppetite === false) {
+            return true;
+        }
+
+        // Also check if critical risk regardless of appetite
+        return $this->severity === 'critical';
     }
 
     public function getStatus(): ?string
