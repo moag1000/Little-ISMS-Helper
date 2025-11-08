@@ -28,11 +28,27 @@ bin/console debug:voter AssetVoter
 ### A02:2021 – Cryptographic Failures ✅
 
 **Implementation:**
-- Session security in production (`config/packages/prod/framework.yaml`):
-  - `cookie_secure: true` (HTTPS only)
-  - `cookie_httponly: true` (No JavaScript access)
-  - `cookie_samesite: 'lax'` (CSRF protection)
-- TLS/HTTPS enforcement via HSTS header (6 months)
+- **Enhanced Session Security** (`config/packages/framework.yaml`):
+  - `cookie_secure: 'auto'` - HTTPS only in production
+  - `cookie_httponly: true` - Prevents JavaScript access to session cookie (XSS protection)
+  - `cookie_samesite: 'strict'` - Strict CSRF protection (cookie only sent with same-site requests)
+  - `sid_length: 48` - Longer session IDs (harder to guess/brute force, default: 32)
+  - `sid_bits_per_character: 6` - More entropy per character (default: 4)
+  - `gc_maxlifetime: 3600` - Session lifetime: 1 hour
+
+- **Session Fixation Protection** (`config/packages/security.yaml`):
+  - Symfony automatically regenerates session ID on successful authentication (built-in protection)
+  - `invalidate_session: true` on logout - Completely invalidates session on logout
+
+- **Remember Me Cookie Security**:
+  - `secure: true` - HTTPS only
+  - `httponly: true` - No JavaScript access
+  - `samesite: 'strict'` - CSRF protection
+  - `lifetime: 604800` - 1 week maximum
+
+- **TLS/HTTPS Enforcement**:
+  - HSTS header with 6 months max-age
+  - Automatic HTTP to HTTPS upgrade in CSP policy
 
 ### A03:2021 – Injection ✅
 
@@ -110,17 +126,34 @@ symfony check:security
 ### A07:2021 – Identification and Authentication Failures ✅
 
 **Implementation:**
-- Login rate limiting (5 attempts per 15 minutes)
-- Session security:
-  - 1-hour session lifetime
-  - Secure cookies (HTTPS only)
-  - HttpOnly cookies
-  - SameSite: lax
+- **Login Rate Limiting** (`config/packages/rate_limiter.yaml`):
+  - 5 attempts per 15 minutes
+  - Automatic 429 responses when limit exceeded
+  - IP-based tracking
+
+- **Session Security** (see A02 above):
+  - 1-hour session lifetime with garbage collection
+  - Secure, HttpOnly, SameSite=strict cookies
+  - 48-character session IDs with high entropy (50% longer than default)
+  - 6 bits per character (maximum entropy, 50% more than default)
+  - Session fixation protection (automatic session regeneration on login)
+  - Session invalidation on logout
+
+- **Password Security**:
+  - Automatic bcrypt/argon2 hashing
+  - High cost factor for production
+  - Password hashing algorithm: auto (uses best available)
+
+- **CSRF Protection**:
+  - Enabled on all forms (`enable_csrf: true`)
+  - SameSite cookie attribute (`strict`)
+  - Token validation on form submissions
 
 **Recommendations:**
 - Implement password complexity requirements
 - Add Multi-Factor Authentication (MFA)
-- Implement account lockout after failed attempts
+- Implement progressive account lockout after failed attempts
+- Add password breach detection (HaveIBeenPwned API)
 
 ### A08:2021 – Software and Data Integrity Failures ⚠️
 
