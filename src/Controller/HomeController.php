@@ -3,9 +3,8 @@
 namespace App\Controller;
 
 use App\Repository\AssetRepository;
-use App\Repository\ControlRepository;
-use App\Repository\IncidentRepository;
 use App\Repository\RiskRepository;
+use App\Service\DashboardStatisticsService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,11 +15,10 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class HomeController extends AbstractController
 {
     public function __construct(
-        private AssetRepository $assetRepository,
-        private RiskRepository $riskRepository,
-        private IncidentRepository $incidentRepository,
-        private ControlRepository $controlRepository,
-        private TranslatorInterface $translator
+        private readonly DashboardStatisticsService $statisticsService,
+        private readonly AssetRepository $assetRepository,
+        private readonly RiskRepository $riskRepository,
+        private readonly TranslatorInterface $translator
     ) {}
 
     #[Route('/', name: 'app_home')]
@@ -44,53 +42,35 @@ class HomeController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function dashboard(): Response
     {
-        $assetCount = count($this->assetRepository->findActiveAssets());
-        $riskCount = count($this->riskRepository->findAll());
-        $openIncidentCount = count($this->incidentRepository->findOpenIncidents());
+        // Get all statistics from service (better separation of concerns)
+        $stats = $this->statisticsService->getDashboardStatistics();
 
-        $applicableControls = $this->controlRepository->findApplicableControls();
-        $implementedControls = array_filter($applicableControls, fn($c) => $c->getImplementationStatus() === 'implemented');
-        $compliancePercentage = count($applicableControls) > 0
-            ? round((count($implementedControls) / count($applicableControls)) * 100)
-            : 0;
-
+        // Build KPIs array for template
         $kpis = [
             [
                 'name' => $this->translator->trans('kpi.registered_assets'),
-                'value' => $assetCount,
+                'value' => $stats['assetCount'],
                 'unit' => $this->translator->trans('kpi.unit_pieces'),
                 'icon' => '🖥️',
             ],
             [
                 'name' => $this->translator->trans('kpi.identified_risks'),
-                'value' => $riskCount,
+                'value' => $stats['riskCount'],
                 'unit' => $this->translator->trans('kpi.unit_pieces'),
                 'icon' => '⚠️',
             ],
             [
                 'name' => $this->translator->trans('kpi.open_incidents'),
-                'value' => $openIncidentCount,
+                'value' => $stats['openIncidentCount'],
                 'unit' => $this->translator->trans('kpi.unit_pieces'),
                 'icon' => '🚨',
             ],
             [
                 'name' => $this->translator->trans('kpi.compliance_status'),
-                'value' => $compliancePercentage,
+                'value' => $stats['compliancePercentage'],
                 'unit' => $this->translator->trans('kpi.unit_percent'),
                 'icon' => '✅',
             ],
-        ];
-
-        // Statistiken für moderne Widgets
-        $stats = [
-            'assets_total' => $assetCount,
-            'assets_critical' => count(array_filter($this->assetRepository->findActiveAssets(), fn($a) => $a->getConfidentialityValue() >= 4)),
-            'risks_total' => $riskCount,
-            'risks_high' => count(array_filter($this->riskRepository->findAll(), fn($r) => $r->getInherentRiskLevel() >= 12)),
-            'controls_total' => count($applicableControls),
-            'controls_implemented' => count($implementedControls),
-            'incidents_open' => $openIncidentCount,
-            'compliance_percentage' => $compliancePercentage,
         ];
 
         // Activity Feed Daten
