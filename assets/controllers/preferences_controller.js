@@ -28,6 +28,20 @@ export default class extends Controller {
 
         // Apply preferences
         this.applyPreferences();
+
+        // ESC to close modal
+        this.handleKeydown = this.handleKeydown.bind(this);
+        document.addEventListener('keydown', this.handleKeydown);
+    }
+
+    disconnect() {
+        document.removeEventListener('keydown', this.handleKeydown);
+    }
+
+    handleKeydown(event) {
+        if (event.key === 'Escape' && this.hasModalTarget && !this.modalTarget.classList.contains('d-none')) {
+            this.close();
+        }
     }
 
     open() {
