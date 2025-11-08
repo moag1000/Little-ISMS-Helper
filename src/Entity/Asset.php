@@ -380,64 +380,7 @@ class Asset
         return max($this->confidentialityValue, $this->integrityValue, $this->availabilityValue);
     }
 
-    /**
-     * Get Asset Risk Score based on multiple factors
-     * Data Reuse: Combines Risks, Incidents, Control Coverage
-     */
-    #[Groups(['asset:read'])]
-    public function getRiskScore(): float
-    {
-        $score = 0;
-
-        // Base score from CIA values
-        $score += $this->getTotalValue() * 10;
-
-        // Risks impact
-        $activeRisks = $this->risks->filter(fn($r) => $r->getStatus() === 'active')->count();
-        $score += $activeRisks * 5;
-
-        // Incidents impact (recent incidents = higher risk)
-        $recentIncidents = $this->incidents->filter(function($i) {
-            $sixMonthsAgo = new \DateTimeImmutable('-6 months');
-            return $i->getDetectedAt() >= $sixMonthsAgo;
-        })->count();
-        $score += $recentIncidents * 10;
-
-        // Control coverage (more controls = lower risk)
-        $controlCount = $this->protectingControls->count();
-        $score -= min($controlCount * 3, 30); // Max 30 points reduction
-
-        return max(0, min(100, $score));
-    }
-
-    /**
-     * Check if asset is high-risk (many incidents, high value)
-     * Data Reuse: Automated risk classification
-     */
-    #[Groups(['asset:read'])]
-    public function isHighRisk(): bool
-    {
-        return $this->getRiskScore() >= 70;
-    }
-
-    /**
-     * Get protection status
-     * Data Reuse: Shows if asset is adequately protected
-     */
-    #[Groups(['asset:read'])]
-    public function getProtectionStatus(): string
-    {
-        $controlCount = $this->protectingControls->count();
-        $riskCount = $this->risks->filter(fn($r) => $r->getStatus() === 'active')->count();
-
-        if ($controlCount === 0 && $riskCount > 0) {
-            return 'unprotected';
-        } elseif ($controlCount < $riskCount) {
-            return 'under_protected';
-        } elseif ($controlCount >= $riskCount) {
-            return 'adequately_protected';
-        }
-
-        return 'unknown';
-    }
+    // Note: Risk calculation methods moved to AssetRiskCalculator service (Symfony best practice)
+    // Computed properties (riskScore, isHighRisk, protectionStatus) are added during
+    // serialization via AssetNormalizer for API Platform compatibility
 }
