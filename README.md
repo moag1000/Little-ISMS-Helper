@@ -176,23 +176,43 @@ symfony serve
 
 ⚠️ **WICHTIG:** Ändern Sie das Admin-Passwort nach dem ersten Login!
 
-### Setup Validierung
+### Automatisierte Setup-Tools ✨ NEU!
 
-Sie können die Setup-Anweisungen automatisch validieren:
+Wir bieten drei professionelle Setup-Tools für eine fehlerfreie Installation:
 
+**1. Umfassende Validierung (18+ Checks):**
 ```bash
-chmod +x test-setup.sh
-./test-setup.sh
+chmod +x validate-setup.sh
+./validate-setup.sh
 ```
 
-Dieser Test überprüft:
-- ✅ Alle Command-Namen und -Pfade
-- ✅ Datenbank-Konfiguration
-- ✅ Migrations und Entities
-- ✅ APP_SECRET Generierung
-- ✅ Command-Abhängigkeiten
+Prüft automatisch:
+- ✅ PHP-Version und Extensions
+- ✅ Composer Dependencies
+- ✅ Entity-Migration Konsistenz
+- ✅ AuditLog Konfiguration
+- ✅ Foreign Key Constraints
 
-Siehe [SETUP_VALIDATION.md](SETUP_VALIDATION.md) für Details.
+**2. Sichere Datenbank-Erstellung:**
+```bash
+chmod +x create-database.sh
+./create-database.sh
+```
+
+Features:
+- ✅ Interaktive Einrichtung mit Bestätigungen
+- ✅ Automatische APP_SECRET Generierung
+- ✅ Optionaler Admin-User
+- ✅ ISO 27001 Controls (93 Controls)
+- ✅ Schema-Validierung
+
+**3. Datenbank-Reset (bei Fehlern):**
+```bash
+chmod +x reset-database.sh
+./reset-database.sh
+```
+
+📖 Siehe [SETUP_TOOLS.md](SETUP_TOOLS.md) für vollständige Dokumentation.
 
 ### Troubleshooting
 
@@ -286,8 +306,9 @@ crontab -e
 | [Authentication Setup](docs/AUTHENTICATION_SETUP.md) | RBAC, Azure OAuth/SAML, Multi-Provider |
 | [Audit Logging](docs/AUDIT_LOGGING.md) | Automatische Änderungsverfolgung |
 | [Deployment Wizard](DEPLOYMENT_WIZARD.md) | Schritt-für-Schritt Produktionssetup |
+| [Setup Tools](SETUP_TOOLS.md) | **NEU!** 3 automatisierte Scripts für fehlerfreie Installation |
 | [Setup Validation](SETUP_VALIDATION.md) | Automatische Validierung der Installation (25 Tests) |
-| [Migration Fix Report](MIGRATION_FIX.md) | Dokumentation von 4 behobenen kritischen Migrations-Fehlern |
+| [Migration Fix Report](MIGRATION_FIX.md) | Dokumentation von 5 behobenen kritischen Migrations-Fehlern |
 | [Entity-Table Mapping](ENTITY_TABLE_MAPPING.md) | Vollständige Zuordnung aller 23 Entities zu Datenbank-Tabellen |
 
 ### Architecture & Design
