@@ -40,8 +40,9 @@ security:
                 - App\Security\AzureOAuthAuthenticator
                 - App\Security\AzureSamlAuthenticator
 
-            # Entry point: removed - Symfony will use first authenticator (form_login)
+            # Entry point: use form_login for unauthenticated users
             # OAuth/SAML accessible via their explicit routes
+            entry_point: form_login
 
             # Remember me functionality
             remember_me:
