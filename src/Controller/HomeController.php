@@ -6,6 +6,7 @@ use App\Repository\AssetRepository;
 use App\Repository\ControlRepository;
 use App\Repository\IncidentRepository;
 use App\Repository\RiskRepository;
+use App\Service\ISOComplianceIntelligenceService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,7 +21,8 @@ class HomeController extends AbstractController
         private RiskRepository $riskRepository,
         private IncidentRepository $incidentRepository,
         private ControlRepository $controlRepository,
-        private TranslatorInterface $translator
+        private TranslatorInterface $translator,
+        private ISOComplianceIntelligenceService $isoComplianceService
     ) {}
 
     #[Route('/', name: 'app_home')]
@@ -96,10 +98,14 @@ class HomeController extends AbstractController
         // Activity Feed Daten
         $activities = $this->getRecentActivities();
 
+        // ISO Compliance Dashboard
+        $isoCompliance = $this->isoComplianceService->getComplianceDashboard();
+
         return $this->render('home/dashboard_modern.html.twig', [
             'kpis' => $kpis,
             'stats' => $stats,
             'activities' => $activities,
+            'iso_compliance' => $isoCompliance,
         ]);
     }
 
