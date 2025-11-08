@@ -21,7 +21,6 @@ class HomeController extends AbstractController
         private readonly TranslatorInterface $translator
     ) {}
 
-    #[Route('/', name: 'app_home')]
     public function index(Request $request): Response
     {
         // Get preferred locale from session, browser preference, or default to 'de'
@@ -38,7 +37,6 @@ class HomeController extends AbstractController
         return $this->redirectToRoute('app_dashboard', ['_locale' => $locale]);
     }
 
-    #[Route('/dashboard', name: 'app_dashboard')]
     #[IsGranted('ROLE_USER')]
     public function dashboard(): Response
     {
