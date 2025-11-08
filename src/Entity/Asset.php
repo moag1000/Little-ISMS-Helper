@@ -93,6 +93,14 @@ class Asset
     #[Assert\Length(max: 100, maxMessage: 'Location cannot exceed {{ limit }} characters')]
     private ?string $location = null;
 
+    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2, nullable: true)]
+    #[Groups(['asset:read', 'asset:write'])]
+    private ?string $acquisitionValue = null;
+
+    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2, nullable: true)]
+    #[Groups(['asset:read', 'asset:write'])]
+    private ?string $currentValue = null;
+
     #[ORM\Column(type: Types::INTEGER)]
     #[Groups(['asset:read', 'asset:write'])]
     #[Assert\NotNull(message: 'Confidentiality value is required')]
@@ -228,6 +236,28 @@ class Asset
     public function setLocation(?string $location): static
     {
         $this->location = $location;
+        return $this;
+    }
+
+    public function getAcquisitionValue(): ?string
+    {
+        return $this->acquisitionValue;
+    }
+
+    public function setAcquisitionValue(?string $acquisitionValue): static
+    {
+        $this->acquisitionValue = $acquisitionValue;
+        return $this;
+    }
+
+    public function getCurrentValue(): ?string
+    {
+        return $this->currentValue;
+    }
+
+    public function setCurrentValue(?string $currentValue): static
+    {
+        $this->currentValue = $currentValue;
         return $this;
     }
 

@@ -17,12 +17,12 @@ class RiskType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('name', TextType::class, [
-                'label' => 'risk.field.name',
+            ->add('title', TextType::class, [
+                'label' => 'risk.field.title',
                 'required' => true,
                 'attr' => [
                     'maxlength' => 255,
-                    'placeholder' => 'risk.placeholder.name',
+                    'placeholder' => 'risk.placeholder.title',
                 ],
             ])
             ->add('description', TextareaType::class, [

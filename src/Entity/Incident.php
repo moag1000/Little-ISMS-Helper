@@ -136,6 +136,10 @@ class Incident
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Groups(['incident:read', 'incident:write'])]
+    private ?string $affectedSystems = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['incident:read', 'incident:write'])]
     private ?string $immediateActions = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -338,6 +342,17 @@ class Incident
     public function setAssignedTo(?string $assignedTo): static
     {
         $this->assignedTo = $assignedTo;
+        return $this;
+    }
+
+    public function getAffectedSystems(): ?string
+    {
+        return $this->affectedSystems;
+    }
+
+    public function setAffectedSystems(?string $affectedSystems): static
+    {
+        $this->affectedSystems = $affectedSystems;
         return $this;
     }
 
