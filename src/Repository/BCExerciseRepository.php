@@ -53,8 +53,20 @@ class BCExerciseRepository extends ServiceEntityRepository
     {
         $total = $this->createQueryBuilder('e')
             ->select('COUNT(e.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        $completed = $this->createQueryBuilder('e')
+            ->select('COUNT(e.id)')
             ->where('e.status = :completed')
             ->setParameter('completed', 'completed')
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        $planned = $this->createQueryBuilder('e')
+            ->select('COUNT(e.id)')
+            ->where('e.status = :planned')
+            ->setParameter('planned', 'planned')
             ->getQuery()
             ->getSingleScalarResult();
 
@@ -67,8 +79,10 @@ class BCExerciseRepository extends ServiceEntityRepository
             ->getSingleScalarResult();
 
         return [
-            'total_exercises' => $total,
-            'avg_success_rating' => round($avgSuccessRating, 2)
+            'total' => $total,
+            'completed' => $completed,
+            'planned' => $planned,
+            'avg_success_rating' => round($avgSuccessRating ?? 0, 2)
         ];
     }
 }
