@@ -92,8 +92,8 @@ RUN apk add --no-cache \
     linux-headers \
     $PHPIZE_DEPS
 
-# Install Xdebug for development with verbose output
-RUN pecl install -v xdebug && docker-php-ext-enable xdebug
+# Install Xdebug for development
+RUN pecl install xdebug && docker-php-ext-enable xdebug
 
 # Configure Xdebug
 RUN echo "xdebug.mode=debug,coverage" >> "$PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini" && \
