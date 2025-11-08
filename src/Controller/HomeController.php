@@ -9,6 +9,7 @@ use App\Repository\RiskRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class HomeController extends AbstractController
@@ -24,20 +25,17 @@ class HomeController extends AbstractController
     #[Route('/', name: 'app_home')]
     public function index(): Response
     {
-        // Statistiken für Hero Section
-        $stats = [
-            'assets' => count($this->assetRepository->findActiveAssets()),
-            'risks' => count($this->riskRepository->findAll()),
-            'controls' => count($this->controlRepository->findAll()),
-            'incidents' => count($this->incidentRepository->findAll()),
-        ];
+        // Redirect to login if not authenticated
+        if (!$this->getUser()) {
+            return $this->redirectToRoute('app_login');
+        }
 
-        return $this->render('home/index_modern.html.twig', [
-            'stats' => $stats,
-        ]);
+        // If authenticated, redirect to dashboard
+        return $this->redirectToRoute('app_dashboard');
     }
 
     #[Route('/dashboard', name: 'app_dashboard')]
+    #[IsGranted('ROLE_USER')]
     public function dashboard(): Response
     {
         $assetCount = count($this->assetRepository->findActiveAssets());
