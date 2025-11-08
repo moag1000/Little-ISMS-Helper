@@ -29,7 +29,7 @@ class RiskType extends AbstractType
             ])
             ->add('description', TextareaType::class, [
                 'label' => 'risk.field.description',
-                'required' => false,
+                'required' => true,
                 'attr' => [
                     'rows' => 4,
                     'placeholder' => 'risk.placeholder.description',
