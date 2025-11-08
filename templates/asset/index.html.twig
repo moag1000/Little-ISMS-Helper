@@ -3,26 +3,92 @@
 {% block title %}{{ 'asset_management.title'|trans }} - {{ 'app.title'|trans }}{% endblock %}
 
 {% block body %}
-<h1>{{ 'asset_management.title'|trans }}</h1>
+<div class="page-header">
+    <div>
+        <h1><i class="bi bi-cpu"></i> {{ 'asset_management.title'|trans }}</h1>
+        <p class="text-muted">{{ 'asset_management.description'|trans }}</p>
+    </div>
+    <div class="button-group">
+        <a href="{{ path('app_asset_new') }}" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> {{ 'asset.new'|trans }}
+        </a>
+    </div>
+</div>
 
-<p style="color: #666; margin-bottom: 2rem;">
-    {{ 'asset_management.description'|trans }}
-</p>
+<div class="stats-grid mb-4">
+    <div class="stat-card">
+        <div class="stat-icon"><i class="bi bi-collection"></i></div>
+        <div class="stat-value">{{ assets|length }}</div>
+        <div class="stat-label">{{ 'asset_management.active_assets'|trans }}</div>
+    </div>
 
-<div class="info-box">
-    <h3>{{ 'asset_management.statistics'|trans }}</h3>
-    <p><strong>{{ 'asset_management.active_assets'|trans }}:</strong> {{ assets|length }}</p>
     {% if typeStats|length > 0 %}
-    <p><strong>{{ 'asset_management.distribution_by_type'|trans }}:</strong></p>
-    <ul>
         {% for stat in typeStats %}
-        <li>{{ stat.assetType }}: {{ stat.count }}</li>
+        <div class="stat-card">
+            <div class="stat-icon"><i class="bi bi-box"></i></div>
+            <div class="stat-value">{{ stat.count }}</div>
+            <div class="stat-label">{{ stat.assetType }}</div>
+        </div>
         {% endfor %}
-    </ul>
     {% endif %}
 </div>
 
-<p style="margin-top: 2rem;">
-    <em>{{ 'asset_management.detail_view_coming'|trans }}</em>
-</p>
+<div class="alert alert-info">
+    <i class="bi bi-info-circle"></i> {{ 'asset_management.detail_view_coming'|trans }}
+</div>
+
+<style>
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--spacing-xl);
+}
+
+.button-group {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: var(--spacing-lg);
+}
+
+.stat-card {
+    background: var(--color-white);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-lg);
+    text-align: center;
+    transition: all var(--transition-normal);
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.stat-icon {
+    font-size: 2.5rem;
+    color: var(--color-secondary);
+    margin-bottom: var(--spacing-sm);
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--color-primary);
+}
+
+.stat-label {
+    color: var(--color-text-light);
+    margin-top: var(--spacing-xs);
+}
+
+.mb-4 {
+    margin-bottom: var(--spacing-xl);
+}
+</style>
 {% endblock %}
