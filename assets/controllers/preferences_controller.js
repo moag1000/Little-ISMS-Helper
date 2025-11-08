@@ -46,6 +46,8 @@ export default class extends Controller {
 
     open() {
         if (this.hasModalTarget) {
+            // Remove inline style that modal manager might have set
+            this.modalTarget.style.display = '';
             this.modalTarget.classList.remove('d-none');
             this.modalTarget.classList.add('show');
             document.body.style.overflow = 'hidden';

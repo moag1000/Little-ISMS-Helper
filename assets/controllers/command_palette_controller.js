@@ -107,6 +107,10 @@ export default class extends Controller {
     }
 
     open() {
+        // Remove inline style that modal manager might have set
+        this.modalTarget.style.display = '';
+        this.modalTarget.classList.remove('d-none');
+
         this.modalTarget.classList.add('command-palette-open');
         this.inputTarget.value = '';
         this.inputTarget.focus();
