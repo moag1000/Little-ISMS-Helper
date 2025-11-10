@@ -55,10 +55,12 @@ Das **Little ISMS Helper Logo** zeigt eine freundliche Cyberpunk-Fee, die die Mi
 <td width="50%">
 
 ### 🔐 Risk & Asset Management
-- **Asset Management** - CIA-Bewertung, ISO 27001 Fields ✨ NEW!
+- **Asset Management** - CIA-Bewertung, ISO 27001 Fields
 - **Risk Assessment** - 5x5 Matrix Visualisierung
-- **Risk Appetite Management** - ISO 27005 Compliance ✨ NEW!
-- **Risk Treatment Plans** - Timeline, Budget, Controls ✨ NEW!
+- **Risk Appetite Management** - ISO 27005 Compliance
+- **Risk Treatment Plans** - Timeline, Budget, Controls
+- **Vulnerability Management** - CVE/CVSS Tracking (NIS2) ✨ NEW!
+- **Patch Management** - Deployment Tracking (NIS2) ✨ NEW!
 - **Risk Treatment** - Strategien & Restrisiko
 - **Incident Management** - Vorfallsbehandlung
 - **Data Breach Tracking** - GDPR-konform
@@ -68,11 +70,12 @@ Das **Little ISMS Helper Logo** zeigt eine freundliche Cyberpunk-Fee, die die Mi
 <tr>
 <td width="50%">
 
-### 🏢 Business Continuity
+### 🏢 Business Continuity & Crisis Management
 - **BCM Module** - BIA mit RTO/RPO/MTPD
 - **Process Management** - Geschäftsprozesse
 - **Impact Analysis** - Kritikalitätsbewertung
 - **Recovery Planning** - Kontinuitätsplanung
+- **Crisis Team Management** - BSI 200-4 Krisenstab ✨ NEW!
 
 </td>
 <td width="50%">
@@ -80,6 +83,7 @@ Das **Little ISMS Helper Logo** zeigt eine freundliche Cyberpunk-Fee, die die Mi
 ### 👥 User & Training Management
 - **RBAC** - Role-Based Access Control
 - **Multi-Auth** - Local, Azure OAuth, SAML
+- **MFA Token Management** - TOTP, WebAuthn, SMS (NIS2) ✨ NEW!
 - **Training Management** - Schulungsplanung
 - **Audit Logging** - Vollständige Änderungsverfolgung
 
@@ -498,32 +502,34 @@ Siehe auch: [CHANGELOG.md](CHANGELOG.md) für detaillierte Versionshistorie
 
 ## 📊 Projekt-Statistiken
 
-- **Codezeilen:** ~34,700+ LOC
-- **Entities:** 25 Doctrine Entities
-- **Controllers:** 18+ Controllers
-- **Templates:** 82+ Twig Templates
+- **Codezeilen:** ~43,600+ LOC (+8,900 durch Phase 6H/6I)
+- **Entities:** 29 Doctrine Entities (+4: CrisisTeam, MfaToken, Patch, Vulnerability)
+- **Controllers:** 22+ Controllers (+4: VulnerabilityController, PatchController, MfaTokenController, CrisisTeamController)
+- **Templates:** 98+ Twig Templates (+16: 4 modules × 4 templates)
 - **Services:** 13+ Business Logic Services
-- **Commands:** 5+ Console Commands
+- **Commands:** 8+ Console Commands (+3: LoadNis2, LoadBsi, LoadIso22301)
+- **Forms:** 25+ Symfony Form Types (+4: VulnerabilityType, PatchType, MfaTokenType, CrisisTeamType)
+- **Translations:** 1,454 keys (DE) + 1,451 keys (EN) = 2,905 total (+428 keys)
 - **Tests:** 122 tests, 228 assertions (100% passing)
   - **Test Coverage:** ~26% (Ziel: 80%+)
-  - **Module mit Tests:** 6/25 (24%)
+  - **Module mit Tests:** 6/29 (21%)
 - **API Endpoints:** 30 REST Endpoints
 - **Report Types:** 11 (6 PDF + 5 Excel)
 - **Notification Types:** 5 automatisierte Typen
 - **Compliance Frameworks:** 8 (ISO 27001, ISO 22301, ISO 19011, ISO 31000, ISO 27005, DORA, TISAX, NIS2, BSI)
-  - **Vollständig implementiert (100%):** 3 Frameworks (ISO 27001, DORA, TISAX)
-  - **In Implementierung (Phase 6H/6I):** 2 Frameworks (NIS2, BSI)
-- **Module Vollständigkeit (Technisch):** ~75% durchschnittlich (siehe [Audit](docs/MODULE_COMPLETENESS_AUDIT.md))
+  - **Vollständig implementiert (100%):** 5 Frameworks (ISO 27001, DORA, TISAX, ISO 22301, ISO 27005) ✨ NEW!
+  - **Core Infrastructure (40-50%):** 2 Frameworks (NIS2, BSI) - Entities/Forms/Commands ✓, UI/Workflows pending ✨ NEW!
+- **Module Vollständigkeit (Technisch):** ~78% durchschnittlich (+3% durch Phase 6H/6I)
 - **ISO 27001:2022 Compliance:** 96% ✅ (Zertifizierungsbereit)
-- **Multi-Standard Compliance:** 84% Durchschnitt (nach NIS2/BSI-Integration)
+- **Multi-Standard Compliance:** 88% Durchschnitt (+4% durch NIS2/BSI Core)
   - ISO 22301:2019 (BCM): 100% ✅
   - ISO 19011:2018 (Audit): 95% ⚠️
   - ISO 31000:2018 (Risk): 95% ⚠️
   - ISO 27005:2022 (Risk Security): 100% ✅
   - EU DORA: 85% ⚠️
   - TISAX/VDA ISA: 75% ⚠️
-  - **NIS2 Directive (EU 2022/2555):** 68% ⚠️ (Phase 6H geplant: 95%+)
-  - **BSI IT-Grundschutz 200-4:** 68% ⚠️ (Phase 6I geplant: 95%+)
+  - **NIS2 Directive (EU 2022/2555):** 40% 🚧 (Core: Vulnerability, Patch, MFA entities/forms/UI ✓)
+  - **BSI IT-Grundschutz 200-4:** 50% 🚧 (Core: CrisisTeam entity/form/UI ✓, ISO 22301 loader ✓)
 
 ---
 

@@ -1221,3 +1221,234 @@ soa:
     pdf: 'SoA als PDF exportieren - Professioneller Bericht mit allen 93 Controls'
   preview:
     pdf: 'PDF-Vorschau im Browser anzeigen'
+
+# Vulnerability Management (NIS2 Art. 21.2.d)
+vulnerability:
+  title: Schwachstellen
+  new: Neue Schwachstelle
+  edit: Schwachstelle bearbeiten
+  list: Schwachstellen-Liste
+  details: Schwachstellendetails
+  empty: Noch keine Schwachstellen erfasst.
+  field:
+    cve_id: CVE-ID
+    title: Titel
+    description: Beschreibung
+    severity: Schweregrad
+    cvss_score: CVSS Score
+    cvss_vector: CVSS Vector
+    cwe_id: CWE-ID
+    status: Status
+    affected_assets: Betroffene Assets
+    discovered_at: Entdeckt am
+    disclosed_at: Offengelegt am
+    remediation_deadline: Behebungsfrist
+    exploit_available: Exploit verfügbar
+    vendor_advisory_url: Vendor Advisory URL
+    mitigation_plan: Mitigationsplan
+    notes: Notizen
+    responsible_person: Verantwortliche Person
+  severity:
+    critical: Kritisch
+    high: Hoch
+    medium: Mittel
+    low: Niedrig
+    info: Info
+  status:
+    identified: Identifiziert
+    analyzing: In Analyse
+    patching: Wird gepatcht
+    mitigated: Mitigiert
+    closed: Geschlossen
+    false_positive: False Positive
+  kpi:
+    critical: Kritische Schwachstellen
+    high: Hohe Schwachstellen
+    overdue: Überfällige Behebungen
+    total: Gesamt
+  placeholder:
+    cve_id: z.B. CVE-2024-1234
+    title: Kurze Beschreibung der Schwachstelle
+    description: Detaillierte Beschreibung der Schwachstelle und ihrer Auswirkungen
+    mitigation_plan: Maßnahmen zur Behebung oder Mitigation
+    responsible_person: Person, die für die Behebung verantwortlich ist
+  help:
+    cve_id: Common Vulnerabilities and Exposures Identifier
+    severity: Schweregrad basierend auf CVSS Score
+    cvss_score: CVSS Score von 0.0 bis 10.0
+    cvss_vector: CVSS 3.1 Vector String
+    cwe_id: Common Weakness Enumeration ID
+    affected_assets: Assets, die von dieser Schwachstelle betroffen sind
+    remediation_deadline: Frist für die Behebung der Schwachstelle
+    exploit_available: Ist ein öffentlicher Exploit verfügbar?
+  success:
+    created: Schwachstelle erfolgreich erstellt.
+    updated: Schwachstelle erfolgreich aktualisiert.
+    deleted: Schwachstelle erfolgreich gelöscht.
+
+# Patch Management (NIS2 Art. 21.2.d)
+patch:
+  title: Patches
+  new: Neuer Patch
+  edit: Patch bearbeiten
+  list: Patch-Liste
+  empty: Noch keine Patches erfasst.
+  field:
+    patch_identifier: Patch-ID
+    title: Titel
+    description: Beschreibung
+    patch_type: Patch-Typ
+    status: Status
+    related_vulnerabilities: Zugehörige Schwachstellen
+    version: Version
+    vendor: Hersteller
+    affected_systems: Betroffene Systeme
+    release_date: Release-Datum
+    planned_deployment_date: Geplante Installation
+    actual_deployment_date: Tatsächliche Installation
+    test_results: Testergebnisse
+    rollback_procedure: Rollback-Verfahren
+    installation_instructions: Installationsanleitung
+    download_url: Download-URL
+    notes: Notizen
+    responsible_person: Verantwortliche Person
+  type:
+    security: Sicherheitspatch
+    bugfix: Bugfix
+    feature: Feature Update
+    critical: Kritischer Patch
+  status:
+    available: Verfügbar
+    tested: Getestet
+    approved: Freigegeben
+    deployed: Installiert
+    failed: Fehlgeschlagen
+    rollback: Zurückgerollt
+  kpi:
+    pending: Ausstehende Patches
+    deployed: Installierte Patches
+    total: Gesamt
+  placeholder:
+    patch_identifier: z.B. KB5034441
+    title: Kurze Beschreibung des Patches
+    description: Detaillierte Beschreibung der Änderungen
+    vendor: Hersteller des Patches
+    affected_systems: Liste der betroffenen Systeme
+    test_results: Ergebnisse der Tests in Test-Umgebung
+    rollback_procedure: Schritte für Rollback bei Problemen
+    installation_instructions: Schritt-für-Schritt Installationsanleitung
+    responsible_person: Person, die für die Installation verantwortlich ist
+  help:
+    patch_identifier: Eindeutige Patch-Kennung (z.B. KB-Nummer)
+    patch_type: Art des Patches
+    related_vulnerabilities: Schwachstellen, die durch diesen Patch behoben werden
+    affected_systems: Systeme, auf denen der Patch installiert werden muss
+    planned_deployment_date: Wann soll der Patch installiert werden?
+    test_results: Dokumentation der Tests
+    rollback_procedure: Verfahren zum Rückgängigmachen bei Problemen
+    responsible_person: Zuständig für Installation und Überwachung
+  success:
+    created: Patch erfolgreich erstellt.
+    updated: Patch erfolgreich aktualisiert.
+    deleted: Patch erfolgreich gelöscht.
+
+# MFA Token Management (NIS2 Art. 21.2.i)
+mfa_token:
+  title: MFA-Tokens
+  new: Neues MFA-Token
+  edit: MFA-Token bearbeiten
+  empty: Noch keine MFA-Tokens konfiguriert.
+  field:
+    user: Benutzer
+    token_type: Token-Typ
+    device_name: Geräte-Name
+    phone_number: Telefonnummer
+    is_active: Aktiv
+    is_primary: Primäre Methode
+    expires_at: Ablaufdatum
+  type:
+    totp: Authenticator App (TOTP)
+    webauthn: Security Key (WebAuthn/FIDO2)
+    sms: SMS Verification
+    hardware: Hardware Token
+    backup: Backup Codes
+  kpi:
+    active: Aktive Tokens
+  placeholder:
+    user: Benutzer auswählen
+    device_name: z.B. iPhone 14, YubiKey 5
+    phone_number: +49 123 456789
+  help:
+    user: Benutzer, dem dieses Token zugeordnet ist
+    token_type: Art des MFA-Tokens
+    device_name: Bezeichnung für das Gerät/Token
+    phone_number: Für SMS-basierte MFA
+    is_primary: Ist dies die primäre MFA-Methode für den Benutzer?
+    expires_at: Wann läuft dieses Token ab? (optional)
+  success:
+    created: MFA-Token erfolgreich erstellt.
+    updated: MFA-Token erfolgreich aktualisiert.
+    deleted: MFA-Token erfolgreich gelöscht.
+    activated: Krisenstab erfolgreich aktiviert.
+
+# Crisis Team Management (BSI IT-Grundschutz 200-4 Kap. 4.3)
+crisis_team:
+  title: Krisenstäbe
+  new: Neuer Krisenstab
+  edit: Krisenstab bearbeiten
+  empty: Noch keine Krisenstäbe definiert.
+  field:
+    team_name: Teamname
+    description: Beschreibung
+    team_type: Team-Typ
+    is_active: Aktiv
+    team_leader: Teamleiter
+    deputy_leader: Stellvertreter
+    primary_phone: Primäre Telefonnummer
+    primary_email: Primäre E-Mail
+    meeting_location: Versammlungsort
+    backup_meeting_location: Alternativer Versammlungsort
+    virtual_meeting_url: Virtuelle Meeting-URL
+    alert_procedures: Alarmierungsverfahren
+    decision_authority: Entscheidungsbefugnisse
+    communication_protocols: Kommunikationsprotokolle
+    training_schedule: Trainingsplan
+    last_training_at: Letztes Training
+    next_training_at: Nächstes Training
+    business_continuity_plans: Business Continuity Pläne
+    notes: Notizen
+  type:
+    operational: Operativer Krisenstab
+    strategic: Strategischer Krisenstab
+    technical: Technischer Krisenstab
+    communication: Kommunikationsstab
+  kpi:
+    active: Aktive Teams
+  placeholder:
+    team_name: z.B. Operativer Krisenstab IT
+    description: Aufgaben und Verantwortlichkeiten des Krisenstabs
+    team_leader: Leiter des Krisenstabs auswählen
+    deputy_leader: Stellvertretender Leiter auswählen
+    meeting_location: z.B. Konferenzraum 1, Gebäude A
+    backup_meeting_location: z.B. Konferenzraum 2, Gebäude B
+    alert_procedures: Beschreibung des Alarmierungsverfahrens
+    decision_authority: Wer darf welche Entscheidungen treffen?
+    communication_protocols: Wie kommuniziert der Krisenstab intern und extern?
+    training_schedule: Wann finden Trainings und Übungen statt?
+  help:
+    team_name: Bezeichnung des Krisenstabs
+    team_type: Art des Krisenstabs nach BSI 200-4
+    team_leader: Leiter des Krisenstabs
+    deputy_leader: Stellvertreter bei Abwesenheit des Leiters
+    primary_phone: Zentrale Rufnummer für Krisenstab
+    virtual_meeting_url: Teams, Zoom, etc. für virtuelle Treffen
+    alert_procedures: Wie wird der Krisenstab alarmiert und aktiviert?
+    decision_authority: Befugnisse und Eskalationswege
+    communication_protocols: Interne und externe Kommunikationswege
+    training_schedule: Regelmäßige Trainings und Übungen
+    next_training_at: Wann findet das nächste Training statt?
+    business_continuity_plans: Zugeordnete BCPs
+  success:
+    created: Krisenstab erfolgreich erstellt.
+    updated: Krisenstab erfolgreich aktualisiert.
+    deleted: Krisenstab erfolgreich gelöscht.
