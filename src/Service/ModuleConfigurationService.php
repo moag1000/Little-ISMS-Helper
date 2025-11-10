@@ -317,7 +317,7 @@ class ModuleConfigurationService
     /**
      * Gibt Beispiel-Daten gefiltert nach aktiven Modulen zurück
      */
-    public function getAvailableSampleData(array $activeModules = null): array
+    public function getAvailableSampleData(?array $activeModules = null): array
     {
         if ($activeModules === null) {
             $activeModules = $this->getActiveModules();
