@@ -6,6 +6,9 @@ import './stimulus_bootstrap.js';
  * which should already be in your base.html.twig.
  */
 
+// External dependencies (loaded from importmap)
+import 'bootstrap-icons/font/bootstrap-icons.css';
+
 // Core styles
 import './styles/app.css';
 import './styles/components.css';
