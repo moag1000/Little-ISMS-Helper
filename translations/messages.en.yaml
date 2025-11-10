@@ -242,3 +242,258 @@ document:
     compliance: Compliance Evidence
     training: Training Material
     general: General
+
+# Person Management
+person:
+  title: Person Management
+  name: Person
+  full_name: Full Name
+  person_type: Person Type
+  badge_id: Badge ID
+  company: Company
+  email: Email
+  phone: Phone
+  department: Department
+  job_title: Job Title
+  linked_user: Linked User
+  active: Active
+  notes: Notes
+  access_valid_from: Access Valid From
+  access_valid_until: Access Valid Until
+  type:
+    employee: Employee
+    contractor: Contractor
+    visitor: Visitor
+    vendor: Vendor
+    auditor: Auditor
+    consultant: Consultant
+    other: Other
+  field:
+    full_name: Full Name
+    person_type: Person Type
+    badge_id: Badge ID
+    company: Company
+    department: Department
+    job_title: Job Title
+
+# Location Management
+location:
+  title: Location Management
+  name: Location
+  location_type: Location Type
+  code: Location Code
+  description: Description
+  address: Address
+  city: City
+  country: Country
+  postal_code: Postal Code
+  parent_location: Parent Location
+  security_level: Security Level
+  requires_badge_access: Requires Badge Access
+  requires_escort: Requires Escort
+  camera_monitored: Camera Monitored
+  access_control_system: Access Control System
+  responsible_person: Responsible Person
+  capacity: Capacity
+  square_meters: Square Meters
+  active: Active
+  notes: Notes
+  type:
+    building: Building
+    floor: Floor
+    room: Room
+    area: Area
+    datacenter: Data Center
+    server_room: Server Room
+    office: Office
+    warehouse: Warehouse
+    gate: Gate
+    entrance: Entrance
+    parking: Parking
+    outdoor: Outdoor
+    other: Other
+  security:
+    public: Public
+    restricted: Restricted
+    controlled: Controlled
+    secure: Secure
+    high_security: High Security
+  field:
+    name: Location Name
+    location_type: Location Type
+    code: Code
+    security_level: Security Level
+
+# Physical Access Log
+physical_access:
+  title: Physical Access Control
+  name: Access Log
+  person: Person
+  location: Location
+  access_type: Access Type
+  access_time: Access Time
+  exit_time: Exit Time
+  authentication_method: Authentication Method
+  purpose: Purpose
+  escorted_by: Escorted By
+  authorized: Authorized
+  notes: Notes
+  alert_level: Alert Level
+  after_hours: After Hours
+  door_or_gate: Door/Gate
+  type:
+    entry: Entry
+    exit: Exit
+    entry_exit: Entry/Exit
+  auth_method:
+    badge: Badge
+    biometric: Biometric
+    pin: PIN
+    key: Key
+    escort: Escort
+    manual: Manual
+    other: Other
+  alert:
+    none: None
+    low: Low
+    medium: Medium
+    high: High
+    critical: Critical
+
+# Threat Intelligence
+threat:
+  title: Threat Intelligence
+  name: Threat
+  threat_type: Threat Type
+  severity: Severity
+  source: Source
+  cve_id: CVE ID
+  affected_systems: Affected Systems
+  affected_assets: Affected Assets
+  indicators: Indicators
+  mitigation_recommendations: Mitigation Recommendations
+  status: Status
+  detection_date: Detection Date
+  mitigation_date: Mitigation Date
+  actions_taken: Actions Taken
+  affects_organization: Affects Organization
+  cvss_score: CVSS Score
+  references: References
+  assigned_to: Assigned To
+  type:
+    malware: Malware
+    phishing: Phishing
+    vulnerability: Vulnerability
+    data_breach: Data Breach
+    ddos: DDoS
+    insider_threat: Insider Threat
+    ransomware: Ransomware
+    apt: APT
+    zero_day: Zero Day
+    other: Other
+  status_type:
+    new: New
+    analyzing: Analyzing
+    mitigated: Mitigated
+    monitoring: Monitoring
+    closed: Closed
+
+# Cryptographic Operations
+crypto:
+  title: Cryptographic Operations
+  name: Cryptographic Operation
+  operation_type: Operation Type
+  algorithm: Algorithm
+  key_length: Key Length
+  key_identifier: Key Identifier
+  purpose: Purpose
+  data_classification: Data Classification
+  application_component: Application Component
+  related_asset: Related Asset
+  status: Status
+  error_message: Error Message
+  timestamp: Timestamp
+  ip_address: IP Address
+  metadata: Metadata
+  compliance_relevant: Compliance Relevant
+  type:
+    encryption: Encryption
+    decryption: Decryption
+    signing: Signing
+    verification: Verification
+    key_generation: Key Generation
+    key_exchange: Key Exchange
+    hashing: Hashing
+    other: Other
+  status_type:
+    success: Success
+    failed: Failed
+    pending: Pending
+    in_progress: In Progress
+
+# Common Field Labels
+field:
+  id: ID
+  name: Name
+  title: Title
+  description: Description
+  status: Status
+  type: Type
+  date: Date
+  created_at: Created At
+  updated_at: Updated At
+  tenant: Tenant
+  user: User
+  location: Location
+  person: Person
+  responsible: Responsible
+  responsible_person: Responsible Person
+  contact_person: Contact Person
+  notes: Notes
+  active: Active
+  email: Email
+  phone: Phone
+  address: Address
+  city: City
+  country: Country
+  postal_code: Postal Code
+  company: Company
+  department: Department
+
+# Supplier Management
+supplier:
+  title: Supplier Management
+  contact_person: Contact Person
+  field:
+    contact_person: Contact Person
+    name: Supplier Name
+    email: Email
+    phone: Phone
+
+# Interested Party Management
+interested_party:
+  title: Interested Parties
+  contact_person: Contact Person
+  field:
+    contact_person: Contact Person
+    name: Party Name
+    party_type: Party Type
+
+# General UI Elements
+ui:
+  location: Location
+  responsible: Responsible
+  contact: Contact
+  details: Details
+  overview: Overview
+  new: New
+  add: Add
+  remove: Remove
+  select: Select
+  none: None
+  all: All
+  yes: Yes
+  no: No
+  optional: Optional
+  required: Required
+  n_a: 'N/A'
