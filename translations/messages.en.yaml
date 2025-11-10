@@ -498,9 +498,13 @@ incident:
     final_report: Final Report (1 month)
     deadline: Deadline
     reported: Reported
+    reported_at: Reported at
     overdue: Overdue
     hours_remaining: "%hours% hours remaining"
     days_remaining: "%days% days remaining"
+  nis2_timeline:
+    title: NIS2 Reporting Timeline (Article 23)
+    description: 'According to the NIS2 Directive (EU 2022/2555), significant incidents must be reported within defined timelines: Early Warning (24h), Detailed Notification (72h), Final Report (1 month).'
   nis2_compliance:
     title: NIS2 Compliance Status
     not_applicable: Not NIS2-relevant
