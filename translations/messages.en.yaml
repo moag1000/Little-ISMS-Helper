@@ -46,7 +46,7 @@ risks: Risks
 controls: Controls
 incidents: Incidents
 audits: Audits
-compliance: Compliance
+compliance_label: Compliance
 training: Training
 users: Users
 settings: Settings
