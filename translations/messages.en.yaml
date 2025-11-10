@@ -130,6 +130,14 @@ risk:
     title: e.g. Data leak from database
   help:
     description: Detailed description of the risk
+    inherent: 'Assessment of risk without considering existing controls (inherent risk)'
+    residual: 'Assessment of risk after implementing controls (residual risk)'
+  section:
+    inherent_risk: 'Inherent Risk Assessment'
+    residual_risk: 'Residual Risk Assessment'
+    treatment: 'Risk Treatment'
+    acceptance: 'Risk Acceptance (ISO 27005)'
+    status: 'Status & Review'
 control:
   field:
     control_id: Control ID
@@ -1081,3 +1089,11 @@ risk_treatment_plan:
     target_completion_date_required: 'Target completion date is required'
     budget_positive: 'Budget must be positive or zero'
     completion_percentage_range: 'Completion percentage must be between {{ min }} and {{ max }}'
+
+# Statement of Applicability (SoA) - Phase 6F-C
+soa:
+  export:
+    html: 'Export SoA as HTML'
+    pdf: 'Export SoA as PDF - Professional report with all 93 controls'
+  preview:
+    pdf: 'Preview PDF report in browser'
