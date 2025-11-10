@@ -17,241 +17,228 @@ final class Version20251105000000 extends AbstractMigration
     public function up(Schema $schema): void
     {
         // Asset table
-        $this->addSql('CREATE TABLE asset (
-            id INT AUTO_INCREMENT NOT NULL,
-            name VARCHAR(255) NOT NULL,
-            description LONGTEXT DEFAULT NULL,
-            asset_type VARCHAR(100) NOT NULL,
-            owner VARCHAR(100) NOT NULL,
-            location VARCHAR(100) DEFAULT NULL,
-            confidentiality_value INT NOT NULL,
-            integrity_value INT NOT NULL,
-            availability_value INT NOT NULL,
-            status VARCHAR(50) NOT NULL,
-            created_at DATETIME NOT NULL,
-            updated_at DATETIME DEFAULT NULL,
-            PRIMARY KEY(id)
-        ) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        $asset = $schema->createTable('asset');
+        $asset->addColumn('id', 'integer', ['autoincrement' => true]);
+        $asset->addColumn('name', 'string', ['length' => 255]);
+        $asset->addColumn('description', 'text', ['notnull' => false]);
+        $asset->addColumn('asset_type', 'string', ['length' => 100]);
+        $asset->addColumn('owner', 'string', ['length' => 100]);
+        $asset->addColumn('location', 'string', ['length' => 100, 'notnull' => false]);
+        $asset->addColumn('confidentiality_value', 'integer');
+        $asset->addColumn('integrity_value', 'integer');
+        $asset->addColumn('availability_value', 'integer');
+        $asset->addColumn('status', 'string', ['length' => 50]);
+        $asset->addColumn('created_at', 'datetime');
+        $asset->addColumn('updated_at', 'datetime', ['notnull' => false]);
+        $asset->setPrimaryKey(['id']);
 
         // Risk table
-        $this->addSql('CREATE TABLE risk (
-            id INT AUTO_INCREMENT NOT NULL,
-            asset_id INT DEFAULT NULL,
-            title VARCHAR(255) NOT NULL,
-            description LONGTEXT NOT NULL,
-            threat LONGTEXT DEFAULT NULL,
-            vulnerability LONGTEXT DEFAULT NULL,
-            probability INT NOT NULL,
-            impact INT NOT NULL,
-            residual_probability INT NOT NULL,
-            residual_impact INT NOT NULL,
-            treatment_strategy VARCHAR(50) NOT NULL,
-            treatment_description LONGTEXT DEFAULT NULL,
-            risk_owner VARCHAR(100) DEFAULT NULL,
-            status VARCHAR(50) NOT NULL,
-            review_date DATE DEFAULT NULL,
-            created_at DATETIME NOT NULL,
-            updated_at DATETIME DEFAULT NULL,
-            INDEX IDX_7906D5415DA1941 (asset_id),
-            PRIMARY KEY(id)
-        ) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        $risk = $schema->createTable('risk');
+        $risk->addColumn('id', 'integer', ['autoincrement' => true]);
+        $risk->addColumn('asset_id', 'integer', ['notnull' => false]);
+        $risk->addColumn('title', 'string', ['length' => 255]);
+        $risk->addColumn('description', 'text');
+        $risk->addColumn('threat', 'text', ['notnull' => false]);
+        $risk->addColumn('vulnerability', 'text', ['notnull' => false]);
+        $risk->addColumn('probability', 'integer');
+        $risk->addColumn('impact', 'integer');
+        $risk->addColumn('residual_probability', 'integer');
+        $risk->addColumn('residual_impact', 'integer');
+        $risk->addColumn('treatment_strategy', 'string', ['length' => 50]);
+        $risk->addColumn('treatment_description', 'text', ['notnull' => false]);
+        $risk->addColumn('risk_owner', 'string', ['length' => 100, 'notnull' => false]);
+        $risk->addColumn('status', 'string', ['length' => 50]);
+        $risk->addColumn('review_date', 'date', ['notnull' => false]);
+        $risk->addColumn('created_at', 'datetime');
+        $risk->addColumn('updated_at', 'datetime', ['notnull' => false]);
+        $risk->setPrimaryKey(['id']);
+        $risk->addIndex(['asset_id'], 'IDX_7906D5415DA1941');
+        $risk->addForeignKeyConstraint('asset', ['asset_id'], ['id'], ['onDelete' => 'RESTRICT'], 'FK_ASSET');
 
         // Control table
-        $this->addSql('CREATE TABLE control (
-            id INT AUTO_INCREMENT NOT NULL,
-            control_id VARCHAR(20) NOT NULL,
-            name VARCHAR(255) NOT NULL,
-            description LONGTEXT NOT NULL,
-            category VARCHAR(100) NOT NULL,
-            applicable TINYINT(1) NOT NULL,
-            justification LONGTEXT DEFAULT NULL,
-            implementation_notes LONGTEXT DEFAULT NULL,
-            implementation_status VARCHAR(50) NOT NULL,
-            implementation_percentage INT DEFAULT NULL,
-            responsible_person VARCHAR(100) DEFAULT NULL,
-            target_date DATE DEFAULT NULL,
-            last_review_date DATE DEFAULT NULL,
-            next_review_date DATE DEFAULT NULL,
-            created_at DATETIME NOT NULL,
-            updated_at DATETIME DEFAULT NULL,
-            PRIMARY KEY(id)
-        ) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        $control = $schema->createTable('control');
+        $control->addColumn('id', 'integer', ['autoincrement' => true]);
+        $control->addColumn('control_id', 'string', ['length' => 20]);
+        $control->addColumn('name', 'string', ['length' => 255]);
+        $control->addColumn('description', 'text');
+        $control->addColumn('category', 'string', ['length' => 100]);
+        $control->addColumn('applicable', 'boolean');
+        $control->addColumn('justification', 'text', ['notnull' => false]);
+        $control->addColumn('implementation_notes', 'text', ['notnull' => false]);
+        $control->addColumn('implementation_status', 'string', ['length' => 50]);
+        $control->addColumn('implementation_percentage', 'integer', ['notnull' => false]);
+        $control->addColumn('responsible_person', 'string', ['length' => 100, 'notnull' => false]);
+        $control->addColumn('target_date', 'date', ['notnull' => false]);
+        $control->addColumn('last_review_date', 'date', ['notnull' => false]);
+        $control->addColumn('next_review_date', 'date', ['notnull' => false]);
+        $control->addColumn('created_at', 'datetime');
+        $control->addColumn('updated_at', 'datetime', ['notnull' => false]);
+        $control->setPrimaryKey(['id']);
 
         // Control-Risk many-to-many
-        $this->addSql('CREATE TABLE control_risk (
-            control_id INT NOT NULL,
-            risk_id INT NOT NULL,
-            INDEX IDX_CONTROL (control_id),
-            INDEX IDX_RISK (risk_id),
-            PRIMARY KEY(control_id, risk_id)
-        ) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        $controlRisk = $schema->createTable('control_risk');
+        $controlRisk->addColumn('control_id', 'integer');
+        $controlRisk->addColumn('risk_id', 'integer');
+        $controlRisk->setPrimaryKey(['control_id', 'risk_id']);
+        $controlRisk->addIndex(['control_id'], 'IDX_CONTROL');
+        $controlRisk->addIndex(['risk_id'], 'IDX_RISK');
+        $controlRisk->addForeignKeyConstraint('control', ['control_id'], ['id'], ['onDelete' => 'CASCADE'], 'FK_CR_CONTROL');
+        $controlRisk->addForeignKeyConstraint('risk', ['risk_id'], ['id'], ['onDelete' => 'CASCADE'], 'FK_CR_RISK');
 
         // Incident table
-        $this->addSql('CREATE TABLE incident (
-            id INT AUTO_INCREMENT NOT NULL,
-            incident_number VARCHAR(50) NOT NULL,
-            title VARCHAR(255) NOT NULL,
-            description LONGTEXT NOT NULL,
-            category VARCHAR(100) NOT NULL,
-            severity VARCHAR(50) NOT NULL,
-            status VARCHAR(50) NOT NULL,
-            detected_at DATETIME NOT NULL,
-            occurred_at DATETIME DEFAULT NULL,
-            reported_by VARCHAR(100) NOT NULL,
-            assigned_to VARCHAR(100) DEFAULT NULL,
-            immediate_actions LONGTEXT DEFAULT NULL,
-            root_cause LONGTEXT DEFAULT NULL,
-            corrective_actions LONGTEXT DEFAULT NULL,
-            preventive_actions LONGTEXT DEFAULT NULL,
-            lessons_learned LONGTEXT DEFAULT NULL,
-            resolved_at DATETIME DEFAULT NULL,
-            closed_at DATETIME DEFAULT NULL,
-            data_breach_occurred TINYINT(1) NOT NULL,
-            notification_required TINYINT(1) NOT NULL,
-            created_at DATETIME NOT NULL,
-            updated_at DATETIME DEFAULT NULL,
-            PRIMARY KEY(id)
-        ) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        $incident = $schema->createTable('incident');
+        $incident->addColumn('id', 'integer', ['autoincrement' => true]);
+        $incident->addColumn('incident_number', 'string', ['length' => 50]);
+        $incident->addColumn('title', 'string', ['length' => 255]);
+        $incident->addColumn('description', 'text');
+        $incident->addColumn('category', 'string', ['length' => 100]);
+        $incident->addColumn('severity', 'string', ['length' => 50]);
+        $incident->addColumn('status', 'string', ['length' => 50]);
+        $incident->addColumn('detected_at', 'datetime');
+        $incident->addColumn('occurred_at', 'datetime', ['notnull' => false]);
+        $incident->addColumn('reported_by', 'string', ['length' => 100]);
+        $incident->addColumn('assigned_to', 'string', ['length' => 100, 'notnull' => false]);
+        $incident->addColumn('immediate_actions', 'text', ['notnull' => false]);
+        $incident->addColumn('root_cause', 'text', ['notnull' => false]);
+        $incident->addColumn('corrective_actions', 'text', ['notnull' => false]);
+        $incident->addColumn('preventive_actions', 'text', ['notnull' => false]);
+        $incident->addColumn('lessons_learned', 'text', ['notnull' => false]);
+        $incident->addColumn('resolved_at', 'datetime', ['notnull' => false]);
+        $incident->addColumn('closed_at', 'datetime', ['notnull' => false]);
+        $incident->addColumn('data_breach_occurred', 'boolean');
+        $incident->addColumn('notification_required', 'boolean');
+        $incident->addColumn('created_at', 'datetime');
+        $incident->addColumn('updated_at', 'datetime', ['notnull' => false]);
+        $incident->setPrimaryKey(['id']);
 
         // Incident-Control many-to-many
-        $this->addSql('CREATE TABLE incident_control (
-            incident_id INT NOT NULL,
-            control_id INT NOT NULL,
-            INDEX IDX_INCIDENT (incident_id),
-            INDEX IDX_CONTROL2 (control_id),
-            PRIMARY KEY(incident_id, control_id)
-        ) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        $incidentControl = $schema->createTable('incident_control');
+        $incidentControl->addColumn('incident_id', 'integer');
+        $incidentControl->addColumn('control_id', 'integer');
+        $incidentControl->setPrimaryKey(['incident_id', 'control_id']);
+        $incidentControl->addIndex(['incident_id'], 'IDX_INCIDENT');
+        $incidentControl->addIndex(['control_id'], 'IDX_CONTROL2');
+        $incidentControl->addForeignKeyConstraint('incident', ['incident_id'], ['id'], ['onDelete' => 'CASCADE'], 'FK_IC_INCIDENT');
+        $incidentControl->addForeignKeyConstraint('control', ['control_id'], ['id'], ['onDelete' => 'CASCADE'], 'FK_IC_CONTROL');
 
         // Internal Audit table
-        $this->addSql('CREATE TABLE internal_audit (
-            id INT AUTO_INCREMENT NOT NULL,
-            audit_number VARCHAR(50) NOT NULL,
-            title VARCHAR(255) NOT NULL,
-            scope LONGTEXT DEFAULT NULL,
-            objectives LONGTEXT DEFAULT NULL,
-            planned_date DATE NOT NULL,
-            actual_date DATE DEFAULT NULL,
-            lead_auditor VARCHAR(100) NOT NULL,
-            audit_team LONGTEXT DEFAULT NULL,
-            audited_departments LONGTEXT DEFAULT NULL,
-            status VARCHAR(50) NOT NULL,
-            findings LONGTEXT DEFAULT NULL,
-            non_conformities LONGTEXT DEFAULT NULL,
-            observations LONGTEXT DEFAULT NULL,
-            recommendations LONGTEXT DEFAULT NULL,
-            conclusion LONGTEXT DEFAULT NULL,
-            report_date DATE DEFAULT NULL,
-            created_at DATETIME NOT NULL,
-            updated_at DATETIME DEFAULT NULL,
-            PRIMARY KEY(id)
-        ) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        $internalAudit = $schema->createTable('internal_audit');
+        $internalAudit->addColumn('id', 'integer', ['autoincrement' => true]);
+        $internalAudit->addColumn('audit_number', 'string', ['length' => 50]);
+        $internalAudit->addColumn('title', 'string', ['length' => 255]);
+        $internalAudit->addColumn('scope', 'text', ['notnull' => false]);
+        $internalAudit->addColumn('objectives', 'text', ['notnull' => false]);
+        $internalAudit->addColumn('planned_date', 'date');
+        $internalAudit->addColumn('actual_date', 'date', ['notnull' => false]);
+        $internalAudit->addColumn('lead_auditor', 'string', ['length' => 100]);
+        $internalAudit->addColumn('audit_team', 'text', ['notnull' => false]);
+        $internalAudit->addColumn('audited_departments', 'text', ['notnull' => false]);
+        $internalAudit->addColumn('status', 'string', ['length' => 50]);
+        $internalAudit->addColumn('findings', 'text', ['notnull' => false]);
+        $internalAudit->addColumn('non_conformities', 'text', ['notnull' => false]);
+        $internalAudit->addColumn('observations', 'text', ['notnull' => false]);
+        $internalAudit->addColumn('recommendations', 'text', ['notnull' => false]);
+        $internalAudit->addColumn('conclusion', 'text', ['notnull' => false]);
+        $internalAudit->addColumn('report_date', 'date', ['notnull' => false]);
+        $internalAudit->addColumn('created_at', 'datetime');
+        $internalAudit->addColumn('updated_at', 'datetime', ['notnull' => false]);
+        $internalAudit->setPrimaryKey(['id']);
 
         // Management Review table
-        $this->addSql('CREATE TABLE management_review (
-            id INT AUTO_INCREMENT NOT NULL,
-            title VARCHAR(255) NOT NULL,
-            review_date DATE NOT NULL,
-            participants LONGTEXT DEFAULT NULL,
-            changes_relevant_to_isms LONGTEXT DEFAULT NULL,
-            feedback_from_interested_parties LONGTEXT DEFAULT NULL,
-            audit_results LONGTEXT DEFAULT NULL,
-            performance_evaluation LONGTEXT DEFAULT NULL,
-            non_conformities_status LONGTEXT DEFAULT NULL,
-            corrective_actions_status LONGTEXT DEFAULT NULL,
-            previous_review_actions LONGTEXT DEFAULT NULL,
-            opportunities_for_improvement LONGTEXT DEFAULT NULL,
-            resource_needs LONGTEXT DEFAULT NULL,
-            decisions LONGTEXT DEFAULT NULL,
-            action_items LONGTEXT DEFAULT NULL,
-            status VARCHAR(50) NOT NULL,
-            created_at DATETIME NOT NULL,
-            updated_at DATETIME DEFAULT NULL,
-            PRIMARY KEY(id)
-        ) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        $managementReview = $schema->createTable('management_review');
+        $managementReview->addColumn('id', 'integer', ['autoincrement' => true]);
+        $managementReview->addColumn('title', 'string', ['length' => 255]);
+        $managementReview->addColumn('review_date', 'date');
+        $managementReview->addColumn('participants', 'text', ['notnull' => false]);
+        $managementReview->addColumn('changes_relevant_to_isms', 'text', ['notnull' => false]);
+        $managementReview->addColumn('feedback_from_interested_parties', 'text', ['notnull' => false]);
+        $managementReview->addColumn('audit_results', 'text', ['notnull' => false]);
+        $managementReview->addColumn('performance_evaluation', 'text', ['notnull' => false]);
+        $managementReview->addColumn('non_conformities_status', 'text', ['notnull' => false]);
+        $managementReview->addColumn('corrective_actions_status', 'text', ['notnull' => false]);
+        $managementReview->addColumn('previous_review_actions', 'text', ['notnull' => false]);
+        $managementReview->addColumn('opportunities_for_improvement', 'text', ['notnull' => false]);
+        $managementReview->addColumn('resource_needs', 'text', ['notnull' => false]);
+        $managementReview->addColumn('decisions', 'text', ['notnull' => false]);
+        $managementReview->addColumn('action_items', 'text', ['notnull' => false]);
+        $managementReview->addColumn('status', 'string', ['length' => 50]);
+        $managementReview->addColumn('created_at', 'datetime');
+        $managementReview->addColumn('updated_at', 'datetime', ['notnull' => false]);
+        $managementReview->setPrimaryKey(['id']);
 
         // Training table
-        $this->addSql('CREATE TABLE training (
-            id INT AUTO_INCREMENT NOT NULL,
-            title VARCHAR(255) NOT NULL,
-            description LONGTEXT DEFAULT NULL,
-            training_type VARCHAR(100) NOT NULL,
-            scheduled_date DATE NOT NULL,
-            duration_minutes INT DEFAULT NULL,
-            trainer VARCHAR(100) NOT NULL,
-            target_audience LONGTEXT DEFAULT NULL,
-            participants LONGTEXT DEFAULT NULL,
-            attendee_count INT DEFAULT NULL,
-            status VARCHAR(50) NOT NULL,
-            materials LONGTEXT DEFAULT NULL,
-            feedback LONGTEXT DEFAULT NULL,
-            completion_date DATE DEFAULT NULL,
-            created_at DATETIME NOT NULL,
-            updated_at DATETIME DEFAULT NULL,
-            PRIMARY KEY(id)
-        ) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        $training = $schema->createTable('training');
+        $training->addColumn('id', 'integer', ['autoincrement' => true]);
+        $training->addColumn('title', 'string', ['length' => 255]);
+        $training->addColumn('description', 'text', ['notnull' => false]);
+        $training->addColumn('training_type', 'string', ['length' => 100]);
+        $training->addColumn('scheduled_date', 'date');
+        $training->addColumn('duration_minutes', 'integer', ['notnull' => false]);
+        $training->addColumn('trainer', 'string', ['length' => 100]);
+        $training->addColumn('target_audience', 'text', ['notnull' => false]);
+        $training->addColumn('participants', 'text', ['notnull' => false]);
+        $training->addColumn('attendee_count', 'integer', ['notnull' => false]);
+        $training->addColumn('status', 'string', ['length' => 50]);
+        $training->addColumn('materials', 'text', ['notnull' => false]);
+        $training->addColumn('feedback', 'text', ['notnull' => false]);
+        $training->addColumn('completion_date', 'date', ['notnull' => false]);
+        $training->addColumn('created_at', 'datetime');
+        $training->addColumn('updated_at', 'datetime', ['notnull' => false]);
+        $training->setPrimaryKey(['id']);
 
         // ISMS Context table
-        $this->addSql('CREATE TABLE ismscontext (
-            id INT AUTO_INCREMENT NOT NULL,
-            organization_name VARCHAR(255) NOT NULL,
-            isms_scope LONGTEXT DEFAULT NULL,
-            scope_exclusions LONGTEXT DEFAULT NULL,
-            external_issues LONGTEXT DEFAULT NULL,
-            internal_issues LONGTEXT DEFAULT NULL,
-            interested_parties LONGTEXT DEFAULT NULL,
-            interested_parties_requirements LONGTEXT DEFAULT NULL,
-            legal_requirements LONGTEXT DEFAULT NULL,
-            regulatory_requirements LONGTEXT DEFAULT NULL,
-            contractual_obligations LONGTEXT DEFAULT NULL,
-            isms_policy LONGTEXT DEFAULT NULL,
-            roles_and_responsibilities LONGTEXT DEFAULT NULL,
-            last_review_date DATE DEFAULT NULL,
-            next_review_date DATE DEFAULT NULL,
-            created_at DATETIME NOT NULL,
-            updated_at DATETIME DEFAULT NULL,
-            PRIMARY KEY(id)
-        ) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        $ismsContext = $schema->createTable('ismscontext');
+        $ismsContext->addColumn('id', 'integer', ['autoincrement' => true]);
+        $ismsContext->addColumn('organization_name', 'string', ['length' => 255]);
+        $ismsContext->addColumn('isms_scope', 'text', ['notnull' => false]);
+        $ismsContext->addColumn('scope_exclusions', 'text', ['notnull' => false]);
+        $ismsContext->addColumn('external_issues', 'text', ['notnull' => false]);
+        $ismsContext->addColumn('internal_issues', 'text', ['notnull' => false]);
+        $ismsContext->addColumn('interested_parties', 'text', ['notnull' => false]);
+        $ismsContext->addColumn('interested_parties_requirements', 'text', ['notnull' => false]);
+        $ismsContext->addColumn('legal_requirements', 'text', ['notnull' => false]);
+        $ismsContext->addColumn('regulatory_requirements', 'text', ['notnull' => false]);
+        $ismsContext->addColumn('contractual_obligations', 'text', ['notnull' => false]);
+        $ismsContext->addColumn('isms_policy', 'text', ['notnull' => false]);
+        $ismsContext->addColumn('roles_and_responsibilities', 'text', ['notnull' => false]);
+        $ismsContext->addColumn('last_review_date', 'date', ['notnull' => false]);
+        $ismsContext->addColumn('next_review_date', 'date', ['notnull' => false]);
+        $ismsContext->addColumn('created_at', 'datetime');
+        $ismsContext->addColumn('updated_at', 'datetime', ['notnull' => false]);
+        $ismsContext->setPrimaryKey(['id']);
 
         // ISMS Objective table
-        $this->addSql('CREATE TABLE ismsobjective (
-            id INT AUTO_INCREMENT NOT NULL,
-            title VARCHAR(255) NOT NULL,
-            description LONGTEXT NOT NULL,
-            category VARCHAR(100) NOT NULL,
-            measurable_indicators LONGTEXT DEFAULT NULL,
-            target_value NUMERIC(10, 2) DEFAULT NULL,
-            current_value NUMERIC(10, 2) DEFAULT NULL,
-            unit VARCHAR(50) DEFAULT NULL,
-            responsible_person VARCHAR(100) NOT NULL,
-            target_date DATE NOT NULL,
-            status VARCHAR(50) NOT NULL,
-            progress_notes LONGTEXT DEFAULT NULL,
-            achieved_date DATE DEFAULT NULL,
-            created_at DATETIME NOT NULL,
-            updated_at DATETIME DEFAULT NULL,
-            PRIMARY KEY(id)
-        ) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
-
-        // Foreign keys
-        $this->addSql('ALTER TABLE risk ADD CONSTRAINT FK_ASSET FOREIGN KEY (asset_id) REFERENCES asset (id)');
-        $this->addSql('ALTER TABLE control_risk ADD CONSTRAINT FK_CR_CONTROL FOREIGN KEY (control_id) REFERENCES control (id) ON DELETE CASCADE');
-        $this->addSql('ALTER TABLE control_risk ADD CONSTRAINT FK_CR_RISK FOREIGN KEY (risk_id) REFERENCES risk (id) ON DELETE CASCADE');
-        $this->addSql('ALTER TABLE incident_control ADD CONSTRAINT FK_IC_INCIDENT FOREIGN KEY (incident_id) REFERENCES incident (id) ON DELETE CASCADE');
-        $this->addSql('ALTER TABLE incident_control ADD CONSTRAINT FK_IC_CONTROL FOREIGN KEY (control_id) REFERENCES control (id) ON DELETE CASCADE');
+        $ismsObjective = $schema->createTable('ismsobjective');
+        $ismsObjective->addColumn('id', 'integer', ['autoincrement' => true]);
+        $ismsObjective->addColumn('title', 'string', ['length' => 255]);
+        $ismsObjective->addColumn('description', 'text');
+        $ismsObjective->addColumn('category', 'string', ['length' => 100]);
+        $ismsObjective->addColumn('measurable_indicators', 'text', ['notnull' => false]);
+        $ismsObjective->addColumn('target_value', 'decimal', ['precision' => 10, 'scale' => 2, 'notnull' => false]);
+        $ismsObjective->addColumn('current_value', 'decimal', ['precision' => 10, 'scale' => 2, 'notnull' => false]);
+        $ismsObjective->addColumn('unit', 'string', ['length' => 50, 'notnull' => false]);
+        $ismsObjective->addColumn('responsible_person', 'string', ['length' => 100]);
+        $ismsObjective->addColumn('target_date', 'date');
+        $ismsObjective->addColumn('status', 'string', ['length' => 50]);
+        $ismsObjective->addColumn('progress_notes', 'text', ['notnull' => false]);
+        $ismsObjective->addColumn('achieved_date', 'date', ['notnull' => false]);
+        $ismsObjective->addColumn('created_at', 'datetime');
+        $ismsObjective->addColumn('updated_at', 'datetime', ['notnull' => false]);
+        $ismsObjective->setPrimaryKey(['id']);
     }
 
     public function down(Schema $schema): void
     {
-        $this->addSql('DROP TABLE IF EXISTS incident_control');
-        $this->addSql('DROP TABLE IF EXISTS control_risk');
-        $this->addSql('DROP TABLE IF EXISTS ismsobjective');
-        $this->addSql('DROP TABLE IF EXISTS ismscontext');
-        $this->addSql('DROP TABLE IF EXISTS training');
-        $this->addSql('DROP TABLE IF EXISTS management_review');
-        $this->addSql('DROP TABLE IF EXISTS internal_audit');
-        $this->addSql('DROP TABLE IF EXISTS incident');
-        $this->addSql('DROP TABLE IF EXISTS control');
-        $this->addSql('DROP TABLE IF EXISTS risk');
-        $this->addSql('DROP TABLE IF EXISTS asset');
+        $schema->dropTable('incident_control');
+        $schema->dropTable('control_risk');
+        $schema->dropTable('ismsobjective');
+        $schema->dropTable('ismscontext');
+        $schema->dropTable('training');
+        $schema->dropTable('management_review');
+        $schema->dropTable('internal_audit');
+        $schema->dropTable('incident');
+        $schema->dropTable('control');
+        $schema->dropTable('risk');
+        $schema->dropTable('asset');
     }
 }
