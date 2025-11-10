@@ -48,7 +48,7 @@ final class Version20251108000004 extends AbstractMigration
         ) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
 
         $this->addSql('ALTER TABLE person
-            ADD CONSTRAINT FK_PERSON_USER FOREIGN KEY (linked_user_id) REFERENCES user (id)');
+            ADD CONSTRAINT FK_PERSON_USER FOREIGN KEY (linked_user_id) REFERENCES users (id)');
         $this->addSql('ALTER TABLE person
             ADD CONSTRAINT FK_PERSON_TENANT FOREIGN KEY (tenant_id) REFERENCES tenant (id)');
 
