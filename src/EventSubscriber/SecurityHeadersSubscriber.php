@@ -82,7 +82,7 @@ class SecurityHeadersSubscriber implements EventSubscriberInterface
             "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net", // Stimulus + CDN, removed unsafe-eval
             "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com", // Bootstrap + Fonts
             "img-src 'self' data: https: blob:", // Allow images from any HTTPS source and data URIs
-            "font-src 'self' data: https://fonts.gstatic.com", // Local + Google Fonts
+            "font-src 'self' data: https://fonts.gstatic.com https://cdn.jsdelivr.net", // Local + Google Fonts + Bootstrap Icons CDN
             "connect-src 'self'", // API calls only to same origin
             "frame-ancestors 'self'", // Prevent embedding in iframes (clickjacking protection)
             "base-uri 'self'", // Prevent base tag injection
