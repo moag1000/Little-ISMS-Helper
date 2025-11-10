@@ -135,11 +135,19 @@ class ThreatIntelligence
     #[ORM\JoinColumn(nullable: true)]
     private ?Tenant $tenant = null;
 
+    /**
+     * @var Collection<int, Incident>
+     */
+    #[ORM\OneToMany(targetEntity: Incident::class, mappedBy: 'originatingThreat')]
+    #[Groups(['threat:read'])]
+    private Collection $resultingIncidents;
+
     public function __construct()
     {
         $this->createdAt = new \DateTime();
         $this->detectionDate = new \DateTime();
         $this->affectedAssets = new ArrayCollection();
+        $this->resultingIncidents = new ArrayCollection();
     }
 
     // Getters and Setters
@@ -389,6 +397,35 @@ class ThreatIntelligence
     public function removeAffectedAsset(Asset $asset): static
     {
         $this->affectedAssets->removeElement($asset);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Incident>
+     */
+    public function getResultingIncidents(): Collection
+    {
+        return $this->resultingIncidents;
+    }
+
+    public function addResultingIncident(Incident $incident): static
+    {
+        if (!$this->resultingIncidents->contains($incident)) {
+            $this->resultingIncidents->add($incident);
+            $incident->setOriginatingThreat($this);
+        }
+
+        return $this;
+    }
+
+    public function removeResultingIncident(Incident $incident): static
+    {
+        if ($this->resultingIncidents->removeElement($incident)) {
+            if ($incident->getOriginatingThreat() === $this) {
+                $incident->setOriginatingThreat(null);
+            }
+        }
 
         return $this;
     }
