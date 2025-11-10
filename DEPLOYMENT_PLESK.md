@@ -212,16 +212,23 @@ php composer.phar install --no-dev --optimize-autoloader
 - Browser-Konsole zeigt:
   ```
   Failed to load resource: the server responded with a status of 500 (Internal Server Error)
-  components-*.css:1
-  app-*.css:1
+  https://domain.com/assets/styles/components-6yrXj4J.css
+  https://domain.com/assets/styles/app-6zxcGag.css
   ```
-- nginx/Apache Error-Log zeigt:
+- Die URLs enthalten Versions-Hashes (z.B. `6yrXj4J`, `6zxcGag`)
+- nginx/Apache Error-Log kann zeigen:
   ```
-  openat() "/var/www/vhosts/domain.com/path/favicon.svg" failed (2: No such file or directory)
+  openat() "/var/www/vhosts/domain.com/path/assets/..." failed
   ```
 
 **Ursache:**
 Die Symfony AssetMapper-Assets wurden nicht installiert. Das `public/assets/` Verzeichnis fehlt oder ist leer.
+
+**Technischer Hintergrund:**
+- Symfony AssetMapper kompiliert Assets aus `assets/` → `public/assets/`
+- CSS-Dateien werden mit Versions-Hashes benannt für Cache-Busting (z.B. `app-6zxcGag.css`)
+- In Produktion müssen diese Dateien vorab generiert werden
+- Wenn sie fehlen, versucht Symfony sie dynamisch zu generieren → 500 Error
 
 **Lösung:**
 
@@ -234,25 +241,41 @@ Die Symfony AssetMapper-Assets wurden nicht installiert. Das `public/assets/` Ve
 2. **Assets manuell installieren:**
    ```bash
    cd /var/www/vhosts/yourdomain.com/httpdocs
+
+   # AssetMapper Assets kompilieren
    php bin/console assets:install public
+
+   # JavaScript-Dependencies installieren
    php bin/console importmap:install
    ```
 
-3. **Cache leeren:**
+3. **Verifizieren Sie, dass die Dateien erstellt wurden:**
+   ```bash
+   ls -la public/assets/styles/
+   # Sollte Dateien wie app-HASH.css, components-HASH.css zeigen
+   ```
+
+4. **Cache leeren:**
    ```bash
    php bin/console cache:clear --env=prod
    ```
 
-4. **Dateirechte prüfen:**
+5. **Dateirechte prüfen:**
    ```bash
    chmod -R 755 public/assets
    ```
 
-5. **Seite neu laden** - CSS und JS sollten jetzt laden!
+6. **Seite neu laden** - CSS und JS sollten jetzt laden!
+
+**Häufige Ursachen, warum Assets fehlen:**
+- `composer install` wurde mit `--no-scripts` ausgeführt
+- Post-Install-Scripts sind fehlgeschlagen (Berechtigungsprobleme)
+- Nach Git-Pull wurde `composer install` vergessen
 
 **Prävention:**
-Nach jedem `composer install` sollten die Post-Install-Scripts automatisch laufen. Falls nicht, führen Sie manuell aus:
+Nach jedem `composer install` sollten die Post-Install-Scripts automatisch laufen:
 ```bash
+# Prüfen Sie, ob die Scripts ausgeführt wurden
 composer run-script auto-scripts
 ```
 
