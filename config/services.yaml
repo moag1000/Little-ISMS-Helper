@@ -90,3 +90,6 @@ services:
 
     App\Command\LoadGdprRequirementsCommand:
         public: true
+
+    App\Command\LoadIso27701RequirementsCommand:
+        public: true
