@@ -20,7 +20,8 @@ DirectoryIndex index.php
 <IfModule mod_rewrite.c>
     # This Option needs to be enabled for RewriteRule, otherwise it will show an error like
     # 'Options FollowSymLinks or SymLinksIfOwnerMatch is off which implies that RewriteRule directive is forbidden'
-    Options +FollowSymlinks
+    # Note: On Plesk/shared hosting, use SymLinksIfOwnerMatch instead of FollowSymlinks for security
+    Options +SymLinksIfOwnerMatch
 
     RewriteEngine On
 

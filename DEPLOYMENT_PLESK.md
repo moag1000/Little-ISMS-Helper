@@ -81,6 +81,29 @@ Oder via Plesk SSH Terminal:
 2. **Terminal öffnen**
 3. **Befehle ausführen**
 
+⚠️ **WICHTIG:** Nach `composer install` sollten die folgenden Scripts automatisch ausgeführt werden:
+- `cache:clear` - Cache leeren
+- `assets:install` - Assets ins public-Verzeichnis kopieren
+- `importmap:install` - JavaScript-Dependencies installieren
+
+**Falls die Scripts nicht automatisch liefen oder Fehler auftraten, führen Sie manuell aus:**
+```bash
+php bin/console cache:clear
+php bin/console assets:install public
+php bin/console importmap:install
+```
+
+**Verifizieren Sie, dass die Assets installiert wurden:**
+```bash
+ls -la public/assets/
+# Sollte Verzeichnisse wie app/, vendor/, etc. zeigen
+```
+
+**Symptom wenn Assets fehlen:**
+- Browser-Konsole zeigt: "Failed to load resource: 500 Internal Server Error" für CSS/JS-Dateien
+- Seiten laden, aber ohne Styling
+- CSS-Dateien wie `components-*.css` und `app-*.css` geben 500-Fehler zurück
+
 ### Schritt 6: Umgebungsvariablen setzen ⚠️ KRITISCH!
 
 **WICHTIG:** Dieser Schritt ist ZWINGEND ERFORDERLICH, sonst erhalten Sie den Fehler:
@@ -181,6 +204,99 @@ php composer.phar install --no-dev --optimize-autoloader
 ```
 
 ## Fehlerbehebung
+
+### Fehler: CSS/JS-Dateien werden nicht geladen (500 Error) ⚠️ HÄUFIG!
+
+**Symptome:**
+- Login-Seite lädt, aber ohne Styling
+- Browser-Konsole zeigt:
+  ```
+  Failed to load resource: the server responded with a status of 500 (Internal Server Error)
+  components-*.css:1
+  app-*.css:1
+  ```
+- nginx/Apache Error-Log zeigt:
+  ```
+  openat() "/var/www/vhosts/domain.com/path/favicon.svg" failed (2: No such file or directory)
+  ```
+
+**Ursache:**
+Die Symfony AssetMapper-Assets wurden nicht installiert. Das `public/assets/` Verzeichnis fehlt oder ist leer.
+
+**Lösung:**
+
+1. **Prüfen Sie, ob das Assets-Verzeichnis existiert:**
+   ```bash
+   ls -la public/assets/
+   # Wenn Fehler "No such file or directory" → Assets fehlen!
+   ```
+
+2. **Assets manuell installieren:**
+   ```bash
+   cd /var/www/vhosts/yourdomain.com/httpdocs
+   php bin/console assets:install public
+   php bin/console importmap:install
+   ```
+
+3. **Cache leeren:**
+   ```bash
+   php bin/console cache:clear --env=prod
+   ```
+
+4. **Dateirechte prüfen:**
+   ```bash
+   chmod -R 755 public/assets
+   ```
+
+5. **Seite neu laden** - CSS und JS sollten jetzt laden!
+
+**Prävention:**
+Nach jedem `composer install` sollten die Post-Install-Scripts automatisch laufen. Falls nicht, führen Sie manuell aus:
+```bash
+composer run-script auto-scripts
+```
+
+### Fehler: "Option FollowSymlinks not allowed here" ⚠️ HÄUFIG!
+
+**Symptome:**
+- Apache Error-Log zeigt:
+  ```
+  [core:alert] /var/www/.../public/.htaccess: Option FollowSymlinks not allowed here
+  ```
+- 500 Internal Server Error beim Aufruf der Seite
+- Eventuell "Internal Server Error" ohne weitere Details
+
+**Ursache:**
+Plesk und viele Shared-Hosting-Umgebungen verbieten aus Sicherheitsgründen die Direktive `Options +FollowSymlinks` in `.htaccess` Dateien. Die `AllowOverride` Einstellung ist auf dem Server eingeschränkt.
+
+**Lösung:**
+
+1. **Öffnen Sie `public/.htaccess`**
+
+2. **Suchen Sie die Zeile:**
+   ```apache
+   Options +FollowSymlinks
+   ```
+
+3. **Ersetzen Sie sie durch:**
+   ```apache
+   Options +SymLinksIfOwnerMatch
+   ```
+
+4. **Seite neu laden** - Der Fehler sollte behoben sein!
+
+**Erklärung:**
+- `+FollowSymlinks` erlaubt das Folgen aller symbolischen Links (Sicherheitsrisiko)
+- `+SymLinksIfOwnerMatch` erlaubt nur Links, die demselben Benutzer gehören (sicher)
+
+Diese Änderung ist bereits in der neuesten Version der `.htaccess` enthalten.
+
+**Alternative (falls das nicht funktioniert):**
+Falls auch `SymLinksIfOwnerMatch` nicht erlaubt ist, können Sie die Zeile komplett auskommentieren:
+```apache
+# Options +SymLinksIfOwnerMatch
+```
+**Achtung:** Dies kann in seltenen Fällen zu Problemen mit RewriteRules führen. Testen Sie nach der Änderung!
 
 ### Fehler: "Class 'Symfony\Bundle\DebugBundle\DebugBundle' not found" ⚠️ HÄUFIG!
 
@@ -328,11 +444,20 @@ php bin/console cache:warmup --env=prod
 
 ## Checkliste
 
+**⚡ QUICK CHECK:** Führen Sie das automatische Check-Script aus:
+```bash
+./deployment-check.sh
+```
+
+Dieses Script überprüft automatisch alle kritischen Punkte unten und gibt detailliertes Feedback.
+
+**Manuelle Checkliste:**
 - [ ] Document Root auf `public` Verzeichnis gesetzt
 - [ ] .htaccess Datei in `public` Verzeichnis vorhanden
 - [ ] PHP-Version >= 8.2
 - [ ] Alle PHP-Erweiterungen aktiviert
 - [ ] Composer Dependencies installiert (`composer install --no-dev --optimize-autoloader`)
+- [ ] ⚠️ **KRITISCH:** Assets installiert (Verzeichnis `public/assets/` existiert)
 - [ ] ⚠️ **KRITISCH:** `.env.local` mit `APP_ENV=prod` erstellt
 - [ ] APP_SECRET mit sicherem zufälligen String gesetzt
 - [ ] DATABASE_URL korrekt konfiguriert
@@ -390,20 +515,30 @@ Bei weiteren Problemen:
 
 ## Zusammenfassung
 
-Die zwei häufigsten Fehler bei Plesk-Deployment:
+Die vier häufigsten Fehler bei Plesk-Deployment:
 
-1. **"Primary script unknown"**
+1. **CSS/JS-Dateien laden nicht (500 Error)**
+   - **Ursache:** Assets wurden nicht installiert, `public/assets/` fehlt
+   - **Lösung:** `php bin/console assets:install public && php bin/console importmap:install`
+
+2. **"Option FollowSymlinks not allowed here"**
+   - **Ursache:** Plesk verbietet `Options +FollowSymlinks` in `.htaccess`
+   - **Lösung:** In `public/.htaccess` ändern zu `Options +SymLinksIfOwnerMatch`
+
+3. **"Primary script unknown"**
    - **Ursache:** Document Root zeigt nicht auf `public` Verzeichnis
    - **Lösung:** Document Root auf `/httpdocs/public` setzen
 
-2. **"Class 'DebugBundle' not found"**
+4. **"Class 'DebugBundle' not found"**
    - **Ursache:** `APP_ENV` ist nicht auf `prod` gesetzt
    - **Lösung:** `.env.local` mit `APP_ENV=prod` erstellen
 
 **Kritische Schritte:**
 - Document Root → `public` Verzeichnis
+- `.htaccess` → `Options +SymLinksIfOwnerMatch` verwenden (Plesk-kompatibel)
 - `.env.local` → `APP_ENV=prod`
 - Composer → `--no-dev` Flag verwenden
+- **Assets installieren** → `php bin/console assets:install public` + `importmap:install`
 - Cache leeren → `php bin/console cache:clear --env=prod`
 
 Ohne diese Schritte funktioniert die Symfony-Anwendung nicht auf Plesk.
