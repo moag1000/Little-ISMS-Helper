@@ -8,6 +8,11 @@
         <h1>{{ incident.title }}</h1>
         <div class="actions">
             <a href="{{ path('app_incident_edit', {id: incident.id}) }}" class="btn btn-primary">Edit</a>
+            {% if incident.requiresNis2Reporting %}
+                <a href="{{ path('app_incident_nis2_report', {id: incident.id}) }}" class="btn btn-success" title="{{ 'incident.action.download_nis2_report'|trans|default('Download NIS2 Report') }}">
+                    <i class="bi bi-file-earmark-pdf"></i> NIS2 Report (PDF)
+                </a>
+            {% endif %}
             <a href="{{ path('app_incident_index') }}" class="btn btn-secondary">Back to List</a>
             {% if is_granted('ROLE_ADMIN') %}
                 <form method="post" action="{{ path('app_incident_delete', {id: incident.id}) }}" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this incident?');">
@@ -191,7 +196,7 @@
                         <div class="impact-item">
                             <span class="label">{{ 'incident.field.cross_border_impact'|trans }}:</span>
                             <span class="value">
-                                {% if incident.crossBorderImpact %}
+                                {% if incident.isCrossBorderImpact %}
                                     <span class="badge bg-danger">{{ 'common.yes'|trans }}</span>
                                 {% else %}
                                     <span class="badge bg-secondary">{{ 'common.no'|trans }}</span>

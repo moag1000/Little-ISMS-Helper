@@ -452,6 +452,8 @@ incident:
     national_authority_notified: Notified National Authority
     authority_reference_number: Authority Reference Number
     affected_assets: Affected Assets
+  action:
+    download_nis2_report: Download NIS2 Report (PDF)
   placeholder:
     title: e.g. Data breach customer data
     description: Detailed description of the incident...
