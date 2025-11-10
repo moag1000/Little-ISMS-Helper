@@ -792,12 +792,70 @@ workflow:
     no_active_workflow: Kein aktiver Workflow für diese Entität gefunden.
 change_request:
   title: Änderungsanträge
+  new: Neuer Änderungsantrag
   page:
     title: ISMS Change Management
+    new: Neuen Änderungsantrag erstellen
+    edit: Änderungsantrag bearbeiten
+  edit: Änderungsantrag bearbeiten
   action:
     create: Änderungsantrag erstellen
+    update: Änderungsantrag aktualisieren
     view: Ansehen
     edit: Bearbeiten
+  field:
+    change_number: Änderungsnummer
+    title: Titel
+    change_type: Änderungstyp
+    description: Beschreibung
+    justification: Begründung
+    requested_by: Angefordert von
+    requested_date: Anforderungsdatum
+    priority: Priorität
+    status: Status
+    isms_impact: ISMS-Auswirkung
+    risk_assessment: Risikobewertung
+    implementation_plan: Umsetzungsplan
+    rollback_plan: Rollback-Plan
+    testing_requirements: Testanforderungen
+    planned_implementation_date: Geplantes Umsetzungsdatum
+    actual_implementation_date: Tatsächliches Umsetzungsdatum
+    approved_by: Genehmigt von
+    approved_date: Genehmigungsdatum
+    approval_comments: Genehmigungskommentare
+    implemented_by: Umgesetzt von
+    implementation_notes: Umsetzungsnotizen
+    verified_by: Verifiziert von
+    verified_date: Verifizierungsdatum
+    verification_results: Verifizierungsergebnisse
+    closed_date: Abschlussdatum
+    closure_notes: Abschlussnotizen
+  change_type:
+    isms_policy: ISMS-Richtlinie
+    isms_scope: ISMS-Geltungsbereich
+    control: Maßnahme
+    asset: Asset
+    process: Prozess
+    technology: Technologie
+    supplier: Lieferant
+    organizational: Organisatorisch
+    other: Sonstiges
+  priority:
+    critical: Kritisch
+    high: Hoch
+    medium: Mittel
+    low: Niedrig
+  status:
+    draft: Entwurf
+    submitted: Eingereicht
+    under_review: In Prüfung
+    approved: Genehmigt
+    rejected: Abgelehnt
+    scheduled: Geplant
+    implemented: Umgesetzt
+    verified: Verifiziert
+    closed: Geschlossen
+    cancelled: Abgebrochen
   statistics:
     title: Statistiken
     total: Gesamtzahl Änderungsanträge
