@@ -158,6 +158,23 @@ if [ -d "public/assets" ]; then
         else
             check_error "Bootstrap Icons fehlen! Führen Sie aus: php bin/console importmap:install && php bin/console asset-map:compile"
         fi
+
+        # Check for JavaScript dependencies (Stimulus, Turbo, Chart.js)
+        if [ -d "public/assets/vendor/@hotwired" ]; then
+            if find public/assets/vendor/@hotwired -name "*.js" -type f 2>/dev/null | grep -q .; then
+                check_success "Hotwired (Stimulus/Turbo) JavaScript installiert"
+            else
+                check_error "Hotwired Verzeichnis existiert, aber keine JS-Dateien!"
+            fi
+        else
+            check_error "Hotwired (Stimulus/Turbo) fehlt! KRITISCH: JavaScript funktioniert nicht! Führen Sie aus: php bin/console importmap:install"
+        fi
+
+        if [ -d "public/assets/vendor/chart.js" ]; then
+            check_success "Chart.js installiert"
+        else
+            check_warning "Chart.js fehlt (Analytics werden nicht funktionieren)"
+        fi
     else
         check_error "public/assets/ ist leer! Führen Sie aus: php bin/console asset-map:compile"
     fi

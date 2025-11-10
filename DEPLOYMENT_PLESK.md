@@ -373,7 +373,14 @@ php bin/console asset-map:compile
 
 # 3. Prüfen, ob Bootstrap Icons installiert wurden
 ls -la public/assets/vendor/bootstrap-icons/font/
-# Sollte Dateien zeigen: bootstrap-icons-HASH.css, bootstrap-icons.woff, etc.
+# Sollte Dateien zeigen: bootstrap-icons-HASH.css
+
+ls -la public/assets/vendor/bootstrap-icons/font/fonts/
+# Sollte Font-Dateien zeigen: bootstrap-icons.woff, bootstrap-icons.woff2
+
+# Alternativ: Debug-Befehl verwenden
+php bin/console debug:asset-map --ext=woff2
+# Sollte bootstrap-icons .woff2 Dateien anzeigen
 
 # 4. Cache leeren
 php bin/console cache:clear --env=prod
@@ -382,6 +389,207 @@ php bin/console cache:clear --env=prod
 **Hinweis:** Bootstrap Icons benötigt beide Befehle:
 1. `importmap:install` lädt das Paket von jsDelivr herunter
 2. `asset-map:compile` kompiliert es nach `public/assets/vendor/`
+
+**⚠️ Bekanntes Problem: Font-Dateien im `fonts/` Unterordner werden nicht kopiert**
+
+Bootstrap Icons hat diese Struktur:
+```
+bootstrap-icons/
+  font/
+    bootstrap-icons.min.css       <-- CSS mit @font-face
+    fonts/                         <-- Unterordner mit .woff/.woff2
+      bootstrap-icons.woff
+      bootstrap-icons.woff2
+```
+
+AssetMapper kopiert manchmal den `fonts/` Unterordner nicht korrekt (bekanntes GitHub Issue #52620).
+
+**Diagnose:**
+```bash
+# Prüfen Sie, ob die Font-Dateien kopiert wurden
+ls -la public/assets/vendor/bootstrap-icons/font/fonts/
+# Wenn "No such file or directory" → Fonts fehlen!
+
+# Debug-Befehl
+php bin/console debug:asset-map --ext=woff2
+# Sollte bootstrap-icons .woff2 Dateien listen
+```
+
+**Lösung A: Bootstrap Icons lokal installieren (EMPFOHLEN)**
+
+Statt über ImportMap können Sie Bootstrap Icons lokal in `assets/` installieren:
+
+```bash
+# 1. Bootstrap Icons npm-Paket herunterladen (oder von GitHub)
+mkdir -p assets/vendor/bootstrap-icons
+cd assets/vendor/bootstrap-icons
+
+# Download der neuesten Version
+wget https://github.com/twbs/icons/releases/download/v1.11.3/bootstrap-icons-1.11.3.zip
+unzip bootstrap-icons-1.11.3.zip
+mv bootstrap-icons-1.11.3/font/* .
+rm -rf bootstrap-icons-1.11.3 bootstrap-icons-1.11.3.zip
+
+# 2. Import-Pfad in assets/app.js ändern
+# Von: import 'bootstrap-icons/font/bootstrap-icons.min.css';
+# Zu:  import './vendor/bootstrap-icons/bootstrap-icons.min.css';
+
+# 3. Aus importmap.php entfernen
+# Die Zeile mit 'bootstrap-icons/font/bootstrap-icons.min.css' löschen
+
+# 4. Assets neu kompilieren
+php bin/console asset-map:compile
+```
+
+**Lösung B: Fonts manuell kopieren nach importmap:install**
+
+Falls Sie ImportMap behalten möchten:
+
+```bash
+# Nach importmap:install und asset-map:compile
+# Prüfen Sie den vendor/ Ordner und kopieren Sie Fonts manuell
+
+# Das vendor/ Verzeichnis finden (meist var/cache oder ähnlich)
+find . -path "*/vendor/bootstrap-icons/font/fonts" -type d
+
+# Fonts nach public/assets/ kopieren
+# (Pfad kann variieren, anpassen!)
+cp -r var/cache/.../vendor/bootstrap-icons/font/fonts public/assets/vendor/bootstrap-icons/font/
+```
+
+**Lösung C: CDN verwenden (Fallback)**
+
+Falls nichts funktioniert:
+
+```twig
+{# templates/base.html.twig #}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+```
+
+Und in `assets/app.js` die Zeile `import 'bootstrap-icons/...'` entfernen.
+
+### Fehler: JavaScript funktioniert nicht (Dark Mode, Suche, etc.) ⚠️ SEHR HÄUFIG!
+
+**Symptome:**
+- Dark Mode Toggle funktioniert nicht
+- Globale Suche (⌘K) funktioniert nicht
+- Command Palette (⌘P) öffnet nicht
+- Dropdown-Menüs funktionieren nicht
+- Diagramme/Charts werden nicht angezeigt
+- Turbo (SPA-Navigation) funktioniert nicht
+- Keine JavaScript-Fehler in der Konsole ODER viele "Failed to load module" Fehler
+
+**Ursache:**
+Die JavaScript-Dependencies (Stimulus, Turbo, Chart.js) wurden nicht installiert. Das passiert, wenn `php bin/console importmap:install` nicht ausgeführt wurde.
+
+**Technischer Hintergrund:**
+Diese Anwendung verwendet:
+- **Stimulus** - für alle interaktiven Komponenten (Search, Dark Mode, Modals, etc.)
+- **Turbo** - für SPA-ähnliche Navigation ohne Page-Reload
+- **Chart.js** - für Diagramme im Analytics-Dashboard
+- **Bootstrap JS** - für Dropdowns, Modals, etc.
+
+Alle diese Pakete werden von jsDelivr heruntergeladen via `importmap:install` und dann von `asset-map:compile` nach `public/assets/vendor/` kompiliert.
+
+**Diagnose:**
+
+```bash
+# 1. Prüfen Sie, ob JavaScript-Dependencies existieren
+ls -la public/assets/vendor/@hotwired/
+# Sollte stimulus/ und turbo/ Verzeichnisse mit .js-Dateien zeigen
+
+ls -la public/assets/vendor/chart.js/
+# Sollte chart.js Dateien zeigen
+
+ls -la public/assets/vendor/bootstrap/
+# Sollte bootstrap.js Dateien zeigen
+
+# 2. Debug-Befehl für JavaScript-Dateien
+php bin/console debug:asset-map --ext=js | head -50
+# Sollte viele JavaScript-Dateien auflisten, inkl. @hotwired/stimulus, @hotwired/turbo, etc.
+
+# 3. Browser-Konsole prüfen
+# Öffnen Sie die Seite und drücken Sie F12 → Console
+# Suchen Sie nach Fehlern wie:
+# - "Failed to load module: @hotwired/stimulus"
+# - "Uncaught TypeError: Cannot read property 'start' of undefined"
+# - "net::ERR_FILE_NOT_FOUND" für .js-Dateien
+```
+
+**Lösung:**
+
+```bash
+cd /var/www/vhosts/yourdomain.com/httpdocs
+
+# 1. Externe JavaScript-Pakete herunterladen (KRITISCH!)
+php bin/console importmap:install
+
+# 2. Alle Assets inkl. JavaScript kompilieren
+php bin/console asset-map:compile
+
+# 3. Verifizieren, dass die JS-Dateien erstellt wurden
+ls -la public/assets/vendor/@hotwired/stimulus/
+ls -la public/assets/vendor/@hotwired/turbo/
+ls -la public/assets/vendor/chart.js/
+
+# 4. Prüfen Sie die Stimulus Controller
+ls -la public/assets/controllers/
+# Sollte alle *_controller.js Dateien zeigen:
+# - search_controller.js
+# - theme_controller.js (Dark Mode)
+# - command_palette_controller.js
+# - etc.
+
+# 5. Cache leeren
+php bin/console cache:clear --env=prod
+
+# 6. Browser Cache leeren und Seite neu laden (Strg+F5)
+```
+
+**Verifizieren Sie, dass es funktioniert:**
+
+1. **Öffnen Sie die Seite**
+2. **Drücken Sie F12 → Console**
+3. **Sollte KEINE Fehler zeigen** (außer evtl. Warnungen)
+4. **Testen Sie:**
+   - Drücken Sie `⌘K` (oder `Ctrl+K`) → Suche sollte öffnen
+   - Klicken Sie auf den Dark Mode Toggle → Sollte Theme wechseln
+   - Drücken Sie `?` → Keyboard Shortcuts Hilfe sollte öffnen
+
+**Falls es immer noch nicht funktioniert:**
+
+```bash
+# Prüfen Sie die importmap.json
+cat public/assets/importmap.json | grep stimulus
+# Sollte Zeilen mit @hotwired/stimulus zeigen
+
+# Prüfen Sie die manifest.json
+cat public/assets/manifest.json | grep stimulus
+# Sollte die kompilierten Stimulus-Dateien mit Hashes zeigen
+
+# Debug-Ausgabe für ein spezifisches Asset
+php bin/console debug:asset-map @hotwired/stimulus
+# Sollte Details über das Stimulus-Asset zeigen
+```
+
+**Häufige Ursachen:**
+
+1. **`importmap:install` wurde nie ausgeführt** → Externe Pakete fehlen komplett
+2. **`asset-map:compile` wurde vor `importmap:install` ausgeführt** → Falsche Reihenfolge!
+3. **Berechtigungsfehler während `importmap:install`** → Download fehlgeschlagen
+4. **Firewall blockiert jsDelivr** → Externe Pakete können nicht heruntergeladen werden
+5. **Browser Cache** → Alte, fehlerhafte Version wird noch geladen
+
+**Kritische Reihenfolge:**
+```bash
+# RICHTIG:
+php bin/console importmap:install    # 1. Externe Pakete laden
+php bin/console asset-map:compile    # 2. Alles kompilieren
+
+# FALSCH:
+php bin/console asset-map:compile    # Kompiliert ohne externe Pakete!
+php bin/console importmap:install    # Zu spät!
+```
 
 ### Fehler: "Option FollowSymlinks not allowed here" ⚠️ HÄUFIG!
 
