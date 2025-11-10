@@ -45,6 +45,7 @@ Das **Little ISMS Helper Logo** zeigt eine freundliche Cyberpunk-Fee, die die Mi
 
 ### 📋 Compliance Management
 - **Statement of Applicability** - 93 ISO 27001:2022 Controls
+- **SoA PDF Export** - Professional ISO 27001 Reports ✨ NEW!
 - **Multi-Framework Support** - TISAX, DORA
 - **Cross-Framework Mappings** - Transitive Compliance
 - **Audit Management** - ISO 27001 Clause 9.2
@@ -54,8 +55,10 @@ Das **Little ISMS Helper Logo** zeigt eine freundliche Cyberpunk-Fee, die die Mi
 <td width="50%">
 
 ### 🔐 Risk & Asset Management
-- **Asset Management** - CIA-Bewertung
+- **Asset Management** - CIA-Bewertung, ISO 27001 Fields ✨ NEW!
 - **Risk Assessment** - 5x5 Matrix Visualisierung
+- **Risk Appetite Management** - ISO 27005 Compliance ✨ NEW!
+- **Risk Treatment Plans** - Timeline, Budget, Controls ✨ NEW!
 - **Risk Treatment** - Strategien & Restrisiko
 - **Incident Management** - Vorfallsbehandlung
 - **Data Breach Tracking** - GDPR-konform
@@ -86,7 +89,7 @@ Das **Little ISMS Helper Logo** zeigt eine freundliche Cyberpunk-Fee, die die Mi
 <td width="50%">
 
 ### 📊 Reporting & Integration
-- **PDF/Excel Export** - 5 professionelle Reports
+- **PDF/Excel Export** - 6 professionelle PDF Reports ✨ NEW!
 - **REST API** - 30 Endpoints, OpenAPI 3.0
 - **Email Notifications** - Automatisierte Benachrichtigungen
 - **Workflow Engine** - Genehmigungsprozesse
@@ -409,7 +412,7 @@ crontab -e
 
 ### 🚧 Phase 6: Module Completeness & Quality Assurance (In Entwicklung)
 
-**Status:** ~70% Abgeschlossen | **Detaillierte Planung:** [ROADMAP.md - Phase 6](ROADMAP.md#-phase-6-module-completeness--quality-assurance-in-entwicklung)
+**Status:** ~75% Abgeschlossen | **Detaillierte Planung:** [ROADMAP.md - Phase 6](ROADMAP.md#-phase-6-module-completeness--quality-assurance-in-entwicklung)
 
 **Fokus:**
 - 🔥 Form Types & Test Coverage (KRITISCH)
@@ -468,23 +471,23 @@ Siehe auch: [CHANGELOG.md](CHANGELOG.md) für detaillierte Versionshistorie
 
 ## 📊 Projekt-Statistiken
 
-- **Codezeilen:** ~31,650+ LOC
-- **Entities:** 23 Doctrine Entities
+- **Codezeilen:** ~34,700+ LOC
+- **Entities:** 25 Doctrine Entities
 - **Controllers:** 18+ Controllers
-- **Templates:** 80+ Twig Templates
-- **Services:** 12+ Business Logic Services
+- **Templates:** 82+ Twig Templates
+- **Services:** 13+ Business Logic Services
 - **Commands:** 5+ Console Commands
 - **Tests:** 122 tests, 228 assertions (100% passing)
   - **Test Coverage:** ~26% (Ziel: 80%+)
-  - **Module mit Tests:** 6/23 (26%)
+  - **Module mit Tests:** 6/25 (24%)
 - **API Endpoints:** 30 REST Endpoints
-- **Report Types:** 10 (5 PDF + 5 Excel)
+- **Report Types:** 11 (6 PDF + 5 Excel)
 - **Notification Types:** 5 automatisierte Typen
 - **Compliance Frameworks:** 8 (ISO 27001, ISO 22301, ISO 19011, ISO 31000, ISO 27005, DORA, TISAX, NIS2, BSI)
   - **Vollständig implementiert (100%):** 3 Frameworks (ISO 27001, DORA, TISAX)
   - **In Implementierung (Phase 6H/6I):** 2 Frameworks (NIS2, BSI)
-- **Module Vollständigkeit (Technisch):** ~70% durchschnittlich (siehe [Audit](docs/MODULE_COMPLETENESS_AUDIT.md))
-- **ISO 27001:2022 Compliance:** 94.5% ✅ (Zertifizierungsbereit)
+- **Module Vollständigkeit (Technisch):** ~75% durchschnittlich (siehe [Audit](docs/MODULE_COMPLETENESS_AUDIT.md))
+- **ISO 27001:2022 Compliance:** 96% ✅ (Zertifizierungsbereit)
 - **Multi-Standard Compliance:** 84% Durchschnitt (nach NIS2/BSI-Integration)
   - ISO 22301:2019 (BCM): 100% ✅
   - ISO 19011:2018 (Audit): 95% ⚠️
