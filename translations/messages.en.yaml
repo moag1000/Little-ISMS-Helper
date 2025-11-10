@@ -437,6 +437,16 @@ incident:
     corrective_actions: Corrective Actions
     lessons_learned: Lessons Learned
     closed_date: Closed Date
+    nis2_category: NIS2 Category
+    early_warning_reported_at: Early Warning Reported At
+    detailed_notification_reported_at: Detailed Notification Reported At
+    final_report_submitted_at: Final Report Submitted At
+    cross_border_impact: Cross-Border Impact
+    affected_users_count: Affected Users Count
+    estimated_financial_impact: Estimated Financial Impact
+    national_authority_notified: Notified National Authority
+    authority_reference_number: Authority Reference Number
+    affected_assets: Affected Assets
   placeholder:
     title: e.g. Data breach customer data
     description: Detailed description of the incident...
@@ -445,8 +455,20 @@ incident:
     root_cause: Root cause analysis...
     corrective_actions: Corrective actions taken...
     lessons_learned: What did we learn?
+    nis2_category: Select NIS2 category...
+    national_authority: e.g. BSI, ENISA
+    authority_reference: e.g. BSI-2024-001234
   help:
     severity: Assessment of incident severity (1=Low, 4=Critical)
+    nis2_category: Categorization according to NIS2 Directive (EU 2022/2555)
+    early_warning_24h: Early warning within 24 hours (NIS2 Art. 23)
+    detailed_notification_72h: Detailed notification within 72 hours (NIS2 Art. 23)
+    final_report_1month: Final report within 1 month (NIS2 Art. 23)
+    cross_border_impact: Does this incident have cross-border impact on other EU member states?
+    affected_users_count: Number of affected users or customers
+    estimated_financial_impact: Estimated financial damage in EUR
+    national_authority: Competent national authority (e.g. BSI in Germany)
+    affected_assets: Assets affected by this incident
   category:
     data_breach: Data Breach
     security_incident: Security Incident
@@ -465,6 +487,28 @@ incident:
     in_resolution: In Resolution
     resolved: Resolved
     closed: Closed
+  nis2_category:
+    operational: Operational Disruption
+    security: Security Breach
+    privacy: Privacy/Data Protection
+    availability: Service Availability
+  timeline:
+    early_warning: Early Warning (24h)
+    detailed_notification: Detailed Notification (72h)
+    final_report: Final Report (1 month)
+    deadline: Deadline
+    reported: Reported
+    overdue: Overdue
+    hours_remaining: "%hours% hours remaining"
+    days_remaining: "%days% days remaining"
+  nis2_compliance:
+    title: NIS2 Compliance Status
+    not_applicable: Not NIS2-relevant
+    compliant: Compliant
+    overdue: Deadline exceeded
+    awaiting_early_warning: Awaiting early warning
+    awaiting_detailed: Awaiting detailed notification
+    awaiting_final: Awaiting final report
   success:
     reported: Incident reported successfully.
     updated: Incident updated successfully.
