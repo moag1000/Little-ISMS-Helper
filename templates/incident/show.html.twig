@@ -1,0 +1,104 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ incident.title }}{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="page-header">
+        <h1>{{ incident.title }}</h1>
+        <div class="actions">
+            <a href="{{ path('app_incident_edit', {id: incident.id}) }}" class="btn btn-primary">Edit</a>
+            <a href="{{ path('app_incident_index') }}" class="btn btn-secondary">Back to List</a>
+            {% if is_granted('ROLE_ADMIN') %}
+                <form method="post" action="{{ path('app_incident_delete', {id: incident.id}) }}" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this incident?');">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ incident.id) }}">
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h2>Incident #{{ incident.incidentNumber }}</h2>
+            <div class="badges">
+                <span class="badge badge-{{ incident.severity }}">{{ incident.severity|upper }}</span>
+                <span class="badge badge-status-{{ incident.status }}">{{ incident.status|upper|replace({'_': ' '}) }}</span>
+            </div>
+        </div>
+        <div class="card-content">
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <span class="label">Category:</span>
+                    <span class="value">{{ incident.category|upper|replace({'_': ' '}) }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Detected:</span>
+                    <span class="value">{{ incident.detectedAt ? incident.detectedAt|date('d.m.Y H:i') : 'N/A' }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Reported By:</span>
+                    <span class="value">{{ incident.reportedBy ?? 'N/A' }}</span>
+                </div>
+                {% if incident.occurredAt %}
+                <div class="detail-item">
+                    <span class="label">Occurred:</span>
+                    <span class="value">{{ incident.occurredAt|date('d.m.Y H:i') }}</span>
+                </div>
+                {% endif %}
+            </div>
+
+            {% if incident.description %}
+                <div class="detail-section">
+                    <h3>Description</h3>
+                    <p>{{ incident.description }}</p>
+                </div>
+            {% endif %}
+
+            {% if incident.affectedSystems %}
+                <div class="detail-section">
+                    <h3>Affected Systems</h3>
+                    <p>{{ incident.affectedSystems }}</p>
+                </div>
+            {% endif %}
+
+            {% if incident.rootCause %}
+                <div class="detail-section">
+                    <h3>Root Cause Analysis</h3>
+                    <p>{{ incident.rootCause }}</p>
+                </div>
+            {% endif %}
+
+            {% if incident.correctiveActions %}
+                <div class="detail-section">
+                    <h3>Corrective Actions</h3>
+                    <p>{{ incident.correctiveActions }}</p>
+                </div>
+            {% endif %}
+
+            {% if incident.lessonsLearned %}
+                <div class="detail-section">
+                    <h3>Lessons Learned</h3>
+                    <p>{{ incident.lessonsLearned }}</p>
+                </div>
+            {% endif %}
+
+            {% if incident.closedDate %}
+                <div class="detail-section">
+                    <h3>Closure</h3>
+                    <p>Closed on: <strong>{{ incident.closedDate|date('d.m.Y H:i') }}</strong></p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+.badges { display: flex; gap: 0.5rem; }
+.badge-status-reported { background: #3b82f6; }
+.badge-status-in_investigation { background: #f59e0b; }
+.badge-status-in_resolution { background: #8b5cf6; }
+.badge-status-resolved { background: #10b981; }
+.badge-status-closed { background: #6b7280; }
+</style>
+{% endblock %}

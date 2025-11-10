@@ -7,7 +7,16 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
+ * Role Repository
+ *
+ * Repository for querying Role entities with system/custom role differentiation.
+ *
  * @extends ServiceEntityRepository<Role>
+ *
+ * @method Role|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Role|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Role[]    findAll()
+ * @method Role[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class RoleRepository extends ServiceEntityRepository
 {
@@ -17,7 +26,9 @@ class RoleRepository extends ServiceEntityRepository
     }
 
     /**
-     * Find all non-system roles
+     * Find all custom (non-system) roles that can be modified.
+     *
+     * @return Role[] Array of custom roles sorted by name
      */
     public function findCustomRoles(): array
     {
@@ -30,7 +41,9 @@ class RoleRepository extends ServiceEntityRepository
     }
 
     /**
-     * Find all system roles
+     * Find protected system roles (ROLE_USER, ROLE_ADMIN).
+     *
+     * @return Role[] Array of system roles sorted by name
      */
     public function findSystemRoles(): array
     {
@@ -43,7 +56,10 @@ class RoleRepository extends ServiceEntityRepository
     }
 
     /**
-     * Find role by name
+     * Find role by name.
+     *
+     * @param string $name Role name (e.g., 'ISO Manager', 'Auditor')
+     * @return Role|null Role entity or null if not found
      */
     public function findByName(string $name): ?Role
     {
@@ -51,7 +67,10 @@ class RoleRepository extends ServiceEntityRepository
     }
 
     /**
-     * Get role with permissions
+     * Find role with eager-loaded permissions for permission management.
+     *
+     * @param int $id Role identifier
+     * @return Role|null Role entity with permissions or null if not found
      */
     public function findWithPermissions(int $id): ?Role
     {
@@ -65,7 +84,9 @@ class RoleRepository extends ServiceEntityRepository
     }
 
     /**
-     * Get roles with user count
+     * Get all roles with user assignment count for role overview.
+     *
+     * @return array Array of roles with 'userCount' field
      */
     public function getRolesWithUserCount(): array
     {

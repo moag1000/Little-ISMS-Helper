@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background: #2563eb; color: white; padding: 20px; text-align: center; }
+        .content { background: #f9fafb; padding: 20px; margin: 20px 0; }
+        .field { margin: 10px 0; }
+        .label { font-weight: bold; color: #666; }
+        .value { color: #000; }
+        .update-box { background: #dbeafe; border-left: 4px solid #2563eb; padding: 15px; margin: 15px 0; }
+        .footer { text-align: center; color: #666; font-size: 12px; padding: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔄 Incident Updated</h1>
+        </div>
+
+        <div class="content">
+            <div class="field">
+                <span class="label">Incident:</span>
+                <span class="value">{{ incident.title }}</span>
+            </div>
+
+            <div class="update-box">
+                <strong>Update:</strong>
+                <p>{{ changeDescription }}</p>
+            </div>
+
+            <div class="field">
+                <span class="label">Current Status:</span>
+                <span class="value">{{ incident.status|upper }}</span>
+            </div>
+
+            <div class="field">
+                <span class="label">Severity:</span>
+                <span class="value">{{ incident.severity|upper }}</span>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>This is an automated notification from Little ISMS Helper</p>
+        </div>
+    </div>
+</body>
+</html>

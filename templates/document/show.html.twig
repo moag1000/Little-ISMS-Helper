@@ -1,0 +1,77 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ document.name }}{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="page-header">
+        <h1>{{ document.name }}</h1>
+        <div class="actions">
+            <a href="{{ path('app_document_download', {id: document.id}) }}" class="btn btn-primary">{{ 'common.download'|trans }}</a>
+            <a href="{{ path('app_document_edit', {id: document.id}) }}" class="btn btn-secondary">{{ 'common.edit'|trans }}</a>
+            <a href="{{ path('app_document_index') }}" class="btn btn-secondary">{{ 'common.back_to_list'|trans }}</a>
+            {% if is_granted('ROLE_ADMIN') %}
+                <form method="post" action="{{ path('app_document_delete', {id: document.id}) }}" style="display:inline;" onsubmit="return confirm('{{ 'document.confirm.delete'|trans }}');">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ document.id) }}">
+                    <button type="submit" class="btn btn-danger">{{ 'common.delete'|trans }}</button>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h2>{{ 'document.details.title'|trans }}</h2>
+            <span class="badge">{{ document.documentType|upper }}</span>
+        </div>
+        <div class="card-content">
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <span class="label">{{ 'document.label.type'|trans }}</span>
+                    <span class="value">{{ document.documentType|upper|replace({'_': ' '}) }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">{{ 'document.label.file_name'|trans }}</span>
+                    <span class="value">{{ document.originalName }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">{{ 'document.label.size'|trans }}</span>
+                    <span class="value">{{ document.fileSizeFormatted }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">{{ 'document.label.mime_type'|trans }}</span>
+                    <span class="value">{{ document.mimeType }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">{{ 'document.label.uploaded_by'|trans }}</span>
+                    <span class="value">{{ document.uploadedBy.fullName }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">{{ 'document.label.uploaded_at'|trans }}</span>
+                    <span class="value">{{ document.uploadedAt|date('d.m.Y H:i') }}</span>
+                </div>
+                {% if document.updatedAt %}
+                <div class="detail-item">
+                    <span class="label">{{ 'document.label.last_updated'|trans }}</span>
+                    <span class="value">{{ document.updatedAt|date('d.m.Y H:i') }}</span>
+                </div>
+                {% endif %}
+            </div>
+
+            {% if document.description %}
+                <div class="detail-section">
+                    <h3>{{ 'common.description'|trans }}</h3>
+                    <p>{{ document.description }}</p>
+                </div>
+            {% endif %}
+
+            {% if document.relatedEntityType and document.relatedEntityId %}
+                <div class="detail-section">
+                    <h3>{{ 'document.label.related_entity'|trans }}</h3>
+                    <p>{{ document.relatedEntityType }} #{{ document.relatedEntityId }}</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

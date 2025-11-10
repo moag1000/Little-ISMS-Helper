@@ -1,0 +1,174 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Risk Assessment Matrix{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="page-header">
+        <h1>Risk Assessment Matrix</h1>
+        <a href="{{ path('app_risk_index') }}" class="btn btn-secondary">Back to Risks</a>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h2>5x5 Risk Matrix</h2>
+            <p>Visual representation of risks based on probability and impact</p>
+        </div>
+
+        <div class="card-content"
+             data-controller="riskmatrix"
+             data-riskmatrix-risks-value="{{ risks|json_encode|e('html_attr') }}">
+
+            <div class="risk-matrix-container">
+                <div class="matrix-labels">
+                    <div class="y-label">Impact</div>
+                </div>
+
+                <div class="risk-matrix">
+                    {% for impact in 5..1 %}
+                        {% for probability in 1..5 %}
+                            {% set score = probability * impact %}
+                            {% set level = score >= 20 ? 'critical' : (score >= 12 ? 'high' : (score >= 6 ? 'medium' : 'low')) %}
+                            <div class="matrix-cell risk-{{ level }}"
+                                 data-probability="{{ probability }}"
+                                 data-impact="{{ impact }}">
+                                <span class="cell-score">{{ score }}</span>
+                            </div>
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+
+                <div class="x-label">Probability</div>
+            </div>
+
+            <div class="matrix-legend">
+                <h3>Risk Levels</h3>
+                <div class="legend-items">
+                    <div class="legend-item">
+                        <span class="legend-color risk-critical"></span>
+                        <span>Critical (20-25)</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color risk-high"></span>
+                        <span>High (12-19)</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color risk-medium"></span>
+                        <span>Medium (6-11)</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color risk-low"></span>
+                        <span>Low (1-5)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.risk-matrix-container {
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.matrix-labels {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.y-label {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    font-weight: bold;
+    margin-right: 1rem;
+}
+
+.x-label {
+    font-weight: bold;
+    margin-top: 1rem;
+}
+
+.risk-matrix {
+    display: grid;
+    grid-template-columns: repeat(5, 100px);
+    grid-template-rows: repeat(5, 100px);
+    gap: 2px;
+    background: #e5e7eb;
+    padding: 2px;
+}
+
+.matrix-cell {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 1px solid #d1d5db;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.matrix-cell:hover {
+    transform: scale(1.05);
+    z-index: 10;
+}
+
+.cell-score {
+    font-size: 12px;
+    color: #666;
+    position: absolute;
+    top: 2px;
+    left: 4px;
+}
+
+.risk-low { background-color: #d1fae5; }
+.risk-medium { background-color: #fef3c7; }
+.risk-high { background-color: #fed7aa; }
+.risk-critical { background-color: #fecaca; }
+
+.risk-item {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin: 2px;
+    cursor: pointer;
+    transition: transform 0.2s;
+    border: 1px solid rgba(0,0,0,0.2);
+}
+
+.risk-item:hover {
+    transform: scale(1.5);
+    z-index: 100;
+}
+
+.matrix-legend {
+    margin-top: 2rem;
+    padding: 1rem;
+    background: #f9fafb;
+    border-radius: 8px;
+}
+
+.legend-items {
+    display: flex;
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.legend-color {
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    border: 1px solid #d1d5db;
+}
+</style>
+{% endblock %}

@@ -1,4 +1,69 @@
-/* Modal Styles */
+/* ============================================
+   DARK MODE SUPPORT FOR BOOTSTRAP COMPONENTS
+   ============================================ */
+
+/* Breadcrumbs */
+[data-theme="dark"] .breadcrumb {
+    background-color: var(--bg-secondary);
+}
+
+[data-theme="dark"] .breadcrumb-item,
+[data-theme="dark"] .breadcrumb-item a {
+    color: var(--text-secondary);
+}
+
+[data-theme="dark"] .breadcrumb-item.active {
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .breadcrumb-item + .breadcrumb-item::before {
+    color: var(--text-muted);
+}
+
+/* Bootstrap Buttons in Dark Mode */
+[data-theme="dark"] .btn-secondary {
+    background-color: var(--bg-tertiary);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .btn-secondary:hover {
+    background-color: var(--bg-secondary);
+}
+
+/* Page Header */
+[data-theme="dark"] .page-header {
+    border-bottom-color: var(--border-color);
+}
+
+[data-theme="dark"] .page-header h1 {
+    color: var(--text-primary);
+}
+
+/* Card Headers/Content */
+[data-theme="dark"] .card-header {
+    background-color: var(--bg-secondary);
+    border-bottom-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .card-content {
+    background-color: var(--bg-elevated);
+    color: var(--text-primary);
+}
+
+/* Help Text */
+[data-theme="dark"] .help-text,
+[data-theme="dark"] .text-muted {
+    color: var(--text-muted) !important;
+}
+
+/* Small text */
+[data-theme="dark"] small {
+    color: var(--text-secondary);
+}
+
+/* Modal Styles - Cyberpunk */
 .modal {
     display: none;
     position: fixed;
@@ -27,7 +92,8 @@
 }
 
 .modal-backdrop.modal-backdrop-show {
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(4px);
 }
 
 .modal-content {
@@ -38,12 +104,19 @@
     width: 90%;
     max-height: 90vh;
     overflow-y: auto;
-    box-shadow: var(--shadow-lg);
+    box-shadow: var(--shadow-lg), 0 0 30px rgba(6, 182, 212, 0.3);
     position: relative;
     z-index: 1001;
     transform: scale(0.9);
     opacity: 0;
     transition: all 0.3s ease;
+    border: 2px solid var(--color-secondary);
+}
+
+[data-theme="dark"] .modal-content {
+    background: var(--bg-elevated);
+    color: var(--text-primary);
+    border-color: var(--border-color);
 }
 
 .modal.modal-open .modal-content {
@@ -57,13 +130,15 @@
     align-items: center;
     margin-bottom: var(--spacing-lg);
     padding-bottom: var(--spacing-md);
-    border-bottom: 1px solid var(--color-border);
+    border-bottom: 2px solid transparent;
+    border-image: linear-gradient(90deg, var(--color-secondary), var(--color-accent-pink)) 1;
 }
 
 .modal-title {
     font-size: 1.5rem;
     font-weight: 600;
     color: var(--color-primary);
+    text-shadow: 0 0 20px rgba(6, 182, 212, 0.2);
 }
 
 .modal-close {
@@ -95,7 +170,7 @@
     background: white;
     border-radius: var(--border-radius);
     padding: var(--spacing-md) var(--spacing-lg);
-    box-shadow: var(--shadow-lg);
+    box-shadow: var(--shadow-lg), 0 0 20px rgba(6, 182, 212, 0.3);
     min-width: 300px;
     max-width: 400px;
     pointer-events: all;
@@ -103,6 +178,7 @@
     transform: translateX(400px);
     transition: all 0.3s ease;
     border-left: 4px solid;
+    border: 2px solid;
 }
 
 .notification.notification-visible {
@@ -117,22 +193,26 @@
 
 .notification-success {
     border-color: var(--color-success);
-    background-color: #d4edda;
+    background: linear-gradient(135deg, #d1fae5 0%, #d4edda 100%);
+    box-shadow: var(--shadow-lg), var(--glow-green);
 }
 
 .notification-error {
     border-color: var(--color-danger);
-    background-color: #f8d7da;
+    background: linear-gradient(135deg, #fee2e2 0%, #f8d7da 100%);
+    box-shadow: var(--shadow-lg), 0 0 20px rgba(239, 68, 68, 0.3);
 }
 
 .notification-warning {
     border-color: var(--color-warning);
-    background-color: #fff3cd;
+    background: linear-gradient(135deg, #fef3c7 0%, #fff3cd 100%);
+    box-shadow: var(--shadow-lg), 0 0 20px rgba(245, 158, 11, 0.3);
 }
 
 .notification-info {
     border-color: var(--color-info);
-    background-color: #d1ecf1;
+    background: linear-gradient(135deg, #cffafe 0%, #d1ecf1 100%);
+    box-shadow: var(--shadow-lg), var(--glow-cyan);
 }
 
 .notification-header {

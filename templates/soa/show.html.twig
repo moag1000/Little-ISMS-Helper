@@ -1,0 +1,161 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ control.controlId }} - {{ control.name }} - Little ISMS Helper{% endblock %}
+
+{% block body %}
+<div class="d-flex justify-between align-center mb-4">
+    <div>
+        <h1>{{ control.controlId }}: {{ control.name }}</h1>
+        <div class="mt-2">
+            <span class="badge badge-info">{{ control.category }}</span>
+        </div>
+    </div>
+    <div>
+        <a href="{{ path('app_soa_edit', {id: control.id}) }}" class="btn btn-success" style="margin-right: 0.5rem;">
+            ✏️ Bearbeiten
+        </a>
+        <a href="{{ path('app_soa_by_category', {category: control.category}) }}" class="btn btn-secondary">
+            ← Zurück zu {{ control.category }}
+        </a>
+    </div>
+</div>
+
+{# Control Description #}
+<div class="card mb-4">
+    <h2>Beschreibung</h2>
+    <p style="color: var(--color-text-light); margin-top: var(--spacing-sm); line-height: 1.6;">
+        {{ control.description }}
+    </p>
+</div>
+
+{# Applicability Status #}
+<div class="card mb-4">
+    <h2>Anwendbarkeitsstatus</h2>
+    <div class="stats-grid mt-2" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+        <div class="stat-item">
+            <strong style="font-size: 1.5rem;">
+                {% if control.applicable %}
+                    <span class="badge badge-success" style="font-size: 1.2rem;">✓ Anwendbar</span>
+                {% else %}
+                    <span class="badge" style="background: #f0f0f0; color: #666; font-size: 1.2rem;">✗ Nicht anwendbar</span>
+                {% endif %}
+            </strong>
+            <span>Status</span>
+        </div>
+
+        {% if control.applicable %}
+        <div class="stat-item">
+            <strong style="font-size: 1.5rem;">
+                {% if control.implementationStatus == 'implemented' %}
+                    <span class="badge badge-success" style="font-size: 1.2rem;">✅ Implementiert</span>
+                {% elseif control.implementationStatus == 'in_progress' %}
+                    <span class="badge badge-warning" style="font-size: 1.2rem;">🔄 In Arbeit</span>
+                {% elseif control.implementationStatus == 'not_started' %}
+                    <span class="badge badge-danger" style="font-size: 1.2rem;">⏸ Nicht begonnen</span>
+                {% else %}
+                    <span class="badge" style="background: #f0f0f0; color: #666; font-size: 1.2rem;">N/A</span>
+                {% endif %}
+            </strong>
+            <span>Implementierungsstatus</span>
+        </div>
+
+        <div class="stat-item">
+            <strong style="font-size: 1.5rem;">{{ control.implementationPercentage }}%</strong>
+            <span>Implementierungsgrad</span>
+        </div>
+        {% endif %}
+    </div>
+
+    {% if control.applicable %}
+    <div class="progress mt-3" style="height: 30px;">
+        <div class="progress-bar" style="width: {{ control.implementationPercentage }}%; font-size: 1rem;">
+            {{ control.implementationPercentage }}%
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+{# Justification #}
+<div class="card mb-4">
+    <h2>Begründung</h2>
+    {% if control.justification %}
+        <div class="info-box mt-2" style="background: var(--color-bg-light);">
+            <p style="white-space: pre-wrap; line-height: 1.6;">{{ control.justification }}</p>
+        </div>
+    {% else %}
+        <p style="color: var(--color-text-muted); margin-top: var(--spacing-sm);">
+            Keine Begründung angegeben.
+        </p>
+    {% endif %}
+</div>
+
+{% if control.applicable %}
+{# Implementation Details #}
+<div class="card mb-4">
+    <h2>Implementierungsdetails</h2>
+
+    <div class="form-group mt-3">
+        <h3 style="font-size: 1rem; margin-bottom: var(--spacing-sm);">Implementierungsnotizen</h3>
+        {% if control.implementationNotes %}
+            <div class="info-box" style="background: var(--color-bg-light);">
+                <p style="white-space: pre-wrap; line-height: 1.6;">{{ control.implementationNotes }}</p>
+            </div>
+        {% else %}
+            <p style="color: var(--color-text-muted);">
+                Keine Implementierungsnotizen vorhanden.
+            </p>
+        {% endif %}
+    </div>
+
+    <div class="stats-grid mt-3" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));">
+        <div class="stat-item">
+            <strong>
+                {% if control.responsiblePerson %}
+                    {{ control.responsiblePerson }}
+                {% else %}
+                    <span style="color: var(--color-text-muted);">Nicht zugewiesen</span>
+                {% endif %}
+            </strong>
+            <span>Verantwortliche Person</span>
+        </div>
+
+        <div class="stat-item">
+            <strong>
+                {% if control.targetDate %}
+                    {{ control.targetDate|date('d.m.Y') }}
+                {% else %}
+                    <span style="color: var(--color-text-muted);">Nicht festgelegt</span>
+                {% endif %}
+            </strong>
+            <span>Zieldatum</span>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{# Metadata #}
+<div class="card">
+    <h2>Metadaten</h2>
+    <div class="stats-grid mt-2" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));">
+        <div class="stat-item">
+            <strong>{{ control.createdAt|date('d.m.Y H:i') }}</strong>
+            <span>Erstellt am</span>
+        </div>
+
+        <div class="stat-item">
+            <strong>{{ control.updatedAt|date('d.m.Y H:i') }}</strong>
+            <span>Zuletzt aktualisiert</span>
+        </div>
+    </div>
+</div>
+
+{# Action Buttons #}
+<div class="d-flex gap-2 mt-4">
+    <a href="{{ path('app_soa_edit', {id: control.id}) }}" class="btn btn-success">
+        ✏️ Control bearbeiten
+    </a>
+    <a href="{{ path('app_soa_index') }}" class="btn btn-secondary">
+        📋 Zur Übersicht
+    </a>
+</div>
+{% endblock %}

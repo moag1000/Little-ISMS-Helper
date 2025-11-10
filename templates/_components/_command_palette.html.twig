@@ -1,0 +1,43 @@
+{# Command Palette Component - Modern ⌘P Interface #}
+<div data-controller="command-palette">
+    {# Modal Backdrop #}
+    <div class="command-palette-modal" data-command-palette-target="modal">
+        <div class="command-palette-container">
+            {# Search Input #}
+            <div class="command-palette-search">
+                <i class="bi bi-search command-palette-search-icon"></i>
+                <input
+                    type="text"
+                    class="command-palette-input"
+                    placeholder="Suche nach Befehlen oder Navigation..."
+                    data-command-palette-target="input"
+                    data-action="input->command-palette#search"
+                    autocomplete="off"
+                    spellcheck="false"
+                >
+                <kbd class="command-palette-hint">ESC</kbd>
+            </div>
+
+            {# Results List #}
+            <div class="command-palette-results" data-command-palette-target="results">
+                {# Dynamically populated by Stimulus controller #}
+            </div>
+
+            {# No Results State #}
+            <div class="command-palette-no-results hidden" data-command-palette-target="noResults">
+                <i class="bi bi-search"></i>
+                <p>Keine Befehle gefunden</p>
+                <small>Versuchen Sie andere Suchbegriffe</small>
+            </div>
+
+            {# Footer with Shortcuts #}
+            <div class="command-palette-footer">
+                <div class="command-palette-shortcuts">
+                    <span><kbd>↑</kbd> <kbd>↓</kbd> Navigation</span>
+                    <span><kbd>↵</kbd> Auswählen</span>
+                    <span><kbd>ESC</kbd> Schließen</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

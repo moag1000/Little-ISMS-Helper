@@ -7,7 +7,16 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
+ * Permission Repository
+ *
+ * Repository for querying Permission entities with category-based organization.
+ *
  * @extends ServiceEntityRepository<Permission>
+ *
+ * @method Permission|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Permission|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Permission[]    findAll()
+ * @method Permission[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class PermissionRepository extends ServiceEntityRepository
 {
@@ -17,7 +26,10 @@ class PermissionRepository extends ServiceEntityRepository
     }
 
     /**
-     * Find permissions by category
+     * Find all permissions for a specific category.
+     *
+     * @param string $category Permission category (e.g., 'user', 'risk', 'asset', 'control')
+     * @return Permission[] Array of permissions sorted by action
      */
     public function findByCategory(string $category): array
     {
@@ -30,7 +42,9 @@ class PermissionRepository extends ServiceEntityRepository
     }
 
     /**
-     * Find all permissions grouped by category
+     * Find all permissions organized by category for role management UI.
+     *
+     * @return array<string, Permission[]> Associative array with categories as keys
      */
     public function findAllGroupedByCategory(): array
     {
@@ -53,7 +67,10 @@ class PermissionRepository extends ServiceEntityRepository
     }
 
     /**
-     * Find permission by name
+     * Find permission by name (e.g., 'user.view', 'risk.edit').
+     *
+     * @param string $name Permission name in format 'category.action'
+     * @return Permission|null Permission entity or null if not found
      */
     public function findByName(string $name): ?Permission
     {
@@ -61,7 +78,9 @@ class PermissionRepository extends ServiceEntityRepository
     }
 
     /**
-     * Get all unique categories
+     * Get all unique permission categories.
+     *
+     * @return string[] Array of category names sorted alphabetically
      */
     public function getCategories(): array
     {
@@ -75,7 +94,9 @@ class PermissionRepository extends ServiceEntityRepository
     }
 
     /**
-     * Get all unique actions
+     * Get all unique permission actions.
+     *
+     * @return string[] Array of action names (e.g., 'view', 'create', 'edit', 'delete') sorted alphabetically
      */
     public function getActions(): array
     {

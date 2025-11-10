@@ -1,0 +1,94 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'incident.new'|trans }} - {{ parent() }}{% endblock %}
+
+{% block body %}
+<div class="container">
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{{ path('app_incident_index') }}"><i class="bi bi-bug"></i> {{ 'nav.incidents'|trans }}</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">{{ 'incident.new'|trans }}</li>
+        </ol>
+    </nav>
+
+    <div class="page-header">
+        <h1><i class="bi bi-plus-circle"></i> {{ 'incident.new'|trans }}</h1>
+        <a href="{{ path('app_incident_index') }}" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> {{ 'common.back'|trans }}</a>
+    </div>
+
+    <div class="card">
+        <div class="card-content">
+            {{ form_start(form) }}
+                <div class="form-row">
+                    <div class="form-group">
+                        {{ form_label(form.title) }}
+                        {{ form_widget(form.title) }}
+                        {{ form_errors(form.title) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.category) }}
+                        {{ form_widget(form.category) }}
+                        {{ form_errors(form.category) }}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.description) }}
+                    {{ form_widget(form.description) }}
+                    {{ form_errors(form.description) }}
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        {{ form_label(form.severity) }}
+                        {{ form_widget(form.severity) }}
+                        {{ form_errors(form.severity) }}
+                        <small class="help-text">{{ 'incident.severity_help'|trans }}</small>
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.status) }}
+                        {{ form_widget(form.status) }}
+                        {{ form_errors(form.status) }}
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        {{ form_label(form.detectedAt) }}
+                        {{ form_widget(form.detectedAt) }}
+                        {{ form_errors(form.detectedAt) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.occurredAt) }}
+                        {{ form_widget(form.occurredAt) }}
+                        {{ form_errors(form.occurredAt) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.reportedBy) }}
+                        {{ form_widget(form.reportedBy) }}
+                        {{ form_errors(form.reportedBy) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.detectedDate) }}
+                        {{ form_widget(form.detectedDate) }}
+                        {{ form_errors(form.detectedDate) }}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.affectedSystems) }}
+                    {{ form_widget(form.affectedSystems) }}
+                    {{ form_errors(form.affectedSystems) }}
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> {{ 'incident.create'|trans }}</button>
+                    <a href="{{ path('app_incident_index') }}" class="btn btn-secondary"><i class="bi bi-x-circle"></i> {{ 'common.cancel'|trans }}</a>
+                </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>
+{% endblock %}

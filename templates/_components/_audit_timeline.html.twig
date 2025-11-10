@@ -1,0 +1,317 @@
+{# Audit Timeline Component
+   Displays audit logs in a vertical timeline format
+
+   Usage:
+   {% include '_components/_audit_timeline.html.twig' with {
+       auditLogs: logs
+   } %}
+#}
+
+<div class="audit-timeline">
+    {% if auditLogs is defined and auditLogs|length > 0 %}
+        {# Group by date #}
+        {% set groupedLogs = {} %}
+        {% for log in auditLogs %}
+            {% set dateKey = log.createdAt|date('Y-m-d') %}
+            {% set groupedLogs = groupedLogs|merge({(dateKey): (groupedLogs[dateKey]|default([]))|merge([log])}) %}
+        {% endfor %}
+
+        {% for dateKey, logs in groupedLogs %}
+        <div class="timeline-date-group">
+            <div class="timeline-date-header">
+                <i class="bi-calendar3"></i>
+                {{ logs[0].createdAt|date('d. M Y') }}
+            </div>
+
+            {% for log in logs %}
+            <div class="timeline-item">
+                <div class="timeline-marker marker-{{ log.action }}">
+                    {% if log.action == 'create' %}
+                        <i class="bi-plus-circle"></i>
+                    {% elseif log.action == 'update' %}
+                        <i class="bi-pencil"></i>
+                    {% elseif log.action == 'delete' %}
+                        <i class="bi-trash"></i>
+                    {% elseif log.action == 'view' %}
+                        <i class="bi-eye"></i>
+                    {% elseif log.action == 'export' %}
+                        <i class="bi-download"></i>
+                    {% elseif log.action == 'import' %}
+                        <i class="bi-upload"></i>
+                    {% else %}
+                        <i class="bi-circle"></i>
+                    {% endif %}
+                </div>
+                <div class="timeline-content">
+                    <div class="timeline-header">
+                        <span class="timeline-action badge-{{ log.action }}">
+                            {{ log.action|capitalize }}
+                        </span>
+                        <span class="timeline-time">
+                            <i class="bi-clock"></i> {{ log.createdAt|date('H:i:s') }}
+                        </span>
+                    </div>
+                    <div class="timeline-title">
+                        {{ log.entityType }}
+                        {% if log.entityId %}
+                            <a href="{{ path('app_audit_log_entity', {entityType: log.entityType, entityId: log.entityId}) }}"
+                               class="entity-link">
+                                #{{ log.entityId }}
+                            </a>
+                        {% endif %}
+                    </div>
+                    <div class="timeline-description">
+                        {{ log.description|default('Keine Beschreibung') }}
+                    </div>
+                    <div class="timeline-footer">
+                        <span class="timeline-user">
+                            <i class="bi-person"></i>
+                            <a href="{{ path('app_audit_log_user', {userName: log.userName}) }}">
+                                {{ log.userName }}
+                            </a>
+                        </span>
+                        <a href="{{ path('app_audit_log_detail', {id: log.id}) }}"
+                           class="timeline-detail-link">
+                            <i class="bi-info-circle"></i> Details
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="text-center text-muted py-5">
+            <i class="bi-inbox" style="font-size: 4rem; opacity: 0.3;"></i>
+            <p class="mt-3">Keine Protokolleinträge vorhanden</p>
+        </div>
+    {% endif %}
+</div>
+
+<style>
+/* Audit Timeline Styles */
+.audit-timeline {
+    padding: 1rem 0;
+}
+
+.timeline-date-group {
+    margin-bottom: 3rem;
+}
+
+.timeline-date-header {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: var(--color-primary);
+    color: white;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.875rem;
+    margin-bottom: 1.5rem;
+    margin-left: 2rem;
+}
+
+.timeline-item {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+}
+
+.timeline-item:not(:last-child)::before {
+    content: '';
+    position: absolute;
+    left: 20px;
+    top: 40px;
+    bottom: -1.5rem;
+    width: 2px;
+    background: var(--color-border);
+}
+
+.timeline-marker {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+    border: 3px solid white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.timeline-marker.marker-create {
+    background: #28a745;
+    color: white;
+}
+
+.timeline-marker.marker-update {
+    background: #ffc107;
+    color: #000;
+}
+
+.timeline-marker.marker-delete {
+    background: #dc3545;
+    color: white;
+}
+
+.timeline-marker.marker-view {
+    background: #17a2b8;
+    color: white;
+}
+
+.timeline-marker.marker-export {
+    background: #6c757d;
+    color: white;
+}
+
+.timeline-marker.marker-import {
+    background: #6f42c1;
+    color: white;
+}
+
+.timeline-content {
+    flex: 1;
+    background: white;
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    padding: 1rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.timeline-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.timeline-action {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.timeline-action.badge-create {
+    background: #d4edda;
+    color: #155724;
+}
+
+.timeline-action.badge-update {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.timeline-action.badge-delete {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.timeline-action.badge-view {
+    background: #d1ecf1;
+    color: #0c5460;
+}
+
+.timeline-action.badge-export {
+    background: #e2e3e5;
+    color: #383d41;
+}
+
+.timeline-action.badge-import {
+    background: #e7e3f3;
+    color: #4a2a7a;
+}
+
+.timeline-time {
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.timeline-title {
+    font-weight: 600;
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    color: var(--color-text);
+}
+
+.timeline-title .entity-link {
+    color: var(--color-primary);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.timeline-title .entity-link:hover {
+    text-decoration: underline;
+}
+
+.timeline-description {
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    margin-bottom: 0.75rem;
+    line-height: 1.5;
+}
+
+.timeline-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--color-border);
+}
+
+.timeline-user {
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.timeline-user a {
+    color: var(--color-primary);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.timeline-user a:hover {
+    text-decoration: underline;
+}
+
+.timeline-detail-link {
+    font-size: 0.875rem;
+    color: var(--color-primary);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.timeline-detail-link:hover {
+    text-decoration: underline;
+}
+
+/* Dark Mode Support */
+.dark-mode .timeline-content {
+    background: var(--dark-bg-elevated);
+    border-color: var(--dark-border);
+}
+
+.dark-mode .timeline-marker {
+    border-color: var(--dark-bg);
+}
+
+.dark-mode .timeline-date-header {
+    background: var(--dark-primary);
+}
+</style>

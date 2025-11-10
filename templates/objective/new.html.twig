@@ -1,0 +1,56 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Neues ISMS-Ziel - {{ parent() }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid py-4">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">Neues ISMS-Ziel erstellen</h4>
+        </div>
+        <div class="card-body">
+            {{ form_start(form) }}
+                <div class="row">
+                    <div class="col-md-8 mb-3">
+                        {{ form_row(form.title) }}
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        {{ form_row(form.category) }}
+                    </div>
+                    <div class="col-md-12 mb-3">
+                        {{ form_row(form.description) }}
+                    </div>
+                    <div class="col-md-12 mb-3">
+                        {{ form_row(form.measurableIndicators) }}
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        {{ form_row(form.targetValue) }}
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        {{ form_row(form.currentValue) }}
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        {{ form_row(form.unit) }}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        {{ form_row(form.responsiblePerson) }}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        {{ form_row(form.targetDate) }}
+                    </div>
+                    <div class="col-md-12 mb-3">
+                        {{ form_row(form.status) }}
+                    </div>
+                    <div class="col-md-12 mb-3">
+                        {{ form_row(form.progressNotes) }}
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between mt-4">
+                    <a href="{{ path('app_objective_index') }}" class="btn btn-outline-secondary">Abbrechen</a>
+                    <button type="submit" class="btn btn-primary">Ziel erstellen</button>
+                </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -22,25 +22,31 @@ security:
             provider: app_user_provider
 
             # Form login for local users
+            # Note: Symfony automatically regenerates the session on successful authentication
+            # to prevent session fixation attacks (OWASP A07:2021)
             form_login:
                 login_path: app_login
                 check_path: app_login
                 enable_csrf: true
-                default_target_path: app_home
+                # Use custom success handler for locale-aware redirects
+                success_handler: App\Security\LoginSuccessHandler
                 always_use_default_target_path: false
 
             # Logout
             logout:
                 path: app_logout
                 target: app_login
+                # Security: Invalidate session on logout (default: true)
+                invalidate_session: true
 
             # Custom authenticators for Azure OAuth and SAML
             custom_authenticators:
                 - App\Security\AzureOAuthAuthenticator
                 - App\Security\AzureSamlAuthenticator
 
-            # Entry point (what to do when authentication is required)
-            entry_point: App\Security\AzureOAuthAuthenticator
+            # Entry point: use form_login for unauthenticated users
+            # OAuth/SAML accessible via their explicit routes
+            entry_point: form_login
 
             # Remember me functionality
             remember_me:
@@ -48,8 +54,12 @@ security:
                 lifetime: 604800 # 1 week in seconds
                 path: /
                 always_remember_me: false
+                # Security: Use secure and httponly cookies
+                secure: true
+                httponly: true
+                samesite: 'strict'
 
-            # Allow user impersonation
+            # Allow user impersonation (for admins)
             switch_user: true
 
     # Role hierarchy - higher roles inherit permissions from lower roles
@@ -62,16 +72,23 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        # Public routes
-        - { path: ^/login, roles: PUBLIC_ACCESS }
+        # Public routes (security routes are now WITHOUT locale prefix)
+        - { path: ^/$, roles: PUBLIC_ACCESS }
+        - { path: ^/login$, roles: PUBLIC_ACCESS }
+        - { path: ^/logout$, roles: PUBLIC_ACCESS }
         - { path: ^/oauth, roles: PUBLIC_ACCESS }
         - { path: ^/saml, roles: PUBLIC_ACCESS }
 
-        # Admin routes
-        - { path: ^/admin, roles: ROLE_ADMIN }
+        # Defensive safeguard: Prevent locale-prefixed security routes from requiring authentication
+        # These routes should NEVER exist (SecurityController is excluded from locale routing),
+        # but if accidentally created, this ensures they remain public to prevent redirect loops
+        - { path: '^/(de|en)/(login|logout)$', roles: PUBLIC_ACCESS }
 
-        # All other routes require authentication
-        - { path: ^/, roles: ROLE_USER }
+        # Admin routes (with locale prefix) - specific locale pattern for better security
+        - { path: '^/(de|en)/admin', roles: ROLE_ADMIN }
+
+        # All other routes require authentication (with locale prefix) - specific locale pattern
+        - { path: '^/(de|en)/', roles: ROLE_USER }
 
 when@test:
     security:

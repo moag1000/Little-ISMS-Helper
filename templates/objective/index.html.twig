@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}ISMS Objectives - {{ parent() }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h2"><i class="bi bi-target"></i> ISMS Objectives</h1>
+        {% if is_granted('ROLE_ADMIN') %}
+        <a href="{{ path('app_objective_new') }}" class="btn btn-primary"><i class="bi bi-plus-circle"></i> New Objective</a>
+        {% endif %}
+    </div>
+
+    <turbo-frame id="objective-stats">
+        <div class="row mb-4">
+            <div class="col-md-3"><div class="card border-primary"><div class="card-body"><h6 class="text-muted">Total</h6><h3>{{ statistics.total }}</h3></div></div></div>
+            <div class="col-md-3"><div class="card border-info"><div class="card-body"><h6 class="text-muted">Active</h6><h3>{{ statistics.active }}</h3></div></div></div>
+            <div class="col-md-3"><div class="card border-success"><div class="card-body"><h6 class="text-muted">Achieved</h6><h3>{{ statistics.achieved }}</h3></div></div></div>
+            <div class="col-md-3"><div class="card border-warning"><div class="card-body"><h6 class="text-muted">Delayed</h6><h3>{{ statistics.delayed }}</h3></div></div></div>
+        </div>
+    </turbo-frame>
+
+    <div class="card">
+        <div class="card-header bg-primary text-white"><h5 class="mb-0">All Objectives</h5></div>
+        <div class="card-body">
+            {% if objectives|length == 0 %}
+            <div class="alert alert-info">No objectives defined yet.</div>
+            {% else %}
+            <table class="table table-hover">
+                <thead><tr><th>Title</th><th>Category</th><th>Target</th><th>Progress</th><th>Status</th><th>Actions</th></tr></thead>
+                <tbody>
+                {% for objective in objectives %}
+                <tr>
+                    <td><strong>{{ objective.title }}</strong></td>
+                    <td><span class="badge bg-secondary">{{ objective.category }}</span></td>
+                    <td>{{ objective.targetDate|date('d.m.Y') }}</td>
+                    <td>
+                        <div class="progress" style="height: 20px;">
+                            <div class="progress-bar {% if objective.progressPercentage >= 75 %}bg-success{% elseif objective.progressPercentage >= 50 %}bg-warning{% else %}bg-danger{% endif %}" 
+                                 style="width: {{ objective.progressPercentage }}%">{{ objective.progressPercentage }}%</div>
+                        </div>
+                    </td>
+                    <td><span class="badge bg-{{ objective.status == 'achieved' ? 'success' : (objective.status == 'in_progress' ? 'info' : 'warning') }}">{{ objective.status }}</span></td>
+                    <td>
+                        <a href="{{ path('app_objective_show', {id: objective.id}) }}" class="btn btn-sm btn-outline-primary"><i class="bi bi-eye"></i></a>
+                        {% if is_granted('ROLE_ADMIN') %}
+                        <a href="{{ path('app_objective_edit', {id: objective.id}) }}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-pencil"></i></a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

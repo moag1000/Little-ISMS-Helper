@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{# Security: Custom 403 Forbidden error page (prevents information disclosure) #}
+
+{% block title %}Access Denied{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+            <div class="error-template">
+                <h1 class="display-1">403</h1>
+                <h2>Access Denied</h2>
+                <div class="error-details mt-4">
+                    <p class="lead">You don't have permission to access this resource.</p>
+                </div>
+                <div class="error-actions mt-4">
+                    <a href="{{ path('app_home') }}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-home"></i> Go to Homepage
+                    </a>
+                    <a href="{{ path('app_login') }}" class="btn btn-outline-secondary btn-lg">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .error-template {
+        padding: 40px 15px;
+        text-align: center;
+    }
+    .error-template h1 {
+        font-size: 10em;
+        color: #dc3545;
+    }
+</style>
+{% endblock %}

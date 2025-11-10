@@ -95,6 +95,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 50, nullable: true)]
     private ?string $timezone = 'Europe/Berlin';
 
+    #[ORM\ManyToOne(targetEntity: Tenant::class, inversedBy: 'users')]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    private ?Tenant $tenant = null;
+
     public function __construct()
     {
         $this->customRoles = new ArrayCollection();
@@ -413,5 +417,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function isAzureUser(): bool
     {
         return in_array($this->authProvider, ['azure_oauth', 'azure_saml']);
+    }
+
+    public function getTenant(): ?Tenant
+    {
+        return $this->tenant;
+    }
+
+    public function setTenant(?Tenant $tenant): static
+    {
+        $this->tenant = $tenant;
+        return $this;
     }
 }

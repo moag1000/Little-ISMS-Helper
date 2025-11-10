@@ -1,0 +1,90 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Business Continuity Plans{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="page-header">
+        <h1>Business Continuity Plans</h1>
+        <a href="{{ path('app_bc_plan_new') }}" class="btn btn-primary">Add New BC Plan</a>
+    </div>
+
+    <p style="color: #666; margin-bottom: 2rem;">
+        ISO 22301:2019 Business Continuity Management
+    </p>
+
+    {% if overdue_tests|length > 0 %}
+    <div class="alert alert-warning">
+        <h4>⚠️ Overdue BC Plan Tests</h4>
+        <ul>
+            {% for plan in overdue_tests %}
+            <li>
+                <a href="{{ path('app_bc_plan_show', {id: plan.id}) }}">{{ plan.name }}</a>
+                - Next test: {{ plan.nextTestDate ? plan.nextTestDate|date('Y-m-d') : 'Not scheduled' }}
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    {% if overdue_reviews|length > 0 %}
+    <div class="alert alert-warning">
+        <h4>⚠️ Overdue BC Plan Reviews</h4>
+        <ul>
+            {% for plan in overdue_reviews %}
+            <li>
+                <a href="{{ path('app_bc_plan_show', {id: plan.id}) }}">{{ plan.name }}</a>
+                - Next review: {{ plan.nextReviewDate ? plan.nextReviewDate|date('Y-m-d') : 'Not scheduled' }}
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <div class="card">
+        <div class="card-header">
+            <h2>BC Plans ({{ bc_plans|length }})</h2>
+        </div>
+        <div class="card-content">
+            {% if bc_plans|length > 0 %}
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Business Process</th>
+                        <th>Owner</th>
+                        <th>Status</th>
+                        <th>Readiness</th>
+                        <th>Last Tested</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for plan in bc_plans %}
+                    <tr>
+                        <td><a href="{{ path('app_bc_plan_show', {id: plan.id}) }}">{{ plan.name }}</a></td>
+                        <td>{{ plan.businessProcess.name }}</td>
+                        <td>{{ plan.planOwner }}</td>
+                        <td><span class="badge badge-{{ plan.status }}">{{ plan.status }}</span></td>
+                        <td>
+                            {% set readiness = plan.getReadinessScore() %}
+                            <span class="badge badge-{{ readiness >= 80 ? 'success' : (readiness >= 60 ? 'warning' : 'danger') }}">
+                                {{ readiness }}%
+                            </span>
+                        </td>
+                        <td>{{ plan.lastTested ? plan.lastTested|date('Y-m-d') : 'Never' }}</td>
+                        <td>
+                            <a href="{{ path('app_bc_plan_show', {id: plan.id}) }}" class="btn btn-sm btn-secondary">View</a>
+                            <a href="{{ path('app_bc_plan_edit', {id: plan.id}) }}" class="btn btn-sm btn-primary">Edit</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p>No BC plans found. <a href="{{ path('app_bc_plan_new') }}">Create your first BC plan</a>.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

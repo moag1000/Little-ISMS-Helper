@@ -1,0 +1,167 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'workflow.title.list'|trans }} - Little ISMS Helper{% endblock %}
+
+{% block body %}
+<div class="d-flex justify-between align-center mb-4">
+    <div>
+        <h1>{{ 'workflow.title.list'|trans }}</h1>
+        <p style="color: var(--color-text-light); margin-top: var(--spacing-sm);">
+            {{ 'workflow.description.overview'|trans }}
+        </p>
+    </div>
+    <div>
+        <a href="{{ path('app_workflow_definitions') }}" class="btn btn-secondary" style="margin-right: 0.5rem;">
+            📋 {{ 'workflow.action.definitions'|trans }}
+        </a>
+        <a href="{{ path('app_workflow_new') }}" class="btn btn-success">
+            ➕ {{ 'workflow.action.create'|trans }}
+        </a>
+    </div>
+</div>
+
+{# Statistics Cards #}
+<div class="kpi-grid">
+    <div class="kpi-card">
+        <div class="icon">📊</div>
+        <div class="label">{{ 'workflow.stats.total'|trans }}</div>
+        <div>
+            <span class="value">{{ instances|length }}</span>
+        </div>
+    </div>
+
+    <div class="kpi-card">
+        <div class="icon">🔄</div>
+        <div class="label">{{ 'workflow.stats.active'|trans }}</div>
+        <div>
+            <span class="value">{{ instances|filter(i => i.status == 'active')|length }}</span>
+        </div>
+    </div>
+
+    <div class="kpi-card">
+        <div class="icon">⏳</div>
+        <div class="label">{{ 'workflow.stats.pending'|trans }}</div>
+        <div>
+            <span class="value">{{ instances|filter(i => i.status == 'pending')|length }}</span>
+        </div>
+    </div>
+
+    <div class="kpi-card">
+        <div class="icon">⚠️</div>
+        <div class="label">{{ 'workflow.stats.overdue'|trans }}</div>
+        <div>
+            <span class="value">{{ instances|filter(i => i.overdue)|length }}</span>
+        </div>
+    </div>
+</div>
+
+{# Quick Links #}
+<div class="module-grid mb-4">
+    <div class="card">
+        <div style="font-size: 2rem; margin-bottom: var(--spacing-sm);">⏳</div>
+        <h3>{{ 'workflow.section.pending'|trans }}</h3>
+        <p style="color: var(--color-text-muted); margin-top: var(--spacing-xs);">
+            {{ 'workflow.description.pending'|trans }}
+        </p>
+        <div class="mt-2">
+            <strong style="font-size: 1.5rem;">{{ instances|filter(i => i.status == 'pending')|length }}</strong>
+        </div>
+        <div class="mt-2">
+            <a href="{{ path('app_workflow_pending') }}" class="btn btn-sm">{{ 'common.view'|trans }}</a>
+        </div>
+    </div>
+
+    <div class="card">
+        <div style="font-size: 2rem; margin-bottom: var(--spacing-sm);">🔄</div>
+        <h3>{{ 'workflow.section.active'|trans }}</h3>
+        <p style="color: var(--color-text-muted); margin-top: var(--spacing-xs);">
+            {{ 'workflow.description.active'|trans }}
+        </p>
+        <div class="mt-2">
+            <strong style="font-size: 1.5rem;">{{ instances|filter(i => i.status == 'active')|length }}</strong>
+        </div>
+        <div class="mt-2">
+            <a href="{{ path('app_workflow_active') }}" class="btn btn-sm">{{ 'common.view'|trans }}</a>
+        </div>
+    </div>
+
+    <div class="card">
+        <div style="font-size: 2rem; margin-bottom: var(--spacing-sm);">⚠️</div>
+        <h3>{{ 'workflow.section.overdue'|trans }}</h3>
+        <p style="color: var(--color-text-muted); margin-top: var(--spacing-xs);">
+            {{ 'workflow.description.overdue'|trans }}
+        </p>
+        <div class="mt-2">
+            <strong style="font-size: 1.5rem; color: var(--color-danger);">{{ instances|filter(i => i.overdue)|length }}</strong>
+        </div>
+        <div class="mt-2">
+            <a href="{{ path('app_workflow_overdue') }}" class="btn btn-sm btn-danger">{{ 'common.view'|trans }}</a>
+        </div>
+    </div>
+</div>
+
+{# Workflow Instances Table #}
+<h2>{{ 'workflow.section.recent_instances'|trans }}</h2>
+
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>{{ 'workflow.field.name'|trans }}</th>
+                <th>{{ 'workflow.field.definition'|trans }}</th>
+                <th>{{ 'workflow.field.current_step'|trans }}</th>
+                <th>{{ 'workflow.field.status'|trans }}</th>
+                <th>{{ 'workflow.field.assignee'|trans }}</th>
+                <th>{{ 'workflow.field.due_date'|trans }}</th>
+                <th style="text-align: center;">{{ 'common.actions'|trans }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for instance in instances|slice(0, 20) %}
+            <tr>
+                <td><strong>{{ instance.name }}</strong></td>
+                <td>
+                    <span class="badge badge-info">{{ instance.definition.name }}</span>
+                </td>
+                <td>{{ instance.currentStep.name }}</td>
+                <td>
+                    {% set statusColors = {
+                        'pending': 'warning',
+                        'active': 'info',
+                        'completed': 'success',
+                        'cancelled': 'secondary'
+                    } %}
+                    <span class="badge badge-{{ statusColors[instance.status] ?? 'secondary' }}">
+                        {{ ('workflow.status.' ~ instance.status)|trans }}
+                    </span>
+                </td>
+                <td>{{ instance.assignee.fullName|default('-') }}</td>
+                <td>
+                    {% if instance.dueDate %}
+                        {{ instance.dueDate|date('d.m.Y') }}
+                        {% if instance.overdue %}
+                            <span class="badge badge-danger" style="margin-left: var(--spacing-xs);">
+                                {{ 'workflow.badge.overdue'|trans }}
+                            </span>
+                        {% endif %}
+                    {% else %}
+                        <span style="color: var(--color-text-muted);">-</span>
+                    {% endif %}
+                </td>
+                <td style="text-align: center;">
+                    <a href="{{ path('app_workflow_instance_show', {id: instance.id}) }}" class="btn btn-sm">
+                        👁 {{ 'common.view'|trans }}
+                    </a>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="7" style="text-align: center; padding: var(--spacing-xl); color: var(--color-text-muted);">
+                    {{ 'workflow.message.no_instances'|trans }}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
