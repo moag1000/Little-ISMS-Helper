@@ -101,8 +101,8 @@ common:
   updated_at: Updated at
   cancel: Cancel
   back: Back
-  true: true
-  false: false
+  'true': true
+  'false': false
   note: Note
   to_home: To Home Page
 asset:
@@ -589,8 +589,8 @@ ui:
   select: Select
   none: None
   all: All
-  true: true
-  false: false
+  'true': true
+  'false': false
   optional: Optional
   required: Required
   n_a: N/A
