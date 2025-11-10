@@ -8,7 +8,7 @@
 
 [![PHP Version](https://img.shields.io/badge/PHP-8.4%2B-777BB4?logo=php&logoColor=white)](https://www.php.net/)
 [![Symfony Version](https://img.shields.io/badge/Symfony-7.3-000000?logo=symfony&logoColor=white)](https://symfony.com/)
-[![License](https://img.shields.io/badge/License-Proprietary-red)](LICENSE)
+[![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](LICENSE)
 [![ISO 27001:2022](https://img.shields.io/badge/ISO-27001%3A2022-blue)](https://www.iso.org/standard/27001)
 [![Tests](https://img.shields.io/badge/Tests-122%20passing-success)](tests/)
 
@@ -645,40 +645,24 @@ Das Projekt nutzt automatisierte Tools zur Lizenzüberwachung:
 
 ## 📜 Lizenz
 
-<<<<<<< HEAD
-### ✅ Implementiert
+**GNU Affero General Public License v3.0 (AGPL-3.0)**
 
-- [x] Basis-Setup und Projektstruktur
-- [x] Alle ISMS Kernentities (Asset, Risk, Control, Incident, etc.)
-- [x] Statement of Applicability mit allen 93 Annex A Controls
-- [x] Grundlegende Controller und Views für alle Module
-- [x] KPI Dashboard mit Echtzeit-Daten
-- [x] Datenbank-Migration
-- [x] **User Authentication & Authorization** (Symfony Security + Azure AD)
-- [x] **Deployment Wizard** mit geführter Einrichtung
-- [x] **Audit Logging System** für Compliance
-- [x] **Mehrsprachigkeit** (Deutsch/Englisch)
-- [x] Business Continuity Management (BCM)
-- [x] Multi-Framework Compliance (ISO 27001, TISAX, DORA)
-- [x] Rollenbasierte Zugriffskontrolle (RBAC)
+Dieses Projekt ist unter der AGPL v3 lizenziert. Das bedeutet:
 
-### 🚧 In Planung
+✅ **Du kannst:**
+- Die Software frei nutzen, modifizieren und verteilen
+- Das Projekt forken und weiterentwickeln
+- Die Software kommerziell einsetzen
 
-- [ ] Vollständige CRUD-Operationen für alle Module
-- [ ] Formulare mit Validierung
-- [ ] Risk Assessment Matrix Visualisierung
-- [ ] Erweiterte Reporting & Export Funktionen (PDF, Excel)
-- [ ] Datei-Uploads für Nachweise und Dokumentation
-- [ ] E-Mail-Benachrichtigungen für Vorfälle und Fälligkeiten
-- [ ] REST API für Integration mit anderen Systemen
-- [ ] Multi-Tenancy Support (für MSPs)
-- [ ] Responsive Design Optimierung
-- [ ] Automatisierte Tests (Unit, Integration)
-=======
-**Proprietary** - Alle Rechte vorbehalten
->>>>>>> origin/main
+⚠️ **Du musst:**
+- Deinen Quellcode bei Modifikationen offenlegen (auch bei SaaS/Cloud-Nutzung)
+- Die gleiche Lizenz (AGPL v3) verwenden
+- Copyright-Hinweise und Nennungen beibehalten
 
-Siehe [LICENSE](LICENSE) für Details.
+🔒 **Besonderheit der AGPL:**
+Wenn du eine modifizierte Version als Netzwerkdienst (z.B. Cloud/SaaS) anbietest, musst du den Quellcode den Nutzern zur Verfügung stellen.
+
+Siehe [LICENSE](LICENSE) für den vollständigen Lizenztext.
 
 ---
 
