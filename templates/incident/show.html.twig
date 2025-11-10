@@ -196,7 +196,7 @@
                         <div class="impact-item">
                             <span class="label">{{ 'incident.field.cross_border_impact'|trans }}:</span>
                             <span class="value">
-                                {% if incident.crossBorderImpact %}
+                                {% if incident.isCrossBorderImpact %}
                                     <span class="badge bg-danger">{{ 'common.yes'|trans }}</span>
                                 {% else %}
                                     <span class="badge bg-secondary">{{ 'common.no'|trans }}</span>

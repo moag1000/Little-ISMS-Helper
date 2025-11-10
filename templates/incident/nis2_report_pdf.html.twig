@@ -205,7 +205,7 @@
             </tr>
             <tr>
                 <td><strong>Early Warning (24h)</strong></td>
-                <td>{{ incident.earlyWarningDeadline|date('d.m.Y H:i') }}</td>
+                <td>{{ incident.earlyWarningDeadline ? incident.earlyWarningDeadline|date('d.m.Y H:i') : 'N/A' }}</td>
                 <td>{{ incident.earlyWarningReportedAt ? incident.earlyWarningReportedAt|date('d.m.Y H:i') : 'Pending' }}</td>
                 <td>
                     {% if incident.earlyWarningReportedAt %}
@@ -219,7 +219,7 @@
             </tr>
             <tr>
                 <td><strong>Detailed Notification (72h)</strong></td>
-                <td>{{ incident.detailedNotificationDeadline|date('d.m.Y H:i') }}</td>
+                <td>{{ incident.detailedNotificationDeadline ? incident.detailedNotificationDeadline|date('d.m.Y H:i') : 'N/A' }}</td>
                 <td>{{ incident.detailedNotificationReportedAt ? incident.detailedNotificationReportedAt|date('d.m.Y H:i') : 'Pending' }}</td>
                 <td>
                     {% if incident.detailedNotificationReportedAt %}
@@ -233,7 +233,7 @@
             </tr>
             <tr>
                 <td><strong>Final Report (1 month)</strong></td>
-                <td>{{ incident.finalReportDeadline|date('d.m.Y H:i') }}</td>
+                <td>{{ incident.finalReportDeadline ? incident.finalReportDeadline|date('d.m.Y H:i') : 'N/A' }}</td>
                 <td>{{ incident.finalReportSubmittedAt ? incident.finalReportSubmittedAt|date('d.m.Y H:i') : 'Pending' }}</td>
                 <td>
                     {% if incident.finalReportSubmittedAt %}
@@ -255,7 +255,7 @@
         <div class="impact-grid">
             <div class="impact-row">
                 <div class="impact-cell impact-label">Cross-Border Impact</div>
-                <div class="impact-cell">{{ incident.crossBorderImpact ? 'Yes' : 'No' }}</div>
+                <div class="impact-cell">{{ incident.isCrossBorderImpact ? 'Yes' : 'No' }}</div>
             </div>
             {% if incident.affectedUsersCount %}
             <div class="impact-row">
