@@ -48,7 +48,7 @@
                 <table class="table table-hover mb-0">
                     <thead>
                         <tr>
-                            <th>{{ 'patch.field.patch_identifier'|trans }}</th>
+                            <th>{{ 'patch.field.patch_id'|trans }}</th>
                             <th>{{ 'patch.field.title'|trans }}</th>
                             <th>{{ 'patch.field.patch_type'|trans }}</th>
                             <th>{{ 'patch.field.status'|trans }}</th>
@@ -58,7 +58,7 @@
                     <tbody>
                         {% for patch in patches %}
                             <tr>
-                                <td><code>{{ patch.patchIdentifier }}</code></td>
+                                <td><code>{{ patch.patchId }}</code></td>
                                 <td><strong>{{ patch.title }}</strong></td>
                                 <td><span class="badge bg-secondary">{{ ('patch.type.' ~ patch.patchType)|trans }}</span></td>
                                 <td><span class="badge bg-info">{{ ('patch.status.' ~ patch.status)|trans }}</span></td>
