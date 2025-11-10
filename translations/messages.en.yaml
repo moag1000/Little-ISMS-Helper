@@ -295,6 +295,32 @@ audit:
     created: Audit created successfully.
     updated: Audit updated successfully.
     deleted: Audit deleted successfully.
+
+# ISMS Context (ISO 27001 Clause 4)
+context:
+  title: ISMS Context
+  field:
+    organization_name: Organization Name
+    isms_scope: ISMS Scope
+    scope_exclusions: Scope Exclusions
+    external_issues: External Issues
+    internal_issues: Internal Issues
+    interested_parties: Interested Parties
+    interested_parties_requirements: Interested Parties Requirements
+    legal_requirements: Legal Requirements
+    regulatory_requirements: Regulatory Requirements
+    contractual_obligations: Contractual Obligations
+    isms_policy: ISMS Policy
+    roles_and_responsibilities: Roles and Responsibilities
+    last_review_date: Last Review Date
+    next_review_date: Next Review Date
+  validation:
+    organization_name_required: Organization name is required.
+    name_max_length: Name may not exceed 255 characters.
+  success:
+    created: ISMS Context created successfully.
+    updated: ISMS Context updated successfully.
+
 framework: Framework
 requirement: Requirement
 soa_title: Statement of Applicability
