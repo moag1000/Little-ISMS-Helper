@@ -117,11 +117,13 @@ class RiskController extends AbstractController
     #[Route('/matrix', name: 'app_risk_matrix')]
     public function matrix(): Response
     {
+        $risks = $this->riskRepository->findAll();
         $matrixData = $this->riskMatrixService->generateMatrix();
         $statistics = $this->riskMatrixService->getRiskStatistics();
         $risksByLevel = $this->riskMatrixService->getRisksByLevel();
 
         return $this->render('risk/matrix.html.twig', [
+            'risks' => $risks,
             'matrixData' => $matrixData,
             'statistics' => $statistics,
             'risksByLevel' => $risksByLevel,
