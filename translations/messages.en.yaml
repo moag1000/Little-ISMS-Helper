@@ -1218,3 +1218,234 @@ soa:
     pdf: 'Export SoA as PDF - Professional report with all 93 controls'
   preview:
     pdf: 'Preview PDF report in browser'
+
+# Vulnerability Management (NIS2 Art. 21.2.d)
+vulnerability:
+  title: Vulnerabilities
+  new: New Vulnerability
+  edit: Edit Vulnerability
+  list: Vulnerability List
+  details: Vulnerability Details
+  empty: No vulnerabilities recorded yet.
+  field:
+    cve_id: CVE-ID
+    title: Title
+    description: Description
+    severity: Severity
+    cvss_score: CVSS Score
+    cvss_vector: CVSS Vector
+    cwe_id: CWE-ID
+    status: Status
+    affected_assets: Affected Assets
+    discovered_at: Discovered At
+    disclosed_at: Disclosed At
+    remediation_deadline: Remediation Deadline
+    exploit_available: Exploit Available
+    vendor_advisory_url: Vendor Advisory URL
+    mitigation_plan: Mitigation Plan
+    notes: Notes
+    responsible_person: Responsible Person
+  severity:
+    critical: Critical
+    high: High
+    medium: Medium
+    low: Low
+    info: Info
+  status:
+    identified: Identified
+    analyzing: Analyzing
+    patching: Patching
+    mitigated: Mitigated
+    closed: Closed
+    false_positive: False Positive
+  kpi:
+    critical: Critical Vulnerabilities
+    high: High Vulnerabilities
+    overdue: Overdue Remediations
+    total: Total
+  placeholder:
+    cve_id: e.g. CVE-2024-1234
+    title: Brief description of the vulnerability
+    description: Detailed description of the vulnerability and its impact
+    mitigation_plan: Actions to fix or mitigate
+    responsible_person: Person responsible for remediation
+  help:
+    cve_id: Common Vulnerabilities and Exposures Identifier
+    severity: Severity based on CVSS Score
+    cvss_score: CVSS Score from 0.0 to 10.0
+    cvss_vector: CVSS 3.1 Vector String
+    cwe_id: Common Weakness Enumeration ID
+    affected_assets: Assets affected by this vulnerability
+    remediation_deadline: Deadline for fixing the vulnerability
+    exploit_available: Is a public exploit available?
+  success:
+    created: Vulnerability created successfully.
+    updated: Vulnerability updated successfully.
+    deleted: Vulnerability deleted successfully.
+
+# Patch Management (NIS2 Art. 21.2.d)
+patch:
+  title: Patches
+  new: New Patch
+  edit: Edit Patch
+  list: Patch List
+  empty: No patches recorded yet.
+  field:
+    patch_identifier: Patch ID
+    title: Title
+    description: Description
+    patch_type: Patch Type
+    status: Status
+    related_vulnerabilities: Related Vulnerabilities
+    version: Version
+    vendor: Vendor
+    affected_systems: Affected Systems
+    release_date: Release Date
+    planned_deployment_date: Planned Deployment
+    actual_deployment_date: Actual Deployment
+    test_results: Test Results
+    rollback_procedure: Rollback Procedure
+    installation_instructions: Installation Instructions
+    download_url: Download URL
+    notes: Notes
+    responsible_person: Responsible Person
+  type:
+    security: Security Patch
+    bugfix: Bugfix
+    feature: Feature Update
+    critical: Critical Patch
+  status:
+    available: Available
+    tested: Tested
+    approved: Approved
+    deployed: Deployed
+    failed: Failed
+    rollback: Rolled Back
+  kpi:
+    pending: Pending Patches
+    deployed: Deployed Patches
+    total: Total
+  placeholder:
+    patch_identifier: e.g. KB5034441
+    title: Brief description of the patch
+    description: Detailed description of changes
+    vendor: Patch vendor
+    affected_systems: List of affected systems
+    test_results: Test results from test environment
+    rollback_procedure: Steps to rollback if issues occur
+    installation_instructions: Step-by-step installation guide
+    responsible_person: Person responsible for installation
+  help:
+    patch_identifier: Unique patch identifier (e.g. KB number)
+    patch_type: Type of patch
+    related_vulnerabilities: Vulnerabilities fixed by this patch
+    affected_systems: Systems where patch must be installed
+    planned_deployment_date: When should the patch be deployed?
+    test_results: Test documentation
+    rollback_procedure: Procedure to undo if problems occur
+    responsible_person: Responsible for installation and monitoring
+  success:
+    created: Patch created successfully.
+    updated: Patch updated successfully.
+    deleted: Patch deleted successfully.
+
+# MFA Token Management (NIS2 Art. 21.2.i)
+mfa_token:
+  title: MFA Tokens
+  new: New MFA Token
+  edit: Edit MFA Token
+  empty: No MFA tokens configured yet.
+  field:
+    user: User
+    token_type: Token Type
+    device_name: Device Name
+    phone_number: Phone Number
+    is_active: Active
+    is_primary: Primary Method
+    expires_at: Expires At
+  type:
+    totp: Authenticator App (TOTP)
+    webauthn: Security Key (WebAuthn/FIDO2)
+    sms: SMS Verification
+    hardware: Hardware Token
+    backup: Backup Codes
+  kpi:
+    active: Active Tokens
+  placeholder:
+    user: Select user
+    device_name: e.g. iPhone 14, YubiKey 5
+    phone_number: +49 123 456789
+  help:
+    user: User this token is assigned to
+    token_type: Type of MFA token
+    device_name: Name for the device/token
+    phone_number: For SMS-based MFA
+    is_primary: Is this the primary MFA method for the user?
+    expires_at: When does this token expire? (optional)
+  success:
+    created: MFA token created successfully.
+    updated: MFA token updated successfully.
+    deleted: MFA token deleted successfully.
+    activated: Crisis team activated successfully.
+
+# Crisis Team Management (BSI IT-Grundschutz 200-4 Ch. 4.3)
+crisis_team:
+  title: Crisis Teams
+  new: New Crisis Team
+  edit: Edit Crisis Team
+  empty: No crisis teams defined yet.
+  field:
+    team_name: Team Name
+    description: Description
+    team_type: Team Type
+    is_active: Active
+    team_leader: Team Leader
+    deputy_leader: Deputy Leader
+    primary_phone: Primary Phone
+    primary_email: Primary Email
+    meeting_location: Meeting Location
+    backup_meeting_location: Backup Meeting Location
+    virtual_meeting_url: Virtual Meeting URL
+    alert_procedures: Alert Procedures
+    decision_authority: Decision Authority
+    communication_protocols: Communication Protocols
+    training_schedule: Training Schedule
+    last_training_at: Last Training
+    next_training_at: Next Training
+    business_continuity_plans: Business Continuity Plans
+    notes: Notes
+  type:
+    operational: Operational Crisis Team
+    strategic: Strategic Crisis Team
+    technical: Technical Crisis Team
+    communication: Communication Team
+  kpi:
+    active: Active Teams
+  placeholder:
+    team_name: e.g. IT Operational Crisis Team
+    description: Tasks and responsibilities of the crisis team
+    team_leader: Select crisis team leader
+    deputy_leader: Select deputy leader
+    meeting_location: e.g. Conference Room 1, Building A
+    backup_meeting_location: e.g. Conference Room 2, Building B
+    alert_procedures: Description of alert procedure
+    decision_authority: Who can make which decisions?
+    communication_protocols: How does the crisis team communicate internally and externally?
+    training_schedule: When do trainings and exercises take place?
+  help:
+    team_name: Name of the crisis team
+    team_type: Type of crisis team according to BSI 200-4
+    team_leader: Leader of the crisis team
+    deputy_leader: Deputy in case of leader absence
+    primary_phone: Central phone number for crisis team
+    virtual_meeting_url: Teams, Zoom, etc. for virtual meetings
+    alert_procedures: How is the crisis team alerted and activated?
+    decision_authority: Authorities and escalation paths
+    communication_protocols: Internal and external communication channels
+    training_schedule: Regular trainings and exercises
+    next_training_at: When is the next training?
+    business_continuity_plans: Assigned BCPs
+  success:
+    created: Crisis team created successfully.
+    updated: Crisis team updated successfully.
+    deleted: Crisis team deleted successfully.
