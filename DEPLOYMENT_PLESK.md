@@ -302,7 +302,7 @@ Die Symfony AssetMapper-Assets wurden nicht installiert. Das `public/assets/` Ve
    ```bash
    cd /var/www/vhosts/yourdomain.com/httpdocs
 
-   # JavaScript-Dependencies installieren (lädt externe Pakete wie Bootstrap Icons!)
+   # JavaScript-Dependencies installieren (lädt externe Pakete: Stimulus, Turbo, Chart.js)
    php bin/console importmap:install
 
    # AssetMapper Assets kompilieren (KRITISCH für Produktion!)
@@ -311,18 +311,23 @@ Die Symfony AssetMapper-Assets wurden nicht installiert. Das `public/assets/` Ve
 
    **⚠️ WICHTIG - Reihenfolge beachten:**
    - `importmap:install` MUSS VOR `asset-map:compile` ausgeführt werden!
-   - `importmap:install` lädt externe Pakete (Bootstrap Icons, Chart.js) von CDNs herunter
+   - `importmap:install` lädt externe Pakete (Stimulus, Turbo, Chart.js) von jsDelivr herunter
    - `asset-map:compile` kompiliert dann ALLE Assets (inkl. externe Pakete) nach `public/assets/`
-   - Erstellt versionierte Dateinamen (z.B. app-6zxcGag.css, bootstrap-icons-KVGbixm.css)
-   - **Ohne beide Befehle fehlen CSS/JS/Icons in Produktion!**
+   - Erstellt versionierte Dateinamen (z.B. app-6zxcGag.css, stimulus-abc123.js)
+   - **Ohne beide Befehle fehlen CSS/JS in Produktion!**
+
+   **Hinweis:** Bootstrap Icons werden über CDN geladen (siehe base.html.twig), nicht über AssetMapper.
 
 3. **Verifizieren Sie, dass die Dateien erstellt wurden:**
    ```bash
    ls -la public/assets/styles/
    # Sollte Dateien wie app-HASH.css, components-HASH.css zeigen
 
-   ls -la public/assets/vendor/bootstrap-icons/font/
-   # Sollte bootstrap-icons-HASH.css und .woff/.woff2 Schriftdateien zeigen
+   ls -la public/assets/vendor/@hotwired/
+   # Sollte stimulus/ und turbo/ Verzeichnisse zeigen
+
+   ls -la public/assets/controllers/
+   # Sollte alle Stimulus Controller zeigen (theme_controller.js, search_controller.js, etc.)
    ```
 
 4. **Cache leeren:**
@@ -335,13 +340,13 @@ Die Symfony AssetMapper-Assets wurden nicht installiert. Das `public/assets/` Ve
    chmod -R 755 public/assets
    ```
 
-6. **Seite neu laden** - CSS, JS und Bootstrap Icons sollten jetzt laden!
+6. **Seite neu laden** - CSS und JS sollten jetzt laden!
 
 **Häufige Ursachen, warum Assets fehlen:**
 - `composer install` wurde mit `--no-scripts` ausgeführt
 - Post-Install-Scripts sind fehlgeschlagen (Berechtigungsprobleme)
 - Nach Git-Pull wurde `composer install` vergessen
-- **`importmap:install` wurde vergessen** → Bootstrap Icons und externe Pakete fehlen!
+- **`importmap:install` wurde vergessen** → JavaScript-Pakete (Stimulus, Turbo, Chart.js) fehlen!
 
 **Prävention:**
 Nach jedem `composer install` sollten die Post-Install-Scripts automatisch laufen:
@@ -352,121 +357,110 @@ composer run-script auto-scripts
 
 **⚠️ Spezialfall: Bootstrap Icons fehlen**
 
-**Symptome:**
-- Icons werden als leere Quadrate oder gar nicht angezeigt
-- Browser-Konsole zeigt Fehler wie:
-  ```
-  Failed to load resource: /assets/vendor/bootstrap-icons/font/bootstrap-icons-KVGbixm.css
-  ```
-- `data:application/javascript,` Fehler in der Konsole
+**UPDATE:** Bootstrap Icons werden jetzt über CDN geladen und nicht mehr über AssetMapper!
 
-**Ursache:**
-Bootstrap Icons ist ein externes Paket, das von jsDelivr heruntergeladen werden muss. Wenn `importmap:install` nicht ausgeführt wurde oder fehlgeschlagen ist, fehlt das Paket.
-
-**Lösung:**
-```bash
-# 1. Externe Pakete herunterladen (inkl. Bootstrap Icons)
-php bin/console importmap:install
-
-# 2. Alle Assets kompilieren (inkl. heruntergeladene externe Pakete)
-php bin/console asset-map:compile
-
-# 3. Prüfen, ob Bootstrap Icons installiert wurden
-ls -la public/assets/vendor/bootstrap-icons/font/
-# Sollte Dateien zeigen: bootstrap-icons-HASH.css
-
-ls -la public/assets/vendor/bootstrap-icons/font/fonts/
-# Sollte Font-Dateien zeigen: bootstrap-icons.woff, bootstrap-icons.woff2
-
-# Alternativ: Debug-Befehl verwenden
-php bin/console debug:asset-map --ext=woff2
-# Sollte bootstrap-icons .woff2 Dateien anzeigen
-
-# 4. Cache leeren
-php bin/console cache:clear --env=prod
-```
-
-**Hinweis:** Bootstrap Icons benötigt beide Befehle:
-1. `importmap:install` lädt das Paket von jsDelivr herunter
-2. `asset-map:compile` kompiliert es nach `public/assets/vendor/`
-
-**⚠️ Bekanntes Problem: Font-Dateien im `fonts/` Unterordner werden nicht kopiert**
-
-Bootstrap Icons hat diese Struktur:
-```
-bootstrap-icons/
-  font/
-    bootstrap-icons.min.css       <-- CSS mit @font-face
-    fonts/                         <-- Unterordner mit .woff/.woff2
-      bootstrap-icons.woff
-      bootstrap-icons.woff2
-```
-
-AssetMapper kopiert manchmal den `fonts/` Unterordner nicht korrekt (bekanntes GitHub Issue #52620).
-
-**Diagnose:**
-```bash
-# Prüfen Sie, ob die Font-Dateien kopiert wurden
-ls -la public/assets/vendor/bootstrap-icons/font/fonts/
-# Wenn "No such file or directory" → Fonts fehlen!
-
-# Debug-Befehl
-php bin/console debug:asset-map --ext=woff2
-# Sollte bootstrap-icons .woff2 Dateien listen
-```
-
-**Lösung A: Bootstrap Icons lokal installieren (EMPFOHLEN)**
-
-Statt über ImportMap können Sie Bootstrap Icons lokal in `assets/` installieren:
-
-```bash
-# 1. Bootstrap Icons npm-Paket herunterladen (oder von GitHub)
-mkdir -p assets/vendor/bootstrap-icons
-cd assets/vendor/bootstrap-icons
-
-# Download der neuesten Version
-wget https://github.com/twbs/icons/releases/download/v1.11.3/bootstrap-icons-1.11.3.zip
-unzip bootstrap-icons-1.11.3.zip
-mv bootstrap-icons-1.11.3/font/* .
-rm -rf bootstrap-icons-1.11.3 bootstrap-icons-1.11.3.zip
-
-# 2. Import-Pfad in assets/app.js ändern
-# Von: import 'bootstrap-icons/font/bootstrap-icons.min.css';
-# Zu:  import './vendor/bootstrap-icons/bootstrap-icons.min.css';
-
-# 3. Aus importmap.php entfernen
-# Die Zeile mit 'bootstrap-icons/font/bootstrap-icons.min.css' löschen
-
-# 4. Assets neu kompilieren
-php bin/console asset-map:compile
-```
-
-**Lösung B: Fonts manuell kopieren nach importmap:install**
-
-Falls Sie ImportMap behalten möchten:
-
-```bash
-# Nach importmap:install und asset-map:compile
-# Prüfen Sie den vendor/ Ordner und kopieren Sie Fonts manuell
-
-# Das vendor/ Verzeichnis finden (meist var/cache oder ähnlich)
-find . -path "*/vendor/bootstrap-icons/font/fonts" -type d
-
-# Fonts nach public/assets/ kopieren
-# (Pfad kann variieren, anpassen!)
-cp -r var/cache/.../vendor/bootstrap-icons/font/fonts public/assets/vendor/bootstrap-icons/font/
-```
-
-**Lösung C: CDN verwenden (Fallback)**
-
-Falls nichts funktioniert:
-
-```twig
-{# templates/base.html.twig #}
+**Aktueller Stand (seit letztem Update):**
+Bootstrap Icons werden über CDN in `templates/base.html.twig` geladen:
+```html
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 ```
 
-Und in `assets/app.js` die Zeile `import 'bootstrap-icons/...'` entfernen.
+**Warum CDN?**
+AssetMapper hat ein bekanntes Problem (GitHub Issue #52620) mit dem `fonts/` Unterordner von Bootstrap Icons. Die Font-Dateien werden nicht korrekt kopiert, was zu fehlenden Icons führt. Der CDN-Ansatz ist:
+- ✅ Zuverlässig und funktioniert sofort
+- ✅ Schnell (jsDelivr ist weltweit gecached)
+- ✅ Mit SRI-Hash gesichert
+- ✅ Kein Troubleshooting nötig
+
+**Falls Bootstrap Icons trotzdem fehlen:**
+
+1. **Prüfen Sie, ob der CDN-Link in base.html.twig vorhanden ist:**
+   ```bash
+   grep "bootstrap-icons" templates/base.html.twig
+   # Sollte den CDN-Link zeigen
+   ```
+
+2. **Prüfen Sie, ob der alte Import auskommentiert ist:**
+   ```bash
+   grep "bootstrap-icons" assets/app.js
+   # Sollte auskommentiert sein: // import 'bootstrap-icons/...
+   ```
+
+3. **Cache leeren und Assets neu kompilieren:**
+   ```bash
+   rm -rf var/cache/prod/*
+   php bin/console cache:clear --env=prod
+   php bin/console asset-map:compile
+   ```
+
+4. **Browser Cache leeren:** Strg+F5 (oder Cmd+Shift+R)
+
+**Kein Zugriff auf jsDelivr CDN?**
+Falls Ihre Server-Firewall jsDelivr blockiert, können Sie Bootstrap Icons lokal in `assets/vendor/bootstrap-icons/` installieren und den Import-Pfad in `assets/app.js` anpassen. Siehe ältere Version dieser Dokumentation für Details.
+
+### Fehler: Content Security Policy (CSP) blockiert Scripts ⚠️
+
+**Symptome:**
+- Browser-Konsole zeigt CSP-Fehler wie:
+  ```
+  Loading the script 'data:application/javascript,' violates the following
+  Content Security Policy directive: "script-src 'self' 'unsafe-inline'..."
+  ```
+- Fehler kommen von verschiedenen Seiten (z.B. `analytics:1`)
+- Source Maps (.map Dateien) werden blockiert (Warnungen, nicht kritisch)
+
+**Ursache:**
+Ein fehlerhafter JavaScript- oder CSS-Import versucht, ein Modul zu laden, das nicht existiert oder nicht aufgelöst werden kann. Dies erzeugt einen `data:application/javascript,` "URL", der von der CSP blockiert wird.
+
+**Häufigste Ursachen:**
+1. **Alte kompilierte Assets im Cache** - Nach Code-Änderungen (z.B. Bootstrap Icons Entfernung)
+2. Ein Import in `importmap.php`, der nicht existiert
+3. Ein fehlerhafter Import in einem Stimulus Controller
+4. Assets wurden nicht neu kompiliert nach einem Git-Pull
+
+**Lösung:**
+
+```bash
+cd /var/www/vhosts/yourdomain.com/httpdocs
+
+# 1. Cache VOLLSTÄNDIG löschen (WICHTIG!)
+rm -rf var/cache/prod/*
+php bin/console cache:clear --env=prod
+
+# 2. Alle Assets NEU kompilieren
+php bin/console importmap:install
+php bin/console asset-map:compile
+
+# 3. Prüfen, dass keine fehlerhaften Imports existieren
+cat public/assets/importmap.json | grep -i "data:"
+# Sollte NICHTS finden!
+
+# 4. Browser Cache leeren (Strg+F5 oder Cmd+Shift+R)
+```
+
+**Debug:**
+```bash
+# Alle JavaScript-Imports auflisten
+php bin/console debug:asset-map --ext=js
+
+# Prüfen Sie importmap.json auf Fehler
+cat public/assets/importmap.json
+
+# Suchen Sie nach CSS-Dateien, die JavaScript importieren (sollte es nicht geben!)
+grep -r "@import.*\.js" assets/styles/
+```
+
+**⚠️ Hinweis zu Source Map Warnungen:**
+
+Die Warnungen über blockierte `.map` Dateien sind **normal und unkritisch**:
+```
+Connecting to 'https://cdn.jsdelivr.net/.../bootstrap.min.css.map' violates CSP...
+Connecting to 'https://cdn.jsdelivr.net/.../chart.umd.js.map' violates CSP...
+```
+
+Source Maps sind nur für Debugging gedacht und werden in Produktion nicht benötigt. Die CSP blockiert sie korrekt aus Sicherheitsgründen. Diese Warnungen können ignoriert werden!
+
+**Kritisch ist nur:** `Loading the script 'data:application/javascript,'` → Das deutet auf einen fehlgeschlagenen Import hin!
 
 ### Fehler: JavaScript funktioniert nicht (Dark Mode, Suche, etc.) ⚠️ SEHR HÄUFIG!
 
