@@ -32,11 +32,21 @@ class RiskController extends AbstractController
         $highRisks = $this->riskRepository->findHighRisks();
         $treatmentStats = $this->riskRepository->countByTreatmentStrategy();
 
-        return $this->render('risk/index.html.twig', [
+        return $this->render('risk/index_modern.html.twig', [
             'risks' => $risks,
             'highRisks' => $highRisks,
             'treatmentStats' => $treatmentStats,
         ]);
+    }
+
+    #[Route('/export', name: 'app_risk_export')]
+    #[IsGranted('ROLE_USER')]
+    public function export(): Response
+    {
+        // Placeholder for risk export functionality
+        // Will be implemented in future phase
+        $this->addFlash('info', 'Risk export functionality coming soon.');
+        return $this->redirectToRoute('app_risk_index');
     }
 
     #[Route('/new', name: 'app_risk_new')]
