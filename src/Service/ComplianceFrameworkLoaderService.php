@@ -8,6 +8,7 @@ use App\Command\LoadNis2RequirementsCommand;
 use App\Command\LoadBsiItGrundschutzRequirementsCommand;
 use App\Command\LoadGdprRequirementsCommand;
 use App\Command\LoadIso27701RequirementsCommand;
+use App\Command\LoadIso27701v2025RequirementsCommand;
 use App\Repository\ComplianceFrameworkRepository;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\BufferedOutput;
@@ -25,6 +26,7 @@ class ComplianceFrameworkLoaderService
         private LoadBsiItGrundschutzRequirementsCommand $bsiCommand,
         private LoadGdprRequirementsCommand $gdprCommand,
         private LoadIso27701RequirementsCommand $iso27701Command,
+        private LoadIso27701v2025RequirementsCommand $iso27701v2025Command,
     ) {}
 
     /**
@@ -102,6 +104,17 @@ class ComplianceFrameworkLoaderService
                 'loaded' => in_array('ISO27701', $loadedCodes),
                 'icon' => '🔐',
             ],
+            [
+                'code' => 'ISO27701_2025',
+                'name' => 'ISO/IEC 27701:2025 - PIMS',
+                'description' => 'Privacy Information Management System - Standalone standard with AI governance (Latest)',
+                'industry' => 'all_sectors',
+                'regulatory_body' => 'ISO/IEC',
+                'mandatory' => false,
+                'version' => '2025',
+                'loaded' => in_array('ISO27701_2025', $loadedCodes),
+                'icon' => '🤖',
+            ],
         ];
     }
 
@@ -117,6 +130,7 @@ class ComplianceFrameworkLoaderService
             'BSI_GRUNDSCHUTZ' => $this->bsiCommand,
             'GDPR' => $this->gdprCommand,
             'ISO27701' => $this->iso27701Command,
+            'ISO27701_2025' => $this->iso27701v2025Command,
             default => null,
         };
 
