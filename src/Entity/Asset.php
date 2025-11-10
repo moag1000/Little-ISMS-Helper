@@ -127,11 +127,56 @@ class Asset
     #[Assert\Range(min: 1, max: 5, notInRangeMessage: 'Availability value must be between {{ min }} and {{ max }}')]
     private ?int $availabilityValue = null;
 
+    // Phase 6F: ISO 27001 Compliance Fields
+
+    /**
+     * Monetary value of the asset for risk impact calculation.
+     * ⚠️ SAFE GUARD: This field must ALWAYS be set manually by users.
+     * NEVER auto-calculate from vulnerabilityScore or other sources to prevent circular dependencies.
+     */
+    #[ORM\Column(type: Types::DECIMAL, precision: 15, scale: 2, nullable: true)]
+    #[Groups(['asset:read', 'asset:write'])]
+    #[Assert\PositiveOrZero(message: 'Monetary value must be positive or zero')]
+    private ?string $monetaryValue = null;
+
+    /**
+     * Data classification level for the asset.
+     * Values: public, internal, confidential, restricted
+     */
+    #[ORM\Column(length: 50, nullable: true)]
+    #[Groups(['asset:read', 'asset:write'])]
+    #[Assert\Choice(
+        choices: ['public', 'internal', 'confidential', 'restricted'],
+        message: 'Data classification must be one of: {{ choices }}'
+    )]
+    private ?string $dataClassification = null;
+
+    /**
+     * Acceptable Use Policy reference or description for this asset.
+     */
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['asset:read', 'asset:write'])]
+    private ?string $acceptableUsePolicy = null;
+
+    /**
+     * Specific handling instructions for this asset (supports Markdown).
+     */
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['asset:read', 'asset:write'])]
+    private ?string $handlingInstructions = null;
+
+    /**
+     * Return date for assets that need to be returned (e.g., leased equipment).
+     */
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    #[Groups(['asset:read', 'asset:write'])]
+    private ?\DateTimeInterface $returnDate = null;
+
     #[ORM\Column(length: 50)]
     #[Groups(['asset:read', 'asset:write'])]
     #[Assert\NotBlank(message: 'Status is required')]
     #[Assert\Choice(
-        choices: ['active', 'inactive', 'retired', 'disposed'],
+        choices: ['active', 'inactive', 'in_use', 'returned', 'retired', 'disposed'],
         message: 'Status must be one of: {{ choices }}'
     )]
     private ?string $status = 'active';
@@ -441,6 +486,63 @@ class Asset
         // Assets with active risks are high-risk
         $activeRisks = $this->risks->filter(fn($r) => $r->getStatus() === 'active')->count();
         return $activeRisks > 0;
+    }
+
+    // Getter/Setter for Phase 6F ISO 27001 Compliance Fields
+
+    public function getMonetaryValue(): ?string
+    {
+        return $this->monetaryValue;
+    }
+
+    public function setMonetaryValue(?string $monetaryValue): static
+    {
+        $this->monetaryValue = $monetaryValue;
+        return $this;
+    }
+
+    public function getDataClassification(): ?string
+    {
+        return $this->dataClassification;
+    }
+
+    public function setDataClassification(?string $dataClassification): static
+    {
+        $this->dataClassification = $dataClassification;
+        return $this;
+    }
+
+    public function getAcceptableUsePolicy(): ?string
+    {
+        return $this->acceptableUsePolicy;
+    }
+
+    public function setAcceptableUsePolicy(?string $acceptableUsePolicy): static
+    {
+        $this->acceptableUsePolicy = $acceptableUsePolicy;
+        return $this;
+    }
+
+    public function getHandlingInstructions(): ?string
+    {
+        return $this->handlingInstructions;
+    }
+
+    public function setHandlingInstructions(?string $handlingInstructions): static
+    {
+        $this->handlingInstructions = $handlingInstructions;
+        return $this;
+    }
+
+    public function getReturnDate(): ?\DateTimeInterface
+    {
+        return $this->returnDate;
+    }
+
+    public function setReturnDate(?\DateTimeInterface $returnDate): static
+    {
+        $this->returnDate = $returnDate;
+        return $this;
     }
 
     public function getPhysicalLocation(): ?Location
