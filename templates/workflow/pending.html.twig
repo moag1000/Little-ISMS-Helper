@@ -1,0 +1,137 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'workflow.title.pending'|trans }} - Small ISMS Helper{% endblock %}
+
+{% block body %}
+<div class="d-flex justify-between align-center mb-4">
+    <div>
+        <h1>{{ 'workflow.title.pending'|trans }}</h1>
+        <p style="color: var(--color-text-light); margin-top: var(--spacing-sm);">
+            {{ 'workflow.description.pending_detail'|trans }}
+        </p>
+    </div>
+    <div>
+        <a href="{{ path('app_workflow_index') }}" class="btn btn-secondary">
+            ← {{ 'common.back'|trans }}
+        </a>
+    </div>
+</div>
+
+{# Statistics Cards #}
+<div class="kpi-grid">
+    <div class="kpi-card">
+        <div class="icon">⏳</div>
+        <div class="label">{{ 'workflow.stats.pending'|trans }}</div>
+        <div>
+            <span class="value">{{ pendingInstances|length }}</span>
+        </div>
+    </div>
+
+    <div class="kpi-card">
+        <div class="icon">⚠️</div>
+        <div class="label">{{ 'workflow.stats.overdue'|trans }}</div>
+        <div>
+            <span class="value">{{ pendingInstances|filter(i => i.overdue)|length }}</span>
+        </div>
+    </div>
+
+    <div class="kpi-card">
+        <div class="icon">👤</div>
+        <div class="label">{{ 'workflow.stats.my_tasks'|trans }}</div>
+        <div>
+            <span class="value">{{ pendingInstances|filter(i => i.assignee and i.assignee.id == app.user.id)|length }}</span>
+        </div>
+    </div>
+
+    <div class="kpi-card">
+        <div class="icon">📅</div>
+        <div class="label">{{ 'workflow.stats.due_this_week'|trans }}</div>
+        <div>
+            {% set weekEnd = 'now'|date_modify('+7 days') %}
+            <span class="value">{{ pendingInstances|filter(i => i.dueDate and i.dueDate <= weekEnd)|length }}</span>
+        </div>
+    </div>
+</div>
+
+{# Pending Workflows Table #}
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>{{ 'workflow.field.name'|trans }}</th>
+                <th>{{ 'workflow.field.definition'|trans }}</th>
+                <th>{{ 'workflow.field.current_step'|trans }}</th>
+                <th>{{ 'workflow.field.assignee'|trans }}</th>
+                <th>{{ 'workflow.field.due_date'|trans }}</th>
+                <th>{{ 'workflow.field.priority'|trans }}</th>
+                <th style="text-align: center;">{{ 'common.actions'|trans }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for instance in pendingInstances %}
+            <tr {% if instance.overdue %}style="background-color: var(--color-danger-light);"{% endif %}>
+                <td>
+                    <strong>{{ instance.name }}</strong>
+                    {% if instance.overdue %}
+                        <span class="badge badge-danger" style="margin-left: var(--spacing-xs);">
+                            {{ 'workflow.badge.overdue'|trans }}
+                        </span>
+                    {% endif %}
+                </td>
+                <td>
+                    <span class="badge badge-info">{{ instance.definition.name }}</span>
+                </td>
+                <td>{{ instance.currentStep.name }}</td>
+                <td>
+                    {% if instance.assignee %}
+                        {{ instance.assignee.fullName }}
+                        {% if instance.assignee.id == app.user.id %}
+                            <span class="badge badge-success" style="margin-left: var(--spacing-xs);">
+                                {{ 'workflow.badge.my_task'|trans }}
+                            </span>
+                        {% endif %}
+                    {% else %}
+                        <span style="color: var(--color-text-muted);">{{ 'workflow.message.unassigned'|trans }}</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if instance.dueDate %}
+                        {{ instance.dueDate|date('d.m.Y') }}
+                        {% set daysUntilDue = (instance.dueDate.timestamp - 'now'|date('U')) / 86400 %}
+                        {% if daysUntilDue < 3 and not instance.overdue %}
+                            <span class="badge badge-warning" style="margin-left: var(--spacing-xs);">
+                                {{ 'workflow.badge.due_soon'|trans }}
+                            </span>
+                        {% endif %}
+                    {% else %}
+                        <span style="color: var(--color-text-muted);">-</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% set priorityColors = {
+                        'low': 'secondary',
+                        'medium': 'info',
+                        'high': 'warning',
+                        'critical': 'danger'
+                    } %}
+                    <span class="badge badge-{{ priorityColors[instance.priority] ?? 'secondary' }}">
+                        {{ ('workflow.priority.' ~ instance.priority)|trans }}
+                    </span>
+                </td>
+                <td style="text-align: center;">
+                    <a href="{{ path('app_workflow_instance_show', {id: instance.id}) }}" class="btn btn-sm">
+                        👁 {{ 'common.view'|trans }}
+                    </a>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="7" style="text-align: center; padding: var(--spacing-xl); color: var(--color-text-muted);">
+                    {{ 'workflow.message.no_pending'|trans }}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
