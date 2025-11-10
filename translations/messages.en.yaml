@@ -242,7 +242,7 @@ audit:
     deleted: Audit deleted successfully.
 framework: Framework
 requirement: Requirement
-soa: Statement of Applicability
+soa_title: Statement of Applicability
 bia: Business Impact Analysis
 roles:
   ROLE_USER: User
