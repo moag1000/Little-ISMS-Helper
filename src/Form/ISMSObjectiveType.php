@@ -19,32 +19,32 @@ class ISMSObjectiveType extends AbstractType
     {
         $builder
             ->add('title', TextType::class, [
-                'label' => 'Titel',
+                'label' => 'objective.field.title',
                 'attr' => [
                     'class' => 'form-control',
                     'placeholder' => 'z.B. Verbesserung der Informationssicherheit'
                 ],
                 'constraints' => [
-                    new Assert\NotBlank(['message' => 'Bitte geben Sie einen Titel ein.']),
+                    new Assert\NotBlank(['message' => 'objective.validation.title_required']),
                     new Assert\Length([
                         'max' => 255,
-                        'maxMessage' => 'Der Titel darf maximal {{ limit }} Zeichen lang sein.'
+                        'maxMessage' => 'objective.validation.title_max_length'
                     ])
                 ]
             ])
             ->add('description', TextareaType::class, [
-                'label' => 'Beschreibung',
+                'label' => 'objective.field.description',
                 'attr' => [
                     'class' => 'form-control',
                     'rows' => 4,
                     'placeholder' => 'Detaillierte Beschreibung des Ziels'
                 ],
                 'constraints' => [
-                    new Assert\NotBlank(['message' => 'Bitte geben Sie eine Beschreibung ein.'])
+                    new Assert\NotBlank(['message' => 'objective.validation.description_required'])
                 ]
             ])
             ->add('category', ChoiceType::class, [
-                'label' => 'Kategorie',
+                'label' => 'objective.field.category',
                 'choices' => [
                     'Verfügbarkeit' => 'availability',
                     'Vertraulichkeit' => 'confidentiality',
@@ -59,11 +59,11 @@ class ISMSObjectiveType extends AbstractType
                     'class' => 'form-select'
                 ],
                 'constraints' => [
-                    new Assert\NotBlank(['message' => 'Bitte wählen Sie eine Kategorie aus.'])
+                    new Assert\NotBlank(['message' => 'objective.validation.category_required'])
                 ]
             ])
             ->add('measurableIndicators', TextareaType::class, [
-                'label' => 'Messbare Indikatoren',
+                'label' => 'objective.field.measurable_indicators',
                 'required' => false,
                 'attr' => [
                     'class' => 'form-control',
@@ -72,7 +72,7 @@ class ISMSObjectiveType extends AbstractType
                 ]
             ])
             ->add('targetValue', NumberType::class, [
-                'label' => 'Zielwert',
+                'label' => 'objective.field.target_value',
                 'required' => false,
                 'attr' => [
                     'class' => 'form-control',
@@ -83,7 +83,7 @@ class ISMSObjectiveType extends AbstractType
                 'scale' => 2
             ])
             ->add('currentValue', NumberType::class, [
-                'label' => 'Aktueller Wert',
+                'label' => 'objective.field.current_value',
                 'required' => false,
                 'attr' => [
                     'class' => 'form-control',
@@ -94,7 +94,7 @@ class ISMSObjectiveType extends AbstractType
                 'scale' => 2
             ])
             ->add('unit', ChoiceType::class, [
-                'label' => 'Einheit',
+                'label' => 'objective.field.unit',
                 'required' => false,
                 'choices' => [
                     'Prozent (%)' => '%',
@@ -112,32 +112,32 @@ class ISMSObjectiveType extends AbstractType
                 ]
             ])
             ->add('responsiblePerson', TextType::class, [
-                'label' => 'Verantwortliche Person',
+                'label' => 'objective.field.responsible_person',
                 'attr' => [
                     'class' => 'form-control',
                     'placeholder' => 'Name des Verantwortlichen'
                 ],
                 'constraints' => [
-                    new Assert\NotBlank(['message' => 'Bitte geben Sie eine verantwortliche Person an.']),
+                    new Assert\NotBlank(['message' => 'objective.validation.responsible_person_required']),
                     new Assert\Length([
                         'max' => 100,
-                        'maxMessage' => 'Der Name darf maximal {{ limit }} Zeichen lang sein.'
+                        'maxMessage' => 'objective.validation.name_max_length'
                     ])
                 ]
             ])
             ->add('targetDate', DateType::class, [
-                'label' => 'Zieldatum',
+                'label' => 'objective.field.target_date',
                 'widget' => 'single_text',
                 'attr' => [
                     'class' => 'form-control',
                 ],
                 'constraints' => [
-                    new Assert\NotBlank(['message' => 'Bitte geben Sie ein Zieldatum an.'])
+                    new Assert\NotBlank(['message' => 'objective.validation.target_date_required'])
                 ],
                 'help' => 'Zieldatum für die Erreichung des Ziels'
             ])
             ->add('status', ChoiceType::class, [
-                'label' => 'Status',
+                'label' => 'objective.field.status',
                 'choices' => [
                     'Nicht begonnen' => 'not_started',
                     'In Bearbeitung' => 'in_progress',
@@ -149,11 +149,11 @@ class ISMSObjectiveType extends AbstractType
                     'class' => 'form-select'
                 ],
                 'constraints' => [
-                    new Assert\NotBlank(['message' => 'Bitte wählen Sie einen Status aus.'])
+                    new Assert\NotBlank(['message' => 'objective.validation.status_required'])
                 ]
             ])
             ->add('progressNotes', TextareaType::class, [
-                'label' => 'Fortschrittsnotizen',
+                'label' => 'objective.field.progress_notes',
                 'required' => false,
                 'attr' => [
                     'class' => 'form-control',
