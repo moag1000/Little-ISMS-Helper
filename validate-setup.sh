@@ -271,25 +271,25 @@ echo "=== AUDITLOG CONFIGURATION ==="
 echo ""
 
 # Check 14: AuditLog setUserName
-check "AuditLogListener uses setUserName()"
-if grep -q "setUserName" src/EventListener/AuditLogListener.php; then
+check "AuditLogger uses setUserName()"
+if grep -q "setUserName" src/Service/AuditLogger.php; then
     pass
 else
-    fail "AuditLogListener not using setUserName() - will cause NULL constraint error"
+    fail "AuditLogger not using setUserName() - will cause NULL constraint error"
 fi
 
 # Check 15: AuditLog fallback for CLI
-check "AuditLogListener has CLI fallback"
-if grep -q "'system'" src/EventListener/AuditLogListener.php || \
-   grep -q '"system"' src/EventListener/AuditLogListener.php; then
+check "AuditLogger has CLI fallback"
+if grep -q "'system'" src/Service/AuditLogger.php || \
+   grep -q '"system"' src/Service/AuditLogger.php; then
     pass
 else
     fail "No CLI fallback - admin user creation will fail"
 fi
 
 # Check 16: AuditLog JSON serialization
-check "AuditLogListener serializes arrays"
-if grep -q "json_encode" src/EventListener/AuditLogListener.php; then
+check "AuditLogger serializes arrays"
+if grep -q "json_encode" src/Service/AuditLogger.php; then
     pass
 else
     fail "No JSON serialization - type error will occur"
