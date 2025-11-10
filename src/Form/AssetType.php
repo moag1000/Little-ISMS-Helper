@@ -110,11 +110,59 @@ class AssetType extends AbstractType
                 ],
                 'help' => 'asset.help.availability',
             ])
+            ->add('monetaryValue', NumberType::class, [
+                'label' => 'asset.field.monetary_value',
+                'required' => false,
+                'attr' => [
+                    'step' => '0.01',
+                    'min' => '0',
+                    'placeholder' => '0.00',
+                ],
+                'help' => 'asset.help.monetary_value',
+            ])
+            ->add('dataClassification', ChoiceType::class, [
+                'label' => 'asset.field.data_classification',
+                'choices' => [
+                    'asset.classification.public' => 'public',
+                    'asset.classification.internal' => 'internal',
+                    'asset.classification.confidential' => 'confidential',
+                    'asset.classification.restricted' => 'restricted',
+                ],
+                'required' => false,
+                'placeholder' => 'asset.placeholder.data_classification',
+                'help' => 'asset.help.data_classification',
+            ])
+            ->add('acceptableUsePolicy', TextareaType::class, [
+                'label' => 'asset.field.acceptable_use_policy',
+                'required' => false,
+                'attr' => [
+                    'rows' => 3,
+                    'placeholder' => 'asset.placeholder.acceptable_use_policy',
+                ],
+                'help' => 'asset.help.acceptable_use_policy',
+            ])
+            ->add('handlingInstructions', TextareaType::class, [
+                'label' => 'asset.field.handling_instructions',
+                'required' => false,
+                'attr' => [
+                    'rows' => 4,
+                    'placeholder' => 'asset.placeholder.handling_instructions',
+                ],
+                'help' => 'asset.help.handling_instructions',
+            ])
+            ->add('returnDate', null, [
+                'label' => 'asset.field.return_date',
+                'required' => false,
+                'widget' => 'single_text',
+                'help' => 'asset.help.return_date',
+            ])
             ->add('status', ChoiceType::class, [
                 'label' => 'asset.field.status',
                 'choices' => [
                     'asset.status.active' => 'active',
                     'asset.status.inactive' => 'inactive',
+                    'asset.status.in_use' => 'in_use',
+                    'asset.status.returned' => 'returned',
                     'asset.status.retired' => 'retired',
                     'asset.status.disposed' => 'disposed',
                 ],
