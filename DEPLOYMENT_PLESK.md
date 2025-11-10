@@ -131,20 +131,32 @@ Oder via Plesk SSH Terminal:
 
 ⚠️ **WICHTIG:** Nach `composer install` sollten die folgenden Scripts automatisch ausgeführt werden:
 - `cache:clear` - Cache leeren
-- `assets:install` - Assets ins public-Verzeichnis kopieren
+- `assets:install` - Assets aus Bundles kopieren (z.B. WebProfiler)
 - `importmap:install` - JavaScript-Dependencies installieren
 
 **Falls die Scripts nicht automatisch liefen oder Fehler auftraten, führen Sie manuell aus:**
 ```bash
 php bin/console cache:clear
-php bin/console assets:install public
 php bin/console importmap:install
+
+# FÜR PRODUKTION: AssetMapper Assets kompilieren (KRITISCH!)
+php bin/console asset-map:compile
 ```
+
+**Was macht `asset-map:compile`?**
+- Nimmt alle Assets aus `assets/` (CSS, JS)
+- Erstellt versionierte Kopien in `public/assets/` (z.B. app-6zxcGag.css)
+- Generiert manifest.json und importmap.json
+- **Ohne diesen Schritt gibt es KEINE CSS/JS-Dateien in Produktion!**
 
 **Verifizieren Sie, dass die Assets installiert wurden:**
 ```bash
 ls -la public/assets/
-# Sollte Verzeichnisse wie app/, vendor/, etc. zeigen
+# Sollte Verzeichnisse wie app/, vendor/, styles/, und viele *.css/*.js Dateien zeigen
+
+# Prüfen Sie speziell:
+ls -la public/assets/styles/
+# Sollte app-HASH.css, components-HASH.css, etc. zeigen
 ```
 
 **Symptom wenn Assets fehlen:**
@@ -290,12 +302,17 @@ Die Symfony AssetMapper-Assets wurden nicht installiert. Das `public/assets/` Ve
    ```bash
    cd /var/www/vhosts/yourdomain.com/httpdocs
 
-   # AssetMapper Assets kompilieren
-   php bin/console assets:install public
-
-   # JavaScript-Dependencies installieren
+   # JavaScript-Dependencies installieren (lädt externe Pakete)
    php bin/console importmap:install
+
+   # AssetMapper Assets kompilieren (KRITISCH für Produktion!)
+   php bin/console asset-map:compile
    ```
+
+   **⚠️ WICHTIG:** `asset-map:compile` ist das Schlüsselkommando!
+   - Kompiliert alle Assets aus `assets/` → `public/assets/`
+   - Erstellt versionierte Dateinamen (z.B. app-6zxcGag.css)
+   - MUSS in Produktion ausgeführt werden!
 
 3. **Verifizieren Sie, dass die Dateien erstellt wurden:**
    ```bash
@@ -500,18 +517,30 @@ Ersetzen Sie `<plesk-user>` mit Ihrem Plesk-Benutzernamen (z.B. aus `ls -la` ers
 Nach dem ersten Deployment:
 
 ```bash
-# 1. Migrationen ausführen
+# 1. JavaScript-Dependencies installieren
+php bin/console importmap:install
+
+# 2. AssetMapper Assets kompilieren (KRITISCH!)
+php bin/console asset-map:compile
+
+# 3. Migrationen ausführen
 php bin/console doctrine:migrations:migrate --no-interaction
 
-# 2. Assets installieren
-php bin/console assets:install --symlink
+# 4. Bundle-Assets installieren (optional, für Dev-Bundles)
+php bin/console assets:install public
 
-# 3. Cache aufwärmen
+# 5. Cache aufwärmen
 php bin/console cache:warmup --env=prod
 
-# 4. Deployment Wizard aufrufen (nur beim ersten Mal)
+# 6. Deployment Wizard aufrufen (nur beim ersten Mal)
 # Öffnen Sie im Browser: https://yourdomain.com/setup
 ```
+
+**Wichtig:**
+- **Schritte 1 + 2 sind KRITISCH** - ohne diese gibt es keine CSS/JS!
+- Schritt 3 erstellt/updated die Datenbank
+- Schritt 4 ist optional (nur wenn Sie Dev-Bundles verwenden)
+- Schritt 5 verbessert die Performance
 
 ## Checkliste
 
@@ -605,9 +634,9 @@ Bei weiteren Problemen:
    - **Lösung:** In `public/.htaccess` ändern zu `Options +SymLinksIfOwnerMatch`
 
 **4. CSS/JS-Dateien laden nicht (500 Error)**
-   - **Ursache:** Assets wurden nicht installiert, `public/assets/` fehlt
+   - **Ursache:** AssetMapper-Assets wurden nicht kompiliert, `public/assets/` fehlt
    - **Symptome:** Seite lädt, aber ohne Styling
-   - **Lösung:** `php bin/console assets:install public && php bin/console importmap:install`
+   - **Lösung:** `php bin/console importmap:install && php bin/console asset-map:compile`
 
 ### Kritische Deployment-Checkliste (in dieser Reihenfolge!):
 
@@ -615,9 +644,10 @@ Bei weiteren Problemen:
 2. `.htaccess` → `Options +SymLinksIfOwnerMatch` verwenden (Plesk-kompatibel)
 3. `.env.local` → `APP_ENV=prod` + `APP_SECRET` + `DATABASE_URL` setzen
 4. Composer → `composer install --no-dev --optimize-autoloader`
-5. **Assets installieren** → `php bin/console assets:install public` + `importmap:install`
-6. Cache leeren → `php bin/console cache:clear --env=prod`
-7. Dateirechte → `chmod -R 775 var/cache var/log`
+5. **⚠️ KRITISCH: AssetMapper kompilieren** → `php bin/console asset-map:compile`
+6. Importmap installieren → `php bin/console importmap:install`
+7. Cache leeren → `php bin/console cache:clear --env=prod`
+8. Dateirechte → `chmod -R 775 var/cache var/log`
 
 **Ohne Schritt 1 (Document Root) funktioniert die gesamte Anwendung nicht!**
 Alle anderen Fehler können Sie nur beheben, wenn das Document Root korrekt konfiguriert ist.
