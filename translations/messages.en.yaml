@@ -708,6 +708,7 @@ context:
     contractual_obligations: Contractual Obligations
   link:
     edit: Edit ISMS Context
+    create_now: Create Now
   info:
     iso_clause: 'ISO 27001 Clause 4:'
     iso_description: Understanding the Organization and its Context
@@ -735,6 +736,17 @@ objective:
     status_required: Please select a status.
   link:
     new: New Goal
+    create_new: Create New Goal
+  status:
+    total: Total
+    active: Active
+    achieved: Achieved
+    delayed: Delayed
+    at_risk: At Risk
+  success:
+    created: Goal created successfully.
+    updated: Goal updated successfully.
+    deleted: Goal deleted successfully.
 business_process:
   field:
     name: Process Name
