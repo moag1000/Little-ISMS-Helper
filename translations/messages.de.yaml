@@ -106,7 +106,6 @@ asset_management:
   statistics: Statistik
   active_assets: Aktive Assets
   distribution_by_type: Verteilung nach Typ
-  detail_view_coming: Detailansicht und Erfassungsformulare werden in der nächsten Phase implementiert.
 
 # Risk Management
 risk_management:
@@ -115,7 +114,6 @@ risk_management:
   high_risks: Hochrisiken
   risk_value_threshold: Risiken mit Risikowert ≥ 12
   total_identified: Gesamt identifizierte Risiken
-  register_coming: Risikoregister und Behandlungspläne werden in der nächsten Phase implementiert.
 
 # Incident Management
 incident_management:
@@ -124,7 +122,6 @@ incident_management:
   open_incidents: Offene Vorfälle
   closed_incidents: Geschlossene Vorfälle
   total_recorded: Gesamt erfasste Vorfälle
-  detail_workflows_coming: Detaillierte Vorfallsdokumentation und Workflows werden in der nächsten Phase implementiert.
 
 # Context Management
 context_management:
@@ -135,7 +132,6 @@ context_management:
   isms_objectives: ISMS-Ziele
   active_objectives: Aktive Ziele
   no_objectives: Noch keine ISMS-Ziele definiert.
-  forms_coming: Erfassungsformulare und detaillierte Verwaltung werden in der nächsten Phase implementiert.
 
 # Audit Management
 audit_management:
@@ -143,7 +139,6 @@ audit_management:
   description: Planung und Durchführung interner ISMS-Audits gemäß ISO 27001
   planned_audits: Geplante Audits
   total_audits: Gesamt Audits
-  audit_planning_coming: Audit-Planung, Checklisten und Berichte werden in der nächsten Phase implementiert.
 
 # BCM
 bcm:
