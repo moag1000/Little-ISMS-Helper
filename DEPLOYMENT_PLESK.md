@@ -302,22 +302,27 @@ Die Symfony AssetMapper-Assets wurden nicht installiert. Das `public/assets/` Ve
    ```bash
    cd /var/www/vhosts/yourdomain.com/httpdocs
 
-   # JavaScript-Dependencies installieren (lädt externe Pakete)
+   # JavaScript-Dependencies installieren (lädt externe Pakete wie Bootstrap Icons!)
    php bin/console importmap:install
 
    # AssetMapper Assets kompilieren (KRITISCH für Produktion!)
    php bin/console asset-map:compile
    ```
 
-   **⚠️ WICHTIG:** `asset-map:compile` ist das Schlüsselkommando!
-   - Kompiliert alle Assets aus `assets/` → `public/assets/`
-   - Erstellt versionierte Dateinamen (z.B. app-6zxcGag.css)
-   - MUSS in Produktion ausgeführt werden!
+   **⚠️ WICHTIG - Reihenfolge beachten:**
+   - `importmap:install` MUSS VOR `asset-map:compile` ausgeführt werden!
+   - `importmap:install` lädt externe Pakete (Bootstrap Icons, Chart.js) von CDNs herunter
+   - `asset-map:compile` kompiliert dann ALLE Assets (inkl. externe Pakete) nach `public/assets/`
+   - Erstellt versionierte Dateinamen (z.B. app-6zxcGag.css, bootstrap-icons-KVGbixm.css)
+   - **Ohne beide Befehle fehlen CSS/JS/Icons in Produktion!**
 
 3. **Verifizieren Sie, dass die Dateien erstellt wurden:**
    ```bash
    ls -la public/assets/styles/
    # Sollte Dateien wie app-HASH.css, components-HASH.css zeigen
+
+   ls -la public/assets/vendor/bootstrap-icons/font/
+   # Sollte bootstrap-icons-HASH.css und .woff/.woff2 Schriftdateien zeigen
    ```
 
 4. **Cache leeren:**
@@ -330,12 +335,13 @@ Die Symfony AssetMapper-Assets wurden nicht installiert. Das `public/assets/` Ve
    chmod -R 755 public/assets
    ```
 
-6. **Seite neu laden** - CSS und JS sollten jetzt laden!
+6. **Seite neu laden** - CSS, JS und Bootstrap Icons sollten jetzt laden!
 
 **Häufige Ursachen, warum Assets fehlen:**
 - `composer install` wurde mit `--no-scripts` ausgeführt
 - Post-Install-Scripts sind fehlgeschlagen (Berechtigungsprobleme)
 - Nach Git-Pull wurde `composer install` vergessen
+- **`importmap:install` wurde vergessen** → Bootstrap Icons und externe Pakete fehlen!
 
 **Prävention:**
 Nach jedem `composer install` sollten die Post-Install-Scripts automatisch laufen:
@@ -343,6 +349,39 @@ Nach jedem `composer install` sollten die Post-Install-Scripts automatisch laufe
 # Prüfen Sie, ob die Scripts ausgeführt wurden
 composer run-script auto-scripts
 ```
+
+**⚠️ Spezialfall: Bootstrap Icons fehlen**
+
+**Symptome:**
+- Icons werden als leere Quadrate oder gar nicht angezeigt
+- Browser-Konsole zeigt Fehler wie:
+  ```
+  Failed to load resource: /assets/vendor/bootstrap-icons/font/bootstrap-icons-KVGbixm.css
+  ```
+- `data:application/javascript,` Fehler in der Konsole
+
+**Ursache:**
+Bootstrap Icons ist ein externes Paket, das von jsDelivr heruntergeladen werden muss. Wenn `importmap:install` nicht ausgeführt wurde oder fehlgeschlagen ist, fehlt das Paket.
+
+**Lösung:**
+```bash
+# 1. Externe Pakete herunterladen (inkl. Bootstrap Icons)
+php bin/console importmap:install
+
+# 2. Alle Assets kompilieren (inkl. heruntergeladene externe Pakete)
+php bin/console asset-map:compile
+
+# 3. Prüfen, ob Bootstrap Icons installiert wurden
+ls -la public/assets/vendor/bootstrap-icons/font/
+# Sollte Dateien zeigen: bootstrap-icons-HASH.css, bootstrap-icons.woff, etc.
+
+# 4. Cache leeren
+php bin/console cache:clear --env=prod
+```
+
+**Hinweis:** Bootstrap Icons benötigt beide Befehle:
+1. `importmap:install` lädt das Paket von jsDelivr herunter
+2. `asset-map:compile` kompiliert es nach `public/assets/vendor/`
 
 ### Fehler: "Option FollowSymlinks not allowed here" ⚠️ HÄUFIG!
 
@@ -517,7 +556,7 @@ Ersetzen Sie `<plesk-user>` mit Ihrem Plesk-Benutzernamen (z.B. aus `ls -la` ers
 Nach dem ersten Deployment:
 
 ```bash
-# 1. JavaScript-Dependencies installieren
+# 1. JavaScript-Dependencies installieren (lädt Bootstrap Icons + andere externe Pakete!)
 php bin/console importmap:install
 
 # 2. AssetMapper Assets kompilieren (KRITISCH!)
@@ -536,8 +575,14 @@ php bin/console cache:warmup --env=prod
 # Öffnen Sie im Browser: https://yourdomain.com/setup
 ```
 
-**Wichtig:**
-- **Schritte 1 + 2 sind KRITISCH** - ohne diese gibt es keine CSS/JS!
+**⚠️ WICHTIG - Reihenfolge beachten:**
+- **Schritt 1 MUSS VOR Schritt 2 ausgeführt werden!**
+  - `importmap:install` lädt externe Pakete (Bootstrap Icons, Chart.js, etc.) von jsDelivr herunter
+  - Ohne Schritt 1 fehlen Bootstrap Icons und andere externe Dependencies!
+- **Schritt 2 MUSS NACH Schritt 1 ausgeführt werden!**
+  - `asset-map:compile` kompiliert ALLE Assets (inkl. heruntergeladene externe Pakete)
+  - Erstellt versionierte Dateien in `public/assets/`
+- **Ohne Schritte 1 + 2 gibt es KEINE CSS/JS/Icons in Produktion!**
 - Schritt 3 erstellt/updated die Datenbank
 - Schritt 4 ist optional (nur wenn Sie Dev-Bundles verwenden)
 - Schritt 5 verbessert die Performance
@@ -644,10 +689,16 @@ Bei weiteren Problemen:
 2. `.htaccess` → `Options +SymLinksIfOwnerMatch` verwenden (Plesk-kompatibel)
 3. `.env.local` → `APP_ENV=prod` + `APP_SECRET` + `DATABASE_URL` setzen
 4. Composer → `composer install --no-dev --optimize-autoloader`
-5. **⚠️ KRITISCH: AssetMapper kompilieren** → `php bin/console asset-map:compile`
-6. Importmap installieren → `php bin/console importmap:install`
+5. **⚠️ KRITISCH: Externe Pakete laden** → `php bin/console importmap:install` (Bootstrap Icons!)
+6. **⚠️ KRITISCH: Assets kompilieren** → `php bin/console asset-map:compile`
 7. Cache leeren → `php bin/console cache:clear --env=prod`
 8. Dateirechte → `chmod -R 775 var/cache var/log`
+
+**⚠️ WICHTIG - Reihenfolge der Asset-Befehle:**
+- Schritt 5 (importmap:install) MUSS VOR Schritt 6 (asset-map:compile) ausgeführt werden!
+- `importmap:install` lädt Bootstrap Icons von jsDelivr herunter
+- `asset-map:compile` kompiliert dann alle Assets inkl. Bootstrap Icons
+- **Ohne beide Schritte fehlen CSS/JS/Icons komplett!**
 
 **Ohne Schritt 1 (Document Root) funktioniert die gesamte Anwendung nicht!**
 Alle anderen Fehler können Sie nur beheben, wenn das Document Root korrekt konfiguriert ist.

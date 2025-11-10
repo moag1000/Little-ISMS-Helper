@@ -147,6 +147,17 @@ if [ -d "public/assets" ]; then
         else
             check_error "public/assets/styles/ fehlt! Führen Sie aus: php bin/console asset-map:compile"
         fi
+
+        # Check for Bootstrap Icons (external dependency)
+        if [ -d "public/assets/vendor/bootstrap-icons" ]; then
+            if find public/assets/vendor/bootstrap-icons -name "*.css" -type f 2>/dev/null | grep -q .; then
+                check_success "Bootstrap Icons installiert"
+            else
+                check_error "Bootstrap Icons Verzeichnis existiert, aber keine CSS-Dateien! Führen Sie aus: php bin/console importmap:install"
+            fi
+        else
+            check_error "Bootstrap Icons fehlen! Führen Sie aus: php bin/console importmap:install && php bin/console asset-map:compile"
+        fi
     else
         check_error "public/assets/ ist leer! Führen Sie aus: php bin/console asset-map:compile"
     fi
