@@ -454,8 +454,36 @@ php bin/console asset-map:compile
 cat public/assets/importmap.json | grep -i "data:"
 # Sollte NICHTS finden!
 
-# 4. Browser Cache leeren (Strg+F5 oder Cmd+Shift+R)
+# 4. Browser Cache leeren (siehe detaillierte Anleitung unten!)
 ```
+
+**⚠️ WICHTIG: Browser Cache VOLLSTÄNDIG leeren!**
+
+Nach dem Server-seitigen Cache-Clear **MUSS** auch der Browser-Cache geleert werden. Ein einfaches `Strg+F5` reicht oft **NICHT aus**, da Browser aggressive Caching-Strategien verwenden!
+
+**Methode 1: Complete Site Data Clear (EMPFOHLEN):**
+1. Öffnen Sie Chrome DevTools (F12)
+2. Gehen Sie zum **Application** Tab
+3. Klicken Sie auf **Storage** in der Seitenleiste
+4. Klicken Sie auf **"Clear site data"** Button
+5. Schließen Sie **ALLE** Browser-Tabs der Domain
+6. Öffnen Sie die Seite neu
+
+**Methode 2: Site-spezifische Daten löschen:**
+1. Chrome: `chrome://settings/siteData`
+2. Suchen Sie nach Ihrer Domain
+3. Klicken Sie auf "Delete all shown"
+4. Schließen und neu öffnen
+
+**Methode 3: Inkognito/Private Window:**
+- Öffnen Sie die Seite im Inkognito-Modus (Strg+Shift+N)
+- Wenn es dort funktioniert → Browser-Cache ist das Problem!
+
+**Testen Sie nach dem Cache-Clear:**
+- Analytics-Seite aufrufen
+- Browser-Konsole öffnen (F12)
+- Prüfen Sie, dass **KEIN** `data:application/javascript,` Fehler erscheint
+- Nur `.map` Warnungen sind OK (siehe unten)
 
 **Debug:**
 ```bash
@@ -471,13 +499,22 @@ grep -r "@import.*\.js" assets/styles/
 
 **⚠️ Hinweis zu Source Map Warnungen:**
 
-Die Warnungen über blockierte `.map` Dateien sind **normal und unkritisch**:
-```
-Connecting to 'https://cdn.jsdelivr.net/.../bootstrap.min.css.map' violates CSP...
-Connecting to 'https://cdn.jsdelivr.net/.../chart.umd.js.map' violates CSP...
+~~Die Warnungen über blockierte `.map` Dateien sind normal...~~ **UPDATE: Source Maps sind jetzt erlaubt!**
+
+Die CSP wurde aktualisiert um Source Maps von jsDelivr zu erlauben:
+```php
+// src/EventSubscriber/SecurityHeadersSubscriber.php
+"connect-src 'self' https://cdn.jsdelivr.net"
 ```
 
-Source Maps sind nur für Debugging gedacht und werden in Produktion nicht benötigt. Die CSP blockiert sie korrekt aus Sicherheitsgründen. Diese Warnungen können ignoriert werden!
+Source Map Warnungen sollten **nicht mehr** erscheinen. Falls doch:
+```bash
+# Server-seitig: Cache leeren und Assets neu kompilieren
+php bin/console cache:clear --env=prod
+php bin/console asset-map:compile
+
+# Browser-seitig: Harten Reload machen (Strg+F5)
+```
 
 **Kritisch ist nur:** `Loading the script 'data:application/javascript,'` → Das deutet auf einen fehlgeschlagenen Import hin!
 
