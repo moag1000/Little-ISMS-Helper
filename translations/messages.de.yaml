@@ -101,8 +101,8 @@ common:
   updated_at: Aktualisiert am
   cancel: Abbrechen
   back: Zurück
-  true: Ja
-  false: Nein
+  'true': Ja
+  'false': Nein
   note: Hinweis
   to_home: Zur Startseite
 asset:
@@ -590,8 +590,8 @@ ui:
   select: Auswählen
   none: Keine
   all: Alle
-  true: Ja
-  false: Nein
+  'true': Ja
+  'false': Nein
   optional: Optional
   required: Erforderlich
   n_a: N/A
