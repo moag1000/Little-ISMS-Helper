@@ -6,6 +6,9 @@ import './stimulus_bootstrap.js';
  * which should already be in your base.html.twig.
  */
 
+// CSRF Protection - Global script (not a Stimulus controller)
+import './csrf_protection.js';
+
 // External dependencies (loaded from importmap)
 // Bootstrap Icons are loaded via CDN in base.html.twig due to AssetMapper issue #52620
 // import 'bootstrap-icons/font/bootstrap-icons.min.css';
