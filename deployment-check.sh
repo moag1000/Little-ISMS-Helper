@@ -135,11 +135,23 @@ if [ -d "public/assets" ]; then
     ASSET_COUNT=$(find public/assets -type f 2>/dev/null | wc -l)
     if [ "$ASSET_COUNT" -gt 0 ]; then
         check_success "public/assets/ existiert mit $ASSET_COUNT Dateien"
+
+        # Check for compiled AssetMapper files
+        if [ -d "public/assets/styles" ]; then
+            CSS_COUNT=$(find public/assets/styles -name "*.css" -type f 2>/dev/null | wc -l)
+            if [ "$CSS_COUNT" -gt 0 ]; then
+                check_success "AssetMapper CSS-Dateien gefunden ($CSS_COUNT Dateien)"
+            else
+                check_error "Keine CSS-Dateien! Führen Sie aus: php bin/console asset-map:compile"
+            fi
+        else
+            check_error "public/assets/styles/ fehlt! Führen Sie aus: php bin/console asset-map:compile"
+        fi
     else
-        check_error "public/assets/ ist leer! Bitte 'php bin/console assets:install public' ausführen"
+        check_error "public/assets/ ist leer! Führen Sie aus: php bin/console asset-map:compile"
     fi
 else
-    check_error "public/assets/ fehlt! KRITISCH: Bitte 'php bin/console assets:install public' ausführen"
+    check_error "public/assets/ fehlt! KRITISCH: Führen Sie aus: php bin/console asset-map:compile"
 fi
 
 # 11. Check: var/cache Verzeichnis
