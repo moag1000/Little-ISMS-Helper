@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+{% block title %}{{ 'mfa_token.title'|trans }} - {{ parent() }}{% endblock %}
+{% block body %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>{{ mfa_token.tokenTypeName }}</h1>
+        <div>
+            <a href="{{ path('app_mfa_token_edit', {id: mfa_token.id}) }}" class="btn btn-primary">{{ 'common.edit'|trans }}</a>
+            <a href="{{ path('app_mfa_token_index') }}" class="btn btn-outline-secondary">{{ 'common.back'|trans }}</a>
+        </div>
+    </div>
+    <div class="card"><div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-3">{{ 'mfa_token.field.user'|trans }}</dt><dd class="col-sm-9">{{ mfa_token.user.email }}</dd>
+            <dt class="col-sm-3">{{ 'mfa_token.field.token_type'|trans }}</dt><dd class="col-sm-9"><span class="badge bg-primary">{{ ('mfa_token.type.' ~ mfa_token.tokenType)|trans }}</span></dd>
+            <dt class="col-sm-3">{{ 'mfa_token.field.is_active'|trans }}</dt><dd class="col-sm-9"><span class="badge bg-{{ mfa_token.isActive ? 'success' : 'danger' }}">{{ mfa_token.isActive ? 'common.yes'|trans : 'common.no'|trans }}</span></dd>
+        </dl>
+    </div></div>
+</div>
+{% endblock %}
