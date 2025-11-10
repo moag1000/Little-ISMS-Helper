@@ -498,9 +498,13 @@ incident:
     final_report: Abschlussbericht (1 Monat)
     deadline: Frist
     reported: Gemeldet
+    reported_at: Gemeldet am
     overdue: Überfällig
     hours_remaining: "%hours% Stunden verbleibend"
     days_remaining: "%days% Tage verbleibend"
+  nis2_timeline:
+    title: NIS2 Meldezeitplan (Artikel 23)
+    description: 'Gemäß NIS2-Richtlinie (EU 2022/2555) müssen bedeutende Vorfälle innerhalb festgelegter Fristen gemeldet werden: Frühwarnung (24h), Detaillierte Meldung (72h), Abschlussbericht (1 Monat).'
   nis2_compliance:
     title: NIS2 Compliance Status
     not_applicable: Nicht NIS2-relevant

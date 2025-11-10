@@ -24,6 +24,13 @@
             <div class="badges">
                 <span class="badge badge-{{ incident.severity }}">{{ incident.severity|upper }}</span>
                 <span class="badge badge-status-{{ incident.status }}">{{ incident.status|upper|replace({'_': ' '}) }}</span>
+                {% if incident.requiresNis2Reporting %}
+                    {% set nis2Status = incident.nis2ComplianceStatus %}
+                    <span class="badge badge-nis2-{{ nis2Status }}">
+                        <i class="bi bi-shield-check"></i>
+                        {{ ('incident.nis2_compliance.' ~ nis2Status)|trans }}
+                    </span>
+                {% endif %}
             </div>
         </div>
         <div class="card-content">
@@ -47,6 +54,177 @@
                 </div>
                 {% endif %}
             </div>
+
+            {# NIS2 Article 23 Reporting Timeline #}
+            {% if incident.requiresNis2Reporting %}
+                <div class="detail-section nis2-timeline-section">
+                    <h3>
+                        <i class="bi bi-clock-history"></i>
+                        {{ 'incident.nis2_timeline.title'|trans }}
+                    </h3>
+                    <p class="text-muted">{{ 'incident.nis2_timeline.description'|trans }}</p>
+
+                    <div class="timeline-container">
+                        {# Stage 1: Early Warning (24h) #}
+                        <div class="timeline-stage {% if incident.earlyWarningReportedAt %}completed{% elseif incident.isEarlyWarningOverdue %}overdue{% else %}pending{% endif %}">
+                            <div class="timeline-icon">
+                                {% if incident.earlyWarningReportedAt %}
+                                    <i class="bi bi-check-circle-fill text-success"></i>
+                                {% elseif incident.isEarlyWarningOverdue %}
+                                    <i class="bi bi-exclamation-triangle-fill text-danger"></i>
+                                {% else %}
+                                    <i class="bi bi-clock-fill text-warning"></i>
+                                {% endif %}
+                            </div>
+                            <div class="timeline-content">
+                                <h4>{{ 'incident.timeline.early_warning'|trans }}</h4>
+                                <p class="timeline-deadline">
+                                    <strong>{{ 'incident.timeline.deadline'|trans }}:</strong>
+                                    {{ incident.earlyWarningDeadline|date('d.m.Y H:i') }}
+                                </p>
+                                {% if incident.earlyWarningReportedAt %}
+                                    <div class="timeline-completed">
+                                        <i class="bi bi-check-circle"></i>
+                                        {{ 'incident.timeline.reported_at'|trans }}:
+                                        <strong>{{ incident.earlyWarningReportedAt|date('d.m.Y H:i') }}</strong>
+                                    </div>
+                                {% elseif incident.isEarlyWarningOverdue %}
+                                    <div class="timeline-overdue">
+                                        <i class="bi bi-exclamation-triangle"></i>
+                                        {{ 'incident.timeline.overdue'|trans }}
+                                    </div>
+                                {% else %}
+                                    <div class="timeline-countdown">
+                                        {% set hoursRemaining = incident.hoursUntilEarlyWarningDeadline %}
+                                        <i class="bi bi-hourglass-split"></i>
+                                        {{ 'incident.timeline.hours_remaining'|trans({'%hours%': hoursRemaining}) }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        {# Stage 2: Detailed Notification (72h) #}
+                        <div class="timeline-stage {% if incident.detailedNotificationReportedAt %}completed{% elseif incident.isDetailedNotificationOverdue %}overdue{% else %}pending{% endif %}">
+                            <div class="timeline-icon">
+                                {% if incident.detailedNotificationReportedAt %}
+                                    <i class="bi bi-check-circle-fill text-success"></i>
+                                {% elseif incident.isDetailedNotificationOverdue %}
+                                    <i class="bi bi-exclamation-triangle-fill text-danger"></i>
+                                {% else %}
+                                    <i class="bi bi-clock-fill text-secondary"></i>
+                                {% endif %}
+                            </div>
+                            <div class="timeline-content">
+                                <h4>{{ 'incident.timeline.detailed_notification'|trans }}</h4>
+                                <p class="timeline-deadline">
+                                    <strong>{{ 'incident.timeline.deadline'|trans }}:</strong>
+                                    {{ incident.detailedNotificationDeadline|date('d.m.Y H:i') }}
+                                </p>
+                                {% if incident.detailedNotificationReportedAt %}
+                                    <div class="timeline-completed">
+                                        <i class="bi bi-check-circle"></i>
+                                        {{ 'incident.timeline.reported_at'|trans }}:
+                                        <strong>{{ incident.detailedNotificationReportedAt|date('d.m.Y H:i') }}</strong>
+                                    </div>
+                                {% elseif incident.isDetailedNotificationOverdue %}
+                                    <div class="timeline-overdue">
+                                        <i class="bi bi-exclamation-triangle"></i>
+                                        {{ 'incident.timeline.overdue'|trans }}
+                                    </div>
+                                {% else %}
+                                    <div class="timeline-countdown">
+                                        {% set hoursRemaining = incident.hoursUntilDetailedNotificationDeadline %}
+                                        <i class="bi bi-hourglass-split"></i>
+                                        {{ 'incident.timeline.hours_remaining'|trans({'%hours%': hoursRemaining}) }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        {# Stage 3: Final Report (1 month) #}
+                        <div class="timeline-stage {% if incident.finalReportSubmittedAt %}completed{% elseif incident.isFinalReportOverdue %}overdue{% else %}pending{% endif %}">
+                            <div class="timeline-icon">
+                                {% if incident.finalReportSubmittedAt %}
+                                    <i class="bi bi-check-circle-fill text-success"></i>
+                                {% elseif incident.isFinalReportOverdue %}
+                                    <i class="bi bi-exclamation-triangle-fill text-danger"></i>
+                                {% else %}
+                                    <i class="bi bi-clock-fill text-secondary"></i>
+                                {% endif %}
+                            </div>
+                            <div class="timeline-content">
+                                <h4>{{ 'incident.timeline.final_report'|trans }}</h4>
+                                <p class="timeline-deadline">
+                                    <strong>{{ 'incident.timeline.deadline'|trans }}:</strong>
+                                    {{ incident.finalReportDeadline|date('d.m.Y H:i') }}
+                                </p>
+                                {% if incident.finalReportSubmittedAt %}
+                                    <div class="timeline-completed">
+                                        <i class="bi bi-check-circle"></i>
+                                        {{ 'incident.timeline.reported_at'|trans }}:
+                                        <strong>{{ incident.finalReportSubmittedAt|date('d.m.Y H:i') }}</strong>
+                                    </div>
+                                {% elseif incident.isFinalReportOverdue %}
+                                    <div class="timeline-overdue">
+                                        <i class="bi bi-exclamation-triangle"></i>
+                                        {{ 'incident.timeline.overdue'|trans }}
+                                    </div>
+                                {% else %}
+                                    <div class="timeline-countdown">
+                                        {% set daysRemaining = incident.daysUntilFinalReportDeadline %}
+                                        <i class="bi bi-hourglass-split"></i>
+                                        {{ 'incident.timeline.days_remaining'|trans({'%days%': daysRemaining}) }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    {# NIS2 Impact Assessment #}
+                    <div class="nis2-impact-grid">
+                        {% if incident.nis2Category %}
+                            <div class="impact-item">
+                                <span class="label">{{ 'incident.field.nis2_category'|trans }}:</span>
+                                <span class="value">{{ ('incident.nis2_category.' ~ incident.nis2Category)|trans }}</span>
+                            </div>
+                        {% endif %}
+                        <div class="impact-item">
+                            <span class="label">{{ 'incident.field.cross_border_impact'|trans }}:</span>
+                            <span class="value">
+                                {% if incident.crossBorderImpact %}
+                                    <span class="badge bg-danger">{{ 'common.yes'|trans }}</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">{{ 'common.no'|trans }}</span>
+                                {% endif %}
+                            </span>
+                        </div>
+                        {% if incident.affectedUsersCount %}
+                            <div class="impact-item">
+                                <span class="label">{{ 'incident.field.affected_users_count'|trans }}:</span>
+                                <span class="value"><strong>{{ incident.affectedUsersCount|number_format }}</strong></span>
+                            </div>
+                        {% endif %}
+                        {% if incident.estimatedFinancialImpact %}
+                            <div class="impact-item">
+                                <span class="label">{{ 'incident.field.estimated_financial_impact'|trans }}:</span>
+                                <span class="value"><strong>{{ incident.estimatedFinancialImpact|number_format(2) }} EUR</strong></span>
+                            </div>
+                        {% endif %}
+                        {% if incident.nationalAuthorityNotified %}
+                            <div class="impact-item">
+                                <span class="label">{{ 'incident.field.national_authority_notified'|trans }}:</span>
+                                <span class="value">{{ incident.nationalAuthorityNotified }}</span>
+                            </div>
+                        {% endif %}
+                        {% if incident.authorityReferenceNumber %}
+                            <div class="impact-item">
+                                <span class="label">{{ 'incident.field.authority_reference_number'|trans }}:</span>
+                                <span class="value"><code>{{ incident.authorityReferenceNumber }}</code></span>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
 
             {% if incident.description %}
                 <div class="detail-section">
@@ -94,11 +272,179 @@
 </div>
 
 <style>
-.badges { display: flex; gap: 0.5rem; }
+.badges {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
 .badge-status-reported { background: #3b82f6; }
 .badge-status-in_investigation { background: #f59e0b; }
 .badge-status-in_resolution { background: #8b5cf6; }
 .badge-status-resolved { background: #10b981; }
 .badge-status-closed { background: #6b7280; }
+
+/* NIS2 Compliance Status Badges */
+.badge-nis2-not_applicable { background: #6b7280; }
+.badge-nis2-compliant { background: #10b981; }
+.badge-nis2-overdue { background: #dc2626; animation: pulse 2s infinite; }
+.badge-nis2-awaiting_early_warning { background: #f59e0b; }
+.badge-nis2-awaiting_detailed { background: #3b82f6; }
+.badge-nis2-awaiting_final { background: #8b5cf6; }
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+/* NIS2 Timeline Section */
+.nis2-timeline-section {
+    background: linear-gradient(135deg, #f8fafc 0%, #e0f2fe 100%);
+    border-left: 4px solid #3b82f6;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    border-radius: 8px;
+}
+
+.nis2-timeline-section h3 {
+    color: #1e40af;
+    margin-bottom: 0.5rem;
+}
+
+.nis2-timeline-section .text-muted {
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+}
+
+.timeline-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin: 1.5rem 0;
+}
+
+.timeline-stage {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+    background: white;
+    border-radius: 8px;
+    border: 2px solid #e5e7eb;
+    transition: all 0.3s ease;
+}
+
+.timeline-stage.completed {
+    border-color: #10b981;
+    background: #f0fdf4;
+}
+
+.timeline-stage.overdue {
+    border-color: #dc2626;
+    background: #fef2f2;
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+}
+
+.timeline-stage.pending {
+    border-color: #3b82f6;
+    background: #eff6ff;
+}
+
+.timeline-icon {
+    font-size: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 3rem;
+}
+
+.timeline-content {
+    flex: 1;
+}
+
+.timeline-content h4 {
+    margin: 0 0 0.5rem 0;
+    color: #1f2937;
+    font-size: 1.1rem;
+}
+
+.timeline-deadline {
+    font-size: 0.9rem;
+    color: #6b7280;
+    margin: 0.5rem 0;
+}
+
+.timeline-completed {
+    padding: 0.5rem;
+    background: #dcfce7;
+    border-radius: 4px;
+    color: #166534;
+    font-weight: 500;
+}
+
+.timeline-overdue {
+    padding: 0.5rem;
+    background: #fee2e2;
+    border-radius: 4px;
+    color: #991b1b;
+    font-weight: 600;
+    animation: pulse 2s infinite;
+}
+
+.timeline-countdown {
+    padding: 0.5rem;
+    background: #fef3c7;
+    border-radius: 4px;
+    color: #92400e;
+    font-weight: 500;
+}
+
+/* NIS2 Impact Grid */
+.nis2-impact-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 2px solid #e5e7eb;
+}
+
+.impact-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.impact-item .label {
+    font-size: 0.85rem;
+    color: #6b7280;
+    font-weight: 500;
+}
+
+.impact-item .value {
+    font-size: 1rem;
+    color: #1f2937;
+}
+
+.impact-item code {
+    background: #f3f4f6;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    color: #1f2937;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .timeline-stage {
+        flex-direction: column;
+    }
+
+    .timeline-icon {
+        align-self: flex-start;
+    }
+
+    .nis2-impact-grid {
+        grid-template-columns: 1fr;
+    }
+}
 </style>
 {% endblock %}
