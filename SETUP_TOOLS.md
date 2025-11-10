@@ -5,13 +5,22 @@
 
 ## Overview
 
-This project provides three complementary scripts for database setup and validation:
+This project provides complementary scripts for database setup, validation, and compliance reporting:
+
+### Database Management
 
 | Script | Purpose | When to Use |
 |--------|---------|-------------|
 | `validate-setup.sh` | Pre-flight validation | Before creating database |
 | `create-database.sh` | Create fresh database | First-time setup |
 | `reset-database.sh` | Reset existing database | After migration errors |
+
+### License Compliance
+
+| Script | Purpose | When to Use |
+|--------|---------|-------------|
+| `license-report.sh` | Generate license report | Before releases, compliance audits |
+| `bin/license-report.js` | Core license analysis | Called by wrapper script |
 
 ---
 
@@ -334,6 +343,281 @@ Run isms:load-annex-a-controls? (Y/n) y
 
 ---
 
+## 4. license-report.sh
+
+**License compliance reporting tool**
+
+### Purpose
+Generates a comprehensive license report for all project dependencies, analyzing commercial usability and compliance requirements.
+
+### Features
+- ✅ Analyzes PHP dependencies (Composer)
+- ✅ Analyzes JavaScript dependencies (Symfony ImportMap)
+- ✅ Tracks manually included packages
+- ✅ Evaluates commercial use permissions
+- ✅ Identifies problematic licenses
+- ✅ Generates detailed compliance report
+- ✅ Provides actionable recommendations
+
+### Usage
+```bash
+chmod +x license-report.sh
+./license-report.sh
+```
+
+### What It Analyzes
+
+**1. Composer Packages (PHP)**
+- Reads from `composer.lock`
+- Extracts license information
+- Validates commercial use rights
+
+**2. ImportMap Packages (JavaScript)**
+- Reads from `importmap.php`
+- Maps packages to known licenses
+- Checks commercial compatibility
+
+**3. Manual Packages**
+- CDN-loaded libraries (marked.js)
+- Bundled components (FOSJsRoutingBundle)
+- Custom attribution tracking
+
+### License Classifications
+
+| Status | Icon | Description | Commercial Use |
+|--------|------|-------------|----------------|
+| **Erlaubt** | ✅ | Permissive (MIT, BSD, Apache-2.0) | Yes, with attribution |
+| **Eingeschränkt** | ⚠️ | Weak copyleft (MPL-2.0, EPL, CC-BY) | Yes, with conditions |
+| **Copyleft** | 🔄 | Strong copyleft (GPL/LGPL/AGPL) | Yes, source disclosure required |
+| **Nicht erlaubt** | ❌ | Non-commercial (NC licenses) | No |
+| **Unbekannt** | ❓ | No/unclear license | Manual review required |
+
+### Output
+
+**Report Location:** `docs/reports/license-report.md`
+
+**Report Sections:**
+1. **Executive Summary**
+   - Overall compliance status
+   - Risk assessment
+   - Key findings
+
+2. **Statistics Table**
+   - Packages by license type
+   - Counts per ecosystem
+   - Total compliance metrics
+
+3. **Problematic Packages**
+   - Unknown licenses (requires review)
+   - Restricted licenses (attribution needed)
+   - Recommendations for each
+
+4. **License Distribution**
+   - Most common licenses
+   - Frequency analysis
+   - Compliance percentages
+
+5. **Action Items**
+   - Immediate actions
+   - Short-term tasks
+   - Long-term recommendations
+
+6. **Detailed Package Lists**
+   - PHP packages (collapsible)
+   - JavaScript packages (collapsible)
+   - Manual packages
+   - Full license information
+
+7. **Compliance Guide**
+   - License type explanations
+   - Attribution requirements
+   - Copyleft obligations
+
+### Example Output
+```
+╔════════════════════════════════════════════════════════════════╗
+║          Little ISMS Helper - Lizenzbericht                   ║
+╚════════════════════════════════════════════════════════════════╝
+
+→ Analysiere Abhängigkeiten...
+
+✅ Lizenzbericht erstellt: docs/reports/license-report.md
+📊 Statistik: 127 Pakete analysiert
+   - 122 erlaubt
+   - 3 eingeschränkt
+   - 0 copyleft
+   - 0 nicht erlaubt
+   - 2 unbekannt
+
+╔════════════════════════════════════════════════════════════════╗
+║                  ✓ Erfolgreich abgeschlossen!                 ║
+╚════════════════════════════════════════════════════════════════╝
+
+→ Bericht verfügbar unter: docs/reports/license-report.md
+```
+
+### When to Use
+
+**Before Major Releases:**
+```bash
+./license-report.sh
+# Review docs/reports/license-report.md
+# Address any unknown/restricted licenses
+```
+
+**During Compliance Audits:**
+```bash
+./license-report.sh
+# Share report with legal team
+# Document compliance measures
+```
+
+**After Adding Dependencies:**
+```bash
+composer require some/package
+./license-report.sh
+# Verify new package license
+```
+
+**Regular Compliance Checks:**
+```bash
+# Monthly/quarterly review
+./license-report.sh
+# Track license changes
+# Update NOTICE file if needed
+```
+
+### Integration with CI/CD
+
+Add to your CI/CD pipeline to catch license issues early:
+
+```yaml
+# .github/workflows/license-check.yml
+name: License Compliance
+
+on: [pull_request]
+
+jobs:
+  license-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+      - name: Generate License Report
+        run: |
+          chmod +x license-report.sh
+          ./license-report.sh
+      - name: Check for problematic licenses
+        run: |
+          if grep -q "nicht erlaubt\|Unbekannt" docs/reports/license-report.md; then
+            echo "⚠️ Problematic licenses found!"
+            exit 1
+          fi
+      - name: Upload Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: license-report
+          path: docs/reports/license-report.md
+```
+
+### Compliance Workflow
+
+**1. Generate Report:**
+```bash
+./license-report.sh
+```
+
+**2. Review Findings:**
+```bash
+# View report
+cat docs/reports/license-report.md
+
+# Or open in browser
+open docs/reports/license-report.md
+```
+
+**3. Address Issues:**
+- **Unknown licenses:** Research package, contact maintainer, or replace
+- **Restricted licenses:** Ensure attribution is in place
+- **Copyleft:** Verify compliance with disclosure requirements
+- **Non-commercial:** Remove from commercial projects
+
+**4. Create NOTICE File:**
+```bash
+# Extract attributions from report
+# Create docs/NOTICE.md with required attributions
+```
+
+**5. Update Documentation:**
+```bash
+# Add license compliance section to README
+# Document known license requirements
+```
+
+### Troubleshooting
+
+**"Node.js ist nicht installiert"**
+```bash
+# Install Node.js
+# Ubuntu/Debian:
+curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+sudo apt-get install -y nodejs
+
+# macOS:
+brew install node
+```
+
+**"Composer ist nicht installiert"**
+```bash
+# Install Composer
+curl -sS https://getcomposer.org/installer | php
+sudo mv composer.phar /usr/local/bin/composer
+```
+
+**"composer.lock nicht gefunden"**
+```bash
+# Install dependencies first
+composer install
+```
+
+**"Keine Schreibrechte für docs/reports/"**
+```bash
+# Create directory and set permissions
+mkdir -p docs/reports
+chmod -R 775 docs/reports
+```
+
+### Customization
+
+**Adding Manual Packages:**
+
+Edit `bin/license-report.js` and add to the `manualPackages` array:
+
+```javascript
+const manualPackages = [
+  {
+    name: 'your-package',
+    version: '1.0.0',
+    licenses: ['MIT'],
+    evaluation: {
+      status: 'allowed',
+      note: 'Permissive Lizenz erlaubt kommerzielle Nutzung'
+    },
+    type: 'CDN',
+    homepage: 'https://github.com/example/package',
+    description: 'Package description',
+    copyright: 'Copyright (c) 2025 Example'
+  }
+];
+```
+
+**Adjusting License Classifications:**
+
+Modify the `evaluateLicense()` function in `bin/license-report.js` to adjust how licenses are categorized.
+
+---
+
 ## Recommended Workflow
 
 ### First-Time Setup
@@ -343,6 +627,9 @@ Run isms:load-annex-a-controls? (Y/n) y
 
 # 2. Create database (if validation passed)
 ./create-database.sh
+
+# 3. Generate license compliance report
+./license-report.sh
 ```
 
 ### After Migration Errors
@@ -351,11 +638,27 @@ Run isms:load-annex-a-controls? (Y/n) y
 ./reset-database.sh
 ```
 
+### Before Production Release
+```bash
+# 1. Run all validations
+./validate-setup.sh
+
+# 2. Generate fresh license report
+./license-report.sh
+
+# 3. Review compliance
+cat docs/reports/license-report.md
+
+# 4. Address any issues found
+# 5. Create/update NOTICE file with attributions
+```
+
 ### CI/CD Pipeline
 ```bash
 # In your CI/CD script
 ./validate-setup.sh || exit 1
 ./create-database.sh --non-interactive  # (if implemented)
+./license-report.sh
 ```
 
 ---
@@ -478,10 +781,19 @@ export AUTO_CONFIRM="yes"
 - **ENTITY_TABLE_MAPPING.md** - Maps all entities to database tables
 - **SETUP_VALIDATION.md** - Original setup validation report
 - **README.md** - Main project documentation with setup instructions
+- **docs/reports/license-report.md** - Generated license compliance report (create with `./license-report.sh`)
 
 ---
 
 ## Version History
+
+### Version 1.1 (2025-11-10)
+- Added license compliance reporting tool
+- New: `license-report.sh` for generating license reports
+- New: `bin/license-report.js` for license analysis
+- Analyzes Composer, ImportMap, and manual packages
+- Comprehensive compliance documentation
+- CI/CD integration examples
 
 ### Version 1.0 (2025-11-07)
 - Initial release
@@ -493,5 +805,5 @@ export AUTO_CONFIRM="yes"
 ---
 
 **Status:** ✅ Production Ready
-**Last Updated:** 2025-11-07
-**Tested On:** PHP 8.2+, Symfony 7.3, MySQL 8.0, PostgreSQL 16, SQLite 3
+**Last Updated:** 2025-11-10
+**Tested On:** PHP 8.2+, Symfony 7.3, MySQL 8.0, PostgreSQL 16, SQLite 3, Node.js 18+
