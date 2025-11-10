@@ -31,7 +31,7 @@ class UserType extends AbstractType
         $builder
             // Basic Information
             ->add('firstName', TextType::class, [
-                'label' => 'Vorname',
+                'label' => 'user.field.first_name',
                 'required' => true,
                 'attr' => ['class' => 'form-control'],
                 'constraints' => [
@@ -43,7 +43,7 @@ class UserType extends AbstractType
                 ],
             ])
             ->add('lastName', TextType::class, [
-                'label' => 'Nachname',
+                'label' => 'user.field.last_name',
                 'required' => true,
                 'attr' => ['class' => 'form-control'],
                 'constraints' => [
@@ -55,7 +55,7 @@ class UserType extends AbstractType
                 ],
             ])
             ->add('email', EmailType::class, [
-                'label' => 'E-Mail',
+                'label' => 'user.field.email',
                 'required' => true,
                 'attr' => ['class' => 'form-control'],
                 'help' => 'Wird als Benutzername verwendet',
@@ -65,24 +65,24 @@ class UserType extends AbstractType
                 ],
             ])
             ->add('department', TextType::class, [
-                'label' => 'Abteilung',
+                'label' => 'user.field.department',
                 'required' => false,
                 'attr' => ['class' => 'form-control'],
             ])
             ->add('jobTitle', TextType::class, [
-                'label' => 'Position',
+                'label' => 'user.field.job_title',
                 'required' => false,
                 'attr' => ['class' => 'form-control'],
             ])
             ->add('phoneNumber', TelType::class, [
-                'label' => 'Telefonnummer',
+                'label' => 'user.field.phone_number',
                 'required' => false,
                 'attr' => ['class' => 'form-control'],
             ])
 
             // Authentication
             ->add('plainPassword', PasswordType::class, [
-                'label' => 'Passwort',
+                'label' => 'user.field.password',
                 'mapped' => false,
                 'required' => !$isEdit,
                 'attr' => ['class' => 'form-control'],
@@ -99,7 +99,7 @@ class UserType extends AbstractType
 
             // Roles & Permissions
             ->add('roles', ChoiceType::class, [
-                'label' => 'Systemrollen',
+                'label' => 'user.field.system_roles',
                 'choices' => [
                     'ROLE_USER - Standard Benutzer' => 'ROLE_USER',
                     'ROLE_AUDITOR - Auditor (Leserechte)' => 'ROLE_AUDITOR',
@@ -114,7 +114,7 @@ class UserType extends AbstractType
                 'help' => 'Systemrollen definieren grundlegende Zugriffsrechte',
             ])
             ->add('customRoles', EntityType::class, [
-                'label' => 'Benutzerdefinierte Rollen',
+                'label' => 'user.field.custom_roles',
                 'class' => Role::class,
                 'choice_label' => function (Role $role) {
                     return $role->getName() . ' - ' . $role->getDescription();
@@ -127,14 +127,14 @@ class UserType extends AbstractType
 
             // Status
             ->add('isActive', CheckboxType::class, [
-                'label' => 'Aktiv',
+                'label' => 'user.field.active',
                 'required' => false,
                 'data' => $isEdit ? null : true, // Default active for new users
                 'help' => 'Nur aktive Benutzer können sich anmelden',
                 'attr' => ['class' => 'form-check-input'],
             ])
             ->add('isVerified', CheckboxType::class, [
-                'label' => 'E-Mail verifiziert',
+                'label' => 'user.field.email_verified',
                 'required' => false,
                 'help' => 'Gibt an, ob die E-Mail-Adresse bestätigt wurde',
                 'attr' => ['class' => 'form-check-input'],

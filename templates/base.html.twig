@@ -158,6 +158,20 @@
     {# Keyboard Shortcuts Help #}
     {% include '_components/_keyboard_shortcuts.html.twig' %}
 
+    {# Global translations for JavaScript #}
+    <script>
+        window.translations = {
+            dashboard: {
+                settings_imported: "{{ 'dashboard.success.settings_imported'|trans|raw }}",
+                import_failed: "{{ 'dashboard.error.import_failed'|trans|raw }}"
+            },
+            preferences: {
+                imported: "{{ 'preferences.success.imported'|trans|raw }}",
+                import_failed: "{{ 'preferences.error.import_failed'|trans|raw }}"
+            }
+        };
+    </script>
+
     {% block javascripts %}
         {% block importmap %}{{ importmap('app') }}{% endblock %}
     {% endblock %}

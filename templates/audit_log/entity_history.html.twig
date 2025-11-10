@@ -1,31 +1,31 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Entitätsverlauf - Small ISMS Helper{% endblock %}
+{% block title %}{{ 'entity_history.title'|trans }} - {{ 'app.title'|trans }}{% endblock %}
 
 {% block body %}
-<h1>Entitätsverlauf</h1>
+<h1>{{ 'entity_history.title'|trans }}</h1>
 
 <p>
-    <a href="{{ path('app_audit_log_index') }}" style="color: #007bff; text-decoration: none;">« Zurück zur Übersicht</a>
+    <a href="{{ path('app_audit_log_index') }}" style="color: #007bff; text-decoration: none;">« {{ 'common.back_to_overview'|trans }}</a>
 </p>
 
 <div class="info-box">
     <h3>{{ entityType }} #{{ entityId }}</h3>
-    <p><strong>Anzahl Einträge:</strong> {{ auditLogs|length }}</p>
+    <p><strong>{{ 'entity_history.entry_count'|trans }}</strong> {{ auditLogs|length }}</p>
 </div>
 
 {% if auditLogs|length > 0 %}
 <div style="margin-top: 2rem;">
-    <h2>Verlauf</h2>
+    <h2>{{ 'entity_history.section'|trans }}</h2>
 
     <table class="table" style="width: 100%; border-collapse: collapse; margin-top: 1rem;">
         <thead>
             <tr style="background: #f0f0f0;">
-                <th style="padding: 0.75rem; text-align: left; border: 1px solid #ddd;">Zeitstempel</th>
-                <th style="padding: 0.75rem; text-align: left; border: 1px solid #ddd;">Aktion</th>
-                <th style="padding: 0.75rem; text-align: left; border: 1px solid #ddd;">Benutzer</th>
-                <th style="padding: 0.75rem; text-align: left; border: 1px solid #ddd;">Beschreibung</th>
-                <th style="padding: 0.75rem; text-align: left; border: 1px solid #ddd;">Details</th>
+                <th style="padding: 0.75rem; text-align: left; border: 1px solid #ddd;">{{ 'audit_log.field.timestamp'|trans }}</th>
+                <th style="padding: 0.75rem; text-align: left; border: 1px solid #ddd;">{{ 'audit_log.field.action'|trans }}</th>
+                <th style="padding: 0.75rem; text-align: left; border: 1px solid #ddd;">{{ 'audit_log.field.user'|trans }}</th>
+                <th style="padding: 0.75rem; text-align: left; border: 1px solid #ddd;">{{ 'audit_log.field.description'|trans }}</th>
+                <th style="padding: 0.75rem; text-align: left; border: 1px solid #ddd;">{{ 'common.details'|trans }}</th>
             </tr>
         </thead>
         <tbody>
@@ -49,7 +49,7 @@
                 <td style="padding: 0.75rem; border: 1px solid #ddd;">
                     <a href="{{ path('app_audit_log_detail', {id: log.id}) }}"
                        style="color: #007bff; text-decoration: none;">
-                        Details anzeigen
+                        {{ 'entity_history.show_details'|trans }}
                     </a>
                 </td>
             </tr>
@@ -59,7 +59,7 @@
 </div>
 {% else %}
 <div class="info-box" style="margin-top: 2rem;">
-    <p>Keine Protokolleinträge für diese Entität gefunden.</p>
+    <p>{{ 'entity_history.no_entries'|trans }}</p>
 </div>
 {% endif %}
 
