@@ -1,32 +1,32 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Change Requests{% endblock %}
+{% block title %}{{ 'change_request.title'|trans }}{% endblock %}
 
 {% block body %}
 <div class="container">
     <div class="page-header">
-        <h1>ISMS Change Management</h1>
-        <a href="{{ path('app_change_request_new') }}" class="btn btn-primary">Create Change Request</a>
+        <h1>{{ 'change_request.page.title'|trans }}</h1>
+        <a href="{{ path('app_change_request_new') }}" class="btn btn-primary">{{ 'change_request.action.create'|trans }}</a>
     </div>
 
     {% if statistics %}
     <div class="info-box">
-        <h3>Statistics</h3>
+        <h3>{{ 'change_request.statistics.title'|trans }}</h3>
         <div class="stats-grid">
             <div class="stat-item">
-                <span class="stat-label">Total Change Requests:</span>
+                <span class="stat-label">{{ 'change_request.statistics.total'|trans }}</span>
                 <span class="stat-value">{{ statistics.total }}</span>
             </div>
             <div class="stat-item">
-                <span class="stat-label">Pending Approval:</span>
+                <span class="stat-label">{{ 'change_request.statistics.pending_approval'|trans }}</span>
                 <span class="stat-value warning">{{ statistics.pending_approval }}</span>
             </div>
             <div class="stat-item">
-                <span class="stat-label">In Implementation:</span>
+                <span class="stat-label">{{ 'change_request.statistics.in_implementation'|trans }}</span>
                 <span class="stat-value">{{ statistics.in_implementation }}</span>
             </div>
             <div class="stat-item">
-                <span class="stat-label">Overdue:</span>
+                <span class="stat-label">{{ 'change_request.statistics.overdue'|trans }}</span>
                 <span class="stat-value danger">{{ statistics.overdue }}</span>
             </div>
         </div>
@@ -35,7 +35,7 @@
 
     {% if pending_approval|length > 0 %}
     <div class="alert alert-info">
-        <h4>📋 Pending Approval</h4>
+        <h4>📋 {{ 'change_request.alert.pending_approval'|trans }}</h4>
         <ul>
             {% for change in pending_approval %}
             <li>
@@ -49,7 +49,7 @@
 
     {% if overdue|length > 0 %}
     <div class="alert alert-danger">
-        <h4>🚨 Overdue Change Requests</h4>
+        <h4>🚨 {{ 'change_request.alert.overdue'|trans }}</h4>
         <ul>
             {% for change in overdue %}
             <li>
@@ -62,21 +62,21 @@
 
     <div class="card">
         <div class="card-header">
-            <h2>Change Requests ({{ change_requests|length }})</h2>
+            <h2>{{ 'change_request.list.title'|trans({'count': change_requests|length}) }}</h2>
         </div>
         <div class="card-content">
             {% if change_requests|length > 0 %}
             <table class="data-table">
                 <thead>
                     <tr>
-                        <th>Change #</th>
-                        <th>Title</th>
-                        <th>Type</th>
-                        <th>Priority</th>
-                        <th>Status</th>
-                        <th>Complexity</th>
-                        <th>Requested</th>
-                        <th>Actions</th>
+                        <th>{{ 'change_request.table.change_number'|trans }}</th>
+                        <th>{{ 'change_request.table.title'|trans }}</th>
+                        <th>{{ 'change_request.table.type'|trans }}</th>
+                        <th>{{ 'change_request.table.priority'|trans }}</th>
+                        <th>{{ 'change_request.table.status'|trans }}</th>
+                        <th>{{ 'change_request.table.complexity'|trans }}</th>
+                        <th>{{ 'change_request.table.requested'|trans }}</th>
+                        <th>{{ 'change_request.table.actions'|trans }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -90,15 +90,15 @@
                         <td>{{ change.getComplexityScore() }}</td>
                         <td>{{ change.requestedDate|date('Y-m-d') }}</td>
                         <td>
-                            <a href="{{ path('app_change_request_show', {id: change.id}) }}" class="btn btn-sm btn-secondary">View</a>
-                            <a href="{{ path('app_change_request_edit', {id: change.id}) }}" class="btn btn-sm btn-primary">Edit</a>
+                            <a href="{{ path('app_change_request_show', {id: change.id}) }}" class="btn btn-sm btn-secondary">{{ 'change_request.action.view'|trans }}</a>
+                            <a href="{{ path('app_change_request_edit', {id: change.id}) }}" class="btn btn-sm btn-primary">{{ 'change_request.action.edit'|trans }}</a>
                         </td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
             {% else %}
-            <p>No change requests found. <a href="{{ path('app_change_request_new') }}">Create your first change request</a>.</p>
+            <p>{{ 'change_request.empty.message'|trans }} <a href="{{ path('app_change_request_new') }}">{{ 'change_request.empty.create_first'|trans }}</a>.</p>
             {% endif %}
         </div>
     </div>
