@@ -620,7 +620,7 @@ supplier:
   not_scheduled: Not scheduled
   risk_score: Risk Score
   list:
-    title: 'Suppliers ({{ count }})'
+    title: 'Suppliers (%count%)'
   table:
     name: Name
     service_provided: Service Provided
@@ -672,7 +672,7 @@ interested_party:
     title: High Importance Parties
   engagement_score: Engagement Score
   list:
-    title: 'Interested Parties ({{ count }})'
+    title: 'Interested Parties (%count%)'
   table:
     name: Name
     type: Type
@@ -751,7 +751,7 @@ change_request:
     pending_approval: Pending Approval
     overdue: Overdue Change Requests
   list:
-    title: 'Change Requests ({{ count }})'
+    title: 'Change Requests (%count%)'
   table:
     change_number: 'Change #'
     title: Title
