@@ -90,6 +90,78 @@
                     <p>Next Review: {{ risk.reviewDate|date('d.m.Y') }}</p>
                 {% endif %}
             </div>
+
+            {# Data Reuse: Risk Owner #}
+            {% if risk.riskOwner is defined and risk.riskOwner %}
+                <div class="detail-section">
+                    <h3>Risk Owner</h3>
+                    <p><strong>{{ risk.riskOwner.fullName }}</strong> ({{ risk.riskOwner.email }})</p>
+                </div>
+            {% endif %}
+
+            {# Data Reuse: Mitigating Controls #}
+            {% if risk.controls is defined and risk.controls|length > 0 %}
+                <div class="detail-section">
+                    <h3>Mitigating Controls ({{ risk.controls|length }})</h3>
+                    <div class="controls-list">
+                        {% for control in risk.controls %}
+                            <div class="control-item">
+                                <strong>{{ control.controlId }}</strong>: {{ control.name }}
+                                <span class="badge badge-{{ control.implementationStatus }}">
+                                    {{ control.implementationStatus|upper }}
+                                </span>
+                                <small>({{ control.implementationPercentage }}%)</small>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+
+            {# Data Reuse: Realized Risks (Incidents) #}
+            {% if risk.incidents is defined and risk.incidents|length > 0 %}
+                <div class="detail-section">
+                    <h3>Realization History ({{ risk.incidents|length }} incidents)</h3>
+                    <div class="alert alert-warning">
+                        <strong>⚠ This risk has been realized {{ risk.incidents|length }} time(s).</strong>
+                        Consider reviewing probability assessment.
+                    </div>
+                    <div class="incidents-list">
+                        {% for incident in risk.incidents %}
+                            <div class="incident-item">
+                                <strong>{{ incident.title }}</strong>
+                                <span class="badge badge-severity-{{ incident.severity }}">
+                                    {{ incident.severity|upper }}
+                                </span>
+                                <small>{{ incident.detectedAt|date('Y-m-d') }}</small>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+
+            {# Data Reuse: Asset Information #}
+            {% if risk.asset is defined and risk.asset %}
+                <div class="detail-section">
+                    <h3>Affected Asset</h3>
+                    <div class="asset-info">
+                        <strong>{{ risk.asset.name }}</strong>
+                        <p>Type: {{ risk.asset.assetType }}</p>
+                        {% if risk.asset.monetaryValue %}
+                            <p>Monetary Value: €{{ risk.asset.monetaryValue }}</p>
+                            <div class="alert alert-info">
+                                <small>💡 Impact calculation can be derived from asset monetary value</small>
+                            </div>
+                        {% endif %}
+                        {% if risk.asset.dataClassification %}
+                            <p>Classification:
+                                <span class="badge badge-classification-{{ risk.asset.dataClassification }}">
+                                    {{ risk.asset.dataClassification|upper }}
+                                </span>
+                            </p>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
         </div>
     </div>
 </div>
@@ -130,5 +202,28 @@
 .risk-level-critical { background: #dc2626; }
 .risk-components { font-size: 0.9rem; color: #666; }
 .risk-level-text { margin-top: 1rem; font-size: 1.1rem; }
+/* Data Reuse Styles */
+.controls-list, .incidents-list { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 1rem; }
+.control-item, .incident-item {
+    padding: 0.75rem;
+    background: #f9fafb;
+    border-left: 3px solid #3b82f6;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.alert { padding: 1rem; border-radius: 4px; margin: 1rem 0; }
+.alert-warning { background: #fef3c7; border-left: 4px solid #f59e0b; color: #92400e; }
+.alert-info { background: #dbeafe; border-left: 4px solid #3b82f6; color: #1e40af; }
+.asset-info { padding: 1rem; background: #f9fafb; border-radius: 4px; }
+.badge-severity-critical { background: #7f1d1d; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; }
+.badge-severity-high { background: #ef4444; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; }
+.badge-severity-medium { background: #f59e0b; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; }
+.badge-severity-low { background: #10b981; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; }
+.badge-classification-public { background: #10b981; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; }
+.badge-classification-internal { background: #3b82f6; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; }
+.badge-classification-confidential { background: #f59e0b; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; }
+.badge-classification-restricted { background: #ef4444; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; }
 </style>
 {% endblock %}
