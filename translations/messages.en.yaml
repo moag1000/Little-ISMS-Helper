@@ -533,6 +533,37 @@ field:
   department: Department
 supplier:
   title: Supplier Management
+  page:
+    title: Supplier Management
+  action:
+    add_new: Add New Supplier
+    view: View
+    edit: Edit
+  statistics:
+    title: Statistics
+    total: Total Suppliers
+    critical: Critical Suppliers
+    overdue_assessments: Overdue Assessments
+    non_compliant: Non-Compliant
+  alert:
+    overdue_assessments: Overdue Security Assessments
+    non_compliant: Non-Compliant Suppliers
+  next_assessment: Next assessment
+  not_scheduled: Not scheduled
+  risk_score: Risk Score
+  list:
+    title: 'Suppliers ({{ count }})'
+  table:
+    name: Name
+    service_provided: Service Provided
+    criticality: Criticality
+    status: Status
+    risk_score: Risk Score
+    iso27001: ISO 27001
+    actions: Actions
+  empty:
+    message: No suppliers found.
+    add_first: Add your first supplier
   contact_person: Contact Person
   field:
     contact_person: Contact Person
