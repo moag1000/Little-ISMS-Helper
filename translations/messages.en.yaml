@@ -609,8 +609,42 @@ workflow:
     cancelled: Workflow instance cancelled.
     no_active_workflow: No active workflow found for this entity.
 change_request:
+  title: Change Requests
+  page:
+    title: ISMS Change Management
+  action:
+    create: Create Change Request
+    view: View
+    edit: Edit
+  statistics:
+    title: Statistics
+    total: Total Change Requests
+    pending_approval: Pending Approval
+    in_implementation: In Implementation
+    overdue: Overdue
+  alert:
+    pending_approval: Pending Approval
+    overdue: Overdue Change Requests
+  list:
+    title: 'Change Requests ({{ count }})'
+  table:
+    change_number: 'Change #'
+    title: Title
+    type: Type
+    priority: Priority
+    status: Status
+    complexity: Complexity
+    requested: Requested
+    actions: Actions
+  empty:
+    message: No change requests found.
+    create_first: Create your first change request
   details:
     title: Change Request Details
+  success:
+    created: Change request created successfully.
+    updated: Change request updated successfully.
+    deleted: Change request deleted successfully.
 business_continuity_plan:
   field:
     name: Plan Name

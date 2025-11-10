@@ -611,8 +611,42 @@ workflow:
     cancelled: Workflow-Instanz abgebrochen.
     no_active_workflow: Kein aktiver Workflow für diese Entität gefunden.
 change_request:
+  title: Änderungsanträge
+  page:
+    title: ISMS Change Management
+  action:
+    create: Änderungsantrag erstellen
+    view: Ansehen
+    edit: Bearbeiten
+  statistics:
+    title: Statistiken
+    total: Gesamtzahl Änderungsanträge
+    pending_approval: Warten auf Genehmigung
+    in_implementation: In Umsetzung
+    overdue: Überfällig
+  alert:
+    pending_approval: Warten auf Genehmigung
+    overdue: Überfällige Änderungsanträge
+  list:
+    title: 'Änderungsanträge ({{ count }})'
+  table:
+    change_number: 'Änderungs-Nr.'
+    title: Titel
+    type: Typ
+    priority: Priorität
+    status: Status
+    complexity: Komplexität
+    requested: Angefordert
+    actions: Aktionen
+  empty:
+    message: Keine Änderungsanträge gefunden.
+    create_first: Erstellen Sie Ihren ersten Änderungsantrag
   details:
     title: Änderungsantragsdetails
+  success:
+    created: Änderungsantrag erfolgreich erstellt.
+    updated: Änderungsantrag erfolgreich aktualisiert.
+    deleted: Änderungsantrag erfolgreich gelöscht.
 business_continuity_plan:
   field:
     name: Planname
