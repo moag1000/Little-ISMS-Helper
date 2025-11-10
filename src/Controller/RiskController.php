@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route('/risk')]
 class RiskController extends AbstractController
@@ -19,7 +20,8 @@ class RiskController extends AbstractController
     public function __construct(
         private RiskRepository $riskRepository,
         private EntityManagerInterface $entityManager,
-        private RiskMatrixService $riskMatrixService
+        private RiskMatrixService $riskMatrixService,
+        private TranslatorInterface $translator
     ) {}
 
     #[Route('/', name: 'app_risk_index')]
@@ -49,7 +51,7 @@ class RiskController extends AbstractController
             $this->entityManager->persist($risk);
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Risk created successfully.');
+            $this->addFlash('success', $this->translator->trans('risk.success.created'));
             return $this->redirectToRoute('app_risk_show', ['id' => $risk->getId()]);
         }
 
@@ -78,7 +80,7 @@ class RiskController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Risk updated successfully.');
+            $this->addFlash('success', $this->translator->trans('risk.success.updated'));
             return $this->redirectToRoute('app_risk_show', ['id' => $risk->getId()]);
         }
 
@@ -96,7 +98,7 @@ class RiskController extends AbstractController
             $this->entityManager->remove($risk);
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Risk deleted successfully.');
+            $this->addFlash('success', $this->translator->trans('risk.success.deleted'));
         }
 
         return $this->redirectToRoute('app_risk_index');

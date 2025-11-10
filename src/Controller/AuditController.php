@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route('/audit')]
 class AuditController extends AbstractController
@@ -21,7 +22,8 @@ class AuditController extends AbstractController
         private InternalAuditRepository $auditRepository,
         private EntityManagerInterface $entityManager,
         private PdfExportService $pdfService,
-        private ExcelExportService $excelService
+        private ExcelExportService $excelService,
+        private TranslatorInterface $translator
     ) {}
 
     #[Route('/', name: 'app_audit_index')]
@@ -48,7 +50,7 @@ class AuditController extends AbstractController
             $this->entityManager->persist($audit);
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Audit created successfully.');
+            $this->addFlash('success', $this->translator->trans('audit.success.created'));
             return $this->redirectToRoute('app_audit_show', ['id' => $audit->getId()]);
         }
 
@@ -76,7 +78,7 @@ class AuditController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Audit updated successfully.');
+            $this->addFlash('success', $this->translator->trans('audit.success.updated'));
             return $this->redirectToRoute('app_audit_show', ['id' => $audit->getId()]);
         }
 
@@ -94,7 +96,7 @@ class AuditController extends AbstractController
             $this->entityManager->remove($audit);
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Audit deleted successfully.');
+            $this->addFlash('success', $this->translator->trans('audit.success.deleted'));
         }
 
         return $this->redirectToRoute('app_audit_index');

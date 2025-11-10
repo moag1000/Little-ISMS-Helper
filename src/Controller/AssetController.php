@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route('/asset')]
 class AssetController extends AbstractController
@@ -21,7 +22,8 @@ class AssetController extends AbstractController
         private AssetRepository $assetRepository,
         private ProtectionRequirementService $protectionRequirementService,
         private BusinessProcessRepository $businessProcessRepository,
-        private EntityManagerInterface $entityManager
+        private EntityManagerInterface $entityManager,
+        private TranslatorInterface $translator
     ) {}
 
     #[Route('/', name: 'app_asset_index')]
@@ -64,7 +66,7 @@ class AssetController extends AbstractController
             $this->entityManager->persist($asset);
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Asset created successfully.');
+            $this->addFlash('success', $this->translator->trans('asset.success.created'));
             return $this->redirectToRoute('app_asset_show', ['id' => $asset->getId()]);
         }
 
@@ -98,7 +100,7 @@ class AssetController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Asset updated successfully.');
+            $this->addFlash('success', $this->translator->trans('asset.success.updated'));
             return $this->redirectToRoute('app_asset_show', ['id' => $asset->getId()]);
         }
 
@@ -116,7 +118,7 @@ class AssetController extends AbstractController
             $this->entityManager->remove($asset);
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Asset deleted successfully.');
+            $this->addFlash('success', $this->translator->trans('asset.success.deleted'));
         }
 
         return $this->redirectToRoute('app_asset_index');

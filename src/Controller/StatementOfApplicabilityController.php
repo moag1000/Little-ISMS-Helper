@@ -9,13 +9,15 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route('/soa')]
 class StatementOfApplicabilityController extends AbstractController
 {
     public function __construct(
         private ControlRepository $controlRepository,
-        private EntityManagerInterface $entityManager
+        private EntityManagerInterface $entityManager,
+        private TranslatorInterface $translator
     ) {}
 
     #[Route('/', name: 'app_soa_index')]
@@ -70,7 +72,7 @@ class StatementOfApplicabilityController extends AbstractController
 
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Control erfolgreich aktualisiert.');
+            $this->addFlash('success', $this->translator->trans('control.success.updated'));
 
             return $this->redirectToRoute('app_soa_show', ['id' => $control->getId()]);
         }

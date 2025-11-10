@@ -266,10 +266,10 @@ export default class extends Controller {
                 this.savePreferences();
                 this.applyPreferences();
 
-                alert('Dashboard-Einstellungen erfolgreich importiert!');
+                alert(window.translations?.dashboard?.settings_imported || 'Dashboard settings successfully imported!');
             } catch (error) {
                 console.error('Failed to import preferences:', error);
-                alert('Fehler beim Importieren der Einstellungen. Bitte überprüfen Sie die Datei.');
+                alert(window.translations?.dashboard?.import_failed || 'Error importing settings. Please check the file.');
             }
         };
         reader.readAsText(file);

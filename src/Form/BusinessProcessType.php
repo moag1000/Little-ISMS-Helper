@@ -23,22 +23,22 @@ class BusinessProcessType extends AbstractType
     {
         $builder
             ->add('name', TextType::class, [
-                'label' => 'Prozessname',
+                'label' => 'business_process.field.name',
                 'attr' => ['class' => 'form-control'],
                 'constraints' => [new NotBlank()],
             ])
             ->add('description', TextareaType::class, [
-                'label' => 'Beschreibung',
+                'label' => 'business_process.field.description',
                 'attr' => ['class' => 'form-control', 'rows' => 4],
                 'required' => false,
             ])
             ->add('processOwner', TextType::class, [
-                'label' => 'Prozessverantwortlicher',
+                'label' => 'business_process.field.process_owner',
                 'attr' => ['class' => 'form-control'],
                 'constraints' => [new NotBlank()],
             ])
             ->add('criticality', ChoiceType::class, [
-                'label' => 'Kritikalität',
+                'label' => 'business_process.field.criticality',
                 'choices' => [
                     'Kritisch' => 'critical',
                     'Hoch' => 'high',
@@ -49,7 +49,7 @@ class BusinessProcessType extends AbstractType
                 'constraints' => [new NotBlank()],
             ])
             ->add('rto', IntegerType::class, [
-                'label' => 'RTO (Recovery Time Objective) in Stunden',
+                'label' => 'business_process.field.rto',
                 'attr' => [
                     'class' => 'form-control',
                     'min' => 0,
@@ -62,7 +62,7 @@ class BusinessProcessType extends AbstractType
                 ],
             ])
             ->add('rpo', IntegerType::class, [
-                'label' => 'RPO (Recovery Point Objective) in Stunden',
+                'label' => 'business_process.field.rpo',
                 'attr' => [
                     'class' => 'form-control',
                     'min' => 0,
@@ -75,7 +75,7 @@ class BusinessProcessType extends AbstractType
                 ],
             ])
             ->add('mtpd', IntegerType::class, [
-                'label' => 'MTPD (Maximum Tolerable Period of Disruption) in Stunden',
+                'label' => 'business_process.field.mtpd',
                 'attr' => [
                     'class' => 'form-control',
                     'min' => 0,
@@ -88,19 +88,19 @@ class BusinessProcessType extends AbstractType
                 ],
             ])
             ->add('financialImpactPerHour', MoneyType::class, [
-                'label' => 'Finanzieller Schaden pro Stunde',
+                'label' => 'business_process.field.financial_impact_per_hour',
                 'currency' => 'EUR',
                 'attr' => ['class' => 'form-control'],
                 'required' => false,
             ])
             ->add('financialImpactPerDay', MoneyType::class, [
-                'label' => 'Finanzieller Schaden pro Tag',
+                'label' => 'business_process.field.financial_impact_per_day',
                 'currency' => 'EUR',
                 'attr' => ['class' => 'form-control'],
                 'required' => false,
             ])
             ->add('reputationalImpact', ChoiceType::class, [
-                'label' => 'Reputationsschaden',
+                'label' => 'business_process.field.reputational_impact',
                 'choices' => [
                     'Sehr gering (1)' => 1,
                     'Gering (2)' => 2,
@@ -112,7 +112,7 @@ class BusinessProcessType extends AbstractType
                 'constraints' => [new NotBlank()],
             ])
             ->add('regulatoryImpact', ChoiceType::class, [
-                'label' => 'Regulatorische Auswirkungen',
+                'label' => 'business_process.field.regulatory_impact',
                 'choices' => [
                     'Sehr gering (1)' => 1,
                     'Gering (2)' => 2,
@@ -124,7 +124,7 @@ class BusinessProcessType extends AbstractType
                 'constraints' => [new NotBlank()],
             ])
             ->add('operationalImpact', ChoiceType::class, [
-                'label' => 'Operationale Auswirkungen',
+                'label' => 'business_process.field.operational_impact',
                 'choices' => [
                     'Sehr gering (1)' => 1,
                     'Gering (2)' => 2,
@@ -136,19 +136,19 @@ class BusinessProcessType extends AbstractType
                 'constraints' => [new NotBlank()],
             ])
             ->add('dependenciesUpstream', TextareaType::class, [
-                'label' => 'Abhängigkeiten (Upstream)',
+                'label' => 'business_process.field.dependencies_upstream',
                 'attr' => ['class' => 'form-control', 'rows' => 3],
                 'help' => 'Von welchen Prozessen/Systemen ist dieser Prozess abhängig?',
                 'required' => false,
             ])
             ->add('dependenciesDownstream', TextareaType::class, [
-                'label' => 'Abhängigkeiten (Downstream)',
+                'label' => 'business_process.field.dependencies_downstream',
                 'attr' => ['class' => 'form-control', 'rows' => 3],
                 'help' => 'Welche Prozesse/Systeme sind von diesem Prozess abhängig?',
                 'required' => false,
             ])
             ->add('recoveryStrategy', TextareaType::class, [
-                'label' => 'Wiederherstellungsstrategie',
+                'label' => 'business_process.field.recovery_strategy',
                 'attr' => ['class' => 'form-control', 'rows' => 4],
                 'required' => false,
             ])
@@ -157,7 +157,7 @@ class BusinessProcessType extends AbstractType
                 'choice_label' => 'name',
                 'multiple' => true,
                 'required' => false,
-                'label' => 'Unterstützende Assets',
+                'label' => 'business_process.field.supporting_assets',
                 'attr' => ['class' => 'form-select', 'size' => 5],
                 'help' => 'Welche IT-Assets unterstützen diesen Prozess?',
             ])
@@ -166,7 +166,7 @@ class BusinessProcessType extends AbstractType
                 'choice_label' => 'title',
                 'multiple' => true,
                 'required' => false,
-                'label' => 'Identifizierte Risiken',
+                'label' => 'business_process.field.identified_risks',
                 'attr' => ['class' => 'form-select', 'size' => 5],
                 'help' => 'Welche Risiken betreffen diesen Prozess?',
             ])
