@@ -23,7 +23,7 @@ class StatementOfApplicabilityController extends AbstractController
     #[Route('/', name: 'app_soa_index')]
     public function index(): Response
     {
-        $controls = $this->controlRepository->findAll();
+        $controls = $this->controlRepository->findAllInIsoOrder();
         $stats = $this->controlRepository->getImplementationStats();
         $categoryStats = $this->controlRepository->countByCategory();
 
@@ -37,7 +37,7 @@ class StatementOfApplicabilityController extends AbstractController
     #[Route('/category/{category}', name: 'app_soa_by_category')]
     public function byCategory(string $category): Response
     {
-        $controls = $this->controlRepository->findBy(['category' => $category], ['controlId' => 'ASC']);
+        $controls = $this->controlRepository->findByCategoryInIsoOrder($category);
 
         return $this->render('soa/category.html.twig', [
             'category' => $category,
@@ -85,7 +85,7 @@ class StatementOfApplicabilityController extends AbstractController
     #[Route('/report/export', name: 'app_soa_export')]
     public function export(): Response
     {
-        $controls = $this->controlRepository->findAll();
+        $controls = $this->controlRepository->findAllInIsoOrder();
 
         return $this->render('soa/export.html.twig', [
             'controls' => $controls,
