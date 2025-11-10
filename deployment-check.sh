@@ -109,6 +109,14 @@ echo ""
 echo "6. Prüfe Apache-Konfiguration..."
 if [ -f "public/.htaccess" ]; then
     check_success "public/.htaccess existiert"
+
+    # Check for Plesk-incompatible FollowSymlinks
+    if grep -q "Options +FollowSymlinks" public/.htaccess && ! grep -q "Options +SymLinksIfOwnerMatch" public/.htaccess; then
+        check_error "public/.htaccess enthält 'Options +FollowSymlinks' - nicht kompatibel mit Plesk!"
+        echo "         Ändern Sie zu 'Options +SymLinksIfOwnerMatch'"
+    elif grep -q "Options +SymLinksIfOwnerMatch" public/.htaccess; then
+        check_success "public/.htaccess ist Plesk-kompatibel (SymLinksIfOwnerMatch)"
+    fi
 else
     check_error "public/.htaccess fehlt!"
 fi
