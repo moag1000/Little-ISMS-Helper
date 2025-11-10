@@ -397,212 +397,39 @@ crontab -e
 
 ## 🗺️ Roadmap
 
-### ✅ Phase 1: Core ISMS (Abgeschlossen)
-- ✅ 9 Core Entities (Asset, Risk, Control, Incident, etc.)
-- ✅ Statement of Applicability mit 93 ISO 27001:2022 Controls
-- ✅ Grundlegende Controller & Views
-- ✅ KPI Dashboard
+**Vollständige Projekt-Roadmap:** 📋 **[ROADMAP.md](ROADMAP.md)**
 
-### ✅ Phase 2: Data Reuse & Multi-Framework (Abgeschlossen)
-- ✅ Business Continuity Management (BCM)
-- ✅ Multi-Framework Compliance (ISO 27001, TISAX, DORA)
-- ✅ Cross-Framework Mappings & Transitive Compliance
-- ✅ Vollständige Entity-Beziehungen
-- ✅ Automatische KPIs
-- ✅ Progressive Disclosure UI
-- ✅ Symfony UX Integration (Stimulus, Turbo)
+### Abgeschlossene Phasen
 
-### ✅ Phase 3: User Management & Security (Abgeschlossen)
-- ✅ Multi-Provider Authentication (Local, Azure OAuth/SAML)
-- ✅ RBAC mit 5 System-Rollen & 29 Permissions
-- ✅ Automatisches Audit Logging
-- ✅ Multi-Language Support (DE, EN)
-- ✅ User Management UI
-
-### ✅ Phase 4: CRUD & Workflows (Abgeschlossen)
-- ✅ Vollständige CRUD für alle Module
-- ✅ 5 Form Types mit Validierung
-- ✅ Workflow-Engine (Approval, Rejection, Cancellation)
-- ✅ Risk Assessment Matrix (5x5 Visualisierung)
-- ✅ 30+ Professional Templates
-
-### ✅ Phase 5: Reporting & Integration (Abgeschlossen)
-- ✅ PDF/Excel Export System (5 Report-Typen)
-- ✅ REST API (30 Endpoints, OpenAPI 3.0)
-- ✅ Automated Notification Scheduler (5 Typen)
-- ✅ Premium Features (Dark Mode, Global Search, Quick View)
-- ⏸️ Document Management (Foundation, deferred)
+- ✅ **Phase 1:** Core ISMS - 9 Entities, 93 ISO 27001:2022 Controls, KPI Dashboard
+- ✅ **Phase 2:** Data Reuse & Multi-Framework - BCM, TISAX, DORA, Cross-Framework Mappings
+- ✅ **Phase 3:** User Management & Security - RBAC, Multi-Auth, Audit Logging
+- ✅ **Phase 4:** CRUD & Workflows - Vollständige CRUD, Workflow-Engine, Risk Matrix
+- ✅ **Phase 5:** Reporting & Integration - PDF/Excel Export, REST API, Notifications, Dark Mode
 
 ### 🚧 Phase 6: Module Completeness & Quality Assurance (In Entwicklung)
 
-**Status:** Umfassendes Audit durchgeführt am 2025-11-08 (Technisch + ISO 27001 + Multi-Standard + NIS2 + BSI)
-- **Technische Vollständigkeit:** ~70% (Lücken: Form Types, Tests, Workflows)
-- **ISO 27001:2022 Compliance:** 94.5% ✅
-- **Multi-Standard Compliance:** 84% Durchschnitt (mit NIS2 + BSI)
-  - ISO 22301:2019 (BCM): 100% ✅
-  - ISO 19011:2018 (Audit): 95% ⚠️
-  - ISO 31000:2018 (Risk): 95% ⚠️
-  - ISO 27005:2022 (Risk Security): 100% ✅
-  - EU DORA: 85% ⚠️
-  - TISAX/VDA ISA: 75% ⚠️
-  - NIS2 Directive: 68% ⚠️ (KRITISCH - Phase 6H)
-  - BSI IT-Grundschutz 200-4: 68% ⚠️ (HOCH - Phase 6I)
-- **Zertifizierungsbereitschaft:** JA (mit Minor Findings in Asset Management)
-- **Kritische Lücken identifiziert:**
-  - *Technisch:* 8 fehlende Form Types, 70% Module ohne Tests
-  - *Inhaltlich ISO 27001:* Asset Management (Acceptable Use, Return Workflow, Data Classification)
-  - *Multi-Standard:* Auditor Competence (ISO 19011), Risk Communication Log (ISO 31000), TPP Register (DORA), TISAX AL-Tracking
-  - *NIS2 KRITISCH:* MFA Implementation, Incident Reporting Timelines (24h/72h/1M), Vulnerability Management (CVE Tracking)
-  - *BSI HOCH:* Krisenstab Entity, Load Commands, Penetration Testing Management
-- **Siehe:** [MODULE_COMPLETENESS_AUDIT.md](docs/MODULE_COMPLETENESS_AUDIT.md)
+**Status:** ~70% Abgeschlossen | **Detaillierte Planung:** [ROADMAP.md - Phase 6](ROADMAP.md#-phase-6-module-completeness--quality-assurance-in-entwicklung)
 
-#### 🔥 Phase 6A: Form Types (Priorität KRITISCH)
-- 🔄 ISMSObjectiveType (Controller existiert bereits)
-- 🔄 WorkflowType, WorkflowInstanceType
-- 🔄 ComplianceFrameworkType, ComplianceRequirementType, ComplianceMappingType
-- 📋 **Aufwand:** 1-2 Tage | **Impact:** Hoch
+**Fokus:**
+- 🔥 Form Types & Test Coverage (KRITISCH)
+- 🏛️ ISO 27001 Inhaltliche Vervollständigung
+- 🇪🇺 NIS2 Directive Compliance (KRITISCH - Deadline: 17.10.2024)
+- 🇩🇪 BSI IT-Grundschutz Integration
+- 🎯 Module UI Completeness (5 Haupt-Module)
 
-#### 🧪 Phase 6B: Test Coverage (Priorität KRITISCH)
-- 🔄 Entity Tests für 17 Module ohne Tests
-- 🔄 Controller Tests für kritische Module
-- 🔄 Service Tests für Business Logic
-- 🔄 Ziel: Test Coverage von 26% auf 80%+
-- 📋 **Aufwand:** 3-4 Tage | **Impact:** Sehr hoch
-
-#### 🔧 Phase 6C: Workflow-Management (Priorität WICHTIG)
-- 🔄 Workflow CRUD vervollständigen (aktuell nur 35%)
-- 🔄 WorkflowInstance CRUD vervollständigen (aktuell nur 30%)
-- 🔄 Templates erstellen (6+ neue Templates)
-- 🔄 Tests implementieren
-- 📋 **Aufwand:** 2-3 Tage | **Impact:** Hoch
-
-#### 📊 Phase 6D: Compliance-Detail-Management (Priorität WICHTIG)
-- 🔄 ComplianceFrameworkController (dediziert, vollständiges CRUD)
-- 🔄 ComplianceRequirementController (dediziert, vollständiges CRUD)
-- 🔄 ComplianceMappingController (dediziert, vollständiges CRUD)
-- 🔄 Templates erstellen (12+ neue Templates)
-- 📋 **Aufwand:** 2-3 Tage | **Impact:** Mittel
-
-#### ✨ Phase 6E: Polish & Optimization (Priorität OPTIONAL)
-- 📅 Code-Review und Refactoring
-- 📅 Dokumentation vervollständigen
-- 📅 UX-Verbesserungen
-- 📋 **Aufwand:** 1-2 Tage | **Impact:** Niedrig
-
-#### 🏛️ Phase 6F: ISO 27001 Inhaltliche Vervollständigung (Priorität HOCH)
-- 🔄 **Asset Management vervollständigen** (KRITISCH für Zertifizierung)
-  - Acceptable Use Policy Field
-  - Monetary Value
-  - Handling Instructions
-  - Data Classification (public/internal/confidential/restricted)
-  - Asset Return Workflow
-- 🔄 **Risk Management vervollständigen**
-  - Risk Owner als User-Referenz
-  - Risk Appetite Entity
-  - Risk Treatment Plan Entity
-- 🔄 **Statement of Applicability Report**
-  - SoA PDF Generator Service
-  - Professional SoA Template
-- 📋 **Aufwand:** 2-3 Tage | **Impact:** KRITISCH
-
-#### 🌐 Phase 6G: Multi-Standard Compliance Vervollständigung (Priorität MITTEL)
-- 🔄 **Audit Management Erweiterung (ISO 19011)**
-  - AuditorCompetence Entity (Auditor-Qualifikationsverwaltung)
-  - Competence Level Tracking (junior/senior/lead)
-  - Training-Integration
-- 🔄 **Risk Communication Log (ISO 31000)**
-  - RiskCommunication Entity
-  - Stakeholder Engagement Tracking
-  - Communication Type Management
-- 🔄 **DORA Compliance (nur für Financial Entities)**
-  - ICTThirdPartyProvider Entity (TPP Register)
-  - TLPTExercise Entity (Threat-Led Penetration Testing)
-  - Critical/Important Provider Classification
-- 🔄 **TISAX Compliance (nur für Automotive Industry)**
-  - Asset.php Erweiterung (AL1/AL2/AL3, Protection Need, Prototype Fields)
-  - TISAXAssessment Entity
-  - Maturity Level Tracking
-- 📋 **Aufwand:** 3-4 Tage | **Impact:** MITTEL (branchenspezifisch)
-
-#### 🇪🇺 Phase 6H: NIS2 Directive Compliance (Priorität KRITISCH)
-- 🔄 **LoadNis2RequirementsCommand.php** (Data Reuse: 45 NIS2 Requirements)
-  - NIS2 Directive (EU 2022/2555) als loadbares Framework
-  - ISO 27001 Control Mappings (z.B. NIS2-21.2.i → 5.17, 5.18)
-  - Automatic Compliance Tracking
-- 🔄 **Multi-Factor Authentication (MFA) Implementation** (KRITISCH)
-  - MfaToken Entity (TOTP, WebAuthn, SMS, Hardware Tokens)
-  - User-MFA-Enrollment Workflow
-  - Admin MFA-Enforcement Settings
-  - MFA-enabled Field in User Entity
-- 🔄 **Incident Reporting Timelines (NIS2 Art. 23)** (KRITISCH)
-  - Incident.php Erweiterung: earlyWarningReportedAt (24h)
-  - Incident.php Erweiterung: detailedNotificationReportedAt (72h)
-  - Incident.php Erweiterung: finalReportSubmittedAt (1 Monat)
-  - NIS2 Incident Category (operational/security/privacy/availability)
-  - Cross-Border Impact Tracking
-- 🔄 **Vulnerability Management (NIS2 Art. 21.2.d)** (KRITISCH)
-  - Vulnerability Entity (CVE Tracking, CVSS Scoring)
-  - Patch Entity (Patch Management, Remediation Deadlines)
-  - Asset-Vulnerability Relationships
-  - Vulnerability Status (open/patched/mitigated/accepted)
-- 🔄 **Supply Chain Security (NIS2 Art. 21.2.e)**
-  - Supplier Risk Assessment Integration
-  - Third-Party Security Monitoring
-- 📋 **Aufwand:** 7-8 Tage | **Impact:** KRITISCH | **Deadline:** 17.10.2024 (NIS2 Enforcement)
-
-#### 🇩🇪 Phase 6I: BSI IT-Grundschutz & Additional Standards (Priorität HOCH)
-- 🔄 **LoadBsiRequirementsCommand.php** (Data Reuse: 35 BSI 200-4 Requirements)
-  - BSI IT-Grundschutz 200-4 (BCM-Methodik) als loadbares Framework
-  - ISO 22301 Control Mappings
-  - Automatic Compliance Tracking
-- 🔄 **Krisenstab-Management (BSI 200-4 Kapitel 4.3)** (HOCH)
-  - CrisisTeam Entity (Krisenstab-Verwaltung)
-  - Team Member Roles & Responsibilities
-  - Contact Information & Availability
-  - Alert & Activation Workflows
-- 🔄 **LoadIso22301RequirementsCommand.php** (Data Reuse: 25 ISO 22301 Requirements)
-  - ISO 22301:2019 als loadbares Framework (aktuell nur Entity-basiert)
-  - ISO 27001 Control Mappings
-  - BIA & BC Strategy Requirements
-- 🔄 **Penetration Testing Management** (MITTEL)
-  - PenetrationTest Entity (PT Planning & Execution)
-  - Findings Integration mit Vulnerability Management
-  - Remediation Tracking
-- 🔄 **Cryptography Management** (MITTEL)
-  - CryptographicKey Entity (Key Lifecycle Management)
-  - Algorithm & Key Length Tracking
-  - Key Rotation Schedules
-- 📋 **Aufwand:** 5-6 Tage | **Impact:** HOCH
-
-**Gesamt-Aufwand Phase 6 (A-I):** 28-38 Tage
 **Erwartete Vollständigkeit nach Phase 6:**
-- **Technisch:** ~95%
-- **ISO 27001 Inhaltlich:** 98%+
-- **Multi-Standard Compliance:** 95%+ (branchenabhängig)
-- **NIS2 Directive Compliance:** 95%+ (von 68%) ✅
-- **BSI IT-Grundschutz 200-4:** 95%+ (von 68%) ✅
-- **Data Reuse: Loadbare Frameworks:** 100% (9 von 9: ISO 27001, DORA, TISAX, NIS2, BSI, ISO 22301, ISO 19011, ISO 31000, ISO 27005) ✅
-- **Zertifizierungsbereitschaft:** 100% ✅ (ISO 27001, ISO 22301, ISO 19011, TISAX AL1, NIS2-konform)
-
----
-
-### 🚀 Phase 7: Enterprise Features (Geplant)
-- ✅ Automated Testing (122 tests, 100% passing)
-- ✅ CI/CD Pipeline (GitHub Actions)
-- ✅ Docker Deployment
-- 🔄 Multi-Tenancy Support (MSPs)
-- 🔄 Advanced Analytics Dashboards
-- 🔄 Mobile PWA
-- 📅 Kubernetes Deployment
+- **Technisch:** 95%+
+- **ISO 27001:** 98%+
+- **NIS2 Compliance:** 95%+ (von 68%)
+- **Test Coverage:** 80%+ (von 26%)
 
 ### 📅 Zukünftige Phasen
-- JWT Authentication für Mobile Apps
-- Real-time Notifications (WebSocket/Mercure)
-- Advanced API Filters & Search
-- Custom Report Builder
-- Integration Marketplace (Slack, Teams, JIRA)
 
-**Legende:** ✅ Abgeschlossen | 🚧 In Entwicklung | 🔄 Geplant | 📅 Backlog | ⏸️ Deferred
+- 🚀 **Phase 7:** Enterprise Features - Multi-Tenancy, Advanced Analytics, Mobile PWA
+- 📅 **Backlog:** JWT Auth, Real-time Notifications, Custom Report Builder, Integration Marketplace
+
+**Legende:** ✅ Abgeschlossen | 🚧 In Entwicklung | 🔄 Geplant | 📅 Backlog
 
 ---
 
