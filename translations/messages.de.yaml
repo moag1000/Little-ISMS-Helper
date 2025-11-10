@@ -591,6 +591,32 @@ supplier:
     dpa_signed_date: DPA-Unterzeichnungsdatum
 interested_party:
   title: Interessierte Parteien
+  page:
+    title: Interessierte Parteien - Verwaltung
+  action:
+    add_new: Neue interessierte Partei hinzufügen
+    view: Ansehen
+    edit: Bearbeiten
+  iso_reference: 'ISO 27001:2022 Kapitel 4.2 - Verstehen der Bedürfnisse und Erwartungen interessierter Parteien'
+  alert:
+    overdue_communications: Überfällige Kommunikation
+  next_communication: Nächste Kommunikation
+  high_importance:
+    title: Parteien mit hoher Wichtigkeit
+  engagement_score: Engagement-Score
+  list:
+    title: 'Interessierte Parteien ({{ count }})'
+  table:
+    name: Name
+    type: Typ
+    importance: Wichtigkeit
+    engagement_score: Engagement-Score
+    last_communication: Letzte Kommunikation
+    actions: Aktionen
+  never: Nie
+  empty:
+    message: Keine interessierten Parteien gefunden.
+    add_first: Fügen Sie Ihre erste interessierte Partei hinzu
   contact_person: Ansprechpartner
   field:
     contact_person: Ansprechpartner
