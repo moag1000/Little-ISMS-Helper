@@ -7,7 +7,8 @@ import './stimulus_bootstrap.js';
  */
 
 // External dependencies (loaded from importmap)
-import 'bootstrap-icons/font/bootstrap-icons.min.css';
+// Bootstrap Icons are loaded via CDN in base.html.twig due to AssetMapper issue #52620
+// import 'bootstrap-icons/font/bootstrap-icons.min.css';
 
 // Core styles
 import './styles/app.css';
