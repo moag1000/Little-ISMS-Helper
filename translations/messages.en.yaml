@@ -106,6 +106,43 @@ common:
   note: Note
   to_home: To Home Page
 asset:
+  new: New Asset
+  create: Create Asset
+  edit: Edit Asset
+  details:
+    title: Asset Details
+  confirm:
+    delete: Are you sure you want to delete this asset?
+  action:
+    bcm_insights: BCM Insights
+  section:
+    cia_triad: CIA Triad
+  cia_help: Rate the confidentiality, integrity and availability of this asset
+  cia_values: CIA Values
+  field:
+    name: Name
+    type: Type
+    description: Description
+    owner: Owner
+    location: Location
+    status: Status
+    acquisition_value: Acquisition Value
+    current_value: Current Value
+    confidentiality: Confidentiality
+    integrity: Integrity
+    availability: Availability
+  placeholder:
+    name: e.g. Customer Database
+    description: Detailed description of the asset
+    owner: Select the responsible owner
+    location: Select the location
+  type:
+    information: Information
+    software: Software
+    hardware: Hardware
+    service: Service
+    people: People
+    intangible: Intangible
   label:
     type: Type
     owner: Owner
@@ -118,6 +155,10 @@ asset:
     confidentiality: Confidentiality
     integrity: Integrity
     availability: Availability
+  success:
+    created: Asset created successfully.
+    updated: Asset updated successfully.
+    deleted: Asset deleted successfully.
 risk:
   success:
     created: Risk created successfully.
