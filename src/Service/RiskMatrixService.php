@@ -58,7 +58,7 @@ class RiskMatrixService
      *     riskLevels: array<int, array<int, string>>
      * }
      */
-    public function generateMatrix(array $risks = null): array
+    public function generateMatrix(?array $risks = null): array
     {
         if ($risks === null) {
             $risks = $this->riskRepository->findAll();
@@ -173,7 +173,7 @@ class RiskMatrixService
     /**
      * Generiert Matrix-Daten für Chart.js Heatmap
      */
-    public function generateHeatmapData(array $risks = null): array
+    public function generateHeatmapData(?array $risks = null): array
     {
         $matrixData = $this->generateMatrix($risks);
         $data = [];
