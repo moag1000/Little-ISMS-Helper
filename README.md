@@ -527,6 +527,89 @@ Zusätzliche Frameworks:
 
 ---
 
+## 📋 Lizenz-Compliance & Third-Party Attributions
+
+Little ISMS Helper verwendet **163 Third-Party Open-Source-Pakete**, die für kommerzielle Nutzung freigegeben sind:
+
+### Compliance-Status
+
+| Status | Pakete | Prozent | Beschreibung |
+|--------|--------|---------|--------------|
+| ✅ Erlaubt | 160 | 98.2% | Permissive Lizenzen (MIT, BSD, Apache-2.0) |
+| 🔄 Copyleft | 1 | 0.6% | LGPL (dynamic linking erlaubt) |
+| ❓ Unbekannt | 2 | 1.2% | LGPL-Varianten (manuell geprüft ✓) |
+
+**Gesamtstatus:** ✅ **Lizenzkonform für kommerzielle Nutzung**
+
+### Lizenzinformationen im Web-Interface
+
+Die Anwendung bietet direkt im Web-Interface Zugriff auf alle Lizenzinformationen:
+
+- **📄 NOTICE** - Third-Party Software Attributions
+- **📊 Detaillierter Bericht** - Vollständige Compliance-Analyse
+- **📈 Zusammenfassung** - Schnellübersicht & KPIs
+
+**Zugriff:** Footer → "Lizenzen" oder direkt unter `/about/licenses`
+
+### Lizenzübersicht
+
+<details>
+<summary><b>Hauptkomponenten nach Lizenz</b></summary>
+
+**MIT License (134 Pakete, 82.2%):**
+- Symfony Framework & Components
+- Doctrine ORM & DBAL
+- Bootstrap 5
+- Chart.js
+- PHPOffice/PhpSpreadsheet
+- Monolog
+- und weitere...
+
+**BSD-3-Clause (26 Pakete, 16%):**
+- Twig Template Engine
+- und weitere...
+
+**LGPL (3 Pakete, 1.8%):**
+- DomPDF (PDF-Generierung)
+- php-font-lib
+- php-svg-lib
+
+> **Hinweis:** LGPL-Komponenten werden über Dynamic Linking eingebunden, was kommerzielle Nutzung ohne Quelloffenlegung ermöglicht.
+
+</details>
+
+### Automatische Compliance-Prüfung
+
+Das Projekt nutzt automatisierte Tools zur Lizenzüberwachung:
+
+```bash
+# Lizenzbericht generieren
+./license-report.sh
+
+# Ausgabe: docs/reports/license-report.md
+```
+
+**CI/CD Integration:**
+- ✅ Automatische Lizenzprüfung bei jedem Pull Request
+- ✅ Monatliche Compliance-Checks
+- ✅ Warnungen bei problematischen Lizenzen
+- ✅ GitHub Actions Workflow integriert
+
+### Compliance-Dokumentation
+
+- **[NOTICE.md](NOTICE.md)** - Vollständige Attributionen & Lizenzhinweise
+- **[docs/reports/license-report.md](docs/reports/license-report.md)** - Automatisch generierter Detailbericht
+- **[SETUP_TOOLS.md](SETUP_TOOLS.md#4-license-reportsh)** - Anleitung zur Berichtsgenerierung
+
+### Wichtige Hinweise
+
+- Alle Dependencies sind für **kommerzielle Nutzung** freigegeben
+- **Attribution erforderlich** bei Weitergabe (NOTICE.md beachten)
+- **Keine Non-Commercial Lizenzen** im Projekt
+- **Regelmäßige Prüfung** durch automatisierte Workflows
+
+---
+
 ## 📜 Lizenz
 
 **Proprietary** - Alle Rechte vorbehalten
