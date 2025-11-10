@@ -181,7 +181,6 @@ audit:
   iso_27001_requirement: ISO 27001 Anforderung
   framework: Framework
   standard: Standard
-  type: Audit-Typ
   status:
     planned: Geplant
     in_progress: In Bearbeitung
