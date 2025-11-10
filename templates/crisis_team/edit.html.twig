@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+{% block title %}{{ 'crisis_team.edit'|trans }} - {{ parent() }}{% endblock %}
+{% block body %}
+<div class="container py-4">
+    <div class="card">
+        <div class="card-header bg-primary text-white"><h4 class="mb-0">{{ 'crisis_team.edit'|trans }}</h4></div>
+        <div class="card-body">
+            {{ form_start(form) }}{{ form_widget(form) }}
+                <div class="d-flex justify-content-between pt-3 border-top">
+                    <a href="{{ path('app_crisis_team_show', {id: crisis_team.id}) }}" class="btn btn-outline-secondary">{{ 'common.back'|trans }}</a>
+                    <button type="submit" class="btn btn-primary">{{ 'common.save'|trans }}</button>
+                </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>
+{% endblock %}
