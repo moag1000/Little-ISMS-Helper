@@ -260,10 +260,12 @@ Phase 6 konzentriert sich auf die Vervollständigung aller Module und die Sicher
 - **Asset Monetary Value → Risk Impact** (Auto-Berechnung)
   - Risk.financialImpact wird aus affectedAssets.monetaryValue berechnet
   - Zeitersparnis: ~15 Min pro Risk Assessment
-- **Asset Data Classification ← Risk Assessment** (Auto-Ableitung)
-  - High-Risk Assets → automatisch "confidential" Classification
-  - CIA-Bewertung informiert Classification
-- **Asset → Control ↔ Asset** (WICHTIG - aus DATA_REUSE_ANALYSIS.md)
+  - 🛡️ **Safe Guard:** Asset.monetaryValue ist IMMER manuell gesetzt (kein Auto-Set aus vulnerabilityScore)
+- **Asset Data Classification ← Risk Assessment** (Suggestion-Only, KEIN Auto-Set)
+  - High-Risk Assets → **Suggestion** "confidential" Classification
+  - UI zeigt Suggestion mit Begründung, User muss bestätigen
+  - 🛡️ **Safe Guard:** Suggestion-Only (kein Auto-Set) verhindert Feedback-Loop
+- **Asset ↔ Control** (WICHTIG - aus DATA_REUSE_ANALYSIS.md)
   - Many-to-Many: Welche Controls schützen welche Assets?
   - Control Coverage Matrix automatisch generiert
   - Asset Protection Dashboard
@@ -277,7 +279,8 @@ Phase 6 konzentriert sich auf die Vervollständigung aller Module und die Sicher
 - [ ] Dokumentation aktualisiert
 - [ ] **Data Reuse:** Asset ↔ Control Beziehung implementiert
 - [ ] **Data Reuse:** Monetary Value → Risk Impact Berechnung
-- [ ] **Data Reuse:** Data Classification Auto-Ableitung
+- [ ] **Data Reuse:** Data Classification **Suggestion-Only** (kein Auto-Set)
+- [ ] **Safe Guard:** Asset.monetaryValue IMMER manuell (Code-Kommentare gegen Zirkel)
 
 #### Risk Management vervollständigen
 
@@ -304,6 +307,8 @@ Phase 6 konzentriert sich auf die Vervollständigung aller Module und die Sicher
   - Risk Validation: "Dieses Risiko trat 3x ein im letzten Jahr"
   - Probability Adjustment basierend auf realisierten Incidents
   - Zeitersparnis: ~30 Min pro Risk Review
+  - 🛡️ **Safe Guard:** Temporal Decoupling (nur Incidents >30 Tage alt, Status=closed)
+  - 🛡️ **Safe Guard:** One-Way Adjustment (nur Erhöhung, keine Auto-Reduktion)
 - **Risk Treatment Plan → Control** (Implementation Tracking)
   - RiskTreatmentPlan.implementedControls (ManyToMany)
   - Treatment-Wirksamkeit durch Control-Effectiveness messbar
@@ -327,6 +332,9 @@ Phase 6 konzentriert sich auf die Vervollständigung aller Module und die Sicher
 - [ ] **Data Reuse:** Risk Treatment Plan ↔ Control
 - [ ] **Data Reuse:** BusinessProcess ↔ Risk
 - [ ] **Data Reuse:** Risk Appetite Auto-Priorisierung
+- [ ] **Safe Guard:** Risk Probability Adjustment nur für historische Incidents (>30 Tage)
+- [ ] **Safe Guard:** Probability nur One-Way erhöhen (User kann manuell reduzieren)
+- [ ] **Safe Guard:** Audit Log für alle Probability-Änderungen
 
 #### Statement of Applicability Report
 
@@ -629,24 +637,29 @@ Phase 6 konzentriert sich auf die Vervollständigung aller Module und die Sicher
    - CVE Trends
 
 ##### Data Reuse Integration 🔄 (KRITISCH)
-- **Vulnerability ↔ Risk** (Auto-Risiko-Erstellung aus CVE)
+- **Vulnerability → Risk** (Auto-Risiko-Erstellung aus CVE)
   - Critical/High CVE → automatische Risk Entity
   - Risk.likelihood = CVSS.exploitability
   - Risk.impact = CVSS.impact * Asset.monetaryValue
   - Zeitersparnis: ~40 Min pro Vulnerability (manuelles Risk Assessment entfällt)
   - **Revolutionär:** CVE-Feed → automatisches Risk Management! 🚀
+  - 🛡️ **Safe Guard:** Asset.monetaryValue ist IMMER manuell (siehe Phase 6F)
+  - 🛡️ **Safe Guard:** Asset.vulnerabilityScore ist READ-ONLY (kein Setter)
+  - 🛡️ **Safe Guard:** Keine Rückwirkung Vulnerability → Asset.monetaryValue
 - **Vulnerability ↔ Incident** (CVE Exploitation Tracking)
   - Incident.exploitedVulnerability (ManyToOne)
   - "Diese CVE wurde in 2 Incidents ausgenutzt" → höhere Priorität
   - Incident Root Cause automatisch: CVE-ID
 - **Vulnerability ↔ Asset** (bereits geplant)
   - Many-to-Many: Welche Assets sind betroffen?
-  - Asset Vulnerability Score automatisch
+  - Asset.vulnerabilityScore automatisch berechnet (READ-ONLY)
+  - 🛡️ **Safe Guard:** vulnerabilityScore beeinflusst NICHT monetaryValue
 - **Patch ↔ Control** (Control Effectiveness Measurement)
   - Patch-Geschwindigkeit = A.8.8 Control Effectiveness
   - "Durchschnittliche Time-to-Patch: 5 Tage" = KPI
   - Control-Dashboard: "Patch Management: 85% Effectiveness"
   - Zeitersparnis: ~30 Min pro Control Review
+  - 🛡️ **Safe Guard:** Snapshot-basierte Berechnung (monatlich), kein Live-Loop
 
 ##### Akzeptanzkriterien
 - [ ] Vulnerability Entity
@@ -660,6 +673,9 @@ Phase 6 konzentriert sich auf die Vervollständigung aller Module und die Sicher
 - [ ] **Data Reuse:** Vulnerability ↔ Incident Tracking
 - [ ] **Data Reuse:** Patch → Control Effectiveness KPI
 - [ ] **Data Reuse:** Vulnerability ↔ Asset
+- [ ] **Safe Guard:** Asset.monetaryValue niemals auto-berechnet (Code-Dokumentation)
+- [ ] **Safe Guard:** Asset.vulnerabilityScore ist READ-ONLY Getter
+- [ ] **Safe Guard:** Patch Control Effectiveness ist Snapshot-basiert (monatlich)
 
 #### Supply Chain Security (NIS2 Art. 21.2.e)
 
@@ -1160,6 +1176,36 @@ Diese Phase implementiert die grundlegenden Data Reuse Beziehungen aus [DATA_REU
 - 🚀 **CVE → Automatisches Risk Management** (Phase 6H)
 - 🚀 **PT Findings → Auto-Vulnerability → Auto-Risk** (Phase 6I)
 - 🚀 **Training → Auto-Compliance-Evidence** (Phase 6K)
+
+### 🛡️ Safe Guards gegen Zirkelschlüsse
+
+**Siehe:** [DATA_REUSE_CIRCULAR_DEPENDENCY_ANALYSIS.md](docs/DATA_REUSE_CIRCULAR_DEPENDENCY_ANALYSIS.md)
+
+**Identifizierte & gelöste potenzielle Zirkel:**
+
+1. **Asset Classification ↔ Risk Assessment**
+   - 🛡️ **Lösung:** Suggestion-Only (kein Auto-Set)
+   - UI zeigt Vorschlag, User muss bestätigen
+
+2. **Risk Probability ← Incident History**
+   - 🛡️ **Lösung:** Temporal Decoupling (nur Incidents >30 Tage, Status=closed)
+   - 🛡️ **Lösung:** One-Way Adjustment (nur Erhöhung, keine Auto-Reduktion)
+
+3. **Vulnerability → Risk ↔ Asset ↔ Vulnerability**
+   - 🛡️ **Lösung:** Asset.monetaryValue IMMER manuell (niemals auto-berechnet)
+   - 🛡️ **Lösung:** Asset.vulnerabilityScore ist READ-ONLY Getter
+
+4. **Patch → Control → Risk → Vulnerability**
+   - ✅ **Kein Zirkel:** Lifecycle mit finalen Status-Änderungen
+   - 🛡️ **Lösung:** Snapshot-basierte Berechnung (monatlich)
+
+**Safe Guard Prinzipien:**
+- ✅ Einseitige Ableitungen bevorzugen (A → B, nicht A ↔ B)
+- ✅ Manual Override für kritische Auto-Berechnungen
+- ✅ Temporal Decoupling (nur historische Daten)
+- ✅ One-Way Adjustments (nur Erhöhung, keine Auto-Reduktion)
+- ✅ READ-ONLY Computed Properties
+- ✅ Clear Separation of Concerns
 
 ### Erwartete Vollständigkeit nach Phase 6
 
