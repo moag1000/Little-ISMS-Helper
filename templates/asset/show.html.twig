@@ -62,6 +62,12 @@
                         <span class="label">{{ 'asset.label.current_value'|trans }}</span>
                         <span class="value">{{ asset.currentValue ? asset.currentValue ~ ' EUR' : 'N/A' }}</span>
                     </div>
+                    {% if asset.monetaryValue %}
+                        <div class="detail-item">
+                            <span class="label">{{ 'asset.label.monetary_value'|trans }}</span>
+                            <span class="value">{{ asset.monetaryValue ~ ' EUR' }}</span>
+                        </div>
+                    {% endif %}
                     <div class="detail-item">
                         <span class="label">{{ 'asset.label.total_value'|trans }}</span>
                         <span class="value">{{ asset.totalValue ~ ' EUR' }}</span>
@@ -72,6 +78,30 @@
                     </div>
                 </div>
             </div>
+
+            {% if asset.dataClassification or asset.returnDate %}
+                <div class="detail-section">
+                    <h3>{{ 'asset.section.compliance'|trans }}</h3>
+                    <div class="detail-grid">
+                        {% if asset.dataClassification %}
+                            <div class="detail-item">
+                                <span class="label">{{ 'asset.label.data_classification'|trans }}</span>
+                                <span class="value">
+                                    <span class="badge badge-classification-{{ asset.dataClassification }}">
+                                        {{ ('asset.classification.' ~ asset.dataClassification)|trans|upper }}
+                                    </span>
+                                </span>
+                            </div>
+                        {% endif %}
+                        {% if asset.returnDate %}
+                            <div class="detail-item">
+                                <span class="label">{{ 'asset.label.return_date'|trans }}</span>
+                                <span class="value">{{ asset.returnDate|date('Y-m-d') }}</span>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
 
             <div class="detail-section">
                 <h3>{{ 'asset.section.cia_triad'|trans }}</h3>
@@ -100,6 +130,24 @@
                 </div>
             </div>
 
+            {% if asset.handlingInstructions %}
+                <div class="detail-section">
+                    <h3>{{ 'asset.section.handling_instructions'|trans }}</h3>
+                    <div class="instruction-box">
+                        {{ asset.handlingInstructions|nl2br }}
+                    </div>
+                </div>
+            {% endif %}
+
+            {% if asset.acceptableUsePolicy %}
+                <div class="detail-section">
+                    <h3>{{ 'asset.section.acceptable_use_policy'|trans }}</h3>
+                    <div class="policy-box">
+                        {{ asset.acceptableUsePolicy|nl2br }}
+                    </div>
+                </div>
+            {% endif %}
+
             {% if analysis %}
                 <div class="detail-section">
                     <h3>{{ 'asset.section.protection_analysis'|trans }}</h3>
@@ -117,5 +165,16 @@
 .value-bar { flex: 1; height: 24px; background: #e5e7eb; border-radius: 4px; overflow: hidden; }
 .value-bar .bar { height: 100%; background: linear-gradient(90deg, #10b981, #059669); }
 .cia-item .value { width: 50px; text-align: right; }
+.instruction-box, .policy-box {
+    padding: 1rem;
+    background: #f9fafb;
+    border-left: 3px solid #3b82f6;
+    border-radius: 4px;
+    white-space: pre-wrap;
+}
+.badge-classification-public { background: #10b981; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; }
+.badge-classification-internal { background: #3b82f6; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; }
+.badge-classification-confidential { background: #f59e0b; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; }
+.badge-classification-restricted { background: #ef4444; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; }
 </style>
 {% endblock %}
