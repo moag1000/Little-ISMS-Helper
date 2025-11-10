@@ -371,8 +371,27 @@ AssetMapper hat ein bekanntes Problem (GitHub Issue #52620) mit dem `fonts/` Unt
 - ✅ Schnell (jsDelivr ist weltweit gecached)
 - ✅ Mit SRI-Hash gesichert
 - ✅ Kein Troubleshooting nötig
+- ✅ CSP ist konfiguriert für jsDelivr (in `SecurityHeadersSubscriber.php`)
 
 **Falls Bootstrap Icons trotzdem fehlen:**
+
+**Symptom 1: CSP blockiert Bootstrap Icons Fonts**
+
+Browser-Konsole zeigt:
+```
+Loading the font 'https://cdn.jsdelivr.net/.../bootstrap-icons.woff2' violates
+the following Content Security Policy directive: "font-src 'self' data: ..."
+```
+
+**Lösung:** CSP muss jsDelivr für Fonts erlauben (bereits im Code enthalten):
+```php
+// src/EventSubscriber/SecurityHeadersSubscriber.php
+"font-src 'self' data: https://fonts.gstatic.com https://cdn.jsdelivr.net"
+```
+
+Nach Git-Pull sollte das automatisch behoben sein. Falls nicht, prüfen Sie die Datei manuell.
+
+**Symptom 2: CDN-Link fehlt**
 
 1. **Prüfen Sie, ob der CDN-Link in base.html.twig vorhanden ist:**
    ```bash
