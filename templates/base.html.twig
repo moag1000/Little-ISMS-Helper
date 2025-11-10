@@ -69,16 +69,8 @@
                 </div>
             </div>
             <div style="display: flex; align-items: center; gap: 1rem;">
-                {# Global Search Trigger Button #}
-                <div data-controller="search" data-search-search-url-value="{{ path('app_api_search') }}">
-                    <button type="button"
-                            class="btn btn-outline-secondary btn-sm"
-                            data-action="click->search#open"
-                            title="Suche (Cmd+K)">
-                        <i class="bi-search"></i>
-                        <span class="d-none d-md-inline ms-2">Suche</span>
-                    </button>
-                </div>
+                {# Global Search Component (Button + Modal) #}
+                {% include '_components/_global_search.html.twig' %}
 
                 <div class="language-switcher">
                     <a href="{{ path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')|merge({'_locale': 'de'})) }}"
@@ -146,8 +138,7 @@
     {# Command Palette (⌘P) #}
     {% include '_components/_command_palette.html.twig' %}
 
-    {# Global Search (Paket B - Premium) #}
-    {% include '_components/_global_search.html.twig' %}
+    {# Global Search is now included in the header #}
 
     {# Quick View Modal (Paket B - Premium) #}
     {% include '_components/_quick_view_modal.html.twig' %}
