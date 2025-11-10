@@ -154,6 +154,60 @@
                     <p>{{ analysis.availability.recommendation }}</p>
                 </div>
             {% endif %}
+
+            {# Data Reuse: Protecting Controls #}
+            {% if asset.protectingControls is defined and asset.protectingControls|length > 0 %}
+                <div class="detail-section">
+                    <h3>{{ 'asset.section.protecting_controls'|trans }} ({{ asset.protectingControls|length }})</h3>
+                    <div class="controls-list">
+                        {% for control in asset.protectingControls %}
+                            <div class="control-item">
+                                <strong>{{ control.controlId }}</strong>: {{ control.name }}
+                                <span class="badge badge-{{ control.implementationStatus }}">
+                                    {{ control.implementationStatus|upper }}
+                                </span>
+                                <small>({{ control.implementationPercentage }}%)</small>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+
+            {# Data Reuse: Related Risks #}
+            {% if asset.risks is defined and asset.risks|length > 0 %}
+                <div class="detail-section">
+                    <h3>{{ 'asset.section.related_risks'|trans }} ({{ asset.risks|length }})</h3>
+                    <div class="risks-list">
+                        {% for risk in asset.risks %}
+                            <div class="risk-item">
+                                <strong>{{ risk.title }}</strong>
+                                <span class="badge badge-risk-{{ risk.inherentRiskLevel >= 16 ? 'high' : (risk.inherentRiskLevel >= 9 ? 'medium' : 'low') }}">
+                                    Risk Level: {{ risk.inherentRiskLevel }}
+                                </span>
+                                <small>Status: {{ risk.status|upper }}</small>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+
+            {# Data Reuse: Related Incidents #}
+            {% if asset.incidents is defined and asset.incidents|length > 0 %}
+                <div class="detail-section">
+                    <h3>{{ 'asset.section.related_incidents'|trans }} ({{ asset.incidents|length }})</h3>
+                    <div class="incidents-list">
+                        {% for incident in asset.incidents %}
+                            <div class="incident-item">
+                                <strong>{{ incident.title }}</strong>
+                                <span class="badge badge-severity-{{ incident.severity }}">
+                                    {{ incident.severity|upper }}
+                                </span>
+                                <small>{{ incident.detectedAt|date('Y-m-d') }}</small>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
         </div>
     </div>
 </div>
@@ -176,5 +230,23 @@
 .badge-classification-internal { background: #3b82f6; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; }
 .badge-classification-confidential { background: #f59e0b; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; }
 .badge-classification-restricted { background: #ef4444; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; }
+/* Data Reuse Sections */
+.controls-list, .risks-list, .incidents-list { display: flex; flex-direction: column; gap: 0.5rem; }
+.control-item, .risk-item, .incident-item {
+    padding: 0.75rem;
+    background: #f9fafb;
+    border-left: 3px solid #3b82f6;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.badge-risk-high { background: #ef4444; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; }
+.badge-risk-medium { background: #f59e0b; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; }
+.badge-risk-low { background: #10b981; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; }
+.badge-severity-critical { background: #7f1d1d; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; }
+.badge-severity-high { background: #ef4444; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; }
+.badge-severity-medium { background: #f59e0b; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; }
+.badge-severity-low { background: #10b981; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; }
 </style>
 {% endblock %}
