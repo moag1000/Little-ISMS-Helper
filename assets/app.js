@@ -7,7 +7,7 @@ import './stimulus_bootstrap.js';
  */
 
 // External dependencies (loaded from importmap)
-import 'bootstrap-icons/font/bootstrap-icons.css';
+import 'bootstrap-icons/font/bootstrap-icons.min.css';
 
 // Core styles
 import './styles/app.css';
