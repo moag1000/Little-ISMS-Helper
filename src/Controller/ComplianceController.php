@@ -227,14 +227,41 @@ class ComplianceController extends AbstractController
     }
 
     #[Route('/compare', name: 'app_compliance_compare')]
-    public function compareFrameworks(): Response
+    public function compareFrameworks(Request $request): Response
     {
         $frameworks = $this->frameworkRepository->findActiveFrameworks();
-        $comparison = $this->assessmentService->compareFrameworks($frameworks);
+
+        $selectedFramework1 = null;
+        $selectedFramework2 = null;
+        $comparison = null;
+        $framework1Requirements = 0;
+        $framework2Requirements = 0;
+        $commonRequirements = 0;
+
+        $framework1Id = $request->query->get('framework1');
+        $framework2Id = $request->query->get('framework2');
+
+        if ($framework1Id && $framework2Id) {
+            $selectedFramework1 = $this->frameworkRepository->find($framework1Id);
+            $selectedFramework2 = $this->frameworkRepository->find($framework2Id);
+
+            if ($selectedFramework1 && $selectedFramework2) {
+                $comparison = $this->assessmentService->compareFrameworks([$selectedFramework1, $selectedFramework2]);
+                $framework1Requirements = count($selectedFramework1->getRequirements());
+                $framework2Requirements = count($selectedFramework2->getRequirements());
+                // Calculate common requirements (simplified - you may want to enhance this)
+                $commonRequirements = 0;
+            }
+        }
 
         return $this->render('compliance/compare.html.twig', [
             'frameworks' => $frameworks,
+            'selectedFramework1' => $selectedFramework1,
+            'selectedFramework2' => $selectedFramework2,
             'comparison' => $comparison,
+            'framework1Requirements' => $framework1Requirements,
+            'framework2Requirements' => $framework2Requirements,
+            'commonRequirements' => $commonRequirements,
         ]);
     }
 
