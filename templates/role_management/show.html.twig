@@ -1,0 +1,140 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ role.name }} - {{ 'role_management.title.show'|trans }} - Small ISMS Helper{% endblock %}
+
+{% block body %}
+<div class="d-flex justify-between align-center mb-4">
+    <div>
+        <h1>{{ role.name }}</h1>
+        <div class="mt-2">
+            {% if role.systemRole %}
+                <span class="badge badge-info">{{ 'role_management.badge.system'|trans }}</span>
+            {% endif %}
+            {% if role.active %}
+                <span class="badge badge-success">{{ 'role_management.badge.active'|trans }}</span>
+            {% else %}
+                <span class="badge badge-danger">{{ 'role_management.badge.inactive'|trans }}</span>
+            {% endif %}
+        </div>
+    </div>
+    <div>
+        <a href="{{ path('app_role_management_edit', {id: role.id}) }}" class="btn btn-success" style="margin-right: 0.5rem;">
+            ✏️ {{ 'common.edit'|trans }}
+        </a>
+        <a href="{{ path('app_role_management_index') }}" class="btn btn-secondary">
+            ← {{ 'common.back_to_list'|trans }}
+        </a>
+    </div>
+</div>
+
+{# Role Details #}
+<div class="card mb-4">
+    <h2>{{ 'role_management.section.details'|trans }}</h2>
+
+    <div class="stats-grid mt-3" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));">
+        <div class="stat-item">
+            <strong>{{ role.name }}</strong>
+            <span>{{ 'role_management.field.name'|trans }}</span>
+        </div>
+
+        <div class="stat-item">
+            <strong>{{ role.users|length }}</strong>
+            <span>{{ 'role_management.field.users'|trans }}</span>
+        </div>
+
+        <div class="stat-item">
+            <strong>{{ role.permissions|length }}</strong>
+            <span>{{ 'role_management.field.permissions'|trans }}</span>
+        </div>
+    </div>
+
+    {% if role.description %}
+    <div class="mt-3">
+        <h3 style="font-size: 1rem; margin-bottom: var(--spacing-sm);">{{ 'role_management.field.description'|trans }}</h3>
+        <div class="info-box" style="background: var(--color-bg-light);">
+            <p style="white-space: pre-wrap;">{{ role.description }}</p>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+{# Permissions #}
+<div class="card mb-4">
+    <h2>{{ 'role_management.section.permissions'|trans }}</h2>
+
+    {% if role.permissions|length > 0 %}
+    <div class="table-container mt-3">
+        <table>
+            <thead>
+                <tr>
+                    <th>{{ 'role_management.permission.name'|trans }}</th>
+                    <th>{{ 'role_management.permission.resource'|trans }}</th>
+                    <th>{{ 'role_management.permission.action'|trans }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for permission in role.permissions %}
+                <tr>
+                    <td><strong>{{ permission.name }}</strong></td>
+                    <td><span class="badge badge-info">{{ permission.resource }}</span></td>
+                    <td><span class="badge badge-secondary">{{ permission.action }}</span></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p style="color: var(--color-text-muted); margin-top: var(--spacing-sm);">
+        {{ 'role_management.message.no_permissions'|trans }}
+    </p>
+    {% endif %}
+</div>
+
+{# Assigned Users #}
+<div class="card mb-4">
+    <h2>{{ 'role_management.section.users'|trans }}</h2>
+
+    {% if role.users|length > 0 %}
+    <div class="table-container mt-3">
+        <table>
+            <thead>
+                <tr>
+                    <th>{{ 'role_management.user.name'|trans }}</th>
+                    <th>{{ 'role_management.user.email'|trans }}</th>
+                    <th>{{ 'role_management.user.assigned_date'|trans }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in role.users %}
+                <tr>
+                    <td><strong>{{ user.fullName }}</strong></td>
+                    <td>{{ user.email|default('-') }}</td>
+                    <td>{{ user.roleAssignedAt|date('d.m.Y H:i') }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p style="color: var(--color-text-muted); margin-top: var(--spacing-sm);">
+        {{ 'role_management.message.no_users'|trans }}
+    </p>
+    {% endif %}
+</div>
+
+{# Action Buttons #}
+<div class="d-flex gap-2 mt-4">
+    <a href="{{ path('app_role_management_edit', {id: role.id}) }}" class="btn btn-success">
+        ✏️ {{ 'common.edit'|trans }}
+    </a>
+    <a href="{{ path('app_role_management_index') }}" class="btn btn-secondary">
+        📋 {{ 'common.back_to_list'|trans }}
+    </a>
+    {% if not role.systemRole %}
+    <form method="post" action="{{ path('app_role_management_delete', {id: role.id}) }}" onsubmit="return confirm('{{ 'role_management.confirm.delete'|trans }}');" style="display: inline;">
+        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ role.id) }}">
+        <button type="submit" class="btn btn-danger">🗑️ {{ 'common.delete'|trans }}</button>
+    </form>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,290 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'asset.title.bcm_insights'|trans }} - Small ISMS Helper{% endblock %}
+
+{% block body %}
+<div class="d-flex justify-between align-center mb-4">
+    <div>
+        <h1>{{ 'asset.title.bcm_insights'|trans }}</h1>
+        <p style="color: var(--color-text-light); margin-top: var(--spacing-sm);">
+            {{ 'asset.description.bcm_insights'|trans }}
+        </p>
+    </div>
+    <div>
+        <a href="{{ path('app_bcm_critical') }}" class="btn btn-secondary" style="margin-right: 0.5rem;">
+            🔴 {{ 'asset.action.view_critical'|trans }}
+        </a>
+        <a href="{{ path('app_asset_index') }}" class="btn btn-secondary">
+            ← {{ 'common.back'|trans }}
+        </a>
+    </div>
+</div>
+
+{# Statistics Cards #}
+<div class="kpi-grid">
+    <div class="kpi-card">
+        <div class="icon">💼</div>
+        <div class="label">{{ 'asset.stats.total_assets'|trans }}</div>
+        <div>
+            <span class="value">{{ totalAssets }}</span>
+        </div>
+    </div>
+
+    <div class="kpi-card" style="border-left: 4px solid var(--color-danger);">
+        <div class="icon">🔴</div>
+        <div class="label">{{ 'asset.stats.critical_assets'|trans }}</div>
+        <div>
+            <span class="value" style="color: var(--color-danger);">{{ criticalAssets }}</span>
+        </div>
+    </div>
+
+    <div class="kpi-card">
+        <div class="icon">⚠️</div>
+        <div class="label">{{ 'asset.stats.high_risk_assets'|trans }}</div>
+        <div>
+            <span class="value">{{ highRiskAssets }}</span>
+        </div>
+    </div>
+
+    <div class="kpi-card">
+        <div class="icon">⏱️</div>
+        <div class="label">{{ 'asset.stats.avg_rto'|trans }}</div>
+        <div>
+            <span class="value">{{ avgRTO }}</span>
+            <span class="unit">h</span>
+        </div>
+    </div>
+</div>
+
+{# Business Impact Analysis #}
+<h2>{{ 'asset.section.business_impact'|trans }}</h2>
+
+<div class="module-grid mb-4">
+    <div class="card" style="border-left: 4px solid var(--color-danger);">
+        <div style="font-size: 2rem; margin-bottom: var(--spacing-sm);">🔴</div>
+        <h3>{{ 'asset.impact.critical'|trans }}</h3>
+        <div class="mt-2">
+            <strong style="font-size: 1.5rem; color: var(--color-danger);">{{ assetsByImpact.critical|length }}</strong>
+        </div>
+        <p style="color: var(--color-text-muted); margin-top: var(--spacing-xs);">
+            {{ 'asset.description.critical_impact'|trans }}
+        </p>
+        <div class="mt-2">
+            <small><strong>{{ 'asset.field.avg_rto'|trans }}:</strong> {{ avgRTOByCriticality.critical }}h</small>
+        </div>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--color-warning);">
+        <div style="font-size: 2rem; margin-bottom: var(--spacing-sm);">🟡</div>
+        <h3>{{ 'asset.impact.high'|trans }}</h3>
+        <div class="mt-2">
+            <strong style="font-size: 1.5rem; color: var(--color-warning);">{{ assetsByImpact.high|length }}</strong>
+        </div>
+        <p style="color: var(--color-text-muted); margin-top: var(--spacing-xs);">
+            {{ 'asset.description.high_impact'|trans }}
+        </p>
+        <div class="mt-2">
+            <small><strong>{{ 'asset.field.avg_rto'|trans }}:</strong> {{ avgRTOByCriticality.high }}h</small>
+        </div>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--color-info);">
+        <div style="font-size: 2rem; margin-bottom: var(--spacing-sm);">🔵</div>
+        <h3>{{ 'asset.impact.medium'|trans }}</h3>
+        <div class="mt-2">
+            <strong style="font-size: 1.5rem; color: var(--color-info);">{{ assetsByImpact.medium|length }}</strong>
+        </div>
+        <p style="color: var(--color-text-muted); margin-top: var(--spacing-xs);">
+            {{ 'asset.description.medium_impact'|trans }}
+        </p>
+        <div class="mt-2">
+            <small><strong>{{ 'asset.field.avg_rto'|trans }}:</strong> {{ avgRTOByCriticality.medium }}h</small>
+        </div>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--color-secondary);">
+        <div style="font-size: 2rem; margin-bottom: var(--spacing-sm);">⚪</div>
+        <h3>{{ 'asset.impact.low'|trans }}</h3>
+        <div class="mt-2">
+            <strong style="font-size: 1.5rem;">{{ assetsByImpact.low|length }}</strong>
+        </div>
+        <p style="color: var(--color-text-muted); margin-top: var(--spacing-xs);">
+            {{ 'asset.description.low_impact'|trans }}
+        </p>
+        <div class="mt-2">
+            <small><strong>{{ 'asset.field.avg_rto'|trans }}:</strong> {{ avgRTOByCriticality.low }}h</small>
+        </div>
+    </div>
+</div>
+
+{# Recovery Time Objectives (RTO) Analysis #}
+<h2>{{ 'asset.section.rto_analysis'|trans }}</h2>
+
+<div class="card mb-4">
+    <p style="color: var(--color-text-muted); margin-bottom: var(--spacing-md);">
+        {{ 'asset.description.rto_analysis'|trans }}
+    </p>
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>{{ 'asset.field.rto_category'|trans }}</th>
+                    <th style="text-align: center;">{{ 'asset.field.asset_count'|trans }}</th>
+                    <th>{{ 'asset.field.examples'|trans }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <strong>{{ 'asset.rto.immediate'|trans }}</strong>
+                        <br><small style="color: var(--color-text-muted);">&lt; 1h</small>
+                    </td>
+                    <td style="text-align: center;">
+                        <span class="badge badge-danger">{{ rtoCategories.immediate|length }}</span>
+                    </td>
+                    <td>
+                        {% for asset in rtoCategories.immediate|slice(0, 3) %}
+                            <span class="badge badge-secondary" style="margin-right: var(--spacing-xs);">{{ asset.name }}</span>
+                        {% endfor %}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <strong>{{ 'asset.rto.urgent'|trans }}</strong>
+                        <br><small style="color: var(--color-text-muted);">1-4h</small>
+                    </td>
+                    <td style="text-align: center;">
+                        <span class="badge badge-warning">{{ rtoCategories.urgent|length }}</span>
+                    </td>
+                    <td>
+                        {% for asset in rtoCategories.urgent|slice(0, 3) %}
+                            <span class="badge badge-secondary" style="margin-right: var(--spacing-xs);">{{ asset.name }}</span>
+                        {% endfor %}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <strong>{{ 'asset.rto.standard'|trans }}</strong>
+                        <br><small style="color: var(--color-text-muted);">4-24h</small>
+                    </td>
+                    <td style="text-align: center;">
+                        <span class="badge badge-info">{{ rtoCategories.standard|length }}</span>
+                    </td>
+                    <td>
+                        {% for asset in rtoCategories.standard|slice(0, 3) %}
+                            <span class="badge badge-secondary" style="margin-right: var(--spacing-xs);">{{ asset.name }}</span>
+                        {% endfor %}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <strong>{{ 'asset.rto.flexible'|trans }}</strong>
+                        <br><small style="color: var(--color-text-muted);">&gt; 24h</small>
+                    </td>
+                    <td style="text-align: center;">
+                        <span class="badge badge-secondary">{{ rtoCategories.flexible|length }}</span>
+                    </td>
+                    <td>
+                        {% for asset in rtoCategories.flexible|slice(0, 3) %}
+                            <span class="badge badge-secondary" style="margin-right: var(--spacing-xs);">{{ asset.name }}</span>
+                        {% endfor %}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{# Critical Assets Details #}
+<h2>{{ 'asset.section.critical_assets'|trans }}</h2>
+
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>{{ 'asset.field.asset_name'|trans }}</th>
+                <th>{{ 'asset.field.type'|trans }}</th>
+                <th>{{ 'asset.field.business_criticality'|trans }}</th>
+                <th>{{ 'asset.field.rto'|trans }}</th>
+                <th>{{ 'asset.field.rpo'|trans }}</th>
+                <th>{{ 'asset.field.recovery_strategy'|trans }}</th>
+                <th style="text-align: center;">{{ 'common.actions'|trans }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for asset in criticalAssetsList %}
+            <tr>
+                <td>
+                    <strong>{{ asset.name }}</strong>
+                    {% if asset.isBusinessCritical %}
+                        <span class="badge badge-danger" style="margin-left: var(--spacing-xs);">
+                            {{ 'asset.badge.business_critical'|trans }}
+                        </span>
+                    {% endif %}
+                </td>
+                <td>
+                    <span class="badge badge-info">{{ ('asset.type.' ~ asset.type)|trans }}</span>
+                </td>
+                <td>
+                    {% set criticalityColors = {
+                        'critical': 'danger',
+                        'high': 'warning',
+                        'medium': 'info',
+                        'low': 'secondary'
+                    } %}
+                    <span class="badge badge-{{ criticalityColors[asset.businessCriticality] ?? 'secondary' }}">
+                        {{ ('asset.criticality.' ~ asset.businessCriticality)|trans }}
+                    </span>
+                </td>
+                <td>
+                    <strong>{{ asset.rto }}h</strong>
+                </td>
+                <td>
+                    <strong>{{ asset.rpo }}h</strong>
+                </td>
+                <td>
+                    <small style="color: var(--color-text-muted);">
+                        {{ asset.recoveryStrategy|default('-') }}
+                    </small>
+                </td>
+                <td style="text-align: center;">
+                    <a href="{{ path('app_asset_show', {id: asset.id}) }}" class="btn btn-sm">
+                        👁 {{ 'common.view'|trans }}
+                    </a>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="7" style="text-align: center; padding: var(--spacing-xl); color: var(--color-text-muted);">
+                    {{ 'asset.message.no_critical_assets'|trans }}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{# Dependency Map #}
+<div class="card mt-4">
+    <h2>{{ 'asset.section.dependency_insights'|trans }}</h2>
+    <p style="color: var(--color-text-muted); margin-top: var(--spacing-sm); margin-bottom: var(--spacing-md);">
+        {{ 'asset.description.dependencies'|trans }}
+    </p>
+
+    <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));">
+        <div class="stat-item">
+            <strong>{{ assetsWithDependencies }}</strong>
+            <span>{{ 'asset.stats.with_dependencies'|trans }}</span>
+        </div>
+        <div class="stat-item">
+            <strong>{{ avgDependencies|round(1) }}</strong>
+            <span>{{ 'asset.stats.avg_dependencies'|trans }}</span>
+        </div>
+        <div class="stat-item">
+            <strong>{{ singlePointsOfFailure }}</strong>
+            <span>{{ 'asset.stats.single_points_failure'|trans }}</span>
+        </div>
+    </div>
+</div>
+{% endblock %}
