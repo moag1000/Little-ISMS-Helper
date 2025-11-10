@@ -173,7 +173,6 @@ audit:
   audit_criteria: Audit-Kriterien
   evidence_collected: Gesammelte Nachweise
   overall_result: Gesamtergebnis
-  result: Ergebnis
   team_size: Teamgröße
   quick_stats: Schnellstatistiken
   export_pdf: Als PDF exportieren
