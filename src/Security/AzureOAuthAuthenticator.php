@@ -120,7 +120,7 @@ class AzureOAuthAuthenticator extends OAuth2Authenticator implements Authenticat
      * Called when authentication is needed, but it's not sent.
      * This redirects to the 'login'.
      */
-    public function start(Request $request, AuthenticationException $authException = null): Response
+    public function start(Request $request, ?AuthenticationException $authException = null): Response
     {
         return new RedirectResponse(
             $this->router->generate('app_login'),
