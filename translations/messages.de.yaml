@@ -106,6 +106,43 @@ common:
   note: Hinweis
   to_home: Zur Startseite
 asset:
+  new: Neues Asset
+  create: Asset erstellen
+  edit: Asset bearbeiten
+  details:
+    title: Asset-Details
+  confirm:
+    delete: Sind Sie sicher, dass Sie dieses Asset löschen möchten?
+  action:
+    bcm_insights: BCM-Einblicke
+  section:
+    cia_triad: CIA-Triade
+  cia_help: Bewerten Sie die Vertraulichkeit, Integrität und Verfügbarkeit dieses Assets
+  cia_values: CIA-Werte
+  field:
+    name: Name
+    type: Typ
+    description: Beschreibung
+    owner: Besitzer
+    location: Standort
+    status: Status
+    acquisition_value: Anschaffungswert
+    current_value: Aktueller Wert
+    confidentiality: Vertraulichkeit
+    integrity: Integrität
+    availability: Verfügbarkeit
+  placeholder:
+    name: z.B. Kundendatenbank
+    description: Detaillierte Beschreibung des Assets
+    owner: Wählen Sie den verantwortlichen Besitzer
+    location: Wählen Sie den Standort
+  type:
+    information: Information
+    software: Software
+    hardware: Hardware
+    service: Dienst
+    people: Personal
+    intangible: Immateriell
   label:
     type: Typ
     owner: Besitzer
@@ -118,6 +155,10 @@ asset:
     confidentiality: Vertraulichkeit
     integrity: Integrität
     availability: Verfügbarkeit
+  success:
+    created: Asset erfolgreich erstellt.
+    updated: Asset erfolgreich aktualisiert.
+    deleted: Asset erfolgreich gelöscht.
 risk:
   success:
     created: Risiko erfolgreich erstellt.
