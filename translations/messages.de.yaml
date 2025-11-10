@@ -676,7 +676,7 @@ supplier:
   not_scheduled: Nicht geplant
   risk_score: Risiko-Score
   list:
-    title: 'Lieferanten ({{ count }})'
+    title: 'Lieferanten (%count%)'
   table:
     name: Name
     service_provided: Bereitgestellte Dienstleistung
@@ -728,7 +728,7 @@ interested_party:
     title: Parteien mit hoher Wichtigkeit
   engagement_score: Engagement-Score
   list:
-    title: 'Interessierte Parteien ({{ count }})'
+    title: 'Interessierte Parteien (%count%)'
   table:
     name: Name
     type: Typ
@@ -866,7 +866,7 @@ change_request:
     pending_approval: Warten auf Genehmigung
     overdue: Überfällige Änderungsanträge
   list:
-    title: 'Änderungsanträge ({{ count }})'
+    title: 'Änderungsanträge (%count%)'
   table:
     change_number: 'Änderungs-Nr.'
     title: Titel
@@ -1116,3 +1116,84 @@ compliance:
   industry.automotive: Automobilindustrie
   industry.financial_services: Finanzdienstleistungen
   industry.all_sectors: Alle Branchen
+
+# Risk Appetite (ISO 27005:2022)
+risk_appetite:
+  field:
+    category: Kategorie
+    max_acceptable_risk: Maximales akzeptables Risiko
+    description: Beschreibung
+    is_active: Aktiv
+    approved_by: Genehmigt von
+    approved_at: Genehmigt am
+  placeholder:
+    category: 'z.B. Finanzrisiken, Operationelle Risiken, Compliance-Risiken'
+    approved_by: Person auswählen
+    description: 'Beschreiben Sie die Risikobereitschaft und deren Begründung...'
+  help:
+    category: 'Optional: Leer lassen für globale Risikobereitschaft, oder Kategorie angeben (z.B. "Finanzrisiken")'
+    max_acceptable_risk: 'Maximaler Risiko-Score (1-25) auf der 5×5 Risikomatrix. Risiken darüber erfordern Behandlung.'
+    description: 'Erklärung der Risikobereitschaft, Begründung und Richtlinien für die Risikoakzeptanz'
+    is_active: 'Nur eine Risikobereitschaft pro Kategorie sollte aktiv sein'
+    approved_by: 'Person, die diese Risikobereitschaft genehmigt hat (ISO 27005 Compliance)'
+    approved_at: 'Zeitpunkt der formalen Genehmigung'
+  validation:
+    category_max_length: 'Kategoriename darf maximal {{ limit }} Zeichen lang sein'
+    max_acceptable_risk_required: 'Maximales akzeptables Risiko ist erforderlich'
+    max_acceptable_risk_range: 'Maximales akzeptables Risiko muss zwischen {{ min }} und {{ max }} liegen'
+    description_required: 'Beschreibung ist erforderlich'
+
+# Risk Treatment Plan (ISO 27005:2022)
+risk_treatment_plan:
+  field:
+    risk: Risiko
+    title: Titel
+    description: Beschreibung
+    status: Status
+    priority: Priorität
+    start_date: Startdatum
+    target_completion_date: Ziel-Fertigstellungsdatum
+    actual_completion_date: Tatsächliches Fertigstellungsdatum
+    budget: Budget
+    responsible_person: Verantwortliche Person
+    controls: Maßnahmen
+    completion_percentage: Fertigstellungsgrad
+    implementation_notes: Implementierungshinweise
+  placeholder:
+    risk: Risiko auswählen
+    title: 'z.B. Implementierung Firewall-Regeln'
+    description: 'Beschreiben Sie die geplanten Behandlungsmaßnahmen...'
+    responsible_person: Person auswählen
+    implementation_notes: 'Notizen zum Implementierungsfortschritt...'
+  help:
+    risk: 'Das Risiko, das durch diesen Plan behandelt wird'
+    description: 'Detaillierte Beschreibung der geplanten Risikobehandlungsmaßnahmen'
+    status: 'Aktueller Implementierungsstatus des Plans'
+    priority: 'Prioritätsstufe für die Implementierung'
+    start_date: 'Datum des Implementierungsbeginns'
+    target_completion_date: 'Geplantes Fertigstellungsdatum'
+    actual_completion_date: 'Tatsächliches Fertigstellungsdatum (bei Abschluss)'
+    budget: 'Für diesen Plan zugewiesenes Budget in EUR'
+    responsible_person: 'Person, die für die Implementierung dieses Plans verantwortlich ist'
+    controls: 'ISO 27001 Maßnahmen, die diesen Behandlungsplan implementieren'
+    completion_percentage: 'Fertigstellungsgrad von 0-100%'
+    implementation_notes: 'Notizen zum Fortschritt und zur Implementierung'
+  status:
+    planned: Geplant
+    in_progress: In Bearbeitung
+    completed: Abgeschlossen
+    cancelled: Abgebrochen
+    on_hold: Pausiert
+  priority:
+    low: Niedrig
+    medium: Mittel
+    high: Hoch
+    critical: Kritisch
+  validation:
+    risk_required: 'Risiko ist erforderlich'
+    title_required: 'Titel ist erforderlich'
+    title_max_length: 'Titel darf maximal {{ limit }} Zeichen lang sein'
+    description_required: 'Beschreibung ist erforderlich'
+    target_completion_date_required: 'Ziel-Fertigstellungsdatum ist erforderlich'
+    budget_positive: 'Budget muss positiv oder null sein'
+    completion_percentage_range: 'Fertigstellungsgrad muss zwischen {{ min }} und {{ max }} liegen'

@@ -26,6 +26,42 @@ class ControlRepository extends ServiceEntityRepository
     }
 
     /**
+     * Find all controls ordered by ISO 27001 control ID in natural order.
+     *
+     * Sorts controls by the numeric parts of controlId (e.g., 5.1, 5.2, ..., 5.10, 5.37)
+     * instead of lexicographic sort (5.1, 5.10, 5.11, ..., 5.2).
+     *
+     * Uses LENGTH + ASC for correct natural sorting (5.1 < 5.2 < 5.10).
+     *
+     * @return Control[] Array of Control entities in ISO 27001 natural order
+     */
+    public function findAllInIsoOrder(): array
+    {
+        return $this->createQueryBuilder('c')
+            ->orderBy('LENGTH(c.controlId)', 'ASC')
+            ->addOrderBy('c.controlId', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Find controls by category ordered by ISO 27001 control ID in natural order.
+     *
+     * @param string $category The category to filter by
+     * @return Control[] Array of Control entities in ISO 27001 natural order
+     */
+    public function findByCategoryInIsoOrder(string $category): array
+    {
+        return $this->createQueryBuilder('c')
+            ->where('c.category = :category')
+            ->setParameter('category', $category)
+            ->orderBy('LENGTH(c.controlId)', 'ASC')
+            ->addOrderBy('c.controlId', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * Find all applicable ISO 27001 controls ordered by control ID.
      *
      * @return Control[] Array of applicable Control entities
