@@ -242,3 +242,258 @@ document:
     compliance: Compliance-Nachweis
     training: Schulungsmaterial
     general: Allgemein
+
+# Person Management
+person:
+  title: Personenverwaltung
+  name: Person
+  full_name: Vollständiger Name
+  person_type: Personentyp
+  badge_id: Ausweisnummer
+  company: Firma
+  email: E-Mail
+  phone: Telefon
+  department: Abteilung
+  job_title: Berufsbezeichnung
+  linked_user: Verknüpfter Benutzer
+  active: Aktiv
+  notes: Notizen
+  access_valid_from: Zugang gültig ab
+  access_valid_until: Zugang gültig bis
+  type:
+    employee: Mitarbeiter
+    contractor: Auftragnehmer
+    visitor: Besucher
+    vendor: Lieferant
+    auditor: Prüfer
+    consultant: Berater
+    other: Sonstiges
+  field:
+    full_name: Vollständiger Name
+    person_type: Personentyp
+    badge_id: Ausweisnummer
+    company: Firma
+    department: Abteilung
+    job_title: Berufsbezeichnung
+
+# Location Management
+location:
+  title: Standortverwaltung
+  name: Standort
+  location_type: Standorttyp
+  code: Standortcode
+  description: Beschreibung
+  address: Adresse
+  city: Stadt
+  country: Land
+  postal_code: Postleitzahl
+  parent_location: Übergeordneter Standort
+  security_level: Sicherheitsstufe
+  requires_badge_access: Benötigt Ausweiszugang
+  requires_escort: Benötigt Begleitung
+  camera_monitored: Kameraüberwacht
+  access_control_system: Zugangskontrollsystem
+  responsible_person: Verantwortliche Person
+  capacity: Kapazität
+  square_meters: Quadratmeter
+  active: Aktiv
+  notes: Notizen
+  type:
+    building: Gebäude
+    floor: Etage
+    room: Raum
+    area: Bereich
+    datacenter: Rechenzentrum
+    server_room: Serverraum
+    office: Büro
+    warehouse: Lager
+    gate: Tor
+    entrance: Eingang
+    parking: Parkplatz
+    outdoor: Außenbereich
+    other: Sonstiges
+  security:
+    public: Öffentlich
+    restricted: Eingeschränkt
+    controlled: Kontrolliert
+    secure: Sicher
+    high_security: Hochsicherheit
+  field:
+    name: Standortname
+    location_type: Standorttyp
+    code: Code
+    security_level: Sicherheitsstufe
+
+# Physical Access Log
+physical_access:
+  title: Zutrittskontrolle
+  name: Zutrittsprotokoll
+  person: Person
+  location: Standort
+  access_type: Zugriffstyp
+  access_time: Zugangszeit
+  exit_time: Ausgangszeit
+  authentication_method: Authentifizierungsmethode
+  purpose: Zweck
+  escorted_by: Begleitet von
+  authorized: Autorisiert
+  notes: Notizen
+  alert_level: Alarmstufe
+  after_hours: Außerhalb der Geschäftszeiten
+  door_or_gate: Tür/Tor
+  type:
+    entry: Eingang
+    exit: Ausgang
+    entry_exit: Ein-/Ausgang
+  auth_method:
+    badge: Ausweis
+    biometric: Biometrisch
+    pin: PIN
+    key: Schlüssel
+    escort: Begleitung
+    manual: Manuell
+    other: Sonstiges
+  alert:
+    none: Keine
+    low: Niedrig
+    medium: Mittel
+    high: Hoch
+    critical: Kritisch
+
+# Threat Intelligence
+threat:
+  title: Bedrohungsinformationen
+  name: Bedrohung
+  threat_type: Bedrohungstyp
+  severity: Schweregrad
+  source: Quelle
+  cve_id: CVE-ID
+  affected_systems: Betroffene Systeme
+  affected_assets: Betroffene Assets
+  indicators: Indikatoren
+  mitigation_recommendations: Empfohlene Gegenmaßnahmen
+  status: Status
+  detection_date: Erkennungsdatum
+  mitigation_date: Maßnahmendatum
+  actions_taken: Ergriffene Maßnahmen
+  affects_organization: Betrifft Organisation
+  cvss_score: CVSS-Score
+  references: Referenzen
+  assigned_to: Zugewiesen an
+  type:
+    malware: Malware
+    phishing: Phishing
+    vulnerability: Schwachstelle
+    data_breach: Datenschutzvorfall
+    ddos: DDoS
+    insider_threat: Insider-Bedrohung
+    ransomware: Ransomware
+    apt: APT
+    zero_day: Zero-Day
+    other: Sonstiges
+  status_type:
+    new: Neu
+    analyzing: In Analyse
+    mitigated: Behoben
+    monitoring: Überwacht
+    closed: Geschlossen
+
+# Cryptographic Operations
+crypto:
+  title: Kryptographische Operationen
+  name: Kryptographische Operation
+  operation_type: Operationstyp
+  algorithm: Algorithmus
+  key_length: Schlüssellänge
+  key_identifier: Schlüsselkennung
+  purpose: Zweck
+  data_classification: Datenklassifizierung
+  application_component: Anwendungskomponente
+  related_asset: Zugehöriges Asset
+  status: Status
+  error_message: Fehlermeldung
+  timestamp: Zeitstempel
+  ip_address: IP-Adresse
+  metadata: Metadaten
+  compliance_relevant: Compliance-relevant
+  type:
+    encryption: Verschlüsselung
+    decryption: Entschlüsselung
+    signing: Signierung
+    verification: Verifizierung
+    key_generation: Schlüsselgenerierung
+    key_exchange: Schlüsselaustausch
+    hashing: Hashing
+    other: Sonstiges
+  status_type:
+    success: Erfolgreich
+    failed: Fehlgeschlagen
+    pending: Ausstehend
+    in_progress: In Bearbeitung
+
+# Common Field Labels
+field:
+  id: ID
+  name: Name
+  title: Titel
+  description: Beschreibung
+  status: Status
+  type: Typ
+  date: Datum
+  created_at: Erstellt am
+  updated_at: Aktualisiert am
+  tenant: Mandant
+  user: Benutzer
+  location: Standort
+  person: Person
+  responsible: Verantwortlich
+  responsible_person: Verantwortliche Person
+  contact_person: Ansprechpartner
+  notes: Notizen
+  active: Aktiv
+  email: E-Mail
+  phone: Telefon
+  address: Adresse
+  city: Stadt
+  country: Land
+  postal_code: Postleitzahl
+  company: Firma
+  department: Abteilung
+
+# Supplier Management
+supplier:
+  title: Lieferantenverwaltung
+  contact_person: Ansprechpartner
+  field:
+    contact_person: Ansprechpartner
+    name: Lieferantenname
+    email: E-Mail
+    phone: Telefon
+
+# Interested Party Management
+interested_party:
+  title: Interessierte Parteien
+  contact_person: Ansprechpartner
+  field:
+    contact_person: Ansprechpartner
+    name: Name der Partei
+    party_type: Typ der Partei
+
+# General UI Elements
+ui:
+  location: Standort
+  responsible: Verantwortlich
+  contact: Kontakt
+  details: Details
+  overview: Übersicht
+  new: Neu
+  add: Hinzufügen
+  remove: Entfernen
+  select: Auswählen
+  none: Keine
+  all: Alle
+  yes: Ja
+  no: Nein
+  optional: Optional
+  required: Erforderlich
+  n_a: 'N/A'
