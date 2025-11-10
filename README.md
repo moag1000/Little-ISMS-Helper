@@ -82,6 +82,35 @@ Der **Small ISMS Helper** ist eine PHP-basierte Webanwendung, die Organisationen
   - **Automatische Fulfillment-Berechnung**: Nutzt bestehende ISO 27001-Daten für andere Frameworks
   - **Gap-Analyse**: Identifiziert Lücken und priorisiert Maßnahmen
 
+- **User & Role Management**: Umfassendes Benutzer- und Berechtigungssystem
+  - Benutzerverwaltung mit Profilen
+  - Rollenbasierte Zugriffskontrolle (RBAC)
+  - Granulare Berechtigungen (View, Create, Edit, Delete)
+  - **Azure Active Directory Integration**: OAuth 2.0 und SAML 2.0 Support
+  - Single Sign-On (SSO) Unterstützung
+  - Mehrsprachige Benutzeroberfläche (Deutsch/Englisch)
+  - Sicherheitsrichtlinien und Passwort-Management
+
+- **Audit Logging**: Vollständiges Aktivitätsprotokoll
+  - Automatisches Logging aller CRUD-Operationen
+  - Detaillierte Änderungshistorie (Before/After Values)
+  - Benutzer-Aktivitätsverfolgung
+  - Entity-History für alle Module
+  - Compliance-relevante Audit Trails
+  - Filterfunktionen nach Benutzer, Entity, Aktion, Zeitraum
+  - Statistiken und Analysen
+  - Export-Funktionen für Audits
+
+- **Deployment Wizard**: Geführte System-Einrichtung
+  - 6-Schritt Setup-Assistent
+  - Automatische System-Anforderungsprüfung
+  - Intelligente Modul-Auswahl mit Dependency-Resolution
+  - Automatische Datenbank-Initialisierung
+  - Basis-Daten Import (ISO 27001 Controls, Permissions)
+  - Optionale Beispiel-Daten für Schnellstart
+  - Nachträgliche Modul-Verwaltung (Aktivieren/Deaktivieren)
+  - Dependency-Graph Visualisierung
+
 - **KPI Dashboard**: Echtzeit-Kennzahlen
   - Asset-Anzahl
   - Risiko-Übersicht
@@ -150,51 +179,82 @@ Ein Kernprinzip des Small ISMS Helper ist die **maximale Wertschöpfung aus einm
 
 ## Installation
 
-### 1. Repository klonen
+### 🚀 Schnellstart mit Deployment Wizard (Empfohlen)
+
+Der einfachste Weg zur Installation ist der integrierte **Deployment Wizard**:
+
+#### 1. Repository klonen und Dependencies installieren
 
 ```bash
 git clone <repository-url>
 cd Little-ISMS-Helper
-```
-
-### 2. Abhängigkeiten installieren
-
-```bash
 composer install
 ```
 
-### 3. Umgebungskonfiguration
-
-Kopieren Sie die `.env` Datei und passen Sie die Datenbankverbindung an:
+#### 2. Umgebungskonfiguration
 
 ```bash
 cp .env .env.local
 ```
 
-Bearbeiten Sie `.env.local` und konfigurieren Sie die Datenbankverbindung:
+Bearbeiten Sie `.env.local` und konfigurieren Sie mindestens die Datenbankverbindung:
+
+```env
+DATABASE_URL="mysql://user:password@localhost:3306/isms_helper"
+# oder PostgreSQL:
+# DATABASE_URL="postgresql://user:password@localhost:5432/isms_helper?serverVersion=16&charset=utf8"
+```
+
+#### 3. Deployment Wizard starten
+
+```bash
+php -S localhost:8000 -t public/
+```
+
+Öffnen Sie dann im Browser:
 
 ```
-DATABASE_URL="postgresql://user:password@localhost:5432/isms_helper?serverVersion=16&charset=utf8"
+http://localhost:8000/setup
 ```
 
-### 4. Datenbank erstellen
+Der Wizard führt Sie durch:
+- ✅ **Schritt 1**: System-Anforderungen automatisch prüfen
+- ✅ **Schritt 2**: Module auswählen (Core ISMS, BCM, Compliance, etc.)
+- ✅ **Schritt 3**: Datenbank automatisch initialisieren
+- ✅ **Schritt 4**: Basis-Daten importieren (ISO 27001 Controls, Permissions)
+- ✅ **Schritt 5**: Optional Beispiel-Daten laden
+- ✅ **Schritt 6**: Setup abschließen
+
+**Zeit**: ~5-10 Minuten für komplette Einrichtung
+
+Weitere Details: [DEPLOYMENT_WIZARD.md](DEPLOYMENT_WIZARD.md)
+
+---
+
+### 🔧 Manuelle Installation (Alternative)
+
+Falls Sie den Wizard nicht nutzen möchten:
+
+#### 1-3. Wie oben (Repository klonen, Dependencies, .env)
+
+#### 4. Datenbank manuell erstellen
 
 ```bash
 php bin/console doctrine:database:create
 php bin/console doctrine:migrations:migrate
 ```
 
-### 5. Compliance-Frameworks und Controls laden
-
-Laden Sie alle 93 Controls aus ISO 27001:2022 Annex A in die Datenbank:
+#### 5. Basis-Daten laden
 
 ```bash
+# ISO 27001 Annex A Controls (93 Controls)
 php bin/console isms:load-annex-a-controls
+
+# System-Berechtigungen
+php bin/console app:setup-permissions
 ```
 
-Dies ist die Grundlage für Ihr Statement of Applicability.
-
-**Optional**: Laden Sie zusätzliche Compliance-Frameworks:
+#### 6. Optional: Compliance-Frameworks laden
 
 ```bash
 # TISAX (VDA ISA) für die Automobilindustrie
@@ -204,29 +264,49 @@ php bin/console app:load-tisax-requirements
 php bin/console app:load-dora-requirements
 ```
 
-Diese Frameworks nutzen automatisch Ihre bestehenden ISO 27001-Daten durch intelligente Mappings.
+#### 7. Optional: Beispiel-Daten laden
 
-### 6. Assets installieren
+Beispiel-Daten befinden sich in `fixtures/*.yaml` und können manuell importiert werden.
+
+#### 8. Assets installieren
 
 ```bash
 php bin/console importmap:install
 ```
 
-### 7. Entwicklungsserver starten
-
-Mit Symfony CLI:
+#### 9. Server starten
 
 ```bash
+# Mit Symfony CLI:
 symfony server:start
-```
 
-Oder mit PHP Built-in Server:
-
-```bash
+# Oder mit PHP Built-in Server:
 php -S localhost:8000 -t public/
 ```
 
 Die Anwendung ist dann unter `http://localhost:8000` erreichbar.
+
+---
+
+### 🔐 Authentication konfigurieren (Optional)
+
+Für Azure AD Integration siehe: [docs/AUTHENTICATION_SETUP.md](docs/AUTHENTICATION_SETUP.md)
+
+Unterstützte Methoden:
+- Local Authentication (username/password)
+- Azure Active Directory OAuth 2.0
+- Azure Active Directory SAML 2.0
+
+Die Basis-Authentication ist bereits konfiguriert. Für Azure AD müssen Sie:
+1. Eine Azure AD App Registration erstellen
+2. Client ID/Secret in `.env.local` konfigurieren
+3. Callback URLs registrieren
+
+---
+
+### 📝 Audit Logging aktivieren (Optional)
+
+Audit Logging ist standardmäßig aktiv. Details siehe: [docs/AUDIT_LOGGING.md](docs/AUDIT_LOGGING.md)
 
 ## Entwicklung
 
@@ -303,20 +383,31 @@ Bei Fragen oder Problemen erstellen Sie bitte ein Issue im Repository.
 
 ## Roadmap
 
+### ✅ Implementiert
+
 - [x] Basis-Setup und Projektstruktur
 - [x] Alle ISMS Kernentities (Asset, Risk, Control, Incident, etc.)
 - [x] Statement of Applicability mit allen 93 Annex A Controls
 - [x] Grundlegende Controller und Views für alle Module
 - [x] KPI Dashboard mit Echtzeit-Daten
 - [x] Datenbank-Migration
-- [ ] User Authentication & Authorization (Symfony Security)
+- [x] **User Authentication & Authorization** (Symfony Security + Azure AD)
+- [x] **Deployment Wizard** mit geführter Einrichtung
+- [x] **Audit Logging System** für Compliance
+- [x] **Mehrsprachigkeit** (Deutsch/Englisch)
+- [x] Business Continuity Management (BCM)
+- [x] Multi-Framework Compliance (ISO 27001, TISAX, DORA)
+- [x] Rollenbasierte Zugriffskontrolle (RBAC)
+
+### 🚧 In Planung
+
 - [ ] Vollständige CRUD-Operationen für alle Module
 - [ ] Formulare mit Validierung
 - [ ] Risk Assessment Matrix Visualisierung
 - [ ] Erweiterte Reporting & Export Funktionen (PDF, Excel)
 - [ ] Datei-Uploads für Nachweise und Dokumentation
 - [ ] E-Mail-Benachrichtigungen für Vorfälle und Fälligkeiten
-- [ ] API für Integration mit anderen Systemen
+- [ ] REST API für Integration mit anderen Systemen
 - [ ] Multi-Tenancy Support (für MSPs)
 - [ ] Responsive Design Optimierung
 - [ ] Automatisierte Tests (Unit, Integration)
