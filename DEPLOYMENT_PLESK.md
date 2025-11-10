@@ -450,12 +450,56 @@ php bin/console cache:clear --env=prod
 php bin/console importmap:install
 php bin/console asset-map:compile
 
-# 3. Prüfen, dass keine fehlerhaften Imports existieren
+# 3. ⚠️ NGINX CACHE LEEREN (SEHR WICHTIG AUF PLESK!)
+# Ohne sudo (empfohlen - funktioniert immer):
+rm -rf public/assets/*
+php bin/console asset-map:compile
+# Dies erzeugt neue Dateinamen (Cache-Buster durch neue Hashes)
+
+# MIT sudo (falls verfügbar):
+sudo rm -rf /var/cache/nginx/*
+sudo systemctl reload nginx
+
+# 4. Prüfen, dass keine fehlerhaften Imports existieren
 cat public/assets/importmap.json | grep -i "data:"
 # Sollte NICHTS finden!
 
-# 4. Browser Cache leeren (siehe detaillierte Anleitung unten!)
+# 5. Browser Cache leeren (siehe detaillierte Anleitung unten!)
 ```
+
+**⚠️ WICHTIG: Nginx Reverse Proxy Cache auf Plesk!**
+
+Plesk verwendet **nginx als Reverse Proxy** vor Apache. Nginx cached **sehr aggressiv** alle statischen Assets (CSS, JS, Bilder).
+
+**Warum das problematisch ist:**
+- Sie leeren Symfony Cache ✅
+- Sie kompilieren Assets neu ✅
+- Browser macht Hard-Refresh ✅
+- **ABER:** nginx liefert die ALTEN gecachten Assets aus! ❌
+
+**Die Lösung:**
+1. **Option A (ohne Root):** Assets mit neuen Dateinamen neu generieren
+   ```bash
+   rm -rf public/assets/*
+   php bin/console asset-map:compile
+   ```
+   Dies erzeugt neue Hashes (z.B. `app-6zxcGag.css` → `app-7AbdEfg.css`)
+
+2. **Option B (mit Root):** Nginx Cache direkt leeren
+   ```bash
+   sudo rm -rf /var/cache/nginx/*
+   sudo systemctl reload nginx
+   ```
+
+3. **Option C (Plesk UI):**
+   - Websites & Domains → Domain → Apache & nginx Einstellungen
+   - Suchen Sie "nginx cache" Option und leeren Sie den Cache
+
+**Nach dem nginx Cache-Clear:**
+- Symfony Cache: ✅ Geleert
+- Assets: ✅ Neu kompiliert
+- Nginx Cache: ✅ Geleert oder umgangen
+- Browser Cache: → Jetzt leeren (siehe unten)
 
 **⚠️ WICHTIG: Browser Cache VOLLSTÄNDIG leeren!**
 
