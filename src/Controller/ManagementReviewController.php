@@ -11,13 +11,15 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route('/management-review')]
 class ManagementReviewController extends AbstractController
 {
     public function __construct(
         private ManagementReviewRepository $reviewRepository,
-        private EntityManagerInterface $entityManager
+        private EntityManagerInterface $entityManager,
+        private TranslatorInterface $translator
     ) {}
 
     #[Route('/', name: 'app_management_review_index')]
@@ -55,7 +57,7 @@ class ManagementReviewController extends AbstractController
             $this->entityManager->persist($review);
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Management Review created successfully.');
+            $this->addFlash('success', $this->translator->trans('management_review.success.created'));
             return $this->redirectToRoute('app_management_review_show', ['id' => $review->getId()]);
         }
 
@@ -84,7 +86,7 @@ class ManagementReviewController extends AbstractController
             $review->setUpdatedAt(new \DateTime());
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Management Review updated successfully.');
+            $this->addFlash('success', $this->translator->trans('management_review.success.updated'));
             return $this->redirectToRoute('app_management_review_show', ['id' => $review->getId()]);
         }
 
@@ -102,7 +104,7 @@ class ManagementReviewController extends AbstractController
             $this->entityManager->remove($review);
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Management Review deleted successfully.');
+            $this->addFlash('success', $this->translator->trans('management_review.success.deleted'));
         }
 
         return $this->redirectToRoute('app_management_review_index');

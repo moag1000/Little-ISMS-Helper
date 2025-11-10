@@ -17,6 +17,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route('/document')]
 #[IsGranted('ROLE_USER')]
@@ -28,7 +29,8 @@ class DocumentController extends AbstractController
         private string $projectDir,
         private RateLimiterFactory $documentUploadLimiter,
         private FileUploadSecurityService $fileUploadSecurity,
-        private SecurityEventLogger $securityLogger
+        private SecurityEventLogger $securityLogger,
+        private TranslatorInterface $translator
     ) {}
 
     #[Route('/', name: 'app_document_index')]
@@ -61,7 +63,7 @@ class DocumentController extends AbstractController
                 // Security: Log rate limit hit for monitoring
                 $this->securityLogger->logRateLimitHit('document_upload');
 
-                $this->addFlash('error', 'Too many document uploads. Please try again in 1 hour.');
+                $this->addFlash('error', $this->translator->trans('document.error.too_many_uploads'));
 
                 return $this->render('document/new_modern.html.twig', [
                     'document' => $document,
@@ -106,7 +108,7 @@ class DocumentController extends AbstractController
                 // Security: Log data change
                 $this->securityLogger->logDataChange('Document', $document->getId(), 'CREATE');
 
-                $this->addFlash('success', 'Document uploaded successfully.');
+                $this->addFlash('success', $this->translator->trans('document.success.uploaded'));
                 return $this->redirectToRoute('app_document_show', ['id' => $document->getId()]);
 
             } catch (FileException $e) {
@@ -119,7 +121,7 @@ class DocumentController extends AbstractController
                     $e->getMessage()
                 );
 
-                $this->addFlash('error', 'File upload failed: ' . $e->getMessage());
+                $this->addFlash('error', $this->translator->trans('document.error.upload_failed') . ': ' . $e->getMessage());
 
                 return $this->render('document/new_modern.html.twig', [
                     'document' => $document,
@@ -194,7 +196,7 @@ class DocumentController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Document updated successfully.');
+            $this->addFlash('success', $this->translator->trans('document.success.updated'));
             return $this->redirectToRoute('app_document_show', ['id' => $document->getId()]);
         }
 
@@ -213,7 +215,7 @@ class DocumentController extends AbstractController
             $document->setStatus('deleted');
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Document deleted successfully.');
+            $this->addFlash('success', $this->translator->trans('document.success.deleted'));
         }
 
         return $this->redirectToRoute('app_document_index');

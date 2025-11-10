@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route('/incident')]
 class IncidentController extends AbstractController
@@ -21,7 +22,8 @@ class IncidentController extends AbstractController
         private IncidentRepository $incidentRepository,
         private EntityManagerInterface $entityManager,
         private EmailNotificationService $emailService,
-        private UserRepository $userRepository
+        private UserRepository $userRepository,
+        private TranslatorInterface $translator
     ) {}
 
     #[Route('/', name: 'app_incident_index')]
@@ -57,7 +59,7 @@ class IncidentController extends AbstractController
                 $this->emailService->sendIncidentNotification($incident, $admins);
             }
 
-            $this->addFlash('success', 'Incident reported successfully.');
+            $this->addFlash('success', $this->translator->trans('incident.success.reported'));
             return $this->redirectToRoute('app_incident_show', ['id' => $incident->getId()]);
         }
 
@@ -94,7 +96,7 @@ class IncidentController extends AbstractController
                 $this->emailService->sendIncidentUpdateNotification($incident, $admins, $changeDescription);
             }
 
-            $this->addFlash('success', 'Incident updated successfully.');
+            $this->addFlash('success', $this->translator->trans('incident.success.updated'));
             return $this->redirectToRoute('app_incident_show', ['id' => $incident->getId()]);
         }
 
@@ -112,7 +114,7 @@ class IncidentController extends AbstractController
             $this->entityManager->remove($incident);
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Incident deleted successfully.');
+            $this->addFlash('success', $this->translator->trans('incident.success.deleted'));
         }
 
         return $this->redirectToRoute('app_incident_index');

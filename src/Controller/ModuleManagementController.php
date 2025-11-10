@@ -8,13 +8,15 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route('/modules')]
 class ModuleManagementController extends AbstractController
 {
     public function __construct(
         private readonly ModuleConfigurationService $moduleConfigService,
-        private readonly DataImportService $dataImportService
+        private readonly DataImportService $dataImportService,
+        private readonly TranslatorInterface $translator
     ) {
     }
 
@@ -52,7 +54,7 @@ class ModuleManagementController extends AbstractController
             foreach ($result['added_modules'] ?? [] as $addedKey) {
                 $module = $this->moduleConfigService->getModule($addedKey);
                 if ($module && $addedKey !== $moduleKey) {
-                    $this->addFlash('info', "Modul '{$module['name']}' wurde als Abhängigkeit hinzugefügt");
+                    $this->addFlash('info', $this->translator->trans('module.info.added_as_dependency', ['name' => $module['name']]));
                 }
             }
         } else {
@@ -76,7 +78,7 @@ class ModuleManagementController extends AbstractController
             $this->addFlash('error', $result['error']);
 
             if (isset($result['dependents'])) {
-                $this->addFlash('warning', 'Deaktivieren Sie zuerst die abhängigen Module: ' . implode(', ', $result['dependents']));
+                $this->addFlash('warning', $this->translator->trans('module.warning.disable_dependents_first', ['dependents' => implode(', ', $result['dependents'])]));
             }
         }
 
@@ -92,7 +94,7 @@ class ModuleManagementController extends AbstractController
         $module = $this->moduleConfigService->getModule($moduleKey);
 
         if (!$module) {
-            $this->addFlash('error', 'Modul nicht gefunden');
+            $this->addFlash('error', $this->translator->trans('module.error.not_found'));
             return $this->redirectToRoute('module_management_index');
         }
 
@@ -126,12 +128,12 @@ class ModuleManagementController extends AbstractController
         $module = $this->moduleConfigService->getModule($moduleKey);
 
         if (!$module) {
-            $this->addFlash('error', 'Modul nicht gefunden');
+            $this->addFlash('error', $this->translator->trans('module.error.not_found'));
             return $this->redirectToRoute('module_management_index');
         }
 
         if (!$this->moduleConfigService->isModuleActive($moduleKey)) {
-            $this->addFlash('error', 'Modul ist nicht aktiv');
+            $this->addFlash('error', $this->translator->trans('module.error.not_active'));
             return $this->redirectToRoute('module_management_details', ['moduleKey' => $moduleKey]);
         }
 

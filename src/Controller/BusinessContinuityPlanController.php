@@ -11,13 +11,15 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route('/business-continuity-plan')]
 class BusinessContinuityPlanController extends AbstractController
 {
     public function __construct(
         private BusinessContinuityPlanRepository $bcPlanRepository,
-        private EntityManagerInterface $entityManager
+        private EntityManagerInterface $entityManager,
+        private TranslatorInterface $translator
     ) {}
 
     #[Route('/', name: 'app_bc_plan_index')]
@@ -49,7 +51,7 @@ class BusinessContinuityPlanController extends AbstractController
             $this->entityManager->persist($bcPlan);
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Business continuity plan created successfully.');
+            $this->addFlash('success', $this->translator->trans('business_continuity_plan.success.created'));
             return $this->redirectToRoute('app_bc_plan_show', ['id' => $bcPlan->getId()]);
         }
 
@@ -79,7 +81,7 @@ class BusinessContinuityPlanController extends AbstractController
             $bcPlan->setUpdatedAt(new \DateTime());
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Business continuity plan updated successfully.');
+            $this->addFlash('success', $this->translator->trans('business_continuity_plan.success.updated'));
             return $this->redirectToRoute('app_bc_plan_show', ['id' => $bcPlan->getId()]);
         }
 
@@ -97,7 +99,7 @@ class BusinessContinuityPlanController extends AbstractController
             $this->entityManager->remove($bcPlan);
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Business continuity plan deleted successfully.');
+            $this->addFlash('success', $this->translator->trans('business_continuity_plan.success.deleted'));
         }
 
         return $this->redirectToRoute('app_bc_plan_index');
