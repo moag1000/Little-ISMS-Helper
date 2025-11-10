@@ -11,13 +11,15 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route('/training')]
 class TrainingController extends AbstractController
 {
     public function __construct(
         private TrainingRepository $trainingRepository,
-        private EntityManagerInterface $entityManager
+        private EntityManagerInterface $entityManager,
+        private TranslatorInterface $translator
     ) {}
 
     #[Route('/', name: 'app_training_index')]
@@ -51,7 +53,7 @@ class TrainingController extends AbstractController
             $this->entityManager->persist($training);
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Training erfolgreich erstellt.');
+            $this->addFlash('success', $this->translator->trans('training.success.created'));
             return $this->redirectToRoute('app_training_show', ['id' => $training->getId()]);
         }
 
@@ -79,7 +81,7 @@ class TrainingController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Training erfolgreich aktualisiert.');
+            $this->addFlash('success', $this->translator->trans('training.success.updated'));
             return $this->redirectToRoute('app_training_show', ['id' => $training->getId()]);
         }
 
@@ -97,7 +99,7 @@ class TrainingController extends AbstractController
             $this->entityManager->remove($training);
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Training erfolgreich gelöscht.');
+            $this->addFlash('success', $this->translator->trans('training.success.deleted'));
         }
 
         return $this->redirectToRoute('app_training_index');

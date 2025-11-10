@@ -22,7 +22,7 @@ class ControlType extends AbstractType
     {
         $builder
             ->add('controlId', TextType::class, [
-                'label' => 'Control-ID',
+                'label' => 'control.field.control_id',
                 'attr' => [
                     'class' => 'form-control',
                     'placeholder' => 'z.B. A.5.1',
@@ -34,7 +34,7 @@ class ControlType extends AbstractType
                 ],
             ])
             ->add('name', TextType::class, [
-                'label' => 'Control-Name',
+                'label' => 'control.field.name',
                 'attr' => [
                     'class' => 'form-control',
                     'placeholder' => 'z.B. Policies for information security',
@@ -44,7 +44,7 @@ class ControlType extends AbstractType
                 ],
             ])
             ->add('description', TextareaType::class, [
-                'label' => 'Beschreibung',
+                'label' => 'control.field.description',
                 'required' => true,
                 'attr' => [
                     'class' => 'form-control',
@@ -55,7 +55,7 @@ class ControlType extends AbstractType
                 ],
             ])
             ->add('category', ChoiceType::class, [
-                'label' => 'Kategorie',
+                'label' => 'control.field.category',
                 'choices' => [
                     'Organizational' => 'organizational',
                     'People' => 'people',
@@ -68,7 +68,7 @@ class ControlType extends AbstractType
                 ],
             ])
             ->add('applicable', ChoiceType::class, [
-                'label' => 'Anwendbarkeit',
+                'label' => 'control.field.applicable',
                 'choices' => [
                     'Anwendbar' => true,
                     'Nicht anwendbar' => false,
@@ -77,7 +77,7 @@ class ControlType extends AbstractType
                 'attr' => ['class' => 'form-check'],
             ])
             ->add('justification', TextareaType::class, [
-                'label' => 'Begründung',
+                'label' => 'control.field.justification',
                 'required' => false,
                 'attr' => [
                     'class' => 'form-control',
@@ -87,7 +87,7 @@ class ControlType extends AbstractType
                 'help' => 'Pflicht für ISO 27001 Statement of Applicability (SoA)',
             ])
             ->add('implementationStatus', ChoiceType::class, [
-                'label' => 'Implementierungsstatus',
+                'label' => 'control.field.implementation_status',
                 'choices' => [
                     'Nicht begonnen' => 'not_started',
                     'In Planung' => 'planned',
@@ -98,7 +98,7 @@ class ControlType extends AbstractType
                 'attr' => ['class' => 'form-select'],
             ])
             ->add('implementationPercentage', IntegerType::class, [
-                'label' => 'Fortschritt (%)',
+                'label' => 'control.field.implementation_percentage',
                 'attr' => [
                     'class' => 'form-control',
                     'min' => 0,
@@ -110,7 +110,7 @@ class ControlType extends AbstractType
                 'help' => 'Implementierungsfortschritt in Prozent (0-100)',
             ])
             ->add('implementationNotes', TextareaType::class, [
-                'label' => 'Implementierungsdetails',
+                'label' => 'control.field.implementation_notes',
                 'required' => false,
                 'attr' => [
                     'class' => 'form-control',
@@ -119,7 +119,7 @@ class ControlType extends AbstractType
                 'help' => 'Beschreiben Sie wie das Control implementiert ist.',
             ])
             ->add('responsiblePerson', TextType::class, [
-                'label' => 'Verantwortliche Person',
+                'label' => 'control.field.responsible_person',
                 'required' => false,
                 'attr' => [
                     'class' => 'form-control',
@@ -128,27 +128,27 @@ class ControlType extends AbstractType
                 ],
             ])
             ->add('targetDate', DateType::class, [
-                'label' => 'Zieldatum',
+                'label' => 'control.field.target_date',
                 'required' => false,
                 'widget' => 'single_text',
                 'attr' => ['class' => 'form-control'],
                 'help' => 'Bis wann soll das Control vollständig implementiert sein?',
             ])
             ->add('lastReviewDate', DateType::class, [
-                'label' => 'Letztes Review',
+                'label' => 'control.field.last_review_date',
                 'required' => false,
                 'widget' => 'single_text',
                 'attr' => ['class' => 'form-control'],
             ])
             ->add('nextReviewDate', DateType::class, [
-                'label' => 'Nächstes Review',
+                'label' => 'control.field.next_review_date',
                 'required' => false,
                 'widget' => 'single_text',
                 'attr' => ['class' => 'form-control'],
                 'help' => 'Wann soll das Control das nächste Mal überprüft werden?',
             ])
             ->add('protectedAssets', EntityType::class, [
-                'label' => 'Verknüpfte Assets',
+                'label' => 'control.field.protected_assets',
                 'class' => Asset::class,
                 'choice_label' => 'name',
                 'multiple' => true,

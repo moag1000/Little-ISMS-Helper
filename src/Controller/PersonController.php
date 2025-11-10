@@ -11,13 +11,15 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route('/person')]
 class PersonController extends AbstractController
 {
     public function __construct(
         private PersonRepository $personRepository,
-        private EntityManagerInterface $entityManager
+        private EntityManagerInterface $entityManager,
+        private TranslatorInterface $translator
     ) {}
 
     #[Route('/', name: 'app_person_index')]
@@ -45,7 +47,7 @@ class PersonController extends AbstractController
             $this->entityManager->persist($person);
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Person created successfully.');
+            $this->addFlash('success', $this->translator->trans('person.success.created'));
             return $this->redirectToRoute('app_person_show', ['id' => $person->getId()]);
         }
 
@@ -77,7 +79,7 @@ class PersonController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Person updated successfully.');
+            $this->addFlash('success', $this->translator->trans('person.success.updated'));
             return $this->redirectToRoute('app_person_show', ['id' => $person->getId()]);
         }
 
@@ -95,7 +97,7 @@ class PersonController extends AbstractController
             $this->entityManager->remove($person);
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Person deleted successfully.');
+            $this->addFlash('success', $this->translator->trans('person.success.deleted'));
         }
 
         return $this->redirectToRoute('app_person_index');
