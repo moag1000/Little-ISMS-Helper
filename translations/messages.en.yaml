@@ -103,8 +103,13 @@ common:
   back: Back
   'true': true
   'false': false
+  yes: Yes
+  no: No
   note: Note
   to_home: To Home Page
+  actions: Actions
+  view: View
+  edit: Edit
 asset:
   new: New Asset
   create: Create Asset

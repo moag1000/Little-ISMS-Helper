@@ -103,8 +103,13 @@ common:
   back: Zurück
   'true': Ja
   'false': Nein
+  yes: Ja
+  no: Nein
   note: Hinweis
   to_home: Zur Startseite
+  actions: Aktionen
+  view: Ansehen
+  edit: Bearbeiten
 asset:
   new: Neues Asset
   create: Asset erstellen
