@@ -814,8 +814,11 @@ class Incident
      * Get early warning deadline (24 hours from detection)
      */
     #[Groups(['incident:read'])]
-    public function getEarlyWarningDeadline(): \DateTimeImmutable
+    public function getEarlyWarningDeadline(): ?\DateTimeImmutable
     {
+        if ($this->detectedAt === null) {
+            return null;
+        }
         return $this->detectedAt instanceof \DateTimeImmutable
             ? $this->detectedAt->modify('+24 hours')
             : \DateTimeImmutable::createFromMutable($this->detectedAt)->modify('+24 hours');
@@ -825,8 +828,11 @@ class Incident
      * Get detailed notification deadline (72 hours from detection)
      */
     #[Groups(['incident:read'])]
-    public function getDetailedNotificationDeadline(): \DateTimeImmutable
+    public function getDetailedNotificationDeadline(): ?\DateTimeImmutable
     {
+        if ($this->detectedAt === null) {
+            return null;
+        }
         return $this->detectedAt instanceof \DateTimeImmutable
             ? $this->detectedAt->modify('+72 hours')
             : \DateTimeImmutable::createFromMutable($this->detectedAt)->modify('+72 hours');
@@ -836,8 +842,11 @@ class Incident
      * Get final report deadline (1 month from detection)
      */
     #[Groups(['incident:read'])]
-    public function getFinalReportDeadline(): \DateTimeImmutable
+    public function getFinalReportDeadline(): ?\DateTimeImmutable
     {
+        if ($this->detectedAt === null) {
+            return null;
+        }
         return $this->detectedAt instanceof \DateTimeImmutable
             ? $this->detectedAt->modify('+1 month')
             : \DateTimeImmutable::createFromMutable($this->detectedAt)->modify('+1 month');
@@ -852,7 +861,11 @@ class Incident
         if ($this->earlyWarningReportedAt !== null) {
             return false; // Already reported
         }
-        return new \DateTimeImmutable() > $this->getEarlyWarningDeadline();
+        $deadline = $this->getEarlyWarningDeadline();
+        if ($deadline === null) {
+            return false; // No deadline if detectedAt is not set
+        }
+        return new \DateTimeImmutable() > $deadline;
     }
 
     /**
@@ -864,7 +877,11 @@ class Incident
         if ($this->detailedNotificationReportedAt !== null) {
             return false; // Already reported
         }
-        return new \DateTimeImmutable() > $this->getDetailedNotificationDeadline();
+        $deadline = $this->getDetailedNotificationDeadline();
+        if ($deadline === null) {
+            return false; // No deadline if detectedAt is not set
+        }
+        return new \DateTimeImmutable() > $deadline;
     }
 
     /**
@@ -876,7 +893,11 @@ class Incident
         if ($this->finalReportSubmittedAt !== null) {
             return false; // Already submitted
         }
-        return new \DateTimeImmutable() > $this->getFinalReportDeadline();
+        $deadline = $this->getFinalReportDeadline();
+        if ($deadline === null) {
+            return false; // No deadline if detectedAt is not set
+        }
+        return new \DateTimeImmutable() > $deadline;
     }
 
     /**
@@ -888,8 +909,11 @@ class Incident
         if ($this->earlyWarningReportedAt !== null) {
             return 0;
         }
-        $now = new \DateTimeImmutable();
         $deadline = $this->getEarlyWarningDeadline();
+        if ($deadline === null) {
+            return 0; // No deadline if detectedAt is not set
+        }
+        $now = new \DateTimeImmutable();
         $diff = $now->diff($deadline);
         return $diff->invert ? 0 : ($diff->days * 24 + $diff->h);
     }
@@ -903,8 +927,11 @@ class Incident
         if ($this->detailedNotificationReportedAt !== null) {
             return 0;
         }
-        $now = new \DateTimeImmutable();
         $deadline = $this->getDetailedNotificationDeadline();
+        if ($deadline === null) {
+            return 0; // No deadline if detectedAt is not set
+        }
+        $now = new \DateTimeImmutable();
         $diff = $now->diff($deadline);
         return $diff->invert ? 0 : ($diff->days * 24 + $diff->h);
     }
@@ -918,8 +945,11 @@ class Incident
         if ($this->finalReportSubmittedAt !== null) {
             return 0;
         }
-        $now = new \DateTimeImmutable();
         $deadline = $this->getFinalReportDeadline();
+        if ($deadline === null) {
+            return 0; // No deadline if detectedAt is not set
+        }
+        $now = new \DateTimeImmutable();
         $diff = $now->diff($deadline);
         return $diff->invert ? 0 : $diff->days;
     }
@@ -931,6 +961,11 @@ class Incident
     #[Groups(['incident:read'])]
     public function requiresNis2Reporting(): bool
     {
+        // NIS2 reporting requires a detected date
+        if ($this->detectedAt === null) {
+            return false;
+        }
+
         // High and critical incidents, or incidents with cross-border impact
         return in_array($this->severity, ['high', 'critical']) ||
                $this->crossBorderImpact ||
