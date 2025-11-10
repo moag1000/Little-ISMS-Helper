@@ -22,15 +22,15 @@ class InternalAuditType extends AbstractType
     {
         $builder
             ->add('title', TextType::class, [
-                'label' => 'Audit-Titel',
+                'label' => 'audit.field.title',
                 'attr' => ['class' => 'form-control', 'placeholder' => 'z.B. ISO 27001 Internes Audit Q1 2025'],
                 'constraints' => [
-                    new NotBlank(['message' => 'Bitte geben Sie einen Titel ein.']),
+                    new NotBlank(['message' => 'audit.validation.title_required']),
                     new Length(['min' => 5, 'max' => 255]),
                 ],
             ])
             ->add('scope', TextareaType::class, [
-                'label' => 'Geltungsbereich',
+                'label' => 'audit.field.scope',
                 'required' => false,
                 'attr' => [
                     'class' => 'form-control',
@@ -39,7 +39,7 @@ class InternalAuditType extends AbstractType
                 ],
             ])
             ->add('scopeType', ChoiceType::class, [
-                'label' => 'Audit-Typ',
+                'label' => 'audit.field.scope_type',
                 'choices' => [
                     'Vollständiges System-Audit' => 'full',
                     'Prozess-spezifisch' => 'process',
@@ -54,7 +54,7 @@ class InternalAuditType extends AbstractType
                 ],
             ])
             ->add('objectives', TextareaType::class, [
-                'label' => 'Audit-Ziele',
+                'label' => 'audit.field.objectives',
                 'required' => false,
                 'attr' => [
                     'class' => 'form-control',
@@ -64,22 +64,22 @@ class InternalAuditType extends AbstractType
                 'help' => 'Definieren Sie klare, messbare Audit-Ziele.',
             ])
             ->add('plannedDate', DateType::class, [
-                'label' => 'Geplantes Datum',
+                'label' => 'audit.field.planned_date',
                 'widget' => 'single_text',
                 'attr' => ['class' => 'form-control'],
                 'constraints' => [
-                    new NotBlank(['message' => 'Bitte wählen Sie ein Datum.']),
+                    new NotBlank(['message' => 'audit.validation.date_required']),
                 ],
             ])
             ->add('completedDate', DateType::class, [
-                'label' => 'Abschlussdatum',
+                'label' => 'audit.field.completed_date',
                 'required' => false,
                 'widget' => 'single_text',
                 'attr' => ['class' => 'form-control'],
                 'help' => 'Wird automatisch gesetzt wenn das Audit abgeschlossen wird.',
             ])
             ->add('status', ChoiceType::class, [
-                'label' => 'Status',
+                'label' => 'audit.field.status',
                 'choices' => [
                     'Geplant' => 'planned',
                     'In Durchführung' => 'in_progress',
@@ -90,7 +90,7 @@ class InternalAuditType extends AbstractType
                 'attr' => ['class' => 'form-select'],
             ])
             ->add('leadAuditor', EntityType::class, [
-                'label' => 'Lead Auditor',
+                'label' => 'audit.field.lead_auditor',
                 'class' => User::class,
                 'choice_label' => function (User $user) {
                     return $user->getFirstName() . ' ' . $user->getLastName() . ' (' . $user->getEmail() . ')';
@@ -100,7 +100,7 @@ class InternalAuditType extends AbstractType
                 'attr' => ['class' => 'form-select'],
             ])
             ->add('auditTeam', EntityType::class, [
-                'label' => 'Audit-Team',
+                'label' => 'audit.field.audit_team',
                 'class' => User::class,
                 'choice_label' => function (User $user) {
                     return $user->getFirstName() . ' ' . $user->getLastName();
@@ -114,7 +114,7 @@ class InternalAuditType extends AbstractType
                 'help' => 'Halten Sie STRG gedrückt um mehrere Teammitglieder auszuwählen.',
             ])
             ->add('frameworks', EntityType::class, [
-                'label' => 'Geprüfte Frameworks',
+                'label' => 'audit.field.frameworks',
                 'class' => ComplianceFramework::class,
                 'choice_label' => 'name',
                 'multiple' => true,
@@ -126,7 +126,7 @@ class InternalAuditType extends AbstractType
                 'help' => 'Welche Compliance-Frameworks werden in diesem Audit geprüft?',
             ])
             ->add('findings', TextareaType::class, [
-                'label' => 'Feststellungen & Nichtkonformitäten',
+                'label' => 'audit.field.findings',
                 'required' => false,
                 'attr' => [
                     'class' => 'form-control',
@@ -135,7 +135,7 @@ class InternalAuditType extends AbstractType
                 'help' => 'Dokumentieren Sie Findings, Nichtkonformitäten und Beobachtungen.',
             ])
             ->add('recommendations', TextareaType::class, [
-                'label' => 'Empfehlungen',
+                'label' => 'audit.field.recommendations',
                 'required' => false,
                 'attr' => [
                     'class' => 'form-control',
@@ -144,7 +144,7 @@ class InternalAuditType extends AbstractType
                 'help' => 'Empfehlungen zur Verbesserung des ISMS.',
             ])
             ->add('summary', TextareaType::class, [
-                'label' => 'Zusammenfassung',
+                'label' => 'audit.field.summary',
                 'required' => false,
                 'attr' => [
                     'class' => 'form-control',

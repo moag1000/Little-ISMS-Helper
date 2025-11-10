@@ -23,17 +23,17 @@ class TrainingType extends AbstractType
     {
         $builder
             ->add('title', TextType::class, [
-                'label' => 'Schulungstitel',
+                'label' => 'training.field.title',
                 'attr' => [
                     'class' => 'form-control',
                     'placeholder' => 'z.B. ISO 27001 Awareness Training',
                 ],
                 'constraints' => [
-                    new NotBlank(['message' => 'Bitte geben Sie einen Titel ein.']),
+                    new NotBlank(['message' => 'training.validation.title_required']),
                 ],
             ])
             ->add('description', TextareaType::class, [
-                'label' => 'Beschreibung',
+                'label' => 'training.field.description',
                 'required' => false,
                 'attr' => [
                     'class' => 'form-control',
@@ -42,7 +42,7 @@ class TrainingType extends AbstractType
                 ],
             ])
             ->add('trainingType', ChoiceType::class, [
-                'label' => 'Schulungsart',
+                'label' => 'training.field.training_type',
                 'choices' => [
                     'Security Awareness' => 'security_awareness',
                     'Technisches Training' => 'technical',
@@ -59,7 +59,7 @@ class TrainingType extends AbstractType
                 ],
             ])
             ->add('deliveryMethod', ChoiceType::class, [
-                'label' => 'Durchführungsart',
+                'label' => 'training.field.delivery_method',
                 'choices' => [
                     'Präsenz' => 'in_person',
                     'Online (Live)' => 'online_live',
@@ -70,15 +70,15 @@ class TrainingType extends AbstractType
                 'attr' => ['class' => 'form-select'],
             ])
             ->add('scheduledDate', DateTimeType::class, [
-                'label' => 'Geplantes Datum & Uhrzeit',
+                'label' => 'training.field.scheduled_date',
                 'widget' => 'single_text',
                 'attr' => ['class' => 'form-control'],
                 'constraints' => [
-                    new NotBlank(['message' => 'Bitte wählen Sie ein Datum.']),
+                    new NotBlank(['message' => 'training.validation.date_required']),
                 ],
             ])
             ->add('duration', IntegerType::class, [
-                'label' => 'Dauer (Minuten)',
+                'label' => 'training.field.duration',
                 'attr' => [
                     'class' => 'form-control',
                     'min' => 15,
@@ -90,7 +90,7 @@ class TrainingType extends AbstractType
                 'help' => 'Dauer in Minuten (15-480)',
             ])
             ->add('location', TextType::class, [
-                'label' => 'Ort / Meeting-Link',
+                'label' => 'training.field.location',
                 'required' => false,
                 'attr' => [
                     'class' => 'form-control',
@@ -98,7 +98,7 @@ class TrainingType extends AbstractType
                 ],
             ])
             ->add('trainer', EntityType::class, [
-                'label' => 'Trainer / Durchführende Person',
+                'label' => 'training.field.trainer',
                 'class' => User::class,
                 'choice_label' => function (User $user) {
                     return $user->getFirstName() . ' ' . $user->getLastName();
@@ -108,7 +108,7 @@ class TrainingType extends AbstractType
                 'attr' => ['class' => 'form-select'],
             ])
             ->add('targetAudience', ChoiceType::class, [
-                'label' => 'Zielgruppe',
+                'label' => 'training.field.target_audience',
                 'choices' => [
                     'Alle Mitarbeiter' => 'all_employees',
                     'IT-Abteilung' => 'it_department',
@@ -122,7 +122,7 @@ class TrainingType extends AbstractType
                 'attr' => ['class' => 'form-select'],
             ])
             ->add('participants', EntityType::class, [
-                'label' => 'Teilnehmer',
+                'label' => 'training.field.participants',
                 'class' => User::class,
                 'choice_label' => function (User $user) {
                     return $user->getFirstName() . ' ' . $user->getLastName() . ' (' . $user->getDepartment() . ')';
@@ -136,7 +136,7 @@ class TrainingType extends AbstractType
                 'help' => 'STRG gedrückt halten um mehrere Teilnehmer auszuwählen.',
             ])
             ->add('status', ChoiceType::class, [
-                'label' => 'Status',
+                'label' => 'training.field.status',
                 'choices' => [
                     'Geplant' => 'planned',
                     'Bestätigt' => 'confirmed',
@@ -147,7 +147,7 @@ class TrainingType extends AbstractType
                 'attr' => ['class' => 'form-select'],
             ])
             ->add('mandatory', ChoiceType::class, [
-                'label' => 'Verpflichtend',
+                'label' => 'training.field.mandatory',
                 'choices' => [
                     'Ja, verpflichtend' => true,
                     'Nein, optional' => false,
@@ -156,7 +156,7 @@ class TrainingType extends AbstractType
                 'data' => true,
             ])
             ->add('relatedControls', EntityType::class, [
-                'label' => 'Verknüpfte Controls',
+                'label' => 'training.field.related_controls',
                 'class' => Control::class,
                 'choice_label' => function (Control $control) {
                     return $control->getControlId() . ' - ' . $control->getName();
@@ -170,7 +170,7 @@ class TrainingType extends AbstractType
                 'help' => 'Welche ISO 27001 Controls werden durch diese Schulung adressiert?',
             ])
             ->add('materials', TextareaType::class, [
-                'label' => 'Schulungsmaterialien',
+                'label' => 'training.field.materials',
                 'required' => false,
                 'attr' => [
                     'class' => 'form-control',
@@ -179,7 +179,7 @@ class TrainingType extends AbstractType
                 'help' => 'Links oder Beschreibungen von Schulungsmaterialien.',
             ])
             ->add('feedback', TextareaType::class, [
-                'label' => 'Feedback / Notizen',
+                'label' => 'training.field.feedback',
                 'required' => false,
                 'attr' => [
                     'class' => 'form-control',

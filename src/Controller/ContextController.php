@@ -11,13 +11,15 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route('/context')]
 class ContextController extends AbstractController
 {
     public function __construct(
         private ISMSContextService $contextService,
-        private ISMSObjectiveService $objectiveService
+        private ISMSObjectiveService $objectiveService,
+        private TranslatorInterface $translator
     ) {}
 
     #[Route('/', name: 'app_context_index')]
@@ -55,7 +57,7 @@ class ContextController extends AbstractController
 
             $this->contextService->saveContext($context);
 
-            $this->addFlash('success', 'ISMS-Kontext erfolgreich aktualisiert.');
+            $this->addFlash('success', $this->translator->trans('context.success.updated'));
             return $this->redirectToRoute('app_context_index');
         }
 

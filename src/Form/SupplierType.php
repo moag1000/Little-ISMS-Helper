@@ -20,41 +20,41 @@ class SupplierType extends AbstractType
     {
         $builder
             ->add('name', TextType::class, [
-                'label' => 'Supplier Name',
+                'label' => 'supplier.field.name',
                 'required' => true,
                 'attr' => ['maxlength' => 255],
             ])
             ->add('description', TextareaType::class, [
-                'label' => 'Description',
+                'label' => 'supplier.field.description',
                 'required' => false,
                 'attr' => ['rows' => 3],
             ])
             ->add('contactPerson', TextType::class, [
-                'label' => 'Contact Person',
+                'label' => 'supplier.field.contact_person',
                 'required' => false,
                 'attr' => ['maxlength' => 100],
             ])
             ->add('email', EmailType::class, [
-                'label' => 'Email',
+                'label' => 'supplier.field.email',
                 'required' => false,
             ])
             ->add('phone', TextType::class, [
-                'label' => 'Phone',
+                'label' => 'supplier.field.phone',
                 'required' => false,
                 'attr' => ['maxlength' => 50],
             ])
             ->add('address', TextareaType::class, [
-                'label' => 'Address',
+                'label' => 'supplier.field.address',
                 'required' => false,
                 'attr' => ['rows' => 2],
             ])
             ->add('serviceProvided', TextareaType::class, [
-                'label' => 'Service Provided',
+                'label' => 'supplier.field.service_provided',
                 'required' => true,
                 'attr' => ['rows' => 3],
             ])
             ->add('criticality', ChoiceType::class, [
-                'label' => 'Criticality',
+                'label' => 'supplier.field.criticality',
                 'choices' => [
                     'Critical' => 'critical',
                     'High' => 'high',
@@ -64,7 +64,7 @@ class SupplierType extends AbstractType
                 'required' => true,
             ])
             ->add('status', ChoiceType::class, [
-                'label' => 'Status',
+                'label' => 'supplier.field.status',
                 'choices' => [
                     'Active' => 'active',
                     'Inactive' => 'inactive',
@@ -74,64 +74,64 @@ class SupplierType extends AbstractType
                 'required' => true,
             ])
             ->add('securityScore', IntegerType::class, [
-                'label' => 'Security Score (0-100)',
+                'label' => 'supplier.field.security_score',
                 'required' => false,
                 'attr' => ['min' => 0, 'max' => 100],
             ])
             ->add('lastSecurityAssessment', DateType::class, [
-                'label' => 'Last Security Assessment',
+                'label' => 'supplier.field.last_security_assessment',
                 'widget' => 'single_text',
                 'required' => false,
             ])
             ->add('nextAssessmentDate', DateType::class, [
-                'label' => 'Next Assessment Date',
+                'label' => 'supplier.field.next_assessment_date',
                 'widget' => 'single_text',
                 'required' => false,
             ])
             ->add('assessmentFindings', TextareaType::class, [
-                'label' => 'Assessment Findings',
+                'label' => 'supplier.field.assessment_findings',
                 'required' => false,
                 'attr' => ['rows' => 4],
             ])
             ->add('nonConformities', TextareaType::class, [
-                'label' => 'Non-Conformities',
+                'label' => 'supplier.field.non_conformities',
                 'required' => false,
                 'attr' => ['rows' => 3],
             ])
             ->add('contractStartDate', DateType::class, [
-                'label' => 'Contract Start Date',
+                'label' => 'supplier.field.contract_start_date',
                 'widget' => 'single_text',
                 'required' => false,
             ])
             ->add('contractEndDate', DateType::class, [
-                'label' => 'Contract End Date',
+                'label' => 'supplier.field.contract_end_date',
                 'widget' => 'single_text',
                 'required' => false,
             ])
             ->add('securityRequirements', TextareaType::class, [
-                'label' => 'Security Requirements',
+                'label' => 'supplier.field.security_requirements',
                 'required' => false,
                 'attr' => ['rows' => 4],
             ])
             ->add('hasISO27001', CheckboxType::class, [
-                'label' => 'ISO 27001 Certified',
+                'label' => 'supplier.field.has_iso27001',
                 'required' => false,
             ])
             ->add('hasISO22301', CheckboxType::class, [
-                'label' => 'ISO 22301 Certified',
+                'label' => 'supplier.field.has_iso22301',
                 'required' => false,
             ])
             ->add('certifications', TextareaType::class, [
-                'label' => 'Other Certifications',
+                'label' => 'supplier.field.certifications',
                 'required' => false,
                 'attr' => ['rows' => 2],
             ])
             ->add('hasDPA', CheckboxType::class, [
-                'label' => 'Data Processing Agreement Signed',
+                'label' => 'supplier.field.has_dpa',
                 'required' => false,
             ])
             ->add('dpaSignedDate', DateType::class, [
-                'label' => 'DPA Signed Date',
+                'label' => 'supplier.field.dpa_signed_date',
                 'widget' => 'single_text',
                 'required' => false,
             ])

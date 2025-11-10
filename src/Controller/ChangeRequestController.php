@@ -11,13 +11,15 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route('/change-request')]
 class ChangeRequestController extends AbstractController
 {
     public function __construct(
         private ChangeRequestRepository $changeRequestRepository,
-        private EntityManagerInterface $entityManager
+        private EntityManagerInterface $entityManager,
+        private TranslatorInterface $translator
     ) {}
 
     #[Route('/', name: 'app_change_request_index')]
@@ -49,7 +51,7 @@ class ChangeRequestController extends AbstractController
             $this->entityManager->persist($changeRequest);
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Change request created successfully.');
+            $this->addFlash('success', $this->translator->trans('change_request.success.created'));
             return $this->redirectToRoute('app_change_request_show', ['id' => $changeRequest->getId()]);
         }
 
@@ -79,7 +81,7 @@ class ChangeRequestController extends AbstractController
             $changeRequest->setUpdatedAt(new \DateTime());
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Change request updated successfully.');
+            $this->addFlash('success', $this->translator->trans('change_request.success.updated'));
             return $this->redirectToRoute('app_change_request_show', ['id' => $changeRequest->getId()]);
         }
 
@@ -97,7 +99,7 @@ class ChangeRequestController extends AbstractController
             $this->entityManager->remove($changeRequest);
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Change request deleted successfully.');
+            $this->addFlash('success', $this->translator->trans('change_request.success.deleted'));
         }
 
         return $this->redirectToRoute('app_change_request_index');

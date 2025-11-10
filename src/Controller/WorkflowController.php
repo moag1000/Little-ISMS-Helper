@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route('/workflow')]
 #[IsGranted('ROLE_USER')]
@@ -22,7 +23,8 @@ class WorkflowController extends AbstractController
         private WorkflowRepository $workflowRepository,
         private WorkflowInstanceRepository $workflowInstanceRepository,
         private WorkflowService $workflowService,
-        private EntityManagerInterface $entityManager
+        private EntityManagerInterface $entityManager,
+        private TranslatorInterface $translator
     ) {}
 
     #[Route('/', name: 'app_workflow_index')]
@@ -76,7 +78,7 @@ class WorkflowController extends AbstractController
     public function approveInstance(Request $request, WorkflowInstance $instance): Response
     {
         if (!$this->isCsrfTokenValid('approve'.$instance->getId(), $request->request->get('_token'))) {
-            $this->addFlash('error', 'Invalid CSRF token.');
+            $this->addFlash('error', $this->translator->trans('error.csrf_invalid'));
             return $this->redirectToRoute('app_workflow_instance_show', ['id' => $instance->getId()]);
         }
 
@@ -84,9 +86,9 @@ class WorkflowController extends AbstractController
         $success = $this->workflowService->approveStep($instance, $this->getUser(), $comments);
 
         if ($success) {
-            $this->addFlash('success', 'Workflow step approved successfully.');
+            $this->addFlash('success', $this->translator->trans('workflow.success.approved'));
         } else {
-            $this->addFlash('error', 'You are not authorized to approve this step.');
+            $this->addFlash('error', $this->translator->trans('workflow.error.not_authorized_approve'));
         }
 
         return $this->redirectToRoute('app_workflow_instance_show', ['id' => $instance->getId()]);
@@ -96,23 +98,23 @@ class WorkflowController extends AbstractController
     public function rejectInstance(Request $request, WorkflowInstance $instance): Response
     {
         if (!$this->isCsrfTokenValid('reject'.$instance->getId(), $request->request->get('_token'))) {
-            $this->addFlash('error', 'Invalid CSRF token.');
+            $this->addFlash('error', $this->translator->trans('error.csrf_invalid'));
             return $this->redirectToRoute('app_workflow_instance_show', ['id' => $instance->getId()]);
         }
 
         $comments = $request->request->get('comments');
 
         if (empty($comments)) {
-            $this->addFlash('error', 'Comments are required when rejecting a workflow step.');
+            $this->addFlash('error', $this->translator->trans('workflow.error.comments_required'));
             return $this->redirectToRoute('app_workflow_instance_show', ['id' => $instance->getId()]);
         }
 
         $success = $this->workflowService->rejectStep($instance, $this->getUser(), $comments);
 
         if ($success) {
-            $this->addFlash('warning', 'Workflow step rejected.');
+            $this->addFlash('warning', $this->translator->trans('workflow.warning.rejected'));
         } else {
-            $this->addFlash('error', 'You are not authorized to reject this step.');
+            $this->addFlash('error', $this->translator->trans('workflow.error.not_authorized_reject'));
         }
 
         return $this->redirectToRoute('app_workflow_instance_show', ['id' => $instance->getId()]);
@@ -123,14 +125,14 @@ class WorkflowController extends AbstractController
     public function cancelInstance(Request $request, WorkflowInstance $instance): Response
     {
         if (!$this->isCsrfTokenValid('cancel'.$instance->getId(), $request->request->get('_token'))) {
-            $this->addFlash('error', 'Invalid CSRF token.');
+            $this->addFlash('error', $this->translator->trans('error.csrf_invalid'));
             return $this->redirectToRoute('app_workflow_instance_show', ['id' => $instance->getId()]);
         }
 
         $reason = $request->request->get('reason', 'Cancelled by administrator');
         $this->workflowService->cancelWorkflow($instance, $reason);
 
-        $this->addFlash('info', 'Workflow instance cancelled.');
+        $this->addFlash('info', $this->translator->trans('workflow.info.cancelled'));
 
         return $this->redirectToRoute('app_workflow_index');
     }
@@ -162,7 +164,7 @@ class WorkflowController extends AbstractController
         $instance = $this->workflowService->getWorkflowInstance($entityType, $entityId);
 
         if (!$instance) {
-            $this->addFlash('info', 'No active workflow found for this entity.');
+            $this->addFlash('info', $this->translator->trans('workflow.info.no_active_workflow'));
             return $this->redirectToRoute('app_workflow_index');
         }
 
@@ -178,10 +180,10 @@ class WorkflowController extends AbstractController
         $instance = $this->workflowService->startWorkflow($entityType, $entityId, $workflowName);
 
         if ($instance) {
-            $this->addFlash('success', 'Workflow started successfully.');
+            $this->addFlash('success', $this->translator->trans('workflow.success.started'));
             return $this->redirectToRoute('app_workflow_instance_show', ['id' => $instance->getId()]);
         } else {
-            $this->addFlash('error', 'No workflow found for this entity type.');
+            $this->addFlash('error', $this->translator->trans('workflow.error.not_found'));
             return $this->redirectToRoute('app_workflow_index');
         }
     }
