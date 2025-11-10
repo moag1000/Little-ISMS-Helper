@@ -1,7 +1,7 @@
 app:
-  title: Small ISMS Helper
+  title: Little ISMS Helper
   subtitle: Informationssicherheitsmanagement nach ISO 27001
-  footer: Small ISMS Helper - Ihr Partner für Informationssicherheit nach ISO 27001
+  footer: Little ISMS Helper - Ihr Partner für Informationssicherheit nach ISO 27001
   powered_by: Powered by Symfony %version%
 nav:
   home: Startseite
