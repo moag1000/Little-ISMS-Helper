@@ -1,29 +1,77 @@
 # Deployment auf Strato/Plesk - Fehlerbehebung
 
+## ⚠️ KRITISCH: Document Root MUSS auf `public/` zeigen! ⚠️
+
+**OHNE diesen Schritt funktioniert die gesamte Anwendung NICHT!**
+
+Die häufigste Ursache für "500 Internal Server Error", "Primary script unknown" und andere Deployment-Probleme ist ein **falsch konfiguriertes Document Root** in Plesk.
+
+**❌ FALSCH:** `/httpdocs` oder `/httpdocs/little-isms-helper`
+**✅ RICHTIG:** `/httpdocs/public` oder `/httpdocs/little-isms-helper/public`
+
+Symfony-Anwendungen **müssen** auf das `public/` Verzeichnis zeigen, da dort:
+- Der Front Controller `index.php` liegt
+- Die `.htaccess` mit Rewrite-Regeln liegt
+- Alle öffentlichen Assets (CSS, JS, Bilder) liegen
+- Sicherheitskritische Dateien (`.env`, `config/`, `src/`) NICHT zugänglich sind
+
+**Bitte prüfen Sie ZUERST diesen Punkt, bevor Sie mit anderen Schritten fortfahren!**
+
+---
+
 ## Problem: "Primary script unknown" Fehler
 
 Dieser Fehler tritt auf, wenn Apache/PHP-FPM die PHP-Dateien nicht finden kann. Dies ist ein häufiges Problem bei Symfony-Anwendungen auf Plesk, da das Document Root nicht korrekt konfiguriert ist.
 
 ## Lösung
 
-### Schritt 1: Document Root in Plesk anpassen
+### Schritt 1: Document Root in Plesk anpassen ⚠️ ZWINGEND ERFORDERLICH!
 
-Der wichtigste Schritt: Das Document Root muss auf das `public` Verzeichnis zeigen!
+**Dies ist der wichtigste und kritischste Schritt des gesamten Deployments!**
+
+Das Document Root **MUSS** auf das `public` Verzeichnis zeigen!
+
+**Detaillierte Anleitung:**
 
 1. **In Plesk einloggen**
+   - Öffnen Sie Ihr Plesk-Panel (z.B. https://yourdomain.com:8443)
+
 2. **Domain auswählen**
+   - Klicken Sie in der Seitenleiste auf "Websites & Domains"
+   - Wählen Sie die Domain aus (z.B. little-isms-helper.banda-dismar.de)
+
 3. **"Hosting-Einstellungen" öffnen**
+   - Klicken Sie auf "Hosting-Einstellungen" (manchmal auch "Apache & nginx-Einstellungen")
+
 4. **Document Root ändern:**
+
+   **VORHER (FALSCH):**
    ```
-   Standardmäßig: /httpdocs
-   Ändern zu: /httpdocs/public
+   Document Root: /httpdocs
    ```
-   ODER wenn Sie die Anwendung in einem Unterverzeichnis installiert haben:
+   oder
    ```
-   /httpdocs/little-isms-helper/public
+   Document Root: /httpdocs/little-isms-helper
    ```
 
-5. **Speichern**
+   **NACHHER (RICHTIG):**
+   ```
+   Document Root: /httpdocs/public
+   ```
+   oder wenn die Anwendung in einem Unterverzeichnis liegt:
+   ```
+   Document Root: /httpdocs/little-isms-helper/public
+   ```
+
+   **⚠️ WICHTIG:** Vergessen Sie NICHT das `/public` am Ende!
+
+5. **"OK" oder "Übernehmen" klicken**
+   - Warten Sie, bis Plesk die Konfiguration neu lädt (kann 5-10 Sekunden dauern)
+
+6. **Verifizieren:**
+   - Öffnen Sie https://yourdomain.com
+   - Sie sollten jetzt die Symfony-Anwendung sehen (ggf. noch ohne Styling, wenn Assets fehlen)
+   - Bei FALSCHEM Document Root sehen Sie: "403 Forbidden" oder "Primary script unknown"
 
 ### Schritt 2: .htaccess Datei platzieren
 
@@ -538,30 +586,38 @@ Bei weiteren Problemen:
 
 ## Zusammenfassung
 
-Die vier häufigsten Fehler bei Plesk-Deployment:
+### Die vier häufigsten Fehler bei Plesk-Deployment (in Reihenfolge der Wichtigkeit):
 
-1. **CSS/JS-Dateien laden nicht (500 Error)**
-   - **Ursache:** Assets wurden nicht installiert, `public/assets/` fehlt
-   - **Lösung:** `php bin/console assets:install public && php bin/console importmap:install`
+**⚠️ 1. Document Root zeigt NICHT auf `public/` Verzeichnis** (BLOCKIERT ALLES!)
+   - **Ursache:** Plesk ist standardmäßig auf `/httpdocs` konfiguriert
+   - **Symptome:** "Primary script unknown", 403 Forbidden, komplett leere Seite
+   - **Lösung:** In Plesk Hosting-Einstellungen Document Root auf `/httpdocs/public` ändern
+   - **⚠️ OHNE diesen Schritt funktioniert GAR NICHTS!**
 
-2. **"Option FollowSymlinks not allowed here"**
-   - **Ursache:** Plesk verbietet `Options +FollowSymlinks` in `.htaccess`
-   - **Lösung:** In `public/.htaccess` ändern zu `Options +SymLinksIfOwnerMatch`
-
-3. **"Primary script unknown"**
-   - **Ursache:** Document Root zeigt nicht auf `public` Verzeichnis
-   - **Lösung:** Document Root auf `/httpdocs/public` setzen
-
-4. **"Class 'DebugBundle' not found"**
-   - **Ursache:** `APP_ENV` ist nicht auf `prod` gesetzt
+**2. "Class 'DebugBundle' not found"**
+   - **Ursache:** `APP_ENV` ist nicht auf `prod` gesetzt, aber Dependencies mit `--no-dev` installiert
+   - **Symptome:** 500 Error, Fehler im Apache-Log
    - **Lösung:** `.env.local` mit `APP_ENV=prod` erstellen
 
-**Kritische Schritte:**
-- Document Root → `public` Verzeichnis
-- `.htaccess` → `Options +SymLinksIfOwnerMatch` verwenden (Plesk-kompatibel)
-- `.env.local` → `APP_ENV=prod`
-- Composer → `--no-dev` Flag verwenden
-- **Assets installieren** → `php bin/console assets:install public` + `importmap:install`
-- Cache leeren → `php bin/console cache:clear --env=prod`
+**3. "Option FollowSymlinks not allowed here"**
+   - **Ursache:** Plesk verbietet `Options +FollowSymlinks` in `.htaccess`
+   - **Symptome:** 500 Error, Apache-Log zeigt Alert
+   - **Lösung:** In `public/.htaccess` ändern zu `Options +SymLinksIfOwnerMatch`
 
-Ohne diese Schritte funktioniert die Symfony-Anwendung nicht auf Plesk.
+**4. CSS/JS-Dateien laden nicht (500 Error)**
+   - **Ursache:** Assets wurden nicht installiert, `public/assets/` fehlt
+   - **Symptome:** Seite lädt, aber ohne Styling
+   - **Lösung:** `php bin/console assets:install public && php bin/console importmap:install`
+
+### Kritische Deployment-Checkliste (in dieser Reihenfolge!):
+
+1. **⚠️ ZUERST: Document Root → `/httpdocs/public` setzen** (ZWINGEND!)
+2. `.htaccess` → `Options +SymLinksIfOwnerMatch` verwenden (Plesk-kompatibel)
+3. `.env.local` → `APP_ENV=prod` + `APP_SECRET` + `DATABASE_URL` setzen
+4. Composer → `composer install --no-dev --optimize-autoloader`
+5. **Assets installieren** → `php bin/console assets:install public` + `importmap:install`
+6. Cache leeren → `php bin/console cache:clear --env=prod`
+7. Dateirechte → `chmod -R 775 var/cache var/log`
+
+**Ohne Schritt 1 (Document Root) funktioniert die gesamte Anwendung nicht!**
+Alle anderen Fehler können Sie nur beheben, wenn das Document Root korrekt konfiguriert ist.
