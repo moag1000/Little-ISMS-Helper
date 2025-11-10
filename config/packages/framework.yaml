@@ -15,9 +15,8 @@ framework:
         gc_probability: 1
         gc_divisor: 100
 
-        # Session ID security
-        sid_length: 48                # Longer session IDs are harder to guess (default: 32)
-        sid_bits_per_character: 6     # More entropy per character (default: 4)
+        # Note: sid_length and sid_bits_per_character removed (deprecated in Symfony 7.2/PHP 8.4)
+        # PHP now manages session ID generation automatically with secure defaults
 
     #esi: true
     #fragments: true
