@@ -1,14 +1,14 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit {{ change_request.changeNumber }}{% endblock %}
+{% block title %}{{ 'change_request.edit'|trans }} {{ change_request.changeNumber }}{% endblock %}
 
 {% block body %}
 <div class="container">
     <div class="page-header">
-        <h1>Edit: {{ change_request.changeNumber }}</h1>
+        <h1>{{ 'change_request.page.edit'|trans }}: {{ change_request.changeNumber }}</h1>
         <div class="actions">
-            <a href="{{ path('app_change_request_show', {id: change_request.id}) }}" class="btn btn-secondary">View</a>
-            <a href="{{ path('app_change_request_index') }}" class="btn btn-secondary">Back</a>
+            <a href="{{ path('app_change_request_show', {id: change_request.id}) }}" class="btn btn-secondary">{{ 'change_request.action.view'|trans }}</a>
+            <a href="{{ path('app_change_request_index') }}" class="btn btn-secondary">{{ 'common.back'|trans }}</a>
         </div>
     </div>
 
@@ -43,8 +43,8 @@
                 {{ form_row(form.closureNotes) }}
 
                 <div class="form-actions">
-                    <button type="submit" class="btn btn-primary">Update Change Request</button>
-                    <a href="{{ path('app_change_request_show', {id: change_request.id}) }}" class="btn btn-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-primary">{{ 'change_request.action.update'|trans }}</button>
+                    <a href="{{ path('app_change_request_show', {id: change_request.id}) }}" class="btn btn-secondary">{{ 'common.cancel'|trans }}</a>
                 </div>
             {{ form_end(form) }}
         </div>
