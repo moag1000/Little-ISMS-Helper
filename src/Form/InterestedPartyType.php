@@ -19,12 +19,12 @@ class InterestedPartyType extends AbstractType
     {
         $builder
             ->add('name', TextType::class, [
-                'label' => 'Party Name',
+                'label' => 'interested_party.field.name',
                 'required' => true,
                 'attr' => ['maxlength' => 255],
             ])
             ->add('partyType', ChoiceType::class, [
-                'label' => 'Party Type',
+                'label' => 'interested_party.field.party_type',
                 'choices' => [
                     'Customer' => 'customer',
                     'Shareholder' => 'shareholder',
@@ -41,26 +41,26 @@ class InterestedPartyType extends AbstractType
                 'required' => true,
             ])
             ->add('description', TextareaType::class, [
-                'label' => 'Description',
+                'label' => 'interested_party.field.description',
                 'required' => false,
                 'attr' => ['rows' => 3],
             ])
             ->add('contactPerson', TextType::class, [
-                'label' => 'Contact Person',
+                'label' => 'interested_party.field.contact_person',
                 'required' => false,
                 'attr' => ['maxlength' => 100],
             ])
             ->add('email', EmailType::class, [
-                'label' => 'Email',
+                'label' => 'interested_party.field.email',
                 'required' => false,
             ])
             ->add('phone', TextType::class, [
-                'label' => 'Phone',
+                'label' => 'interested_party.field.phone',
                 'required' => false,
                 'attr' => ['maxlength' => 50],
             ])
             ->add('importance', ChoiceType::class, [
-                'label' => 'Importance',
+                'label' => 'interested_party.field.importance',
                 'choices' => [
                     'Critical' => 'critical',
                     'High' => 'high',
@@ -70,17 +70,17 @@ class InterestedPartyType extends AbstractType
                 'required' => true,
             ])
             ->add('requirements', TextareaType::class, [
-                'label' => 'Requirements & Expectations',
+                'label' => 'interested_party.field.requirements',
                 'required' => true,
                 'attr' => ['rows' => 4],
             ])
             ->add('howAddressed', TextareaType::class, [
-                'label' => 'How Requirements are Addressed',
+                'label' => 'interested_party.field.how_addressed',
                 'required' => false,
                 'attr' => ['rows' => 4],
             ])
             ->add('communicationFrequency', ChoiceType::class, [
-                'label' => 'Communication Frequency',
+                'label' => 'interested_party.field.communication_frequency',
                 'choices' => [
                     'Daily' => 'daily',
                     'Weekly' => 'weekly',
@@ -92,32 +92,32 @@ class InterestedPartyType extends AbstractType
                 'required' => false,
             ])
             ->add('communicationMethod', TextareaType::class, [
-                'label' => 'Communication Method',
+                'label' => 'interested_party.field.communication_method',
                 'required' => false,
                 'attr' => ['rows' => 2],
             ])
             ->add('lastCommunication', DateType::class, [
-                'label' => 'Last Communication',
+                'label' => 'interested_party.field.last_communication',
                 'widget' => 'single_text',
                 'required' => false,
             ])
             ->add('nextCommunication', DateType::class, [
-                'label' => 'Next Planned Communication',
+                'label' => 'interested_party.field.next_communication',
                 'widget' => 'single_text',
                 'required' => false,
             ])
             ->add('feedback', TextareaType::class, [
-                'label' => 'Feedback',
+                'label' => 'interested_party.field.feedback',
                 'required' => false,
                 'attr' => ['rows' => 3],
             ])
             ->add('satisfactionLevel', IntegerType::class, [
-                'label' => 'Satisfaction Level (1-5)',
+                'label' => 'interested_party.field.satisfaction_level',
                 'required' => false,
                 'attr' => ['min' => 1, 'max' => 5],
             ])
             ->add('issues', TextareaType::class, [
-                'label' => 'Issues/Concerns',
+                'label' => 'interested_party.field.issues',
                 'required' => false,
                 'attr' => ['rows' => 3],
             ])
