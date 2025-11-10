@@ -1000,3 +1000,84 @@ compliance:
   industry.automotive: Automotive Industry
   industry.financial_services: Financial Services
   industry.all_sectors: All Sectors
+
+# Risk Appetite (ISO 27005:2022)
+risk_appetite:
+  field:
+    category: Category
+    max_acceptable_risk: Maximum Acceptable Risk
+    description: Description
+    is_active: Active
+    approved_by: Approved By
+    approved_at: Approved At
+  placeholder:
+    category: 'e.g. Financial Risks, Operational Risks, Compliance Risks'
+    approved_by: Select person
+    description: 'Describe the risk appetite and its rationale...'
+  help:
+    category: 'Optional: Leave empty for global risk appetite, or specify category (e.g. "Financial Risks")'
+    max_acceptable_risk: 'Maximum risk score (1-25) on the 5×5 risk matrix. Risks above require treatment.'
+    description: 'Explanation of risk appetite, rationale, and guidelines for risk acceptance'
+    is_active: 'Only one risk appetite per category should be active'
+    approved_by: 'Person who approved this risk appetite (ISO 27005 compliance)'
+    approved_at: 'Timestamp of formal approval'
+  validation:
+    category_max_length: 'Category name cannot exceed {{ limit }} characters'
+    max_acceptable_risk_required: 'Maximum acceptable risk is required'
+    max_acceptable_risk_range: 'Maximum acceptable risk must be between {{ min }} and {{ max }}'
+    description_required: 'Description is required'
+
+# Risk Treatment Plan (ISO 27005:2022)
+risk_treatment_plan:
+  field:
+    risk: Risk
+    title: Title
+    description: Description
+    status: Status
+    priority: Priority
+    start_date: Start Date
+    target_completion_date: Target Completion Date
+    actual_completion_date: Actual Completion Date
+    budget: Budget
+    responsible_person: Responsible Person
+    controls: Controls
+    completion_percentage: Completion Percentage
+    implementation_notes: Implementation Notes
+  placeholder:
+    risk: Select risk
+    title: 'e.g. Implementation of Firewall Rules'
+    description: 'Describe the planned treatment measures...'
+    responsible_person: Select person
+    implementation_notes: 'Notes on implementation progress...'
+  help:
+    risk: 'The risk being addressed by this plan'
+    description: 'Detailed description of planned risk treatment measures'
+    status: 'Current implementation status of the plan'
+    priority: 'Priority level for implementation'
+    start_date: 'Date when implementation begins'
+    target_completion_date: 'Planned completion date'
+    actual_completion_date: 'Actual completion date (when completed)'
+    budget: 'Budget allocated for this plan in EUR'
+    responsible_person: 'Person responsible for implementing this plan'
+    controls: 'ISO 27001 controls implementing this treatment plan'
+    completion_percentage: 'Completion percentage from 0-100%'
+    implementation_notes: 'Notes on progress and implementation'
+  status:
+    planned: Planned
+    in_progress: In Progress
+    completed: Completed
+    cancelled: Cancelled
+    on_hold: On Hold
+  priority:
+    low: Low
+    medium: Medium
+    high: High
+    critical: Critical
+  validation:
+    risk_required: 'Risk is required'
+    title_required: 'Title is required'
+    title_max_length: 'Title cannot exceed {{ limit }} characters'
+    description_required: 'Description is required'
+    target_completion_date_required: 'Target completion date is required'
+    budget_positive: 'Budget must be positive or zero'
+    completion_percentage_range: 'Completion percentage must be between {{ min }} and {{ max }}'
