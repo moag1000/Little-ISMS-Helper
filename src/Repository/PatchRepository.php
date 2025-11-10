@@ -133,6 +133,14 @@ class PatchRepository extends ServiceEntityRepository
     }
 
     /**
+     * Get deployment statistics (alias for countByStatus)
+     */
+    public function getDeploymentStatistics(): array
+    {
+        return $this->countByStatus();
+    }
+
+    /**
      * Find recently deployed patches
      *
      * @return Patch[]
