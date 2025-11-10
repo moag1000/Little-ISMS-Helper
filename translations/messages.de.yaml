@@ -711,6 +711,7 @@ context:
     contractual_obligations: Vertragliche Verpflichtungen
   link:
     edit: ISMS-Kontext bearbeiten
+    create_now: Jetzt erstellen
   info:
     iso_clause: 'ISO 27001 Kapitel 4:'
     iso_description: Verstehen der Organisation und ihres Kontexts
@@ -738,6 +739,17 @@ objective:
     status_required: Bitte wählen Sie einen Status aus.
   link:
     new: Neues Ziel
+    create_new: Neues Ziel erstellen
+  status:
+    total: Gesamt
+    active: Aktiv
+    achieved: Erreicht
+    delayed: Verzögert
+    at_risk: Gefährdet
+  success:
+    created: Ziel erfolgreich erstellt.
+    updated: Ziel erfolgreich aktualisiert.
+    deleted: Ziel erfolgreich gelöscht.
 business_process:
   field:
     name: Prozessname
