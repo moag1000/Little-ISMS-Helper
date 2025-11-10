@@ -94,16 +94,47 @@ class ControlRepository extends ServiceEntityRepository
     /**
      * Get control implementation statistics grouped by status.
      *
-     * @return array<array{implementationStatus: string, count: int}> Array of counts per implementation status
+     * @return array{total: int, implemented: int, in_progress: int, not_started: int, not_applicable: int} Control statistics
      */
     public function getImplementationStats(): array
     {
-        return $this->createQueryBuilder('c')
+        $rawStats = $this->createQueryBuilder('c')
             ->select('c.implementationStatus, COUNT(c.id) as count')
             ->where('c.applicable = :applicable')
             ->setParameter('applicable', true)
             ->groupBy('c.implementationStatus')
             ->getQuery()
             ->getResult();
+
+        // Transform to template-friendly format
+        $stats = [
+            'total' => 0,
+            'implemented' => 0,
+            'in_progress' => 0,
+            'not_started' => 0,
+            'not_applicable' => 0,
+        ];
+
+        foreach ($rawStats as $stat) {
+            $status = $stat['implementationStatus'] ?? 'not_started';
+            $count = (int) $stat['count'];
+            $stats['total'] += $count;
+
+            if (isset($stats[$status])) {
+                $stats[$status] = $count;
+            }
+        }
+
+        // Add not applicable controls
+        $notApplicableCount = $this->createQueryBuilder('c')
+            ->select('COUNT(c.id)')
+            ->where('c.applicable = :applicable')
+            ->setParameter('applicable', false)
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        $stats['not_applicable'] = (int) $notApplicableCount;
+
+        return $stats;
     }
 }
