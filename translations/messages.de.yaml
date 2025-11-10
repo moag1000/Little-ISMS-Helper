@@ -185,6 +185,14 @@ risk:
     title: z.B. Datenleck aus der Datenbank
   help:
     description: Detaillierte Beschreibung des Risikos
+    inherent: 'Bewertung des Risikos ohne Berücksichtigung bestehender Maßnahmen (inhärentes Risiko)'
+    residual: 'Bewertung des Risikos nach Implementierung von Maßnahmen (Restrisiko)'
+  section:
+    inherent_risk: 'Inhärente Risikobewertung'
+    residual_risk: 'Restrisikobewertung'
+    treatment: 'Risikobehandlung'
+    acceptance: 'Risikoakzeptanz (ISO 27005)'
+    status: 'Status & Review'
 control:
   field:
     control_id: Control-ID
@@ -289,7 +297,7 @@ audit:
     deleted: Audit erfolgreich gelöscht.
 framework: Framework
 requirement: Anforderung
-soa: Statement of Applicability
+soa_title: Statement of Applicability
 bia: Business Impact Analysis
 roles:
   ROLE_USER: Benutzer
@@ -1197,3 +1205,11 @@ risk_treatment_plan:
     target_completion_date_required: 'Ziel-Fertigstellungsdatum ist erforderlich'
     budget_positive: 'Budget muss positiv oder null sein'
     completion_percentage_range: 'Fertigstellungsgrad muss zwischen {{ min }} und {{ max }} liegen'
+
+# Statement of Applicability (SoA) - Phase 6F-C
+soa:
+  export:
+    html: 'SoA als HTML exportieren'
+    pdf: 'SoA als PDF exportieren - Professioneller Bericht mit allen 93 Controls'
+  preview:
+    pdf: 'PDF-Vorschau im Browser anzeigen'

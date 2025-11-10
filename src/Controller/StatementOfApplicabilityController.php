@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Control;
 use App\Repository\ControlRepository;
+use App\Service\SoAReportService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,7 +18,8 @@ class StatementOfApplicabilityController extends AbstractController
     public function __construct(
         private ControlRepository $controlRepository,
         private EntityManagerInterface $entityManager,
-        private TranslatorInterface $translator
+        private TranslatorInterface $translator,
+        private SoAReportService $soaReportService
     ) {}
 
     #[Route('/', name: 'app_soa_index')]
@@ -91,5 +93,25 @@ class StatementOfApplicabilityController extends AbstractController
             'controls' => $controls,
             'generatedAt' => new \DateTime(),
         ]);
+    }
+
+    /**
+     * Export Statement of Applicability as PDF
+     * Phase 6F-C: Professional SoA PDF Report with all 93 controls
+     */
+    #[Route('/report/pdf', name: 'app_soa_export_pdf')]
+    public function exportPdf(): Response
+    {
+        return $this->soaReportService->downloadSoAReport();
+    }
+
+    /**
+     * Preview SoA PDF Report (inline display)
+     * Phase 6F-C: View PDF in browser before downloading
+     */
+    #[Route('/report/pdf/preview', name: 'app_soa_preview_pdf')]
+    public function previewPdf(): Response
+    {
+        return $this->soaReportService->streamSoAReport();
     }
 }

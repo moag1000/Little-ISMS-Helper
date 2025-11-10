@@ -10,9 +10,15 @@
             ISO/IEC 27001:2022 Annex A Controls - Übersicht und Anwendbarkeitserklärung
         </p>
     </div>
-    <div>
-        <a href="{{ path('app_soa_export') }}" class="btn btn-success">
-            📊 SoA Exportieren
+    <div style="display: flex; gap: 0.5rem;">
+        <a href="{{ path('app_soa_export') }}" class="btn btn-outline-success" title="{{ 'soa.export.html'|trans }}">
+            <i class="bi bi-file-earmark-text"></i> HTML
+        </a>
+        <a href="{{ path('app_soa_export_pdf') }}" class="btn btn-success" title="{{ 'soa.export.pdf'|trans }}">
+            <i class="bi bi-file-earmark-pdf"></i> PDF Export
+        </a>
+        <a href="{{ path('app_soa_preview_pdf') }}" class="btn btn-outline-primary" title="{{ 'soa.preview.pdf'|trans }}" target="_blank">
+            <i class="bi bi-eye"></i> Vorschau
         </a>
     </div>
 </div>
