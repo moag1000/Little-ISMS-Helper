@@ -452,6 +452,8 @@ incident:
     national_authority_notified: Gemeldete Behörde
     authority_reference_number: Aktenzeichen der Behörde
     affected_assets: Betroffene Assets
+  action:
+    download_nis2_report: NIS2-Bericht herunterladen (PDF)
   placeholder:
     title: z.B. Datenschutzvorfall Kundendaten
     description: Detaillierte Beschreibung des Vorfalls...

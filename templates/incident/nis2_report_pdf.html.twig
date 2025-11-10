@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>NIS2 Incident Report - {{ incident.incidentNumber }}</title>
+    <style>
+        @page {
+            margin: 2cm;
+        }
+        body {
+            font-family: 'DejaVu Sans', sans-serif;
+            font-size: 11pt;
+            line-height: 1.5;
+            color: #000;
+        }
+        .header {
+            text-align: center;
+            border-bottom: 3px solid #1e40af;
+            padding-bottom: 1cm;
+            margin-bottom: 1cm;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 18pt;
+            color: #1e40af;
+        }
+        .header .subtitle {
+            font-size: 10pt;
+            color: #666;
+            margin-top: 0.3cm;
+        }
+        .meta-info {
+            background: #f0f4f8;
+            padding: 0.5cm;
+            margin-bottom: 1cm;
+            border-left: 4px solid #1e40af;
+        }
+        .meta-info table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .meta-info td {
+            padding: 0.2cm 0;
+        }
+        .meta-info td:first-child {
+            font-weight: bold;
+            width: 40%;
+        }
+        .section {
+            margin-bottom: 1cm;
+        }
+        .section h2 {
+            font-size: 14pt;
+            color: #1e40af;
+            border-bottom: 2px solid #1e40af;
+            padding-bottom: 0.2cm;
+            margin-bottom: 0.5cm;
+        }
+        .section h3 {
+            font-size: 12pt;
+            color: #1e40af;
+            margin-top: 0.5cm;
+            margin-bottom: 0.3cm;
+        }
+        .timeline-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 0.5cm;
+        }
+        .timeline-table th,
+        .timeline-table td {
+            border: 1px solid #ddd;
+            padding: 0.3cm;
+            text-align: left;
+        }
+        .timeline-table th {
+            background: #1e40af;
+            color: white;
+            font-weight: bold;
+        }
+        .status-badge {
+            padding: 0.1cm 0.3cm;
+            border-radius: 3px;
+            font-size: 9pt;
+            font-weight: bold;
+            display: inline-block;
+        }
+        .status-compliant { background: #10b981; color: white; }
+        .status-overdue { background: #dc2626; color: white; }
+        .status-pending { background: #f59e0b; color: white; }
+        .impact-grid {
+            display: table;
+            width: 100%;
+            margin-top: 0.5cm;
+        }
+        .impact-row {
+            display: table-row;
+        }
+        .impact-cell {
+            display: table-cell;
+            padding: 0.3cm;
+            border: 1px solid #ddd;
+        }
+        .impact-label {
+            font-weight: bold;
+            background: #f0f4f8;
+        }
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 9pt;
+            color: #666;
+            border-top: 1px solid #ddd;
+            padding-top: 0.3cm;
+        }
+        .legal-notice {
+            font-size: 9pt;
+            color: #666;
+            margin-top: 1cm;
+            padding-top: 0.5cm;
+            border-top: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    {# Header #}
+    <div class="header">
+        <h1>NIS2 Incident Notification Report</h1>
+        <div class="subtitle">
+            According to Directive (EU) 2022/2555 - Article 23<br>
+            Network and Information Security (NIS2) Directive
+        </div>
+    </div>
+
+    {# Meta Information #}
+    <div class="meta-info">
+        <table>
+            <tr>
+                <td>Incident Number:</td>
+                <td><strong>{{ incident.incidentNumber ?? 'N/A' }}</strong></td>
+            </tr>
+            <tr>
+                <td>Report Generated:</td>
+                <td>{{ "now"|date('d.m.Y H:i') }} UTC</td>
+            </tr>
+            <tr>
+                <td>Incident Detected:</td>
+                <td>{{ incident.detectedAt|date('d.m.Y H:i') }}</td>
+            </tr>
+            <tr>
+                <td>Severity Level:</td>
+                <td><strong>{{ incident.severity|upper }}</strong></td>
+            </tr>
+            {% if incident.authorityReferenceNumber %}
+            <tr>
+                <td>Authority Reference:</td>
+                <td>{{ incident.authorityReferenceNumber }}</td>
+            </tr>
+            {% endif %}
+        </table>
+    </div>
+
+    {# Incident Overview #}
+    <div class="section">
+        <h2>1. Incident Overview</h2>
+
+        <h3>Incident Title</h3>
+        <p>{{ incident.title }}</p>
+
+        {% if incident.description %}
+        <h3>Description</h3>
+        <p>{{ incident.description }}</p>
+        {% endif %}
+
+        <h3>Classification</h3>
+        <table class="timeline-table">
+            <tr>
+                <th>Category</th>
+                <th>NIS2 Category</th>
+                <th>Severity</th>
+                <th>Status</th>
+            </tr>
+            <tr>
+                <td>{{ ('incident.category.' ~ incident.category)|trans }}</td>
+                <td>{{ incident.nis2Category ? ('incident.nis2_category.' ~ incident.nis2Category)|trans : 'N/A' }}</td>
+                <td>{{ ('incident.severity.' ~ incident.severity)|trans }}</td>
+                <td>{{ ('incident.status.' ~ incident.status)|trans }}</td>
+            </tr>
+        </table>
+    </div>
+
+    {# NIS2 Reporting Timeline #}
+    <div class="section">
+        <h2>2. NIS2 Article 23 Reporting Timeline</h2>
+
+        <table class="timeline-table">
+            <tr>
+                <th>Reporting Stage</th>
+                <th>Deadline</th>
+                <th>Reported At</th>
+                <th>Status</th>
+            </tr>
+            <tr>
+                <td><strong>Early Warning (24h)</strong></td>
+                <td>{{ incident.earlyWarningDeadline|date('d.m.Y H:i') }}</td>
+                <td>{{ incident.earlyWarningReportedAt ? incident.earlyWarningReportedAt|date('d.m.Y H:i') : 'Pending' }}</td>
+                <td>
+                    {% if incident.earlyWarningReportedAt %}
+                        <span class="status-badge status-compliant">Completed</span>
+                    {% elseif incident.isEarlyWarningOverdue %}
+                        <span class="status-badge status-overdue">Overdue</span>
+                    {% else %}
+                        <span class="status-badge status-pending">Pending ({{ incident.hoursUntilEarlyWarningDeadline }}h remaining)</span>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td><strong>Detailed Notification (72h)</strong></td>
+                <td>{{ incident.detailedNotificationDeadline|date('d.m.Y H:i') }}</td>
+                <td>{{ incident.detailedNotificationReportedAt ? incident.detailedNotificationReportedAt|date('d.m.Y H:i') : 'Pending' }}</td>
+                <td>
+                    {% if incident.detailedNotificationReportedAt %}
+                        <span class="status-badge status-compliant">Completed</span>
+                    {% elseif incident.isDetailedNotificationOverdue %}
+                        <span class="status-badge status-overdue">Overdue</span>
+                    {% else %}
+                        <span class="status-badge status-pending">Pending ({{ incident.hoursUntilDetailedNotificationDeadline }}h remaining)</span>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td><strong>Final Report (1 month)</strong></td>
+                <td>{{ incident.finalReportDeadline|date('d.m.Y H:i') }}</td>
+                <td>{{ incident.finalReportSubmittedAt ? incident.finalReportSubmittedAt|date('d.m.Y H:i') : 'Pending' }}</td>
+                <td>
+                    {% if incident.finalReportSubmittedAt %}
+                        <span class="status-badge status-compliant">Completed</span>
+                    {% elseif incident.isFinalReportOverdue %}
+                        <span class="status-badge status-overdue">Overdue</span>
+                    {% else %}
+                        <span class="status-badge status-pending">Pending ({{ incident.daysUntilFinalReportDeadline }} days remaining)</span>
+                    {% endif %}
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    {# Impact Assessment #}
+    <div class="section">
+        <h2>3. Impact Assessment</h2>
+
+        <div class="impact-grid">
+            <div class="impact-row">
+                <div class="impact-cell impact-label">Cross-Border Impact</div>
+                <div class="impact-cell">{{ incident.crossBorderImpact ? 'Yes' : 'No' }}</div>
+            </div>
+            {% if incident.affectedUsersCount %}
+            <div class="impact-row">
+                <div class="impact-cell impact-label">Affected Users</div>
+                <div class="impact-cell">{{ incident.affectedUsersCount|number_format }}</div>
+            </div>
+            {% endif %}
+            {% if incident.estimatedFinancialImpact %}
+            <div class="impact-row">
+                <div class="impact-cell impact-label">Estimated Financial Impact</div>
+                <div class="impact-cell">{{ incident.estimatedFinancialImpact|number_format(2) }} EUR</div>
+            </div>
+            {% endif %}
+            {% if incident.affectedSystems %}
+            <div class="impact-row">
+                <div class="impact-cell impact-label">Affected Systems</div>
+                <div class="impact-cell">{{ incident.affectedSystems }}</div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    {# Technical Details #}
+    {% if incident.rootCause or incident.correctiveActions %}
+    <div class="section">
+        <h2>4. Technical Analysis</h2>
+
+        {% if incident.rootCause %}
+        <h3>Root Cause Analysis</h3>
+        <p>{{ incident.rootCause }}</p>
+        {% endif %}
+
+        {% if incident.correctiveActions %}
+        <h3>Corrective Actions Taken</h3>
+        <p>{{ incident.correctiveActions }}</p>
+        {% endif %}
+
+        {% if incident.lessonsLearned %}
+        <h3>Lessons Learned</h3>
+        <p>{{ incident.lessonsLearned }}</p>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    {# Authority Notification #}
+    <div class="section">
+        <h2>5. Authority Notification Details</h2>
+
+        <div class="impact-grid">
+            {% if incident.nationalAuthorityNotified %}
+            <div class="impact-row">
+                <div class="impact-cell impact-label">Notified Authority</div>
+                <div class="impact-cell">{{ incident.nationalAuthorityNotified }}</div>
+            </div>
+            {% endif %}
+            {% if incident.authorityReferenceNumber %}
+            <div class="impact-row">
+                <div class="impact-cell impact-label">Authority Reference Number</div>
+                <div class="impact-cell">{{ incident.authorityReferenceNumber }}</div>
+            </div>
+            {% endif %}
+            <div class="impact-row">
+                <div class="impact-cell impact-label">Reported By</div>
+                <div class="impact-cell">{{ incident.reportedBy ?? 'N/A' }}</div>
+            </div>
+        </div>
+    </div>
+
+    {# Legal Notice #}
+    <div class="legal-notice">
+        <strong>Legal Notice:</strong> This report has been generated in accordance with Article 23 of
+        Directive (EU) 2022/2555 of the European Parliament and of the Council (NIS2 Directive).
+        The information contained herein is confidential and intended solely for the competent
+        national authority. Unauthorized disclosure, copying, or distribution is strictly prohibited.
+    </div>
+
+    {# Footer #}
+    <div class="footer">
+        Report generated on {{ "now"|date('d.m.Y H:i') }} | NIS2 Incident Management System | Page 1/1
+    </div>
+</body>
+</html>

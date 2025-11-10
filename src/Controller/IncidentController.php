@@ -6,6 +6,7 @@ use App\Entity\Incident;
 use App\Form\IncidentType;
 use App\Repository\IncidentRepository;
 use App\Service\EmailNotificationService;
+use App\Service\PdfExportService;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -22,6 +23,7 @@ class IncidentController extends AbstractController
         private IncidentRepository $incidentRepository,
         private EntityManagerInterface $entityManager,
         private EmailNotificationService $emailService,
+        private PdfExportService $pdfService,
         private UserRepository $userRepository,
         private TranslatorInterface $translator
     ) {}
@@ -118,5 +120,43 @@ class IncidentController extends AbstractController
         }
 
         return $this->redirectToRoute('app_incident_index');
+    }
+
+    /**
+     * Download NIS2 Incident Report as PDF
+     *
+     * Generates a NIS2-compliant incident report according to Article 23
+     * of Directive (EU) 2022/2555 for submission to competent authorities.
+     */
+    #[Route('/{id}/nis2-report.pdf', name: 'app_incident_nis2_report', requirements: ['id' => '\d+'])]
+    #[IsGranted('ROLE_USER')]
+    public function downloadNis2Report(Incident $incident): Response
+    {
+        // Verify that the incident requires NIS2 reporting
+        if (!$incident->requiresNis2Reporting()) {
+            $this->addFlash('warning', 'This incident does not require NIS2 reporting.');
+            return $this->redirectToRoute('app_incident_show', ['id' => $incident->getId()]);
+        }
+
+        // Generate filename with incident number and timestamp
+        $filename = sprintf(
+            'NIS2-Report-%s-%s.pdf',
+            $incident->getIncidentNumber() ?? $incident->getId(),
+            date('Ymd-His')
+        );
+
+        // Generate PDF
+        $pdf = $this->pdfService->generatePdf(
+            'incident/nis2_report_pdf.html.twig',
+            ['incident' => $incident],
+            ['orientation' => 'portrait', 'paper' => 'A4']
+        );
+
+        // Return PDF as download
+        return new Response($pdf, 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => sprintf('attachment; filename="%s"', $filename),
+            'Content-Length' => strlen($pdf),
+        ]);
     }
 }
