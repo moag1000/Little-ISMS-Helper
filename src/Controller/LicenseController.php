@@ -6,11 +6,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Yaml\Yaml;
 
 class LicenseController extends AbstractController
 {
-    #[Route('/{_locale}/about/licenses', name: 'app_licenses', requirements: ['_locale' => 'de|en'])]
+    #[Route('/about/licenses', name: 'app_licenses')]
     public function index(): Response
     {
         $noticeFile = $this->getParameter('kernel.project_dir') . '/NOTICE.md';
@@ -32,7 +31,7 @@ class LicenseController extends AbstractController
         ]);
     }
 
-    #[Route('/{_locale}/about/licenses/report', name: 'app_licenses_report', requirements: ['_locale' => 'de|en'])]
+    #[Route('/about/licenses/report', name: 'app_licenses_report')]
     public function report(): Response
     {
         $reportFile = $this->getParameter('kernel.project_dir') . '/docs/reports/license-report.md';
@@ -50,7 +49,7 @@ class LicenseController extends AbstractController
         ]);
     }
 
-    #[Route('/{_locale}/about/licenses/summary', name: 'app_licenses_summary', requirements: ['_locale' => 'de|en'])]
+    #[Route('/about/licenses/summary', name: 'app_licenses_summary')]
     public function summary(): Response
     {
         $reportFile = $this->getParameter('kernel.project_dir') . '/docs/reports/license-report.md';
@@ -99,23 +98,5 @@ class LicenseController extends AbstractController
         return $this->render('license/summary.html.twig', [
             'stats' => $stats,
         ]);
-    }
-
-    #[Route('/about/licenses', name: 'app_licenses_no_locale')]
-    public function indexRedirect(): Response
-    {
-        return $this->redirectToRoute('app_licenses', ['_locale' => 'de']);
-    }
-
-    #[Route('/about/licenses/report', name: 'app_licenses_report_no_locale')]
-    public function reportRedirect(): Response
-    {
-        return $this->redirectToRoute('app_licenses_report', ['_locale' => 'de']);
-    }
-
-    #[Route('/about/licenses/summary', name: 'app_licenses_summary_no_locale')]
-    public function summaryRedirect(): Response
-    {
-        return $this->redirectToRoute('app_licenses_summary', ['_locale' => 'de']);
     }
 }
