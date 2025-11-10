@@ -147,6 +147,72 @@ control:
     next_review_date: Nächstes Review
     protected_assets: Verknüpfte Assets
 audit:
+  title: Audits
+  new: Neues Audit
+  edit: Audit bearbeiten
+  create: Audit erstellen
+  delete_warning: Möchten Sie dieses Audit wirklich löschen?
+  confirm_delete: Audit löschen
+  scope: Geltungsbereich
+  objectives: Audit-Ziele
+  planned_date: Geplantes Datum
+  actual_date: Tatsächliches Datum
+  lead_auditor: Lead Auditor
+  audit_team: Audit-Team
+  auditee: Auditierte Person/Abteilung
+  department: Abteilung
+  findings: Feststellungen
+  nonconformities: Nichtkonformitäten
+  observations: Beobachtungen
+  recommendations: Empfehlungen
+  corrective_actions: Korrekturmaßnahmen
+  follow_up_actions: Folgemaßnahmen
+  summary: Zusammenfassung
+  notes: Notizen
+  methodology: Methodik
+  audit_criteria: Audit-Kriterien
+  evidence_collected: Gesammelte Nachweise
+  overall_result: Gesamtergebnis
+  result: Ergebnis
+  team_size: Teamgröße
+  quick_stats: Schnellstatistiken
+  export_pdf: Als PDF exportieren
+  iso_27001_clause_info: ISO 27001 Kapitel-Informationen
+  iso_27001_requirement: ISO 27001 Anforderung
+  framework: Framework
+  standard: Standard
+  type: Audit-Typ
+  status:
+    planned: Geplant
+    in_progress: In Bearbeitung
+    completed: Abgeschlossen
+    cancelled: Abgebrochen
+  scope_type:
+    internal: Internes Audit
+    external: Externes Audit
+    certification: Zertifizierungsaudit
+    surveillance: Überwachungsaudit
+    recertification: Rezertifizierungsaudit
+  type:
+    iso27001: ISO 27001
+    iso9001: ISO 9001
+    gdpr: DSGVO
+    custom: Benutzerdefiniert
+  result:
+    passed: Bestanden
+    passed_with_findings: Bestanden mit Feststellungen
+    failed: Nicht bestanden
+    pending: Ausstehend
+  section:
+    basic_info: Grundinformationen
+    schedule: Zeitplan
+    team: Team
+    objectives: Ziele
+    frameworks: Frameworks
+    findings: Feststellungen
+    recommendations: Empfehlungen
+    documentation: Dokumentation
+    status: Status
   field:
     title: Audit-Titel
     scope: Geltungsbereich
@@ -164,6 +230,10 @@ audit:
   validation:
     title_required: Bitte geben Sie einen Titel ein.
     date_required: Bitte wählen Sie ein Datum.
+  success:
+    created: Audit erfolgreich erstellt.
+    updated: Audit erfolgreich aktualisiert.
+    deleted: Audit erfolgreich gelöscht.
 framework: Framework
 requirement: Anforderung
 soa: Statement of Applicability
