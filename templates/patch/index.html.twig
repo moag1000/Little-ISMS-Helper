@@ -1,0 +1,83 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'patch.title'|trans }} - {{ parent() }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="bi bi-patch-check"></i> {{ 'patch.title'|trans }}</h1>
+        <a href="{{ path('app_patch_new') }}" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> {{ 'patch.new'|trans }}
+        </a>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h3>{{ pending_count }}</h3>
+                    <p class="mb-0">{{ 'patch.kpi.pending'|trans }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-success">
+                <div class="card-body text-center">
+                    <h3 class="text-success">{{ deployment_stats.deployed ?? 0 }}</h3>
+                    <p class="mb-0">{{ 'patch.kpi.deployed'|trans }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h3>{{ patches|length }}</h3>
+                    <p class="mb-0">{{ 'patch.kpi.total'|trans }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if patches|length == 0 %}
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i> {{ 'patch.empty'|trans }}
+        </div>
+    {% else %}
+        <div class="card">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>{{ 'patch.field.patch_identifier'|trans }}</th>
+                            <th>{{ 'patch.field.title'|trans }}</th>
+                            <th>{{ 'patch.field.patch_type'|trans }}</th>
+                            <th>{{ 'patch.field.status'|trans }}</th>
+                            <th>{{ 'common.actions'|trans }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for patch in patches %}
+                            <tr>
+                                <td><code>{{ patch.patchIdentifier }}</code></td>
+                                <td><strong>{{ patch.title }}</strong></td>
+                                <td><span class="badge bg-secondary">{{ ('patch.type.' ~ patch.patchType)|trans }}</span></td>
+                                <td><span class="badge bg-info">{{ ('patch.status.' ~ patch.status)|trans }}</span></td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <a href="{{ path('app_patch_show', {id: patch.id}) }}" class="btn btn-outline-primary">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        <a href="{{ path('app_patch_edit', {id: patch.id}) }}" class="btn btn-outline-secondary">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

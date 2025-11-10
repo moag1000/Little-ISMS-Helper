@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+{% block title %}{{ crisis_team.teamName }} - {{ parent() }}{% endblock %}
+{% block body %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>{{ crisis_team.teamName }}</h1>
+        <div>
+            <a href="{{ path('app_crisis_team_edit', {id: crisis_team.id}) }}" class="btn btn-primary">{{ 'common.edit'|trans }}</a>
+            <a href="{{ path('app_crisis_team_index') }}" class="btn btn-outline-secondary">{{ 'common.back'|trans }}</a>
+        </div>
+    </div>
+    <div class="card"><div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-3">{{ 'crisis_team.field.team_type'|trans }}</dt><dd class="col-sm-9"><span class="badge bg-primary">{{ ('crisis_team.type.' ~ crisis_team.teamType)|trans }}</span></dd>
+            <dt class="col-sm-3">{{ 'crisis_team.field.is_active'|trans }}</dt><dd class="col-sm-9"><span class="badge bg-{{ crisis_team.isActive ? 'success' : 'danger' }}">{{ crisis_team.isActive ? 'common.yes'|trans : 'common.no'|trans }}</span></dd>
+            {% if crisis_team.teamLeader %}<dt class="col-sm-3">{{ 'crisis_team.field.team_leader'|trans }}</dt><dd class="col-sm-9">{{ crisis_team.teamLeader.email }}</dd>{% endif %}
+            {% if crisis_team.description %}<dt class="col-sm-3">{{ 'crisis_team.field.description'|trans }}</dt><dd class="col-sm-9">{{ crisis_team.description|nl2br }}</dd>{% endif %}
+        </dl>
+    </div></div>
+</div>
+{% endblock %}

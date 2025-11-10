@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+{% block title %}{{ patch.title }} - {{ parent() }}{% endblock %}
+{% block body %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>{{ patch.title }}</h1>
+        <div>
+            <a href="{{ path('app_patch_edit', {id: patch.id}) }}" class="btn btn-primary">{{ 'common.edit'|trans }}</a>
+            <a href="{{ path('app_patch_index') }}" class="btn btn-outline-secondary">{{ 'common.back'|trans }}</a>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">{{ 'patch.field.patch_identifier'|trans }}</dt>
+                <dd class="col-sm-9"><code>{{ patch.patchIdentifier }}</code></dd>
+                <dt class="col-sm-3">{{ 'patch.field.status'|trans }}</dt>
+                <dd class="col-sm-9"><span class="badge bg-info">{{ ('patch.status.' ~ patch.status)|trans }}</span></dd>
+                <dt class="col-sm-3">{{ 'patch.field.description'|trans }}</dt>
+                <dd class="col-sm-9">{{ patch.description|nl2br }}</dd>
+            </dl>
+        </div>
+    </div>
+</div>
+{% endblock %}
