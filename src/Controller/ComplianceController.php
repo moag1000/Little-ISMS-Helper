@@ -185,13 +185,26 @@ class ComplianceController extends AbstractController
     {
         $frameworks = $this->frameworkRepository->findActiveFrameworks();
         $transitiveAnalysis = [];
+        $mappingMatrix = [];
 
+        // Build mapping coverage matrix for template
         foreach ($frameworks as $sourceFramework) {
             foreach ($frameworks as $targetFramework) {
                 if ($sourceFramework->getId() === $targetFramework->getId()) {
                     continue;
                 }
 
+                // Calculate coverage for matrix
+                $coverage = $this->mappingRepository->calculateFrameworkCoverage(
+                    $sourceFramework,
+                    $targetFramework
+                );
+                $mappingMatrix[$sourceFramework->getId()][$targetFramework->getId()] = [
+                    'coverage' => $coverage,
+                    'has_mapping' => $coverage > 0
+                ];
+
+                // Transitive analysis
                 $transitive = $this->mappingRepository->getTransitiveCompliance(
                     $sourceFramework,
                     $targetFramework
@@ -206,6 +219,10 @@ class ComplianceController extends AbstractController
         return $this->render('compliance/transitive_compliance.html.twig', [
             'frameworks' => $frameworks,
             'transitive_analysis' => $transitiveAnalysis,
+            'mapping_matrix' => $mappingMatrix,
+            'total_relationships' => count($transitiveAnalysis),
+            'transitive_compliance' => array_sum(array_column($transitiveAnalysis, 'requirements_helped')),
+            'leverage_opportunities' => [],
         ]);
     }
 
@@ -278,5 +295,19 @@ class ComplianceController extends AbstractController
             'frameworks' => $frameworks,
             'statistics' => $statistics,
         ]);
+    }
+
+    #[Route('/export/transitive', name: 'app_compliance_export_transitive')]
+    public function exportTransitive(): Response
+    {
+        $this->addFlash('info', 'Transitive compliance export feature coming soon.');
+        return $this->redirectToRoute('app_compliance_transitive');
+    }
+
+    #[Route('/export/comparison', name: 'app_compliance_export_comparison')]
+    public function exportComparison(): Response
+    {
+        $this->addFlash('info', 'Framework comparison export feature coming soon.');
+        return $this->redirectToRoute('app_compliance_compare');
     }
 }

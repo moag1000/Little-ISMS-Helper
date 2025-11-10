@@ -295,6 +295,60 @@ audit:
     created: Audit created successfully.
     updated: Audit updated successfully.
     deleted: Audit deleted successfully.
+
+# ISMS Context (ISO 27001 Clause 4)
+context:
+  title: ISMS Context
+  field:
+    organization_name: Organization Name
+    isms_scope: ISMS Scope
+    scope_exclusions: Scope Exclusions
+    external_issues: External Issues
+    internal_issues: Internal Issues
+    interested_parties: Interested Parties
+    interested_parties_requirements: Interested Parties Requirements
+    legal_requirements: Legal Requirements
+    regulatory_requirements: Regulatory Requirements
+    contractual_obligations: Contractual Obligations
+    isms_policy: ISMS Policy
+    roles_and_responsibilities: Roles and Responsibilities
+    last_review_date: Last Review Date
+    next_review_date: Next Review Date
+  validation:
+    organization_name_required: Please enter an organization name.
+    name_max_length: The name may not exceed {{ limit }} characters.
+  success:
+    created: ISMS Context created successfully.
+    updated: ISMS Context updated successfully.
+  kpi:
+    completeness: Completeness
+    active_goals: Active Goals
+    achieved_goals: Achieved Goals
+    next_review: Next Review
+  review_status:
+    today: Today
+    due: Review due
+    days_remaining: Days remaining
+    days_overdue: Days overdue
+  section:
+    title: ISMS Context
+    organization: Organization
+    exclusions: Exclusions
+    policy: ISMS Policy
+    external_issues: External Issues
+    internal_issues: Internal Issues
+    interested_parties: Interested Parties
+    requirements: Requirements
+    legal_requirements: Legal Requirements
+    regulatory_requirements: Regulatory Requirements
+    contractual_obligations: Contractual Obligations
+  link:
+    edit: Edit ISMS Context
+    create_now: Create Now
+  info:
+    iso_clause: 'ISO 27001 Clause 4:'
+    iso_description: Understanding the Organization and its Context
+
 framework: Framework
 requirement: Requirement
 soa_title: Statement of Applicability
@@ -945,53 +999,7 @@ management_review:
     action_items: Action Items
     resources_needed: Resources Needed
     summary: Summary
-context:
-  field:
-    organization_name: Organization Name
-    isms_scope: ISMS Scope
-    scope_exclusions: Scope Exclusions
-    external_issues: External Issues
-    internal_issues: Internal Issues
-    interested_parties: Interested Parties
-    interested_parties_requirements: Interested Parties Requirements
-    legal_requirements: Legal Requirements
-    regulatory_requirements: Regulatory Requirements
-    contractual_obligations: Contractual Obligations
-    isms_policy: ISMS Policy
-    roles_and_responsibilities: Roles and Responsibilities
-    last_review_date: Last Review Date
-    next_review_date: Next Review Date
-  validation:
-    organization_name_required: Please enter an organization name.
-    name_max_length: The name may not exceed {{ limit }} characters.
-  kpi:
-    completeness: Completeness
-    active_goals: Active Goals
-    achieved_goals: Achieved Goals
-    next_review: Next Review
-  review_status:
-    today: Today
-    due: Review due
-    days_remaining: Days remaining
-    days_overdue: Days overdue
-  section:
-    title: ISMS Context
-    organization: Organization
-    exclusions: Exclusions
-    policy: ISMS Policy
-    external_issues: External Issues
-    internal_issues: Internal Issues
-    interested_parties: Interested Parties
-    requirements: Requirements
-    legal_requirements: Legal Requirements
-    regulatory_requirements: Regulatory Requirements
-    contractual_obligations: Contractual Obligations
-  link:
-    edit: Edit ISMS Context
-    create_now: Create Now
-  info:
-    iso_clause: 'ISO 27001 Clause 4:'
-    iso_description: Understanding the Organization and its Context
+
 objective:
   field:
     title: Title

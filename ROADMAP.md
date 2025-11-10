@@ -519,59 +519,74 @@ Phase 6 konzentriert sich auf die Vervollständigung aller Module und die Sicher
 
 ### 🇪🇺 Phase 6H: NIS2 Directive Compliance (Priorität KRITISCH)
 
-**Status:** 🔄 Geplant
-**Aufwand:** 7-8 Tage
+**Status:** 🚧 ~40% Abgeschlossen (Core Entities & Loader Command)
+**Aufwand:** 7-8 Tage (3 Tage investiert)
 **Impact:** KRITISCH
 **Deadline:** 17.10.2024 (NIS2 Enforcement)
 
-#### LoadNis2RequirementsCommand.php (Data Reuse)
+#### ✅ LoadNis2RequirementsCommand.php (Data Reuse) - ABGESCHLOSSEN
 
 **Zweck:** NIS2 Directive (EU 2022/2555) als loadbares Framework
+**Implementierung:** 583 Zeilen, 3 Commits
 
 ##### Features
-- 45 NIS2 Requirements als ComplianceRequirement Entities
-- ISO 27001 Control Mappings (z.B. NIS2-21.2.i → 5.17, 5.18)
-- Automatic Compliance Tracking
-- Transitive Compliance über Mappings
+- ✅ 45 NIS2 Requirements als ComplianceRequirement Entities (Art. 21)
+- ✅ ISO 27001 Control Mappings (z.B. NIS2-21.2.i → 5.17, 5.18)
+- ✅ Automatic Compliance Tracking
+- ✅ Transitive Compliance über Mappings
+- ✅ Priority levels (critical, high, medium)
+- ✅ Compliance category assignments
 
 ##### Akzeptanzkriterien
-- [ ] Command implementiert
-- [ ] 45 Requirements definiert
-- [ ] Control Mappings erstellt
+- ✅ Command implementiert (app:load-nis2-requirements)
+- ✅ 45 Requirements definiert (Art. 21.2.a bis 21.2.i)
+- ✅ Control Mappings erstellt (ISO 27001:2022 Annex A)
 - [ ] Tests geschrieben
-- [ ] Dokumentation
+- ✅ Dokumentation (inline)
 
-#### Multi-Factor Authentication (MFA) Implementation (KRITISCH)
+#### ✅ Multi-Factor Authentication (MFA) Infrastructure - ENTITY ABGESCHLOSSEN
 
 **NIS2 Artikel:** Art. 21.2.i (Access Control & Authentication)
+**Implementierung:** MfaToken Entity (366 Zeilen) + Repository (118 Zeilen)
 
-##### Fehlende Features
-1. **MfaToken Entity**
-   - TOTP (Time-based One-Time Password)
-   - WebAuthn (FIDO2)
-   - SMS Backup Codes
-   - Hardware Token Support
+##### ✅ Abgeschlossene Features
+1. **✅ MfaToken Entity**
+   - ✅ TOTP (Time-based One-Time Password) mit encrypted secret
+   - ✅ WebAuthn (FIDO2) mit credential ID, public key, counter
+   - ✅ SMS Verification mit phone number
+   - ✅ Hardware Token Support
+   - ✅ Backup Codes (encrypted JSON array)
+   - ✅ Device name/identifier tracking
+   - ✅ Primary/secondary token management (isPrimary flag)
+   - ✅ Usage statistics (lastUsedAt, usageCount)
+   - ✅ Expiration tracking (expiresAt, isExpired())
+   - ✅ Active/inactive toggle
 
-2. **User-MFA-Enrollment Workflow**
-   - QR-Code Generation (TOTP)
-   - Backup Codes Generation
-   - Recovery Options
-   - Enrollment UI
+2. **✅ MfaTokenRepository**
+   - ✅ findActiveByUser() - get all active tokens for user
+   - ✅ findPrimaryByUser() - get primary MFA method
+   - ✅ Database queries optimized
 
-3. **Admin MFA-Enforcement Settings**
-   - Global MFA Toggle
-   - Role-based MFA Requirements
-   - Grace Period Configuration
-   - Exemptions Management
+##### 🚧 Noch Fehlende Features (UI & Workflows)
+3. **User-MFA-Enrollment Workflow**
+   - [ ] QR-Code Generation (TOTP)
+   - [ ] Backup Codes Generation UI
+   - [ ] Recovery Options
+   - [ ] Enrollment UI/Forms
 
-4. **MFA-enabled Field in User Entity**
-   - Boolean Feld
-   - MFA Type (totp/webauthn/sms)
-   - Enrollment Date
-   - Last Verified
+4. **Admin MFA-Enforcement Settings**
+   - [ ] Global MFA Toggle
+   - [ ] Role-based MFA Requirements
+   - [ ] Grace Period Configuration
+   - [ ] Exemptions Management
+
+5. **Login Integration**
+   - [ ] MFA Challenge Screen
+   - [ ] Token Verification Logic
+   - [ ] Fallback to Backup Codes
 
 ##### Akzeptanzkriterien
-- [ ] MfaToken Entity
+- ✅ MfaToken Entity (NIS2-konform)
 - [ ] MFA Service (TOTP, WebAuthn)
 - [ ] Enrollment UI
 - [ ] Login Integration
@@ -625,40 +640,62 @@ Phase 6 konzentriert sich auf die Vervollständigung aller Module und die Sicher
 - [ ] **Data Reuse:** Incident Timeline → Notification Auto-Alerts
 - [ ] **Data Reuse:** Incident ↔ Asset Beziehung
 
-#### Vulnerability Management (NIS2 Art. 21.2.d) (KRITISCH)
+#### ✅ Vulnerability & Patch Management - ENTITIES ABGESCHLOSSEN
 
 **NIS2 Artikel:** Art. 21.2.d (Vulnerability Handling & Disclosure)
+**Implementierung:** Vulnerability (570 Zeilen) + Patch (582 Zeilen) + 2 Repositories (304 Zeilen)
 
-##### Fehlende Features
-1. **Vulnerability Entity**
-   - CVE-ID (unique)
-   - CVSS Score & Vector
-   - Severity (critical/high/medium/low)
-   - Description
-   - Affected Assets (ManyToMany)
-   - Status (open/patched/mitigated/accepted)
-   - Discovery Date
-   - Disclosure Date
-   - Remediation Deadline
+##### ✅ Abgeschlossene Features
+1. **✅ Vulnerability Entity**
+   - ✅ CVE-ID (unique identifier)
+   - ✅ CVSS Scoring (base, temporal, environmental vectors)
+   - ✅ Severity (critical/high/medium/low) auto-calculated
+   - ✅ Description & technical details
+   - ✅ Affected Assets (ManyToMany)
+   - ✅ Status (identified/analyzing/patching/mitigated/closed/false_positive)
+   - ✅ Discovery & disclosure dates
+   - ✅ Remediation deadline tracking
+   - ✅ CWE (Common Weakness Enumeration) reference
+   - ✅ Exploit availability tracking
+   - ✅ Vendor advisory links
+   - ✅ Mitigation plan
 
-2. **Patch Entity**
-   - Patch-ID
-   - Related Vulnerabilities (ManyToMany)
-   - Patch Status (planned/testing/deployed/verified)
-   - Deployment Date
-   - Responsible User
-   - Rollback Plan
+2. **✅ Patch Entity**
+   - ✅ Patch identifier & version
+   - ✅ Related Vulnerabilities (ManyToMany)
+   - ✅ Patch types (security, bugfix, feature, critical)
+   - ✅ Status (available/tested/approved/deployed/failed/rollback)
+   - ✅ Affected systems & vendor info
+   - ✅ Test results & deployment tracking
+   - ✅ Responsible user assignment
+   - ✅ Rollback procedures
+   - ✅ Installation instructions
 
-3. **Asset-Vulnerability Relationships**
-   - ManyToMany zwischen Asset und Vulnerability
-   - Impact Assessment per Asset
-   - Prioritization
+3. **✅ Asset-Vulnerability Relationships**
+   - ✅ ManyToMany zwischen Asset und Vulnerability
+   - ✅ Automated vulnerability scoring per asset
+   - ✅ Criticality calculation
 
-4. **Vulnerability Dashboard**
-   - Open Vulnerabilities by Severity
-   - Overdue Patches
-   - Time to Remediate (KPI)
-   - CVE Trends
+4. **✅ VulnerabilityRepository & PatchRepository**
+   - ✅ findBySeverity() - filter by criticality
+   - ✅ findOverdue() - remediation deadline tracking
+   - ✅ Patch deployment statistics
+   - ✅ Time-to-remediate queries
+
+##### 🚧 Noch Fehlende Features (UI & Dashboards)
+5. **Vulnerability Dashboard**
+   - [ ] Open Vulnerabilities by Severity KPI Cards
+   - [ ] Overdue Patches Timeline
+   - [ ] Time to Remediate Charts (KPI)
+   - [ ] CVE Trends Visualization
+
+6. **Forms & CRUD**
+   - [ ] VulnerabilityType form
+   - [ ] PatchType form
+   - [ ] Templates (index, show, new, edit)
+
+7. **CVE Integration**
+   - [ ] CVE Feed Import (optional)
 
 ##### Data Reuse Integration 🔄 (KRITISCH)
 - **Vulnerability → Risk** (Auto-Risiko-Erstellung aus CVE)
@@ -686,19 +723,20 @@ Phase 6 konzentriert sich auf die Vervollständigung aller Module und die Sicher
   - 🛡️ **Safe Guard:** Snapshot-basierte Berechnung (monatlich), kein Live-Loop
 
 ##### Akzeptanzkriterien
-- [ ] Vulnerability Entity
-- [ ] Patch Entity
-- [ ] 2 Form Types
+- ✅ Vulnerability Entity (570 Zeilen, CVSS scoring, CVE/CWE tracking)
+- ✅ Patch Entity (582 Zeilen, deployment tracking, rollback)
+- ✅ VulnerabilityRepository & PatchRepository (304 Zeilen)
+- [ ] 2 Form Types (VulnerabilityType, PatchType)
 - [ ] Dashboard KPIs
 - [ ] CVE Import (optional)
-- [ ] Templates
+- [ ] Templates (8 files: index, show, new, edit für beide)
 - [ ] Tests
 - [ ] **Data Reuse:** Vulnerability → Risk Auto-Erstellung (KRITISCH)
 - [ ] **Data Reuse:** Vulnerability ↔ Incident Tracking
 - [ ] **Data Reuse:** Patch → Control Effectiveness KPI
-- [ ] **Data Reuse:** Vulnerability ↔ Asset
-- [ ] **Safe Guard:** Asset.monetaryValue niemals auto-berechnet (Code-Dokumentation)
-- [ ] **Safe Guard:** Asset.vulnerabilityScore ist READ-ONLY Getter
+- ✅ **Data Reuse:** Vulnerability ↔ Asset (ManyToMany relationship)
+- ✅ **Safe Guard:** Asset.monetaryValue niemals auto-berechnet (Entity design)
+- ✅ **Safe Guard:** Asset.vulnerabilityScore ist READ-ONLY Getter (in Vulnerability entity)
 - [ ] **Safe Guard:** Patch Control Effectiveness ist Snapshot-basiert (monatlich)
 
 #### Supply Chain Security (NIS2 Art. 21.2.e)
@@ -725,76 +763,94 @@ Phase 6 konzentriert sich auf die Vervollständigung aller Module und die Sicher
 
 ### 🇩🇪 Phase 6I: BSI IT-Grundschutz & Additional Standards (Priorität HOCH)
 
-**Status:** 🔄 Geplant
-**Aufwand:** 5-6 Tage
+**Status:** 🚧 ~50% Abgeschlossen (Core Entities & Loader Commands)
+**Aufwand:** 5-6 Tage (2.5 Tage investiert)
 **Impact:** HOCH
 
-#### LoadBsiRequirementsCommand.php (Data Reuse)
+#### ✅ LoadBsiRequirementsCommand.php (Data Reuse) - ABGESCHLOSSEN
 
 **Zweck:** BSI IT-Grundschutz 200-4 als loadbares Framework
+**Implementierung:** 451 Zeilen, Krisenstab-Fokus
 
 ##### Features
-- 35 BSI 200-4 Requirements als ComplianceRequirement Entities
-- ISO 22301 Control Mappings
-- Automatic Compliance Tracking
-- BCM-Methodik Integration
+- ✅ 35+ BSI 200-4 Requirements als ComplianceRequirement Entities
+- ✅ ISO 27001 A.17.1/A.17.2 Control Mappings (BCM-Fokus)
+- ✅ Automatic Compliance Tracking
+- ✅ BCM-Methodik Integration (Krisenstab, Business Continuity)
+- ✅ Priority assignments (critical, high, medium)
 
 ##### Akzeptanzkriterien
-- [ ] Command implementiert
-- [ ] 35 Requirements definiert
-- [ ] Control Mappings
+- ✅ Command implementiert (app:load-bsi-requirements)
+- ✅ 35+ Requirements definiert (BSI 200-4 Kapitel 4)
+- ✅ Control Mappings (ISO 27001 & ISO 22301)
 - [ ] Tests
-- [ ] Dokumentation
+- ✅ Dokumentation (inline)
 
-#### Krisenstab-Management (BSI 200-4 Kapitel 4.3) (HOCH)
+#### ✅ Krisenstab-Management (BSI 200-4 Kapitel 4.3) - ENTITY ABGESCHLOSSEN
 
 **BSI Standard:** BSI 200-4 Kapitel 4.3 (Krisenstab)
+**Implementierung:** CrisisTeam Entity (570 Zeilen) + Repository (98 Zeilen)
 
-##### Fehlende Features
-1. **CrisisTeam Entity**
-   - Team Name
-   - Team Members (ManyToMany zu User)
-   - Team Roles (Leiter, Stellvertreter, Mitglieder)
-   - Responsibilities
-   - Contact Information
-   - Availability (24/7 Rufbereitschaft)
-   - Alert Mechanisms
-   - Activation Criteria
+##### ✅ Abgeschlossene Features
+1. **✅ CrisisTeam Entity**
+   - ✅ Team Name & description
+   - ✅ Team Types (operational, strategic, technical, communication)
+   - ✅ Team leader & deputy leader (ManyToOne zu User)
+   - ✅ Team members (JSON array mit roles, contact, responsibilities)
+   - ✅ Emergency contacts (JSON array)
+   - ✅ Meeting locations (primary, backup, virtual)
+   - ✅ Alert procedures & activation protocols
+   - ✅ Decision authority & communication protocols
+   - ✅ Available resources tracking
+   - ✅ Training schedule (lastTrainingAt, nextTrainingAt)
+   - ✅ Last activation tracking
+   - ✅ BCP relationships (ManyToMany zu BusinessContinuityPlan)
+   - ✅ Documentation & notes
 
-2. **Alert & Activation Workflows**
-   - Activation Trigger
-   - Notification Chain
-   - Meeting Scheduling
-   - Decision Tracking
+2. **✅ CrisisTeamRepository**
+   - ✅ Database queries for active teams
+   - ✅ Team availability checks
 
-3. **Integration mit BCM**
-   - BIA-Scenario → CrisisTeam Assignment
-   - Process → CrisisTeam Responsibility
+##### 🚧 Noch Fehlende Features (UI & Workflows)
+3. **Alert & Activation Workflows**
+   - [ ] Activation Trigger UI
+   - [ ] Notification Chain Automation
+   - [ ] Meeting Scheduling Integration
+   - [ ] Decision Tracking Forms
+
+4. **Forms & Templates**
+   - [ ] CrisisTeamType form
+   - [ ] Activation workflow forms
+   - [ ] Templates (index, show, new, edit)
 
 ##### Akzeptanzkriterien
-- [ ] CrisisTeam Entity
+- ✅ CrisisTeam Entity (BSI 200-4 konform)
+- ✅ CrisisTeamRepository
 - [ ] Team Form Type
 - [ ] Activation Workflow
-- [ ] BCM Integration
-- [ ] Templates
+- ✅ BCM Integration (ManyToMany relationship ready)
+- [ ] Templates (4 files)
 - [ ] Tests
 
-#### LoadIso22301RequirementsCommand.php (Data Reuse)
+#### ✅ LoadIso22301RequirementsCommand.php (Data Reuse) - ABGESCHLOSSEN
 
-**Zweck:** ISO 22301:2019 als loadbares Framework
+**Zweck:** ISO 22301:2019 Business Continuity Management als loadbares Framework
+**Implementierung:** 353 Zeilen
 
 ##### Features
-- 25 ISO 22301 Requirements
-- ISO 27001 Control Mappings
-- BIA & BC Strategy Requirements
-- Automatic Compliance Tracking
+- ✅ 25 ISO 22301:2019 Requirements (BCM System)
+- ✅ ISO 27001 Control Mappings (A.17.1, A.17.2)
+- ✅ BIA & BC Strategy Requirements
+- ✅ Automatic Compliance Tracking
+- ✅ Context, Leadership, Planning, Support, Operation sections
+- ✅ Performance evaluation & improvement requirements
 
 ##### Akzeptanzkriterien
-- [ ] Command implementiert
-- [ ] 25 Requirements definiert
-- [ ] Control Mappings
+- ✅ Command implementiert (app:load-iso22301-requirements)
+- ✅ 25 Requirements definiert (Clauses 4-10)
+- ✅ Control Mappings (ISO 27001 cross-reference)
 - [ ] Tests
-- [ ] Dokumentation
+- ✅ Dokumentation (inline)
 
 #### Penetration Testing Management (MITTEL)
 

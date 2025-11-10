@@ -139,9 +139,9 @@
                         {% if sourceFramework.id == targetFramework.id %}
                             <span style="color: var(--color-text-muted);">-</span>
                         {% else %}
-                            {% set mapping = getMappingBetween(sourceFramework, targetFramework) %}
-                            {% if mapping %}
-                                <span class="badge badge-success">{{ mapping.coverage }}%</span>
+                            {% set mapping = mapping_matrix[sourceFramework.id][targetFramework.id] ?? null %}
+                            {% if mapping and mapping.coverage > 0 %}
+                                <span class="badge badge-success">{{ mapping.coverage|round }}%</span>
                             {% else %}
                                 <span class="badge badge-secondary">0%</span>
                             {% endif %}
