@@ -524,3 +524,11 @@ compliance:
   industry.automotive: Automobilindustrie
   industry.financial_services: Finanzdienstleistungen
   industry.all_sectors: Alle Branchen
+
+# Common Terms
+common:
+  overview: Übersicht
+  yes: Ja
+  no: Nein
+  note: Hinweis
+  back: Zurück
