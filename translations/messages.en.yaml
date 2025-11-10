@@ -1,13 +1,9 @@
-# English translations for ISMS Helper
-
-# App
 app:
   title: Small ISMS Helper
   subtitle: Information Security Management according to ISO 27001
-  footer: Small ISMS Helper - Your Partner for Information Security according to ISO 27001
-  powered_by: 'Powered by Symfony %version%'
-
-# Navigation
+  footer: Small ISMS Helper - Your Partner for Information Security according to ISO
+    27001
+  powered_by: Powered by Symfony %version%
 nav:
   home: Home
   dashboard: Dashboard
@@ -27,9 +23,17 @@ nav:
   compliance: Compliance
   audit_log: Audit Log
   users: Users
-
-# Security & Authentication
-login: Login
+login:
+  title: Login
+  already_logged_in: You are already logged in as {{ user }}.
+  field:
+    email: Email
+    password: Password
+  remember_me: Remember Me
+  submit: Login
+  azure_oauth: Sign in with Microsoft Azure (OAuth)
+  azure_saml: Sign in with Microsoft Azure (SAML)
+  no_account_message: Don't have an account yet? Contact your administrator.
 logout: Logout
 email: Email
 password: Password
@@ -37,23 +41,42 @@ forgot_password: Forgot Password
 remember_me: Remember Me
 login_title: Login
 welcome_back: Welcome Back
-
-# Legacy (for backwards compatibility)
 home: Home
-dashboard: Dashboard
+dashboard:
+  success:
+    settings_imported: Dashboard settings successfully imported!
+  error:
+    import_failed: Error importing settings. Please check the file.
 assets: Assets
 risks: Risks
 controls: Controls
 incidents: Incidents
 audits: Audits
 compliance_label: Compliance
-training: Training
+training:
+  field:
+    title: Training Title
+    description: Description
+    training_type: Training Type
+    delivery_method: Delivery Method
+    scheduled_date: Scheduled Date & Time
+    duration: Duration (Minutes)
+    location: Location / Meeting Link
+    trainer: Trainer / Conducting Person
+    target_audience: Target Audience
+    participants: Participants
+    status: Status
+    mandatory: Mandatory
+    related_controls: Related Controls
+    materials: Training Materials
+    feedback: Feedback / Notes
+  validation:
+    title_required: Please enter a title.
+    date_required: Please select a date.
 users: Users
 settings: Settings
 profile: Profile
 administration: Administration
-
-# Actions
 create: Create
 edit: Edit
 delete: Delete
@@ -68,8 +91,6 @@ details: Details
 close: Close
 confirm: Confirm
 back: Back
-
-# Common
 common:
   overview: Overview
   name: Name
@@ -80,85 +101,127 @@ common:
   updated_at: Updated at
   cancel: Cancel
   back: Back
-  yes: Yes
-  no: No
+  true: true
+  false: false
   note: Note
-
-# ISMS Core Terms
-asset: Asset
-risk: Risk
-control: Control
-audit: Audit
+  to_home: To Home Page
+asset:
+  label:
+    type: Type
+    owner: Owner
+    location: Location
+    status: Status
+    acquisition_value: Acquisition Value
+    current_value: Current Value
+    total_value: Total Value
+    risk_score: Risk Score
+    confidentiality: Confidentiality
+    integrity: Integrity
+    availability: Availability
+risk:
+  success:
+    created: Risk created successfully.
+    updated: Risk updated successfully.
+    deleted: Risk deleted successfully.
+  field:
+    title: Risk Title
+    description: Description
+  placeholder:
+    title: e.g. Data leak from database
+  help:
+    description: Detailed description of the risk
+control:
+  field:
+    control_id: Control ID
+    name: Control Name
+    description: Description
+    category: Category
+    applicable: Applicability
+    justification: Justification
+    implementation_status: Implementation Status
+    implementation_percentage: Progress (%)
+    implementation_notes: Implementation Details
+    responsible_person: Responsible Person
+    target_date: Target Date
+    last_review_date: Last Review
+    next_review_date: Next Review
+    protected_assets: Related Assets
+audit:
+  field:
+    title: Audit Title
+    scope: Scope
+    scope_type: Audit Type
+    objectives: Audit Objectives
+    planned_date: Planned Date
+    completed_date: Completion Date
+    status: Status
+    lead_auditor: Lead Auditor
+    audit_team: Audit Team
+    frameworks: Audited Frameworks
+    findings: Findings & Non-Conformities
+    recommendations: Recommendations
+    summary: Summary
+  validation:
+    title_required: Please enter a title.
+    date_required: Please select a date.
 framework: Framework
 requirement: Requirement
 soa: Statement of Applicability
 bia: Business Impact Analysis
-
-# Roles
 roles:
   ROLE_USER: User
   ROLE_AUDITOR: Auditor
   ROLE_MANAGER: Manager
   ROLE_ADMIN: Administrator
   ROLE_SUPER_ADMIN: Super Administrator
-
-# Asset Management
 asset_management:
   title: Asset Management
   description: Management of IT assets and information values according to ISO 27001
   statistics: Statistics
   active_assets: Active Assets
   distribution_by_type: Distribution by Type
-  detail_view_coming: Detailed view and entry forms will be implemented in the next phase.
-
-# Risk Management
+  detail_view_coming: Detailed view and entry forms will be implemented in the next
+    phase.
 risk_management:
   title: Risk Management
   description: Identification, assessment and treatment of information security risks
   high_risks: High Risks
   risk_value_threshold: Risks with risk value ≥ 12
   total_identified: Total Identified Risks
-  register_coming: Risk register and treatment plans will be implemented in the next phase.
-
-# Incident Management
+  register_coming: Risk register and treatment plans will be implemented in the next
+    phase.
 incident_management:
   title: Incident Management
   description: Documentation and handling of information security incidents
   open_incidents: Open Incidents
   closed_incidents: Closed Incidents
   total_recorded: Total Recorded Incidents
-  detail_workflows_coming: Detailed incident documentation and workflows will be implemented in the next phase.
-
-# Context Management
+  detail_workflows_coming: Detailed incident documentation and workflows will be implemented
+    in the next phase.
 context_management:
   title: ISMS Context
   description: Definition of organizational context, scope and ISMS objectives
   isms_scope: ISMS Scope
-  no_context_defined: No ISMS context defined yet. Please define the organizational context first.
+  no_context_defined: No ISMS context defined yet. Please define the organizational
+    context first.
   isms_objectives: ISMS Objectives
   active_objectives: Active Objectives
   no_objectives: No ISMS objectives defined yet.
-  forms_coming: Entry forms and detailed management will be implemented in the next phase.
-
-# Audit Management
+  forms_coming: Entry forms and detailed management will be implemented in the next
+    phase.
 audit_management:
   title: Internal Audit
   description: Planning and execution of internal ISMS audits according to ISO 27001
   planned_audits: Planned Audits
   total_audits: Total Audits
-  audit_planning_coming: Audit planning, checklists and reports will be implemented in the next phase.
-
-# BCM
+  audit_planning_coming: Audit planning, checklists and reports will be implemented
+    in the next phase.
 bcm:
   title: Business Continuity Management
   description: Business continuity management and emergency preparedness
-
-# Compliance
 compliance_management:
   title: Compliance Management
   description: Management of compliance requirements
-
-# KPIs
 kpi:
   registered_assets: Registered Assets
   identified_risks: Identified Risks
@@ -166,8 +229,6 @@ kpi:
   compliance_status: Compliance Status
   unit_pieces: Items
   unit_percent: '%'
-
-# Activity Feed
 activity:
   asset_added: Asset added
   risk_identified: Risk identified
@@ -176,8 +237,6 @@ activity:
   system: System
   security_team: Security Team
   new_risk: New Risk
-
-# Incident Management (Form Fields)
 incident:
   field:
     title: Incident Title
@@ -221,8 +280,10 @@ incident:
     in_resolution: In Resolution
     resolved: Resolved
     closed: Closed
-
-# Document Management (Form Fields)
+  success:
+    reported: Incident reported successfully.
+    updated: Incident updated successfully.
+    deleted: Incident deleted successfully.
 document:
   field:
     name: Document Name
@@ -245,8 +306,18 @@ document:
     compliance: Compliance Evidence
     training: Training Material
     general: General
-
-# Person Management
+    pdf: PDF Documents
+    images: Images
+    tables: Tables
+    other: Other
+  label:
+    type: Type
+    file_name: File Name
+    size: Size
+    mime_type: MIME Type
+    uploaded_by: Uploaded By
+    uploaded_at: Uploaded At
+    last_updated: Last Updated
 person:
   title: Person Management
   name: Person
@@ -278,8 +349,10 @@ person:
     company: Company
     department: Department
     job_title: Job Title
-
-# Location Management
+  success:
+    created: Person created successfully.
+    updated: Person updated successfully.
+    deleted: Person deleted successfully.
 location:
   title: Location Management
   name: Location
@@ -326,8 +399,10 @@ location:
     location_type: Location Type
     code: Code
     security_level: Security Level
-
-# Physical Access Log
+  success:
+    created: Location created successfully.
+    updated: Location updated successfully.
+    deleted: Location deleted successfully.
 physical_access:
   title: Physical Access Control
   name: Access Log
@@ -362,8 +437,6 @@ physical_access:
     medium: Medium
     high: High
     critical: Critical
-
-# Threat Intelligence
 threat:
   title: Threat Intelligence
   name: Threat
@@ -400,8 +473,6 @@ threat:
     mitigated: Mitigated
     monitoring: Monitoring
     closed: Closed
-
-# Cryptographic Operations
 crypto:
   title: Cryptographic Operations
   name: Cryptographic Operation
@@ -433,8 +504,6 @@ crypto:
     failed: Failed
     pending: Pending
     in_progress: In Progress
-
-# Common Field Labels
 field:
   id: ID
   name: Name
@@ -462,8 +531,6 @@ field:
   postal_code: Postal Code
   company: Company
   department: Department
-
-# Supplier Management
 supplier:
   title: Supplier Management
   contact_person: Contact Person
@@ -472,8 +539,24 @@ supplier:
     name: Supplier Name
     email: Email
     phone: Phone
-
-# Interested Party Management
+    description: Description
+    address: Address
+    service_provided: Service Provided
+    criticality: Criticality
+    status: Status
+    security_score: Security Score (0-100)
+    last_security_assessment: Last Security Assessment
+    next_assessment_date: Next Assessment Date
+    assessment_findings: Assessment Findings
+    non_conformities: Non-Conformities
+    contract_start_date: Contract Start Date
+    contract_end_date: Contract End Date
+    security_requirements: Security Requirements
+    has_iso27001: ISO 27001 Certified
+    has_iso22301: ISO 22301 Certified
+    certifications: Other Certifications
+    has_dpa: Data Processing Agreement Signed
+    dpa_signed_date: DPA Signed Date
 interested_party:
   title: Interested Parties
   contact_person: Contact Person
@@ -481,8 +564,19 @@ interested_party:
     contact_person: Contact Person
     name: Party Name
     party_type: Party Type
-
-# General UI Elements
+    description: Description
+    email: Email
+    phone: Phone
+    importance: Importance
+    requirements: Requirements & Expectations
+    how_addressed: How Requirements are Addressed
+    communication_frequency: Communication Frequency
+    communication_method: Communication Method
+    last_communication: Last Communication
+    next_communication: Next Planned Communication
+    feedback: Feedback
+    satisfaction_level: Satisfaction Level (1-5)
+    issues: Issues/Concerns
 ui:
   location: Location
   responsible: Responsible
@@ -495,25 +589,11 @@ ui:
   select: Select
   none: None
   all: All
-  yes: Yes
-  no: No
+  true: true
+  false: false
   optional: Optional
   required: Required
-  n_a: 'N/A'
-
-# Flash Messages - Success
-location:
-  success:
-    created: Location created successfully.
-    updated: Location updated successfully.
-    deleted: Location deleted successfully.
-
-person:
-  success:
-    created: Person created successfully.
-    updated: Person updated successfully.
-    deleted: Person deleted successfully.
-
+  n_a: N/A
 workflow:
   success:
     approved: Workflow step approved successfully.
@@ -528,210 +608,9 @@ workflow:
   info:
     cancelled: Workflow instance cancelled.
     no_active_workflow: No active workflow found for this entity.
-
-audit:
-  success:
-    created: Audit created successfully.
-    updated: Audit updated successfully.
-    deleted: Audit deleted successfully.
-
-asset:
-  success:
-    created: Asset created successfully.
-    updated: Asset updated successfully.
-    deleted: Asset deleted successfully.
-
 change_request:
-  success:
-    created: Change request created successfully.
-    updated: Change request updated successfully.
-    deleted: Change request deleted successfully.
-
-business_continuity_plan:
-  success:
-    created: Business continuity plan created successfully.
-    updated: Business continuity plan updated successfully.
-    deleted: Business continuity plan deleted successfully.
-
-incident:
-  success:
-    reported: Incident reported successfully.
-    updated: Incident updated successfully.
-    deleted: Incident deleted successfully.
-
-interested_party:
-  success:
-    created: Interested party created successfully.
-    updated: Interested party updated successfully.
-    deleted: Interested party deleted successfully.
-
-security:
-  error:
-    too_many_attempts: Too many login attempts. Please try again in 15 minutes.
-    saml_login_error: SAML Login Error
-    saml_logout_error: SAML Logout Error
-    csrf_invalid: Invalid CSRF token.
-
-bc_exercise:
-  success:
-    created: BC exercise created successfully.
-    updated: BC exercise updated successfully.
-    deleted: BC exercise deleted successfully.
-
-management_review:
-  success:
-    created: Management Review created successfully.
-    updated: Management Review updated successfully.
-    deleted: Management Review deleted successfully.
-
-supplier:
-  success:
-    created: Supplier created successfully.
-    updated: Supplier updated successfully.
-    deleted: Supplier deleted successfully.
-
-document:
-  error:
-    too_many_uploads: Too many document uploads. Please try again in 1 hour.
-    upload_failed: File upload failed
-  success:
-    uploaded: Document uploaded successfully.
-    updated: Document updated successfully.
-    deleted: Document deleted successfully.
-
-risk:
-  success:
-    created: Risk created successfully.
-    updated: Risk updated successfully.
-    deleted: Risk deleted successfully.
-  field:
-    title: Risk Title
-    description: Description
-  placeholder:
-    title: e.g. Data leak from database
-  help:
-    description: Detailed description of the risk
-
-context:
-  success:
-    updated: ISMS context successfully updated.
-
-objective:
-  success:
-    created: ISMS objective successfully created.
-    updated: ISMS objective successfully updated.
-    deleted: ISMS Objective deleted successfully.
-
-business_process:
-  success:
-    created: Business process successfully created.
-    updated: Business process successfully updated.
-    deleted: Business process successfully deleted.
-
-user:
-  success:
-    created: User successfully created.
-    updated: User successfully updated.
-    deleted: User successfully deleted.
-    activated: User activated.
-    deactivated: User deactivated.
-
-module:
-  info:
-    added_as_dependency: "Module '{name}' was added as dependency"
-  warning:
-    disable_dependents_first: 'Disable dependent modules first: {dependents}'
-  error:
-    not_found: Module not found
-    not_active: Module is not active
-
-deployment:
-  error:
-    fix_requirements: Please fix system requirements first.
-    select_modules: Please select modules first.
-  info:
-    module_added_auto: "Module '{name}' was automatically added (dependency)"
-    sample_data_skipped: Sample data was skipped.
-  success:
-    reset: Setup has been reset.
-
-training:
-  success:
-    created: Training successfully created.
-    updated: Training successfully updated.
-    deleted: Training successfully deleted.
-
-control:
-  success:
-    updated: Control successfully updated.
-
-role:
-  success:
-    created: Role successfully created.
-    updated: Role successfully updated.
-    deleted: Role successfully deleted.
-
-# Error Messages
-error:
-  csrf_invalid: Invalid CSRF token.
-
-# Form Fields - Interested Party
-interested_party:
-  field:
-    name: Party Name
-    party_type: Party Type
-    description: Description
-    contact_person: Contact Person
-    email: Email
-    phone: Phone
-    importance: Importance
-    requirements: Requirements & Expectations
-    how_addressed: How Requirements are Addressed
-    communication_frequency: Communication Frequency
-    communication_method: Communication Method
-    last_communication: Last Communication
-    next_communication: Next Planned Communication
-    feedback: Feedback
-    satisfaction_level: Satisfaction Level (1-5)
-    issues: Issues/Concerns
-
-# Form Fields - Change Request
-change_request:
-  field:
-    change_number: Change Number
-    title: Title
-    change_type: Change Type
-    description: Description
-    justification: Justification
-    requested_by: Requested By
-    requested_date: Requested Date
-    priority: Priority
-    status: Status
-    isms_impact: ISMS Impact
-    risk_assessment: Risk Assessment
-    implementation_plan: Implementation Plan
-    rollback_plan: Rollback Plan
-    testing_requirements: Testing Requirements
-    planned_implementation_date: Planned Implementation Date
-    actual_implementation_date: Actual Implementation Date
-    approved_by: Approved By
-    approved_date: Approved Date
-    approval_comments: Approval Comments
-    implemented_by: Implemented By
-    implementation_notes: Implementation Notes
-    verified_by: Verified By
-    verified_date: Verified Date
-    verification_results: Verification Results
-    closed_date: Closed Date
-    closure_notes: Closure Notes
-  section:
-    description: Description
-    justification: Justification
-    impact: Impact
-    risk_assessment: Risk Assessment
-    plan: Plan
-
-# Form Fields - Business Continuity Plan
+  details:
+    title: Change Request Details
 business_continuity_plan:
   field:
     name: Plan Name
@@ -757,91 +636,35 @@ business_continuity_plan:
     last_review_date: Last Review Date
     next_review_date: Next Review Date
     review_notes: Review Notes
-
-# Form Fields - Supplier
-supplier:
+security:
+  error:
+    too_many_attempts: Too many login attempts. Please try again in 15 minutes.
+    saml_login_error: SAML Login Error
+    saml_logout_error: SAML Logout Error
+    csrf_invalid: Invalid CSRF token.
+bc_exercise:
+  success:
+    created: BC exercise created successfully.
+    updated: BC exercise updated successfully.
+    deleted: BC exercise deleted successfully.
+management_review:
   field:
-    name: Supplier Name
-    description: Description
-    contact_person: Contact Person
-    email: Email
-    phone: Phone
-    address: Address
-    service_provided: Service Provided
-    criticality: Criticality
-    status: Status
-    security_score: Security Score (0-100)
-    last_security_assessment: Last Security Assessment
-    next_assessment_date: Next Assessment Date
-    assessment_findings: Assessment Findings
-    non_conformities: Non-Conformities
-    contract_start_date: Contract Start Date
-    contract_end_date: Contract End Date
-    security_requirements: Security Requirements
-    has_iso27001: ISO 27001 Certified
-    has_iso22301: ISO 22301 Certified
-    certifications: Other Certifications
-    has_dpa: Data Processing Agreement Signed
-    dpa_signed_date: DPA Signed Date
-
-# Form Fields - User (German)
-user:
-  field:
-    first_name: First Name
-    last_name: Last Name
-    email: Email
-    department: Department
-    job_title: Job Title
-    phone_number: Phone Number
-    password: Password
-    system_roles: System Roles
-    custom_roles: Custom Roles
-    active: Active
-    email_verified: Email Verified
-
-# Form Fields - Training
-training:
-  field:
-    title: Training Title
-    description: Description
-    training_type: Training Type
-    delivery_method: Delivery Method
-    scheduled_date: Scheduled Date & Time
-    duration: Duration (Minutes)
-    location: Location / Meeting Link
-    trainer: Trainer / Conducting Person
-    target_audience: Target Audience
+    title: Review Title
+    review_date: Review Date
+    reviewed_by: Reviewed By
     participants: Participants
     status: Status
-    mandatory: Mandatory
-    related_controls: Related Controls
-    materials: Training Materials
-    feedback: Feedback / Notes
-  validation:
-    title_required: Please enter a title.
-    date_required: Please select a date.
-
-# Form Fields - Internal Audit
-audit:
-  field:
-    title: Audit Title
-    scope: Scope
-    scope_type: Audit Type
-    objectives: Audit Objectives
-    planned_date: Planned Date
-    completed_date: Completion Date
-    status: Status
-    lead_auditor: Lead Auditor
-    audit_team: Audit Team
-    frameworks: Audited Frameworks
-    findings: Findings & Non-Conformities
-    recommendations: Recommendations
+    performance_evaluation: Performance Evaluation
+    nonconformities_review: Non-Conformities Review
+    incidents_review: Security Incidents Review
+    risks_review: Risks Review
+    objectives_review: ISMS Objectives Review
+    context_changes: Context Changes
+    improvement_opportunities: Improvement Opportunities
+    decisions: Management Decisions
+    action_items: Action Items
+    resources_needed: Resources Needed
     summary: Summary
-  validation:
-    title_required: Please enter a title.
-    date_required: Please select a date.
-
-# Form Fields - ISMS Context
 context:
   field:
     organization_name: Organization Name
@@ -888,67 +711,6 @@ context:
   info:
     iso_clause: 'ISO 27001 Clause 4:'
     iso_description: Understanding the Organization and its Context
-
-# Form Fields - Management Review
-management_review:
-  field:
-    title: Review Title
-    review_date: Review Date
-    reviewed_by: Reviewed By
-    participants: Participants
-    status: Status
-    performance_evaluation: Performance Evaluation
-    nonconformities_review: Non-Conformities Review
-    incidents_review: Security Incidents Review
-    risks_review: Risks Review
-    objectives_review: ISMS Objectives Review
-    context_changes: Context Changes
-    improvement_opportunities: Improvement Opportunities
-    decisions: Management Decisions
-    action_items: Action Items
-    resources_needed: Resources Needed
-    summary: Summary
-
-# Form Fields - Business Process
-business_process:
-  field:
-    name: Process Name
-    description: Description
-    process_owner: Process Owner
-    criticality: Criticality
-    rto: RTO (Recovery Time Objective) in hours
-    rpo: RPO (Recovery Point Objective) in hours
-    mtpd: MTPD (Maximum Tolerable Period of Disruption) in hours
-    financial_impact_per_hour: Financial Impact per Hour
-    financial_impact_per_day: Financial Impact per Day
-    reputational_impact: Reputational Impact
-    regulatory_impact: Regulatory Impact
-    operational_impact: Operational Impact
-    dependencies_upstream: Dependencies (Upstream)
-    dependencies_downstream: Dependencies (Downstream)
-    recovery_strategy: Recovery Strategy
-    supporting_assets: Supporting Assets
-    identified_risks: Identified Risks
-
-# Form Fields - Control
-control:
-  field:
-    control_id: Control ID
-    name: Control Name
-    description: Description
-    category: Category
-    applicable: Applicability
-    justification: Justification
-    implementation_status: Implementation Status
-    implementation_percentage: Progress (%)
-    implementation_notes: Implementation Details
-    responsible_person: Responsible Person
-    target_date: Target Date
-    last_review_date: Last Review
-    next_review_date: Next Review
-    protected_assets: Related Assets
-
-# Form Fields - ISMS Objective
 objective:
   field:
     title: Title
@@ -973,86 +735,75 @@ objective:
     status_required: Please select a status.
   link:
     new: New Goal
-
-# Login Template
-login:
-  title: Login
-  already_logged_in: You are already logged in as {{ user }}.
+business_process:
   field:
+    name: Process Name
+    description: Description
+    process_owner: Process Owner
+    criticality: Criticality
+    rto: RTO (Recovery Time Objective) in hours
+    rpo: RPO (Recovery Point Objective) in hours
+    mtpd: MTPD (Maximum Tolerable Period of Disruption) in hours
+    financial_impact_per_hour: Financial Impact per Hour
+    financial_impact_per_day: Financial Impact per Day
+    reputational_impact: Reputational Impact
+    regulatory_impact: Regulatory Impact
+    operational_impact: Operational Impact
+    dependencies_upstream: Dependencies (Upstream)
+    dependencies_downstream: Dependencies (Downstream)
+    recovery_strategy: Recovery Strategy
+    supporting_assets: Supporting Assets
+    identified_risks: Identified Risks
+user:
+  field:
+    first_name: First Name
+    last_name: Last Name
     email: Email
+    department: Department
+    job_title: Job Title
+    phone_number: Phone Number
     password: Password
-  remember_me: Remember Me
-  submit: Login
-  azure_oauth: Sign in with Microsoft Azure (OAuth)
-  azure_saml: Sign in with Microsoft Azure (SAML)
-  no_account_message: Don't have an account yet? Contact your administrator.
-
-common:
-  to_home: To Home Page
-
-# Document Labels
-document:
-  type:
-    pdf: PDF Documents
-    images: Images
-    tables: Tables
-    other: Other
-  label:
-    type: Type
-    file_name: File Name
-    size: Size
-    mime_type: MIME Type
-    uploaded_by: Uploaded By
-    uploaded_at: Uploaded At
-    last_updated: Last Updated
-
-# Asset Labels
-asset:
-  label:
-    type: Type
-    owner: Owner
-    location: Location
-    status: Status
-    acquisition_value: Acquisition Value
-    current_value: Current Value
-    total_value: Total Value
-    risk_score: Risk Score
-    confidentiality: Confidentiality
-    integrity: Integrity
-    availability: Availability
-
-# Audit Log
+    system_roles: System Roles
+    custom_roles: Custom Roles
+    active: Active
+    email_verified: Email Verified
+module:
+  info:
+    added_as_dependency: Module '{name}' was added as dependency
+  warning:
+    disable_dependents_first: 'Disable dependent modules first: {dependents}'
+  error:
+    not_found: Module not found
+    not_active: Module is not active
+deployment:
+  error:
+    fix_requirements: Please fix system requirements first.
+    select_modules: Please select modules first.
+  info:
+    module_added_auto: Module '{name}' was automatically added (dependency)
+    sample_data_skipped: Sample data was skipped.
+  success:
+    reset: Setup has been reset.
+role:
+  success:
+    created: Role successfully created.
+    updated: Role successfully updated.
+    deleted: Role successfully deleted.
+error:
+  csrf_invalid: Invalid CSRF token.
 audit_log:
   title: Audit Log Details
   entry: 'Log Entry #{{ id }}'
   old_values: Old Values
   new_values: New Values
-
-# Entity History
 entity_history:
   title: Entity History
   section: History
-
-# Change Request Details
-change_request:
-  details:
-    title: Change Request Details
-
-# Dashboard
-dashboard:
-  success:
-    settings_imported: Dashboard settings successfully imported!
-  error:
-    import_failed: Error importing settings. Please check the file.
-
-# Preferences
 preferences:
   success:
     imported: Settings successfully imported
   error:
     import_failed: Error importing settings
-
-# Compliance Framework Management
 compliance:
   manage_frameworks: Manage Frameworks
   manage_frameworks_subtitle: Load and manage available compliance frameworks
