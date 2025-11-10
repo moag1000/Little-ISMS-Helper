@@ -141,8 +141,22 @@ asset:
     software: Software
     hardware: Hardware
     service: Dienst
-    people: Personal
-    intangible: Immateriell
+    personnel: Personal
+    physical: Physisch
+  help:
+    description: Detaillierte Beschreibung des Assets und seiner Funktion
+    owner: Die Person oder Abteilung, die für dieses Asset verantwortlich ist
+    acquisition_value: Der ursprüngliche Anschaffungswert des Assets
+    current_value: Der aktuelle geschätzte Wert des Assets
+    confidentiality: Bewerten Sie die Vertraulichkeitsanforderungen (1=niedrig, 5=hoch)
+    integrity: Bewerten Sie die Integritätsanforderungen (1=niedrig, 5=hoch)
+    availability: Bewerten Sie die Verfügbarkeitsanforderungen (1=niedrig, 5=hoch)
+    status: Der aktuelle Betriebsstatus des Assets
+  status:
+    active: Aktiv
+    inactive: Inaktiv
+    retired: Stillgelegt
+    disposed: Entsorgt
   label:
     type: Typ
     owner: Besitzer

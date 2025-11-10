@@ -141,8 +141,22 @@ asset:
     software: Software
     hardware: Hardware
     service: Service
-    people: People
-    intangible: Intangible
+    personnel: Personnel
+    physical: Physical
+  help:
+    description: Detailed description of the asset and its function
+    owner: The person or department responsible for this asset
+    acquisition_value: The original acquisition value of the asset
+    current_value: The current estimated value of the asset
+    confidentiality: Rate the confidentiality requirements (1=low, 5=high)
+    integrity: Rate the integrity requirements (1=low, 5=high)
+    availability: Rate the availability requirements (1=low, 5=high)
+    status: The current operational status of the asset
+  status:
+    active: Active
+    inactive: Inactive
+    retired: Retired
+    disposed: Disposed
   label:
     type: Type
     owner: Owner
