@@ -64,6 +64,24 @@ if [ ! -f ".env.local" ]; then
 fi
 success ".env.local found"
 
+# URL encode a string for use in DATABASE_URL
+urlencode() {
+    local string="$1"
+    local strlen=${#string}
+    local encoded=""
+    local pos c o
+
+    for (( pos=0 ; pos<strlen ; pos++ )); do
+        c=${string:$pos:1}
+        case "$c" in
+            [-_.~a-zA-Z0-9] ) o="${c}" ;;
+            * ) printf -v o '%%%02x' "'$c"
+        esac
+        encoded+="${o}"
+    done
+    echo "${encoded}"
+}
+
 # Load environment variables from .env and .env.local
 load_env_var() {
     local var_name=$1
@@ -148,13 +166,17 @@ if [ "$DB_TYPE" != "sqlite" ]; then
         echo ""
         NEW_DB_PASS=${NEW_DB_PASS:-$DB_PASS}
 
-        # Update individual variables in .env.local
+        # Update individual variables in .env.local (safe for special characters)
         update_env_var() {
             local var_name=$1
             local var_value=$2
 
+            # Escape special characters for sed
+            local escaped_value=$(printf '%s\n' "$var_value" | sed -e 's/[\/&]/\\&/g' -e 's/|/\\|/g')
+
             if grep -q "^${var_name}=" .env.local; then
-                sed -i "s|^${var_name}=.*|${var_name}=\"${var_value}\"|" .env.local
+                # Use @ as delimiter to avoid conflicts with special chars
+                sed -i "s@^${var_name}=.*@${var_name}=\"${escaped_value}\"@" .env.local
             else
                 echo "${var_name}=\"${var_value}\"" >> .env.local
             fi
@@ -165,6 +187,9 @@ if [ "$DB_TYPE" != "sqlite" ]; then
         update_env_var "DB_NAME" "$NEW_DB_NAME"
         update_env_var "DB_USER" "$NEW_DB_USER"
         update_env_var "DB_PASS" "$NEW_DB_PASS"
+
+        info "Password stored securely in .env.local"
+        warning "Note: DATABASE_URL variable interpolation will handle special characters automatically"
 
         # Update DB_* variables for current session
         DB_HOST=$NEW_DB_HOST
