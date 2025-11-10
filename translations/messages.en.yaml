@@ -790,12 +790,70 @@ workflow:
     no_active_workflow: No active workflow found for this entity.
 change_request:
   title: Change Requests
+  new: New Change Request
   page:
     title: ISMS Change Management
+    new: Create New Change Request
+    edit: Edit Change Request
+  edit: Edit Change Request
   action:
     create: Create Change Request
+    update: Update Change Request
     view: View
     edit: Edit
+  field:
+    change_number: Change Number
+    title: Title
+    change_type: Change Type
+    description: Description
+    justification: Justification
+    requested_by: Requested By
+    requested_date: Requested Date
+    priority: Priority
+    status: Status
+    isms_impact: ISMS Impact
+    risk_assessment: Risk Assessment
+    implementation_plan: Implementation Plan
+    rollback_plan: Rollback Plan
+    testing_requirements: Testing Requirements
+    planned_implementation_date: Planned Implementation Date
+    actual_implementation_date: Actual Implementation Date
+    approved_by: Approved By
+    approved_date: Approved Date
+    approval_comments: Approval Comments
+    implemented_by: Implemented By
+    implementation_notes: Implementation Notes
+    verified_by: Verified By
+    verified_date: Verified Date
+    verification_results: Verification Results
+    closed_date: Closed Date
+    closure_notes: Closure Notes
+  change_type:
+    isms_policy: ISMS Policy
+    isms_scope: ISMS Scope
+    control: Control
+    asset: Asset
+    process: Process
+    technology: Technology
+    supplier: Supplier
+    organizational: Organizational
+    other: Other
+  priority:
+    critical: Critical
+    high: High
+    medium: Medium
+    low: Low
+  status:
+    draft: Draft
+    submitted: Submitted
+    under_review: Under Review
+    approved: Approved
+    rejected: Rejected
+    scheduled: Scheduled
+    implemented: Implemented
+    verified: Verified
+    closed: Closed
+    cancelled: Cancelled
   statistics:
     title: Statistics
     total: Total Change Requests
