@@ -1,6 +1,6 @@
 # Lizenzbericht - Little ISMS Helper
 
-**Generiert am:** 2025-11-10 19:30
+**Generiert am:** 2025-11-10 20:24
 **Status:** ✅ Lizenzkonform (160/163 Pakete freigegeben)
 
 > **Wichtiger Hinweis:** Diese Auswertung fokussiert sich auf die **kommerzielle Nutzbarkeit** von Softwarekomponenten.
