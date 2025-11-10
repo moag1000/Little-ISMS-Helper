@@ -46,7 +46,7 @@ risks: Risiken
 controls: Maßnahmen
 incidents: Vorfälle
 audits: Audits
-compliance: Compliance
+compliance_label: Compliance
 training: Schulungen
 users: Benutzer
 settings: Einstellungen
@@ -80,6 +80,9 @@ common:
   updated_at: Aktualisiert am
   cancel: Abbrechen
   back: Zurück
+  yes: Ja
+  no: Nein
+  note: Hinweis
 
 # ISMS Core Terms
 asset: Asset
@@ -497,3 +500,30 @@ ui:
   optional: Optional
   required: Erforderlich
   n_a: 'N/A'
+
+# Compliance Framework Management
+compliance:
+  manage_frameworks: Frameworks verwalten
+  manage_frameworks_subtitle: Verfügbare Compliance-Frameworks laden und verwalten
+  framework_statistics: Framework-Statistiken
+  total_available: Verfügbar
+  loaded: Geladen
+  not_loaded: Nicht geladen
+  mandatory_missing: Verpflichtende fehlen
+  available_frameworks: Verfügbare Frameworks
+  no_frameworks_loaded: Noch keine Compliance-Frameworks geladen
+  add_frameworks: Frameworks hinzufügen
+  load_framework: Framework laden
+  already_loaded: Bereits geladen
+  successfully_loaded: Erfolgreich geladen
+  load_failed: Laden fehlgeschlagen
+  loading: Wird geladen
+  confirm_load: Möchten Sie dieses Framework wirklich laden?
+  error: Fehler
+  version: Version
+  industry: Branche
+  regulatory_body: Regulierungsbehörde
+  mandatory: Verpflichtend
+  industry.automotive: Automobilindustrie
+  industry.financial_services: Finanzdienstleistungen
+  industry.all_sectors: Alle Branchen
