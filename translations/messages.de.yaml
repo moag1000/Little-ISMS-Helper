@@ -621,7 +621,7 @@ supplier:
   not_scheduled: Nicht geplant
   risk_score: Risiko-Score
   list:
-    title: 'Lieferanten ({{ count }})'
+    title: 'Lieferanten (%count%)'
   table:
     name: Name
     service_provided: Bereitgestellte Dienstleistung
@@ -673,7 +673,7 @@ interested_party:
     title: Parteien mit hoher Wichtigkeit
   engagement_score: Engagement-Score
   list:
-    title: 'Interessierte Parteien ({{ count }})'
+    title: 'Interessierte Parteien (%count%)'
   table:
     name: Name
     type: Typ
@@ -753,7 +753,7 @@ change_request:
     pending_approval: Warten auf Genehmigung
     overdue: Überfällige Änderungsanträge
   list:
-    title: 'Änderungsanträge ({{ count }})'
+    title: 'Änderungsanträge (%count%)'
   table:
     change_number: 'Änderungs-Nr.'
     title: Titel
