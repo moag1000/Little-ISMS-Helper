@@ -187,8 +187,8 @@ export default class extends Controller {
     // Show/Hide Help Modal
     show() {
         if (this.hasModalTarget) {
-            // Remove inline style that modal manager might have set
-            this.modalTarget.style.display = '';
+            // Override modal manager's display:none with display:flex
+            this.modalTarget.style.display = 'flex';
             this.modalTarget.classList.add('keyboard-shortcuts-open');
             this.renderShortcuts();
         }
@@ -196,6 +196,7 @@ export default class extends Controller {
 
     close() {
         if (this.hasModalTarget) {
+            this.modalTarget.style.display = 'none';
             this.modalTarget.classList.remove('keyboard-shortcuts-open');
         }
     }
