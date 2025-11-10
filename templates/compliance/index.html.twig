@@ -10,6 +10,9 @@
             <p class="text-muted">Maximizing Data Value Across Standards</p>
         </div>
         <div class="button-group">
+            <a href="{{ path('app_compliance_manage_frameworks') }}" class="btn btn-success">
+                <span class="icon">➕</span> {{ 'compliance.manage_frameworks'|trans }}
+            </a>
             <a href="{{ path('app_compliance_cross_framework') }}" class="btn btn-secondary">
                 <span class="icon">🔗</span> Cross-Framework Mappings
             </a>
@@ -84,10 +87,10 @@
             </div>
         {% else %}
             <div class="col-span-all text-center" style="padding: var(--spacing-xl);">
-                <p class="text-muted">No compliance frameworks loaded yet.</p>
-                <p>Run the following commands to load frameworks:</p>
-                <code>php bin/console app:load-tisax-requirements</code><br>
-                <code>php bin/console app:load-dora-requirements</code>
+                <p class="text-muted">{{ 'compliance.no_frameworks_loaded'|trans }}</p>
+                <a href="{{ path('app_compliance_manage_frameworks') }}" class="btn btn-success btn-lg">
+                    <span class="icon">➕</span> {{ 'compliance.add_frameworks'|trans }}
+                </a>
             </div>
         {% endfor %}
     </div>
