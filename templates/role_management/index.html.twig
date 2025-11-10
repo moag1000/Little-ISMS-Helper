@@ -1,0 +1,120 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'role_management.title.list'|trans }} - Small ISMS Helper{% endblock %}
+
+{% block body %}
+<div class="d-flex justify-between align-center mb-4">
+    <div>
+        <h1>{{ 'role_management.title.list'|trans }}</h1>
+        <p style="color: var(--color-text-light); margin-top: var(--spacing-sm);">
+            {{ 'role_management.description.overview'|trans }}
+        </p>
+    </div>
+    <div>
+        <a href="{{ path('app_role_management_new') }}" class="btn btn-success">
+            ➕ {{ 'role_management.action.create'|trans }}
+        </a>
+    </div>
+</div>
+
+{# Statistics Cards #}
+<div class="kpi-grid">
+    <div class="kpi-card">
+        <div class="icon">🔐</div>
+        <div class="label">{{ 'role_management.stats.total'|trans }}</div>
+        <div>
+            <span class="value">{{ roles|length }}</span>
+        </div>
+    </div>
+
+    <div class="kpi-card">
+        <div class="icon">✅</div>
+        <div class="label">{{ 'role_management.stats.active'|trans }}</div>
+        <div>
+            <span class="value">{{ roles|filter(r => r.active)|length }}</span>
+        </div>
+    </div>
+
+    <div class="kpi-card">
+        <div class="icon">👥</div>
+        <div class="label">{{ 'role_management.stats.with_users'|trans }}</div>
+        <div>
+            <span class="value">{{ roles|filter(r => r.users|length > 0)|length }}</span>
+        </div>
+    </div>
+
+    <div class="kpi-card">
+        <div class="icon">🔑</div>
+        <div class="label">{{ 'role_management.stats.avg_permissions'|trans }}</div>
+        <div>
+            {% set totalPerms = 0 %}
+            {% for role in roles %}
+                {% set totalPerms = totalPerms + role.permissions|length %}
+            {% endfor %}
+            <span class="value">{{ roles|length > 0 ? (totalPerms / roles|length)|round : 0 }}</span>
+        </div>
+    </div>
+</div>
+
+{# Roles Table #}
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>{{ 'role_management.field.name'|trans }}</th>
+                <th>{{ 'role_management.field.description'|trans }}</th>
+                <th style="text-align: center;">{{ 'role_management.field.permissions'|trans }}</th>
+                <th style="text-align: center;">{{ 'role_management.field.users'|trans }}</th>
+                <th style="text-align: center;">{{ 'role_management.field.active'|trans }}</th>
+                <th style="text-align: center;">{{ 'common.actions'|trans }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for role in roles %}
+            <tr>
+                <td>
+                    <strong>{{ role.name }}</strong>
+                    {% if role.systemRole %}
+                        <span class="badge badge-info" style="margin-left: var(--spacing-xs);">
+                            {{ 'role_management.badge.system'|trans }}
+                        </span>
+                    {% endif %}
+                </td>
+                <td>
+                    <small style="color: var(--color-text-muted);">
+                        {{ role.description|default('-') }}
+                    </small>
+                </td>
+                <td style="text-align: center;">
+                    <span class="badge badge-secondary">{{ role.permissions|length }}</span>
+                </td>
+                <td style="text-align: center;">
+                    <span class="badge badge-info">{{ role.users|length }}</span>
+                </td>
+                <td style="text-align: center;">
+                    {% if role.active %}
+                        <span class="badge badge-success">✓</span>
+                    {% else %}
+                        <span class="badge badge-danger">✗</span>
+                    {% endif %}
+                </td>
+                <td style="text-align: center;">
+                    <a href="{{ path('app_role_management_show', {id: role.id}) }}" class="btn btn-sm" style="margin-right: 0.25rem;">
+                        👁 {{ 'common.view'|trans }}
+                    </a>
+                    <a href="{{ path('app_role_management_edit', {id: role.id}) }}" class="btn btn-sm btn-secondary">
+                        ✏️ {{ 'common.edit'|trans }}
+                    </a>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="6" style="text-align: center; padding: var(--spacing-xl); color: var(--color-text-muted);">
+                    {{ 'role_management.message.no_roles'|trans }}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

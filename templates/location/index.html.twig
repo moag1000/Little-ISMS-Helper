@@ -1,0 +1,132 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'location.title.list'|trans }} - Small ISMS Helper{% endblock %}
+
+{% block body %}
+<div class="d-flex justify-between align-center mb-4">
+    <div>
+        <h1>{{ 'location.title.list'|trans }}</h1>
+        <p style="color: var(--color-text-light); margin-top: var(--spacing-sm);">
+            {{ 'location.description.overview'|trans }}
+        </p>
+    </div>
+    <div>
+        <a href="{{ path('app_location_new') }}" class="btn btn-success">
+            ➕ {{ 'location.action.create'|trans }}
+        </a>
+    </div>
+</div>
+
+{# Statistics Cards #}
+<div class="kpi-grid">
+    <div class="kpi-card">
+        <div class="icon">📍</div>
+        <div class="label">{{ 'location.stats.total'|trans }}</div>
+        <div>
+            <span class="value">{{ locations|length }}</span>
+        </div>
+    </div>
+
+    <div class="kpi-card">
+        <div class="icon">🏢</div>
+        <div class="label">{{ 'location.stats.buildings'|trans }}</div>
+        <div>
+            <span class="value">{{ locations|filter(l => l.locationType == 'building')|length }}</span>
+        </div>
+    </div>
+
+    <div class="kpi-card">
+        <div class="icon">🚪</div>
+        <div class="label">{{ 'location.stats.rooms'|trans }}</div>
+        <div>
+            <span class="value">{{ locations|filter(l => l.locationType == 'room')|length }}</span>
+        </div>
+    </div>
+
+    <div class="kpi-card">
+        <div class="icon">🔒</div>
+        <div class="label">{{ 'location.stats.secure'|trans }}</div>
+        <div>
+            <span class="value">{{ locations|filter(l => l.requiresBadgeAccess)|length }}</span>
+        </div>
+    </div>
+</div>
+
+{# Locations Table #}
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>{{ 'location.field.name'|trans }}</th>
+                <th>{{ 'location.field.type'|trans }}</th>
+                <th>{{ 'location.field.code'|trans }}</th>
+                <th>{{ 'location.field.city'|trans }}</th>
+                <th>{{ 'location.field.security_level'|trans }}</th>
+                <th style="text-align: center;">{{ 'location.field.badge_access'|trans }}</th>
+                <th style="text-align: center;">{{ 'common.actions'|trans }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for location in locations %}
+            <tr>
+                <td>
+                    <strong>{{ location.name }}</strong>
+                    {% if location.parentLocation %}
+                        <br><small style="color: var(--color-text-muted);">↳ {{ location.parentLocation.name }}</small>
+                    {% endif %}
+                </td>
+                <td>
+                    <span class="badge badge-info">{{ ('location.type.' ~ location.locationType)|trans }}</span>
+                </td>
+                <td>
+                    {% if location.code %}
+                        <code>{{ location.code }}</code>
+                    {% else %}
+                        <span style="color: var(--color-text-muted);">-</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {{ location.city ?? '-' }}
+                    {% if location.country %}
+                        <br><small style="color: var(--color-text-muted);">{{ location.country }}</small>
+                    {% endif %}
+                </td>
+                <td>
+                    {% set securityColors = {
+                        'public': 'secondary',
+                        'restricted': 'info',
+                        'controlled': 'warning',
+                        'secure': 'warning',
+                        'high_security': 'danger'
+                    } %}
+                    <span class="badge badge-{{ securityColors[location.securityLevel] ?? 'secondary' }}">
+                        {{ ('location.security.' ~ location.securityLevel)|trans }}
+                    </span>
+                </td>
+                <td style="text-align: center;">
+                    {% if location.requiresBadgeAccess %}
+                        <span class="badge badge-success">✓</span>
+                    {% else %}
+                        <span class="badge badge-secondary">✗</span>
+                    {% endif %}
+                </td>
+                <td style="text-align: center;">
+                    <a href="{{ path('app_location_show', {id: location.id}) }}" class="btn btn-sm" style="margin-right: 0.25rem;">
+                        👁 {{ 'common.view'|trans }}
+                    </a>
+                    <a href="{{ path('app_location_edit', {id: location.id}) }}" class="btn btn-sm btn-secondary">
+                        ✏️ {{ 'common.edit'|trans }}
+                    </a>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="7" style="text-align: center; padding: var(--spacing-xl); color: var(--color-text-muted);">
+                    {{ 'location.message.no_locations'|trans }}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

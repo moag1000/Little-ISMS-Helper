@@ -1,0 +1,137 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'workflow.title.active'|trans }} - Small ISMS Helper{% endblock %}
+
+{% block body %}
+<div class="d-flex justify-between align-center mb-4">
+    <div>
+        <h1>{{ 'workflow.title.active'|trans }}</h1>
+        <p style="color: var(--color-text-light); margin-top: var(--spacing-sm);">
+            {{ 'workflow.description.active_detail'|trans }}
+        </p>
+    </div>
+    <div>
+        <a href="{{ path('app_workflow_index') }}" class="btn btn-secondary">
+            ← {{ 'common.back'|trans }}
+        </a>
+    </div>
+</div>
+
+{# Statistics Cards #}
+<div class="kpi-grid">
+    <div class="kpi-card">
+        <div class="icon">🔄</div>
+        <div class="label">{{ 'workflow.stats.active'|trans }}</div>
+        <div>
+            <span class="value">{{ activeInstances|length }}</span>
+        </div>
+    </div>
+
+    <div class="kpi-card">
+        <div class="icon">📈</div>
+        <div class="label">{{ 'workflow.stats.avg_progress'|trans }}</div>
+        <div>
+            {% set totalProgress = 0 %}
+            {% for instance in activeInstances %}
+                {% set totalProgress = totalProgress + (instance.completedSteps|length / instance.definition.steps|length * 100) %}
+            {% endfor %}
+            <span class="value">{{ activeInstances|length > 0 ? (totalProgress / activeInstances|length)|round : 0 }}</span>
+            <span class="unit">%</span>
+        </div>
+    </div>
+
+    <div class="kpi-card">
+        <div class="icon">⚠️</div>
+        <div class="label">{{ 'workflow.stats.overdue'|trans }}</div>
+        <div>
+            <span class="value">{{ activeInstances|filter(i => i.overdue)|length }}</span>
+        </div>
+    </div>
+
+    <div class="kpi-card">
+        <div class="icon">👤</div>
+        <div class="label">{{ 'workflow.stats.my_workflows'|trans }}</div>
+        <div>
+            <span class="value">{{ activeInstances|filter(i => i.assignee and i.assignee.id == app.user.id)|length }}</span>
+        </div>
+    </div>
+</div>
+
+{# Active Workflows Table #}
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>{{ 'workflow.field.name'|trans }}</th>
+                <th>{{ 'workflow.field.definition'|trans }}</th>
+                <th>{{ 'workflow.field.current_step'|trans }}</th>
+                <th>{{ 'workflow.field.assignee'|trans }}</th>
+                <th style="text-align: center;">{{ 'workflow.field.progress'|trans }}</th>
+                <th>{{ 'workflow.field.due_date'|trans }}</th>
+                <th style="text-align: center;">{{ 'common.actions'|trans }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for instance in activeInstances %}
+            <tr {% if instance.overdue %}style="background-color: var(--color-danger-light);"{% endif %}>
+                <td>
+                    <strong>{{ instance.name }}</strong>
+                    {% if instance.overdue %}
+                        <span class="badge badge-danger" style="margin-left: var(--spacing-xs);">
+                            {{ 'workflow.badge.overdue'|trans }}
+                        </span>
+                    {% endif %}
+                </td>
+                <td>
+                    <span class="badge badge-info">{{ instance.definition.name }}</span>
+                </td>
+                <td>
+                    {{ instance.currentStep.name }}
+                    <br><small style="color: var(--color-text-muted);">
+                        {{ 'workflow.step'|trans }} {{ instance.currentStepNumber }} / {{ instance.definition.steps|length }}
+                    </small>
+                </td>
+                <td>
+                    {% if instance.assignee %}
+                        {{ instance.assignee.fullName }}
+                        {% if instance.assignee.id == app.user.id %}
+                            <span class="badge badge-success" style="margin-left: var(--spacing-xs);">
+                                {{ 'workflow.badge.my_task'|trans }}
+                            </span>
+                        {% endif %}
+                    {% else %}
+                        <span style="color: var(--color-text-muted);">{{ 'workflow.message.unassigned'|trans }}</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% set progress = (instance.completedSteps|length / instance.definition.steps|length * 100)|round %}
+                    <div class="progress" style="height: 20px; width: 120px; margin: 0 auto;">
+                        <div class="progress-bar" style="width: {{ progress }}%; font-size: 0.75rem;">
+                            {{ progress }}%
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    {% if instance.dueDate %}
+                        {{ instance.dueDate|date('d.m.Y') }}
+                    {% else %}
+                        <span style="color: var(--color-text-muted);">-</span>
+                    {% endif %}
+                </td>
+                <td style="text-align: center;">
+                    <a href="{{ path('app_workflow_instance_show', {id: instance.id}) }}" class="btn btn-sm">
+                        👁 {{ 'common.view'|trans }}
+                    </a>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="7" style="text-align: center; padding: var(--spacing-xl); color: var(--color-text-muted);">
+                    {{ 'workflow.message.no_active'|trans }}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

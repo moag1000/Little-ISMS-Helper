@@ -71,12 +71,12 @@ class InternalAuditType extends AbstractType
                     new NotBlank(['message' => 'audit.validation.date_required']),
                 ],
             ])
-            ->add('completedDate', DateType::class, [
-                'label' => 'audit.field.completed_date',
+            ->add('actualDate', DateType::class, [
+                'label' => 'audit.field.actual_date',
                 'required' => false,
                 'widget' => 'single_text',
                 'attr' => ['class' => 'form-control'],
-                'help' => 'Wird automatisch gesetzt wenn das Audit abgeschlossen wird.',
+                'help' => 'Tatsächliches Durchführungsdatum des Audits.',
             ])
             ->add('status', ChoiceType::class, [
                 'label' => 'audit.field.status',
@@ -89,41 +89,34 @@ class InternalAuditType extends AbstractType
                 ],
                 'attr' => ['class' => 'form-select'],
             ])
-            ->add('leadAuditor', EntityType::class, [
+            ->add('leadAuditor', TextType::class, [
                 'label' => 'audit.field.lead_auditor',
-                'class' => User::class,
-                'choice_label' => function (User $user) {
-                    return $user->getFirstName() . ' ' . $user->getLastName() . ' (' . $user->getEmail() . ')';
-                },
-                'placeholder' => '-- Bitte wählen --',
-                'required' => false,
-                'attr' => ['class' => 'form-select'],
-            ])
-            ->add('auditTeam', EntityType::class, [
-                'label' => 'audit.field.audit_team',
-                'class' => User::class,
-                'choice_label' => function (User $user) {
-                    return $user->getFirstName() . ' ' . $user->getLastName();
-                },
-                'multiple' => true,
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-select',
-                    'size' => 5,
+                    'class' => 'form-control',
+                    'placeholder' => 'Name des Lead Auditors',
                 ],
-                'help' => 'Halten Sie STRG gedrückt um mehrere Teammitglieder auszuwählen.',
             ])
-            ->add('frameworks', EntityType::class, [
-                'label' => 'audit.field.frameworks',
+            ->add('auditTeam', TextareaType::class, [
+                'label' => 'audit.field.audit_team',
+                'required' => false,
+                'attr' => [
+                    'class' => 'form-control',
+                    'rows' => 3,
+                    'placeholder' => 'Namen der Audit-Teammitglieder',
+                ],
+                'help' => 'Geben Sie die Namen der Teammitglieder ein.',
+            ])
+            ->add('scopedFramework', EntityType::class, [
+                'label' => 'audit.field.scoped_framework',
                 'class' => ComplianceFramework::class,
                 'choice_label' => 'name',
-                'multiple' => true,
+                'placeholder' => '-- Kein spezifisches Framework --',
                 'required' => false,
                 'attr' => [
                     'class' => 'form-select',
-                    'size' => 3,
                 ],
-                'help' => 'Welche Compliance-Frameworks werden in diesem Audit geprüft?',
+                'help' => 'Compliance-Framework für framework-spezifische Audits.',
             ])
             ->add('findings', TextareaType::class, [
                 'label' => 'audit.field.findings',
@@ -143,14 +136,14 @@ class InternalAuditType extends AbstractType
                 ],
                 'help' => 'Empfehlungen zur Verbesserung des ISMS.',
             ])
-            ->add('summary', TextareaType::class, [
-                'label' => 'audit.field.summary',
+            ->add('conclusion', TextareaType::class, [
+                'label' => 'audit.field.conclusion',
                 'required' => false,
                 'attr' => [
                     'class' => 'form-control',
                     'rows' => 4,
                 ],
-                'help' => 'Kurze Zusammenfassung der Audit-Ergebnisse.',
+                'help' => 'Kurze Zusammenfassung und Schlussfolgerungen der Audit-Ergebnisse.',
             ]);
     }
 
