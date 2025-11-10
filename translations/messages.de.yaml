@@ -437,6 +437,16 @@ incident:
     corrective_actions: Korrekturmaßnahmen
     lessons_learned: Erkenntnisse
     closed_date: Abschlussdatum
+    nis2_category: NIS2 Kategorie
+    early_warning_reported_at: Frühwarnung gemeldet am
+    detailed_notification_reported_at: Detaillierte Meldung am
+    final_report_submitted_at: Abschlussbericht eingereicht am
+    cross_border_impact: Grenzüberschreitende Auswirkung
+    affected_users_count: Anzahl betroffener Nutzer
+    estimated_financial_impact: Geschätzter finanzieller Schaden
+    national_authority_notified: Gemeldete Behörde
+    authority_reference_number: Aktenzeichen der Behörde
+    affected_assets: Betroffene Assets
   placeholder:
     title: z.B. Datenschutzvorfall Kundendaten
     description: Detaillierte Beschreibung des Vorfalls...
@@ -445,8 +455,20 @@ incident:
     root_cause: Analyse der Grundursache...
     corrective_actions: Durchgeführte Korrekturmaßnahmen...
     lessons_learned: Was haben wir gelernt?
+    nis2_category: Wählen Sie die NIS2 Kategorie...
+    national_authority: z.B. BSI, ENISA
+    authority_reference: z.B. BSI-2024-001234
   help:
     severity: Bewertung der Schwere des Vorfalls (1=Niedrig, 4=Kritisch)
+    nis2_category: Kategorisierung nach NIS2-Richtlinie (EU 2022/2555)
+    early_warning_24h: Frühwarnung innerhalb von 24 Stunden (NIS2 Art. 23)
+    detailed_notification_72h: Detaillierte Meldung innerhalb von 72 Stunden (NIS2 Art. 23)
+    final_report_1month: Abschlussbericht innerhalb von 1 Monat (NIS2 Art. 23)
+    cross_border_impact: Hat der Vorfall Auswirkungen auf andere EU-Mitgliedstaaten?
+    affected_users_count: Anzahl der betroffenen Nutzer oder Kunden
+    estimated_financial_impact: Geschätzter finanzieller Schaden in EUR
+    national_authority: Zuständige nationale Behörde (z.B. BSI in Deutschland)
+    affected_assets: Assets, die von diesem Vorfall betroffen sind
   category:
     data_breach: Datenschutzvorfall
     security_incident: Sicherheitsvorfall
@@ -465,6 +487,28 @@ incident:
     in_resolution: In Behebung
     resolved: Behoben
     closed: Geschlossen
+  nis2_category:
+    operational: Betriebsstörung
+    security: Sicherheitsvorfall
+    privacy: Datenschutz
+    availability: Verfügbarkeit
+  timeline:
+    early_warning: Frühwarnung (24h)
+    detailed_notification: Detaillierte Meldung (72h)
+    final_report: Abschlussbericht (1 Monat)
+    deadline: Frist
+    reported: Gemeldet
+    overdue: Überfällig
+    hours_remaining: "%hours% Stunden verbleibend"
+    days_remaining: "%days% Tage verbleibend"
+  nis2_compliance:
+    title: NIS2 Compliance Status
+    not_applicable: Nicht NIS2-relevant
+    compliant: Konform
+    overdue: Frist überschritten
+    awaiting_early_warning: Frühwarnung ausstehend
+    awaiting_detailed: Detaillierte Meldung ausstehend
+    awaiting_final: Abschlussbericht ausstehend
   success:
     reported: Vorfall erfolgreich gemeldet.
     updated: Vorfall erfolgreich aktualisiert.
