@@ -11,13 +11,15 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route('/objective')]
 class ISMSObjectiveController extends AbstractController
 {
     public function __construct(
         private ISMSObjectiveRepository $objectiveRepository,
-        private EntityManagerInterface $entityManager
+        private EntityManagerInterface $entityManager,
+        private TranslatorInterface $translator
     ) {}
 
     #[Route('/', name: 'app_objective_index')]
@@ -58,7 +60,7 @@ class ISMSObjectiveController extends AbstractController
             $this->entityManager->persist($objective);
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'ISMS-Ziel erfolgreich erstellt.');
+            $this->addFlash('success', $this->translator->trans('objective.success.created'));
             return $this->redirectToRoute('app_objective_show', ['id' => $objective->getId()]);
         }
 
@@ -94,7 +96,7 @@ class ISMSObjectiveController extends AbstractController
 
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'ISMS-Ziel erfolgreich aktualisiert.');
+            $this->addFlash('success', $this->translator->trans('objective.success.updated'));
             return $this->redirectToRoute('app_objective_show', ['id' => $objective->getId()]);
         }
 
@@ -112,7 +114,7 @@ class ISMSObjectiveController extends AbstractController
             $this->entityManager->remove($objective);
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'ISMS Objective deleted successfully.');
+            $this->addFlash('success', $this->translator->trans('objective.success.deleted'));
         }
 
         return $this->redirectToRoute('app_objective_index');

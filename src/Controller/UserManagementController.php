@@ -15,6 +15,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route('/admin/users')]
 #[IsGranted('ROLE_ADMIN')]
@@ -38,7 +39,8 @@ class UserManagementController extends AbstractController
     public function new(
         Request $request,
         EntityManagerInterface $entityManager,
-        UserPasswordHasherInterface $passwordHasher
+        UserPasswordHasherInterface $passwordHasher,
+        TranslatorInterface $translator
     ): Response {
         $this->denyAccessUnlessGranted(UserVoter::CREATE);
 
@@ -68,7 +70,7 @@ class UserManagementController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
 
-            $this->addFlash('success', 'Benutzer erfolgreich erstellt.');
+            $this->addFlash('success', $translator->trans('user.success.created'));
 
             return $this->redirectToRoute('user_management_index');
         }
@@ -94,7 +96,8 @@ class UserManagementController extends AbstractController
         User $user,
         Request $request,
         EntityManagerInterface $entityManager,
-        UserPasswordHasherInterface $passwordHasher
+        UserPasswordHasherInterface $passwordHasher,
+        TranslatorInterface $translator
     ): Response {
         $this->denyAccessUnlessGranted(UserVoter::EDIT, $user);
 
@@ -121,7 +124,7 @@ class UserManagementController extends AbstractController
             $user->setUpdatedAt(new \DateTimeImmutable());
             $entityManager->flush();
 
-            $this->addFlash('success', 'Benutzer erfolgreich aktualisiert.');
+            $this->addFlash('success', $translator->trans('user.success.updated'));
 
             return $this->redirectToRoute('user_management_show', ['id' => $user->getId()]);
         }
@@ -136,7 +139,8 @@ class UserManagementController extends AbstractController
     public function delete(
         User $user,
         Request $request,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        TranslatorInterface $translator
     ): Response {
         $this->denyAccessUnlessGranted(UserVoter::DELETE, $user);
 
@@ -144,7 +148,7 @@ class UserManagementController extends AbstractController
             $entityManager->remove($user);
             $entityManager->flush();
 
-            $this->addFlash('success', 'Benutzer erfolgreich gelöscht.');
+            $this->addFlash('success', $translator->trans('user.success.deleted'));
         }
 
         return $this->redirectToRoute('user_management_index');
@@ -154,7 +158,8 @@ class UserManagementController extends AbstractController
     public function toggleActive(
         User $user,
         Request $request,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        TranslatorInterface $translator
     ): Response {
         $this->denyAccessUnlessGranted(UserVoter::EDIT, $user);
 
@@ -163,7 +168,7 @@ class UserManagementController extends AbstractController
             $user->setUpdatedAt(new \DateTimeImmutable());
             $entityManager->flush();
 
-            $this->addFlash('success', $user->isActive() ? 'Benutzer aktiviert.' : 'Benutzer deaktiviert.');
+            $this->addFlash('success', $user->isActive() ? $translator->trans('user.success.activated') : $translator->trans('user.success.deactivated'));
         }
 
         return $this->redirectToRoute('user_management_show', ['id' => $user->getId()]);

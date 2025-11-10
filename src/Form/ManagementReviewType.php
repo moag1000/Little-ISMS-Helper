@@ -20,7 +20,7 @@ class ManagementReviewType extends AbstractType
     {
         $builder
             ->add('title', TextType::class, [
-                'label' => 'Review-Titel',
+                'label' => 'management_review.field.title',
                 'attr' => [
                     'class' => 'form-control',
                     'placeholder' => 'z.B. Management Review Q1 2025',
@@ -30,7 +30,7 @@ class ManagementReviewType extends AbstractType
                 ],
             ])
             ->add('reviewDate', DateType::class, [
-                'label' => 'Review-Datum',
+                'label' => 'management_review.field.review_date',
                 'widget' => 'single_text',
                 'attr' => ['class' => 'form-control'],
                 'constraints' => [
@@ -38,7 +38,7 @@ class ManagementReviewType extends AbstractType
                 ],
             ])
             ->add('reviewedBy', EntityType::class, [
-                'label' => 'Durchgeführt von',
+                'label' => 'management_review.field.reviewed_by',
                 'class' => User::class,
                 'choice_label' => function (User $user) {
                     return $user->getFirstName() . ' ' . $user->getLastName();
@@ -49,7 +49,7 @@ class ManagementReviewType extends AbstractType
                 'help' => 'Üblicherweise ein Mitglied des Top-Managements',
             ])
             ->add('participants', EntityType::class, [
-                'label' => 'Teilnehmer',
+                'label' => 'management_review.field.participants',
                 'class' => User::class,
                 'choice_label' => function (User $user) {
                     return $user->getFirstName() . ' ' . $user->getLastName();
@@ -62,7 +62,7 @@ class ManagementReviewType extends AbstractType
                 ],
             ])
             ->add('status', ChoiceType::class, [
-                'label' => 'Status',
+                'label' => 'management_review.field.status',
                 'choices' => [
                     'Geplant' => 'planned',
                     'Durchgeführt' => 'completed',
@@ -71,7 +71,7 @@ class ManagementReviewType extends AbstractType
                 'attr' => ['class' => 'form-select'],
             ])
             ->add('performanceEvaluation', TextareaType::class, [
-                'label' => 'Performance-Bewertung',
+                'label' => 'management_review.field.performance_evaluation',
                 'required' => false,
                 'attr' => [
                     'class' => 'form-control',
@@ -80,7 +80,7 @@ class ManagementReviewType extends AbstractType
                 'help' => 'Bewertung der ISMS-Performance und KPIs',
             ])
             ->add('nonconformitiesReview', TextareaType::class, [
-                'label' => 'Review der Nichtkonformitäten',
+                'label' => 'management_review.field.nonconformities_review',
                 'required' => false,
                 'attr' => [
                     'class' => 'form-control',
@@ -89,7 +89,7 @@ class ManagementReviewType extends AbstractType
                 'help' => 'Status offener Nichtkonformitäten aus Audits',
             ])
             ->add('incidentsReview', TextareaType::class, [
-                'label' => 'Review der Security Incidents',
+                'label' => 'management_review.field.incidents_review',
                 'required' => false,
                 'attr' => [
                     'class' => 'form-control',
@@ -98,7 +98,7 @@ class ManagementReviewType extends AbstractType
                 'help' => 'Analyse von Sicherheitsvorfällen seit letztem Review',
             ])
             ->add('risksReview', TextareaType::class, [
-                'label' => 'Review der Risiken',
+                'label' => 'management_review.field.risks_review',
                 'required' => false,
                 'attr' => [
                     'class' => 'form-control',
@@ -107,7 +107,7 @@ class ManagementReviewType extends AbstractType
                 'help' => 'Änderungen im Risikoprofil',
             ])
             ->add('objectivesReview', TextareaType::class, [
-                'label' => 'Review der ISMS-Ziele',
+                'label' => 'management_review.field.objectives_review',
                 'required' => false,
                 'attr' => [
                     'class' => 'form-control',
@@ -116,7 +116,7 @@ class ManagementReviewType extends AbstractType
                 'help' => 'Status der ISMS-Ziele und Zielerreichung',
             ])
             ->add('contextChanges', TextareaType::class, [
-                'label' => 'Änderungen im Kontext',
+                'label' => 'management_review.field.context_changes',
                 'required' => false,
                 'attr' => [
                     'class' => 'form-control',
@@ -125,7 +125,7 @@ class ManagementReviewType extends AbstractType
                 'help' => 'Änderungen in internen/externen Anforderungen',
             ])
             ->add('improvementOpportunities', TextareaType::class, [
-                'label' => 'Verbesserungsmöglichkeiten',
+                'label' => 'management_review.field.improvement_opportunities',
                 'required' => false,
                 'attr' => [
                     'class' => 'form-control',
@@ -134,7 +134,7 @@ class ManagementReviewType extends AbstractType
                 'help' => 'Identifizierte Chancen zur Verbesserung des ISMS',
             ])
             ->add('decisions', TextareaType::class, [
-                'label' => 'Managemententscheidungen',
+                'label' => 'management_review.field.decisions',
                 'required' => false,
                 'attr' => [
                     'class' => 'form-control',
@@ -143,7 +143,7 @@ class ManagementReviewType extends AbstractType
                 'help' => 'Getroffene Entscheidungen und Maßnahmen',
             ])
             ->add('actionItems', TextareaType::class, [
-                'label' => 'Maßnahmen / Action Items',
+                'label' => 'management_review.field.action_items',
                 'required' => false,
                 'attr' => [
                     'class' => 'form-control',
@@ -152,7 +152,7 @@ class ManagementReviewType extends AbstractType
                 'help' => 'Konkrete Maßnahmen mit Verantwortlichkeiten und Fristen',
             ])
             ->add('resourcesNeeded', TextareaType::class, [
-                'label' => 'Benötigte Ressourcen',
+                'label' => 'management_review.field.resources_needed',
                 'required' => false,
                 'attr' => [
                     'class' => 'form-control',
@@ -161,7 +161,7 @@ class ManagementReviewType extends AbstractType
                 'help' => 'Budget, Personal oder sonstige Ressourcen',
             ])
             ->add('summary', TextareaType::class, [
-                'label' => 'Zusammenfassung',
+                'label' => 'management_review.field.summary',
                 'required' => false,
                 'attr' => [
                     'class' => 'form-control',

@@ -11,13 +11,15 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route('/location')]
 class LocationController extends AbstractController
 {
     public function __construct(
         private LocationRepository $locationRepository,
-        private EntityManagerInterface $entityManager
+        private EntityManagerInterface $entityManager,
+        private TranslatorInterface $translator
     ) {}
 
     #[Route('/', name: 'app_location_index')]
@@ -45,7 +47,7 @@ class LocationController extends AbstractController
             $this->entityManager->persist($location);
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Location created successfully.');
+            $this->addFlash('success', $this->translator->trans('location.success.created'));
             return $this->redirectToRoute('app_location_show', ['id' => $location->getId()]);
         }
 
@@ -81,7 +83,7 @@ class LocationController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Location updated successfully.');
+            $this->addFlash('success', $this->translator->trans('location.success.updated'));
             return $this->redirectToRoute('app_location_show', ['id' => $location->getId()]);
         }
 
@@ -99,7 +101,7 @@ class LocationController extends AbstractController
             $this->entityManager->remove($location);
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Location deleted successfully.');
+            $this->addFlash('success', $this->translator->trans('location.success.deleted'));
         }
 
         return $this->redirectToRoute('app_location_index');

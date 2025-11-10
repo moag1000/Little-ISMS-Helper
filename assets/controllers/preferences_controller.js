@@ -220,9 +220,9 @@ export default class extends Controller {
                 this.savePreferences();
                 this.applyPreferences();
                 this.updateFormFields();
-                this.showSuccessMessage('Einstellungen erfolgreich importiert');
+                this.showSuccessMessage(window.translations?.preferences?.imported || 'Settings successfully imported');
             } catch (err) {
-                alert('Fehler beim Importieren der Einstellungen');
+                alert(window.translations?.preferences?.import_failed || 'Error importing settings');
                 console.error(err);
             }
         };
