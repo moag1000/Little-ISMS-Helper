@@ -7,7 +7,7 @@
     <div class="page-header">
         <div>
             <h1>{{ framework.name }}</h1>
-            <p class="text-muted">{{ framework.description|u.truncate(100, '...') }}</p>
+            <p class="text-muted">{{ framework.description|length > 100 ? framework.description|slice(0, 100) ~ '...' : framework.description }}</p>
         </div>
         <div class="button-group">
             <a href="{{ path('app_compliance_index') }}" class="btn btn-secondary">

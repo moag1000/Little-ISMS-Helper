@@ -1,0 +1,298 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ business_process.name }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{{ path('app_business_process_index') }}">BCM</a></li>
+            <li class="breadcrumb-item active">{{ business_process.name }}</li>
+        </ol>
+    </nav>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>{{ business_process.name }}</h1>
+        <div>
+            <a href="{{ path('app_business_process_bia', {'id': business_process.id}) }}" class="btn btn-info">
+                <i class="bi bi-graph-up"></i> BIA Ansicht
+            </a>
+            <a href="{{ path('app_business_process_edit', {'id': business_process.id}) }}" class="btn btn-primary">
+                <i class="bi bi-pencil"></i> Bearbeiten
+            </a>
+            <form method="post" action="{{ path('app_business_process_delete', {'id': business_process.id}) }}" style="display: inline-block;" onsubmit="return confirm('Möchten Sie diesen Geschäftsprozess wirklich löschen?');">
+                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ business_process.id) }}">
+                <button class="btn btn-danger">
+                    <i class="bi bi-trash"></i> Löschen
+                </button>
+            </form>
+        </div>
+    </div>
+
+    {# KPI Cards with Data Reuse #}
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="card-subtitle mb-2 text-muted">Kritikalität</h6>
+                    <p class="h3">
+                        {% set criticality_badge = {
+                            'critical': 'danger',
+                            'high': 'warning',
+                            'medium': 'info',
+                            'low': 'success'
+                        } %}
+                        <span class="badge bg-{{ criticality_badge[business_process.criticality] ?? 'secondary' }}">
+                            {{ business_process.criticality|capitalize }}
+                        </span>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="card-subtitle mb-2 text-muted">Business Impact Score</h6>
+                    <p class="h3">{{ metrics.business_impact_score }}/5</p>
+                    <small class="text-muted">Automatisch berechnet</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="card-subtitle mb-2 text-muted">Prozess-Risikolevel</h6>
+                    <p class="h3">
+                        {% set risk_badge = {
+                            'critical': 'danger',
+                            'high': 'warning',
+                            'medium': 'info',
+                            'low': 'success',
+                            'unknown': 'secondary'
+                        } %}
+                        <span class="badge bg-{{ risk_badge[metrics.process_risk_level] ?? 'secondary' }}">
+                            {{ metrics.process_risk_level|capitalize }}
+                        </span>
+                    </p>
+                    <small class="text-muted">{{ metrics.active_risks }} aktive Risiken</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card {% if not metrics.criticality_aligned %}border-warning{% endif %}">
+                <div class="card-body">
+                    <h6 class="card-subtitle mb-2 text-muted">Alignment-Status</h6>
+                    <p class="h3">
+                        {% if metrics.criticality_aligned %}
+                            <i class="bi bi-check-circle text-success"></i>
+                        {% else %}
+                            <i class="bi bi-exclamation-triangle text-warning"></i>
+                        {% endif %}
+                    </p>
+                    <small class="text-muted">
+                        {% if metrics.criticality_aligned %}
+                            BIA ↔ Risiko aligned
+                        {% else %}
+                            Überprüfung erforderlich
+                        {% endif %}
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Main Content in Tabs with Turbo Frame #}
+    <div class="card" data-controller="toggle">
+        <div class="card-header">
+            <ul class="nav nav-tabs card-header-tabs">
+                <li class="nav-item">
+                    <a class="nav-link active" data-action="click->toggle#switchTab" data-tab="general" href="#">Allgemein</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-action="click->toggle#switchTab" data-tab="bia" href="#">BIA Daten</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-action="click->toggle#switchTab" data-tab="assets" href="#">Assets</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-action="click->toggle#switchTab" data-tab="risks" href="#">Risiken</a>
+                </li>
+            </ul>
+        </div>
+        <div class="card-body">
+            {# General Tab #}
+            <div class="tab-content active" data-tab-content="general">
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <th style="width: 200px;">Prozessverantwortlicher</th>
+                            <td>{{ business_process.processOwner }}</td>
+                        </tr>
+                        <tr>
+                            <th>Beschreibung</th>
+                            <td>{{ business_process.description ?? '-' }}</td>
+                        </tr>
+                        <tr>
+                            <th>Upstream-Abhängigkeiten</th>
+                            <td>{{ business_process.dependenciesUpstream ?? '-' }}</td>
+                        </tr>
+                        <tr>
+                            <th>Downstream-Abhängigkeiten</th>
+                            <td>{{ business_process.dependenciesDownstream ?? '-' }}</td>
+                        </tr>
+                        <tr>
+                            <th>Wiederherstellungsstrategie</th>
+                            <td>{{ business_process.recoveryStrategy ?? '-' }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            {# BIA Tab #}
+            <div class="tab-content" data-tab-content="bia" style="display: none;">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>Recovery-Ziele</h5>
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <th>RTO (Recovery Time Objective)</th>
+                                    <td>{{ business_process.rto }} Stunden</td>
+                                </tr>
+                                <tr>
+                                    <th>RPO (Recovery Point Objective)</th>
+                                    <td>{{ business_process.rpo }} Stunden</td>
+                                </tr>
+                                <tr>
+                                    <th>MTPD (Maximum Tolerable Period)</th>
+                                    <td>{{ business_process.mtpd }} Stunden</td>
+                                </tr>
+                                <tr>
+                                    <th>Empfohlenes RTO (basierend auf Risiken)</th>
+                                    <td>
+                                        {{ metrics.suggested_rto }} Stunden
+                                        {% if metrics.suggested_rto != business_process.rto %}
+                                            <span class="badge bg-warning">Abweichung</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>Impact-Bewertung</h5>
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <th>Reputationsschaden</th>
+                                    <td>{{ business_process.reputationalImpact }}/5</td>
+                                </tr>
+                                <tr>
+                                    <th>Regulatorischer Impact</th>
+                                    <td>{{ business_process.regulatoryImpact }}/5</td>
+                                </tr>
+                                <tr>
+                                    <th>Operationaler Impact</th>
+                                    <td>{{ business_process.operationalImpact }}/5</td>
+                                </tr>
+                                <tr>
+                                    <th>Finanzieller Schaden/Stunde</th>
+                                    <td>{{ business_process.financialImpactPerHour ? (business_process.financialImpactPerHour|number_format(2, ',', '.') ~ ' €') : '-' }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Finanzieller Schaden/Tag</th>
+                                    <td>{{ business_process.financialImpactPerDay ? (business_process.financialImpactPerDay|number_format(2, ',', '.') ~ ' €') : '-' }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                {% if metrics.unmitigated_high_risks %}
+                    <div class="alert alert-danger mt-3">
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+                        <strong>Warnung:</strong> Dieser Prozess hat unbehandelte Hochrisiken!
+                    </div>
+                {% endif %}
+            </div>
+
+            {# Assets Tab #}
+            <turbo-frame id="process-assets" data-tab-content="assets" style="display: none;">
+                {% if business_process.supportingAssets|length > 0 %}
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Asset</th>
+                                <th>Typ</th>
+                                <th>CIA-Bewertung</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for asset in business_process.supportingAssets %}
+                                <tr>
+                                    <td>{{ asset.name }}</td>
+                                    <td>{{ asset.assetType }}</td>
+                                    <td>
+                                        C: {{ asset.confidentialityValue }}, 
+                                        I: {{ asset.integrityValue }}, 
+                                        A: {{ asset.availabilityValue }}
+                                    </td>
+                                    <td>{{ asset.status }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <div class="alert alert-info">
+                        Keine unterstützenden Assets verknüpft.
+                    </div>
+                {% endif %}
+            </turbo-frame>
+
+            {# Risks Tab #}
+            <turbo-frame id="process-risks" data-tab-content="risks" style="display: none;">
+                {% if business_process.identifiedRisks|length > 0 %}
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Risiko</th>
+                                <th>Status</th>
+                                <th>Inherent Risk</th>
+                                <th>Residual Risk</th>
+                                <th>Behandlung</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for risk in business_process.identifiedRisks %}
+                                <tr>
+                                    <td>{{ risk.title }}</td>
+                                    <td>
+                                        <span class="badge bg-{{ risk.status == 'active' ? 'warning' : 'success' }}">
+                                            {{ risk.status }}
+                                        </span>
+                                    </td>
+                                    <td>{{ risk.inherentRiskLevel }}</td>
+                                    <td>{{ risk.residualRiskLevel }}</td>
+                                    <td>{{ risk.treatmentStrategy }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <div class="alert alert-info">
+                        Keine Risiken verknüpft.
+                    </div>
+                {% endif %}
+            </turbo-frame>
+        </div>
+    </div>
+</div>
+
+<style>
+.tab-content.active {
+    display: block !important;
+}
+</style>
+{% endblock %}

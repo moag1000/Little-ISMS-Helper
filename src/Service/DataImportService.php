@@ -9,6 +9,26 @@ use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Yaml\Yaml;
 
+/**
+ * Data Import Service
+ *
+ * Manages the import of base data and sample data for ISMS modules.
+ * Supports both command-based and file-based import mechanisms.
+ *
+ * Features:
+ * - Base data import (ISO 27001 controls, compliance requirements)
+ * - Sample data import for demo/testing purposes
+ * - Module-aware import (respects active modules)
+ * - Command execution for data loading
+ * - YAML-based file imports
+ * - Import logging and result tracking
+ *
+ * Workflow:
+ * 1. Check module dependencies
+ * 2. Execute configured import commands
+ * 3. Load data from YAML files
+ * 4. Track results and errors
+ */
 class DataImportService
 {
     private array $importLog = [];

@@ -1,0 +1,197 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ instance.name }} - {{ 'workflow.title.instance_show'|trans }} - Little ISMS Helper{% endblock %}
+
+{% block body %}
+<div class="d-flex justify-between align-center mb-4">
+    <div>
+        <h1>{{ instance.name }}</h1>
+        <div class="mt-2">
+            {% set statusColors = {
+                'pending': 'warning',
+                'active': 'info',
+                'completed': 'success',
+                'cancelled': 'secondary'
+            } %}
+            <span class="badge badge-{{ statusColors[instance.status] ?? 'secondary' }}">
+                {{ ('workflow.status.' ~ instance.status)|trans }}
+            </span>
+            {% if instance.overdue %}
+                <span class="badge badge-danger" style="margin-left: var(--spacing-xs);">
+                    {{ 'workflow.badge.overdue'|trans }}
+                </span>
+            {% endif %}
+        </div>
+    </div>
+    <div>
+        <a href="{{ path('app_workflow_instance_edit', {id: instance.id}) }}" class="btn btn-success" style="margin-right: 0.5rem;">
+            ✏️ {{ 'common.edit'|trans }}
+        </a>
+        <a href="{{ path('app_workflow_index') }}" class="btn btn-secondary">
+            ← {{ 'common.back_to_list'|trans }}
+        </a>
+    </div>
+</div>
+
+{# Instance Overview #}
+<div class="card mb-4">
+    <h2>{{ 'workflow.section.overview'|trans }}</h2>
+
+    <div class="stats-grid mt-3" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));">
+        <div class="stat-item">
+            <strong>{{ instance.definition.name }}</strong>
+            <span>{{ 'workflow.field.definition'|trans }}</span>
+        </div>
+
+        <div class="stat-item">
+            <strong>{{ instance.currentStep.name }}</strong>
+            <span>{{ 'workflow.field.current_step'|trans }}</span>
+        </div>
+
+        <div class="stat-item">
+            <strong>
+                {% if instance.assignee %}
+                    {{ instance.assignee.fullName }}
+                {% else %}
+                    <span style="color: var(--color-text-muted);">{{ 'workflow.message.unassigned'|trans }}</span>
+                {% endif %}
+            </strong>
+            <span>{{ 'workflow.field.assignee'|trans }}</span>
+        </div>
+
+        {% if instance.dueDate %}
+        <div class="stat-item">
+            <strong>{{ instance.dueDate|date('d.m.Y H:i') }}</strong>
+            <span>{{ 'workflow.field.due_date'|trans }}</span>
+        </div>
+        {% endif %}
+
+        <div class="stat-item">
+            <strong>{{ instance.createdAt|date('d.m.Y H:i') }}</strong>
+            <span>{{ 'workflow.field.created_at'|trans }}</span>
+        </div>
+
+        {% if instance.completedAt %}
+        <div class="stat-item">
+            <strong>{{ instance.completedAt|date('d.m.Y H:i') }}</strong>
+            <span>{{ 'workflow.field.completed_at'|trans }}</span>
+        </div>
+        {% endif %}
+    </div>
+
+    {# Progress Bar #}
+    <div class="mt-3">
+        <h3 style="font-size: 1rem; margin-bottom: var(--spacing-sm);">{{ 'workflow.field.progress'|trans }}</h3>
+        {% set progress = (instance.completedSteps|length / instance.definition.steps|length * 100)|round %}
+        <div class="progress" style="height: 30px;">
+            <div class="progress-bar" style="width: {{ progress }}%; font-size: 1rem;">
+                {{ progress }}% ({{ instance.completedSteps|length }} / {{ instance.definition.steps|length }})
+            </div>
+        </div>
+    </div>
+</div>
+
+{# Workflow Steps #}
+<div class="card mb-4">
+    <h2>{{ 'workflow.section.steps'|trans }}</h2>
+
+    <div class="mt-3">
+        {% for step in instance.definition.steps %}
+        <div class="card" style="margin-bottom: var(--spacing-md); padding: var(--spacing-md); {% if step.id == instance.currentStep.id %}border-left: 4px solid var(--color-primary);{% endif %}">
+            <div class="d-flex justify-between align-center">
+                <div>
+                    <h3 style="font-size: 1.1rem; margin-bottom: var(--spacing-xs);">
+                        {{ loop.index }}. {{ step.name }}
+                        {% if step.id == instance.currentStep.id %}
+                            <span class="badge badge-primary">{{ 'workflow.badge.current'|trans }}</span>
+                        {% elseif step in instance.completedSteps %}
+                            <span class="badge badge-success">✓ {{ 'workflow.badge.completed'|trans }}</span>
+                        {% endif %}
+                    </h3>
+                    {% if step.description %}
+                        <p style="color: var(--color-text-muted); margin-top: var(--spacing-xs);">{{ step.description }}</p>
+                    {% endif %}
+                </div>
+                {% if step.id == instance.currentStep.id and instance.status == 'active' %}
+                <div>
+                    <a href="{{ path('app_workflow_step_complete', {instanceId: instance.id, stepId: step.id}) }}" class="btn btn-success btn-sm">
+                        ✓ {{ 'workflow.action.complete_step'|trans }}
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+
+            {% if step.assignee %}
+            <div class="mt-2">
+                <small><strong>{{ 'workflow.field.assignee'|trans }}:</strong> {{ step.assignee.fullName }}</small>
+            </div>
+            {% endif %}
+
+            {% if step.dueDate %}
+            <div class="mt-1">
+                <small><strong>{{ 'workflow.field.due_date'|trans }}:</strong> {{ step.dueDate|date('d.m.Y H:i') }}</small>
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{# Activity Log #}
+<div class="card mb-4">
+    <h2>{{ 'workflow.section.activity_log'|trans }}</h2>
+
+    {% if instance.activities|length > 0 %}
+    <div class="table-container mt-3">
+        <table>
+            <thead>
+                <tr>
+                    <th>{{ 'workflow.activity.timestamp'|trans }}</th>
+                    <th>{{ 'workflow.activity.user'|trans }}</th>
+                    <th>{{ 'workflow.activity.action'|trans }}</th>
+                    <th>{{ 'workflow.activity.details'|trans }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for activity in instance.activities|reverse %}
+                <tr>
+                    <td>{{ activity.createdAt|date('d.m.Y H:i:s') }}</td>
+                    <td>{{ activity.user.fullName }}</td>
+                    <td>
+                        <span class="badge badge-info">{{ ('workflow.action.' ~ activity.action)|trans }}</span>
+                    </td>
+                    <td>
+                        <small style="color: var(--color-text-muted);">{{ activity.details }}</small>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p style="color: var(--color-text-muted); margin-top: var(--spacing-sm);">
+        {{ 'workflow.message.no_activities'|trans }}
+    </p>
+    {% endif %}
+</div>
+
+{# Action Buttons #}
+<div class="d-flex gap-2 mt-4">
+    {% if instance.status == 'pending' %}
+    <a href="{{ path('app_workflow_instance_start', {id: instance.id}) }}" class="btn btn-success">
+        ▶️ {{ 'workflow.action.start'|trans }}
+    </a>
+    {% endif %}
+
+    {% if instance.status in ['pending', 'active'] %}
+    <form method="post" action="{{ path('app_workflow_instance_cancel', {id: instance.id}) }}" onsubmit="return confirm('{{ 'workflow.confirm.cancel'|trans }}');" style="display: inline;">
+        <input type="hidden" name="_token" value="{{ csrf_token('cancel' ~ instance.id) }}">
+        <button type="submit" class="btn btn-danger">❌ {{ 'workflow.action.cancel'|trans }}</button>
+    </form>
+    {% endif %}
+
+    <a href="{{ path('app_workflow_index') }}" class="btn btn-secondary">
+        📋 {{ 'common.back_to_list'|trans }}
+    </a>
+</div>
+{% endblock %}

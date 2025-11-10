@@ -1,0 +1,216 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'compliance.title.transitive'|trans }} - Little ISMS Helper{% endblock %}
+
+{% block body %}
+<div class="d-flex justify-between align-center mb-4">
+    <div>
+        <h1>{{ 'compliance.title.transitive'|trans }}</h1>
+        <p style="color: var(--color-text-light); margin-top: var(--spacing-sm);">
+            {{ 'compliance.description.transitive'|trans }}
+        </p>
+    </div>
+    <div>
+        <a href="{{ path('app_compliance_export_transitive') }}" class="btn btn-success">
+            📊 {{ 'compliance.action.export_transitive'|trans }}
+        </a>
+    </div>
+</div>
+
+{# Statistics Cards #}
+<div class="kpi-grid">
+    <div class="kpi-card">
+        <div class="icon">🔗</div>
+        <div class="label">{{ 'compliance.stats.total_relationships'|trans }}</div>
+        <div>
+            <span class="value">{{ totalRelationships }}</span>
+        </div>
+    </div>
+
+    <div class="kpi-card">
+        <div class="icon">✅</div>
+        <div class="label">{{ 'compliance.stats.transitive_compliance'|trans }}</div>
+        <div>
+            <span class="value">{{ transitiveCompliance }}</span>
+        </div>
+    </div>
+
+    <div class="kpi-card">
+        <div class="icon">📈</div>
+        <div class="label">{{ 'compliance.stats.leverage_rate'|trans }}</div>
+        <div>
+            {% set leverageRate = totalRelationships > 0 ? (transitiveCompliance / totalRelationships * 100)|round : 0 %}
+            <span class="value">{{ leverageRate }}</span>
+            <span class="unit">%</span>
+        </div>
+    </div>
+
+    <div class="kpi-card">
+        <div class="icon">🎯</div>
+        <div class="label">{{ 'compliance.stats.frameworks_leveraged'|trans }}</div>
+        <div>
+            <span class="value">{{ frameworksLeveraged }}</span>
+        </div>
+    </div>
+</div>
+
+{# Transitive Compliance Explanation #}
+<div class="info-box mb-4" style="background: var(--color-info-light); border-left: 4px solid var(--color-info);">
+    <p><strong>ℹ️ {{ 'compliance.info.transitive_title'|trans }}</strong></p>
+    <p style="margin-top: var(--spacing-xs);">{{ 'compliance.info.transitive_desc'|trans }}</p>
+</div>
+
+{# Framework Relationships #}
+<h2>{{ 'compliance.section.framework_relationships'|trans }}</h2>
+
+<div class="module-grid mb-4">
+    {% for relationship in frameworkRelationships %}
+    <div class="card">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--spacing-md);">
+            <div>
+                <h3 style="font-size: 1.1rem; margin-bottom: var(--spacing-xs);">
+                    {{ relationship.sourceFramework.name }}
+                </h3>
+                <div style="font-size: 1.5rem; color: var(--color-primary);">↓</div>
+                <h3 style="font-size: 1.1rem; margin-top: var(--spacing-xs);">
+                    {{ relationship.targetFramework.name }}
+                </h3>
+            </div>
+        </div>
+
+        <div class="stats-grid" style="grid-template-columns: 1fr 1fr;">
+            <div class="stat-item">
+                <strong>{{ relationship.mappedRequirements }}</strong>
+                <span>{{ 'compliance.field.mapped'|trans }}</span>
+            </div>
+            <div class="stat-item">
+                <strong>{{ relationship.coveragePercentage }}%</strong>
+                <span>{{ 'compliance.field.coverage'|trans }}</span>
+            </div>
+        </div>
+
+        <div class="progress mt-2" style="height: 8px;">
+            <div class="progress-bar" style="width: {{ relationship.coveragePercentage }}%;"></div>
+        </div>
+
+        <div class="mt-3">
+            <a href="{{ path('app_compliance_relationship_details', {id: relationship.id}) }}" class="btn btn-sm">
+                {{ 'common.view_details'|trans }}
+            </a>
+        </div>
+    </div>
+    {% else %}
+    <div class="card" style="grid-column: 1 / -1;">
+        <p style="text-align: center; color: var(--color-text-muted);">
+            {{ 'compliance.message.no_relationships'|trans }}
+        </p>
+    </div>
+    {% endfor %}
+</div>
+
+{# Transitive Compliance Matrix #}
+<h2>{{ 'compliance.section.compliance_matrix'|trans }}</h2>
+
+<div class="card mb-4">
+    <p style="color: var(--color-text-muted); margin-bottom: var(--spacing-md);">
+        {{ 'compliance.description.matrix'|trans }}
+    </p>
+
+    <div class="table-container" style="overflow-x: auto;">
+        <table style="min-width: 800px;">
+            <thead>
+                <tr>
+                    <th style="position: sticky; left: 0; background: var(--color-bg); z-index: 10;">
+                        {{ 'compliance.field.framework'|trans }}
+                    </th>
+                    {% for framework in frameworks %}
+                    <th style="text-align: center;">{{ framework.shortName ?? framework.name }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for sourceFramework in frameworks %}
+                <tr>
+                    <td style="position: sticky; left: 0; background: var(--color-bg); font-weight: bold;">
+                        {{ sourceFramework.shortName ?? sourceFramework.name }}
+                    </td>
+                    {% for targetFramework in frameworks %}
+                    <td style="text-align: center;">
+                        {% if sourceFramework.id == targetFramework.id %}
+                            <span style="color: var(--color-text-muted);">-</span>
+                        {% else %}
+                            {% set mapping = mapping_matrix[sourceFramework.id][targetFramework.id] ?? null %}
+                            {% if mapping and mapping.coverage > 0 %}
+                                <span class="badge badge-success">{{ mapping.coverage|round }}%</span>
+                            {% else %}
+                                <span class="badge badge-secondary">0%</span>
+                            {% endif %}
+                        {% endif %}
+                    </td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{# Compliance Leverage Opportunities #}
+<h2>{{ 'compliance.section.leverage_opportunities'|trans }}</h2>
+
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>{{ 'compliance.field.source_requirement'|trans }}</th>
+                <th>{{ 'compliance.field.source_framework'|trans }}</th>
+                <th>{{ 'compliance.field.target_requirements'|trans }}</th>
+                <th>{{ 'compliance.field.target_frameworks'|trans }}</th>
+                <th style="text-align: center;">{{ 'compliance.field.leverage_impact'|trans }}</th>
+                <th style="text-align: center;">{{ 'common.actions'|trans }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for opportunity in leverageOpportunities %}
+            <tr>
+                <td>
+                    <strong>{{ opportunity.sourceRequirement.identifier }}</strong>
+                    <br><small style="color: var(--color-text-muted);">{{ opportunity.sourceRequirement.name }}</small>
+                </td>
+                <td>
+                    <span class="badge badge-info">{{ opportunity.sourceFramework.name }}</span>
+                </td>
+                <td>
+                    {% for req in opportunity.targetRequirements %}
+                        <div style="margin-bottom: var(--spacing-xs);">
+                            <code>{{ req.identifier }}</code>
+                        </div>
+                    {% endfor %}
+                </td>
+                <td>
+                    {% for framework in opportunity.targetFrameworks %}
+                        <span class="badge badge-secondary" style="margin-right: var(--spacing-xs); margin-bottom: var(--spacing-xs);">
+                            {{ framework.shortName ?? framework.name }}
+                        </span>
+                    {% endfor %}
+                </td>
+                <td style="text-align: center;">
+                    <span class="badge badge-success">{{ opportunity.impactScore }}</span>
+                </td>
+                <td style="text-align: center;">
+                    <a href="{{ path('app_compliance_leverage_details', {id: opportunity.id}) }}" class="btn btn-sm">
+                        👁 {{ 'common.view'|trans }}
+                    </a>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="6" style="text-align: center; padding: var(--spacing-xl); color: var(--color-text-muted);">
+                    {{ 'compliance.message.no_leverage_opportunities'|trans }}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

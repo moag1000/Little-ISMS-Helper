@@ -7,7 +7,10 @@ use App\Repository\ComplianceRequirementRepository;
 use App\Repository\ComplianceMappingRepository;
 use App\Service\ComplianceAssessmentService;
 use App\Service\ComplianceMappingService;
+use App\Service\ComplianceFrameworkLoaderService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -19,7 +22,8 @@ class ComplianceController extends AbstractController
         private ComplianceRequirementRepository $requirementRepository,
         private ComplianceMappingRepository $mappingRepository,
         private ComplianceAssessmentService $assessmentService,
-        private ComplianceMappingService $mappingService
+        private ComplianceMappingService $mappingService,
+        private ComplianceFrameworkLoaderService $frameworkLoaderService
     ) {}
 
     #[Route('/', name: 'app_compliance_index')]
@@ -181,13 +185,26 @@ class ComplianceController extends AbstractController
     {
         $frameworks = $this->frameworkRepository->findActiveFrameworks();
         $transitiveAnalysis = [];
+        $mappingMatrix = [];
 
+        // Build mapping coverage matrix for template
         foreach ($frameworks as $sourceFramework) {
             foreach ($frameworks as $targetFramework) {
                 if ($sourceFramework->getId() === $targetFramework->getId()) {
                     continue;
                 }
 
+                // Calculate coverage for matrix
+                $coverage = $this->mappingRepository->calculateFrameworkCoverage(
+                    $sourceFramework,
+                    $targetFramework
+                );
+                $mappingMatrix[$sourceFramework->getId()][$targetFramework->getId()] = [
+                    'coverage' => $coverage,
+                    'has_mapping' => $coverage > 0
+                ];
+
+                // Transitive analysis
                 $transitive = $this->mappingRepository->getTransitiveCompliance(
                     $sourceFramework,
                     $targetFramework
@@ -202,6 +219,10 @@ class ComplianceController extends AbstractController
         return $this->render('compliance/transitive_compliance.html.twig', [
             'frameworks' => $frameworks,
             'transitive_analysis' => $transitiveAnalysis,
+            'mapping_matrix' => $mappingMatrix,
+            'total_relationships' => count($transitiveAnalysis),
+            'transitive_compliance' => array_sum(array_column($transitiveAnalysis, 'requirements_helped')),
+            'leverage_opportunities' => [],
         ]);
     }
 
@@ -236,5 +257,57 @@ class ComplianceController extends AbstractController
         ));
 
         return $this->redirectToRoute('app_compliance_framework', ['id' => $id]);
+    }
+
+    #[Route('/frameworks/manage', name: 'app_compliance_manage_frameworks')]
+    public function manageFrameworks(): Response
+    {
+        $availableFrameworks = $this->frameworkLoaderService->getAvailableFrameworks();
+        $statistics = $this->frameworkLoaderService->getFrameworkStatistics();
+
+        return $this->render('compliance/manage_frameworks.html.twig', [
+            'available_frameworks' => $availableFrameworks,
+            'statistics' => $statistics,
+        ]);
+    }
+
+    #[Route('/frameworks/load/{code}', name: 'app_compliance_load_framework', methods: ['POST'])]
+    public function loadFramework(string $code): JsonResponse
+    {
+        $result = $this->frameworkLoaderService->loadFramework($code);
+
+        if ($result['success']) {
+            $this->addFlash('success', $result['message']);
+        } else {
+            $this->addFlash('error', $result['message']);
+        }
+
+        return new JsonResponse($result);
+    }
+
+    #[Route('/frameworks/available', name: 'app_compliance_available_frameworks', methods: ['GET'])]
+    public function getAvailableFrameworks(): JsonResponse
+    {
+        $frameworks = $this->frameworkLoaderService->getAvailableFrameworks();
+        $statistics = $this->frameworkLoaderService->getFrameworkStatistics();
+
+        return new JsonResponse([
+            'frameworks' => $frameworks,
+            'statistics' => $statistics,
+        ]);
+    }
+
+    #[Route('/export/transitive', name: 'app_compliance_export_transitive')]
+    public function exportTransitive(): Response
+    {
+        $this->addFlash('info', 'Transitive compliance export feature coming soon.');
+        return $this->redirectToRoute('app_compliance_transitive');
+    }
+
+    #[Route('/export/comparison', name: 'app_compliance_export_comparison')]
+    public function exportComparison(): Response
+    {
+        $this->addFlash('info', 'Framework comparison export feature coming soon.');
+        return $this->redirectToRoute('app_compliance_compare');
     }
 }

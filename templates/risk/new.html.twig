@@ -1,0 +1,148 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'risk.new'|trans }} - {{ parent() }}{% endblock %}
+
+{% block body %}
+<div class="container">
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{{ path('app_risk_index') }}"><i class="bi bi-exclamation-triangle"></i> {{ 'nav.risks'|trans }}</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">{{ 'risk.new'|trans }}</li>
+        </ol>
+    </nav>
+
+    <div class="page-header">
+        <h1><i class="bi bi-plus-circle"></i> {{ 'risk.new'|trans }}</h1>
+        <a href="{{ path('app_risk_index') }}" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> {{ 'common.back'|trans }}</a>
+    </div>
+
+    <div class="card">
+        <div class="card-content">
+            {{ form_start(form) }}
+                <div class="form-row">
+                    <div class="form-group">
+                        {{ form_label(form.title) }}
+                        {{ form_widget(form.title) }}
+                        {{ form_errors(form.title) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.asset) }}
+                        {{ form_widget(form.asset) }}
+                        {{ form_errors(form.asset) }}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.description) }}
+                    {{ form_widget(form.description) }}
+                    {{ form_errors(form.description) }}
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        {{ form_label(form.threat) }}
+                        {{ form_widget(form.threat) }}
+                        {{ form_errors(form.threat) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.vulnerability) }}
+                        {{ form_widget(form.vulnerability) }}
+                        {{ form_errors(form.vulnerability) }}
+                    </div>
+                </div>
+
+                <h3><i class="bi bi-exclamation-diamond"></i> {{ 'risk.section.inherent_risk'|trans }}</h3>
+                <p class="text-muted small">{{ 'risk.help.inherent'|trans }}</p>
+                <div class="form-row">
+                    <div class="form-group">
+                        {{ form_label(form.probability) }}
+                        {{ form_widget(form.probability) }}
+                        {{ form_errors(form.probability) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.impact) }}
+                        {{ form_widget(form.impact) }}
+                        {{ form_errors(form.impact) }}
+                    </div>
+                </div>
+
+                <h3><i class="bi bi-shield-check"></i> {{ 'risk.section.residual_risk'|trans }}</h3>
+                <p class="text-muted small">{{ 'risk.help.residual'|trans }}</p>
+                <div class="form-row">
+                    <div class="form-group">
+                        {{ form_label(form.residualProbability) }}
+                        {{ form_widget(form.residualProbability) }}
+                        {{ form_errors(form.residualProbability) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.residualImpact) }}
+                        {{ form_widget(form.residualImpact) }}
+                        {{ form_errors(form.residualImpact) }}
+                    </div>
+                </div>
+
+                <h3><i class="bi bi-clipboard-check"></i> {{ 'risk.section.treatment'|trans }}</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        {{ form_label(form.treatmentStrategy) }}
+                        {{ form_widget(form.treatmentStrategy) }}
+                        {{ form_errors(form.treatmentStrategy) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.riskOwner) }}
+                        {{ form_widget(form.riskOwner) }}
+                        {{ form_errors(form.riskOwner) }}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.treatmentDescription) }}
+                    {{ form_widget(form.treatmentDescription) }}
+                    {{ form_errors(form.treatmentDescription) }}
+                </div>
+
+                <h3><i class="bi bi-check-circle"></i> {{ 'risk.section.acceptance'|trans }}</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        {{ form_label(form.acceptanceApprovedBy) }}
+                        {{ form_widget(form.acceptanceApprovedBy) }}
+                        {{ form_errors(form.acceptanceApprovedBy) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.acceptanceApprovedAt) }}
+                        {{ form_widget(form.acceptanceApprovedAt) }}
+                        {{ form_errors(form.acceptanceApprovedAt) }}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.acceptanceJustification) }}
+                    {{ form_widget(form.acceptanceJustification) }}
+                    {{ form_errors(form.acceptanceJustification) }}
+                </div>
+
+                <h3><i class="bi bi-gear"></i> {{ 'risk.section.status'|trans }}</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        {{ form_label(form.status) }}
+                        {{ form_widget(form.status) }}
+                        {{ form_errors(form.status) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.reviewDate) }}
+                        {{ form_widget(form.reviewDate) }}
+                        {{ form_errors(form.reviewDate) }}
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> {{ 'risk.create'|trans }}</button>
+                    <a href="{{ path('app_risk_index') }}" class="btn btn-secondary"><i class="bi bi-x-circle"></i> {{ 'common.cancel'|trans }}</a>
+                </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>
+{% endblock %}

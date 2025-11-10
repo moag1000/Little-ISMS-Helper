@@ -1,0 +1,83 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'interested_party.title'|trans }}{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="page-header">
+        <h1>{{ 'interested_party.page.title'|trans }}</h1>
+        <a href="{{ path('app_interested_party_new') }}" class="btn btn-primary">{{ 'interested_party.action.add_new'|trans }}</a>
+    </div>
+
+    <p style="color: #666; margin-bottom: 2rem;">
+        {{ 'interested_party.iso_reference'|trans }}
+    </p>
+
+    {% if overdue_communications|length > 0 %}
+    <div class="alert alert-warning">
+        <h4>⚠️ {{ 'interested_party.alert.overdue_communications'|trans }}</h4>
+        <ul>
+            {% for party in overdue_communications %}
+            <li>
+                <a href="{{ path('app_interested_party_show', {id: party.id}) }}">{{ party.name }}</a>
+                ({{ party.partyType }}) - {{ 'interested_party.next_communication'|trans }}: {{ party.nextCommunication|date('Y-m-d') }}
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    {% if high_importance|length > 0 %}
+    <div class="info-box">
+        <h3>{{ 'interested_party.high_importance.title'|trans }}</h3>
+        <ul>
+            {% for party in high_importance %}
+            <li>
+                <a href="{{ path('app_interested_party_show', {id: party.id}) }}">{{ party.name }}</a>
+                ({{ party.partyType }}) - {{ 'interested_party.engagement_score'|trans }}: {{ party.getEngagementScore() }}
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <div class="card">
+        <div class="card-header">
+            <h2>{{ 'interested_party.list.title'|trans({'count': interested_parties|length}) }}</h2>
+        </div>
+        <div class="card-content">
+            {% if interested_parties|length > 0 %}
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>{{ 'interested_party.table.name'|trans }}</th>
+                        <th>{{ 'interested_party.table.type'|trans }}</th>
+                        <th>{{ 'interested_party.table.importance'|trans }}</th>
+                        <th>{{ 'interested_party.table.engagement_score'|trans }}</th>
+                        <th>{{ 'interested_party.table.last_communication'|trans }}</th>
+                        <th>{{ 'interested_party.table.actions'|trans }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for party in interested_parties %}
+                    <tr>
+                        <td><a href="{{ path('app_interested_party_show', {id: party.id}) }}">{{ party.name }}</a></td>
+                        <td><span class="badge badge-info">{{ party.partyType }}</span></td>
+                        <td><span class="badge badge-{{ party.importance }}">{{ party.importance|upper }}</span></td>
+                        <td>{{ party.getEngagementScore() }}</td>
+                        <td>{{ party.lastCommunication ? party.lastCommunication|date('Y-m-d') : ('interested_party.never'|trans) }}</td>
+                        <td>
+                            <a href="{{ path('app_interested_party_show', {id: party.id}) }}" class="btn btn-sm btn-secondary">{{ 'interested_party.action.view'|trans }}</a>
+                            <a href="{{ path('app_interested_party_edit', {id: party.id}) }}" class="btn btn-sm btn-primary">{{ 'interested_party.action.edit'|trans }}</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p>{{ 'interested_party.empty.message'|trans }} <a href="{{ path('app_interested_party_new') }}">{{ 'interested_party.empty.add_first'|trans }}</a>.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

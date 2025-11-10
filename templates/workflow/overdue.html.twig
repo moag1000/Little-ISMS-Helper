@@ -1,0 +1,162 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'workflow.title.overdue'|trans }} - Little ISMS Helper{% endblock %}
+
+{% block body %}
+<div class="d-flex justify-between align-center mb-4">
+    <div>
+        <h1>{{ 'workflow.title.overdue'|trans }}</h1>
+        <p style="color: var(--color-text-light); margin-top: var(--spacing-sm);">
+            {{ 'workflow.description.overdue_detail'|trans }}
+        </p>
+    </div>
+    <div>
+        <a href="{{ path('app_workflow_index') }}" class="btn btn-secondary">
+            ← {{ 'common.back'|trans }}
+        </a>
+    </div>
+</div>
+
+{# Alert Banner #}
+{% if overdueInstances|length > 0 %}
+<div class="info-box mb-4" style="background: var(--color-danger-light); border-left: 4px solid var(--color-danger);">
+    <p><strong>⚠️ {{ 'workflow.warning.overdue_count'|trans({'%count%': overdueInstances|length}) }}</strong></p>
+    <p style="margin-top: var(--spacing-xs);">{{ 'workflow.warning.overdue_message'|trans }}</p>
+</div>
+{% endif %}
+
+{# Statistics Cards #}
+<div class="kpi-grid">
+    <div class="kpi-card" style="border-left: 4px solid var(--color-danger);">
+        <div class="icon">⚠️</div>
+        <div class="label">{{ 'workflow.stats.overdue'|trans }}</div>
+        <div>
+            <span class="value" style="color: var(--color-danger);">{{ overdueInstances|length }}</span>
+        </div>
+    </div>
+
+    <div class="kpi-card">
+        <div class="icon">👤</div>
+        <div class="label">{{ 'workflow.stats.my_overdue'|trans }}</div>
+        <div>
+            <span class="value">{{ overdueInstances|filter(i => i.assignee and i.assignee.id == app.user.id)|length }}</span>
+        </div>
+    </div>
+
+    <div class="kpi-card">
+        <div class="icon">📅</div>
+        <div class="label">{{ 'workflow.stats.overdue_days_avg'|trans }}</div>
+        <div>
+            {% set totalDaysOverdue = 0 %}
+            {% for instance in overdueInstances %}
+                {% set daysOverdue = ('now'|date('U') - instance.dueDate.timestamp) / 86400 %}
+                {% set totalDaysOverdue = totalDaysOverdue + daysOverdue %}
+            {% endfor %}
+            <span class="value">{{ overdueInstances|length > 0 ? (totalDaysOverdue / overdueInstances|length)|round : 0 }}</span>
+        </div>
+    </div>
+
+    <div class="kpi-card">
+        <div class="icon">🔴</div>
+        <div class="label">{{ 'workflow.stats.critical_overdue'|trans }}</div>
+        <div>
+            {% set criticalOverdue = 0 %}
+            {% for instance in overdueInstances %}
+                {% set daysOverdue = ('now'|date('U') - instance.dueDate.timestamp) / 86400 %}
+                {% if daysOverdue > 7 %}
+                    {% set criticalOverdue = criticalOverdue + 1 %}
+                {% endif %}
+            {% endfor %}
+            <span class="value" style="color: var(--color-danger);">{{ criticalOverdue }}</span>
+        </div>
+    </div>
+</div>
+
+{# Overdue Workflows Table #}
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>{{ 'workflow.field.name'|trans }}</th>
+                <th>{{ 'workflow.field.definition'|trans }}</th>
+                <th>{{ 'workflow.field.current_step'|trans }}</th>
+                <th>{{ 'workflow.field.assignee'|trans }}</th>
+                <th>{{ 'workflow.field.due_date'|trans }}</th>
+                <th style="text-align: center;">{{ 'workflow.field.days_overdue'|trans }}</th>
+                <th>{{ 'workflow.field.priority'|trans }}</th>
+                <th style="text-align: center;">{{ 'common.actions'|trans }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for instance in overdueInstances %}
+            {% set daysOverdue = ('now'|date('U') - instance.dueDate.timestamp) / 86400 %}
+            <tr style="{% if daysOverdue > 7 %}background-color: #ffebee;{% else %}background-color: var(--color-warning-light);{% endif %}">
+                <td>
+                    <strong>{{ instance.name }}</strong>
+                    {% if daysOverdue > 7 %}
+                        <span class="badge badge-danger" style="margin-left: var(--spacing-xs);">
+                            {{ 'workflow.badge.critical'|trans }}
+                        </span>
+                    {% endif %}
+                </td>
+                <td>
+                    <span class="badge badge-info">{{ instance.definition.name }}</span>
+                </td>
+                <td>
+                    {{ instance.currentStep.name }}
+                    <br><small style="color: var(--color-text-muted);">
+                        {{ ('workflow.status.' ~ instance.status)|trans }}
+                    </small>
+                </td>
+                <td>
+                    {% if instance.assignee %}
+                        {{ instance.assignee.fullName }}
+                        {% if instance.assignee.id == app.user.id %}
+                            <span class="badge badge-success" style="margin-left: var(--spacing-xs);">
+                                {{ 'workflow.badge.my_task'|trans }}
+                            </span>
+                        {% endif %}
+                    {% else %}
+                        <span style="color: var(--color-text-muted);">{{ 'workflow.message.unassigned'|trans }}</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {{ instance.dueDate|date('d.m.Y H:i') }}
+                </td>
+                <td style="text-align: center;">
+                    <span class="badge badge-danger" style="font-weight: bold;">
+                        {{ daysOverdue|round }} {{ 'workflow.days'|trans }}
+                    </span>
+                </td>
+                <td>
+                    {% set priorityColors = {
+                        'low': 'secondary',
+                        'medium': 'info',
+                        'high': 'warning',
+                        'critical': 'danger'
+                    } %}
+                    <span class="badge badge-{{ priorityColors[instance.priority] ?? 'secondary' }}">
+                        {{ ('workflow.priority.' ~ instance.priority)|trans }}
+                    </span>
+                </td>
+                <td style="text-align: center;">
+                    <a href="{{ path('app_workflow_instance_show', {id: instance.id}) }}" class="btn btn-sm">
+                        👁 {{ 'common.view'|trans }}
+                    </a>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="8" style="text-align: center; padding: var(--spacing-xl); color: var(--color-text-muted);">
+                    <div style="font-size: 2rem; margin-bottom: var(--spacing-sm);">✅</div>
+                    <p><strong>{{ 'workflow.message.no_overdue'|trans }}</strong></p>
+                    <p style="color: var(--color-text-muted); margin-top: var(--spacing-xs);">
+                        {{ 'workflow.message.no_overdue_desc'|trans }}
+                    </p>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

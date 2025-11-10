@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background: #0891b2; color: white; padding: 20px; text-align: center; }
+        .content { background: #f9fafb; padding: 20px; margin: 20px 0; }
+        .field { margin: 10px 0; }
+        .label { font-weight: bold; color: #666; }
+        .value { color: #000; }
+        .due-date { background: #fef3c7; border: 1px solid #f59e0b; padding: 10px; margin: 15px 0; border-radius: 4px; }
+        .progress-bar { background: #e5e7eb; height: 20px; border-radius: 10px; overflow: hidden; margin: 10px 0; }
+        .progress-fill { background: #10b981; height: 100%; text-align: center; color: white; font-size: 12px; line-height: 20px; }
+        .footer { text-align: center; color: #666; font-size: 12px; padding: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🛡️ Control Target Date Approaching</h1>
+        </div>
+
+        <div class="content">
+            <div class="field">
+                <span class="label">Control ID:</span>
+                <span class="value">{{ control.controlId }}</span>
+            </div>
+
+            <div class="field">
+                <span class="label">Control Name:</span>
+                <span class="value">{{ control.name }}</span>
+            </div>
+
+            <div class="due-date">
+                <strong>⏰ Target Date:</strong>
+                {{ control.targetDate|date('d.m.Y') }}
+            </div>
+
+            <div class="field">
+                <span class="label">Category:</span>
+                <span class="value">{{ control.category }}</span>
+            </div>
+
+            <div class="field">
+                <span class="label">Implementation Status:</span>
+                <span class="value">{{ control.implementationStatus|upper }}</span>
+            </div>
+
+            <div class="field">
+                <span class="label">Progress:</span>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: {{ control.implementationProgress }}%;">
+                        {{ control.implementationProgress }}%
+                    </div>
+                </div>
+            </div>
+
+            {% if control.implementationNotes %}
+            <div class="field">
+                <span class="label">Notes:</span>
+                <p class="value">{{ control.implementationNotes|slice(0, 200) }}{% if control.implementationNotes|length > 200 %}...{% endif %}</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="footer">
+            <p>This is an automated reminder from Little ISMS Helper</p>
+            <p>Please ensure the control implementation is completed before the target date</p>
+        </div>
+    </div>
+</body>
+</html>
