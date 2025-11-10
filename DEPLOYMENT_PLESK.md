@@ -373,7 +373,14 @@ php bin/console asset-map:compile
 
 # 3. Prüfen, ob Bootstrap Icons installiert wurden
 ls -la public/assets/vendor/bootstrap-icons/font/
-# Sollte Dateien zeigen: bootstrap-icons-HASH.css, bootstrap-icons.woff, etc.
+# Sollte Dateien zeigen: bootstrap-icons-HASH.css
+
+ls -la public/assets/vendor/bootstrap-icons/font/fonts/
+# Sollte Font-Dateien zeigen: bootstrap-icons.woff, bootstrap-icons.woff2
+
+# Alternativ: Debug-Befehl verwenden
+php bin/console debug:asset-map --ext=woff2
+# Sollte bootstrap-icons .woff2 Dateien anzeigen
 
 # 4. Cache leeren
 php bin/console cache:clear --env=prod
@@ -382,6 +389,84 @@ php bin/console cache:clear --env=prod
 **Hinweis:** Bootstrap Icons benötigt beide Befehle:
 1. `importmap:install` lädt das Paket von jsDelivr herunter
 2. `asset-map:compile` kompiliert es nach `public/assets/vendor/`
+
+**⚠️ Bekanntes Problem: Font-Dateien im `fonts/` Unterordner werden nicht kopiert**
+
+Bootstrap Icons hat diese Struktur:
+```
+bootstrap-icons/
+  font/
+    bootstrap-icons.min.css       <-- CSS mit @font-face
+    fonts/                         <-- Unterordner mit .woff/.woff2
+      bootstrap-icons.woff
+      bootstrap-icons.woff2
+```
+
+AssetMapper kopiert manchmal den `fonts/` Unterordner nicht korrekt (bekanntes GitHub Issue #52620).
+
+**Diagnose:**
+```bash
+# Prüfen Sie, ob die Font-Dateien kopiert wurden
+ls -la public/assets/vendor/bootstrap-icons/font/fonts/
+# Wenn "No such file or directory" → Fonts fehlen!
+
+# Debug-Befehl
+php bin/console debug:asset-map --ext=woff2
+# Sollte bootstrap-icons .woff2 Dateien listen
+```
+
+**Lösung A: Bootstrap Icons lokal installieren (EMPFOHLEN)**
+
+Statt über ImportMap können Sie Bootstrap Icons lokal in `assets/` installieren:
+
+```bash
+# 1. Bootstrap Icons npm-Paket herunterladen (oder von GitHub)
+mkdir -p assets/vendor/bootstrap-icons
+cd assets/vendor/bootstrap-icons
+
+# Download der neuesten Version
+wget https://github.com/twbs/icons/releases/download/v1.11.3/bootstrap-icons-1.11.3.zip
+unzip bootstrap-icons-1.11.3.zip
+mv bootstrap-icons-1.11.3/font/* .
+rm -rf bootstrap-icons-1.11.3 bootstrap-icons-1.11.3.zip
+
+# 2. Import-Pfad in assets/app.js ändern
+# Von: import 'bootstrap-icons/font/bootstrap-icons.min.css';
+# Zu:  import './vendor/bootstrap-icons/bootstrap-icons.min.css';
+
+# 3. Aus importmap.php entfernen
+# Die Zeile mit 'bootstrap-icons/font/bootstrap-icons.min.css' löschen
+
+# 4. Assets neu kompilieren
+php bin/console asset-map:compile
+```
+
+**Lösung B: Fonts manuell kopieren nach importmap:install**
+
+Falls Sie ImportMap behalten möchten:
+
+```bash
+# Nach importmap:install und asset-map:compile
+# Prüfen Sie den vendor/ Ordner und kopieren Sie Fonts manuell
+
+# Das vendor/ Verzeichnis finden (meist var/cache oder ähnlich)
+find . -path "*/vendor/bootstrap-icons/font/fonts" -type d
+
+# Fonts nach public/assets/ kopieren
+# (Pfad kann variieren, anpassen!)
+cp -r var/cache/.../vendor/bootstrap-icons/font/fonts public/assets/vendor/bootstrap-icons/font/
+```
+
+**Lösung C: CDN verwenden (Fallback)**
+
+Falls nichts funktioniert:
+
+```twig
+{# templates/base.html.twig #}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+```
+
+Und in `assets/app.js` die Zeile `import 'bootstrap-icons/...'` entfernen.
 
 ### Fehler: "Option FollowSymlinks not allowed here" ⚠️ HÄUFIG!
 
