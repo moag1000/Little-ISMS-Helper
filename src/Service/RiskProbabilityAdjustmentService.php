@@ -201,7 +201,7 @@ class RiskProbabilityAdjustmentService
      * @param Risk $risk
      * @return array{current_probability: int, suggested_probability: int|null, eligible_incidents: int, total_incidents: int, frequency_analysis: array, should_adjust: bool, rationale: string}
      */
-    public function analyzeP robabilityAdjustment(Risk $risk): array
+    public function analyzeProbabilityAdjustment(Risk $risk): array
     {
         $eligibleIncidents = $this->getEligibleIncidents($risk);
         $totalIncidents = $risk->getIncidents()->count();
