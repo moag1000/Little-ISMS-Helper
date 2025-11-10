@@ -305,6 +305,7 @@ Für Produktions-Deployments beachten Sie bitte:
 
 Detaillierte Anweisungen finden Sie in:
 - [DEPLOYMENT_WIZARD.md](DEPLOYMENT_WIZARD.md) - Deployment Wizard Setup
+- [DEPLOYMENT_PLESK.md](DEPLOYMENT_PLESK.md) - Strato/Plesk Deployment & "Primary script unknown" Fix
 - [docs/DOCKER_SETUP.md](docs/DOCKER_SETUP.md) - Docker Compose Setup
 
 ### Optional: Weitere Frameworks laden
@@ -345,6 +346,7 @@ crontab -e
 | [Authentication Setup](docs/AUTHENTICATION_SETUP.md) | RBAC, Azure OAuth/SAML, Multi-Provider |
 | [Audit Logging](docs/AUDIT_LOGGING.md) | Automatische Änderungsverfolgung |
 | [Deployment Wizard](DEPLOYMENT_WIZARD.md) | Schritt-für-Schritt Produktionssetup |
+| [Plesk Deployment](DEPLOYMENT_PLESK.md) | **NEU!** Strato/Plesk Setup & Fix für "Primary script unknown" |
 | [Setup Tools](SETUP_TOOLS.md) | **NEU!** 3 automatisierte Scripts für fehlerfreie Installation |
 | [Setup Validation](SETUP_VALIDATION.md) | Automatische Validierung der Installation (25 Tests) |
 | [Migration Fix Report](MIGRATION_FIX.md) | Dokumentation von 5 behobenen kritischen Migrations-Fehlern |
