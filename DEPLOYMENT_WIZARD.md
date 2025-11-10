@@ -15,6 +15,7 @@ Der Deployment Wizard führt Sie Schritt für Schritt durch die Einrichtung Ihre
 
 ### 🧩 Modulare Architektur
 - **Core ISMS** (erforderlich): Basis-Funktionalität
+- **Authentication** (erforderlich): User & Role Management mit Azure AD
 - **Asset Management**: Verwaltung von Informationswerten
 - **Risk Management**: Risikobewertung und -behandlung
 - **Control Management (SoA)**: ISO 27001 Annex A Controls
@@ -24,10 +25,12 @@ Der Deployment Wizard führt Sie Schritt für Schritt durch die Einrichtung Ihre
 - **Compliance**: Multi-Framework (ISO 27001, TISAX, DORA)
 - **Training**: Schulungen und Awareness
 - **Reviews**: Management-Bewertungen
+- **Audit Logging**: Umfassendes Aktivitätsprotokoll
 
 ### 📦 Automatischer Datenimport
 - **Basis-Daten** (automatisch):
   - ISO 27001:2022 Annex A Controls (93 Controls)
+  - System Permissions (Rollen und Berechtigungen)
   - TISAX Requirements (optional, bei aktiviertem Compliance-Modul)
   - DORA Requirements (optional, bei aktiviertem Compliance-Modul)
 
@@ -141,17 +144,41 @@ Visualisiert alle Abhängigkeiten zwischen Modulen:
 ### Beispiel-Abhängigkeiten
 
 ```
+Core ISMS (erforderlich)
+├── benötigt: -
+└── benötigt von: alle anderen Module (indirekt)
+
+Authentication (erforderlich)
+├── benötigt: -
+└── benötigt von: Audit Logging
+
+Asset Management
+├── benötigt: -
+└── benötigt von: Risk Management, BCM
+
 Risk Management
 ├── benötigt: Asset Management
 └── benötigt von: -
+
+Control Management (SoA)
+├── benötigt: -
+└── benötigt von: Incident Management, Compliance, Audits
 
 Incident Management
 ├── benötigt: Control Management
 └── benötigt von: -
 
+Audit Management
+├── benötigt: Control Management
+└── benötigt von: Management Review
+
 Compliance Management
 ├── benötigt: Control Management
 └── benötigt von: Audit Management
+
+Audit Logging
+├── benötigt: Authentication
+└── benötigt von: -
 ```
 
 ## Konfiguration

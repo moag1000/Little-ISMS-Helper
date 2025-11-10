@@ -46,7 +46,7 @@ Das **Little ISMS Helper Logo** zeigt eine freundliche Cyberpunk-Fee, die die Mi
 ### 📋 Compliance Management
 - **Statement of Applicability** - 93 ISO 27001:2022 Controls
 - **SoA PDF Export** - Professional ISO 27001 Reports ✨ NEW!
-- **Multi-Framework Support** - TISAX, DORA
+- **Multi-Framework Support** - TISAX, DORA, NIS2, BSI IT-Grundschutz
 - **Cross-Framework Mappings** - Transitive Compliance
 - **Audit Management** - ISO 27001 Clause 9.2
 - **Management Review** - ISO 27001 Clause 9.3
@@ -185,6 +185,27 @@ symfony serve
 
 ⚠️ **WICHTIG:** Ändern Sie das Admin-Passwort nach dem ersten Login!
 
+### 🧙 Deployment Wizard (Alternative Installation)
+
+Für eine geführte Setup-Erfahrung können Sie den **Deployment Wizard** nutzen:
+
+```bash
+# Nach Schritten 1-3 oben (Clone, Dependencies, .env)
+php -S localhost:8000 -t public/
+```
+
+Öffnen Sie dann im Browser: `http://localhost:8000/setup`
+
+Der Wizard führt Sie durch:
+- ✅ **Schritt 1**: System-Anforderungen automatisch prüfen
+- ✅ **Schritt 2**: Module auswählen (Core ISMS, BCM, Compliance, etc.)
+- ✅ **Schritt 3**: Datenbank automatisch initialisieren
+- ✅ **Schritt 4**: Basis-Daten importieren (ISO 27001 Controls, Permissions)
+- ✅ **Schritt 5**: Optional Beispiel-Daten laden
+- ✅ **Schritt 6**: Setup abschließen
+
+📖 Detaillierte Anleitung: [DEPLOYMENT_WIZARD.md](DEPLOYMENT_WIZARD.md)
+
 ### Automatisierte Setup-Tools ✨ NEU!
 
 Wir bieten drei professionelle Setup-Tools für eine fehlerfreie Installation:
@@ -279,7 +300,7 @@ Für Produktions-Deployments beachten Sie bitte:
 5. **Cache**: Führen Sie `php bin/console cache:clear --env=prod` aus
 
 Detaillierte Anweisungen finden Sie in:
-- [DEPLOYMENT_WIZARD.md](DEPLOYMENT_WIZARD.md) - Schritt-für-Schritt Produktionssetup
+- [DEPLOYMENT_WIZARD.md](DEPLOYMENT_WIZARD.md) - Deployment Wizard Setup
 - [docs/DOCKER_SETUP.md](docs/DOCKER_SETUP.md) - Docker Compose Setup
 
 ### Optional: Weitere Frameworks laden
@@ -290,6 +311,12 @@ php bin/console app:load-tisax-requirements
 
 # EU-DORA für Finanzdienstleister
 php bin/console app:load-dora-requirements
+
+# NIS2 für kritische Infrastrukturen
+php bin/console app:load-nis2-requirements
+
+# BSI IT-Grundschutz für Deutschland
+php bin/console app:load-bsi-requirements
 ```
 
 ### Optional: Benachrichtigungen einrichten
@@ -301,7 +328,6 @@ crontab -e
 # Täglich um 8 Uhr Benachrichtigungen versenden
 0 8 * * * cd /path/to/Little-ISMS-Helper && php bin/console app:send-notifications --type=all
 ```
-
 ---
 
 ## 📚 Dokumentation
@@ -456,6 +482,7 @@ git clone https://github.com/YOUR-USERNAME/Little-ISMS-Helper.git
 git checkout -b feature/your-feature
 
 # Entwickeln & Testen
+>>>>>>> origin/main
 php bin/phpunit
 
 # Commit & Push
@@ -529,7 +556,38 @@ Zusätzliche Frameworks:
 
 ## 📜 Lizenz
 
+<<<<<<< HEAD
+### ✅ Implementiert
+
+- [x] Basis-Setup und Projektstruktur
+- [x] Alle ISMS Kernentities (Asset, Risk, Control, Incident, etc.)
+- [x] Statement of Applicability mit allen 93 Annex A Controls
+- [x] Grundlegende Controller und Views für alle Module
+- [x] KPI Dashboard mit Echtzeit-Daten
+- [x] Datenbank-Migration
+- [x] **User Authentication & Authorization** (Symfony Security + Azure AD)
+- [x] **Deployment Wizard** mit geführter Einrichtung
+- [x] **Audit Logging System** für Compliance
+- [x] **Mehrsprachigkeit** (Deutsch/Englisch)
+- [x] Business Continuity Management (BCM)
+- [x] Multi-Framework Compliance (ISO 27001, TISAX, DORA)
+- [x] Rollenbasierte Zugriffskontrolle (RBAC)
+
+### 🚧 In Planung
+
+- [ ] Vollständige CRUD-Operationen für alle Module
+- [ ] Formulare mit Validierung
+- [ ] Risk Assessment Matrix Visualisierung
+- [ ] Erweiterte Reporting & Export Funktionen (PDF, Excel)
+- [ ] Datei-Uploads für Nachweise und Dokumentation
+- [ ] E-Mail-Benachrichtigungen für Vorfälle und Fälligkeiten
+- [ ] REST API für Integration mit anderen Systemen
+- [ ] Multi-Tenancy Support (für MSPs)
+- [ ] Responsive Design Optimierung
+- [ ] Automatisierte Tests (Unit, Integration)
+=======
 **Proprietary** - Alle Rechte vorbehalten
+>>>>>>> origin/main
 
 Siehe [LICENSE](LICENSE) für Details.
 
