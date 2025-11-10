@@ -81,9 +81,43 @@ Oder via Plesk SSH Terminal:
 2. **Terminal öffnen**
 3. **Befehle ausführen**
 
-### Schritt 6: Umgebungsvariablen setzen
+### Schritt 6: Umgebungsvariablen setzen ⚠️ KRITISCH!
 
-In Plesk:
+**WICHTIG:** Dieser Schritt ist ZWINGEND ERFORDERLICH, sonst erhalten Sie den Fehler:
+```
+Class "Symfony\Bundle\DebugBundle\DebugBundle" not found
+```
+
+#### Option A: .env.local Datei erstellen (EMPFOHLEN)
+
+Erstellen Sie eine `.env.local` Datei im Root-Verzeichnis (neben `.env`):
+
+```bash
+# Kopieren Sie die Vorlage
+cp .env.prod.example .env.local
+
+# Bearbeiten Sie die Datei und setzen Sie:
+```
+
+**Minimale .env.local für Produktion:**
+```
+APP_ENV=prod
+APP_SECRET=CHANGE_ME_TO_A_SECURE_RANDOM_STRING
+DATABASE_URL="mysql://user:password@localhost:3306/database?serverVersion=8.0&charset=utf8mb4"
+```
+
+**APP_SECRET generieren:**
+```bash
+# Via SSH:
+openssl rand -hex 32
+
+# Oder:
+php -r 'echo bin2hex(random_bytes(32))."\n";'
+```
+
+#### Option B: Apache Umgebungsvariablen in Plesk
+
+Alternativ in Plesk:
 1. **"Apache & nginx Einstellungen" öffnen**
 2. **"Zusätzliche Apache-Anweisungen" Abschnitt**
 3. **Umgebungsvariablen setzen:**
@@ -91,15 +125,10 @@ In Plesk:
 ```apache
 SetEnv APP_ENV prod
 SetEnv APP_SECRET your-secret-key-here
-SetEnv DATABASE_URL "postgresql://user:password@localhost:5432/database"
+SetEnv DATABASE_URL "mysql://user:password@localhost:3306/database?serverVersion=8.0&charset=utf8mb4"
 ```
 
-ODER `.env.local` Datei im Root-Verzeichnis erstellen:
-```
-APP_ENV=prod
-APP_SECRET=your-secret-key-here
-DATABASE_URL="postgresql://user:password@localhost:5432/database"
-```
+⚠️ **ACHTUNG:** Ohne `APP_ENV=prod` wird Symfony im Dev-Modus laufen und DebugBundle laden wollen, was nicht installiert ist!
 
 ## Strato-spezifische Hinweise
 
@@ -152,6 +181,51 @@ php composer.phar install --no-dev --optimize-autoloader
 ```
 
 ## Fehlerbehebung
+
+### Fehler: "Class 'Symfony\Bundle\DebugBundle\DebugBundle' not found" ⚠️ HÄUFIG!
+
+**Fehlermeldung im Apache Error Log:**
+```
+PHP message: 2025-11-10T21:08:09+00:00 [critical] Uncaught Error:
+Class "Symfony\Bundle\DebugBundle\DebugBundle" not found
+```
+
+**Ursache:**
+Die Anwendung läuft im Dev-Modus (`APP_ENV=dev`), aber die Dev-Dependencies wurden nicht installiert (weil `composer install --no-dev` ausgeführt wurde).
+
+**Lösung:**
+
+1. **Erstellen Sie eine `.env.local` Datei** (falls noch nicht vorhanden):
+   ```bash
+   cd /var/www/vhosts/yourdomain.com/httpdocs
+   cp .env.prod.example .env.local
+   ```
+
+2. **Setzen Sie APP_ENV auf prod:**
+   ```
+   APP_ENV=prod
+   APP_SECRET=your-secure-random-string-here
+   DATABASE_URL="mysql://user:pass@localhost:3306/dbname?serverVersion=8.0&charset=utf8mb4"
+   ```
+
+3. **Cache leeren:**
+   ```bash
+   php bin/console cache:clear --env=prod
+   ```
+
+4. **Seite neu laden** - Der Fehler sollte weg sein!
+
+**Prüfen Sie die aktuelle Umgebung:**
+```bash
+# Via SSH
+php bin/console about
+
+# Sollte zeigen: Environment: prod
+```
+
+**Alternative:** Wenn Sie `.env.local` nicht verwenden möchten, setzen Sie die Umgebungsvariable in Plesk:
+- "Apache & nginx Einstellungen" → "Zusätzliche Apache-Anweisungen"
+- Fügen Sie hinzu: `SetEnv APP_ENV prod`
 
 ### Fehler: "Primary script unknown" bleibt bestehen
 
@@ -258,12 +332,15 @@ php bin/console cache:warmup --env=prod
 - [ ] .htaccess Datei in `public` Verzeichnis vorhanden
 - [ ] PHP-Version >= 8.2
 - [ ] Alle PHP-Erweiterungen aktiviert
-- [ ] Composer Dependencies installiert
-- [ ] .env.local mit korrekten Einstellungen erstellt
+- [ ] Composer Dependencies installiert (`composer install --no-dev --optimize-autoloader`)
+- [ ] ⚠️ **KRITISCH:** `.env.local` mit `APP_ENV=prod` erstellt
+- [ ] APP_SECRET mit sicherem zufälligen String gesetzt
+- [ ] DATABASE_URL korrekt konfiguriert
 - [ ] Dateirechte korrekt gesetzt (755/775)
 - [ ] Datenbank erstellt und erreichbar
 - [ ] Migrations ausgeführt
-- [ ] Cache geleert und aufgewärmt
+- [ ] Cache geleert und aufgewärmt (`php bin/console cache:clear --env=prod`)
+- [ ] Umgebung verifiziert (`php bin/console about` zeigt "Environment: prod")
 
 ## Zusätzliche Optimierungen für Produktion
 
@@ -313,7 +390,20 @@ Bei weiteren Problemen:
 
 ## Zusammenfassung
 
-Der Hauptgrund für "Primary script unknown" auf Plesk:
-- **Document Root muss auf `public` Verzeichnis zeigen!**
+Die zwei häufigsten Fehler bei Plesk-Deployment:
 
-Dies ist der kritischste Schritt. Ohne korrekte Document Root Konfiguration funktioniert die Symfony-Anwendung nicht.
+1. **"Primary script unknown"**
+   - **Ursache:** Document Root zeigt nicht auf `public` Verzeichnis
+   - **Lösung:** Document Root auf `/httpdocs/public` setzen
+
+2. **"Class 'DebugBundle' not found"**
+   - **Ursache:** `APP_ENV` ist nicht auf `prod` gesetzt
+   - **Lösung:** `.env.local` mit `APP_ENV=prod` erstellen
+
+**Kritische Schritte:**
+- Document Root → `public` Verzeichnis
+- `.env.local` → `APP_ENV=prod`
+- Composer → `--no-dev` Flag verwenden
+- Cache leeren → `php bin/console cache:clear --env=prod`
+
+Ohne diese Schritte funktioniert die Symfony-Anwendung nicht auf Plesk.
