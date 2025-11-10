@@ -93,3 +93,6 @@ services:
 
     App\Command\LoadIso27701RequirementsCommand:
         public: true
+
+    App\Command\LoadIso27701v2025RequirementsCommand:
+        public: true
