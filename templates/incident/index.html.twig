@@ -3,18 +3,250 @@
 {% block title %}{{ 'incident_management.title'|trans }} - {{ 'app.title'|trans }}{% endblock %}
 
 {% block body %}
-<h1>{{ 'incident_management.title'|trans }}</h1>
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="bi bi-exclamation-triangle"></i> {{ 'incident_management.title'|trans }}</h1>
+        <a href="{{ path('app_incident_new') }}" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> {{ 'incident.action.report_new'|trans|default('Report New Incident') }}
+        </a>
+    </div>
 
-<p style="color: #666; margin-bottom: 2rem;">
-    {{ 'incident_management.description'|trans }}
-</p>
+    <p class="text-muted mb-4">
+        {{ 'incident_management.description'|trans }}
+    </p>
 
-<div class="warning-box">
-    <strong>{{ 'incident_management.open_incidents'|trans }}:</strong> {{ openIncidents|length }}
+    {# KPI Cards #}
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card border-warning">
+                <div class="card-body text-center">
+                    <h3 class="text-warning">{{ openIncidents|length }}</h3>
+                    <p class="mb-0">{{ 'incident_management.open_incidents'|trans }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-danger">
+                <div class="card-body text-center">
+                    {% set nis2Count = 0 %}
+                    {% for incident in allIncidents %}
+                        {% if incident.requiresNis2Reporting and incident.nis2ComplianceStatus in ['overdue', 'awaiting_early_warning', 'awaiting_detailed'] %}
+                            {% set nis2Count = nis2Count + 1 %}
+                        {% endif %}
+                    {% endfor %}
+                    <h3 class="text-danger">{{ nis2Count }}</h3>
+                    <p class="mb-0">{{ 'incident.kpi.nis2_attention'|trans|default('NIS2 Requiring Attention') }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-info">
+                <div class="card-body text-center">
+                    <h3 class="text-info">{{ categoryStats|length }}</h3>
+                    <p class="mb-0">{{ 'incident.kpi.categories'|trans|default('Categories') }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h3>{{ allIncidents|length }}</h3>
+                    <p class="mb-0">{{ 'incident_management.total_recorded'|trans }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Category Statistics #}
+    {% if categoryStats|length > 0 %}
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">{{ 'incident.kpi.by_category'|trans|default('Incidents by Category') }}</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    {% for stat in categoryStats %}
+                        <div class="col-md-2">
+                            <div class="category-stat">
+                                <strong>{{ stat.count }}</strong>
+                                <span>{{ ('incident.category.' ~ stat.category)|trans }}</span>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    {# Incidents Table #}
+    {% if allIncidents|length == 0 %}
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i> {{ 'incident.empty'|trans|default('No incidents recorded yet.') }}
+        </div>
+    {% else %}
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">{{ 'incident.list.title'|trans|default('All Incidents') }}</h5>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>{{ 'incident.field.title'|trans }}</th>
+                            <th>{{ 'incident.field.category'|trans }}</th>
+                            <th>{{ 'incident.field.severity'|trans }}</th>
+                            <th>{{ 'incident.field.status'|trans }}</th>
+                            <th>{{ 'incident.field.detected_at'|trans }}</th>
+                            <th>NIS2</th>
+                            <th>{{ 'common.actions'|trans }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for incident in allIncidents %}
+                            <tr>
+                                <td>
+                                    <strong>{{ incident.title }}</strong>
+                                    {% if incident.incidentNumber %}
+                                        <br><small class="text-muted">#{{ incident.incidentNumber }}</small>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <span class="badge bg-secondary">
+                                        {{ ('incident.category.' ~ incident.category)|trans }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="badge badge-severity-{{ incident.severity }}">
+                                        {{ ('incident.severity.' ~ incident.severity)|trans }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="badge badge-status-{{ incident.status }}">
+                                        {{ ('incident.status.' ~ incident.status)|trans }}
+                                    </span>
+                                </td>
+                                <td>{{ incident.detectedAt|date('d.m.Y H:i') }}</td>
+                                <td>
+                                    {% if incident.requiresNis2Reporting %}
+                                        {% set nis2Status = incident.nis2ComplianceStatus %}
+                                        <span class="badge badge-nis2-{{ nis2Status }}" title="{{ ('incident.nis2_compliance.' ~ nis2Status)|trans }}">
+                                            {% if nis2Status == 'compliant' %}
+                                                <i class="bi bi-check-circle-fill"></i>
+                                            {% elseif nis2Status == 'overdue' %}
+                                                <i class="bi bi-exclamation-triangle-fill"></i>
+                                            {% else %}
+                                                <i class="bi bi-clock-fill"></i>
+                                            {% endif %}
+                                            {{ ('incident.nis2_compliance.' ~ nis2Status)|trans }}
+                                        </span>
+                                    {% else %}
+                                        <span class="badge bg-secondary" title="{{ 'incident.nis2_compliance.not_applicable'|trans }}">N/A</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <a href="{{ path('app_incident_show', {id: incident.id}) }}" class="btn btn-outline-primary" title="{{ 'common.view'|trans }}">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        <a href="{{ path('app_incident_edit', {id: incident.id}) }}" class="btn btn-outline-secondary" title="{{ 'common.edit'|trans }}">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% endif %}
 </div>
 
-<div class="info-box" style="margin-top: 1rem;">
-    <h3>{{ 'common.overview'|trans }}</h3>
-    <p><strong>{{ 'incident_management.total_recorded'|trans }}:</strong> {{ allIncidents|length }}</p>
-</div>
+<style>
+/* Severity Badges */
+.badge-severity-low { background: #10b981; }
+.badge-severity-medium { background: #f59e0b; }
+.badge-severity-high { background: #f97316; }
+.badge-severity-critical { background: #dc2626; }
+
+/* Status Badges */
+.badge-status-reported { background: #3b82f6; }
+.badge-status-in_investigation { background: #f59e0b; }
+.badge-status-in_resolution { background: #8b5cf6; }
+.badge-status-resolved { background: #10b981; }
+.badge-status-closed { background: #6b7280; }
+
+/* NIS2 Compliance Badges */
+.badge-nis2-not_applicable { background: #6b7280; }
+.badge-nis2-compliant { background: #10b981; }
+.badge-nis2-overdue {
+    background: #dc2626;
+    animation: pulse 2s infinite;
+}
+.badge-nis2-awaiting_early_warning { background: #f59e0b; }
+.badge-nis2-awaiting_detailed { background: #3b82f6; }
+.badge-nis2-awaiting_final { background: #8b5cf6; }
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+/* Category Stats */
+.category-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0.75rem;
+    background: #f3f4f6;
+    border-radius: 6px;
+    margin-bottom: 0.5rem;
+}
+
+.category-stat strong {
+    font-size: 1.5rem;
+    color: #1f2937;
+}
+
+.category-stat span {
+    font-size: 0.85rem;
+    color: #6b7280;
+    text-align: center;
+}
+
+/* Cards */
+.card {
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+    background: #f9fafb;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+/* Table Styling */
+.table thead th {
+    background: #f9fafb;
+    font-weight: 600;
+    color: #374151;
+    border-bottom: 2px solid #e5e7eb;
+}
+
+.table tbody tr:hover {
+    background: #f9fafb;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .table {
+        font-size: 0.85rem;
+    }
+
+    .badge {
+        font-size: 0.7rem;
+    }
+}
+</style>
 {% endblock %}
