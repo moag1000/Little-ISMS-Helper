@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Statement of Applicability Export - ISO/IEC 27001:2022</title>
+    <style>
+        @media print {
+            .no-print {
+                display: none;
+            }
+            body {
+                margin: 0;
+                padding: 20px;
+            }
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #fff;
+        }
+
+        .header {
+            border-bottom: 3px solid #2c5282;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: #2c5282;
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            color: #2c5282;
+            font-size: 1.5rem;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 10px;
+        }
+
+        h3 {
+            color: #2d3748;
+            font-size: 1.2rem;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        .meta-info {
+            color: #718096;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .stat-box {
+            background: #f7fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .stat-box .value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #2c5282;
+            display: block;
+        }
+
+        .stat-box .label {
+            color: #718096;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 0.85rem;
+        }
+
+        th {
+            background: #2c5282;
+            color: white;
+            padding: 12px 8px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 10px 8px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        tr:nth-child(even) {
+            background: #f7fafc;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .badge-success {
+            background: #48bb78;
+            color: white;
+        }
+
+        .badge-warning {
+            background: #ed8936;
+            color: white;
+        }
+
+        .badge-danger {
+            background: #f56565;
+            color: white;
+        }
+
+        .badge-secondary {
+            background: #e2e8f0;
+            color: #4a5568;
+        }
+
+        .badge-info {
+            background: #4299e1;
+            color: white;
+        }
+
+        .control-detail {
+            margin: 30px 0;
+            page-break-inside: avoid;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 20px;
+            background: #ffffff;
+        }
+
+        .control-header {
+            background: #edf2f7;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+
+        .detail-section {
+            margin: 15px 0;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 5px;
+        }
+
+        .detail-value {
+            color: #4a5568;
+            padding-left: 10px;
+            white-space: pre-wrap;
+        }
+
+        .footer {
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 2px solid #e2e8f0;
+            text-align: center;
+            color: #718096;
+            font-size: 0.85rem;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 10px 5px;
+            background: #2c5282;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .btn:hover {
+            background: #2a4365;
+        }
+
+        .btn-secondary {
+            background: #718096;
+        }
+
+        .btn-secondary:hover {
+            background: #4a5568;
+        }
+
+        @page {
+            margin: 2cm;
+        }
+    </style>
+</head>
+<body>
+    <div class="no-print" style="text-align: center; margin-bottom: 20px;">
+        <button onclick="window.print()" class="btn">🖨️ Drucken / PDF speichern</button>
+        <a href="{{ path('app_soa_index') }}" class="btn btn-secondary">← Zurück zur Übersicht</a>
+    </div>
+
+    <div class="header">
+        <h1>Statement of Applicability (SoA)</h1>
+        <div class="meta-info">
+            <strong>Standard:</strong> ISO/IEC 27001:2022 Annex A Controls<br>
+            <strong>Generiert am:</strong> {{ generatedAt|date('d.m.Y H:i') }} Uhr
+        </div>
+    </div>
+
+    {# Summary Statistics #}
+    <h2>Zusammenfassung</h2>
+    <div class="stats-grid">
+        <div class="stat-box">
+            <span class="value">{{ controls|length }}</span>
+            <div class="label">Gesamt Controls</div>
+        </div>
+
+        <div class="stat-box">
+            <span class="value">{{ controls|filter(c => c.applicable)|length }}</span>
+            <div class="label">Anwendbare Controls</div>
+        </div>
+
+        <div class="stat-box">
+            {% set implemented = controls|filter(c => c.applicable and c.implementationStatus == 'implemented')|length %}
+            <span class="value">{{ implemented }}</span>
+            <div class="label">Implementierte Controls</div>
+        </div>
+
+        <div class="stat-box">
+            {% set applicable = controls|filter(c => c.applicable)|length %}
+            {% set implemented = controls|filter(c => c.applicable and c.implementationStatus == 'implemented')|length %}
+            {% set percentage = applicable > 0 ? (implemented / applicable * 100)|round : 0 %}
+            <span class="value">{{ percentage }}%</span>
+            <div class="label">Compliance-Rate</div>
+        </div>
+    </div>
+
+    {# Category Breakdown #}
+    <h2>Kategorieübersicht</h2>
+    {% set categories = ['Organizational', 'People', 'Physical', 'Technological'] %}
+    <table>
+        <thead>
+            <tr>
+                <th>Kategorie</th>
+                <th style="text-align: center;">Gesamt</th>
+                <th style="text-align: center;">Anwendbar</th>
+                <th style="text-align: center;">Implementiert</th>
+                <th style="text-align: center;">Compliance-Rate</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for category in categories %}
+                {% set cat_controls = controls|filter(c => c.category == category) %}
+                {% set applicable = cat_controls|filter(c => c.applicable) %}
+                {% set implemented = applicable|filter(c => c.implementationStatus == 'implemented') %}
+                {% set rate = applicable|length > 0 ? (implemented|length / applicable|length * 100)|round : 0 %}
+                <tr>
+                    <td><strong>{{ category }}</strong></td>
+                    <td style="text-align: center;">{{ cat_controls|length }}</td>
+                    <td style="text-align: center;">{{ applicable|length }}</td>
+                    <td style="text-align: center;">{{ implemented|length }}</td>
+                    <td style="text-align: center;">{{ rate }}%</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {# Controls Overview Table #}
+    <h2>Controls Übersicht</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Control ID</th>
+                <th>Name</th>
+                <th>Kategorie</th>
+                <th style="text-align: center;">Anwendbar</th>
+                <th>Status</th>
+                <th style="text-align: center;">Fortschritt</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for control in controls|sort((a, b) => a.controlId <=> b.controlId) %}
+            <tr>
+                <td><strong>{{ control.controlId }}</strong></td>
+                <td>{{ control.name }}</td>
+                <td><span class="badge badge-info">{{ control.category }}</span></td>
+                <td style="text-align: center;">
+                    {% if control.applicable %}
+                        <span class="badge badge-success">✓</span>
+                    {% else %}
+                        <span class="badge badge-secondary">✗</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if control.applicable %}
+                        {% if control.implementationStatus == 'implemented' %}
+                            <span class="badge badge-success">Implementiert</span>
+                        {% elseif control.implementationStatus == 'in_progress' %}
+                            <span class="badge badge-warning">In Arbeit</span>
+                        {% elseif control.implementationStatus == 'not_started' %}
+                            <span class="badge badge-danger">Nicht begonnen</span>
+                        {% endif %}
+                    {% else %}
+                        <span class="badge badge-secondary">N/A</span>
+                    {% endif %}
+                </td>
+                <td style="text-align: center;">
+                    {% if control.applicable %}
+                        {{ control.implementationPercentage }}%
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {# Detailed Controls Information #}
+    <h2>Detaillierte Control-Informationen</h2>
+
+    {% for control in controls|sort((a, b) => a.controlId <=> b.controlId) %}
+    <div class="control-detail">
+        <div class="control-header">
+            <h3>{{ control.controlId }}: {{ control.name }}</h3>
+            <span class="badge badge-info">{{ control.category }}</span>
+            {% if control.applicable %}
+                <span class="badge badge-success">Anwendbar</span>
+            {% else %}
+                <span class="badge badge-secondary">Nicht anwendbar</span>
+            {% endif %}
+        </div>
+
+        <div class="detail-section">
+            <div class="detail-label">Beschreibung:</div>
+            <div class="detail-value">{{ control.description }}</div>
+        </div>
+
+        <div class="detail-section">
+            <div class="detail-label">Begründung für Anwendbarkeit:</div>
+            <div class="detail-value">
+                {% if control.justification %}
+                    {{ control.justification }}
+                {% else %}
+                    <em style="color: #a0aec0;">Keine Begründung angegeben</em>
+                {% endif %}
+            </div>
+        </div>
+
+        {% if control.applicable %}
+            <div class="detail-section">
+                <div class="detail-label">Implementierungsstatus:</div>
+                <div class="detail-value">
+                    {% if control.implementationStatus == 'implemented' %}
+                        <span class="badge badge-success">✅ Implementiert</span> - {{ control.implementationPercentage }}%
+                    {% elseif control.implementationStatus == 'in_progress' %}
+                        <span class="badge badge-warning">🔄 In Arbeit</span> - {{ control.implementationPercentage }}%
+                    {% elseif control.implementationStatus == 'not_started' %}
+                        <span class="badge badge-danger">⏸ Nicht begonnen</span> - {{ control.implementationPercentage }}%
+                    {% endif %}
+                </div>
+            </div>
+
+            {% if control.implementationNotes %}
+            <div class="detail-section">
+                <div class="detail-label">Implementierungsnotizen:</div>
+                <div class="detail-value">{{ control.implementationNotes }}</div>
+            </div>
+            {% endif %}
+
+            <div class="detail-section">
+                <div class="detail-label">Verantwortliche Person:</div>
+                <div class="detail-value">
+                    {% if control.responsiblePerson %}
+                        {{ control.responsiblePerson }}
+                    {% else %}
+                        <em style="color: #a0aec0;">Nicht zugewiesen</em>
+                    {% endif %}
+                </div>
+            </div>
+
+            {% if control.targetDate %}
+            <div class="detail-section">
+                <div class="detail-label">Zieldatum:</div>
+                <div class="detail-value">{{ control.targetDate|date('d.m.Y') }}</div>
+            </div>
+            {% endif %}
+        {% endif %}
+
+        <div class="detail-section" style="font-size: 0.8rem; color: #a0aec0;">
+            <em>Zuletzt aktualisiert: {{ control.updatedAt|date('d.m.Y H:i') }}</em>
+        </div>
+    </div>
+    {% endfor %}
+
+    <div class="footer">
+        <p><strong>Statement of Applicability (SoA)</strong></p>
+        <p>ISO/IEC 27001:2022 Annex A Controls</p>
+        <p>Generiert am {{ generatedAt|date('d.m.Y H:i') }} Uhr</p>
+    </div>
+</body>
+</html>
