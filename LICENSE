@@ -1,0 +1,38 @@
+GNU AFFERO GENERAL PUBLIC LICENSE
+Version 3, 19 November 2007
+
+Copyright (C) 2024-2025 moag1000 and contributors
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+---
+
+For the complete text of the GNU Affero General Public License v3.0,
+please visit: https://www.gnu.org/licenses/agpl-3.0.html
+
+---
+
+ADDITIONAL INFORMATION
+
+This application is licensed under AGPL v3, which means:
+
+1. You can use, modify, and distribute this software freely
+2. If you modify and distribute this software, you must:
+   - Make your source code available
+   - License it under AGPL v3
+   - Preserve copyright notices
+3. If you run a modified version as a network service (SaaS/Cloud),
+   you must make your source code available to users of that service
+
+For questions about licensing, please contact the project maintainers.
