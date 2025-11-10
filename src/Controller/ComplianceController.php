@@ -7,7 +7,10 @@ use App\Repository\ComplianceRequirementRepository;
 use App\Repository\ComplianceMappingRepository;
 use App\Service\ComplianceAssessmentService;
 use App\Service\ComplianceMappingService;
+use App\Service\ComplianceFrameworkLoaderService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -19,7 +22,8 @@ class ComplianceController extends AbstractController
         private ComplianceRequirementRepository $requirementRepository,
         private ComplianceMappingRepository $mappingRepository,
         private ComplianceAssessmentService $assessmentService,
-        private ComplianceMappingService $mappingService
+        private ComplianceMappingService $mappingService,
+        private ComplianceFrameworkLoaderService $frameworkLoaderService
     ) {}
 
     #[Route('/', name: 'app_compliance_index')]
@@ -236,5 +240,43 @@ class ComplianceController extends AbstractController
         ));
 
         return $this->redirectToRoute('app_compliance_framework', ['id' => $id]);
+    }
+
+    #[Route('/frameworks/manage', name: 'app_compliance_manage_frameworks')]
+    public function manageFrameworks(): Response
+    {
+        $availableFrameworks = $this->frameworkLoaderService->getAvailableFrameworks();
+        $statistics = $this->frameworkLoaderService->getFrameworkStatistics();
+
+        return $this->render('compliance/manage_frameworks.html.twig', [
+            'available_frameworks' => $availableFrameworks,
+            'statistics' => $statistics,
+        ]);
+    }
+
+    #[Route('/frameworks/load/{code}', name: 'app_compliance_load_framework', methods: ['POST'])]
+    public function loadFramework(string $code): JsonResponse
+    {
+        $result = $this->frameworkLoaderService->loadFramework($code);
+
+        if ($result['success']) {
+            $this->addFlash('success', $result['message']);
+        } else {
+            $this->addFlash('error', $result['message']);
+        }
+
+        return new JsonResponse($result);
+    }
+
+    #[Route('/frameworks/available', name: 'app_compliance_available_frameworks', methods: ['GET'])]
+    public function getAvailableFrameworks(): JsonResponse
+    {
+        $frameworks = $this->frameworkLoaderService->getAvailableFrameworks();
+        $statistics = $this->frameworkLoaderService->getFrameworkStatistics();
+
+        return new JsonResponse([
+            'frameworks' => $frameworks,
+            'statistics' => $statistics,
+        ]);
     }
 }
