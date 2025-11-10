@@ -1,0 +1,197 @@
+name: License Compliance Check
+
+on:
+  pull_request:
+    branches:
+      - main
+      - develop
+  push:
+    branches:
+      - main
+  schedule:
+    # Run monthly on the 1st at 00:00 UTC
+    - cron: '0 0 1 * *'
+  workflow_dispatch: # Allow manual trigger
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+jobs:
+  license-check:
+    runs-on: ubuntu-latest
+    name: Check License Compliance
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, xml, ctype, iconv, intl, pdo, pdo_mysql
+          coverage: none
+
+      - name: Install Composer dependencies
+        run: composer install --no-interaction --no-progress --prefer-dist
+
+      - name: Make license-report script executable
+        run: chmod +x license-report.sh
+
+      - name: Generate License Report
+        id: license_report
+        run: |
+          ./license-report.sh
+          echo "report_generated=true" >> $GITHUB_OUTPUT
+
+      - name: Check for problematic licenses
+        id: check_licenses
+        run: |
+          REPORT_FILE="docs/reports/license-report.md"
+
+          if [ ! -f "$REPORT_FILE" ]; then
+            echo "❌ License report not found!"
+            exit 1
+          fi
+
+          # Extract total from status line
+          TOTAL=$(grep -oP 'Lizenzkonform \(\K\d+(?=/\d+ Pakete)' "$REPORT_FILE" | head -1 || echo "0")
+          TOTAL_PACKAGES=$(grep -oP 'Lizenzkonform \(\d+/\K\d+(?= Pakete)' "$REPORT_FILE" | head -1 || echo "0")
+
+          # Extract counts from table (simpler approach)
+          NOT_ALLOWED=$(grep "Nicht erlaubt" "$REPORT_FILE" | grep -oP '\*\*\d+\*\*' | grep -oP '\d+' | tail -1 || echo "0")
+          UNKNOWN=$(grep "Unbekannt" "$REPORT_FILE" | grep -oP '\*\*\d+\*\*' | grep -oP '\d+' | tail -1 || echo "0")
+          COPYLEFT=$(grep "Copyleft" "$REPORT_FILE" | grep -oP '\*\*\d+\*\*' | grep -oP '\d+' | tail -1 || echo "0")
+          ALLOWED=$(grep "Erlaubt" "$REPORT_FILE" | grep -oP '\*\*\d+\*\*' | grep -oP '\d+' | tail -1 || echo "0")
+
+          echo "total=$TOTAL_PACKAGES" >> $GITHUB_OUTPUT
+          echo "allowed=$ALLOWED" >> $GITHUB_OUTPUT
+          echo "not_allowed=$NOT_ALLOWED" >> $GITHUB_OUTPUT
+          echo "unknown=$UNKNOWN" >> $GITHUB_OUTPUT
+          echo "copyleft=$COPYLEFT" >> $GITHUB_OUTPUT
+
+          # Generate summary
+          echo "## 📊 License Compliance Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Metric | Count |" >> $GITHUB_STEP_SUMMARY
+          echo "|--------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Total Packages | $TOTAL_PACKAGES |" >> $GITHUB_STEP_SUMMARY
+          echo "| ✅ Allowed | $ALLOWED |" >> $GITHUB_STEP_SUMMARY
+          echo "| ❌ Not Allowed (NC) | $NOT_ALLOWED |" >> $GITHUB_STEP_SUMMARY
+          echo "| ❓ Unknown | $UNKNOWN |" >> $GITHUB_STEP_SUMMARY
+          echo "| 🔄 Copyleft | $COPYLEFT |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # Fail if problematic licenses found
+          if [ "$NOT_ALLOWED" -gt 0 ]; then
+            echo "status=failed" >> $GITHUB_OUTPUT
+            echo "❌ **FAILED**: $NOT_ALLOWED non-commercial license(s) found!" >> $GITHUB_STEP_SUMMARY
+            exit 1
+          elif [ "$UNKNOWN" -gt 5 ]; then
+            echo "status=warning" >> $GITHUB_OUTPUT
+            echo "⚠️ **WARNING**: $UNKNOWN unknown license(s) require review" >> $GITHUB_STEP_SUMMARY
+            echo "::warning::Found $UNKNOWN packages with unknown licenses that require manual review"
+            exit 0
+          else
+            echo "status=passed" >> $GITHUB_OUTPUT
+            echo "✅ **PASSED**: All licenses compliant for commercial use!" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Upload License Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: license-report
+          path: docs/reports/license-report.md
+          retention-days: 90
+
+      - name: Comment on PR with results
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const reportPath = 'docs/reports/license-report.md';
+            const reportExists = fs.existsSync(reportPath);
+
+            if (!reportExists) {
+              return;
+            }
+
+            const status = '${{ steps.check_licenses.outputs.status }}';
+            const total = '${{ steps.check_licenses.outputs.total }}';
+            const allowed = '${{ steps.check_licenses.outputs.allowed }}';
+            const notAllowed = '${{ steps.check_licenses.outputs.not_allowed }}';
+            const unknown = '${{ steps.check_licenses.outputs.unknown }}';
+            const copyleft = '${{ steps.check_licenses.outputs.copyleft }}';
+
+            let statusEmoji = '✅';
+            let statusText = 'Compliant';
+            if (status === 'failed') {
+              statusEmoji = '❌';
+              statusText = 'Failed';
+            } else if (status === 'warning') {
+              statusEmoji = '⚠️';
+              statusText = 'Warning';
+            }
+
+            const comment = `## ${statusEmoji} License Compliance Check ${statusText}
+
+            | Metric | Count |
+            |--------|-------|
+            | Total Packages | ${total} |
+            | ✅ Allowed | ${allowed} |
+            | ❌ Not Allowed (NC) | ${notAllowed} |
+            | ❓ Unknown | ${unknown} |
+            | 🔄 Copyleft | ${copyleft} |
+
+            ${notAllowed > 0 ? '❌ **Action Required**: Non-commercial licenses detected and must be removed or replaced!' : ''}
+            ${unknown > 5 ? '⚠️ **Review Recommended**: Multiple packages with unknown licenses require manual review.' : ''}
+            ${status === 'passed' ? '✅ All licenses are compliant for commercial use!' : ''}
+
+            📄 [View Full Report](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})
+            `;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+
+      - name: Create issue for problematic licenses
+        if: steps.check_licenses.outputs.status == 'failed' && github.event_name == 'schedule'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const notAllowed = '${{ steps.check_licenses.outputs.not_allowed }}';
+            const unknown = '${{ steps.check_licenses.outputs.unknown }}';
+
+            github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: '⚠️ License Compliance Issue Detected',
+              body: `## License Compliance Alert
+
+              The monthly license compliance check has detected problematic licenses:
+
+              - ❌ Not Allowed (NC): ${notAllowed}
+              - ❓ Unknown: ${unknown}
+
+              **Action Required:**
+              1. Review the full report in the workflow artifacts
+              2. Replace or remove non-commercial packages
+              3. Investigate unknown licenses
+              4. Update the NOTICE.md file if needed
+
+              **Report Link:** https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}
+              `,
+              labels: ['compliance', 'license', 'priority:high']
+            });
