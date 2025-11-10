@@ -80,6 +80,9 @@ common:
   updated_at: Aktualisiert am
   cancel: Abbrechen
   back: Zurück
+  yes: Ja
+  no: Nein
+  note: Hinweis
 
 # ISMS Core Terms
 asset: Asset
@@ -524,11 +527,3 @@ compliance:
   industry.automotive: Automobilindustrie
   industry.financial_services: Finanzdienstleistungen
   industry.all_sectors: Alle Branchen
-
-# Common Terms
-common:
-  overview: Übersicht
-  yes: Ja
-  no: Nein
-  note: Hinweis
-  back: Zurück
