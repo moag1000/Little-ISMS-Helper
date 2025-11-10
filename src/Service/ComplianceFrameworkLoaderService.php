@@ -7,6 +7,7 @@ use App\Command\LoadDoraRequirementsCommand;
 use App\Command\LoadNis2RequirementsCommand;
 use App\Command\LoadBsiItGrundschutzRequirementsCommand;
 use App\Command\LoadGdprRequirementsCommand;
+use App\Command\LoadIso27701RequirementsCommand;
 use App\Repository\ComplianceFrameworkRepository;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\BufferedOutput;
@@ -23,6 +24,7 @@ class ComplianceFrameworkLoaderService
         private LoadNis2RequirementsCommand $nis2Command,
         private LoadBsiItGrundschutzRequirementsCommand $bsiCommand,
         private LoadGdprRequirementsCommand $gdprCommand,
+        private LoadIso27701RequirementsCommand $iso27701Command,
     ) {}
 
     /**
@@ -89,6 +91,17 @@ class ComplianceFrameworkLoaderService
                 'loaded' => in_array('GDPR', $loadedCodes),
                 'icon' => '🔒',
             ],
+            [
+                'code' => 'ISO27701',
+                'name' => 'ISO/IEC 27701:2019 - PIMS',
+                'description' => 'Privacy Information Management System extension to ISO 27001/27002',
+                'industry' => 'all_sectors',
+                'regulatory_body' => 'ISO/IEC',
+                'mandatory' => false,
+                'version' => '2019',
+                'loaded' => in_array('ISO27701', $loadedCodes),
+                'icon' => '🔐',
+            ],
         ];
     }
 
@@ -103,6 +116,7 @@ class ComplianceFrameworkLoaderService
             'NIS2' => $this->nis2Command,
             'BSI_GRUNDSCHUTZ' => $this->bsiCommand,
             'GDPR' => $this->gdprCommand,
+            'ISO27701' => $this->iso27701Command,
             default => null,
         };
 
