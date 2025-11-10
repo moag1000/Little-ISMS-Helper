@@ -1,0 +1,65 @@
+{# Notification Center Component
+   Usage: {% include '_components/_notification_center.html.twig' %}
+   
+   Features:
+   - Display notifications
+   - Mark as read
+   - Clear all
+   - Notification history
+#}
+
+<div class="notification-center" data-controller="notifications">
+    {# Notification Bell Button #}
+    <button type="button"
+            class="notification-bell-btn"
+            data-action="click->notifications#toggle"
+            title="Benachrichtigungen">
+        <i class="bi-bell"></i>
+        <span class="notification-badge d-none"
+              data-notifications-target="badge">0</span>
+    </button>
+
+    {# Notification Panel #}
+    <div class="notification-panel d-none"
+         data-notifications-target="panel"
+         data-action="click->notifications#handleBackdropClick">
+        
+        <div class="notification-panel-container">
+            {# Panel Header #}
+            <div class="notification-panel-header">
+                <h5 class="notification-panel-title">
+                    <i class="bi-bell"></i>
+                    Benachrichtigungen
+                </h5>
+                <div class="notification-panel-actions">
+                    <button type="button"
+                            class="btn btn-sm btn-link"
+                            data-action="click->notifications#markAllAsRead"
+                            title="Alle als gelesen markieren">
+                        <i class="bi-check2-all"></i>
+                    </button>
+                    <button type="button"
+                            class="btn btn-sm btn-link"
+                            data-action="click->notifications#clearAll"
+                            title="Alle löschen">
+                        <i class="bi-trash"></i>
+                    </button>
+                    <button type="button"
+                            class="btn-close btn-sm"
+                            data-action="click->notifications#close"
+                            aria-label="Close"></button>
+                </div>
+            </div>
+
+            {# Notification List #}
+            <div class="notification-list" data-notifications-target="list">
+                {# Notifications will be rendered here by JavaScript #}
+                <div class="notification-empty">
+                    <i class="bi-bell-slash" style="font-size: 3rem; color: #ccc;"></i>
+                    <p class="mt-3 mb-0">Keine Benachrichtigungen</p>
+                    <p class="text-muted small">Sie haben alle Benachrichtigungen gelesen</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

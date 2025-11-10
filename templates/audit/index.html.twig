@@ -1,21 +1,86 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Internes Audit - Small ISMS Helper{% endblock %}
+{% block title %}{{ 'audit_management.title'|trans }} - {{ 'app.title'|trans }}{% endblock %}
 
 {% block body %}
-<h1>Internes Audit</h1>
-
-<p style="color: #666; margin-bottom: 2rem;">
-    Planung und Durchführung interner ISMS-Audits gemäß ISO 27001
-</p>
-
-<div class="info-box">
-    <h3>Übersicht</h3>
-    <p><strong>Geplante Audits:</strong> {{ upcoming|length }}</p>
-    <p><strong>Gesamt Audits:</strong> {{ audits|length }}</p>
+<div class="page-header">
+    <div>
+        <h1><i class="bi bi-clipboard-check"></i> {{ 'audit_management.title'|trans }}</h1>
+        <p class="text-muted">{{ 'audit_management.description'|trans }}</p>
+    </div>
+    <div class="button-group">
+        <a href="{{ path('app_audit_new') }}" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> {{ 'audit.new'|trans }}
+        </a>
+    </div>
 </div>
 
-<p style="margin-top: 2rem;">
-    <em>Audit-Planung, Checklisten und Berichte werden in der nächsten Phase implementiert.</em>
-</p>
+<div class="stats-grid mb-4">
+    <div class="stat-card">
+        <div class="stat-icon"><i class="bi bi-calendar-event"></i></div>
+        <div class="stat-value">{{ upcoming|length }}</div>
+        <div class="stat-label">{{ 'audit_management.planned_audits'|trans }}</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon"><i class="bi bi-collection"></i></div>
+        <div class="stat-value">{{ audits|length }}</div>
+        <div class="stat-label">{{ 'audit_management.total_audits'|trans }}</div>
+    </div>
+</div>
+
+<style>
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--spacing-xl);
+}
+
+.button-group {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: var(--spacing-lg);
+}
+
+.stat-card {
+    background: var(--color-white);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-lg);
+    text-align: center;
+    transition: all var(--transition-normal);
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.stat-icon {
+    font-size: 2.5rem;
+    color: var(--color-secondary);
+    margin-bottom: var(--spacing-sm);
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--color-primary);
+}
+
+.stat-label {
+    color: var(--color-text-light);
+    margin-top: var(--spacing-xs);
+}
+
+.mb-4 {
+    margin-bottom: var(--spacing-xl);
+}
+</style>
 {% endblock %}

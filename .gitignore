@@ -23,3 +23,4 @@
 /config/setup_complete.lock
 /config/active_modules.yaml
 ###< little-isms-helper/deployment ###
+PR_DESCRIPTION.md

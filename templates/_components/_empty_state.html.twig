@@ -1,0 +1,29 @@
+{#
+  Reusable Empty State Component
+
+  Usage:
+  {% include '_components/_empty_state.html.twig' with {
+      icon: 'bi-inbox',
+      title: 'Noch keine Assets vorhanden',
+      description: 'Legen Sie Ihr erstes Asset an, um zu beginnen.',
+      action: { label: 'Asset erstellen', url: path('app_asset_new') }
+  } %}
+#}
+
+<div class="empty-state">
+    <div class="empty-state-icon">
+        <i class="bi {{ icon|default('bi-inbox') }}"></i>
+    </div>
+    <h3 class="empty-state-title">{{ title }}</h3>
+    {% if description is defined %}
+        <p class="empty-state-description">{{ description }}</p>
+    {% endif %}
+    {% if action is defined and is_granted('ROLE_USER') %}
+        <a href="{{ action.url }}"
+           class="btn btn-primary"
+           data-turbo-action="advance">
+            <i class="bi {{ action.icon|default('bi-plus-circle') }}"></i>
+            {{ action.label }}
+        </a>
+    {% endif %}
+</div>

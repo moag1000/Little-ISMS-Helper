@@ -2,63 +2,106 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use App\Repository\ISMSObjectiveRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ISMSObjectiveRepository::class)]
+#[ApiResource(
+    operations: [
+        new GetCollection(security: "is_granted('ROLE_USER')"),
+        new Get(security: "is_granted('ROLE_USER')"),
+        new Post(security: "is_granted('ROLE_ADMIN')"),
+        new Put(security: "is_granted('ROLE_ADMIN')"),
+        new Patch(security: "is_granted('ROLE_ADMIN')"),
+        new Delete(security: "is_granted('ROLE_ADMIN')"),
+    ],
+    normalizationContext: ['groups' => ['isms_objective:read']],
+    denormalizationContext: ['groups' => ['isms_objective:write']]
+)]
 class ISMSObjective
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['isms_objective:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['isms_objective:read', 'isms_objective:write'])]
+    #[Assert\NotBlank]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups(['isms_objective:read', 'isms_objective:write'])]
+    #[Assert\NotBlank]
     private ?string $description = null;
 
     #[ORM\Column(length: 100)]
+    #[Groups(['isms_objective:read', 'isms_objective:write'])]
+    #[Assert\NotBlank]
+    #[Assert\Choice(choices: ['availability', 'confidentiality', 'integrity', 'compliance', 'risk_management', 'incident_response', 'awareness', 'continual_improvement'])]
     private ?string $category = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['isms_objective:read', 'isms_objective:write'])]
     private ?string $measurableIndicators = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2, nullable: true)]
+    #[Groups(['isms_objective:read', 'isms_objective:write'])]
     private ?string $targetValue = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2, nullable: true)]
+    #[Groups(['isms_objective:read', 'isms_objective:write'])]
     private ?string $currentValue = null;
 
     #[ORM\Column(length: 50, nullable: true)]
+    #[Groups(['isms_objective:read', 'isms_objective:write'])]
     private ?string $unit = null;
 
     #[ORM\Column(length: 100)]
+    #[Groups(['isms_objective:read', 'isms_objective:write'])]
+    #[Assert\NotBlank]
     private ?string $responsiblePerson = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Groups(['isms_objective:read', 'isms_objective:write'])]
+    #[Assert\NotBlank]
     private ?\DateTimeInterface $targetDate = null;
 
     #[ORM\Column(length: 50)]
+    #[Groups(['isms_objective:read', 'isms_objective:write'])]
+    #[Assert\Choice(choices: ['not_started', 'in_progress', 'achieved', 'delayed', 'cancelled'])]
     private ?string $status = 'in_progress';
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['isms_objective:read', 'isms_objective:write'])]
     private ?string $progressNotes = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    #[Groups(['isms_objective:read'])]
     private ?\DateTimeInterface $achievedDate = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Groups(['isms_objective:read'])]
     private ?\DateTimeInterface $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[Groups(['isms_objective:read'])]
     private ?\DateTimeInterface $updatedAt = null;
 
     public function __construct()
     {
-        $this->createdAt = new \DateTime();
+        $this->createdAt = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -220,6 +263,7 @@ class ISMSObjective
         return $this;
     }
 
+    #[Groups(['isms_objective:read'])]
     public function getProgressPercentage(): int
     {
         if ($this->targetValue && $this->currentValue && (float)$this->targetValue > 0) {

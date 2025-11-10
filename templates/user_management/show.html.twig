@@ -1,0 +1,307 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Benutzer: {{ user.firstName }} {{ user.lastName }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1><i class="bi bi-person"></i> {{ user.firstName }} {{ user.lastName }}</h1>
+            <p class="text-muted">{{ user.email }}</p>
+        </div>
+        <div>
+            <a href="{{ path('user_management_edit', {'id': user.id}) }}" class="btn btn-secondary">
+                <i class="bi bi-pencil"></i> Bearbeiten
+            </a>
+            <a href="{{ path('user_management_index') }}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Zurück
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        {# Basic Information #}
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="bi bi-info-circle"></i> Grundinformationen</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-sm">
+                        <tbody>
+                            <tr>
+                                <th width="40%">Vorname:</th>
+                                <td>{{ user.firstName }}</td>
+                            </tr>
+                            <tr>
+                                <th>Nachname:</th>
+                                <td>{{ user.lastName }}</td>
+                            </tr>
+                            <tr>
+                                <th>E-Mail:</th>
+                                <td>{{ user.email }}</td>
+                            </tr>
+                            <tr>
+                                <th>Abteilung:</th>
+                                <td>{{ user.department ?? '-' }}</td>
+                            </tr>
+                            <tr>
+                                <th>Position:</th>
+                                <td>{{ user.jobTitle ?? '-' }}</td>
+                            </tr>
+                            <tr>
+                                <th>Telefon:</th>
+                                <td>{{ user.phoneNumber ?? '-' }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        {# Security & Status #}
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0"><i class="bi bi-shield-check"></i> Sicherheit & Status</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-sm">
+                        <tbody>
+                            <tr>
+                                <th width="40%">Status:</th>
+                                <td>
+                                    {% if user.isActive %}
+                                        <span class="badge bg-success">
+                                            <i class="bi bi-check-circle"></i> Aktiv
+                                        </span>
+                                    {% else %}
+                                        <span class="badge bg-danger">
+                                            <i class="bi bi-x-circle"></i> Inaktiv
+                                        </span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Verifiziert:</th>
+                                <td>
+                                    {% if user.isVerified %}
+                                        <span class="badge bg-success">
+                                            <i class="bi bi-check-circle"></i> Ja
+                                        </span>
+                                    {% else %}
+                                        <span class="badge bg-warning">
+                                            <i class="bi bi-exclamation-triangle"></i> Nein
+                                        </span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Auth Provider:</th>
+                                <td>
+                                    {% if user.authProvider == 'azure_oauth' %}
+                                        <i class="bi bi-microsoft"></i> Azure OAuth
+                                    {% elseif user.authProvider == 'azure_saml' %}
+                                        <i class="bi bi-microsoft"></i> Azure SAML
+                                    {% else %}
+                                        <i class="bi bi-person-circle"></i> Lokal
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% if user.azureObjectId %}
+                                <tr>
+                                    <th>Azure Object ID:</th>
+                                    <td><code>{{ user.azureObjectId }}</code></td>
+                                </tr>
+                            {% endif %}
+                            <tr>
+                                <th>Erstellt am:</th>
+                                <td>{{ user.createdAt|date('d.m.Y H:i') }}</td>
+                            </tr>
+                            <tr>
+                                <th>Letzte Anmeldung:</th>
+                                <td>
+                                    {% if user.lastLoginAt %}
+                                        {{ user.lastLoginAt|date('d.m.Y H:i') }}
+                                    {% else %}
+                                        <span class="text-muted">Nie</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Roles & Permissions #}
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0"><i class="bi bi-shield"></i> Systemrollen</h5>
+                </div>
+                <div class="card-body">
+                    {% if user.roles|length > 0 %}
+                        <div class="list-group">
+                            {% for role in user.roles %}
+                                <div class="list-group-item">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span>
+                                            <i class="bi bi-shield-fill text-warning"></i>
+                                            {{ role }}
+                                        </span>
+                                        {% if role == 'ROLE_SUPER_ADMIN' %}
+                                            <span class="badge bg-danger">Super Admin</span>
+                                        {% elseif role == 'ROLE_ADMIN' %}
+                                            <span class="badge bg-warning">Admin</span>
+                                        {% elseif role == 'ROLE_MANAGER' %}
+                                            <span class="badge bg-info">Manager</span>
+                                        {% elseif role == 'ROLE_AUDITOR' %}
+                                            <span class="badge bg-primary">Auditor</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">User</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info mb-0">
+                            Keine Systemrollen zugewiesen.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="bi bi-key"></i> Benutzerdefinierte Rollen</h5>
+                </div>
+                <div class="card-body">
+                    {% if user.customRoles|length > 0 %}
+                        <div class="list-group">
+                            {% for customRole in user.customRoles %}
+                                <div class="list-group-item">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <strong>{{ customRole.name }}</strong>
+                                            {% if customRole.description %}
+                                                <br>
+                                                <small class="text-muted">{{ customRole.description }}</small>
+                                            {% endif %}
+                                        </div>
+                                        <span class="badge bg-info">{{ customRole.permissions|length }} Berechtigungen</span>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info mb-0">
+                            Keine benutzerdefinierten Rollen zugewiesen.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# All Permissions #}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card mb-4">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0"><i class="bi bi-unlock"></i> Alle Berechtigungen</h5>
+                </div>
+                <div class="card-body">
+                    {% set allPermissions = [] %}
+                    {% for customRole in user.customRoles %}
+                        {% for permission in customRole.permissions %}
+                            {% set allPermissions = allPermissions|merge([permission]) %}
+                        {% endfor %}
+                    {% endfor %}
+
+                    {% if allPermissions|length > 0 %}
+                        <div class="row">
+                            {% for permission in allPermissions %}
+                                <div class="col-md-3 mb-2">
+                                    <span class="badge bg-secondary w-100">
+                                        <i class="bi bi-check"></i> {{ permission.name }}
+                                    </span>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info mb-0">
+                            Keine spezifischen Berechtigungen zugewiesen. Berechtigungen werden durch Systemrollen vererbt.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Actions #}
+    <div class="card mb-4">
+        <div class="card-header bg-dark text-white">
+            <h5 class="mb-0"><i class="bi bi-gear"></i> Aktionen</h5>
+        </div>
+        <div class="card-body">
+            <div class="btn-group" role="group">
+                <a href="{{ path('user_management_edit', {'id': user.id}) }}" class="btn btn-primary">
+                    <i class="bi bi-pencil"></i> Bearbeiten
+                </a>
+                {% if user.id != app.user.id %}
+                    {% if user.isActive %}
+                        <form method="post" action="{{ path('user_management_deactivate', {'id': user.id}) }}" style="display: inline;">
+                            <input type="hidden" name="_token" value="{{ csrf_token('deactivate' ~ user.id) }}">
+                            <button type="submit" class="btn btn-warning">
+                                <i class="bi bi-pause-circle"></i> Deaktivieren
+                            </button>
+                        </form>
+                    {% else %}
+                        <form method="post" action="{{ path('user_management_activate', {'id': user.id}) }}" style="display: inline;">
+                            <input type="hidden" name="_token" value="{{ csrf_token('activate' ~ user.id) }}">
+                            <button type="submit" class="btn btn-success">
+                                <i class="bi bi-play-circle"></i> Aktivieren
+                            </button>
+                        </form>
+                    {% endif %}
+                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                        <i class="bi bi-trash"></i> Löschen
+                    </button>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{# Delete Confirmation Modal #}
+{% if user.id != app.user.id %}
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Benutzer löschen</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                Möchten Sie den Benutzer <strong>{{ user.firstName }} {{ user.lastName }}</strong> wirklich löschen?
+                <br><br>
+                <strong>Achtung:</strong> Diese Aktion kann nicht rückgängig gemacht werden.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abbrechen</button>
+                <form method="post" action="{{ path('user_management_delete', {'id': user.id}) }}" style="display: inline;">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
+                    <button type="submit" class="btn btn-danger">Löschen</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

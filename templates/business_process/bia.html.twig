@@ -1,0 +1,156 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}BIA - {{ business_process.name }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{{ path('app_business_process_index') }}">BCM</a></li>
+            <li class="breadcrumb-item"><a href="{{ path('app_business_process_show', {'id': business_process.id}) }}">{{ business_process.name }}</a></li>
+            <li class="breadcrumb-item active">Business Impact Analysis</li>
+        </ol>
+    </nav>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Business Impact Analysis</h1>
+        <a href="{{ path('app_business_process_show', {'id': business_process.id}) }}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Zurück
+        </a>
+    </div>
+
+    <h3 class="mb-3">{{ business_process.name }}</h3>
+
+    {# Recovery Objectives #}
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0"><i class="bi bi-clock-history"></i> Recovery Objectives</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card bg-light">
+                        <div class="card-body text-center">
+                            <h6 class="text-muted">RTO</h6>
+                            <p class="display-4">{{ bia_data.rto }}h</p>
+                            <small>Recovery Time Objective</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card bg-light">
+                        <div class="card-body text-center">
+                            <h6 class="text-muted">RPO</h6>
+                            <p class="display-4">{{ bia_data.rpo }}h</p>
+                            <small>Recovery Point Objective</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card bg-light">
+                        <div class="card-body text-center">
+                            <h6 class="text-muted">MTPD</h6>
+                            <p class="display-4">{{ bia_data.mtpd }}h</p>
+                            <small>Maximum Tolerable Period</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Financial Impact #}
+    <div class="card mb-4">
+        <div class="card-header bg-success text-white">
+            <h5 class="mb-0"><i class="bi bi-currency-euro"></i> Finanzielle Auswirkungen</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <h6>Schaden pro Stunde</h6>
+                    <p class="h3">{{ bia_data.financial_impact_hour ? (bia_data.financial_impact_hour|number_format(2, ',', '.') ~ ' €') : 'Nicht angegeben' }}</p>
+                </div>
+                <div class="col-md-6">
+                    <h6>Schaden pro Tag</h6>
+                    <p class="h3">{{ bia_data.financial_impact_day ? (bia_data.financial_impact_day|number_format(2, ',', '.') ~ ' €') : 'Nicht angegeben' }}</p>
+                </div>
+            </div>
+            {% if bia_data.financial_impact_day %}
+                <div class="alert alert-info mt-3">
+                    <strong>Hochrechnung:</strong>
+                    <ul class="mb-0">
+                        <li>1 Woche Ausfall: {{ (bia_data.financial_impact_day * 7)|number_format(2, ',', '.') }} €</li>
+                        <li>1 Monat Ausfall: {{ (bia_data.financial_impact_day * 30)|number_format(2, ',', '.') }} €</li>
+                    </ul>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    {# Impact Assessment #}
+    <div class="card mb-4">
+        <div class="card-header bg-warning">
+            <h5 class="mb-0"><i class="bi bi-graph-up"></i> Impact-Bewertung</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <h6>Reputationsschaden</h6>
+                    <div class="progress" style="height: 30px;">
+                        <div class="progress-bar bg-danger" role="progressbar" 
+                             style="width: {{ (bia_data.reputational_impact / 5 * 100) }}%">
+                            {{ bia_data.reputational_impact }}/5
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <h6>Regulatorischer Impact</h6>
+                    <div class="progress" style="height: 30px;">
+                        <div class="progress-bar bg-warning" role="progressbar" 
+                             style="width: {{ (bia_data.regulatory_impact / 5 * 100) }}%">
+                            {{ bia_data.regulatory_impact }}/5
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <h6>Operationaler Impact</h6>
+                    <div class="progress" style="height: 30px;">
+                        <div class="progress-bar bg-info" role="progressbar" 
+                             style="width: {{ (bia_data.operational_impact / 5 * 100) }}%">
+                            {{ bia_data.operational_impact }}/5
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-3">
+                <h6>Aggregierter Business Impact Score</h6>
+                <div class="progress" style="height: 40px;">
+                    <div class="progress-bar {% if bia_data.business_impact_score >= 4 %}bg-danger{% elseif bia_data.business_impact_score >= 3 %}bg-warning{% else %}bg-success{% endif %}" 
+                         role="progressbar" 
+                         style="width: {{ (bia_data.business_impact_score / 5 * 100) }}%">
+                        <strong>{{ bia_data.business_impact_score }}/5</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Data Reuse Recommendations #}
+    <div class="card">
+        <div class="card-header bg-info text-white">
+            <h5 class="mb-0"><i class="bi bi-lightbulb"></i> Automatische Empfehlungen (Data Reuse)</h5>
+        </div>
+        <div class="card-body">
+            <h6>Empfohlener Verfügbarkeitswert für unterstützende Assets</h6>
+            <p class="lead">
+                Basierend auf RTO {{ bia_data.rto }}h wird empfohlen: 
+                <span class="badge bg-primary fs-5">{{ bia_data.suggested_availability }}/5</span>
+            </p>
+            <small class="text-muted">
+                Dieser Wert sollte bei der Asset-Bewertung berücksichtigt werden, um die Konsistenz zwischen BIA und Asset Management sicherzustellen.
+            </small>
+        </div>
+    </div>
+</div>
+{% endblock %}

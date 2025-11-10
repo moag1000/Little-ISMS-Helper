@@ -1,0 +1,189 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ location.name }} - {{ 'location.title.show'|trans }} - Little ISMS Helper{% endblock %}
+
+{% block body %}
+<div class="d-flex justify-between align-center mb-4">
+    <div>
+        <h1>{{ location.name }}</h1>
+        <div class="mt-2">
+            <span class="badge badge-info">{{ ('location.type.' ~ location.locationType)|trans }}</span>
+            {% if location.code %}
+                <code style="margin-left: var(--spacing-sm);">{{ location.code }}</code>
+            {% endif %}
+        </div>
+    </div>
+    <div>
+        <a href="{{ path('app_location_edit', {id: location.id}) }}" class="btn btn-success" style="margin-right: 0.5rem;">
+            ✏️ {{ 'common.edit'|trans }}
+        </a>
+        <a href="{{ path('app_location_index') }}" class="btn btn-secondary">
+            ← {{ 'common.back_to_list'|trans }}
+        </a>
+    </div>
+</div>
+
+{# Location Details #}
+<div class="card mb-4">
+    <h2>{{ 'location.section.details'|trans }}</h2>
+
+    {% if location.description %}
+    <div class="form-group mt-3">
+        <label class="form-label">{{ 'location.field.description'|trans }}</label>
+        <p style="color: var(--color-text-light); white-space: pre-wrap;">{{ location.description }}</p>
+    </div>
+    {% endif %}
+
+    <div class="stats-grid mt-3" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));">
+        <div class="stat-item">
+            <strong>{{ ('location.type.' ~ location.locationType)|trans }}</strong>
+            <span>{{ 'location.field.type'|trans }}</span>
+        </div>
+
+        {% if location.parentLocation %}
+        <div class="stat-item">
+            <strong>
+                <a href="{{ path('app_location_show', {id: location.parentLocation.id}) }}">
+                    {{ location.parentLocation.name }}
+                </a>
+            </strong>
+            <span>{{ 'location.field.parent'|trans }}</span>
+        </div>
+        {% endif %}
+
+        <div class="stat-item">
+            <strong>
+                {% set securityColors = {
+                    'public': 'secondary',
+                    'restricted': 'info',
+                    'controlled': 'warning',
+                    'secure': 'warning',
+                    'high_security': 'danger'
+                } %}
+                <span class="badge badge-{{ securityColors[location.securityLevel] ?? 'secondary' }}">
+                    {{ ('location.security.' ~ location.securityLevel)|trans }}
+                </span>
+            </strong>
+            <span>{{ 'location.field.security_level'|trans }}</span>
+        </div>
+
+        <div class="stat-item">
+            <strong>
+                {% if location.requiresBadgeAccess %}
+                    <span class="badge badge-success">{{ 'common.yes'|trans }}</span>
+                {% else %}
+                    <span class="badge badge-secondary">{{ 'common.no'|trans }}</span>
+                {% endif %}
+            </strong>
+            <span>{{ 'location.field.badge_access'|trans }}</span>
+        </div>
+    </div>
+</div>
+
+{# Address Information #}
+{% if location.address or location.city or location.country %}
+<div class="card mb-4">
+    <h2>{{ 'location.section.address'|trans }}</h2>
+    <div class="info-box mt-2" style="background: var(--color-bg-light);">
+        {% if location.address %}
+            <p>{{ location.address }}</p>
+        {% endif %}
+        {% if location.postalCode or location.city %}
+            <p>
+                {% if location.postalCode %}{{ location.postalCode }}{% endif %}
+                {{ location.city }}
+            </p>
+        {% endif %}
+        {% if location.country %}
+            <p><strong>{{ location.country }}</strong></p>
+        {% endif %}
+    </div>
+</div>
+{% endif %}
+
+{# Child Locations #}
+{% if location.childLocations|length > 0 %}
+<div class="card mb-4">
+    <h2>{{ 'location.section.child_locations'|trans }} ({{ location.childLocations|length }})</h2>
+    <div class="table-container mt-2">
+        <table>
+            <thead>
+                <tr>
+                    <th>{{ 'location.field.name'|trans }}</th>
+                    <th>{{ 'location.field.type'|trans }}</th>
+                    <th>{{ 'location.field.security_level'|trans }}</th>
+                    <th style="text-align: center;">{{ 'common.actions'|trans }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for child in location.childLocations %}
+                <tr>
+                    <td>{{ child.name }}</td>
+                    <td><span class="badge badge-info">{{ ('location.type.' ~ child.locationType)|trans }}</span></td>
+                    <td>
+                        {% set securityColors = {
+                            'public': 'secondary',
+                            'restricted': 'info',
+                            'controlled': 'warning',
+                            'secure': 'warning',
+                            'high_security': 'danger'
+                        } %}
+                        <span class="badge badge-{{ securityColors[child.securityLevel] ?? 'secondary' }}">
+                            {{ ('location.security.' ~ child.securityLevel)|trans }}
+                        </span>
+                    </td>
+                    <td style="text-align: center;">
+                        <a href="{{ path('app_location_show', {id: child.id}) }}" class="btn btn-sm">
+                            👁 {{ 'common.view'|trans }}
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+
+{# Additional Features #}
+<div class="card">
+    <h2>{{ 'location.section.features'|trans }}</h2>
+    <div class="stats-grid mt-2" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));">
+        <div class="stat-item">
+            <strong>
+                {% if location.active %}
+                    <span class="badge badge-success">{{ 'common.active'|trans }}</span>
+                {% else %}
+                    <span class="badge badge-secondary">{{ 'common.inactive'|trans }}</span>
+                {% endif %}
+            </strong>
+            <span>{{ 'location.field.status'|trans }}</span>
+        </div>
+
+        <div class="stat-item">
+            <strong>
+                {% if location.accessControlSystem %}
+                    <span class="badge badge-info">{{ location.accessControlSystem }}</span>
+                {% else %}
+                    <span style="color: var(--color-text-muted);">-</span>
+                {% endif %}
+            </strong>
+            <span>{{ 'location.field.access_control'|trans }}</span>
+        </div>
+    </div>
+</div>
+
+{# Action Buttons #}
+<div class="d-flex gap-2 mt-4">
+    <a href="{{ path('app_location_edit', {id: location.id}) }}" class="btn btn-success">
+        ✏️ {{ 'common.edit'|trans }}
+    </a>
+    <a href="{{ path('app_location_index') }}" class="btn btn-secondary">
+        📋 {{ 'common.back_to_list'|trans }}
+    </a>
+    <form method="post" action="{{ path('app_location_delete', {id: location.id}) }}" onsubmit="return confirm('{{ 'location.confirm.delete'|trans }}');" style="display: inline;">
+        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ location.id) }}">
+        <button type="submit" class="btn btn-danger">🗑️ {{ 'common.delete'|trans }}</button>
+    </form>
+</div>
+{% endblock %}

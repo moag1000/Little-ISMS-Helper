@@ -1,0 +1,209 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Willkommen{% endblock %}
+
+{% block body %}
+{# Hero Section #}
+<div class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-7">
+                <div class="hero-content">
+                    <h1 class="hero-title">
+                        <i class="bi bi-shield-check text-white"></i>
+                        Little ISMS Helper
+                    </h1>
+                    <p class="hero-subtitle">
+                        Ihr umfassendes Tool für die Implementierung und Verwaltung eines
+                        <strong>Informationssicherheits-Managementsystems</strong> nach ISO/IEC 27001:2022
+                    </p>
+                    <div class="hero-stats mb-4">
+                        <div class="hero-stat">
+                            <span class="hero-stat-value">{{ stats.assets|default(0) }}</span>
+                            <span class="hero-stat-label">Assets</span>
+                        </div>
+                        <div class="hero-stat">
+                            <span class="hero-stat-value">{{ stats.risks|default(0) }}</span>
+                            <span class="hero-stat-label">Risiken</span>
+                        </div>
+                        <div class="hero-stat">
+                            <span class="hero-stat-value">{{ stats.controls|default(0) }}</span>
+                            <span class="hero-stat-label">Maßnahmen</span>
+                        </div>
+                    </div>
+                    <div class="hero-actions">
+                        <a href="{{ path('app_dashboard') }}" class="btn btn-light btn-lg">
+                            <i class="bi-speedometer2"></i> Zum Dashboard
+                        </a>
+                        <a href="#features" class="btn btn-outline-light btn-lg">
+                            <i class="bi-info-circle"></i> Mehr erfahren
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div class="hero-image">
+                    <div class="text-center">
+                        <i class="bi-shield-lock" style="font-size: 15rem; color: rgba(255, 255, 255, 0.2);"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{# Features Section #}
+<div class="container my-5" id="features">
+    <div class="text-center mb-5">
+        <h2 class="display-5 fw-bold">Umfassende ISMS-Funktionen</h2>
+        <p class="lead text-muted">Alles, was Sie für ein erfolgreiches Informationssicherheits-Management benötigen</p>
+    </div>
+
+    <div class="row g-4">
+        {# Asset Management #}
+        <div class="col-lg-3 col-md-6">
+            <div class="feature-card">
+                <div class="feature-icon bg-primary">
+                    <i class="bi-server"></i>
+                </div>
+                <h3 class="feature-title">Asset Management</h3>
+                <p class="feature-description">
+                    Verwalten und kategorisieren Sie alle IT-Assets Ihres Unternehmens zentral mit detaillierten Informationen.
+                </p>
+                <a href="{{ path('app_asset_index') }}" class="btn btn-sm btn-outline-primary mt-3">
+                    Zu den Assets <i class="bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+
+        {# Risk Management #}
+        <div class="col-lg-3 col-md-6">
+            <div class="feature-card">
+                <div class="feature-icon bg-warning">
+                    <i class="bi-exclamation-triangle"></i>
+                </div>
+                <h3 class="feature-title">Risk Management</h3>
+                <p class="feature-description">
+                    Identifizieren, bewerten und behandeln Sie Risiken systematisch nach bewährten Standards.
+                </p>
+                <a href="{{ path('app_risk_index') }}" class="btn btn-sm btn-outline-warning mt-3">
+                    Zu den Risiken <i class="bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+
+        {# Control Framework #}
+        <div class="col-lg-3 col-md-6">
+            <div class="feature-card">
+                <div class="feature-icon bg-success">
+                    <i class="bi-shield-check"></i>
+                </div>
+                <h3 class="feature-title">Control Framework</h3>
+                <p class="feature-description">
+                    Implementieren Sie Controls aus ISO 27001:2022 Annex A mit vollständiger Nachverfolgung.
+                </p>
+                <a href="{{ path('app_compliance_index') }}" class="btn btn-sm btn-outline-success mt-3">
+                    Zu den Controls <i class="bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+
+        {# Training Management #}
+        <div class="col-lg-3 col-md-6">
+            <div class="feature-card">
+                <div class="feature-icon bg-info">
+                    <i class="bi-mortarboard"></i>
+                </div>
+                <h3 class="feature-title">Training Management</h3>
+                <p class="feature-description">
+                    Schulen Sie Ihre Mitarbeiter systematisch und dokumentieren Sie alle Awareness-Aktivitäten.
+                </p>
+                <a href="{{ path('app_training_index') }}" class="btn btn-sm btn-outline-info mt-3">
+                    Zu den Trainings <i class="bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{# Quick Start Guide #}
+<div class="bg-light py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="display-5 fw-bold">Schnellstart in 4 Schritten</h2>
+            <p class="lead text-muted">So starten Sie mit Ihrem ISMS</p>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="steps-container">
+                    {# Step 1 #}
+                    <div class="step-item">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h4 class="step-title">Assets erfassen</h4>
+                            <p class="step-description">
+                                Beginnen Sie mit der Erfassung Ihrer IT-Assets. Kategorisieren Sie Hardware, Software,
+                                Daten und Services für einen vollständigen Überblick.
+                            </p>
+                            <a href="{{ path('app_asset_new') }}" class="btn btn-sm btn-primary">Asset hinzufügen</a>
+                        </div>
+                    </div>
+
+                    {# Step 2 #}
+                    <div class="step-item">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h4 class="step-title">Risiken bewerten</h4>
+                            <p class="step-description">
+                                Identifizieren Sie potenzielle Risiken für Ihre Assets. Bewerten Sie Eintrittswahrscheinlichkeit
+                                und Auswirkungen systematisch.
+                            </p>
+                            <a href="{{ path('app_risk_new') }}" class="btn btn-sm btn-primary">Risiko erfassen</a>
+                        </div>
+                    </div>
+
+                    {# Step 3 #}
+                    <div class="step-item">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h4 class="step-title">Controls implementieren</h4>
+                            <p class="step-description">
+                                Wählen Sie passende Controls aus dem ISO 27001 Annex A und implementieren Sie
+                                Sicherheitsmaßnahmen zur Risikobehandlung.
+                            </p>
+                            <a href="{{ path('app_compliance_index') }}" class="btn btn-sm btn-primary">Controls ansehen</a>
+                        </div>
+                    </div>
+
+                    {# Step 4 #}
+                    <div class="step-item">
+                        <div class="step-number">4</div>
+                        <div class="step-content">
+                            <h4 class="step-title">Team schulen</h4>
+                            <p class="step-description">
+                                Sensibilisieren Sie Ihre Mitarbeiter durch regelmäßige Trainings. Dokumentieren Sie
+                                alle Schulungsaktivitäten für Compliance-Nachweise.
+                            </p>
+                            <a href="{{ path('app_training_new') }}" class="btn btn-sm btn-primary">Training planen</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{# CTA Section #}
+<div class="container my-5">
+    <div class="text-center py-5">
+        <h2 class="display-5 fw-bold mb-4">Bereit zu starten?</h2>
+        <p class="lead text-muted mb-4">
+            Implementieren Sie Ihr ISMS effizient und strukturiert mit dem Little ISMS Helper
+        </p>
+        <a href="{{ path('app_dashboard') }}" class="btn btn-primary btn-lg">
+            <i class="bi-speedometer2"></i> Zum Dashboard
+        </a>
+    </div>
+</div>
+{% endblock %}

@@ -3,7 +3,9 @@
 namespace App\Service;
 
 use App\Entity\AuditLog;
+use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 class AuditLogger
@@ -19,7 +21,8 @@ class AuditLogger
 
     public function __construct(
         private EntityManagerInterface $entityManager,
-        private RequestStack $requestStack
+        private RequestStack $requestStack,
+        private Security $security
     ) {}
 
     /**
@@ -126,30 +129,23 @@ class AuditLogger
             $auditLog->setNewValues(json_encode($this->sanitizeValues($newValues), JSON_UNESCAPED_UNICODE));
         }
 
-        // Persist the audit log
+        // Persist the audit log (don't flush - let Doctrine handle it with the main transaction)
+        // This prevents nested flush operations and improves performance
         $this->entityManager->persist($auditLog);
-        $this->entityManager->flush();
     }
 
     /**
-     * Get the current user name
+     * Get the current user name from the security context
      */
     private function getCurrentUserName(): string
     {
-        // For now, we'll use a simple approach.
-        // In a real application, you would get this from the security context
-        // e.g., $this->security->getUser()->getUserIdentifier()
+        $user = $this->security->getUser();
 
-        // Check if there's a request and if it has session data
-        $request = $this->requestStack->getCurrentRequest();
-        if ($request && $request->hasSession()) {
-            $session = $request->getSession();
-            if ($session->has('_security_main')) {
-                // Try to extract user from session
-                return 'authenticated_user'; // Placeholder
-            }
+        if ($user instanceof User) {
+            return $user->getEmail();
         }
 
+        // For CLI operations (e.g., setup commands, migrations) or unauthenticated requests
         return 'system';
     }
 

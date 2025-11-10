@@ -4,6 +4,25 @@ namespace App\Service;
 
 use Symfony\Component\Yaml\Yaml;
 
+/**
+ * Module Configuration Service
+ *
+ * Manages ISMS module configuration, dependencies, and validation.
+ * Loads module definitions from YAML configuration files.
+ *
+ * Features:
+ * - Module definition management (required vs. optional)
+ * - Dependency resolution and validation
+ * - Base data and sample data configuration
+ * - Module compatibility checking
+ * - Automatic inclusion of required modules
+ *
+ * Module Types:
+ * - Required: Core modules always enabled
+ * - Optional: Feature modules selectable by user
+ *
+ * Configuration File: config/modules.yaml
+ */
 class ModuleConfigurationService
 {
     private array $modules;

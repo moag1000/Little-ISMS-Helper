@@ -1,0 +1,126 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'person.title.list'|trans }} - Little ISMS Helper{% endblock %}
+
+{% block body %}
+<div class="d-flex justify-between align-center mb-4">
+    <div>
+        <h1>{{ 'person.title.list'|trans }}</h1>
+        <p style="color: var(--color-text-light); margin-top: var(--spacing-sm);">
+            {{ 'person.description.overview'|trans }}
+        </p>
+    </div>
+    <div>
+        <a href="{{ path('app_person_new') }}" class="btn btn-success">
+            ➕ {{ 'person.action.create'|trans }}
+        </a>
+    </div>
+</div>
+
+{# Statistics Cards #}
+<div class="kpi-grid">
+    <div class="kpi-card">
+        <div class="icon">👥</div>
+        <div class="label">{{ 'person.stats.total'|trans }}</div>
+        <div>
+            <span class="value">{{ persons|length }}</span>
+        </div>
+    </div>
+
+    <div class="kpi-card">
+        <div class="icon">👨‍💼</div>
+        <div class="label">{{ 'person.stats.employees'|trans }}</div>
+        <div>
+            <span class="value">{{ persons|filter(p => p.personType == 'employee')|length }}</span>
+        </div>
+    </div>
+
+    <div class="kpi-card">
+        <div class="icon">🔧</div>
+        <div class="label">{{ 'person.stats.contractors'|trans }}</div>
+        <div>
+            <span class="value">{{ persons|filter(p => p.personType == 'contractor')|length }}</span>
+        </div>
+    </div>
+
+    <div class="kpi-card">
+        <div class="icon">🎫</div>
+        <div class="label">{{ 'person.stats.with_badge'|trans }}</div>
+        <div>
+            <span class="value">{{ persons|filter(p => p.badgeId)|length }}</span>
+        </div>
+    </div>
+</div>
+
+{# Persons Table #}
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>{{ 'person.field.name'|trans }}</th>
+                <th>{{ 'person.field.type'|trans }}</th>
+                <th>{{ 'person.field.badge_id'|trans }}</th>
+                <th>{{ 'person.field.company'|trans }}</th>
+                <th>{{ 'person.field.email'|trans }}</th>
+                <th>{{ 'person.field.department'|trans }}</th>
+                <th style="text-align: center;">{{ 'common.actions'|trans }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for person in persons %}
+            <tr>
+                <td>
+                    <strong>{{ person.fullName }}</strong>
+                    {% if person.jobTitle %}
+                        <br><small style="color: var(--color-text-muted);">{{ person.jobTitle }}</small>
+                    {% endif %}
+                </td>
+                <td>
+                    {% set typeColors = {
+                        'employee': 'success',
+                        'contractor': 'info',
+                        'visitor': 'warning',
+                        'vendor': 'info',
+                        'auditor': 'danger',
+                        'consultant': 'info'
+                    } %}
+                    <span class="badge badge-{{ typeColors[person.personType] ?? 'secondary' }}">
+                        {{ ('person.type.' ~ person.personType)|trans }}
+                    </span>
+                </td>
+                <td>
+                    {% if person.badgeId %}
+                        <code>{{ person.badgeId }}</code>
+                    {% else %}
+                        <span style="color: var(--color-text-muted);">-</span>
+                    {% endif %}
+                </td>
+                <td>{{ person.company ?? '-' }}</td>
+                <td>
+                    {% if person.email %}
+                        <a href="mailto:{{ person.email }}">{{ person.email }}</a>
+                    {% else %}
+                        <span style="color: var(--color-text-muted);">-</span>
+                    {% endif %}
+                </td>
+                <td>{{ person.department ?? '-' }}</td>
+                <td style="text-align: center;">
+                    <a href="{{ path('app_person_show', {id: person.id}) }}" class="btn btn-sm" style="margin-right: 0.25rem;">
+                        👁 {{ 'common.view'|trans }}
+                    </a>
+                    <a href="{{ path('app_person_edit', {id: person.id}) }}" class="btn btn-sm btn-secondary">
+                        ✏️ {{ 'common.edit'|trans }}
+                    </a>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="7" style="text-align: center; padding: var(--spacing-xl); color: var(--color-text-muted);">
+                    {{ 'person.message.no_persons'|trans }}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

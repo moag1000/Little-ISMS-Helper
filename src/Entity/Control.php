@@ -2,75 +2,173 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Doctrine\Orm\Filter\BooleanFilter;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
+use ApiPlatform\Metadata\Delete;
 use App\Repository\ControlRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ControlRepository::class)]
+#[ORM\Index(columns: ['control_id'], name: 'idx_control_control_id')]
+#[ORM\Index(columns: ['category'], name: 'idx_control_category')]
+#[ORM\Index(columns: ['implementation_status'], name: 'idx_control_impl_status')]
+#[ORM\Index(columns: ['target_date'], name: 'idx_control_target_date')]
+#[ORM\Index(columns: ['applicable'], name: 'idx_control_applicable')]
+#[ORM\Index(columns: ['tenant_id'], name: 'idx_control_tenant')]
+#[ApiResource(
+    operations: [
+        new Get(
+            security: "is_granted('ROLE_USER')",
+            description: 'Retrieve a specific ISO 27001 control by ID'
+        ),
+        new GetCollection(
+            security: "is_granted('ROLE_USER')",
+            description: 'Retrieve the collection of ISO 27001 controls with filtering by category, status, and applicability'
+        ),
+        new Post(
+            security: "is_granted('ROLE_USER')",
+            description: 'Create a new control implementation'
+        ),
+        new Put(
+            security: "is_granted('ROLE_USER')",
+            description: 'Update an existing control implementation status'
+        ),
+        new Delete(
+            security: "is_granted('ROLE_ADMIN')",
+            description: 'Delete a control (Admin only)'
+        ),
+    ],
+    normalizationContext: ['groups' => ['control:read']],
+    denormalizationContext: ['groups' => ['control:write']]
+)]
+#[ApiFilter(SearchFilter::class, properties: ['controlId' => 'exact', 'name' => 'partial', 'category' => 'exact', 'implementationStatus' => 'exact'])]
+#[ApiFilter(BooleanFilter::class, properties: ['applicable'])]
+#[ApiFilter(OrderFilter::class, properties: ['controlId', 'category', 'implementationPercentage', 'targetDate'])]
+#[ApiFilter(DateFilter::class, properties: ['targetDate', 'lastReviewDate'])]
 class Control
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['control:read'])]
     private ?int $id = null;
 
+    #[ORM\ManyToOne(targetEntity: Tenant::class)]
+    #[ORM\JoinColumn(nullable: true)]
+    #[Groups(['control:read'])]
+    private ?Tenant $tenant = null;
+
     #[ORM\Column(length: 20)]
+    #[Groups(['control:read', 'control:write', 'risk:read'])]
+    #[Assert\NotBlank(message: 'Control ID is required')]
+    #[Assert\Length(max: 20, maxMessage: 'Control ID cannot exceed {{ limit }} characters')]
+    #[Assert\Regex(
+        pattern: '/^\d+\.\d+(\.\d+)?$/',
+        message: 'Control ID must follow ISO 27001 format (e.g., 5.1, 8.3)'
+    )]
     private ?string $controlId = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['control:read', 'control:write'])]
+    #[Assert\NotBlank(message: 'Control name is required')]
+    #[Assert\Length(max: 255, maxMessage: 'Control name cannot exceed {{ limit }} characters')]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups(['control:read', 'control:write'])]
+    #[Assert\NotBlank(message: 'Control description is required')]
     private ?string $description = null;
 
     #[ORM\Column(length: 100)]
+    #[Groups(['control:read', 'control:write'])]
+    #[Assert\NotBlank(message: 'Control category is required')]
+    #[Assert\Length(max: 100, maxMessage: 'Category cannot exceed {{ limit }} characters')]
     private ?string $category = null;
 
     #[ORM\Column(type: Types::BOOLEAN)]
+    #[Groups(['control:read', 'control:write'])]
+    #[Assert\NotNull(message: 'Applicable flag is required')]
     private ?bool $applicable = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['control:read', 'control:write'])]
     private ?string $justification = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['control:read', 'control:write'])]
     private ?string $implementationNotes = null;
 
     #[ORM\Column(length: 50)]
+    #[Groups(['control:read', 'control:write'])]
+    #[Assert\NotBlank(message: 'Implementation status is required')]
+    #[Assert\Choice(
+        choices: ['not_started', 'planned', 'in_progress', 'implemented', 'verified'],
+        message: 'Implementation status must be one of: {{ choices }}'
+    )]
     private ?string $implementationStatus = 'not_started';
 
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
+    #[Groups(['control:read', 'control:write'])]
+    #[Assert\Range(
+        min: 0,
+        max: 100,
+        notInRangeMessage: 'Implementation percentage must be between {{ min }} and {{ max }}'
+    )]
     private ?int $implementationPercentage = 0;
 
     #[ORM\Column(length: 100, nullable: true)]
+    #[Groups(['control:read', 'control:write'])]
+    #[Assert\Length(max: 100, maxMessage: 'Responsible person cannot exceed {{ limit }} characters')]
     private ?string $responsiblePerson = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    #[Groups(['control:read', 'control:write'])]
     private ?\DateTimeInterface $targetDate = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    #[Groups(['control:read', 'control:write'])]
     private ?\DateTimeInterface $lastReviewDate = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    #[Groups(['control:read', 'control:write'])]
     private ?\DateTimeInterface $nextReviewDate = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Groups(['control:read'])]
     private ?\DateTimeInterface $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[Groups(['control:read'])]
     private ?\DateTimeInterface $updatedAt = null;
 
     /**
      * @var Collection<int, Risk>
      */
     #[ORM\ManyToMany(targetEntity: Risk::class, inversedBy: 'controls')]
+    #[Groups(['control:read'])]
+    #[MaxDepth(1)]
     private Collection $risks;
 
     /**
      * @var Collection<int, Incident>
      */
     #[ORM\ManyToMany(targetEntity: Incident::class, mappedBy: 'relatedControls')]
+    #[Groups(['control:read'])]
+    #[MaxDepth(1)]
     private Collection $incidents;
 
     /**
@@ -78,12 +176,16 @@ class Control
      */
     #[ORM\ManyToMany(targetEntity: Asset::class, inversedBy: 'protectingControls')]
     #[ORM\JoinTable(name: 'control_asset')]
+    #[Groups(['control:read'])]
+    #[MaxDepth(1)]
     private Collection $protectedAssets;
 
     /**
      * @var Collection<int, Training>
      */
     #[ORM\ManyToMany(targetEntity: Training::class, mappedBy: 'coveredControls')]
+    #[Groups(['control:read'])]
+    #[MaxDepth(1)]
     private Collection $trainings;
 
     public function __construct()
@@ -92,12 +194,23 @@ class Control
         $this->incidents = new ArrayCollection();
         $this->protectedAssets = new ArrayCollection();
         $this->trainings = new ArrayCollection();
-        $this->createdAt = new \DateTime();
+        $this->createdAt = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getTenant(): ?Tenant
+    {
+        return $this->tenant;
+    }
+
+    public function setTenant(?Tenant $tenant): static
+    {
+        $this->tenant = $tenant;
+        return $this;
     }
 
     public function getControlId(): ?string
@@ -338,6 +451,7 @@ class Control
      * Get total value of protected assets
      * Data Reuse: Aggregates asset CIA values to show control importance
      */
+    #[Groups(['control:read'])]
     public function getProtectedAssetValue(): int
     {
         $total = 0;
@@ -351,6 +465,7 @@ class Control
      * Get count of high-risk assets protected
      * Data Reuse: Uses Asset risk scoring
      */
+    #[Groups(['control:read'])]
     public function getHighRiskAssetCount(): int
     {
         return $this->protectedAssets->filter(fn($asset) => $asset->isHighRisk())->count();
@@ -360,6 +475,7 @@ class Control
      * Calculate control effectiveness based on incidents
      * Data Reuse: Compare protected assets' incidents before/after control
      */
+    #[Groups(['control:read'])]
     public function getEffectivenessScore(): float
     {
         if ($this->implementationPercentage < 100) {
@@ -393,10 +509,11 @@ class Control
      * Check if control needs review based on recent incidents
      * Data Reuse: Automatic review trigger from incident data
      */
-    public function needsReview(): bool
+    #[Groups(['control:read'])]
+    public function isReviewNeeded(): bool
     {
         // Check if there are recent incidents affecting protected assets
-        $threeMonthsAgo = new \DateTime('-3 months');
+        $threeMonthsAgo = new \DateTimeImmutable('-3 months');
 
         foreach ($this->protectedAssets as $asset) {
             foreach ($asset->getIncidents() as $incident) {
@@ -407,7 +524,7 @@ class Control
         }
 
         // Also check regular review schedule
-        if ($this->nextReviewDate && $this->nextReviewDate < new \DateTime()) {
+        if ($this->nextReviewDate && $this->nextReviewDate < new \DateTimeImmutable()) {
             return true;
         }
 
@@ -443,6 +560,7 @@ class Control
      * Check if control has adequate training coverage
      * Data Reuse: Training status affects control implementation
      */
+    #[Groups(['control:read'])]
     public function hasTrainingCoverage(): bool
     {
         foreach ($this->trainings as $training) {
@@ -457,6 +575,7 @@ class Control
      * Get training gap analysis
      * Data Reuse: Identifies missing or outdated training
      */
+    #[Groups(['control:read'])]
     public function getTrainingStatus(): string
     {
         if ($this->trainings->isEmpty()) {
@@ -481,7 +600,7 @@ class Control
 
         if ($hasCompleted) {
             // Check if training is outdated (>1 year old)
-            $oneYearAgo = new \DateTime('-1 year');
+            $oneYearAgo = new \DateTimeImmutable('-1 year');
             if ($mostRecentDate && $mostRecentDate < $oneYearAgo) {
                 return 'training_outdated';
             }

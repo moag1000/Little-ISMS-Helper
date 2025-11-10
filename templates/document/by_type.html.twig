@@ -1,0 +1,311 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'document.title.by_type'|trans }} - Little ISMS Helper{% endblock %}
+
+{% block body %}
+<div class="d-flex justify-between align-center mb-4">
+    <div>
+        <h1>{{ 'document.title.by_type'|trans }}</h1>
+        <p style="color: var(--color-text-light); margin-top: var(--spacing-sm);">
+            {{ 'document.description.by_type'|trans }}
+        </p>
+    </div>
+    <div>
+        <a href="{{ path('app_document_index') }}" class="btn btn-secondary" style="margin-right: 0.5rem;">
+            ← {{ 'common.back'|trans }}
+        </a>
+        <a href="{{ path('app_document_new') }}" class="btn btn-success">
+            ➕ {{ 'document.action.create'|trans }}
+        </a>
+    </div>
+</div>
+
+{# Statistics Cards #}
+<div class="kpi-grid">
+    <div class="kpi-card">
+        <div class="icon">📄</div>
+        <div class="label">{{ 'document.stats.total'|trans }}</div>
+        <div>
+            <span class="value">{{ totalDocuments }}</span>
+        </div>
+    </div>
+
+    <div class="kpi-card">
+        <div class="icon">📁</div>
+        <div class="label">{{ 'document.stats.document_types'|trans }}</div>
+        <div>
+            <span class="value">{{ documentTypes|length }}</span>
+        </div>
+    </div>
+
+    <div class="kpi-card">
+        <div class="icon">⚠️</div>
+        <div class="label">{{ 'document.stats.expiring_soon'|trans }}</div>
+        <div>
+            <span class="value">{{ expiringSoonCount }}</span>
+        </div>
+    </div>
+
+    <div class="kpi-card">
+        <div class="icon">📊</div>
+        <div class="label">{{ 'document.stats.avg_per_type'|trans }}</div>
+        <div>
+            <span class="value">{{ documentTypes|length > 0 ? (totalDocuments / documentTypes|length)|round : 0 }}</span>
+        </div>
+    </div>
+</div>
+
+{# Document Type Selection #}
+<div class="card mb-4">
+    <h2>{{ 'document.section.select_type'|trans }}</h2>
+
+    <form method="get" style="margin-top: var(--spacing-md);">
+        <div class="form-group">
+            <label for="type">{{ 'document.field.document_type'|trans }}</label>
+            <select name="type" id="type" class="form-select" onchange="this.form.submit();">
+                <option value="">{{ 'document.option.all_types'|trans }}</option>
+                {% for type in documentTypes %}
+                    <option value="{{ type.id }}" {% if selectedType and selectedType.id == type.id %}selected{% endif %}>
+                        {{ type.name }} ({{ type.documentCount }})
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+    </form>
+</div>
+
+{# Document Types Overview #}
+<h2>{{ 'document.section.types_overview'|trans }}</h2>
+
+<div class="module-grid mb-4">
+    {% for type in documentTypes|slice(0, 6) %}
+    <div class="card">
+        <div style="font-size: 2rem; margin-bottom: var(--spacing-sm);">{{ type.icon ?? '📄' }}</div>
+        <h3 style="font-size: 1.1rem; margin-bottom: var(--spacing-sm);">{{ type.name }}</h3>
+        <p style="color: var(--color-text-muted); margin-bottom: var(--spacing-md);">
+            {{ type.description|default('-') }}
+        </p>
+
+        <div class="stats-grid" style="grid-template-columns: 1fr 1fr;">
+            <div class="stat-item">
+                <strong style="font-size: 1.5rem;">{{ type.documentCount }}</strong>
+                <span>{{ 'document.field.documents'|trans }}</span>
+            </div>
+            <div class="stat-item">
+                <strong>{{ type.activeDocuments }}</strong>
+                <span>{{ 'document.field.active'|trans }}</span>
+            </div>
+        </div>
+
+        <div class="mt-3">
+            <a href="{{ path('app_document_by_type', {type: type.id}) }}" class="btn btn-sm">
+                {{ 'common.view_all'|trans }}
+            </a>
+        </div>
+    </div>
+    {% else %}
+    <div class="card" style="grid-column: 1 / -1;">
+        <p style="text-align: center; color: var(--color-text-muted);">
+            {{ 'document.message.no_types'|trans }}
+        </p>
+    </div>
+    {% endfor %}
+</div>
+
+{# Documents by Selected Type #}
+{% if selectedType %}
+<h2>{{ selectedType.name }} - {{ 'document.section.documents'|trans }}</h2>
+
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>{{ 'document.field.title'|trans }}</th>
+                <th>{{ 'document.field.version'|trans }}</th>
+                <th>{{ 'document.field.status'|trans }}</th>
+                <th>{{ 'document.field.owner'|trans }}</th>
+                <th>{{ 'document.field.last_updated'|trans }}</th>
+                <th>{{ 'document.field.review_date'|trans }}</th>
+                <th style="text-align: center;">{{ 'common.actions'|trans }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for document in documentsByType %}
+            <tr>
+                <td>
+                    <strong>{{ document.title }}</strong>
+                    {% if document.isControlledDocument %}
+                        <span class="badge badge-info" style="margin-left: var(--spacing-xs);">
+                            {{ 'document.badge.controlled'|trans }}
+                        </span>
+                    {% endif %}
+                    {% if document.isConfidential %}
+                        <span class="badge badge-danger" style="margin-left: var(--spacing-xs);">
+                            {{ 'document.badge.confidential'|trans }}
+                        </span>
+                    {% endif %}
+                </td>
+                <td>
+                    <code>{{ document.version }}</code>
+                </td>
+                <td>
+                    {% set statusColors = {
+                        'draft': 'secondary',
+                        'review': 'warning',
+                        'approved': 'success',
+                        'archived': 'info',
+                        'obsolete': 'danger'
+                    } %}
+                    <span class="badge badge-{{ statusColors[document.status] ?? 'secondary' }}">
+                        {{ ('document.status.' ~ document.status)|trans }}
+                    </span>
+                </td>
+                <td>{{ document.owner.fullName|default('-') }}</td>
+                <td>{{ document.updatedAt|date('d.m.Y') }}</td>
+                <td>
+                    {% if document.reviewDate %}
+                        {{ document.reviewDate|date('d.m.Y') }}
+                        {% if document.reviewDate < date() %}
+                            <span class="badge badge-danger" style="margin-left: var(--spacing-xs);">
+                                {{ 'document.badge.overdue'|trans }}
+                            </span>
+                        {% elseif document.reviewDate < date('+30 days') %}
+                            <span class="badge badge-warning" style="margin-left: var(--spacing-xs);">
+                                {{ 'document.badge.due_soon'|trans }}
+                            </span>
+                        {% endif %}
+                    {% else %}
+                        <span style="color: var(--color-text-muted);">-</span>
+                    {% endif %}
+                </td>
+                <td style="text-align: center;">
+                    <a href="{{ path('app_document_show', {id: document.id}) }}" class="btn btn-sm" style="margin-right: 0.25rem;">
+                        👁 {{ 'common.view'|trans }}
+                    </a>
+                    <a href="{{ path('app_document_download', {id: document.id}) }}" class="btn btn-sm btn-secondary">
+                        📥 {{ 'common.download'|trans }}
+                    </a>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="7" style="text-align: center; padding: var(--spacing-xl); color: var(--color-text-muted);">
+                    {{ 'document.message.no_documents_for_type'|trans }}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{# Type Statistics #}
+<div class="module-grid mt-4">
+    <div class="card">
+        <h3>{{ 'document.section.type_statistics'|trans }}</h3>
+
+        <div class="stats-grid mt-3" style="grid-template-columns: 1fr;">
+            <div class="stat-item">
+                <strong>{{ selectedType.documentCount }}</strong>
+                <span>{{ 'document.stats.total_documents'|trans }}</span>
+            </div>
+            <div class="stat-item">
+                <strong>{{ selectedType.activeDocuments }}</strong>
+                <span>{{ 'document.stats.active_documents'|trans }}</span>
+            </div>
+            <div class="stat-item">
+                <strong>{{ selectedType.draftDocuments }}</strong>
+                <span>{{ 'document.stats.draft_documents'|trans }}</span>
+            </div>
+            <div class="stat-item">
+                <strong>{{ selectedType.overdueReviews }}</strong>
+                <span>{{ 'document.stats.overdue_reviews'|trans }}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>{{ 'document.section.recent_activity'|trans }}</h3>
+
+        {% if selectedType.recentDocuments|length > 0 %}
+        <ul style="list-style: none; padding: 0; margin-top: var(--spacing-md);">
+            {% for doc in selectedType.recentDocuments|slice(0, 5) %}
+            <li style="padding: var(--spacing-xs) 0; border-bottom: 1px solid var(--color-border);">
+                <strong>{{ doc.title }}</strong>
+                <br><small style="color: var(--color-text-muted);">
+                    {{ 'document.field.updated'|trans }}: {{ doc.updatedAt|date('d.m.Y H:i') }}
+                </small>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p style="color: var(--color-text-muted); margin-top: var(--spacing-md);">
+            {{ 'document.message.no_recent_activity'|trans }}
+        </p>
+        {% endif %}
+    </div>
+</div>
+
+{% else %}
+
+{# All Document Types Table #}
+<h2>{{ 'document.section.all_types'|trans }}</h2>
+
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>{{ 'document.field.type_name'|trans }}</th>
+                <th>{{ 'document.field.description'|trans }}</th>
+                <th style="text-align: center;">{{ 'document.field.total_documents'|trans }}</th>
+                <th style="text-align: center;">{{ 'document.field.active'|trans }}</th>
+                <th style="text-align: center;">{{ 'document.field.draft'|trans }}</th>
+                <th style="text-align: center;">{{ 'document.field.overdue_reviews'|trans }}</th>
+                <th style="text-align: center;">{{ 'common.actions'|trans }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for type in documentTypes %}
+            <tr>
+                <td>
+                    <strong>{{ type.icon ?? '📄' }} {{ type.name }}</strong>
+                </td>
+                <td>
+                    <small style="color: var(--color-text-muted);">
+                        {{ type.description|default('-') }}
+                    </small>
+                </td>
+                <td style="text-align: center;">
+                    <span class="badge badge-info">{{ type.documentCount }}</span>
+                </td>
+                <td style="text-align: center;">
+                    <span class="badge badge-success">{{ type.activeDocuments }}</span>
+                </td>
+                <td style="text-align: center;">
+                    <span class="badge badge-secondary">{{ type.draftDocuments }}</span>
+                </td>
+                <td style="text-align: center;">
+                    {% if type.overdueReviews > 0 %}
+                        <span class="badge badge-danger">{{ type.overdueReviews }}</span>
+                    {% else %}
+                        <span class="badge badge-success">0</span>
+                    {% endif %}
+                </td>
+                <td style="text-align: center;">
+                    <a href="{{ path('app_document_by_type', {type: type.id}) }}" class="btn btn-sm">
+                        👁 {{ 'common.view'|trans }}
+                    </a>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="7" style="text-align: center; padding: var(--spacing-xl); color: var(--color-text-muted);">
+                    {{ 'document.message.no_types'|trans }}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endif %}
+{% endblock %}

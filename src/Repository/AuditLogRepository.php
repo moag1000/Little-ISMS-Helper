@@ -7,7 +7,26 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
+ * Audit Log Repository
+ *
+ * Repository for querying audit trail entries with comprehensive filtering and search capabilities.
+ * Supports compliance requirements for activity tracking and forensic analysis.
+ *
+ * Features:
+ * - Entity-specific audit history
+ * - User activity tracking
+ * - Action-based filtering
+ * - Date range queries
+ * - Statistical analysis by action and entity type
+ * - Recent activity monitoring
+ * - Full-text search across multiple criteria
+ *
  * @extends ServiceEntityRepository<AuditLog>
+ *
+ * @method AuditLog|null find($id, $lockMode = null, $lockVersion = null)
+ * @method AuditLog|null findOneBy(array $criteria, array $orderBy = null)
+ * @method AuditLog[]    findAll()
+ * @method AuditLog[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class AuditLogRepository extends ServiceEntityRepository
 {

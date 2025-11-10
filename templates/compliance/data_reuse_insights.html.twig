@@ -1,0 +1,197 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'compliance.title.data_reuse'|trans }} - Little ISMS Helper{% endblock %}
+
+{% block body %}
+<div class="d-flex justify-between align-center mb-4">
+    <div>
+        <h1>{{ 'compliance.title.data_reuse'|trans }}</h1>
+        <p style="color: var(--color-text-light); margin-top: var(--spacing-sm);">
+            {{ 'compliance.description.data_reuse'|trans }}
+        </p>
+    </div>
+    <div>
+        <a href="{{ path('app_compliance_export_reuse') }}" class="btn btn-success">
+            📊 {{ 'compliance.action.export_insights'|trans }}
+        </a>
+    </div>
+</div>
+
+{# Statistics Cards #}
+<div class="kpi-grid">
+    <div class="kpi-card">
+        <div class="icon">📊</div>
+        <div class="label">{{ 'compliance.stats.total_data_points'|trans }}</div>
+        <div>
+            <span class="value">{{ totalDataPoints }}</span>
+        </div>
+    </div>
+
+    <div class="kpi-card">
+        <div class="icon">🔄</div>
+        <div class="label">{{ 'compliance.stats.reused_data'|trans }}</div>
+        <div>
+            <span class="value">{{ reusedDataPoints }}</span>
+        </div>
+    </div>
+
+    <div class="kpi-card">
+        <div class="icon">📈</div>
+        <div class="label">{{ 'compliance.stats.reuse_rate'|trans }}</div>
+        <div>
+            {% set reuseRate = totalDataPoints > 0 ? (reusedDataPoints / totalDataPoints * 100)|round : 0 %}
+            <span class="value">{{ reuseRate }}</span>
+            <span class="unit">%</span>
+        </div>
+    </div>
+
+    <div class="kpi-card">
+        <div class="icon">💾</div>
+        <div class="label">{{ 'compliance.stats.effort_saved'|trans }}</div>
+        <div>
+            <span class="value">{{ effortSavedHours }}</span>
+            <span class="unit">h</span>
+        </div>
+    </div>
+</div>
+
+{# Reuse Opportunities #}
+<h2>{{ 'compliance.section.reuse_opportunities'|trans }}</h2>
+
+<div class="module-grid mb-4">
+    {% for opportunity in reuseOpportunities %}
+    <div class="card">
+        <h3 style="font-size: 1.1rem; margin-bottom: var(--spacing-sm);">{{ opportunity.name }}</h3>
+        <p style="color: var(--color-text-muted); margin-bottom: var(--spacing-md);">
+            {{ opportunity.description }}
+        </p>
+
+        <div class="stats-grid" style="grid-template-columns: 1fr 1fr;">
+            <div class="stat-item">
+                <strong>{{ opportunity.applicableFrameworks|length }}</strong>
+                <span>{{ 'compliance.field.frameworks'|trans }}</span>
+            </div>
+            <div class="stat-item">
+                <strong>{{ opportunity.potentialSavings }}h</strong>
+                <span>{{ 'compliance.field.time_savings'|trans }}</span>
+            </div>
+        </div>
+
+        <div class="mt-2">
+            <span class="badge badge-success">{{ opportunity.reusePercentage }}% {{ 'compliance.badge.reusable'|trans }}</span>
+        </div>
+
+        <div class="mt-3">
+            <a href="{{ path('app_compliance_opportunity_details', {id: opportunity.id}) }}" class="btn btn-sm">
+                {{ 'common.view_details'|trans }}
+            </a>
+        </div>
+    </div>
+    {% else %}
+    <div class="card" style="grid-column: 1 / -1;">
+        <p style="text-align: center; color: var(--color-text-muted);">
+            {{ 'compliance.message.no_opportunities'|trans }}
+        </p>
+    </div>
+    {% endfor %}
+</div>
+
+{# Data Reuse Matrix #}
+<h2>{{ 'compliance.section.reuse_matrix'|trans }}</h2>
+
+<div class="card mb-4">
+    <p style="color: var(--color-text-muted); margin-bottom: var(--spacing-md);">
+        {{ 'compliance.description.reuse_matrix'|trans }}
+    </p>
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>{{ 'compliance.field.data_element'|trans }}</th>
+                    <th>{{ 'compliance.field.source'|trans }}</th>
+                    <th style="text-align: center;">{{ 'compliance.field.reuse_count'|trans }}</th>
+                    <th>{{ 'compliance.field.used_in_frameworks'|trans }}</th>
+                    <th style="text-align: center;">{{ 'compliance.field.quality_score'|trans }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for element in dataElements %}
+                <tr>
+                    <td>
+                        <strong>{{ element.name }}</strong>
+                        <br><small style="color: var(--color-text-muted);">{{ element.type }}</small>
+                    </td>
+                    <td>{{ element.source }}</td>
+                    <td style="text-align: center;">
+                        <span class="badge badge-info">{{ element.reuseCount }}</span>
+                    </td>
+                    <td>
+                        {% for framework in element.frameworks %}
+                            <span class="badge badge-secondary" style="margin-right: var(--spacing-xs);">
+                                {{ framework.name }}
+                            </span>
+                        {% endfor %}
+                    </td>
+                    <td style="text-align: center;">
+                        {% set qualityColor = element.qualityScore >= 80 ? 'success' : (element.qualityScore >= 60 ? 'warning' : 'danger') %}
+                        <span class="badge badge-{{ qualityColor }}">{{ element.qualityScore }}%</span>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5" style="text-align: center; padding: var(--spacing-xl); color: var(--color-text-muted);">
+                        {{ 'compliance.message.no_data_elements'|trans }}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{# Framework Coverage Map #}
+<h2>{{ 'compliance.section.framework_coverage'|trans }}</h2>
+
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>{{ 'compliance.field.framework'|trans }}</th>
+                <th style="text-align: center;">{{ 'compliance.field.total_requirements'|trans }}</th>
+                <th style="text-align: center;">{{ 'compliance.field.reused_data'|trans }}</th>
+                <th style="text-align: center;">{{ 'compliance.field.new_data_needed'|trans }}</th>
+                <th style="text-align: center;">{{ 'compliance.field.coverage'|trans }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for framework in frameworkCoverage %}
+            <tr>
+                <td><strong>{{ framework.name }}</strong></td>
+                <td style="text-align: center;">{{ framework.totalRequirements }}</td>
+                <td style="text-align: center;">
+                    <span class="badge badge-success">{{ framework.reusedData }}</span>
+                </td>
+                <td style="text-align: center;">
+                    <span class="badge badge-warning">{{ framework.newDataNeeded }}</span>
+                </td>
+                <td>
+                    {% set coverage = (framework.reusedData / framework.totalRequirements * 100)|round %}
+                    <div class="progress" style="height: 20px; width: 100px; margin: 0 auto;">
+                        <div class="progress-bar" style="width: {{ coverage }}%; font-size: 0.75rem;">
+                            {{ coverage }}%
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="5" style="text-align: center; padding: var(--spacing-xl); color: var(--color-text-muted);">
+                    {{ 'compliance.message.no_frameworks'|trans }}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

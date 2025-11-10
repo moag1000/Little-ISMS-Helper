@@ -1,0 +1,261 @@
+import { Controller } from '@hotwired/stimulus';
+
+/**
+ * Keyboard Shortcuts Controller
+ * Global keyboard navigation and actions
+ *
+ * Usage:
+ * <div data-controller="keyboard-shortcuts">
+ *   <div data-keyboard-shortcuts-target="modal">...</div>
+ * </div>
+ */
+export default class extends Controller {
+    static targets = ['modal'];
+
+    shortcuts = [
+        // Global Navigation
+        { keys: ['g', 'd'], description: 'Go to Dashboard', action: () => this.navigate('/dashboard'), category: 'Navigation' },
+        { keys: ['g', 'a'], description: 'Go to Assets', action: () => this.navigate('/asset'), category: 'Navigation' },
+        { keys: ['g', 'r'], description: 'Go to Risks', action: () => this.navigate('/risk'), category: 'Navigation' },
+        { keys: ['g', 'i'], description: 'Go to Incidents', action: () => this.navigate('/incident'), category: 'Navigation' },
+        { keys: ['g', 's'], description: 'Go to SoA', action: () => this.navigate('/soa'), category: 'Navigation' },
+        { keys: ['g', 't'], description: 'Go to Trainings', action: () => this.navigate('/training'), category: 'Navigation' },
+        { keys: ['g', 'c'], description: 'Go to Compliance', action: () => this.navigate('/compliance'), category: 'Navigation' },
+
+        // Actions
+        { keys: ['c'], description: 'Create new (context-aware)', action: () => this.contextCreate(), category: 'Actions' },
+        { keys: ['e'], description: 'Edit current item', action: () => this.contextEdit(), category: 'Actions' },
+        { keys: ['/'], description: 'Focus search', action: () => this.focusSearch(), category: 'Actions' },
+
+        // Special
+        { keys: ['?'], description: 'Show this help', action: () => this.show(), category: 'Help' },
+        { keys: ['Escape'], description: 'Close modals/dialogs', action: () => this.closeModals(), category: 'Help' },
+    ];
+
+    keySequence = [];
+    sequenceTimeout = null;
+
+    connect() {
+        this.boundHandleKeydown = this.handleKeydown.bind(this);
+        document.addEventListener('keydown', this.boundHandleKeydown);
+
+        // Close modal on ESC
+        if (this.hasModalTarget) {
+            this.boundHandleBackdropClick = this.handleBackdropClick.bind(this);
+            this.modalTarget.addEventListener('click', this.boundHandleBackdropClick);
+        }
+    }
+
+    disconnect() {
+        document.removeEventListener('keydown', this.boundHandleKeydown);
+        if (this.hasModalTarget && this.boundHandleBackdropClick) {
+            this.modalTarget.removeEventListener('click', this.boundHandleBackdropClick);
+        }
+    }
+
+    handleKeydown(event) {
+        // Ignore if user is typing in input field
+        if (this.isInputFocused() && event.key !== 'Escape' && event.key !== '?') {
+            return;
+        }
+
+        // Ignore if modifier keys are pressed (except for ?)
+        if ((event.metaKey || event.ctrlKey || event.altKey) && event.key !== '?') {
+            return;
+        }
+
+        // Handle Escape (handled by ModalManager, so we can skip this)
+        if (event.key === 'Escape') {
+            return;  // Let ModalManager handle it
+        }
+
+        // Single key shortcuts (when not in input)
+        if (!this.isInputFocused()) {
+            const singleKeyShortcut = this.shortcuts.find(s =>
+                s.keys.length === 1 && s.keys[0] === event.key
+            );
+
+            if (singleKeyShortcut) {
+                event.preventDefault();
+                singleKeyShortcut.action();
+                return;
+            }
+        }
+
+        // Sequence shortcuts (like 'g' then 'd')
+        if (!this.isInputFocused() && event.key.length === 1 && !event.metaKey && !event.ctrlKey) {
+            this.keySequence.push(event.key);
+
+            // Clear sequence after 1 second
+            clearTimeout(this.sequenceTimeout);
+            this.sequenceTimeout = setTimeout(() => {
+                this.keySequence = [];
+            }, 1000);
+
+            // Check if sequence matches any shortcut
+            const matchingShortcut = this.shortcuts.find(s =>
+                s.keys.length > 1 &&
+                this.arraysEqual(s.keys, this.keySequence)
+            );
+
+            if (matchingShortcut) {
+                event.preventDefault();
+                matchingShortcut.action();
+                this.keySequence = [];
+            }
+        }
+    }
+
+    handleBackdropClick(event) {
+        if (event.target === this.modalTarget) {
+            this.close();
+        }
+    }
+
+    isInputFocused() {
+        const activeElement = document.activeElement;
+        return activeElement && (
+            activeElement.tagName === 'INPUT' ||
+            activeElement.tagName === 'TEXTAREA' ||
+            activeElement.tagName === 'SELECT' ||
+            activeElement.isContentEditable
+        );
+    }
+
+    arraysEqual(a, b) {
+        return a.length === b.length && a.every((val, index) => val === b[index]);
+    }
+
+    // Actions
+    navigate(url) {
+        window.Turbo.visit(url);
+    }
+
+    contextCreate() {
+        // Determine what to create based on current page
+        const path = window.location.pathname;
+
+        if (path.includes('/asset')) {
+            this.navigate('/asset/new');
+        } else if (path.includes('/risk')) {
+            this.navigate('/risk/new');
+        } else if (path.includes('/incident')) {
+            this.navigate('/incident/new');
+        } else if (path.includes('/training')) {
+            this.navigate('/training/new');
+        } else if (path.includes('/audit')) {
+            this.navigate('/audit/new');
+        } else {
+            // Fallback: show command palette
+            document.dispatchEvent(new KeyboardEvent('keydown', {
+                key: 'k',
+                metaKey: true
+            }));
+        }
+    }
+
+    contextEdit() {
+        // Find edit button on page and click it
+        const editButton = document.querySelector('a[href*="/edit"], button[data-action*="edit"]');
+        if (editButton) {
+            editButton.click();
+        }
+    }
+
+    focusSearch() {
+        // Focus search input if exists
+        const searchInput = document.querySelector('input[type="search"], input[placeholder*="Suche"], input[placeholder*="Search"]');
+        if (searchInput) {
+            searchInput.focus();
+            searchInput.select();
+        }
+    }
+
+    closeModals() {
+        // Close any open modals
+        const openModals = document.querySelectorAll('.modal.show, [data-command-palette-target="modal"].command-palette-open');
+        openModals.forEach(modal => {
+            modal.classList.remove('show', 'command-palette-open');
+        });
+
+        // Also hide keyboard shortcuts help
+        if (this.hasModalTarget && this.modalTarget.classList.contains('keyboard-shortcuts-open')) {
+            this.close();
+        }
+    }
+
+    // Show/Hide Help Modal
+    show() {
+        if (this.hasModalTarget) {
+            // Remove inline style that modal manager might have set
+            this.modalTarget.style.display = '';
+            this.modalTarget.classList.add('keyboard-shortcuts-open');
+            this.renderShortcuts();
+        }
+    }
+
+    close() {
+        if (this.hasModalTarget) {
+            this.modalTarget.classList.remove('keyboard-shortcuts-open');
+        }
+    }
+
+    renderShortcuts() {
+        const content = this.modalTarget.querySelector('.keyboard-shortcuts-content');
+        if (!content) return;
+
+        // Group shortcuts by category
+        const grouped = this.groupByCategory(this.shortcuts);
+
+        let html = '<div class="keyboard-shortcuts-grid">';
+
+        for (const [category, shortcuts] of Object.entries(grouped)) {
+            html += `
+                <div class="keyboard-shortcuts-category">
+                    <h4>${category}</h4>
+                    <dl>
+            `;
+
+            shortcuts.forEach(shortcut => {
+                html += `
+                    <div class="keyboard-shortcuts-item">
+                        <dt>
+                            ${shortcut.keys.map(k => `<kbd>${this.formatKey(k)}</kbd>`).join(' <span class="then">then</span> ')}
+                        </dt>
+                        <dd>${shortcut.description}</dd>
+                    </div>
+                `;
+            });
+
+            html += `
+                    </dl>
+                </div>
+            `;
+        }
+
+        html += '</div>';
+        content.innerHTML = html;
+    }
+
+    groupByCategory(shortcuts) {
+        return shortcuts.reduce((acc, shortcut) => {
+            if (!acc[shortcut.category]) {
+                acc[shortcut.category] = [];
+            }
+            acc[shortcut.category].push(shortcut);
+            return acc;
+        }, {});
+    }
+
+    formatKey(key) {
+        const specialKeys = {
+            'Escape': 'ESC',
+            'Enter': '↵',
+            'ArrowUp': '↑',
+            'ArrowDown': '↓',
+            'ArrowLeft': '←',
+            'ArrowRight': '→',
+        };
+        return specialKeys[key] || key.toUpperCase();
+    }
+}

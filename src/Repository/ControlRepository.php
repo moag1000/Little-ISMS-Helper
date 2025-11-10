@@ -6,6 +6,18 @@ use App\Entity\Control;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
+/**
+ * Control Repository
+ *
+ * Repository for querying ISO 27001 Control entities with custom business logic queries.
+ *
+ * @extends ServiceEntityRepository<Control>
+ *
+ * @method Control|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Control|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Control[]    findAll()
+ * @method Control[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ */
 class ControlRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
@@ -13,6 +25,47 @@ class ControlRepository extends ServiceEntityRepository
         parent::__construct($registry, Control::class);
     }
 
+    /**
+     * Find all controls ordered by ISO 27001 control ID in natural order.
+     *
+     * Sorts controls by the numeric parts of controlId (e.g., 5.1, 5.2, ..., 5.10, 5.37)
+     * instead of lexicographic sort (5.1, 5.10, 5.11, ..., 5.2).
+     *
+     * Uses LENGTH + ASC for correct natural sorting (5.1 < 5.2 < 5.10).
+     *
+     * @return Control[] Array of Control entities in ISO 27001 natural order
+     */
+    public function findAllInIsoOrder(): array
+    {
+        return $this->createQueryBuilder('c')
+            ->orderBy('LENGTH(c.controlId)', 'ASC')
+            ->addOrderBy('c.controlId', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Find controls by category ordered by ISO 27001 control ID in natural order.
+     *
+     * @param string $category The category to filter by
+     * @return Control[] Array of Control entities in ISO 27001 natural order
+     */
+    public function findByCategoryInIsoOrder(string $category): array
+    {
+        return $this->createQueryBuilder('c')
+            ->where('c.category = :category')
+            ->setParameter('category', $category)
+            ->orderBy('LENGTH(c.controlId)', 'ASC')
+            ->addOrderBy('c.controlId', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Find all applicable ISO 27001 controls ordered by control ID.
+     *
+     * @return Control[] Array of applicable Control entities
+     */
     public function findApplicableControls(): array
     {
         return $this->createQueryBuilder('c')
@@ -23,6 +76,11 @@ class ControlRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    /**
+     * Count controls grouped by ISO 27001 Annex A category.
+     *
+     * @return array<array{category: string, total: int, applicable: int}> Array with total and applicable counts per category
+     */
     public function countByCategory(): array
     {
         return $this->createQueryBuilder('c')
@@ -33,14 +91,50 @@ class ControlRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    /**
+     * Get control implementation statistics grouped by status.
+     *
+     * @return array{total: int, implemented: int, in_progress: int, not_started: int, not_applicable: int} Control statistics
+     */
     public function getImplementationStats(): array
     {
-        return $this->createQueryBuilder('c')
+        $rawStats = $this->createQueryBuilder('c')
             ->select('c.implementationStatus, COUNT(c.id) as count')
             ->where('c.applicable = :applicable')
             ->setParameter('applicable', true)
             ->groupBy('c.implementationStatus')
             ->getQuery()
             ->getResult();
+
+        // Transform to template-friendly format
+        $stats = [
+            'total' => 0,
+            'implemented' => 0,
+            'in_progress' => 0,
+            'not_started' => 0,
+            'not_applicable' => 0,
+        ];
+
+        foreach ($rawStats as $stat) {
+            $status = $stat['implementationStatus'] ?? 'not_started';
+            $count = (int) $stat['count'];
+            $stats['total'] += $count;
+
+            if (isset($stats[$status])) {
+                $stats[$status] = $count;
+            }
+        }
+
+        // Add not applicable controls
+        $notApplicableCount = $this->createQueryBuilder('c')
+            ->select('COUNT(c.id)')
+            ->where('c.applicable = :applicable')
+            ->setParameter('applicable', false)
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        $stats['not_applicable'] = (int) $notApplicableCount;
+
+        return $stats;
     }
 }

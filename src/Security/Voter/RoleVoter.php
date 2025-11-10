@@ -8,7 +8,27 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 /**
- * Voter for Role management permissions
+ * Role Voter
+ *
+ * Implements fine-grained authorization for Role entity operations.
+ * Protects system roles from unauthorized modification or deletion.
+ *
+ * Supported Operations:
+ * - VIEW: View role definitions and permissions
+ * - CREATE: Create new custom roles
+ * - EDIT: Modify role permissions and attributes
+ * - DELETE: Remove custom roles
+ *
+ * Security Rules:
+ * - ROLE_ADMIN bypasses all checks
+ * - Inactive users cannot perform any actions
+ * - Permission-based access control (role.view, role.create, role.edit, role.delete)
+ * - System roles (ROLE_USER, ROLE_ADMIN) cannot be edited or deleted
+ *
+ * System Role Protection:
+ * - Implements OWASP A1: Broken Access Control prevention
+ * - Prevents privilege escalation by protecting core system roles
+ * - Ensures role integrity for security-critical operations
  */
 class RoleVoter extends Voter
 {

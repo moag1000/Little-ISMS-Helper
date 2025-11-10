@@ -1,0 +1,309 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'training.title'|trans }} - {{ parent() }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h2">
+            <i class="bi bi-mortarboard"></i> {{ 'training.title'|trans }}
+        </h1>
+        {% if is_granted('ROLE_USER') %}
+        <a href="{{ path('app_training_new') }}" class="btn btn-primary" data-turbo-action="advance">
+            <i class="bi bi-plus-circle"></i> {{ 'training.new'|trans }}
+        </a>
+        {% endif %}
+    </div>
+
+    {# Statistics Cards #}
+    <turbo-frame id="training-stats">
+        <div class="row mb-4">
+            <div class="col-md-3 mb-3">
+                <div class="card border-primary">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0">
+                                <i class="bi bi-collection text-primary" style="font-size: 2rem;"></i>
+                            </div>
+                            <div class="ms-3">
+                                <h6 class="text-muted mb-1">{{ 'training.statistics.total'|trans }}</h6>
+                                <h3 class="mb-0">
+                                    <span id="training-total-count">{{ statistics.total ?? trainings|length }}</span>
+                                </h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3 mb-3">
+                <div class="card border-info">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0">
+                                <i class="bi bi-calendar-check text-info" style="font-size: 2rem;"></i>
+                            </div>
+                            <div class="ms-3">
+                                <h6 class="text-muted mb-1">{{ 'training.statistics.upcoming'|trans }}</h6>
+                                <h3 class="mb-0">
+                                    <span id="training-upcoming-count">{{ statistics.upcoming ?? 0 }}</span>
+                                </h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3 mb-3">
+                <div class="card border-success">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0">
+                                <i class="bi bi-check-circle text-success" style="font-size: 2rem;"></i>
+                            </div>
+                            <div class="ms-3">
+                                <h6 class="text-muted mb-1">{{ 'training.statistics.completed'|trans }}</h6>
+                                <h3 class="mb-0">
+                                    <span id="training-completed-count">{{ statistics.completed ?? 0 }}</span>
+                                </h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3 mb-3">
+                <div class="card border-warning">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0">
+                                <i class="bi bi-exclamation-triangle text-warning" style="font-size: 2rem;"></i>
+                            </div>
+                            <div class="ms-3">
+                                <h6 class="text-muted mb-1">{{ 'training.statistics.mandatory'|trans }}</h6>
+                                <h3 class="mb-0">
+                                    <span id="training-mandatory-count">{{ statistics.mandatory ?? 0 }}</span>
+                                </h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </turbo-frame>
+
+    {# Upcoming Trainings Section #}
+    {% if upcoming|length > 0 %}
+    <div class="card mb-4 border-info">
+        <div class="card-header bg-info text-white">
+            <h5 class="mb-0"><i class="bi bi-calendar-event"></i> {{ 'training.upcoming_trainings'|trans }}</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>{{ 'training.title'|trans }}</th>
+                            <th>{{ 'training.type'|trans }}</th>
+                            <th>{{ 'training.scheduled_date'|trans }}</th>
+                            <th>{{ 'training.delivery_method'|trans }}</th>
+                            <th>{{ 'training.mandatory'|trans }}</th>
+                            <th>{{ 'common.actions'|trans }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for training in upcoming %}
+                        <tr>
+                            <td>
+                                <strong>{{ training.title }}</strong>
+                                {% if training.mandatory %}
+                                <span class="badge bg-warning text-dark ms-1">
+                                    <i class="bi bi-exclamation-circle"></i> {{ 'training.mandatory_label'|trans }}
+                                </span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span class="badge bg-secondary">
+                                    {{ ('training.type.' ~ training.trainingType)|trans }}
+                                </span>
+                            </td>
+                            <td>
+                                <i class="bi bi-clock"></i>
+                                {{ training.scheduledDate|date('d.m.Y H:i') }}
+                            </td>
+                            <td>{{ ('training.delivery.' ~ training.deliveryMethod)|trans }}</td>
+                            <td>
+                                {% if training.mandatory %}
+                                <span class="text-warning"><i class="bi bi-check-circle-fill"></i> {{ 'common.yes'|trans }}</span>
+                                {% else %}
+                                <span class="text-muted">{{ 'common.no'|trans }}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{{ path('app_training_show', {id: training.id}) }}"
+                                   class="btn btn-sm btn-outline-primary"
+                                   data-turbo-action="advance">
+                                    <i class="bi bi-eye"></i> {{ 'common.view'|trans }}
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {# All Trainings Section #}
+    <div class="card" data-controller="bulk-actions" data-bulk-actions-endpoint-value="/training">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0"><i class="bi bi-list"></i> {{ 'training.all_trainings'|trans }}</h5>
+        </div>
+        <div class="card-body">
+            {% if trainings|length == 0 %}
+            <div class="alert alert-info" role="alert">
+                <i class="bi bi-info-circle"></i> {{ 'training.no_trainings'|trans }}
+                {% if is_granted('ROLE_USER') %}
+                <a href="{{ path('app_training_new') }}" class="alert-link" data-turbo-action="advance">
+                    {{ 'training.create_first'|trans }}
+                </a>
+                {% endif %}
+            </div>
+            {% else %}
+            <div class="table-responsive">
+                <table class="table table-hover table-striped">
+                    <thead>
+                        <tr>
+                            <th style="width: 40px;">
+                                <input type="checkbox"
+                                       class="form-check-input"
+                                       data-action="bulk-actions#selectAll"
+                                       data-bulk-actions-target="selectAllCheckbox"
+                                       title="Alle auswählen">
+                            </th>
+                            <th>{{ 'training.title'|trans }}</th>
+                            <th>{{ 'training.type'|trans }}</th>
+                            <th>{{ 'training.scheduled_date'|trans }}</th>
+                            <th>{{ 'training.duration'|trans }}</th>
+                            <th>{{ 'training.status'|trans }}</th>
+                            <th>{{ 'training.participants_count'|trans }}</th>
+                            <th>{{ 'common.actions'|trans }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for training in trainings %}
+                        <tr data-training-id="{{ training.id }}">
+                            <td>
+                                <input type="checkbox"
+                                       class="form-check-input"
+                                       data-bulk-actions-target="item"
+                                       data-action="bulk-actions#selectItem"
+                                       value="{{ training.id }}">
+                            </td>
+                            <td>
+                                <strong>{{ training.title }}</strong>
+                                {% if training.mandatory %}
+                                <span class="badge bg-warning text-dark ms-1">
+                                    <i class="bi bi-exclamation-circle"></i>
+                                </span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span class="badge bg-secondary">
+                                    {{ ('training.type.' ~ training.trainingType)|trans }}
+                                </span>
+                            </td>
+                            <td>{{ training.scheduledDate|date('d.m.Y H:i') }}</td>
+                            <td>{{ training.duration }} {{ 'training.minutes'|trans }}</td>
+                            <td>
+                                {% set statusClass = {
+                                    'planned': 'info',
+                                    'confirmed': 'primary',
+                                    'completed': 'success',
+                                    'cancelled': 'danger',
+                                    'postponed': 'warning'
+                                } %}
+                                <span class="badge bg-{{ statusClass[training.status] ?? 'secondary' }}">
+                                    {{ ('training.status.' ~ training.status)|trans }}
+                                </span>
+                            </td>
+                            <td>
+                                <i class="bi bi-people"></i>
+                                {{ training.participants|length }}
+                            </td>
+                            <td>
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <a href="{{ path('app_training_show', {id: training.id}) }}"
+                                       class="btn btn-outline-primary"
+                                       data-turbo-action="advance"
+                                       title="{{ 'common.view'|trans }}">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    {% if is_granted('ROLE_USER') %}
+                                    <a href="{{ path('app_training_edit', {id: training.id}) }}"
+                                       class="btn btn-outline-secondary"
+                                       data-turbo-action="advance"
+                                       title="{{ 'common.edit'|trans }}">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    {% endif %}
+                                    {% if is_granted('ROLE_ADMIN') %}
+                                    <button type="button"
+                                            class="btn btn-outline-danger"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#deleteModal{{ training.id }}"
+                                            title="{{ 'common.delete'|trans }}">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% endif %}
+        </div>
+
+        {# Bulk Action Bar #}
+        {% if trainings|length > 0 %}
+        {% include '_components/_bulk_action_bar.html.twig' with {
+            actions: ['export', 'assign', 'delete']
+        } %}
+        {% endif %}
+    </div>
+</div>
+
+{# Delete Modals #}
+{% for training in trainings %}
+<div class="modal fade" id="deleteModal{{ training.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ training.id }}" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="deleteModalLabel{{ training.id }}">
+                    <i class="bi bi-exclamation-triangle"></i> {{ 'training.confirm_delete'|trans }}
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>{{ 'training.delete_warning'|trans({'%title%': training.title}) }}</p>
+                <p class="text-muted"><small>{{ 'common.action_irreversible'|trans }}</small></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    {{ 'common.cancel'|trans }}
+                </button>
+                <form method="post" action="{{ path('app_training_delete', {id: training.id}) }}" style="display: inline;">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ training.id) }}">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-trash"></i> {{ 'common.delete'|trans }}
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+{% endblock %}

@@ -1,0 +1,105 @@
+{# Dashboard Customization Settings Modal #}
+
+<div class="modal fade" id="dashboardSettingsModal" tabindex="-1" data-dashboard-customizer-target="settingsModal">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="bi-sliders"></i> Dashboard anpassen
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p class="text-muted mb-4">
+                    Wählen Sie aus, welche Widgets auf Ihrem Dashboard angezeigt werden sollen.
+                </p>
+
+                <div class="widget-toggles">
+                    <h6 class="mb-3">Statistik-Karten</h6>
+                    <div class="form-check form-switch mb-3"
+                         data-widget-toggle="stats-cards"
+                         data-action="click->dashboard-customizer#toggleWidget">
+                        <input class="form-check-input" type="checkbox" checked>
+                        <label class="form-check-label">
+                            <i class="bi-bar-chart-fill me-2 text-primary"></i>
+                            Statistik-Übersicht (Assets, Risks, Controls, Incidents)
+                        </label>
+                    </div>
+
+                    <h6 class="mb-3 mt-4">Charts</h6>
+                    <div class="form-check form-switch mb-3"
+                         data-widget-toggle="risk-chart"
+                         data-action="click->dashboard-customizer#toggleWidget">
+                        <input class="form-check-input" type="checkbox" checked>
+                        <label class="form-check-label">
+                            <i class="bi-pie-chart-fill me-2 text-warning"></i>
+                            Risikoverteilung
+                        </label>
+                    </div>
+
+                    <div class="form-check form-switch mb-3"
+                         data-widget-toggle="asset-chart"
+                         data-action="click->dashboard-customizer#toggleWidget">
+                        <input class="form-check-input" type="checkbox" checked>
+                        <label class="form-check-label">
+                            <i class="bi-bar-chart-fill me-2 text-info"></i>
+                            Assets nach Kategorie
+                        </label>
+                    </div>
+
+                    <h6 class="mb-3 mt-4">Widgets</h6>
+                    <div class="form-check form-switch mb-3"
+                         data-widget-toggle="activity-feed"
+                         data-action="click->dashboard-customizer#toggleWidget">
+                        <input class="form-check-input" type="checkbox" checked>
+                        <label class="form-check-label">
+                            <i class="bi-activity me-2 text-success"></i>
+                            Letzte Aktivitäten
+                        </label>
+                    </div>
+
+                    <div class="form-check form-switch mb-3"
+                         data-widget-toggle="quick-actions"
+                         data-action="click->dashboard-customizer#toggleWidget">
+                        <input class="form-check-input" type="checkbox" checked>
+                        <label class="form-check-label">
+                            <i class="bi-lightning-fill me-2 text-warning"></i>
+                            Schnellzugriff
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button"
+                        class="btn btn-outline-danger me-auto"
+                        data-action="click->dashboard-customizer#resetToDefaults">
+                    <i class="bi-arrow-counterclockwise"></i> Zurücksetzen
+                </button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    Schließen
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.widget-toggles .form-check-label {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+}
+
+.widget-toggles .form-check-input {
+    cursor: pointer;
+}
+
+.widget-toggles h6 {
+    color: var(--color-text-muted);
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+}
+</style>

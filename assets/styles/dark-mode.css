@@ -1,0 +1,423 @@
+/* ===================================
+   Paket C: Dark Mode Styles
+   =================================== */
+
+/* ===============================
+   CSS Variables (Light Mode Default - Cyberpunk Theme)
+   =============================== */
+:root {
+    /* Cyberpunk Colors */
+    --color-primary: #06b6d4;
+    --color-primary-dark: #0891b2;
+    --color-success: #10b981;
+    --color-warning: #f59e0b;
+    --color-danger: #ef4444;
+    --color-info: #06b6d4;
+
+    /* Background */
+    --bg-primary: #ffffff;
+    --bg-secondary: #f8fafc;
+    --bg-tertiary: #f1f5f9;
+    --bg-elevated: #ffffff;
+
+    /* Text */
+    --text-primary: #1e293b;
+    --text-secondary: #64748b;
+    --text-muted: #94a3b8;
+    --text-inverse: #ffffff;
+
+    /* Borders */
+    --border-color: #e2e8f0;
+    --border-color-light: #f1f5f9;
+
+    /* Shadows with Cyberpunk Glow */
+    --shadow-sm: 0 2px 4px rgba(6, 182, 212, 0.08);
+    --shadow-md: 0 4px 12px rgba(6, 182, 212, 0.12);
+    --shadow-lg: 0 8px 24px rgba(6, 182, 212, 0.16);
+
+    /* Overlays */
+    --overlay-bg: rgba(15, 23, 42, 0.5);
+
+    /* Transitions */
+    --transition-speed: 0.3s;
+}
+
+/* ===============================
+   Dark Mode Variables - Enhanced Cyberpunk
+   =============================== */
+[data-theme="dark"] {
+    /* Vibrant Cyberpunk Colors */
+    --color-primary: #06b6d4;
+    --color-primary-dark: #0891b2;
+    --color-accent-pink: #ec4899;
+    --color-accent-purple: #8b5cf6;
+    --color-success: #10b981;
+    --color-warning: #f59e0b;
+    --color-danger: #ef4444;
+    --color-info: #06b6d4;
+
+    /* Dark Cyberpunk Backgrounds */
+    --bg-primary: #0f172a;
+    --bg-secondary: #1e293b;
+    --bg-tertiary: #334155;
+    --bg-elevated: #1e293b;
+
+    /* Dark Text with Glow */
+    --text-primary: #e2e8f0;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    --text-inverse: #0f172a;
+
+    /* Dark Borders with Neon Accent */
+    --border-color: #334155;
+    --border-color-light: #1e293b;
+
+    /* Dark Shadows with Neon Glow */
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.4), 0 0 8px rgba(6, 182, 212, 0.1);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5), 0 0 12px rgba(6, 182, 212, 0.15);
+    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.6), 0 0 20px rgba(6, 182, 212, 0.2);
+
+    /* Dark Overlay */
+    --overlay-bg: rgba(15, 23, 42, 0.9);
+}
+
+/* ===============================
+   Apply Variables to Elements
+   =============================== */
+
+body {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    transition: background-color var(--transition-speed), color var(--transition-speed);
+}
+
+/* Headers */
+.header {
+    background-color: var(--bg-elevated);
+    border-bottom: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
+}
+
+/* Navigation */
+.nav {
+    background-color: var(--bg-secondary);
+    border-right: 1px solid var(--border-color);
+}
+
+.nav a {
+    color: var(--text-secondary);
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.nav a:hover,
+.nav a.active {
+    background-color: var(--bg-tertiary);
+    color: var(--color-primary);
+}
+
+/* Cards */
+.card,
+.stat-card,
+.widget-card,
+.feature-card {
+    background-color: var(--bg-elevated);
+    border-color: var(--border-color);
+    box-shadow: var(--shadow-sm);
+}
+
+/* Tables */
+table {
+    background-color: var(--bg-elevated);
+    color: var(--text-primary);
+}
+
+thead {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+tbody tr {
+    border-bottom: 1px solid var(--border-color-light);
+}
+
+tbody tr:hover {
+    background-color: var(--bg-secondary);
+}
+
+/* Forms */
+input,
+textarea,
+select,
+.form-control {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+}
+
+input:focus,
+textarea:focus,
+select:focus,
+.form-control:focus {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+/* Buttons */
+.btn {
+    transition: all 0.2s;
+}
+
+.btn-outline-secondary {
+    color: var(--text-secondary);
+    border-color: var(--border-color);
+}
+
+.btn-outline-secondary:hover {
+    background-color: var(--bg-tertiary);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+/* Modals */
+.modal-content,
+.global-search-container,
+.quick-view-container {
+    background-color: var(--bg-elevated);
+    color: var(--text-primary);
+}
+
+.modal-header,
+.modal-footer,
+.global-search-header,
+.quick-view-header,
+.quick-view-footer {
+    border-color: var(--border-color);
+    background-color: var(--bg-secondary);
+}
+
+/* Badges */
+.badge {
+    color: var(--text-inverse);
+}
+
+/* Alerts */
+.alert {
+    background-color: var(--bg-secondary);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+/* Code & Pre */
+code,
+pre,
+kbd {
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+}
+
+/* Footer */
+.footer {
+    background-color: var(--bg-secondary);
+    color: var(--text-secondary);
+    border-top: 1px solid var(--border-color);
+}
+
+/* Dropdowns */
+.dropdown-menu {
+    background-color: var(--bg-elevated);
+    border-color: var(--border-color);
+    box-shadow: var(--shadow-md);
+}
+
+.dropdown-item {
+    color: var(--text-primary);
+}
+
+.dropdown-item:hover {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+/* Toast Notifications */
+.toast {
+    background-color: var(--bg-elevated);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+    box-shadow: var(--shadow-lg);
+}
+
+/* Search Results */
+.search-result-item {
+    color: var(--text-primary);
+}
+
+.search-result-item:hover {
+    background-color: var(--bg-secondary);
+}
+
+.search-category-header {
+    background-color: var(--bg-secondary);
+    color: var(--text-secondary);
+}
+
+.search-result-icon {
+    background-color: var(--bg-tertiary);
+}
+
+/* Activity Feed */
+.activity-item:hover {
+    background-color: var(--bg-secondary);
+}
+
+/* Preview Content */
+.preview-section {
+    border-bottom: 1px solid var(--border-color-light);
+}
+
+.cia-badge,
+.stat-mini,
+.risk-metric {
+    background-color: var(--bg-secondary);
+}
+
+/* Filter Presets */
+.filter-presets {
+    background-color: var(--bg-elevated);
+    border-color: var(--border-color);
+}
+
+.filter-preset-btn {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+}
+
+.filter-preset-btn:hover {
+    background-color: var(--bg-secondary);
+}
+
+/* ===============================
+   Dark Mode Toggle Button
+   =============================== */
+.theme-toggle {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+.theme-toggle-btn {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    box-shadow: var(--shadow-lg);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.theme-toggle-btn:hover {
+    transform: scale(1.1) rotate(15deg);
+    box-shadow: 0 12px 32px rgba(102, 126, 234, 0.4);
+}
+
+.theme-toggle-btn:active {
+    transform: scale(0.95);
+}
+
+/* Icon rotation animation */
+.theme-toggle-btn i {
+    transition: transform 0.5s ease;
+}
+
+.theme-toggle-btn:hover i {
+    transform: rotate(180deg);
+}
+
+/* ===============================
+   Smooth Transitions for Theme Switch
+   =============================== */
+* {
+    transition-property: background-color, border-color, color, box-shadow;
+    transition-duration: var(--transition-speed);
+    transition-timing-function: ease;
+}
+
+/* Disable transitions for certain elements */
+a,
+button,
+input,
+.btn {
+    transition-property: background-color, border-color, color, box-shadow, transform;
+}
+
+/* ===============================
+   Dark Mode Specific Adjustments
+   =============================== */
+
+/* Hero Section in Dark Mode */
+[data-theme="dark"] .hero-section {
+    background: linear-gradient(135deg, #7c8ff0 0%, #8b5fc7 100%);
+}
+
+/* Ensure text is visible in Dark Mode */
+[data-theme="dark"] .hero-section::before {
+    opacity: 0.2;
+}
+
+/* Stat Cards in Dark Mode */
+[data-theme="dark"] .stat-card-icon {
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+}
+
+/* Charts adjustments for Dark Mode */
+[data-theme="dark"] canvas {
+    filter: brightness(0.9);
+}
+
+/* Image adjustments for Dark Mode */
+[data-theme="dark"] img:not([src*=".svg"]) {
+    opacity: 0.9;
+}
+
+/* ===============================
+   Accessibility - Reduced Motion
+   =============================== */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+
+    .theme-toggle-btn i {
+        transition: none;
+    }
+}
+
+/* ===============================
+   Print Styles (Force Light Mode)
+   =============================== */
+@media print {
+    [data-theme="dark"] {
+        --bg-primary: #ffffff;
+        --bg-secondary: #f8f9fa;
+        --bg-tertiary: #e9ecef;
+        --text-primary: #2c3e50;
+        --text-secondary: #6c757d;
+        --border-color: #dee2e6;
+    }
+
+    .theme-toggle {
+        display: none !important;
+    }
+}

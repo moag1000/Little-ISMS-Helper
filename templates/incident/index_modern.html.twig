@@ -1,0 +1,412 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Vorfallsmanagement - {{ 'app.title'|trans }}{% endblock %}
+
+{% block body %}
+{# Breadcrumb Navigation #}
+{% include '_components/_breadcrumb.html.twig' with {
+    breadcrumbs: [
+        { label: 'Vorfallsmanagement' }
+    ]
+} %}
+
+{# Page Header with Actions #}
+{% include '_components/_page_header.html.twig' with {
+    title: 'Vorfallsmanagement',
+    subtitle: 'Dokumentation und Behandlung von Informationssicherheitsvorfällen',
+    icon: 'bi-bug',
+    actions: [
+        { label: 'Vorfall melden', url: path('app_incident_new'), variant: 'danger', icon: 'bi-exclamation-circle' },
+        { label: 'Export', url: path('app_incident_export'), variant: 'secondary', icon: 'bi-download' }
+    ]
+} %}
+
+{# KPI Cards Grid #}
+<div class="kpi-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin: 2rem 0;">
+    {% include '_components/_kpi_card.html.twig' with {
+        icon: 'bi-bug',
+        label: 'Gesamte Vorfälle',
+        value: allIncidents|length,
+        variant: 'primary'
+    } %}
+
+    {% include '_components/_kpi_card.html.twig' with {
+        icon: 'bi-exclamation-circle',
+        label: 'Offene Vorfälle',
+        value: openIncidents|length,
+        variant: openIncidents|length > 0 ? 'danger' : 'success',
+        link: '#filter-open'
+    } %}
+
+    {% set criticalIncidents = allIncidents|filter(i => i.severity == 'critical')|length %}
+    {% include '_components/_kpi_card.html.twig' with {
+        icon: 'bi-shield-fill-exclamation',
+        label: 'Kritische Vorfälle',
+        value: criticalIncidents,
+        variant: 'warning'
+    } %}
+
+    {% set avgResolutionDays = allIncidents|filter(i => i.status == 'resolved')|length > 0
+        ? ((allIncidents|filter(i => i.status == 'resolved')|reduce((carry, i) => carry + (i.resolvedAt ? (i.resolvedAt.diff(i.occurredAt).days) : 0), 0)) / (allIncidents|filter(i => i.status == 'resolved')|length))|round(1)
+        : 0 %}
+    {% include '_components/_kpi_card.html.twig' with {
+        icon: 'bi-clock-history',
+        label: 'Ø Lösungszeit',
+        value: avgResolutionDays,
+        unit: 'Tage',
+        variant: 'info'
+    } %}
+</div>
+
+{# Status Overview #}
+<div class="card mb-4">
+    <div class="card-header">
+        <h5 class="mb-0"><i class="bi bi-kanban"></i> Status-Übersicht</h5>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            {% set statuses = {
+                'open': { label: 'Offen', icon: 'bi-circle', color: 'danger' },
+                'in_progress': { label: 'In Bearbeitung', icon: 'bi-arrow-repeat', color: 'warning' },
+                'resolved': { label: 'Gelöst', icon: 'bi-check-circle', color: 'success' },
+                'closed': { label: 'Abgeschlossen', icon: 'bi-check-circle-fill', color: 'secondary' }
+            } %}
+            {% for status, data in statuses %}
+                {% set count = allIncidents|filter(i => i.status == status)|length %}
+                <div class="col-md-3 mb-3">
+                    <div class="status-card status-{{ status }}">
+                        <div class="status-icon text-{{ data.color }}">
+                            <i class="bi {{ data.icon }}"></i>
+                        </div>
+                        <div class="status-info">
+                            <div class="status-label">{{ data.label }}</div>
+                            <div class="status-count">{{ count }}</div>
+                            {% if allIncidents|length > 0 %}
+                                <div class="progress mt-2" style="height: 6px;">
+                                    <div class="progress-bar bg-{{ data.color }}"
+                                         style="width: {{ (count / allIncidents|length * 100)|round }}%"></div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+{# Severity Distribution #}
+<div class="card mb-4">
+    <div class="card-header">
+        <h5 class="mb-0"><i class="bi bi-speedometer"></i> Schweregrade</h5>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            {% set severities = {
+                'critical': { label: 'Kritisch', icon: '🔴', color: 'danger' },
+                'high': { label: 'Hoch', icon: '🟠', color: 'warning' },
+                'medium': { label: 'Mittel', icon: '🟡', color: 'info' },
+                'low': { label: 'Niedrig', icon: '🟢', color: 'success' }
+            } %}
+            {% for severity, data in severities %}
+                {% set count = allIncidents|filter(i => i.severity == severity)|length %}
+                <div class="col-md-3 mb-3">
+                    <div class="severity-badge severity-{{ severity }}">
+                        <div class="severity-icon">{{ data.icon }}</div>
+                        <div class="severity-label">{{ data.label }}</div>
+                        <div class="severity-count">{{ count }}</div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+{# Incidents Table or Empty State #}
+{% if allIncidents|length == 0 %}
+    {% include '_components/_empty_state.html.twig' with {
+        icon: 'bi-shield-check',
+        title: 'Keine Vorfälle erfasst',
+        description: 'Gut! Es wurden bisher keine Sicherheitsvorfälle gemeldet. Falls ein Vorfall auftritt, können Sie ihn hier schnell dokumentieren.',
+        action: { label: 'Vorfall melden', url: path('app_incident_new'), icon: 'bi-exclamation-circle' }
+    } %}
+{% else %}
+<div class="card" data-controller="bulk-actions" data-bulk-actions-endpoint-value="/incident">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0"><i class="bi bi-list"></i> Alle Vorfälle ({{ allIncidents|length }})</h5>
+        <div class="d-flex gap-2">
+            <select class="form-select form-select-sm" id="incident-status-filter" style="width: 150px;">
+                <option value="">Alle Status</option>
+                <option value="open">Offen</option>
+                <option value="in_progress">In Bearbeitung</option>
+                <option value="resolved">Gelöst</option>
+                <option value="closed">Abgeschlossen</option>
+            </select>
+            <select class="form-select form-select-sm" id="incident-severity-filter" style="width: 150px;">
+                <option value="">Alle Schweregrade</option>
+                <option value="critical">Kritisch</option>
+                <option value="high">Hoch</option>
+                <option value="medium">Mittel</option>
+                <option value="low">Niedrig</option>
+            </select>
+            <input type="search"
+                   class="form-control form-control-sm"
+                   placeholder="Suche..."
+                   style="width: 200px;"
+                   id="incident-search">
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th style="width: 40px;">
+                        <input type="checkbox"
+                               class="form-check-input"
+                               data-action="bulk-actions#selectAll"
+                               data-bulk-actions-target="selectAllCheckbox"
+                               title="Alle auswählen">
+                    </th>
+                    <th>Titel</th>
+                    <th>Kategorie</th>
+                    <th class="text-center">Schweregrad</th>
+                    <th>Status</th>
+                    <th>Aufgetreten am</th>
+                    <th class="text-center">Betroffene Assets</th>
+                    <th class="text-center">Datenschutzrelevant</th>
+                    <th class="text-center">Aktionen</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for incident in allIncidents %}
+                <tr data-incident-id="{{ incident.id }}"
+                    data-incident-status="{{ incident.status }}"
+                    data-incident-severity="{{ incident.severity }}">
+                    <td>
+                        <input type="checkbox"
+                               class="form-check-input"
+                               data-bulk-actions-target="item"
+                               data-action="bulk-actions#selectItem"
+                               value="{{ incident.id }}">
+                    </td>
+                    <td>
+                        <strong>{{ incident.title }}</strong>
+                        {% if incident.description %}
+                        <br><small class="text-muted">{{ incident.description|length > 60 ? incident.description|slice(0, 60) ~ '...' : incident.description }}</small>
+                        {% endif %}
+                        {% if incident.status == 'open' %}
+                            <span class="badge bg-danger ms-2">NEU</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if incident.category %}
+                            <span class="badge bg-secondary">{{ incident.category|replace({'_': ' '})|title }}</span>
+                        {% else %}
+                            <span class="text-muted">-</span>
+                        {% endif %}
+                    </td>
+                    <td class="text-center">
+                        {% set severityColors = {
+                            'critical': 'danger',
+                            'high': 'warning',
+                            'medium': 'info',
+                            'low': 'success'
+                        } %}
+                        <span class="badge bg-{{ severityColors[incident.severity] ?? 'secondary' }}">
+                            {{ incident.severity|upper }}
+                        </span>
+                    </td>
+                    <td>
+                        {% set statusIcons = {
+                            'open': 'bi-circle text-danger',
+                            'in_progress': 'bi-arrow-repeat text-warning',
+                            'resolved': 'bi-check-circle text-success',
+                            'closed': 'bi-check-circle-fill text-secondary'
+                        } %}
+                        <i class="bi {{ statusIcons[incident.status] ?? 'bi-circle' }}"></i>
+                        {{ incident.status|replace({'_': ' '})|title }}
+                    </td>
+                    <td>
+                        {{ incident.occurredAt|date('d.m.Y H:i') }}
+                        {% if incident.occurredAt %}
+                            {% set daysSince = (date().diff(incident.occurredAt).days) %}
+                            {% if daysSince == 0 %}
+                                <br><small class="text-muted">Heute</small>
+                            {% elseif daysSince == 1 %}
+                                <br><small class="text-muted">Gestern</small>
+                            {% else %}
+                                <br><small class="text-muted">vor {{ daysSince }} Tagen</small>
+                            {% endif %}
+                        {% endif %}
+                    </td>
+                    <td class="text-center">
+                        {% if incident.affectedAssets|length > 0 %}
+                            <a href="{{ path('app_incident_assets', {id: incident.id}) }}" class="badge bg-warning text-dark">
+                                {{ incident.affectedAssets|length }}
+                            </a>
+                        {% else %}
+                            <span class="text-muted">0</span>
+                        {% endif %}
+                    </td>
+                    <td class="text-center">
+                        {% if incident.dataBreachRelevant %}
+                            <span class="badge bg-danger" title="Datenschutzverletzung">
+                                <i class="bi bi-shield-exclamation"></i> Ja
+                            </span>
+                        {% else %}
+                            <span class="text-muted">Nein</span>
+                        {% endif %}
+                    </td>
+                    <td class="text-center">
+                        <div class="btn-group btn-group-sm">
+                            <a href="{{ path('app_incident_show', {id: incident.id}) }}"
+                               class="btn btn-outline-primary"
+                               data-turbo-action="advance"
+                               title="Anzeigen">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                            {% if is_granted('ROLE_USER') and incident.status != 'closed' %}
+                            <a href="{{ path('app_incident_edit', {id: incident.id}) }}"
+                               class="btn btn-outline-secondary"
+                               data-turbo-action="advance"
+                               title="Bearbeiten">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {# Bulk Action Bar #}
+    {% include '_components/_bulk_action_bar.html.twig' with {
+        actions: ['export', 'delete']
+    } %}
+</div>
+{% endif %}
+
+<style>
+/* Status Cards */
+.status-card {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-lg);
+    background: white;
+    border-radius: var(--border-radius);
+    border: 2px solid var(--color-border);
+    transition: all 0.2s;
+}
+
+.status-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.status-icon {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    background: var(--color-bg);
+    border-radius: 50%;
+}
+
+.status-info {
+    flex: 1;
+}
+
+.status-label {
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    margin-bottom: 4px;
+}
+
+.status-count {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--color-primary);
+}
+
+/* Severity Badges */
+.severity-badge {
+    text-align: center;
+    padding: var(--spacing-lg);
+    background: white;
+    border-radius: var(--border-radius);
+    border: 2px solid;
+    transition: all 0.2s;
+}
+
+.severity-badge.severity-critical { border-color: var(--color-danger); }
+.severity-badge.severity-high { border-color: var(--color-warning); }
+.severity-badge.severity-medium { border-color: var(--color-info); }
+.severity-badge.severity-low { border-color: var(--color-success); }
+
+.severity-badge:hover {
+    transform: scale(1.05);
+    box-shadow: var(--shadow-md);
+}
+
+.severity-icon {
+    font-size: 2.5rem;
+    margin-bottom: var(--spacing-xs);
+}
+
+.severity-label {
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    margin-bottom: 4px;
+}
+
+.severity-count {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-primary);
+}
+</style>
+
+{# Search & Filter functionality #}
+<script>
+// Search
+document.getElementById('incident-search')?.addEventListener('input', function(e) {
+    const query = e.target.value.toLowerCase();
+    filterIncidents();
+});
+
+// Status filter
+document.getElementById('incident-status-filter')?.addEventListener('change', function(e) {
+    filterIncidents();
+});
+
+// Severity filter
+document.getElementById('incident-severity-filter')?.addEventListener('change', function(e) {
+    filterIncidents();
+});
+
+function filterIncidents() {
+    const query = document.getElementById('incident-search')?.value.toLowerCase() || '';
+    const status = document.getElementById('incident-status-filter')?.value || '';
+    const severity = document.getElementById('incident-severity-filter')?.value || '';
+    const rows = document.querySelectorAll('tbody tr[data-incident-id]');
+
+    rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        const rowStatus = row.dataset.incidentStatus;
+        const rowSeverity = row.dataset.incidentSeverity;
+
+        const matchesSearch = !query || text.includes(query);
+        const matchesStatus = !status || rowStatus === status;
+        const matchesSeverity = !severity || rowSeverity === severity;
+
+        row.style.display = (matchesSearch && matchesStatus && matchesSeverity) ? '' : 'none';
+    });
+}
+</script>
+
+{% endblock %}

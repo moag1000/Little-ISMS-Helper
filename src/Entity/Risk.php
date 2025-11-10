@@ -2,90 +2,224 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
+use ApiPlatform\Metadata\Delete;
 use App\Repository\RiskRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: RiskRepository::class)]
+#[ORM\Index(columns: ['status'], name: 'idx_risk_status')]
+#[ORM\Index(columns: ['created_at'], name: 'idx_risk_created_at')]
+#[ORM\Index(columns: ['review_date'], name: 'idx_risk_review_date')]
+#[ORM\Index(columns: ['tenant_id'], name: 'idx_risk_tenant')]
+#[ApiResource(
+    operations: [
+        new Get(
+            security: "is_granted('ROLE_USER')",
+            description: 'Retrieve a specific risk assessment by ID'
+        ),
+        new GetCollection(
+            security: "is_granted('ROLE_USER')",
+            description: 'Retrieve the collection of risk assessments with filtering by status and date'
+        ),
+        new Post(
+            security: "is_granted('ROLE_USER')",
+            description: 'Create a new risk assessment with probability and impact analysis'
+        ),
+        new Put(
+            security: "is_granted('ROLE_USER')",
+            description: 'Update an existing risk assessment'
+        ),
+        new Delete(
+            security: "is_granted('ROLE_ADMIN')",
+            description: 'Delete a risk assessment (Admin only)'
+        ),
+    ],
+    normalizationContext: ['groups' => ['risk:read']],
+    denormalizationContext: ['groups' => ['risk:write']]
+)]
+#[ApiFilter(SearchFilter::class, properties: ['title' => 'partial', 'status' => 'exact', 'riskOwner.email' => 'partial', 'riskOwner.firstName' => 'partial', 'riskOwner.lastName' => 'partial'])]
+#[ApiFilter(OrderFilter::class, properties: ['title', 'createdAt', 'status'])]
+#[ApiFilter(DateFilter::class, properties: ['createdAt', 'reviewDate'])]
 class Risk
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['risk:read'])]
     private ?int $id = null;
 
+    #[ORM\ManyToOne(targetEntity: Tenant::class)]
+    #[ORM\JoinColumn(nullable: true)]
+    #[Groups(['risk:read'])]
+    private ?Tenant $tenant = null;
+
     #[ORM\Column(length: 255)]
+    #[Groups(['risk:read', 'risk:write'])]
+    #[Assert\NotBlank(message: 'Risk title is required')]
+    #[Assert\Length(max: 255, maxMessage: 'Risk title cannot exceed {{ limit }} characters')]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups(['risk:read', 'risk:write'])]
+    #[Assert\NotBlank(message: 'Risk description is required')]
     private ?string $description = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['risk:read', 'risk:write'])]
     private ?string $threat = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['risk:read', 'risk:write'])]
     private ?string $vulnerability = null;
 
     #[ORM\ManyToOne(inversedBy: 'risks')]
+    #[Groups(['risk:read', 'risk:write'])]
+    #[Assert\NotNull(message: 'Risk must be associated with an asset')]
+    #[MaxDepth(1)]
     private ?Asset $asset = null;
 
     #[ORM\Column(type: Types::INTEGER)]
+    #[Groups(['risk:read', 'risk:write'])]
+    #[Assert\NotNull(message: 'Probability is required')]
+    #[Assert\Range(min: 1, max: 5, notInRangeMessage: 'Probability must be between {{ min }} and {{ max }}')]
     private ?int $probability = null;
 
     #[ORM\Column(type: Types::INTEGER)]
+    #[Groups(['risk:read', 'risk:write'])]
+    #[Assert\NotNull(message: 'Impact is required')]
+    #[Assert\Range(min: 1, max: 5, notInRangeMessage: 'Impact must be between {{ min }} and {{ max }}')]
     private ?int $impact = null;
 
     #[ORM\Column(type: Types::INTEGER)]
+    #[Groups(['risk:read', 'risk:write'])]
+    #[Assert\Range(min: 1, max: 5, notInRangeMessage: 'Residual probability must be between {{ min }} and {{ max }}')]
     private ?int $residualProbability = null;
 
     #[ORM\Column(type: Types::INTEGER)]
+    #[Groups(['risk:read', 'risk:write'])]
+    #[Assert\Range(min: 1, max: 5, notInRangeMessage: 'Residual impact must be between {{ min }} and {{ max }}')]
     private ?int $residualImpact = null;
 
     #[ORM\Column(length: 50)]
+    #[Groups(['risk:read', 'risk:write'])]
+    #[Assert\NotBlank(message: 'Treatment strategy is required')]
+    #[Assert\Choice(
+        choices: ['accept', 'mitigate', 'transfer', 'avoid'],
+        message: 'Treatment strategy must be one of: {{ choices }}'
+    )]
     private ?string $treatmentStrategy = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['risk:read', 'risk:write'])]
     private ?string $treatmentDescription = null;
 
-    #[ORM\Column(length: 100, nullable: true)]
-    private ?string $riskOwner = null;
+    /**
+     * Risk Owner (ISO 27001:2022 - A.5.1 Policies for information security)
+     * Person responsible for managing this risk
+     * Phase 6F-B: Changed from string to User entity reference
+     */
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    #[Groups(['risk:read', 'risk:write'])]
+    #[MaxDepth(1)]
+    private ?User $riskOwner = null;
 
     #[ORM\Column(length: 50)]
+    #[Groups(['risk:read', 'risk:write'])]
+    #[Assert\NotBlank(message: 'Status is required')]
+    #[Assert\Choice(
+        choices: ['identified', 'assessed', 'treated', 'monitored', 'closed', 'accepted'],
+        message: 'Status must be one of: {{ choices }}'
+    )]
     private ?string $status = 'identified';
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    #[Groups(['risk:read', 'risk:write'])]
     private ?\DateTimeInterface $reviewDate = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Groups(['risk:read'])]
     private ?\DateTimeInterface $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[Groups(['risk:read'])]
     private ?\DateTimeInterface $updatedAt = null;
+
+    /**
+     * Risk Acceptance Approval (ISO 27005)
+     * Required when treatmentStrategy = 'accept'
+     */
+    #[ORM\Column(length: 100, nullable: true)]
+    #[Groups(['risk:read', 'risk:write'])]
+    private ?string $acceptanceApprovedBy = null;
+
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    #[Groups(['risk:read', 'risk:write'])]
+    private ?\DateTimeInterface $acceptanceApprovedAt = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['risk:read', 'risk:write'])]
+    private ?string $acceptanceJustification = null;
+
+    /**
+     * Formal approval for risk acceptance
+     */
+    #[ORM\Column(type: Types::BOOLEAN)]
+    #[Groups(['risk:read'])]
+    private bool $formallyAccepted = false;
 
     /**
      * @var Collection<int, Control>
      */
     #[ORM\ManyToMany(targetEntity: Control::class, mappedBy: 'risks')]
+    #[Groups(['risk:read'])]
+    #[MaxDepth(1)]
     private Collection $controls;
 
     /**
      * @var Collection<int, Incident>
      */
     #[ORM\ManyToMany(targetEntity: Incident::class, mappedBy: 'realizedRisks')]
+    #[Groups(['risk:read'])]
+    #[MaxDepth(1)]
     private Collection $incidents;
 
     public function __construct()
     {
         $this->controls = new ArrayCollection();
         $this->incidents = new ArrayCollection();
-        $this->createdAt = new \DateTime();
+        $this->createdAt = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getTenant(): ?Tenant
+    {
+        return $this->tenant;
+    }
+
+    public function setTenant(?Tenant $tenant): static
+    {
+        $this->tenant = $tenant;
+        return $this;
     }
 
     public function getTitle(): ?string
@@ -209,15 +343,25 @@ class Risk
         return $this;
     }
 
-    public function getRiskOwner(): ?string
+    public function getRiskOwner(): ?User
     {
         return $this->riskOwner;
     }
 
-    public function setRiskOwner(?string $riskOwner): static
+    public function setRiskOwner(?User $riskOwner): static
     {
         $this->riskOwner = $riskOwner;
         return $this;
+    }
+
+    /**
+     * Get risk owner's full name for display
+     * Data Reuse: Quick access to owner name without loading full User entity
+     */
+    #[Groups(['risk:read'])]
+    public function getRiskOwnerName(): ?string
+    {
+        return $this->riskOwner?->getFullName();
     }
 
     public function getStatus(): ?string
@@ -289,19 +433,28 @@ class Risk
         return $this;
     }
 
+    #[Groups(['risk:read'])]
     public function getInherentRiskLevel(): int
     {
         return $this->probability * $this->impact;
     }
 
+    #[Groups(['risk:read'])]
     public function getResidualRiskLevel(): int
     {
         return $this->residualProbability * $this->residualImpact;
     }
 
-    public function getRiskReduction(): int
+    #[Groups(['risk:read'])]
+    public function getRiskReduction(): float
     {
-        return $this->getInherentRiskLevel() - $this->getResidualRiskLevel();
+        $inherent = $this->getInherentRiskLevel();
+        if ($inherent === 0) {
+            return 0.0;
+        }
+
+        $residual = $this->getResidualRiskLevel();
+        return round((($inherent - $residual) / $inherent) * 100, 2);
     }
 
     /**
@@ -333,6 +486,7 @@ class Risk
      * Check if this risk has been realized (incident occurred)
      * Data Reuse: Validates risk assessment with real-world incidents
      */
+    #[Groups(['risk:read'])]
     public function hasBeenRealized(): bool
     {
         return !$this->incidents->isEmpty();
@@ -342,6 +496,7 @@ class Risk
      * Get realization count
      * Data Reuse: Frequency analysis for risk assessment calibration
      */
+    #[Groups(['risk:read'])]
     public function getRealizationCount(): int
     {
         return $this->incidents->count();
@@ -351,7 +506,8 @@ class Risk
      * Check if risk assessment was accurate based on incidents
      * Data Reuse: Compare predicted impact vs actual incident severity
      */
-    public function wasAssessmentAccurate(): ?bool
+    #[Groups(['risk:read'])]
+    public function isAssessmentAccurate(): ?bool
     {
         if ($this->incidents->isEmpty()) {
             return null; // Cannot validate without incidents
@@ -372,15 +528,16 @@ class Risk
             return $criticalIncidents > 0;
         } elseif ($predictedLevel >= 9) { // Medium risk
             return $criticalIncidents === 0; // Should NOT have critical incidents
+        } else { // Low risk
+            return $criticalIncidents === 0; // Low risk should NOT have critical incidents
         }
-
-        return true; // Low risk is accurate if few/no critical incidents
     }
 
     /**
      * Get most recent incident for this risk
      * Data Reuse: Track latest realization
      */
+    #[Groups(['risk:read'])]
     public function getMostRecentIncident(): ?Incident
     {
         if ($this->incidents->isEmpty()) {
@@ -395,5 +552,137 @@ class Risk
         }
 
         return $latest;
+    }
+
+    /**
+     * Check if this is a high-risk item
+     * Data Reuse: Risk classification for prioritization
+     */
+    #[Groups(['risk:read'])]
+    public function isHighRisk(): bool
+    {
+        return $this->getInherentRiskLevel() >= 15;
+    }
+
+    /**
+     * Get count of controls mitigating this risk
+     * Data Reuse: Control coverage metric
+     */
+    #[Groups(['risk:read'])]
+    public function getControlCoverageCount(): int
+    {
+        return $this->controls->count();
+    }
+
+    /**
+     * Get count of incidents related to this risk
+     * Data Reuse: Realization frequency (alias for getRealizationCount)
+     */
+    #[Groups(['risk:read'])]
+    public function getIncidentCount(): int
+    {
+        return $this->getRealizationCount();
+    }
+
+    // Risk Acceptance Approval Getters/Setters (ISO 27005)
+
+    public function getAcceptanceApprovedBy(): ?string
+    {
+        return $this->acceptanceApprovedBy;
+    }
+
+    public function setAcceptanceApprovedBy(?string $acceptanceApprovedBy): static
+    {
+        $this->acceptanceApprovedBy = $acceptanceApprovedBy;
+        return $this;
+    }
+
+    public function getAcceptanceApprovedAt(): ?\DateTimeInterface
+    {
+        return $this->acceptanceApprovedAt;
+    }
+
+    public function setAcceptanceApprovedAt(?\DateTimeInterface $acceptanceApprovedAt): static
+    {
+        $this->acceptanceApprovedAt = $acceptanceApprovedAt;
+        return $this;
+    }
+
+    public function getAcceptanceJustification(): ?string
+    {
+        return $this->acceptanceJustification;
+    }
+
+    public function setAcceptanceJustification(?string $acceptanceJustification): static
+    {
+        $this->acceptanceJustification = $acceptanceJustification;
+        return $this;
+    }
+
+    public function isFormallyAccepted(): bool
+    {
+        return $this->formallyAccepted;
+    }
+
+    public function setFormallyAccepted(bool $formallyAccepted): static
+    {
+        $this->formallyAccepted = $formallyAccepted;
+        return $this;
+    }
+
+    /**
+     * Check if risk acceptance requires approval
+     * ISO 27005 compliant: Risk acceptance must be formally approved
+     */
+    #[Groups(['risk:read'])]
+    public function isAcceptanceApprovalRequired(): bool
+    {
+        return $this->treatmentStrategy === 'accept' && !$this->formallyAccepted;
+    }
+
+    /**
+     * Alias for backward compatibility
+     * @deprecated Use isAcceptanceApprovalRequired() instead
+     */
+    public function requiresAcceptanceApproval(): bool
+    {
+        return $this->isAcceptanceApprovalRequired();
+    }
+
+    /**
+     * Check if risk acceptance is properly documented
+     */
+    #[Groups(['risk:read'])]
+    public function isAcceptanceComplete(): bool
+    {
+        if ($this->treatmentStrategy !== 'accept') {
+            return true; // Not applicable
+        }
+
+        return $this->formallyAccepted
+            && $this->acceptanceApprovedBy !== null
+            && $this->acceptanceApprovedAt !== null
+            && $this->acceptanceJustification !== null;
+    }
+
+    /**
+     * Get risk acceptance status
+     */
+    #[Groups(['risk:read'])]
+    public function getAcceptanceStatus(): string
+    {
+        if ($this->treatmentStrategy !== 'accept') {
+            return 'not_applicable';
+        }
+
+        if (!$this->formallyAccepted) {
+            return 'pending_approval';
+        }
+
+        if (!$this->isAcceptanceComplete()) {
+            return 'incomplete_documentation';
+        }
+
+        return 'approved';
     }
 }

@@ -1,0 +1,91 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'person.title.edit'|trans }} - {{ person.fullName }} - Little ISMS Helper{% endblock %}
+
+{% block body %}
+<div class="d-flex justify-between align-center mb-4">
+    <h1>{{ 'person.title.edit'|trans }}: {{ person.fullName }}</h1>
+    <a href="{{ path('app_person_show', {id: person.id}) }}" class="btn btn-secondary">
+        ← {{ 'common.back'|trans }}
+    </a>
+</div>
+
+<div class="card">
+    {{ form_start(form) }}
+
+    <h3>{{ 'person.section.basic_info'|trans }}</h3>
+
+    <div class="form-group">
+        {{ form_label(form.fullName) }}
+        {{ form_widget(form.fullName, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.fullName) }}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.personType) }}
+        {{ form_widget(form.personType, {'attr': {'class': 'form-select'}}) }}
+        {{ form_errors(form.personType) }}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.badgeId) }}
+        {{ form_widget(form.badgeId, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.badgeId) }}
+    </div>
+
+    <h3 style="margin-top: var(--spacing-lg);">{{ 'person.section.organization'|trans }}</h3>
+
+    <div class="form-group">
+        {{ form_label(form.company) }}
+        {{ form_widget(form.company, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.company) }}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.department) }}
+        {{ form_widget(form.department, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.department) }}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.jobTitle) }}
+        {{ form_widget(form.jobTitle, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.jobTitle) }}
+    </div>
+
+    <h3 style="margin-top: var(--spacing-lg);">{{ 'person.section.contact'|trans }}</h3>
+
+    <div class="form-group">
+        {{ form_label(form.email) }}
+        {{ form_widget(form.email, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.email) }}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.phone) }}
+        {{ form_widget(form.phone, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.phone) }}
+    </div>
+
+    {% if form.notes is defined %}
+    <h3 style="margin-top: var(--spacing-lg);">{{ 'person.section.additional'|trans }}</h3>
+
+    <div class="form-group">
+        {{ form_label(form.notes) }}
+        {{ form_widget(form.notes, {'attr': {'class': 'form-control', 'rows': 4}}) }}
+        {{ form_errors(form.notes) }}
+    </div>
+    {% endif %}
+
+    <div class="d-flex gap-2 mt-4">
+        <button type="submit" class="btn btn-success">
+            💾 {{ 'common.save'|trans }}
+        </button>
+        <a href="{{ path('app_person_show', {id: person.id}) }}" class="btn btn-secondary">
+            ❌ {{ 'common.cancel'|trans }}
+        </a>
+    </div>
+
+    {{ form_end(form) }}
+</div>
+{% endblock %}

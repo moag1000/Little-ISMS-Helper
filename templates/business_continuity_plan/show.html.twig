@@ -1,0 +1,150 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ bc_plan.name }}{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="page-header">
+        <h1>{{ bc_plan.name }}</h1>
+        <div class="actions">
+            <a href="{{ path('app_bc_plan_edit', {id: bc_plan.id}) }}" class="btn btn-primary">Edit</a>
+            <a href="{{ path('app_bc_plan_index') }}" class="btn btn-secondary">Back to List</a>
+            {% if is_granted('ROLE_ADMIN') %}
+                <form method="post" action="{{ path('app_bc_plan_delete', {id: bc_plan.id}) }}" style="display:inline;" onsubmit="return confirm('Are you sure?');">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ bc_plan.id) }}">
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h2>BC Plan Details</h2>
+            <span class="badge badge-{{ bc_plan.status }}">{{ bc_plan.status }}</span>
+        </div>
+        <div class="card-content">
+            {% set readiness = bc_plan.getReadinessScore() %}
+            <div class="alert alert-{{ readiness >= 80 ? 'success' : (readiness >= 60 ? 'info' : 'warning') }}">
+                <strong>Readiness Score: {{ readiness }}%</strong>
+            </div>
+
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <span class="label">Business Process:</span>
+                    <span class="value"><a href="{{ path('app_business_process_show', {id: bc_plan.businessProcess.id}) }}">{{ bc_plan.businessProcess.name }}</a></span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Plan Owner:</span>
+                    <span class="value">{{ bc_plan.planOwner }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Version:</span>
+                    <span class="value">{{ bc_plan.version }}</span>
+                </div>
+            </div>
+
+            {% if bc_plan.description %}
+            <div class="detail-section">
+                <h3>Description</h3>
+                <p>{{ bc_plan.description }}</p>
+            </div>
+            {% endif %}
+
+            <div class="detail-section">
+                <h3>Activation Criteria</h3>
+                <p>{{ bc_plan.activationCriteria }}</p>
+            </div>
+
+            <div class="detail-section">
+                <h3>Recovery Procedures</h3>
+                <p>{{ bc_plan.recoveryProcedures|nl2br }}</p>
+            </div>
+
+            {% if bc_plan.rolesAndResponsibilities %}
+            <div class="detail-section">
+                <h3>Roles and Responsibilities</h3>
+                <p>{{ bc_plan.rolesAndResponsibilities|nl2br }}</p>
+            </div>
+            {% endif %}
+
+            {% if bc_plan.bcTeam %}
+            <div class="detail-section">
+                <h3>BC Team Members</h3>
+                <p>{{ bc_plan.bcTeam|nl2br }}</p>
+            </div>
+            {% endif %}
+
+            <div class="detail-section">
+                <h3>Testing & Review</h3>
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <span class="label">Last Tested:</span>
+                        <span class="value">{{ bc_plan.lastTested ? bc_plan.lastTested|date('Y-m-d') : 'Never' }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">Next Test:</span>
+                        <span class="value {{ bc_plan.isTestOverdue() ? 'text-danger' : '' }}">
+                            {{ bc_plan.nextTestDate ? bc_plan.nextTestDate|date('Y-m-d') : 'Not scheduled' }}
+                            {{ bc_plan.isTestOverdue() ? '⚠️ OVERDUE' : '' }}
+                        </span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">Last Review:</span>
+                        <span class="value">{{ bc_plan.lastReviewDate ? bc_plan.lastReviewDate|date('Y-m-d') : 'Never' }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">Next Review:</span>
+                        <span class="value {{ bc_plan.isReviewOverdue() ? 'text-danger' : '' }}">
+                            {{ bc_plan.nextReviewDate ? bc_plan.nextReviewDate|date('Y-m-d') : 'Not scheduled' }}
+                            {{ bc_plan.isReviewOverdue() ? '⚠️ OVERDUE' : '' }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            {% if bc_plan.reviewNotes %}
+            <div class="detail-section">
+                <h3>Review Notes</h3>
+                <p>{{ bc_plan.reviewNotes }}</p>
+            </div>
+            {% endif %}
+
+            {% if bc_plan.communicationPlan %}
+            <div class="detail-section">
+                <h3>Communication Plan</h3>
+                <p>{{ bc_plan.communicationPlan|nl2br }}</p>
+            </div>
+            {% endif %}
+
+            {% if bc_plan.alternativeSite %}
+            <div class="detail-section">
+                <h3>Alternative Site</h3>
+                <p>{{ bc_plan.alternativeSite }}</p>
+                {% if bc_plan.alternativeSiteAddress %}
+                    <p><strong>Address:</strong> {{ bc_plan.alternativeSiteAddress }}</p>
+                {% endif %}
+                {% if bc_plan.alternativeSiteCapacity %}
+                    <p><strong>Capacity:</strong> {{ bc_plan.alternativeSiteCapacity }}</p>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            {% if bc_plan.relatedRisks|length > 0 %}
+            <div class="detail-section">
+                <h3>Related Risks ({{ bc_plan.relatedRisks|length }})</h3>
+                <ul>
+                    {% for risk in bc_plan.relatedRisks %}
+                    <li><a href="{{ path('app_risk_show', {id: risk.id}) }}">{{ risk.title }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+.text-danger { color: #dc2626; font-weight: bold; }
+</style>
+{% endblock %}

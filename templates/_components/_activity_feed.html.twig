@@ -1,0 +1,48 @@
+{# Activity Feed Component
+   Usage:
+   {% include '_components/_activity_feed.html.twig' with {
+       activities: [
+           {
+               icon: 'bi-server',
+               color: 'primary',
+               title: 'Asset added',
+               description: 'Web Server added to inventory',
+               time: '2 minutes',
+               user: 'John Doe'
+           }
+       ]
+   } %}
+#}
+
+<div class="activity-feed">
+    {% if activities is defined and activities|length > 0 %}
+        {% for activity in activities %}
+        <div class="activity-item">
+            <div class="activity-icon icon-{{ activity.color|default('primary') }}">
+                <i class="{{ activity.icon|default('bi-circle') }}"></i>
+            </div>
+            <div class="activity-content">
+                <div class="activity-title">{{ activity.title }}</div>
+                <div class="activity-description">{{ activity.description }}</div>
+                <div class="activity-meta">
+                    {% if activity.time is defined %}
+                    <span class="activity-time">
+                        <i class="bi-clock"></i> {{ activity.time }}
+                    </span>
+                    {% endif %}
+                    {% if activity.user is defined %}
+                    <span class="activity-user">
+                        <i class="bi-person"></i> {{ activity.user }}
+                    </span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="text-center text-muted py-4">
+            <i class="bi-inbox" style="font-size: 3rem;"></i>
+            <p class="mt-2">Keine Aktivitäten vorhanden</p>
+        </div>
+    {% endif %}
+</div>

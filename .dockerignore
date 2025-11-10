@@ -1,0 +1,57 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Documentation
+README.md
+docs/
+*.md
+
+# Environment & Config
+.env.local
+.env.*.local
+.env.test
+
+# Dependencies
+/vendor/
+/node_modules/
+
+# Build artifacts
+/var/cache/*
+/var/log/*
+/var/sessions/*
+!/var/cache/.gitkeep
+!/var/log/.gitkeep
+!/var/sessions/.gitkeep
+
+# Tests
+/tests/
+/phpunit.xml.dist
+/.phpunit.result.cache
+
+# CI/CD
+/.github/
+/.gitlab-ci.yml
+/bitbucket-pipelines.yml
+
+# IDE
+/.idea/
+/.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Symfony
+/public/bundles/
+/public/build/
+/var/
+
+# Temporary files
+*.tmp
+*.bak
+*.cache

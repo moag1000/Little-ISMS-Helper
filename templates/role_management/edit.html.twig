@@ -1,0 +1,64 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'role_management.title.edit'|trans }} - {{ role.name }} - Little ISMS Helper{% endblock %}
+
+{% block body %}
+<div class="d-flex justify-between align-center mb-4">
+    <h1>{{ 'role_management.title.edit'|trans }}: {{ role.name }}</h1>
+    <a href="{{ path('app_role_management_show', {id: role.id}) }}" class="btn btn-secondary">
+        ← {{ 'common.back'|trans }}
+    </a>
+</div>
+
+<div class="card">
+    {{ form_start(form) }}
+
+    <h3>{{ 'role_management.section.basic_info'|trans }}</h3>
+
+    <div class="form-group">
+        {{ form_label(form.name) }}
+        {{ form_widget(form.name, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.name) }}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.description) }}
+        {{ form_widget(form.description, {'attr': {'class': 'form-control', 'rows': 3}}) }}
+        {{ form_errors(form.description) }}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.active) }}
+        <div style="margin-top: var(--spacing-xs);">
+            {{ form_widget(form.active) }}
+        </div>
+        {{ form_errors(form.active) }}
+    </div>
+
+    {% if role.systemRole %}
+    <div class="info-box" style="background: var(--color-warning-light); border-left: 4px solid var(--color-warning);">
+        <p><strong>{{ 'role_management.warning.system_role'|trans }}</strong></p>
+        <p style="margin-top: var(--spacing-xs);">{{ 'role_management.warning.system_role_desc'|trans }}</p>
+    </div>
+    {% endif %}
+
+    <h3 style="margin-top: var(--spacing-lg);">{{ 'role_management.section.permissions'|trans }}</h3>
+
+    <div class="form-group">
+        {{ form_label(form.permissions) }}
+        {{ form_widget(form.permissions, {'attr': {'class': 'form-control', 'size': 10}}) }}
+        {{ form_errors(form.permissions) }}
+    </div>
+
+    <div class="d-flex gap-2 mt-4">
+        <button type="submit" class="btn btn-success">
+            💾 {{ 'common.save'|trans }}
+        </button>
+        <a href="{{ path('app_role_management_show', {id: role.id}) }}" class="btn btn-secondary">
+            ❌ {{ 'common.cancel'|trans }}
+        </a>
+    </div>
+
+    {{ form_end(form) }}
+</div>
+{% endblock %}

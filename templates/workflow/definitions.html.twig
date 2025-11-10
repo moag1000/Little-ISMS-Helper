@@ -1,0 +1,125 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'workflow.title.definitions'|trans }} - Little ISMS Helper{% endblock %}
+
+{% block body %}
+<div class="d-flex justify-between align-center mb-4">
+    <div>
+        <h1>{{ 'workflow.title.definitions'|trans }}</h1>
+        <p style="color: var(--color-text-light); margin-top: var(--spacing-sm);">
+            {{ 'workflow.description.definitions'|trans }}
+        </p>
+    </div>
+    <div>
+        <a href="{{ path('app_workflow_index') }}" class="btn btn-secondary" style="margin-right: 0.5rem;">
+            ← {{ 'common.back'|trans }}
+        </a>
+        <a href="{{ path('app_workflow_definition_new') }}" class="btn btn-success">
+            ➕ {{ 'workflow.action.create_definition'|trans }}
+        </a>
+    </div>
+</div>
+
+{# Statistics Cards #}
+<div class="kpi-grid">
+    <div class="kpi-card">
+        <div class="icon">📋</div>
+        <div class="label">{{ 'workflow.stats.total_definitions'|trans }}</div>
+        <div>
+            <span class="value">{{ definitions|length }}</span>
+        </div>
+    </div>
+
+    <div class="kpi-card">
+        <div class="icon">✅</div>
+        <div class="label">{{ 'workflow.stats.active_definitions'|trans }}</div>
+        <div>
+            <span class="value">{{ definitions|filter(d => d.active)|length }}</span>
+        </div>
+    </div>
+
+    <div class="kpi-card">
+        <div class="icon">🔄</div>
+        <div class="label">{{ 'workflow.stats.avg_steps'|trans }}</div>
+        <div>
+            {% set totalSteps = 0 %}
+            {% for definition in definitions %}
+                {% set totalSteps = totalSteps + definition.steps|length %}
+            {% endfor %}
+            <span class="value">{{ definitions|length > 0 ? (totalSteps / definitions|length)|round : 0 }}</span>
+        </div>
+    </div>
+
+    <div class="kpi-card">
+        <div class="icon">📊</div>
+        <div class="label">{{ 'workflow.stats.total_instances'|trans }}</div>
+        <div>
+            {% set totalInstances = 0 %}
+            {% for definition in definitions %}
+                {% set totalInstances = totalInstances + definition.instances|length %}
+            {% endfor %}
+            <span class="value">{{ totalInstances }}</span>
+        </div>
+    </div>
+</div>
+
+{# Definitions Table #}
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>{{ 'workflow.field.definition_name'|trans }}</th>
+                <th>{{ 'workflow.field.description'|trans }}</th>
+                <th style="text-align: center;">{{ 'workflow.field.steps'|trans }}</th>
+                <th style="text-align: center;">{{ 'workflow.field.instances'|trans }}</th>
+                <th style="text-align: center;">{{ 'workflow.field.active'|trans }}</th>
+                <th style="text-align: center;">{{ 'common.actions'|trans }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for definition in definitions %}
+            <tr>
+                <td>
+                    <strong>{{ definition.name }}</strong>
+                    {% if definition.category %}
+                        <br><small style="color: var(--color-text-muted);">{{ definition.category }}</small>
+                    {% endif %}
+                </td>
+                <td>
+                    <small style="color: var(--color-text-muted);">
+                        {{ definition.description|default('-') }}
+                    </small>
+                </td>
+                <td style="text-align: center;">
+                    <span class="badge badge-info">{{ definition.steps|length }}</span>
+                </td>
+                <td style="text-align: center;">
+                    <span class="badge badge-secondary">{{ definition.instances|length }}</span>
+                </td>
+                <td style="text-align: center;">
+                    {% if definition.active %}
+                        <span class="badge badge-success">✓</span>
+                    {% else %}
+                        <span class="badge badge-secondary">✗</span>
+                    {% endif %}
+                </td>
+                <td style="text-align: center;">
+                    <a href="{{ path('app_workflow_definition_show', {id: definition.id}) }}" class="btn btn-sm" style="margin-right: 0.25rem;">
+                        👁 {{ 'common.view'|trans }}
+                    </a>
+                    <a href="{{ path('app_workflow_definition_edit', {id: definition.id}) }}" class="btn btn-sm btn-secondary">
+                        ✏️ {{ 'common.edit'|trans }}
+                    </a>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="6" style="text-align: center; padding: var(--spacing-xl); color: var(--color-text-muted);">
+                    {{ 'workflow.message.no_definitions'|trans }}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

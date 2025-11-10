@@ -1,0 +1,165 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit {{ supplier.name }}{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="page-header">
+        <h1>Edit Supplier: {{ supplier.name }}</h1>
+        <div class="actions">
+            <a href="{{ path('app_supplier_show', {id: supplier.id}) }}" class="btn btn-secondary">View Supplier</a>
+            <a href="{{ path('app_supplier_index') }}" class="btn btn-secondary">Back to List</a>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-content">
+            {{ form_start(form) }}
+                <h3>Basic Information</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        {{ form_label(form.name) }}
+                        {{ form_widget(form.name) }}
+                        {{ form_errors(form.name) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.criticality) }}
+                        {{ form_widget(form.criticality) }}
+                        {{ form_errors(form.criticality) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.status) }}
+                        {{ form_widget(form.status) }}
+                        {{ form_errors(form.status) }}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.description) }}
+                    {{ form_widget(form.description) }}
+                    {{ form_errors(form.description) }}
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.serviceProvided) }}
+                    {{ form_widget(form.serviceProvided) }}
+                    {{ form_errors(form.serviceProvided) }}
+                </div>
+
+                <h3>Contact Information</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        {{ form_label(form.contactPerson) }}
+                        {{ form_widget(form.contactPerson) }}
+                        {{ form_errors(form.contactPerson) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.email) }}
+                        {{ form_widget(form.email) }}
+                        {{ form_errors(form.email) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.phone) }}
+                        {{ form_widget(form.phone) }}
+                        {{ form_errors(form.phone) }}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.address) }}
+                    {{ form_widget(form.address) }}
+                    {{ form_errors(form.address) }}
+                </div>
+
+                <h3>Security Assessment</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        {{ form_label(form.securityScore) }}
+                        {{ form_widget(form.securityScore) }}
+                        {{ form_errors(form.securityScore) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.lastSecurityAssessment) }}
+                        {{ form_widget(form.lastSecurityAssessment) }}
+                        {{ form_errors(form.lastSecurityAssessment) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.nextAssessmentDate) }}
+                        {{ form_widget(form.nextAssessmentDate) }}
+                        {{ form_errors(form.nextAssessmentDate) }}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.assessmentFindings) }}
+                    {{ form_widget(form.assessmentFindings) }}
+                    {{ form_errors(form.assessmentFindings) }}
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.nonConformities) }}
+                    {{ form_widget(form.nonConformities) }}
+                    {{ form_errors(form.nonConformities) }}
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.securityRequirements) }}
+                    {{ form_widget(form.securityRequirements) }}
+                    {{ form_errors(form.securityRequirements) }}
+                </div>
+
+                <h3>Certifications & Compliance</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        {{ form_label(form.hasISO27001) }}
+                        {{ form_widget(form.hasISO27001) }}
+                        {{ form_errors(form.hasISO27001) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.hasISO22301) }}
+                        {{ form_widget(form.hasISO22301) }}
+                        {{ form_errors(form.hasISO22301) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.hasDPA) }}
+                        {{ form_widget(form.hasDPA) }}
+                        {{ form_errors(form.hasDPA) }}
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        {{ form_label(form.dpaSignedDate) }}
+                        {{ form_widget(form.dpaSignedDate) }}
+                        {{ form_errors(form.dpaSignedDate) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.certifications) }}
+                        {{ form_widget(form.certifications) }}
+                        {{ form_errors(form.certifications) }}
+                    </div>
+                </div>
+
+                <h3>Contract Information</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        {{ form_label(form.contractStartDate) }}
+                        {{ form_widget(form.contractStartDate) }}
+                        {{ form_errors(form.contractStartDate) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.contractEndDate) }}
+                        {{ form_widget(form.contractEndDate) }}
+                        {{ form_errors(form.contractEndDate) }}
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Update Supplier</button>
+                    <a href="{{ path('app_supplier_show', {id: supplier.id}) }}" class="btn btn-secondary">Cancel</a>
+                </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>
+{% endblock %}
