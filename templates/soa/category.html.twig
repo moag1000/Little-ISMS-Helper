@@ -1,0 +1,138 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ category }} Controls - Statement of Applicability - Small ISMS Helper{% endblock %}
+
+{% block body %}
+<div class="d-flex justify-between align-center mb-4">
+    <div>
+        <h1>{{ category }} Controls</h1>
+        <p style="color: var(--color-text-light); margin-top: var(--spacing-sm);">
+            ISO/IEC 27001:2022 Annex A - {{ category }} Kontrollen
+        </p>
+    </div>
+    <a href="{{ path('app_soa_index') }}" class="btn btn-secondary">← Zurück zur Übersicht</a>
+</div>
+
+{# Statistics Cards #}
+<div class="kpi-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+    <div class="kpi-card">
+        <div class="icon">📋</div>
+        <div class="label">Gesamt Controls</div>
+        <div>
+            <span class="value">{{ controls|length }}</span>
+        </div>
+    </div>
+
+    <div class="kpi-card">
+        <div class="icon">✅</div>
+        <div class="label">Anwendbar</div>
+        <div>
+            <span class="value">{{ controls|filter(c => c.applicable)|length }}</span>
+        </div>
+    </div>
+
+    <div class="kpi-card">
+        <div class="icon">🚀</div>
+        <div class="label">Implementiert</div>
+        <div>
+            {% set implemented = controls|filter(c => c.applicable and c.implementationStatus == 'implemented')|length %}
+            {% set applicable = controls|filter(c => c.applicable)|length %}
+            <span class="value">{{ implemented }}</span>
+            <span class="unit">von {{ applicable }}</span>
+        </div>
+    </div>
+
+    <div class="kpi-card">
+        <div class="icon">📈</div>
+        <div class="label">Compliance-Rate</div>
+        <div>
+            {% set applicable = controls|filter(c => c.applicable)|length %}
+            {% set implemented = controls|filter(c => c.applicable and c.implementationStatus == 'implemented')|length %}
+            {% set percentage = applicable > 0 ? (implemented / applicable * 100)|round : 0 %}
+            <span class="value">{{ percentage }}</span>
+            <span class="unit">%</span>
+        </div>
+    </div>
+</div>
+
+{# Controls Table #}
+<h2>Controls</h2>
+
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Control ID</th>
+                <th>Name</th>
+                <th style="text-align: center;">Anwendbar</th>
+                <th>Implementierungsstatus</th>
+                <th style="text-align: center;">Fortschritt</th>
+                <th>Verantwortlich</th>
+                <th style="text-align: center;">Aktionen</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for control in controls %}
+            <tr>
+                <td><strong>{{ control.controlId }}</strong></td>
+                <td>
+                    {{ control.name }}
+                    <br>
+                    <small style="color: var(--color-text-muted);">{{ control.description|slice(0, 100) }}{% if control.description|length > 100 %}...{% endif %}</small>
+                </td>
+                <td style="text-align: center;">
+                    {% if control.applicable %}
+                        <span class="badge badge-success">✓ Ja</span>
+                    {% else %}
+                        <span class="badge" style="background: #f0f0f0; color: #666;">✗ Nein</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if control.applicable %}
+                        {% if control.implementationStatus == 'implemented' %}
+                            <span class="badge badge-success">✅ Implementiert</span>
+                        {% elseif control.implementationStatus == 'in_progress' %}
+                            <span class="badge badge-warning">🔄 In Arbeit</span>
+                        {% elseif control.implementationStatus == 'not_started' %}
+                            <span class="badge badge-danger">⏸ Nicht begonnen</span>
+                        {% else %}
+                            <span class="badge" style="background: #f0f0f0; color: #666;">N/A</span>
+                        {% endif %}
+                    {% else %}
+                        <span class="badge" style="background: #f0f0f0; color: #666;">Nicht anwendbar</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if control.applicable %}
+                        <div class="progress" style="height: 20px; width: 100px; margin: 0 auto;">
+                            <div class="progress-bar" style="width: {{ control.implementationPercentage }}%; font-size: 0.75rem;">
+                                {{ control.implementationPercentage }}%
+                            </div>
+                        </div>
+                    {% else %}
+                        <span style="text-align: center; display: block; color: #999;">-</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if control.responsiblePerson %}
+                        {{ control.responsiblePerson }}
+                    {% else %}
+                        <span style="color: var(--color-text-muted);">Nicht zugewiesen</span>
+                    {% endif %}
+                </td>
+                <td style="text-align: center;">
+                    <a href="{{ path('app_soa_show', {id: control.id}) }}" class="btn btn-sm" style="margin-right: 0.25rem;">👁 Details</a>
+                    <a href="{{ path('app_soa_edit', {id: control.id}) }}" class="btn btn-sm btn-secondary">✏️ Bearbeiten</a>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="7" style="text-align: center; padding: var(--spacing-xl); color: var(--color-text-muted);">
+                    Keine Controls in dieser Kategorie gefunden.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

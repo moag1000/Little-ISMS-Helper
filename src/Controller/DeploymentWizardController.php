@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route('/setup')]
 class DeploymentWizardController extends AbstractController
@@ -17,7 +18,8 @@ class DeploymentWizardController extends AbstractController
     public function __construct(
         private readonly SystemRequirementsChecker $requirementsChecker,
         private readonly ModuleConfigurationService $moduleConfigService,
-        private readonly DataImportService $dataImportService
+        private readonly DataImportService $dataImportService,
+        private readonly TranslatorInterface $translator
     ) {
     }
 
@@ -57,7 +59,7 @@ class DeploymentWizardController extends AbstractController
     {
         // Prüfe ob Step 1 bestanden
         if (!$this->requirementsChecker->isSystemReady()) {
-            $this->addFlash('error', 'Bitte beheben Sie zuerst die System-Anforderungen.');
+            $this->addFlash('error', $this->translator->trans('deployment.error.fix_requirements'));
             return $this->redirectToRoute('setup_step1_requirements');
         }
 
@@ -105,7 +107,7 @@ class DeploymentWizardController extends AbstractController
         // Zeige hinzugefügte Module
         foreach ($resolved['added'] as $addedModule) {
             $module = $this->moduleConfigService->getModule($addedModule);
-            $this->addFlash('info', "Modul '{$module['name']}' wurde automatisch hinzugefügt (Abhängigkeit)");
+            $this->addFlash('info', $this->translator->trans('deployment.info.module_added_auto', ['name' => $module['name']]));
         }
 
         foreach ($validation['warnings'] as $warning) {
@@ -124,7 +126,7 @@ class DeploymentWizardController extends AbstractController
         $selectedModules = $session->get('setup_selected_modules', []);
 
         if (empty($selectedModules)) {
-            $this->addFlash('error', 'Bitte wählen Sie zuerst Module aus.');
+            $this->addFlash('error', $this->translator->trans('deployment.error.select_modules'));
             return $this->redirectToRoute('setup_step2_modules');
         }
 
@@ -163,7 +165,7 @@ class DeploymentWizardController extends AbstractController
         $selectedModules = $session->get('setup_selected_modules', []);
 
         if (empty($selectedModules)) {
-            $this->addFlash('error', 'Bitte wählen Sie zuerst Module aus.');
+            $this->addFlash('error', $this->translator->trans('deployment.error.select_modules'));
             return $this->redirectToRoute('setup_step2_modules');
         }
 
@@ -212,7 +214,7 @@ class DeploymentWizardController extends AbstractController
         $selectedModules = $session->get('setup_selected_modules', []);
 
         if (empty($selectedModules)) {
-            $this->addFlash('error', 'Bitte wählen Sie zuerst Module aus.');
+            $this->addFlash('error', $this->translator->trans('deployment.error.select_modules'));
             return $this->redirectToRoute('setup_step2_modules');
         }
 
@@ -252,7 +254,7 @@ class DeploymentWizardController extends AbstractController
     #[Route('/step5-sample-data/skip', name: 'setup_step5_sample_data_skip', methods: ['POST'])]
     public function step5SampleDataSkip(): Response
     {
-        $this->addFlash('info', 'Beispiel-Daten wurden übersprungen.');
+        $this->addFlash('info', $this->translator->trans('deployment.info.sample_data_skipped'));
         return $this->redirectToRoute('setup_step6_complete');
     }
 
@@ -265,7 +267,7 @@ class DeploymentWizardController extends AbstractController
         $selectedModules = $session->get('setup_selected_modules', []);
 
         if (empty($selectedModules)) {
-            $this->addFlash('error', 'Bitte wählen Sie zuerst Module aus.');
+            $this->addFlash('error', $this->translator->trans('deployment.error.select_modules'));
             return $this->redirectToRoute('setup_step2_modules');
         }
 
@@ -321,7 +323,7 @@ class DeploymentWizardController extends AbstractController
         // Lösche Session
         $session->clear();
 
-        $this->addFlash('success', 'Setup wurde zurückgesetzt.');
+        $this->addFlash('success', $this->translator->trans('deployment.success.reset'));
         return $this->redirectToRoute('setup_wizard_index');
     }
 }

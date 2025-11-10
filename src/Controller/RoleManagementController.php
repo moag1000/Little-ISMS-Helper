@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route('/admin/roles')]
 #[IsGranted('ROLE_ADMIN')]
@@ -33,7 +34,8 @@ class RoleManagementController extends AbstractController
     public function new(
         Request $request,
         EntityManagerInterface $entityManager,
-        PermissionRepository $permissionRepository
+        PermissionRepository $permissionRepository,
+        TranslatorInterface $translator
     ): Response {
         $this->denyAccessUnlessGranted(RoleVoter::CREATE);
 
@@ -57,7 +59,7 @@ class RoleManagementController extends AbstractController
             $entityManager->persist($role);
             $entityManager->flush();
 
-            $this->addFlash('success', 'Rolle erfolgreich erstellt.');
+            $this->addFlash('success', $translator->trans('role.success.created'));
 
             return $this->redirectToRoute('role_management_index');
         }
@@ -85,7 +87,8 @@ class RoleManagementController extends AbstractController
         Role $role,
         Request $request,
         EntityManagerInterface $entityManager,
-        PermissionRepository $permissionRepository
+        PermissionRepository $permissionRepository,
+        TranslatorInterface $translator
     ): Response {
         $this->denyAccessUnlessGranted(RoleVoter::EDIT, $role);
 
@@ -113,7 +116,7 @@ class RoleManagementController extends AbstractController
             $role->setUpdatedAt(new \DateTimeImmutable());
             $entityManager->flush();
 
-            $this->addFlash('success', 'Rolle erfolgreich aktualisiert.');
+            $this->addFlash('success', $translator->trans('role.success.updated'));
 
             return $this->redirectToRoute('role_management_show', ['id' => $role->getId()]);
         }
@@ -128,7 +131,8 @@ class RoleManagementController extends AbstractController
     public function delete(
         Role $role,
         Request $request,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        TranslatorInterface $translator
     ): Response {
         $this->denyAccessUnlessGranted(RoleVoter::DELETE, $role);
 
@@ -136,7 +140,7 @@ class RoleManagementController extends AbstractController
             $entityManager->remove($role);
             $entityManager->flush();
 
-            $this->addFlash('success', 'Rolle erfolgreich gelöscht.');
+            $this->addFlash('success', $translator->trans('role.success.deleted'));
         }
 
         return $this->redirectToRoute('role_management_index');

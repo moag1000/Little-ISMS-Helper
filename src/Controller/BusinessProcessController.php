@@ -10,6 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route('/bcm/business-process')]
 class BusinessProcessController extends AbstractController
@@ -69,7 +70,7 @@ class BusinessProcessController extends AbstractController
     }
 
     #[Route('/new', name: 'app_business_process_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager, BusinessProcessRepository $businessProcessRepository): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, BusinessProcessRepository $businessProcessRepository, TranslatorInterface $translator): Response
     {
         $businessProcess = new BusinessProcess();
         $form = $this->createForm(BusinessProcessType::class, $businessProcess);
@@ -91,7 +92,7 @@ class BusinessProcessController extends AbstractController
                 ]);
             }
 
-            $this->addFlash('success', 'Geschäftsprozess erfolgreich erstellt.');
+            $this->addFlash('success', $translator->trans('business_process.success.created'));
             return $this->redirectToRoute('app_business_process_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -122,7 +123,7 @@ class BusinessProcessController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_business_process_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, BusinessProcess $businessProcess, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, BusinessProcess $businessProcess, EntityManagerInterface $entityManager, TranslatorInterface $translator): Response
     {
         $form = $this->createForm(BusinessProcessType::class, $businessProcess);
         $form->handleRequest($request);
@@ -139,7 +140,7 @@ class BusinessProcessController extends AbstractController
                 ]);
             }
 
-            $this->addFlash('success', 'Geschäftsprozess erfolgreich aktualisiert.');
+            $this->addFlash('success', $translator->trans('business_process.success.updated'));
             return $this->redirectToRoute('app_business_process_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -150,7 +151,7 @@ class BusinessProcessController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_business_process_delete', methods: ['POST'])]
-    public function delete(Request $request, BusinessProcess $businessProcess, EntityManagerInterface $entityManager, BusinessProcessRepository $businessProcessRepository): Response
+    public function delete(Request $request, BusinessProcess $businessProcess, EntityManagerInterface $entityManager, BusinessProcessRepository $businessProcessRepository, TranslatorInterface $translator): Response
     {
         if ($this->isCsrfTokenValid('delete'.$businessProcess->getId(), $request->request->get('_token'))) {
             $processId = $businessProcess->getId();
@@ -178,7 +179,7 @@ class BusinessProcessController extends AbstractController
                 ]);
             }
 
-            $this->addFlash('success', 'Geschäftsprozess erfolgreich gelöscht.');
+            $this->addFlash('success', $translator->trans('business_process.success.deleted'));
         }
 
         return $this->redirectToRoute('app_business_process_index', [], Response::HTTP_SEE_OTHER);

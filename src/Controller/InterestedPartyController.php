@@ -11,13 +11,15 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route('/interested-party')]
 class InterestedPartyController extends AbstractController
 {
     public function __construct(
         private InterestedPartyRepository $interestedPartyRepository,
-        private EntityManagerInterface $entityManager
+        private EntityManagerInterface $entityManager,
+        private TranslatorInterface $translator
     ) {}
 
     #[Route('/', name: 'app_interested_party_index')]
@@ -47,7 +49,7 @@ class InterestedPartyController extends AbstractController
             $this->entityManager->persist($interestedParty);
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Interested party created successfully.');
+            $this->addFlash('success', $this->translator->trans('interested_party.success.created'));
             return $this->redirectToRoute('app_interested_party_show', ['id' => $interestedParty->getId()]);
         }
 
@@ -77,7 +79,7 @@ class InterestedPartyController extends AbstractController
             $interestedParty->setUpdatedAt(new \DateTime());
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Interested party updated successfully.');
+            $this->addFlash('success', $this->translator->trans('interested_party.success.updated'));
             return $this->redirectToRoute('app_interested_party_show', ['id' => $interestedParty->getId()]);
         }
 
@@ -95,7 +97,7 @@ class InterestedPartyController extends AbstractController
             $this->entityManager->remove($interestedParty);
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Interested party deleted successfully.');
+            $this->addFlash('success', $this->translator->trans('interested_party.success.deleted'));
         }
 
         return $this->redirectToRoute('app_interested_party_index');

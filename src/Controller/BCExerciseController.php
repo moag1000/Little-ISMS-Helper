@@ -11,13 +11,15 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route('/bc-exercise')]
 class BCExerciseController extends AbstractController
 {
     public function __construct(
         private BCExerciseRepository $bcExerciseRepository,
-        private EntityManagerInterface $entityManager
+        private EntityManagerInterface $entityManager,
+        private TranslatorInterface $translator
     ) {}
 
     #[Route('/', name: 'app_bc_exercise_index')]
@@ -49,7 +51,7 @@ class BCExerciseController extends AbstractController
             $this->entityManager->persist($bcExercise);
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'BC exercise created successfully.');
+            $this->addFlash('success', $this->translator->trans('bc_exercise.success.created'));
             return $this->redirectToRoute('app_bc_exercise_show', ['id' => $bcExercise->getId()]);
         }
 
@@ -79,7 +81,7 @@ class BCExerciseController extends AbstractController
             $bcExercise->setUpdatedAt(new \DateTime());
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'BC exercise updated successfully.');
+            $this->addFlash('success', $this->translator->trans('bc_exercise.success.updated'));
             return $this->redirectToRoute('app_bc_exercise_show', ['id' => $bcExercise->getId()]);
         }
 
@@ -97,7 +99,7 @@ class BCExerciseController extends AbstractController
             $this->entityManager->remove($bcExercise);
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'BC exercise deleted successfully.');
+            $this->addFlash('success', $this->translator->trans('bc_exercise.success.deleted'));
         }
 
         return $this->redirectToRoute('app_bc_exercise_index');

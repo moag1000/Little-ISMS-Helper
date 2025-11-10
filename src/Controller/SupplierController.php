@@ -11,13 +11,15 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route('/supplier')]
 class SupplierController extends AbstractController
 {
     public function __construct(
         private SupplierRepository $supplierRepository,
-        private EntityManagerInterface $entityManager
+        private EntityManagerInterface $entityManager,
+        private TranslatorInterface $translator
     ) {}
 
     #[Route('/', name: 'app_supplier_index')]
@@ -51,7 +53,7 @@ class SupplierController extends AbstractController
             $this->entityManager->persist($supplier);
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Supplier created successfully.');
+            $this->addFlash('success', $this->translator->trans('supplier.success.created'));
             return $this->redirectToRoute('app_supplier_show', ['id' => $supplier->getId()]);
         }
 
@@ -81,7 +83,7 @@ class SupplierController extends AbstractController
             $supplier->setUpdatedAt(new \DateTime());
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Supplier updated successfully.');
+            $this->addFlash('success', $this->translator->trans('supplier.success.updated'));
             return $this->redirectToRoute('app_supplier_show', ['id' => $supplier->getId()]);
         }
 
@@ -99,7 +101,7 @@ class SupplierController extends AbstractController
             $this->entityManager->remove($supplier);
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Supplier deleted successfully.');
+            $this->addFlash('success', $this->translator->trans('supplier.success.deleted'));
         }
 
         return $this->redirectToRoute('app_supplier_index');

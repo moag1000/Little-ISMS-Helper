@@ -74,3 +74,22 @@ services:
     App\EventSubscriber\SecurityHeadersSubscriber:
         arguments:
             $environment: '%kernel.environment%'
+
+    # Make compliance framework commands public for service injection
+    App\Command\LoadTisaxRequirementsCommand:
+        public: true
+
+    App\Command\LoadDoraRequirementsCommand:
+        public: true
+
+    App\Command\LoadNis2RequirementsCommand:
+        public: true
+
+    App\Command\LoadBsiItGrundschutzRequirementsCommand:
+        public: true
+
+    App\Command\LoadGdprRequirementsCommand:
+        public: true
+
+    App\Command\LoadIso27701RequirementsCommand:
+        public: true

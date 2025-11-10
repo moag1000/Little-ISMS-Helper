@@ -1,35 +1,35 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Audit Log Details - Small ISMS Helper{% endblock %}
+{% block title %}{{ 'audit_log.title'|trans }} - {{ 'app.title'|trans }}{% endblock %}
 
 {% block body %}
-<h1>Audit Log Details</h1>
+<h1>{{ 'audit_log.title'|trans }}</h1>
 
 <p>
-    <a href="{{ path('app_audit_log_index') }}" style="color: #007bff; text-decoration: none;">« Zurück zur Übersicht</a>
+    <a href="{{ path('app_audit_log_index') }}" style="color: #007bff; text-decoration: none;">« {{ 'common.back_to_overview'|trans }}</a>
 </p>
 
 <div class="info-box" style="margin-top: 2rem;">
-    <h3>Protokolleintrag #{{ auditLog.id }}</h3>
+    <h3>{{ 'audit_log.entry'|trans({'%id%': auditLog.id}) }}</h3>
 
     <table style="width: 100%; margin-top: 1rem;">
         <tr>
-            <td style="padding: 0.5rem; font-weight: bold; width: 200px;">Zeitstempel:</td>
+            <td style="padding: 0.5rem; font-weight: bold; width: 200px;">{{ 'audit_log.field.timestamp'|trans }}</td>
             <td style="padding: 0.5rem;">{{ auditLog.createdAt|date('d.m.Y H:i:s') }}</td>
         </tr>
         <tr>
-            <td style="padding: 0.5rem; font-weight: bold;">Aktion:</td>
+            <td style="padding: 0.5rem; font-weight: bold;">{{ 'audit_log.field.action'|trans }}</td>
             <td style="padding: 0.5rem;">
                 <span class="badge badge-{{ auditLog.action }}">{{ auditLog.action|capitalize }}</span>
             </td>
         </tr>
         <tr>
-            <td style="padding: 0.5rem; font-weight: bold;">Entitätstyp:</td>
+            <td style="padding: 0.5rem; font-weight: bold;">{{ 'audit_log.field.entity_type'|trans }}</td>
             <td style="padding: 0.5rem;">{{ auditLog.entityType }}</td>
         </tr>
         {% if auditLog.entityId %}
         <tr>
-            <td style="padding: 0.5rem; font-weight: bold;">Entitäts-ID:</td>
+            <td style="padding: 0.5rem; font-weight: bold;">{{ 'audit_log.field.entity_id'|trans }}</td>
             <td style="padding: 0.5rem;">
                 <a href="{{ path('app_audit_log_entity', {entityType: auditLog.entityType, entityId: auditLog.entityId}) }}"
                    style="color: #007bff; text-decoration: none;">
@@ -39,7 +39,7 @@
         </tr>
         {% endif %}
         <tr>
-            <td style="padding: 0.5rem; font-weight: bold;">Benutzer:</td>
+            <td style="padding: 0.5rem; font-weight: bold;">{{ 'audit_log.field.user'|trans }}</td>
             <td style="padding: 0.5rem;">
                 <a href="{{ path('app_audit_log_user', {userName: auditLog.userName}) }}"
                    style="color: #007bff; text-decoration: none;">
@@ -49,19 +49,19 @@
         </tr>
         {% if auditLog.ipAddress %}
         <tr>
-            <td style="padding: 0.5rem; font-weight: bold;">IP-Adresse:</td>
+            <td style="padding: 0.5rem; font-weight: bold;">{{ 'audit_log.field.ip_address'|trans }}</td>
             <td style="padding: 0.5rem;">{{ auditLog.ipAddress }}</td>
         </tr>
         {% endif %}
         {% if auditLog.userAgent %}
         <tr>
-            <td style="padding: 0.5rem; font-weight: bold;">User Agent:</td>
+            <td style="padding: 0.5rem; font-weight: bold;">{{ 'audit_log.field.user_agent'|trans }}</td>
             <td style="padding: 0.5rem; font-size: 0.9rem;">{{ auditLog.userAgent }}</td>
         </tr>
         {% endif %}
         {% if auditLog.description %}
         <tr>
-            <td style="padding: 0.5rem; font-weight: bold;">Beschreibung:</td>
+            <td style="padding: 0.5rem; font-weight: bold;">{{ 'audit_log.field.description'|trans }}</td>
             <td style="padding: 0.5rem;">{{ auditLog.description }}</td>
         </tr>
         {% endif %}
@@ -73,12 +73,12 @@
 
 {% if oldValues or newValues %}
 <div class="info-box" style="margin-top: 2rem;">
-    <h3>Änderungen</h3>
+    <h3>{{ 'audit_log.changes'|trans }}</h3>
 
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 1rem;">
         {% if oldValues %}
         <div>
-            <h4 style="color: #dc3545;">Alte Werte</h4>
+            <h4 style="color: #dc3545;">{{ 'audit_log.old_values'|trans }}</h4>
             <table style="width: 100%; border-collapse: collapse; margin-top: 0.5rem;">
                 {% for key, value in oldValues %}
                 <tr>
@@ -96,7 +96,7 @@
 
         {% if newValues %}
         <div>
-            <h4 style="color: #28a745;">Neue Werte</h4>
+            <h4 style="color: #28a745;">{{ 'audit_log.new_values'|trans }}</h4>
             <table style="width: 100%; border-collapse: collapse; margin-top: 0.5rem;">
                 {% for key, value in newValues %}
                 <tr>

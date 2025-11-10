@@ -1,0 +1,119 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'location.title.edit'|trans }} - {{ location.name }} - Small ISMS Helper{% endblock %}
+
+{% block body %}
+<div class="d-flex justify-between align-center mb-4">
+    <h1>{{ 'location.title.edit'|trans }}: {{ location.name }}</h1>
+    <a href="{{ path('app_location_show', {id: location.id}) }}" class="btn btn-secondary">
+        ← {{ 'common.back'|trans }}
+    </a>
+</div>
+
+<div class="card">
+    {{ form_start(form) }}
+
+    <div class="form-group">
+        {{ form_label(form.name) }}
+        {{ form_widget(form.name, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.name) }}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.locationType) }}
+        {{ form_widget(form.locationType, {'attr': {'class': 'form-select'}}) }}
+        {{ form_errors(form.locationType) }}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.code) }}
+        {{ form_widget(form.code, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.code) }}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.description) }}
+        {{ form_widget(form.description, {'attr': {'class': 'form-control', 'rows': 3}}) }}
+        {{ form_errors(form.description) }}
+    </div>
+
+    <h3 style="margin-top: var(--spacing-lg);">{{ 'location.section.address'|trans }}</h3>
+
+    <div class="form-group">
+        {{ form_label(form.address) }}
+        {{ form_widget(form.address, {'attr': {'class': 'form-control', 'rows': 2}}) }}
+        {{ form_errors(form.address) }}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.city) }}
+        {{ form_widget(form.city, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.city) }}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.postalCode) }}
+        {{ form_widget(form.postalCode, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.postalCode) }}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.country) }}
+        {{ form_widget(form.country, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.country) }}
+    </div>
+
+    <h3 style="margin-top: var(--spacing-lg);">{{ 'location.section.hierarchy'|trans }}</h3>
+
+    <div class="form-group">
+        {{ form_label(form.parentLocation) }}
+        {{ form_widget(form.parentLocation, {'attr': {'class': 'form-select'}}) }}
+        {{ form_errors(form.parentLocation) }}
+    </div>
+
+    <h3 style="margin-top: var(--spacing-lg);">{{ 'location.section.security'|trans }}</h3>
+
+    <div class="form-group">
+        {{ form_label(form.securityLevel) }}
+        {{ form_widget(form.securityLevel, {'attr': {'class': 'form-select'}}) }}
+        {{ form_errors(form.securityLevel) }}
+    </div>
+
+    <div class="form-group">
+        <label class="form-label" style="display: flex; align-items: center; gap: var(--spacing-sm); cursor: pointer;">
+            {{ form_widget(form.requiresBadgeAccess, {'attr': {'style': 'width: 20px; height: 20px;'}}) }}
+            <span>{{ form_label(form.requiresBadgeAccess) }}</span>
+        </label>
+        {{ form_errors(form.requiresBadgeAccess) }}
+    </div>
+
+    {% if form.accessControlSystem is defined %}
+    <div class="form-group">
+        {{ form_label(form.accessControlSystem) }}
+        {{ form_widget(form.accessControlSystem, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.accessControlSystem) }}
+    </div>
+    {% endif %}
+
+    {% if form.active is defined %}
+    <div class="form-group">
+        <label class="form-label" style="display: flex; align-items: center; gap: var(--spacing-sm); cursor: pointer;">
+            {{ form_widget(form.active, {'attr': {'style': 'width: 20px; height: 20px;'}}) }}
+            <span>{{ form_label(form.active) }}</span>
+        </label>
+        {{ form_errors(form.active) }}
+    </div>
+    {% endif %}
+
+    <div class="d-flex gap-2 mt-4">
+        <button type="submit" class="btn btn-success">
+            💾 {{ 'common.save'|trans }}
+        </button>
+        <a href="{{ path('app_location_show', {id: location.id}) }}" class="btn btn-secondary">
+            ❌ {{ 'common.cancel'|trans }}
+        </a>
+    </div>
+
+    {{ form_end(form) }}
+</div>
+{% endblock %}

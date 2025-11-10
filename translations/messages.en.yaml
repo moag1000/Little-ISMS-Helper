@@ -1,13 +1,9 @@
-# English translations for ISMS Helper
-
-# App
 app:
   title: Small ISMS Helper
   subtitle: Information Security Management according to ISO 27001
-  footer: Small ISMS Helper - Your Partner for Information Security according to ISO 27001
-  powered_by: 'Powered by Symfony %version%'
-
-# Navigation
+  footer: Small ISMS Helper - Your Partner for Information Security according to ISO
+    27001
+  powered_by: Powered by Symfony %version%
 nav:
   home: Home
   dashboard: Dashboard
@@ -27,9 +23,17 @@ nav:
   compliance: Compliance
   audit_log: Audit Log
   users: Users
-
-# Security & Authentication
-login: Login
+login:
+  title: Login
+  already_logged_in: You are already logged in as {{ user }}.
+  field:
+    email: Email
+    password: Password
+  remember_me: Remember Me
+  submit: Login
+  azure_oauth: Sign in with Microsoft Azure (OAuth)
+  azure_saml: Sign in with Microsoft Azure (SAML)
+  no_account_message: Don't have an account yet? Contact your administrator.
 logout: Logout
 email: Email
 password: Password
@@ -37,23 +41,42 @@ forgot_password: Forgot Password
 remember_me: Remember Me
 login_title: Login
 welcome_back: Welcome Back
-
-# Legacy (for backwards compatibility)
 home: Home
-dashboard: Dashboard
+dashboard:
+  success:
+    settings_imported: Dashboard settings successfully imported!
+  error:
+    import_failed: Error importing settings. Please check the file.
 assets: Assets
 risks: Risks
 controls: Controls
 incidents: Incidents
 audits: Audits
-compliance: Compliance
-training: Training
+compliance_label: Compliance
+training:
+  field:
+    title: Training Title
+    description: Description
+    training_type: Training Type
+    delivery_method: Delivery Method
+    scheduled_date: Scheduled Date & Time
+    duration: Duration (Minutes)
+    location: Location / Meeting Link
+    trainer: Trainer / Conducting Person
+    target_audience: Target Audience
+    participants: Participants
+    status: Status
+    mandatory: Mandatory
+    related_controls: Related Controls
+    materials: Training Materials
+    feedback: Feedback / Notes
+  validation:
+    title_required: Please enter a title.
+    date_required: Please select a date.
 users: Users
 settings: Settings
 profile: Profile
 administration: Administration
-
-# Actions
 create: Create
 edit: Edit
 delete: Delete
@@ -68,8 +91,6 @@ details: Details
 close: Close
 confirm: Confirm
 back: Back
-
-# Common
 common:
   overview: Overview
   name: Name
@@ -80,26 +101,147 @@ common:
   updated_at: Updated at
   cancel: Cancel
   back: Back
-
-# ISMS Core Terms
-asset: Asset
-risk: Risk
-control: Control
-audit: Audit
+  'true': true
+  'false': false
+  note: Note
+  to_home: To Home Page
+asset:
+  label:
+    type: Type
+    owner: Owner
+    location: Location
+    status: Status
+    acquisition_value: Acquisition Value
+    current_value: Current Value
+    total_value: Total Value
+    risk_score: Risk Score
+    confidentiality: Confidentiality
+    integrity: Integrity
+    availability: Availability
+risk:
+  success:
+    created: Risk created successfully.
+    updated: Risk updated successfully.
+    deleted: Risk deleted successfully.
+  field:
+    title: Risk Title
+    description: Description
+  placeholder:
+    title: e.g. Data leak from database
+  help:
+    description: Detailed description of the risk
+control:
+  field:
+    control_id: Control ID
+    name: Control Name
+    description: Description
+    category: Category
+    applicable: Applicability
+    justification: Justification
+    implementation_status: Implementation Status
+    implementation_percentage: Progress (%)
+    implementation_notes: Implementation Details
+    responsible_person: Responsible Person
+    target_date: Target Date
+    last_review_date: Last Review
+    next_review_date: Next Review
+    protected_assets: Related Assets
+audit:
+  title: Audits
+  new: New Audit
+  edit: Edit Audit
+  create: Create Audit
+  delete_warning: Are you sure you want to delete this audit?
+  confirm_delete: Delete Audit
+  scope: Scope
+  objectives: Audit Objectives
+  planned_date: Planned Date
+  actual_date: Actual Date
+  lead_auditor: Lead Auditor
+  audit_team: Audit Team
+  auditee: Auditee
+  department: Department
+  findings: Findings
+  nonconformities: Non-Conformities
+  observations: Observations
+  recommendations: Recommendations
+  corrective_actions: Corrective Actions
+  follow_up_actions: Follow-up Actions
+  summary: Summary
+  notes: Notes
+  methodology: Methodology
+  audit_criteria: Audit Criteria
+  evidence_collected: Evidence Collected
+  overall_result: Overall Result
+  team_size: Team Size
+  quick_stats: Quick Statistics
+  export_pdf: Export as PDF
+  iso_27001_clause_info: ISO 27001 Clause Information
+  iso_27001_requirement: ISO 27001 Requirement
+  framework: Framework
+  standard: Standard
+  status:
+    planned: Planned
+    in_progress: In Progress
+    completed: Completed
+    cancelled: Cancelled
+  scope_type:
+    internal: Internal Audit
+    external: External Audit
+    certification: Certification Audit
+    surveillance: Surveillance Audit
+    recertification: Recertification Audit
+  type:
+    iso27001: ISO 27001
+    iso9001: ISO 9001
+    gdpr: GDPR
+    custom: Custom
+  result:
+    passed: Passed
+    passed_with_findings: Passed with Findings
+    failed: Failed
+    pending: Pending
+  section:
+    basic_info: Basic Information
+    schedule: Schedule
+    team: Team
+    objectives: Objectives
+    frameworks: Frameworks
+    findings: Findings
+    recommendations: Recommendations
+    documentation: Documentation
+    status: Status
+  field:
+    title: Audit Title
+    scope: Scope
+    scope_type: Audit Type
+    objectives: Audit Objectives
+    planned_date: Planned Date
+    completed_date: Completion Date
+    status: Status
+    lead_auditor: Lead Auditor
+    audit_team: Audit Team
+    frameworks: Audited Frameworks
+    findings: Findings & Non-Conformities
+    recommendations: Recommendations
+    summary: Summary
+  validation:
+    title_required: Please enter a title.
+    date_required: Please select a date.
+  success:
+    created: Audit created successfully.
+    updated: Audit updated successfully.
+    deleted: Audit deleted successfully.
 framework: Framework
 requirement: Requirement
 soa: Statement of Applicability
 bia: Business Impact Analysis
-
-# Roles
 roles:
   ROLE_USER: User
   ROLE_AUDITOR: Auditor
   ROLE_MANAGER: Manager
   ROLE_ADMIN: Administrator
   ROLE_SUPER_ADMIN: Super Administrator
-
-# Asset Management
 asset_management:
   title: Asset Management
   description: Management of IT assets and information values according to ISO 27001
@@ -128,7 +270,8 @@ context_management:
   title: ISMS Context
   description: Definition of organizational context, scope and ISMS objectives
   isms_scope: ISMS Scope
-  no_context_defined: No ISMS context defined yet. Please define the organizational context first.
+  no_context_defined: No ISMS context defined yet. Please define the organizational
+    context first.
   isms_objectives: ISMS Objectives
   active_objectives: Active Objectives
   no_objectives: No ISMS objectives defined yet.
@@ -144,13 +287,9 @@ audit_management:
 bcm:
   title: Business Continuity Management
   description: Business continuity management and emergency preparedness
-
-# Compliance
 compliance_management:
   title: Compliance Management
   description: Management of compliance requirements
-
-# KPIs
 kpi:
   registered_assets: Registered Assets
   identified_risks: Identified Risks
@@ -158,8 +297,6 @@ kpi:
   compliance_status: Compliance Status
   unit_pieces: Items
   unit_percent: '%'
-
-# Activity Feed
 activity:
   asset_added: Asset added
   risk_identified: Risk identified
@@ -168,8 +305,6 @@ activity:
   system: System
   security_team: Security Team
   new_risk: New Risk
-
-# Incident Management (Form Fields)
 incident:
   field:
     title: Incident Title
@@ -213,8 +348,10 @@ incident:
     in_resolution: In Resolution
     resolved: Resolved
     closed: Closed
-
-# Document Management (Form Fields)
+  success:
+    reported: Incident reported successfully.
+    updated: Incident updated successfully.
+    deleted: Incident deleted successfully.
 document:
   field:
     name: Document Name
@@ -237,8 +374,18 @@ document:
     compliance: Compliance Evidence
     training: Training Material
     general: General
-
-# Person Management
+    pdf: PDF Documents
+    images: Images
+    tables: Tables
+    other: Other
+  label:
+    type: Type
+    file_name: File Name
+    size: Size
+    mime_type: MIME Type
+    uploaded_by: Uploaded By
+    uploaded_at: Uploaded At
+    last_updated: Last Updated
 person:
   title: Person Management
   name: Person
@@ -270,8 +417,10 @@ person:
     company: Company
     department: Department
     job_title: Job Title
-
-# Location Management
+  success:
+    created: Person created successfully.
+    updated: Person updated successfully.
+    deleted: Person deleted successfully.
 location:
   title: Location Management
   name: Location
@@ -318,8 +467,10 @@ location:
     location_type: Location Type
     code: Code
     security_level: Security Level
-
-# Physical Access Log
+  success:
+    created: Location created successfully.
+    updated: Location updated successfully.
+    deleted: Location deleted successfully.
 physical_access:
   title: Physical Access Control
   name: Access Log
@@ -354,8 +505,6 @@ physical_access:
     medium: Medium
     high: High
     critical: Critical
-
-# Threat Intelligence
 threat:
   title: Threat Intelligence
   name: Threat
@@ -392,8 +541,6 @@ threat:
     mitigated: Mitigated
     monitoring: Monitoring
     closed: Closed
-
-# Cryptographic Operations
 crypto:
   title: Cryptographic Operations
   name: Cryptographic Operation
@@ -425,8 +572,6 @@ crypto:
     failed: Failed
     pending: Pending
     in_progress: In Progress
-
-# Common Field Labels
 field:
   id: ID
   name: Name
@@ -454,27 +599,109 @@ field:
   postal_code: Postal Code
   company: Company
   department: Department
-
-# Supplier Management
 supplier:
   title: Supplier Management
+  page:
+    title: Supplier Management
+  action:
+    add_new: Add New Supplier
+    view: View
+    edit: Edit
+  statistics:
+    title: Statistics
+    total: Total Suppliers
+    critical: Critical Suppliers
+    overdue_assessments: Overdue Assessments
+    non_compliant: Non-Compliant
+  alert:
+    overdue_assessments: Overdue Security Assessments
+    non_compliant: Non-Compliant Suppliers
+  next_assessment: Next assessment
+  not_scheduled: Not scheduled
+  risk_score: Risk Score
+  list:
+    title: 'Suppliers ({{ count }})'
+  table:
+    name: Name
+    service_provided: Service Provided
+    criticality: Criticality
+    status: Status
+    risk_score: Risk Score
+    iso27001: ISO 27001
+    actions: Actions
+  empty:
+    message: No suppliers found.
+    add_first: Add your first supplier
   contact_person: Contact Person
   field:
     contact_person: Contact Person
     name: Supplier Name
     email: Email
     phone: Phone
-
-# Interested Party Management
+    description: Description
+    address: Address
+    service_provided: Service Provided
+    criticality: Criticality
+    status: Status
+    security_score: Security Score (0-100)
+    last_security_assessment: Last Security Assessment
+    next_assessment_date: Next Assessment Date
+    assessment_findings: Assessment Findings
+    non_conformities: Non-Conformities
+    contract_start_date: Contract Start Date
+    contract_end_date: Contract End Date
+    security_requirements: Security Requirements
+    has_iso27001: ISO 27001 Certified
+    has_iso22301: ISO 22301 Certified
+    certifications: Other Certifications
+    has_dpa: Data Processing Agreement Signed
+    dpa_signed_date: DPA Signed Date
 interested_party:
   title: Interested Parties
+  page:
+    title: Interested Parties Management
+  action:
+    add_new: Add New Interested Party
+    view: View
+    edit: Edit
+  iso_reference: 'ISO 27001:2022 Chapter 4.2 - Understanding the needs and expectations of interested parties'
+  alert:
+    overdue_communications: Overdue Communications
+  next_communication: Next communication
+  high_importance:
+    title: High Importance Parties
+  engagement_score: Engagement Score
+  list:
+    title: 'Interested Parties ({{ count }})'
+  table:
+    name: Name
+    type: Type
+    importance: Importance
+    engagement_score: Engagement Score
+    last_communication: Last Communication
+    actions: Actions
+  never: Never
+  empty:
+    message: No interested parties found.
+    add_first: Add your first interested party
   contact_person: Contact Person
   field:
     contact_person: Contact Person
     name: Party Name
     party_type: Party Type
-
-# General UI Elements
+    description: Description
+    email: Email
+    phone: Phone
+    importance: Importance
+    requirements: Requirements & Expectations
+    how_addressed: How Requirements are Addressed
+    communication_frequency: Communication Frequency
+    communication_method: Communication Method
+    last_communication: Last Communication
+    next_communication: Next Planned Communication
+    feedback: Feedback
+    satisfaction_level: Satisfaction Level (1-5)
+    issues: Issues/Concerns
 ui:
   location: Location
   responsible: Responsible
@@ -487,8 +714,289 @@ ui:
   select: Select
   none: None
   all: All
-  yes: Yes
-  no: No
+  'true': true
+  'false': false
   optional: Optional
   required: Required
-  n_a: 'N/A'
+  n_a: N/A
+workflow:
+  success:
+    approved: Workflow step approved successfully.
+    started: Workflow started successfully.
+  error:
+    not_authorized_approve: You are not authorized to approve this step.
+    not_authorized_reject: You are not authorized to reject this step.
+    comments_required: Comments are required when rejecting a workflow step.
+    not_found: No workflow found for this entity type.
+  warning:
+    rejected: Workflow step rejected.
+  info:
+    cancelled: Workflow instance cancelled.
+    no_active_workflow: No active workflow found for this entity.
+change_request:
+  title: Change Requests
+  page:
+    title: ISMS Change Management
+  action:
+    create: Create Change Request
+    view: View
+    edit: Edit
+  statistics:
+    title: Statistics
+    total: Total Change Requests
+    pending_approval: Pending Approval
+    in_implementation: In Implementation
+    overdue: Overdue
+  alert:
+    pending_approval: Pending Approval
+    overdue: Overdue Change Requests
+  list:
+    title: 'Change Requests ({{ count }})'
+  table:
+    change_number: 'Change #'
+    title: Title
+    type: Type
+    priority: Priority
+    status: Status
+    complexity: Complexity
+    requested: Requested
+    actions: Actions
+  empty:
+    message: No change requests found.
+    create_first: Create your first change request
+  details:
+    title: Change Request Details
+  success:
+    created: Change request created successfully.
+    updated: Change request updated successfully.
+    deleted: Change request deleted successfully.
+business_continuity_plan:
+  field:
+    name: Plan Name
+    business_process: Business Process
+    description: Description
+    plan_owner: Plan Owner
+    bc_team: BC Team Members
+    status: Status
+    activation_criteria: Activation Criteria
+    roles_and_responsibilities: Roles and Responsibilities
+    recovery_procedures: Recovery Procedures
+    communication_plan: Communication Plan
+    internal_communication: Internal Communication
+    external_communication: External Communication
+    alternative_site: Alternative Site
+    alternative_site_address: Alternative Site Address
+    alternative_site_capacity: Alternative Site Capacity
+    backup_procedures: Backup Procedures
+    restore_procedures: Restore Procedures
+    version: Version
+    last_tested: Last Tested
+    next_test_date: Next Test Date
+    last_review_date: Last Review Date
+    next_review_date: Next Review Date
+    review_notes: Review Notes
+security:
+  error:
+    too_many_attempts: Too many login attempts. Please try again in 15 minutes.
+    saml_login_error: SAML Login Error
+    saml_logout_error: SAML Logout Error
+    csrf_invalid: Invalid CSRF token.
+bc_exercise:
+  success:
+    created: BC exercise created successfully.
+    updated: BC exercise updated successfully.
+    deleted: BC exercise deleted successfully.
+management_review:
+  field:
+    title: Review Title
+    review_date: Review Date
+    reviewed_by: Reviewed By
+    participants: Participants
+    status: Status
+    performance_evaluation: Performance Evaluation
+    nonconformities_review: Non-Conformities Review
+    incidents_review: Security Incidents Review
+    risks_review: Risks Review
+    objectives_review: ISMS Objectives Review
+    context_changes: Context Changes
+    improvement_opportunities: Improvement Opportunities
+    decisions: Management Decisions
+    action_items: Action Items
+    resources_needed: Resources Needed
+    summary: Summary
+context:
+  field:
+    organization_name: Organization Name
+    isms_scope: ISMS Scope
+    scope_exclusions: Scope Exclusions
+    external_issues: External Issues
+    internal_issues: Internal Issues
+    interested_parties: Interested Parties
+    interested_parties_requirements: Interested Parties Requirements
+    legal_requirements: Legal Requirements
+    regulatory_requirements: Regulatory Requirements
+    contractual_obligations: Contractual Obligations
+    isms_policy: ISMS Policy
+    roles_and_responsibilities: Roles and Responsibilities
+    last_review_date: Last Review Date
+    next_review_date: Next Review Date
+  validation:
+    organization_name_required: Please enter an organization name.
+    name_max_length: The name may not exceed {{ limit }} characters.
+  kpi:
+    completeness: Completeness
+    active_goals: Active Goals
+    achieved_goals: Achieved Goals
+    next_review: Next Review
+  review_status:
+    today: Today
+    due: Review due
+    days_remaining: Days remaining
+    days_overdue: Days overdue
+  section:
+    title: ISMS Context
+    organization: Organization
+    exclusions: Exclusions
+    policy: ISMS Policy
+    external_issues: External Issues
+    internal_issues: Internal Issues
+    interested_parties: Interested Parties
+    requirements: Requirements
+    legal_requirements: Legal Requirements
+    regulatory_requirements: Regulatory Requirements
+    contractual_obligations: Contractual Obligations
+  link:
+    edit: Edit ISMS Context
+    create_now: Create Now
+  info:
+    iso_clause: 'ISO 27001 Clause 4:'
+    iso_description: Understanding the Organization and its Context
+objective:
+  field:
+    title: Title
+    description: Description
+    category: Category
+    measurable_indicators: Measurable Indicators
+    target_value: Target Value
+    current_value: Current Value
+    unit: Unit
+    responsible_person: Responsible Person
+    target_date: Target Date
+    status: Status
+    progress_notes: Progress Notes
+  validation:
+    title_required: Please enter a title.
+    title_max_length: The title may not exceed {{ limit }} characters.
+    description_required: Please enter a description.
+    category_required: Please select a category.
+    responsible_person_required: Please specify a responsible person.
+    name_max_length: The name may not exceed {{ limit }} characters.
+    target_date_required: Please specify a target date.
+    status_required: Please select a status.
+  link:
+    new: New Goal
+    create_new: Create New Goal
+  status:
+    total: Total
+    active: Active
+    achieved: Achieved
+    delayed: Delayed
+    at_risk: At Risk
+  success:
+    created: Goal created successfully.
+    updated: Goal updated successfully.
+    deleted: Goal deleted successfully.
+business_process:
+  field:
+    name: Process Name
+    description: Description
+    process_owner: Process Owner
+    criticality: Criticality
+    rto: RTO (Recovery Time Objective) in hours
+    rpo: RPO (Recovery Point Objective) in hours
+    mtpd: MTPD (Maximum Tolerable Period of Disruption) in hours
+    financial_impact_per_hour: Financial Impact per Hour
+    financial_impact_per_day: Financial Impact per Day
+    reputational_impact: Reputational Impact
+    regulatory_impact: Regulatory Impact
+    operational_impact: Operational Impact
+    dependencies_upstream: Dependencies (Upstream)
+    dependencies_downstream: Dependencies (Downstream)
+    recovery_strategy: Recovery Strategy
+    supporting_assets: Supporting Assets
+    identified_risks: Identified Risks
+user:
+  field:
+    first_name: First Name
+    last_name: Last Name
+    email: Email
+    department: Department
+    job_title: Job Title
+    phone_number: Phone Number
+    password: Password
+    system_roles: System Roles
+    custom_roles: Custom Roles
+    active: Active
+    email_verified: Email Verified
+module:
+  info:
+    added_as_dependency: Module '{name}' was added as dependency
+  warning:
+    disable_dependents_first: 'Disable dependent modules first: {dependents}'
+  error:
+    not_found: Module not found
+    not_active: Module is not active
+deployment:
+  error:
+    fix_requirements: Please fix system requirements first.
+    select_modules: Please select modules first.
+  info:
+    module_added_auto: Module '{name}' was automatically added (dependency)
+    sample_data_skipped: Sample data was skipped.
+  success:
+    reset: Setup has been reset.
+role:
+  success:
+    created: Role successfully created.
+    updated: Role successfully updated.
+    deleted: Role successfully deleted.
+error:
+  csrf_invalid: Invalid CSRF token.
+audit_log:
+  title: Audit Log Details
+  entry: 'Log Entry #{{ id }}'
+  old_values: Old Values
+  new_values: New Values
+entity_history:
+  title: Entity History
+  section: History
+preferences:
+  success:
+    imported: Settings successfully imported
+  error:
+    import_failed: Error importing settings
+compliance:
+  manage_frameworks: Manage Frameworks
+  manage_frameworks_subtitle: Load and manage available compliance frameworks
+  framework_statistics: Framework Statistics
+  total_available: Available
+  loaded: Loaded
+  not_loaded: Not Loaded
+  mandatory_missing: Mandatory Missing
+  available_frameworks: Available Frameworks
+  no_frameworks_loaded: No compliance frameworks loaded yet
+  add_frameworks: Add Frameworks
+  load_framework: Load Framework
+  already_loaded: Already Loaded
+  successfully_loaded: Successfully Loaded
+  load_failed: Load Failed
+  loading: Loading
+  confirm_load: Do you really want to load this framework?
+  error: Error
+  version: Version
+  industry: Industry
+  regulatory_body: Regulatory Body
+  mandatory: Mandatory
+  industry.automotive: Automotive Industry
+  industry.financial_services: Financial Services
+  industry.all_sectors: All Sectors
