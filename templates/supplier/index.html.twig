@@ -1,32 +1,32 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Supplier Management{% endblock %}
+{% block title %}{{ 'supplier.title'|trans }}{% endblock %}
 
 {% block body %}
 <div class="container">
     <div class="page-header">
-        <h1>Supplier Management</h1>
-        <a href="{{ path('app_supplier_new') }}" class="btn btn-primary">Add New Supplier</a>
+        <h1>{{ 'supplier.page.title'|trans }}</h1>
+        <a href="{{ path('app_supplier_new') }}" class="btn btn-primary">{{ 'supplier.action.add_new'|trans }}</a>
     </div>
 
     {% if statistics %}
     <div class="info-box">
-        <h3>Statistics</h3>
+        <h3>{{ 'supplier.statistics.title'|trans }}</h3>
         <div class="stats-grid">
             <div class="stat-item">
-                <span class="stat-label">Total Suppliers:</span>
+                <span class="stat-label">{{ 'supplier.statistics.total'|trans }}</span>
                 <span class="stat-value">{{ statistics.total }}</span>
             </div>
             <div class="stat-item">
-                <span class="stat-label">Critical Suppliers:</span>
+                <span class="stat-label">{{ 'supplier.statistics.critical'|trans }}</span>
                 <span class="stat-value critical">{{ statistics.critical }}</span>
             </div>
             <div class="stat-item">
-                <span class="stat-label">Overdue Assessments:</span>
+                <span class="stat-label">{{ 'supplier.statistics.overdue_assessments'|trans }}</span>
                 <span class="stat-value warning">{{ statistics.overdue_assessments }}</span>
             </div>
             <div class="stat-item">
-                <span class="stat-label">Non-Compliant:</span>
+                <span class="stat-label">{{ 'supplier.statistics.non_compliant'|trans }}</span>
                 <span class="stat-value danger">{{ statistics.non_compliant }}</span>
             </div>
         </div>
@@ -35,12 +35,12 @@
 
     {% if overdueAssessments|length > 0 %}
     <div class="alert alert-warning">
-        <h4>⚠️ Overdue Security Assessments</h4>
+        <h4>⚠️ {{ 'supplier.alert.overdue_assessments'|trans }}</h4>
         <ul>
             {% for supplier in overdueAssessments %}
             <li>
                 <a href="{{ path('app_supplier_show', {id: supplier.id}) }}">{{ supplier.name }}</a>
-                - Next assessment: {{ supplier.nextAssessmentDate ? supplier.nextAssessmentDate|date('Y-m-d') : 'Not scheduled' }}
+                - {{ 'supplier.next_assessment'|trans }}: {{ supplier.nextAssessmentDate ? supplier.nextAssessmentDate|date('Y-m-d') : ('supplier.not_scheduled'|trans) }}
             </li>
             {% endfor %}
         </ul>
@@ -49,12 +49,12 @@
 
     {% if nonCompliant|length > 0 %}
     <div class="alert alert-danger">
-        <h4>🚨 Non-Compliant Suppliers</h4>
+        <h4>🚨 {{ 'supplier.alert.non_compliant'|trans }}</h4>
         <ul>
             {% for supplier in nonCompliant %}
             <li>
                 <a href="{{ path('app_supplier_show', {id: supplier.id}) }}">{{ supplier.name }}</a>
-                - Risk Score: {{ supplier.calculateRiskScore() }}
+                - {{ 'supplier.risk_score'|trans }}: {{ supplier.calculateRiskScore() }}
             </li>
             {% endfor %}
         </ul>
@@ -63,20 +63,20 @@
 
     <div class="card">
         <div class="card-header">
-            <h2>Suppliers ({{ suppliers|length }})</h2>
+            <h2>{{ 'supplier.list.title'|trans({'count': suppliers|length}) }}</h2>
         </div>
         <div class="card-content">
             {% if suppliers|length > 0 %}
             <table class="data-table">
                 <thead>
                     <tr>
-                        <th>Name</th>
-                        <th>Service Provided</th>
-                        <th>Criticality</th>
-                        <th>Status</th>
-                        <th>Risk Score</th>
-                        <th>ISO 27001</th>
-                        <th>Actions</th>
+                        <th>{{ 'supplier.table.name'|trans }}</th>
+                        <th>{{ 'supplier.table.service_provided'|trans }}</th>
+                        <th>{{ 'supplier.table.criticality'|trans }}</th>
+                        <th>{{ 'supplier.table.status'|trans }}</th>
+                        <th>{{ 'supplier.table.risk_score'|trans }}</th>
+                        <th>{{ 'supplier.table.iso27001'|trans }}</th>
+                        <th>{{ 'supplier.table.actions'|trans }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -94,15 +94,15 @@
                         </td>
                         <td>{{ supplier.hasISO27001 ? '✓' : '✗' }}</td>
                         <td>
-                            <a href="{{ path('app_supplier_show', {id: supplier.id}) }}" class="btn btn-sm btn-secondary">View</a>
-                            <a href="{{ path('app_supplier_edit', {id: supplier.id}) }}" class="btn btn-sm btn-primary">Edit</a>
+                            <a href="{{ path('app_supplier_show', {id: supplier.id}) }}" class="btn btn-sm btn-secondary">{{ 'supplier.action.view'|trans }}</a>
+                            <a href="{{ path('app_supplier_edit', {id: supplier.id}) }}" class="btn btn-sm btn-primary">{{ 'supplier.action.edit'|trans }}</a>
                         </td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
             {% else %}
-            <p>No suppliers found. <a href="{{ path('app_supplier_new') }}">Add your first supplier</a>.</p>
+            <p>{{ 'supplier.empty.message'|trans }} <a href="{{ path('app_supplier_new') }}">{{ 'supplier.empty.add_first'|trans }}</a>.</p>
             {% endif %}
         </div>
     </div>
