@@ -52,7 +52,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     normalizationContext: ['groups' => ['risk:read']],
     denormalizationContext: ['groups' => ['risk:write']]
 )]
-#[ApiFilter(SearchFilter::class, properties: ['title' => 'partial', 'status' => 'exact', 'riskOwner' => 'partial'])]
+#[ApiFilter(SearchFilter::class, properties: ['title' => 'partial', 'status' => 'exact', 'riskOwner.email' => 'partial', 'riskOwner.firstName' => 'partial', 'riskOwner.lastName' => 'partial'])]
 #[ApiFilter(OrderFilter::class, properties: ['title', 'createdAt', 'status'])]
 #[ApiFilter(DateFilter::class, properties: ['createdAt', 'reviewDate'])]
 class Risk
@@ -128,10 +128,16 @@ class Risk
     #[Groups(['risk:read', 'risk:write'])]
     private ?string $treatmentDescription = null;
 
-    #[ORM\Column(length: 100, nullable: true)]
+    /**
+     * Risk Owner (ISO 27001:2022 - A.5.1 Policies for information security)
+     * Person responsible for managing this risk
+     * Phase 6F-B: Changed from string to User entity reference
+     */
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     #[Groups(['risk:read', 'risk:write'])]
-    #[Assert\Length(max: 100, maxMessage: 'Risk owner cannot exceed {{ limit }} characters')]
-    private ?string $riskOwner = null;
+    #[MaxDepth(1)]
+    private ?User $riskOwner = null;
 
     #[ORM\Column(length: 50)]
     #[Groups(['risk:read', 'risk:write'])]
@@ -337,15 +343,25 @@ class Risk
         return $this;
     }
 
-    public function getRiskOwner(): ?string
+    public function getRiskOwner(): ?User
     {
         return $this->riskOwner;
     }
 
-    public function setRiskOwner(?string $riskOwner): static
+    public function setRiskOwner(?User $riskOwner): static
     {
         $this->riskOwner = $riskOwner;
         return $this;
+    }
+
+    /**
+     * Get risk owner's full name for display
+     * Data Reuse: Quick access to owner name without loading full User entity
+     */
+    #[Groups(['risk:read'])]
+    public function getRiskOwnerName(): ?string
+    {
+        return $this->riskOwner?->getFullName();
     }
 
     public function getStatus(): ?string
