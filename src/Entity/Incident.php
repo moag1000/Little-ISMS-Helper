@@ -957,8 +957,9 @@ class Incident
     /**
      * Check if this incident requires NIS2 reporting
      * Based on severity and category
+     *
+     * Note: No Groups annotation - API Platform only allows Groups on get/is/has/set methods
      */
-    #[Groups(['incident:read'])]
     public function requiresNis2Reporting(): bool
     {
         // NIS2 reporting requires a detected date
