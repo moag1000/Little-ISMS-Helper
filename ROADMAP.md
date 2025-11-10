@@ -256,6 +256,18 @@ Phase 6 konzentriert sich auf die Vervollständigung aller Module und die Sicher
    - Return-Formular
    - Return-Benachrichtigungen
 
+##### Data Reuse Integration 🔄
+- **Asset Monetary Value → Risk Impact** (Auto-Berechnung)
+  - Risk.financialImpact wird aus affectedAssets.monetaryValue berechnet
+  - Zeitersparnis: ~15 Min pro Risk Assessment
+- **Asset Data Classification ← Risk Assessment** (Auto-Ableitung)
+  - High-Risk Assets → automatisch "confidential" Classification
+  - CIA-Bewertung informiert Classification
+- **Asset → Control ↔ Asset** (WICHTIG - aus DATA_REUSE_ANALYSIS.md)
+  - Many-to-Many: Welche Controls schützen welche Assets?
+  - Control Coverage Matrix automatisch generiert
+  - Asset Protection Dashboard
+
 ##### Akzeptanzkriterien
 - [ ] 5 neue Asset-Felder implementiert
 - [ ] Asset Form Type aktualisiert
@@ -263,6 +275,9 @@ Phase 6 konzentriert sich auf die Vervollständigung aller Module und die Sicher
 - [ ] Templates angepasst
 - [ ] Tests geschrieben
 - [ ] Dokumentation aktualisiert
+- [ ] **Data Reuse:** Asset ↔ Control Beziehung implementiert
+- [ ] **Data Reuse:** Monetary Value → Risk Impact Berechnung
+- [ ] **Data Reuse:** Data Classification Auto-Ableitung
 
 #### Risk Management vervollständigen
 
@@ -283,6 +298,24 @@ Phase 6 konzentriert sich auf die Vervollständigung aller Module und die Sicher
    - Verantwortlichkeiten
    - Status-Verfolgung
 
+##### Data Reuse Integration 🔄
+- **Risk ↔ Incident** (KRITISCH - aus DATA_REUSE_ANALYSIS.md)
+  - Many-to-Many: Welche Risiken wurden durch Incidents realisiert?
+  - Risk Validation: "Dieses Risiko trat 3x ein im letzten Jahr"
+  - Probability Adjustment basierend auf realisierten Incidents
+  - Zeitersparnis: ~30 Min pro Risk Review
+- **Risk Treatment Plan → Control** (Implementation Tracking)
+  - RiskTreatmentPlan.implementedControls (ManyToMany)
+  - Treatment-Wirksamkeit durch Control-Effectiveness messbar
+  - Automatische Progress-Berechnung
+- **BusinessProcess ↔ Risk** (WICHTIG - aus DATA_REUSE_ANALYSIS.md)
+  - Many-to-Many: Welche Risiken betreffen welche Prozesse?
+  - Risk Priority aus BIA.rto/rpo abgeleitet
+  - Business-aligned Risk Treatment
+- **Risk Appetite → Risk Assessment** (Auto-Priorisierung)
+  - Risiken über Risk Appetite = automatisch High Priority
+  - Dashboard: "5 Risiken überschreiten Appetite"
+
 ##### Akzeptanzkriterien
 - [ ] Risk Owner Feld hinzugefügt
 - [ ] RiskAppetite Entity erstellt
@@ -290,6 +323,10 @@ Phase 6 konzentriert sich auf die Vervollständigung aller Module und die Sicher
 - [ ] 3 Form Types
 - [ ] Integration in Risk Module
 - [ ] Tests geschrieben
+- [ ] **Data Reuse:** Risk ↔ Incident Beziehung implementiert
+- [ ] **Data Reuse:** Risk Treatment Plan ↔ Control
+- [ ] **Data Reuse:** BusinessProcess ↔ Risk
+- [ ] **Data Reuse:** Risk Appetite Auto-Priorisierung
 
 #### Statement of Applicability Report
 
@@ -335,12 +372,20 @@ Phase 6 konzentriert sich auf die Vervollständigung aller Module und die Sicher
    - Automatische Kompetenz-Updates
    - Training Gap Analysis
 
+##### Data Reuse Integration 🔄
+- **AuditorCompetence ↔ Training** (Auto-Qualification Tracking)
+  - Training.completedBy → automatische Competence-Updates
+  - Training Gap Analysis für Auditoren
+  - Certification Expiry → Training Reminder
+  - Zeitersparnis: ~20 Min pro Auditor-Verwaltung
+
 ##### Akzeptanzkriterien
 - [ ] AuditorCompetence Entity
 - [ ] Competence Form Type
 - [ ] Templates
 - [ ] Training Integration
 - [ ] Tests
+- [ ] **Data Reuse:** Training ↔ AuditorCompetence Auto-Update
 
 #### Risk Communication Log (ISO 31000)
 
@@ -356,12 +401,19 @@ Phase 6 konzentriert sich auf die Vervollständigung aller Module und die Sicher
    - Stakeholder-Kategorien
    - Communication Preferences
 
+##### Data Reuse Integration 🔄
+- **RiskCommunication ↔ Risk** (Communication Tracking)
+  - ManyToMany: Welche Risiken wurden mit wem kommuniziert?
+  - Communication Gap Analysis: "Risiko XYZ nicht mit Management besprochen"
+  - Automatic Reminder: "High Risk ohne Communication in 30 Tagen"
+
 ##### Akzeptanzkriterien
 - [ ] RiskCommunication Entity
 - [ ] Form Type
 - [ ] Templates
 - [ ] Integration in Risk Module
 - [ ] Tests
+- [ ] **Data Reuse:** RiskCommunication ↔ Risk
 
 #### DORA Compliance (nur für Financial Entities)
 
@@ -378,12 +430,25 @@ Phase 6 konzentriert sich auf die Vervollständigung aller Module und die Sicher
    - Results Tracking
    - Remediation Follow-up
 
+##### Data Reuse Integration 🔄
+- **ICTThirdPartyProvider ↔ Risk** (Third-Party Risk Assessment)
+  - Auto-Risiko-Erstellung für Critical/Important TPPs
+  - Risk.thirdPartyProvider (ManyToOne)
+  - Risk Aggregation: "10 Risiken durch TPP XYZ"
+  - Zeitersparnis: ~25 Min pro TPP Risk Assessment
+- **TLPTExercise ↔ Vulnerability** (Findings Integration)
+  - TLPT Findings → automatische Vulnerability-Erstellung
+  - Severity Mapping (TLPT → CVSS)
+  - Remediation Tracking
+
 ##### Akzeptanzkriterien
 - [ ] 2 neue Entities
 - [ ] 2 Form Types
 - [ ] Templates
 - [ ] DORA-spezifische Reports
 - [ ] Tests
+- [ ] **Data Reuse:** ICTThirdPartyProvider ↔ Risk
+- [ ] **Data Reuse:** TLPTExercise ↔ Vulnerability
 
 #### TISAX Compliance (nur für Automotive Industry)
 
@@ -399,6 +464,15 @@ Phase 6 konzentriert sich auf die Vervollständigung aller Module und die Sicher
    - Findings Management
    - Re-Assessment Scheduling
 
+##### Data Reuse Integration 🔄
+- **TISAXAssessment ↔ Asset** (AL-Level Tracking per Asset)
+  - Assessment Results → automatische Asset.assessmentLevel Updates
+  - Asset.protectionNeed ← CIA-Bewertung (Auto-Ableitung)
+  - Assessment Gap Analysis: "20 Assets ohne AL-Level"
+- **TISAXAssessment ↔ Control** (Maturity Assessment)
+  - Assessment.findings → Control Improvement Actions
+  - Maturity Level per Control Category
+
 ##### Akzeptanzkriterien
 - [ ] Asset erweitert
 - [ ] TISAXAssessment Entity
@@ -406,6 +480,8 @@ Phase 6 konzentriert sich auf die Vervollständigung aller Module und die Sicher
 - [ ] Templates
 - [ ] TISAX-Reports
 - [ ] Tests
+- [ ] **Data Reuse:** TISAXAssessment ↔ Asset (AL-Level Auto-Update)
+- [ ] **Data Reuse:** Asset.protectionNeed ← CIA Auto-Ableitung
 
 ---
 
@@ -495,6 +571,17 @@ Phase 6 konzentriert sich auf die Vervollständigung aller Module und die Sicher
    - Structured Data Export
    - Attachment Support
 
+##### Data Reuse Integration 🔄
+- **Incident Timeline → Notification** (Auto-Alerts bei Frist-Ablauf)
+  - 20h vor 24h-Frist: Auto-Benachrichtigung an Incident Owner
+  - 68h vor 72h-Frist: Escalation an Management
+  - 7 Tage vor 1-Monat-Frist: Final Report Reminder
+  - Zeitersparnis: ~45 Min pro Incident (manuelle Frist-Verfolgung entfällt)
+- **Incident ↔ Asset** (KRITISCH - aus DATA_REUSE_ANALYSIS.md)
+  - Many-to-Many: Welche Assets waren betroffen?
+  - Asset Incident History automatisch
+  - High-Risk Asset Identification
+
 ##### Akzeptanzkriterien
 - [ ] 6 neue Incident-Felder
 - [ ] Migration
@@ -503,6 +590,8 @@ Phase 6 konzentriert sich auf die Vervollständigung aller Module und die Sicher
 - [ ] Report Generator
 - [ ] Automated Notifications
 - [ ] Tests
+- [ ] **Data Reuse:** Incident Timeline → Notification Auto-Alerts
+- [ ] **Data Reuse:** Incident ↔ Asset Beziehung
 
 #### Vulnerability Management (NIS2 Art. 21.2.d) (KRITISCH)
 
@@ -539,6 +628,26 @@ Phase 6 konzentriert sich auf die Vervollständigung aller Module und die Sicher
    - Time to Remediate (KPI)
    - CVE Trends
 
+##### Data Reuse Integration 🔄 (KRITISCH)
+- **Vulnerability ↔ Risk** (Auto-Risiko-Erstellung aus CVE)
+  - Critical/High CVE → automatische Risk Entity
+  - Risk.likelihood = CVSS.exploitability
+  - Risk.impact = CVSS.impact * Asset.monetaryValue
+  - Zeitersparnis: ~40 Min pro Vulnerability (manuelles Risk Assessment entfällt)
+  - **Revolutionär:** CVE-Feed → automatisches Risk Management! 🚀
+- **Vulnerability ↔ Incident** (CVE Exploitation Tracking)
+  - Incident.exploitedVulnerability (ManyToOne)
+  - "Diese CVE wurde in 2 Incidents ausgenutzt" → höhere Priorität
+  - Incident Root Cause automatisch: CVE-ID
+- **Vulnerability ↔ Asset** (bereits geplant)
+  - Many-to-Many: Welche Assets sind betroffen?
+  - Asset Vulnerability Score automatisch
+- **Patch ↔ Control** (Control Effectiveness Measurement)
+  - Patch-Geschwindigkeit = A.8.8 Control Effectiveness
+  - "Durchschnittliche Time-to-Patch: 5 Tage" = KPI
+  - Control-Dashboard: "Patch Management: 85% Effectiveness"
+  - Zeitersparnis: ~30 Min pro Control Review
+
 ##### Akzeptanzkriterien
 - [ ] Vulnerability Entity
 - [ ] Patch Entity
@@ -547,6 +656,10 @@ Phase 6 konzentriert sich auf die Vervollständigung aller Module und die Sicher
 - [ ] CVE Import (optional)
 - [ ] Templates
 - [ ] Tests
+- [ ] **Data Reuse:** Vulnerability → Risk Auto-Erstellung (KRITISCH)
+- [ ] **Data Reuse:** Vulnerability ↔ Incident Tracking
+- [ ] **Data Reuse:** Patch → Control Effectiveness KPI
+- [ ] **Data Reuse:** Vulnerability ↔ Asset
 
 #### Supply Chain Security (NIS2 Art. 21.2.e)
 
@@ -660,12 +773,20 @@ Phase 6 konzentriert sich auf die Vervollständigung aller Module und die Sicher
    - Automated Risk Assessment
    - Remediation Tracking
 
+##### Data Reuse Integration 🔄
+- **PenetrationTest ↔ Vulnerability** (bereits geplant, gut!)
+  - PT Findings → automatische Vulnerability-Erstellung
+  - Severity Mapping (PT Finding → CVSS)
+  - Vulnerability → Risk → Control (Full Chain!)
+  - Zeitersparnis: ~60 Min pro PT (manuelle Vulnerability-Erfassung entfällt)
+
 ##### Akzeptanzkriterien
 - [ ] PenetrationTest Entity
 - [ ] Form Type
 - [ ] Vulnerability Integration
 - [ ] Templates
 - [ ] Tests
+- [ ] **Data Reuse:** PenetrationTest → Vulnerability Auto-Erstellung
 
 #### Cryptography Management (MITTEL)
 
@@ -688,12 +809,29 @@ Phase 6 konzentriert sich auf die Vervollständigung aller Module und die Sicher
    - Key Revocation
    - Key Archival
 
+##### Data Reuse Integration 🔄
+- **CryptographicKey ↔ Asset** (Key-Asset-Mapping)
+  - Many-to-Many: Welche Assets nutzen welche Keys?
+  - Asset.encryptionKeys Collection
+  - Asset Protection: "Asset X verschlüsselt mit AES-256 Key Y"
+  - Zeitersparnis: ~20 Min pro Asset Cryptography Review
+- **CryptographicKey ↔ Control** (A.8.24 Cryptography Evidence)
+  - Control A.8.24 Effectiveness = Key Rotation Compliance
+  - "95% der Keys innerhalb Rotation Schedule" = Control Score
+  - Expiry Alerts → Control Improvement Actions
+- **CryptographicKey → Notification** (Rotation Reminders)
+  - 30 Tage vor Expiry: Key Owner Notification
+  - 7 Tage vor Expiry: Escalation
+
 ##### Akzeptanzkriterien
 - [ ] CryptographicKey Entity
 - [ ] Form Type
 - [ ] Lifecycle Workflow
 - [ ] Templates
 - [ ] Tests
+- [ ] **Data Reuse:** CryptographicKey ↔ Asset
+- [ ] **Data Reuse:** CryptographicKey ↔ Control (A.8.24)
+- [ ] **Data Reuse:** Key Rotation → Notification
 
 ---
 
@@ -878,6 +1016,74 @@ Diese Phase fokussiert sich auf die Vervollständigung der 5 Haupt-Module, die a
 
 ---
 
+### 🔗 Phase 6K: Core Data Reuse Relationships (Priorität WICHTIG)
+
+**Status:** 🔄 Geplant
+**Aufwand:** 2-3 Tage
+**Impact:** HOCH (Foundation für alle anderen Phasen)
+
+Diese Phase implementiert die grundlegenden Data Reuse Beziehungen aus [DATA_REUSE_ANALYSIS.md](docs/DATA_REUSE_ANALYSIS.md), die noch nicht in anderen Phasen abgedeckt sind.
+
+#### Training ↔ Control (WICHTIG)
+
+**Problem:** Keine Verknüpfung zwischen Schulungen und Controls
+
+##### Features
+- **Training Entity Erweiterung**
+  - relatedControls (ManyToMany)
+  - Welche Controls erfordern diese Schulung?
+
+- **Control Entity Erweiterung**
+  - requiredTrainings (ManyToMany)
+  - Welche Schulungen sind für dieses Control erforderlich?
+
+##### Data Reuse Benefits 🔄
+- **Training Coverage Analysis**
+  - "Control A.6.3 erfordert Security Awareness Training"
+  - "80% der Mitarbeiter geschult für Control A.6.3"
+- **Training Gap Identification**
+  - "Control A.5.16 hat 0 zugeordnete Trainings" → Gap!
+  - Dashboard: "10 Controls ohne Training Coverage"
+- **Compliance Evidence**
+  - ISO 27001 A.6.3 Nachweisbarkeit
+  - "Alle People Controls haben dokumentierte Trainings"
+- **Zeitersparnis:** ~25 Min pro Control Review (Training-Mapping automatisch)
+
+#### Training ↔ ComplianceRequirement (NÜTZLICH)
+
+**Problem:** Awareness-Requirements nicht mit Trainings verknüpft
+
+##### Features
+- **Training Entity Erweiterung**
+  - fulfilledRequirements (ManyToMany)
+  - Welche Compliance-Anforderungen erfüllt diese Schulung?
+
+- **ComplianceRequirement Entity Erweiterung**
+  - requiredTrainings (ManyToMany)
+  - DORA Art. 13.6, TISAX People Controls
+
+##### Data Reuse Benefits 🔄
+- **Compliance Training Matrix**
+  - "DORA Art. 13.6 erfordert ICT Risk Training"
+  - "Training durchgeführt → Requirement automatisch erfüllt"
+- **Multi-Framework Efficiency**
+  - Ein Training erfüllt mehrere Requirements (ISO 27001 + DORA + TISAX)
+- **Automatic Fulfillment Tracking**
+  - "TISAX 1.1.1 (Awareness) erfüllt durch 3 Trainings"
+- **Zeitersparnis:** ~30 Min pro Compliance Audit (Training Evidence automatisch)
+
+#### Akzeptanzkriterien
+- [ ] Training ↔ Control Beziehung implementiert
+- [ ] Training ↔ ComplianceRequirement Beziehung implementiert
+- [ ] Form Types aktualisiert
+- [ ] Training Coverage Dashboard
+- [ ] Training Gap Analysis Report
+- [ ] Compliance Training Matrix
+- [ ] Tests geschrieben
+- [ ] Dokumentation aktualisiert
+
+---
+
 ### ✨ Phase 6E: Polish & Optimization (Priorität OPTIONAL)
 
 **Status:** 📅 Backlog
@@ -900,7 +1106,7 @@ Diese Phase fokussiert sich auf die Vervollständigung der 5 Haupt-Module, die a
 
 ## 📊 Phase 6 Zusammenfassung
 
-**Gesamt-Aufwand Phase 6 (A-J):** 31-42 Tage
+**Gesamt-Aufwand Phase 6 (A-K):** 33-45 Tage
 
 ### Prioritäten
 1. **KRITISCH** (19-23 Tage):
@@ -913,15 +1119,47 @@ Diese Phase fokussiert sich auf die Vervollständigung der 5 Haupt-Module, die a
 2. **HOCH** (5-6 Tage):
    - 6I: BSI IT-Grundschutz (5-6 Tage)
 
-3. **WICHTIG** (4-6 Tage):
+3. **WICHTIG** (6-9 Tage):
    - 6C: Workflow-Management (2-3 Tage)
    - 6D: Compliance-Detail (2-3 Tage)
+   - 6K: Core Data Reuse Relationships (2-3 Tage) ⭐ NEU!
 
 4. **MITTEL** (3-4 Tage):
    - 6G: Multi-Standard (3-4 Tage)
 
 5. **OPTIONAL** (1-2 Tage):
    - 6E: Polish & Optimization (1-2 Tage)
+
+### 🔄 Data Reuse Impact
+
+**Neue Data Reuse Beziehungen in Phase 6:**
+
+| Beziehung | Phase | Zeitersparnis | Impact |
+|-----------|-------|---------------|--------|
+| Asset ↔ Control | 6F | ~15 Min/Control Review | Control Coverage Matrix |
+| Asset Monetary Value → Risk Impact | 6F | ~15 Min/Risk | Auto-Berechnung |
+| Risk ↔ Incident | 6F | ~30 Min/Risk Review | Risk Validation |
+| Risk Treatment Plan → Control | 6F | ~20 Min/Treatment Plan | Implementation Tracking |
+| BusinessProcess ↔ Risk | 6F | ~25 Min/Process Review | Business-aligned Risk |
+| Incident ↔ Asset | 6H | ~10 Min/Incident | Asset Incident History |
+| Incident Timeline → Notification | 6H | ~45 Min/Incident | Auto-Alerts |
+| **Vulnerability → Risk** | 6H | **~40 Min/CVE** | **Auto-Risk aus CVE** 🚀 |
+| Vulnerability ↔ Incident | 6H | ~15 Min/Incident | CVE Exploitation Tracking |
+| Patch → Control | 6H | ~30 Min/Control Review | Effectiveness KPI |
+| CryptographicKey ↔ Asset | 6I | ~20 Min/Asset | Key-Asset-Mapping |
+| CryptographicKey ↔ Control | 6I | ~15 Min/Control | A.8.24 Evidence |
+| PenetrationTest → Vulnerability | 6I | ~60 Min/PT | Auto-Vulnerability |
+| Training ↔ Control | 6K | ~25 Min/Control Review | Training Coverage |
+| Training ↔ ComplianceRequirement | 6K | ~30 Min/Audit | Compliance Evidence |
+| ICTThirdPartyProvider ↔ Risk | 6G | ~25 Min/TPP | Third-Party Risk |
+| TISAXAssessment ↔ Asset | 6G | ~20 Min/Assessment | AL-Level Tracking |
+
+**Total Zeitersparnis:** ~450+ Minuten (7.5+ Stunden) pro Audit-Zyklus zusätzlich!
+
+**Revolutionäre Features:**
+- 🚀 **CVE → Automatisches Risk Management** (Phase 6H)
+- 🚀 **PT Findings → Auto-Vulnerability → Auto-Risk** (Phase 6I)
+- 🚀 **Training → Auto-Compliance-Evidence** (Phase 6K)
 
 ### Erwartete Vollständigkeit nach Phase 6
 
@@ -934,7 +1172,13 @@ Diese Phase fokussiert sich auf die Vervollständigung der 5 Haupt-Module, die a
 | **BSI IT-Grundschutz** | 68% ⚠️ | 95%+ ✅ | 95%+ |
 | **Test Coverage** | 26% | 80%+ | 80%+ |
 | **Module mit vollständigem CRUD** | 70% | 95%+ | 95%+ |
+| **Data Reuse Beziehungen** | 45% (9/20) | 100% ✅ (20/20) | 100% |
 | **Zertifizierungsbereitschaft** | JA (Minor Findings) | 100% ✅ | 100% |
+
+**Data Reuse Beziehungen Breakdown:**
+- ✅ **Bereits implementiert (9):** Asset→Risk, Risk→Control, Control→Incident, Control→ComplianceRequirement, InternalAudit→Asset, BusinessProcess→Asset, ComplianceRequirement→ComplianceMapping (cross-framework), BCM→Asset (RTO/RPO), Incident→Control
+- 🔄 **Phase 6 (11 neue):** Asset↔Control, Asset↔Incident, Risk↔Incident, Risk Treatment→Control, BusinessProcess↔Risk, Training↔Control, Training↔ComplianceRequirement, Vulnerability→Risk, Vulnerability↔Incident, Vulnerability↔Asset, Patch→Control, CryptographicKey↔Asset, CryptographicKey↔Control, PenetrationTest→Vulnerability, ICTThirdPartyProvider↔Risk, TISAXAssessment↔Asset, AuditorCompetence↔Training, RiskCommunication↔Risk
+- **Gesamt nach Phase 6:** 20+ Data Reuse Beziehungen ✅
 
 ### Data Reuse: Loadbare Frameworks (Nach Phase 6)
 
