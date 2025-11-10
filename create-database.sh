@@ -1,11 +1,12 @@
 #!/bin/bash
-# Database Creation & Setup Script
+# Little ISMS Helper - Database Creation & Setup Script
 # Creates a new database and runs complete setup
 # Safe to run on fresh installations (won't drop existing database)
 
 set -e
 
 echo "=========================================="
+echo "Little ISMS Helper"
 echo "Database Creation & Setup Tool"
 echo "=========================================="
 echo ""
@@ -79,7 +80,7 @@ fi
 info "Database URL: ${DB_URL:0:50}..."
 echo ""
 
-# Determine database type
+# Determine database type and extract connection details
 if [[ $DB_URL == sqlite* ]]; then
     DB_TYPE="sqlite"
     # Extract SQLite database file path
@@ -91,16 +92,91 @@ if [[ $DB_URL == sqlite* ]]; then
     info "Database file: $DB_FILE"
 elif [[ $DB_URL == mysql* ]]; then
     DB_TYPE="mysql"
-    info "Database type: MySQL"
+    # Extract database name from URL (format: mysql://user:pass@host:port/dbname)
+    DB_NAME=$(echo $DB_URL | sed -n 's|.*\/\([^?]*\).*|\1|p')
+    DB_USER=$(echo $DB_URL | sed -n 's|.*://\([^:]*\):.*|\1|p')
+    info "Database type: MySQL/MariaDB"
+    info "Database name: $DB_NAME"
+    info "Database user: $DB_USER"
 elif [[ $DB_URL == postgresql* ]] || [[ $DB_URL == pgsql* ]]; then
     DB_TYPE="postgresql"
+    # Extract database name from URL
+    DB_NAME=$(echo $DB_URL | sed -n 's|.*\/\([^?]*\).*|\1|p')
+    DB_USER=$(echo $DB_URL | sed -n 's|.*://\([^:]*\):.*|\1|p')
     info "Database type: PostgreSQL"
+    info "Database name: $DB_NAME"
+    info "Database user: $DB_USER"
 else
     error "Unknown database type in DATABASE_URL"
     exit 1
 fi
 
 echo ""
+
+# Check and update database configuration if needed
+if [ "$DB_TYPE" != "sqlite" ]; then
+    echo ""
+    info "Database configuration check:"
+    read -p "Do you want to configure database credentials before creating? (y/N) " -n 1 -r
+    echo
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+        echo ""
+        read -p "Database name [$DB_NAME]: " NEW_DB_NAME
+        NEW_DB_NAME=${NEW_DB_NAME:-$DB_NAME}
+
+        read -p "Database user [$DB_USER]: " NEW_DB_USER
+        NEW_DB_USER=${NEW_DB_USER:-$DB_USER}
+
+        read -s -p "Database password (leave empty to keep current): " NEW_DB_PASS
+        echo ""
+
+        if [ ! -z "$NEW_DB_NAME" ] || [ ! -z "$NEW_DB_USER" ] || [ ! -z "$NEW_DB_PASS" ]; then
+            # Update DATABASE_URL in .env.local
+            if [ "$DB_TYPE" = "mysql" ]; then
+                if [ -z "$NEW_DB_PASS" ]; then
+                    # Extract current password
+                    CURRENT_PASS=$(echo $DB_URL | sed -n 's|.*:\([^@]*\)@.*|\1|p')
+                    NEW_DB_PASS=$CURRENT_PASS
+                fi
+                HOST_PORT=$(echo $DB_URL | sed -n 's|.*@\(.*\)/.*|\1|p')
+                NEW_DB_URL="mysql://${NEW_DB_USER}:${NEW_DB_PASS}@${HOST_PORT}/${NEW_DB_NAME}"
+            elif [ "$DB_TYPE" = "postgresql" ]; then
+                if [ -z "$NEW_DB_PASS" ]; then
+                    # Extract current password
+                    CURRENT_PASS=$(echo $DB_URL | sed -n 's|.*:\([^@]*\)@.*|\1|p')
+                    NEW_DB_PASS=$CURRENT_PASS
+                fi
+                HOST_PORT=$(echo $DB_URL | sed -n 's|.*@\(.*\)/.*|\1|p')
+                # Extract additional parameters if any
+                PARAMS=$(echo $DB_URL | sed -n 's|.*?\(.*\)|\1|p')
+                if [ ! -z "$PARAMS" ]; then
+                    NEW_DB_URL="postgresql://${NEW_DB_USER}:${NEW_DB_PASS}@${HOST_PORT}/${NEW_DB_NAME}?${PARAMS}"
+                else
+                    NEW_DB_URL="postgresql://${NEW_DB_USER}:${NEW_DB_PASS}@${HOST_PORT}/${NEW_DB_NAME}?serverVersion=16&charset=utf8"
+                fi
+            fi
+
+            # Update .env.local
+            if grep -q "^DATABASE_URL=" .env.local; then
+                sed -i "s|^DATABASE_URL=.*|DATABASE_URL=\"${NEW_DB_URL}\"|" .env.local
+                success "Database configuration updated in .env.local"
+
+                # Update variables for further use
+                DB_URL=$NEW_DB_URL
+                DB_NAME=$NEW_DB_NAME
+                DB_USER=$NEW_DB_USER
+            else
+                echo "DATABASE_URL=\"${NEW_DB_URL}\"" >> .env.local
+                success "Database configuration added to .env.local"
+
+                # Update variables for further use
+                DB_URL=$NEW_DB_URL
+                DB_NAME=$NEW_DB_NAME
+                DB_USER=$NEW_DB_USER
+            fi
+        fi
+    fi
+fi
 
 # Check if database already exists and handle accordingly
 echo ""
@@ -168,7 +244,7 @@ fi
 echo ""
 info "Running migrations..."
 php bin/console doctrine:migrations:migrate --no-interaction
-success "All migrations completed (10/10)"
+success "All migrations completed"
 
 echo ""
 info "Setting up roles & permissions..."
@@ -194,7 +270,7 @@ if [[ ! $REPLY =~ ^[Nn]$ ]]; then
     echo ""
     info "Login credentials:"
     echo "  Email: $ADMIN_EMAIL"
-    echo "  Password: $ADMIN_PASSWORD"
+    echo "  Password: ******* (hidden)"
 else
     php bin/console app:setup-permissions
     success "Roles and permissions created (no admin user)"
@@ -207,7 +283,7 @@ echo
 
 if [[ ! $REPLY =~ ^[Nn]$ ]]; then
     if php bin/console isms:load-annex-a-controls 2>/dev/null; then
-        success "ISO 27001 Controls loaded (93 controls)"
+        success "ISO 27001 Controls loaded"
     else
         warning "isms:load-annex-a-controls command not found (skipped)"
     fi
@@ -232,10 +308,13 @@ info "Database Summary:"
 echo "  Type: $DB_TYPE"
 if [ "$DB_TYPE" = "sqlite" ]; then
     echo "  File: $DB_FILE"
+else
+    echo "  Database: $DB_NAME"
+    echo "  User: $DB_USER"
 fi
-echo "  Migrations: 10/10 executed"
+echo "  Migrations: Executed ✓"
 echo "  Roles: 4 (USER, AUDITOR, MANAGER, ADMIN)"
-echo "  Permissions: 42"
+echo "  Permissions: Setup completed ✓"
 if [[ ! $REPLY =~ ^[Nn]$ ]]; then
     echo "  Admin User: Created ✓"
 fi
