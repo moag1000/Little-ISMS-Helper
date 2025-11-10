@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Asset;
 use App\Entity\Risk;
+use App\Entity\User;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -86,14 +87,18 @@ class RiskType extends AbstractType
                 'attr' => ['min' => 1, 'max' => 5],
                 'help' => 'risk.help.impact',
             ])
-            ->add('riskOwner', TextType::class, [
+            ->add('riskOwner', EntityType::class, [
                 'label' => 'risk.field.risk_owner',
+                'class' => User::class,
+                'choice_label' => function(User $user) {
+                    return $user->getFullName() . ' (' . $user->getEmail() . ')';
+                },
+                'placeholder' => 'risk.placeholder.risk_owner',
                 'required' => false,
-                'attr' => [
-                    'maxlength' => 100,
-                    'placeholder' => 'risk.placeholder.risk_owner',
-                ],
                 'help' => 'risk.help.risk_owner',
+                'attr' => [
+                    'class' => 'form-select',
+                ],
             ])
             ->add('treatmentStrategy', ChoiceType::class, [
                 'label' => 'risk.field.treatment_strategy',
