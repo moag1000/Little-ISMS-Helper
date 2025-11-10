@@ -64,23 +64,44 @@ if [ ! -f ".env.local" ]; then
 fi
 success ".env.local found"
 
-# Get database URL from .env.local
-DB_URL=$(grep "^DATABASE_URL=" .env.local | head -1 | cut -d '=' -f 2- | tr -d '"')
+# Load environment variables from .env and .env.local
+load_env_var() {
+    local var_name=$1
+    local value=""
 
-if [ -z "$DB_URL" ]; then
-    # Fall back to .env
-    DB_URL=$(grep "^DATABASE_URL=" .env | head -1 | cut -d '=' -f 2- | tr -d '"')
-fi
+    # Try .env.local first
+    if [ -f ".env.local" ]; then
+        value=$(grep "^${var_name}=" .env.local | head -1 | cut -d '=' -f 2- | tr -d '"')
+    fi
+
+    # Fall back to .env if not found
+    if [ -z "$value" ] && [ -f ".env" ]; then
+        value=$(grep "^${var_name}=" .env | head -1 | cut -d '=' -f 2- | tr -d '"')
+    fi
+
+    echo "$value"
+}
+
+# Get database configuration
+DB_URL=$(load_env_var "DATABASE_URL")
+DB_USER=$(load_env_var "DB_USER")
+DB_PASS=$(load_env_var "DB_PASS")
+DB_HOST=$(load_env_var "DB_HOST")
+DB_PORT=$(load_env_var "DB_PORT")
+DB_NAME=$(load_env_var "DB_NAME")
 
 if [ -z "$DB_URL" ]; then
     error "DATABASE_URL not found in .env or .env.local"
     exit 1
 fi
 
-info "Database URL: ${DB_URL:0:50}..."
+info "Database Configuration:"
+echo "  User: ${DB_USER}"
+echo "  Host: ${DB_HOST}:${DB_PORT}"
+echo "  Database: ${DB_NAME}"
 echo ""
 
-# Determine database type and extract connection details
+# Determine database type from URL
 if [[ $DB_URL == sqlite* ]]; then
     DB_TYPE="sqlite"
     # Extract SQLite database file path
@@ -92,20 +113,10 @@ if [[ $DB_URL == sqlite* ]]; then
     info "Database file: $DB_FILE"
 elif [[ $DB_URL == mysql* ]]; then
     DB_TYPE="mysql"
-    # Extract database name from URL (format: mysql://user:pass@host:port/dbname)
-    DB_NAME=$(echo $DB_URL | sed -n 's|.*\/\([^?]*\).*|\1|p')
-    DB_USER=$(echo $DB_URL | sed -n 's|.*://\([^:]*\):.*|\1|p')
     info "Database type: MySQL/MariaDB"
-    info "Database name: $DB_NAME"
-    info "Database user: $DB_USER"
 elif [[ $DB_URL == postgresql* ]] || [[ $DB_URL == pgsql* ]]; then
     DB_TYPE="postgresql"
-    # Extract database name from URL
-    DB_NAME=$(echo $DB_URL | sed -n 's|.*\/\([^?]*\).*|\1|p')
-    DB_USER=$(echo $DB_URL | sed -n 's|.*://\([^:]*\):.*|\1|p')
     info "Database type: PostgreSQL"
-    info "Database name: $DB_NAME"
-    info "Database user: $DB_USER"
 else
     error "Unknown database type in DATABASE_URL"
     exit 1
@@ -121,6 +132,12 @@ if [ "$DB_TYPE" != "sqlite" ]; then
     echo
     if [[ $REPLY =~ ^[Yy]$ ]]; then
         echo ""
+        read -p "Database host [$DB_HOST]: " NEW_DB_HOST
+        NEW_DB_HOST=${NEW_DB_HOST:-$DB_HOST}
+
+        read -p "Database port [$DB_PORT]: " NEW_DB_PORT
+        NEW_DB_PORT=${NEW_DB_PORT:-$DB_PORT}
+
         read -p "Database name [$DB_NAME]: " NEW_DB_NAME
         NEW_DB_NAME=${NEW_DB_NAME:-$DB_NAME}
 
@@ -129,52 +146,34 @@ if [ "$DB_TYPE" != "sqlite" ]; then
 
         read -s -p "Database password (leave empty to keep current): " NEW_DB_PASS
         echo ""
+        NEW_DB_PASS=${NEW_DB_PASS:-$DB_PASS}
 
-        if [ ! -z "$NEW_DB_NAME" ] || [ ! -z "$NEW_DB_USER" ] || [ ! -z "$NEW_DB_PASS" ]; then
-            # Update DATABASE_URL in .env.local
-            if [ "$DB_TYPE" = "mysql" ]; then
-                if [ -z "$NEW_DB_PASS" ]; then
-                    # Extract current password
-                    CURRENT_PASS=$(echo $DB_URL | sed -n 's|.*:\([^@]*\)@.*|\1|p')
-                    NEW_DB_PASS=$CURRENT_PASS
-                fi
-                HOST_PORT=$(echo $DB_URL | sed -n 's|.*@\(.*\)/.*|\1|p')
-                NEW_DB_URL="mysql://${NEW_DB_USER}:${NEW_DB_PASS}@${HOST_PORT}/${NEW_DB_NAME}"
-            elif [ "$DB_TYPE" = "postgresql" ]; then
-                if [ -z "$NEW_DB_PASS" ]; then
-                    # Extract current password
-                    CURRENT_PASS=$(echo $DB_URL | sed -n 's|.*:\([^@]*\)@.*|\1|p')
-                    NEW_DB_PASS=$CURRENT_PASS
-                fi
-                HOST_PORT=$(echo $DB_URL | sed -n 's|.*@\(.*\)/.*|\1|p')
-                # Extract additional parameters if any
-                PARAMS=$(echo $DB_URL | sed -n 's|.*?\(.*\)|\1|p')
-                if [ ! -z "$PARAMS" ]; then
-                    NEW_DB_URL="postgresql://${NEW_DB_USER}:${NEW_DB_PASS}@${HOST_PORT}/${NEW_DB_NAME}?${PARAMS}"
-                else
-                    NEW_DB_URL="postgresql://${NEW_DB_USER}:${NEW_DB_PASS}@${HOST_PORT}/${NEW_DB_NAME}?serverVersion=16&charset=utf8"
-                fi
-            fi
+        # Update individual variables in .env.local
+        update_env_var() {
+            local var_name=$1
+            local var_value=$2
 
-            # Update .env.local
-            if grep -q "^DATABASE_URL=" .env.local; then
-                sed -i "s|^DATABASE_URL=.*|DATABASE_URL=\"${NEW_DB_URL}\"|" .env.local
-                success "Database configuration updated in .env.local"
-
-                # Update variables for further use
-                DB_URL=$NEW_DB_URL
-                DB_NAME=$NEW_DB_NAME
-                DB_USER=$NEW_DB_USER
+            if grep -q "^${var_name}=" .env.local; then
+                sed -i "s|^${var_name}=.*|${var_name}=\"${var_value}\"|" .env.local
             else
-                echo "DATABASE_URL=\"${NEW_DB_URL}\"" >> .env.local
-                success "Database configuration added to .env.local"
-
-                # Update variables for further use
-                DB_URL=$NEW_DB_URL
-                DB_NAME=$NEW_DB_NAME
-                DB_USER=$NEW_DB_USER
+                echo "${var_name}=\"${var_value}\"" >> .env.local
             fi
-        fi
+        }
+
+        update_env_var "DB_HOST" "$NEW_DB_HOST"
+        update_env_var "DB_PORT" "$NEW_DB_PORT"
+        update_env_var "DB_NAME" "$NEW_DB_NAME"
+        update_env_var "DB_USER" "$NEW_DB_USER"
+        update_env_var "DB_PASS" "$NEW_DB_PASS"
+
+        # Update DB_* variables for current session
+        DB_HOST=$NEW_DB_HOST
+        DB_PORT=$NEW_DB_PORT
+        DB_NAME=$NEW_DB_NAME
+        DB_USER=$NEW_DB_USER
+        DB_PASS=$NEW_DB_PASS
+
+        success "Database configuration updated in .env.local"
     fi
 fi
 
