@@ -43,26 +43,52 @@ class LoadGdprRequirementsCommand extends Command
                 ->setActive(true);
 
             $this->entityManager->persist($framework);
+        } else {
+            // Framework exists - check if requirements are already loaded
+            $existingRequirements = $this->entityManager
+                ->getRepository(ComplianceRequirement::class)
+                ->findBy(['framework' => $framework]);
+
+            if (!empty($existingRequirements)) {
+                $io->warning(sprintf(
+                    'Framework GDPR already has %d requirements loaded. Skipping to avoid duplicates.',
+                    count($existingRequirements)
+                ));
+                return Command::SUCCESS;
+            }
+
+            // Framework exists but has no requirements - update timestamp
+            $framework->setUpdatedAt(new \DateTimeImmutable());
+            $this->entityManager->persist($framework);
         }
 
-        $requirements = $this->getGdprRequirements();
+        try {
+            $this->entityManager->beginTransaction();
 
-        foreach ($requirements as $reqData) {
-            $requirement = new ComplianceRequirement();
-            $requirement->setFramework($framework)
-                ->setRequirementId($reqData['id'])
-                ->setTitle($reqData['title'])
-                ->setDescription($reqData['description'])
-                ->setCategory($reqData['category'])
-                ->setPriority($reqData['priority'])
-                ->setDataSourceMapping($reqData['data_source_mapping']);
+            $requirements = $this->getGdprRequirements();
 
-            $this->entityManager->persist($requirement);
+            foreach ($requirements as $reqData) {
+                $requirement = new ComplianceRequirement();
+                $requirement->setFramework($framework)
+                    ->setRequirementId($reqData['id'])
+                    ->setTitle($reqData['title'])
+                    ->setDescription($reqData['description'])
+                    ->setCategory($reqData['category'])
+                    ->setPriority($reqData['priority'])
+                    ->setDataSourceMapping($reqData['data_source_mapping']);
+
+                $this->entityManager->persist($requirement);
+            }
+
+            $this->entityManager->flush();
+            $this->entityManager->commit();
+
+            $io->success(sprintf('Successfully loaded %d GDPR requirements', count($requirements)));
+        } catch (\Exception $e) {
+            $this->entityManager->rollback();
+            $io->error('Failed to load GDPR requirements: ' . $e->getMessage());
+            return Command::FAILURE;
         }
-
-        $this->entityManager->flush();
-
-        $io->success(sprintf('Successfully loaded %d GDPR requirements', count($requirements)));
 
         return Command::SUCCESS;
     }

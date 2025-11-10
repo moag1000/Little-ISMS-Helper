@@ -113,13 +113,17 @@ class ComplianceFrameworkLoaderService
             ];
         }
 
-        // Check if already loaded
+        // Check if already loaded with requirements
         $existingFramework = $this->frameworkRepository->findOneBy(['code' => $code]);
         if ($existingFramework) {
-            return [
-                'success' => false,
-                'message' => 'Framework already loaded',
-            ];
+            $requirementsCount = $existingFramework->getRequirements()->count();
+            if ($requirementsCount > 0) {
+                return [
+                    'success' => false,
+                    'message' => sprintf('Framework already loaded with %d requirements', $requirementsCount),
+                ];
+            }
+            // Framework exists but has no requirements - allow loading
         }
 
         // Execute the command
@@ -142,6 +146,16 @@ class ComplianceFrameworkLoaderService
                     'output' => $output->fetch(),
                 ];
             }
+        } catch (\Doctrine\DBAL\Exception\UniqueConstraintViolationException $e) {
+            return [
+                'success' => false,
+                'message' => 'Framework or requirements already exist in database',
+            ];
+        } catch (\Doctrine\ORM\Exception\ORMException $e) {
+            return [
+                'success' => false,
+                'message' => 'Database error: ' . $e->getMessage(),
+            ];
         } catch (\Exception $e) {
             return [
                 'success' => false,
