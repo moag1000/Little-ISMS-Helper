@@ -390,6 +390,15 @@ function initializeAuditFilters() {
     }
 }
 
+// Cleanup before Turbo caches the page to allow re-initialization on back navigation
+document.addEventListener('turbo:before-cache', function() {
+    const statusFilter = document.getElementById('statusFilter');
+    const searchInput = document.getElementById('auditSearch');
+
+    if (statusFilter) delete statusFilter.dataset.initialized;
+    if (searchInput) delete searchInput.dataset.initialized;
+});
+
 // Initialize on both DOMContentLoaded (first page load) and turbo:load (Turbo navigation)
 document.addEventListener('DOMContentLoaded', initializeAuditFilters);
 document.addEventListener('turbo:load', initializeAuditFilters);

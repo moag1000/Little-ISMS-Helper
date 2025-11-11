@@ -404,6 +404,17 @@ function initializeDocumentFilters() {
     }
 }
 
+// Cleanup before Turbo caches the page to allow re-initialization on back navigation
+document.addEventListener('turbo:before-cache', function() {
+    const categoryFilter = document.getElementById('categoryFilter');
+    const searchInput = document.getElementById('documentSearch');
+    const bulkActionsController = document.querySelector('[data-controller="bulk-actions"]');
+
+    if (categoryFilter) delete categoryFilter.dataset.initialized;
+    if (searchInput) delete searchInput.dataset.initialized;
+    if (bulkActionsController) delete bulkActionsController.dataset.badgeInitialized;
+});
+
 // Initialize on both DOMContentLoaded (first page load) and turbo:load (Turbo navigation)
 document.addEventListener('DOMContentLoaded', initializeDocumentFilters);
 document.addEventListener('turbo:load', initializeDocumentFilters);

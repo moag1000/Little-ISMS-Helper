@@ -316,6 +316,13 @@ function initializeFrameworkButtons() {
     });
 }
 
+// Cleanup before Turbo caches the page to allow re-initialization on back navigation
+document.addEventListener('turbo:before-cache', function() {
+    document.querySelectorAll('.load-framework-btn[data-initialized="true"]').forEach(btn => {
+        delete btn.dataset.initialized;
+    });
+});
+
 // Initialize on both DOMContentLoaded (first page load) and turbo:load (Turbo navigation)
 document.addEventListener('DOMContentLoaded', initializeFrameworkButtons);
 document.addEventListener('turbo:load', initializeFrameworkButtons);
