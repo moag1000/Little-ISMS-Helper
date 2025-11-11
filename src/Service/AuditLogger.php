@@ -48,7 +48,7 @@ class AuditLogger
     /**
      * Log a delete action
      */
-    public function logDelete(string $entityType, int $entityId, array $oldValues, ?string $description = null): void
+    public function logDelete(string $entityType, ?int $entityId, array $oldValues, ?string $description = null): void
     {
         $this->log(self::ACTION_DELETE, $entityType, $entityId, $oldValues, null, $description);
     }
