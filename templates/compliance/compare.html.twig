@@ -266,52 +266,64 @@
 
 {% if selectedFramework1 and selectedFramework2 %}
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+function initializeComparisonMappingButton() {
     const createMappingsBtn = document.getElementById('createMappingsBtn');
 
-    if (createMappingsBtn) {
-        createMappingsBtn.addEventListener('click', async function() {
-            const framework1Id = this.dataset.framework1;
-            const framework2Id = this.dataset.framework2;
+    if (!createMappingsBtn) {
+        return;
+    }
 
-            // Disable button and show loading state
-            createMappingsBtn.disabled = true;
-            createMappingsBtn.textContent = '⏳ Erstelle Mappings...';
+    // Prevent multiple initializations
+    if (createMappingsBtn.dataset.initialized === 'true') {
+        return;
+    }
 
-            try {
-                const response = await fetch('{{ path('app_compliance_create_comparison_mappings') }}', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-Token': '{{ csrf_token('create_mappings') }}'
-                    },
-                    body: JSON.stringify({
-                        framework1_id: parseInt(framework1Id),
-                        framework2_id: parseInt(framework2Id)
-                    })
-                });
+    createMappingsBtn.dataset.initialized = 'true';
 
-                const result = await response.json();
+    createMappingsBtn.addEventListener('click', async function() {
+        const framework1Id = this.dataset.framework1;
+        const framework2Id = this.dataset.framework2;
 
-                if (result.success) {
-                    // Show success message
-                    alert(result.message);
-                    // Reload page to show updated mappings
-                    window.location.reload();
-                } else {
-                    alert('Fehler: ' + result.message);
-                    createMappingsBtn.disabled = false;
-                    createMappingsBtn.textContent = '🔗 Mappings erstellen';
-                }
-            } catch (error) {
-                console.error('Error creating mappings:', error);
-                alert('Fehler beim Erstellen der Mappings: ' + error.message);
+        // Disable button and show loading state
+        createMappingsBtn.disabled = true;
+        createMappingsBtn.textContent = '⏳ Erstelle Mappings...';
+
+        try {
+            const response = await fetch('{{ path('app_compliance_create_comparison_mappings') }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-Token': '{{ csrf_token('create_mappings') }}'
+                },
+                body: JSON.stringify({
+                    framework1_id: parseInt(framework1Id),
+                    framework2_id: parseInt(framework2Id)
+                })
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                // Show success message
+                alert(result.message);
+                // Reload page to show updated mappings
+                window.location.reload();
+            } else {
+                alert('Fehler: ' + result.message);
                 createMappingsBtn.disabled = false;
                 createMappingsBtn.textContent = '🔗 Mappings erstellen';
             }
-        });
-    }
-});
+        } catch (error) {
+            console.error('Error creating mappings:', error);
+            alert('Fehler beim Erstellen der Mappings: ' + error.message);
+            createMappingsBtn.disabled = false;
+            createMappingsBtn.textContent = '🔗 Mappings erstellen';
+        }
+    });
+}
+
+document.addEventListener('DOMContentLoaded', initializeComparisonMappingButton);
+document.addEventListener('turbo:load', initializeComparisonMappingButton);
 </script>
 {% endif %}
 
