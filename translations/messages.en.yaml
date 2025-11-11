@@ -152,6 +152,7 @@ common:
   to_home: To Home Page
   actions: Actions
   view: View
+  view_details: View Details
   edit: Edit
 asset:
   new: New Asset
@@ -1261,6 +1262,53 @@ compliance:
   industry.automotive: Automotive Industry
   industry.financial_services: Financial Services
   industry.all_sectors: All Sectors
+  title:
+    transitive: Transitive Compliance
+  description:
+    transitive: Leverage existing compliance work across multiple frameworks for maximum efficiency
+    matrix: Shows how fulfilling requirements in one framework helps satisfy requirements in other frameworks
+  action:
+    export_transitive: Export Transitive Analysis
+  stats:
+    total_relationships: Total Framework Relationships
+    transitive_compliance: Transitive Compliance Benefits
+    leverage_rate: Leverage Rate
+    frameworks_leveraged: Frameworks Leveraged
+  info:
+    transitive_title: What is Transitive Compliance?
+    transitive_desc: Transitive compliance means that when you fulfill a requirement in one framework (e.g., ISO 27001), you automatically or partially fulfill requirements in other frameworks (e.g., TISAX, NIS2). This allows you to leverage your compliance work across multiple standards.
+  section:
+    framework_relationships: Framework Relationships
+    compliance_matrix: Transitive Compliance Matrix
+    leverage_opportunities: Compliance Leverage Opportunities
+    cross_framework_mappings: Cross-Framework Requirement Mappings
+    mapping_explanation: Understanding Requirement Mappings
+  field:
+    mapped: Mapped Requirements
+    coverage: Coverage
+    framework: Framework
+    source_requirement: Source Requirement
+    source_framework: Source Framework
+    target_requirements: Target Requirements
+    target_frameworks: Target Frameworks
+    leverage_impact: Leverage Impact
+    mapping_type: Mapping Type
+    mapping_strength: Mapping Strength
+    bidirectional: Bidirectional
+  message:
+    no_relationships: No framework relationships found yet
+    no_leverage_opportunities: No leverage opportunities identified yet
+    no_mappings: No cross-framework mappings available
+  mapping:
+    type:
+      full: Full Coverage
+      partial: Partial Coverage
+      weak: Weak Coverage
+      exceeds: Exceeds Requirements
+    strength:
+      high: High (≥75%)
+      medium: Medium (50-74%)
+      low: Low (<50%)
 
 # Risk Appetite (ISO 27005:2022)
 risk_appetite:

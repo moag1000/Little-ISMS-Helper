@@ -213,4 +213,208 @@
         </tbody>
     </table>
 </div>
+
+{# Cross-Framework Mappings Details #}
+<h2>{{ 'compliance.section.cross_framework_mappings'|trans }}</h2>
+
+{% if cross_mappings is not empty %}
+    {# Coverage Matrix #}
+    <div class="card mb-4">
+        <div style="padding: var(--spacing-lg);">
+            <h3 style="margin-bottom: var(--spacing-md);">📊 {{ 'compliance.section.compliance_matrix'|trans }}</h3>
+            <p style="color: var(--color-text-muted); margin-bottom: var(--spacing-md);">
+                {{ 'compliance.description.matrix'|trans }}
+            </p>
+            <div style="overflow-x: auto;">
+                <table class="matrix-table" style="min-width: 600px; border-collapse: collapse; width: 100%;">
+                    <thead>
+                        <tr>
+                            <th style="padding: var(--spacing-md); border: 1px solid var(--color-border); background: var(--color-bg); font-weight: 600;">
+                                Source ↓ / Target →
+                            </th>
+                            {% for framework in frameworks %}
+                                <th style="padding: var(--spacing-md); border: 1px solid var(--color-border); text-align: center; background: var(--color-bg); font-weight: 600;">
+                                    {{ framework.code }}
+                                </th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for sourceFramework in frameworks %}
+                            <tr>
+                                <td style="padding: var(--spacing-md); border: 1px solid var(--color-border); font-weight: bold;">
+                                    {{ sourceFramework.code }}
+                                </td>
+                                {% for targetFramework in frameworks %}
+                                    <td style="padding: var(--spacing-md); border: 1px solid var(--color-border); text-align: center;">
+                                        {% if sourceFramework.id == targetFramework.id %}
+                                            <span style="color: var(--color-text-muted); font-weight: 600;">100%</span>
+                                        {% elseif coverage_matrix[sourceFramework.code][targetFramework.code] is defined %}
+                                            {% set coverage = coverage_matrix[sourceFramework.code][targetFramework.code] %}
+                                            {% set percentage = coverage.coverage_percentage ?? 0 %}
+                                            <span style="font-weight: 600; font-size: 1.1rem; color: {{ percentage >= 75 ? 'var(--color-success)' : (percentage >= 50 ? 'var(--color-warning)' : 'var(--color-danger)') }};">
+                                                {{ percentage|round }}%
+                                            </span>
+                                            <br>
+                                            <small style="font-size: 0.75rem; color: var(--color-text-muted);">
+                                                {{ coverage.covered_requirements }}/{{ coverage.total_target_requirements }}
+                                            </small>
+                                        {% else %}
+                                            <span style="color: var(--color-text-muted);">—</span>
+                                        {% endif %}
+                                    </td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div style="display: flex; justify-content: center; gap: var(--spacing-lg); margin-top: var(--spacing-md); padding: var(--spacing-md); background: var(--color-bg-alt); border-radius: var(--border-radius);">
+                <div style="display: flex; align-items: center; gap: var(--spacing-xs);">
+                    <span style="width: 20px; height: 20px; background: var(--color-success); border-radius: 4px;"></span>
+                    <span>{{ 'compliance.mapping.strength.high'|trans }}</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: var(--spacing-xs);">
+                    <span style="width: 20px; height: 20px; background: var(--color-warning); border-radius: 4px;"></span>
+                    <span>{{ 'compliance.mapping.strength.medium'|trans }}</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: var(--spacing-xs);">
+                    <span style="width: 20px; height: 20px; background: var(--color-danger); border-radius: 4px;"></span>
+                    <span>{{ 'compliance.mapping.strength.low'|trans }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Detailed Mappings by Framework Pair #}
+    {% for mapping_group in cross_mappings %}
+        <div class="card mb-4">
+            <div style="padding: var(--spacing-lg); border-bottom: 1px solid var(--color-border);">
+                <h3 style="margin-bottom: var(--spacing-xs);">
+                    {{ mapping_group.source.code }} → {{ mapping_group.target.code }}
+                </h3>
+                <p style="color: var(--color-text-muted);">
+                    {{ mapping_group.coverage.covered_requirements }} {{ 'compliance.field.mapped'|trans|lower }}
+                    ({{ mapping_group.coverage.coverage_percentage|round }}% {{ 'compliance.field.coverage'|trans|lower }})
+                </p>
+            </div>
+
+            <div style="display: flex; justify-content: space-around; padding: var(--spacing-lg); background: var(--color-bg-alt); border-bottom: 1px solid var(--color-border);">
+                <div style="display: flex; align-items: center; gap: var(--spacing-md);">
+                    <div style="width: 50px; height: 50px; border-radius: 50%; background: var(--color-success); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem;">✓</div>
+                    <div>
+                        <div style="font-size: 2rem; font-weight: bold; color: var(--color-primary);">{{ mapping_group.coverage.strong_mappings ?? 0 }}</div>
+                        <div style="font-size: 0.85rem; color: var(--color-text-muted);">{{ 'compliance.mapping.type.full'|trans }} (≥100%)</div>
+                    </div>
+                </div>
+                <div style="display: flex; align-items: center; gap: var(--spacing-md);">
+                    <div style="width: 50px; height: 50px; border-radius: 50%; background: var(--color-warning); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem;">⚠</div>
+                    <div>
+                        <div style="font-size: 2rem; font-weight: bold; color: var(--color-primary);">{{ mapping_group.coverage.partial_mappings ?? 0 }}</div>
+                        <div style="font-size: 0.85rem; color: var(--color-text-muted);">{{ 'compliance.mapping.type.partial'|trans }} (50-99%)</div>
+                    </div>
+                </div>
+                <div style="display: flex; align-items: center; gap: var(--spacing-md);">
+                    <div style="width: 50px; height: 50px; border-radius: 50%; background: var(--color-secondary); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem;">◐</div>
+                    <div>
+                        <div style="font-size: 2rem; font-weight: bold; color: var(--color-primary);">{{ mapping_group.coverage.weak_mappings ?? 0 }}</div>
+                        <div style="font-size: 0.85rem; color: var(--color-text-muted);">{{ 'compliance.mapping.type.weak'|trans }} (<50%)</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>{{ 'compliance.field.source_requirement'|trans }}</th>
+                            <th>{{ 'compliance.field.target_requirements'|trans }}</th>
+                            <th>{{ 'compliance.field.mapping_type'|trans }}</th>
+                            <th>{{ 'compliance.field.mapping_strength'|trans }}</th>
+                            <th style="text-align: center;">{{ 'compliance.field.bidirectional'|trans }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for mapping in mapping_group.mappings|slice(0, 10) %}
+                            <tr>
+                                <td>
+                                    <strong>{{ mapping.sourceRequirement.requirementId }}</strong><br>
+                                    <small style="color: var(--color-text-muted);">
+                                        {{ mapping.sourceRequirement.title|length > 60 ? mapping.sourceRequirement.title|slice(0, 60) ~ '...' : mapping.sourceRequirement.title }}
+                                    </small>
+                                </td>
+                                <td>
+                                    <strong>{{ mapping.targetRequirement.requirementId }}</strong><br>
+                                    <small style="color: var(--color-text-muted);">
+                                        {{ mapping.targetRequirement.title|length > 60 ? mapping.targetRequirement.title|slice(0, 60) ~ '...' : mapping.targetRequirement.title }}
+                                    </small>
+                                </td>
+                                <td>
+                                    <span class="badge badge-{{ mapping.mappingBadgeClass }}">
+                                        {{ mapping.mappingType|upper }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <div style="display: flex; align-items: center; gap: var(--spacing-sm);">
+                                        <div style="flex: 1; height: 8px; background: var(--color-bg-alt); border-radius: 4px; overflow: hidden;">
+                                            <div style="height: 100%; width: {{ mapping.mappingPercentage }}%; background: {{ mapping.mappingPercentage >= 100 ? 'var(--color-success)' : (mapping.mappingPercentage >= 50 ? 'var(--color-warning)' : 'var(--color-secondary)') }};"></div>
+                                        </div>
+                                        <span style="font-weight: 600; min-width: 50px; text-align: right;">{{ mapping.mappingPercentage }}%</span>
+                                    </div>
+                                </td>
+                                <td style="text-align: center;">
+                                    {% if mapping.bidirectional %}
+                                        <span class="badge badge-success">🔄 {{ 'common.yes'|trans }}</span>
+                                    {% else %}
+                                        <span class="badge badge-secondary">→</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            {% if mapping_group.mappings|length > 10 %}
+                <div style="padding: var(--spacing-md); text-align: center; color: var(--color-text-muted); border-top: 1px solid var(--color-border);">
+                    {{ 'Showing 10 of'|trans }} {{ mapping_group.mappings|length }} {{ 'mappings'|trans }}
+                </div>
+            {% endif %}
+        </div>
+    {% endfor %}
+
+    {# Explanation Section #}
+    <div class="info-box mb-4" style="background: var(--color-info-light); border-left: 4px solid var(--color-info);">
+        <h3 style="margin-bottom: var(--spacing-md);">💡 {{ 'compliance.section.mapping_explanation'|trans }}</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--spacing-lg);">
+            <div>
+                <h4 style="color: var(--color-primary); margin-bottom: var(--spacing-sm);">🎯 Was sind Mappings?</h4>
+                <p style="margin: 0;">Mappings zeigen, wie Anforderungen aus einem Framework sich auf Anforderungen in einem anderen Framework beziehen. Zum Beispiel könnte eine TISAX-Anforderung eine DORA-Anforderung vollständig erfüllen.</p>
+            </div>
+            <div>
+                <h4 style="color: var(--color-primary); margin-bottom: var(--spacing-sm);">📊 Mapping-Typen</h4>
+                <ul style="margin: 0; padding-left: var(--spacing-lg);">
+                    <li style="margin-bottom: var(--spacing-xs);"><strong>{{ 'compliance.mapping.type.exceeds'|trans }} (>100%):</strong> Quelle übertrifft Ziel</li>
+                    <li style="margin-bottom: var(--spacing-xs);"><strong>{{ 'compliance.mapping.type.full'|trans }} (100%):</strong> Quelle erfüllt Ziel vollständig</li>
+                    <li style="margin-bottom: var(--spacing-xs);"><strong>{{ 'compliance.mapping.type.partial'|trans }} (50-99%):</strong> Quelle erfüllt Ziel teilweise</li>
+                    <li style="margin-bottom: var(--spacing-xs);"><strong>{{ 'compliance.mapping.type.weak'|trans }} (<50%):</strong> Schwache Beziehung</li>
+                </ul>
+            </div>
+            <div>
+                <h4 style="color: var(--color-primary); margin-bottom: var(--spacing-sm);">🔄 Bidirektionale Mappings</h4>
+                <p style="margin: 0;">Manche Anforderungen erfüllen sich gegenseitig. Das bedeutet, dass Arbeit an einem Framework automatisch auch dem anderen Framework zugute kommt.</p>
+            </div>
+            <div>
+                <h4 style="color: var(--color-primary); margin-bottom: var(--spacing-sm);">💡 Strategischer Wert</h4>
+                <p style="margin: 0;">Nutzen Sie diese Mappings, um Frameworks mit der größten Überschneidung zu identifizieren und Compliance-Bemühungen für maximalen Multi-Framework-Nutzen zu priorisieren.</p>
+            </div>
+        </div>
+    </div>
+{% else %}
+    <div class="card">
+        <p style="text-align: center; color: var(--color-text-muted); padding: var(--spacing-xl);">
+            {{ 'compliance.message.no_mappings'|trans }}
+        </p>
+    </div>
+{% endif %}
 {% endblock %}
