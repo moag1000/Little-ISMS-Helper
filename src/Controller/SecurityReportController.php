@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use App\Service\SecurityAuditService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -61,6 +63,33 @@ class SecurityReportController extends AbstractController
             'report_version' => '2021',
             'report_title' => 'OWASP Top 10:2021 Security Report',
         ]);
+    }
+
+    #[Route('/about/security/generate', name: 'app_security_report_generate', methods: ['POST'])]
+    public function generate(SecurityAuditService $securityAuditService): JsonResponse
+    {
+        try {
+            $result = $securityAuditService->generateReports();
+
+            if ($result['success']) {
+                return $this->json([
+                    'success' => true,
+                    'message' => 'Security reports generated successfully',
+                    'reports' => $result['reports'],
+                ]);
+            } else {
+                return $this->json([
+                    'success' => false,
+                    'message' => 'Security report generation failed',
+                    'error' => $result['error_output'] ?: $result['output'],
+                ], 500);
+            }
+        } catch (\Exception $e) {
+            return $this->json([
+                'success' => false,
+                'message' => 'Error generating security reports: ' . $e->getMessage(),
+            ], 500);
+        }
     }
 
     private function parseSecurityReport(string $filePath): array

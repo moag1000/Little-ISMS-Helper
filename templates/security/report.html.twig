@@ -238,8 +238,62 @@
 </style>
 
 <script>
-function regenerateReport() {
-    alert('Bitte führen Sie "php scripts/generate-security-audit.php" im Terminal aus, um die Reports neu zu generieren.');
+async function regenerateReport() {
+    const button = event.target.closest('button');
+    const originalText = button.innerHTML;
+
+    // Disable button and show loading state
+    button.disabled = true;
+    button.innerHTML = '<i class="bi-arrow-clockwise spinner-border spinner-border-sm me-1"></i>Generiere Reports...';
+
+    try {
+        const response = await fetch('{{ path('app_security_report_generate') }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            // Show success message
+            showToast('success', 'Security Reports erfolgreich generiert!');
+
+            // Reload page after short delay
+            setTimeout(() => {
+                window.location.reload();
+            }, 1500);
+        } else {
+            showToast('error', data.message || 'Fehler beim Generieren der Reports');
+            button.disabled = false;
+            button.innerHTML = originalText;
+        }
+    } catch (error) {
+        console.error('Error generating reports:', error);
+        showToast('error', 'Netzwerkfehler beim Generieren der Reports');
+        button.disabled = false;
+        button.innerHTML = originalText;
+    }
+}
+
+function showToast(type, message) {
+    // Create toast element
+    const toast = document.createElement('div');
+    toast.className = `alert alert-${type === 'success' ? 'success' : 'danger'} position-fixed top-0 end-0 m-3`;
+    toast.style.zIndex = '9999';
+    toast.innerHTML = `
+        <i class="bi-${type === 'success' ? 'check-circle' : 'exclamation-triangle'} me-2"></i>
+        ${message}
+    `;
+
+    document.body.appendChild(toast);
+
+    // Remove after 5 seconds
+    setTimeout(() => {
+        toast.remove();
+    }, 5000);
 }
 </script>
 {% endblock %}
