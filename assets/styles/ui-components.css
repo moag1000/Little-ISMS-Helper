@@ -1403,6 +1403,58 @@
     margin-bottom: var(--spacing-sm);
 }
 
+/* Audit Log Statistics Utilities */
+.table-stats {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+.tr-header {
+    background: #f0f0f0;
+}
+
+.th-stats-left {
+    padding: 0.5rem;
+    text-align: left;
+    border: 1px solid #ddd;
+}
+
+.th-stats-right {
+    padding: 0.5rem;
+    text-align: right;
+    border: 1px solid #ddd;
+}
+
+.td-stats {
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+}
+
+.td-stats-right {
+    padding: 0.5rem;
+    text-align: right;
+    border: 1px solid #ddd;
+}
+
+.grid-2-col-gap-mt {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.chart-container {
+    margin-top: 1rem;
+    position: relative;
+    height: 300px;
+}
+
+.w-h-100 {
+    width: 100%;
+    height: 100%;
+}
+
 /* ====================
    Responsive
    ==================== */
