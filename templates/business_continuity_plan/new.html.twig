@@ -1,46 +1,188 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New BC Plan{% endblock %}
+{% block title %}{{ 'bc_plan.new'|trans }} - {{ parent() }}{% endblock %}
 
 {% block body %}
-<div class="container">
-    <div class="page-header">
-        <h1>Create New Business Continuity Plan</h1>
-        <a href="{{ path('app_bc_plan_index') }}" class="btn btn-secondary">Back</a>
-    </div>
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-lg-10 col-xl-9 mx-auto">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="h3 mb-0">{{ 'bc_plan.create'|trans }}</h1>
+                <a href="{{ path('app_bc_plan_index') }}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i> {{ 'common.back'|trans }}
+                </a>
+            </div>
 
-    <div class="card">
-        <div class="card-content">
-            {{ form_start(form) }}
-                {{ form_row(form.name) }}
-                {{ form_row(form.businessProcess) }}
-                {{ form_row(form.description) }}
-                {{ form_row(form.planOwner) }}
-                {{ form_row(form.bcTeam) }}
-                {{ form_row(form.status) }}
-                {{ form_row(form.activationCriteria) }}
-                {{ form_row(form.rolesAndResponsibilities) }}
-                {{ form_row(form.recoveryProcedures) }}
-                {{ form_row(form.communicationPlan) }}
-                {{ form_row(form.internalCommunication) }}
-                {{ form_row(form.externalCommunication) }}
-                {{ form_row(form.alternativeSite) }}
-                {{ form_row(form.alternativeSiteAddress) }}
-                {{ form_row(form.alternativeSiteCapacity) }}
-                {{ form_row(form.backupProcedures) }}
-                {{ form_row(form.restoreProcedures) }}
-                {{ form_row(form.version) }}
-                {{ form_row(form.lastTested) }}
-                {{ form_row(form.nextTestDate) }}
-                {{ form_row(form.lastReviewDate) }}
-                {{ form_row(form.nextReviewDate) }}
-                {{ form_row(form.reviewNotes) }}
-
-                <div class="form-actions">
-                    <button type="submit" class="btn btn-primary">Create BC Plan</button>
-                    <a href="{{ path('app_bc_plan_index') }}" class="btn btn-secondary">Cancel</a>
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-plus-circle"></i> {{ 'bc_plan.new'|trans }}
+                    </h5>
                 </div>
-            {{ form_end(form) }}
+                <div class="card-body">
+                    {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+
+                    {# Basic Information Section #}
+                    <div class="card mb-4">
+                        <div class="card-header bg-light">
+                            <h6 class="mb-0"><i class="bi bi-info-square"></i> {{ 'bc_plan.section.basic_info'|trans }}</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12 mb-3">
+                                    {{ form_row(form.name) }}
+                                </div>
+                                <div class="col-md-12 mb-3">
+                                    {{ form_row(form.businessProcess) }}
+                                </div>
+                                <div class="col-md-12 mb-3">
+                                    {{ form_row(form.description) }}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    {{ form_row(form.planOwner) }}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    {{ form_row(form.status) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {# Team Section #}
+                    <div class="card mb-4">
+                        <div class="card-header bg-light">
+                            <h6 class="mb-0"><i class="bi bi-people"></i> {{ 'bc_plan.section.team'|trans }}</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12 mb-3">
+                                    {{ form_row(form.bcTeam) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {# Activation & Response Section #}
+                    <div class="card mb-4">
+                        <div class="card-header bg-light">
+                            <h6 class="mb-0"><i class="bi bi-lightning"></i> {{ 'bc_plan.section.activation'|trans }}</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12 mb-3">
+                                    {{ form_row(form.activationCriteria) }}
+                                </div>
+                                <div class="col-md-12 mb-3">
+                                    {{ form_row(form.rolesAndResponsibilities) }}
+                                </div>
+                                <div class="col-md-12 mb-3">
+                                    {{ form_row(form.recoveryProcedures) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {# Communication Section #}
+                    <div class="card mb-4">
+                        <div class="card-header bg-light">
+                            <h6 class="mb-0"><i class="bi bi-chat-dots"></i> {{ 'bc_plan.section.communication'|trans }}</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12 mb-3">
+                                    {{ form_row(form.communicationPlan) }}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    {{ form_row(form.internalCommunication) }}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    {{ form_row(form.externalCommunication) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {# Alternative Site Section #}
+                    <div class="card mb-4">
+                        <div class="card-header bg-light">
+                            <h6 class="mb-0"><i class="bi bi-building"></i> {{ 'bc_plan.section.alternative_site'|trans }}</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12 mb-3">
+                                    {{ form_row(form.alternativeSite) }}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    {{ form_row(form.alternativeSiteAddress) }}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    {{ form_row(form.alternativeSiteCapacity) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {# Backup & Recovery Section #}
+                    <div class="card mb-4">
+                        <div class="card-header bg-light">
+                            <h6 class="mb-0"><i class="bi bi-hdd"></i> {{ 'bc_plan.section.backup_recovery'|trans }}</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    {{ form_row(form.backupProcedures) }}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    {{ form_row(form.restoreProcedures) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {# Version & Review Section #}
+                    <div class="card mb-4">
+                        <div class="card-header bg-light">
+                            <h6 class="mb-0"><i class="bi bi-calendar-check"></i> {{ 'bc_plan.section.version_review'|trans }}</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    {{ form_row(form.version) }}
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    {{ form_row(form.lastTested) }}
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    {{ form_row(form.nextTestDate) }}
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    {{ form_row(form.lastReviewDate) }}
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    {{ form_row(form.nextReviewDate) }}
+                                </div>
+                                <div class="col-md-12 mb-3">
+                                    {{ form_row(form.reviewNotes) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {# Form Actions #}
+                    <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+                        <a href="{{ path('app_bc_plan_index') }}"
+                           class="btn btn-outline-secondary"
+                           data-turbo-action="advance">
+                            <i class="bi bi-arrow-left"></i> {{ 'common.back'|trans }}
+                        </a>
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="bi bi-save"></i> {{ 'bc_plan.create'|trans }}
+                        </button>
+                    </div>
+
+                    {{ form_end(form) }}
+                </div>
+            </div>
         </div>
     </div>
 </div>

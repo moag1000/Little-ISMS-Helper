@@ -1,45 +1,163 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New BC Exercise{% endblock %}
+{% block title %}{{ 'bc_exercise.new'|trans }} - {{ parent() }}{% endblock %}
 
 {% block body %}
-<div class="container">
-    <div class="page-header">
-        <h1>Schedule New BC Exercise</h1>
-        <a href="{{ path('app_bc_exercise_index') }}" class="btn btn-secondary">Back</a>
-    </div>
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-lg-10 col-xl-9 mx-auto">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="h3 mb-0">{{ 'bc_exercise.create'|trans }}</h1>
+                <a href="{{ path('app_bc_exercise_index') }}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i> {{ 'common.back'|trans }}
+                </a>
+            </div>
 
-    <div class="card">
-        <div class="card-content">
-            {{ form_start(form) }}
-                {{ form_row(form.name) }}
-                {{ form_row(form.exerciseType) }}
-                {{ form_row(form.description) }}
-                {{ form_row(form.scope) }}
-                {{ form_row(form.objectives) }}
-                {{ form_row(form.scenario) }}
-                {{ form_row(form.exerciseDate) }}
-                {{ form_row(form.durationHours) }}
-                {{ form_row(form.participants) }}
-                {{ form_row(form.facilitator) }}
-                {{ form_row(form.observers) }}
-                {{ form_row(form.status) }}
-                {{ form_row(form.results) }}
-                {{ form_row(form.whatWentWell) }}
-                {{ form_row(form.areasForImprovement) }}
-                {{ form_row(form.findings) }}
-                {{ form_row(form.actionItems) }}
-                {{ form_row(form.lessonsLearned) }}
-                {{ form_row(form.planUpdatesRequired) }}
-                {{ form_row(form.successRating) }}
-                {{ form_row(form.reportCompleted) }}
-                {{ form_row(form.reportDate) }}
-
-                <div class="form-actions">
-                    <button type="submit" class="btn btn-primary">Create Exercise</button>
-                    <a href="{{ path('app_bc_exercise_index') }}" class="btn btn-secondary">Cancel</a>
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-plus-circle"></i> {{ 'bc_exercise.new'|trans }}
+                    </h5>
                 </div>
-            {{ form_end(form) }}
+                <div class="card-body">
+                    {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+
+                    {# Basic Information Section #}
+                    <div class="card mb-4">
+                        <div class="card-header bg-light">
+                            <h6 class="mb-0"><i class="bi bi-info-square"></i> {{ 'bc_exercise.section.basic_info'|trans }}</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12 mb-3">
+                                    {{ form_row(form.name) }}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    {{ form_row(form.exerciseType) }}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    {{ form_row(form.status) }}
+                                </div>
+                                <div class="col-md-12 mb-3">
+                                    {{ form_row(form.description) }}
+                                </div>
+                                <div class="col-md-12 mb-3">
+                                    {{ form_row(form.scope) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {# Planning Section #}
+                    <div class="card mb-4">
+                        <div class="card-header bg-light">
+                            <h6 class="mb-0"><i class="bi bi-calendar-event"></i> {{ 'bc_exercise.section.planning'|trans }}</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12 mb-3">
+                                    {{ form_row(form.objectives) }}
+                                </div>
+                                <div class="col-md-12 mb-3">
+                                    {{ form_row(form.scenario) }}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    {{ form_row(form.exerciseDate) }}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    {{ form_row(form.durationHours) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {# Participants Section #}
+                    <div class="card mb-4">
+                        <div class="card-header bg-light">
+                            <h6 class="mb-0"><i class="bi bi-people"></i> {{ 'bc_exercise.section.participants'|trans }}</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12 mb-3">
+                                    {{ form_row(form.participants) }}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    {{ form_row(form.facilitator) }}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    {{ form_row(form.observers) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {# Results Section #}
+                    <div class="card mb-4">
+                        <div class="card-header bg-light">
+                            <h6 class="mb-0"><i class="bi bi-clipboard-check"></i> {{ 'bc_exercise.section.results'|trans }}</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12 mb-3">
+                                    {{ form_row(form.results) }}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    {{ form_row(form.whatWentWell) }}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    {{ form_row(form.areasForImprovement) }}
+                                </div>
+                                <div class="col-md-12 mb-3">
+                                    {{ form_row(form.findings) }}
+                                </div>
+                                <div class="col-md-12 mb-3">
+                                    {{ form_row(form.actionItems) }}
+                                </div>
+                                <div class="col-md-12 mb-3">
+                                    {{ form_row(form.lessonsLearned) }}
+                                </div>
+                                <div class="col-md-12 mb-3">
+                                    {{ form_row(form.planUpdatesRequired) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {# Report Section #}
+                    <div class="card mb-4">
+                        <div class="card-header bg-light">
+                            <h6 class="mb-0"><i class="bi bi-file-earmark-text"></i> {{ 'bc_exercise.section.report'|trans }}</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    {{ form_row(form.successRating) }}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    {{ form_row(form.reportCompleted) }}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    {{ form_row(form.reportDate) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {# Form Actions #}
+                    <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+                        <a href="{{ path('app_bc_exercise_index') }}"
+                           class="btn btn-outline-secondary"
+                           data-turbo-action="advance">
+                            <i class="bi bi-arrow-left"></i> {{ 'common.back'|trans }}
+                        </a>
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="bi bi-save"></i> {{ 'bc_exercise.create'|trans }}
+                        </button>
+                    </div>
+
+                    {{ form_end(form) }}
+                </div>
+            </div>
         </div>
     </div>
 </div>

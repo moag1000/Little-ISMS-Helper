@@ -154,6 +154,7 @@ common:
   view: Ansehen
   view_details: Details ansehen
   edit: Bearbeiten
+  show_all: Alle anzeigen
 asset:
   new: Neues Asset
   create: Asset erstellen
@@ -404,6 +405,8 @@ context:
     active_goals: Aktive Ziele
     achieved_goals: Erreichte Ziele
     next_review: Nächste Überprüfung
+    of_total: von %total%
+    success_rate: '%rate%% Erfolgsquote'
   review_status:
     today: Heute
     due: Überprüfung fällig
@@ -1080,7 +1083,28 @@ change_request:
     created: Änderungsantrag erfolgreich erstellt.
     updated: Änderungsantrag erfolgreich aktualisiert.
     deleted: Änderungsantrag erfolgreich gelöscht.
+bc_plan:
+  new: Neuer BC-Plan
+  create: BC-Plan erstellen
+  section:
+    basic_info: Grundinformationen
+    team: Team
+    activation: Aktivierung & Reaktion
+    communication: Kommunikation
+    alternative_site: Alternativer Standort
+    backup_recovery: Backup & Wiederherstellung
+    version_review: Version & Review
 business_continuity_plan:
+  new: Neuer BC-Plan
+  create: BC-Plan erstellen
+  section:
+    basic_info: Grundinformationen
+    team: Team
+    activation: Aktivierung & Reaktion
+    communication: Kommunikation
+    alternative_site: Alternativer Standort
+    backup_recovery: Backup & Wiederherstellung
+    version_review: Version & Review
   field:
     name: Planname
     business_process: Geschäftsprozess
@@ -1113,6 +1137,14 @@ security:
     saml_logout_error: SAML-Abmeldefehler
     csrf_invalid: Ungültiges CSRF-Token.
 bc_exercise:
+  new: Neue BC-Übung
+  create: BC-Übung erstellen
+  section:
+    basic_info: Grundinformationen
+    planning: Planung
+    participants: Teilnehmer
+    results: Ergebnisse
+    report: Bericht
   success:
     created: BC-Übung erfolgreich erstellt.
     updated: BC-Übung erfolgreich aktualisiert.
