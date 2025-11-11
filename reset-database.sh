@@ -235,22 +235,23 @@ empty_database() {
                     fi
                 done <<< "$TABLES"
                 success "All tables dropped (doctrine_migration_versions preserved)"
-
-                # Reset migration history so migrations will run again
-                info "Resetting migration history..."
-                RESET_OUTPUT=$(php bin/console dbal:run-sql "DELETE FROM doctrine_migration_versions;" 2>&1)
-                RESET_EXIT=$?
-                if [ $RESET_EXIT -eq 0 ]; then
-                    success "Migration history reset"
-                else
-                    warning "Could not reset migration history: $RESET_OUTPUT"
-                fi
             else
                 error "Failed to drop tables: $DROP_OUTPUT"
                 return 1
             fi
         else
             warning "No tables found to drop (database might already be empty)"
+        fi
+
+        # Always reset migration history, even if no tables were found
+        # (doctrine_migration_versions table still exists with old history)
+        info "Resetting migration history..."
+        RESET_OUTPUT=$(php bin/console dbal:run-sql "DELETE FROM doctrine_migration_versions;" 2>&1)
+        RESET_EXIT=$?
+        if [ $RESET_EXIT -eq 0 ]; then
+            success "Migration history reset"
+        else
+            warning "Could not reset migration history: $RESET_OUTPUT"
         fi
     elif [ "$DB_TYPE" = "postgresql" ]; then
         info "Dropping PostgreSQL database tables (will be recreated by migrations)..."
@@ -285,22 +286,23 @@ empty_database() {
                     fi
                 done <<< "$TABLES"
                 success "All tables dropped (doctrine_migration_versions preserved)"
-
-                # Reset migration history so migrations will run again
-                info "Resetting migration history..."
-                RESET_OUTPUT=$(php bin/console dbal:run-sql "DELETE FROM doctrine_migration_versions;" 2>&1)
-                RESET_EXIT=$?
-                if [ $RESET_EXIT -eq 0 ]; then
-                    success "Migration history reset"
-                else
-                    warning "Could not reset migration history: $RESET_OUTPUT"
-                fi
             else
                 error "Failed to drop tables: $DROP_OUTPUT"
                 return 1
             fi
         else
             warning "No tables found to drop (database might already be empty)"
+        fi
+
+        # Always reset migration history, even if no tables were found
+        # (doctrine_migration_versions table still exists with old history)
+        info "Resetting migration history..."
+        RESET_OUTPUT=$(php bin/console dbal:run-sql "DELETE FROM doctrine_migration_versions;" 2>&1)
+        RESET_EXIT=$?
+        if [ $RESET_EXIT -eq 0 ]; then
+            success "Migration history reset"
+        else
+            warning "Could not reset migration history: $RESET_OUTPUT"
         fi
     fi
 }
