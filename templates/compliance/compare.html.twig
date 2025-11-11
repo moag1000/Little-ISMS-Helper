@@ -100,7 +100,7 @@
 {# Visual Comparison #}
 <div class="module-grid mb-4">
     <div class="card">
-        <h3>{{ selectedFramework1.name }}</h3>
+        <h3>{{ selectedFramework1.name }}{% if selectedFramework1.version %} <span style="color: var(--color-text-muted); font-size: 0.9em;">(v{{ selectedFramework1.version }})</span>{% endif %}</h3>
         <p style="color: var(--color-text-muted); margin-top: var(--spacing-sm);">
             {{ selectedFramework1.description }}
         </p>
@@ -122,7 +122,7 @@
     </div>
 
     <div class="card">
-        <h3>{{ selectedFramework2.name }}</h3>
+        <h3>{{ selectedFramework2.name }}{% if selectedFramework2.version %} <span style="color: var(--color-text-muted); font-size: 0.9em;">(v{{ selectedFramework2.version }})</span>{% endif %}</h3>
         <p style="color: var(--color-text-muted); margin-top: var(--spacing-sm);">
             {{ selectedFramework2.description }}
         </p>
