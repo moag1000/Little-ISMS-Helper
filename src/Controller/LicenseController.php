@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use App\Service\LicenseReportService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -98,5 +100,32 @@ class LicenseController extends AbstractController
         return $this->render('license/summary.html.twig', [
             'stats' => $stats,
         ]);
+    }
+
+    #[Route('/about/licenses/generate', name: 'app_licenses_generate', methods: ['POST'])]
+    public function generate(LicenseReportService $licenseReportService): JsonResponse
+    {
+        try {
+            $result = $licenseReportService->generateReport();
+
+            if ($result['success']) {
+                return $this->json([
+                    'success' => true,
+                    'message' => 'License report generated successfully',
+                    'report' => $result['report'],
+                ]);
+            } else {
+                return $this->json([
+                    'success' => false,
+                    'message' => 'License report generation failed',
+                    'error' => $result['error_output'] ?: $result['output'],
+                ], 500);
+            }
+        } catch (\Exception $e) {
+            return $this->json([
+                'success' => false,
+                'message' => 'Error generating license report: ' . $e->getMessage(),
+            ], 500);
+        }
     }
 }
