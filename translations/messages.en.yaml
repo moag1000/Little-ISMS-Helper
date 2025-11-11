@@ -505,6 +505,8 @@ activity:
   security_team: Security Team
   new_risk: New Risk
 incident:
+  new: New Incident
+  create: Create Incident
   section:
     affected_assets: Affected Assets
     realized_risks: Realized Risks
