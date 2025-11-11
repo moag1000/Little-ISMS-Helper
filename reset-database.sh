@@ -224,7 +224,10 @@ empty_database() {
             DROP_SQL="$DROP_SQL SET FOREIGN_KEY_CHECKS = 1;"
 
             # Execute all DROP statements in one go
-            if php bin/console dbal:run-sql "$DROP_SQL" 2>&1 | grep -v "^\[" | grep -v "rows affected" | grep -v "^$"; then
+            DROP_OUTPUT=$(php bin/console dbal:run-sql "$DROP_SQL" 2>&1)
+            DROP_EXIT=$?
+
+            if [ $DROP_EXIT -eq 0 ]; then
                 # Show which tables were dropped
                 while IFS= read -r TABLE; do
                     if [ ! -z "$TABLE" ]; then
@@ -235,13 +238,15 @@ empty_database() {
 
                 # Reset migration history so migrations will run again
                 info "Resetting migration history..."
-                if php bin/console dbal:run-sql "DELETE FROM doctrine_migration_versions;" 2>&1 | grep -v "^\[" | grep -v "rows affected" | grep -v "^$"; then
+                RESET_OUTPUT=$(php bin/console dbal:run-sql "DELETE FROM doctrine_migration_versions;" 2>&1)
+                RESET_EXIT=$?
+                if [ $RESET_EXIT -eq 0 ]; then
                     success "Migration history reset"
                 else
-                    warning "Could not reset migration history"
+                    warning "Could not reset migration history: $RESET_OUTPUT"
                 fi
             else
-                error "Failed to drop tables"
+                error "Failed to drop tables: $DROP_OUTPUT"
                 return 1
             fi
         else
@@ -269,7 +274,10 @@ empty_database() {
             done <<< "$TABLES"
 
             # Execute all DROP statements in one go
-            if php bin/console dbal:run-sql "$DROP_SQL" 2>&1 | grep -v "^\[" | grep -v "rows affected" | grep -v "^$"; then
+            DROP_OUTPUT=$(php bin/console dbal:run-sql "$DROP_SQL" 2>&1)
+            DROP_EXIT=$?
+
+            if [ $DROP_EXIT -eq 0 ]; then
                 # Show which tables were dropped
                 while IFS= read -r TABLE; do
                     if [ ! -z "$TABLE" ]; then
@@ -280,13 +288,15 @@ empty_database() {
 
                 # Reset migration history so migrations will run again
                 info "Resetting migration history..."
-                if php bin/console dbal:run-sql "DELETE FROM doctrine_migration_versions;" 2>&1 | grep -v "^\[" | grep -v "rows affected" | grep -v "^$"; then
+                RESET_OUTPUT=$(php bin/console dbal:run-sql "DELETE FROM doctrine_migration_versions;" 2>&1)
+                RESET_EXIT=$?
+                if [ $RESET_EXIT -eq 0 ]; then
                     success "Migration history reset"
                 else
-                    warning "Could not reset migration history"
+                    warning "Could not reset migration history: $RESET_OUTPUT"
                 fi
             else
-                error "Failed to drop tables"
+                error "Failed to drop tables: $DROP_OUTPUT"
                 return 1
             fi
         else
