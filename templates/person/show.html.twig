@@ -3,7 +3,7 @@
 {% block title %}{{ person.fullName }} - {{ 'person.title.show'|trans }} - Little ISMS Helper{% endblock %}
 
 {% block body %}
-<div class="d-flex justify-between align-center mb-4">
+<div class="page-header">
     <div>
         <h1>{{ person.fullName }}</h1>
         <div class="mt-2">
@@ -23,8 +23,8 @@
             {% endif %}
         </div>
     </div>
-    <div>
-        <a href="{{ path('app_person_edit', {id: person.id}) }}" class="btn btn-success" style="margin-right: 0.5rem;">
+    <div class="button-group">
+        <a href="{{ path('app_person_edit', {id: person.id}) }}" class="btn btn-primary">
             ✏️ {{ 'common.edit'|trans }}
         </a>
         <a href="{{ path('app_person_index') }}" class="btn btn-secondary">
@@ -117,8 +117,8 @@
 {% endif %}
 
 {# Action Buttons #}
-<div class="d-flex gap-2 mt-4">
-    <a href="{{ path('app_person_edit', {id: person.id}) }}" class="btn btn-success">
+<div class="button-group mt-xl">
+    <a href="{{ path('app_person_edit', {id: person.id}) }}" class="btn btn-primary">
         ✏️ {{ 'common.edit'|trans }}
     </a>
     <a href="{{ path('app_person_index') }}" class="btn btn-secondary">

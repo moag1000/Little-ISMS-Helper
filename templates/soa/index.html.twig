@@ -3,14 +3,12 @@
 {% block title %}Statement of Applicability - Little ISMS Helper{% endblock %}
 
 {% block body %}
-<div class="d-flex justify-between align-center mb-4">
+<div class="page-header">
     <div>
         <h1>Statement of Applicability (SoA)</h1>
-        <p style="color: var(--color-text-light); margin-top: var(--spacing-sm);">
-            ISO/IEC 27001:2022 Annex A Controls - Übersicht und Anwendbarkeitserklärung
-        </p>
+        <p class="text-muted">ISO/IEC 27001:2022 Annex A Controls - Übersicht und Anwendbarkeitserklärung</p>
     </div>
-    <div style="display: flex; gap: 0.5rem;">
+    <div class="button-group">
         <a href="{{ path('app_soa_export') }}" class="btn btn-outline-success" title="{{ 'soa.export.html'|trans }}">
             <i class="bi bi-file-earmark-text"></i> HTML
         </a>

@@ -3,15 +3,13 @@
 {% block title %}{{ 'bcm.title.critical'|trans }} - Little ISMS Helper{% endblock %}
 
 {% block body %}
-<div class="d-flex justify-between align-center mb-4">
+<div class="page-header">
     <div>
         <h1>{{ 'bcm.title.critical'|trans }}</h1>
-        <p style="color: var(--color-text-light); margin-top: var(--spacing-sm);">
-            {{ 'bcm.description.critical'|trans }}
-        </p>
+        <p class="text-muted">{{ 'bcm.description.critical'|trans }}</p>
     </div>
-    <div>
-        <a href="{{ path('app_asset_bcm_insights') }}" class="btn btn-secondary" style="margin-right: 0.5rem;">
+    <div class="button-group">
+        <a href="{{ path('app_asset_bcm_insights') }}" class="btn btn-secondary">
             📊 {{ 'bcm.action.view_insights'|trans }}
         </a>
         <a href="{{ path('app_bcm_export_critical') }}" class="btn btn-success">

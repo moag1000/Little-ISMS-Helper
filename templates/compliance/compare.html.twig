@@ -3,14 +3,12 @@
 {% block title %}{{ 'compliance.title.compare'|trans }} - Little ISMS Helper{% endblock %}
 
 {% block body %}
-<div class="d-flex justify-between align-center mb-4">
+<div class="page-header">
     <div>
         <h1>{{ 'compliance.title.compare'|trans }}</h1>
-        <p style="color: var(--color-text-light); margin-top: var(--spacing-sm);">
-            {{ 'compliance.description.compare'|trans }}
-        </p>
+        <p class="text-muted">{{ 'compliance.description.compare'|trans }}</p>
     </div>
-    <div style="display: flex; gap: var(--spacing-sm);">
+    <div class="button-group">
         {% if selectedFramework1 and selectedFramework2 %}
         <button id="createMappingsBtn" class="btn btn-primary" data-framework1="{{ selectedFramework1.id }}" data-framework2="{{ selectedFramework2.id }}">
             🔗 Mappings erstellen

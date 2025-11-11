@@ -10,7 +10,7 @@
             <p class="text-muted">{{ 'compliance.page_subtitle'|trans }}</p>
         </div>
         <div class="button-group">
-            <a href="{{ path('app_compliance_manage_frameworks') }}" class="btn btn-success">
+            <a href="{{ path('app_compliance_manage_frameworks') }}" class="btn btn-primary">
                 <span class="icon">➕</span> {{ 'compliance.manage_frameworks'|trans }}
             </a>
             <a href="{{ path('app_compliance_cross_framework') }}" class="btn btn-secondary">
@@ -19,7 +19,7 @@
             <a href="{{ path('app_compliance_transitive') }}" class="btn btn-secondary">
                 <span class="icon">📊</span> {{ 'compliance.button.transitive'|trans }}
             </a>
-            <a href="{{ path('app_compliance_compare') }}" class="btn btn-info">
+            <a href="{{ path('app_compliance_compare') }}" class="btn btn-secondary">
                 <span class="icon">⚖️</span> {{ 'compliance.button.compare_frameworks'|trans }}
             </a>
         </div>
@@ -86,7 +86,7 @@
         {% else %}
             <div class="col-span-all text-center" style="padding: var(--spacing-xl);">
                 <p class="text-muted">{{ 'compliance.no_frameworks_loaded'|trans }}</p>
-                <a href="{{ path('app_compliance_manage_frameworks') }}" class="btn btn-success btn-lg">
+                <a href="{{ path('app_compliance_manage_frameworks') }}" class="btn btn-primary btn-lg">
                     <span class="icon">➕</span> {{ 'compliance.add_frameworks'|trans }}
                 </a>
             </div>
@@ -95,7 +95,7 @@
 
     {# Cross-Framework Mapping Statistics #}
     {% if mapping_stats.total_mappings > 0 %}
-        <div class="card" style="margin-top: var(--spacing-lg);">
+        <div class="card mt-lg">
             <div class="card-header">
                 <h2>🔗 {{ 'compliance.cross_framework.title'|trans }}</h2>
             </div>
@@ -132,7 +132,7 @@
     {% endif %}
 
     {# Benefits Explanation #}
-    <div class="card" style="margin-top: var(--spacing-lg);">
+    <div class="card mt-lg">
         <div class="card-header">
             <h2>{{ 'compliance.benefits.title'|trans }}</h2>
         </div>
