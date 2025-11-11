@@ -124,7 +124,7 @@
                 <th>{{ 'document.field.owner'|trans }}</th>
                 <th>{{ 'document.field.last_updated'|trans }}</th>
                 <th>{{ 'document.field.review_date'|trans }}</th>
-                <th style="text-align: center;">{{ 'common.actions'|trans }}</th>
+                <th class="text-center">{{ 'common.actions'|trans }}</th>
             </tr>
         </thead>
         <tbody>
@@ -173,10 +173,10 @@
                             </span>
                         {% endif %}
                     {% else %}
-                        <span style="color: var(--color-text-muted);">-</span>
+                        <span class="text-muted">-</span>
                     {% endif %}
                 </td>
-                <td style="text-align: center;">
+                <td class="text-center">
                     <a href="{{ path('app_document_show', {id: document.id}) }}" class="btn btn-sm" style="margin-right: 0.25rem;">
                         👁 {{ 'common.view'|trans }}
                     </a>
@@ -229,7 +229,7 @@
             {% for doc in selectedType.recentDocuments|slice(0, 5) %}
             <li style="padding: var(--spacing-xs) 0; border-bottom: 1px solid var(--color-border);">
                 <strong>{{ doc.title }}</strong>
-                <br><small style="color: var(--color-text-muted);">
+                <br><small class="text-muted">
                     {{ 'document.field.updated'|trans }}: {{ doc.updatedAt|date('d.m.Y H:i') }}
                 </small>
             </li>
@@ -254,11 +254,11 @@
             <tr>
                 <th>{{ 'document.field.type_name'|trans }}</th>
                 <th>{{ 'document.field.description'|trans }}</th>
-                <th style="text-align: center;">{{ 'document.field.total_documents'|trans }}</th>
-                <th style="text-align: center;">{{ 'document.field.active'|trans }}</th>
-                <th style="text-align: center;">{{ 'document.field.draft'|trans }}</th>
-                <th style="text-align: center;">{{ 'document.field.overdue_reviews'|trans }}</th>
-                <th style="text-align: center;">{{ 'common.actions'|trans }}</th>
+                <th class="text-center">{{ 'document.field.total_documents'|trans }}</th>
+                <th class="text-center">{{ 'document.field.active'|trans }}</th>
+                <th class="text-center">{{ 'document.field.draft'|trans }}</th>
+                <th class="text-center">{{ 'document.field.overdue_reviews'|trans }}</th>
+                <th class="text-center">{{ 'common.actions'|trans }}</th>
             </tr>
         </thead>
         <tbody>
@@ -268,27 +268,27 @@
                     <strong>{{ type.icon ?? '📄' }} {{ type.name }}</strong>
                 </td>
                 <td>
-                    <small style="color: var(--color-text-muted);">
+                    <small class="text-muted">
                         {{ type.description|default('-') }}
                     </small>
                 </td>
-                <td style="text-align: center;">
+                <td class="text-center">
                     <span class="badge badge-info">{{ type.documentCount }}</span>
                 </td>
-                <td style="text-align: center;">
+                <td class="text-center">
                     <span class="badge badge-success">{{ type.activeDocuments }}</span>
                 </td>
-                <td style="text-align: center;">
+                <td class="text-center">
                     <span class="badge badge-secondary">{{ type.draftDocuments }}</span>
                 </td>
-                <td style="text-align: center;">
+                <td class="text-center">
                     {% if type.overdueReviews > 0 %}
                         <span class="badge badge-danger">{{ type.overdueReviews }}</span>
                     {% else %}
                         <span class="badge badge-success">0</span>
                     {% endif %}
                 </td>
-                <td style="text-align: center;">
+                <td class="text-center">
                     <a href="{{ path('app_document_by_type', {type: type.id}) }}" class="btn btn-sm">
                         👁 {{ 'common.view'|trans }}
                     </a>
