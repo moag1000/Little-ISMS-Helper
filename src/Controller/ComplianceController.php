@@ -13,6 +13,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Csrf\CsrfToken;
+use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 
 #[Route('/compliance')]
 class ComplianceController extends AbstractController
@@ -23,7 +25,8 @@ class ComplianceController extends AbstractController
         private ComplianceMappingRepository $mappingRepository,
         private ComplianceAssessmentService $assessmentService,
         private ComplianceMappingService $mappingService,
-        private ComplianceFrameworkLoaderService $frameworkLoaderService
+        private ComplianceFrameworkLoaderService $frameworkLoaderService,
+        private CsrfTokenManagerInterface $csrfTokenManager
     ) {}
 
     #[Route('/', name: 'app_compliance_index')]
@@ -338,8 +341,17 @@ class ComplianceController extends AbstractController
     }
 
     #[Route('/frameworks/load/{code}', name: 'app_compliance_load_framework', methods: ['POST'])]
-    public function loadFramework(string $code): JsonResponse
+    public function loadFramework(string $code, Request $request): JsonResponse
     {
+        // Validate CSRF token
+        $token = $request->headers->get('X-CSRF-Token');
+        if (!$this->csrfTokenManager->isTokenValid(new CsrfToken('load_framework', $token))) {
+            return new JsonResponse([
+                'success' => false,
+                'message' => 'Invalid CSRF token'
+            ], 403);
+        }
+
         $result = $this->frameworkLoaderService->loadFramework($code);
 
         if ($result['success']) {
