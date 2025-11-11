@@ -140,6 +140,62 @@
     </div>
 </div>
 
+{# Risk Filters #}
+<div class="card mb-4">
+    <div class="card-header">
+        <h5><i class="bi bi-funnel"></i> Filteroptionen</h5>
+    </div>
+    <div class="card-body">
+        <form method="get" action="{{ path('app_risk_index') }}" class="row g-3">
+            <div class="col-md-3">
+                <label for="filter-level" class="form-label">Risikolevel</label>
+                <select class="form-select" id="filter-level" name="level" onchange="this.form.submit()">
+                    <option value="">Alle Risiken</option>
+                    <option value="critical" {{ app.request.get('level') == 'critical' ? 'selected' : '' }}>Kritisch (15-25)</option>
+                    <option value="high" {{ app.request.get('level') == 'high' ? 'selected' : '' }}>Hoch (8-14)</option>
+                    <option value="medium" {{ app.request.get('level') == 'medium' ? 'selected' : '' }}>Mittel (4-7)</option>
+                    <option value="low" {{ app.request.get('level') == 'low' ? 'selected' : '' }}>Niedrig (1-3)</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label for="filter-status" class="form-label">Status</label>
+                <select class="form-select" id="filter-status" name="status" onchange="this.form.submit()">
+                    <option value="">Alle Status</option>
+                    <option value="identified" {{ app.request.get('status') == 'identified' ? 'selected' : '' }}>Identifiziert</option>
+                    <option value="assessed" {{ app.request.get('status') == 'assessed' ? 'selected' : '' }}>Bewertet</option>
+                    <option value="treated" {{ app.request.get('status') == 'treated' ? 'selected' : '' }}>Behandelt</option>
+                    <option value="monitored" {{ app.request.get('status') == 'monitored' ? 'selected' : '' }}>Überwacht</option>
+                    <option value="closed" {{ app.request.get('status') == 'closed' ? 'selected' : '' }}>Geschlossen</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label for="filter-treatment" class="form-label">Behandlungsstrategie</label>
+                <select class="form-select" id="filter-treatment" name="treatment" onchange="this.form.submit()">
+                    <option value="">Alle Strategien</option>
+                    <option value="mitigate" {{ app.request.get('treatment') == 'mitigate' ? 'selected' : '' }}>Mindern</option>
+                    <option value="accept" {{ app.request.get('treatment') == 'accept' ? 'selected' : '' }}>Akzeptieren</option>
+                    <option value="transfer" {{ app.request.get('treatment') == 'transfer' ? 'selected' : '' }}>Übertragen</option>
+                    <option value="avoid" {{ app.request.get('treatment') == 'avoid' ? 'selected' : '' }}>Vermeiden</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label for="filter-owner" class="form-label">Risk Owner</label>
+                <input type="text" class="form-control" id="filter-owner" name="owner"
+                       value="{{ app.request.get('owner') }}"
+                       placeholder="Suche nach Owner...">
+            </div>
+            <div class="col-12">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-search"></i> Filtern
+                </button>
+                <a href="{{ path('app_risk_index') }}" class="btn btn-secondary">
+                    <i class="bi bi-x-circle"></i> Zurücksetzen
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
 {# Risks Table or Empty State #}
 {% if risks|length == 0 %}
     {% include '_components/_empty_state.html.twig' with {

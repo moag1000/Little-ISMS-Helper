@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Asset;
 use App\Form\AssetType;
 use App\Repository\AssetRepository;
+use App\Repository\AuditLogRepository;
 use App\Repository\BusinessProcessRepository;
 use App\Service\ProtectionRequirementService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -20,6 +21,7 @@ class AssetController extends AbstractController
 {
     public function __construct(
         private AssetRepository $assetRepository,
+        private AuditLogRepository $auditLogRepository,
         private ProtectionRequirementService $protectionRequirementService,
         private BusinessProcessRepository $businessProcessRepository,
         private EntityManagerInterface $entityManager,
@@ -28,9 +30,36 @@ class AssetController extends AbstractController
 
     #[Route('/', name: 'app_asset_index')]
     #[IsGranted('ROLE_USER')]
-    public function index(): Response
+    public function index(Request $request): Response
     {
+        // Get filter parameters
+        $type = $request->query->get('type');
+        $classification = $request->query->get('classification');
+        $owner = $request->query->get('owner');
+        $status = $request->query->get('status');
+
+        // Apply filters
         $assets = $this->assetRepository->findActiveAssets();
+
+        if ($type) {
+            $assets = array_filter($assets, fn($asset) => $asset->getAssetType() === $type);
+        }
+
+        if ($classification) {
+            $assets = array_filter($assets, fn($asset) => $asset->getDataClassification() === $classification);
+        }
+
+        if ($owner) {
+            $assets = array_filter($assets, fn($asset) => stripos($asset->getOwner(), $owner) !== false);
+        }
+
+        if ($status) {
+            $assets = array_filter($assets, fn($asset) => $asset->getStatus() === $status);
+        }
+
+        // Re-index array after filtering to avoid gaps in keys
+        $assets = array_values($assets);
+
         $typeStats = $this->assetRepository->countByType();
 
         // Calculate BCM-based suggestions for each asset
@@ -83,10 +112,16 @@ class AssetController extends AbstractController
         $analysis = $this->protectionRequirementService->getCompleteProtectionRequirementAnalysis($asset);
         $processes = $this->businessProcessRepository->findByAsset($asset->getId());
 
+        // Get audit log history for this asset (last 10 entries)
+        $auditLogs = $this->auditLogRepository->findByEntity('Asset', $asset->getId());
+        $recentAuditLogs = array_slice($auditLogs, 0, 10);
+
         return $this->render('asset/show.html.twig', [
             'asset' => $asset,
             'analysis' => $analysis,
             'processes' => $processes,
+            'auditLogs' => $recentAuditLogs,
+            'totalAuditLogs' => count($auditLogs),
         ]);
     }
 

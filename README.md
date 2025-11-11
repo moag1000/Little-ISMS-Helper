@@ -488,7 +488,6 @@ git clone https://github.com/YOUR-USERNAME/Little-ISMS-Helper.git
 git checkout -b feature/your-feature
 
 # Entwickeln & Testen
->>>>>>> origin/main
 php bin/phpunit
 
 # Commit & Push
@@ -505,33 +504,36 @@ Siehe auch: [CHANGELOG.md](CHANGELOG.md) für detaillierte Versionshistorie
 ## 📊 Projekt-Statistiken
 
 - **Codezeilen:** ~43,600+ LOC (+8,900 durch Phase 6H/6I)
-- **Entities:** 29 Doctrine Entities (+4: CrisisTeam, MfaToken, Patch, Vulnerability)
-- **Controllers:** 22+ Controllers (+4: VulnerabilityController, PatchController, MfaTokenController, CrisisTeamController)
-- **Templates:** 98+ Twig Templates (+16: 4 modules × 4 templates)
-- **Services:** 13+ Business Logic Services
-- **Commands:** 8+ Console Commands (+3: LoadNis2, LoadBsi, LoadIso22301)
-- **Forms:** 25+ Symfony Form Types (+4: VulnerabilityType, PatchType, MfaTokenType, CrisisTeamType)
+- **Entities:** 39 Doctrine Entities (+10 in Phase 6)
+- **Controllers:** 38 Controllers
+- **Templates:** 197 Twig Templates
+- **Services:** 29 Business Logic Services
+- **Commands:** 20 Console Commands (inkl. LoadNis2, LoadBsi, LoadIso22301)
+- **Forms:** 30 Symfony Form Types
 - **Translations:** 1,454 keys (DE) + 1,451 keys (EN) = 2,905 total (+428 keys)
 - **Tests:** 122 tests, 228 assertions (100% passing)
   - **Test Coverage:** ~26% (Ziel: 80%+)
-  - **Module mit Tests:** 6/29 (21%)
+  - **Module mit Tests:** 6/23 (26%)
 - **API Endpoints:** 30 REST Endpoints
 - **Report Types:** 11 (6 PDF + 5 Excel)
 - **Notification Types:** 5 automatisierte Typen
 - **Compliance Frameworks:** 8 (ISO 27001, ISO 22301, ISO 19011, ISO 31000, ISO 27005, DORA, TISAX, NIS2, BSI)
-  - **Vollständig implementiert (100%):** 5 Frameworks (ISO 27001, DORA, TISAX, ISO 22301, ISO 27005) ✨ NEW!
-  - **Core Infrastructure (40-50%):** 2 Frameworks (NIS2, BSI) - Entities/Forms/Commands ✓, UI/Workflows pending ✨ NEW!
-- **Module Vollständigkeit (Technisch):** ~78% durchschnittlich (+3% durch Phase 6H/6I)
+  - **Vollständig implementiert (100%):** 5 Frameworks (ISO 27001, DORA, TISAX, ISO 22301, ISO 27005)
+  - **Core Infrastructure (40-50%):** 2 Frameworks (NIS2, BSI) - Entities/Forms/Commands ✓, UI/Workflows pending
+- **Module Vollständigkeit (Technisch):** ~70% durchschnittlich (lt. MODULE_COMPLETENESS_AUDIT.md)
+  - 100% vollständig: 6 Module (26%)
+  - 90% vollständig: 8 Module (35%)
+  - <75% vollständig: 9 Module (39%)
 - **ISO 27001:2022 Compliance:** 96% ✅ (Zertifizierungsbereit)
-- **Multi-Standard Compliance:** 88% Durchschnitt (+4% durch NIS2/BSI Core)
+- **Multi-Standard Compliance:** 80% Durchschnitt
   - ISO 22301:2019 (BCM): 100% ✅
   - ISO 19011:2018 (Audit): 95% ⚠️
   - ISO 31000:2018 (Risk): 95% ⚠️
   - ISO 27005:2022 (Risk Security): 100% ✅
   - EU DORA: 85% ⚠️
   - TISAX/VDA ISA: 75% ⚠️
-  - **NIS2 Directive (EU 2022/2555):** 40% 🚧 (Core: Vulnerability, Patch, MFA entities/forms/UI ✓)
-  - **BSI IT-Grundschutz 200-4:** 50% 🚧 (Core: CrisisTeam entity/form/UI ✓, ISO 22301 loader ✓)
+  - **NIS2 Directive (EU 2022/2555):** 40% 🚧 (Core: Vulnerability, Patch, MFA entities/forms ✓)
+  - **BSI IT-Grundschutz 200-4:** 50% 🚧 (Core: CrisisTeam entity/form ✓, ISO 22301 loader ✓)
 
 ---
 
