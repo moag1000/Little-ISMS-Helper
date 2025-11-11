@@ -259,6 +259,39 @@
     flex-shrink: 0;
 }
 
+/* Button Group - used in page headers and toolbars */
+.button-group {
+    display: flex;
+    gap: var(--spacing-sm);
+    flex-wrap: wrap;
+}
+
+/* ====================
+   Utility Classes
+   ==================== */
+
+/* Margin utilities */
+.mt-lg {
+    margin-top: var(--spacing-lg);
+}
+
+.mt-xl {
+    margin-top: var(--spacing-xl);
+}
+
+.mb-lg {
+    margin-bottom: var(--spacing-lg);
+}
+
+.mb-xl {
+    margin-bottom: var(--spacing-xl);
+}
+
+/* Card spacing utility */
+.card + .card {
+    margin-top: var(--spacing-lg);
+}
+
 /* ====================
    Empty State
    ==================== */

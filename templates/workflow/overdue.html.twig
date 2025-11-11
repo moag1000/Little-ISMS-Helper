@@ -3,14 +3,12 @@
 {% block title %}{{ 'workflow.title.overdue'|trans }} - Little ISMS Helper{% endblock %}
 
 {% block body %}
-<div class="d-flex justify-between align-center mb-4">
+<div class="page-header">
     <div>
         <h1>{{ 'workflow.title.overdue'|trans }}</h1>
-        <p style="color: var(--color-text-light); margin-top: var(--spacing-sm);">
-            {{ 'workflow.description.overdue_detail'|trans }}
-        </p>
+        <p class="text-muted">{{ 'workflow.description.overdue_detail'|trans }}</p>
     </div>
-    <div>
+    <div class="button-group">
         <a href="{{ path('app_workflow_index') }}" class="btn btn-secondary">
             ← {{ 'common.back'|trans }}
         </a>
