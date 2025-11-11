@@ -316,8 +316,12 @@ class ComplianceController extends AbstractController
                     $matchQuality = null;
                     $isMapped = false;
 
-                    // Check if this requirement has mappings to framework2
-                    foreach ($req1->getSourceMappings() as $mapping) {
+                    // Find mappings where req1 is the source
+                    $sourceMappings = $this->mappingRepository->findBy([
+                        'sourceRequirement' => $req1
+                    ]);
+
+                    foreach ($sourceMappings as $mapping) {
                         if ($mapping->getTargetRequirement()->getFramework()->getId() === $selectedFramework2->getId()) {
                             $mappedRequirement = $mapping->getTargetRequirement();
                             $matchQuality = $mapping->getMappingPercentage();
@@ -327,9 +331,13 @@ class ComplianceController extends AbstractController
                         }
                     }
 
-                    // Also check reverse mappings
+                    // Also check reverse mappings where req1 is the target
                     if (!$isMapped) {
-                        foreach ($req1->getTargetMappings() as $mapping) {
+                        $targetMappings = $this->mappingRepository->findBy([
+                            'targetRequirement' => $req1
+                        ]);
+
+                        foreach ($targetMappings as $mapping) {
                             if ($mapping->getSourceRequirement()->getFramework()->getId() === $selectedFramework2->getId()) {
                                 $mappedRequirement = $mapping->getSourceRequirement();
                                 $matchQuality = $mapping->getMappingPercentage();
@@ -489,8 +497,9 @@ class ComplianceController extends AbstractController
             $qb->getQuery()->execute();
 
             $mappingsCreated = 0;
+            $createdPairs = []; // Track created mapping pairs to avoid duplicates
 
-            // Create mappings TO ISO 27001
+            // 1. Create mappings FROM other frameworks TO ISO 27001
             foreach ($frameworks as $framework) {
                 if ($framework->getCode() === 'ISO27001') {
                     continue;
@@ -518,21 +527,130 @@ class ComplianceController extends AbstractController
                         ]);
 
                         if ($isoRequirement) {
-                            $mapping = new ComplianceMapping();
-                            $mapping->setSourceRequirement($requirement)
-                                ->setTargetRequirement($isoRequirement)
-                                ->setMappingPercentage(85)
+                            $pairKey = $requirement->getId() . '-' . $isoRequirement->getId();
+
+                            if (!isset($createdPairs[$pairKey])) {
+                                // Forward mapping: Other → ISO
+                                $mapping = new ComplianceMapping();
+                                $mapping->setSourceRequirement($requirement)
+                                    ->setTargetRequirement($isoRequirement)
+                                    ->setMappingPercentage(85)
+                                    ->setMappingType('partial')
+                                    ->setBidirectional(true)
+                                    ->setConfidence('high')
+                                    ->setMappingRationale(sprintf(
+                                        '%s requirement mapped to ISO 27001 %s',
+                                        $framework->getCode(),
+                                        $normalizedId
+                                    ));
+
+                                $em->persist($mapping);
+                                $mappingsCreated++;
+                                $createdPairs[$pairKey] = true;
+
+                                // Reverse mapping: ISO → Other
+                                $reversePairKey = $isoRequirement->getId() . '-' . $requirement->getId();
+                                $reverseMapping = new ComplianceMapping();
+                                $reverseMapping->setSourceRequirement($isoRequirement)
+                                    ->setTargetRequirement($requirement)
+                                    ->setMappingPercentage(85)
+                                    ->setMappingType('partial')
+                                    ->setBidirectional(true)
+                                    ->setConfidence('high')
+                                    ->setMappingRationale(sprintf(
+                                        'ISO 27001 %s mapped to %s requirement',
+                                        $normalizedId,
+                                        $framework->getCode()
+                                    ));
+
+                                $em->persist($reverseMapping);
+                                $mappingsCreated++;
+                                $createdPairs[$reversePairKey] = true;
+                            }
+                        }
+                    }
+                }
+            }
+
+            // 2. Create transitive mappings between non-ISO frameworks
+            // If Framework A → ISO Control X and Framework B → ISO Control X, then A ↔ B
+            $isoRequirements = $this->requirementRepository->findBy(['framework' => $iso27001]);
+
+            foreach ($isoRequirements as $isoReq) {
+                // Find all frameworks that map to this ISO requirement
+                $mappedToThisISO = [];
+
+                foreach ($frameworks as $framework) {
+                    if ($framework->getCode() === 'ISO27001') {
+                        continue;
+                    }
+
+                    $requirements = $this->requirementRepository->findBy(['framework' => $framework]);
+
+                    foreach ($requirements as $req) {
+                        $dataSourceMapping = $req->getDataSourceMapping();
+                        if (empty($dataSourceMapping) || empty($dataSourceMapping['iso_controls'])) {
+                            continue;
+                        }
+
+                        $isoControls = $dataSourceMapping['iso_controls'];
+                        if (!is_array($isoControls)) {
+                            $isoControls = [$isoControls];
+                        }
+
+                        foreach ($isoControls as $controlId) {
+                            $normalizedId = 'A.' . str_replace(['A.', 'A'], '', $controlId);
+
+                            if ($normalizedId === $isoReq->getRequirementId()) {
+                                $mappedToThisISO[] = $req;
+                            }
+                        }
+                    }
+                }
+
+                // Create cross-mappings between all requirements that map to same ISO control
+                for ($i = 0; $i < count($mappedToThisISO); $i++) {
+                    for ($j = $i + 1; $j < count($mappedToThisISO); $j++) {
+                        $req1 = $mappedToThisISO[$i];
+                        $req2 = $mappedToThisISO[$j];
+
+                        $pairKey = $req1->getId() . '-' . $req2->getId();
+                        $reversePairKey = $req2->getId() . '-' . $req1->getId();
+
+                        if (!isset($createdPairs[$pairKey]) && !isset($createdPairs[$reversePairKey])) {
+                            // Forward mapping
+                            $crossMapping = new ComplianceMapping();
+                            $crossMapping->setSourceRequirement($req1)
+                                ->setTargetRequirement($req2)
+                                ->setMappingPercentage(75)
                                 ->setMappingType('partial')
                                 ->setBidirectional(true)
-                                ->setConfidence('high')
+                                ->setConfidence('medium')
                                 ->setMappingRationale(sprintf(
-                                    '%s requirement mapped to ISO 27001 %s',
-                                    $framework->getCode(),
-                                    $normalizedId
+                                    'Transitive mapping via ISO 27001 %s',
+                                    $isoReq->getRequirementId()
                                 ));
 
-                            $em->persist($mapping);
+                            $em->persist($crossMapping);
                             $mappingsCreated++;
+                            $createdPairs[$pairKey] = true;
+
+                            // Reverse mapping
+                            $reverseCrossMapping = new ComplianceMapping();
+                            $reverseCrossMapping->setSourceRequirement($req2)
+                                ->setTargetRequirement($req1)
+                                ->setMappingPercentage(75)
+                                ->setMappingType('partial')
+                                ->setBidirectional(true)
+                                ->setConfidence('medium')
+                                ->setMappingRationale(sprintf(
+                                    'Transitive mapping via ISO 27001 %s',
+                                    $isoReq->getRequirementId()
+                                ));
+
+                            $em->persist($reverseCrossMapping);
+                            $mappingsCreated++;
+                            $createdPairs[$reversePairKey] = true;
                         }
                     }
                 }
