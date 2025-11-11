@@ -39,10 +39,11 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 WORKDIR /var/www/html
 
 # Copy composer files first for better caching
-COPY composer.json composer.lock ./
-COPY symfony.lock ./
+COPY composer.json symfony.lock ./
+# Note: composer.lock intentionally omitted - will be generated during install
 
 # Install dependencies (production) WITHOUT running scripts (bin/console doesn't exist yet)
+# This will generate a fresh composer.lock with the latest compatible versions
 RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist --no-scripts --verbose
 
 # Copy application files
