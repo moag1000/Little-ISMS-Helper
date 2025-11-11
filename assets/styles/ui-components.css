@@ -1455,6 +1455,27 @@
     height: 100%;
 }
 
+/* Document By Type Utilities */
+.mr-025 {
+    margin-right: 0.25rem;
+}
+
+.list-unstyled-mt-md {
+    list-style: none;
+    padding: 0;
+    margin-top: var(--spacing-md);
+}
+
+.li-border-item {
+    padding: var(--spacing-xs) 0;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.text-muted-mt-md {
+    color: var(--color-text-muted);
+    margin-top: var(--spacing-md);
+}
+
 /* ====================
    Responsive
    ==================== */
