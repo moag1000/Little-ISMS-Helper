@@ -49,7 +49,7 @@
         <div class="icon">🎯</div>
         <div class="label">{{ 'compliance.stats.frameworks_leveraged'|trans }}</div>
         <div>
-            <span class="value">{{ frameworksLeveraged }}</span>
+            <span class="value">{{ frameworks_leveraged }}</span>
         </div>
     </div>
 </div>
@@ -64,7 +64,7 @@
 <h2>{{ 'compliance.section.framework_relationships'|trans }}</h2>
 
 <div class="module-grid mb-4">
-    {% for relationship in frameworkRelationships %}
+    {% for relationship in framework_relationships %}
     <div class="card">
         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--spacing-md);">
             <div>
@@ -171,7 +171,7 @@
             </tr>
         </thead>
         <tbody>
-            {% for opportunity in leverageOpportunities %}
+            {% for opportunity in leverage_opportunities %}
             <tr>
                 <td>
                     <strong>{{ opportunity.sourceRequirement.identifier }}</strong>
