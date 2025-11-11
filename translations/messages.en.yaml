@@ -1307,6 +1307,10 @@ compliance:
   load_failed: Load Failed
   loading: Loading
   confirm_load: Do you really want to load this framework?
+  delete_framework: Delete Framework
+  deleting: Deleting
+  successfully_deleted: Successfully Deleted
+  delete_failed: Delete Failed
   error: Error
   version: Version
   industry: Industry
