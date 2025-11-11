@@ -444,6 +444,93 @@ class ComplianceController extends AbstractController
         ]);
     }
 
+    #[Route('/frameworks/delete/{code}', name: 'app_compliance_delete_framework', methods: ['POST'])]
+    public function deleteFramework(string $code, Request $request): JsonResponse
+    {
+        // Validate CSRF token
+        $token = $request->headers->get('X-CSRF-Token');
+        if (!$this->csrfTokenManager->isTokenValid(new CsrfToken('delete_framework', $token))) {
+            return new JsonResponse([
+                'success' => false,
+                'message' => 'Invalid CSRF token'
+            ], 403);
+        }
+
+        try {
+            $em = $this->frameworkRepository->getEntityManager();
+
+            // Find the framework by code
+            $framework = $this->frameworkRepository->findOneBy(['code' => $code]);
+
+            if (!$framework) {
+                return new JsonResponse([
+                    'success' => false,
+                    'message' => 'Framework nicht gefunden!'
+                ], 404);
+            }
+
+            $frameworkName = $framework->getName();
+
+            // Get all requirements for this framework
+            $requirements = $this->requirementRepository->findBy(['framework' => $framework]);
+
+            $deletedMappings = 0;
+            $deletedRequirements = 0;
+
+            // Delete all mappings associated with these requirements
+            foreach ($requirements as $requirement) {
+                // Find mappings where this requirement is the source
+                $sourceMappings = $this->mappingRepository->findBy(['sourceRequirement' => $requirement]);
+                foreach ($sourceMappings as $mapping) {
+                    $em->remove($mapping);
+                    $deletedMappings++;
+                }
+
+                // Find mappings where this requirement is the target
+                $targetMappings = $this->mappingRepository->findBy(['targetRequirement' => $requirement]);
+                foreach ($targetMappings as $mapping) {
+                    $em->remove($mapping);
+                    $deletedMappings++;
+                }
+
+                // Delete the requirement
+                $em->remove($requirement);
+                $deletedRequirements++;
+            }
+
+            // Delete the framework itself
+            $em->remove($framework);
+
+            // Flush all changes
+            $em->flush();
+
+            $this->addFlash('success', sprintf(
+                'Framework "%s" wurde erfolgreich gelöscht (%d Anforderungen, %d Mappings).',
+                $frameworkName,
+                $deletedRequirements,
+                $deletedMappings
+            ));
+
+            return new JsonResponse([
+                'success' => true,
+                'message' => sprintf(
+                    'Framework "%s" wurde erfolgreich gelöscht (%d Anforderungen, %d Mappings).',
+                    $frameworkName,
+                    $deletedRequirements,
+                    $deletedMappings
+                ),
+                'deleted_requirements' => $deletedRequirements,
+                'deleted_mappings' => $deletedMappings,
+            ]);
+
+        } catch (\Exception $e) {
+            return new JsonResponse([
+                'success' => false,
+                'message' => 'Fehler beim Löschen des Frameworks: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
     #[Route('/export/transitive', name: 'app_compliance_export_transitive')]
     public function exportTransitive(): Response
     {

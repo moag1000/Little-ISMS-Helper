@@ -1310,6 +1310,10 @@ compliance:
   load_failed: Laden fehlgeschlagen
   loading: Wird geladen
   confirm_load: Möchten Sie dieses Framework wirklich laden?
+  delete_framework: Framework löschen
+  deleting: Wird gelöscht
+  successfully_deleted: Erfolgreich gelöscht
+  delete_failed: Löschen fehlgeschlagen
   error: Fehler
   version: Version
   industry: Branche
