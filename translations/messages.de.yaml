@@ -1337,6 +1337,10 @@ compliance:
     frameworks_leveraged: Genutzte Frameworks
     common_requirements: Gemeinsame Anforderungen
     overlap_percentage: Überschneidungs-Prozentsatz
+    total_mappings: Gesamt-Mappings
+    full_exceeds: Vollständig/Übertrifft
+    partial_mappings: Teilweise Mappings
+    bidirectional_mappings: Bidirektionale
   unit:
     requirements: Anforderungen
   info:
@@ -1513,12 +1517,6 @@ compliance:
     strategic:
       title: Strategische Compliance
       description: Identifizieren Sie, welche Frameworks sich am meisten überschneiden und priorisieren Sie die Umsetzung basierend auf Multi-Framework-Vorteilen.
-  # Statistics
-  stats:
-    total_mappings: Gesamt-Mappings
-    full_exceeds: Vollständig/Übertrifft
-    partial_mappings: Teilweise Mappings
-    bidirectional_mappings: Bidirektionale
 
 # Risk Appetite (ISO 27005:2022)
 risk_appetite:
