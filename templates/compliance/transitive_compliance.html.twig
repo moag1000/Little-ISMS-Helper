@@ -426,8 +426,8 @@ function switchTab(tabName) {
 }
 
 // Create Cross-Framework Mappings
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('DOM loaded, looking for createMappingsBtn...');
+function initializeMappingButton() {
+    console.log('Initializing mapping button...');
     const createBtn = document.getElementById('createMappingsBtn');
 
     if (!createBtn) {
@@ -435,7 +435,15 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
     }
 
+    // Check if already initialized to prevent duplicate listeners
+    if (createBtn.dataset.initialized === 'true') {
+        console.log('Button already initialized, skipping');
+        return;
+    }
+
     console.log('createMappingsBtn found, attaching event listener');
+    createBtn.dataset.initialized = 'true';
+
     const btnIcon = document.getElementById('btnIcon');
     const btnText = document.getElementById('btnText');
     const csrfToken = '{{ csrf_token('create_mappings') }}';
@@ -532,6 +540,10 @@ document.addEventListener('DOMContentLoaded', function() {
             }, 5000);
         }
     });
-});
+}
+
+// Initialize on both DOMContentLoaded (first page load) and turbo:load (Turbo navigation)
+document.addEventListener('DOMContentLoaded', initializeMappingButton);
+document.addEventListener('turbo:load', initializeMappingButton);
 </script>
 {% endblock %}
