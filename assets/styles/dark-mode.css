@@ -49,6 +49,9 @@
     /* Vibrant Cyberpunk Colors */
     --color-primary: #06b6d4;
     --color-primary-dark: #0891b2;
+    --color-primary-light: #1e293b;
+    --color-secondary: #06b6d4;
+    --color-secondary-hover: #0891b2;
     --color-accent-pink: #ec4899;
     --color-accent-purple: #8b5cf6;
     --color-success: #10b981;
@@ -61,6 +64,11 @@
     --bg-secondary: #1e293b;
     --bg-tertiary: #334155;
     --bg-elevated: #1e293b;
+
+    /* Background - Compatibility with app.css naming */
+    --color-bg: #1e293b;
+    --color-bg-alt: #334155;
+    --color-white: #1e293b;
 
     /* Dark Text with Glow */
     --text-primary: #e2e8f0;
@@ -76,6 +84,8 @@
     /* Dark Borders with Neon Accent */
     --border-color: #334155;
     --border-color-light: #1e293b;
+    --color-border: #334155;
+    --color-border-light: #1e293b;
 
     /* Dark Shadows with Neon Glow */
     --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.4), 0 0 8px rgba(6, 182, 212, 0.1);
