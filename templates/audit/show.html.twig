@@ -379,6 +379,90 @@
     </div>
 </div>
 
+{# Audit Log History #}
+{% if auditLogs is defined and auditLogs|length > 0 %}
+<div class="container-fluid py-4">
+    <div class="card shadow mb-4">
+        <div class="card-header bg-light">
+            <h5 class="mb-0">
+                <i class="bi bi-clock-history"></i> {{ 'audit.section.history'|trans }}
+                ({{ totalAuditLogs }} {{ 'audit_log.entries'|trans }})
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="audit-log-list">
+                {% for log in auditLogs %}
+                <div class="audit-log-entry">
+                    <div class="audit-log-header">
+                        <span class="badge bg-{{ log.action == 'create' ? 'success' : (log.action == 'update' ? 'info' : 'danger') }}">
+                            {{ log.action|upper }}
+                        </span>
+                        <span class="text-muted">
+                            {{ log.userName }}
+                            &bull; {{ log.createdAt|date('Y-m-d H:i:s') }}
+                        </span>
+                    </div>
+                    {% if log.action == 'update' %}
+                        {% set oldValues = log.oldValuesArray %}
+                        {% set newValues = log.newValuesArray %}
+                        {% if oldValues and newValues %}
+                            <div class="audit-log-changes">
+                                {% for field, newValue in newValues %}
+                                    {% if oldValues[field] is defined and oldValues[field] != newValue %}
+                                        <div class="change-item">
+                                            <strong>{{ field }}:</strong>
+                                            <span class="text-danger">
+                                                {{ oldValues[field]|length > 100 ? oldValues[field]|slice(0, 100) ~ '...' : oldValues[field] }}
+                                            </span>
+                                            &rarr;
+                                            <span class="text-success">
+                                                {{ newValue|length > 100 ? newValue|slice(0, 100) ~ '...' : newValue }}
+                                            </span>
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            {% if totalAuditLogs > 10 %}
+            <div class="text-center mt-3">
+                <small class="text-muted">
+                    {{ 'audit_log.showing_recent'|trans({'%count%': 10, '%total%': totalAuditLogs}) }}
+                </small>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+.audit-log-entry {
+    border-left: 3px solid var(--color-border);
+    padding-left: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+}
+
+.audit-log-header {
+    margin-bottom: var(--spacing-xs);
+    display: flex;
+    gap: var(--spacing-sm);
+    align-items: center;
+}
+
+.audit-log-changes {
+    font-size: 0.875rem;
+    margin-top: var(--spacing-xs);
+}
+
+.change-item {
+    margin-bottom: var(--spacing-xs);
+}
+</style>
+{% endif %}
+
 {# Delete Confirmation Modal #}
 {% if is_granted('ROLE_ADMIN') %}
 <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
