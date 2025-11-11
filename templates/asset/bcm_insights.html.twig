@@ -28,7 +28,7 @@
         </div>
     </div>
 
-    <div class="kpi-card" style="border-left: 4px solid var(--color-danger);">
+    <div class="kpi-card" class="border-left-danger">
         <div class="icon">🔴</div>
         <div class="label">{{ 'asset.stats.critical_assets'|trans }}</div>
         <div>
@@ -58,7 +58,7 @@
 <h2>{{ 'asset.section.business_impact'|trans }}</h2>
 
 <div class="module-grid mb-4">
-    <div class="card" style="border-left: 4px solid var(--color-danger);">
+    <div class="card" class="border-left-danger">
         <div style="font-size: 2rem; margin-bottom: var(--spacing-sm);">🔴</div>
         <h3>{{ 'asset.impact.critical'|trans }}</h3>
         <div class="mt-2">
@@ -128,7 +128,7 @@
             <thead>
                 <tr>
                     <th>{{ 'asset.field.rto_category'|trans }}</th>
-                    <th style="text-align: center;">{{ 'asset.field.asset_count'|trans }}</th>
+                    <th class="text-center">{{ 'asset.field.asset_count'|trans }}</th>
                     <th>{{ 'asset.field.examples'|trans }}</th>
                 </tr>
             </thead>
@@ -136,9 +136,9 @@
                 <tr>
                     <td>
                         <strong>{{ 'asset.rto.immediate'|trans }}</strong>
-                        <br><small style="color: var(--color-text-muted);">&lt; 1h</small>
+                        <br><small class="text-muted">&lt; 1h</small>
                     </td>
-                    <td style="text-align: center;">
+                    <td class="text-center">
                         <span class="badge badge-danger">{{ rtoCategories.immediate|length }}</span>
                     </td>
                     <td>
@@ -150,9 +150,9 @@
                 <tr>
                     <td>
                         <strong>{{ 'asset.rto.urgent'|trans }}</strong>
-                        <br><small style="color: var(--color-text-muted);">1-4h</small>
+                        <br><small class="text-muted">1-4h</small>
                     </td>
-                    <td style="text-align: center;">
+                    <td class="text-center">
                         <span class="badge badge-warning">{{ rtoCategories.urgent|length }}</span>
                     </td>
                     <td>
@@ -164,9 +164,9 @@
                 <tr>
                     <td>
                         <strong>{{ 'asset.rto.standard'|trans }}</strong>
-                        <br><small style="color: var(--color-text-muted);">4-24h</small>
+                        <br><small class="text-muted">4-24h</small>
                     </td>
-                    <td style="text-align: center;">
+                    <td class="text-center">
                         <span class="badge badge-info">{{ rtoCategories.standard|length }}</span>
                     </td>
                     <td>
@@ -178,9 +178,9 @@
                 <tr>
                     <td>
                         <strong>{{ 'asset.rto.flexible'|trans }}</strong>
-                        <br><small style="color: var(--color-text-muted);">&gt; 24h</small>
+                        <br><small class="text-muted">&gt; 24h</small>
                     </td>
-                    <td style="text-align: center;">
+                    <td class="text-center">
                         <span class="badge badge-secondary">{{ rtoCategories.flexible|length }}</span>
                     </td>
                     <td>
@@ -207,7 +207,7 @@
                 <th>{{ 'asset.field.rto'|trans }}</th>
                 <th>{{ 'asset.field.rpo'|trans }}</th>
                 <th>{{ 'asset.field.recovery_strategy'|trans }}</th>
-                <th style="text-align: center;">{{ 'common.actions'|trans }}</th>
+                <th class="text-center">{{ 'common.actions'|trans }}</th>
             </tr>
         </thead>
         <tbody>
@@ -242,11 +242,11 @@
                     <strong>{{ asset.rpo }}h</strong>
                 </td>
                 <td>
-                    <small style="color: var(--color-text-muted);">
+                    <small class="text-muted">
                         {{ asset.recoveryStrategy|default('-') }}
                     </small>
                 </td>
-                <td style="text-align: center;">
+                <td class="text-center">
                     <a href="{{ path('app_asset_show', {id: asset.id}) }}" class="btn btn-sm">
                         👁 {{ 'common.view'|trans }}
                     </a>

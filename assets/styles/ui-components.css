@@ -270,13 +270,79 @@
    Utility Classes
    ==================== */
 
+/* Text alignment */
+.text-center {
+    text-align: center;
+}
+
+.text-left {
+    text-align: left;
+}
+
+.text-right {
+    text-align: right;
+}
+
+/* Display utilities */
+.d-none {
+    display: none;
+}
+
+.d-inline {
+    display: inline;
+}
+
+.d-block {
+    display: block;
+}
+
+.d-flex {
+    display: flex;
+}
+
+.d-grid {
+    display: grid;
+}
+
 /* Margin utilities */
+.mt-xs {
+    margin-top: var(--spacing-xs);
+}
+
+.mt-sm {
+    margin-top: var(--spacing-sm);
+}
+
+.mt-md {
+    margin-top: var(--spacing-md);
+}
+
 .mt-lg {
     margin-top: var(--spacing-lg);
 }
 
 .mt-xl {
     margin-top: var(--spacing-xl);
+}
+
+.mt-2 {
+    margin-top: 2rem;
+}
+
+.mt-3 {
+    margin-top: 3rem;
+}
+
+.mb-xs {
+    margin-bottom: var(--spacing-xs);
+}
+
+.mb-sm {
+    margin-bottom: var(--spacing-sm);
+}
+
+.mb-md {
+    margin-bottom: var(--spacing-md);
 }
 
 .mb-lg {
@@ -287,9 +353,111 @@
     margin-bottom: var(--spacing-xl);
 }
 
+.mb-2 {
+    margin-bottom: 2rem;
+}
+
+.ml-xs {
+    margin-left: var(--spacing-xs);
+}
+
+.ml-sm {
+    margin-left: var(--spacing-sm);
+}
+
+.ml-md {
+    margin-left: var(--spacing-md);
+}
+
+.ml-lg {
+    margin-left: 1.5rem;
+}
+
+.mr-xs {
+    margin-right: var(--spacing-xs);
+}
+
+.mr-sm {
+    margin-right: 0.25rem;
+}
+
+/* Padding utilities */
+.p-xl {
+    padding: var(--spacing-xl);
+}
+
+/* Gap utilities for flexbox */
+.gap-1 {
+    gap: 1rem;
+}
+
+.gap-2 {
+    gap: var(--spacing-sm);
+}
+
+/* Font size utilities */
+.fs-15 {
+    font-size: 1.5rem;
+}
+
+.fs-2 {
+    font-size: 2rem;
+}
+
+/* Color utilities (already have text-muted from Bootstrap) */
+.text-muted {
+    color: var(--color-text-muted);
+}
+
+/* Border utilities */
+.border-left-danger {
+    border-left: 4px solid var(--color-danger);
+}
+
+.border-left-warning {
+    border-left: 4px solid var(--color-warning);
+}
+
+.border-left-info {
+    border-left: 4px solid var(--color-info);
+}
+
 /* Card spacing utility */
 .card + .card {
     margin-top: var(--spacing-lg);
+}
+
+/* Common semantic classes */
+.icon-large {
+    font-size: 2.5rem;
+}
+
+.icon-xlarge {
+    font-size: 4rem;
+}
+
+.section-title {
+    margin-top: 0;
+    color: var(--color-primary);
+}
+
+.small-text {
+    font-size: 0.85rem;
+}
+
+.small-text-secondary {
+    font-size: 0.85rem;
+    color: var(--color-text-secondary);
+    margin-top: 0.25rem;
+}
+
+.text-sm {
+    font-size: 0.9rem;
+}
+
+.text-sm-secondary {
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
 }
 
 /* ====================
@@ -488,6 +656,11 @@
     display: flex;
     align-items: center;
     gap: 1rem;
+}
+
+.header-logo img {
+    width: 48px;
+    height: 48px;
 }
 
 .header-actions {

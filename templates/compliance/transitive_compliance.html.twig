@@ -19,9 +19,9 @@
 </div>
 
 {# Statistics Cards - Prominently displayed #}
-<div class="kpi-grid" style="margin-bottom: 2rem;">
+<div class="kpi-grid" class="mb-2">
     <div class="kpi-card">
-        <div class="icon" style="font-size: 2.5rem;">🔗</div>
+        <div class="icon icon-large">🔗</div>
         <div class="label" style="font-size: 0.9rem; color: var(--color-text-secondary);">{{ 'compliance.stats.total_relationships'|trans }}</div>
         <div>
             <span class="value" style="font-size: 2.5rem; font-weight: bold; color: var(--color-primary);">{{ total_relationships }}</span>
@@ -29,7 +29,7 @@
     </div>
 
     <div class="kpi-card">
-        <div class="icon" style="font-size: 2.5rem;">✅</div>
+        <div class="icon icon-large">✅</div>
         <div class="label" style="font-size: 0.9rem; color: var(--color-text-secondary);">{{ 'compliance.stats.transitive_compliance'|trans }}</div>
         <div>
             <span class="value" style="font-size: 2.5rem; font-weight: bold; color: var(--color-success);">{{ transitive_compliance }}</span>
@@ -37,7 +37,7 @@
     </div>
 
     <div class="kpi-card">
-        <div class="icon" style="font-size: 2.5rem;">📈</div>
+        <div class="icon icon-large">📈</div>
         <div class="label" style="font-size: 0.9rem; color: var(--color-text-secondary);">{{ 'compliance.stats.leverage_rate'|trans }}</div>
         <div>
             {% set leverageRate = total_relationships > 0 ? (transitive_compliance / total_relationships * 100)|round : 0 %}
@@ -47,7 +47,7 @@
     </div>
 
     <div class="kpi-card">
-        <div class="icon" style="font-size: 2.5rem;">🎯</div>
+        <div class="icon icon-large">🎯</div>
         <div class="label" style="font-size: 0.9rem; color: var(--color-text-secondary);">{{ 'compliance.stats.frameworks_leveraged'|trans }}</div>
         <div>
             <span class="value" style="font-size: 2.5rem; font-weight: bold; color: var(--color-warning);">{{ frameworks_leveraged }}</span>
@@ -56,7 +56,7 @@
 </div>
 
 {# Tabbed Interface for better organization #}
-<div class="card" style="margin-bottom: 2rem;">
+<div class="card" class="mb-2">
     <div class="tabs">
         <button class="tab-button active" onclick="switchTab('overview')">
             📊 Übersicht
@@ -74,11 +74,11 @@
 
     {# Tab 1: Overview #}
     <div id="tab-overview" class="tab-content active">
-        <h2 style="margin-top: 0; color: var(--color-primary);">{{ 'compliance.section.framework_relationships'|trans }}</h2>
+        <h2 class="section-title">{{ 'compliance.section.framework_relationships'|trans }}</h2>
 
         {% if framework_relationships is empty %}
             <div class="card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; text-align: center; padding: 3rem; border: none;">
-                <div style="font-size: 4rem; margin-bottom: 1rem;">🔗</div>
+                <div class="icon-xlarge mb-md">🔗</div>
                 <h3 style="color: white; margin-bottom: 1rem; font-size: 1.5rem;">Noch keine Framework-Mappings vorhanden</h3>
                 <p style="font-size: 1.1rem; line-height: 1.6; margin-bottom: 2rem; opacity: 0.95;">
                     Die Cross-Framework Mappings zwischen Ihren Compliance-Frameworks wurden noch nicht erstellt.
@@ -118,7 +118,7 @@
                             </div>
                         </div>
 
-                        <div style="text-align: center;">
+                        <div class="text-center">
                             <div style="font-size: 2rem; font-weight: bold; color: var(--color-success);">
                                 {{ relationship.coveragePercentage }}%
                             </div>
@@ -149,8 +149,8 @@
     </div>
 
     {# Tab 2: Matrix #}
-    <div id="tab-matrix" class="tab-content" style="display: none;">
-        <h2 style="margin-top: 0; color: var(--color-primary);">{{ 'compliance.section.compliance_matrix'|trans }}</h2>
+    <div id="tab-matrix" class="tab-content d-none">
+        <h2 class="section-title">{{ 'compliance.section.compliance_matrix'|trans }}</h2>
         <p style="color: var(--color-text-secondary); margin-bottom: 1.5rem;">
             {{ 'compliance.description.matrix'|trans }}
         </p>
@@ -217,12 +217,12 @@
     </div>
 
     {# Tab 3: Detailed Mappings #}
-    <div id="tab-details" class="tab-content" style="display: none;">
-        <h2 style="margin-top: 0; color: var(--color-primary);">{{ 'compliance.section.cross_framework_mappings'|trans }}</h2>
+    <div id="tab-details" class="tab-content d-none">
+        <h2 class="section-title">{{ 'compliance.section.cross_framework_mappings'|trans }}</h2>
 
         {% if cross_mappings is empty %}
             <div class="card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; text-align: center; padding: 3rem; border: none;">
-                <div style="font-size: 4rem; margin-bottom: 1rem;">📋</div>
+                <div class="icon-xlarge mb-md">📋</div>
                 <h3 style="color: white; margin-bottom: 1rem; font-size: 1.5rem;">Keine detaillierten Mappings verfügbar</h3>
                 <p style="font-size: 1.1rem; line-height: 1.6; margin-bottom: 1.5rem; opacity: 0.95;">
                     Es wurden noch keine Cross-Framework Mappings zwischen den Requirements erstellt.
@@ -323,8 +323,8 @@
     </div>
 
     {# Tab 4: Explanation #}
-    <div id="tab-info" class="tab-content" style="display: none;">
-        <h2 style="margin-top: 0; color: var(--color-primary);">💡 {{ 'compliance.section.mapping_explanation'|trans }}</h2>
+    <div id="tab-info" class="tab-content d-none">
+        <h2 class="section-title">💡 {{ 'compliance.section.mapping_explanation'|trans }}</h2>
 
         <div style="display: grid; gap: 1.5rem;">
             <div class="card" style="padding: 1.5rem; border-left: 4px solid var(--color-info);">
