@@ -476,21 +476,30 @@ class ComplianceController extends AbstractController
 
             $deletedMappings = 0;
             $deletedRequirements = 0;
+            $deletedMappingIds = []; // Track deleted mapping IDs to avoid duplicates
 
             // Delete all mappings associated with these requirements
             foreach ($requirements as $requirement) {
                 // Find mappings where this requirement is the source
                 $sourceMappings = $this->mappingRepository->findBy(['sourceRequirement' => $requirement]);
                 foreach ($sourceMappings as $mapping) {
-                    $em->remove($mapping);
-                    $deletedMappings++;
+                    $mappingId = $mapping->getId();
+                    if (!isset($deletedMappingIds[$mappingId])) {
+                        $em->remove($mapping);
+                        $deletedMappings++;
+                        $deletedMappingIds[$mappingId] = true;
+                    }
                 }
 
                 // Find mappings where this requirement is the target
                 $targetMappings = $this->mappingRepository->findBy(['targetRequirement' => $requirement]);
                 foreach ($targetMappings as $mapping) {
-                    $em->remove($mapping);
-                    $deletedMappings++;
+                    $mappingId = $mapping->getId();
+                    if (!isset($deletedMappingIds[$mappingId])) {
+                        $em->remove($mapping);
+                        $deletedMappings++;
+                        $deletedMappingIds[$mappingId] = true;
+                    }
                 }
 
                 // Delete the requirement
