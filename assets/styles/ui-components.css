@@ -476,6 +476,27 @@
 }
 
 /* ====================
+   Header Layout
+   ==================== */
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-logo {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+/* ====================
    Responsive
    ==================== */
 @media (max-width: 768px) {
