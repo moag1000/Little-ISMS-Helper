@@ -658,10 +658,21 @@ class ComplianceController extends AbstractController
 
             $em->flush();
 
+            // Debug info
+            $frameworkCounts = [];
+            foreach ($frameworks as $fw) {
+                $reqCount = count($this->requirementRepository->findBy(['framework' => $fw]));
+                $frameworkCounts[$fw->getCode()] = $reqCount;
+            }
+
             return new JsonResponse([
                 'success' => true,
                 'message' => sprintf('Erfolgreich %d Cross-Framework Mappings erstellt!', $mappingsCreated),
-                'mappings_created' => $mappingsCreated
+                'mappings_created' => $mappingsCreated,
+                'debug' => [
+                    'frameworks_loaded' => count($frameworks),
+                    'framework_details' => $frameworkCounts,
+                ]
             ]);
 
         } catch (\Exception $e) {
