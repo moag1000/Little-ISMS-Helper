@@ -6,7 +6,7 @@
 <h1>{{ 'entity_history.title'|trans }}</h1>
 
 <p>
-    <a href="{{ path('app_audit_log_index') }}" style="color: #007bff; text-decoration: none;">« {{ 'common.back_to_overview'|trans }}</a>
+    <a href="{{ path('app_audit_log_index') }}" class="link-primary">« {{ 'common.back_to_overview'|trans }}</a>
 </p>
 
 <div class="info-box">
@@ -21,34 +21,34 @@
     <table class="table" style="width: 100%; border-collapse: collapse; margin-top: 1rem;">
         <thead>
             <tr style="background: #f0f0f0;">
-                <th style="padding: 0.75rem; text-align: left; border: 1px solid #ddd;">{{ 'audit_log.field.timestamp'|trans }}</th>
-                <th style="padding: 0.75rem; text-align: left; border: 1px solid #ddd;">{{ 'audit_log.field.action'|trans }}</th>
-                <th style="padding: 0.75rem; text-align: left; border: 1px solid #ddd;">{{ 'audit_log.field.user'|trans }}</th>
-                <th style="padding: 0.75rem; text-align: left; border: 1px solid #ddd;">{{ 'audit_log.field.description'|trans }}</th>
-                <th style="padding: 0.75rem; text-align: left; border: 1px solid #ddd;">{{ 'common.details'|trans }}</th>
+                <th style="padding: 0.75rem; text-align: left; border: 1px solid #ddd;" class="table-cell">{{ 'audit_log.field.timestamp'|trans }}</th>
+                <th style="padding: 0.75rem; text-align: left; border: 1px solid #ddd;" class="table-cell">{{ 'audit_log.field.action'|trans }}</th>
+                <th style="padding: 0.75rem; text-align: left; border: 1px solid #ddd;" class="table-cell">{{ 'audit_log.field.user'|trans }}</th>
+                <th style="padding: 0.75rem; text-align: left; border: 1px solid #ddd;" class="table-cell">{{ 'audit_log.field.description'|trans }}</th>
+                <th style="padding: 0.75rem; text-align: left; border: 1px solid #ddd;" class="table-cell">{{ 'common.details'|trans }}</th>
             </tr>
         </thead>
         <tbody>
             {% for log in auditLogs %}
             <tr>
-                <td style="padding: 0.75rem; border: 1px solid #ddd; font-size: 0.9rem;">
+                <td class="table-cell text-sm">
                     {{ log.createdAt|date('d.m.Y H:i:s') }}
                 </td>
-                <td style="padding: 0.75rem; border: 1px solid #ddd;">
+                <td class="table-cell">
                     <span class="badge badge-{{ log.action }}">{{ log.action|capitalize }}</span>
                 </td>
-                <td style="padding: 0.75rem; border: 1px solid #ddd;">
+                <td class="table-cell">
                     <a href="{{ path('app_audit_log_user', {userName: log.userName}) }}"
-                       style="color: #007bff; text-decoration: none;">
+                       class="link-primary">
                         {{ log.userName }}
                     </a>
                 </td>
-                <td style="padding: 0.75rem; border: 1px solid #ddd; font-size: 0.9rem;">
+                <td class="table-cell text-sm">
                     {{ log.description|default('-') }}
                 </td>
-                <td style="padding: 0.75rem; border: 1px solid #ddd;">
+                <td class="table-cell">
                     <a href="{{ path('app_audit_log_detail', {id: log.id}) }}"
-                       style="color: #007bff; text-decoration: none;">
+                       class="link-primary">
                         {{ 'entity_history.show_details'|trans }}
                     </a>
                 </td>
