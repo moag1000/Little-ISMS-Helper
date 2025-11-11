@@ -133,6 +133,113 @@
 </div>
 {% endif %}
 
+{# Data Reuse: Protected Assets #}
+{% if control.protectedAssets is defined and control.protectedAssets|length > 0 %}
+<div class="card mb-4">
+    <h2>🛡️ Geschützte Assets ({{ control.protectedAssets|length }})</h2>
+    <div class="alert alert-info mt-2">
+        <strong>Control Coverage:</strong> Dieses Control schützt {{ control.protectedAssets|length }} Asset(s) mit Gesamtwert {{ control.protectedAssetValue }}.
+        {% if control.highRiskAssetCount > 0 %}
+            <br><strong>⚠️ {{ control.highRiskAssetCount }}</strong> davon sind High-Risk Assets.
+        {% endif %}
+    </div>
+    <div class="data-reuse-list">
+        {% for asset in control.protectedAssets %}
+            <div class="data-reuse-item">
+                <strong>{{ asset.name }}</strong>
+                <span class="badge badge-info">{{ asset.assetType }}</span>
+                <small>CIA: {{ asset.confidentialityValue }}/{{ asset.integrityValue }}/{{ asset.availabilityValue }}</small>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+{# Data Reuse: Related Risks #}
+{% if control.risks is defined and control.risks|length > 0 %}
+<div class="card mb-4">
+    <h2>⚠️ Mitigierte Risks ({{ control.risks|length }})</h2>
+    <p style="color: var(--color-text-light);">Dieses Control trägt zur Behandlung folgender Risks bei:</p>
+    <div class="data-reuse-list">
+        {% for risk in control.risks %}
+            <div class="data-reuse-item">
+                <strong>{{ risk.title }}</strong>
+                <span class="badge badge-risk-{{ risk.inherentRiskLevel >= 16 ? 'high' : (risk.inherentRiskLevel >= 9 ? 'medium' : 'low') }}">
+                    Risk Level: {{ risk.inherentRiskLevel }}
+                </span>
+                <small>Status: {{ risk.status|upper }}</small>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+{# Data Reuse: Related Incidents #}
+{% if control.incidents is defined and control.incidents|length > 0 %}
+<div class="card mb-4">
+    <h2>📋 Related Incidents ({{ control.incidents|length }})</h2>
+    <div class="alert alert-warning">
+        <strong>⚠️ {{ control.incidents|length }} Incident(s)</strong> stehen in Beziehung zu diesem Control.
+        {% if control.isReviewNeeded %}
+            <br><strong>👉 Review erforderlich:</strong> Bitte Control-Effektivität überprüfen.
+        {% endif %}
+    </div>
+    <div class="data-reuse-list">
+        {% for incident in control.incidents %}
+            <div class="data-reuse-item">
+                <strong>{{ incident.title }}</strong>
+                <span class="badge badge-severity-{{ incident.severity }}">
+                    {{ incident.severity|upper }}
+                </span>
+                <small>{{ incident.detectedAt|date('Y-m-d') }}</small>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+{# Data Reuse: Training Coverage #}
+{% if control.trainings is defined and control.trainings|length > 0 %}
+<div class="card mb-4">
+    <h2>🎓 Training Coverage ({{ control.trainings|length }})</h2>
+    <div class="alert {{ control.hasTrainingCoverage ? 'alert-success' : 'alert-warning' }}">
+        <strong>Status: {{ control.trainingStatus|upper }}</strong>
+        {% if not control.hasTrainingCoverage %}
+            <br>⚠️ Keine abgeschlossenen Trainings für dieses Control.
+        {% endif %}
+    </div>
+    <div class="data-reuse-list">
+        {% for training in control.trainings %}
+            <div class="data-reuse-item">
+                <strong>{{ training.title }}</strong>
+                <span class="badge badge-{{ training.status }}">{{ training.status|upper }}</span>
+                {% if training.completionDate %}
+                    <small>Abgeschlossen: {{ training.completionDate|date('Y-m-d') }}</small>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+{# Control Effectiveness Score #}
+{% if control.applicable and control.implementationPercentage == 100 %}
+<div class="card mb-4">
+    <h2>📊 Control Effectiveness</h2>
+    <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+        <div class="stat-item">
+            <strong style="font-size: 2rem; color: {{ control.effectivenessScore >= 80 ? 'var(--color-success)' : (control.effectivenessScore >= 50 ? 'var(--color-warning)' : 'var(--color-danger)') }}">
+                {{ control.effectivenessScore|number_format(1) }}%
+            </strong>
+            <span>Effectiveness Score</span>
+        </div>
+    </div>
+    <p style="color: var(--color-text-light); margin-top: var(--spacing-sm);">
+        Basierend auf Incident-Analyse nach Control-Implementierung.
+    </p>
+</div>
+{% endif %}
+
 {# Metadata #}
 <div class="card">
     <h2>Metadaten</h2>
@@ -146,6 +253,20 @@
             <strong>{{ control.updatedAt|date('d.m.Y H:i') }}</strong>
             <span>Zuletzt aktualisiert</span>
         </div>
+
+        {% if control.lastReviewDate %}
+        <div class="stat-item">
+            <strong>{{ control.lastReviewDate|date('d.m.Y') }}</strong>
+            <span>Letztes Review</span>
+        </div>
+        {% endif %}
+
+        {% if control.nextReviewDate %}
+        <div class="stat-item">
+            <strong>{{ control.nextReviewDate|date('d.m.Y') }}</strong>
+            <span>Nächstes Review</span>
+        </div>
+        {% endif %}
     </div>
 </div>
 
@@ -158,4 +279,86 @@
         📋 Zur Übersicht
     </a>
 </div>
+
+<style>
+/* Data Reuse Sections */
+.data-reuse-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+.data-reuse-item {
+    padding: 0.75rem;
+    background: var(--color-bg-light, #f9fafb);
+    border-left: 3px solid var(--color-primary, #3b82f6);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+.alert {
+    padding: 1rem;
+    border-radius: 4px;
+    margin: 1rem 0;
+}
+.alert-info {
+    background: #dbeafe;
+    border-left: 4px solid #3b82f6;
+    color: #1e40af;
+}
+.alert-warning {
+    background: #fef3c7;
+    border-left: 4px solid #f59e0b;
+    color: #92400e;
+}
+.alert-success {
+    background: #d1fae5;
+    border-left: 4px solid #10b981;
+    color: #065f46;
+}
+.badge-risk-high {
+    background: #ef4444;
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+}
+.badge-risk-medium {
+    background: #f59e0b;
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+}
+.badge-risk-low {
+    background: #10b981;
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+}
+.badge-severity-critical {
+    background: #7f1d1d;
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+}
+.badge-severity-high {
+    background: #ef4444;
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+}
+.badge-severity-medium {
+    background: #f59e0b;
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+}
+.badge-severity-low {
+    background: #10b981;
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+}
+</style>
 {% endblock %}
