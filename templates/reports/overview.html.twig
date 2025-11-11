@@ -1,0 +1,217 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Reports & Compliance{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    {# Breadcrumb Navigation #}
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'Über', url: '#' },
+            { label: 'Reports & Compliance' }
+        ]
+    } %}
+
+    {# Page Header #}
+    {% include '_components/_page_header.html.twig' with {
+        title: 'Reports & Compliance',
+        subtitle: 'Übersicht aller verfügbaren Compliance- und Sicherheitsberichte',
+        icon: 'bi-file-earmark-bar-graph'
+    } %}
+
+    <div class="row">
+        {# License Report Card #}
+        <div class="col-lg-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="card-title mb-0">
+                        <i class="bi-file-text me-2"></i>Lizenzreport
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">
+                        Vollständige Übersicht aller verwendeten Third-Party-Lizenzen und deren Compliance-Status für kommerzielle Nutzung.
+                    </p>
+                    <div class="mb-3">
+                        <h6 class="text-muted small mb-2">Verfügbare Reports:</h6>
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2">
+                                <i class="bi-file-earmark-text text-primary me-2"></i>
+                                <strong>NOTICE.md</strong> - Third-Party Attributions
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi-file-earmark-bar-graph text-primary me-2"></i>
+                                <strong>Detaillierter Bericht</strong> - Compliance-Analyse
+                                {% if license_stats.exists %}
+                                    <span class="badge bg-success ms-2">
+                                        <i class="bi-check-circle me-1"></i>Verfügbar
+                                    </span>
+                                {% else %}
+                                    <span class="badge bg-warning ms-2">
+                                        <i class="bi-exclamation-triangle me-1"></i>Nicht generiert
+                                    </span>
+                                {% endif %}
+                            </li>
+                            <li>
+                                <i class="bi-bar-chart text-primary me-2"></i>
+                                <strong>Zusammenfassung</strong> - Dashboard & Statistiken
+                            </li>
+                        </ul>
+                    </div>
+                    {% if license_stats.exists %}
+                        <small class="text-muted">
+                            <i class="bi-calendar me-1"></i>Letzte Aktualisierung: {{ license_stats.updated_at }}
+                        </small>
+                    {% endif %}
+                </div>
+                <div class="card-footer bg-light">
+                    <div class="d-grid gap-2">
+                        <a href="{{ path('app_licenses') }}" class="btn btn-primary">
+                            <i class="bi-arrow-right-circle me-1"></i>Lizenzreport öffnen
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# Security Report Card #}
+        <div class="col-lg-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="card-title mb-0">
+                        <i class="bi-shield-lock me-2"></i>Security Audit Report
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">
+                        Automatisierte Sicherheitsanalyse basierend auf OWASP Top 10 Security Risks mit detaillierten Findings und Empfehlungen.
+                    </p>
+                    <div class="mb-3">
+                        <h6 class="text-muted small mb-2">Verfügbare Reports:</h6>
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2">
+                                <i class="bi-shield-lock text-danger me-2"></i>
+                                <strong>OWASP Top 10:2025 RC1</strong> (Primary)
+                                {% if security_stats.owasp_2025.exists %}
+                                    <span class="badge bg-success ms-2">
+                                        <i class="bi-check-circle me-1"></i>Verfügbar
+                                    </span>
+                                {% else %}
+                                    <span class="badge bg-warning ms-2">
+                                        <i class="bi-exclamation-triangle me-1"></i>Nicht generiert
+                                    </span>
+                                {% endif %}
+                                {% if security_stats.owasp_2025.updated_at %}
+                                    <br>
+                                    <small class="text-muted ms-4">Aktualisiert: {{ security_stats.owasp_2025.updated_at }}</small>
+                                {% endif %}
+                            </li>
+                            <li>
+                                <i class="bi-shield-check text-danger me-2"></i>
+                                <strong>OWASP Top 10:2021</strong> (Legacy)
+                                {% if security_stats.owasp_2021.exists %}
+                                    <span class="badge bg-success ms-2">
+                                        <i class="bi-check-circle me-1"></i>Verfügbar
+                                    </span>
+                                {% else %}
+                                    <span class="badge bg-warning ms-2">
+                                        <i class="bi-exclamation-triangle me-1"></i>Nicht generiert
+                                    </span>
+                                {% endif %}
+                                {% if security_stats.owasp_2021.updated_at %}
+                                    <br>
+                                    <small class="text-muted ms-4">Aktualisiert: {{ security_stats.owasp_2021.updated_at }}</small>
+                                {% endif %}
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="card-footer bg-light">
+                    <div class="d-grid gap-2">
+                        <a href="{{ path('app_security_report') }}" class="btn btn-danger">
+                            <i class="bi-arrow-right-circle me-1"></i>Security Reports öffnen
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Information & Actions #}
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="bi-info-circle me-2"></i>Report-Generierung
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3 mb-md-0">
+                            <h6><i class="bi-file-text me-2"></i>Lizenzreport aktualisieren</h6>
+                            <p class="text-muted small mb-2">
+                                Führen Sie das folgende Skript aus, um den Lizenzreport neu zu generieren:
+                            </p>
+                            <div class="bg-light p-3 rounded">
+                                <code>./license-report.sh</code>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h6><i class="bi-shield-lock me-2"></i>Security Report aktualisieren</h6>
+                            <p class="text-muted small mb-2">
+                                Führen Sie das folgende Skript aus, um die Security Reports neu zu generieren:
+                            </p>
+                            <div class="bg-light p-3 rounded">
+                                <code>php scripts/generate-security-audit.php</code>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Additional Information #}
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="alert alert-info">
+                <div class="d-flex align-items-start">
+                    <i class="bi-lightbulb fs-4 me-3"></i>
+                    <div>
+                        <h6 class="alert-heading mb-2">Best Practices</h6>
+                        <ul class="mb-0">
+                            <li>Aktualisieren Sie den <strong>Lizenzreport</strong> nach jeder Änderung an den Dependencies (composer.json, package.json)</li>
+                            <li>Generieren Sie den <strong>Security Report</strong> regelmäßig (mindestens monatlich) und vor jedem Release</li>
+                            <li>Dokumentieren Sie alle Findings und deren Behebung für Compliance-Nachweise</li>
+                            <li>Integrieren Sie die Report-Generierung in Ihre CI/CD-Pipeline</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.card {
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.card-footer {
+    border-top: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+code {
+    background-color: #f8f9fa;
+    padding: 0.2rem 0.4rem;
+    border-radius: 3px;
+    font-size: 0.9em;
+}
+</style>
+{% endblock %}

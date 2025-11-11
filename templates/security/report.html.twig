@@ -1,0 +1,245 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ report_title }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    {# Breadcrumb Navigation #}
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'Über', url: path('app_reports_overview') },
+            { label: 'Security Reports', url: path('app_security_report') },
+            { label: 'OWASP ' ~ report_version }
+        ]
+    } %}
+
+    {# Page Header #}
+    {% include '_components/_page_header.html.twig' with {
+        title: report_title,
+        subtitle: 'Automated Security Audit Analysis',
+        icon: 'bi-shield-lock'
+    } %}
+
+    <div class="row">
+        <div class="col-lg-3 mb-4">
+            {# Navigation Sidebar #}
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="bi-list-ul me-2"></i>Navigation
+                    </h5>
+                </div>
+                <div class="list-group list-group-flush">
+                    <a href="{{ path('app_security_report') }}" class="list-group-item list-group-item-action">
+                        <i class="bi-shield-check me-2"></i>Übersicht
+                    </a>
+                    <a href="{{ path('app_security_report_2025') }}" class="list-group-item list-group-item-action {% if report_version == '2025 RC1' %}active{% endif %}">
+                        <i class="bi-file-earmark-bar-graph me-2"></i>OWASP 2025 RC1
+                    </a>
+                    <a href="{{ path('app_security_report_2021') }}" class="list-group-item list-group-item-action {% if report_version == '2021' %}active{% endif %}">
+                        <i class="bi-file-earmark-bar-graph me-2"></i>OWASP 2021
+                    </a>
+                    <a href="{{ path('app_reports_overview') }}" class="list-group-item list-group-item-action">
+                        <i class="bi-arrow-left me-2"></i>Alle Reports
+                    </a>
+                </div>
+            </div>
+
+            {# Quick Actions #}
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="bi-tools me-2"></i>Aktionen
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <button onclick="window.print()" class="btn btn-outline-primary btn-sm">
+                            <i class="bi-printer me-1"></i>Drucken
+                        </button>
+                        <a href="{{ asset('docs/reports/security-audit-owasp-' ~ (report_version == '2025 RC1' ? '2025-rc1' : '2021') ~ '.md') }}" download class="btn btn-outline-secondary btn-sm">
+                            <i class="bi-download me-1"></i>Report.md
+                        </a>
+                        <button onclick="regenerateReport()" class="btn btn-outline-warning btn-sm">
+                            <i class="bi-arrow-clockwise me-1"></i>Neu generieren
+                        </button>
+                    </div>
+                    <div class="mt-3">
+                        <small class="text-muted">
+                            <i class="bi-info-circle me-1"></i>
+                            Führen Sie <code>php scripts/generate-security-audit.php</code> aus
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-9">
+            {# Report Content #}
+            <div class="card">
+                <div class="card-header bg-light">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">
+                            <i class="bi-file-earmark-bar-graph me-2"></i>Vollständiger Security Report
+                        </h5>
+                        <div class="btn-group btn-group-sm" role="group">
+                            <button type="button" class="btn btn-outline-secondary" onclick="document.getElementById('report-content').style.fontSize='13px'">
+                                <i class="bi-zoom-out"></i>
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary" onclick="document.getElementById('report-content').style.fontSize='14px'">
+                                <i class="bi-zoom-in"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div id="report-content" class="markdown-content p-4" style="font-size: 13px; max-height: 80vh; overflow-y: auto;">
+                        {{ report_content|raw|nl2br }}
+                    </div>
+                </div>
+            </div>
+
+            {# Legend #}
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h6 class="card-title mb-0">
+                        <i class="bi-question-circle me-2"></i>Severity-Legende
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4 mb-2">
+                            <span class="badge bg-danger me-2">P0-URGENT</span>
+                            <small>Kritische Sicherheitslücken - sofort beheben</small>
+                        </div>
+                        <div class="col-md-4 mb-2">
+                            <span class="badge bg-warning me-2">P1-HIGH</span>
+                            <small>Hohe Priorität - innerhalb 1 Woche beheben</small>
+                        </div>
+                        <div class="col-md-4 mb-2">
+                            <span class="badge bg-info me-2">P2-MEDIUM</span>
+                            <small>Mittlere Priorität - innerhalb 1 Monat</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.markdown-content {
+    line-height: 1.6;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+.markdown-content h1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid #e9ecef;
+    padding-bottom: 0.5rem;
+}
+
+.markdown-content h2 {
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin-top: 1.25rem;
+    margin-bottom: 0.75rem;
+    border-bottom: 1px solid #e9ecef;
+    padding-bottom: 0.25rem;
+}
+
+.markdown-content h3 {
+    font-size: 1.15rem;
+    font-weight: 600;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.markdown-content h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-top: 0.75rem;
+    margin-bottom: 0.5rem;
+}
+
+.markdown-content p {
+    margin-bottom: 0.75rem;
+}
+
+.markdown-content code {
+    background-color: #f8f9fa;
+    padding: 0.2rem 0.4rem;
+    border-radius: 3px;
+    font-size: 0.85em;
+}
+
+.markdown-content pre {
+    background-color: #f8f9fa;
+    padding: 0.75rem;
+    border-radius: 5px;
+    overflow-x: auto;
+    font-size: 0.85em;
+}
+
+.markdown-content table {
+    width: 100%;
+    margin-bottom: 1rem;
+    border-collapse: collapse;
+    font-size: 0.9em;
+}
+
+.markdown-content table th,
+.markdown-content table td {
+    padding: 0.5rem;
+    border: 1px solid #dee2e6;
+}
+
+.markdown-content table th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+}
+
+.markdown-content ul,
+.markdown-content ol {
+    margin-bottom: 0.75rem;
+    padding-left: 1.5rem;
+}
+
+.markdown-content blockquote {
+    border-left: 4px solid #0d6efd;
+    padding-left: 1rem;
+    margin-left: 0;
+    color: #6c757d;
+    font-style: italic;
+}
+
+.markdown-content hr {
+    margin: 1.5rem 0;
+    border: 0;
+    border-top: 2px solid #e9ecef;
+}
+
+@media print {
+    .breadcrumb,
+    .page-header-actions,
+    .card:not(.card:has(.markdown-content)),
+    .btn {
+        display: none !important;
+    }
+
+    #report-content {
+        max-height: none !important;
+        overflow-y: visible !important;
+    }
+}
+</style>
+
+<script>
+function regenerateReport() {
+    alert('Bitte führen Sie "php scripts/generate-security-audit.php" im Terminal aus, um die Reports neu zu generieren.');
+}
+</script>
+{% endblock %}
