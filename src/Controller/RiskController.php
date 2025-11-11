@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Risk;
 use App\Form\RiskType;
+use App\Repository\AuditLogRepository;
 use App\Repository\RiskRepository;
 use App\Service\RiskMatrixService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -19,6 +20,7 @@ class RiskController extends AbstractController
 {
     public function __construct(
         private RiskRepository $riskRepository,
+        private AuditLogRepository $auditLogRepository,
         private EntityManagerInterface $entityManager,
         private RiskMatrixService $riskMatrixService,
         private TranslatorInterface $translator
@@ -26,9 +28,48 @@ class RiskController extends AbstractController
 
     #[Route('/', name: 'app_risk_index')]
     #[IsGranted('ROLE_USER')]
-    public function index(): Response
+    public function index(Request $request): Response
     {
+        // Get filter parameters
+        $level = $request->query->get('level'); // critical, high, medium, low
+        $status = $request->query->get('status');
+        $treatment = $request->query->get('treatment');
+        $owner = $request->query->get('owner');
+
+        // Get all risks
         $risks = $this->riskRepository->findAll();
+
+        // Apply filters
+        if ($level) {
+            $risks = array_filter($risks, function($risk) use ($level) {
+                $score = $risk->getRiskScore();
+                return match($level) {
+                    'critical' => $score >= 15,
+                    'high' => $score >= 8 && $score < 15,
+                    'medium' => $score >= 4 && $score < 8,
+                    'low' => $score < 4,
+                    default => true
+                };
+            });
+        }
+
+        if ($status) {
+            $risks = array_filter($risks, fn($risk) => $risk->getStatus() === $status);
+        }
+
+        if ($treatment) {
+            $risks = array_filter($risks, fn($risk) => $risk->getTreatmentStrategy() === $treatment);
+        }
+
+        if ($owner) {
+            $risks = array_filter($risks, fn($risk) =>
+                $risk->getRiskOwner() && stripos($risk->getRiskOwner()->getFullName(), $owner) !== false
+            );
+        }
+
+        // Re-index array after filtering
+        $risks = array_values($risks);
+
         $highRisks = $this->riskRepository->findHighRisks();
         $treatmentStats = $this->riskRepository->countByTreatmentStrategy();
 
@@ -75,8 +116,14 @@ class RiskController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function show(Risk $risk): Response
     {
+        // Get audit log history for this risk (last 10 entries)
+        $auditLogs = $this->auditLogRepository->findByEntity('Risk', $risk->getId());
+        $recentAuditLogs = array_slice($auditLogs, 0, 10);
+
         return $this->render('risk/show.html.twig', [
             'risk' => $risk,
+            'auditLogs' => $recentAuditLogs,
+            'totalAuditLogs' => count($auditLogs),
         ]);
     }
 
