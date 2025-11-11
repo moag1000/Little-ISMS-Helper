@@ -33,11 +33,11 @@
         </div>
     </div>
 
-    <div class="kpi-card" style="border-left: 4px solid var(--color-danger);">
+    <div class="kpi-card border-left-danger">
         <div class="icon">⚠️</div>
         <div class="label">{{ 'compliance.stats.gaps_identified'|trans }}</div>
         <div>
-            <span class="value" style="color: var(--color-danger);">{{ gaps|length }}</span>
+            <span class="value text-danger">{{ gaps|length }}</span>
         </div>
     </div>
 
@@ -56,7 +56,7 @@
 <div class="card mb-4">
     <h2>{{ 'compliance.section.framework_selection'|trans }}</h2>
 
-    <form method="get" style="margin-top: var(--spacing-md);">
+    <form method="get" class="mt-md">
         <div class="form-group">
             <label for="framework">{{ 'compliance.field.select_framework'|trans }}</label>
             <select name="framework" id="framework" class="form-select" onchange="this.form.submit();">
@@ -73,46 +73,46 @@
 
 {# Gap Analysis by Severity #}
 <div class="module-grid mb-4">
-    <div class="card" style="border-left: 4px solid var(--color-danger);">
-        <div style="font-size: 2rem; margin-bottom: var(--spacing-sm);">🔴</div>
+    <div class="card border-left-danger">
+        <div class="fs-2-mb-sm">🔴</div>
         <h3>{{ 'compliance.severity.critical'|trans }}</h3>
         <div class="mt-2">
-            <strong style="font-size: 1.5rem; color: var(--color-danger);">{{ gaps|filter(g => g.severity == 'critical')|length }}</strong>
+            <strong class="fs-15-danger">{{ gaps|filter(g => g.severity == 'critical')|length }}</strong>
         </div>
-        <p style="color: var(--color-text-muted); margin-top: var(--spacing-xs);">
+        <p class="text-muted-mt-xs">
             {{ 'compliance.description.critical_gaps'|trans }}
         </p>
     </div>
 
-    <div class="card" style="border-left: 4px solid var(--color-warning);">
-        <div style="font-size: 2rem; margin-bottom: var(--spacing-sm);">🟡</div>
+    <div class="card border-left-warning">
+        <div class="fs-2-mb-sm">🟡</div>
         <h3>{{ 'compliance.severity.high'|trans }}</h3>
         <div class="mt-2">
-            <strong style="font-size: 1.5rem; color: var(--color-warning);">{{ gaps|filter(g => g.severity == 'high')|length }}</strong>
+            <strong class="fs-15-warning">{{ gaps|filter(g => g.severity == 'high')|length }}</strong>
         </div>
-        <p style="color: var(--color-text-muted); margin-top: var(--spacing-xs);">
+        <p class="text-muted-mt-xs">
             {{ 'compliance.description.high_gaps'|trans }}
         </p>
     </div>
 
-    <div class="card" style="border-left: 4px solid var(--color-info);">
-        <div style="font-size: 2rem; margin-bottom: var(--spacing-sm);">🔵</div>
+    <div class="card border-left-info">
+        <div class="fs-2-mb-sm">🔵</div>
         <h3>{{ 'compliance.severity.medium'|trans }}</h3>
         <div class="mt-2">
-            <strong style="font-size: 1.5rem; color: var(--color-info);">{{ gaps|filter(g => g.severity == 'medium')|length }}</strong>
+            <strong class="fs-15-info">{{ gaps|filter(g => g.severity == 'medium')|length }}</strong>
         </div>
-        <p style="color: var(--color-text-muted); margin-top: var(--spacing-xs);">
+        <p class="text-muted-mt-xs">
             {{ 'compliance.description.medium_gaps'|trans }}
         </p>
     </div>
 
-    <div class="card" style="border-left: 4px solid var(--color-secondary);">
-        <div style="font-size: 2rem; margin-bottom: var(--spacing-sm);">⚪</div>
+    <div class="card border-left-secondary">
+        <div class="fs-2-mb-sm">⚪</div>
         <h3>{{ 'compliance.severity.low'|trans }}</h3>
         <div class="mt-2">
-            <strong style="font-size: 1.5rem;">{{ gaps|filter(g => g.severity == 'low')|length }}</strong>
+            <strong class="fs-15">{{ gaps|filter(g => g.severity == 'low')|length }}</strong>
         </div>
-        <p style="color: var(--color-text-muted); margin-top: var(--spacing-xs);">
+        <p class="text-muted-mt-xs">
             {{ 'compliance.description.low_gaps'|trans }}
         </p>
     </div>
@@ -129,7 +129,7 @@
                 <th>{{ 'compliance.field.gap_description'|trans }}</th>
                 <th>{{ 'compliance.field.remediation'|trans }}</th>
                 <th>{{ 'compliance.field.due_date'|trans }}</th>
-                <th style="text-align: center;">{{ 'common.actions'|trans }}</th>
+                <th class="text-center">{{ 'common.actions'|trans }}</th>
             </tr>
         </thead>
         <tbody>
@@ -137,7 +137,7 @@
             <tr>
                 <td>
                     <strong>{{ gap.requirement.identifier }}</strong>
-                    <br><small style="color: var(--color-text-muted);">{{ gap.requirement.name }}</small>
+                    <br><small class="text-muted">{{ gap.requirement.name }}</small>
                 </td>
                 <td>
                     <span class="badge badge-info">{{ gap.framework.name }}</span>
@@ -163,15 +163,15 @@
                     {% if gap.targetDate %}
                         {{ gap.targetDate|date('d.m.Y') }}
                         {% if gap.targetDate < date() %}
-                            <span class="badge badge-danger" style="margin-left: var(--spacing-xs);">
+                            <span class="badge badge-danger ml-xs">
                                 {{ 'compliance.badge.overdue'|trans }}
                             </span>
                         {% endif %}
                     {% else %}
-                        <span style="color: var(--color-text-muted);">-</span>
+                        <span class="text-muted">-</span>
                     {% endif %}
                 </td>
-                <td style="text-align: center;">
+                <td class="text-center">
                     <a href="{{ path('app_compliance_gap_show', {id: gap.id}) }}" class="btn btn-sm">
                         👁 {{ 'common.view'|trans }}
                     </a>
@@ -180,9 +180,9 @@
             {% else %}
             <tr>
                 <td colspan="7" style="text-align: center; padding: var(--spacing-xl); color: var(--color-text-muted);">
-                    <div style="font-size: 2rem; margin-bottom: var(--spacing-sm);">✅</div>
+                    <div class="fs-2-mb-sm">✅</div>
                     <p><strong>{{ 'compliance.message.no_gaps'|trans }}</strong></p>
-                    <p style="margin-top: var(--spacing-xs);">{{ 'compliance.message.no_gaps_desc'|trans }}</p>
+                    <p class="mt-xs">{{ 'compliance.message.no_gaps_desc'|trans }}</p>
                 </td>
             </tr>
             {% endfor %}
