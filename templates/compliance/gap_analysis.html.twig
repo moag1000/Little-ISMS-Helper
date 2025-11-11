@@ -3,14 +3,12 @@
 {% block title %}{{ 'compliance.title.gap_analysis'|trans }} - Little ISMS Helper{% endblock %}
 
 {% block body %}
-<div class="d-flex justify-between align-center mb-4">
+<div class="page-header">
     <div>
         <h1>{{ 'compliance.title.gap_analysis'|trans }}</h1>
-        <p style="color: var(--color-text-light); margin-top: var(--spacing-sm);">
-            {{ 'compliance.description.gap_analysis'|trans }}
-        </p>
+        <p class="text-muted">{{ 'compliance.description.gap_analysis'|trans }}</p>
     </div>
-    <div>
+    <div class="button-group">
         <a href="{{ path('app_compliance_export_gaps') }}" class="btn btn-success">
             📊 {{ 'compliance.action.export_gaps'|trans }}
         </a>
