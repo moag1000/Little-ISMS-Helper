@@ -58,6 +58,16 @@ services:
         arguments:
             $projectDir: '%kernel.project_dir%'
 
+    # Configure Security Audit Service
+    App\Service\SecurityAuditService:
+        arguments:
+            $projectDir: '%kernel.project_dir%'
+
+    # Configure License Report Service
+    App\Service\LicenseReportService:
+        arguments:
+            $projectDir: '%kernel.project_dir%'
+
     # Configure Document Controller
     App\Controller\DocumentController:
         arguments:

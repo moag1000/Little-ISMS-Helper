@@ -2,18 +2,15 @@
 
 namespace App\Service;
 
-use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Process\Process;
 
 class LicenseReportService
 {
     private string $projectDir;
-    private Filesystem $filesystem;
 
     public function __construct(string $projectDir)
     {
         $this->projectDir = $projectDir;
-        $this->filesystem = new Filesystem();
     }
 
     /**
