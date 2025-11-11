@@ -70,6 +70,14 @@ class ComplianceRequirement
     #[ORM\JoinTable(name: 'compliance_requirement_control')]
     private Collection $mappedControls;
 
+    /**
+     * @var Collection<int, Training>
+     * Phase 6K: Training ↔ ComplianceRequirement inverse relationship
+     * Tracks which trainings fulfill this compliance requirement
+     */
+    #[ORM\ManyToMany(targetEntity: Training::class, mappedBy: 'complianceRequirements')]
+    private Collection $trainings;
+
     #[ORM\Column(type: Types::JSON, nullable: true)]
     private ?array $dataSourceMapping = null; // Maps to Asset, Risk, BCM, etc.
 
@@ -91,6 +99,7 @@ class ComplianceRequirement
     public function __construct()
     {
         $this->mappedControls = new ArrayCollection();
+        $this->trainings = new ArrayCollection();
         $this->detailedRequirements = new ArrayCollection();
         $this->createdAt = new \DateTimeImmutable();
     }
@@ -242,6 +251,65 @@ class ComplianceRequirement
     {
         $this->mappedControls->removeElement($mappedControl);
         return $this;
+    }
+
+    /**
+     * @return Collection<int, Training>
+     */
+    public function getTrainings(): Collection
+    {
+        return $this->trainings;
+    }
+
+    public function addTraining(Training $training): static
+    {
+        if (!$this->trainings->contains($training)) {
+            $this->trainings->add($training);
+            $training->addComplianceRequirement($this);
+        }
+        return $this;
+    }
+
+    public function removeTraining(Training $training): static
+    {
+        if ($this->trainings->removeElement($training)) {
+            $training->removeComplianceRequirement($this);
+        }
+        return $this;
+    }
+
+    /**
+     * Check if requirement has training coverage
+     * Data Reuse: Training completion affects requirement fulfillment
+     */
+    public function hasTrainingCoverage(): bool
+    {
+        foreach ($this->trainings as $training) {
+            if ($training->getStatus() === 'completed') {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Get training coverage percentage
+     * Data Reuse: Calculate how well this requirement is supported by trainings
+     */
+    public function getTrainingCoveragePercentage(): float
+    {
+        if ($this->trainings->isEmpty()) {
+            return 0.0;
+        }
+
+        $completedCount = 0;
+        foreach ($this->trainings as $training) {
+            if ($training->getStatus() === 'completed') {
+                $completedCount++;
+            }
+        }
+
+        return round(($completedCount / $this->trainings->count()) * 100, 2);
     }
 
     public function getDataSourceMapping(): ?array
