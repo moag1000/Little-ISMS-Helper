@@ -76,10 +76,29 @@
         <h2 style="margin-top: 0; color: var(--color-primary);">{{ 'compliance.section.framework_relationships'|trans }}</h2>
 
         {% if framework_relationships is empty %}
-            <div class="info-box" style="background: var(--color-bg-alt); text-align: center; padding: 3rem;">
-                <p style="font-size: 1.2rem; color: var(--color-text-muted);">
-                    🔍 {{ 'compliance.message.no_relationships'|trans }}
+            <div class="card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; text-align: center; padding: 3rem; border: none;">
+                <div style="font-size: 4rem; margin-bottom: 1rem;">🔗</div>
+                <h3 style="color: white; margin-bottom: 1rem; font-size: 1.5rem;">Noch keine Framework-Mappings vorhanden</h3>
+                <p style="font-size: 1.1rem; line-height: 1.6; margin-bottom: 2rem; opacity: 0.95;">
+                    Die Cross-Framework Mappings zwischen Ihren Compliance-Frameworks wurden noch nicht erstellt.
+                    <br>Diese Mappings zeigen, wie Anforderungen verschiedener Frameworks zusammenhängen.
                 </p>
+                <div style="background: rgba(255,255,255,0.2); padding: 1.5rem; border-radius: 8px; margin-bottom: 1.5rem;">
+                    <h4 style="color: white; margin-top: 0; margin-bottom: 0.5rem;">💡 So erstellen Sie Mappings:</h4>
+                    <p style="margin: 0; font-size: 0.95rem; opacity: 0.9;">
+                        Mappings müssen manuell erstellt oder über ein Datenimport-Script geladen werden.
+                        <br>Kontaktieren Sie Ihren Administrator für weitere Informationen.
+                    </p>
+                </div>
+                <div style="display: inline-flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                    <button id="createMappingsBtn" class="btn" style="background: white; color: #667eea; font-weight: 600; display: flex; align-items: center; gap: 0.5rem;">
+                        <span id="btnIcon">🔗</span>
+                        <span id="btnText">Mappings jetzt erstellen</span>
+                    </button>
+                    <a href="{{ path('app_compliance_index') }}" class="btn" style="background: rgba(255,255,255,0.3); color: white; font-weight: 600; border: 2px solid white;">
+                        ← Zurück zur Übersicht
+                    </a>
+                </div>
             </div>
         {% else %}
             <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 1.5rem;">
@@ -158,16 +177,18 @@
                             {% for targetFramework in frameworks %}
                                 <td style="padding: 1rem; border: 1px solid var(--color-border); text-align: center;">
                                     {% if sourceFramework.id == targetFramework.id %}
-                                        <span style="color: var(--color-text-muted); font-weight: 600;">100%</span>
+                                        <span style="color: var(--color-text-muted); font-weight: 600; font-size: 1rem;">100%</span>
                                     {% else %}
                                         {% set mapping = mapping_matrix[sourceFramework.id][targetFramework.id] ?? null %}
                                         {% if mapping and mapping.coverage > 0 %}
                                             {% set percentage = mapping.coverage|round %}
-                                            <span class="badge" style="padding: 0.4rem 0.8rem; font-size: 0.9rem; font-weight: 600; background: {% if percentage >= 75 %}var(--color-success){% elseif percentage >= 50 %}var(--color-warning){% else %}var(--color-danger){% endif %}; color: white;">
+                                            <span class="badge" style="padding: 0.5rem 1rem; font-size: 1rem; font-weight: 700; background: {% if percentage >= 75 %}var(--color-success){% elseif percentage >= 50 %}var(--color-warning){% else %}var(--color-danger){% endif %}; color: white; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
                                                 {{ percentage }}%
                                             </span>
                                         {% else %}
-                                            <span class="badge badge-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.9rem;">0%</span>
+                                            <span style="display: inline-block; padding: 0.5rem 1rem; font-size: 1rem; font-weight: 700; background: #f3f4f6; color: #6b7280; border-radius: 4px; border: 2px dashed #d1d5db;">
+                                                0%
+                                            </span>
                                         {% endif %}
                                     {% endif %}
                                 </td>
@@ -199,10 +220,18 @@
         <h2 style="margin-top: 0; color: var(--color-primary);">{{ 'compliance.section.cross_framework_mappings'|trans }}</h2>
 
         {% if cross_mappings is empty %}
-            <div class="info-box" style="background: var(--color-bg-alt); text-align: center; padding: 3rem;">
-                <p style="font-size: 1.2rem; color: var(--color-text-muted);">
-                    {{ 'compliance.message.no_mappings'|trans }}
+            <div class="card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; text-align: center; padding: 3rem; border: none;">
+                <div style="font-size: 4rem; margin-bottom: 1rem;">📋</div>
+                <h3 style="color: white; margin-bottom: 1rem; font-size: 1.5rem;">Keine detaillierten Mappings verfügbar</h3>
+                <p style="font-size: 1.1rem; line-height: 1.6; margin-bottom: 1.5rem; opacity: 0.95;">
+                    Es wurden noch keine Cross-Framework Mappings zwischen den Requirements erstellt.
                 </p>
+                <div style="background: rgba(255,255,255,0.2); padding: 1.5rem; border-radius: 8px;">
+                    <p style="margin: 0; font-size: 0.95rem; opacity: 0.9;">
+                        💡 Mappings werden benötigt, um zu zeigen, wie sich Anforderungen verschiedener
+                        Compliance-Frameworks gegenseitig abdecken.
+                    </p>
+                </div>
             </div>
         {% else %}
             {% for mapping_group in cross_mappings %}
@@ -395,5 +424,88 @@ function switchTab(tabName) {
     // Add active class to clicked button
     event.target.classList.add('active');
 }
+
+// Create Cross-Framework Mappings
+document.addEventListener('DOMContentLoaded', function() {
+    const createBtn = document.getElementById('createMappingsBtn');
+    if (!createBtn) return;
+
+    const btnIcon = document.getElementById('btnIcon');
+    const btnText = document.getElementById('btnText');
+    const csrfToken = '{{ csrf_token('create_mappings') }}';
+
+    createBtn.addEventListener('click', async function() {
+        // Confirm action
+        if (!confirm('Möchten Sie jetzt Cross-Framework Mappings erstellen?\n\nDies kann einige Sekunden dauern und überschreibt bestehende Mappings.')) {
+            return;
+        }
+
+        // Disable button and show loading
+        createBtn.disabled = true;
+        btnIcon.textContent = '⏳';
+        btnText.textContent = 'Erstelle Mappings...';
+        createBtn.style.opacity = '0.7';
+        createBtn.style.cursor = 'not-allowed';
+
+        try {
+            const response = await fetch('{{ path('app_compliance_create_mappings') }}', {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-Token': csrfToken
+                }
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                // Show success message
+                btnIcon.textContent = '✅';
+                btnText.textContent = data.message;
+                createBtn.style.background = '#10b981';
+                createBtn.style.color = 'white';
+
+                // Reload page after 2 seconds
+                setTimeout(() => {
+                    window.location.reload();
+                }, 2000);
+            } else {
+                // Show error message
+                btnIcon.textContent = '❌';
+                btnText.textContent = data.message;
+                createBtn.style.background = '#ef4444';
+                createBtn.style.color = 'white';
+
+                // Re-enable button after 3 seconds
+                setTimeout(() => {
+                    btnIcon.textContent = '🔗';
+                    btnText.textContent = 'Mappings jetzt erstellen';
+                    createBtn.style.background = 'white';
+                    createBtn.style.color = '#667eea';
+                    createBtn.style.opacity = '1';
+                    createBtn.style.cursor = 'pointer';
+                    createBtn.disabled = false;
+                }, 3000);
+            }
+        } catch (error) {
+            console.error('Error creating mappings:', error);
+            btnIcon.textContent = '❌';
+            btnText.textContent = 'Fehler: ' + error.message;
+            createBtn.style.background = '#ef4444';
+            createBtn.style.color = 'white';
+
+            // Re-enable button after 3 seconds
+            setTimeout(() => {
+                btnIcon.textContent = '🔗';
+                btnText.textContent = 'Mappings jetzt erstellen';
+                createBtn.style.background = 'white';
+                createBtn.style.color = '#667eea';
+                createBtn.style.opacity = '1';
+                createBtn.style.cursor = 'pointer';
+                createBtn.disabled = false;
+            }, 3000);
+        }
+    });
+});
 </script>
 {% endblock %}
