@@ -505,10 +505,28 @@ activity:
   security_team: Security Team
   new_risk: New Risk
 incident:
+  new: New Incident
+  create: Create Incident
   section:
+    basic_info: Basic Information
+    severity_status: Severity & Status
+    detection_reporting: Detection & Reporting
+    affected_systems: Affected Systems & Assets
+    analysis: Analysis & Actions
+    nis2_reporting: NIS2 Reporting Requirement (EU 2022/2555)
+    nis2_info: "NIS2 Art. 23: Significant incidents must be reported within specified timeframes"
     affected_assets: Affected Assets
     realized_risks: Realized Risks
     related_controls: Related Controls
+  nis2_alert:
+    title: ⚠️ Potentially NIS2 Reportable
+    description: "Based on severity and impact, this incident may be reportable under NIS2 Directive (EU 2022/2555):"
+    early_warning: "Early Warning: Within 24 hours of awareness"
+    detailed_notification: "Detailed Notification: Within 72 hours"
+    final_report: "Final Report: Within 1 month"
+  nis2_toggle:
+    show: Show NIS2 Reporting Fields
+    hide: Hide NIS2 Fields
   field:
     title: Incident Title
     description: Description
