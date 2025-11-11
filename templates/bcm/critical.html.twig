@@ -20,7 +20,7 @@
 
 {# Alert Banner #}
 {% if criticalAssets|length > 0 %}
-<div class="info-box mb-4" style="background: var(--color-danger-light); border-left: 4px solid var(--color-danger);">
+<div class="info-box mb-4 bg-danger-light-border-left-danger">
     <p><strong>🔴 {{ 'bcm.warning.critical_assets_count'|trans({'%count%': criticalAssets|length}) }}</strong></p>
     <p class="mt-xs">{{ 'bcm.warning.critical_message'|trans }}</p>
 </div>
@@ -32,7 +32,7 @@
         <div class="icon">🔴</div>
         <div class="label">{{ 'bcm.stats.critical_assets'|trans }}</div>
         <div>
-            <span class="value" style="color: var(--color-danger);">{{ criticalAssets|length }}</span>
+            <span class="value text-danger">{{ criticalAssets|length }}</span>
         </div>
     </div>
 
@@ -67,15 +67,15 @@
 
 <div class="module-grid mb-4">
     <div class="card border-left-danger">
-        <div style="font-size: 2rem; margin-bottom: var(--spacing-sm);">🔴</div>
+        <div class="fs-2-mb-sm">🔴</div>
         <h3>{{ 'bcm.criticality.critical'|trans }}</h3>
-        <p style="color: var(--color-text-muted); margin-top: var(--spacing-xs); margin-bottom: var(--spacing-md);">
+        <p class="text-muted-mt-xs-mb-md">
             {{ 'bcm.description.critical_level'|trans }}
         </p>
 
-        <div class="stats-grid" style="grid-template-columns: 1fr;">
+        <div class="stats-grid grid-col-1">
             <div class="stat-item">
-                <strong style="font-size: 1.5rem; color: var(--color-danger);">{{ criticalityGroups.critical|length }}</strong>
+                <strong class="fs-15-danger">{{ criticalityGroups.critical|length }}</strong>
                 <span>{{ 'bcm.field.assets'|trans }}</span>
             </div>
             <div class="stat-item">
@@ -85,16 +85,16 @@
         </div>
     </div>
 
-    <div class="card" style="border-left: 4px solid var(--color-warning);">
-        <div style="font-size: 2rem; margin-bottom: var(--spacing-sm);">🟡</div>
+    <div class="card border-left-warning">
+        <div class="fs-2-mb-sm">🟡</div>
         <h3>{{ 'bcm.criticality.high'|trans }}</h3>
-        <p style="color: var(--color-text-muted); margin-top: var(--spacing-xs); margin-bottom: var(--spacing-md);">
+        <p class="text-muted-mt-xs-mb-md">
             {{ 'bcm.description.high_level'|trans }}
         </p>
 
-        <div class="stats-grid" style="grid-template-columns: 1fr;">
+        <div class="stats-grid grid-col-1">
             <div class="stat-item">
-                <strong style="font-size: 1.5rem; color: var(--color-warning);">{{ criticalityGroups.high|length }}</strong>
+                <strong class="fs-15-warning">{{ criticalityGroups.high|length }}</strong>
                 <span>{{ 'bcm.field.assets'|trans }}</span>
             </div>
             <div class="stat-item">
@@ -104,16 +104,16 @@
         </div>
     </div>
 
-    <div class="card" style="border-left: 4px solid var(--color-info);">
-        <div style="font-size: 2rem; margin-bottom: var(--spacing-sm);">🔵</div>
+    <div class="card border-left-info">
+        <div class="fs-2-mb-sm">🔵</div>
         <h3>{{ 'bcm.criticality.medium'|trans }}</h3>
-        <p style="color: var(--color-text-muted); margin-top: var(--spacing-xs); margin-bottom: var(--spacing-md);">
+        <p class="text-muted-mt-xs-mb-md">
             {{ 'bcm.description.medium_level'|trans }}
         </p>
 
-        <div class="stats-grid" style="grid-template-columns: 1fr;">
+        <div class="stats-grid grid-col-1">
             <div class="stat-item">
-                <strong style="font-size: 1.5rem; color: var(--color-info);">{{ criticalityGroups.medium|length }}</strong>
+                <strong class="fs-15-info">{{ criticalityGroups.medium|length }}</strong>
                 <span>{{ 'bcm.field.assets'|trans }}</span>
             </div>
             <div class="stat-item">
@@ -143,7 +143,7 @@
         </thead>
         <tbody>
             {% for asset in criticalAssets %}
-            <tr {% if not asset.hasRecoveryPlan %}style="background-color: var(--color-warning-light);"{% endif %}>
+            <tr {% if not asset.hasRecoveryPlan %}class="bg-warning-light"{% endif %}>
                 <td>
                     <strong>{{ asset.name }}</strong>
                     {% if not asset.hasRecoveryPlan %}
@@ -169,7 +169,7 @@
                 <td>
                     <strong>{{ asset.rto }}h</strong>
                     {% if asset.rto <= 1 %}
-                        <span class="badge badge-danger" style="margin-left: var(--spacing-xs);">
+                        <span class="badge badge-danger ml-xs">
                             {{ 'bcm.badge.immediate'|trans }}
                         </span>
                     {% endif %}
@@ -198,7 +198,7 @@
                     {% endif %}
                 </td>
                 <td class="text-center">
-                    <a href="{{ path('app_asset_show', {id: asset.id}) }}" class="btn btn-sm" style="margin-right: 0.25rem;">
+                    <a href="{{ path('app_asset_show', {id: asset.id}) }}" class="btn btn-sm mr-sm">
                         👁 {{ 'common.view'|trans }}
                     </a>
                     <a href="{{ path('app_bcm_recovery_plan', {assetId: asset.id}) }}" class="btn btn-sm btn-secondary">
@@ -208,8 +208,8 @@
             </tr>
             {% else %}
             <tr>
-                <td colspan="8" style="text-align: center; padding: var(--spacing-xl); color: var(--color-text-muted);">
-                    <div style="font-size: 2rem; margin-bottom: var(--spacing-sm);">✅</div>
+                <td colspan="8" class="text-center-p-xl">
+                    <div class="fs-2-mb-sm">✅</div>
                     <p><strong>{{ 'bcm.message.no_critical_assets'|trans }}</strong></p>
                 </td>
             </tr>
@@ -261,7 +261,7 @@
             </tr>
             {% else %}
             <tr>
-                <td colspan="6" style="text-align: center; padding: var(--spacing-xl); color: var(--color-text-muted);">
+                <td colspan="6" class="text-center-p-xl">
                     {{ 'bcm.message.no_critical_processes'|trans }}
                 </td>
             </tr>
@@ -274,13 +274,13 @@
 {% if actionItems|length > 0 %}
 <div class="card mt-4">
     <h2>{{ 'bcm.section.action_items'|trans }}</h2>
-    <p style="color: var(--color-text-muted); margin-top: var(--spacing-sm); margin-bottom: var(--spacing-md);">
+    <p class="text-muted-mt-sm-mb-md">
         {{ 'bcm.description.action_items'|trans }}
     </p>
 
-    <ul style="list-style: none; padding: 0;">
+    <ul class="list-unstyled">
         {% for item in actionItems %}
-        <li style="padding: var(--spacing-md); border-bottom: 1px solid var(--color-border); display: flex; justify-content: space-between; align-items: center;">
+        <li class="list-item-action">
             <div>
                 <strong>{{ item.title }}</strong>
                 <br><small class="text-muted">{{ item.description }}</small>
