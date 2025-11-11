@@ -172,7 +172,7 @@
     </script>
 
     {% block javascripts %}
-        {% block importmap %}{{ importmap('app') }}{% endblock %}
+        {% block importmap %}{{ importmap(['app', 'styles']) }}{% endblock %}
     {% endblock %}
 </body>
 </html>
