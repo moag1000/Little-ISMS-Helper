@@ -357,6 +357,31 @@ class ComplianceController extends AbstractController
                 }
 
                 $commonRequirements = $mappedCount;
+
+                // Calculate unique requirements (not mapped)
+                $framework1Unique = [];
+                $framework2Unique = [];
+
+                // Framework 1 unique requirements
+                foreach ($comparisonDetails as $detail) {
+                    if (!$detail['mapped']) {
+                        $framework1Unique[] = $detail['framework1Requirement'];
+                    }
+                }
+
+                // Framework 2 unique requirements
+                $mappedFramework2Ids = [];
+                foreach ($comparisonDetails as $detail) {
+                    if ($detail['mapped'] && $detail['framework2Requirement']) {
+                        $mappedFramework2Ids[] = $detail['framework2Requirement']->getId();
+                    }
+                }
+
+                foreach ($selectedFramework2->getRequirements() as $req2) {
+                    if (!in_array($req2->getId(), $mappedFramework2Ids)) {
+                        $framework2Unique[] = $req2;
+                    }
+                }
             }
         }
 
@@ -373,6 +398,8 @@ class ComplianceController extends AbstractController
             'framework2UniqueRequirements' => max(0, $framework2Requirements - $commonRequirements),
             'framework1Categories' => $framework1Categories,
             'framework2Categories' => $framework2Categories,
+            'framework1Unique' => $framework1Unique ?? [],
+            'framework2Unique' => $framework2Unique ?? [],
         ]);
     }
 
