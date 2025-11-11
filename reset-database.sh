@@ -141,7 +141,7 @@ echo ""
 echo "Choose how to reset the database:"
 echo ""
 echo "  [1] Drop & Create (Delete database and create new)"
-echo "  [2] Empty existing (Clear all tables, keep database)"
+echo "  [2] Drop tables (Drop all tables, keep database & migration history)"
 echo ""
 read -p "Select option [1/2]: " RESET_OPTION
 
@@ -166,10 +166,10 @@ if [ "$OPERATION_MODE" = "drop" ]; then
     echo "  1. Drop the existing database"
     echo "  2. Create a new database"
 else
-    echo "  1. Empty all tables in existing database"
-    echo "  2. Keep database and user credentials"
+    echo "  1. Drop all tables (except migration history)"
+    echo "  2. Keep database and migration history"
 fi
-echo "  3. Run all migrations"
+echo "  3. Run all migrations (will recreate tables)"
 echo "  4. (Optional) Load default roles & permissions"
 echo "  5. (Optional) Create admin user"
 echo ""
@@ -199,7 +199,7 @@ empty_database() {
             warning "Could not create SQLite database (may already exist)"
         fi
     elif [ "$DB_TYPE" = "mysql" ]; then
-        info "Emptying MySQL database tables..."
+        info "Dropping MySQL database tables (will be recreated by migrations)..."
         # Disable foreign key checks
         if ! php bin/console dbal:run-sql "SET FOREIGN_KEY_CHECKS = 0;" 2>&1 | grep -v "^$"; then
             error "Failed to disable foreign key checks"
@@ -215,26 +215,26 @@ empty_database() {
         TABLES=$(echo "$TABLES_RAW" | grep -v "^+" | grep -v "^|" | grep -v "table_name" | grep -v "^$" | grep -v "rows" | grep -v "\[" | grep -v "!" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | grep -v "^$")
 
         if [ ! -z "$TABLES" ]; then
-            info "Found $(echo "$TABLES" | wc -l) tables to empty"
-            # Truncate each table
+            info "Found $(echo "$TABLES" | wc -l) tables to drop"
+            # Drop each table (better than TRUNCATE due to foreign key constraints)
             while IFS= read -r TABLE; do
                 if [ ! -z "$TABLE" ]; then
-                    if php bin/console dbal:run-sql "TRUNCATE TABLE \`$TABLE\`;" 2>&1 | grep -v "^$"; then
-                        info "  ✓ Emptied: $TABLE"
+                    if php bin/console dbal:run-sql "DROP TABLE \`$TABLE\`;" 2>&1 | grep -v "^$" | grep -v "\[OK\]"; then
+                        info "  ✓ Dropped: $TABLE"
                     else
                         warning "  ✗ Failed: $TABLE"
                     fi
                 fi
             done <<< "$TABLES"
-            success "All tables emptied (doctrine_migration_versions preserved)"
+            success "All tables dropped (doctrine_migration_versions preserved)"
         else
-            warning "No tables found to empty (database might already be empty)"
+            warning "No tables found to drop (database might already be empty)"
         fi
 
         # Re-enable foreign key checks
         php bin/console dbal:run-sql "SET FOREIGN_KEY_CHECKS = 1;" 2>&1 | grep -v "^$" || true
     elif [ "$DB_TYPE" = "postgresql" ]; then
-        info "Emptying PostgreSQL database tables..."
+        info "Dropping PostgreSQL database tables (will be recreated by migrations)..."
         # Get list of tables excluding doctrine_migration_versions
         TABLES_RAW=$(php bin/console dbal:run-sql "SELECT tablename FROM pg_tables WHERE schemaname = 'public' AND tablename != 'doctrine_migration_versions' ORDER BY tablename;" 2>&1)
 
@@ -243,25 +243,20 @@ empty_database() {
         TABLES=$(echo "$TABLES_RAW" | grep -v "^+" | grep -v "^|" | grep -v "tablename" | grep -v "^$" | grep -v "rows" | grep -v "\[" | grep -v "!" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | grep -v "^$")
 
         if [ ! -z "$TABLES" ]; then
-            info "Found $(echo "$TABLES" | wc -l) tables to empty"
-            # Build comma-separated list for CASCADE truncate
-            TABLE_LIST=$(echo "$TABLES" | tr '\n' ',' | sed 's/,$//')
-
-            if [ ! -z "$TABLE_LIST" ]; then
-                if php bin/console dbal:run-sql "TRUNCATE TABLE $TABLE_LIST CASCADE;" 2>&1 | grep -v "^$"; then
-                    # Show which tables were emptied
-                    while IFS= read -r TABLE; do
-                        if [ ! -z "$TABLE" ]; then
-                            info "  ✓ Emptied: $TABLE"
-                        fi
-                    done <<< "$TABLES"
-                    success "All tables emptied (doctrine_migration_versions preserved)"
-                else
-                    warning "Could not empty all tables"
+            info "Found $(echo "$TABLES" | wc -l) tables to drop"
+            # Drop each table (better than TRUNCATE due to foreign key constraints)
+            while IFS= read -r TABLE; do
+                if [ ! -z "$TABLE" ]; then
+                    if php bin/console dbal:run-sql "DROP TABLE \"$TABLE\" CASCADE;" 2>&1 | grep -v "^$" | grep -v "\[OK\]"; then
+                        info "  ✓ Dropped: $TABLE"
+                    else
+                        warning "  ✗ Failed: $TABLE"
+                    fi
                 fi
-            fi
+            done <<< "$TABLES"
+            success "All tables dropped (doctrine_migration_versions preserved)"
         else
-            warning "No tables found to empty (database might already be empty)"
+            warning "No tables found to drop (database might already be empty)"
         fi
     fi
 }
@@ -313,9 +308,9 @@ else
     fi
 
     echo ""
-    info "Step 2: Emptying existing database..."
+    info "Step 2: Dropping database tables..."
     if ! empty_database; then
-        error "Failed to empty database"
+        error "Failed to drop database tables"
         exit 1
     fi
 fi
