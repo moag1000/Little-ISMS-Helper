@@ -147,9 +147,20 @@ class Training
     #[MaxDepth(1)]
     private Collection $coveredControls;
 
+    /**
+     * @var Collection<int, ComplianceRequirement>
+     * Phase 6J: Training ↔ ComplianceRequirement relationship for compliance training tracking
+     */
+    #[ORM\ManyToMany(targetEntity: ComplianceRequirement::class)]
+    #[ORM\JoinTable(name: 'training_compliance_requirement')]
+    #[Groups(['training:read'])]
+    #[MaxDepth(1)]
+    private Collection $complianceRequirements;
+
     public function __construct()
     {
         $this->coveredControls = new ArrayCollection();
+        $this->complianceRequirements = new ArrayCollection();
         $this->createdAt = new \DateTimeImmutable();
     }
 
@@ -401,6 +412,74 @@ class Training
         foreach ($this->coveredControls as $control) {
             if (!$control->isApplicable() || $control->getImplementationPercentage() < 50) {
                 return true; // Training addresses controls that need attention
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @return Collection<int, ComplianceRequirement>
+     */
+    public function getComplianceRequirements(): Collection
+    {
+        return $this->complianceRequirements;
+    }
+
+    public function addComplianceRequirement(ComplianceRequirement $requirement): static
+    {
+        if (!$this->complianceRequirements->contains($requirement)) {
+            $this->complianceRequirements->add($requirement);
+        }
+        return $this;
+    }
+
+    public function removeComplianceRequirement(ComplianceRequirement $requirement): static
+    {
+        $this->complianceRequirements->removeElement($requirement);
+        return $this;
+    }
+
+    /**
+     * Get count of compliance requirements covered
+     * Data Reuse: Shows training impact on regulatory compliance
+     */
+    #[Groups(['training:read'])]
+    public function getComplianceRequirementCount(): int
+    {
+        return $this->complianceRequirements->count();
+    }
+
+    /**
+     * Get list of compliance frameworks covered
+     * Data Reuse: Shows training scope across regulations
+     */
+    #[Groups(['training:read'])]
+    public function getCoveredFrameworks(): array
+    {
+        $frameworkNames = [];
+        foreach ($this->complianceRequirements as $requirement) {
+            $framework = $requirement->getFramework();
+            if ($framework) {
+                $name = $framework->getName();
+                if ($name && !in_array($name, $frameworkNames)) {
+                    $frameworkNames[] = $name;
+                }
+            }
+        }
+        return $frameworkNames;
+    }
+
+    /**
+     * Check if training fulfills specific compliance framework
+     * Data Reuse: Validates training coverage for certifications
+     */
+    #[Groups(['training:read'])]
+    public function coversFramework(string $frameworkName): bool
+    {
+        foreach ($this->complianceRequirements as $requirement) {
+            $framework = $requirement->getFramework();
+            if ($framework && $framework->getName() === $frameworkName) {
+                return true;
             }
         }
         return false;
