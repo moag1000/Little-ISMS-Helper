@@ -430,11 +430,42 @@ class LoadIso27701v2025RequirementsCommand extends Command
                 ],
             ],
             [
+                'id' => '27701:2025-A.7.3.7',
+                'title' => 'PII principals accessing their own PII (Controller)',
+                'description' => 'PII controllers shall provide PII principals with the capability to review their PII and challenge its accuracy and completeness.',
+                'category' => 'PII Principal Rights',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['5.34'],
+                ],
+            ],
+            [
+                'id' => '27701:2025-A.7.3.8',
+                'title' => 'Provide information to PII principals on request (Controller)',
+                'description' => 'PII controllers shall provide information about PII processing to PII principals upon request, including AI processing details.',
+                'category' => 'Transparency',
+                'priority' => 'high',
+                'data_source_mapping' => [
+                    'iso_controls' => ['5.34'],
+                ],
+            ],
+            [
                 'id' => '27701:2025-A.7.3.9',
                 'title' => 'Temporary file management (Controller)',
                 'description' => 'PII controllers shall manage temporary files containing PII, including cached data in AI systems.',
                 'category' => 'Data Management',
                 'priority' => 'medium',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.10'],
+                    'asset_types' => ['data'],
+                ],
+            ],
+            [
+                'id' => '27701:2025-A.7.3.10',
+                'title' => 'Disposal of PII (Controller)',
+                'description' => 'PII controllers shall dispose of PII in a secure manner when no longer required, including secure deletion from backups and AI models.',
+                'category' => 'Data Disposal',
+                'priority' => 'critical',
                 'data_source_mapping' => [
                     'iso_controls' => ['8.10'],
                     'asset_types' => ['data'],
@@ -483,6 +514,47 @@ class LoadIso27701v2025RequirementsCommand extends Command
                 ],
             ],
             [
+                'id' => '27701:2025-A.7.4.5',
+                'title' => 'Restriction of processing (Controller)',
+                'description' => 'PII controllers shall provide mechanisms for PII principals to restrict processing of their PII in certain circumstances.',
+                'category' => 'PII Principal Rights',
+                'priority' => 'high',
+                'data_source_mapping' => [
+                    'iso_controls' => ['5.34'],
+                ],
+            ],
+            [
+                'id' => '27701:2025-A.7.4.6',
+                'title' => 'Object to processing (Controller)',
+                'description' => 'PII controllers shall allow PII principals to object to processing of their PII, including profiling and automated decision-making.',
+                'category' => 'PII Principal Rights',
+                'priority' => 'high',
+                'data_source_mapping' => [
+                    'iso_controls' => ['5.34'],
+                ],
+            ],
+            [
+                'id' => '27701:2025-A.7.4.7',
+                'title' => 'Retention and deletion of PII (Controller)',
+                'description' => 'PII controllers shall define and implement retention periods and deletion schedules for PII, including AI training data.',
+                'category' => 'Data Retention',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.10'],
+                    'asset_types' => ['data'],
+                ],
+            ],
+            [
+                'id' => '27701:2025-A.7.4.8',
+                'title' => 'PII transmission controls (Controller)',
+                'description' => 'PII controllers shall implement controls for transmission of PII, ensuring confidentiality and integrity during transfer.',
+                'category' => 'Data Transfer',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['5.14', '8.24'],
+                ],
+            ],
+            [
                 'id' => '27701:2025-A.7.5.1',
                 'title' => 'Notification of PII breach (Controller)',
                 'description' => 'PII controllers shall notify authorities and PII principals of PII breaches, including breaches involving AI systems or training data.',
@@ -491,6 +563,28 @@ class LoadIso27701v2025RequirementsCommand extends Command
                 'data_source_mapping' => [
                     'iso_controls' => ['5.26'],
                     'incident_management' => true,
+                ],
+            ],
+            [
+                'id' => '27701:2025-A.7.5.2',
+                'title' => 'PII breach response (Controller)',
+                'description' => 'PII controllers shall respond to PII breaches in accordance with documented procedures, including containment, investigation, and remediation.',
+                'category' => 'Incident Response',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['5.26', '5.27'],
+                    'incident_management' => true,
+                ],
+            ],
+            [
+                'id' => '27701:2025-A.7.5.3',
+                'title' => 'Privacy complaints handling (Controller)',
+                'description' => 'PII controllers shall establish and maintain a process for handling privacy complaints from PII principals.',
+                'category' => 'Complaints Management',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['5.34'],
+                    'audit_evidence' => true,
                 ],
             ],
 
@@ -548,6 +642,140 @@ class LoadIso27701v2025RequirementsCommand extends Command
                 'priority' => 'critical',
                 'data_source_mapping' => [
                     'iso_controls' => ['5.34'],
+                    'audit_evidence' => true,
+                ],
+            ],
+
+            // Additional Controller Requirements - Access Control and Security
+            [
+                'id' => '27701:2025-A.7.8.1',
+                'title' => 'Access controls for PII (Controller)',
+                'description' => 'PII controllers shall implement appropriate access controls to limit access to PII based on business need and data classification.',
+                'category' => 'Access Control',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['5.15', '5.18'],
+                ],
+            ],
+            [
+                'id' => '27701:2025-A.7.8.2',
+                'title' => 'Encryption of PII (Controller)',
+                'description' => 'PII controllers shall implement encryption for PII at rest and in transit where appropriate to the risk.',
+                'category' => 'Cryptography',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.24'],
+                ],
+            ],
+            [
+                'id' => '27701:2025-A.7.8.3',
+                'title' => 'Logging of PII access (Controller)',
+                'description' => 'PII controllers shall log access to and processing of PII to enable monitoring and investigation of privacy incidents.',
+                'category' => 'Monitoring',
+                'priority' => 'high',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.15'],
+                    'audit_evidence' => true,
+                ],
+            ],
+            [
+                'id' => '27701:2025-A.7.8.4',
+                'title' => 'Testing and validation of PII systems (Controller)',
+                'description' => 'PII controllers shall test and validate systems processing PII, including security testing and privacy controls testing.',
+                'category' => 'Testing',
+                'priority' => 'high',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.29'],
+                ],
+            ],
+            [
+                'id' => '27701:2025-A.7.8.5',
+                'title' => 'Backup of PII (Controller)',
+                'description' => 'PII controllers shall implement backup procedures for PII while ensuring backup copies are subject to the same privacy controls.',
+                'category' => 'Backup',
+                'priority' => 'high',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.13'],
+                ],
+            ],
+            [
+                'id' => '27701:2025-A.7.8.6',
+                'title' => 'Physical security for PII storage (Controller)',
+                'description' => 'PII controllers shall implement physical security controls for equipment and media storing PII.',
+                'category' => 'Physical Security',
+                'priority' => 'high',
+                'data_source_mapping' => [
+                    'iso_controls' => ['7.1', '7.2', '7.8'],
+                ],
+            ],
+            [
+                'id' => '27701:2025-A.7.8.7',
+                'title' => 'Protection against malware for PII systems (Controller)',
+                'description' => 'PII controllers shall implement malware protection for systems processing PII to prevent data breaches.',
+                'category' => 'Malware Protection',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.7'],
+                ],
+            ],
+            [
+                'id' => '27701:2025-A.7.8.8',
+                'title' => 'Vulnerability management for PII systems (Controller)',
+                'description' => 'PII controllers shall implement vulnerability management processes for systems processing PII.',
+                'category' => 'Vulnerability Management',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.8'],
+                ],
+            ],
+            [
+                'id' => '27701:2025-A.7.8.9',
+                'title' => 'Network security for PII transmission (Controller)',
+                'description' => 'PII controllers shall implement network security controls to protect PII during transmission.',
+                'category' => 'Network Security',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.20', '8.21', '8.22'],
+                ],
+            ],
+            [
+                'id' => '27701:2025-A.7.8.10',
+                'title' => 'Configuration management for PII systems (Controller)',
+                'description' => 'PII controllers shall implement configuration management for systems processing PII to maintain security baselines.',
+                'category' => 'Configuration Management',
+                'priority' => 'high',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.9'],
+                ],
+            ],
+            [
+                'id' => '27701:2025-A.7.8.11',
+                'title' => 'Secure development lifecycle for PII systems (Controller)',
+                'description' => 'PII controllers shall apply secure development practices to systems and applications processing PII.',
+                'category' => 'Secure Development',
+                'priority' => 'high',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.25', '8.27', '8.28'],
+                ],
+            ],
+            [
+                'id' => '27701:2025-A.7.8.12',
+                'title' => 'Third-party service provider assessment (Controller)',
+                'description' => 'PII controllers shall assess third-party service providers before engaging them to process PII.',
+                'category' => 'Third Party Management',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['5.19', '5.21'],
+                ],
+            ],
+            [
+                'id' => '27701:2025-A.7.8.13',
+                'title' => 'Monitoring of third-party processing (Controller)',
+                'description' => 'PII controllers shall monitor and audit third-party processing of PII to ensure compliance.',
+                'category' => 'Third Party Management',
+                'priority' => 'high',
+                'data_source_mapping' => [
+                    'iso_controls' => ['5.22'],
                     'audit_evidence' => true,
                 ],
             ],
@@ -617,6 +845,26 @@ class LoadIso27701v2025RequirementsCommand extends Command
                 ],
             ],
             [
+                'id' => '27701:2025-B.8.2.4',
+                'title' => 'Security of PII processing (Processor)',
+                'description' => 'PII processors shall implement appropriate technical and organizational measures to ensure security of PII processing.',
+                'category' => 'PII Processor Obligations',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['5.15', '8.1', '8.24'],
+                ],
+            ],
+            [
+                'id' => '27701:2025-B.8.2.5',
+                'title' => 'PII processor personnel (Processor)',
+                'description' => 'PII processors shall ensure personnel processing PII are subject to confidentiality obligations and have appropriate training.',
+                'category' => 'PII Processor Obligations',
+                'priority' => 'high',
+                'data_source_mapping' => [
+                    'iso_controls' => ['6.1', '6.2', '6.3'],
+                ],
+            ],
+            [
                 'id' => '27701:2025-B.8.3.1',
                 'title' => 'Subcontractor relationships (Processor)',
                 'description' => 'PII processors shall only engage sub-processors with prior authorization, including cloud sub-processors and AI service providers.',
@@ -624,6 +872,26 @@ class LoadIso27701v2025RequirementsCommand extends Command
                 'priority' => 'critical',
                 'data_source_mapping' => [
                     'iso_controls' => ['5.19', '5.22'],
+                ],
+            ],
+            [
+                'id' => '27701:2025-B.8.3.2',
+                'title' => 'Sub-processor obligations (Processor)',
+                'description' => 'PII processors shall ensure sub-processors are subject to the same privacy obligations as the processor.',
+                'category' => 'Subcontracting',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['5.19', '5.20'],
+                ],
+            ],
+            [
+                'id' => '27701:2025-B.8.3.3',
+                'title' => 'Change of sub-processors (Processor)',
+                'description' => 'PII processors shall inform controllers of intended changes concerning addition or replacement of sub-processors.',
+                'category' => 'Subcontracting',
+                'priority' => 'high',
+                'data_source_mapping' => [
+                    'iso_controls' => ['5.22', '5.23'],
                 ],
             ],
             [
@@ -645,6 +913,27 @@ class LoadIso27701v2025RequirementsCommand extends Command
                 'data_source_mapping' => [
                     'iso_controls' => ['5.26'],
                     'incident_management' => true,
+                ],
+            ],
+            [
+                'id' => '27701:2025-B.8.4.3',
+                'title' => 'Assistance with PPIA (Processor)',
+                'description' => 'PII processors shall assist controllers in carrying out PII protection impact assessments, providing necessary information about processing.',
+                'category' => 'PII Processor Obligations',
+                'priority' => 'high',
+                'data_source_mapping' => [
+                    'iso_controls' => ['5.7'],
+                ],
+            ],
+            [
+                'id' => '27701:2025-B.8.4.4',
+                'title' => 'Make available information to demonstrate compliance (Processor)',
+                'description' => 'PII processors shall make available information necessary to demonstrate compliance with processor obligations, including audit support.',
+                'category' => 'PII Processor Obligations',
+                'priority' => 'high',
+                'data_source_mapping' => [
+                    'iso_controls' => ['5.35', '5.36'],
+                    'audit_evidence' => true,
                 ],
             ],
             [
@@ -679,6 +968,39 @@ class LoadIso27701v2025RequirementsCommand extends Command
                 ],
             ],
 
+            [
+                'id' => '27701:2025-B.8.5.4',
+                'title' => 'PII de-identification and anonymization (Processor)',
+                'description' => 'PII processors shall implement appropriate de-identification and anonymization techniques when instructed by controllers.',
+                'category' => 'Data Protection',
+                'priority' => 'high',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.11'],
+                ],
+            ],
+            [
+                'id' => '27701:2025-B.8.5.5',
+                'title' => 'Temporary files containing PII (Processor)',
+                'description' => 'PII processors shall manage temporary files containing PII in accordance with controller requirements.',
+                'category' => 'Data Management',
+                'priority' => 'medium',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.10'],
+                    'asset_types' => ['data'],
+                ],
+            ],
+            [
+                'id' => '27701:2025-B.8.5.6',
+                'title' => 'Disposal of PII (Processor)',
+                'description' => 'PII processors shall dispose of PII in a secure manner when instructed by controllers, including secure deletion from all systems.',
+                'category' => 'Data Disposal',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.10', '7.14'],
+                    'asset_types' => ['data'],
+                ],
+            ],
+
             // NEW 2025: Processor-specific AI and Cloud Requirements
             [
                 'id' => '27701:2025-B.8.6.1',
@@ -710,6 +1032,49 @@ class LoadIso27701v2025RequirementsCommand extends Command
                     'iso_controls' => ['8.20', '8.31'],
                 ],
             ],
+            [
+                'id' => '27701:2025-B.8.6.4',
+                'title' => 'Incident response for processor environments (Processor)',
+                'description' => 'PII processors shall maintain incident response capabilities specific to PII breaches in their processing environments.',
+                'category' => 'Incident Management',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['5.24', '5.25', '5.26'],
+                    'incident_management' => true,
+                ],
+            ],
+            [
+                'id' => '27701:2025-B.8.6.5',
+                'title' => 'Vulnerability management for processing infrastructure (Processor)',
+                'description' => 'PII processors shall implement vulnerability management for infrastructure used to process customer PII.',
+                'category' => 'Vulnerability Management',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.8'],
+                ],
+            ],
+            [
+                'id' => '27701:2025-B.8.6.6',
+                'title' => 'Logging and monitoring of PII processing (Processor)',
+                'description' => 'PII processors shall implement comprehensive logging and monitoring of PII processing activities.',
+                'category' => 'Monitoring',
+                'priority' => 'high',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.15', '8.16'],
+                    'audit_evidence' => true,
+                ],
+            ],
+            [
+                'id' => '27701:2025-B.8.6.7',
+                'title' => 'Backup and recovery for customer PII (Processor)',
+                'description' => 'PII processors shall implement backup and recovery procedures for customer PII according to agreed service levels.',
+                'category' => 'Backup',
+                'priority' => 'high',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.13', '5.29'],
+                ],
+            ],
         ];
     }
 }
+
