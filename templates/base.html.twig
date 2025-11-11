@@ -14,14 +14,8 @@
         {# Bootstrap Icons - Loaded via CDN due to AssetMapper issue #52620 with fonts/ subfolder #}
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" integrity="sha384-XGjxtQfXaH2tnPFa9x+ruJTuLE3Aa6LhHSWRr1XeTyhezb4abCG4ccI5AkVDxqC+" crossorigin="anonymous">
 
-        {#
-            Custom styles are loaded via AssetMapper through assets/app.js
-            All CSS files are imported there and will be automatically included via importmap('app')
-            This ensures:
-            - No dependency on external CDNs (offline-capable)
-            - Proper cache-busting with versioned filenames (e.g., app-6zxcGag.css)
-            - Single HTTP/2 multiplexed connection for all assets
-        #}
+        {# Custom styles - Loaded via AssetMapper with automatic versioning #}
+        <link rel="stylesheet" href="{{ asset('styles.css') }}">
         <style>
             /* Turbo Progress Bar */
             .turbo-progress-bar {
@@ -172,7 +166,7 @@
     </script>
 
     {% block javascripts %}
-        {% block importmap %}{{ importmap(['app', 'styles']) }}{% endblock %}
+        {% block importmap %}{{ importmap('app') }}{% endblock %}
     {% endblock %}
 </body>
 </html>
