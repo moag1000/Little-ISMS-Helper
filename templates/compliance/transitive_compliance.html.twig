@@ -5,8 +5,8 @@
 {% block body %}
 <div class="d-flex justify-between align-center mb-4">
     <div>
-        <h1>{{ 'compliance.title.transitive'|trans }}</h1>
-        <p style="color: var(--color-text-light); margin-top: var(--spacing-sm);">
+        <h1>🔗 {{ 'compliance.title.transitive'|trans }}</h1>
+        <p style="color: var(--color-text-secondary); margin-top: var(--spacing-sm); font-size: 1.1rem;">
             {{ 'compliance.description.transitive'|trans }}
         </p>
     </div>
@@ -17,404 +17,383 @@
     </div>
 </div>
 
-{# Statistics Cards #}
-<div class="kpi-grid">
+{# Statistics Cards - Prominently displayed #}
+<div class="kpi-grid" style="margin-bottom: 2rem;">
     <div class="kpi-card">
-        <div class="icon">🔗</div>
-        <div class="label">{{ 'compliance.stats.total_relationships'|trans }}</div>
+        <div class="icon" style="font-size: 2.5rem;">🔗</div>
+        <div class="label" style="font-size: 0.9rem; color: var(--color-text-secondary);">{{ 'compliance.stats.total_relationships'|trans }}</div>
         <div>
-            <span class="value">{{ total_relationships }}</span>
+            <span class="value" style="font-size: 2.5rem; font-weight: bold; color: var(--color-primary);">{{ total_relationships }}</span>
         </div>
     </div>
 
     <div class="kpi-card">
-        <div class="icon">✅</div>
-        <div class="label">{{ 'compliance.stats.transitive_compliance'|trans }}</div>
+        <div class="icon" style="font-size: 2.5rem;">✅</div>
+        <div class="label" style="font-size: 0.9rem; color: var(--color-text-secondary);">{{ 'compliance.stats.transitive_compliance'|trans }}</div>
         <div>
-            <span class="value">{{ transitive_compliance }}</span>
+            <span class="value" style="font-size: 2.5rem; font-weight: bold; color: var(--color-success);">{{ transitive_compliance }}</span>
         </div>
     </div>
 
     <div class="kpi-card">
-        <div class="icon">📈</div>
-        <div class="label">{{ 'compliance.stats.leverage_rate'|trans }}</div>
+        <div class="icon" style="font-size: 2.5rem;">📈</div>
+        <div class="label" style="font-size: 0.9rem; color: var(--color-text-secondary);">{{ 'compliance.stats.leverage_rate'|trans }}</div>
         <div>
             {% set leverageRate = total_relationships > 0 ? (transitive_compliance / total_relationships * 100)|round : 0 %}
-            <span class="value">{{ leverageRate }}</span>
-            <span class="unit">%</span>
+            <span class="value" style="font-size: 2.5rem; font-weight: bold; color: var(--color-info);">{{ leverageRate }}</span>
+            <span class="unit" style="font-size: 1.2rem; color: var(--color-text-secondary);">%</span>
         </div>
     </div>
 
     <div class="kpi-card">
-        <div class="icon">🎯</div>
-        <div class="label">{{ 'compliance.stats.frameworks_leveraged'|trans }}</div>
+        <div class="icon" style="font-size: 2.5rem;">🎯</div>
+        <div class="label" style="font-size: 0.9rem; color: var(--color-text-secondary);">{{ 'compliance.stats.frameworks_leveraged'|trans }}</div>
         <div>
-            <span class="value">{{ frameworks_leveraged }}</span>
+            <span class="value" style="font-size: 2.5rem; font-weight: bold; color: var(--color-warning);">{{ frameworks_leveraged }}</span>
         </div>
     </div>
 </div>
 
-{# Transitive Compliance Explanation #}
-<div class="info-box mb-4" style="background: var(--color-info-light); border-left: 4px solid var(--color-info);">
-    <p><strong>ℹ️ {{ 'compliance.info.transitive_title'|trans }}</strong></p>
-    <p style="margin-top: var(--spacing-xs);">{{ 'compliance.info.transitive_desc'|trans }}</p>
-</div>
+{# Tabbed Interface for better organization #}
+<div class="card" style="margin-bottom: 2rem;">
+    <div class="tabs">
+        <button class="tab-button active" onclick="switchTab('overview')">
+            📊 Übersicht
+        </button>
+        <button class="tab-button" onclick="switchTab('matrix')">
+            🔢 Mapping-Matrix
+        </button>
+        <button class="tab-button" onclick="switchTab('details')">
+            📋 Detaillierte Mappings
+        </button>
+        <button class="tab-button" onclick="switchTab('info')">
+            💡 Erklärung
+        </button>
+    </div>
 
-{# Framework Relationships #}
-<h2>{{ 'compliance.section.framework_relationships'|trans }}</h2>
+    {# Tab 1: Overview #}
+    <div id="tab-overview" class="tab-content active">
+        <h2 style="margin-top: 0; color: var(--color-primary);">{{ 'compliance.section.framework_relationships'|trans }}</h2>
 
-<div class="module-grid mb-4">
-    {% for relationship in framework_relationships %}
-    <div class="card">
-        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--spacing-md);">
-            <div>
-                <h3 style="font-size: 1.1rem; margin-bottom: var(--spacing-xs);">
-                    {{ relationship.sourceFramework.name }}
-                </h3>
-                <div style="font-size: 1.5rem; color: var(--color-primary);">↓</div>
-                <h3 style="font-size: 1.1rem; margin-top: var(--spacing-xs);">
-                    {{ relationship.targetFramework.name }}
-                </h3>
+        {% if framework_relationships is empty %}
+            <div class="info-box" style="background: var(--color-bg-alt); text-align: center; padding: 3rem;">
+                <p style="font-size: 1.2rem; color: var(--color-text-muted);">
+                    🔍 {{ 'compliance.message.no_relationships'|trans }}
+                </p>
             </div>
-        </div>
-
-        <div class="stats-grid" style="grid-template-columns: 1fr 1fr;">
-            <div class="stat-item">
-                <strong>{{ relationship.mappedRequirements }}</strong>
-                <span>{{ 'compliance.field.mapped'|trans }}</span>
-            </div>
-            <div class="stat-item">
-                <strong>{{ relationship.coveragePercentage }}%</strong>
-                <span>{{ 'compliance.field.coverage'|trans }}</span>
-            </div>
-        </div>
-
-        <div class="progress mt-2" style="height: 8px;">
-            <div class="progress-bar" style="width: {{ relationship.coveragePercentage }}%;"></div>
-        </div>
-
-        <div class="mt-3">
-            <a href="{{ path('app_compliance_relationship_details', {id: relationship.id}) }}" class="btn btn-sm">
-                {{ 'common.view_details'|trans }}
-            </a>
-        </div>
-    </div>
-    {% else %}
-    <div class="card" style="grid-column: 1 / -1;">
-        <p style="text-align: center; color: var(--color-text-muted);">
-            {{ 'compliance.message.no_relationships'|trans }}
-        </p>
-    </div>
-    {% endfor %}
-</div>
-
-{# Transitive Compliance Matrix #}
-<h2>{{ 'compliance.section.compliance_matrix'|trans }}</h2>
-
-<div class="card mb-4">
-    <p style="color: var(--color-text-muted); margin-bottom: var(--spacing-md);">
-        {{ 'compliance.description.matrix'|trans }}
-    </p>
-
-    <div class="table-container" style="overflow-x: auto;">
-        <table style="min-width: 800px;">
-            <thead>
-                <tr>
-                    <th style="position: sticky; left: 0; background: var(--color-bg); z-index: 10;">
-                        {{ 'compliance.field.framework'|trans }}
-                    </th>
-                    {% for framework in frameworks %}
-                    <th style="text-align: center;">{{ framework.shortName ?? framework.name }}</th>
-                    {% endfor %}
-                </tr>
-            </thead>
-            <tbody>
-                {% for sourceFramework in frameworks %}
-                <tr>
-                    <td style="position: sticky; left: 0; background: var(--color-bg); font-weight: bold;">
-                        {{ sourceFramework.shortName ?? sourceFramework.name }}
-                    </td>
-                    {% for targetFramework in frameworks %}
-                    <td style="text-align: center;">
-                        {% if sourceFramework.id == targetFramework.id %}
-                            <span style="color: var(--color-text-muted);">-</span>
-                        {% else %}
-                            {% set mapping = mapping_matrix[sourceFramework.id][targetFramework.id] ?? null %}
-                            {% if mapping and mapping.coverage > 0 %}
-                                <span class="badge badge-success">{{ mapping.coverage|round }}%</span>
-                            {% else %}
-                                <span class="badge badge-secondary">0%</span>
-                            {% endif %}
-                        {% endif %}
-                    </td>
-                    {% endfor %}
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-</div>
-
-{# Compliance Leverage Opportunities #}
-<h2>{{ 'compliance.section.leverage_opportunities'|trans }}</h2>
-
-<div class="table-container">
-    <table>
-        <thead>
-            <tr>
-                <th>{{ 'compliance.field.source_requirement'|trans }}</th>
-                <th>{{ 'compliance.field.source_framework'|trans }}</th>
-                <th>{{ 'compliance.field.target_requirements'|trans }}</th>
-                <th>{{ 'compliance.field.target_frameworks'|trans }}</th>
-                <th style="text-align: center;">{{ 'compliance.field.leverage_impact'|trans }}</th>
-                <th style="text-align: center;">{{ 'common.actions'|trans }}</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for opportunity in leverage_opportunities %}
-            <tr>
-                <td>
-                    <strong>{{ opportunity.sourceRequirement.identifier }}</strong>
-                    <br><small style="color: var(--color-text-muted);">{{ opportunity.sourceRequirement.name }}</small>
-                </td>
-                <td>
-                    <span class="badge badge-info">{{ opportunity.sourceFramework.name }}</span>
-                </td>
-                <td>
-                    {% for req in opportunity.targetRequirements %}
-                        <div style="margin-bottom: var(--spacing-xs);">
-                            <code>{{ req.identifier }}</code>
+        {% else %}
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 1.5rem;">
+                {% for relationship in framework_relationships %}
+                <div class="card" style="padding: 1.5rem; border: 2px solid var(--color-border); transition: all 0.2s;">
+                    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                        <div style="flex: 1;">
+                            <div style="font-weight: 600; font-size: 0.95rem; color: var(--color-text-secondary); margin-bottom: 0.25rem;">
+                                {{ relationship.sourceFramework.code }}
+                            </div>
+                            <div style="font-size: 2rem; color: var(--color-primary); text-align: center; margin: 0.5rem 0;">
+                                ↓
+                            </div>
+                            <div style="font-weight: 600; font-size: 0.95rem; color: var(--color-text-secondary); margin-top: 0.25rem;">
+                                {{ relationship.targetFramework.code }}
+                            </div>
                         </div>
-                    {% endfor %}
-                </td>
-                <td>
-                    {% for framework in opportunity.targetFrameworks %}
-                        <span class="badge badge-secondary" style="margin-right: var(--spacing-xs); margin-bottom: var(--spacing-xs);">
-                            {{ framework.shortName ?? framework.name }}
-                        </span>
-                    {% endfor %}
-                </td>
-                <td style="text-align: center;">
-                    <span class="badge badge-success">{{ opportunity.impactScore }}</span>
-                </td>
-                <td style="text-align: center;">
-                    <a href="{{ path('app_compliance_leverage_details', {id: opportunity.id}) }}" class="btn btn-sm">
-                        👁 {{ 'common.view'|trans }}
-                    </a>
-                </td>
-            </tr>
-            {% else %}
-            <tr>
-                <td colspan="6" style="text-align: center; padding: var(--spacing-xl); color: var(--color-text-muted);">
-                    {{ 'compliance.message.no_leverage_opportunities'|trans }}
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
 
-{# Cross-Framework Mappings Details #}
-<h2>{{ 'compliance.section.cross_framework_mappings'|trans }}</h2>
+                        <div style="text-align: center;">
+                            <div style="font-size: 2rem; font-weight: bold; color: var(--color-success);">
+                                {{ relationship.coveragePercentage }}%
+                            </div>
+                            <div style="font-size: 0.75rem; color: var(--color-text-secondary);">
+                                Coverage
+                            </div>
+                        </div>
+                    </div>
 
-{% if cross_mappings is not empty %}
-    {# Coverage Matrix #}
-    <div class="card mb-4">
-        <div style="padding: var(--spacing-lg);">
-            <h3 style="margin-bottom: var(--spacing-md);">📊 {{ 'compliance.section.compliance_matrix'|trans }}</h3>
-            <p style="color: var(--color-text-muted); margin-bottom: var(--spacing-md);">
-                {{ 'compliance.description.matrix'|trans }}
-            </p>
-            <div style="overflow-x: auto;">
-                <table class="matrix-table" style="min-width: 600px; border-collapse: collapse; width: 100%;">
-                    <thead>
-                        <tr>
-                            <th style="padding: var(--spacing-md); border: 1px solid var(--color-border); background: var(--color-bg); font-weight: 600;">
-                                {{ 'compliance.label.source_target_matrix'|trans }}
+                    <div style="background: var(--color-bg-alt); padding: 0.75rem; border-radius: 4px; margin-bottom: 1rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="font-size: 0.85rem; color: var(--color-text-secondary);">
+                                {{ 'compliance.field.mapped'|trans }}:
+                            </span>
+                            <span style="font-weight: 600; font-size: 1.1rem; color: var(--color-primary);">
+                                {{ relationship.mappedRequirements }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="progress" style="height: 10px; border-radius: 5px; background: var(--color-bg-alt);">
+                        <div class="progress-bar" style="width: {{ relationship.coveragePercentage }}%; height: 10px; border-radius: 5px; background: linear-gradient(to right, var(--color-success), var(--color-info)); transition: width 0.3s;"></div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+
+    {# Tab 2: Matrix #}
+    <div id="tab-matrix" class="tab-content" style="display: none;">
+        <h2 style="margin-top: 0; color: var(--color-primary);">{{ 'compliance.section.compliance_matrix'|trans }}</h2>
+        <p style="color: var(--color-text-secondary); margin-bottom: 1.5rem;">
+            {{ 'compliance.description.matrix'|trans }}
+        </p>
+
+        <div style="overflow-x: auto; margin-bottom: 1.5rem;">
+            <table style="width: 100%; border-collapse: collapse; min-width: 600px;">
+                <thead>
+                    <tr style="background: var(--color-bg-alt);">
+                        <th style="padding: 1rem; border: 1px solid var(--color-border); text-align: left; font-weight: 600; position: sticky; left: 0; background: var(--color-bg-alt); z-index: 10;">
+                            Von → Nach
+                        </th>
+                        {% for framework in frameworks %}
+                            <th style="padding: 1rem; border: 1px solid var(--color-border); text-align: center; font-weight: 600; font-size: 0.9rem;">
+                                {{ framework.code }}
                             </th>
-                            {% for framework in frameworks %}
-                                <th style="padding: var(--spacing-md); border: 1px solid var(--color-border); text-align: center; background: var(--color-bg); font-weight: 600;">
-                                    {{ framework.code }}
-                                </th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for sourceFramework in frameworks %}
+                        <tr>
+                            <td style="padding: 1rem; border: 1px solid var(--color-border); font-weight: 600; position: sticky; left: 0; background: white; z-index: 5;">
+                                {{ sourceFramework.code }}
+                            </td>
+                            {% for targetFramework in frameworks %}
+                                <td style="padding: 1rem; border: 1px solid var(--color-border); text-align: center;">
+                                    {% if sourceFramework.id == targetFramework.id %}
+                                        <span style="color: var(--color-text-muted); font-weight: 600;">100%</span>
+                                    {% else %}
+                                        {% set mapping = mapping_matrix[sourceFramework.id][targetFramework.id] ?? null %}
+                                        {% if mapping and mapping.coverage > 0 %}
+                                            {% set percentage = mapping.coverage|round %}
+                                            <span class="badge" style="padding: 0.4rem 0.8rem; font-size: 0.9rem; font-weight: 600; background: {% if percentage >= 75 %}var(--color-success){% elseif percentage >= 50 %}var(--color-warning){% else %}var(--color-danger){% endif %}; color: white;">
+                                                {{ percentage }}%
+                                            </span>
+                                        {% else %}
+                                            <span class="badge badge-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.9rem;">0%</span>
+                                        {% endif %}
+                                    {% endif %}
+                                </td>
                             {% endfor %}
                         </tr>
-                    </thead>
-                    <tbody>
-                        {% for sourceFramework in frameworks %}
-                            <tr>
-                                <td style="padding: var(--spacing-md); border: 1px solid var(--color-border); font-weight: bold;">
-                                    {{ sourceFramework.code }}
-                                </td>
-                                {% for targetFramework in frameworks %}
-                                    <td style="padding: var(--spacing-md); border: 1px solid var(--color-border); text-align: center;">
-                                        {% if sourceFramework.id == targetFramework.id %}
-                                            <span style="color: var(--color-text-muted); font-weight: 600;">100%</span>
-                                        {% elseif coverage_matrix[sourceFramework.code][targetFramework.code] is defined %}
-                                            {% set coverage = coverage_matrix[sourceFramework.code][targetFramework.code] %}
-                                            {% set percentage = coverage.coverage_percentage ?? 0 %}
-                                            <span style="font-weight: 600; font-size: 1.1rem; color: {{ percentage >= 75 ? 'var(--color-success)' : (percentage >= 50 ? 'var(--color-warning)' : 'var(--color-danger)') }};">
-                                                {{ percentage|round }}%
-                                            </span>
-                                            <br>
-                                            <small style="font-size: 0.75rem; color: var(--color-text-muted);">
-                                                {{ coverage.covered_requirements }}/{{ coverage.total_target_requirements }}
-                                            </small>
-                                        {% else %}
-                                            <span style="color: var(--color-text-muted);">—</span>
-                                        {% endif %}
-                                    </td>
-                                {% endfor %}
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div style="display: flex; justify-content: center; gap: 2rem; padding: 1rem; background: var(--color-bg-alt); border-radius: 8px;">
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <span style="width: 30px; height: 20px; background: var(--color-success); border-radius: 4px;"></span>
+                <span style="font-size: 0.9rem;">≥ 75%</span>
             </div>
-            <div style="display: flex; justify-content: center; gap: var(--spacing-lg); margin-top: var(--spacing-md); padding: var(--spacing-md); background: var(--color-bg-alt); border-radius: var(--border-radius);">
-                <div style="display: flex; align-items: center; gap: var(--spacing-xs);">
-                    <span style="width: 20px; height: 20px; background: var(--color-success); border-radius: 4px;"></span>
-                    <span>{{ 'compliance.mapping.strength.high'|trans }}</span>
-                </div>
-                <div style="display: flex; align-items: center; gap: var(--spacing-xs);">
-                    <span style="width: 20px; height: 20px; background: var(--color-warning); border-radius: 4px;"></span>
-                    <span>{{ 'compliance.mapping.strength.medium'|trans }}</span>
-                </div>
-                <div style="display: flex; align-items: center; gap: var(--spacing-xs);">
-                    <span style="width: 20px; height: 20px; background: var(--color-danger); border-radius: 4px;"></span>
-                    <span>{{ 'compliance.mapping.strength.low'|trans }}</span>
-                </div>
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <span style="width: 30px; height: 20px; background: var(--color-warning); border-radius: 4px;"></span>
+                <span style="font-size: 0.9rem;">50-74%</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <span style="width: 30px; height: 20px; background: var(--color-danger); border-radius: 4px;"></span>
+                <span style="font-size: 0.9rem;">< 50%</span>
             </div>
         </div>
     </div>
 
-    {# Detailed Mappings by Framework Pair #}
-    {% for mapping_group in cross_mappings %}
-        <div class="card mb-4">
-            <div style="padding: var(--spacing-lg); border-bottom: 1px solid var(--color-border);">
-                <h3 style="margin-bottom: var(--spacing-xs);">
-                    {{ mapping_group.source.code }} → {{ mapping_group.target.code }}
-                </h3>
-                <p style="color: var(--color-text-muted);">
-                    {{ mapping_group.coverage.covered_requirements }} {{ 'compliance.field.mapped'|trans|lower }}
-                    ({{ mapping_group.coverage.coverage_percentage|round }}% {{ 'compliance.field.coverage'|trans|lower }})
+    {# Tab 3: Detailed Mappings #}
+    <div id="tab-details" class="tab-content" style="display: none;">
+        <h2 style="margin-top: 0; color: var(--color-primary);">{{ 'compliance.section.cross_framework_mappings'|trans }}</h2>
+
+        {% if cross_mappings is empty %}
+            <div class="info-box" style="background: var(--color-bg-alt); text-align: center; padding: 3rem;">
+                <p style="font-size: 1.2rem; color: var(--color-text-muted);">
+                    {{ 'compliance.message.no_mappings'|trans }}
+                </p>
+            </div>
+        {% else %}
+            {% for mapping_group in cross_mappings %}
+                <details class="card" style="margin-bottom: 1.5rem; border: 2px solid var(--color-border);" open>
+                    <summary style="padding: 1.5rem; cursor: pointer; font-size: 1.2rem; font-weight: 600; color: var(--color-primary); list-style: none;">
+                        <span style="margin-right: 0.5rem;">▶</span>
+                        {{ mapping_group.source.code }} → {{ mapping_group.target.code }}
+                        <span style="float: right; font-size: 1rem; color: var(--color-text-secondary);">
+                            {{ mapping_group.coverage.covered_requirements }} mappings ({{ mapping_group.coverage.coverage_percentage|round }}%)
+                        </span>
+                    </summary>
+
+                    <div style="padding: 0 1.5rem 1.5rem 1.5rem; border-top: 1px solid var(--color-border);">
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 1.5rem 0;">
+                            <div style="text-align: center; padding: 1rem; background: var(--color-success-light); border-radius: 8px;">
+                                <div style="font-size: 2rem; font-weight: bold; color: var(--color-success);">
+                                    {{ mapping_group.coverage.strong_mappings ?? 0 }}
+                                </div>
+                                <div style="font-size: 0.85rem; color: var(--color-text-secondary); margin-top: 0.25rem;">
+                                    {{ 'compliance.mapping.type.full'|trans }}
+                                </div>
+                            </div>
+                            <div style="text-align: center; padding: 1rem; background: var(--color-warning-light); border-radius: 8px;">
+                                <div style="font-size: 2rem; font-weight: bold; color: var(--color-warning);">
+                                    {{ mapping_group.coverage.partial_mappings ?? 0 }}
+                                </div>
+                                <div style="font-size: 0.85rem; color: var(--color-text-secondary); margin-top: 0.25rem;">
+                                    {{ 'compliance.mapping.type.partial'|trans }}
+                                </div>
+                            </div>
+                            <div style="text-align: center; padding: 1rem; background: var(--color-bg-alt); border-radius: 8px;">
+                                <div style="font-size: 2rem; font-weight: bold; color: var(--color-secondary);">
+                                    {{ mapping_group.coverage.weak_mappings ?? 0 }}
+                                </div>
+                                <div style="font-size: 0.85rem; color: var(--color-text-secondary); margin-top: 0.25rem;">
+                                    {{ 'compliance.mapping.type.weak'|trans }}
+                                </div>
+                            </div>
+                        </div>
+
+                        {% if mapping_group.mappings|length > 5 %}
+                            <p style="text-align: center; color: var(--color-text-secondary); font-style: italic; margin: 1rem 0;">
+                                Zeige erste 5 von {{ mapping_group.mappings|length }} Mappings
+                            </p>
+                        {% endif %}
+
+                        <div style="overflow-x: auto;">
+                            <table style="width: 100%; border-collapse: collapse;">
+                                <thead style="background: var(--color-bg-alt);">
+                                    <tr>
+                                        <th style="padding: 0.75rem; text-align: left; font-size: 0.9rem;">{{ 'compliance.field.source_requirement'|trans }}</th>
+                                        <th style="padding: 0.75rem; text-align: left; font-size: 0.9rem;">{{ 'compliance.field.target_requirements'|trans }}</th>
+                                        <th style="padding: 0.75rem; text-align: center; font-size: 0.9rem;">{{ 'compliance.field.mapping_strength'|trans }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for mapping in mapping_group.mappings|slice(0, 5) %}
+                                        <tr style="border-bottom: 1px solid var(--color-border);">
+                                            <td style="padding: 0.75rem;">
+                                                <strong style="color: var(--color-primary);">{{ mapping.sourceRequirement.requirementId }}</strong>
+                                                <div style="font-size: 0.85rem; color: var(--color-text-secondary); margin-top: 0.25rem;">
+                                                    {{ mapping.sourceRequirement.title|length > 60 ? mapping.sourceRequirement.title|slice(0, 60) ~ '...' : mapping.sourceRequirement.title }}
+                                                </div>
+                                            </td>
+                                            <td style="padding: 0.75rem;">
+                                                <strong style="color: var(--color-primary);">{{ mapping.targetRequirement.requirementId }}</strong>
+                                                <div style="font-size: 0.85rem; color: var(--color-text-secondary); margin-top: 0.25rem;">
+                                                    {{ mapping.targetRequirement.title|length > 60 ? mapping.targetRequirement.title|slice(0, 60) ~ '...' : mapping.targetRequirement.title }}
+                                                </div>
+                                            </td>
+                                            <td style="padding: 0.75rem; text-align: center;">
+                                                <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                                                    <div style="flex: 1; max-width: 100px; height: 8px; background: var(--color-bg-alt); border-radius: 4px; overflow: hidden;">
+                                                        <div style="height: 100%; width: {{ mapping.mappingPercentage }}%; background: {% if mapping.mappingPercentage >= 100 %}var(--color-success){% elseif mapping.mappingPercentage >= 50 %}var(--color-warning){% else %}var(--color-secondary){% endif %};"></div>
+                                                    </div>
+                                                    <span style="font-weight: 600; min-width: 45px;">{{ mapping.mappingPercentage }}%</span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </details>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    {# Tab 4: Explanation #}
+    <div id="tab-info" class="tab-content" style="display: none;">
+        <h2 style="margin-top: 0; color: var(--color-primary);">💡 {{ 'compliance.section.mapping_explanation'|trans }}</h2>
+
+        <div style="display: grid; gap: 1.5rem;">
+            <div class="card" style="padding: 1.5rem; border-left: 4px solid var(--color-info);">
+                <h3 style="color: var(--color-info); margin-top: 0;">{{ 'compliance.explanation.what_are_mappings_title'|trans }}</h3>
+                <p style="line-height: 1.6; color: var(--color-text);">
+                    {{ 'compliance.explanation.what_are_mappings'|trans }}
                 </p>
             </div>
 
-            <div style="display: flex; justify-content: space-around; padding: var(--spacing-lg); background: var(--color-bg-alt); border-bottom: 1px solid var(--color-border);">
-                <div style="display: flex; align-items: center; gap: var(--spacing-md);">
-                    <div style="width: 50px; height: 50px; border-radius: 50%; background: var(--color-success); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem;">✓</div>
-                    <div>
-                        <div style="font-size: 2rem; font-weight: bold; color: var(--color-primary);">{{ mapping_group.coverage.strong_mappings ?? 0 }}</div>
-                        <div style="font-size: 0.85rem; color: var(--color-text-muted);">{{ 'compliance.mapping.type.full'|trans }} (≥100%)</div>
-                    </div>
-                </div>
-                <div style="display: flex; align-items: center; gap: var(--spacing-md);">
-                    <div style="width: 50px; height: 50px; border-radius: 50%; background: var(--color-warning); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem;">⚠</div>
-                    <div>
-                        <div style="font-size: 2rem; font-weight: bold; color: var(--color-primary);">{{ mapping_group.coverage.partial_mappings ?? 0 }}</div>
-                        <div style="font-size: 0.85rem; color: var(--color-text-muted);">{{ 'compliance.mapping.type.partial'|trans }} (50-99%)</div>
-                    </div>
-                </div>
-                <div style="display: flex; align-items: center; gap: var(--spacing-md);">
-                    <div style="width: 50px; height: 50px; border-radius: 50%; background: var(--color-secondary); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem;">◐</div>
-                    <div>
-                        <div style="font-size: 2rem; font-weight: bold; color: var(--color-primary);">{{ mapping_group.coverage.weak_mappings ?? 0 }}</div>
-                        <div style="font-size: 0.85rem; color: var(--color-text-muted);">{{ 'compliance.mapping.type.weak'|trans }} (<50%)</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>{{ 'compliance.field.source_requirement'|trans }}</th>
-                            <th>{{ 'compliance.field.target_requirements'|trans }}</th>
-                            <th>{{ 'compliance.field.mapping_type'|trans }}</th>
-                            <th>{{ 'compliance.field.mapping_strength'|trans }}</th>
-                            <th style="text-align: center;">{{ 'compliance.field.bidirectional'|trans }}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for mapping in mapping_group.mappings|slice(0, 10) %}
-                            <tr>
-                                <td>
-                                    <strong>{{ mapping.sourceRequirement.requirementId }}</strong><br>
-                                    <small style="color: var(--color-text-muted);">
-                                        {{ mapping.sourceRequirement.title|length > 60 ? mapping.sourceRequirement.title|slice(0, 60) ~ '...' : mapping.sourceRequirement.title }}
-                                    </small>
-                                </td>
-                                <td>
-                                    <strong>{{ mapping.targetRequirement.requirementId }}</strong><br>
-                                    <small style="color: var(--color-text-muted);">
-                                        {{ mapping.targetRequirement.title|length > 60 ? mapping.targetRequirement.title|slice(0, 60) ~ '...' : mapping.targetRequirement.title }}
-                                    </small>
-                                </td>
-                                <td>
-                                    <span class="badge badge-{{ mapping.mappingBadgeClass }}">
-                                        {{ mapping.mappingType|upper }}
-                                    </span>
-                                </td>
-                                <td>
-                                    <div style="display: flex; align-items: center; gap: var(--spacing-sm);">
-                                        <div style="flex: 1; height: 8px; background: var(--color-bg-alt); border-radius: 4px; overflow: hidden;">
-                                            <div style="height: 100%; width: {{ mapping.mappingPercentage }}%; background: {{ mapping.mappingPercentage >= 100 ? 'var(--color-success)' : (mapping.mappingPercentage >= 50 ? 'var(--color-warning)' : 'var(--color-secondary)') }};"></div>
-                                        </div>
-                                        <span style="font-weight: 600; min-width: 50px; text-align: right;">{{ mapping.mappingPercentage }}%</span>
-                                    </div>
-                                </td>
-                                <td style="text-align: center;">
-                                    {% if mapping.bidirectional %}
-                                        <span class="badge badge-success">🔄 {{ 'common.yes'|trans }}</span>
-                                    {% else %}
-                                        <span class="badge badge-secondary">→</span>
-                                    {% endif %}
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-
-            {% if mapping_group.mappings|length > 10 %}
-                <div style="padding: var(--spacing-md); text-align: center; color: var(--color-text-muted); border-top: 1px solid var(--color-border);">
-                    {{ 'compliance.label.showing_of'|trans({'%count%': 10}) }} {{ mapping_group.mappings|length }} {{ 'compliance.label.mappings_count'|trans }}
-                </div>
-            {% endif %}
-        </div>
-    {% endfor %}
-
-    {# Explanation Section #}
-    <div class="info-box mb-4" style="background: var(--color-info-light); border-left: 4px solid var(--color-info);">
-        <h3 style="margin-bottom: var(--spacing-md);">💡 {{ 'compliance.section.mapping_explanation'|trans }}</h3>
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--spacing-lg);">
-            <div>
-                <h4 style="color: var(--color-primary); margin-bottom: var(--spacing-sm);">{{ 'compliance.explanation.what_are_mappings_title'|trans }}</h4>
-                <p style="margin: 0;">{{ 'compliance.explanation.what_are_mappings'|trans }}</p>
-            </div>
-            <div>
-                <h4 style="color: var(--color-primary); margin-bottom: var(--spacing-sm);">{{ 'compliance.explanation.mapping_types_title'|trans }}</h4>
-                <ul style="margin: 0; padding-left: var(--spacing-lg);">
-                    <li style="margin-bottom: var(--spacing-xs);"><strong>{{ 'compliance.explanation.mapping_types_exceeds'|trans }}</strong></li>
-                    <li style="margin-bottom: var(--spacing-xs);"><strong>{{ 'compliance.explanation.mapping_types_full'|trans }}</strong></li>
-                    <li style="margin-bottom: var(--spacing-xs);"><strong>{{ 'compliance.explanation.mapping_types_partial'|trans }}</strong></li>
-                    <li style="margin-bottom: var(--spacing-xs);"><strong>{{ 'compliance.explanation.mapping_types_weak'|trans }}</strong></li>
+            <div class="card" style="padding: 1.5rem; border-left: 4px solid var(--color-success);">
+                <h3 style="color: var(--color-success); margin-top: 0;">{{ 'compliance.explanation.mapping_types_title'|trans }}</h3>
+                <ul style="line-height: 1.8; color: var(--color-text); padding-left: 1.5rem;">
+                    <li><strong>{{ 'compliance.explanation.mapping_types_exceeds'|trans }}</strong></li>
+                    <li><strong>{{ 'compliance.explanation.mapping_types_full'|trans }}</strong></li>
+                    <li><strong>{{ 'compliance.explanation.mapping_types_partial'|trans }}</strong></li>
+                    <li><strong>{{ 'compliance.explanation.mapping_types_weak'|trans }}</strong></li>
                 </ul>
             </div>
-            <div>
-                <h4 style="color: var(--color-primary); margin-bottom: var(--spacing-sm);">{{ 'compliance.explanation.bidirectional_title'|trans }}</h4>
-                <p style="margin: 0;">{{ 'compliance.explanation.bidirectional'|trans }}</p>
-            </div>
-            <div>
-                <h4 style="color: var(--color-primary); margin-bottom: var(--spacing-sm);">{{ 'compliance.explanation.strategic_value_title'|trans }}</h4>
-                <p style="margin: 0;">{{ 'compliance.explanation.strategic_value'|trans }}</p>
+
+            <div class="card" style="padding: 1.5rem; border-left: 4px solid var(--color-warning);">
+                <h3 style="color: var(--color-warning); margin-top: 0;">{{ 'compliance.explanation.strategic_value_title'|trans }}</h3>
+                <p style="line-height: 1.6; color: var(--color-text);">
+                    {{ 'compliance.explanation.strategic_value'|trans }}
+                </p>
             </div>
         </div>
     </div>
-{% else %}
-    <div class="card">
-        <p style="text-align: center; color: var(--color-text-muted); padding: var(--spacing-xl);">
-            {{ 'compliance.message.no_mappings'|trans }}
-        </p>
-    </div>
-{% endif %}
+</div>
+
+<style>
+.tabs {
+    display: flex;
+    border-bottom: 2px solid var(--color-border);
+    margin: -1rem -1rem 0 -1rem;
+    padding: 0 1rem;
+    background: var(--color-bg-alt);
+    overflow-x: auto;
+}
+
+.tab-button {
+    padding: 1rem 1.5rem;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.tab-button:hover {
+    color: var(--color-primary);
+    background: var(--color-bg);
+}
+
+.tab-button.active {
+    color: var(--color-primary);
+    border-bottom-color: var(--color-primary);
+    font-weight: 600;
+}
+
+.tab-content {
+    padding: 2rem 1rem;
+}
+
+details summary {
+    transition: color 0.2s;
+}
+
+details[open] summary {
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 1rem;
+}
+
+details[open] summary span:first-child {
+    transform: rotate(90deg);
+    display: inline-block;
+}
+</style>
+
+<script>
+function switchTab(tabName) {
+    // Hide all tabs
+    document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.style.display = 'none';
+    });
+
+    // Remove active class from all buttons
+    document.querySelectorAll('.tab-button').forEach(btn => {
+        btn.classList.remove('active');
+    });
+
+    // Show selected tab
+    document.getElementById('tab-' + tabName).style.display = 'block';
+
+    // Add active class to clicked button
+    event.target.classList.add('active');
+}
+</script>
 {% endblock %}
