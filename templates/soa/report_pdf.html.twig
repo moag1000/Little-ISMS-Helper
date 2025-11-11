@@ -233,17 +233,17 @@
             </tr>
         </thead>
         <tbody>
-            {% for category, count in categoryStats %}
+            {% for stat in categoryStats %}
                 <tr>
-                    <td><strong>{{ category }}</strong></td>
+                    <td><strong>{{ stat.category }}</strong></td>
                     <td>
-                        {% if category == 'A.5' %}Organisational Controls
-                        {% elseif category == 'A.6' %}People Controls
-                        {% elseif category == 'A.7' %}Physical Controls
-                        {% elseif category == 'A.8' %}Technological Controls
+                        {% if stat.category == 'Organizational' %}Organisational Controls
+                        {% elseif stat.category == 'People' %}People Controls
+                        {% elseif stat.category == 'Physical' %}Physical Controls
+                        {% elseif stat.category == 'Technological' %}Technological Controls
                         {% endif %}
                     </td>
-                    <td style="text-align: center;">{{ count }}</td>
+                    <td style="text-align: center;">{{ stat.total }}</td>
                 </tr>
             {% endfor %}
         </tbody>
@@ -256,10 +256,10 @@
     {% for category, controls in controlsByCategory %}
         <div class="category-header">
             {{ category }} -
-            {% if category == 'A.5' %}Organisational Controls
-            {% elseif category == 'A.6' %}People Controls
-            {% elseif category == 'A.7' %}Physical Controls
-            {% elseif category == 'A.8' %}Technological Controls
+            {% if category == 'Organizational' %}Organisational Controls
+            {% elseif category == 'People' %}People Controls
+            {% elseif category == 'Physical' %}Physical Controls
+            {% elseif category == 'Technological' %}Technological Controls
             {% endif %}
             ({{ controls|length }} controls)
         </div>
