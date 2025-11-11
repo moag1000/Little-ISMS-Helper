@@ -11,10 +11,10 @@
         </div>
         <div class="button-group">
             <a href="{{ path('app_compliance_index') }}" class="btn btn-secondary">
-                ← Zurück
+                ← {{ 'compliance.button.back'|trans }}
             </a>
             <a href="{{ path('app_compliance_assess', {id: framework.id}) }}" class="btn btn-success">
-                Neu bewerten
+                {{ 'compliance.button.reassess'|trans }}
             </a>
         </div>
     </div>
@@ -22,24 +22,24 @@
     {# Quick Stats Bar - Always Visible #}
     <div class="stats-bar">
         <div class="stat-item">
-            <div class="stat-label">Compliance</div>
+            <div class="stat-label">{{ 'compliance.label.compliance'|trans }}</div>
             <div class="stat-value">{{ dashboard.compliance_percentage }}%</div>
         </div>
         <div class="stat-item">
-            <div class="stat-label">Anforderungen</div>
+            <div class="stat-label">{{ 'compliance.label.requirements'|trans }}</div>
             <div class="stat-value">{{ dashboard.statistics.applicable }}/{{ dashboard.statistics.total }}</div>
         </div>
         <div class="stat-item">
-            <div class="stat-label">Erfüllt</div>
+            <div class="stat-label">{{ 'compliance.label.fulfilled'|trans }}</div>
             <div class="stat-value" style="color: var(--color-success);">{{ dashboard.statistics.fulfilled }}</div>
         </div>
         <div class="stat-item">
-            <div class="stat-label">Lücken</div>
+            <div class="stat-label">{{ 'compliance.label.gaps'|trans }}</div>
             <div class="stat-value" style="color: var(--color-danger);">{{ dashboard.gaps.total }}</div>
         </div>
         <div class="stat-item">
-            <div class="stat-label">Zeitersparnis</div>
-            <div class="stat-value">{{ dashboard.data_reuse.total_days_saved }} Tage</div>
+            <div class="stat-label">{{ 'compliance.label.time_savings'|trans }}</div>
+            <div class="stat-value">{{ dashboard.data_reuse.total_days_saved }} {{ 'compliance.label.days'|trans }}</div>
         </div>
     </div>
 
@@ -47,16 +47,16 @@
     <div class="tabs" data-controller="toggle">
         <div class="tab-nav">
             <button class="tab-button active" data-action="click->toggle#switchTab" data-tab="overview">
-                Übersicht
+                {{ 'compliance.tab.overview'|trans }}
             </button>
             <button class="tab-button" data-action="click->toggle#switchTab" data-tab="requirements">
-                Anforderungen
+                {{ 'compliance.tab.requirements'|trans }}
             </button>
             <button class="tab-button" data-action="click->toggle#switchTab" data-tab="gaps">
-                Lücken ({{ dashboard.gaps.total }})
+                {{ 'compliance.tab.gaps'|trans }} ({{ dashboard.gaps.total }})
             </button>
             <button class="tab-button" data-action="click->toggle#switchTab" data-tab="data-reuse">
-                Datennutzung
+                {{ 'compliance.tab.data_reuse'|trans }}
             </button>
         </div>
 
@@ -64,33 +64,33 @@
         <div class="tab-content active" data-tab-content="overview">
             <div class="card">
                 <div class="card-header">
-                    <h2>Framework-Informationen</h2>
+                    <h2>{{ 'compliance.framework_info'|trans }}</h2>
                 </div>
                 <div class="card-body">
                     <div class="info-grid">
                         <div class="info-item">
-                            <span class="label">Code:</span>
+                            <span class="label">{{ 'compliance.label.code'|trans }}:</span>
                             <span class="value">{{ framework.code }}</span>
                         </div>
                         <div class="info-item">
-                            <span class="label">Version:</span>
+                            <span class="label">{{ 'compliance.version'|trans }}:</span>
                             <span class="value">{{ framework.version }}</span>
                         </div>
                         <div class="info-item">
-                            <span class="label">Branche:</span>
+                            <span class="label">{{ 'compliance.industry'|trans }}:</span>
                             <span class="value">{{ framework.applicableIndustry|replace({'_': ' '})|title }}</span>
                         </div>
                         <div class="info-item">
-                            <span class="label">Regulierungsbehörde:</span>
+                            <span class="label">{{ 'compliance.regulatory_body'|trans }}:</span>
                             <span class="value">{{ framework.regulatoryBody }}</span>
                         </div>
                         <div class="info-item">
-                            <span class="label">Verpflichtend:</span>
+                            <span class="label">{{ 'compliance.mandatory'|trans }}:</span>
                             <span class="value">
                                 {% if framework.mandatory %}
-                                    <span class="badge badge-danger">Ja</span>
+                                    <span class="badge badge-danger">{{ 'compliance.label.yes'|trans }}</span>
                                 {% else %}
-                                    <span class="badge badge-success">Nein</span>
+                                    <span class="badge badge-success">{{ 'compliance.label.no'|trans }}</span>
                                 {% endif %}
                             </span>
                         </div>
@@ -102,7 +102,7 @@
             {% if dashboard.recommendations is not empty %}
                 <div class="card">
                     <div class="card-header">
-                        <h2>Empfehlungen</h2>
+                        <h2>{{ 'compliance.recommendations'|trans }}</h2>
                     </div>
                     <div class="card-body">
                         {% for recommendation in dashboard.recommendations %}
@@ -128,29 +128,29 @@
         <div class="tab-content" data-tab-content="requirements">
             <div class="card">
                 <div class="card-header">
-                    <h2>Anforderungen</h2>
+                    <h2>{{ 'compliance.tab.requirements'|trans }}</h2>
                     <div class="filter-toggle">
                         <button class="btn btn-sm btn-secondary" data-action="click->toggle#toggleFilter">
-                            Filter
+                            {{ 'compliance.filter'|trans }}
                         </button>
                     </div>
                 </div>
 
                 {# Filter Panel - Hidden by Default #}
                 <div class="filter-panel" data-toggle-target="filterPanel" style="display: none;">
-                    <input type="text" class="search-input" placeholder="Suchen..." id="reqSearch">
+                    <input type="text" class="search-input" placeholder="{{ 'compliance.search'|trans }}" id="reqSearch">
                     <select id="reqPriority">
-                        <option value="">Alle Prioritäten</option>
-                        <option value="critical">Critical</option>
-                        <option value="high">High</option>
-                        <option value="medium">Medium</option>
-                        <option value="low">Low</option>
+                        <option value="">{{ 'compliance.priority.all'|trans }}</option>
+                        <option value="critical">{{ 'compliance.priority.critical'|trans }}</option>
+                        <option value="high">{{ 'compliance.priority.high'|trans }}</option>
+                        <option value="medium">{{ 'compliance.priority.medium'|trans }}</option>
+                        <option value="low">{{ 'compliance.priority.low'|trans }}</option>
                     </select>
                     <select id="reqStatus">
-                        <option value="">Alle Status</option>
-                        <option value="fulfilled">Erfüllt (≥100%)</option>
-                        <option value="partial">Teilweise (50-99%)</option>
-                        <option value="gap">Lücke (<50%)</option>
+                        <option value="">{{ 'compliance.status.all'|trans }}</option>
+                        <option value="fulfilled">{{ 'compliance.status.fulfilled'|trans }}</option>
+                        <option value="partial">{{ 'compliance.status.partial'|trans }}</option>
+                        <option value="gap">{{ 'compliance.status.gap'|trans }}</option>
                     </select>
                 </div>
 
@@ -213,7 +213,7 @@
         <div class="tab-content" data-tab-content="gaps">
             <div class="card">
                 <div class="card-header">
-                    <h2>Compliance-Lücken</h2>
+                    <h2>{{ 'compliance.gaps.title'|trans }}</h2>
                 </div>
                 <div class="card-body">
                     {% if dashboard.gaps.total > 0 %}
@@ -232,15 +232,15 @@
                                     <div class="progress-bar">
                                         <div class="progress-fill" style="width: {{ gap.fulfillmentPercentage }}%; background: var(--color-danger);"></div>
                                     </div>
-                                    <span>{{ gap.fulfillmentPercentage }}% erfüllt</span>
+                                    <span>{{ gap.fulfillmentPercentage }}{{ 'compliance.gaps.fulfilled_percentage'|trans }}</span>
                                 </div>
                             </div>
                         {% endfor %}
                     {% else %}
                         <div class="text-center" style="padding: var(--spacing-xl);">
                             <div style="font-size: 3rem; margin-bottom: var(--spacing-md);">✅</div>
-                            <h3>Keine Lücken gefunden!</h3>
-                            <p class="text-muted">Alle anwendbaren Anforderungen sind vollständig erfüllt.</p>
+                            <h3>{{ 'compliance.gaps.none'|trans }}</h3>
+                            <p class="text-muted">{{ 'compliance.gaps.none_description'|trans }}</p>
                         </div>
                     {% endif %}
                 </div>
@@ -251,18 +251,18 @@
         <div class="tab-content" data-tab-content="data-reuse">
             <div class="card">
                 <div class="card-header">
-                    <h2>Datenwiederverwendung</h2>
+                    <h2>{{ 'compliance.tab.data_reuse'|trans }}</h2>
                 </div>
                 <div class="card-body">
                     <div class="value-highlight">
                         <div class="value-icon">💎</div>
                         <div class="value-content">
-                            <h3>{{ dashboard.data_reuse.total_hours_saved }} Stunden gespart</h3>
-                            <p>Das entspricht {{ dashboard.data_reuse.total_days_saved }} Arbeitstagen durch intelligente Datenwiederverwendung</p>
+                            <h3>{{ dashboard.data_reuse.total_hours_saved }} {{ 'compliance.data_reuse.hours_saved'|trans }}</h3>
+                            <p>{{ 'compliance.data_reuse.work_days'|trans({'%days%': dashboard.data_reuse.total_days_saved}) }}</p>
                         </div>
                     </div>
                     <a href="{{ path('app_compliance_data_reuse', {id: framework.id}) }}" class="btn btn-primary">
-                        Details anzeigen →
+                        {{ 'compliance.data_reuse.show_details'|trans }} →
                     </a>
                 </div>
             </div>
