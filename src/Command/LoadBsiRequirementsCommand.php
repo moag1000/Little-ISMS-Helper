@@ -13,7 +13,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
     name: 'app:load-bsi-requirements',
-    description: 'Load BSI IT-Grundschutz 200-4 (BCM) requirements with ISO 22301 mappings'
+    description: 'Load BSI IT-Grundschutz requirements including core building blocks and BCM with ISO mappings'
 )]
 class LoadBsiRequirementsCommand extends Command
 {
@@ -28,18 +28,18 @@ class LoadBsiRequirementsCommand extends Command
 
         // Create or get BSI framework
         $framework = $this->entityManager->getRepository(ComplianceFramework::class)
-            ->findOneBy(['code' => 'BSI-200-4']);
+            ->findOneBy(['code' => 'BSI-Grundschutz']);
 
         if (!$framework) {
             $framework = new ComplianceFramework();
-            $framework->setCode('BSI-200-4')
-                ->setName('BSI IT-Grundschutz 200-4 (BCM)')
-                ->setDescription('BSI-Standard 200-4: Business Continuity Management')
-                ->setVersion('200-4')
+            $framework->setCode('BSI-Grundschutz')
+                ->setName('BSI IT-Grundschutz')
+                ->setDescription('BSI IT-Grundschutz: Comprehensive IT security standard with building blocks (Bausteine) for organization, infrastructure, systems, and applications')
+                ->setVersion('2023')
                 ->setApplicableIndustry('all')
                 ->setRegulatoryBody('BSI (Bundesamt für Sicherheit in der Informationstechnik)')
                 ->setMandatory(false)
-                ->setScopeDescription('Business Continuity Management methodology for IT-Grundschutz')
+                ->setScopeDescription('IT-Grundschutz methodology covering ISMS, BCM, infrastructure, networks, systems, applications, and security concepts')
                 ->setActive(true);
 
             $this->entityManager->persist($framework);
@@ -62,7 +62,7 @@ class LoadBsiRequirementsCommand extends Command
 
         $this->entityManager->flush();
 
-        $io->success(sprintf('Successfully loaded %d BSI 200-4 requirements', count($requirements)));
+        $io->success(sprintf('Successfully loaded %d BSI IT-Grundschutz requirements', count($requirements)));
 
         return Command::SUCCESS;
     }
@@ -443,7 +443,523 @@ class LoadBsiRequirementsCommand extends Command
                 'priority' => 'high',
                 'data_source_mapping' => [
                     'iso_22301_controls' => ['8.4.4'],
-                    'iso_27001_controls' => ['5.19', '5.20', '5.21'],
+                    'iso_controls' => ['5.19', '5.20', '5.21'],
+                ],
+            ],
+
+            // ORP.1: Organization (Organisation)
+            [
+                'id' => 'ORP.1.A1',
+                'title' => 'Definition of Security Roles and Responsibilities',
+                'description' => 'Roles and responsibilities for information security shall be defined and assigned.',
+                'category' => 'ORP - Organization',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['5.3'],
+                    'audit_evidence' => true,
+                ],
+            ],
+            [
+                'id' => 'ORP.1.A2',
+                'title' => 'Appointment of Information Security Officer',
+                'description' => 'An Information Security Officer shall be appointed with appropriate authority and resources.',
+                'category' => 'ORP - Organization',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['5.3'],
+                    'audit_evidence' => true,
+                ],
+            ],
+            [
+                'id' => 'ORP.1.A3',
+                'title' => 'Security Awareness and Training',
+                'description' => 'Regular security awareness and training programs shall be conducted for all employees.',
+                'category' => 'ORP - Organization',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['6.3'],
+                    'training_required' => true,
+                ],
+            ],
+            [
+                'id' => 'ORP.2.A1',
+                'title' => 'Personnel Screening',
+                'description' => 'Background checks shall be performed on personnel according to legal and contractual requirements.',
+                'category' => 'ORP - Personnel',
+                'priority' => 'high',
+                'data_source_mapping' => [
+                    'iso_controls' => ['6.1'],
+                ],
+            ],
+            [
+                'id' => 'ORP.2.A2',
+                'title' => 'Confidentiality Agreements',
+                'description' => 'All employees shall sign confidentiality agreements before accessing sensitive information.',
+                'category' => 'ORP - Personnel',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['6.2'],
+                ],
+            ],
+            [
+                'id' => 'ORP.3.A1',
+                'title' => 'Incident Response Process',
+                'description' => 'A documented incident response process shall be established and maintained.',
+                'category' => 'ORP - Incident Management',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['5.24', '5.25', '5.26'],
+                    'incident_management' => true,
+                ],
+            ],
+
+            // INF.1: Infrastructure - General Building
+            [
+                'id' => 'INF.1.A1',
+                'title' => 'Physical Access Control',
+                'description' => 'Physical access to buildings and rooms shall be controlled and monitored.',
+                'category' => 'INF - Infrastructure',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['7.2'],
+                ],
+            ],
+            [
+                'id' => 'INF.1.A2',
+                'title' => 'Fire Protection',
+                'description' => 'Adequate fire detection and suppression systems shall be installed and maintained.',
+                'category' => 'INF - Infrastructure',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['7.4'],
+                ],
+            ],
+            [
+                'id' => 'INF.1.A3',
+                'title' => 'Water Damage Protection',
+                'description' => 'Protection measures against water damage shall be implemented.',
+                'category' => 'INF - Infrastructure',
+                'priority' => 'high',
+                'data_source_mapping' => [
+                    'iso_controls' => ['7.4'],
+                ],
+            ],
+            [
+                'id' => 'INF.2.A1',
+                'title' => 'Data Center Access Control',
+                'description' => 'Strict access control to data center facilities shall be enforced.',
+                'category' => 'INF - Data Center',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['7.2'],
+                ],
+            ],
+            [
+                'id' => 'INF.2.A2',
+                'title' => 'Environmental Monitoring',
+                'description' => 'Temperature, humidity, and other environmental factors in data centers shall be monitored.',
+                'category' => 'INF - Data Center',
+                'priority' => 'high',
+                'data_source_mapping' => [
+                    'iso_controls' => ['7.9'],
+                ],
+            ],
+            [
+                'id' => 'INF.2.A3',
+                'title' => 'Power Supply',
+                'description' => 'Redundant power supply and UPS systems shall be provided for data centers.',
+                'category' => 'INF - Data Center',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['7.9'],
+                ],
+            ],
+            [
+                'id' => 'INF.3.A1',
+                'title' => 'Room Security',
+                'description' => 'Server rooms and technical rooms shall be secured against unauthorized access.',
+                'category' => 'INF - Server Rooms',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['7.2', '7.3'],
+                ],
+            ],
+
+            // NET.1: Networks
+            [
+                'id' => 'NET.1.1.A1',
+                'title' => 'Network Architecture Documentation',
+                'description' => 'The network architecture shall be documented comprehensively.',
+                'category' => 'NET - Networks',
+                'priority' => 'high',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.20'],
+                    'audit_evidence' => true,
+                ],
+            ],
+            [
+                'id' => 'NET.1.1.A2',
+                'title' => 'Network Segmentation',
+                'description' => 'Networks shall be segmented based on security requirements and business needs.',
+                'category' => 'NET - Networks',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.22'],
+                ],
+            ],
+            [
+                'id' => 'NET.1.2.A1',
+                'title' => 'Firewall Configuration',
+                'description' => 'Firewalls shall be configured according to security policies with deny-all default rules.',
+                'category' => 'NET - Firewall',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.20', '8.22'],
+                ],
+            ],
+            [
+                'id' => 'NET.1.2.A2',
+                'title' => 'Firewall Rule Review',
+                'description' => 'Firewall rules shall be reviewed regularly and updated as needed.',
+                'category' => 'NET - Firewall',
+                'priority' => 'high',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.20'],
+                    'audit_evidence' => true,
+                ],
+            ],
+            [
+                'id' => 'NET.2.1.A1',
+                'title' => 'WLAN Security',
+                'description' => 'WLAN networks shall be secured using WPA3 or equivalent encryption.',
+                'category' => 'NET - WLAN',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.20', '8.24'],
+                ],
+            ],
+            [
+                'id' => 'NET.2.1.A2',
+                'title' => 'WLAN Segmentation',
+                'description' => 'Guest WLAN shall be separated from corporate networks.',
+                'category' => 'NET - WLAN',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.22'],
+                ],
+            ],
+            [
+                'id' => 'NET.3.1.A1',
+                'title' => 'Router Security',
+                'description' => 'Routers shall be hardened and secured according to best practices.',
+                'category' => 'NET - Router',
+                'priority' => 'high',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.9', '8.20'],
+                ],
+            ],
+            [
+                'id' => 'NET.3.2.A1',
+                'title' => 'VPN Security',
+                'description' => 'VPN connections shall use strong encryption and authentication.',
+                'category' => 'NET - VPN',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.24'],
+                ],
+            ],
+
+            // SYS.1: IT Systems - General
+            [
+                'id' => 'SYS.1.1.A1',
+                'title' => 'Server Hardening',
+                'description' => 'Servers shall be hardened according to security baseline configurations.',
+                'category' => 'SYS - Servers',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.9'],
+                ],
+            ],
+            [
+                'id' => 'SYS.1.1.A2',
+                'title' => 'Server Patch Management',
+                'description' => 'Security patches shall be applied to servers in a timely manner.',
+                'category' => 'SYS - Servers',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.8'],
+                ],
+            ],
+            [
+                'id' => 'SYS.1.1.A3',
+                'title' => 'Server Logging',
+                'description' => 'Comprehensive logging shall be enabled on all servers.',
+                'category' => 'SYS - Servers',
+                'priority' => 'high',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.15'],
+                ],
+            ],
+            [
+                'id' => 'SYS.2.1.A1',
+                'title' => 'Client Hardening',
+                'description' => 'Client systems shall be configured according to security baselines.',
+                'category' => 'SYS - Clients',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.9'],
+                ],
+            ],
+            [
+                'id' => 'SYS.2.1.A2',
+                'title' => 'Client Antivirus',
+                'description' => 'Antivirus software shall be installed and kept up-to-date on all clients.',
+                'category' => 'SYS - Clients',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.7'],
+                ],
+            ],
+            [
+                'id' => 'SYS.2.1.A3',
+                'title' => 'Client Disk Encryption',
+                'description' => 'Full disk encryption shall be enabled on all mobile and sensitive client systems.',
+                'category' => 'SYS - Clients',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.24'],
+                ],
+            ],
+            [
+                'id' => 'SYS.2.2.A1',
+                'title' => 'Mobile Device Management',
+                'description' => 'Mobile devices shall be managed through a central MDM solution.',
+                'category' => 'SYS - Mobile Devices',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['6.7', '8.9'],
+                ],
+            ],
+            [
+                'id' => 'SYS.2.2.A2',
+                'title' => 'Mobile Device Encryption',
+                'description' => 'Data on mobile devices shall be encrypted.',
+                'category' => 'SYS - Mobile Devices',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.24'],
+                ],
+            ],
+            [
+                'id' => 'SYS.2.3.A1',
+                'title' => 'Virtual Machine Security',
+                'description' => 'Virtual machines shall be secured and isolated appropriately.',
+                'category' => 'SYS - Virtualization',
+                'priority' => 'high',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.9'],
+                ],
+            ],
+            [
+                'id' => 'SYS.3.1.A1',
+                'title' => 'Directory Service Security',
+                'description' => 'Directory services (Active Directory, LDAP) shall be secured and monitored.',
+                'category' => 'SYS - Directory Services',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['5.16', '5.18'],
+                ],
+            ],
+
+            // APP.1: Applications
+            [
+                'id' => 'APP.1.1.A1',
+                'title' => 'Secure Software Development',
+                'description' => 'Applications shall be developed following secure coding practices.',
+                'category' => 'APP - Development',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.25', '8.28'],
+                ],
+            ],
+            [
+                'id' => 'APP.1.1.A2',
+                'title' => 'Security Testing',
+                'description' => 'Applications shall undergo security testing before deployment.',
+                'category' => 'APP - Development',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.29'],
+                    'audit_evidence' => true,
+                ],
+            ],
+            [
+                'id' => 'APP.2.1.A1',
+                'title' => 'Web Application Security',
+                'description' => 'Web applications shall be protected against common vulnerabilities (OWASP Top 10).',
+                'category' => 'APP - Web Applications',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.28'],
+                ],
+            ],
+            [
+                'id' => 'APP.2.1.A2',
+                'title' => 'Web Application Firewall',
+                'description' => 'A Web Application Firewall shall be deployed for critical web applications.',
+                'category' => 'APP - Web Applications',
+                'priority' => 'high',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.20'],
+                ],
+            ],
+            [
+                'id' => 'APP.3.1.A1',
+                'title' => 'Database Security',
+                'description' => 'Databases shall be hardened and access shall be restricted to authorized users only.',
+                'category' => 'APP - Databases',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.9'],
+                ],
+            ],
+            [
+                'id' => 'APP.3.1.A2',
+                'title' => 'Database Encryption',
+                'description' => 'Sensitive data in databases shall be encrypted at rest.',
+                'category' => 'APP - Databases',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.24'],
+                    'asset_types' => ['data'],
+                ],
+            ],
+            [
+                'id' => 'APP.3.1.A3',
+                'title' => 'Database Backup',
+                'description' => 'Regular database backups shall be performed and tested.',
+                'category' => 'APP - Databases',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.13'],
+                    'bcm_required' => true,
+                ],
+            ],
+            [
+                'id' => 'APP.4.1.A1',
+                'title' => 'Email Security',
+                'description' => 'Email systems shall be protected against spam, phishing, and malware.',
+                'category' => 'APP - Email',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.7', '8.23'],
+                ],
+            ],
+            [
+                'id' => 'APP.5.1.A1',
+                'title' => 'Cloud Application Security',
+                'description' => 'Security requirements shall be defined for cloud applications.',
+                'category' => 'APP - Cloud',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['5.19', '5.20', '5.23'],
+                    'asset_types' => ['cloud'],
+                ],
+            ],
+
+            // CON.1: Concepts
+            [
+                'id' => 'CON.1.A1',
+                'title' => 'Cryptographic Concept',
+                'description' => 'A comprehensive cryptographic concept shall be developed and maintained.',
+                'category' => 'CON - Cryptography',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.24'],
+                ],
+            ],
+            [
+                'id' => 'CON.1.A2',
+                'title' => 'Key Management',
+                'description' => 'Cryptographic keys shall be managed securely throughout their lifecycle.',
+                'category' => 'CON - Cryptography',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.24'],
+                ],
+            ],
+            [
+                'id' => 'CON.2.A1',
+                'title' => 'Data Protection Concept',
+                'description' => 'A data protection concept compliant with GDPR shall be implemented.',
+                'category' => 'CON - Data Protection',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['5.34'],
+                    'asset_types' => ['data'],
+                ],
+            ],
+            [
+                'id' => 'CON.3.A1',
+                'title' => 'Data Backup Concept',
+                'description' => 'A comprehensive data backup concept shall be established and tested regularly.',
+                'category' => 'CON - Backup',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.13'],
+                    'bcm_required' => true,
+                ],
+            ],
+            [
+                'id' => 'CON.4.A1',
+                'title' => 'Logging Concept',
+                'description' => 'A centralized logging concept shall be implemented for security monitoring.',
+                'category' => 'CON - Logging',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.15', '8.16'],
+                ],
+            ],
+            [
+                'id' => 'CON.5.A1',
+                'title' => 'Secure Deletion Concept',
+                'description' => 'A concept for secure deletion of data and media shall be established.',
+                'category' => 'CON - Data Deletion',
+                'priority' => 'high',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.10'],
+                ],
+            ],
+            [
+                'id' => 'CON.6.A1',
+                'title' => 'Security Incident Management Concept',
+                'description' => 'A comprehensive security incident management concept shall be implemented.',
+                'category' => 'CON - Incident Management',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['5.24', '5.25', '5.26'],
+                    'incident_management' => true,
+                ],
+            ],
+            [
+                'id' => 'CON.7.A1',
+                'title' => 'Secure Software Development Lifecycle',
+                'description' => 'A secure SDLC process shall be established for all software development.',
+                'category' => 'CON - Development',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.25', '8.28', '8.29'],
+                ],
+            ],
+            [
+                'id' => 'CON.8.A1',
+                'title' => 'Penetration Testing Concept',
+                'description' => 'Regular penetration tests shall be conducted and documented.',
+                'category' => 'CON - Testing',
+                'priority' => 'high',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.8'],
+                    'audit_evidence' => true,
                 ],
             ],
         ];
