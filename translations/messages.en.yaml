@@ -154,6 +154,7 @@ common:
   view: View
   view_details: View Details
   edit: Edit
+  show_all: Show All
 asset:
   new: New Asset
   create: Create Asset
@@ -404,6 +405,8 @@ context:
     active_goals: Active Goals
     achieved_goals: Achieved Goals
     next_review: Next Review
+    of_total: of %total%
+    success_rate: '%rate%% Success Rate'
   review_status:
     today: Today
     due: Review due
