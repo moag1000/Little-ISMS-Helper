@@ -354,8 +354,10 @@ audit:
     title: Audit Title
     scope: Scope
     scope_type: Audit Type
+    scoped_framework: Framework Scope
     objectives: Audit Objectives
     planned_date: Planned Date
+    actual_date: Actual Date
     completed_date: Completion Date
     status: Status
     lead_auditor: Lead Auditor
@@ -363,6 +365,7 @@ audit:
     frameworks: Audited Frameworks
     findings: Findings & Non-Conformities
     recommendations: Recommendations
+    conclusion: Conclusion
     summary: Summary
   validation:
     title_required: Please enter a title.
