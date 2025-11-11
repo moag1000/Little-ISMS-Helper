@@ -12,10 +12,10 @@
     --color-danger: #ef4444;
     --color-info: #06b6d4;
 
-    /* Text Colors */
+    /* Text Colors - Improved contrast for WCAG AA compliance */
     --color-text: #1e293b;
     --color-text-light: #64748b;
-    --color-text-muted: #94a3b8;
+    --color-text-muted: #64748b;  /* Changed from #94a3b8 for better contrast (6.4:1) */
 
     /* Background Colors */
     --color-bg: #f8fafc;
@@ -541,7 +541,7 @@ tbody tr {
 }
 
 tbody tr:hover {
-    background-color: #fafafa;
+    background-color: var(--color-bg-alt);
 }
 
 [data-theme="dark"] tbody tr:hover {

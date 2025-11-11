@@ -177,7 +177,7 @@
 
 .stat-card-title {
     font-size: 0.85rem;
-    color: #6c757d;
+    color: var(--text-secondary);
     text-transform: uppercase;
     letter-spacing: 0.5px;
     margin-bottom: 8px;
@@ -186,7 +186,7 @@
 .stat-card-value {
     font-size: 2rem;
     font-weight: 700;
-    color: #2c3e50;
+    color: var(--text-primary);
     margin-bottom: 5px;
 }
 
@@ -198,11 +198,11 @@
 }
 
 .stat-card-change.positive {
-    color: #27ae60;
+    color: var(--color-success);
 }
 
 .stat-card-change.negative {
-    color: #e74c3c;
+    color: var(--color-danger);
 }
 
 /* ===============================
@@ -252,7 +252,7 @@
 .widget-title {
     font-size: 1.1rem;
     font-weight: 600;
-    color: #2c3e50;
+    color: var(--text-primary);
     margin: 0;
     display: flex;
     align-items: center;
@@ -267,7 +267,7 @@
 .widget-action {
     background: transparent;
     border: none;
-    color: #6c757d;
+    color: var(--text-secondary);
     cursor: pointer;
     padding: 5px 10px;
     border-radius: 5px;
@@ -275,8 +275,8 @@
 }
 
 .widget-action:hover {
-    background: #f8f9fa;
-    color: #2c3e50;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
 }
 
 .chart-container {
@@ -354,13 +354,13 @@
 
 .activity-title {
     font-weight: 600;
-    color: #2c3e50;
+    color: var(--text-primary);
     margin-bottom: 3px;
     font-size: 0.95rem;
 }
 
 .activity-description {
-    color: #6c757d;
+    color: var(--text-secondary);
     font-size: 0.85rem;
     margin-bottom: 5px;
 }
@@ -369,7 +369,7 @@
     display: flex;
     gap: 15px;
     font-size: 0.75rem;
-    color: #95a5a6;
+    color: var(--text-muted);
 }
 
 .activity-time,
@@ -390,15 +390,15 @@
 }
 
 .quick-action-btn {
-    background: white;
-    border: 2px solid #e0e0e0;
+    background: var(--bg-elevated);
+    border: 2px solid var(--border-color);
     border-radius: 10px;
     padding: 20px 15px;
     text-align: center;
     transition: all 0.3s ease;
     cursor: pointer;
     text-decoration: none;
-    color: #2c3e50;
+    color: var(--text-primary);
     display: flex;
     flex-direction: column;
     align-items: center;
