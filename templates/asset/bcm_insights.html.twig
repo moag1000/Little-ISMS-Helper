@@ -32,7 +32,7 @@
         <div class="icon">🔴</div>
         <div class="label">{{ 'asset.stats.critical_assets'|trans }}</div>
         <div>
-            <span class="value" style="color: var(--color-danger);">{{ criticalAssets }}</span>
+            <span class="value text-danger">{{ criticalAssets }}</span>
         </div>
     </div>
 
@@ -59,12 +59,12 @@
 
 <div class="module-grid mb-4">
     <div class="card border-left-danger">
-        <div style="font-size: 2rem; margin-bottom: var(--spacing-sm);">🔴</div>
+        <div class="fs-2-mb-sm">🔴</div>
         <h3>{{ 'asset.impact.critical'|trans }}</h3>
         <div class="mt-2">
-            <strong style="font-size: 1.5rem; color: var(--color-danger);">{{ assetsByImpact.critical|length }}</strong>
+            <strong class="fs-15-danger">{{ assetsByImpact.critical|length }}</strong>
         </div>
-        <p style="color: var(--color-text-muted); margin-top: var(--spacing-xs);">
+        <p class="text-muted-mt-xs">
             {{ 'asset.description.critical_impact'|trans }}
         </p>
         <div class="mt-2">
@@ -72,13 +72,13 @@
         </div>
     </div>
 
-    <div class="card" style="border-left: 4px solid var(--color-warning);">
-        <div style="font-size: 2rem; margin-bottom: var(--spacing-sm);">🟡</div>
+    <div class="card border-left-warning">
+        <div class="fs-2-mb-sm">🟡</div>
         <h3>{{ 'asset.impact.high'|trans }}</h3>
         <div class="mt-2">
-            <strong style="font-size: 1.5rem; color: var(--color-warning);">{{ assetsByImpact.high|length }}</strong>
+            <strong class="fs-15-warning">{{ assetsByImpact.high|length }}</strong>
         </div>
-        <p style="color: var(--color-text-muted); margin-top: var(--spacing-xs);">
+        <p class="text-muted-mt-xs">
             {{ 'asset.description.high_impact'|trans }}
         </p>
         <div class="mt-2">
@@ -86,13 +86,13 @@
         </div>
     </div>
 
-    <div class="card" style="border-left: 4px solid var(--color-info);">
-        <div style="font-size: 2rem; margin-bottom: var(--spacing-sm);">🔵</div>
+    <div class="card border-left-info">
+        <div class="fs-2-mb-sm">🔵</div>
         <h3>{{ 'asset.impact.medium'|trans }}</h3>
         <div class="mt-2">
-            <strong style="font-size: 1.5rem; color: var(--color-info);">{{ assetsByImpact.medium|length }}</strong>
+            <strong class="fs-15-info">{{ assetsByImpact.medium|length }}</strong>
         </div>
-        <p style="color: var(--color-text-muted); margin-top: var(--spacing-xs);">
+        <p class="text-muted-mt-xs">
             {{ 'asset.description.medium_impact'|trans }}
         </p>
         <div class="mt-2">
@@ -100,13 +100,13 @@
         </div>
     </div>
 
-    <div class="card" style="border-left: 4px solid var(--color-secondary);">
-        <div style="font-size: 2rem; margin-bottom: var(--spacing-sm);">⚪</div>
+    <div class="card border-left-secondary">
+        <div class="fs-2-mb-sm">⚪</div>
         <h3>{{ 'asset.impact.low'|trans }}</h3>
         <div class="mt-2">
-            <strong style="font-size: 1.5rem;">{{ assetsByImpact.low|length }}</strong>
+            <strong class="fs-15">{{ assetsByImpact.low|length }}</strong>
         </div>
-        <p style="color: var(--color-text-muted); margin-top: var(--spacing-xs);">
+        <p class="text-muted-mt-xs">
             {{ 'asset.description.low_impact'|trans }}
         </p>
         <div class="mt-2">
@@ -119,7 +119,7 @@
 <h2>{{ 'asset.section.rto_analysis'|trans }}</h2>
 
 <div class="card mb-4">
-    <p style="color: var(--color-text-muted); margin-bottom: var(--spacing-md);">
+    <p class="text-muted-mb-md">
         {{ 'asset.description.rto_analysis'|trans }}
     </p>
 
@@ -143,7 +143,7 @@
                     </td>
                     <td>
                         {% for asset in rtoCategories.immediate|slice(0, 3) %}
-                            <span class="badge badge-secondary" style="margin-right: var(--spacing-xs);">{{ asset.name }}</span>
+                            <span class="badge badge-secondary mr-xs">{{ asset.name }}</span>
                         {% endfor %}
                     </td>
                 </tr>
@@ -157,7 +157,7 @@
                     </td>
                     <td>
                         {% for asset in rtoCategories.urgent|slice(0, 3) %}
-                            <span class="badge badge-secondary" style="margin-right: var(--spacing-xs);">{{ asset.name }}</span>
+                            <span class="badge badge-secondary mr-xs">{{ asset.name }}</span>
                         {% endfor %}
                     </td>
                 </tr>
@@ -171,7 +171,7 @@
                     </td>
                     <td>
                         {% for asset in rtoCategories.standard|slice(0, 3) %}
-                            <span class="badge badge-secondary" style="margin-right: var(--spacing-xs);">{{ asset.name }}</span>
+                            <span class="badge badge-secondary mr-xs">{{ asset.name }}</span>
                         {% endfor %}
                     </td>
                 </tr>
@@ -185,7 +185,7 @@
                     </td>
                     <td>
                         {% for asset in rtoCategories.flexible|slice(0, 3) %}
-                            <span class="badge badge-secondary" style="margin-right: var(--spacing-xs);">{{ asset.name }}</span>
+                            <span class="badge badge-secondary mr-xs">{{ asset.name }}</span>
                         {% endfor %}
                     </td>
                 </tr>
@@ -216,7 +216,7 @@
                 <td>
                     <strong>{{ asset.name }}</strong>
                     {% if asset.isBusinessCritical %}
-                        <span class="badge badge-danger" style="margin-left: var(--spacing-xs);">
+                        <span class="badge badge-danger ml-xs">
                             {{ 'asset.badge.business_critical'|trans }}
                         </span>
                     {% endif %}
@@ -254,7 +254,7 @@
             </tr>
             {% else %}
             <tr>
-                <td colspan="7" style="text-align: center; padding: var(--spacing-xl); color: var(--color-text-muted);">
+                <td colspan="7" class="text-center-p-xl">
                     {{ 'asset.message.no_critical_assets'|trans }}
                 </td>
             </tr>
@@ -266,11 +266,11 @@
 {# Dependency Map #}
 <div class="card mt-4">
     <h2>{{ 'asset.section.dependency_insights'|trans }}</h2>
-    <p style="color: var(--color-text-muted); margin-top: var(--spacing-sm); margin-bottom: var(--spacing-md);">
+    <p class="text-muted-mt-sm-mb-md">
         {{ 'asset.description.dependencies'|trans }}
     </p>
 
-    <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));">
+    <div class="stats-grid grid-auto-fit-250">
         <div class="stat-item">
             <strong>{{ assetsWithDependencies }}</strong>
             <span>{{ 'asset.stats.with_dependencies'|trans }}</span>
