@@ -187,6 +187,8 @@ export default class extends Controller {
     // Show/Hide Help Modal
     show() {
         if (this.hasModalTarget) {
+            // Remove d-none class added by modal manager (has !important)
+            this.modalTarget.classList.remove('d-none');
             // Override modal manager's display:none with display:flex
             this.modalTarget.style.display = 'flex';
             this.modalTarget.classList.add('keyboard-shortcuts-open');
@@ -197,6 +199,7 @@ export default class extends Controller {
     close() {
         if (this.hasModalTarget) {
             this.modalTarget.style.display = 'none';
+            this.modalTarget.classList.add('d-none');
             this.modalTarget.classList.remove('keyboard-shortcuts-open');
         }
     }
