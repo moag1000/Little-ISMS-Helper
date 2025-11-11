@@ -158,8 +158,8 @@
             {% for comparison in comparisonDetails %}
             <tr>
                 <td>
-                    <strong>{{ comparison.framework1Requirement.identifier }}</strong>
-                    <br><small style="color: var(--color-text-muted);">{{ comparison.framework1Requirement.name }}</small>
+                    <strong>{{ comparison.framework1Requirement.requirementId }}</strong>
+                    <br><small style="color: var(--color-text-muted);">{{ comparison.framework1Requirement.title }}</small>
                 </td>
                 <td>
                     <span class="badge badge-info">{{ comparison.framework1Requirement.category }}</span>
@@ -173,8 +173,8 @@
                 </td>
                 <td>
                     {% if comparison.framework2Requirement %}
-                        <strong>{{ comparison.framework2Requirement.identifier }}</strong>
-                        <br><small style="color: var(--color-text-muted);">{{ comparison.framework2Requirement.name }}</small>
+                        <strong>{{ comparison.framework2Requirement.requirementId }}</strong>
+                        <br><small style="color: var(--color-text-muted);">{{ comparison.framework2Requirement.title }}</small>
                     {% else %}
                         <span style="color: var(--color-text-muted);">-</span>
                     {% endif %}
@@ -218,7 +218,7 @@
         <ul style="list-style: none; padding: 0;">
             {% for req in framework1Unique|slice(0, 10) %}
             <li style="padding: var(--spacing-xs) 0; border-bottom: 1px solid var(--color-border);">
-                <code>{{ req.identifier }}</code> {{ req.name }}
+                <code>{{ req.requirementId }}</code> {{ req.title }}
             </li>
             {% endfor %}
             {% if framework1Unique|length > 10 %}
@@ -242,7 +242,7 @@
         <ul style="list-style: none; padding: 0;">
             {% for req in framework2Unique|slice(0, 10) %}
             <li style="padding: var(--spacing-xs) 0; border-bottom: 1px solid var(--color-border);">
-                <code>{{ req.identifier }}</code> {{ req.name }}
+                <code>{{ req.requirementId }}</code> {{ req.title }}
             </li>
             {% endfor %}
             {% if framework2Unique|length > 10 %}
