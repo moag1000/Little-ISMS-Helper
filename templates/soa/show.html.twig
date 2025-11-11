@@ -33,9 +33,9 @@
     <h2>Anwendbarkeitsstatus</h2>
     <div class="stats-grid mt-2" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
         <div class="stat-item">
-            <strong style="font-size: 1.5rem;">
+            <strong class="fs-15">
                 {% if control.applicable %}
-                    <span class="badge badge-success" style="font-size: 1.2rem;">✓ Anwendbar</span>
+                    <span class="badge badge-success fs-12">✓ Anwendbar</span>
                 {% else %}
                     <span class="badge" style="background: #f0f0f0; color: #666; font-size: 1.2rem;">✗ Nicht anwendbar</span>
                 {% endif %}
@@ -45,13 +45,13 @@
 
         {% if control.applicable %}
         <div class="stat-item">
-            <strong style="font-size: 1.5rem;">
+            <strong class="fs-15">
                 {% if control.implementationStatus == 'implemented' %}
-                    <span class="badge badge-success" style="font-size: 1.2rem;">✅ Implementiert</span>
+                    <span class="badge badge-success fs-12">✅ Implementiert</span>
                 {% elseif control.implementationStatus == 'in_progress' %}
-                    <span class="badge badge-warning" style="font-size: 1.2rem;">🔄 In Arbeit</span>
+                    <span class="badge badge-warning fs-12">🔄 In Arbeit</span>
                 {% elseif control.implementationStatus == 'not_started' %}
-                    <span class="badge badge-danger" style="font-size: 1.2rem;">⏸ Nicht begonnen</span>
+                    <span class="badge badge-danger fs-12">⏸ Nicht begonnen</span>
                 {% else %}
                     <span class="badge" style="background: #f0f0f0; color: #666; font-size: 1.2rem;">N/A</span>
                 {% endif %}
@@ -60,7 +60,7 @@
         </div>
 
         <div class="stat-item">
-            <strong style="font-size: 1.5rem;">{{ control.implementationPercentage }}%</strong>
+            <strong class="fs-15">{{ control.implementationPercentage }}%</strong>
             <span>Implementierungsgrad</span>
         </div>
         {% endif %}
@@ -80,10 +80,10 @@
     <h2>Begründung</h2>
     {% if control.justification %}
         <div class="info-box mt-2" style="background: var(--color-bg-light);">
-            <p style="white-space: pre-wrap; line-height: 1.6;">{{ control.justification }}</p>
+            <p class="ws-pre-wrap-lh">{{ control.justification }}</p>
         </div>
     {% else %}
-        <p style="color: var(--color-text-muted); margin-top: var(--spacing-sm);">
+        <p class="text-muted mt-sm">
             Keine Begründung angegeben.
         </p>
     {% endif %}
@@ -95,13 +95,13 @@
     <h2>Implementierungsdetails</h2>
 
     <div class="form-group mt-3">
-        <h3 style="font-size: 1rem; margin-bottom: var(--spacing-sm);">Implementierungsnotizen</h3>
+        <h3 class="fs-1 mb-sm">Implementierungsnotizen</h3>
         {% if control.implementationNotes %}
             <div class="info-box" style="background: var(--color-bg-light);">
-                <p style="white-space: pre-wrap; line-height: 1.6;">{{ control.implementationNotes }}</p>
+                <p class="ws-pre-wrap-lh">{{ control.implementationNotes }}</p>
             </div>
         {% else %}
-            <p style="color: var(--color-text-muted);">
+            <p class="text-muted">
                 Keine Implementierungsnotizen vorhanden.
             </p>
         {% endif %}
@@ -113,7 +113,7 @@
                 {% if control.responsiblePerson %}
                     {{ control.responsiblePerson }}
                 {% else %}
-                    <span style="color: var(--color-text-muted);">Nicht zugewiesen</span>
+                    <span class="text-muted">Nicht zugewiesen</span>
                 {% endif %}
             </strong>
             <span>Verantwortliche Person</span>
@@ -124,7 +124,7 @@
                 {% if control.targetDate %}
                     {{ control.targetDate|date('d.m.Y') }}
                 {% else %}
-                    <span style="color: var(--color-text-muted);">Nicht festgelegt</span>
+                    <span class="text-muted">Nicht festgelegt</span>
                 {% endif %}
             </strong>
             <span>Zieldatum</span>
