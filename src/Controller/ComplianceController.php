@@ -388,4 +388,108 @@ class ComplianceController extends AbstractController
         $this->addFlash('info', 'Framework comparison export feature coming soon.');
         return $this->redirectToRoute('app_compliance_compare');
     }
+
+    #[Route('/frameworks/create-mappings', name: 'app_compliance_create_mappings', methods: ['POST'])]
+    public function createCrossFrameworkMappings(Request $request): JsonResponse
+    {
+        // Validate CSRF token
+        $token = $request->headers->get('X-CSRF-Token');
+        if (!$this->csrfTokenManager->isTokenValid(new CsrfToken('create_mappings', $token))) {
+            return new JsonResponse([
+                'success' => false,
+                'message' => 'Invalid CSRF token'
+            ], 403);
+        }
+
+        try {
+            $em = $this->frameworkRepository->getEntityManager();
+
+            // Check if ISO 27001 exists
+            $iso27001 = $this->frameworkRepository->findOneBy(['code' => 'ISO27001']);
+            if (!$iso27001) {
+                return new JsonResponse([
+                    'success' => false,
+                    'message' => 'ISO 27001 Framework muss zuerst geladen werden!'
+                ]);
+            }
+
+            // Get all frameworks
+            $frameworks = $this->frameworkRepository->findAll();
+            if (count($frameworks) < 2) {
+                return new JsonResponse([
+                    'success' => false,
+                    'message' => 'Mindestens 2 Frameworks müssen geladen sein!'
+                ]);
+            }
+
+            // Clear existing mappings
+            $qb = $em->createQueryBuilder();
+            $qb->delete('App\Entity\ComplianceMapping', 'm');
+            $qb->getQuery()->execute();
+
+            $mappingsCreated = 0;
+
+            // Create mappings TO ISO 27001
+            foreach ($frameworks as $framework) {
+                if ($framework->getCode() === 'ISO27001') {
+                    continue;
+                }
+
+                $requirements = $this->requirementRepository->findBy(['framework' => $framework]);
+
+                foreach ($requirements as $requirement) {
+                    $dataSourceMapping = $requirement->getDataSourceMapping();
+                    if (empty($dataSourceMapping) || empty($dataSourceMapping['iso_controls'])) {
+                        continue;
+                    }
+
+                    $isoControls = $dataSourceMapping['iso_controls'];
+                    if (!is_array($isoControls)) {
+                        $isoControls = [$isoControls];
+                    }
+
+                    foreach ($isoControls as $controlId) {
+                        $normalizedId = 'A.' . str_replace(['A.', 'A'], '', $controlId);
+
+                        $isoRequirement = $this->requirementRepository->findOneBy([
+                            'framework' => $iso27001,
+                            'requirementId' => $normalizedId
+                        ]);
+
+                        if ($isoRequirement) {
+                            $mapping = new \App\Entity\ComplianceMapping();
+                            $mapping->setSourceRequirement($requirement)
+                                ->setTargetRequirement($isoRequirement)
+                                ->setMappingPercentage(85)
+                                ->setMappingType('partial')
+                                ->setBidirectional(true)
+                                ->setConfidence('high')
+                                ->setMappingRationale(sprintf(
+                                    '%s requirement mapped to ISO 27001 %s',
+                                    $framework->getCode(),
+                                    $normalizedId
+                                ));
+
+                            $em->persist($mapping);
+                            $mappingsCreated++;
+                        }
+                    }
+                }
+            }
+
+            $em->flush();
+
+            return new JsonResponse([
+                'success' => true,
+                'message' => sprintf('Erfolgreich %d Cross-Framework Mappings erstellt!', $mappingsCreated),
+                'mappings_created' => $mappingsCreated
+            ]);
+
+        } catch (\Exception $e) {
+            return new JsonResponse([
+                'success' => false,
+                'message' => 'Fehler beim Erstellen der Mappings: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 }
