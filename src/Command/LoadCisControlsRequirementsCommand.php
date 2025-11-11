@@ -8,6 +8,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
@@ -22,9 +23,18 @@ class LoadCisControlsRequirementsCommand extends Command
         parent::__construct();
     }
 
+    protected function configure(): void
+    {
+        $this->addOption('update', 'u', InputOption::VALUE_NONE, 'Update existing requirements instead of skipping them');
+    }
+
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
+        $updateMode = $input->getOption('update');
+
+        $io->title('Loading CIS Controls v8 Requirements');
+        $io->text(sprintf('Mode: %s', $updateMode ? 'UPDATE existing' : 'CREATE new (skip existing)'));
 
         // Create or get CIS Controls framework
         $framework = $this->entityManager->getRepository(ComplianceFramework::class)
@@ -43,26 +53,64 @@ class LoadCisControlsRequirementsCommand extends Command
                 ->setActive(true);
 
             $this->entityManager->persist($framework);
+            $io->text('✓ Created framework');
+        } else {
+            $io->text('✓ Framework exists');
         }
 
         $requirements = $this->getCisControlsRequirements();
+        $stats = ['created' => 0, 'updated' => 0, 'skipped' => 0];
 
         foreach ($requirements as $reqData) {
-            $requirement = new ComplianceRequirement();
-            $requirement->setFramework($framework)
-                ->setRequirementId($reqData['id'])
-                ->setTitle($reqData['title'])
-                ->setDescription($reqData['description'])
-                ->setCategory($reqData['category'])
-                ->setPriority($reqData['priority'])
-                ->setDataSourceMapping($reqData['data_source_mapping']);
+            $existing = $this->entityManager->getRepository(ComplianceRequirement::class)
+                ->findOneBy([
+                    'framework' => $framework,
+                    'requirementId' => $reqData['id']
+                ]);
 
-            $this->entityManager->persist($requirement);
+            if ($existing) {
+                if ($updateMode) {
+                    $existing->setTitle($reqData['title'])
+                        ->setDescription($reqData['description'])
+                        ->setCategory($reqData['category'])
+                        ->setPriority($reqData['priority'])
+                        ->setDataSourceMapping($reqData['data_source_mapping']);
+                    $stats['updated']++;
+                } else {
+                    $stats['skipped']++;
+                }
+            } else {
+                $requirement = new ComplianceRequirement();
+                $requirement->setFramework($framework)
+                    ->setRequirementId($reqData['id'])
+                    ->setTitle($reqData['title'])
+                    ->setDescription($reqData['description'])
+                    ->setCategory($reqData['category'])
+                    ->setPriority($reqData['priority'])
+                    ->setDataSourceMapping($reqData['data_source_mapping']);
+
+                $this->entityManager->persist($requirement);
+                $stats['created']++;
+            }
+
+            // Batch flush
+            if (($stats['created'] + $stats['updated']) % 50 === 0) {
+                $this->entityManager->flush();
+            }
         }
 
         $this->entityManager->flush();
 
-        $io->success(sprintf('Successfully loaded %d CIS Controls v8 requirements', count($requirements)));
+        $io->success('CIS Controls v8 requirements loaded!');
+        $io->table(
+            ['Action', 'Count'],
+            [
+                ['Created', $stats['created']],
+                ['Updated', $stats['updated']],
+                ['Skipped', $stats['skipped']],
+                ['Total', count($requirements)],
+            ]
+        );
 
         return Command::SUCCESS;
     }
