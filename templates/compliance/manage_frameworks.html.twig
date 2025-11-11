@@ -238,11 +238,17 @@
 </style>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+function initializeFrameworkButtons() {
     const loadButtons = document.querySelectorAll('.load-framework-btn');
     const csrfToken = '{{ csrf_token('load_framework') }}';
 
     loadButtons.forEach(button => {
+        // Prevent duplicate listeners
+        if (button.dataset.initialized === 'true') {
+            return;
+        }
+        button.dataset.initialized = 'true';
+
         button.addEventListener('click', async function() {
             const code = this.dataset.frameworkCode;
             const name = this.dataset.frameworkName;
@@ -308,6 +314,17 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
+}
+
+// Cleanup before Turbo caches the page to allow re-initialization on back navigation
+document.addEventListener('turbo:before-cache', function() {
+    document.querySelectorAll('.load-framework-btn[data-initialized="true"]').forEach(btn => {
+        delete btn.dataset.initialized;
+    });
 });
+
+// Initialize on both DOMContentLoaded (first page load) and turbo:load (Turbo navigation)
+document.addEventListener('DOMContentLoaded', initializeFrameworkButtons);
+document.addEventListener('turbo:load', initializeFrameworkButtons);
 </script>
 {% endblock %}

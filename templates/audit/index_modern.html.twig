@@ -334,12 +334,14 @@
 </style>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+function initializeAuditFilters() {
     const statusFilter = document.getElementById('statusFilter');
     const searchInput = document.getElementById('auditSearch');
     const auditRows = document.querySelectorAll('.audit-row');
     const noResults = document.getElementById('noResults');
     const tableBody = document.getElementById('auditTableBody');
+
+    if (!statusFilter && !searchInput) return; // Elements not present on page
 
     function filterAudits() {
         const statusValue = statusFilter ? statusFilter.value.toLowerCase() : '';
@@ -376,14 +378,29 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Attach event listeners
-    if (statusFilter) {
+    // Attach event listeners (prevent duplicates)
+    if (statusFilter && statusFilter.dataset.initialized !== 'true') {
+        statusFilter.dataset.initialized = 'true';
         statusFilter.addEventListener('change', filterAudits);
     }
 
-    if (searchInput) {
+    if (searchInput && searchInput.dataset.initialized !== 'true') {
+        searchInput.dataset.initialized = 'true';
         searchInput.addEventListener('input', filterAudits);
     }
+}
+
+// Cleanup before Turbo caches the page to allow re-initialization on back navigation
+document.addEventListener('turbo:before-cache', function() {
+    const statusFilter = document.getElementById('statusFilter');
+    const searchInput = document.getElementById('auditSearch');
+
+    if (statusFilter) delete statusFilter.dataset.initialized;
+    if (searchInput) delete searchInput.dataset.initialized;
 });
+
+// Initialize on both DOMContentLoaded (first page load) and turbo:load (Turbo navigation)
+document.addEventListener('DOMContentLoaded', initializeAuditFilters);
+document.addEventListener('turbo:load', initializeAuditFilters);
 </script>
 {% endblock %}
