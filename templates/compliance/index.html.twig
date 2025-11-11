@@ -1,37 +1,35 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Multi-Framework Compliance{% endblock %}
+{% block title %}{{ 'compliance.page_title'|trans }}{% endblock %}
 
 {% block body %}
 <div class="container">
     <div class="page-header">
         <div>
-            <h1>🎯 Multi-Framework Compliance</h1>
-            <p class="text-muted">Maximizing Data Value Across Standards</p>
+            <h1>🎯 {{ 'compliance.page_title'|trans }}</h1>
+            <p class="text-muted">{{ 'compliance.page_subtitle'|trans }}</p>
         </div>
         <div class="button-group">
             <a href="{{ path('app_compliance_manage_frameworks') }}" class="btn btn-success">
                 <span class="icon">➕</span> {{ 'compliance.manage_frameworks'|trans }}
             </a>
             <a href="{{ path('app_compliance_cross_framework') }}" class="btn btn-secondary">
-                <span class="icon">🔗</span> Cross-Framework Mappings
+                <span class="icon">🔗</span> {{ 'compliance.button.cross_framework'|trans }}
             </a>
             <a href="{{ path('app_compliance_transitive') }}" class="btn btn-secondary">
-                <span class="icon">📊</span> Transitive Compliance
+                <span class="icon">📊</span> {{ 'compliance.button.transitive'|trans }}
             </a>
             <a href="{{ path('app_compliance_compare') }}" class="btn btn-info">
-                <span class="icon">⚖️</span> Compare Frameworks
+                <span class="icon">⚖️</span> {{ 'compliance.button.compare_frameworks'|trans }}
             </a>
         </div>
     </div>
 
     {# Data Reuse Value Highlight #}
     <div class="alert alert-success" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white; border: none; margin-bottom: var(--spacing-lg);">
-        <h3 style="margin: 0 0 var(--spacing-sm) 0;">💎 Data Reuse Value</h3>
+        <h3 style="margin: 0 0 var(--spacing-sm) 0;">💎 {{ 'compliance.data_reuse.title'|trans }}</h3>
         <p style="font-size: 1.1rem; margin: 0;">
-            By reusing existing ISMS data across multiple frameworks, you save an estimated
-            <strong>{{ total_time_savings }} hours ({{ total_days_savings }} days)</strong>
-            of manual compliance work!
+            {{ 'compliance.data_reuse.description'|trans({'%hours%': total_time_savings, '%days%': total_days_savings})|raw }}
         </p>
     </div>
 
@@ -46,7 +44,7 @@
                         <p class="framework-subtitle">{{ item.name|length > 40 ? item.name|slice(0, 40) ~ '...' : item.name }}</p>
                     </div>
                     {% if framework.mandatory %}
-                        <span class="badge badge-light">Verpflichtend</span>
+                        <span class="badge badge-light">{{ 'compliance.mandatory'|trans }}</span>
                     {% endif %}
                 </div>
 
@@ -64,24 +62,24 @@
                             />
                             <text x="18" y="20.35" class="percentage">{{ item.compliance_percentage }}%</text>
                         </svg>
-                        <div class="compliance-label">Compliance</div>
+                        <div class="compliance-label">{{ 'compliance.label.compliance'|trans }}</div>
                     </div>
 
                     {# Quick Stats - Minimal #}
                     <div class="quick-stats">
                         <div class="quick-stat">
                             <span class="quick-value">{{ item.fulfilled_requirements }}/{{ item.applicable_requirements }}</span>
-                            <span class="quick-label">Erfüllt</span>
+                            <span class="quick-label">{{ 'compliance.label.fulfilled'|trans }}</span>
                         </div>
                         <div class="quick-stat">
                             <span class="quick-value" style="color: var(--color-danger);">{{ item.applicable_requirements - item.fulfilled_requirements }}</span>
-                            <span class="quick-label">Lücken</span>
+                            <span class="quick-label">{{ 'compliance.label.gaps'|trans }}</span>
                         </div>
                     </div>
 
                     {# Single Action Button #}
                     <a href="{{ path('app_compliance_framework', {id: item.id}) }}" class="btn btn-block btn-primary">
-                        Dashboard öffnen →
+                        {{ 'compliance.button.open_dashboard'|trans }} →
                     </a>
                 </div>
             </div>
@@ -99,34 +97,34 @@
     {% if mapping_stats.total_mappings > 0 %}
         <div class="card" style="margin-top: var(--spacing-lg);">
             <div class="card-header">
-                <h2>🔗 Cross-Framework Mapping Statistics</h2>
+                <h2>🔗 {{ 'compliance.cross_framework.title'|trans }}</h2>
             </div>
             <div class="card-body">
                 <div class="stats-grid">
                     <div class="stat-box">
                         <div class="stat-icon">📊</div>
                         <div class="stat-number">{{ mapping_stats.total_mappings }}</div>
-                        <div class="stat-text">Total Mappings</div>
+                        <div class="stat-text">{{ 'compliance.stats.total_mappings'|trans }}</div>
                     </div>
                     <div class="stat-box">
                         <div class="stat-icon">✅</div>
                         <div class="stat-number">{{ mapping_stats.full_mappings + mapping_stats.exceeds_mappings }}</div>
-                        <div class="stat-text">Full/Exceeds</div>
+                        <div class="stat-text">{{ 'compliance.stats.full_exceeds'|trans }}</div>
                     </div>
                     <div class="stat-box">
                         <div class="stat-icon">⚠️</div>
                         <div class="stat-number">{{ mapping_stats.partial_mappings }}</div>
-                        <div class="stat-text">Partial Mappings</div>
+                        <div class="stat-text">{{ 'compliance.stats.partial_mappings'|trans }}</div>
                     </div>
                     <div class="stat-box">
                         <div class="stat-icon">🔄</div>
                         <div class="stat-number">{{ mapping_stats.bidirectional_mappings }}</div>
-                        <div class="stat-text">Bidirectional</div>
+                        <div class="stat-text">{{ 'compliance.stats.bidirectional_mappings'|trans }}</div>
                     </div>
                 </div>
                 <p class="text-center" style="margin-top: var(--spacing-md);">
                     <a href="{{ path('app_compliance_cross_framework') }}" class="btn btn-primary">
-                        Explore Cross-Framework Mappings →
+                        {{ 'compliance.button.explore_mappings'|trans }} →
                     </a>
                 </p>
             </div>
@@ -136,29 +134,29 @@
     {# Benefits Explanation #}
     <div class="card" style="margin-top: var(--spacing-lg);">
         <div class="card-header">
-            <h2>Why Multi-Framework Compliance Matters</h2>
+            <h2>{{ 'compliance.benefits.title'|trans }}</h2>
         </div>
         <div class="card-body">
             <div class="benefits-grid">
                 <div class="benefit-item">
                     <div class="benefit-icon">🔄</div>
-                    <strong>Maximum Data Reuse</strong>
-                    <p>Enter data once in your ISMS and automatically leverage it for TISAX, DORA, and other frameworks.</p>
+                    <strong>{{ 'compliance.benefits.data_reuse.title'|trans }}</strong>
+                    <p>{{ 'compliance.benefits.data_reuse.description'|trans }}</p>
                 </div>
                 <div class="benefit-item">
                     <div class="benefit-icon">⏱️</div>
-                    <strong>Time Efficiency</strong>
-                    <p>Save hundreds of hours by avoiding duplicate data entry and evidence gathering across different standards.</p>
+                    <strong>{{ 'compliance.benefits.time_efficiency.title'|trans }}</strong>
+                    <p>{{ 'compliance.benefits.time_efficiency.description'|trans }}</p>
                 </div>
                 <div class="benefit-item">
                     <div class="benefit-icon">📊</div>
-                    <strong>Transparency</strong>
-                    <p>See exactly how requirements from different frameworks relate to each other and to your existing controls.</p>
+                    <strong>{{ 'compliance.benefits.transparency.title'|trans }}</strong>
+                    <p>{{ 'compliance.benefits.transparency.description'|trans }}</p>
                 </div>
                 <div class="benefit-item">
                     <div class="benefit-icon">🎯</div>
-                    <strong>Strategic Compliance</strong>
-                    <p>Identify which frameworks overlap the most and prioritize implementation based on multi-framework benefits.</p>
+                    <strong>{{ 'compliance.benefits.strategic.title'|trans }}</strong>
+                    <p>{{ 'compliance.benefits.strategic.description'|trans }}</p>
                 </div>
             </div>
         </div>
