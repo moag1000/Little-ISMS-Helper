@@ -304,6 +304,12 @@
     display: grid;
 }
 
+.grid-2-cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+}
+
 /* Margin utilities */
 .mt-xs {
     margin-top: var(--spacing-xs);
@@ -382,6 +388,18 @@
 }
 
 /* Padding utilities */
+.p-sm {
+    padding: 0.5rem;
+}
+
+.p-md {
+    padding: 0.75rem;
+}
+
+.p-lg {
+    padding: 1rem;
+}
+
 .p-xl {
     padding: var(--spacing-xl);
 }
@@ -396,6 +414,10 @@
 }
 
 /* Font size utilities */
+.fs-09 {
+    font-size: 0.9rem;
+}
+
 .fs-15 {
     font-size: 1.5rem;
 }
@@ -404,9 +426,75 @@
     font-size: 2rem;
 }
 
+.fs-25 {
+    font-size: 2.5rem;
+}
+
+/* Font weight utilities */
+.fw-bold {
+    font-weight: bold;
+}
+
+.fw-700 {
+    font-weight: 700;
+}
+
+/* Width utilities */
+.w-auto {
+    width: auto;
+}
+
+.w-100 {
+    width: 100%;
+}
+
+.w-50px {
+    width: 50px;
+}
+
+.w-100px {
+    width: 100px;
+}
+
+.w-130px {
+    width: 130px;
+}
+
+.w-150px {
+    width: 150px;
+}
+
+.w-180px {
+    width: 180px;
+}
+
+.w-200px {
+    width: 200px;
+}
+
+.w-250px {
+    width: 250px;
+}
+
 /* Color utilities (already have text-muted from Bootstrap) */
 .text-muted {
     color: var(--color-text-muted);
+}
+
+.text-primary {
+    color: var(--color-primary);
+}
+
+.text-success {
+    color: var(--color-success);
+}
+
+.text-danger {
+    color: var(--color-danger);
+}
+
+.text-warning {
+    color: var(--color-warning);
 }
 
 /* Link utilities */
@@ -436,6 +524,34 @@
 .table-cell {
     padding: 0.75rem;
     border: 1px solid #ddd;
+}
+
+.table-cell-sm {
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+}
+
+.table-cell-fw-bold {
+    padding: 0.5rem;
+    font-weight: bold;
+}
+
+.table-cell-header {
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    font-weight: bold;
+    background: #f8f9fa;
+}
+
+.table-collapse {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table-collapse-mt {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 0.5rem;
 }
 
 /* Card spacing utility */
