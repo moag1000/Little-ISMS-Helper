@@ -154,6 +154,7 @@ common:
   view: View
   view_details: View Details
   edit: Edit
+  show_all: Show All
 asset:
   new: New Asset
   create: Create Asset
@@ -404,6 +405,8 @@ context:
     active_goals: Active Goals
     achieved_goals: Achieved Goals
     next_review: Next Review
+    of_total: of %total%
+    success_rate: '%rate%% Success Rate'
   review_status:
     today: Today
     due: Review due
@@ -1078,7 +1081,28 @@ change_request:
     created: Change request created successfully.
     updated: Change request updated successfully.
     deleted: Change request deleted successfully.
+bc_plan:
+  new: New BC Plan
+  create: Create BC Plan
+  section:
+    basic_info: Basic Information
+    team: Team
+    activation: Activation & Response
+    communication: Communication
+    alternative_site: Alternative Site
+    backup_recovery: Backup & Recovery
+    version_review: Version & Review
 business_continuity_plan:
+  new: New BC Plan
+  create: Create BC Plan
+  section:
+    basic_info: Basic Information
+    team: Team
+    activation: Activation & Response
+    communication: Communication
+    alternative_site: Alternative Site
+    backup_recovery: Backup & Recovery
+    version_review: Version & Review
   field:
     name: Plan Name
     business_process: Business Process
@@ -1110,6 +1134,14 @@ security:
     saml_logout_error: SAML Logout Error
     csrf_invalid: Invalid CSRF token.
 bc_exercise:
+  new: New BC Exercise
+  create: Create BC Exercise
+  section:
+    basic_info: Basic Information
+    planning: Planning
+    participants: Participants
+    results: Results
+    report: Report
   success:
     created: BC exercise created successfully.
     updated: BC exercise updated successfully.

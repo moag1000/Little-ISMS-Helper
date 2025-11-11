@@ -121,7 +121,7 @@ class IncidentType extends AbstractType
                     'placeholder' => 'incident.placeholder.lessons_learned',
                 ],
             ])
-            ->add('closedDate', DateTimeType::class, [
+            ->add('closedAt', DateTimeType::class, [
                 'label' => 'incident.field.closed_date',
                 'widget' => 'single_text',
                 'required' => false,
