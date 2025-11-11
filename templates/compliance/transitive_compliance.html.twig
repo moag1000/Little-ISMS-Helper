@@ -3,17 +3,12 @@
 {% block title %}{{ 'compliance.title.transitive'|trans }} - Little ISMS Helper{% endblock %}
 
 {% block body %}
-<div class="d-flex justify-between align-center mb-4">
+<div class="page-header">
     <div>
-        <h1 style="font-size: 2rem; font-weight: 700; color: var(--color-text-primary); display: flex; align-items: center; gap: 0.75rem;">
-            <span style="font-size: 2.5rem;">🔗</span>
-            <span>{{ 'compliance.title.transitive'|trans }}</span>
-        </h1>
-        <p style="color: var(--color-text-secondary); margin-top: var(--spacing-sm); font-size: 1.1rem;">
-            {{ 'compliance.description.transitive'|trans }}
-        </p>
+        <h1>🔗 {{ 'compliance.title.transitive'|trans }}</h1>
+        <p class="text-muted">{{ 'compliance.description.transitive'|trans }}</p>
     </div>
-    <div style="display: flex; gap: var(--spacing-sm);">
+    <div class="button-group">
         <button id="createAllMappingsBtn" class="btn btn-primary">
             🔗 Fehlende Mappings ergänzen
         </button>
