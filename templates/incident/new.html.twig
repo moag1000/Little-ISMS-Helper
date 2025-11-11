@@ -231,7 +231,9 @@
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+let manualOverrideNis2 = false;
+
+function initializeIncidentNIS2() {
     const severityField = document.getElementById('incident_severity');
     const affectedUsersField = document.getElementById('incident_affectedUsersCount');
     const crossBorderField = document.querySelectorAll('input[name="incident[crossBorderImpact]"]');
@@ -241,10 +243,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const showNis2Btn = document.getElementById('show-nis2-btn');
     const hideNis2Btn = document.getElementById('hide-nis2-btn');
 
-    let manualOverride = false;
+    if (!severityField) return; // Elements not present on page
 
     function checkNIS2Criteria() {
-        if (manualOverride) return; // User manually toggled
+        if (manualOverrideNis2) return; // User manually toggled
 
         const severity = severityField ? severityField.value : '';
         const affectedUsers = affectedUsersField ? parseInt(affectedUsersField.value) || 0 : 0;
@@ -282,38 +284,64 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Manual show NIS2 section
-    if (showNis2Btn) {
+    if (showNis2Btn && showNis2Btn.dataset.initialized !== 'true') {
+        showNis2Btn.dataset.initialized = 'true';
         showNis2Btn.addEventListener('click', function() {
-            manualOverride = true;
+            manualOverrideNis2 = true;
             nis2Section.classList.remove('d-none');
             showNis2Container.classList.add('d-none');
         });
     }
 
     // Manual hide NIS2 section
-    if (hideNis2Btn) {
+    if (hideNis2Btn && hideNis2Btn.dataset.initialized !== 'true') {
+        hideNis2Btn.dataset.initialized = 'true';
         hideNis2Btn.addEventListener('click', function() {
-            manualOverride = false;
+            manualOverrideNis2 = false;
             nis2Section.classList.add('d-none');
             showNis2Container.classList.remove('d-none');
             checkNIS2Criteria();
         });
     }
 
-    // Event listeners
-    if (severityField) {
+    // Event listeners (only add if not already initialized)
+    if (severityField && severityField.dataset.nis2Initialized !== 'true') {
+        severityField.dataset.nis2Initialized = 'true';
         severityField.addEventListener('change', checkNIS2Criteria);
     }
-    if (affectedUsersField) {
+    if (affectedUsersField && affectedUsersField.dataset.nis2Initialized !== 'true') {
+        affectedUsersField.dataset.nis2Initialized = 'true';
         affectedUsersField.addEventListener('input', checkNIS2Criteria);
     }
     crossBorderField.forEach(radio => {
-        radio.addEventListener('change', checkNIS2Criteria);
+        if (radio.dataset.nis2Initialized !== 'true') {
+            radio.dataset.nis2Initialized = 'true';
+            radio.addEventListener('change', checkNIS2Criteria);
+        }
     });
 
     // Initial check
     checkNIS2Criteria();
+}
+
+// Cleanup before Turbo caches the page to allow re-initialization on back navigation
+document.addEventListener('turbo:before-cache', function() {
+    const showNis2Btn = document.getElementById('show-nis2-btn');
+    const hideNis2Btn = document.getElementById('hide-nis2-btn');
+    const severityField = document.getElementById('incident_severity');
+    const affectedUsersField = document.getElementById('incident_affectedUsersCount');
+    const crossBorderField = document.querySelectorAll('input[name="incident[crossBorderImpact]"]');
+
+    if (showNis2Btn) delete showNis2Btn.dataset.initialized;
+    if (hideNis2Btn) delete hideNis2Btn.dataset.initialized;
+    if (severityField) delete severityField.dataset.nis2Initialized;
+    if (affectedUsersField) delete affectedUsersField.dataset.nis2Initialized;
+    crossBorderField.forEach(radio => delete radio.dataset.nis2Initialized);
 });
+
+// Initialize on both DOMContentLoaded (first page load) and turbo:load (Turbo navigation)
+document.addEventListener('DOMContentLoaded', initializeIncidentNIS2);
+document.addEventListener('turbo:load', initializeIncidentNIS2);
 </script>
 
 <style>

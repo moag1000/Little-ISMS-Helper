@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\ComplianceMapping;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\ComplianceRequirementRepository;
 use App\Repository\ComplianceMappingRepository;
@@ -279,6 +280,8 @@ class ComplianceController extends AbstractController
         $framework1Requirements = 0;
         $framework2Requirements = 0;
         $commonRequirements = 0;
+        $framework1Categories = [];
+        $framework2Categories = [];
 
         $framework1Id = $request->query->get('framework1');
         $framework2Id = $request->query->get('framework2');
@@ -293,6 +296,18 @@ class ComplianceController extends AbstractController
                 $framework2Requirements = count($selectedFramework2->getRequirements());
                 // Calculate common requirements (simplified - you may want to enhance this)
                 $commonRequirements = 0;
+
+                // Get unique categories from each framework
+                $framework1Categories = array_unique(
+                    array_filter(
+                        array_map(fn($req) => $req->getCategory(), $selectedFramework1->getRequirements()->toArray())
+                    )
+                );
+                $framework2Categories = array_unique(
+                    array_filter(
+                        array_map(fn($req) => $req->getCategory(), $selectedFramework2->getRequirements()->toArray())
+                    )
+                );
             }
         }
 
@@ -306,6 +321,8 @@ class ComplianceController extends AbstractController
             'commonRequirements' => $commonRequirements,
             'framework1UniqueRequirements' => max(0, $framework1Requirements - $commonRequirements),
             'framework2UniqueRequirements' => max(0, $framework2Requirements - $commonRequirements),
+            'framework1Categories' => $framework1Categories,
+            'framework2Categories' => $framework2Categories,
         ]);
     }
 
@@ -426,7 +443,7 @@ class ComplianceController extends AbstractController
 
             // Clear existing mappings
             $qb = $em->createQueryBuilder();
-            $qb->delete('App\Entity\ComplianceMapping', 'm');
+            $qb->delete(ComplianceMapping::class, 'm');
             $qb->getQuery()->execute();
 
             $mappingsCreated = 0;
@@ -459,7 +476,7 @@ class ComplianceController extends AbstractController
                         ]);
 
                         if ($isoRequirement) {
-                            $mapping = new \App\Entity\ComplianceMapping();
+                            $mapping = new ComplianceMapping();
                             $mapping->setSourceRequirement($requirement)
                                 ->setTargetRequirement($isoRequirement)
                                 ->setMappingPercentage(85)
