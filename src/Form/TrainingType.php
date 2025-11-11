@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Entity\Training;
 use App\Entity\User;
 use App\Entity\Control;
+use App\Entity\ComplianceRequirement;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -155,8 +156,8 @@ class TrainingType extends AbstractType
                 'expanded' => true,
                 'data' => true,
             ])
-            ->add('relatedControls', EntityType::class, [
-                'label' => 'training.field.related_controls',
+            ->add('coveredControls', EntityType::class, [
+                'label' => 'training.field.covered_controls',
                 'class' => Control::class,
                 'choice_label' => function (Control $control) {
                     return $control->getControlId() . ' - ' . $control->getName();
@@ -168,6 +169,22 @@ class TrainingType extends AbstractType
                     'size' => 5,
                 ],
                 'help' => 'Welche ISO 27001 Controls werden durch diese Schulung adressiert?',
+            ])
+            ->add('complianceRequirements', EntityType::class, [
+                'label' => 'training.field.compliance_requirements',
+                'class' => ComplianceRequirement::class,
+                'choice_label' => function (ComplianceRequirement $requirement) {
+                    $framework = $requirement->getFramework();
+                    $frameworkName = $framework ? $framework->getName() : 'N/A';
+                    return $frameworkName . ' - ' . $requirement->getRequirementId() . ': ' . $requirement->getTitle();
+                },
+                'multiple' => true,
+                'required' => false,
+                'attr' => [
+                    'class' => 'form-select',
+                    'size' => 5,
+                ],
+                'help' => 'Welche Compliance-Anforderungen werden durch diese Schulung erfüllt? (z.B. DORA, TISAX, NIS2)',
             ])
             ->add('materials', TextareaType::class, [
                 'label' => 'training.field.materials',
