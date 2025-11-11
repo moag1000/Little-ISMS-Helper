@@ -264,7 +264,10 @@
                     <p class="small text-muted mb-2">Dieses Training erfüllt folgende Compliance-Anforderungen:</p>
                     <div class="d-flex flex-wrap gap-2">
                         {% for requirement in training.complianceRequirements %}
-                            <span class="badge bg-info">{{ requirement.framework }} {{ requirement.requirementId }}</span>
+                            <span class="badge bg-info">
+                                {{ requirement.framework ? requirement.framework.name : 'N/A' }}
+                                {{ requirement.requirementId }}
+                            </span>
                         {% endfor %}
                     </div>
                 </div>
