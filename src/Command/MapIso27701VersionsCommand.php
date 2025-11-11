@@ -189,7 +189,6 @@ class MapIso27701VersionsCommand extends Command
             '27701:2025-A.7.3.5' => '27701-A.7.3.5',
             '27701:2025-A.7.3.6' => '27701-A.7.3.6',
             '27701:2025-A.7.3.9' => '27701-A.7.3.9',
-            '27701:2025-A.7.3.10' => '27701-A.7.3.10',
             '27701:2025-A.7.4.1' => '27701-A.7.4.1',
             '27701:2025-A.7.4.2' => '27701-A.7.4.2',
             '27701:2025-A.7.4.3' => '27701-A.7.4.3',
@@ -209,6 +208,7 @@ class MapIso27701VersionsCommand extends Command
 
             // Note: The following 2025 requirements have no 2019 equivalent:
             // - A.7.3.7-A.7.3.8: Expanded PII principal rights
+            // - A.7.3.10: PII disposal requirements (NEW)
             // - A.7.4.5-A.7.4.8: Expanded processing controls
             // - A.7.5.2-A.7.5.3: Enhanced incident response
             // - A.7.6.x: AI-specific requirements (NEW)
