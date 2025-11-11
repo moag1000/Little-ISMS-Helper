@@ -614,12 +614,17 @@ class ComplianceController extends AbstractController
                 ]);
             }
 
-            // Clear existing mappings
-            $qb = $em->createQueryBuilder();
-            $qb->delete(ComplianceMapping::class, 'm');
-            $qb->getQuery()->execute();
+            // Load existing mappings to avoid duplicates (incremental approach)
+            $existingMappings = $this->mappingRepository->findAll();
+            $existingPairs = [];
+            foreach ($existingMappings as $mapping) {
+                $sourceId = $mapping->getSourceRequirement()->getId();
+                $targetId = $mapping->getTargetRequirement()->getId();
+                $existingPairs[$sourceId . '-' . $targetId] = true;
+            }
 
             $mappingsCreated = 0;
+            $mappingsSkipped = 0;
             $createdPairs = []; // Track created mapping pairs to avoid duplicates
 
             // 1. Create mappings FROM other frameworks TO ISO 27001
@@ -652,7 +657,7 @@ class ComplianceController extends AbstractController
                         if ($isoRequirement) {
                             $pairKey = $requirement->getId() . '-' . $isoRequirement->getId();
 
-                            if (!isset($createdPairs[$pairKey])) {
+                            if (!isset($createdPairs[$pairKey]) && !isset($existingPairs[$pairKey])) {
                                 // Forward mapping: Other → ISO
                                 $mapping = new ComplianceMapping();
                                 $mapping->setSourceRequirement($requirement)
@@ -670,9 +675,13 @@ class ComplianceController extends AbstractController
                                 $em->persist($mapping);
                                 $mappingsCreated++;
                                 $createdPairs[$pairKey] = true;
+                            } elseif (isset($existingPairs[$pairKey])) {
+                                $mappingsSkipped++;
+                            }
 
-                                // Reverse mapping: ISO → Other
-                                $reversePairKey = $isoRequirement->getId() . '-' . $requirement->getId();
+                            // Reverse mapping: ISO → Other
+                            $reversePairKey = $isoRequirement->getId() . '-' . $requirement->getId();
+                            if (!isset($createdPairs[$reversePairKey]) && !isset($existingPairs[$reversePairKey])) {
                                 $reverseMapping = new ComplianceMapping();
                                 $reverseMapping->setSourceRequirement($isoRequirement)
                                     ->setTargetRequirement($requirement)
@@ -689,6 +698,8 @@ class ComplianceController extends AbstractController
                                 $em->persist($reverseMapping);
                                 $mappingsCreated++;
                                 $createdPairs[$reversePairKey] = true;
+                            } elseif (isset($existingPairs[$reversePairKey])) {
+                                $mappingsSkipped++;
                             }
                         }
                     }
@@ -740,7 +751,10 @@ class ComplianceController extends AbstractController
                         $pairKey = $req1->getId() . '-' . $req2->getId();
                         $reversePairKey = $req2->getId() . '-' . $req1->getId();
 
-                        if (!isset($createdPairs[$pairKey]) && !isset($createdPairs[$reversePairKey])) {
+                        // Check if mappings already exist in database or were just created
+                        if (!isset($createdPairs[$pairKey]) && !isset($createdPairs[$reversePairKey])
+                            && !isset($existingPairs[$pairKey]) && !isset($existingPairs[$reversePairKey])) {
+
                             // Forward mapping
                             $crossMapping = new ComplianceMapping();
                             $crossMapping->setSourceRequirement($req1)
@@ -774,6 +788,9 @@ class ComplianceController extends AbstractController
                             $em->persist($reverseCrossMapping);
                             $mappingsCreated++;
                             $createdPairs[$reversePairKey] = true;
+                        } elseif (isset($existingPairs[$pairKey]) || isset($existingPairs[$reversePairKey])) {
+                            // Both directions count as one skipped pair
+                            $mappingsSkipped += 2;
                         }
                     }
                 }
@@ -788,10 +805,20 @@ class ComplianceController extends AbstractController
                 $frameworkCounts[$fw->getCode()] = $reqCount;
             }
 
+            $message = sprintf(
+                'Erfolgreich %d neue Cross-Framework Mappings erstellt!',
+                $mappingsCreated
+            );
+            if ($mappingsSkipped > 0) {
+                $message .= sprintf(' (%d bereits vorhanden, übersprungen)', $mappingsSkipped);
+            }
+
             return new JsonResponse([
                 'success' => true,
-                'message' => sprintf('Erfolgreich %d Cross-Framework Mappings erstellt!', $mappingsCreated),
+                'message' => $message,
                 'mappings_created' => $mappingsCreated,
+                'mappings_skipped' => $mappingsSkipped,
+                'mappings_total' => $mappingsCreated + $mappingsSkipped,
                 'debug' => [
                     'frameworks_loaded' => count($frameworks),
                     'framework_details' => $frameworkCounts,
