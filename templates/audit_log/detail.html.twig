@@ -6,7 +6,7 @@
 <h1>{{ 'audit_log.title'|trans }}</h1>
 
 <p>
-    <a href="{{ path('app_audit_log_index') }}" style="color: #007bff; text-decoration: none;">« {{ 'common.back_to_overview'|trans }}</a>
+    <a href="{{ path('app_audit_log_index') }}" class="link-primary">« {{ 'common.back_to_overview'|trans }}</a>
 </p>
 
 <div class="info-box" style="margin-top: 2rem;">
@@ -32,7 +32,7 @@
             <td style="padding: 0.5rem; font-weight: bold;">{{ 'audit_log.field.entity_id'|trans }}</td>
             <td style="padding: 0.5rem;">
                 <a href="{{ path('app_audit_log_entity', {entityType: auditLog.entityType, entityId: auditLog.entityId}) }}"
-                   style="color: #007bff; text-decoration: none;">
+                   class="link-primary">
                     #{{ auditLog.entityId }}
                 </a>
             </td>
@@ -42,7 +42,7 @@
             <td style="padding: 0.5rem; font-weight: bold;">{{ 'audit_log.field.user'|trans }}</td>
             <td style="padding: 0.5rem;">
                 <a href="{{ path('app_audit_log_user', {userName: auditLog.userName}) }}"
-                   style="color: #007bff; text-decoration: none;">
+                   class="link-primary">
                     {{ auditLog.userName }}
                 </a>
             </td>

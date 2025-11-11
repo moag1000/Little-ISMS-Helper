@@ -409,6 +409,16 @@
     color: var(--color-text-muted);
 }
 
+/* Link utilities */
+.link-primary {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.link-primary:hover {
+    text-decoration: underline;
+}
+
 /* Border utilities */
 .border-left-danger {
     border-left: 4px solid var(--color-danger);
@@ -420,6 +430,12 @@
 
 .border-left-info {
     border-left: 4px solid var(--color-info);
+}
+
+/* Table utilities */
+.table-cell {
+    padding: 0.75rem;
+    border: 1px solid #ddd;
 }
 
 /* Card spacing utility */
