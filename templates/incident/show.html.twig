@@ -272,6 +272,68 @@
                     <p>Closed on: <strong>{{ incident.closedDate|date('d.m.Y H:i') }}</strong></p>
                 </div>
             {% endif %}
+
+            {# Data Reuse: Affected Assets #}
+            {% if incident.affectedAssets is defined and incident.affectedAssets|length > 0 %}
+                <div class="detail-section">
+                    <h3>🏢 Affected Assets ({{ incident.affectedAssets|length }})</h3>
+                    <div class="data-reuse-list">
+                        {% for asset in incident.affectedAssets %}
+                            <div class="data-reuse-item">
+                                <strong>{{ asset.name }}</strong>
+                                <span class="badge badge-info">{{ asset.assetType }}</span>
+                                <small>CIA: {{ asset.confidentialityValue }}/{{ asset.integrityValue }}/{{ asset.availabilityValue }}</small>
+                                {% if asset.monetaryValue %}
+                                    <small class="text-danger">Value: €{{ asset.monetaryValue }}</small>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+
+            {# Data Reuse: Realized Risks #}
+            {% if incident.realizedRisks is defined and incident.realizedRisks|length > 0 %}
+                <div class="detail-section">
+                    <h3>⚠️ Realized Risks ({{ incident.realizedRisks|length }})</h3>
+                    <div class="alert alert-warning">
+                        <strong>Risk Realization:</strong> This incident realized {{ incident.realizedRisks|length }} identified risk(s).
+                        Consider reviewing risk probability assessments.
+                    </div>
+                    <div class="data-reuse-list">
+                        {% for risk in incident.realizedRisks %}
+                            <div class="data-reuse-item">
+                                <strong>{{ risk.title }}</strong>
+                                <span class="badge badge-risk-{{ risk.inherentRiskLevel >= 16 ? 'high' : (risk.inherentRiskLevel >= 9 ? 'medium' : 'low') }}">
+                                    Risk Level: {{ risk.inherentRiskLevel }}
+                                </span>
+                                <small>Probability: {{ risk.probability }}/5</small>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+
+            {# Data Reuse: Related Controls #}
+            {% if incident.relatedControls is defined and incident.relatedControls|length > 0 %}
+                <div class="detail-section">
+                    <h3>🛡️ Related Controls ({{ incident.relatedControls|length }})</h3>
+                    <p class="text-muted">Controls that should prevent/detect this type of incident:</p>
+                    <div class="data-reuse-list">
+                        {% for control in incident.relatedControls %}
+                            <div class="data-reuse-item">
+                                <strong>{{ control.controlId }}</strong>: {{ control.name }}
+                                <span class="badge badge-{{ control.implementationStatus == 'implemented' ? 'success' : (control.implementationStatus == 'in_progress' ? 'warning' : 'danger') }}">
+                                    {{ control.implementationStatus|upper }}
+                                </span>
+                                {% if control.implementationStatus != 'implemented' %}
+                                    <small class="text-warning">⚠️ Control not fully implemented</small>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
         </div>
     </div>
 </div>
@@ -435,6 +497,52 @@
     border-radius: 4px;
     font-family: 'Courier New', monospace;
     color: #1f2937;
+}
+
+/* Data Reuse Sections */
+.data-reuse-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+.data-reuse-item {
+    padding: 0.75rem;
+    background: #f9fafb;
+    border-left: 3px solid #3b82f6;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+.alert {
+    padding: 1rem;
+    border-radius: 4px;
+    margin: 1rem 0;
+}
+.alert-warning {
+    background: #fef3c7;
+    border-left: 4px solid #f59e0b;
+    color: #92400e;
+}
+.badge-risk-high {
+    background: #ef4444;
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+}
+.badge-risk-medium {
+    background: #f59e0b;
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+}
+.badge-risk-low {
+    background: #10b981;
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
 }
 
 /* Responsive adjustments */

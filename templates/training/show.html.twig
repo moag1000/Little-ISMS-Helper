@@ -222,28 +222,92 @@
                 </div>
             </div>
 
-            {# Related Controls #}
-            {% if training.relatedControls|length > 0 %}
+            {# Data Reuse: Covered Controls #}
+            {% if training.coveredControls is defined and training.coveredControls|length > 0 %}
             <div class="card shadow mb-4">
                 <div class="card-header bg-light">
                     <h5 class="mb-0">
-                        <i class="bi bi-shield-check"></i> {{ 'training.related_controls'|trans }}
+                        <i class="bi bi-shield-check"></i> {{ 'training.covered_controls'|trans }}
+                        <span class="badge bg-primary">{{ training.coveredControls|length }}</span>
                     </h5>
                 </div>
                 <div class="card-body">
                     <div class="list-group list-group-flush">
-                        {% for control in training.relatedControls %}
+                        {% for control in training.coveredControls %}
                         <div class="list-group-item px-0">
                             <div class="d-flex w-100 justify-content-between align-items-start">
                                 <div>
                                     <h6 class="mb-1">{{ control.controlId }}</h6>
                                     <p class="mb-1 small text-muted">{{ control.name }}</p>
                                 </div>
-                                <span class="badge bg-primary rounded-pill">ISO 27001</span>
+                                <span class="badge bg-{{ control.implementationStatus == 'implemented' ? 'success' : (control.implementationStatus == 'in_progress' ? 'warning' : 'secondary') }} rounded-pill">
+                                    {{ control.implementationStatus|upper }}
+                                </span>
                             </div>
                         </div>
                         {% endfor %}
                     </div>
+                </div>
+            </div>
+            {% endif %}
+
+            {# Data Reuse: Compliance Coverage #}
+            {% if training.complianceRequirements is defined and training.complianceRequirements|length > 0 %}
+            <div class="card shadow mb-4">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">
+                        <i class="bi bi-clipboard-check"></i> Compliance Coverage
+                        <span class="badge bg-success">{{ training.complianceRequirements|length }}</span>
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <p class="small text-muted mb-2">Dieses Training erfüllt folgende Compliance-Anforderungen:</p>
+                    <div class="d-flex flex-wrap gap-2">
+                        {% for requirement in training.complianceRequirements %}
+                            <span class="badge bg-info">
+                                {{ requirement.framework ? requirement.framework.name : 'N/A' }}
+                                {{ requirement.requirementId }}
+                            </span>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            {# Data Reuse: Training Statistics #}
+            {% if training.status == 'completed' %}
+            <div class="card shadow mb-4">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">
+                        <i class="bi bi-graph-up"></i> Training Statistics
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="small text-muted">Completion Rate</span>
+                            <span class="small fw-bold">
+                                {% if training.participants|length > 0 %}
+                                    100%
+                                {% else %}
+                                    0%
+                                {% endif %}
+                            </span>
+                        </div>
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar bg-success" style="width: {% if training.participants|length > 0 %}100{% else %}0{% endif %}%"></div>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between small">
+                        <span class="text-muted">Participants:</span>
+                        <span class="fw-bold">{{ training.participants|length }}</span>
+                    </div>
+                    {% if training.completionDate %}
+                    <div class="d-flex justify-content-between small mt-2">
+                        <span class="text-muted">Completed:</span>
+                        <span class="fw-bold">{{ training.completionDate|date('d.m.Y') }}</span>
+                    </div>
+                    {% endif %}
                 </div>
             </div>
             {% endif %}

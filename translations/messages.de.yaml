@@ -54,6 +54,45 @@ incidents: Vorfälle
 audits: Audits
 compliance_label: Compliance
 training:
+  title: Schulungen
+  mandatory_training: Verpflichtende Schulung
+  mandatory_info: Diese Schulung ist für alle Teilnehmer verpflichtend.
+  no_participants: Noch keine Teilnehmer registriert.
+  covered_controls: Abgedeckte Maßnahmen
+  compliance_coverage: Compliance-Abdeckung
+  description: Beschreibung
+  delivery:
+    in_person: Präsenz
+    online: Online
+    hybrid: Hybrid
+    self_paced: Selbststudium
+  type:
+    awareness: Awareness
+    technical: Technisch
+    compliance: Compliance
+    security: Sicherheit
+    other: Sonstiges
+  status:
+    planned: Geplant
+    confirmed: Bestätigt
+    completed: Abgeschlossen
+    cancelled: Abgesagt
+    postponed: Verschoben
+  scheduled_date: Geplantes Datum
+  duration: Dauer
+  minutes: Minuten
+  trainer: Trainer
+  target_audience: Zielgruppe
+  audience:
+    all_staff: Alle Mitarbeiter
+    it_staff: IT-Personal
+    management: Management
+    specific_department: Bestimmte Abteilung
+  participants: Teilnehmer
+  materials: Schulungsmaterialien
+  feedback: Feedback
+  confirm_delete: Schulung löschen bestätigen
+  delete_warning: Möchten Sie diese Schulung wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.
   field:
     title: Schulungstitel
     description: Beschreibung
@@ -101,6 +140,10 @@ common:
   updated_at: Aktualisiert am
   cancel: Abbrechen
   back: Zurück
+  back_to_list: Zurück zur Liste
+  delete: Löschen
+  metadata: Metadaten
+  action_irreversible: Diese Aktion kann nicht rückgängig gemacht werden.
   'true': Ja
   'false': Nein
   yes: Ja
@@ -122,8 +165,21 @@ asset:
     bcm_insights: BCM-Einblicke
   section:
     cia_triad: CIA-Triade
+    valuation: Bewertung
+    compliance: Compliance
+    handling_instructions: Handhabungshinweise
+    acceptable_use_policy: Nutzungsrichtlinie
+    protection_analysis: Schutzanalyse
+    protecting_controls: Schützende Maßnahmen
+    related_risks: Zugehörige Risiken
+    related_incidents: Zugehörige Vorfälle
   cia_help: Bewerten Sie die Vertraulichkeit, Integrität und Verfügbarkeit dieses Assets
   cia_values: CIA-Werte
+  classification:
+    public: Öffentlich
+    internal: Intern
+    confidential: Vertraulich
+    restricted: Streng vertraulich
   field:
     name: Name
     type: Typ
@@ -169,8 +225,10 @@ asset:
     status: Status
     acquisition_value: Anschaffungswert
     current_value: Aktueller Wert
+    monetary_value: Geldwert
     total_value: Gesamtwert
     risk_score: Risiko-Score
+    data_classification: Datenklassifizierung
     confidentiality: Vertraulichkeit
     integrity: Integrität
     availability: Verfügbarkeit
@@ -186,6 +244,8 @@ risk:
   field:
     title: Risikotitel
     description: Beschreibung
+  label:
+    risk_owner: Risikoverantwortlicher
   placeholder:
     title: z.B. Datenleck aus der Datenbank
   help:
@@ -198,7 +258,17 @@ risk:
     treatment: 'Risikobehandlung'
     acceptance: 'Risikoakzeptanz (ISO 27005)'
     status: 'Status & Review'
+    risk_owner: 'Risikoverantwortlicher'
+    mitigating_controls: 'Mindernde Maßnahmen'
+    realization_history: 'Realisierungsverlauf'
+    affected_asset: 'Betroffenes Asset'
 control:
+  section:
+    protected_assets: Geschützte Assets
+    mitigated_risks: Geminderte Risiken
+    related_incidents: Zugehörige Vorfälle
+    training_coverage: Schulungsabdeckung
+    effectiveness_score: Effektivitätsscore
   field:
     control_id: Control-ID
     name: Control-Name
@@ -428,6 +498,10 @@ activity:
   security_team: Security Team
   new_risk: Neues Risiko
 incident:
+  section:
+    affected_assets: Betroffene Assets
+    realized_risks: Realisierte Risiken
+    related_controls: Zugehörige Maßnahmen
   field:
     title: Vorfallstitel
     description: Beschreibung
@@ -1113,6 +1187,9 @@ business_process:
     supporting_assets: Unterstützende Assets
     identified_risks: Identifizierte Risiken
 user:
+  name: Name
+  email: E-Mail
+  department: Abteilung
   field:
     first_name: Vorname
     last_name: Nachname
