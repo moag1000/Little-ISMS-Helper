@@ -28,16 +28,26 @@
                     <table class="matrix-table">
                         <thead>
                             <tr>
-                                <th>{{ 'compliance.cross_framework.source_target_label'|trans }}</th>
+                                <th class="matrix-corner-cell">{{ 'compliance.cross_framework.source_target_label'|trans }}</th>
                                 {% for framework in frameworks %}
-                                    <th>{{ framework.code }}</th>
+                                    <th class="matrix-header-cell">
+                                        <div class="matrix-header-content">
+                                            <strong>{{ framework.code }}</strong>
+                                            <small class="framework-name">{{ framework.name }}</small>
+                                        </div>
+                                    </th>
                                 {% endfor %}
                             </tr>
                         </thead>
                         <tbody>
                             {% for sourceFramework in frameworks %}
                                 <tr>
-                                    <td><strong>{{ sourceFramework.code }}</strong></td>
+                                    <td class="matrix-row-header">
+                                        <div class="matrix-row-content">
+                                            <strong>{{ sourceFramework.code }}</strong>
+                                            <small class="framework-name">{{ sourceFramework.name }}</small>
+                                        </div>
+                                    </td>
                                     {% for targetFramework in frameworks %}
                                         <td class="matrix-cell">
                                             {% if sourceFramework.id == targetFramework.id %}
@@ -223,8 +233,67 @@
 }
 
 .matrix-table th {
-    background: var(--color-background);
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
     font-weight: 600;
+}
+
+.matrix-corner-cell {
+    background: linear-gradient(135deg, #dee2e6 0%, #ced4da 100%) !important;
+    font-weight: 700;
+    font-size: 0.95rem;
+}
+
+.matrix-header-cell {
+    min-width: 140px;
+    vertical-align: middle;
+}
+
+.matrix-header-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.matrix-header-content strong {
+    font-size: 1.1rem;
+    color: var(--color-primary);
+    font-weight: 700;
+}
+
+.matrix-header-content .framework-name {
+    font-size: 0.7rem;
+    color: var(--color-text-secondary);
+    font-weight: 400;
+    line-height: 1.2;
+    max-width: 120px;
+    margin: 0 auto;
+    display: block;
+}
+
+.matrix-row-header {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    font-weight: 600;
+    min-width: 140px;
+    text-align: left;
+}
+
+.matrix-row-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.matrix-row-content strong {
+    font-size: 1.05rem;
+    color: var(--color-primary);
+    font-weight: 700;
+}
+
+.matrix-row-content .framework-name {
+    font-size: 0.7rem;
+    color: var(--color-text-secondary);
+    font-weight: 400;
+    line-height: 1.2;
 }
 
 .matrix-cell {
