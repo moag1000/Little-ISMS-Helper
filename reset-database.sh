@@ -200,11 +200,6 @@ empty_database() {
         fi
     elif [ "$DB_TYPE" = "mysql" ]; then
         info "Dropping MySQL database tables (will be recreated by migrations)..."
-        # Disable foreign key checks
-        if ! php bin/console dbal:run-sql "SET FOREIGN_KEY_CHECKS = 0;" 2>&1 | grep -v "^$"; then
-            error "Failed to disable foreign key checks"
-            return 1
-        fi
 
         # Get table names excluding doctrine_migration_versions
         # Using a more reliable method that works with dbal:run-sql output format
@@ -215,24 +210,35 @@ empty_database() {
         TABLES=$(echo "$TABLES_RAW" | grep -v "^+" | grep -v "^|" | grep -v "table_name" | grep -v "^$" | grep -v "rows" | grep -v "\[" | grep -v "!" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | grep -v "^$")
 
         if [ ! -z "$TABLES" ]; then
-            info "Found $(echo "$TABLES" | wc -l) tables to drop"
-            # Drop each table (better than TRUNCATE due to foreign key constraints)
+            TABLE_COUNT=$(echo "$TABLES" | wc -l)
+            info "Found $TABLE_COUNT tables to drop"
+
+            # Build a single SQL statement with all DROP commands
+            # This ensures FOREIGN_KEY_CHECKS = 0 applies to all drops
+            DROP_SQL="SET FOREIGN_KEY_CHECKS = 0;"
             while IFS= read -r TABLE; do
                 if [ ! -z "$TABLE" ]; then
-                    if php bin/console dbal:run-sql "DROP TABLE \`$TABLE\`;" 2>&1 | grep -v "^$" | grep -v "\[OK\]"; then
-                        info "  ✓ Dropped: $TABLE"
-                    else
-                        warning "  ✗ Failed: $TABLE"
-                    fi
+                    DROP_SQL="$DROP_SQL DROP TABLE \`$TABLE\`;"
                 fi
             done <<< "$TABLES"
-            success "All tables dropped (doctrine_migration_versions preserved)"
+            DROP_SQL="$DROP_SQL SET FOREIGN_KEY_CHECKS = 1;"
+
+            # Execute all DROP statements in one go
+            if php bin/console dbal:run-sql "$DROP_SQL" 2>&1 | grep -v "^\[" | grep -v "rows affected" | grep -v "^$"; then
+                # Show which tables were dropped
+                while IFS= read -r TABLE; do
+                    if [ ! -z "$TABLE" ]; then
+                        info "  ✓ Dropped: $TABLE"
+                    fi
+                done <<< "$TABLES"
+                success "All tables dropped (doctrine_migration_versions preserved)"
+            else
+                error "Failed to drop tables"
+                return 1
+            fi
         else
             warning "No tables found to drop (database might already be empty)"
         fi
-
-        # Re-enable foreign key checks
-        php bin/console dbal:run-sql "SET FOREIGN_KEY_CHECKS = 1;" 2>&1 | grep -v "^$" || true
     elif [ "$DB_TYPE" = "postgresql" ]; then
         info "Dropping PostgreSQL database tables (will be recreated by migrations)..."
         # Get list of tables excluding doctrine_migration_versions
@@ -243,18 +249,30 @@ empty_database() {
         TABLES=$(echo "$TABLES_RAW" | grep -v "^+" | grep -v "^|" | grep -v "tablename" | grep -v "^$" | grep -v "rows" | grep -v "\[" | grep -v "!" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | grep -v "^$")
 
         if [ ! -z "$TABLES" ]; then
-            info "Found $(echo "$TABLES" | wc -l) tables to drop"
-            # Drop each table (better than TRUNCATE due to foreign key constraints)
+            TABLE_COUNT=$(echo "$TABLES" | wc -l)
+            info "Found $TABLE_COUNT tables to drop"
+
+            # Build a single SQL statement with all DROP commands
+            DROP_SQL=""
             while IFS= read -r TABLE; do
                 if [ ! -z "$TABLE" ]; then
-                    if php bin/console dbal:run-sql "DROP TABLE \"$TABLE\" CASCADE;" 2>&1 | grep -v "^$" | grep -v "\[OK\]"; then
-                        info "  ✓ Dropped: $TABLE"
-                    else
-                        warning "  ✗ Failed: $TABLE"
-                    fi
+                    DROP_SQL="$DROP_SQL DROP TABLE IF EXISTS \"$TABLE\" CASCADE;"
                 fi
             done <<< "$TABLES"
-            success "All tables dropped (doctrine_migration_versions preserved)"
+
+            # Execute all DROP statements in one go
+            if php bin/console dbal:run-sql "$DROP_SQL" 2>&1 | grep -v "^\[" | grep -v "rows affected" | grep -v "^$"; then
+                # Show which tables were dropped
+                while IFS= read -r TABLE; do
+                    if [ ! -z "$TABLE" ]; then
+                        info "  ✓ Dropped: $TABLE"
+                    fi
+                done <<< "$TABLES"
+                success "All tables dropped (doctrine_migration_versions preserved)"
+            else
+                error "Failed to drop tables"
+                return 1
+            fi
         else
             warning "No tables found to drop (database might already be empty)"
         fi
