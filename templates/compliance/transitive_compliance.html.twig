@@ -427,18 +427,30 @@ function switchTab(tabName) {
 
 // Create Cross-Framework Mappings
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM loaded, looking for createMappingsBtn...');
     const createBtn = document.getElementById('createMappingsBtn');
-    if (!createBtn) return;
 
+    if (!createBtn) {
+        console.log('createMappingsBtn not found - mappings already exist or element missing');
+        return;
+    }
+
+    console.log('createMappingsBtn found, attaching event listener');
     const btnIcon = document.getElementById('btnIcon');
     const btnText = document.getElementById('btnText');
     const csrfToken = '{{ csrf_token('create_mappings') }}';
 
-    createBtn.addEventListener('click', async function() {
+    createBtn.addEventListener('click', async function(e) {
+        e.preventDefault();
+        console.log('Button clicked!');
+
         // Confirm action
         if (!confirm('Möchten Sie jetzt Cross-Framework Mappings erstellen?\n\nDies kann einige Sekunden dauern und überschreibt bestehende Mappings.')) {
+            console.log('User cancelled');
             return;
         }
+
+        console.log('Starting mapping creation...');
 
         // Disable button and show loading
         createBtn.disabled = true;
@@ -448,17 +460,29 @@ document.addEventListener('DOMContentLoaded', function() {
         createBtn.style.cursor = 'not-allowed';
 
         try {
-            const response = await fetch('{{ path('app_compliance_create_mappings') }}', {
+            const url = '{{ path('app_compliance_create_mappings') }}';
+            console.log('Fetching:', url);
+
+            const response = await fetch(url, {
                 method: 'POST',
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest',
-                    'X-CSRF-Token': csrfToken
+                    'X-CSRF-Token': csrfToken,
+                    'Content-Type': 'application/json'
                 }
             });
 
+            console.log('Response status:', response.status);
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
             const data = await response.json();
+            console.log('Response data:', data);
 
             if (data.success) {
+                console.log('Success! Created', data.mappings_created, 'mappings');
                 // Show success message
                 btnIcon.textContent = '✅';
                 btnText.textContent = data.message;
@@ -467,16 +491,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 // Reload page after 2 seconds
                 setTimeout(() => {
+                    console.log('Reloading page...');
                     window.location.reload();
                 }, 2000);
             } else {
+                console.error('Server returned error:', data.message);
                 // Show error message
                 btnIcon.textContent = '❌';
-                btnText.textContent = data.message;
+                btnText.textContent = data.message || 'Fehler beim Erstellen der Mappings';
                 createBtn.style.background = '#ef4444';
                 createBtn.style.color = 'white';
 
-                // Re-enable button after 3 seconds
+                // Re-enable button after 5 seconds
                 setTimeout(() => {
                     btnIcon.textContent = '🔗';
                     btnText.textContent = 'Mappings jetzt erstellen';
@@ -485,16 +511,16 @@ document.addEventListener('DOMContentLoaded', function() {
                     createBtn.style.opacity = '1';
                     createBtn.style.cursor = 'pointer';
                     createBtn.disabled = false;
-                }, 3000);
+                }, 5000);
             }
         } catch (error) {
-            console.error('Error creating mappings:', error);
+            console.error('JavaScript error creating mappings:', error);
             btnIcon.textContent = '❌';
             btnText.textContent = 'Fehler: ' + error.message;
             createBtn.style.background = '#ef4444';
             createBtn.style.color = 'white';
 
-            // Re-enable button after 3 seconds
+            // Re-enable button after 5 seconds
             setTimeout(() => {
                 btnIcon.textContent = '🔗';
                 btnText.textContent = 'Mappings jetzt erstellen';
@@ -503,7 +529,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 createBtn.style.opacity = '1';
                 createBtn.style.cursor = 'pointer';
                 createBtn.disabled = false;
-            }, 3000);
+            }, 5000);
         }
     });
 });
