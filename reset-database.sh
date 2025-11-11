@@ -183,45 +183,65 @@ empty_database() {
     elif [ "$DB_TYPE" = "mysql" ]; then
         info "Emptying MySQL database tables..."
         # Disable foreign key checks
-        if ! php bin/console dbal:run-sql "SET FOREIGN_KEY_CHECKS = 0;" 2>/dev/null; then
+        if ! php bin/console dbal:run-sql "SET FOREIGN_KEY_CHECKS = 0;" 2>&1 | grep -v "^$"; then
             error "Failed to disable foreign key checks"
             return 1
         fi
 
         # Get table names excluding doctrine_migration_versions
-        TABLES=$(php bin/console dbal:run-sql "SELECT GROUP_CONCAT(table_name) FROM information_schema.tables WHERE table_schema = '$DB_NAME' AND table_name != 'doctrine_migration_versions';" 2>/dev/null | tail -1)
+        # Using a more reliable method that works with dbal:run-sql output format
+        TABLES_RAW=$(php bin/console dbal:run-sql "SELECT table_name FROM information_schema.tables WHERE table_schema = '$DB_NAME' AND table_name != 'doctrine_migration_versions' ORDER BY table_name;" 2>&1)
 
-        if [ ! -z "$TABLES" ] && [ "$TABLES" != "NULL" ]; then
-            # Split tables by comma and truncate each
-            IFS=',' read -ra TABLE_ARRAY <<< "$TABLES"
-            for TABLE in "${TABLE_ARRAY[@]}"; do
-                if php bin/console dbal:run-sql "TRUNCATE TABLE \`$TABLE\`;" 2>/dev/null; then
-                    info "  Emptied table: $TABLE"
-                else
-                    warning "  Could not empty table: $TABLE"
+        # Extract table names from output (skip header lines)
+        TABLES=$(echo "$TABLES_RAW" | grep -v "^+" | grep -v "^|" | grep -v "table_name" | grep -v "^$" | grep -v "^[0-9]* rows" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+
+        if [ ! -z "$TABLES" ]; then
+            info "Found $(echo "$TABLES" | wc -l) tables to empty"
+            # Truncate each table
+            while IFS= read -r TABLE; do
+                if [ ! -z "$TABLE" ]; then
+                    if php bin/console dbal:run-sql "TRUNCATE TABLE \`$TABLE\`;" 2>&1 | grep -v "^$"; then
+                        info "  ✓ Emptied: $TABLE"
+                    else
+                        warning "  ✗ Failed: $TABLE"
+                    fi
                 fi
-            done
+            done <<< "$TABLES"
             success "All tables emptied (doctrine_migration_versions preserved)"
         else
-            warning "No tables found to empty"
+            warning "No tables found to empty (database might already be empty)"
         fi
 
         # Re-enable foreign key checks
-        php bin/console dbal:run-sql "SET FOREIGN_KEY_CHECKS = 1;" 2>/dev/null || true
+        php bin/console dbal:run-sql "SET FOREIGN_KEY_CHECKS = 1;" 2>&1 | grep -v "^$" || true
     elif [ "$DB_TYPE" = "postgresql" ]; then
         info "Emptying PostgreSQL database tables..."
         # Get list of tables excluding doctrine_migration_versions
-        TABLES=$(php bin/console dbal:run-sql "SELECT string_agg(tablename, ',') FROM pg_tables WHERE schemaname = 'public' AND tablename != 'doctrine_migration_versions';" 2>/dev/null | tail -1)
+        TABLES_RAW=$(php bin/console dbal:run-sql "SELECT tablename FROM pg_tables WHERE schemaname = 'public' AND tablename != 'doctrine_migration_versions' ORDER BY tablename;" 2>&1)
 
-        if [ ! -z "$TABLES" ] && [ "$TABLES" != "" ]; then
-            # Truncate all tables at once
-            if php bin/console dbal:run-sql "TRUNCATE TABLE $TABLES CASCADE;" 2>/dev/null; then
-                success "All tables emptied (doctrine_migration_versions preserved)"
-            else
-                warning "Could not empty all tables"
+        # Extract table names from output (skip header lines)
+        TABLES=$(echo "$TABLES_RAW" | grep -v "^+" | grep -v "^|" | grep -v "tablename" | grep -v "^$" | grep -v "^[0-9]* rows" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+
+        if [ ! -z "$TABLES" ]; then
+            info "Found $(echo "$TABLES" | wc -l) tables to empty"
+            # Build comma-separated list for CASCADE truncate
+            TABLE_LIST=$(echo "$TABLES" | tr '\n' ',' | sed 's/,$//')
+
+            if [ ! -z "$TABLE_LIST" ]; then
+                if php bin/console dbal:run-sql "TRUNCATE TABLE $TABLE_LIST CASCADE;" 2>&1 | grep -v "^$"; then
+                    # Show which tables were emptied
+                    while IFS= read -r TABLE; do
+                        if [ ! -z "$TABLE" ]; then
+                            info "  ✓ Emptied: $TABLE"
+                        fi
+                    done <<< "$TABLES"
+                    success "All tables emptied (doctrine_migration_versions preserved)"
+                else
+                    warning "Could not empty all tables"
+                fi
             fi
         else
-            warning "No tables found to empty"
+            warning "No tables found to empty (database might already be empty)"
         fi
     fi
 }
