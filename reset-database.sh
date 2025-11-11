@@ -94,7 +94,7 @@ echo "  Host: ${DB_HOST}:${DB_PORT}"
 echo "  Database: ${DB_NAME}"
 echo ""
 
-# Determine database type from URL
+# Determine database type from URL and extract actual database name
 if [[ $DB_URL == sqlite* ]]; then
     DB_TYPE="sqlite"
     # Extract SQLite database file path
@@ -106,10 +106,28 @@ if [[ $DB_URL == sqlite* ]]; then
     info "Database file: $DB_FILE"
 elif [[ $DB_URL == mysql* ]]; then
     DB_TYPE="mysql"
-    info "Database type: MySQL/MariaDB"
+    # Extract actual database name from URL: mysql://user:pass@host:port/dbname
+    DB_NAME_FROM_URL=$(echo "$DB_URL" | sed -n 's|.*://[^/]*/\([^?]*\).*|\1|p')
+    if [ ! -z "$DB_NAME_FROM_URL" ]; then
+        DB_NAME="$DB_NAME_FROM_URL"
+        info "Database type: MySQL/MariaDB"
+        info "Actual database name from URL: $DB_NAME"
+    else
+        info "Database type: MySQL/MariaDB"
+        warning "Could not extract database name from URL, using DB_NAME from env: $DB_NAME"
+    fi
 elif [[ $DB_URL == postgresql* ]]; then
     DB_TYPE="postgresql"
-    info "Database type: PostgreSQL"
+    # Extract actual database name from URL: postgresql://user:pass@host:port/dbname
+    DB_NAME_FROM_URL=$(echo "$DB_URL" | sed -n 's|.*://[^/]*/\([^?]*\).*|\1|p')
+    if [ ! -z "$DB_NAME_FROM_URL" ]; then
+        DB_NAME="$DB_NAME_FROM_URL"
+        info "Database type: PostgreSQL"
+        info "Actual database name from URL: $DB_NAME"
+    else
+        info "Database type: PostgreSQL"
+        warning "Could not extract database name from URL, using DB_NAME from env: $DB_NAME"
+    fi
 else
     error "Unknown database type in DATABASE_URL"
     exit 1
