@@ -499,6 +499,10 @@
     width: 100px;
 }
 
+.w-120px {
+    width: 120px;
+}
+
 .w-130px {
     width: 130px;
 }
@@ -992,6 +996,104 @@
     display: flex;
     align-items: center;
     gap: 1rem;
+}
+
+/* ====================
+   Audit Status Utilities
+   ==================== */
+/* Status card backgrounds */
+.bg-audit-planned {
+    background: rgba(52, 152, 219, 0.1);
+    border-radius: var(--border-radius);
+}
+
+.bg-audit-in-progress {
+    background: rgba(243, 156, 18, 0.1);
+    border-radius: var(--border-radius);
+}
+
+.bg-audit-completed {
+    background: rgba(39, 174, 96, 0.1);
+    border-radius: var(--border-radius);
+}
+
+.bg-audit-cancelled {
+    background: rgba(149, 165, 166, 0.1);
+    border-radius: var(--border-radius);
+}
+
+/* Status icon styles */
+.audit-icon-planned {
+    font-size: 2rem;
+    color: #3498db;
+}
+
+.audit-icon-in-progress {
+    font-size: 2rem;
+    color: #f39c12;
+}
+
+.audit-icon-completed {
+    font-size: 2rem;
+    color: #27ae60;
+}
+
+.audit-icon-cancelled {
+    font-size: 2rem;
+    color: #95a5a6;
+}
+
+/* Status count styles */
+.audit-count-planned {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #3498db;
+}
+
+.audit-count-in-progress {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #f39c12;
+}
+
+.audit-count-completed {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #27ae60;
+}
+
+.audit-count-cancelled {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #95a5a6;
+}
+
+/* ====================
+   Additional Font & Spacing Utilities
+   ==================== */
+.fs-2-mr-md {
+    font-size: 2rem;
+    margin-right: var(--spacing-md);
+}
+
+.fs-3-text-muted-opacity-50 {
+    font-size: 3rem;
+    color: var(--color-text-muted);
+    opacity: 0.5;
+}
+
+/* ====================
+   Table Utilities
+   ==================== */
+.thead-sticky {
+    background: var(--color-bg);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.w-text-right {
+    text-align: right;
 }
 
 /* ====================

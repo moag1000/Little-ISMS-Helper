@@ -87,12 +87,12 @@
             <div class="row g-4">
                 {# Planned #}
                 <div class="col-md-3">
-                    <div class="status-card text-center p-4" style="background: rgba(52, 152, 219, 0.1); border-radius: var(--border-radius);">
-                        <div class="status-icon mb-3" style="font-size: 2rem; color: #3498db;">
+                    <div class="status-card text-center p-4 bg-audit-planned">
+                        <div class="status-icon mb-3 audit-icon-planned">
                             <i class="bi bi-calendar3"></i>
                         </div>
                         <div class="status-label text-muted mb-2">Geplant</div>
-                        <div class="status-count" style="font-size: 2.5rem; font-weight: 700; color: #3498db;">
+                        <div class="status-count audit-count-planned">
                             {{ plannedAudits }}
                         </div>
                     </div>
@@ -100,12 +100,12 @@
 
                 {# In Progress #}
                 <div class="col-md-3">
-                    <div class="status-card text-center p-4" style="background: rgba(243, 156, 18, 0.1); border-radius: var(--border-radius);">
-                        <div class="status-icon mb-3" style="font-size: 2rem; color: #f39c12;">
+                    <div class="status-card text-center p-4 bg-audit-in-progress">
+                        <div class="status-icon mb-3 audit-icon-in-progress">
                             <i class="bi bi-hourglass-split"></i>
                         </div>
                         <div class="status-label text-muted mb-2">In Bearbeitung</div>
-                        <div class="status-count" style="font-size: 2.5rem; font-weight: 700; color: #f39c12;">
+                        <div class="status-count audit-count-in-progress">
                             {{ inProgressAudits }}
                         </div>
                     </div>
@@ -113,12 +113,12 @@
 
                 {# Completed #}
                 <div class="col-md-3">
-                    <div class="status-card text-center p-4" style="background: rgba(39, 174, 96, 0.1); border-radius: var(--border-radius);">
-                        <div class="status-icon mb-3" style="font-size: 2rem; color: #27ae60;">
+                    <div class="status-card text-center p-4 bg-audit-completed">
+                        <div class="status-icon mb-3 audit-icon-completed">
                             <i class="bi bi-check-circle"></i>
                         </div>
                         <div class="status-label text-muted mb-2">Abgeschlossen</div>
-                        <div class="status-count" style="font-size: 2.5rem; font-weight: 700; color: #27ae60;">
+                        <div class="status-count audit-count-completed">
                             {{ completedAudits }}
                         </div>
                     </div>
@@ -126,12 +126,12 @@
 
                 {# Cancelled #}
                 <div class="col-md-3">
-                    <div class="status-card text-center p-4" style="background: rgba(149, 165, 166, 0.1); border-radius: var(--border-radius);">
-                        <div class="status-icon mb-3" style="font-size: 2rem; color: #95a5a6;">
+                    <div class="status-card text-center p-4 bg-audit-cancelled">
+                        <div class="status-icon mb-3 audit-icon-cancelled">
                             <i class="bi bi-x-circle"></i>
                         </div>
                         <div class="status-label text-muted mb-2">Abgebrochen</div>
-                        <div class="status-count" style="font-size: 2.5rem; font-weight: 700; color: #95a5a6;">
+                        <div class="status-count audit-count-cancelled">
                             {{ audits|filter(a => a.status == 'cancelled')|length }}
                         </div>
                     </div>
@@ -142,9 +142,9 @@
 
     {# Upcoming Audits Highlight #}
     {% if upcoming|length > 0 %}
-    <div class="alert alert-info mb-4" style="border-left: 4px solid var(--color-info);">
+    <div class="alert alert-info mb-4 border-left-info">
         <div class="d-flex align-items-center">
-            <i class="bi bi-calendar-event" style="font-size: 2rem; margin-right: var(--spacing-md);"></i>
+            <i class="bi bi-calendar-event fs-2-mr-md"></i>
             <div>
                 <h4 class="mb-1">Bevorstehende Audits</h4>
                 <p class="mb-0">Sie haben <strong>{{ upcoming|length }}</strong> bevorstehende Audits geplant.</p>
@@ -163,7 +163,7 @@
 
             {# Filter Controls #}
             <div class="d-flex gap-2">
-                <select class="form-select form-select-sm" id="statusFilter" style="width: auto;">
+                <select class="form-select form-select-sm" id="statusFilter" class="w-auto">
                     <option value="">Alle Status</option>
                     <option value="planned">Geplant</option>
                     <option value="in_progress">In Bearbeitung</option>
@@ -175,7 +175,7 @@
                        class="form-control form-control-sm"
                        id="auditSearch"
                        placeholder="Audits durchsuchen..."
-                       style="width: 250px;">
+                       class="w-250px">
             </div>
         </div>
 
@@ -183,14 +183,14 @@
             {% if audits|length > 0 %}
             <div class="table-responsive">
                 <table class="table table-hover mb-0">
-                    <thead style="background: var(--color-bg); position: sticky; top: 0; z-index: 10;">
+                    <thead class="thead-sticky">
                         <tr>
-                            <th style="width: 120px;">Audit Nr.</th>
+                            <th class="w-120px">Audit Nr.</th>
                             <th>Titel</th>
-                            <th style="width: 150px;">Typ</th>
-                            <th style="width: 130px;">Geplantes Datum</th>
-                            <th style="width: 130px;">Status</th>
-                            <th style="width: 180px; text-align: right;">Aktionen</th>
+                            <th class="w-150px">Typ</th>
+                            <th class="w-130px">Geplantes Datum</th>
+                            <th class="w-130px">Status</th>
+                            <th class="w-180px w-text-right">Aktionen</th>
                         </tr>
                     </thead>
                     <tbody id="auditTableBody">
@@ -260,7 +260,7 @@
                                     <span class="badge bg-secondary">{{ audit.status }}</span>
                                 {% endif %}
                             </td>
-                            <td style="text-align: right;">
+                            <td class="w-text-right">
                                 <div class="btn-group btn-group-sm">
                                     <a href="{{ path('app_audit_show', {id: audit.id}) }}"
                                        class="btn btn-sm btn-outline-primary"
@@ -286,8 +286,8 @@
             </div>
 
             {# No Results Message #}
-            <div id="noResults" class="text-center p-5" style="display: none;">
-                <i class="bi bi-search" style="font-size: 3rem; color: var(--color-text-muted); opacity: 0.5;"></i>
+            <div id="noResults" class="text-center p-5 d-none">
+                <i class="bi bi-search fs-3-text-muted-opacity-50"></i>
                 <p class="text-muted mt-3">Keine Audits gefunden, die den Filterkriterien entsprechen.</p>
             </div>
             {% else %}
