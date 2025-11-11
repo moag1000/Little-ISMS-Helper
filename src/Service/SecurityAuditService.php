@@ -2,19 +2,15 @@
 
 namespace App\Service;
 
-use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Finder\Finder;
 use Symfony\Component\Process\Process;
 
 class SecurityAuditService
 {
     private string $projectDir;
-    private Filesystem $filesystem;
 
     public function __construct(string $projectDir)
     {
         $this->projectDir = $projectDir;
-        $this->filesystem = new Filesystem();
     }
 
     /**
