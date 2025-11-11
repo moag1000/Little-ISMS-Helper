@@ -327,12 +327,14 @@
 </style>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+function initializeDocumentFilters() {
     const categoryFilter = document.getElementById('categoryFilter');
     const searchInput = document.getElementById('documentSearch');
     const documentRows = document.querySelectorAll('.document-row');
     const noResults = document.getElementById('noResults');
     const tableBody = document.getElementById('documentTableBody');
+
+    if (!categoryFilter && !searchInput) return; // Elements not present on page
 
     function filterDocuments() {
         const categoryValue = categoryFilter ? categoryFilter.value.toLowerCase() : '';
@@ -366,18 +368,21 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Attach event listeners
-    if (categoryFilter) {
+    // Attach event listeners (prevent duplicates)
+    if (categoryFilter && categoryFilter.dataset.initialized !== 'true') {
+        categoryFilter.dataset.initialized = 'true';
         categoryFilter.addEventListener('change', filterDocuments);
     }
 
-    if (searchInput) {
+    if (searchInput && searchInput.dataset.initialized !== 'true') {
+        searchInput.dataset.initialized = 'true';
         searchInput.addEventListener('input', filterDocuments);
     }
 
     // Update badge visibility when selection changes
     const bulkActionsController = document.querySelector('[data-controller="bulk-actions"]');
-    if (bulkActionsController) {
+    if (bulkActionsController && bulkActionsController.dataset.badgeInitialized !== 'true') {
+        bulkActionsController.dataset.badgeInitialized = 'true';
         const countBadge = document.querySelector('[data-bulk-actions-target="countBadge"]');
         const observer = new MutationObserver((mutations) => {
             mutations.forEach((mutation) => {
@@ -397,6 +402,10 @@ document.addEventListener('DOMContentLoaded', function() {
             countBadge.style.display = 'none';
         }
     }
-});
+}
+
+// Initialize on both DOMContentLoaded (first page load) and turbo:load (Turbo navigation)
+document.addEventListener('DOMContentLoaded', initializeDocumentFilters);
+document.addEventListener('turbo:load', initializeDocumentFilters);
 </script>
 {% endblock %}

@@ -136,9 +136,15 @@
 
 <script>
 // Update range input value display in real-time
-document.addEventListener('DOMContentLoaded', function() {
+function initializeSOAPercentageSlider() {
     const rangeInput = document.getElementById('implementationPercentage');
     const progressBar = document.querySelector('.progress-bar');
+
+    if (!rangeInput || !progressBar) return; // Elements not present on page
+
+    // Prevent duplicate listeners
+    if (rangeInput.dataset.initialized === 'true') return;
+    rangeInput.dataset.initialized = 'true';
 
     rangeInput.addEventListener('input', function() {
         const value = this.value;
@@ -146,6 +152,10 @@ document.addEventListener('DOMContentLoaded', function() {
         progressBar.style.width = value + '%';
         progressBar.textContent = value + '%';
     });
-});
+}
+
+// Initialize on both DOMContentLoaded (first page load) and turbo:load (Turbo navigation)
+document.addEventListener('DOMContentLoaded', initializeSOAPercentageSlider);
+document.addEventListener('turbo:load', initializeSOAPercentageSlider);
 </script>
 {% endblock %}
