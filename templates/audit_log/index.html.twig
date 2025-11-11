@@ -42,7 +42,7 @@
                 <select name="entityType" id="entityType" style="width: 100%; padding: 0.5rem;">
                     <option value="">Alle</option>
                     {% for entityType in entityTypes %}
-                    <option value="{{ entityType }}" {% if filters.entityType == entityType %}selected{% endif %}>
+                    <option value="{{ entityType }}" {% if filters.entityType|default('') == entityType %}selected{% endif %}>
                         {{ entityType }}
                     </option>
                     {% endfor %}
@@ -54,7 +54,7 @@
                 <select name="action" id="action" style="width: 100%; padding: 0.5rem;">
                     <option value="">Alle</option>
                     {% for action in actions %}
-                    <option value="{{ action }}" {% if filters.action == action %}selected{% endif %}>
+                    <option value="{{ action }}" {% if filters.action|default('') == action %}selected{% endif %}>
                         {{ action|capitalize }}
                     </option>
                     {% endfor %}
