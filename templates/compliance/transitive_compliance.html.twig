@@ -23,7 +23,7 @@
         <div class="icon">🔗</div>
         <div class="label">{{ 'compliance.stats.total_relationships'|trans }}</div>
         <div>
-            <span class="value">{{ totalRelationships }}</span>
+            <span class="value">{{ total_relationships }}</span>
         </div>
     </div>
 
@@ -31,7 +31,7 @@
         <div class="icon">✅</div>
         <div class="label">{{ 'compliance.stats.transitive_compliance'|trans }}</div>
         <div>
-            <span class="value">{{ transitiveCompliance }}</span>
+            <span class="value">{{ transitive_compliance }}</span>
         </div>
     </div>
 
@@ -39,7 +39,7 @@
         <div class="icon">📈</div>
         <div class="label">{{ 'compliance.stats.leverage_rate'|trans }}</div>
         <div>
-            {% set leverageRate = totalRelationships > 0 ? (transitiveCompliance / totalRelationships * 100)|round : 0 %}
+            {% set leverageRate = total_relationships > 0 ? (transitive_compliance / total_relationships * 100)|round : 0 %}
             <span class="value">{{ leverageRate }}</span>
             <span class="unit">%</span>
         </div>
