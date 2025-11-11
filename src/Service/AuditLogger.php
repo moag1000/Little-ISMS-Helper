@@ -129,9 +129,11 @@ class AuditLogger
             $auditLog->setNewValues(json_encode($this->sanitizeValues($newValues), JSON_UNESCAPED_UNICODE));
         }
 
-        // Persist the audit log (don't flush - let Doctrine handle it with the main transaction)
-        // This prevents nested flush operations and improves performance
+        // Persist and flush the audit log immediately
+        // This is necessary because we're in a Doctrine event listener (postPersist, postUpdate, etc.)
+        // which runs AFTER the main flush(). Without this flush(), the audit log would never be saved.
         $this->entityManager->persist($auditLog);
+        $this->entityManager->flush();
     }
 
     /**
