@@ -1,95 +1,72 @@
-# Fix: Doctrine Native Lazy Objects Compatibility
+# Fix: Symfony 7.3 Lazy Ghost Objects Deprecation
 
 ## Problem
-The CI/CD pipeline fails with:
+Symfony 7.3 zeigt folgende Deprecation-Warnung:
 ```
-Using native lazy objects requires PHP 8.4 or higher.
+User Deprecated: Since symfony/var-exporter 7.3: Using ProxyHelper::generateLazyGhost() is deprecated, use native lazy objects instead.
 ```
 
 ## Root Cause
-`config/packages/doctrine.yaml` line 14:
-```yaml
-enable_native_lazy_objects: true
+**Doctrine ORM 3.x** erfordert zwingend `enable_lazy_ghost_objects: true` und kann nicht deaktiviert werden:
+```
+Lazy ghost objects cannot be disabled for ORM 3.
 ```
 
-Native lazy objects are an experimental PHP 8.4+ feature that may not be available in all PHP builds, especially in CI/CD environments.
+Die alte Implementierung (`ProxyHelper::generateLazyGhost()`) ist in Symfony 7.3 deprecated.
 
-## Solution Options
+## Solution (Implemented)
 
-### Option 1: Disable Native Lazy Objects (Recommended)
-**File:** `config/packages/doctrine.yaml`
+**PHP 8.4+ verwenden mit Native Lazy Objects**
 
-Change line 14:
+`config/packages/doctrine.yaml`:
 ```yaml
-enable_native_lazy_objects: false  # Use ghost objects instead
-```
-
-**Pros:**
-- ✅ Works with PHP 8.2, 8.3, 8.4
-- ✅ Stable and well-tested
-- ✅ No CI/CD issues
-
-**Cons:**
-- ⚠️ Slightly less performant (minimal impact)
-
-### Option 2: Conditional Configuration
-Only enable native lazy objects in production with PHP 8.4+:
-
-```yaml
-# config/packages/doctrine.yaml
 doctrine:
     orm:
-        enable_native_lazy_objects: '%env(bool:DOCTRINE_NATIVE_LAZY_OBJECTS)%'
+        enable_lazy_ghost_objects: true   # Pflicht für Doctrine ORM 3
+        enable_native_lazy_objects: true  # Löst Deprecation (PHP 8.4+)
 ```
 
-`.env`:
-```bash
-# Default: disabled
-DOCTRINE_NATIVE_LAZY_OBJECTS=false
-```
+### Warum diese Lösung?
 
-`.env.prod`:
-```bash
-# Enable in production if PHP 8.4+
-DOCTRINE_NATIVE_LAZY_OBJECTS=true
-```
+1. ✅ **Doctrine ORM 3 Kompatibilität**: `enable_lazy_ghost_objects: true` ist Pflicht
+2. ✅ **Keine Deprecation-Warnung**: Native lazy objects verwenden moderne PHP-Features
+3. ✅ **Beste Performance**: PHP 8.4 native lazy objects sind optimiert
+4. ✅ **Zukunftssicher**: PHP 8.4 ist seit November 2024 stable und produktionsreif
 
-### Option 3: GitHub Actions PHP Extension
-Ensure PHP 8.4 has the required build flags in `.github/workflows/ci.yml`:
+### Voraussetzungen
 
+- **PHP 8.4+** auf allen Umgebungen (lokal, CI/CD, Produktion)
+- Falls noch PHP 8.2/8.3: Upgrade auf PHP 8.4 erforderlich
+
+## Alternative: Temporäre Lösung (nicht empfohlen)
+
+Falls PHP 8.4 Upgrade noch nicht möglich:
 ```yaml
-- name: Setup PHP
-  uses: shivammathur/setup-php@v2
-  with:
-    php-version: ${{ matrix.php-version }}
-    extensions: pdo_pgsql, opcache, intl
-    # Add if needed:
-    # ini-values: opcache.enable=1, opcache.jit=1255
+doctrine:
+    orm:
+        enable_lazy_ghost_objects: true
+        enable_native_lazy_objects: false
 ```
 
-## Recommendation
+**Nachteile:**
+- ⚠️ Deprecation-Warnung bleibt bestehen (nur INFO-Level)
+- ⚠️ Verwendet veraltete Implementierung
+- ⚠️ Muss später trotzdem zu native lazy objects migriert werden
 
-**Use Option 1** (disable native lazy objects) because:
-1. It's a new experimental feature
-2. Ghost objects work perfectly fine
-3. Performance difference is negligible for most applications
-4. Avoids CI/CD complications
+## Implementation History
 
-## Implementation
-
+**2025-11-11**: Native lazy objects aktiviert
 ```bash
-# Edit the config file
-sed -i 's/enable_native_lazy_objects: true/enable_native_lazy_objects: false/' config/packages/doctrine.yaml
-
-# Test locally
-php bin/console cache:clear
-php bin/console doctrine:schema:validate
-
-# Commit
-git add config/packages/doctrine.yaml
-git commit -m "fix: Disable Doctrine native lazy objects for compatibility"
-git push
+git commit -m "fix: Enable native lazy objects for PHP 8.4+ (fixes deprecation)"
 ```
 
-## Note
-This is NOT related to the cross-framework mappings work. All new commands and mappings are correct and functional. This is a pre-existing configuration issue in the project.
+**Ergebnis:**
+- Deprecation-Warnung eliminiert
+- PHP 8.4 native lazy objects aktiv
+- Volle Doctrine ORM 3 Kompatibilität
+
+## Referenzen
+
+- [Symfony 7.3 Release Notes](https://symfony.com/blog/symfony-7-3-0-released)
+- [Doctrine ORM 3.0 Migration](https://www.doctrine-project.org/projects/doctrine-orm/en/3.0/reference/annotations-reference.html)
+- [PHP 8.4 Lazy Objects RFC](https://wiki.php.net/rfc/lazy-objects)
