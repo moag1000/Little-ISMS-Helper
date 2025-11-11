@@ -1,0 +1,378 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ appetite.displayName }} - {{ 'risk_appetite.title'|trans }}{% endblock %}
+
+{% block body %}
+<div class="page-header">
+    <div>
+        <h1>
+            <i class="bi bi-speedometer2"></i>
+            {% if appetite.isGlobal() %}
+                <i class="bi bi-globe"></i> {{ 'risk_appetite.category.global'|trans }}
+            {% else %}
+                {{ appetite.category }} {{ 'risk_appetite.title_singular'|trans }}
+            {% endif %}
+        </h1>
+        <p class="text-muted">
+            {{ 'risk_appetite.show.subtitle'|trans }}
+            {% if appetite.isActive() %}
+                <span class="badge bg-success ms-2">{{ 'risk_appetite.status.active'|trans }}</span>
+            {% else %}
+                <span class="badge bg-secondary ms-2">{{ 'risk_appetite.status.inactive'|trans }}</span>
+            {% endif %}
+            {% if appetite.isApproved() %}
+                <span class="badge bg-info ms-2">{{ 'risk_appetite.approved'|trans }}</span>
+            {% endif %}
+        </p>
+    </div>
+    <div class="button-group">
+        {% if is_granted('ROLE_ADMIN') %}
+        <a href="{{ path('app_risk_appetite_edit', {id: appetite.id}) }}" class="btn btn-primary">
+            <i class="bi bi-pencil"></i> {{ 'common.edit'|trans }}
+        </a>
+        {% endif %}
+        <a href="{{ path('app_risk_appetite_index') }}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> {{ 'common.back'|trans }}
+        </a>
+    </div>
+</div>
+
+{# Key Metrics #}
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="info-card">
+            <div class="info-label">{{ 'risk_appetite.field.max_acceptable_risk'|trans }}</div>
+            <div class="info-value">
+                <span class="badge bg-{{ appetite.maxAcceptableRisk <= 6 ? 'success' : (appetite.maxAcceptableRisk <= 12 ? 'warning' : 'danger') }} fs-3">
+                    {{ appetite.maxAcceptableRisk }}
+                </span>
+            </div>
+            <small class="text-muted">{{ 'risk_appetite.scale'|trans }}: 1-25</small>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="info-card {{ risksWithinAppetite|length > 0 ? 'bg-success text-white' : '' }}">
+            <div class="info-label">{{ 'risk_appetite.risks_within'|trans }}</div>
+            <div class="info-value">{{ risksWithinAppetite|length }}</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="info-card {{ risksExceedingAppetite|length > 0 ? 'bg-danger text-white' : '' }}">
+            <div class="info-label">{{ 'risk_appetite.risks_exceeding'|trans }}</div>
+            <div class="info-value">{{ risksExceedingAppetite|length }}</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="info-card">
+            <div class="info-label">{{ 'risk_appetite.acceptance_rate'|trans }}</div>
+            <div class="info-value">
+                {% set totalRisks = risksWithinAppetite|length + risksExceedingAppetite|length %}
+                {% if totalRisks > 0 %}
+                    {{ ((risksWithinAppetite|length / totalRisks) * 100)|number_format(0) }}%
+                {% else %}
+                    N/A
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{# Appetite Details #}
+<div class="card mb-4">
+    <div class="card-header">
+        <h5><i class="bi bi-info-circle"></i> {{ 'risk_appetite.section.details'|trans }}</h5>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="detail-item">
+                    <strong>{{ 'risk_appetite.field.category'|trans }}:</strong>
+                    {% if appetite.isGlobal() %}
+                        <span class="badge bg-primary">{{ 'risk_appetite.category.global'|trans }}</span>
+                    {% else %}
+                        {{ appetite.category }}
+                    {% endif %}
+                </div>
+
+                <div class="detail-item">
+                    <strong>{{ 'risk_appetite.field.approved_by'|trans }}:</strong>
+                    {% if appetite.approvedBy %}
+                        {{ appetite.approvedBy.fullName }} ({{ appetite.approvedBy.email }})
+                    {% else %}
+                        <span class="text-warning">{{ 'common.not_approved'|trans }}</span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="detail-item">
+                    <strong>{{ 'risk_appetite.field.approved_at'|trans }}:</strong>
+                    {% if appetite.approvedAt %}
+                        {{ appetite.approvedAt|date('Y-m-d H:i:s') }}
+                    {% else %}
+                        <span class="text-warning">{{ 'common.not_approved'|trans }}</span>
+                    {% endif %}
+                </div>
+
+                <div class="detail-item">
+                    <strong>{{ 'risk_appetite.field.created_at'|trans }}:</strong>
+                    {{ appetite.createdAt|date('Y-m-d H:i:s') }}
+                </div>
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="detail-item">
+            <strong>{{ 'risk_appetite.field.description'|trans }}:</strong>
+            <div class="mt-2">{{ appetite.description|nl2br }}</div>
+        </div>
+    </div>
+</div>
+
+{# Risks Exceeding Appetite #}
+{% if risksExceedingAppetite|length > 0 %}
+<div class="card border-danger mb-4">
+    <div class="card-header bg-danger text-white">
+        <h5><i class="bi bi-exclamation-triangle"></i> {{ 'risk_appetite.risks_exceeding_title'|trans }} ({{ risksExceedingAppetite|length }})</h5>
+    </div>
+    <div class="card-body">
+        <p>{{ 'risk_appetite.risks_exceeding_description'|trans }}</p>
+        <div class="table-responsive">
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th>{{ 'risk.field.title'|trans }}</th>
+                        <th class="text-center">{{ 'risk.field.score'|trans }}</th>
+                        <th class="text-center">{{ 'risk_appetite.exceeds_by'|trans }}</th>
+                        <th>{{ 'risk.field.treatment_strategy'|trans }}</th>
+                        <th class="text-center">{{ 'common.actions'|trans }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for risk in risksExceedingAppetite %}
+                    <tr>
+                        <td>{{ risk.title }}</td>
+                        <td class="text-center">
+                            <span class="badge bg-danger">{{ risk.riskScore }}</span>
+                        </td>
+                        <td class="text-center">
+                            <strong class="text-danger">+{{ risk.riskScore - appetite.maxAcceptableRisk }}</strong>
+                        </td>
+                        <td>
+                            {% if risk.treatmentStrategy %}
+                                <span class="badge bg-secondary">{{ risk.treatmentStrategy }}</span>
+                            {% else %}
+                                <span class="text-muted">-</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-center">
+                            <a href="{{ path('app_risk_show', {id: risk.id}) }}" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{# Risks Within Appetite #}
+{% if risksWithinAppetite|length > 0 %}
+<div class="card border-success mb-4">
+    <div class="card-header bg-success text-white">
+        <h5><i class="bi bi-check-circle"></i> {{ 'risk_appetite.risks_within_title'|trans }} ({{ risksWithinAppetite|length }})</h5>
+    </div>
+    <div class="card-body">
+        <p>{{ 'risk_appetite.risks_within_description'|trans }}</p>
+        <div class="table-responsive">
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th>{{ 'risk.field.title'|trans }}</th>
+                        <th class="text-center">{{ 'risk.field.score'|trans }}</th>
+                        <th class="text-center">{{ 'risk_appetite.appetite_percentage'|trans }}</th>
+                        <th>{{ 'risk.field.status'|trans }}</th>
+                        <th class="text-center">{{ 'common.actions'|trans }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for risk in risksWithinAppetite|slice(0, 10) %}
+                    <tr>
+                        <td>{{ risk.title }}</td>
+                        <td class="text-center">
+                            <span class="badge bg-{{ risk.riskScore < 4 ? 'success' : (risk.riskScore < 8 ? 'info' : 'warning') }}">
+                                {{ risk.riskScore }}
+                            </span>
+                        </td>
+                        <td class="text-center">
+                            {% set percentage = appetite.getAppetitePercentage(risk.riskScore) %}
+                            <div class="progress" style="height: 20px; min-width: 100px;">
+                                <div class="progress-bar bg-{{ percentage >= 80 ? 'warning' : 'success' }}"
+                                     role="progressbar"
+                                     style="width: {{ percentage }}%"
+                                     aria-valuenow="{{ percentage }}"
+                                     aria-valuemin="0"
+                                     aria-valuemax="100">
+                                    {{ percentage|number_format(0) }}%
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="badge bg-secondary">{{ risk.status }}</span>
+                        </td>
+                        <td class="text-center">
+                            <a href="{{ path('app_risk_show', {id: risk.id}) }}" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    {% if risksWithinAppetite|length > 10 %}
+                    <tr>
+                        <td colspan="5" class="text-center text-muted">
+                            {{ 'risk_appetite.and_more_risks'|trans({'%count%': risksWithinAppetite|length - 10}) }}
+                        </td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{# Audit Log History #}
+{% if auditLogs is defined and auditLogs|length > 0 %}
+<div class="card mb-4">
+    <div class="card-header">
+        <h5><i class="bi bi-clock-history"></i> {{ 'risk_appetite.section.history'|trans }} ({{ totalAuditLogs }} {{ 'audit_log.entries'|trans }})</h5>
+    </div>
+    <div class="card-body">
+        <div class="audit-log-list">
+            {% for log in auditLogs %}
+            <div class="audit-log-entry">
+                <div class="audit-log-header">
+                    <span class="badge bg-{{ log.action == 'create' ? 'success' : (log.action == 'update' ? 'info' : 'danger') }}">
+                        {{ log.action|upper }}
+                    </span>
+                    <span class="text-muted">
+                        {{ log.performedBy ? log.performedBy.fullName : 'System' }}
+                        &bull; {{ log.createdAt|date('Y-m-d H:i:s') }}
+                    </span>
+                </div>
+                {% if log.action == 'update' %}
+                    {% set oldValues = log.oldValuesArray %}
+                    {% set newValues = log.newValuesArray %}
+                    {% if oldValues and newValues %}
+                        <div class="audit-log-changes">
+                            {% for field, newValue in newValues %}
+                                {% if oldValues[field] is defined and oldValues[field] != newValue %}
+                                    <div class="change-item">
+                                        <strong>{{ field }}:</strong>
+                                        <span class="text-danger">{{ oldValues[field] }}</span>
+                                        &rarr;
+                                        <span class="text-success">{{ newValue }}</span>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        {% if totalAuditLogs > 10 %}
+        <div class="text-center mt-3">
+            <small class="text-muted">{{ 'audit_log.showing_recent'|trans({'%count%': 10, '%total%': totalAuditLogs}) }}</small>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endif %}
+
+{# Delete Section - Admin Only #}
+{% if is_granted('ROLE_ADMIN') %}
+<div class="card border-danger">
+    <div class="card-header bg-danger text-white">
+        <h5><i class="bi bi-exclamation-triangle"></i> {{ 'common.danger_zone'|trans }}</h5>
+    </div>
+    <div class="card-body">
+        <p>{{ 'risk_appetite.delete.warning'|trans }}</p>
+        <form method="post" action="{{ path('app_risk_appetite_delete', {id: appetite.id}) }}" onsubmit="return confirm('{{ 'risk_appetite.delete.confirm'|trans }}');">
+            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ appetite.id) }}">
+            <button type="submit" class="btn btn-danger">
+                <i class="bi bi-trash"></i> {{ 'common.delete'|trans }}
+            </button>
+        </form>
+    </div>
+</div>
+{% endif %}
+
+<style>
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--spacing-xl);
+}
+
+.button-group {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+.info-card {
+    background: var(--color-white);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-lg);
+    text-align: center;
+    height: 100%;
+}
+
+.info-label {
+    color: var(--color-text-light);
+    font-size: 0.875rem;
+    margin-bottom: var(--spacing-sm);
+}
+
+.info-value {
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+
+.detail-item {
+    margin-bottom: var(--spacing-md);
+}
+
+.audit-log-entry {
+    border-left: 3px solid var(--color-border);
+    padding-left: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+}
+
+.audit-log-header {
+    margin-bottom: var(--spacing-xs);
+    display: flex;
+    gap: var(--spacing-sm);
+    align-items: center;
+}
+
+.audit-log-changes {
+    font-size: 0.875rem;
+    margin-top: var(--spacing-xs);
+}
+
+.change-item {
+    margin-bottom: var(--spacing-xs);
+}
+
+.mb-4 {
+    margin-bottom: var(--spacing-xl);
+}
+</style>
+{% endblock %}
