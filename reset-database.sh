@@ -207,7 +207,7 @@ empty_database() {
 
         # Extract table names from output (skip header lines, status messages, etc.)
         # Filter status messages that may have leading spaces, then trim whitespace
-        TABLES=$(echo "$TABLES_RAW" | grep -v "^+" | grep -v "^|" | grep -v "table_name" | grep -v "^$" | grep -v "rows" | grep -v "\[" | grep -v "!" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | grep -v "^$")
+        TABLES=$(echo "$TABLES_RAW" | grep -v "^+" | grep -v "^|" | grep -v "table_name" | grep -v "^$" | grep -v "rows" | grep -v "\[" | grep -v "!" | grep -v "^-*$" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | grep -v "^$" | grep -v "^-*$")
 
         if [ ! -z "$TABLES" ]; then
             TABLE_COUNT=$(echo "$TABLES" | wc -l)
@@ -232,6 +232,14 @@ empty_database() {
                     fi
                 done <<< "$TABLES"
                 success "All tables dropped (doctrine_migration_versions preserved)"
+
+                # Reset migration history so migrations will run again
+                info "Resetting migration history..."
+                if php bin/console dbal:run-sql "DELETE FROM doctrine_migration_versions;" 2>&1 | grep -v "^\[" | grep -v "rows affected" | grep -v "^$"; then
+                    success "Migration history reset"
+                else
+                    warning "Could not reset migration history"
+                fi
             else
                 error "Failed to drop tables"
                 return 1
@@ -246,7 +254,7 @@ empty_database() {
 
         # Extract table names from output (skip header lines, status messages, etc.)
         # Filter status messages that may have leading spaces, then trim whitespace
-        TABLES=$(echo "$TABLES_RAW" | grep -v "^+" | grep -v "^|" | grep -v "tablename" | grep -v "^$" | grep -v "rows" | grep -v "\[" | grep -v "!" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | grep -v "^$")
+        TABLES=$(echo "$TABLES_RAW" | grep -v "^+" | grep -v "^|" | grep -v "tablename" | grep -v "^$" | grep -v "rows" | grep -v "\[" | grep -v "!" | grep -v "^-*$" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | grep -v "^$" | grep -v "^-*$")
 
         if [ ! -z "$TABLES" ]; then
             TABLE_COUNT=$(echo "$TABLES" | wc -l)
@@ -269,6 +277,14 @@ empty_database() {
                     fi
                 done <<< "$TABLES"
                 success "All tables dropped (doctrine_migration_versions preserved)"
+
+                # Reset migration history so migrations will run again
+                info "Resetting migration history..."
+                if php bin/console dbal:run-sql "DELETE FROM doctrine_migration_versions;" 2>&1 | grep -v "^\[" | grep -v "rows affected" | grep -v "^$"; then
+                    success "Migration history reset"
+                else
+                    warning "Could not reset migration history"
+                fi
             else
                 error "Failed to drop tables"
                 return 1
