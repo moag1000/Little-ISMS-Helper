@@ -9,11 +9,12 @@ doctrine:
         profiling_collect_backtrace: '%kernel.debug%'
         # use_savepoints removed in DBAL 4.0 (now always enabled by default)
     orm:
-        auto_generate_proxy_classes: true
+        # auto_generate_proxy_classes moved to entity_managers.default in DoctrineBundle 3.0
         # enable_lazy_ghost_objects removed in DoctrineBundle 3.0
         # enable_native_lazy_objects is a no-op in DoctrineBundle 3.0 (always enabled)
         entity_managers:
             default:
+                auto_generate_proxy_classes: true
                 validate_xml_mapping: true
                 naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
                 identity_generation_preferences:
@@ -38,13 +39,15 @@ when@test:
 when@prod:
     doctrine:
         orm:
-            auto_generate_proxy_classes: false
-            query_cache_driver:
-                type: pool
-                pool: doctrine.system_cache_pool
-            result_cache_driver:
-                type: pool
-                pool: doctrine.result_cache_pool
+            entity_managers:
+                default:
+                    auto_generate_proxy_classes: false
+                    query_cache_driver:
+                        type: pool
+                        pool: doctrine.system_cache_pool
+                    result_cache_driver:
+                        type: pool
+                        pool: doctrine.result_cache_pool
 
     framework:
         cache:
