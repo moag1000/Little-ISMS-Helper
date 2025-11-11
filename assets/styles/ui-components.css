@@ -592,6 +592,72 @@
     color: var(--color-text-secondary);
 }
 
+/* Flexbox utilities */
+.flex-center-gap {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Line height utilities */
+.lh-16 {
+    line-height: 1.6;
+}
+
+/* Opacity utilities */
+.opacity-90 {
+    opacity: 0.9;
+}
+
+.opacity-95 {
+    opacity: 0.95;
+}
+
+/* Background utilities */
+.bg-alt {
+    background: var(--color-bg-alt);
+}
+
+/* KPI Card components */
+.kpi-label {
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+}
+
+.kpi-value {
+    font-size: 2.5rem;
+    font-weight: bold;
+}
+
+.kpi-value-primary {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: var(--color-primary);
+}
+
+.kpi-value-success {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: var(--color-success);
+}
+
+.kpi-value-info {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: var(--color-info);
+}
+
+.kpi-value-warning {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: var(--color-warning);
+}
+
+.kpi-unit {
+    font-size: 1.2rem;
+    color: var(--color-text-secondary);
+}
+
 /* ====================
    Empty State
    ==================== */
