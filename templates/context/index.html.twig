@@ -268,5 +268,113 @@
             {% endif %}
         {% endif %}
     </div>
+
+    {# Context History: Audit Log #}
+    {% if auditLogs is defined and auditLogs|length > 0 %}
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-clock-history"></i> {{ 'context.section.history'|trans|default('Context History') }}
+                        ({{ totalAuditLogs }} {{ 'audit_log.entries'|trans|default('entries') }})
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="audit-log-list">
+                        {% for log in auditLogs %}
+                        <div class="audit-log-entry">
+                            <div class="audit-log-header">
+                                <span class="badge bg-{{ log.action == 'create' ? 'success' : (log.action == 'update' ? 'info' : 'danger') }}">
+                                    {{ log.action|upper }}
+                                </span>
+                                <span class="text-muted">
+                                    {{ log.performedBy ? log.performedBy.fullName : 'System' }}
+                                    &bull; {{ log.createdAt|date('Y-m-d H:i:s') }}
+                                </span>
+                            </div>
+                            {% if log.action == 'update' %}
+                                {% set oldValues = log.oldValuesArray %}
+                                {% set newValues = log.newValuesArray %}
+                                {% if oldValues and newValues %}
+                                    <div class="audit-log-changes">
+                                        {% for field, newValue in newValues %}
+                                            {% if oldValues[field] is defined and oldValues[field] != newValue %}
+                                                <div class="change-item">
+                                                    <strong>{{ field }}:</strong>
+                                                    <span class="text-danger">{{ oldValues[field]|length > 100 ? oldValues[field]|slice(0, 100) ~ '...' : oldValues[field] }}</span>
+                                                    &rarr;
+                                                    <span class="text-success">{{ newValue|length > 100 ? newValue|slice(0, 100) ~ '...' : newValue }}</span>
+                                                </div>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% if totalAuditLogs > 10 %}
+                    <div class="text-center mt-3">
+                        <small class="text-muted">
+                            {{ 'audit_log.showing_recent'|trans({'%count%': 10, '%total%': totalAuditLogs})|default('Showing 10 most recent of ' ~ totalAuditLogs ~ ' total entries') }}
+                        </small>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
 </div>
+
+<style>
+/* Audit Log Styles */
+.audit-log-list {
+    margin-top: 1rem;
+}
+
+.audit-log-entry {
+    border-left: 3px solid #e5e7eb;
+    padding-left: 1rem;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.audit-log-entry:last-child {
+    border-bottom: none;
+}
+
+.audit-log-header {
+    margin-bottom: 0.5rem;
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.audit-log-changes {
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+    padding-left: 1rem;
+}
+
+.change-item {
+    margin-bottom: 0.25rem;
+    word-break: break-word;
+}
+
+.change-item strong {
+    color: #374151;
+}
+
+.text-danger {
+    color: #dc2626;
+}
+
+.text-success {
+    color: #10b981;
+}
+</style>
 {% endblock %}

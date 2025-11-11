@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\ISMSContext;
 use App\Form\ISMSContextType;
+use App\Repository\AuditLogRepository;
 use App\Service\ISMSContextService;
 use App\Service\ISMSObjectiveService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -19,6 +20,7 @@ class ContextController extends AbstractController
     public function __construct(
         private ISMSContextService $contextService,
         private ISMSObjectiveService $objectiveService,
+        private AuditLogRepository $auditLogRepository,
         private TranslatorInterface $translator
     ) {}
 
@@ -28,12 +30,23 @@ class ContextController extends AbstractController
         $context = $this->contextService->getCurrentContext();
         $statistics = $this->objectiveService->getStatistics();
 
+        // Get audit log history for the context (last 10 entries) if context exists
+        $auditLogs = [];
+        $totalAuditLogs = 0;
+        if ($context && $context->getId()) {
+            $auditLogs = $this->auditLogRepository->findByEntity('ISMSContext', $context->getId());
+            $totalAuditLogs = count($auditLogs);
+            $auditLogs = array_slice($auditLogs, 0, 10);
+        }
+
         return $this->render('context/index.html.twig', [
             'context' => $context,
             'completeness' => $this->contextService->calculateCompleteness($context),
             'isReviewDue' => $this->contextService->isReviewDue($context),
             'daysUntilReview' => $this->contextService->getDaysUntilReview($context),
             'statistics' => $statistics,
+            'auditLogs' => $auditLogs,
+            'totalAuditLogs' => $totalAuditLogs,
         ]);
     }
 

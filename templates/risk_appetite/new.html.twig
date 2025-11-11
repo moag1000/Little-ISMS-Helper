@@ -1,0 +1,84 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'risk_appetite.new'|trans }} - {{ 'app.title'|trans }}{% endblock %}
+
+{% block body %}
+<div class="page-header">
+    <div>
+        <h1><i class="bi bi-plus-circle"></i> {{ 'risk_appetite.new'|trans }}</h1>
+        <p class="text-muted">{{ 'risk_appetite.new.description'|trans }}</p>
+    </div>
+    <div class="button-group">
+        <a href="{{ path('app_risk_appetite_index') }}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> {{ 'common.back'|trans }}
+        </a>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        {{ form_start(form) }}
+            <div class="row">
+                <div class="col-md-6">
+                    {{ form_row(form.category) }}
+                    <small class="text-muted">{{ 'risk_appetite.help.category_empty'|trans }}</small>
+                </div>
+                <div class="col-md-6">
+                    {{ form_row(form.maxAcceptableRisk) }}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    {{ form_row(form.description) }}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4">
+                    {{ form_row(form.isActive) }}
+                </div>
+                <div class="col-md-4">
+                    {{ form_row(form.approvedBy) }}
+                </div>
+                <div class="col-md-4">
+                    {{ form_row(form.approvedAt) }}
+                </div>
+            </div>
+
+            <div class="alert alert-info mt-3">
+                <i class="bi bi-info-circle"></i> {{ 'risk_appetite.info.iso27005'|trans }}
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-check-circle"></i> {{ 'common.create'|trans }}
+                </button>
+                <a href="{{ path('app_risk_appetite_index') }}" class="btn btn-secondary">
+                    {{ 'common.cancel'|trans }}
+                </a>
+            </div>
+        {{ form_end(form) }}
+    </div>
+</div>
+
+<style>
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--spacing-xl);
+}
+
+.button-group {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+.form-actions {
+    margin-top: var(--spacing-lg);
+    display: flex;
+    gap: var(--spacing-sm);
+}
+</style>
+{% endblock %}

@@ -1,0 +1,331 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ plan.title }} - {{ 'risk_treatment_plan.title'|trans }}{% endblock %}
+
+{% block body %}
+<div class="page-header">
+    <div>
+        <h1><i class="bi bi-clipboard-check"></i> {{ plan.title }}</h1>
+        <p class="text-muted">
+            {{ 'risk_treatment_plan.show.subtitle'|trans }}
+            {% if plan.isOverdue() %}
+                <span class="badge bg-danger ms-2">
+                    <i class="bi bi-exclamation-triangle"></i> {{ 'risk_treatment_plan.overdue'|trans }}
+                </span>
+            {% endif %}
+        </p>
+    </div>
+    <div class="button-group">
+        <a href="{{ path('app_risk_treatment_plan_edit', {id: plan.id}) }}" class="btn btn-primary">
+            <i class="bi bi-pencil"></i> {{ 'common.edit'|trans }}
+        </a>
+        <a href="{{ path('app_risk_treatment_plan_index') }}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> {{ 'common.back'|trans }}
+        </a>
+    </div>
+</div>
+
+{# Status Cards #}
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="info-card">
+            <div class="info-label">{{ 'risk_treatment_plan.field.status'|trans }}</div>
+            <div class="info-value">
+                <span class="badge bg-{{ plan.status == 'completed' ? 'success' : (plan.status == 'in_progress' ? 'primary' : (plan.status == 'cancelled' ? 'secondary' : (plan.status == 'on_hold' ? 'warning' : 'info'))) }} fs-6">
+                    {{ ('risk_treatment_plan.status.' ~ plan.status)|trans }}
+                </span>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="info-card">
+            <div class="info-label">{{ 'risk_treatment_plan.field.priority'|trans }}</div>
+            <div class="info-value">
+                <span class="badge bg-{{ plan.priority == 'critical' ? 'danger' : (plan.priority == 'high' ? 'warning' : (plan.priority == 'medium' ? 'info' : 'secondary')) }} fs-6">
+                    {{ ('risk_treatment_plan.priority.' ~ plan.priority)|trans|upper }}
+                </span>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="info-card">
+            <div class="info-label">{{ 'risk_treatment_plan.field.completion'|trans }}</div>
+            <div class="info-value">
+                <div class="progress" style="height: 30px;">
+                    <div class="progress-bar bg-{{ plan.completionPercentage >= 75 ? 'success' : (plan.completionPercentage >= 50 ? 'info' : (plan.completionPercentage >= 25 ? 'warning' : 'danger')) }}"
+                         role="progressbar"
+                         style="width: {{ plan.completionPercentage }}%"
+                         aria-valuenow="{{ plan.completionPercentage }}"
+                         aria-valuemin="0"
+                         aria-valuemax="100">
+                        <strong>{{ plan.completionPercentage }}%</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="info-card {{ plan.isOverdue() ? 'bg-danger text-white' : '' }}">
+            <div class="info-label">{{ 'risk_treatment_plan.days_until_target'|trans }}</div>
+            <div class="info-value">
+                {% set daysUntil = plan.daysUntilTarget %}
+                {% if daysUntil < 0 %}
+                    <span class="text-danger fw-bold">{{ daysUntil|abs }} {{ 'risk_treatment_plan.days_overdue'|trans }}</span>
+                {% elseif daysUntil == 0 %}
+                    <span class="text-warning fw-bold">{{ 'risk_treatment_plan.due_today'|trans }}</span>
+                {% else %}
+                    {{ daysUntil }} {{ 'risk_treatment_plan.days_remaining'|trans }}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{# Main Details #}
+<div class="card mb-4">
+    <div class="card-header">
+        <h5><i class="bi bi-info-circle"></i> {{ 'risk_treatment_plan.section.details'|trans }}</h5>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="detail-item">
+                    <strong>{{ 'risk_treatment_plan.field.risk'|trans }}:</strong>
+                    {% if plan.risk %}
+                        <a href="{{ path('app_risk_show', {id: plan.risk.id}) }}">{{ plan.risk.title }}</a>
+                        <span class="badge bg-danger ms-2">Score: {{ plan.risk.riskScore }}</span>
+                    {% else %}
+                        <span class="text-muted">-</span>
+                    {% endif %}
+                </div>
+
+                <div class="detail-item">
+                    <strong>{{ 'risk_treatment_plan.field.responsible_person'|trans }}:</strong>
+                    {% if plan.responsiblePerson %}
+                        {{ plan.responsiblePerson.fullName }} ({{ plan.responsiblePerson.email }})
+                    {% else %}
+                        <span class="text-muted">{{ 'common.not_assigned'|trans }}</span>
+                    {% endif %}
+                </div>
+
+                <div class="detail-item">
+                    <strong>{{ 'risk_treatment_plan.field.budget'|trans }}:</strong>
+                    {% if plan.budget %}
+                        {{ plan.budget|number_format(2, '.', ',') }} €
+                    {% else %}
+                        <span class="text-muted">{{ 'common.not_set'|trans }}</span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="detail-item">
+                    <strong>{{ 'risk_treatment_plan.field.start_date'|trans }}:</strong>
+                    {% if plan.startDate %}
+                        {{ plan.startDate|date('Y-m-d') }}
+                    {% else %}
+                        <span class="text-muted">{{ 'common.not_started'|trans }}</span>
+                    {% endif %}
+                </div>
+
+                <div class="detail-item">
+                    <strong>{{ 'risk_treatment_plan.field.target_completion_date'|trans }}:</strong>
+                    {{ plan.targetCompletionDate|date('Y-m-d') }}
+                </div>
+
+                <div class="detail-item">
+                    <strong>{{ 'risk_treatment_plan.field.actual_completion_date'|trans }}:</strong>
+                    {% if plan.actualCompletionDate %}
+                        {{ plan.actualCompletionDate|date('Y-m-d') }}
+                    {% else %}
+                        <span class="text-muted">{{ 'common.not_completed'|trans }}</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="detail-item">
+            <strong>{{ 'risk_treatment_plan.field.description'|trans }}:</strong>
+            <div class="mt-2">{{ plan.description|nl2br }}</div>
+        </div>
+
+        {% if plan.implementationNotes %}
+        <hr>
+        <div class="detail-item">
+            <strong>{{ 'risk_treatment_plan.field.implementation_notes'|trans }}:</strong>
+            <div class="mt-2">{{ plan.implementationNotes|nl2br }}</div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+{# Linked Controls #}
+{% if plan.controls|length > 0 %}
+<div class="card mb-4">
+    <div class="card-header">
+        <h5><i class="bi bi-shield-check"></i> {{ 'risk_treatment_plan.section.controls'|trans }} ({{ plan.controls|length }})</h5>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th>{{ 'control.field.control_id'|trans }}</th>
+                        <th>{{ 'control.field.title'|trans }}</th>
+                        <th>{{ 'control.field.status'|trans }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for control in plan.controls %}
+                    <tr>
+                        <td>
+                            <a href="{{ path('app_control_show', {id: control.id}) }}">{{ control.controlId }}</a>
+                        </td>
+                        <td>{{ control.title }}</td>
+                        <td>
+                            <span class="badge bg-{{ control.implementationStatus == 'implemented' ? 'success' : (control.implementationStatus == 'partial' ? 'warning' : 'secondary') }}">
+                                {{ control.implementationStatus|upper }}
+                            </span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{# Audit Log History #}
+{% if auditLogs is defined and auditLogs|length > 0 %}
+<div class="card mb-4">
+    <div class="card-header">
+        <h5><i class="bi bi-clock-history"></i> {{ 'risk_treatment_plan.section.history'|trans }} ({{ totalAuditLogs }} {{ 'audit_log.entries'|trans }})</h5>
+    </div>
+    <div class="card-body">
+        <div class="audit-log-list">
+            {% for log in auditLogs %}
+            <div class="audit-log-entry">
+                <div class="audit-log-header">
+                    <span class="badge bg-{{ log.action == 'create' ? 'success' : (log.action == 'update' ? 'info' : 'danger') }}">
+                        {{ log.action|upper }}
+                    </span>
+                    <span class="text-muted">
+                        {{ log.performedBy ? log.performedBy.fullName : 'System' }}
+                        &bull; {{ log.createdAt|date('Y-m-d H:i:s') }}
+                    </span>
+                </div>
+                {% if log.action == 'update' %}
+                    {% set oldValues = log.oldValuesArray %}
+                    {% set newValues = log.newValuesArray %}
+                    {% if oldValues and newValues %}
+                        <div class="audit-log-changes">
+                            {% for field, newValue in newValues %}
+                                {% if oldValues[field] is defined and oldValues[field] != newValue %}
+                                    <div class="change-item">
+                                        <strong>{{ field }}:</strong>
+                                        <span class="text-danger">{{ oldValues[field] }}</span>
+                                        &rarr;
+                                        <span class="text-success">{{ newValue }}</span>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        {% if totalAuditLogs > 10 %}
+        <div class="text-center mt-3">
+            <small class="text-muted">{{ 'audit_log.showing_recent'|trans({'%count%': 10, '%total%': totalAuditLogs}) }}</small>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endif %}
+
+{# Delete Section - Admin Only #}
+{% if is_granted('ROLE_ADMIN') %}
+<div class="card border-danger">
+    <div class="card-header bg-danger text-white">
+        <h5><i class="bi bi-exclamation-triangle"></i> {{ 'common.danger_zone'|trans }}</h5>
+    </div>
+    <div class="card-body">
+        <p>{{ 'risk_treatment_plan.delete.warning'|trans }}</p>
+        <form method="post" action="{{ path('app_risk_treatment_plan_delete', {id: plan.id}) }}" onsubmit="return confirm('{{ 'risk_treatment_plan.delete.confirm'|trans }}');">
+            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ plan.id) }}">
+            <button type="submit" class="btn btn-danger">
+                <i class="bi bi-trash"></i> {{ 'common.delete'|trans }}
+            </button>
+        </form>
+    </div>
+</div>
+{% endif %}
+
+<style>
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--spacing-xl);
+}
+
+.button-group {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+.info-card {
+    background: var(--color-white);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-lg);
+    text-align: center;
+    height: 100%;
+}
+
+.info-label {
+    color: var(--color-text-light);
+    font-size: 0.875rem;
+    margin-bottom: var(--spacing-sm);
+}
+
+.info-value {
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+
+.detail-item {
+    margin-bottom: var(--spacing-md);
+}
+
+.audit-log-entry {
+    border-left: 3px solid var(--color-border);
+    padding-left: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+}
+
+.audit-log-header {
+    margin-bottom: var(--spacing-xs);
+    display: flex;
+    gap: var(--spacing-sm);
+    align-items: center;
+}
+
+.audit-log-changes {
+    font-size: 0.875rem;
+    margin-top: var(--spacing-xs);
+}
+
+.change-item {
+    margin-bottom: var(--spacing-xs);
+}
+
+.mb-4 {
+    margin-bottom: var(--spacing-xl);
+}
+</style>
+{% endblock %}

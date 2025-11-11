@@ -208,6 +208,51 @@
                     </div>
                 </div>
             {% endif %}
+
+            {# Asset History: Audit Log #}
+            {% if auditLogs is defined and auditLogs|length > 0 %}
+                <div class="detail-section">
+                    <h3>{{ 'asset.section.history'|trans }} ({{ totalAuditLogs }} {{ 'audit_log.entries'|trans }})</h3>
+                    <div class="audit-log-list">
+                        {% for log in auditLogs %}
+                            <div class="audit-log-item">
+                                <div class="audit-log-header">
+                                    <span class="badge badge-action-{{ log.action }}">
+                                        {{ log.action|upper }}
+                                    </span>
+                                    <small class="text-muted">{{ log.createdAt|date('Y-m-d H:i:s') }}</small>
+                                </div>
+                                <div class="audit-log-details">
+                                    <strong>{{ log.userName }}</strong>
+                                    {% set oldValues = log.oldValuesArray %}
+                                    {% set newValues = log.newValuesArray %}
+                                    {% if newValues %}
+                                        <div class="audit-log-changes">
+                                            {% for field, newValue in newValues %}
+                                                <div class="change-item">
+                                                    <span class="field-name">{{ field }}:</span>
+                                                    {% if oldValues and oldValues[field] is defined %}
+                                                        <span class="old-value">{{ oldValues[field] }}</span>
+                                                        <i class="bi bi-arrow-right"></i>
+                                                    {% endif %}
+                                                    <span class="new-value">{{ newValue }}</span>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    {% if totalAuditLogs > 10 %}
+                        <div class="text-center mt-3">
+                            <a href="{{ path('app_audit_log_index', {entity: 'Asset', entityId: asset.id}) }}" class="btn btn-sm btn-outline-secondary">
+                                <i class="bi bi-clock-history"></i> {{ 'audit_log.view_all'|trans }} ({{ totalAuditLogs }})
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            {% endif %}
         </div>
     </div>
 </div>
@@ -248,5 +293,43 @@
 .badge-severity-high { background: #ef4444; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; }
 .badge-severity-medium { background: #f59e0b; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; }
 .badge-severity-low { background: #10b981; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; }
+/* Audit Log Styles */
+.audit-log-list { display: flex; flex-direction: column; gap: 0.75rem; }
+.audit-log-item {
+    padding: 1rem;
+    background: #f9fafb;
+    border-left: 3px solid #6366f1;
+    border-radius: 4px;
+}
+.audit-log-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+.audit-log-details { margin-top: 0.5rem; }
+.audit-log-changes {
+    margin-top: 0.5rem;
+    padding-left: 1rem;
+    font-size: 0.875rem;
+}
+.change-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0.25rem 0;
+}
+.field-name { font-weight: bold; color: #6b7280; }
+.old-value {
+    text-decoration: line-through;
+    color: #ef4444;
+}
+.new-value {
+    color: #10b981;
+    font-weight: 500;
+}
+.badge-action-insert { background: #10b981; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; }
+.badge-action-update { background: #3b82f6; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; }
+.badge-action-delete { background: #ef4444; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; }
 </style>
 {% endblock %}
