@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\InternalAudit;
 use App\Form\InternalAuditType;
+use App\Repository\AuditLogRepository;
 use App\Repository\InternalAuditRepository;
 use App\Service\PdfExportService;
 use App\Service\ExcelExportService;
@@ -20,6 +21,7 @@ class AuditController extends AbstractController
 {
     public function __construct(
         private InternalAuditRepository $auditRepository,
+        private AuditLogRepository $auditLogRepository,
         private EntityManagerInterface $entityManager,
         private PdfExportService $pdfService,
         private ExcelExportService $excelService,
@@ -27,13 +29,43 @@ class AuditController extends AbstractController
     ) {}
 
     #[Route('/', name: 'app_audit_index')]
-    public function index(): Response
+    public function index(Request $request): Response
     {
-        $audits = $this->auditRepository->findAll();
+        // Get filter parameters
+        $status = $request->query->get('status');
+        $scopeType = $request->query->get('scope_type');
+        $dateFrom = $request->query->get('date_from');
+        $dateTo = $request->query->get('date_to');
+
+        // Get all audits
+        $allAudits = $this->auditRepository->findAll();
+
+        // Apply filters
+        if ($status) {
+            $allAudits = array_filter($allAudits, fn($audit) => $audit->getStatus() === $status);
+        }
+
+        if ($scopeType) {
+            $allAudits = array_filter($allAudits, fn($audit) => $audit->getScopeType() === $scopeType);
+        }
+
+        if ($dateFrom) {
+            $dateFromObj = new \DateTime($dateFrom);
+            $allAudits = array_filter($allAudits, fn($audit) => $audit->getPlannedDate() >= $dateFromObj);
+        }
+
+        if ($dateTo) {
+            $dateToObj = new \DateTime($dateTo);
+            $allAudits = array_filter($allAudits, fn($audit) => $audit->getPlannedDate() <= $dateToObj);
+        }
+
+        // Re-index array after filtering to avoid gaps in keys
+        $allAudits = array_values($allAudits);
+
         $upcoming = $this->auditRepository->findUpcoming();
 
         return $this->render('audit/index.html.twig', [
-            'audits' => $audits,
+            'audits' => $allAudits,
             'upcoming' => $upcoming,
         ]);
     }
@@ -63,8 +95,15 @@ class AuditController extends AbstractController
     #[Route('/{id}', name: 'app_audit_show', requirements: ['id' => '\d+'])]
     public function show(InternalAudit $audit): Response
     {
+        // Get audit log history for this audit (last 10 entries)
+        $auditLogs = $this->auditLogRepository->findByEntity('InternalAudit', $audit->getId());
+        $totalAuditLogs = count($auditLogs);
+        $auditLogs = array_slice($auditLogs, 0, 10);
+
         return $this->render('audit/show.html.twig', [
             'audit' => $audit,
+            'auditLogs' => $auditLogs,
+            'totalAuditLogs' => $totalAuditLogs,
         ]);
     }
 
