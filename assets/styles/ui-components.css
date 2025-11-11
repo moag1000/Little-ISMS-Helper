@@ -259,6 +259,13 @@
     flex-shrink: 0;
 }
 
+/* Button Group - used in page headers and toolbars */
+.button-group {
+    display: flex;
+    gap: var(--spacing-sm);
+    flex-wrap: wrap;
+}
+
 /* ====================
    Empty State
    ==================== */
