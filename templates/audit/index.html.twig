@@ -29,6 +29,123 @@
     </div>
 </div>
 
+{# Filter Section #}
+<div class="card mb-4">
+    <div class="card-header">
+        <h5 class="mb-0"><i class="bi bi-funnel"></i> {{ 'common.filters'|trans }}</h5>
+    </div>
+    <div class="card-body">
+        <form method="get" action="{{ path('app_audit_index') }}" class="row g-3">
+            <div class="col-md-3">
+                <label for="filter-status" class="form-label">{{ 'audit.field.status'|trans }}</label>
+                <select class="form-select" id="filter-status" name="status" onchange="this.form.submit()">
+                    <option value="">{{ 'common.all'|trans }}</option>
+                    <option value="planned" {{ app.request.get('status') == 'planned' ? 'selected' : '' }}>{{ 'audit.status.planned'|trans }}</option>
+                    <option value="in_progress" {{ app.request.get('status') == 'in_progress' ? 'selected' : '' }}>{{ 'audit.status.in_progress'|trans }}</option>
+                    <option value="completed" {{ app.request.get('status') == 'completed' ? 'selected' : '' }}>{{ 'audit.status.completed'|trans }}</option>
+                    <option value="reported" {{ app.request.get('status') == 'reported' ? 'selected' : '' }}>{{ 'audit.status.reported'|trans }}</option>
+                </select>
+            </div>
+
+            <div class="col-md-3">
+                <label for="filter-scope-type" class="form-label">{{ 'audit.field.scope_type'|trans }}</label>
+                <select class="form-select" id="filter-scope-type" name="scope_type" onchange="this.form.submit()">
+                    <option value="">{{ 'common.all'|trans }}</option>
+                    <option value="full_isms" {{ app.request.get('scope_type') == 'full_isms' ? 'selected' : '' }}>{{ 'audit.scope_type.full_isms'|trans }}</option>
+                    <option value="compliance_framework" {{ app.request.get('scope_type') == 'compliance_framework' ? 'selected' : '' }}>{{ 'audit.scope_type.compliance_framework'|trans }}</option>
+                    <option value="asset" {{ app.request.get('scope_type') == 'asset' ? 'selected' : '' }}>{{ 'audit.scope_type.asset'|trans }}</option>
+                    <option value="asset_type" {{ app.request.get('scope_type') == 'asset_type' ? 'selected' : '' }}>{{ 'audit.scope_type.asset_type'|trans }}</option>
+                    <option value="asset_group" {{ app.request.get('scope_type') == 'asset_group' ? 'selected' : '' }}>{{ 'audit.scope_type.asset_group'|trans }}</option>
+                    <option value="location" {{ app.request.get('scope_type') == 'location' ? 'selected' : '' }}>{{ 'audit.scope_type.location'|trans }}</option>
+                    <option value="department" {{ app.request.get('scope_type') == 'department' ? 'selected' : '' }}>{{ 'audit.scope_type.department'|trans }}</option>
+                </select>
+            </div>
+
+            <div class="col-md-2">
+                <label for="filter-date-from" class="form-label">{{ 'common.date_from'|trans }}</label>
+                <input type="date" class="form-control" id="filter-date-from" name="date_from" value="{{ app.request.get('date_from') }}" onchange="this.form.submit()">
+            </div>
+
+            <div class="col-md-2">
+                <label for="filter-date-to" class="form-label">{{ 'common.date_to'|trans }}</label>
+                <input type="date" class="form-control" id="filter-date-to" name="date_to" value="{{ app.request.get('date_to') }}" onchange="this.form.submit()">
+            </div>
+
+            <div class="col-md-2 d-flex align-items-end">
+                <a href="{{ path('app_audit_index') }}" class="btn btn-secondary w-100">
+                    <i class="bi bi-x-circle"></i> {{ 'common.reset'|trans }}
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+{# Audits List #}
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0"><i class="bi bi-list-check"></i> {{ 'audit_management.audits_list'|trans }} ({{ audits|length }})</h5>
+    </div>
+    <div class="card-body">
+        {% if audits|length > 0 %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>{{ 'audit.field.audit_number'|trans }}</th>
+                            <th>{{ 'audit.field.title'|trans }}</th>
+                            <th>{{ 'audit.field.scope_type'|trans }}</th>
+                            <th>{{ 'audit.field.planned_date'|trans }}</th>
+                            <th>{{ 'audit.field.status'|trans }}</th>
+                            <th>{{ 'audit.field.lead_auditor'|trans }}</th>
+                            <th class="text-center">{{ 'common.actions'|trans }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for audit in audits %}
+                        <tr>
+                            <td><code>{{ audit.auditNumber }}</code></td>
+                            <td>{{ audit.title }}</td>
+                            <td>
+                                <span class="badge bg-secondary">
+                                    {{ ('audit.scope_type.' ~ audit.scopeType)|trans }}
+                                </span>
+                            </td>
+                            <td>{{ audit.plannedDate|date('d.m.Y') }}</td>
+                            <td>
+                                {% set statusClass = {
+                                    'planned': 'info',
+                                    'in_progress': 'warning',
+                                    'completed': 'success',
+                                    'reported': 'primary'
+                                } %}
+                                <span class="badge bg-{{ statusClass[audit.status] ?? 'secondary' }}">
+                                    {{ ('audit.status.' ~ audit.status)|trans }}
+                                </span>
+                            </td>
+                            <td>{{ audit.leadAuditor }}</td>
+                            <td class="text-center">
+                                <a href="{{ path('app_audit_show', {id: audit.id}) }}" class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                {% if is_granted('ROLE_USER') %}
+                                <a href="{{ path('app_audit_edit', {id: audit.id}) }}" class="btn btn-sm btn-outline-secondary">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="alert alert-info">
+                <i class="bi bi-info-circle"></i> {{ 'audit_management.no_audits'|trans }}
+            </div>
+        {% endif %}
+    </div>
+</div>
+
 <style>
 .page-header {
     display: flex;
