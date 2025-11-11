@@ -1,17 +1,17 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Cross-Framework Mappings{% endblock %}
+{% block title %}{{ 'compliance.cross_framework.title'|trans }}{% endblock %}
 
 {% block body %}
 <div class="container">
     <div class="page-header">
         <div>
-            <h1>🔗 Cross-Framework Mappings</h1>
-            <p class="text-muted">How Requirements Map Across Different Standards</p>
+            <h1>🔗 {{ 'compliance.cross_framework.title'|trans }}</h1>
+            <p class="text-muted">{{ 'compliance.cross_framework.subtitle'|trans }}</p>
         </div>
         <div class="button-group">
             <a href="{{ path('app_compliance_index') }}" class="btn btn-secondary">
-                ← Back to Compliance
+                ← {{ 'compliance.cross_framework.back'|trans }}
             </a>
         </div>
     </div>
@@ -20,15 +20,15 @@
     {% if coverage_matrix is not empty %}
         <div class="card">
             <div class="card-header">
-                <h2>📊 Framework Coverage Matrix</h2>
-                <p class="text-muted">Shows how much of each target framework is covered by fulfilling the source framework</p>
+                <h2>📊 {{ 'compliance.cross_framework.coverage_matrix'|trans }}</h2>
+                <p class="text-muted">{{ 'compliance.cross_framework.coverage_description'|trans }}</p>
             </div>
             <div class="card-body">
                 <div class="coverage-matrix">
                     <table class="matrix-table">
                         <thead>
                             <tr>
-                                <th>Source Framework ↓ / Target Framework →</th>
+                                <th>{{ 'compliance.cross_framework.source_target_label'|trans }}</th>
                                 {% for framework in frameworks %}
                                     <th>{{ framework.code }}</th>
                                 {% endfor %}
@@ -63,15 +63,15 @@
                 <div class="matrix-legend">
                     <div class="legend-item">
                         <span class="legend-color coverage-high"></span>
-                        <span>≥75% Coverage (High)</span>
+                        <span>{{ 'compliance.cross_framework.coverage_high'|trans }}</span>
                     </div>
                     <div class="legend-item">
                         <span class="legend-color coverage-medium"></span>
-                        <span>50-74% Coverage (Medium)</span>
+                        <span>{{ 'compliance.cross_framework.coverage_medium'|trans }}</span>
                     </div>
                     <div class="legend-item">
                         <span class="legend-color coverage-low"></span>
-                        <span><50% Coverage (Low)</span>
+                        <span>{{ 'compliance.cross_framework.coverage_low'|trans }}</span>
                     </div>
                 </div>
             </div>
@@ -96,21 +96,21 @@
                     <div class="summary-icon" style="background: var(--color-success);">✓</div>
                     <div class="summary-content">
                         <div class="summary-value">{{ mapping_group.coverage.strong_mappings }}</div>
-                        <div class="summary-label">Full/Exceeds (≥100%)</div>
+                        <div class="summary-label">{{ 'compliance.cross_framework.strong_mappings'|trans }}</div>
                     </div>
                 </div>
                 <div class="summary-stat">
                     <div class="summary-icon" style="background: var(--color-warning);">⚠</div>
                     <div class="summary-content">
                         <div class="summary-value">{{ mapping_group.coverage.partial_mappings }}</div>
-                        <div class="summary-label">Partial (50-99%)</div>
+                        <div class="summary-label">{{ 'compliance.cross_framework.partial_mappings_label'|trans }}</div>
                     </div>
                 </div>
                 <div class="summary-stat">
                     <div class="summary-icon" style="background: var(--color-secondary);">◐</div>
                     <div class="summary-content">
                         <div class="summary-value">{{ mapping_group.coverage.weak_mappings }}</div>
-                        <div class="summary-label">Weak (<50%)</div>
+                        <div class="summary-label">{{ 'compliance.cross_framework.weak_mappings'|trans }}</div>
                     </div>
                 </div>
             </div>
@@ -119,11 +119,11 @@
                 <table class="table">
                     <thead>
                         <tr>
-                            <th>Source Requirement</th>
-                            <th>Target Requirement</th>
-                            <th>Mapping Type</th>
-                            <th>Strength</th>
-                            <th>Bidirectional</th>
+                            <th>{{ 'compliance.cross_framework.table.source'|trans }}</th>
+                            <th>{{ 'compliance.cross_framework.table.target'|trans }}</th>
+                            <th>{{ 'compliance.cross_framework.table.type'|trans }}</th>
+                            <th>{{ 'compliance.cross_framework.table.strength'|trans }}</th>
+                            <th>{{ 'compliance.cross_framework.table.bidirectional'|trans }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -152,7 +152,7 @@
                                 </td>
                                 <td class="text-center">
                                     {% if mapping.bidirectional %}
-                                        <span class="badge badge-success">🔄 Yes</span>
+                                        <span class="badge badge-success">{{ 'compliance.cross_framework.yes_bidirectional'|trans }}</span>
                                     {% else %}
                                         <span class="badge badge-secondary">→</span>
                                     {% endif %}
@@ -165,7 +165,7 @@
 
             {% if mapping_group.mappings|length > 20 %}
                 <div class="card-footer text-center">
-                    Showing 20 of {{ mapping_group.mappings|length }} mappings
+                    {{ 'compliance.cross_framework.showing_of'|trans({'%total%': mapping_group.mappings|length}) }}
                 </div>
             {% endif %}
         </div>
@@ -174,30 +174,30 @@
     {# Explanation #}
     <div class="card" style="margin-top: var(--spacing-lg);">
         <div class="card-header">
-            <h2>Understanding Cross-Framework Mappings</h2>
+            <h2>{{ 'compliance.cross_framework.understanding_title'|trans }}</h2>
         </div>
         <div class="card-body">
             <div class="explanation-grid">
                 <div class="explanation-item">
-                    <h4>🎯 What are Mappings?</h4>
-                    <p>Mappings show how requirements from one framework relate to requirements in another framework. For example, a TISAX requirement might fully satisfy a DORA requirement.</p>
+                    <h4>{{ 'compliance.cross_framework.what_title'|trans }}</h4>
+                    <p>{{ 'compliance.cross_framework.what_description'|trans }}</p>
                 </div>
                 <div class="explanation-item">
-                    <h4>📊 Mapping Types</h4>
+                    <h4>{{ 'compliance.cross_framework.types_title'|trans }}</h4>
                     <ul>
-                        <li><strong>Exceeds (>100%):</strong> Source requirement goes beyond target</li>
-                        <li><strong>Full (100%):</strong> Source fully satisfies target</li>
-                        <li><strong>Partial (50-99%):</strong> Source partially satisfies target</li>
-                        <li><strong>Weak (<50%):</strong> Source has weak relationship to target</li>
+                        <li><strong>{{ 'compliance.cross_framework.types.exceeds'|trans }}</strong></li>
+                        <li><strong>{{ 'compliance.cross_framework.types.full'|trans }}</strong></li>
+                        <li><strong>{{ 'compliance.cross_framework.types.partial'|trans }}</strong></li>
+                        <li><strong>{{ 'compliance.cross_framework.types.weak'|trans }}</strong></li>
                     </ul>
                 </div>
                 <div class="explanation-item">
-                    <h4>🔄 Bidirectional Mappings</h4>
-                    <p>Some requirements mutually satisfy each other. This means work done for one framework automatically benefits the other framework as well.</p>
+                    <h4>{{ 'compliance.cross_framework.bidirectional_title'|trans }}</h4>
+                    <p>{{ 'compliance.cross_framework.bidirectional_description'|trans }}</p>
                 </div>
                 <div class="explanation-item">
-                    <h4>💡 Strategic Value</h4>
-                    <p>Use these mappings to identify which frameworks have the most overlap and prioritize compliance efforts for maximum multi-framework benefit.</p>
+                    <h4>{{ 'compliance.cross_framework.strategic_title'|trans }}</h4>
+                    <p>{{ 'compliance.cross_framework.strategic_description'|trans }}</p>
                 </div>
             </div>
         </div>

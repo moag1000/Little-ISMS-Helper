@@ -1337,6 +1337,10 @@ compliance:
     frameworks_leveraged: Genutzte Frameworks
     common_requirements: Gemeinsame Anforderungen
     overlap_percentage: Überschneidungs-Prozentsatz
+    total_mappings: Gesamt-Mappings
+    full_exceeds: Vollständig/Übertrifft
+    partial_mappings: Teilweise Mappings
+    bidirectional_mappings: Bidirektionale
   unit:
     requirements: Anforderungen
   info:
@@ -1355,6 +1359,15 @@ compliance:
     source_target_matrix: "Quelle ↓ / Ziel →"
     showing_of: "Zeige %count% von"
     mappings_count: "Mappings"
+    compliance: Compliance
+    requirements: Anforderungen
+    fulfilled: Erfüllt
+    gaps: Lücken
+    time_savings: Zeitersparnis
+    days: Tage
+    code: Code
+    yes: Ja
+    no: Nein
   explanation:
     what_are_mappings_title: "🎯 Was sind Mappings?"
     what_are_mappings: "Mappings zeigen, wie Anforderungen aus einem Framework sich auf Anforderungen in einem anderen Framework beziehen. Zum Beispiel könnte eine TISAX-Anforderung eine DORA-Anforderung vollständig erfüllen."
@@ -1410,6 +1423,100 @@ compliance:
       high: Hoch (≥75%)
       medium: Mittel (50-74%)
       low: Niedrig (<50%)
+  # Index Page
+  page_title: Multi-Framework Compliance
+  page_subtitle: Maximale Datennutzung über Standards hinweg
+  button:
+    cross_framework: Cross-Framework Mappings
+    transitive: Transitive Compliance
+    compare_frameworks: Frameworks vergleichen
+    open_dashboard: Dashboard öffnen
+    back: Zurück
+    reassess: Neu bewerten
+    explore_mappings: Cross-Framework Mappings erkunden
+  data_reuse:
+    title: Datenwiederverwendungs-Wert
+    description: Durch die Wiederverwendung bestehender ISMS-Daten über mehrere Frameworks hinweg sparen Sie geschätzt <strong>%hours% Stunden (%days% Tage)</strong> manuelle Compliance-Arbeit!
+    hours_saved: Stunden gespart
+    work_days: Das entspricht %days% Arbeitstagen durch intelligente Datenwiederverwendung
+    show_details: Details anzeigen
+  tab:
+    overview: Übersicht
+    requirements: Anforderungen
+    gaps: Lücken
+    data_reuse: Datennutzung
+  framework_info: Framework-Informationen
+  recommendations: Empfehlungen
+  filter: Filter
+  search: Suchen...
+  priority:
+    all: Alle Prioritäten
+    critical: Kritisch
+    high: Hoch
+    medium: Mittel
+    low: Niedrig
+  status:
+    all: Alle Status
+    fulfilled: Erfüllt (≥100%)
+    partial: Teilweise (50-99%)
+    gap: Lücke (<50%)
+  details_label: Details
+  gaps:
+    title: Compliance-Lücken
+    none: Keine Lücken gefunden!
+    none_description: Alle anwendbaren Anforderungen sind vollständig erfüllt.
+    fulfilled_percentage: "% erfüllt"
+  # Cross-Framework Page
+  cross_framework:
+    title: Cross-Framework Mappings
+    subtitle: Wie Anforderungen über verschiedene Standards hinweg zugeordnet werden
+    back: Zurück zu Compliance
+    coverage_matrix: Framework-Abdeckungs-Matrix
+    coverage_description: Zeigt, wie viel des Ziel-Frameworks durch die Erfüllung des Quell-Frameworks abgedeckt wird
+    source_target_label: "Quell-Framework ↓ / Ziel-Framework →"
+    coverage_high: "≥75% Abdeckung (Hoch)"
+    coverage_medium: "50-74% Abdeckung (Mittel)"
+    coverage_low: "<50% Abdeckung (Niedrig)"
+    covered_of: "%covered% von %total% Anforderungen abgedeckt (%percentage%%)"
+    strong_mappings: "Vollständig/Übertrifft (≥100%)"
+    partial_mappings_label: "Teilweise (50-99%)"
+    weak_mappings: "Schwach (<50%)"
+    showing_of: "Zeige 20 von %total% Mappings"
+    understanding_title: Cross-Framework Mappings verstehen
+    what_title: "🎯 Was sind Mappings?"
+    what_description: "Mappings zeigen, wie Anforderungen aus einem Framework sich auf Anforderungen in einem anderen Framework beziehen. Zum Beispiel könnte eine TISAX-Anforderung eine DORA-Anforderung vollständig erfüllen."
+    types_title: "📊 Mapping-Typen"
+    types:
+      exceeds: "Übertrifft (>100%): Quelle übertrifft Ziel"
+      full: "Vollständig (100%): Quelle erfüllt Ziel vollständig"
+      partial: "Teilweise (50-99%): Quelle erfüllt Ziel teilweise"
+      weak: "Schwach (<50%): Schwache Beziehung"
+    bidirectional_title: "🔄 Bidirektionale Mappings"
+    bidirectional_description: "Manche Anforderungen erfüllen sich gegenseitig. Das bedeutet, dass Arbeit an einem Framework automatisch auch dem anderen Framework zugute kommt."
+    strategic_title: "💡 Strategischer Wert"
+    strategic_description: "Nutzen Sie diese Mappings, um Frameworks mit der größten Überschneidung zu identifizieren und Compliance-Bemühungen für maximalen Multi-Framework-Nutzen zu priorisieren."
+    table:
+      source: Quell-Anforderung
+      target: Ziel-Anforderung
+      type: Mapping-Typ
+      strength: Stärke
+      bidirectional: Bidirektional
+    yes_bidirectional: "🔄 Ja"
+  # Benefits Section
+  benefits:
+    title: Warum Multi-Framework Compliance wichtig ist
+    data_reuse:
+      title: Maximale Datennutzung
+      description: Erfassen Sie Daten einmal in Ihrem ISMS und nutzen Sie sie automatisch für TISAX, DORA und andere Frameworks.
+    time_efficiency:
+      title: Zeiteffizienz
+      description: Sparen Sie Hunderte von Stunden durch Vermeidung doppelter Dateneingabe und Beweissammlung über verschiedene Standards hinweg.
+    transparency:
+      title: Transparenz
+      description: Sehen Sie genau, wie Anforderungen aus verschiedenen Frameworks zueinander in Beziehung stehen und zu Ihren bestehenden Maßnahmen.
+    strategic:
+      title: Strategische Compliance
+      description: Identifizieren Sie, welche Frameworks sich am meisten überschneiden und priorisieren Sie die Umsetzung basierend auf Multi-Framework-Vorteilen.
 
 # Risk Appetite (ISO 27005:2022)
 risk_appetite:
