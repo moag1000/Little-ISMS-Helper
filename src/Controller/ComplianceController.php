@@ -294,8 +294,6 @@ class ComplianceController extends AbstractController
                 $comparison = $this->assessmentService->compareFrameworks([$selectedFramework1, $selectedFramework2]);
                 $framework1Requirements = count($selectedFramework1->getRequirements());
                 $framework2Requirements = count($selectedFramework2->getRequirements());
-                // Calculate common requirements (simplified - you may want to enhance this)
-                $commonRequirements = 0;
 
                 // Get unique categories from each framework
                 $framework1Categories = array_unique(
@@ -308,6 +306,49 @@ class ComplianceController extends AbstractController
                         array_map(fn($req) => $req->getCategory(), $selectedFramework2->getRequirements()->toArray())
                     )
                 );
+
+                // Build detailed comparison data
+                $comparisonDetails = [];
+                $mappedCount = 0;
+
+                foreach ($selectedFramework1->getRequirements() as $req1) {
+                    $mappedRequirement = null;
+                    $matchQuality = null;
+                    $isMapped = false;
+
+                    // Check if this requirement has mappings to framework2
+                    foreach ($req1->getSourceMappings() as $mapping) {
+                        if ($mapping->getTargetRequirement()->getFramework()->getId() === $selectedFramework2->getId()) {
+                            $mappedRequirement = $mapping->getTargetRequirement();
+                            $matchQuality = $mapping->getMappingPercentage();
+                            $isMapped = true;
+                            $mappedCount++;
+                            break;
+                        }
+                    }
+
+                    // Also check reverse mappings
+                    if (!$isMapped) {
+                        foreach ($req1->getTargetMappings() as $mapping) {
+                            if ($mapping->getSourceRequirement()->getFramework()->getId() === $selectedFramework2->getId()) {
+                                $mappedRequirement = $mapping->getSourceRequirement();
+                                $matchQuality = $mapping->getMappingPercentage();
+                                $isMapped = true;
+                                $mappedCount++;
+                                break;
+                            }
+                        }
+                    }
+
+                    $comparisonDetails[] = [
+                        'framework1Requirement' => $req1,
+                        'mapped' => $isMapped,
+                        'framework2Requirement' => $mappedRequirement,
+                        'matchQuality' => $matchQuality,
+                    ];
+                }
+
+                $commonRequirements = $mappedCount;
             }
         }
 
@@ -316,6 +357,7 @@ class ComplianceController extends AbstractController
             'selectedFramework1' => $selectedFramework1,
             'selectedFramework2' => $selectedFramework2,
             'comparison' => $comparison,
+            'comparisonDetails' => $comparisonDetails ?? [],
             'framework1Requirements' => $framework1Requirements,
             'framework2Requirements' => $framework2Requirements,
             'commonRequirements' => $commonRequirements,
