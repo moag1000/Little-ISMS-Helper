@@ -3,7 +3,7 @@
 {% block title %}{{ instance.name }} - {{ 'workflow.title.instance_show'|trans }} - Little ISMS Helper{% endblock %}
 
 {% block body %}
-<div class="d-flex justify-between align-center mb-4">
+<div class="page-header">
     <div>
         <h1>{{ instance.name }}</h1>
         <div class="mt-2">
@@ -23,8 +23,8 @@
             {% endif %}
         </div>
     </div>
-    <div>
-        <a href="{{ path('app_workflow_instance_edit', {id: instance.id}) }}" class="btn btn-success" style="margin-right: 0.5rem;">
+    <div class="button-group">
+        <a href="{{ path('app_workflow_instance_edit', {id: instance.id}) }}" class="btn btn-primary">
             ✏️ {{ 'common.edit'|trans }}
         </a>
         <a href="{{ path('app_workflow_index') }}" class="btn btn-secondary">

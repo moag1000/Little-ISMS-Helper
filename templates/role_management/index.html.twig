@@ -3,15 +3,13 @@
 {% block title %}{{ 'role_management.title.list'|trans }} - Little ISMS Helper{% endblock %}
 
 {% block body %}
-<div class="d-flex justify-between align-center mb-4">
+<div class="page-header">
     <div>
         <h1>{{ 'role_management.title.list'|trans }}</h1>
-        <p style="color: var(--color-text-light); margin-top: var(--spacing-sm);">
-            {{ 'role_management.description.overview'|trans }}
-        </p>
+        <p class="text-muted">{{ 'role_management.description.overview'|trans }}</p>
     </div>
-    <div>
-        <a href="{{ path('app_role_management_new') }}" class="btn btn-success">
+    <div class="button-group">
+        <a href="{{ path('app_role_management_new') }}" class="btn btn-primary">
             ➕ {{ 'role_management.action.create'|trans }}
         </a>
     </div>
