@@ -304,6 +304,8 @@ class ComplianceController extends AbstractController
             'framework1Requirements' => $framework1Requirements,
             'framework2Requirements' => $framework2Requirements,
             'commonRequirements' => $commonRequirements,
+            'framework1UniqueRequirements' => max(0, $framework1Requirements - $commonRequirements),
+            'framework2UniqueRequirements' => max(0, $framework2Requirements - $commonRequirements),
         ]);
     }
 
