@@ -33,6 +33,155 @@
     {% endif %}
 </div>
 
+{# Filter Section #}
+<div class="card mb-4">
+    <div class="card-header">
+        <h5><i class="bi bi-funnel"></i> {{ 'common.filters'|trans }}</h5>
+    </div>
+    <div class="card-body">
+        <form method="get" action="{{ path('app_asset_index') }}" class="row g-3" id="asset-filter-form">
+            <div class="col-md-3">
+                <label for="filter-type" class="form-label">{{ 'asset.label.type'|trans }}</label>
+                <select class="form-select" id="filter-type" name="type" onchange="this.form.submit()">
+                    <option value="">{{ 'common.all'|trans }}</option>
+                    {% if typeStats|length > 0 %}
+                        {% for stat in typeStats %}
+                            <option value="{{ stat.assetType }}" {{ app.request.get('type') == stat.assetType ? 'selected' : '' }}>
+                                {{ stat.assetType }} ({{ stat.count }})
+                            </option>
+                        {% endfor %}
+                    {% endif %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label for="filter-classification" class="form-label">{{ 'asset.label.data_classification'|trans }}</label>
+                <select class="form-select" id="filter-classification" name="classification" onchange="this.form.submit()">
+                    <option value="">{{ 'common.all'|trans }}</option>
+                    <option value="public" {{ app.request.get('classification') == 'public' ? 'selected' : '' }}>{{ 'asset.classification.public'|trans }}</option>
+                    <option value="internal" {{ app.request.get('classification') == 'internal' ? 'selected' : '' }}>{{ 'asset.classification.internal'|trans }}</option>
+                    <option value="confidential" {{ app.request.get('classification') == 'confidential' ? 'selected' : '' }}>{{ 'asset.classification.confidential'|trans }}</option>
+                    <option value="restricted" {{ app.request.get('classification') == 'restricted' ? 'selected' : '' }}>{{ 'asset.classification.restricted'|trans }}</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label for="filter-owner" class="form-label">{{ 'asset.label.owner'|trans }}</label>
+                <input type="text" class="form-control" id="filter-owner" name="owner"
+                       value="{{ app.request.get('owner') }}"
+                       placeholder="{{ 'common.search'|trans }}...">
+            </div>
+            <div class="col-md-3">
+                <label for="filter-status" class="form-label">{{ 'asset.label.status'|trans }}</label>
+                <select class="form-select" id="filter-status" name="status" onchange="this.form.submit()">
+                    <option value="">{{ 'common.all'|trans }}</option>
+                    <option value="active" {{ app.request.get('status') == 'active' ? 'selected' : '' }}>{{ 'asset.status.active'|trans }}</option>
+                    <option value="inactive" {{ app.request.get('status') == 'inactive' ? 'selected' : '' }}>{{ 'asset.status.inactive'|trans }}</option>
+                    <option value="retired" {{ app.request.get('status') == 'retired' ? 'selected' : '' }}>{{ 'asset.status.retired'|trans }}</option>
+                </select>
+            </div>
+            <div class="col-12">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-search"></i> {{ 'common.filter'|trans }}
+                </button>
+                <a href="{{ path('app_asset_index') }}" class="btn btn-secondary">
+                    <i class="bi bi-x-circle"></i> {{ 'common.reset'|trans }}
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+{# Assets Table #}
+<div class="card">
+    <div class="card-header">
+        <h5><i class="bi bi-list"></i> {{ 'asset.list.title'|trans }} ({{ assets|length }})</h5>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th>{{ 'asset.label.name'|trans }}</th>
+                    <th>{{ 'asset.label.type'|trans }}</th>
+                    <th>{{ 'asset.label.owner'|trans }}</th>
+                    <th class="text-center">{{ 'asset.label.classification'|trans }}</th>
+                    <th class="text-center">CIA</th>
+                    <th class="text-center">{{ 'asset.label.risks'|trans }}</th>
+                    <th>{{ 'asset.label.status'|trans }}</th>
+                    <th class="text-center">{{ 'common.actions'|trans }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for asset in assets %}
+                <tr>
+                    <td>
+                        <strong>{{ asset.name }}</strong>
+                        {% if asset.description %}
+                            <br><small class="text-muted">{{ asset.description|length > 60 ? asset.description|slice(0, 60) ~ '...' : asset.description }}</small>
+                        {% endif %}
+                    </td>
+                    <td><span class="badge bg-secondary">{{ asset.assetType }}</span></td>
+                    <td>{{ asset.owner }}</td>
+                    <td class="text-center">
+                        {% if asset.dataClassification %}
+                            <span class="badge badge-classification-{{ asset.dataClassification }}">
+                                {{ ('asset.classification.' ~ asset.dataClassification)|trans|upper }}
+                            </span>
+                        {% else %}
+                            <span class="text-muted">-</span>
+                        {% endif %}
+                    </td>
+                    <td class="text-center">
+                        <small>
+                            <span class="badge bg-{{ asset.confidentialityValue >= 4 ? 'danger' : (asset.confidentialityValue >= 3 ? 'warning' : 'success') }}">
+                                C:{{ asset.confidentialityValue }}
+                            </span>
+                            <span class="badge bg-{{ asset.integrityValue >= 4 ? 'danger' : (asset.integrityValue >= 3 ? 'warning' : 'success') }}">
+                                I:{{ asset.integrityValue }}
+                            </span>
+                            <span class="badge bg-{{ asset.availabilityValue >= 4 ? 'danger' : (asset.availabilityValue >= 3 ? 'warning' : 'success') }}">
+                                A:{{ asset.availabilityValue }}
+                            </span>
+                        </small>
+                    </td>
+                    <td class="text-center">
+                        {% if recommendations[asset.id] is defined %}
+                            {% set recData = recommendations[asset.id] %}
+                            {% if recData.has_bcm_data %}
+                                <span class="badge bg-warning" title="{{ recData.process_count }} {{ 'asset.bcm.processes'|trans }}">
+                                    {{ recData.process_count }} BCM
+                                </span>
+                            {% else %}
+                                <span class="text-muted">-</span>
+                            {% endif %}
+                        {% else %}
+                            <span class="text-muted">-</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <span class="badge bg-{{ asset.status == 'active' ? 'success' : (asset.status == 'inactive' ? 'warning' : 'secondary') }}">
+                            {{ asset.status|upper }}
+                        </span>
+                    </td>
+                    <td class="text-center">
+                        <div class="btn-group btn-group-sm">
+                            <a href="{{ path('app_asset_show', {id: asset.id}) }}"
+                               class="btn btn-outline-primary"
+                               title="{{ 'common.view'|trans }}">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                            <a href="{{ path('app_asset_edit', {id: asset.id}) }}"
+                               class="btn btn-outline-secondary"
+                               title="{{ 'common.edit'|trans }}">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
 <style>
 .page-header {
     display: flex;
