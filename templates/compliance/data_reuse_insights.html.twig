@@ -3,14 +3,12 @@
 {% block title %}{{ 'compliance.title.data_reuse'|trans }} - Little ISMS Helper{% endblock %}
 
 {% block body %}
-<div class="d-flex justify-between align-center mb-4">
+<div class="page-header">
     <div>
         <h1>{{ 'compliance.title.data_reuse'|trans }}</h1>
-        <p style="color: var(--color-text-light); margin-top: var(--spacing-sm);">
-            {{ 'compliance.description.data_reuse'|trans }}
-        </p>
+        <p class="text-muted">{{ 'compliance.description.data_reuse'|trans }}</p>
     </div>
-    <div>
+    <div class="button-group">
         <a href="{{ path('app_compliance_export_reuse') }}" class="btn btn-success">
             📊 {{ 'compliance.action.export_insights'|trans }}
         </a>

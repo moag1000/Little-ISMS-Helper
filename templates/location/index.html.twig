@@ -3,15 +3,13 @@
 {% block title %}{{ 'location.title.list'|trans }} - Little ISMS Helper{% endblock %}
 
 {% block body %}
-<div class="d-flex justify-between align-center mb-4">
+<div class="page-header">
     <div>
         <h1>{{ 'location.title.list'|trans }}</h1>
-        <p style="color: var(--color-text-light); margin-top: var(--spacing-sm);">
-            {{ 'location.description.overview'|trans }}
-        </p>
+        <p class="text-muted">{{ 'location.description.overview'|trans }}</p>
     </div>
-    <div>
-        <a href="{{ path('app_location_new') }}" class="btn btn-success">
+    <div class="button-group">
+        <a href="{{ path('app_location_new') }}" class="btn btn-primary">
             ➕ {{ 'location.action.create'|trans }}
         </a>
     </div>

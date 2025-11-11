@@ -3,14 +3,12 @@
 {% block title %}{{ 'workflow.title.pending'|trans }} - Little ISMS Helper{% endblock %}
 
 {% block body %}
-<div class="d-flex justify-between align-center mb-4">
+<div class="page-header">
     <div>
         <h1>{{ 'workflow.title.pending'|trans }}</h1>
-        <p style="color: var(--color-text-light); margin-top: var(--spacing-sm);">
-            {{ 'workflow.description.pending_detail'|trans }}
-        </p>
+        <p class="text-muted">{{ 'workflow.description.pending_detail'|trans }}</p>
     </div>
-    <div>
+    <div class="button-group">
         <a href="{{ path('app_workflow_index') }}" class="btn btn-secondary">
             ← {{ 'common.back'|trans }}
         </a>
