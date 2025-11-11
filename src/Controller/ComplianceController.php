@@ -1001,16 +1001,46 @@ class ComplianceController extends AbstractController
                 $message .= sprintf(' (%d bereits vorhanden, übersprungen)', $mappingsSkipped);
             }
 
+            // Additional debug info to help diagnose mapping issues
+            $debugInfo = [
+                'frameworks_loaded' => count($frameworks),
+                'framework_details' => $frameworkCounts,
+            ];
+
+            // Check if TISAX exists and has ISO controls
+            $tisax = $this->frameworkRepository->findOneBy(['code' => 'TISAX']);
+            if ($tisax) {
+                $tisaxReqs = $this->requirementRepository->findBy(['framework' => $tisax]);
+                $tisaxWithIsoControls = 0;
+                $sampleIsoControls = [];
+
+                foreach ($tisaxReqs as $req) {
+                    $dataSourceMapping = $req->getDataSourceMapping();
+                    if (!empty($dataSourceMapping['iso_controls'])) {
+                        $tisaxWithIsoControls++;
+                        if (count($sampleIsoControls) < 5) {
+                            $sampleIsoControls[] = [
+                                'requirement_id' => $req->getRequirementId(),
+                                'iso_controls' => $dataSourceMapping['iso_controls']
+                            ];
+                        }
+                    }
+                }
+
+                $debugInfo['tisax'] = [
+                    'total_requirements' => count($tisaxReqs),
+                    'with_iso_controls' => $tisaxWithIsoControls,
+                    'sample_iso_controls' => $sampleIsoControls,
+                ];
+            }
+
             return new JsonResponse([
                 'success' => true,
                 'message' => $message,
                 'mappings_created' => $mappingsCreated,
                 'mappings_skipped' => $mappingsSkipped,
                 'mappings_total' => $mappingsCreated + $mappingsSkipped,
-                'debug' => [
-                    'frameworks_loaded' => count($frameworks),
-                    'framework_details' => $frameworkCounts,
-                ]
+                'debug' => $debugInfo
             ]);
 
         } catch (\Exception $e) {
