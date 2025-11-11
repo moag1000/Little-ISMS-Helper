@@ -1264,16 +1264,25 @@ compliance:
   industry.all_sectors: All Sectors
   title:
     transitive: Transitive Compliance
+    compare: Compare Frameworks
   description:
     transitive: Leverage existing compliance work across multiple frameworks for maximum efficiency
     matrix: Shows how fulfilling requirements in one framework helps satisfy requirements in other frameworks
+    compare: Compare two compliance frameworks side-by-side to understand their differences, overlaps, and unique requirements
+    unique_requirements: Requirements that are unique to this framework and not covered by the other
   action:
     export_transitive: Export Transitive Analysis
+    export_comparison: Export Comparison
+    compare: Compare Frameworks
   stats:
     total_relationships: Total Framework Relationships
     transitive_compliance: Transitive Compliance Benefits
     leverage_rate: Leverage Rate
     frameworks_leveraged: Frameworks Leveraged
+    common_requirements: Common Requirements
+    overlap_percentage: Overlap Percentage
+  unit:
+    requirements: Requirements
   info:
     transitive_title: What is Transitive Compliance?
     transitive_desc: Transitive compliance means that when you fulfill a requirement in one framework (e.g., ISO 27001), you automatically or partially fulfill requirements in other frameworks (e.g., TISAX, NIS2). This allows you to leverage your compliance work across multiple standards.
@@ -1283,10 +1292,31 @@ compliance:
     leverage_opportunities: Compliance Leverage Opportunities
     cross_framework_mappings: Cross-Framework Requirement Mappings
     mapping_explanation: Understanding Requirement Mappings
+    select_frameworks: Select Frameworks to Compare
+    detailed_comparison: Detailed Comparison
+    unique_to: "Unique to"
+  label:
+    source_target_matrix: "Source ↓ / Target →"
+    showing_of: "Showing %count% of"
+    mappings_count: "mappings"
+  explanation:
+    what_are_mappings_title: "🎯 What are Mappings?"
+    what_are_mappings: "Mappings show how requirements from one framework relate to requirements in another framework. For example, a TISAX requirement might fully satisfy a DORA requirement."
+    mapping_types_title: "📊 Mapping Types"
+    mapping_types_exceeds: "Exceeds (>100%): Source exceeds target"
+    mapping_types_full: "Full (100%): Source fully satisfies target"
+    mapping_types_partial: "Partial (50-99%): Source partially satisfies target"
+    mapping_types_weak: "Weak (<50%): Weak relationship"
+    bidirectional_title: "🔄 Bidirectional Mappings"
+    bidirectional: "Some requirements mutually satisfy each other. This means work done for one framework automatically benefits the other framework as well."
+    strategic_value_title: "💡 Strategic Value"
+    strategic_value: "Use these mappings to identify which frameworks have the most overlap and prioritize compliance efforts for maximum multi-framework benefit."
   field:
     mapped: Mapped Requirements
     coverage: Coverage
     framework: Framework
+    framework_1: First Framework
+    framework_2: Second Framework
     source_requirement: Source Requirement
     source_framework: Source Framework
     target_requirements: Target Requirements
@@ -1295,10 +1325,25 @@ compliance:
     mapping_type: Mapping Type
     mapping_strength: Mapping Strength
     bidirectional: Bidirectional
+    requirement: Requirement
+    category: Category
+    mapping: Mapping
+    match_quality: Match Quality
+    total_requirements: Total Requirements
+    unique_requirements: Unique Requirements
+    categories: Categories
+  option:
+    select_framework: -- Select a framework --
+  badge:
+    mapped: Mapped
+    no_mapping: No Mapping
   message:
     no_relationships: No framework relationships found yet
     no_leverage_opportunities: No leverage opportunities identified yet
     no_mappings: No cross-framework mappings available
+    no_comparison_data: No comparison data available. Please select two frameworks to compare.
+    no_unique: No unique requirements found
+    more_requirements: "+ %count% more requirements"
   mapping:
     type:
       full: Full Coverage
