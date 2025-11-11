@@ -52,15 +52,15 @@
 </head>
 <body data-turbo="true" data-controller="modal-manager">
     <header class="header">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-            <div style="display: flex; align-items: center; gap: 1rem;">
+        <div class="header-container">
+            <div class="header-logo">
                 <img src="{{ asset('favicon.svg') }}" alt="Little ISMS Helper Logo" style="width: 48px; height: 48px;">
                 <div>
                     <h1>{{ 'app.title'|trans }}</h1>
                     <p>{{ 'app.subtitle'|trans }}</p>
                 </div>
             </div>
-            <div style="display: flex; align-items: center; gap: 1rem;">
+            <div class="header-actions">
                 {# Global Search Component (Button + Modal) #}
                 {% include '_components/_global_search.html.twig' %}
 
