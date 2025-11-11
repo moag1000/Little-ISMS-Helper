@@ -193,7 +193,8 @@ empty_database() {
         TABLES_RAW=$(php bin/console dbal:run-sql "SELECT table_name FROM information_schema.tables WHERE table_schema = '$DB_NAME' AND table_name != 'doctrine_migration_versions' ORDER BY table_name;" 2>&1)
 
         # Extract table names from output (skip header lines, status messages, etc.)
-        TABLES=$(echo "$TABLES_RAW" | grep -v "^+" | grep -v "^|" | grep -v "table_name" | grep -v "^$" | grep -v "^[0-9]* rows" | grep -v "^\[" | grep -v "^!" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+        # Filter status messages that may have leading spaces, then trim whitespace
+        TABLES=$(echo "$TABLES_RAW" | grep -v "^+" | grep -v "^|" | grep -v "table_name" | grep -v "^$" | grep -v "rows" | grep -v "\[" | grep -v "!" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | grep -v "^$")
 
         if [ ! -z "$TABLES" ]; then
             info "Found $(echo "$TABLES" | wc -l) tables to empty"
@@ -220,7 +221,8 @@ empty_database() {
         TABLES_RAW=$(php bin/console dbal:run-sql "SELECT tablename FROM pg_tables WHERE schemaname = 'public' AND tablename != 'doctrine_migration_versions' ORDER BY tablename;" 2>&1)
 
         # Extract table names from output (skip header lines, status messages, etc.)
-        TABLES=$(echo "$TABLES_RAW" | grep -v "^+" | grep -v "^|" | grep -v "tablename" | grep -v "^$" | grep -v "^[0-9]* rows" | grep -v "^\[" | grep -v "^!" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+        # Filter status messages that may have leading spaces, then trim whitespace
+        TABLES=$(echo "$TABLES_RAW" | grep -v "^+" | grep -v "^|" | grep -v "tablename" | grep -v "^$" | grep -v "rows" | grep -v "\[" | grep -v "!" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | grep -v "^$")
 
         if [ ! -z "$TABLES" ]; then
             info "Found $(echo "$TABLES" | wc -l) tables to empty"
