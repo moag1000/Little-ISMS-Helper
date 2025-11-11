@@ -581,6 +581,194 @@ class ComplianceController extends AbstractController
         return $this->redirectToRoute('app_compliance_compare');
     }
 
+    #[Route('/frameworks/create-comparison-mappings', name: 'app_compliance_create_comparison_mappings', methods: ['POST'])]
+    public function createComparisonMappings(Request $request): JsonResponse
+    {
+        // Validate CSRF token
+        $token = $request->headers->get('X-CSRF-Token');
+        if (!$this->csrfTokenManager->isTokenValid(new CsrfToken('create_mappings', $token))) {
+            return new JsonResponse([
+                'success' => false,
+                'message' => 'Invalid CSRF token'
+            ], 403);
+        }
+
+        try {
+            $data = json_decode($request->getContent(), true);
+            $framework1Id = $data['framework1_id'] ?? null;
+            $framework2Id = $data['framework2_id'] ?? null;
+
+            if (!$framework1Id || !$framework2Id) {
+                return new JsonResponse([
+                    'success' => false,
+                    'message' => 'Beide Framework IDs müssen angegeben werden!'
+                ], 400);
+            }
+
+            if ($framework1Id === $framework2Id) {
+                return new JsonResponse([
+                    'success' => false,
+                    'message' => 'Die beiden Frameworks müssen unterschiedlich sein!'
+                ], 400);
+            }
+
+            $em = $this->frameworkRepository->getEntityManager();
+
+            // Load frameworks
+            $framework1 = $this->frameworkRepository->find($framework1Id);
+            $framework2 = $this->frameworkRepository->find($framework2Id);
+
+            if (!$framework1 || !$framework2) {
+                return new JsonResponse([
+                    'success' => false,
+                    'message' => 'Ein oder beide Frameworks wurden nicht gefunden!'
+                ], 404);
+            }
+
+            // Check if ISO 27001 exists (needed for transitive mappings)
+            $iso27001 = $this->frameworkRepository->findOneBy(['code' => 'ISO27001']);
+
+            // Load existing mappings to avoid duplicates (incremental approach)
+            $existingMappings = $this->mappingRepository->findAll();
+            $existingPairs = [];
+            foreach ($existingMappings as $mapping) {
+                $sourceId = $mapping->getSourceRequirement()->getId();
+                $targetId = $mapping->getTargetRequirement()->getId();
+                $existingPairs[$sourceId . '-' . $targetId] = true;
+            }
+
+            $mappingsCreated = 0;
+            $mappingsSkipped = 0;
+            $createdPairs = [];
+
+            // Get requirements for both frameworks
+            $requirements1 = $this->requirementRepository->findBy(['framework' => $framework1]);
+            $requirements2 = $this->requirementRepository->findBy(['framework' => $framework2]);
+
+            // Strategy 1: Direct mapping via ISO controls if available
+            if ($iso27001) {
+                // Build a map of ISO control IDs to requirements for both frameworks
+                $framework1IsoMap = [];
+                $framework2IsoMap = [];
+
+                foreach ($requirements1 as $req) {
+                    $dataSourceMapping = $req->getDataSourceMapping();
+                    if (!empty($dataSourceMapping['iso_controls'])) {
+                        $isoControls = is_array($dataSourceMapping['iso_controls'])
+                            ? $dataSourceMapping['iso_controls']
+                            : [$dataSourceMapping['iso_controls']];
+
+                        foreach ($isoControls as $controlId) {
+                            $normalizedId = 'A.' . str_replace(['A.', 'A'], '', $controlId);
+                            if (!isset($framework1IsoMap[$normalizedId])) {
+                                $framework1IsoMap[$normalizedId] = [];
+                            }
+                            $framework1IsoMap[$normalizedId][] = $req;
+                        }
+                    }
+                }
+
+                foreach ($requirements2 as $req) {
+                    $dataSourceMapping = $req->getDataSourceMapping();
+                    if (!empty($dataSourceMapping['iso_controls'])) {
+                        $isoControls = is_array($dataSourceMapping['iso_controls'])
+                            ? $dataSourceMapping['iso_controls']
+                            : [$dataSourceMapping['iso_controls']];
+
+                        foreach ($isoControls as $controlId) {
+                            $normalizedId = 'A.' . str_replace(['A.', 'A'], '', $controlId);
+                            if (!isset($framework2IsoMap[$normalizedId])) {
+                                $framework2IsoMap[$normalizedId] = [];
+                            }
+                            $framework2IsoMap[$normalizedId][] = $req;
+                        }
+                    }
+                }
+
+                // Create mappings for requirements sharing the same ISO control
+                foreach ($framework1IsoMap as $isoControl => $reqs1) {
+                    if (isset($framework2IsoMap[$isoControl])) {
+                        $reqs2 = $framework2IsoMap[$isoControl];
+
+                        foreach ($reqs1 as $req1) {
+                            foreach ($reqs2 as $req2) {
+                                $pairKey = $req1->getId() . '-' . $req2->getId();
+                                $reversePairKey = $req2->getId() . '-' . $req1->getId();
+
+                                if (!isset($createdPairs[$pairKey]) && !isset($createdPairs[$reversePairKey])
+                                    && !isset($existingPairs[$pairKey]) && !isset($existingPairs[$reversePairKey])) {
+
+                                    // Forward mapping
+                                    $mapping = new ComplianceMapping();
+                                    $mapping->setSourceRequirement($req1)
+                                        ->setTargetRequirement($req2)
+                                        ->setMappingPercentage(80)
+                                        ->setMappingType('partial')
+                                        ->setBidirectional(true)
+                                        ->setConfidence('high')
+                                        ->setMappingRationale(sprintf(
+                                            'Mapped via shared ISO 27001 control %s',
+                                            $isoControl
+                                        ));
+
+                                    $em->persist($mapping);
+                                    $mappingsCreated++;
+                                    $createdPairs[$pairKey] = true;
+
+                                    // Reverse mapping
+                                    $reverseMapping = new ComplianceMapping();
+                                    $reverseMapping->setSourceRequirement($req2)
+                                        ->setTargetRequirement($req1)
+                                        ->setMappingPercentage(80)
+                                        ->setMappingType('partial')
+                                        ->setBidirectional(true)
+                                        ->setConfidence('high')
+                                        ->setMappingRationale(sprintf(
+                                            'Mapped via shared ISO 27001 control %s',
+                                            $isoControl
+                                        ));
+
+                                    $em->persist($reverseMapping);
+                                    $mappingsCreated++;
+                                    $createdPairs[$reversePairKey] = true;
+                                } elseif (isset($existingPairs[$pairKey]) || isset($existingPairs[$reversePairKey])) {
+                                    $mappingsSkipped += 2;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            $em->flush();
+
+            $message = sprintf(
+                'Erfolgreich %d neue Mappings zwischen %s und %s erstellt!',
+                $mappingsCreated,
+                $framework1->getName(),
+                $framework2->getName()
+            );
+            if ($mappingsSkipped > 0) {
+                $message .= sprintf(' (%d bereits vorhanden, übersprungen)', $mappingsSkipped);
+            }
+
+            return new JsonResponse([
+                'success' => true,
+                'message' => $message,
+                'mappings_created' => $mappingsCreated,
+                'mappings_skipped' => $mappingsSkipped,
+                'framework1' => $framework1->getName(),
+                'framework2' => $framework2->getName(),
+            ]);
+
+        } catch (\Exception $e) {
+            return new JsonResponse([
+                'success' => false,
+                'message' => 'Fehler beim Erstellen der Mappings: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
     #[Route('/frameworks/create-mappings', name: 'app_compliance_create_mappings', methods: ['POST'])]
     public function createCrossFrameworkMappings(Request $request): JsonResponse
     {
