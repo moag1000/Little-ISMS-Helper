@@ -2,7 +2,7 @@
 # Little ISMS Helper - Database Reset and Migration Script
 # Use this to clean up and re-run migrations after fixing migration issues
 
-set -e
+# Note: We don't use set -e to allow graceful error handling
 
 echo "=========================================="
 echo "Little ISMS Helper"
@@ -173,37 +173,53 @@ empty_database() {
         else
             warning "SQLite database not found: $DB_FILE (will be created)"
         fi
-        php bin/console doctrine:database:create 2>/dev/null || true
-        success "SQLite database recreated"
+
+        # Create database
+        if php bin/console doctrine:database:create 2>/dev/null; then
+            success "SQLite database recreated"
+        else
+            warning "Could not create SQLite database (may already exist)"
+        fi
     elif [ "$DB_TYPE" = "mysql" ]; then
         info "Emptying MySQL database tables..."
-        # Get list of tables and truncate them
-        php bin/console dbal:run-sql "SET FOREIGN_KEY_CHECKS = 0;" 2>/dev/null || true
+        # Disable foreign key checks
+        if ! php bin/console dbal:run-sql "SET FOREIGN_KEY_CHECKS = 0;" 2>/dev/null; then
+            error "Failed to disable foreign key checks"
+            return 1
+        fi
 
-        # Get table names and truncate each one
-        TABLES=$(php bin/console dbal:run-sql "SELECT GROUP_CONCAT(table_name) FROM information_schema.tables WHERE table_schema = '$DB_NAME';" 2>/dev/null | tail -1)
+        # Get table names excluding doctrine_migration_versions
+        TABLES=$(php bin/console dbal:run-sql "SELECT GROUP_CONCAT(table_name) FROM information_schema.tables WHERE table_schema = '$DB_NAME' AND table_name != 'doctrine_migration_versions';" 2>/dev/null | tail -1)
 
         if [ ! -z "$TABLES" ] && [ "$TABLES" != "NULL" ]; then
             # Split tables by comma and truncate each
             IFS=',' read -ra TABLE_ARRAY <<< "$TABLES"
             for TABLE in "${TABLE_ARRAY[@]}"; do
-                php bin/console dbal:run-sql "TRUNCATE TABLE \`$TABLE\`;" 2>/dev/null || true
+                if php bin/console dbal:run-sql "TRUNCATE TABLE \`$TABLE\`;" 2>/dev/null; then
+                    info "  Emptied table: $TABLE"
+                else
+                    warning "  Could not empty table: $TABLE"
+                fi
             done
-            success "All tables emptied"
+            success "All tables emptied (doctrine_migration_versions preserved)"
         else
             warning "No tables found to empty"
         fi
 
+        # Re-enable foreign key checks
         php bin/console dbal:run-sql "SET FOREIGN_KEY_CHECKS = 1;" 2>/dev/null || true
     elif [ "$DB_TYPE" = "postgresql" ]; then
         info "Emptying PostgreSQL database tables..."
-        # Get list of tables and truncate them
-        TABLES=$(php bin/console dbal:run-sql "SELECT string_agg(tablename, ',') FROM pg_tables WHERE schemaname = 'public';" 2>/dev/null | tail -1)
+        # Get list of tables excluding doctrine_migration_versions
+        TABLES=$(php bin/console dbal:run-sql "SELECT string_agg(tablename, ',') FROM pg_tables WHERE schemaname = 'public' AND tablename != 'doctrine_migration_versions';" 2>/dev/null | tail -1)
 
         if [ ! -z "$TABLES" ] && [ "$TABLES" != "" ]; then
             # Truncate all tables at once
-            php bin/console dbal:run-sql "TRUNCATE TABLE $TABLES CASCADE;" 2>/dev/null || true
-            success "All tables emptied"
+            if php bin/console dbal:run-sql "TRUNCATE TABLE $TABLES CASCADE;" 2>/dev/null; then
+                success "All tables emptied (doctrine_migration_versions preserved)"
+            else
+                warning "Could not empty all tables"
+            fi
         else
             warning "No tables found to empty"
         fi
@@ -222,23 +238,46 @@ if [ "$OPERATION_MODE" = "drop" ]; then
             warning "SQLite database not found: $DB_FILE (will be created)"
         fi
     else
-        php bin/console doctrine:database:drop --force 2>/dev/null || warning "Database did not exist"
-        success "Database dropped"
+        if php bin/console doctrine:database:drop --force 2>/dev/null; then
+            success "Database dropped"
+        else
+            warning "Database did not exist"
+        fi
     fi
 
     echo ""
     info "Step 2: Creating database..."
-    php bin/console doctrine:database:create
-    success "Database created"
+    if php bin/console doctrine:database:create 2>&1; then
+        success "Database created"
+    else
+        error "Failed to create database"
+        exit 1
+    fi
 else
     info "Step 1: Checking if database exists..."
 
     # Try to create database if it doesn't exist
-    php bin/console doctrine:database:create 2>/dev/null && success "Database created (did not exist)" || success "Database exists"
+    DB_CREATE_OUTPUT=$(php bin/console doctrine:database:create 2>&1)
+    DB_CREATE_EXIT=$?
+
+    if [ $DB_CREATE_EXIT -eq 0 ]; then
+        success "Database created (did not exist)"
+    else
+        # Check if error is because database already exists
+        if echo "$DB_CREATE_OUTPUT" | grep -qi "already exists\|database exists"; then
+            success "Database exists"
+        else
+            error "Failed to verify/create database: $DB_CREATE_OUTPUT"
+            exit 1
+        fi
+    fi
 
     echo ""
     info "Step 2: Emptying existing database..."
-    empty_database
+    if ! empty_database; then
+        error "Failed to empty database"
+        exit 1
+    fi
 fi
 
 # Check and update database configuration if needed
@@ -303,8 +342,12 @@ fi
 
 echo ""
 info "Step 3: Running migrations..."
-php bin/console doctrine:migrations:migrate --no-interaction
-success "Migrations completed"
+if php bin/console doctrine:migrations:migrate --no-interaction 2>&1; then
+    success "Migrations completed"
+else
+    error "Migrations failed"
+    exit 1
+fi
 
 echo ""
 info "Step 4: Loading default roles & permissions..."
@@ -322,17 +365,25 @@ if [[ ! $REPLY =~ ^[Nn]$ ]]; then
         echo
         ADMIN_PASSWORD=${ADMIN_PASSWORD:-admin123}
 
-        php bin/console app:setup-permissions \
+        if php bin/console app:setup-permissions \
             --admin-email="$ADMIN_EMAIL" \
-            --admin-password="$ADMIN_PASSWORD"
-        success "Roles, permissions, and admin user created"
-        echo ""
-        info "Login credentials:"
-        echo "  Email: $ADMIN_EMAIL"
-        echo "  Password: ******* (hidden)"
+            --admin-password="$ADMIN_PASSWORD" 2>&1; then
+            success "Roles, permissions, and admin user created"
+            echo ""
+            info "Login credentials:"
+            echo "  Email: $ADMIN_EMAIL"
+            echo "  Password: ******* (hidden)"
+        else
+            error "Failed to setup permissions and admin user"
+            exit 1
+        fi
     else
-        php bin/console app:setup-permissions
-        success "Roles and permissions created"
+        if php bin/console app:setup-permissions 2>&1; then
+            success "Roles and permissions created"
+        else
+            error "Failed to setup permissions"
+            exit 1
+        fi
     fi
 else
     warning "Skipped setup-permissions"
@@ -343,8 +394,11 @@ info "Step 5: (Optional) Load ISO 27001 Controls..."
 read -p "Run isms:load-annex-a-controls? (Y/n) " -n 1 -r
 echo
 if [[ ! $REPLY =~ ^[Nn]$ ]]; then
-    php bin/console isms:load-annex-a-controls
-    success "ISO 27001 Controls loaded"
+    if php bin/console isms:load-annex-a-controls 2>&1; then
+        success "ISO 27001 Controls loaded"
+    else
+        warning "Failed to load ISO 27001 Controls (continuing anyway)"
+    fi
 else
     warning "Skipped loading controls"
 fi
