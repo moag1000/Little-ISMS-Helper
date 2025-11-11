@@ -316,6 +316,10 @@
     gap: 2rem;
 }
 
+.grid-col-1 {
+    grid-template-columns: 1fr;
+}
+
 /* Margin utilities */
 .mt-xs {
     margin-top: var(--spacing-xs);
@@ -536,6 +540,12 @@
     margin-bottom: var(--spacing-md);
 }
 
+.text-muted-mt-sm-mb-md {
+    color: var(--color-text-muted);
+    margin-top: var(--spacing-sm);
+    margin-bottom: var(--spacing-md);
+}
+
 .text-muted-fs-09 {
     color: var(--color-text-muted);
     font-size: 0.9em;
@@ -575,6 +585,14 @@
 .list-unstyled {
     list-style: none;
     padding: 0;
+}
+
+.list-item-action {
+    padding: var(--spacing-md);
+    border-bottom: 1px solid var(--color-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 /* Border utilities */
@@ -716,6 +734,15 @@
 /* Background utilities */
 .bg-alt {
     background: var(--color-bg-alt);
+}
+
+.bg-warning-light {
+    background-color: var(--color-warning-light);
+}
+
+.bg-danger-light-border-left-danger {
+    background: var(--color-danger-light);
+    border-left: 4px solid var(--color-danger);
 }
 
 /* KPI Card components */
