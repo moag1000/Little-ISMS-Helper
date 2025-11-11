@@ -230,7 +230,7 @@
                     <thead>
                         <tr>
                             <th style="padding: var(--spacing-md); border: 1px solid var(--color-border); background: var(--color-bg); font-weight: 600;">
-                                Source ↓ / Target →
+                                {{ 'compliance.label.source_target_matrix'|trans }}
                             </th>
                             {% for framework in frameworks %}
                                 <th style="padding: var(--spacing-md); border: 1px solid var(--color-border); text-align: center; background: var(--color-bg); font-weight: 600;">
@@ -377,7 +377,7 @@
 
             {% if mapping_group.mappings|length > 10 %}
                 <div style="padding: var(--spacing-md); text-align: center; color: var(--color-text-muted); border-top: 1px solid var(--color-border);">
-                    {{ 'Showing 10 of'|trans }} {{ mapping_group.mappings|length }} {{ 'mappings'|trans }}
+                    {{ 'compliance.label.showing_of'|trans({'%count%': 10}) }} {{ mapping_group.mappings|length }} {{ 'compliance.label.mappings_count'|trans }}
                 </div>
             {% endif %}
         </div>
@@ -388,25 +388,25 @@
         <h3 style="margin-bottom: var(--spacing-md);">💡 {{ 'compliance.section.mapping_explanation'|trans }}</h3>
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--spacing-lg);">
             <div>
-                <h4 style="color: var(--color-primary); margin-bottom: var(--spacing-sm);">🎯 Was sind Mappings?</h4>
-                <p style="margin: 0;">Mappings zeigen, wie Anforderungen aus einem Framework sich auf Anforderungen in einem anderen Framework beziehen. Zum Beispiel könnte eine TISAX-Anforderung eine DORA-Anforderung vollständig erfüllen.</p>
+                <h4 style="color: var(--color-primary); margin-bottom: var(--spacing-sm);">{{ 'compliance.explanation.what_are_mappings_title'|trans }}</h4>
+                <p style="margin: 0;">{{ 'compliance.explanation.what_are_mappings'|trans }}</p>
             </div>
             <div>
-                <h4 style="color: var(--color-primary); margin-bottom: var(--spacing-sm);">📊 Mapping-Typen</h4>
+                <h4 style="color: var(--color-primary); margin-bottom: var(--spacing-sm);">{{ 'compliance.explanation.mapping_types_title'|trans }}</h4>
                 <ul style="margin: 0; padding-left: var(--spacing-lg);">
-                    <li style="margin-bottom: var(--spacing-xs);"><strong>{{ 'compliance.mapping.type.exceeds'|trans }} (>100%):</strong> Quelle übertrifft Ziel</li>
-                    <li style="margin-bottom: var(--spacing-xs);"><strong>{{ 'compliance.mapping.type.full'|trans }} (100%):</strong> Quelle erfüllt Ziel vollständig</li>
-                    <li style="margin-bottom: var(--spacing-xs);"><strong>{{ 'compliance.mapping.type.partial'|trans }} (50-99%):</strong> Quelle erfüllt Ziel teilweise</li>
-                    <li style="margin-bottom: var(--spacing-xs);"><strong>{{ 'compliance.mapping.type.weak'|trans }} (<50%):</strong> Schwache Beziehung</li>
+                    <li style="margin-bottom: var(--spacing-xs);"><strong>{{ 'compliance.explanation.mapping_types_exceeds'|trans }}</strong></li>
+                    <li style="margin-bottom: var(--spacing-xs);"><strong>{{ 'compliance.explanation.mapping_types_full'|trans }}</strong></li>
+                    <li style="margin-bottom: var(--spacing-xs);"><strong>{{ 'compliance.explanation.mapping_types_partial'|trans }}</strong></li>
+                    <li style="margin-bottom: var(--spacing-xs);"><strong>{{ 'compliance.explanation.mapping_types_weak'|trans }}</strong></li>
                 </ul>
             </div>
             <div>
-                <h4 style="color: var(--color-primary); margin-bottom: var(--spacing-sm);">🔄 Bidirektionale Mappings</h4>
-                <p style="margin: 0;">Manche Anforderungen erfüllen sich gegenseitig. Das bedeutet, dass Arbeit an einem Framework automatisch auch dem anderen Framework zugute kommt.</p>
+                <h4 style="color: var(--color-primary); margin-bottom: var(--spacing-sm);">{{ 'compliance.explanation.bidirectional_title'|trans }}</h4>
+                <p style="margin: 0;">{{ 'compliance.explanation.bidirectional'|trans }}</p>
             </div>
             <div>
-                <h4 style="color: var(--color-primary); margin-bottom: var(--spacing-sm);">💡 Strategischer Wert</h4>
-                <p style="margin: 0;">Nutzen Sie diese Mappings, um Frameworks mit der größten Überschneidung zu identifizieren und Compliance-Bemühungen für maximalen Multi-Framework-Nutzen zu priorisieren.</p>
+                <h4 style="color: var(--color-primary); margin-bottom: var(--spacing-sm);">{{ 'compliance.explanation.strategic_value_title'|trans }}</h4>
+                <p style="margin: 0;">{{ 'compliance.explanation.strategic_value'|trans }}</p>
             </div>
         </div>
     </div>
