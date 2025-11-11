@@ -3,18 +3,16 @@
 {% block title %}{{ 'workflow.title.list'|trans }} - Little ISMS Helper{% endblock %}
 
 {% block body %}
-<div class="d-flex justify-between align-center mb-4">
+<div class="page-header">
     <div>
         <h1>{{ 'workflow.title.list'|trans }}</h1>
-        <p style="color: var(--color-text-light); margin-top: var(--spacing-sm);">
-            {{ 'workflow.description.overview'|trans }}
-        </p>
+        <p class="text-muted">{{ 'workflow.description.overview'|trans }}</p>
     </div>
-    <div>
-        <a href="{{ path('app_workflow_definitions') }}" class="btn btn-secondary" style="margin-right: 0.5rem;">
+    <div class="button-group">
+        <a href="{{ path('app_workflow_definitions') }}" class="btn btn-secondary">
             📋 {{ 'workflow.action.definitions'|trans }}
         </a>
-        <a href="{{ path('app_workflow_new') }}" class="btn btn-success">
+        <a href="{{ path('app_workflow_new') }}" class="btn btn-primary">
             ➕ {{ 'workflow.action.create'|trans }}
         </a>
     </div>

@@ -90,7 +90,7 @@
 
     {# Detailed Mappings #}
     {% for mapping_group in cross_mappings %}
-        <div class="card" style="margin-top: var(--spacing-lg);">
+        <div class="card mt-lg">
             <div class="card-header">
                 <h3>
                     {{ mapping_group.source.code }} → {{ mapping_group.target.code }}
@@ -182,7 +182,7 @@
     {% endfor %}
 
     {# Explanation #}
-    <div class="card" style="margin-top: var(--spacing-lg);">
+    <div class="card mt-lg">
         <div class="card-header">
             <h2>{{ 'compliance.cross_framework.understanding_title'|trans }}</h2>
         </div>
