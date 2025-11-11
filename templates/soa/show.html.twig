@@ -3,15 +3,15 @@
 {% block title %}{{ control.controlId }} - {{ control.name }} - Little ISMS Helper{% endblock %}
 
 {% block body %}
-<div class="d-flex justify-between align-center mb-4">
+<div class="page-header">
     <div>
         <h1>{{ control.controlId }}: {{ control.name }}</h1>
         <div class="mt-2">
             <span class="badge badge-info">{{ control.category }}</span>
         </div>
     </div>
-    <div>
-        <a href="{{ path('app_soa_edit', {id: control.id}) }}" class="btn btn-success" style="margin-right: 0.5rem;">
+    <div class="button-group">
+        <a href="{{ path('app_soa_edit', {id: control.id}) }}" class="btn btn-primary">
             ✏️ Bearbeiten
         </a>
         <a href="{{ path('app_soa_by_category', {category: control.category}) }}" class="btn btn-secondary">
