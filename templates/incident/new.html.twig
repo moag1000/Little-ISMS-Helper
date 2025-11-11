@@ -3,87 +3,325 @@
 {% block title %}{{ 'incident.new'|trans }} - {{ parent() }}{% endblock %}
 
 {% block body %}
-<div class="container">
-    <nav aria-label="breadcrumb" class="mb-3">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item">
-                <a href="{{ path('app_incident_index') }}"><i class="bi bi-bug"></i> {{ 'nav.incidents'|trans }}</a>
-            </li>
-            <li class="breadcrumb-item active" aria-current="page">{{ 'incident.new'|trans }}</li>
-        </ol>
-    </nav>
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-lg-10 col-xl-9 mx-auto">
+            <nav aria-label="breadcrumb" class="mb-3">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="{{ path('app_incident_index') }}" data-turbo-action="advance">
+                            <i class="bi bi-bug"></i> {{ 'nav.incidents'|trans }}
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ 'incident.new'|trans }}</li>
+                </ol>
+            </nav>
 
-    <div class="page-header">
-        <h1><i class="bi bi-plus-circle"></i> {{ 'incident.new'|trans }}</h1>
-        <a href="{{ path('app_incident_index') }}" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> {{ 'common.back'|trans }}</a>
-    </div>
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="h3 mb-0"><i class="bi bi-plus-circle"></i> {{ 'incident.new'|trans }}</h1>
+                <a href="{{ path('app_incident_index') }}" class="btn btn-outline-secondary" data-turbo-action="advance">
+                    <i class="bi bi-arrow-left"></i> {{ 'common.back'|trans }}
+                </a>
+            </div>
 
-    <div class="card">
-        <div class="card-content">
-            {{ form_start(form) }}
-                <div class="form-row">
-                    <div class="form-group">
-                        {{ form_label(form.title) }}
-                        {{ form_widget(form.title) }}
-                        {{ form_errors(form.title) }}
-                    </div>
-                    <div class="form-group">
-                        {{ form_label(form.category) }}
-                        {{ form_widget(form.category) }}
-                        {{ form_errors(form.category) }}
-                    </div>
+            {# NIS2 Reporting Alert Banner #}
+            <div id="nis2-alert" class="alert alert-warning d-none mb-4" role="alert">
+                <h6 class="alert-heading">
+                    <i class="bi bi-exclamation-triangle-fill"></i> {{ 'incident.nis2_alert.title'|trans }}
+                </h6>
+                <p class="mb-2 small">{{ 'incident.nis2_alert.description'|trans }}</p>
+                <ul class="mb-0 small">
+                    <li>{{ 'incident.nis2_alert.early_warning'|trans }}</li>
+                    <li>{{ 'incident.nis2_alert.detailed_notification'|trans }}</li>
+                    <li>{{ 'incident.nis2_alert.final_report'|trans }}</li>
+                </ul>
+            </div>
+
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">{{ 'incident.new'|trans }}</h5>
                 </div>
+                <div class="card-body">
+                    {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'id': 'incident-form'}}) }}
 
-                <div class="form-group">
-                    {{ form_label(form.description) }}
-                    {{ form_widget(form.description) }}
-                    {{ form_errors(form.description) }}
-                </div>
+                    {# Basic Information Section #}
+                    <div class="card mb-4">
+                        <div class="card-header bg-light">
+                            <h6 class="mb-0"><i class="bi bi-info-square"></i> {{ 'incident.section.basic_info'|trans }}</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-8 mb-3">
+                                    {{ form_row(form.title) }}
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    {{ form_row(form.category) }}
+                                </div>
+                                <div class="col-md-12 mb-3">
+                                    {{ form_row(form.description) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-                <div class="form-row">
-                    <div class="form-group">
-                        {{ form_label(form.severity) }}
-                        {{ form_widget(form.severity) }}
-                        {{ form_errors(form.severity) }}
-                        <small class="help-text">{{ 'incident.help.severity'|trans }}</small>
+                    {# Severity & Status Section #}
+                    <div class="card mb-4">
+                        <div class="card-header bg-light">
+                            <h6 class="mb-0"><i class="bi bi-thermometer-half"></i> {{ 'incident.section.severity_status'|trans }}</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    {{ form_row(form.severity) }}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    {{ form_row(form.status) }}
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        {{ form_label(form.status) }}
-                        {{ form_widget(form.status) }}
-                        {{ form_errors(form.status) }}
-                    </div>
-                </div>
 
-                <div class="form-row">
-                    <div class="form-group">
-                        {{ form_label(form.detectedAt) }}
-                        {{ form_widget(form.detectedAt) }}
-                        {{ form_errors(form.detectedAt) }}
+                    {# Detection & Reporting Section #}
+                    <div class="card mb-4">
+                        <div class="card-header bg-light">
+                            <h6 class="mb-0"><i class="bi bi-calendar-event"></i> {{ 'incident.section.detection_reporting'|trans }}</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    {{ form_row(form.detectedAt) }}
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    {{ form_row(form.occurredAt) }}
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    {{ form_row(form.reportedBy) }}
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        {{ form_label(form.occurredAt) }}
-                        {{ form_widget(form.occurredAt) }}
-                        {{ form_errors(form.occurredAt) }}
-                    </div>
-                    <div class="form-group">
-                        {{ form_label(form.reportedBy) }}
-                        {{ form_widget(form.reportedBy) }}
-                        {{ form_errors(form.reportedBy) }}
-                    </div>
-                </div>
 
-                <div class="form-group">
-                    {{ form_label(form.affectedSystems) }}
-                    {{ form_widget(form.affectedSystems) }}
-                    {{ form_errors(form.affectedSystems) }}
-                </div>
+                    {# Affected Systems & Assets Section #}
+                    <div class="card mb-4">
+                        <div class="card-header bg-light">
+                            <h6 class="mb-0"><i class="bi bi-hdd-network"></i> {{ 'incident.section.affected_systems'|trans }}</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12 mb-3">
+                                    {{ form_row(form.affectedSystems) }}
+                                </div>
+                                <div class="col-md-12 mb-3">
+                                    {{ form_row(form.affectedAssets) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-                <div class="form-actions">
-                    <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> {{ 'incident.create'|trans }}</button>
-                    <a href="{{ path('app_incident_index') }}" class="btn btn-secondary"><i class="bi bi-x-circle"></i> {{ 'common.cancel'|trans }}</a>
+                    {# Analysis Section #}
+                    <div class="card mb-4">
+                        <div class="card-header bg-light">
+                            <h6 class="mb-0"><i class="bi bi-search"></i> {{ 'incident.section.analysis'|trans }}</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12 mb-3">
+                                    {{ form_row(form.rootCause) }}
+                                </div>
+                                <div class="col-md-12 mb-3">
+                                    {{ form_row(form.correctiveActions) }}
+                                </div>
+                                <div class="col-md-12 mb-3">
+                                    {{ form_row(form.lessonsLearned) }}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    {{ form_row(form.closedAt) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {# NIS2 Reporting Section - Conditionally Displayed #}
+                    <div id="nis2-section" class="card mb-4 d-none">
+                        <div class="card-header bg-warning text-dark">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h6 class="mb-0">
+                                    <i class="bi bi-shield-exclamation"></i> {{ 'incident.section.nis2_reporting'|trans }}
+                                </h6>
+                                <button type="button" class="btn btn-sm btn-outline-dark" id="hide-nis2-btn">
+                                    <i class="bi bi-eye-slash"></i> {{ 'incident.nis2_toggle.hide'|trans }}
+                                </button>
+                            </div>
+                            <small class="d-block mt-2">{{ 'incident.section.nis2_info'|trans }}</small>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    {{ form_row(form.nis2Category) }}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    {{ form_row(form.crossBorderImpact) }}
+                                </div>
+                            </div>
+
+                            {# NIS2 Timeline - Article 23 #}
+                            <div class="alert alert-info mt-3">
+                                <h6 class="alert-heading">{{ 'incident.nis2_timeline.title'|trans }}</h6>
+                                <p class="mb-0 small">{{ 'incident.nis2_timeline.description'|trans }}</p>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    {{ form_row(form.earlyWarningReportedAt) }}
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    {{ form_row(form.detailedNotificationReportedAt) }}
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    {{ form_row(form.finalReportSubmittedAt) }}
+                                </div>
+                            </div>
+
+                            {# Impact Assessment #}
+                            <div class="row mt-3">
+                                <div class="col-md-4 mb-3">
+                                    {{ form_row(form.affectedUsersCount) }}
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    {{ form_row(form.estimatedFinancialImpact) }}
+                                </div>
+                            </div>
+
+                            {# Authority Notification #}
+                            <div class="row">
+                                <div class="col-md-8 mb-3">
+                                    {{ form_row(form.nationalAuthorityNotified) }}
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    {{ form_row(form.authorityReferenceNumber) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {# Manual NIS2 Toggle Button #}
+                    <div id="show-nis2-container" class="text-center mb-4 d-none">
+                        <button type="button" class="btn btn-outline-warning" id="show-nis2-btn">
+                            <i class="bi bi-shield-exclamation"></i> {{ 'incident.nis2_toggle.show'|trans }}
+                        </button>
+                    </div>
+
+                    {# Form Actions #}
+                    <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+                        <a href="{{ path('app_incident_index') }}"
+                           class="btn btn-outline-secondary"
+                           data-turbo-action="advance">
+                            <i class="bi bi-arrow-left"></i> {{ 'common.back'|trans }}
+                        </a>
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="bi bi-save"></i> {{ 'incident.create'|trans }}
+                        </button>
+                    </div>
+
+                    {{ form_end(form) }}
                 </div>
-            {{ form_end(form) }}
+            </div>
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const severityField = document.getElementById('incident_severity');
+    const affectedUsersField = document.getElementById('incident_affectedUsersCount');
+    const crossBorderField = document.querySelectorAll('input[name="incident[crossBorderImpact]"]');
+    const nis2Section = document.getElementById('nis2-section');
+    const nis2Alert = document.getElementById('nis2-alert');
+    const showNis2Container = document.getElementById('show-nis2-container');
+    const showNis2Btn = document.getElementById('show-nis2-btn');
+    const hideNis2Btn = document.getElementById('hide-nis2-btn');
+
+    let manualOverride = false;
+
+    function checkNIS2Criteria() {
+        if (manualOverride) return; // User manually toggled
+
+        const severity = severityField ? severityField.value : '';
+        const affectedUsers = affectedUsersField ? parseInt(affectedUsersField.value) || 0 : 0;
+        let crossBorder = false;
+
+        crossBorderField.forEach(radio => {
+            if (radio.checked && radio.value === '1') {
+                crossBorder = true;
+            }
+        });
+
+        // Criteria for showing NIS2 fields
+        const shouldShowNIS2 =
+            severity === 'critical' ||
+            (severity === 'high' && (affectedUsers > 100 || crossBorder));
+
+        // Criteria for showing alert (more strict)
+        const shouldShowAlert =
+            severity === 'critical' ||
+            (severity === 'high' && (affectedUsers > 100 || crossBorder));
+
+        if (shouldShowNIS2) {
+            nis2Section.classList.remove('d-none');
+            showNis2Container.classList.add('d-none');
+        } else {
+            nis2Section.classList.add('d-none');
+            showNis2Container.classList.remove('d-none');
+        }
+
+        if (shouldShowAlert) {
+            nis2Alert.classList.remove('d-none');
+        } else {
+            nis2Alert.classList.add('d-none');
+        }
+    }
+
+    // Manual show NIS2 section
+    if (showNis2Btn) {
+        showNis2Btn.addEventListener('click', function() {
+            manualOverride = true;
+            nis2Section.classList.remove('d-none');
+            showNis2Container.classList.add('d-none');
+        });
+    }
+
+    // Manual hide NIS2 section
+    if (hideNis2Btn) {
+        hideNis2Btn.addEventListener('click', function() {
+            manualOverride = false;
+            nis2Section.classList.add('d-none');
+            showNis2Container.classList.remove('d-none');
+            checkNIS2Criteria();
+        });
+    }
+
+    // Event listeners
+    if (severityField) {
+        severityField.addEventListener('change', checkNIS2Criteria);
+    }
+    if (affectedUsersField) {
+        affectedUsersField.addEventListener('input', checkNIS2Criteria);
+    }
+    crossBorderField.forEach(radio => {
+        radio.addEventListener('change', checkNIS2Criteria);
+    });
+
+    // Initial check
+    checkNIS2Criteria();
+});
+</script>
+
+<style>
+.help-text {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: 0.875rem;
+    color: #6c757d;
+}
+</style>
 {% endblock %}
