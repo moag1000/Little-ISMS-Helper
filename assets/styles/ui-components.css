@@ -418,6 +418,14 @@
     font-size: 0.9rem;
 }
 
+.fs-1 {
+    font-size: 1rem;
+}
+
+.fs-12 {
+    font-size: 1.2rem;
+}
+
 .fs-15 {
     font-size: 1.5rem;
 }
@@ -601,6 +609,16 @@
 
 /* Line height utilities */
 .lh-16 {
+    line-height: 1.6;
+}
+
+/* White space utilities */
+.ws-pre-wrap {
+    white-space: pre-wrap;
+}
+
+.ws-pre-wrap-lh {
+    white-space: pre-wrap;
     line-height: 1.6;
 }
 
