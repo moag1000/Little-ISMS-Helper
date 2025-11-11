@@ -376,6 +376,15 @@ function initializeDocumentUploadSync() {
     }
 }
 
+// Cleanup before Turbo caches the page to allow re-initialization on back navigation
+document.addEventListener('turbo:before-cache', function() {
+    const fileUploadController = document.querySelector('[data-controller="file-upload"]');
+    if (fileUploadController) {
+        const dragDropInput = fileUploadController.querySelector('[data-file-upload-target="fileInput"]');
+        if (dragDropInput) delete dragDropInput.dataset.initialized;
+    }
+});
+
 // Initialize on both DOMContentLoaded (first page load) and turbo:load (Turbo navigation)
 document.addEventListener('DOMContentLoaded', initializeDocumentUploadSync);
 document.addEventListener('turbo:load', initializeDocumentUploadSync);

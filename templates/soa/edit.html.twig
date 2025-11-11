@@ -154,6 +154,12 @@ function initializeSOAPercentageSlider() {
     });
 }
 
+// Cleanup before Turbo caches the page to allow re-initialization on back navigation
+document.addEventListener('turbo:before-cache', function() {
+    const rangeInput = document.getElementById('implementationPercentage');
+    if (rangeInput) delete rangeInput.dataset.initialized;
+});
+
 // Initialize on both DOMContentLoaded (first page load) and turbo:load (Turbo navigation)
 document.addEventListener('DOMContentLoaded', initializeSOAPercentageSlider);
 document.addEventListener('turbo:load', initializeSOAPercentageSlider);
