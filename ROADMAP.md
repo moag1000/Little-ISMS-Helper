@@ -933,8 +933,8 @@ Phase 6 konzentriert sich auf die Vervollständigung aller Module und die Sicher
 
 ### 🎯 Phase 6J: Module UI Completeness (Priorität KRITISCH)
 
-**Status:** 🚧 ~40% Abgeschlossen (2/5 Module)
-**Aufwand:** 3-4 Tage → **1-2 Tage verbleibend**
+**Status:** 🚧 ~45% Abgeschlossen (2/5 Module vollständig, 0/5 teilweise)
+**Aufwand:** 3-4 Tage → **0.5-1 Tag verbleibend**
 **Impact:** KRITISCH (User Experience)
 
 Diese Phase fokussiert sich auf die Vervollständigung der 5 Haupt-Module, die aktuell noch Platzhalter-Hinweise enthalten ("werden in der nächsten Phase implementiert").
@@ -971,52 +971,60 @@ Diese Phase fokussiert sich auf die Vervollständigung der 5 Haupt-Module, die a
 
 ---
 
-#### 2. Risk Management - Risikoregister & Behandlungspläne 🚧
+#### 2. Risk Management - Risikoregister & Behandlungspläne ✅
 
-**Status:** 🚧 **TEILWEISE** (~65% - Filter & Audit Log fertig, Treatment Plan & Appetite pending)
-**Commit:** d1b9986
+**Status:** ✅ **ABGESCHLOSSEN** (100% - alle Kern-Features implementiert)
+**Commit:** e124dbf (RiskTreatmentPlan & RiskAppetite), d1b9986 (Filter & Audit Log)
 
 ##### Implementierte Features ✅
 - ✅ Vollständiges Risikoregister
   - ✅ Alle Risiken in Tabellenform (index_modern.html.twig)
   - ✅ Sortierung nach Risikowert (KPI Cards)
-  - ✅ **Erweiterte Filter (NEU!)**
+  - ✅ **Erweiterte Filter**
     - Filter nach Risk Level (Critical/High/Medium/Low mit Score-Ranges)
     - Filter nach Status (identified/assessed/treated/monitored/closed)
     - Filter nach Treatment Strategy (mitigate/accept/transfer/avoid)
     - Filter nach Risk Owner (Text-Suche)
-  - ⏸️ Export als PDF/Excel (placeholder - route existiert)
-- ✅ **Risk History (NEU!)**
+  - ⏸️ Export als PDF/Excel (placeholder - route existiert - deferred to Phase 6K)
+- ✅ **Risk History**
   - Audit Log Integration (letzte 10 Einträge)
   - Field-by-field Change Tracking
   - Old → New Value Visualization
-- ✅ Risk Owner Integration (bereits vorhanden)
+- ✅ Risk Owner Integration
   - Owner-Auswahl in Risk Form ✅
   - Owner im Show Template angezeigt ✅
   - Owner-Dashboard ⏸️ (deferred)
   - Owner-Benachrichtigungen ⏸️ (deferred)
-
-##### Fehlende Features ⏸️
-- ⏸️ **Risk Treatment Plan UI**
-  - RiskTreatmentPlan Entity **existiert bereits** ✅ (Phase 6F-B3)
-  - RiskTreatmentPlanType Form **existiert bereits** ✅
-  - RiskTreatmentPlanController **fehlt noch** ❌
-  - Templates (index, show, new, edit) **fehlen noch** ❌
-- ⏸️ **Risk Appetite Visualization**
-  - RiskAppetite Entity **existiert bereits** ✅ (Phase 6F-B3)
-  - RiskAppetiteType Form **existiert bereits** ✅
-  - RiskAppetiteController **fehlt noch** ❌
-  - Templates **fehlen noch** ❌
-  - Appetite vs. Actual Risk Dashboard **fehlt noch** ❌
+- ✅ **Risk Treatment Plan UI (NEU!)**
+  - RiskTreatmentPlanController mit CRUD ✅
+  - Templates (index, show, new, edit) ✅
+  - Filter: Status, Priority, Responsible Person, Overdue ✅
+  - Statistics Dashboard (total, planned, in_progress, completed, overdue, avg_completion) ✅
+  - Progress tracking mit Completion Percentage ✅
+  - Overdue detection mit visuellen Warnungen ✅
+  - Linked Controls Display ✅
+  - Budget & Timeline Tracking ✅
+  - Audit Log Integration ✅
+- ✅ **Risk Appetite Visualization (NEU!)**
+  - RiskAppetiteController mit CRUD ✅
+  - Templates (index, show, new, edit) ✅
+  - Filter: Category, Active Status ✅
+  - Global & Category-specific Appetite Support ✅
+  - Risk vs. Appetite Comparison ✅
+  - Risks Exceeding Appetite Display ✅
+  - Risks Within Appetite Display ✅
+  - Approval Workflow Tracking ✅
+  - ISO 27005:2022 Compliance Information ✅
+  - Visual Acceptance Rate Calculation ✅
 
 ##### Akzeptanzkriterien
 - [x] Risikoregister-Seite implementiert ✅
 - [x] Filter UI implementiert ✅ (4 Filter-Felder + Backend-Logik)
-- [x] Audit Log History ✅ (NEU - nicht ursprünglich geplant)
-- [ ] Risk Treatment Plan UI ⏸️ (Entity + Form existieren, Controller/Templates fehlen)
-- [ ] Risk Appetite UI ⏸️ (Entity + Form existieren, Controller/Templates fehlen)
+- [x] Audit Log History ✅
+- [x] Risk Treatment Plan UI ✅ (Controller + 4 Templates komplett)
+- [x] Risk Appetite UI ✅ (Controller + 4 Templates komplett)
 - [x] Risk Owner Integration ✅ (angezeigt, Filter, Relation vorhanden)
-- [ ] PDF/Excel Export ⏸️ (Route existiert, Implementierung fehlt)
+- [ ] PDF/Excel Export ⏸️ (deferred to Phase 6K - Export Funktionalität)
 - [ ] Tests geschrieben (deferred - Phase 6B)
 - [x] **Hinweis-Text entfernt** ✅ (keine Platzhalter mehr im UI)
 
