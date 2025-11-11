@@ -1202,23 +1202,24 @@ Diese Phase implementiert die grundlegenden Data Reuse Beziehungen aus [DATA_REU
 
 ## 📊 Phase 6 Zusammenfassung
 
-**Gesamt-Aufwand Phase 6 (A-K):** 33-45 Tage
+**Gesamt-Aufwand Phase 6 (A-L):** 38-52 Tage
 
 ### Prioritäten
 1. **KRITISCH** (19-23 Tage):
-   - 6A: Form Types (1-2 Tage)
+   - 6A: Form Types (1-2 Tage) ✅
    - 6B: Test Coverage (3-4 Tage)
-   - 6F: ISO 27001 Inhalt (2-3 Tage)
+   - 6F: ISO 27001 Inhalt (2-3 Tage) ✅
    - 6H: NIS2 Compliance (7-8 Tage)
    - 6J: Module UI Completeness (3-4 Tage)
 
-2. **HOCH** (5-6 Tage):
+2. **HOCH** (10-13 Tage):
    - 6I: BSI IT-Grundschutz (5-6 Tage)
+   - 6L: Unified Admin Panel (5-7 Tage) ⭐ NEU!
 
 3. **WICHTIG** (6-9 Tage):
    - 6C: Workflow-Management (2-3 Tage)
    - 6D: Compliance-Detail (2-3 Tage)
-   - 6K: Core Data Reuse Relationships (2-3 Tage) ⭐ NEU!
+   - 6K: Core Data Reuse Relationships (2-3 Tage)
 
 4. **MITTEL** (3-4 Tage):
    - 6G: Multi-Standard (3-4 Tage)
@@ -1324,6 +1325,647 @@ Diese Phase implementiert die grundlegenden Data Reuse Beziehungen aus [DATA_REU
 
 ---
 
+## 🎛️ Phase 6L: Unified Admin Panel (Priorität HOCH)
+
+**Status:** 🔄 Geplant
+**Aufwand:** 5-7 Tage
+**Impact:** HOCH (Konsolidierung & Benutzererfahrung)
+
+### Überblick
+
+Das System hat aktuell zahlreiche Einstellungsoptionen und Admin-Features, die über verschiedene Bereiche verteilt sind. Diese Phase konsolidiert alle administrativen Funktionen in einen einheitlichen Administrationsbereich und fügt fehlende UI-Komponenten für bereits existierende Backend-Funktionalität hinzu.
+
+### Problembeschreibung
+
+**Aktuell verstreute Admin-Features:**
+- ✅ User Management → `/admin/users` (existiert)
+- ✅ Role Management → `/admin/roles` (existiert)
+- ✅ Module Management → `/modules` (existiert)
+- ✅ Compliance Frameworks → `/compliance` (existiert)
+- ✅ Audit Log → `/audit-log` (existiert)
+- ✅ Deployment Wizard → `/setup` (existiert)
+- ⚠️ **Tenant Management** → Keine UI (Entity existiert!)
+- ⚠️ **System Settings** → Nur in `.env` und YAML-Dateien
+- ⚠️ **Authentication Configuration** → Nur in `.env`
+- ⚠️ **Email/SMTP Settings** → Nur in `.env`
+- ⚠️ **Keine zentrale Admin-Navigation**
+- ⚠️ **Kein Admin Dashboard**
+
+### Ziel-Architektur: Unified Admin Panel
+
+```
+/admin
+├── /dashboard                    # NEU: Admin Dashboard (Übersicht)
+├── /users                        # ✅ EXISTIERT (konsolidieren)
+├── /roles                        # ✅ EXISTIERT (konsolidieren)
+├── /permissions                  # NEU: Erweiterte Permission-Verwaltung
+├── /sessions                     # NEU: Session Management
+├── /tenants                      # NEU: Tenant Management UI
+├── /settings
+│   ├── /application              # NEU: App Settings (Locale, Pagination, etc.)
+│   ├── /email                    # NEU: SMTP Configuration
+│   ├── /authentication           # NEU: OAuth/SAML Settings
+│   ├── /security                 # NEU: Rate Limiting, Session Timeout
+│   └── /features                 # NEU: Feature Flags
+├── /modules                      # ✅ EXISTIERT (integrieren)
+├── /compliance                   # ✅ EXISTIERT (integrieren)
+├── /monitoring
+│   ├── /audit-log                # ✅ EXISTIERT (integrieren)
+│   ├── /system-health            # NEU: Health Dashboard
+│   ├── /performance              # NEU: Performance Metrics
+│   └── /errors                   # NEU: Error Log Viewer
+├── /data
+│   ├── /backup                   # NEU: Database Backup Management
+│   ├── /export                   # NEU: Bulk Data Export
+│   ├── /import                   # NEU: Bulk Data Import
+│   └── /setup                    # ✅ EXISTIERT (integrieren)
+└── /licensing                    # ✅ EXISTIERT (integrieren)
+```
+
+---
+
+### 🎯 Phase 6L-A: Admin Dashboard & Navigation (1-2 Tage)
+
+**Zweck:** Zentrale Einstiegsseite für alle administrativen Aufgaben
+
+#### Features
+
+1. **AdminDashboardController** (neu)
+   - Route: `/admin` (Haupt-Dashboard)
+   - System Health Overview
+   - Quick Stats (User Count, Active Sessions, Module Status)
+   - Recent Activity (aus Audit Log)
+   - System Alerts (kritische Hinweise)
+   - Quick Actions (häufige Admin-Tasks)
+
+2. **Unified Admin Navigation** (neu)
+   - Sidebar-Navigation für alle Admin-Bereiche
+   - Gruppierung nach Kategorien:
+     - User & Access Management
+     - System Configuration
+     - Modules & Features
+     - Monitoring & Logs
+     - Data Management
+     - Licensing
+   - Breadcrumb-Navigation
+   - Active-State Highlighting
+
+3. **Admin Layout Template** (neu)
+   - `templates/admin/layout.html.twig`
+   - Erweitert `base.html.twig`
+   - Admin-spezifisches Sidebar-Menü
+   - Konsistentes Admin-Design
+
+4. **Access Control**
+   - Alle `/admin/*` Routen → `ROLE_ADMIN` required
+   - Feinere Granularität über Permissions
+   - Admin-Dashboard zeigt nur erlaubte Bereiche
+
+#### Akzeptanzkriterien
+- [ ] AdminDashboardController implementiert
+- [ ] Admin Dashboard Template erstellt
+- [ ] Unified Admin Navigation (Sidebar)
+- [ ] Admin Layout Template
+- [ ] System Health Cards (User, Module, Session Stats)
+- [ ] Recent Activity Widget (Audit Log Integration)
+- [ ] Quick Actions (Top 5 Admin Tasks)
+- [ ] Access Control (ROLE_ADMIN)
+- [ ] Tests geschrieben
+- [ ] Dokumentation (Admin Guide)
+
+---
+
+### ⚙️ Phase 6L-B: System Configuration UI (2-3 Tage)
+
+**Zweck:** Web-basierte Verwaltung von Systemeinstellungen (aktuell nur in `.env`/YAML)
+
+#### Features
+
+1. **SystemSettingsController** (neu)
+   - Route: `/admin/settings`
+   - Settings-Kategorien (Application, Email, Auth, Security)
+
+2. **Application Settings** (`/admin/settings/application`)
+   - Supported Locales (de, en)
+   - Default Locale
+   - Pagination Items per Page
+   - Timezone
+   - Date/Time Format
+   - **Speicherung:** `config/services.yaml` (via Symfony ParameterBag) ODER neue `SystemSettings` Entity
+
+3. **Email/SMTP Settings** (`/admin/settings/email`)
+   - SMTP Host, Port, Encryption
+   - SMTP User & Password
+   - From Address & Name
+   - Test Email Function
+   - **Speicherung:** `.env` (via Symfony DotEnv) ODER `SystemSettings` Entity
+
+4. **Authentication Provider Settings** (`/admin/settings/authentication`)
+   - Local Authentication (Enable/Disable)
+   - Azure OAuth Configuration
+     - Client ID, Client Secret, Tenant ID
+     - Redirect URI
+   - Azure SAML Configuration
+     - IDP Entity ID, SSO URL, Certificate
+     - SP Entity ID, ACS URL
+   - Test Connection Buttons
+   - **Speicherung:** `.env` (verschlüsselt) ODER `SystemSettings` Entity
+
+5. **Security Settings** (`/admin/settings/security`)
+   - Session Lifetime (Sekunden)
+   - Session Cookie Name
+   - Remember Me Duration
+   - Password Reset Token Lifetime
+   - Rate Limiter Configuration (API, Login)
+   - MFA Enforcement (Global Toggle)
+   - **Speicherung:** `config/packages/security.yaml` ODER `SystemSettings` Entity
+
+6. **Feature Flags** (`/admin/settings/features`)
+   - Toggle-Schalter für experimentelle Features
+   - Feature-Beschreibungen
+   - Feature-Abhängigkeiten
+   - **Speicherung:** `SystemSettings` Entity (JSON field)
+
+#### Technische Implementierung
+
+**Option A: SystemSettings Entity** (Empfohlen)
+```php
+// src/Entity/SystemSettings.php
+class SystemSettings {
+    private ?int $id = null;
+    private string $category; // 'application', 'email', 'auth', 'security'
+    private string $key;      // 'default_locale', 'smtp_host', etc.
+    private mixed $value;     // JSON field
+    private ?string $encrypted = null; // Verschlüsselte Werte (Passwörter)
+}
+```
+
+**Option B: Symfony Parameter + YAML Writer** (Komplexer)
+- Settings → `config/services.yaml` schreiben
+- Requires: `Symfony\Component\Yaml\Yaml` Writer
+- Cache Clear nach Änderungen
+
+**Empfehlung:** Option A (SystemSettings Entity) mit:
+- Einfacher zu implementieren
+- Keine Cache-Probleme
+- Versionierung möglich (Audit Log)
+- Verschlüsselung für sensitive Daten (Sodium Crypto)
+
+#### Akzeptanzkriterien
+- [ ] SystemSettings Entity (category, key, value, encrypted)
+- [ ] SystemSettingsRepository
+- [ ] SystemSettingsController (CRUD)
+- [ ] 5 Settings-Kategorien implementiert
+- [ ] Settings Forms (ApplicationSettingsType, EmailSettingsType, etc.)
+- [ ] Test Email Function (für SMTP)
+- [ ] Test Connection (für OAuth/SAML)
+- [ ] Encryption für sensitive Werte (Passwörter, Secrets)
+- [ ] Migration
+- [ ] Templates (5 Settings-Seiten)
+- [ ] Validation (Email, URL, Integer Ranges)
+- [ ] Tests geschrieben
+- [ ] **Safe Guard:** .env Fallback (wenn DB-Settings leer)
+- [ ] Dokumentation (Settings Guide)
+
+---
+
+### 🏢 Phase 6L-C: Tenant Management UI (1-2 Tage)
+
+**Zweck:** Admin-Interface für Multi-Tenancy (Tenant Entity existiert bereits!)
+
+#### Features
+
+1. **TenantManagementController** (neu)
+   - Route: `/admin/tenants`
+   - CRUD für Tenant Entity
+
+2. **Tenant List View**
+   - Tabellenansicht aller Tenants
+   - Spalten: Code, Name, Active Status, User Count, Created
+   - Filter: Active/Inactive
+   - Sortierung
+   - Bulk Actions (Activate/Deactivate)
+
+3. **Tenant Create/Edit Form**
+   - Tenant Code (unique, alphanumeric)
+   - Tenant Name
+   - Description
+   - Azure Tenant ID (optional)
+   - Active Toggle
+   - Custom Settings (JSON editor)
+   - Logo Upload (optional)
+
+4. **Tenant Detail View**
+   - Tenant Info
+   - User List (alle User dieses Tenants)
+   - Statistics (User Count, Assets, Risks, etc.)
+   - Audit Log (Tenant-spezifisch)
+   - Tenant Settings Override
+
+5. **Tenant Settings Override**
+   - Pro Tenant individuelle Settings überschreiben
+   - z.B. Custom Branding, Locale, Features
+   - Inheritance-Modell (Global → Tenant → User)
+
+#### Akzeptanzkriterien
+- [ ] TenantManagementController (index, show, new, edit, delete)
+- [ ] TenantType Form
+- [ ] Tenant List View mit Filtern
+- [ ] Tenant Detail View mit Stats
+- [ ] Tenant Settings Override UI (JSON editor)
+- [ ] User Assignment (User → Tenant)
+- [ ] Logo Upload (optional)
+- [ ] Tenant Activation/Deactivation Workflow
+- [ ] Audit Log Integration (Tenant-Änderungen)
+- [ ] Templates (4 Seiten: index, show, new, edit)
+- [ ] Tests geschrieben
+- [ ] Dokumentation (Tenant Management Guide)
+
+---
+
+### 👥 Phase 6L-D: Extended User & Access Management (1-2 Tage)
+
+**Zweck:** Erweiterte User-Management-Features & Konsolidierung
+
+#### Features
+
+1. **Permission Management UI** (`/admin/permissions`)
+   - List View aller Permissions
+   - Gruppierung nach Category
+   - Permission Details (Name, Description, Action)
+   - Usage View (welche Roles nutzen diese Permission)
+   - **Hinweis:** Permission sind system-definiert (kein Create/Delete, nur View)
+
+2. **Session Management** (`/admin/sessions`)
+   - Active Sessions List
+   - Session Details (User, IP, Last Activity, Device)
+   - Session Termination (einzeln oder alle eines Users)
+   - Session Statistics (Gesamt, Aktiv, Heute)
+
+3. **User Management Enhancements** (Erweiterung existierendem Controller)
+   - Bulk User Actions (Activate/Deactivate, Assign Role)
+   - User Export (CSV, Excel)
+   - User Import (CSV mit Template)
+   - User Activity Dashboard (aus Audit Log)
+   - User Impersonation Link (für ROLE_SUPER_ADMIN)
+
+4. **MFA Management** (`/admin/users/{id}/mfa`)
+   - View User's MFA Tokens (aus Phase 6H Entity)
+   - MFA Status (Enabled/Disabled)
+   - Reset MFA Token (Admin-Funktion)
+   - MFA Enrollment Statistics
+
+5. **Role Management Enhancements** (Erweiterung existierendem Controller)
+   - Role Comparison View (Permissions Side-by-Side)
+   - Role Templates (vordefinierte Rollen)
+   - Role Export/Import
+
+#### Akzeptanzkriterien
+- [ ] PermissionController (index, show)
+- [ ] Permission List View mit Gruppierung
+- [ ] Permission Usage View (welche Roles)
+- [ ] SessionController (index, show, terminate)
+- [ ] Active Sessions List
+- [ ] Session Termination (einzeln & bulk)
+- [ ] UserManagementController erweitert (Bulk Actions, Export/Import)
+- [ ] User Bulk Actions (Activate, Deactivate, Assign Role)
+- [ ] User CSV Export/Import
+- [ ] MFA Management View (Integration mit MfaToken Entity)
+- [ ] MFA Reset Function
+- [ ] Role Comparison View
+- [ ] Templates (8+ neue/erweiterte Seiten)
+- [ ] Tests geschrieben
+- [ ] Dokumentation aktualisiert
+
+---
+
+### 📊 Phase 6L-E: System Monitoring & Health (1 Tag)
+
+**Zweck:** Echtzeit-Überwachung der System-Gesundheit
+
+#### Features
+
+1. **System Health Dashboard** (`/admin/monitoring/health`)
+   - Database Status (Connection, Response Time)
+   - Cache Status (Redis/File Cache)
+   - Disk Space (Available, Used, Percentage)
+   - PHP Version & Memory Limit
+   - Symfony Version
+   - Required Extensions Check
+   - Module Status Overview
+   - Background Jobs Status (optional)
+
+2. **Performance Metrics** (`/admin/monitoring/performance`)
+   - Response Time Statistics (Average, Min, Max)
+   - Database Query Count (per Page)
+   - Memory Usage (per Request)
+   - Slow Queries Log
+   - Most Visited Pages
+   - API Request Statistics
+
+3. **Error Log Viewer** (`/admin/monitoring/errors`)
+   - Recent Errors (aus `var/log/prod.log` oder `var/log/dev.log`)
+   - Error Grouping (nach Typ, File, Line)
+   - Error Details (Stack Trace, Context)
+   - Error Statistics (Anzahl pro Tag)
+   - Clear Logs Function
+
+4. **Audit Log Integration** (`/admin/monitoring/audit-log`)
+   - Bestehende Audit Log View integrieren
+   - Quick Filters (Today, This Week, Critical Actions)
+   - User Activity Timeline
+   - Entity Change History
+
+#### Technische Implementierung
+
+**System Health Checks:**
+- Doctrine DBAL für DB Connection Test
+- `disk_free_space()` für Disk Space
+- `extension_loaded()` für PHP Extensions
+- Symfony Environment für PHP/Symfony Versionen
+
+**Performance Metrics:**
+- Event Subscriber für Request/Response Timing
+- Doctrine SQL Logger für Query Count
+- Cache-basierte Aggregation (hourly/daily)
+
+**Error Log Viewer:**
+- File Reader für `var/log/*.log`
+- Regex Parsing für Error-Format
+- Pagination (500 errors per page)
+
+#### Akzeptanzkriterien
+- [ ] MonitoringController (health, performance, errors)
+- [ ] System Health Checks (DB, Cache, Disk, Extensions)
+- [ ] Health Dashboard Template mit Status-Cards
+- [ ] Performance Metrics Dashboard
+- [ ] Request/Response Event Subscriber (Timing)
+- [ ] Error Log Reader Service
+- [ ] Error Log Viewer Template
+- [ ] Audit Log Integration (Linked View)
+- [ ] Tests geschrieben
+- [ ] Dokumentation (Monitoring Guide)
+
+---
+
+### 💾 Phase 6L-F: Data Management (1 Tag)
+
+**Zweck:** Backup, Export, Import Verwaltung
+
+#### Features
+
+1. **Database Backup** (`/admin/data/backup`)
+   - Create Backup Button (mysqldump/pg_dump)
+   - Backup List (Filename, Size, Date)
+   - Download Backup
+   - Restore Backup (mit Warnung!)
+   - Auto-Backup Schedule (optional: Cron)
+   - Retention Policy (z.B. 7 Tage)
+
+2. **Data Export** (`/admin/data/export`)
+   - Bulk Data Export (alle Entities)
+   - Selective Export (bestimmte Entities)
+   - Export Format (SQL, JSON, CSV)
+   - Export Queue (für große Datenmengen)
+   - Download Export Files
+
+3. **Data Import** (`/admin/data/import`)
+   - Bulk Data Import (JSON, CSV)
+   - Import Validation (vor Speicherung)
+   - Import Preview (zeige zu importierende Daten)
+   - Import Rollback (optional)
+   - Import Log (Erfolg/Fehler)
+
+4. **Setup Wizard Integration** (`/admin/data/setup`)
+   - Link zum bestehenden Deployment Wizard
+   - Re-run Setup Option (für Reset)
+   - Setup Status Check
+
+#### Technische Implementierung
+
+**Database Backup:**
+- Symfony Process Component für `mysqldump`/`pg_dump`
+- Backup Storage: `var/backups/`
+- Filename: `backup_YYYYMMDD_HHMMSS.sql.gz`
+
+**Data Export/Import:**
+- Doctrine EntityManager für Entity Serialization
+- Symfony Serializer für JSON/CSV
+- Queue: Symfony Messenger (optional)
+
+#### Akzeptanzkriterien
+- [ ] DataManagementController (backup, export, import)
+- [ ] BackupService (create, restore, list, cleanup)
+- [ ] Database Backup Function (mysqldump/pg_dump)
+- [ ] Backup List View
+- [ ] Restore Backup Function (mit Confirmation)
+- [ ] Data Export Service (JSON, CSV)
+- [ ] Data Import Service (mit Validation)
+- [ ] Import Preview UI
+- [ ] Setup Wizard Integration (Link)
+- [ ] Templates (4 Seiten: backup, export, import, setup)
+- [ ] Tests geschrieben
+- [ ] Dokumentation (Backup & Restore Guide)
+
+---
+
+### 🧩 Phase 6L-G: Module & Compliance Integration (0.5 Tage)
+
+**Zweck:** Bestehende Features in Admin Panel integrieren
+
+#### Features
+
+1. **Module Management Integration**
+   - Bestehende `/modules` Route → `/admin/modules` redirect
+   - Einheitliches Layout (Admin Template)
+   - Navigation-Link im Admin Sidebar
+
+2. **Compliance Framework Integration**
+   - Bestehende `/compliance/frameworks/manage` → `/admin/compliance` redirect
+   - Framework Activation/Deactivation
+   - Framework Statistics
+   - Navigation-Link im Admin Sidebar
+
+3. **License Management Integration**
+   - Bestehende `/about/licenses` → `/admin/licensing` redirect
+   - License Report View
+   - Third-Party License Compliance
+   - Navigation-Link im Admin Sidebar
+
+#### Akzeptanzkriterien
+- [ ] Route Redirects eingerichtet
+- [ ] Admin Layout für Module Management
+- [ ] Admin Layout für Compliance Management
+- [ ] Admin Layout für License Management
+- [ ] Admin Sidebar Navigation (Links)
+- [ ] Breadcrumb-Navigation
+- [ ] Tests aktualisiert
+
+---
+
+### 🎨 Phase 6L-H: UI/UX Polish & Documentation (0.5 Tage)
+
+**Zweck:** Konsistentes Admin-Design & Dokumentation
+
+#### Features
+
+1. **UI/UX Konsistenz**
+   - Einheitliche Card-Designs
+   - Konsistente Button-Styles
+   - Icon-Set für Admin-Bereiche
+   - Responsive Design (Mobile-Ready)
+   - Dark Mode Support (aus Phase 5)
+
+2. **Admin User Guide**
+   - `docs/ADMIN_GUIDE.md`
+   - Dokumentation aller Admin-Bereiche
+   - Screenshots (optional)
+   - Best Practices
+   - Troubleshooting
+
+3. **Admin API Documentation**
+   - OpenAPI 3.0 Specs für neue Endpoints
+   - API Examples
+   - Postman Collection Update
+
+#### Akzeptanzkriterien
+- [ ] UI/UX Review durchgeführt
+- [ ] Konsistente Styles angewendet
+- [ ] Icon-Set integriert
+- [ ] Responsive Design getestet
+- [ ] Dark Mode für Admin Templates
+- [ ] `docs/ADMIN_GUIDE.md` erstellt
+- [ ] API Documentation aktualisiert
+- [ ] Screenshots erstellt (optional)
+
+---
+
+## 📊 Phase 6L Zusammenfassung
+
+### Gesamt-Aufwand
+**5-7 Tage** (aufgeteilt in 8 Subphasen)
+
+| Subphase | Aufwand | Priorität |
+|----------|---------|-----------|
+| 6L-A: Admin Dashboard & Navigation | 1-2 Tage | KRITISCH |
+| 6L-B: System Configuration UI | 2-3 Tage | HOCH |
+| 6L-C: Tenant Management UI | 1-2 Tage | HOCH |
+| 6L-D: Extended User & Access Management | 1-2 Tage | MITTEL |
+| 6L-E: System Monitoring & Health | 1 Tag | MITTEL |
+| 6L-F: Data Management | 1 Tag | MITTEL |
+| 6L-G: Module & Compliance Integration | 0.5 Tage | NIEDRIG |
+| 6L-H: UI/UX Polish & Documentation | 0.5 Tage | NIEDRIG |
+
+### Neue Komponenten
+
+**Entities:**
+- SystemSettings (category, key, value, encrypted)
+
+**Controllers:**
+- AdminDashboardController
+- SystemSettingsController
+- TenantManagementController
+- PermissionController
+- SessionController
+- MonitoringController
+- DataManagementController
+
+**Services:**
+- SystemHealthService (Health Checks)
+- BackupService (Database Backup/Restore)
+- DataExportService (Bulk Export)
+- DataImportService (Bulk Import)
+- ErrorLogReaderService (Log File Parsing)
+- PerformanceMetricsService (Request Timing)
+
+**Templates:**
+- `templates/admin/layout.html.twig` (Admin Layout)
+- `templates/admin/dashboard/index.html.twig`
+- `templates/admin/settings/*.html.twig` (5 Settings-Seiten)
+- `templates/admin/tenants/*.html.twig` (4 Seiten)
+- `templates/admin/permissions/*.html.twig` (2 Seiten)
+- `templates/admin/sessions/*.html.twig` (2 Seiten)
+- `templates/admin/monitoring/*.html.twig` (3 Seiten)
+- `templates/admin/data/*.html.twig` (4 Seiten)
+
+**Gesamt:** ~30+ neue Templates, 7+ neue Controller, 6+ neue Services, 1 neue Entity
+
+### Erwartete Vollständigkeit nach Phase 6L
+
+| Feature-Bereich | Vorher | Nachher |
+|----------------|--------|---------|
+| **Admin Features Konsolidierung** | 30% | 100% ✅ |
+| **System Settings UI** | 0% | 100% ✅ |
+| **Tenant Management UI** | 0% | 100% ✅ |
+| **System Monitoring** | 20% | 100% ✅ |
+| **Data Management** | 10% | 100% ✅ |
+| **Admin UX** | 50% | 100% ✅ |
+
+### Benefits
+
+**Für Administratoren:**
+- ✅ Zentrale Anlaufstelle für alle Admin-Aufgaben
+- ✅ Keine .env-Datei Bearbeitung mehr nötig
+- ✅ Tenant Management mit UI
+- ✅ System Health Monitoring
+- ✅ Backup/Restore ohne Shell-Zugang
+- ✅ Session Management & MFA Control
+
+**Für Entwickler:**
+- ✅ Klare Admin-Struktur
+- ✅ Wiederverwendbare Admin-Templates
+- ✅ API für Settings (SystemSettings Entity)
+- ✅ Audit Log für alle Settings-Änderungen
+
+**Für das Projekt:**
+- ✅ Enterprise-Ready Multi-Tenancy
+- ✅ Compliance: Admin Audit Trail
+- ✅ Wartbarkeit: Settings ohne Code-Deployment änderbar
+- ✅ Skalierbarkeit: Tenant-Verwaltung für MSPs
+
+### Zeitersparnis
+
+**Admin-Aufgaben:**
+- Settings-Änderung: ~30 Min → 2 Min (94% Reduktion)
+- Tenant-Erstellung: ~20 Min → 3 Min (85% Reduktion)
+- User-Verwaltung: ~15 Min → 5 Min (66% Reduktion)
+- System Health Check: ~10 Min → 1 Min (90% Reduktion)
+- Backup-Erstellung: ~15 Min → 2 Min (86% Reduktion)
+
+**Gesamt:** ~90 Min → ~13 Min pro Admin-Session (**85% Zeitersparnis**)
+
+### Safe Guards
+
+**Security:**
+- ✅ Alle `/admin/*` Routes → `ROLE_ADMIN` required
+- ✅ Sensitive Settings (Passwörter) → Sodium Encryption
+- ✅ Audit Log für alle Settings-Änderungen
+- ✅ Session Timeout für Admin-Bereich
+- ✅ CSRF Protection für alle Admin-Forms
+
+**Data Integrity:**
+- ✅ Settings-Validation (Email, URL, Integer Ranges)
+- ✅ .env Fallback (wenn DB-Settings fehlen)
+- ✅ Backup vor Restore (automatisch)
+- ✅ Import Validation vor Speicherung
+- ✅ Tenant-Isolation (Data Access)
+
+**Availability:**
+- ✅ Graceful Degradation (wenn Settings fehlen)
+- ✅ Health Checks ohne DB-Zugriff möglich
+- ✅ Error Handling für fehlgeschlagene Backups
+- ✅ Rate Limiting für Admin API
+
+### Dokumentation
+
+**Neu zu erstellen:**
+- `docs/ADMIN_GUIDE.md` (Vollständiger Admin Guide)
+- `docs/SYSTEM_SETTINGS.md` (Settings Reference)
+- `docs/TENANT_MANAGEMENT.md` (Multi-Tenancy Guide)
+- `docs/BACKUP_RESTORE.md` (Backup & Restore Procedures)
+
+---
+
 ## 🚀 Phase 7: Enterprise Features (Geplant)
 
 **Zeitraum:** Nach Phase 6
@@ -1335,7 +1977,7 @@ Diese Phase implementiert die grundlegenden Data Reuse Beziehungen aus [DATA_REU
 - ✅ Docker Deployment
 
 ### Geplante Features
-- 🔄 Multi-Tenancy Support (MSPs)
+- 🔄 Multi-Tenancy Support (MSPs) → **Phase 6L integriert! ✅**
 - 🔄 Advanced Analytics Dashboards
 - 🔄 Mobile PWA
 - 📅 Kubernetes Deployment
@@ -1380,14 +2022,15 @@ Diese Phase implementiert die grundlegenden Data Reuse Beziehungen aus [DATA_REU
 - **Report Types:** 10 (5 PDF + 5 Excel)
 - **Notification Types:** 5 automatisierte Typen
 
-### Erwarteter Stand (Phase 6 Ende)
-- **Entities:** ~32 Entities (+9: Vulnerability, Patch, MfaToken, RiskTreatmentPlan, RiskAppetite, CrisisTeam, PenetrationTest, CryptographicKey, RiskCommunication)
-- **Controllers:** ~23+ Controllers (+5)
-- **Templates:** ~130+ Templates (+50)
+### Erwarteter Stand (Phase 6 Ende inkl. 6L)
+- **Entities:** ~33 Entities (+10: Vulnerability, Patch, MfaToken, RiskTreatmentPlan, RiskAppetite, CrisisTeam, PenetrationTest, CryptographicKey, RiskCommunication, SystemSettings)
+- **Controllers:** ~30+ Controllers (+12: inkl. 7 neue Admin Controllers)
+- **Templates:** ~160+ Templates (+80: inkl. 30+ Admin Templates)
 - **Commands:** ~9+ Commands (+4: NIS2, BSI, ISO 22301, weitere)
-- **Tests:** ~400+ tests (Ziel: 80% Coverage)
+- **Tests:** ~500+ tests (Ziel: 80% Coverage)
 - **Test Coverage:** 80%+
 - **Report Types:** ~13 (SoA, NIS2 Incident, Audit, etc.)
+- **Admin Features:** Unified Admin Panel mit 8 Hauptbereichen ✅
 
 ---
 
