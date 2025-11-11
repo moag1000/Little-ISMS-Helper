@@ -13,7 +13,10 @@
             {{ 'compliance.description.transitive'|trans }}
         </p>
     </div>
-    <div>
+    <div style="display: flex; gap: var(--spacing-sm);">
+        <button id="createAllMappingsBtn" class="btn btn-primary">
+            🔗 Fehlende Mappings ergänzen
+        </button>
         <a href="{{ path('app_compliance_export_transitive') }}" class="btn btn-success">
             📊 {{ 'compliance.action.export_transitive'|trans }}
         </a>
@@ -553,5 +556,66 @@ document.addEventListener('turbo:before-cache', function() {
 // Initialize on both DOMContentLoaded (first page load) and turbo:load (Turbo navigation)
 document.addEventListener('DOMContentLoaded', initializeMappingButton);
 document.addEventListener('turbo:load', initializeMappingButton);
+
+// Handler for the "Fehlende Mappings ergänzen" button in the header
+document.addEventListener('DOMContentLoaded', function() {
+    const createAllMappingsBtn = document.getElementById('createAllMappingsBtn');
+
+    if (createAllMappingsBtn) {
+        createAllMappingsBtn.addEventListener('click', async function() {
+            const originalText = this.textContent;
+
+            // Confirm action
+            if (!confirm('Möchten Sie fehlende Cross-Framework Mappings ergänzen?\n\nDies erstellt nur neue Mappings und überschreibt keine bestehenden.')) {
+                return;
+            }
+
+            // Disable button and show loading
+            createAllMappingsBtn.disabled = true;
+            createAllMappingsBtn.textContent = '⏳ Erstelle Mappings...';
+            createAllMappingsBtn.style.opacity = '0.7';
+
+            try {
+                const csrfToken = '{{ csrf_token('create_mappings') }}';
+                const url = '{{ path('app_compliance_create_mappings') }}';
+
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-Token': csrfToken,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Show success message
+                    createAllMappingsBtn.textContent = '✅ ' + data.message;
+                    createAllMappingsBtn.style.background = '#10b981';
+                    createAllMappingsBtn.style.color = 'white';
+
+                    // Reload page after 2 seconds
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 2000);
+                } else {
+                    // Show error message
+                    alert('Fehler: ' + (data.message || 'Unbekannter Fehler'));
+                    createAllMappingsBtn.disabled = false;
+                    createAllMappingsBtn.textContent = originalText;
+                    createAllMappingsBtn.style.opacity = '1';
+                }
+            } catch (error) {
+                console.error('Error creating mappings:', error);
+                alert('Fehler beim Erstellen der Mappings: ' + error.message);
+                createAllMappingsBtn.disabled = false;
+                createAllMappingsBtn.textContent = originalText;
+                createAllMappingsBtn.style.opacity = '1';
+            }
+        });
+    }
+});
 </script>
 {% endblock %}
