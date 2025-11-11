@@ -7,6 +7,7 @@ use App\Command\LoadDoraRequirementsCommand;
 use App\Command\LoadNis2RequirementsCommand;
 use App\Command\LoadBsiItGrundschutzRequirementsCommand;
 use App\Command\LoadGdprRequirementsCommand;
+use App\Command\LoadIso27001RequirementsCommand;
 use App\Command\LoadIso27701RequirementsCommand;
 use App\Command\LoadIso27701v2025RequirementsCommand;
 use App\Repository\ComplianceFrameworkRepository;
@@ -25,6 +26,7 @@ class ComplianceFrameworkLoaderService
         private LoadNis2RequirementsCommand $nis2Command,
         private LoadBsiItGrundschutzRequirementsCommand $bsiCommand,
         private LoadGdprRequirementsCommand $gdprCommand,
+        private LoadIso27001RequirementsCommand $iso27001Command,
         private LoadIso27701RequirementsCommand $iso27701Command,
         private LoadIso27701v2025RequirementsCommand $iso27701v2025Command,
     ) {}
@@ -94,6 +96,17 @@ class ComplianceFrameworkLoaderService
                 'icon' => '🔒',
             ],
             [
+                'code' => 'ISO27001',
+                'name' => 'ISO/IEC 27001:2022 - ISMS',
+                'description' => 'Information Security Management System - International standard for information security management',
+                'industry' => 'all_sectors',
+                'regulatory_body' => 'ISO/IEC',
+                'mandatory' => false,
+                'version' => '2022',
+                'loaded' => in_array('ISO27001', $loadedCodes),
+                'icon' => '📋',
+            ],
+            [
                 'code' => 'ISO27701',
                 'name' => 'ISO/IEC 27701:2019 - PIMS',
                 'description' => 'Privacy Information Management System extension to ISO 27001/27002',
@@ -129,6 +142,7 @@ class ComplianceFrameworkLoaderService
             'NIS2' => $this->nis2Command,
             'BSI_GRUNDSCHUTZ' => $this->bsiCommand,
             'GDPR' => $this->gdprCommand,
+            'ISO27001' => $this->iso27001Command,
             'ISO27701' => $this->iso27701Command,
             'ISO27701_2025' => $this->iso27701v2025Command,
             default => null,
