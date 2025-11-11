@@ -472,8 +472,9 @@ class Training
     /**
      * Check if training fulfills specific compliance framework
      * Data Reuse: Validates training coverage for certifications
+     *
+     * Note: No Groups annotation - method takes parameter, not suitable for API serialization
      */
-    #[Groups(['training:read'])]
     public function coversFramework(string $frameworkName): bool
     {
         foreach ($this->complianceRequirements as $requirement) {
