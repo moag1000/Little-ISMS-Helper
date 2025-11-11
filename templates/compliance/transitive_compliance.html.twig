@@ -91,7 +91,11 @@
                     </p>
                 </div>
                 <div style="display: inline-flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-                    <a href="{{ path('app_compliance_index') }}" class="btn" style="background: white; color: #667eea; font-weight: 600;">
+                    <button id="createMappingsBtn" class="btn" style="background: white; color: #667eea; font-weight: 600; display: flex; align-items: center; gap: 0.5rem;">
+                        <span id="btnIcon">🔗</span>
+                        <span id="btnText">Mappings jetzt erstellen</span>
+                    </button>
+                    <a href="{{ path('app_compliance_index') }}" class="btn" style="background: rgba(255,255,255,0.3); color: white; font-weight: 600; border: 2px solid white;">
                         ← Zurück zur Übersicht
                     </a>
                 </div>
@@ -420,5 +424,88 @@ function switchTab(tabName) {
     // Add active class to clicked button
     event.target.classList.add('active');
 }
+
+// Create Cross-Framework Mappings
+document.addEventListener('DOMContentLoaded', function() {
+    const createBtn = document.getElementById('createMappingsBtn');
+    if (!createBtn) return;
+
+    const btnIcon = document.getElementById('btnIcon');
+    const btnText = document.getElementById('btnText');
+    const csrfToken = '{{ csrf_token('create_mappings') }}';
+
+    createBtn.addEventListener('click', async function() {
+        // Confirm action
+        if (!confirm('Möchten Sie jetzt Cross-Framework Mappings erstellen?\n\nDies kann einige Sekunden dauern und überschreibt bestehende Mappings.')) {
+            return;
+        }
+
+        // Disable button and show loading
+        createBtn.disabled = true;
+        btnIcon.textContent = '⏳';
+        btnText.textContent = 'Erstelle Mappings...';
+        createBtn.style.opacity = '0.7';
+        createBtn.style.cursor = 'not-allowed';
+
+        try {
+            const response = await fetch('{{ path('app_compliance_create_mappings') }}', {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-Token': csrfToken
+                }
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                // Show success message
+                btnIcon.textContent = '✅';
+                btnText.textContent = data.message;
+                createBtn.style.background = '#10b981';
+                createBtn.style.color = 'white';
+
+                // Reload page after 2 seconds
+                setTimeout(() => {
+                    window.location.reload();
+                }, 2000);
+            } else {
+                // Show error message
+                btnIcon.textContent = '❌';
+                btnText.textContent = data.message;
+                createBtn.style.background = '#ef4444';
+                createBtn.style.color = 'white';
+
+                // Re-enable button after 3 seconds
+                setTimeout(() => {
+                    btnIcon.textContent = '🔗';
+                    btnText.textContent = 'Mappings jetzt erstellen';
+                    createBtn.style.background = 'white';
+                    createBtn.style.color = '#667eea';
+                    createBtn.style.opacity = '1';
+                    createBtn.style.cursor = 'pointer';
+                    createBtn.disabled = false;
+                }, 3000);
+            }
+        } catch (error) {
+            console.error('Error creating mappings:', error);
+            btnIcon.textContent = '❌';
+            btnText.textContent = 'Fehler: ' + error.message;
+            createBtn.style.background = '#ef4444';
+            createBtn.style.color = 'white';
+
+            // Re-enable button after 3 seconds
+            setTimeout(() => {
+                btnIcon.textContent = '🔗';
+                btnText.textContent = 'Mappings jetzt erstellen';
+                createBtn.style.background = 'white';
+                createBtn.style.color = '#667eea';
+                createBtn.style.opacity = '1';
+                createBtn.style.cursor = 'pointer';
+                createBtn.disabled = false;
+            }, 3000);
+        }
+    });
+});
 </script>
 {% endblock %}
