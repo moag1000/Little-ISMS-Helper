@@ -1355,6 +1355,15 @@ compliance:
     source_target_matrix: "Quelle ↓ / Ziel →"
     showing_of: "Zeige %count% von"
     mappings_count: "Mappings"
+    compliance: Compliance
+    requirements: Anforderungen
+    fulfilled: Erfüllt
+    gaps: Lücken
+    time_savings: Zeitersparnis
+    days: Tage
+    code: Code
+    yes: Ja
+    no: Nein
   explanation:
     what_are_mappings_title: "🎯 Was sind Mappings?"
     what_are_mappings: "Mappings zeigen, wie Anforderungen aus einem Framework sich auf Anforderungen in einem anderen Framework beziehen. Zum Beispiel könnte eine TISAX-Anforderung eine DORA-Anforderung vollständig erfüllen."
@@ -1427,16 +1436,6 @@ compliance:
     hours_saved: Stunden gespart
     work_days: Das entspricht %days% Arbeitstagen durch intelligente Datenwiederverwendung
     show_details: Details anzeigen
-  label:
-    compliance: Compliance
-    requirements: Anforderungen
-    fulfilled: Erfüllt
-    gaps: Lücken
-    time_savings: Zeitersparnis
-    days: Tage
-    code: Code
-    yes: Ja
-    no: Nein
   tab:
     overview: Übersicht
     requirements: Anforderungen
