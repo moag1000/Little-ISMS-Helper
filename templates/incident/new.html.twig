@@ -324,6 +324,21 @@ function initializeIncidentNIS2() {
     checkNIS2Criteria();
 }
 
+// Cleanup before Turbo caches the page to allow re-initialization on back navigation
+document.addEventListener('turbo:before-cache', function() {
+    const showNis2Btn = document.getElementById('show-nis2-btn');
+    const hideNis2Btn = document.getElementById('hide-nis2-btn');
+    const severityField = document.getElementById('incident_severity');
+    const affectedUsersField = document.getElementById('incident_affectedUsersCount');
+    const crossBorderField = document.querySelectorAll('input[name="incident[crossBorderImpact]"]');
+
+    if (showNis2Btn) delete showNis2Btn.dataset.initialized;
+    if (hideNis2Btn) delete hideNis2Btn.dataset.initialized;
+    if (severityField) delete severityField.dataset.nis2Initialized;
+    if (affectedUsersField) delete affectedUsersField.dataset.nis2Initialized;
+    crossBorderField.forEach(radio => delete radio.dataset.nis2Initialized);
+});
+
 // Initialize on both DOMContentLoaded (first page load) and turbo:load (Turbo navigation)
 document.addEventListener('DOMContentLoaded', initializeIncidentNIS2);
 document.addEventListener('turbo:load', initializeIncidentNIS2);
