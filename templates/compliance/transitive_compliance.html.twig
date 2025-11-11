@@ -558,64 +558,91 @@ document.addEventListener('DOMContentLoaded', initializeMappingButton);
 document.addEventListener('turbo:load', initializeMappingButton);
 
 // Handler for the "Fehlende Mappings ergänzen" button in the header
-document.addEventListener('DOMContentLoaded', function() {
+function initializeHeaderMappingButton() {
+    console.log('[Header Button] Initializing...');
     const createAllMappingsBtn = document.getElementById('createAllMappingsBtn');
 
-    if (createAllMappingsBtn) {
-        createAllMappingsBtn.addEventListener('click', async function() {
-            const originalText = this.textContent;
+    if (!createAllMappingsBtn) {
+        console.log('[Header Button] Button not found in DOM');
+        return;
+    }
 
-            // Confirm action
-            if (!confirm('Möchten Sie fehlende Cross-Framework Mappings ergänzen?\n\nDies erstellt nur neue Mappings und überschreibt keine bestehenden.')) {
-                return;
-            }
+    // Prevent multiple initializations
+    if (createAllMappingsBtn.dataset.headerInitialized === 'true') {
+        console.log('[Header Button] Already initialized, skipping');
+        return;
+    }
 
-            // Disable button and show loading
-            createAllMappingsBtn.disabled = true;
-            createAllMappingsBtn.textContent = '⏳ Erstelle Mappings...';
-            createAllMappingsBtn.style.opacity = '0.7';
+    console.log('[Header Button] Found button, attaching event listener');
+    createAllMappingsBtn.dataset.headerInitialized = 'true';
 
-            try {
-                const csrfToken = '{{ csrf_token('create_mappings') }}';
-                const url = '{{ path('app_compliance_create_mappings') }}';
+    createAllMappingsBtn.addEventListener('click', async function() {
+        console.log('[Header Button] Button clicked!');
+        const originalText = this.textContent;
 
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest',
-                        'X-CSRF-Token': csrfToken,
-                        'Content-Type': 'application/json'
-                    }
-                });
+        // Confirm action
+        if (!confirm('Möchten Sie fehlende Cross-Framework Mappings ergänzen?\n\nDies erstellt nur neue Mappings und überschreibt keine bestehenden.')) {
+            console.log('[Header Button] User cancelled');
+            return;
+        }
 
-                const data = await response.json();
+        console.log('[Header Button] Starting mapping creation...');
 
-                if (data.success) {
-                    // Show success message
-                    createAllMappingsBtn.textContent = '✅ ' + data.message;
-                    createAllMappingsBtn.style.background = '#10b981';
-                    createAllMappingsBtn.style.color = 'white';
+        // Disable button and show loading
+        createAllMappingsBtn.disabled = true;
+        createAllMappingsBtn.textContent = '⏳ Erstelle Mappings...';
+        createAllMappingsBtn.style.opacity = '0.7';
 
-                    // Reload page after 2 seconds
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 2000);
-                } else {
-                    // Show error message
-                    alert('Fehler: ' + (data.message || 'Unbekannter Fehler'));
-                    createAllMappingsBtn.disabled = false;
-                    createAllMappingsBtn.textContent = originalText;
-                    createAllMappingsBtn.style.opacity = '1';
+        try {
+            const csrfToken = '{{ csrf_token('create_mappings') }}';
+            const url = '{{ path('app_compliance_create_mappings') }}';
+
+            console.log('[Header Button] Fetching:', url);
+
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-Token': csrfToken,
+                    'Content-Type': 'application/json'
                 }
-            } catch (error) {
-                console.error('Error creating mappings:', error);
-                alert('Fehler beim Erstellen der Mappings: ' + error.message);
+            });
+
+            console.log('[Header Button] Response status:', response.status);
+
+            const data = await response.json();
+            console.log('[Header Button] Response data:', data);
+
+            if (data.success) {
+                // Show success message
+                createAllMappingsBtn.textContent = '✅ ' + data.message;
+                createAllMappingsBtn.style.background = '#10b981';
+                createAllMappingsBtn.style.color = 'white';
+
+                // Reload page after 2 seconds
+                setTimeout(() => {
+                    console.log('[Header Button] Reloading page...');
+                    window.location.reload();
+                }, 2000);
+            } else {
+                // Show error message
+                console.error('[Header Button] Server returned error:', data.message);
+                alert('Fehler: ' + (data.message || 'Unbekannter Fehler'));
                 createAllMappingsBtn.disabled = false;
                 createAllMappingsBtn.textContent = originalText;
                 createAllMappingsBtn.style.opacity = '1';
             }
-        });
-    }
-});
+        } catch (error) {
+            console.error('[Header Button] JavaScript error:', error);
+            alert('Fehler beim Erstellen der Mappings: ' + error.message);
+            createAllMappingsBtn.disabled = false;
+            createAllMappingsBtn.textContent = originalText;
+            createAllMappingsBtn.style.opacity = '1';
+        }
+    });
+}
+
+document.addEventListener('DOMContentLoaded', initializeHeaderMappingButton);
+document.addEventListener('turbo:load', initializeHeaderMappingButton);
 </script>
 {% endblock %}
