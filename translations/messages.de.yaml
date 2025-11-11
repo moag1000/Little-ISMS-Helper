@@ -505,10 +505,28 @@ activity:
   security_team: Security Team
   new_risk: Neues Risiko
 incident:
+  new: Neuer Vorfall
+  create: Vorfall erstellen
   section:
+    basic_info: Grundinformationen
+    severity_status: Schweregrad & Status
+    detection_reporting: Erkennung & Meldung
+    affected_systems: Betroffene Systeme & Assets
+    analysis: Analyse & Maßnahmen
+    nis2_reporting: NIS2-Meldepflicht (EU 2022/2555)
+    nis2_info: "NIS2 Art. 23: Erhebliche Vorfälle müssen innerhalb festgelegter Fristen gemeldet werden"
     affected_assets: Betroffene Assets
     realized_risks: Realisierte Risiken
     related_controls: Zugehörige Maßnahmen
+  nis2_alert:
+    title: ⚠️ Potenziell NIS2-meldepflichtig
+    description: "Basierend auf Schweregrad und Auswirkungen könnte dieser Vorfall gemäß NIS2-Richtlinie (EU 2022/2555) meldepflichtig sein:"
+    early_warning: "Frühwarnung: Innerhalb von 24 Stunden nach Kenntnisnahme"
+    detailed_notification: "Detaillierte Meldung: Innerhalb von 72 Stunden"
+    final_report: "Abschlussbericht: Innerhalb von 1 Monat"
+  nis2_toggle:
+    show: NIS2-Meldefelder anzeigen
+    hide: NIS2-Felder ausblenden
   field:
     title: Vorfallstitel
     description: Beschreibung
