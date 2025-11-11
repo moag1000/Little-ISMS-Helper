@@ -143,7 +143,7 @@ class ComplianceMappingService
         $typedAssets = 0;
 
         foreach ($assetTypes as $type) {
-            $typedAssets += $this->assetRepository->count(['type' => $type]);
+            $typedAssets += $this->assetRepository->count(['assetType' => $type]);
         }
 
         return [
