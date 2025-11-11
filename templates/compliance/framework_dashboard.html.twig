@@ -1,12 +1,12 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ framework.name }}{% endblock %}
+{% block title %}{{ framework.name }}{% if framework.version %} (v{{ framework.version }}){% endif %}{% endblock %}
 
 {% block body %}
 <div class="container">
     <div class="page-header">
         <div>
-            <h1>{{ framework.name }}</h1>
+            <h1>{{ framework.name }}{% if framework.version %} <span style="color: var(--color-text-muted); font-size: 0.8em;">(v{{ framework.version }})</span>{% endif %}</h1>
             <p class="text-muted">{{ framework.description|length > 100 ? framework.description|slice(0, 100) ~ '...' : framework.description }}</p>
         </div>
         <div class="button-group">
