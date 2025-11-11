@@ -186,6 +186,10 @@ class ComplianceController extends AbstractController
         $frameworks = $this->frameworkRepository->findActiveFrameworks();
         $transitiveAnalysis = [];
         $mappingMatrix = [];
+        $crossMappings = [];
+        $coverageMatrix = [];
+        $frameworkRelationships = [];
+        $frameworksLeveragedSet = [];
 
         // Build mapping coverage matrix for template
         foreach ($frameworks as $sourceFramework) {
@@ -199,10 +203,14 @@ class ComplianceController extends AbstractController
                     $sourceFramework,
                     $targetFramework
                 );
+
                 $mappingMatrix[$sourceFramework->getId()][$targetFramework->getId()] = [
-                    'coverage' => $coverage,
-                    'has_mapping' => $coverage > 0
+                    'coverage' => $coverage['coverage_percentage'] ?? 0,
+                    'has_mapping' => ($coverage['coverage_percentage'] ?? 0) > 0
                 ];
+
+                // Build coverage matrix for cross-framework display
+                $coverageMatrix[$sourceFramework->getCode()][$targetFramework->getCode()] = $coverage;
 
                 // Transitive analysis
                 $transitive = $this->mappingRepository->getTransitiveCompliance(
@@ -212,6 +220,33 @@ class ComplianceController extends AbstractController
 
                 if ($transitive['requirements_helped'] > 0) {
                     $transitiveAnalysis[] = $transitive;
+                }
+
+                // Get detailed cross-framework mappings
+                $mappings = $this->mappingRepository->findCrossFrameworkMappings(
+                    $sourceFramework,
+                    $targetFramework
+                );
+
+                if (!empty($mappings) && ($coverage['coverage_percentage'] ?? 0) > 0) {
+                    $crossMappings[] = [
+                        'source' => $sourceFramework,
+                        'target' => $targetFramework,
+                        'mappings' => $mappings,
+                        'coverage' => $coverage,
+                    ];
+
+                    // Build framework relationships for KPI cards
+                    $frameworkRelationships[] = (object)[
+                        'id' => $sourceFramework->getId() . '_' . $targetFramework->getId(),
+                        'sourceFramework' => $sourceFramework,
+                        'targetFramework' => $targetFramework,
+                        'mappedRequirements' => $coverage['covered_requirements'] ?? 0,
+                        'coveragePercentage' => round($coverage['coverage_percentage'] ?? 0),
+                    ];
+
+                    // Track frameworks being leveraged
+                    $frameworksLeveragedSet[$targetFramework->getId()] = true;
                 }
             }
         }
@@ -223,6 +258,10 @@ class ComplianceController extends AbstractController
             'total_relationships' => count($transitiveAnalysis),
             'transitive_compliance' => array_sum(array_column($transitiveAnalysis, 'requirements_helped')),
             'leverage_opportunities' => [],
+            'cross_mappings' => $crossMappings,
+            'coverage_matrix' => $coverageMatrix,
+            'frameworkRelationships' => $frameworkRelationships,
+            'frameworksLeveraged' => count($frameworksLeveragedSet),
         ]);
     }
 

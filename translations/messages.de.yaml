@@ -152,6 +152,7 @@ common:
   to_home: Zur Startseite
   actions: Aktionen
   view: Ansehen
+  view_details: Details ansehen
   edit: Bearbeiten
 asset:
   new: Neues Asset
@@ -1264,6 +1265,53 @@ compliance:
   industry.automotive: Automobilindustrie
   industry.financial_services: Finanzdienstleistungen
   industry.all_sectors: Alle Branchen
+  title:
+    transitive: Transitive Compliance
+  description:
+    transitive: Nutzen Sie bestehende Compliance-Arbeit über mehrere Frameworks hinweg für maximale Effizienz
+    matrix: Zeigt, wie die Erfüllung von Anforderungen in einem Framework hilft, Anforderungen in anderen Frameworks zu erfüllen
+  action:
+    export_transitive: Transitive Analyse exportieren
+  stats:
+    total_relationships: Gesamt Framework-Beziehungen
+    transitive_compliance: Transitive Compliance-Vorteile
+    leverage_rate: Nutzungsrate
+    frameworks_leveraged: Genutzte Frameworks
+  info:
+    transitive_title: Was ist Transitive Compliance?
+    transitive_desc: Transitive Compliance bedeutet, dass wenn Sie eine Anforderung in einem Framework erfüllen (z.B. ISO 27001), Sie automatisch oder teilweise Anforderungen in anderen Frameworks (z.B. TISAX, NIS2) erfüllen. Dies ermöglicht es Ihnen, Ihre Compliance-Arbeit über mehrere Standards hinweg zu nutzen.
+  section:
+    framework_relationships: Framework-Beziehungen
+    compliance_matrix: Transitive Compliance-Matrix
+    leverage_opportunities: Compliance-Nutzungsmöglichkeiten
+    cross_framework_mappings: Cross-Framework-Anforderungs-Mappings
+    mapping_explanation: Anforderungs-Mappings verstehen
+  field:
+    mapped: Gemappte Anforderungen
+    coverage: Abdeckung
+    framework: Framework
+    source_requirement: Quell-Anforderung
+    source_framework: Quell-Framework
+    target_requirements: Ziel-Anforderungen
+    target_frameworks: Ziel-Frameworks
+    leverage_impact: Nutzungseffekt
+    mapping_type: Mapping-Typ
+    mapping_strength: Mapping-Stärke
+    bidirectional: Bidirektional
+  message:
+    no_relationships: Noch keine Framework-Beziehungen gefunden
+    no_leverage_opportunities: Noch keine Nutzungsmöglichkeiten identifiziert
+    no_mappings: Keine Cross-Framework-Mappings verfügbar
+  mapping:
+    type:
+      full: Vollständige Abdeckung
+      partial: Teilweise Abdeckung
+      weak: Schwache Abdeckung
+      exceeds: Übertrifft Anforderungen
+    strength:
+      high: Hoch (≥75%)
+      medium: Mittel (50-74%)
+      low: Niedrig (<50%)
 
 # Risk Appetite (ISO 27005:2022)
 risk_appetite:
