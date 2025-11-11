@@ -240,6 +240,7 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const loadButtons = document.querySelectorAll('.load-framework-btn');
+    const csrfToken = '{{ csrf_token('load_framework') }}';
 
     loadButtons.forEach(button => {
         button.addEventListener('click', async function() {
@@ -258,7 +259,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 const response = await fetch(`{{ path('app_compliance_load_framework', {code: '__CODE__'}) }}`.replace('__CODE__', code), {
                     method: 'POST',
                     headers: {
-                        'X-Requested-With': 'XMLHttpRequest'
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-Token': csrfToken
                     }
                 });
 
