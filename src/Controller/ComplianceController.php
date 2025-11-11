@@ -263,8 +263,8 @@ class ComplianceController extends AbstractController
             'leverage_opportunities' => [],
             'cross_mappings' => $crossMappings,
             'coverage_matrix' => $coverageMatrix,
-            'frameworkRelationships' => $frameworkRelationships,
-            'frameworksLeveraged' => count($frameworksLeveragedSet),
+            'framework_relationships' => $frameworkRelationships,
+            'frameworks_leveraged' => count($frameworksLeveragedSet),
         ]);
     }
 
