@@ -1372,6 +1372,37 @@
     background: var(--color-bg-alt);
 }
 
+/* Data Reuse Insights Utilities */
+.text-center-p-xl-muted {
+    text-align: center;
+    padding: var(--spacing-xl);
+    color: var(--color-text-muted);
+}
+
+.text-center-muted {
+    text-align: center;
+    color: var(--color-text-muted);
+}
+
+.progress-compact {
+    height: 20px;
+    width: 100px;
+    margin: 0 auto;
+}
+
+.grid-col-2 {
+    grid-template-columns: 1fr 1fr;
+}
+
+.grid-full {
+    grid-column: 1 / -1;
+}
+
+.fs-11-mb-sm {
+    font-size: 1.1rem;
+    margin-bottom: var(--spacing-sm);
+}
+
 /* ====================
    Responsive
    ==================== */
