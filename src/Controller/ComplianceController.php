@@ -316,8 +316,12 @@ class ComplianceController extends AbstractController
                     $matchQuality = null;
                     $isMapped = false;
 
-                    // Check if this requirement has mappings to framework2
-                    foreach ($req1->getSourceMappings() as $mapping) {
+                    // Find mappings where req1 is the source
+                    $sourceMappings = $this->mappingRepository->findBy([
+                        'sourceRequirement' => $req1
+                    ]);
+
+                    foreach ($sourceMappings as $mapping) {
                         if ($mapping->getTargetRequirement()->getFramework()->getId() === $selectedFramework2->getId()) {
                             $mappedRequirement = $mapping->getTargetRequirement();
                             $matchQuality = $mapping->getMappingPercentage();
@@ -327,9 +331,13 @@ class ComplianceController extends AbstractController
                         }
                     }
 
-                    // Also check reverse mappings
+                    // Also check reverse mappings where req1 is the target
                     if (!$isMapped) {
-                        foreach ($req1->getTargetMappings() as $mapping) {
+                        $targetMappings = $this->mappingRepository->findBy([
+                            'targetRequirement' => $req1
+                        ]);
+
+                        foreach ($targetMappings as $mapping) {
                             if ($mapping->getSourceRequirement()->getFramework()->getId() === $selectedFramework2->getId()) {
                                 $mappedRequirement = $mapping->getSourceRequirement();
                                 $matchQuality = $mapping->getMappingPercentage();
