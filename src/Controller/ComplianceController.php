@@ -738,6 +738,93 @@ class ComplianceController extends AbstractController
                         }
                     }
                 }
+
+                // Strategy 2: Direct mapping when one framework IS ISO 27001
+                $isFramework1Iso = $framework1->getCode() === 'ISO27001';
+                $isFramework2Iso = $framework2->getCode() === 'ISO27001';
+
+                if ($isFramework1Iso || $isFramework2Iso) {
+                    // Determine which is ISO and which has iso_controls
+                    $isoFramework = $isFramework1Iso ? $framework1 : $framework2;
+                    $otherFramework = $isFramework1Iso ? $framework2 : $framework1;
+                    $isoRequirements = $isFramework1Iso ? $requirements1 : $requirements2;
+                    $otherRequirements = $isFramework1Iso ? $requirements2 : $requirements1;
+
+                    // Build map of other framework's requirements by ISO control
+                    $otherByIsoControl = [];
+                    foreach ($otherRequirements as $req) {
+                        $dataSourceMapping = $req->getDataSourceMapping();
+                        if (!empty($dataSourceMapping['iso_controls'])) {
+                            $isoControls = is_array($dataSourceMapping['iso_controls'])
+                                ? $dataSourceMapping['iso_controls']
+                                : [$dataSourceMapping['iso_controls']];
+
+                            foreach ($isoControls as $controlId) {
+                                $normalizedId = 'A.' . str_replace(['A.', 'A'], '', $controlId);
+                                if (!isset($otherByIsoControl[$normalizedId])) {
+                                    $otherByIsoControl[$normalizedId] = [];
+                                }
+                                $otherByIsoControl[$normalizedId][] = $req;
+                            }
+                        }
+                    }
+
+                    // Map ISO requirements directly to other framework requirements
+                    foreach ($isoRequirements as $isoReq) {
+                        $isoControlId = $isoReq->getRequirementId(); // e.g., 'A.5.1'
+
+                        if (isset($otherByIsoControl[$isoControlId])) {
+                            $otherReqs = $otherByIsoControl[$isoControlId];
+
+                            foreach ($otherReqs as $otherReq) {
+                                $pairKey = $isoReq->getId() . '-' . $otherReq->getId();
+                                $reversePairKey = $otherReq->getId() . '-' . $isoReq->getId();
+
+                                if (!isset($createdPairs[$pairKey]) && !isset($createdPairs[$reversePairKey])
+                                    && !isset($existingPairs[$pairKey]) && !isset($existingPairs[$reversePairKey])) {
+
+                                    // Forward mapping: ISO → Other
+                                    $mapping = new ComplianceMapping();
+                                    $mapping->setSourceRequirement($isoReq)
+                                        ->setTargetRequirement($otherReq)
+                                        ->setMappingPercentage(90)
+                                        ->setMappingType('partial')
+                                        ->setBidirectional(true)
+                                        ->setConfidence('high')
+                                        ->setMappingRationale(sprintf(
+                                            'Direct mapping: ISO 27001 %s to %s requirement',
+                                            $isoControlId,
+                                            $otherFramework->getName()
+                                        ));
+
+                                    $em->persist($mapping);
+                                    $mappingsCreated++;
+                                    $createdPairs[$pairKey] = true;
+
+                                    // Reverse mapping: Other → ISO
+                                    $reverseMapping = new ComplianceMapping();
+                                    $reverseMapping->setSourceRequirement($otherReq)
+                                        ->setTargetRequirement($isoReq)
+                                        ->setMappingPercentage(90)
+                                        ->setMappingType('partial')
+                                        ->setBidirectional(true)
+                                        ->setConfidence('high')
+                                        ->setMappingRationale(sprintf(
+                                            'Direct mapping: %s requirement to ISO 27001 %s',
+                                            $otherFramework->getName(),
+                                            $isoControlId
+                                        ));
+
+                                    $em->persist($reverseMapping);
+                                    $mappingsCreated++;
+                                    $createdPairs[$reversePairKey] = true;
+                                } elseif (isset($existingPairs[$pairKey]) || isset($existingPairs[$reversePairKey])) {
+                                    $mappingsSkipped += 2;
+                                }
+                            }
+                        }
+                    }
+                }
             }
 
             $em->flush();
