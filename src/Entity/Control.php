@@ -147,11 +147,11 @@ class Control
     #[Groups(['control:read', 'control:write'])]
     private ?\DateTimeInterface $nextReviewDate = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Groups(['control:read'])]
     private ?\DateTimeInterface $createdAt = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     #[Groups(['control:read'])]
     private ?\DateTimeInterface $updatedAt = null;
 
