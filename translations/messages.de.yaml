@@ -1267,16 +1267,25 @@ compliance:
   industry.all_sectors: Alle Branchen
   title:
     transitive: Transitive Compliance
+    compare: Frameworks vergleichen
   description:
     transitive: Nutzen Sie bestehende Compliance-Arbeit über mehrere Frameworks hinweg für maximale Effizienz
     matrix: Zeigt, wie die Erfüllung von Anforderungen in einem Framework hilft, Anforderungen in anderen Frameworks zu erfüllen
+    compare: Vergleichen Sie zwei Compliance-Frameworks nebeneinander, um ihre Unterschiede, Überschneidungen und einzigartigen Anforderungen zu verstehen
+    unique_requirements: Anforderungen, die einzigartig für dieses Framework sind und nicht vom anderen abgedeckt werden
   action:
     export_transitive: Transitive Analyse exportieren
+    export_comparison: Vergleich exportieren
+    compare: Frameworks vergleichen
   stats:
     total_relationships: Gesamt Framework-Beziehungen
     transitive_compliance: Transitive Compliance-Vorteile
     leverage_rate: Nutzungsrate
     frameworks_leveraged: Genutzte Frameworks
+    common_requirements: Gemeinsame Anforderungen
+    overlap_percentage: Überschneidungs-Prozentsatz
+  unit:
+    requirements: Anforderungen
   info:
     transitive_title: Was ist Transitive Compliance?
     transitive_desc: Transitive Compliance bedeutet, dass wenn Sie eine Anforderung in einem Framework erfüllen (z.B. ISO 27001), Sie automatisch oder teilweise Anforderungen in anderen Frameworks (z.B. TISAX, NIS2) erfüllen. Dies ermöglicht es Ihnen, Ihre Compliance-Arbeit über mehrere Standards hinweg zu nutzen.
@@ -1286,10 +1295,31 @@ compliance:
     leverage_opportunities: Compliance-Nutzungsmöglichkeiten
     cross_framework_mappings: Cross-Framework-Anforderungs-Mappings
     mapping_explanation: Anforderungs-Mappings verstehen
+    select_frameworks: Frameworks zum Vergleichen auswählen
+    detailed_comparison: Detaillierter Vergleich
+    unique_to: "Einzigartig für"
+  label:
+    source_target_matrix: "Quelle ↓ / Ziel →"
+    showing_of: "Zeige %count% von"
+    mappings_count: "Mappings"
+  explanation:
+    what_are_mappings_title: "🎯 Was sind Mappings?"
+    what_are_mappings: "Mappings zeigen, wie Anforderungen aus einem Framework sich auf Anforderungen in einem anderen Framework beziehen. Zum Beispiel könnte eine TISAX-Anforderung eine DORA-Anforderung vollständig erfüllen."
+    mapping_types_title: "📊 Mapping-Typen"
+    mapping_types_exceeds: "Übertrifft (>100%): Quelle übertrifft Ziel"
+    mapping_types_full: "Vollständig (100%): Quelle erfüllt Ziel vollständig"
+    mapping_types_partial: "Teilweise (50-99%): Quelle erfüllt Ziel teilweise"
+    mapping_types_weak: "Schwach (<50%): Schwache Beziehung"
+    bidirectional_title: "🔄 Bidirektionale Mappings"
+    bidirectional: "Manche Anforderungen erfüllen sich gegenseitig. Das bedeutet, dass Arbeit an einem Framework automatisch auch dem anderen Framework zugute kommt."
+    strategic_value_title: "💡 Strategischer Wert"
+    strategic_value: "Nutzen Sie diese Mappings, um Frameworks mit der größten Überschneidung zu identifizieren und Compliance-Bemühungen für maximalen Multi-Framework-Nutzen zu priorisieren."
   field:
     mapped: Gemappte Anforderungen
     coverage: Abdeckung
     framework: Framework
+    framework_1: Erstes Framework
+    framework_2: Zweites Framework
     source_requirement: Quell-Anforderung
     source_framework: Quell-Framework
     target_requirements: Ziel-Anforderungen
@@ -1298,10 +1328,25 @@ compliance:
     mapping_type: Mapping-Typ
     mapping_strength: Mapping-Stärke
     bidirectional: Bidirektional
+    requirement: Anforderung
+    category: Kategorie
+    mapping: Mapping
+    match_quality: Match-Qualität
+    total_requirements: Gesamt-Anforderungen
+    unique_requirements: Einzigartige Anforderungen
+    categories: Kategorien
+  option:
+    select_framework: -- Framework auswählen --
+  badge:
+    mapped: Gemappt
+    no_mapping: Kein Mapping
   message:
     no_relationships: Noch keine Framework-Beziehungen gefunden
     no_leverage_opportunities: Noch keine Nutzungsmöglichkeiten identifiziert
     no_mappings: Keine Cross-Framework-Mappings verfügbar
+    no_comparison_data: Keine Vergleichsdaten verfügbar. Bitte wählen Sie zwei Frameworks zum Vergleichen aus.
+    no_unique: Keine einzigartigen Anforderungen gefunden
+    more_requirements: "+ %count% weitere Anforderungen"
   mapping:
     type:
       full: Vollständige Abdeckung
