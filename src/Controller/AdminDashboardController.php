@@ -4,6 +4,10 @@ namespace App\Controller;
 
 use App\Repository\AuditLogRepository;
 use App\Repository\UserRepository;
+use Doctrine\DBAL\Platforms\MariaDBPlatform;
+use Doctrine\DBAL\Platforms\MySQLPlatform;
+use Doctrine\DBAL\Platforms\PostgreSQLPlatform;
+use Doctrine\DBAL\Platforms\SqlitePlatform;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -132,18 +136,18 @@ class AdminDashboardController extends AbstractController
         try {
             $conn = $this->entityManager->getConnection();
             $dbName = $conn->getDatabase();
-            $platformName = $conn->getDatabasePlatform()->getName();
+            $platform = $conn->getDatabasePlatform();
 
-            // SQLite
-            if (str_contains($platformName, 'sqlite')) {
+            // SQLite - Check using instanceof (Doctrine DBAL 4.x compatible)
+            if ($platform instanceof SqlitePlatform) {
                 $dbPath = $conn->getParams()['path'] ?? null;
                 if ($dbPath && file_exists($dbPath)) {
                     return round(filesize($dbPath) / 1024 / 1024, 2);
                 }
             }
 
-            // MySQL/MariaDB
-            if (str_contains($platformName, 'mysql')) {
+            // MySQL/MariaDB - Check using instanceof (Doctrine DBAL 4.x compatible)
+            if ($platform instanceof MySQLPlatform || $platform instanceof MariaDBPlatform) {
                 $result = $conn->executeQuery(
                     "SELECT ROUND(SUM(data_length + index_length) / 1024 / 1024, 2) as size_mb
                      FROM information_schema.TABLES
@@ -153,8 +157,8 @@ class AdminDashboardController extends AbstractController
                 return (float) ($result['size_mb'] ?? 0);
             }
 
-            // PostgreSQL
-            if (str_contains($platformName, 'pgsql')) {
+            // PostgreSQL - Check using instanceof (Doctrine DBAL 4.x compatible)
+            if ($platform instanceof PostgreSQLPlatform) {
                 $result = $conn->executeQuery(
                     "SELECT pg_size_pretty(pg_database_size(:dbname)) as size",
                     ['dbname' => $dbName]
@@ -173,8 +177,8 @@ class AdminDashboardController extends AbstractController
                 }
             }
 
-            $this->logger->debug('Unsupported database driver for size calculation', [
-                'driver' => $driverName,
+            $this->logger->debug('Unsupported database platform for size calculation', [
+                'platform' => get_class($platform),
             ]);
             return 0.0;
         } catch (\Exception $e) {
