@@ -3,11 +3,12 @@
 {% block title %}Audit Log - Little ISMS Helper{% endblock %}
 
 {% block body %}
-<h1>Audit Log - Revisionssicheres Protokoll</h1>
-
-<p style="color: #666; margin-bottom: 2rem;">
-    Vollständige Protokollierung aller Aktivitäten im ISMS zur Sicherstellung der Revisionssicherheit
-</p>
+<div class="page-header">
+    <div>
+        <h1>📋 Audit Log - Revisionssicheres Protokoll</h1>
+        <p class="text-muted">Vollständige Protokollierung aller Aktivitäten im ISMS zur Sicherstellung der Revisionssicherheit</p>
+    </div>
+</div>
 
 <div class="info-box">
     <h3>Statistik</h3>
@@ -39,7 +40,7 @@
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1rem;">
             <div>
                 <label for="entityType">Entitätstyp:</label>
-                <select name="entityType" id="entityType" style="width: 100%; padding: 0.5rem;">
+                <select name="entityType" id="entityType" class="form-control">
                     <option value="">Alle</option>
                     {% for entityType in entityTypes %}
                     <option value="{{ entityType }}" {% if filters.entityType|default('') == entityType %}selected{% endif %}>
@@ -51,7 +52,7 @@
 
             <div>
                 <label for="action">Aktion:</label>
-                <select name="action" id="action" style="width: 100%; padding: 0.5rem;">
+                <select name="action" id="action" class="form-control">
                     <option value="">Alle</option>
                     {% for action in actions %}
                     <option value="{{ action }}" {% if filters.action|default('') == action %}selected{% endif %}>
@@ -63,21 +64,21 @@
 
             <div>
                 <label for="userName">Benutzer:</label>
-                <input type="text" name="userName" id="userName" value="{{ filters.userName ?? '' }}" style="width: 100%; padding: 0.5rem;">
+                <input type="text" name="userName" id="userName" value="{{ filters.userName ?? '' }}" class="form-control">
             </div>
 
             <div>
                 <label for="dateFrom">Von Datum:</label>
-                <input type="date" name="dateFrom" id="dateFrom" value="{{ filters.dateFrom ?? '' }}" style="width: 100%; padding: 0.5rem;">
+                <input type="date" name="dateFrom" id="dateFrom" value="{{ filters.dateFrom ?? '' }}" class="form-control">
             </div>
 
             <div>
                 <label for="dateTo">Bis Datum:</label>
-                <input type="date" name="dateTo" id="dateTo" value="{{ filters.dateTo ?? '' }}" style="width: 100%; padding: 0.5rem;">
+                <input type="date" name="dateTo" id="dateTo" value="{{ filters.dateTo ?? '' }}" class="form-control">
             </div>
         </div>
 
-        <div style="display: flex; gap: 1rem;">
+        <div class="d-flex gap-1">
             <button type="submit" class="btn btn-primary">Filtern</button>
             <a href="{{ path('app_audit_log_index') }}" class="btn">Filter zurücksetzen</a>
             <a href="{{ path('app_audit_log_statistics') }}" class="btn">Statistiken</a>
@@ -86,7 +87,7 @@
 </div>
 
 {% if auditLogs|length > 0 %}
-<div style="margin-top: 2rem;">
+<div class="mt-2">
     <h2>Protokolleinträge</h2>
 
     {# Tab Navigation #}
@@ -118,44 +119,44 @@
             <table class="table" style="width: 100%; border-collapse: collapse;">
                 <thead>
                     <tr style="background: #f0f0f0;">
-                        <th style="padding: 0.75rem; text-align: left; border: 1px solid #ddd;">Zeitstempel</th>
-                        <th style="padding: 0.75rem; text-align: left; border: 1px solid #ddd;">Aktion</th>
-                        <th style="padding: 0.75rem; text-align: left; border: 1px solid #ddd;">Entität</th>
-                        <th style="padding: 0.75rem; text-align: left; border: 1px solid #ddd;">Benutzer</th>
-                        <th style="padding: 0.75rem; text-align: left; border: 1px solid #ddd;">Beschreibung</th>
-                        <th style="padding: 0.75rem; text-align: left; border: 1px solid #ddd;">Details</th>
+                        <th class="table-cell text-left">Zeitstempel</th>
+                        <th class="table-cell text-left">Aktion</th>
+                        <th class="table-cell text-left">Entität</th>
+                        <th class="table-cell text-left">Benutzer</th>
+                        <th class="table-cell text-left">Beschreibung</th>
+                        <th class="table-cell text-left">Details</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for log in auditLogs %}
                     <tr>
-                        <td style="padding: 0.75rem; border: 1px solid #ddd; font-size: 0.9rem;">
+                        <td class="table-cell text-sm">
                             {{ log.createdAt|date('d.m.Y H:i:s') }}
                         </td>
-                        <td style="padding: 0.75rem; border: 1px solid #ddd;">
+                        <td class="table-cell">
                             <span class="badge badge-{{ log.action }}">{{ log.action|capitalize }}</span>
                         </td>
-                        <td style="padding: 0.75rem; border: 1px solid #ddd;">
+                        <td class="table-cell">
                             {{ log.entityType }}
                             {% if log.entityId %}
                                 <a href="{{ path('app_audit_log_entity', {entityType: log.entityType, entityId: log.entityId}) }}"
-                                   style="color: #007bff; text-decoration: none;">
+                                   class="link-primary">
                                     (#{{ log.entityId }})
                                 </a>
                             {% endif %}
                         </td>
-                        <td style="padding: 0.75rem; border: 1px solid #ddd;">
+                        <td class="table-cell">
                             <a href="{{ path('app_audit_log_user', {userName: log.userName}) }}"
-                               style="color: #007bff; text-decoration: none;">
+                               class="link-primary">
                                 {{ log.userName }}
                             </a>
                         </td>
-                        <td style="padding: 0.75rem; border: 1px solid #ddd; font-size: 0.9rem;">
+                        <td class="table-cell text-sm">
                             {{ log.description|default('-') }}
                         </td>
-                        <td style="padding: 0.75rem; border: 1px solid #ddd;">
+                        <td class="table-cell">
                             <a href="{{ path('app_audit_log_detail', {id: log.id}) }}"
-                               style="color: #007bff; text-decoration: none;">
+                               class="link-primary">
                                 Details anzeigen
                             </a>
                         </td>
@@ -190,7 +191,7 @@
     {% endif %}
 </div>
 {% else %}
-<div class="info-box" style="margin-top: 2rem;">
+<div class="info-box mt-2">
     <p>Keine Protokolleinträge gefunden.</p>
 </div>
 {% endif %}

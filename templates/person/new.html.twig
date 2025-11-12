@@ -3,11 +3,15 @@
 {% block title %}{{ 'person.title.create'|trans }} - Little ISMS Helper{% endblock %}
 
 {% block body %}
-<div class="d-flex justify-between align-center mb-4">
-    <h1>{{ 'person.title.create'|trans }}</h1>
-    <a href="{{ path('app_person_index') }}" class="btn btn-secondary">
-        ← {{ 'common.back_to_list'|trans }}
-    </a>
+<div class="page-header">
+    <div>
+        <h1>{{ 'person.title.create'|trans }}</h1>
+    </div>
+    <div class="button-group">
+        <a href="{{ path('app_person_index') }}" class="btn btn-secondary">
+            ← {{ 'common.back_to_list'|trans }}
+        </a>
+    </div>
 </div>
 
 <div class="card">

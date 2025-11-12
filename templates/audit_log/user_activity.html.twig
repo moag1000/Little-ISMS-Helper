@@ -6,7 +6,7 @@
 <h1>Benutzeraktivität</h1>
 
 <p>
-    <a href="{{ path('app_audit_log_index') }}" style="color: #007bff; text-decoration: none;">« Zurück zur Übersicht</a>
+    <a href="{{ path('app_audit_log_index') }}" class="link-primary">« Zurück zur Übersicht</a>
 </p>
 
 <div class="info-box">
@@ -21,37 +21,37 @@
     <table class="table" style="width: 100%; border-collapse: collapse; margin-top: 1rem;">
         <thead>
             <tr style="background: #f0f0f0;">
-                <th style="padding: 0.75rem; text-align: left; border: 1px solid #ddd;">Zeitstempel</th>
-                <th style="padding: 0.75rem; text-align: left; border: 1px solid #ddd;">Aktion</th>
-                <th style="padding: 0.75rem; text-align: left; border: 1px solid #ddd;">Entität</th>
-                <th style="padding: 0.75rem; text-align: left; border: 1px solid #ddd;">Beschreibung</th>
-                <th style="padding: 0.75rem; text-align: left; border: 1px solid #ddd;">Details</th>
+                <th class="table-cell text-left">Zeitstempel</th>
+                <th class="table-cell text-left">Aktion</th>
+                <th class="table-cell text-left">Entität</th>
+                <th class="table-cell text-left">Beschreibung</th>
+                <th class="table-cell text-left">Details</th>
             </tr>
         </thead>
         <tbody>
             {% for log in auditLogs %}
             <tr>
-                <td style="padding: 0.75rem; border: 1px solid #ddd; font-size: 0.9rem;">
+                <td class="table-cell text-sm">
                     {{ log.createdAt|date('d.m.Y H:i:s') }}
                 </td>
-                <td style="padding: 0.75rem; border: 1px solid #ddd;">
+                <td class="table-cell">
                     <span class="badge badge-{{ log.action }}">{{ log.action|capitalize }}</span>
                 </td>
-                <td style="padding: 0.75rem; border: 1px solid #ddd;">
+                <td class="table-cell">
                     {{ log.entityType }}
                     {% if log.entityId %}
                         <a href="{{ path('app_audit_log_entity', {entityType: log.entityType, entityId: log.entityId}) }}"
-                           style="color: #007bff; text-decoration: none;">
+                           class="link-primary">
                             (#{{ log.entityId }})
                         </a>
                     {% endif %}
                 </td>
-                <td style="padding: 0.75rem; border: 1px solid #ddd; font-size: 0.9rem;">
+                <td class="table-cell text-sm">
                     {{ log.description|default('-') }}
                 </td>
-                <td style="padding: 0.75rem; border: 1px solid #ddd;">
+                <td class="table-cell">
                     <a href="{{ path('app_audit_log_detail', {id: log.id}) }}"
-                       style="color: #007bff; text-decoration: none;">
+                       class="link-primary">
                         Details anzeigen
                     </a>
                 </td>

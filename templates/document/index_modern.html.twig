@@ -84,11 +84,11 @@
                 {# PDF #}
                 <div class="col-md-3">
                     <div class="type-card text-center p-4" style="background: rgba(231, 76, 60, 0.1); border-radius: var(--border-radius);">
-                        <div class="type-icon mb-3" style="font-size: 2.5rem; color: #e74c3c;">
+                        <div class="type-icon mb-3 fs-25" style="color: #e74c3c;">
                             <i class="bi bi-file-pdf"></i>
                         </div>
                         <div class="type-label text-muted mb-2">{{ 'document.type.pdf'|trans }}</div>
-                        <div class="type-count" style="font-size: 2rem; font-weight: 700; color: #e74c3c;">
+                        <div class="type-count fs-2 fw-700" style="color: #e74c3c;">
                             {{ pdfDocs }}
                         </div>
                     </div>
@@ -97,11 +97,11 @@
                 {# Images #}
                 <div class="col-md-3">
                     <div class="type-card text-center p-4" style="background: rgba(52, 152, 219, 0.1); border-radius: var(--border-radius);">
-                        <div class="type-icon mb-3" style="font-size: 2.5rem; color: #3498db;">
+                        <div class="type-icon mb-3 fs-25" style="color: #3498db;">
                             <i class="bi bi-image"></i>
                         </div>
                         <div class="type-label text-muted mb-2">{{ 'document.type.images'|trans }}</div>
-                        <div class="type-count" style="font-size: 2rem; font-weight: 700; color: #3498db;">
+                        <div class="type-count fs-2 fw-700" style="color: #3498db;">
                             {{ imageDocs }}
                         </div>
                     </div>
@@ -110,11 +110,11 @@
                 {# Excel/Spreadsheets #}
                 <div class="col-md-3">
                     <div class="type-card text-center p-4" style="background: rgba(39, 174, 96, 0.1); border-radius: var(--border-radius);">
-                        <div class="type-icon mb-3" style="font-size: 2.5rem; color: #27ae60;">
+                        <div class="type-icon mb-3 fs-25" style="color: #27ae60;">
                             <i class="bi bi-file-earmark-spreadsheet"></i>
                         </div>
                         <div class="type-label text-muted mb-2">{{ 'document.type.tables'|trans }}</div>
-                        <div class="type-count" style="font-size: 2rem; font-weight: 700; color: #27ae60;">
+                        <div class="type-count fs-2 fw-700" style="color: #27ae60;">
                             {{ excelDocs }}
                         </div>
                     </div>
@@ -123,11 +123,11 @@
                 {# Other #}
                 <div class="col-md-3">
                     <div class="type-card text-center p-4" style="background: rgba(149, 165, 166, 0.1); border-radius: var(--border-radius);">
-                        <div class="type-icon mb-3" style="font-size: 2.5rem; color: #95a5a6;">
+                        <div class="type-icon mb-3 fs-25" style="color: #95a5a6;">
                             <i class="bi bi-file-earmark"></i>
                         </div>
                         <div class="type-label text-muted mb-2">{{ 'document.type.other'|trans }}</div>
-                        <div class="type-count" style="font-size: 2rem; font-weight: 700; color: #95a5a6;">
+                        <div class="type-count fs-2 fw-700" style="color: #95a5a6;">
                             {{ total - pdfDocs - imageDocs - excelDocs }}
                         </div>
                     </div>
@@ -142,14 +142,14 @@
             <h2 class="mb-0">
                 <i class="bi bi-list-ul"></i>
                 {{ 'document.section.all_documents'|trans }}
-                <span class="bulk-selected-badge" data-bulk-actions-target="countBadge" style="display: none;">
+                <span class="bulk-selected-badge" data-bulk-actions-target="countBadge" class="d-none">
                     <span data-bulk-actions-target="count">0</span> {{ 'common.selected'|trans }}
                 </span>
             </h2>
 
             {# Filter Controls #}
             <div class="d-flex gap-2">
-                <select class="form-select form-select-sm" id="categoryFilter" style="width: auto;">
+                <select class="form-select form-select-sm" id="categoryFilter" class="w-auto">
                     <option value="">{{ 'document.filter.all_categories'|trans }}</option>
                     {% set categories = documents|map(d => d.category)|unique %}
                     {% for category in categories %}
@@ -161,7 +161,7 @@
                        class="form-control form-control-sm"
                        id="documentSearch"
                        placeholder="{{ 'document.filter.search_placeholder'|trans }}"
-                       style="width: 250px;">
+                       class="w-250px">
             </div>
         </div>
 
@@ -176,13 +176,13 @@
                                        data-action="bulk-actions#selectAll"
                                        data-bulk-actions-target="selectAllCheckbox">
                             </th>
-                            <th style="width: 50px;"></th>
+                            <th class="w-50px"></th>
                             <th>{{ 'common.name'|trans }}</th>
-                            <th style="width: 150px;">{{ 'common.category'|trans }}</th>
-                            <th style="width: 100px;">{{ 'common.size'|trans }}</th>
-                            <th style="width: 150px;">{{ 'document.table.uploaded_by'|trans }}</th>
-                            <th style="width: 130px;">{{ 'common.date'|trans }}</th>
-                            <th style="width: 180px; text-align: right;">{{ 'common.actions'|trans }}</th>
+                            <th class="w-150px">{{ 'common.category'|trans }}</th>
+                            <th class="w-100px">{{ 'common.size'|trans }}</th>
+                            <th class="w-150px">{{ 'document.table.uploaded_by'|trans }}</th>
+                            <th class="w-130px">{{ 'common.date'|trans }}</th>
+                            <th class="w-180px text-right">{{ 'common.actions'|trans }}</th>
                         </tr>
                     </thead>
                     <tbody id="documentTableBody">
@@ -199,15 +199,15 @@
                             <td>
                                 {# File Type Icon #}
                                 {% if document.mimeType == 'application/pdf' %}
-                                    <i class="bi bi-file-pdf-fill text-danger" style="font-size: 1.5rem;"></i>
+                                    <i class="bi bi-file-pdf-fill text-danger fs-15"></i>
                                 {% elseif document.mimeType starts with 'image/' %}
-                                    <i class="bi bi-file-image-fill text-primary" style="font-size: 1.5rem;"></i>
+                                    <i class="bi bi-file-image-fill text-primary fs-15"></i>
                                 {% elseif document.mimeType contains 'spreadsheet' %}
-                                    <i class="bi bi-file-earmark-spreadsheet-fill text-success" style="font-size: 1.5rem;"></i>
+                                    <i class="bi bi-file-earmark-spreadsheet-fill text-success fs-15"></i>
                                 {% elseif document.mimeType contains 'word' or document.mimeType contains 'document' %}
-                                    <i class="bi bi-file-word-fill text-info" style="font-size: 1.5rem;"></i>
+                                    <i class="bi bi-file-word-fill text-info fs-15"></i>
                                 {% else %}
-                                    <i class="bi bi-file-earmark-fill text-secondary" style="font-size: 1.5rem;"></i>
+                                    <i class="bi bi-file-earmark-fill text-secondary fs-15"></i>
                                 {% endif %}
                             </td>
                             <td>
@@ -237,7 +237,7 @@
                                 <br>
                                 <small class="text-muted">{{ document.uploadedAt|date('H:i') }}</small>
                             </td>
-                            <td style="text-align: right;">
+                            <td class="text-right">
                                 <div class="btn-group btn-group-sm">
                                     <a href="{{ path('app_document_download', {id: document.id}) }}"
                                        class="btn btn-sm btn-outline-success"
@@ -263,7 +263,7 @@
             </div>
 
             {# No Results Message #}
-            <div id="noResults" class="text-center p-5" style="display: none;">
+            <div id="noResults" class="text-center p-5 d-none">
                 <i class="bi bi-search" style="font-size: 3rem; color: var(--color-text-muted); opacity: 0.5;"></i>
                 <p class="text-muted mt-3">{{ 'document.message.no_results'|trans }}</p>
             </div>

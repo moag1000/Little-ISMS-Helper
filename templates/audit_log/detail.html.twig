@@ -6,63 +6,63 @@
 <h1>{{ 'audit_log.title'|trans }}</h1>
 
 <p>
-    <a href="{{ path('app_audit_log_index') }}" style="color: #007bff; text-decoration: none;">« {{ 'common.back_to_overview'|trans }}</a>
+    <a href="{{ path('app_audit_log_index') }}" class="link-primary">« {{ 'common.back_to_overview'|trans }}</a>
 </p>
 
-<div class="info-box" style="margin-top: 2rem;">
+<div class="info-box mt-2">
     <h3>{{ 'audit_log.entry'|trans({'%id%': auditLog.id}) }}</h3>
 
-    <table style="width: 100%; margin-top: 1rem;">
+    <table class="w-100 mt-lg">
         <tr>
-            <td style="padding: 0.5rem; font-weight: bold; width: 200px;">{{ 'audit_log.field.timestamp'|trans }}</td>
-            <td style="padding: 0.5rem;">{{ auditLog.createdAt|date('d.m.Y H:i:s') }}</td>
+            <td class="p-sm fw-bold w-200px">{{ 'audit_log.field.timestamp'|trans }}</td>
+            <td class="p-sm">{{ auditLog.createdAt|date('d.m.Y H:i:s') }}</td>
         </tr>
         <tr>
-            <td style="padding: 0.5rem; font-weight: bold;">{{ 'audit_log.field.action'|trans }}</td>
-            <td style="padding: 0.5rem;">
+            <td class="p-sm fw-bold">{{ 'audit_log.field.action'|trans }}</td>
+            <td class="p-sm">
                 <span class="badge badge-{{ auditLog.action }}">{{ auditLog.action|capitalize }}</span>
             </td>
         </tr>
         <tr>
-            <td style="padding: 0.5rem; font-weight: bold;">{{ 'audit_log.field.entity_type'|trans }}</td>
-            <td style="padding: 0.5rem;">{{ auditLog.entityType }}</td>
+            <td class="p-sm fw-bold">{{ 'audit_log.field.entity_type'|trans }}</td>
+            <td class="p-sm">{{ auditLog.entityType }}</td>
         </tr>
         {% if auditLog.entityId %}
         <tr>
-            <td style="padding: 0.5rem; font-weight: bold;">{{ 'audit_log.field.entity_id'|trans }}</td>
-            <td style="padding: 0.5rem;">
+            <td class="p-sm fw-bold">{{ 'audit_log.field.entity_id'|trans }}</td>
+            <td class="p-sm">
                 <a href="{{ path('app_audit_log_entity', {entityType: auditLog.entityType, entityId: auditLog.entityId}) }}"
-                   style="color: #007bff; text-decoration: none;">
+                   class="link-primary">
                     #{{ auditLog.entityId }}
                 </a>
             </td>
         </tr>
         {% endif %}
         <tr>
-            <td style="padding: 0.5rem; font-weight: bold;">{{ 'audit_log.field.user'|trans }}</td>
-            <td style="padding: 0.5rem;">
+            <td class="p-sm fw-bold">{{ 'audit_log.field.user'|trans }}</td>
+            <td class="p-sm">
                 <a href="{{ path('app_audit_log_user', {userName: auditLog.userName}) }}"
-                   style="color: #007bff; text-decoration: none;">
+                   class="link-primary">
                     {{ auditLog.userName }}
                 </a>
             </td>
         </tr>
         {% if auditLog.ipAddress %}
         <tr>
-            <td style="padding: 0.5rem; font-weight: bold;">{{ 'audit_log.field.ip_address'|trans }}</td>
-            <td style="padding: 0.5rem;">{{ auditLog.ipAddress }}</td>
+            <td class="p-sm fw-bold">{{ 'audit_log.field.ip_address'|trans }}</td>
+            <td class="p-sm">{{ auditLog.ipAddress }}</td>
         </tr>
         {% endif %}
         {% if auditLog.userAgent %}
         <tr>
-            <td style="padding: 0.5rem; font-weight: bold;">{{ 'audit_log.field.user_agent'|trans }}</td>
-            <td style="padding: 0.5rem; font-size: 0.9rem;">{{ auditLog.userAgent }}</td>
+            <td class="p-sm fw-bold">{{ 'audit_log.field.user_agent'|trans }}</td>
+            <td class="p-sm fs-09">{{ auditLog.userAgent }}</td>
         </tr>
         {% endif %}
         {% if auditLog.description %}
         <tr>
-            <td style="padding: 0.5rem; font-weight: bold;">{{ 'audit_log.field.description'|trans }}</td>
-            <td style="padding: 0.5rem;">{{ auditLog.description }}</td>
+            <td class="p-sm fw-bold">{{ 'audit_log.field.description'|trans }}</td>
+            <td class="p-sm">{{ auditLog.description }}</td>
         </tr>
         {% endif %}
     </table>
@@ -72,20 +72,20 @@
 {% set newValues = auditLog.newValuesArray %}
 
 {% if oldValues or newValues %}
-<div class="info-box" style="margin-top: 2rem;">
+<div class="info-box mt-2">
     <h3>{{ 'audit_log.changes'|trans }}</h3>
 
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 1rem;">
+    <div class="grid-2-cols mt-lg">
         {% if oldValues %}
         <div>
-            <h4 style="color: #dc3545;">{{ 'audit_log.old_values'|trans }}</h4>
-            <table style="width: 100%; border-collapse: collapse; margin-top: 0.5rem;">
+            <h4 class="text-danger">{{ 'audit_log.old_values'|trans }}</h4>
+            <table class="table-collapse-mt">
                 {% for key, value in oldValues %}
                 <tr>
-                    <td style="padding: 0.5rem; border: 1px solid #ddd; font-weight: bold; background: #f8f9fa;">
+                    <td class="table-cell-header">
                         {{ key }}
                     </td>
-                    <td style="padding: 0.5rem; border: 1px solid #ddd;">
+                    <td class="table-cell-sm">
                         {{ value|default('-') }}
                     </td>
                 </tr>
@@ -96,14 +96,14 @@
 
         {% if newValues %}
         <div>
-            <h4 style="color: #28a745;">{{ 'audit_log.new_values'|trans }}</h4>
-            <table style="width: 100%; border-collapse: collapse; margin-top: 0.5rem;">
+            <h4 class="text-success">{{ 'audit_log.new_values'|trans }}</h4>
+            <table class="table-collapse-mt">
                 {% for key, value in newValues %}
                 <tr>
-                    <td style="padding: 0.5rem; border: 1px solid #ddd; font-weight: bold; background: #f8f9fa;">
+                    <td class="table-cell-header">
                         {{ key }}
                     </td>
-                    <td style="padding: 0.5rem; border: 1px solid #ddd;">
+                    <td class="table-cell-sm">
                         {{ value|default('-') }}
                     </td>
                 </tr>

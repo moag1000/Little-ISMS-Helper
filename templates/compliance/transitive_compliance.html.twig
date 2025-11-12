@@ -3,17 +3,12 @@
 {% block title %}{{ 'compliance.title.transitive'|trans }} - Little ISMS Helper{% endblock %}
 
 {% block body %}
-<div class="d-flex justify-between align-center mb-4">
+<div class="page-header">
     <div>
-        <h1 style="font-size: 2rem; font-weight: 700; color: var(--color-text-primary); display: flex; align-items: center; gap: 0.75rem;">
-            <span style="font-size: 2.5rem;">🔗</span>
-            <span>{{ 'compliance.title.transitive'|trans }}</span>
-        </h1>
-        <p style="color: var(--color-text-secondary); margin-top: var(--spacing-sm); font-size: 1.1rem;">
-            {{ 'compliance.description.transitive'|trans }}
-        </p>
+        <h1>🔗 {{ 'compliance.title.transitive'|trans }}</h1>
+        <p class="text-muted">{{ 'compliance.description.transitive'|trans }}</p>
     </div>
-    <div style="display: flex; gap: var(--spacing-sm);">
+    <div class="button-group">
         <button id="createAllMappingsBtn" class="btn btn-primary">
             🔗 Fehlende Mappings ergänzen
         </button>
@@ -24,44 +19,44 @@
 </div>
 
 {# Statistics Cards - Prominently displayed #}
-<div class="kpi-grid" style="margin-bottom: 2rem;">
+<div class="kpi-grid mb-2">
     <div class="kpi-card">
-        <div class="icon" style="font-size: 2.5rem;">🔗</div>
-        <div class="label" style="font-size: 0.9rem; color: var(--color-text-secondary);">{{ 'compliance.stats.total_relationships'|trans }}</div>
+        <div class="icon icon-large">🔗</div>
+        <div class="kpi-label">{{ 'compliance.stats.total_relationships'|trans }}</div>
         <div>
-            <span class="value" style="font-size: 2.5rem; font-weight: bold; color: var(--color-primary);">{{ total_relationships }}</span>
+            <span class="kpi-value-primary">{{ total_relationships }}</span>
         </div>
     </div>
 
     <div class="kpi-card">
-        <div class="icon" style="font-size: 2.5rem;">✅</div>
-        <div class="label" style="font-size: 0.9rem; color: var(--color-text-secondary);">{{ 'compliance.stats.transitive_compliance'|trans }}</div>
+        <div class="icon icon-large">✅</div>
+        <div class="kpi-label">{{ 'compliance.stats.transitive_compliance'|trans }}</div>
         <div>
-            <span class="value" style="font-size: 2.5rem; font-weight: bold; color: var(--color-success);">{{ transitive_compliance }}</span>
+            <span class="kpi-value-success">{{ transitive_compliance }}</span>
         </div>
     </div>
 
     <div class="kpi-card">
-        <div class="icon" style="font-size: 2.5rem;">📈</div>
-        <div class="label" style="font-size: 0.9rem; color: var(--color-text-secondary);">{{ 'compliance.stats.leverage_rate'|trans }}</div>
+        <div class="icon icon-large">📈</div>
+        <div class="kpi-label">{{ 'compliance.stats.leverage_rate'|trans }}</div>
         <div>
             {% set leverageRate = total_relationships > 0 ? (transitive_compliance / total_relationships * 100)|round : 0 %}
-            <span class="value" style="font-size: 2.5rem; font-weight: bold; color: var(--color-info);">{{ leverageRate }}</span>
-            <span class="unit" style="font-size: 1.2rem; color: var(--color-text-secondary);">%</span>
+            <span class="kpi-value-info">{{ leverageRate }}</span>
+            <span class="kpi-unit">%</span>
         </div>
     </div>
 
     <div class="kpi-card">
-        <div class="icon" style="font-size: 2.5rem;">🎯</div>
-        <div class="label" style="font-size: 0.9rem; color: var(--color-text-secondary);">{{ 'compliance.stats.frameworks_leveraged'|trans }}</div>
+        <div class="icon icon-large">🎯</div>
+        <div class="kpi-label">{{ 'compliance.stats.frameworks_leveraged'|trans }}</div>
         <div>
-            <span class="value" style="font-size: 2.5rem; font-weight: bold; color: var(--color-warning);">{{ frameworks_leveraged }}</span>
+            <span class="kpi-value-warning">{{ frameworks_leveraged }}</span>
         </div>
     </div>
 </div>
 
 {# Tabbed Interface for better organization #}
-<div class="card" style="margin-bottom: 2rem;">
+<div class="card mb-2">
     <div class="tabs">
         <button class="tab-button active" onclick="switchTab('overview')">
             📊 Übersicht
@@ -79,19 +74,19 @@
 
     {# Tab 1: Overview #}
     <div id="tab-overview" class="tab-content active">
-        <h2 style="margin-top: 0; color: var(--color-primary);">{{ 'compliance.section.framework_relationships'|trans }}</h2>
+        <h2 class="section-title">{{ 'compliance.section.framework_relationships'|trans }}</h2>
 
         {% if framework_relationships is empty %}
             <div class="card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; text-align: center; padding: 3rem; border: none;">
-                <div style="font-size: 4rem; margin-bottom: 1rem;">🔗</div>
-                <h3 style="color: white; margin-bottom: 1rem; font-size: 1.5rem;">Noch keine Framework-Mappings vorhanden</h3>
-                <p style="font-size: 1.1rem; line-height: 1.6; margin-bottom: 2rem; opacity: 0.95;">
+                <div class="icon-xlarge mb-md">🔗</div>
+                <h3 class="fs-15-white-mb">Noch keine Framework-Mappings vorhanden</h3>
+                <p class="fs-11-lh-mb">
                     Die Cross-Framework Mappings zwischen Ihren Compliance-Frameworks wurden noch nicht erstellt.
                     <br>Diese Mappings zeigen, wie Anforderungen verschiedener Frameworks zusammenhängen.
                 </p>
                 <div style="background: rgba(255,255,255,0.2); padding: 1.5rem; border-radius: 8px; margin-bottom: 1.5rem;">
                     <h4 style="color: white; margin-top: 0; margin-bottom: 0.5rem;">💡 So erstellen Sie Mappings:</h4>
-                    <p style="margin: 0; font-size: 0.95rem; opacity: 0.9;">
+                    <p class="fs-095-opacity-09">
                         Mappings müssen manuell erstellt oder über ein Datenimport-Script geladen werden.
                         <br>Kontaktieren Sie Ihren Administrator für weitere Informationen.
                     </p>
@@ -101,7 +96,7 @@
                         <span id="btnIcon">🔗</span>
                         <span id="btnText">Mappings jetzt erstellen</span>
                     </button>
-                    <a href="{{ path('app_compliance_index') }}" class="btn btn-outline-light" style="font-weight: 600;">
+                    <a href="{{ path('app_compliance_index') }}" class="btn btn-outline-light fw-600">
                         ← Zurück zur Übersicht
                     </a>
                 </div>
@@ -109,22 +104,22 @@
         {% else %}
             <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 1.5rem;">
                 {% for relationship in framework_relationships %}
-                <div class="card" style="padding: 1.5rem; border: 2px solid var(--color-border); transition: all 0.2s;">
+                <div class="card card-border-hover">
                     <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
                         <div style="flex: 1;">
-                            <div style="font-weight: 600; font-size: 0.95rem; color: var(--color-text-secondary); margin-bottom: 0.25rem;">
+                            <div class="fw-600-fs-095-secondary-mb">
                                 {{ relationship.sourceFramework.code }}
                             </div>
-                            <div style="font-size: 2rem; color: var(--color-primary); text-align: center; margin: 0.5rem 0;">
+                            <div class="fs-2-primary-center-margin">
                                 ↓
                             </div>
-                            <div style="font-weight: 600; font-size: 0.95rem; color: var(--color-text-secondary); margin-top: 0.25rem;">
+                            <div class="fw-600-fs-095-secondary-mt">
                                 {{ relationship.targetFramework.code }}
                             </div>
                         </div>
 
-                        <div style="text-align: center;">
-                            <div style="font-size: 2rem; font-weight: bold; color: var(--color-success);">
+                        <div class="text-center">
+                            <div class="fs-2-fw-bold-success">
                                 {{ relationship.coveragePercentage }}%
                             </div>
                             <div style="font-size: 0.75rem; color: var(--color-text-secondary);">
@@ -138,13 +133,13 @@
                             <span style="font-size: 0.85rem; color: var(--color-text-secondary);">
                                 {{ 'compliance.field.mapped'|trans }}:
                             </span>
-                            <span style="font-weight: 600; font-size: 1.1rem; color: var(--color-primary);">
+                            <span class="fw-600-fs-11-primary">
                                 {{ relationship.mappedRequirements }}
                             </span>
                         </div>
                     </div>
 
-                    <div class="progress" style="height: 10px; border-radius: 5px; background: var(--color-bg-alt);">
+                    <div class="progress progress-bar-bg">
                         <div class="progress-bar" style="width: {{ relationship.coveragePercentage }}%; height: 10px; border-radius: 5px; background: linear-gradient(to right, var(--color-success), var(--color-info)); transition: width 0.3s;"></div>
                     </div>
                 </div>
@@ -154,21 +149,21 @@
     </div>
 
     {# Tab 2: Matrix #}
-    <div id="tab-matrix" class="tab-content" style="display: none;">
-        <h2 style="margin-top: 0; color: var(--color-primary);">{{ 'compliance.section.compliance_matrix'|trans }}</h2>
+    <div id="tab-matrix" class="tab-content d-none">
+        <h2 class="section-title">{{ 'compliance.section.compliance_matrix'|trans }}</h2>
         <p style="color: var(--color-text-secondary); margin-bottom: 1.5rem;">
             {{ 'compliance.description.matrix'|trans }}
         </p>
 
-        <div style="overflow-x: auto; margin-bottom: 1.5rem;">
-            <table style="width: 100%; border-collapse: collapse; min-width: 600px;">
+        <div class="overflow-auto-mb">
+            <table class="table-full-collapse">
                 <thead>
-                    <tr style="background: var(--color-bg-alt);">
-                        <th style="padding: 1rem; border: 1px solid var(--color-border); text-align: left; font-weight: 600; position: sticky; left: 0; background: var(--color-bg-alt); z-index: 10;">
+                    <tr class="bg-alt">
+                        <th class="th-sticky-left">
                             Von → Nach
                         </th>
                         {% for framework in frameworks %}
-                            <th style="padding: 1rem; border: 1px solid var(--color-border); text-align: center; font-weight: 600; font-size: 0.9rem;">
+                            <th class="th-center">
                                 {{ framework.code }}
                             </th>
                         {% endfor %}
@@ -177,11 +172,11 @@
                 <tbody>
                     {% for sourceFramework in frameworks %}
                         <tr>
-                            <td style="padding: 1rem; border: 1px solid var(--color-border); font-weight: 600; position: sticky; left: 0; background: white; z-index: 5;">
+                            <td class="td-sticky-left">
                                 {{ sourceFramework.code }}
                             </td>
                             {% for targetFramework in frameworks %}
-                                <td style="padding: 1rem; border: 1px solid var(--color-border); text-align: center;">
+                                <td class="td-center">
                                     {% if sourceFramework.id == targetFramework.id %}
                                         <span style="color: var(--color-text-muted); font-weight: 600; font-size: 1rem;">100%</span>
                                     {% else %}
@@ -206,34 +201,34 @@
         </div>
 
         <div style="display: flex; justify-content: center; gap: 2rem; padding: 1rem; background: var(--color-bg-alt); border-radius: 8px;">
-            <div style="display: flex; align-items: center; gap: 0.5rem;">
-                <span style="width: 30px; height: 20px; background: var(--color-success); border-radius: 4px;"></span>
-                <span style="font-size: 0.9rem;">≥ 75%</span>
+            <div class="flex-center-gap">
+                <span class="legend-success"></span>
+                <span class="text-sm">≥ 75%</span>
             </div>
-            <div style="display: flex; align-items: center; gap: 0.5rem;">
-                <span style="width: 30px; height: 20px; background: var(--color-warning); border-radius: 4px;"></span>
-                <span style="font-size: 0.9rem;">50-74%</span>
+            <div class="flex-center-gap">
+                <span class="legend-warning"></span>
+                <span class="text-sm">50-74%</span>
             </div>
-            <div style="display: flex; align-items: center; gap: 0.5rem;">
-                <span style="width: 30px; height: 20px; background: var(--color-danger); border-radius: 4px;"></span>
-                <span style="font-size: 0.9rem;">< 50%</span>
+            <div class="flex-center-gap">
+                <span class="legend-danger"></span>
+                <span class="text-sm">< 50%</span>
             </div>
         </div>
     </div>
 
     {# Tab 3: Detailed Mappings #}
-    <div id="tab-details" class="tab-content" style="display: none;">
-        <h2 style="margin-top: 0; color: var(--color-primary);">{{ 'compliance.section.cross_framework_mappings'|trans }}</h2>
+    <div id="tab-details" class="tab-content d-none">
+        <h2 class="section-title">{{ 'compliance.section.cross_framework_mappings'|trans }}</h2>
 
         {% if cross_mappings is empty %}
             <div class="card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; text-align: center; padding: 3rem; border: none;">
-                <div style="font-size: 4rem; margin-bottom: 1rem;">📋</div>
-                <h3 style="color: white; margin-bottom: 1rem; font-size: 1.5rem;">Keine detaillierten Mappings verfügbar</h3>
-                <p style="font-size: 1.1rem; line-height: 1.6; margin-bottom: 1.5rem; opacity: 0.95;">
+                <div class="icon-xlarge mb-md">📋</div>
+                <h3 class="fs-15-white-mb">Keine detaillierten Mappings verfügbar</h3>
+                <p class="fs-11-lh-mb-sm">
                     Es wurden noch keine Cross-Framework Mappings zwischen den Requirements erstellt.
                 </p>
                 <div style="background: rgba(255,255,255,0.2); padding: 1.5rem; border-radius: 8px;">
-                    <p style="margin: 0; font-size: 0.95rem; opacity: 0.9;">
+                    <p class="fs-095-opacity-09">
                         💡 Mappings werden benötigt, um zu zeigen, wie sich Anforderungen verschiedener
                         Compliance-Frameworks gegenseitig abdecken.
                     </p>
@@ -241,79 +236,79 @@
             </div>
         {% else %}
             {% for mapping_group in cross_mappings %}
-                <details class="card" style="margin-bottom: 1.5rem; border: 2px solid var(--color-border);" open>
-                    <summary style="padding: 1.5rem; cursor: pointer; font-size: 1.2rem; font-weight: 600; color: var(--color-primary); list-style: none;">
-                        <span style="margin-right: 0.5rem;">▶</span>
+                <details class="card mb-border" open>
+                    <summary class="summary-interactive">
+                        <span class="mr-xs">▶</span>
                         {{ mapping_group.source.code }} → {{ mapping_group.target.code }}
                         <span style="float: right; font-size: 1rem; color: var(--color-text-secondary);">
                             {{ mapping_group.coverage.covered_requirements }} mappings ({{ mapping_group.coverage.coverage_percentage|round }}%)
                         </span>
                     </summary>
 
-                    <div style="padding: 0 1.5rem 1.5rem 1.5rem; border-top: 1px solid var(--color-border);">
+                    <div class="details-padding">
                         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 1.5rem 0;">
-                            <div style="text-align: center; padding: 1rem; background: var(--color-success-light); border-radius: 8px;">
-                                <div style="font-size: 2rem; font-weight: bold; color: var(--color-success);">
+                            <div class="mapping-card-success">
+                                <div class="fs-2-fw-bold-success">
                                     {{ mapping_group.coverage.strong_mappings ?? 0 }}
                                 </div>
-                                <div style="font-size: 0.85rem; color: var(--color-text-secondary); margin-top: 0.25rem;">
+                                <div class="small-text-secondary">
                                     {{ 'compliance.mapping.type.full'|trans }}
                                 </div>
                             </div>
-                            <div style="text-align: center; padding: 1rem; background: var(--color-warning-light); border-radius: 8px;">
-                                <div style="font-size: 2rem; font-weight: bold; color: var(--color-warning);">
+                            <div class="mapping-card-warning">
+                                <div class="fs-2-fw-bold-warning">
                                     {{ mapping_group.coverage.partial_mappings ?? 0 }}
                                 </div>
-                                <div style="font-size: 0.85rem; color: var(--color-text-secondary); margin-top: 0.25rem;">
+                                <div class="small-text-secondary">
                                     {{ 'compliance.mapping.type.partial'|trans }}
                                 </div>
                             </div>
-                            <div style="text-align: center; padding: 1rem; background: var(--color-bg-alt); border-radius: 8px;">
-                                <div style="font-size: 2rem; font-weight: bold; color: var(--color-secondary);">
+                            <div class="mapping-card-alt">
+                                <div class="fs-2-fw-bold-secondary">
                                     {{ mapping_group.coverage.weak_mappings ?? 0 }}
                                 </div>
-                                <div style="font-size: 0.85rem; color: var(--color-text-secondary); margin-top: 0.25rem;">
+                                <div class="small-text-secondary">
                                     {{ 'compliance.mapping.type.weak'|trans }}
                                 </div>
                             </div>
                         </div>
 
                         {% if mapping_group.mappings|length > 5 %}
-                            <p style="text-align: center; color: var(--color-text-secondary); font-style: italic; margin: 1rem 0;">
+                            <p class="text-center-italic-margin">
                                 Zeige erste 5 von {{ mapping_group.mappings|length }} Mappings
                             </p>
                         {% endif %}
 
-                        <div style="overflow-x: auto;">
-                            <table style="width: 100%; border-collapse: collapse;">
-                                <thead style="background: var(--color-bg-alt);">
+                        <div class="overflow-auto">
+                            <table class="table-collapse">
+                                <thead class="bg-alt">
                                     <tr>
-                                        <th style="padding: 0.75rem; text-align: left; font-size: 0.9rem;">{{ 'compliance.field.source_requirement'|trans }}</th>
-                                        <th style="padding: 0.75rem; text-align: left; font-size: 0.9rem;">{{ 'compliance.field.target_requirements'|trans }}</th>
-                                        <th style="padding: 0.75rem; text-align: center; font-size: 0.9rem;">{{ 'compliance.field.mapping_strength'|trans }}</th>
+                                        <th class="th-left-fs-09">{{ 'compliance.field.source_requirement'|trans }}</th>
+                                        <th class="th-left-fs-09">{{ 'compliance.field.target_requirements'|trans }}</th>
+                                        <th class="td-center-fs-09">{{ 'compliance.field.mapping_strength'|trans }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {% for mapping in mapping_group.mappings|slice(0, 5) %}
                                         <tr style="border-bottom: 1px solid var(--color-border);">
-                                            <td style="padding: 0.75rem;">
-                                                <strong style="color: var(--color-primary);">{{ mapping.sourceRequirement.requirementId }}</strong>
-                                                <div style="font-size: 0.85rem; color: var(--color-text-secondary); margin-top: 0.25rem;">
+                                            <td class="p-md">
+                                                <strong class="text-primary">{{ mapping.sourceRequirement.requirementId }}</strong>
+                                                <div class="small-text-secondary">
                                                     {{ mapping.sourceRequirement.title|length > 60 ? mapping.sourceRequirement.title|slice(0, 60) ~ '...' : mapping.sourceRequirement.title }}
                                                 </div>
                                             </td>
-                                            <td style="padding: 0.75rem;">
-                                                <strong style="color: var(--color-primary);">{{ mapping.targetRequirement.requirementId }}</strong>
-                                                <div style="font-size: 0.85rem; color: var(--color-text-secondary); margin-top: 0.25rem;">
+                                            <td class="p-md">
+                                                <strong class="text-primary">{{ mapping.targetRequirement.requirementId }}</strong>
+                                                <div class="small-text-secondary">
                                                     {{ mapping.targetRequirement.title|length > 60 ? mapping.targetRequirement.title|slice(0, 60) ~ '...' : mapping.targetRequirement.title }}
                                                 </div>
                                             </td>
-                                            <td style="padding: 0.75rem; text-align: center;">
+                                            <td class="td-center-p-075">
                                                 <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
                                                     <div style="flex: 1; max-width: 100px; height: 8px; background: var(--color-bg-alt); border-radius: 4px; overflow: hidden;">
                                                         <div style="height: 100%; width: {{ mapping.mappingPercentage }}%; background: {% if mapping.mappingPercentage >= 100 %}var(--color-success){% elseif mapping.mappingPercentage >= 50 %}var(--color-warning){% else %}var(--color-secondary){% endif %};"></div>
                                                     </div>
-                                                    <span style="font-weight: 600; min-width: 45px;">{{ mapping.mappingPercentage }}%</span>
+                                                    <span class="fw-600-min-w-45">{{ mapping.mappingPercentage }}%</span>
                                                 </div>
                                             </td>
                                         </tr>
@@ -328,20 +323,20 @@
     </div>
 
     {# Tab 4: Explanation #}
-    <div id="tab-info" class="tab-content" style="display: none;">
-        <h2 style="margin-top: 0; color: var(--color-primary);">💡 {{ 'compliance.section.mapping_explanation'|trans }}</h2>
+    <div id="tab-info" class="tab-content d-none">
+        <h2 class="section-title">💡 {{ 'compliance.section.mapping_explanation'|trans }}</h2>
 
         <div style="display: grid; gap: 1.5rem;">
-            <div class="card" style="padding: 1.5rem; border-left: 4px solid var(--color-info);">
+            <div class="card card-border-left-info-lg">
                 <h3 style="color: var(--color-info); margin-top: 0;">{{ 'compliance.explanation.what_are_mappings_title'|trans }}</h3>
-                <p style="line-height: 1.6; color: var(--color-text);">
+                <p class="lh-16">
                     {{ 'compliance.explanation.what_are_mappings'|trans }}
                 </p>
             </div>
 
-            <div class="card" style="padding: 1.5rem; border-left: 4px solid var(--color-success);">
+            <div class="card card-border-left-success-lg">
                 <h3 style="color: var(--color-success); margin-top: 0;">{{ 'compliance.explanation.mapping_types_title'|trans }}</h3>
-                <ul style="line-height: 1.8; color: var(--color-text); padding-left: 1.5rem;">
+                <ul class="lh-18-pl">
                     <li><strong>{{ 'compliance.explanation.mapping_types_exceeds'|trans }}</strong></li>
                     <li><strong>{{ 'compliance.explanation.mapping_types_full'|trans }}</strong></li>
                     <li><strong>{{ 'compliance.explanation.mapping_types_partial'|trans }}</strong></li>
@@ -349,9 +344,9 @@
                 </ul>
             </div>
 
-            <div class="card" style="padding: 1.5rem; border-left: 4px solid var(--color-warning);">
+            <div class="card card-border-left-warning-lg">
                 <h3 style="color: var(--color-warning); margin-top: 0;">{{ 'compliance.explanation.strategic_value_title'|trans }}</h3>
-                <p style="line-height: 1.6; color: var(--color-text);">
+                <p class="lh-16">
                     {{ 'compliance.explanation.strategic_value'|trans }}
                 </p>
             </div>

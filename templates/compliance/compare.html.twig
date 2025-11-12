@@ -24,7 +24,7 @@
 <div class="card mb-4">
     <h2>{{ 'compliance.section.select_frameworks'|trans }}</h2>
 
-    <form method="get" action="{{ path('app_compliance_compare') }}" style="margin-top: var(--spacing-md);">
+    <form method="get" action="{{ path('app_compliance_compare') }}" class="mt-md">
         <div class="form-group">
             <label for="framework1">{{ 'compliance.field.framework_1'|trans }}</label>
             <select name="framework1" id="framework1" class="form-select" required>
@@ -98,8 +98,8 @@
 {# Visual Comparison #}
 <div class="module-grid mb-4">
     <div class="card">
-        <h3>{{ selectedFramework1.name }}{% if selectedFramework1.version %} <span style="color: var(--color-text-muted); font-size: 0.9em;">(v{{ selectedFramework1.version }})</span>{% endif %}</h3>
-        <p style="color: var(--color-text-muted); margin-top: var(--spacing-sm);">
+        <h3>{{ selectedFramework1.name }}{% if selectedFramework1.version %} <span class="text-muted-fs-09">(v{{ selectedFramework1.version }})</span>{% endif %}</h3>
+        <p class="text-muted-mt-sm">
             {{ selectedFramework1.description }}
         </p>
 
@@ -120,8 +120,8 @@
     </div>
 
     <div class="card">
-        <h3>{{ selectedFramework2.name }}{% if selectedFramework2.version %} <span style="color: var(--color-text-muted); font-size: 0.9em;">(v{{ selectedFramework2.version }})</span>{% endif %}</h3>
-        <p style="color: var(--color-text-muted); margin-top: var(--spacing-sm);">
+        <h3>{{ selectedFramework2.name }}{% if selectedFramework2.version %} <span class="text-muted-fs-09">(v{{ selectedFramework2.version }})</span>{% endif %}</h3>
+        <p class="text-muted-mt-sm">
             {{ selectedFramework2.description }}
         </p>
 
@@ -151,10 +151,10 @@
             <tr>
                 <th>{{ selectedFramework1.name }} {{ 'compliance.field.requirement'|trans }}</th>
                 <th>{{ 'compliance.field.category'|trans }}</th>
-                <th style="text-align: center;">{{ 'compliance.field.mapping'|trans }}</th>
+                <th class="text-center">{{ 'compliance.field.mapping'|trans }}</th>
                 <th>{{ selectedFramework2.name }} {{ 'compliance.field.requirement'|trans }}</th>
                 <th>{{ 'compliance.field.category'|trans }}</th>
-                <th style="text-align: center;">{{ 'compliance.field.match_quality'|trans }}</th>
+                <th class="text-center">{{ 'compliance.field.match_quality'|trans }}</th>
             </tr>
         </thead>
         <tbody>
@@ -162,12 +162,12 @@
             <tr>
                 <td>
                     <strong>{{ comparison.framework1Requirement.requirementId }}</strong>
-                    <br><small style="color: var(--color-text-muted);">{{ comparison.framework1Requirement.title }}</small>
+                    <br><small class="text-muted">{{ comparison.framework1Requirement.title }}</small>
                 </td>
                 <td>
                     <span class="badge badge-info">{{ comparison.framework1Requirement.category }}</span>
                 </td>
-                <td style="text-align: center;">
+                <td class="text-center">
                     {% if comparison.mapped %}
                         <span class="badge badge-success">✓ {{ 'compliance.badge.mapped'|trans }}</span>
                     {% else %}
@@ -177,30 +177,30 @@
                 <td>
                     {% if comparison.framework2Requirement %}
                         <strong>{{ comparison.framework2Requirement.requirementId }}</strong>
-                        <br><small style="color: var(--color-text-muted);">{{ comparison.framework2Requirement.title }}</small>
+                        <br><small class="text-muted">{{ comparison.framework2Requirement.title }}</small>
                     {% else %}
-                        <span style="color: var(--color-text-muted);">-</span>
+                        <span class="text-muted">-</span>
                     {% endif %}
                 </td>
                 <td>
                     {% if comparison.framework2Requirement %}
                         <span class="badge badge-info">{{ comparison.framework2Requirement.category }}</span>
                     {% else %}
-                        <span style="color: var(--color-text-muted);">-</span>
+                        <span class="text-muted">-</span>
                     {% endif %}
                 </td>
-                <td style="text-align: center;">
+                <td class="text-center">
                     {% if comparison.matchQuality %}
                         {% set qualityColor = comparison.matchQuality >= 80 ? 'success' : (comparison.matchQuality >= 60 ? 'warning' : 'danger') %}
                         <span class="badge badge-{{ qualityColor }}">{{ comparison.matchQuality }}%</span>
                     {% else %}
-                        <span style="color: var(--color-text-muted);">-</span>
+                        <span class="text-muted">-</span>
                     {% endif %}
                 </td>
             </tr>
             {% else %}
             <tr>
-                <td colspan="6" style="text-align: center; padding: var(--spacing-xl); color: var(--color-text-muted);">
+                <td colspan="6" class="text-center-p-xl">
                     {{ 'compliance.message.no_comparison_data'|trans }}
                 </td>
             </tr>
@@ -213,49 +213,49 @@
 <div class="module-grid mt-4">
     <div class="card">
         <h3>{{ 'compliance.section.unique_to'|trans }} {{ selectedFramework1.name }}</h3>
-        <p style="color: var(--color-text-muted); margin-top: var(--spacing-xs); margin-bottom: var(--spacing-md);">
+        <p class="text-muted-mt-xs-mb-md">
             {{ 'compliance.description.unique_requirements'|trans }}
         </p>
 
         {% if framework1Unique|length > 0 %}
-        <ul style="list-style: none; padding: 0;">
+        <ul class="list-unstyled">
             {% for req in framework1Unique|slice(0, 10) %}
-            <li style="padding: var(--spacing-xs) 0; border-bottom: 1px solid var(--color-border);">
+            <li class="py-xs-border-bottom">
                 <code>{{ req.requirementId }}</code> {{ req.title }}
             </li>
             {% endfor %}
             {% if framework1Unique|length > 10 %}
-            <li style="padding: var(--spacing-xs) 0; color: var(--color-text-muted);">
+            <li class="py-xs-text-muted">
                 {{ 'compliance.message.more_requirements'|trans({'%count%': framework1Unique|length - 10}) }}
             </li>
             {% endif %}
         </ul>
         {% else %}
-        <p style="color: var(--color-text-muted);">{{ 'compliance.message.no_unique'|trans }}</p>
+        <p class="text-muted">{{ 'compliance.message.no_unique'|trans }}</p>
         {% endif %}
     </div>
 
     <div class="card">
         <h3>{{ 'compliance.section.unique_to'|trans }} {{ selectedFramework2.name }}</h3>
-        <p style="color: var(--color-text-muted); margin-top: var(--spacing-xs); margin-bottom: var(--spacing-md);">
+        <p class="text-muted-mt-xs-mb-md">
             {{ 'compliance.description.unique_requirements'|trans }}
         </p>
 
         {% if framework2Unique|length > 0 %}
-        <ul style="list-style: none; padding: 0;">
+        <ul class="list-unstyled">
             {% for req in framework2Unique|slice(0, 10) %}
-            <li style="padding: var(--spacing-xs) 0; border-bottom: 1px solid var(--color-border);">
+            <li class="py-xs-border-bottom">
                 <code>{{ req.requirementId }}</code> {{ req.title }}
             </li>
             {% endfor %}
             {% if framework2Unique|length > 10 %}
-            <li style="padding: var(--spacing-xs) 0; color: var(--color-text-muted);">
+            <li class="py-xs-text-muted">
                 {{ 'compliance.message.more_requirements'|trans({'%count%': framework2Unique|length - 10}) }}
             </li>
             {% endif %}
         </ul>
         {% else %}
-        <p style="color: var(--color-text-muted);">{{ 'compliance.message.no_unique'|trans }}</p>
+        <p class="text-muted">{{ 'compliance.message.no_unique'|trans }}</p>
         {% endif %}
     </div>
 </div>
