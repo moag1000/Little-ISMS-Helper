@@ -190,6 +190,41 @@
             font-weight: bold;
             color: #059669;
         }
+
+        /* Color variants for stats values */
+        .stats-value-success {
+            color: #10b981;
+        }
+
+        .stats-value-warning {
+            color: #f59e0b;
+        }
+
+        .stats-value-danger {
+            color: #ef4444;
+        }
+
+        /* Text alignment */
+        .text-center {
+            text-align: center;
+        }
+
+        /* Column widths */
+        .w-8 {
+            width: 8%;
+        }
+
+        .w-12 {
+            width: 12%;
+        }
+
+        .w-25 {
+            width: 25%;
+        }
+
+        .w-35 {
+            width: 35%;
+        }
     </style>
 </head>
 <body>
@@ -209,15 +244,15 @@
             </div>
             <div class="stats-cell">
                 <div class="stats-label">Implemented</div>
-                <div class="stats-value" style="color: #10b981;">{{ stats.implemented }}</div>
+                <div class="stats-value stats-value-success">{{ stats.implemented }}</div>
             </div>
             <div class="stats-cell">
                 <div class="stats-label">In Progress</div>
-                <div class="stats-value" style="color: #f59e0b;">{{ stats.in_progress }}</div>
+                <div class="stats-value stats-value-warning">{{ stats.in_progress }}</div>
             </div>
             <div class="stats-cell">
                 <div class="stats-label">Not Started</div>
-                <div class="stats-value" style="color: #ef4444;">{{ stats.not_started }}</div>
+                <div class="stats-value stats-value-danger">{{ stats.not_started }}</div>
             </div>
         </div>
     </div>
@@ -229,7 +264,7 @@
             <tr>
                 <th>Category</th>
                 <th>Title</th>
-                <th style="text-align: center;">Count</th>
+                <th class="text-center">Count</th>
             </tr>
         </thead>
         <tbody>
@@ -243,7 +278,7 @@
                         {% elseif stat.category == 'Technological' %}Technological Controls
                         {% endif %}
                     </td>
-                    <td style="text-align: center;">{{ stat.total }}</td>
+                    <td class="text-center">{{ stat.total }}</td>
                 </tr>
             {% endfor %}
         </tbody>
@@ -267,12 +302,12 @@
         <table class="control-table">
             <thead>
                 <tr>
-                    <th style="width: 8%;">ID</th>
-                    <th style="width: 25%;">Title</th>
-                    <th style="width: 12%;">Applicable</th>
-                    <th style="width: 12%;">Status</th>
-                    <th style="width: 8%;">Progress</th>
-                    <th style="width: 35%;">Justification / Notes</th>
+                    <th class="w-8">ID</th>
+                    <th class="w-25">Title</th>
+                    <th class="w-12">Applicable</th>
+                    <th class="w-12">Status</th>
+                    <th class="w-8">Progress</th>
+                    <th class="w-35">Justification / Notes</th>
                 </tr>
             </thead>
             <tbody>
@@ -298,7 +333,7 @@
                                 <span class="badge badge-not-implemented">Not Started</span>
                             {% endif %}
                         </td>
-                        <td style="text-align: center;">
+                        <td class="text-center">
                             <span class="percentage">{{ control.implementationPercentage }}%</span>
                         </td>
                         <td>
