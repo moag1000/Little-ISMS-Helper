@@ -2011,6 +2011,11 @@
     color: #95a5a6;
 }
 
+/* Training Index Utilities */
+.icon-2rem {
+    font-size: 2rem;
+}
+
 /* SOA Edit Utilities */
 .mt-sm-text-light {
     margin-top: var(--spacing-sm);
