@@ -24,7 +24,7 @@
         <div class="icon">📋</div>
         <div class="label">{{ 'workflow.stats.total_definitions'|trans }}</div>
         <div>
-            <span class="value">{{ definitions|length }}</span>
+            <span class="value">{{ workflows|length }}</span>
         </div>
     </div>
 
@@ -32,7 +32,7 @@
         <div class="icon">✅</div>
         <div class="label">{{ 'workflow.stats.active_definitions'|trans }}</div>
         <div>
-            <span class="value">{{ definitions|filter(d => d.active)|length }}</span>
+            <span class="value">{{ workflows|filter(w => w.isActive)|length }}</span>
         </div>
     </div>
 
@@ -41,22 +41,18 @@
         <div class="label">{{ 'workflow.stats.avg_steps'|trans }}</div>
         <div>
             {% set totalSteps = 0 %}
-            {% for definition in definitions %}
-                {% set totalSteps = totalSteps + definition.steps|length %}
+            {% for workflow in workflows %}
+                {% set totalSteps = totalSteps + workflow.steps|length %}
             {% endfor %}
-            <span class="value">{{ definitions|length > 0 ? (totalSteps / definitions|length)|round : 0 }}</span>
+            <span class="value">{{ workflows|length > 0 ? (totalSteps / workflows|length)|round : 0 }}</span>
         </div>
     </div>
 
     <div class="kpi-card">
         <div class="icon">📊</div>
-        <div class="label">{{ 'workflow.stats.total_instances'|trans }}</div>
+        <div class="label">{{ 'workflow.stats.entity_types'|trans }}</div>
         <div>
-            {% set totalInstances = 0 %}
-            {% for definition in definitions %}
-                {% set totalInstances = totalInstances + definition.instances|length %}
-            {% endfor %}
-            <span class="value">{{ totalInstances }}</span>
+            <span class="value">{{ workflows|map(w => w.entityType)|unique|length }}</span>
         </div>
     </div>
 </div>
@@ -75,37 +71,35 @@
             </tr>
         </thead>
         <tbody>
-            {% for definition in definitions %}
+            {% for workflow in workflows %}
             <tr>
                 <td>
-                    <strong>{{ definition.name }}</strong>
-                    {% if definition.category %}
-                        <br><small style="color: var(--color-text-muted);">{{ definition.category }}</small>
-                    {% endif %}
+                    <strong>{{ workflow.name }}</strong>
+                    <br><small style="color: var(--color-text-muted);">{{ workflow.entityType }}</small>
                 </td>
                 <td>
                     <small style="color: var(--color-text-muted);">
-                        {{ definition.description|default('-') }}
+                        {{ workflow.description|default('-') }}
                     </small>
                 </td>
                 <td style="text-align: center;">
-                    <span class="badge badge-info">{{ definition.steps|length }}</span>
+                    <span class="badge badge-info">{{ workflow.steps|length }}</span>
                 </td>
                 <td style="text-align: center;">
-                    <span class="badge badge-secondary">{{ definition.instances|length }}</span>
+                    <span class="badge badge-secondary">—</span>
                 </td>
                 <td style="text-align: center;">
-                    {% if definition.active %}
+                    {% if workflow.isActive %}
                         <span class="badge badge-success">✓</span>
                     {% else %}
                         <span class="badge badge-secondary">✗</span>
                     {% endif %}
                 </td>
                 <td style="text-align: center;">
-                    <a href="{{ path('app_workflow_definition_show', {id: definition.id}) }}" class="btn btn-sm" style="margin-right: 0.25rem;">
+                    <a href="{{ path('app_workflow_definition_show', {id: workflow.id}) }}" class="btn btn-sm" style="margin-right: 0.25rem;">
                         👁 {{ 'common.view'|trans }}
                     </a>
-                    <a href="{{ path('app_workflow_definition_edit', {id: definition.id}) }}" class="btn btn-sm btn-secondary">
+                    <a href="{{ path('app_workflow_definition_edit', {id: workflow.id}) }}" class="btn btn-sm btn-secondary">
                         ✏️ {{ 'common.edit'|trans }}
                     </a>
                 </td>
