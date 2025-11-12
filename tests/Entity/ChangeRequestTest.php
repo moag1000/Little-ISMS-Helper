@@ -121,7 +121,7 @@ class ChangeRequestTest extends TestCase
     {
         $changeRequest = new ChangeRequest();
         $control = new Control();
-        $control->setTitle('Access Control');
+        $control->setName('Access Control');
 
         $changeRequest->addAffectedControl($control);
         $this->assertCount(1, $changeRequest->getAffectedControls());
@@ -160,7 +160,7 @@ class ChangeRequestTest extends TestCase
     {
         $changeRequest = new ChangeRequest();
         $document = new Document();
-        $document->setTitle('Implementation Plan');
+        $document->setOriginalFilename('Implementation Plan.pdf');
 
         $changeRequest->addDocument($document);
         $this->assertCount(1, $changeRequest->getDocuments());
@@ -244,7 +244,7 @@ class ChangeRequestTest extends TestCase
         // Add 3 affected controls (3 * 5 = 15, capped at 25)
         for ($i = 0; $i < 3; $i++) {
             $control = new Control();
-            $control->setTitle("Control $i");
+            $control->setName("Control $i");
             $changeRequest->addAffectedControl($control);
         }
         $this->assertEquals(34, $changeRequest->getComplexityScore()); // 15 + 15 + 4
@@ -265,7 +265,7 @@ class ChangeRequestTest extends TestCase
         // Add maximum controls (25 points)
         for ($i = 0; $i < 10; $i++) {
             $control = new Control();
-            $control->setTitle("Control $i");
+            $control->setName("Control $i");
             $changeRequest->addAffectedControl($control);
         }
 

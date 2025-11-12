@@ -98,7 +98,7 @@ class ComplianceRequirementTest extends TestCase
     {
         $requirement = new ComplianceRequirement();
         $control = new Control();
-        $control->setTitle('Access Control Policy');
+        $control->setName('Access Control Policy');
 
         $this->assertCount(0, $requirement->getMappedControls());
 
@@ -115,7 +115,7 @@ class ComplianceRequirementTest extends TestCase
     {
         $requirement = new ComplianceRequirement();
         $control = new Control();
-        $control->setTitle('Access Control Policy');
+        $control->setName('Access Control Policy');
 
         $requirement->addMappedControl($control);
         $requirement->addMappedControl($control); // Add same control again
