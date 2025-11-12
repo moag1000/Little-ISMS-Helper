@@ -34,10 +34,10 @@
     {% endif %}
 </div>
 
-<div style="margin: 2rem 0; padding: 1rem; background: #f5f5f5; border-radius: 4px;">
+<div class="filter-container">
     <h3>Filter</h3>
     <form method="get" action="{{ path('app_audit_log_index') }}">
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1rem;">
+        <div class="d-grid grid-responsive-200 gap-1 mb-md">
             <div>
                 <label for="entityType">Entitätstyp:</label>
                 <select name="entityType" id="entityType" class="form-control">
@@ -91,7 +91,7 @@
     <h2>Protokolleinträge</h2>
 
     {# Tab Navigation #}
-    <ul class="nav nav-tabs" role="tablist" style="margin-top: 1rem;">
+    <ul class="nav nav-tabs mt-md" role="tablist">
         <li class="nav-item" role="presentation">
             <button class="nav-link active"
                     data-bs-toggle="tab"
@@ -113,12 +113,12 @@
     </ul>
 
     {# Tab Content #}
-    <div class="tab-content" style="margin-top: 1rem;">
+    <div class="tab-content mt-md">
         {# Table View #}
         <div class="tab-pane fade show active" id="table-view" role="tabpanel">
-            <table class="table" style="width: 100%; border-collapse: collapse;">
+            <table class="table table-full">
                 <thead>
-                    <tr style="background: #f0f0f0;">
+                    <tr class="bg-gray-f0">
                         <th class="table-cell text-left">Zeitstempel</th>
                         <th class="table-cell text-left">Aktion</th>
                         <th class="table-cell text-left">Entität</th>
@@ -175,13 +175,13 @@
     </div>
 
     {% if totalPages > 1 %}
-    <div style="margin-top: 2rem; text-align: center;">
+    <div class="mt-2 text-center">
         <div class="pagination">
             {% if currentPage > 1 %}
                 <a href="{{ path('app_audit_log_index', filters|merge({page: currentPage - 1})) }}">« Zurück</a>
             {% endif %}
 
-            <span style="margin: 0 1rem;">Seite {{ currentPage }} von {{ totalPages }}</span>
+            <span class="mx-1rem">Seite {{ currentPage }} von {{ totalPages }}</span>
 
             {% if currentPage < totalPages %}
                 <a href="{{ path('app_audit_log_index', filters|merge({page: currentPage + 1})) }}">Weiter »</a>
