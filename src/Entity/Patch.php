@@ -201,7 +201,12 @@ class Patch
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     private ?\DateTimeImmutable $updatedAt = null;
 
-    public function __construct()
+    
+    #[ORM\ManyToOne(targetEntity: Tenant::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Tenant $tenant = null;
+
+public function __construct()
     {
         $this->affectedAssets = new ArrayCollection();
         $this->createdAt = new \DateTimeImmutable();
@@ -578,5 +583,16 @@ class Patch
         $diff = $now->diff($this->deploymentDeadline);
 
         return $diff->invert ? -$diff->days : $diff->days;
+    }
+
+    public function getTenant(): ?Tenant
+    {
+        return $this->tenant;
+    }
+
+    public function setTenant(?Tenant $tenant): static
+    {
+        $this->tenant = $tenant;
+        return $this;
     }
 }
