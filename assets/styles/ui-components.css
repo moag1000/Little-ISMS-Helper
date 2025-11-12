@@ -1482,6 +1482,11 @@
     border-left: 4px solid var(--color-danger);
 }
 
+.alert-warning-border {
+    background: var(--color-warning-light);
+    border-left: 4px solid var(--color-warning);
+}
+
 /* SOA Index Utilities */
 .badge-neutral {
     background: #f0f0f0;
