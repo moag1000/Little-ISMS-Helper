@@ -17,7 +17,7 @@
     </div>
 
     {# Statistics Card #}
-    <div class="card" style="margin-bottom: var(--spacing-lg);">
+    <div class="card mb-lg">
         <div class="card-header">
             <h2>📊 {{ 'compliance.framework_statistics'|trans }}</h2>
         </div>
@@ -49,7 +49,7 @@
 
     {# Available Frameworks #}
     <div class="frameworks-container">
-        <h2 style="margin-bottom: var(--spacing-lg);">{{ 'compliance.available_frameworks'|trans }}</h2>
+        <h2 class="mb-lg">{{ 'compliance.available_frameworks'|trans }}</h2>
 
         <div class="framework-cards-grid">
             {% for framework in available_frameworks %}
@@ -100,10 +100,9 @@
                                 <button class="btn btn-success btn-block" disabled>
                                     <span class="icon">✅</span> {{ 'compliance.already_loaded'|trans }}
                                 </button>
-                                <button class="btn btn-danger btn-block delete-framework-btn"
+                                <button class="btn btn-danger btn-block delete-framework-btn mt-sm"
                                         data-framework-code="{{ framework.code }}"
-                                        data-framework-name="{{ framework.name }}"
-                                        style="margin-top: var(--spacing-sm);">
+                                        data-framework-name="{{ framework.name }}">
                                     <span class="icon">🗑️</span> {{ 'compliance.delete_framework'|trans }}
                                 </button>
                             {% else %}
