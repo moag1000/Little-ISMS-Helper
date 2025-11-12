@@ -13,7 +13,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-#[Route('/mfa-token')]
+#[Route('/admin/mfa')]
 #[IsGranted('ROLE_ADMIN')]  // MFA management requires admin privileges
 class MfaTokenController extends AbstractController
 {
@@ -23,7 +23,7 @@ class MfaTokenController extends AbstractController
         private TranslatorInterface $translator
     ) {}
 
-    #[Route('/', name: 'app_mfa_token_index')]
+    #[Route('', name: 'admin_mfa_index')]
     public function index(): Response
     {
         $mfaTokens = $this->mfaTokenRepository->findAll();
@@ -41,7 +41,7 @@ class MfaTokenController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'app_mfa_token_new')]
+    #[Route('/new', name: 'admin_mfa_new')]
     public function new(Request $request): Response
     {
         $mfaToken = new MfaToken();
@@ -53,7 +53,7 @@ class MfaTokenController extends AbstractController
             $this->entityManager->flush();
 
             $this->addFlash('success', $this->translator->trans('mfa_token.success.created'));
-            return $this->redirectToRoute('app_mfa_token_show', ['id' => $mfaToken->getId()]);
+            return $this->redirectToRoute('admin_mfa_show', ['id' => $mfaToken->getId()]);
         }
 
         return $this->render('mfa_token/new.html.twig', [
@@ -62,7 +62,7 @@ class MfaTokenController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_mfa_token_show', requirements: ['id' => '\d+'])]
+    #[Route('/{id}', name: 'admin_mfa_show', requirements: ['id' => '\d+'])]
     public function show(MfaToken $mfaToken): Response
     {
         return $this->render('mfa_token/show.html.twig', [
@@ -70,7 +70,7 @@ class MfaTokenController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_mfa_token_edit', requirements: ['id' => '\d+'])]
+    #[Route('/{id}/edit', name: 'admin_mfa_edit', requirements: ['id' => '\d+'])]
     public function edit(Request $request, MfaToken $mfaToken): Response
     {
         $form = $this->createForm(MfaTokenType::class, $mfaToken);
@@ -80,7 +80,7 @@ class MfaTokenController extends AbstractController
             $this->entityManager->flush();
 
             $this->addFlash('success', $this->translator->trans('mfa_token.success.updated'));
-            return $this->redirectToRoute('app_mfa_token_show', ['id' => $mfaToken->getId()]);
+            return $this->redirectToRoute('admin_mfa_show', ['id' => $mfaToken->getId()]);
         }
 
         return $this->render('mfa_token/edit.html.twig', [
@@ -89,7 +89,7 @@ class MfaTokenController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/delete', name: 'app_mfa_token_delete', methods: ['POST'])]
+    #[Route('/{id}/delete', name: 'admin_mfa_delete', methods: ['POST'])]
     public function delete(Request $request, MfaToken $mfaToken): Response
     {
         if ($this->isCsrfTokenValid('delete'.$mfaToken->getId(), $request->request->get('_token'))) {
@@ -99,6 +99,6 @@ class MfaTokenController extends AbstractController
             $this->addFlash('success', $this->translator->trans('mfa_token.success.deleted'));
         }
 
-        return $this->redirectToRoute('app_mfa_token_index');
+        return $this->redirectToRoute('admin_mfa_index');
     }
 }
