@@ -23,7 +23,7 @@
 } %}
 
 {# KPI Cards Grid #}
-<div class="kpi-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin: 2rem 0;">
+<div class="kpi-grid d-grid grid-responsive-250 gap-4 my-2rem">
     {% include '_components/_kpi_card.html.twig' with {
         icon: 'bi-exclamation-triangle',
         label: 'Identifizierte Risiken',
@@ -209,7 +209,7 @@
     <div class="card-header d-flex justify-content-between align-items-center">
         <h5 class="mb-0"><i class="bi bi-list"></i> Alle Risiken ({{ risks|length }})</h5>
         <div class="d-flex gap-2">
-            <select class="form-select form-select-sm" id="risk-filter" style="width: 150px;">
+            <select class="form-select form-select-sm w-150px" id="risk-filter">
                 <option value="">Alle Risiken</option>
                 <option value="critical">Kritisch</option>
                 <option value="high">Hoch</option>
@@ -217,9 +217,8 @@
                 <option value="low">Niedrig</option>
             </select>
             <input type="search"
-                   class="form-control form-control-sm"
+                   class="form-control form-control-sm w-200px"
                    placeholder="Suche..."
-                   style="width: 200px;"
                    id="risk-search">
         </div>
     </div>
@@ -227,7 +226,7 @@
         <table class="table table-hover mb-0">
             <thead>
                 <tr>
-                    <th style="width: 40px;">
+                    <th class="w-40px">
                         <input type="checkbox"
                                class="form-check-input"
                                data-action="bulk-actions#selectAll"

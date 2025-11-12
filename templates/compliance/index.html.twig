@@ -26,9 +26,9 @@
     </div>
 
     {# Data Reuse Value Highlight #}
-    <div class="alert alert-success" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white; border: none; margin-bottom: var(--spacing-lg);">
-        <h3 style="margin: 0 0 var(--spacing-sm) 0;">💎 {{ 'compliance.data_reuse.title'|trans }}</h3>
-        <p style="font-size: 1.1rem; margin: 0;">
+    <div class="alert alert-success alert-gradient-success">
+        <h3 class="h3-m0-mb-sm">💎 {{ 'compliance.data_reuse.title'|trans }}</h3>
+        <p class="text-lg-m0">
             {{ 'compliance.data_reuse.description'|trans({'%hours%': total_time_savings, '%days%': total_days_savings})|raw }}
         </p>
     </div>
@@ -72,7 +72,7 @@
                             <span class="quick-label">{{ 'compliance.label.fulfilled'|trans }}</span>
                         </div>
                         <div class="quick-stat">
-                            <span class="quick-value" style="color: var(--color-danger);">{{ item.applicable_requirements - item.fulfilled_requirements }}</span>
+                            <span class="quick-value text-danger-color">{{ item.applicable_requirements - item.fulfilled_requirements }}</span>
                             <span class="quick-label">{{ 'compliance.label.gaps'|trans }}</span>
                         </div>
                     </div>
@@ -84,7 +84,7 @@
                 </div>
             </div>
         {% else %}
-            <div class="col-span-all text-center" style="padding: var(--spacing-xl);">
+            <div class="col-span-all text-center p-xl">
                 <p class="text-muted">{{ 'compliance.no_frameworks_loaded'|trans }}</p>
                 <a href="{{ path('app_compliance_manage_frameworks') }}" class="btn btn-primary btn-lg">
                     <span class="icon">➕</span> {{ 'compliance.add_frameworks'|trans }}
@@ -122,7 +122,7 @@
                         <div class="stat-text">{{ 'compliance.stats.bidirectional_mappings'|trans }}</div>
                     </div>
                 </div>
-                <p class="text-center" style="margin-top: var(--spacing-md);">
+                <p class="text-center mt-md">
                     <a href="{{ path('app_compliance_cross_framework') }}" class="btn btn-primary">
                         {{ 'compliance.button.explore_mappings'|trans }} →
                     </a>

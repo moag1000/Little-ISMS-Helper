@@ -41,7 +41,7 @@
         {{ form_errors(form.description) }}
     </div>
 
-    <h3 style="margin-top: var(--spacing-lg);">{{ 'location.section.address'|trans }}</h3>
+    <h3 class="h3-mt-lg">{{ 'location.section.address'|trans }}</h3>
 
     <div class="form-group">
         {{ form_label(form.address) }}
@@ -67,7 +67,7 @@
         {{ form_errors(form.country) }}
     </div>
 
-    <h3 style="margin-top: var(--spacing-lg);">{{ 'location.section.hierarchy'|trans }}</h3>
+    <h3 class="h3-mt-lg">{{ 'location.section.hierarchy'|trans }}</h3>
 
     <div class="form-group">
         {{ form_label(form.parentLocation) }}
@@ -75,7 +75,7 @@
         {{ form_errors(form.parentLocation) }}
     </div>
 
-    <h3 style="margin-top: var(--spacing-lg);">{{ 'location.section.security'|trans }}</h3>
+    <h3 class="h3-mt-lg">{{ 'location.section.security'|trans }}</h3>
 
     <div class="form-group">
         {{ form_label(form.securityLevel) }}
@@ -84,7 +84,7 @@
     </div>
 
     <div class="form-group">
-        <label class="form-label" style="display: flex; align-items: center; gap: var(--spacing-sm); cursor: pointer;">
+        <label class="form-label label-checkbox">
             {{ form_widget(form.requiresBadgeAccess, {'attr': {'style': 'width: 20px; height: 20px;'}}) }}
             <span>{{ form_label(form.requiresBadgeAccess) }}</span>
         </label>
@@ -101,7 +101,7 @@
 
     {% if form.active is defined %}
     <div class="form-group">
-        <label class="form-label" style="display: flex; align-items: center; gap: var(--spacing-sm); cursor: pointer;">
+        <label class="form-label label-checkbox">
             {{ form_widget(form.active, {'attr': {'style': 'width: 20px; height: 20px;'}}) }}
             <span>{{ form_label(form.active) }}</span>
         </label>

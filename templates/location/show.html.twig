@@ -9,7 +9,7 @@
         <div class="mt-2">
             <span class="badge badge-info">{{ ('location.type.' ~ location.locationType)|trans }}</span>
             {% if location.code %}
-                <code style="margin-left: var(--spacing-sm);">{{ location.code }}</code>
+                <code class="ml-sm">{{ location.code }}</code>
             {% endif %}
         </div>
     </div>
@@ -30,11 +30,11 @@
     {% if location.description %}
     <div class="form-group mt-3">
         <label class="form-label">{{ 'location.field.description'|trans }}</label>
-        <p style="color: var(--color-text-light); white-space: pre-wrap;">{{ location.description }}</p>
+        <p class="text-light-pre-wrap">{{ location.description }}</p>
     </div>
     {% endif %}
 
-    <div class="stats-grid mt-3" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));">
+    <div class="stats-grid mt-3 grid-responsive-250">
         <div class="stat-item">
             <strong>{{ ('location.type.' ~ location.locationType)|trans }}</strong>
             <span>{{ 'location.field.type'|trans }}</span>
@@ -84,7 +84,7 @@
 {% if location.address or location.city or location.country %}
 <div class="card mb-4">
     <h2>{{ 'location.section.address'|trans }}</h2>
-    <div class="info-box mt-2" style="background: var(--color-bg-light);">
+    <div class="info-box mt-2 bg-light">
         {% if location.address %}
             <p>{{ location.address }}</p>
         {% endif %}
@@ -112,7 +112,7 @@
                     <th>{{ 'location.field.name'|trans }}</th>
                     <th>{{ 'location.field.type'|trans }}</th>
                     <th>{{ 'location.field.security_level'|trans }}</th>
-                    <th style="text-align: center;">{{ 'common.actions'|trans }}</th>
+                    <th class="text-center">{{ 'common.actions'|trans }}</th>
                 </tr>
             </thead>
             <tbody>
@@ -132,7 +132,7 @@
                             {{ ('location.security.' ~ child.securityLevel)|trans }}
                         </span>
                     </td>
-                    <td style="text-align: center;">
+                    <td class="text-center">
                         <a href="{{ path('app_location_show', {id: child.id}) }}" class="btn btn-sm">
                             👁 {{ 'common.view'|trans }}
                         </a>
@@ -148,7 +148,7 @@
 {# Additional Features #}
 <div class="card">
     <h2>{{ 'location.section.features'|trans }}</h2>
-    <div class="stats-grid mt-2" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));">
+    <div class="stats-grid mt-2 grid-responsive-250">
         <div class="stat-item">
             <strong>
                 {% if location.active %}
@@ -165,7 +165,7 @@
                 {% if location.accessControlSystem %}
                     <span class="badge badge-info">{{ location.accessControlSystem }}</span>
                 {% else %}
-                    <span style="color: var(--color-text-muted);">-</span>
+                    <span class="text-muted-color">-</span>
                 {% endif %}
             </strong>
             <span>{{ 'location.field.access_control'|trans }}</span>
@@ -181,7 +181,7 @@
     <a href="{{ path('app_location_index') }}" class="btn btn-secondary">
         📋 {{ 'common.back_to_list'|trans }}
     </a>
-    <form method="post" action="{{ path('app_location_delete', {id: location.id}) }}" onsubmit="return confirm('{{ 'location.confirm.delete'|trans }}');" style="display: inline;">
+    <form method="post" action="{{ path('app_location_delete', {id: location.id}) }}" onsubmit="return confirm('{{ 'location.confirm.delete'|trans }}');" class="d-inline">
         <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ location.id) }}">
         <button type="submit" class="btn btn-danger">🗑️ {{ 'common.delete'|trans }}</button>
     </form>

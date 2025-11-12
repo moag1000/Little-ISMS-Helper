@@ -22,7 +22,7 @@
 } %}
 
 {# KPI Cards Grid #}
-<div class="kpi-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin: 2rem 0;">
+<div class="kpi-grid d-grid grid-responsive-250 gap-4 my-2rem">
     {% include '_components/_kpi_card.html.twig' with {
         icon: 'bi-server',
         label: 'Total Assets',
@@ -71,7 +71,7 @@
             <div class="col-md-3 mb-3">
                 <div class="stat-item">
                     <strong>{{ stat.assetType }}</strong>
-                    <div class="progress mt-2" style="height: 8px;">
+                    <div class="progress mt-2 progress-h-8">
                         <div class="progress-bar"
                              style="width: {{ (stat.count / assets|length * 100)|round }}%"
                              title="{{ stat.count }} Assets">
@@ -100,9 +100,8 @@
         <h5 class="mb-0"><i class="bi bi-list"></i> Alle Assets ({{ assets|length }})</h5>
         <div>
             <input type="search"
-                   class="form-control form-control-sm"
+                   class="form-control form-control-sm w-200px"
                    placeholder="Suche..."
-                   style="width: 200px;"
                    id="asset-search">
         </div>
     </div>
@@ -110,7 +109,7 @@
         <table class="table table-hover mb-0">
             <thead>
                 <tr>
-                    <th style="width: 40px;">
+                    <th class="w-40px">
                         <input type="checkbox"
                                class="form-check-input"
                                data-action="bulk-actions#selectAll"
