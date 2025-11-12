@@ -132,10 +132,10 @@ class AdminDashboardController extends AbstractController
         try {
             $conn = $this->entityManager->getConnection();
             $dbName = $conn->getDatabase();
-            $driverName = $conn->getDriver()->getName();
+            $platformName = $conn->getDatabasePlatform()->getName();
 
             // SQLite
-            if (str_contains($driverName, 'sqlite')) {
+            if (str_contains($platformName, 'sqlite')) {
                 $dbPath = $conn->getParams()['path'] ?? null;
                 if ($dbPath && file_exists($dbPath)) {
                     return round(filesize($dbPath) / 1024 / 1024, 2);
@@ -143,7 +143,7 @@ class AdminDashboardController extends AbstractController
             }
 
             // MySQL/MariaDB
-            if (str_contains($driverName, 'mysql')) {
+            if (str_contains($platformName, 'mysql')) {
                 $result = $conn->executeQuery(
                     "SELECT ROUND(SUM(data_length + index_length) / 1024 / 1024, 2) as size_mb
                      FROM information_schema.TABLES
@@ -154,7 +154,7 @@ class AdminDashboardController extends AbstractController
             }
 
             // PostgreSQL
-            if (str_contains($driverName, 'pgsql')) {
+            if (str_contains($platformName, 'pgsql')) {
                 $result = $conn->executeQuery(
                     "SELECT pg_size_pretty(pg_database_size(:dbname)) as size",
                     ['dbname' => $dbName]
