@@ -1,7 +1,7 @@
 # Lizenzbericht - Little ISMS Helper
 
-**Generiert am:** 2025-11-10 20:24
-**Status:** ✅ Lizenzkonform (160/163 Pakete freigegeben)
+**Generiert am:** 2025-11-12 17:46
+**Status:** ✅ Lizenzkonform (159/162 Pakete freigegeben)
 
 > **Wichtiger Hinweis:** Diese Auswertung fokussiert sich auf die **kommerzielle Nutzbarkeit** von Softwarekomponenten.
 > Lizenzen können zusätzliche Pflichten (Attribution, Quelloffenlegung, NOTICE-Dateien) erfordern, die unbedingt eingehalten werden müssen.
@@ -11,18 +11,18 @@
 
 - **Gesamtstatus:** Lizenzkonform für kommerzielle Nutzung
 - **Handlungsbedarf:** 2 Pakete mit unbekannter Lizenz müssen manuell geprüft werden
-- **Risikobewertung:** Mittel (98.2% der Abhängigkeiten mit unkritischen Lizenzen)
+- **Risikobewertung:** Mittel (98.1% der Abhängigkeiten mit unkritischen Lizenzen)
 
 ## Zusammenfassung
 
 | Einstufung | Beschreibung | Composer (PHP) | ImportMap (JS) | Manuell | Gesamt |
 |------------|--------------|----------------|----------------|---------|--------|
-| <span class="status-allowed">✅ Erlaubt</span> | Kommerzielle Nutzung ohne Copyleft (MIT, BSD, Apache-2.0) | 153 | 5 | 2 | **160** |
+| <span class="status-allowed">✅ Erlaubt</span> | Kommerzielle Nutzung ohne Copyleft (MIT, BSD, Apache-2.0) | 152 | 5 | 2 | **159** |
 | <span class="status-restricted">⚠️ Eingeschränkt</span> | Kommerziell nutzbar mit Auflagen (MPL-2.0, EPL, CC-BY) | 0 | 0 | 0 | **0** |
 | <span class="status-copyleft">🔄 Copyleft</span> | Kommerziell nutzbar mit Quelloffenlegungspflicht (GPL/LGPL) | 1 | 0 | 0 | **1** |
 | <span class="status-not-allowed">❌ Nicht erlaubt</span> | Keine kommerzielle Nutzung (NC-Lizenzen) | 0 | 0 | 0 | **0** |
 | <span class="status-unknown">❓ Unbekannt</span> | Manuelle Prüfung erforderlich | 2 | 0 | 0 | **2** |
-| **Gesamt** | | **156** | **5** | **2** | **163** |
+| **Gesamt** | | **155** | **5** | **2** | **162** |
 
 ## Prüfbedürftige Pakete
 
@@ -62,7 +62,7 @@ Die folgenden Pakete werden nicht über Composer oder ImportMap verwaltet und wu
 ## Lizenztypen nach Häufigkeit
 
 ```
-MIT           :  134 (82.2%)
+MIT           :  133 (82.1%)
 BSD-3-CLAUSE  :   26 (16%)
 LGPL-2.1      :    1 (0.6%)
 LGPL-2.1-OR-LATER:    1 (0.6%)
@@ -101,22 +101,22 @@ Keine JavaScript-Pakete mit problematischen Lizenzen gefunden.
 </details>
 
 <details>
-<summary><strong>Vollständige Liste der PHP-Pakete</strong> (156 Pakete)</summary>
+<summary><strong>Vollständige Liste der PHP-Pakete</strong> (155 Pakete)</summary>
 
 - api-platform/core@v4.2.3 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/api-platform/core.git
 - composer/pcre@3.3.2 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/composer/pcre.git
 - composer/semver@3.4.4 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/composer/semver.git
 - doctrine/collections@2.4.0 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/doctrine/collections.git
-- doctrine/dbal@3.10.3 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/doctrine/dbal.git
+- doctrine/dbal@4.3.4 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/doctrine/dbal.git
 - doctrine/deprecations@1.1.5 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/doctrine/deprecations.git
-- doctrine/doctrine-bundle@2.18.0 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/doctrine/DoctrineBundle.git
-- doctrine/doctrine-migrations-bundle@3.5.0 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/doctrine/DoctrineMigrationsBundle.git
+- doctrine/doctrine-bundle@3.0.0 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/doctrine/DoctrineBundle.git
+- doctrine/doctrine-migrations-bundle@3.6.0 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/doctrine/DoctrineMigrationsBundle.git
 - doctrine/event-manager@2.0.1 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/doctrine/event-manager.git
 - doctrine/inflector@2.1.0 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/doctrine/inflector.git
 - doctrine/instantiator@2.0.0 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/doctrine/instantiator.git
 - doctrine/lexer@3.0.1 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/doctrine/lexer.git
 - doctrine/migrations@3.9.4 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/doctrine/migrations.git
-- doctrine/orm@3.5.3 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/doctrine/orm.git
+- doctrine/orm@3.5.7 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/doctrine/orm.git
 - doctrine/persistence@4.1.1 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/doctrine/persistence.git
 - doctrine/sql-formatter@1.5.3 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/doctrine/sql-formatter.git
 - dompdf/dompdf@v3.1.4 — Lizenz(e): LGPL-2.1 — Einstufung: copyleft | https://github.com/dompdf/dompdf.git
@@ -154,74 +154,73 @@ Keine JavaScript-Pakete mit problematischen Lizenzen gefunden.
 - ralouphie/getallheaders@3.0.3 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/ralouphie/getallheaders.git
 - robrichards/xmlseclibs@3.1.3 — Lizenz(e): BSD-3-Clause — Einstufung: allowed | https://github.com/robrichards/xmlseclibs.git
 - sabberworm/php-css-parser@v8.9.0 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/MyIntervals/PHP-CSS-Parser.git
-- symfony/asset@v7.3.0 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/asset.git
-- symfony/asset-mapper@v7.3.5 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/asset-mapper.git
-- symfony/cache@v7.3.5 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/cache.git
+- symfony/asset@v7.4.0-BETA1 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/asset.git
+- symfony/asset-mapper@v7.4.0-BETA1 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/asset-mapper.git
+- symfony/cache@v7.4.0-BETA1 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/cache.git
 - symfony/cache-contracts@v3.6.0 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/cache-contracts.git
-- symfony/clock@v7.3.0 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/clock.git
-- symfony/config@v7.3.4 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/config.git
-- symfony/console@v7.3.5 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/console.git
-- symfony/dependency-injection@v7.3.4 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/dependency-injection.git
+- symfony/clock@v7.4.0-BETA1 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/clock.git
+- symfony/config@v7.4.0-BETA2 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/config.git
+- symfony/console@v7.4.0-BETA2 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/console.git
+- symfony/dependency-injection@v7.4.0-BETA2 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/dependency-injection.git
 - symfony/deprecation-contracts@v3.6.0 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/deprecation-contracts.git
-- symfony/doctrine-bridge@v7.3.5 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/doctrine-bridge.git
-- symfony/doctrine-messenger@v7.3.4 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/doctrine-messenger.git
-- symfony/dotenv@v7.3.2 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/dotenv.git
-- symfony/error-handler@v7.3.4 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/error-handler.git
-- symfony/event-dispatcher@v7.3.3 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/event-dispatcher.git
+- symfony/doctrine-bridge@v7.4.0-BETA1 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/doctrine-bridge.git
+- symfony/doctrine-messenger@v7.4.0-BETA2 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/doctrine-messenger.git
+- symfony/dotenv@v7.4.0-BETA1 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/dotenv.git
+- symfony/error-handler@v7.4.0-BETA1 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/error-handler.git
+- symfony/event-dispatcher@v7.4.0-BETA2 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/event-dispatcher.git
 - symfony/event-dispatcher-contracts@v3.6.0 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/event-dispatcher-contracts.git
-- symfony/expression-language@v7.3.2 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/expression-language.git
-- symfony/filesystem@v7.3.2 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/filesystem.git
-- symfony/finder@v7.3.5 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/finder.git
+- symfony/expression-language@v7.4.0-BETA1 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/expression-language.git
+- symfony/filesystem@v7.4.0-BETA1 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/filesystem.git
+- symfony/finder@v7.4.0-BETA1 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/finder.git
 - symfony/flex@v2.9.0 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/flex.git
-- symfony/form@v7.3.5 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/form.git
-- symfony/framework-bundle@v7.3.5 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/framework-bundle.git
-- symfony/http-client@v7.3.4 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/http-client.git
+- symfony/form@v7.4.0-BETA2 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/form.git
+- symfony/framework-bundle@v7.4.0-BETA2 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/framework-bundle.git
+- symfony/http-client@v7.4.0-BETA2 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/http-client.git
 - symfony/http-client-contracts@v3.6.0 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/http-client-contracts.git
-- symfony/http-foundation@v7.3.5 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/http-foundation.git
-- symfony/http-kernel@v7.3.5 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/http-kernel.git
-- symfony/intl@v7.3.5 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/intl.git
-- symfony/mailer@v7.3.5 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/mailer.git
-- symfony/messenger@v7.3.3 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/messenger.git
-- symfony/mime@v7.3.4 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/mime.git
-- symfony/monolog-bridge@v7.3.5 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/monolog-bridge.git
+- symfony/http-foundation@v7.4.0-BETA2 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/http-foundation.git
+- symfony/http-kernel@v7.4.0-BETA2 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/http-kernel.git
+- symfony/intl@v7.4.0-BETA2 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/intl.git
+- symfony/mailer@v7.4.0-BETA1 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/mailer.git
+- symfony/messenger@v7.4.0-BETA2 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/messenger.git
+- symfony/mime@v7.4.0-BETA1 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/mime.git
+- symfony/monolog-bridge@v7.4.0-BETA2 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/monolog-bridge.git
 - symfony/monolog-bundle@v3.10.0 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/monolog-bundle.git
-- symfony/notifier@v7.3.3 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/notifier.git
-- symfony/options-resolver@v7.3.3 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/options-resolver.git
-- symfony/password-hasher@v7.3.0 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/password-hasher.git
+- symfony/notifier@v7.4.0-BETA1 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/notifier.git
+- symfony/options-resolver@v7.4.0-BETA1 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/options-resolver.git
+- symfony/password-hasher@v7.4.0-BETA1 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/password-hasher.git
 - symfony/polyfill-intl-grapheme@v1.33.0 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/polyfill-intl-grapheme.git
 - symfony/polyfill-intl-icu@v1.33.0 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/polyfill-intl-icu.git
 - symfony/polyfill-intl-idn@v1.33.0 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/polyfill-intl-idn.git
 - symfony/polyfill-intl-normalizer@v1.33.0 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/polyfill-intl-normalizer.git
 - symfony/polyfill-mbstring@v1.33.0 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/polyfill-mbstring.git
-- symfony/polyfill-php83@v1.33.0 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/polyfill-php83.git
-- symfony/polyfill-php84@v1.33.0 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/polyfill-php84.git
-- symfony/process@v7.3.4 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/process.git
-- symfony/property-access@v7.3.3 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/property-access.git
-- symfony/property-info@v7.3.5 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/property-info.git
-- symfony/rate-limiter@v7.3.2 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/rate-limiter.git
-- symfony/routing@v7.3.4 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/routing.git
-- symfony/runtime@v7.3.4 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/runtime.git
-- symfony/security-bundle@v7.3.4 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/security-bundle.git
-- symfony/security-core@v7.3.5 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/security-core.git
-- symfony/security-csrf@v7.3.0 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/security-csrf.git
-- symfony/security-http@v7.3.5 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/security-http.git
-- symfony/serializer@v7.3.5 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/serializer.git
-- symfony/service-contracts@v3.6.0 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/service-contracts.git
+- symfony/polyfill-php85@v1.33.0 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/polyfill-php85.git
+- symfony/process@v7.4.0-BETA1 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/process.git
+- symfony/property-access@v7.4.0-BETA1 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/property-access.git
+- symfony/property-info@v7.4.0-BETA1 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/property-info.git
+- symfony/rate-limiter@v7.4.0-BETA1 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/rate-limiter.git
+- symfony/routing@v7.4.0-BETA1 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/routing.git
+- symfony/runtime@v7.4.0-BETA2 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/runtime.git
+- symfony/security-bundle@v7.4.0-BETA1 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/security-bundle.git
+- symfony/security-core@v7.4.0-BETA1 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/security-core.git
+- symfony/security-csrf@v7.4.0-BETA1 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/security-csrf.git
+- symfony/security-http@v7.4.0-BETA1 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/security-http.git
+- symfony/serializer@v7.4.0-BETA2 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/serializer.git
+- symfony/service-contracts@v3.6.1 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/service-contracts.git
 - symfony/stimulus-bundle@v2.31.0 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/stimulus-bundle.git
-- symfony/stopwatch@v7.3.0 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/stopwatch.git
-- symfony/string@v7.3.4 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/string.git
-- symfony/translation@v7.3.4 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/translation.git
-- symfony/translation-contracts@v3.6.0 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/translation-contracts.git
-- symfony/twig-bridge@v7.3.3 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/twig-bridge.git
-- symfony/twig-bundle@v7.3.4 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/twig-bundle.git
-- symfony/type-info@v7.3.5 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/type-info.git
+- symfony/stopwatch@v7.4.0-BETA1 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/stopwatch.git
+- symfony/string@v7.4.0-BETA1 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/string.git
+- symfony/translation@v7.4.0-BETA1 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/translation.git
+- symfony/translation-contracts@v3.6.1 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/translation-contracts.git
+- symfony/twig-bridge@v7.4.0-BETA1 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/twig-bridge.git
+- symfony/twig-bundle@v7.4.0-BETA1 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/twig-bundle.git
+- symfony/type-info@v7.4.0-BETA2 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/type-info.git
 - symfony/ux-chartjs@v2.31.0 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/ux-chartjs.git
 - symfony/ux-turbo@v2.31.0 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/ux-turbo.git
-- symfony/validator@v7.3.5 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/validator.git
-- symfony/var-dumper@v7.3.5 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/var-dumper.git
-- symfony/var-exporter@v7.3.4 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/var-exporter.git
-- symfony/web-link@v7.3.0 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/web-link.git
-- symfony/yaml@v7.3.5 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/yaml.git
+- symfony/validator@v7.4.0-BETA2 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/validator.git
+- symfony/var-dumper@v7.4.0-BETA2 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/var-dumper.git
+- symfony/var-exporter@v7.4.0-BETA1 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/var-exporter.git
+- symfony/web-link@v7.4.0-BETA1 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/web-link.git
+- symfony/yaml@v7.4.0-BETA1 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/yaml.git
 - thenetworg/oauth2-azure@v2.2.2 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/TheNetworg/oauth2-azure.git
 - twig/extra-bundle@v3.22.0 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/twigphp/twig-extra-bundle.git
 - twig/twig@v3.22.0 — Lizenz(e): BSD-3-Clause — Einstufung: allowed | https://github.com/twigphp/Twig.git
@@ -252,12 +251,12 @@ Keine JavaScript-Pakete mit problematischen Lizenzen gefunden.
 - sebastian/type@6.0.3 — Lizenz(e): BSD-3-Clause — Einstufung: allowed | https://github.com/sebastianbergmann/type.git
 - sebastian/version@6.0.0 — Lizenz(e): BSD-3-Clause — Einstufung: allowed | https://github.com/sebastianbergmann/version.git
 - staabm/side-effects-detector@1.0.5 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/staabm/side-effects-detector.git
-- symfony/browser-kit@v7.3.2 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/browser-kit.git
-- symfony/css-selector@v7.3.0 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/css-selector.git
-- symfony/debug-bundle@v7.3.5 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/debug-bundle.git
-- symfony/dom-crawler@v7.3.3 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/dom-crawler.git
+- symfony/browser-kit@v7.4.0-BETA1 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/browser-kit.git
+- symfony/css-selector@v7.4.0-BETA2 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/css-selector.git
+- symfony/debug-bundle@v7.4.0-BETA1 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/debug-bundle.git
+- symfony/dom-crawler@v7.4.0-BETA2 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/dom-crawler.git
 - symfony/maker-bundle@v1.64.0 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/maker-bundle.git
-- symfony/web-profiler-bundle@v7.3.5 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/web-profiler-bundle.git
+- symfony/web-profiler-bundle@v7.4.0-BETA1 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/web-profiler-bundle.git
 - theseer/tokenizer@1.2.3 — Lizenz(e): BSD-3-Clause — Einstufung: allowed | https://github.com/theseer/tokenizer.git
 </details>
 
