@@ -1472,6 +1472,34 @@ user:
     custom_roles: Custom Roles
     active: Active
     email_verified: Email Verified
+  error:
+    no_users_selected: No users selected
+    no_file_uploaded: No file uploaded
+  success:
+    bulk_action_completed: '%count% users successfully processed (%action%)'
+    imported: '%count% users successfully imported'
+    activated: User successfully activated
+    deactivated: User successfully deactivated
+  action:
+    export: Export
+    import: Import
+    bulk_actions: Bulk Actions
+    activate: Activate
+    deactivate: Deactivate
+    assign_role: Assign Role
+    view_activity: View Activity
+    view_mfa: Manage MFA
+    impersonate: Impersonate User
+  import:
+    title: Import Users
+    description: Upload a CSV file to import multiple users
+    format: 'Expected format: email, first_name, last_name, password, is_active, roles'
+    download_template: Download Template
+  activity:
+    title: User Activity
+    total: Total Activities
+    by_date: By Date
+    by_action: By Action
 module:
   info:
     added_as_dependency: Module '{name}' was added as dependency
@@ -2188,36 +2216,6 @@ session:
     invalid_token: Invalid CSRF token
   info:
     termination_not_implemented: Session termination requires additional configuration (database session storage)
-
-user:
-  error:
-    no_users_selected: No users selected
-    no_file_uploaded: No file uploaded
-  success:
-    bulk_action_completed: '%count% users successfully processed (%action%)'
-    imported: '%count% users successfully imported'
-    activated: User successfully activated
-    deactivated: User successfully deactivated
-  action:
-    export: Export
-    import: Import
-    bulk_actions: Bulk Actions
-    activate: Activate
-    deactivate: Deactivate
-    assign_role: Assign Role
-    view_activity: View Activity
-    view_mfa: Manage MFA
-    impersonate: Impersonate User
-  import:
-    title: Import Users
-    description: Upload a CSV file to import multiple users
-    format: 'Expected format: email, first_name, last_name, password, is_active, roles'
-    download_template: Download Template
-  activity:
-    title: User Activity
-    total: Total Activities
-    by_date: By Date
-    by_action: By Action
 
 mfa:
   title: Two-Factor Authentication
