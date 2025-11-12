@@ -42,8 +42,22 @@ jobs:
       - name: Install Composer dependencies
         run: composer install --no-interaction --no-progress --prefer-dist
 
+      - name: Verify license-report script exists
+        run: |
+          echo "Current directory: $(pwd)"
+          echo "Directory contents:"
+          ls -la
+          if [ ! -f "license-report.sh" ]; then
+            echo "❌ Error: license-report.sh not found in repository root"
+            exit 1
+          fi
+          echo "✅ license-report.sh found"
+
       - name: Make license-report script executable
         run: chmod +x license-report.sh
+
+      - name: Create reports directory
+        run: mkdir -p docs/reports
 
       - name: Generate License Report
         id: license_report
