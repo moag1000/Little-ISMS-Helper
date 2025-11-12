@@ -41,6 +41,68 @@ remember_me: Angemeldet bleiben
 login_title: Anmeldung
 welcome_back: Willkommen zurück
 home: Startseite
+# Phase 6L-A: Admin Panel Translation Keys
+admin:
+  title: Administration
+  breadcrumb:
+    home: Admin Dashboard
+  section:
+    user_access: Benutzer & Zugriff
+    system_config: Systemkonfiguration
+    modules: Module & Features
+    monitoring: Überwachung & Logs
+    navigation: Navigation
+  nav:
+    users: Benutzer
+    roles: Rollen
+    settings: Einstellungen
+    compliance: Compliance-Frameworks
+    audit_log: Audit Log
+    back_to_app: Zurück zur Anwendung
+  dashboard:
+    title: Admin Dashboard
+    subtitle: Zentrale Verwaltung und Systemübersicht
+    alerts:
+      title: Systemhinweise
+      item: Element
+      items: Elemente
+      view: Ansehen
+    stats:
+      users: Benutzer
+      active: Aktiv
+      inactive: Inaktiv
+      manage: Verwalten
+      active_sessions: Aktive Sitzungen
+      last_24h: Letzte 24 Stunden
+      database: Datenbankgröße
+      total_records: Gesamt-Datensätze
+      across_modules: Über alle Module
+    modules:
+      title: Modul-Statistiken
+      module: Modul
+      records: Datensätze
+      action: Aktion
+      assets: Assets
+      risks: Risiken
+      controls: Maßnahmen
+      incidents: Vorfälle
+      audits: Audits
+      compliance: Compliance
+      trainings: Schulungen
+    quick_actions:
+      title: Schnellaktionen
+      add_user: Benutzer hinzufügen
+      add_role: Rolle hinzufügen
+      view_logs: Logs anzeigen
+      manage_compliance: Compliance verwalten
+    activity:
+      title: Letzte Aktivitäten
+      empty: Keine aktuellen Aktivitäten
+      view_all: Alle Aktivitäten anzeigen
+  alert:
+    inactive_users: Inaktive Benutzer
+    unverified_users: Nicht verifizierte Benutzer
+    large_database: Große Datenbank (GB)
 dashboard:
   success:
     settings_imported: Dashboard-Einstellungen erfolgreich importiert!
