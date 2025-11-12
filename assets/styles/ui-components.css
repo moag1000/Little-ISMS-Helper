@@ -1920,6 +1920,27 @@
     height: 40px;
 }
 
+/* Audit Log Utilities */
+.filter-container {
+    margin: 2rem 0;
+    padding: 1rem;
+    background: #f5f5f5;
+    border-radius: 4px;
+}
+
+.table-full {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.bg-gray-f0 {
+    background: #f0f0f0;
+}
+
+.mx-1rem {
+    margin: 0 1rem;
+}
+
 /* SOA Edit Utilities */
 .mt-sm-text-light {
     margin-top: var(--spacing-sm);
