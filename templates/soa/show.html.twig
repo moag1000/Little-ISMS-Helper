@@ -23,7 +23,7 @@
 {# Control Description #}
 <div class="card mb-4">
     <h2>Beschreibung</h2>
-    <p style="color: var(--color-text-light); margin-top: var(--spacing-sm); line-height: 1.6;">
+    <p class="text-light-mt-sm-lh">
         {{ control.description }}
     </p>
 </div>
@@ -31,13 +31,13 @@
 {# Applicability Status #}
 <div class="card mb-4">
     <h2>Anwendbarkeitsstatus</h2>
-    <div class="stats-grid mt-2" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+    <div class="stats-grid mt-2 grid-responsive-200">
         <div class="stat-item">
             <strong class="fs-15">
                 {% if control.applicable %}
                     <span class="badge badge-success fs-12">✓ Anwendbar</span>
                 {% else %}
-                    <span class="badge" style="background: #f0f0f0; color: #666; font-size: 1.2rem;">✗ Nicht anwendbar</span>
+                    <span class="badge badge-neutral-lg">✗ Nicht anwendbar</span>
                 {% endif %}
             </strong>
             <span>Status</span>
@@ -53,7 +53,7 @@
                 {% elseif control.implementationStatus == 'not_started' %}
                     <span class="badge badge-danger fs-12">⏸ Nicht begonnen</span>
                 {% else %}
-                    <span class="badge" style="background: #f0f0f0; color: #666; font-size: 1.2rem;">N/A</span>
+                    <span class="badge badge-neutral-lg">N/A</span>
                 {% endif %}
             </strong>
             <span>Implementierungsstatus</span>
@@ -67,7 +67,7 @@
     </div>
 
     {% if control.applicable %}
-    <div class="progress mt-3" style="height: 30px;">
+    <div class="progress mt-3 progress-lg">
         <div class="progress-bar" style="width: {{ control.implementationPercentage }}%; font-size: 1rem;">
             {{ control.implementationPercentage }}%
         </div>
@@ -79,7 +79,7 @@
 <div class="card mb-4">
     <h2>Begründung</h2>
     {% if control.justification %}
-        <div class="info-box mt-2" style="background: var(--color-bg-light);">
+        <div class="info-box mt-2 bg-light">
             <p class="ws-pre-wrap-lh">{{ control.justification }}</p>
         </div>
     {% else %}
@@ -97,7 +97,7 @@
     <div class="form-group mt-3">
         <h3 class="fs-1 mb-sm">Implementierungsnotizen</h3>
         {% if control.implementationNotes %}
-            <div class="info-box" style="background: var(--color-bg-light);">
+            <div class="info-box bg-light">
                 <p class="ws-pre-wrap-lh">{{ control.implementationNotes }}</p>
             </div>
         {% else %}
@@ -107,7 +107,7 @@
         {% endif %}
     </div>
 
-    <div class="stats-grid mt-3" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));">
+    <div class="stats-grid mt-3 grid-responsive-250">
         <div class="stat-item">
             <strong>
                 {% if control.responsiblePerson %}
@@ -159,7 +159,7 @@
 {% if control.risks is defined and control.risks|length > 0 %}
 <div class="card mb-4">
     <h2>⚠️ Mitigierte Risks ({{ control.risks|length }})</h2>
-    <p style="color: var(--color-text-light);">Dieses Control trägt zur Behandlung folgender Risks bei:</p>
+    <p class="text-light">Dieses Control trägt zur Behandlung folgender Risks bei:</p>
     <div class="data-reuse-list">
         {% for risk in control.risks %}
             <div class="data-reuse-item">
@@ -226,7 +226,7 @@
 {% if control.applicable and control.implementationPercentage == 100 %}
 <div class="card mb-4">
     <h2>📊 Control Effectiveness</h2>
-    <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+    <div class="stats-grid grid-responsive-200">
         <div class="stat-item">
             <strong style="font-size: 2rem; color: {{ control.effectivenessScore >= 80 ? 'var(--color-success)' : (control.effectivenessScore >= 50 ? 'var(--color-warning)' : 'var(--color-danger)') }}">
                 {{ control.effectivenessScore|number_format(1) }}%
@@ -234,7 +234,7 @@
             <span>Effectiveness Score</span>
         </div>
     </div>
-    <p style="color: var(--color-text-light); margin-top: var(--spacing-sm);">
+    <p class="text-light-mt-sm">
         Basierend auf Incident-Analyse nach Control-Implementierung.
     </p>
 </div>
@@ -243,7 +243,7 @@
 {# Metadata #}
 <div class="card">
     <h2>Metadaten</h2>
-    <div class="stats-grid mt-2" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));">
+    <div class="stats-grid mt-2 grid-responsive-250">
         <div class="stat-item">
             <strong>{{ control.createdAt|date('d.m.Y H:i') }}</strong>
             <span>Erstellt am</span>
