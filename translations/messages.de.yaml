@@ -1475,6 +1475,34 @@ user:
     custom_roles: Benutzerdefinierte Rollen
     active: Aktiv
     email_verified: E-Mail verifiziert
+  error:
+    no_users_selected: Keine Benutzer ausgewählt
+    no_file_uploaded: Keine Datei hochgeladen
+  success:
+    bulk_action_completed: '%count% Benutzer erfolgreich verarbeitet (%action%)'
+    imported: '%count% Benutzer erfolgreich importiert'
+    activated: Benutzer erfolgreich aktiviert
+    deactivated: Benutzer erfolgreich deaktiviert
+  action:
+    export: Exportieren
+    import: Importieren
+    bulk_actions: Massen-Aktionen
+    activate: Aktivieren
+    deactivate: Deaktivieren
+    assign_role: Rolle zuweisen
+    view_activity: Aktivität anzeigen
+    view_mfa: MFA verwalten
+    impersonate: Benutzer imitieren
+  import:
+    title: Benutzer importieren
+    description: Laden Sie eine CSV-Datei hoch, um mehrere Benutzer zu importieren
+    format: 'Erwartetes Format: email, first_name, last_name, password, is_active, roles'
+    download_template: Vorlage herunterladen
+  activity:
+    title: Benutzeraktivität
+    total: Gesamtaktivitäten
+    by_date: Nach Datum
+    by_action: Nach Aktion
 module:
   info:
     added_as_dependency: Modul '{name}' wurde als Abhängigkeit hinzugefügt
@@ -2193,36 +2221,6 @@ session:
     invalid_token: Ungültiges CSRF-Token
   info:
     termination_not_implemented: Sitzungsbeendigung erfordert zusätzliche Konfiguration (Datenbank-Session-Speicherung)
-
-user:
-  error:
-    no_users_selected: Keine Benutzer ausgewählt
-    no_file_uploaded: Keine Datei hochgeladen
-  success:
-    bulk_action_completed: '%count% Benutzer erfolgreich verarbeitet (%action%)'
-    imported: '%count% Benutzer erfolgreich importiert'
-    activated: Benutzer erfolgreich aktiviert
-    deactivated: Benutzer erfolgreich deaktiviert
-  action:
-    export: Exportieren
-    import: Importieren
-    bulk_actions: Massen-Aktionen
-    activate: Aktivieren
-    deactivate: Deaktivieren
-    assign_role: Rolle zuweisen
-    view_activity: Aktivität anzeigen
-    view_mfa: MFA verwalten
-    impersonate: Benutzer imitieren
-  import:
-    title: Benutzer importieren
-    description: Laden Sie eine CSV-Datei hoch, um mehrere Benutzer zu importieren
-    format: 'Erwartetes Format: email, first_name, last_name, password, is_active, roles'
-    download_template: Vorlage herunterladen
-  activity:
-    title: Benutzeraktivität
-    total: Gesamtaktivitäten
-    by_date: Nach Datum
-    by_action: Nach Aktion
 
 mfa:
   title: Zwei-Faktor-Authentifizierung
