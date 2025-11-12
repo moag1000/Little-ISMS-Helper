@@ -1909,6 +1909,10 @@
 }
 
 /* License Summary Utilities */
+.w-150px {
+    width: 150px;
+}
+
 .w-200px {
     width: 200px;
 }
