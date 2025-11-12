@@ -1947,6 +1947,37 @@
     padding: var(--spacing-sm) var(--spacing-md);
 }
 
+/* Framework Dashboard Utilities */
+.version-muted-small {
+    color: var(--color-text-muted);
+    font-size: 0.8em;
+}
+
+.stat-value-success {
+    color: var(--color-success);
+}
+
+.stat-value-danger {
+    color: var(--color-danger);
+}
+
+.d-none {
+    display: none;
+}
+
+.p-xl {
+    padding: var(--spacing-xl);
+}
+
+.icon-3rem-mb-md {
+    font-size: 3rem;
+    margin-bottom: var(--spacing-md);
+}
+
+.bg-danger {
+    background: var(--color-danger);
+}
+
 /* ====================
    Responsive
    ==================== */
