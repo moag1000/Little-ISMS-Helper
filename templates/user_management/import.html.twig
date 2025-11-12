@@ -1,0 +1,91 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'user.import.title'|trans }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="bi bi-upload"></i> {{ 'user.import.title'|trans }}</h1>
+        <a href="{{ path('user_management_index') }}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Zurück
+        </a>
+    </div>
+
+    {# Instructions #}
+    <div class="alert alert-info mb-4">
+        <h5><i class="bi bi-info-circle"></i> {{ 'user.import.description'|trans }}</h5>
+        <p class="mb-2">{{ 'user.import.format'|trans }}</p>
+        <code>email, first_name, last_name, password, is_active, roles</code>
+
+        <hr>
+
+        <h6>Beispiel CSV:</h6>
+        <pre class="mb-0">email,first_name,last_name,password,is_active,roles
+john.doe@example.com,John,Doe,SecurePass123,yes,"Admin,User"
+jane.smith@example.com,Jane,Smith,SecurePass456,yes,"User"</pre>
+    </div>
+
+    {# Import Form #}
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">
+                <i class="bi bi-file-earmark-arrow-up"></i> CSV-Datei hochladen
+            </h5>
+        </div>
+        <div class="card-body">
+            <form method="post" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label for="import_file" class="form-label">CSV-Datei auswählen</label>
+                    <input type="file"
+                           class="form-control"
+                           id="import_file"
+                           name="import_file"
+                           accept=".csv"
+                           required>
+                    <div class="form-text">
+                        Maximale Dateigröße: 10 MB. Nur CSV-Dateien werden akzeptiert.
+                    </div>
+                </div>
+
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <a href="{{ path('user_management_index') }}" class="btn btn-secondary">
+                        <i class="bi bi-x-circle"></i> Abbrechen
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-upload"></i> Importieren
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {# CSV Template Download #}
+    <div class="card mt-4">
+        <div class="card-header bg-secondary text-white">
+            <h5 class="mb-0">
+                <i class="bi bi-download"></i> Vorlage herunterladen
+            </h5>
+        </div>
+        <div class="card-body">
+            <p>Laden Sie eine CSV-Vorlage herunter, um Ihre Benutzerdaten vorzubereiten:</p>
+            <a href="data:text/csv;charset=utf-8,email%2Cfirst_name%2Clast_name%2Cpassword%2Cis_active%2Croles%0A"
+               download="user_import_template.csv"
+               class="btn btn-outline-primary">
+                <i class="bi bi-file-earmark-spreadsheet"></i> CSV-Vorlage herunterladen
+            </a>
+        </div>
+    </div>
+
+    {# Important Notes #}
+    <div class="alert alert-warning mt-4">
+        <h5><i class="bi bi-exclamation-triangle"></i> Wichtige Hinweise</h5>
+        <ul class="mb-0">
+            <li>Benutzer mit bereits existierenden E-Mail-Adressen werden übersprungen</li>
+            <li>Wenn kein Passwort angegeben wird, wird ein zufälliges Passwort generiert</li>
+            <li>Rollennamen müssen exakt übereinstimmen (Groß-/Kleinschreibung beachten)</li>
+            <li>Der Import kann nicht rückgängig gemacht werden</li>
+            <li>Alle importierten Benutzer erhalten automatisch die ROLE_USER</li>
+        </ul>
+    </div>
+</div>
+{% endblock %}
