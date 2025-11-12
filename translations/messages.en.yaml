@@ -104,6 +104,69 @@ admin:
     inactive_users: Inactive users
     unverified_users: Unverified users
     large_database: Large database (GB)
+  # Phase 6L-B: System Settings Translation Keys
+  settings:
+    title: System Settings
+    subtitle: Configuration and management of system settings
+    configure: Configure
+    saved: Settings saved successfully
+    help: Help
+    info: Information
+    info_title: Notice
+    info_text: Changes to system settings take effect immediately and are stored in the database.
+    application:
+      title: Application Settings
+      description: Language, timezone, display options
+      locale_settings: Language Settings
+      display_settings: Display Settings
+      locale: Default Language
+      default_locale: Default Language
+      default_locale_help: The default language for new users and the system
+      supported_locales: Supported Languages
+      supported_locales_help: Which languages can users select?
+      timezone: Timezone
+      timezone_help: Default timezone for date and time displays
+      items_per_page: Items per Page
+      items_per_page_help: Number of items in lists (10-100)
+      date_format: Date Format
+      date_format_help: Format for date displays
+      datetime_format: Date/Time Format
+      datetime_format_help: Format for date/time displays
+      help_text: These settings affect the application display for all users.
+    security:
+      title: Security Settings
+      description: Sessions, passwords, authentication
+      session_settings: Session Settings
+      password_settings: Password Settings
+      auth_settings: Authentication Settings
+      session_lifetime: Session Lifetime
+      session_lifetime_help: Maximum session duration in seconds (5-1440 min)
+      remember_me_lifetime: Remember Me Lifetime
+      remember_me_help: Duration for "Remember Me" in seconds
+      password_min_length: Minimum Password Length
+      password_min_length_help: Minimum number of characters for passwords (6-20)
+      max_login_attempts: Max. Login Attempts
+      max_login_attempts_help: Number of failed login attempts before lockout
+      lockout_duration: Lockout Duration
+      lockout_duration_help: Account lockout duration after too many failed attempts
+      require_2fa: Require Two-Factor Authentication
+      require_2fa_help: All users must enable 2FA
+      warning: Changes to security settings can affect all users. Please proceed with caution.
+    features:
+      title: Feature Flags
+      description: Enable/disable experimental features
+      intro: Enable or disable experimental features for the entire system.
+      dark_mode: Dark Mode
+      dark_mode_help: Allows users to switch to dark theme
+      global_search: Global Search
+      global_search_help: Search function across all modules
+      quick_view: Quick View
+      quick_view_help: Quick view modals for records
+      notifications: Notifications
+      notifications_help: System notifications and alerts
+      audit_log: Audit Logging
+      audit_log_help: Automatic logging of all changes
+      info_text: Feature flags allow gradual introduction or testing of new features.
 dashboard:
   success:
     settings_imported: Dashboard settings successfully imported!
