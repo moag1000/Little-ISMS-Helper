@@ -72,6 +72,11 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
+        # Setup wizard - access control is handled by SetupSecuritySubscriber
+        # Before setup: PUBLIC_ACCESS
+        # After setup: ROLE_ADMIN required (enforced by subscriber)
+        - { path: ^/setup, roles: PUBLIC_ACCESS }
+
         # Public routes (security routes are now WITHOUT locale prefix)
         - { path: ^/$, roles: PUBLIC_ACCESS }
         - { path: ^/login$, roles: PUBLIC_ACCESS }
