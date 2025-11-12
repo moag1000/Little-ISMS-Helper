@@ -187,4 +187,118 @@ class WorkflowController extends AbstractController
             return $this->redirectToRoute('app_workflow_index');
         }
     }
+
+    // ===========================================
+    // Workflow Definition CRUD
+    // ===========================================
+
+    #[Route('/definition/{id}', name: 'app_workflow_definition_show', requirements: ['id' => '\d+'])]
+    #[IsGranted('ROLE_ADMIN')]
+    public function showDefinition(Workflow $workflow): Response
+    {
+        $instances = $this->workflowInstanceRepository->findBy(
+            ['workflow' => $workflow],
+            ['createdAt' => 'DESC'],
+            10
+        );
+
+        return $this->render('workflow/definition_show.html.twig', [
+            'workflow' => $workflow,
+            'recent_instances' => $instances,
+        ]);
+    }
+
+    #[Route('/definition/new', name: 'app_workflow_definition_new', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_ADMIN')]
+    public function newDefinition(Request $request): Response
+    {
+        $workflow = new Workflow();
+        $form = $this->createForm(\App\Form\WorkflowType::class, $workflow);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->entityManager->persist($workflow);
+            $this->entityManager->flush();
+
+            $this->addFlash('success', $this->translator->trans('workflow.success.definition_created'));
+
+            return $this->redirectToRoute('app_workflow_definition_show', ['id' => $workflow->getId()]);
+        }
+
+        return $this->render('workflow/definition_form.html.twig', [
+            'workflow' => $workflow,
+            'form' => $form,
+            'is_edit' => false,
+        ]);
+    }
+
+    #[Route('/definition/{id}/edit', name: 'app_workflow_definition_edit', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
+    #[IsGranted('ROLE_ADMIN')]
+    public function editDefinition(Request $request, Workflow $workflow): Response
+    {
+        $form = $this->createForm(\App\Form\WorkflowType::class, $workflow);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $workflow->setUpdatedAt(new \DateTimeImmutable());
+            $this->entityManager->flush();
+
+            $this->addFlash('success', $this->translator->trans('workflow.success.definition_updated'));
+
+            return $this->redirectToRoute('app_workflow_definition_show', ['id' => $workflow->getId()]);
+        }
+
+        return $this->render('workflow/definition_form.html.twig', [
+            'workflow' => $workflow,
+            'form' => $form,
+            'is_edit' => true,
+        ]);
+    }
+
+    #[Route('/definition/{id}/delete', name: 'app_workflow_definition_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[IsGranted('ROLE_ADMIN')]
+    public function deleteDefinition(Request $request, Workflow $workflow): Response
+    {
+        if (!$this->isCsrfTokenValid('delete'.$workflow->getId(), $request->request->get('_token'))) {
+            $this->addFlash('error', $this->translator->trans('error.csrf_invalid'));
+            return $this->redirectToRoute('app_workflow_definitions');
+        }
+
+        // Check if there are active instances
+        $activeInstances = $this->workflowInstanceRepository->count([
+            'workflow' => $workflow,
+            'status' => ['pending', 'in_progress']
+        ]);
+
+        if ($activeInstances > 0) {
+            $this->addFlash('error', $this->translator->trans('workflow.error.has_active_instances', ['count' => $activeInstances]));
+            return $this->redirectToRoute('app_workflow_definition_show', ['id' => $workflow->getId()]);
+        }
+
+        $this->entityManager->remove($workflow);
+        $this->entityManager->flush();
+
+        $this->addFlash('success', $this->translator->trans('workflow.success.definition_deleted'));
+
+        return $this->redirectToRoute('app_workflow_definitions');
+    }
+
+    #[Route('/definition/{id}/toggle', name: 'app_workflow_definition_toggle', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[IsGranted('ROLE_ADMIN')]
+    public function toggleDefinition(Request $request, Workflow $workflow): Response
+    {
+        if (!$this->isCsrfTokenValid('toggle'.$workflow->getId(), $request->request->get('_token'))) {
+            $this->addFlash('error', $this->translator->trans('error.csrf_invalid'));
+            return $this->redirectToRoute('app_workflow_definitions');
+        }
+
+        $workflow->setIsActive(!$workflow->isActive());
+        $workflow->setUpdatedAt(new \DateTimeImmutable());
+        $this->entityManager->flush();
+
+        $status = $workflow->isActive() ? 'activated' : 'deactivated';
+        $this->addFlash('success', $this->translator->trans('workflow.success.definition_' . $status));
+
+        return $this->redirectToRoute('app_workflow_definition_show', ['id' => $workflow->getId()]);
+    }
 }
