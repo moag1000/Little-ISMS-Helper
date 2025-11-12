@@ -17,17 +17,20 @@
         {# Custom styles - Loaded via AssetMapper with automatic versioning #}
         <link rel="stylesheet" href="{{ asset('styles.css') }}">
         <style>
-            /* Turbo Progress Bar */
+            /* Turbo Progress Bar - Cyberpunk Style */
             .turbo-progress-bar {
                 position: fixed;
                 display: block;
                 top: 0;
                 left: 0;
                 height: 3px;
-                background: #0d6efd;
+                background: linear-gradient(90deg, #06b6d4, #ec4899, #8b5cf6);
                 z-index: var(--z-turbo-bar);
                 transition: width 300ms ease-out, opacity 150ms 150ms ease-in;
                 transform: translate3d(0, 0, 0);
+                box-shadow: 0 0 10px rgba(6, 182, 212, 0.6),
+                            0 0 20px rgba(236, 72, 153, 0.4),
+                            0 0 30px rgba(139, 92, 246, 0.3);
             }
 
             /* Loading state for body */

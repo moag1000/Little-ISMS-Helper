@@ -37,13 +37,18 @@
 
         .admin-sidebar {
             width: 240px;
-            background: #f8f9fa;
-            border-right: 1px solid #dee2e6;
+            background: linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%);
+            border-right: 2px solid transparent;
+            border-image: linear-gradient(180deg,
+                          rgba(6, 182, 212, 0.3),
+                          rgba(236, 72, 153, 0.2),
+                          rgba(139, 92, 246, 0.15)) 1;
             padding: 1rem 0;
             position: sticky;
             top: 0;
             height: calc(100vh - 200px);
             overflow-y: auto;
+            box-shadow: inset -2px 0 10px rgba(6, 182, 212, 0.05);
         }
 
         .admin-sidebar nav {
@@ -59,8 +64,10 @@
             font-size: 0.7rem;
             font-weight: 600;
             text-transform: uppercase;
-            color: #6c757d;
+            color: #06b6d4;
             letter-spacing: 0.5px;
+            text-shadow: 0 0 5px rgba(6, 182, 212, 0.3);
+            border-left: 2px solid rgba(6, 182, 212, 0.3);
         }
 
         .admin-sidebar ul {
@@ -84,14 +91,24 @@
         }
 
         .admin-sidebar ul li a:hover {
-            background: #e9ecef;
-            color: #0d6efd;
+            background: linear-gradient(90deg,
+                        rgba(6, 182, 212, 0.1),
+                        rgba(236, 72, 153, 0.05));
+            color: #06b6d4;
+            border-left: 3px solid #06b6d4;
+            padding-left: calc(1rem - 3px);
+            box-shadow: inset 0 0 10px rgba(6, 182, 212, 0.1);
         }
 
         .admin-sidebar ul li a.active {
-            background: #0d6efd;
+            background: linear-gradient(135deg, #06b6d4, #8b5cf6);
             color: white;
             font-weight: 500;
+            border-left: 3px solid #ec4899;
+            padding-left: calc(1rem - 3px);
+            box-shadow: 0 0 15px rgba(6, 182, 212, 0.3),
+                        inset 0 0 10px rgba(255, 255, 255, 0.1);
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
         }
 
         .admin-sidebar ul li a i {
@@ -157,8 +174,8 @@
 
         /* Dark mode support */
         [data-theme="dark"] .admin-sidebar {
-            background: var(--bg-elevated);
-            border-right-color: var(--border-color);
+            background: linear-gradient(180deg, var(--bg-elevated) 0%, var(--bg-secondary) 100%);
+            box-shadow: inset -2px 0 10px rgba(6, 182, 212, 0.1);
         }
 
         [data-theme="dark"] .admin-sidebar ul li a {
@@ -166,13 +183,18 @@
         }
 
         [data-theme="dark"] .admin-sidebar ul li a:hover {
-            background: var(--bg-tertiary);
+            background: linear-gradient(90deg,
+                        rgba(6, 182, 212, 0.2),
+                        rgba(236, 72, 153, 0.1));
             color: var(--color-primary);
+            box-shadow: inset 0 0 10px rgba(6, 182, 212, 0.2);
         }
 
         [data-theme="dark"] .admin-sidebar ul li a.active {
-            background: var(--color-primary);
+            background: linear-gradient(135deg, #06b6d4, #8b5cf6);
             color: white;
+            box-shadow: 0 0 15px rgba(6, 182, 212, 0.4),
+                        inset 0 0 10px rgba(255, 255, 255, 0.1);
         }
 
         [data-theme="dark"] .admin-sidebar .sidebar-section-title {
