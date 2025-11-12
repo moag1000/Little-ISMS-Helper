@@ -338,7 +338,7 @@ Stellen Sie sicher, dass:
 
 Bei Fragen oder Problemen:
 
-1. Prüfen Sie die [README.md](README.md)
+1. Prüfen Sie die [README.md](../README.md)
 2. Konsultieren Sie die Logs in `var/log/`
 3. Überprüfen Sie die Symfony-Profiler-Toolbar (Development)
 
@@ -380,4 +380,4 @@ Migrations werden in der Reihenfolge ausgeführt:
 
 ## Lizenz
 
-Siehe [README.md](README.md) für Lizenzinformationen.
+Siehe [README.md](../README.md) für Lizenzinformationen.

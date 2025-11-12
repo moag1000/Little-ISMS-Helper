@@ -210,7 +210,7 @@ Once composer dependencies are installed:
 
 ```bash
 # 1. Clean slate
-./reset-database.sh
+scripts/setup/reset-database.sh
 
 # 2. Verify schema
 php bin/console doctrine:schema:validate

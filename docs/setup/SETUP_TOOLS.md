@@ -11,16 +11,18 @@ This project provides complementary scripts for database setup, validation, and 
 
 | Script | Purpose | When to Use |
 |--------|---------|-------------|
-| `validate-setup.sh` | Pre-flight validation | Before creating database |
-| `create-database.sh` | Create fresh database | First-time setup |
-| `reset-database.sh` | Reset existing database | After migration errors |
+| `scripts/setup/validate-setup.sh` | Pre-flight validation | Before creating database |
+| `scripts/setup/create-database.sh` | Create fresh database | First-time setup |
+| `scripts/setup/reset-database.sh` | Reset existing database | After migration errors |
 
 ### License Compliance
 
 | Script | Purpose | When to Use |
 |--------|---------|-------------|
-| `license-report.sh` | Generate license report | Before releases, compliance audits |
+| `scripts/tools/license-report.sh` | Generate license report | Before releases, compliance audits |
 | `bin/license-report.js` | Core license analysis | Called by wrapper script |
+
+> **Note:** Backward-compatible wrappers available in root directory (e.g., `./validate-setup.sh`, `./reset-database.sh`, `./license-report.sh`)
 
 ---
 
@@ -32,6 +34,12 @@ This project provides complementary scripts for database setup, validation, and 
 Checks for potential issues before running database setup. Performs 18+ validation checks.
 
 ### Usage
+```bash
+chmod +x scripts/setup/validate-setup.sh
+scripts/setup/validate-setup.sh
+```
+
+Or use the backward-compatible wrapper:
 ```bash
 chmod +x validate-setup.sh
 ./validate-setup.sh
@@ -137,6 +145,12 @@ Creates a fresh database from scratch with complete setup. Safe to run on fresh 
 - ✅ Detailed summary report
 
 ### Usage
+```bash
+chmod +x scripts/setup/create-database.sh
+scripts/setup/create-database.sh
+```
+
+Or use the backward-compatible wrapper:
 ```bash
 chmod +x create-database.sh
 ./create-database.sh
@@ -282,6 +296,12 @@ Completely resets the database by dropping and recreating it. Use when migration
 
 ### Usage
 ```bash
+chmod +x scripts/setup/reset-database.sh
+scripts/setup/reset-database.sh
+```
+
+Or use the backward-compatible wrapper:
+```bash
 chmod +x reset-database.sh
 ./reset-database.sh
 ```
@@ -360,6 +380,12 @@ Generates a comprehensive license report for all project dependencies, analyzing
 - ✅ Provides actionable recommendations
 
 ### Usage
+```bash
+chmod +x scripts/tools/license-report.sh
+scripts/tools/license-report.sh
+```
+
+Or use the backward-compatible wrapper:
 ```bash
 chmod +x license-report.sh
 ./license-report.sh
@@ -460,14 +486,14 @@ chmod +x license-report.sh
 
 **Before Major Releases:**
 ```bash
-./license-report.sh
+scripts/tools/license-report.sh
 # Review docs/reports/license-report.md
 # Address any unknown/restricted licenses
 ```
 
 **During Compliance Audits:**
 ```bash
-./license-report.sh
+scripts/tools/license-report.sh
 # Share report with legal team
 # Document compliance measures
 ```
@@ -475,14 +501,14 @@ chmod +x license-report.sh
 **After Adding Dependencies:**
 ```bash
 composer require some/package
-./license-report.sh
+scripts/tools/license-report.sh
 # Verify new package license
 ```
 
 **Regular Compliance Checks:**
 ```bash
 # Monthly/quarterly review
-./license-report.sh
+scripts/tools/license-report.sh
 # Track license changes
 # Update NOTICE file if needed
 ```
@@ -506,8 +532,8 @@ jobs:
         uses: actions/setup-node@v3
       - name: Generate License Report
         run: |
-          chmod +x license-report.sh
-          ./license-report.sh
+          chmod +x scripts/tools/license-report.sh
+          scripts/tools/license-report.sh
       - name: Check for problematic licenses
         run: |
           if grep -q "nicht erlaubt\|Unbekannt" docs/reports/license-report.md; then
@@ -525,7 +551,7 @@ jobs:
 
 **1. Generate Report:**
 ```bash
-./license-report.sh
+scripts/tools/license-report.sh
 ```
 
 **2. Review Findings:**
@@ -623,28 +649,28 @@ Modify the `evaluateLicense()` function in `bin/license-report.js` to adjust how
 ### First-Time Setup
 ```bash
 # 1. Validate prerequisites
-./validate-setup.sh
+scripts/setup/validate-setup.sh
 
 # 2. Create database (if validation passed)
-./create-database.sh
+scripts/setup/create-database.sh
 
 # 3. Generate license compliance report
-./license-report.sh
+scripts/tools/license-report.sh
 ```
 
 ### After Migration Errors
 ```bash
 # Reset database and try again
-./reset-database.sh
+scripts/setup/reset-database.sh
 ```
 
 ### Before Production Release
 ```bash
 # 1. Run all validations
-./validate-setup.sh
+scripts/setup/validate-setup.sh
 
 # 2. Generate fresh license report
-./license-report.sh
+scripts/tools/license-report.sh
 
 # 3. Review compliance
 cat docs/reports/license-report.md
@@ -656,9 +682,9 @@ cat docs/reports/license-report.md
 ### CI/CD Pipeline
 ```bash
 # In your CI/CD script
-./validate-setup.sh || exit 1
-./create-database.sh --non-interactive  # (if implemented)
-./license-report.sh
+scripts/setup/validate-setup.sh || exit 1
+scripts/setup/create-database.sh --non-interactive  # (if implemented)
+scripts/tools/license-report.sh
 ```
 
 ---
@@ -726,20 +752,22 @@ echo "APP_SECRET=$(openssl rand -hex 32)" >> .env.local
 
 **Only validate, don't create:**
 ```bash
-./validate-setup.sh
+scripts/setup/validate-setup.sh
 ```
 
 **Create database without admin user:**
 ```bash
-./create-database.sh
+scripts/setup/create-database.sh
 # Answer "n" to admin user prompt
 ```
 
 **Reset database with specific admin credentials:**
 ```bash
-./reset-database.sh
+scripts/setup/reset-database.sh
 # Provide credentials when prompted
 ```
+
+> **Alternative:** You can use the backward-compatible root wrappers: `./validate-setup.sh`, `./create-database.sh`, `./reset-database.sh`
 
 ### Automation (Non-Interactive)
 
