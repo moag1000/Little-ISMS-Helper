@@ -54,6 +54,7 @@
         "symfony/yaml": "7.4.*",
         "thenetworg/oauth2-azure": "^2.2",
         "twig/extra-bundle": "^3.0",
+        "twig/string-extra": "^3.22",
         "twig/twig": "^3.0",
         "vich/uploader-bundle": "*"
     },
