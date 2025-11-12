@@ -25,7 +25,7 @@ Dieses Dokument enthält die vollständige Projekt-Roadmap mit allen Phasen, Mei
 
 **Zeitraum:** Nach Phase 1
 **Status:** ✅ 100% Abgeschlossen
-**Bericht:** [docs/PHASE2_COMPLETENESS_REPORT.md](docs/PHASE2_COMPLETENESS_REPORT.md)
+**Bericht:** [docs/phases/PHASE2_COMPLETENESS_REPORT.md](docs/phases/PHASE2_COMPLETENESS_REPORT.md)
 
 ### Implementierte Features
 - ✅ Business Continuity Management (BCM)
@@ -44,7 +44,7 @@ Dieses Dokument enthält die vollständige Projekt-Roadmap mit allen Phasen, Mei
 
 **Zeitraum:** Nach Phase 2
 **Status:** ✅ 100% Abgeschlossen
-**Bericht:** [docs/PHASE3_COMPLETENESS_REPORT.md](docs/PHASE3_COMPLETENESS_REPORT.md)
+**Bericht:** [docs/phases/PHASE3_COMPLETENESS_REPORT.md](docs/phases/PHASE3_COMPLETENESS_REPORT.md)
 
 ### Implementierte Features
 - ✅ Multi-Provider Authentication (Local, Azure OAuth/SAML)
@@ -59,7 +59,7 @@ Dieses Dokument enthält die vollständige Projekt-Roadmap mit allen Phasen, Mei
 
 **Zeitraum:** Nach Phase 3
 **Status:** ✅ 100% Abgeschlossen
-**Bericht:** [docs/PHASE4_COMPLETENESS_REPORT.md](docs/PHASE4_COMPLETENESS_REPORT.md)
+**Bericht:** [docs/phases/PHASE4_COMPLETENESS_REPORT.md](docs/phases/PHASE4_COMPLETENESS_REPORT.md)
 
 ### Implementierte Features
 - ✅ Vollständige CRUD für alle Module
@@ -74,7 +74,7 @@ Dieses Dokument enthält die vollständige Projekt-Roadmap mit allen Phasen, Mei
 
 **Zeitraum:** Nach Phase 4
 **Status:** ✅ 100% Abgeschlossen
-**Bericht:** [docs/PHASE5_COMPLETENESS_REPORT.md](docs/PHASE5_COMPLETENESS_REPORT.md)
+**Bericht:** [docs/phases/PHASE5_COMPLETENESS_REPORT.md](docs/phases/PHASE5_COMPLETENESS_REPORT.md)
 
 ### Implementierte Features
 - ✅ PDF/Excel Export System (5 Report-Typen)
@@ -89,7 +89,7 @@ Dieses Dokument enthält die vollständige Projekt-Roadmap mit allen Phasen, Mei
 
 **Zeitraum:** Aktuell
 **Status:** 🚧 ~75% Abgeschlossen (+5% durch Phase 6F)
-**Audit:** [docs/MODULE_COMPLETENESS_AUDIT.md](docs/MODULE_COMPLETENESS_AUDIT.md)
+**Audit:** [docs/phases/MODULE_COMPLETENESS_AUDIT.md](docs/phases/MODULE_COMPLETENESS_AUDIT.md)
 **Letzte Aktualisierung:** Nov 10, 2025 (Phase 6F abgeschlossen)
 
 ### Überblick
@@ -2175,8 +2175,8 @@ class SystemSettings {
 ## 📞 Weitere Informationen
 
 - **Projekt-README:** [README.md](README.md)
-- **Module Completeness Audit:** [docs/MODULE_COMPLETENESS_AUDIT.md](docs/MODULE_COMPLETENESS_AUDIT.md)
-- **Phase Reports:** [docs/](docs/) (PHASE2-5_COMPLETENESS_REPORT.md)
+- **Module Completeness Audit:** [docs/phases/MODULE_COMPLETENESS_AUDIT.md](docs/phases/MODULE_COMPLETENESS_AUDIT.md)
+- **Phase Reports:** [docs/phases/](docs/phases/) (PHASE2-5_COMPLETENESS_REPORT.md)
 - **Issue Tracker:** [GitHub Issues](https://github.com/moag1000/Little-ISMS-Helper/issues)
 
 ---

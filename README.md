@@ -208,16 +208,16 @@ Der Wizard führt Sie durch:
 - ✅ **Schritt 5**: Optional Beispiel-Daten laden
 - ✅ **Schritt 6**: Setup abschließen
 
-📖 Detaillierte Anleitung: [DEPLOYMENT_WIZARD.md](DEPLOYMENT_WIZARD.md)
+📖 Detaillierte Anleitung: [DEPLOYMENT_WIZARD.md](docs/deployment/DEPLOYMENT_WIZARD.md)
 
 ### Automatisierte Setup-Tools ✨ NEU!
 
-Wir bieten drei professionelle Setup-Tools für eine fehlerfreie Installation:
+Wir bieten professionelle Setup-Tools für eine fehlerfreie Installation im `scripts/` Verzeichnis:
 
 **1. Umfassende Validierung (18+ Checks):**
 ```bash
-chmod +x validate-setup.sh
-./validate-setup.sh
+chmod +x scripts/setup/validate-setup.sh
+scripts/setup/validate-setup.sh
 ```
 
 Prüft automatisch:
@@ -229,8 +229,8 @@ Prüft automatisch:
 
 **2. Sichere Datenbank-Erstellung:**
 ```bash
-chmod +x create-database.sh
-./create-database.sh
+chmod +x scripts/setup/create-database.sh
+scripts/setup/create-database.sh
 ```
 
 Features:
@@ -242,11 +242,13 @@ Features:
 
 **3. Datenbank-Reset (bei Fehlern):**
 ```bash
-chmod +x reset-database.sh
-./reset-database.sh
+chmod +x scripts/setup/reset-database.sh
+scripts/setup/reset-database.sh
 ```
 
-📖 Siehe [SETUP_TOOLS.md](SETUP_TOOLS.md) für vollständige Dokumentation.
+📖 Siehe [SETUP_TOOLS.md](docs/setup/SETUP_TOOLS.md) für vollständige Dokumentation.
+
+> **Note:** Backward-compatible wrappers available in root directory (e.g., `./validate-setup.sh` → `scripts/setup/validate-setup.sh`)
 
 ### Troubleshooting
 
@@ -283,8 +285,8 @@ php bin/console app:setup-permissions
 **Problem: Migration-Fehler "Column not found" oder "already exists"**
 ```bash
 # Datenbank komplett zurücksetzen und neu aufsetzen:
-chmod +x reset-database.sh
-./reset-database.sh
+chmod +x scripts/setup/reset-database.sh
+./scripts/setup/reset-database.sh
 
 # Oder manuell:
 php bin/console doctrine:database:drop --force
@@ -292,6 +294,8 @@ php bin/console doctrine:database:create
 php bin/console doctrine:migrations:migrate --no-interaction
 php bin/console app:setup-permissions --admin-email=admin@example.com --admin-password=admin123
 ```
+
+> **Note:** Backward-compatible wrapper available at `./reset-database.sh`
 
 ### Produktions-Deployment
 
@@ -304,9 +308,9 @@ Für Produktions-Deployments beachten Sie bitte:
 5. **Cache**: Führen Sie `php bin/console cache:clear --env=prod` aus
 
 Detaillierte Anweisungen finden Sie in:
-- [DEPLOYMENT_WIZARD.md](DEPLOYMENT_WIZARD.md) - Deployment Wizard Setup
-- [DEPLOYMENT_PLESK.md](DEPLOYMENT_PLESK.md) - Strato/Plesk Deployment & "Primary script unknown" Fix
-- [docs/DOCKER_SETUP.md](docs/DOCKER_SETUP.md) - Docker Compose Setup
+- [DEPLOYMENT_WIZARD.md](docs/deployment/DEPLOYMENT_WIZARD.md) - Deployment Wizard Setup
+- [DEPLOYMENT_PLESK.md](docs/deployment/DEPLOYMENT_PLESK.md) - Strato/Plesk Deployment & "Primary script unknown" Fix
+- [DOCKER_SETUP.md](docs/setup/DOCKER_SETUP.md) - Docker Compose Setup
 
 ### Optional: Weitere Frameworks laden
 
@@ -341,49 +345,65 @@ crontab -e
 
 | Dokument | Beschreibung |
 |----------|--------------|
-| [API Setup Guide](docs/API_SETUP.md) | REST API Konfiguration, Swagger UI, Postman |
-| [Docker Setup](docs/DOCKER_SETUP.md) | Docker Compose, Entwicklung & Produktion |
-| [Authentication Setup](docs/AUTHENTICATION_SETUP.md) | RBAC, Azure OAuth/SAML, Multi-Provider |
-| [Audit Logging](docs/AUDIT_LOGGING.md) | Automatische Änderungsverfolgung |
-| [Deployment Wizard](DEPLOYMENT_WIZARD.md) | Schritt-für-Schritt Produktionssetup |
-| [Plesk Deployment](DEPLOYMENT_PLESK.md) | **NEU!** Strato/Plesk Setup & Fix für "Primary script unknown" |
-| [Setup Tools](SETUP_TOOLS.md) | **NEU!** 3 automatisierte Scripts für fehlerfreie Installation |
-| [Setup Validation](SETUP_VALIDATION.md) | Automatische Validierung der Installation (25 Tests) |
-| [Migration Fix Report](MIGRATION_FIX.md) | Dokumentation von 5 behobenen kritischen Migrations-Fehlern |
-| [Entity-Table Mapping](ENTITY_TABLE_MAPPING.md) | Vollständige Zuordnung aller 23 Entities zu Datenbank-Tabellen |
+| [API Setup Guide](docs/setup/API_SETUP.md) | REST API Konfiguration, Swagger UI, Postman |
+| [Docker Setup](docs/setup/DOCKER_SETUP.md) | Docker Compose, Entwicklung & Produktion |
+| [Authentication Setup](docs/setup/AUTHENTICATION_SETUP.md) | RBAC, Azure OAuth/SAML, Multi-Provider |
+| [Audit Logging](docs/setup/AUDIT_LOGGING.md) | Automatische Änderungsverfolgung |
+| [Audit Logging Quickstart](docs/setup/AUDIT_LOGGING_QUICKSTART.md) | 3-Schritte Setup für Audit-Logging |
+| [Deployment Wizard](docs/deployment/DEPLOYMENT_WIZARD.md) | Schritt-für-Schritt Produktionssetup |
+| [Plesk Deployment](docs/deployment/DEPLOYMENT_PLESK.md) | **NEU!** Strato/Plesk Setup & Fix für "Primary script unknown" |
+| [Setup Tools](docs/setup/SETUP_TOOLS.md) | **NEU!** 3 automatisierte Scripts für fehlerfreie Installation |
+| [Setup Validation](docs/setup/SETUP_VALIDATION.md) | Automatische Validierung der Installation (25 Tests) |
+| [Migration Fix Report](docs/migration/MIGRATION_FIX.md) | Dokumentation von 5 behobenen kritischen Migrations-Fehlern |
+| [Migration Order Check](docs/migration/MIGRATION_ORDER_CHECK.md) | Migration Order Verification |
+| [Entity-Table Mapping](docs/architecture/ENTITY_TABLE_MAPPING.md) | Vollständige Zuordnung aller 23 Entities zu Datenbank-Tabellen |
 
 ### Architecture & Design
 
 | Dokument | Beschreibung |
 |----------|--------------|
-| [Solution Description](SOLUTION_DESCRIPTION.md) | Architektur-Übersicht, Design-Entscheidungen |
-| [Data Reuse Analysis](docs/DATA_REUSE_ANALYSIS.md) | Intelligente Datenwiederverwendung |
-| [Verification Report](VERIFICATION_REPORT.md) | Code-Nachweis für alle Features |
+| [Solution Description](docs/architecture/SOLUTION_DESCRIPTION.md) | Architektur-Übersicht, Design-Entscheidungen |
+| [Data Reuse Analysis](docs/architecture/DATA_REUSE_ANALYSIS.md) | Intelligente Datenwiederverwendung |
+| [Cross-Framework Mappings](docs/architecture/CROSS_FRAMEWORK_MAPPINGS.md) | Multi-Framework Compliance Mappings |
+| [Verification Report](docs/reports/VERIFICATION_REPORT.md) | Code-Nachweis für alle Features |
 
 ### Phase Reports (Vollständigkeitsprüfungen)
 
 | Phase | Status | Dokument |
 |-------|--------|----------|
-| Phase 2 | ✅ 100% | [BCM, Multi-Framework, Data Reuse](docs/PHASE2_COMPLETENESS_REPORT.md) |
-| Phase 3 | ✅ 100% | [User Management, Security, RBAC](docs/PHASE3_COMPLETENESS_REPORT.md) |
-| Phase 4 | ✅ 100% | [CRUD, Workflows, Risk Matrix](docs/PHASE4_COMPLETENESS_REPORT.md) |
-| Phase 5 | ✅ 100% | [Reports, API, Notifications](docs/PHASE5_COMPLETENESS_REPORT.md) |
-| **Phase 6** | 🚧 ~70% | **[Module Completeness Audit](docs/MODULE_COMPLETENESS_AUDIT.md)** |
+| Phase 2 | ✅ 100% | [BCM, Multi-Framework, Data Reuse](docs/phases/PHASE2_COMPLETENESS_REPORT.md) |
+| Phase 3 | ✅ 100% | [User Management, Security, RBAC](docs/phases/PHASE3_COMPLETENESS_REPORT.md) |
+| Phase 4 | ✅ 100% | [CRUD, Workflows, Risk Matrix](docs/phases/PHASE4_COMPLETENESS_REPORT.md) |
+| Phase 5 | ✅ 100% | [Reports, API, Notifications](docs/phases/PHASE5_COMPLETENESS_REPORT.md) |
+| **Phase 6** | 🚧 ~70% | **[Module Completeness Audit](docs/phases/MODULE_COMPLETENESS_AUDIT.md)** |
 
 ### UI/UX
 
 | Dokument | Beschreibung |
 |----------|--------------|
-| [UI/UX Quick Start](docs/UI_UX_QUICK_START.md) | Keyboard Shortcuts, Command Palette (⌘K) |
-| [UI/UX Implementation](docs/UI_UX_IMPLEMENTATION.md) | Progressive Disclosure, Components |
-| [Paket B: Quick View](docs/PHASE5_PAKET_B.md) | Global Search, Quick Preview, Filters |
-| [Paket C: Dark Mode](docs/PHASE5_PAKET_C.md) | Theme Toggle, User Preferences, Notifications |
+| [UI/UX Quick Start](docs/ui-ux/UI_UX_QUICK_START.md) | Keyboard Shortcuts, Command Palette (⌘K) |
+| [UI/UX Implementation](docs/ui-ux/UI_UX_IMPLEMENTATION.md) | Progressive Disclosure, Components |
+| [UI/UX Phase 2](docs/ui-ux/UI_UX_PHASE2.md) | Phase 2 UI/UX Implementation |
+| [UI/UX Phase 3](docs/ui-ux/UI_UX_PHASE3.md) | Phase 3 UI/UX Improvements |
+| [UI/UX Phase 4](docs/ui-ux/UI_UX_PHASE4_COMPLETE.md) | Complete Phase 4 UI/UX Specification |
 
-### Quickstart Guides
+### Compliance & Security
 
 | Dokument | Beschreibung |
 |----------|--------------|
-| [Audit Logging Quickstart](docs/AUDIT_LOGGING_QUICKSTART.md) | 3-Schritte Setup für Audit-Logging |
+| [ISO 27001 Implementation](docs/compliance/ISO_COMPLIANCE_IMPLEMENTATION_SUMMARY.md) | ISO 27001 Implementation Details |
+| [ISO Compliance Improvements](docs/compliance/ISO_COMPLIANCE_IMPROVEMENTS.md) | Compliance Enhancements |
+| [Security Improvements](docs/security/SECURITY_IMPROVEMENTS.md) | Security Enhancements and OWASP Compliance |
+| [Security Architecture](docs/security/SECURITY.md) | Security Architecture and Best Practices |
+
+### Reports & Quality
+
+| Dokument | Beschreibung |
+|----------|--------------|
+| [Translation Consistency Report](docs/reports/TRANSLATION_CONSISTENCY_REPORT.md) | Multi-Language Support Verification |
+| [Translation Verification Report](docs/reports/TRANSLATION_VERIFICATION_REPORT.md) | Translation Verification Details |
+| [License Report](docs/reports/license-report.md) | Detailed License Report |
+| [OWASP Security Audit](docs/reports/security-audit-owasp-2025-rc1.md) | OWASP Security Audit Report |
 
 ---
 
@@ -621,10 +641,12 @@ Das Projekt nutzt automatisierte Tools zur Lizenzüberwachung:
 
 ```bash
 # Lizenzbericht generieren
-./license-report.sh
+scripts/tools/license-report.sh
 
 # Ausgabe: docs/reports/license-report.md
 ```
+
+> **Note:** Backward-compatible wrapper available at `./license-report.sh`
 
 **CI/CD Integration:**
 - ✅ Automatische Lizenzprüfung bei jedem Pull Request
@@ -635,8 +657,8 @@ Das Projekt nutzt automatisierte Tools zur Lizenzüberwachung:
 ### Compliance-Dokumentation
 
 - **[NOTICE.md](NOTICE.md)** - Vollständige Attributionen & Lizenzhinweise
-- **[docs/reports/license-report.md](docs/reports/license-report.md)** - Automatisch generierter Detailbericht
-- **[SETUP_TOOLS.md](SETUP_TOOLS.md#4-license-reportsh)** - Anleitung zur Berichtsgenerierung
+- **[License Report](docs/reports/license-report.md)** - Automatisch generierter Detailbericht
+- **[Setup Tools](docs/setup/SETUP_TOOLS.md#4-license-reportsh)** - Anleitung zur Berichtsgenerierung
 
 ### Wichtige Hinweise
 

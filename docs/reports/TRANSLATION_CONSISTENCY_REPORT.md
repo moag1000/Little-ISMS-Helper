@@ -304,8 +304,8 @@ Once duplicate sections are merged, verify that both files have exactly the same
 
 After implementing fixes:
 
-1. Run `python3 check_translations.py` again - should show 0 missing keys
-2. Run `python3 check_yaml_duplicates.py` again - should show 0 duplicate parent keys
+1. Run `python3 scripts/quality/check_translations.py` again - should show 0 missing keys
+2. Run `python3 scripts/quality/check_yaml_duplicates.py` again - should show 0 duplicate parent keys
 3. Load both YAML files in your application and verify all translations work
 
 ---
