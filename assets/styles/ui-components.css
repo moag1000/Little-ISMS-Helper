@@ -1993,6 +1993,15 @@
     margin-top: var(--spacing-lg);
 }
 
+/* Incident Index Utilities */
+.progress-h-6 {
+    height: 6px;
+}
+
+.w-40px {
+    width: 40px;
+}
+
 /* SOA Edit Utilities */
 .mt-sm-text-light {
     margin-top: var(--spacing-sm);
