@@ -1,0 +1,148 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'role.templates.title'|trans }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="bi bi-file-earmark-text"></i> {{ 'role.templates.title'|trans }}</h1>
+        <a href="{{ path('role_management_index') }}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Zurück
+        </a>
+    </div>
+
+    {# Description #}
+    <div class="alert alert-info mb-4">
+        <i class="bi bi-info-circle"></i>
+        <strong>{{ 'role.templates.description'|trans }}</strong>
+        <p class="mb-0 mt-2">
+            Wählen Sie eine vordefinierte Rollenvorlage aus und passen Sie optional den Namen an.
+            Die Vorlage enthält bereits eine sinnvolle Kombination von Berechtigungen für den jeweiligen Anwendungsfall.
+        </p>
+    </div>
+
+    {# Template Cards #}
+    <div class="row">
+        {% for key, template in templates %}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100 border-primary">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">
+                            {% if key == 'auditor' %}
+                                <i class="bi bi-search"></i>
+                            {% elseif key == 'risk_manager' %}
+                                <i class="bi bi-exclamation-triangle"></i>
+                            {% elseif key == 'compliance_officer' %}
+                                <i class="bi bi-clipboard-check"></i>
+                            {% elseif key == 'incident_manager' %}
+                                <i class="bi bi-shield-exclamation"></i>
+                            {% elseif key == 'asset_manager' %}
+                                <i class="bi bi-hdd-stack"></i>
+                            {% elseif key == 'readonly' %}
+                                <i class="bi bi-eye"></i>
+                            {% endif %}
+                            {{ template.name }}
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">{{ template.description }}</p>
+
+                        <h6 class="mt-3 mb-2">Berechtigungen:</h6>
+                        <div class="permissions-list" style="max-height: 200px; overflow-y: auto;">
+                            {% for permission in template.permissions %}
+                                <div class="mb-1">
+                                    <code class="small">{{ permission }}</code>
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="mt-3">
+                            <span class="badge bg-secondary">{{ template.permissions|length }} Berechtigungen</span>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <button type="button"
+                                class="btn btn-primary w-100"
+                                data-bs-toggle="modal"
+                                data-bs-target="#templateModal{{ key }}">
+                            <i class="bi bi-plus-circle"></i> Vorlage verwenden
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            {# Modal for template application #}
+            <div class="modal fade" id="templateModal{{ key }}" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <form method="post">
+                            <div class="modal-header">
+                                <h5 class="modal-title">{{ template.name }} erstellen</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <input type="hidden" name="template" value="{{ key }}">
+
+                                <div class="mb-3">
+                                    <label for="custom_name_{{ key }}" class="form-label">
+                                        {{ 'role.templates.custom_name'|trans }}
+                                    </label>
+                                    <input type="text"
+                                           class="form-control"
+                                           id="custom_name_{{ key }}"
+                                           name="custom_name"
+                                           placeholder="{{ template.name }}">
+                                    <div class="form-text">
+                                        Leer lassen, um den Standard-Namen "{{ template.name }}" zu verwenden
+                                    </div>
+                                </div>
+
+                                <div class="alert alert-info">
+                                    <strong>Diese Vorlage enthält:</strong>
+                                    <ul class="mb-0 mt-2">
+                                        {% for permission in template.permissions|slice(0, 5) %}
+                                            <li><code>{{ permission }}</code></li>
+                                        {% endfor %}
+                                        {% if template.permissions|length > 5 %}
+                                            <li class="text-muted">
+                                                und {{ template.permissions|length - 5 }} weitere...
+                                            </li>
+                                        {% endif %}
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                    Abbrechen
+                                </button>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-check-circle"></i> Rolle erstellen
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    {# Info Box #}
+    <div class="alert alert-warning mt-4">
+        <h5><i class="bi bi-exclamation-triangle"></i> Wichtige Hinweise</h5>
+        <ul class="mb-0">
+            <li>Die erstellte Rolle kann nach der Erstellung angepasst werden</li>
+            <li>Fehlende Berechtigungen werden übersprungen (z.B. wenn sie noch nicht existieren)</li>
+            <li>Die Rolle wird als benutzerdefinierte Rolle (nicht System-Rolle) erstellt</li>
+            <li>Nach der Erstellung können Sie Berechtigungen hinzufügen oder entfernen</li>
+        </ul>
+    </div>
+</div>
+
+<style>
+.permissions-list {
+    background-color: #f8f9fa;
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+}
+</style>
+{% endblock %}

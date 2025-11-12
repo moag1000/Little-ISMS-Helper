@@ -1,0 +1,118 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ permission.name }} - {{ 'permission.show'|trans }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="bi bi-shield-check"></i> {{ 'permission.show'|trans }}</h1>
+        <a href="{{ path('permission_index') }}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Zurück
+        </a>
+    </div>
+
+    {# Permission Details #}
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">
+                <i class="bi bi-info-circle"></i> Berechtigungsdetails
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="row mb-3">
+                <div class="col-md-3"><strong>Name:</strong></div>
+                <div class="col-md-9"><code>{{ permission.name }}</code></div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-3"><strong>{{ 'permission.category'|trans }}:</strong></div>
+                <div class="col-md-9">
+                    <span class="badge bg-primary">{{ permission.category|title }}</span>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-3"><strong>{{ 'permission.action'|trans }}:</strong></div>
+                <div class="col-md-9">
+                    <span class="badge bg-info">{{ permission.action|title }}</span>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-3"><strong>{{ 'permission.description'|trans }}:</strong></div>
+                <div class="col-md-9">{{ permission.description }}</div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-3"><strong>Typ:</strong></div>
+                <div class="col-md-9">
+                    {% if permission.isSystemPermission %}
+                        <span class="badge bg-success">System-Berechtigung</span>
+                    {% else %}
+                        <span class="badge bg-secondary">Benutzerdefiniert</span>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3"><strong>Erstellt am:</strong></div>
+                <div class="col-md-9">{{ permission.createdAt|date('d.m.Y H:i') }}</div>
+            </div>
+        </div>
+    </div>
+
+    {# Roles using this permission #}
+    <div class="card mb-4">
+        <div class="card-header bg-info text-white">
+            <h5 class="mb-0">
+                <i class="bi bi-people-fill"></i> {{ 'permission.roles_using'|trans }}
+                <span class="badge bg-light text-dark">{{ roles|length }}</span>
+            </h5>
+        </div>
+        <div class="card-body">
+            {% if roles|length > 0 %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Rollenname</th>
+                                <th>Beschreibung</th>
+                                <th>Benutzer</th>
+                                <th class="text-end">Aktion</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for role in roles %}
+                                <tr>
+                                    <td>
+                                        <strong>{{ role.name }}</strong>
+                                        {% if role.isSystemRole %}
+                                            <span class="badge bg-warning text-dark">System</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ role.description }}</td>
+                                    <td>
+                                        <span class="badge bg-secondary">{{ role.users|length }}</span>
+                                    </td>
+                                    <td class="text-end">
+                                        <a href="{{ path('role_management_show', {id: role.id}) }}"
+                                           class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-eye"></i> Details
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="alert alert-info mt-3">
+                    <i class="bi bi-info-circle"></i>
+                    <strong>{{ 'permission.affected_users'|trans }}:</strong>
+                    Diese Berechtigung betrifft insgesamt {{ affected_users_count }} Benutzer über {{ roles|length }} Rolle(n).
+                </div>
+            {% else %}
+                <div class="alert alert-warning">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    Diese Berechtigung wird derzeit von keiner Rolle verwendet.
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
