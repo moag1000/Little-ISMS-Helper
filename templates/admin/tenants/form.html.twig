@@ -1,0 +1,180 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block admin_title %}
+    {% if isEdit %}
+        {{ 'tenant.title.edit'|trans }}
+    {% else %}
+        {{ 'tenant.title.create'|trans }}
+    {% endif %}
+{% endblock %}
+
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item"><a href="{{ path('tenant_management_index') }}">{{ 'tenant.title'|trans }}</a></li>
+    {% if isEdit %}
+        <li class="breadcrumb-item"><a href="{{ path('tenant_management_show', {id: tenant.id}) }}">{{ tenant.code }}</a></li>
+        <li class="breadcrumb-item active">{{ 'common.edit'|trans }}</li>
+    {% else %}
+        <li class="breadcrumb-item active">{{ 'common.create'|trans }}</li>
+    {% endif %}
+{% endblock %}
+
+{% block admin_content %}
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header bg-white">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-building text-primary"></i>
+                        {% if isEdit %}
+                            {{ 'tenant.form.edit_title'|trans }}
+                        {% else %}
+                            {{ 'tenant.form.create_title'|trans }}
+                        {% endif %}
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {{ form_start(form) }}
+                        {# Basic Information #}
+                        <div class="mb-4">
+                            <h6 class="border-bottom pb-2 mb-3">{{ 'tenant.section.basic_info'|trans }}</h6>
+
+                            <div class="mb-3">
+                                {{ form_label(form.code) }}
+                                {{ form_widget(form.code, {'attr': {'class': 'form-control'}}) }}
+                                {{ form_help(form.code) }}
+                                {{ form_errors(form.code) }}
+                            </div>
+
+                            <div class="mb-3">
+                                {{ form_label(form.name) }}
+                                {{ form_widget(form.name, {'attr': {'class': 'form-control'}}) }}
+                                {{ form_help(form.name) }}
+                                {{ form_errors(form.name) }}
+                            </div>
+
+                            <div class="mb-3">
+                                {{ form_label(form.description) }}
+                                {{ form_widget(form.description, {'attr': {'class': 'form-control'}}) }}
+                                {{ form_help(form.description) }}
+                                {{ form_errors(form.description) }}
+                            </div>
+                        </div>
+
+                        {# Azure Integration #}
+                        <div class="mb-4">
+                            <h6 class="border-bottom pb-2 mb-3">{{ 'tenant.section.azure_integration'|trans }}</h6>
+
+                            <div class="mb-3">
+                                {{ form_label(form.azureTenantId) }}
+                                {{ form_widget(form.azureTenantId, {'attr': {'class': 'form-control'}}) }}
+                                {{ form_help(form.azureTenantId) }}
+                                {{ form_errors(form.azureTenantId) }}
+                            </div>
+                        </div>
+
+                        {# Settings #}
+                        <div class="mb-4">
+                            <h6 class="border-bottom pb-2 mb-3">{{ 'tenant.section.settings'|trans }}</h6>
+
+                            <div class="mb-3">
+                                <div class="form-check form-switch">
+                                    {{ form_widget(form.isActive, {'attr': {'class': 'form-check-input', 'role': 'switch'}}) }}
+                                    {{ form_label(form.isActive, null, {'label_attr': {'class': 'form-check-label'}}) }}
+                                </div>
+                                {{ form_help(form.isActive) }}
+                                {{ form_errors(form.isActive) }}
+                            </div>
+
+                            <div class="mb-3">
+                                {{ form_label(form.settings) }}
+                                {{ form_widget(form.settings, {'attr': {'class': 'form-control'}}) }}
+                                {{ form_help(form.settings) }}
+                                {{ form_errors(form.settings) }}
+                                <div class="form-text">
+                                    <strong>{{ 'tenant.settings.example_title'|trans }}</strong><br>
+                                    <pre class="bg-light p-2 rounded small mb-0"><code>{
+  "branding": {
+    "primaryColor": "#0d6efd",
+    "logoUrl": "/uploads/tenant-logo.png"
+  },
+  "features": {
+    "darkMode": true,
+    "globalSearch": false
+  }
+}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        {# Form Actions #}
+                        <div class="d-flex justify-content-between">
+                            <a href="{% if isEdit %}{{ path('tenant_management_show', {id: tenant.id}) }}{% else %}{{ path('tenant_management_index') }}{% endif %}"
+                               class="btn btn-secondary">
+                                <i class="bi bi-x-circle"></i> {{ 'common.cancel'|trans }}
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-save"></i>
+                                {% if isEdit %}
+                                    {{ 'common.save'|trans }}
+                                {% else %}
+                                    {{ 'tenant.action.create'|trans }}
+                                {% endif %}
+                            </button>
+                        </div>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+
+        {# Help Sidebar #}
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-header bg-white">
+                    <h6 class="card-title mb-0">{{ 'tenant.help.title'|trans }}</h6>
+                </div>
+                <div class="card-body">
+                    <h6 class="text-muted small mb-2">{{ 'tenant.help.code_title'|trans }}</h6>
+                    <p class="small">{{ 'tenant.help.code_text'|trans }}</p>
+
+                    <hr>
+
+                    <h6 class="text-muted small mb-2">{{ 'tenant.help.azure_title'|trans }}</h6>
+                    <p class="small">{{ 'tenant.help.azure_text'|trans }}</p>
+
+                    <hr>
+
+                    <h6 class="text-muted small mb-2">{{ 'tenant.help.settings_title'|trans }}</h6>
+                    <p class="small">{{ 'tenant.help.settings_text'|trans }}</p>
+                </div>
+            </div>
+
+            {% if isEdit %}
+                <div class="card mt-3">
+                    <div class="card-header bg-white">
+                        <h6 class="card-title mb-0">{{ 'tenant.info.metadata'|trans }}</h6>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-sm mb-0">
+                            <tr>
+                                <th class="text-muted small">{{ 'common.created'|trans }}</th>
+                                <td class="small">{{ tenant.createdAt|date('d.m.Y H:i') }}</td>
+                            </tr>
+                            {% if tenant.updatedAt %}
+                                <tr>
+                                    <th class="text-muted small">{{ 'common.updated'|trans }}</th>
+                                    <td class="small">{{ tenant.updatedAt|date('d.m.Y H:i') }}</td>
+                                </tr>
+                            {% endif %}
+                            <tr>
+                                <th class="text-muted small">{{ 'tenant.field.users'|trans }}</th>
+                                <td class="small">
+                                    <span class="badge bg-info">{{ tenant.users|length }}</span>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

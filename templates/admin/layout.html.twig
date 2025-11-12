@@ -151,6 +151,12 @@
                     <div class="sidebar-section-title">{{ 'admin.section.user_access'|trans }}</div>
                     <ul>
                         <li>
+                            <a href="{{ path('tenant_management_index') }}"
+                               class="{% if app.request.get('_route') starts with 'tenant_management_' %}active{% endif %}">
+                                <i class="bi bi-building"></i> {{ 'admin.nav.tenants'|trans }}
+                            </a>
+                        </li>
+                        <li>
                             <a href="{{ path('user_management_index') }}"
                                class="{% if app.request.get('_route') starts with 'user_management_' %}active{% endif %}">
                                 <i class="bi bi-people"></i> {{ 'admin.nav.users'|trans }}
