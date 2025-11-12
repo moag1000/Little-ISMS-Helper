@@ -41,6 +41,132 @@ remember_me: Angemeldet bleiben
 login_title: Anmeldung
 welcome_back: Willkommen zurück
 home: Startseite
+# Phase 6L-A: Admin Panel Translation Keys
+admin:
+  title: Administration
+  breadcrumb:
+    home: Admin Dashboard
+  section:
+    user_access: Benutzer & Zugriff
+    system_config: Systemkonfiguration
+    modules: Module & Features
+    monitoring: Überwachung & Logs
+    navigation: Navigation
+  nav:
+    tenants: Mandanten
+    users: Benutzer
+    roles: Rollen
+    settings: Einstellungen
+    compliance: Compliance-Frameworks
+    audit_log: Audit Log
+    back_to_app: Zurück zur Anwendung
+  dashboard:
+    title: Admin Dashboard
+    subtitle: Zentrale Verwaltung und Systemübersicht
+    alerts:
+      title: Systemhinweise
+      item: Element
+      items: Elemente
+      view: Ansehen
+    stats:
+      users: Benutzer
+      active: Aktiv
+      inactive: Inaktiv
+      manage: Verwalten
+      active_sessions: Aktive Sitzungen
+      last_24h: Letzte 24 Stunden
+      database: Datenbankgröße
+      total_records: Gesamt-Datensätze
+      across_modules: Über alle Module
+    modules:
+      title: Modul-Statistiken
+      module: Modul
+      records: Datensätze
+      action: Aktion
+      assets: Assets
+      risks: Risiken
+      controls: Maßnahmen
+      incidents: Vorfälle
+      audits: Audits
+      compliance: Compliance
+      trainings: Schulungen
+    quick_actions:
+      title: Schnellaktionen
+      add_user: Benutzer hinzufügen
+      add_role: Rolle hinzufügen
+      view_logs: Logs anzeigen
+      manage_compliance: Compliance verwalten
+    activity:
+      title: Letzte Aktivitäten
+      empty: Keine aktuellen Aktivitäten
+      view_all: Alle Aktivitäten anzeigen
+  alert:
+    inactive_users: Inaktive Benutzer
+    unverified_users: Nicht verifizierte Benutzer
+    large_database: Große Datenbank (GB)
+  # Phase 6L-B: System Settings Translation Keys
+  settings:
+    title: Systemeinstellungen
+    subtitle: Konfiguration und Verwaltung von Systemeinstellungen
+    configure: Konfigurieren
+    saved: Einstellungen erfolgreich gespeichert
+    help: Hilfe
+    info: Information
+    info_title: Hinweis
+    info_text: Änderungen an den Systemeinstellungen werden sofort wirksam und in der Datenbank gespeichert.
+    application:
+      title: Anwendungseinstellungen
+      description: Sprache, Zeitzone, Anzeigeoptionen
+      locale_settings: Spracheinstellungen
+      display_settings: Anzeigeeinstellungen
+      locale: Standardsprache
+      default_locale: Standardsprache
+      default_locale_help: Die Standardsprache für neue Benutzer und das System
+      supported_locales: Unterstützte Sprachen
+      supported_locales_help: Welche Sprachen können Benutzer auswählen?
+      timezone: Zeitzone
+      timezone_help: Standardzeitzone für Datums- und Zeitanzeigen
+      items_per_page: Einträge pro Seite
+      items_per_page_help: Anzahl der Einträge in Listen (10-100)
+      date_format: Datumsformat
+      date_format_help: Format für Datumsanzeigen
+      datetime_format: Datum/Zeit-Format
+      datetime_format_help: Format für Datum/Zeit-Anzeigen
+      help_text: Diese Einstellungen beeinflussen die Darstellung der Anwendung für alle Benutzer.
+    security:
+      title: Sicherheitseinstellungen
+      description: Sitzungen, Passwörter, Authentifizierung
+      session_settings: Sitzungseinstellungen
+      password_settings: Passworteinstellungen
+      auth_settings: Authentifizierungseinstellungen
+      session_lifetime: Sitzungsdauer
+      session_lifetime_help: Maximale Dauer einer Benutzersitzung in Sekunden (5-1440 Min)
+      remember_me_lifetime: '"Angemeldet bleiben"-Dauer'
+      remember_me_help: Dauer für "Angemeldet bleiben" in Sekunden
+      password_min_length: Minimale Passwortlänge
+      password_min_length_help: Mindestanzahl Zeichen für Passwörter (6-20)
+      max_login_attempts: Max. Anmeldeversuche
+      max_login_attempts_help: Anzahl fehlgeschlagener Anmeldeversuche vor Sperre
+      lockout_duration: Sperrdauer
+      lockout_duration_help: Dauer der Kontosperre nach zu vielen Fehlversuchen
+      require_2fa: Zwei-Faktor-Authentifizierung erzwingen
+      require_2fa_help: Alle Benutzer müssen 2FA aktivieren
+      warning: Änderungen an Sicherheitseinstellungen können sich auf alle Benutzer auswirken. Bitte mit Vorsicht vorgehen.
+    features:
+      title: Feature-Flags
+      description: Experimentelle Features ein-/ausschalten
+      intro: Aktivieren oder deaktivieren Sie experimentelle Features für das gesamte System.
+      dark_mode: Dark Mode
+      dark_mode_help: Ermöglicht Benutzern den Wechsel zum dunklen Design
+      global_search: Globale Suche
+      global_search_help: Suchfunktion über alle Module hinweg
+      quick_view: Quick View
+      quick_view_help: Schnellansicht-Modals für Datensätze
+      notifications: Benachrichtigungen
+      notifications_help: System-Benachrichtigungen und Alerts
+      audit_log: Audit-Protokollierung
+      audit_log_help: Automatische Protokollierung aller Änderungen
+      info_text: Feature-Flags erlauben es, neue Funktionen schrittweise einzuführen oder zu testen.
 dashboard:
   success:
     settings_imported: Dashboard-Einstellungen erfolgreich importiert!
@@ -53,13 +179,23 @@ controls: Maßnahmen
 incidents: Vorfälle
 audits: Audits
 compliance_label: Compliance
+# Phase 6K Translation Update
 training:
   title: Schulungen
+  all_trainings: Alle Schulungen
+  create: Schulung erstellen
+  create_first: Erstellen Sie Ihre erste Schulung
+  edit: Schulung bearbeiten
+  edit_help: Schulungsdetails bearbeiten
   mandatory_training: Verpflichtende Schulung
   mandatory_info: Diese Schulung ist für alle Teilnehmer verpflichtend.
   no_participants: Noch keine Teilnehmer registriert.
+  no_trainings_found: Keine Schulungen gefunden
+  participant_count: Teilnehmerzahl
+  participants_label: Teilnehmer
   covered_controls: Abgedeckte Maßnahmen
   compliance_coverage: Compliance-Abdeckung
+  controls_help: Wählen Sie die Maßnahmen, die diese Schulung abdeckt
   description: Beschreibung
   delivery:
     in_person: Präsenz
@@ -109,6 +245,23 @@ training:
     related_controls: Verknüpfte Controls
     materials: Schulungsmaterialien
     feedback: Feedback / Notizen
+  placeholder:
+    date: Datum und Uhrzeit wählen
+    delivery: Durchführungsart wählen
+    duration: Dauer in Minuten
+    location: z.B. Konferenzraum 1 oder https://...
+    participants: Teilnehmer auswählen
+    status: Status wählen
+    title: z.B. Sicherheitsschulung 2024
+    trainer: Name des Trainers
+    type: Schulungsart wählen
+  section:
+    attendance: Teilnahme & Teilnehmer
+    details: Schulungsdetails
+  show:
+    title: Schulungsdetails
+  table:
+    trainer: Trainer
   validation:
     title_required: Bitte geben Sie einen Titel ein.
     date_required: Bitte wählen Sie ein Datum.
@@ -130,6 +283,7 @@ details: Details
 close: Schließen
 confirm: Bestätigen
 back: Zurück
+# Phase 6K Translation Update - Common UI
 common:
   overview: Übersicht
   name: Name
@@ -141,6 +295,7 @@ common:
   cancel: Abbrechen
   back: Zurück
   back_to_list: Zurück zur Liste
+  back_to_overview: Zurück zur Übersicht
   delete: Löschen
   metadata: Metadaten
   action_irreversible: Diese Aktion kann nicht rückgängig gemacht werden.
@@ -155,6 +310,36 @@ common:
   view_details: Details ansehen
   edit: Bearbeiten
   show_all: Alle anzeigen
+  active: Aktiv
+  all: Alle
+  category: Kategorie
+  create: Erstellen
+  danger_zone: Gefahrenbereich
+  dashboard: Dashboard
+  date_from: Datum von
+  date_to: Datum bis
+  details: Details
+  download: Herunterladen
+  error: Fehler
+  export: Exportieren
+  filter: Filtern
+  from: Von
+  help: Hilfe
+  history: Verlauf
+  id: ID
+  inactive: Inaktiv
+  last_updated: Zuletzt aktualisiert
+  loading: Wird geladen...
+  never: Nie
+  not_applicable: Nicht zutreffend
+  not_assigned: Nicht zugewiesen
+  not_completed: Nicht abgeschlossen
+  not_set: Nicht festgelegt
+  not_started: Nicht begonnen
+  refresh: Aktualisieren
+  search: Suchen
+  success: Erfolgreich
+  to: Bis
 asset:
   new: Neues Asset
   create: Asset erstellen
@@ -286,6 +471,7 @@ control:
     last_review_date: Letztes Review
     next_review_date: Nächstes Review
     protected_assets: Verknüpfte Assets
+# Phase 6K Translation Update - Audit Module
 audit:
   title: Audits
   new: Neues Audit
@@ -331,6 +517,13 @@ audit:
     certification: Zertifizierungsaudit
     surveillance: Überwachungsaudit
     recertification: Rezertifizierungsaudit
+    asset: Asset-Audit
+    asset_group: Asset-Gruppen-Audit
+    asset_type: Asset-Typ-Audit
+    compliance_framework: Framework-Audit
+    department: Abteilungsaudit
+    full_isms: Vollständiges ISMS-Audit
+    location: Standortaudit
   type:
     iso27001: ISO 27001
     iso9001: ISO 9001
@@ -351,7 +544,12 @@ audit:
     recommendations: Empfehlungen
     documentation: Dokumentation
     status: Status
+    history: Audit-Verlauf
+  table:
+    auditor: Auditor
+    date: Audit-Datum
   field:
+    audit_number: Auditnummer
     title: Audit-Titel
     scope: Geltungsbereich
     scope_type: Audit-Typ
@@ -412,7 +610,9 @@ context:
     due: Überprüfung fällig
     days_remaining: Tage verbleibend
     days_overdue: Tage überfällig
+    not_scheduled: Nicht geplant
   section:
+    history: Kontext-Review-Verlauf
     title: ISMS-Kontext
     organization: Organisation
     exclusions: Ausschlüsse
@@ -504,15 +704,31 @@ activity:
   system: System
   security_team: Security Team
   new_risk: Neues Risiko
+# Phase 6K Translation Update - Incident Module
 incident:
   new: Neuer Vorfall
   create: Vorfall erstellen
+  edit: Vorfall bearbeiten
+  empty: Noch keine Vorfälle erfasst
+  analysis_resolution: Analyse & Behebung
+  filter:
+    data_breach: Datenschutzvorfall
+    data_breach_only: Nur Datenschutzvorfälle
+    nis2_only: Nur NIS2-meldepflichtig
+  kpi:
+    by_category: Nach Kategorie
+    categories: Kategorien
+    nis2_attention: NIS2 Aufmerksamkeit erforderlich
+  table:
+    category: Kategorie
+    occurred: Aufgetreten
   section:
     basic_info: Grundinformationen
     severity_status: Schweregrad & Status
     detection_reporting: Erkennung & Meldung
     affected_systems: Betroffene Systeme & Assets
     analysis: Analyse & Maßnahmen
+    assessment: Auswirkungsanalyse
     nis2_reporting: NIS2-Meldepflicht (EU 2022/2555)
     nis2_info: "NIS2 Art. 23: Erhebliche Vorfälle müssen innerhalb festgelegter Fristen gemeldet werden"
     affected_assets: Betroffene Assets
@@ -553,7 +769,10 @@ incident:
     affected_assets: Betroffene Assets
   action:
     download_nis2_report: NIS2-Bericht herunterladen (PDF)
+    report_new: Neuen Vorfall melden
   placeholder:
+    category: Vorfallkategorie auswählen
+    severity: Schweregrad auswählen
     title: z.B. Datenschutzvorfall Kundendaten
     description: Detaillierte Beschreibung des Vorfalls...
     reported_by: Name des Meldenden
@@ -1256,6 +1475,34 @@ user:
     custom_roles: Benutzerdefinierte Rollen
     active: Aktiv
     email_verified: E-Mail verifiziert
+  error:
+    no_users_selected: Keine Benutzer ausgewählt
+    no_file_uploaded: Keine Datei hochgeladen
+  success:
+    bulk_action_completed: '%count% Benutzer erfolgreich verarbeitet (%action%)'
+    imported: '%count% Benutzer erfolgreich importiert'
+    activated: Benutzer erfolgreich aktiviert
+    deactivated: Benutzer erfolgreich deaktiviert
+  action:
+    export: Exportieren
+    import: Importieren
+    bulk_actions: Massen-Aktionen
+    activate: Aktivieren
+    deactivate: Deaktivieren
+    assign_role: Rolle zuweisen
+    view_activity: Aktivität anzeigen
+    view_mfa: MFA verwalten
+    impersonate: Benutzer imitieren
+  import:
+    title: Benutzer importieren
+    description: Laden Sie eine CSV-Datei hoch, um mehrere Benutzer zu importieren
+    format: 'Erwartetes Format: email, first_name, last_name, password, is_active, roles'
+    download_template: Vorlage herunterladen
+  activity:
+    title: Benutzeraktivität
+    total: Gesamtaktivitäten
+    by_date: Nach Datum
+    by_action: Nach Aktion
 module:
   info:
     added_as_dependency: Modul '{name}' wurde als Abhängigkeit hinzugefügt
@@ -1278,6 +1525,28 @@ role:
     created: Rolle erfolgreich erstellt.
     updated: Rolle erfolgreich aktualisiert.
     deleted: Rolle erfolgreich gelöscht.
+    created_from_template: Rolle '%role%' erfolgreich aus Vorlage erstellt
+  action:
+    compare: Rollen vergleichen
+    templates: Vorlagen
+  compare:
+    title: Rollenvergleich
+    select_roles: Rollen zum Vergleich auswählen
+    permission_matrix: Berechtigungsmatrix
+    has_permission: Hat Berechtigung
+    no_permission: Keine Berechtigung
+  templates:
+    title: Rollenvorlagen
+    description: Erstellen Sie eine neue Rolle basierend auf einer Vorlage
+    select: Vorlage auswählen
+    apply: Vorlage anwenden
+    custom_name: Benutzerdefinierter Name (optional)
+    auditor: Prüfer
+    risk_manager: Risikomanager
+    compliance_officer: Compliance Officer
+    incident_manager: Incident Manager
+    asset_manager: Asset Manager
+    readonly: Nur-Lese-Benutzer
 error:
   csrf_invalid: Ungültiges CSRF-Token.
 audit_log:
@@ -1841,3 +2110,449 @@ crisis_team:
     created: Krisenstab erfolgreich erstellt.
     updated: Krisenstab erfolgreich aktualisiert.
     deleted: Krisenstab erfolgreich gelöscht.
+
+tenant:
+  title: Mandantenverwaltung
+  subtitle: Verwalten Sie Organisationen und Mandanten
+  title_create: Neuen Mandanten erstellen
+  title_edit: Mandant bearbeiten
+  empty: Keine Mandanten vorhanden
+  stats:
+    total: Gesamt
+    active: Aktiv
+    inactive: Inaktiv
+    total_users: Benutzer gesamt
+    active_users: Aktive Benutzer
+    inactive_users: Inaktive Benutzer
+  filter:
+    all: Alle
+    active: Aktiv
+    inactive: Inaktiv
+  field:
+    code: Mandanten-Code
+    code_help: Eindeutiger alphanumerischer Code (nur a-z, 0-9, _, -)
+    name: Name
+    name_help: Vollständiger Name der Organisation
+    description: Beschreibung
+    description_help: Optionale Beschreibung des Mandanten
+    azure_tenant_id: Azure Tenant ID
+    azure_tenant_id_help: Azure AD Tenant ID (UUID-Format) für SSO-Integration
+    is_active: Aktiv
+    is_active_help: Nur aktive Mandanten können sich anmelden
+    settings: Einstellungen (JSON)
+    settings_help: Mandantenspezifische Einstellungen im JSON-Format
+    users: Benutzer
+    status: Status
+    created: Erstellt
+    updated: Aktualisiert
+  placeholder:
+    code: z.B. acme-corp
+    name: z.B. ACME Corporation
+    description: Beschreibung des Mandanten...
+    azure_tenant_id: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+    settings: "{\n  \"branding\": {...},\n  \"features\": {...}\n}"
+  validation:
+    code_format: Der Code darf nur Buchstaben, Zahlen, Unterstriche und Bindestriche enthalten
+    azure_tenant_id_format: Die Azure Tenant ID muss im UUID-Format vorliegen
+  status:
+    active: Aktiv
+    inactive: Inaktiv
+  action:
+    create: Neuen Mandanten erstellen
+    create_first: Ersten Mandanten erstellen
+    edit: Bearbeiten
+    delete: Löschen
+    activate: Aktivieren
+    deactivate: Deaktivieren
+  section:
+    information: Mandanten-Informationen
+    users: Benutzer
+    basic_info: Grundinformationen
+    azure_integration: Azure-Integration
+    settings: Einstellungen
+    danger_zone: Gefahrenbereich
+  users:
+    empty: Keine Benutzer in diesem Mandanten
+    showing: 'Zeige %count% von %total% Benutzern'
+  form:
+    create_title: Neuen Mandanten anlegen
+    edit_title: Mandant bearbeiten
+  flash:
+    created: Mandant erfolgreich erstellt
+    updated: Mandant erfolgreich aktualisiert
+    deleted: Mandant erfolgreich gelöscht
+    activated: Mandant erfolgreich aktiviert
+    deactivated: Mandant erfolgreich deaktiviert
+    error: Fehler beim Speichern des Mandanten
+    has_users: Mandant kann nicht gelöscht werden, da er noch Benutzer hat
+  confirm:
+    delete: Sind Sie sicher, dass Sie diesen Mandanten löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.
+    toggle: Möchten Sie den Status dieses Mandanten wirklich ändern?
+  delete:
+    warning: Mandanten können nur gelöscht werden, wenn sie keine zugewiesenen Benutzer mehr haben.
+  info:
+    title: Über Mandanten
+    text: Mandanten ermöglichen es, mehrere Organisationen in einer Instanz zu verwalten. Jeder Benutzer gehört zu einem Mandanten.
+    metadata: Metadaten
+  help:
+    title: Hilfe
+    code_title: Mandanten-Code
+    code_text: Der Code ist ein eindeutiger Identifier und kann nach der Erstellung nicht mehr geändert werden. Verwenden Sie nur Kleinbuchstaben, Zahlen und Bindestriche.
+    azure_title: Azure-Integration
+    azure_text: Wenn Sie Azure AD SSO verwenden, können Sie hier die Azure Tenant ID hinterlegen für mandantenspezifische Authentifizierung.
+    settings_title: Einstellungen
+    settings_text: Mandantenspezifische Einstellungen im JSON-Format können individuelle Konfigurationen wie Branding, Features oder Limits enthalten.
+  settings:
+    example_title: Beispiel JSON-Struktur
+
+# Phase 6L-D: Extended User & Access Management
+permission:
+  title: Berechtigungen
+  list: Berechtigungsliste
+  show: Berechtigungsdetails
+  category: Kategorie
+  action: Aktion
+  description: Beschreibung
+  roles_using: Rollen mit dieser Berechtigung
+  affected_users: Betroffene Benutzer
+  system_permission: System-Berechtigung
+  statistics:
+    total: Gesamt
+    system: System
+    custom: Benutzerdefiniert
+    categories: Kategorien
+
+session:
+  title: Sitzungen
+  list: Aktive Sitzungen
+  show: Sitzungsdetails
+  user_name: Benutzername
+  ip_address: IP-Adresse
+  user_agent: User Agent
+  last_activity: Letzte Aktivität
+  session_start: Sitzungsbeginn
+  terminate: Sitzung beenden
+  statistics:
+    total: Gesamt aktive Sitzungen
+    today: Heute
+    hours_filter: Zeitfilter (Stunden)
+  activity_timeline: Aktivitätsverlauf
+  unique_ips: Eindeutige IP-Adressen
+  unique_devices: Eindeutige Geräte
+  error:
+    invalid_token: Ungültiges CSRF-Token
+  info:
+    termination_not_implemented: Sitzungsbeendigung erfordert zusätzliche Konfiguration (Datenbank-Session-Speicherung)
+
+mfa:
+  title: Zwei-Faktor-Authentifizierung
+  tokens: MFA-Token
+  enabled: MFA aktiviert
+  disabled: MFA deaktiviert
+  token_type: Token-Typ
+  device_name: Gerätename
+  enrolled_at: Registriert am
+  last_used: Zuletzt verwendet
+  usage_count: Verwendungsanzahl
+  is_active: Aktiv
+  is_primary: Primär
+  action:
+    reset: Token zurücksetzen
+  error:
+    token_not_found: MFA-Token nicht gefunden
+  success:
+    token_reset: MFA-Token erfolgreich zurückgesetzt
+  statistics:
+    active_tokens: Aktive Token
+    by_type: Nach Typ
+
+# Phase 6L-E: System Monitoring & Health
+monitoring:
+  title: System-Überwachung
+  health:
+    title: System-Gesundheit
+    overall_status: Gesamtstatus
+    healthy: Gesund
+    warning: Warnung
+    error: Fehler
+    last_checked: Zuletzt geprüft
+  database:
+    title: Datenbank
+    status: Status
+    response_time: Antwortzeit
+    driver: Treiber
+    error: Fehler
+  disk:
+    title: Festplatte
+    free: Frei
+    used: Belegt
+    total: Gesamt
+    percentage: Prozent
+  php:
+    title: PHP
+    version: Version
+    memory_limit: Speicherlimit
+    max_execution_time: Max. Ausführungszeit
+    extensions: Erweiterungen
+    loaded: Geladen
+    missing: Fehlend
+  symfony:
+    title: Symfony
+    version: Version
+    environment: Umgebung
+    debug: Debug-Modus
+  cache:
+    title: Cache
+    directory: Verzeichnis
+    writable: Schreibbar
+  logs:
+    title: Protokolle
+    directory: Verzeichnis
+    writable: Schreibbar
+  performance:
+    title: Performance-Metriken
+    total_requests: Gesamtanfragen
+    unique_users: Eindeutige Benutzer
+    memory_usage: Speichernutzung
+    memory_peak: Spitzenspeicher
+    memory_limit: Speicherlimit
+    top_actions: Top-Aktionen
+    top_entities: Aktivste Entitäten
+    last_24h: Letzte 24 Stunden
+    system_resources: Systemressourcen
+    note: Hinweis
+  errors:
+    title: Fehlerprotokolle
+    total: Fehler gesamt
+    by_level: Nach Stufe
+    file_size: Dateigröße
+    last_modified: Zuletzt geändert
+    log_file: Protokolldatei
+    show_entries: Einträge anzeigen
+    recent: Letzte Fehler
+    no_errors: Keine Fehler gefunden!
+    no_log_file: Keine Protokolldatei gefunden
+    show_full: Vollständigen Eintrag anzeigen
+  audit_log:
+    title: Audit-Protokoll
+    total_entries: Einträge gesamt
+    top_actions: Top-Aktionen
+    top_entities: Top-Entitäten
+    quick_filters: Schnellfilter
+    all: Alle
+    today: Heute
+    this_week: Diese Woche
+    critical_actions: Kritische Aktionen
+    entries: Einträge
+    timestamp: Zeitstempel
+    user: Benutzer
+    action: Aktion
+    entity: Entität
+    ip_address: IP-Adresse
+    details: Details
+    view: Ansehen
+    description: Beschreibung
+    changes: Änderungen
+    about: Über Audit-Protokoll
+    about_text: Das Audit-Protokoll verfolgt alle wichtigen Aktionen im System einschließlich Erstellen, Aktualisieren und Löschen.
+  related: Verwandte Überwachung
+  refresh: Aktualisieren
+  back_to_health: Zurück zur Gesundheit
+
+# Phase 6L-F: Data Management
+data:
+  title: Datenverwaltung
+  backup:
+    title: Datenbank-Backup
+    create: Backup erstellen
+    list: Verfügbare Backups
+    filename: Dateiname
+    date: Datum
+    size: Größe
+    actions: Aktionen
+    download: Herunterladen
+    delete: Löschen
+    retention_policy: 'Aufbewahrungsrichtlinie: Nur die letzten 7 Backups werden automatisch behalten'
+    location: 'Backup-Speicherort'
+    method: 'Backup-Methode: PostgreSQL pg_dump (SQL-Format)'
+    how_to_restore: So stellen Sie ein Backup wieder her
+    restore_warning: 'Warnung: Das Wiederherstellen eines Backups überschreibt alle aktuellen Daten!'
+    success:
+      created: 'Backup erfolgreich erstellt: %filename%'
+      deleted: Backup erfolgreich gelöscht
+    error:
+      invalid_token: Ungültiges CSRF-Token
+      create_failed: 'Backup fehlgeschlagen: %error%'
+      not_found: Backup-Datei nicht gefunden
+  export:
+    title: Daten exportieren
+    configure: Export konfigurieren
+    format: Export-Format
+    select_entities: Zu exportierende Entitäten auswählen
+    select_all: Alle auswählen
+    deselect_all: Alle abwählen
+    execute: Ausgewählte Entitäten exportieren
+    about: Über Datenexport
+    about_text: Exportieren Sie Ihre Daten im JSON- oder CSV-Format. Sie können spezifische Entitäten exportieren oder alle Daten.
+    format_json: JSON-Format bewahrt Datentypen und wird für Re-Import empfohlen
+    format_csv: CSV ist besser für Tabellenkalkulationen
+    success:
+      exported: Daten erfolgreich exportiert
+    error:
+      invalid_token: Ungültiges CSRF-Token
+      no_entities: Keine Entitäten ausgewählt
+  import:
+    title: Daten importieren
+    upload: Import-Datei hochladen
+    preview: Import-Vorschau
+    execute: Import ausführen
+    select_file: JSON-Datei auswählen
+    upload_and_preview: Hochladen und Vorschau
+    process: Import-Prozess
+    requirements: Import-Anforderungen
+    file_format: Dateiformat
+    before_importing: Vor dem Import
+    limitations: Einschränkungen
+    warning:
+      critical: 'Kritische Warnung: Datenimport kann bestehende Daten überschreiben!'
+      backup_first: Erstellen Sie immer ein Backup vor dem Import
+      preview_mode: Dieses Feature befindet sich im Vorschaumodus
+      not_implemented: Import-Funktionalität ist noch nicht vollständig implementiert
+    stats:
+      total_entities: Entitäten gesamt
+      total_records: Datensätze gesamt
+      status: Status
+    error:
+      invalid_token: Ungültiges CSRF-Token
+      no_file: Keine Datei hochgeladen
+      invalid_file: 'Ungültige Datei: %error%'
+  setup:
+    title: Setup-Assistent
+    link: Link zum bestehenden Deployment-Assistenten
+
+# Admin Integration - Phase 6L-G
+nav.admin.modules: 'Modul-Verwaltung'
+nav.admin.compliance: 'Compliance-Verwaltung'
+nav.admin.licensing: 'Lizenz-Verwaltung'
+
+admin.modules.title: 'Modul-Verwaltung'
+admin.modules.dependency_graph: 'Abhängigkeits-Graph'
+admin.modules.stats.total: 'Gesamt'
+admin.modules.stats.active: 'Aktiv'
+admin.modules.stats.inactive: 'Inaktiv'
+admin.modules.stats.required: 'Erforderlich'
+admin.modules.active_modules: 'Aktive Module'
+admin.modules.inactive_modules: 'Inaktive Module'
+admin.modules.status.active: 'Aktiv'
+admin.modules.status.inactive: 'Inaktiv'
+admin.modules.dependencies: 'Abhängigkeiten'
+admin.modules.required_by: 'Benötigt von'
+admin.modules.details: 'Details'
+admin.modules.confirm_deactivate: 'Modul "%name%" wirklich deaktivieren?'
+admin.modules.deactivate: 'Deaktivieren'
+admin.modules.required: 'Erforderlich'
+admin.modules.no_active: 'Keine aktiven Module'
+admin.modules.activate: 'Aktivieren'
+
+admin.compliance.statistics: 'Compliance-Statistiken'
+admin.compliance.total_available: 'Verfügbar'
+admin.compliance.loaded: 'Geladen'
+admin.compliance.not_loaded: 'Nicht geladen'
+admin.compliance.mandatory_missing: 'Pflicht fehlt'
+admin.compliance.compliance_overview: 'Compliance-Übersicht'
+admin.compliance.framework: 'Framework'
+admin.compliance.total_requirements: 'Anforderungen'
+admin.compliance.assessed: 'Bewertet'
+admin.compliance.compliant: 'Konform'
+admin.compliance.compliance_rate: 'Konformität'
+admin.compliance.progress: 'Fortschritt'
+admin.compliance.no_frameworks_loaded: 'Keine Frameworks geladen'
+
+admin.licensing.title: 'Lizenz-Verwaltung'
+admin.licensing.third_party: 'Drittanbieter-Lizenzen'
+admin.licensing.report: 'Lizenzbericht'
+admin.licensing.summary: 'Lizenz-Zusammenfassung'
+
+admin.panel.title: 'Admin Panel'
+
+# Common translations
+common.back: 'Zurück'
+common.yes: 'Ja'
+common.no: 'Nein'
+
+# Workflow Definition Management - Phase 6C
+workflow.definition.title: 'Workflow-Definition'
+workflow.definition.new_title: 'Neue Workflow-Definition'
+workflow.definition.edit_title: 'Workflow-Definition bearbeiten'
+workflow.breadcrumb.home: 'Workflows'
+workflow.breadcrumb.definitions: 'Definitionen'
+workflow.breadcrumb.new: 'Neu'
+workflow.breadcrumb.edit: 'Bearbeiten'
+workflow.section.information: 'Workflow-Informationen'
+workflow.section.basic_information: 'Basis-Informationen'
+workflow.section.steps: 'Workflow-Schritte'
+workflow.section.recent_instances: 'Letzte Instanzen'
+workflow.section.actions: 'Aktionen'
+workflow.section.statistics: 'Statistiken'
+workflow.section.danger_zone: 'Gefahrenbereich'
+workflow.field.name: 'Name'
+workflow.field.description: 'Beschreibung'
+workflow.field.entity_type: 'Entitäts-Typ'
+workflow.field.status: 'Status'
+workflow.field.created_at: 'Erstellt am'
+workflow.field.updated_at: 'Aktualisiert am'
+workflow.field.definition_name: 'Workflow-Name'
+workflow.field.steps: 'Schritte'
+workflow.field.instances: 'Instanzen'
+workflow.field.active: 'Aktiv'
+workflow.field.is_active: 'Aktiv'
+workflow.status.active: 'Aktiv'
+workflow.status.inactive: 'Inaktiv'
+workflow.status.completed: 'Abgeschlossen'
+workflow.status.rejected: 'Abgelehnt'
+workflow.status.cancelled: 'Abgebrochen'
+workflow.status.pending: 'Ausstehend'
+workflow.action.edit: 'Bearbeiten'
+workflow.action.activate: 'Aktivieren'
+workflow.action.deactivate: 'Deaktivieren'
+workflow.action.delete: 'Löschen'
+workflow.action.create: 'Erstellen'
+workflow.action.update: 'Aktualisieren'
+workflow.action.create_definition: 'Neue Definition'
+workflow.action.delete_definition: 'Definition löschen'
+workflow.step.requires_comment: 'Kommentar erforderlich'
+workflow.step.requires_file: 'Datei erforderlich'
+workflow.message.no_steps: 'Keine Workflow-Schritte definiert'
+workflow.message.no_instances: 'Keine Workflow-Instanzen vorhanden'
+workflow.message.no_definitions: 'Keine Workflow-Definitionen vorhanden'
+workflow.instance.entity: 'Entität'
+workflow.instance.status: 'Status'
+workflow.instance.current_step: 'Aktueller Schritt'
+workflow.instance.created: 'Erstellt'
+workflow.instance.actions: 'Aktionen'
+workflow.stats.steps: 'Anzahl Schritte'
+workflow.stats.total_instances: 'Gesamte Instanzen'
+workflow.stats.total_definitions: 'Gesamte Definitionen'
+workflow.stats.active_definitions: 'Aktive Definitionen'
+workflow.stats.avg_steps: 'Durchschn. Schritte'
+workflow.stats.entity_types: 'Entitäts-Typen'
+workflow.success.definition_created: 'Workflow-Definition erfolgreich erstellt'
+workflow.success.definition_updated: 'Workflow-Definition erfolgreich aktualisiert'
+workflow.success.definition_deleted: 'Workflow-Definition erfolgreich gelöscht'
+workflow.success.definition_activated: 'Workflow-Definition aktiviert'
+workflow.success.definition_deactivated: 'Workflow-Definition deaktiviert'
+workflow.error.has_active_instances: 'Workflow kann nicht gelöscht werden: {count} aktive Instanz(en) vorhanden'
+workflow.confirm.delete: 'Workflow-Definition wirklich löschen?'
+workflow.help.name: 'Eindeutiger Name für diese Workflow-Definition'
+workflow.help.description: 'Optionale Beschreibung des Workflow-Zwecks'
+workflow.help.entity_type: 'Entitäts-Typ, für den dieser Workflow angewendet wird'
+workflow.help.is_active: 'Wenn deaktiviert, können keine neuen Workflow-Instanzen gestartet werden'
+workflow.help.delete_warning: 'Das Löschen einer Workflow-Definition kann nicht rückgängig gemacht werden. Aktive Instanzen verhindern das Löschen.'
+workflow.info.steps_note_title: 'Hinweis zu Workflow-Schritten'
+workflow.info.steps_note_text: 'Workflow-Schritte müssen nach dem Erstellen der Definition separat konfiguriert werden.'
+workflow.placeholder.name: 'z.B. Risk Assessment Approval'
+workflow.placeholder.description: 'z.B. Genehmigungsprozess für Risikoanalysen'
+common.cancel: 'Abbrechen'
+common.view: 'Anzeigen'
+common.edit: 'Bearbeiten'
+common.actions: 'Aktionen'

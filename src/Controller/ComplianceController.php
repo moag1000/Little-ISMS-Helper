@@ -869,6 +869,11 @@ class ComplianceController extends AbstractController
         }
 
         try {
+            // Get batch parameters for chunking
+            $data = json_decode($request->getContent(), true) ?? [];
+            $currentBatch = $data['batch'] ?? 0;
+            $batchSize = $data['batch_size'] ?? 50; // Process 50 mappings per batch
+
             $em = $this->frameworkRepository->getEntityManager();
 
             // Check if ISO 27001 exists
@@ -901,8 +906,9 @@ class ComplianceController extends AbstractController
             $mappingsCreated = 0;
             $mappingsSkipped = 0;
             $createdPairs = []; // Track created mapping pairs to avoid duplicates
+            $potentialMappings = []; // Collect all potential mappings first
 
-            // 1. Create mappings FROM other frameworks TO ISO 27001
+            // 1. Collect potential mappings FROM other frameworks TO ISO 27001
             foreach ($frameworks as $framework) {
                 if ($framework->getCode() === 'ISO27001') {
                     continue;
@@ -931,57 +937,35 @@ class ComplianceController extends AbstractController
 
                         if ($isoRequirement) {
                             $pairKey = $requirement->getId() . '-' . $isoRequirement->getId();
+                            $reversePairKey = $isoRequirement->getId() . '-' . $requirement->getId();
 
-                            if (!isset($createdPairs[$pairKey]) && !isset($existingPairs[$pairKey])) {
-                                // Forward mapping: Other → ISO
-                                $mapping = new ComplianceMapping();
-                                $mapping->setSourceRequirement($requirement)
-                                    ->setTargetRequirement($isoRequirement)
-                                    ->setMappingPercentage(85)
-                                    ->setMappingType('partial')
-                                    ->setBidirectional(true)
-                                    ->setConfidence('high')
-                                    ->setMappingRationale(sprintf(
-                                        '%s requirement mapped to ISO 27001 %s',
-                                        $framework->getCode(),
-                                        $normalizedId
-                                    ));
-
-                                $em->persist($mapping);
-                                $mappingsCreated++;
-                                $createdPairs[$pairKey] = true;
-                            } elseif (isset($existingPairs[$pairKey])) {
-                                $mappingsSkipped++;
+                            if (!isset($existingPairs[$pairKey])) {
+                                $potentialMappings[] = [
+                                    'type' => 'forward',
+                                    'source' => $requirement,
+                                    'target' => $isoRequirement,
+                                    'pairKey' => $pairKey,
+                                    'framework' => $framework,
+                                    'controlId' => $normalizedId
+                                ];
                             }
 
-                            // Reverse mapping: ISO → Other
-                            $reversePairKey = $isoRequirement->getId() . '-' . $requirement->getId();
-                            if (!isset($createdPairs[$reversePairKey]) && !isset($existingPairs[$reversePairKey])) {
-                                $reverseMapping = new ComplianceMapping();
-                                $reverseMapping->setSourceRequirement($isoRequirement)
-                                    ->setTargetRequirement($requirement)
-                                    ->setMappingPercentage(85)
-                                    ->setMappingType('partial')
-                                    ->setBidirectional(true)
-                                    ->setConfidence('high')
-                                    ->setMappingRationale(sprintf(
-                                        'ISO 27001 %s mapped to %s requirement',
-                                        $normalizedId,
-                                        $framework->getCode()
-                                    ));
-
-                                $em->persist($reverseMapping);
-                                $mappingsCreated++;
-                                $createdPairs[$reversePairKey] = true;
-                            } elseif (isset($existingPairs[$reversePairKey])) {
-                                $mappingsSkipped++;
+                            if (!isset($existingPairs[$reversePairKey])) {
+                                $potentialMappings[] = [
+                                    'type' => 'reverse',
+                                    'source' => $isoRequirement,
+                                    'target' => $requirement,
+                                    'pairKey' => $reversePairKey,
+                                    'framework' => $framework,
+                                    'controlId' => $normalizedId
+                                ];
                             }
                         }
                     }
                 }
             }
 
-            // 2. Create transitive mappings between non-ISO frameworks
+            // 2. Collect transitive mappings between non-ISO frameworks
             // If Framework A → ISO Control X and Framework B → ISO Control X, then A ↔ B
             $isoRequirements = $this->requirementRepository->findBy(['framework' => $iso27001]);
 
@@ -1017,7 +1001,7 @@ class ComplianceController extends AbstractController
                     }
                 }
 
-                // Create cross-mappings between all requirements that map to same ISO control
+                // Collect cross-mappings between all requirements that map to same ISO control
                 for ($i = 0; $i < count($mappedToThisISO); $i++) {
                     for ($j = $i + 1; $j < count($mappedToThisISO); $j++) {
                         $req1 = $mappedToThisISO[$i];
@@ -1026,52 +1010,75 @@ class ComplianceController extends AbstractController
                         $pairKey = $req1->getId() . '-' . $req2->getId();
                         $reversePairKey = $req2->getId() . '-' . $req1->getId();
 
-                        // Check if mappings already exist in database or were just created
-                        if (!isset($createdPairs[$pairKey]) && !isset($createdPairs[$reversePairKey])
-                            && !isset($existingPairs[$pairKey]) && !isset($existingPairs[$reversePairKey])) {
+                        if (!isset($existingPairs[$pairKey]) && !isset($existingPairs[$reversePairKey])) {
+                            $potentialMappings[] = [
+                                'type' => 'transitive_forward',
+                                'source' => $req1,
+                                'target' => $req2,
+                                'pairKey' => $pairKey,
+                                'isoControl' => $isoReq->getRequirementId()
+                            ];
 
-                            // Forward mapping
-                            $crossMapping = new ComplianceMapping();
-                            $crossMapping->setSourceRequirement($req1)
-                                ->setTargetRequirement($req2)
-                                ->setMappingPercentage(75)
-                                ->setMappingType('partial')
-                                ->setBidirectional(true)
-                                ->setConfidence('medium')
-                                ->setMappingRationale(sprintf(
-                                    'Transitive mapping via ISO 27001 %s',
-                                    $isoReq->getRequirementId()
-                                ));
-
-                            $em->persist($crossMapping);
-                            $mappingsCreated++;
-                            $createdPairs[$pairKey] = true;
-
-                            // Reverse mapping
-                            $reverseCrossMapping = new ComplianceMapping();
-                            $reverseCrossMapping->setSourceRequirement($req2)
-                                ->setTargetRequirement($req1)
-                                ->setMappingPercentage(75)
-                                ->setMappingType('partial')
-                                ->setBidirectional(true)
-                                ->setConfidence('medium')
-                                ->setMappingRationale(sprintf(
-                                    'Transitive mapping via ISO 27001 %s',
-                                    $isoReq->getRequirementId()
-                                ));
-
-                            $em->persist($reverseCrossMapping);
-                            $mappingsCreated++;
-                            $createdPairs[$reversePairKey] = true;
-                        } elseif (isset($existingPairs[$pairKey]) || isset($existingPairs[$reversePairKey])) {
-                            // Both directions count as one skipped pair
-                            $mappingsSkipped += 2;
+                            $potentialMappings[] = [
+                                'type' => 'transitive_reverse',
+                                'source' => $req2,
+                                'target' => $req1,
+                                'pairKey' => $reversePairKey,
+                                'isoControl' => $isoReq->getRequirementId()
+                            ];
                         }
                     }
                 }
             }
 
+            // 3. Process mappings in batches to avoid timeouts
+            $totalPotentialMappings = count($potentialMappings);
+            $startIndex = $currentBatch * $batchSize;
+            $endIndex = min($startIndex + $batchSize, $totalPotentialMappings);
+            $hasMore = $endIndex < $totalPotentialMappings;
+
+            // Process only the current batch
+            for ($i = $startIndex; $i < $endIndex; $i++) {
+                $mappingData = $potentialMappings[$i];
+
+                // Skip if already created in this session
+                if (isset($createdPairs[$mappingData['pairKey']])) {
+                    $mappingsSkipped++;
+                    continue;
+                }
+
+                $mapping = new ComplianceMapping();
+                $mapping->setSourceRequirement($mappingData['source'])
+                    ->setTargetRequirement($mappingData['target'])
+                    ->setBidirectional(true);
+
+                // Set type-specific properties
+                if (str_starts_with($mappingData['type'], 'transitive')) {
+                    $mapping->setMappingPercentage(75)
+                        ->setMappingType('partial')
+                        ->setConfidence('medium')
+                        ->setMappingRationale(sprintf(
+                            'Transitive mapping via ISO 27001 %s',
+                            $mappingData['isoControl']
+                        ));
+                } else {
+                    $mapping->setMappingPercentage(85)
+                        ->setMappingType('partial')
+                        ->setConfidence('high')
+                        ->setMappingRationale(sprintf(
+                            '%s requirement mapped to ISO 27001 %s',
+                            $mappingData['framework']->getCode(),
+                            $mappingData['controlId']
+                        ));
+                }
+
+                $em->persist($mapping);
+                $mappingsCreated++;
+                $createdPairs[$mappingData['pairKey']] = true;
+            }
+
             $em->flush();
+            $em->clear(); // Clear entity manager to free memory
 
             // Debug info
             $frameworkCounts = [];
@@ -1080,18 +1087,42 @@ class ComplianceController extends AbstractController
                 $frameworkCounts[$fw->getCode()] = $reqCount;
             }
 
+            $processedSoFar = min($endIndex, $totalPotentialMappings);
+            $remaining = max(0, $totalPotentialMappings - $processedSoFar);
+            $progressPercent = $totalPotentialMappings > 0
+                ? round(($processedSoFar / $totalPotentialMappings) * 100, 1)
+                : 100;
+
             $message = sprintf(
-                'Erfolgreich %d neue Cross-Framework Mappings erstellt!',
+                'Batch %d: %d Mappings erstellt',
+                $currentBatch + 1,
                 $mappingsCreated
             );
-            if ($mappingsSkipped > 0) {
-                $message .= sprintf(' (%d bereits vorhanden, übersprungen)', $mappingsSkipped);
+            if ($hasMore) {
+                $message .= sprintf(' (%d%% - %d/%d verarbeitet, %d verbleibend)',
+                    $progressPercent,
+                    $processedSoFar,
+                    $totalPotentialMappings,
+                    $remaining
+                );
+            } else {
+                $message .= ' - Alle Mappings erstellt!';
             }
 
             // Additional debug info to help diagnose mapping issues
             $debugInfo = [
                 'frameworks_loaded' => count($frameworks),
                 'framework_details' => $frameworkCounts,
+                'batch_info' => [
+                    'current_batch' => $currentBatch,
+                    'batch_size' => $batchSize,
+                    'total_potential_mappings' => $totalPotentialMappings,
+                    'processed_so_far' => $processedSoFar,
+                    'remaining' => $remaining,
+                    'progress_percent' => $progressPercent,
+                    'has_more' => $hasMore,
+                    'next_batch' => $hasMore ? $currentBatch + 1 : null,
+                ],
             ];
 
             // Check if TISAX exists and has ISO controls
@@ -1127,6 +1158,14 @@ class ComplianceController extends AbstractController
                 'mappings_created' => $mappingsCreated,
                 'mappings_skipped' => $mappingsSkipped,
                 'mappings_total' => $mappingsCreated + $mappingsSkipped,
+                'has_more' => $hasMore,
+                'next_batch' => $hasMore ? $currentBatch + 1 : null,
+                'progress' => [
+                    'total' => $totalPotentialMappings,
+                    'processed' => $processedSoFar,
+                    'remaining' => $remaining,
+                    'percent' => $progressPercent,
+                ],
                 'debug' => $debugInfo
             ]);
 

@@ -105,6 +105,7 @@ class LoadIso27701v2025RequirementsCommand extends Command
                 'priority' => 'critical',
                 'data_source_mapping' => [
                     'iso_controls' => ['5.1', '5.2'],
+                    'iso27701_2019_ref' => '27701-5.2.1',
                     'audit_evidence' => true,
                 ],
             ],
@@ -116,6 +117,7 @@ class LoadIso27701v2025RequirementsCommand extends Command
                 'priority' => 'critical',
                 'data_source_mapping' => [
                     'iso_controls' => ['5.2'],
+                    'iso27701_2019_ref' => '27701-5.2.2',
                     'audit_evidence' => true,
                 ],
             ],
@@ -127,6 +129,7 @@ class LoadIso27701v2025RequirementsCommand extends Command
                 'priority' => 'critical',
                 'data_source_mapping' => [
                     'iso_controls' => ['5.1'],
+                    'iso27701_2019_ref' => '27701-5.3',
                     'audit_evidence' => true,
                 ],
             ],
@@ -138,6 +141,7 @@ class LoadIso27701v2025RequirementsCommand extends Command
                 'priority' => 'critical',
                 'data_source_mapping' => [
                     'iso_controls' => ['5.1'],
+                    'iso27701_2019_ref' => '27701-5.4.1',
                     'audit_evidence' => true,
                 ],
             ],

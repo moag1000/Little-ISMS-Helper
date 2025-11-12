@@ -1,0 +1,141 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Error Logs - Monitoring{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="bi bi-exclamation-triangle"></i> Error Logs</h1>
+        <a href="{{ path('monitoring_health') }}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Back to Health
+        </a>
+    </div>
+
+    {% if has_log %}
+        {# Statistics #}
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card border-danger">
+                    <div class="card-body text-center">
+                        <h5 class="card-title text-muted">Total Errors</h5>
+                        <p class="display-6 text-danger">{{ error_stats.total }}</p>
+                        <small>Shown (last {{ errors|length }})</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-warning">
+                    <div class="card-body text-center">
+                        <h5 class="card-title text-muted">File Size</h5>
+                        <p class="display-6 text-warning small">{{ error_stats.file_size }}</p>
+                        <small>Log file size</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card border-info">
+                    <div class="card-body">
+                        <h5 class="card-title text-muted">By Level</h5>
+                        {% for level, count in error_stats.by_level %}
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="badge bg-{{ level == 'ERROR' ? 'danger' : (level == 'WARNING' ? 'warning' : 'info') }}">
+                                    {{ level }}
+                                </span>
+                                <span>{{ count }}</span>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# Log File Info #}
+        <div class="alert alert-secondary mb-4">
+            <strong>Log File:</strong> <code>{{ log_file }}</code><br>
+            <strong>Last Modified:</strong> {{ error_stats.last_modified }}
+        </div>
+
+        {# Filter Options #}
+        <div class="card mb-4">
+            <div class="card-body">
+                <form method="get" class="row g-3">
+                    <div class="col-auto">
+                        <label for="limit" class="col-form-label">Show entries:</label>
+                    </div>
+                    <div class="col-auto">
+                        <select name="limit" id="limit" class="form-select" onchange="this.form.submit()">
+                            <option value="50" {{ app.request.query.get('limit') == 50 ? 'selected' : '' }}>50</option>
+                            <option value="100" {{ app.request.query.get('limit') == 100 or not app.request.query.get('limit') ? 'selected' : '' }}>100</option>
+                            <option value="200" {{ app.request.query.get('limit') == 200 ? 'selected' : '' }}>200</option>
+                            <option value="500" {{ app.request.query.get('limit') == 500 ? 'selected' : '' }}>500</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        {# Error List #}
+        <div class="card">
+            <div class="card-header bg-danger text-white">
+                <h5 class="mb-0">
+                    <i class="bi bi-list-ul"></i> Recent Errors
+                </h5>
+            </div>
+            <div class="card-body p-0">
+                {% if errors|length > 0 %}
+                    <div class="list-group list-group-flush">
+                        {% for error in errors %}
+                            <div class="list-group-item">
+                                <div class="d-flex w-100 justify-content-between align-items-start">
+                                    <div class="flex-grow-1">
+                                        <div class="d-flex align-items-center mb-2">
+                                            <span class="badge bg-{{ error.level == 'ERROR' ? 'danger' : (error.level == 'WARNING' ? 'warning text-dark' : (error.level == 'CRITICAL' ? 'dark' : 'info')) }} me-2">
+                                                {{ error.level }}
+                                            </span>
+                                            <small class="text-muted">
+                                                <i class="bi bi-clock"></i> {{ error.timestamp }}
+                                            </small>
+                                            <span class="badge bg-secondary ms-2">{{ error.channel }}</span>
+                                        </div>
+                                        <p class="mb-1 font-monospace small">{{ error.message|slice(0, 300) }}{% if error.message|length > 300 %}...{% endif %}</p>
+                                        <details class="mt-2">
+                                            <summary class="text-muted small" style="cursor: pointer;">
+                                                <i class="bi bi-code-square"></i> Show full log entry
+                                            </summary>
+                                            <pre class="mt-2 mb-0 small bg-light p-3 rounded">{{ error.raw }}</pre>
+                                        </details>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="p-4 text-center">
+                        <i class="bi bi-check-circle text-success fs-1"></i>
+                        <p class="mt-2">No errors found in the log file!</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        {# Warning Box #}
+        <div class="alert alert-warning mt-4">
+            <h5><i class="bi bi-exclamation-triangle"></i> Important Notes</h5>
+            <ul class="mb-0">
+                <li>Log entries are shown in reverse chronological order (most recent first)</li>
+                <li>Only the most recent entries are displayed based on the selected limit</li>
+                <li>For full log analysis, consider downloading the log file or using log management tools</li>
+                <li>Large log files may impact performance - consider log rotation</li>
+            </ul>
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            <h5><i class="bi bi-info-circle"></i> No Log File Found</h5>
+            <p class="mb-0">
+                The log file <code>{{ log_file }}</code> does not exist yet.
+                Errors will be logged here once they occur.
+            </p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
