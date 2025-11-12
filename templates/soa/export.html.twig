@@ -220,10 +220,29 @@
         @page {
             margin: 2cm;
         }
+
+        /* Utility Classes */
+        .text-center {
+            text-align: center;
+        }
+
+        .text-center-mb-20 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .text-light-gray {
+            color: #a0aec0;
+        }
+
+        .fs-08-light-gray {
+            font-size: 0.8rem;
+            color: #a0aec0;
+        }
     </style>
 </head>
 <body>
-    <div class="no-print" style="text-align: center; margin-bottom: 20px;">
+    <div class="no-print text-center-mb-20">
         <button onclick="window.print()" class="btn">🖨️ Drucken / PDF speichern</button>
         <a href="{{ path('app_soa_index') }}" class="btn btn-secondary">← Zurück zur Übersicht</a>
     </div>
@@ -271,10 +290,10 @@
         <thead>
             <tr>
                 <th>Kategorie</th>
-                <th style="text-align: center;">Gesamt</th>
-                <th style="text-align: center;">Anwendbar</th>
-                <th style="text-align: center;">Implementiert</th>
-                <th style="text-align: center;">Compliance-Rate</th>
+                <th class="text-center">Gesamt</th>
+                <th class="text-center">Anwendbar</th>
+                <th class="text-center">Implementiert</th>
+                <th class="text-center">Compliance-Rate</th>
             </tr>
         </thead>
         <tbody>
@@ -285,10 +304,10 @@
                 {% set rate = applicable|length > 0 ? (implemented|length / applicable|length * 100)|round : 0 %}
                 <tr>
                     <td><strong>{{ category }}</strong></td>
-                    <td style="text-align: center;">{{ cat_controls|length }}</td>
-                    <td style="text-align: center;">{{ applicable|length }}</td>
-                    <td style="text-align: center;">{{ implemented|length }}</td>
-                    <td style="text-align: center;">{{ rate }}%</td>
+                    <td class="text-center">{{ cat_controls|length }}</td>
+                    <td class="text-center">{{ applicable|length }}</td>
+                    <td class="text-center">{{ implemented|length }}</td>
+                    <td class="text-center">{{ rate }}%</td>
                 </tr>
             {% endfor %}
         </tbody>
@@ -302,9 +321,9 @@
                 <th>Control ID</th>
                 <th>Name</th>
                 <th>Kategorie</th>
-                <th style="text-align: center;">Anwendbar</th>
+                <th class="text-center">Anwendbar</th>
                 <th>Status</th>
-                <th style="text-align: center;">Fortschritt</th>
+                <th class="text-center">Fortschritt</th>
             </tr>
         </thead>
         <tbody>
@@ -313,7 +332,7 @@
                 <td><strong>{{ control.controlId }}</strong></td>
                 <td>{{ control.name }}</td>
                 <td><span class="badge badge-info">{{ control.category }}</span></td>
-                <td style="text-align: center;">
+                <td class="text-center">
                     {% if control.applicable %}
                         <span class="badge badge-success">✓</span>
                     {% else %}
@@ -333,7 +352,7 @@
                         <span class="badge badge-secondary">N/A</span>
                     {% endif %}
                 </td>
-                <td style="text-align: center;">
+                <td class="text-center">
                     {% if control.applicable %}
                         {{ control.implementationPercentage }}%
                     {% else %}
@@ -371,7 +390,7 @@
                 {% if control.justification %}
                     {{ control.justification }}
                 {% else %}
-                    <em style="color: #a0aec0;">Keine Begründung angegeben</em>
+                    <em class="text-light-gray">Keine Begründung angegeben</em>
                 {% endif %}
             </div>
         </div>
@@ -403,7 +422,7 @@
                     {% if control.responsiblePerson %}
                         {{ control.responsiblePerson }}
                     {% else %}
-                        <em style="color: #a0aec0;">Nicht zugewiesen</em>
+                        <em class="text-light-gray">Nicht zugewiesen</em>
                     {% endif %}
                 </div>
             </div>
@@ -416,7 +435,7 @@
             {% endif %}
         {% endif %}
 
-        <div class="detail-section" style="font-size: 0.8rem; color: #a0aec0;">
+        <div class="detail-section fs-08-light-gray">
             <em>Zuletzt aktualisiert: {{ control.updatedAt|date('d.m.Y H:i') }}</em>
         </div>
     </div>
