@@ -1395,8 +1395,8 @@ Diese Phase implementierte die grundlegenden Data Reuse Beziehungen aus [DATA_RE
 
 ## 🎛️ Phase 6L: Unified Admin Panel (Priorität HOCH)
 
-**Status:** 🔄 Geplant
-**Aufwand:** 5-7 Tage
+**Status:** 🔄 In Arbeit (Phase 6L-A ✅ + Phase 6L-B Core ✅)
+**Aufwand:** 5-7 Tage (2-3 Stunden bisher)
 **Impact:** HOCH (Konsolidierung & Benutzererfahrung)
 
 ### Überblick
@@ -1516,8 +1516,10 @@ Das System hat aktuell zahlreiche Einstellungsoptionen und Admin-Features, die �
 
 ---
 
-### ⚙️ Phase 6L-B: System Configuration UI (2-3 Tage)
+### ✅ Phase 6L-B: System Configuration UI (ABGESCHLOSSEN - Core Features)
 
+**Status:** ✅ Core Features Complete (3 von 5 Settings-Kategorien)
+**Aufwand:** 1-2 Stunden (geplant: 2-3 Tage für vollständige Implementierung)
 **Zweck:** Web-basierte Verwaltung von Systemeinstellungen (aktuell nur in `.env`/YAML)
 
 #### Features
@@ -1592,21 +1594,47 @@ class SystemSettings {
 - Versionierung möglich (Audit Log)
 - Verschlüsselung für sensitive Daten (Sodium Crypto)
 
-#### Akzeptanzkriterien
-- [ ] SystemSettings Entity (category, key, value, encrypted)
-- [ ] SystemSettingsRepository
-- [ ] SystemSettingsController (CRUD)
-- [ ] 5 Settings-Kategorien implementiert
-- [ ] Settings Forms (ApplicationSettingsType, EmailSettingsType, etc.)
-- [ ] Test Email Function (für SMTP)
-- [ ] Test Connection (für OAuth/SAML)
-- [ ] Encryption für sensitive Werte (Passwörter, Secrets)
-- [ ] Migration
-- [ ] Templates (5 Settings-Seiten)
-- [ ] Validation (Email, URL, Integer Ranges)
-- [ ] Tests geschrieben
-- [ ] **Safe Guard:** .env Fallback (wenn DB-Settings leer)
-- [ ] Dokumentation (Settings Guide)
+#### Implementierte Features (Phase 6L-B Core)
+- ✅ SystemSettings Entity (175 Zeilen) - category, key, value (JSON), encryptedValue, isEncrypted
+- ✅ SystemSettingsRepository (125 Zeilen) - getSetting, setSetting, getSettingsByCategory, getAllSettingsArray, deleteSetting
+- ✅ Migration (Version20251112000000) - system_settings table mit UNIQUE constraint
+- ✅ SystemSettingsController (225 Zeilen) - 4 Routes: index, application, security, features
+- ✅ Settings Templates (4 Seiten):
+  - templates/admin/settings/index.html.twig (Übersicht mit Karten für jede Kategorie)
+  - templates/admin/settings/application.html.twig (Locale, Timezone, Pagination, Date Formats)
+  - templates/admin/settings/security.html.twig (Session Lifetime, Login Attempts, Password Policy, 2FA)
+  - templates/admin/settings/features.html.twig (Feature Flags: Dark Mode, Global Search, Audit Log)
+- ✅ Translation Keys (60+ in DE + EN) - Komplette admin.settings.* Hierarchie
+- ✅ Admin Navigation Update - Settings Link aktiv (statt "Soon" Badge)
+
+#### Deferred Features (für zukünftige Phasen)
+- ⏸️ Email/SMTP Settings (requires SMTP configuration implementation)
+- ⏸️ Authentication Provider Settings (OAuth/SAML)
+- ⏸️ Symfony Form Types (using plain HTML forms for now)
+- ⏸️ Test Email Function
+- ⏸️ Test Connection Buttons
+- ⏸️ Full Encryption Implementation (placeholder exists)
+- ⏸️ Comprehensive Validation
+- ⏸️ Tests (deferred to Phase 6B)
+- ⏸️ .env Fallback Safe Guard
+- ⏸️ Documentation
+
+#### Akzeptanzkriterien (Core Features)
+- [x] SystemSettings Entity (category, key, value, encrypted) ✅
+- [x] SystemSettingsRepository ✅
+- [x] SystemSettingsController (CRUD) ✅
+- [x] 3 Settings-Kategorien implementiert (Application, Security, Features) ✅
+- [ ] 5 Settings-Kategorien implementiert (Email, Authentication deferred)
+- [ ] Settings Forms (ApplicationSettingsType, EmailSettingsType, etc.) - Using HTML forms
+- [ ] Test Email Function (für SMTP) - deferred
+- [ ] Test Connection (für OAuth/SAML) - deferred
+- [x] Encryption Placeholder für sensitive Werte ✅
+- [x] Migration ✅
+- [x] Templates (4 Settings-Seiten) ✅
+- [ ] Validation (Email, URL, Integer Ranges) - Basic HTML5 validation
+- [ ] Tests geschrieben - deferred to Phase 6B
+- [ ] **Safe Guard:** .env Fallback (wenn DB-Settings leer) - deferred
+- [ ] Dokumentation (Settings Guide) - deferred
 
 ---
 
