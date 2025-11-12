@@ -212,12 +212,12 @@ Der Wizard führt Sie durch:
 
 ### Automatisierte Setup-Tools ✨ NEU!
 
-Wir bieten drei professionelle Setup-Tools für eine fehlerfreie Installation:
+Wir bieten professionelle Setup-Tools für eine fehlerfreie Installation im `scripts/` Verzeichnis:
 
 **1. Umfassende Validierung (18+ Checks):**
 ```bash
-chmod +x validate-setup.sh
-./validate-setup.sh
+chmod +x scripts/setup/validate-setup.sh
+scripts/setup/validate-setup.sh
 ```
 
 Prüft automatisch:
@@ -229,8 +229,8 @@ Prüft automatisch:
 
 **2. Sichere Datenbank-Erstellung:**
 ```bash
-chmod +x create-database.sh
-./create-database.sh
+chmod +x scripts/setup/create-database.sh
+scripts/setup/create-database.sh
 ```
 
 Features:
@@ -242,11 +242,13 @@ Features:
 
 **3. Datenbank-Reset (bei Fehlern):**
 ```bash
-chmod +x reset-database.sh
-./reset-database.sh
+chmod +x scripts/setup/reset-database.sh
+scripts/setup/reset-database.sh
 ```
 
 📖 Siehe [SETUP_TOOLS.md](docs/setup/SETUP_TOOLS.md) für vollständige Dokumentation.
+
+> **Note:** Backward-compatible wrappers available in root directory (e.g., `./validate-setup.sh` → `scripts/setup/validate-setup.sh`)
 
 ### Troubleshooting
 
@@ -283,8 +285,8 @@ php bin/console app:setup-permissions
 **Problem: Migration-Fehler "Column not found" oder "already exists"**
 ```bash
 # Datenbank komplett zurücksetzen und neu aufsetzen:
-chmod +x reset-database.sh
-./reset-database.sh
+chmod +x scripts/setup/reset-database.sh
+./scripts/setup/reset-database.sh
 
 # Oder manuell:
 php bin/console doctrine:database:drop --force
@@ -292,6 +294,8 @@ php bin/console doctrine:database:create
 php bin/console doctrine:migrations:migrate --no-interaction
 php bin/console app:setup-permissions --admin-email=admin@example.com --admin-password=admin123
 ```
+
+> **Note:** Backward-compatible wrapper available at `./reset-database.sh`
 
 ### Produktions-Deployment
 
@@ -637,10 +641,12 @@ Das Projekt nutzt automatisierte Tools zur Lizenzüberwachung:
 
 ```bash
 # Lizenzbericht generieren
-./license-report.sh
+scripts/tools/license-report.sh
 
 # Ausgabe: docs/reports/license-report.md
 ```
+
+> **Note:** Backward-compatible wrapper available at `./license-report.sh`
 
 **CI/CD Integration:**
 - ✅ Automatische Lizenzprüfung bei jedem Pull Request

@@ -525,6 +525,12 @@ If you encountered this error before the fix:
 ### Option 1: Automated Reset (Recommended)
 
 ```bash
+chmod +x scripts/setup/reset-database.sh
+scripts/setup/reset-database.sh
+```
+
+Or use the backward-compatible wrapper:
+```bash
 chmod +x reset-database.sh
 ./reset-database.sh
 ```
@@ -562,7 +568,7 @@ php bin/console doctrine:migrations:status
 php bin/console doctrine:schema:validate
 
 # 3. Run setup validation
-./test-setup.sh
+scripts/setup/test-setup.sh
 
 # 4. Check database structure
 php bin/console doctrine:schema:update --dump-sql
