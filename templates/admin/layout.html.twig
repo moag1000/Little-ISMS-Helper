@@ -257,20 +257,20 @@
                     <div class="sidebar-section-title">{{ 'admin.section.data_management'|trans }}</div>
                     <ul>
                         <li>
-                            <a href="{{ path('data_management_backup_index') }}"
-                               class="{% if app.request.get('_route') starts with 'data_management_backup' %}active{% endif %}">
+                            <a href="{{ path('data_backup_index') }}"
+                               class="{% if app.request.get('_route') starts with 'data_backup' %}active{% endif %}">
                                 <i class="bi bi-hdd"></i> {{ 'admin.nav.backup'|trans }}
                             </a>
                         </li>
                         <li>
-                            <a href="{{ path('data_management_export') }}"
-                               class="{% if app.request.get('_route') == 'data_management_export' %}active{% endif %}">
+                            <a href="{{ path('data_export_index') }}"
+                               class="{% if app.request.get('_route') starts with 'data_export' %}active{% endif %}">
                                 <i class="bi bi-download"></i> {{ 'admin.nav.export'|trans }}
                             </a>
                         </li>
                         <li>
-                            <a href="{{ path('data_management_import') }}"
-                               class="{% if app.request.get('_route') starts with 'data_management_import' %}active{% endif %}">
+                            <a href="{{ path('data_import_index') }}"
+                               class="{% if app.request.get('_route') starts with 'data_import' %}active{% endif %}">
                                 <i class="bi bi-upload"></i> {{ 'admin.nav.import'|trans }}
                             </a>
                         </li>

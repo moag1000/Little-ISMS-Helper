@@ -1973,21 +1973,152 @@ class SystemSettings {
 
 ---
 
+### ✅ Phase 6L-I: Admin Navigation Refinement (0.5 Tage) - ABGESCHLOSSEN
+
+**Zweck:** Verbesserung der Admin-Portal-Navigation und Konsolidierung der Routen
+**Status:** ✅ 100% Abgeschlossen (2024-11-12)
+**Aufwand:** ~3 Stunden
+
+#### Probleme vor dieser Phase
+
+1. **Keine klare Einstiegspunkt:** Kein "Admin Portal" Link in der Hauptnavigation
+2. **Verstreute Admin-Links:** User, Modules, Compliance, Licensing einzeln in Hauptnav
+3. **Unvollständige Admin-Sidebar:** Nur 7 von 16 Admin-Funktionen verlinkt
+4. **Inkonsistente Routen:** MFA unter `/mfa-token` statt `/admin/mfa`
+5. **Fehlende Module in Sidebar:** Permissions, Sessions, MFA, Monitoring, Data Management
+
+#### Implementierte Features
+
+**1. Hauptnavigation-Restrukturierung**
+- ✅ Zentraler "Admin Portal" Link hinzugefügt (ersetzt 4 einzelne Admin-Links)
+- ✅ Icon: `bi-gear-fill`
+- ✅ Active-State für alle Admin-Routen (`admin_*`, `user_management_*`, `role_management_*`, `tenant_management_*`)
+- ✅ Position: Nach Audit Log, vor Footer
+- ✅ Nur für `ROLE_ADMIN` sichtbar
+
+**2. Admin-Sidebar-Erweiterung**
+- ✅ **Admin Dashboard** (neu): Link zu `/admin`
+- ✅ **User & Access Management** (6 Links):
+  - Tenants (existing)
+  - Users (existing)
+  - Roles (existing)
+  - Permissions (neu hinzugefügt)
+  - Sessions (neu hinzugefügt)
+  - MFA Management (neu hinzugefügt)
+- ✅ **System Configuration** (1 Link):
+  - Settings (existing)
+- ✅ **Modules & Features** (2 Links):
+  - Module Management (neu strukturiert)
+  - Compliance Management (neu strukturiert)
+- ✅ **Monitoring & Logs** (2 Links):
+  - System Health (neu hinzugefügt)
+  - Audit Log (existing, besser strukturiert)
+- ✅ **Data Management** (3 Links):
+  - Backup (neu hinzugefügt)
+  - Export (neu hinzugefügt)
+  - Import (neu hinzugefügt)
+- ✅ **Licensing** (1 Link):
+  - License Management (neu strukturiert)
+
+**Gesamt:** 16 Admin-Funktionen in 6 logischen Sektionen (vorher: 7 Funktionen ohne Struktur)
+
+**3. Routen-Konsolidierung**
+- ✅ MFA Token Controller: `/mfa-token` → `/admin/mfa`
+- ✅ Alle MFA-Routen umbenannt: `app_mfa_token_*` → `admin_mfa_*`
+- ✅ MFA-Templates aktualisiert (4 Dateien): index, show, edit, new
+- ✅ Data Management Routen korrigiert:
+  - `data_management_backup_index` → `data_backup_index`
+  - `data_management_export` → `data_export_index`
+  - `data_management_import` → `data_import_index`
+
+**4. Übersetzungen**
+- ✅ 28 neue Translation-Keys hinzugefügt (DE + EN):
+  - `nav.admin_portal`: "Admin Portal" / "Admin Portal"
+  - `admin.title`: "Administration" / "Administration"
+  - `admin.nav.*`: Dashboard, Tenants, Users, Roles, Permissions, Sessions, MFA, Settings, Module Management, Compliance Management, System Health, Audit Log, Backup, Export, Import, License Management, Back to App
+  - `admin.section.*`: User Access, System Config, Modules, Monitoring, Data Management, Licensing, Navigation
+  - `admin.breadcrumb.home`: "Admin" / "Admin"
+
+**5. Code-Dateien geändert**
+- ✅ `src/Controller/MfaTokenController.php` (18 Zeilen)
+- ✅ `templates/admin/layout.html.twig` (86 Zeilen hinzugefügt)
+- ✅ `templates/base.html.twig` (5 Zeilen)
+- ✅ `templates/mfa_token/*.html.twig` (4 Dateien, Route-Namen aktualisiert)
+- ✅ `translations/messages.de.yaml` (29 Zeilen)
+- ✅ `translations/messages.en.yaml` (29 Zeilen)
+
+**Gesamt:** 9 Dateien geändert, +158 Zeilen, -23 Zeilen
+
+#### Vorher/Nachher-Vergleich
+
+| Aspekt | Vorher | Nachher |
+|--------|--------|---------|
+| **Admin-Links in Hauptnav** | 4 einzelne Links | 1 zentraler "Admin Portal" Link |
+| **Admin-Sidebar Links** | 7 Links (unstrukturiert) | 16 Links in 6 Sektionen |
+| **MFA Route** | `/mfa-token` | `/admin/mfa` ✅ |
+| **Fehlende Module** | 9 Module nicht verlinkt | Alle 16 Module verlinkt ✅ |
+| **Navigation-Hierarchie** | Flach, unübersichtlich | 6 logische Sektionen ✅ |
+| **Discoverability** | Admin-Funktionen schwer zu finden | Klarer Einstiegspunkt ✅ |
+
+#### Akzeptanzkriterien
+- [x] Zentraler "Admin Portal" Link in Hauptnavigation ✅
+- [x] Alle Admin-Funktionen in Admin-Sidebar verlinkt ✅
+- [x] 6 logische Sektionen in Sidebar ✅
+- [x] MFA-Routen nach `/admin/mfa` verschoben ✅
+- [x] Alle MFA-Templates aktualisiert ✅
+- [x] Data Management Routen korrigiert ✅
+- [x] 28 neue Übersetzungen (DE + EN) ✅
+- [x] Alle Routen validiert (mit `debug:router`) ✅
+- [x] Keine alten Route-Referenzen mehr vorhanden ✅
+- [x] ROADMAP.md aktualisiert ✅
+
+#### Benefits
+
+**Für Administratoren:**
+- ✅ Klarer Einstiegspunkt zum Admin Portal in Hauptnavigation
+- ✅ Alle Admin-Funktionen an einem Ort (16 statt 7)
+- ✅ Übersichtliche Kategorisierung (6 Sektionen)
+- ✅ Schnellerer Zugriff auf wichtige Funktionen
+- ✅ Keine versteckten Admin-Bereiche mehr
+
+**Für Entwickler:**
+- ✅ Konsistente Route-Struktur (alle unter `/admin/*`)
+- ✅ Klare Namenskonventionen (`admin_*` Prefix)
+- ✅ Wiederverwendbare Admin-Sidebar
+- ✅ Einfache Erweiterbarkeit
+
+**Für das Projekt:**
+- ✅ Professionelle Admin-UX
+- ✅ Enterprise-Ready Navigation
+- ✅ Wartbare Code-Struktur
+- ✅ Klare Separation: App vs. Admin
+
+#### Zeit-Investition
+- Analyse & Planung: 30 Min
+- Implementierung: 1.5 Stunden
+- Testing & Bugfixing: 30 Min
+- Dokumentation (ROADMAP): 30 Min
+
+**Gesamt:** ~3 Stunden
+
+---
+
 ## 📊 Phase 6L Zusammenfassung
 
 ### Gesamt-Aufwand
-**5-7 Tage** (aufgeteilt in 8 Subphasen)
+**5-7 Tage** (aufgeteilt in 9 Subphasen)
 
-| Subphase | Aufwand | Priorität |
-|----------|---------|-----------|
-| 6L-A: Admin Dashboard & Navigation | 1-2 Tage | KRITISCH |
-| 6L-B: System Configuration UI | 2-3 Tage | HOCH |
-| 6L-C: Tenant Management UI | 1-2 Tage | HOCH |
-| 6L-D: Extended User & Access Management | 1-2 Tage | MITTEL |
-| 6L-E: System Monitoring & Health | 1 Tag | MITTEL |
-| 6L-F: Data Management | 1 Tag | MITTEL |
-| 6L-G: Module & Compliance Integration | 0.5 Tage | NIEDRIG |
-| 6L-H: UI/UX Polish & Documentation | 0.5 Tage | NIEDRIG |
+| Subphase | Aufwand | Priorität | Status |
+|----------|---------|-----------|--------|
+| 6L-A: Admin Dashboard & Navigation | 1-2 Tage | KRITISCH | ✅ Abgeschlossen |
+| 6L-B: System Configuration UI | 2-3 Tage | HOCH | ✅ Abgeschlossen |
+| 6L-C: Tenant Management UI | 1-2 Tage | HOCH | 🔄 Teilweise |
+| 6L-D: Extended User & Access Management | 1-2 Tage | MITTEL | ✅ Abgeschlossen |
+| 6L-E: System Monitoring & Health | 1 Tag | MITTEL | ✅ Abgeschlossen |
+| 6L-F: Data Management | 1 Tag | MITTEL | ✅ Abgeschlossen |
+| 6L-G: Module & Compliance Integration | 0.5 Tage | NIEDRIG | ✅ Abgeschlossen |
+| 6L-H: UI/UX Polish & Documentation | 0.5 Tage | NIEDRIG | ✅ Abgeschlossen |
+| 6L-I: Admin Navigation Refinement | 0.5 Tage | HOCH | ✅ Abgeschlossen |
 
 ### Neue Komponenten
 
