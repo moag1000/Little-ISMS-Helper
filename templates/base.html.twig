@@ -17,17 +17,20 @@
         {# Custom styles - Loaded via AssetMapper with automatic versioning #}
         <link rel="stylesheet" href="{{ asset('styles.css') }}">
         <style>
-            /* Turbo Progress Bar */
+            /* Turbo Progress Bar - Cyberpunk Style */
             .turbo-progress-bar {
                 position: fixed;
                 display: block;
                 top: 0;
                 left: 0;
                 height: 3px;
-                background: #0d6efd;
-                z-index: 2147483647;
+                background: linear-gradient(90deg, #06b6d4, #ec4899, #8b5cf6);
+                z-index: var(--z-turbo-bar);
                 transition: width 300ms ease-out, opacity 150ms 150ms ease-in;
                 transform: translate3d(0, 0, 0);
+                box-shadow: 0 0 10px rgba(6, 182, 212, 0.6),
+                            0 0 20px rgba(236, 72, 153, 0.4),
+                            0 0 30px rgba(139, 92, 246, 0.3);
             }
 
             /* Loading state for body */
@@ -51,10 +54,10 @@
     {% endblock %}
 </head>
 <body data-turbo="true" data-controller="modal-manager">
-    <header class="header">
+    <header class="header" role="banner">
         <div class="header-container">
             <div class="header-logo">
-                <img src="{{ asset('favicon.svg') }}" alt="Little ISMS Helper Logo">
+                <img src="{{ asset('favicon.svg') }}" alt="Little ISMS Helper Logo" width="40" height="40">
                 <div>
                     <h1>{{ 'app.title'|trans }}</h1>
                     <p>{{ 'app.subtitle'|trans }}</p>
@@ -75,9 +78,9 @@
     </header>
 
     {% set current_route = app.request.get('_route') %}
-    <nav class="nav" data-turbo-permanent>
-        <ul>
-            <li><a href="{{ path('app_home') }}" class="{% if current_route starts with 'app_home' %}active{% endif %}" data-turbo-action="advance"><i class="bi bi-house"></i> {{ 'nav.home'|trans }}</a></li>
+    <nav class="nav" data-turbo-permanent aria-label="Main navigation" role="navigation">
+        <ul role="list">
+            <li><a href="{{ path('app_home') }}" class="{% if current_route starts with 'app_home' %}active{% endif %}" {% if current_route starts with 'app_home' %}aria-current="page"{% endif %} data-turbo-action="advance"><i class="bi bi-house" aria-hidden="true"></i> {{ 'nav.home'|trans }}</a></li>
             <li><a href="{{ path('app_dashboard') }}" class="{% if current_route starts with 'app_dashboard' %}active{% endif %}" data-turbo-action="advance"><i class="bi bi-speedometer2"></i> {{ 'nav.dashboard'|trans }}</a></li>
             <li><a href="{{ path('app_analytics_dashboard') }}" class="{% if current_route starts with 'app_analytics_' %}active{% endif %}" data-turbo-action="advance"><i class="bi bi-graph-up"></i> {{ 'nav.analytics'|trans }}</a></li>
             <li><a href="{{ path('app_context_index') }}" class="{% if current_route starts with 'app_context_' %}active{% endif %}" data-turbo-action="advance"><i class="bi bi-diagram-3"></i> {{ 'nav.context'|trans }}</a></li>
@@ -101,7 +104,7 @@
     </nav>
 
     <div class="container" data-controller="turbo">
-        <div class="content">
+        <div class="content" role="main">
             {# Flash Messages Container (will be converted to toasts) #}
             <div id="flash-messages" class="d-none">
                 {% for label, messages in app.flashes %}
@@ -117,7 +120,7 @@
         </div>
     </div>
 
-    <footer class="footer">
+    <footer class="footer" role="contentinfo">
         <p>{{ 'app.footer'|trans }}</p>
         <p class="footer-text-small">
             {{ 'app.powered_by'|trans({'%version%': constant('Symfony\\Component\\HttpKernel\\Kernel::VERSION')}) }}
