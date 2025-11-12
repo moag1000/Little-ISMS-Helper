@@ -2161,6 +2161,19 @@
     height: 8px;
 }
 
+/* Cross Framework Utilities */
+.bg-color-success {
+    background: var(--color-success);
+}
+
+.bg-color-warning {
+    background: var(--color-warning);
+}
+
+.bg-color-secondary {
+    background: var(--color-secondary);
+}
+
 /* ====================
    Responsive
    ==================== */
