@@ -96,6 +96,9 @@
             <li><a href="{{ path('app_audit_log_index') }}" class="{% if current_route starts with 'app_audit_log_' %}active{% endif %}" data-turbo-action="advance"><i class="bi bi-journal-text"></i> {{ 'nav.audit_log'|trans }}</a></li>
             {% if is_granted('ROLE_ADMIN') %}
             <li><a href="{{ path('user_management_index') }}" class="{% if current_route starts with 'user_management_' %}active{% endif %}" data-turbo-action="advance"><i class="bi bi-people"></i> {{ 'nav.users'|trans }}</a></li>
+            <li><a href="{{ path('admin_modules_index') }}" class="{% if current_route starts with 'admin_modules_' %}active{% endif %}" data-turbo-action="advance"><i class="bi bi-puzzle"></i> {{ 'nav.admin.modules'|trans }}</a></li>
+            <li><a href="{{ path('admin_compliance_index') }}" class="{% if current_route starts with 'admin_compliance_' %}active{% endif %}" data-turbo-action="advance"><i class="bi bi-shield-check"></i> {{ 'nav.admin.compliance'|trans }}</a></li>
+            <li><a href="{{ path('admin_licensing_index') }}" class="{% if current_route starts with 'admin_licensing' %}active{% endif %}" data-turbo-action="advance"><i class="bi bi-file-text"></i> {{ 'nav.admin.licensing'|trans }}</a></li>
             {% endif %}
         </ul>
     </nav>
