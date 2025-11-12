@@ -1,0 +1,148 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ user.fullName }} - {{ 'user.activity.title'|trans }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>
+            <i class="bi bi-activity"></i>
+            {{ 'user.activity.title'|trans }}: {{ user.fullName }}
+        </h1>
+        <a href="{{ path('user_management_show', {id: user.id}) }}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Zurück
+        </a>
+    </div>
+
+    {# Activity Statistics #}
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card border-primary">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-muted">{{ 'user.activity.total'|trans }}</h5>
+                    <p class="display-6 text-primary">{{ total_activities }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card border-info">
+                <div class="card-body">
+                    <h5 class="card-title text-muted">{{ 'user.activity.by_action'|trans }}</h5>
+                    {% for action, count in action_counts %}
+                        <div class="d-flex justify-content-between">
+                            <span class="badge bg-primary">{{ action }}</span>
+                            <span class="badge bg-secondary">{{ count }}</span>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Activity Timeline #}
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">
+                <i class="bi bi-clock-history"></i> Aktivitätsverlauf
+            </h5>
+        </div>
+        <div class="card-body">
+            {% if activities_by_date|length > 0 %}
+                {% for date, daily_activities in activities_by_date|reverse %}
+                    <div class="mb-4">
+                        <h6 class="text-muted border-bottom pb-2">
+                            <i class="bi bi-calendar"></i>
+                            {{ date|date('d.m.Y') }}
+                            <span class="badge bg-secondary">{{ daily_activities|length }}</span>
+                        </h6>
+
+                        <div class="timeline">
+                            {% for activity in daily_activities %}
+                                <div class="timeline-item mb-3 ps-4 border-start border-2 border-primary">
+                                    <div class="timeline-marker">
+                                        <small class="text-muted">{{ activity.createdAt|date('H:i:s') }}</small>
+                                    </div>
+                                    <div class="card">
+                                        <div class="card-body py-2">
+                                            <div class="d-flex justify-content-between align-items-start">
+                                                <div>
+                                                    <span class="badge bg-primary">{{ activity.action }}</span>
+                                                    {% if activity.entityType %}
+                                                        <span class="text-muted">
+                                                            {{ activity.entityType }}
+                                                            {% if activity.entityId %}
+                                                                <code>#{{ activity.entityId }}</code>
+                                                            {% endif %}
+                                                        </span>
+                                                    {% endif %}
+                                                </div>
+                                                {% if activity.ipAddress %}
+                                                    <small class="text-muted">
+                                                        <i class="bi bi-geo-alt"></i>
+                                                        <code>{{ activity.ipAddress }}</code>
+                                                    </small>
+                                                {% endif %}
+                                            </div>
+                                            {% if activity.description %}
+                                                <p class="mb-0 mt-2 text-muted small">
+                                                    {{ activity.description }}
+                                                </p>
+                                            {% endif %}
+                                            {% if activity.newValues %}
+                                                <details class="mt-2">
+                                                    <summary class="text-muted small" style="cursor: pointer;">
+                                                        Details anzeigen
+                                                    </summary>
+                                                    <pre class="mt-2 mb-0 small bg-light p-2 rounded">{{ activity.newValues }}</pre>
+                                                </details>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle"></i>
+                    Keine Aktivitäten für diesen Benutzer gefunden.
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    {# Filter Options #}
+    <div class="card mt-4">
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-auto">
+                    <label for="limit" class="col-form-label">Anzahl anzeigen:</label>
+                </div>
+                <div class="col-auto">
+                    <select name="limit" id="limit" class="form-select" onchange="this.form.submit()">
+                        <option value="50" {{ app.request.query.get('limit') == 50 ? 'selected' : '' }}>50</option>
+                        <option value="100" {{ app.request.query.get('limit') == 100 or not app.request.query.get('limit') ? 'selected' : '' }}>100</option>
+                        <option value="200" {{ app.request.query.get('limit') == 200 ? 'selected' : '' }}>200</option>
+                        <option value="500" {{ app.request.query.get('limit') == 500 ? 'selected' : '' }}>500</option>
+                    </select>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+.timeline {
+    position: relative;
+}
+.timeline-item {
+    position: relative;
+}
+.timeline-marker {
+    position: absolute;
+    left: -60px;
+    top: 0;
+}
+</style>
+{% endblock %}
