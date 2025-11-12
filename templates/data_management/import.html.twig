@@ -1,0 +1,99 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Data Import - Data Management{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="bi bi-box-arrow-in-down"></i> Data Import</h1>
+    </div>
+
+    {# Warning Banner #}
+    <div class="alert alert-danger mb-4">
+        <h5><i class="bi bi-exclamation-octagon"></i> Critical Warning</h5>
+        <p class="mb-0">
+            <strong>Data import can overwrite existing data!</strong>
+            Always create a backup before importing data. This feature is currently in preview mode
+            and does not execute actual imports yet.
+        </p>
+    </div>
+
+    {# Import Form #}
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">
+                <i class="bi bi-upload"></i> Upload Import File
+            </h5>
+        </div>
+        <div class="card-body">
+            <form method="post" action="{{ path('data_import_upload') }}" enctype="multipart/form-data">
+                <input type="hidden" name="_token" value="{{ csrf_token('data_import') }}">
+
+                <div class="mb-4">
+                    <label for="import_file" class="form-label">
+                        <strong>Select JSON File:</strong>
+                    </label>
+                    <input type="file"
+                           class="form-control"
+                           id="import_file"
+                           name="import_file"
+                           accept=".json"
+                           required>
+                    <div class="form-text">
+                        Upload a JSON file exported from this system. Only JSON format is currently supported.
+                    </div>
+                </div>
+
+                <div class="alert alert-info">
+                    <h6><i class="bi bi-info-circle"></i> Import Process</h6>
+                    <ol class="mb-0">
+                        <li>Upload your JSON export file</li>
+                        <li>Preview the data to be imported</li>
+                        <li>Confirm import (currently shows preview only)</li>
+                        <li>Data will be validated and imported</li>
+                    </ol>
+                </div>
+
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="bi bi-upload"></i> Upload and Preview
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {# Requirements #}
+    <div class="card mt-4">
+        <div class="card-header bg-secondary text-white">
+            <h5 class="mb-0">
+                <i class="bi bi-list-check"></i> Import Requirements
+            </h5>
+        </div>
+        <div class="card-body">
+            <h6>File Format:</h6>
+            <ul>
+                <li>Must be valid JSON format</li>
+                <li>Should be exported from this system's Data Export function</li>
+                <li>Maximum file size: 50 MB (configurable)</li>
+            </ul>
+
+            <h6>Before Importing:</h6>
+            <ul>
+                <li><strong>Create a database backup</strong> using the <a href="{{ path('data_backup_index') }}">Backup</a> function</li>
+                <li>Ensure you have sufficient disk space</li>
+                <li>Plan for potential system downtime during large imports</li>
+                <li>Test with a small dataset first</li>
+            </ul>
+
+            <h6>Limitations:</h6>
+            <ul class="mb-0">
+                <li>This feature is currently in <strong>preview mode</strong></li>
+                <li>Full import functionality requires additional validation logic</li>
+                <li>Entity relationships need manual verification</li>
+                <li>Duplicate detection is not yet implemented</li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

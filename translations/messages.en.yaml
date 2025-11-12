@@ -2358,3 +2358,74 @@ monitoring:
   related: Related Monitoring
   refresh: Refresh
   back_to_health: Back to Health
+
+# Phase 6L-F: Data Management
+data:
+  title: Data Management
+  backup:
+    title: Database Backup
+    create: Create Backup
+    list: Available Backups
+    filename: Filename
+    date: Date
+    size: Size
+    actions: Actions
+    download: Download
+    delete: Delete
+    retention_policy: 'Retention Policy: Only the last 7 backups are kept automatically'
+    location: 'Backup Location'
+    method: 'Backup Method: PostgreSQL pg_dump (SQL format)'
+    how_to_restore: How to Restore a Backup
+    restore_warning: 'Warning: Restoring a backup will overwrite all current data!'
+    success:
+      created: 'Backup successfully created: %filename%'
+      deleted: Backup successfully deleted
+    error:
+      invalid_token: Invalid CSRF token
+      create_failed: 'Backup failed: %error%'
+      not_found: Backup file not found
+  export:
+    title: Data Export
+    configure: Configure Export
+    format: Export Format
+    select_entities: Select Entities to Export
+    select_all: Select All
+    deselect_all: Deselect All
+    execute: Export Selected Entities
+    about: About Data Export
+    about_text: Export your data in JSON or CSV format. You can select specific entities or export all data.
+    format_json: JSON format preserves data types and is recommended for re-import
+    format_csv: CSV is better for spreadsheet applications
+    success:
+      exported: Data successfully exported
+    error:
+      invalid_token: Invalid CSRF token
+      no_entities: No entities selected
+  import:
+    title: Data Import
+    upload: Upload Import File
+    preview: Import Preview
+    execute: Execute Import
+    select_file: Select JSON File
+    upload_and_preview: Upload and Preview
+    process: Import Process
+    requirements: Import Requirements
+    file_format: File Format
+    before_importing: Before Importing
+    limitations: Limitations
+    warning:
+      critical: 'Critical Warning: Data import can overwrite existing data!'
+      backup_first: Always create a backup before importing
+      preview_mode: This feature is currently in preview mode
+      not_implemented: Import functionality is not yet fully implemented
+    stats:
+      total_entities: Total Entities
+      total_records: Total Records
+      status: Status
+    error:
+      invalid_token: Invalid CSRF token
+      no_file: No file uploaded
+      invalid_file: 'Invalid file: %error%'
+  setup:
+    title: Setup Wizard
+    link: Link to existing Deployment Wizard
