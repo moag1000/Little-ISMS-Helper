@@ -2020,6 +2020,11 @@
     border-top: 1px solid var(--color-border);
 }
 
+/* Person Show Utilities */
+.pre-wrap {
+    white-space: pre-wrap;
+}
+
 /* ====================
    Responsive
    ==================== */
