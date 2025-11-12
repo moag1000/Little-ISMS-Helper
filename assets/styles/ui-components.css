@@ -1946,6 +1946,27 @@
     margin-bottom: var(--spacing-sm);
 }
 
+/* Compliance Index Utilities */
+.alert-gradient-success {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    color: white;
+    border: none;
+    margin-bottom: var(--spacing-lg);
+}
+
+.h3-m0-mb-sm {
+    margin: 0 0 var(--spacing-sm) 0;
+}
+
+.text-lg-m0 {
+    font-size: 1.1rem;
+    margin: 0;
+}
+
+.text-danger-color {
+    color: var(--color-danger);
+}
+
 /* SOA Edit Utilities */
 .mt-sm-text-light {
     margin-top: var(--spacing-sm);
