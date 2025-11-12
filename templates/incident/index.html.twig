@@ -57,6 +57,73 @@
         </div>
     </div>
 
+    {# Filter Section #}
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0"><i class="bi bi-funnel"></i> {{ 'common.filters'|trans }}</h5>
+        </div>
+        <div class="card-body">
+            <form method="get" action="{{ path('app_incident_index') }}" class="row g-3">
+                <div class="col-md-2">
+                    <label for="filter-severity" class="form-label">{{ 'incident.field.severity'|trans }}</label>
+                    <select class="form-select" id="filter-severity" name="severity" onchange="this.form.submit()">
+                        <option value="">{{ 'common.all'|trans }}</option>
+                        <option value="low" {{ app.request.get('severity') == 'low' ? 'selected' : '' }}>{{ 'incident.severity.low'|trans }}</option>
+                        <option value="medium" {{ app.request.get('severity') == 'medium' ? 'selected' : '' }}>{{ 'incident.severity.medium'|trans }}</option>
+                        <option value="high" {{ app.request.get('severity') == 'high' ? 'selected' : '' }}>{{ 'incident.severity.high'|trans }}</option>
+                        <option value="critical" {{ app.request.get('severity') == 'critical' ? 'selected' : '' }}>{{ 'incident.severity.critical'|trans }}</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="filter-category" class="form-label">{{ 'incident.field.category'|trans }}</label>
+                    <select class="form-select" id="filter-category" name="category" onchange="this.form.submit()">
+                        <option value="">{{ 'common.all'|trans }}</option>
+                        {% if categoryStats|length > 0 %}
+                            {% for stat in categoryStats %}
+                                <option value="{{ stat.category }}" {{ app.request.get('category') == stat.category ? 'selected' : '' }}>
+                                    {{ ('incident.category.' ~ stat.category)|trans }} ({{ stat.count }})
+                                </option>
+                            {% endfor %}
+                        {% endif %}
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label for="filter-status" class="form-label">{{ 'incident.field.status'|trans }}</label>
+                    <select class="form-select" id="filter-status" name="status" onchange="this.form.submit()">
+                        <option value="">{{ 'common.all'|trans }}</option>
+                        <option value="reported" {{ app.request.get('status') == 'reported' ? 'selected' : '' }}>{{ 'incident.status.reported'|trans }}</option>
+                        <option value="in_investigation" {{ app.request.get('status') == 'in_investigation' ? 'selected' : '' }}>{{ 'incident.status.in_investigation'|trans }}</option>
+                        <option value="in_resolution" {{ app.request.get('status') == 'in_resolution' ? 'selected' : '' }}>{{ 'incident.status.in_resolution'|trans }}</option>
+                        <option value="resolved" {{ app.request.get('status') == 'resolved' ? 'selected' : '' }}>{{ 'incident.status.resolved'|trans }}</option>
+                        <option value="closed" {{ app.request.get('status') == 'closed' ? 'selected' : '' }}>{{ 'incident.status.closed'|trans }}</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label for="filter-data-breach" class="form-label">{{ 'incident.filter.data_breach'|trans|default('Data Breach') }}</label>
+                    <select class="form-select" id="filter-data-breach" name="data_breach_only" onchange="this.form.submit()">
+                        <option value="">{{ 'common.all'|trans }}</option>
+                        <option value="1" {{ app.request.get('data_breach_only') == '1' ? 'selected' : '' }}>{{ 'incident.filter.data_breach_only'|trans|default('Data Breach Only') }}</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label for="filter-nis2" class="form-label">NIS2</label>
+                    <select class="form-select" id="filter-nis2" name="nis2_only" onchange="this.form.submit()">
+                        <option value="">{{ 'common.all'|trans }}</option>
+                        <option value="1" {{ app.request.get('nis2_only') == '1' ? 'selected' : '' }}>{{ 'incident.filter.nis2_only'|trans|default('NIS2 Only') }}</option>
+                    </select>
+                </div>
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-search"></i> {{ 'common.filter'|trans }}
+                    </button>
+                    <a href="{{ path('app_incident_index') }}" class="btn btn-secondary">
+                        <i class="bi bi-x-circle"></i> {{ 'common.reset'|trans }}
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
     {# Category Statistics #}
     {% if categoryStats|length > 0 %}
         <div class="card mb-4">

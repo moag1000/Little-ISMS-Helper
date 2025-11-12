@@ -73,6 +73,11 @@ services:
         arguments:
             $projectDir: '%kernel.project_dir%'
 
+    # Configure Data Management Controller
+    App\Controller\DataManagementController:
+        arguments:
+            $projectDir: '%kernel.project_dir%'
+
     # Bind rate limiter factories for autowiring
     # Symfony automatically creates services named limiter.<name> from rate_limiter.yaml
     Symfony\Component\RateLimiter\RateLimiterFactory $loginLimiter: '@limiter.login'

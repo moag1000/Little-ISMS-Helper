@@ -49,6 +49,10 @@ RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-di
 # Copy application files
 COPY . .
 
+# Set environment variables for production
+ENV APP_ENV=prod
+ENV APP_DEBUG=0
+
 # Now run Symfony scripts (bin/console is now available)
 RUN composer run-script --no-dev auto-scripts || true
 

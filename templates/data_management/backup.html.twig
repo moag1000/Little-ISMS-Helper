@@ -1,0 +1,123 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Database Backup - Data Management{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="bi bi-database-fill-down"></i> Database Backup</h1>
+        <form method="post" action="{{ path('data_backup_create') }}" style="display: inline;">
+            <input type="hidden" name="_token" value="{{ csrf_token('backup_create') }}">
+            <button type="submit" class="btn btn-primary" onclick="return confirm('Create a new database backup?')">
+                <i class="bi bi-plus-circle"></i> Create Backup
+            </button>
+        </form>
+    </div>
+
+    {# Warning Box #}
+    <div class="alert alert-warning mb-4">
+        <h5><i class="bi bi-exclamation-triangle"></i> Important Information</h5>
+        <ul class="mb-0">
+            <li><strong>Retention Policy:</strong> Only the last 7 backups are kept automatically</li>
+            <li><strong>Backup Location:</strong> <code>{{ backup_dir }}</code></li>
+            <li><strong>Backup Method:</strong> PostgreSQL pg_dump (SQL format)</li>
+            <li><strong>Restore:</strong> Restoring backups requires database administrator access</li>
+            <li><strong>Security:</strong> Backup files contain sensitive data - store securely</li>
+        </ul>
+    </div>
+
+    {# Backups List #}
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">
+                <i class="bi bi-list-ul"></i> Available Backups ({{ backups|length }})
+            </h5>
+        </div>
+        <div class="card-body">
+            {% if backups|length > 0 %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Filename</th>
+                                <th>Date</th>
+                                <th>Size</th>
+                                <th class="text-end">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for backup in backups %}
+                                <tr>
+                                    <td>
+                                        <i class="bi bi-file-earmark-zip"></i>
+                                        <code>{{ backup.filename }}</code>
+                                    </td>
+                                    <td>
+                                        {{ backup.date|date('Y-m-d H:i:s') }}
+                                        <small class="text-muted">
+                                            ({{ 'now'|date('U') - backup.date < 3600 ? ((('now'|date('U') - backup.date) / 60)|round ~ ' min ago') : ((('now'|date('U') - backup.date) / 3600)|round ~ ' hours ago') }})
+                                        </small>
+                                    </td>
+                                    <td>
+                                        {% set size_kb = (backup.size / 1024)|round(2) %}
+                                        {% set size_mb = (backup.size / 1024 / 1024)|round(2) %}
+                                        {% if size_mb > 1 %}
+                                            {{ size_mb }} MB
+                                        {% else %}
+                                            {{ size_kb }} KB
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-end">
+                                        <a href="{{ path('data_backup_download', {filename: backup.filename}) }}"
+                                           class="btn btn-sm btn-outline-success">
+                                            <i class="bi bi-download"></i> Download
+                                        </a>
+                                        <form method="post"
+                                              action="{{ path('data_backup_delete', {filename: backup.filename}) }}"
+                                              style="display: inline;">
+                                            <input type="hidden" name="_token"
+                                                   value="{{ csrf_token('backup_delete_' ~ backup.filename) }}">
+                                            <button type="submit"
+                                                    class="btn btn-sm btn-outline-danger"
+                                                    onclick="return confirm('Delete this backup? This cannot be undone.')">
+                                                <i class="bi bi-trash"></i> Delete
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="text-center py-4">
+                    <i class="bi bi-inbox fs-1 text-muted"></i>
+                    <p class="mt-2 text-muted">No backups available. Create your first backup using the button above.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    {# How to Restore #}
+    <div class="card mt-4">
+        <div class="card-header bg-info text-white">
+            <h5 class="mb-0">
+                <i class="bi bi-info-circle"></i> How to Restore a Backup
+            </h5>
+        </div>
+        <div class="card-body">
+            <p>To restore a backup, follow these steps:</p>
+            <ol>
+                <li>Download the backup file using the Download button</li>
+                <li>Access your PostgreSQL server with administrator privileges</li>
+                <li>Drop the existing database (if needed): <code>DROP DATABASE your_database;</code></li>
+                <li>Create a new database: <code>CREATE DATABASE your_database;</code></li>
+                <li>Restore the backup: <code>psql -U postgres -d your_database -f backup_file.sql</code></li>
+            </ol>
+            <div class="alert alert-danger mt-3 mb-0">
+                <strong>Warning:</strong> Restoring a backup will overwrite all current data. Make sure to create a backup of the current state before restoring!
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
