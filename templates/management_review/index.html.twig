@@ -33,7 +33,7 @@
                     <div class="card-body">
                         <div class="d-flex align-items-center">
                             <div class="flex-shrink-0">
-                                <i class="bi bi-collection text-primary" style="font-size: 2rem;"></i>
+                                <i class="bi bi-collection text-primary icon-2rem"></i>
                             </div>
                             <div class="ms-3">
                                 <h6 class="text-muted mb-1">{{ 'management_review.statistics.total'|trans }}</h6>
@@ -49,7 +49,7 @@
                     <div class="card-body">
                         <div class="d-flex align-items-center">
                             <div class="flex-shrink-0">
-                                <i class="bi bi-hourglass-split text-warning" style="font-size: 2rem;"></i>
+                                <i class="bi bi-hourglass-split text-warning icon-2rem"></i>
                             </div>
                             <div class="ms-3">
                                 <h6 class="text-muted mb-1">{{ 'management_review.statistics.planned'|trans }}</h6>
@@ -65,7 +65,7 @@
                     <div class="card-body">
                         <div class="d-flex align-items-center">
                             <div class="flex-shrink-0">
-                                <i class="bi bi-check-circle text-success" style="font-size: 2rem;"></i>
+                                <i class="bi bi-check-circle text-success icon-2rem"></i>
                             </div>
                             <div class="ms-3">
                                 <h6 class="text-muted mb-1">{{ 'management_review.statistics.completed'|trans }}</h6>
@@ -81,7 +81,7 @@
                     <div class="card-body">
                         <div class="d-flex align-items-center">
                             <div class="flex-shrink-0">
-                                <i class="bi bi-calendar-event text-info" style="font-size: 2rem;"></i>
+                                <i class="bi bi-calendar-event text-info icon-2rem"></i>
                             </div>
                             <div class="ms-3">
                                 <h6 class="text-muted mb-1">{{ 'management_review.statistics.this_year'|trans }}</h6>
@@ -201,7 +201,7 @@
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                     {{ 'common.cancel'|trans }}
                 </button>
-                <form method="post" action="{{ path('app_management_review_delete', {id: review.id}) }}" style="display: inline;">
+                <form method="post" action="{{ path('app_management_review_delete', {id: review.id}) }}" class="d-inline">
                     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ review.id) }}">
                     <button type="submit" class="btn btn-danger">
                         <i class="bi bi-trash"></i> {{ 'common.delete'|trans }}
