@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route('/admin/data')]
@@ -19,7 +20,9 @@ class DataManagementController extends AbstractController
 {
     private string $backupDir;
 
-    public function __construct(string $projectDir)
+    public function __construct(
+        #[Autowire('%kernel.project_dir%')] string $projectDir
+    )
     {
         $this->backupDir = $projectDir . '/var/backups';
 
