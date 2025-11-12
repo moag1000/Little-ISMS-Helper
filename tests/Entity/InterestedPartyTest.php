@@ -235,7 +235,8 @@ class InterestedPartyTest extends TestCase
     {
         $party = new InterestedParty();
 
-        $this->assertEquals(0, $party->getEngagementScore());
+        // Initial score is 20 because no issues = +20 points
+        $this->assertEquals(20, $party->getEngagementScore());
     }
 
     public function testGetEngagementScoreCalculatesFromSatisfaction(): void
@@ -243,7 +244,8 @@ class InterestedPartyTest extends TestCase
         $party = new InterestedParty();
         $party->setSatisfactionLevel(5); // 5/5 * 50 = 50
 
-        $this->assertEquals(50, $party->getEngagementScore());
+        // 50 (satisfaction) + 20 (no issues) = 70
+        $this->assertEquals(70, $party->getEngagementScore());
     }
 
     public function testGetEngagementScoreIncludesRecentCommunication(): void
@@ -252,7 +254,8 @@ class InterestedPartyTest extends TestCase
         $party->setSatisfactionLevel(5); // 50 points
         $party->setLastCommunication(new \DateTime('-15 days')); // +30 points (within 30 days)
 
-        $this->assertEquals(80, $party->getEngagementScore());
+        // 50 (satisfaction) + 30 (recent communication) + 20 (no issues) = 100
+        $this->assertEquals(100, $party->getEngagementScore());
     }
 
     public function testGetEngagementScoreIncludesNoIssues(): void
@@ -271,7 +274,8 @@ class InterestedPartyTest extends TestCase
         $party->setSatisfactionLevel(5); // 50 points
         $party->setLastCommunication(new \DateTime('-60 days')); // +20 points (31-90 days)
 
-        $this->assertEquals(70, $party->getEngagementScore());
+        // 50 (satisfaction) + 20 (older communication) + 20 (no issues) = 90
+        $this->assertEquals(90, $party->getEngagementScore());
     }
 
     public function testGetEngagementScoreDecreasesWithOutstandingIssues(): void

@@ -217,8 +217,8 @@ class SupplierTest extends TestCase
         $supplier->setHasISO27001(false);
         $supplier->setHasDPA(false);
 
-        // 40 (critical) + 30 (no security score) + 10 (no ISO27001) + 10 (no DPA) = 90
-        $this->assertEquals(90, $supplier->calculateRiskScore());
+        // 40 (critical) + 30 (no security score) + 10 (no ISO27001) + 5 (no ISO22301 for critical) + 10 (no DPA) + 5 (overdue - no assessment) = 100
+        $this->assertEquals(100, $supplier->calculateRiskScore());
     }
 
     public function testCalculateRiskScoreWithGoodSecurityScore(): void
@@ -229,8 +229,8 @@ class SupplierTest extends TestCase
         $supplier->setHasISO27001(true);
         $supplier->setHasDPA(true);
 
-        // 15 (medium) + 3 (high security score) = 18
-        $this->assertEquals(18, $supplier->calculateRiskScore());
+        // 15 (medium) + 3 (high security score) + 5 (overdue - no lastSecurityAssessment) = 23
+        $this->assertEquals(23, $supplier->calculateRiskScore());
     }
 
     public function testCalculateRiskScoreIsCappedAt100(): void
