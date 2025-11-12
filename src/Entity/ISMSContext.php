@@ -99,7 +99,12 @@ class ISMSContext
     #[Groups(['isms_context:read'])]
     private ?\DateTimeInterface $updatedAt = null;
 
-    public function __construct()
+    
+    #[ORM\ManyToOne(targetEntity: Tenant::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Tenant $tenant = null;
+
+public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
     }
@@ -282,6 +287,17 @@ class ISMSContext
     public function setUpdatedAt(?\DateTimeInterface $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
+        return $this;
+    }
+
+    public function getTenant(): ?Tenant
+    {
+        return $this->tenant;
+    }
+
+    public function setTenant(?Tenant $tenant): static
+    {
+        $this->tenant = $tenant;
         return $this;
     }
 }

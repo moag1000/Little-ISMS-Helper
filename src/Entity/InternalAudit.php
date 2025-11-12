@@ -190,7 +190,12 @@ class InternalAudit
     #[Groups(['audit:read'])]
     private ?\DateTimeInterface $updatedAt = null;
 
-    public function __construct()
+    
+    #[ORM\ManyToOne(targetEntity: Tenant::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Tenant $tenant = null;
+
+public function __construct()
     {
         $this->scopedAssets = new ArrayCollection();
         $this->createdAt = new \DateTimeImmutable();
@@ -488,5 +493,16 @@ class InternalAudit
     public function isComplianceAudit(): bool
     {
         return $this->scopeType === 'compliance_framework' && $this->scopedFramework !== null;
+    }
+
+    public function getTenant(): ?Tenant
+    {
+        return $this->tenant;
+    }
+
+    public function setTenant(?Tenant $tenant): static
+    {
+        $this->tenant = $tenant;
+        return $this;
     }
 }
