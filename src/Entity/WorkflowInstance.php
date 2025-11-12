@@ -55,7 +55,12 @@ class WorkflowInstance
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     private ?\DateTimeImmutable $dueDate = null;
 
-    public function __construct()
+    
+    #[ORM\ManyToOne(targetEntity: Tenant::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Tenant $tenant = null;
+
+public function __construct()
     {
         $this->startedAt = new \DateTimeImmutable();
         $this->completedSteps = [];
@@ -237,5 +242,16 @@ class WorkflowInstance
 
         $completedCount = count($this->completedSteps);
         return (int) round(($completedCount / $totalSteps) * 100);
+    }
+
+    public function getTenant(): ?Tenant
+    {
+        return $this->tenant;
+    }
+
+    public function setTenant(?Tenant $tenant): static
+    {
+        $this->tenant = $tenant;
+        return $this;
     }
 }
