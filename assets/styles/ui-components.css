@@ -1875,6 +1875,15 @@
     height: 40px;
 }
 
+/* Workflow Definitions Utilities */
+.text-muted-color {
+    color: var(--color-text-muted);
+}
+
+.mr-025 {
+    margin-right: 0.25rem;
+}
+
 /* ====================
    Responsive
    ==================== */

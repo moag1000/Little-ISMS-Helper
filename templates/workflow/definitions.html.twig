@@ -68,10 +68,10 @@
             <tr>
                 <th>{{ 'workflow.field.definition_name'|trans }}</th>
                 <th>{{ 'workflow.field.description'|trans }}</th>
-                <th style="text-align: center;">{{ 'workflow.field.steps'|trans }}</th>
-                <th style="text-align: center;">{{ 'workflow.field.instances'|trans }}</th>
-                <th style="text-align: center;">{{ 'workflow.field.active'|trans }}</th>
-                <th style="text-align: center;">{{ 'common.actions'|trans }}</th>
+                <th class="text-center">{{ 'workflow.field.steps'|trans }}</th>
+                <th class="text-center">{{ 'workflow.field.instances'|trans }}</th>
+                <th class="text-center">{{ 'workflow.field.active'|trans }}</th>
+                <th class="text-center">{{ 'common.actions'|trans }}</th>
             </tr>
         </thead>
         <tbody>
@@ -80,29 +80,29 @@
                 <td>
                     <strong>{{ definition.name }}</strong>
                     {% if definition.category %}
-                        <br><small style="color: var(--color-text-muted);">{{ definition.category }}</small>
+                        <br><small class="text-muted-color">{{ definition.category }}</small>
                     {% endif %}
                 </td>
                 <td>
-                    <small style="color: var(--color-text-muted);">
+                    <small class="text-muted-color">
                         {{ definition.description|default('-') }}
                     </small>
                 </td>
-                <td style="text-align: center;">
+                <td class="text-center">
                     <span class="badge badge-info">{{ definition.steps|length }}</span>
                 </td>
-                <td style="text-align: center;">
+                <td class="text-center">
                     <span class="badge badge-secondary">{{ definition.instances|length }}</span>
                 </td>
-                <td style="text-align: center;">
+                <td class="text-center">
                     {% if definition.active %}
                         <span class="badge badge-success">✓</span>
                     {% else %}
                         <span class="badge badge-secondary">✗</span>
                     {% endif %}
                 </td>
-                <td style="text-align: center;">
-                    <a href="{{ path('app_workflow_definition_show', {id: definition.id}) }}" class="btn btn-sm" style="margin-right: 0.25rem;">
+                <td class="text-center">
+                    <a href="{{ path('app_workflow_definition_show', {id: definition.id}) }}" class="btn btn-sm mr-025">
                         👁 {{ 'common.view'|trans }}
                     </a>
                     <a href="{{ path('app_workflow_definition_edit', {id: definition.id}) }}" class="btn btn-sm btn-secondary">
@@ -112,7 +112,7 @@
             </tr>
             {% else %}
             <tr>
-                <td colspan="6" style="text-align: center; padding: var(--spacing-xl); color: var(--color-text-muted);">
+                <td colspan="6" class="text-center-p-xl-muted">
                     {{ 'workflow.message.no_definitions'|trans }}
                 </td>
             </tr>
