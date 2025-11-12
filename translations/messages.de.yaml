@@ -53,6 +53,7 @@ admin:
     monitoring: Überwachung & Logs
     navigation: Navigation
   nav:
+    tenants: Mandanten
     users: Benutzer
     roles: Rollen
     settings: Einstellungen
@@ -2059,3 +2060,97 @@ crisis_team:
     created: Krisenstab erfolgreich erstellt.
     updated: Krisenstab erfolgreich aktualisiert.
     deleted: Krisenstab erfolgreich gelöscht.
+
+tenant:
+  title: Mandantenverwaltung
+  subtitle: Verwalten Sie Organisationen und Mandanten
+  title_create: Neuen Mandanten erstellen
+  title_edit: Mandant bearbeiten
+  empty: Keine Mandanten vorhanden
+  stats:
+    total: Gesamt
+    active: Aktiv
+    inactive: Inaktiv
+    total_users: Benutzer gesamt
+    active_users: Aktive Benutzer
+    inactive_users: Inaktive Benutzer
+  filter:
+    all: Alle
+    active: Aktiv
+    inactive: Inaktiv
+  field:
+    code: Mandanten-Code
+    code_help: Eindeutiger alphanumerischer Code (nur a-z, 0-9, _, -)
+    name: Name
+    name_help: Vollständiger Name der Organisation
+    description: Beschreibung
+    description_help: Optionale Beschreibung des Mandanten
+    azure_tenant_id: Azure Tenant ID
+    azure_tenant_id_help: Azure AD Tenant ID (UUID-Format) für SSO-Integration
+    is_active: Aktiv
+    is_active_help: Nur aktive Mandanten können sich anmelden
+    settings: Einstellungen (JSON)
+    settings_help: Mandantenspezifische Einstellungen im JSON-Format
+    users: Benutzer
+    status: Status
+    created: Erstellt
+    updated: Aktualisiert
+  placeholder:
+    code: z.B. acme-corp
+    name: z.B. ACME Corporation
+    description: Beschreibung des Mandanten...
+    azure_tenant_id: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+    settings: "{\n  \"branding\": {...},\n  \"features\": {...}\n}"
+  validation:
+    code_format: Der Code darf nur Buchstaben, Zahlen, Unterstriche und Bindestriche enthalten
+    azure_tenant_id_format: Die Azure Tenant ID muss im UUID-Format vorliegen
+  status:
+    active: Aktiv
+    inactive: Inaktiv
+  action:
+    create: Neuen Mandanten erstellen
+    create_first: Ersten Mandanten erstellen
+    edit: Bearbeiten
+    delete: Löschen
+    activate: Aktivieren
+    deactivate: Deaktivieren
+  section:
+    information: Mandanten-Informationen
+    users: Benutzer
+    basic_info: Grundinformationen
+    azure_integration: Azure-Integration
+    settings: Einstellungen
+    danger_zone: Gefahrenbereich
+  users:
+    empty: Keine Benutzer in diesem Mandanten
+    showing: 'Zeige %count% von %total% Benutzern'
+  form:
+    create_title: Neuen Mandanten anlegen
+    edit_title: Mandant bearbeiten
+  flash:
+    created: Mandant erfolgreich erstellt
+    updated: Mandant erfolgreich aktualisiert
+    deleted: Mandant erfolgreich gelöscht
+    activated: Mandant erfolgreich aktiviert
+    deactivated: Mandant erfolgreich deaktiviert
+    error: Fehler beim Speichern des Mandanten
+    has_users: Mandant kann nicht gelöscht werden, da er noch Benutzer hat
+  confirm:
+    delete: Sind Sie sicher, dass Sie diesen Mandanten löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.
+    toggle: Möchten Sie den Status dieses Mandanten wirklich ändern?
+  delete:
+    warning: Mandanten können nur gelöscht werden, wenn sie keine zugewiesenen Benutzer mehr haben.
+  info:
+    title: Über Mandanten
+    text: Mandanten ermöglichen es, mehrere Organisationen in einer Instanz zu verwalten. Jeder Benutzer gehört zu einem Mandanten.
+    metadata: Metadaten
+  help:
+    title: Hilfe
+    code_title: Mandanten-Code
+    code_text: Der Code ist ein eindeutiger Identifier und kann nach der Erstellung nicht mehr geändert werden. Verwenden Sie nur Kleinbuchstaben, Zahlen und Bindestriche.
+    azure_title: Azure-Integration
+    azure_text: Wenn Sie Azure AD SSO verwenden, können Sie hier die Azure Tenant ID hinterlegen für mandantenspezifische Authentifizierung.
+    settings_title: Einstellungen
+    settings_text: Mandantenspezifische Einstellungen im JSON-Format können individuelle Konfigurationen wie Branding, Features oder Limits enthalten.
+  settings:
+    example_title: Beispiel JSON-Struktur
