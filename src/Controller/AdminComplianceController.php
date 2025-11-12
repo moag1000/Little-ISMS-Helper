@@ -154,11 +154,11 @@ class AdminComplianceController extends AbstractController
                     $compliant = 0;
 
                     foreach ($requirements as $requirement) {
-                        if ($requirement->getMappings()->count() > 0) {
+                        if ($requirement->getMappedControls()->count() > 0) {
                             $assessed++;
-                            // Check if at least one mapping is compliant
-                            foreach ($requirement->getMappings() as $mapping) {
-                                if ($mapping->getImplementationStatus() === 'implemented') {
+                            // Check if at least one mapped control is implemented
+                            foreach ($requirement->getMappedControls() as $control) {
+                                if ($control->getImplementationStatus() === 'implemented') {
                                     $compliant++;
                                     break;
                                 }
