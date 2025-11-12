@@ -1912,6 +1912,14 @@
     height: 20px;
 }
 
+.progress-h-30 {
+    height: 30px;
+}
+
+.progress-h-40 {
+    height: 40px;
+}
+
 /* SOA Edit Utilities */
 .mt-sm-text-light {
     margin-top: var(--spacing-sm);
