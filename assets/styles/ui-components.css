@@ -1884,6 +1884,25 @@
     margin-right: 0.25rem;
 }
 
+/* Workflow Active Utilities */
+.ml-xs {
+    margin-left: var(--spacing-xs);
+}
+
+.progress-inline {
+    height: 20px;
+    width: 120px;
+    margin: 0 auto;
+}
+
+.bg-danger-light {
+    background-color: var(--color-danger-light);
+}
+
+.progress-bar-fs-075 {
+    font-size: 0.75rem;
+}
+
 /* ====================
    Responsive
    ==================== */
