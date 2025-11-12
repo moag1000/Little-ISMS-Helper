@@ -22,7 +22,7 @@
     {# KPI Overview Cards #}
     <div class="kpi-grid">
         <div class="kpi-card">
-            <div class="kpi-icon" style="background: var(--gradient-primary);">📊</div>
+            <div class="kpi-icon bg-gradient-primary">📊</div>
             <div class="kpi-content">
                 <div class="kpi-value">{{ stats.total }}</div>
                 <div class="kpi-label">Total Processes</div>
@@ -30,7 +30,7 @@
         </div>
 
         <div class="kpi-card">
-            <div class="kpi-icon" style="background: var(--gradient-danger);">🔴</div>
+            <div class="kpi-icon bg-gradient-danger">🔴</div>
             <div class="kpi-content">
                 <div class="kpi-value">{{ stats.critical }}</div>
                 <div class="kpi-label">Critical Processes</div>
@@ -38,7 +38,7 @@
         </div>
 
         <div class="kpi-card">
-            <div class="kpi-icon" style="background: var(--gradient-warning);">🟠</div>
+            <div class="kpi-icon bg-gradient-warning">🟠</div>
             <div class="kpi-content">
                 <div class="kpi-value">{{ stats.high }}</div>
                 <div class="kpi-label">High Priority</div>
@@ -46,7 +46,7 @@
         </div>
 
         <div class="kpi-card">
-            <div class="kpi-icon" style="background: var(--gradient-success);">⏱️</div>
+            <div class="kpi-icon bg-gradient-success">⏱️</div>
             <div class="kpi-content">
                 <div class="kpi-value">{{ stats.avg_rto|number_format(1) }}h</div>
                 <div class="kpi-label">Avg RTO</div>
@@ -54,7 +54,7 @@
         </div>
 
         <div class="kpi-card">
-            <div class="kpi-icon" style="background: var(--gradient-info);">📅</div>
+            <div class="kpi-icon bg-gradient-info">📅</div>
             <div class="kpi-content">
                 <div class="kpi-value">{{ stats.avg_mtpd|number_format(1) }}h</div>
                 <div class="kpi-label">Avg MTPD</div>
@@ -160,13 +160,13 @@
             </table>
         </div>
 
-        <div data-filter-target="noResults" class="no-results" style="display: none;">
+        <div data-filter-target="noResults" class="no-results d-none">
             <p>No processes match your search criteria.</p>
         </div>
     </div>
 
     {# Help Section #}
-    <div class="card" style="margin-top: var(--spacing-lg);">
+    <div class="card mt-lg">
         <div class="card-header">
             <h3>Understanding BCM & BIA</h3>
         </div>
