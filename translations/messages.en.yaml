@@ -42,6 +42,132 @@ remember_me: Remember Me
 login_title: Login
 welcome_back: Welcome Back
 home: Home
+# Phase 6L-A: Admin Panel Translation Keys
+admin:
+  title: Administration
+  breadcrumb:
+    home: Admin Dashboard
+  section:
+    user_access: Users & Access
+    system_config: System Configuration
+    modules: Modules & Features
+    monitoring: Monitoring & Logs
+    navigation: Navigation
+  nav:
+    tenants: Tenants
+    users: Users
+    roles: Roles
+    settings: Settings
+    compliance: Compliance Frameworks
+    audit_log: Audit Log
+    back_to_app: Back to Application
+  dashboard:
+    title: Admin Dashboard
+    subtitle: Central administration and system overview
+    alerts:
+      title: System Alerts
+      item: item
+      items: items
+      view: View
+    stats:
+      users: Users
+      active: Active
+      inactive: Inactive
+      manage: Manage
+      active_sessions: Active Sessions
+      last_24h: Last 24 hours
+      database: Database Size
+      total_records: Total Records
+      across_modules: Across all modules
+    modules:
+      title: Module Statistics
+      module: Module
+      records: Records
+      action: Action
+      assets: Assets
+      risks: Risks
+      controls: Controls
+      incidents: Incidents
+      audits: Audits
+      compliance: Compliance
+      trainings: Trainings
+    quick_actions:
+      title: Quick Actions
+      add_user: Add User
+      add_role: Add Role
+      view_logs: View Logs
+      manage_compliance: Manage Compliance
+    activity:
+      title: Recent Activity
+      empty: No recent activity
+      view_all: View All Activity
+  alert:
+    inactive_users: Inactive users
+    unverified_users: Unverified users
+    large_database: Large database (GB)
+  # Phase 6L-B: System Settings Translation Keys
+  settings:
+    title: System Settings
+    subtitle: Configuration and management of system settings
+    configure: Configure
+    saved: Settings saved successfully
+    help: Help
+    info: Information
+    info_title: Notice
+    info_text: Changes to system settings take effect immediately and are stored in the database.
+    application:
+      title: Application Settings
+      description: Language, timezone, display options
+      locale_settings: Language Settings
+      display_settings: Display Settings
+      locale: Default Language
+      default_locale: Default Language
+      default_locale_help: The default language for new users and the system
+      supported_locales: Supported Languages
+      supported_locales_help: Which languages can users select?
+      timezone: Timezone
+      timezone_help: Default timezone for date and time displays
+      items_per_page: Items per Page
+      items_per_page_help: Number of items in lists (10-100)
+      date_format: Date Format
+      date_format_help: Format for date displays
+      datetime_format: Date/Time Format
+      datetime_format_help: Format for date/time displays
+      help_text: These settings affect the application display for all users.
+    security:
+      title: Security Settings
+      description: Sessions, passwords, authentication
+      session_settings: Session Settings
+      password_settings: Password Settings
+      auth_settings: Authentication Settings
+      session_lifetime: Session Lifetime
+      session_lifetime_help: Maximum session duration in seconds (5-1440 min)
+      remember_me_lifetime: Remember Me Lifetime
+      remember_me_help: Duration for "Remember Me" in seconds
+      password_min_length: Minimum Password Length
+      password_min_length_help: Minimum number of characters for passwords (6-20)
+      max_login_attempts: Max. Login Attempts
+      max_login_attempts_help: Number of failed login attempts before lockout
+      lockout_duration: Lockout Duration
+      lockout_duration_help: Account lockout duration after too many failed attempts
+      require_2fa: Require Two-Factor Authentication
+      require_2fa_help: All users must enable 2FA
+      warning: Changes to security settings can affect all users. Please proceed with caution.
+    features:
+      title: Feature Flags
+      description: Enable/disable experimental features
+      intro: Enable or disable experimental features for the entire system.
+      dark_mode: Dark Mode
+      dark_mode_help: Allows users to switch to dark theme
+      global_search: Global Search
+      global_search_help: Search function across all modules
+      quick_view: Quick View
+      quick_view_help: Quick view modals for records
+      notifications: Notifications
+      notifications_help: System notifications and alerts
+      audit_log: Audit Logging
+      audit_log_help: Automatic logging of all changes
+      info_text: Feature flags allow gradual introduction or testing of new features.
 dashboard:
   success:
     settings_imported: Dashboard settings successfully imported!
@@ -53,13 +179,23 @@ controls: Controls
 incidents: Incidents
 audits: Audits
 compliance_label: Compliance
+# Phase 6K Translation Update
 training:
   title: Training
+  all_trainings: All Trainings
+  create: Create Training
+  create_first: Create your first training
+  edit: Edit Training
+  edit_help: Edit training details
   mandatory_training: Mandatory Training
   mandatory_info: This training is mandatory for all participants.
   no_participants: No participants registered yet.
+  no_trainings_found: No trainings found
+  participant_count: Participant Count
+  participants_label: Participants
   covered_controls: Covered Controls
   compliance_coverage: Compliance Coverage
+  controls_help: Select controls covered by this training
   description: Description
   delivery:
     in_person: In-Person
@@ -109,6 +245,23 @@ training:
     related_controls: Related Controls
     materials: Training Materials
     feedback: Feedback / Notes
+  placeholder:
+    date: Select date and time
+    delivery: Select delivery method
+    duration: Duration in minutes
+    location: e.g. Conference Room 1 or https://...
+    participants: Select participants
+    status: Select status
+    title: e.g. Security Awareness Training 2024
+    trainer: Name of trainer
+    type: Select training type
+  section:
+    attendance: Attendance & Participants
+    details: Training Details
+  show:
+    title: Training Details
+  table:
+    trainer: Trainer
   validation:
     title_required: Please enter a title.
     date_required: Please select a date.
@@ -130,6 +283,7 @@ details: Details
 close: Close
 confirm: Confirm
 back: Back
+# Phase 6K Translation Update - Common UI
 common:
   overview: Overview
   name: Name
@@ -141,6 +295,7 @@ common:
   cancel: Cancel
   back: Back
   back_to_list: Back to List
+  back_to_overview: Back to Overview
   delete: Delete
   metadata: Metadata
   action_irreversible: This action cannot be undone.
@@ -155,6 +310,36 @@ common:
   view_details: View Details
   edit: Edit
   show_all: Show All
+  active: Active
+  all: All
+  category: Category
+  create: Create
+  danger_zone: Danger Zone
+  dashboard: Dashboard
+  date_from: Date From
+  date_to: Date To
+  details: Details
+  download: Download
+  error: Error
+  export: Export
+  filter: Filter
+  from: From
+  help: Help
+  history: History
+  id: ID
+  inactive: Inactive
+  last_updated: Last Updated
+  loading: Loading...
+  never: Never
+  not_applicable: Not Applicable
+  not_assigned: Not Assigned
+  not_completed: Not Completed
+  not_set: Not Set
+  not_started: Not Started
+  refresh: Refresh
+  search: Search
+  success: Success
+  to: To
 asset:
   new: New Asset
   create: Create Asset
@@ -286,6 +471,7 @@ control:
     last_review_date: Last Review
     next_review_date: Next Review
     protected_assets: Related Assets
+# Phase 6K Translation Update - Audit Module
 audit:
   title: Audits
   new: New Audit
@@ -331,6 +517,13 @@ audit:
     certification: Certification Audit
     surveillance: Surveillance Audit
     recertification: Recertification Audit
+    asset: Asset Audit
+    asset_group: Asset Group Audit
+    asset_type: Asset Type Audit
+    compliance_framework: Framework Audit
+    department: Department Audit
+    full_isms: Full ISMS Audit
+    location: Location Audit
   type:
     iso27001: ISO 27001
     iso9001: ISO 9001
@@ -351,7 +544,12 @@ audit:
     recommendations: Recommendations
     documentation: Documentation
     status: Status
+    history: Audit History
+  table:
+    auditor: Auditor
+    date: Audit Date
   field:
+    audit_number: Audit Number
     title: Audit Title
     scope: Scope
     scope_type: Audit Type
@@ -412,7 +610,9 @@ context:
     due: Review due
     days_remaining: Days remaining
     days_overdue: Days overdue
+    not_scheduled: Not Scheduled
   section:
+    history: Context Review History
     title: ISMS Context
     organization: Organization
     exclusions: Exclusions
@@ -504,15 +704,31 @@ activity:
   system: System
   security_team: Security Team
   new_risk: New Risk
+# Phase 6K Translation Update - Incident Module
 incident:
   new: New Incident
   create: Create Incident
+  edit: Edit Incident
+  empty: No incidents recorded yet
+  analysis_resolution: Analysis & Resolution
+  filter:
+    data_breach: Data Breach
+    data_breach_only: Data Breaches Only
+    nis2_only: NIS2 Reportable Only
+  kpi:
+    by_category: By Category
+    categories: Categories
+    nis2_attention: NIS2 Attention Required
+  table:
+    category: Category
+    occurred: Occurred
   section:
     basic_info: Basic Information
     severity_status: Severity & Status
     detection_reporting: Detection & Reporting
     affected_systems: Affected Systems & Assets
     analysis: Analysis & Actions
+    assessment: Impact Assessment
     nis2_reporting: NIS2 Reporting Requirement (EU 2022/2555)
     nis2_info: "NIS2 Art. 23: Significant incidents must be reported within specified timeframes"
     affected_assets: Affected Assets
@@ -553,7 +769,10 @@ incident:
     affected_assets: Affected Assets
   action:
     download_nis2_report: Download NIS2 Report (PDF)
+    report_new: Report New Incident
   placeholder:
+    category: Select incident category
+    severity: Select severity level
     title: e.g. Data breach customer data
     description: Detailed description of the incident...
     reported_by: Name of reporter
@@ -1253,6 +1472,34 @@ user:
     custom_roles: Custom Roles
     active: Active
     email_verified: Email Verified
+  error:
+    no_users_selected: No users selected
+    no_file_uploaded: No file uploaded
+  success:
+    bulk_action_completed: '%count% users successfully processed (%action%)'
+    imported: '%count% users successfully imported'
+    activated: User successfully activated
+    deactivated: User successfully deactivated
+  action:
+    export: Export
+    import: Import
+    bulk_actions: Bulk Actions
+    activate: Activate
+    deactivate: Deactivate
+    assign_role: Assign Role
+    view_activity: View Activity
+    view_mfa: Manage MFA
+    impersonate: Impersonate User
+  import:
+    title: Import Users
+    description: Upload a CSV file to import multiple users
+    format: 'Expected format: email, first_name, last_name, password, is_active, roles'
+    download_template: Download Template
+  activity:
+    title: User Activity
+    total: Total Activities
+    by_date: By Date
+    by_action: By Action
 module:
   info:
     added_as_dependency: Module '{name}' was added as dependency
@@ -1275,6 +1522,28 @@ role:
     created: Role successfully created.
     updated: Role successfully updated.
     deleted: Role successfully deleted.
+    created_from_template: Role '%role%' successfully created from template
+  action:
+    compare: Compare Roles
+    templates: Templates
+  compare:
+    title: Role Comparison
+    select_roles: Select roles to compare
+    permission_matrix: Permission Matrix
+    has_permission: Has Permission
+    no_permission: No Permission
+  templates:
+    title: Role Templates
+    description: Create a new role based on a template
+    select: Select Template
+    apply: Apply Template
+    custom_name: Custom Name (optional)
+    auditor: Auditor
+    risk_manager: Risk Manager
+    compliance_officer: Compliance Officer
+    incident_manager: Incident Manager
+    asset_manager: Asset Manager
+    readonly: Read-Only User
 error:
   csrf_invalid: Invalid CSRF token.
 audit_log:
@@ -1331,13 +1600,6 @@ compliance:
     export_transitive: Export Transitive Analysis
     export_comparison: Export Comparison
     compare: Compare Frameworks
-  stats:
-    total_relationships: Total Framework Relationships
-    transitive_compliance: Transitive Compliance Benefits
-    leverage_rate: Leverage Rate
-    frameworks_leveraged: Frameworks Leveraged
-    common_requirements: Common Requirements
-    overlap_percentage: Overlap Percentage
   unit:
     requirements: Requirements
   info:
@@ -1352,10 +1614,6 @@ compliance:
     select_frameworks: Select Frameworks to Compare
     detailed_comparison: Detailed Comparison
     unique_to: "Unique to"
-  label:
-    source_target_matrix: "Source ↓ / Target →"
-    showing_of: "Showing %count% of"
-    mappings_count: "mappings"
   explanation:
     what_are_mappings_title: "🎯 What are Mappings?"
     what_are_mappings: "Mappings show how requirements from one framework relate to requirements in another framework. For example, a TISAX requirement might fully satisfy a DORA requirement."
@@ -1411,6 +1669,122 @@ compliance:
       high: High (≥75%)
       medium: Medium (50-74%)
       low: Low (<50%)
+  # Phase 6K Translation Update - Compliance Module
+  page_title: Multi-Framework Compliance
+  page_subtitle: Maximum data leverage across standards
+  details_label: Details
+  filter: Filter
+  framework_info: Framework Information
+  recommendations: Recommendations
+  search: Search...
+  benefits:
+    title: Why Multi-Framework Compliance Matters
+    data_reuse:
+      title: Maximum Data Reuse
+      description: Capture data once in your ISMS and automatically leverage it for TISAX, DORA, and other frameworks.
+    time_efficiency:
+      title: Time Efficiency
+      description: Save hundreds of hours by avoiding duplicate data entry and evidence collection across different standards.
+    transparency:
+      title: Transparency
+      description: See exactly how requirements from different frameworks relate to each other and to your existing controls.
+    strategic:
+      title: Strategic Compliance
+      description: Identify which frameworks have the most overlap and prioritize implementation based on multi-framework benefits.
+  button:
+    back: Back
+    compare_frameworks: Compare Frameworks
+    cross_framework: Cross-Framework Mappings
+    explore_mappings: Explore Cross-Framework Mappings
+    open_dashboard: Open Dashboard
+    reassess: Reassess
+    transitive: Transitive Compliance
+  cross_framework:
+    title: Cross-Framework Mappings
+    subtitle: How requirements map across different standards
+    back: Back to Compliance
+    coverage_matrix: Framework Coverage Matrix
+    coverage_description: Shows how much of the target framework is covered by fulfilling the source framework
+    coverage_high: ≥75% Coverage (High)
+    coverage_medium: 50-74% Coverage (Medium)
+    coverage_low: <50% Coverage (Low)
+    covered_of: "%covered% of %total% requirements covered (%percentage%%)"
+    source_target_label: "Source Framework ↓ / Target Framework →"
+    strong_mappings: "Full/Exceeds (≥100%)"
+    partial_mappings_label: "Partial (50-99%)"
+    weak_mappings: "Weak (<50%)"
+    showing_of: "Showing 20 of %total% mappings"
+    understanding_title: Understanding Cross-Framework Mappings
+    what_title: "🎯 What are Mappings?"
+    what_description: "Mappings show how requirements from one framework relate to requirements in another framework. For example, a TISAX requirement might fully satisfy a DORA requirement."
+    types_title: "📊 Mapping Types"
+    bidirectional_title: "🔄 Bidirectional Mappings"
+    bidirectional_description: "Some requirements mutually satisfy each other. This means work done for one framework automatically benefits the other framework as well."
+    strategic_title: "💡 Strategic Value"
+    strategic_description: "Use these mappings to identify which frameworks have the most overlap and prioritize compliance efforts for maximum multi-framework benefit."
+    yes_bidirectional: "🔄 Yes"
+    types:
+      exceeds: "Exceeds (>100%): Source exceeds target"
+      full: "Full (100%): Source fully satisfies target"
+      partial: "Partial (50-99%): Source partially satisfies target"
+      weak: "Weak (<50%): Weak relationship"
+    table:
+      source: Source Requirement
+      target: Target Requirement
+      type: Mapping Type
+      strength: Strength
+      bidirectional: Bidirectional
+  data_reuse:
+    title: Data Reuse Value
+    description: By reusing existing ISMS data across multiple frameworks, you save an estimated <strong>%hours% hours (%days% days)</strong> of manual compliance work!
+    hours_saved: Hours Saved
+    work_days: "That's %days% work days through smart data reuse"
+    show_details: Show Details
+  label:
+    code: Code
+    compliance: Compliance
+    days: Days
+    fulfilled: Fulfilled
+    gaps: Gaps
+    mappings_count: "mappings"
+    no: No
+    requirements: Requirements
+    showing_of: "Showing %count% of"
+    source_target_matrix: "Source ↓ / Target →"
+    time_savings: Time Savings
+    yes: Yes
+  stats:
+    bidirectional_mappings: Bidirectional
+    common_requirements: Common Requirements
+    frameworks_leveraged: Frameworks Leveraged
+    full_exceeds: Full/Exceeds
+    leverage_rate: Leverage Rate
+    overlap_percentage: Overlap Percentage
+    partial_mappings: Partial Mappings
+    total_mappings: Total Mappings
+    total_relationships: Total Framework Relationships
+    transitive_compliance: Transitive Compliance Benefits
+  priority:
+    all: All Priorities
+    critical: Critical
+    high: High
+    medium: Medium
+    low: Low
+  status:
+    all: All Statuses
+    fulfilled: "Fulfilled (≥100%)"
+    partial: "Partial (50-99%)"
+    gap: "Gap (<50%)"
+  tab:
+    overview: Overview
+    requirements: Requirements
+    gaps: Gaps
+    data_reuse: Data Reuse
+  gaps:
+    title: Compliance Gaps
+    none: No gaps found!
+    none_description: All applicable requirements are fully satisfied.
+    fulfilled_percentage: "% Fulfilled"
 
 # Risk Appetite (ISO 27005:2022)
 risk_appetite:
@@ -1731,3 +2105,449 @@ crisis_team:
     created: Crisis team created successfully.
     updated: Crisis team updated successfully.
     deleted: Crisis team deleted successfully.
+
+tenant:
+  title: Tenant Management
+  subtitle: Manage organizations and tenants
+  title_create: Create New Tenant
+  title_edit: Edit Tenant
+  empty: No tenants available
+  stats:
+    total: Total
+    active: Active
+    inactive: Inactive
+    total_users: Total Users
+    active_users: Active Users
+    inactive_users: Inactive Users
+  filter:
+    all: All
+    active: Active
+    inactive: Inactive
+  field:
+    code: Tenant Code
+    code_help: Unique alphanumeric code (only a-z, 0-9, _, -)
+    name: Name
+    name_help: Full organization name
+    description: Description
+    description_help: Optional tenant description
+    azure_tenant_id: Azure Tenant ID
+    azure_tenant_id_help: Azure AD Tenant ID (UUID format) for SSO integration
+    is_active: Active
+    is_active_help: Only active tenants can sign in
+    settings: Settings (JSON)
+    settings_help: Tenant-specific settings in JSON format
+    users: Users
+    status: Status
+    created: Created
+    updated: Updated
+  placeholder:
+    code: e.g. acme-corp
+    name: e.g. ACME Corporation
+    description: Tenant description...
+    azure_tenant_id: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+    settings: "{\n  \"branding\": {...},\n  \"features\": {...}\n}"
+  validation:
+    code_format: The code may only contain letters, numbers, underscores, and hyphens
+    azure_tenant_id_format: The Azure Tenant ID must be in UUID format
+  status:
+    active: Active
+    inactive: Inactive
+  action:
+    create: Create New Tenant
+    create_first: Create First Tenant
+    edit: Edit
+    delete: Delete
+    activate: Activate
+    deactivate: Deactivate
+  section:
+    information: Tenant Information
+    users: Users
+    basic_info: Basic Information
+    azure_integration: Azure Integration
+    settings: Settings
+    danger_zone: Danger Zone
+  users:
+    empty: No users in this tenant
+    showing: 'Showing %count% of %total% users'
+  form:
+    create_title: Create New Tenant
+    edit_title: Edit Tenant
+  flash:
+    created: Tenant created successfully
+    updated: Tenant updated successfully
+    deleted: Tenant deleted successfully
+    activated: Tenant activated successfully
+    deactivated: Tenant deactivated successfully
+    error: Error saving tenant
+    has_users: Tenant cannot be deleted as it still has assigned users
+  confirm:
+    delete: Are you sure you want to delete this tenant? This action cannot be undone.
+    toggle: Do you really want to change the status of this tenant?
+  delete:
+    warning: Tenants can only be deleted when they have no assigned users.
+  info:
+    title: About Tenants
+    text: Tenants allow managing multiple organizations in a single instance. Each user belongs to a tenant.
+    metadata: Metadata
+  help:
+    title: Help
+    code_title: Tenant Code
+    code_text: The code is a unique identifier and cannot be changed after creation. Use only lowercase letters, numbers, and hyphens.
+    azure_title: Azure Integration
+    azure_text: If you use Azure AD SSO, you can store the Azure Tenant ID here for tenant-specific authentication.
+    settings_title: Settings
+    settings_text: Tenant-specific settings in JSON format can contain individual configurations such as branding, features, or limits.
+  settings:
+    example_title: Example JSON Structure
+
+# Phase 6L-D: Extended User & Access Management
+permission:
+  title: Permissions
+  list: Permission List
+  show: Permission Details
+  category: Category
+  action: Action
+  description: Description
+  roles_using: Roles using this permission
+  affected_users: Affected Users
+  system_permission: System Permission
+  statistics:
+    total: Total
+    system: System
+    custom: Custom
+    categories: Categories
+
+session:
+  title: Sessions
+  list: Active Sessions
+  show: Session Details
+  user_name: Username
+  ip_address: IP Address
+  user_agent: User Agent
+  last_activity: Last Activity
+  session_start: Session Start
+  terminate: Terminate Session
+  statistics:
+    total: Total Active Sessions
+    today: Today
+    hours_filter: Time Filter (Hours)
+  activity_timeline: Activity Timeline
+  unique_ips: Unique IP Addresses
+  unique_devices: Unique Devices
+  error:
+    invalid_token: Invalid CSRF token
+  info:
+    termination_not_implemented: Session termination requires additional configuration (database session storage)
+
+mfa:
+  title: Two-Factor Authentication
+  tokens: MFA Tokens
+  enabled: MFA Enabled
+  disabled: MFA Disabled
+  token_type: Token Type
+  device_name: Device Name
+  enrolled_at: Enrolled At
+  last_used: Last Used
+  usage_count: Usage Count
+  is_active: Active
+  is_primary: Primary
+  action:
+    reset: Reset Token
+  error:
+    token_not_found: MFA token not found
+  success:
+    token_reset: MFA token successfully reset
+  statistics:
+    active_tokens: Active Tokens
+    by_type: By Type
+
+# Phase 6L-E: System Monitoring & Health
+monitoring:
+  title: System Monitoring
+  health:
+    title: System Health
+    overall_status: Overall Status
+    healthy: Healthy
+    warning: Warning
+    error: Error
+    last_checked: Last Checked
+  database:
+    title: Database
+    status: Status
+    response_time: Response Time
+    driver: Driver
+    error: Error
+  disk:
+    title: Disk
+    free: Free
+    used: Used
+    total: Total
+    percentage: Percentage
+  php:
+    title: PHP
+    version: Version
+    memory_limit: Memory Limit
+    max_execution_time: Max Execution Time
+    extensions: Extensions
+    loaded: Loaded
+    missing: Missing
+  symfony:
+    title: Symfony
+    version: Version
+    environment: Environment
+    debug: Debug Mode
+  cache:
+    title: Cache
+    directory: Directory
+    writable: Writable
+  logs:
+    title: Logs
+    directory: Directory
+    writable: Writable
+  performance:
+    title: Performance Metrics
+    total_requests: Total Requests
+    unique_users: Unique Users
+    memory_usage: Memory Usage
+    memory_peak: Memory Peak
+    memory_limit: Memory Limit
+    top_actions: Top Actions
+    top_entities: Most Active Entities
+    last_24h: Last 24 Hours
+    system_resources: System Resources
+    note: Note
+  errors:
+    title: Error Logs
+    total: Total Errors
+    by_level: By Level
+    file_size: File Size
+    last_modified: Last Modified
+    log_file: Log File
+    show_entries: Show Entries
+    recent: Recent Errors
+    no_errors: No errors found!
+    no_log_file: No log file found
+    show_full: Show full log entry
+  audit_log:
+    title: Audit Log
+    total_entries: Total Entries
+    top_actions: Top Actions
+    top_entities: Top Entities
+    quick_filters: Quick Filters
+    all: All
+    today: Today
+    this_week: This Week
+    critical_actions: Critical Actions
+    entries: Entries
+    timestamp: Timestamp
+    user: User
+    action: Action
+    entity: Entity
+    ip_address: IP Address
+    details: Details
+    view: View
+    description: Description
+    changes: Changes
+    about: About Audit Log
+    about_text: The audit log tracks all significant actions in the system including create, update, and delete operations.
+  related: Related Monitoring
+  refresh: Refresh
+  back_to_health: Back to Health
+
+# Phase 6L-F: Data Management
+data:
+  title: Data Management
+  backup:
+    title: Database Backup
+    create: Create Backup
+    list: Available Backups
+    filename: Filename
+    date: Date
+    size: Size
+    actions: Actions
+    download: Download
+    delete: Delete
+    retention_policy: 'Retention Policy: Only the last 7 backups are kept automatically'
+    location: 'Backup Location'
+    method: 'Backup Method: PostgreSQL pg_dump (SQL format)'
+    how_to_restore: How to Restore a Backup
+    restore_warning: 'Warning: Restoring a backup will overwrite all current data!'
+    success:
+      created: 'Backup successfully created: %filename%'
+      deleted: Backup successfully deleted
+    error:
+      invalid_token: Invalid CSRF token
+      create_failed: 'Backup failed: %error%'
+      not_found: Backup file not found
+  export:
+    title: Data Export
+    configure: Configure Export
+    format: Export Format
+    select_entities: Select Entities to Export
+    select_all: Select All
+    deselect_all: Deselect All
+    execute: Export Selected Entities
+    about: About Data Export
+    about_text: Export your data in JSON or CSV format. You can select specific entities or export all data.
+    format_json: JSON format preserves data types and is recommended for re-import
+    format_csv: CSV is better for spreadsheet applications
+    success:
+      exported: Data successfully exported
+    error:
+      invalid_token: Invalid CSRF token
+      no_entities: No entities selected
+  import:
+    title: Data Import
+    upload: Upload Import File
+    preview: Import Preview
+    execute: Execute Import
+    select_file: Select JSON File
+    upload_and_preview: Upload and Preview
+    process: Import Process
+    requirements: Import Requirements
+    file_format: File Format
+    before_importing: Before Importing
+    limitations: Limitations
+    warning:
+      critical: 'Critical Warning: Data import can overwrite existing data!'
+      backup_first: Always create a backup before importing
+      preview_mode: This feature is currently in preview mode
+      not_implemented: Import functionality is not yet fully implemented
+    stats:
+      total_entities: Total Entities
+      total_records: Total Records
+      status: Status
+    error:
+      invalid_token: Invalid CSRF token
+      no_file: No file uploaded
+      invalid_file: 'Invalid file: %error%'
+  setup:
+    title: Setup Wizard
+    link: Link to existing Deployment Wizard
+
+# Admin Integration - Phase 6L-G
+nav.admin.modules: 'Module Management'
+nav.admin.compliance: 'Compliance Management'
+nav.admin.licensing: 'License Management'
+
+admin.modules.title: 'Module Management'
+admin.modules.dependency_graph: 'Dependency Graph'
+admin.modules.stats.total: 'Total'
+admin.modules.stats.active: 'Active'
+admin.modules.stats.inactive: 'Inactive'
+admin.modules.stats.required: 'Required'
+admin.modules.active_modules: 'Active Modules'
+admin.modules.inactive_modules: 'Inactive Modules'
+admin.modules.status.active: 'Active'
+admin.modules.status.inactive: 'Inactive'
+admin.modules.dependencies: 'Dependencies'
+admin.modules.required_by: 'Required by'
+admin.modules.details: 'Details'
+admin.modules.confirm_deactivate: 'Really deactivate module "%name%"?'
+admin.modules.deactivate: 'Deactivate'
+admin.modules.required: 'Required'
+admin.modules.no_active: 'No active modules'
+admin.modules.activate: 'Activate'
+
+admin.compliance.statistics: 'Compliance Statistics'
+admin.compliance.total_available: 'Available'
+admin.compliance.loaded: 'Loaded'
+admin.compliance.not_loaded: 'Not Loaded'
+admin.compliance.mandatory_missing: 'Mandatory Missing'
+admin.compliance.compliance_overview: 'Compliance Overview'
+admin.compliance.framework: 'Framework'
+admin.compliance.total_requirements: 'Requirements'
+admin.compliance.assessed: 'Assessed'
+admin.compliance.compliant: 'Compliant'
+admin.compliance.compliance_rate: 'Compliance Rate'
+admin.compliance.progress: 'Progress'
+admin.compliance.no_frameworks_loaded: 'No frameworks loaded'
+
+admin.licensing.title: 'License Management'
+admin.licensing.third_party: 'Third-Party Licenses'
+admin.licensing.report: 'License Report'
+admin.licensing.summary: 'License Summary'
+
+admin.panel.title: 'Admin Panel'
+
+# Common translations
+common.back: 'Back'
+common.yes: 'Yes'
+common.no: 'No'
+
+# Workflow Definition Management - Phase 6C
+workflow.definition.title: 'Workflow Definition'
+workflow.definition.new_title: 'New Workflow Definition'
+workflow.definition.edit_title: 'Edit Workflow Definition'
+workflow.breadcrumb.home: 'Workflows'
+workflow.breadcrumb.definitions: 'Definitions'
+workflow.breadcrumb.new: 'New'
+workflow.breadcrumb.edit: 'Edit'
+workflow.section.information: 'Workflow Information'
+workflow.section.basic_information: 'Basic Information'
+workflow.section.steps: 'Workflow Steps'
+workflow.section.recent_instances: 'Recent Instances'
+workflow.section.actions: 'Actions'
+workflow.section.statistics: 'Statistics'
+workflow.section.danger_zone: 'Danger Zone'
+workflow.field.name: 'Name'
+workflow.field.description: 'Description'
+workflow.field.entity_type: 'Entity Type'
+workflow.field.status: 'Status'
+workflow.field.created_at: 'Created at'
+workflow.field.updated_at: 'Updated at'
+workflow.field.definition_name: 'Workflow Name'
+workflow.field.steps: 'Steps'
+workflow.field.instances: 'Instances'
+workflow.field.active: 'Active'
+workflow.field.is_active: 'Active'
+workflow.status.active: 'Active'
+workflow.status.inactive: 'Inactive'
+workflow.status.completed: 'Completed'
+workflow.status.rejected: 'Rejected'
+workflow.status.cancelled: 'Cancelled'
+workflow.status.pending: 'Pending'
+workflow.action.edit: 'Edit'
+workflow.action.activate: 'Activate'
+workflow.action.deactivate: 'Deactivate'
+workflow.action.delete: 'Delete'
+workflow.action.create: 'Create'
+workflow.action.update: 'Update'
+workflow.action.create_definition: 'New Definition'
+workflow.action.delete_definition: 'Delete Definition'
+workflow.step.requires_comment: 'Comment required'
+workflow.step.requires_file: 'File required'
+workflow.message.no_steps: 'No workflow steps defined'
+workflow.message.no_instances: 'No workflow instances available'
+workflow.message.no_definitions: 'No workflow definitions available'
+workflow.instance.entity: 'Entity'
+workflow.instance.status: 'Status'
+workflow.instance.current_step: 'Current Step'
+workflow.instance.created: 'Created'
+workflow.instance.actions: 'Actions'
+workflow.stats.steps: 'Number of Steps'
+workflow.stats.total_instances: 'Total Instances'
+workflow.stats.total_definitions: 'Total Definitions'
+workflow.stats.active_definitions: 'Active Definitions'
+workflow.stats.avg_steps: 'Avg. Steps'
+workflow.stats.entity_types: 'Entity Types'
+workflow.success.definition_created: 'Workflow definition successfully created'
+workflow.success.definition_updated: 'Workflow definition successfully updated'
+workflow.success.definition_deleted: 'Workflow definition successfully deleted'
+workflow.success.definition_activated: 'Workflow definition activated'
+workflow.success.definition_deactivated: 'Workflow definition deactivated'
+workflow.error.has_active_instances: 'Cannot delete workflow: {count} active instance(s) exist'
+workflow.confirm.delete: 'Really delete workflow definition?'
+workflow.help.name: 'Unique name for this workflow definition'
+workflow.help.description: 'Optional description of the workflow purpose'
+workflow.help.entity_type: 'Entity type this workflow applies to'
+workflow.help.is_active: 'When deactivated, no new workflow instances can be started'
+workflow.help.delete_warning: 'Deleting a workflow definition cannot be undone. Active instances prevent deletion.'
+workflow.info.steps_note_title: 'Note about Workflow Steps'
+workflow.info.steps_note_text: 'Workflow steps must be configured separately after creating the definition.'
+workflow.placeholder.name: 'e.g. Risk Assessment Approval'
+workflow.placeholder.description: 'e.g. Approval process for risk assessments'
+common.cancel: 'Cancel'
+common.view: 'View'
+common.edit: 'Edit'
+common.actions: 'Actions'

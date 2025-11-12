@@ -581,59 +581,87 @@ function initializeHeaderMappingButton() {
             return;
         }
 
-        console.log('[Header Button] Starting mapping creation...');
+        console.log('[Header Button] Starting chunked mapping creation...');
 
         // Disable button and show loading
         createAllMappingsBtn.disabled = true;
-        createAllMappingsBtn.textContent = '⏳ Erstelle Mappings...';
         createAllMappingsBtn.style.opacity = '0.7';
 
-        try {
-            const csrfToken = '{{ csrf_token('create_mappings') }}';
-            const url = '{{ path('app_compliance_create_mappings') }}';
+        const csrfToken = '{{ csrf_token('create_mappings') }}';
+        const url = '{{ path('app_compliance_create_mappings') }}';
 
-            console.log('[Header Button] Fetching:', url);
+        let currentBatch = 0;
+        let totalCreated = 0;
+        let totalSkipped = 0;
 
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'X-CSRF-Token': csrfToken,
-                    'Content-Type': 'application/json'
+        // Recursive function to process batches
+        async function processBatch() {
+            try {
+                createAllMappingsBtn.textContent = `⏳ Batch ${currentBatch + 1}...`;
+                console.log('[Header Button] Processing batch:', currentBatch);
+
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-Token': csrfToken,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        batch: currentBatch,
+                        batch_size: 50
+                    })
+                });
+
+                console.log('[Header Button] Batch', currentBatch, 'response status:', response.status);
+
+                const data = await response.json();
+                console.log('[Header Button] Batch', currentBatch, 'response data:', data);
+
+                if (!data.success) {
+                    throw new Error(data.message || 'Unbekannter Fehler');
                 }
-            });
 
-            console.log('[Header Button] Response status:', response.status);
+                totalCreated += data.mappings_created || 0;
+                totalSkipped += data.mappings_skipped || 0;
 
-            const data = await response.json();
-            console.log('[Header Button] Response data:', data);
+                // Show progress
+                if (data.progress) {
+                    createAllMappingsBtn.textContent = `⏳ ${data.progress.percent}% (${data.progress.processed}/${data.progress.total})`;
+                }
 
-            if (data.success) {
-                // Show success message
-                createAllMappingsBtn.textContent = '✅ ' + data.message;
-                createAllMappingsBtn.style.background = '#10b981';
-                createAllMappingsBtn.style.color = 'white';
+                // Continue with next batch if there's more
+                if (data.has_more) {
+                    currentBatch = data.next_batch;
+                    // Small delay to prevent overwhelming the server
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                    return processBatch();
+                } else {
+                    // All done!
+                    const message = `✅ ${totalCreated} neue Mappings erstellt!`;
+                    createAllMappingsBtn.textContent = message;
+                    createAllMappingsBtn.style.background = '#10b981';
+                    createAllMappingsBtn.style.color = 'white';
 
-                // Reload page after 2 seconds
-                setTimeout(() => {
-                    console.log('[Header Button] Reloading page...');
-                    window.location.reload();
-                }, 2000);
-            } else {
-                // Show error message
-                console.error('[Header Button] Server returned error:', data.message);
-                alert('Fehler: ' + (data.message || 'Unbekannter Fehler'));
+                    console.log('[Header Button] All batches completed. Created:', totalCreated, 'Skipped:', totalSkipped);
+
+                    // Reload page after 2 seconds
+                    setTimeout(() => {
+                        console.log('[Header Button] Reloading page...');
+                        window.location.reload();
+                    }, 2000);
+                }
+            } catch (error) {
+                console.error('[Header Button] Error in batch', currentBatch, ':', error);
+                alert('Fehler beim Erstellen der Mappings: ' + error.message);
                 createAllMappingsBtn.disabled = false;
                 createAllMappingsBtn.textContent = originalText;
                 createAllMappingsBtn.style.opacity = '1';
             }
-        } catch (error) {
-            console.error('[Header Button] JavaScript error:', error);
-            alert('Fehler beim Erstellen der Mappings: ' + error.message);
-            createAllMappingsBtn.disabled = false;
-            createAllMappingsBtn.textContent = originalText;
-            createAllMappingsBtn.style.opacity = '1';
         }
+
+        // Start processing
+        await processBatch();
     });
 }
 

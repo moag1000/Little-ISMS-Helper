@@ -1,0 +1,113 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block admin_title %}{{ 'admin.settings.security.title'|trans }}{% endblock %}
+
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item"><a href="{{ path('admin_settings_index') }}">{{ 'admin.settings.title'|trans }}</a></li>
+    <li class="breadcrumb-item active">{{ 'admin.settings.security.title'|trans }}</li>
+{% endblock %}
+
+{% block admin_content %}
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header bg-white">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-shield-lock-fill text-danger"></i>
+                        {{ 'admin.settings.security.title'|trans }}
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {# Session Settings #}
+                        <div class="mb-4">
+                            <h6 class="border-bottom pb-2 mb-3">{{ 'admin.settings.security.session_settings'|trans }}</h6>
+
+                            <div class="mb-3">
+                                <label for="session_lifetime" class="form-label">{{ 'admin.settings.security.session_lifetime'|trans }}</label>
+                                <div class="input-group">
+                                    <input type="number" name="session_lifetime" id="session_lifetime" class="form-control"
+                                           value="{{ settings.session_lifetime }}" min="300" max="86400" step="60">
+                                    <span class="input-group-text">{{ 'common.seconds'|trans }}</span>
+                                </div>
+                                <div class="form-text">{{ 'admin.settings.security.session_lifetime_help'|trans }}</div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="remember_me_lifetime" class="form-label">{{ 'admin.settings.security.remember_me_lifetime'|trans }}</label>
+                                <div class="input-group">
+                                    <input type="number" name="remember_me_lifetime" id="remember_me_lifetime" class="form-control"
+                                           value="{{ settings.remember_me_lifetime }}" min="86400" max="2592000" step="86400">
+                                    <span class="input-group-text">{{ 'common.seconds'|trans }}</span>
+                                </div>
+                                <div class="form-text">{{ 'admin.settings.security.remember_me_help'|trans }} ({{ (settings.remember_me_lifetime / 86400)|round }} {{ 'common.days'|trans }})</div>
+                            </div>
+                        </div>
+
+                        {# Password Settings #}
+                        <div class="mb-4">
+                            <h6 class="border-bottom pb-2 mb-3">{{ 'admin.settings.security.password_settings'|trans }}</h6>
+
+                            <div class="mb-3">
+                                <label for="password_min_length" class="form-label">{{ 'admin.settings.security.password_min_length'|trans }}</label>
+                                <input type="number" name="password_min_length" id="password_min_length" class="form-control"
+                                       value="{{ settings.password_min_length }}" min="6" max="20">
+                                <div class="form-text">{{ 'admin.settings.security.password_min_length_help'|trans }}</div>
+                            </div>
+                        </div>
+
+                        {# Authentication Settings #}
+                        <div class="mb-4">
+                            <h6 class="border-bottom pb-2 mb-3">{{ 'admin.settings.security.auth_settings'|trans }}</h6>
+
+                            <div class="mb-3">
+                                <label for="max_login_attempts" class="form-label">{{ 'admin.settings.security.max_login_attempts'|trans }}</label>
+                                <input type="number" name="max_login_attempts" id="max_login_attempts" class="form-control"
+                                       value="{{ settings.max_login_attempts }}" min="3" max="10">
+                                <div class="form-text">{{ 'admin.settings.security.max_login_attempts_help'|trans }}</div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="lockout_duration" class="form-label">{{ 'admin.settings.security.lockout_duration'|trans }}</label>
+                                <div class="input-group">
+                                    <input type="number" name="lockout_duration" id="lockout_duration" class="form-control"
+                                           value="{{ settings.lockout_duration }}" min="60" max="3600" step="60">
+                                    <span class="input-group-text">{{ 'common.seconds'|trans }}</span>
+                                </div>
+                                <div class="form-text">{{ 'admin.settings.security.lockout_duration_help'|trans }} ({{ (settings.lockout_duration / 60)|round }} {{ 'common.minutes'|trans }})</div>
+                            </div>
+
+                            <div class="mb-3">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" name="require_2fa" id="require_2fa" value="1"
+                                           {% if settings.require_2fa %}checked{% endif %}>
+                                    <label class="form-check-label" for="require_2fa">
+                                        {{ 'admin.settings.security.require_2fa'|trans }}
+                                    </label>
+                                </div>
+                                <div class="form-text">{{ 'admin.settings.security.require_2fa_help'|trans }}</div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ path('admin_settings_index') }}" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left"></i> {{ 'common.back'|trans }}
+                            </a>
+                            <button type="submit" class="btn btn-danger">
+                                <i class="bi bi-save"></i> {{ 'common.save'|trans }}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="alert alert-warning">
+                <i class="bi bi-exclamation-triangle"></i>
+                <strong>{{ 'common.warning'|trans }}</strong><br>
+                {{ 'admin.settings.security.warning'|trans }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

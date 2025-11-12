@@ -1,0 +1,135 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block admin_title %}{{ 'admin.settings.features.title'|trans }}{% endblock %}
+
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item"><a href="{{ path('admin_settings_index') }}">{{ 'admin.settings.title'|trans }}</a></li>
+    <li class="breadcrumb-item active">{{ 'admin.settings.features.title'|trans }}</li>
+{% endblock %}
+
+{% block admin_content %}
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header bg-white">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-toggles2 text-success"></i>
+                        {{ 'admin.settings.features.title'|trans }}
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        <p class="text-muted">{{ 'admin.settings.features.intro'|trans }}</p>
+
+                        <div class="list-group list-group-flush">
+                            {# Dark Mode #}
+                            <div class="list-group-item">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div class="flex-grow-1">
+                                        <h6 class="mb-1">
+                                            <i class="bi bi-moon-stars"></i>
+                                            {{ 'admin.settings.features.dark_mode'|trans }}
+                                        </h6>
+                                        <p class="mb-0 small text-muted">{{ 'admin.settings.features.dark_mode_help'|trans }}</p>
+                                    </div>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" name="enable_dark_mode" id="enable_dark_mode" value="1"
+                                               {% if settings.enable_dark_mode %}checked{% endif %}>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {# Global Search #}
+                            <div class="list-group-item">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div class="flex-grow-1">
+                                        <h6 class="mb-1">
+                                            <i class="bi bi-search"></i>
+                                            {{ 'admin.settings.features.global_search'|trans }}
+                                        </h6>
+                                        <p class="mb-0 small text-muted">{{ 'admin.settings.features.global_search_help'|trans }}</p>
+                                    </div>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" name="enable_global_search" id="enable_global_search" value="1"
+                                               {% if settings.enable_global_search %}checked{% endif %}>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {# Quick View #}
+                            <div class="list-group-item">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div class="flex-grow-1">
+                                        <h6 class="mb-1">
+                                            <i class="bi bi-eye-fill"></i>
+                                            {{ 'admin.settings.features.quick_view'|trans }}
+                                        </h6>
+                                        <p class="mb-0 small text-muted">{{ 'admin.settings.features.quick_view_help'|trans }}</p>
+                                    </div>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" name="enable_quick_view" id="enable_quick_view" value="1"
+                                               {% if settings.enable_quick_view %}checked{% endif %}>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {# Notifications #}
+                            <div class="list-group-item">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div class="flex-grow-1">
+                                        <h6 class="mb-1">
+                                            <i class="bi bi-bell-fill"></i>
+                                            {{ 'admin.settings.features.notifications'|trans }}
+                                        </h6>
+                                        <p class="mb-0 small text-muted">{{ 'admin.settings.features.notifications_help'|trans }}</p>
+                                    </div>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" name="enable_notifications" id="enable_notifications" value="1"
+                                               {% if settings.enable_notifications %}checked{% endif %}>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {# Audit Log #}
+                            <div class="list-group-item">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div class="flex-grow-1">
+                                        <h6 class="mb-1">
+                                            <i class="bi bi-journal-text"></i>
+                                            {{ 'admin.settings.features.audit_log'|trans }}
+                                        </h6>
+                                        <p class="mb-0 small text-muted">{{ 'admin.settings.features.audit_log_help'|trans }}</p>
+                                    </div>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" name="enable_audit_log" id="enable_audit_log" value="1"
+                                               {% if settings.enable_audit_log %}checked{% endif %}>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="{{ path('admin_settings_index') }}" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left"></i> {{ 'common.back'|trans }}
+                            </a>
+                            <button type="submit" class="btn btn-success">
+                                <i class="bi bi-save"></i> {{ 'common.save'|trans }}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-header bg-white">
+                    <h6 class="card-title mb-0">{{ 'admin.settings.info'|trans }}</h6>
+                </div>
+                <div class="card-body">
+                    <p class="small">{{ 'admin.settings.features.info_text'|trans }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

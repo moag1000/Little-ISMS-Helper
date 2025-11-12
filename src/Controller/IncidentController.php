@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Incident;
 use App\Form\IncidentType;
+use App\Repository\AuditLogRepository;
 use App\Repository\IncidentRepository;
 use App\Service\EmailNotificationService;
 use App\Service\PdfExportService;
@@ -21,6 +22,7 @@ class IncidentController extends AbstractController
 {
     public function __construct(
         private IncidentRepository $incidentRepository,
+        private AuditLogRepository $auditLogRepository,
         private EntityManagerInterface $entityManager,
         private EmailNotificationService $emailService,
         private PdfExportService $pdfService,
@@ -30,16 +32,51 @@ class IncidentController extends AbstractController
 
     #[Route('/', name: 'app_incident_index')]
     #[IsGranted('ROLE_USER')]
-    public function index(): Response
+    public function index(Request $request): Response
     {
-        $openIncidents = $this->incidentRepository->findOpenIncidents();
+        // Get filter parameters
+        $severity = $request->query->get('severity');
+        $category = $request->query->get('category');
+        $status = $request->query->get('status');
+        $dataBreachOnly = $request->query->get('data_breach_only');
+        $nis2Only = $request->query->get('nis2_only');
+
+        // Get all incidents
         $allIncidents = $this->incidentRepository->findAll();
+
+        // Apply filters
+        if ($severity) {
+            $allIncidents = array_filter($allIncidents, fn($incident) => $incident->getSeverity() === $severity);
+        }
+
+        if ($category) {
+            $allIncidents = array_filter($allIncidents, fn($incident) => $incident->getCategory() === $category);
+        }
+
+        if ($status) {
+            $allIncidents = array_filter($allIncidents, fn($incident) => $incident->getStatus() === $status);
+        }
+
+        if ($dataBreachOnly === '1') {
+            $allIncidents = array_filter($allIncidents, fn($incident) => $incident->isDataBreachOccurred());
+        }
+
+        if ($nis2Only === '1') {
+            $allIncidents = array_filter($allIncidents, fn($incident) => $incident->requiresNis2Reporting());
+        }
+
+        // Re-index array after filtering to avoid gaps in keys
+        $allIncidents = array_values($allIncidents);
+
+        $openIncidents = $this->incidentRepository->findOpenIncidents();
         $categoryStats = $this->incidentRepository->countByCategory();
+        $severityStats = $this->incidentRepository->countBySeverity();
 
         return $this->render('incident/index.html.twig', [
             'openIncidents' => $openIncidents,
             'allIncidents' => $allIncidents,
             'categoryStats' => $categoryStats,
+            'severityStats' => $severityStats,
         ]);
     }
 
@@ -75,8 +112,14 @@ class IncidentController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function show(Incident $incident): Response
     {
+        // Get audit log history for this incident (last 10 entries)
+        $auditLogs = $this->auditLogRepository->findByEntity('Incident', $incident->getId());
+        $recentAuditLogs = array_slice($auditLogs, 0, 10);
+
         return $this->render('incident/show.html.twig', [
             'incident' => $incident,
+            'auditLogs' => $recentAuditLogs,
+            'totalAuditLogs' => count($auditLogs),
         ]);
     }
 

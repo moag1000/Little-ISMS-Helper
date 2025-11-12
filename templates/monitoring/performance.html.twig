@@ -1,0 +1,161 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Performance Metrics - Monitoring{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="bi bi-speedometer"></i> Performance Metrics</h1>
+        <a href="{{ path('monitoring_health') }}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Back to Health
+        </a>
+    </div>
+
+    {# Overview Statistics #}
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card border-primary">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-muted">Total Requests</h5>
+                    <p class="display-6 text-primary">{{ total_requests }}</p>
+                    <small>Last 24 hours</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-success">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-muted">Unique Users</h5>
+                    <p class="display-6 text-success">{{ unique_users }}</p>
+                    <small>Active today</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-info">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-muted">Memory Usage</h5>
+                    <p class="display-6 text-info small">{{ memory_usage }}</p>
+                    <small>Current</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-warning">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-muted">Memory Peak</h5>
+                    <p class="display-6 text-warning small">{{ memory_peak }}</p>
+                    <small>Peak usage</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        {# Top Actions #}
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-activity"></i> Top Actions (Last 24h)
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if top_actions|length > 0 %}
+                        <div class="list-group list-group-flush">
+                            {% for action, count in top_actions %}
+                                <div class="list-group-item d-flex justify-content-between align-items-center">
+                                    <span>
+                                        <i class="bi bi-dot"></i>
+                                        <code>{{ action }}</code>
+                                    </span>
+                                    <span>
+                                        <span class="badge bg-primary rounded-pill">{{ count }}</span>
+                                        <small class="text-muted ms-2">
+                                            ({{ (count / total_requests * 100)|number_format(1) }}%)
+                                        </small>
+                                    </span>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info mb-0">
+                            <i class="bi bi-info-circle"></i> No data available
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        {# Top Entities #}
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-folder"></i> Most Active Entities (Last 24h)
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if top_entities|length > 0 %}
+                        <div class="list-group list-group-flush">
+                            {% for entity, count in top_entities %}
+                                <div class="list-group-item d-flex justify-content-between align-items-center">
+                                    <span>
+                                        <i class="bi bi-dot"></i>
+                                        {{ entity }}
+                                    </span>
+                                    <span>
+                                        <span class="badge bg-success rounded-pill">{{ count }}</span>
+                                        <small class="text-muted ms-2">
+                                            ({{ (count / total_requests * 100)|number_format(1) }}%)
+                                        </small>
+                                    </span>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info mb-0">
+                            <i class="bi bi-info-circle"></i> No data available
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# System Resources #}
+    <div class="card">
+        <div class="card-header bg-info text-white">
+            <h5 class="mb-0">
+                <i class="bi bi-cpu"></i> System Resources
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <dl class="row">
+                        <dt class="col-sm-6">Memory Limit:</dt>
+                        <dd class="col-sm-6"><code>{{ memory_limit }}</code></dd>
+
+                        <dt class="col-sm-6">Current Usage:</dt>
+                        <dd class="col-sm-6"><code>{{ memory_usage }}</code></dd>
+
+                        <dt class="col-sm-6">Peak Usage:</dt>
+                        <dd class="col-sm-6"><code>{{ memory_peak }}</code></dd>
+                    </dl>
+                </div>
+                <div class="col-md-8">
+                    <div class="alert alert-info mb-0">
+                        <h6><i class="bi bi-info-circle"></i> Performance Monitoring Note</h6>
+                        <p class="mb-0">
+                            These metrics are based on audit log data and current PHP process information.
+                            For production environments, consider integrating professional monitoring tools like:
+                            <strong>New Relic</strong>, <strong>Datadog</strong>, or <strong>Blackfire</strong> for detailed performance insights.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

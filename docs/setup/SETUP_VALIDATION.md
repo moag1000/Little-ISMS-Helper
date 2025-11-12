@@ -198,12 +198,12 @@ The original README had **critical gaps**:
 
 ## Test Script
 
-A validation script has been created: `test-setup.sh`
+A validation script has been created: `scripts/setup/test-setup.sh`
 
 **Usage:**
 ```bash
-chmod +x test-setup.sh
-./test-setup.sh
+chmod +x scripts/setup/test-setup.sh
+scripts/setup/test-setup.sh
 ```
 
 **Output:**

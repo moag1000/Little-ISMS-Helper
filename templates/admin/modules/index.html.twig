@@ -1,0 +1,192 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'admin.modules.title'|trans }} - {{ 'admin.panel.title'|trans }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="bi bi-puzzle"></i> {{ 'admin.modules.title'|trans }}</h1>
+        <a href="{{ path('admin_modules_graph') }}" class="btn btn-outline-primary">
+            <i class="bi bi-diagram-3"></i> {{ 'admin.modules.dependency_graph'|trans }}
+        </a>
+    </div>
+
+    {# Statistics #}
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="card border-primary">
+                <div class="card-body text-center">
+                    <h6 class="text-muted mb-1">{{ 'admin.modules.stats.total'|trans }}</h6>
+                    <h2 class="mb-0">{{ statistics.total_modules }}</h2>
+                    <i class="bi bi-box fs-3 text-primary opacity-25"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-success">
+                <div class="card-body text-center">
+                    <h6 class="text-muted mb-1">{{ 'admin.modules.stats.active'|trans }}</h6>
+                    <h2 class="mb-0 text-success">{{ statistics.active_modules }}</h2>
+                    <i class="bi bi-check-circle fs-3 text-success opacity-25"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-secondary">
+                <div class="card-body text-center">
+                    <h6 class="text-muted mb-1">{{ 'admin.modules.stats.inactive'|trans }}</h6>
+                    <h2 class="mb-0 text-secondary">{{ statistics.inactive_modules }}</h2>
+                    <i class="bi bi-x-circle fs-3 text-secondary opacity-25"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-warning">
+                <div class="card-body text-center">
+                    <h6 class="text-muted mb-1">{{ 'admin.modules.stats.required'|trans }}</h6>
+                    <h2 class="mb-0 text-warning">{{ statistics.required_modules }}</h2>
+                    <i class="bi bi-star fs-3 text-warning opacity-25"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Active Modules #}
+    <div class="card mb-4">
+        <div class="card-header bg-success text-white">
+            <h5 class="mb-0">
+                <i class="bi bi-check-circle"></i> {{ 'admin.modules.active_modules'|trans }} ({{ active_modules|length }})
+            </h5>
+        </div>
+        <div class="card-body">
+            {% if active_modules|length > 0 %}
+                <div class="row g-3">
+                    {% for key, module in all_modules if key in active_modules %}
+                        <div class="col-md-6 col-lg-4">
+                            <div class="card h-100 border-success">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start mb-3">
+                                        <h6 class="mb-0">
+                                            <i class="bi bi-{{ module.icon }} text-{{ module.required ? 'warning' : 'success' }}"></i>
+                                            {{ module.name }}
+                                        </h6>
+                                        <span class="badge bg-success">{{ 'admin.modules.status.active'|trans }}</span>
+                                    </div>
+                                    <p class="text-muted small">{{ module.description }}</p>
+
+                                    {% if dependency_graph[key].dependencies|length > 0 %}
+                                        <div class="mb-2">
+                                            <small class="text-warning">
+                                                <i class="bi bi-link-45deg"></i>
+                                                <strong>{{ 'admin.modules.dependencies'|trans }}:</strong>
+                                            </small><br>
+                                            {% for dep in dependency_graph[key].dependencies %}
+                                                <span class="badge bg-warning text-dark me-1 mb-1">{{ all_modules[dep].name }}</span>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+
+                                    {% if dependency_graph[key].dependents|length > 0 %}
+                                        <div class="mb-2">
+                                            <small class="text-info">
+                                                <i class="bi bi-arrow-right"></i>
+                                                <strong>{{ 'admin.modules.required_by'|trans }}:</strong>
+                                            </small><br>
+                                            {% for dep in dependency_graph[key].dependents %}
+                                                <span class="badge bg-info me-1 mb-1">{{ all_modules[dep].name }}</span>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+
+                                    <div class="d-grid gap-2 mt-3">
+                                        <a href="{{ path('admin_modules_details', {moduleKey: key}) }}" class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-info-circle"></i> {{ 'admin.modules.details'|trans }}
+                                        </a>
+                                        {% if not module.required %}
+                                            <form method="post" action="{{ path('admin_modules_deactivate', {moduleKey: key}) }}">
+                                                <button type="submit" class="btn btn-sm btn-outline-danger w-100"
+                                                    onclick="return confirm('{{ 'admin.modules.confirm_deactivate'|trans({'%name%': module.name}) }}')">
+                                                    <i class="bi bi-x-circle"></i> {{ 'admin.modules.deactivate'|trans }}
+                                                </button>
+                                            </form>
+                                        {% else %}
+                                            <button type="button" class="btn btn-sm btn-secondary" disabled>
+                                                <i class="bi bi-lock"></i> {{ 'admin.modules.required'|trans }}
+                                            </button>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-muted text-center py-4">{{ 'admin.modules.no_active'|trans }}</p>
+            {% endif %}
+        </div>
+    </div>
+
+    {# Inactive Modules #}
+    {% set inactive_modules = [] %}
+    {% for key, module in all_modules %}
+        {% if key not in active_modules %}
+            {% set inactive_modules = inactive_modules|merge([{key: key, module: module}]) %}
+        {% endif %}
+    {% endfor %}
+
+    {% if inactive_modules|length > 0 %}
+        <div class="card">
+            <div class="card-header bg-secondary text-white">
+                <h5 class="mb-0">
+                    <i class="bi bi-x-circle"></i> {{ 'admin.modules.inactive_modules'|trans }} ({{ inactive_modules|length }})
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    {% for item in inactive_modules %}
+                        {% set key = item.key %}
+                        {% set module = item.module %}
+                        <div class="col-md-6 col-lg-4">
+                            <div class="card h-100 border-secondary">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start mb-3">
+                                        <h6 class="mb-0 text-muted">
+                                            <i class="bi bi-{{ module.icon }}"></i>
+                                            {{ module.name }}
+                                        </h6>
+                                        <span class="badge bg-secondary">{{ 'admin.modules.status.inactive'|trans }}</span>
+                                    </div>
+                                    <p class="text-muted small">{{ module.description }}</p>
+
+                                    {% if dependency_graph[key].dependencies|length > 0 %}
+                                        <div class="mb-2">
+                                            <small class="text-warning">
+                                                <i class="bi bi-link-45deg"></i>
+                                                <strong>{{ 'admin.modules.dependencies'|trans }}:</strong>
+                                            </small><br>
+                                            {% for dep in dependency_graph[key].dependencies %}
+                                                <span class="badge bg-warning text-dark me-1 mb-1">{{ all_modules[dep].name }}</span>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+
+                                    <div class="d-grid gap-2 mt-3">
+                                        <a href="{{ path('admin_modules_details', {moduleKey: key}) }}" class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-info-circle"></i> {{ 'admin.modules.details'|trans }}
+                                        </a>
+                                        <form method="post" action="{{ path('admin_modules_activate', {moduleKey: key}) }}">
+                                            <button type="submit" class="btn btn-sm btn-success w-100">
+                                                <i class="bi bi-check-circle"></i> {{ 'admin.modules.activate'|trans }}
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
