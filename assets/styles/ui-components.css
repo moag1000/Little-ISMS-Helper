@@ -1591,6 +1591,26 @@
     z-index: 10;
 }
 
+/* Workflow Instance Show Utilities */
+.fs-1-mb-sm {
+    font-size: 1rem;
+    margin-bottom: var(--spacing-sm);
+}
+
+.fs-11-mb-xs {
+    font-size: 1.1rem;
+    margin-bottom: var(--spacing-xs);
+}
+
+.card-step {
+    margin-bottom: var(--spacing-md);
+    padding: var(--spacing-md);
+}
+
+.border-left-primary {
+    border-left: 4px solid var(--color-primary);
+}
+
 /* ====================
    Responsive
    ==================== */
