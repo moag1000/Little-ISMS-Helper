@@ -1,5 +1,15 @@
 /* CSS Variables für konsistentes Cyberpunk Design */
 :root {
+    /* Z-Index System - Organized by layer */
+    --z-base: 0;
+    --z-dropdown: 10;
+    --z-sticky: 100;
+    --z-fixed: 500;
+    --z-modal-backdrop: 1000;
+    --z-modal: 1001;
+    --z-toast: 9999;
+    --z-turbo-bar: 999999;
+
     /* Cyberpunk Theme Colors - From Logo */
     --color-primary: #0f172a;
     --color-primary-light: #1e293b;
@@ -77,10 +87,16 @@ body {
     color: white;
     padding: var(--spacing-md) var(--spacing-lg);
     box-shadow: var(--shadow-md), 0 1px 0 var(--color-secondary);
-    position: sticky;
-    top: 0;
-    z-index: 100;
     border-bottom: 2px solid var(--color-secondary);
+}
+
+/* Header sticky only on desktop (matches nav behavior) */
+@media (min-width: 769px) {
+    .header {
+        position: sticky;
+        top: 0;
+        z-index: var(--z-sticky);
+    }
 }
 
 [data-theme="dark"] .header {
@@ -121,7 +137,7 @@ body {
     .nav {
         position: sticky;
         top: 0;
-        z-index: 99;
+        z-index: calc(var(--z-sticky) - 1);
     }
 }
 
@@ -135,7 +151,7 @@ body {
     display: flex;
     flex-wrap: wrap;
     gap: var(--spacing-sm);
-    max-width: 1400px;
+    max-width: 1600px;  /* Match container width */
     margin: 0 auto;
     padding: 0 var(--spacing-lg);
 }
@@ -190,7 +206,7 @@ body {
 
 /* Container & Content with Dark Mode Support */
 .container {
-    max-width: 1400px;
+    max-width: 1600px;  /* Increased from 1400px for better use of modern displays */
     margin: var(--spacing-xl) auto;
     padding: 0 var(--spacing-xl);
 }
