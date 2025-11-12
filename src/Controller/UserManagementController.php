@@ -505,8 +505,7 @@ class UserManagementController extends AbstractController
     public function impersonate(User $user): Response
     {
         // Redirect to the homepage with the impersonation parameter
-        return $this->redirectToRoute('app_home', [
-            '_switch_user' => $user->getEmail(),
-        ]);
+        // Using direct URL with _switch_user parameter for Symfony's user impersonation
+        return $this->redirect('/?_switch_user=' . urlencode($user->getEmail()));
     }
 }
