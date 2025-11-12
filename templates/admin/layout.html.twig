@@ -6,13 +6,18 @@
     {{ parent() }}
     <style>
         /* Override base layout for admin portal */
-        body:has(.admin-wrapper) .container {
+        /* Using :has() for modern browsers with fallback */
+        body:has(.admin-wrapper) .container,
+        body .admin-wrapper ~ * .container,
+        .admin-layout .container {
             max-width: 100%;
             margin: 0;
             padding: 0;
         }
 
-        body:has(.admin-wrapper) .content {
+        body:has(.admin-wrapper) .content,
+        body .admin-wrapper ~ * .content,
+        .admin-layout .content {
             background: transparent;
             padding: 0;
             box-shadow: none;
@@ -215,8 +220,8 @@
 {% block body %}
     <div class="admin-wrapper">
         {# Admin Sidebar Navigation #}
-        <aside class="admin-sidebar">
-            <nav>
+        <aside class="admin-sidebar" role="complementary" aria-label="Admin navigation">
+            <nav role="navigation">
                 {# Admin Dashboard #}
                 <div class="sidebar-section">
                     <ul>
