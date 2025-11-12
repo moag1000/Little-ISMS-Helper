@@ -1503,6 +1503,44 @@
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
 }
 
+/* SOA Show Utilities */
+.grid-responsive-200 {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+.grid-responsive-250 {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+.bg-light {
+    background: var(--color-bg-light);
+}
+
+.badge-neutral-lg {
+    background: #f0f0f0;
+    color: #666;
+    font-size: 1.2rem;
+}
+
+.progress-lg {
+    height: 30px;
+}
+
+.text-light {
+    color: var(--color-text-light);
+}
+
+.text-light-mt-sm {
+    color: var(--color-text-light);
+    margin-top: var(--spacing-sm);
+}
+
+.text-light-mt-sm-lh {
+    color: var(--color-text-light);
+    margin-top: var(--spacing-sm);
+    line-height: 1.6;
+}
+
 /* ====================
    Responsive
    ==================== */
