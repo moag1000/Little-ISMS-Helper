@@ -1482,6 +1482,22 @@
     border-left: 4px solid var(--color-danger);
 }
 
+/* SOA Index Utilities */
+.badge-neutral {
+    background: #f0f0f0;
+    color: #666;
+}
+
+.text-center-block-light {
+    text-align: center;
+    display: block;
+    color: #999;
+}
+
+.justify-end {
+    justify-content: flex-end;
+}
+
 /* ====================
    Responsive
    ==================== */
