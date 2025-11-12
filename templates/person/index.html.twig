@@ -61,7 +61,7 @@
                 <th>{{ 'person.field.company'|trans }}</th>
                 <th>{{ 'person.field.email'|trans }}</th>
                 <th>{{ 'person.field.department'|trans }}</th>
-                <th style="text-align: center;">{{ 'common.actions'|trans }}</th>
+                <th class="text-center">{{ 'common.actions'|trans }}</th>
             </tr>
         </thead>
         <tbody>
@@ -70,7 +70,7 @@
                 <td>
                     <strong>{{ person.fullName }}</strong>
                     {% if person.jobTitle %}
-                        <br><small style="color: var(--color-text-muted);">{{ person.jobTitle }}</small>
+                        <br><small class="text-muted-color">{{ person.jobTitle }}</small>
                     {% endif %}
                 </td>
                 <td>
@@ -90,7 +90,7 @@
                     {% if person.badgeId %}
                         <code>{{ person.badgeId }}</code>
                     {% else %}
-                        <span style="color: var(--color-text-muted);">-</span>
+                        <span class="text-muted-color">-</span>
                     {% endif %}
                 </td>
                 <td>{{ person.company ?? '-' }}</td>
@@ -98,12 +98,12 @@
                     {% if person.email %}
                         <a href="mailto:{{ person.email }}">{{ person.email }}</a>
                     {% else %}
-                        <span style="color: var(--color-text-muted);">-</span>
+                        <span class="text-muted-color">-</span>
                     {% endif %}
                 </td>
                 <td>{{ person.department ?? '-' }}</td>
-                <td style="text-align: center;">
-                    <a href="{{ path('app_person_show', {id: person.id}) }}" class="btn btn-sm" style="margin-right: 0.25rem;">
+                <td class="text-center">
+                    <a href="{{ path('app_person_show', {id: person.id}) }}" class="btn btn-sm mr-025">
                         👁 {{ 'common.view'|trans }}
                     </a>
                     <a href="{{ path('app_person_edit', {id: person.id}) }}" class="btn btn-sm btn-secondary">
@@ -113,7 +113,7 @@
             </tr>
             {% else %}
             <tr>
-                <td colspan="7" style="text-align: center; padding: var(--spacing-xl); color: var(--color-text-muted);">
+                <td colspan="7" class="text-center-p-xl-muted">
                     {{ 'person.message.no_persons'|trans }}
                 </td>
             </tr>
