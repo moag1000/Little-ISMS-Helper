@@ -1,0 +1,239 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block admin_title %}{{ tenant.name }}{% endblock %}
+
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item"><a href="{{ path('tenant_management_index') }}">{{ 'tenant.title'|trans }}</a></li>
+    <li class="breadcrumb-item active">{{ tenant.code }}</li>
+{% endblock %}
+
+{% block admin_content %}
+    {# Tenant Header #}
+    <div class="d-flex justify-content-between align-items-start mb-4">
+        <div>
+            <h2>{{ tenant.name }}</h2>
+            <p class="text-muted mb-2">
+                <code class="text-primary">{{ tenant.code }}</code>
+                {% if tenant.isActive %}
+                    <span class="badge bg-success ms-2">
+                        <i class="bi bi-check-circle"></i> {{ 'tenant.status.active'|trans }}
+                    </span>
+                {% else %}
+                    <span class="badge bg-secondary ms-2">
+                        <i class="bi bi-x-circle"></i> {{ 'tenant.status.inactive'|trans }}
+                    </span>
+                {% endif %}
+            </p>
+            {% if tenant.description %}
+                <p>{{ tenant.description }}</p>
+            {% endif %}
+        </div>
+        <div class="btn-group">
+            <a href="{{ path('tenant_management_edit', {id: tenant.id}) }}" class="btn btn-primary">
+                <i class="bi bi-pencil"></i> {{ 'common.edit'|trans }}
+            </a>
+            <form method="post" action="{{ path('tenant_management_toggle', {id: tenant.id}) }}" class="d-inline">
+                <button type="submit"
+                        class="btn btn-{% if tenant.isActive %}warning{% else %}success{% endif %}"
+                        onclick="return confirm('{{ 'tenant.confirm.toggle'|trans }}');">
+                    <i class="bi bi-{% if tenant.isActive %}pause{% else %}play{% endif %}-circle"></i>
+                    {{ (tenant.isActive ? 'tenant.action.deactivate' : 'tenant.action.activate')|trans }}
+                </button>
+            </form>
+        </div>
+    </div>
+
+    {# Statistics Cards #}
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="bg-primary bg-opacity-10 p-3 rounded me-3">
+                            <i class="bi bi-people text-primary fs-3"></i>
+                        </div>
+                        <div>
+                            <h6 class="text-muted mb-1">{{ 'tenant.stats.total_users'|trans }}</h6>
+                            <h3 class="mb-0">{{ userCount }}</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="bg-success bg-opacity-10 p-3 rounded me-3">
+                            <i class="bi bi-person-check text-success fs-3"></i>
+                        </div>
+                        <div>
+                            <h6 class="text-muted mb-1">{{ 'tenant.stats.active_users'|trans }}</h6>
+                            <h3 class="mb-0">{{ activeUsers }}</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="bg-secondary bg-opacity-10 p-3 rounded me-3">
+                            <i class="bi bi-person-x text-secondary fs-3"></i>
+                        </div>
+                        <div>
+                            <h6 class="text-muted mb-1">{{ 'tenant.stats.inactive_users'|trans }}</h6>
+                            <h3 class="mb-0">{{ inactiveUsers }}</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        {# Tenant Information #}
+        <div class="col-lg-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-white">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-info-circle text-primary"></i>
+                        {{ 'tenant.section.information'|trans }}
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-sm">
+                        <tbody>
+                            <tr>
+                                <th style="width: 40%;">{{ 'tenant.field.code'|trans }}</th>
+                                <td><code class="text-primary">{{ tenant.code }}</code></td>
+                            </tr>
+                            <tr>
+                                <th>{{ 'tenant.field.name'|trans }}</th>
+                                <td>{{ tenant.name }}</td>
+                            </tr>
+                            <tr>
+                                <th>{{ 'tenant.field.azure_tenant_id'|trans }}</th>
+                                <td>
+                                    {% if tenant.azureTenantId %}
+                                        <code class="text-muted small">{{ tenant.azureTenantId }}</code>
+                                    {% else %}
+                                        <span class="text-muted">—</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>{{ 'tenant.field.status'|trans }}</th>
+                                <td>
+                                    {% if tenant.isActive %}
+                                        <span class="badge bg-success">{{ 'tenant.status.active'|trans }}</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">{{ 'tenant.status.inactive'|trans }}</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>{{ 'tenant.field.created'|trans }}</th>
+                                <td>{{ tenant.createdAt|date('d.m.Y H:i') }}</td>
+                            </tr>
+                            {% if tenant.updatedAt %}
+                                <tr>
+                                    <th>{{ 'tenant.field.updated'|trans }}</th>
+                                    <td>{{ tenant.updatedAt|date('d.m.Y H:i') }}</td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+
+                    {% if tenant.settings %}
+                        <hr>
+                        <h6 class="text-muted mb-2">{{ 'tenant.field.settings'|trans }}</h6>
+                        <pre class="bg-light p-3 rounded small"><code>{{ tenant.settings|json_encode(constant('JSON_PRETTY_PRINT') b-or constant('JSON_UNESCAPED_UNICODE')) }}</code></pre>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        {# Users List #}
+        <div class="col-lg-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-people text-primary"></i>
+                            {{ 'tenant.section.users'|trans }}
+                        </h5>
+                        <span class="badge bg-primary">{{ userCount }}</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    {% if userCount == 0 %}
+                        <div class="text-center text-muted py-4">
+                            <i class="bi bi-people" style="font-size: 3rem;"></i>
+                            <p class="mt-2">{{ 'tenant.users.empty'|trans }}</p>
+                        </div>
+                    {% else %}
+                        <div class="list-group list-group-flush">
+                            {% for user in tenant.users|slice(0, 10) %}
+                                <div class="list-group-item px-0">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <strong>{{ user.email }}</strong>
+                                            {% if user.firstName or user.lastName %}
+                                                <br><small class="text-muted">{{ user.firstName }} {{ user.lastName }}</small>
+                                            {% endif %}
+                                        </div>
+                                        <div>
+                                            {% if user.isActive %}
+                                                <span class="badge bg-success">{{ 'common.active'|trans }}</span>
+                                            {% else %}
+                                                <span class="badge bg-secondary">{{ 'common.inactive'|trans }}</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                        {% if userCount > 10 %}
+                            <div class="text-center mt-3">
+                                <small class="text-muted">
+                                    {{ 'tenant.users.showing'|trans({'%count%': 10, '%total%': userCount}) }}
+                                </small>
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Danger Zone #}
+    {% if userCount == 0 %}
+        <div class="card border-danger">
+            <div class="card-header bg-danger text-white">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    {{ 'tenant.section.danger_zone'|trans }}
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="mb-1">{{ 'tenant.action.delete'|trans }}</h6>
+                        <p class="text-muted small mb-0">{{ 'tenant.delete.warning'|trans }}</p>
+                    </div>
+                    <form method="post" action="{{ path('tenant_management_delete', {id: tenant.id}) }}" class="d-inline">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete_tenant_' ~ tenant.id) }}">
+                        <button type="submit"
+                                class="btn btn-danger"
+                                onclick="return confirm('{{ 'tenant.confirm.delete'|trans }}');">
+                            <i class="bi bi-trash"></i> {{ 'tenant.action.delete'|trans }}
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
