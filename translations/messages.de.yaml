@@ -2270,3 +2270,96 @@ role:
     incident_manager: Incident Manager
     asset_manager: Asset Manager
     readonly: Nur-Lese-Benutzer
+
+# Phase 6L-E: System Monitoring & Health
+monitoring:
+  title: System-Überwachung
+  health:
+    title: System-Gesundheit
+    overall_status: Gesamtstatus
+    healthy: Gesund
+    warning: Warnung
+    error: Fehler
+    last_checked: Zuletzt geprüft
+  database:
+    title: Datenbank
+    status: Status
+    response_time: Antwortzeit
+    driver: Treiber
+    error: Fehler
+  disk:
+    title: Festplatte
+    free: Frei
+    used: Belegt
+    total: Gesamt
+    percentage: Prozent
+  php:
+    title: PHP
+    version: Version
+    memory_limit: Speicherlimit
+    max_execution_time: Max. Ausführungszeit
+    extensions: Erweiterungen
+    loaded: Geladen
+    missing: Fehlend
+  symfony:
+    title: Symfony
+    version: Version
+    environment: Umgebung
+    debug: Debug-Modus
+  cache:
+    title: Cache
+    directory: Verzeichnis
+    writable: Schreibbar
+  logs:
+    title: Protokolle
+    directory: Verzeichnis
+    writable: Schreibbar
+  performance:
+    title: Performance-Metriken
+    total_requests: Gesamtanfragen
+    unique_users: Eindeutige Benutzer
+    memory_usage: Speichernutzung
+    memory_peak: Spitzenspeicher
+    memory_limit: Speicherlimit
+    top_actions: Top-Aktionen
+    top_entities: Aktivste Entitäten
+    last_24h: Letzte 24 Stunden
+    system_resources: Systemressourcen
+    note: Hinweis
+  errors:
+    title: Fehlerprotokolle
+    total: Fehler gesamt
+    by_level: Nach Stufe
+    file_size: Dateigröße
+    last_modified: Zuletzt geändert
+    log_file: Protokolldatei
+    show_entries: Einträge anzeigen
+    recent: Letzte Fehler
+    no_errors: Keine Fehler gefunden!
+    no_log_file: Keine Protokolldatei gefunden
+    show_full: Vollständigen Eintrag anzeigen
+  audit_log:
+    title: Audit-Protokoll
+    total_entries: Einträge gesamt
+    top_actions: Top-Aktionen
+    top_entities: Top-Entitäten
+    quick_filters: Schnellfilter
+    all: Alle
+    today: Heute
+    this_week: Diese Woche
+    critical_actions: Kritische Aktionen
+    entries: Einträge
+    timestamp: Zeitstempel
+    user: Benutzer
+    action: Aktion
+    entity: Entität
+    ip_address: IP-Adresse
+    details: Details
+    view: Ansehen
+    description: Beschreibung
+    changes: Änderungen
+    about: Über Audit-Protokoll
+    about_text: Das Audit-Protokoll verfolgt alle wichtigen Aktionen im System einschließlich Erstellen, Aktualisieren und Löschen.
+  related: Verwandte Überwachung
+  refresh: Aktualisieren
+  back_to_health: Zurück zur Gesundheit
