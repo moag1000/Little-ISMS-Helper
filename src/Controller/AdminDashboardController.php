@@ -79,7 +79,7 @@ class AdminDashboardController extends AbstractController
         // Using audit log as proxy for activity
         $windowStart = new \DateTimeImmutable('-' . self::ACTIVE_SESSION_WINDOW_HOURS . ' hours');
         $activeSessions = $this->auditLogRepository->createQueryBuilder('a')
-            ->select('COUNT(DISTINCT a.userId)')
+            ->select('COUNT(DISTINCT a.userName)')
             ->where('a.createdAt >= :windowStart')
             ->setParameter('windowStart', $windowStart)
             ->getQuery()
