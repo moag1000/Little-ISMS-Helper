@@ -155,8 +155,8 @@ Diese PR schließt Phase 5 des Little-ISMS-Helper Projekts vollständig ab und i
 ## 📚 Dokumentation
 
 Vollständige Dokumentation in:
-- [docs/PHASE5_FINAL_FEATURES.md](docs/PHASE5_FINAL_FEATURES.md) - 100% Complete Status
-- [CHANGELOG.md](CHANGELOG.md) - Version 1.5.0 Details
+- [PHASE5_FINAL_FEATURES.md](PHASE5_FINAL_FEATURES.md) - 100% Complete Status
+- [CHANGELOG.md](../../CHANGELOG.md) - Version 1.5.0 Details
 
 ---
 
