@@ -2363,3 +2363,74 @@ monitoring:
   related: Verwandte Überwachung
   refresh: Aktualisieren
   back_to_health: Zurück zur Gesundheit
+
+# Phase 6L-F: Data Management
+data:
+  title: Datenverwaltung
+  backup:
+    title: Datenbank-Backup
+    create: Backup erstellen
+    list: Verfügbare Backups
+    filename: Dateiname
+    date: Datum
+    size: Größe
+    actions: Aktionen
+    download: Herunterladen
+    delete: Löschen
+    retention_policy: 'Aufbewahrungsrichtlinie: Nur die letzten 7 Backups werden automatisch behalten'
+    location: 'Backup-Speicherort'
+    method: 'Backup-Methode: PostgreSQL pg_dump (SQL-Format)'
+    how_to_restore: So stellen Sie ein Backup wieder her
+    restore_warning: 'Warnung: Das Wiederherstellen eines Backups überschreibt alle aktuellen Daten!'
+    success:
+      created: 'Backup erfolgreich erstellt: %filename%'
+      deleted: Backup erfolgreich gelöscht
+    error:
+      invalid_token: Ungültiges CSRF-Token
+      create_failed: 'Backup fehlgeschlagen: %error%'
+      not_found: Backup-Datei nicht gefunden
+  export:
+    title: Daten exportieren
+    configure: Export konfigurieren
+    format: Export-Format
+    select_entities: Zu exportierende Entitäten auswählen
+    select_all: Alle auswählen
+    deselect_all: Alle abwählen
+    execute: Ausgewählte Entitäten exportieren
+    about: Über Datenexport
+    about_text: Exportieren Sie Ihre Daten im JSON- oder CSV-Format. Sie können spezifische Entitäten exportieren oder alle Daten.
+    format_json: JSON-Format bewahrt Datentypen und wird für Re-Import empfohlen
+    format_csv: CSV ist besser für Tabellenkalkulationen
+    success:
+      exported: Daten erfolgreich exportiert
+    error:
+      invalid_token: Ungültiges CSRF-Token
+      no_entities: Keine Entitäten ausgewählt
+  import:
+    title: Daten importieren
+    upload: Import-Datei hochladen
+    preview: Import-Vorschau
+    execute: Import ausführen
+    select_file: JSON-Datei auswählen
+    upload_and_preview: Hochladen und Vorschau
+    process: Import-Prozess
+    requirements: Import-Anforderungen
+    file_format: Dateiformat
+    before_importing: Vor dem Import
+    limitations: Einschränkungen
+    warning:
+      critical: 'Kritische Warnung: Datenimport kann bestehende Daten überschreiben!'
+      backup_first: Erstellen Sie immer ein Backup vor dem Import
+      preview_mode: Dieses Feature befindet sich im Vorschaumodus
+      not_implemented: Import-Funktionalität ist noch nicht vollständig implementiert
+    stats:
+      total_entities: Entitäten gesamt
+      total_records: Datensätze gesamt
+      status: Status
+    error:
+      invalid_token: Ungültiges CSRF-Token
+      no_file: Keine Datei hochgeladen
+      invalid_file: 'Ungültige Datei: %error%'
+  setup:
+    title: Setup-Assistent
+    link: Link zum bestehenden Deployment-Assistenten
