@@ -31,7 +31,7 @@ class ComplianceMappingTest extends TestCase
     {
         $mapping = new ComplianceMapping();
         $requirement = new ComplianceRequirement();
-        $requirement->setIdentifier('ISO-27001-A.5.1');
+        $requirement->setRequirementId('ISO-27001-A.5.1');
 
         $mapping->setSourceRequirement($requirement);
 
@@ -42,7 +42,7 @@ class ComplianceMappingTest extends TestCase
     {
         $mapping = new ComplianceMapping();
         $requirement = new ComplianceRequirement();
-        $requirement->setIdentifier('GDPR-Art-32');
+        $requirement->setRequirementId('GDPR-Art-32');
 
         $mapping->setTargetRequirement($requirement);
 
@@ -199,11 +199,11 @@ class ComplianceMappingTest extends TestCase
         $framework->setName('ISO 27001');
 
         $sourceReq = new ComplianceRequirement();
-        $sourceReq->setIdentifier('ISO-A.5.1')
+        $sourceReq->setRequirementId('ISO-A.5.1')
                   ->setFramework($framework);
 
         $targetReq = new ComplianceRequirement();
-        $targetReq->setIdentifier('GDPR-Art-32')
+        $targetReq->setRequirementId('GDPR-Art-32')
                   ->setFramework($framework);
 
         // Simulate 80% fulfillment of source requirement
@@ -224,11 +224,11 @@ class ComplianceMappingTest extends TestCase
         $framework->setName('ISO 27001');
 
         $sourceReq = new ComplianceRequirement();
-        $sourceReq->setIdentifier('ISO-A.5.1')
+        $sourceReq->setRequirementId('ISO-A.5.1')
                   ->setFramework($framework);
 
         $targetReq = new ComplianceRequirement();
-        $targetReq->setIdentifier('GDPR-Art-32')
+        $targetReq->setRequirementId('GDPR-Art-32')
                   ->setFramework($framework);
 
         $sourceReq->setFulfillmentPercentage(100);

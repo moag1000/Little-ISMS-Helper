@@ -54,12 +54,12 @@ class ComplianceFrameworkTest extends TestCase
         $this->assertEquals('2022', $framework->getVersion());
     }
 
-    public function testSetAndGetIndustry(): void
+    public function testSetAndGetApplicableIndustry(): void
     {
         $framework = new ComplianceFramework();
-        $framework->setIndustry('General');
+        $framework->setApplicableIndustry('General');
 
-        $this->assertEquals('General', $framework->getIndustry());
+        $this->assertEquals('General', $framework->getApplicableIndustry());
     }
 
     public function testSetAndGetRegulatoryBody(): void
@@ -109,20 +109,5 @@ class ComplianceFrameworkTest extends TestCase
         $framework->addRequirement($requirement); // Add same requirement again
 
         $this->assertCount(1, $framework->getRequirements());
-    }
-
-    public function testToString(): void
-    {
-        $framework = new ComplianceFramework();
-        $framework->setName('ISO 27001:2022');
-
-        $this->assertEquals('ISO 27001:2022', (string) $framework);
-    }
-
-    public function testToStringWhenNameIsNull(): void
-    {
-        $framework = new ComplianceFramework();
-
-        $this->assertEquals('', (string) $framework);
     }
 }

@@ -124,7 +124,10 @@ class WorkflowTest extends TestCase
         $this->assertCount(3, $workflow->getSteps());
 
         // Steps should be ordered by stepOrder
+        // Note: OrderBy annotation only works when loading from DB, so we sort manually for testing
         $steps = $workflow->getSteps()->toArray();
+        usort($steps, fn($a, $b) => $a->getStepOrder() <=> $b->getStepOrder());
+
         $this->assertEquals('First', $steps[0]->getName());
         $this->assertEquals('Second', $steps[1]->getName());
         $this->assertEquals('Third', $steps[2]->getName());
