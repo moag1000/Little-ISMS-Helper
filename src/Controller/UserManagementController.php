@@ -7,11 +7,15 @@ use App\Entity\Role;
 use App\Form\UserType;
 use App\Repository\UserRepository;
 use App\Repository\RoleRepository;
+use App\Repository\AuditLogRepository;
+use App\Repository\MfaTokenRepository;
 use App\Security\Voter\UserVoter;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -172,5 +176,337 @@ class UserManagementController extends AbstractController
         }
 
         return $this->redirectToRoute('user_management_show', ['id' => $user->getId()]);
+    }
+
+    #[Route('/bulk-actions', name: 'user_management_bulk_actions', methods: ['POST'])]
+    public function bulkActions(
+        Request $request,
+        UserRepository $userRepository,
+        RoleRepository $roleRepository,
+        EntityManagerInterface $entityManager,
+        TranslatorInterface $translator
+    ): Response {
+        $this->denyAccessUnlessGranted(UserVoter::VIEW_ALL);
+
+        $action = $request->request->get('action');
+        $userIds = $request->request->all('user_ids') ?? [];
+
+        if (empty($userIds)) {
+            $this->addFlash('error', $translator->trans('user.error.no_users_selected'));
+            return $this->redirectToRoute('user_management_index');
+        }
+
+        $users = $userRepository->findBy(['id' => $userIds]);
+        $count = 0;
+
+        foreach ($users as $user) {
+            switch ($action) {
+                case 'activate':
+                    if ($this->isGranted(UserVoter::EDIT, $user)) {
+                        $user->setIsActive(true);
+                        $user->setUpdatedAt(new \DateTimeImmutable());
+                        $count++;
+                    }
+                    break;
+
+                case 'deactivate':
+                    if ($this->isGranted(UserVoter::EDIT, $user)) {
+                        $user->setIsActive(false);
+                        $user->setUpdatedAt(new \DateTimeImmutable());
+                        $count++;
+                    }
+                    break;
+
+                case 'assign_role':
+                    $roleId = $request->request->get('role_id');
+                    $role = $roleRepository->find($roleId);
+
+                    if ($role && $this->isGranted(UserVoter::EDIT, $user)) {
+                        if (!$user->getCustomRoles()->contains($role)) {
+                            $user->addCustomRole($role);
+                            $user->setUpdatedAt(new \DateTimeImmutable());
+                            $count++;
+                        }
+                    }
+                    break;
+
+                case 'delete':
+                    if ($this->isGranted(UserVoter::DELETE, $user)) {
+                        $entityManager->remove($user);
+                        $count++;
+                    }
+                    break;
+            }
+        }
+
+        $entityManager->flush();
+
+        $this->addFlash('success', $translator->trans('user.success.bulk_action_completed', [
+            'count' => $count,
+            'action' => $action,
+        ]));
+
+        return $this->redirectToRoute('user_management_index');
+    }
+
+    #[Route('/export', name: 'user_management_export', methods: ['GET'])]
+    public function export(
+        UserRepository $userRepository
+    ): StreamedResponse {
+        $this->denyAccessUnlessGranted(UserVoter::VIEW_ALL);
+
+        $users = $userRepository->findAll();
+
+        $response = new StreamedResponse(function () use ($users) {
+            $handle = fopen('php://output', 'w');
+
+            // CSV Header
+            fputcsv($handle, [
+                'ID',
+                'Email',
+                'First Name',
+                'Last Name',
+                'Active',
+                'MFA Enabled',
+                'Tenant',
+                'Roles',
+                'Auth Provider',
+                'Created At',
+                'Last Login',
+            ]);
+
+            // CSV Rows
+            foreach ($users as $user) {
+                $roles = array_map(function ($role) {
+                    return $role->getName();
+                }, $user->getCustomRoles()->toArray());
+
+                fputcsv($handle, [
+                    $user->getId(),
+                    $user->getEmail(),
+                    $user->getFirstName(),
+                    $user->getLastName(),
+                    $user->isActive() ? 'Yes' : 'No',
+                    'N/A', // MFA status - would need MfaTokenRepository to check
+                    $user->getTenant() ? $user->getTenant()->getName() : '',
+                    implode(', ', $roles),
+                    $user->getAuthProvider(),
+                    $user->getCreatedAt()?->format('Y-m-d H:i:s'),
+                    $user->getLastLoginAt()?->format('Y-m-d H:i:s'),
+                ]);
+            }
+
+            fclose($handle);
+        });
+
+        $response->headers->set('Content-Type', 'text/csv');
+        $response->headers->set('Content-Disposition', 'attachment; filename="users_export_' . date('Y-m-d_H-i-s') . '.csv"');
+
+        return $response;
+    }
+
+    #[Route('/import', name: 'user_management_import', methods: ['GET', 'POST'])]
+    public function import(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        UserPasswordHasherInterface $passwordHasher,
+        RoleRepository $roleRepository,
+        TranslatorInterface $translator
+    ): Response {
+        $this->denyAccessUnlessGranted(UserVoter::CREATE);
+
+        if ($request->isMethod('POST')) {
+            $file = $request->files->get('import_file');
+
+            if (!$file) {
+                $this->addFlash('error', $translator->trans('user.error.no_file_uploaded'));
+                return $this->redirectToRoute('user_management_import');
+            }
+
+            $handle = fopen($file->getPathname(), 'r');
+            $header = fgetcsv($handle); // Skip header
+
+            $imported = 0;
+            $errors = [];
+
+            while (($row = fgetcsv($handle)) !== false) {
+                try {
+                    // Expected CSV format: email, first_name, last_name, password, is_active, roles
+                    $email = $row[0] ?? null;
+                    $firstName = $row[1] ?? null;
+                    $lastName = $row[2] ?? null;
+                    $password = $row[3] ?? null;
+                    $isActive = ($row[4] ?? 'yes') === 'yes';
+                    $roleNames = isset($row[5]) ? explode(',', $row[5]) : [];
+
+                    if (!$email || !$firstName || !$lastName) {
+                        $errors[] = "Skipped row: Missing required fields (email, first_name, last_name)";
+                        continue;
+                    }
+
+                    // Check if user already exists
+                    $existingUser = $entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
+                    if ($existingUser) {
+                        $errors[] = "Skipped: User with email {$email} already exists";
+                        continue;
+                    }
+
+                    $user = new User();
+                    $user->setEmail($email);
+                    $user->setFirstName($firstName);
+                    $user->setLastName($lastName);
+                    $user->setIsActive($isActive);
+                    $user->setAuthProvider('local');
+
+                    // Set password
+                    if ($password) {
+                        $hashedPassword = $passwordHasher->hashPassword($user, $password);
+                        $user->setPassword($hashedPassword);
+                    } else {
+                        // Generate random password if not provided
+                        $randomPassword = bin2hex(random_bytes(16));
+                        $hashedPassword = $passwordHasher->hashPassword($user, $randomPassword);
+                        $user->setPassword($hashedPassword);
+                    }
+
+                    // Assign roles
+                    foreach ($roleNames as $roleName) {
+                        $roleName = trim($roleName);
+                        $role = $roleRepository->findOneBy(['name' => $roleName]);
+                        if ($role) {
+                            $user->addCustomRole($role);
+                        }
+                    }
+
+                    $entityManager->persist($user);
+                    $imported++;
+                } catch (\Exception $e) {
+                    $errors[] = "Error importing row: " . $e->getMessage();
+                }
+            }
+
+            fclose($handle);
+
+            $entityManager->flush();
+
+            $this->addFlash('success', $translator->trans('user.success.imported', ['count' => $imported]));
+
+            if (!empty($errors)) {
+                foreach ($errors as $error) {
+                    $this->addFlash('warning', $error);
+                }
+            }
+
+            return $this->redirectToRoute('user_management_index');
+        }
+
+        return $this->render('user_management/import.html.twig');
+    }
+
+    #[Route('/{id}/activity', name: 'user_management_activity', requirements: ['id' => '\d+'])]
+    public function activity(
+        User $user,
+        AuditLogRepository $auditLogRepository,
+        Request $request
+    ): Response {
+        $this->denyAccessUnlessGranted(UserVoter::VIEW, $user);
+
+        $limit = (int) $request->query->get('limit', 100);
+        $activities = $auditLogRepository->findByUser($user->getEmail(), $limit);
+
+        // Group activities by date
+        $activitiesByDate = [];
+        foreach ($activities as $activity) {
+            $date = $activity->getCreatedAt()->format('Y-m-d');
+            if (!isset($activitiesByDate[$date])) {
+                $activitiesByDate[$date] = [];
+            }
+            $activitiesByDate[$date][] = $activity;
+        }
+
+        // Calculate statistics
+        $actionCounts = [];
+        foreach ($activities as $activity) {
+            $action = $activity->getAction();
+            if (!isset($actionCounts[$action])) {
+                $actionCounts[$action] = 0;
+            }
+            $actionCounts[$action]++;
+        }
+
+        return $this->render('user_management/activity.html.twig', [
+            'user' => $user,
+            'activities' => $activities,
+            'activities_by_date' => $activitiesByDate,
+            'action_counts' => $actionCounts,
+            'total_activities' => count($activities),
+        ]);
+    }
+
+    #[Route('/{id}/mfa', name: 'user_management_mfa', requirements: ['id' => '\d+'])]
+    public function mfa(
+        User $user,
+        MfaTokenRepository $mfaTokenRepository
+    ): Response {
+        $this->denyAccessUnlessGranted(UserVoter::VIEW, $user);
+
+        $mfaTokens = $mfaTokenRepository->findBy(['user' => $user], ['createdAt' => 'DESC']);
+
+        // Calculate MFA statistics
+        $activeTokens = array_filter($mfaTokens, fn($token) => $token->isActive());
+        $tokensByType = [];
+        foreach ($mfaTokens as $token) {
+            $type = $token->getTokenType();
+            if (!isset($tokensByType[$type])) {
+                $tokensByType[$type] = 0;
+            }
+            $tokensByType[$type]++;
+        }
+
+        return $this->render('user_management/mfa.html.twig', [
+            'user' => $user,
+            'mfa_tokens' => $mfaTokens,
+            'active_tokens_count' => count($activeTokens),
+            'tokens_by_type' => $tokensByType,
+            'mfa_enabled' => count($activeTokens) > 0,
+        ]);
+    }
+
+    #[Route('/{id}/mfa/{tokenId}/reset', name: 'user_management_mfa_reset', requirements: ['id' => '\d+', 'tokenId' => '\d+'], methods: ['POST'])]
+    public function mfaReset(
+        User $user,
+        int $tokenId,
+        Request $request,
+        MfaTokenRepository $mfaTokenRepository,
+        EntityManagerInterface $entityManager,
+        TranslatorInterface $translator
+    ): Response {
+        $this->denyAccessUnlessGranted('ROLE_SUPER_ADMIN');
+
+        $token = $mfaTokenRepository->find($tokenId);
+
+        if (!$token || $token->getUser()->getId() !== $user->getId()) {
+            $this->addFlash('error', $translator->trans('mfa.error.token_not_found'));
+            return $this->redirectToRoute('user_management_mfa', ['id' => $user->getId()]);
+        }
+
+        if ($this->isCsrfTokenValid('mfa_reset_' . $tokenId, $request->request->get('_token'))) {
+            $entityManager->remove($token);
+            $entityManager->flush();
+
+            $this->addFlash('success', $translator->trans('mfa.success.token_reset'));
+        }
+
+        return $this->redirectToRoute('user_management_mfa', ['id' => $user->getId()]);
+    }
+
+    #[Route('/{id}/impersonate', name: 'user_management_impersonate', requirements: ['id' => '\d+'])]
+    #[IsGranted('ROLE_SUPER_ADMIN')]
+    public function impersonate(User $user): Response
+    {
+        // Redirect to the homepage with the impersonation parameter
+        return $this->redirectToRoute('app_home', [
+            '_switch_user' => $user->getEmail(),
+        ]);
     }
 }
