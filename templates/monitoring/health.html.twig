@@ -1,0 +1,278 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}System Health - Monitoring{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="bi bi-heart-pulse"></i> System Health</h1>
+        <div>
+            <a href="{{ path('monitoring_health_json') }}" class="btn btn-outline-secondary" target="_blank">
+                <i class="bi bi-code-square"></i> JSON API
+            </a>
+        </div>
+    </div>
+
+    {# Overall Status Banner #}
+    <div class="alert alert-{{ overall_status == 'healthy' ? 'success' : (overall_status == 'warning' ? 'warning' : 'danger') }} mb-4">
+        <div class="d-flex align-items-center">
+            <i class="bi bi-{{ overall_status == 'healthy' ? 'check-circle-fill' : (overall_status == 'warning' ? 'exclamation-triangle-fill' : 'x-circle-fill') }} fs-1 me-3"></i>
+            <div>
+                <h4 class="mb-1">
+                    System Status:
+                    {% if overall_status == 'healthy' %}
+                        <strong>Healthy</strong>
+                    {% elseif overall_status == 'warning' %}
+                        <strong>Warning</strong>
+                    {% else %}
+                        <strong>Error</strong>
+                    {% endif %}
+                </h4>
+                <p class="mb-0">
+                    Last checked: {{ 'now'|date('Y-m-d H:i:s') }}
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        {# Database Health #}
+        <div class="col-md-6 mb-4">
+            <div class="card h-100 border-{{ health_checks.database.status == 'healthy' ? 'success' : 'danger' }}">
+                <div class="card-header bg-{{ health_checks.database.status == 'healthy' ? 'success' : 'danger' }} text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-database"></i> Database
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-4">Status:</dt>
+                        <dd class="col-sm-8">
+                            <span class="badge bg-{{ health_checks.database.status == 'healthy' ? 'success' : 'danger' }}">
+                                {{ health_checks.database.status|upper }}
+                            </span>
+                        </dd>
+
+                        {% if health_checks.database.response_time is defined %}
+                            <dt class="col-sm-4">Response Time:</dt>
+                            <dd class="col-sm-8">{{ health_checks.database.response_time }}</dd>
+
+                            <dt class="col-sm-4">Driver:</dt>
+                            <dd class="col-sm-8"><code>{{ health_checks.database.driver }}</code></dd>
+                        {% endif %}
+
+                        {% if health_checks.database.error is defined %}
+                            <dt class="col-sm-4">Error:</dt>
+                            <dd class="col-sm-8 text-danger">{{ health_checks.database.error }}</dd>
+                        {% endif %}
+                    </dl>
+                </div>
+            </div>
+        </div>
+
+        {# Disk Space #}
+        <div class="col-md-6 mb-4">
+            <div class="card h-100 border-{{ health_checks.disk.status == 'healthy' ? 'success' : 'warning' }}">
+                <div class="card-header bg-{{ health_checks.disk.status == 'healthy' ? 'success' : 'warning' }} text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-hdd"></i> Disk Space
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row mb-3">
+                        <dt class="col-sm-4">Free:</dt>
+                        <dd class="col-sm-8">{{ health_checks.disk.free }}</dd>
+
+                        <dt class="col-sm-4">Used:</dt>
+                        <dd class="col-sm-8">{{ health_checks.disk.used }}</dd>
+
+                        <dt class="col-sm-4">Total:</dt>
+                        <dd class="col-sm-8">{{ health_checks.disk.total }}</dd>
+                    </dl>
+
+                    <div class="progress" style="height: 25px;">
+                        <div class="progress-bar bg-{{ health_checks.disk.percentage > 90 ? 'danger' : (health_checks.disk.percentage > 75 ? 'warning' : 'success') }}"
+                             role="progressbar"
+                             style="width: {{ health_checks.disk.percentage }}%"
+                             aria-valuenow="{{ health_checks.disk.percentage }}"
+                             aria-valuemin="0"
+                             aria-valuemax="100">
+                            {{ health_checks.disk.percentage }}%
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# PHP Info #}
+        <div class="col-md-6 mb-4">
+            <div class="card h-100 border-{{ health_checks.php.status == 'healthy' ? 'success' : 'danger' }}">
+                <div class="card-header bg-{{ health_checks.php.status == 'healthy' ? 'success' : 'danger' }} text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-code-slash"></i> PHP
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-5">Version:</dt>
+                        <dd class="col-sm-7"><code>{{ health_checks.php.version }}</code></dd>
+
+                        <dt class="col-sm-5">Memory Limit:</dt>
+                        <dd class="col-sm-7"><code>{{ health_checks.php.memory_limit }}</code></dd>
+
+                        <dt class="col-sm-5">Max Execution:</dt>
+                        <dd class="col-sm-7"><code>{{ health_checks.php.max_execution_time }}s</code></dd>
+
+                        <dt class="col-sm-5">Extensions:</dt>
+                        <dd class="col-sm-7">
+                            <span class="badge bg-success">{{ health_checks.php.loaded_extensions|length }} loaded</span>
+                            {% if health_checks.php.missing_extensions|length > 0 %}
+                                <span class="badge bg-danger">{{ health_checks.php.missing_extensions|length }} missing</span>
+                            {% endif %}
+                        </dd>
+
+                        {% if health_checks.php.missing_extensions|length > 0 %}
+                            <dt class="col-sm-5">Missing:</dt>
+                            <dd class="col-sm-7">
+                                {% for ext in health_checks.php.missing_extensions %}
+                                    <code class="text-danger">{{ ext }}</code>{% if not loop.last %}, {% endif %}
+                                {% endfor %}
+                            </dd>
+                        {% endif %}
+                    </dl>
+                </div>
+            </div>
+        </div>
+
+        {# Symfony Info #}
+        <div class="col-md-6 mb-4">
+            <div class="card h-100 border-success">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-gear"></i> Symfony
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-5">Version:</dt>
+                        <dd class="col-sm-7"><code>{{ health_checks.symfony.version }}</code></dd>
+
+                        <dt class="col-sm-5">Environment:</dt>
+                        <dd class="col-sm-7">
+                            <span class="badge bg-{{ health_checks.symfony.environment == 'prod' ? 'success' : 'warning' }}">
+                                {{ health_checks.symfony.environment|upper }}
+                            </span>
+                        </dd>
+
+                        <dt class="col-sm-5">Debug Mode:</dt>
+                        <dd class="col-sm-7">
+                            <span class="badge bg-{{ health_checks.symfony.debug ? 'warning' : 'success' }}">
+                                {{ health_checks.symfony.debug ? 'ON' : 'OFF' }}
+                            </span>
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+
+        {# Cache #}
+        <div class="col-md-6 mb-4">
+            <div class="card h-100 border-{{ health_checks.cache.status == 'healthy' ? 'success' : 'danger' }}">
+                <div class="card-header bg-{{ health_checks.cache.status == 'healthy' ? 'success' : 'danger' }} text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-lightning"></i> Cache
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-4">Status:</dt>
+                        <dd class="col-sm-8">
+                            <span class="badge bg-{{ health_checks.cache.status == 'healthy' ? 'success' : 'danger' }}">
+                                {{ health_checks.cache.status|upper }}
+                            </span>
+                        </dd>
+
+                        <dt class="col-sm-4">Directory:</dt>
+                        <dd class="col-sm-8"><code class="small">{{ health_checks.cache.directory }}</code></dd>
+
+                        <dt class="col-sm-4">Writable:</dt>
+                        <dd class="col-sm-8">
+                            {% if health_checks.cache.writable %}
+                                <i class="bi bi-check-circle text-success"></i> Yes
+                            {% else %}
+                                <i class="bi bi-x-circle text-danger"></i> No
+                            {% endif %}
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+
+        {# Logs #}
+        <div class="col-md-6 mb-4">
+            <div class="card h-100 border-{{ health_checks.logs.status == 'healthy' ? 'success' : 'danger' }}">
+                <div class="card-header bg-{{ health_checks.logs.status == 'healthy' ? 'success' : 'danger' }} text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-file-text"></i> Logs
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-4">Status:</dt>
+                        <dd class="col-sm-8">
+                            <span class="badge bg-{{ health_checks.logs.status == 'healthy' ? 'success' : 'danger' }}">
+                                {{ health_checks.logs.status|upper }}
+                            </span>
+                        </dd>
+
+                        <dt class="col-sm-4">Directory:</dt>
+                        <dd class="col-sm-8"><code class="small">{{ health_checks.logs.directory }}</code></dd>
+
+                        <dt class="col-sm-4">Writable:</dt>
+                        <dd class="col-sm-8">
+                            {% if health_checks.logs.writable %}
+                                <i class="bi bi-check-circle text-success"></i> Yes
+                            {% else %}
+                                <i class="bi bi-x-circle text-danger"></i> No
+                            {% endif %}
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Quick Actions #}
+    <div class="card mt-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">
+                <i class="bi bi-link-45deg"></i> Related Monitoring
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-3 mb-2">
+                    <a href="{{ path('monitoring_performance') }}" class="btn btn-outline-primary w-100">
+                        <i class="bi bi-speedometer"></i> Performance Metrics
+                    </a>
+                </div>
+                <div class="col-md-3 mb-2">
+                    <a href="{{ path('monitoring_errors') }}" class="btn btn-outline-danger w-100">
+                        <i class="bi bi-exclamation-triangle"></i> Error Logs
+                    </a>
+                </div>
+                <div class="col-md-3 mb-2">
+                    <a href="{{ path('monitoring_audit_log') }}" class="btn btn-outline-info w-100">
+                        <i class="bi bi-journal-text"></i> Audit Log
+                    </a>
+                </div>
+                <div class="col-md-3 mb-2">
+                    <button onclick="location.reload()" class="btn btn-outline-secondary w-100">
+                        <i class="bi bi-arrow-clockwise"></i> Refresh
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
