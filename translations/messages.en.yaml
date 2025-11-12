@@ -42,6 +42,68 @@ remember_me: Remember Me
 login_title: Login
 welcome_back: Welcome Back
 home: Home
+# Phase 6L-A: Admin Panel Translation Keys
+admin:
+  title: Administration
+  breadcrumb:
+    home: Admin Dashboard
+  section:
+    user_access: Users & Access
+    system_config: System Configuration
+    modules: Modules & Features
+    monitoring: Monitoring & Logs
+    navigation: Navigation
+  nav:
+    users: Users
+    roles: Roles
+    settings: Settings
+    compliance: Compliance Frameworks
+    audit_log: Audit Log
+    back_to_app: Back to Application
+  dashboard:
+    title: Admin Dashboard
+    subtitle: Central administration and system overview
+    alerts:
+      title: System Alerts
+      item: item
+      items: items
+      view: View
+    stats:
+      users: Users
+      active: Active
+      inactive: Inactive
+      manage: Manage
+      active_sessions: Active Sessions
+      last_24h: Last 24 hours
+      database: Database Size
+      total_records: Total Records
+      across_modules: Across all modules
+    modules:
+      title: Module Statistics
+      module: Module
+      records: Records
+      action: Action
+      assets: Assets
+      risks: Risks
+      controls: Controls
+      incidents: Incidents
+      audits: Audits
+      compliance: Compliance
+      trainings: Trainings
+    quick_actions:
+      title: Quick Actions
+      add_user: Add User
+      add_role: Add Role
+      view_logs: View Logs
+      manage_compliance: Manage Compliance
+    activity:
+      title: Recent Activity
+      empty: No recent activity
+      view_all: View All Activity
+  alert:
+    inactive_users: Inactive users
+    unverified_users: Unverified users
+    large_database: Large database (GB)
 dashboard:
   success:
     settings_imported: Dashboard settings successfully imported!
