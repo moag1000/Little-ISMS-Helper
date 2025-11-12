@@ -1525,6 +1525,28 @@ role:
     created: Rolle erfolgreich erstellt.
     updated: Rolle erfolgreich aktualisiert.
     deleted: Rolle erfolgreich gelöscht.
+    created_from_template: Rolle '%role%' erfolgreich aus Vorlage erstellt
+  action:
+    compare: Rollen vergleichen
+    templates: Vorlagen
+  compare:
+    title: Rollenvergleich
+    select_roles: Rollen zum Vergleich auswählen
+    permission_matrix: Berechtigungsmatrix
+    has_permission: Hat Berechtigung
+    no_permission: Keine Berechtigung
+  templates:
+    title: Rollenvorlagen
+    description: Erstellen Sie eine neue Rolle basierend auf einer Vorlage
+    select: Vorlage auswählen
+    apply: Vorlage anwenden
+    custom_name: Benutzerdefinierter Name (optional)
+    auditor: Prüfer
+    risk_manager: Risikomanager
+    compliance_officer: Compliance Officer
+    incident_manager: Incident Manager
+    asset_manager: Asset Manager
+    readonly: Nur-Lese-Benutzer
 error:
   csrf_invalid: Ungültiges CSRF-Token.
 audit_log:
@@ -2243,31 +2265,6 @@ mfa:
   statistics:
     active_tokens: Aktive Token
     by_type: Nach Typ
-
-role:
-  success:
-    created_from_template: Rolle '%role%' erfolgreich aus Vorlage erstellt
-  action:
-    compare: Rollen vergleichen
-    templates: Vorlagen
-  compare:
-    title: Rollenvergleich
-    select_roles: Rollen zum Vergleich auswählen
-    permission_matrix: Berechtigungsmatrix
-    has_permission: Hat Berechtigung
-    no_permission: Keine Berechtigung
-  templates:
-    title: Rollenvorlagen
-    description: Erstellen Sie eine neue Rolle basierend auf einer Vorlage
-    select: Vorlage auswählen
-    apply: Vorlage anwenden
-    custom_name: Benutzerdefinierter Name (optional)
-    auditor: Prüfer
-    risk_manager: Risikomanager
-    compliance_officer: Compliance Officer
-    incident_manager: Incident Manager
-    asset_manager: Asset Manager
-    readonly: Nur-Lese-Benutzer
 
 # Phase 6L-E: System Monitoring & Health
 monitoring:

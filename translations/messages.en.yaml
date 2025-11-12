@@ -1522,6 +1522,28 @@ role:
     created: Role successfully created.
     updated: Role successfully updated.
     deleted: Role successfully deleted.
+    created_from_template: Role '%role%' successfully created from template
+  action:
+    compare: Compare Roles
+    templates: Templates
+  compare:
+    title: Role Comparison
+    select_roles: Select roles to compare
+    permission_matrix: Permission Matrix
+    has_permission: Has Permission
+    no_permission: No Permission
+  templates:
+    title: Role Templates
+    description: Create a new role based on a template
+    select: Select Template
+    apply: Apply Template
+    custom_name: Custom Name (optional)
+    auditor: Auditor
+    risk_manager: Risk Manager
+    compliance_officer: Compliance Officer
+    incident_manager: Incident Manager
+    asset_manager: Asset Manager
+    readonly: Read-Only User
 error:
   csrf_invalid: Invalid CSRF token.
 audit_log:
@@ -2238,31 +2260,6 @@ mfa:
   statistics:
     active_tokens: Active Tokens
     by_type: By Type
-
-role:
-  success:
-    created_from_template: Role '%role%' successfully created from template
-  action:
-    compare: Compare Roles
-    templates: Templates
-  compare:
-    title: Role Comparison
-    select_roles: Select roles to compare
-    permission_matrix: Permission Matrix
-    has_permission: Has Permission
-    no_permission: No Permission
-  templates:
-    title: Role Templates
-    description: Create a new role based on a template
-    select: Select Template
-    apply: Apply Template
-    custom_name: Custom Name (optional)
-    auditor: Auditor
-    risk_manager: Risk Manager
-    compliance_officer: Compliance Officer
-    incident_manager: Incident Manager
-    asset_manager: Asset Manager
-    readonly: Read-Only User
 
 # Phase 6L-E: System Monitoring & Health
 monitoring:
