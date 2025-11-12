@@ -2,11 +2,10 @@
 
 namespace App\Controller;
 
-use App\Entity\AuditLog;
-use App\Entity\User;
 use App\Repository\AuditLogRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -16,10 +15,27 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('ROLE_ADMIN')]
 class AdminDashboardController extends AbstractController
 {
+    // Constants for configuration
+    private const RECENT_ACTIVITY_LIMIT = 10;
+    private const DATABASE_SIZE_WARNING_MB = 1024; // 1 GB
+    private const ACTIVE_SESSION_WINDOW_HOURS = 24;
+
+    // Whitelist of allowed table names for statistics
+    private const ALLOWED_TABLES = [
+        'assets',
+        'risks',
+        'controls',
+        'incidents',
+        'audits',
+        'compliance_requirements',
+        'trainings',
+    ];
+
     public function __construct(
         private EntityManagerInterface $entityManager,
         private UserRepository $userRepository,
-        private AuditLogRepository $auditLogRepository
+        private AuditLogRepository $auditLogRepository,
+        private LoggerInterface $logger
     ) {
     }
 
@@ -29,14 +45,14 @@ class AdminDashboardController extends AbstractController
         // System Health Stats
         $stats = $this->getSystemHealthStats();
 
-        // Recent Activity (last 10 audit log entries)
+        // Recent Activity (using configured limit)
         $recentActivity = $this->auditLogRepository->findBy(
             [],
             ['createdAt' => 'DESC'],
-            10
+            self::RECENT_ACTIVITY_LIMIT
         );
 
-        // System Alerts (example: inactive users, pending reviews, etc.)
+        // System Alerts (inactive users, pending reviews, etc.)
         $alerts = $this->getSystemAlerts();
 
         return $this->render('admin/dashboard.html.twig', [
@@ -48,30 +64,24 @@ class AdminDashboardController extends AbstractController
 
     private function getSystemHealthStats(): array
     {
-        $conn = $this->entityManager->getConnection();
-
         // User Statistics
         $totalUsers = $this->userRepository->count([]);
         $activeUsers = $this->userRepository->count(['isActive' => true]);
         $inactiveUsers = $totalUsers - $activeUsers;
 
-        // Module Statistics (check if tables exist and have data)
-        $moduleStats = [
-            'assets' => $this->getTableCount('assets'),
-            'risks' => $this->getTableCount('risks'),
-            'controls' => $this->getTableCount('controls'),
-            'incidents' => $this->getTableCount('incidents'),
-            'audits' => $this->getTableCount('audits'),
-            'compliance_requirements' => $this->getTableCount('compliance_requirements'),
-            'trainings' => $this->getTableCount('trainings'),
-        ];
+        // Module Statistics (using allowed tables only)
+        $moduleStats = [];
+        foreach (self::ALLOWED_TABLES as $tableName) {
+            $moduleStats[$tableName] = $this->getTableCount($tableName);
+        }
 
-        // Session Statistics (active sessions in last 24 hours)
-        // For now, we'll use audit log as proxy for activity
+        // Session Statistics (active sessions in configured time window)
+        // Using audit log as proxy for activity
+        $windowStart = new \DateTimeImmutable('-' . self::ACTIVE_SESSION_WINDOW_HOURS . ' hours');
         $activeSessions = $this->auditLogRepository->createQueryBuilder('a')
             ->select('COUNT(DISTINCT a.userId)')
-            ->where('a.createdAt >= :yesterday')
-            ->setParameter('yesterday', new \DateTimeImmutable('-24 hours'))
+            ->where('a.createdAt >= :windowStart')
+            ->setParameter('windowStart', $windowStart)
             ->getQuery()
             ->getSingleScalarResult();
 
@@ -93,11 +103,26 @@ class AdminDashboardController extends AbstractController
 
     private function getTableCount(string $tableName): int
     {
+        // Security: Validate table name against whitelist to prevent SQL injection
+        if (!in_array($tableName, self::ALLOWED_TABLES, true)) {
+            $this->logger->warning('Attempted to query non-whitelisted table', [
+                'table' => $tableName,
+                'allowed_tables' => self::ALLOWED_TABLES,
+            ]);
+            return 0;
+        }
+
         try {
             $conn = $this->entityManager->getConnection();
+            // Safe to use direct interpolation since $tableName is validated against whitelist
             $result = $conn->executeQuery("SELECT COUNT(*) as count FROM {$tableName}")->fetchAssociative();
             return (int) ($result['count'] ?? 0);
         } catch (\Exception $e) {
+            $this->logger->error('Failed to get table count', [
+                'table' => $tableName,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
             return 0;
         }
     }
@@ -107,9 +132,10 @@ class AdminDashboardController extends AbstractController
         try {
             $conn = $this->entityManager->getConnection();
             $dbName = $conn->getDatabase();
+            $driverName = $conn->getDriver()->getName();
 
             // SQLite
-            if (str_contains($conn->getDriver()->getName(), 'sqlite')) {
+            if (str_contains($driverName, 'sqlite')) {
                 $dbPath = $conn->getParams()['path'] ?? null;
                 if ($dbPath && file_exists($dbPath)) {
                     return round(filesize($dbPath) / 1024 / 1024, 2);
@@ -117,7 +143,7 @@ class AdminDashboardController extends AbstractController
             }
 
             // MySQL/MariaDB
-            if (str_contains($conn->getDriver()->getName(), 'mysql')) {
+            if (str_contains($driverName, 'mysql')) {
                 $result = $conn->executeQuery(
                     "SELECT ROUND(SUM(data_length + index_length) / 1024 / 1024, 2) as size_mb
                      FROM information_schema.TABLES
@@ -128,7 +154,7 @@ class AdminDashboardController extends AbstractController
             }
 
             // PostgreSQL
-            if (str_contains($conn->getDriver()->getName(), 'pgsql')) {
+            if (str_contains($driverName, 'pgsql')) {
                 $result = $conn->executeQuery(
                     "SELECT pg_size_pretty(pg_database_size(:dbname)) as size",
                     ['dbname' => $dbName]
@@ -147,8 +173,15 @@ class AdminDashboardController extends AbstractController
                 }
             }
 
+            $this->logger->debug('Unsupported database driver for size calculation', [
+                'driver' => $driverName,
+            ]);
             return 0.0;
         } catch (\Exception $e) {
+            $this->logger->error('Failed to calculate database size', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
             return 0.0;
         }
     }
@@ -181,9 +214,9 @@ class AdminDashboardController extends AbstractController
             ];
         }
 
-        // Database size warning (> 1GB)
+        // Database size warning (using configured threshold)
         $dbSize = $this->getDatabaseSize();
-        if ($dbSize > 1024) {
+        if ($dbSize > self::DATABASE_SIZE_WARNING_MB) {
             $alerts[] = [
                 'type' => 'warning',
                 'icon' => 'bi-database-exclamation',
