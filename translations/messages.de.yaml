@@ -2434,3 +2434,48 @@ data:
   setup:
     title: Setup-Assistent
     link: Link zum bestehenden Deployment-Assistenten
+
+# Admin Integration - Phase 6L-G
+nav.admin.modules: 'Modul-Verwaltung'
+nav.admin.compliance: 'Compliance-Verwaltung'
+nav.admin.licensing: 'Lizenz-Verwaltung'
+
+admin.modules.title: 'Modul-Verwaltung'
+admin.modules.dependency_graph: 'Abhängigkeits-Graph'
+admin.modules.stats.total: 'Gesamt'
+admin.modules.stats.active: 'Aktiv'
+admin.modules.stats.inactive: 'Inaktiv'
+admin.modules.stats.required: 'Erforderlich'
+admin.modules.active_modules: 'Aktive Module'
+admin.modules.inactive_modules: 'Inaktive Module'
+admin.modules.status.active: 'Aktiv'
+admin.modules.status.inactive: 'Inaktiv'
+admin.modules.dependencies: 'Abhängigkeiten'
+admin.modules.required_by: 'Benötigt von'
+admin.modules.details: 'Details'
+admin.modules.confirm_deactivate: 'Modul "%name%" wirklich deaktivieren?'
+admin.modules.deactivate: 'Deaktivieren'
+admin.modules.required: 'Erforderlich'
+admin.modules.no_active: 'Keine aktiven Module'
+admin.modules.activate: 'Aktivieren'
+
+admin.compliance.statistics: 'Compliance-Statistiken'
+admin.compliance.total_available: 'Verfügbar'
+admin.compliance.loaded: 'Geladen'
+admin.compliance.not_loaded: 'Nicht geladen'
+admin.compliance.mandatory_missing: 'Pflicht fehlt'
+admin.compliance.compliance_overview: 'Compliance-Übersicht'
+admin.compliance.framework: 'Framework'
+admin.compliance.total_requirements: 'Anforderungen'
+admin.compliance.assessed: 'Bewertet'
+admin.compliance.compliant: 'Konform'
+admin.compliance.compliance_rate: 'Konformität'
+admin.compliance.progress: 'Fortschritt'
+admin.compliance.no_frameworks_loaded: 'Keine Frameworks geladen'
+
+admin.licensing.title: 'Lizenz-Verwaltung'
+admin.licensing.third_party: 'Drittanbieter-Lizenzen'
+admin.licensing.report: 'Lizenzbericht'
+admin.licensing.summary: 'Lizenz-Zusammenfassung'
+
+admin.panel.title: 'Admin Panel'

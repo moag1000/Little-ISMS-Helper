@@ -2429,3 +2429,48 @@ data:
   setup:
     title: Setup Wizard
     link: Link to existing Deployment Wizard
+
+# Admin Integration - Phase 6L-G
+nav.admin.modules: 'Module Management'
+nav.admin.compliance: 'Compliance Management'
+nav.admin.licensing: 'License Management'
+
+admin.modules.title: 'Module Management'
+admin.modules.dependency_graph: 'Dependency Graph'
+admin.modules.stats.total: 'Total'
+admin.modules.stats.active: 'Active'
+admin.modules.stats.inactive: 'Inactive'
+admin.modules.stats.required: 'Required'
+admin.modules.active_modules: 'Active Modules'
+admin.modules.inactive_modules: 'Inactive Modules'
+admin.modules.status.active: 'Active'
+admin.modules.status.inactive: 'Inactive'
+admin.modules.dependencies: 'Dependencies'
+admin.modules.required_by: 'Required by'
+admin.modules.details: 'Details'
+admin.modules.confirm_deactivate: 'Really deactivate module "%name%"?'
+admin.modules.deactivate: 'Deactivate'
+admin.modules.required: 'Required'
+admin.modules.no_active: 'No active modules'
+admin.modules.activate: 'Activate'
+
+admin.compliance.statistics: 'Compliance Statistics'
+admin.compliance.total_available: 'Available'
+admin.compliance.loaded: 'Loaded'
+admin.compliance.not_loaded: 'Not Loaded'
+admin.compliance.mandatory_missing: 'Mandatory Missing'
+admin.compliance.compliance_overview: 'Compliance Overview'
+admin.compliance.framework: 'Framework'
+admin.compliance.total_requirements: 'Requirements'
+admin.compliance.assessed: 'Assessed'
+admin.compliance.compliant: 'Compliant'
+admin.compliance.compliance_rate: 'Compliance Rate'
+admin.compliance.progress: 'Progress'
+admin.compliance.no_frameworks_loaded: 'No frameworks loaded'
+
+admin.licensing.title: 'License Management'
+admin.licensing.third_party: 'Third-Party Licenses'
+admin.licensing.report: 'License Report'
+admin.licensing.summary: 'License Summary'
+
+admin.panel.title: 'Admin Panel'
