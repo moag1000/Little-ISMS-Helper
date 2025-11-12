@@ -1541,6 +1541,56 @@
     line-height: 1.6;
 }
 
+/* Document Index Modern Utilities */
+.color-pdf {
+    color: #e74c3c;
+}
+
+.color-image {
+    color: #3498db;
+}
+
+.color-excel {
+    color: #27ae60;
+}
+
+.color-other {
+    color: #95a5a6;
+}
+
+.bg-pdf-light {
+    background: rgba(231, 76, 60, 0.1);
+    border-radius: var(--border-radius);
+}
+
+.bg-image-light {
+    background: rgba(52, 152, 219, 0.1);
+    border-radius: var(--border-radius);
+}
+
+.bg-excel-light {
+    background: rgba(39, 174, 96, 0.1);
+    border-radius: var(--border-radius);
+}
+
+.bg-other-light {
+    background: rgba(149, 165, 166, 0.1);
+    border-radius: var(--border-radius);
+}
+
+.icon-search-empty {
+    font-size: 3rem;
+    color: var(--color-text-muted);
+    opacity: 0.5;
+}
+
+.thead-sticky {
+    background: var(--color-bg);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
 /* ====================
    Responsive
    ==================== */
