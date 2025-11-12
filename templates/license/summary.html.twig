@@ -155,7 +155,7 @@
                                         <th>Beschreibung</th>
                                         <th class="text-end">Anzahl</th>
                                         <th class="text-end">Anteil</th>
-                                        <th style="width: 200px;">Verteilung</th>
+                                        <th class="w-200px">Verteilung</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -165,7 +165,7 @@
                                         <td class="text-end"><strong>{{ stats.allowed }}</strong></td>
                                         <td class="text-end">{{ (stats.allowed / stats.total * 100)|round(1) }}%</td>
                                         <td>
-                                            <div class="progress" style="height: 20px;">
+                                            <div class="progress progress-h-20">
                                                 <div class="progress-bar bg-success" role="progressbar"
                                                      style="width: {{ (stats.allowed / stats.total * 100)|round(1) }}%"
                                                      aria-valuenow="{{ stats.allowed }}" aria-valuemin="0" aria-valuemax="{{ stats.total }}">
@@ -179,7 +179,7 @@
                                         <td class="text-end"><strong>{{ stats.restricted }}</strong></td>
                                         <td class="text-end">{{ (stats.restricted / stats.total * 100)|round(1) }}%</td>
                                         <td>
-                                            <div class="progress" style="height: 20px;">
+                                            <div class="progress progress-h-20">
                                                 <div class="progress-bar bg-warning" role="progressbar"
                                                      style="width: {{ (stats.restricted / stats.total * 100)|round(1) }}%"
                                                      aria-valuenow="{{ stats.restricted }}" aria-valuemin="0" aria-valuemax="{{ stats.total }}">
@@ -193,7 +193,7 @@
                                         <td class="text-end"><strong>{{ stats.copyleft }}</strong></td>
                                         <td class="text-end">{{ (stats.copyleft / stats.total * 100)|round(1) }}%</td>
                                         <td>
-                                            <div class="progress" style="height: 20px;">
+                                            <div class="progress progress-h-20">
                                                 <div class="progress-bar bg-info" role="progressbar"
                                                      style="width: {{ (stats.copyleft / stats.total * 100)|round(1) }}%"
                                                      aria-valuenow="{{ stats.copyleft }}" aria-valuemin="0" aria-valuemax="{{ stats.total }}">
@@ -207,7 +207,7 @@
                                         <td class="text-end"><strong>{{ stats.not_allowed }}</strong></td>
                                         <td class="text-end">{{ (stats.not_allowed / stats.total * 100)|round(1) }}%</td>
                                         <td>
-                                            <div class="progress" style="height: 20px;">
+                                            <div class="progress progress-h-20">
                                                 <div class="progress-bar bg-danger" role="progressbar"
                                                      style="width: {{ (stats.not_allowed / stats.total * 100)|round(1) }}%"
                                                      aria-valuenow="{{ stats.not_allowed }}" aria-valuemin="0" aria-valuemax="{{ stats.total }}">
@@ -221,7 +221,7 @@
                                         <td class="text-end"><strong>{{ stats.unknown }}</strong></td>
                                         <td class="text-end">{{ (stats.unknown / stats.total * 100)|round(1) }}%</td>
                                         <td>
-                                            <div class="progress" style="height: 20px;">
+                                            <div class="progress progress-h-20">
                                                 <div class="progress-bar bg-secondary" role="progressbar"
                                                      style="width: {{ (stats.unknown / stats.total * 100)|round(1) }}%"
                                                      aria-valuenow="{{ stats.unknown }}" aria-valuemin="0" aria-valuemax="{{ stats.total }}">
