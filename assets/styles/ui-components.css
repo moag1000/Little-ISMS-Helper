@@ -1912,6 +1912,41 @@
     height: 20px;
 }
 
+/* SOA Edit Utilities */
+.mt-sm-text-light {
+    margin-top: var(--spacing-sm);
+    color: var(--color-text-light);
+}
+
+.label-checkbox {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    cursor: pointer;
+}
+
+.checkbox-lg {
+    width: 20px;
+    height: 20px;
+}
+
+.small-muted-block {
+    color: var(--color-text-muted);
+    margin-top: var(--spacing-xs);
+    display: block;
+}
+
+.flex-center-gap-md {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.badge-fs-1-p-sm-md {
+    font-size: 1rem;
+    padding: var(--spacing-sm) var(--spacing-md);
+}
+
 /* ====================
    Responsive
    ==================== */
