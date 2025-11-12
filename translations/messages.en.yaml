@@ -1472,6 +1472,34 @@ user:
     custom_roles: Custom Roles
     active: Active
     email_verified: Email Verified
+  error:
+    no_users_selected: No users selected
+    no_file_uploaded: No file uploaded
+  success:
+    bulk_action_completed: '%count% users successfully processed (%action%)'
+    imported: '%count% users successfully imported'
+    activated: User successfully activated
+    deactivated: User successfully deactivated
+  action:
+    export: Export
+    import: Import
+    bulk_actions: Bulk Actions
+    activate: Activate
+    deactivate: Deactivate
+    assign_role: Assign Role
+    view_activity: View Activity
+    view_mfa: Manage MFA
+    impersonate: Impersonate User
+  import:
+    title: Import Users
+    description: Upload a CSV file to import multiple users
+    format: 'Expected format: email, first_name, last_name, password, is_active, roles'
+    download_template: Download Template
+  activity:
+    title: User Activity
+    total: Total Activities
+    by_date: By Date
+    by_action: By Action
 module:
   info:
     added_as_dependency: Module '{name}' was added as dependency
@@ -1494,6 +1522,28 @@ role:
     created: Role successfully created.
     updated: Role successfully updated.
     deleted: Role successfully deleted.
+    created_from_template: Role '%role%' successfully created from template
+  action:
+    compare: Compare Roles
+    templates: Templates
+  compare:
+    title: Role Comparison
+    select_roles: Select roles to compare
+    permission_matrix: Permission Matrix
+    has_permission: Has Permission
+    no_permission: No Permission
+  templates:
+    title: Role Templates
+    description: Create a new role based on a template
+    select: Select Template
+    apply: Apply Template
+    custom_name: Custom Name (optional)
+    auditor: Auditor
+    risk_manager: Risk Manager
+    compliance_officer: Compliance Officer
+    incident_manager: Incident Manager
+    asset_manager: Asset Manager
+    readonly: Read-Only User
 error:
   csrf_invalid: Invalid CSRF token.
 audit_log:
@@ -2149,3 +2199,355 @@ tenant:
     settings_text: Tenant-specific settings in JSON format can contain individual configurations such as branding, features, or limits.
   settings:
     example_title: Example JSON Structure
+
+# Phase 6L-D: Extended User & Access Management
+permission:
+  title: Permissions
+  list: Permission List
+  show: Permission Details
+  category: Category
+  action: Action
+  description: Description
+  roles_using: Roles using this permission
+  affected_users: Affected Users
+  system_permission: System Permission
+  statistics:
+    total: Total
+    system: System
+    custom: Custom
+    categories: Categories
+
+session:
+  title: Sessions
+  list: Active Sessions
+  show: Session Details
+  user_name: Username
+  ip_address: IP Address
+  user_agent: User Agent
+  last_activity: Last Activity
+  session_start: Session Start
+  terminate: Terminate Session
+  statistics:
+    total: Total Active Sessions
+    today: Today
+    hours_filter: Time Filter (Hours)
+  activity_timeline: Activity Timeline
+  unique_ips: Unique IP Addresses
+  unique_devices: Unique Devices
+  error:
+    invalid_token: Invalid CSRF token
+  info:
+    termination_not_implemented: Session termination requires additional configuration (database session storage)
+
+mfa:
+  title: Two-Factor Authentication
+  tokens: MFA Tokens
+  enabled: MFA Enabled
+  disabled: MFA Disabled
+  token_type: Token Type
+  device_name: Device Name
+  enrolled_at: Enrolled At
+  last_used: Last Used
+  usage_count: Usage Count
+  is_active: Active
+  is_primary: Primary
+  action:
+    reset: Reset Token
+  error:
+    token_not_found: MFA token not found
+  success:
+    token_reset: MFA token successfully reset
+  statistics:
+    active_tokens: Active Tokens
+    by_type: By Type
+
+# Phase 6L-E: System Monitoring & Health
+monitoring:
+  title: System Monitoring
+  health:
+    title: System Health
+    overall_status: Overall Status
+    healthy: Healthy
+    warning: Warning
+    error: Error
+    last_checked: Last Checked
+  database:
+    title: Database
+    status: Status
+    response_time: Response Time
+    driver: Driver
+    error: Error
+  disk:
+    title: Disk
+    free: Free
+    used: Used
+    total: Total
+    percentage: Percentage
+  php:
+    title: PHP
+    version: Version
+    memory_limit: Memory Limit
+    max_execution_time: Max Execution Time
+    extensions: Extensions
+    loaded: Loaded
+    missing: Missing
+  symfony:
+    title: Symfony
+    version: Version
+    environment: Environment
+    debug: Debug Mode
+  cache:
+    title: Cache
+    directory: Directory
+    writable: Writable
+  logs:
+    title: Logs
+    directory: Directory
+    writable: Writable
+  performance:
+    title: Performance Metrics
+    total_requests: Total Requests
+    unique_users: Unique Users
+    memory_usage: Memory Usage
+    memory_peak: Memory Peak
+    memory_limit: Memory Limit
+    top_actions: Top Actions
+    top_entities: Most Active Entities
+    last_24h: Last 24 Hours
+    system_resources: System Resources
+    note: Note
+  errors:
+    title: Error Logs
+    total: Total Errors
+    by_level: By Level
+    file_size: File Size
+    last_modified: Last Modified
+    log_file: Log File
+    show_entries: Show Entries
+    recent: Recent Errors
+    no_errors: No errors found!
+    no_log_file: No log file found
+    show_full: Show full log entry
+  audit_log:
+    title: Audit Log
+    total_entries: Total Entries
+    top_actions: Top Actions
+    top_entities: Top Entities
+    quick_filters: Quick Filters
+    all: All
+    today: Today
+    this_week: This Week
+    critical_actions: Critical Actions
+    entries: Entries
+    timestamp: Timestamp
+    user: User
+    action: Action
+    entity: Entity
+    ip_address: IP Address
+    details: Details
+    view: View
+    description: Description
+    changes: Changes
+    about: About Audit Log
+    about_text: The audit log tracks all significant actions in the system including create, update, and delete operations.
+  related: Related Monitoring
+  refresh: Refresh
+  back_to_health: Back to Health
+
+# Phase 6L-F: Data Management
+data:
+  title: Data Management
+  backup:
+    title: Database Backup
+    create: Create Backup
+    list: Available Backups
+    filename: Filename
+    date: Date
+    size: Size
+    actions: Actions
+    download: Download
+    delete: Delete
+    retention_policy: 'Retention Policy: Only the last 7 backups are kept automatically'
+    location: 'Backup Location'
+    method: 'Backup Method: PostgreSQL pg_dump (SQL format)'
+    how_to_restore: How to Restore a Backup
+    restore_warning: 'Warning: Restoring a backup will overwrite all current data!'
+    success:
+      created: 'Backup successfully created: %filename%'
+      deleted: Backup successfully deleted
+    error:
+      invalid_token: Invalid CSRF token
+      create_failed: 'Backup failed: %error%'
+      not_found: Backup file not found
+  export:
+    title: Data Export
+    configure: Configure Export
+    format: Export Format
+    select_entities: Select Entities to Export
+    select_all: Select All
+    deselect_all: Deselect All
+    execute: Export Selected Entities
+    about: About Data Export
+    about_text: Export your data in JSON or CSV format. You can select specific entities or export all data.
+    format_json: JSON format preserves data types and is recommended for re-import
+    format_csv: CSV is better for spreadsheet applications
+    success:
+      exported: Data successfully exported
+    error:
+      invalid_token: Invalid CSRF token
+      no_entities: No entities selected
+  import:
+    title: Data Import
+    upload: Upload Import File
+    preview: Import Preview
+    execute: Execute Import
+    select_file: Select JSON File
+    upload_and_preview: Upload and Preview
+    process: Import Process
+    requirements: Import Requirements
+    file_format: File Format
+    before_importing: Before Importing
+    limitations: Limitations
+    warning:
+      critical: 'Critical Warning: Data import can overwrite existing data!'
+      backup_first: Always create a backup before importing
+      preview_mode: This feature is currently in preview mode
+      not_implemented: Import functionality is not yet fully implemented
+    stats:
+      total_entities: Total Entities
+      total_records: Total Records
+      status: Status
+    error:
+      invalid_token: Invalid CSRF token
+      no_file: No file uploaded
+      invalid_file: 'Invalid file: %error%'
+  setup:
+    title: Setup Wizard
+    link: Link to existing Deployment Wizard
+
+# Admin Integration - Phase 6L-G
+nav.admin.modules: 'Module Management'
+nav.admin.compliance: 'Compliance Management'
+nav.admin.licensing: 'License Management'
+
+admin.modules.title: 'Module Management'
+admin.modules.dependency_graph: 'Dependency Graph'
+admin.modules.stats.total: 'Total'
+admin.modules.stats.active: 'Active'
+admin.modules.stats.inactive: 'Inactive'
+admin.modules.stats.required: 'Required'
+admin.modules.active_modules: 'Active Modules'
+admin.modules.inactive_modules: 'Inactive Modules'
+admin.modules.status.active: 'Active'
+admin.modules.status.inactive: 'Inactive'
+admin.modules.dependencies: 'Dependencies'
+admin.modules.required_by: 'Required by'
+admin.modules.details: 'Details'
+admin.modules.confirm_deactivate: 'Really deactivate module "%name%"?'
+admin.modules.deactivate: 'Deactivate'
+admin.modules.required: 'Required'
+admin.modules.no_active: 'No active modules'
+admin.modules.activate: 'Activate'
+
+admin.compliance.statistics: 'Compliance Statistics'
+admin.compliance.total_available: 'Available'
+admin.compliance.loaded: 'Loaded'
+admin.compliance.not_loaded: 'Not Loaded'
+admin.compliance.mandatory_missing: 'Mandatory Missing'
+admin.compliance.compliance_overview: 'Compliance Overview'
+admin.compliance.framework: 'Framework'
+admin.compliance.total_requirements: 'Requirements'
+admin.compliance.assessed: 'Assessed'
+admin.compliance.compliant: 'Compliant'
+admin.compliance.compliance_rate: 'Compliance Rate'
+admin.compliance.progress: 'Progress'
+admin.compliance.no_frameworks_loaded: 'No frameworks loaded'
+
+admin.licensing.title: 'License Management'
+admin.licensing.third_party: 'Third-Party Licenses'
+admin.licensing.report: 'License Report'
+admin.licensing.summary: 'License Summary'
+
+admin.panel.title: 'Admin Panel'
+
+# Common translations
+common.back: 'Back'
+common.yes: 'Yes'
+common.no: 'No'
+
+# Workflow Definition Management - Phase 6C
+workflow.definition.title: 'Workflow Definition'
+workflow.definition.new_title: 'New Workflow Definition'
+workflow.definition.edit_title: 'Edit Workflow Definition'
+workflow.breadcrumb.home: 'Workflows'
+workflow.breadcrumb.definitions: 'Definitions'
+workflow.breadcrumb.new: 'New'
+workflow.breadcrumb.edit: 'Edit'
+workflow.section.information: 'Workflow Information'
+workflow.section.basic_information: 'Basic Information'
+workflow.section.steps: 'Workflow Steps'
+workflow.section.recent_instances: 'Recent Instances'
+workflow.section.actions: 'Actions'
+workflow.section.statistics: 'Statistics'
+workflow.section.danger_zone: 'Danger Zone'
+workflow.field.name: 'Name'
+workflow.field.description: 'Description'
+workflow.field.entity_type: 'Entity Type'
+workflow.field.status: 'Status'
+workflow.field.created_at: 'Created at'
+workflow.field.updated_at: 'Updated at'
+workflow.field.definition_name: 'Workflow Name'
+workflow.field.steps: 'Steps'
+workflow.field.instances: 'Instances'
+workflow.field.active: 'Active'
+workflow.field.is_active: 'Active'
+workflow.status.active: 'Active'
+workflow.status.inactive: 'Inactive'
+workflow.status.completed: 'Completed'
+workflow.status.rejected: 'Rejected'
+workflow.status.cancelled: 'Cancelled'
+workflow.status.pending: 'Pending'
+workflow.action.edit: 'Edit'
+workflow.action.activate: 'Activate'
+workflow.action.deactivate: 'Deactivate'
+workflow.action.delete: 'Delete'
+workflow.action.create: 'Create'
+workflow.action.update: 'Update'
+workflow.action.create_definition: 'New Definition'
+workflow.action.delete_definition: 'Delete Definition'
+workflow.step.requires_comment: 'Comment required'
+workflow.step.requires_file: 'File required'
+workflow.message.no_steps: 'No workflow steps defined'
+workflow.message.no_instances: 'No workflow instances available'
+workflow.message.no_definitions: 'No workflow definitions available'
+workflow.instance.entity: 'Entity'
+workflow.instance.status: 'Status'
+workflow.instance.current_step: 'Current Step'
+workflow.instance.created: 'Created'
+workflow.instance.actions: 'Actions'
+workflow.stats.steps: 'Number of Steps'
+workflow.stats.total_instances: 'Total Instances'
+workflow.stats.total_definitions: 'Total Definitions'
+workflow.stats.active_definitions: 'Active Definitions'
+workflow.stats.avg_steps: 'Avg. Steps'
+workflow.stats.entity_types: 'Entity Types'
+workflow.success.definition_created: 'Workflow definition successfully created'
+workflow.success.definition_updated: 'Workflow definition successfully updated'
+workflow.success.definition_deleted: 'Workflow definition successfully deleted'
+workflow.success.definition_activated: 'Workflow definition activated'
+workflow.success.definition_deactivated: 'Workflow definition deactivated'
+workflow.error.has_active_instances: 'Cannot delete workflow: {count} active instance(s) exist'
+workflow.confirm.delete: 'Really delete workflow definition?'
+workflow.help.name: 'Unique name for this workflow definition'
+workflow.help.description: 'Optional description of the workflow purpose'
+workflow.help.entity_type: 'Entity type this workflow applies to'
+workflow.help.is_active: 'When deactivated, no new workflow instances can be started'
+workflow.help.delete_warning: 'Deleting a workflow definition cannot be undone. Active instances prevent deletion.'
+workflow.info.steps_note_title: 'Note about Workflow Steps'
+workflow.info.steps_note_text: 'Workflow steps must be configured separately after creating the definition.'
+workflow.placeholder.name: 'e.g. Risk Assessment Approval'
+workflow.placeholder.description: 'e.g. Approval process for risk assessments'
+common.cancel: 'Cancel'
+common.view: 'View'
+common.edit: 'Edit'
+common.actions: 'Actions'

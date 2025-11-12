@@ -1475,6 +1475,34 @@ user:
     custom_roles: Benutzerdefinierte Rollen
     active: Aktiv
     email_verified: E-Mail verifiziert
+  error:
+    no_users_selected: Keine Benutzer ausgewählt
+    no_file_uploaded: Keine Datei hochgeladen
+  success:
+    bulk_action_completed: '%count% Benutzer erfolgreich verarbeitet (%action%)'
+    imported: '%count% Benutzer erfolgreich importiert'
+    activated: Benutzer erfolgreich aktiviert
+    deactivated: Benutzer erfolgreich deaktiviert
+  action:
+    export: Exportieren
+    import: Importieren
+    bulk_actions: Massen-Aktionen
+    activate: Aktivieren
+    deactivate: Deaktivieren
+    assign_role: Rolle zuweisen
+    view_activity: Aktivität anzeigen
+    view_mfa: MFA verwalten
+    impersonate: Benutzer imitieren
+  import:
+    title: Benutzer importieren
+    description: Laden Sie eine CSV-Datei hoch, um mehrere Benutzer zu importieren
+    format: 'Erwartetes Format: email, first_name, last_name, password, is_active, roles'
+    download_template: Vorlage herunterladen
+  activity:
+    title: Benutzeraktivität
+    total: Gesamtaktivitäten
+    by_date: Nach Datum
+    by_action: Nach Aktion
 module:
   info:
     added_as_dependency: Modul '{name}' wurde als Abhängigkeit hinzugefügt
@@ -1497,6 +1525,28 @@ role:
     created: Rolle erfolgreich erstellt.
     updated: Rolle erfolgreich aktualisiert.
     deleted: Rolle erfolgreich gelöscht.
+    created_from_template: Rolle '%role%' erfolgreich aus Vorlage erstellt
+  action:
+    compare: Rollen vergleichen
+    templates: Vorlagen
+  compare:
+    title: Rollenvergleich
+    select_roles: Rollen zum Vergleich auswählen
+    permission_matrix: Berechtigungsmatrix
+    has_permission: Hat Berechtigung
+    no_permission: Keine Berechtigung
+  templates:
+    title: Rollenvorlagen
+    description: Erstellen Sie eine neue Rolle basierend auf einer Vorlage
+    select: Vorlage auswählen
+    apply: Vorlage anwenden
+    custom_name: Benutzerdefinierter Name (optional)
+    auditor: Prüfer
+    risk_manager: Risikomanager
+    compliance_officer: Compliance Officer
+    incident_manager: Incident Manager
+    asset_manager: Asset Manager
+    readonly: Nur-Lese-Benutzer
 error:
   csrf_invalid: Ungültiges CSRF-Token.
 audit_log:
@@ -2154,3 +2204,355 @@ tenant:
     settings_text: Mandantenspezifische Einstellungen im JSON-Format können individuelle Konfigurationen wie Branding, Features oder Limits enthalten.
   settings:
     example_title: Beispiel JSON-Struktur
+
+# Phase 6L-D: Extended User & Access Management
+permission:
+  title: Berechtigungen
+  list: Berechtigungsliste
+  show: Berechtigungsdetails
+  category: Kategorie
+  action: Aktion
+  description: Beschreibung
+  roles_using: Rollen mit dieser Berechtigung
+  affected_users: Betroffene Benutzer
+  system_permission: System-Berechtigung
+  statistics:
+    total: Gesamt
+    system: System
+    custom: Benutzerdefiniert
+    categories: Kategorien
+
+session:
+  title: Sitzungen
+  list: Aktive Sitzungen
+  show: Sitzungsdetails
+  user_name: Benutzername
+  ip_address: IP-Adresse
+  user_agent: User Agent
+  last_activity: Letzte Aktivität
+  session_start: Sitzungsbeginn
+  terminate: Sitzung beenden
+  statistics:
+    total: Gesamt aktive Sitzungen
+    today: Heute
+    hours_filter: Zeitfilter (Stunden)
+  activity_timeline: Aktivitätsverlauf
+  unique_ips: Eindeutige IP-Adressen
+  unique_devices: Eindeutige Geräte
+  error:
+    invalid_token: Ungültiges CSRF-Token
+  info:
+    termination_not_implemented: Sitzungsbeendigung erfordert zusätzliche Konfiguration (Datenbank-Session-Speicherung)
+
+mfa:
+  title: Zwei-Faktor-Authentifizierung
+  tokens: MFA-Token
+  enabled: MFA aktiviert
+  disabled: MFA deaktiviert
+  token_type: Token-Typ
+  device_name: Gerätename
+  enrolled_at: Registriert am
+  last_used: Zuletzt verwendet
+  usage_count: Verwendungsanzahl
+  is_active: Aktiv
+  is_primary: Primär
+  action:
+    reset: Token zurücksetzen
+  error:
+    token_not_found: MFA-Token nicht gefunden
+  success:
+    token_reset: MFA-Token erfolgreich zurückgesetzt
+  statistics:
+    active_tokens: Aktive Token
+    by_type: Nach Typ
+
+# Phase 6L-E: System Monitoring & Health
+monitoring:
+  title: System-Überwachung
+  health:
+    title: System-Gesundheit
+    overall_status: Gesamtstatus
+    healthy: Gesund
+    warning: Warnung
+    error: Fehler
+    last_checked: Zuletzt geprüft
+  database:
+    title: Datenbank
+    status: Status
+    response_time: Antwortzeit
+    driver: Treiber
+    error: Fehler
+  disk:
+    title: Festplatte
+    free: Frei
+    used: Belegt
+    total: Gesamt
+    percentage: Prozent
+  php:
+    title: PHP
+    version: Version
+    memory_limit: Speicherlimit
+    max_execution_time: Max. Ausführungszeit
+    extensions: Erweiterungen
+    loaded: Geladen
+    missing: Fehlend
+  symfony:
+    title: Symfony
+    version: Version
+    environment: Umgebung
+    debug: Debug-Modus
+  cache:
+    title: Cache
+    directory: Verzeichnis
+    writable: Schreibbar
+  logs:
+    title: Protokolle
+    directory: Verzeichnis
+    writable: Schreibbar
+  performance:
+    title: Performance-Metriken
+    total_requests: Gesamtanfragen
+    unique_users: Eindeutige Benutzer
+    memory_usage: Speichernutzung
+    memory_peak: Spitzenspeicher
+    memory_limit: Speicherlimit
+    top_actions: Top-Aktionen
+    top_entities: Aktivste Entitäten
+    last_24h: Letzte 24 Stunden
+    system_resources: Systemressourcen
+    note: Hinweis
+  errors:
+    title: Fehlerprotokolle
+    total: Fehler gesamt
+    by_level: Nach Stufe
+    file_size: Dateigröße
+    last_modified: Zuletzt geändert
+    log_file: Protokolldatei
+    show_entries: Einträge anzeigen
+    recent: Letzte Fehler
+    no_errors: Keine Fehler gefunden!
+    no_log_file: Keine Protokolldatei gefunden
+    show_full: Vollständigen Eintrag anzeigen
+  audit_log:
+    title: Audit-Protokoll
+    total_entries: Einträge gesamt
+    top_actions: Top-Aktionen
+    top_entities: Top-Entitäten
+    quick_filters: Schnellfilter
+    all: Alle
+    today: Heute
+    this_week: Diese Woche
+    critical_actions: Kritische Aktionen
+    entries: Einträge
+    timestamp: Zeitstempel
+    user: Benutzer
+    action: Aktion
+    entity: Entität
+    ip_address: IP-Adresse
+    details: Details
+    view: Ansehen
+    description: Beschreibung
+    changes: Änderungen
+    about: Über Audit-Protokoll
+    about_text: Das Audit-Protokoll verfolgt alle wichtigen Aktionen im System einschließlich Erstellen, Aktualisieren und Löschen.
+  related: Verwandte Überwachung
+  refresh: Aktualisieren
+  back_to_health: Zurück zur Gesundheit
+
+# Phase 6L-F: Data Management
+data:
+  title: Datenverwaltung
+  backup:
+    title: Datenbank-Backup
+    create: Backup erstellen
+    list: Verfügbare Backups
+    filename: Dateiname
+    date: Datum
+    size: Größe
+    actions: Aktionen
+    download: Herunterladen
+    delete: Löschen
+    retention_policy: 'Aufbewahrungsrichtlinie: Nur die letzten 7 Backups werden automatisch behalten'
+    location: 'Backup-Speicherort'
+    method: 'Backup-Methode: PostgreSQL pg_dump (SQL-Format)'
+    how_to_restore: So stellen Sie ein Backup wieder her
+    restore_warning: 'Warnung: Das Wiederherstellen eines Backups überschreibt alle aktuellen Daten!'
+    success:
+      created: 'Backup erfolgreich erstellt: %filename%'
+      deleted: Backup erfolgreich gelöscht
+    error:
+      invalid_token: Ungültiges CSRF-Token
+      create_failed: 'Backup fehlgeschlagen: %error%'
+      not_found: Backup-Datei nicht gefunden
+  export:
+    title: Daten exportieren
+    configure: Export konfigurieren
+    format: Export-Format
+    select_entities: Zu exportierende Entitäten auswählen
+    select_all: Alle auswählen
+    deselect_all: Alle abwählen
+    execute: Ausgewählte Entitäten exportieren
+    about: Über Datenexport
+    about_text: Exportieren Sie Ihre Daten im JSON- oder CSV-Format. Sie können spezifische Entitäten exportieren oder alle Daten.
+    format_json: JSON-Format bewahrt Datentypen und wird für Re-Import empfohlen
+    format_csv: CSV ist besser für Tabellenkalkulationen
+    success:
+      exported: Daten erfolgreich exportiert
+    error:
+      invalid_token: Ungültiges CSRF-Token
+      no_entities: Keine Entitäten ausgewählt
+  import:
+    title: Daten importieren
+    upload: Import-Datei hochladen
+    preview: Import-Vorschau
+    execute: Import ausführen
+    select_file: JSON-Datei auswählen
+    upload_and_preview: Hochladen und Vorschau
+    process: Import-Prozess
+    requirements: Import-Anforderungen
+    file_format: Dateiformat
+    before_importing: Vor dem Import
+    limitations: Einschränkungen
+    warning:
+      critical: 'Kritische Warnung: Datenimport kann bestehende Daten überschreiben!'
+      backup_first: Erstellen Sie immer ein Backup vor dem Import
+      preview_mode: Dieses Feature befindet sich im Vorschaumodus
+      not_implemented: Import-Funktionalität ist noch nicht vollständig implementiert
+    stats:
+      total_entities: Entitäten gesamt
+      total_records: Datensätze gesamt
+      status: Status
+    error:
+      invalid_token: Ungültiges CSRF-Token
+      no_file: Keine Datei hochgeladen
+      invalid_file: 'Ungültige Datei: %error%'
+  setup:
+    title: Setup-Assistent
+    link: Link zum bestehenden Deployment-Assistenten
+
+# Admin Integration - Phase 6L-G
+nav.admin.modules: 'Modul-Verwaltung'
+nav.admin.compliance: 'Compliance-Verwaltung'
+nav.admin.licensing: 'Lizenz-Verwaltung'
+
+admin.modules.title: 'Modul-Verwaltung'
+admin.modules.dependency_graph: 'Abhängigkeits-Graph'
+admin.modules.stats.total: 'Gesamt'
+admin.modules.stats.active: 'Aktiv'
+admin.modules.stats.inactive: 'Inaktiv'
+admin.modules.stats.required: 'Erforderlich'
+admin.modules.active_modules: 'Aktive Module'
+admin.modules.inactive_modules: 'Inaktive Module'
+admin.modules.status.active: 'Aktiv'
+admin.modules.status.inactive: 'Inaktiv'
+admin.modules.dependencies: 'Abhängigkeiten'
+admin.modules.required_by: 'Benötigt von'
+admin.modules.details: 'Details'
+admin.modules.confirm_deactivate: 'Modul "%name%" wirklich deaktivieren?'
+admin.modules.deactivate: 'Deaktivieren'
+admin.modules.required: 'Erforderlich'
+admin.modules.no_active: 'Keine aktiven Module'
+admin.modules.activate: 'Aktivieren'
+
+admin.compliance.statistics: 'Compliance-Statistiken'
+admin.compliance.total_available: 'Verfügbar'
+admin.compliance.loaded: 'Geladen'
+admin.compliance.not_loaded: 'Nicht geladen'
+admin.compliance.mandatory_missing: 'Pflicht fehlt'
+admin.compliance.compliance_overview: 'Compliance-Übersicht'
+admin.compliance.framework: 'Framework'
+admin.compliance.total_requirements: 'Anforderungen'
+admin.compliance.assessed: 'Bewertet'
+admin.compliance.compliant: 'Konform'
+admin.compliance.compliance_rate: 'Konformität'
+admin.compliance.progress: 'Fortschritt'
+admin.compliance.no_frameworks_loaded: 'Keine Frameworks geladen'
+
+admin.licensing.title: 'Lizenz-Verwaltung'
+admin.licensing.third_party: 'Drittanbieter-Lizenzen'
+admin.licensing.report: 'Lizenzbericht'
+admin.licensing.summary: 'Lizenz-Zusammenfassung'
+
+admin.panel.title: 'Admin Panel'
+
+# Common translations
+common.back: 'Zurück'
+common.yes: 'Ja'
+common.no: 'Nein'
+
+# Workflow Definition Management - Phase 6C
+workflow.definition.title: 'Workflow-Definition'
+workflow.definition.new_title: 'Neue Workflow-Definition'
+workflow.definition.edit_title: 'Workflow-Definition bearbeiten'
+workflow.breadcrumb.home: 'Workflows'
+workflow.breadcrumb.definitions: 'Definitionen'
+workflow.breadcrumb.new: 'Neu'
+workflow.breadcrumb.edit: 'Bearbeiten'
+workflow.section.information: 'Workflow-Informationen'
+workflow.section.basic_information: 'Basis-Informationen'
+workflow.section.steps: 'Workflow-Schritte'
+workflow.section.recent_instances: 'Letzte Instanzen'
+workflow.section.actions: 'Aktionen'
+workflow.section.statistics: 'Statistiken'
+workflow.section.danger_zone: 'Gefahrenbereich'
+workflow.field.name: 'Name'
+workflow.field.description: 'Beschreibung'
+workflow.field.entity_type: 'Entitäts-Typ'
+workflow.field.status: 'Status'
+workflow.field.created_at: 'Erstellt am'
+workflow.field.updated_at: 'Aktualisiert am'
+workflow.field.definition_name: 'Workflow-Name'
+workflow.field.steps: 'Schritte'
+workflow.field.instances: 'Instanzen'
+workflow.field.active: 'Aktiv'
+workflow.field.is_active: 'Aktiv'
+workflow.status.active: 'Aktiv'
+workflow.status.inactive: 'Inaktiv'
+workflow.status.completed: 'Abgeschlossen'
+workflow.status.rejected: 'Abgelehnt'
+workflow.status.cancelled: 'Abgebrochen'
+workflow.status.pending: 'Ausstehend'
+workflow.action.edit: 'Bearbeiten'
+workflow.action.activate: 'Aktivieren'
+workflow.action.deactivate: 'Deaktivieren'
+workflow.action.delete: 'Löschen'
+workflow.action.create: 'Erstellen'
+workflow.action.update: 'Aktualisieren'
+workflow.action.create_definition: 'Neue Definition'
+workflow.action.delete_definition: 'Definition löschen'
+workflow.step.requires_comment: 'Kommentar erforderlich'
+workflow.step.requires_file: 'Datei erforderlich'
+workflow.message.no_steps: 'Keine Workflow-Schritte definiert'
+workflow.message.no_instances: 'Keine Workflow-Instanzen vorhanden'
+workflow.message.no_definitions: 'Keine Workflow-Definitionen vorhanden'
+workflow.instance.entity: 'Entität'
+workflow.instance.status: 'Status'
+workflow.instance.current_step: 'Aktueller Schritt'
+workflow.instance.created: 'Erstellt'
+workflow.instance.actions: 'Aktionen'
+workflow.stats.steps: 'Anzahl Schritte'
+workflow.stats.total_instances: 'Gesamte Instanzen'
+workflow.stats.total_definitions: 'Gesamte Definitionen'
+workflow.stats.active_definitions: 'Aktive Definitionen'
+workflow.stats.avg_steps: 'Durchschn. Schritte'
+workflow.stats.entity_types: 'Entitäts-Typen'
+workflow.success.definition_created: 'Workflow-Definition erfolgreich erstellt'
+workflow.success.definition_updated: 'Workflow-Definition erfolgreich aktualisiert'
+workflow.success.definition_deleted: 'Workflow-Definition erfolgreich gelöscht'
+workflow.success.definition_activated: 'Workflow-Definition aktiviert'
+workflow.success.definition_deactivated: 'Workflow-Definition deaktiviert'
+workflow.error.has_active_instances: 'Workflow kann nicht gelöscht werden: {count} aktive Instanz(en) vorhanden'
+workflow.confirm.delete: 'Workflow-Definition wirklich löschen?'
+workflow.help.name: 'Eindeutiger Name für diese Workflow-Definition'
+workflow.help.description: 'Optionale Beschreibung des Workflow-Zwecks'
+workflow.help.entity_type: 'Entitäts-Typ, für den dieser Workflow angewendet wird'
+workflow.help.is_active: 'Wenn deaktiviert, können keine neuen Workflow-Instanzen gestartet werden'
+workflow.help.delete_warning: 'Das Löschen einer Workflow-Definition kann nicht rückgängig gemacht werden. Aktive Instanzen verhindern das Löschen.'
+workflow.info.steps_note_title: 'Hinweis zu Workflow-Schritten'
+workflow.info.steps_note_text: 'Workflow-Schritte müssen nach dem Erstellen der Definition separat konfiguriert werden.'
+workflow.placeholder.name: 'z.B. Risk Assessment Approval'
+workflow.placeholder.description: 'z.B. Genehmigungsprozess für Risikoanalysen'
+common.cancel: 'Abbrechen'
+common.view: 'Anzeigen'
+common.edit: 'Bearbeiten'
+common.actions: 'Aktionen'

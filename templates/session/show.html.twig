@@ -1,0 +1,109 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ user_name }} - {{ 'session.show'|trans }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="bi bi-person-badge"></i> {{ user_name }}</h1>
+        <a href="{{ path('session_index') }}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Zurück
+        </a>
+    </div>
+
+    {# Session Overview #}
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card border-primary">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-muted">Aktivitäten (7 Tage)</h5>
+                    <p class="display-6 text-primary">{{ total_activities }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-info">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-muted">{{ 'session.unique_ips'|trans }}</h5>
+                    <p class="display-6 text-info">{{ ip_addresses|length }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-success">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-muted">{{ 'session.unique_devices'|trans }}</h5>
+                    <p class="display-6 text-success">{{ user_agents|length }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# IP Addresses #}
+    <div class="card mb-4">
+        <div class="card-header bg-info text-white">
+            <h5 class="mb-0">
+                <i class="bi bi-geo-alt"></i> IP-Adressen
+            </h5>
+        </div>
+        <div class="card-body">
+            {% for ip in ip_addresses %}
+                <code class="me-2">{{ ip }}</code>
+            {% endfor %}
+        </div>
+    </div>
+
+    {# Activity Timeline #}
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">
+                <i class="bi bi-clock-history"></i> {{ 'session.activity_timeline'|trans }}
+            </h5>
+        </div>
+        <div class="card-body">
+            {% if activity_timeline|length > 0 %}
+                {% for date, daily_activities in activity_timeline|reverse %}
+                    <div class="mb-4">
+                        <h6 class="text-muted">
+                            <i class="bi bi-calendar"></i>
+                            {{ date|date('d.m.Y') }}
+                            <span class="badge bg-secondary">{{ daily_activities|length }}</span>
+                        </h6>
+                        <div class="list-group">
+                            {% for activity in daily_activities %}
+                                <div class="list-group-item">
+                                    <div class="d-flex w-100 justify-content-between align-items-start">
+                                        <div>
+                                            <span class="badge bg-primary">{{ activity.action }}</span>
+                                            {% if activity.entityType %}
+                                                <span class="text-muted">
+                                                    {{ activity.entityType }}
+                                                    {% if activity.entityId %}#{{ activity.entityId }}{% endif %}
+                                                </span>
+                                            {% endif %}
+                                            {% if activity.description %}
+                                                <p class="mb-1 mt-2 text-muted small">{{ activity.description }}</p>
+                                            {% endif %}
+                                        </div>
+                                        <small class="text-muted">{{ activity.createdAt|date('H:i:s') }}</small>
+                                    </div>
+                                    {% if activity.ipAddress %}
+                                        <small class="text-muted">
+                                            <i class="bi bi-geo-alt"></i> {{ activity.ipAddress }}
+                                        </small>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle"></i>
+                    Keine Aktivitäten in den letzten 7 Tagen gefunden.
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

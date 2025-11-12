@@ -1,0 +1,183 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ user.fullName }} - {{ 'mfa.title'|trans }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>
+            <i class="bi bi-shield-lock"></i>
+            {{ 'mfa.title'|trans }}: {{ user.fullName }}
+        </h1>
+        <a href="{{ path('user_management_show', {id: user.id}) }}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Zurück
+        </a>
+    </div>
+
+    {# MFA Status #}
+    <div class="alert {{ mfa_enabled ? 'alert-success' : 'alert-warning' }} mb-4">
+        <div class="d-flex align-items-center">
+            <i class="bi {{ mfa_enabled ? 'bi-shield-check' : 'bi-shield-exclamation' }} fs-1 me-3"></i>
+            <div>
+                <h5 class="mb-1">
+                    {% if mfa_enabled %}
+                        {{ 'mfa.enabled'|trans }}
+                    {% else %}
+                        {{ 'mfa.disabled'|trans }}
+                    {% endif %}
+                </h5>
+                <p class="mb-0">
+                    {% if mfa_enabled %}
+                        Dieser Benutzer hat die Zwei-Faktor-Authentifizierung aktiviert.
+                    {% else %}
+                        Dieser Benutzer hat die Zwei-Faktor-Authentifizierung nicht aktiviert.
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+    </div>
+
+    {# MFA Statistics #}
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card border-primary">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-muted">{{ 'mfa.statistics.active_tokens'|trans }}</h5>
+                    <p class="display-6 text-primary">{{ active_tokens_count }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-info">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-muted">Gesamt Tokens</h5>
+                    <p class="display-6 text-info">{{ mfa_tokens|length }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-success">
+                <div class="card-body">
+                    <h5 class="card-title text-muted">{{ 'mfa.statistics.by_type'|trans }}</h5>
+                    {% for type, count in tokens_by_type %}
+                        <div class="d-flex justify-content-between">
+                            <span>{{ type|upper }}</span>
+                            <span class="badge bg-secondary">{{ count }}</span>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# MFA Tokens List #}
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">
+                <i class="bi bi-key"></i> {{ 'mfa.tokens'|trans }}
+            </h5>
+        </div>
+        <div class="card-body">
+            {% if mfa_tokens|length > 0 %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>{{ 'mfa.token_type'|trans }}</th>
+                                <th>{{ 'mfa.device_name'|trans }}</th>
+                                <th>{{ 'mfa.enrolled_at'|trans }}</th>
+                                <th>{{ 'mfa.last_used'|trans }}</th>
+                                <th class="text-center">{{ 'mfa.usage_count'|trans }}</th>
+                                <th class="text-center">Status</th>
+                                <th class="text-end">Aktion</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for token in mfa_tokens %}
+                                <tr class="{{ not token.isActive ? 'table-secondary' : '' }}">
+                                    <td>
+                                        {% if token.tokenType == 'totp' %}
+                                            <i class="bi bi-phone"></i> Authenticator App
+                                        {% elseif token.tokenType == 'webauthn' %}
+                                            <i class="bi bi-fingerprint"></i> Security Key
+                                        {% elseif token.tokenType == 'sms' %}
+                                            <i class="bi bi-chat"></i> SMS
+                                        {% elseif token.tokenType == 'hardware' %}
+                                            <i class="bi bi-cpu"></i> Hardware Token
+                                        {% elseif token.tokenType == 'backup' %}
+                                            <i class="bi bi-lock"></i> Backup Codes
+                                        {% else %}
+                                            <i class="bi bi-question-circle"></i> {{ token.tokenType }}
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {{ token.deviceName ?? '-' }}
+                                        {% if token.isPrimary %}
+                                            <span class="badge bg-primary">{{ 'mfa.is_primary'|trans }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ token.enrolledAt|date('d.m.Y H:i') }}</td>
+                                    <td>
+                                        {% if token.lastUsedAt %}
+                                            {{ token.lastUsedAt|date('d.m.Y H:i') }}
+                                        {% else %}
+                                            <span class="text-muted">Noch nie verwendet</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge bg-info">{{ token.usageCount }}</span>
+                                    </td>
+                                    <td class="text-center">
+                                        {% if token.isActive %}
+                                            {% if token.isExpired %}
+                                                <span class="badge bg-danger">Abgelaufen</span>
+                                            {% else %}
+                                                <span class="badge bg-success">{{ 'mfa.is_active'|trans }}</span>
+                                            {% endif %}
+                                        {% else %}
+                                            <span class="badge bg-secondary">Inaktiv</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-end">
+                                        {% if is_granted('ROLE_SUPER_ADMIN') %}
+                                            <form method="post"
+                                                  action="{{ path('user_management_mfa_reset', {id: user.id, tokenId: token.id}) }}"
+                                                  style="display: inline;">
+                                                <input type="hidden" name="_token"
+                                                       value="{{ csrf_token('mfa_reset_' ~ token.id) }}">
+                                                <button type="submit"
+                                                        class="btn btn-sm btn-outline-danger"
+                                                        onclick="return confirm('Möchten Sie diesen MFA-Token wirklich zurücksetzen?')">
+                                                    <i class="bi bi-trash"></i> {{ 'mfa.action.reset'|trans }}
+                                                </button>
+                                            </form>
+                                        {% else %}
+                                            <span class="text-muted">-</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle"></i>
+                    Dieser Benutzer hat noch keine MFA-Tokens registriert.
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    {# Info Box for Super Admins #}
+    {% if is_granted('ROLE_SUPER_ADMIN') %}
+        <div class="alert alert-warning mt-4">
+            <h5><i class="bi bi-exclamation-triangle"></i> Administratorhinweis</h5>
+            <p class="mb-0">
+                Als Super-Administrator können Sie MFA-Tokens zurücksetzen, falls ein Benutzer den Zugriff auf sein
+                MFA-Gerät verloren hat. Dies sollte nur in Notfällen durchgeführt werden.
+            </p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
