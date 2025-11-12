@@ -33,22 +33,22 @@
 
     <div class="form-group">
         {{ form_label(form.active) }}
-        <div style="margin-top: var(--spacing-xs);">
+        <div class="mt-xs">
             {{ form_widget(form.active) }}
         </div>
         {{ form_errors(form.active) }}
-        <small style="color: var(--color-text-muted); margin-top: var(--spacing-xs); display: block;">
+        <small class="small-muted-block">
             {{ 'role_management.help.active'|trans }}
         </small>
     </div>
 
-    <h3 style="margin-top: var(--spacing-lg);">{{ 'role_management.section.permissions'|trans }}</h3>
+    <h3 class="h3-mt-lg">{{ 'role_management.section.permissions'|trans }}</h3>
 
     <div class="form-group">
         {{ form_label(form.permissions) }}
         {{ form_widget(form.permissions, {'attr': {'class': 'form-control', 'size': 10}}) }}
         {{ form_errors(form.permissions) }}
-        <small style="color: var(--color-text-muted); margin-top: var(--spacing-xs); display: block;">
+        <small class="small-muted-block">
             {{ 'role_management.help.permissions'|trans }}
         </small>
     </div>
