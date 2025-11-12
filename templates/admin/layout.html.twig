@@ -5,10 +5,29 @@
 {% block stylesheets %}
     {{ parent() }}
     <style>
+        /* Override base layout for admin portal */
+        body:has(.admin-wrapper) .container {
+            max-width: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        body:has(.admin-wrapper) .content {
+            background: transparent;
+            padding: 0;
+            box-shadow: none;
+            animation: none;
+        }
+
         /* Admin-specific layout */
         .admin-wrapper {
             display: flex;
             min-height: calc(100vh - 200px);
+            background: var(--color-bg);
+        }
+
+        [data-theme="dark"] .admin-wrapper {
+            background: var(--bg-primary);
         }
 
         .admin-sidebar {
@@ -85,6 +104,12 @@
             flex: 1;
             padding: 1.5rem;
             max-width: 100%;
+            background: white;
+            overflow-x: auto;
+        }
+
+        [data-theme="dark"] .admin-content {
+            background: var(--bg-secondary);
         }
 
         .admin-header {
@@ -125,9 +150,9 @@
             color: #212529;
         }
 
-        /* Dark mode support for admin sidebar */
+        /* Dark mode support */
         [data-theme="dark"] .admin-sidebar {
-            background: var(--bg-secondary);
+            background: var(--bg-elevated);
             border-right-color: var(--border-color);
         }
 
@@ -147,10 +172,6 @@
 
         [data-theme="dark"] .admin-sidebar .sidebar-section-title {
             color: var(--text-muted);
-        }
-
-        [data-theme="dark"] .admin-content {
-            background: var(--bg-primary);
         }
 
         [data-theme="dark"] .admin-header {
