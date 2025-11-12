@@ -26,6 +26,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -42,16 +44,35 @@ jobs:
       - name: Install Composer dependencies
         run: composer install --no-interaction --no-progress --prefer-dist
 
+      - name: Check if license-report script exists
+        id: check_script
+        run: |
+          if [ -f "license-report.sh" ]; then
+            echo "script_exists=true" >> $GITHUB_OUTPUT
+            echo "✅ license-report.sh found"
+          else
+            echo "script_exists=false" >> $GITHUB_OUTPUT
+            echo "⚠️ license-report.sh not found - skipping license check"
+            echo "::warning::License compliance script not found in this branch/commit. This is expected for older branches."
+          fi
+
       - name: Make license-report script executable
+        if: steps.check_script.outputs.script_exists == 'true'
         run: chmod +x license-report.sh
 
+      - name: Create reports directory
+        if: steps.check_script.outputs.script_exists == 'true'
+        run: mkdir -p docs/reports
+
       - name: Generate License Report
+        if: steps.check_script.outputs.script_exists == 'true'
         id: license_report
         run: |
           ./license-report.sh
           echo "report_generated=true" >> $GITHUB_OUTPUT
 
       - name: Check for problematic licenses
+        if: steps.check_script.outputs.script_exists == 'true'
         id: check_licenses
         run: |
           REPORT_FILE="docs/reports/license-report.md"
@@ -106,14 +127,14 @@ jobs:
 
       - name: Upload License Report
         uses: actions/upload-artifact@v4
-        if: always()
+        if: always() && steps.check_script.outputs.script_exists == 'true'
         with:
           name: license-report
           path: docs/reports/license-report.md
           retention-days: 90
 
       - name: Comment on PR with results
-        if: github.event_name == 'pull_request' && steps.check_licenses.outputs.status != 'passed'
+        if: github.event_name == 'pull_request' && steps.check_script.outputs.script_exists == 'true' && steps.check_licenses.outputs.status != 'passed'
         uses: actions/github-script@v7
         with:
           script: |
@@ -167,7 +188,7 @@ jobs:
             });
 
       - name: Create issue for problematic licenses
-        if: steps.check_licenses.outputs.status == 'failed' && github.event_name == 'schedule'
+        if: steps.check_script.outputs.script_exists == 'true' && steps.check_licenses.outputs.status == 'failed' && github.event_name == 'schedule'
         uses: actions/github-script@v7
         with:
           script: |
