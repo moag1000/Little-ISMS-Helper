@@ -140,7 +140,7 @@ admin:
       auth_settings: Authentifizierungseinstellungen
       session_lifetime: Sitzungsdauer
       session_lifetime_help: Maximale Dauer einer Benutzersitzung in Sekunden (5-1440 Min)
-      remember_me_lifetime: "Angemeldet bleiben"-Dauer
+      remember_me_lifetime: '"Angemeldet bleiben"-Dauer'
       remember_me_help: Dauer für "Angemeldet bleiben" in Sekunden
       password_min_length: Minimale Passwortlänge
       password_min_length_help: Mindestanzahl Zeichen für Passwörter (6-20)
