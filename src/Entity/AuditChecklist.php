@@ -56,7 +56,12 @@ class AuditChecklist
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $updatedAt = null;
 
-    public function __construct()
+    
+    #[ORM\ManyToOne(targetEntity: Tenant::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Tenant $tenant = null;
+
+public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
     }
@@ -252,5 +257,16 @@ class AuditChecklist
     public function hasFindings(): bool
     {
         return !empty($this->findings);
+    }
+
+    public function getTenant(): ?Tenant
+    {
+        return $this->tenant;
+    }
+
+    public function setTenant(?Tenant $tenant): static
+    {
+        $this->tenant = $tenant;
+        return $this;
     }
 }

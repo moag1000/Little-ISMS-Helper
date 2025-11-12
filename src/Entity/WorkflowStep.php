@@ -42,6 +42,10 @@ class WorkflowStep
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
     private ?int $daysToComplete = null; // SLA in days
 
+    #[ORM\ManyToOne(targetEntity: Tenant::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Tenant $tenant = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -143,6 +147,17 @@ class WorkflowStep
     public function setDaysToComplete(?int $daysToComplete): static
     {
         $this->daysToComplete = $daysToComplete;
+        return $this;
+    }
+
+    public function getTenant(): ?Tenant
+    {
+        return $this->tenant;
+    }
+
+    public function setTenant(?Tenant $tenant): static
+    {
+        $this->tenant = $tenant;
         return $this;
     }
 }

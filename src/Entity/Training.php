@@ -157,7 +157,12 @@ class Training
     #[MaxDepth(1)]
     private Collection $complianceRequirements;
 
-    public function __construct()
+    
+    #[ORM\ManyToOne(targetEntity: Tenant::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Tenant $tenant = null;
+
+public function __construct()
     {
         $this->coveredControls = new ArrayCollection();
         $this->complianceRequirements = new ArrayCollection();
@@ -484,5 +489,16 @@ class Training
             }
         }
         return false;
+    }
+
+    public function getTenant(): ?Tenant
+    {
+        return $this->tenant;
+    }
+
+    public function setTenant(?Tenant $tenant): static
+    {
+        $this->tenant = $tenant;
+        return $this;
     }
 }
