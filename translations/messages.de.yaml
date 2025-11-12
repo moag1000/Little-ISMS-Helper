@@ -2479,3 +2479,8 @@ admin.licensing.report: 'Lizenzbericht'
 admin.licensing.summary: 'Lizenz-Zusammenfassung'
 
 admin.panel.title: 'Admin Panel'
+
+# Common translations
+common.back: 'Zurück'
+common.yes: 'Ja'
+common.no: 'Nein'

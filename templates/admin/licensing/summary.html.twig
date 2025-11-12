@@ -8,7 +8,7 @@
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
             { label: 'Reports', url: path('app_reports_overview') },
-            { label: 'Lizenzen', url: path('admin_licensing') },
+            { label: 'Lizenzen', url: path('admin_licensing_index') },
             { label: 'Zusammenfassung' }
         ]
     } %}
@@ -30,7 +30,7 @@
                     </h5>
                 </div>
                 <div class="list-group list-group-flush">
-                    <a href="{{ path('admin_licensing') }}" class="list-group-item list-group-item-action">
+                    <a href="{{ path('admin_licensing_index') }}" class="list-group-item list-group-item-action">
                         <i class="bi-file-earmark-text me-2"></i>NOTICE
                     </a>
                     <a href="{{ path('admin_licensing_report') }}" class="list-group-item list-group-item-action">
@@ -275,7 +275,7 @@
                         <ol class="mb-0">
                             <li>Vollständigen Bericht prüfen: <a href="{{ path('admin_licensing_report') }}">Detailbericht öffnen</a></li>
                             <li>Problematische Lizenzen identifizieren und dokumentieren</li>
-                            <li>NOTICE-Datei prüfen: <a href="{{ path('admin_licensing') }}">NOTICE anzeigen</a></li>
+                            <li>NOTICE-Datei prüfen: <a href="{{ path('admin_licensing_index') }}">NOTICE anzeigen</a></li>
                             <li>Attributionen in der Anwendung bereitstellen (erledigt ✓)</li>
                             <li>Regelmäßig aktualisieren: <code>./license-report.sh</code> ausführen</li>
                         </ol>
