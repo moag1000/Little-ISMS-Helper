@@ -1967,6 +1967,27 @@
     color: var(--color-danger);
 }
 
+/* BCM Index Utilities */
+.bg-gradient-primary {
+    background: var(--gradient-primary);
+}
+
+.bg-gradient-danger {
+    background: var(--gradient-danger);
+}
+
+.bg-gradient-warning {
+    background: var(--gradient-warning);
+}
+
+.bg-gradient-success {
+    background: var(--gradient-success);
+}
+
+.bg-gradient-info {
+    background: var(--gradient-info);
+}
+
 /* SOA Edit Utilities */
 .mt-sm-text-light {
     margin-top: var(--spacing-sm);
