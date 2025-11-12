@@ -1,0 +1,120 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'permission.title'|trans }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="bi bi-shield-check"></i> {{ 'permission.list'|trans }}</h1>
+    </div>
+
+    {# Statistics Cards #}
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card border-primary">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-muted">{{ 'permission.statistics.total'|trans }}</h5>
+                    <p class="display-6 text-primary">{{ statistics.total }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-success">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-muted">{{ 'permission.statistics.system'|trans }}</h5>
+                    <p class="display-6 text-success">{{ statistics.system }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-info">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-muted">{{ 'permission.statistics.custom'|trans }}</h5>
+                    <p class="display-6 text-info">{{ statistics.custom }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-warning">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-muted">{{ 'permission.statistics.categories'|trans }}</h5>
+                    <p class="display-6 text-warning">{{ statistics.categories_count }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Category Filter #}
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="btn-group" role="group">
+                <a href="{{ path('permission_index') }}"
+                   class="btn btn-sm {{ currentCategory is null ? 'btn-primary' : 'btn-outline-primary' }}">
+                    Alle
+                </a>
+                {% for category in categories %}
+                    <a href="{{ path('permission_index', {category: category}) }}"
+                       class="btn btn-sm {{ currentCategory == category ? 'btn-primary' : 'btn-outline-primary' }}">
+                        {{ category|title }}
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    {# Permissions by Category #}
+    {% for category, permissions in groupedPermissions %}
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">
+                    <i class="bi bi-folder"></i> {{ category|title }}
+                    <span class="badge bg-light text-dark">{{ permissions|length }}</span>
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>{{ 'permission.action'|trans }}</th>
+                                <th>{{ 'permission.description'|trans }}</th>
+                                <th class="text-center">{{ 'permission.system_permission'|trans }}</th>
+                                <th class="text-end">Aktionen</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for permission in permissions %}
+                                <tr>
+                                    <td>
+                                        <code>{{ permission.name }}</code>
+                                    </td>
+                                    <td>{{ permission.description }}</td>
+                                    <td class="text-center">
+                                        {% if permission.isSystemPermission %}
+                                            <span class="badge bg-info">System</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">Custom</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-end">
+                                        <a href="{{ path('permission_show', {id: permission.id}) }}"
+                                           class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-eye"></i> Details
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+
+    {% if groupedPermissions|length == 0 %}
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i> Keine Berechtigungen gefunden.
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

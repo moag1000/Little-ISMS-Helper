@@ -1,0 +1,142 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'session.list'|trans }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="bi bi-clock-history"></i> {{ 'session.list'|trans }}</h1>
+    </div>
+
+    {# Statistics Cards #}
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card border-primary">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-muted">{{ 'session.statistics.total'|trans }}</h5>
+                    <p class="display-6 text-primary">{{ statistics.total }}</p>
+                    <small>Aktive Sitzungen</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-success">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-muted">{{ 'session.statistics.today'|trans }}</h5>
+                    <p class="display-6 text-success">{{ statistics.today }}</p>
+                    <small>Heute</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-info">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-muted">{{ 'session.statistics.hours_filter'|trans }}</h5>
+                    <p class="display-6 text-info">{{ statistics.hours_filter }}</p>
+                    <small>Stunden</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Time Filter #}
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-auto">
+                    <label for="hours" class="col-form-label">Zeitfilter:</label>
+                </div>
+                <div class="col-auto">
+                    <select name="hours" id="hours" class="form-select" onchange="this.form.submit()">
+                        <option value="1" {{ statistics.hours_filter == 1 ? 'selected' : '' }}>Letzte Stunde</option>
+                        <option value="6" {{ statistics.hours_filter == 6 ? 'selected' : '' }}>Letzte 6 Stunden</option>
+                        <option value="24" {{ statistics.hours_filter == 24 ? 'selected' : '' }}>Letzte 24 Stunden</option>
+                        <option value="72" {{ statistics.hours_filter == 72 ? 'selected' : '' }}>Letzte 3 Tage</option>
+                        <option value="168" {{ statistics.hours_filter == 168 ? 'selected' : '' }}>Letzte Woche</option>
+                    </select>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {# Active Sessions Table #}
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">
+                <i class="bi bi-list-ul"></i> Aktive Sitzungen
+            </h5>
+        </div>
+        <div class="card-body">
+            {% if sessions|length > 0 %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>{{ 'session.user_name'|trans }}</th>
+                                <th>{{ 'session.ip_address'|trans }}</th>
+                                <th>{{ 'session.last_activity'|trans }}</th>
+                                <th>{{ 'session.session_start'|trans }}</th>
+                                <th class="text-end">Aktionen</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for session in sessions %}
+                                <tr>
+                                    <td>
+                                        <i class="bi bi-person"></i>
+                                        <strong>{{ session.user_name }}</strong>
+                                    </td>
+                                    <td>
+                                        <code>{{ session.ip_address ?? 'N/A' }}</code>
+                                    </td>
+                                    <td>
+                                        {% set minutes_ago = 'now'|date('U') - session.last_activity.timestamp %}
+                                        {% set minutes = (minutes_ago / 60)|round %}
+                                        {% if minutes < 1 %}
+                                            <span class="badge bg-success">Jetzt aktiv</span>
+                                        {% elseif minutes < 60 %}
+                                            <span class="text-muted">vor {{ minutes }} Min.</span>
+                                        {% else %}
+                                            <span class="text-muted">{{ session.last_activity|date('d.m.Y H:i') }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ session.session_start|date('d.m.Y H:i') }}</td>
+                                    <td class="text-end">
+                                        <a href="{{ path('session_show', {userName: session.user_name}) }}"
+                                           class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-eye"></i> Details
+                                        </a>
+                                        <form method="post"
+                                              action="{{ path('session_terminate', {userName: session.user_name}) }}"
+                                              style="display: inline;">
+                                            <input type="hidden" name="_token"
+                                                   value="{{ csrf_token('terminate_session_' ~ session.user_name) }}">
+                                            <button type="submit"
+                                                    class="btn btn-sm btn-outline-danger"
+                                                    onclick="return confirm('Möchten Sie diese Sitzung wirklich beenden?')">
+                                                <i class="bi bi-x-circle"></i> Beenden
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle"></i>
+                    Keine aktiven Sitzungen im gewählten Zeitraum gefunden.
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    {# Info Box #}
+    <div class="alert alert-warning mt-4">
+        <i class="bi bi-info-circle"></i>
+        <strong>Hinweis:</strong> Diese Übersicht basiert auf Login-Ereignissen im Audit-Log.
+        Für vollständiges Session-Management wird Datenbank-Session-Speicherung benötigt.
+    </div>
+</div>
+{% endblock %}
