@@ -1,0 +1,257 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'admin.title'|trans }} - {{ parent() }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        /* Admin-specific layout */
+        .admin-wrapper {
+            display: flex;
+            min-height: calc(100vh - 200px);
+        }
+
+        .admin-sidebar {
+            width: 280px;
+            background: #f8f9fa;
+            border-right: 1px solid #dee2e6;
+            padding: 1.5rem 0;
+            position: sticky;
+            top: 0;
+            height: calc(100vh - 200px);
+            overflow-y: auto;
+        }
+
+        .admin-sidebar nav {
+            padding: 0;
+        }
+
+        .admin-sidebar .sidebar-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .admin-sidebar .sidebar-section-title {
+            padding: 0.5rem 1.5rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: #6c757d;
+            letter-spacing: 0.5px;
+        }
+
+        .admin-sidebar ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .admin-sidebar ul li {
+            margin: 0;
+        }
+
+        .admin-sidebar ul li a {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1.5rem;
+            color: #495057;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .admin-sidebar ul li a:hover {
+            background: #e9ecef;
+            color: #0d6efd;
+        }
+
+        .admin-sidebar ul li a.active {
+            background: #0d6efd;
+            color: white;
+            font-weight: 500;
+        }
+
+        .admin-sidebar ul li a i {
+            margin-right: 0.75rem;
+            font-size: 1.1rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        .admin-sidebar ul li a .badge {
+            margin-left: auto;
+        }
+
+        .admin-content {
+            flex: 1;
+            padding: 2rem;
+            max-width: 100%;
+        }
+
+        .admin-header {
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        .admin-header h1 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin: 0 0 0.5rem 0;
+            color: #212529;
+        }
+
+        .admin-header p {
+            color: #6c757d;
+            margin: 0;
+        }
+
+        .admin-breadcrumb {
+            background: transparent;
+            padding: 0;
+            margin-bottom: 1rem;
+            font-size: 0.875rem;
+        }
+
+        .admin-breadcrumb .breadcrumb-item a {
+            color: #6c757d;
+            text-decoration: none;
+        }
+
+        .admin-breadcrumb .breadcrumb-item a:hover {
+            color: #0d6efd;
+        }
+
+        .admin-breadcrumb .breadcrumb-item.active {
+            color: #212529;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 992px) {
+            .admin-wrapper {
+                flex-direction: column;
+            }
+
+            .admin-sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                border-right: none;
+                border-bottom: 1px solid #dee2e6;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="admin-wrapper">
+        {# Admin Sidebar Navigation #}
+        <aside class="admin-sidebar">
+            <nav>
+                {# User & Access Management #}
+                <div class="sidebar-section">
+                    <div class="sidebar-section-title">{{ 'admin.section.user_access'|trans }}</div>
+                    <ul>
+                        <li>
+                            <a href="{{ path('user_management_index') }}"
+                               class="{% if app.request.get('_route') starts with 'user_management_' %}active{% endif %}">
+                                <i class="bi bi-people"></i> {{ 'admin.nav.users'|trans }}
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ path('role_management_index') }}"
+                               class="{% if app.request.get('_route') starts with 'role_management_' %}active{% endif %}">
+                                <i class="bi bi-shield-lock"></i> {{ 'admin.nav.roles'|trans }}
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                {# System Configuration #}
+                <div class="sidebar-section">
+                    <div class="sidebar-section-title">{{ 'admin.section.system_config'|trans }}</div>
+                    <ul>
+                        <li>
+                            <a href="#" class="text-muted disabled">
+                                <i class="bi bi-gear"></i> {{ 'admin.nav.settings'|trans }}
+                                <span class="badge bg-secondary ms-auto" style="font-size: 0.65rem;">Soon</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                {# Modules & Features #}
+                <div class="sidebar-section">
+                    <div class="sidebar-section-title">{{ 'admin.section.modules'|trans }}</div>
+                    <ul>
+                        <li>
+                            <a href="{{ path('app_compliance_index') }}"
+                               class="{% if app.request.get('_route') starts with 'app_compliance_' %}active{% endif %}">
+                                <i class="bi bi-check-circle"></i> {{ 'admin.nav.compliance'|trans }}
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                {# Monitoring & Logs #}
+                <div class="sidebar-section">
+                    <div class="sidebar-section-title">{{ 'admin.section.monitoring'|trans }}</div>
+                    <ul>
+                        <li>
+                            <a href="{{ path('app_audit_log_index') }}"
+                               class="{% if app.request.get('_route') starts with 'app_audit_log_' %}active{% endif %}">
+                                <i class="bi bi-journal-text"></i> {{ 'admin.nav.audit_log'|trans }}
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                {# Back to Application #}
+                <div class="sidebar-section">
+                    <div class="sidebar-section-title">{{ 'admin.section.navigation'|trans }}</div>
+                    <ul>
+                        <li>
+                            <a href="{{ path('app_dashboard') }}">
+                                <i class="bi bi-arrow-left"></i> {{ 'admin.nav.back_to_app'|trans }}
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </aside>
+
+        {# Admin Content Area #}
+        <main class="admin-content">
+            {# Breadcrumb Navigation #}
+            {% block breadcrumb %}
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb admin-breadcrumb">
+                        <li class="breadcrumb-item"><a href="{{ path('admin_dashboard') }}">{{ 'admin.breadcrumb.home'|trans }}</a></li>
+                        {% block breadcrumb_items %}{% endblock %}
+                    </ol>
+                </nav>
+            {% endblock %}
+
+            {# Flash Messages #}
+            {% for label, messages in app.flashes %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+                        {{ message|trans }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endfor %}
+
+            {# Page Header #}
+            {% block admin_header %}
+                <div class="admin-header">
+                    <h1>{% block admin_title %}{{ 'admin.title'|trans }}{% endblock %}</h1>
+                    {% block admin_subtitle %}{% endblock %}
+                </div>
+            {% endblock %}
+
+            {# Main Content #}
+            {% block admin_content %}
+                {# Content from child templates #}
+            {% endblock %}
+        </main>
+    </div>
+{% endblock %}

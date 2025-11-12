@@ -1,0 +1,280 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block admin_title %}{{ 'admin.dashboard.title'|trans }}{% endblock %}
+{% block admin_subtitle %}
+    <p class="text-muted">{{ 'admin.dashboard.subtitle'|trans }}</p>
+{% endblock %}
+
+{% block admin_content %}
+    {# System Alerts #}
+    {% if alerts is not empty %}
+        <div class="row mb-4">
+            <div class="col-12">
+                <h3 class="h5 mb-3">
+                    <i class="bi bi-exclamation-triangle-fill text-warning"></i>
+                    {{ 'admin.dashboard.alerts.title'|trans }}
+                </h3>
+                {% for alert in alerts %}
+                    <div class="alert alert-{{ alert.type }} alert-dismissible fade show" role="alert">
+                        <i class="bi {{ alert.icon }}"></i>
+                        <strong>{{ alert.message|trans }}</strong>
+                        {% if alert.count is defined %}
+                            - {{ alert.count }}
+                            {{ (alert.count == 1 ? 'admin.dashboard.alerts.item' : 'admin.dashboard.alerts.items')|trans }}
+                        {% endif %}
+                        {% if alert.action %}
+                            <a href="{{ alert.action }}" class="alert-link ms-2">{{ 'admin.dashboard.alerts.view'|trans }} →</a>
+                        {% endif %}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+
+    {# Quick Stats Cards #}
+    <div class="row g-3 mb-4">
+        {# Users Card #}
+        <div class="col-md-6 col-lg-3">
+            <div class="card border-primary h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div>
+                            <h6 class="card-subtitle text-muted mb-2">{{ 'admin.dashboard.stats.users'|trans }}</h6>
+                            <h2 class="card-title mb-0">{{ stats.users.total }}</h2>
+                        </div>
+                        <div class="bg-primary bg-opacity-10 p-3 rounded">
+                            <i class="bi bi-people-fill text-primary fs-3"></i>
+                        </div>
+                    </div>
+                    <div class="small text-muted">
+                        <i class="bi bi-check-circle text-success"></i> {{ stats.users.active }} {{ 'admin.dashboard.stats.active'|trans }}
+                        {% if stats.users.inactive > 0 %}
+                            <span class="ms-2">
+                                <i class="bi bi-x-circle text-danger"></i> {{ stats.users.inactive }} {{ 'admin.dashboard.stats.inactive'|trans }}
+                            </span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent border-top-0">
+                    <a href="{{ path('user_management_index') }}" class="btn btn-sm btn-outline-primary w-100">
+                        {{ 'admin.dashboard.stats.manage'|trans }} <i class="bi bi-arrow-right ms-1"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        {# Active Sessions Card #}
+        <div class="col-md-6 col-lg-3">
+            <div class="card border-success h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div>
+                            <h6 class="card-subtitle text-muted mb-2">{{ 'admin.dashboard.stats.active_sessions'|trans }}</h6>
+                            <h2 class="card-title mb-0">{{ stats.sessions.active_24h }}</h2>
+                        </div>
+                        <div class="bg-success bg-opacity-10 p-3 rounded">
+                            <i class="bi bi-clock-history text-success fs-3"></i>
+                        </div>
+                    </div>
+                    <div class="small text-muted">
+                        <i class="bi bi-calendar-week"></i> {{ 'admin.dashboard.stats.last_24h'|trans }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# Database Size Card #}
+        <div class="col-md-6 col-lg-3">
+            <div class="card border-info h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div>
+                            <h6 class="card-subtitle text-muted mb-2">{{ 'admin.dashboard.stats.database'|trans }}</h6>
+                            <h2 class="card-title mb-0">{{ stats.database.size_mb }}</h2>
+                        </div>
+                        <div class="bg-info bg-opacity-10 p-3 rounded">
+                            <i class="bi bi-database-fill text-info fs-3"></i>
+                        </div>
+                    </div>
+                    <div class="small text-muted">
+                        <i class="bi bi-file-earmark-binary"></i> MB
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# Modules Overview Card #}
+        <div class="col-md-6 col-lg-3">
+            <div class="card border-warning h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div>
+                            <h6 class="card-subtitle text-muted mb-2">{{ 'admin.dashboard.stats.total_records'|trans }}</h6>
+                            <h2 class="card-title mb-0">
+                                {{ stats.modules.assets + stats.modules.risks + stats.modules.controls + stats.modules.incidents }}
+                            </h2>
+                        </div>
+                        <div class="bg-warning bg-opacity-10 p-3 rounded">
+                            <i class="bi bi-layers-fill text-warning fs-3"></i>
+                        </div>
+                    </div>
+                    <div class="small text-muted">
+                        <i class="bi bi-check-lg"></i> {{ 'admin.dashboard.stats.across_modules'|trans }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        {# Module Statistics #}
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header bg-white">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-bar-chart-fill text-primary"></i>
+                        {{ 'admin.dashboard.modules.title'|trans }}
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>{{ 'admin.dashboard.modules.module'|trans }}</th>
+                                    <th class="text-end">{{ 'admin.dashboard.modules.records'|trans }}</th>
+                                    <th class="text-end">{{ 'admin.dashboard.modules.action'|trans }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><i class="bi bi-cpu text-primary"></i> {{ 'admin.dashboard.modules.assets'|trans }}</td>
+                                    <td class="text-end"><span class="badge bg-primary">{{ stats.modules.assets }}</span></td>
+                                    <td class="text-end">
+                                        <a href="{{ path('app_asset_index') }}" class="btn btn-sm btn-outline-secondary">{{ 'common.view'|trans }}</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><i class="bi bi-exclamation-triangle text-danger"></i> {{ 'admin.dashboard.modules.risks'|trans }}</td>
+                                    <td class="text-end"><span class="badge bg-danger">{{ stats.modules.risks }}</span></td>
+                                    <td class="text-end">
+                                        <a href="{{ path('app_risk_index') }}" class="btn btn-sm btn-outline-secondary">{{ 'common.view'|trans }}</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><i class="bi bi-shield-check text-success"></i> {{ 'admin.dashboard.modules.controls'|trans }}</td>
+                                    <td class="text-end"><span class="badge bg-success">{{ stats.modules.controls }}</span></td>
+                                    <td class="text-end">
+                                        <a href="{{ path('app_soa_index') }}" class="btn btn-sm btn-outline-secondary">{{ 'common.view'|trans }}</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><i class="bi bi-bug text-warning"></i> {{ 'admin.dashboard.modules.incidents'|trans }}</td>
+                                    <td class="text-end"><span class="badge bg-warning">{{ stats.modules.incidents }}</span></td>
+                                    <td class="text-end">
+                                        <a href="{{ path('app_incident_index') }}" class="btn btn-sm btn-outline-secondary">{{ 'common.view'|trans }}</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><i class="bi bi-clipboard-check text-info"></i> {{ 'admin.dashboard.modules.audits'|trans }}</td>
+                                    <td class="text-end"><span class="badge bg-info">{{ stats.modules.audits }}</span></td>
+                                    <td class="text-end">
+                                        <a href="{{ path('app_audit_index') }}" class="btn btn-sm btn-outline-secondary">{{ 'common.view'|trans }}</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><i class="bi bi-check-circle text-secondary"></i> {{ 'admin.dashboard.modules.compliance'|trans }}</td>
+                                    <td class="text-end"><span class="badge bg-secondary">{{ stats.modules.compliance_requirements }}</span></td>
+                                    <td class="text-end">
+                                        <a href="{{ path('app_compliance_index') }}" class="btn btn-sm btn-outline-secondary">{{ 'common.view'|trans }}</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><i class="bi bi-book text-dark"></i> {{ 'admin.dashboard.modules.trainings'|trans }}</td>
+                                    <td class="text-end"><span class="badge bg-dark">{{ stats.modules.trainings }}</span></td>
+                                    <td class="text-end">
+                                        <a href="{{ path('app_training_index') }}" class="btn btn-sm btn-outline-secondary">{{ 'common.view'|trans }}</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# Recent Activity & Quick Actions #}
+        <div class="col-lg-4">
+            {# Quick Actions #}
+            <div class="card mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-lightning-fill text-warning"></i>
+                        {{ 'admin.dashboard.quick_actions.title'|trans }}
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a href="{{ path('user_management_new') }}" class="btn btn-outline-primary">
+                            <i class="bi bi-person-plus"></i> {{ 'admin.dashboard.quick_actions.add_user'|trans }}
+                        </a>
+                        <a href="{{ path('role_management_new') }}" class="btn btn-outline-success">
+                            <i class="bi bi-shield-plus"></i> {{ 'admin.dashboard.quick_actions.add_role'|trans }}
+                        </a>
+                        <a href="{{ path('app_audit_log_index') }}" class="btn btn-outline-info">
+                            <i class="bi bi-journal-text"></i> {{ 'admin.dashboard.quick_actions.view_logs'|trans }}
+                        </a>
+                        <a href="{{ path('app_compliance_index') }}" class="btn btn-outline-secondary">
+                            <i class="bi bi-check-circle"></i> {{ 'admin.dashboard.quick_actions.manage_compliance'|trans }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            {# Recent Activity #}
+            <div class="card">
+                <div class="card-header bg-white">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-clock-history text-info"></i>
+                        {{ 'admin.dashboard.activity.title'|trans }}
+                    </h5>
+                </div>
+                <div class="card-body p-0">
+                    {% if recentActivity is empty %}
+                        <div class="p-3 text-center text-muted">
+                            <i class="bi bi-inbox fs-3"></i>
+                            <p class="mb-0 mt-2">{{ 'admin.dashboard.activity.empty'|trans }}</p>
+                        </div>
+                    {% else %}
+                        <div class="list-group list-group-flush">
+                            {% for log in recentActivity %}
+                                <div class="list-group-item">
+                                    <div class="d-flex w-100 justify-content-between align-items-start">
+                                        <div>
+                                            <h6 class="mb-1 small">{{ log.action|trans }}</h6>
+                                            <p class="mb-1 small text-muted">
+                                                {{ log.entityType }} #{{ log.entityId }}
+                                                {% if log.username %}
+                                                    <span class="badge bg-light text-dark">{{ log.username }}</span>
+                                                {% endif %}
+                                            </p>
+                                        </div>
+                                        <small class="text-muted text-nowrap ms-2">
+                                            {{ log.createdAt|date('d.m H:i') }}
+                                        </small>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="card-footer bg-transparent">
+                    <a href="{{ path('app_audit_log_index') }}" class="btn btn-sm btn-outline-secondary w-100">
+                        {{ 'admin.dashboard.activity.view_all'|trans }} <i class="bi bi-arrow-right ms-1"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
