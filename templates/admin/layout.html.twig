@@ -170,9 +170,9 @@
                     <div class="sidebar-section-title">{{ 'admin.section.system_config'|trans }}</div>
                     <ul>
                         <li>
-                            <a href="#" class="text-muted disabled">
+                            <a href="{{ path('admin_settings_index') }}"
+                               class="{% if app.request.get('_route') starts with 'admin_settings_' %}active{% endif %}">
                                 <i class="bi bi-gear"></i> {{ 'admin.nav.settings'|trans }}
-                                <span class="badge bg-secondary ms-auto" style="font-size: 0.65rem;">Soon</span>
                             </a>
                         </li>
                     </ul>
