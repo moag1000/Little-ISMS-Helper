@@ -59,12 +59,12 @@
 <div class="module-grid mb-4">
     {% for opportunity in reuseOpportunities %}
     <div class="card">
-        <h3 style="font-size: 1.1rem; margin-bottom: var(--spacing-sm);">{{ opportunity.name }}</h3>
-        <p style="color: var(--color-text-muted); margin-bottom: var(--spacing-md);">
+        <h3 class="fs-11-mb-sm">{{ opportunity.name }}</h3>
+        <p class="text-muted-mb-md">
             {{ opportunity.description }}
         </p>
 
-        <div class="stats-grid" style="grid-template-columns: 1fr 1fr;">
+        <div class="stats-grid grid-col-2">
             <div class="stat-item">
                 <strong>{{ opportunity.applicableFrameworks|length }}</strong>
                 <span>{{ 'compliance.field.frameworks'|trans }}</span>
@@ -86,8 +86,8 @@
         </div>
     </div>
     {% else %}
-    <div class="card" style="grid-column: 1 / -1;">
-        <p style="text-align: center; color: var(--color-text-muted);">
+    <div class="card grid-full">
+        <p class="text-center-muted">
             {{ 'compliance.message.no_opportunities'|trans }}
         </p>
     </div>
@@ -98,7 +98,7 @@
 <h2>{{ 'compliance.section.reuse_matrix'|trans }}</h2>
 
 <div class="card mb-4">
-    <p style="color: var(--color-text-muted); margin-bottom: var(--spacing-md);">
+    <p class="text-muted-mb-md">
         {{ 'compliance.description.reuse_matrix'|trans }}
     </p>
 
@@ -108,9 +108,9 @@
                 <tr>
                     <th>{{ 'compliance.field.data_element'|trans }}</th>
                     <th>{{ 'compliance.field.source'|trans }}</th>
-                    <th style="text-align: center;">{{ 'compliance.field.reuse_count'|trans }}</th>
+                    <th class="text-center">{{ 'compliance.field.reuse_count'|trans }}</th>
                     <th>{{ 'compliance.field.used_in_frameworks'|trans }}</th>
-                    <th style="text-align: center;">{{ 'compliance.field.quality_score'|trans }}</th>
+                    <th class="text-center">{{ 'compliance.field.quality_score'|trans }}</th>
                 </tr>
             </thead>
             <tbody>
@@ -118,27 +118,27 @@
                 <tr>
                     <td>
                         <strong>{{ element.name }}</strong>
-                        <br><small style="color: var(--color-text-muted);">{{ element.type }}</small>
+                        <br><small class="text-muted">{{ element.type }}</small>
                     </td>
                     <td>{{ element.source }}</td>
-                    <td style="text-align: center;">
+                    <td class="text-center">
                         <span class="badge badge-info">{{ element.reuseCount }}</span>
                     </td>
                     <td>
                         {% for framework in element.frameworks %}
-                            <span class="badge badge-secondary" style="margin-right: var(--spacing-xs);">
+                            <span class="badge badge-secondary mr-xs">
                                 {{ framework.name }}
                             </span>
                         {% endfor %}
                     </td>
-                    <td style="text-align: center;">
+                    <td class="text-center">
                         {% set qualityColor = element.qualityScore >= 80 ? 'success' : (element.qualityScore >= 60 ? 'warning' : 'danger') %}
                         <span class="badge badge-{{ qualityColor }}">{{ element.qualityScore }}%</span>
                     </td>
                 </tr>
                 {% else %}
                 <tr>
-                    <td colspan="5" style="text-align: center; padding: var(--spacing-xl); color: var(--color-text-muted);">
+                    <td colspan="5" class="text-center-p-xl-muted">
                         {{ 'compliance.message.no_data_elements'|trans }}
                     </td>
                 </tr>
@@ -156,26 +156,26 @@
         <thead>
             <tr>
                 <th>{{ 'compliance.field.framework'|trans }}</th>
-                <th style="text-align: center;">{{ 'compliance.field.total_requirements'|trans }}</th>
-                <th style="text-align: center;">{{ 'compliance.field.reused_data'|trans }}</th>
-                <th style="text-align: center;">{{ 'compliance.field.new_data_needed'|trans }}</th>
-                <th style="text-align: center;">{{ 'compliance.field.coverage'|trans }}</th>
+                <th class="text-center">{{ 'compliance.field.total_requirements'|trans }}</th>
+                <th class="text-center">{{ 'compliance.field.reused_data'|trans }}</th>
+                <th class="text-center">{{ 'compliance.field.new_data_needed'|trans }}</th>
+                <th class="text-center">{{ 'compliance.field.coverage'|trans }}</th>
             </tr>
         </thead>
         <tbody>
             {% for framework in frameworkCoverage %}
             <tr>
                 <td><strong>{{ framework.name }}</strong></td>
-                <td style="text-align: center;">{{ framework.totalRequirements }}</td>
-                <td style="text-align: center;">
+                <td class="text-center">{{ framework.totalRequirements }}</td>
+                <td class="text-center">
                     <span class="badge badge-success">{{ framework.reusedData }}</span>
                 </td>
-                <td style="text-align: center;">
+                <td class="text-center">
                     <span class="badge badge-warning">{{ framework.newDataNeeded }}</span>
                 </td>
                 <td>
                     {% set coverage = (framework.reusedData / framework.totalRequirements * 100)|round %}
-                    <div class="progress" style="height: 20px; width: 100px; margin: 0 auto;">
+                    <div class="progress progress-compact">
                         <div class="progress-bar" style="width: {{ coverage }}%; font-size: 0.75rem;">
                             {{ coverage }}%
                         </div>
@@ -184,7 +184,7 @@
             </tr>
             {% else %}
             <tr>
-                <td colspan="5" style="text-align: center; padding: var(--spacing-xl); color: var(--color-text-muted);">
+                <td colspan="5" class="text-center-p-xl-muted">
                     {{ 'compliance.message.no_frameworks'|trans }}
                 </td>
             </tr>
