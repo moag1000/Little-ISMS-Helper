@@ -201,7 +201,7 @@ class SupplierTest extends TestCase
     {
         $supplier = new Supplier();
         $document = new Document();
-        $document->setTitle('Service Level Agreement');
+        $document->setOriginalFilename('Service Level Agreement.pdf');
 
         $supplier->addDocument($document);
         $this->assertCount(1, $supplier->getDocuments());
