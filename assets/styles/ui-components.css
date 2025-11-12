@@ -2143,6 +2143,15 @@
     margin-top: 0.5rem;
 }
 
+/* Asset Index Modern Utilities */
+.my-2rem {
+    margin: 2rem 0;
+}
+
+.progress-h-8 {
+    height: 8px;
+}
+
 /* ====================
    Responsive
    ==================== */
