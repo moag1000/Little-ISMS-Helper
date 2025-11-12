@@ -1795,6 +1795,86 @@
     border-bottom: 1px solid var(--color-border);
 }
 
+/* Skeleton Component Utilities */
+/* Width utilities */
+.w-30 {
+    width: 30%;
+}
+
+.w-40 {
+    width: 40%;
+}
+
+.w-50 {
+    width: 50%;
+}
+
+.w-60 {
+    width: 60%;
+}
+
+.w-70 {
+    width: 70%;
+}
+
+.w-80 {
+    width: 80%;
+}
+
+.w-100 {
+    width: 100%;
+}
+
+.w-80px {
+    width: 80px;
+}
+
+/* Height utilities */
+.h-32px {
+    height: 32px;
+}
+
+.h-40px {
+    height: 40px;
+}
+
+/* Spacing utilities */
+.mb-8px {
+    margin-bottom: 8px;
+}
+
+.mb-24px {
+    margin-bottom: 24px;
+}
+
+.mb-lg {
+    margin-bottom: var(--spacing-lg);
+}
+
+.mt-md {
+    margin-top: var(--spacing-md);
+}
+
+.mt-xl {
+    margin-top: var(--spacing-xl);
+}
+
+/* Width and height combined */
+.w-50-h-32 {
+    width: 50%;
+    height: 32px;
+}
+
+.w-30-mb-8 {
+    width: 30%;
+    margin-bottom: 8px;
+}
+
+.w-100-h-40 {
+    width: 100%;
+    height: 40px;
+}
+
 /* ====================
    Responsive
    ==================== */
