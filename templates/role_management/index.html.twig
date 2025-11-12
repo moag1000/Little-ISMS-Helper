@@ -61,10 +61,10 @@
             <tr>
                 <th>{{ 'role_management.field.name'|trans }}</th>
                 <th>{{ 'role_management.field.description'|trans }}</th>
-                <th style="text-align: center;">{{ 'role_management.field.permissions'|trans }}</th>
-                <th style="text-align: center;">{{ 'role_management.field.users'|trans }}</th>
-                <th style="text-align: center;">{{ 'role_management.field.active'|trans }}</th>
-                <th style="text-align: center;">{{ 'common.actions'|trans }}</th>
+                <th class="text-center">{{ 'role_management.field.permissions'|trans }}</th>
+                <th class="text-center">{{ 'role_management.field.users'|trans }}</th>
+                <th class="text-center">{{ 'role_management.field.active'|trans }}</th>
+                <th class="text-center">{{ 'common.actions'|trans }}</th>
             </tr>
         </thead>
         <tbody>
@@ -73,31 +73,31 @@
                 <td>
                     <strong>{{ role.name }}</strong>
                     {% if role.systemRole %}
-                        <span class="badge badge-info" style="margin-left: var(--spacing-xs);">
+                        <span class="badge badge-info ml-xs">
                             {{ 'role_management.badge.system'|trans }}
                         </span>
                     {% endif %}
                 </td>
                 <td>
-                    <small style="color: var(--color-text-muted);">
+                    <small class="text-muted-color">
                         {{ role.description|default('-') }}
                     </small>
                 </td>
-                <td style="text-align: center;">
+                <td class="text-center">
                     <span class="badge badge-secondary">{{ role.permissions|length }}</span>
                 </td>
-                <td style="text-align: center;">
+                <td class="text-center">
                     <span class="badge badge-info">{{ role.users|length }}</span>
                 </td>
-                <td style="text-align: center;">
+                <td class="text-center">
                     {% if role.active %}
                         <span class="badge badge-success">✓</span>
                     {% else %}
                         <span class="badge badge-danger">✗</span>
                     {% endif %}
                 </td>
-                <td style="text-align: center;">
-                    <a href="{{ path('app_role_management_show', {id: role.id}) }}" class="btn btn-sm" style="margin-right: 0.25rem;">
+                <td class="text-center">
+                    <a href="{{ path('app_role_management_show', {id: role.id}) }}" class="btn btn-sm mr-025">
                         👁 {{ 'common.view'|trans }}
                     </a>
                     <a href="{{ path('app_role_management_edit', {id: role.id}) }}" class="btn btn-sm btn-secondary">
@@ -107,7 +107,7 @@
             </tr>
             {% else %}
             <tr>
-                <td colspan="6" style="text-align: center; padding: var(--spacing-xl); color: var(--color-text-muted);">
+                <td colspan="6" class="text-center-p-xl-muted">
                     {{ 'role_management.message.no_roles'|trans }}
                 </td>
             </tr>
