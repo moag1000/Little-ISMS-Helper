@@ -41,6 +41,131 @@ remember_me: Angemeldet bleiben
 login_title: Anmeldung
 welcome_back: Willkommen zurück
 home: Startseite
+# Phase 6L-A: Admin Panel Translation Keys
+admin:
+  title: Administration
+  breadcrumb:
+    home: Admin Dashboard
+  section:
+    user_access: Benutzer & Zugriff
+    system_config: Systemkonfiguration
+    modules: Module & Features
+    monitoring: Überwachung & Logs
+    navigation: Navigation
+  nav:
+    users: Benutzer
+    roles: Rollen
+    settings: Einstellungen
+    compliance: Compliance-Frameworks
+    audit_log: Audit Log
+    back_to_app: Zurück zur Anwendung
+  dashboard:
+    title: Admin Dashboard
+    subtitle: Zentrale Verwaltung und Systemübersicht
+    alerts:
+      title: Systemhinweise
+      item: Element
+      items: Elemente
+      view: Ansehen
+    stats:
+      users: Benutzer
+      active: Aktiv
+      inactive: Inaktiv
+      manage: Verwalten
+      active_sessions: Aktive Sitzungen
+      last_24h: Letzte 24 Stunden
+      database: Datenbankgröße
+      total_records: Gesamt-Datensätze
+      across_modules: Über alle Module
+    modules:
+      title: Modul-Statistiken
+      module: Modul
+      records: Datensätze
+      action: Aktion
+      assets: Assets
+      risks: Risiken
+      controls: Maßnahmen
+      incidents: Vorfälle
+      audits: Audits
+      compliance: Compliance
+      trainings: Schulungen
+    quick_actions:
+      title: Schnellaktionen
+      add_user: Benutzer hinzufügen
+      add_role: Rolle hinzufügen
+      view_logs: Logs anzeigen
+      manage_compliance: Compliance verwalten
+    activity:
+      title: Letzte Aktivitäten
+      empty: Keine aktuellen Aktivitäten
+      view_all: Alle Aktivitäten anzeigen
+  alert:
+    inactive_users: Inaktive Benutzer
+    unverified_users: Nicht verifizierte Benutzer
+    large_database: Große Datenbank (GB)
+  # Phase 6L-B: System Settings Translation Keys
+  settings:
+    title: Systemeinstellungen
+    subtitle: Konfiguration und Verwaltung von Systemeinstellungen
+    configure: Konfigurieren
+    saved: Einstellungen erfolgreich gespeichert
+    help: Hilfe
+    info: Information
+    info_title: Hinweis
+    info_text: Änderungen an den Systemeinstellungen werden sofort wirksam und in der Datenbank gespeichert.
+    application:
+      title: Anwendungseinstellungen
+      description: Sprache, Zeitzone, Anzeigeoptionen
+      locale_settings: Spracheinstellungen
+      display_settings: Anzeigeeinstellungen
+      locale: Standardsprache
+      default_locale: Standardsprache
+      default_locale_help: Die Standardsprache für neue Benutzer und das System
+      supported_locales: Unterstützte Sprachen
+      supported_locales_help: Welche Sprachen können Benutzer auswählen?
+      timezone: Zeitzone
+      timezone_help: Standardzeitzone für Datums- und Zeitanzeigen
+      items_per_page: Einträge pro Seite
+      items_per_page_help: Anzahl der Einträge in Listen (10-100)
+      date_format: Datumsformat
+      date_format_help: Format für Datumsanzeigen
+      datetime_format: Datum/Zeit-Format
+      datetime_format_help: Format für Datum/Zeit-Anzeigen
+      help_text: Diese Einstellungen beeinflussen die Darstellung der Anwendung für alle Benutzer.
+    security:
+      title: Sicherheitseinstellungen
+      description: Sitzungen, Passwörter, Authentifizierung
+      session_settings: Sitzungseinstellungen
+      password_settings: Passworteinstellungen
+      auth_settings: Authentifizierungseinstellungen
+      session_lifetime: Sitzungsdauer
+      session_lifetime_help: Maximale Dauer einer Benutzersitzung in Sekunden (5-1440 Min)
+      remember_me_lifetime: '"Angemeldet bleiben"-Dauer'
+      remember_me_help: Dauer für "Angemeldet bleiben" in Sekunden
+      password_min_length: Minimale Passwortlänge
+      password_min_length_help: Mindestanzahl Zeichen für Passwörter (6-20)
+      max_login_attempts: Max. Anmeldeversuche
+      max_login_attempts_help: Anzahl fehlgeschlagener Anmeldeversuche vor Sperre
+      lockout_duration: Sperrdauer
+      lockout_duration_help: Dauer der Kontosperre nach zu vielen Fehlversuchen
+      require_2fa: Zwei-Faktor-Authentifizierung erzwingen
+      require_2fa_help: Alle Benutzer müssen 2FA aktivieren
+      warning: Änderungen an Sicherheitseinstellungen können sich auf alle Benutzer auswirken. Bitte mit Vorsicht vorgehen.
+    features:
+      title: Feature-Flags
+      description: Experimentelle Features ein-/ausschalten
+      intro: Aktivieren oder deaktivieren Sie experimentelle Features für das gesamte System.
+      dark_mode: Dark Mode
+      dark_mode_help: Ermöglicht Benutzern den Wechsel zum dunklen Design
+      global_search: Globale Suche
+      global_search_help: Suchfunktion über alle Module hinweg
+      quick_view: Quick View
+      quick_view_help: Schnellansicht-Modals für Datensätze
+      notifications: Benachrichtigungen
+      notifications_help: System-Benachrichtigungen und Alerts
+      audit_log: Audit-Protokollierung
+      audit_log_help: Automatische Protokollierung aller Änderungen
+      info_text: Feature-Flags erlauben es, neue Funktionen schrittweise einzuführen oder zu testen.
 dashboard:
   success:
     settings_imported: Dashboard-Einstellungen erfolgreich importiert!
