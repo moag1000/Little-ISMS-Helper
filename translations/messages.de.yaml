@@ -2154,3 +2154,119 @@ tenant:
     settings_text: Mandantenspezifische Einstellungen im JSON-Format können individuelle Konfigurationen wie Branding, Features oder Limits enthalten.
   settings:
     example_title: Beispiel JSON-Struktur
+
+# Phase 6L-D: Extended User & Access Management
+permission:
+  title: Berechtigungen
+  list: Berechtigungsliste
+  show: Berechtigungsdetails
+  category: Kategorie
+  action: Aktion
+  description: Beschreibung
+  roles_using: Rollen mit dieser Berechtigung
+  affected_users: Betroffene Benutzer
+  system_permission: System-Berechtigung
+  statistics:
+    total: Gesamt
+    system: System
+    custom: Benutzerdefiniert
+    categories: Kategorien
+
+session:
+  title: Sitzungen
+  list: Aktive Sitzungen
+  show: Sitzungsdetails
+  user_name: Benutzername
+  ip_address: IP-Adresse
+  user_agent: User Agent
+  last_activity: Letzte Aktivität
+  session_start: Sitzungsbeginn
+  terminate: Sitzung beenden
+  statistics:
+    total: Gesamt aktive Sitzungen
+    today: Heute
+    hours_filter: Zeitfilter (Stunden)
+  activity_timeline: Aktivitätsverlauf
+  unique_ips: Eindeutige IP-Adressen
+  unique_devices: Eindeutige Geräte
+  error:
+    invalid_token: Ungültiges CSRF-Token
+  info:
+    termination_not_implemented: Sitzungsbeendigung erfordert zusätzliche Konfiguration (Datenbank-Session-Speicherung)
+
+user:
+  error:
+    no_users_selected: Keine Benutzer ausgewählt
+    no_file_uploaded: Keine Datei hochgeladen
+  success:
+    bulk_action_completed: '%count% Benutzer erfolgreich verarbeitet (%action%)'
+    imported: '%count% Benutzer erfolgreich importiert'
+    activated: Benutzer erfolgreich aktiviert
+    deactivated: Benutzer erfolgreich deaktiviert
+  action:
+    export: Exportieren
+    import: Importieren
+    bulk_actions: Massen-Aktionen
+    activate: Aktivieren
+    deactivate: Deaktivieren
+    assign_role: Rolle zuweisen
+    view_activity: Aktivität anzeigen
+    view_mfa: MFA verwalten
+    impersonate: Benutzer imitieren
+  import:
+    title: Benutzer importieren
+    description: Laden Sie eine CSV-Datei hoch, um mehrere Benutzer zu importieren
+    format: 'Erwartetes Format: email, first_name, last_name, password, is_active, roles'
+    download_template: Vorlage herunterladen
+  activity:
+    title: Benutzeraktivität
+    total: Gesamtaktivitäten
+    by_date: Nach Datum
+    by_action: Nach Aktion
+
+mfa:
+  title: Zwei-Faktor-Authentifizierung
+  tokens: MFA-Token
+  enabled: MFA aktiviert
+  disabled: MFA deaktiviert
+  token_type: Token-Typ
+  device_name: Gerätename
+  enrolled_at: Registriert am
+  last_used: Zuletzt verwendet
+  usage_count: Verwendungsanzahl
+  is_active: Aktiv
+  is_primary: Primär
+  action:
+    reset: Token zurücksetzen
+  error:
+    token_not_found: MFA-Token nicht gefunden
+  success:
+    token_reset: MFA-Token erfolgreich zurückgesetzt
+  statistics:
+    active_tokens: Aktive Token
+    by_type: Nach Typ
+
+role:
+  success:
+    created_from_template: Rolle '%role%' erfolgreich aus Vorlage erstellt
+  action:
+    compare: Rollen vergleichen
+    templates: Vorlagen
+  compare:
+    title: Rollenvergleich
+    select_roles: Rollen zum Vergleich auswählen
+    permission_matrix: Berechtigungsmatrix
+    has_permission: Hat Berechtigung
+    no_permission: Keine Berechtigung
+  templates:
+    title: Rollenvorlagen
+    description: Erstellen Sie eine neue Rolle basierend auf einer Vorlage
+    select: Vorlage auswählen
+    apply: Vorlage anwenden
+    custom_name: Benutzerdefinierter Name (optional)
+    auditor: Prüfer
+    risk_manager: Risikomanager
+    compliance_officer: Compliance Officer
+    incident_manager: Incident Manager
+    asset_manager: Asset Manager
+    readonly: Nur-Lese-Benutzer

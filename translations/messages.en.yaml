@@ -2149,3 +2149,119 @@ tenant:
     settings_text: Tenant-specific settings in JSON format can contain individual configurations such as branding, features, or limits.
   settings:
     example_title: Example JSON Structure
+
+# Phase 6L-D: Extended User & Access Management
+permission:
+  title: Permissions
+  list: Permission List
+  show: Permission Details
+  category: Category
+  action: Action
+  description: Description
+  roles_using: Roles using this permission
+  affected_users: Affected Users
+  system_permission: System Permission
+  statistics:
+    total: Total
+    system: System
+    custom: Custom
+    categories: Categories
+
+session:
+  title: Sessions
+  list: Active Sessions
+  show: Session Details
+  user_name: Username
+  ip_address: IP Address
+  user_agent: User Agent
+  last_activity: Last Activity
+  session_start: Session Start
+  terminate: Terminate Session
+  statistics:
+    total: Total Active Sessions
+    today: Today
+    hours_filter: Time Filter (Hours)
+  activity_timeline: Activity Timeline
+  unique_ips: Unique IP Addresses
+  unique_devices: Unique Devices
+  error:
+    invalid_token: Invalid CSRF token
+  info:
+    termination_not_implemented: Session termination requires additional configuration (database session storage)
+
+user:
+  error:
+    no_users_selected: No users selected
+    no_file_uploaded: No file uploaded
+  success:
+    bulk_action_completed: '%count% users successfully processed (%action%)'
+    imported: '%count% users successfully imported'
+    activated: User successfully activated
+    deactivated: User successfully deactivated
+  action:
+    export: Export
+    import: Import
+    bulk_actions: Bulk Actions
+    activate: Activate
+    deactivate: Deactivate
+    assign_role: Assign Role
+    view_activity: View Activity
+    view_mfa: Manage MFA
+    impersonate: Impersonate User
+  import:
+    title: Import Users
+    description: Upload a CSV file to import multiple users
+    format: 'Expected format: email, first_name, last_name, password, is_active, roles'
+    download_template: Download Template
+  activity:
+    title: User Activity
+    total: Total Activities
+    by_date: By Date
+    by_action: By Action
+
+mfa:
+  title: Two-Factor Authentication
+  tokens: MFA Tokens
+  enabled: MFA Enabled
+  disabled: MFA Disabled
+  token_type: Token Type
+  device_name: Device Name
+  enrolled_at: Enrolled At
+  last_used: Last Used
+  usage_count: Usage Count
+  is_active: Active
+  is_primary: Primary
+  action:
+    reset: Reset Token
+  error:
+    token_not_found: MFA token not found
+  success:
+    token_reset: MFA token successfully reset
+  statistics:
+    active_tokens: Active Tokens
+    by_type: By Type
+
+role:
+  success:
+    created_from_template: Role '%role%' successfully created from template
+  action:
+    compare: Compare Roles
+    templates: Templates
+  compare:
+    title: Role Comparison
+    select_roles: Select roles to compare
+    permission_matrix: Permission Matrix
+    has_permission: Has Permission
+    no_permission: No Permission
+  templates:
+    title: Role Templates
+    description: Create a new role based on a template
+    select: Select Template
+    apply: Apply Template
+    custom_name: Custom Name (optional)
+    auditor: Auditor
+    risk_manager: Risk Manager
+    compliance_officer: Compliance Officer
+    incident_manager: Incident Manager
+    asset_manager: Asset Manager
+    readonly: Read-Only User
