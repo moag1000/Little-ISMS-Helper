@@ -33,20 +33,20 @@
 
     <div class="form-group">
         {{ form_label(form.active) }}
-        <div style="margin-top: var(--spacing-xs);">
+        <div class="mt-xs">
             {{ form_widget(form.active) }}
         </div>
         {{ form_errors(form.active) }}
     </div>
 
     {% if role.systemRole %}
-    <div class="info-box" style="background: var(--color-warning-light); border-left: 4px solid var(--color-warning);">
+    <div class="info-box alert-warning-border">
         <p><strong>{{ 'role_management.warning.system_role'|trans }}</strong></p>
-        <p style="margin-top: var(--spacing-xs);">{{ 'role_management.warning.system_role_desc'|trans }}</p>
+        <p class="mt-xs">{{ 'role_management.warning.system_role_desc'|trans }}</p>
     </div>
     {% endif %}
 
-    <h3 style="margin-top: var(--spacing-lg);">{{ 'role_management.section.permissions'|trans }}</h3>
+    <h3 class="h3-mt-lg">{{ 'role_management.section.permissions'|trans }}</h3>
 
     <div class="form-group">
         {{ form_label(form.permissions) }}
