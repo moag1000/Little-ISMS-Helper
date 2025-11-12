@@ -27,7 +27,7 @@
         {{ form_label(form.locationType) }}
         {{ form_widget(form.locationType, {'attr': {'class': 'form-select'}}) }}
         {{ form_errors(form.locationType) }}
-        <small style="color: var(--color-text-muted); margin-top: var(--spacing-xs); display: block;">
+        <small class="small-muted-block">
             {{ 'location.help.type'|trans }}
         </small>
     </div>
@@ -36,7 +36,7 @@
         {{ form_label(form.code) }}
         {{ form_widget(form.code, {'attr': {'class': 'form-control', 'placeholder': 'location.placeholder.code'|trans}}) }}
         {{ form_errors(form.code) }}
-        <small style="color: var(--color-text-muted); margin-top: var(--spacing-xs); display: block;">
+        <small class="small-muted-block">
             {{ 'location.help.code'|trans }}
         </small>
     </div>
@@ -47,7 +47,7 @@
         {{ form_errors(form.description) }}
     </div>
 
-    <h3 style="margin-top: var(--spacing-lg);">{{ 'location.section.address'|trans }}</h3>
+    <h3 class="h3-mt-lg">{{ 'location.section.address'|trans }}</h3>
 
     <div class="form-group">
         {{ form_label(form.address) }}
@@ -73,18 +73,18 @@
         {{ form_errors(form.country) }}
     </div>
 
-    <h3 style="margin-top: var(--spacing-lg);">{{ 'location.section.hierarchy'|trans }}</h3>
+    <h3 class="h3-mt-lg">{{ 'location.section.hierarchy'|trans }}</h3>
 
     <div class="form-group">
         {{ form_label(form.parentLocation) }}
         {{ form_widget(form.parentLocation, {'attr': {'class': 'form-select'}}) }}
         {{ form_errors(form.parentLocation) }}
-        <small style="color: var(--color-text-muted); margin-top: var(--spacing-xs); display: block;">
+        <small class="small-muted-block">
             {{ 'location.help.parent'|trans }}
         </small>
     </div>
 
-    <h3 style="margin-top: var(--spacing-lg);">{{ 'location.section.security'|trans }}</h3>
+    <h3 class="h3-mt-lg">{{ 'location.section.security'|trans }}</h3>
 
     <div class="form-group">
         {{ form_label(form.securityLevel) }}
@@ -93,8 +93,8 @@
     </div>
 
     <div class="form-group">
-        <label class="form-label" style="display: flex; align-items: center; gap: var(--spacing-sm); cursor: pointer;">
-            {{ form_widget(form.requiresBadgeAccess, {'attr': {'style': 'width: 20px; height: 20px;'}}) }}
+        <label class="form-label label-checkbox">
+            {{ form_widget(form.requiresBadgeAccess, {'attr': {'class': 'checkbox-lg'}}) }}
             <span>{{ form_label(form.requiresBadgeAccess) }}</span>
         </label>
         {{ form_errors(form.requiresBadgeAccess) }}

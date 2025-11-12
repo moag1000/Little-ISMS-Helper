@@ -97,8 +97,8 @@
             <div class="row">
                 <div class="col-md-4">
                     <h6>Reputationsschaden</h6>
-                    <div class="progress" style="height: 30px;">
-                        <div class="progress-bar bg-danger" role="progressbar" 
+                    <div class="progress progress-h-30">
+                        <div class="progress-bar bg-danger" role="progressbar"
                              style="width: {{ (bia_data.reputational_impact / 5 * 100) }}%">
                             {{ bia_data.reputational_impact }}/5
                         </div>
@@ -106,8 +106,8 @@
                 </div>
                 <div class="col-md-4">
                     <h6>Regulatorischer Impact</h6>
-                    <div class="progress" style="height: 30px;">
-                        <div class="progress-bar bg-warning" role="progressbar" 
+                    <div class="progress progress-h-30">
+                        <div class="progress-bar bg-warning" role="progressbar"
                              style="width: {{ (bia_data.regulatory_impact / 5 * 100) }}%">
                             {{ bia_data.regulatory_impact }}/5
                         </div>
@@ -115,8 +115,8 @@
                 </div>
                 <div class="col-md-4">
                     <h6>Operationaler Impact</h6>
-                    <div class="progress" style="height: 30px;">
-                        <div class="progress-bar bg-info" role="progressbar" 
+                    <div class="progress progress-h-30">
+                        <div class="progress-bar bg-info" role="progressbar"
                              style="width: {{ (bia_data.operational_impact / 5 * 100) }}%">
                             {{ bia_data.operational_impact }}/5
                         </div>
@@ -125,9 +125,9 @@
             </div>
             <div class="mt-3">
                 <h6>Aggregierter Business Impact Score</h6>
-                <div class="progress" style="height: 40px;">
-                    <div class="progress-bar {% if bia_data.business_impact_score >= 4 %}bg-danger{% elseif bia_data.business_impact_score >= 3 %}bg-warning{% else %}bg-success{% endif %}" 
-                         role="progressbar" 
+                <div class="progress progress-h-40">
+                    <div class="progress-bar {% if bia_data.business_impact_score >= 4 %}bg-danger{% elseif bia_data.business_impact_score >= 3 %}bg-warning{% else %}bg-success{% endif %}"
+                         role="progressbar"
                          style="width: {{ (bia_data.business_impact_score / 5 * 100) }}%">
                         <strong>{{ bia_data.business_impact_score }}/5</strong>
                     </div>
