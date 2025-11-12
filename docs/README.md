@@ -15,6 +15,11 @@ docs/
 ├── migration/         # Datenbank-Migrationen
 ├── ui-ux/            # UI/UX Dokumentation
 └── reports/          # Qualitäts- & Audit-Reports
+
+scripts/               # Automatisierte Scripts & Tools
+├── setup/             # Database setup & validation scripts
+├── quality/           # Quality & translation verification scripts
+└── tools/             # License reporting & utilities
 ```
 
 ---
@@ -41,6 +46,33 @@ Dokumentation für Installation, Konfiguration und Deployment.
 |----------|--------------|
 | [DEPLOYMENT_WIZARD.md](deployment/DEPLOYMENT_WIZARD.md) | Schritt-für-Schritt Produktionssetup mit Web-UI |
 | [DEPLOYMENT_PLESK.md](deployment/DEPLOYMENT_PLESK.md) | Strato/Plesk Deployment & "Primary script unknown" Fix |
+
+### scripts/
+
+Automatisierte Scripts für Setup, Validierung und Quality Assurance:
+
+**Setup & Datenbank-Verwaltung** (`scripts/setup/`)
+| Script | Beschreibung |
+|--------|--------------|
+| `validate-setup.sh` | Validierung von Voraussetzungen (18+ Checks) |
+| `create-database.sh` | Sichere Datenbank-Erstellung mit interaktiver Einrichtung |
+| `reset-database.sh` | Datenbank-Reset nach Migration-Fehlern |
+| `test-setup.sh` | Validierungs-Tests für Installation (25 Tests) |
+
+**Qualität & Translation** (`scripts/quality/`)
+| Script | Beschreibung |
+|--------|--------------|
+| `check_translations.py` | Validierung der Translations-Konsistenz (DE/EN) |
+| `verify_translations_v2.py` | Erweiterte Translation-Verifikation |
+
+**Tools & Compliance** (`scripts/tools/`)
+| Script | Beschreibung |
+|--------|--------------|
+| `license-report.sh` | Automatische Lizenz-Compliance-Berichte |
+
+📖 Detaillierte Dokumentation: [setup/SETUP_TOOLS.md](setup/SETUP_TOOLS.md)
+
+> **Note:** Backward-compatible Wrapper-Scripts sind im Root-Verzeichnis verfügbar (z.B. `./validate-setup.sh`, `./reset-database.sh`, `./license-report.sh`)
 
 ---
 

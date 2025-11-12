@@ -180,11 +180,11 @@ All verification checks have passed successfully. The translation files are:
 
 ## Verification Script
 
-The verification was performed using: `verify_translations_v2.py`
+The verification was performed using: `scripts/quality/verify_translations_v2.py`
 
 To re-run verification at any time:
 ```bash
-python3 verify_translations_v2.py
+python3 scripts/quality/verify_translations_v2.py
 ```
 
 ---
