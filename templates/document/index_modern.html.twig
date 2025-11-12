@@ -83,12 +83,12 @@
             <div class="row g-4">
                 {# PDF #}
                 <div class="col-md-3">
-                    <div class="type-card text-center p-4" style="background: rgba(231, 76, 60, 0.1); border-radius: var(--border-radius);">
-                        <div class="type-icon mb-3 fs-25" style="color: #e74c3c;">
+                    <div class="type-card text-center p-4 bg-pdf-light">
+                        <div class="type-icon mb-3 fs-25 color-pdf">
                             <i class="bi bi-file-pdf"></i>
                         </div>
                         <div class="type-label text-muted mb-2">{{ 'document.type.pdf'|trans }}</div>
-                        <div class="type-count fs-2 fw-700" style="color: #e74c3c;">
+                        <div class="type-count fs-2 fw-700 color-pdf">
                             {{ pdfDocs }}
                         </div>
                     </div>
@@ -96,12 +96,12 @@
 
                 {# Images #}
                 <div class="col-md-3">
-                    <div class="type-card text-center p-4" style="background: rgba(52, 152, 219, 0.1); border-radius: var(--border-radius);">
-                        <div class="type-icon mb-3 fs-25" style="color: #3498db;">
+                    <div class="type-card text-center p-4 bg-image-light">
+                        <div class="type-icon mb-3 fs-25 color-image">
                             <i class="bi bi-image"></i>
                         </div>
                         <div class="type-label text-muted mb-2">{{ 'document.type.images'|trans }}</div>
-                        <div class="type-count fs-2 fw-700" style="color: #3498db;">
+                        <div class="type-count fs-2 fw-700 color-image">
                             {{ imageDocs }}
                         </div>
                     </div>
@@ -109,12 +109,12 @@
 
                 {# Excel/Spreadsheets #}
                 <div class="col-md-3">
-                    <div class="type-card text-center p-4" style="background: rgba(39, 174, 96, 0.1); border-radius: var(--border-radius);">
-                        <div class="type-icon mb-3 fs-25" style="color: #27ae60;">
+                    <div class="type-card text-center p-4 bg-excel-light">
+                        <div class="type-icon mb-3 fs-25 color-excel">
                             <i class="bi bi-file-earmark-spreadsheet"></i>
                         </div>
                         <div class="type-label text-muted mb-2">{{ 'document.type.tables'|trans }}</div>
-                        <div class="type-count fs-2 fw-700" style="color: #27ae60;">
+                        <div class="type-count fs-2 fw-700 color-excel">
                             {{ excelDocs }}
                         </div>
                     </div>
@@ -122,12 +122,12 @@
 
                 {# Other #}
                 <div class="col-md-3">
-                    <div class="type-card text-center p-4" style="background: rgba(149, 165, 166, 0.1); border-radius: var(--border-radius);">
-                        <div class="type-icon mb-3 fs-25" style="color: #95a5a6;">
+                    <div class="type-card text-center p-4 bg-other-light">
+                        <div class="type-icon mb-3 fs-25 color-other">
                             <i class="bi bi-file-earmark"></i>
                         </div>
                         <div class="type-label text-muted mb-2">{{ 'document.type.other'|trans }}</div>
-                        <div class="type-count fs-2 fw-700" style="color: #95a5a6;">
+                        <div class="type-count fs-2 fw-700 color-other">
                             {{ total - pdfDocs - imageDocs - excelDocs }}
                         </div>
                     </div>
@@ -169,7 +169,7 @@
             {% if documents|length > 0 %}
             <div class="table-responsive">
                 <table class="table table-hover table-bulk-selectable mb-0">
-                    <thead style="background: var(--color-bg); position: sticky; top: 0; z-index: 10;">
+                    <thead class="thead-sticky">
                         <tr>
                             <th class="bulk-select-column">
                                 <input type="checkbox"
@@ -264,7 +264,7 @@
 
             {# No Results Message #}
             <div id="noResults" class="text-center p-5 d-none">
-                <i class="bi bi-search" style="font-size: 3rem; color: var(--color-text-muted); opacity: 0.5;"></i>
+                <i class="bi bi-search icon-search-empty"></i>
                 <p class="text-muted mt-3">{{ 'document.message.no_results'|trans }}</p>
             </div>
 
