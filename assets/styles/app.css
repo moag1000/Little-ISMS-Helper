@@ -140,91 +140,228 @@ body {
                  0 0 5px rgba(236, 72, 153, 0.2);
 }
 
-/* Navigation - Cyberpunk Style with Dark Mode Support */
-.nav {
-    background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
-    box-shadow: 0 2px 8px rgba(6, 182, 212, 0.2);
-    border-top: 1px solid rgba(6, 182, 212, 0.3);
+/* Mobile Menu Button - Hidden on Desktop */
+.mobile-menu-btn {
+    display: none;
+    flex-direction: column;
+    justify-content: space-around;
+    width: 30px;
+    height: 24px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    z-index: 1001;
+    position: relative;
 }
 
-/* Navigation sticky only on desktop */
-@media (min-width: 769px) {
-    .nav {
-        position: sticky;
-        top: 0;
-        z-index: calc(var(--z-sticky) - 1);
+.mobile-menu-btn span {
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, #06b6d4, #ec4899);
+    border-radius: 2px;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 5px rgba(6, 182, 212, 0.5);
+}
+
+/* Hamburger Animation */
+.mobile-menu-btn.active span:nth-child(1) {
+    transform: rotate(45deg) translate(7px, 7px);
+}
+
+.mobile-menu-btn.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.mobile-menu-btn.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(7px, -7px);
+}
+
+/* Mobile only */
+@media (max-width: 768px) {
+    .mobile-menu-btn {
+        display: flex;
+        margin-right: var(--spacing-md);
     }
 }
 
-[data-theme="dark"] .nav {
-    background: linear-gradient(180deg, var(--bg-tertiary) 0%, var(--bg-secondary) 100%);
-    border-top-color: var(--border-color);
+/* Sidebar Backdrop - Mobile only */
+.sidebar-backdrop {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(4px);
+    z-index: 999;
+    opacity: 0;
+    transition: opacity 0.3s ease;
 }
 
-.nav ul {
-    list-style: none;
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--spacing-sm);
-    max-width: 1600px;  /* Match container width */
-    margin: 0 auto;
-    padding: 0 var(--spacing-lg);
-}
-
-.nav a {
-    color: white;
-    text-decoration: none;
-    padding: var(--spacing-sm) var(--spacing-sm);
+.sidebar-backdrop.active {
     display: block;
-    transition: all var(--transition-normal);
-    border-bottom: 3px solid transparent;
-    font-weight: 500;
-    position: relative;
-    font-size: 0.9rem;
+    opacity: 1;
 }
 
-[data-theme="dark"] .nav a {
+/* App Layout with Sidebar */
+.app-layout {
+    display: flex;
+    min-height: calc(100vh - 180px);
+}
+
+/* App Sidebar - Cyberpunk Style */
+.app-sidebar {
+    width: 260px;
+    background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+    border-right: 2px solid transparent;
+    border-image: linear-gradient(180deg,
+                  rgba(6, 182, 212, 0.5),
+                  rgba(236, 72, 153, 0.3),
+                  rgba(139, 92, 246, 0.2)) 1;
+    padding: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    box-shadow: 2px 0 20px rgba(6, 182, 212, 0.1);
+    position: sticky;
+    top: 0;
+    height: calc(100vh - 180px);
+}
+
+[data-theme="dark"] .app-sidebar {
+    background: linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+}
+
+.app-sidebar nav {
+    padding: 0;
+}
+
+.app-sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.app-sidebar li {
+    margin: 0;
+}
+
+/* Sidebar Dividers */
+.app-sidebar .nav-divider {
+    padding: var(--spacing-md) var(--spacing-md) var(--spacing-xs);
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #06b6d4;
+    letter-spacing: 1px;
+    margin-top: var(--spacing-md);
+    text-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
+    border-left: 3px solid rgba(6, 182, 212, 0.5);
+}
+
+.app-sidebar .nav-divider:first-child {
+    margin-top: 0;
+}
+
+/* Sidebar Links */
+.app-sidebar a {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-sm) var(--spacing-md);
+    color: #a5f3fc;
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    border-left: 3px solid transparent;
+    position: relative;
+    overflow: hidden;
+}
+
+.app-sidebar a i {
+    font-size: 1.1rem;
+    min-width: 20px;
+    text-align: center;
+}
+
+.app-sidebar a span {
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+/* Sidebar Link Hover Effect */
+.app-sidebar a::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 0;
+    height: 100%;
+    background: linear-gradient(90deg,
+                rgba(6, 182, 212, 0.2),
+                rgba(236, 72, 153, 0.1),
+                transparent);
+    transition: width 0.4s ease;
+}
+
+.app-sidebar a:hover::before {
+    width: 100%;
+}
+
+.app-sidebar a:hover {
+    color: white;
+    border-left-color: #06b6d4;
+    padding-left: calc(var(--spacing-md) + 3px);
+    background: linear-gradient(90deg,
+                rgba(6, 182, 212, 0.15),
+                rgba(236, 72, 153, 0.05),
+                transparent);
+    text-shadow: 0 0 10px rgba(6, 182, 212, 0.8);
+    box-shadow: inset 0 0 20px rgba(6, 182, 212, 0.1);
+}
+
+.app-sidebar a:hover i {
+    color: #06b6d4;
+    transform: scale(1.1);
+}
+
+/* Sidebar Active Link */
+.app-sidebar a.active {
+    background: linear-gradient(135deg, #06b6d4, #8b5cf6);
+    color: white;
+    border-left-color: #ec4899;
+    border-left-width: 4px;
+    padding-left: calc(var(--spacing-md) + 3px);
+    box-shadow: 0 0 20px rgba(6, 182, 212, 0.4),
+                inset 0 0 20px rgba(255, 255, 255, 0.1);
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+    font-weight: 600;
+}
+
+.app-sidebar a.active i {
+    color: white;
+    transform: scale(1.15);
+}
+
+[data-theme="dark"] .app-sidebar a {
     color: var(--text-secondary);
 }
 
-.nav a::before {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 0;
-    height: 3px;
-    background: linear-gradient(90deg, var(--color-secondary), var(--color-accent-pink));
-    transition: width var(--transition-normal);
+[data-theme="dark"] .app-sidebar a:hover {
+    color: white;
 }
 
-.nav a:hover::before {
-    width: 100%;
+[data-theme="dark"] .app-sidebar a.active {
+    background: linear-gradient(135deg, #06b6d4, #8b5cf6);
+    color: white;
 }
 
-.nav a:hover,
-.nav a.active {
-    opacity: 1;
-    background: linear-gradient(180deg,
-                rgba(6, 182, 212, 0.15),
-                rgba(236, 72, 153, 0.1),
-                rgba(139, 92, 246, 0.08));
-    text-shadow: 0 0 10px rgba(6, 182, 212, 0.6),
-                 0 0 5px rgba(236, 72, 153, 0.4);
-    box-shadow: inset 0 -2px 8px rgba(6, 182, 212, 0.2);
-}
-
-[data-theme="dark"] .nav a:hover,
-[data-theme="dark"] .nav a.active {
-    color: var(--color-primary);
-    background: linear-gradient(180deg,
-                var(--bg-tertiary),
-                rgba(6, 182, 212, 0.1));
-    box-shadow: inset 0 -2px 8px rgba(6, 182, 212, 0.3);
-}
-
-.nav a.active::before {
-    width: 100%;
+/* Main Content Area */
+.app-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
 }
 
 /* Container & Content with Dark Mode Support */
@@ -928,8 +1065,8 @@ textarea.form-control {
 .justify-between { justify-content: space-between; }
 
 /* Responsive */
-/* Mobile (up to 480px) */
-@media (max-width: 480px) {
+/* Mobile (up to 768px) - Hide Sidebar, show mobile menu */
+@media (max-width: 768px) {
     .header {
         padding: var(--spacing-sm) var(--spacing-md);
     }
@@ -951,14 +1088,28 @@ textarea.form-control {
         gap: 0.5rem;
     }
 
-    .nav ul {
-        padding: 0 var(--spacing-sm);
-        gap: var(--spacing-xs);
+    /* Hide sidebar on mobile by default */
+    .app-sidebar {
+        position: fixed;
+        top: 0;
+        left: -280px;
+        width: 280px;
+        height: 100vh;
+        z-index: 1000;
+        transition: left 0.3s ease;
+        box-shadow: 5px 0 30px rgba(6, 182, 212, 0.3);
     }
 
-    .nav a {
-        padding: var(--spacing-xs) var(--spacing-sm);
-        font-size: 0.85rem;
+    .app-sidebar.open {
+        left: 0;
+    }
+
+    .app-layout {
+        flex-direction: column;
+    }
+
+    .app-main {
+        width: 100%;
     }
 
     .container {
@@ -969,29 +1120,7 @@ textarea.form-control {
     .content {
         padding: var(--spacing-sm);
     }
-}
 
-/* Tablet (481px to 768px) */
-@media (min-width: 481px) and (max-width: 768px) {
-    .header {
-        padding: var(--spacing-sm) var(--spacing-md);
-    }
-
-    .container {
-        padding: 0 var(--spacing-md);
-    }
-
-    .content {
-        padding: var(--spacing-md);
-    }
-
-    .nav ul {
-        padding: 0 var(--spacing-md);
-    }
-}
-
-/* Tablet and smaller */
-@media (max-width: 768px) {
     .kpi-grid,
     .module-grid {
         grid-template-columns: 1fr;
@@ -1002,19 +1131,34 @@ textarea.form-control {
     }
 }
 
-/* Larger tablets (769px to 1024px) */
+/* Tablet (769px to 1024px) - Narrower Sidebar */
 @media (min-width: 769px) and (max-width: 1024px) {
-    .container {
-        padding: 0 var(--spacing-lg);
+    .app-sidebar {
+        width: 220px;
     }
 
-    .nav ul {
-        padding: 0 var(--spacing-lg);
-        gap: var(--spacing-xs);
-    }
-
-    .nav a {
-        padding: var(--spacing-sm) var(--spacing-xs);
+    .app-sidebar a {
+        padding: var(--spacing-xs) var(--spacing-sm);
         font-size: 0.85rem;
+    }
+
+    .app-sidebar a i {
+        font-size: 1rem;
+    }
+
+    .container {
+        padding: 0 var(--spacing-md);
+    }
+}
+
+/* Large Desktop (> 1440px) - Wider Sidebar */
+@media (min-width: 1440px) {
+    .app-sidebar {
+        width: 300px;
+    }
+
+    .app-sidebar a {
+        padding: var(--spacing-md) var(--spacing-lg);
+        font-size: 1rem;
     }
 }
