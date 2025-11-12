@@ -1498,6 +1498,11 @@
     justify-content: flex-end;
 }
 
+/* SOA Category Utilities */
+.kpi-grid-responsive {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
 /* ====================
    Responsive
    ==================== */
