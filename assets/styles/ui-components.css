@@ -2002,6 +2002,15 @@
     width: 40px;
 }
 
+/* Dashboard Status Colors */
+.status-in-progress {
+    color: #e67e22;
+}
+
+.status-not-started {
+    color: #95a5a6;
+}
+
 /* SOA Edit Utilities */
 .mt-sm-text-light {
     margin-top: var(--spacing-sm);
