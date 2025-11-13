@@ -187,7 +187,7 @@ final class Version20251105000000 extends AbstractMigration
         $training->setPrimaryKey(['id']);
 
         // ISMS Context table
-        $ismsContext = $schema->createTable('ismscontext');
+        $ismsContext = $schema->createTable('isms_context');
         $ismsContext->addColumn('id', 'integer', ['autoincrement' => true]);
         $ismsContext->addColumn('organization_name', 'string', ['length' => 255]);
         $ismsContext->addColumn('isms_scope', 'text', ['notnull' => false]);
@@ -208,7 +208,7 @@ final class Version20251105000000 extends AbstractMigration
         $ismsContext->setPrimaryKey(['id']);
 
         // ISMS Objective table
-        $ismsObjective = $schema->createTable('ismsobjective');
+        $ismsObjective = $schema->createTable('isms_objective');
         $ismsObjective->addColumn('id', 'integer', ['autoincrement' => true]);
         $ismsObjective->addColumn('title', 'string', ['length' => 255]);
         $ismsObjective->addColumn('description', 'text');
@@ -231,8 +231,8 @@ final class Version20251105000000 extends AbstractMigration
     {
         $schema->dropTable('incident_control');
         $schema->dropTable('control_risk');
-        $schema->dropTable('ismsobjective');
-        $schema->dropTable('ismscontext');
+        $schema->dropTable('isms_objective');
+        $schema->dropTable('isms_context');
         $schema->dropTable('training');
         $schema->dropTable('management_review');
         $schema->dropTable('internal_audit');
