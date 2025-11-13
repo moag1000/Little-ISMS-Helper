@@ -34,6 +34,101 @@
         </div>
     </div>
 
+    {# Mapping Quality Distribution Section #}
+    {% if total_mappings > 0 %}
+    <h2>Mapping-Qualitätsverteilung</h2>
+    <p style="font-size: 9pt; color: #666; margin-bottom: 10px;">
+        Qualitätsanalyse aller {{ total_mappings }} Framework-Mappings im Multi-Framework-Setup
+    </p>
+
+    <div style="background: {% if avg_mapping_quality >= 80 %}#C6EFCE{% elseif avg_mapping_quality >= 60 %}#FFEB9C{% else %}#FFC7CE{% endif %}; padding: 8px; margin: 5px 0; border-left: 3px solid {% if avg_mapping_quality >= 80 %}#28A745{% elseif avg_mapping_quality >= 60 %}#FFA500{% else %}#DC3545{% endif %}; font-size: 9pt;">
+        <strong>Durchschnittliche Mapping-Qualität:</strong> <strong>{{ avg_mapping_quality }}%</strong>
+        {% if avg_mapping_quality >= 80 %}
+        | ✓ <strong>Exzellent</strong> - Sehr gute Mapping-Qualität im gesamten Framework-Netzwerk!
+        {% elseif avg_mapping_quality >= 60 %}
+        | ⚠ <strong>Gut</strong> - Mapping-Qualität ist akzeptabel, aber Verbesserungspotential vorhanden.
+        {% else %}
+        | ⚠ <strong>Verbesserungsbedarf</strong> - Viele schwache Mappings beeinträchtigen die Transitive Compliance-Effektivität.
+        {% endif %}
+    </div>
+
+    <table style="width: 80%;">
+        <thead>
+            <tr>
+                <th style="width: 30%;">Qualitätsstufe</th>
+                <th style="width: 15%;">Bereich</th>
+                <th style="width: 15%;">Anzahl</th>
+                <th style="width: 15%;">Prozentsatz</th>
+                <th style="width: 25%;">Bewertung</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr style="background: #C6EFCE;">
+                <td><span class="badge badge-success">Exzellent</span></td>
+                <td class="text-center">90-100%</td>
+                <td class="text-center"><strong>{{ quality_distribution.excellent }}</strong></td>
+                <td class="text-center"><strong>{{ total_mappings > 0 ? ((quality_distribution.excellent / total_mappings * 100)|round(1)) : 0 }}%</strong></td>
+                <td style="font-size: 8pt;">Sehr präzise Mappings, hohe Zuverlässigkeit</td>
+            </tr>
+            <tr style="background: #E8F5E9;">
+                <td><span class="badge badge-info">Gut</span></td>
+                <td class="text-center">70-89%</td>
+                <td class="text-center"><strong>{{ quality_distribution.good }}</strong></td>
+                <td class="text-center"><strong>{{ total_mappings > 0 ? ((quality_distribution.good / total_mappings * 100)|round(1)) : 0 }}%</strong></td>
+                <td style="font-size: 8pt;">Solide Mappings mit kleinen Abweichungen</td>
+            </tr>
+            <tr style="background: #FFF9E6;">
+                <td><span class="badge badge-warning">Mittel</span></td>
+                <td class="text-center">50-69%</td>
+                <td class="text-center"><strong>{{ quality_distribution.medium }}</strong></td>
+                <td class="text-center"><strong>{{ total_mappings > 0 ? ((quality_distribution.medium / total_mappings * 100)|round(1)) : 0 }}%</strong></td>
+                <td style="font-size: 8pt;">Teilweise Übereinstimmung, Review empfohlen</td>
+            </tr>
+            <tr style="background: #FFEBEE;">
+                <td><span class="badge badge-danger">Schwach</span></td>
+                <td class="text-center">&lt;50%</td>
+                <td class="text-center"><strong style="color: #C00;">{{ quality_distribution.weak }}</strong></td>
+                <td class="text-center"><strong style="color: #C00;">{{ total_mappings > 0 ? ((quality_distribution.weak / total_mappings * 100)|round(1)) : 0 }}%</strong></td>
+                <td style="font-size: 8pt;">⚠ Geringe Übereinstimmung, Optimierung nötig</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div style="background: #E8F4F8; padding: 8px; margin: 5px 0; border-left: 3px solid #2196F3; font-size: 9pt;">
+        <strong>Qualitäts-Insights:</strong>
+        {% set excellent_good_percentage = total_mappings > 0 ? (((quality_distribution.excellent + quality_distribution.good) / total_mappings * 100)|round(1)) : 0 %}
+        <strong>{{ excellent_good_percentage }}%</strong> der Mappings sind "Gut" oder besser (≥70%).
+        {% if excellent_good_percentage >= 70 %}
+        <strong>Sehr gut!</strong> Die Mehrheit der Mappings ist von hoher Qualität.
+        {% elseif excellent_good_percentage >= 50 %}
+        <strong>Akzeptabel.</strong> Etwa die Hälfte der Mappings ist von guter Qualität.
+        {% else %}
+        <strong>Verbesserungsbedarf!</strong> Nur {{ excellent_good_percentage }}% der Mappings sind von guter Qualität.
+        {% endif %}
+
+        {% if quality_distribution.weak > 0 %}
+        <br><strong>⚠ Achtung:</strong> {{ quality_distribution.weak }} schwache Mappings (<50% Qualität) identifiziert.
+        <strong>Empfehlung:</strong> Diese Mappings priorisiert überarbeiten für bessere Transitive Compliance-Effektivität.
+        {% endif %}
+
+        {% if quality_distribution.excellent >= (total_mappings * 0.5) %}
+        <br><strong>🎯 Highlight:</strong> Über 50% exzellente Mappings (≥90%)! Dies ermöglicht sehr zuverlässige transitive Compliance-Analysen.
+        {% endif %}
+    </div>
+
+    <div style="background: #C6EFCE; padding: 8px; margin: 5px 0; border-radius: 4px; font-size: 9pt;">
+        <strong>💡 Optimierungspotential:</strong>
+        {% if quality_distribution.weak > 0 or quality_distribution.medium > 10 %}
+        Durch Verbesserung der {{ quality_distribution.weak + quality_distribution.medium }} schwachen/mittleren Mappings
+        kann die durchschnittliche Qualität auf potenziell <strong>{{ (avg_mapping_quality + 10)|round(1) }}%</strong> gesteigert werden.
+        <strong>ROI:</strong> Bessere Mapping-Qualität = zuverlässigere transitive Compliance = weniger Audit-Risiken!
+        {% else %}
+        Die Mapping-Qualität ist bereits sehr gut. Fokus auf Aufrechterhaltung dieser hohen Standards.
+        {% endif %}
+    </div>
+    <div class="page-break"></div>
+    {% endif %}
+
     {# Quick Wins Section - Highlight high ROI opportunities #}
     {% if quick_wins|length > 0 %}
     <h2>🎯 Quick Wins - Höchste Priorität</h2>
