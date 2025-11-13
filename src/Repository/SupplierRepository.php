@@ -121,4 +121,113 @@ class SupplierRepository extends ServiceEntityRepository
             'compliance_rate' => $total > 0 ? round(($iso27001 / $total) * 100, 2) : 0
         ];
     }
+
+    /**
+     * Find all suppliers for a tenant (own suppliers only)
+     *
+     * @param \App\Entity\Tenant $tenant The tenant to find suppliers for
+     * @return Supplier[] Array of Supplier entities
+     */
+    public function findByTenant($tenant): array
+    {
+        return $this->createQueryBuilder('s')
+            ->where('s.tenant = :tenant')
+            ->setParameter('tenant', $tenant)
+            ->orderBy('s.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Find suppliers by tenant or parent tenant (for hierarchical governance)
+     * This allows viewing inherited suppliers from parent companies
+     *
+     * @param \App\Entity\Tenant $tenant The tenant to find suppliers for
+     * @param \App\Entity\Tenant|null $parentTenant Optional parent tenant for inherited suppliers
+     * @return Supplier[] Array of Supplier entities (own + inherited)
+     */
+    public function findByTenantIncludingParent($tenant, $parentTenant = null): array
+    {
+        $qb = $this->createQueryBuilder('s')
+            ->where('s.tenant = :tenant')
+            ->setParameter('tenant', $tenant);
+
+        if ($parentTenant) {
+            $qb->orWhere('s.tenant = :parentTenant')
+               ->setParameter('parentTenant', $parentTenant);
+        }
+
+        return $qb
+            ->orderBy('s.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Get supplier statistics for a specific tenant
+     *
+     * @param \App\Entity\Tenant $tenant The tenant
+     * @return array Supplier statistics
+     */
+    public function getStatisticsByTenant($tenant): array
+    {
+        $qb = $this->createQueryBuilder('s');
+
+        $total = $qb->select('COUNT(s.id)')
+            ->where('s.tenant = :tenant')
+            ->andWhere('s.status = :active')
+            ->setParameter('tenant', $tenant)
+            ->setParameter('active', 'active')
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        $critical = $this->createQueryBuilder('s')
+            ->select('COUNT(s.id)')
+            ->where('s.tenant = :tenant')
+            ->andWhere('s.criticality = :critical')
+            ->andWhere('s.status = :active')
+            ->setParameter('tenant', $tenant)
+            ->setParameter('critical', 'critical')
+            ->setParameter('active', 'active')
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        $iso27001 = $this->createQueryBuilder('s')
+            ->select('COUNT(s.id)')
+            ->where('s.tenant = :tenant')
+            ->andWhere('s.hasISO27001 = :true')
+            ->andWhere('s.status = :active')
+            ->setParameter('tenant', $tenant)
+            ->setParameter('true', true)
+            ->setParameter('active', 'active')
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        return [
+            'total' => (int) $total,
+            'critical' => (int) $critical,
+            'iso27001_certified' => (int) $iso27001,
+            'compliance_rate' => $total > 0 ? round(($iso27001 / $total) * 100, 2) : 0
+        ];
+    }
+
+    /**
+     * Find critical suppliers for a specific tenant
+     *
+     * @param \App\Entity\Tenant $tenant The tenant
+     * @return Supplier[] Array of critical supplier entities
+     */
+    public function findCriticalSuppliersByTenant($tenant): array
+    {
+        return $this->createQueryBuilder('s')
+            ->where('s.tenant = :tenant')
+            ->andWhere('s.criticality IN (:criticalities)')
+            ->andWhere('s.status = :active')
+            ->setParameter('tenant', $tenant)
+            ->setParameter('criticalities', ['critical', 'high'])
+            ->setParameter('active', 'active')
+            ->orderBy('s.criticality', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 }
