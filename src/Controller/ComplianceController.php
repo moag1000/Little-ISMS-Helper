@@ -710,6 +710,9 @@ class ComplianceController extends AbstractController
         // Calculate priority-weighted gap analysis
         $priorityWeightedAnalysis = $this->mappingRepository->calculatePriorityWeightedGaps($framework, $gaps);
 
+        // Perform root cause analysis for gaps
+        $rootCauseAnalysis = $this->mappingRepository->analyzeGapRootCauses($gaps);
+
         // Calculate weighted compliance score (how well critical/high requirements are met)
         $totalRequirements = count($requirements);
         $weightedScore = 0;
@@ -752,6 +755,12 @@ class ComplianceController extends AbstractController
             'uncovered_high' => $priorityWeightedAnalysis['uncovered_high'],
             'priority_distribution' => $priorityWeightedAnalysis['priority_distribution'],
             'gap_recommendations' => $priorityWeightedAnalysis['recommendations'],
+            // Root cause analysis
+            'root_cause_analysis' => $rootCauseAnalysis,
+            'root_causes' => $rootCauseAnalysis['root_causes'],
+            'root_cause_summary' => $rootCauseAnalysis['summary'],
+            'category_patterns' => $rootCauseAnalysis['category_patterns'],
+            'root_cause_recommendations' => $rootCauseAnalysis['recommendations'],
             'pdf_generation_date' => new \DateTime(),
         ]);
 
