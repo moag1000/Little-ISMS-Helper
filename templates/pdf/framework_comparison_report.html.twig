@@ -1,246 +1,478 @@
-{% extends 'pdf/base.html.twig' %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>Framework Comparison Report</title>
+    <style>
+        @page {
+            margin: 2cm 1.5cm;
+        }
 
-{% block pdf_title %}Framework Comparison - {{ framework1.name }} vs {{ framework2.name }}{% endblock %}
+        body {
+            font-family: DejaVu Sans, sans-serif;
+            font-size: 9pt;
+            line-height: 1.4;
+            color: #333;
+        }
 
-{% block header_title %}Framework Comparison Report{% endblock %}
-{% block header_subtitle %}{{ framework1.name }} ↔ {{ framework2.name }}{% endblock %}
+        h1 {
+            font-size: 18pt;
+            color: #1a56db;
+            text-align: center;
+            margin-bottom: 5pt;
+            border-bottom: 3px solid #1a56db;
+            padding-bottom: 10pt;
+        }
 
-{% block content %}
-    {# Summary Section #}
-    <div class="summary-box">
-        <div class="metric">
-            <span class="metric-label">{{ framework1.code }}</span>
-            <span class="metric-value">{{ framework1_count }} Anforderungen</span>
-        </div>
-        <div class="metric">
-            <span class="metric-label">{{ framework2.code }}</span>
-            <span class="metric-value">{{ framework2_count }} Anforderungen</span>
-        </div>
-        <div class="metric">
-            <span class="metric-label">Gemappte Anforderungen</span>
-            <span class="metric-value" style="color: #0A0;">{{ mapped_count }}</span>
-        </div>
-        <div class="metric">
-            <span class="metric-label">Overlap</span>
-            <span class="metric-value">{{ overlap_percentage }}%</span>
-        </div>
-        <div class="metric">
-            <span class="metric-label">Unique zu {{ framework1.code }}</span>
-            <span class="metric-value" style="color: #F90;">{{ unique_framework1|length }}</span>
+        h2 {
+            font-size: 14pt;
+            color: #1a56db;
+            margin-top: 15pt;
+            margin-bottom: 8pt;
+            border-bottom: 1px solid #cbd5e1;
+            padding-bottom: 5pt;
+        }
+
+        h3 {
+            font-size: 11pt;
+            color: #334155;
+            margin-top: 12pt;
+            margin-bottom: 6pt;
+            font-weight: bold;
+        }
+
+        .header-info {
+            text-align: center;
+            font-size: 9pt;
+            color: #64748b;
+            margin-bottom: 20pt;
+        }
+
+        .stats-grid {
+            display: table;
+            width: 100%;
+            margin-bottom: 20pt;
+            border: 1px solid #cbd5e1;
+            border-collapse: collapse;
+        }
+
+        .stats-row {
+            display: table-row;
+        }
+
+        .stats-cell {
+            display: table-cell;
+            padding: 10pt;
+            text-align: center;
+            border: 1px solid #cbd5e1;
+            width: 20%;
+        }
+
+        .stats-label {
+            font-size: 8pt;
+            color: #64748b;
+            font-weight: bold;
+            margin-bottom: 4pt;
+        }
+
+        .stats-value {
+            font-size: 16pt;
+            color: #1a56db;
+            font-weight: bold;
+        }
+
+        .stats-value-success {
+            color: #10b981;
+        }
+
+        .stats-value-warning {
+            color: #f59e0b;
+        }
+
+        .insight-box {
+            background: #f8fafc;
+            border-left: 4px solid #1a56db;
+            padding: 10pt;
+            margin: 10pt 0;
+            font-size: 8pt;
+            color: #475569;
+        }
+
+        .insight-box strong {
+            color: #1e293b;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10pt 0;
+            font-size: 8pt;
+        }
+
+        table th {
+            background-color: #1a56db;
+            color: white;
+            padding: 6pt;
+            text-align: left;
+            font-weight: bold;
+            border: 1px solid #1e3a8a;
+        }
+
+        table td {
+            padding: 5pt;
+            border: 1px solid #cbd5e1;
+            vertical-align: top;
+        }
+
+        table tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+
+        .highlight-row {
+            font-weight: bold;
+            background: #e0e7ff !important;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 2pt 6pt;
+            border-radius: 3pt;
+            font-size: 7pt;
+            font-weight: bold;
+        }
+
+        .badge-success {
+            background-color: #10b981;
+            color: white;
+        }
+
+        .badge-info {
+            background-color: #3b82f6;
+            color: white;
+        }
+
+        .badge-warning {
+            background-color: #f59e0b;
+            color: white;
+        }
+
+        .badge-danger {
+            background-color: #ef4444;
+            color: white;
+        }
+
+        .badge-secondary {
+            background-color: #6b7280;
+            color: white;
+        }
+
+        .quality-good {
+            color: #10b981;
+            font-weight: bold;
+        }
+
+        .quality-medium {
+            color: #f59e0b;
+            font-weight: bold;
+        }
+
+        .quality-weak {
+            color: #ef4444;
+            font-weight: bold;
+        }
+
+        .page-break {
+            page-break-before: always;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .w-10 { width: 10%; }
+        .w-15 { width: 15%; }
+        .w-20 { width: 20%; }
+        .w-30 { width: 30%; }
+        .w-50 { width: 50%; }
+
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 30pt;
+            text-align: center;
+            font-size: 7pt;
+            color: #64748b;
+            border-top: 1px solid #cbd5e1;
+            padding-top: 5pt;
+        }
+    </style>
+</head>
+<body>
+    <h1>Framework Comparison Report</h1>
+    <div class="header-info">
+        {{ framework1.name }} ↔ {{ framework2.name }}<br>
+        Generated: {{ pdf_generation_date|date('d.m.Y H:i') }}
+    </div>
+
+    {# Executive Summary #}
+    <h2>Executive Summary</h2>
+    <div class="stats-grid">
+        <div class="stats-row">
+            <div class="stats-cell">
+                <div class="stats-label">{{ framework1.code }}</div>
+                <div class="stats-value">{{ framework1_count }}</div>
+                <div class="stats-label" style="margin-top: 2pt;">Requirements</div>
+            </div>
+            <div class="stats-cell">
+                <div class="stats-label">{{ framework2.code }}</div>
+                <div class="stats-value">{{ framework2_count }}</div>
+                <div class="stats-label" style="margin-top: 2pt;">Requirements</div>
+            </div>
+            <div class="stats-cell">
+                <div class="stats-label">Mapped</div>
+                <div class="stats-value stats-value-success">{{ mapped_count }}</div>
+                <div class="stats-label" style="margin-top: 2pt;">{{ overlap_percentage }}%</div>
+            </div>
+            <div class="stats-cell">
+                <div class="stats-label">Avg. Quality</div>
+                <div class="stats-value {% if avg_mapping_quality >= 80 %}stats-value-success{% elseif avg_mapping_quality >= 60 %}stats-value-warning{% endif %}">{{ avg_mapping_quality }}%</div>
+            </div>
+            <div class="stats-cell">
+                <div class="stats-label">Symmetric Coverage</div>
+                <div class="stats-value {% if symmetric_coverage >= 70 %}stats-value-success{% endif %}">{{ symmetric_coverage }}%</div>
+            </div>
         </div>
     </div>
 
-    {# Comparison Summary #}
-    <h2>Vergleichs-Übersicht</h2>
-    <table style="width: 80%;">
+    {# Bidirectional Coverage #}
+    <h2>Bidirectional Coverage Analysis</h2>
+    <table>
         <thead>
             <tr>
-                <th>Metrik</th>
-                <th class="text-center">{{ framework1.code }}</th>
-                <th class="text-center">{{ framework2.code }}</th>
+                <th class="w-50">Metric</th>
+                <th class="text-center w-20">{{ framework1.code }} → {{ framework2.code }}</th>
+                <th class="text-center w-20">{{ framework2.code }} → {{ framework1.code }}</th>
             </tr>
         </thead>
         <tbody>
             <tr>
-                <td>Gesamt Anforderungen</td>
+                <td>Total Requirements (Source)</td>
                 <td class="text-center">{{ framework1_count }}</td>
                 <td class="text-center">{{ framework2_count }}</td>
             </tr>
             <tr>
-                <td>Gemappte Anforderungen</td>
-                <td class="text-center">{{ mapped_count }}</td>
-                <td class="text-center">{{ mapped_count }}</td>
+                <td>Mapped Requirements</td>
+                <td class="text-center">{{ bidirectional_coverage.framework1_to_framework2.covered_requirements ?? 0 }}</td>
+                <td class="text-center">{{ bidirectional_coverage.framework2_to_framework1.covered_requirements ?? 0 }}</td>
             </tr>
             <tr>
-                <td>Unique Anforderungen</td>
-                <td class="text-center">{{ unique_framework1|length }}</td>
-                <td class="text-center">{{ framework2_count - mapped_count }}</td>
+                <td>Coverage Percentage</td>
+                <td class="text-center">
+                    <span class="{% if coverage_f1_to_f2 >= 70 %}quality-good{% elseif coverage_f1_to_f2 >= 50 %}quality-medium{% else %}quality-weak{% endif %}">
+                        {{ coverage_f1_to_f2 }}%
+                    </span>
+                </td>
+                <td class="text-center">
+                    <span class="{% if coverage_f2_to_f1 >= 70 %}quality-good{% elseif coverage_f2_to_f1 >= 50 %}quality-medium{% else %}quality-weak{% endif %}">
+                        {{ coverage_f2_to_f1 }}%
+                    </span>
+                </td>
             </tr>
-            <tr>
-                <td>Coverage</td>
-                <td class="text-center">{{ framework1_count > 0 ? ((mapped_count / framework1_count * 100)|round(1)) : 0 }}%</td>
-                <td class="text-center">{{ framework2_count > 0 ? ((mapped_count / framework2_count * 100)|round(1)) : 0 }}%</td>
+            <tr class="highlight-row">
+                <td>Bidirectional Overlap (Average)</td>
+                <td colspan="2" class="text-center">{{ bidirectional_overlap }}%</td>
+            </tr>
+            <tr class="highlight-row">
+                <td>Symmetric Coverage (Minimum)</td>
+                <td colspan="2" class="text-center">{{ symmetric_coverage }}%</td>
             </tr>
         </tbody>
     </table>
 
-    {# High-Quality Mappings #}
-    {% set high_quality = comparison_details|filter(d => d.mapped and d.matchQuality >= 80) %}
-    {% if high_quality|length > 0 %}
+    <div class="insight-box">
+        <strong>Analysis:</strong>
+        {% if symmetric_coverage >= 70 %}
+        Excellent bidirectional coverage. Both frameworks are strongly aligned.
+        {% elseif symmetric_coverage >= 50 %}
+        Good mutual coverage with some gaps in both directions.
+        {% else %}
+        Asymmetric coverage detected. Review unmapped requirements in both frameworks.
+        {% endif %}
+    </div>
+
+    {# Mapping Quality Distribution #}
     <div class="page-break"></div>
-    <h2>High-Quality Mappings (≥80% Match)</h2>
-    <p style="font-size: 9pt; color: #666; margin-bottom: 10px;">
-        Diese Anforderungen sind gut aufeinander abgestimmt und können für Harmonisierung genutzt werden.
-    </p>
+    <h2>Mapping Quality Distribution</h2>
     <table>
         <thead>
             <tr>
-                <th style="width: 15%;">{{ framework1.code }} ID</th>
-                <th style="width: 30%;">{{ framework1.code }} Titel</th>
-                <th style="width: 15%;">{{ framework2.code }} ID</th>
-                <th style="width: 30%;">{{ framework2.code }} Titel</th>
-                <th style="width: 10%;">Match %</th>
+                <th class="w-30">Quality Level</th>
+                <th class="text-center w-15">Range</th>
+                <th class="text-center w-15">Count</th>
+                <th class="text-center w-15">Percentage</th>
+                <th class="w-25">Assessment</th>
             </tr>
         </thead>
         <tbody>
-            {% for detail in high_quality|slice(0, 15) %}
-            <tr class="no-break">
+            <tr>
+                <td><span class="badge badge-success">Excellent</span></td>
+                <td class="text-center">90-100%</td>
+                <td class="text-center"><strong>{{ quality_distribution.excellent }}</strong></td>
+                <td class="text-center">{{ mapped_count > 0 ? ((quality_distribution.excellent / mapped_count * 100)|round(1)) : 0 }}%</td>
+                <td>Precise mappings, high reliability</td>
+            </tr>
+            <tr>
+                <td><span class="badge badge-info">Good</span></td>
+                <td class="text-center">70-89%</td>
+                <td class="text-center"><strong>{{ quality_distribution.good }}</strong></td>
+                <td class="text-center">{{ mapped_count > 0 ? ((quality_distribution.good / mapped_count * 100)|round(1)) : 0 }}%</td>
+                <td>Solid mappings with minor deviations</td>
+            </tr>
+            <tr>
+                <td><span class="badge badge-warning">Medium</span></td>
+                <td class="text-center">50-69%</td>
+                <td class="text-center"><strong>{{ quality_distribution.medium }}</strong></td>
+                <td class="text-center">{{ mapped_count > 0 ? ((quality_distribution.medium / mapped_count * 100)|round(1)) : 0 }}%</td>
+                <td>Partial alignment, review recommended</td>
+            </tr>
+            <tr>
+                <td><span class="badge badge-danger">Weak</span></td>
+                <td class="text-center">&lt;50%</td>
+                <td class="text-center"><strong>{{ quality_distribution.weak }}</strong></td>
+                <td class="text-center">{{ mapped_count > 0 ? ((quality_distribution.weak / mapped_count * 100)|round(1)) : 0 }}%</td>
+                <td>Low alignment, optimization needed</td>
+            </tr>
+            <tr class="highlight-row">
+                <td><strong>Average Mapping Quality</strong></td>
+                <td colspan="4" class="text-center"><strong>{{ avg_mapping_quality }}%</strong></td>
+            </tr>
+        </tbody>
+    </table>
+
+    {% set excellent_good_pct = mapped_count > 0 ? (((quality_distribution.excellent + quality_distribution.good) / mapped_count * 100)|round(1)) : 0 %}
+    <div class="insight-box">
+        <strong>Quality Assessment:</strong>
+        {{ excellent_good_pct }}% of mappings are good or better (≥70%).
+        {% if quality_distribution.weak > 0 %}
+        <br><strong>Recommendation:</strong> Review and improve {{ quality_distribution.weak }} weak mappings (&lt;50% quality) for better framework alignment.
+        {% endif %}
+    </div>
+
+    {# Category Coverage Analysis #}
+    <div class="page-break"></div>
+    <h2>Category Coverage Analysis</h2>
+
+    <h3>{{ framework1.code }} → {{ framework2.code }}</h3>
+    <table>
+        <thead>
+            <tr>
+                <th class="w-30">Category</th>
+                <th class="text-center w-15">Total</th>
+                <th class="text-center w-15">Mapped</th>
+                <th class="text-center w-15">Coverage</th>
+                <th class="text-center w-15">Avg. Quality</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for category, stats in category_coverage_f1_to_f2 %}
+            <tr>
+                <td><strong>{{ category }}</strong></td>
+                <td class="text-center">{{ stats.total }}</td>
+                <td class="text-center">{{ stats.mapped }}</td>
+                <td class="text-center">
+                    <span class="{% if stats.coverage >= 70 %}quality-good{% elseif stats.coverage >= 50 %}quality-medium{% else %}quality-weak{% endif %}">
+                        {{ stats.coverage }}%
+                    </span>
+                </td>
+                <td class="text-center">{{ stats.avg_quality }}%</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h3 style="margin-top: 15pt;">{{ framework2.code }} → {{ framework1.code }}</h3>
+    <table>
+        <thead>
+            <tr>
+                <th class="w-30">Category</th>
+                <th class="text-center w-15">Total</th>
+                <th class="text-center w-15">Mapped</th>
+                <th class="text-center w-15">Coverage</th>
+                <th class="text-center w-15">Avg. Quality</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for category, stats in category_coverage_f2_to_f1 %}
+            <tr>
+                <td><strong>{{ category }}</strong></td>
+                <td class="text-center">{{ stats.total }}</td>
+                <td class="text-center">{{ stats.mapped }}</td>
+                <td class="text-center">
+                    <span class="{% if stats.coverage >= 70 %}quality-good{% elseif stats.coverage >= 50 %}quality-medium{% else %}quality-weak{% endif %}">
+                        {{ stats.coverage }}%
+                    </span>
+                </td>
+                <td class="text-center">{{ stats.avg_quality }}%</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="insight-box">
+        <strong>Category Insights:</strong>
+        Categories with coverage &lt;50% should be prioritized for improved mapping quality and completeness.
+    </div>
+
+    {# Detailed Comparison #}
+    <div class="page-break"></div>
+    <h2>Detailed Requirement Mapping</h2>
+    <table>
+        <thead>
+            <tr>
+                <th class="w-15">{{ framework1.code }} ID</th>
+                <th class="w-30">{{ framework1.code }} Requirement</th>
+                <th class="w-15">Mapping Status</th>
+                <th class="w-10">Quality</th>
+                <th class="w-30">{{ framework2.code }} Requirement</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for detail in comparison_details %}
+            <tr>
                 <td><strong>{{ detail.framework1Requirement.requirementId }}</strong></td>
-                <td style="font-size: 8pt;">{{ detail.framework1Requirement.title|length > 60 ? (detail.framework1Requirement.title|slice(0, 60) ~ '...') : detail.framework1Requirement.title }}</td>
-                <td><strong>{{ detail.framework2Requirement.requirementId }}</strong></td>
-                <td style="font-size: 8pt;">{{ detail.framework2Requirement.title|length > 60 ? (detail.framework2Requirement.title|slice(0, 60) ~ '...') : detail.framework2Requirement.title }}</td>
-                <td class="text-center"><span class="badge badge-success">{{ detail.matchQuality }}%</span></td>
+                <td>{{ (detail.framework1Requirement.description ?? '')|slice(0, 60) }}{% if (detail.framework1Requirement.description ?? '')|length > 60 %}...{% endif %}</td>
+                <td class="text-center">
+                    {% if detail.mapped %}
+                        <span class="badge badge-success">Mapped</span>
+                    {% else %}
+                        <span class="badge badge-secondary">Not Mapped</span>
+                    {% endif %}
+                </td>
+                <td class="text-center">
+                    {% if detail.matchQuality is not null %}
+                        <span class="{% if detail.matchQuality >= 90 %}quality-good{% elseif detail.matchQuality >= 70 %}quality-medium{% else %}quality-weak{% endif %}">
+                            {{ detail.matchQuality }}%
+                        </span>
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+                <td>
+                    {% if detail.framework2Requirement %}
+                        {{ detail.framework2Requirement.description|slice(0, 60) }}{% if detail.framework2Requirement.description|length > 60 %}...{% endif %}
+                    {% else %}
+                        <span style="color: #94a3b8;">No mapping</span>
+                    {% endif %}
+                </td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
-    {% endif %}
 
-    {# Unique Requirements (Gaps) #}
-    {% if unique_framework1|length > 0 %}
-    <div class="page-break"></div>
-    <h2>Unique Requirements: {{ framework1.code }}</h2>
-    <p style="font-size: 9pt; color: #666; margin-bottom: 10px;">
-        Diese Anforderungen existieren nur in {{ framework1.code }} und haben keine Entsprechung in {{ framework2.code }}.
-    </p>
-    <table>
-        <thead>
-            <tr>
-                <th style="width: 15%;">ID</th>
-                <th style="width: 35%;">Titel</th>
-                <th style="width: 20%;">Kategorie</th>
-                <th style="width: 30%;">Beschreibung</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for req in unique_framework1|slice(0, 20) %}
-            <tr class="no-break">
-                <td><strong>{{ req.framework1Requirement.requirementId }}</strong></td>
-                <td style="font-size: 8pt;">{{ req.framework1Requirement.title|length > 50 ? (req.framework1Requirement.title|slice(0, 50) ~ '...') : req.framework1Requirement.title }}</td>
-                <td><span class="badge badge-info">{{ req.framework1Requirement.category ?? '-' }}</span></td>
-                <td style="font-size: 7pt;">{{ req.framework1Requirement.description|length > 80 ? (req.framework1Requirement.description|slice(0, 80) ~ '...') : (req.framework1Requirement.description ?? '-') }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    {% if unique_framework1|length > 20 %}
-    <p style="font-size: 8pt; color: #666; margin-top: 5px;">
-        ... und {{ unique_framework1|length - 20 }} weitere unique Anforderungen
-    </p>
-    {% endif %}
-    {% endif %}
-
-    {# Recommendations Section #}
-    <div class="page-break"></div>
-    <h2>Harmonisierungs-Empfehlungen</h2>
-
-    <h3>Strategie: Framework-Harmonisierung</h3>
-    <div style="background: #E8F4F8; padding: 15px; margin: 10px 0; border-left: 4px solid #2196F3; font-size: 9pt;">
-        <strong>Aktueller Status:</strong>
-        <ul style="margin-left: 20px; margin-top: 5px;">
-            <li>{{ mapped_count }} von {{ framework1_count }} Anforderungen gemapped ({{ overlap_percentage }}%)</li>
-            <li>{{ high_quality|length }} High-Quality Mappings (≥80% Match) identifiziert</li>
-            <li>{{ unique_framework1|length }} unique Anforderungen in {{ framework1.code }}</li>
-            <li>{{ framework2_count - mapped_count }} unmapped Anforderungen in {{ framework2.code }}</li>
-        </ul>
+    <div class="footer">
+        Framework Comparison Report - Generated on {{ pdf_generation_date|date('d.m.Y H:i:s') }} - Page <span class="pagenum"></span>
     </div>
-
-    <h3>Empfehlung 1: Mapping-Lücken schließen</h3>
-    <div style="background: #FFF2CC; padding: 15px; margin: 10px 0; border-left: 4px solid #F4D03F; font-size: 9pt;">
-        <strong>Priorität: Hoch</strong>
-        <p style="margin: 5px 0;">
-            {% set unmapped = framework1_count - mapped_count %}
-            Derzeit sind {{ unmapped }} Anforderungen nicht gemapped. Empfohlene Maßnahmen:
-        </p>
-        <ul style="margin-left: 20px;">
-            <li>Review der {{ unique_framework1|length }} unique {{ framework1.code }}-Anforderungen</li>
-            <li>Identifikation potentieller Partial-Mappings (60-80% Match)</li>
-            <li>Dokumentation von bewusst nicht gemappten Anforderungen</li>
-        </ul>
-        <p style="margin: 5px 0;"><strong>Zeitaufwand:</strong> ~{{ (unmapped * 15 / 60)|round(1) }} Stunden</p>
-    </div>
-
-    <h3>Empfehlung 2: Compliance-Hebel nutzen</h3>
-    <div style="background: #C6EFCE; padding: 15px; margin: 10px 0; border-left: 4px solid #28A745; font-size: 9pt;">
-        <strong>Quick Win!</strong>
-        <p style="margin: 5px 0;">
-            Mit {{ high_quality|length }} High-Quality Mappings können Sie signifikante Synergien realisieren:
-        </p>
-        <ul style="margin-left: 20px;">
-            <li>Wiederverwendung von Nachweisen und Dokumentation</li>
-            <li>Gemeinsame Kontroll-Implementierungen für beide Frameworks</li>
-            <li>Reduzierung des Audit-Aufwands durch kombinierte Assessments</li>
-        </ul>
-        <p style="margin: 5px 0;">
-            <strong>Geschätzte Zeitersparnis:</strong> ~{{ (high_quality|length * 2)|round }} Stunden bei der nächsten Compliance-Bewertung
-        </p>
-    </div>
-
-    <h3>Empfehlung 3: Gap-Analyse für Unique Requirements</h3>
-    <div style="background: #FFEB9C; padding: 15px; margin: 10px 0; border-left: 4px solid #FFA500; font-size: 9pt;">
-        <strong>Mittelfristig</strong>
-        <p style="margin: 5px 0;">
-            Die {{ unique_framework1|length + (framework2_count - mapped_count) }} unmapped Anforderungen erfordern separate Bearbeitung:
-        </p>
-        <ul style="margin-left: 20px;">
-            <li><strong>{{ framework1.code }} Unique ({{ unique_framework1|length }}):</strong> Zusätzliche Kontrollen für {{ framework1.code }}-Compliance</li>
-            <li><strong>{{ framework2.code }} Unmapped ({{ framework2_count - mapped_count }}):</strong> Zusätzliche Kontrollen für {{ framework2.code }}-Compliance</li>
-            <li>Prüfung auf indirekte Coverage durch bestehende Maßnahmen</li>
-        </ul>
-    </div>
-
-    <h3>Implementierungs-Roadmap</h3>
-    <table style="width: 95%;">
-        <thead>
-            <tr>
-                <th style="width: 20%;">Phase</th>
-                <th style="width: 50%;">Aktivitäten</th>
-                <th style="width: 15%;">Dauer</th>
-                <th style="width: 15%;">Nutzen</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td><strong>Phase 1<br/>(Woche 1-2)</strong></td>
-                <td style="font-size: 8pt;">
-                    • High-Quality Mappings dokumentieren<br/>
-                    • Gemeinsame Kontroll-Implementierungen identifizieren<br/>
-                    • Quick Wins realisieren
-                </td>
-                <td class="text-center">2 Wochen</td>
-                <td class="text-center"><span class="badge badge-success">Hoch</span></td>
-            </tr>
-            <tr>
-                <td><strong>Phase 2<br/>(Woche 3-6)</strong></td>
-                <td style="font-size: 8pt;">
-                    • Fehlende Mappings erstellen<br/>
-                    • Partial Mappings (60-80%) bewerten<br/>
-                    • Mapping-Dokumentation vervollständigen
-                </td>
-                <td class="text-center">4 Wochen</td>
-                <td class="text-center"><span class="badge badge-warning">Mittel</span></td>
-            </tr>
-            <tr>
-                <td><strong>Phase 3<br/>(Woche 7-12)</strong></td>
-                <td style="font-size: 8pt;">
-                    • Unique Requirements Gap-Analyse<br/>
-                    • Zusätzliche Kontrollen implementieren<br/>
-                    • Kombinierte Compliance-Bewertung durchführen
-                </td>
-                <td class="text-center">6 Wochen</td>
-                <td class="text-center"><span class="badge badge-info">Langfristig</span></td>
-            </tr>
-        </tbody>
-    </table>
-
-    <div style="background: #E8F4F8; padding: 15px; margin-top: 20px; border-radius: 4px; font-size: 9pt;">
-        <strong>📋 Nächste Schritte:</strong>
-        <ol style="margin-left: 20px; margin-top: 5px;">
-            <li>Stakeholder-Meeting zur Priorisierung der Harmonisierung</li>
-            <li>Ressourcen-Planung für Mapping-Vervollständigung</li>
-            <li>Template für gemeinsame Kontroll-Dokumentation erstellen</li>
-            <li>Pilotprojekt mit Top 10 High-Quality Mappings starten</li>
-            <li>Monatliches Mapping-Review etablieren</li>
-        </ol>
-    </div>
-{% endblock %}
+</body>
+</html>
