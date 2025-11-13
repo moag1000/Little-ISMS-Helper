@@ -1761,21 +1761,29 @@ change_request:
     requested_date: Requested Date
     priority: Priority
     status: Status
+    complexity_score: Complexity Score
     isms_impact: ISMS Impact
     risk_assessment: Risk Assessment
     implementation_plan: Implementation Plan
     rollback_plan: Rollback Plan
     testing_requirements: Testing Requirements
+    planned_implementation: Planned Implementation
     planned_implementation_date: Planned Implementation Date
     actual_implementation_date: Actual Implementation Date
+    implementation_date: Implementation Date
     approved_by: Approved By
     approved_date: Approved Date
+    approval_date: Approval Date
     approval_comments: Approval Comments
+    comments: Comments
     implemented_by: Implemented By
     implementation_notes: Implementation Notes
+    notes: Notes
     verified_by: Verified By
     verified_date: Verified Date
+    verification_date: Verification Date
     verification_results: Verification Results
+    results: Results
     closed_date: Closed Date
     closure_notes: Closure Notes
   change_type:
@@ -1800,10 +1808,28 @@ change_request:
     approved: Approved
     rejected: Rejected
     scheduled: Scheduled
+    not_scheduled: Not Scheduled
     implemented: Implemented
     verified: Verified
     closed: Closed
     cancelled: Cancelled
+  section:
+    description: Description
+    justification: Justification
+    impact: Impact
+    risk_assessment: Risk Assessment
+    plan: Implementation Plan
+    rollback_plan: Rollback Plan
+    testing_requirements: Testing Requirements
+    approval_info: Approval Information
+    implementation: Implementation
+    verification: Verification
+    closure: Closure
+    affected_assets: Affected Assets
+    affected_controls: Affected Controls
+    affected_risks: Affected Risks
+  confirm:
+    delete: 'Are you sure you want to delete this change request?'
   statistics:
     title: Statistics
     total: Total Change Requests
