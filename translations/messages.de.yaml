@@ -2467,11 +2467,20 @@ data:
       header: 'Schritt 1: Datenbank konfigurieren'
       description: Konfigurieren Sie Ihre Datenbank-Verbindung. Die Datenbank wird automatisch angelegt, falls sie nicht existiert.
       type: Datenbank-Typ
+      type_help: Wählen Sie den Typ Ihrer Datenbank
       name: Datenbankname
+      name_help: Name der zu erstellenden oder vorhandenen Datenbank
+      name_invalid: Der Datenbankname darf nur Buchstaben, Zahlen und Unterstriche enthalten
       host: Host
+      host_help: Hostname oder IP-Adresse des Datenbankservers
       port: Port
+      port_help: Port des Datenbankservers (Standard: MySQL 3306, PostgreSQL 5432)
       user: Benutzername
+      user_help: Datenbank-Benutzername
       password: Passwort
+      password_help: Datenbank-Passwort (Sonderzeichen werden automatisch maskiert)
+      server_version: Server-Version
+      server_version_help: Versionsnummer des Datenbankservers (z.B. 8.0 für MySQL, 14 für PostgreSQL)
       test_button: Verbindung testen
       info:
         title: Hinweise zur Datenbank-Konfiguration

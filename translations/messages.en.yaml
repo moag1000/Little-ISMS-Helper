@@ -2462,11 +2462,20 @@ data:
       header: 'Step 1: Configure Database'
       description: Configure your database connection. The database will be created automatically if it does not exist.
       type: Database Type
+      type_help: Select your database type
       name: Database Name
+      name_help: Name of the database to create or use
+      name_invalid: The database name may only contain letters, numbers, and underscores
       host: Host
+      host_help: Hostname or IP address of the database server
       port: Port
+      port_help: Database server port (default: MySQL 3306, PostgreSQL 5432)
       user: Username
+      user_help: Database username
       password: Password
+      password_help: Database password (special characters are automatically escaped)
+      server_version: Server Version
+      server_version_help: Version number of the database server (e.g. 8.0 for MySQL, 14 for PostgreSQL)
       test_button: Test Connection
       info:
         title: Database Configuration Notes
