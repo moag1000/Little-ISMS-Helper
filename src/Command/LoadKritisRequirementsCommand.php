@@ -803,6 +803,721 @@ class LoadKritisRequirementsCommand extends Command
                 ],
             ],
 
+            // Category: Communications Security (COS)
+            [
+                'id' => 'KRITIS-COS-1.1',
+                'title' => 'Network Controls',
+                'description' => 'Networks shall be controlled and protected with appropriate security mechanisms.',
+                'category' => 'Communications Security',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.20'],
+                ],
+            ],
+            [
+                'id' => 'KRITIS-COS-1.2',
+                'title' => 'Transmission Security',
+                'description' => 'Information in transit shall be protected through appropriate encryption mechanisms.',
+                'category' => 'Communications Security',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.24'],
+                ],
+            ],
+            [
+                'id' => 'KRITIS-COS-1.3',
+                'title' => 'Electronic Messaging',
+                'description' => 'Electronic messaging shall be secured with appropriate controls.',
+                'category' => 'Communications Security',
+                'priority' => 'high',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.24'],
+                ],
+            ],
+            [
+                'id' => 'KRITIS-COS-1.4',
+                'title' => 'Network Segregation',
+                'description' => 'Information services, users and information systems shall be segregated on networks.',
+                'category' => 'Communications Security',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.22'],
+                ],
+            ],
+            [
+                'id' => 'KRITIS-COS-1.5',
+                'title' => 'Confidentiality Agreements',
+                'description' => 'Requirements for confidentiality or non-disclosure agreements shall be identified and documented.',
+                'category' => 'Communications Security',
+                'priority' => 'medium',
+                'data_source_mapping' => [
+                    'iso_controls' => ['5.14'],
+                ],
+            ],
+            [
+                'id' => 'KRITIS-COS-1.6',
+                'title' => 'Remote Diagnostic and Configuration',
+                'description' => 'Remote diagnostic and configuration ports shall be secured.',
+                'category' => 'Communications Security',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.20'],
+                ],
+            ],
+            [
+                'id' => 'KRITIS-COS-1.7',
+                'title' => 'Wireless Network Security',
+                'description' => 'Wireless networks shall be secured with appropriate authentication and encryption.',
+                'category' => 'Communications Security',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.20', '8.24'],
+                ],
+            ],
+            [
+                'id' => 'KRITIS-COS-1.8',
+                'title' => 'VPN Security',
+                'description' => 'Virtual Private Networks shall use strong encryption and authentication.',
+                'category' => 'Communications Security',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.24'],
+                ],
+            ],
+            [
+                'id' => 'KRITIS-COS-1.9',
+                'title' => 'Network Connection Control',
+                'description' => 'Connections to networks shall be controlled and restricted.',
+                'category' => 'Communications Security',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.20', '8.21'],
+                ],
+            ],
+            [
+                'id' => 'KRITIS-COS-1.10',
+                'title' => 'Information Transfer Policies',
+                'description' => 'Policies and procedures for information transfer shall be established.',
+                'category' => 'Communications Security',
+                'priority' => 'high',
+                'data_source_mapping' => [
+                    'iso_controls' => ['5.14'],
+                ],
+            ],
+
+            // Category: System Development (DEV)
+            [
+                'id' => 'KRITIS-DEV-1.1',
+                'title' => 'Security Requirements Analysis',
+                'description' => 'Security requirements shall be identified and documented in the development lifecycle.',
+                'category' => 'System Development',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.27'],
+                ],
+            ],
+            [
+                'id' => 'KRITIS-DEV-1.2',
+                'title' => 'Secure Development Lifecycle',
+                'description' => 'A secure development lifecycle shall be established and followed.',
+                'category' => 'System Development',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.25', '8.27'],
+                ],
+            ],
+            [
+                'id' => 'KRITIS-DEV-1.3',
+                'title' => 'Application Security',
+                'description' => 'Applications shall be designed and developed with security controls.',
+                'category' => 'System Development',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.28', '8.29'],
+                ],
+            ],
+            [
+                'id' => 'KRITIS-DEV-1.4',
+                'title' => 'Secure Coding Standards',
+                'description' => 'Secure coding standards shall be established and enforced.',
+                'category' => 'System Development',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.28'],
+                ],
+            ],
+            [
+                'id' => 'KRITIS-DEV-1.5',
+                'title' => 'Development Testing',
+                'description' => 'Security testing shall be performed during development.',
+                'category' => 'System Development',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.29'],
+                ],
+            ],
+            [
+                'id' => 'KRITIS-DEV-1.6',
+                'title' => 'Test Data Protection',
+                'description' => 'Test data shall be selected carefully and protected.',
+                'category' => 'System Development',
+                'priority' => 'high',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.33'],
+                ],
+            ],
+            [
+                'id' => 'KRITIS-DEV-1.7',
+                'title' => 'Acceptance Testing',
+                'description' => 'Acceptance testing programs shall include security testing.',
+                'category' => 'System Development',
+                'priority' => 'high',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.29'],
+                ],
+            ],
+            [
+                'id' => 'KRITIS-DEV-1.8',
+                'title' => 'System Engineering Principles',
+                'description' => 'Principles for engineering secure systems shall be established and applied.',
+                'category' => 'System Development',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.27'],
+                ],
+            ],
+            [
+                'id' => 'KRITIS-DEV-1.9',
+                'title' => 'Outsourced Development',
+                'description' => 'Outsourced development activities shall be supervised and monitored.',
+                'category' => 'System Development',
+                'priority' => 'high',
+                'data_source_mapping' => [
+                    'iso_controls' => ['5.20', '8.27'],
+                ],
+            ],
+            [
+                'id' => 'KRITIS-DEV-1.10',
+                'title' => 'Technical Vulnerability Scanning',
+                'description' => 'Systems shall be scanned for technical vulnerabilities regularly.',
+                'category' => 'System Development',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.8'],
+                ],
+            ],
+
+            // Category: Identity Management Extended (IDM)
+            [
+                'id' => 'KRITIS-IDM-1.1',
+                'title' => 'User Registration Process',
+                'description' => 'A formal user registration process shall control user identity assignment.',
+                'category' => 'Identity Management',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['5.16'],
+                ],
+            ],
+            [
+                'id' => 'KRITIS-IDM-1.2',
+                'title' => 'User De-registration',
+                'description' => 'User de-registration shall be performed promptly when access is no longer required.',
+                'category' => 'Identity Management',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['5.16'],
+                ],
+            ],
+            [
+                'id' => 'KRITIS-IDM-1.3',
+                'title' => 'Information Access Restriction',
+                'description' => 'Access to information and application system functions shall be restricted.',
+                'category' => 'Identity Management',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['5.15', '5.18'],
+                ],
+            ],
+            [
+                'id' => 'KRITIS-IDM-1.4',
+                'title' => 'Secure Authentication',
+                'description' => 'Secure authentication methods shall be implemented for all users.',
+                'category' => 'Identity Management',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['5.17', '5.18'],
+                ],
+            ],
+            [
+                'id' => 'KRITIS-IDM-1.5',
+                'title' => 'Password Management System',
+                'description' => 'A password management system shall enforce password quality requirements.',
+                'category' => 'Identity Management',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['5.17', '8.5'],
+                ],
+            ],
+            [
+                'id' => 'KRITIS-IDM-1.6',
+                'title' => 'Use of Secret Authentication',
+                'description' => 'Users shall be required to follow good security practices for secret authentication information.',
+                'category' => 'Identity Management',
+                'priority' => 'high',
+                'data_source_mapping' => [
+                    'iso_controls' => ['5.17'],
+                ],
+            ],
+            [
+                'id' => 'KRITIS-IDM-1.7',
+                'title' => 'User Account Management',
+                'description' => 'User accounts shall be managed through a formal process.',
+                'category' => 'Identity Management',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['5.16', '5.18'],
+                ],
+            ],
+            [
+                'id' => 'KRITIS-IDM-1.8',
+                'title' => 'Privileged Utility Programs',
+                'description' => 'Use of privileged utility programs shall be restricted and controlled.',
+                'category' => 'Identity Management',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.4'],
+                ],
+            ],
+
+            // Category: Advanced Cryptography (CRY)
+            [
+                'id' => 'KRITIS-CRY-1.1',
+                'title' => 'Cryptographic Policy',
+                'description' => 'A policy on the use of cryptographic controls shall be developed.',
+                'category' => 'Advanced Cryptography',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.24'],
+                ],
+            ],
+            [
+                'id' => 'KRITIS-CRY-1.2',
+                'title' => 'Encryption Key Management',
+                'description' => 'Key management processes shall support the use of cryptographic techniques.',
+                'category' => 'Advanced Cryptography',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.24'],
+                ],
+            ],
+            [
+                'id' => 'KRITIS-CRY-1.3',
+                'title' => 'Digital Signatures',
+                'description' => 'Digital signatures shall be used where appropriate for authentication and integrity.',
+                'category' => 'Advanced Cryptography',
+                'priority' => 'high',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.24'],
+                ],
+            ],
+            [
+                'id' => 'KRITIS-CRY-1.4',
+                'title' => 'Certificate Management',
+                'description' => 'Digital certificates shall be managed securely throughout their lifecycle.',
+                'category' => 'Advanced Cryptography',
+                'priority' => 'high',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.24'],
+                ],
+            ],
+            [
+                'id' => 'KRITIS-CRY-1.5',
+                'title' => 'Cryptographic Algorithm Selection',
+                'description' => 'Cryptographic algorithms shall be selected based on industry standards and best practices.',
+                'category' => 'Advanced Cryptography',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.24'],
+                ],
+            ],
+            [
+                'id' => 'KRITIS-CRY-1.6',
+                'title' => 'Key Generation',
+                'description' => 'Cryptographic keys shall be generated using approved methods.',
+                'category' => 'Advanced Cryptography',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.24'],
+                ],
+            ],
+            [
+                'id' => 'KRITIS-CRY-1.7',
+                'title' => 'Key Storage and Protection',
+                'description' => 'Cryptographic keys shall be protected against unauthorized disclosure and modification.',
+                'category' => 'Advanced Cryptography',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.24'],
+                ],
+            ],
+            [
+                'id' => 'KRITIS-CRY-1.8',
+                'title' => 'Key Destruction',
+                'description' => 'Cryptographic keys shall be destroyed securely when no longer needed.',
+                'category' => 'Advanced Cryptography',
+                'priority' => 'high',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.24'],
+                ],
+            ],
+
+            // Category: Enhanced Physical Security (PHY)
+            [
+                'id' => 'KRITIS-PHY-1.1',
+                'title' => 'Delivery and Loading Areas',
+                'description' => 'Delivery and loading areas shall be controlled and isolated from information processing facilities.',
+                'category' => 'Enhanced Physical Security',
+                'priority' => 'medium',
+                'data_source_mapping' => [
+                    'iso_controls' => ['7.5'],
+                ],
+            ],
+            [
+                'id' => 'KRITIS-PHY-1.2',
+                'title' => 'Clear Desk and Clear Screen',
+                'description' => 'Clear desk and clear screen policies shall be adopted.',
+                'category' => 'Enhanced Physical Security',
+                'priority' => 'medium',
+                'data_source_mapping' => [
+                    'iso_controls' => ['7.7'],
+                ],
+            ],
+            [
+                'id' => 'KRITIS-PHY-1.3',
+                'title' => 'Equipment Removal',
+                'description' => 'Equipment shall not be removed from the site without authorization.',
+                'category' => 'Enhanced Physical Security',
+                'priority' => 'high',
+                'data_source_mapping' => [
+                    'iso_controls' => ['7.12'],
+                ],
+            ],
+            [
+                'id' => 'KRITIS-PHY-1.4',
+                'title' => 'Asset Returns',
+                'description' => 'Employees and external party users shall return all organizational assets upon termination.',
+                'category' => 'Enhanced Physical Security',
+                'priority' => 'high',
+                'data_source_mapping' => [
+                    'iso_controls' => ['7.13'],
+                ],
+            ],
+            [
+                'id' => 'KRITIS-PHY-1.5',
+                'title' => 'Unattended User Equipment',
+                'description' => 'Users shall ensure that unattended equipment has appropriate protection.',
+                'category' => 'Enhanced Physical Security',
+                'priority' => 'medium',
+                'data_source_mapping' => [
+                    'iso_controls' => ['7.7'],
+                ],
+            ],
+
+            // Category: Advanced Operations Security (OPS)
+            [
+                'id' => 'KRITIS-OPS-EXT-1.1',
+                'title' => 'Separation of Development and Production',
+                'description' => 'Development, testing and operational environments shall be separated.',
+                'category' => 'Advanced Operations',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.31'],
+                ],
+            ],
+            [
+                'id' => 'KRITIS-OPS-EXT-1.2',
+                'title' => 'Information Classification',
+                'description' => 'Information shall be classified in terms of legal requirements, value, criticality and sensitivity.',
+                'category' => 'Advanced Operations',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['5.12'],
+                ],
+            ],
+            [
+                'id' => 'KRITIS-OPS-EXT-1.3',
+                'title' => 'Information Labeling',
+                'description' => 'Information shall be labeled according to its classification.',
+                'category' => 'Advanced Operations',
+                'priority' => 'high',
+                'data_source_mapping' => [
+                    'iso_controls' => ['5.13'],
+                ],
+            ],
+            [
+                'id' => 'KRITIS-OPS-EXT-1.4',
+                'title' => 'Information Handling',
+                'description' => 'Procedures for information handling shall be established.',
+                'category' => 'Advanced Operations',
+                'priority' => 'high',
+                'data_source_mapping' => [
+                    'iso_controls' => ['5.12', '5.13'],
+                ],
+            ],
+            [
+                'id' => 'KRITIS-OPS-EXT-1.5',
+                'title' => 'Media Disposal',
+                'description' => 'Media shall be disposed of securely when no longer required.',
+                'category' => 'Advanced Operations',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.10'],
+                ],
+            ],
+            [
+                'id' => 'KRITIS-OPS-EXT-1.6',
+                'title' => 'Media Transportation',
+                'description' => 'Media containing information shall be protected against unauthorized access during transport.',
+                'category' => 'Advanced Operations',
+                'priority' => 'high',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.11'],
+                ],
+            ],
+            [
+                'id' => 'KRITIS-OPS-EXT-1.7',
+                'title' => 'Secure Disposal of Equipment',
+                'description' => 'Equipment containing storage media shall be verified to ensure data removal before disposal.',
+                'category' => 'Advanced Operations',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.10'],
+                ],
+            ],
+            [
+                'id' => 'KRITIS-OPS-EXT-1.8',
+                'title' => 'Mobile Device Policy',
+                'description' => 'A policy for mobile devices shall be adopted and implemented.',
+                'category' => 'Advanced Operations',
+                'priority' => 'high',
+                'data_source_mapping' => [
+                    'iso_controls' => ['6.7'],
+                ],
+            ],
+            [
+                'id' => 'KRITIS-OPS-EXT-1.9',
+                'title' => 'Teleworking Security',
+                'description' => 'Security measures for teleworking shall be implemented.',
+                'category' => 'Advanced Operations',
+                'priority' => 'high',
+                'data_source_mapping' => [
+                    'iso_controls' => ['6.7'],
+                ],
+            ],
+            [
+                'id' => 'KRITIS-OPS-EXT-1.10',
+                'title' => 'Information Backup Testing',
+                'description' => 'Backup information and software shall be regularly tested.',
+                'category' => 'Advanced Operations',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.13'],
+                    'bcm_required' => true,
+                ],
+            ],
+
+            // Category: Network Security Extended (NET)
+            [
+                'id' => 'KRITIS-NET-1.1',
+                'title' => 'Network Security Services',
+                'description' => 'Security features and service levels of network services shall be identified.',
+                'category' => 'Network Security Extended',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.20', '8.21'],
+                ],
+            ],
+            [
+                'id' => 'KRITIS-NET-1.2',
+                'title' => 'Security in Network Services',
+                'description' => 'Security mechanisms and service levels shall be included in network service agreements.',
+                'category' => 'Network Security Extended',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.21'],
+                ],
+            ],
+            [
+                'id' => 'KRITIS-NET-1.3',
+                'title' => 'Network Routing Control',
+                'description' => 'Routing controls shall be implemented for networks to ensure secure routes.',
+                'category' => 'Network Security Extended',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.20'],
+                ],
+            ],
+            [
+                'id' => 'KRITIS-NET-1.4',
+                'title' => 'Network Traffic Filtering',
+                'description' => 'Network traffic shall be filtered using firewalls and similar devices.',
+                'category' => 'Network Security Extended',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.20'],
+                ],
+            ],
+            [
+                'id' => 'KRITIS-NET-1.5',
+                'title' => 'DMZ Implementation',
+                'description' => 'Demilitarized zones shall be implemented to separate external and internal networks.',
+                'category' => 'Network Security Extended',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.20', '8.22'],
+                ],
+            ],
+            [
+                'id' => 'KRITIS-NET-1.6',
+                'title' => 'Protocol Security',
+                'description' => 'Network protocols shall be configured securely.',
+                'category' => 'Network Security Extended',
+                'priority' => 'high',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.20'],
+                ],
+            ],
+            [
+                'id' => 'KRITIS-NET-1.7',
+                'title' => 'Network Monitoring',
+                'description' => 'Networks shall be monitored for security events and anomalies.',
+                'category' => 'Network Security Extended',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.16'],
+                ],
+            ],
+            [
+                'id' => 'KRITIS-NET-1.8',
+                'title' => 'Network Documentation',
+                'description' => 'Network architecture and configurations shall be documented.',
+                'category' => 'Network Security Extended',
+                'priority' => 'high',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.20'],
+                ],
+            ],
+
+            // Category: Application Security (APP)
+            [
+                'id' => 'KRITIS-APP-1.1',
+                'title' => 'Input Data Validation',
+                'description' => 'Input data validation shall be implemented in applications.',
+                'category' => 'Application Security',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.28'],
+                ],
+            ],
+            [
+                'id' => 'KRITIS-APP-1.2',
+                'title' => 'Output Data Validation',
+                'description' => 'Output data validation shall be implemented in applications.',
+                'category' => 'Application Security',
+                'priority' => 'high',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.28'],
+                ],
+            ],
+            [
+                'id' => 'KRITIS-APP-1.3',
+                'title' => 'Authenticity of Transactions',
+                'description' => 'Controls shall protect authenticity of transactions.',
+                'category' => 'Application Security',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.28'],
+                ],
+            ],
+            [
+                'id' => 'KRITIS-APP-1.4',
+                'title' => 'Session Management',
+                'description' => 'Application session management shall be implemented securely.',
+                'category' => 'Application Security',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.5'],
+                ],
+            ],
+            [
+                'id' => 'KRITIS-APP-1.5',
+                'title' => 'Secure Application Interfaces',
+                'description' => 'Application programming interfaces (APIs) shall be secured.',
+                'category' => 'Application Security',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.29'],
+                ],
+            ],
+
+            // Category: Data Protection and Privacy (DPP)
+            [
+                'id' => 'KRITIS-DPP-1.1',
+                'title' => 'Privacy and Protection of PII',
+                'description' => 'Privacy and protection of personally identifiable information shall be ensured.',
+                'category' => 'Data Protection',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['5.34'],
+                    'gdpr_relevant' => true,
+                ],
+            ],
+            [
+                'id' => 'KRITIS-DPP-1.2',
+                'title' => 'Data Minimization',
+                'description' => 'Only necessary personal data shall be collected and processed.',
+                'category' => 'Data Protection',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['5.34'],
+                    'gdpr_relevant' => true,
+                ],
+            ],
+            [
+                'id' => 'KRITIS-DPP-1.3',
+                'title' => 'Purpose Limitation',
+                'description' => 'Personal data shall be processed only for specified purposes.',
+                'category' => 'Data Protection',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['5.34'],
+                    'gdpr_relevant' => true,
+                ],
+            ],
+            [
+                'id' => 'KRITIS-DPP-1.4',
+                'title' => 'Data Subject Rights',
+                'description' => 'Processes shall support data subject rights (access, correction, deletion).',
+                'category' => 'Data Protection',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['5.34'],
+                    'gdpr_relevant' => true,
+                ],
+            ],
+            [
+                'id' => 'KRITIS-DPP-1.5',
+                'title' => 'Data Breach Notification',
+                'description' => 'Procedures for data breach notification shall be established.',
+                'category' => 'Data Protection',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['5.26'],
+                    'gdpr_relevant' => true,
+                    'incident_management' => true,
+                ],
+            ],
+
             // § 14 BSIG - Penalties
             [
                 'id' => 'KRITIS-14.1',
