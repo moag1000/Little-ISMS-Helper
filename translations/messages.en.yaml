@@ -2542,17 +2542,17 @@ data:
         message: You can configure email settings later in the system settings.
       transport: Transport Method
       transport_help: Select the method for sending emails
-      transport:
+      transport_types:
         smtp: SMTP Server
         sendmail: Sendmail
         native: PHP mail()
       host: SMTP Host
       host_help: Hostname or IP address of the SMTP server
       port: SMTP Port
-      port_help: SMTP server port (default: 587 for TLS, 465 for SSL)
+      port_help: "SMTP server port (default: 587 for TLS, 465 for SSL)"
       encryption: Encryption
       encryption_help: Select the encryption method
-      encryption:
+      encryption_types:
         none: None
         tls: TLS (recommended)
         ssl: SSL
@@ -2571,7 +2571,7 @@ data:
       config_failed: Error saving email configuration
       info:
         title: What is email used for?
-        description: The email configuration enables the system to:
+        description: "The email configuration enables the system to:"
         notifications: Send notifications to users
         reminders: Send reminders for due tasks
         reports: Send automated reports
@@ -2621,7 +2621,7 @@ data:
         message: This information will be used to provide industry-specific recommendations and compliance requirements.
       compliance_info:
         title: Why is this information important?
-        description: Based on your input, we can:
+        description: "Based on your input, we can:"
         scope: Better define the scope of your ISMS
         reporting: Automatically adapt compliance reports
         recommendations: Provide industry-specific recommendations
@@ -2631,7 +2631,7 @@ data:
       description: Select the compliance frameworks that are relevant to your organisation. You can add more frameworks later.
       recommended:
         title: Recommended Frameworks for Your Industry
-        description: Based on your organisation information, we recommend the following frameworks:
+        description: "Based on your organisation information, we recommend the following frameworks:"
       mandatory:
         title: ISO 27001 is Mandatory
         message: ISO 27001:2022 is the foundation of this ISMS and cannot be deselected.
