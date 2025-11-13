@@ -4,6 +4,7 @@ namespace App\Service;
 
 use PDO;
 use PDOException;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 /**
  * Service to test database connections during setup.
@@ -15,6 +16,10 @@ use PDOException;
  */
 class DatabaseTestService
 {
+    public function __construct(
+        private readonly ParameterBagInterface $params
+    ) {
+    }
     /**
      * Test database connection with given configuration.
      *
@@ -77,7 +82,7 @@ class DatabaseTestService
     private function testSqliteConnection(array $config): array
     {
         $dbName = $config['name'] ?? 'little_isms_helper';
-        $dbPath = dirname(__DIR__, 2) . "/var/{$dbName}.db";
+        $dbPath = $this->params->get('kernel.project_dir') . "/var/{$dbName}.db";
 
         try {
             $pdo = new PDO("sqlite:{$dbPath}");
@@ -188,7 +193,7 @@ class DatabaseTestService
     private function createSqliteDatabase(array $config): array
     {
         $dbName = $config['name'] ?? 'little_isms_helper';
-        $dbPath = dirname(__DIR__, 2) . "/var/{$dbName}.db";
+        $dbPath = $this->params->get('kernel.project_dir') . "/var/{$dbName}.db";
         $dbDir = dirname($dbPath);
 
         // Ensure var directory exists
