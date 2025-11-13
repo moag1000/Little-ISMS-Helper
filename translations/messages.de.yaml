@@ -22,6 +22,7 @@ nav:
   compliance: Compliance
   audit_log: Audit Log
   users: Benutzer
+  documents: Dokumente
 login:
   title: Anmelden
   already_logged_in: Sie sind bereits als {{ user }} angemeldet.
@@ -40,7 +41,39 @@ forgot_password: Passwort vergessen
 remember_me: Angemeldet bleiben
 login_title: Anmeldung
 welcome_back: Willkommen zurück
-home: Startseite
+home:
+  _default: Startseite
+  welcome: Willkommen
+  title: Übersicht
+  description: Verwalten Sie Ihr Information Security Management System
+  modules: Module
+  module:
+    assets:
+      title: Assets
+      description: Verwalten Sie Ihre IT-Assets und Ressourcen
+      action: Zu den Assets
+    risks:
+      title: Risiken
+      description: Identifizieren und bewerten Sie Sicherheitsrisiken
+      action: Zu den Risiken
+    incidents:
+      title: Vorfälle
+      description: Erfassen und verwalten Sie Sicherheitsvorfälle
+      action: Zu den Vorfällen
+    compliance:
+      title: Compliance
+      description: Verwalten Sie Compliance-Frameworks und Anforderungen
+      action: Zur Compliance
+    dashboard:
+      title: Dashboard
+      description: Übersicht über den aktuellen Sicherheitsstatus
+      action: Zum Dashboard
+    documents:
+      title: Dokumente
+      description: Verwalten Sie Richtlinien und Dokumentation
+      action: Zu den Dokumenten
+  development_notice: Diese Funktion befindet sich in Entwicklung
+  go_to_dashboard: Zum Dashboard
 # Phase 6L-A: Admin Panel Translation Keys
 admin:
   title: Administration
@@ -168,6 +201,13 @@ admin:
       audit_log_help: Automatische Protokollierung aller Änderungen
       info_text: Feature-Flags erlauben es, neue Funktionen schrittweise einzuführen oder zu testen.
 dashboard:
+  title: ISMS Dashboard
+  subtitle: Übersicht über Ihren Informationssicherheitsstatus
+  kpis: Kennzahlen
+  compliance_status: Compliance-Status
+  implementation_status: Implementierungsstatus
+  quick_access: Schnellzugriff
+  next_steps: Nächste Schritte
   success:
     settings_imported: Dashboard-Einstellungen erfolgreich importiert!
   error:
@@ -183,32 +223,48 @@ compliance_label: Compliance
 training:
   title: Schulungen
   all_trainings: Alle Schulungen
+  new: Neue Schulung
+  new_help: Erstellen Sie eine neue Schulung für Mitarbeiter
   create: Schulung erstellen
   create_first: Erstellen Sie Ihre erste Schulung
   edit: Schulung bearbeiten
   edit_help: Schulungsdetails bearbeiten
+  mandatory: Verpflichtend
+  mandatory_label: Verpflichtende Schulung
   mandatory_training: Verpflichtende Schulung
   mandatory_info: Diese Schulung ist für alle Teilnehmer verpflichtend.
   no_participants: Noch keine Teilnehmer registriert.
+  no_trainings: Keine Schulungen vorhanden. Erstellen Sie die erste Schulung.
   no_trainings_found: Keine Schulungen gefunden
   participant_count: Teilnehmerzahl
+  participants_count: Teilnehmer
   participants_label: Teilnehmer
+  upcoming_trainings: Anstehende Schulungen
+  location: Ort
   covered_controls: Abgedeckte Maßnahmen
   compliance_coverage: Compliance-Abdeckung
   controls_help: Wählen Sie die Maßnahmen, die diese Schulung abdeckt
   description: Beschreibung
+  statistics:
+    total: Schulungen gesamt
+    upcoming: Anstehend
+    completed: Abgeschlossen
+    mandatory: Verpflichtend
   delivery:
     in_person: Präsenz
     online: Online
     hybrid: Hybrid
     self_paced: Selbststudium
-  type:
+  delivery_method: Durchführungsart
+  type: Schulungsart
+  type_values:
     awareness: Awareness
     technical: Technisch
     compliance: Compliance
     security: Sicherheit
     other: Sonstiges
-  status:
+  status: Status
+  status_values:
     planned: Geplant
     confirmed: Bestätigt
     completed: Abgeschlossen
@@ -257,11 +313,21 @@ training:
     type: Schulungsart wählen
   section:
     attendance: Teilnahme & Teilnehmer
+    basic_info: Grundinformationen
     details: Schulungsdetails
+    schedule: Zeitplanung
+    people: Personen
+    status: Status
+    controls: Verknüpfte Controls
+    materials: Schulungsmaterialien
   show:
     title: Schulungsdetails
   table:
     trainer: Trainer
+  success:
+    created: Schulung erfolgreich erstellt.
+    updated: Schulung erfolgreich aktualisiert.
+    deleted: Schulung erfolgreich gelöscht.
   validation:
     title_required: Bitte geben Sie einen Titel ein.
     date_required: Bitte wählen Sie ein Datum.
@@ -290,13 +356,19 @@ common:
   description: Beschreibung
   status: Status
   date: Datum
+  created: Erstellt
   created_at: Erstellt am
+  updated: Aktualisiert
   updated_at: Aktualisiert am
   cancel: Abbrechen
+  save: Speichern
+  save_changes: Änderungen speichern
   back: Zurück
   back_to_list: Zurück zur Liste
   back_to_overview: Zurück zur Übersicht
+  to_list: Zur Liste
   delete: Löschen
+  reset: Zurücksetzen
   metadata: Metadaten
   action_irreversible: Diese Aktion kann nicht rückgängig gemacht werden.
   'true': Ja
@@ -304,14 +376,17 @@ common:
   yes: Ja
   no: Nein
   note: Hinweis
+  warning: Warnung
   to_home: Zur Startseite
   actions: Aktionen
   view: Ansehen
   view_details: Details ansehen
+  view_all: Alle anzeigen
   edit: Bearbeiten
   show_all: Alle anzeigen
   active: Aktiv
   all: Alle
+  selected: Ausgewählt
   category: Kategorie
   create: Erstellen
   danger_zone: Gefahrenbereich
@@ -323,6 +398,7 @@ common:
   error: Fehler
   export: Exportieren
   filter: Filtern
+  filters: Filter
   from: Von
   help: Hilfe
   history: Verlauf
@@ -332,27 +408,56 @@ common:
   loading: Wird geladen...
   never: Nie
   not_applicable: Nicht zutreffend
+  not_approved: Nicht genehmigt
   not_assigned: Nicht zugewiesen
   not_completed: Nicht abgeschlossen
   not_set: Nicht festgelegt
   not_started: Nicht begonnen
   refresh: Aktualisieren
-  save: Speichern
   search: Suchen
   success: Erfolgreich
   to: Bis
+  size: Größe
+  seconds: Sekunden
+  minutes: Minuten
+  days: Tage
 asset:
   new: Neues Asset
   create: Asset erstellen
   edit: Asset bearbeiten
+  update: 'Asset aktualisieren'
   list:
     title: Assets
   details:
     title: Asset-Details
   confirm:
     delete: Sind Sie sicher, dass Sie dieses Asset löschen möchten?
+
+  title:
+    _default: Assets
+    bcm_insights: 'BCM-Einblicke für Assets'
+
+  description:
+    bcm_insights: 'Analyse der geschäftskritischen Assets und ihrer Auswirkungen auf die Business Continuity'
+    critical_impact: 'Kritische Auswirkung: Sofortiger Geschäftsausfall bei Verlust'
+    high_impact: 'Hohe Auswirkung: Erhebliche Geschäftsbeeinträchtigung innerhalb von Stunden'
+    medium_impact: 'Mittlere Auswirkung: Spürbare Beeinträchtigung innerhalb von Tagen'
+    low_impact: 'Geringe Auswirkung: Minimale oder verzögerte Auswirkungen'
+    rto_analysis: 'Verteilung der Assets nach ihren Recovery Time Objectives'
+    dependencies: 'Analyse der Asset-Abhängigkeiten und potenzieller Single Points of Failure'
+
   action:
     bcm_insights: BCM-Einblicke
+    view_critical: 'Kritische Assets anzeigen'
+
+  stats:
+    total_assets: 'Gesamt-Assets'
+    critical_assets: 'Kritische Assets'
+    high_risk_assets: 'Hochrisiko-Assets'
+    avg_rto: 'Durchschn. RTO'
+    with_dependencies: 'Mit Abhängigkeiten'
+    avg_dependencies: 'Durchschn. Abhängigkeiten'
+    single_points_failure: 'Single Points of Failure'
   bcm:
     processes: Prozesse
   section:
@@ -365,6 +470,11 @@ asset:
     protecting_controls: Schützende Maßnahmen
     related_risks: Zugehörige Risiken
     related_incidents: Zugehörige Vorfälle
+    history: 'Änderungsverlauf'
+    business_impact: 'Geschäftliche Auswirkungen'
+    rto_analysis: 'RTO-Analyse'
+    critical_assets: 'Kritische Assets'
+    dependency_insights: 'Abhängigkeits-Analyse'
   cia_help: Bewerten Sie die Vertraulichkeit, Integrität und Verfügbarkeit dieses Assets
   cia_values: CIA-Werte
   classification:
@@ -384,6 +494,15 @@ asset:
     confidentiality: Vertraulichkeit
     integrity: Integrität
     availability: Verfügbarkeit
+    asset_name: 'Asset-Name'
+    business_criticality: 'Geschäftskritikalität'
+    rto: 'RTO'
+    rpo: 'RPO'
+    recovery_strategy: 'Wiederherstellungsstrategie'
+    avg_rto: 'Durchschn. RTO'
+    rto_category: 'RTO-Kategorie'
+    asset_count: 'Anzahl Assets'
+    examples: 'Beispiele'
   placeholder:
     name: z.B. Kundendatenbank
     description: Detaillierte Beschreibung des Assets
@@ -427,11 +546,41 @@ asset:
     confidentiality: Vertraulichkeit
     integrity: Integrität
     availability: Verfügbarkeit
+    return_date: 'Rückgabedatum'
+
+  impact:
+    critical: 'Kritisch'
+    high: 'Hoch'
+    medium: 'Mittel'
+    low: 'Gering'
+
+  rto:
+    immediate: 'Sofort (< 4h)'
+    urgent: 'Dringend (4-24h)'
+    standard: 'Standard (1-3 Tage)'
+    flexible: 'Flexibel (> 3 Tage)'
+
+  badge:
+    business_critical: 'Geschäftskritisch'
+
+  message:
+    no_critical_assets: 'Keine kritischen Assets gefunden'
+
   success:
     created: Asset erfolgreich erstellt.
     updated: Asset erfolgreich aktualisiert.
     deleted: Asset erfolgreich gelöscht.
 risk:
+  new: Neues Risiko
+  create: Risiko erstellen
+  edit: Risiko bearbeiten
+  update: Risiko aktualisieren
+  inherent_assessment: Inhärente Risikobewertung
+  inherent_help: Bewerten Sie das Risiko ohne Berücksichtigung bestehender Sicherheitsmaßnahmen
+  probability_help: Wahrscheinlichkeit des Eintritts (1=Sehr unwahrscheinlich, 5=Sehr wahrscheinlich)
+  impact_help: Schwere der Auswirkung bei Eintritt (1=Vernachlässigbar, 5=Katastrophal)
+  residual_assessment: Restrisikobewertung
+  residual_help: Bewerten Sie das verbleibende Risiko nach Implementierung von Sicherheitsmaßnahmen
   success:
     created: Risiko erfolgreich erstellt.
     updated: Risiko erfolgreich aktualisiert.
@@ -439,6 +588,9 @@ risk:
   field:
     title: Risikotitel
     description: Beschreibung
+    score: Risikoscore
+    treatment_strategy: Behandlungsstrategie
+    status: Status
   label:
     risk_owner: Risikoverantwortlicher
   placeholder:
@@ -467,8 +619,10 @@ control:
   field:
     control_id: Control-ID
     name: Control-Name
+    title: Control-Titel
     description: Beschreibung
     category: Kategorie
+    status: Status
     applicable: Anwendbarkeit
     justification: Begründung
     implementation_status: Implementierungsstatus
@@ -479,6 +633,8 @@ control:
     last_review_date: Letztes Review
     next_review_date: Nächstes Review
     protected_assets: Verknüpfte Assets
+  success:
+    updated: Control erfolgreich aktualisiert.
 # Phase 6K Translation Update - Audit Module
 audit:
   title: Audits
@@ -519,6 +675,7 @@ audit:
     in_progress: In Bearbeitung
     completed: Abgeschlossen
     cancelled: Abgebrochen
+    reported: Gemeldet
   scope_type:
     internal: Internes Audit
     external: Externes Audit
@@ -544,6 +701,14 @@ audit:
     passed_with_findings: Bestanden mit Feststellungen
     failed: Nicht bestanden
     pending: Ausstehend
+  type_iso27001: ISO 27001
+  type_iso9001: ISO 9001
+  type_gdpr: DSGVO
+  type_custom: Benutzerdefiniert
+  result_passed: Bestanden
+  result_passed_with_findings: Bestanden mit Feststellungen
+  result_failed: Nicht bestanden
+  result_pending: Ausstehend
   section:
     basic_info: Grundinformationen
     schedule: Zeitplan
@@ -691,11 +856,148 @@ audit_management:
   description: Planung und Durchführung interner ISMS-Audits gemäß ISO 27001
   planned_audits: Geplante Audits
   total_audits: Gesamt Audits
+  audits_list: Liste der Audits
+  no_audits: Keine Audits vorhanden
 
 # BCM
 bcm:
-  title: Business Continuity Management
-  description: Geschäftskontinuitätsmanagement und Notfallvorsorge
+  title:
+    _default: Business Continuity Management
+    critical: 'Kritische Assets & Prozesse'
+  description:
+    _default: Geschäftskontinuitätsmanagement und Notfallvorsorge
+    critical: 'Übersicht über geschäftskritische Assets und Prozesse mit ihren Wiederherstellungsanforderungen'
+    critical_level: 'Kritisch: Unmittelbare Auswirkung auf Geschäftsbetrieb. RTO < 4 Stunden.'
+    high_level: 'Hoch: Erhebliche Auswirkung auf Geschäftsbetrieb. RTO < 24 Stunden.'
+    medium_level: 'Mittel: Moderate Auswirkung. RTO < 72 Stunden.'
+    action_items: 'Prioritäre Maßnahmen zur Verbesserung der Business Continuity'
+
+  action:
+    view_insights: 'Erkenntnisse anzeigen'
+    export: 'Exportieren'
+    plan: 'Plan erstellen'
+
+  warning:
+    critical_assets_count: '%count% kritische Assets benötigen Aufmerksamkeit'
+    critical_message: 'Kritische Assets ohne Recovery-Pläne gefunden'
+
+  stats:
+    critical_assets: 'Kritische Assets'
+    critical_processes: 'Kritische Prozesse'
+    avg_rto: 'Durchschn. RTO'
+    missing_recovery_plans: 'Fehlende Recovery-Pläne'
+
+  section:
+    criticality_overview: 'Kritikalitäts-Übersicht'
+    critical_assets_list: 'Kritische Assets'
+    critical_processes: 'Kritische Geschäftsprozesse'
+    action_items: 'Maßnahmen erforderlich'
+
+  criticality:
+    critical: 'Kritisch'
+    high: 'Hoch'
+    medium: 'Mittel'
+
+  field:
+    assets: 'Assets'
+    avg_rto: 'Durchschn. RTO'
+    asset_name: 'Asset-Name'
+    type: 'Typ'
+    criticality: 'Kritikalität'
+    rto: 'RTO'
+    rpo: 'RPO'
+    recovery_plan: 'Recovery-Plan'
+    last_tested: 'Zuletzt getestet'
+    process_name: 'Prozessname'
+    department: 'Abteilung'
+    dependent_assets: 'Abhängige Assets'
+    mtd: 'MTD'
+    impact_of_loss: 'Auswirkung bei Ausfall'
+    maximum_tolerable_downtime: 'Maximal tolerierbare Ausfallzeit'
+
+  badge:
+    no_recovery_plan: 'Kein Plan'
+    immediate: 'Sofort'
+    exists: 'Vorhanden'
+    missing: 'Fehlt'
+    test_overdue: 'Test überfällig'
+
+  message:
+    never_tested: 'Noch nie getestet'
+    no_critical_assets: 'Keine kritischen Assets gefunden'
+    no_critical_processes: 'Keine kritischen Prozesse gefunden'
+
+# Role Management
+role_management:
+  title:
+    list: 'Rollen & Berechtigungen'
+    create: 'Rolle erstellen'
+    edit: 'Rolle bearbeiten'
+    show: 'Rollendetails'
+
+  description:
+    overview: 'Verwalten Sie Benutzerrollen und deren Berechtigungen für die Zugriffskontrolle'
+
+  action:
+    create: 'Neue Rolle erstellen'
+
+  section:
+    basic_info: 'Grundinformationen'
+    permissions: 'Berechtigungen'
+    details: 'Rollendetails'
+    users: 'Zugewiesene Benutzer'
+
+  field:
+    name: 'Rollenname'
+    description: 'Beschreibung'
+    users: 'Benutzer'
+    permissions: 'Berechtigungen'
+    type: 'Typ'
+
+  placeholder:
+    name: 'z.B. Sicherheitsbeauftragter'
+    description: 'Beschreibung der Rolle und ihrer Verantwortlichkeiten...'
+
+  help:
+    active: 'Aktive Rollen können Benutzern zugewiesen werden'
+    permissions: 'Wählen Sie die Berechtigungen aus, die diese Rolle haben soll'
+
+  permission:
+    name: 'Berechtigung'
+    resource: 'Ressource'
+    action: 'Aktion'
+
+  user:
+    name: 'Name'
+    email: 'E-Mail'
+    assigned_date: 'Zugewiesen am'
+
+  badge:
+    system: 'System'
+    custom: 'Benutzerdefiniert'
+
+  type:
+    system: 'Systemrolle'
+    custom: 'Benutzerdefinierte Rolle'
+
+  stats:
+    total: 'Gesamt-Rollen'
+    system_roles: 'Systemrollen'
+    with_users: 'Mit Benutzern'
+    avg_permissions: 'Durchschn. Berechtigungen'
+
+  message:
+    no_permissions: 'Dieser Rolle sind keine Berechtigungen zugewiesen'
+    no_users: 'Dieser Rolle sind keine Benutzer zugewiesen'
+    no_roles: 'Noch keine Rollen erstellt'
+
+  warning:
+    system_role: 'Systemrolle'
+    system_role_desc: 'Dies ist eine Systemrolle und kann nicht gelöscht werden. Nur Berechtigungen können angepasst werden.'
+
+  confirm:
+    delete: 'Sind Sie sicher, dass Sie diese Rolle löschen möchten? Alle Benutzerzuweisungen werden entfernt.'
+
 compliance_management:
   title: Compliance-Management
   description: Verwaltung von Compliance-Anforderungen
@@ -719,8 +1021,12 @@ incident:
   new: Neuer Vorfall
   create: Vorfall erstellen
   edit: Vorfall bearbeiten
+  update: Vorfall aktualisieren
   empty: Noch keine Vorfälle erfasst
+  status_help: Status des Vorfalls im Lebenszyklus
   analysis_resolution: Analyse & Behebung
+  list:
+    title: Vorfallsliste
   filter:
     data_breach: Datenschutzvorfall
     data_breach_only: Nur Datenschutzvorfälle
@@ -739,6 +1045,7 @@ incident:
     affected_systems: Betroffene Systeme & Assets
     analysis: Analyse & Maßnahmen
     assessment: Auswirkungsanalyse
+    history: Verlauf
     nis2_reporting: NIS2-Meldepflicht (EU 2022/2555)
     nis2_info: "NIS2 Art. 23: Erhebliche Vorfälle müssen innerhalb festgelegter Fristen gemeldet werden"
     affected_assets: Betroffene Assets
@@ -853,19 +1160,48 @@ incident:
     updated: Vorfall erfolgreich aktualisiert.
     deleted: Vorfall erfolgreich gelöscht.
 document:
+  doc_title: 'Dokumente'
+  title: 'Dokumente'
+  'title.by_type': 'Dokumente nach Typ'
+  subtitle: 'Dokumentenverwaltung'
+  new: 'Neues Dokument'
+  edit: 'Dokument bearbeiten'
+  update: 'Dokument aktualisieren'
+  upload: 'Dokument hochladen'
+
   field:
     name: Dokumentname
     description: Beschreibung
     document_type: Dokumenttyp
     file: Datei
+    title: 'Titel'
+    status: 'Status'
+    version: 'Version'
+    owner: 'Eigentümer'
+    review_date: 'Überprüfungsdatum'
+    last_updated: 'Zuletzt aktualisiert'
+    updated: 'Aktualisiert'
+    active: 'Aktiv'
+    draft: 'Entwurf'
+    documents: 'Dokumente'
+    total_documents: 'Gesamtanzahl Dokumente'
+    overdue_reviews: 'Überfällige Überprüfungen'
+    type_name: 'Typbezeichnung'
+
   placeholder:
     name: z.B. Informationssicherheitsrichtlinie 2024
     description: Kurze Beschreibung des Dokuments...
+
   help:
     file: Maximal 10 MB. Erlaubte Formate PDF, Word, Excel, Bilder, Text
+
+  file_help: 'Erlaubte Dateitypen: PDF, Word, Excel, Bilder, Text'
+  edit_file_help: 'Laden Sie eine neue Datei hoch, um die bestehende zu ersetzen'
+
   validation:
     mime_types: Bitte laden Sie ein gültiges Dokument hoch (PDF, Word, Excel, Bild
       oder Textdatei)
+
   type:
     asset: Asset-Dokumentation
     risk: Risikobewertung
@@ -878,7 +1214,9 @@ document:
     pdf: PDF-Dokumente
     images: Bilder
     tables: Tabellen
+    excel: 'Excel-Dokumente'
     other: Sonstige
+
   label:
     type: Typ
     file_name: Dateiname
@@ -887,8 +1225,84 @@ document:
     uploaded_by: Hochgeladen von
     uploaded_at: Hochgeladen am
     last_updated: Zuletzt aktualisiert
+    related_entity: 'Zugehörige Entität'
+
+  action:
+    create: 'Dokument erstellen'
+    upload: 'Dokument hochladen'
+
+  badge:
+    confidential: 'Vertraulich'
+    controlled: 'Kontrolliert'
+    due_soon: 'Bald fällig'
+    overdue: 'Überfällig'
+
+  confirm:
+    delete: 'Möchten Sie dieses Dokument wirklich löschen?'
+
+  description:
+    by_type: 'Dokumente nach Typ'
+
+  details:
+    title: 'Dokumentdetails'
+
+  error:
+    upload_failed: 'Fehler beim Hochladen der Datei'
+    too_many_uploads: 'Zu viele Uploads. Bitte versuchen Sie es später erneut.'
+
+  filter:
+    all_categories: 'Alle Kategorien'
+    search_placeholder: 'Dokumente durchsuchen...'
+
+  kpi:
+    total_documents: 'Gesamtanzahl Dokumente'
+    total_size: 'Gesamtgröße'
+
+  message:
+    no_documents: 'Keine Dokumente vorhanden'
+    no_documents_for_type: 'Keine Dokumente für diesen Typ vorhanden'
+    no_recent_activity: 'Keine aktuellen Aktivitäten'
+    no_results: 'Keine Ergebnisse gefunden'
+    no_types: 'Keine Dokumenttypen definiert'
+    upload_first: 'Laden Sie Ihr erstes Dokument hoch'
+
+  option:
+    all_types: 'Alle Typen'
+
+  section:
+    all_documents: 'Alle Dokumente'
+    all_types: 'Alle Typen'
+    documents: 'Dokumente'
+    recent_activity: 'Letzte Aktivitäten'
+    select_type: 'Typ auswählen'
+    type_overview: 'Typübersicht'
+    type_statistics: 'Typ-Statistiken'
+    types_overview: 'Typen-Übersicht'
+
+  stats:
+    active_documents: 'Aktive Dokumente'
+    avg_per_type: 'Durchschnitt pro Typ'
+    document_types: 'Dokumenttypen'
+    draft_documents: 'Entwürfe'
+    expiring_soon: 'Läuft bald ab'
+    overdue_reviews: 'Überfällige Überprüfungen'
+    total: 'Gesamt'
+    total_documents: 'Gesamtanzahl Dokumente'
+
+  success:
+    deleted: 'Dokument erfolgreich gelöscht'
+    updated: 'Dokument erfolgreich aktualisiert'
+    uploaded: 'Dokument erfolgreich hochgeladen'
+
+  table:
+    uploaded_by: 'Hochgeladen von'
 person:
-  title: Personenverwaltung
+  title:
+    _default: Personenverwaltung
+    list: Personen
+    show: Person anzeigen
+    create: Neue Person anlegen
+    edit: Person bearbeiten
   name: Person
   full_name: Vollständiger Name
   person_type: Personentyp
@@ -903,6 +1317,15 @@ person:
   notes: Notizen
   access_valid_from: Zugang gültig ab
   access_valid_until: Zugang gültig bis
+  description:
+    overview: 'Verwalten Sie Mitarbeiter, Auftragnehmer, Besucher und andere Personen in Ihrer Organisation.'
+  action:
+    create: Person anlegen
+  stats:
+    total: Personen gesamt
+    employees: Mitarbeiter
+    contractors: Auftragnehmer
+    with_badge: Mit Ausweis
   type:
     employee: Mitarbeiter
     contractor: Auftragnehmer
@@ -913,21 +1336,55 @@ person:
     other: Sonstiges
   field:
     full_name: Vollständiger Name
+    name: Name
+    type: Typ
     person_type: Personentyp
+    email: E-Mail
+    phone: Telefon
     badge_id: Ausweisnummer
     company: Firma
     department: Abteilung
     job_title: Berufsbezeichnung
+  section:
+    basic_info: Grundinformationen
+    details: Details
+    contact: Kontaktdaten
+    organization: Organisation
+    notes: Notizen
+    additional: Zusatzinformationen
+  message:
+    no_persons: Noch keine Personen vorhanden. Erstellen Sie die erste Person.
+  placeholder:
+    name: 'z.B. Max Mustermann'
+    badge: 'z.B. BADGE-12345'
+  help:
+    badge: Eindeutige Ausweiskennung für physische Zutrittskontrolle
+  confirm:
+    delete: 'Möchten Sie diese Person wirklich löschen?'
   success:
     created: Person erfolgreich erstellt.
     updated: Person erfolgreich aktualisiert.
     deleted: Person erfolgreich gelöscht.
 location:
-  title: Standortverwaltung
+  title:
+    _default: Standortverwaltung
+    list: Standorte
+    show: Standort anzeigen
+    create: Neuen Standort anlegen
+    edit: Standort bearbeiten
   name: Standort
   location_type: Standorttyp
   code: Standortcode
-  description: Beschreibung
+  description:
+    _default: Beschreibung
+    overview: 'Verwalten Sie physische Standorte, Gebäude und Räume Ihrer Organisation für Sicherheits- und Asset-Management.'
+  action:
+    create: Standort anlegen
+  stats:
+    total: Standorte gesamt
+    buildings: Gebäude
+    rooms: Räume
+    secure: Gesicherte Bereiche
   address: Adresse
   city: Stadt
   country: Land
@@ -966,8 +1423,33 @@ location:
   field:
     name: Standortname
     location_type: Standorttyp
+    type: Typ
     code: Code
+    description: Beschreibung
+    city: Stadt
+    parent: Übergeordneter Standort
+    badge_access: Ausweiszugang erforderlich
+    status: Status
+    access_control: Zugangskontrollsystem
     security_level: Sicherheitsstufe
+  section:
+    details: Details
+    address: Adresse
+    hierarchy: Hierarchie
+    child_locations: Untergeordnete Standorte
+    security: Sicherheit
+    features: Merkmale
+  message:
+    no_locations: Noch keine Standorte vorhanden. Erstellen Sie den ersten Standort.
+  placeholder:
+    name: 'z.B. Hauptgebäude A'
+    code: 'z.B. HQ-A-01'
+  help:
+    type: Wählen Sie den Standorttyp (Gebäude, Raum, Rechenzentrum etc.)
+    code: Eindeutiger Code zur Identifikation des Standorts
+    parent: Ordnen Sie diesen Standort einem übergeordneten Standort zu (z.B. Raum in Gebäude)
+  confirm:
+    delete: 'Möchten Sie diesen Standort wirklich löschen? Untergeordnete Standorte werden ebenfalls entfernt.'
   success:
     created: Standort erfolgreich erstellt.
     updated: Standort erfolgreich aktualisiert.
@@ -1157,6 +1639,10 @@ supplier:
     certifications: Weitere Zertifizierungen
     has_dpa: Datenverarbeitungsvereinbarung unterzeichnet
     dpa_signed_date: DPA-Unterzeichnungsdatum
+  success:
+    created: Lieferant erfolgreich erstellt.
+    updated: Lieferant erfolgreich aktualisiert.
+    deleted: Lieferant erfolgreich gelöscht.
 interested_party:
   title: Interessierte Parteien
   page:
@@ -1203,6 +1689,10 @@ interested_party:
     feedback: Feedback
     satisfaction_level: Zufriedenheitslevel (1-5)
     issues: Probleme/Bedenken
+  success:
+    created: Interessierte Partei erfolgreich erstellt.
+    updated: Interessierte Partei erfolgreich aktualisiert.
+    deleted: Interessierte Partei erfolgreich gelöscht.
 ui:
   location: Standort
   responsible: Verantwortlich
@@ -1221,17 +1711,104 @@ ui:
   required: Erforderlich
   n_a: N/A
 workflow:
+  title:
+    list: 'Workflows'
+    definitions: 'Workflow-Definitionen'
+    active: 'Aktive Workflows'
+    pending: 'Ausstehende Workflows'
+    overdue: 'Überfällige Workflows'
+    instance_show: 'Workflow-Details'
+
+  step: 'Schritt'
+  days: 'Tage'
+
+  action:
+    start: 'Workflow starten'
+    cancel: 'Workflow abbrechen'
+    complete_step: 'Schritt abschließen'
+    definitions: 'Definitionen verwalten'
+
+  badge:
+    completed: 'Abgeschlossen'
+    critical: 'Kritisch'
+    current: 'Aktuell'
+    due_soon: 'Bald fällig'
+    overdue: 'Überfällig'
+    my_task: 'Meine Aufgabe'
+
+  confirm:
+    cancel: 'Möchten Sie diesen Workflow wirklich abbrechen?'
+
+  description:
+    active: 'Aktive Workflows'
+    active_detail: 'Workflows, die derzeit in Bearbeitung sind'
+    definitions: 'Workflow-Definitionen verwalten'
+    overdue: 'Überfällige Workflows'
+    overdue_detail: 'Workflows, die ihr Fälligkeitsdatum überschritten haben'
+    overview: 'Workflow-Übersicht'
+    pending: 'Ausstehende Workflows'
+    pending_detail: 'Workflows, die auf eine Aktion warten'
+
+  field:
+    assignee: 'Zugewiesen an'
+    completed_at: 'Abgeschlossen am'
+    current_step: 'Aktueller Schritt'
+    days_overdue: 'Tage überfällig'
+    definition: 'Definition'
+    due_date: 'Fälligkeitsdatum'
+    priority: 'Priorität'
+    progress: 'Fortschritt'
+
+  message:
+    no_active: 'Keine aktiven Workflows'
+    no_activities: 'Keine Aktivitäten'
+    no_overdue: 'Keine überfälligen Workflows'
+    no_overdue_desc: 'Alle Workflows sind im Zeitplan'
+    no_pending: 'Keine ausstehenden Workflows'
+    unassigned: 'Nicht zugewiesen'
+
+  section:
+    active: 'Aktive Workflows'
+    activity_log: 'Aktivitätsprotokoll'
+    overdue: 'Überfällig'
+    overview: 'Übersicht'
+    pending: 'Ausstehend'
+
+  stats:
+    active: 'Aktive'
+    avg_progress: 'Durchschnittlicher Fortschritt'
+    critical_overdue: 'Kritisch überfällig'
+    due_this_week: 'Fällig diese Woche'
+    my_overdue: 'Meine überfälligen'
+    my_tasks: 'Meine Aufgaben'
+    my_workflows: 'Meine Workflows'
+    overdue: 'Überfällig'
+    overdue_days_avg: 'Durchschnitt Tage überfällig'
+    pending: 'Ausstehend'
+    total: 'Gesamt'
+
+  activity:
+    action: 'Aktion'
+    details: 'Details'
+    timestamp: 'Zeitstempel'
+    user: 'Benutzer'
+
+  warning:
+    overdue_count: '{{ count }} überfällige Workflows'
+    overdue_message: 'Sie haben überfällige Workflows, die Aufmerksamkeit erfordern'
+    rejected: 'Workflow-Schritt abgelehnt'
+
   success:
     approved: Workflow-Schritt erfolgreich genehmigt.
     started: Workflow erfolgreich gestartet.
+
   error:
     not_authorized_approve: Sie sind nicht berechtigt, diesen Schritt zu genehmigen.
     not_authorized_reject: Sie sind nicht berechtigt, diesen Schritt abzulehnen.
     comments_required: Kommentare sind erforderlich, wenn ein Workflow-Schritt abgelehnt
       wird.
     not_found: Kein Workflow für diesen Entity-Typ gefunden.
-  warning:
-    rejected: Workflow-Schritt abgelehnt.
+
   info:
     cancelled: Workflow-Instanz abgebrochen.
     no_active_workflow: Kein aktiver Workflow für diese Entität gefunden.
@@ -1258,21 +1835,29 @@ change_request:
     requested_date: Anforderungsdatum
     priority: Priorität
     status: Status
+    complexity_score: Komplexitätsbewertung
     isms_impact: ISMS-Auswirkung
     risk_assessment: Risikobewertung
     implementation_plan: Umsetzungsplan
     rollback_plan: Rollback-Plan
     testing_requirements: Testanforderungen
+    planned_implementation: Geplante Umsetzung
     planned_implementation_date: Geplantes Umsetzungsdatum
     actual_implementation_date: Tatsächliches Umsetzungsdatum
+    implementation_date: Umsetzungsdatum
     approved_by: Genehmigt von
     approved_date: Genehmigungsdatum
+    approval_date: Genehmigungsdatum
     approval_comments: Genehmigungskommentare
+    comments: Kommentare
     implemented_by: Umgesetzt von
     implementation_notes: Umsetzungsnotizen
+    notes: Notizen
     verified_by: Verifiziert von
     verified_date: Verifizierungsdatum
+    verification_date: Verifizierungsdatum
     verification_results: Verifizierungsergebnisse
+    results: Ergebnisse
     closed_date: Abschlussdatum
     closure_notes: Abschlussnotizen
   change_type:
@@ -1297,10 +1882,28 @@ change_request:
     approved: Genehmigt
     rejected: Abgelehnt
     scheduled: Geplant
+    not_scheduled: Nicht geplant
     implemented: Umgesetzt
     verified: Verifiziert
     closed: Geschlossen
     cancelled: Abgebrochen
+  section:
+    description: Beschreibung
+    justification: Begründung
+    impact: Auswirkung
+    risk_assessment: Risikobewertung
+    plan: Umsetzungsplan
+    rollback_plan: Rollback-Plan
+    testing_requirements: Testanforderungen
+    approval_info: Genehmigungsinformationen
+    implementation: Umsetzung
+    verification: Verifizierung
+    closure: Abschluss
+    affected_assets: Betroffene Assets
+    affected_controls: Betroffene Maßnahmen
+    affected_risks: Betroffene Risiken
+  confirm:
+    delete: 'Möchten Sie diesen Änderungsantrag wirklich löschen?'
   statistics:
     title: Statistiken
     total: Gesamtzahl Änderungsanträge
@@ -1376,6 +1979,10 @@ business_continuity_plan:
     last_review_date: Letztes Überprüfungsdatum
     next_review_date: Nächstes Überprüfungsdatum
     review_notes: Überprüfungsnotizen
+  success:
+    created: Business Continuity Plan erfolgreich erstellt.
+    updated: Business Continuity Plan erfolgreich aktualisiert.
+    deleted: Business Continuity Plan erfolgreich gelöscht.
 security:
   error:
     too_many_attempts: Zu viele Anmeldeversuche. Bitte versuchen Sie es in 15 Minuten
@@ -1397,6 +2004,71 @@ bc_exercise:
     updated: BC-Übung erfolgreich aktualisiert.
     deleted: BC-Übung erfolgreich gelöscht.
 management_review:
+  title: 'Management Reviews'
+  new: 'Neues Management Review'
+  create: 'Management Review erstellen'
+  edit: 'Management Review bearbeiten'
+  all_reviews: 'Alle Reviews'
+  no_reviews: 'Keine Management Reviews vorhanden'
+  create_first: 'Erstellen Sie Ihr erstes Management Review'
+
+  review_date: 'Review-Datum'
+  participants: 'Teilnehmer'
+  status: 'Status'
+
+  confirm_delete: 'Möchten Sie dieses Management Review wirklich löschen?'
+  delete_warning: 'Diese Aktion kann nicht rückgängig gemacht werden.'
+
+  clause_93: 'ISO 27001:2022 Clause 9.3'
+  clause_93_description: 'Management Review der obersten Leitung'
+  iso_clause_93_info: 'Anforderungen gemäß ISO 27001:2022 Clause 9.3'
+  iso_clause_info: 'Diese Sektion erfüllt die Anforderungen von ISO 27001:2022 Clause 9.3'
+  iso_requirement: 'ISO-Anforderung'
+
+  section:
+    basic_info: 'Grundinformationen'
+    inputs: 'Review-Eingaben (Inputs)'
+    outputs: 'Review-Ergebnisse (Outputs)'
+    followup: 'Follow-up'
+
+  inputs_label: 'Review-Eingaben (gemäß ISO 27001:2022 Clause 9.3)'
+  outputs_label: 'Review-Ergebnisse (gemäß ISO 27001:2022 Clause 9.3)'
+  action_items_label: 'Maßnahmen und Verbesserungen'
+
+  input_1: 'Status von Maßnahmen aus früheren Management Reviews'
+  input_2: 'Änderungen bei externen und internen Themen, die für das ISMS relevant sind'
+  input_3: 'Feedback zur Informationssicherheitsleistung'
+  input_4: 'Feedback von interessierten Parteien'
+
+  performance_evaluation: 'Leistungsbewertung einschließlich Trends bei:'
+  nonconformities_status: 'Nichtkonformitäten und Korrekturmaßnahmen'
+  audit_results: 'Ergebnisse von Überwachung und Messung'
+  corrective_actions_status: 'Status von Korrekturmaßnahmen'
+  previous_review_actions: 'Maßnahmen aus früheren Reviews'
+  changes_relevant_to_isms: 'Änderungen relevant für das ISMS'
+  feedback_from_interested_parties: 'Feedback von interessierten Parteien'
+  opportunities_for_improvement: 'Möglichkeiten zur kontinuierlichen Verbesserung'
+
+  output_1: 'Möglichkeiten zur kontinuierlichen Verbesserung'
+  output_2: 'Bedarf für Änderungen am Informationssicherheitsmanagementsystem'
+  output_3: 'Ressourcenbedarf'
+
+  management_decisions: 'Managemententscheidungen'
+  decisions: 'Entscheidungen'
+  action_items: 'Maßnahmen'
+  resource_needs: 'Ressourcenbedarf'
+
+  statistics:
+    total: 'Gesamt'
+    completed: 'Abgeschlossen'
+    planned: 'Geplant'
+    this_year: 'Dieses Jahr'
+
+  success:
+    created: 'Management Review erfolgreich erstellt'
+    updated: 'Management Review erfolgreich aktualisiert'
+    deleted: 'Management Review erfolgreich gelöscht'
+
   field:
     title: Review-Titel
     review_date: Review-Datum
@@ -1469,6 +2141,10 @@ business_process:
     recovery_strategy: Wiederherstellungsstrategie
     supporting_assets: Unterstützende Assets
     identified_risks: Identifizierte Risiken
+  success:
+    created: Geschäftsprozess erfolgreich erstellt.
+    updated: Geschäftsprozess erfolgreich aktualisiert.
+    deleted: Geschäftsprozess erfolgreich gelöscht.
 user:
   name: Name
   email: E-Mail
@@ -1493,6 +2169,9 @@ user:
     imported: '%count% Benutzer erfolgreich importiert'
     activated: Benutzer erfolgreich aktiviert
     deactivated: Benutzer erfolgreich deaktiviert
+    created: Benutzer erfolgreich erstellt.
+    updated: Benutzer erfolgreich aktualisiert.
+    deleted: Benutzer erfolgreich gelöscht.
   action:
     export: Exportieren
     import: Importieren
@@ -1561,17 +2240,41 @@ error:
   csrf_invalid: Ungültiges CSRF-Token.
 audit_log:
   title: Audit Log Details
+  entries: Protokolleinträge
+  showing_recent: Zeigt die letzten Einträge
   entry: 'Protokolleintrag #{{ id }}'
   old_values: Alte Werte
   new_values: Neue Werte
+  changes: Änderungen
+  view_all: Alle anzeigen
+  field:
+    timestamp: Zeitstempel
+    action: Aktion
+    entity_type: Entitätstyp
+    entity_id: Entitäts-ID
+    user: Benutzer
+    ip_address: IP-Adresse
+    user_agent: Benutzer-Agent
+    description: Beschreibung
 entity_history:
   title: Entitätsverlauf
   section: Verlauf
+  entry_count: '%count% Einträge'
+  show_details: Details anzeigen
+  no_entries: Keine Einträge vorhanden
 preferences:
   success:
     imported: Einstellungen erfolgreich importiert
   error:
     import_failed: Fehler beim Importieren der Einstellungen
+clause:
+  '4': 'Kontext der Organisation'
+  '5': 'Führung'
+  '6': 'Planung'
+  '7': 'Unterstützung'
+  '8': 'Betrieb'
+  '9': 'Bewertung der Leistung'
+  '10': 'Verbesserung'
 compliance:
   manage_frameworks: Frameworks verwalten
   manage_frameworks_subtitle: Verfügbare Compliance-Frameworks laden und verwalten
@@ -1606,6 +2309,7 @@ compliance:
     compare: Frameworks vergleichen
     data_reuse: Datenwiederverwendungs-Insights
     gaps: Gap-Analyse
+    gap_analysis: 'Gap-Analyse'
   description:
     transitive: Nutzen Sie bestehende Compliance-Arbeit über mehrere Frameworks hinweg für maximale Effizienz
     matrix: Zeigt, wie die Erfüllung von Anforderungen in einem Framework hilft, Anforderungen in anderen Frameworks zu erfüllen
@@ -1614,6 +2318,10 @@ compliance:
     data_reuse: Analysieren Sie Datenwiederverwendungsmöglichkeiten über Frameworks hinweg
     reuse_matrix: Sehen Sie, welche Daten über mehrere Frameworks hinweg genutzt werden können
     gap_analysis: Identifizieren Sie Compliance-Lücken und Verbesserungsmöglichkeiten
+    critical_gaps: 'Kritische Compliance-Lücken'
+    high_gaps: 'Hohe Priorität Lücken'
+    medium_gaps: 'Mittlere Priorität Lücken'
+    low_gaps: 'Niedrige Priorität Lücken'
   action:
     export_transitive: Transitive Analyse exportieren
     export_comparison: Vergleich exportieren
@@ -1634,6 +2342,10 @@ compliance:
     reuse_rate: Wiederverwendungsrate
     effort_saved: Eingesparte Arbeit
     time_saved_hours: Zeitersparnis (Stunden)
+    total_requirements: 'Gesamt-Anforderungen'
+    met_requirements: 'Erfüllte Anforderungen'
+    gaps_identified: 'Identifizierte Lücken'
+    compliance_score: 'Compliance-Score'
   unit:
     requirements: Anforderungen
   info:
@@ -1653,6 +2365,7 @@ compliance:
     framework_coverage: Framework-Abdeckung
     gap_details: Gap-Details
     recommendations: Empfehlungen
+    framework_selection: 'Framework-Auswahl'
   label:
     source_target_matrix: "Quelle ↓ / Ziel →"
     showing_of: "Zeige %count% von"
@@ -1710,8 +2423,15 @@ compliance:
     gap_reason: Grund für Lücke
     assessment: Bewertung
     risk_level: Risikolevel
+    select_framework: 'Framework auswählen'
+    severity: 'Schweregrad'
+    gap_description: 'Lückenbeschreibung'
+    remediation: 'Abhilfemaßnahme'
+    due_date: 'Fälligkeitsdatum'
+    time_savings: 'Zeitersparnis'
   option:
     select_framework: -- Framework auswählen --
+    all_frameworks: 'Alle Frameworks'
   badge:
     mapped: Gemappt
     no_mapping: Kein Mapping
@@ -1725,9 +2445,10 @@ compliance:
     no_unique: Keine einzigartigen Anforderungen gefunden
     more_requirements: "+ %count% weitere Anforderungen"
     no_opportunities: Keine Wiederverwendungsmöglichkeiten gefunden
-    no_data_elements: Keine Datenelemente gefunden
-    no_frameworks: Keine Frameworks geladen
     no_gaps: Keine Gaps gefunden - Alle Anforderungen erfüllt!
+    no_frameworks: 'Keine Frameworks verfügbar'
+    no_gaps_desc: 'Alle Anforderungen sind erfüllt'
+    no_data_elements: 'Keine Datenelemente verfügbar'
   mapping:
     type:
       full: Vollständige Abdeckung
@@ -1833,34 +2554,152 @@ compliance:
       title: Strategische Compliance
       description: Identifizieren Sie, welche Frameworks sich am meisten überschneiden und priorisieren Sie die Umsetzung basierend auf Multi-Framework-Vorteilen.
 
+  severity:
+    critical: 'Kritisch'
+    high: 'Hoch'
+    medium: 'Mittel'
+    low: 'Niedrig'
+
 # Risk Appetite (ISO 27005:2022)
 risk_appetite:
+  title: 'Risikobereitschaften'
+  title_singular: 'Risikobereitschaft'
+  description: 'Definieren Sie die akzeptablen Risikoniveaus gemäß ISO 27005:2022'
+  new: 'Neue Risikobereitschaft'
+  edit: 'Risikobereitschaft bearbeiten'
+  no_appetites: 'Noch keine Risikobereitschaften definiert'
+  scale: 'Risiko-Skala (1-25)'
+  approved: 'Genehmigt'
+
+  new.description: 'Definieren Sie die maximalen akzeptablen Risikoniveaus für verschiedene Kategorien'
+
+  list:
+    title: 'Risikobereitschaften'
+
+  show:
+    subtitle: 'Details zur Risikobereitschaft'
+
+  success:
+    created: 'Risikobereitschaft erfolgreich erstellt.'
+    updated: 'Risikobereitschaft erfolgreich aktualisiert.'
+    deleted: 'Risikobereitschaft erfolgreich gelöscht.'
+
+  delete:
+    warning: 'Möchten Sie diese Risikobereitschaft wirklich löschen?'
+    confirm: 'Risikobereitschaft löschen'
+
+  section:
+    details: 'Details'
+    history: 'Änderungsverlauf'
+
+  stats:
+    total: 'Gesamt'
+    global_threshold: 'Globale Schwelle'
+    categories: 'Kategorien'
+    total_risks: 'Gesamt-Risiken'
+    exceeding: 'Überschreitung'
+
+  category:
+    global: 'Global'
+
+  status:
+    active: 'Aktiv'
+    inactive: 'Inaktiv'
+
+  filter:
+    active_only: 'Nur aktive'
+
+  exceeding:
+    title: 'Risiken über Schwelle'
+    description: 'Diese Risiken überschreiten die definierte Risikobereitschaft und erfordern Behandlungsmaßnahmen'
+
+  risks_exceeding_title: 'Risiken, die die Schwelle überschreiten'
+  risks_exceeding_description: 'Diese Risiken überschreiten das maximal akzeptable Risikoniveau'
+  risks_within_title: 'Akzeptierte Risiken'
+  risks_within_description: 'Diese Risiken liegen innerhalb der definierten Risikobereitschaft'
+  risks_within: 'Risiken innerhalb'
+  risks_exceeding: 'Risiken überschreiten'
+  exceeds_by: 'Überschreitet um %value%'
+  and_more: 'und %count% weitere'
+  and_more_risks: 'und %count% weitere Risiken'
+  acceptance_rate: 'Akzeptanzrate'
+  appetite_percentage: 'Risikobereitschaft (%)'
+
+  info:
+    iso27005: 'Gemäß ISO 27005:2022 sollte die Risikobereitschaft formal vom Management genehmigt werden'
+
   field:
     category: Kategorie
     max_acceptable_risk: Maximales akzeptables Risiko
     description: Beschreibung
     is_active: Aktiv
+    status: 'Status'
     approved_by: Genehmigt von
     approved_at: Genehmigt am
+    created_at: 'Erstellt am'
+
   placeholder:
     category: 'z.B. Finanzrisiken, Operationelle Risiken, Compliance-Risiken'
     approved_by: Person auswählen
     description: 'Beschreiben Sie die Risikobereitschaft und deren Begründung...'
+
   help:
+    category_empty: 'Leer lassen für globale Risikobereitschaft'
     category: 'Optional: Leer lassen für globale Risikobereitschaft, oder Kategorie angeben (z.B. "Finanzrisiken")'
     max_acceptable_risk: 'Maximaler Risiko-Score (1-25) auf der 5×5 Risikomatrix. Risiken darüber erfordern Behandlung.'
     description: 'Erklärung der Risikobereitschaft, Begründung und Richtlinien für die Risikoakzeptanz'
     is_active: 'Nur eine Risikobereitschaft pro Kategorie sollte aktiv sein'
     approved_by: 'Person, die diese Risikobereitschaft genehmigt hat (ISO 27005 Compliance)'
     approved_at: 'Zeitpunkt der formalen Genehmigung'
-  validation:
-    category_max_length: 'Kategoriename darf maximal {{ limit }} Zeichen lang sein'
-    max_acceptable_risk_required: 'Maximales akzeptables Risiko ist erforderlich'
-    max_acceptable_risk_range: 'Maximales akzeptables Risiko muss zwischen {{ min }} und {{ max }} liegen'
-    description_required: 'Beschreibung ist erforderlich'
 
 # Risk Treatment Plan (ISO 27005:2022)
 risk_treatment_plan:
+  title: 'Risikobehandlungspläne'
+  new: 'Neuer Behandlungsplan'
+  edit: 'Behandlungsplan bearbeiten'
+  description: 'Verwalten Sie Maßnahmen zur Risikobehandlung gemäß ISO 27005'
+  no_plans: 'Noch keine Risikobehandlungspläne erstellt'
+
+  new.description: 'Erstellen Sie einen neuen Plan zur Behandlung identifizierter Risiken'
+
+  list:
+    title: 'Risikobehandlungspläne'
+
+  show:
+    subtitle: 'Details zum Risikobehandlungsplan'
+
+  success:
+    created: 'Risikobehandlungsplan erfolgreich erstellt.'
+    updated: 'Risikobehandlungsplan erfolgreich aktualisiert.'
+    deleted: 'Risikobehandlungsplan erfolgreich gelöscht.'
+
+  delete:
+    warning: 'Möchten Sie diesen Risikobehandlungsplan wirklich löschen?'
+    confirm: 'Behandlungsplan löschen'
+
+  section:
+    details: 'Plandetails'
+    controls: 'Zugeordnete Maßnahmen'
+    history: 'Änderungsverlauf'
+
+  stats:
+    total: 'Gesamt-Pläne'
+    planned: 'Geplant'
+    in_progress: 'In Bearbeitung'
+    completed: 'Abgeschlossen'
+    overdue: 'Überfällig'
+    avg_completion: 'Durchschn. Fertigstellung'
+
+  filter:
+    overdue: 'Überfällig'
+    overdue_only: 'Nur überfällige Pläne'
+
+  overdue: 'Überfällig'
+  due_today: 'Heute fällig'
+  days_until_target: '%count% Tage bis Zieldatum'
+  days_overdue: '%count% Tage überfällig'
+  days_remaining: '%count% Tage verbleibend'
+
   field:
     risk: Risiko
     title: Titel
@@ -1868,11 +2707,13 @@ risk_treatment_plan:
     status: Status
     priority: Priorität
     start_date: Startdatum
+    target_date: 'Zieldatum'
     target_completion_date: Ziel-Fertigstellungsdatum
     actual_completion_date: Tatsächliches Fertigstellungsdatum
     budget: Budget
     responsible_person: Verantwortliche Person
     controls: Maßnahmen
+    completion: 'Fertigstellung'
     completion_percentage: Fertigstellungsgrad
     implementation_notes: Implementierungshinweise
   placeholder:
@@ -1941,6 +2782,7 @@ vulnerability:
     status: Status
     affected_assets: Betroffene Assets
     discovered_at: Entdeckt am
+    discovered_date: Entdeckungsdatum
     disclosed_at: Offengelegt am
     remediation_deadline: Behebungsfrist
     exploit_available: Exploit verfügbar
@@ -1995,6 +2837,7 @@ patch:
   empty: Noch keine Patches erfasst.
   field:
     patch_identifier: Patch-ID
+    patch_id: Patch-ID
     title: Titel
     description: Beschreibung
     patch_type: Patch-Typ
@@ -2152,12 +2995,13 @@ crisis_team:
     created: Krisenstab erfolgreich erstellt.
     updated: Krisenstab erfolgreich aktualisiert.
     deleted: Krisenstab erfolgreich gelöscht.
+    activated: Krisenstab erfolgreich aktiviert.
 
 tenant:
   title: Mandantenverwaltung
+  'title.edit': Mandant bearbeiten
+  'title.create': Neuen Mandanten erstellen
   subtitle: Verwalten Sie Organisationen und Mandanten
-  title_create: Neuen Mandanten erstellen
-  title_edit: Mandant bearbeiten
   empty: Keine Mandanten vorhanden
   stats:
     total: Gesamt
@@ -2853,9 +3697,160 @@ common.view: 'Anzeigen'
 common.edit: 'Bearbeiten'
 common.actions: 'Aktionen'
 
-# Corporate Structure Management
+# Setup Wizard Translations
+setup:
+  welcome:
+    title: 'Willkommen beim Little ISMS Helper'
+    greeting: 'Willkommen zur Ersteinrichtung'
+    header: 'Setup-Assistent'
+    description: 'Dieser Assistent führt Sie durch die Erstkonfiguration Ihres ISMS-Systems.'
+    start_button: 'Setup starten'
+    info:
+      title: 'Über diesen Setup-Assistenten'
+      description: 'Wir führen Sie Schritt für Schritt durch die Konfiguration Ihres Informationssicherheits-Managementsystems.'
+      point1: 'Datenbankverbindung einrichten'
+      point2: 'Administrator-Account erstellen'
+      point3: 'Organisationsdaten eingeben'
+    steps:
+      title: 'Setup-Schritte'
+      requirements: 'Systemvoraussetzungen'
+      database: 'Datenbankverbindung'
+      migrations: 'Datenbank-Migrationen'
+      admin: 'Administrator anlegen'
+      base_data: 'Basisdaten'
+      modules: 'Module aktivieren'
+      sample_data: 'Beispieldaten'
+    requirements:
+      title: 'Systemvoraussetzungen'
+      php: 'PHP Version {{ version }} oder höher'
+      database: 'MySQL, PostgreSQL oder SQLite Datenbank'
+      permissions: 'Schreibrechte im Installationsverzeichnis'
+      duration: 'Geschätzte Dauer: 5-10 Minuten'
+
+  progress:
+    title: 'Fortschritt'
+    step: 'Schritt {{ current }} von {{ total }}'
+
+  navigation:
+    next: 'Weiter'
+    back: 'Zurück'
+
+  state:
+    recovery_detected: 'Eine vorherige Setup-Sitzung wurde erkannt. Sie können von dort fortfahren.'
+
+  database:
+    title: 'Datenbankverbindung'
+    header: 'Datenbankkonfiguration'
+    description: 'Bitte geben Sie die Verbindungsdaten für Ihre Datenbank ein.'
+    type: 'Datenbanktyp'
+    host: 'Host'
+    port: 'Port'
+    name: 'Datenbankname'
+    user: 'Benutzername'
+    password: 'Passwort'
+    test_button: 'Verbindung testen'
+    existing_tables: 'Achtung: Die Datenbank enthält bereits Tabellen. Eine Migration kann bestehende Daten überschreiben.'
+    info:
+      title: 'Datenbank-Hinweise'
+      mysql: 'MySQL: Standardport ist 3306'
+      postgresql: 'PostgreSQL: Standardport ist 5432'
+      sqlite: 'SQLite: Geben Sie den Pfad zur Datenbankdatei an'
+      special_chars: 'Vermeiden Sie Sonderzeichen im Passwort, die escaped werden müssen'
+    test:
+      success: 'Datenbankverbindung erfolgreich getestet'
+      failed: 'Verbindung fehlgeschlagen: {{ error }}'
+      create_needed: 'Datenbank existiert nicht und wird bei der Migration erstellt'
+    config_saved: 'Datenbankkonfiguration erfolgreich gespeichert'
+    config_failed: 'Fehler beim Speichern der Konfiguration: {{ error }}'
+    write_failed: 'Konnte Konfigurationsdatei nicht schreiben. Bitte prüfen Sie die Dateiberechtigungen.'
+
+  admin:
+    title: 'Administrator erstellen'
+    header: 'Administrator-Account'
+    description: 'Erstellen Sie den ersten Administrator-Account für Ihr System.'
+    email: 'E-Mail-Adresse'
+    email_help: 'Diese E-Mail wird für die Anmeldung verwendet'
+    first_name: 'Vorname'
+    last_name: 'Nachname'
+    password: 'Passwort'
+    password_confirm: 'Passwort bestätigen'
+    password_requirements:
+      title: 'Passwortanforderungen'
+      length: 'Mindestens 8 Zeichen'
+      uppercase: 'Mindestens ein Großbuchstabe'
+      lowercase: 'Mindestens ein Kleinbuchstabe'
+      number: 'Mindestens eine Ziffer'
+    security_note:
+      title: 'Sicherheitshinweis'
+      message: 'Dieser Account erhält volle Administratorrechte. Wählen Sie ein starkes Passwort!'
+    user_created: 'Administrator-Account erfolgreich erstellt'
+    creation_failed: 'Fehler beim Erstellen des Administrators: {{ error }}'
+    migration_failed: 'Datenbank-Migrationen fehlgeschlagen: {{ error }}'
+    next_steps:
+      title: 'Nächste Schritte'
+      description: 'Nach Abschluss des Setups können Sie sich mit diesem Account anmelden.'
+
+  organisation:
+    title: 'Organisationsdaten'
+    header: 'Ihre Organisation'
+    description: 'Bitte geben Sie die Daten Ihrer Organisation ein.'
+    info_saved: 'Organisationsdaten erfolgreich gespeichert'
+    info_failed: 'Fehler beim Speichern: {{ error }}'
+    usage:
+      title: 'Verwendungszweck'
+      message: 'Diese Daten werden in Berichten und Dokumentationen verwendet.'
+    compliance_info:
+      title: 'Compliance-Informationen'
+      scope: 'Diese Informationen helfen bei der Anpassung des Systems an Ihre Compliance-Anforderungen'
+      relevant_frameworks: 'Relevante Frameworks'
+      regulatory_requirements: 'Regulatorische Anforderungen'
+      description: 'Optionale Zusatzinformationen zur Compliance-Situation Ihrer Organisation'
+      reporting: 'Compliance-Berichte automatisch anpassen'
+      recommendations: 'Branchenspezifische Empfehlungen bereitstellen'
+
+  email:
+    title: 'E-Mail-Konfiguration'
+    header: 'E-Mail-Server'
+    sender_info: 'Absenderadresse für System-E-Mails'
+    skip_button: 'Überspringen'
+    skipped: 'E-Mail-Konfiguration übersprungen. Sie können diese später vornehmen.'
+    config_saved: 'E-Mail-Konfiguration gespeichert'
+    config_failed: 'Fehler beim Speichern der E-Mail-Konfiguration: {{ error }}'
+    optional:
+      title: 'Optionaler Schritt'
+      message: 'Die E-Mail-Konfiguration kann auch später vorgenommen werden.'
+    info:
+      title: 'E-Mail-Verwendung'
+      description: 'Das System versendet E-Mails für:'
+      notifications: 'Benachrichtigungen bei wichtigen Ereignissen'
+      reminders: 'Erinnerungen für anstehende Aufgaben'
+      reports: 'Automatische Berichte'
+
+  compliance:
+    frameworks_saved: 'Compliance-Frameworks wurden konfiguriert'
+
+  error:
+    configure_database_first: 'Bitte konfigurieren Sie zuerst die Datenbankverbindung'
+    create_admin_first: 'Bitte erstellen Sie zuerst einen Administrator-Account'
+
+# Status Translations
+status:
+  in_progress: In Bearbeitung
+  not_started: Nicht begonnen
+
+# Action Translations
+action:
+  new_asset: Neues Asset
+  assess_risk: Risiko bewerten
+  report_incident: Vorfall melden
+
+# Form Translations
+form:
+  complete_asset_inventory: Asset-Inventar vervollständigen
+  conduct_risk_analysis: Risikoanalyse durchführen
+  document_policies: Richtlinien dokumentieren
+  plan_awareness_training: Awareness-Schulung planen
 corporate:
-  title: 'Konzernstrukturen'
   subtitle: 'Verwaltung von Muttergesellschaften und Tochtergesellschaften'
   role:
     parent: 'Muttergesellschaft'
@@ -2865,105 +3860,45 @@ corporate:
     standalone: 'Eigenständige Mandanten'
     structure: 'Konzernstruktur'
   stats:
-    groups: 'Konzerngruppen'
     standalone: 'Eigenständig'
     total: 'Gesamt Mandanten'
   field:
-    subsidiary: 'Tochtergesellschaft'
-    parent: 'Muttergesellschaft'
-    governance_model: 'Governance-Modell'
     actions: 'Aktionen'
-    hierarchy_depth: 'Hierarchieebene'
     subsidiaries: 'Tochtergesellschaften'
-    is_corporate_parent: 'Ist Muttergesellschaft'
-    is_corporate_parent_help: 'Markieren Sie dies, wenn dieser Mandant eine Muttergesellschaft ist'
-    parent_help: 'Wählen Sie die Muttergesellschaft für diesen Mandanten'
-    governance_model_help: 'Wählen Sie, wie ISMS-Verantwortlichkeiten verwaltet werden'
-    corporate_notes: 'Konzernnotizen'
-    corporate_notes_help: 'Optionale Notizen zur Konzernstruktur'
   select:
     parent: 'Muttergesellschaft auswählen...'
     governance: 'Governance-Modell auswählen...'
-  action:
-    set_parent: 'Muttergesellschaft zuweisen'
-    remove_parent: 'Zuordnung entfernen'
-    update_governance: 'Governance-Modell ändern'
-    view_structure: 'Gesamte Struktur anzeigen'
   modal:
-    set_parent:
-      title: 'Muttergesellschaft zuweisen'
-    update_governance:
-      title: 'Governance-Modell ändern'
   confirm:
-    remove_parent: 'Möchten Sie die Zuordnung zur Muttergesellschaft wirklich entfernen?'
   flash:
-    parent_set: 'Muttergesellschaft erfolgreich zugewiesen'
-    parent_removed: 'Zuordnung zur Muttergesellschaft entfernt'
-    parent_not_found: 'Muttergesellschaft nicht gefunden'
-    invalid_governance: 'Ungültiges Governance-Modell'
-    governance_updated: 'Governance-Modell aktualisiert'
-    error: 'Fehler bei der Konzernstruktur-Verwaltung'
-    no_governance_found: 'Keine Governance-Regel gefunden für diesen Mandanten'
-  info:
-    title: 'Information zur Konzernstruktur'
     text: 'Hier können Sie Beziehungen zwischen Muttergesellschaften und Tochtergesellschaften verwalten. Das Governance-Modell bestimmt, wie ISMS-Verantwortlichkeiten zwischen Mutter- und Tochtergesellschaften aufgeteilt werden.'
   level: 'Ebene %level%'
   placeholder:
     parent: 'Keine Muttergesellschaft (eigenständig)'
-    governance_model: 'Governance-Modell auswählen...'
-    corporate_notes: 'Z.B. Spezielle Vereinbarungen oder Besonderheiten...'
-  single_tenant:
-    title: 'Einzelmandant-Umgebung'
-    message: 'Es existiert derzeit nur %count% aktiver Mandant in Ihrem System.'
     hint: 'Konzernstrukturen werden erst relevant, wenn Sie mehrere Mandanten verwalten.'
   granular:
-    title: 'Granulare Governance-Regeln'
     subtitle: 'Spezifische Governance-Regeln für einzelne Bereiche'
-    add_rule: 'Regel hinzufügen'
-    no_rules: 'Keine spezifischen Regeln definiert. Es gilt das Standard-Governance-Modell.'
     loading: 'Lade Governance-Regeln...'
     modal:
-      title: 'Governance-Regel hinzufügen'
-      edit_title: 'Governance-Regel bearbeiten'
     field:
-      scope: 'Bereich'
-      scope_id: 'Bereichs-ID (optional)'
       notes: 'Notizen'
     help:
-      scope_id: 'Optional: Spezifische ID für den Bereich (z.B. "A.5.1" für ein Control)'
-    scope:
       control: 'Control'
-      isms_context: 'ISMS-Kontext'
       risk: 'Risiko'
       asset: 'Asset'
       process: 'Prozess'
       default: 'Standard'
-    action:
       delete: 'Regel löschen'
     confirm:
       delete: 'Möchten Sie diese Governance-Regel wirklich löschen?'
     flash:
       saved: 'Governance-Regel gespeichert'
       deleted: 'Governance-Regel gelöscht'
-      error: 'Fehler beim Speichern der Governance-Regel'
   inheritance:
-    title: 'ISMS-Kontext & Organisation'
     subtitle: 'Effektiver ISMS-Kontext für diesen Mandanten'
     organization: 'Organisation'
-    inherited_from: 'Geerbt von'
-    own_context: 'Verwendet eigenen ISMS-Kontext'
-    no_context: 'Kein ISMS-Kontext vorhanden'
-    load_error: 'Fehler beim Laden des ISMS-Kontexts'
     propagate: 'An Tochtergesellschaften verteilen'
-    propagate_error: 'Fehler beim Verteilen des Kontexts'
-    confirm_propagate: 'Möchten Sie den ISMS-Kontext wirklich an alle hierarchischen Tochtergesellschaften verteilen? Dies überschreibt deren aktuelle Kontexte.'
-    isms_context_inherited: 'ISMS-Kontext wird von Muttergesellschaft geerbt'
     from: 'Von'
-    edit_at_parent: 'Um diesen Kontext zu ändern, bearbeiten Sie ihn bei der Muttergesellschaft.'
-    cannot_edit_inherited: 'Geerbte Kontexte können nicht bearbeitet werden'
-    cannot_edit_inherited_long: 'Dieser ISMS-Kontext wird von der Muttergesellschaft "%parent%" geerbt und kann hier nicht bearbeitet werden. Bitte bearbeiten Sie den Kontext bei der Muttergesellschaft.'
-
-# Governance Model Labels
 governance:
   hierarchical: 'Hierarchisch'
   shared: 'Geteilt'
