@@ -10,6 +10,13 @@ use App\Command\LoadGdprRequirementsCommand;
 use App\Command\LoadIso27001RequirementsCommand;
 use App\Command\LoadIso27701RequirementsCommand;
 use App\Command\LoadIso27701v2025RequirementsCommand;
+use App\Command\LoadC5RequirementsCommand;
+use App\Command\LoadC52025RequirementsCommand;
+use App\Command\LoadKritisRequirementsCommand;
+use App\Command\LoadKritisHealthRequirementsCommand;
+use App\Command\LoadDigavRequirementsCommand;
+use App\Command\LoadTkgRequirementsCommand;
+use App\Command\LoadGxpRequirementsCommand;
 use App\Repository\ComplianceFrameworkRepository;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\BufferedOutput;
@@ -29,6 +36,13 @@ class ComplianceFrameworkLoaderService
         private LoadIso27001RequirementsCommand $iso27001Command,
         private LoadIso27701RequirementsCommand $iso27701Command,
         private LoadIso27701v2025RequirementsCommand $iso27701v2025Command,
+        private LoadC5RequirementsCommand $c5Command,
+        private LoadC52025RequirementsCommand $c52025Command,
+        private LoadKritisRequirementsCommand $kritisCommand,
+        private LoadKritisHealthRequirementsCommand $kritisHealthCommand,
+        private LoadDigavRequirementsCommand $digavCommand,
+        private LoadTkgRequirementsCommand $tkgCommand,
+        private LoadGxpRequirementsCommand $gxpCommand,
     ) {}
 
     /**
@@ -128,6 +142,83 @@ class ComplianceFrameworkLoaderService
                 'loaded' => in_array('ISO27701_2025', $loadedCodes),
                 'icon' => '🤖',
             ],
+            [
+                'code' => 'BSI-C5',
+                'name' => 'BSI C5:2020 - Cloud Computing Compliance Criteria Catalogue',
+                'description' => 'German Federal Office for Information Security criteria catalogue for secure cloud computing (121 criteria in 17 categories)',
+                'industry' => 'cloud_services',
+                'regulatory_body' => 'BSI - Bundesamt für Sicherheit in der Informationstechnik',
+                'mandatory' => false,
+                'version' => '2020',
+                'loaded' => in_array('BSI-C5', $loadedCodes),
+                'icon' => '☁️',
+            ],
+            [
+                'code' => 'BSI-C5-2025',
+                'name' => 'BSI C5:2025 Community Draft - Cloud Computing Compliance',
+                'description' => 'Next-generation C5 with container management, supply chain security, post-quantum cryptography, and confidential computing (43 new requirements, mandatory from Jan 2027)',
+                'industry' => 'cloud_services',
+                'regulatory_body' => 'BSI - Bundesamt für Sicherheit in der Informationstechnik',
+                'mandatory' => false,
+                'version' => '2025 Community Draft',
+                'loaded' => in_array('BSI-C5-2025', $loadedCodes),
+                'icon' => '🔮',
+            ],
+            [
+                'code' => 'KRITIS',
+                'name' => 'KRITIS - Critical Infrastructure Protection (§8a BSIG)',
+                'description' => 'German security requirements for operators of critical infrastructure based on IT Security Act 2.0 (135 controls)',
+                'industry' => 'critical_infrastructure',
+                'regulatory_body' => 'BSI - Bundesamt für Sicherheit in der Informationstechnik',
+                'mandatory' => true,
+                'version' => '§8a BSIG (IT-SiG 2.0)',
+                'loaded' => in_array('KRITIS', $loadedCodes),
+                'icon' => '⚡',
+            ],
+            [
+                'code' => 'KRITIS-HEALTH',
+                'name' => 'KRITIS Healthcare - Hospital IT Security',
+                'description' => 'IT security requirements for hospitals and healthcare facilities (KHPatSiG, KHZG, §75c SGB V, BSI B3S, 37 requirements)',
+                'industry' => 'healthcare',
+                'regulatory_body' => 'BSI / Bundesgesundheitsministerium',
+                'mandatory' => true,
+                'version' => 'KHPatSiG/KHZG 2024',
+                'loaded' => in_array('KRITIS-HEALTH', $loadedCodes),
+                'icon' => '🏥',
+            ],
+            [
+                'code' => 'DIGAV',
+                'name' => 'DiGAV - Digital Health Applications Regulation',
+                'description' => 'Requirements for digital health applications (DiGA) - apps on prescription in Germany (38 requirements)',
+                'industry' => 'healthcare',
+                'regulatory_body' => 'BfArM - Bundesinstitut für Arzneimittel und Medizinprodukte',
+                'mandatory' => true,
+                'version' => 'DiGAV 2024',
+                'loaded' => in_array('DIGAV', $loadedCodes),
+                'icon' => '📱',
+            ],
+            [
+                'code' => 'TKG-2024',
+                'name' => 'TKG 2024 - Telecommunications Security',
+                'description' => 'Security requirements for telecommunications providers (§164-167 TKG, TK-SiV, BNetzA Security Catalog 2.0, 43 requirements)',
+                'industry' => 'telecommunications',
+                'regulatory_body' => 'Bundesnetzagentur / BSI',
+                'mandatory' => true,
+                'version' => 'TKG 2024',
+                'loaded' => in_array('TKG-2024', $loadedCodes),
+                'icon' => '📡',
+            ],
+            [
+                'code' => 'GXP',
+                'name' => 'GxP - Good Practice (Pharmaceutical & Life Sciences)',
+                'description' => 'Regulatory requirements for pharmaceutical and life sciences (EU GMP Annex 11, FDA 21 CFR Part 11, GAMP 5, 65+ requirements)',
+                'industry' => 'pharmaceutical',
+                'regulatory_body' => 'EMA / FDA',
+                'mandatory' => true,
+                'version' => 'EU GMP Annex 11 (2024) / FDA 21 CFR Part 11',
+                'loaded' => in_array('GXP', $loadedCodes),
+                'icon' => '💊',
+            ],
         ];
     }
 
@@ -145,6 +236,13 @@ class ComplianceFrameworkLoaderService
             'ISO27001' => $this->iso27001Command,
             'ISO27701' => $this->iso27701Command,
             'ISO27701_2025' => $this->iso27701v2025Command,
+            'BSI-C5' => $this->c5Command,
+            'BSI-C5-2025' => $this->c52025Command,
+            'KRITIS' => $this->kritisCommand,
+            'KRITIS-HEALTH' => $this->kritisHealthCommand,
+            'DIGAV' => $this->digavCommand,
+            'TKG-2024' => $this->tkgCommand,
+            'GXP' => $this->gxpCommand,
             default => null,
         };
 

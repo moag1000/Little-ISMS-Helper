@@ -485,6 +485,67 @@ else
 fi
 
 echo ""
+info "Step 6: (Optional) Load German Compliance Frameworks..."
+echo ""
+info "Available frameworks:"
+echo "  1. BSI C5:2020 (Cloud Security - 121 criteria)"
+echo "  2. BSI C5:2025 Community Draft (43 new requirements)"
+echo "  3. KRITIS (Critical Infrastructure - 135 controls)"
+echo "  4. KRITIS-Health (Hospital IT Security - 37 requirements)"
+echo "  5. DiGAV (Digital Health Apps - 38 requirements)"
+echo "  6. TKG-2024 (Telecommunications - 43 requirements)"
+echo "  7. GxP (Pharma/Life Sciences - 55 requirements)"
+echo ""
+read -p "Load German compliance frameworks? (y/N) " -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+    echo ""
+    read -p "  Load BSI C5:2020? (Y/n) " -n 1 -r
+    echo
+    if [[ ! $REPLY =~ ^[Nn]$ ]]; then
+        php bin/console app:load-c5-requirements 2>&1 && success "  ✓ BSI C5:2020 loaded" || warning "  ⚠ C5:2020 failed"
+    fi
+
+    read -p "  Load BSI C5:2025 Community Draft? (Y/n) " -n 1 -r
+    echo
+    if [[ ! $REPLY =~ ^[Nn]$ ]]; then
+        php bin/console app:load-c5-2025-requirements 2>&1 && success "  ✓ BSI C5:2025 loaded" || warning "  ⚠ C5:2025 failed"
+    fi
+
+    read -p "  Load KRITIS? (Y/n) " -n 1 -r
+    echo
+    if [[ ! $REPLY =~ ^[Nn]$ ]]; then
+        php bin/console app:load-kritis-requirements 2>&1 && success "  ✓ KRITIS loaded" || warning "  ⚠ KRITIS failed"
+    fi
+
+    read -p "  Load KRITIS-Health? (Y/n) " -n 1 -r
+    echo
+    if [[ ! $REPLY =~ ^[Nn]$ ]]; then
+        php bin/console app:load-kritis-health-requirements 2>&1 && success "  ✓ KRITIS-Health loaded" || warning "  ⚠ KRITIS-Health failed"
+    fi
+
+    read -p "  Load DiGAV? (Y/n) " -n 1 -r
+    echo
+    if [[ ! $REPLY =~ ^[Nn]$ ]]; then
+        php bin/console app:load-digav-requirements 2>&1 && success "  ✓ DiGAV loaded" || warning "  ⚠ DiGAV failed"
+    fi
+
+    read -p "  Load TKG-2024? (Y/n) " -n 1 -r
+    echo
+    if [[ ! $REPLY =~ ^[Nn]$ ]]; then
+        php bin/console app:load-tkg-requirements 2>&1 && success "  ✓ TKG-2024 loaded" || warning "  ⚠ TKG-2024 failed"
+    fi
+
+    read -p "  Load GxP? (Y/n) " -n 1 -r
+    echo
+    if [[ ! $REPLY =~ ^[Nn]$ ]]; then
+        php bin/console app:load-gxp-requirements 2>&1 && success "  ✓ GxP loaded" || warning "  ⚠ GxP failed"
+    fi
+else
+    warning "Skipped loading German compliance frameworks"
+fi
+
+echo ""
 echo "=========================================="
 success "Database setup completed successfully!"
 echo "=========================================="
@@ -493,4 +554,5 @@ info "Next steps:"
 echo "  1. Start the server: symfony serve"
 echo "  2. Or use: php -S localhost:8000 -t public/"
 echo "  3. Open: http://localhost:8000"
+echo "  4. Load additional frameworks via UI: /compliance/frameworks/manage"
 echo ""
