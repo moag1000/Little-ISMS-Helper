@@ -23,6 +23,7 @@ nav:
   compliance: Compliance
   audit_log: Audit Log
   users: Users
+  documents: Documents
 login:
   title: Login
   already_logged_in: You are already logged in as {{ user }}.
@@ -612,8 +613,10 @@ control:
   field:
     control_id: Control ID
     name: Control Name
+    title: Control Title
     description: Description
     category: Category
+    status: Status
     applicable: Applicability
     justification: Justification
     implementation_status: Implementation Status
@@ -624,6 +627,8 @@ control:
     last_review_date: Last Review
     next_review_date: Next Review
     protected_assets: Related Assets
+  success:
+    updated: Control updated successfully.
 # Phase 6K Translation Update - Audit Module
 audit:
   title: Audits
@@ -679,11 +684,13 @@ audit:
     full_isms: Full ISMS Audit
     location: Location Audit
   type:
+    _default: Audit Type
     iso27001: ISO 27001
     iso9001: ISO 9001
     gdpr: GDPR
     custom: Custom
   result:
+    _default: Audit Result
     passed: Passed
     passed_with_findings: Passed with Findings
     failed: Failed
@@ -835,6 +842,8 @@ audit_management:
   description: Planning and execution of internal ISMS audits according to ISO 27001
   planned_audits: Planned Audits
   total_audits: Total Audits
+  audits_list: Audits List
+  no_audits: No audits available
 
 # BCM
 bcm:
@@ -998,8 +1007,12 @@ incident:
   new: New Incident
   create: Create Incident
   edit: Edit Incident
+  update: Update Incident
   empty: No incidents recorded yet
+  status_help: Status of the incident in its lifecycle
   analysis_resolution: Analysis & Resolution
+  list:
+    title: Incident List
   filter:
     data_breach: Data Breach
     data_breach_only: Data Breaches Only
@@ -1018,6 +1031,7 @@ incident:
     affected_systems: Affected Systems & Assets
     analysis: Analysis & Actions
     assessment: Impact Assessment
+    history: History
     nis2_reporting: NIS2 Reporting Requirement (EU 2022/2555)
     nis2_info: "NIS2 Art. 23: Significant incidents must be reported within specified timeframes"
     affected_assets: Affected Assets
@@ -1134,6 +1148,7 @@ incident:
 document:
   doc_title: 'Documents'
   title:
+    _default: 'Document'
     by_type: 'Documents by Type'
   subtitle: 'Document Management'
   new: 'New Document'
@@ -1610,6 +1625,10 @@ supplier:
     certifications: Other Certifications
     has_dpa: Data Processing Agreement Signed
     dpa_signed_date: DPA Signed Date
+  success:
+    created: Supplier created successfully.
+    updated: Supplier updated successfully.
+    deleted: Supplier deleted successfully.
 interested_party:
   title: Interested Parties
   page:
@@ -1656,6 +1675,10 @@ interested_party:
     feedback: Feedback
     satisfaction_level: Satisfaction Level (1-5)
     issues: Issues/Concerns
+  success:
+    created: Interested party created successfully.
+    updated: Interested party updated successfully.
+    deleted: Interested party deleted successfully.
 ui:
   location: Location
   responsible: Responsible
@@ -1941,6 +1964,10 @@ business_continuity_plan:
     last_review_date: Last Review Date
     next_review_date: Next Review Date
     review_notes: Review Notes
+  success:
+    created: Business Continuity Plan created successfully.
+    updated: Business Continuity Plan updated successfully.
+    deleted: Business Continuity Plan deleted successfully.
 security:
   error:
     too_many_attempts: Too many login attempts. Please try again in 15 minutes.
@@ -2098,6 +2125,10 @@ business_process:
     recovery_strategy: Recovery Strategy
     supporting_assets: Supporting Assets
     identified_risks: Identified Risks
+  success:
+    created: Business process created successfully.
+    updated: Business process updated successfully.
+    deleted: Business process deleted successfully.
 user:
   name: Name
   email: Email
@@ -2122,6 +2153,9 @@ user:
     imported: '%count% users successfully imported'
     activated: User successfully activated
     deactivated: User successfully deactivated
+    created: User created successfully.
+    updated: User updated successfully.
+    deleted: User deleted successfully.
   action:
     export: Export
     import: Import
@@ -2209,6 +2243,9 @@ audit_log:
 entity_history:
   title: Entity History
   section: History
+  entry_count: '%count% entries'
+  show_details: Show details
+  no_entries: No entries available
 preferences:
   success:
     imported: Settings successfully imported
@@ -2700,6 +2737,7 @@ vulnerability:
     status: Status
     affected_assets: Affected Assets
     discovered_at: Discovered At
+    discovered_date: Discovery Date
     disclosed_at: Disclosed At
     remediation_deadline: Remediation Deadline
     exploit_available: Exploit Available
@@ -2754,6 +2792,7 @@ patch:
   empty: No patches recorded yet.
   field:
     patch_identifier: Patch ID
+    patch_id: Patch ID
     title: Title
     description: Description
     patch_type: Patch Type
@@ -2911,9 +2950,13 @@ crisis_team:
     created: Crisis team created successfully.
     updated: Crisis team updated successfully.
     deleted: Crisis team deleted successfully.
+    activated: Crisis team activated successfully.
 
 tenant:
-  title: Tenant Management
+  title:
+    _default: Tenant Management
+    edit: Edit Tenant
+    create: Create New Tenant
   subtitle: Manage organizations and tenants
   title_create: Create New Tenant
   title_edit: Edit Tenant
@@ -3746,3 +3789,21 @@ setup:
   error:
     configure_database_first: 'Please configure the database connection first'
     create_admin_first: 'Please create an administrator account first'
+
+# Status Translations
+status:
+  in_progress: In Progress
+  not_started: Not Started
+
+# Action Translations
+action:
+  new_asset: New Asset
+  assess_risk: Assess Risk
+  report_incident: Report Incident
+
+# Form Translations
+form:
+  complete_asset_inventory: Complete asset inventory
+  conduct_risk_analysis: Conduct risk analysis
+  document_policies: Document policies
+  plan_awareness_training: Plan awareness training
