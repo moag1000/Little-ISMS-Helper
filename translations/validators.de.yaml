@@ -99,3 +99,13 @@ compliance_mapping:
 'Data classification must be one of: {{ choices }}': 'Die Datenklassifizierung muss eine der folgenden sein: {{ choices }}.'
 'Status is required': 'Bitte wählen Sie einen Status aus.'
 'Status must be one of: {{ choices }}': 'Der Status muss einer der folgenden sein: {{ choices }}.'
+
+# Risk Treatment Plan Validators
+risk_treatment_plan:
+  validation:
+    risk_required: 'Risiko ist erforderlich'
+    title_required: 'Titel ist erforderlich'
+    title_max_length: 'Titel darf maximal {{ limit }} Zeichen lang sein'
+    description_required: 'Beschreibung ist erforderlich'
+    target_completion_date_required: 'Ziel-Fertigstellungsdatum ist erforderlich'
+    completion_percentage_range: 'Fertigstellungsgrad muss zwischen {{ min }} und {{ max }} liegen'
