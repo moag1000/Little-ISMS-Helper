@@ -9,8 +9,14 @@
         <p class="text-muted">{{ 'compliance.description.gap_analysis'|trans }}</p>
     </div>
     <div class="button-group">
-        <a href="{{ path('app_compliance_export_gaps') }}" class="btn btn-success">
-            📊 {{ 'compliance.action.export_gaps'|trans }}
+        <a href="{{ path('app_compliance_export_gaps_pdf', {id: framework.id}) }}" class="btn btn-danger">
+            📄 PDF Report
+        </a>
+        <a href="{{ path('app_compliance_export_gaps_excel', {id: framework.id}) }}" class="btn btn-success">
+            📊 Excel Export
+        </a>
+        <a href="{{ path('app_compliance_export_gaps', {id: framework.id}) }}" class="btn btn-secondary">
+            📄 CSV Export
         </a>
     </div>
 </div>
