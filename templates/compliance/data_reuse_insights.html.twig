@@ -9,13 +9,13 @@
         <p class="text-muted">{{ 'compliance.description.data_reuse'|trans }}</p>
     </div>
     <div class="button-group">
-        <a href="{{ path('app_compliance_export_reuse_pdf', {id: framework.id}) }}" class="btn btn-danger">
+        <a href="{{ path('app_compliance_export_reuse_pdf', {id: framework.id}) }}" class="btn btn-danger" data-turbo="false">
             📄 PDF Report
         </a>
-        <a href="{{ path('app_compliance_export_reuse_excel', {id: framework.id}) }}" class="btn btn-success">
+        <a href="{{ path('app_compliance_export_reuse_excel', {id: framework.id}) }}" class="btn btn-success" data-turbo="false">
             📊 Excel Export
         </a>
-        <a href="{{ path('app_compliance_export_reuse', {id: framework.id}) }}" class="btn btn-secondary">
+        <a href="{{ path('app_compliance_export_reuse', {id: framework.id}) }}" class="btn btn-secondary" data-turbo="false">
             📄 CSV Export
         </a>
     </div>

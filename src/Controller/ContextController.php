@@ -28,25 +28,30 @@ class ContextController extends AbstractController
     public function index(): Response
     {
         $context = $this->contextService->getCurrentContext();
+        $effectiveContext = $this->contextService->getEffectiveContext($context);
+        $inheritanceInfo = $this->contextService->getContextInheritanceInfo($context);
         $statistics = $this->objectiveService->getStatistics();
 
-        // Get audit log history for the context (last 10 entries) if context exists
+        // Get audit log history for the EFFECTIVE context (last 10 entries) if context exists
         $auditLogs = [];
         $totalAuditLogs = 0;
-        if ($context && $context->getId()) {
-            $auditLogs = $this->auditLogRepository->findByEntity('ISMSContext', $context->getId());
+        if ($effectiveContext && $effectiveContext->getId()) {
+            $auditLogs = $this->auditLogRepository->findByEntity('ISMSContext', $effectiveContext->getId());
             $totalAuditLogs = count($auditLogs);
             $auditLogs = array_slice($auditLogs, 0, 10);
         }
 
         return $this->render('context/index.html.twig', [
-            'context' => $context,
-            'completeness' => $this->contextService->calculateCompleteness($context),
-            'isReviewDue' => $this->contextService->isReviewDue($context),
-            'daysUntilReview' => $this->contextService->getDaysUntilReview($context),
+            'context' => $effectiveContext, // Show effective context
+            'ownContext' => $context, // Keep reference to own context
+            'completeness' => $this->contextService->calculateCompleteness($effectiveContext),
+            'isReviewDue' => $this->contextService->isReviewDue($effectiveContext),
+            'daysUntilReview' => $this->contextService->getDaysUntilReview($effectiveContext),
             'statistics' => $statistics,
             'auditLogs' => $auditLogs,
             'totalAuditLogs' => $totalAuditLogs,
+            'inheritanceInfo' => $inheritanceInfo, // NEW: Corporate inheritance info
+            'canEdit' => $this->contextService->canEditContext($context), // NEW: Edit permission
         ]);
     }
 
@@ -55,6 +60,18 @@ class ContextController extends AbstractController
     public function edit(Request $request): Response
     {
         $context = $this->contextService->getCurrentContext();
+
+        // Check if context can be edited (not inherited)
+        if (!$this->contextService->canEditContext($context)) {
+            $inheritanceInfo = $this->contextService->getContextInheritanceInfo($context);
+            $parentName = $inheritanceInfo['inheritedFrom'] ? $inheritanceInfo['inheritedFrom']->getName() : '';
+
+            $this->addFlash('danger', $this->translator->trans('corporate.inheritance.cannot_edit_inherited_long', [
+                '%parent%' => $parentName
+            ]));
+
+            return $this->redirectToRoute('app_context_index');
+        }
 
         $form = $this->createForm(ISMSContextType::class, $context);
         $form->handleRequest($request);

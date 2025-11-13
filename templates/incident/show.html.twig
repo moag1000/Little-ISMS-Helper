@@ -9,7 +9,7 @@
         <div class="actions">
             <a href="{{ path('app_incident_edit', {id: incident.id}) }}" class="btn btn-primary">Edit</a>
             {% if incident.requiresNis2Reporting %}
-                <a href="{{ path('app_incident_nis2_report', {id: incident.id}) }}" class="btn btn-success" title="{{ 'incident.action.download_nis2_report'|trans|default('Download NIS2 Report') }}">
+                <a href="{{ path('app_incident_nis2_report', {id: incident.id}) }}" class="btn btn-success" data-turbo="false" title="{{ 'incident.action.download_nis2_report'|trans|default('Download NIS2 Report') }}">
                     <i class="bi bi-file-earmark-pdf"></i> NIS2 Report (PDF)
                 </a>
             {% endif %}
