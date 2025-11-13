@@ -1,0 +1,228 @@
+{% extends 'pdf/base.html.twig' %}
+
+{% block pdf_title %}Risk Management Report{% endblock %}
+
+{% block header_title %}Risk Management Report{% endblock %}
+
+{% block content %}
+    {# Summary Section #}
+    <div class="summary-box">
+        <div class="metric">
+            <span class="metric-label">Gesamt Risiken</span>
+            <span class="metric-value">{{ total_risks }}</span>
+        </div>
+        <div class="metric">
+            <span class="metric-label">Kritische Risiken</span>
+            <span class="metric-value" style="color: #C00;">{{ critical_risks }}</span>
+        </div>
+        <div class="metric">
+            <span class="metric-label">Hohe Risiken</span>
+            <span class="metric-value" style="color: #F90;">{{ high_risks }}</span>
+        </div>
+        <div class="metric">
+            <span class="metric-label">Mittlere Risiken</span>
+            <span class="metric-value" style="color: #FA0;">{{ medium_risks }}</span>
+        </div>
+        <div class="metric">
+            <span class="metric-label">Niedrige Risiken</span>
+            <span class="metric-value" style="color: #0A0;">{{ low_risks }}</span>
+        </div>
+    </div>
+
+    {% if filter_info %}
+    <div style="background: #E8F4F8; padding: 10px; margin: 15px 0; border-radius: 4px; font-size: 9pt;">
+        <strong>Angewendete Filter:</strong> {{ filter_info }}
+    </div>
+    {% endif %}
+
+    {# Critical and High Risks Table #}
+    {% set critical_and_high = risks|filter(r => r.riskScore >= 10) %}
+    {% if critical_and_high|length > 0 %}
+    <h2>Kritische & Hohe Risiken (Top Priorität)</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 8%;">ID</th>
+                <th style="width: 25%;">Titel</th>
+                <th style="width: 15%;">Asset</th>
+                <th style="width: 10%;">Score</th>
+                <th style="width: 12%;">Level</th>
+                <th style="width: 15%;">Behandlung</th>
+                <th style="width: 15%;">Verantwortlich</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for risk in critical_and_high %}
+            <tr class="no-break">
+                <td>{{ risk.id }}</td>
+                <td><strong>{{ risk.title }}</strong></td>
+                <td>{{ risk.asset ? risk.asset.name : '-' }}</td>
+                <td class="text-center"><strong>{{ risk.riskScore }}</strong></td>
+                <td>
+                    {% if risk.riskScore >= 15 %}
+                        <span class="badge badge-critical">Kritisch</span>
+                    {% elseif risk.riskScore >= 10 %}
+                        <span class="badge badge-high">Hoch</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if risk.treatment %}
+                        <span class="badge badge-info">
+                            {% if risk.treatment == 'mitigate' %}Mindern
+                            {% elseif risk.treatment == 'accept' %}Akzeptieren
+                            {% elseif risk.treatment == 'transfer' %}Übertragen
+                            {% elseif risk.treatment == 'avoid' %}Vermeiden
+                            {% else %}{{ risk.treatment }}
+                            {% endif %}
+                        </span>
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+                <td>{{ risk.owner ? risk.owner.name : '-' }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+
+    {# Page break before all risks #}
+    {% if critical_and_high|length > 0 and risks|length > critical_and_high|length %}
+    <div class="page-break"></div>
+    {% endif %}
+
+    {# All Risks Table #}
+    <h2>Alle Risiken (Detailansicht)</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 6%;">ID</th>
+                <th style="width: 22%;">Titel</th>
+                <th style="width: 12%;">Asset</th>
+                <th style="width: 6%;">Wkt.</th>
+                <th style="width: 6%;">Ausw.</th>
+                <th style="width: 8%;">Score</th>
+                <th style="width: 10%;">Level</th>
+                <th style="width: 10%;">Behandlung</th>
+                <th style="width: 10%;">Status</th>
+                <th style="width: 10%;">Owner</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for risk in risks %}
+            <tr class="no-break">
+                <td>{{ risk.id }}</td>
+                <td>{{ risk.title }}</td>
+                <td>{{ risk.asset ? risk.asset.name : '-' }}</td>
+                <td class="text-center">{{ risk.likelihood ?? '-' }}</td>
+                <td class="text-center">{{ risk.impact ?? '-' }}</td>
+                <td class="text-center"><strong>{{ risk.riskScore }}</strong></td>
+                <td>
+                    {% if risk.riskScore >= 15 %}
+                        <span class="badge badge-critical">Kritisch</span>
+                    {% elseif risk.riskScore >= 10 %}
+                        <span class="badge badge-high">Hoch</span>
+                    {% elseif risk.riskScore >= 5 %}
+                        <span class="badge badge-medium">Mittel</span>
+                    {% else %}
+                        <span class="badge badge-low">Niedrig</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if risk.treatment %}
+                        <span class="badge badge-info">
+                            {% if risk.treatment == 'mitigate' %}Mindern
+                            {% elseif risk.treatment == 'accept' %}Akzeptieren
+                            {% elseif risk.treatment == 'transfer' %}Übertragen
+                            {% elseif risk.treatment == 'avoid' %}Vermeiden
+                            {% else %}{{ risk.treatment }}
+                            {% endif %}
+                        </span>
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+                <td>
+                    {% if risk.status %}
+                        <span class="badge {% if risk.status == 'identified' %}badge-warning{% elseif risk.status == 'assessed' %}badge-info{% elseif risk.status == 'treated' %}badge-success{% else %}badge-secondary{% endif %}">
+                            {% if risk.status == 'identified' %}Identifiziert
+                            {% elseif risk.status == 'assessed' %}Bewertet
+                            {% elseif risk.status == 'treated' %}Behandelt
+                            {% elseif risk.status == 'monitored' %}Überwacht
+                            {% else %}{{ risk.status }}
+                            {% endif %}
+                        </span>
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+                <td style="font-size: 8pt;">{{ risk.owner ? risk.owner.name : '-' }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {# Risk Statistics Summary at the end #}
+    <div class="page-break"></div>
+    <h2>Risiko-Statistiken</h2>
+
+    <h3>Verteilung nach Risk Level</h3>
+    <table style="width: 60%;">
+        <thead>
+            <tr>
+                <th>Risk Level</th>
+                <th class="text-center">Anzahl</th>
+                <th class="text-center">Prozentsatz</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="badge badge-critical">Kritisch (≥15)</span></td>
+                <td class="text-center">{{ critical_risks }}</td>
+                <td class="text-center">{{ total_risks > 0 ? ((critical_risks / total_risks * 100)|round(1)) : 0 }}%</td>
+            </tr>
+            <tr>
+                <td><span class="badge badge-high">Hoch (10-14)</span></td>
+                <td class="text-center">{{ high_risks }}</td>
+                <td class="text-center">{{ total_risks > 0 ? ((high_risks / total_risks * 100)|round(1)) : 0 }}%</td>
+            </tr>
+            <tr>
+                <td><span class="badge badge-medium">Mittel (5-9)</span></td>
+                <td class="text-center">{{ medium_risks }}</td>
+                <td class="text-center">{{ total_risks > 0 ? ((medium_risks / total_risks * 100)|round(1)) : 0 }}%</td>
+            </tr>
+            <tr>
+                <td><span class="badge badge-low">Niedrig (<5)</span></td>
+                <td class="text-center">{{ low_risks }}</td>
+                <td class="text-center">{{ total_risks > 0 ? ((low_risks / total_risks * 100)|round(1)) : 0 }}%</td>
+            </tr>
+        </tbody>
+    </table>
+
+    {% if status_breakdown %}
+    <h3 class="mt-2">Verteilung nach Status</h3>
+    <table style="width: 60%;">
+        <thead>
+            <tr>
+                <th>Status</th>
+                <th class="text-center">Anzahl</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for status, count in status_breakdown %}
+            <tr>
+                <td>
+                    {% if status == 'identified' %}Identifiziert
+                    {% elseif status == 'assessed' %}Bewertet
+                    {% elseif status == 'treated' %}Behandelt
+                    {% elseif status == 'monitored' %}Überwacht
+                    {% else %}{{ status }}
+                    {% endif %}
+                </td>
+                <td class="text-center">{{ count }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+{% endblock %}
