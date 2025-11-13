@@ -1583,6 +1583,71 @@ bc_exercise:
     updated: BC-Übung erfolgreich aktualisiert.
     deleted: BC-Übung erfolgreich gelöscht.
 management_review:
+  title: 'Management Reviews'
+  new: 'Neues Management Review'
+  create: 'Management Review erstellen'
+  edit: 'Management Review bearbeiten'
+  all_reviews: 'Alle Reviews'
+  no_reviews: 'Keine Management Reviews vorhanden'
+  create_first: 'Erstellen Sie Ihr erstes Management Review'
+
+  review_date: 'Review-Datum'
+  participants: 'Teilnehmer'
+  status: 'Status'
+
+  confirm_delete: 'Möchten Sie dieses Management Review wirklich löschen?'
+  delete_warning: 'Diese Aktion kann nicht rückgängig gemacht werden.'
+
+  clause_93: 'ISO 27001:2022 Clause 9.3'
+  clause_93_description: 'Management Review der obersten Leitung'
+  iso_clause_93_info: 'Anforderungen gemäß ISO 27001:2022 Clause 9.3'
+  iso_clause_info: 'Diese Sektion erfüllt die Anforderungen von ISO 27001:2022 Clause 9.3'
+  iso_requirement: 'ISO-Anforderung'
+
+  section:
+    basic_info: 'Grundinformationen'
+    inputs: 'Review-Eingaben (Inputs)'
+    outputs: 'Review-Ergebnisse (Outputs)'
+    followup: 'Follow-up'
+
+  inputs_label: 'Review-Eingaben (gemäß ISO 27001:2022 Clause 9.3)'
+  outputs_label: 'Review-Ergebnisse (gemäß ISO 27001:2022 Clause 9.3)'
+  action_items_label: 'Maßnahmen und Verbesserungen'
+
+  input_1: 'Status von Maßnahmen aus früheren Management Reviews'
+  input_2: 'Änderungen bei externen und internen Themen, die für das ISMS relevant sind'
+  input_3: 'Feedback zur Informationssicherheitsleistung'
+  input_4: 'Feedback von interessierten Parteien'
+
+  performance_evaluation: 'Leistungsbewertung einschließlich Trends bei:'
+  nonconformities_status: 'Nichtkonformitäten und Korrekturmaßnahmen'
+  audit_results: 'Ergebnisse von Überwachung und Messung'
+  corrective_actions_status: 'Status von Korrekturmaßnahmen'
+  previous_review_actions: 'Maßnahmen aus früheren Reviews'
+  changes_relevant_to_isms: 'Änderungen relevant für das ISMS'
+  feedback_from_interested_parties: 'Feedback von interessierten Parteien'
+  opportunities_for_improvement: 'Möglichkeiten zur kontinuierlichen Verbesserung'
+
+  output_1: 'Möglichkeiten zur kontinuierlichen Verbesserung'
+  output_2: 'Bedarf für Änderungen am Informationssicherheitsmanagementsystem'
+  output_3: 'Ressourcenbedarf'
+
+  management_decisions: 'Managemententscheidungen'
+  decisions: 'Entscheidungen'
+  action_items: 'Maßnahmen'
+  resource_needs: 'Ressourcenbedarf'
+
+  statistics:
+    total: 'Gesamt'
+    completed: 'Abgeschlossen'
+    planned: 'Geplant'
+    this_year: 'Dieses Jahr'
+
+  success:
+    created: 'Management Review erfolgreich erstellt'
+    updated: 'Management Review erfolgreich aktualisiert'
+    deleted: 'Management Review erfolgreich gelöscht'
+
   field:
     title: Review-Titel
     review_date: Review-Datum
