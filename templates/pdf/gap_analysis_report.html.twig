@@ -218,15 +218,15 @@
             </tr>
             <tr>
                 <td><span class="badge badge-warning">Medium</span></td>
-                <td class="text-center"><strong>{{ uncovered_medium|length }}</strong></td>
-                <td class="text-center">{{ total_gaps > 0 ? ((uncovered_medium|length / total_gaps * 100)|round(1)) : 0 }}%</td>
+                <td class="text-center"><strong>{{ priority_distribution.medium }}</strong></td>
+                <td class="text-center">{{ total_gaps > 0 ? ((priority_distribution.medium / total_gaps * 100)|round(1)) : 0 }}%</td>
                 <td class="text-center">-</td>
                 <td class="text-center">-</td>
             </tr>
             <tr>
                 <td><span class="badge badge-low">Low</span></td>
-                <td class="text-center"><strong>{{ uncovered_low|length }}</strong></td>
-                <td class="text-center">{{ total_gaps > 0 ? ((uncovered_low|length / total_gaps * 100)|round(1)) : 0 }}%</td>
+                <td class="text-center"><strong>{{ priority_distribution.low }}</strong></td>
+                <td class="text-center">{{ total_gaps > 0 ? ((priority_distribution.low / total_gaps * 100)|round(1)) : 0 }}%</td>
                 <td class="text-center">-</td>
                 <td class="text-center">-</td>
             </tr>
@@ -334,7 +334,7 @@
     {% endif %}
 
     {# Priority-Weighted Roadmap #}
-    {% if recommendations is defined and recommendations|length > 0 %}
+    {% if gap_recommendations is defined and gap_recommendations|length > 0 %}
     <div class="page-break"></div>
     <h2>Priority-Weighted Gap Closure Roadmap</h2>
     <table>
@@ -349,7 +349,7 @@
             </tr>
         </thead>
         <tbody>
-            {% for rec in recommendations %}
+            {% for rec in gap_recommendations %}
             <tr>
                 <td><span class="badge badge-{{ rec.priority|lower }}">{{ rec.priority }}</span></td>
                 <td><strong>{{ rec.action }}</strong></td>
