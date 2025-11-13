@@ -575,10 +575,126 @@ class ComplianceController extends AbstractController
     }
 
     #[Route('/export/comparison', name: 'app_compliance_export_comparison')]
-    public function exportComparison(): Response
+    public function exportComparison(Request $request): Response
     {
-        $this->addFlash('info', 'Framework comparison export feature coming soon.');
-        return $this->redirectToRoute('app_compliance_compare');
+        $framework1Id = $request->query->get('framework1');
+        $framework2Id = $request->query->get('framework2');
+
+        if (!$framework1Id || !$framework2Id) {
+            $this->addFlash('error', 'Bitte wählen Sie zwei Frameworks zum Vergleich aus.');
+            return $this->redirectToRoute('app_compliance_compare');
+        }
+
+        $framework1 = $this->frameworkRepository->find($framework1Id);
+        $framework2 = $this->frameworkRepository->find($framework2Id);
+
+        if (!$framework1 || !$framework2) {
+            $this->addFlash('error', 'Ein oder beide Frameworks wurden nicht gefunden.');
+            return $this->redirectToRoute('app_compliance_compare');
+        }
+
+        // Build detailed comparison data
+        $comparisonDetails = [];
+
+        foreach ($framework1->getRequirements() as $req1) {
+            $mappedRequirement = null;
+            $matchQuality = null;
+            $isMapped = false;
+
+            // Find mappings where req1 is the source
+            $sourceMappings = $this->mappingRepository->findBy([
+                'sourceRequirement' => $req1
+            ]);
+
+            foreach ($sourceMappings as $mapping) {
+                if ($mapping->getTargetRequirement()->getFramework()->getId() === $framework2->getId()) {
+                    $mappedRequirement = $mapping->getTargetRequirement();
+                    $matchQuality = $mapping->getMappingPercentage();
+                    $isMapped = true;
+                    break;
+                }
+            }
+
+            // Also check reverse mappings where req1 is the target
+            if (!$isMapped) {
+                $targetMappings = $this->mappingRepository->findBy([
+                    'targetRequirement' => $req1
+                ]);
+
+                foreach ($targetMappings as $mapping) {
+                    if ($mapping->getSourceRequirement()->getFramework()->getId() === $framework2->getId()) {
+                        $mappedRequirement = $mapping->getSourceRequirement();
+                        $matchQuality = $mapping->getMappingPercentage();
+                        $isMapped = true;
+                        break;
+                    }
+                }
+            }
+
+            $comparisonDetails[] = [
+                'framework1Requirement' => $req1,
+                'mapped' => $isMapped,
+                'framework2Requirement' => $mappedRequirement,
+                'matchQuality' => $matchQuality,
+            ];
+        }
+
+        // Create CSV content
+        $csv = [];
+
+        // CSV Header
+        $csv[] = [
+            $framework1->getName() . ' - ID',
+            $framework1->getName() . ' - Titel',
+            $framework1->getName() . ' - Kategorie',
+            'Mapping Status',
+            'Match Qualität (%)',
+            $framework2->getName() . ' - ID',
+            $framework2->getName() . ' - Titel',
+            $framework2->getName() . ' - Kategorie',
+        ];
+
+        // CSV Data
+        foreach ($comparisonDetails as $detail) {
+            $csv[] = [
+                $detail['framework1Requirement']->getRequirementId(),
+                $detail['framework1Requirement']->getTitle(),
+                $detail['framework1Requirement']->getCategory() ?? '-',
+                $detail['mapped'] ? 'Gemapped' : 'Nicht gemapped',
+                $detail['matchQuality'] ?? '-',
+                $detail['framework2Requirement'] ? $detail['framework2Requirement']->getRequirementId() : '-',
+                $detail['framework2Requirement'] ? $detail['framework2Requirement']->getTitle() : '-',
+                $detail['framework2Requirement'] ? ($detail['framework2Requirement']->getCategory() ?? '-') : '-',
+            ];
+        }
+
+        // Generate CSV file
+        $filename = sprintf(
+            'framework_comparison_%s_vs_%s_%s.csv',
+            $framework1->getCode(),
+            $framework2->getCode(),
+            date('Y-m-d')
+        );
+
+        $response = new Response();
+        $response->headers->set('Content-Type', 'text/csv; charset=utf-8');
+        $response->headers->set('Content-Disposition', 'attachment; filename="' . $filename . '"');
+
+        // Add BOM for Excel UTF-8 support
+        $csvContent = "\xEF\xBB\xBF";
+
+        // Create CSV content
+        $handle = fopen('php://temp', 'r+');
+        foreach ($csv as $row) {
+            fputcsv($handle, $row, ';'); // Use semicolon as delimiter for Excel compatibility
+        }
+        rewind($handle);
+        $csvContent .= stream_get_contents($handle);
+        fclose($handle);
+
+        $response->setContent($csvContent);
+
+        return $response;
     }
 
     #[Route('/frameworks/create-comparison-mappings', name: 'app_compliance_create_comparison_mappings', methods: ['POST'])]
