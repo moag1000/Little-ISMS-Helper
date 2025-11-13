@@ -5,10 +5,12 @@ namespace App\Controller;
 use App\Entity\Document;
 use App\Form\DocumentType;
 use App\Repository\DocumentRepository;
+use App\Service\DocumentService;
 use App\Service\FileUploadSecurityService;
 use App\Service\SecurityEventLogger;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -25,26 +27,43 @@ class DocumentController extends AbstractController
 {
     public function __construct(
         private DocumentRepository $documentRepository,
+        private DocumentService $documentService,
         private EntityManagerInterface $entityManager,
         private string $projectDir,
         private RateLimiterFactory $documentUploadLimiter,
         private FileUploadSecurityService $fileUploadSecurity,
         private SecurityEventLogger $securityLogger,
-        private TranslatorInterface $translator
+        private TranslatorInterface $translator,
+        private Security $security
     ) {}
 
     #[Route('/', name: 'app_document_index')]
     public function index(): Response
     {
-        $documents = $this->documentRepository->findBy(
-            ['status' => 'active'],
-            ['uploadedAt' => 'DESC']
-        );
-        $stats = $this->documentRepository->getStatistics();
+        // Get current tenant
+        $user = $this->security->getUser();
+        $tenant = $user?->getTenant();
+
+        if (!$tenant) {
+            throw $this->createAccessDeniedException('No tenant associated with user');
+        }
+
+        // Get documents based on governance model
+        $allDocuments = $this->documentService->getDocumentsForTenant($tenant);
+
+        // Filter to active only
+        $documents = array_filter($allDocuments, fn($doc) => $doc->getStatus() === 'active');
+
+        // Sort by upload date descending
+        usort($documents, fn($a, $b) => $b->getUploadedAt() <=> $a->getUploadedAt());
+
+        // Get inheritance info
+        $inheritanceInfo = $this->documentService->getDocumentInheritanceInfo($tenant);
 
         return $this->render('document/index_modern.html.twig', [
             'documents' => $documents,
-            'stats' => $stats,
+            'inheritanceInfo' => $inheritanceInfo,
+            'currentTenant' => $tenant,
         ]);
     }
 
@@ -142,8 +161,22 @@ class DocumentController extends AbstractController
         // Security: Check if user has permission to view this document (OWASP #1 - Broken Access Control)
         $this->denyAccessUnlessGranted('view', $document);
 
+        $user = $this->security->getUser();
+        $tenant = $user?->getTenant();
+
+        if (!$tenant) {
+            throw $this->createAccessDeniedException('No tenant associated with user');
+        }
+
+        // Check if document is inherited and can be edited
+        $isInherited = $this->documentService->isInheritedDocument($document, $tenant);
+        $canEdit = $this->documentService->canEditDocument($document, $tenant);
+
         return $this->render('document/show.html.twig', [
             'document' => $document,
+            'isInherited' => $isInherited,
+            'canEdit' => $canEdit,
+            'currentTenant' => $tenant,
         ]);
     }
 
@@ -190,6 +223,19 @@ class DocumentController extends AbstractController
         // Security: Check if user has permission to edit this document (OWASP #1 - Broken Access Control)
         $this->denyAccessUnlessGranted('edit', $document);
 
+        $user = $this->security->getUser();
+        $tenant = $user?->getTenant();
+
+        if (!$tenant) {
+            throw $this->createAccessDeniedException('No tenant associated with user');
+        }
+
+        // Check if document can be edited (not inherited)
+        if (!$this->documentService->canEditDocument($document, $tenant)) {
+            $this->addFlash('error', $this->translator->trans('corporate.inheritance.cannot_edit_inherited'));
+            return $this->redirectToRoute('app_document_show', ['id' => $document->getId()]);
+        }
+
         $form = $this->createForm(DocumentType::class, $document);
         $form->handleRequest($request);
 
@@ -210,6 +256,19 @@ class DocumentController extends AbstractController
     #[IsGranted('ROLE_ADMIN')]
     public function delete(Request $request, Document $document): Response
     {
+        $user = $this->security->getUser();
+        $tenant = $user?->getTenant();
+
+        if (!$tenant) {
+            throw $this->createAccessDeniedException('No tenant associated with user');
+        }
+
+        // Check if document can be deleted (not inherited)
+        if (!$this->documentService->canEditDocument($document, $tenant)) {
+            $this->addFlash('error', $this->translator->trans('corporate.inheritance.cannot_delete_inherited'));
+            return $this->redirectToRoute('app_document_index');
+        }
+
         if ($this->isCsrfTokenValid('delete'.$document->getId(), $request->request->get('_token'))) {
             // Mark as deleted instead of actually removing
             $document->setStatus('deleted');
@@ -224,11 +283,23 @@ class DocumentController extends AbstractController
     #[Route('/type/{type}', name: 'app_document_by_type')]
     public function byType(string $type): Response
     {
-        $documents = $this->documentRepository->findByType($type);
+        $user = $this->security->getUser();
+        $tenant = $user?->getTenant();
+
+        if (!$tenant) {
+            throw $this->createAccessDeniedException('No tenant associated with user');
+        }
+
+        // Get documents based on governance model
+        $allDocuments = $this->documentService->getDocumentsForTenant($tenant);
+
+        // Filter by type
+        $documents = array_filter($allDocuments, fn($doc) => $doc->getType() === $type);
 
         return $this->render('document/by_type.html.twig', [
             'documents' => $documents,
             'type' => $type,
+            'currentTenant' => $tenant,
         ]);
     }
 }
