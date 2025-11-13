@@ -200,6 +200,13 @@ admin:
       audit_log_help: Automatische Protokollierung aller Änderungen
       info_text: Feature-Flags erlauben es, neue Funktionen schrittweise einzuführen oder zu testen.
 dashboard:
+  title: ISMS Dashboard
+  subtitle: Übersicht über Ihren Informationssicherheitsstatus
+  kpis: Kennzahlen
+  compliance_status: Compliance-Status
+  implementation_status: Implementierungsstatus
+  quick_access: Schnellzugriff
+  next_steps: Nächste Schritte
   success:
     settings_imported: Dashboard-Einstellungen erfolgreich importiert!
   error:
