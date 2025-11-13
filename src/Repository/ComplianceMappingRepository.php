@@ -368,6 +368,109 @@ class ComplianceMappingRepository extends ServiceEntityRepository
     }
 
     /**
+     * Calculate priority-weighted gap analysis for a framework.
+     *
+     * Weights gaps by requirement priority to focus on high-impact compliance issues.
+     * Priority weights: critical=4.0, high=2.0, medium=1.0, low=0.5
+     *
+     * @param ComplianceFramework $framework Framework to analyze
+     * @param array $gaps Array of gap requirements (unfulfilled requirements)
+     * @return array{weighted_gap_score: float, total_weight: float, risk_score: int, uncovered_critical: array, uncovered_high: array, priority_distribution: array, recommendations: array} Priority-weighted gap analysis
+     */
+    public function calculatePriorityWeightedGaps(
+        ComplianceFramework $framework,
+        array $gaps
+    ): array {
+        $priorityWeights = [
+            'critical' => 4.0,
+            'high' => 2.0,
+            'medium' => 1.0,
+            'low' => 0.5,
+        ];
+
+        $weightedGapScore = 0;
+        $totalWeight = 0;
+        $uncoveredCritical = [];
+        $uncoveredHigh = [];
+        $priorityDistribution = [
+            'critical' => 0,
+            'high' => 0,
+            'medium' => 0,
+            'low' => 0,
+        ];
+
+        foreach ($gaps as $gap) {
+            $priority = $gap->getPriority() ?? 'medium';
+            $weight = $priorityWeights[$priority] ?? 1.0;
+
+            $totalWeight += $weight;
+            $weightedGapScore += $weight;
+
+            $priorityDistribution[$priority]++;
+
+            if ($priority === 'critical') {
+                $uncoveredCritical[] = [
+                    'id' => $gap->getRequirementId(),
+                    'title' => $gap->getTitle(),
+                    'category' => $gap->getCategory(),
+                    'description' => $gap->getDescription(),
+                    'fulfillment' => $gap->getFulfillmentPercentage() ?? 0,
+                ];
+            } elseif ($priority === 'high') {
+                $uncoveredHigh[] = [
+                    'id' => $gap->getRequirementId(),
+                    'title' => $gap->getTitle(),
+                    'category' => $gap->getCategory(),
+                    'fulfillment' => $gap->getFulfillmentPercentage() ?? 0,
+                ];
+            }
+        }
+
+        // Calculate risk score (critical gaps * 10 + high gaps * 5)
+        $riskScore = (count($uncoveredCritical) * 10) + (count($uncoveredHigh) * 5);
+
+        // Generate recommendations based on risk analysis
+        $recommendations = [];
+
+        if (count($uncoveredCritical) > 0) {
+            $recommendations[] = [
+                'priority' => 'CRITICAL',
+                'action' => 'Sofortmaßnahmen für ' . count($uncoveredCritical) . ' kritische Gaps erforderlich',
+                'timeline' => '0-30 Tage',
+                'risk_reduction' => count($uncoveredCritical) * 10,
+            ];
+        }
+
+        if (count($uncoveredHigh) > 0) {
+            $recommendations[] = [
+                'priority' => 'HIGH',
+                'action' => count($uncoveredHigh) . ' hohe Gaps innerhalb 90 Tagen schließen',
+                'timeline' => '30-90 Tage',
+                'risk_reduction' => count($uncoveredHigh) * 5,
+            ];
+        }
+
+        if ($priorityDistribution['medium'] > 0) {
+            $recommendations[] = [
+                'priority' => 'MEDIUM',
+                'action' => 'Mittelfristige Roadmap für ' . $priorityDistribution['medium'] . ' mittlere Gaps',
+                'timeline' => '3-6 Monate',
+                'risk_reduction' => $priorityDistribution['medium'] * 2,
+            ];
+        }
+
+        return [
+            'weighted_gap_score' => round($weightedGapScore, 2),
+            'total_weight' => round($totalWeight, 2),
+            'risk_score' => $riskScore,
+            'uncovered_critical' => $uncoveredCritical,
+            'uncovered_high' => $uncoveredHigh,
+            'priority_distribution' => $priorityDistribution,
+            'recommendations' => $recommendations,
+        ];
+    }
+
+    /**
      * Find bidirectional mappings where requirements mutually satisfy each other.
      *
      * Bidirectional mappings indicate strong equivalence between requirements across frameworks,
