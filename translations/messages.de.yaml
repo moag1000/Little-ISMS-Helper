@@ -2910,3 +2910,5 @@ corporate:
     parent: 'Keine Muttergesellschaft (eigenständig)'
     governance_model: 'Governance-Modell auswählen...'
     corporate_notes: 'Z.B. Spezielle Vereinbarungen oder Besonderheiten...'
+  flash:
+    no_governance_found: 'Keine Governance-Regel gefunden für diesen Mandanten'

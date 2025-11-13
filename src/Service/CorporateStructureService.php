@@ -5,6 +5,7 @@ namespace App\Service;
 use App\Entity\ISMSContext;
 use App\Entity\Tenant;
 use App\Enum\GovernanceModel;
+use App\Repository\CorporateGovernanceRepository;
 use App\Repository\ISMSContextRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -15,7 +16,8 @@ class CorporateStructureService
 {
     public function __construct(
         private EntityManagerInterface $entityManager,
-        private ISMSContextRepository $ismsContextRepository
+        private ISMSContextRepository $ismsContextRepository,
+        private CorporateGovernanceRepository $governanceRepository
     ) {
     }
 
@@ -35,7 +37,14 @@ class CorporateStructureService
             return $this->ismsContextRepository->findOneBy(['tenant' => $tenant]);
         }
 
-        $governanceModel = $tenant->getGovernanceModel();
+        // Get governance for ISMS context scope
+        $governance = $this->governanceRepository->findGovernanceForScope($tenant, 'isms_context');
+        if (!$governance) {
+            // Fall back to default governance
+            $governance = $this->governanceRepository->findDefaultGovernance($tenant);
+        }
+
+        $governanceModel = $governance?->getGovernanceModel();
 
         switch ($governanceModel) {
             case GovernanceModel::HIERARCHICAL:
@@ -196,12 +205,15 @@ class CorporateStructureService
 
     private function buildTreeNode(Tenant $tenant): array
     {
+        // Get default governance for this tenant
+        $governance = $this->governanceRepository->findDefaultGovernance($tenant);
+
         $node = [
             'id' => $tenant->getId(),
             'code' => $tenant->getCode(),
             'name' => $tenant->getName(),
-            'governanceModel' => $tenant->getGovernanceModel()?->value,
-            'governanceLabel' => $tenant->getGovernanceModel()?->getLabel(),
+            'governanceModel' => $governance?->getGovernanceModel()?->value,
+            'governanceLabel' => $governance?->getGovernanceModel()?->getLabel(),
             'isCorporateParent' => $tenant->isCorporateParent(),
             'depth' => $tenant->getHierarchyDepth(),
             'children' => []
@@ -222,7 +234,8 @@ class CorporateStructureService
         $updatedCount = 0;
 
         foreach ($parent->getSubsidiaries() as $subsidiary) {
-            if ($subsidiary->getGovernanceModel() === GovernanceModel::HIERARCHICAL) {
+            $governance = $this->governanceRepository->findDefaultGovernance($subsidiary);
+            if ($governance && $governance->getGovernanceModel() === GovernanceModel::HIERARCHICAL) {
                 // Update or create context for hierarchical subsidiaries
                 $subsidiaryContext = $this->ismsContextRepository->findOneBy(['tenant' => $subsidiary]);
 
