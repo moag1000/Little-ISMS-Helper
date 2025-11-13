@@ -691,8 +691,72 @@ audit_management:
 
 # BCM
 bcm:
-  title: Business Continuity Management
-  description: Geschäftskontinuitätsmanagement und Notfallvorsorge
+  title:
+    _default: Business Continuity Management
+    critical: 'Kritische Assets & Prozesse'
+  description:
+    _default: Geschäftskontinuitätsmanagement und Notfallvorsorge
+    critical: 'Übersicht über geschäftskritische Assets und Prozesse mit ihren Wiederherstellungsanforderungen'
+    critical_level: 'Kritisch: Unmittelbare Auswirkung auf Geschäftsbetrieb. RTO < 4 Stunden.'
+    high_level: 'Hoch: Erhebliche Auswirkung auf Geschäftsbetrieb. RTO < 24 Stunden.'
+    medium_level: 'Mittel: Moderate Auswirkung. RTO < 72 Stunden.'
+    action_items: 'Prioritäre Maßnahmen zur Verbesserung der Business Continuity'
+
+  action:
+    view_insights: 'Erkenntnisse anzeigen'
+    export: 'Exportieren'
+    plan: 'Plan erstellen'
+
+  warning:
+    critical_assets_count: '%count% kritische Assets benötigen Aufmerksamkeit'
+    critical_message: 'Kritische Assets ohne Recovery-Pläne gefunden'
+
+  stats:
+    critical_assets: 'Kritische Assets'
+    critical_processes: 'Kritische Prozesse'
+    avg_rto: 'Durchschn. RTO'
+    missing_recovery_plans: 'Fehlende Recovery-Pläne'
+
+  section:
+    criticality_overview: 'Kritikalitäts-Übersicht'
+    critical_assets_list: 'Kritische Assets'
+    critical_processes: 'Kritische Geschäftsprozesse'
+    action_items: 'Maßnahmen erforderlich'
+
+  criticality:
+    critical: 'Kritisch'
+    high: 'Hoch'
+    medium: 'Mittel'
+
+  field:
+    assets: 'Assets'
+    avg_rto: 'Durchschn. RTO'
+    asset_name: 'Asset-Name'
+    type: 'Typ'
+    criticality: 'Kritikalität'
+    rto: 'RTO'
+    rpo: 'RPO'
+    recovery_plan: 'Recovery-Plan'
+    last_tested: 'Zuletzt getestet'
+    process_name: 'Prozessname'
+    department: 'Abteilung'
+    dependent_assets: 'Abhängige Assets'
+    mtd: 'MTD'
+    impact_of_loss: 'Auswirkung bei Ausfall'
+    maximum_tolerable_downtime: 'Maximal tolerierbare Ausfallzeit'
+
+  badge:
+    no_recovery_plan: 'Kein Plan'
+    immediate: 'Sofort'
+    exists: 'Vorhanden'
+    missing: 'Fehlt'
+    test_overdue: 'Test überfällig'
+
+  message:
+    never_tested: 'Noch nie getestet'
+    no_critical_assets: 'Keine kritischen Assets gefunden'
+    no_critical_processes: 'Keine kritischen Prozesse gefunden'
+
 compliance_management:
   title: Compliance-Management
   description: Verwaltung von Compliance-Anforderungen
