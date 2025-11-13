@@ -122,7 +122,7 @@
                                     <td>
                                         <strong>{{ tenant.name }}</strong>
                                         {% if tenant.description %}
-                                            <br><small class="text-muted">{{ tenant.description|truncate(50) }}</small>
+                                            <br><small class="text-muted">{{ tenant.description|u.truncate(50, '...') }}</small>
                                         {% endif %}
                                     </td>
                                     <td>
@@ -132,7 +132,7 @@
                                     </td>
                                     <td>
                                         {% if tenant.azureTenantId %}
-                                            <small class="font-monospace text-muted">{{ tenant.azureTenantId|truncate(20) }}</small>
+                                            <small class="font-monospace text-muted">{{ tenant.azureTenantId|u.truncate(20, '...') }}</small>
                                         {% else %}
                                             <span class="text-muted">—</span>
                                         {% endif %}

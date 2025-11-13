@@ -344,12 +344,16 @@ asset:
   new: Neues Asset
   create: Asset erstellen
   edit: Asset bearbeiten
+  list:
+    title: Assets
   details:
     title: Asset-Details
   confirm:
     delete: Sind Sie sicher, dass Sie dieses Asset löschen möchten?
   action:
     bcm_insights: BCM-Einblicke
+  bcm:
+    processes: Prozesse
   section:
     cia_triad: CIA-Triade
     valuation: Bewertung
@@ -406,15 +410,18 @@ asset:
     retired: Stillgelegt
     disposed: Entsorgt
   label:
+    name: Name
     type: Typ
     owner: Besitzer
     location: Standort
+    classification: Klassifizierung
     status: Status
     acquisition_value: Anschaffungswert
     current_value: Aktueller Wert
     monetary_value: Geldwert
     total_value: Gesamtwert
     risk_score: Risiko-Score
+    risks: Risiken
     data_classification: Datenklassifizierung
     confidentiality: Vertraulichkeit
     integrity: Integrität

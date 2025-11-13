@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Tenant;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
@@ -99,7 +100,12 @@ class ISMSObjective
     #[Groups(['isms_objective:read'])]
     private ?\DateTimeInterface $updatedAt = null;
 
-    public function __construct()
+    
+    #[ORM\ManyToOne(targetEntity: Tenant::class)]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Tenant $tenant = null;
+
+public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
     }
@@ -270,5 +276,16 @@ class ISMSObjective
             return (int)(((float)$this->currentValue / (float)$this->targetValue) * 100);
         }
         return 0;
+    }
+
+    public function getTenant(): ?Tenant
+    {
+        return $this->tenant;
+    }
+
+    public function setTenant(?Tenant $tenant): static
+    {
+        $this->tenant = $tenant;
+        return $this;
     }
 }
