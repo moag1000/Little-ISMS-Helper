@@ -2909,3 +2909,7 @@ corporate:
     parent: 'Keine Muttergesellschaft (eigenständig)'
     governance_model: 'Governance-Modell auswählen...'
     corporate_notes: 'Z.B. Spezielle Vereinbarungen oder Besonderheiten...'
+  single_tenant:
+    title: 'Einzelmandant-Umgebung'
+    message: 'Es existiert derzeit nur %count% aktiver Mandant in Ihrem System.'
+    hint: 'Konzernstrukturen werden erst relevant, wenn Sie mehrere Mandanten verwalten.'
