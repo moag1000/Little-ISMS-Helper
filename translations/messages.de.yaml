@@ -1207,7 +1207,12 @@ document:
   table:
     uploaded_by: 'Hochgeladen von'
 person:
-  title: Personenverwaltung
+  title:
+    _default: Personenverwaltung
+    list: Personen
+    show: Person anzeigen
+    create: Neue Person anlegen
+    edit: Person bearbeiten
   name: Person
   full_name: Vollständiger Name
   person_type: Personentyp
@@ -1222,6 +1227,15 @@ person:
   notes: Notizen
   access_valid_from: Zugang gültig ab
   access_valid_until: Zugang gültig bis
+  description:
+    overview: 'Verwalten Sie Mitarbeiter, Auftragnehmer, Besucher und andere Personen in Ihrer Organisation.'
+  action:
+    create: Person anlegen
+  stats:
+    total: Personen gesamt
+    employees: Mitarbeiter
+    contractors: Auftragnehmer
+    with_badge: Mit Ausweis
   type:
     employee: Mitarbeiter
     contractor: Auftragnehmer
@@ -1232,11 +1246,31 @@ person:
     other: Sonstiges
   field:
     full_name: Vollständiger Name
+    name: Name
+    type: Typ
     person_type: Personentyp
+    email: E-Mail
+    phone: Telefon
     badge_id: Ausweisnummer
     company: Firma
     department: Abteilung
     job_title: Berufsbezeichnung
+  section:
+    basic_info: Grundinformationen
+    details: Details
+    contact: Kontaktdaten
+    organization: Organisation
+    notes: Notizen
+    additional: Zusatzinformationen
+  message:
+    no_persons: Noch keine Personen vorhanden. Erstellen Sie die erste Person.
+  placeholder:
+    name: 'z.B. Max Mustermann'
+    badge: 'z.B. BADGE-12345'
+  help:
+    badge: Eindeutige Ausweiskennung für physische Zutrittskontrolle
+  confirm:
+    delete: 'Möchten Sie diese Person wirklich löschen?'
   success:
     created: Person erfolgreich erstellt.
     updated: Person erfolgreich aktualisiert.
