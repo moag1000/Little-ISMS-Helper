@@ -5,12 +5,15 @@ namespace App\Service;
 use App\Entity\ISMSContext;
 use App\Repository\ISMSContextRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Security\Core\Security;
 
 class ISMSContextService
 {
     public function __construct(
         private ISMSContextRepository $contextRepository,
-        private EntityManagerInterface $entityManager
+        private EntityManagerInterface $entityManager,
+        private ?CorporateStructureService $corporateStructureService = null,
+        private ?Security $security = null
     ) {}
 
     /**
@@ -133,5 +136,94 @@ class ISMSContextService
         }
 
         return $errors;
+    }
+
+    /**
+     * Get effective ISMS context considering corporate structure
+     * Returns inherited context if governance model is HIERARCHICAL
+     */
+    public function getEffectiveContext(?ISMSContext $context = null): ISMSContext
+    {
+        if (!$context) {
+            $context = $this->getCurrentContext();
+        }
+
+        $tenant = $context->getTenant();
+
+        // If no corporate structure service or no tenant, return as-is
+        if (!$this->corporateStructureService || !$tenant) {
+            return $context;
+        }
+
+        // Use corporate structure service to get effective context
+        $effectiveContext = $this->corporateStructureService->getEffectiveISMSContext($tenant);
+
+        return $effectiveContext ?? $context;
+    }
+
+    /**
+     * Get information about context inheritance
+     * Returns array with: isInherited, inheritedFrom, effectiveContext
+     */
+    public function getContextInheritanceInfo(?ISMSContext $context = null): array
+    {
+        if (!$context) {
+            $context = $this->getCurrentContext();
+        }
+
+        $tenant = $context->getTenant();
+        $effectiveContext = $this->getEffectiveContext($context);
+
+        // Check if contexts are different (null-safe comparison)
+        $contextId = $context->getId();
+        $effectiveContextId = $effectiveContext->getId();
+        $isInherited = $contextId !== null && $effectiveContextId !== null && $effectiveContextId !== $contextId;
+        $inheritedFrom = $isInherited ? $effectiveContext->getTenant() : null;
+
+        return [
+            'isInherited' => $isInherited,
+            'inheritedFrom' => $inheritedFrom,
+            'effectiveContext' => $effectiveContext,
+            'ownContext' => $context,
+            'hasParent' => $tenant && $tenant->getParent() !== null,
+        ];
+    }
+
+    /**
+     * Check if current user's tenant can edit this context
+     * Subsidiaries with HIERARCHICAL governance can only view, not edit
+     */
+    public function canEditContext(ISMSContext $context): bool
+    {
+        $tenant = $context->getTenant();
+
+        if (!$tenant || !$this->security) {
+            return true; // Default: allow if no restrictions
+        }
+
+        $user = $this->security->getUser();
+        if (!$user || !method_exists($user, 'getTenant')) {
+            return true;
+        }
+
+        $userTenant = $user->getTenant();
+        if (!$userTenant) {
+            return true; // No tenant assigned to user - allow by default
+        }
+
+        // If different tenant, check corporate access
+        if ($userTenant->getId() !== $tenant->getId()) {
+            if (!$this->corporateStructureService) {
+                return false;
+            }
+
+            return $this->corporateStructureService->canAccessTenant($userTenant, $tenant);
+        }
+
+        // Same tenant: Check if using inherited context
+        $inheritanceInfo = $this->getContextInheritanceInfo($context);
+
+        // If context is inherited, user cannot edit (must edit at parent level)
+        return !$inheritanceInfo['isInherited'];
     }
 }
