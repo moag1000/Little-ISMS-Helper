@@ -1,0 +1,148 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  db:
+    image: postgres:16-alpine
+    container_name: isms-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-little_isms}
+      POSTGRES_USER: ${POSTGRES_USER:-isms_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-isms_password}
+    ports:
+      # ⚠️ Security: In Produktion sollte Port 5432 NICHT öffentlich sein!
+      # Verwenden Sie 127.0.0.1:5432:5432 oder entfernen Sie die Port-Mapping ganz
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-isms_user} -d ${POSTGRES_DB:-little_isms}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - isms-network
+    # Security: Resource Limits
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+
+  # Little ISMS Helper Application
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    container_name: isms-app
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+      mailhog:
+        condition: service_started
+    ports:
+      - "${APP_PORT:-8000}:80"
+    volumes:
+      # ✅ Bind mount für Code - persistiert .env.local, config/setup_complete.lock nach Reboot!
+      - ./:/var/www/html:cached
+      # Named volumes für bessere Performance
+      - vendor_data:/var/www/html/vendor
+      - var_cache:/var/www/html/var/cache
+      - var_log:/var/www/html/var/log
+    environment:
+      # Note: APP_SECRET und DATABASE_URL werden vom Deployment Wizard konfiguriert
+      # Diese Werte sind nur Defaults - der Wizard schreibt .env.local (persistiert durch Bind-Mount!)
+      APP_ENV: ${APP_ENV:-dev}
+      APP_DEBUG: ${APP_DEBUG:-1}
+      # MailHog für Email-Testing
+      MAILER_DSN: smtp://mailhog:1025
+    networks:
+      - isms-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    # Security: Resource Limits
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+
+  # MailHog - Email Testing
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: isms-mailhog
+    restart: unless-stopped
+    ports:
+      - "${MAILHOG_SMTP_PORT:-1025}:1025"  # SMTP port
+      - "${MAILHOG_WEB_PORT:-8025}:8025"   # Web UI port
+    networks:
+      - isms-network
+    # Security: Resource Limits
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+        reservations:
+          cpus: '0.1'
+          memory: 64M
+
+  # pgAdmin - Database Management (Optional - nur für Development!)
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: isms-pgadmin
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-admin@isms.local}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: 'False'
+    ports:
+      # ⚠️ Security: In Produktion sollte pgAdmin NICHT öffentlich sein!
+      # Verwenden Sie 127.0.0.1:5050:80 oder entfernen Sie pgAdmin komplett
+      - "${PGADMIN_PORT:-5050}:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    networks:
+      - isms-network
+    depends_on:
+      - db
+    # Security: Resource Limits
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 128M
+
+volumes:
+  # ✅ Alle Volumes sind persistent - überleben docker-compose down und Reboot!
+  db_data:
+    driver: local
+  vendor_data:
+    driver: local
+  var_cache:
+    driver: local
+  var_log:
+    driver: local
+  pgadmin_data:
+    driver: local
+
+networks:
+  isms-network:
+    driver: bridge

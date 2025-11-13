@@ -24,3 +24,8 @@
 /config/active_modules.yaml
 ###< little-isms-helper/deployment ###
 PR_DESCRIPTION.md
+
+###> docker ###
+.env.docker.local
+/docker-compose.override.yml
+###< docker ###
