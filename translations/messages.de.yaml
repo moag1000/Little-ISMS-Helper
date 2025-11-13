@@ -2860,6 +2860,7 @@ corporate:
   section:
     groups: 'Konzerngruppen'
     standalone: 'Eigenständige Mandanten'
+    structure: 'Konzernstruktur'
   stats:
     groups: 'Konzerngruppen'
     standalone: 'Eigenständig'
@@ -2869,6 +2870,14 @@ corporate:
     parent: 'Muttergesellschaft'
     governance_model: 'Governance-Modell'
     actions: 'Aktionen'
+    hierarchy_depth: 'Hierarchieebene'
+    subsidiaries: 'Tochtergesellschaften'
+    is_corporate_parent: 'Ist Muttergesellschaft'
+    is_corporate_parent_help: 'Markieren Sie dies, wenn dieser Mandant eine Muttergesellschaft ist'
+    parent_help: 'Wählen Sie die Muttergesellschaft für diesen Mandanten'
+    governance_model_help: 'Wählen Sie, wie ISMS-Verantwortlichkeiten verwaltet werden'
+    corporate_notes: 'Konzernnotizen'
+    corporate_notes_help: 'Optionale Notizen zur Konzernstruktur'
   select:
     parent: 'Muttergesellschaft auswählen...'
     governance: 'Governance-Modell auswählen...'
@@ -2876,6 +2885,7 @@ corporate:
     set_parent: 'Muttergesellschaft zuweisen'
     remove_parent: 'Zuordnung entfernen'
     update_governance: 'Governance-Modell ändern'
+    view_structure: 'Gesamte Struktur anzeigen'
   modal:
     set_parent:
       title: 'Muttergesellschaft zuweisen'
@@ -2890,27 +2900,12 @@ corporate:
     invalid_governance: 'Ungültiges Governance-Modell'
     governance_updated: 'Governance-Modell aktualisiert'
     error: 'Fehler bei der Konzernstruktur-Verwaltung'
+    no_governance_found: 'Keine Governance-Regel gefunden für diesen Mandanten'
   info:
     title: 'Information zur Konzernstruktur'
     text: 'Hier können Sie Beziehungen zwischen Muttergesellschaften und Tochtergesellschaften verwalten. Das Governance-Modell bestimmt, wie ISMS-Verantwortlichkeiten zwischen Mutter- und Tochtergesellschaften aufgeteilt werden.'
-  section:
-    structure: 'Konzernstruktur'
-  field:
-    hierarchy_depth: 'Hierarchieebene'
-    subsidiaries: 'Tochtergesellschaften'
   level: 'Ebene %level%'
-  action:
-    view_structure: 'Gesamte Struktur anzeigen'
-  field:
-    is_corporate_parent: 'Ist Muttergesellschaft'
-    is_corporate_parent_help: 'Markieren Sie dies, wenn dieser Mandant eine Muttergesellschaft ist'
-    parent_help: 'Wählen Sie die Muttergesellschaft für diesen Mandanten'
-    governance_model_help: 'Wählen Sie, wie ISMS-Verantwortlichkeiten verwaltet werden'
-    corporate_notes: 'Konzernnotizen'
-    corporate_notes_help: 'Optionale Notizen zur Konzernstruktur'
   placeholder:
     parent: 'Keine Muttergesellschaft (eigenständig)'
     governance_model: 'Governance-Modell auswählen...'
     corporate_notes: 'Z.B. Spezielle Vereinbarungen oder Besonderheiten...'
-  flash:
-    no_governance_found: 'Keine Governance-Regel gefunden für diesen Mandanten'
