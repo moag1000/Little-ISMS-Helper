@@ -39,11 +39,12 @@ class EnvironmentWriter
         $password = $config['password'] ?? '';
 
         // Build DATABASE_URL based on type
+        // Important: URL-encode user and password to handle special characters
         $databaseUrl = match ($type) {
             'mysql', 'mariadb' => sprintf(
                 'mysql://%s:%s@%s:%s/%s?serverVersion=%s&charset=utf8mb4',
-                $user,
-                $password,
+                urlencode($user),
+                urlencode($password),
                 $host,
                 $port,
                 $name,
@@ -51,8 +52,8 @@ class EnvironmentWriter
             ),
             'postgresql' => sprintf(
                 'postgresql://%s:%s@%s:%s/%s?serverVersion=%s&charset=utf8',
-                $user,
-                $password,
+                urlencode($user),
+                urlencode($password),
                 $host,
                 $port,
                 $name,
