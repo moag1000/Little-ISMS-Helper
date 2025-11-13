@@ -146,6 +146,70 @@
                         </tbody>
                     </table>
 
+                    {# Corporate Structure Information #}
+                    {% if tenant.isPartOfCorporateStructure %}
+                        <hr>
+                        <h6 class="text-muted mb-3">
+                            <i class="bi bi-diagram-3"></i> {{ 'corporate.section.structure'|trans }}
+                        </h6>
+                        <table class="table table-sm">
+                            <tbody>
+                                {% if tenant.parent %}
+                                    <tr>
+                                        <th style="width: 40%;">{{ 'corporate.field.parent'|trans }}</th>
+                                        <td>
+                                            <a href="{{ path('tenant_management_show', {id: tenant.parent.id}) }}">
+                                                {{ tenant.parent.name }}
+                                            </a>
+                                            <code class="text-muted ms-2">{{ tenant.parent.code }}</code>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>{{ 'corporate.field.governance_model'|trans }}</th>
+                                        <td>
+                                            <span class="badge bg-{{ tenant.governanceModel.value == 'hierarchical' ? 'primary' : (tenant.governanceModel.value == 'shared' ? 'warning' : 'secondary') }}">
+                                                {{ tenant.governanceModel.label }}
+                                            </span>
+                                            <br><small class="text-muted">{{ tenant.governanceModel.description }}</small>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>{{ 'corporate.field.hierarchy_depth'|trans }}</th>
+                                        <td>{{ 'corporate.level'|trans({'%level%': tenant.hierarchyDepth}) }}</td>
+                                    </tr>
+                                {% endif %}
+                                {% if tenant.isCorporateParent %}
+                                    <tr>
+                                        <th>{{ 'corporate.field.subsidiaries'|trans }}</th>
+                                        <td>
+                                            <span class="badge bg-info">{{ tenant.subsidiaries|length }}</span>
+                                            {% if tenant.subsidiaries|length > 0 %}
+                                                <ul class="mt-2 mb-0">
+                                                    {% for subsidiary in tenant.subsidiaries %}
+                                                        <li>
+                                                            <a href="{{ path('tenant_management_show', {id: subsidiary.id}) }}">
+                                                                {{ subsidiary.name }}
+                                                            </a>
+                                                            <code class="text-muted">{{ subsidiary.code }}</code>
+                                                            <span class="badge bg-{{ subsidiary.governanceModel.value == 'hierarchical' ? 'primary' : (subsidiary.governanceModel.value == 'shared' ? 'warning' : 'secondary') }} ms-1">
+                                                                {{ subsidiary.governanceModel.label }}
+                                                            </span>
+                                                        </li>
+                                                    {% endfor %}
+                                                </ul>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                        <div class="d-grid">
+                            <a href="{{ path('tenant_management_corporate_structure') }}" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-diagram-3"></i> {{ 'corporate.action.view_structure'|trans }}
+                            </a>
+                        </div>
+                    {% endif %}
+
                     {% if tenant.settings %}
                         <hr>
                         <h6 class="text-muted mb-2">{{ 'tenant.field.settings'|trans }}</h6>
