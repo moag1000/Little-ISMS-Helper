@@ -101,7 +101,15 @@ class SupplierService
             return false;
         }
 
-        return $supplierTenant->getId() !== $currentTenant->getId();
+        $supplierTenantId = $supplierTenant->getId();
+        $currentTenantId = $currentTenant->getId();
+
+        // Explicit null handling for unsaved entities
+        if ($supplierTenantId === null || $currentTenantId === null) {
+            return false;
+        }
+
+        return $supplierTenantId !== $currentTenantId;
     }
 
     /**
