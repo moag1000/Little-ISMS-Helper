@@ -44,10 +44,12 @@ final class Version20250113000002_granular_corporate_governance extends Abstract
         $this->addSql('CREATE INDEX IDX_9815E573B03A8386 ON corporate_governance (created_by_id)');
         $this->addSql('CREATE UNIQUE INDEX uniq_tenant_scope ON corporate_governance (tenant_id, scope, scope_id)');
 
-        // Add foreign key constraints
+        // Add foreign key constraints (only for tenant references)
         $this->addSql('ALTER TABLE corporate_governance ADD CONSTRAINT FK_9815E5739033212A FOREIGN KEY (tenant_id) REFERENCES tenant (id) ON DELETE CASCADE');
         $this->addSql('ALTER TABLE corporate_governance ADD CONSTRAINT FK_9815E573727ACA70 FOREIGN KEY (parent_id) REFERENCES tenant (id) ON DELETE CASCADE');
-        $this->addSql('ALTER TABLE corporate_governance ADD CONSTRAINT FK_9815E573B03A8386 FOREIGN KEY (created_by_id) REFERENCES user (id) ON DELETE SET NULL');
+
+        // Note: created_by_id foreign key to user table is intentionally omitted
+        // to avoid dependency issues during migration. Can be added manually later if needed.
 
         // Check if governance_model column exists before migrating data
         $columnExists = $this->connection->fetchOne(
@@ -95,7 +97,7 @@ final class Version20250113000002_granular_corporate_governance extends Abstract
         // Drop corporate_governance table
         $this->addSql('ALTER TABLE corporate_governance DROP FOREIGN KEY FK_9815E5739033212A');
         $this->addSql('ALTER TABLE corporate_governance DROP FOREIGN KEY FK_9815E573727ACA70');
-        $this->addSql('ALTER TABLE corporate_governance DROP FOREIGN KEY FK_9815E573B03A8386');
+        // FK_9815E573B03A8386 was not created in up(), so don't drop it
         $this->addSql('DROP TABLE corporate_governance');
     }
 }
