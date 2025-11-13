@@ -176,6 +176,14 @@ jobs:
           build-args: |
             BUILDKIT_PROGRESS=plain
 
+      - name: Sanitize branch name for Docker tag
+        id: sanitize
+        if: github.ref == 'refs/heads/develop' || startsWith(github.ref, 'refs/heads/claude/')
+        run: |
+          # Replace slashes with hyphens for valid Docker tag
+          SANITIZED_TAG=$(echo "${{ github.ref_name }}" | sed 's/\//-/g')
+          echo "tag=${SANITIZED_TAG}" >> $GITHUB_OUTPUT
+
       - name: Build and Push Docker image (development)
         uses: docker/build-push-action@v5
         timeout-minutes: 15
@@ -183,7 +191,7 @@ jobs:
         with:
           context: .
           target: development
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/little-isms-helper:dev-${{ github.ref_name }}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/little-isms-helper:dev-${{ steps.sanitize.outputs.tag }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
