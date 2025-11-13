@@ -2213,6 +2213,14 @@ preferences:
     imported: Settings successfully imported
   error:
     import_failed: Error importing settings
+clause:
+  '4': 'Context of the Organization'
+  '5': 'Leadership'
+  '6': 'Planning'
+  '7': 'Support'
+  '8': 'Operation'
+  '9': 'Performance Evaluation'
+  '10': 'Improvement'
 compliance:
   manage_frameworks: Manage Frameworks
   manage_frameworks_subtitle: Load and manage available compliance frameworks
