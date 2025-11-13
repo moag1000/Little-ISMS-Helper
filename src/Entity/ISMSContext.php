@@ -2,8 +2,7 @@
 
 namespace App\Entity;
 
-// TODO: Re-enable after migration Version20251113120000 is successfully executed
-// use App\Entity\Tenant;
+use App\Entity\Tenant;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
@@ -101,10 +100,9 @@ class ISMSContext
     #[Groups(['isms_context:read'])]
     private ?\DateTimeInterface $updatedAt = null;
 
-    // TODO: Re-enable after migration Version20251113120000 is successfully executed
-    // #[ORM\ManyToOne(targetEntity: Tenant::class)]
-    // #[ORM\JoinColumn(nullable: true)]
-    // private ?Tenant $tenant = null;
+    #[ORM\ManyToOne(targetEntity: Tenant::class)]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Tenant $tenant = null;
 
     public function __construct()
     {
@@ -292,15 +290,14 @@ class ISMSContext
         return $this;
     }
 
-    // TODO: Re-enable after migration Version20251113120000 is successfully executed
-    // public function getTenant(): ?Tenant
-    // {
-    //     return $this->tenant;
-    // }
+    public function getTenant(): ?Tenant
+    {
+        return $this->tenant;
+    }
 
-    // public function setTenant(?Tenant $tenant): static
-    // {
-    //     $this->tenant = $tenant;
-    //     return $this;
-    // }
+    public function setTenant(?Tenant $tenant): static
+    {
+        $this->tenant = $tenant;
+        return $this;
+    }
 }
