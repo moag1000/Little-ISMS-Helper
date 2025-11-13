@@ -11,6 +11,20 @@
 {% endblock %}
 
 {% block admin_content %}
+    {# Info message when only one tenant exists #}
+    {% if not isMultiTenant %}
+        <div class="alert alert-info d-flex align-items-center mb-4" role="alert">
+            <i class="bi bi-info-circle fs-4 me-3"></i>
+            <div>
+                <h5 class="alert-heading mb-1">{{ 'corporate.single_tenant.title'|trans }}</h5>
+                <p class="mb-0">
+                    {{ 'corporate.single_tenant.message'|trans({'%count%': activeTenantCount}) }}
+                    {{ 'corporate.single_tenant.hint'|trans }}
+                </p>
+            </div>
+        </div>
+    {% endif %}
+
     {# Statistics Cards #}
     <div class="row g-3 mb-4">
         <div class="col-md-4">
