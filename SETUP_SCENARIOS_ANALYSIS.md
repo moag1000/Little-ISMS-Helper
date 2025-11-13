@@ -359,14 +359,235 @@ Output: mysql://user:p%40ss%3Aword@localhost/db
 
 ---
 
+### 24. Docker/Container-Deployment
+**Ablauf:**
+1. User startet Container
+2. `var/` ist Volume-Mount (potentiell read-only)
+3. Setup versucht `.env.local` zu schreiben
+4. Schlägt fehl wegen Read-Only Filesystem
+
+**Status:** ❌ **NICHT ABGEDECKT**
+**Problem:** Keine Erkennung von Container-Umgebungen
+**Lösung nötig:**
+- Environment-Variable-basierte Konfiguration als Alternative
+- Erkennung von Read-Only Filesystems
+
+---
+
+### 25. SSL/TLS Datenbank-Verbindungen
+**Ablauf:**
+1. User muss verschlüsselte DB-Verbindung nutzen (Cloud, Compliance)
+2. DATABASE_URL benötigt SSL-Parameter
+3. Wizard bietet keine Option für SSL-Konfiguration
+
+**Status:** ❌ **NICHT ABGEDECKT**
+**Problem:** Keine SSL-Optionen im Formular
+**Lösung nötig:**
+- Checkbox "SSL/TLS verwenden"
+- `?sslmode=require` für PostgreSQL
+- `?ssl-mode=REQUIRED` für MySQL
+
+---
+
+### 26. Cloud-Managed Databases (RDS, Azure SQL)
+**Ablauf:**
+1. User verwendet AWS RDS / Azure SQL Database
+2. Spezielle Connection-String-Formate
+3. Auto-Scaling, Failover-URLs
+4. Managed Service kann DB nicht erstellen (bereits vorhanden)
+
+**Status:** ⚠️ **TEILWEISE ABGEDECKT**
+**Problem:**
+- Wizard versucht DB zu erstellen (schlägt fehl bei managed services)
+- Keine Erkennung von Cloud-Providern
+**Lösung:** Option "DB bereits erstellt" überspringen
+
+---
+
+### 27. IPv6 Datenbank-Host
+**Ablauf:**
+1. User gibt IPv6-Adresse ein: `::1` oder `2001:db8::1`
+2. Connection-String Format könnte falsch sein
+3. PDO könnte IPv6 nicht erkennen
+
+**Status:** ⚠️ **UNSICHER**
+**Problem:** Keine Validierung für IPv6-Format
+**Test benötigt:** Mit IPv6 localhost testen
+
+---
+
+### 28. Reverse Proxy / Load Balancer
+**Ablauf:**
+1. App läuft hinter nginx/Apache Reverse Proxy
+2. Setup-Wizard generiert URLs mit falscher Base-URL
+3. Assets laden nicht (relative Pfade)
+
+**Status:** ✅ **SOLLTE FUNKTIONIEREN**
+**Grund:** Symfony nutzt Request-basierte URL-Generation
+**Aber:** Keine explizite Prüfung
+
+---
+
+### 29. Disk Full während Setup
+**Ablauf:**
+1. Setup läuft
+2. Disk wird voll während `.env.local` Schreiben
+3. Partial File wird geschrieben
+4. Korrupte Konfiguration
+
+**Status:** ❌ **NICHT ABGEDECKT**
+**Problem:** Keine Validierung nach Schreiben
+**Lösung nötig:** Atomic Write (temp file + rename)
+
+---
+
+### 30. Sehr lange Setup-Dauer (Timeout)
+**Ablauf:**
+1. User startet Setup
+2. Base-Data Import dauert >60 Sekunden
+3. PHP max_execution_time Timeout
+4. Partial Import, inkonsistenter State
+
+**Status:** ⚠️ **TEILWEISE ABGEDECKT**
+**Code:** SystemRequirementsChecker prüft max_execution_time
+**Problem:** Keine Timeout-Handling während laufendem Import
+
+---
+
+### 31. Sonderzeichen in DB-Name/Host
+**Ablauf:**
+1. User gibt DB-Name mit Leerzeichen/Sonderzeichen ein
+2. Keine Validierung
+3. DATABASE_URL wird ungültig
+
+**Status:** ⚠️ **TEILWEISE ABGEDECKT**
+**Code:** `DatabaseConfigurationType` validiert nur `[a-zA-Z0-9_]+`
+**Problem:** Fehlermeldung könnte unklar sein
+
+---
+
+### 32. JavaScript deaktiviert im Browser
+**Ablauf:**
+1. User hat JavaScript deaktiviert
+2. Dynamische Formular-Features funktionieren nicht
+3. DB-Type-Toggle zeigt alle Felder
+4. Verwirrend, aber funktional
+
+**Status:** ✅ **FUNKTIONIERT** (Progressive Enhancement)
+**Grund:** Formular ist server-side rendered
+
+---
+
+### 33. Multiple Browser Tabs
+**Ablauf:**
+1. User öffnet Setup in 2 Tabs
+2. Tab 1: Konfiguriert DB
+3. Tab 2: Zeigt alten State
+4. Beide nutzen gleiche Session
+5. Session-Race-Condition
+
+**Status:** ❌ **NICHT ABGEDECKT**
+**Problem:** Session-Overwrites zwischen Tabs
+**Lösung:** Session-Lock oder Tab-spezifischer State
+
+---
+
+### 34. CSRF-Token Expiration
+**Ablauf:**
+1. User öffnet Setup-Formular
+2. Lässt Tab 2 Stunden offen
+3. Submitted Formular
+4. CSRF-Token expired
+
+**Status:** ✅ **FUNKTIONIERT**
+**Grund:** Symfony zeigt Fehler, User kann neu laden
+
+---
+
+### 35. Email-Konfiguration fehlt
+**Ablauf:**
+1. Setup abgeschlossen
+2. System versucht Email zu senden (z.B. Password-Reset)
+3. MAILER_DSN = null://null
+4. Email schlägt fehl
+
+**Status:** ⚠️ **BEKANNTES PROBLEM**
+**Code:** `.env.minimal` setzt `MAILER_DSN=null://null`
+**Lösung:** Optionaler Step "Email-Konfiguration" im Wizard
+
+---
+
+### 36. Existierende Daten in Datenbank
+**Ablauf:**
+1. User gibt existierende DB ein
+2. DB hat bereits Tabellen (von alter Installation)
+3. Migrationen schlagen fehl wegen Conflicts
+4. Oder: Daten werden überschrieben
+
+**Status:** ⚠️ **TEILWEISE ABGEDECKT**
+**Code:** Doctrine Migrations sind idempotent
+**Problem:** Keine Warnung bei existierenden Tabellen
+**Lösung:** Pre-Check: Sind Tabellen vorhanden?
+
+---
+
+### 37. Wizard in iFrame
+**Ablauf:**
+1. Setup-Wizard wird in iFrame eingebettet
+2. Session-Cookies werden blockiert (SameSite)
+3. State geht verloren zwischen Requests
+
+**Status:** ❌ **NICHT ABGEDECKT**
+**Wahrscheinlichkeit:** Sehr niedrig (wer würde Setup in iFrame machen?)
+**Lösung:** Headers für iFrame-Kompatibilität
+
+---
+
+### 38. Inkonsistente Filesystem-Permissions
+**Ablauf:**
+1. `var/` gehört User A
+2. Webserver läuft als User B
+3. Kann nicht in `var/` schreiben (SQLite)
+4. Kann nicht `.env.local` schreiben
+
+**Status:** ❌ **NICHT ABGEDECKT**
+**Code:** Keine Permission-Checks vor Schreiben
+**Lösung:** Pre-Check: Sind Verzeichnisse writable?
+
+---
+
+### 39. Großbuchstaben in Email
+**Ablauf:**
+1. User gibt Email ein: `Admin@Example.COM`
+2. Email wird case-sensitive gespeichert
+3. Login schlägt fehl (Email-Vergleich)
+
+**Status:** ⚠️ **UNKLAR**
+**Test benötigt:** Ist Email-Lookup case-insensitive?
+**Lösung:** `strtolower()` bei Email-Speicherung
+
+---
+
+### 40. Setup auf Subdomain/Subpath
+**Ablauf:**
+1. App läuft auf `https://example.com/isms/`
+2. Setup-Wizard URLs sind relativ
+3. Asset-Pfade könnten falsch sein
+
+**Status:** ✅ **SOLLTE FUNKTIONIEREN**
+**Grund:** Symfony Asset-Component nutzt BASE_PATH
+**Aber:** Nicht explizit getestet
+
+---
+
 ## 📊 Zusammenfassung
 
 | Kategorie | Anzahl | Status |
 |-----------|--------|--------|
-| **Vollständig abgedeckt** | 10 | ✅ |
-| **Teilweise abgedeckt** | 6 | ⚠️ |
-| **Nicht abgedeckt** | 7 | ❌ |
-| **GESAMT** | 23 | - |
+| **Vollständig abgedeckt** | 13 | 33% |
+| **Teilweise abgedeckt** | 13 | 33% |
+| **Nicht abgedeckt** | 14 | 35% |
+| **GESAMT** | 40 | - |
 
 ---
 
@@ -377,7 +598,7 @@ Output: mysql://user:p%40ss%3Aword@localhost/db
 1. **Szenario #14: .env.local schreibgeschützt**
    - Häufigkeit: Mittel (Production-Deployments)
    - Auswirkung: Setup kann nicht abgeschlossen werden
-   - Lösung: Try-Catch + User-Hinweis
+   - Lösung: Try-Catch + User-Hinweis + Atomic Write
 
 2. **Szenario #20: Fehlende PHP-Extensions**
    - Häufigkeit: Hoch (bei manuellen Installationen)
@@ -388,6 +609,16 @@ Output: mysql://user:p%40ss%3Aword@localhost/db
    - Häufigkeit: Mittel (restriktive DB-Server)
    - Auswirkung: Setup schlägt fehl ohne klare Erklärung
    - Lösung: Permission-Check + Alternative anbieten
+
+4. **Szenario #29: Disk Full während Setup**
+   - Häufigkeit: Niedrig, aber katastrophal
+   - Auswirkung: Korrupte Konfiguration
+   - Lösung: Atomic Write (temp file + rename)
+
+5. **Szenario #38: Inkonsistente Filesystem-Permissions**
+   - Häufigkeit: Hoch (Shared Hosting, Docker)
+   - Auswirkung: Setup kann nicht starten
+   - Lösung: Pre-Check writable directories
 
 ---
 
