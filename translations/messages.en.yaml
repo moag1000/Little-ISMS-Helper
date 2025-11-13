@@ -2424,6 +2424,107 @@ data:
   setup:
     title: Setup Wizard
     link: Link to existing Deployment Wizard
+    progress:
+      title: Setup Progress
+      step: 'Step %current% of %total%'
+    navigation:
+      back: Back
+      next: Continue
+    welcome:
+      title: Welcome
+      header: Little ISMS Helper - Setup Wizard
+      greeting: Welcome to the Setup Wizard
+      description: This wizard will guide you through setting up your ISMS system in just a few steps
+      steps:
+        title: 'What will be set up?'
+        database: Configure database
+        admin: Create administrator account
+        requirements: Check system requirements
+        modules: Select modules
+        migrations: Create database schema
+        base_data: Import base data
+        sample_data: 'Optional: Load sample data'
+      requirements:
+        title: Duration & Requirements
+        duration: '~5-10 minutes'
+        database: Database access required
+        php: PHP 8.2+ and extensions
+        permissions: Write permissions for directories
+      info:
+        title: Important Notes
+        description: The setup wizard helps you with initial configuration
+        point1: 'The database will be created automatically (if it does not exist)'
+        point2: 'You will create an administrator account for first access'
+        point3: 'All base data will be imported automatically'
+      start_button: Start Setup
+    database:
+      title: Database Configuration
+      header: 'Step 1: Configure Database'
+      description: Configure your database connection. The database will be created automatically if it does not exist.
+      type: Database Type
+      name: Database Name
+      host: Host
+      port: Port
+      user: Username
+      password: Password
+      test_button: Test Connection
+      info:
+        title: Database Configuration Notes
+        mysql: 'MySQL/MariaDB: Default port 3306, recommended for production'
+        postgresql: 'PostgreSQL: Default port 5432, good performance for large datasets'
+        sqlite: 'SQLite: File-based, no installation needed, ideal for development and small installations'
+        special_chars: 'Special characters in passwords are automatically escaped'
+      test:
+        success: Database connection successful
+        failed: Database connection failed
+        create_needed: The database does not exist yet and will be created automatically in the next step
+      write_failed: 'Error writing configuration: %error%. %hint%'
+      existing_tables: 'Warning: The database already contains %count% tables: %tables%'
+      config_saved: Database configuration saved successfully
+      config_failed: Error saving database configuration
+    admin:
+      title: Create Administrator
+      header: 'Step 2: Create Administrator Account'
+      description: Create the first administrator account for your ISMS system. This account will have full access rights.
+      first_name: First Name
+      last_name: Last Name
+      email: Email Address
+      email_help: This email address will be used for login
+      password: Password
+      password_confirm: Confirm Password
+      password_requirements:
+        title: Password Requirements
+        length: At least 8 characters
+        uppercase: At least one uppercase letter
+        lowercase: At least one lowercase letter
+        number: At least one digit
+      security_note:
+        title: Security Note
+        message: Use a secure password and keep your credentials in a safe place.
+      next_steps:
+        title: Next Steps
+        description: After creating the administrator account, system requirements will be checked and the database will be initialized.
+      first_name_required: First name is required
+      first_name_min: First name must be at least 2 characters long
+      first_name_max: First name may not exceed 50 characters
+      last_name_required: Last name is required
+      last_name_min: Last name must be at least 2 characters long
+      last_name_max: Last name may not exceed 50 characters
+      email_required: Email address is required
+      email_invalid: Invalid email address
+      password_required: Password is required
+      password_min: Password must be at least 8 characters long
+      password_max: Password may not exceed 255 characters
+      password_strength: Password must contain at least one uppercase letter, one lowercase letter, and one digit
+      password_mismatch: The passwords do not match
+      migration_failed: Error executing database migrations
+      creation_failed: Error creating administrator account
+      user_created: Administrator account created successfully
+    state:
+      recovery_detected: 'Note: An incomplete installation was detected. You can continue from here.'
+    error:
+      configure_database_first: Please configure the database first
+      create_admin_first: Please create an administrator first
 
 # Admin Integration - Phase 6L-G
 nav.admin.modules: 'Module Management'

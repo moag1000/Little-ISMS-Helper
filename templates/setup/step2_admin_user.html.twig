@@ -1,0 +1,138 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'setup.admin.title'|trans }} - Deployment Wizard{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            {# Flash Messages #}
+            {% for label, messages in app.flashes %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+                        {{ message|raw }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endfor %}
+
+            {# Progress Bar #}
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h6 class="mb-0">{{ 'setup.progress.title'|trans }}</h6>
+                        <small class="text-muted">{{ 'setup.progress.step'|trans({'%current%': 2, '%total%': 7}) }}</small>
+                    </div>
+                    <div class="progress" style="height: 10px;">
+                        <div class="progress-bar" role="progressbar" style="width: 28%;" aria-valuenow="28" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-lg">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="mb-0">
+                        <i class="fas fa-user-shield me-2"></i>
+                        {{ 'setup.admin.header'|trans }}
+                    </h2>
+                </div>
+                <div class="card-body p-4">
+                    <p class="text-muted mb-4">
+                        {{ 'setup.admin.description'|trans }}
+                    </p>
+
+                    {# Admin User Form #}
+                    {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            {{ form_row(form.firstName, {
+                                'label': 'setup.admin.first_name'|trans,
+                                'attr': {'class': 'form-control'}
+                            }) }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            {{ form_row(form.lastName, {
+                                'label': 'setup.admin.last_name'|trans,
+                                'attr': {'class': 'form-control'}
+                            }) }}
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form_row(form.email, {
+                            'label': 'setup.admin.email'|trans,
+                            'attr': {'class': 'form-control'}
+                        }) }}
+                        <small class="form-text text-muted">
+                            {{ 'setup.admin.email_help'|trans }}
+                        </small>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            {{ form_row(form.password.first, {
+                                'label': 'setup.admin.password'|trans,
+                                'attr': {'class': 'form-control'}
+                            }) }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            {{ form_row(form.password.second, {
+                                'label': 'setup.admin.password_confirm'|trans,
+                                'attr': {'class': 'form-control'}
+                            }) }}
+                        </div>
+                    </div>
+
+                    {# Password Requirements Info #}
+                    <div class="alert alert-info">
+                        <i class="fas fa-shield-alt me-2"></i>
+                        <strong>{{ 'setup.admin.password_requirements.title'|trans }}</strong>
+                        <ul class="mb-0 mt-2">
+                            <li>{{ 'setup.admin.password_requirements.length'|trans }}</li>
+                            <li>{{ 'setup.admin.password_requirements.uppercase'|trans }}</li>
+                            <li>{{ 'setup.admin.password_requirements.lowercase'|trans }}</li>
+                            <li>{{ 'setup.admin.password_requirements.number'|trans }}</li>
+                        </ul>
+                    </div>
+
+                    {# Security Note #}
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong>{{ 'setup.admin.security_note.title'|trans }}</strong>
+                        <p class="mb-0">{{ 'setup.admin.security_note.message'|trans }}</p>
+                    </div>
+
+                    {# Navigation #}
+                    <div class="d-flex justify-content-between mt-4">
+                        <a href="{{ path('setup_step1_database_config') }}" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>
+                            {{ 'setup.navigation.back'|trans }}
+                        </a>
+
+                        <button type="submit" class="btn btn-primary">
+                            {{ 'setup.navigation.next'|trans }}
+                            <i class="fas fa-arrow-right ms-2"></i>
+                        </button>
+                    </div>
+
+                    {{ form_end(form) }}
+                </div>
+            </div>
+
+            {# Information Card #}
+            <div class="card mt-4 border-info">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="fas fa-info-circle text-info me-2"></i>
+                        {{ 'setup.admin.next_steps.title'|trans }}
+                    </h5>
+                    <p class="text-muted mb-0">
+                        {{ 'setup.admin.next_steps.description'|trans }}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

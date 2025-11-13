@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Schritt 5: Beispiel-Daten - Deployment Wizard{% endblock %}
+{% block title %}Schritt 6: Beispiel-Daten - Deployment Wizard{% endblock %}
 
 {% block body %}
 <div class="container mt-5">
@@ -11,10 +11,10 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center mb-2">
                         <h6 class="mb-0">Setup-Fortschritt</h6>
-                        <small class="text-muted">Schritt 5 von 6</small>
+                        <small class="text-muted">Schritt 6 von 7</small>
                     </div>
                     <div class="progress" style="height: 10px;">
-                        <div class="progress-bar" role="progressbar" style="width: 83%;" aria-valuenow="83" aria-valuemin="0" aria-valuemax="100"></div>
+                        <div class="progress-bar" role="progressbar" style="width: 86%;" aria-valuenow="86" aria-valuemin="0" aria-valuemax="100"></div>
                     </div>
                 </div>
             </div>
@@ -23,7 +23,7 @@
                 <div class="card-header bg-primary text-white">
                     <h2 class="mb-0">
                         <i class="fas fa-file-code me-2"></i>
-                        Schritt 5: Beispiel-Daten (Optional)
+                        Schritt 6: Beispiel-Daten (Optional)
                     </h2>
                 </div>
                 <div class="card-body p-4">
@@ -44,7 +44,7 @@
                     </div>
 
                     {% if sample_data|length > 0 %}
-                        <form method="post" action="{{ path('setup_step5_sample_data_import') }}">
+                        <form method="post" action="{{ path('setup_step6_sample_data_import') }}">
                             <h5 class="mb-3 mt-4">
                                 <i class="fas fa-toggle-on me-2"></i>
                                 Verfügbare Beispiel-Daten
@@ -91,7 +91,7 @@
                             {% endfor %}
 
                             <div class="d-flex justify-content-between mt-4">
-                                <a href="{{ path('setup_step4_base_data') }}" class="btn btn-outline-secondary">
+                                <a href="{{ path('setup_step5_base_data') }}" class="btn btn-outline-secondary">
                                     <i class="fas fa-arrow-left me-2"></i>
                                     Zurück
                                 </a>
@@ -108,7 +108,7 @@
                             </div>
                         </form>
 
-                        <form id="skip-form" method="post" action="{{ path('setup_step5_sample_data_skip') }}" style="display: none;">
+                        <form id="skip-form" method="post" action="{{ path('setup_step6_sample_data_skip') }}" style="display: none;">
                         </form>
                     {% else %}
                         <div class="alert alert-info" role="alert">
