@@ -17,6 +17,13 @@ This Docker setup provides a complete development and production environment for
 - Docker Compose 2.0+
 - At least 4GB RAM available for Docker
 
+## ⚠️ Security & Datenpersistenz
+
+**Wichtige Informationen:**
+- ✅ **Datenpersistenz:** Alle Konfigurationen (`.env.local`, `config/setup_complete.lock`) und Daten (PostgreSQL) überleben Reboots
+- 🔒 **Security:** Siehe [DOCKER_SECURITY.md](DOCKER_SECURITY.md) für Best Practices
+- 🔐 **Produktion:** Verwenden Sie `docker-compose.prod.yml` für Production-Deployments
+
 ## Quick Start (With Deployment Wizard - Recommended) 🧙
 
 ### 1. Start Docker Environment

@@ -1,0 +1,110 @@
+version: '3.8'
+
+# 🔒 PRODUCTION Docker Compose Configuration
+# ⚠️ WICHTIG: Vor Produktion-Deployment:
+# 1. Ändern Sie ALLE Passwörter in .env.docker.local
+# 2. Verwenden Sie HTTPS mit Reverse Proxy (Nginx/Traefik)
+# 3. Deaktivieren Sie Debug-Mode
+# 4. Entfernen Sie pgAdmin und MailHog
+# 5. Beschränken Sie Port-Zugriff mit Firewall
+
+services:
+  # PostgreSQL Database
+  db:
+    image: postgres:16-alpine
+    container_name: isms-db-prod
+    restart: always
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    # ✅ Security: Keine öffentlichen Ports! Nur über Docker-Netzwerk erreichbar
+    expose:
+      - "5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - isms-network
+    # Security: Resource Limits
+    deploy:
+      resources:
+        limits:
+          cpus: '4'
+          memory: 4G
+        reservations:
+          cpus: '1'
+          memory: 1G
+    # Security: Read-only root filesystem (außer /var/lib/postgresql/data)
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /var/run/postgresql
+
+  # Little ISMS Helper Application
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    container_name: isms-app-prod
+    restart: always
+    depends_on:
+      db:
+        condition: service_healthy
+    # ✅ Security: Nur App-Port öffentlich
+    ports:
+      - "${APP_PORT:-8000}:80"
+    volumes:
+      # ✅ Bind mount für Konfiguration (persistiert .env.local, config/, etc.)
+      - ./:/var/www/html:ro  # Read-only für Security
+      # Config-Ordner beschreibbar für setup_complete.lock
+      - ./config:/var/www/html/config:rw
+      # var/ beschreibbar für Cache, Logs, Sessions
+      - ./var:/var/www/html/var:rw
+      # Named volumes für Dependencies
+      - vendor_data:/var/www/html/vendor:ro
+    environment:
+      # ⚠️ WICHTIG: Diese müssen in .env.docker.local gesetzt werden!
+      APP_ENV: prod
+      APP_DEBUG: 0
+      # MAILER_DSN muss für echte SMTP konfiguriert werden
+      MAILER_DSN: ${MAILER_DSN}
+    networks:
+      - isms-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    # Security: Resource Limits
+    deploy:
+      resources:
+        limits:
+          cpus: '4'
+          memory: 4G
+        reservations:
+          cpus: '1'
+          memory: 1G
+
+volumes:
+  # ✅ Production Volumes - persistent und performant
+  db_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /var/lib/docker/volumes/isms_db_data
+  vendor_data:
+    driver: local
+
+networks:
+  isms-network:
+    driver: bridge
+    # Security: Isoliertes Netzwerk
+    internal: false  # Auf true setzen wenn keine externe Kommunikation nötig
