@@ -66,6 +66,15 @@
                         <p class="mb-0">{{ 'setup.compliance.mandatory.message'|trans }}</p>
                     </div>
 
+                    {# Critical Infrastructure Notice for NIS2 #}
+                    {% if 'NIS2' in recommended_frameworks and (app.session.get('setup_organisation_employee_count', '1-10') in ['1-10', '11-50']) %}
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <strong>{{ 'setup.compliance.critical_infrastructure.title'|trans }}</strong>
+                            <p class="mb-0">{{ 'setup.compliance.critical_infrastructure.message'|trans }}</p>
+                        </div>
+                    {% endif %}
+
                     {# Compliance Framework Selection Form #}
                     {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
 

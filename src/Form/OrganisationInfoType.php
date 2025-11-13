@@ -57,6 +57,11 @@ class OrganisationInfoType extends AbstractType
                 ],
                 'required' => true,
                 'placeholder' => 'setup.organisation.industry.select',
+                'constraints' => [
+                    new Assert\NotBlank([
+                        'message' => 'setup.organisation.industry_required',
+                    ]),
+                ],
                 'attr' => [
                     'class' => 'form-select',
                 ],
@@ -73,6 +78,11 @@ class OrganisationInfoType extends AbstractType
                 ],
                 'required' => true,
                 'placeholder' => 'setup.organisation.employee_count.select',
+                'constraints' => [
+                    new Assert\NotBlank([
+                        'message' => 'setup.organisation.employee_count_required',
+                    ]),
+                ],
                 'attr' => [
                     'class' => 'form-select',
                 ],
