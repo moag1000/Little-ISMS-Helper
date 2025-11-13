@@ -689,18 +689,16 @@ audit:
     department: Abteilungsaudit
     full_isms: Vollständiges ISMS-Audit
     location: Standortaudit
-  type:
-    _default: Audit-Typ
-    iso27001: ISO 27001
-    iso9001: ISO 9001
-    gdpr: DSGVO
-    custom: Benutzerdefiniert
-  result:
-    _default: Audit-Ergebnis
-    passed: Bestanden
-    passed_with_findings: Bestanden mit Feststellungen
-    failed: Nicht bestanden
-    pending: Ausstehend
+  type: Audit-Typ
+  type_iso27001: ISO 27001
+  type_iso9001: ISO 9001
+  type_gdpr: DSGVO
+  type_custom: Benutzerdefiniert
+  result: Audit-Ergebnis
+  result_passed: Bestanden
+  result_passed_with_findings: Bestanden mit Feststellungen
+  result_failed: Nicht bestanden
+  result_pending: Ausstehend
   section:
     basic_info: Grundinformationen
     schedule: Zeitplan
@@ -1153,9 +1151,8 @@ incident:
     deleted: Vorfall erfolgreich gelöscht.
 document:
   doc_title: 'Dokumente'
-  title:
-    _default: 'Dokument'
-    by_type: 'Dokumente nach Typ'
+  title: 'Dokumente'
+  title_by_type: 'Dokumente nach Typ'
   subtitle: 'Dokumentenverwaltung'
   new: 'Neues Dokument'
   edit: 'Dokument bearbeiten'
@@ -2984,13 +2981,10 @@ crisis_team:
     activated: Krisenstab erfolgreich aktiviert.
 
 tenant:
-  title:
-    _default: Mandantenverwaltung
-    edit: Mandant bearbeiten
-    create: Neuen Mandanten erstellen
-  subtitle: Verwalten Sie Organisationen und Mandanten
-  title_create: Neuen Mandanten erstellen
+  title: Mandantenverwaltung
   title_edit: Mandant bearbeiten
+  title_create: Neuen Mandanten erstellen
+  subtitle: Verwalten Sie Organisationen und Mandanten
   empty: Keine Mandanten vorhanden
   stats:
     total: Gesamt
