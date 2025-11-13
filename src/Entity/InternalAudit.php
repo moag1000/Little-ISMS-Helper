@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Tenant;
 use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
@@ -190,7 +191,12 @@ class InternalAudit
     #[Groups(['audit:read'])]
     private ?\DateTimeInterface $updatedAt = null;
 
-    public function __construct()
+    
+    #[ORM\ManyToOne(targetEntity: Tenant::class)]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Tenant $tenant = null;
+
+public function __construct()
     {
         $this->scopedAssets = new ArrayCollection();
         $this->createdAt = new \DateTimeImmutable();
@@ -488,5 +494,16 @@ class InternalAudit
     public function isComplianceAudit(): bool
     {
         return $this->scopeType === 'compliance_framework' && $this->scopedFramework !== null;
+    }
+
+    public function getTenant(): ?Tenant
+    {
+        return $this->tenant;
+    }
+
+    public function setTenant(?Tenant $tenant): static
+    {
+        $this->tenant = $tenant;
+        return $this;
     }
 }

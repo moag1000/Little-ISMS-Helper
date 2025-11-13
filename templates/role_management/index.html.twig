@@ -1,15 +1,15 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin/layout.html.twig' %}
 
 {% block title %}{{ 'role_management.title.list'|trans }} - Little ISMS Helper{% endblock %}
 
-{% block body %}
+{% block admin_content %}
 <div class="page-header">
     <div>
         <h1>{{ 'role_management.title.list'|trans }}</h1>
         <p class="text-muted">{{ 'role_management.description.overview'|trans }}</p>
     </div>
     <div class="button-group">
-        <a href="{{ path('app_role_management_new') }}" class="btn btn-primary">
+        <a href="{{ path('role_management_new') }}" class="btn btn-primary">
             ➕ {{ 'role_management.action.create'|trans }}
         </a>
     </div>
@@ -26,10 +26,10 @@
     </div>
 
     <div class="kpi-card">
-        <div class="icon">✅</div>
-        <div class="label">{{ 'role_management.stats.active'|trans }}</div>
+        <div class="icon">⚙️</div>
+        <div class="label">{{ 'role_management.stats.system_roles'|trans }}</div>
         <div>
-            <span class="value">{{ roles|filter(r => r.active)|length }}</span>
+            <span class="value">{{ roles|filter(r => r.systemRole)|length }}</span>
         </div>
     </div>
 
@@ -63,7 +63,7 @@
                 <th>{{ 'role_management.field.description'|trans }}</th>
                 <th class="text-center">{{ 'role_management.field.permissions'|trans }}</th>
                 <th class="text-center">{{ 'role_management.field.users'|trans }}</th>
-                <th class="text-center">{{ 'role_management.field.active'|trans }}</th>
+                <th class="text-center">{{ 'role_management.field.type'|trans }}</th>
                 <th class="text-center">{{ 'common.actions'|trans }}</th>
             </tr>
         </thead>
@@ -90,17 +90,17 @@
                     <span class="badge badge-info">{{ role.users|length }}</span>
                 </td>
                 <td class="text-center">
-                    {% if role.active %}
-                        <span class="badge badge-success">✓</span>
+                    {% if role.systemRole %}
+                        <span class="badge badge-info">{{ 'role_management.type.system'|trans }}</span>
                     {% else %}
-                        <span class="badge badge-danger">✗</span>
+                        <span class="badge badge-secondary">{{ 'role_management.type.custom'|trans }}</span>
                     {% endif %}
                 </td>
                 <td class="text-center">
-                    <a href="{{ path('app_role_management_show', {id: role.id}) }}" class="btn btn-sm mr-025">
+                    <a href="{{ path('role_management_show', {id: role.id}) }}" class="btn btn-sm mr-025">
                         👁 {{ 'common.view'|trans }}
                     </a>
-                    <a href="{{ path('app_role_management_edit', {id: role.id}) }}" class="btn btn-sm btn-secondary">
+                    <a href="{{ path('role_management_edit', {id: role.id}) }}" class="btn btn-sm btn-secondary">
                         ✏️ {{ 'common.edit'|trans }}
                     </a>
                 </td>
@@ -115,4 +115,4 @@
         </tbody>
     </table>
 </div>
-{% endblock %}
+{% endblock admin_content %}

@@ -1,8 +1,8 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin/layout.html.twig' %}
 
 {% block title %}Lizenz-Zusammenfassung{% endblock %}
 
-{% block body %}
+{% block admin_content %}
 <div class="container-fluid">
     {# Breadcrumb Navigation #}
     {% include '_components/_breadcrumb.html.twig' with {
@@ -307,4 +307,4 @@
         </div>
     </div>
 </div>
-{% endblock %}
+{% endblock admin_content %}

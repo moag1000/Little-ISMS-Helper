@@ -108,7 +108,8 @@
                 Aktive Module ({{ active_modules|length }})
             </h3>
             <div class="row g-3">
-                {% for key, module in all_modules if key in active_modules %}
+                {% for key, module in all_modules %}
+                    {% if key in active_modules %}
                     <div class="col-md-6 col-lg-4">
                         <div class="card h-100 border-success">
                             <div class="card-body">
@@ -175,6 +176,7 @@
                             </div>
                         </div>
                     </div>
+                    {% endif %}
                 {% endfor %}
             </div>
         </div>

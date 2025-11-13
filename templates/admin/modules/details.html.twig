@@ -1,8 +1,8 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin/layout.html.twig' %}
 
 {% block title %}{{ module.name }} - {{ 'admin.modules.details'|trans }}{% endblock %}
 
-{% block body %}
+{% block admin_content %}
 <div class="container-fluid mt-4">
     <div class="row mb-4">
         <div class="col-12">
@@ -220,4 +220,4 @@
         </div>
     </div>
 </div>
-{% endblock %}
+{% endblock admin_content %}

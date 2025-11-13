@@ -1,8 +1,8 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin/layout.html.twig' %}
 
 {% block title %}Lizenzbericht - Detailliert{% endblock %}
 
-{% block body %}
+{% block admin_content %}
 <div class="container-fluid">
     {# Breadcrumb Navigation #}
     {% include '_components/_breadcrumb.html.twig' with {
@@ -307,4 +307,4 @@ function showToast(type, message) {
     }, 5000);
 }
 </script>
-{% endblock %}
+{% endblock admin_content %}

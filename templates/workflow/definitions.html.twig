@@ -52,7 +52,13 @@
         <div class="icon">📊</div>
         <div class="label">{{ 'workflow.stats.entity_types'|trans }}</div>
         <div>
-            <span class="value">{{ workflows|map(w => w.entityType)|unique|length }}</span>
+            {% set entityTypes = [] %}
+            {% for w in workflows %}
+                {% if w.entityType not in entityTypes %}
+                    {% set entityTypes = entityTypes|merge([w.entityType]) %}
+                {% endif %}
+            {% endfor %}
+            <span class="value">{{ entityTypes|length }}</span>
         </div>
     </div>
 </div>

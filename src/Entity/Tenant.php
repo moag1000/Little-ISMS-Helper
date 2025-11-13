@@ -42,6 +42,9 @@ class Tenant
     #[ORM\Column(type: Types::JSON, nullable: true)]
     private ?array $settings = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $logoPath = null;
+
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private ?\DateTimeImmutable $createdAt = null;
 
@@ -125,6 +128,17 @@ class Tenant
     public function setSettings(?array $settings): static
     {
         $this->settings = $settings;
+        return $this;
+    }
+
+    public function getLogoPath(): ?string
+    {
+        return $this->logoPath;
+    }
+
+    public function setLogoPath(?string $logoPath): static
+    {
+        $this->logoPath = $logoPath;
         return $this;
     }
 

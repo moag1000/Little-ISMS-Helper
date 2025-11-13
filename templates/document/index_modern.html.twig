@@ -33,7 +33,7 @@
     {% set totalSizeMB = (totalSize / 1024 / 1024)|number_format(2) %}
     {% set pdfDocs = documents|filter(d => d.mimeType == 'application/pdf')|length %}
     {% set imageDocs = documents|filter(d => d.mimeType starts with 'image/')|length %}
-    {% set excelDocs = documents|filter(d => d.mimeType contains 'spreadsheet')|length %}
+    {% set excelDocs = documents|filter(d => d.mimeType matches '/spreadsheet/')|length %}
 
     {# KPI Cards #}
     <div class="kpi-grid">
@@ -151,7 +151,12 @@
             <div class="d-flex gap-2">
                 <select class="form-select form-select-sm" id="categoryFilter" class="w-auto">
                     <option value="">{{ 'document.filter.all_categories'|trans }}</option>
-                    {% set categories = documents|map(d => d.category)|unique %}
+                    {% set categories = [] %}
+                    {% for doc in documents %}
+                        {% if doc.category not in categories %}
+                            {% set categories = categories|merge([doc.category]) %}
+                        {% endif %}
+                    {% endfor %}
                     {% for category in categories %}
                         <option value="{{ category }}">{{ category|capitalize }}</option>
                     {% endfor %}
@@ -202,9 +207,9 @@
                                     <i class="bi bi-file-pdf-fill text-danger fs-15"></i>
                                 {% elseif document.mimeType starts with 'image/' %}
                                     <i class="bi bi-file-image-fill text-primary fs-15"></i>
-                                {% elseif document.mimeType contains 'spreadsheet' %}
+                                {% elseif document.mimeType matches '/spreadsheet/' %}
                                     <i class="bi bi-file-earmark-spreadsheet-fill text-success fs-15"></i>
-                                {% elseif document.mimeType contains 'word' or document.mimeType contains 'document' %}
+                                {% elseif document.mimeType matches '/word/' or document.mimeType matches '/document/' %}
                                     <i class="bi bi-file-word-fill text-info fs-15"></i>
                                 {% else %}
                                     <i class="bi bi-file-earmark-fill text-secondary fs-15"></i>
