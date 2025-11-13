@@ -2,7 +2,7 @@
 
 ## Übersicht
 
-Der Deployment Wizard führt Sie Schritt für Schritt durch die Einrichtung Ihres Little ISMS Helper Systems. Er prüft System-Anforderungen, lässt Sie Module auswählen, initialisiert die Datenbank und importiert Basis- sowie optionale Beispieldaten.
+Der **10-Schritte Deployment Wizard** führt Sie Schritt für Schritt durch die komplette Einrichtung Ihres Little ISMS Helper Systems - **keine manuelle Konfiguration nötig!** Er übernimmt die Datenbank-Konfiguration, Admin-User-Erstellung, Email-Setup, Organisations-Informationen, Module-Auswahl, intelligente Compliance-Framework-Empfehlungen und den Import von Basis- und Beispieldaten.
 
 ## Features
 
@@ -58,42 +58,117 @@ http://localhost:8000/setup
 
 ### 2. Wizard-Schritte durchlaufen
 
-#### Schritt 1: System-Anforderungen
+#### Schritt 1: Datenbank-Konfiguration
+Konfigurieren Sie Ihre Datenbank direkt im Web-Formular:
+- **PostgreSQL** (empfohlen für Produktion)
+- **MySQL** (alternative Option)
+- **SQLite** (ideal für Tests und Entwicklung)
+- Automatische APP_SECRET-Generierung
+- Validierung der Datenbankverbindung
+- Automatische Tabellenerstellung
+
+**Keine manuelle .env-Bearbeitung erforderlich!**
+
+#### Schritt 2: Admin-User erstellen
+Erstellen Sie Ihren ersten Admin-User:
+- Email-Adresse
+- Sicheres Passwort (min. 8 Zeichen)
+- Automatische ROLE_SUPER_ADMIN Zuweisung
+- Passwort-Validierung in Echtzeit
+
+#### Schritt 3: Email-Konfiguration (optional)
+Richten Sie Email-Benachrichtigungen ein:
+- **SMTP** - Eigener Mail-Server
+- **Gmail** - Google Mail
+- **Outlook** - Microsoft 365
+- **Sendgrid** - Transactional Email Service
+- **Überspringen** - Email-Setup für später
+
+Vorteile: Automatische Benachrichtigungen für Audits, Risiken, Incidents, etc.
+
+#### Schritt 4: Organisations-Informationen
+Erfassen Sie grundlegende Informationen:
+- **Name** der Organisation
+- **Branche** (13 Optionen: Automotive, Finanzdienstleistungen, Energie, etc.)
+- **Mitarbeiterzahl** (1-10, 11-50, 51-250, 251-1000, 1001+)
+- **Land** (Deutschland, Österreich, Schweiz, etc.)
+
+Diese Daten werden für intelligente Compliance-Framework-Empfehlungen genutzt.
+
+#### Schritt 5: System-Anforderungen prüfen
 Der Wizard prüft automatisch:
-- PHP 8.2+ mit erforderlichen Extensions
-- Datenbank-Konfiguration
-- Schreibrechte für Verzeichnisse
-- Symfony 7.3+
+- ✅ PHP 8.2+ mit erforderlichen Extensions (pdo, mbstring, intl, xml, etc.)
+- ✅ Datenbank-Konnektivität
+- ✅ Schreibrechte für Verzeichnisse (var/, config/)
+- ✅ Memory Limit (empfohlen: 256MB+)
+- ✅ Symfony 7.3+
 
 **Beheben Sie alle kritischen Fehler, bevor Sie fortfahren.**
 
-#### Schritt 2: Module auswählen
+#### Schritt 6: Module auswählen
 Wählen Sie die Module aus, die Sie nutzen möchten:
-- Erforderliche Module werden automatisch aktiviert
-- Abhängigkeiten werden automatisch aufgelöst
-- Empfehlung: Starten Sie mit wenigen Modulen und erweitern Sie später
+- **Core ISMS** (erforderlich) - Basis-Funktionalität
+- **Authentication** (erforderlich) - User & Role Management
+- **Asset Management** - Informationswerte verwalten
+- **Risk Management** - Risikobewertung und -behandlung
+- **Control Management (SoA)** - ISO 27001 Annex A Controls
+- **Incident Management** - Sicherheitsvorfälle
+- **Audit Management** - Interne Audits
+- **BCM** - Business Continuity Management
+- **Compliance** - Multi-Framework Support
+- **Training** - Schulungen und Awareness
 
-#### Schritt 3: Datenbank initialisieren
-- Migrations werden automatisch ausgeführt
-- Datenbank-Tabellen werden erstellt
-- Bestehende Daten bleiben erhalten
+Erforderliche Module werden automatisch aktiviert, Abhängigkeiten automatisch aufgelöst.
 
-#### Schritt 4: Basis-Daten importieren
-Erforderliche Daten werden automatisch geladen:
-- ISO 27001 Annex A Controls
-- Framework-spezifische Requirements (TISAX, DORA)
+#### Schritt 7: Compliance Frameworks - **Intelligente Empfehlungen** ✨
+Wählen Sie relevante Compliance-Frameworks:
 
-#### Schritt 5: Beispiel-Daten (optional)
-Wählen Sie optionale Beispiel-Daten:
-- Assets, Risks, Business Processes
-- Incidents
-- Nur zu Demonstrations- und Testzwecken
+**Automatische Empfehlungen basierend auf:**
+- ✅ **Unternehmensgröße** - NIS2 nur für 51+ Mitarbeiter
+- ✅ **Branche** - TISAX für Automotive, DORA für Finanzdienstleistungen
+- ✅ **Land** - ISO 27701 für DACH-Region (statt GDPR)
+- ✅ **Kritische Infrastruktur** - NIS2 für Energie/Telekom unabhängig von Größe
 
-#### Schritt 6: Abschluss
-Setup ist abgeschlossen! Sie können:
-- Zum Dashboard navigieren
-- Module nachträglich verwalten
-- Mit der Nutzung beginnen
+**Verfügbare Frameworks:**
+- **ISO 27001** (immer vorausgewählt) - International Standard für ISMS
+- **ISO 27701** - Privacy Information Management (DACH-Region)
+- **GDPR** - Datenschutz-Grundverordnung (EU)
+- **TISAX** - Automotive Information Security Standard
+- **DORA** - Digital Operational Resilience Act (Finanzsektor)
+- **NIS2** - Network and Information Security Directive (EU)
+- **BSI IT-Grundschutz** - Deutscher Sicherheitsstandard
+
+Empfohlene Frameworks sind automatisch vorausgewählt - Sie können die Auswahl anpassen.
+
+#### Schritt 8: Datenbank initialisieren & Basis-Daten importieren
+Automatischer Import erforderlicher Daten:
+- ✅ Datenbank-Migrationen ausführen
+- ✅ ISO 27001:2022 Annex A Controls (93 Controls)
+- ✅ System Permissions (Rollen und Berechtigungen)
+- ✅ Framework-spezifische Requirements (TISAX, DORA, NIS2, BSI)
+
+Der Import erfolgt automatisch basierend auf ausgewählten Modulen und Frameworks.
+
+#### Schritt 9: Beispiel-Daten (optional)
+Wählen Sie optionale Beispiel-Daten zum Kennenlernen des Systems:
+- 🔧 Assets (Server, Anwendungen, etc.)
+- ⚠️ Risiko-Szenarien
+- 🏢 Geschäftsprozesse mit BIA-Daten
+- 🚨 Beispiel-Incidents
+- 📋 Training-Programme
+
+**Hinweis:** Nur zu Demonstrations- und Testzwecken - vor Produktivbetrieb entfernen!
+
+#### Schritt 10: Setup abschließen
+Setup ist erfolgreich abgeschlossen! 🎉
+
+Sie können jetzt:
+- ✅ Zum Dashboard navigieren
+- ✅ Module nachträglich verwalten
+- ✅ Mit der Nutzung beginnen
+- ✅ Ihre Organisation konfigurieren
+
+**Login:** Ihre im Schritt 2 erstellten Admin-Zugangsdaten
 
 ## Modulverwaltung
 
@@ -352,7 +427,7 @@ Bei Fragen oder Problemen:
 - `DataImportService`: Importiert Basis- und Beispieldaten
 
 **Controller**:
-- `DeploymentWizardController`: 6-Schritt Wizard
+- `DeploymentWizardController`: 10-Schritt Wizard mit intelligenter Framework-Auswahl
 - `ModuleManagementController`: Nachträgliche Modulverwaltung
 
 **Templates**:

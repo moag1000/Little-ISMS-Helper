@@ -458,7 +458,10 @@ class DeploymentWizardController extends AbstractController
         // Get industry-specific recommendations
         $recommendedFrameworks = $this->getRecommendedFrameworks($organisationIndustry, $employeeCount, $country);
 
-        $form = $this->createForm(ComplianceFrameworkSelectionType::class, null, [
+        // Pre-select recommended frameworks (including ISO27001 which is mandatory)
+        $form = $this->createForm(ComplianceFrameworkSelectionType::class, [
+            'frameworks' => $recommendedFrameworks,
+        ], [
             'available_frameworks' => $availableFrameworks,
         ]);
         $form->handleRequest($request);

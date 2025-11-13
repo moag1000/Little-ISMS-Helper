@@ -2585,6 +2585,7 @@ data:
       name_max: Organisation name may not exceed 255 characters
       name_help: Official name of your organisation
       industry: Industry
+      industry_required: Please select an industry
       industry_help: Select your organisation's industry
       industry:
         select: '-- Select Industry --'
@@ -2600,6 +2601,7 @@ data:
         education: Education
         other: Other
       employee_count: Employee Count
+      employee_count_required: Please select the employee count
       employee_count_help: Approximate number of employees
       employee_count:
         select: '-- Select Employee Count --'
@@ -2643,6 +2645,9 @@ data:
       details:
         title: Framework Details
         description: Overview of all available frameworks
+      critical_infrastructure:
+        title: Critical Infrastructure Notice
+        message: Your organisation belongs to critical infrastructure (energy/telecommunications). NIS2 may be relevant even for smaller companies, as the directive can cover critical sectors regardless of size.
 
 # Admin Integration - Phase 6L-G
 nav.admin.modules: 'Module Management'

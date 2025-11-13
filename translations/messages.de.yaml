@@ -2590,6 +2590,7 @@ data:
       name_max: Organisationsname darf maximal 255 Zeichen lang sein
       name_help: Offizieller Name Ihrer Organisation
       industry: Branche
+      industry_required: Bitte wählen Sie eine Branche aus
       industry_help: Wählen Sie die Branche Ihrer Organisation
       industry:
         select: '-- Branche wählen --'
@@ -2605,6 +2606,7 @@ data:
         education: Bildungswesen
         other: Sonstige
       employee_count: Mitarbeiterzahl
+      employee_count_required: Bitte wählen Sie die Mitarbeiterzahl aus
       employee_count_help: Ungefähre Anzahl der Mitarbeiter
       employee_count:
         select: '-- Mitarbeiterzahl wählen --'
@@ -2648,6 +2650,9 @@ data:
       details:
         title: Framework-Details
         description: Übersicht über alle verfügbaren Frameworks
+      critical_infrastructure:
+        title: Hinweis zu kritischer Infrastruktur
+        message: Ihre Organisation gehört zu einer kritischen Infrastruktur (Energie/Telekommunikation). NIS2 kann auch für kleinere Unternehmen relevant sein, da die Richtlinie kritische Sektoren unabhängig von der Größe erfassen kann.
 
 # Admin Integration - Phase 6L-G
 nav.admin.modules: 'Modul-Verwaltung'
