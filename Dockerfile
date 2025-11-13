@@ -13,6 +13,10 @@ LABEL org.opencontainers.image.source="https://github.com/moag1000/Little-ISMS-H
 LABEL org.opencontainers.image.documentation="https://github.com/moag1000/Little-ISMS-Helper/blob/main/README.md"
 LABEL maintainer="Little ISMS Helper Project"
 
+# Security: Update all packages to latest security patches
+# Addresses CVE-2025-10966 (curl) and other potential vulnerabilities
+RUN apk update && apk upgrade --no-cache
+
 # Install system dependencies
 RUN apk add --no-cache \
     git \
