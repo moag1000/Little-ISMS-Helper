@@ -134,10 +134,11 @@ Ein Kernprinzip: **Maximale Wertschöpfung aus einmal erfassten Daten**
 
 - **PHP** 8.4 (empfohlen) oder 8.2+
 - **Composer** 2.x
-- **PostgreSQL** 16+ oder MySQL 8.0+
-- **Symfony CLI** (optional)
+- **PostgreSQL** 16+ oder MySQL 8.0+ (SQLite für Tests möglich)
 
-### Installation (5 Minuten)
+### 🧙 Installation mit Deployment Wizard (Empfohlen)
+
+Der **10-Schritte Deployment Wizard** führt Sie durch die komplette Einrichtung - **keine manuelle Konfiguration nötig!**
 
 ```bash
 # 1. Repository klonen
@@ -148,67 +149,68 @@ cd Little-ISMS-Helper
 composer install
 php bin/console importmap:install
 
-# 3. Umgebung konfigurieren
-cp .env .env.local
-
-# 3.1. APP_SECRET generieren
-echo "APP_SECRET=$(openssl rand -hex 32)" >> .env.local
-
-# 3.2. Datenbank-URL konfigurieren (wählen Sie eine Option):
-# Option A: SQLite (Standard, ideal für Tests/Entwicklung):
-# DATABASE_URL="sqlite:///%kernel.project_dir%/var/data.db"
-
-# Option B: PostgreSQL (Empfohlen für Produktion):
-# echo 'DATABASE_URL="postgresql://dbuser:dbpassword@127.0.0.1:5432/little_isms?serverVersion=16&charset=utf8"' >> .env.local
-
-# Option C: MySQL:
-# echo 'DATABASE_URL="mysql://dbuser:dbpassword@127.0.0.1:3306/little_isms?serverVersion=8.0.32&charset=utf8mb4"' >> .env.local
-
-# 4. Datenbank einrichten
-php bin/console doctrine:database:create
-php bin/console doctrine:migrations:migrate --no-interaction
-
-# 5. Rollen & Berechtigungen einrichten + Admin-User erstellen
-php bin/console app:setup-permissions \
-  --admin-email=admin@example.com \
-  --admin-password=admin123
-
-# 6. ISO 27001 Controls laden
-php bin/console isms:load-annex-a-controls
-
-# 7. Server starten
-symfony serve
-# oder: php -S localhost:8000 -t public/
-```
-
-**Fertig!** 🎉 Öffnen Sie http://localhost:8000
-
-**Standard Login-Daten:**
-- Email: `admin@example.com`
-- Passwort: `admin123`
-
-⚠️ **WICHTIG:** Ändern Sie das Admin-Passwort nach dem ersten Login!
-
-### 🧙 Deployment Wizard (Alternative Installation)
-
-Für eine geführte Setup-Erfahrung können Sie den **Deployment Wizard** nutzen:
-
-```bash
-# Nach Schritten 1-3 oben (Clone, Dependencies, .env)
+# 3. Server starten
 php -S localhost:8000 -t public/
+# oder mit Symfony CLI: symfony serve
 ```
 
-Öffnen Sie dann im Browser: `http://localhost:8000/setup`
+**Das war's!** 🎉 Öffnen Sie im Browser: `http://localhost:8000/setup`
 
-Der Wizard führt Sie durch:
-- ✅ **Schritt 1**: System-Anforderungen automatisch prüfen
-- ✅ **Schritt 2**: Module auswählen (Core ISMS, BCM, Compliance, etc.)
-- ✅ **Schritt 3**: Datenbank automatisch initialisieren
-- ✅ **Schritt 4**: Basis-Daten importieren (ISO 27001 Controls, Permissions)
-- ✅ **Schritt 5**: Optional Beispiel-Daten laden
-- ✅ **Schritt 6**: Setup abschließen
+Der Wizard übernimmt die komplette Einrichtung:
+
+- ✅ **Schritt 1**: Datenbank-Konfiguration (PostgreSQL/MySQL/SQLite) - Web-Formular statt manueller .env-Bearbeitung
+- ✅ **Schritt 2**: Admin-User anlegen - Sichere Passwort-Validierung
+- ✅ **Schritt 3**: Email-Konfiguration (optional) - SMTP/Gmail/Outlook/Sendgrid
+- ✅ **Schritt 4**: Organisations-Informationen - Name, Branche, Größe, Land
+- ✅ **Schritt 5**: System-Anforderungen prüfen - PHP-Version, Extensions, Berechtigungen
+- ✅ **Schritt 6**: Module auswählen - Core ISMS, BCM, Compliance, Training, etc.
+- ✅ **Schritt 7**: Compliance Frameworks - **Intelligente Empfehlungen** basierend auf:
+  - **Unternehmensgröße** (NIS2 nur für 51+ Mitarbeiter)
+  - **Branche** (TISAX für Automotive, DORA für Finanz, etc.)
+  - **Land** (ISO 27701 für DACH-Region statt GDPR)
+  - **Kritische Infrastruktur** (NIS2 für Energie/Telekom unabhängig von Größe)
+- ✅ **Schritt 8**: Basis-Daten importieren - ISO 27001:2022 Controls (93), Rollen, Permissions
+- ✅ **Schritt 9**: Beispiel-Daten (optional) - Zum Kennenlernen des Systems
+- ✅ **Schritt 10**: Setup abschließen - Fertig zum Login!
+
+**Highlights des Wizards:**
+- 🎯 **Intelligente Framework-Auswahl** - Automatisch passende Compliance-Frameworks vorausgewählt
+- 🔒 **Sichere Konfiguration** - Automatische APP_SECRET-Generierung
+- ✅ **Validierung** - Prüfung aller Eingaben in Echtzeit
+- 📱 **Responsive Design** - Funktioniert auf allen Geräten
+- 🌍 **Mehrsprachig** - Deutsch & Englisch
 
 📖 Detaillierte Anleitung: [DEPLOYMENT_WIZARD.md](docs/deployment/DEPLOYMENT_WIZARD.md)
+
+### ⚙️ Manuelle Installation (Fortgeschritten)
+
+Für fortgeschrittene Nutzer oder automatisierte Deployments:
+
+```bash
+# Nach Schritten 1-2 oben (Clone, Dependencies)
+
+# 3. Umgebung konfigurieren
+cp .env .env.local
+echo "APP_SECRET=$(openssl rand -hex 32)" >> .env.local
+
+# 4. Datenbank-URL konfigurieren:
+# PostgreSQL (Produktion): echo 'DATABASE_URL="postgresql://user:pass@127.0.0.1:5432/little_isms?serverVersion=16"' >> .env.local
+# MySQL: echo 'DATABASE_URL="mysql://user:pass@127.0.0.1:3306/little_isms?serverVersion=8.0.32"' >> .env.local
+# SQLite (Entwicklung): DATABASE_URL="sqlite:///%kernel.project_dir%/var/data.db"
+
+# 5. Datenbank einrichten
+php bin/console doctrine:database:create
+php bin/console doctrine:migrations:migrate --no-interaction
+php bin/console app:setup-permissions --admin-email=admin@example.com --admin-password=admin123
+php bin/console isms:load-annex-a-controls
+
+# 6. Server starten
+symfony serve  # oder: php -S localhost:8000 -t public/
+```
+
+**Login:** admin@example.com / admin123 (⚠️ **Sofort ändern!**)
+
+💡 **Empfehlung:** Nutzen Sie den Deployment Wizard für eine fehlerfreie, geführte Installation!
 
 ### Automatisierte Setup-Tools ✨ NEU!
 
