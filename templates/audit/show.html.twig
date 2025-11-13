@@ -296,7 +296,8 @@
                         {% endif %}
 
                         <a href="{{ path('app_audit_export_pdf', {id: audit.id}) }}"
-                           class="btn btn-outline-danger">
+                           class="btn btn-outline-danger"
+                           data-turbo="false">
                             <i class="bi bi-file-pdf"></i> {{ 'audit.export_pdf'|trans }}
                         </a>
 

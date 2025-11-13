@@ -30,7 +30,7 @@
             {% for action in actions %}
                 <a href="{{ action.url }}"
                    class="btn btn-{{ action.variant|default('secondary') }}"
-                   data-turbo-action="advance">
+                   {% if action.turbo is defined and action.turbo == false %}data-turbo="false"{% else %}data-turbo-action="advance"{% endif %}>
                     {% if action.icon is defined %}
                         <i class="bi {{ action.icon }}"></i>
                     {% endif %}

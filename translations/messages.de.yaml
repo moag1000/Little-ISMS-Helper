@@ -1601,11 +1601,16 @@ compliance:
   title:
     transitive: Transitive Compliance
     compare: Frameworks vergleichen
+    data_reuse: Datenwiederverwendungs-Insights
+    gaps: Gap-Analyse
   description:
     transitive: Nutzen Sie bestehende Compliance-Arbeit über mehrere Frameworks hinweg für maximale Effizienz
     matrix: Zeigt, wie die Erfüllung von Anforderungen in einem Framework hilft, Anforderungen in anderen Frameworks zu erfüllen
     compare: Vergleichen Sie zwei Compliance-Frameworks nebeneinander, um ihre Unterschiede, Überschneidungen und einzigartigen Anforderungen zu verstehen
     unique_requirements: Anforderungen, die einzigartig für dieses Framework sind und nicht vom anderen abgedeckt werden
+    data_reuse: Analysieren Sie Datenwiederverwendungsmöglichkeiten über Frameworks hinweg
+    reuse_matrix: Sehen Sie, welche Daten über mehrere Frameworks hinweg genutzt werden können
+    gap_analysis: Identifizieren Sie Compliance-Lücken und Verbesserungsmöglichkeiten
   action:
     export_transitive: Transitive Analyse exportieren
     export_comparison: Vergleich exportieren
@@ -1621,6 +1626,11 @@ compliance:
     full_exceeds: Vollständig/Übertrifft
     partial_mappings: Teilweise Mappings
     bidirectional_mappings: Bidirektionale
+    total_data_points: Gesamt Datenpunkte
+    reused_data: Wiederverwendete Daten
+    reuse_rate: Wiederverwendungsrate
+    effort_saved: Eingesparte Arbeit
+    time_saved_hours: Zeitersparnis (Stunden)
   unit:
     requirements: Anforderungen
   info:
@@ -1635,6 +1645,11 @@ compliance:
     select_frameworks: Frameworks zum Vergleichen auswählen
     detailed_comparison: Detaillierter Vergleich
     unique_to: "Einzigartig für"
+    reuse_opportunities: Wiederverwendungsmöglichkeiten
+    reuse_matrix: Datenwiederverwendungs-Matrix
+    framework_coverage: Framework-Abdeckung
+    gap_details: Gap-Details
+    recommendations: Empfehlungen
   label:
     source_target_matrix: "Quelle ↓ / Ziel →"
     showing_of: "Zeige %count% von"
@@ -1681,11 +1696,24 @@ compliance:
     total_requirements: Gesamt-Anforderungen
     unique_requirements: Einzigartige Anforderungen
     categories: Kategorien
+    data_element: Datenelement
+    source: Quelle
+    reuse_count: Wiederverwendungszähler
+    used_in_frameworks: Verwendet in Frameworks
+    quality_score: Qualitätsscore
+    reused_data: Wiederverwendete Daten
+    new_data_needed: Neue Daten erforderlich
+    frameworks: Frameworks
+    gap_reason: Grund für Lücke
+    assessment: Bewertung
+    risk_level: Risikolevel
   option:
     select_framework: -- Framework auswählen --
   badge:
     mapped: Gemappt
     no_mapping: Kein Mapping
+    overdue: Überfällig
+    reusable: Wiederverwendbar
   message:
     no_relationships: Noch keine Framework-Beziehungen gefunden
     no_leverage_opportunities: Noch keine Nutzungsmöglichkeiten identifiziert
@@ -1693,6 +1721,10 @@ compliance:
     no_comparison_data: Keine Vergleichsdaten verfügbar. Bitte wählen Sie zwei Frameworks zum Vergleichen aus.
     no_unique: Keine einzigartigen Anforderungen gefunden
     more_requirements: "+ %count% weitere Anforderungen"
+    no_opportunities: Keine Wiederverwendungsmöglichkeiten gefunden
+    no_data_elements: Keine Datenelemente gefunden
+    no_frameworks: Keine Frameworks geladen
+    no_gaps: Keine Gaps gefunden - Alle Anforderungen erfüllt!
   mapping:
     type:
       full: Vollständige Abdeckung
