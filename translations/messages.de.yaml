@@ -2913,3 +2913,31 @@ corporate:
     title: 'Einzelmandant-Umgebung'
     message: 'Es existiert derzeit nur %count% aktiver Mandant in Ihrem System.'
     hint: 'Konzernstrukturen werden erst relevant, wenn Sie mehrere Mandanten verwalten.'
+  granular:
+    title: 'Granulare Governance-Regeln'
+    subtitle: 'Spezifische Governance-Regeln für einzelne Bereiche'
+    add_rule: 'Regel hinzufügen'
+    no_rules: 'Keine spezifischen Regeln definiert. Es gilt das Standard-Governance-Modell.'
+    loading: 'Lade Governance-Regeln...'
+    modal:
+      title: 'Governance-Regel hinzufügen'
+      edit_title: 'Governance-Regel bearbeiten'
+    field:
+      scope: 'Bereich'
+      scope_id: 'Bereichs-ID (optional)'
+      notes: 'Notizen'
+    scope:
+      control: 'Control'
+      isms_context: 'ISMS-Kontext'
+      risk: 'Risiko'
+      asset: 'Asset'
+      process: 'Prozess'
+      default: 'Standard'
+    action:
+      delete: 'Regel löschen'
+    confirm:
+      delete: 'Möchten Sie diese Governance-Regel wirklich löschen?'
+    flash:
+      saved: 'Governance-Regel gespeichert'
+      deleted: 'Governance-Regel gelöscht'
+      error: 'Fehler beim Speichern der Governance-Regel'
