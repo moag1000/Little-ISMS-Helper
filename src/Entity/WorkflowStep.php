@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Tenant;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -41,6 +42,10 @@ class WorkflowStep
 
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
     private ?int $daysToComplete = null; // SLA in days
+
+    #[ORM\ManyToOne(targetEntity: Tenant::class)]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Tenant $tenant = null;
 
     public function getId(): ?int
     {
@@ -143,6 +148,17 @@ class WorkflowStep
     public function setDaysToComplete(?int $daysToComplete): static
     {
         $this->daysToComplete = $daysToComplete;
+        return $this;
+    }
+
+    public function getTenant(): ?Tenant
+    {
+        return $this->tenant;
+    }
+
+    public function setTenant(?Tenant $tenant): static
+    {
+        $this->tenant = $tenant;
         return $this;
     }
 }

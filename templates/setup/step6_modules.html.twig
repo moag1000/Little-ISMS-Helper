@@ -39,7 +39,8 @@
                             Erforderliche Module
                         </h5>
 
-                        {% for key, module in all_modules if module.required %}
+                        {% for key, module in all_modules %}
+                            {% if module.required %}
                             <div class="card mb-3 border-primary bg-light">
                                 <div class="card-body">
                                     <div class="form-check">
@@ -66,6 +67,7 @@
                                     </div>
                                 </div>
                             </div>
+                            {% endif %}
                         {% endfor %}
 
                         {# Optional Modules #}

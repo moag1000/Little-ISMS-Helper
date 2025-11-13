@@ -84,15 +84,17 @@ class RoleRepository extends ServiceEntityRepository
     }
 
     /**
-     * Get all roles with user assignment count for role overview.
+     * Get all roles with eager-loaded users and permissions for role overview.
      *
-     * @return array Array of roles with 'userCount' field
+     * @return Role[] Array of Role entities with users and permissions loaded
      */
     public function getRolesWithUserCount(): array
     {
         return $this->createQueryBuilder('r')
-            ->select('r', 'COUNT(u.id) as userCount')
             ->leftJoin('r.users', 'u')
+            ->leftJoin('r.permissions', 'p')
+            ->addSelect('u')
+            ->addSelect('p')
             ->groupBy('r.id')
             ->orderBy('r.name', 'ASC')
             ->getQuery()

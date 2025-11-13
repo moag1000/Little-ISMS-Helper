@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Tenant;
 use App\Repository\CrisisTeamRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -183,7 +184,12 @@ class CrisisTeam
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     private ?\DateTimeImmutable $updatedAt = null;
 
-    public function __construct()
+    
+    #[ORM\ManyToOne(targetEntity: Tenant::class)]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Tenant $tenant = null;
+
+public function __construct()
     {
         $this->businessContinuityPlans = new ArrayCollection();
         $this->createdAt = new \DateTimeImmutable();
@@ -566,5 +572,16 @@ class CrisisTeam
             && !empty($this->members)
             && $this->primaryPhone !== null
             && $this->primaryEmail !== null;
+    }
+
+    public function getTenant(): ?Tenant
+    {
+        return $this->tenant;
+    }
+
+    public function setTenant(?Tenant $tenant): static
+    {
+        $this->tenant = $tenant;
+        return $this;
     }
 }
