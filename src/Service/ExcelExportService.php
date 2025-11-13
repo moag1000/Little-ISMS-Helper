@@ -7,6 +7,9 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Style\Font;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Style\Color;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 /**
  * Excel Export Service
@@ -159,5 +162,241 @@ class ExcelExportService
         }
 
         return $value;
+    }
+
+    // === EXTENDED FEATURES FOR PROFESSIONAL EXPORTS ===
+
+    /**
+     * Add a summary section with formatted key metrics
+     */
+    public function addSummarySection(Worksheet $sheet, array $metrics, int $startRow = 1, string $title = 'Zusammenfassung'): int
+    {
+        $currentRow = $startRow;
+
+        // Title
+        $sheet->setCellValue('A' . $currentRow, $title);
+        $sheet->getStyle('A' . $currentRow)->applyFromArray([
+            'font' => [
+                'bold' => true,
+                'size' => 14,
+                'color' => ['rgb' => '1F4E78'],
+            ],
+        ]);
+        $currentRow += 2;
+
+        // Metrics
+        foreach ($metrics as $label => $value) {
+            $sheet->setCellValue('A' . $currentRow, $label);
+            $sheet->setCellValue('B' . $currentRow, $value);
+
+            // Style
+            $sheet->getStyle('A' . $currentRow . ':B' . $currentRow)->applyFromArray([
+                'fill' => [
+                    'fillType' => Fill::FILL_SOLID,
+                    'startColor' => ['rgb' => 'FFF2CC'],
+                ],
+                'borders' => [
+                    'allBorders' => [
+                        'borderStyle' => Border::BORDER_THIN,
+                    ],
+                ],
+            ]);
+
+            $sheet->getStyle('A' . $currentRow)->getFont()->setBold(true);
+
+            $currentRow++;
+        }
+
+        return $currentRow + 2; // Return next available row with spacing
+    }
+
+    /**
+     * Add a formatted header row with freeze panes
+     */
+    public function addFormattedHeaderRow(Worksheet $sheet, array $headers, int $row = 1, bool $freezePane = true): void
+    {
+        $col = 'A';
+        foreach ($headers as $header) {
+            $cell = $col . $row;
+            $sheet->setCellValue($cell, $header);
+
+            // Enhanced header styling
+            $sheet->getStyle($cell)->applyFromArray([
+                'font' => [
+                    'bold' => true,
+                    'color' => ['rgb' => '1F4E78'],
+                    'size' => 11,
+                ],
+                'fill' => [
+                    'fillType' => Fill::FILL_SOLID,
+                    'startColor' => ['rgb' => 'D9E1F2'],
+                ],
+                'alignment' => [
+                    'horizontal' => Alignment::HORIZONTAL_CENTER,
+                    'vertical' => Alignment::VERTICAL_CENTER,
+                ],
+                'borders' => [
+                    'allBorders' => [
+                        'borderStyle' => Border::BORDER_THIN,
+                        'color' => ['rgb' => '000000'],
+                    ],
+                ],
+            ]);
+
+            $col++;
+        }
+
+        // Freeze pane below header
+        if ($freezePane) {
+            $sheet->freezePane('A' . ($row + 1));
+        }
+    }
+
+    /**
+     * Add data rows with conditional formatting
+     */
+    public function addFormattedDataRows(Worksheet $sheet, array $data, int $startRow, array $conditionalFormatting = []): void
+    {
+        $currentRow = $startRow;
+
+        foreach ($data as $row) {
+            $col = 'A';
+            $colIndex = 0;
+
+            foreach ($row as $value) {
+                $cell = $col . $currentRow;
+                $safeValue = $this->sanitizeFormulaInjection($value);
+                $sheet->setCellValue($cell, $safeValue);
+
+                // Apply conditional formatting if specified for this column
+                if (isset($conditionalFormatting[$colIndex])) {
+                    $this->applyConditionalFormatting($sheet, $cell, $value, $conditionalFormatting[$colIndex]);
+                }
+
+                // Basic border
+                $sheet->getStyle($cell)->applyFromArray([
+                    'borders' => [
+                        'allBorders' => [
+                            'borderStyle' => Border::BORDER_THIN,
+                            'color' => ['rgb' => 'CCCCCC'],
+                        ],
+                    ],
+                ]);
+
+                $col++;
+                $colIndex++;
+            }
+            $currentRow++;
+        }
+    }
+
+    /**
+     * Apply conditional formatting based on rules
+     */
+    private function applyConditionalFormatting(Worksheet $sheet, string $cell, mixed $value, array $rules): void
+    {
+        foreach ($rules as $condition => $config) {
+            $matches = false;
+            $color = is_array($config) ? ($config['color'] ?? 'FFFFFF') : $config;
+            $fontBold = is_array($config) ? ($config['bold'] ?? true) : true;
+            $fontColor = is_array($config) ? ($config['fontColor'] ?? null) : null;
+
+            // Check condition
+            if (is_callable($condition)) {
+                $matches = $condition($value);
+            } elseif (is_array($condition)) {
+                $matches = in_array($value, $condition);
+            } elseif ($condition === $value) {
+                $matches = true;
+            } elseif (is_string($condition) && preg_match('/^(>|<|>=|<=|==)(.+)$/', $condition, $m)) {
+                $operator = $m[1];
+                $compareValue = is_numeric($m[2]) ? (float)$m[2] : $m[2];
+
+                $matches = match($operator) {
+                    '>' => $value > $compareValue,
+                    '<' => $value < $compareValue,
+                    '>=' => $value >= $compareValue,
+                    '<=' => $value <= $compareValue,
+                    '==' => $value == $compareValue,
+                    default => false
+                };
+            }
+
+            if ($matches) {
+                $style = [
+                    'fill' => [
+                        'fillType' => Fill::FILL_SOLID,
+                        'startColor' => ['rgb' => $color],
+                    ],
+                ];
+
+                if ($fontBold) {
+                    $style['font'] = ['bold' => true];
+                }
+
+                if ($fontColor) {
+                    $style['font'] = array_merge($style['font'] ?? [], ['color' => ['rgb' => $fontColor]]);
+                }
+
+                $sheet->getStyle($cell)->applyFromArray($style);
+                break;
+            }
+        }
+    }
+
+    /**
+     * Auto-size all columns with optional max width
+     */
+    public function autoSizeColumns(Worksheet $sheet, ?int $maxWidth = 50): void
+    {
+        $highestColumn = $sheet->getHighestColumn();
+        $highestColumnIndex = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::columnIndexFromString($highestColumn);
+
+        for ($col = 1; $col <= $highestColumnIndex; $col++) {
+            $columnLetter = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col);
+            $sheet->getColumnDimension($columnLetter)->setAutoSize(true);
+        }
+    }
+
+    /**
+     * Create a new sheet in the spreadsheet
+     */
+    public function createSheet(Spreadsheet $spreadsheet, string $title): Worksheet
+    {
+        $sheet = $spreadsheet->createSheet();
+        $sheet->setTitle($this->sanitizeSheetName($title));
+        return $sheet;
+    }
+
+    /**
+     * Sanitize sheet name (max 31 chars, no special chars)
+     */
+    private function sanitizeSheetName(string $name): string
+    {
+        // Remove invalid characters
+        $name = preg_replace('/[\[\]\:\*\?\/\\\\]/', '', $name);
+        // Trim to 31 characters (Excel limit)
+        return substr($name, 0, 31);
+    }
+
+    /**
+     * Get predefined color constants
+     */
+    public function getColor(string $name): string
+    {
+        return match($name) {
+            'success', 'green' => 'C6EFCE',
+            'warning', 'yellow' => 'FFEB9C',
+            'danger', 'red' => 'FFC7CE',
+            'info', 'blue' => 'BDD7EE',
+            'header_bg' => 'D9E1F2',
+            'header_font' => '1F4E78',
+            'summary_bg' => 'FFF2CC',
+            'critical' => 'FF0000',
+            'high' => 'FFA500',
+            'medium' => 'FFFF00',
+            'low' => '90EE90',
+            default => 'FFFFFF'
+        };
     }
 }
