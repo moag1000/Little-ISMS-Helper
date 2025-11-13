@@ -2699,6 +2699,7 @@ nav.admin_portal: 'Admin Portal'
 admin.title: 'Administration'
 admin.nav.dashboard: 'Dashboard'
 admin.nav.tenants: 'Tenants'
+admin.nav.corporate_structure: 'Corporate Structures'
 admin.nav.users: 'Users'
 admin.nav.roles: 'Roles'
 admin.nav.permissions: 'Permissions'
@@ -2804,3 +2805,63 @@ common.cancel: 'Cancel'
 common.view: 'View'
 common.edit: 'Edit'
 common.actions: 'Actions'
+
+# Corporate Structure Management
+corporate:
+  title: 'Corporate Structures'
+  subtitle: 'Management of parent companies and subsidiaries'
+  role:
+    parent: 'Parent Company'
+    subsidiary: 'Subsidiary'
+  section:
+    groups: 'Corporate Groups'
+    standalone: 'Standalone Tenants'
+    structure: 'Corporate Structure'
+  stats:
+    groups: 'Corporate Groups'
+    standalone: 'Standalone'
+    total: 'Total Tenants'
+  field:
+    subsidiary: 'Subsidiary'
+    parent: 'Parent Company'
+    governance_model: 'Governance Model'
+    actions: 'Actions'
+    hierarchy_depth: 'Hierarchy Level'
+    subsidiaries: 'Subsidiaries'
+    is_corporate_parent: 'Is Corporate Parent'
+    is_corporate_parent_help: 'Check this if this tenant is a parent company'
+    parent_help: 'Select the parent company for this tenant'
+    governance_model_help: 'Choose how ISMS responsibilities are managed'
+    corporate_notes: 'Corporate Notes'
+    corporate_notes_help: 'Optional notes about the corporate structure'
+  select:
+    parent: 'Select parent company...'
+    governance: 'Select governance model...'
+  action:
+    set_parent: 'Assign parent'
+    remove_parent: 'Remove assignment'
+    update_governance: 'Change governance model'
+    view_structure: 'View Complete Structure'
+  modal:
+    set_parent:
+      title: 'Assign Parent Company'
+    update_governance:
+      title: 'Change Governance Model'
+  confirm:
+    remove_parent: 'Do you really want to remove the assignment to the parent company?'
+  flash:
+    parent_set: 'Parent company successfully assigned'
+    parent_removed: 'Assignment to parent company removed'
+    parent_not_found: 'Parent company not found'
+    invalid_governance: 'Invalid governance model'
+    governance_updated: 'Governance model updated'
+    error: 'Error in corporate structure management'
+    no_governance_found: 'No governance rule found for this tenant'
+  info:
+    title: 'Corporate Structure Information'
+    text: 'Here you can manage relationships between parent companies and subsidiaries. The governance model determines how ISMS responsibilities are divided between parent and subsidiary companies.'
+  level: 'Level %level%'
+  placeholder:
+    parent: 'No parent (standalone)'
+    governance_model: 'Select governance model...'
+    corporate_notes: 'E.g. Special agreements or particularities...'
