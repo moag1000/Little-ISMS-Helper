@@ -101,7 +101,15 @@ class RiskService
             return false;
         }
 
-        return $riskTenant->getId() !== $currentTenant->getId();
+        $riskTenantId = $riskTenant->getId();
+        $currentTenantId = $currentTenant->getId();
+
+        // Explicit null handling for unsaved entities
+        if ($riskTenantId === null || $currentTenantId === null) {
+            return false;
+        }
+
+        return $riskTenantId !== $currentTenantId;
     }
 
     /**
