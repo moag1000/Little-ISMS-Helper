@@ -63,7 +63,16 @@ class SecurityEventLogger
             $session = $request?->getSession();
 
             if ($session) {
-                $this->sessionManager->createSession($user, $session->getId());
+                try {
+                    $this->sessionManager->createSession($user, $session->getId());
+                } catch (\Exception $e) {
+                    // Log error but don't fail the login if session tracking fails
+                    // This ensures login works even if user_sessions table doesn't exist yet
+                    $this->logger->error('Failed to create session record', [
+                        'user' => $user->getUserIdentifier(),
+                        'error' => $e->getMessage(),
+                    ]);
+                }
             }
         }
     }
@@ -114,7 +123,16 @@ class SecurityEventLogger
         $session = $request?->getSession();
 
         if ($session) {
-            $this->sessionManager->endSession($session->getId(), 'logout');
+            try {
+                $this->sessionManager->endSession($session->getId(), 'logout');
+            } catch (\Exception $e) {
+                // Log error but don't fail the logout if session tracking fails
+                // This ensures logout works even if user_sessions table doesn't exist yet
+                $this->logger->error('Failed to end session record', [
+                    'user' => $user->getUserIdentifier(),
+                    'error' => $e->getMessage(),
+                ]);
+            }
         }
     }
 

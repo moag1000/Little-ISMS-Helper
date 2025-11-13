@@ -20,6 +20,9 @@ export default class extends Controller {
         this.boundHandleSubmitEnd = this.handleSubmitEnd.bind(this);
         this.boundHandleBeforeFetchRequest = this.handleBeforeFetchRequest.bind(this);
         this.boundHandleBeforeFetchResponse = this.handleBeforeFetchResponse.bind(this);
+        this.boundHandleBeforeCache = this.handleBeforeCache.bind(this);
+        this.boundHandlePageShow = this.handlePageShow.bind(this);
+        this.boundHandlePageHide = this.handlePageHide.bind(this);
 
         document.addEventListener('turbo:before-visit', this.boundHandleBeforeVisit);
         document.addEventListener('turbo:visit', this.boundHandleVisit);
@@ -30,6 +33,9 @@ export default class extends Controller {
         document.addEventListener('turbo:submit-end', this.boundHandleSubmitEnd);
         document.addEventListener('turbo:before-fetch-request', this.boundHandleBeforeFetchRequest);
         document.addEventListener('turbo:before-fetch-response', this.boundHandleBeforeFetchResponse);
+        document.addEventListener('turbo:before-cache', this.boundHandleBeforeCache);
+        window.addEventListener('pageshow', this.boundHandlePageShow);
+        window.addEventListener('pagehide', this.boundHandlePageHide);
     }
 
     disconnect() {
@@ -43,6 +49,9 @@ export default class extends Controller {
         document.removeEventListener('turbo:submit-end', this.boundHandleSubmitEnd);
         document.removeEventListener('turbo:before-fetch-request', this.boundHandleBeforeFetchRequest);
         document.removeEventListener('turbo:before-fetch-response', this.boundHandleBeforeFetchResponse);
+        document.removeEventListener('turbo:before-cache', this.boundHandleBeforeCache);
+        window.removeEventListener('pageshow', this.boundHandlePageShow);
+        window.removeEventListener('pagehide', this.boundHandlePageHide);
     }
 
     handleBeforeVisit(event) {
@@ -183,5 +192,36 @@ export default class extends Controller {
         };
 
         return icons[type] || 'info-circle';
+    }
+
+    handleBeforeCache(event) {
+        // Clean up before page is cached
+        // This helps prevent extension errors when page is restored from bfcache
+        const cleanupEvent = new CustomEvent('app:cleanup-before-cache');
+        document.dispatchEvent(cleanupEvent);
+    }
+
+    handlePageShow(event) {
+        if (event.persisted) {
+            // Page was restored from bfcache
+            // Re-initialize any necessary components
+            document.body.classList.remove('turbo-loading');
+
+            // Dispatch event for other controllers to handle
+            const restoreEvent = new CustomEvent('app:page-restored-from-cache');
+            document.dispatchEvent(restoreEvent);
+        }
+    }
+
+    handlePageHide(event) {
+        if (event.persisted) {
+            // Page is being stored in bfcache
+            // Ensure proper cleanup to prevent extension errors
+            document.body.classList.remove('turbo-loading');
+
+            // Dispatch cleanup event
+            const cacheEvent = new CustomEvent('app:page-entering-cache');
+            document.dispatchEvent(cacheEvent);
+        }
     }
 }
