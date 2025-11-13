@@ -1,15 +1,15 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin/layout.html.twig' %}
 
 {% block title %}{{ 'role_management.title.list'|trans }} - Little ISMS Helper{% endblock %}
 
-{% block body %}
+{% block admin_content %}
 <div class="page-header">
     <div>
         <h1>{{ 'role_management.title.list'|trans }}</h1>
         <p class="text-muted">{{ 'role_management.description.overview'|trans }}</p>
     </div>
     <div class="button-group">
-        <a href="{{ path('app_role_management_new') }}" class="btn btn-primary">
+        <a href="{{ path('role_management_new') }}" class="btn btn-primary">
             ➕ {{ 'role_management.action.create'|trans }}
         </a>
     </div>
@@ -97,10 +97,10 @@
                     {% endif %}
                 </td>
                 <td style="text-align: center;">
-                    <a href="{{ path('app_role_management_show', {id: role.id}) }}" class="btn btn-sm" style="margin-right: 0.25rem;">
+                    <a href="{{ path('role_management_show', {id: role.id}) }}" class="btn btn-sm" style="margin-right: 0.25rem;">
                         👁 {{ 'common.view'|trans }}
                     </a>
-                    <a href="{{ path('app_role_management_edit', {id: role.id}) }}" class="btn btn-sm btn-secondary">
+                    <a href="{{ path('role_management_edit', {id: role.id}) }}" class="btn btn-sm btn-secondary">
                         ✏️ {{ 'common.edit'|trans }}
                     </a>
                 </td>
@@ -115,4 +115,4 @@
         </tbody>
     </table>
 </div>
-{% endblock %}
+{% endblock admin_content %}
