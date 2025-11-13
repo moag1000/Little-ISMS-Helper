@@ -174,7 +174,10 @@ class ISMSContextService
         $tenant = $context->getTenant();
         $effectiveContext = $this->getEffectiveContext($context);
 
-        $isInherited = $effectiveContext->getId() !== $context->getId();
+        // Check if contexts are different (null-safe comparison)
+        $contextId = $context->getId();
+        $effectiveContextId = $effectiveContext->getId();
+        $isInherited = $contextId !== null && $effectiveContextId !== null && $effectiveContextId !== $contextId;
         $inheritedFrom = $isInherited ? $effectiveContext->getTenant() : null;
 
         return [
@@ -204,6 +207,9 @@ class ISMSContextService
         }
 
         $userTenant = $user->getTenant();
+        if (!$userTenant) {
+            return true; // No tenant assigned to user - allow by default
+        }
 
         // If different tenant, check corporate access
         if ($userTenant->getId() !== $tenant->getId()) {
