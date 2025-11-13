@@ -30,7 +30,7 @@ class MonitoringController extends AbstractController
             $healthChecks['database'] = [
                 'status' => 'healthy',
                 'response_time' => $dbTime . ' ms',
-                'driver' => $connection->getDriver()->getDatabasePlatform()->getName(),
+                'driver' => $connection->getDatabasePlatform()->getName(),
             ];
         } catch (\Exception $e) {
             $healthChecks['database'] = [
