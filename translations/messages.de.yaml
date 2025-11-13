@@ -1769,21 +1769,29 @@ change_request:
     requested_date: Anforderungsdatum
     priority: Priorität
     status: Status
+    complexity_score: Komplexitätsbewertung
     isms_impact: ISMS-Auswirkung
     risk_assessment: Risikobewertung
     implementation_plan: Umsetzungsplan
     rollback_plan: Rollback-Plan
     testing_requirements: Testanforderungen
+    planned_implementation: Geplante Umsetzung
     planned_implementation_date: Geplantes Umsetzungsdatum
     actual_implementation_date: Tatsächliches Umsetzungsdatum
+    implementation_date: Umsetzungsdatum
     approved_by: Genehmigt von
     approved_date: Genehmigungsdatum
+    approval_date: Genehmigungsdatum
     approval_comments: Genehmigungskommentare
+    comments: Kommentare
     implemented_by: Umgesetzt von
     implementation_notes: Umsetzungsnotizen
+    notes: Notizen
     verified_by: Verifiziert von
     verified_date: Verifizierungsdatum
+    verification_date: Verifizierungsdatum
     verification_results: Verifizierungsergebnisse
+    results: Ergebnisse
     closed_date: Abschlussdatum
     closure_notes: Abschlussnotizen
   change_type:
@@ -1808,10 +1816,28 @@ change_request:
     approved: Genehmigt
     rejected: Abgelehnt
     scheduled: Geplant
+    not_scheduled: Nicht geplant
     implemented: Umgesetzt
     verified: Verifiziert
     closed: Geschlossen
     cancelled: Abgebrochen
+  section:
+    description: Beschreibung
+    justification: Begründung
+    impact: Auswirkung
+    risk_assessment: Risikobewertung
+    plan: Umsetzungsplan
+    rollback_plan: Rollback-Plan
+    testing_requirements: Testanforderungen
+    approval_info: Genehmigungsinformationen
+    implementation: Umsetzung
+    verification: Verifizierung
+    closure: Abschluss
+    affected_assets: Betroffene Assets
+    affected_controls: Betroffene Maßnahmen
+    affected_risks: Betroffene Risiken
+  confirm:
+    delete: 'Möchten Sie diesen Änderungsantrag wirklich löschen?'
   statistics:
     title: Statistiken
     total: Gesamtzahl Änderungsanträge
