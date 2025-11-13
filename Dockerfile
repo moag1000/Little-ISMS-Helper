@@ -2,6 +2,17 @@
 # Stage 1: Production Build
 FROM php:8.4-fpm-alpine AS production
 
+# OCI Image Labels (https://github.com/opencontainers/image-spec/blob/main/annotations.md)
+LABEL org.opencontainers.image.title="Little ISMS Helper"
+LABEL org.opencontainers.image.description="Webbasierte ISMS-Lösung für ISO 27001:2022 Compliance, Risiko- und BCM-Management"
+LABEL org.opencontainers.image.authors="Little ISMS Helper Project"
+LABEL org.opencontainers.image.vendor="Little ISMS Helper Project"
+LABEL org.opencontainers.image.licenses="AGPL-3.0-or-later"
+LABEL org.opencontainers.image.url="https://github.com/moag1000/Little-ISMS-Helper"
+LABEL org.opencontainers.image.source="https://github.com/moag1000/Little-ISMS-Helper"
+LABEL org.opencontainers.image.documentation="https://github.com/moag1000/Little-ISMS-Helper/blob/main/README.md"
+LABEL maintainer="Little ISMS Helper Project"
+
 # Install system dependencies
 RUN apk add --no-cache \
     git \
