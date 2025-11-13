@@ -318,7 +318,7 @@
     {% endif %}
 
     {# Quick Wins #}
-    {% if quick_wins|length > 0 %}
+    {% if quick_wins is defined and quick_wins|length > 0 %}
     <div class="page-break"></div>
     <h2>Quick Wins - High ROI Opportunities</h2>
     <div class="quick-win-box">
@@ -497,9 +497,9 @@
         <tbody>
             <tr>
                 <td><strong>Phase 1 (Week 1-4)</strong></td>
-                <td>Implement Top {{ quick_wins|slice(0, 5)|length }} Quick Wins, start combined audits</td>
+                <td>Implement Top {{ (quick_wins ?? [])|slice(0, 5)|length }} Quick Wins, start combined audits</td>
                 <td class="text-center">4 weeks</td>
-                <td class="text-center">{% if quick_wins|length > 0 %}{{ quick_wins|slice(0, 5)|reduce((carry, rel) => carry + rel.effort_estimate, 0) }}h{% else %}20-30h{% endif %}</td>
+                <td class="text-center">{% if quick_wins is defined and quick_wins|length > 0 %}{{ quick_wins|slice(0, 5)|reduce((carry, rel) => carry + rel.effort_estimate, 0) }}h{% else %}20-30h{% endif %}</td>
                 <td class="text-center"><span class="badge badge-success">Very High</span></td>
             </tr>
             <tr>
