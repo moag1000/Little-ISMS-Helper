@@ -2297,29 +2297,95 @@ compliance:
 
 # Risk Appetite (ISO 27005:2022)
 risk_appetite:
+  title: 'Risikobereitschaften'
+  title_singular: 'Risikobereitschaft'
+  description: 'Definieren Sie die akzeptablen Risikoniveaus gemäß ISO 27005:2022'
+  new: 'Neue Risikobereitschaft'
+  edit: 'Risikobereitschaft bearbeiten'
+  no_appetites: 'Noch keine Risikobereitschaften definiert'
+  scale: 'Risiko-Skala (1-25)'
+  approved: 'Genehmigt'
+
+  new.description: 'Definieren Sie die maximalen akzeptablen Risikoniveaus für verschiedene Kategorien'
+
+  list:
+    title: 'Risikobereitschaften'
+
+  show:
+    subtitle: 'Details zur Risikobereitschaft'
+
+  success:
+    created: 'Risikobereitschaft erfolgreich erstellt.'
+    updated: 'Risikobereitschaft erfolgreich aktualisiert.'
+    deleted: 'Risikobereitschaft erfolgreich gelöscht.'
+
+  delete:
+    warning: 'Möchten Sie diese Risikobereitschaft wirklich löschen?'
+    confirm: 'Risikobereitschaft löschen'
+
+  section:
+    details: 'Details'
+    history: 'Änderungsverlauf'
+
+  stats:
+    total: 'Gesamt'
+    global_threshold: 'Globale Schwelle'
+    categories: 'Kategorien'
+    total_risks: 'Gesamt-Risiken'
+    exceeding: 'Überschreitung'
+
+  category:
+    global: 'Global'
+
+  status:
+    active: 'Aktiv'
+    inactive: 'Inaktiv'
+
+  filter:
+    active_only: 'Nur aktive'
+
+  exceeding:
+    title: 'Risiken über Schwelle'
+    description: 'Diese Risiken überschreiten die definierte Risikobereitschaft und erfordern Behandlungsmaßnahmen'
+
+  risks_exceeding_title: 'Risiken, die die Schwelle überschreiten'
+  risks_exceeding_description: 'Diese Risiken überschreiten das maximal akzeptable Risikoniveau'
+  risks_within_title: 'Akzeptierte Risiken'
+  risks_within_description: 'Diese Risiken liegen innerhalb der definierten Risikobereitschaft'
+  risks_within: 'Risiken innerhalb'
+  risks_exceeding: 'Risiken überschreiten'
+  exceeds_by: 'Überschreitet um %value%'
+  and_more: 'und %count% weitere'
+  and_more_risks: 'und %count% weitere Risiken'
+  acceptance_rate: 'Akzeptanzrate'
+  appetite_percentage: 'Risikobereitschaft (%)'
+
+  info:
+    iso27005: 'Gemäß ISO 27005:2022 sollte die Risikobereitschaft formal vom Management genehmigt werden'
+
   field:
     category: Kategorie
     max_acceptable_risk: Maximales akzeptables Risiko
     description: Beschreibung
     is_active: Aktiv
+    status: 'Status'
     approved_by: Genehmigt von
     approved_at: Genehmigt am
+    created_at: 'Erstellt am'
+
   placeholder:
     category: 'z.B. Finanzrisiken, Operationelle Risiken, Compliance-Risiken'
     approved_by: Person auswählen
     description: 'Beschreiben Sie die Risikobereitschaft und deren Begründung...'
+
   help:
+    category_empty: 'Leer lassen für globale Risikobereitschaft'
     category: 'Optional: Leer lassen für globale Risikobereitschaft, oder Kategorie angeben (z.B. "Finanzrisiken")'
     max_acceptable_risk: 'Maximaler Risiko-Score (1-25) auf der 5×5 Risikomatrix. Risiken darüber erfordern Behandlung.'
     description: 'Erklärung der Risikobereitschaft, Begründung und Richtlinien für die Risikoakzeptanz'
     is_active: 'Nur eine Risikobereitschaft pro Kategorie sollte aktiv sein'
     approved_by: 'Person, die diese Risikobereitschaft genehmigt hat (ISO 27005 Compliance)'
     approved_at: 'Zeitpunkt der formalen Genehmigung'
-  validation:
-    category_max_length: 'Kategoriename darf maximal {{ limit }} Zeichen lang sein'
-    max_acceptable_risk_required: 'Maximales akzeptables Risiko ist erforderlich'
-    max_acceptable_risk_range: 'Maximales akzeptables Risiko muss zwischen {{ min }} und {{ max }} liegen'
-    description_required: 'Beschreibung ist erforderlich'
 
 # Risk Treatment Plan (ISO 27005:2022)
 risk_treatment_plan:
