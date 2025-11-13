@@ -11,7 +11,6 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/admin/settings')]
-#[IsGranted('ROLE_ADMIN')]
 class SystemSettingsController extends AbstractController
 {
     public function __construct(
@@ -20,6 +19,7 @@ class SystemSettingsController extends AbstractController
     }
 
     #[Route('', name: 'admin_settings_index', methods: ['GET'])]
+    #[IsGranted('ADMIN_VIEW')]
     public function index(): Response
     {
         // Get all settings grouped by category
@@ -31,6 +31,7 @@ class SystemSettingsController extends AbstractController
     }
 
     #[Route('/application', name: 'admin_settings_application', methods: ['GET', 'POST'])]
+    #[IsGranted('ADMIN_EDIT')]
     public function application(Request $request): Response
     {
         if ($request->isMethod('POST')) {
@@ -54,6 +55,7 @@ class SystemSettingsController extends AbstractController
     }
 
     #[Route('/security', name: 'admin_settings_security', methods: ['GET', 'POST'])]
+    #[IsGranted('ADMIN_EDIT')]
     public function security(Request $request): Response
     {
         if ($request->isMethod('POST')) {
@@ -77,6 +79,7 @@ class SystemSettingsController extends AbstractController
     }
 
     #[Route('/features', name: 'admin_settings_features', methods: ['GET', 'POST'])]
+    #[IsGranted('ADMIN_EDIT')]
     public function features(Request $request): Response
     {
         if ($request->isMethod('POST')) {

@@ -16,7 +16,6 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * Integrates existing /modules functionality into admin panel
  */
 #[Route('/admin/modules')]
-#[IsGranted('ROLE_ADMIN')]
 class AdminModuleController extends AbstractController
 {
     public function __construct(
@@ -30,6 +29,7 @@ class AdminModuleController extends AbstractController
      * Module Overview - Admin Panel
      */
     #[Route('', name: 'admin_modules_index', methods: ['GET'])]
+    #[IsGranted('MODULE_VIEW')]
     public function index(): Response
     {
         $allModules = $this->moduleConfigService->getAllModules();
@@ -49,6 +49,7 @@ class AdminModuleController extends AbstractController
      * Module Activation
      */
     #[Route('/{moduleKey}/activate', name: 'admin_modules_activate', methods: ['POST'])]
+    #[IsGranted('MODULE_MANAGE')]
     public function activate(string $moduleKey, Request $request): Response
     {
         $result = $this->moduleConfigService->activateModule($moduleKey);
@@ -74,6 +75,7 @@ class AdminModuleController extends AbstractController
      * Module Deactivation
      */
     #[Route('/{moduleKey}/deactivate', name: 'admin_modules_deactivate', methods: ['POST'])]
+    #[IsGranted('MODULE_MANAGE')]
     public function deactivate(string $moduleKey): Response
     {
         $result = $this->moduleConfigService->deactivateModule($moduleKey);
@@ -95,6 +97,7 @@ class AdminModuleController extends AbstractController
      * Module Details
      */
     #[Route('/{moduleKey}/details', name: 'admin_modules_details', methods: ['GET'])]
+    #[IsGranted('MODULE_VIEW')]
     public function details(string $moduleKey): Response
     {
         $module = $this->moduleConfigService->getModule($moduleKey);
@@ -129,6 +132,7 @@ class AdminModuleController extends AbstractController
      * Import Module Sample Data
      */
     #[Route('/{moduleKey}/import-data', name: 'admin_modules_import_data', methods: ['POST'])]
+    #[IsGranted('MODULE_MANAGE')]
     public function importData(string $moduleKey, Request $request): Response
     {
         $module = $this->moduleConfigService->getModule($moduleKey);
@@ -164,6 +168,7 @@ class AdminModuleController extends AbstractController
      * Export Module Data
      */
     #[Route('/{moduleKey}/export', name: 'admin_modules_export', methods: ['GET'])]
+    #[IsGranted('MODULE_VIEW')]
     public function export(string $moduleKey): Response
     {
         $result = $this->dataImportService->exportModuleData($moduleKey);
@@ -187,6 +192,7 @@ class AdminModuleController extends AbstractController
      * Dependency Graph Visualization
      */
     #[Route('/dependency-graph', name: 'admin_modules_graph', methods: ['GET'])]
+    #[IsGranted('MODULE_VIEW')]
     public function dependencyGraph(): Response
     {
         $dependencyGraph = $this->moduleConfigService->getDependencyGraph();
