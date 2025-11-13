@@ -101,7 +101,15 @@ class DocumentService
             return false;
         }
 
-        return $documentTenant->getId() !== $currentTenant->getId();
+        $documentTenantId = $documentTenant->getId();
+        $currentTenantId = $currentTenant->getId();
+
+        // Explicit null handling for unsaved entities
+        if ($documentTenantId === null || $currentTenantId === null) {
+            return false;
+        }
+
+        return $documentTenantId !== $currentTenantId;
     }
 
     /**
