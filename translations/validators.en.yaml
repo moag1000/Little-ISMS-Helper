@@ -99,3 +99,13 @@ compliance_mapping:
 'Data classification must be one of: {{ choices }}': 'The data classification must be one of: {{ choices }}.'
 'Status is required': 'Please select a status.'
 'Status must be one of: {{ choices }}': 'The status must be one of: {{ choices }}.'
+
+# Risk Treatment Plan Validators
+risk_treatment_plan:
+  validation:
+    risk_required: 'Risk is required'
+    title_required: 'Title is required'
+    title_max_length: 'Title cannot exceed {{ limit }} characters'
+    description_required: 'Description is required'
+    target_completion_date_required: 'Target completion date is required'
+    completion_percentage_range: 'Completion percentage must be between {{ min }} and {{ max }}'
