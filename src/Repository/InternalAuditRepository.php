@@ -52,8 +52,7 @@ class InternalAuditRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('a')
             ->leftJoin('a.auditedSubsidiaries', 's')
-            ->where('a.tenant = :tenant')
-            ->orWhere('s.id = :tenantId')
+            ->where('a.tenant = :tenant OR s.id = :tenantId')
             ->setParameter('tenant', $tenant)
             ->setParameter('tenantId', $tenant->getId())
             ->orderBy('a.plannedDate', 'DESC')
