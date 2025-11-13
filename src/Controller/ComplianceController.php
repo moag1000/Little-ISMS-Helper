@@ -570,8 +570,115 @@ class ComplianceController extends AbstractController
     #[Route('/export/transitive', name: 'app_compliance_export_transitive')]
     public function exportTransitive(): Response
     {
-        $this->addFlash('info', 'Transitive compliance export feature coming soon.');
-        return $this->redirectToRoute('app_compliance_transitive');
+        $frameworks = $this->frameworkRepository->findActiveFrameworks();
+        $transitiveAnalysis = [];
+        $frameworkRelationships = [];
+
+        // Build transitive analysis data (same as in transitiveCompliance method)
+        foreach ($frameworks as $sourceFramework) {
+            foreach ($frameworks as $targetFramework) {
+                if ($sourceFramework->getId() === $targetFramework->getId()) {
+                    continue;
+                }
+
+                // Calculate coverage
+                $coverage = $this->mappingRepository->calculateFrameworkCoverage(
+                    $sourceFramework,
+                    $targetFramework
+                );
+
+                // Get transitive analysis
+                $transitive = $this->mappingRepository->getTransitiveCompliance(
+                    $sourceFramework,
+                    $targetFramework
+                );
+
+                if ($transitive['requirements_helped'] > 0) {
+                    $transitiveAnalysis[] = $transitive;
+                }
+
+                // Get detailed cross-framework mappings
+                $mappings = $this->mappingRepository->findCrossFrameworkMappings(
+                    $sourceFramework,
+                    $targetFramework
+                );
+
+                if (!empty($mappings) && ($coverage['coverage_percentage'] ?? 0) > 0) {
+                    $frameworkRelationships[] = [
+                        'sourceFramework' => $sourceFramework,
+                        'targetFramework' => $targetFramework,
+                        'mappedRequirements' => $coverage['covered_requirements'] ?? 0,
+                        'totalRequirements' => $coverage['total_requirements'] ?? 0,
+                        'coveragePercentage' => round($coverage['coverage_percentage'] ?? 0, 2),
+                    ];
+                }
+            }
+        }
+
+        // Create CSV content
+        $csv = [];
+
+        // CSV Header - Framework Relationships
+        $csv[] = ['Framework-Beziehungen und Transitive Compliance'];
+        $csv[] = [];
+        $csv[] = [
+            'Quell-Framework',
+            'Ziel-Framework',
+            'Gemappte Anforderungen',
+            'Gesamt-Anforderungen',
+            'Coverage (%)',
+        ];
+
+        // CSV Data - Framework Relationships
+        foreach ($frameworkRelationships as $relationship) {
+            $csv[] = [
+                $relationship['sourceFramework']->getName() . ' (' . $relationship['sourceFramework']->getCode() . ')',
+                $relationship['targetFramework']->getName() . ' (' . $relationship['targetFramework']->getCode() . ')',
+                $relationship['mappedRequirements'],
+                $relationship['totalRequirements'],
+                $relationship['coveragePercentage'],
+            ];
+        }
+
+        // Add summary section
+        $csv[] = [];
+        $csv[] = ['Zusammenfassung'];
+        $csv[] = [];
+        $csv[] = ['Metrik', 'Wert'];
+        $csv[] = ['Anzahl aktiver Frameworks', count($frameworks)];
+        $csv[] = ['Anzahl Framework-Beziehungen', count($frameworkRelationships)];
+        $csv[] = ['Transitive Compliance Opportunities', count($transitiveAnalysis)];
+
+        if (!empty($transitiveAnalysis)) {
+            $totalRequirementsHelped = array_sum(array_column($transitiveAnalysis, 'requirements_helped'));
+            $csv[] = ['Gesamt unterstützte Anforderungen', $totalRequirementsHelped];
+        }
+
+        // Generate CSV file
+        $filename = sprintf(
+            'transitive_compliance_export_%s.csv',
+            date('Y-m-d_His')
+        );
+
+        $response = new Response();
+        $response->headers->set('Content-Type', 'text/csv; charset=utf-8');
+        $response->headers->set('Content-Disposition', 'attachment; filename="' . $filename . '"');
+
+        // Add BOM for Excel UTF-8 support
+        $csvContent = "\xEF\xBB\xBF";
+
+        // Create CSV content
+        $handle = fopen('php://temp', 'r+');
+        foreach ($csv as $row) {
+            fputcsv($handle, $row, ';'); // Use semicolon as delimiter for Excel compatibility
+        }
+        rewind($handle);
+        $csvContent .= stream_get_contents($handle);
+        fclose($handle);
+
+        $response->setContent($csvContent);
+
+        return $response;
     }
 
     #[Route('/export/comparison', name: 'app_compliance_export_comparison')]
