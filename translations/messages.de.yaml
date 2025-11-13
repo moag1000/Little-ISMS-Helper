@@ -348,13 +348,19 @@ common:
   description: Beschreibung
   status: Status
   date: Datum
+  created: Erstellt
   created_at: Erstellt am
+  updated: Aktualisiert
   updated_at: Aktualisiert am
   cancel: Abbrechen
+  save: Speichern
+  save_changes: Änderungen speichern
   back: Zurück
   back_to_list: Zurück zur Liste
   back_to_overview: Zurück zur Übersicht
+  to_list: Zur Liste
   delete: Löschen
+  reset: Zurücksetzen
   metadata: Metadaten
   action_irreversible: Diese Aktion kann nicht rückgängig gemacht werden.
   'true': Ja
@@ -362,14 +368,17 @@ common:
   yes: Ja
   no: Nein
   note: Hinweis
+  warning: Warnung
   to_home: Zur Startseite
   actions: Aktionen
   view: Ansehen
   view_details: Details ansehen
+  view_all: Alle anzeigen
   edit: Bearbeiten
   show_all: Alle anzeigen
   active: Aktiv
   all: Alle
+  selected: Ausgewählt
   category: Kategorie
   create: Erstellen
   danger_zone: Gefahrenbereich
@@ -381,6 +390,7 @@ common:
   error: Fehler
   export: Exportieren
   filter: Filtern
+  filters: Filter
   from: Von
   help: Hilfe
   history: Verlauf
@@ -390,6 +400,7 @@ common:
   loading: Wird geladen...
   never: Nie
   not_applicable: Nicht zutreffend
+  not_approved: Nicht genehmigt
   not_assigned: Nicht zugewiesen
   not_completed: Nicht abgeschlossen
   not_set: Nicht festgelegt
@@ -398,6 +409,10 @@ common:
   search: Suchen
   success: Erfolgreich
   to: Bis
+  size: Größe
+  seconds: Sekunden
+  minutes: Minuten
+  days: Tage
 asset:
   new: Neues Asset
   create: Asset erstellen
