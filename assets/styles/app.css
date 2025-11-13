@@ -214,28 +214,82 @@ body {
 /* App Sidebar - Cyberpunk Style */
 .app-sidebar {
     width: 260px;
-    background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
-    border-right: 2px solid transparent;
+    background: linear-gradient(180deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+    border-right: 3px solid transparent;
     border-image: linear-gradient(180deg,
-                  rgba(6, 182, 212, 0.5),
-                  rgba(236, 72, 153, 0.3),
-                  rgba(139, 92, 246, 0.2)) 1;
-    padding: var(--spacing-md) 0;
-    overflow-y: visible;
+                  rgba(6, 182, 212, 0.6),
+                  rgba(236, 72, 153, 0.4),
+                  rgba(139, 92, 246, 0.3),
+                  rgba(6, 182, 212, 0.6)) 1;
+    padding: var(--spacing-lg) 0;
+    overflow-y: auto;
     overflow-x: hidden;
-    box-shadow: 2px 0 20px rgba(6, 182, 212, 0.1);
+    box-shadow: 2px 0 30px rgba(6, 182, 212, 0.15),
+                inset -1px 0 20px rgba(6, 182, 212, 0.05);
     position: sticky;
     top: 0;
     align-self: flex-start;
     max-height: 100vh;
 }
 
+/* Custom Scrollbar for Sidebar - Cyberpunk Style */
+.app-sidebar::-webkit-scrollbar {
+    width: 8px;
+}
+
+.app-sidebar::-webkit-scrollbar-track {
+    background: linear-gradient(180deg,
+                rgba(15, 23, 42, 0.3),
+                rgba(30, 41, 59, 0.5),
+                rgba(15, 23, 42, 0.3));
+    border-radius: 4px;
+    margin: var(--spacing-sm) 0;
+}
+
+.app-sidebar::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg,
+                #06b6d4 0%,
+                #8b5cf6 50%,
+                #ec4899 100%);
+    border-radius: 4px;
+    border: 1px solid rgba(6, 182, 212, 0.3);
+    box-shadow: 0 0 15px rgba(6, 182, 212, 0.6),
+                inset 0 0 10px rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.app-sidebar::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg,
+                #22d3ee 0%,
+                #a78bfa 50%,
+                #f472b6 100%);
+    box-shadow: 0 0 20px rgba(6, 182, 212, 0.9),
+                0 0 10px rgba(236, 72, 153, 0.6),
+                inset 0 0 15px rgba(255, 255, 255, 0.2);
+    border-color: rgba(6, 182, 212, 0.6);
+}
+
+.app-sidebar::-webkit-scrollbar-thumb:active {
+    background: linear-gradient(180deg,
+                #0891b2 0%,
+                #7c3aed 50%,
+                #db2777 100%);
+    box-shadow: 0 0 25px rgba(6, 182, 212, 1),
+                0 0 15px rgba(236, 72, 153, 0.8);
+}
+
+/* Firefox Scrollbar */
+.app-sidebar {
+    scrollbar-width: thin;
+    scrollbar-color: #06b6d4 rgba(15, 23, 42, 0.5);
+}
+
 [data-theme="dark"] .app-sidebar {
-    background: linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+    background: linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, var(--bg-primary) 100%);
 }
 
 .app-sidebar nav {
-    padding: 0;
+    padding: 0 var(--spacing-xs);
 }
 
 .app-sidebar ul {
@@ -250,15 +304,34 @@ body {
 
 /* Sidebar Dividers */
 .app-sidebar .nav-divider {
-    padding: var(--spacing-md) var(--spacing-md) var(--spacing-xs);
-    font-size: 0.7rem;
-    font-weight: 700;
+    padding: var(--spacing-lg) var(--spacing-md) var(--spacing-sm);
+    font-size: 0.65rem;
+    font-weight: 800;
     text-transform: uppercase;
-    color: #06b6d4;
-    letter-spacing: 1px;
-    margin-top: var(--spacing-md);
-    text-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
-    border-left: 3px solid rgba(6, 182, 212, 0.5);
+    color: #22d3ee;
+    letter-spacing: 1.5px;
+    margin-top: var(--spacing-xl);
+    text-shadow: 0 0 15px rgba(6, 182, 212, 0.8),
+                 0 0 5px rgba(6, 182, 212, 0.5);
+    border-left: 0;
+    position: relative;
+    user-select: none;
+}
+
+.app-sidebar .nav-divider::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 3px;
+    height: 60%;
+    transform: translateY(-50%);
+    background: linear-gradient(180deg,
+                transparent,
+                rgba(6, 182, 212, 0.8),
+                transparent);
+    border-radius: 2px;
+    box-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
 }
 
 .app-sidebar .nav-divider:first-child {
@@ -270,27 +343,34 @@ body {
     display: flex;
     align-items: center;
     gap: var(--spacing-md);
-    padding: var(--spacing-sm) var(--spacing-md);
-    color: #a5f3fc;
+    padding: 0.75rem var(--spacing-md);
+    margin: 0.25rem var(--spacing-sm);
+    color: #cffafe;
     text-decoration: none;
-    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-    border-left: 3px solid transparent;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: var(--border-radius-sm);
+    border-left: 0;
     position: relative;
     overflow: hidden;
-}
-
-.app-sidebar a i {
-    font-size: 1.1rem;
-    min-width: 20px;
-    text-align: center;
-}
-
-.app-sidebar a span {
-    font-size: 0.9rem;
     font-weight: 500;
 }
 
-/* Sidebar Link Hover Effect */
+.app-sidebar a i {
+    font-size: 1.15rem;
+    min-width: 24px;
+    text-align: center;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    filter: drop-shadow(0 0 3px rgba(6, 182, 212, 0.3));
+}
+
+.app-sidebar a span {
+    font-size: 0.875rem;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Sidebar Link Hover Effect - Subtle Glow */
 .app-sidebar a::before {
     content: '';
     position: absolute;
@@ -299,49 +379,95 @@ body {
     width: 0;
     height: 100%;
     background: linear-gradient(90deg,
-                rgba(6, 182, 212, 0.2),
-                rgba(236, 72, 153, 0.1),
+                rgba(6, 182, 212, 0.25),
+                rgba(139, 92, 246, 0.15),
                 transparent);
-    transition: width 0.4s ease;
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: var(--border-radius-sm);
+}
+
+.app-sidebar a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 3px;
+    height: 100%;
+    background: transparent;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .app-sidebar a:hover::before {
     width: 100%;
 }
 
+.app-sidebar a:hover::after {
+    background: linear-gradient(180deg, #06b6d4, #8b5cf6);
+    box-shadow: 0 0 10px rgba(6, 182, 212, 0.6);
+}
+
 .app-sidebar a:hover {
     color: white;
-    border-left-color: #06b6d4;
-    padding-left: calc(var(--spacing-md) + 3px);
-    background: linear-gradient(90deg,
-                rgba(6, 182, 212, 0.15),
-                rgba(236, 72, 153, 0.05),
-                transparent);
-    text-shadow: 0 0 10px rgba(6, 182, 212, 0.8);
-    box-shadow: inset 0 0 20px rgba(6, 182, 212, 0.1);
+    background: rgba(6, 182, 212, 0.1);
+    padding-left: calc(var(--spacing-md) + 4px);
+    text-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
+    transform: translateX(2px);
 }
 
 .app-sidebar a:hover i {
-    color: #06b6d4;
-    transform: scale(1.1);
+    color: #22d3ee;
+    transform: scale(1.12) rotate(-5deg);
+    filter: drop-shadow(0 0 8px rgba(6, 182, 212, 0.8));
 }
 
-/* Sidebar Active Link */
+.app-sidebar a:hover span {
+    letter-spacing: 0.5px;
+}
+
+/* Sidebar Active Link - Bold Gradient */
 .app-sidebar a.active {
-    background: linear-gradient(135deg, #06b6d4, #8b5cf6);
+    background: linear-gradient(135deg,
+                rgba(6, 182, 212, 0.2) 0%,
+                rgba(139, 92, 246, 0.15) 100%);
     color: white;
-    border-left-color: #ec4899;
-    border-left-width: 4px;
-    padding-left: calc(var(--spacing-md) + 3px);
-    box-shadow: 0 0 20px rgba(6, 182, 212, 0.4),
-                inset 0 0 20px rgba(255, 255, 255, 0.1);
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+    padding-left: calc(var(--spacing-md) + 4px);
+    box-shadow: 0 2px 15px rgba(6, 182, 212, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    text-shadow: 0 0 15px rgba(6, 182, 212, 0.8),
+                 0 0 5px rgba(255, 255, 255, 0.5);
     font-weight: 600;
+    border: 1px solid rgba(6, 182, 212, 0.3);
+}
+
+.app-sidebar a.active::before {
+    width: 100%;
+    background: linear-gradient(90deg,
+                rgba(6, 182, 212, 0.15),
+                rgba(139, 92, 246, 0.1),
+                transparent);
+}
+
+.app-sidebar a.active::after {
+    background: linear-gradient(180deg, #06b6d4, #ec4899, #8b5cf6);
+    width: 4px;
+    box-shadow: 0 0 15px rgba(6, 182, 212, 0.8),
+                0 0 10px rgba(236, 72, 153, 0.5);
 }
 
 .app-sidebar a.active i {
-    color: white;
-    transform: scale(1.15);
+    color: #22d3ee;
+    transform: scale(1.2);
+    filter: drop-shadow(0 0 10px rgba(6, 182, 212, 1));
+}
+
+.app-sidebar a.active span {
+    letter-spacing: 0.5px;
+}
+
+/* Focus State for Accessibility */
+.app-sidebar a:focus-visible {
+    outline: 2px solid #06b6d4;
+    outline-offset: 2px;
 }
 
 [data-theme="dark"] .app-sidebar a {
@@ -353,7 +479,7 @@ body {
 }
 
 [data-theme="dark"] .app-sidebar a.active {
-    background: linear-gradient(135deg, #06b6d4, #8b5cf6);
+    background: linear-gradient(135deg, rgba(6, 182, 212, 0.2), rgba(139, 92, 246, 0.15));
     color: white;
 }
 
