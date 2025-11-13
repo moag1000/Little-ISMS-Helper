@@ -414,7 +414,6 @@ common:
   not_set: Nicht festgelegt
   not_started: Nicht begonnen
   refresh: Aktualisieren
-  save: Speichern
   search: Suchen
   success: Erfolgreich
   to: Bis
@@ -702,12 +701,10 @@ audit:
     passed_with_findings: Bestanden mit Feststellungen
     failed: Nicht bestanden
     pending: Ausstehend
-  type: Audit-Typ
   type_iso27001: ISO 27001
   type_iso9001: ISO 9001
   type_gdpr: DSGVO
   type_custom: Benutzerdefiniert
-  result: Audit-Ergebnis
   result_passed: Bestanden
   result_passed_with_findings: Bestanden mit Feststellungen
   result_failed: Nicht bestanden
@@ -2313,7 +2310,6 @@ compliance:
     data_reuse: Datenwiederverwendungs-Insights
     gaps: Gap-Analyse
     gap_analysis: 'Gap-Analyse'
-    data_reuse: 'Datenwiederverwendung'
   description:
     transitive: Nutzen Sie bestehende Compliance-Arbeit über mehrere Frameworks hinweg für maximale Effizienz
     matrix: Zeigt, wie die Erfüllung von Anforderungen in einem Framework hilft, Anforderungen in anderen Frameworks zu erfüllen
@@ -2322,9 +2318,6 @@ compliance:
     data_reuse: Analysieren Sie Datenwiederverwendungsmöglichkeiten über Frameworks hinweg
     reuse_matrix: Sehen Sie, welche Daten über mehrere Frameworks hinweg genutzt werden können
     gap_analysis: Identifizieren Sie Compliance-Lücken und Verbesserungsmöglichkeiten
-    gap_analysis: 'Identifizieren Sie Compliance-Lücken und priorisieren Sie Maßnahmen'
-    data_reuse: 'Nutzen Sie bestehende Daten über mehrere Frameworks hinweg'
-    reuse_matrix: 'Matrix der wiederverwendbaren Daten über Frameworks hinweg'
     critical_gaps: 'Kritische Compliance-Lücken'
     high_gaps: 'Hohe Priorität Lücken'
     medium_gaps: 'Mittlere Priorität Lücken'
@@ -2353,10 +2346,6 @@ compliance:
     met_requirements: 'Erfüllte Anforderungen'
     gaps_identified: 'Identifizierte Lücken'
     compliance_score: 'Compliance-Score'
-    total_data_points: 'Gesamt-Datenpunkte'
-    reused_data: 'Wiederverwendete Daten'
-    reuse_rate: 'Wiederverwendungsrate'
-    effort_saved: 'Eingesparte Arbeit'
   unit:
     requirements: Anforderungen
   info:
@@ -2377,9 +2366,6 @@ compliance:
     gap_details: Gap-Details
     recommendations: Empfehlungen
     framework_selection: 'Framework-Auswahl'
-    framework_coverage: 'Framework-Abdeckung'
-    reuse_matrix: 'Wiederverwendungs-Matrix'
-    reuse_opportunities: 'Wiederverwendungsmöglichkeiten'
   label:
     source_target_matrix: "Quelle ↓ / Ziel →"
     showing_of: "Zeige %count% von"
@@ -2437,20 +2423,12 @@ compliance:
     gap_reason: Grund für Lücke
     assessment: Bewertung
     risk_level: Risikolevel
-    frameworks: 'Frameworks'
     select_framework: 'Framework auswählen'
     severity: 'Schweregrad'
     gap_description: 'Lückenbeschreibung'
     remediation: 'Abhilfemaßnahme'
     due_date: 'Fälligkeitsdatum'
-    data_element: 'Datenelement'
-    source: 'Quelle'
-    used_in_frameworks: 'Verwendet in Frameworks'
-    reuse_count: 'Wiederverwendungszähler'
-    reused_data: 'Wiederverwendete Daten'
-    new_data_needed: 'Neue Daten benötigt'
     time_savings: 'Zeitersparnis'
-    quality_score: 'Qualitätsscore'
   option:
     select_framework: -- Framework auswählen --
     all_frameworks: 'Alle Frameworks'
@@ -2459,8 +2437,6 @@ compliance:
     no_mapping: Kein Mapping
     overdue: Überfällig
     reusable: Wiederverwendbar
-    overdue: 'Überfällig'
-    reusable: 'Wiederverwendbar'
   message:
     no_relationships: Noch keine Framework-Beziehungen gefunden
     no_leverage_opportunities: Noch keine Nutzungsmöglichkeiten identifiziert
@@ -2469,13 +2445,9 @@ compliance:
     no_unique: Keine einzigartigen Anforderungen gefunden
     more_requirements: "+ %count% weitere Anforderungen"
     no_opportunities: Keine Wiederverwendungsmöglichkeiten gefunden
-    no_data_elements: Keine Datenelemente gefunden
-    no_frameworks: Keine Frameworks geladen
     no_gaps: Keine Gaps gefunden - Alle Anforderungen erfüllt!
     no_frameworks: 'Keine Frameworks verfügbar'
-    no_gaps: 'Keine Lücken gefunden'
     no_gaps_desc: 'Alle Anforderungen sind erfüllt'
-    no_opportunities: 'Keine Wiederverwendungsmöglichkeiten'
     no_data_elements: 'Keine Datenelemente verfügbar'
   mapping:
     type:
