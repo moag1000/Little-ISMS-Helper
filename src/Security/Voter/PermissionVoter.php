@@ -25,6 +25,8 @@ class PermissionVoter extends Voter
 {
     // Admin permissions
     public const ADMIN_ACCESS = 'ADMIN_ACCESS';
+    public const ADMIN_VIEW = 'ADMIN_VIEW';
+    public const ADMIN_EDIT = 'ADMIN_EDIT';
     public const ADMIN_SETTINGS = 'ADMIN_SETTINGS';
 
     // User management permissions
@@ -52,6 +54,7 @@ class PermissionVoter extends Voter
 
     // Module management permissions
     public const MODULE_VIEW = 'MODULE_VIEW';
+    public const MODULE_MANAGE = 'MODULE_MANAGE';
     public const MODULE_CONFIGURE = 'MODULE_CONFIGURE';
 
     // Role & Permission management
@@ -59,6 +62,10 @@ class PermissionVoter extends Voter
     public const ROLE_CREATE = 'ROLE_CREATE';
     public const ROLE_EDIT = 'ROLE_EDIT';
     public const ROLE_DELETE = 'ROLE_DELETE';
+
+    // Compliance management permissions
+    public const COMPLIANCE_VIEW = 'COMPLIANCE_VIEW';
+    public const COMPLIANCE_MANAGE = 'COMPLIANCE_MANAGE';
 
     // Audit log permissions
     public const AUDIT_VIEW = 'AUDIT_VIEW';
@@ -77,6 +84,8 @@ class PermissionVoter extends Voter
         // Check if this voter supports the permission
         return in_array($attribute, [
             self::ADMIN_ACCESS,
+            self::ADMIN_VIEW,
+            self::ADMIN_EDIT,
             self::ADMIN_SETTINGS,
             self::USER_VIEW,
             self::USER_CREATE,
@@ -94,11 +103,14 @@ class PermissionVoter extends Voter
             self::MFA_SETUP,
             self::MFA_DELETE,
             self::MODULE_VIEW,
+            self::MODULE_MANAGE,
             self::MODULE_CONFIGURE,
             self::ROLE_VIEW,
             self::ROLE_CREATE,
             self::ROLE_EDIT,
             self::ROLE_DELETE,
+            self::COMPLIANCE_VIEW,
+            self::COMPLIANCE_MANAGE,
             self::AUDIT_VIEW,
             self::AUDIT_EXPORT,
             self::MONITORING_VIEW,
@@ -164,6 +176,8 @@ class PermissionVoter extends Voter
         return [
             'admin' => [
                 self::ADMIN_ACCESS => 'Access admin panel',
+                self::ADMIN_VIEW => 'View admin dashboard and data',
+                self::ADMIN_EDIT => 'Edit system settings',
                 self::ADMIN_SETTINGS => 'Manage system settings',
             ],
             'user' => [
@@ -191,6 +205,7 @@ class PermissionVoter extends Voter
             ],
             'module' => [
                 self::MODULE_VIEW => 'View modules',
+                self::MODULE_MANAGE => 'Manage modules (activate/deactivate)',
                 self::MODULE_CONFIGURE => 'Configure modules',
             ],
             'role' => [
@@ -198,6 +213,10 @@ class PermissionVoter extends Voter
                 self::ROLE_CREATE => 'Create roles',
                 self::ROLE_EDIT => 'Edit roles',
                 self::ROLE_DELETE => 'Delete roles',
+            ],
+            'compliance' => [
+                self::COMPLIANCE_VIEW => 'View compliance frameworks',
+                self::COMPLIANCE_MANAGE => 'Manage compliance frameworks',
             ],
             'audit' => [
                 self::AUDIT_VIEW => 'View audit logs',
