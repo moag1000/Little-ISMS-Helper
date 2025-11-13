@@ -2,8 +2,10 @@
 
 namespace App\Controller;
 
+use App\Entity\CorporateGovernance;
 use App\Entity\Tenant;
 use App\Enum\GovernanceModel;
+use App\Repository\CorporateGovernanceRepository;
 use App\Repository\TenantRepository;
 use App\Service\CorporateStructureService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -20,6 +22,7 @@ class CorporateStructureController extends AbstractController
 {
     public function __construct(
         private TenantRepository $tenantRepository,
+        private CorporateGovernanceRepository $governanceRepository,
         private CorporateStructureService $corporateStructureService,
         private EntityManagerInterface $entityManager
     ) {
@@ -85,7 +88,14 @@ class CorporateStructureController extends AbstractController
         // Remove parent if parentId is null
         if ($parentId === null) {
             $tenant->setParent(null);
-            $tenant->setGovernanceModel(null);
+
+            // Delete all governance rules for this tenant
+            $this->entityManager->createQueryBuilder()
+                ->delete(CorporateGovernance::class, 'cg')
+                ->where('cg.tenant = :tenant')
+                ->setParameter('tenant', $tenant)
+                ->getQuery()
+                ->execute();
         } else {
             $parent = $this->tenantRepository->find($parentId);
             if (!$parent) {
@@ -98,8 +108,20 @@ class CorporateStructureController extends AbstractController
             }
 
             $tenant->setParent($parent);
-            $tenant->setGovernanceModel(GovernanceModel::from($governanceModel));
             $parent->setIsCorporateParent(true);
+
+            // Create or update default governance rule
+            $governance = $this->governanceRepository->findDefaultGovernance($tenant);
+            if (!$governance) {
+                $governance = new CorporateGovernance();
+                $governance->setTenant($tenant);
+                $governance->setParent($parent);
+                $governance->setScope('default');
+                $governance->setScopeId(null);
+                $governance->setCreatedBy($this->getUser());
+            }
+            $governance->setGovernanceModel(GovernanceModel::from($governanceModel));
+            $this->entityManager->persist($governance);
         }
 
         // Validate structure
@@ -110,6 +132,9 @@ class CorporateStructureController extends AbstractController
 
         $this->entityManager->flush();
 
+        // Get default governance for response
+        $defaultGovernance = $tenant->getParent() ? $this->governanceRepository->findDefaultGovernance($tenant) : null;
+
         return $this->json([
             'success' => true,
             'tenant' => [
@@ -119,8 +144,8 @@ class CorporateStructureController extends AbstractController
                     'id' => $tenant->getParent()->getId(),
                     'name' => $tenant->getParent()->getName()
                 ] : null,
-                'governanceModel' => $tenant->getGovernanceModel()?->value,
-                'governanceLabel' => $tenant->getGovernanceModel()?->getLabel()
+                'governanceModel' => $defaultGovernance?->getGovernanceModel()?->value,
+                'governanceLabel' => $defaultGovernance?->getGovernanceModel()?->getLabel()
             ]
         ]);
     }
@@ -138,7 +163,13 @@ class CorporateStructureController extends AbstractController
             return $this->json(['error' => 'Valid governance model is required'], Response::HTTP_BAD_REQUEST);
         }
 
-        $tenant->setGovernanceModel(GovernanceModel::from($governanceModel));
+        // Update default governance rule
+        $governance = $this->governanceRepository->findDefaultGovernance($tenant);
+        if (!$governance) {
+            return $this->json(['error' => 'No default governance found for this tenant'], Response::HTTP_NOT_FOUND);
+        }
+
+        $governance->setGovernanceModel(GovernanceModel::from($governanceModel));
         $this->entityManager->flush();
 
         return $this->json([
@@ -146,8 +177,8 @@ class CorporateStructureController extends AbstractController
             'tenant' => [
                 'id' => $tenant->getId(),
                 'name' => $tenant->getName(),
-                'governanceModel' => $tenant->getGovernanceModel()->value,
-                'governanceLabel' => $tenant->getGovernanceModel()->getLabel()
+                'governanceModel' => $governance->getGovernanceModel()->value,
+                'governanceLabel' => $governance->getGovernanceModel()->getLabel()
             ]
         ]);
     }
