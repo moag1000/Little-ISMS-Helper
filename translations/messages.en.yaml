@@ -1845,11 +1845,20 @@ compliance:
   title:
     transitive: Transitive Compliance
     compare: Compare Frameworks
+    gap_analysis: 'Gap Analysis'
+    data_reuse: 'Data Reuse'
   description:
     transitive: Leverage existing compliance work across multiple frameworks for maximum efficiency
     matrix: Shows how fulfilling requirements in one framework helps satisfy requirements in other frameworks
     compare: Compare two compliance frameworks side-by-side to understand their differences, overlaps, and unique requirements
     unique_requirements: Requirements that are unique to this framework and not covered by the other
+    gap_analysis: 'Identify compliance gaps and prioritize actions'
+    data_reuse: 'Leverage existing data across multiple frameworks'
+    reuse_matrix: 'Matrix of reusable data across frameworks'
+    critical_gaps: 'Critical compliance gaps'
+    high_gaps: 'High priority gaps'
+    medium_gaps: 'Medium priority gaps'
+    low_gaps: 'Low priority gaps'
   action:
     export_transitive: Export Transitive Analysis
     export_comparison: Export Comparison
@@ -1866,6 +1875,10 @@ compliance:
     cross_framework_mappings: Cross-Framework Requirement Mappings
     mapping_explanation: Understanding Requirement Mappings
     select_frameworks: Select Frameworks to Compare
+    framework_selection: 'Framework Selection'
+    framework_coverage: 'Framework Coverage'
+    reuse_matrix: 'Reuse Matrix'
+    reuse_opportunities: 'Reuse Opportunities'
     detailed_comparison: Detailed Comparison
     unique_to: "Unique to"
   explanation:
@@ -1901,11 +1914,27 @@ compliance:
     total_requirements: Total Requirements
     unique_requirements: Unique Requirements
     categories: Categories
+    frameworks: 'Frameworks'
+    select_framework: 'Select Framework'
+    severity: 'Severity'
+    gap_description: 'Gap Description'
+    remediation: 'Remediation'
+    due_date: 'Due Date'
+    data_element: 'Data Element'
+    source: 'Source'
+    used_in_frameworks: 'Used in Frameworks'
+    reuse_count: 'Reuse Count'
+    reused_data: 'Reused Data'
+    new_data_needed: 'New Data Needed'
+    time_savings: 'Time Savings'
+    quality_score: 'Quality Score'
   option:
     select_framework: -- Select a framework --
   badge:
     mapped: Mapped
     no_mapping: No Mapping
+    overdue: 'Overdue'
+    reusable: 'Reusable'
   message:
     no_relationships: No framework relationships found yet
     no_leverage_opportunities: No leverage opportunities identified yet
