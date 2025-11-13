@@ -144,3 +144,11 @@ objective:
 'Control name cannot exceed {{ limit }} characters': 'Control-Name darf maximal {{ limit }} Zeichen lang sein'
 'Control description is required': 'Control-Beschreibung ist erforderlich'
 'Control category is required': 'Control-Kategorie ist erforderlich'
+
+# Risk Validators
+'Risk title is required': 'Risikotitel ist erforderlich'
+'Risk title cannot exceed {{ limit }} characters': 'Risikotitel darf maximal {{ limit }} Zeichen lang sein'
+'Risk description is required': 'Risikobeschreibung ist erforderlich'
+'Risk must be associated with an asset': 'Risiko muss einem Asset zugeordnet sein'
+'Risk is required': 'Risiko ist erforderlich'
+'Risk appetite description is required': 'Risikobereitschafts-Beschreibung ist erforderlich'
