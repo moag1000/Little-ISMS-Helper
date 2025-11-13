@@ -115,7 +115,19 @@ fi
 
 # Step 7: Check if custom commands exist
 step "Step 7: Verifying custom console commands"
-COMMANDS=("LoadAnnexAControlsCommand.php" "SetupPermissionsCommand.php" "LoadTisaxRequirementsCommand.php" "LoadDoraRequirementsCommand.php")
+COMMANDS=(
+    "LoadAnnexAControlsCommand.php"
+    "SetupPermissionsCommand.php"
+    "LoadTisaxRequirementsCommand.php"
+    "LoadDoraRequirementsCommand.php"
+    "LoadC5RequirementsCommand.php"
+    "LoadC52025RequirementsCommand.php"
+    "LoadKritisRequirementsCommand.php"
+    "LoadKritisHealthRequirementsCommand.php"
+    "LoadDigavRequirementsCommand.php"
+    "LoadTkgRequirementsCommand.php"
+    "LoadGxpRequirementsCommand.php"
+)
 for cmd in "${COMMANDS[@]}"; do
     if [ -f "src/Command/$cmd" ]; then
         success "Command exists: $cmd"
@@ -133,6 +145,13 @@ EXPECTED_COMMANDS=(
     "app:setup-permissions"
     "app:load-tisax-requirements"
     "app:load-dora-requirements"
+    "app:load-c5-requirements"
+    "app:load-c5-2025-requirements"
+    "app:load-kritis-requirements"
+    "app:load-kritis-health-requirements"
+    "app:load-digav-requirements"
+    "app:load-tkg-requirements"
+    "app:load-gxp-requirements"
 )
 
 for cmd_name in "${EXPECTED_COMMANDS[@]}"; do
