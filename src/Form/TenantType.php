@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Entity\Tenant;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -52,6 +53,27 @@ class TenantType extends AbstractType
                 'attr' => [
                     'rows' => 4,
                     'placeholder' => 'tenant.placeholder.description',
+                ],
+            ])
+            ->add('logoFile', FileType::class, [
+                'label' => 'tenant.field.logo',
+                'help' => 'tenant.field.logo_help',
+                'mapped' => false,
+                'required' => false,
+                'attr' => [
+                    'accept' => 'image/jpeg,image/png,image/gif,image/webp',
+                ],
+                'constraints' => [
+                    new Assert\File([
+                        'maxSize' => '2M',
+                        'mimeTypes' => [
+                            'image/jpeg',
+                            'image/png',
+                            'image/gif',
+                            'image/webp',
+                        ],
+                        'mimeTypesMessage' => 'tenant.validation.logo_format',
+                    ]),
                 ],
             ])
             ->add('azureTenantId', TextType::class, [

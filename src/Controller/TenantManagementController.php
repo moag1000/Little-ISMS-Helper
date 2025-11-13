@@ -5,13 +5,16 @@ namespace App\Controller;
 use App\Entity\Tenant;
 use App\Form\TenantType;
 use App\Repository\TenantRepository;
+use App\Service\FileUploadSecurityService;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 #[Route('/admin/tenants')]
 #[IsGranted('ROLE_ADMIN')]
@@ -21,6 +24,9 @@ class TenantManagementController extends AbstractController
         private readonly EntityManagerInterface $entityManager,
         private readonly TenantRepository $tenantRepository,
         private readonly LoggerInterface $logger,
+        private readonly FileUploadSecurityService $fileUploadService,
+        private readonly SluggerInterface $slugger,
+        private readonly string $uploadsDirectory = 'uploads/tenants',
     ) {
     }
 
@@ -70,12 +76,29 @@ class TenantManagementController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
+                // Handle logo upload
+                /** @var UploadedFile|null $logoFile */
+                $logoFile = $form->get('logoFile')->getData();
+                if ($logoFile) {
+                    $logoPath = $this->handleLogoUpload($logoFile, $tenant);
+                    if ($logoPath) {
+                        $tenant->setLogoPath($logoPath);
+                    }
+                }
+
+                // Handle settings JSON
+                $settingsJson = $form->get('settings')->getData();
+                if ($settingsJson) {
+                    $tenant->setSettings(json_decode($settingsJson, true));
+                }
+
                 $this->entityManager->persist($tenant);
                 $this->entityManager->flush();
 
                 $this->logger->info('Tenant created', [
                     'tenant_id' => $tenant->getId(),
                     'tenant_code' => $tenant->getCode(),
+                    'has_logo' => $tenant->getLogoPath() !== null,
                     'user' => $this->getUser()?->getUserIdentifier(),
                 ]);
 
@@ -127,16 +150,39 @@ class TenantManagementController extends AbstractController
     #[Route('/{id}/edit', name: 'tenant_management_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Tenant $tenant): Response
     {
+        $oldLogoPath = $tenant->getLogoPath();
         $form = $this->createForm(TenantType::class, $tenant);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
+                // Handle logo upload
+                /** @var UploadedFile|null $logoFile */
+                $logoFile = $form->get('logoFile')->getData();
+                if ($logoFile) {
+                    // Delete old logo if exists
+                    if ($oldLogoPath) {
+                        $this->deleteOldLogo($oldLogoPath);
+                    }
+
+                    $logoPath = $this->handleLogoUpload($logoFile, $tenant);
+                    if ($logoPath) {
+                        $tenant->setLogoPath($logoPath);
+                    }
+                }
+
+                // Handle settings JSON
+                $settingsJson = $form->get('settings')->getData();
+                if ($settingsJson) {
+                    $tenant->setSettings(json_decode($settingsJson, true));
+                }
+
                 $this->entityManager->flush();
 
                 $this->logger->info('Tenant updated', [
                     'tenant_id' => $tenant->getId(),
                     'tenant_code' => $tenant->getCode(),
+                    'logo_updated' => $logoFile !== null,
                     'user' => $this->getUser()?->getUserIdentifier(),
                 ]);
 
@@ -231,5 +277,73 @@ class TenantManagementController extends AbstractController
         }
 
         return $this->redirectToRoute('tenant_management_index');
+    }
+
+    /**
+     * Handle logo upload with security validation
+     */
+    private function handleLogoUpload(UploadedFile $file, Tenant $tenant): ?string
+    {
+        try {
+            // Security validation using FileUploadSecurityService
+            $validation = $this->fileUploadService->validateUpload($file);
+
+            if (!$validation['valid']) {
+                $this->addFlash('warning', 'Logo upload failed: ' . $validation['error']);
+                $this->logger->warning('Logo upload validation failed', [
+                    'tenant_code' => $tenant->getCode(),
+                    'error' => $validation['error'],
+                ]);
+                return null;
+            }
+
+            // Generate safe filename
+            $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+            $safeFilename = $this->slugger->slug($originalFilename);
+            $newFilename = sprintf(
+                '%s-%s.%s',
+                $tenant->getCode(),
+                uniqid(),
+                $file->guessExtension()
+            );
+
+            // Move file to uploads directory
+            $uploadsPath = $this->getParameter('kernel.project_dir') . '/public/' . $this->uploadsDirectory;
+            $file->move($uploadsPath, $newFilename);
+
+            $this->logger->info('Logo uploaded successfully', [
+                'tenant_code' => $tenant->getCode(),
+                'filename' => $newFilename,
+            ]);
+
+            return $this->uploadsDirectory . '/' . $newFilename;
+
+        } catch (\Exception $e) {
+            $this->logger->error('Logo upload failed', [
+                'tenant_code' => $tenant->getCode(),
+                'error' => $e->getMessage(),
+            ]);
+            $this->addFlash('warning', 'Logo upload failed. Please try again.');
+            return null;
+        }
+    }
+
+    /**
+     * Delete old logo file
+     */
+    private function deleteOldLogo(string $logoPath): void
+    {
+        try {
+            $fullPath = $this->getParameter('kernel.project_dir') . '/public/' . $logoPath;
+            if (file_exists($fullPath)) {
+                unlink($fullPath);
+                $this->logger->info('Old logo deleted', ['path' => $logoPath]);
+            }
+        } catch (\Exception $e) {
+            $this->logger->error('Failed to delete old logo', [
+                'path' => $logoPath,
+                'error' => $e->getMessage(),
+            ]);
+        }
     }
 }

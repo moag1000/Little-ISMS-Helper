@@ -29,3 +29,5 @@ PR_DESCRIPTION.md
 .env.docker.local
 /docker-compose.override.yml
 ###< docker ###
+/public/uploads/*
+!public/uploads/*/.gitkeep
