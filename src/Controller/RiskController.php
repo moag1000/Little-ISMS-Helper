@@ -8,6 +8,7 @@ use App\Repository\AuditLogRepository;
 use App\Repository\RiskRepository;
 use App\Service\RiskMatrixService;
 use App\Service\ExcelExportService;
+use App\Service\PdfExportService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -25,7 +26,8 @@ class RiskController extends AbstractController
         private EntityManagerInterface $entityManager,
         private RiskMatrixService $riskMatrixService,
         private TranslatorInterface $translator,
-        private ExcelExportService $excelExportService
+        private ExcelExportService $excelExportService,
+        private PdfExportService $pdfExportService
     ) {}
 
     #[Route('/', name: 'app_risk_index')]
@@ -474,6 +476,99 @@ class RiskController extends AbstractController
         $response->headers->set('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         $response->headers->set('Content-Disposition', 'attachment; filename="' . $filename . '"');
         $response->headers->set('Content-Length', strlen($content));
+
+        return $response;
+    }
+
+    #[Route('/export/pdf', name: 'app_risk_export_pdf')]
+    #[IsGranted('ROLE_USER')]
+    public function exportPdf(Request $request): Response
+    {
+        // Get filter parameters (same as index)
+        $level = $request->query->get('level');
+        $status = $request->query->get('status');
+        $treatment = $request->query->get('treatment');
+        $owner = $request->query->get('owner');
+
+        // Get all risks
+        $risks = $this->riskRepository->findAll();
+
+        // Build filter info string
+        $filterParts = [];
+        if ($level) $filterParts[] = "Level: $level";
+        if ($status) $filterParts[] = "Status: $status";
+        if ($treatment) $filterParts[] = "Behandlung: $treatment";
+        if ($owner) $filterParts[] = "Owner: $owner";
+        $filterInfo = !empty($filterParts) ? implode(', ', $filterParts) : null;
+
+        // Apply filters (same logic as index)
+        if ($level) {
+            $risks = array_filter($risks, function($risk) use ($level) {
+                $score = $risk->getRiskScore();
+                return match($level) {
+                    'critical' => $score >= 15,
+                    'high' => $score >= 8 && $score < 15,
+                    'medium' => $score >= 4 && $score < 8,
+                    'low' => $score < 4,
+                    default => true
+                };
+            });
+        }
+
+        if ($status) {
+            $risks = array_filter($risks, fn($risk) => $risk->getStatus() === $status);
+        }
+
+        if ($treatment) {
+            $risks = array_filter($risks, fn($risk) => $risk->getTreatmentStrategy() === $treatment);
+        }
+
+        if ($owner) {
+            $risks = array_filter($risks, fn($risk) =>
+                $risk->getRiskOwner() && stripos($risk->getRiskOwner()->getFullName(), $owner) !== false
+            );
+        }
+
+        // Re-index array after filtering
+        $risks = array_values($risks);
+
+        // Calculate statistics
+        $totalRisks = count($risks);
+        $criticalRisks = count(array_filter($risks, fn($risk) => $risk->getRiskScore() >= 15));
+        $highRisks = count(array_filter($risks, fn($risk) => $risk->getRiskScore() >= 8 && $risk->getRiskScore() < 15));
+        $mediumRisks = count(array_filter($risks, fn($risk) => $risk->getRiskScore() >= 4 && $risk->getRiskScore() < 8));
+        $lowRisks = count(array_filter($risks, fn($risk) => $risk->getRiskScore() < 4));
+
+        // Status breakdown
+        $statusBreakdown = [
+            'identified' => count(array_filter($risks, fn($r) => $r->getStatus() === 'identified')),
+            'assessed' => count(array_filter($risks, fn($r) => $r->getStatus() === 'assessed')),
+            'treated' => count(array_filter($risks, fn($r) => $r->getStatus() === 'treated')),
+            'monitored' => count(array_filter($risks, fn($r) => $r->getStatus() === 'monitored')),
+            'closed' => count(array_filter($risks, fn($r) => $r->getStatus() === 'closed')),
+            'accepted' => count(array_filter($risks, fn($r) => $r->getStatus() === 'accepted')),
+        ];
+        // Remove zero counts
+        $statusBreakdown = array_filter($statusBreakdown, fn($count) => $count > 0);
+
+        // Generate PDF
+        $pdfContent = $this->pdfExportService->generatePdf('pdf/risk_report.html.twig', [
+            'risks' => $risks,
+            'total_risks' => $totalRisks,
+            'critical_risks' => $criticalRisks,
+            'high_risks' => $highRisks,
+            'medium_risks' => $mediumRisks,
+            'low_risks' => $lowRisks,
+            'status_breakdown' => $statusBreakdown,
+            'filter_info' => $filterInfo,
+        ]);
+
+        $filename = sprintf('risk_management_report_%s.pdf', date('Y-m-d_His'));
+
+        $response = new Response($pdfContent);
+        $response->headers->set('Content-Type', 'application/pdf');
+        $response->headers->set('Content-Disposition', 'attachment; filename="' . $filename . '"');
+        $response->headers->set('Content-Length', strlen($pdfContent));
 
         return $response;
     }
