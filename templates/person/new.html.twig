@@ -35,12 +35,12 @@
         {{ form_label(form.badgeId) }}
         {{ form_widget(form.badgeId, {'attr': {'class': 'form-control', 'placeholder': 'person.placeholder.badge'|trans}}) }}
         {{ form_errors(form.badgeId) }}
-        <small style="color: var(--color-text-muted); margin-top: var(--spacing-xs); display: block;">
+        <small class="small-muted-block">
             {{ 'person.help.badge'|trans }}
         </small>
     </div>
 
-    <h3 style="margin-top: var(--spacing-lg);">{{ 'person.section.organization'|trans }}</h3>
+    <h3 class="h3-mt-lg">{{ 'person.section.organization'|trans }}</h3>
 
     <div class="form-group">
         {{ form_label(form.company) }}
@@ -60,7 +60,7 @@
         {{ form_errors(form.jobTitle) }}
     </div>
 
-    <h3 style="margin-top: var(--spacing-lg);">{{ 'person.section.contact'|trans }}</h3>
+    <h3 class="h3-mt-lg">{{ 'person.section.contact'|trans }}</h3>
 
     <div class="form-group">
         {{ form_label(form.email) }}
@@ -75,7 +75,7 @@
     </div>
 
     {% if form.notes is defined %}
-    <h3 style="margin-top: var(--spacing-lg);">{{ 'person.section.additional'|trans }}</h3>
+    <h3 class="h3-mt-lg">{{ 'person.section.additional'|trans }}</h3>
 
     <div class="form-group">
         {{ form_label(form.notes) }}

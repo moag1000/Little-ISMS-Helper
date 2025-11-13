@@ -14,7 +14,7 @@
 
 <div class="info-box mb-4">
     <h3>{{ control.name }}</h3>
-    <p style="margin-top: var(--spacing-sm); color: var(--color-text-light);">{{ control.description }}</p>
+    <p class="mt-sm-text-light">{{ control.description }}</p>
     <div class="mt-2">
         <span class="badge badge-info">{{ control.category }}</span>
     </div>
@@ -22,11 +22,11 @@
 
 <form method="post">
     <div class="form-group">
-        <label class="form-label" style="display: flex; align-items: center; gap: var(--spacing-sm); cursor: pointer;">
-            <input type="checkbox" name="applicable" value="1" {% if control.applicable %}checked{% endif %} style="width: 20px; height: 20px;">
+        <label class="form-label label-checkbox">
+            <input type="checkbox" name="applicable" value="1" {% if control.applicable %}checked{% endif %} class="checkbox-lg">
             <span>Control ist anwendbar für diese Organisation</span>
         </label>
-        <small style="color: var(--color-text-muted); margin-top: var(--spacing-xs); display: block;">
+        <small class="small-muted-block">
             Markieren Sie dieses Control als anwendbar, wenn es für Ihr ISMS relevant ist.
         </small>
     </div>
@@ -42,7 +42,7 @@
             class="form-control"
             placeholder="Erklären Sie, warum dieses Control anwendbar oder nicht anwendbar ist..."
         >{{ control.justification }}</textarea>
-        <small style="color: var(--color-text-muted); margin-top: var(--spacing-xs); display: block;">
+        <small class="small-muted-block">
             Eine klare Begründung ist für Audits und Compliance-Nachweise wichtig.
         </small>
     </div>
@@ -63,7 +63,7 @@
         <label class="form-label" for="implementationPercentage">
             Implementierungsgrad (%)
         </label>
-        <div style="display: flex; align-items: center; gap: var(--spacing-md);">
+        <div class="flex-center-gap-md">
             <input
                 type="range"
                 name="implementationPercentage"
@@ -71,10 +71,10 @@
                 min="0"
                 max="100"
                 value="{{ control.implementationPercentage }}"
-                style="flex: 1;"
+                class="flex-1"
                 oninput="document.getElementById('percentageValue').textContent = this.value + '%'"
             >
-            <span id="percentageValue" class="badge badge-info" style="font-size: 1rem; padding: var(--spacing-sm) var(--spacing-md);">
+            <span id="percentageValue" class="badge badge-info badge-fs-1-p-sm-md">
                 {{ control.implementationPercentage }}%
             </span>
         </div>
@@ -96,7 +96,7 @@
             class="form-control"
             placeholder="Beschreiben Sie, wie dieses Control implementiert wurde oder wird..."
         >{{ control.implementationNotes }}</textarea>
-        <small style="color: var(--color-text-muted); margin-top: var(--spacing-xs); display: block;">
+        <small class="small-muted-block">
             Dokumentieren Sie technische Details, verwendete Tools, Prozesse, etc.
         </small>
     </div>

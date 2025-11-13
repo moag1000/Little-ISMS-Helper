@@ -19,7 +19,7 @@
                 {{ ('person.type.' ~ person.personType)|trans }}
             </span>
             {% if person.badgeId %}
-                <code style="margin-left: var(--spacing-sm);">{{ person.badgeId }}</code>
+                <code class="ml-sm">{{ person.badgeId }}</code>
             {% endif %}
         </div>
     </div>
@@ -37,7 +37,7 @@
 <div class="card mb-4">
     <h2>{{ 'person.section.details'|trans }}</h2>
 
-    <div class="stats-grid mt-3" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));">
+    <div class="stats-grid mt-3 grid-responsive-250">
         <div class="stat-item">
             <strong>{{ person.fullName }}</strong>
             <span>{{ 'person.field.name'|trans }}</span>
@@ -81,13 +81,13 @@
 {# Contact Information #}
 <div class="card mb-4">
     <h2>{{ 'person.section.contact'|trans }}</h2>
-    <div class="stats-grid mt-3" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));">
+    <div class="stats-grid mt-3 grid-responsive-250">
         <div class="stat-item">
             <strong>
                 {% if person.email %}
                     <a href="mailto:{{ person.email }}">{{ person.email }}</a>
                 {% else %}
-                    <span style="color: var(--color-text-muted);">-</span>
+                    <span class="text-muted-color">-</span>
                 {% endif %}
             </strong>
             <span>{{ 'person.field.email'|trans }}</span>
@@ -98,7 +98,7 @@
                 {% if person.phone %}
                     <a href="tel:{{ person.phone }}">{{ person.phone }}</a>
                 {% else %}
-                    <span style="color: var(--color-text-muted);">-</span>
+                    <span class="text-muted-color">-</span>
                 {% endif %}
             </strong>
             <span>{{ 'person.field.phone'|trans }}</span>
@@ -110,8 +110,8 @@
 {% if person.notes %}
 <div class="card mb-4">
     <h2>{{ 'person.section.notes'|trans }}</h2>
-    <div class="info-box mt-2" style="background: var(--color-bg-light);">
-        <p style="white-space: pre-wrap;">{{ person.notes }}</p>
+    <div class="info-box mt-2 bg-light">
+        <p class="pre-wrap">{{ person.notes }}</p>
     </div>
 </div>
 {% endif %}
@@ -124,7 +124,7 @@
     <a href="{{ path('app_person_index') }}" class="btn btn-secondary">
         📋 {{ 'common.back_to_list'|trans }}
     </a>
-    <form method="post" action="{{ path('app_person_delete', {id: person.id}) }}" onsubmit="return confirm('{{ 'person.confirm.delete'|trans }}');" style="display: inline;">
+    <form method="post" action="{{ path('app_person_delete', {id: person.id}) }}" onsubmit="return confirm('{{ 'person.confirm.delete'|trans }}');" class="d-inline">
         <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ person.id) }}">
         <button type="submit" class="btn btn-danger">🗑️ {{ 'common.delete'|trans }}</button>
     </form>

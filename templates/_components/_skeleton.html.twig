@@ -21,9 +21,9 @@
                 <div class="skeleton-kpi-card">
                     <div class="skeleton skeleton-kpi-icon"></div>
                     <div class="skeleton-kpi-content">
-                        <div class="skeleton skeleton-text skeleton-text-sm" style="width: 70%;"></div>
-                        <div class="skeleton skeleton-heading" style="width: 50%; height: 32px;"></div>
-                        <div class="skeleton skeleton-text-sm" style="width: 40%;"></div>
+                        <div class="skeleton skeleton-text skeleton-text-sm w-70"></div>
+                        <div class="skeleton skeleton-heading w-50-h-32"></div>
+                        <div class="skeleton skeleton-text-sm w-40"></div>
                     </div>
                 </div>
             {% endfor %}
@@ -31,7 +31,7 @@
 
     {% elseif type == 'table' %}
         <div class="skeleton-card">
-            <div class="skeleton skeleton-heading" style="margin-bottom: 24px;"></div>
+            <div class="skeleton skeleton-heading mb-24px"></div>
             <div class="skeleton-table">
                 {% for i in 1..count %}
                     <div class="skeleton-table-row">
@@ -42,10 +42,10 @@
                             <div class="skeleton skeleton-badge"></div>
                         </div>
                         <div class="skeleton-table-cell">
-                            <div class="skeleton skeleton-text" style="width: 60%;"></div>
+                            <div class="skeleton skeleton-text w-60"></div>
                         </div>
                         <div class="skeleton-table-cell">
-                            <div class="skeleton skeleton-button" style="width: 80px;"></div>
+                            <div class="skeleton skeleton-button w-80px"></div>
                         </div>
                     </div>
                 {% endfor %}
@@ -58,9 +58,9 @@
                 {% for i in 1..count %}
                     <li class="skeleton-list-item">
                         <div class="skeleton skeleton-avatar"></div>
-                        <div style="flex: 1;">
-                            <div class="skeleton skeleton-text" style="width: 70%;"></div>
-                            <div class="skeleton skeleton-text-sm" style="width: 50%;"></div>
+                        <div class="flex-1">
+                            <div class="skeleton skeleton-text w-70"></div>
+                            <div class="skeleton skeleton-text-sm w-50"></div>
                         </div>
                         <div class="skeleton skeleton-badge"></div>
                     </li>
@@ -70,12 +70,12 @@
 
     {% elseif type == 'card' %}
         {% for i in 1..count %}
-            <div class="skeleton-card" style="margin-bottom: var(--spacing-lg);">
+            <div class="skeleton-card mb-lg">
                 <div class="skeleton skeleton-heading"></div>
                 <div class="skeleton skeleton-text"></div>
                 <div class="skeleton skeleton-text"></div>
-                <div class="skeleton skeleton-text" style="width: 80%;"></div>
-                <div style="margin-top: var(--spacing-md);">
+                <div class="skeleton skeleton-text w-80"></div>
+                <div class="mt-md">
                     <div class="skeleton skeleton-button"></div>
                 </div>
             </div>
@@ -84,12 +84,12 @@
     {% elseif type == 'form' %}
         <div class="skeleton-card">
             {% for i in 1..count %}
-                <div style="margin-bottom: var(--spacing-lg);">
-                    <div class="skeleton skeleton-text-sm" style="width: 30%; margin-bottom: 8px;"></div>
-                    <div class="skeleton skeleton-text-lg" style="height: 40px; width: 100%;"></div>
+                <div class="mb-lg">
+                    <div class="skeleton skeleton-text-sm w-30-mb-8"></div>
+                    <div class="skeleton skeleton-text-lg w-100-h-40"></div>
                 </div>
             {% endfor %}
-            <div style="margin-top: var(--spacing-xl);">
+            <div class="mt-xl">
                 <div class="skeleton skeleton-button"></div>
             </div>
         </div>

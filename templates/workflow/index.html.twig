@@ -56,13 +56,13 @@
 {# Quick Links #}
 <div class="module-grid mb-4">
     <div class="card">
-        <div style="font-size: 2rem; margin-bottom: var(--spacing-sm);">⏳</div>
+        <div class="fs-2-mb-sm">⏳</div>
         <h3>{{ 'workflow.section.pending'|trans }}</h3>
-        <p style="color: var(--color-text-muted); margin-top: var(--spacing-xs);">
+        <p class="text-muted-mt-xs">
             {{ 'workflow.description.pending'|trans }}
         </p>
         <div class="mt-2">
-            <strong style="font-size: 1.5rem;">{{ instances|filter(i => i.status == 'pending')|length }}</strong>
+            <strong class="fs-15">{{ instances|filter(i => i.status == 'pending')|length }}</strong>
         </div>
         <div class="mt-2">
             <a href="{{ path('app_workflow_pending') }}" class="btn btn-sm">{{ 'common.view'|trans }}</a>
@@ -70,13 +70,13 @@
     </div>
 
     <div class="card">
-        <div style="font-size: 2rem; margin-bottom: var(--spacing-sm);">🔄</div>
+        <div class="fs-2-mb-sm">🔄</div>
         <h3>{{ 'workflow.section.active'|trans }}</h3>
-        <p style="color: var(--color-text-muted); margin-top: var(--spacing-xs);">
+        <p class="text-muted-mt-xs">
             {{ 'workflow.description.active'|trans }}
         </p>
         <div class="mt-2">
-            <strong style="font-size: 1.5rem;">{{ instances|filter(i => i.status == 'active')|length }}</strong>
+            <strong class="fs-15">{{ instances|filter(i => i.status == 'active')|length }}</strong>
         </div>
         <div class="mt-2">
             <a href="{{ path('app_workflow_active') }}" class="btn btn-sm">{{ 'common.view'|trans }}</a>
@@ -84,13 +84,13 @@
     </div>
 
     <div class="card">
-        <div style="font-size: 2rem; margin-bottom: var(--spacing-sm);">⚠️</div>
+        <div class="fs-2-mb-sm">⚠️</div>
         <h3>{{ 'workflow.section.overdue'|trans }}</h3>
-        <p style="color: var(--color-text-muted); margin-top: var(--spacing-xs);">
+        <p class="text-muted-mt-xs">
             {{ 'workflow.description.overdue'|trans }}
         </p>
         <div class="mt-2">
-            <strong style="font-size: 1.5rem; color: var(--color-danger);">{{ instances|filter(i => i.overdue)|length }}</strong>
+            <strong class="fs-15-danger">{{ instances|filter(i => i.overdue)|length }}</strong>
         </div>
         <div class="mt-2">
             <a href="{{ path('app_workflow_overdue') }}" class="btn btn-sm btn-danger">{{ 'common.view'|trans }}</a>
@@ -111,7 +111,7 @@
                 <th>{{ 'workflow.field.status'|trans }}</th>
                 <th>{{ 'workflow.field.assignee'|trans }}</th>
                 <th>{{ 'workflow.field.due_date'|trans }}</th>
-                <th style="text-align: center;">{{ 'common.actions'|trans }}</th>
+                <th class="text-center">{{ 'common.actions'|trans }}</th>
             </tr>
         </thead>
         <tbody>
@@ -138,15 +138,15 @@
                     {% if instance.dueDate %}
                         {{ instance.dueDate|date('d.m.Y') }}
                         {% if instance.overdue %}
-                            <span class="badge badge-danger" style="margin-left: var(--spacing-xs);">
+                            <span class="badge badge-danger ml-xs">
                                 {{ 'workflow.badge.overdue'|trans }}
                             </span>
                         {% endif %}
                     {% else %}
-                        <span style="color: var(--color-text-muted);">-</span>
+                        <span class="text-muted">-</span>
                     {% endif %}
                 </td>
-                <td style="text-align: center;">
+                <td class="text-center">
                     <a href="{{ path('app_workflow_instance_show', {id: instance.id}) }}" class="btn btn-sm">
                         👁 {{ 'common.view'|trans }}
                     </a>
@@ -154,7 +154,7 @@
             </tr>
             {% else %}
             <tr>
-                <td colspan="7" style="text-align: center; padding: var(--spacing-xl); color: var(--color-text-muted);">
+                <td colspan="7" class="text-center-p-xl-muted">
                     {{ 'workflow.message.no_instances'|trans }}
                 </td>
             </tr>
