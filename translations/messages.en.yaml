@@ -2804,3 +2804,139 @@ common.cancel: 'Cancel'
 common.view: 'View'
 common.edit: 'Edit'
 common.actions: 'Actions'
+
+# Setup Wizard Translations
+setup:
+  welcome:
+    title: 'Welcome to Little ISMS Helper'
+    greeting: 'Welcome to Initial Setup'
+    header: 'Setup Wizard'
+    description: 'This wizard will guide you through the initial configuration of your ISMS system.'
+    start_button: 'Start Setup'
+    info:
+      title: 'About this Setup Wizard'
+      description: 'We will guide you step by step through the configuration of your Information Security Management System.'
+      point1: 'Configure database connection'
+      point2: 'Create administrator account'
+      point3: 'Enter organization data'
+    steps:
+      title: 'Setup Steps'
+      requirements: 'System Requirements'
+      database: 'Database Connection'
+      migrations: 'Database Migrations'
+      admin: 'Create Administrator'
+      base_data: 'Base Data'
+      modules: 'Activate Modules'
+      sample_data: 'Sample Data'
+    requirements:
+      title: 'System Requirements'
+      php: 'PHP version {{ version }} or higher'
+      database: 'MySQL, PostgreSQL or SQLite database'
+      permissions: 'Write permissions in installation directory'
+      duration: 'Estimated duration: 5-10 minutes'
+
+  progress:
+    title: 'Progress'
+    step: 'Step {{ current }} of {{ total }}'
+
+  navigation:
+    next: 'Next'
+    back: 'Back'
+
+  state:
+    recovery_detected: 'A previous setup session was detected. You can continue from there.'
+
+  database:
+    title: 'Database Connection'
+    header: 'Database Configuration'
+    description: 'Please enter the connection details for your database.'
+    type: 'Database Type'
+    host: 'Host'
+    port: 'Port'
+    name: 'Database Name'
+    user: 'Username'
+    password: 'Password'
+    test_button: 'Test Connection'
+    existing_tables: 'Warning: The database already contains tables. Migration may overwrite existing data.'
+    info:
+      title: 'Database Notes'
+      mysql: 'MySQL: Default port is 3306'
+      postgresql: 'PostgreSQL: Default port is 5432'
+      sqlite: 'SQLite: Specify the path to the database file'
+      special_chars: 'Avoid special characters in the password that need to be escaped'
+    test:
+      success: 'Database connection successfully tested'
+      failed: 'Connection failed: {{ error }}'
+      create_needed: 'Database does not exist and will be created during migration'
+    config_saved: 'Database configuration successfully saved'
+    config_failed: 'Error saving configuration: {{ error }}'
+    write_failed: 'Could not write configuration file. Please check file permissions.'
+
+  admin:
+    title: 'Create Administrator'
+    header: 'Administrator Account'
+    description: 'Create the first administrator account for your system.'
+    email: 'Email Address'
+    email_help: 'This email will be used for login'
+    first_name: 'First Name'
+    last_name: 'Last Name'
+    password: 'Password'
+    password_confirm: 'Confirm Password'
+    password_requirements:
+      title: 'Password Requirements'
+      length: 'At least 8 characters'
+      uppercase: 'At least one uppercase letter'
+      lowercase: 'At least one lowercase letter'
+      number: 'At least one digit'
+    security_note:
+      title: 'Security Note'
+      message: 'This account will receive full administrator privileges. Choose a strong password!'
+    user_created: 'Administrator account successfully created'
+    creation_failed: 'Error creating administrator: {{ error }}'
+    migration_failed: 'Database migrations failed: {{ error }}'
+    next_steps:
+      title: 'Next Steps'
+      description: 'After completing the setup, you can log in with this account.'
+
+  organisation:
+    title: 'Organization Data'
+    header: 'Your Organization'
+    description: 'Please enter your organization data.'
+    info_saved: 'Organization data successfully saved'
+    info_failed: 'Error saving data: {{ error }}'
+    usage:
+      title: 'Purpose of Use'
+      message: 'This data will be used in reports and documentation.'
+    compliance_info:
+      title: 'Compliance Information'
+      scope: 'This information helps to adapt the system to your compliance requirements'
+      relevant_frameworks: 'Relevant Frameworks'
+      regulatory_requirements: 'Regulatory Requirements'
+      description: 'Optional additional information about your organization compliance situation'
+      reporting: 'Automatically adapt compliance reports'
+      recommendations: 'Provide industry-specific recommendations'
+
+  email:
+    title: 'Email Configuration'
+    header: 'Email Server'
+    sender_info: 'Sender address for system emails'
+    skip_button: 'Skip'
+    skipped: 'Email configuration skipped. You can configure this later.'
+    config_saved: 'Email configuration saved'
+    config_failed: 'Error saving email configuration: {{ error }}'
+    optional:
+      title: 'Optional Step'
+      message: 'Email configuration can also be done later.'
+    info:
+      title: 'Email Usage'
+      description: 'The system sends emails for:'
+      notifications: 'Notifications for important events'
+      reminders: 'Reminders for upcoming tasks'
+      reports: 'Automatic reports'
+
+  compliance:
+    frameworks_saved: 'Compliance frameworks have been configured'
+
+  error:
+    configure_database_first: 'Please configure the database connection first'
+    create_admin_first: 'Please create an administrator account first'
