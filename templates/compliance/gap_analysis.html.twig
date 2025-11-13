@@ -9,7 +9,7 @@
         <p class="text-muted">{{ 'compliance.description.gap_analysis'|trans }}</p>
     </div>
     <div class="button-group">
-        <a href="{{ path('app_compliance_export_gaps') }}" class="btn btn-success">
+        <a href="{{ path('app_compliance_export_gaps', {id: framework.id}) }}" class="btn btn-success">
             📊 {{ 'compliance.action.export_gaps'|trans }}
         </a>
     </div>
