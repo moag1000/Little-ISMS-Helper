@@ -264,8 +264,8 @@
             </tr>
             <tr>
                 <td>Mapped Requirements</td>
-                <td class="text-center">{{ bidirectional_coverage.framework1_to_framework2.covered_requirements }}</td>
-                <td class="text-center">{{ bidirectional_coverage.framework2_to_framework1.covered_requirements }}</td>
+                <td class="text-center">{{ bidirectional_coverage.framework1_to_framework2.covered_requirements ?? 0 }}</td>
+                <td class="text-center">{{ bidirectional_coverage.framework2_to_framework1.covered_requirements ?? 0 }}</td>
             </tr>
             <tr>
                 <td>Coverage Percentage</td>
@@ -442,7 +442,7 @@
             {% for detail in comparison_details %}
             <tr>
                 <td><strong>{{ detail.framework1Requirement.requirementId }}</strong></td>
-                <td>{{ detail.framework1Requirement.description|slice(0, 60) }}{% if detail.framework1Requirement.description|length > 60 %}...{% endif %}</td>
+                <td>{{ (detail.framework1Requirement.description ?? '')|slice(0, 60) }}{% if (detail.framework1Requirement.description ?? '')|length > 60 %}...{% endif %}</td>
                 <td class="text-center">
                     {% if detail.mapped %}
                         <span class="badge badge-success">Mapped</span>
