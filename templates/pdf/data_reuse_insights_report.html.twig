@@ -1,0 +1,258 @@
+{% extends 'pdf/base.html.twig' %}
+
+{% block pdf_title %}Data Reuse Insights - {{ framework.name }}{% endblock %}
+
+{% block header_title %}Data Reuse Insights Report{% endblock %}
+{% block header_subtitle %}{{ framework.name }} ({{ framework.code }}){% endblock %}
+
+{% block content %}
+    {# Summary Section #}
+    <div class="summary-box">
+        <div class="metric">
+            <span class="metric-label">Framework</span>
+            <span class="metric-value">{{ framework.name }}</span>
+        </div>
+        <div class="metric">
+            <span class="metric-label">Analysierte Anforderungen</span>
+            <span class="metric-value">{{ total_requirements }}</span>
+        </div>
+        <div class="metric">
+            <span class="metric-label">Zeitersparnis (Stunden)</span>
+            <span class="metric-value" style="color: #0A0;">{{ total_time_savings|round(1) }}</span>
+        </div>
+        <div class="metric">
+            <span class="metric-label">Zeitersparnis (Tage)</span>
+            <span class="metric-value" style="color: #0A0;">{{ total_days_savings|round(1) }}</span>
+        </div>
+        <div class="metric">
+            <span class="metric-label">Durchschn. Reuse %</span>
+            <span class="metric-value">{{ avg_reuse_percentage|round(1) }}%</span>
+        </div>
+    </div>
+
+    <h2>Top Wiederverwendungs-Potentiale</h2>
+    <p style="font-size: 9pt; color: #666; margin-bottom: 10px;">
+        Anforderungen mit dem höchsten Data-Reuse-Potential (≥50% Wiederverwendung)
+    </p>
+
+    {% set high_reuse = data_reuse_analysis|filter(item => item.value.reuse_percentage >= 50)|sort((a, b) => b.value.reuse_percentage <=> a.value.reuse_percentage) %}
+
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 12%;">ID</th>
+                <th style="width: 28%;">Anforderung</th>
+                <th style="width: 15%;">Kategorie</th>
+                <th style="width: 15%;">Wiederverw. Daten</th>
+                <th style="width: 12%;">Reuse %</th>
+                <th style="width: 10%;">Zeit (h)</th>
+                <th style="width: 8%;">Conf.</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in high_reuse|slice(0, 20) %}
+            {% set req = item.requirement %}
+            {% set value = item.value %}
+            {% set analysis = item.analysis %}
+            <tr class="no-break">
+                <td><strong>{{ req.requirementId }}</strong></td>
+                <td style="font-size: 8pt;">{{ req.title|length > 50 ? (req.title|slice(0, 50) ~ '...') : req.title }}</td>
+                <td><span class="badge badge-info">{{ req.category ?? '-' }}</span></td>
+                <td class="text-center">{{ analysis.reusable_data|length ?? 0 }}</td>
+                <td class="text-center">
+                    {% if value.reuse_percentage >= 80 %}
+                        <span class="badge badge-success">{{ value.reuse_percentage|round }}%</span>
+                    {% elseif value.reuse_percentage >= 50 %}
+                        <span class="badge badge-warning">{{ value.reuse_percentage|round }}%</span>
+                    {% else %}
+                        <span class="badge badge-secondary">{{ value.reuse_percentage|round }}%</span>
+                    {% endif %}
+                </td>
+                <td class="text-center">{{ value.estimated_hours_saved|round(1) }}</td>
+                <td class="text-center" style="font-size: 7pt;">{{ value.confidence ?? 'low' }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {# Quick Wins Section #}
+    <div class="page-break"></div>
+    <h2>Quick Wins - Sofort umsetzbare Wiederverwendung</h2>
+
+    {% set quick_wins = data_reuse_analysis|filter(item => item.value.reuse_percentage >= 80 and item.value.confidence == 'high')|sort((a, b) => b.value.estimated_hours_saved <=> a.value.estimated_hours_saved) %}
+
+    {% if quick_wins|length > 0 %}
+    <div style="background: #C6EFCE; padding: 15px; margin: 10px 0; border-left: 4px solid #28A745; font-size: 9pt;">
+        <strong>{{ quick_wins|length }} Quick Win Opportunities identifiziert!</strong>
+        <p style="margin: 5px 0;">
+            Diese Anforderungen haben ≥80% Wiederverwendungs-Potential mit hoher Confidence.
+            Geschätzte Gesamtersparnis: <strong>{{ quick_wins|reduce((carry, item) => carry + item.value.estimated_hours_saved, 0)|round(1) }} Stunden</strong>
+        </p>
+    </div>
+
+    <table style="width: 90%;">
+        <thead>
+            <tr>
+                <th style="width: 15%;">ID</th>
+                <th style="width: 40%;">Anforderung</th>
+                <th style="width: 25%;">Datenquellen</th>
+                <th style="width: 10%;">Reuse %</th>
+                <th style="width: 10%;">Zeit (h)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in quick_wins|slice(0, 10) %}
+            {% set req = item.requirement %}
+            {% set value = item.value %}
+            {% set analysis = item.analysis %}
+            {% set sources = [] %}
+            {% if analysis.reusable_data is not empty %}
+                {% for data in analysis.reusable_data %}
+                    {% set sources = sources|merge([data.source ?? 'Unknown']) %}
+                {% endfor %}
+            {% endif %}
+            <tr class="no-break">
+                <td><strong>{{ req.requirementId }}</strong></td>
+                <td style="font-size: 8pt;">{{ req.title }}</td>
+                <td style="font-size: 7pt;">{{ sources|slice(0, 3)|join(', ') }}</td>
+                <td class="text-center"><span class="badge badge-success">{{ value.reuse_percentage|round }}%</span></td>
+                <td class="text-center"><strong>{{ value.estimated_hours_saved|round(1) }}</strong></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p style="font-size: 9pt; color: #666;">
+        Keine Quick Wins mit ≥80% Reuse + High Confidence gefunden. Fokus auf mittelfristige Potentiale (50-80%).
+    </p>
+    {% endif %}
+
+    {# Recommendations Section #}
+    <div class="page-break"></div>
+    <h2>Empfehlungen zur Daten-Wiederverwendung</h2>
+
+    <h3>Strategie: Maximierung der Data Reuse</h3>
+    <div style="background: #E8F4F8; padding: 15px; margin: 10px 0; border-left: 4px solid #2196F3; font-size: 9pt;">
+        <strong>Aktueller Status:</strong>
+        <ul style="margin-left: 20px; margin-top: 5px;">
+            <li>{{ total_requirements }} Anforderungen analysiert</li>
+            <li>{{ high_reuse|length }} Anforderungen mit ≥50% Wiederverwendungs-Potential</li>
+            <li>{{ quick_wins|length }} sofort umsetzbare Quick Wins identifiziert</li>
+            <li>Gesamtersparnis-Potential: <strong>{{ total_time_savings|round(1) }} Stunden ({{ total_days_savings|round(1) }} Tage)</strong></li>
+        </ul>
+    </div>
+
+    <h3>Empfehlung 1: Quick Wins sofort realisieren (Woche 1-2)</h3>
+    <div style="background: #C6EFCE; padding: 15px; margin: 10px 0; border-left: 4px solid #28A745; font-size: 9pt;">
+        <strong>Priorität: Sehr Hoch - Sofortige Umsetzung</strong>
+        <p style="margin: 5px 0;">
+            Die {{ quick_wins|length }} identifizierten Quick Wins können sofort umgesetzt werden:
+        </p>
+        <ul style="margin-left: 20px;">
+            <li>Bestehende Dokumentation/Nachweise wiederverwenden statt neu erstellen</li>
+            <li>Referenzen auf vorhandene Kontrollen setzen</li>
+            <li>Cross-Framework Mappings nutzen</li>
+        </ul>
+        <p style="margin: 5px 0;">
+            <strong>Geschätzte Zeitersparnis:</strong> {{ quick_wins|reduce((carry, item) => carry + item.value.estimated_hours_saved, 0)|round(1) }} Stunden
+        </p>
+        <p style="margin: 5px 0;">
+            <strong>ROI:</strong> Sehr hoch - Minimaler Aufwand, maximale Ersparnis
+        </p>
+    </div>
+
+    <h3>Empfehlung 2: Mittelfristige Potentiale nutzen (Woche 3-8)</h3>
+    {% set medium_reuse = data_reuse_analysis|filter(item => item.value.reuse_percentage >= 50 and item.value.reuse_percentage < 80) %}
+    <div style="background: #FFEB9C; padding: 15px; margin: 10px 0; border-left: 4px solid #FFA500; font-size: 9pt;">
+        <strong>Priorität: Hoch</strong>
+        <p style="margin: 5px 0;">
+            {{ medium_reuse|length }} Anforderungen mit 50-80% Wiederverwendungs-Potential:
+        </p>
+        <ul style="margin-left: 20px;">
+            <li>Bestehende Daten anpassen/erweitern statt komplett neu erstellen</li>
+            <li>Templates aus ähnlichen Anforderungen wiederverwenden</li>
+            <li>Gemeinsame Kontroll-Implementierungen identifizieren</li>
+        </ul>
+        <p style="margin: 5px 0;">
+            <strong>Geschätzte Zeitersparnis:</strong> {{ medium_reuse|reduce((carry, item) => carry + item.value.estimated_hours_saved, 0)|round(1) }} Stunden
+        </p>
+        <p style="margin: 5px 0;">
+            <strong>Aufwand:</strong> Mittel - Anpassung erforderlich, aber deutlich weniger als Neuerstellung
+        </p>
+    </div>
+
+    <h3>Empfehlung 3: Data Repository aufbauen (Langfristig)</h3>
+    <div style="background: #BDD7EE; padding: 15px; margin: 10px 0; border-left: 4px solid #2196F3; font-size: 9pt;">
+        <strong>Strategische Initiative</strong>
+        <p style="margin: 5px 0;">
+            Aufbau eines zentralen Data Repository für maximale Wiederverwendung:
+        </p>
+        <ul style="margin-left: 20px;">
+            <li>Standardisierte Templates für wiederkehrende Anforderungen</li>
+            <li>Versionierung und Change-Tracking für wiederverwendete Daten</li>
+            <li>Automatische Identifikation von Wiederverwendungs-Möglichkeiten</li>
+            <li>Best-Practice-Bibliothek für ähnliche Anforderungen</li>
+        </ul>
+        <p style="margin: 5px 0;">
+            <strong>Langfristige Ersparnis:</strong> 30-50% Reduktion des Compliance-Aufwands
+        </p>
+    </div>
+
+    <h3>Implementierungs-Plan</h3>
+    <table style="width: 95%;">
+        <thead>
+            <tr>
+                <th style="width: 15%;">Zeitraum</th>
+                <th style="width: 45%;">Aktivitäten</th>
+                <th style="width: 20%;">Erwartete Ersparnis</th>
+                <th style="width: 20%;">Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Woche 1-2</strong></td>
+                <td style="font-size: 8pt;">
+                    • Quick Wins umsetzen ({{ quick_wins|length }} Anforderungen)<br/>
+                    • Vorhandene Daten/Nachweise identifizieren<br/>
+                    • Cross-Referenzen erstellen
+                </td>
+                <td class="text-center"><strong>{{ quick_wins|reduce((carry, item) => carry + item.value.estimated_hours_saved, 0)|round(1) }}h</strong></td>
+                <td class="text-center"><span class="badge badge-success">Start sofort</span></td>
+            </tr>
+            <tr>
+                <td><strong>Woche 3-8</strong></td>
+                <td style="font-size: 8pt;">
+                    • Mittelfristige Potentiale nutzen ({{ medium_reuse|length }} Anf.)<br/>
+                    • Templates anpassen und wiederverwenden<br/>
+                    • Gemeinsame Kontrollen implementieren
+                </td>
+                <td class="text-center"><strong>{{ medium_reuse|reduce((carry, item) => carry + item.value.estimated_hours_saved, 0)|round(1) }}h</strong></td>
+                <td class="text-center"><span class="badge badge-warning">Planung</span></td>
+            </tr>
+            <tr>
+                <td><strong>Monat 3-6</strong></td>
+                <td style="font-size: 8pt;">
+                    • Data Repository aufbauen<br/>
+                    • Standardisierung & Versionierung<br/>
+                    • Automatisierung etablieren
+                </td>
+                <td class="text-center"><strong>Langfristig<br/>30-50%</strong></td>
+                <td class="text-center"><span class="badge badge-info">Vision</span></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div style="background: #E8F4F8; padding: 15px; margin-top: 20px; border-radius: 4px; font-size: 9pt;">
+        <strong>📋 Nächste Schritte (Start diese Woche!):</strong>
+        <ol style="margin-left: 20px; margin-top: 5px;">
+            <li>Top 5 Quick Wins priorisieren und Verantwortliche zuweisen</li>
+            <li>Vorhandene Dokumentation/Nachweise für diese 5 identifizieren</li>
+            <li>Cross-Referenzen in Compliance-System eintragen</li>
+            <li>Template-Bibliothek für wiederkehrende Anforderungen starten</li>
+            <li>Wöchentliches Review-Meeting für Data Reuse etablieren</li>
+        </ol>
+        <p style="margin-top: 10px; font-weight: bold;">
+            💡 Pro-Tipp: Starten Sie mit den Top 3 Quick Wins - Sie werden innerhalb von 2 Wochen {{ quick_wins|slice(0, 3)|reduce((carry, item) => carry + item.value.estimated_hours_saved, 0)|round(1) }} Stunden sparen!
+        </p>
+    </div>
+{% endblock %}
