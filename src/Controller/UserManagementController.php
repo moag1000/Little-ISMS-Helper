@@ -10,8 +10,12 @@ use App\Repository\RoleRepository;
 use App\Repository\AuditLogRepository;
 use App\Repository\MfaTokenRepository;
 use App\Security\Voter\UserVoter;
+use App\Service\AuditLogger;
+use App\Service\FileUploadSecurityService;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -19,12 +23,22 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route('/admin/users')]
 #[IsGranted('ROLE_ADMIN')]
 class UserManagementController extends AbstractController
 {
+    public function __construct(
+        private readonly FileUploadSecurityService $fileUploadService,
+        private readonly SluggerInterface $slugger,
+        private readonly LoggerInterface $logger,
+        private readonly AuditLogger $auditLogger,
+        private readonly string $uploadsDirectory = 'uploads/users',
+    ) {
+    }
+
     #[Route('', name: 'user_management_index')]
     public function index(UserRepository $userRepository): Response
     {
@@ -64,6 +78,16 @@ class UserManagementController extends AbstractController
                 $user->setPassword($hashedPassword);
             }
 
+            // Handle avatar upload
+            /** @var UploadedFile|null $avatarFile */
+            $avatarFile = $form->get('avatarFile')->getData();
+            if ($avatarFile) {
+                $avatarPath = $this->handleAvatarUpload($avatarFile, $user);
+                if ($avatarPath) {
+                    $user->setProfilePicture($avatarPath);
+                }
+            }
+
             // Ensure ROLE_USER is always included
             $roles = $user->getRoles();
             if (!in_array('ROLE_USER', $roles)) {
@@ -73,6 +97,23 @@ class UserManagementController extends AbstractController
 
             $entityManager->persist($user);
             $entityManager->flush();
+
+            // Audit log
+            $this->auditLogger->logCustom(
+                'user_created',
+                'User',
+                $user->getId(),
+                null,
+                [
+                    'email' => $user->getEmail(),
+                    'first_name' => $user->getFirstName(),
+                    'last_name' => $user->getLastName(),
+                    'roles' => $user->getRoles(),
+                    'is_active' => $user->isActive(),
+                    'auth_provider' => $user->getAuthProvider(),
+                ],
+                sprintf('User "%s %s" (%s) created', $user->getFirstName(), $user->getLastName(), $user->getEmail())
+            );
 
             $this->addFlash('success', $translator->trans('user.success.created'));
 
@@ -105,6 +146,19 @@ class UserManagementController extends AbstractController
     ): Response {
         $this->denyAccessUnlessGranted(UserVoter::EDIT, $user);
 
+        // Capture old values for audit log
+        $oldValues = [
+            'email' => $user->getEmail(),
+            'first_name' => $user->getFirstName(),
+            'last_name' => $user->getLastName(),
+            'roles' => $user->getRoles(),
+            'is_active' => $user->isActive(),
+            'department' => $user->getDepartment(),
+            'job_title' => $user->getJobTitle(),
+            'has_avatar' => $user->getProfilePicture() !== null,
+        ];
+
+        $oldAvatarPath = $user->getProfilePicture();
         $form = $this->createForm(UserType::class, $user, [
             'is_edit' => true,
         ]);
@@ -118,6 +172,21 @@ class UserManagementController extends AbstractController
                 $user->setPassword($hashedPassword);
             }
 
+            // Handle avatar upload
+            /** @var UploadedFile|null $avatarFile */
+            $avatarFile = $form->get('avatarFile')->getData();
+            if ($avatarFile) {
+                // Delete old avatar if exists
+                if ($oldAvatarPath) {
+                    $this->deleteOldAvatar($oldAvatarPath);
+                }
+
+                $avatarPath = $this->handleAvatarUpload($avatarFile, $user);
+                if ($avatarPath) {
+                    $user->setProfilePicture($avatarPath);
+                }
+            }
+
             // Ensure ROLE_USER is always included
             $roles = $user->getRoles();
             if (!in_array('ROLE_USER', $roles)) {
@@ -127,6 +196,27 @@ class UserManagementController extends AbstractController
 
             $user->setUpdatedAt(new \DateTimeImmutable());
             $entityManager->flush();
+
+            // Audit log with before/after values
+            $newValues = [
+                'email' => $user->getEmail(),
+                'first_name' => $user->getFirstName(),
+                'last_name' => $user->getLastName(),
+                'roles' => $user->getRoles(),
+                'is_active' => $user->isActive(),
+                'department' => $user->getDepartment(),
+                'job_title' => $user->getJobTitle(),
+                'has_avatar' => $user->getProfilePicture() !== null,
+            ];
+
+            $this->auditLogger->logCustom(
+                'user_updated',
+                'User',
+                $user->getId(),
+                $oldValues,
+                $newValues,
+                sprintf('User "%s %s" (%s) updated', $user->getFirstName(), $user->getLastName(), $user->getEmail())
+            );
 
             $this->addFlash('success', $translator->trans('user.success.updated'));
 
@@ -149,8 +239,30 @@ class UserManagementController extends AbstractController
         $this->denyAccessUnlessGranted(UserVoter::DELETE, $user);
 
         if ($this->isCsrfTokenValid('delete' . $user->getId(), $request->request->get('_token'))) {
+            // Capture user data for audit log before deletion
+            $userId = $user->getId();
+            $userEmail = $user->getEmail();
+            $userName = $user->getFirstName() . ' ' . $user->getLastName();
+
+            $oldValues = [
+                'email' => $userEmail,
+                'first_name' => $user->getFirstName(),
+                'last_name' => $user->getLastName(),
+                'roles' => $user->getRoles(),
+            ];
+
             $entityManager->remove($user);
             $entityManager->flush();
+
+            // Audit log
+            $this->auditLogger->logCustom(
+                'user_deleted',
+                'User',
+                $userId,
+                $oldValues,
+                null,
+                sprintf('User "%s" (%s) deleted', $userName, $userEmail)
+            );
 
             $this->addFlash('success', $translator->trans('user.success.deleted'));
         }
@@ -168,9 +280,25 @@ class UserManagementController extends AbstractController
         $this->denyAccessUnlessGranted(UserVoter::EDIT, $user);
 
         if ($this->isCsrfTokenValid('toggle-active' . $user->getId(), $request->request->get('_token'))) {
+            $previousStatus = $user->isActive();
             $user->setIsActive(!$user->isActive());
             $user->setUpdatedAt(new \DateTimeImmutable());
             $entityManager->flush();
+
+            // Audit log
+            $this->auditLogger->logCustom(
+                'user_status_toggled',
+                'User',
+                $user->getId(),
+                ['is_active' => $previousStatus],
+                ['is_active' => $user->isActive()],
+                sprintf('User "%s %s" (%s) %s',
+                    $user->getFirstName(),
+                    $user->getLastName(),
+                    $user->getEmail(),
+                    $user->isActive() ? 'activated' : 'deactivated'
+                )
+            );
 
             $this->addFlash('success', $user->isActive() ? $translator->trans('user.success.activated') : $translator->trans('user.success.deactivated'));
         }
@@ -507,5 +635,79 @@ class UserManagementController extends AbstractController
         // Redirect to the homepage with the impersonation parameter
         // Using direct URL with _switch_user parameter for Symfony's user impersonation
         return $this->redirect('/?_switch_user=' . urlencode($user->getEmail()));
+    }
+
+    /**
+     * Handle avatar upload with security validation
+     */
+    private function handleAvatarUpload(UploadedFile $file, User $user): ?string
+    {
+        try {
+            // Security validation using FileUploadSecurityService
+            $validation = $this->fileUploadService->validateUpload($file);
+
+            if (!$validation['valid']) {
+                $this->addFlash('warning', 'Avatar upload failed: ' . $validation['error']);
+                $this->logger->warning('Avatar upload validation failed', [
+                    'user_email' => $user->getEmail(),
+                    'error' => $validation['error'],
+                ]);
+                return null;
+            }
+
+            // Generate safe filename
+            $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+            $safeFilename = $this->slugger->slug($originalFilename);
+            $newFilename = sprintf(
+                'user-%d-%s.%s',
+                $user->getId() ?: uniqid(),
+                uniqid(),
+                $file->guessExtension()
+            );
+
+            // Move file to uploads directory
+            $uploadsPath = $this->getParameter('kernel.project_dir') . '/public/' . $this->uploadsDirectory;
+
+            // Create directory if it doesn't exist
+            if (!is_dir($uploadsPath)) {
+                mkdir($uploadsPath, 0755, true);
+            }
+
+            $file->move($uploadsPath, $newFilename);
+
+            $this->logger->info('Avatar uploaded successfully', [
+                'user_email' => $user->getEmail(),
+                'filename' => $newFilename,
+            ]);
+
+            return $this->uploadsDirectory . '/' . $newFilename;
+
+        } catch (\Exception $e) {
+            $this->logger->error('Avatar upload failed', [
+                'user_email' => $user->getEmail(),
+                'error' => $e->getMessage(),
+            ]);
+            $this->addFlash('warning', 'Avatar upload failed. Please try again.');
+            return null;
+        }
+    }
+
+    /**
+     * Delete old avatar file
+     */
+    private function deleteOldAvatar(string $avatarPath): void
+    {
+        try {
+            $fullPath = $this->getParameter('kernel.project_dir') . '/public/' . $avatarPath;
+            if (file_exists($fullPath)) {
+                unlink($fullPath);
+                $this->logger->info('Old avatar deleted', ['path' => $avatarPath]);
+            }
+        } catch (\Exception $e) {
+            $this->logger->error('Failed to delete old avatar', [
+                'path' => $avatarPath,
+                'error' => $e->getMessage(),
+            ]);
+        }
     }
 }
