@@ -139,6 +139,256 @@ class ComplianceController extends AbstractController
         ]);
     }
 
+    #[Route('/framework/{id}/data-reuse/export', name: 'app_compliance_export_reuse', requirements: ['id' => '\d+'])]
+    public function exportDataReuse(int $id): Response
+    {
+        $framework = $this->frameworkRepository->find($id);
+
+        if (!$framework) {
+            throw $this->createNotFoundException('Framework not found');
+        }
+
+        $requirements = $this->requirementRepository->findApplicableByFramework($framework);
+        $dataReuseAnalysis = [];
+        $totalTimeSavings = 0;
+
+        foreach ($requirements as $requirement) {
+            $analysis = $this->mappingService->getDataReuseAnalysis($requirement);
+            $reuseValue = $this->mappingService->calculateDataReuseValue($requirement);
+
+            $dataReuseAnalysis[] = [
+                'requirement' => $requirement,
+                'analysis' => $analysis,
+                'value' => $reuseValue,
+            ];
+
+            $totalTimeSavings += $reuseValue['estimated_hours_saved'];
+        }
+
+        // Create CSV content
+        $csv = [];
+
+        // CSV Header - Title
+        $csv[] = ['Data Reuse Insights - ' . $framework->getName()];
+        $csv[] = [];
+
+        // Summary section
+        $csv[] = ['Zusammenfassung'];
+        $csv[] = ['Framework', $framework->getName() . ' (' . $framework->getCode() . ')'];
+        $csv[] = ['Gesamt Zeitersparnis (Stunden)', $totalTimeSavings];
+        $csv[] = ['Gesamt Zeitersparnis (Tage)', round($totalTimeSavings / 8, 1)];
+        $csv[] = ['Anzahl analysierten Anforderungen', count($dataReuseAnalysis)];
+        $csv[] = [];
+
+        // CSV Header - Requirements
+        $csv[] = [
+            'Anforderungs-ID',
+            'Titel',
+            'Kategorie',
+            'Wiederverwendbare Daten',
+            'Datenquelle',
+            'Geschätzte Zeitersparnis (h)',
+            'Reuse-Prozentsatz (%)',
+            'Confidence',
+        ];
+
+        // CSV Data - Requirements
+        foreach ($dataReuseAnalysis as $item) {
+            $requirement = $item['requirement'];
+            $value = $item['value'];
+            $analysis = $item['analysis'];
+
+            $reusableDataSources = [];
+            if (!empty($analysis['reusable_data'])) {
+                foreach ($analysis['reusable_data'] as $data) {
+                    $reusableDataSources[] = $data['source'] ?? 'Unknown';
+                }
+            }
+
+            $csv[] = [
+                $requirement->getRequirementId(),
+                $requirement->getTitle(),
+                $requirement->getCategory() ?? '-',
+                !empty($analysis['reusable_data']) ? count($analysis['reusable_data']) : 0,
+                !empty($reusableDataSources) ? implode(', ', $reusableDataSources) : '-',
+                $value['estimated_hours_saved'] ?? 0,
+                $value['reuse_percentage'] ?? 0,
+                $value['confidence'] ?? 'low',
+            ];
+        }
+
+        // Generate CSV file
+        $filename = sprintf(
+            'data_reuse_insights_%s_%s.csv',
+            $framework->getCode(),
+            date('Y-m-d_His')
+        );
+
+        $response = new Response();
+        $response->headers->set('Content-Type', 'text/csv; charset=utf-8');
+        $response->headers->set('Content-Disposition', 'attachment; filename="' . $filename . '"');
+
+        // Add BOM for Excel UTF-8 support
+        $csvContent = "\xEF\xBB\xBF";
+
+        // Create CSV content
+        $handle = fopen('php://temp', 'r+');
+        foreach ($csv as $row) {
+            fputcsv($handle, $row, ';');
+        }
+        rewind($handle);
+        $csvContent .= stream_get_contents($handle);
+        fclose($handle);
+
+        $response->setContent($csvContent);
+
+        return $response;
+    }
+
+    #[Route('/framework/{id}/gaps/export', name: 'app_compliance_export_gaps', requirements: ['id' => '\d+'])]
+    public function exportGaps(int $id): Response
+    {
+        $framework = $this->frameworkRepository->find($id);
+
+        if (!$framework) {
+            throw $this->createNotFoundException('Framework not found');
+        }
+
+        $gaps = $this->requirementRepository->findGapsByFramework($framework);
+        $requirements = $this->requirementRepository->findByFramework($framework);
+        $metRequirements = count($requirements) - count($gaps);
+
+        // Analyze each gap
+        $gapAnalysis = [];
+        foreach ($gaps as $gap) {
+            $analysis = $this->assessmentService->assessRequirement($gap);
+            $gapAnalysis[] = [
+                'requirement' => $gap,
+                'analysis' => $analysis,
+            ];
+        }
+
+        // Create CSV content
+        $csv = [];
+
+        // CSV Header - Title
+        $csv[] = ['Gap Analysis - ' . $framework->getName()];
+        $csv[] = [];
+
+        // Summary section
+        $csv[] = ['Zusammenfassung'];
+        $csv[] = ['Framework', $framework->getName() . ' (' . $framework->getCode() . ')'];
+        $csv[] = ['Gesamt Anforderungen', count($requirements)];
+        $csv[] = ['Erfüllte Anforderungen', $metRequirements];
+        $csv[] = ['Identifizierte Gaps', count($gaps)];
+        $complianceScore = count($requirements) > 0 ? round(($metRequirements / count($requirements)) * 100, 2) : 0;
+        $csv[] = ['Compliance Score (%)', $complianceScore];
+        $csv[] = [];
+
+        // Gap severity breakdown
+        $criticalCount = 0;
+        $highCount = 0;
+        $mediumCount = 0;
+        $lowCount = 0;
+
+        foreach ($gapAnalysis as $item) {
+            $priority = $item['requirement']->getPriority() ?? 'low';
+            switch ($priority) {
+                case 'critical':
+                    $criticalCount++;
+                    break;
+                case 'high':
+                    $highCount++;
+                    break;
+                case 'medium':
+                    $mediumCount++;
+                    break;
+                default:
+                    $lowCount++;
+            }
+        }
+
+        $csv[] = ['Gaps nach Severity'];
+        $csv[] = ['Kritisch', $criticalCount];
+        $csv[] = ['Hoch', $highCount];
+        $csv[] = ['Mittel', $mediumCount];
+        $csv[] = ['Niedrig', $lowCount];
+        $csv[] = [];
+
+        // CSV Header - Gaps
+        $csv[] = [
+            'Anforderungs-ID',
+            'Titel',
+            'Kategorie',
+            'Beschreibung',
+            'Priority/Severity',
+            'Status',
+            'Erfüllungsgrad (%)',
+            'Gap-Grund',
+        ];
+
+        // CSV Data - Gaps
+        foreach ($gapAnalysis as $item) {
+            $requirement = $item['requirement'];
+            $analysis = $item['analysis'];
+
+            // Translate priority
+            $priorityMap = [
+                'critical' => 'Kritisch',
+                'high' => 'Hoch',
+                'medium' => 'Mittel',
+                'low' => 'Niedrig',
+            ];
+
+            // Translate status
+            $statusMap = [
+                'not_applicable' => 'Nicht anwendbar',
+                'not_implemented' => 'Nicht implementiert',
+                'partially_implemented' => 'Teilweise implementiert',
+                'implemented' => 'Implementiert',
+                'not_assessed' => 'Nicht bewertet',
+            ];
+
+            $csv[] = [
+                $requirement->getRequirementId(),
+                $requirement->getTitle(),
+                $requirement->getCategory() ?? '-',
+                $requirement->getDescription() ?? '-',
+                $priorityMap[$requirement->getPriority() ?? 'low'] ?? 'Niedrig',
+                $statusMap[$requirement->getStatus() ?? 'not_assessed'] ?? 'Nicht bewertet',
+                $requirement->getFulfillmentPercentage() ?? 0,
+                $analysis['gap_reason'] ?? 'Nicht erfüllt',
+            ];
+        }
+
+        // Generate CSV file
+        $filename = sprintf(
+            'gap_analysis_%s_%s.csv',
+            $framework->getCode(),
+            date('Y-m-d_His')
+        );
+
+        $response = new Response();
+        $response->headers->set('Content-Type', 'text/csv; charset=utf-8');
+        $response->headers->set('Content-Disposition', 'attachment; filename="' . $filename . '"');
+
+        // Add BOM for Excel UTF-8 support
+        $csvContent = "\xEF\xBB\xBF";
+
+        // Create CSV content
+        $handle = fopen('php://temp', 'r+');
+        foreach ($csv as $row) {
+            fputcsv($handle, $row, ';');
+        }
+        rewind($handle);
+        $csvContent .= stream_get_contents($handle);
+        fclose($handle);
+
+        $response->setContent($csvContent);
+
+        return $response;
+    }
+
     #[Route('/cross-framework', name: 'app_compliance_cross_framework')]
     public function crossFrameworkMappings(): Response
     {
