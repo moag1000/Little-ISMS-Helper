@@ -2534,6 +2534,115 @@ data:
     error:
       configure_database_first: Please configure the database first
       create_admin_first: Please create an administrator first
+    email:
+      title: Email Configuration
+      header: 'Step 3: Email Configuration (Optional)'
+      optional:
+        title: This step is optional
+        message: You can configure email settings later in the system settings.
+      transport: Transport Method
+      transport_help: Select the method for sending emails
+      transport:
+        smtp: SMTP Server
+        sendmail: Sendmail
+        native: PHP mail()
+      host: SMTP Host
+      host_help: Hostname or IP address of the SMTP server
+      port: SMTP Port
+      port_help: SMTP server port (default: 587 for TLS, 465 for SSL)
+      encryption: Encryption
+      encryption_help: Select the encryption method
+      encryption:
+        none: None
+        tls: TLS (recommended)
+        ssl: SSL
+      username: Username
+      username_help: SMTP username (usually the email address)
+      password: Password
+      password_help: SMTP password
+      from_address: Sender Address
+      from_address_help: Email address of the sender
+      from_name: Sender Name
+      from_name_help: Name of the sender
+      sender_info: Sender Information
+      skip_button: Skip
+      skipped: Email configuration skipped
+      config_saved: Email configuration saved successfully
+      config_failed: Error saving email configuration
+      info:
+        title: What is email used for?
+        description: The email configuration enables the system to:
+        notifications: Send notifications to users
+        reminders: Send reminders for due tasks
+        reports: Send automated reports
+    organisation:
+      title: Organisation Information
+      header: 'Step 4: Organisation Information'
+      description: Provide information about your organisation. This will be used for compliance reports and scope definition.
+      name: Organisation Name
+      name_required: Organisation name is required
+      name_min: Organisation name must be at least 2 characters long
+      name_max: Organisation name may not exceed 255 characters
+      name_help: Official name of your organisation
+      industry: Industry
+      industry_help: Select your organisation's industry
+      industry:
+        select: '-- Select Industry --'
+        automotive: Automotive
+        financial_services: Financial Services
+        healthcare: Healthcare
+        manufacturing: Manufacturing
+        it_services: IT Services
+        energy: Energy
+        telecommunications: Telecommunications
+        retail: Retail
+        public_sector: Public Sector
+        education: Education
+        other: Other
+      employee_count: Employee Count
+      employee_count_help: Approximate number of employees
+      employee_count:
+        select: '-- Select Employee Count --'
+        1_10: '1-10'
+        11_50: '11-50'
+        51_250: '51-250'
+        251_1000: '251-1000'
+        1001_plus: '1001+'
+      country: Country
+      country_help: Main location of your organisation
+      description: Description
+      description_help: Brief description of your organisation and business activities
+      info_saved: Organisation information saved successfully
+      info_failed: Error saving organisation information
+      usage:
+        title: Use of this Information
+        message: This information will be used to provide industry-specific recommendations and compliance requirements.
+      compliance_info:
+        title: Why is this information important?
+        description: Based on your input, we can:
+        scope: Better define the scope of your ISMS
+        reporting: Automatically adapt compliance reports
+        recommendations: Provide industry-specific recommendations
+    compliance:
+      title: Compliance Frameworks
+      header: 'Step 7: Select Compliance Frameworks'
+      description: Select the compliance frameworks that are relevant to your organisation. You can add more frameworks later.
+      recommended:
+        title: Recommended Frameworks for Your Industry
+        description: Based on your organisation information, we recommend the following frameworks:
+      mandatory:
+        title: ISO 27001 is Mandatory
+        message: ISO 27001:2022 is the foundation of this ISMS and cannot be deselected.
+      select_frameworks: Select Your Compliance Frameworks
+      recommended_badge: Recommended
+      mandatory_badge: Mandatory
+      frameworks_saved: '%count% compliance frameworks selected'
+      note:
+        title: Important Note
+        message: You can add or remove frameworks at any time. The selection affects which requirements and controls are available in your ISMS.
+      details:
+        title: Framework Details
+        description: Overview of all available frameworks
 
 # Admin Integration - Phase 6L-G
 nav.admin.modules: 'Module Management'
