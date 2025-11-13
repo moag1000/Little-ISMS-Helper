@@ -26,3 +26,18 @@ setup:
 document:
   validation:
     mime_types: 'Bitte laden Sie ein gültiges Dokument hoch (PDF, Word, Excel, Bild oder Textdatei).'
+
+# Workflow Validators
+workflow:
+  validation:
+    name_required: 'Bitte geben Sie einen Workflow-Namen ein.'
+    name_max_length: 'Der Workflow-Name darf maximal {{ limit }} Zeichen lang sein.'
+    entity_type_required: 'Bitte wählen Sie einen Entitätstyp aus.'
+
+workflow_instance:
+  validation:
+    workflow_required: 'Bitte wählen Sie eine Workflow-Definition aus.'
+    entity_type_required: 'Bitte geben Sie einen Entitätstyp ein.'
+    entity_type_max_length: 'Der Entitätstyp darf maximal {{ limit }} Zeichen lang sein.'
+    entity_id_required: 'Bitte geben Sie eine Entitäts-ID ein.'
+    status_required: 'Bitte wählen Sie einen Status aus.'
