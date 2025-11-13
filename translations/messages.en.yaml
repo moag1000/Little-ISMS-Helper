@@ -2292,6 +2292,52 @@ risk_appetite:
 
 # Risk Treatment Plan (ISO 27005:2022)
 risk_treatment_plan:
+  title: 'Risk Treatment Plans'
+  new: 'New Treatment Plan'
+  edit: 'Edit Treatment Plan'
+  description: 'Manage risk treatment measures according to ISO 27005'
+  no_plans: 'No risk treatment plans created yet'
+
+  new.description: 'Create a new plan to treat identified risks'
+
+  list:
+    title: 'Risk Treatment Plans'
+
+  show:
+    subtitle: 'Risk Treatment Plan Details'
+
+  success:
+    created: 'Risk treatment plan created successfully.'
+    updated: 'Risk treatment plan updated successfully.'
+    deleted: 'Risk treatment plan deleted successfully.'
+
+  delete:
+    warning: 'Are you sure you want to delete this risk treatment plan?'
+    confirm: 'Delete Treatment Plan'
+
+  section:
+    details: 'Plan Details'
+    controls: 'Assigned Controls'
+    history: 'Change History'
+
+  stats:
+    total: 'Total Plans'
+    planned: 'Planned'
+    in_progress: 'In Progress'
+    completed: 'Completed'
+    overdue: 'Overdue'
+    avg_completion: 'Avg. Completion'
+
+  filter:
+    overdue: 'Overdue'
+    overdue_only: 'Only overdue plans'
+
+  overdue: 'Overdue'
+  due_today: 'Due today'
+  days_until_target: '%count% days until target'
+  days_overdue: '%count% days overdue'
+  days_remaining: '%count% days remaining'
+
   field:
     risk: Risk
     title: Title
@@ -2299,11 +2345,13 @@ risk_treatment_plan:
     status: Status
     priority: Priority
     start_date: Start Date
+    target_date: 'Target Date'
     target_completion_date: Target Completion Date
     actual_completion_date: Actual Completion Date
     budget: Budget
     responsible_person: Responsible Person
     controls: Controls
+    completion: 'Completion'
     completion_percentage: Completion Percentage
     implementation_notes: Implementation Notes
   placeholder:

@@ -2323,6 +2323,52 @@ risk_appetite:
 
 # Risk Treatment Plan (ISO 27005:2022)
 risk_treatment_plan:
+  title: 'Risikobehandlungspläne'
+  new: 'Neuer Behandlungsplan'
+  edit: 'Behandlungsplan bearbeiten'
+  description: 'Verwalten Sie Maßnahmen zur Risikobehandlung gemäß ISO 27005'
+  no_plans: 'Noch keine Risikobehandlungspläne erstellt'
+
+  new.description: 'Erstellen Sie einen neuen Plan zur Behandlung identifizierter Risiken'
+
+  list:
+    title: 'Risikobehandlungspläne'
+
+  show:
+    subtitle: 'Details zum Risikobehandlungsplan'
+
+  success:
+    created: 'Risikobehandlungsplan erfolgreich erstellt.'
+    updated: 'Risikobehandlungsplan erfolgreich aktualisiert.'
+    deleted: 'Risikobehandlungsplan erfolgreich gelöscht.'
+
+  delete:
+    warning: 'Möchten Sie diesen Risikobehandlungsplan wirklich löschen?'
+    confirm: 'Behandlungsplan löschen'
+
+  section:
+    details: 'Plandetails'
+    controls: 'Zugeordnete Maßnahmen'
+    history: 'Änderungsverlauf'
+
+  stats:
+    total: 'Gesamt-Pläne'
+    planned: 'Geplant'
+    in_progress: 'In Bearbeitung'
+    completed: 'Abgeschlossen'
+    overdue: 'Überfällig'
+    avg_completion: 'Durchschn. Fertigstellung'
+
+  filter:
+    overdue: 'Überfällig'
+    overdue_only: 'Nur überfällige Pläne'
+
+  overdue: 'Überfällig'
+  due_today: 'Heute fällig'
+  days_until_target: '%count% Tage bis Zieldatum'
+  days_overdue: '%count% Tage überfällig'
+  days_remaining: '%count% Tage verbleibend'
+
   field:
     risk: Risiko
     title: Titel
@@ -2330,11 +2376,13 @@ risk_treatment_plan:
     status: Status
     priority: Priorität
     start_date: Startdatum
+    target_date: 'Zieldatum'
     target_completion_date: Ziel-Fertigstellungsdatum
     actual_completion_date: Tatsächliches Fertigstellungsdatum
     budget: Budget
     responsible_person: Verantwortliche Person
     controls: Maßnahmen
+    completion: 'Fertigstellung'
     completion_percentage: Fertigstellungsgrad
     implementation_notes: Implementierungshinweise
   placeholder:
