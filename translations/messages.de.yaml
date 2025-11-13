@@ -1152,7 +1152,7 @@ incident:
 document:
   doc_title: 'Dokumente'
   title: 'Dokumente'
-  title_by_type: 'Dokumente nach Typ'
+  'title.by_type': 'Dokumente nach Typ'
   subtitle: 'Dokumentenverwaltung'
   new: 'Neues Dokument'
   edit: 'Dokument bearbeiten'
@@ -2982,8 +2982,8 @@ crisis_team:
 
 tenant:
   title: Mandantenverwaltung
-  title_edit: Mandant bearbeiten
-  title_create: Neuen Mandanten erstellen
+  'title.edit': Mandant bearbeiten
+  'title.create': Neuen Mandanten erstellen
   subtitle: Verwalten Sie Organisationen und Mandanten
   empty: Keine Mandanten vorhanden
   stats:
