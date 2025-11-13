@@ -129,6 +129,27 @@ Der Workflow führt folgende Schritte aus:
 Tests passed → Build production image → Push to Docker Hub → Tag with metadata
 ```
 
+## Automatisches Logo-Upload
+
+Das Repository-Logo wird **automatisch zu Docker Hub hochgeladen** beim Push zum `main` Branch!
+
+### Wie funktioniert's?
+
+- ✅ Script: `.github/scripts/upload-dockerhub-logo.sh`
+- ✅ Logo: `public/logo-512.png` (512x512 PNG)
+- ✅ Trigger: Push zu `main` Branch
+- ✅ Fehler-tolerant: Build schlägt nicht fehl, wenn Upload nicht funktioniert
+
+### Manueller Upload (falls nötig)
+
+Falls der automatische Upload nicht funktioniert:
+
+1. Gehe zu deinem Repository: `https://hub.docker.com/r/<username>/little-isms-helper`
+2. Klicke auf den **Repository-Namen** (oben links, neben dem Icon)
+3. Bewege Maus über das Icon-Placeholder und klicke **"Edit"**
+4. Lade `public/logo-512.png` hoch
+5. Klicke **"Save"**
+
 ## Setup für Contributors
 
 Wenn Sie zum Projekt beitragen und Docker Images bauen möchten:
@@ -138,7 +159,7 @@ Wenn Sie zum Projekt beitragen und Docker Images bauen möchten:
 1. Gehe zu **Settings** → **Secrets and variables** → **Actions**
 2. Erstelle folgende Secrets:
    - `DOCKERHUB_USERNAME`: Dein Docker Hub Username
-   - `DOCKERHUB_TOKEN`: Docker Hub Access Token
+   - `DOCKERHUB_TOKEN`: Docker Hub Access Token (wird auch für Logo-Upload verwendet)
 
 ### Docker Hub Token erstellen
 
