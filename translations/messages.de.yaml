@@ -2539,6 +2539,115 @@ data:
     error:
       configure_database_first: Bitte konfigurieren Sie zuerst die Datenbank
       create_admin_first: Bitte erstellen Sie zuerst einen Administrator
+    email:
+      title: E-Mail-Konfiguration
+      header: 'Schritt 3: E-Mail-Konfiguration (Optional)'
+      optional:
+        title: Dieser Schritt ist optional
+        message: Sie können die E-Mail-Konfiguration später in den Systemeinstellungen vornehmen.
+      transport: Übertragungsart
+      transport_help: Wählen Sie die Methode zum Versenden von E-Mails
+      transport:
+        smtp: SMTP-Server
+        sendmail: Sendmail
+        native: PHP mail()
+      host: SMTP-Host
+      host_help: Hostname oder IP-Adresse des SMTP-Servers
+      port: SMTP-Port
+      port_help: Port des SMTP-Servers (Standard: 587 für TLS, 465 für SSL)
+      encryption: Verschlüsselung
+      encryption_help: Wählen Sie die Verschlüsselungsmethode
+      encryption:
+        none: Keine
+        tls: TLS (empfohlen)
+        ssl: SSL
+      username: Benutzername
+      username_help: SMTP-Benutzername (meist die E-Mail-Adresse)
+      password: Passwort
+      password_help: SMTP-Passwort
+      from_address: Absender-Adresse
+      from_address_help: E-Mail-Adresse des Absenders
+      from_name: Absender-Name
+      from_name_help: Name des Absenders
+      sender_info: Absender-Informationen
+      skip_button: Überspringen
+      skipped: E-Mail-Konfiguration übersprungen
+      config_saved: E-Mail-Konfiguration erfolgreich gespeichert
+      config_failed: Fehler beim Speichern der E-Mail-Konfiguration
+      info:
+        title: Wofür wird E-Mail verwendet?
+        description: Die E-Mail-Konfiguration ermöglicht dem System:
+        notifications: Benachrichtigungen an Benutzer zu senden
+        reminders: Erinnerungen für fällige Aufgaben zu verschicken
+        reports: Automatische Berichte zu versenden
+    organisation:
+      title: Organisations-Informationen
+      header: 'Schritt 4: Organisations-Informationen'
+      description: Geben Sie Informationen über Ihre Organisation an. Diese werden für Compliance-Berichte und Scope-Definition verwendet.
+      name: Organisationsname
+      name_required: Organisationsname ist erforderlich
+      name_min: Organisationsname muss mindestens 2 Zeichen lang sein
+      name_max: Organisationsname darf maximal 255 Zeichen lang sein
+      name_help: Offizieller Name Ihrer Organisation
+      industry: Branche
+      industry_help: Wählen Sie die Branche Ihrer Organisation
+      industry:
+        select: '-- Branche wählen --'
+        automotive: Automobilindustrie
+        financial_services: Finanzdienstleistungen
+        healthcare: Gesundheitswesen
+        manufacturing: Fertigungsindustrie
+        it_services: IT-Dienstleistungen
+        energy: Energiewirtschaft
+        telecommunications: Telekommunikation
+        retail: Einzelhandel
+        public_sector: Öffentlicher Sektor
+        education: Bildungswesen
+        other: Sonstige
+      employee_count: Mitarbeiterzahl
+      employee_count_help: Ungefähre Anzahl der Mitarbeiter
+      employee_count:
+        select: '-- Mitarbeiterzahl wählen --'
+        1_10: '1-10'
+        11_50: '11-50'
+        51_250: '51-250'
+        251_1000: '251-1000'
+        1001_plus: '1001+'
+      country: Land
+      country_help: Hauptsitz Ihrer Organisation
+      description: Beschreibung
+      description_help: Kurze Beschreibung Ihrer Organisation und Geschäftstätigkeit
+      info_saved: Organisations-Informationen erfolgreich gespeichert
+      info_failed: Fehler beim Speichern der Organisations-Informationen
+      usage:
+        title: Verwendung dieser Informationen
+        message: Diese Informationen werden verwendet, um branchenspezifische Empfehlungen und Compliance-Anforderungen bereitzustellen.
+      compliance_info:
+        title: Warum sind diese Informationen wichtig?
+        description: Basierend auf Ihren Angaben können wir:
+        scope: Den Geltungsbereich Ihres ISMS besser definieren
+        reporting: Compliance-Berichte automatisch anpassen
+        recommendations: Branchenspezifische Empfehlungen geben
+    compliance:
+      title: Compliance Frameworks
+      header: 'Schritt 7: Compliance Frameworks auswählen'
+      description: Wählen Sie die Compliance-Frameworks aus, die für Ihre Organisation relevant sind. Sie können später weitere Frameworks hinzufügen.
+      recommended:
+        title: Empfohlene Frameworks für Ihre Branche
+        description: Basierend auf den Angaben zu Ihrer Organisation empfehlen wir folgende Frameworks:
+      mandatory:
+        title: ISO 27001 ist verpflichtend
+        message: ISO 27001:2022 ist die Grundlage dieses ISMS und kann nicht abgewählt werden.
+      select_frameworks: Wählen Sie Ihre Compliance-Frameworks
+      recommended_badge: Empfohlen
+      mandatory_badge: Verpflichtend
+      frameworks_saved: '%count% Compliance-Frameworks ausgewählt'
+      note:
+        title: Wichtiger Hinweis
+        message: Sie können jederzeit weitere Frameworks hinzufügen oder entfernen. Die Auswahl beeinflusst, welche Anforderungen und Controls in Ihrem ISMS verfügbar sind.
+      details:
+        title: Framework-Details
+        description: Übersicht über alle verfügbaren Frameworks
 
 # Admin Integration - Phase 6L-G
 nav.admin.modules: 'Modul-Verwaltung'
