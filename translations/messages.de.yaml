@@ -670,6 +670,7 @@ audit:
     in_progress: In Bearbeitung
     completed: Abgeschlossen
     cancelled: Abgebrochen
+    reported: Gemeldet
   scope_type:
     internal: Internes Audit
     external: Externes Audit
