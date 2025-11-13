@@ -850,19 +850,48 @@ incident:
     updated: Vorfall erfolgreich aktualisiert.
     deleted: Vorfall erfolgreich gelöscht.
 document:
+  doc_title: 'Dokumente'
+  title:
+    by_type: 'Dokumente nach Typ'
+  subtitle: 'Dokumentenverwaltung'
+  new: 'Neues Dokument'
+  edit: 'Dokument bearbeiten'
+  update: 'Dokument aktualisieren'
+  upload: 'Dokument hochladen'
+
   field:
     name: Dokumentname
     description: Beschreibung
     document_type: Dokumenttyp
     file: Datei
+    title: 'Titel'
+    status: 'Status'
+    version: 'Version'
+    owner: 'Eigentümer'
+    review_date: 'Überprüfungsdatum'
+    last_updated: 'Zuletzt aktualisiert'
+    updated: 'Aktualisiert'
+    active: 'Aktiv'
+    draft: 'Entwurf'
+    documents: 'Dokumente'
+    total_documents: 'Gesamtanzahl Dokumente'
+    overdue_reviews: 'Überfällige Überprüfungen'
+    type_name: 'Typbezeichnung'
+
   placeholder:
     name: z.B. Informationssicherheitsrichtlinie 2024
     description: Kurze Beschreibung des Dokuments...
+
   help:
     file: Maximal 10 MB. Erlaubte Formate PDF, Word, Excel, Bilder, Text
+
+  file_help: 'Erlaubte Dateitypen: PDF, Word, Excel, Bilder, Text'
+  edit_file_help: 'Laden Sie eine neue Datei hoch, um die bestehende zu ersetzen'
+
   validation:
     mime_types: Bitte laden Sie ein gültiges Dokument hoch (PDF, Word, Excel, Bild
       oder Textdatei)
+
   type:
     asset: Asset-Dokumentation
     risk: Risikobewertung
@@ -875,7 +904,9 @@ document:
     pdf: PDF-Dokumente
     images: Bilder
     tables: Tabellen
+    excel: 'Excel-Dokumente'
     other: Sonstige
+
   label:
     type: Typ
     file_name: Dateiname
@@ -884,6 +915,77 @@ document:
     uploaded_by: Hochgeladen von
     uploaded_at: Hochgeladen am
     last_updated: Zuletzt aktualisiert
+    related_entity: 'Zugehörige Entität'
+
+  action:
+    create: 'Dokument erstellen'
+    upload: 'Dokument hochladen'
+
+  badge:
+    confidential: 'Vertraulich'
+    controlled: 'Kontrolliert'
+    due_soon: 'Bald fällig'
+    overdue: 'Überfällig'
+
+  confirm:
+    delete: 'Möchten Sie dieses Dokument wirklich löschen?'
+
+  description:
+    by_type: 'Dokumente nach Typ'
+
+  details:
+    title: 'Dokumentdetails'
+
+  error:
+    upload_failed: 'Fehler beim Hochladen der Datei'
+    too_many_uploads: 'Zu viele Uploads. Bitte versuchen Sie es später erneut.'
+
+  filter:
+    all_categories: 'Alle Kategorien'
+    search_placeholder: 'Dokumente durchsuchen...'
+
+  kpi:
+    total_documents: 'Gesamtanzahl Dokumente'
+    total_size: 'Gesamtgröße'
+
+  message:
+    no_documents: 'Keine Dokumente vorhanden'
+    no_documents_for_type: 'Keine Dokumente für diesen Typ vorhanden'
+    no_recent_activity: 'Keine aktuellen Aktivitäten'
+    no_results: 'Keine Ergebnisse gefunden'
+    no_types: 'Keine Dokumenttypen definiert'
+    upload_first: 'Laden Sie Ihr erstes Dokument hoch'
+
+  option:
+    all_types: 'Alle Typen'
+
+  section:
+    all_documents: 'Alle Dokumente'
+    all_types: 'Alle Typen'
+    documents: 'Dokumente'
+    recent_activity: 'Letzte Aktivitäten'
+    select_type: 'Typ auswählen'
+    type_overview: 'Typübersicht'
+    type_statistics: 'Typ-Statistiken'
+    types_overview: 'Typen-Übersicht'
+
+  stats:
+    active_documents: 'Aktive Dokumente'
+    avg_per_type: 'Durchschnitt pro Typ'
+    document_types: 'Dokumenttypen'
+    draft_documents: 'Entwürfe'
+    expiring_soon: 'Läuft bald ab'
+    overdue_reviews: 'Überfällige Überprüfungen'
+    total: 'Gesamt'
+    total_documents: 'Gesamtanzahl Dokumente'
+
+  success:
+    deleted: 'Dokument erfolgreich gelöscht'
+    updated: 'Dokument erfolgreich aktualisiert'
+    uploaded: 'Dokument erfolgreich hochgeladen'
+
+  table:
+    uploaded_by: 'Hochgeladen von'
 person:
   title: Personenverwaltung
   name: Person
