@@ -58,6 +58,8 @@
                     <option value="asset_group" {{ app.request.get('scope_type') == 'asset_group' ? 'selected' : '' }}>{{ 'audit.scope_type.asset_group'|trans }}</option>
                     <option value="location" {{ app.request.get('scope_type') == 'location' ? 'selected' : '' }}>{{ 'audit.scope_type.location'|trans }}</option>
                     <option value="department" {{ app.request.get('scope_type') == 'department' ? 'selected' : '' }}>{{ 'audit.scope_type.department'|trans }}</option>
+                    <option value="corporate_wide" {{ app.request.get('scope_type') == 'corporate_wide' ? 'selected' : '' }}>{{ 'audit.scope_type.corporate_wide'|trans }}</option>
+                    <option value="corporate_subsidiaries" {{ app.request.get('scope_type') == 'corporate_subsidiaries' ? 'selected' : '' }}>{{ 'audit.scope_type.corporate_subsidiaries'|trans }}</option>
                 </select>
             </div>
 
@@ -109,6 +111,12 @@
                                 <span class="badge bg-secondary">
                                     {{ ('audit.scope_type.' ~ audit.scopeType)|trans }}
                                 </span>
+                                {% if audit.auditedSubsidiaries|length > 0 %}
+                                <br>
+                                <small class="text-muted">
+                                    <i class="bi bi-building"></i> {{ audit.auditedSubsidiaries|length }} {{ 'common.subsidiaries'|trans }}
+                                </small>
+                                {% endif %}
                             </td>
                             <td>{{ audit.plannedDate|date('d.m.Y') }}</td>
                             <td>
