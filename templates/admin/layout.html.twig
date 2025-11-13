@@ -262,8 +262,14 @@
                     <ul>
                         <li>
                             <a href="{{ path('tenant_management_index') }}"
-                               class="{% if app.request.get('_route') starts with 'tenant_management_' %}active{% endif %}">
+                               class="{% if app.request.get('_route') starts with 'tenant_management_' and app.request.get('_route') != 'tenant_management_corporate_structure' %}active{% endif %}">
                                 <i class="bi bi-building"></i> {{ 'admin.nav.tenants'|trans }}
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ path('tenant_management_corporate_structure') }}"
+                               class="{% if app.request.get('_route') == 'tenant_management_corporate_structure' %}active{% endif %}">
+                                <i class="bi bi-diagram-3"></i> {{ 'admin.nav.corporate_structure'|trans }}
                             </a>
                         </li>
                         <li>

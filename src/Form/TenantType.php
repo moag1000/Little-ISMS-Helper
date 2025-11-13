@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Tenant;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -71,6 +72,45 @@ class TenantType extends AbstractType
                 'label' => 'tenant.field.is_active',
                 'help' => 'tenant.field.is_active_help',
                 'required' => false,
+            ])
+            // Corporate Structure Fields
+            ->add('parent', EntityType::class, [
+                'class' => Tenant::class,
+                'label' => 'corporate.field.parent',
+                'help' => 'corporate.field.parent_help',
+                'required' => false,
+                'placeholder' => 'corporate.placeholder.parent',
+                'choice_label' => function (Tenant $tenant) {
+                    return $tenant->getName() . ' (' . $tenant->getCode() . ')';
+                },
+                'query_builder' => function ($repository) use ($options) {
+                    $qb = $repository->createQueryBuilder('t')
+                        ->where('t.isActive = :active')
+                        ->setParameter('active', true)
+                        ->orderBy('t.name', 'ASC');
+
+                    // Prevent self-selection
+                    if ($options['data']->getId()) {
+                        $qb->andWhere('t.id != :currentId')
+                           ->setParameter('currentId', $options['data']->getId());
+                    }
+
+                    return $qb;
+                },
+            ])
+            ->add('isCorporateParent', CheckboxType::class, [
+                'label' => 'corporate.field.is_corporate_parent',
+                'help' => 'corporate.field.is_corporate_parent_help',
+                'required' => false,
+            ])
+            ->add('corporateNotes', TextareaType::class, [
+                'label' => 'corporate.field.corporate_notes',
+                'help' => 'corporate.field.corporate_notes_help',
+                'required' => false,
+                'attr' => [
+                    'rows' => 3,
+                    'placeholder' => 'corporate.placeholder.corporate_notes',
+                ],
             ])
             ->add('settings', TextareaType::class, [
                 'label' => 'tenant.field.settings',

@@ -2,9 +2,13 @@
 
 namespace App\Controller;
 
+use App\Entity\CorporateGovernance;
 use App\Entity\Tenant;
+use App\Enum\GovernanceModel;
 use App\Form\TenantType;
+use App\Repository\CorporateGovernanceRepository;
 use App\Repository\TenantRepository;
+use App\Service\CorporateStructureService;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -20,7 +24,9 @@ class TenantManagementController extends AbstractController
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly TenantRepository $tenantRepository,
+        private readonly CorporateGovernanceRepository $governanceRepository,
         private readonly LoggerInterface $logger,
+        private readonly CorporateStructureService $corporateStructureService,
     ) {
     }
 
@@ -115,12 +121,19 @@ class TenantManagementController extends AbstractController
             ];
         }
 
+        // Get default governance model
+        $defaultGovernance = null;
+        if ($tenant->getParent()) {
+            $defaultGovernance = $this->governanceRepository->findDefaultGovernance($tenant);
+        }
+
         return $this->render('admin/tenants/show.html.twig', [
             'tenant' => $tenant,
             'userCount' => $users->count(),
             'activeUsers' => $activeUsers,
             'inactiveUsers' => $users->count() - $activeUsers,
             'recentActivity' => $recentActivity,
+            'defaultGovernance' => $defaultGovernance,
         ]);
     }
 
@@ -231,5 +244,157 @@ class TenantManagementController extends AbstractController
         }
 
         return $this->redirectToRoute('tenant_management_index');
+    }
+
+    /**
+     * Corporate Structure Management Routes
+     */
+    #[Route('/corporate-structure', name: 'tenant_management_corporate_structure', methods: ['GET'])]
+    public function corporateStructure(): Response
+    {
+        // Get all root tenants (corporate parents without parents)
+        $allTenants = $this->tenantRepository->findBy(['isActive' => true], ['name' => 'ASC']);
+        $corporateGroups = [];
+
+        foreach ($allTenants as $tenant) {
+            if ($tenant->isCorporateParent() && $tenant->getParent() === null) {
+                $tree = $this->corporateStructureService->getStructureTree($tenant);
+                $corporateGroups[] = $tree;
+            }
+        }
+
+        // Get standalone tenants (not part of any corporate structure)
+        $standaloneTenants = array_filter($allTenants, function ($tenant) {
+            return !$tenant->isPartOfCorporateStructure();
+        });
+
+        return $this->render('admin/tenants/corporate_structure.html.twig', [
+            'corporateGroups' => $corporateGroups,
+            'standaloneTenants' => $standaloneTenants,
+            'allTenants' => $allTenants,
+            'governanceModels' => GovernanceModel::cases(),
+        ]);
+    }
+
+    #[Route('/{id}/set-parent', name: 'tenant_management_set_parent', methods: ['POST'])]
+    public function setParent(Request $request, Tenant $tenant): Response
+    {
+        $parentId = $request->request->get('parent_id');
+        $governanceModel = $request->request->get('governance_model');
+
+        try {
+            if ($parentId) {
+                $parent = $this->tenantRepository->find($parentId);
+                if (!$parent) {
+                    $this->addFlash('danger', 'corporate.flash.parent_not_found');
+                    return $this->redirectToRoute('tenant_management_corporate_structure');
+                }
+
+                if (!$governanceModel || !in_array($governanceModel, ['hierarchical', 'shared', 'independent'])) {
+                    $this->addFlash('danger', 'corporate.flash.invalid_governance');
+                    return $this->redirectToRoute('tenant_management_corporate_structure');
+                }
+
+                $tenant->setParent($parent);
+                $parent->setIsCorporateParent(true);
+
+                // Create default governance rule
+                $governance = $this->governanceRepository->findDefaultGovernance($tenant);
+                if (!$governance) {
+                    $governance = new CorporateGovernance();
+                    $governance->setTenant($tenant);
+                    $governance->setParent($parent);
+                    $governance->setScope('default');
+                    $governance->setScopeId(null);
+                    $governance->setCreatedBy($this->getUser());
+                }
+                $governance->setGovernanceModel(GovernanceModel::from($governanceModel));
+                $this->entityManager->persist($governance);
+
+                // Validate structure
+                $errors = $this->corporateStructureService->validateStructure($tenant);
+                if (!empty($errors)) {
+                    $this->addFlash('danger', implode(', ', $errors));
+                    return $this->redirectToRoute('tenant_management_corporate_structure');
+                }
+
+                $this->logger->info('Tenant parent set', [
+                    'tenant_id' => $tenant->getId(),
+                    'parent_id' => $parent->getId(),
+                    'governance_model' => $governanceModel,
+                    'user' => $this->getUser()?->getUserIdentifier(),
+                ]);
+
+                $this->addFlash('success', 'corporate.flash.parent_set');
+            } else {
+                // Remove parent and all governance rules
+                $tenant->setParent(null);
+
+                // Delete all governance rules for this tenant
+                $this->entityManager->createQueryBuilder()
+                    ->delete(CorporateGovernance::class, 'cg')
+                    ->where('cg.tenant = :tenant')
+                    ->setParameter('tenant', $tenant)
+                    ->getQuery()
+                    ->execute();
+
+                $this->logger->info('Tenant parent removed', [
+                    'tenant_id' => $tenant->getId(),
+                    'user' => $this->getUser()?->getUserIdentifier(),
+                ]);
+
+                $this->addFlash('success', 'corporate.flash.parent_removed');
+            }
+
+            $this->entityManager->flush();
+        } catch (\Exception $e) {
+            $this->logger->error('Failed to set tenant parent', [
+                'tenant_id' => $tenant->getId(),
+                'error' => $e->getMessage(),
+            ]);
+
+            $this->addFlash('danger', 'corporate.flash.error');
+        }
+
+        return $this->redirectToRoute('tenant_management_corporate_structure');
+    }
+
+    #[Route('/{id}/update-governance', name: 'tenant_management_update_governance', methods: ['POST'])]
+    public function updateGovernance(Request $request, Tenant $tenant): Response
+    {
+        $governanceModel = $request->request->get('governance_model');
+
+        if (!$governanceModel || !in_array($governanceModel, ['hierarchical', 'shared', 'independent'])) {
+            $this->addFlash('danger', 'corporate.flash.invalid_governance');
+            return $this->redirectToRoute('tenant_management_corporate_structure');
+        }
+
+        try {
+            // Update default governance rule
+            $governance = $this->governanceRepository->findDefaultGovernance($tenant);
+            if ($governance) {
+                $governance->setGovernanceModel(GovernanceModel::from($governanceModel));
+                $this->entityManager->flush();
+
+                $this->logger->info('Tenant governance model updated', [
+                    'tenant_id' => $tenant->getId(),
+                    'governance_model' => $governanceModel,
+                    'user' => $this->getUser()?->getUserIdentifier(),
+                ]);
+
+                $this->addFlash('success', 'corporate.flash.governance_updated');
+            } else {
+                $this->addFlash('warning', 'corporate.flash.no_governance_found');
+            }
+        } catch (\Exception $e) {
+            $this->logger->error('Failed to update governance model', [
+                'tenant_id' => $tenant->getId(),
+                'error' => $e->getMessage(),
+            ]);
+
+            $this->addFlash('danger', 'corporate.flash.error');
+        }
+
+        return $this->redirectToRoute('tenant_management_corporate_structure');
     }
 }
