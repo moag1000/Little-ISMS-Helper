@@ -117,3 +117,9 @@ risk_treatment_plan:
     description_required: 'Description is required'
     target_completion_date_required: 'Target completion date is required'
     completion_percentage_range: 'Completion percentage must be between {{ min }} and {{ max }}'
+
+# Training Validators
+training:
+  validation:
+    title_required: 'Please enter a title.'
+    date_required: 'Please select a date.'
