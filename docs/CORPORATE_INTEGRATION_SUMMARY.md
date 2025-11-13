@@ -3,11 +3,27 @@
 **Projekt:** Little ISMS Helper
 **Feature Branch:** `claude/develop-feature-k-01DgSobbzhk6bFmH4mQUw6jm`
 **Datum:** 2025-01-13
-**Status:** ✅ Phase 1 Komplett | ⏳ Phase 2 Dokumentiert
+**Status:** ✅ Backend Komplett (7 Module) | ⏳ UI-Integration Ausstehend
 
 ---
 
 ## 📊 Übersicht der Implementierung
+
+**7 Module vollständig integriert:**
+1. ✅ ISMS-Kontext (ISMSContext) - Commit `595e522`
+2. ✅ Internal Audits - Commit `6648968` + `0880ad1` + `92d3cb2`
+3. ✅ ISO 27001 Controls (SOA) - Commit `2b4f421`
+4. ✅ Risk Management - Commit `82f1be3`
+5. ✅ Asset Management - Commit `82f1be3`
+6. ✅ Document Management - Commit `82f1be3`
+7. ✅ Supplier Management - Commit `82f1be3`
+
+**Gesamtstatistik:**
+- 🆕 7 neue Services erstellt (ISMS, Control, Risk, Asset, Document, Supplier + Audit-Erweiterungen)
+- 📝 6 Repositories erweitert (Audit, Control, Risk, Asset, Document, Supplier)
+- 🎨 3 UI-Templates aktualisiert (Context, Audit new/edit/show/index)
+- 🌐 10+ Übersetzungskeys hinzugefügt (DE/EN)
+- 🗄️ 1 Datenbank-Migration (Audit Subsidiaries)
 
 ### ✅ Vollständig Implementierte Module
 
@@ -99,6 +115,107 @@
 
 ---
 
+#### 4. Risk Management
+**Commit:** `82f1be3`
+
+**Implementierung:**
+- `RiskService` (NEU):
+  - `getRisksForTenant()` - Eigene + geerbte Risiken
+  - `getRiskInheritanceInfo()` - Vererbungs-Metadaten
+  - `isInheritedRisk()` - Prüft ob Risk vom Parent kommt
+  - `canEditRisk()` - Edit-Schutz für geerbte Risiken
+  - `getRiskStatsWithInheritance()` - Statistiken inkl. geerbter Risiken
+  - `getHighRisksForTenant()` - High-Risk Filtering (Score >= 12)
+
+- `RiskRepository` erweitert:
+  - `findByTenant()` - Tenant-spezifische Risiken
+  - `findByTenantIncludingParent()` - Inkl. Parent-Risiken bei hierarchischer Governance
+  - `getRiskStatsByTenant()` - Risiko-Statistiken (high/medium/low)
+  - `findHighRisksByTenant()` - High-Risk Queries mit Schwellenwert
+
+**Resultat:**
+- ✅ Tochtergesellschaften sehen Parent-Risiken (hierarchisch)
+- ✅ Risiko-Score-basierte Klassifizierung (high: >=12, medium: >=6, low: <6)
+- ✅ Statistiken tracken eigen + geerbt separat
+- ✅ Edit-Schutz für geerbte Risiken
+
+---
+
+#### 5. Asset Management
+**Commit:** `82f1be3`
+
+**Implementierung:**
+- `AssetService` (NEU):
+  - `getAssetsForTenant()` - Eigene + geerbte Assets
+  - `getAssetInheritanceInfo()` - Vererbungs-Metadaten
+  - `isInheritedAsset()` - Prüft ob Asset vom Parent kommt
+  - `canEditAsset()` - Edit-Schutz für geerbte Assets
+  - `getAssetStatsWithInheritance()` - Statistiken inkl. geerbter Assets
+
+- `AssetRepository` erweitert:
+  - `findByTenant()` - Tenant-spezifische Assets
+  - `findByTenantIncludingParent()` - Inkl. Parent-Assets bei hierarchischer Governance
+  - `getAssetStatsByTenant()` - Asset-Statistiken (total/active/inactive)
+  - `findActiveAssetsByTenant()` - Nur aktive Assets
+
+**Resultat:**
+- ✅ Tochtergesellschaften sehen Parent-Assets (hierarchisch)
+- ✅ Active/Inactive Status-Tracking
+- ✅ Statistiken tracken eigen + geerbt separat
+- ✅ Edit-Schutz für geerbte Assets
+
+---
+
+#### 6. Document Management
+**Commit:** `82f1be3`
+
+**Implementierung:**
+- `DocumentService` (NEU):
+  - `getDocumentsForTenant()` - Eigene + geerbte Dokumente
+  - `getDocumentInheritanceInfo()` - Vererbungs-Metadaten
+  - `isInheritedDocument()` - Prüft ob Dokument vom Parent kommt
+  - `canEditDocument()` - Edit-Schutz für geerbte Dokumente
+  - `getDocumentStatsWithInheritance()` - Statistiken inkl. geerbter Dokumente
+
+- `DocumentRepository` erweitert:
+  - `findByTenant()` - Tenant-spezifische Dokumente (non-archived)
+  - `findByTenantIncludingParent()` - Inkl. Parent-Dokumente bei hierarchischer Governance
+  - `findByCategoryAndTenant()` - Kategorie-basierte Queries
+
+**Resultat:**
+- ✅ Tochtergesellschaften sehen Parent-Dokumente (hierarchisch)
+- ✅ Automatische Archiv-Filterung
+- ✅ Kategorie-basierte Organisation
+- ✅ Edit-Schutz für geerbte Dokumente
+
+---
+
+#### 7. Supplier Management
+**Commit:** `82f1be3`
+
+**Implementierung:**
+- `SupplierService` (NEU):
+  - `getSuppliersForTenant()` - Eigene + geerbte Lieferanten
+  - `getSupplierInheritanceInfo()` - Vererbungs-Metadaten
+  - `isInheritedSupplier()` - Prüft ob Supplier vom Parent kommt
+  - `canEditSupplier()` - Edit-Schutz für geerbte Lieferanten
+  - `getSupplierStatsWithInheritance()` - Statistiken inkl. geerbter Lieferanten
+
+- `SupplierRepository` erweitert:
+  - `findByTenant()` - Tenant-spezifische Lieferanten
+  - `findByTenantIncludingParent()` - Inkl. Parent-Lieferanten bei hierarchischer Governance
+  - `getStatisticsByTenant()` - Lieferanten-Statistiken (total/critical/ISO27001/compliance)
+  - `findCriticalSuppliersByTenant()` - Critical Supplier Queries
+
+**Resultat:**
+- ✅ Tochtergesellschaften sehen Parent-Lieferanten (hierarchisch)
+- ✅ Criticality-Tracking (critical/high)
+- ✅ ISO 27001 Compliance-Monitoring
+- ✅ Statistiken tracken eigen + geerbt separat
+- ✅ Edit-Schutz für geerbte Lieferanten
+
+---
+
 ### 🔧 Bugfixes
 **Commit:** `95be832`
 
@@ -140,8 +257,10 @@ Governance kann pro Scope definiert werden:
 - `default` - Globales Governance-Modell
 - `isms_context` - Spezifisch für ISMS-Kontext
 - `control` - Spezifisch für ISO 27001 Controls
-- `risk` - Für Risiken (vorbereitet)
-- `asset` - Für Assets (vorbereitet)
+- `risk` - Für Risiken ✅ IMPLEMENTIERT
+- `asset` - Für Assets ✅ IMPLEMENTIERT
+- `document` - Für Dokumente ✅ IMPLEMENTIERT
+- `supplier` - Für Lieferanten ✅ IMPLEMENTIERT
 - `process` - Für Prozesse (vorbereitet)
 
 **Fallback-Chain:** ScopeID → Scope → Default
@@ -170,12 +289,20 @@ CREATE TABLE internal_audit_subsidiary (
 
 ### Services
 - ✅ `src/Service/ISMSContextService.php` - ISMS-Kontext mit Corporate-Bewusstsein
-- ✅ `src/Service/ControlService.php` - NEU: Control-Verwaltung mit Vererbung
+- ✅ `src/Service/ControlService.php` - Control-Verwaltung mit Vererbung
+- ✅ `src/Service/RiskService.php` - NEU: Risk Management mit Governance
+- ✅ `src/Service/AssetService.php` - NEU: Asset Management mit Vererbung
+- ✅ `src/Service/DocumentService.php` - NEU: Document Management mit Governance
+- ✅ `src/Service/SupplierService.php` - NEU: Supplier Management mit Vererbung
 - ✅ `src/Service/CorporateStructureService.php` - Kern-Service (bereits vorhanden)
 
 ### Repositories
 - ✅ `src/Repository/InternalAuditRepository.php` - Corporate Audit Queries
 - ✅ `src/Repository/ControlRepository.php` - Tenant + Vererbungs-Queries
+- ✅ `src/Repository/RiskRepository.php` - NEU: Tenant-spezifische Risk Queries
+- ✅ `src/Repository/AssetRepository.php` - NEU: Tenant-spezifische Asset Queries
+- ✅ `src/Repository/DocumentRepository.php` - NEU: Tenant-spezifische Document Queries
+- ✅ `src/Repository/SupplierRepository.php` - NEU: Tenant-spezifische Supplier Queries
 
 ### Controllers
 - ✅ `src/Controller/ContextController.php` - Vererbungsschutz
