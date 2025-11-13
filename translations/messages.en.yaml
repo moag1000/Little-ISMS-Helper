@@ -1573,6 +1573,71 @@ bc_exercise:
     updated: BC exercise updated successfully.
     deleted: BC exercise deleted successfully.
 management_review:
+  title: 'Management Reviews'
+  new: 'New Management Review'
+  create: 'Create Management Review'
+  edit: 'Edit Management Review'
+  all_reviews: 'All Reviews'
+  no_reviews: 'No management reviews available'
+  create_first: 'Create your first management review'
+
+  review_date: 'Review Date'
+  participants: 'Participants'
+  status: 'Status'
+
+  confirm_delete: 'Do you really want to delete this management review?'
+  delete_warning: 'This action cannot be undone.'
+
+  clause_93: 'ISO 27001:2022 Clause 9.3'
+  clause_93_description: 'Management Review by Top Management'
+  iso_clause_93_info: 'Requirements according to ISO 27001:2022 Clause 9.3'
+  iso_clause_info: 'This section fulfills the requirements of ISO 27001:2022 Clause 9.3'
+  iso_requirement: 'ISO Requirement'
+
+  section:
+    basic_info: 'Basic Information'
+    inputs: 'Review Inputs'
+    outputs: 'Review Outputs'
+    followup: 'Follow-up'
+
+  inputs_label: 'Review Inputs (according to ISO 27001:2022 Clause 9.3)'
+  outputs_label: 'Review Outputs (according to ISO 27001:2022 Clause 9.3)'
+  action_items_label: 'Actions and Improvements'
+
+  input_1: 'Status of actions from previous management reviews'
+  input_2: 'Changes in external and internal issues that are relevant to the ISMS'
+  input_3: 'Feedback on information security performance'
+  input_4: 'Feedback from interested parties'
+
+  performance_evaluation: 'Performance evaluation including trends in:'
+  nonconformities_status: 'Nonconformities and corrective actions'
+  audit_results: 'Results of monitoring and measurement'
+  corrective_actions_status: 'Status of corrective actions'
+  previous_review_actions: 'Actions from previous reviews'
+  changes_relevant_to_isms: 'Changes relevant to the ISMS'
+  feedback_from_interested_parties: 'Feedback from interested parties'
+  opportunities_for_improvement: 'Opportunities for continual improvement'
+
+  output_1: 'Opportunities for continual improvement'
+  output_2: 'Any need for changes to the information security management system'
+  output_3: 'Resource needs'
+
+  management_decisions: 'Management Decisions'
+  decisions: 'Decisions'
+  action_items: 'Actions'
+  resource_needs: 'Resource Needs'
+
+  statistics:
+    total: 'Total'
+    completed: 'Completed'
+    planned: 'Planned'
+    this_year: 'This Year'
+
+  success:
+    created: 'Management review created successfully'
+    updated: 'Management review updated successfully'
+    deleted: 'Management review deleted successfully'
+
   field:
     title: Review Title
     review_date: Review Date
