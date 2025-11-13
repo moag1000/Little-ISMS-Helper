@@ -6,6 +6,10 @@
     <title>{% block pdf_title %}PDF Report{% endblock %}</title>
 
     <style>
+        @page {
+            margin: 100px 30px 70px 30px;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -17,22 +21,24 @@
             font-size: 10pt;
             line-height: 1.4;
             color: #333;
+            margin: 0;
+            padding: 0;
         }
 
         .pdf-header {
             position: fixed;
-            top: 0;
+            top: -80px;
             left: 0;
             right: 0;
-            height: 80px;
+            height: 70px;
             border-bottom: 2px solid #1F4E78;
-            padding: 15px 30px;
+            padding: 10px 0;
             background: white;
         }
 
         .pdf-header .title {
             text-align: center;
-            padding-top: 10px;
+            padding-top: 5px;
         }
 
         .pdf-header .title h1 {
@@ -48,12 +54,12 @@
 
         .pdf-footer {
             position: fixed;
-            bottom: 0;
+            bottom: -50px;
             left: 0;
             right: 0;
-            height: 50px;
+            height: 40px;
             border-top: 1px solid #ddd;
-            padding: 15px 30px;
+            padding: 10px 0;
             font-size: 8pt;
             color: #666;
             background: white;
@@ -72,9 +78,8 @@
         }
 
         .pdf-content {
-            margin-top: 100px;
-            margin-bottom: 70px;
-            padding: 0 30px;
+            margin: 0;
+            padding: 0;
         }
 
         h1 {
@@ -246,7 +251,7 @@
     <div class="pdf-footer">
         <div class="left">
             {% block footer_left %}
-                Little ISMS Helper - {{ pdf_generation_date|date('d.m.Y H:i') }}
+                Little ISMS Helper - {{ (pdf_generation_date|default('now'))|date('d.m.Y H:i') }}
             {% endblock %}
         </div>
         <div class="right">
