@@ -563,6 +563,16 @@ asset:
     updated: Asset erfolgreich aktualisiert.
     deleted: Asset erfolgreich gelöscht.
 risk:
+  new: Neues Risiko
+  create: Risiko erstellen
+  edit: Risiko bearbeiten
+  update: Risiko aktualisieren
+  inherent_assessment: Inhärente Risikobewertung
+  inherent_help: Bewerten Sie das Risiko ohne Berücksichtigung bestehender Sicherheitsmaßnahmen
+  probability_help: Wahrscheinlichkeit des Eintritts (1=Sehr unwahrscheinlich, 5=Sehr wahrscheinlich)
+  impact_help: Schwere der Auswirkung bei Eintritt (1=Vernachlässigbar, 5=Katastrophal)
+  residual_assessment: Restrisikobewertung
+  residual_help: Bewerten Sie das verbleibende Risiko nach Implementierung von Sicherheitsmaßnahmen
   success:
     created: Risiko erfolgreich erstellt.
     updated: Risiko erfolgreich aktualisiert.
@@ -570,6 +580,9 @@ risk:
   field:
     title: Risikotitel
     description: Beschreibung
+    score: Risikoscore
+    treatment_strategy: Behandlungsstrategie
+    status: Status
   label:
     risk_owner: Risikoverantwortlicher
   placeholder:

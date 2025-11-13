@@ -557,6 +557,16 @@ asset:
     updated: Asset updated successfully.
     deleted: Asset deleted successfully.
 risk:
+  new: New Risk
+  create: Create Risk
+  edit: Edit Risk
+  update: Update Risk
+  inherent_assessment: Inherent Risk Assessment
+  inherent_help: Assess the risk without considering existing security controls
+  probability_help: Likelihood of occurrence (1=Very unlikely, 5=Very likely)
+  impact_help: Severity of impact if occurs (1=Negligible, 5=Catastrophic)
+  residual_assessment: Residual Risk Assessment
+  residual_help: Assess the remaining risk after implementing security controls
   success:
     created: Risk created successfully.
     updated: Risk updated successfully.
@@ -564,6 +574,9 @@ risk:
   field:
     title: Risk Title
     description: Description
+    score: Risk Score
+    treatment_strategy: Treatment Strategy
+    status: Status
   label:
     risk_owner: Risk Owner
   placeholder:
