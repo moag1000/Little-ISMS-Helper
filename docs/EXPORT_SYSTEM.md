@@ -6,13 +6,93 @@ Das Little ISMS Helper verfügt über ein professionelles Export-System mit **CS
 
 ### Implementierungsstatus
 
-| Modul | CSV Export | Excel Export (Multi-Tab) | Status |
-|-------|-----------|--------------------------|--------|
-| **Risk Management** | ✅ `/risk/export` | ✅ `/risk/export/excel` | **LIVE** |
-| **Framework Comparison** | ✅ `/compliance/export/comparison` | ✅ `/compliance/export/comparison/excel` | **LIVE** |
-| **Gap Analysis** | ✅ `/compliance/framework/{id}/gaps/export` | ⏳ Template ready | Ready to implement |
-| **Data Reuse Insights** | ✅ `/compliance/framework/{id}/data-reuse/export` | ⏳ Template ready | Ready to implement |
-| **Transitive Compliance** | ✅ `/compliance/export/transitive` | ⏳ Template ready | Ready to implement |
+| Modul | CSV Export | Excel Export (Multi-Tab) | PDF Export | Status |
+|-------|-----------|--------------------------|------------|--------|
+| **Risk Management** | ✅ `/risk/export` | ✅ `/risk/export/excel` | ✅ `/risk/export/pdf` | **LIVE** |
+| **Framework Comparison** | ✅ `/compliance/export/comparison` | ✅ `/compliance/export/comparison/excel` | ⏳ Template ready | **LIVE** |
+| **Gap Analysis** | ✅ `/compliance/framework/{id}/gaps/export` | ✅ `/compliance/framework/{id}/gaps/export/excel` | ✅ `/compliance/framework/{id}/gaps/export/pdf` | **LIVE** |
+| **Data Reuse Insights** | ✅ `/compliance/framework/{id}/data-reuse/export` | ✅ `/compliance/framework/{id}/data-reuse/export/excel` | ⏳ Template ready | **LIVE** |
+| **Transitive Compliance** | ✅ `/compliance/export/transitive` | ✅ `/compliance/export/transitive/excel` | ⏳ Template ready | **LIVE** |
+
+---
+
+## 📄 PDF Export Features
+
+### Professional PDF Reports with DomPDF
+
+**PdfExportService:** `src/Service/PdfExportService.php`
+
+**Features:**
+- Professional Twig-based templates
+- Custom header/footer with page numbers
+- Responsive table layouts
+- Color-coded badges (Critical/High/Medium/Low)
+- Page breaks for better readability
+- Secure by design (no remote resources)
+- UTF-8 support with DejaVu Sans font
+
+### 1. Risk Management PDF Export
+
+**Route:** `GET /risk/export/pdf`
+**Button:** Risk Index → "PDF Report" (rot)
+
+**Content:**
+- Executive Summary Box with KPIs
+- Applied filters info
+- **Critical & High Risks Table** (Priority section)
+- **All Risks Detailed Table** (Complete overview)
+- **Risk Statistics Section:**
+  - Distribution by Risk Level (with percentages)
+  - Distribution by Status
+- Professional layout with color-coded badges
+
+**Example Filename:** `risk_management_report_2025-11-13_153045.pdf`
+
+### 2. Gap Analysis PDF Export
+
+**Route:** `GET /compliance/framework/{id}/gaps/export/pdf`
+**Button:** Gap Analysis → "PDF Report" (rot)
+
+**Content:**
+- Executive Summary with Compliance Score
+- Gap Distribution by Severity (with percentages)
+- **Critical Gaps Section** (Immediate action required)
+- **All Gaps Detailed Table**
+- **Recommendations Section:**
+  - Priority 1: Critical Gaps (30-day plan)
+  - Priority 2: High Gaps (90-day plan)
+  - Compliance Roadmap (Q1-Q4)
+  - Next Steps Checklist
+
+**Example Filename:** `gap_analysis_ISO27001_2025-11-13_153045.pdf`
+
+**Special Feature:** Management-ready recommendations with actionable timelines
+
+### PDF Template System
+
+**Base Template:** `templates/pdf/base.html.twig`
+- Fixed header/footer
+- Page numbering
+- Professional styling
+- Color scheme matching Excel exports
+
+**Specific Templates:**
+- `templates/pdf/risk_report.html.twig`
+- `templates/pdf/gap_analysis_report.html.twig`
+
+**Usage Example:**
+```php
+$pdfContent = $this->pdfExportService->generatePdf('pdf/risk_report.html.twig', [
+    'risks' => $risks,
+    'total_risks' => $totalRisks,
+    'critical_risks' => $criticalRisks,
+    // ... more data
+]);
+
+$response = new Response($pdfContent);
+$response->headers->set('Content-Type', 'application/pdf');
+$response->headers->set('Content-Disposition', 'attachment; filename="report.pdf"');
+```
 
 ---
 
