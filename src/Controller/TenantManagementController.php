@@ -23,7 +23,6 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
 #[Route('/admin/tenants')]
-#[IsGranted('ROLE_ADMIN')]
 class TenantManagementController extends AbstractController
 {
     public function __construct(
@@ -41,6 +40,7 @@ class TenantManagementController extends AbstractController
     }
 
     #[Route('', name: 'tenant_management_index', methods: ['GET'])]
+    #[IsGranted('TENANT_VIEW')]
     public function index(Request $request): Response
     {
         $filter = $request->query->get('filter', 'all'); // all, active, inactive
@@ -78,6 +78,7 @@ class TenantManagementController extends AbstractController
     }
 
     #[Route('/new', name: 'tenant_management_new', methods: ['GET', 'POST'])]
+    #[IsGranted('TENANT_CREATE')]
     public function new(Request $request): Response
     {
         $tenant = new Tenant();
@@ -148,6 +149,7 @@ class TenantManagementController extends AbstractController
     }
 
     #[Route('/{id}', name: 'tenant_management_show', methods: ['GET'])]
+    #[IsGranted('TENANT_VIEW')]
     public function show(Tenant $tenant): Response
     {
         // Get user statistics
@@ -180,6 +182,7 @@ class TenantManagementController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'tenant_management_edit', methods: ['GET', 'POST'])]
+    #[IsGranted('TENANT_EDIT')]
     public function edit(Request $request, Tenant $tenant): Response
     {
         // Capture old values for audit log
@@ -269,6 +272,7 @@ class TenantManagementController extends AbstractController
     }
 
     #[Route('/{id}/toggle', name: 'tenant_management_toggle', methods: ['POST'])]
+    #[IsGranted('TENANT_EDIT')]
     public function toggle(Tenant $tenant): Response
     {
         try {
@@ -310,6 +314,7 @@ class TenantManagementController extends AbstractController
     }
 
     #[Route('/{id}/delete', name: 'tenant_management_delete', methods: ['POST'])]
+    #[IsGranted('TENANT_DELETE')]
     public function delete(Request $request, Tenant $tenant): Response
     {
         // Security: Verify CSRF token
@@ -441,6 +446,7 @@ class TenantManagementController extends AbstractController
      * Corporate Structure Management Routes
      */
     #[Route('/corporate-structure', name: 'tenant_management_corporate_structure', methods: ['GET'])]
+    #[IsGranted('TENANT_VIEW')]
     public function corporateStructure(): Response
     {
         // Check if corporate structure features should be available
@@ -473,6 +479,7 @@ class TenantManagementController extends AbstractController
     }
 
     #[Route('/{id}/set-parent', name: 'tenant_management_set_parent', methods: ['POST'])]
+    #[IsGranted('TENANT_EDIT')]
     public function setParent(Request $request, Tenant $tenant): Response
     {
         $parentId = $request->request->get('parent_id');
@@ -556,6 +563,7 @@ class TenantManagementController extends AbstractController
     }
 
     #[Route('/{id}/update-governance', name: 'tenant_management_update_governance', methods: ['POST'])]
+    #[IsGranted('TENANT_EDIT')]
     public function updateGovernance(Request $request, Tenant $tenant): Response
     {
         $governanceModel = $request->request->get('governance_model');

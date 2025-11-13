@@ -11,10 +11,10 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/admin/permissions')]
-#[IsGranted('ROLE_ADMIN')]
 class PermissionController extends AbstractController
 {
     #[Route('', name: 'permission_index', methods: ['GET'])]
+    #[IsGranted('ROLE_VIEW')]
     public function index(
         PermissionRepository $permissionRepository,
         Request $request
@@ -51,6 +51,7 @@ class PermissionController extends AbstractController
     }
 
     #[Route('/{id}', name: 'permission_show', methods: ['GET'], requirements: ['id' => '\d+'])]
+    #[IsGranted('ROLE_VIEW')]
     public function show(Permission $permission): Response
     {
         // Load roles that have this permission
