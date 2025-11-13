@@ -1,82 +1,331 @@
-{% extends 'pdf/base.html.twig' %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>Risk Management Report</title>
+    <style>
+        @page {
+            margin: 2cm 1.5cm;
+        }
 
-{% block pdf_title %}Risk Management Report{% endblock %}
+        body {
+            font-family: DejaVu Sans, sans-serif;
+            font-size: 9pt;
+            line-height: 1.4;
+            color: #333;
+        }
 
-{% block header_title %}Risk Management Report{% endblock %}
+        h1 {
+            font-size: 18pt;
+            color: #1a56db;
+            text-align: center;
+            margin-bottom: 5pt;
+            border-bottom: 3px solid #1a56db;
+            padding-bottom: 10pt;
+        }
 
-{% block content %}
-    {# Summary Section #}
-    <div class="summary-box">
-        <div class="metric">
-            <span class="metric-label">Gesamt Risiken</span>
-            <span class="metric-value">{{ total_risks }}</span>
-        </div>
-        <div class="metric">
-            <span class="metric-label">Kritische Risiken</span>
-            <span class="metric-value" style="color: #C00;">{{ critical_risks }}</span>
-        </div>
-        <div class="metric">
-            <span class="metric-label">Hohe Risiken</span>
-            <span class="metric-value" style="color: #F90;">{{ high_risks }}</span>
-        </div>
-        <div class="metric">
-            <span class="metric-label">Mittlere Risiken</span>
-            <span class="metric-value" style="color: #FA0;">{{ medium_risks }}</span>
-        </div>
-        <div class="metric">
-            <span class="metric-label">Niedrige Risiken</span>
-            <span class="metric-value" style="color: #0A0;">{{ low_risks }}</span>
+        h2 {
+            font-size: 14pt;
+            color: #1a56db;
+            margin-top: 15pt;
+            margin-bottom: 8pt;
+            border-bottom: 1px solid #cbd5e1;
+            padding-bottom: 5pt;
+        }
+
+        h3 {
+            font-size: 11pt;
+            color: #334155;
+            margin-top: 12pt;
+            margin-bottom: 6pt;
+            font-weight: bold;
+        }
+
+        .header-info {
+            text-align: center;
+            font-size: 9pt;
+            color: #64748b;
+            margin-bottom: 20pt;
+        }
+
+        .stats-grid {
+            display: table;
+            width: 100%;
+            margin-bottom: 20pt;
+            border: 1px solid #cbd5e1;
+            border-collapse: collapse;
+        }
+
+        .stats-row {
+            display: table-row;
+        }
+
+        .stats-cell {
+            display: table-cell;
+            padding: 10pt;
+            text-align: center;
+            border: 1px solid #cbd5e1;
+            width: 20%;
+        }
+
+        .stats-label {
+            font-size: 8pt;
+            color: #64748b;
+            font-weight: bold;
+            margin-bottom: 4pt;
+        }
+
+        .stats-value {
+            font-size: 16pt;
+            color: #1a56db;
+            font-weight: bold;
+        }
+
+        .stats-value-critical {
+            color: #ef4444;
+        }
+
+        .stats-value-high {
+            color: #f59e0b;
+        }
+
+        .stats-value-medium {
+            color: #fbbf24;
+        }
+
+        .stats-value-low {
+            color: #10b981;
+        }
+
+        .insight-box {
+            background: #f8fafc;
+            border-left: 4pt solid #1a56db;
+            padding: 10pt;
+            margin: 10pt 0;
+            font-size: 8pt;
+            color: #475569;
+        }
+
+        .filter-info-box {
+            background: #e0f2fe;
+            border-left: 4pt solid #0ea5e9;
+            padding: 8pt;
+            margin: 10pt 0;
+            font-size: 8pt;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10pt 0;
+            font-size: 8pt;
+        }
+
+        table th {
+            background-color: #1a56db;
+            color: white;
+            padding: 6pt;
+            text-align: left;
+            font-weight: bold;
+            border: 1px solid #1e3a8a;
+        }
+
+        table td {
+            padding: 5pt;
+            border: 1px solid #cbd5e1;
+            vertical-align: top;
+        }
+
+        table tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 2pt 6pt;
+            border-radius: 3pt;
+            font-size: 7pt;
+            font-weight: bold;
+        }
+
+        .badge-critical {
+            background-color: #ef4444;
+            color: white;
+        }
+
+        .badge-high {
+            background-color: #f59e0b;
+            color: white;
+        }
+
+        .badge-medium {
+            background-color: #fbbf24;
+            color: white;
+        }
+
+        .badge-low {
+            background-color: #10b981;
+            color: white;
+        }
+
+        .badge-info {
+            background-color: #3b82f6;
+            color: white;
+        }
+
+        .badge-success {
+            background-color: #10b981;
+            color: white;
+        }
+
+        .badge-warning {
+            background-color: #f59e0b;
+            color: white;
+        }
+
+        .badge-secondary {
+            background-color: #6b7280;
+            color: white;
+        }
+
+        .page-break {
+            page-break-before: always;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .no-break {
+            page-break-inside: avoid;
+        }
+
+        .mt-2 {
+            margin-top: 15pt;
+        }
+
+        .w-6 { width: 6%; }
+        .w-8 { width: 8%; }
+        .w-10 { width: 10%; }
+        .w-12 { width: 12%; }
+        .w-15 { width: 15%; }
+        .w-22 { width: 22%; }
+        .w-25 { width: 25%; }
+        .w-30 { width: 30%; }
+        .w-60 { width: 60%; }
+
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 30pt;
+            text-align: center;
+            font-size: 7pt;
+            color: #64748b;
+            border-top: 1px solid #cbd5e1;
+            padding-top: 5pt;
+        }
+    </style>
+</head>
+<body>
+    <h1>Risk Management Report</h1>
+    <div class="header-info">
+        Risk Overview and Analysis<br>
+        Generated: {{ pdf_generation_date|date('d.m.Y H:i') }}
+    </div>
+
+    {# Executive Summary #}
+    <h2>Executive Summary</h2>
+    <div class="stats-grid">
+        <div class="stats-row">
+            <div class="stats-cell">
+                <div class="stats-label">Total Risks</div>
+                <div class="stats-value">{{ total_risks }}</div>
+            </div>
+            <div class="stats-cell">
+                <div class="stats-label">Critical Risks</div>
+                <div class="stats-value stats-value-critical">{{ critical_risks }}</div>
+            </div>
+            <div class="stats-cell">
+                <div class="stats-label">High Risks</div>
+                <div class="stats-value stats-value-high">{{ high_risks }}</div>
+            </div>
+            <div class="stats-cell">
+                <div class="stats-label">Medium Risks</div>
+                <div class="stats-value stats-value-medium">{{ medium_risks }}</div>
+            </div>
+            <div class="stats-cell">
+                <div class="stats-label">Low Risks</div>
+                <div class="stats-value stats-value-low">{{ low_risks }}</div>
+            </div>
         </div>
     </div>
 
     {% if filter_info %}
-    <div style="background: #E8F4F8; padding: 8px; margin: 8px 0; border-radius: 4px; font-size: 9pt;">
-        <strong>Angewendete Filter:</strong> {{ filter_info }}
+    <div class="filter-info-box">
+        <strong>Applied Filters:</strong> {{ filter_info }}
+    </div>
+    {% endif %}
+
+    {# Risk Assessment Insight #}
+    {% set high_priority_count = critical_risks + high_risks %}
+    {% if high_priority_count > 0 %}
+    <div class="insight-box" style="border-left-color: #ef4444; background: #fef2f2;">
+        <strong>Priority Action Required:</strong> {{ high_priority_count }} high-priority risks (critical + high) identified that require immediate attention and treatment planning.
+    </div>
+    {% else %}
+    <div class="insight-box" style="border-left-color: #10b981; background: #f0fdf4;">
+        <strong>Status:</strong> No critical or high-priority risks identified. Continue monitoring medium and low risks for changes.
     </div>
     {% endif %}
 
     {# Critical and High Risks Table #}
     {% set critical_and_high = risks|filter(r => r.riskScore >= 10) %}
     {% if critical_and_high|length > 0 %}
-    <h2>Kritische & Hohe Risiken (Top Priorität)</h2>
+    <h2>Critical & High Risks (Top Priority)</h2>
+    <div class="insight-box">
+        These {{ critical_and_high|length }} risks require immediate attention and treatment. Focus on mitigation strategies and assign clear ownership.
+    </div>
+
     <table>
         <thead>
             <tr>
-                <th style="width: 8%;">ID</th>
-                <th style="width: 25%;">Titel</th>
-                <th style="width: 15%;">Asset</th>
-                <th style="width: 10%;">Score</th>
-                <th style="width: 12%;">Level</th>
-                <th style="width: 15%;">Behandlung</th>
-                <th style="width: 15%;">Verantwortlich</th>
+                <th class="w-8">ID</th>
+                <th class="w-25">Title</th>
+                <th class="w-15">Asset</th>
+                <th class="w-10 text-center">Score</th>
+                <th class="w-12">Level</th>
+                <th class="w-15">Treatment</th>
+                <th class="w-15">Owner</th>
             </tr>
         </thead>
         <tbody>
             {% for risk in critical_and_high %}
             <tr class="no-break">
-                <td>{{ risk.id }}</td>
+                <td><strong>{{ risk.id }}</strong></td>
                 <td><strong>{{ risk.title }}</strong></td>
                 <td>{{ risk.asset ? risk.asset.name : '-' }}</td>
-                <td class="text-center"><strong>{{ risk.riskScore }}</strong></td>
+                <td class="text-center"><strong style="font-size: 9pt;">{{ risk.riskScore }}</strong></td>
                 <td>
                     {% if risk.riskScore >= 15 %}
-                        <span class="badge badge-critical">Kritisch</span>
+                        <span class="badge badge-critical">Critical</span>
                     {% elseif risk.riskScore >= 10 %}
-                        <span class="badge badge-high">Hoch</span>
+                        <span class="badge badge-high">High</span>
                     {% endif %}
                 </td>
                 <td>
                     {% if risk.treatment %}
                         <span class="badge badge-info">
-                            {% if risk.treatment == 'mitigate' %}Mindern
-                            {% elseif risk.treatment == 'accept' %}Akzeptieren
-                            {% elseif risk.treatment == 'transfer' %}Übertragen
-                            {% elseif risk.treatment == 'avoid' %}Vermeiden
+                            {% if risk.treatment == 'mitigate' %}Mitigate
+                            {% elseif risk.treatment == 'accept' %}Accept
+                            {% elseif risk.treatment == 'transfer' %}Transfer
+                            {% elseif risk.treatment == 'avoid' %}Avoid
                             {% else %}{{ risk.treatment }}
                             {% endif %}
                         </span>
                     {% else %}
-                        -
+                        <span style="color: #94a3b8;">Not defined</span>
                     {% endif %}
                 </td>
                 <td>{{ risk.owner ? risk.owner.name : '-' }}</td>
@@ -92,26 +341,26 @@
     {% endif %}
 
     {# All Risks Table #}
-    <h2>Alle Risiken (Detailansicht)</h2>
+    <h2>All Risks (Detailed View)</h2>
     <table>
         <thead>
             <tr>
-                <th style="width: 6%;">ID</th>
-                <th style="width: 22%;">Titel</th>
-                <th style="width: 12%;">Asset</th>
-                <th style="width: 6%;">Wkt.</th>
-                <th style="width: 6%;">Ausw.</th>
-                <th style="width: 8%;">Score</th>
-                <th style="width: 10%;">Level</th>
-                <th style="width: 10%;">Behandlung</th>
-                <th style="width: 10%;">Status</th>
-                <th style="width: 10%;">Owner</th>
+                <th class="w-6">ID</th>
+                <th class="w-22">Title</th>
+                <th class="w-12">Asset</th>
+                <th class="w-6 text-center">L</th>
+                <th class="w-6 text-center">I</th>
+                <th class="w-8 text-center">Score</th>
+                <th class="w-10">Level</th>
+                <th class="w-10">Treatment</th>
+                <th class="w-10">Status</th>
+                <th class="w-10">Owner</th>
             </tr>
         </thead>
         <tbody>
             {% for risk in risks %}
             <tr class="no-break">
-                <td>{{ risk.id }}</td>
+                <td><strong>{{ risk.id }}</strong></td>
                 <td>{{ risk.title }}</td>
                 <td>{{ risk.asset ? risk.asset.name : '-' }}</td>
                 <td class="text-center">{{ risk.likelihood ?? '-' }}</td>
@@ -119,22 +368,22 @@
                 <td class="text-center"><strong>{{ risk.riskScore }}</strong></td>
                 <td>
                     {% if risk.riskScore >= 15 %}
-                        <span class="badge badge-critical">Kritisch</span>
+                        <span class="badge badge-critical">Critical</span>
                     {% elseif risk.riskScore >= 10 %}
-                        <span class="badge badge-high">Hoch</span>
+                        <span class="badge badge-high">High</span>
                     {% elseif risk.riskScore >= 5 %}
-                        <span class="badge badge-medium">Mittel</span>
+                        <span class="badge badge-medium">Medium</span>
                     {% else %}
-                        <span class="badge badge-low">Niedrig</span>
+                        <span class="badge badge-low">Low</span>
                     {% endif %}
                 </td>
                 <td>
                     {% if risk.treatment %}
                         <span class="badge badge-info">
-                            {% if risk.treatment == 'mitigate' %}Mindern
-                            {% elseif risk.treatment == 'accept' %}Akzeptieren
-                            {% elseif risk.treatment == 'transfer' %}Übertragen
-                            {% elseif risk.treatment == 'avoid' %}Vermeiden
+                            {% if risk.treatment == 'mitigate' %}Mitigate
+                            {% elseif risk.treatment == 'accept' %}Accept
+                            {% elseif risk.treatment == 'transfer' %}Transfer
+                            {% elseif risk.treatment == 'avoid' %}Avoid
                             {% else %}{{ risk.treatment }}
                             {% endif %}
                         </span>
@@ -145,10 +394,10 @@
                 <td>
                     {% if risk.status %}
                         <span class="badge {% if risk.status == 'identified' %}badge-warning{% elseif risk.status == 'assessed' %}badge-info{% elseif risk.status == 'treated' %}badge-success{% else %}badge-secondary{% endif %}">
-                            {% if risk.status == 'identified' %}Identifiziert
-                            {% elseif risk.status == 'assessed' %}Bewertet
-                            {% elseif risk.status == 'treated' %}Behandelt
-                            {% elseif risk.status == 'monitored' %}Überwacht
+                            {% if risk.status == 'identified' %}Identified
+                            {% elseif risk.status == 'assessed' %}Assessed
+                            {% elseif risk.status == 'treated' %}Treated
+                            {% elseif risk.status == 'monitored' %}Monitored
                             {% else %}{{ risk.status }}
                             {% endif %}
                         </span>
@@ -156,73 +405,100 @@
                         -
                     {% endif %}
                 </td>
-                <td style="font-size: 8pt;">{{ risk.owner ? risk.owner.name : '-' }}</td>
+                <td style="font-size: 7pt;">{{ risk.owner ? risk.owner.name : '-' }}</td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
 
-    {# Risk Statistics Summary at the end #}
+    {# Risk Statistics Summary #}
     <div class="page-break"></div>
-    <h2>Risiko-Statistiken</h2>
+    <h2>Risk Statistics</h2>
 
-    <h3>Verteilung nach Risk Level</h3>
+    <h3>Distribution by Risk Level</h3>
     <table style="width: 60%;">
         <thead>
             <tr>
-                <th>Risk Level</th>
-                <th class="text-center">Anzahl</th>
-                <th class="text-center">Prozentsatz</th>
+                <th class="w-30">Risk Level</th>
+                <th class="text-center w-15">Count</th>
+                <th class="text-center w-15">Percentage</th>
             </tr>
         </thead>
         <tbody>
             <tr>
-                <td><span class="badge badge-critical">Kritisch (≥15)</span></td>
-                <td class="text-center">{{ critical_risks }}</td>
+                <td><span class="badge badge-critical">Critical (≥15)</span></td>
+                <td class="text-center"><strong>{{ critical_risks }}</strong></td>
                 <td class="text-center">{{ total_risks > 0 ? ((critical_risks / total_risks * 100)|round(1)) : 0 }}%</td>
             </tr>
             <tr>
-                <td><span class="badge badge-high">Hoch (10-14)</span></td>
-                <td class="text-center">{{ high_risks }}</td>
+                <td><span class="badge badge-high">High (10-14)</span></td>
+                <td class="text-center"><strong>{{ high_risks }}</strong></td>
                 <td class="text-center">{{ total_risks > 0 ? ((high_risks / total_risks * 100)|round(1)) : 0 }}%</td>
             </tr>
             <tr>
-                <td><span class="badge badge-medium">Mittel (5-9)</span></td>
-                <td class="text-center">{{ medium_risks }}</td>
+                <td><span class="badge badge-medium">Medium (5-9)</span></td>
+                <td class="text-center"><strong>{{ medium_risks }}</strong></td>
                 <td class="text-center">{{ total_risks > 0 ? ((medium_risks / total_risks * 100)|round(1)) : 0 }}%</td>
             </tr>
             <tr>
-                <td><span class="badge badge-low">Niedrig (<5)</span></td>
-                <td class="text-center">{{ low_risks }}</td>
+                <td><span class="badge badge-low">Low (<5)</span></td>
+                <td class="text-center"><strong>{{ low_risks }}</strong></td>
                 <td class="text-center">{{ total_risks > 0 ? ((low_risks / total_risks * 100)|round(1)) : 0 }}%</td>
             </tr>
         </tbody>
     </table>
 
+    <div class="insight-box">
+        <strong>Risk Profile:</strong>
+        {% set critical_high_pct = total_risks > 0 ? (((critical_risks + high_risks) / total_risks * 100)|round(1)) : 0 %}
+        {{ critical_high_pct }}% of risks are critical or high priority.
+        {% if critical_high_pct >= 30 %}
+        This indicates significant risk exposure requiring immediate management attention.
+        {% elseif critical_high_pct >= 15 %}
+        Moderate risk exposure. Continue focused treatment and monitoring.
+        {% else %}
+        Risk exposure is within acceptable limits. Maintain regular monitoring.
+        {% endif %}
+    </div>
+
     {% if status_breakdown %}
-    <h3 class="mt-2">Verteilung nach Status</h3>
+    <h3 class="mt-2">Distribution by Status</h3>
     <table style="width: 60%;">
         <thead>
             <tr>
-                <th>Status</th>
-                <th class="text-center">Anzahl</th>
+                <th class="w-30">Status</th>
+                <th class="text-center w-15">Count</th>
             </tr>
         </thead>
         <tbody>
             {% for status, count in status_breakdown %}
             <tr>
                 <td>
-                    {% if status == 'identified' %}Identifiziert
-                    {% elseif status == 'assessed' %}Bewertet
-                    {% elseif status == 'treated' %}Behandelt
-                    {% elseif status == 'monitored' %}Überwacht
-                    {% else %}{{ status }}
+                    {% if status == 'identified' %}
+                        <span class="badge badge-warning">Identified</span>
+                    {% elseif status == 'assessed' %}
+                        <span class="badge badge-info">Assessed</span>
+                    {% elseif status == 'treated' %}
+                        <span class="badge badge-success">Treated</span>
+                    {% elseif status == 'monitored' %}
+                        <span class="badge badge-secondary">Monitored</span>
+                    {% else %}
+                        {{ status }}
                     {% endif %}
                 </td>
-                <td class="text-center">{{ count }}</td>
+                <td class="text-center"><strong>{{ count }}</strong></td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
+
+    <div class="insight-box">
+        <strong>Recommendation:</strong> Ensure all identified risks are assessed and appropriate treatment strategies are defined and implemented.
+    </div>
     {% endif %}
-{% endblock %}
+
+    <div class="footer">
+        Risk Management Report - Generated on {{ pdf_generation_date|date('d.m.Y H:i:s') }} - Page <span class="pagenum"></span>
+    </div>
+</body>
+</html>
