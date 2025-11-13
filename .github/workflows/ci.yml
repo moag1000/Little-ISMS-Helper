@@ -161,6 +161,13 @@ jobs:
             type=semver,pattern={{major}}.{{minor}}
             type=sha,prefix={{branch}}-
             type=raw,value=latest,enable={{is_default_branch}}
+          labels: |
+            org.opencontainers.image.title=Little ISMS Helper
+            org.opencontainers.image.description=Webbasierte ISMS-Lösung für ISO 27001:2022 Compliance, Risiko- und BCM-Management
+            org.opencontainers.image.vendor=Little ISMS Helper Project
+            org.opencontainers.image.licenses=AGPL-3.0-or-later
+            org.opencontainers.image.documentation=https://github.com/moag1000/Little-ISMS-Helper/blob/main/README.md
+            maintainer=Little ISMS Helper Project
 
       - name: Build and Push Docker image (production)
         uses: docker/build-push-action@v5
@@ -178,11 +185,12 @@ jobs:
 
       - name: Sanitize branch name for Docker tag
         id: sanitize
-        if: github.ref == 'refs/heads/develop' || startsWith(github.ref, 'refs/heads/claude/')
         run: |
-          # Replace slashes with hyphens for valid Docker tag
-          SANITIZED_TAG=$(echo "${{ github.ref_name }}" | sed 's/\//-/g')
-          echo "tag=${SANITIZED_TAG}" >> $GITHUB_OUTPUT
+          # Replace slashes with dashes for valid Docker tags
+          BRANCH_NAME="${{ github.ref_name }}"
+          SANITIZED_BRANCH=$(echo "$BRANCH_NAME" | sed 's/\//-/g')
+          echo "branch=$SANITIZED_BRANCH" >> $GITHUB_OUTPUT
+          echo "Sanitized branch name: $SANITIZED_BRANCH"
 
       - name: Build and Push Docker image (development)
         uses: docker/build-push-action@v5
@@ -191,7 +199,7 @@ jobs:
         with:
           context: .
           target: development
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/little-isms-helper:dev-${{ steps.sanitize.outputs.tag }}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/little-isms-helper:dev-${{ steps.sanitize.outputs.branch }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
