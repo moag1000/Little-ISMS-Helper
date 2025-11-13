@@ -1,0 +1,227 @@
+{% extends 'pdf/base.html.twig' %}
+
+{% block pdf_title %}Gap Analysis Report - {{ framework.name }}{% endblock %}
+
+{% block header_title %}Gap Analysis Report{% endblock %}
+{% block header_subtitle %}{{ framework.name }} ({{ framework.code }}){% endblock %}
+
+{% block content %}
+    {# Summary Section #}
+    <div class="summary-box">
+        <div class="metric">
+            <span class="metric-label">Framework</span>
+            <span class="metric-value">{{ framework.name }}</span>
+        </div>
+        <div class="metric">
+            <span class="metric-label">Gesamt Anforderungen</span>
+            <span class="metric-value">{{ total_requirements }}</span>
+        </div>
+        <div class="metric">
+            <span class="metric-label">Erfüllte Anforderungen</span>
+            <span class="metric-value" style="color: #0A0;">{{ met_requirements }}</span>
+        </div>
+        <div class="metric">
+            <span class="metric-label">Identifizierte Gaps</span>
+            <span class="metric-value" style="color: #C00;">{{ total_gaps }}</span>
+        </div>
+        <div class="metric">
+            <span class="metric-label">Compliance Score</span>
+            <span class="metric-value">{{ compliance_score }}%</span>
+        </div>
+    </div>
+
+    {# Severity Breakdown #}
+    <h2>Gap-Verteilung nach Severity</h2>
+    <table style="width: 70%;">
+        <thead>
+            <tr>
+                <th>Severity Level</th>
+                <th class="text-center">Anzahl Gaps</th>
+                <th class="text-center">Prozentsatz</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="badge badge-critical">Kritisch</span></td>
+                <td class="text-center">{{ severity_counts.critical }}</td>
+                <td class="text-center">{{ total_gaps > 0 ? ((severity_counts.critical / total_gaps * 100)|round(1)) : 0 }}%</td>
+            </tr>
+            <tr>
+                <td><span class="badge badge-high">Hoch</span></td>
+                <td class="text-center">{{ severity_counts.high }}</td>
+                <td class="text-center">{{ total_gaps > 0 ? ((severity_counts.high / total_gaps * 100)|round(1)) : 0 }}%</td>
+            </tr>
+            <tr>
+                <td><span class="badge badge-medium">Mittel</span></td>
+                <td class="text-center">{{ severity_counts.medium }}</td>
+                <td class="text-center">{{ total_gaps > 0 ? ((severity_counts.medium / total_gaps * 100)|round(1)) : 0 }}%</td>
+            </tr>
+            <tr>
+                <td><span class="badge badge-low">Niedrig</span></td>
+                <td class="text-center">{{ severity_counts.low }}</td>
+                <td class="text-center">{{ total_gaps > 0 ? ((severity_counts.low / total_gaps * 100)|round(1)) : 0 }}%</td>
+            </tr>
+        </tbody>
+    </table>
+
+    {# Critical Gaps First #}
+    {% set critical_gaps = gaps|filter(g => g.requirement.priority == 'critical') %}
+    {% if critical_gaps|length > 0 %}
+    <div class="page-break"></div>
+    <h2>Kritische Gaps (Sofortmaßnahmen erforderlich)</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 12%;">ID</th>
+                <th style="width: 25%;">Anforderung</th>
+                <th style="width: 15%;">Kategorie</th>
+                <th style="width: 10%;">Severity</th>
+                <th style="width: 10%;">Status</th>
+                <th style="width: 28%;">Gap-Beschreibung</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for gap_item in critical_gaps %}
+            {% set req = gap_item.requirement %}
+            <tr class="no-break">
+                <td><strong>{{ req.requirementId }}</strong></td>
+                <td>{{ req.title }}</td>
+                <td><span class="badge badge-info">{{ req.category ?? '-' }}</span></td>
+                <td><span class="badge badge-critical">Kritisch</span></td>
+                <td>
+                    {% set status = req.status %}
+                    <span class="badge {% if status == 'not_implemented' %}badge-danger{% elseif status == 'partially_implemented' %}badge-warning{% else %}badge-secondary{% endif %}">
+                        {% if status == 'not_implemented' %}Nicht impl.
+                        {% elseif status == 'partially_implemented' %}Teilweise
+                        {% elseif status == 'not_applicable' %}N/A
+                        {% else %}{{ status }}
+                        {% endif %}
+                    </span>
+                </td>
+                <td style="font-size: 8pt;">{{ gap_item.analysis.gap_reason ?? 'Anforderung nicht erfüllt' }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+
+    {# All Gaps Detailed Table #}
+    <div class="page-break"></div>
+    <h2>Alle Gaps (Detailansicht)</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 10%;">ID</th>
+                <th style="width: 22%;">Anforderung</th>
+                <th style="width: 12%;">Kategorie</th>
+                <th style="width: 10%;">Severity</th>
+                <th style="width: 8%;">Status</th>
+                <th style="width: 8%;">Erfüllung</th>
+                <th style="width: 30%;">Gap-Grund</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for gap_item in gaps %}
+            {% set req = gap_item.requirement %}
+            <tr class="no-break">
+                <td><strong>{{ req.requirementId }}</strong></td>
+                <td>{{ req.title|length > 50 ? (req.title|slice(0, 50) ~ '...') : req.title }}</td>
+                <td><span class="badge badge-info">{{ req.category ?? '-' }}</span></td>
+                <td>
+                    {% set priority = req.priority ?? 'low' %}
+                    <span class="badge badge-{{ priority == 'critical' ? 'critical' : (priority == 'high' ? 'high' : (priority == 'medium' ? 'medium' : 'low')) }}">
+                        {% if priority == 'critical' %}Kritisch
+                        {% elseif priority == 'high' %}Hoch
+                        {% elseif priority == 'medium' %}Mittel
+                        {% else %}Niedrig
+                        {% endif %}
+                    </span>
+                </td>
+                <td>
+                    {% set status = req.status %}
+                    <span class="badge {% if status == 'not_implemented' %}badge-danger{% elseif status == 'partially_implemented' %}badge-warning{% else %}badge-secondary{% endif %}">
+                        {% if status == 'not_implemented' %}Nicht impl.
+                        {% elseif status == 'partially_implemented' %}Teilweise
+                        {% elseif status == 'not_applicable' %}N/A
+                        {% else %}{{ status }}
+                        {% endif %}
+                    </span>
+                </td>
+                <td class="text-center">{{ req.fulfillmentPercentage ?? 0 }}%</td>
+                <td style="font-size: 8pt;">{{ gap_item.analysis.gap_reason|length > 80 ? (gap_item.analysis.gap_reason|slice(0, 80) ~ '...') : gap_item.analysis.gap_reason }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {# Recommendations Section #}
+    <div class="page-break"></div>
+    <h2>Empfehlungen zur Gap-Schließung</h2>
+
+    <h3>Priorität 1: Kritische Gaps</h3>
+    <div style="background: #FFC7CE; padding: 15px; margin: 10px 0; border-left: 4px solid #9C0006; font-size: 9pt;">
+        <strong>Sofortmaßnahmen erforderlich:</strong>
+        <ul style="margin-left: 20px; margin-top: 5px;">
+            {% if severity_counts.critical > 0 %}
+                <li>{{ severity_counts.critical }} kritische Gap(s) identifiziert - Diese erfordern sofortige Aufmerksamkeit</li>
+                <li>Empfehlung: Wöchentliche Reviews und dedizierte Ressourcen für kritische Anforderungen</li>
+                <li>Ziel: 100% der kritischen Gaps innerhalb von 30 Tagen schließen</li>
+            {% else %}
+                <li>Keine kritischen Gaps identifiziert - Guter Status!</li>
+            {% endif %}
+        </ul>
+    </div>
+
+    <h3>Priorität 2: Hohe Gaps</h3>
+    <div style="background: #FFEB9C; padding: 15px; margin: 10px 0; border-left: 4px solid #9C5700; font-size: 9pt;">
+        <strong>Mittelfristige Maßnahmen:</strong>
+        <ul style="margin-left: 20px; margin-top: 5px;">
+            {% if severity_counts.high > 0 %}
+                <li>{{ severity_counts.high }} hohe Gap(s) identifiziert - Sollten zeitnah adressiert werden</li>
+                <li>Empfehlung: Monatliche Reviews und klare Verantwortlichkeiten definieren</li>
+                <li>Ziel: 80% der hohen Gaps innerhalb von 90 Tagen schließen</li>
+            {% else %}
+                <li>Keine hohen Gaps identifiziert - Weiter so!</li>
+            {% endif %}
+        </ul>
+    </div>
+
+    <h3>Compliance Roadmap</h3>
+    <table style="width: 90%;">
+        <thead>
+            <tr>
+                <th>Zeitraum</th>
+                <th>Fokus</th>
+                <th>Erwartete Verbesserung</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Q1 (0-3 Monate)</strong></td>
+                <td>Kritische & Hohe Gaps</td>
+                <td>Compliance Score: {{ compliance_score }}% → {{ [compliance_score + 15, 95]|min }}%</td>
+            </tr>
+            <tr>
+                <td><strong>Q2 (3-6 Monate)</strong></td>
+                <td>Mittlere Gaps</td>
+                <td>Compliance Score: → {{ [compliance_score + 25, 98]|min }}%</td>
+            </tr>
+            <tr>
+                <td><strong>Q3-Q4 (6-12 Monate)</strong></td>
+                <td>Niedrige Gaps & Kontinuierliche Verbesserung</td>
+                <td>Compliance Score: → 100%</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div style="background: #E8F4F8; padding: 15px; margin-top: 20px; border-radius: 4px; font-size: 9pt;">
+        <strong>📋 Nächste Schritte:</strong>
+        <ol style="margin-left: 20px; margin-top: 5px;">
+            <li>Review Meeting mit Stakeholdern zur Priorisierung der Gaps einplanen</li>
+            <li>Verantwortlichkeiten für kritische und hohe Gaps zuweisen</li>
+            <li>Detaillierte Implementierungspläne für Top 5 Gaps erstellen</li>
+            <li>Monatliches Gap-Tracking und Fortschrittsberichte etablieren</li>
+            <li>Quarterly Compliance Reviews durchführen</li>
+        </ol>
+    </div>
+{% endblock %}

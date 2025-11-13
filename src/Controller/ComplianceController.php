@@ -10,6 +10,7 @@ use App\Service\ComplianceAssessmentService;
 use App\Service\ComplianceMappingService;
 use App\Service\ComplianceFrameworkLoaderService;
 use App\Service\ExcelExportService;
+use App\Service\PdfExportService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -29,7 +30,8 @@ class ComplianceController extends AbstractController
         private ComplianceMappingService $mappingService,
         private ComplianceFrameworkLoaderService $frameworkLoaderService,
         private CsrfTokenManagerInterface $csrfTokenManager,
-        private ExcelExportService $excelExportService
+        private ExcelExportService $excelExportService,
+        private PdfExportService $pdfExportService
     ) {}
 
     #[Route('/', name: 'app_compliance_index')]
@@ -605,6 +607,57 @@ class ComplianceController extends AbstractController
         $response = new Response($content);
         $response->headers->set('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         $response->headers->set('Content-Disposition', 'attachment; filename="' . $filename . '"');
+
+        return $response;
+    }
+
+    #[Route('/framework/{id}/gaps/export/pdf', name: 'app_compliance_export_gaps_pdf', requirements: ['id' => '\d+'])]
+    public function exportGapsPdf(int $id): Response
+    {
+        $framework = $this->frameworkRepository->find($id);
+
+        if (!$framework) {
+            throw $this->createNotFoundException('Framework not found');
+        }
+
+        $gaps = $this->requirementRepository->findGapsByFramework($framework);
+        $requirements = $this->requirementRepository->findByFramework($framework);
+        $metRequirements = count($requirements) - count($gaps);
+
+        // Analyze gaps
+        $gapAnalysis = [];
+        $severityCounts = ['critical' => 0, 'high' => 0, 'medium' => 0, 'low' => 0];
+
+        foreach ($gaps as $gap) {
+            $analysis = $this->assessmentService->assessRequirement($gap);
+            $priority = $gap->getPriority() ?? 'low';
+            $severityCounts[$priority]++;
+
+            $gapAnalysis[] = [
+                'requirement' => $gap,
+                'analysis' => $analysis,
+            ];
+        }
+
+        $complianceScore = count($requirements) > 0 ? round(($metRequirements / count($requirements)) * 100, 1) : 0;
+
+        // Generate PDF
+        $pdfContent = $this->pdfExportService->generatePdf('pdf/gap_analysis_report.html.twig', [
+            'framework' => $framework,
+            'gaps' => $gapAnalysis,
+            'total_requirements' => count($requirements),
+            'met_requirements' => $metRequirements,
+            'total_gaps' => count($gaps),
+            'compliance_score' => $complianceScore,
+            'severity_counts' => $severityCounts,
+        ]);
+
+        $filename = sprintf('gap_analysis_%s_%s.pdf', $framework->getCode(), date('Y-m-d_His'));
+
+        $response = new Response($pdfContent);
+        $response->headers->set('Content-Type', 'application/pdf');
+        $response->headers->set('Content-Disposition', 'attachment; filename="' . $filename . '"');
+        $response->headers->set('Content-Length', strlen($pdfContent));
 
         return $response;
     }
