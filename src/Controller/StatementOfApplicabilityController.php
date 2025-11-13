@@ -85,9 +85,12 @@ class StatementOfApplicabilityController extends AbstractController
     }
 
     #[Route('/report/export', name: 'app_soa_export')]
-    public function export(): Response
+    public function export(Request $request): Response
     {
         $controls = $this->controlRepository->findAllInIsoOrder();
+
+        // Close session to prevent blocking other requests
+        $request->getSession()->save();
 
         return $this->render('soa/export.html.twig', [
             'controls' => $controls,
@@ -100,8 +103,11 @@ class StatementOfApplicabilityController extends AbstractController
      * Phase 6F-C: Professional SoA PDF Report with all 93 controls
      */
     #[Route('/report/pdf', name: 'app_soa_export_pdf')]
-    public function exportPdf(): Response
+    public function exportPdf(Request $request): Response
     {
+        // Close session to prevent blocking other requests during PDF generation
+        $request->getSession()->save();
+
         return $this->soaReportService->downloadSoAReport();
     }
 

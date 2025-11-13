@@ -172,6 +172,111 @@
                         </tbody>
                     </table>
 
+                    {# Corporate Structure Information #}
+                    {% if tenant.isPartOfCorporateStructure %}
+                        <hr>
+                        <h6 class="text-muted mb-3">
+                            <i class="bi bi-diagram-3"></i> {{ 'corporate.section.structure'|trans }}
+                        </h6>
+                        <table class="table table-sm">
+                            <tbody>
+                                {% if tenant.parent %}
+                                    <tr>
+                                        <th style="width: 40%;">{{ 'corporate.field.parent'|trans }}</th>
+                                        <td>
+                                            <a href="{{ path('tenant_management_show', {id: tenant.parent.id}) }}">
+                                                {{ tenant.parent.name }}
+                                            </a>
+                                            <code class="text-muted ms-2">{{ tenant.parent.code }}</code>
+                                        </td>
+                                    </tr>
+                                    {% if defaultGovernance %}
+                                        <tr>
+                                            <th>{{ 'corporate.field.governance_model'|trans }}</th>
+                                            <td>
+                                                <span class="badge bg-{{ defaultGovernance.governanceModel.value == 'hierarchical' ? 'primary' : (defaultGovernance.governanceModel.value == 'shared' ? 'warning' : 'secondary') }}">
+                                                    {{ defaultGovernance.governanceModel.label }}
+                                                </span>
+                                                <br><small class="text-muted">{{ defaultGovernance.governanceModel.description }}</small>
+                                            </td>
+                                        </tr>
+                                    {% endif %}
+                                    <tr>
+                                        <th>{{ 'corporate.field.hierarchy_depth'|trans }}</th>
+                                        <td>{{ 'corporate.level'|trans({'%level%': tenant.hierarchyDepth}) }}</td>
+                                    </tr>
+                                {% endif %}
+                                {% if tenant.isCorporateParent %}
+                                    <tr>
+                                        <th>{{ 'corporate.field.subsidiaries'|trans }}</th>
+                                        <td>
+                                            <span class="badge bg-info">{{ tenant.subsidiaries|length }}</span>
+                                            {% if tenant.subsidiaries|length > 0 %}
+                                                <ul class="mt-2 mb-0">
+                                                    {% for subsidiary in tenant.subsidiaries %}
+                                                        <li>
+                                                            <a href="{{ path('tenant_management_show', {id: subsidiary.id}) }}">
+                                                                {{ subsidiary.name }}
+                                                            </a>
+                                                            <code class="text-muted">{{ subsidiary.code }}</code>
+                                                        </li>
+                                                    {% endfor %}
+                                                </ul>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                        <div class="d-grid">
+                            <a href="{{ path('tenant_management_corporate_structure') }}" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-diagram-3"></i> {{ 'corporate.action.view_structure'|trans }}
+                            </a>
+                        </div>
+
+                        {# ISMS Context Inheritance #}
+                        <hr>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h6 class="text-muted mb-0">
+                                <i class="bi bi-building-gear"></i> {{ 'corporate.inheritance.title'|trans }}
+                            </h6>
+                            {% if tenant.isCorporateParent %}
+                                <button type="button" class="btn btn-sm btn-primary" onclick="propagateContext()">
+                                    <i class="bi bi-arrow-down-circle"></i> {{ 'corporate.inheritance.propagate'|trans }}
+                                </button>
+                            {% endif %}
+                        </div>
+                        <div id="effectiveContextContainer">
+                            <div class="text-center text-muted py-3">
+                                <div class="spinner-border spinner-border-sm" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                {{ 'common.loading'|trans }}
+                            </div>
+                        </div>
+
+                        {# Granular Governance Rules - only for subsidiaries #}
+                        {% if tenant.parent %}
+                            <hr>
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h6 class="text-muted mb-0">
+                                    <i class="bi bi-gear"></i> {{ 'corporate.granular.title'|trans }}
+                                </h6>
+                                <button type="button" class="btn btn-sm btn-success" onclick="showAddGovernanceRuleModal()">
+                                    <i class="bi bi-plus-circle"></i> {{ 'corporate.granular.add_rule'|trans }}
+                                </button>
+                            </div>
+                            <div id="governanceRulesContainer">
+                                <div class="text-center text-muted py-3">
+                                    <div class="spinner-border spinner-border-sm" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                    {{ 'common.loading'|trans }}
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endif %}
+
                     {% if tenant.settings %}
                         <hr>
                         <h6 class="text-muted mb-2">{{ 'tenant.field.settings'|trans }}</h6>
@@ -261,5 +366,214 @@
                 </div>
             </div>
         </div>
+    {% endif %}
+
+    {# Governance Rule Modal #}
+    {% if tenant.parent %}
+    <div class="modal fade" id="governanceRuleModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{{ 'corporate.granular.modal.title'|trans }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">{{ 'corporate.granular.field.scope'|trans }}</label>
+                        <select class="form-select" id="ruleScope" required>
+                            <option value="control">{{ 'corporate.granular.scope.control'|trans }}</option>
+                            <option value="isms_context">{{ 'corporate.granular.scope.isms_context'|trans }}</option>
+                            <option value="risk">{{ 'corporate.granular.scope.risk'|trans }}</option>
+                            <option value="asset">{{ 'corporate.granular.scope.asset'|trans }}</option>
+                            <option value="process">{{ 'corporate.granular.scope.process'|trans }}</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">{{ 'corporate.granular.field.scope_id'|trans }}</label>
+                        <input type="text" class="form-control" id="ruleScopeId" placeholder="z.B. A.5.1">
+                        <small class="form-text text-muted">{{ 'corporate.granular.help.scope_id'|trans }}</small>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">{{ 'corporate.field.governance_model'|trans }}</label>
+                        <select class="form-select" id="ruleGovernance" required>
+                            <option value="hierarchical">{{ 'governance.hierarchical'|trans }}</option>
+                            <option value="shared">{{ 'governance.shared'|trans }}</option>
+                            <option value="independent">{{ 'governance.independent'|trans }}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ 'common.cancel'|trans }}</button>
+                    <button type="button" class="btn btn-primary" onclick="saveGovernanceRule()">{{ 'common.save'|trans }}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {% if tenant.isPartOfCorporateStructure %}
+    <script>
+        const tenantId = {{ tenant.id }};
+
+        // Load effective ISMS context
+        function loadEffectiveContext() {
+            fetch(`/api/corporate-structure/effective-context/${tenantId}`)
+                .then(r => r.json())
+                .then(data => {
+                    const container = document.getElementById('effectiveContextContainer');
+                    if (data.error) {
+                        container.innerHTML = '<div class="alert alert-warning small mb-0"><i class="bi bi-exclamation-triangle"></i> {{ 'corporate.inheritance.no_context'|trans }}</div>';
+                        return;
+                    }
+
+                    let html = '<div class="card border-info">';
+                    html += '<div class="card-body p-3">';
+                    html += '<p class="mb-2"><strong>{{ 'corporate.inheritance.organization'|trans }}:</strong> ' + data.context.organizationName + '</p>';
+
+                    if (data.context.isInherited) {
+                        html += '<div class="alert alert-info small mb-0">';
+                        html += '<i class="bi bi-arrow-up-right"></i> ';
+                        html += '{{ 'corporate.inheritance.inherited_from'|trans }}: ';
+                        html += '<a href="{{ path('tenant_management_show', {id: '__ID__'}) }}" class="alert-link">' + data.context.inheritedFrom.name + '</a>';
+                        html = html.replace('__ID__', data.context.inheritedFrom.id);
+                        html += '</div>';
+                    } else {
+                        html += '<div class="alert alert-success small mb-0">';
+                        html += '<i class="bi bi-check-circle"></i> {{ 'corporate.inheritance.own_context'|trans }}';
+                        html += '</div>';
+                    }
+
+                    html += '</div></div>';
+                    container.innerHTML = html;
+                })
+                .catch(err => {
+                    console.error('Error loading effective context:', err);
+                    document.getElementById('effectiveContextContainer').innerHTML =
+                        '<div class="alert alert-danger small mb-0">{{ 'corporate.inheritance.load_error'|trans }}</div>';
+                });
+        }
+
+        // Propagate context changes to subsidiaries
+        function propagateContext() {
+            if (!confirm('{{ 'corporate.inheritance.confirm_propagate'|trans }}')) {
+                return;
+            }
+
+            fetch(`/api/corporate-structure/propagate-context/${tenantId}`, {
+                method: 'POST'
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    alert(data.message);
+                    loadEffectiveContext();
+                } else {
+                    alert('{{ 'corporate.inheritance.propagate_error'|trans }}');
+                }
+            })
+            .catch(err => {
+                console.error('Error propagating context:', err);
+                alert('{{ 'corporate.inheritance.propagate_error'|trans }}');
+            });
+        }
+
+        {% if tenant.parent %}
+        function loadGovernanceRules() {
+            fetch(`/api/corporate-structure/${tenantId}/governance`)
+                .then(r => r.json())
+                .then(data => {
+                    const container = document.getElementById('governanceRulesContainer');
+                    if (data.rules.length === 0) {
+                        container.innerHTML = '<p class="text-muted small">{{ 'corporate.granular.no_rules'|trans }}</p>';
+                        return;
+                    }
+                    let html = '<div class="list-group list-group-flush">';
+                    data.rules.forEach(rule => {
+                        const badgeColor = rule.governanceModel === 'hierarchical' ? 'primary' : (rule.governanceModel === 'shared' ? 'warning' : 'secondary');
+                        const scopeIdParam = rule.scopeId ? `'${rule.scopeId}'` : 'null';
+                        html += `<div class="list-group-item d-flex justify-content-between align-items-center">
+                            <div><strong>${rule.scope}</strong>${rule.scopeId ? ': ' + rule.scopeId : ''}<br>
+                            <span class="badge bg-${badgeColor}">${rule.governanceLabel}</span></div>
+                            <button class="btn btn-sm btn-danger" onclick="deleteRule(${rule.id}, '${rule.scope}', ${scopeIdParam})"><i class="bi bi-trash"></i></button>
+                        </div>`;
+                    });
+                    html += '</div>';
+                    container.innerHTML = html;
+                })
+                .catch(err => {
+                    console.error('Error loading governance rules:', err);
+                    document.getElementById('governanceRulesContainer').innerHTML =
+                        '<div class="alert alert-danger small mb-0">{{ 'corporate.granular.flash.error'|trans }}</div>';
+                });
+        }
+
+        function showAddGovernanceRuleModal() {
+            const modal = new bootstrap.Modal(document.getElementById('governanceRuleModal'));
+            modal.show();
+        }
+
+        function saveGovernanceRule() {
+            const scope = document.getElementById('ruleScope').value;
+            const scopeId = document.getElementById('ruleScopeId').value || null;
+            const governanceModel = document.getElementById('ruleGovernance').value;
+
+            fetch(`/api/corporate-structure/${tenantId}/governance/${scope}`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({scopeId, governanceModel})
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    bootstrap.Modal.getInstance(document.getElementById('governanceRuleModal')).hide();
+                    loadGovernanceRules();
+                } else {
+                    alert('{{ 'corporate.granular.flash.error'|trans }}');
+                }
+            })
+            .catch(err => {
+                console.error('Error saving governance rule:', err);
+                alert('{{ 'corporate.granular.flash.error'|trans }}');
+            });
+        }
+
+        function deleteRule(ruleId, scope, scopeId) {
+            if (!confirm('{{ 'corporate.granular.confirm.delete'|trans }}')) {
+                return;
+            }
+
+            const url = scopeId
+                ? `/api/corporate-structure/${tenantId}/governance/${scope}/${scopeId}`
+                : `/api/corporate-structure/${tenantId}/governance/${scope}/null`;
+
+            fetch(url, {
+                method: 'DELETE'
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    loadGovernanceRules();
+                } else {
+                    alert('{{ 'corporate.granular.flash.error'|trans }}');
+                }
+            })
+            .catch(err => {
+                console.error('Error deleting governance rule:', err);
+                alert('{{ 'corporate.granular.flash.error'|trans }}');
+            });
+        }
+        {% endif %}
+
+        // Load data on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            loadEffectiveContext();
+            {% if tenant.parent %}
+            loadGovernanceRules();
+            {% endif %}
+        });
+    </script>
     {% endif %}
 {% endblock %}

@@ -22,7 +22,7 @@
             {% set primaryAction = actions|first %}
             <a href="{{ primaryAction.url }}"
                class="btn btn-{{ primaryAction.variant|default('primary') }}"
-               data-turbo-action="advance">
+               {% if primaryAction.turbo is defined and primaryAction.turbo == false %}data-turbo="false"{% else %}data-turbo-action="advance"{% endif %}>
                 <i class="bi {{ primaryAction.icon }}"></i>
                 {{ primaryAction.label }}
                 {% if primaryAction.shortcut is defined %}
@@ -48,6 +48,8 @@
                                    {% if action.action == 'delete' %}
                                        data-turbo-method="delete"
                                        data-turbo-confirm="Möchten Sie dieses {{ entityType }} wirklich löschen?"
+                                   {% elseif action.turbo is defined and action.turbo == false %}
+                                       data-turbo="false"
                                    {% else %}
                                        data-turbo-action="advance"
                                    {% endif %}>

@@ -337,6 +337,7 @@ common:
   not_set: Not Set
   not_started: Not Started
   refresh: Refresh
+  save: Save
   search: Search
   success: Success
   to: To
@@ -524,6 +525,8 @@ audit:
     department: Department Audit
     full_isms: Full ISMS Audit
     location: Location Audit
+    corporate_wide: Corporate-Wide Audit
+    corporate_subsidiaries: Subsidiary Audit
   type:
     iso27001: ISO 27001
     iso9001: ISO 9001
@@ -2699,6 +2702,7 @@ nav.admin_portal: 'Admin Portal'
 admin.title: 'Administration'
 admin.nav.dashboard: 'Dashboard'
 admin.nav.tenants: 'Tenants'
+admin.nav.corporate_structure: 'Corporate Structures'
 admin.nav.users: 'Users'
 admin.nav.roles: 'Roles'
 admin.nav.permissions: 'Permissions'
@@ -2804,3 +2808,119 @@ common.cancel: 'Cancel'
 common.view: 'View'
 common.edit: 'Edit'
 common.actions: 'Actions'
+
+# Corporate Structure Management
+corporate:
+  title: 'Corporate Structures'
+  subtitle: 'Management of parent companies and subsidiaries'
+  role:
+    parent: 'Parent Company'
+    subsidiary: 'Subsidiary'
+  section:
+    groups: 'Corporate Groups'
+    standalone: 'Standalone Tenants'
+    structure: 'Corporate Structure'
+  stats:
+    groups: 'Corporate Groups'
+    standalone: 'Standalone'
+    total: 'Total Tenants'
+  field:
+    subsidiary: 'Subsidiary'
+    parent: 'Parent Company'
+    governance_model: 'Governance Model'
+    actions: 'Actions'
+    hierarchy_depth: 'Hierarchy Level'
+    subsidiaries: 'Subsidiaries'
+    is_corporate_parent: 'Is Corporate Parent'
+    is_corporate_parent_help: 'Check this if this tenant is a parent company'
+    parent_help: 'Select the parent company for this tenant'
+    governance_model_help: 'Choose how ISMS responsibilities are managed'
+    corporate_notes: 'Corporate Notes'
+    corporate_notes_help: 'Optional notes about the corporate structure'
+  select:
+    parent: 'Select parent company...'
+    governance: 'Select governance model...'
+  action:
+    set_parent: 'Assign parent'
+    remove_parent: 'Remove assignment'
+    update_governance: 'Change governance model'
+    view_structure: 'View Complete Structure'
+  modal:
+    set_parent:
+      title: 'Assign Parent Company'
+    update_governance:
+      title: 'Change Governance Model'
+  confirm:
+    remove_parent: 'Do you really want to remove the assignment to the parent company?'
+  flash:
+    parent_set: 'Parent company successfully assigned'
+    parent_removed: 'Assignment to parent company removed'
+    parent_not_found: 'Parent company not found'
+    invalid_governance: 'Invalid governance model'
+    governance_updated: 'Governance model updated'
+    error: 'Error in corporate structure management'
+    no_governance_found: 'No governance rule found for this tenant'
+  info:
+    title: 'Corporate Structure Information'
+    text: 'Here you can manage relationships between parent companies and subsidiaries. The governance model determines how ISMS responsibilities are divided between parent and subsidiary companies.'
+  level: 'Level %level%'
+  placeholder:
+    parent: 'No parent (standalone)'
+    governance_model: 'Select governance model...'
+    corporate_notes: 'E.g. Special agreements or particularities...'
+  single_tenant:
+    title: 'Single Tenant Environment'
+    message: 'There is currently only %count% active tenant in your system.'
+    hint: 'Corporate structures become relevant when you manage multiple tenants.'
+  granular:
+    title: 'Granular Governance Rules'
+    subtitle: 'Specific governance rules for individual areas'
+    add_rule: 'Add Rule'
+    no_rules: 'No specific rules defined. Default governance model applies.'
+    loading: 'Loading governance rules...'
+    modal:
+      title: 'Add Governance Rule'
+      edit_title: 'Edit Governance Rule'
+    field:
+      scope: 'Scope'
+      scope_id: 'Scope ID (optional)'
+      notes: 'Notes'
+    help:
+      scope_id: 'Optional: Specific ID for the scope (e.g., "A.5.1" for a control)'
+    scope:
+      control: 'Control'
+      isms_context: 'ISMS Context'
+      risk: 'Risk'
+      asset: 'Asset'
+      process: 'Process'
+      default: 'Default'
+    action:
+      delete: 'Delete Rule'
+    confirm:
+      delete: 'Do you really want to delete this governance rule?'
+    flash:
+      saved: 'Governance rule saved'
+      deleted: 'Governance rule deleted'
+      error: 'Error saving governance rule'
+  inheritance:
+    title: 'ISMS Context & Organization'
+    subtitle: 'Effective ISMS context for this tenant'
+    organization: 'Organization'
+    inherited_from: 'Inherited from'
+    own_context: 'Uses own ISMS context'
+    no_context: 'No ISMS context available'
+    load_error: 'Error loading ISMS context'
+    propagate: 'Propagate to Subsidiaries'
+    propagate_error: 'Error propagating context'
+    confirm_propagate: 'Do you really want to propagate the ISMS context to all hierarchical subsidiaries? This will overwrite their current contexts.'
+    isms_context_inherited: 'ISMS context is inherited from parent company'
+    from: 'From'
+    edit_at_parent: 'To modify this context, please edit it at the parent company.'
+    cannot_edit_inherited: 'Inherited contexts cannot be edited'
+    cannot_edit_inherited_long: 'This ISMS context is inherited from parent company "%parent%" and cannot be edited here. Please edit the context at the parent company.'
+
+# Governance Model Labels
+governance:
+  hierarchical: 'Hierarchical'
+  shared: 'Shared'
+  independent: 'Independent'
