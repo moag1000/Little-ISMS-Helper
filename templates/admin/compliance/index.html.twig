@@ -1,8 +1,8 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin/layout.html.twig' %}
 
 {% block title %}{{ 'compliance.manage_frameworks'|trans }}{% endblock %}
 
-{% block body %}
+{% block admin_content %}
 <div class="container">
     <div class="page-header">
         <div>
@@ -435,4 +435,4 @@ document.addEventListener('turbo:load', function() {
     initializeDeleteButtons();
 });
 </script>
-{% endblock %}
+{% endblock admin_content %}

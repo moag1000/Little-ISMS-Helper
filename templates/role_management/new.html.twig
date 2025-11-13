@@ -1,14 +1,14 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin/layout.html.twig' %}
 
 {% block title %}{{ 'role_management.title.create'|trans }} - Little ISMS Helper{% endblock %}
 
-{% block body %}
+{% block admin_content %}
 <div class="page-header">
     <div>
         <h1>{{ 'role_management.title.create'|trans }}</h1>
     </div>
     <div class="button-group">
-        <a href="{{ path('app_role_management_index') }}" class="btn btn-secondary">
+        <a href="{{ path('role_management_index') }}" class="btn btn-secondary">
             ← {{ 'common.back_to_list'|trans }}
         </a>
     </div>
@@ -57,11 +57,11 @@
         <button type="submit" class="btn btn-success">
             💾 {{ 'common.create'|trans }}
         </button>
-        <a href="{{ path('app_role_management_index') }}" class="btn btn-secondary">
+        <a href="{{ path('role_management_index') }}" class="btn btn-secondary">
             ❌ {{ 'common.cancel'|trans }}
         </a>
     </div>
 
     {{ form_end(form) }}
 </div>
-{% endblock %}
+{% endblock admin_content %}
