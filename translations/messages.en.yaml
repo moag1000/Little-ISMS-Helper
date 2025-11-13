@@ -684,8 +684,72 @@ audit_management:
 
 # BCM
 bcm:
-  title: Business Continuity Management
-  description: Business continuity management and emergency preparedness
+  title:
+    _default: Business Continuity Management
+    critical: 'Critical Assets & Processes'
+  description:
+    _default: Business continuity management and emergency preparedness
+    critical: 'Overview of business-critical assets and processes with their recovery requirements'
+    critical_level: 'Critical: Immediate impact on business operations. RTO < 4 hours.'
+    high_level: 'High: Significant impact on business operations. RTO < 24 hours.'
+    medium_level: 'Medium: Moderate impact. RTO < 72 hours.'
+    action_items: 'Priority actions to improve business continuity'
+
+  action:
+    view_insights: 'View Insights'
+    export: 'Export'
+    plan: 'Create Plan'
+
+  warning:
+    critical_assets_count: '%count% critical assets require attention'
+    critical_message: 'Critical assets without recovery plans found'
+
+  stats:
+    critical_assets: 'Critical Assets'
+    critical_processes: 'Critical Processes'
+    avg_rto: 'Avg. RTO'
+    missing_recovery_plans: 'Missing Recovery Plans'
+
+  section:
+    criticality_overview: 'Criticality Overview'
+    critical_assets_list: 'Critical Assets'
+    critical_processes: 'Critical Business Processes'
+    action_items: 'Actions Required'
+
+  criticality:
+    critical: 'Critical'
+    high: 'High'
+    medium: 'Medium'
+
+  field:
+    assets: 'Assets'
+    avg_rto: 'Avg. RTO'
+    asset_name: 'Asset Name'
+    type: 'Type'
+    criticality: 'Criticality'
+    rto: 'RTO'
+    rpo: 'RPO'
+    recovery_plan: 'Recovery Plan'
+    last_tested: 'Last Tested'
+    process_name: 'Process Name'
+    department: 'Department'
+    dependent_assets: 'Dependent Assets'
+    mtd: 'MTD'
+    impact_of_loss: 'Impact of Loss'
+    maximum_tolerable_downtime: 'Maximum Tolerable Downtime'
+
+  badge:
+    no_recovery_plan: 'No Plan'
+    immediate: 'Immediate'
+    exists: 'Exists'
+    missing: 'Missing'
+    test_overdue: 'Test Overdue'
+
+  message:
+    never_tested: 'Never tested'
+    no_critical_assets: 'No critical assets found'
+    no_critical_processes: 'No critical processes found'
+
 compliance_management:
   title: Compliance Management
   description: Management of compliance requirements
