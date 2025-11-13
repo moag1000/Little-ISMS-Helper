@@ -5,6 +5,8 @@ namespace App\Form;
 use App\Entity\InternalAudit;
 use App\Entity\User;
 use App\Entity\ComplianceFramework;
+use App\Entity\Tenant;
+use App\Repository\TenantRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -41,17 +43,24 @@ class InternalAuditType extends AbstractType
             ->add('scopeType', ChoiceType::class, [
                 'label' => 'audit.field.scope_type',
                 'choices' => [
-                    'Vollständiges System-Audit' => 'full',
-                    'Prozess-spezifisch' => 'process',
-                    'Standort-spezifisch' => 'location',
-                    'Abteilungs-spezifisch' => 'department',
-                    'Framework-spezifisch' => 'framework',
-                    'Asset-spezifisch' => 'asset',
+                    'audit.scope_type.full_isms' => 'full_isms',
+                    'audit.scope_type.compliance_framework' => 'compliance_framework',
+                    'audit.scope_type.asset' => 'asset',
+                    'audit.scope_type.asset_type' => 'asset_type',
+                    'audit.scope_type.asset_group' => 'asset_group',
+                    'audit.scope_type.location' => 'location',
+                    'audit.scope_type.department' => 'department',
+                    'audit.scope_type.corporate_wide' => 'corporate_wide',
+                    'audit.scope_type.corporate_subsidiaries' => 'corporate_subsidiaries',
                 ],
-                'attr' => ['class' => 'form-select'],
+                'attr' => [
+                    'class' => 'form-select',
+                    'data-corporate-scope' => '1',
+                ],
                 'constraints' => [
                     new NotBlank(),
                 ],
+                'help' => 'Für Konzernaudits wählen Sie "Konzernweites Audit" oder "Tochtergesellschafts-Audit"',
             ])
             ->add('objectives', TextareaType::class, [
                 'label' => 'audit.field.objectives',
@@ -117,6 +126,24 @@ class InternalAuditType extends AbstractType
                     'class' => 'form-select',
                 ],
                 'help' => 'Compliance-Framework für framework-spezifische Audits.',
+            ])
+            ->add('auditedSubsidiaries', EntityType::class, [
+                'label' => 'audit.field.audited_subsidiaries',
+                'class' => Tenant::class,
+                'choice_label' => 'name',
+                'multiple' => true,
+                'required' => false,
+                'query_builder' => function (TenantRepository $repo) {
+                    return $repo->createQueryBuilder('t')
+                        ->where('t.parent IS NOT NULL')
+                        ->orderBy('t.name', 'ASC');
+                },
+                'attr' => [
+                    'class' => 'form-select',
+                    'size' => 8,
+                    'data-corporate-subsidiaries' => '1',
+                ],
+                'help' => 'Wählen Sie die Tochtergesellschaften für dieses Konzernaudit aus (nur bei Corporate-Audits relevant)',
             ])
             ->add('findings', TextareaType::class, [
                 'label' => 'audit.field.findings',
