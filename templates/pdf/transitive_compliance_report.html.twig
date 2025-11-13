@@ -1,114 +1,232 @@
-{% extends 'pdf/base.html.twig' %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>Transitive Compliance Analysis</title>
+    <style>
+        @page {
+            margin: 2cm 1.5cm;
+        }
 
-{% block pdf_title %}Transitive Compliance Analysis{% endblock %}
+        body {
+            font-family: DejaVu Sans, sans-serif;
+            font-size: 9pt;
+            line-height: 1.4;
+            color: #333;
+        }
 
-{% block header_title %}Transitive Compliance Report{% endblock %}
-{% block header_subtitle %}Multi-Framework Compliance Leverage Analysis{% endblock %}
+        h1 {
+            font-size: 18pt;
+            color: #1a56db;
+            text-align: center;
+            margin-bottom: 5pt;
+            border-bottom: 3px solid #1a56db;
+            padding-bottom: 10pt;
+        }
 
-{% block extra_styles %}
-    .stats-grid {
-        display: table;
-        width: 100%;
-        margin-bottom: 20pt;
-        border: 1px solid #cbd5e1;
-        border-collapse: collapse;
-    }
+        h2 {
+            font-size: 14pt;
+            color: #1a56db;
+            margin-top: 15pt;
+            margin-bottom: 8pt;
+            border-bottom: 1px solid #cbd5e1;
+            padding-bottom: 5pt;
+        }
 
-    .stats-row {
-        display: table-row;
-    }
+        h3 {
+            font-size: 11pt;
+            color: #334155;
+            margin-top: 12pt;
+            margin-bottom: 6pt;
+            font-weight: bold;
+        }
 
-    .stats-cell {
-        display: table-cell;
-        padding: 10pt;
-        text-align: center;
-        border: 1px solid #cbd5e1;
-    }
+        .header-info {
+            text-align: center;
+            font-size: 9pt;
+            color: #64748b;
+            margin-bottom: 20pt;
+        }
 
-    .stats-label {
-        font-size: 8pt;
-        color: #64748b;
-        font-weight: bold;
-        margin-bottom: 4pt;
-    }
+        .stats-grid {
+            display: table;
+            width: 100%;
+            margin-bottom: 20pt;
+            border: 1px solid #cbd5e1;
+            border-collapse: collapse;
+        }
 
-    .stats-value {
-        font-size: 16pt;
-        color: #1F4E78;
-        font-weight: bold;
-    }
+        .stats-row {
+            display: table-row;
+        }
 
-    .stats-value-success {
-        color: #10b981;
-    }
+        .stats-cell {
+            display: table-cell;
+            padding: 10pt;
+            text-align: center;
+            border: 1px solid #cbd5e1;
+        }
 
-    .stats-value-warning {
-        color: #f59e0b;
-    }
+        .stats-label {
+            font-size: 8pt;
+            color: #64748b;
+            font-weight: bold;
+            margin-bottom: 4pt;
+        }
 
-    .insight-box {
-        background: #f8fafc;
-        border-left: 4px solid #1F4E78;
-        padding: 10pt;
-        margin: 10pt 0;
-        font-size: 9pt;
-        color: #475569;
-    }
+        .stats-value {
+            font-size: 16pt;
+            color: #1a56db;
+            font-weight: bold;
+        }
 
-    .insight-box strong {
-        color: #1e293b;
-    }
+        .stats-value-success {
+            color: #10b981;
+        }
 
-    .quick-win-box {
-        background: #f0fdf4;
-        border-left: 4px solid #10b981;
-        padding: 10pt;
-        margin: 10pt 0;
-        font-size: 9pt;
-    }
+        .stats-value-warning {
+            color: #f59e0b;
+        }
 
-    .highlight-row {
-        font-weight: bold;
-        background: #f1f5f9;
-    }
+        .insight-box {
+            background: #f8fafc;
+            border-left: 4pt solid #1a56db;
+            padding: 10pt;
+            margin: 10pt 0;
+            font-size: 8pt;
+            color: #475569;
+        }
 
-    .quality-good {
-        color: #10b981;
-        font-weight: bold;
-    }
+        .insight-box strong {
+            color: #1e293b;
+        }
 
-    .quality-medium {
-        color: #f59e0b;
-        font-weight: bold;
-    }
+        .quick-win-box {
+            background: #f0fdf4;
+            border-left: 4pt solid #10b981;
+            padding: 10pt;
+            margin: 10pt 0;
+            font-size: 8pt;
+        }
 
-    .quality-weak {
-        color: #ef4444;
-        font-weight: bold;
-    }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10pt 0;
+            font-size: 8pt;
+        }
 
-    .w-12 {
-        width: 12%;
-    }
+        table th {
+            background-color: #1a56db;
+            color: white;
+            padding: 6pt;
+            text-align: left;
+            font-weight: bold;
+            border: 1px solid #1e3a8a;
+        }
 
-    .w-15 {
-        width: 15%;
-    }
+        table td {
+            padding: 5pt;
+            border: 1px solid #cbd5e1;
+            vertical-align: top;
+        }
 
-    .w-18 {
-        width: 18%;
-    }
+        table tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
 
-    .w-20 {
-        width: 20%;
-    }
+        .highlight-row {
+            font-weight: bold;
+            background: #e0e7ff !important;
+        }
 
-    .w-25 {
-        width: 25%;
-    }
-{% endblock %}
+        .badge {
+            display: inline-block;
+            padding: 2pt 6pt;
+            border-radius: 3pt;
+            font-size: 7pt;
+            font-weight: bold;
+        }
 
-{% block content %}
+        .badge-success {
+            background-color: #10b981;
+            color: white;
+        }
+
+        .badge-info {
+            background-color: #3b82f6;
+            color: white;
+        }
+
+        .badge-warning {
+            background-color: #f59e0b;
+            color: white;
+        }
+
+        .badge-danger {
+            background-color: #ef4444;
+            color: white;
+        }
+
+        .badge-critical {
+            background-color: #ef4444;
+            color: white;
+        }
+
+        .quality-good {
+            color: #10b981;
+            font-weight: bold;
+        }
+
+        .quality-medium {
+            color: #f59e0b;
+            font-weight: bold;
+        }
+
+        .quality-weak {
+            color: #ef4444;
+            font-weight: bold;
+        }
+
+        .page-break {
+            page-break-before: always;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .w-10 { width: 10%; }
+        .w-12 { width: 12%; }
+        .w-15 { width: 15%; }
+        .w-16 { width: 16%; }
+        .w-18 { width: 18%; }
+        .w-20 { width: 20%; }
+        .w-25 { width: 25%; }
+        .w-30 { width: 30%; }
+        .w-40 { width: 40%; }
+
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 30pt;
+            text-align: center;
+            font-size: 7pt;
+            color: #64748b;
+            border-top: 1px solid #cbd5e1;
+            padding-top: 5pt;
+        }
+    </style>
+</head>
+<body>
+    <h1>Transitive Compliance Report</h1>
+    <div class="header-info">
+        Multi-Framework Compliance Leverage Analysis<br>
+        Generated: {{ pdf_generation_date|date('d.m.Y H:i') }}
+    </div>
+
     {# Executive Summary #}
     <h2>Executive Summary</h2>
     <div class="stats-grid">
@@ -321,7 +439,7 @@
     </div>
 
     {% for rel in high_coverage|slice(0, 10) %}
-    <div style="background: #f9fafb; border-left: 3px solid #10b981; padding: 8pt; margin: 5pt 0; font-size: 9pt;">
+    <div style="background: #f9fafb; border-left: 3px solid #10b981; padding: 8pt; margin: 5pt 0; font-size: 8pt;">
         <strong>{{ rel.source.code }} → {{ rel.target.code }}</strong>:
         Coverage <strong>{{ rel.coverage }}%</strong> ({{ rel.mapped }} of {{ rel.total }} requirements).
         Estimated time savings: ~{{ (rel.mapped * 1.5)|round }} hours.
@@ -334,7 +452,7 @@
     <h2>Strategic Recommendations</h2>
 
     <h3>1. Immediate Actions - Quick Wins</h3>
-    <div class="quick-win-box">
+    <div class="quick-win-box insight-box">
         <strong>Priority: CRITICAL</strong>
         {% if quick_win_count > 0 %}
         - Focus on {{ quick_win_count }} Quick Wins with highest ROI (≥3.0).
@@ -408,4 +526,9 @@
         Phase 3 establishes sustainable processes for long-term ROI optimization.
         <br><strong>Long-term ROI:</strong> 40-60% reduction in overall compliance effort through optimized prioritization.
     </div>
-{% endblock %}
+
+    <div class="footer">
+        Transitive Compliance Report - Generated on {{ pdf_generation_date|date('d.m.Y H:i:s') }} - Page <span class="pagenum"></span>
+    </div>
+</body>
+</html>
