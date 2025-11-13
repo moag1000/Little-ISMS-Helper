@@ -386,6 +386,7 @@ class ComplianceController extends AbstractController
             'total_time_savings' => $totalTimeSavings,
             'total_days_savings' => round($totalTimeSavings / 8, 1),
             'avg_reuse_percentage' => $avgReusePercentage,
+            'pdf_generation_date' => new \DateTime(),
         ]);
 
         $filename = sprintf('data_reuse_insights_%s_%s.pdf', $framework->getCode(), date('Y-m-d_His'));
@@ -700,6 +701,7 @@ class ComplianceController extends AbstractController
             'total_gaps' => count($gaps),
             'compliance_score' => $complianceScore,
             'severity_counts' => $severityCounts,
+            'pdf_generation_date' => new \DateTime(),
         ]);
 
         $filename = sprintf('gap_analysis_%s_%s.pdf', $framework->getCode(), date('Y-m-d_His'));
@@ -1404,6 +1406,7 @@ class ComplianceController extends AbstractController
             'transitive_count' => count($transitiveAnalysis),
             'total_helped' => $totalHelped,
             'avg_coverage' => $avgCoverage,
+            'pdf_generation_date' => new \DateTime(),
         ]);
 
         $filename = sprintf('transitive_compliance_report_%s.pdf', date('Y-m-d_His'));
@@ -1800,6 +1803,7 @@ class ComplianceController extends AbstractController
             'high_quality_mappings' => $highQualityMappings,
             'unmapped' => $unmapped,
             'unique_framework1' => $uniqueFramework1,
+            'pdf_generation_date' => new \DateTime(),
         ]);
 
         $filename = sprintf(
