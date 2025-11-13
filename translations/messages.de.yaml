@@ -2222,6 +2222,14 @@ preferences:
     imported: Einstellungen erfolgreich importiert
   error:
     import_failed: Fehler beim Importieren der Einstellungen
+clause:
+  '4': 'Kontext der Organisation'
+  '5': 'Führung'
+  '6': 'Planung'
+  '7': 'Unterstützung'
+  '8': 'Betrieb'
+  '9': 'Bewertung der Leistung'
+  '10': 'Verbesserung'
 compliance:
   manage_frameworks: Frameworks verwalten
   manage_frameworks_subtitle: Verfügbare Compliance-Frameworks laden und verwalten
