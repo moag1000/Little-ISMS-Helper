@@ -247,6 +247,105 @@ class ComplianceController extends AbstractController
         return $response;
     }
 
+    #[Route('/framework/{id}/data-reuse/export/excel', name: 'app_compliance_export_reuse_excel', requirements: ['id' => '\d+'])]
+    public function exportDataReuseExcel(int $id): Response
+    {
+        $framework = $this->frameworkRepository->find($id);
+
+        if (!$framework) {
+            throw $this->createNotFoundException('Framework not found');
+        }
+
+        $requirements = $this->requirementRepository->findApplicableByFramework($framework);
+        $dataReuseAnalysis = [];
+        $totalTimeSavings = 0;
+
+        foreach ($requirements as $requirement) {
+            $analysis = $this->mappingService->getDataReuseAnalysis($requirement);
+            $reuseValue = $this->mappingService->calculateDataReuseValue($requirement);
+
+            $dataReuseAnalysis[] = [
+                'requirement' => $requirement,
+                'analysis' => $analysis,
+                'value' => $reuseValue,
+            ];
+
+            $totalTimeSavings += $reuseValue['estimated_hours_saved'];
+        }
+
+        // Create spreadsheet
+        $spreadsheet = $this->excelExportService->createSpreadsheet('Data Reuse Insights Report');
+
+        // Tab 1: Summary
+        $summarySheet = $spreadsheet->getActiveSheet();
+        $summarySheet->setTitle('Zusammenfassung');
+
+        $metrics = [
+            'Framework' => $framework->getName() . ' (' . $framework->getCode() . ')',
+            'Analysierte Anforderungen' => count($dataReuseAnalysis),
+            'Zeitersparnis (Stunden)' => round($totalTimeSavings, 1),
+            'Zeitersparnis (Tage)' => round($totalTimeSavings / 8, 1),
+            'Export-Datum' => date('d.m.Y H:i'),
+        ];
+
+        $this->excelExportService->addSummarySection($summarySheet, $metrics, 1, 'Data Reuse Insights');
+        $this->excelExportService->autoSizeColumns($summarySheet);
+
+        // Tab 2: Details
+        $detailsSheet = $this->excelExportService->createSheet($spreadsheet, 'Reuse Details');
+
+        $headers = ['ID', 'Titel', 'Kategorie', 'Reusable Data', 'Quellen', 'Zeitersparnis (h)', 'Reuse %', 'Confidence'];
+        $this->excelExportService->addFormattedHeaderRow($detailsSheet, $headers, 1, true);
+
+        $data = [];
+        foreach ($dataReuseAnalysis as $item) {
+            $requirement = $item['requirement'];
+            $value = $item['value'];
+            $analysis = $item['analysis'];
+
+            $reusableDataSources = [];
+            if (!empty($analysis['reusable_data'])) {
+                foreach ($analysis['reusable_data'] as $data) {
+                    $reusableDataSources[] = $data['source'] ?? 'Unknown';
+                }
+            }
+
+            $data[] = [
+                $requirement->getRequirementId(),
+                $requirement->getTitle(),
+                $requirement->getCategory() ?? '-',
+                !empty($analysis['reusable_data']) ? count($analysis['reusable_data']) : 0,
+                !empty($reusableDataSources) ? implode(', ', array_slice($reusableDataSources, 0, 3)) : '-',
+                round($value['estimated_hours_saved'] ?? 0, 1),
+                round($value['reuse_percentage'] ?? 0, 1),
+                $value['confidence'] ?? 'low',
+            ];
+        }
+
+        // Conditional formatting
+        $conditionalFormatting = [
+            6 => [ // Reuse %
+                '>=80' => $this->excelExportService->getColor('success'),
+                '>=50' => $this->excelExportService->getColor('warning'),
+                '<50' => ['color' => $this->excelExportService->getColor('danger'), 'bold' => false],
+            ],
+        ];
+
+        $this->excelExportService->addFormattedDataRows($detailsSheet, $data, 2, $conditionalFormatting);
+        $this->excelExportService->autoSizeColumns($detailsSheet);
+
+        // Generate
+        $content = $this->excelExportService->generateExcel($spreadsheet);
+
+        $filename = sprintf('data_reuse_insights_%s_%s.xlsx', $framework->getCode(), date('Y-m-d_His'));
+
+        $response = new Response($content);
+        $response->headers->set('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        $response->headers->set('Content-Disposition', 'attachment; filename="' . $filename . '"');
+
+        return $response;
+    }
+
     #[Route('/framework/{id}/gaps/export', name: 'app_compliance_export_gaps', requirements: ['id' => '\d+'])]
     public function exportGaps(int $id): Response
     {
@@ -387,6 +486,125 @@ class ComplianceController extends AbstractController
         fclose($handle);
 
         $response->setContent($csvContent);
+
+        return $response;
+    }
+
+    #[Route('/framework/{id}/gaps/export/excel', name: 'app_compliance_export_gaps_excel', requirements: ['id' => '\d+'])]
+    public function exportGapsExcel(int $id): Response
+    {
+        $framework = $this->frameworkRepository->find($id);
+
+        if (!$framework) {
+            throw $this->createNotFoundException('Framework not found');
+        }
+
+        $gaps = $this->requirementRepository->findGapsByFramework($framework);
+        $requirements = $this->requirementRepository->findByFramework($framework);
+        $metRequirements = count($requirements) - count($gaps);
+
+        // Analyze gaps
+        $gapAnalysis = [];
+        $severityCounts = ['critical' => 0, 'high' => 0, 'medium' => 0, 'low' => 0];
+
+        foreach ($gaps as $gap) {
+            $analysis = $this->assessmentService->assessRequirement($gap);
+            $priority = $gap->getPriority() ?? 'low';
+            $severityCounts[$priority]++;
+
+            $gapAnalysis[] = [
+                'requirement' => $gap,
+                'analysis' => $analysis,
+            ];
+        }
+
+        // Create spreadsheet
+        $spreadsheet = $this->excelExportService->createSpreadsheet('Gap Analysis Report');
+
+        // Tab 1: Summary
+        $summarySheet = $spreadsheet->getActiveSheet();
+        $summarySheet->setTitle('Zusammenfassung');
+
+        $complianceScore = count($requirements) > 0 ? round(($metRequirements / count($requirements)) * 100, 1) : 0;
+
+        $metrics = [
+            'Framework' => $framework->getName() . ' (' . $framework->getCode() . ')',
+            'Gesamt Anforderungen' => count($requirements),
+            'Erfüllte Anforderungen' => $metRequirements,
+            'Identifizierte Gaps' => count($gaps),
+            'Compliance Score' => $complianceScore . '%',
+            'Export-Datum' => date('d.m.Y H:i'),
+        ];
+
+        $nextRow = $this->excelExportService->addSummarySection($summarySheet, $metrics, 1, 'Gap Analysis');
+
+        // Severity breakdown
+        $severityMetrics = [
+            'Kritische Gaps' => $severityCounts['critical'],
+            'Hohe Gaps' => $severityCounts['high'],
+            'Mittlere Gaps' => $severityCounts['medium'],
+            'Niedrige Gaps' => $severityCounts['low'],
+        ];
+        $this->excelExportService->addSummarySection($summarySheet, $severityMetrics, $nextRow, 'Severity Breakdown');
+        $this->excelExportService->autoSizeColumns($summarySheet);
+
+        // Tab 2: Gap Details
+        $detailsSheet = $this->excelExportService->createSheet($spreadsheet, 'Gap Details');
+
+        $headers = ['ID', 'Titel', 'Kategorie', 'Priority', 'Status', 'Erfüllungsgrad %', 'Gap Grund'];
+        $this->excelExportService->addFormattedHeaderRow($detailsSheet, $headers, 1, true);
+
+        $data = [];
+        foreach ($gapAnalysis as $item) {
+            $requirement = $item['requirement'];
+            $analysis = $item['analysis'];
+
+            $priorityMap = ['critical' => 'Kritisch', 'high' => 'Hoch', 'medium' => 'Mittel', 'low' => 'Niedrig'];
+            $statusMap = [
+                'not_applicable' => 'Nicht anwendbar',
+                'not_implemented' => 'Nicht implementiert',
+                'partially_implemented' => 'Teilweise',
+                'implemented' => 'Implementiert',
+                'not_assessed' => 'Nicht bewertet',
+            ];
+
+            $data[] = [
+                $requirement->getRequirementId(),
+                $requirement->getTitle(),
+                $requirement->getCategory() ?? '-',
+                $priorityMap[$requirement->getPriority() ?? 'low'] ?? 'Niedrig',
+                $statusMap[$requirement->getStatus() ?? 'not_assessed'] ?? '-',
+                $requirement->getFulfillmentPercentage() ?? 0,
+                substr($analysis['gap_reason'] ?? 'Nicht erfüllt', 0, 100),
+            ];
+        }
+
+        // Conditional formatting
+        $conditionalFormatting = [
+            3 => [ // Priority
+                'Kritisch' => $this->excelExportService->getColor('critical'),
+                'Hoch' => $this->excelExportService->getColor('high'),
+                'Mittel' => $this->excelExportService->getColor('medium'),
+                'Niedrig' => $this->excelExportService->getColor('low'),
+            ],
+            5 => [ // Fulfillment %
+                '>=80' => $this->excelExportService->getColor('success'),
+                '>=50' => $this->excelExportService->getColor('warning'),
+                '<50' => $this->excelExportService->getColor('danger'),
+            ],
+        ];
+
+        $this->excelExportService->addFormattedDataRows($detailsSheet, $data, 2, $conditionalFormatting);
+        $this->excelExportService->autoSizeColumns($detailsSheet);
+
+        // Generate
+        $content = $this->excelExportService->generateExcel($spreadsheet);
+
+        $filename = sprintf('gap_analysis_%s_%s.xlsx', $framework->getCode(), date('Y-m-d_His'));
+
+        $response = new Response($content);
+        $response->headers->set('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        $response->headers->set('Content-Disposition', 'attachment; filename="' . $filename . '"');
 
         return $response;
     }
@@ -929,6 +1147,102 @@ class ComplianceController extends AbstractController
         fclose($handle);
 
         $response->setContent($csvContent);
+
+        return $response;
+    }
+
+    #[Route('/export/transitive/excel', name: 'app_compliance_export_transitive_excel')]
+    public function exportTransitiveExcel(): Response
+    {
+        $frameworks = $this->frameworkRepository->findActiveFrameworks();
+        $transitiveAnalysis = [];
+        $frameworkRelationships = [];
+
+        // Build data
+        foreach ($frameworks as $sourceFramework) {
+            foreach ($frameworks as $targetFramework) {
+                if ($sourceFramework->getId() === $targetFramework->getId()) {
+                    continue;
+                }
+
+                $coverage = $this->mappingRepository->calculateFrameworkCoverage($sourceFramework, $targetFramework);
+                $transitive = $this->mappingRepository->getTransitiveCompliance($sourceFramework, $targetFramework);
+
+                if ($transitive['requirements_helped'] > 0) {
+                    $transitiveAnalysis[] = $transitive;
+                }
+
+                $mappings = $this->mappingRepository->findCrossFrameworkMappings($sourceFramework, $targetFramework);
+
+                if (!empty($mappings) && ($coverage['coverage_percentage'] ?? 0) > 0) {
+                    $frameworkRelationships[] = [
+                        'source' => $sourceFramework,
+                        'target' => $targetFramework,
+                        'mapped' => $coverage['covered_requirements'] ?? 0,
+                        'total' => $coverage['total_requirements'] ?? 0,
+                        'coverage' => round($coverage['coverage_percentage'] ?? 0, 1),
+                    ];
+                }
+            }
+        }
+
+        // Create spreadsheet
+        $spreadsheet = $this->excelExportService->createSpreadsheet('Transitive Compliance Report');
+
+        // Tab 1: Summary
+        $summarySheet = $spreadsheet->getActiveSheet();
+        $summarySheet->setTitle('Zusammenfassung');
+
+        $totalHelped = !empty($transitiveAnalysis) ? array_sum(array_column($transitiveAnalysis, 'requirements_helped')) : 0;
+
+        $metrics = [
+            'Aktive Frameworks' => count($frameworks),
+            'Framework-Beziehungen' => count($frameworkRelationships),
+            'Transitive Opportunities' => count($transitiveAnalysis),
+            'Unterstützte Anforderungen' => $totalHelped,
+            'Export-Datum' => date('d.m.Y H:i'),
+        ];
+
+        $this->excelExportService->addSummarySection($summarySheet, $metrics, 1, 'Transitive Compliance');
+        $this->excelExportService->autoSizeColumns($summarySheet);
+
+        // Tab 2: Framework Relationships
+        $relationshipsSheet = $this->excelExportService->createSheet($spreadsheet, 'Framework-Beziehungen');
+
+        $headers = ['Quell-Framework', 'Ziel-Framework', 'Gemapped', 'Total', 'Coverage %'];
+        $this->excelExportService->addFormattedHeaderRow($relationshipsSheet, $headers, 1, true);
+
+        $data = [];
+        foreach ($frameworkRelationships as $rel) {
+            $data[] = [
+                $rel['source']->getName() . ' (' . $rel['source']->getCode() . ')',
+                $rel['target']->getName() . ' (' . $rel['target']->getCode() . ')',
+                $rel['mapped'],
+                $rel['total'],
+                $rel['coverage'],
+            ];
+        }
+
+        // Conditional formatting for coverage
+        $conditionalFormatting = [
+            4 => [ // Coverage %
+                '>=80' => $this->excelExportService->getColor('success'),
+                '>=50' => $this->excelExportService->getColor('warning'),
+                '<50' => ['color' => $this->excelExportService->getColor('danger'), 'bold' => false],
+            ],
+        ];
+
+        $this->excelExportService->addFormattedDataRows($relationshipsSheet, $data, 2, $conditionalFormatting);
+        $this->excelExportService->autoSizeColumns($relationshipsSheet);
+
+        // Generate
+        $content = $this->excelExportService->generateExcel($spreadsheet);
+
+        $filename = sprintf('transitive_compliance_%s.xlsx', date('Y-m-d_His'));
+
+        $response = new Response($content);
+        $response->headers->set('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        $response->headers->set('Content-Disposition', 'attachment; filename="' . $filename . '"');
 
         return $response;
     }
