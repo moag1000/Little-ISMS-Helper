@@ -787,8 +787,7 @@ Little ISMS Helper verwendet **163 Third-Party Open-Source-Pakete**, die für ko
 | Status | Pakete | Prozent | Beschreibung |
 |--------|--------|---------|--------------|
 | ✅ Erlaubt | 160 | 98.2% | Permissive Lizenzen (MIT, BSD, Apache-2.0) |
-| 🔄 Copyleft | 1 | 0.6% | LGPL (dynamic linking erlaubt) |
-| ❓ Unbekannt | 2 | 1.2% | LGPL-Varianten (manuell geprüft ✓) |
+| 🔄 Copyleft | 3 | 1.8% | LGPL (dynamic linking erlaubt) |
 
 **Gesamtstatus:** ✅ **Lizenzkonform für kommerzielle Nutzung**
 
