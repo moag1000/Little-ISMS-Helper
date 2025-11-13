@@ -450,9 +450,13 @@ class DeploymentWizardController extends AbstractController
         // Get available frameworks
         $availableFrameworks = $this->complianceLoader->getAvailableFrameworks();
 
-        // Get industry-specific recommendations
+        // Get context for recommendations
         $organisationIndustry = $session->get('setup_organisation_industry', 'other');
-        $recommendedFrameworks = $this->getRecommendedFrameworks($organisationIndustry);
+        $employeeCount = $session->get('setup_organisation_employee_count', '1-10');
+        $country = $session->get('setup_organisation_country', 'DE');
+
+        // Get industry-specific recommendations
+        $recommendedFrameworks = $this->getRecommendedFrameworks($organisationIndustry, $employeeCount, $country);
 
         $form = $this->createForm(ComplianceFrameworkSelectionType::class, null, [
             'available_frameworks' => $availableFrameworks,
@@ -486,19 +490,81 @@ class DeploymentWizardController extends AbstractController
     }
 
     /**
-     * Get recommended compliance frameworks based on industry
+     * Get recommended compliance frameworks based on industry, size, and location
+     *
+     * @param string $industry Organisation industry
+     * @param string $employeeCount Employee count range (1-10, 11-50, 51-250, 251-1000, 1001+)
+     * @param string $country Country code (DE, AT, CH, etc.)
+     * @return array List of recommended framework codes
      */
-    private function getRecommendedFrameworks(string $industry): array
+    private function getRecommendedFrameworks(string $industry, string $employeeCount, string $country): array
     {
-        return match ($industry) {
-            'automotive' => ['ISO27001', 'TISAX'],
-            'financial_services' => ['ISO27001', 'DORA', 'GDPR', 'NIS2'],
-            'healthcare' => ['ISO27001', 'GDPR', 'NIS2'],
-            'energy', 'telecommunications' => ['ISO27001', 'NIS2', 'GDPR'],
-            'public_sector' => ['ISO27001', 'NIS2', 'BSI_GRUNDSCHUTZ', 'GDPR'],
-            'it_services' => ['ISO27001', 'GDPR', 'ISO27701'],
-            default => ['ISO27001', 'GDPR'],
-        };
+        $recommendations = ['ISO27001']; // Always recommend ISO 27001
+
+        // Determine if company is large enough for NIS2 (typically 50+ employees)
+        $isNis2Size = in_array($employeeCount, ['51-250', '251-1000', '1001+'], true);
+
+        // Use ISO 27701 for DACH region (covers GDPR), otherwise recommend GDPR
+        $privacyFramework = in_array($country, ['DE', 'AT', 'CH'], true) ? 'ISO27701' : 'GDPR';
+
+        // Industry-specific recommendations
+        switch ($industry) {
+            case 'automotive':
+                $recommendations[] = 'TISAX';
+                $recommendations[] = $privacyFramework;
+                break;
+
+            case 'financial_services':
+                $recommendations[] = 'DORA';
+                $recommendations[] = $privacyFramework;
+                if ($isNis2Size) {
+                    $recommendations[] = 'NIS2';
+                }
+                break;
+
+            case 'healthcare':
+                $recommendations[] = $privacyFramework;
+                if ($isNis2Size) {
+                    $recommendations[] = 'NIS2';
+                }
+                break;
+
+            case 'energy':
+            case 'telecommunications':
+                // Critical infrastructure - NIS2 often applies regardless of size
+                $recommendations[] = 'NIS2';
+                $recommendations[] = $privacyFramework;
+                break;
+
+            case 'public_sector':
+                $recommendations[] = 'BSI_GRUNDSCHUTZ';
+                $recommendations[] = $privacyFramework;
+                if ($isNis2Size) {
+                    $recommendations[] = 'NIS2';
+                }
+                break;
+
+            case 'it_services':
+                $recommendations[] = $privacyFramework;
+                if ($isNis2Size) {
+                    $recommendations[] = 'NIS2';
+                }
+                break;
+
+            case 'manufacturing':
+                $recommendations[] = $privacyFramework;
+                if ($isNis2Size) {
+                    $recommendations[] = 'NIS2';
+                }
+                break;
+
+            default:
+                // Default recommendation for other industries
+                $recommendations[] = $privacyFramework;
+                break;
+        }
+
+        return array_unique($recommendations);
     }
 
     /**
