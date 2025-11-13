@@ -2879,6 +2879,8 @@ corporate:
   modal:
     set_parent:
       title: 'Muttergesellschaft zuweisen'
+    update_governance:
+      title: 'Governance-Modell ändern'
   confirm:
     remove_parent: 'Möchten Sie die Zuordnung zur Muttergesellschaft wirklich entfernen?'
   flash:
