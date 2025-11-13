@@ -414,7 +414,6 @@ common:
   not_set: Not Set
   not_started: Not Started
   refresh: Refresh
-  save: Save
   search: Search
   success: Success
   to: To
@@ -696,12 +695,10 @@ audit:
     passed_with_findings: Passed with Findings
     failed: Failed
     pending: Pending
-  type: Audit Type
   type_iso27001: ISO 27001
   type_iso9001: ISO 9001
   type_gdpr: GDPR
   type_custom: Custom
-  result: Audit Result
   result_passed: Passed
   result_passed_with_findings: Passed with Findings
   result_failed: Failed
