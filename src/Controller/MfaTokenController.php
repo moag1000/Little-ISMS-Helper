@@ -20,7 +20,6 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route('/admin/mfa')]
-#[IsGranted('ROLE_ADMIN')]  // MFA management requires admin privileges
 class MfaTokenController extends AbstractController
 {
     public function __construct(
@@ -34,6 +33,7 @@ class MfaTokenController extends AbstractController
     ) {}
 
     #[Route('', name: 'admin_mfa_index')]
+    #[IsGranted('MFA_VIEW')]
     public function index(): Response
     {
         $mfaTokens = $this->mfaTokenRepository->findAll();
@@ -66,6 +66,7 @@ class MfaTokenController extends AbstractController
     }
 
     #[Route('/user/{id}/setup-totp', name: 'admin_mfa_setup_totp', requirements: ['id' => '\d+'])]
+    #[IsGranted('MFA_SETUP')]
     public function setupTotp(User $user, Request $request): Response
     {
         $deviceName = $request->query->get('device_name', 'Authenticator App');
@@ -103,6 +104,7 @@ class MfaTokenController extends AbstractController
     }
 
     #[Route('/{id}/verify', name: 'admin_mfa_verify', requirements: ['id' => '\d+'], methods: ['POST'])]
+    #[IsGranted('MFA_MANAGE')]
     public function verify(MfaToken $mfaToken, Request $request): JsonResponse
     {
         $code = $request->request->get('code');
@@ -146,6 +148,7 @@ class MfaTokenController extends AbstractController
     }
 
     #[Route('/{id}/regenerate-backup-codes', name: 'admin_mfa_regenerate_backup', requirements: ['id' => '\d+'], methods: ['POST'])]
+    #[IsGranted('MFA_MANAGE')]
     public function regenerateBackupCodes(MfaToken $mfaToken, Request $request): Response
     {
         if (!$this->isCsrfTokenValid('regenerate_backup_' . $mfaToken->getId(), $request->request->get('_token'))) {
@@ -169,6 +172,7 @@ class MfaTokenController extends AbstractController
     }
 
     #[Route('/{id}', name: 'admin_mfa_show', requirements: ['id' => '\d+'])]
+    #[IsGranted('MFA_VIEW')]
     public function show(MfaToken $mfaToken): Response
     {
         $remainingBackupCodes = count($mfaToken->getBackupCodes() ?? []);
@@ -180,6 +184,7 @@ class MfaTokenController extends AbstractController
     }
 
     #[Route('/{id}/disable', name: 'admin_mfa_disable', requirements: ['id' => '\d+'], methods: ['POST'])]
+    #[IsGranted('MFA_MANAGE')]
     public function disable(MfaToken $mfaToken, Request $request): Response
     {
         if (!$this->isCsrfTokenValid('disable_' . $mfaToken->getId(), $request->request->get('_token'))) {
@@ -202,6 +207,7 @@ class MfaTokenController extends AbstractController
     }
 
     #[Route('/{id}/delete', name: 'admin_mfa_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
+    #[IsGranted('MFA_DELETE')]
     public function delete(MfaToken $mfaToken, Request $request): Response
     {
         if (!$this->isCsrfTokenValid('delete_' . $mfaToken->getId(), $request->request->get('_token'))) {
