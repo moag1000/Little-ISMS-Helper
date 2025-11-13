@@ -212,6 +212,42 @@ symfony serve  # oder: php -S localhost:8000 -t public/
 
 💡 **Empfehlung:** Nutzen Sie den Deployment Wizard für eine fehlerfreie, geführte Installation!
 
+### 🐳 Docker Installation (Einfachste Methode)
+
+Für die **schnellste und einfachste Installation** nutzen Sie Docker mit dem Deployment Wizard:
+
+```bash
+# 1. Repository klonen
+git clone https://github.com/moag1000/Little-ISMS-Helper.git
+cd Little-ISMS-Helper
+
+# 2. Docker-Container starten (PostgreSQL, App, MailHog, pgAdmin)
+docker-compose up -d
+
+# 3. Warten bis alle Services bereit sind
+docker-compose ps
+```
+
+**Fertig!** 🎉 Öffnen Sie: `http://localhost:8000/setup`
+
+Der Wizard führt Sie durch die komplette Einrichtung. **Für Schritt 1 (Datenbank)** verwenden Sie:
+- **Typ**: PostgreSQL
+- **Host**: `db`
+- **Port**: `5432`
+- **Datenbank**: `little_isms`
+- **User**: `isms_user`
+- **Passwort**: `isms_password`
+
+**Vorteile:**
+- ✅ Keine PHP/Composer-Installation auf Host nötig
+- ✅ PostgreSQL-Datenbank automatisch bereitgestellt
+- ✅ MailHog für Email-Testing (http://localhost:8025)
+- ✅ pgAdmin für Datenbank-Management (http://localhost:5050)
+- ✅ Konsistente Umgebung für alle Entwickler
+- ✅ Ein Befehl zum Starten/Stoppen: `docker-compose up/down`
+
+📖 Detaillierte Anleitung: [DOCKER_SETUP.md](docs/setup/DOCKER_SETUP.md)
+
 ### Automatisierte Setup-Tools ✨ NEU!
 
 Wir bieten professionelle Setup-Tools für eine fehlerfreie Installation im `scripts/` Verzeichnis:
