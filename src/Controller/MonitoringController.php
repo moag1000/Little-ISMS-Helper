@@ -27,10 +27,16 @@ class MonitoringController extends AbstractController
             $dbStart = microtime(true);
             $connection->executeQuery('SELECT 1');
             $dbTime = round((microtime(true) - $dbStart) * 1000, 2);
+
+            // Get platform class name (DBAL 4.x compatible)
+            $platform = $connection->getDatabasePlatform();
+            $platformClass = get_class($platform);
+            $platformName = substr($platformClass, strrpos($platformClass, '\\') + 1);
+
             $healthChecks['database'] = [
                 'status' => 'healthy',
                 'response_time' => $dbTime . ' ms',
-                'driver' => $connection->getDatabasePlatform()->getName(),
+                'driver' => $platformName,
             ];
         } catch (\Exception $e) {
             $healthChecks['database'] = [
