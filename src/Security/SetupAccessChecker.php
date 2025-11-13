@@ -106,4 +106,55 @@ class SetupAccessChecker
             in_array('ROLE_SUPER_ADMIN', $roles, true)
         );
     }
+
+    /**
+     * Detect current setup state for recovery purposes
+     *
+     * @return array State information with completed steps
+     */
+    public function detectSetupState(): array
+    {
+        $state = [
+            'database_configured' => false,
+            'database_migrated' => false,
+            'admin_user_exists' => false,
+            'setup_complete' => $this->isSetupComplete(),
+        ];
+
+        // Check if .env.local exists and has DATABASE_URL
+        $envLocalPath = $this->params->get('kernel.project_dir') . '/.env.local';
+        if (file_exists($envLocalPath)) {
+            $content = file_get_contents($envLocalPath);
+            if ($content && str_contains($content, 'DATABASE_URL=')) {
+                $state['database_configured'] = true;
+
+                // Try to check if migrations ran (this requires DB connection)
+                // We'll mark as "potentially migrated" if .env.local exists
+                // The actual check happens in the controller with a DB connection
+            }
+        }
+
+        return $state;
+    }
+
+    /**
+     * Get recommended next step based on current state
+     *
+     * @return string Route name of next step
+     */
+    public function getRecommendedNextStep(): string
+    {
+        $state = $this->detectSetupState();
+
+        if ($state['setup_complete']) {
+            return 'setup_wizard_index'; // Show completion message
+        }
+
+        if (!$state['database_configured']) {
+            return 'setup_step1_database_config';
+        }
+
+        // If DB configured but not sure about admin, go to admin creation
+        return 'setup_step2_admin_user';
+    }
 }
