@@ -214,7 +214,24 @@ symfony serve  # oder: php -S localhost:8000 -t public/
 
 ### 🐳 Docker Installation (Einfachste Methode)
 
-Für die **schnellste und einfachste Installation** nutzen Sie Docker mit dem Deployment Wizard:
+#### Option 1: Mit Docker Hub Image (empfohlen)
+
+```bash
+# 1. docker-compose.yml herunterladen
+wget https://raw.githubusercontent.com/moag1000/Little-ISMS-Helper/main/docker-compose.yml
+
+# 2. Image von Docker Hub nutzen (in docker-compose.yml anpassen):
+# Ersetze: build: context: . ...
+# Mit: image: <your-dockerhub-username>/little-isms-helper:latest
+
+# 3. Services starten
+docker-compose up -d
+
+# 4. Warten bis alle Services bereit sind
+docker-compose ps
+```
+
+#### Option 2: Lokal bauen
 
 ```bash
 # 1. Repository klonen
@@ -246,7 +263,9 @@ Der Wizard führt Sie durch die komplette Einrichtung. **Für Schritt 1 (Datenba
 - ✅ Konsistente Umgebung für alle Entwickler
 - ✅ Ein Befehl zum Starten/Stoppen: `docker-compose up/down`
 
-📖 Detaillierte Anleitung: [DOCKER_SETUP.md](docs/setup/DOCKER_SETUP.md)
+📖 Detaillierte Anleitungen:
+- [DOCKER_SETUP.md](docs/setup/DOCKER_SETUP.md) - Docker Compose Setup
+- [DOCKER_HUB.md](docs/setup/DOCKER_HUB.md) - Docker Hub Integration & CI/CD
 
 ### Automatisierte Setup-Tools ✨ NEU!
 
