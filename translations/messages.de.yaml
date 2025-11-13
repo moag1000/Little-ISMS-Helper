@@ -1216,11 +1216,25 @@ person:
     updated: Person erfolgreich aktualisiert.
     deleted: Person erfolgreich gelöscht.
 location:
-  title: Standortverwaltung
+  title:
+    _default: Standortverwaltung
+    list: Standorte
+    show: Standort anzeigen
+    create: Neuen Standort anlegen
+    edit: Standort bearbeiten
   name: Standort
   location_type: Standorttyp
   code: Standortcode
-  description: Beschreibung
+  description:
+    _default: Beschreibung
+    overview: 'Verwalten Sie physische Standorte, Gebäude und Räume Ihrer Organisation für Sicherheits- und Asset-Management.'
+  action:
+    create: Standort anlegen
+  stats:
+    total: Standorte gesamt
+    buildings: Gebäude
+    rooms: Räume
+    secure: Gesicherte Bereiche
   address: Adresse
   city: Stadt
   country: Land
@@ -1259,8 +1273,33 @@ location:
   field:
     name: Standortname
     location_type: Standorttyp
+    type: Typ
     code: Code
+    description: Beschreibung
+    city: Stadt
+    parent: Übergeordneter Standort
+    badge_access: Ausweiszugang erforderlich
+    status: Status
+    access_control: Zugangskontrollsystem
     security_level: Sicherheitsstufe
+  section:
+    details: Details
+    address: Adresse
+    hierarchy: Hierarchie
+    child_locations: Untergeordnete Standorte
+    security: Sicherheit
+    features: Merkmale
+  message:
+    no_locations: Noch keine Standorte vorhanden. Erstellen Sie den ersten Standort.
+  placeholder:
+    name: 'z.B. Hauptgebäude A'
+    code: 'z.B. HQ-A-01'
+  help:
+    type: Wählen Sie den Standorttyp (Gebäude, Raum, Rechenzentrum etc.)
+    code: Eindeutiger Code zur Identifikation des Standorts
+    parent: Ordnen Sie diesen Standort einem übergeordneten Standort zu (z.B. Raum in Gebäude)
+  confirm:
+    delete: 'Möchten Sie diesen Standort wirklich löschen? Untergeordnete Standorte werden ebenfalls entfernt.'
   success:
     created: Standort erfolgreich erstellt.
     updated: Standort erfolgreich aktualisiert.
