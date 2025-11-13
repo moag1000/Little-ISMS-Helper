@@ -843,18 +843,47 @@ incident:
     updated: Incident updated successfully.
     deleted: Incident deleted successfully.
 document:
+  doc_title: 'Documents'
+  title:
+    by_type: 'Documents by Type'
+  subtitle: 'Document Management'
+  new: 'New Document'
+  edit: 'Edit Document'
+  update: 'Update Document'
+  upload: 'Upload Document'
+
   field:
     name: Document Name
     description: Description
     document_type: Document Type
     file: File
+    title: 'Title'
+    status: 'Status'
+    version: 'Version'
+    owner: 'Owner'
+    review_date: 'Review Date'
+    last_updated: 'Last Updated'
+    updated: 'Updated'
+    active: 'Active'
+    draft: 'Draft'
+    documents: 'Documents'
+    total_documents: 'Total Documents'
+    overdue_reviews: 'Overdue Reviews'
+    type_name: 'Type Name'
+
   placeholder:
     name: e.g. Information Security Policy 2024
     description: Brief description of the document...
+
   help:
     file: Maximum 10 MB. Allowed formats PDF, Word, Excel, images, text
+
+  file_help: 'Allowed file types: PDF, Word, Excel, Images, Text'
+  edit_file_help: 'Upload a new file to replace the existing one'
+
   validation:
     mime_types: Please upload a valid document (PDF, Word, Excel, Image or Text file)
+
   type:
     asset: Asset Documentation
     risk: Risk Assessment
@@ -867,7 +896,9 @@ document:
     pdf: PDF Documents
     images: Images
     tables: Tables
+    excel: 'Excel Documents'
     other: Other
+
   label:
     type: Type
     file_name: File Name
@@ -876,6 +907,77 @@ document:
     uploaded_by: Uploaded By
     uploaded_at: Uploaded At
     last_updated: Last Updated
+    related_entity: 'Related Entity'
+
+  action:
+    create: 'Create Document'
+    upload: 'Upload Document'
+
+  badge:
+    confidential: 'Confidential'
+    controlled: 'Controlled'
+    due_soon: 'Due Soon'
+    overdue: 'Overdue'
+
+  confirm:
+    delete: 'Do you really want to delete this document?'
+
+  description:
+    by_type: 'Documents by Type'
+
+  details:
+    title: 'Document Details'
+
+  error:
+    upload_failed: 'File upload failed'
+    too_many_uploads: 'Too many uploads. Please try again later.'
+
+  filter:
+    all_categories: 'All Categories'
+    search_placeholder: 'Search documents...'
+
+  kpi:
+    total_documents: 'Total Documents'
+    total_size: 'Total Size'
+
+  message:
+    no_documents: 'No documents available'
+    no_documents_for_type: 'No documents for this type'
+    no_recent_activity: 'No recent activity'
+    no_results: 'No results found'
+    no_types: 'No document types defined'
+    upload_first: 'Upload your first document'
+
+  option:
+    all_types: 'All Types'
+
+  section:
+    all_documents: 'All Documents'
+    all_types: 'All Types'
+    documents: 'Documents'
+    recent_activity: 'Recent Activity'
+    select_type: 'Select Type'
+    type_overview: 'Type Overview'
+    type_statistics: 'Type Statistics'
+    types_overview: 'Types Overview'
+
+  stats:
+    active_documents: 'Active Documents'
+    avg_per_type: 'Average per Type'
+    document_types: 'Document Types'
+    draft_documents: 'Drafts'
+    expiring_soon: 'Expiring Soon'
+    overdue_reviews: 'Overdue Reviews'
+    total: 'Total'
+    total_documents: 'Total Documents'
+
+  success:
+    deleted: 'Document deleted successfully'
+    updated: 'Document updated successfully'
+    uploaded: 'Document uploaded successfully'
+
+  table:
+    uploaded_by: 'Uploaded By'
 person:
   title: Person Management
   name: Person
