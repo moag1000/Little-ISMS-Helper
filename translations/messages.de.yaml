@@ -2547,17 +2547,17 @@ data:
         message: Sie können die E-Mail-Konfiguration später in den Systemeinstellungen vornehmen.
       transport: Übertragungsart
       transport_help: Wählen Sie die Methode zum Versenden von E-Mails
-      transport:
+      transport_types:
         smtp: SMTP-Server
         sendmail: Sendmail
         native: PHP mail()
       host: SMTP-Host
       host_help: Hostname oder IP-Adresse des SMTP-Servers
       port: SMTP-Port
-      port_help: Port des SMTP-Servers (Standard: 587 für TLS, 465 für SSL)
+      port_help: "Port des SMTP-Servers (Standard: 587 für TLS, 465 für SSL)"
       encryption: Verschlüsselung
       encryption_help: Wählen Sie die Verschlüsselungsmethode
-      encryption:
+      encryption_types:
         none: Keine
         tls: TLS (empfohlen)
         ssl: SSL
@@ -2576,7 +2576,7 @@ data:
       config_failed: Fehler beim Speichern der E-Mail-Konfiguration
       info:
         title: Wofür wird E-Mail verwendet?
-        description: Die E-Mail-Konfiguration ermöglicht dem System:
+        description: "Die E-Mail-Konfiguration ermöglicht dem System:"
         notifications: Benachrichtigungen an Benutzer zu senden
         reminders: Erinnerungen für fällige Aufgaben zu verschicken
         reports: Automatische Berichte zu versenden
@@ -2626,7 +2626,7 @@ data:
         message: Diese Informationen werden verwendet, um branchenspezifische Empfehlungen und Compliance-Anforderungen bereitzustellen.
       compliance_info:
         title: Warum sind diese Informationen wichtig?
-        description: Basierend auf Ihren Angaben können wir:
+        description: "Basierend auf Ihren Angaben können wir:"
         scope: Den Geltungsbereich Ihres ISMS besser definieren
         reporting: Compliance-Berichte automatisch anpassen
         recommendations: Branchenspezifische Empfehlungen geben
@@ -2636,7 +2636,7 @@ data:
       description: Wählen Sie die Compliance-Frameworks aus, die für Ihre Organisation relevant sind. Sie können später weitere Frameworks hinzufügen.
       recommended:
         title: Empfohlene Frameworks für Ihre Branche
-        description: Basierend auf den Angaben zu Ihrer Organisation empfehlen wir folgende Frameworks:
+        description: "Basierend auf den Angaben zu Ihrer Organisation empfehlen wir folgende Frameworks:"
       mandatory:
         title: ISO 27001 ist verpflichtend
         message: ISO 27001:2022 ist die Grundlage dieses ISMS und kann nicht abgewählt werden.
