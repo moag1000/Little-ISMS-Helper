@@ -30,7 +30,8 @@ class SecurityEventLogger
     public function __construct(
         private readonly LoggerInterface $logger,
         private readonly RequestStack $requestStack,
-        private readonly EntityManagerInterface $entityManager
+        private readonly EntityManagerInterface $entityManager,
+        private readonly AuditLogger $auditLogger
     ) {}
 
     /**
@@ -42,6 +43,16 @@ class SecurityEventLogger
             'username' => $user->getUserIdentifier(),
             'user_id' => $user instanceof User ? $user->getId() : null,
         ]);
+
+        // Also log to audit log database for session tracking
+        $this->auditLogger->logCustom(
+            'login_success',
+            'Authentication',
+            $user instanceof User ? $user->getId() : null,
+            null,
+            ['username' => $user->getUserIdentifier()],
+            'User logged in successfully'
+        );
     }
 
     /**
@@ -53,6 +64,17 @@ class SecurityEventLogger
             'username' => $username,
             'reason' => $reason ?? 'Invalid credentials',
         ], 'warning');
+
+        // Also log to audit log database for security monitoring
+        $this->auditLogger->logCustom(
+            'login_failure',
+            'Authentication',
+            null,
+            null,
+            ['username' => $username, 'reason' => $reason ?? 'Invalid credentials'],
+            'Failed login attempt',
+            $username // Pass the username explicitly since user is not authenticated
+        );
     }
 
     /**
@@ -63,6 +85,16 @@ class SecurityEventLogger
         $this->logSecurityEvent('LOGOUT', [
             'username' => $user->getUserIdentifier(),
         ]);
+
+        // Also log to audit log database for session tracking
+        $this->auditLogger->logCustom(
+            'logout',
+            'Authentication',
+            $user instanceof User ? $user->getId() : null,
+            null,
+            ['username' => $user->getUserIdentifier()],
+            'User logged out'
+        );
     }
 
     /**
