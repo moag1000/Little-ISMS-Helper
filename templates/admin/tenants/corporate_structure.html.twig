@@ -203,6 +203,46 @@
             </div>
         </div>
     </div>
+
+    {# Update Governance Modal #}
+    <div class="modal fade" id="updateGovernanceModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{{ 'corporate.modal.update_governance.title'|trans }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form method="post" id="updateGovernanceForm">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">{{ 'tenant.field.name'|trans }}</label>
+                            <input type="text" class="form-control" id="governanceTenantName" readonly>
+                            <input type="hidden" id="governanceTenantId">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="updateGovernanceModel" class="form-label">{{ 'corporate.field.governance_model'|trans }}</label>
+                            <select class="form-select" name="governance_model" id="updateGovernanceModel" required>
+                                <option value="">{{ 'corporate.select.governance'|trans }}</option>
+                                {% for model in governanceModels %}
+                                    <option value="{{ model.value }}">{{ model.label }}</option>
+                                {% endfor %}
+                            </select>
+                            <div class="form-text" id="updateGovernanceHelp"></div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            {{ 'common.cancel'|trans }}
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle"></i> {{ 'common.save'|trans }}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 {% endblock %}
 
 {% block javascripts %}
@@ -229,9 +269,34 @@
             modal.show();
         }
 
-        // Update governance help text when model changes
+        // Update governance help text when model changes (for setParent modal)
         document.getElementById('governanceModel').addEventListener('change', function() {
             const helpText = document.getElementById('governanceHelp');
+            const description = governanceDescriptions[this.value] || '';
+            helpText.textContent = description;
+        });
+
+        // Show update governance modal
+        function showUpdateGovernanceModal(tenantId, tenantName, currentGovernance) {
+            document.getElementById('governanceTenantId').value = tenantId;
+            document.getElementById('governanceTenantName').value = tenantName;
+            document.getElementById('updateGovernanceForm').action = `/admin/tenants/${tenantId}/update-governance`;
+
+            // Set current governance as selected
+            const select = document.getElementById('updateGovernanceModel');
+            select.value = currentGovernance || '';
+
+            // Update help text
+            const helpText = document.getElementById('updateGovernanceHelp');
+            helpText.textContent = governanceDescriptions[currentGovernance] || '';
+
+            const modal = new bootstrap.Modal(document.getElementById('updateGovernanceModal'));
+            modal.show();
+        }
+
+        // Update governance help text when model changes (for update modal)
+        document.getElementById('updateGovernanceModel').addEventListener('change', function() {
+            const helpText = document.getElementById('updateGovernanceHelp');
             const description = governanceDescriptions[this.value] || '';
             helpText.textContent = description;
         });
