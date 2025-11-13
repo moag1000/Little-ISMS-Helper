@@ -2182,9 +2182,22 @@ error:
   csrf_invalid: Invalid CSRF token.
 audit_log:
   title: Audit Log Details
+  entries: Log Entries
+  showing_recent: Showing recent entries
   entry: 'Log Entry #{{ id }}'
   old_values: Old Values
   new_values: New Values
+  changes: Changes
+  view_all: View All
+  field:
+    timestamp: Timestamp
+    action: Action
+    entity_type: Entity Type
+    entity_id: Entity ID
+    user: User
+    ip_address: IP Address
+    user_agent: User Agent
+    description: Description
 entity_history:
   title: Entity History
   section: History
