@@ -12,7 +12,7 @@ use Doctrine\Migrations\AbstractMigration;
  * - Parent-child relationships
  * - Governance models (hierarchical, shared, independent)
  */
-final class Version20250113000001_add_corporate_structure extends AbstractMigration
+final class Version20251114000001_add_corporate_structure extends AbstractMigration
 {
     public function getDescription(): string
     {
