@@ -164,15 +164,17 @@
                                             <code class="text-muted ms-2">{{ tenant.parent.code }}</code>
                                         </td>
                                     </tr>
-                                    <tr>
-                                        <th>{{ 'corporate.field.governance_model'|trans }}</th>
-                                        <td>
-                                            <span class="badge bg-{{ tenant.governanceModel.value == 'hierarchical' ? 'primary' : (tenant.governanceModel.value == 'shared' ? 'warning' : 'secondary') }}">
-                                                {{ tenant.governanceModel.label }}
-                                            </span>
-                                            <br><small class="text-muted">{{ tenant.governanceModel.description }}</small>
-                                        </td>
-                                    </tr>
+                                    {% if defaultGovernance %}
+                                        <tr>
+                                            <th>{{ 'corporate.field.governance_model'|trans }}</th>
+                                            <td>
+                                                <span class="badge bg-{{ defaultGovernance.governanceModel.value == 'hierarchical' ? 'primary' : (defaultGovernance.governanceModel.value == 'shared' ? 'warning' : 'secondary') }}">
+                                                    {{ defaultGovernance.governanceModel.label }}
+                                                </span>
+                                                <br><small class="text-muted">{{ defaultGovernance.governanceModel.description }}</small>
+                                            </td>
+                                        </tr>
+                                    {% endif %}
                                     <tr>
                                         <th>{{ 'corporate.field.hierarchy_depth'|trans }}</th>
                                         <td>{{ 'corporate.level'|trans({'%level%': tenant.hierarchyDepth}) }}</td>
@@ -191,9 +193,6 @@
                                                                 {{ subsidiary.name }}
                                                             </a>
                                                             <code class="text-muted">{{ subsidiary.code }}</code>
-                                                            <span class="badge bg-{{ subsidiary.governanceModel.value == 'hierarchical' ? 'primary' : (subsidiary.governanceModel.value == 'shared' ? 'warning' : 'secondary') }} ms-1">
-                                                                {{ subsidiary.governanceModel.label }}
-                                                            </span>
                                                         </li>
                                                     {% endfor %}
                                                 </ul>

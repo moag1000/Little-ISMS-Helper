@@ -2,9 +2,11 @@
 
 namespace App\Controller;
 
+use App\Entity\CorporateGovernance;
 use App\Entity\Tenant;
 use App\Enum\GovernanceModel;
 use App\Form\TenantType;
+use App\Repository\CorporateGovernanceRepository;
 use App\Repository\TenantRepository;
 use App\Service\CorporateStructureService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -22,6 +24,7 @@ class TenantManagementController extends AbstractController
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly TenantRepository $tenantRepository,
+        private readonly CorporateGovernanceRepository $governanceRepository,
         private readonly LoggerInterface $logger,
         private readonly CorporateStructureService $corporateStructureService,
     ) {
@@ -118,12 +121,19 @@ class TenantManagementController extends AbstractController
             ];
         }
 
+        // Get default governance model
+        $defaultGovernance = null;
+        if ($tenant->getParent()) {
+            $defaultGovernance = $this->governanceRepository->findDefaultGovernance($tenant);
+        }
+
         return $this->render('admin/tenants/show.html.twig', [
             'tenant' => $tenant,
             'userCount' => $users->count(),
             'activeUsers' => $activeUsers,
             'inactiveUsers' => $users->count() - $activeUsers,
             'recentActivity' => $recentActivity,
+            'defaultGovernance' => $defaultGovernance,
         ]);
     }
 
@@ -286,8 +296,20 @@ class TenantManagementController extends AbstractController
                 }
 
                 $tenant->setParent($parent);
-                $tenant->setGovernanceModel(GovernanceModel::from($governanceModel));
                 $parent->setIsCorporateParent(true);
+
+                // Create default governance rule
+                $governance = $this->governanceRepository->findDefaultGovernance($tenant);
+                if (!$governance) {
+                    $governance = new CorporateGovernance();
+                    $governance->setTenant($tenant);
+                    $governance->setParent($parent);
+                    $governance->setScope('default');
+                    $governance->setScopeId(null);
+                    $governance->setCreatedBy($this->getUser());
+                }
+                $governance->setGovernanceModel(GovernanceModel::from($governanceModel));
+                $this->entityManager->persist($governance);
 
                 // Validate structure
                 $errors = $this->corporateStructureService->validateStructure($tenant);
@@ -305,9 +327,16 @@ class TenantManagementController extends AbstractController
 
                 $this->addFlash('success', 'corporate.flash.parent_set');
             } else {
-                // Remove parent
+                // Remove parent and all governance rules
                 $tenant->setParent(null);
-                $tenant->setGovernanceModel(null);
+
+                // Delete all governance rules for this tenant
+                $this->entityManager->createQueryBuilder()
+                    ->delete(CorporateGovernance::class, 'cg')
+                    ->where('cg.tenant = :tenant')
+                    ->setParameter('tenant', $tenant)
+                    ->getQuery()
+                    ->execute();
 
                 $this->logger->info('Tenant parent removed', [
                     'tenant_id' => $tenant->getId(),
@@ -341,16 +370,22 @@ class TenantManagementController extends AbstractController
         }
 
         try {
-            $tenant->setGovernanceModel(GovernanceModel::from($governanceModel));
-            $this->entityManager->flush();
+            // Update default governance rule
+            $governance = $this->governanceRepository->findDefaultGovernance($tenant);
+            if ($governance) {
+                $governance->setGovernanceModel(GovernanceModel::from($governanceModel));
+                $this->entityManager->flush();
 
-            $this->logger->info('Tenant governance model updated', [
-                'tenant_id' => $tenant->getId(),
-                'governance_model' => $governanceModel,
-                'user' => $this->getUser()?->getUserIdentifier(),
-            ]);
+                $this->logger->info('Tenant governance model updated', [
+                    'tenant_id' => $tenant->getId(),
+                    'governance_model' => $governanceModel,
+                    'user' => $this->getUser()?->getUserIdentifier(),
+                ]);
 
-            $this->addFlash('success', 'corporate.flash.governance_updated');
+                $this->addFlash('success', 'corporate.flash.governance_updated');
+            } else {
+                $this->addFlash('warning', 'corporate.flash.no_governance_found');
+            }
         } catch (\Exception $e) {
             $this->logger->error('Failed to update governance model', [
                 'tenant_id' => $tenant->getId(),

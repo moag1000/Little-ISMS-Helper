@@ -2,7 +2,6 @@
 
 namespace App\Entity;
 
-use App\Enum\GovernanceModel;
 use App\Repository\TenantRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -62,9 +61,6 @@ class Tenant
 
     #[ORM\OneToMany(mappedBy: 'parent', targetEntity: self::class)]
     private Collection $subsidiaries;
-
-    #[ORM\Column(type: Types::STRING, length: 20, enumType: GovernanceModel::class, nullable: true)]
-    private ?GovernanceModel $governanceModel = null;
 
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
     private bool $isCorporateParent = false;
@@ -256,17 +252,6 @@ class Tenant
             }
         }
 
-        return $this;
-    }
-
-    public function getGovernanceModel(): ?GovernanceModel
-    {
-        return $this->governanceModel;
-    }
-
-    public function setGovernanceModel(?GovernanceModel $governanceModel): static
-    {
-        $this->governanceModel = $governanceModel;
         return $this;
     }
 

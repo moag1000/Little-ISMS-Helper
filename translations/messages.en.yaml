@@ -2866,3 +2866,5 @@ corporate:
     parent: 'No parent (standalone)'
     governance_model: 'Select governance model...'
     corporate_notes: 'E.g. Special agreements or particularities...'
+  flash:
+    no_governance_found: 'No governance rule found for this tenant'
