@@ -86,9 +86,10 @@ class AuditLogger
         ?int $entityId = null,
         ?array $oldValues = null,
         ?array $newValues = null,
-        ?string $description = null
+        ?string $description = null,
+        ?string $userName = null
     ): void {
-        $this->log($action, $entityType, $entityId, $oldValues, $newValues, $description);
+        $this->log($action, $entityType, $entityId, $oldValues, $newValues, $description, $userName);
     }
 
     /**
@@ -100,7 +101,8 @@ class AuditLogger
         ?int $entityId,
         ?array $oldValues,
         ?array $newValues,
-        ?string $description
+        ?string $description,
+        ?string $userName = null
     ): void {
         $request = $this->requestStack->getCurrentRequest();
 
@@ -110,8 +112,8 @@ class AuditLogger
         $auditLog->setEntityId($entityId);
         $auditLog->setDescription($description);
 
-        // Set user information
-        $userName = $this->getCurrentUserName();
+        // Set user information (use provided userName or get from security context)
+        $userName = $userName ?? $this->getCurrentUserName();
         $auditLog->setUserName($userName);
 
         // Set request information if available
