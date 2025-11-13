@@ -89,7 +89,7 @@ function evaluateLicense(licenses) {
   }
 
   // Copyleft (commercial use allowed but strong obligations)
-  if (hasAny(['GPL-2.0', 'GPL-2.0-ONLY', 'GPL-2.0-OR-LATER', 'GPL-3.0', 'GPL-3.0-ONLY', 'GPL-3.0-OR-LATER', 'AGPL-3.0', 'AGPL-3.0-ONLY', 'AGPL-3.0-OR-LATER', 'LGPL-2.1', 'LGPL-3.0'])) {
+  if (hasAny(['GPL-2.0', 'GPL-2.0-ONLY', 'GPL-2.0-OR-LATER', 'GPL-3.0', 'GPL-3.0-ONLY', 'GPL-3.0-OR-LATER', 'AGPL-3.0', 'AGPL-3.0-ONLY', 'AGPL-3.0-OR-LATER', 'LGPL-2.1', 'LGPL-2.1-ONLY', 'LGPL-2.1-OR-LATER', 'LGPL-3.0', 'LGPL-3.0-ONLY', 'LGPL-3.0-OR-LATER'])) {
     return { status: 'copyleft', note: 'Kommerzielle Nutzung erlaubt; Reziprozitätspflichten beachten' };
   }
 
