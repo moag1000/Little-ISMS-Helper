@@ -36,6 +36,9 @@ Das Development-Image enthält zusätzliche Tools für die Entwicklung:
 # Development Version
 docker pull <username>/little-isms-helper:dev-develop
 docker pull <username>/little-isms-helper:dev-claude-xyz
+
+# Hinweis: Branch-Namen mit "/" werden zu "-" konvertiert
+# claude/feature-branch → dev-claude-feature-branch
 ```
 
 **Zusätzliche Features:**
@@ -109,7 +112,7 @@ Der CI/CD Workflow erstellt automatisch folgende Tags:
 | `develop` | Development branch | Push zu `develop` |
 | `main-<sha>` | Spezifischer Commit | Jeder Push zu `main` |
 | `develop-<sha>` | Dev-Commit | Jeder Push zu `develop` |
-| `dev-<branch>` | Development Image | Push zu `develop` oder `claude/*` |
+| `dev-<branch>` | Development Image | Push zu `develop` oder `claude/*` (Note: `/` wird zu `-`) |
 
 ## CI/CD Workflow
 
