@@ -2578,7 +2578,7 @@ data:
     organisation:
       title: Organisation Information
       header: 'Step 4: Organisation Information'
-      description: Provide information about your organisation. This will be used for compliance reports and scope definition.
+      intro: Provide information about your organisation. This will be used for compliance reports and scope definition.
       name: Organisation Name
       name_required: Organisation name is required
       name_min: Organisation name must be at least 2 characters long
@@ -2587,7 +2587,7 @@ data:
       industry: Industry
       industry_required: Please select an industry
       industry_help: Select your organisation's industry
-      industry:
+      industry_options:
         select: '-- Select Industry --'
         automotive: Automotive
         financial_services: Financial Services
@@ -2603,7 +2603,7 @@ data:
       employee_count: Employee Count
       employee_count_required: Please select the employee count
       employee_count_help: Approximate number of employees
-      employee_count:
+      employee_count_options:
         select: '-- Select Employee Count --'
         1_10: '1-10'
         11_50: '11-50'

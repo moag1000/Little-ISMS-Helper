@@ -2583,7 +2583,7 @@ data:
     organisation:
       title: Organisations-Informationen
       header: 'Schritt 4: Organisations-Informationen'
-      description: Geben Sie Informationen über Ihre Organisation an. Diese werden für Compliance-Berichte und Scope-Definition verwendet.
+      intro: Geben Sie Informationen über Ihre Organisation an. Diese werden für Compliance-Berichte und Scope-Definition verwendet.
       name: Organisationsname
       name_required: Organisationsname ist erforderlich
       name_min: Organisationsname muss mindestens 2 Zeichen lang sein
@@ -2592,7 +2592,7 @@ data:
       industry: Branche
       industry_required: Bitte wählen Sie eine Branche aus
       industry_help: Wählen Sie die Branche Ihrer Organisation
-      industry:
+      industry_options:
         select: '-- Branche wählen --'
         automotive: Automobilindustrie
         financial_services: Finanzdienstleistungen
@@ -2608,7 +2608,7 @@ data:
       employee_count: Mitarbeiterzahl
       employee_count_required: Bitte wählen Sie die Mitarbeiterzahl aus
       employee_count_help: Ungefähre Anzahl der Mitarbeiter
-      employee_count:
+      employee_count_options:
         select: '-- Mitarbeiterzahl wählen --'
         1_10: '1-10'
         11_50: '11-50'
