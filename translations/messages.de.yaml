@@ -2955,6 +2955,11 @@ corporate:
     propagate: 'An Tochtergesellschaften verteilen'
     propagate_error: 'Fehler beim Verteilen des Kontexts'
     confirm_propagate: 'Möchten Sie den ISMS-Kontext wirklich an alle hierarchischen Tochtergesellschaften verteilen? Dies überschreibt deren aktuelle Kontexte.'
+    isms_context_inherited: 'ISMS-Kontext wird von Muttergesellschaft geerbt'
+    from: 'Von'
+    edit_at_parent: 'Um diesen Kontext zu ändern, bearbeiten Sie ihn bei der Muttergesellschaft.'
+    cannot_edit_inherited: 'Geerbte Kontexte können nicht bearbeitet werden'
+    cannot_edit_inherited_long: 'Dieser ISMS-Kontext wird von der Muttergesellschaft "%parent%" geerbt und kann hier nicht bearbeitet werden. Bitte bearbeiten Sie den Kontext bei der Muttergesellschaft.'
 
 # Governance Model Labels
 governance:
