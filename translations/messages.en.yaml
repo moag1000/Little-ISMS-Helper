@@ -2869,3 +2869,31 @@ corporate:
     title: 'Single Tenant Environment'
     message: 'There is currently only %count% active tenant in your system.'
     hint: 'Corporate structures become relevant when you manage multiple tenants.'
+  granular:
+    title: 'Granular Governance Rules'
+    subtitle: 'Specific governance rules for individual areas'
+    add_rule: 'Add Rule'
+    no_rules: 'No specific rules defined. Default governance model applies.'
+    loading: 'Loading governance rules...'
+    modal:
+      title: 'Add Governance Rule'
+      edit_title: 'Edit Governance Rule'
+    field:
+      scope: 'Scope'
+      scope_id: 'Scope ID (optional)'
+      notes: 'Notes'
+    scope:
+      control: 'Control'
+      isms_context: 'ISMS Context'
+      risk: 'Risk'
+      asset: 'Asset'
+      process: 'Process'
+      default: 'Default'
+    action:
+      delete: 'Delete Rule'
+    confirm:
+      delete: 'Do you really want to delete this governance rule?'
+    flash:
+      saved: 'Governance rule saved'
+      deleted: 'Governance rule deleted'
+      error: 'Error saving governance rule'
