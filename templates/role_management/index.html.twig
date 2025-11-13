@@ -26,10 +26,10 @@
     </div>
 
     <div class="kpi-card">
-        <div class="icon">✅</div>
-        <div class="label">{{ 'role_management.stats.active'|trans }}</div>
+        <div class="icon">⚙️</div>
+        <div class="label">{{ 'role_management.stats.system_roles'|trans }}</div>
         <div>
-            <span class="value">{{ roles|filter(r => r.active)|length }}</span>
+            <span class="value">{{ roles|filter(r => r.systemRole)|length }}</span>
         </div>
     </div>
 
@@ -63,7 +63,7 @@
                 <th>{{ 'role_management.field.description'|trans }}</th>
                 <th class="text-center">{{ 'role_management.field.permissions'|trans }}</th>
                 <th class="text-center">{{ 'role_management.field.users'|trans }}</th>
-                <th class="text-center">{{ 'role_management.field.active'|trans }}</th>
+                <th class="text-center">{{ 'role_management.field.type'|trans }}</th>
                 <th class="text-center">{{ 'common.actions'|trans }}</th>
             </tr>
         </thead>
@@ -90,10 +90,10 @@
                     <span class="badge badge-info">{{ role.users|length }}</span>
                 </td>
                 <td class="text-center">
-                    {% if role.active %}
-                        <span class="badge badge-success">✓</span>
+                    {% if role.systemRole %}
+                        <span class="badge badge-info">{{ 'role_management.type.system'|trans }}</span>
                     {% else %}
-                        <span class="badge badge-danger">✗</span>
+                        <span class="badge badge-secondary">{{ 'role_management.type.custom'|trans }}</span>
                     {% endif %}
                 </td>
                 <td class="text-center">
