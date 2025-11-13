@@ -5,54 +5,159 @@
 {% block header_title %}Gap Analysis Report{% endblock %}
 {% block header_subtitle %}{{ framework.name }} ({{ framework.code }}){% endblock %}
 
+{% block extra_styles %}
+    .stats-grid {
+        display: table;
+        width: 100%;
+        margin-bottom: 20pt;
+        border: 1px solid #cbd5e1;
+        border-collapse: collapse;
+    }
+
+    .stats-row {
+        display: table-row;
+    }
+
+    .stats-cell {
+        display: table-cell;
+        padding: 10pt;
+        text-align: center;
+        border: 1px solid #cbd5e1;
+        width: 20%;
+    }
+
+    .stats-label {
+        font-size: 8pt;
+        color: #64748b;
+        font-weight: bold;
+        margin-bottom: 4pt;
+    }
+
+    .stats-value {
+        font-size: 16pt;
+        color: #1F4E78;
+        font-weight: bold;
+    }
+
+    .stats-value-success {
+        color: #10b981;
+    }
+
+    .stats-value-warning {
+        color: #f59e0b;
+    }
+
+    .stats-value-danger {
+        color: #ef4444;
+    }
+
+    .insight-box {
+        background: #f8fafc;
+        border-left: 4px solid #1F4E78;
+        padding: 10pt;
+        margin: 10pt 0;
+        font-size: 9pt;
+        color: #475569;
+    }
+
+    .insight-box strong {
+        color: #1e293b;
+    }
+
+    .risk-box-low {
+        background: #f0fdf4;
+        border-left: 4px solid #10b981;
+    }
+
+    .risk-box-medium {
+        background: #fffbeb;
+        border-left: 4px solid #f59e0b;
+    }
+
+    .risk-box-high {
+        background: #fef2f2;
+        border-left: 4px solid #ef4444;
+    }
+
+    .highlight-row {
+        font-weight: bold;
+        background: #f1f5f9;
+    }
+
+    .w-15 {
+        width: 15%;
+    }
+
+    .w-20 {
+        width: 20%;
+    }
+
+    .w-25 {
+        width: 25%;
+    }
+
+    .w-30 {
+        width: 30%;
+    }
+
+    .w-40 {
+        width: 40%;
+    }
+{% endblock %}
+
 {% block content %}
-    {# Summary Section #}
-    <div class="summary-box">
-        <div class="metric">
-            <span class="metric-label">Framework</span>
-            <span class="metric-value">{{ framework.name }}</span>
-        </div>
-        <div class="metric">
-            <span class="metric-label">Gesamt Anforderungen</span>
-            <span class="metric-value">{{ total_requirements }}</span>
-        </div>
-        <div class="metric">
-            <span class="metric-label">Erfüllte Anforderungen</span>
-            <span class="metric-value" style="color: #0A0;">{{ met_requirements }}</span>
-        </div>
-        <div class="metric">
-            <span class="metric-label">Identifizierte Gaps</span>
-            <span class="metric-value" style="color: #C00;">{{ total_gaps }}</span>
-        </div>
-        <div class="metric">
-            <span class="metric-label">Compliance Score</span>
-            <span class="metric-value">{{ compliance_score }}%</span>
+    {# Executive Summary #}
+    <h2>Executive Summary</h2>
+    <div class="stats-grid">
+        <div class="stats-row">
+            <div class="stats-cell">
+                <div class="stats-label">Total Requirements</div>
+                <div class="stats-value">{{ total_requirements }}</div>
+            </div>
+            <div class="stats-cell">
+                <div class="stats-label">Met Requirements</div>
+                <div class="stats-value stats-value-success">{{ met_requirements }}</div>
+            </div>
+            <div class="stats-cell">
+                <div class="stats-label">Identified Gaps</div>
+                <div class="stats-value stats-value-danger">{{ total_gaps }}</div>
+            </div>
+            <div class="stats-cell">
+                <div class="stats-label">Compliance Score</div>
+                <div class="stats-value {% if compliance_score >= 80 %}stats-value-success{% elseif compliance_score >= 60 %}stats-value-warning{% else %}stats-value-danger{% endif %}">{{ compliance_score }}%</div>
+            </div>
+            <div class="stats-cell">
+                <div class="stats-label">Risk Score</div>
+                <div class="stats-value {% if risk_score >= 50 %}stats-value-danger{% elseif risk_score >= 20 %}stats-value-warning{% else %}stats-value-success{% endif %}">{{ risk_score }}</div>
+            </div>
         </div>
     </div>
 
-    {# Risk Score & Weighted Compliance #}
-    <h2>Risiko-Bewertung & Prioritäten</h2>
-    <div style="background: {% if risk_score >= 50 %}#FFC7CE{% elseif risk_score >= 20 %}#FFEB9C{% else %}#C6EFCE{% endif %}; padding: 8px; margin: 8px 0; border-left: 3px solid {% if risk_score >= 50 %}#9C0006{% elseif risk_score >= 20 %}#FFA500{% else %}#28A745{% endif %}; font-size: 9pt;">
-        <strong>Gesamt-Risk-Score:</strong> <strong style="font-size: 14pt;">{{ risk_score }}</strong>
-        (Berechnung: {{ uncovered_critical|length }} kritische × 10 + {{ uncovered_high|length }} hohe × 5)
+    {# Risk Assessment #}
+    <h2>Risk Assessment</h2>
+    <div class="{% if risk_score >= 50 %}risk-box-high{% elseif risk_score >= 20 %}risk-box-medium{% else %}risk-box-low{% endif %} insight-box">
+        <strong>Overall Risk Score: {{ risk_score }}</strong>
+        (Calculation: {{ uncovered_critical|length }} critical × 10 + {{ uncovered_high|length }} high × 5)
+        <br>
         {% if risk_score >= 50 %}
-        | <strong style="color: #9C0006;">⚠ KRITISCH</strong> - Sofortmaßnahmen erforderlich!
+            <strong>Status: CRITICAL</strong> - Immediate action required
         {% elseif risk_score >= 20 %}
-        | <strong style="color: #FFA500;">⚠ HOCH</strong> - Dringende Aufmerksamkeit nötig
+            <strong>Status: HIGH</strong> - Urgent attention needed
         {% elseif risk_score > 0 %}
-        | <strong style="color: #2196F3;">ℹ MITTEL</strong> - Planmäßige Gap-Schließung
+            <strong>Status: MEDIUM</strong> - Planned gap closure recommended
         {% else %}
-        | <strong style="color: #28A745;">✓ NIEDRIG</strong> - Guter Status
+            <strong>Status: LOW</strong> - Good compliance status
         {% endif %}
     </div>
 
-    <table style="width: 90%;">
+    <h3>Compliance Scores Comparison</h3>
+    <table>
         <thead>
             <tr>
-                <th>Metrik</th>
-                <th class="text-center">Standard Score</th>
-                <th class="text-center">Weighted Score</th>
-                <th class="text-center">Differenz</th>
+                <th class="w-40">Metric</th>
+                <th class="text-center w-20">Standard Score</th>
+                <th class="text-center w-20">Weighted Score</th>
+                <th class="text-center w-20">Difference</th>
             </tr>
         </thead>
         <tbody>
@@ -60,13 +165,11 @@
                 <td>Compliance Score</td>
                 <td class="text-center">{{ compliance_score }}%</td>
                 <td class="text-center">
-                    <strong {% if weighted_compliance_score < compliance_score %}style="color: #C00;"{% endif %}>
-                        {{ weighted_compliance_score }}%
-                    </strong>
+                    <strong>{{ weighted_compliance_score }}%</strong>
                 </td>
                 <td class="text-center">
                     {% set diff = weighted_compliance_score - compliance_score %}
-                    <span style="color: {% if diff < 0 %}#C00{% elseif diff > 0 %}#0A0{% else %}#666{% endif %};">
+                    <span style="color: {% if diff < 0 %}#ef4444{% elseif diff > 0 %}#10b981{% else %}#64748b{% endif %}; font-weight: bold;">
                         {{ diff > 0 ? '+' : '' }}{{ diff }}%
                     </span>
                 </td>
@@ -74,453 +177,223 @@
         </tbody>
     </table>
 
-    <div style="background: #E8F4F8; padding: 8px; margin: 8px 0; border-left: 3px solid #2196F3; font-size: 9pt;">
+    <div class="insight-box">
         <strong>Interpretation:</strong>
         {% if weighted_compliance_score < compliance_score %}
-        Der gewichtete Score ist niedriger, was bedeutet, dass <strong>kritische/hohe Priority-Requirements</strong> schlechter erfüllt sind als Medium/Low-Requirements. <strong>Fokus auf High-Impact-Gaps erforderlich!</strong>
+            The weighted score is lower, indicating that critical/high priority requirements are less well met than medium/low requirements. Focus on high-impact gaps required.
         {% elseif weighted_compliance_score > compliance_score %}
-        Der gewichtete Score ist höher - Kritische Requirements sind besser erfüllt. Gute Priorisierung!
+            The weighted score is higher - critical requirements are better met. Good prioritization!
         {% else %}
-        Ausgewogene Compliance über alle Prioritäts-Stufen.
+            Balanced compliance across all priority levels.
         {% endif %}
     </div>
 
-    {# Severity Breakdown #}
-    <h2>Gap-Verteilung nach Severity</h2>
-    <table style="width: 70%;">
-        <thead>
-            <tr>
-                <th>Severity Level</th>
-                <th class="text-center">Anzahl Gaps</th>
-                <th class="text-center">Prozentsatz</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td><span class="badge badge-critical">Kritisch</span></td>
-                <td class="text-center">{{ severity_counts.critical }}</td>
-                <td class="text-center">{{ total_gaps > 0 ? ((severity_counts.critical / total_gaps * 100)|round(1)) : 0 }}%</td>
-            </tr>
-            <tr>
-                <td><span class="badge badge-high">Hoch</span></td>
-                <td class="text-center">{{ severity_counts.high }}</td>
-                <td class="text-center">{{ total_gaps > 0 ? ((severity_counts.high / total_gaps * 100)|round(1)) : 0 }}%</td>
-            </tr>
-            <tr>
-                <td><span class="badge badge-medium">Mittel</span></td>
-                <td class="text-center">{{ severity_counts.medium }}</td>
-                <td class="text-center">{{ total_gaps > 0 ? ((severity_counts.medium / total_gaps * 100)|round(1)) : 0 }}%</td>
-            </tr>
-            <tr>
-                <td><span class="badge badge-low">Niedrig</span></td>
-                <td class="text-center">{{ severity_counts.low }}</td>
-                <td class="text-center">{{ total_gaps > 0 ? ((severity_counts.low / total_gaps * 100)|round(1)) : 0 }}%</td>
-            </tr>
-        </tbody>
-    </table>
-
-    {# Priority-Weighted Recommendations #}
-    {% if gap_recommendations|length > 0 %}
+    {# Gap Distribution #}
     <div class="page-break"></div>
-    <h2>Priorisierte Gap-Schließungs-Roadmap</h2>
-    <p style="font-size: 9pt; color: #666; margin-bottom: 10px;">
-        Automatisch generierte Empfehlungen basierend auf Priority-Weights und Risk-Score.
-    </p>
-
+    <h2>Gap Distribution by Severity</h2>
     <table>
         <thead>
             <tr>
-                <th style="width: 15%;">Priorität</th>
-                <th style="width: 50%;">Maßnahme</th>
-                <th style="width: 20%;">Timeline</th>
-                <th style="width: 15%;">Risk-Reduktion</th>
+                <th class="w-30">Severity Level</th>
+                <th class="text-center w-20">Gap Count</th>
+                <th class="text-center w-20">Percentage</th>
+                <th class="text-center w-15">Risk Weight</th>
+                <th class="text-center w-15">Total Risk</th>
             </tr>
         </thead>
         <tbody>
-            {% for rec in gap_recommendations %}
-            <tr class="no-break">
-                <td>
-                    <span class="badge {% if rec.priority == 'CRITICAL' %}badge-critical{% elseif rec.priority == 'HIGH' %}badge-high{% elseif rec.priority == 'MEDIUM' %}badge-medium{% else %}badge-low{% endif %}">
-                        {{ rec.priority }}
-                    </span>
-                </td>
-                <td style="font-size: 8pt;">{{ rec.action }}</td>
-                <td class="text-center">{{ rec.timeline }}</td>
-                <td class="text-center"><strong>-{{ rec.risk_reduction }}</strong></td>
+            <tr>
+                <td><span class="badge badge-critical">Critical</span></td>
+                <td class="text-center"><strong>{{ uncovered_critical|length }}</strong></td>
+                <td class="text-center">{{ total_gaps > 0 ? ((uncovered_critical|length / total_gaps * 100)|round(1)) : 0 }}%</td>
+                <td class="text-center">10</td>
+                <td class="text-center"><strong style="color: #ef4444;">{{ uncovered_critical|length * 10 }}</strong></td>
             </tr>
-            {% endfor %}
+            <tr>
+                <td><span class="badge badge-high">High</span></td>
+                <td class="text-center"><strong>{{ uncovered_high|length }}</strong></td>
+                <td class="text-center">{{ total_gaps > 0 ? ((uncovered_high|length / total_gaps * 100)|round(1)) : 0 }}%</td>
+                <td class="text-center">5</td>
+                <td class="text-center"><strong style="color: #f59e0b;">{{ uncovered_high|length * 5 }}</strong></td>
+            </tr>
+            <tr>
+                <td><span class="badge badge-warning">Medium</span></td>
+                <td class="text-center"><strong>{{ uncovered_medium|length }}</strong></td>
+                <td class="text-center">{{ total_gaps > 0 ? ((uncovered_medium|length / total_gaps * 100)|round(1)) : 0 }}%</td>
+                <td class="text-center">-</td>
+                <td class="text-center">-</td>
+            </tr>
+            <tr>
+                <td><span class="badge badge-low">Low</span></td>
+                <td class="text-center"><strong>{{ uncovered_low|length }}</strong></td>
+                <td class="text-center">{{ total_gaps > 0 ? ((uncovered_low|length / total_gaps * 100)|round(1)) : 0 }}%</td>
+                <td class="text-center">-</td>
+                <td class="text-center">-</td>
+            </tr>
+            <tr class="highlight-row">
+                <td><strong>Total</strong></td>
+                <td class="text-center"><strong>{{ total_gaps }}</strong></td>
+                <td class="text-center"><strong>100%</strong></td>
+                <td colspan="2" class="text-center"><strong>Risk Score: {{ risk_score }}</strong></td>
+            </tr>
         </tbody>
     </table>
 
-    <div style="background: #FFF2CC; padding: 8px; margin: 8px 0; border-left: 3px solid #F4D03F; font-size: 9pt;">
-        <strong>Potenzielle Gesamt-Risk-Reduktion:</strong>
-        Durch Umsetzung aller Empfehlungen kann der Risk-Score von <strong>{{ risk_score }}</strong> auf
-        <strong>{{ risk_score - gap_recommendations|reduce((carry, rec) => carry + rec.risk_reduction, 0) }}</strong>
-        reduziert werden (-{{ gap_recommendations|reduce((carry, rec) => carry + rec.risk_reduction, 0) }} Punkte).
-    </div>
-    {% endif %}
-
-    {# Critical Gaps Detailed Table #}
-    {% if uncovered_critical|length > 0 %}
+    {# Root Cause Analysis #}
+    {% if root_cause_analysis is defined %}
     <div class="page-break"></div>
-    <h2>⚠ Kritische Gaps - Sofortmaßnahmen erforderlich</h2>
-    <p style="font-size: 9pt; color: #C00; margin-bottom: 10px;">
-        Diese {{ uncovered_critical|length }} kritischen Anforderungen sind NICHT erfüllt und erfordern höchste Priorität!
-    </p>
+    <h2>Root Cause Analysis</h2>
+
+    <h3>Root Cause Distribution</h3>
     <table>
         <thead>
             <tr>
-                <th style="width: 12%;">ID</th>
-                <th style="width: 30%;">Anforderung</th>
-                <th style="width: 18%;">Kategorie</th>
-                <th style="width: 12%;">Erfüllung</th>
-                <th style="width: 28%;">Beschreibung (gekürzt)</th>
+                <th class="w-30">Root Cause</th>
+                <th class="text-center w-15">Count</th>
+                <th class="text-center w-15">Percentage</th>
+                <th class="w-40">Description</th>
             </tr>
         </thead>
         <tbody>
-            {% for critical in uncovered_critical %}
-            <tr class="no-break">
-                <td><strong style="color: #9C0006;">{{ critical.id }}</strong></td>
-                <td style="font-size: 8pt;"><strong>{{ critical.title|length > 50 ? (critical.title|slice(0, 50) ~ '...') : critical.title }}</strong></td>
-                <td><span class="badge badge-info">{{ critical.category ?? 'Uncategorized' }}</span></td>
-                <td class="text-center">
-                    <span style="color: #C00;"><strong>{{ critical.fulfillment }}%</strong></span>
-                </td>
-                <td style="font-size: 7pt;">{{ critical.description|length > 80 ? (critical.description|slice(0, 80) ~ '...') : (critical.description ?? '-') }}</td>
+            <tr>
+                <td><span class="badge badge-critical">Not Started</span></td>
+                <td class="text-center"><strong>{{ root_cause_analysis.summary.not_started_count }}</strong></td>
+                <td class="text-center">{{ total_gaps > 0 ? ((root_cause_analysis.summary.not_started_count / total_gaps * 100)|round(1)) : 0 }}%</td>
+                <td>Requirements with 0% fulfillment - not yet addressed</td>
             </tr>
-            {% endfor %}
+            <tr>
+                <td><span class="badge badge-high">Missing Control</span></td>
+                <td class="text-center"><strong>{{ root_cause_analysis.summary.missing_control_count }}</strong></td>
+                <td class="text-center">{{ total_gaps > 0 ? ((root_cause_analysis.summary.missing_control_count / total_gaps * 100)|round(1)) : 0 }}%</td>
+                <td>Very low fulfillment (&lt;30%) - control missing or insufficient</td>
+            </tr>
+            <tr>
+                <td><span class="badge badge-warning">Incomplete Implementation</span></td>
+                <td class="text-center"><strong>{{ root_cause_analysis.summary.incomplete_implementation_count }}</strong></td>
+                <td class="text-center">{{ total_gaps > 0 ? ((root_cause_analysis.summary.incomplete_implementation_count / total_gaps * 100)|round(1)) : 0 }}%</td>
+                <td>Partial fulfillment (30-80%) - implementation in progress</td>
+            </tr>
+            <tr>
+                <td><span class="badge badge-info">Missing Evidence</span></td>
+                <td class="text-center"><strong>{{ root_cause_analysis.summary.missing_evidence_count }}</strong></td>
+                <td class="text-center">{{ total_gaps > 0 ? ((root_cause_analysis.summary.missing_evidence_count / total_gaps * 100)|round(1)) : 0 }}%</td>
+                <td>High fulfillment (80-99%) - control exists but documentation lacking</td>
+            </tr>
         </tbody>
     </table>
 
-    <div style="background: #FFC7CE; padding: 8px; margin: 8px 0; border-left: 3px solid #9C0006; font-size: 9pt;">
-        <strong>⚠ Dringende Handlungsempfehlung:</strong> Diese {{ uncovered_critical|length }} kritischen Gaps tragen
-        <strong>{{ uncovered_critical|length * 10 }} Punkte</strong> zum Gesamt-Risk-Score bei. Sofortige Maßnahmen binnen
-        30 Tagen erforderlich!
-    </div>
-    {% endif %}
-
-    {# High Priority Gaps Table #}
-    {% if uncovered_high|length > 0 %}
-    <div class="page-break"></div>
-    <h2>Hohe Priorität Gaps</h2>
-    <p style="font-size: 9pt; color: #F90; margin-bottom: 10px;">
-        {{ uncovered_high|length }} Anforderungen mit hoher Priorität sind nicht erfüllt (Timeline: 30-90 Tage).
-    </p>
+    <h3>Category-Specific Patterns (Top 5)</h3>
     <table>
         <thead>
             <tr>
-                <th style="width: 12%;">ID</th>
-                <th style="width: 35%;">Anforderung</th>
-                <th style="width: 20%;">Kategorie</th>
-                <th style="width: 12%;">Erfüllung</th>
-                <th style="width: 21%;">Impact</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for high in uncovered_high|slice(0, 15) %}
-            <tr class="no-break">
-                <td><strong>{{ high.id }}</strong></td>
-                <td style="font-size: 8pt;">{{ high.title|length > 50 ? (high.title|slice(0, 50) ~ '...') : high.title }}</td>
-                <td><span class="badge badge-info">{{ high.category ?? 'Uncategorized' }}</span></td>
-                <td class="text-center">{{ high.fulfillment }}%</td>
-                <td class="text-center" style="font-size: 7pt;">Risk: +5 Punkte</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    {% if uncovered_high|length > 15 %}
-    <p style="font-size: 8pt; color: #666; margin-top: 5px;">
-        ... und {{ uncovered_high|length - 15 }} weitere hohe Priorität Gaps
-    </p>
-    {% endif %}
-
-    <div style="background: #FFEB9C; padding: 8px; margin: 8px 0; border-left: 3px solid #FFA500; font-size: 9pt;">
-        <strong>Empfehlung:</strong> Diese {{ uncovered_high|length }} hohen Gaps tragen
-        <strong>{{ uncovered_high|length * 5 }} Punkte</strong> zum Risk-Score bei. Zeitnahe Bearbeitung innerhalb
-        90 Tagen empfohlen.
-    </div>
-    {% endif %}
-
-    {# Root Cause Analysis Section #}
-    <div class="page-break"></div>
-    <h2>🔍 Root Cause Analysis - Ursachenforschung</h2>
-    <p style="font-size: 9pt; color: #666; margin-bottom: 10px;">
-        Analyse der Grundursachen für Compliance-Gaps zur Entwicklung gezielter Lösungsstrategien.
-    </p>
-
-    <h3>Root Cause Verteilung</h3>
-    <table style="width: 90%;">
-        <thead>
-            <tr>
-                <th style="width: 35%;">Root Cause</th>
-                <th style="width: 15%;">Anzahl</th>
-                <th style="width: 15%;">Prozent</th>
-                <th style="width: 35%;">Beschreibung</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td><span class="badge badge-critical">Nicht begonnen</span></td>
-                <td class="text-center"><strong>{{ root_cause_summary.not_started_count }}</strong></td>
-                <td class="text-center">{{ total_gaps > 0 ? ((root_cause_summary.not_started_count / total_gaps * 100)|round(1)) : 0 }}%</td>
-                <td style="font-size: 8pt;">Anforderungen mit 0% Erfüllung - noch nicht in Angriff genommen</td>
-            </tr>
-            <tr>
-                <td><span class="badge badge-high">Fehlende Kontrolle</span></td>
-                <td class="text-center"><strong>{{ root_cause_summary.missing_control_count }}</strong></td>
-                <td class="text-center">{{ total_gaps > 0 ? ((root_cause_summary.missing_control_count / total_gaps * 100)|round(1)) : 0 }}%</td>
-                <td style="font-size: 8pt;">Sehr niedrige Erfüllung (<30%) - Kontrolle fehlt oder unzureichend</td>
-            </tr>
-            <tr>
-                <td><span class="badge badge-warning">Unvollständig umgesetzt</span></td>
-                <td class="text-center"><strong>{{ root_cause_summary.incomplete_implementation_count }}</strong></td>
-                <td class="text-center">{{ total_gaps > 0 ? ((root_cause_summary.incomplete_implementation_count / total_gaps * 100)|round(1)) : 0 }}%</td>
-                <td style="font-size: 8pt;">Mittlere Erfüllung (30-80%) - Teilweise implementiert, Lücken vorhanden</td>
-            </tr>
-            <tr>
-                <td><span class="badge badge-info">Fehlende Evidenz</span></td>
-                <td class="text-center"><strong>{{ root_cause_summary.missing_evidence_count }}</strong></td>
-                <td class="text-center">{{ total_gaps > 0 ? ((root_cause_summary.missing_evidence_count / total_gaps * 100)|round(1)) : 0 }}%</td>
-                <td style="font-size: 8pt;">Hohe Erfüllung (80-99%) - Kontrolle vorhanden, Dokumentation fehlt</td>
-            </tr>
-        </tbody>
-    </table>
-
-    <div style="background: #E8F4F8; padding: 8px; margin: 8px 0; border-left: 3px solid #2196F3; font-size: 9pt;">
-        <strong>Interpretation:</strong>
-        {% if root_cause_summary.not_started_count > root_cause_summary.missing_evidence_count %}
-        Mehrheit der Gaps sind <strong>nicht begonnen</strong> - Fokus auf <strong>Projekt-Kickoff und Ressourcen-Allokation</strong>.
-        {% elseif root_cause_summary.missing_control_count > (total_gaps / 2) %}
-        Viele Gaps durch <strong>fehlende Kontrollen</strong> - <strong>Control Design & Implementierung</strong> erforderlich.
-        {% elseif root_cause_summary.incomplete_implementation_count > (total_gaps / 2) %}
-        Schwerpunkt auf <strong>unvollständigen Implementierungen</strong> - <strong>Gap-Closure & Finalisierung</strong> nötig.
-        {% elseif root_cause_summary.missing_evidence_count > (total_gaps / 3) %}
-        Signifikanter Anteil <strong>fehlende Evidenz</strong> - <strong>Dokumentations-Sprint</strong> kann schnelle Erfolge bringen!
-        {% else %}
-        Gemischte Root Causes - Differenzierte Strategie erforderlich.
-        {% endif %}
-    </div>
-
-    {# Category Pattern Analysis #}
-    {% if category_patterns|length > 0 %}
-    <h3>Kategorie-spezifische Gap-Patterns</h3>
-    <p style="font-size: 9pt; color: #666; margin-bottom: 10px;">
-        Identifikation systematischer Probleme auf Kategorie-Ebene (Top 5 betroffene Kategorien).
-    </p>
-    <table style="width: 95%;">
-        <thead>
-            <tr>
-                <th style="width: 25%;">Kategorie</th>
-                <th style="width: 12%;">Gaps</th>
-                <th style="width: 15%;">Ø Erfüllung</th>
-                <th style="width: 25%;">Dominante Root Cause</th>
-                <th style="width: 23%;">Status</th>
+                <th class="w-30">Category</th>
+                <th class="text-center w-15">Gap Count</th>
+                <th class="text-center w-15">Avg. Fulfillment</th>
+                <th class="text-center w-20">Dominant Root Cause</th>
+                <th class="text-center w-20">Pattern Severity</th>
             </tr>
         </thead>
         <tbody>
             {% for category, pattern in category_patterns|slice(0, 5) %}
-            <tr class="no-break">
-                <td style="font-size: 8pt;"><strong>{{ category }}</strong></td>
-                <td class="text-center"><strong style="color: #C00;">{{ pattern.count }}</strong></td>
-                <td class="text-center">
-                    <span {% if pattern.avg_fulfillment < 30 %}style="color: #C00;"{% elseif pattern.avg_fulfillment < 60 %}style="color: #FFA500;"{% endif %}>
-                        {{ pattern.avg_fulfillment }}%
-                    </span>
-                </td>
-                <td style="font-size: 8pt;">
-                    {% if pattern.dominant_root_cause == 'not_started' %}
-                        <span class="badge badge-critical">Nicht begonnen</span>
-                    {% elseif pattern.dominant_root_cause == 'missing_control' %}
-                        <span class="badge badge-high">Fehlende Kontrolle</span>
-                    {% elseif pattern.dominant_root_cause == 'incomplete_implementation' %}
-                        <span class="badge badge-warning">Unvollständig</span>
-                    {% else %}
-                        <span class="badge badge-info">Fehlende Evidenz</span>
-                    {% endif %}
-                </td>
-                <td style="font-size: 7pt;">
-                    {% if pattern.count >= 5 %}
-                        ⚠ Kritischer Cluster
-                    {% elseif pattern.count >= 3 %}
-                        ↗ Signifikantes Pattern
-                    {% else %}
-                        ℹ Überwachung
-                    {% endif %}
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-
-    <div style="background: #FFF2CC; padding: 8px; margin: 8px 0; border-left: 3px solid #F4D03F; font-size: 9pt;">
-        <strong>Pattern-Erkennung:</strong> {{ root_cause_summary.total_categories_affected }} Kategorien betroffen.
-        {% if category_patterns|first.count >= 5 %}
-        Kategorie "<strong>{{ category_patterns|first[0] }}</strong>" hat kritischen Cluster mit {{ category_patterns|first.count }} Gaps -
-        <strong>Empfehlung:</strong> Dedicated Task Force etablieren!
-        {% endif %}
-        Systematische Patterns ermöglichen effiziente Batch-Lösungen statt einzelner Gap-Behandlung.
-    </div>
-    {% endif %}
-
-    {# Root Cause Recommendations #}
-    {% if root_cause_recommendations|length > 0 %}
-    <h3>Root Cause-basierte Handlungsempfehlungen</h3>
-    <p style="font-size: 9pt; color: #666; margin-bottom: 10px;">
-        Gezielte Maßnahmen basierend auf identifizierten Grundursachen.
-    </p>
-    <table style="width: 100%;">
-        <thead>
             <tr>
-                <th style="width: 10%;">Priority</th>
-                <th style="width: 30%;">Initiative</th>
-                <th style="width: 35%;">Maßnahme & Lösung</th>
-                <th style="width: 12%;">Timeline</th>
-                <th style="width: 13%;">Aufwand</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for rec in root_cause_recommendations %}
-            <tr class="no-break">
+                <td><strong>{{ category }}</strong></td>
+                <td class="text-center">{{ pattern.count }}</td>
+                <td class="text-center">{{ pattern.avg_fulfillment }}%</td>
                 <td class="text-center">
-                    <span class="badge {% if rec.priority == 'CRITICAL' %}badge-critical{% elseif rec.priority == 'HIGH' %}badge-high{% else %}badge-medium{% endif %}">
-                        {{ rec.priority }}
-                    </span>
+                    {% if pattern.dominant_root_cause == 'not_started' %}
+                        <span class="badge badge-critical">Not Started</span>
+                    {% elseif pattern.dominant_root_cause == 'missing_control' %}
+                        <span class="badge badge-high">Missing Control</span>
+                    {% elseif pattern.dominant_root_cause == 'incomplete_implementation' %}
+                        <span class="badge badge-warning">Incomplete</span>
+                    {% else %}
+                        <span class="badge badge-info">Missing Evidence</span>
+                    {% endif %}
                 </td>
-                <td style="font-size: 8pt;">
-                    <strong>{{ rec.title }}</strong>
-                    <br><small style="color: #666;">({{ rec.count }} Gaps)</small>
-                </td>
-                <td style="font-size: 7pt;">
-                    <strong>Problem:</strong> {{ rec.action }}
-                    <br><strong>Lösung:</strong> {{ rec.solution }}
-                </td>
-                <td class="text-center" style="font-size: 8pt;">{{ rec.timeline }}</td>
                 <td class="text-center">
-                    <span class="badge {% if rec.effort == 'Hoch' %}badge-danger{% elseif rec.effort == 'Mittel' or rec.effort == 'Mittel-Hoch' %}badge-warning{% else %}badge-success{% endif %}">
-                        {{ rec.effort }}
-                    </span>
+                    {% if pattern.count >= 5 %}
+                        <span style="color: #ef4444; font-weight: bold;">Critical Cluster</span>
+                    {% elseif pattern.count >= 3 %}
+                        <span style="color: #f59e0b; font-weight: bold;">Significant Pattern</span>
+                    {% else %}
+                        Moderate
+                    {% endif %}
                 </td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
 
-    <div style="background: #C6EFCE; padding: 8px; margin: 8px 0; border-left: 3px solid #28A745; font-size: 9pt;">
-        <strong>🎯 Quick Wins durch Root Cause Targeting:</strong>
-        {% if root_cause_summary.missing_evidence_count > 0 %}
-        <strong>{{ root_cause_summary.missing_evidence_count }} Gaps</strong> haben nur fehlende Dokumentation -
-        <strong>Dokumentations-Sprint kann {{ root_cause_summary.missing_evidence_count }} Gaps in 30-60 Tagen schließen!</strong>
+    <div class="insight-box">
+        <strong>Quick Wins:</strong>
+        {% if root_cause_analysis.summary.missing_evidence_count > 0 %}
+            {{ root_cause_analysis.summary.missing_evidence_count }} gaps have missing documentation only.
+            A documentation sprint can close these gaps in 30-60 days!
         {% endif %}
-        {% if root_cause_summary.incomplete_implementation_count > 0 %}
-        <strong>{{ root_cause_summary.incomplete_implementation_count }} Gaps</strong> sind teilweise implementiert -
-        Finalisierung effizienter als Neuimplementierung.
-        {% endif %}
-        Root Cause-basierte Priorisierung maximiert ROI der Gap-Closure-Aktivitäten.
     </div>
     {% endif %}
 
-    {# All Gaps Detailed Table #}
+    {# Priority-Weighted Roadmap #}
+    {% if recommendations is defined and recommendations|length > 0 %}
     <div class="page-break"></div>
-    <h2>Alle Gaps (Detailansicht)</h2>
+    <h2>Priority-Weighted Gap Closure Roadmap</h2>
     <table>
         <thead>
             <tr>
-                <th style="width: 10%;">ID</th>
-                <th style="width: 22%;">Anforderung</th>
-                <th style="width: 12%;">Kategorie</th>
-                <th style="width: 10%;">Severity</th>
-                <th style="width: 8%;">Status</th>
-                <th style="width: 8%;">Erfüllung</th>
-                <th style="width: 30%;">Gap-Grund</th>
+                <th class="w-15">Priority</th>
+                <th class="w-25">Action</th>
+                <th class="w-15">Affected Gaps</th>
+                <th class="w-15">Timeline</th>
+                <th class="w-15">Risk Reduction</th>
+                <th class="w-15">Effort</th>
             </tr>
         </thead>
         <tbody>
-            {% for gap_item in gaps %}
-            {% set req = gap_item.requirement %}
-            <tr class="no-break">
-                <td><strong>{{ req.requirementId }}</strong></td>
-                <td>{{ req.title|length > 50 ? (req.title|slice(0, 50) ~ '...') : req.title }}</td>
-                <td><span class="badge badge-info">{{ req.category ?? '-' }}</span></td>
-                <td>
-                    {% set priority = req.priority ?? 'low' %}
-                    <span class="badge badge-{{ priority == 'critical' ? 'critical' : (priority == 'high' ? 'high' : (priority == 'medium' ? 'medium' : 'low')) }}">
-                        {% if priority == 'critical' %}Kritisch
-                        {% elseif priority == 'high' %}Hoch
-                        {% elseif priority == 'medium' %}Mittel
-                        {% else %}Niedrig
-                        {% endif %}
-                    </span>
-                </td>
-                <td>
-                    {% set status = req.status %}
-                    <span class="badge {% if status == 'not_implemented' %}badge-danger{% elseif status == 'partially_implemented' %}badge-warning{% else %}badge-secondary{% endif %}">
-                        {% if status == 'not_implemented' %}Nicht impl.
-                        {% elseif status == 'partially_implemented' %}Teilweise
-                        {% elseif status == 'not_applicable' %}N/A
-                        {% else %}{{ status }}
-                        {% endif %}
-                    </span>
-                </td>
-                <td class="text-center">{{ req.fulfillmentPercentage ?? 0 }}%</td>
-                <td style="font-size: 8pt;">{{ gap_item.analysis.gap_reason|length > 80 ? (gap_item.analysis.gap_reason|slice(0, 80) ~ '...') : gap_item.analysis.gap_reason }}</td>
+            {% for rec in recommendations %}
+            <tr>
+                <td><span class="badge badge-{{ rec.priority|lower }}">{{ rec.priority }}</span></td>
+                <td><strong>{{ rec.action }}</strong></td>
+                <td class="text-center">{{ rec.count }}</td>
+                <td class="text-center">{{ rec.timeline }}</td>
+                <td class="text-center"><strong style="color: #10b981;">-{{ rec.risk_reduction }}</strong></td>
+                <td class="text-center">{{ rec.effort }}</td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
+    {% endif %}
 
-    {# Recommendations Section #}
+    {# Detailed Gap List #}
     <div class="page-break"></div>
-    <h2>Empfehlungen zur Gap-Schließung</h2>
-
-    <h3>Priorität 1: Kritische Gaps</h3>
-    <div style="background: #FFC7CE; padding: 8px; margin: 5px 0; border-left: 3px solid #9C0006; font-size: 9pt;">
-        <strong>Sofortmaßnahmen:</strong>
-        {% if severity_counts.critical > 0 %}
-        {{ severity_counts.critical }} kritische Gap(s) identifiziert - sofortige Aufmerksamkeit erforderlich. Wöchentliche Reviews & dedizierte Ressourcen einplanen. <strong>Ziel: 100% innerhalb von 30 Tagen schließen</strong>
-        {% else %}
-        Keine kritischen Gaps identifiziert - Guter Status!
-        {% endif %}
-    </div>
-
-    <h3>Priorität 2: Hohe Gaps</h3>
-    <div style="background: #FFEB9C; padding: 8px; margin: 5px 0; border-left: 3px solid #9C5700; font-size: 9pt;">
-        <strong>Mittelfristige Maßnahmen:</strong>
-        {% if severity_counts.high > 0 %}
-        {{ severity_counts.high }} hohe Gap(s) identifiziert - zeitnah adressieren. Monatliche Reviews & klare Verantwortlichkeiten definieren. <strong>Ziel: 80% innerhalb von 90 Tagen schließen</strong>
-        {% else %}
-        Keine hohen Gaps identifiziert - Weiter so!
-        {% endif %}
-    </div>
-
-    <h3>Compliance Roadmap</h3>
-    <table style="width: 90%;">
+    <h2>Detailed Gap List</h2>
+    <table>
         <thead>
             <tr>
-                <th>Zeitraum</th>
-                <th>Fokus</th>
-                <th>Erwartete Verbesserung</th>
+                <th class="w-15">Requirement ID</th>
+                <th class="w-30">Requirement</th>
+                <th class="text-center w-15">Priority</th>
+                <th class="text-center w-15">Fulfillment</th>
+                <th class="w-25">Category</th>
             </tr>
         </thead>
         <tbody>
+            {% for gap in gaps %}
             <tr>
-                <td><strong>Q1 (0-3 Monate)</strong></td>
-                <td>Kritische & Hohe Gaps</td>
-                <td>Compliance Score: {{ compliance_score }}% → {{ [compliance_score + 15, 95]|min }}%</td>
+                <td><strong>{{ gap.requirementId }}</strong></td>
+                <td>{{ gap.description|slice(0, 100) }}{% if gap.description|length > 100 %}...{% endif %}</td>
+                <td class="text-center">
+                    {% set priority = gap.priority|default('medium') %}
+                    <span class="badge badge-{{ priority }}">{{ priority|upper }}</span>
+                </td>
+                <td class="text-center">
+                    {% set fulfillment = gap.fulfillmentPercentage|default(0) %}
+                    <strong style="color: {% if fulfillment >= 80 %}#10b981{% elseif fulfillment >= 50 %}#f59e0b{% else %}#ef4444{% endif %};">
+                        {{ fulfillment }}%
+                    </strong>
+                </td>
+                <td>{{ gap.category|default('N/A') }}</td>
             </tr>
-            <tr>
-                <td><strong>Q2 (3-6 Monate)</strong></td>
-                <td>Mittlere Gaps</td>
-                <td>Compliance Score: → {{ [compliance_score + 25, 98]|min }}%</td>
-            </tr>
-            <tr>
-                <td><strong>Q3-Q4 (6-12 Monate)</strong></td>
-                <td>Niedrige Gaps & Kontinuierliche Verbesserung</td>
-                <td>Compliance Score: → 100%</td>
-            </tr>
+            {% endfor %}
         </tbody>
     </table>
-
-    <div style="background: #E8F4F8; padding: 8px; margin-top: 10px; border-radius: 4px; font-size: 9pt;">
-        <strong>Nächste Schritte:</strong> (1) Review Meeting mit Stakeholdern zur Gap-Priorisierung einplanen, (2) Verantwortlichkeiten für kritische/hohe Gaps zuweisen, (3) Detaillierte Implementierungspläne für Top 5 Gaps erstellen, (4) Monatliches Gap-Tracking & Fortschrittsberichte etablieren, (5) Quarterly Compliance Reviews durchführen.
-    </div>
 {% endblock %}
