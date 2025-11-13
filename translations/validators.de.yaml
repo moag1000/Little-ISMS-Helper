@@ -79,6 +79,9 @@ compliance_mapping:
     confidence_required: 'Bitte wählen Sie ein Konfidenzniveau aus.'
     verified_by_max_length: 'Das Feld "Verifiziert von" darf maximal {{ limit }} Zeichen lang sein.'
 
+# Role Validators
+'This role name is already in use': 'Dieser Rollenname wird bereits verwendet.'
+
 # Asset Validators
 'Asset name is required': 'Bitte geben Sie einen Asset-Namen ein.'
 'Asset name cannot exceed {{ limit }} characters': 'Der Asset-Name darf maximal {{ limit }} Zeichen lang sein.'
