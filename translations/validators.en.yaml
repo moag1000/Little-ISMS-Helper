@@ -79,6 +79,9 @@ compliance_mapping:
     confidence_required: 'Please select a confidence level.'
     verified_by_max_length: 'The verified by field cannot exceed {{ limit }} characters.'
 
+# Role Validators
+'This role name is already in use': 'This role name is already in use.'
+
 # Asset Validators
 'Asset name is required': 'Please enter an asset name.'
 'Asset name cannot exceed {{ limit }} characters': 'The asset name cannot exceed {{ limit }} characters.'
