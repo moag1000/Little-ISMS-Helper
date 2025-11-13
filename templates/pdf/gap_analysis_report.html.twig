@@ -241,6 +241,184 @@
     </div>
     {% endif %}
 
+    {# Root Cause Analysis Section #}
+    <div class="page-break"></div>
+    <h2>🔍 Root Cause Analysis - Ursachenforschung</h2>
+    <p style="font-size: 9pt; color: #666; margin-bottom: 10px;">
+        Analyse der Grundursachen für Compliance-Gaps zur Entwicklung gezielter Lösungsstrategien.
+    </p>
+
+    <h3>Root Cause Verteilung</h3>
+    <table style="width: 90%;">
+        <thead>
+            <tr>
+                <th style="width: 35%;">Root Cause</th>
+                <th style="width: 15%;">Anzahl</th>
+                <th style="width: 15%;">Prozent</th>
+                <th style="width: 35%;">Beschreibung</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="badge badge-critical">Nicht begonnen</span></td>
+                <td class="text-center"><strong>{{ root_cause_summary.not_started_count }}</strong></td>
+                <td class="text-center">{{ total_gaps > 0 ? ((root_cause_summary.not_started_count / total_gaps * 100)|round(1)) : 0 }}%</td>
+                <td style="font-size: 8pt;">Anforderungen mit 0% Erfüllung - noch nicht in Angriff genommen</td>
+            </tr>
+            <tr>
+                <td><span class="badge badge-high">Fehlende Kontrolle</span></td>
+                <td class="text-center"><strong>{{ root_cause_summary.missing_control_count }}</strong></td>
+                <td class="text-center">{{ total_gaps > 0 ? ((root_cause_summary.missing_control_count / total_gaps * 100)|round(1)) : 0 }}%</td>
+                <td style="font-size: 8pt;">Sehr niedrige Erfüllung (<30%) - Kontrolle fehlt oder unzureichend</td>
+            </tr>
+            <tr>
+                <td><span class="badge badge-warning">Unvollständig umgesetzt</span></td>
+                <td class="text-center"><strong>{{ root_cause_summary.incomplete_implementation_count }}</strong></td>
+                <td class="text-center">{{ total_gaps > 0 ? ((root_cause_summary.incomplete_implementation_count / total_gaps * 100)|round(1)) : 0 }}%</td>
+                <td style="font-size: 8pt;">Mittlere Erfüllung (30-80%) - Teilweise implementiert, Lücken vorhanden</td>
+            </tr>
+            <tr>
+                <td><span class="badge badge-info">Fehlende Evidenz</span></td>
+                <td class="text-center"><strong>{{ root_cause_summary.missing_evidence_count }}</strong></td>
+                <td class="text-center">{{ total_gaps > 0 ? ((root_cause_summary.missing_evidence_count / total_gaps * 100)|round(1)) : 0 }}%</td>
+                <td style="font-size: 8pt;">Hohe Erfüllung (80-99%) - Kontrolle vorhanden, Dokumentation fehlt</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div style="background: #E8F4F8; padding: 8px; margin: 8px 0; border-left: 3px solid #2196F3; font-size: 9pt;">
+        <strong>Interpretation:</strong>
+        {% if root_cause_summary.not_started_count > root_cause_summary.missing_evidence_count %}
+        Mehrheit der Gaps sind <strong>nicht begonnen</strong> - Fokus auf <strong>Projekt-Kickoff und Ressourcen-Allokation</strong>.
+        {% elseif root_cause_summary.missing_control_count > (total_gaps / 2) %}
+        Viele Gaps durch <strong>fehlende Kontrollen</strong> - <strong>Control Design & Implementierung</strong> erforderlich.
+        {% elseif root_cause_summary.incomplete_implementation_count > (total_gaps / 2) %}
+        Schwerpunkt auf <strong>unvollständigen Implementierungen</strong> - <strong>Gap-Closure & Finalisierung</strong> nötig.
+        {% elseif root_cause_summary.missing_evidence_count > (total_gaps / 3) %}
+        Signifikanter Anteil <strong>fehlende Evidenz</strong> - <strong>Dokumentations-Sprint</strong> kann schnelle Erfolge bringen!
+        {% else %}
+        Gemischte Root Causes - Differenzierte Strategie erforderlich.
+        {% endif %}
+    </div>
+
+    {# Category Pattern Analysis #}
+    {% if category_patterns|length > 0 %}
+    <h3>Kategorie-spezifische Gap-Patterns</h3>
+    <p style="font-size: 9pt; color: #666; margin-bottom: 10px;">
+        Identifikation systematischer Probleme auf Kategorie-Ebene (Top 5 betroffene Kategorien).
+    </p>
+    <table style="width: 95%;">
+        <thead>
+            <tr>
+                <th style="width: 25%;">Kategorie</th>
+                <th style="width: 12%;">Gaps</th>
+                <th style="width: 15%;">Ø Erfüllung</th>
+                <th style="width: 25%;">Dominante Root Cause</th>
+                <th style="width: 23%;">Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for category, pattern in category_patterns|slice(0, 5) %}
+            <tr class="no-break">
+                <td style="font-size: 8pt;"><strong>{{ category }}</strong></td>
+                <td class="text-center"><strong style="color: #C00;">{{ pattern.count }}</strong></td>
+                <td class="text-center">
+                    <span {% if pattern.avg_fulfillment < 30 %}style="color: #C00;"{% elseif pattern.avg_fulfillment < 60 %}style="color: #FFA500;"{% endif %}>
+                        {{ pattern.avg_fulfillment }}%
+                    </span>
+                </td>
+                <td style="font-size: 8pt;">
+                    {% if pattern.dominant_root_cause == 'not_started' %}
+                        <span class="badge badge-critical">Nicht begonnen</span>
+                    {% elseif pattern.dominant_root_cause == 'missing_control' %}
+                        <span class="badge badge-high">Fehlende Kontrolle</span>
+                    {% elseif pattern.dominant_root_cause == 'incomplete_implementation' %}
+                        <span class="badge badge-warning">Unvollständig</span>
+                    {% else %}
+                        <span class="badge badge-info">Fehlende Evidenz</span>
+                    {% endif %}
+                </td>
+                <td style="font-size: 7pt;">
+                    {% if pattern.count >= 5 %}
+                        ⚠ Kritischer Cluster
+                    {% elseif pattern.count >= 3 %}
+                        ↗ Signifikantes Pattern
+                    {% else %}
+                        ℹ Überwachung
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div style="background: #FFF2CC; padding: 8px; margin: 8px 0; border-left: 3px solid #F4D03F; font-size: 9pt;">
+        <strong>Pattern-Erkennung:</strong> {{ root_cause_summary.total_categories_affected }} Kategorien betroffen.
+        {% if category_patterns|first.count >= 5 %}
+        Kategorie "<strong>{{ category_patterns|first[0] }}</strong>" hat kritischen Cluster mit {{ category_patterns|first.count }} Gaps -
+        <strong>Empfehlung:</strong> Dedicated Task Force etablieren!
+        {% endif %}
+        Systematische Patterns ermöglichen effiziente Batch-Lösungen statt einzelner Gap-Behandlung.
+    </div>
+    {% endif %}
+
+    {# Root Cause Recommendations #}
+    {% if root_cause_recommendations|length > 0 %}
+    <h3>Root Cause-basierte Handlungsempfehlungen</h3>
+    <p style="font-size: 9pt; color: #666; margin-bottom: 10px;">
+        Gezielte Maßnahmen basierend auf identifizierten Grundursachen.
+    </p>
+    <table style="width: 100%;">
+        <thead>
+            <tr>
+                <th style="width: 10%;">Priority</th>
+                <th style="width: 30%;">Initiative</th>
+                <th style="width: 35%;">Maßnahme & Lösung</th>
+                <th style="width: 12%;">Timeline</th>
+                <th style="width: 13%;">Aufwand</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for rec in root_cause_recommendations %}
+            <tr class="no-break">
+                <td class="text-center">
+                    <span class="badge {% if rec.priority == 'CRITICAL' %}badge-critical{% elseif rec.priority == 'HIGH' %}badge-high{% else %}badge-medium{% endif %}">
+                        {{ rec.priority }}
+                    </span>
+                </td>
+                <td style="font-size: 8pt;">
+                    <strong>{{ rec.title }}</strong>
+                    <br><small style="color: #666;">({{ rec.count }} Gaps)</small>
+                </td>
+                <td style="font-size: 7pt;">
+                    <strong>Problem:</strong> {{ rec.action }}
+                    <br><strong>Lösung:</strong> {{ rec.solution }}
+                </td>
+                <td class="text-center" style="font-size: 8pt;">{{ rec.timeline }}</td>
+                <td class="text-center">
+                    <span class="badge {% if rec.effort == 'Hoch' %}badge-danger{% elseif rec.effort == 'Mittel' or rec.effort == 'Mittel-Hoch' %}badge-warning{% else %}badge-success{% endif %}">
+                        {{ rec.effort }}
+                    </span>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div style="background: #C6EFCE; padding: 8px; margin: 8px 0; border-left: 3px solid #28A745; font-size: 9pt;">
+        <strong>🎯 Quick Wins durch Root Cause Targeting:</strong>
+        {% if root_cause_summary.missing_evidence_count > 0 %}
+        <strong>{{ root_cause_summary.missing_evidence_count }} Gaps</strong> haben nur fehlende Dokumentation -
+        <strong>Dokumentations-Sprint kann {{ root_cause_summary.missing_evidence_count }} Gaps in 30-60 Tagen schließen!</strong>
+        {% endif %}
+        {% if root_cause_summary.incomplete_implementation_count > 0 %}
+        <strong>{{ root_cause_summary.incomplete_implementation_count }} Gaps</strong> sind teilweise implementiert -
+        Finalisierung effizienter als Neuimplementierung.
+        {% endif %}
+        Root Cause-basierte Priorisierung maximiert ROI der Gap-Closure-Aktivitäten.
+    </div>
+    {% endif %}
+
     {# All Gaps Detailed Table #}
     <div class="page-break"></div>
     <h2>Alle Gaps (Detailansicht)</h2>
