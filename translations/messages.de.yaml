@@ -415,6 +415,7 @@ common:
   not_started: Nicht begonnen
   refresh: Aktualisieren
   search: Suchen
+  subsidiaries: Tochtergesellschaften
   success: Erfolgreich
   to: Bis
   size: Größe
@@ -741,6 +742,7 @@ audit:
     recommendations: Empfehlungen
     conclusion: Fazit
     summary: Zusammenfassung
+    audited_subsidiaries: Auditierte Tochtergesellschaften
   validation:
     title_required: Bitte geben Sie einen Titel ein.
     date_required: Bitte wählen Sie ein Datum.
@@ -3899,6 +3901,18 @@ corporate:
     organization: 'Organisation'
     propagate: 'An Tochtergesellschaften verteilen'
     from: 'Von'
+    edit_at_parent: 'Um diesen Kontext zu ändern, bearbeiten Sie ihn bei der Muttergesellschaft.'
+    cannot_edit_inherited: 'Geerbte Kontexte können nicht bearbeitet werden'
+    cannot_edit_inherited_long: 'Dieser ISMS-Kontext wird von der Muttergesellschaft "%parent%" geerbt und kann hier nicht bearbeitet werden. Bitte bearbeiten Sie den Kontext bei der Muttergesellschaft.'
+    cannot_delete_inherited: 'Geerbte Einträge können nicht gelöscht werden'
+    view_only_title: 'Nur Ansicht - Geerbter Eintrag'
+    risk_inherited_message: 'Dieses Risiko wird von der Muttergesellschaft geerbt und kann hier nicht bearbeitet werden.'
+    asset_inherited_message: 'Dieses Asset wird von der Muttergesellschaft geerbt und kann hier nicht bearbeitet werden.'
+    document_inherited_message: 'Dieses Dokument wird von der Muttergesellschaft geerbt und kann hier nicht bearbeitet werden.'
+    supplier_inherited_message: 'Dieser Lieferant wird von der Muttergesellschaft geerbt und kann hier nicht bearbeitet werden.'
+  inherited: 'Geerbt'
+
+# Governance Model Labels
 governance:
   hierarchical: 'Hierarchisch'
   shared: 'Geteilt'

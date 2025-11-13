@@ -46,6 +46,26 @@
                                 {{ ('audit.type.' ~ audit.auditType)|trans }}
                             </span>
                         </div>
+
+                        {# Corporate Audit Subsidiaries #}
+                        {% if audit.auditedSubsidiaries|length > 0 %}
+                        <div class="mt-3 p-3 border border-primary rounded bg-light">
+                            <h6 class="text-primary mb-2">
+                                <i class="bi bi-building"></i> {{ 'audit.field.audited_subsidiaries'|trans }}
+                            </h6>
+                            <div class="d-flex flex-wrap gap-2">
+                                {% for subsidiary in audit.auditedSubsidiaries %}
+                                <span class="badge bg-primary">
+                                    {{ subsidiary.name }}
+                                </span>
+                                {% endfor %}
+                            </div>
+                            <small class="text-muted d-block mt-2">
+                                <i class="bi bi-info-circle"></i>
+                                Dieses Konzernaudit umfasst {{ audit.auditedSubsidiaries|length }} Tochtergesellschaft(en)
+                            </small>
+                        </div>
+                        {% endif %}
                     </div>
                     <hr>
 
