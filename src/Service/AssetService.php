@@ -101,7 +101,15 @@ class AssetService
             return false;
         }
 
-        return $assetTenant->getId() !== $currentTenant->getId();
+        $assetTenantId = $assetTenant->getId();
+        $currentTenantId = $currentTenant->getId();
+
+        // Explicit null handling for unsaved entities
+        if ($assetTenantId === null || $currentTenantId === null) {
+            return false;
+        }
+
+        return $assetTenantId !== $currentTenantId;
     }
 
     /**

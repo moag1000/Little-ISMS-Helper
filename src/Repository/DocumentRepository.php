@@ -84,13 +84,15 @@ class DocumentRepository extends ServiceEntityRepository
     public function findByTenantIncludingParent($tenant, $parentTenant = null): array
     {
         $qb = $this->createQueryBuilder('d')
-            ->where('d.tenant = :tenant')
-            ->andWhere('d.isArchived = false')
-            ->setParameter('tenant', $tenant);
+            ->andWhere('d.isArchived = false');
 
         if ($parentTenant) {
-            $qb->orWhere('d.tenant = :parentTenant')
+            $qb->andWhere('d.tenant = :tenant OR d.tenant = :parentTenant')
+               ->setParameter('tenant', $tenant)
                ->setParameter('parentTenant', $parentTenant);
+        } else {
+            $qb->andWhere('d.tenant = :tenant')
+               ->setParameter('tenant', $tenant);
         }
 
         return $qb
