@@ -5,175 +5,235 @@
 {% block header_title %}Transitive Compliance Report{% endblock %}
 {% block header_subtitle %}Multi-Framework Compliance Leverage Analysis{% endblock %}
 
+{% block extra_styles %}
+    .stats-grid {
+        display: table;
+        width: 100%;
+        margin-bottom: 20pt;
+        border: 1px solid #cbd5e1;
+        border-collapse: collapse;
+    }
+
+    .stats-row {
+        display: table-row;
+    }
+
+    .stats-cell {
+        display: table-cell;
+        padding: 10pt;
+        text-align: center;
+        border: 1px solid #cbd5e1;
+    }
+
+    .stats-label {
+        font-size: 8pt;
+        color: #64748b;
+        font-weight: bold;
+        margin-bottom: 4pt;
+    }
+
+    .stats-value {
+        font-size: 16pt;
+        color: #1F4E78;
+        font-weight: bold;
+    }
+
+    .stats-value-success {
+        color: #10b981;
+    }
+
+    .stats-value-warning {
+        color: #f59e0b;
+    }
+
+    .insight-box {
+        background: #f8fafc;
+        border-left: 4px solid #1F4E78;
+        padding: 10pt;
+        margin: 10pt 0;
+        font-size: 9pt;
+        color: #475569;
+    }
+
+    .insight-box strong {
+        color: #1e293b;
+    }
+
+    .quick-win-box {
+        background: #f0fdf4;
+        border-left: 4px solid #10b981;
+        padding: 10pt;
+        margin: 10pt 0;
+        font-size: 9pt;
+    }
+
+    .highlight-row {
+        font-weight: bold;
+        background: #f1f5f9;
+    }
+
+    .quality-good {
+        color: #10b981;
+        font-weight: bold;
+    }
+
+    .quality-medium {
+        color: #f59e0b;
+        font-weight: bold;
+    }
+
+    .quality-weak {
+        color: #ef4444;
+        font-weight: bold;
+    }
+
+    .w-12 {
+        width: 12%;
+    }
+
+    .w-15 {
+        width: 15%;
+    }
+
+    .w-18 {
+        width: 18%;
+    }
+
+    .w-20 {
+        width: 20%;
+    }
+
+    .w-25 {
+        width: 25%;
+    }
+{% endblock %}
+
 {% block content %}
-    {# Summary Section #}
-    <div class="summary-box">
-        <div class="metric">
-            <span class="metric-label">Aktive Frameworks</span>
-            <span class="metric-value">{{ total_frameworks }}</span>
-        </div>
-        <div class="metric">
-            <span class="metric-label">Framework-Beziehungen</span>
-            <span class="metric-value">{{ total_relationships }}</span>
-        </div>
-        <div class="metric">
-            <span class="metric-label">Quick Wins (High ROI)</span>
-            <span class="metric-value" style="color: #28A745;">{{ quick_win_count }}</span>
-        </div>
-        <div class="metric">
-            <span class="metric-label">High Impact (≥50)</span>
-            <span class="metric-value" style="color: #2196F3;">{{ high_impact_count }}</span>
-        </div>
-        <div class="metric">
-            <span class="metric-label">Durchschn. Impact Score</span>
-            <span class="metric-value" style="color: #FFA500;">{{ avg_impact_score }}</span>
-        </div>
-        <div class="metric">
-            <span class="metric-label">Durchschn. Coverage</span>
-            <span class="metric-value">{{ avg_coverage|round(1) }}%</span>
+    {# Executive Summary #}
+    <h2>Executive Summary</h2>
+    <div class="stats-grid">
+        <div class="stats-row">
+            <div class="stats-cell">
+                <div class="stats-label">Active Frameworks</div>
+                <div class="stats-value">{{ total_frameworks }}</div>
+            </div>
+            <div class="stats-cell">
+                <div class="stats-label">Framework Relationships</div>
+                <div class="stats-value">{{ total_relationships }}</div>
+            </div>
+            <div class="stats-cell">
+                <div class="stats-label">Quick Wins (High ROI)</div>
+                <div class="stats-value stats-value-success">{{ quick_win_count }}</div>
+            </div>
+            <div class="stats-cell">
+                <div class="stats-label">Avg. Coverage</div>
+                <div class="stats-value">{{ avg_coverage|round(1) }}%</div>
+            </div>
+            <div class="stats-cell">
+                <div class="stats-label">Avg. Mapping Quality</div>
+                <div class="stats-value {% if avg_mapping_quality >= 80 %}stats-value-success{% elseif avg_mapping_quality >= 60 %}stats-value-warning{% endif %}">{{ avg_mapping_quality }}%</div>
+            </div>
+            <div class="stats-cell">
+                <div class="stats-label">Avg. Impact Score</div>
+                <div class="stats-value stats-value-warning">{{ avg_impact_score }}</div>
+            </div>
         </div>
     </div>
 
-    {# Mapping Quality Distribution Section #}
+    {# Mapping Quality Distribution #}
     {% if total_mappings > 0 %}
-    <h2>Mapping-Qualitätsverteilung</h2>
-    <p style="font-size: 9pt; color: #666; margin-bottom: 10px;">
-        Qualitätsanalyse aller {{ total_mappings }} Framework-Mappings im Multi-Framework-Setup
-    </p>
-
-    <div style="background: {% if avg_mapping_quality >= 80 %}#C6EFCE{% elseif avg_mapping_quality >= 60 %}#FFEB9C{% else %}#FFC7CE{% endif %}; padding: 8px; margin: 5px 0; border-left: 3px solid {% if avg_mapping_quality >= 80 %}#28A745{% elseif avg_mapping_quality >= 60 %}#FFA500{% else %}#DC3545{% endif %}; font-size: 9pt;">
-        <strong>Durchschnittliche Mapping-Qualität:</strong> <strong>{{ avg_mapping_quality }}%</strong>
-        {% if avg_mapping_quality >= 80 %}
-        | ✓ <strong>Exzellent</strong> - Sehr gute Mapping-Qualität im gesamten Framework-Netzwerk!
-        {% elseif avg_mapping_quality >= 60 %}
-        | ⚠ <strong>Gut</strong> - Mapping-Qualität ist akzeptabel, aber Verbesserungspotential vorhanden.
-        {% else %}
-        | ⚠ <strong>Verbesserungsbedarf</strong> - Viele schwache Mappings beeinträchtigen die Transitive Compliance-Effektivität.
-        {% endif %}
-    </div>
-
-    <table style="width: 80%;">
+    <h2>Mapping Quality Distribution</h2>
+    <table>
         <thead>
             <tr>
-                <th style="width: 30%;">Qualitätsstufe</th>
-                <th style="width: 15%;">Bereich</th>
-                <th style="width: 15%;">Anzahl</th>
-                <th style="width: 15%;">Prozentsatz</th>
-                <th style="width: 25%;">Bewertung</th>
+                <th class="w-25">Quality Level</th>
+                <th class="text-center w-15">Range</th>
+                <th class="text-center w-15">Count</th>
+                <th class="text-center w-15">Percentage</th>
+                <th class="w-30">Assessment</th>
             </tr>
         </thead>
         <tbody>
-            <tr style="background: #C6EFCE;">
-                <td><span class="badge badge-success">Exzellent</span></td>
+            <tr>
+                <td><span class="badge badge-success">Excellent</span></td>
                 <td class="text-center">90-100%</td>
                 <td class="text-center"><strong>{{ quality_distribution.excellent }}</strong></td>
-                <td class="text-center"><strong>{{ total_mappings > 0 ? ((quality_distribution.excellent / total_mappings * 100)|round(1)) : 0 }}%</strong></td>
-                <td style="font-size: 8pt;">Sehr präzise Mappings, hohe Zuverlässigkeit</td>
+                <td class="text-center">{{ total_mappings > 0 ? ((quality_distribution.excellent / total_mappings * 100)|round(1)) : 0 }}%</td>
+                <td>Precise mappings, high reliability</td>
             </tr>
-            <tr style="background: #E8F5E9;">
-                <td><span class="badge badge-info">Gut</span></td>
+            <tr>
+                <td><span class="badge badge-info">Good</span></td>
                 <td class="text-center">70-89%</td>
                 <td class="text-center"><strong>{{ quality_distribution.good }}</strong></td>
-                <td class="text-center"><strong>{{ total_mappings > 0 ? ((quality_distribution.good / total_mappings * 100)|round(1)) : 0 }}%</strong></td>
-                <td style="font-size: 8pt;">Solide Mappings mit kleinen Abweichungen</td>
+                <td class="text-center">{{ total_mappings > 0 ? ((quality_distribution.good / total_mappings * 100)|round(1)) : 0 }}%</td>
+                <td>Solid mappings with minor deviations</td>
             </tr>
-            <tr style="background: #FFF9E6;">
-                <td><span class="badge badge-warning">Mittel</span></td>
+            <tr>
+                <td><span class="badge badge-warning">Medium</span></td>
                 <td class="text-center">50-69%</td>
                 <td class="text-center"><strong>{{ quality_distribution.medium }}</strong></td>
-                <td class="text-center"><strong>{{ total_mappings > 0 ? ((quality_distribution.medium / total_mappings * 100)|round(1)) : 0 }}%</strong></td>
-                <td style="font-size: 8pt;">Teilweise Übereinstimmung, Review empfohlen</td>
+                <td class="text-center">{{ total_mappings > 0 ? ((quality_distribution.medium / total_mappings * 100)|round(1)) : 0 }}%</td>
+                <td>Partial alignment, review recommended</td>
             </tr>
-            <tr style="background: #FFEBEE;">
-                <td><span class="badge badge-danger">Schwach</span></td>
+            <tr>
+                <td><span class="badge badge-danger">Weak</span></td>
                 <td class="text-center">&lt;50%</td>
-                <td class="text-center"><strong style="color: #C00;">{{ quality_distribution.weak }}</strong></td>
-                <td class="text-center"><strong style="color: #C00;">{{ total_mappings > 0 ? ((quality_distribution.weak / total_mappings * 100)|round(1)) : 0 }}%</strong></td>
-                <td style="font-size: 8pt;">⚠ Geringe Übereinstimmung, Optimierung nötig</td>
+                <td class="text-center"><strong>{{ quality_distribution.weak }}</strong></td>
+                <td class="text-center">{{ total_mappings > 0 ? ((quality_distribution.weak / total_mappings * 100)|round(1)) : 0 }}%</td>
+                <td>Low alignment, optimization needed</td>
+            </tr>
+            <tr class="highlight-row">
+                <td><strong>Average Quality</strong></td>
+                <td colspan="4" class="text-center"><strong>{{ avg_mapping_quality }}%</strong> (across {{ total_mappings }} mappings)</td>
             </tr>
         </tbody>
     </table>
 
-    <div style="background: #E8F4F8; padding: 8px; margin: 5px 0; border-left: 3px solid #2196F3; font-size: 9pt;">
-        <strong>Qualitäts-Insights:</strong>
-        {% set excellent_good_percentage = total_mappings > 0 ? (((quality_distribution.excellent + quality_distribution.good) / total_mappings * 100)|round(1)) : 0 %}
-        <strong>{{ excellent_good_percentage }}%</strong> der Mappings sind "Gut" oder besser (≥70%).
-        {% if excellent_good_percentage >= 70 %}
-        <strong>Sehr gut!</strong> Die Mehrheit der Mappings ist von hoher Qualität.
-        {% elseif excellent_good_percentage >= 50 %}
-        <strong>Akzeptabel.</strong> Etwa die Hälfte der Mappings ist von guter Qualität.
-        {% else %}
-        <strong>Verbesserungsbedarf!</strong> Nur {{ excellent_good_percentage }}% der Mappings sind von guter Qualität.
-        {% endif %}
-
+    {% set excellent_good_percentage = total_mappings > 0 ? (((quality_distribution.excellent + quality_distribution.good) / total_mappings * 100)|round(1)) : 0 %}
+    <div class="insight-box">
+        <strong>Quality Assessment:</strong>
+        {{ excellent_good_percentage }}% of mappings are good or better (≥70%).
         {% if quality_distribution.weak > 0 %}
-        <br><strong>⚠ Achtung:</strong> {{ quality_distribution.weak }} schwache Mappings (<50% Qualität) identifiziert.
-        <strong>Empfehlung:</strong> Diese Mappings priorisiert überarbeiten für bessere Transitive Compliance-Effektivität.
-        {% endif %}
-
-        {% if quality_distribution.excellent >= (total_mappings * 0.5) %}
-        <br><strong>🎯 Highlight:</strong> Über 50% exzellente Mappings (≥90%)! Dies ermöglicht sehr zuverlässige transitive Compliance-Analysen.
+        {{ quality_distribution.weak }} weak mappings identified - review recommended for better transitive compliance effectiveness.
         {% endif %}
     </div>
-
-    <div style="background: #C6EFCE; padding: 8px; margin: 5px 0; border-radius: 4px; font-size: 9pt;">
-        <strong>💡 Optimierungspotential:</strong>
-        {% if quality_distribution.weak > 0 or quality_distribution.medium > 10 %}
-        Durch Verbesserung der {{ quality_distribution.weak + quality_distribution.medium }} schwachen/mittleren Mappings
-        kann die durchschnittliche Qualität auf potenziell <strong>{{ (avg_mapping_quality + 10)|round(1) }}%</strong> gesteigert werden.
-        <strong>ROI:</strong> Bessere Mapping-Qualität = zuverlässigere transitive Compliance = weniger Audit-Risiken!
-        {% else %}
-        Die Mapping-Qualität ist bereits sehr gut. Fokus auf Aufrechterhaltung dieser hohen Standards.
-        {% endif %}
-    </div>
-    <div class="page-break"></div>
     {% endif %}
 
-    {# Quick Wins Section - Highlight high ROI opportunities #}
+    {# Quick Wins #}
     {% if quick_wins|length > 0 %}
-    <h2>🎯 Quick Wins - Höchste Priorität</h2>
-    <p style="font-size: 9pt; color: #666; margin-bottom: 10px;">
-        Framework-Beziehungen mit <strong>hohem ROI</strong> (Impact ÷ Aufwand ≥ 3.0) und guter Coverage (≥60%)
-    </p>
-
-    <div style="background: #C6EFCE; padding: 8px; margin: 5px 0; border-left: 3px solid #28A745; font-size: 9pt;">
-        <strong>{{ quick_wins|length }} Quick Wins identifiziert!</strong>
-        Diese Beziehungen bieten maximalen Compliance-Nutzen bei minimalem Aufwand.
-        <strong>Empfehlung:</strong> Sofort priorisieren für schnelle Erfolge.
+    <div class="page-break"></div>
+    <h2>Quick Wins - High ROI Opportunities</h2>
+    <div class="quick-win-box">
+        <strong>{{ quick_wins|length }} Quick Wins Identified!</strong>
+        These framework relationships offer maximum compliance benefit with minimal effort (ROI ≥ 3.0, Coverage ≥ 60%).
     </div>
 
     <table>
         <thead>
             <tr>
-                <th style="width: 20%;">Von Framework</th>
-                <th style="width: 20%;">Zu Framework</th>
-                <th style="width: 10%;">Coverage</th>
-                <th style="width: 12%;">Impact Score</th>
-                <th style="width: 10%;">ROI</th>
-                <th style="width: 10%;">Aufwand</th>
-                <th style="width: 18%;">Nutzen-Bewertung</th>
+                <th class="w-18">From Framework</th>
+                <th class="w-18">To Framework</th>
+                <th class="text-center w-12">Coverage</th>
+                <th class="text-center w-12">Impact Score</th>
+                <th class="text-center w-12">ROI</th>
+                <th class="text-center w-12">Effort (hrs)</th>
+                <th class="w-16">Assessment</th>
             </tr>
         </thead>
         <tbody>
             {% for rel in quick_wins %}
-            <tr class="no-break" style="background: #F0FFF4;">
+            <tr>
                 <td><strong>{{ rel.source.code }}</strong></td>
                 <td><strong>{{ rel.target.code }}</strong></td>
                 <td class="text-center">
-                    <span class="badge badge-success">{{ rel.coverage }}%</span>
+                    <span class="quality-good">{{ rel.coverage }}%</span>
                 </td>
-                <td class="text-center">
-                    <strong style="color: #2196F3;">{{ rel.impact_score }}</strong>
-                </td>
-                <td class="text-center">
-                    <strong style="color: #28A745;">{{ rel.roi }}</strong>
-                </td>
-                <td class="text-center" style="font-size: 8pt;">{{ rel.effort_estimate }}h</td>
-                <td style="font-size: 8pt;">
-                    {% if rel.roi >= 5 %}
-                        ⭐ Exzellent - Top-Priorität
-                    {% elseif rel.roi >= 3 %}
-                        ✓ Sehr gut - Empfohlen
+                <td class="text-center"><strong style="color: #2196F3;">{{ rel.impact_score }}</strong></td>
+                <td class="text-center"><strong class="quality-good">{{ rel.roi }}</strong></td>
+                <td class="text-center">{{ rel.effort_estimate }}</td>
+                <td>
+                    {% if rel.roi >= 5 %}Excellent - Top Priority
+                    {% else %}Very Good - Recommended
                     {% endif %}
                 </td>
             </tr>
@@ -181,45 +241,37 @@
         </tbody>
     </table>
 
-    <div style="background: #E8F4F8; padding: 8px; margin: 5px 0; font-size: 9pt;">
-        <strong>Geschätzte Gesamtersparnis:</strong> {{ quick_wins|reduce((carry, rel) => carry + rel.mapped, 0) }} Anforderungen
-        können mit nur {{ quick_wins|reduce((carry, rel) => carry + rel.effort_estimate, 0) }}h Aufwand abgedeckt werden.
-        <strong>Pro-Tipp:</strong> Mit diesen Quick Wins starten für sofortige Compliance-Verbesserung!
+    <div class="insight-box">
+        <strong>Estimated Total Savings:</strong> {{ quick_wins|reduce((carry, rel) => carry + rel.mapped, 0) }} requirements
+        can be covered with only {{ quick_wins|reduce((carry, rel) => carry + rel.effort_estimate, 0) }} hours of effort.
     </div>
-    <div class="page-break"></div>
     {% endif %}
 
-    <h2>Framework-Beziehungen Matrix (sortiert nach Impact Score)</h2>
-    <p style="font-size: 9pt; color: #666; margin-bottom: 10px;">
-        Alle Framework-Beziehungen mit Impact-Bewertung und ROI-Analyse
-    </p>
-
+    {# Framework Relationships Matrix #}
+    <div class="page-break"></div>
+    <h2>Framework Relationships Matrix</h2>
     <table>
         <thead>
             <tr>
-                <th style="width: 18%;">Von Framework</th>
-                <th style="width: 18%;">Zu Framework</th>
-                <th style="width: 10%;">Coverage</th>
-                <th style="width: 12%;">Impact Score</th>
-                <th style="width: 10%;">ROI</th>
-                <th style="width: 10%;">Aufwand</th>
-                <th style="width: 10%;">Priority</th>
-                <th style="width: 12%;">Bewertung</th>
+                <th class="w-15">From Framework</th>
+                <th class="w-15">To Framework</th>
+                <th class="text-center w-12">Coverage</th>
+                <th class="text-center w-12">Impact Score</th>
+                <th class="text-center w-12">ROI</th>
+                <th class="text-center w-12">Effort</th>
+                <th class="text-center w-12">Priority</th>
+                <th class="w-10">Rating</th>
             </tr>
         </thead>
         <tbody>
             {% for rel in framework_relationships %}
-            <tr class="no-break" {% if rel.is_quick_win %}style="background: #F0FFF4;"{% endif %}>
-                <td style="font-size: 8pt;"><strong>{{ rel.source.code }}</strong></td>
-                <td style="font-size: 8pt;"><strong>{{ rel.target.code }}</strong></td>
+            <tr {% if rel.is_quick_win %}style="background: #f0fdf4;"{% endif %}>
+                <td><strong>{{ rel.source.code }}</strong></td>
+                <td><strong>{{ rel.target.code }}</strong></td>
                 <td class="text-center">
-                    {% if rel.coverage >= 80 %}
-                        <span class="badge badge-success">{{ rel.coverage }}%</span>
-                    {% elseif rel.coverage >= 50 %}
-                        <span class="badge badge-warning">{{ rel.coverage }}%</span>
-                    {% else %}
-                        <span class="badge badge-danger">{{ rel.coverage }}%</span>
-                    {% endif %}
+                    <span class="{% if rel.coverage >= 80 %}quality-good{% elseif rel.coverage >= 50 %}quality-medium{% else %}quality-weak{% endif %}">
+                        {{ rel.coverage }}%
+                    </span>
                 </td>
                 <td class="text-center">
                     <strong {% if rel.impact_score >= 50 %}style="color: #2196F3;"{% endif %}>
@@ -227,29 +279,25 @@
                     </strong>
                 </td>
                 <td class="text-center">
-                    <strong {% if rel.roi >= 3 %}style="color: #28A745;"{% endif %}>
+                    <strong {% if rel.roi >= 3 %}class="quality-good"{% endif %}>
                         {{ rel.roi }}
                     </strong>
                 </td>
-                <td class="text-center" style="font-size: 8pt;">{{ rel.effort_estimate }}h</td>
+                <td class="text-center">{{ rel.effort_estimate }}h</td>
                 <td class="text-center">
                     {% if rel.priority_multiplier >= 2 %}
-                        <span class="badge badge-critical">Hoch</span>
+                        <span class="badge badge-critical">High</span>
                     {% elseif rel.priority_multiplier >= 1.5 %}
-                        <span class="badge badge-warning">Mittel</span>
+                        <span class="badge badge-warning">Medium</span>
                     {% else %}
                         <span class="badge badge-info">Normal</span>
                     {% endif %}
                 </td>
-                <td style="font-size: 7pt;">
-                    {% if rel.is_quick_win %}
-                        🎯 Quick Win
-                    {% elseif rel.impact_score >= 50 %}
-                        ⭐ High Impact
-                    {% elseif rel.roi >= 2 %}
-                        ✓ Gutes ROI
-                    {% else %}
-                        - Standard
+                <td>
+                    {% if rel.is_quick_win %}Quick Win
+                    {% elseif rel.impact_score >= 50 %}High Impact
+                    {% elseif rel.roi >= 2 %}Good ROI
+                    {% else %}Standard
                     {% endif %}
                 </td>
             </tr>
@@ -257,251 +305,107 @@
         </tbody>
     </table>
 
-    <div style="background: #E8F4F8; padding: 8px; margin: 5px 0; border-left: 3px solid #2196F3; font-size: 9pt;">
-        <strong>Impact Score erklärt:</strong> Berechnet als (Coverage × Ø Requirements × Priority) ÷ 100.
-        Höhere Scores = höherer Business-Wert.
-        <strong>ROI erklärt:</strong> Impact Score ÷ Aufwand (in Stunden). ROI ≥ 3.0 = Quick Win!
+    <div class="insight-box">
+        <strong>Impact Score:</strong> Calculated as (Coverage × Avg. Requirements × Priority) ÷ 100. Higher scores = higher business value.
+        <br><strong>ROI:</strong> Impact Score ÷ Effort (hours). ROI ≥ 3.0 = Quick Win!
     </div>
 
     {# High Coverage Relationships #}
     {% set high_coverage = framework_relationships|filter(rel => rel.coverage >= 70) %}
     {% if high_coverage|length > 0 %}
     <div class="page-break"></div>
-    <h2>High-Coverage Relationships (≥70%)</h2>
-    <p style="font-size: 9pt; color: #666; margin-bottom: 10px;">
-        Diese Framework-Beziehungen haben starke Überlappungen und bieten signifikante Compliance-Hebel.
-    </p>
-
-    <div style="background: #C6EFCE; padding: 8px; margin: 5px 0; border-left: 3px solid #28A745; font-size: 9pt;">
-        <strong>{{ high_coverage|length }} High-Coverage Relationships identifiziert!</strong>
-        <p style="margin: 5px 0;">
-            Diese Beziehungen ermöglichen es, mit einer Kontrolle mehrere Framework-Anforderungen gleichzeitig zu erfüllen.
-        </p>
+    <h2>High Coverage Relationships (≥70%)</h2>
+    <div class="insight-box">
+        <strong>{{ high_coverage|length }} High-Coverage Relationships Identified!</strong>
+        These frameworks have strong overlaps and offer significant compliance leverage.
     </div>
 
-    {% for rel in high_coverage %}
-    <div class="no-break" style="background: #F9F9F9; padding: 6px; margin: 5px 0; border-left: 3px solid #28A745; font-size: 9pt;">
-        <strong>{{ rel.source.code }} → {{ rel.target.code }}</strong>
-        <p style="margin: 5px 0;">
-            Coverage: <strong>{{ rel.coverage }}%</strong> ({{ rel.mapped }} von {{ rel.total }} Anforderungen)
-        </p>
-        <p style="margin: 5px 0; color: #666;">
-            <em>Empfehlung:</em> Gemeinsame Kontroll-Implementierungen für diese {{ rel.mapped }} Anforderungen nutzen.
-            Geschätzte Zeitersparnis: ~{{ (rel.mapped * 1.5)|round }} Stunden.
-        </p>
+    {% for rel in high_coverage|slice(0, 10) %}
+    <div style="background: #f9fafb; border-left: 3px solid #10b981; padding: 8pt; margin: 5pt 0; font-size: 9pt;">
+        <strong>{{ rel.source.code }} → {{ rel.target.code }}</strong>:
+        Coverage <strong>{{ rel.coverage }}%</strong> ({{ rel.mapped }} of {{ rel.total }} requirements).
+        Estimated time savings: ~{{ (rel.mapped * 1.5)|round }} hours.
     </div>
     {% endfor %}
     {% endif %}
 
-    {# Compliance Leverage Opportunities #}
+    {# Strategic Recommendations #}
     <div class="page-break"></div>
-    <h2>Compliance-Hebel-Analyse</h2>
+    <h2>Strategic Recommendations</h2>
 
-    <h3>Top Compliance Leverage Opportunities</h3>
-    <p style="font-size: 9pt; color: #666; margin-bottom: 10px;">
-        Identifikation von Anforderungen, die mehrere Frameworks gleichzeitig bedienen
-    </p>
-
-    {% set leverage_potential = total_helped / total_frameworks %}
-    <div style="background: #E8F4F8; padding: 8px; margin: 5px 0; border-left: 3px solid #2196F3; font-size: 9pt;">
-        <strong>Leverage-Score:</strong> Durchschnittlich unterstützt jede Kontrolle <strong>{{ leverage_potential|round(1) }} Frameworks</strong>.
-        {% if leverage_potential >= 2 %}
-        <strong>Sehr gut!</strong> Cross-Framework-Synergien werden effektiv genutzt.
-        {% elseif leverage_potential >= 1.5 %}
-        <strong>Gut,</strong> aber Verbesserungspotential vorhanden.
-        {% else %}
-        <strong>Niedrig</strong> - Signifikantes Optimierungspotential durch bessere Mappings.
-        {% endif %}
-    </div>
-
-    {# Recommendations Section #}
-    <div class="page-break"></div>
-    <h2>ROI-basierte Multi-Framework-Strategie</h2>
-
-    <h3>Executive Summary: Impact & ROI-Analyse</h3>
-    <div style="background: #E8F4F8; padding: 8px; margin: 5px 0; border-left: 3px solid #2196F3; font-size: 9pt;">
-        <strong>Status:</strong> {{ total_frameworks }} aktive Frameworks, {{ total_relationships }} Framework-Beziehungen etabliert,
-        <strong style="color: #28A745;">{{ quick_win_count }} Quick Wins identifiziert (ROI ≥ 3.0)</strong>,
-        <strong style="color: #2196F3;">{{ high_impact_count }} High-Impact Relationships (Score ≥ 50)</strong>,
-        Durchschnittlicher Impact Score: <strong>{{ avg_impact_score }}</strong>.
-    </div>
-
-    <div style="background: #C6EFCE; padding: 8px; margin: 5px 0; border-left: 3px solid #28A745; font-size: 9pt;">
-        <strong>🎯 Gesamtpotential:</strong>
-        Gesamt Impact Score: <strong>{{ total_impact_score }}</strong> |
-        Quick Wins Ersparnis: <strong>{{ quick_wins|reduce((carry, rel) => carry + rel.effort_estimate, 0) }}h Aufwand</strong> für
-        <strong>{{ quick_wins|reduce((carry, rel) => carry + rel.mapped, 0) }} Anforderungen</strong> |
-        Geschätzte Gesamtzeitersparnis durch Framework-Synergien: <strong>{{ (framework_relationships|reduce((carry, rel) => carry + (rel.mapped * 1.5), 0))|round }}h pro Audit-Zyklus</strong>
-    </div>
-
-    <h3>Empfehlung 1: Quick Wins sofort umsetzen 🎯</h3>
-    <div style="background: #C6EFCE; padding: 8px; margin: 5px 0; border-left: 3px solid #28A745; font-size: 9pt;">
-        <strong>Priorität: KRITISCH - Sofortmaßnahme</strong> -
+    <h3>1. Immediate Actions - Quick Wins</h3>
+    <div class="quick-win-box">
+        <strong>Priority: CRITICAL</strong>
         {% if quick_win_count > 0 %}
-        <strong>{{ quick_win_count }} Quick Wins</strong> mit höchstem ROI (≥3.0) identifiziert!
-        Diese bieten maximalen Compliance-Nutzen bei minimalem Aufwand.
-        <strong>Aktion:</strong> Sofort starten mit den Top 3 Quick Wins{% if quick_wins|length >= 3 %}:
-        <strong>{{ quick_wins[0].source.code }}→{{ quick_wins[0].target.code }}</strong> (ROI: {{ quick_wins[0].roi }}),
-        <strong>{{ quick_wins[1].source.code }}→{{ quick_wins[1].target.code }}</strong> (ROI: {{ quick_wins[1].roi }}),
-        <strong>{{ quick_wins[2].source.code }}→{{ quick_wins[2].target.code }}</strong> (ROI: {{ quick_wins[2].roi }}){% endif %}.
-        <strong>Erwarteter Nutzen:</strong> {{ quick_wins|slice(0, 3)|reduce((carry, rel) => carry + rel.mapped, 0) }} Anforderungen
-        mit nur {{ quick_wins|slice(0, 3)|reduce((carry, rel) => carry + rel.effort_estimate, 0) }}h Aufwand!
+        - Focus on {{ quick_win_count }} Quick Wins with highest ROI (≥3.0).
+        Start with top 3 for immediate compliance improvement.
+        <br><strong>Expected Benefit:</strong> {{ quick_wins|slice(0, 3)|reduce((carry, rel) => carry + rel.mapped, 0) }} requirements
+        with only {{ quick_wins|slice(0, 3)|reduce((carry, rel) => carry + rel.effort_estimate, 0) }} hours effort.
         {% else %}
-        Aktuell keine Quick Wins identifiziert. <strong>Fokus auf High-Impact Relationships</strong> (≥50 Impact Score).
+        - No Quick Wins identified. Focus on High-Impact Relationships (Impact Score ≥ 50).
         {% endif %}
     </div>
 
-    <h3>Empfehlung 2: High-Impact Relationships priorisieren ⭐</h3>
-    <div style="background: #BDD7EE; padding: 8px; margin: 5px 0; border-left: 3px solid #2196F3; font-size: 9pt;">
-        <strong>Priorität: Sehr Hoch</strong> -
+    <h3>2. High-Impact Relationships</h3>
+    <div class="insight-box">
+        <strong>Priority: Very High</strong>
         {% if high_impact_count > 0 %}
-        <strong>{{ high_impact_count }} High-Impact Relationships</strong> (Impact Score ≥ 50) bieten signifikanten Business-Wert.
-        Diese Framework-Kombinationen haben hohe strategische Bedeutung durch Coverage, Requirement-Anzahl und Framework-Priorität.
-        <strong>Aktion:</strong> Ressourcen-Allokation für Top High-Impact Relationships{% if high_impact_relationships|length >= 2 %}:
-        <strong>{{ high_impact_relationships[0].source.code }}→{{ high_impact_relationships[0].target.code }}</strong> (Impact: {{ high_impact_relationships[0].impact_score }}),
-        <strong>{{ high_impact_relationships[1].source.code }}→{{ high_impact_relationships[1].target.code }}</strong> (Impact: {{ high_impact_relationships[1].impact_score }}){% endif %}.
-        <strong>Erwarteter Nutzen:</strong> Maximale Framework-Synergien für kritische Compliance-Anforderungen.
+        - {{ high_impact_count }} High-Impact Relationships (Impact Score ≥ 50) offer significant business value.
+        Allocate resources for top relationships to maximize framework synergies.
         {% else %}
-        Fokus auf Verbesserung bestehender Relationships zur Erhöhung des Impact Scores.
+        - Focus on improving existing relationships to increase impact scores.
         {% endif %}
     </div>
 
-    <h3>Empfehlung 3: Low-Impact / Low-ROI Relationships optimieren</h3>
+    <h3>3. Optimization Opportunities</h3>
     {% set low_roi = framework_relationships|filter(rel => rel.roi < 2 and not rel.is_quick_win) %}
-    <div style="background: #FFEB9C; padding: 8px; margin: 5px 0; border-left: 3px solid #FFA500; font-size: 9pt;">
-        <strong>Priorität: Mittel - Optimierung</strong> -
-        {{ low_roi|length }} Framework-Beziehungen haben niedriges ROI (<2.0) oder niedrigen Impact Score.
-        <strong>Optionen:</strong> (1) Mapping-Qualität verbessern zur ROI-Erhöhung, (2) Aufwand reduzieren durch Automatisierung,
-        (3) De-priorisieren zugunsten von Quick Wins & High-Impact Relationships.
-        <strong>Empfehlung:</strong> Ressourcen umverteilen von Low-ROI zu High-ROI Opportunities für bessere Gesamteffektivität.
+    <div class="insight-box">
+        <strong>Priority: Medium</strong>
+        - {{ low_roi|length }} framework relationships have low ROI (&lt;2.0).
+        Options: (1) Improve mapping quality, (2) Reduce effort through automation, (3) De-prioritize in favor of high-ROI opportunities.
     </div>
 
-    <h3>Empfehlung 4: Compliance-Hub mit ROI-Dashboard etablieren</h3>
-    <div style="background: #BDD7EE; padding: 8px; margin: 5px 0; border-left: 3px solid #2196F3; font-size: 9pt;">
-        <strong>Strategische Initiative:</strong> Zentraler "Compliance Hub" mit integriertem <strong>ROI-Dashboard</strong> für
-        data-driven Entscheidungen: Impact-Score-Tracking pro Framework-Relationship, automatische Quick Win Detection,
-        ROI-basierte Ressourcen-Allokation, Fortschritts-Monitoring mit KPIs (Impact Score, ROI, Coverage).
-        <strong>Langfristiger ROI:</strong> 40-60% Reduktion des Gesamt-Compliance-Aufwands durch optimierte Priorisierung.
-    </div>
-
-    <h3>ROI-optimierte Implementierungs-Roadmap</h3>
-    <table style="width: 95%;">
+    <h3>ROI-Based Implementation Roadmap</h3>
+    <table>
         <thead>
             <tr>
-                <th style="width: 20%;">Phase</th>
-                <th style="width: 45%;">Aktivitäten</th>
-                <th style="width: 12%;">Dauer</th>
-                <th style="width: 12%;">Aufwand</th>
-                <th style="width: 11%;">ROI</th>
+                <th class="w-20">Phase</th>
+                <th class="w-40">Activities</th>
+                <th class="text-center w-15">Duration</th>
+                <th class="text-center w-12">Effort</th>
+                <th class="text-center w-13">ROI</th>
             </tr>
         </thead>
         <tbody>
             <tr>
-                <td><strong>Phase 1 (Woche 1-4)</strong></td>
-                <td style="font-size: 8pt;">
-                    <strong>Quick Wins umsetzen:</strong> Top {{ quick_wins|slice(0, 5)|length }} Quick Wins (ROI ≥ 3.0) starten,
-                    gemeinsame Kontroll-Dokumentation für High-ROI Relationships,
-                    erste kombinierte Audits planen
-                </td>
-                <td class="text-center">4 Wochen</td>
-                <td class="text-center" style="font-size: 8pt;">{% if quick_wins|length > 0 %}{{ quick_wins|slice(0, 5)|reduce((carry, rel) => carry + rel.effort_estimate, 0) }}h{% else %}20-30h{% endif %}</td>
-                <td class="text-center"><span class="badge badge-success">Sehr Hoch</span></td>
+                <td><strong>Phase 1 (Week 1-4)</strong></td>
+                <td>Implement Top {{ quick_wins|slice(0, 5)|length }} Quick Wins, start combined audits</td>
+                <td class="text-center">4 weeks</td>
+                <td class="text-center">{% if quick_wins|length > 0 %}{{ quick_wins|slice(0, 5)|reduce((carry, rel) => carry + rel.effort_estimate, 0) }}h{% else %}20-30h{% endif %}</td>
+                <td class="text-center"><span class="badge badge-success">Very High</span></td>
             </tr>
             <tr>
-                <td><strong>Phase 2 (Woche 5-12)</strong></td>
-                <td style="font-size: 8pt;">
-                    <strong>High-Impact Relationships:</strong> Top High-Impact Beziehungen (Score ≥ 50) optimieren,
-                    Mapping-Qualität verbessern, Coverage erhöhen, ROI-Tracking implementieren
-                </td>
-                <td class="text-center">8 Wochen</td>
-                <td class="text-center" style="font-size: 8pt;">40-60h</td>
-                <td class="text-center"><span class="badge badge-info">Hoch</span></td>
+                <td><strong>Phase 2 (Week 5-12)</strong></td>
+                <td>Optimize High-Impact Relationships (Score ≥ 50), improve mapping quality, increase coverage</td>
+                <td class="text-center">8 weeks</td>
+                <td class="text-center">40-60h</td>
+                <td class="text-center"><span class="badge badge-info">High</span></td>
             </tr>
             <tr>
-                <td><strong>Phase 3 (Woche 13-24)</strong></td>
-                <td style="font-size: 8pt;">
-                    <strong>Compliance Hub mit ROI-Dashboard:</strong> Zentrales Dashboard aufbauen,
-                    automatische Impact & ROI-Berechnung, kontinuierliches Monitoring & Optimierung
-                </td>
-                <td class="text-center">12 Wochen</td>
-                <td class="text-center" style="font-size: 8pt;">80-120h</td>
-                <td class="text-center"><span class="badge badge-warning">Sehr Hoch (langfristig)</span></td>
+                <td><strong>Phase 3 (Week 13-24)</strong></td>
+                <td>Establish Compliance Hub with ROI Dashboard, automated tracking, continuous optimization</td>
+                <td class="text-center">12 weeks</td>
+                <td class="text-center">80-120h</td>
+                <td class="text-center"><span class="badge badge-warning">Very High (long-term)</span></td>
             </tr>
         </tbody>
     </table>
 
-    <div style="background: #E8F4F8; padding: 8px; margin-top: 5px; font-size: 9pt;">
-        <strong>Gesamt-Roadmap-Nutzen:</strong>
-        Phase 1 (Quick Wins) liefert sofortige Ergebnisse mit minimalem Aufwand.
-        Phase 2 maximiert strategischen Impact. Phase 3 etabliert nachhaltige Prozesse für langfristige ROI-Optimierung.
-    </div>
-
-    <h3>ROI-Priorisierungs-Matrix</h3>
-    <table style="width: 95%;">
-        <thead>
-            <tr>
-                <th style="width: 35%;">Initiative</th>
-                <th style="width: 15%;">Aufwand</th>
-                <th style="width: 15%;">Impact</th>
-                <th style="width: 12%;">ROI</th>
-                <th style="width: 13%;">Priority</th>
-                <th style="width: 10%;">Status</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% if quick_wins|length > 0 %}
-            <tr style="background: #C6EFCE;">
-                <td style="font-size: 8pt;">Top {{ quick_wins|slice(0, 3)|length }} Quick Wins umsetzen</td>
-                <td class="text-center"><span class="badge badge-success">{{ quick_wins|slice(0, 3)|reduce((carry, rel) => carry + rel.effort_estimate, 0) }}h</span></td>
-                <td class="text-center"><strong style="color: #2196F3;">{{ quick_wins|slice(0, 3)|reduce((carry, rel) => carry + rel.impact_score, 0)|round(1) }}</strong></td>
-                <td class="text-center"><strong style="color: #28A745;">{{ (quick_wins|slice(0, 3)|reduce((carry, rel) => carry + rel.roi, 0) / 3)|round(1) }}</strong></td>
-                <td class="text-center"><span class="badge badge-critical">1 - KRITISCH</span></td>
-                <td class="text-center">🎯</td>
-            </tr>
-            {% endif %}
-            {% if high_impact_count > 0 %}
-            <tr>
-                <td style="font-size: 8pt;">High-Impact Relationships optimieren (Top 3)</td>
-                <td class="text-center"><span class="badge badge-warning">{{ high_impact_relationships|slice(0, 3)|reduce((carry, rel) => carry + rel.effort_estimate, 0) }}h</span></td>
-                <td class="text-center"><strong style="color: #2196F3;">{{ high_impact_relationships|slice(0, 3)|reduce((carry, rel) => carry + rel.impact_score, 0)|round(1) }}</strong></td>
-                <td class="text-center"><strong>{{ (high_impact_relationships|slice(0, 3)|reduce((carry, rel) => carry + rel.roi, 0) / 3)|round(1) }}</strong></td>
-                <td class="text-center"><span class="badge badge-high">2 - Sehr Hoch</span></td>
-                <td class="text-center">⭐</td>
-            </tr>
-            {% endif %}
-            <tr>
-                <td style="font-size: 8pt;">Gemeinsame Kontroll-Dokumentation erstellen</td>
-                <td class="text-center"><span class="badge badge-warning">30-40h</span></td>
-                <td class="text-center"><strong>Hoch</strong></td>
-                <td class="text-center"><strong>2.5</strong></td>
-                <td class="text-center"><span class="badge badge-high">3 - Hoch</span></td>
-                <td class="text-center">✓</td>
-            </tr>
-            <tr>
-                <td style="font-size: 8pt;">ROI-Dashboard & Monitoring aufbauen</td>
-                <td class="text-center"><span class="badge badge-danger">80-120h</span></td>
-                <td class="text-center"><strong>Sehr Hoch</strong></td>
-                <td class="text-center"><strong>3.5</strong></td>
-                <td class="text-center"><span class="badge badge-warning">4 - Mittel</span></td>
-                <td class="text-center">📊</td>
-            </tr>
-        </tbody>
-    </table>
-
-    <div style="background: #C6EFCE; padding: 8px; margin-top: 10px; border-radius: 4px; font-size: 9pt;">
-        <strong>🎯 Sofort-Aktionen (Start diese Woche):</strong>
-        {% if quick_wins|length > 0 %}
-        (1) <strong>Quick Wins starten:</strong> Top 3 Quick Wins umsetzen ({{ quick_wins|slice(0, 3)|reduce((carry, rel) => carry + rel.mapped, 0) }} Anforderungen, {{ quick_wins|slice(0, 3)|reduce((carry, rel) => carry + rel.effort_estimate, 0) }}h Aufwand),
-        {% else %}
-        (1) <strong>High-Impact Relationships:</strong> Top 3 Relationships mit höchstem Impact Score priorisieren,
-        {% endif %}
-        (2) ROI-Tracking für alle Framework-Beziehungen implementieren,
-        (3) Stakeholder-Meeting mit Impact & ROI-Daten präsentieren,
-        (4) Ressourcen-Allokation basierend auf ROI-Matrix optimieren,
-        (5) Monatliches ROI-Review etablieren (Impact Score, Quick Win Pipeline, Coverage-Trends).
-        <strong style="display: block; margin-top: 5px;">💡 Pro-Tipp:</strong> Nächstes Audit als "Multi-Framework-Audit" für 2+ Frameworks gleichzeitig nutzen!
-        {% if quick_wins|length > 0 %}
-        Starte mit Quick Win #1: <strong>{{ quick_wins[0].source.code }}→{{ quick_wins[0].target.code }}</strong> (ROI: {{ quick_wins[0].roi }}, nur {{ quick_wins[0].effort_estimate }}h Aufwand).
-        {% endif %}
+    <div class="insight-box">
+        <strong>Total Roadmap Benefit:</strong>
+        Phase 1 delivers immediate results with minimal effort.
+        Phase 2 maximizes strategic impact.
+        Phase 3 establishes sustainable processes for long-term ROI optimization.
+        <br><strong>Long-term ROI:</strong> 40-60% reduction in overall compliance effort through optimized prioritization.
     </div>
 {% endblock %}
