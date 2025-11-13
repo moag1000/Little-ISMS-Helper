@@ -3,8 +3,12 @@
 namespace App\Controller;
 
 use App\Form\AdminUserType;
+use App\Form\ComplianceFrameworkSelectionType;
 use App\Form\DatabaseConfigurationType;
+use App\Form\EmailConfigurationType;
+use App\Form\OrganisationInfoType;
 use App\Security\SetupAccessChecker;
+use App\Service\ComplianceFrameworkLoaderService;
 use App\Service\DatabaseTestService;
 use App\Service\DataImportService;
 use App\Service\EnvironmentWriter;
@@ -35,6 +39,7 @@ class DeploymentWizardController extends AbstractController
         private readonly EnvironmentWriter $envWriter,
         private readonly DatabaseTestService $dbTestService,
         private readonly KernelInterface $kernel,
+        private readonly ComplianceFrameworkLoaderService $complianceLoader,
     ) {
     }
 
@@ -204,7 +209,7 @@ class DeploymentWizardController extends AbstractController
 
                     $this->addFlash('success', $this->translator->trans('setup.admin.user_created'));
 
-                    return $this->redirectToRoute('setup_step3_requirements');
+                    return $this->redirectToRoute('setup_step5_requirements');
                 } else {
                     $this->addFlash('error', $result['message']);
                 }
@@ -219,10 +224,135 @@ class DeploymentWizardController extends AbstractController
     }
 
     /**
-     * Step 3: System Requirements Check
+     * Step 3: Email Configuration (Optional)
      */
-    #[Route('/step3-requirements', name: 'setup_step3_requirements')]
-    public function step3Requirements(SessionInterface $session): Response
+    #[Route('/step3-email-config', name: 'setup_step3_email_config')]
+    public function step3EmailConfig(Request $request, SessionInterface $session): Response
+    {
+        // Check if admin user is created
+        if (!$session->get('setup_admin_created')) {
+            $this->addFlash('error', $this->translator->trans('setup.error.create_admin_first'));
+            return $this->redirectToRoute('setup_step2_admin_user');
+        }
+
+        $form = $this->createForm(EmailConfigurationType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+
+            try {
+                // Build MAILER_DSN
+                $transport = $data['transport'] ?? 'smtp';
+
+                if ($transport === 'smtp') {
+                    $host = $data['host'] ?? 'localhost';
+                    $port = $data['port'] ?? 587;
+                    $username = $data['username'] ?? '';
+                    $password = $data['password'] ?? '';
+                    $encryption = $data['encryption'] ?? null;
+
+                    $mailerDsn = sprintf(
+                        'smtp://%s:%s@%s:%s',
+                        urlencode($username),
+                        urlencode($password),
+                        $host,
+                        $port
+                    );
+
+                    if ($encryption) {
+                        $mailerDsn .= "?encryption={$encryption}";
+                    }
+                } elseif ($transport === 'sendmail') {
+                    $mailerDsn = 'sendmail://default';
+                } else {
+                    $mailerDsn = 'native://default';
+                }
+
+                // Write to .env.local
+                $envVars = ['MAILER_DSN' => $mailerDsn];
+
+                if (!empty($data['from_address'])) {
+                    $envVars['MAILER_FROM_ADDRESS'] = $data['from_address'];
+                }
+
+                if (!empty($data['from_name'])) {
+                    $envVars['MAILER_FROM_NAME'] = $data['from_name'];
+                }
+
+                $this->envWriter->writeEnvVariables($envVars);
+
+                $session->set('setup_email_configured', true);
+                $this->addFlash('success', $this->translator->trans('setup.email.config_saved'));
+
+                return $this->redirectToRoute('setup_step4_organisation_info');
+            } catch (\Exception $e) {
+                $this->addFlash('error', $this->translator->trans('setup.email.config_failed') . ': ' . $e->getMessage());
+            }
+        }
+
+        return $this->render('setup/step3_email_config.html.twig', [
+            'form' => $form,
+        ]);
+    }
+
+    /**
+     * Step 3: Skip Email Configuration
+     */
+    #[Route('/step3-email-config/skip', name: 'setup_step3_email_config_skip', methods: ['POST'])]
+    public function step3EmailConfigSkip(SessionInterface $session): Response
+    {
+        $session->set('setup_email_configured', false);
+        $this->addFlash('info', $this->translator->trans('setup.email.skipped'));
+
+        return $this->redirectToRoute('setup_step4_organisation_info');
+    }
+
+    /**
+     * Step 4: Organisation Information
+     */
+    #[Route('/step4-organisation-info', name: 'setup_step4_organisation_info')]
+    public function step4OrganisationInfo(Request $request, SessionInterface $session): Response
+    {
+        // User can skip email config, so we don't check for it
+        // But admin must be created
+        if (!$session->get('setup_admin_created')) {
+            $this->addFlash('error', $this->translator->trans('setup.error.create_admin_first'));
+            return $this->redirectToRoute('setup_step2_admin_user');
+        }
+
+        $form = $this->createForm(OrganisationInfoType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+
+            try {
+                // Store in session for later use (will be used during base data import)
+                $session->set('setup_organisation_name', $data['name']);
+                $session->set('setup_organisation_industry', $data['industry']);
+                $session->set('setup_organisation_employee_count', $data['employee_count']);
+                $session->set('setup_organisation_country', $data['country']);
+                $session->set('setup_organisation_description', $data['description'] ?? '');
+
+                $this->addFlash('success', $this->translator->trans('setup.organisation.info_saved'));
+
+                return $this->redirectToRoute('setup_step5_requirements');
+            } catch (\Exception $e) {
+                $this->addFlash('error', $this->translator->trans('setup.organisation.info_failed') . ': ' . $e->getMessage());
+            }
+        }
+
+        return $this->render('setup/step4_organisation_info.html.twig', [
+            'form' => $form,
+        ]);
+    }
+
+    /**
+     * Step 5: System Requirements Check
+     */
+    #[Route('/step5-requirements', name: 'setup_step5_requirements')]
+    public function step5Requirements(SessionInterface $session): Response
     {
         // Check if admin user is created
         if (!$session->get('setup_admin_created')) {
@@ -232,22 +362,22 @@ class DeploymentWizardController extends AbstractController
 
         $results = $this->requirementsChecker->checkAll();
 
-        return $this->render('setup/step3_requirements.html.twig', [
+        return $this->render('setup/step5_requirements.html.twig', [
             'results' => $results,
             'can_proceed' => $results['overall']['can_proceed'],
         ]);
     }
 
     /**
-     * Step 4: Module Selection
+     * Step 6: Module Selection
      */
-    #[Route('/step4-modules', name: 'setup_step4_modules')]
-    public function step4Modules(SessionInterface $session): Response
+    #[Route('/step6-modules', name: 'setup_step6_modules')]
+    public function step6Modules(SessionInterface $session): Response
     {
         // Check if requirements passed
         if (!$this->requirementsChecker->isSystemReady()) {
             $this->addFlash('error', $this->translator->trans('deployment.error.fix_requirements'));
-            return $this->redirectToRoute('setup_step3_requirements');
+            return $this->redirectToRoute('setup_step5_requirements');
         }
 
         $allModules = $this->moduleConfigService->getAllModules();
@@ -257,7 +387,7 @@ class DeploymentWizardController extends AbstractController
         // Load previous selection from session
         $selectedModules = $session->get('setup_selected_modules', $requiredModules);
 
-        return $this->render('setup/step4_modules.html.twig', [
+        return $this->render('setup/step6_modules.html.twig', [
             'all_modules' => $allModules,
             'required_modules' => $requiredModules,
             'optional_modules' => $optionalModules,
@@ -267,10 +397,10 @@ class DeploymentWizardController extends AbstractController
     }
 
     /**
-     * Step 4: Save Module Selection
+     * Step 6: Save Module Selection
      */
-    #[Route('/step4-modules/save', name: 'setup_step4_modules_save', methods: ['POST'])]
-    public function step4ModulesSave(Request $request, SessionInterface $session): Response
+    #[Route('/step6-modules/save', name: 'setup_step6_modules_save', methods: ['POST'])]
+    public function step6ModulesSave(Request $request, SessionInterface $session): Response
     {
         $selectedModules = $request->request->all('modules') ?? [];
 
@@ -282,7 +412,7 @@ class DeploymentWizardController extends AbstractController
                 $this->addFlash('error', $error);
             }
 
-            return $this->redirectToRoute('setup_step4_modules');
+            return $this->redirectToRoute('setup_step6_modules');
         }
 
         // Resolve dependencies
@@ -301,35 +431,102 @@ class DeploymentWizardController extends AbstractController
             $this->addFlash('warning', $warning);
         }
 
-        return $this->redirectToRoute('setup_step5_base_data');
+        return $this->redirectToRoute('setup_step7_compliance_frameworks');
     }
 
     /**
-     * Step 5: Base Data Import
+     * Step 7: Compliance Frameworks Selection
      */
-    #[Route('/step5-base-data', name: 'setup_step5_base_data')]
-    public function step5BaseData(SessionInterface $session): Response
+    #[Route('/step7-compliance-frameworks', name: 'setup_step7_compliance_frameworks')]
+    public function step7ComplianceFrameworks(Request $request, SessionInterface $session): Response
     {
         $selectedModules = $session->get('setup_selected_modules', []);
 
         if (empty($selectedModules)) {
             $this->addFlash('error', $this->translator->trans('deployment.error.select_modules'));
-            return $this->redirectToRoute('setup_step4_modules');
+            return $this->redirectToRoute('setup_step6_modules');
+        }
+
+        // Get available frameworks
+        $availableFrameworks = $this->complianceLoader->getAvailableFrameworks();
+
+        // Get industry-specific recommendations
+        $organisationIndustry = $session->get('setup_organisation_industry', 'other');
+        $recommendedFrameworks = $this->getRecommendedFrameworks($organisationIndustry);
+
+        $form = $this->createForm(ComplianceFrameworkSelectionType::class, null, [
+            'available_frameworks' => $availableFrameworks,
+        ]);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+            $selectedFrameworks = $data['frameworks'] ?? ['ISO27001'];
+
+            // Ensure ISO27001 is always selected
+            if (!in_array('ISO27001', $selectedFrameworks, true)) {
+                $selectedFrameworks[] = 'ISO27001';
+            }
+
+            // Store selection in session
+            $session->set('setup_selected_frameworks', $selectedFrameworks);
+
+            $this->addFlash('success', $this->translator->trans('setup.compliance.frameworks_saved', [
+                '%count%' => count($selectedFrameworks),
+            ]));
+
+            return $this->redirectToRoute('setup_step8_base_data');
+        }
+
+        return $this->render('setup/step7_compliance_frameworks.html.twig', [
+            'form' => $form,
+            'available_frameworks' => $availableFrameworks,
+            'recommended_frameworks' => $recommendedFrameworks,
+        ]);
+    }
+
+    /**
+     * Get recommended compliance frameworks based on industry
+     */
+    private function getRecommendedFrameworks(string $industry): array
+    {
+        return match ($industry) {
+            'automotive' => ['ISO27001', 'TISAX'],
+            'financial_services' => ['ISO27001', 'DORA', 'GDPR', 'NIS2'],
+            'healthcare' => ['ISO27001', 'GDPR', 'NIS2'],
+            'energy', 'telecommunications' => ['ISO27001', 'NIS2', 'GDPR'],
+            'public_sector' => ['ISO27001', 'NIS2', 'BSI_GRUNDSCHUTZ', 'GDPR'],
+            'it_services' => ['ISO27001', 'GDPR', 'ISO27701'],
+            default => ['ISO27001', 'GDPR'],
+        };
+    }
+
+    /**
+     * Step 8: Base Data Import
+     */
+    #[Route('/step8-base-data', name: 'setup_step8_base_data')]
+    public function step8BaseData(SessionInterface $session): Response
+    {
+        $selectedModules = $session->get('setup_selected_modules', []);
+
+        if (empty($selectedModules)) {
+            $this->addFlash('error', $this->translator->trans('deployment.error.select_modules'));
+            return $this->redirectToRoute('setup_step6_modules');
         }
 
         $baseData = $this->moduleConfigService->getBaseData();
 
-        return $this->render('setup/step5_base_data.html.twig', [
+        return $this->render('setup/step8_base_data.html.twig', [
             'selected_modules' => $selectedModules,
             'base_data' => $baseData,
         ]);
     }
 
     /**
-     * Step 5: Import Base Data
+     * Step 8: Import Base Data
      */
-    #[Route('/step5-base-data/import', name: 'setup_step5_base_data_import', methods: ['POST'])]
-    public function step5BaseDataImport(SessionInterface $session): Response
+    #[Route('/step8-base-data/import', name: 'setup_step8_base_data_import', methods: ['POST'])]
+    public function step8BaseDataImport(SessionInterface $session): Response
     {
         $selectedModules = $session->get('setup_selected_modules', []);
 
@@ -350,35 +547,35 @@ class DeploymentWizardController extends AbstractController
 
         $session->set('setup_base_data_imported', true);
 
-        return $this->redirectToRoute('setup_step6_sample_data');
+        return $this->redirectToRoute('setup_step9_sample_data');
     }
 
     /**
-     * Step 6: Sample Data (Optional)
+     * Step 9: Sample Data (Optional)
      */
-    #[Route('/step6-sample-data', name: 'setup_step6_sample_data')]
-    public function step6SampleData(SessionInterface $session): Response
+    #[Route('/step9-sample-data', name: 'setup_step9_sample_data')]
+    public function step9SampleData(SessionInterface $session): Response
     {
         $selectedModules = $session->get('setup_selected_modules', []);
 
         if (empty($selectedModules)) {
             $this->addFlash('error', $this->translator->trans('deployment.error.select_modules'));
-            return $this->redirectToRoute('setup_step4_modules');
+            return $this->redirectToRoute('setup_step6_modules');
         }
 
         $sampleData = $this->moduleConfigService->getAvailableSampleData($selectedModules);
 
-        return $this->render('setup/step6_sample_data.html.twig', [
+        return $this->render('setup/step9_sample_data.html.twig', [
             'selected_modules' => $selectedModules,
             'sample_data' => $sampleData,
         ]);
     }
 
     /**
-     * Step 6: Import Sample Data
+     * Step 9: Import Sample Data
      */
-    #[Route('/step6-sample-data/import', name: 'setup_step6_sample_data_import', methods: ['POST'])]
-    public function step6SampleDataImport(Request $request, SessionInterface $session): Response
+    #[Route('/step9-sample-data/import', name: 'setup_step9_sample_data_import', methods: ['POST'])]
+    public function step9SampleDataImport(Request $request, SessionInterface $session): Response
     {
         $selectedModules = $session->get('setup_selected_modules', []);
         $selectedSamples = $request->request->all('samples') ?? [];
@@ -393,30 +590,30 @@ class DeploymentWizardController extends AbstractController
             }
         }
 
-        return $this->redirectToRoute('setup_step7_complete');
+        return $this->redirectToRoute('setup_step10_complete');
     }
 
     /**
-     * Step 6: Skip Sample Data
+     * Step 9: Skip Sample Data
      */
-    #[Route('/step6-sample-data/skip', name: 'setup_step6_sample_data_skip', methods: ['POST'])]
-    public function step6SampleDataSkip(): Response
+    #[Route('/step9-sample-data/skip', name: 'setup_step9_sample_data_skip', methods: ['POST'])]
+    public function step9SampleDataSkip(): Response
     {
         $this->addFlash('info', $this->translator->trans('deployment.info.sample_data_skipped'));
-        return $this->redirectToRoute('setup_step7_complete');
+        return $this->redirectToRoute('setup_step10_complete');
     }
 
     /**
-     * Step 7: Setup Complete
+     * Step 10: Setup Complete
      */
-    #[Route('/step7-complete', name: 'setup_step7_complete')]
-    public function step7Complete(SessionInterface $session): Response
+    #[Route('/step10-complete', name: 'setup_step10_complete')]
+    public function step10Complete(SessionInterface $session): Response
     {
         $selectedModules = $session->get('setup_selected_modules', []);
 
         if (empty($selectedModules)) {
             $this->addFlash('error', $this->translator->trans('deployment.error.select_modules'));
-            return $this->redirectToRoute('setup_step4_modules');
+            return $this->redirectToRoute('setup_step6_modules');
         }
 
         // Save active modules
@@ -427,7 +624,7 @@ class DeploymentWizardController extends AbstractController
 
         $statistics = $this->moduleConfigService->getStatistics();
 
-        return $this->render('setup/step7_complete.html.twig', [
+        return $this->render('setup/step10_complete.html.twig', [
             'selected_modules' => $selectedModules,
             'statistics' => $statistics,
             'admin_email' => $session->get('setup_admin_email'),
