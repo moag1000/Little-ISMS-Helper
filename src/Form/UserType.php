@@ -9,6 +9,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -78,6 +79,27 @@ class UserType extends AbstractType
                 'label' => 'user.field.phone_number',
                 'required' => false,
                 'attr' => ['class' => 'form-control'],
+            ])
+            ->add('avatarFile', FileType::class, [
+                'label' => 'user.field.avatar',
+                'help' => 'user.field.avatar_help',
+                'mapped' => false,
+                'required' => false,
+                'attr' => [
+                    'accept' => 'image/jpeg,image/png,image/gif,image/webp',
+                ],
+                'constraints' => [
+                    new Assert\File([
+                        'maxSize' => '2M',
+                        'mimeTypes' => [
+                            'image/jpeg',
+                            'image/png',
+                            'image/gif',
+                            'image/webp',
+                        ],
+                        'mimeTypesMessage' => 'user.validation.avatar_format',
+                    ]),
+                ],
             ])
 
             // Authentication

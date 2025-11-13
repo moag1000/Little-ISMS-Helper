@@ -8,15 +8,19 @@ use App\Enum\GovernanceModel;
 use App\Form\TenantType;
 use App\Repository\CorporateGovernanceRepository;
 use App\Repository\TenantRepository;
+use App\Service\AuditLogger;
+use App\Service\FileUploadSecurityService;
 use App\Service\CorporateStructureService;
 use App\Service\MultiTenantCheckService;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 #[Route('/admin/tenants')]
 #[IsGranted('ROLE_ADMIN')]
@@ -27,8 +31,12 @@ class TenantManagementController extends AbstractController
         private readonly TenantRepository $tenantRepository,
         private readonly CorporateGovernanceRepository $governanceRepository,
         private readonly LoggerInterface $logger,
+        private readonly AuditLogger $auditLogger,
+        private readonly FileUploadSecurityService $fileUploadService,
+        private readonly SluggerInterface $slugger,
         private readonly CorporateStructureService $corporateStructureService,
         private readonly MultiTenantCheckService $multiTenantCheckService,
+        private readonly string $uploadsDirectory = 'uploads/tenants',
     ) {
     }
 
@@ -78,14 +86,46 @@ class TenantManagementController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
+                // Handle logo upload
+                /** @var UploadedFile|null $logoFile */
+                $logoFile = $form->get('logoFile')->getData();
+                if ($logoFile) {
+                    $logoPath = $this->handleLogoUpload($logoFile, $tenant);
+                    if ($logoPath) {
+                        $tenant->setLogoPath($logoPath);
+                    }
+                }
+
+                // Handle settings JSON
+                $settingsJson = $form->get('settings')->getData();
+                if ($settingsJson) {
+                    $tenant->setSettings(json_decode($settingsJson, true));
+                }
+
                 $this->entityManager->persist($tenant);
                 $this->entityManager->flush();
 
                 $this->logger->info('Tenant created', [
                     'tenant_id' => $tenant->getId(),
                     'tenant_code' => $tenant->getCode(),
+                    'has_logo' => $tenant->getLogoPath() !== null,
                     'user' => $this->getUser()?->getUserIdentifier(),
                 ]);
+
+                // Audit log
+                $this->auditLogger->logCustom(
+                    'tenant_created',
+                    'Tenant',
+                    $tenant->getId(),
+                    null,
+                    [
+                        'code' => $tenant->getCode(),
+                        'name' => $tenant->getName(),
+                        'is_active' => $tenant->isActive(),
+                        'has_logo' => $tenant->getLogoPath() !== null,
+                    ],
+                    sprintf('Tenant "%s" created', $tenant->getName())
+                );
 
                 $this->addFlash('success', 'tenant.flash.created');
 
@@ -142,18 +182,70 @@ class TenantManagementController extends AbstractController
     #[Route('/{id}/edit', name: 'tenant_management_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Tenant $tenant): Response
     {
+        // Capture old values for audit log
+        $oldValues = [
+            'code' => $tenant->getCode(),
+            'name' => $tenant->getName(),
+            'description' => $tenant->getDescription(),
+            'is_active' => $tenant->isActive(),
+            'azure_tenant_id' => $tenant->getAzureTenantId(),
+            'has_logo' => $tenant->getLogoPath() !== null,
+        ];
+
+        $oldLogoPath = $tenant->getLogoPath();
         $form = $this->createForm(TenantType::class, $tenant);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
+                // Handle logo upload
+                /** @var UploadedFile|null $logoFile */
+                $logoFile = $form->get('logoFile')->getData();
+                if ($logoFile) {
+                    // Delete old logo if exists
+                    if ($oldLogoPath) {
+                        $this->deleteOldLogo($oldLogoPath);
+                    }
+
+                    $logoPath = $this->handleLogoUpload($logoFile, $tenant);
+                    if ($logoPath) {
+                        $tenant->setLogoPath($logoPath);
+                    }
+                }
+
+                // Handle settings JSON
+                $settingsJson = $form->get('settings')->getData();
+                if ($settingsJson) {
+                    $tenant->setSettings(json_decode($settingsJson, true));
+                }
+
                 $this->entityManager->flush();
 
                 $this->logger->info('Tenant updated', [
                     'tenant_id' => $tenant->getId(),
                     'tenant_code' => $tenant->getCode(),
+                    'logo_updated' => $logoFile !== null,
                     'user' => $this->getUser()?->getUserIdentifier(),
                 ]);
+
+                // Audit log with before/after values
+                $newValues = [
+                    'code' => $tenant->getCode(),
+                    'name' => $tenant->getName(),
+                    'description' => $tenant->getDescription(),
+                    'is_active' => $tenant->isActive(),
+                    'azure_tenant_id' => $tenant->getAzureTenantId(),
+                    'has_logo' => $tenant->getLogoPath() !== null,
+                ];
+
+                $this->auditLogger->logCustom(
+                    'tenant_updated',
+                    'Tenant',
+                    $tenant->getId(),
+                    $oldValues,
+                    $newValues,
+                    sprintf('Tenant "%s" updated', $tenant->getName())
+                );
 
                 $this->addFlash('success', 'tenant.flash.updated');
 
@@ -192,6 +284,16 @@ class TenantManagementController extends AbstractController
                 'user' => $this->getUser()?->getUserIdentifier(),
             ]);
 
+            // Audit log
+            $this->auditLogger->logCustom(
+                'tenant_status_toggled',
+                'Tenant',
+                $tenant->getId(),
+                ['is_active' => $previousStatus],
+                ['is_active' => $tenant->isActive()],
+                sprintf('Tenant "%s" %s', $tenant->getName(), $tenant->isActive() ? 'activated' : 'deactivated')
+            );
+
             $message = $tenant->isActive() ? 'tenant.flash.activated' : 'tenant.flash.deactivated';
             $this->addFlash('success', $message);
         } catch (\Exception $e) {
@@ -223,16 +325,35 @@ class TenantManagementController extends AbstractController
         }
 
         try {
+            $tenantId = $tenant->getId();
             $tenantCode = $tenant->getCode();
+            $tenantName = $tenant->getName();
+
+            // Capture tenant data for audit log before deletion
+            $oldValues = [
+                'code' => $tenantCode,
+                'name' => $tenantName,
+                'is_active' => $tenant->isActive(),
+            ];
 
             $this->entityManager->remove($tenant);
             $this->entityManager->flush();
 
             $this->logger->warning('Tenant deleted', [
-                'tenant_id' => $tenant->getId(),
+                'tenant_id' => $tenantId,
                 'tenant_code' => $tenantCode,
                 'user' => $this->getUser()?->getUserIdentifier(),
             ]);
+
+            // Audit log
+            $this->auditLogger->logCustom(
+                'tenant_deleted',
+                'Tenant',
+                $tenantId,
+                $oldValues,
+                null,
+                sprintf('Tenant "%s" (code: %s) deleted', $tenantName, $tenantCode)
+            );
 
             $this->addFlash('success', 'tenant.flash.deleted');
         } catch (\Exception $e) {
@@ -246,6 +367,74 @@ class TenantManagementController extends AbstractController
         }
 
         return $this->redirectToRoute('tenant_management_index');
+    }
+
+    /**
+     * Handle logo upload with security validation
+     */
+    private function handleLogoUpload(UploadedFile $file, Tenant $tenant): ?string
+    {
+        try {
+            // Security validation using FileUploadSecurityService
+            $validation = $this->fileUploadService->validateUpload($file);
+
+            if (!$validation['valid']) {
+                $this->addFlash('warning', 'Logo upload failed: ' . $validation['error']);
+                $this->logger->warning('Logo upload validation failed', [
+                    'tenant_code' => $tenant->getCode(),
+                    'error' => $validation['error'],
+                ]);
+                return null;
+            }
+
+            // Generate safe filename
+            $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+            $safeFilename = $this->slugger->slug($originalFilename);
+            $newFilename = sprintf(
+                '%s-%s.%s',
+                $tenant->getCode(),
+                uniqid(),
+                $file->guessExtension()
+            );
+
+            // Move file to uploads directory
+            $uploadsPath = $this->getParameter('kernel.project_dir') . '/public/' . $this->uploadsDirectory;
+            $file->move($uploadsPath, $newFilename);
+
+            $this->logger->info('Logo uploaded successfully', [
+                'tenant_code' => $tenant->getCode(),
+                'filename' => $newFilename,
+            ]);
+
+            return $this->uploadsDirectory . '/' . $newFilename;
+
+        } catch (\Exception $e) {
+            $this->logger->error('Logo upload failed', [
+                'tenant_code' => $tenant->getCode(),
+                'error' => $e->getMessage(),
+            ]);
+            $this->addFlash('warning', 'Logo upload failed. Please try again.');
+            return null;
+        }
+    }
+
+    /**
+     * Delete old logo file
+     */
+    private function deleteOldLogo(string $logoPath): void
+    {
+        try {
+            $fullPath = $this->getParameter('kernel.project_dir') . '/public/' . $logoPath;
+            if (file_exists($fullPath)) {
+                unlink($fullPath);
+                $this->logger->info('Old logo deleted', ['path' => $logoPath]);
+            }
+        } catch (\Exception $e) {
+            $this->logger->error('Failed to delete old logo', [
+                'path' => $logoPath,
+                'error' => $e->getMessage(),
+            ]);
+        }
     }
 
     /**
