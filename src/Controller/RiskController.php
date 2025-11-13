@@ -551,6 +551,9 @@ class RiskController extends AbstractController
         // Remove zero counts
         $statusBreakdown = array_filter($statusBreakdown, fn($count) => $count > 0);
 
+        // Close session to prevent blocking other requests during PDF generation
+        $request->getSession()->save();
+
         // Generate PDF
         $pdfContent = $this->pdfExportService->generatePdf('pdf/risk_report.html.twig', [
             'risks' => $risks,
@@ -561,6 +564,7 @@ class RiskController extends AbstractController
             'low_risks' => $lowRisks,
             'status_breakdown' => $statusBreakdown,
             'filter_info' => $filterInfo,
+            'pdf_generation_date' => new \DateTime(),
         ]);
 
         $filename = sprintf('risk_management_report_%s.pdf', date('Y-m-d_His'));
