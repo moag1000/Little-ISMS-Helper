@@ -103,6 +103,7 @@
                     <table class="table table-hover align-middle">
                         <thead>
                             <tr>
+                                <th style="width: 60px;">{{ 'tenant.field.logo'|trans }}</th>
                                 <th>{{ 'tenant.field.code'|trans }}</th>
                                 <th>{{ 'tenant.field.name'|trans }}</th>
                                 <th>{{ 'tenant.field.users'|trans }}</th>
@@ -116,6 +117,19 @@
                             {% for item in tenants %}
                                 {% set tenant = item.tenant %}
                                 <tr>
+                                    <td>
+                                        {% if tenant.logoPath %}
+                                            <img src="{{ asset(tenant.logoPath) }}"
+                                                 alt="{{ tenant.name }}"
+                                                 class="rounded"
+                                                 style="width: 40px; height: 40px; object-fit: contain;">
+                                        {% else %}
+                                            <div class="bg-light rounded d-flex align-items-center justify-content-center"
+                                                 style="width: 40px; height: 40px;">
+                                                <i class="bi bi-building text-muted"></i>
+                                            </div>
+                                        {% endif %}
+                                    </td>
                                     <td>
                                         <code class="text-primary">{{ tenant.code }}</code>
                                     </td>
