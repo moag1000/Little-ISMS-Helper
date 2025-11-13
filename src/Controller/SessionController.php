@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\Repository\AuditLogRepository;
+use App\Repository\UserRepository;
+use App\Service\SessionManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,55 +20,24 @@ class SessionController extends AbstractController
 {
     #[Route('', name: 'session_index', methods: ['GET'])]
     public function index(
-        AuditLogRepository $auditLogRepository,
+        SessionManager $sessionManager,
         Request $request
     ): Response {
-        // Get recent login activities (last 24 hours)
-        $hoursFilter = (int) $request->query->get('hours', 24);
-        $recentActivity = $auditLogRepository->getRecentActivity($hoursFilter);
+        // Get filter parameters
+        $userEmail = $request->query->get('email');
+        $limit = $request->query->get('limit', 100);
 
-        // Filter for login/authentication events
-        $loginEvents = array_filter($recentActivity, function ($log) {
-            return in_array($log->getAction(), ['login', 'login_success', 'authentication', 'session_start']);
-        });
+        // Get active sessions from SessionManager
+        $activeSessions = $sessionManager->getAllActiveSessions($userEmail, $limit);
 
-        // Group by user to get unique sessions
-        $activeSessions = [];
-        $userSessions = [];
-
-        foreach ($loginEvents as $event) {
-            $userName = $event->getUserName();
-
-            // Keep only the most recent login per user
-            if (!isset($userSessions[$userName]) ||
-                $event->getCreatedAt() > $userSessions[$userName]['last_activity']) {
-
-                $userSessions[$userName] = [
-                    'user_name' => $userName,
-                    'ip_address' => $event->getIpAddress(),
-                    'user_agent' => $event->getUserAgent(),
-                    'last_activity' => $event->getCreatedAt(),
-                    'session_start' => $event->getCreatedAt(),
-                    'audit_log_id' => $event->getId(),
-                ];
-            }
-        }
-
-        $activeSessions = array_values($userSessions);
-
-        // Calculate statistics
-        $totalSessions = count($activeSessions);
-        $todaySessions = count(array_filter($activeSessions, function ($session) {
-            return $session['last_activity']->format('Y-m-d') === (new \DateTime())->format('Y-m-d');
-        }));
+        // Get statistics
+        $statistics = $sessionManager->getStatistics();
+        $statistics['max_concurrent'] = $sessionManager->getMaxConcurrentSessions();
 
         return $this->render('session/index.html.twig', [
             'sessions' => $activeSessions,
-            'statistics' => [
-                'total' => $totalSessions,
-                'today' => $todaySessions,
-                'hours_filter' => $hoursFilter,
-            ],
+            'statistics' => $statistics,
+            'search_email' => $userEmail,
         ]);
     }
 
@@ -118,31 +89,68 @@ class SessionController extends AbstractController
     public function terminate(
         string $userName,
         Request $request,
-        EntityManagerInterface $entityManager,
+        SessionManager $sessionManager,
+        UserRepository $userRepository,
         TranslatorInterface $translator
     ): Response {
         // Verify CSRF token
         $token = $request->request->get('_token');
         if (!$this->isCsrfTokenValid('terminate_session_' . $userName, $token)) {
-            $this->addFlash('error', $translator->trans('session.error.invalid_token'));
+            $this->addFlash('danger', $translator->trans('session.error.invalid_token'));
             return $this->redirectToRoute('session_index');
         }
 
-        // In a real implementation, you would:
-        // 1. Find all sessions for this user in the session storage
-        // 2. Invalidate/delete them
-        // 3. Force the user to re-authenticate
+        // Find user by email/username
+        $user = $userRepository->findOneBy(['email' => $userName]);
 
-        // For now, we log the termination action
-        // Note: This requires actual session storage implementation
+        if (!$user) {
+            $this->addFlash('danger', 'User not found');
+            return $this->redirectToRoute('session_index');
+        }
 
-        // TODO: Implement actual session termination using Symfony's session handlers
-        // For example, if using database session storage:
-        // $sessionRepository->deleteByUsername($userName);
+        // Terminate all active sessions for this user
+        $adminEmail = $this->getUser()?->getUserIdentifier();
+        $count = $sessionManager->terminateUserSessions($user, $adminEmail);
 
-        $this->addFlash('warning', $translator->trans('session.info.termination_not_implemented', [
-            'username' => $userName
-        ]));
+        if ($count > 0) {
+            $this->addFlash('success', sprintf(
+                'Successfully terminated %d active session(s) for user %s',
+                $count,
+                $userName
+            ));
+        } else {
+            $this->addFlash('info', sprintf(
+                'No active sessions found for user %s',
+                $userName
+            ));
+        }
+
+        return $this->redirectToRoute('session_index');
+    }
+
+    #[Route('/terminate-session/{sessionId}', name: 'session_terminate_single', methods: ['POST'])]
+    public function terminateSingle(
+        string $sessionId,
+        Request $request,
+        SessionManager $sessionManager,
+        TranslatorInterface $translator
+    ): Response {
+        // Verify CSRF token
+        $token = $request->request->get('_token');
+        if (!$this->isCsrfTokenValid('terminate_single_' . $sessionId, $token)) {
+            $this->addFlash('danger', $translator->trans('session.error.invalid_token'));
+            return $this->redirectToRoute('session_index');
+        }
+
+        // Terminate specific session
+        $adminEmail = $this->getUser()?->getUserIdentifier();
+        $success = $sessionManager->terminateSession($sessionId, 'forced', $adminEmail);
+
+        if ($success) {
+            $this->addFlash('success', 'Session terminated successfully');
+        } else {
+            $this->addFlash('warning', 'Session not found or already inactive');
+        }
 
         return $this->redirectToRoute('session_index');
     }
