@@ -344,14 +344,39 @@ asset:
   new: Neues Asset
   create: Asset erstellen
   edit: Asset bearbeiten
+  update: 'Asset aktualisieren'
   list:
     title: Assets
   details:
     title: Asset-Details
   confirm:
     delete: Sind Sie sicher, dass Sie dieses Asset löschen möchten?
+
+  title:
+    _default: Assets
+    bcm_insights: 'BCM-Einblicke für Assets'
+
+  description:
+    bcm_insights: 'Analyse der geschäftskritischen Assets und ihrer Auswirkungen auf die Business Continuity'
+    critical_impact: 'Kritische Auswirkung: Sofortiger Geschäftsausfall bei Verlust'
+    high_impact: 'Hohe Auswirkung: Erhebliche Geschäftsbeeinträchtigung innerhalb von Stunden'
+    medium_impact: 'Mittlere Auswirkung: Spürbare Beeinträchtigung innerhalb von Tagen'
+    low_impact: 'Geringe Auswirkung: Minimale oder verzögerte Auswirkungen'
+    rto_analysis: 'Verteilung der Assets nach ihren Recovery Time Objectives'
+    dependencies: 'Analyse der Asset-Abhängigkeiten und potenzieller Single Points of Failure'
+
   action:
     bcm_insights: BCM-Einblicke
+    view_critical: 'Kritische Assets anzeigen'
+
+  stats:
+    total_assets: 'Gesamt-Assets'
+    critical_assets: 'Kritische Assets'
+    high_risk_assets: 'Hochrisiko-Assets'
+    avg_rto: 'Durchschn. RTO'
+    with_dependencies: 'Mit Abhängigkeiten'
+    avg_dependencies: 'Durchschn. Abhängigkeiten'
+    single_points_failure: 'Single Points of Failure'
   bcm:
     processes: Prozesse
   section:
@@ -364,6 +389,11 @@ asset:
     protecting_controls: Schützende Maßnahmen
     related_risks: Zugehörige Risiken
     related_incidents: Zugehörige Vorfälle
+    history: 'Änderungsverlauf'
+    business_impact: 'Geschäftliche Auswirkungen'
+    rto_analysis: 'RTO-Analyse'
+    critical_assets: 'Kritische Assets'
+    dependency_insights: 'Abhängigkeits-Analyse'
   cia_help: Bewerten Sie die Vertraulichkeit, Integrität und Verfügbarkeit dieses Assets
   cia_values: CIA-Werte
   classification:
@@ -383,6 +413,15 @@ asset:
     confidentiality: Vertraulichkeit
     integrity: Integrität
     availability: Verfügbarkeit
+    asset_name: 'Asset-Name'
+    business_criticality: 'Geschäftskritikalität'
+    rto: 'RTO'
+    rpo: 'RPO'
+    recovery_strategy: 'Wiederherstellungsstrategie'
+    avg_rto: 'Durchschn. RTO'
+    rto_category: 'RTO-Kategorie'
+    asset_count: 'Anzahl Assets'
+    examples: 'Beispiele'
   placeholder:
     name: z.B. Kundendatenbank
     description: Detaillierte Beschreibung des Assets
@@ -426,6 +465,26 @@ asset:
     confidentiality: Vertraulichkeit
     integrity: Integrität
     availability: Verfügbarkeit
+    return_date: 'Rückgabedatum'
+
+  impact:
+    critical: 'Kritisch'
+    high: 'Hoch'
+    medium: 'Mittel'
+    low: 'Gering'
+
+  rto:
+    immediate: 'Sofort (< 4h)'
+    urgent: 'Dringend (4-24h)'
+    standard: 'Standard (1-3 Tage)'
+    flexible: 'Flexibel (> 3 Tage)'
+
+  badge:
+    business_critical: 'Geschäftskritisch'
+
+  message:
+    no_critical_assets: 'Keine kritischen Assets gefunden'
+
   success:
     created: Asset erfolgreich erstellt.
     updated: Asset erfolgreich aktualisiert.
