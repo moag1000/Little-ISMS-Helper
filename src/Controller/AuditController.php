@@ -142,8 +142,11 @@ class AuditController extends AbstractController
     }
 
     #[Route('/{id}/export/pdf', name: 'app_audit_export_pdf', requirements: ['id' => '\d+'])]
-    public function exportPdf(InternalAudit $audit): Response
+    public function exportPdf(Request $request, InternalAudit $audit): Response
     {
+        // Close session to prevent blocking other requests during PDF generation
+        $request->getSession()->save();
+
         $pdf = $this->pdfService->generatePdf('audit/export_pdf.html.twig', [
             'audit' => $audit,
         ]);
@@ -155,7 +158,7 @@ class AuditController extends AbstractController
     }
 
     #[Route('/export/excel', name: 'app_audit_export_excel')]
-    public function exportExcel(): Response
+    public function exportExcel(Request $request): Response
     {
         $audits = $this->auditRepository->findAll();
 
@@ -172,6 +175,9 @@ class AuditController extends AbstractController
                 $audit->getActualDate()?->format('d.m.Y') ?? '',
             ];
         }
+
+        // Close session to prevent blocking other requests during Excel generation
+        $request->getSession()->save();
 
         $spreadsheet = $this->excelService->exportArray($data, $headers, 'Audits');
         $excel = $this->excelService->generateExcel($spreadsheet);

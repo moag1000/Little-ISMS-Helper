@@ -128,6 +128,9 @@ class RiskController extends AbstractController
         // Re-index array after filtering
         $risks = array_values($risks);
 
+        // Close session to prevent blocking other requests during CSV generation
+        $request->getSession()->save();
+
         // Create CSV content
         $csv = [];
 
@@ -292,6 +295,9 @@ class RiskController extends AbstractController
         $highRisks = count(array_filter($risks, fn($risk) => $risk->getRiskScore() >= 8 && $risk->getRiskScore() < 15));
         $mediumRisks = count(array_filter($risks, fn($risk) => $risk->getRiskScore() >= 4 && $risk->getRiskScore() < 8));
         $lowRisks = count(array_filter($risks, fn($risk) => $risk->getRiskScore() < 4));
+
+        // Close session to prevent blocking other requests during Excel generation
+        $request->getSession()->save();
 
         // Create spreadsheet
         $spreadsheet = $this->excelExportService->createSpreadsheet('Risk Management Report');
