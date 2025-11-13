@@ -12,7 +12,7 @@ use Doctrine\Migrations\AbstractMigration;
  *
  * Adds support for corporate-wide and subsidiary-specific audits
  */
-final class Version20250113000003_corporate_audit_scope extends AbstractMigration
+final class Version20251114000003_corporate_audit_scope extends AbstractMigration
 {
     public function getDescription(): string
     {
