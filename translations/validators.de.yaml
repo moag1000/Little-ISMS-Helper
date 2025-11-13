@@ -194,3 +194,96 @@ tenant:
 'Category name cannot exceed {{ limit }} characters': 'Kategoriename darf maximal {{ limit }} Zeichen lang sein'
 'Maximum acceptable risk level is required': 'Maximales akzeptables Risikoniveau ist erforderlich'
 'Maximum acceptable risk must be between {{ min }} and {{ max }}': 'Maximales akzeptables Risiko muss zwischen {{ min }} und {{ max }} liegen'
+
+# Context Validators
+context:
+  validation:
+    organization_name_required: 'Bitte geben Sie einen Organisationsnamen ein.'
+    name_max_length: 'Der Name darf maximal {{ limit }} Zeichen lang sein.'
+
+# Person Validators (German keys as validators)
+'Bitte geben Sie einen Vornamen ein.': 'Bitte geben Sie einen Vornamen ein.'
+'Der Vorname darf maximal {{ limit }} Zeichen lang sein.': 'Der Vorname darf maximal {{ limit }} Zeichen lang sein.'
+'Bitte geben Sie einen Nachnamen ein.': 'Bitte geben Sie einen Nachnamen ein.'
+'Der Nachname darf maximal {{ limit }} Zeichen lang sein.': 'Der Nachname darf maximal {{ limit }} Zeichen lang sein.'
+'Bitte geben Sie eine E-Mail-Adresse ein.': 'Bitte geben Sie eine E-Mail-Adresse ein.'
+'Bitte geben Sie eine gültige E-Mail-Adresse ein.': 'Bitte geben Sie eine gültige E-Mail-Adresse ein.'
+'Das Passwort muss mindestens {{ limit }} Zeichen lang sein.': 'Das Passwort muss mindestens {{ limit }} Zeichen lang sein.'
+
+# BC Exercise Validators
+'Exercise name is required': 'Übungsname ist erforderlich'
+'Scope must be defined': 'Umfang muss definiert werden'
+'Objectives must be defined': 'Ziele müssen definiert werden'
+'Participants must be documented': 'Teilnehmer müssen dokumentiert werden'
+
+# Tenant Validators (Additional)
+'This tenant code is already in use': 'Dieser Mandanten-Code wird bereits verwendet'
+
+# Permission Validators
+'This permission name is already in use': 'Dieser Berechtigungsname wird bereits verwendet'
+
+# Risk Validators (Additional)
+'Probability is required': 'Wahrscheinlichkeit ist erforderlich'
+'Probability must be between {{ min }} and {{ max }}': 'Wahrscheinlichkeit muss zwischen {{ min }} und {{ max }} liegen'
+'Impact is required': 'Auswirkung ist erforderlich'
+'Impact must be between {{ min }} and {{ max }}': 'Auswirkung muss zwischen {{ min }} und {{ max }} liegen'
+'Residual probability must be between {{ min }} and {{ max }}': 'Restwahrscheinlichkeit muss zwischen {{ min }} und {{ max }} liegen'
+'Residual impact must be between {{ min }} and {{ max }}': 'Restauswirkung muss zwischen {{ min }} und {{ max }} liegen'
+'Treatment strategy is required': 'Behandlungsstrategie ist erforderlich'
+'Treatment strategy must be one of: {{ choices }}': 'Behandlungsstrategie muss eine der folgenden sein: {{ choices }}'
+
+# Training Validators (Additional)
+'Training title is required': 'Schulungstitel ist erforderlich'
+'Title cannot exceed {{ limit }} characters': 'Titel darf maximal {{ limit }} Zeichen lang sein'
+'Training type is required': 'Schulungsart ist erforderlich'
+'Training type cannot exceed {{ limit }} characters': 'Schulungsart darf maximal {{ limit }} Zeichen lang sein'
+'Scheduled date is required': 'Geplantes Datum ist erforderlich'
+'Trainer name is required': 'Trainername ist erforderlich'
+'Trainer name cannot exceed {{ limit }} characters': 'Trainername darf maximal {{ limit }} Zeichen lang sein'
+
+# Generic Validators
+'Title is required': 'Titel ist erforderlich'
+'Description is required': 'Beschreibung ist erforderlich'
+'Priority is required': 'Priorität ist erforderlich'
+'Priority must be one of: {{ choices }}': 'Priorität muss eine der folgenden sein: {{ choices }}'
+'Target completion date is required': 'Ziel-Fertigstellungsdatum ist erforderlich'
+'Completion percentage must be between {{ min }} and {{ max }}': 'Fertigstellungsgrad muss zwischen {{ min }} und {{ max }} liegen'
+
+# Interested Party Validators (Additional)
+'Party name is required': 'Name der Partei ist erforderlich'
+'Requirements must be documented': 'Anforderungen müssen dokumentiert werden'
+
+# Category Validators
+'Category cannot exceed {{ limit }} characters': 'Kategorie darf maximal {{ limit }} Zeichen lang sein'
+
+# Incident Validators (Additional)
+'Severity is required': 'Schweregrad ist erforderlich'
+'Severity must be one of: {{ choices }}': 'Schweregrad muss einer der folgenden sein: {{ choices }}'
+'Detection date is required': 'Erkennungsdatum ist erforderlich'
+'Reporter name is required': 'Name des Meldenden ist erforderlich'
+'Reporter name cannot exceed {{ limit }} characters': 'Name des Meldenden darf maximal {{ limit }} Zeichen lang sein'
+'Assignee name cannot exceed {{ limit }} characters': 'Name des Zugewiesenen darf maximal {{ limit }} Zeichen lang sein'
+'Data breach flag is required': 'Datenschutzvorfall-Kennzeichen ist erforderlich'
+'Notification required flag is required': 'Meldepflicht-Kennzeichen ist erforderlich'
+'NIS2 category must be one of: {{ choices }}': 'NIS2-Kategorie muss eine der folgenden sein: {{ choices }}'
+
+# Control Validators (Additional)
+'Applicable flag is required': 'Anwendbarkeits-Kennzeichen ist erforderlich'
+'Implementation status is required': 'Implementierungsstatus ist erforderlich'
+'Implementation status must be one of: {{ choices }}': 'Implementierungsstatus muss einer der folgenden sein: {{ choices }}'
+'Implementation percentage must be between {{ min }} and {{ max }}': 'Implementierungsgrad muss zwischen {{ min }} und {{ max }} liegen'
+'Responsible person cannot exceed {{ limit }} characters': 'Verantwortliche Person darf maximal {{ limit }} Zeichen lang sein'
+
+# Supplier Validators (Additional)
+'Supplier name is required': 'Lieferantenname ist erforderlich'
+'Invalid email address': 'Ungültige E-Mail-Adresse'
+'Service description is required': 'Leistungsbeschreibung ist erforderlich'
+
+# Setting Validators
+'This setting already exists in this category': 'Diese Einstellung existiert bereits in dieser Kategorie'
+
+# Audit Validators (Additional)
+'Audit number is required': 'Auditnummer ist erforderlich'
+'Audit number cannot exceed {{ limit }} characters': 'Auditnummer darf maximal {{ limit }} Zeichen lang sein'
+'Audit title is required': 'Audit-Titel ist erforderlich'
+'Scope type must be one of: {{ choices }}': 'Umfangstyp muss einer der folgenden sein: {{ choices }}'

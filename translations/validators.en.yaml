@@ -194,3 +194,96 @@ tenant:
 'Category name cannot exceed {{ limit }} characters': 'Category name cannot exceed {{ limit }} characters'
 'Maximum acceptable risk level is required': 'Maximum acceptable risk level is required'
 'Maximum acceptable risk must be between {{ min }} and {{ max }}': 'Maximum acceptable risk must be between {{ min }} and {{ max }}'
+
+# Context Validators
+context:
+  validation:
+    organization_name_required: 'Please enter an organization name.'
+    name_max_length: 'Name cannot exceed {{ limit }} characters.'
+
+# Person Validators (German strings as keys - keep original)
+'Bitte geben Sie einen Vornamen ein.': 'Please enter a first name.'
+'Der Vorname darf maximal {{ limit }} Zeichen lang sein.': 'First name cannot exceed {{ limit }} characters.'
+'Bitte geben Sie einen Nachnamen ein.': 'Please enter a last name.'
+'Der Nachname darf maximal {{ limit }} Zeichen lang sein.': 'Last name cannot exceed {{ limit }} characters.'
+'Bitte geben Sie eine E-Mail-Adresse ein.': 'Please enter an email address.'
+'Bitte geben Sie eine gültige E-Mail-Adresse ein.': 'Please enter a valid email address.'
+'Das Passwort muss mindestens {{ limit }} Zeichen lang sein.': 'Password must be at least {{ limit }} characters long.'
+
+# BC Exercise Validators
+'Exercise name is required': 'Exercise name is required'
+'Scope must be defined': 'Scope must be defined'
+'Objectives must be defined': 'Objectives must be defined'
+'Participants must be documented': 'Participants must be documented'
+
+# Tenant Validators (Additional)
+'This tenant code is already in use': 'This tenant code is already in use'
+
+# Permission Validators
+'This permission name is already in use': 'This permission name is already in use'
+
+# Risk Validators (Additional)
+'Probability is required': 'Probability is required'
+'Probability must be between {{ min }} and {{ max }}': 'Probability must be between {{ min }} and {{ max }}'
+'Impact is required': 'Impact is required'
+'Impact must be between {{ min }} and {{ max }}': 'Impact must be between {{ min }} and {{ max }}'
+'Residual probability must be between {{ min }} and {{ max }}': 'Residual probability must be between {{ min }} and {{ max }}'
+'Residual impact must be between {{ min }} and {{ max }}': 'Residual impact must be between {{ min }} and {{ max }}'
+'Treatment strategy is required': 'Treatment strategy is required'
+'Treatment strategy must be one of: {{ choices }}': 'Treatment strategy must be one of: {{ choices }}'
+
+# Training Validators (Additional)
+'Training title is required': 'Training title is required'
+'Title cannot exceed {{ limit }} characters': 'Title cannot exceed {{ limit }} characters'
+'Training type is required': 'Training type is required'
+'Training type cannot exceed {{ limit }} characters': 'Training type cannot exceed {{ limit }} characters'
+'Scheduled date is required': 'Scheduled date is required'
+'Trainer name is required': 'Trainer name is required'
+'Trainer name cannot exceed {{ limit }} characters': 'Trainer name cannot exceed {{ limit }} characters'
+
+# Generic Validators
+'Title is required': 'Title is required'
+'Description is required': 'Description is required'
+'Priority is required': 'Priority is required'
+'Priority must be one of: {{ choices }}': 'Priority must be one of: {{ choices }}'
+'Target completion date is required': 'Target completion date is required'
+'Completion percentage must be between {{ min }} and {{ max }}': 'Completion percentage must be between {{ min }} and {{ max }}'
+
+# Interested Party Validators (Additional)
+'Party name is required': 'Party name is required'
+'Requirements must be documented': 'Requirements must be documented'
+
+# Category Validators
+'Category cannot exceed {{ limit }} characters': 'Category cannot exceed {{ limit }} characters'
+
+# Incident Validators (Additional)
+'Severity is required': 'Severity is required'
+'Severity must be one of: {{ choices }}': 'Severity must be one of: {{ choices }}'
+'Detection date is required': 'Detection date is required'
+'Reporter name is required': 'Reporter name is required'
+'Reporter name cannot exceed {{ limit }} characters': 'Reporter name cannot exceed {{ limit }} characters'
+'Assignee name cannot exceed {{ limit }} characters': 'Assignee name cannot exceed {{ limit }} characters'
+'Data breach flag is required': 'Data breach flag is required'
+'Notification required flag is required': 'Notification required flag is required'
+'NIS2 category must be one of: {{ choices }}': 'NIS2 category must be one of: {{ choices }}'
+
+# Control Validators (Additional)
+'Applicable flag is required': 'Applicable flag is required'
+'Implementation status is required': 'Implementation status is required'
+'Implementation status must be one of: {{ choices }}': 'Implementation status must be one of: {{ choices }}'
+'Implementation percentage must be between {{ min }} and {{ max }}': 'Implementation percentage must be between {{ min }} and {{ max }}'
+'Responsible person cannot exceed {{ limit }} characters': 'Responsible person cannot exceed {{ limit }} characters'
+
+# Supplier Validators (Additional)
+'Supplier name is required': 'Supplier name is required'
+'Invalid email address': 'Invalid email address'
+'Service description is required': 'Service description is required'
+
+# Setting Validators
+'This setting already exists in this category': 'This setting already exists in this category'
+
+# Audit Validators (Additional)
+'Audit number is required': 'Audit number is required'
+'Audit number cannot exceed {{ limit }} characters': 'Audit number cannot exceed {{ limit }} characters'
+'Audit title is required': 'Audit title is required'
+'Scope type must be one of: {{ choices }}': 'Scope type must be one of: {{ choices }}'
