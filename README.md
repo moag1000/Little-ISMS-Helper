@@ -7,7 +7,7 @@
 **Eine moderne, webbasierte ISMS-Lösung für kleine und mittelständische Unternehmen**
 
 [![PHP Version](https://img.shields.io/badge/PHP-8.4%2B-777BB4?logo=php&logoColor=white)](https://www.php.net/)
-[![Symfony Version](https://img.shields.io/badge/Symfony-7.3-000000?logo=symfony&logoColor=white)](https://symfony.com/)
+[![Symfony Version](https://img.shields.io/badge/Symfony-7.4-000000?logo=symfony&logoColor=white)](https://symfony.com/)
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](LICENSE)
 [![ISO 27001:2022](https://img.shields.io/badge/ISO-27001%3A2022-blue)](https://www.iso.org/standard/27001)
 [![Tests](https://img.shields.io/badge/Tests-122%20passing-success)](tests/)
@@ -27,7 +27,7 @@ Little ISMS Helper unterstützt Organisationen bei der **Implementierung und Ver
 - ✅ **ISO 27001:2022 konform** - Alle 93 Annex A Controls integriert
 - 🔄 **Intelligente Datenwiederverwendung** - Einmal erfasst, mehrfach genutzt
 - 📊 **Multi-Framework Support** - ISO 27001, TISAX, DORA parallel verwalten
-- 🚀 **Modern & schnell** - Symfony 7.3, PHP 8.4, Progressive UI
+- 🚀 **Modern & schnell** - Symfony 7.4, PHP 8.4, Progressive UI
 - 🔓 **Open Architecture** - REST API für Integrationen
 - 📈 **Automatische KPIs** - Echtzeit-Metriken ohne manuelle Berechnung
 
@@ -599,7 +599,7 @@ Detaillierte Admin-Dokumentation finden Sie in:
 <table>
 <tr>
 <td><b>Backend</b></td>
-<td>PHP 8.4, Symfony 7.3, Doctrine ORM</td>
+<td>PHP 8.4, Symfony 7.4, Doctrine ORM</td>
 </tr>
 <tr>
 <td><b>Frontend</b></td>
@@ -787,8 +787,7 @@ Little ISMS Helper verwendet **163 Third-Party Open-Source-Pakete**, die für ko
 | Status | Pakete | Prozent | Beschreibung |
 |--------|--------|---------|--------------|
 | ✅ Erlaubt | 160 | 98.2% | Permissive Lizenzen (MIT, BSD, Apache-2.0) |
-| 🔄 Copyleft | 1 | 0.6% | LGPL (dynamic linking erlaubt) |
-| ❓ Unbekannt | 2 | 1.2% | LGPL-Varianten (manuell geprüft ✓) |
+| 🔄 Copyleft | 3 | 1.8% | LGPL (dynamic linking erlaubt) |
 
 **Gesamtstatus:** ✅ **Lizenzkonform für kommerzielle Nutzung**
 
@@ -889,7 +888,7 @@ Siehe [LICENSE](LICENSE) für den vollständigen Lizenztext.
 ## 🙏 Danksagungen
 
 - Entwickelt für kleine und mittelständische Unternehmen
-- Built with ❤️ using Symfony 7.3
+- Built with ❤️ using Symfony 7.4
 - Unterstützt durch Claude AI (Anthropic)
 
 ---
