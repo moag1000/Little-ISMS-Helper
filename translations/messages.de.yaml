@@ -2191,9 +2191,22 @@ error:
   csrf_invalid: Ungültiges CSRF-Token.
 audit_log:
   title: Audit Log Details
+  entries: Protokolleinträge
+  showing_recent: Zeigt die letzten Einträge
   entry: 'Protokolleintrag #{{ id }}'
   old_values: Alte Werte
   new_values: Neue Werte
+  changes: Änderungen
+  view_all: Alle anzeigen
+  field:
+    timestamp: Zeitstempel
+    action: Aktion
+    entity_type: Entitätstyp
+    entity_id: Entitäts-ID
+    user: Benutzer
+    ip_address: IP-Adresse
+    user_agent: Benutzer-Agent
+    description: Beschreibung
 entity_history:
   title: Entitätsverlauf
   section: Verlauf
