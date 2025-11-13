@@ -1,0 +1,23 @@
+# Validator Translations - German (de)
+
+# Setup Validators
+setup:
+  admin:
+    email_required: 'Bitte geben Sie eine E-Mail-Adresse ein.'
+    email_invalid: 'Bitte geben Sie eine gültige E-Mail-Adresse ein.'
+    first_name_required: 'Bitte geben Sie einen Vornamen ein.'
+    first_name_min: 'Der Vorname muss mindestens {{ limit }} Zeichen lang sein.'
+    last_name_required: 'Bitte geben Sie einen Nachnamen ein.'
+    last_name_min: 'Der Nachname muss mindestens {{ limit }} Zeichen lang sein.'
+    password_required: 'Bitte geben Sie ein Passwort ein.'
+    password_min: 'Das Passwort muss mindestens {{ limit }} Zeichen lang sein.'
+    password_strength: 'Das Passwort muss mindestens einen Großbuchstaben, einen Kleinbuchstaben und eine Ziffer enthalten.'
+
+  database:
+    name_invalid: 'Der Datenbankname enthält ungültige Zeichen.'
+
+  organisation:
+    name_required: 'Bitte geben Sie einen Organisationsnamen ein.'
+    name_min: 'Der Organisationsname muss mindestens {{ limit }} Zeichen lang sein.'
+    industry_required: 'Bitte wählen Sie eine Branche aus.'
+    employee_count_required: 'Bitte wählen Sie die Mitarbeiteranzahl aus.'

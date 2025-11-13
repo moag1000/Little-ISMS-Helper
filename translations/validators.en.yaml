@@ -1,0 +1,23 @@
+# Validator Translations - English (en)
+
+# Setup Validators
+setup:
+  admin:
+    email_required: 'Please enter an email address.'
+    email_invalid: 'Please enter a valid email address.'
+    first_name_required: 'Please enter a first name.'
+    first_name_min: 'The first name must be at least {{ limit }} characters long.'
+    last_name_required: 'Please enter a last name.'
+    last_name_min: 'The last name must be at least {{ limit }} characters long.'
+    password_required: 'Please enter a password.'
+    password_min: 'The password must be at least {{ limit }} characters long.'
+    password_strength: 'The password must contain at least one uppercase letter, one lowercase letter, and one digit.'
+
+  database:
+    name_invalid: 'The database name contains invalid characters.'
+
+  organisation:
+    name_required: 'Please enter an organization name.'
+    name_min: 'The organization name must be at least {{ limit }} characters long.'
+    industry_required: 'Please select an industry.'
+    employee_count_required: 'Please select the employee count.'
