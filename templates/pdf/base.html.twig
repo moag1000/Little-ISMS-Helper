@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block pdf_title %}PDF Report{% endblock %}</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DejaVu Sans', sans-serif;
+            font-size: 10pt;
+            line-height: 1.4;
+            color: #333;
+        }
+
+        .pdf-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            border-bottom: 2px solid #1F4E78;
+            padding: 15px 30px;
+            background: white;
+        }
+
+        .pdf-header .title {
+            text-align: center;
+            padding-top: 10px;
+        }
+
+        .pdf-header .title h1 {
+            font-size: 18pt;
+            color: #1F4E78;
+            margin-bottom: 5px;
+        }
+
+        .pdf-header .title .subtitle {
+            font-size: 9pt;
+            color: #666;
+        }
+
+        .pdf-footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 50px;
+            border-top: 1px solid #ddd;
+            padding: 15px 30px;
+            font-size: 8pt;
+            color: #666;
+            background: white;
+        }
+
+        .pdf-footer .left {
+            float: left;
+        }
+
+        .pdf-footer .right {
+            float: right;
+        }
+
+        .pdf-footer .page-number:after {
+            content: counter(page);
+        }
+
+        .pdf-content {
+            margin-top: 100px;
+            margin-bottom: 70px;
+            padding: 0 30px;
+        }
+
+        h1 {
+            font-size: 16pt;
+            color: #1F4E78;
+            margin-bottom: 15px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #D9E1F2;
+        }
+
+        h2 {
+            font-size: 14pt;
+            color: #1F4E78;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        h3 {
+            font-size: 12pt;
+            color: #1F4E78;
+            margin-top: 15px;
+            margin-bottom: 8px;
+        }
+
+        .summary-box {
+            background: #FFF2CC;
+            border: 1px solid #F4D03F;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        .summary-box .metric {
+            display: inline-block;
+            margin-right: 30px;
+            margin-bottom: 10px;
+            vertical-align: top;
+        }
+
+        .summary-box .metric-label {
+            font-size: 8pt;
+            color: #666;
+            display: block;
+        }
+
+        .summary-box .metric-value {
+            font-size: 14pt;
+            font-weight: bold;
+            color: #1F4E78;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 9pt;
+        }
+
+        table thead {
+            background: #D9E1F2;
+            color: #1F4E78;
+        }
+
+        table th {
+            padding: 8px;
+            text-align: left;
+            font-weight: bold;
+            border: 1px solid #1F4E78;
+        }
+
+        table td {
+            padding: 6px 8px;
+            border: 1px solid #ddd;
+            vertical-align: top;
+        }
+
+        table tbody tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 8pt;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .badge-critical {
+            background: #FFC7CE;
+            color: #9C0006;
+        }
+
+        .badge-high {
+            background: #FFEB9C;
+            color: #9C5700;
+        }
+
+        .badge-medium {
+            background: #C6EFCE;
+            color: #006100;
+        }
+
+        .badge-low {
+            background: #BDD7EE;
+            color: #003366;
+        }
+
+        .badge-success {
+            background: #C6EFCE;
+            color: #006100;
+        }
+
+        .badge-warning {
+            background: #FFEB9C;
+            color: #9C5700;
+        }
+
+        .badge-danger {
+            background: #FFC7CE;
+            color: #9C0006;
+        }
+
+        .badge-info {
+            background: #BDD7EE;
+            color: #003366;
+        }
+
+        .badge-secondary {
+            background: #E9ECEF;
+            color: #495057;
+        }
+
+        .page-break {
+            page-break-after: always;
+        }
+
+        .no-break {
+            page-break-inside: avoid;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .mt-1 { margin-top: 10px; }
+        .mt-2 { margin-top: 20px; }
+        .mb-1 { margin-bottom: 10px; }
+        .mb-2 { margin-bottom: 20px; }
+
+        {% block extra_styles %}{% endblock %}
+    </style>
+</head>
+<body>
+    {# PDF Header #}
+    <div class="pdf-header">
+        <div class="title">
+            <h1>{% block header_title %}{% endblock %}</h1>
+            <div class="subtitle">{% block header_subtitle %}Little ISMS Helper{% endblock %}</div>
+        </div>
+    </div>
+
+    {# PDF Footer #}
+    <div class="pdf-footer">
+        <div class="left">
+            {% block footer_left %}
+                Little ISMS Helper - {{ pdf_generation_date|date('d.m.Y H:i') }}
+            {% endblock %}
+        </div>
+        <div class="right">
+            {% block footer_right %}
+                Seite <span class="page-number"></span>
+            {% endblock %}
+        </div>
+    </div>
+
+    {# PDF Content #}
+    <div class="pdf-content">
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>

@@ -1,0 +1,293 @@
+{% extends 'pdf/base.html.twig' %}
+
+{% block pdf_title %}Transitive Compliance Analysis{% endblock %}
+
+{% block header_title %}Transitive Compliance Report{% endblock %}
+{% block header_subtitle %}Multi-Framework Compliance Leverage Analysis{% endblock %}
+
+{% block content %}
+    {# Summary Section #}
+    <div class="summary-box">
+        <div class="metric">
+            <span class="metric-label">Aktive Frameworks</span>
+            <span class="metric-value">{{ total_frameworks }}</span>
+        </div>
+        <div class="metric">
+            <span class="metric-label">Framework-Beziehungen</span>
+            <span class="metric-value">{{ total_relationships }}</span>
+        </div>
+        <div class="metric">
+            <span class="metric-label">Transitive Opportunities</span>
+            <span class="metric-value" style="color: #0A0;">{{ transitive_count }}</span>
+        </div>
+        <div class="metric">
+            <span class="metric-label">Unterstützte Anforderungen</span>
+            <span class="metric-value" style="color: #0A0;">{{ total_helped }}</span>
+        </div>
+        <div class="metric">
+            <span class="metric-label">Durchschn. Coverage</span>
+            <span class="metric-value">{{ avg_coverage|round(1) }}%</span>
+        </div>
+    </div>
+
+    <h2>Framework-Beziehungen Matrix</h2>
+    <p style="font-size: 9pt; color: #666; margin-bottom: 10px;">
+        Übersicht über die Mappings und Coverage zwischen allen aktiven Frameworks
+    </p>
+
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 25%;">Von Framework</th>
+                <th style="width: 25%;">Zu Framework</th>
+                <th style="width: 15%;">Gemapped</th>
+                <th style="width: 15%;">Total</th>
+                <th style="width: 20%;">Coverage</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for rel in framework_relationships|sort((a, b) => b.coverage <=> a.coverage) %}
+            <tr class="no-break">
+                <td><strong>{{ rel.source.name }}</strong><br/><small style="font-size: 7pt;">({{ rel.source.code }})</small></td>
+                <td><strong>{{ rel.target.name }}</strong><br/><small style="font-size: 7pt;">({{ rel.target.code }})</small></td>
+                <td class="text-center">{{ rel.mapped }}</td>
+                <td class="text-center">{{ rel.total }}</td>
+                <td class="text-center">
+                    {% if rel.coverage >= 80 %}
+                        <span class="badge badge-success">{{ rel.coverage }}%</span>
+                    {% elseif rel.coverage >= 50 %}
+                        <span class="badge badge-warning">{{ rel.coverage }}%</span>
+                    {% else %}
+                        <span class="badge badge-danger">{{ rel.coverage }}%</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {# High Coverage Relationships #}
+    {% set high_coverage = framework_relationships|filter(rel => rel.coverage >= 70) %}
+    {% if high_coverage|length > 0 %}
+    <div class="page-break"></div>
+    <h2>High-Coverage Relationships (≥70%)</h2>
+    <p style="font-size: 9pt; color: #666; margin-bottom: 10px;">
+        Diese Framework-Beziehungen haben starke Überlappungen und bieten signifikante Compliance-Hebel.
+    </p>
+
+    <div style="background: #C6EFCE; padding: 15px; margin: 10px 0; border-left: 4px solid #28A745; font-size: 9pt;">
+        <strong>{{ high_coverage|length }} High-Coverage Relationships identifiziert!</strong>
+        <p style="margin: 5px 0;">
+            Diese Beziehungen ermöglichen es, mit einer Kontrolle mehrere Framework-Anforderungen gleichzeitig zu erfüllen.
+        </p>
+    </div>
+
+    {% for rel in high_coverage %}
+    <div class="no-break" style="background: #F9F9F9; padding: 10px; margin: 10px 0; border-left: 3px solid #28A745; font-size: 9pt;">
+        <strong>{{ rel.source.code }} → {{ rel.target.code }}</strong>
+        <p style="margin: 5px 0;">
+            Coverage: <strong>{{ rel.coverage }}%</strong> ({{ rel.mapped }} von {{ rel.total }} Anforderungen)
+        </p>
+        <p style="margin: 5px 0; color: #666;">
+            <em>Empfehlung:</em> Gemeinsame Kontroll-Implementierungen für diese {{ rel.mapped }} Anforderungen nutzen.
+            Geschätzte Zeitersparnis: ~{{ (rel.mapped * 1.5)|round }} Stunden.
+        </p>
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    {# Compliance Leverage Opportunities #}
+    <div class="page-break"></div>
+    <h2>Compliance-Hebel-Analyse</h2>
+
+    <h3>Top Compliance Leverage Opportunities</h3>
+    <p style="font-size: 9pt; color: #666; margin-bottom: 10px;">
+        Identifikation von Anforderungen, die mehrere Frameworks gleichzeitig bedienen
+    </p>
+
+    {% set leverage_potential = total_helped / total_frameworks %}
+    <div style="background: #E8F4F8; padding: 15px; margin: 10px 0; border-left: 4px solid #2196F3; font-size: 9pt;">
+        <strong>Aktueller Leverage-Score:</strong>
+        <p style="margin: 5px 0;">
+            Im Durchschnitt unterstützt jede Kontrolle <strong>{{ leverage_potential|round(1) }} Frameworks</strong>.
+        </p>
+        <p style="margin: 5px 0;">
+            {% if leverage_potential >= 2 %}
+                ✅ Sehr gut! Sie nutzen bereits Cross-Framework-Synergien effektiv.
+            {% elseif leverage_potential >= 1.5 %}
+                ⚠️ Gut, aber Verbesserungspotential vorhanden.
+            {% else %}
+                ❌ Niedrig - Signifikantes Optimierungspotential durch bessere Mappings.
+            {% endif %}
+        </p>
+    </div>
+
+    {# Recommendations Section #}
+    <div class="page-break"></div>
+    <h2>Multi-Framework-Strategie-Empfehlungen</h2>
+
+    <h3>Strategie: Maximierung der Framework-Synergien</h3>
+    <div style="background: #E8F4F8; padding: 15px; margin: 10px 0; border-left: 4px solid #2196F3; font-size: 9pt;">
+        <strong>Aktueller Status:</strong>
+        <ul style="margin-left: 20px; margin-top: 5px;">
+            <li>{{ total_frameworks }} aktive Frameworks implementiert</li>
+            <li>{{ total_relationships }} Framework-Beziehungen etabliert</li>
+            <li>{{ high_coverage|length }} High-Coverage Relationships (≥70%)</li>
+            <li>{{ total_helped }} Anforderungen profitieren von transitiver Compliance</li>
+        </ul>
+    </div>
+
+    <h3>Empfehlung 1: High-Coverage Relationships nutzen</h3>
+    <div style="background: #C6EFCE; padding: 15px; margin: 10px 0; border-left: 4px solid #28A745; font-size: 9pt;">
+        <strong>Priorität: Sehr Hoch - Quick Win</strong>
+        <p style="margin: 5px 0;">
+            Die {{ high_coverage|length }} identifizierten High-Coverage Relationships bieten sofortige Optimierung:
+        </p>
+        <ul style="margin-left: 20px;">
+            <li>Gemeinsame Kontroll-Dokumentation für gemappte Anforderungen</li>
+            <li>Kombinierte Audit-Vorbereitung (1 Audit = 2+ Frameworks)</li>
+            <li>Wiederverwendung von Nachweisen und Evidenzen</li>
+        </ul>
+        <p style="margin: 5px 0;">
+            <strong>Geschätzte Zeitersparnis:</strong> {{ (high_coverage|reduce((carry, rel) => carry + (rel.mapped * 1.5), 0))|round }} Stunden pro Audit-Zyklus
+        </p>
+    </div>
+
+    <h3>Empfehlung 2: Mapping-Lücken schließen</h3>
+    {% set low_coverage = framework_relationships|filter(rel => rel.coverage < 50) %}
+    <div style="background: #FFEB9C; padding: 15px; margin: 10px 0; border-left: 4px solid #FFA500; font-size: 9pt;">
+        <strong>Priorität: Hoch</strong>
+        <p style="margin: 5px 0;">
+            {{ low_coverage|length }} Framework-Beziehungen haben <50% Coverage und benötigen Aufmerksamkeit:
+        </p>
+        <ul style="margin-left: 20px;">
+            {% for rel in low_coverage|slice(0, 5) %}
+            <li><strong>{{ rel.source.code }} → {{ rel.target.code }}:</strong> nur {{ rel.coverage }}% Coverage</li>
+            {% endfor %}
+            {% if low_coverage|length > 5 %}
+            <li>... und {{ low_coverage|length - 5 }} weitere</li>
+            {% endif %}
+        </ul>
+        <p style="margin: 5px 0;">
+            <strong>Empfohlene Maßnahme:</strong> Mapping-Review und -Vervollständigung
+        </p>
+        <p style="margin: 5px 0;">
+            <strong>Erwarteter Nutzen:</strong> 20-30% Reduktion des Compliance-Aufwands nach Optimierung
+        </p>
+    </div>
+
+    <h3>Empfehlung 3: Compliance-Hub etablieren</h3>
+    <div style="background: #BDD7EE; padding: 15px; margin: 10px 0; border-left: 4px solid #2196F3; font-size: 9pt;">
+        <strong>Strategische Initiative</strong>
+        <p style="margin: 5px 0;">
+            Aufbau eines zentralen "Compliance Hub" für optimale Multi-Framework-Steuerung:
+        </p>
+        <ul style="margin-left: 20px;">
+            <li><strong>Zentrale Kontroll-Bibliothek:</strong> Eine Kontrolle → mehrere Frameworks</li>
+            <li><strong>Automatisches Mapping-Tracking:</strong> Änderungen propagieren automatisch</li>
+            <li><strong>Kombinierte Audit-Planung:</strong> Framework-übergreifende Assessments</li>
+            <li><strong>Unified Reporting:</strong> Ein Compliance-Dashboard für alle Frameworks</li>
+        </ul>
+        <p style="margin: 5px 0;">
+            <strong>Langfristiger ROI:</strong> 40-60% Reduktion des Gesamt-Compliance-Aufwands
+        </p>
+    </div>
+
+    <h3>Implementierungs-Roadmap</h3>
+    <table style="width: 95%;">
+        <thead>
+            <tr>
+                <th style="width: 20%;">Phase</th>
+                <th style="width: 50%;">Aktivitäten</th>
+                <th style="width: 15%;">Dauer</th>
+                <th style="width: 15%;">Impact</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Phase 1<br/>(Monat 1)</strong></td>
+                <td style="font-size: 8pt;">
+                    • High-Coverage Relationships dokumentieren<br/>
+                    • Gemeinsame Kontroll-Dokumentation erstellen<br/>
+                    • Pilotprojekt mit Top 3 Relationships starten
+                </td>
+                <td class="text-center">4 Wochen</td>
+                <td class="text-center"><span class="badge badge-success">Hoch</span></td>
+            </tr>
+            <tr>
+                <td><strong>Phase 2<br/>(Monat 2-3)</strong></td>
+                <td style="font-size: 8pt;">
+                    • Low-Coverage Mappings verbessern<br/>
+                    • Framework-Matrix vervollständigen<br/>
+                    • Kombinierte Audit-Planung implementieren
+                </td>
+                <td class="text-center">8 Wochen</td>
+                <td class="text-center"><span class="badge badge-warning">Mittel</span></td>
+            </tr>
+            <tr>
+                <td><strong>Phase 3<br/>(Monat 4-6)</strong></td>
+                <td style="font-size: 8pt;">
+                    • Compliance Hub aufbauen<br/>
+                    • Automatisierung & Integration<br/>
+                    • Unified Reporting Dashboard
+                </td>
+                <td class="text-center">12 Wochen</td>
+                <td class="text-center"><span class="badge badge-info">Sehr Hoch</span></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Quick Win Scorecard</h3>
+    <table style="width: 90%;">
+        <thead>
+            <tr>
+                <th style="width: 40%;">Quick Win</th>
+                <th style="width: 20%;">Aufwand</th>
+                <th style="width: 20%;">Nutzen</th>
+                <th style="width: 20%;">Priority</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Top 3 High-Coverage Relationships ausnutzen</td>
+                <td class="text-center"><span class="badge badge-success">Niedrig</span></td>
+                <td class="text-center"><span class="badge badge-success">Hoch</span></td>
+                <td class="text-center">1</td>
+            </tr>
+            <tr>
+                <td>Gemeinsame Kontroll-Dokumentation erstellen</td>
+                <td class="text-center"><span class="badge badge-warning">Mittel</span></td>
+                <td class="text-center"><span class="badge badge-success">Hoch</span></td>
+                <td class="text-center">2</td>
+            </tr>
+            <tr>
+                <td>Kombinierte Audit-Vorbereitung (2+ Frameworks)</td>
+                <td class="text-center"><span class="badge badge-success">Niedrig</span></td>
+                <td class="text-center"><span class="badge badge-warning">Mittel</span></td>
+                <td class="text-center">3</td>
+            </tr>
+            <tr>
+                <td>Framework-Matrix vervollständigen</td>
+                <td class="text-center"><span class="badge badge-danger">Hoch</span></td>
+                <td class="text-center"><span class="badge badge-success">Hoch</span></td>
+                <td class="text-center">4</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div style="background: #E8F4F8; padding: 15px; margin-top: 20px; border-radius: 4px; font-size: 9pt;">
+        <strong>📋 Nächste Schritte (Start nächste Woche!):</strong>
+        <ol style="margin-left: 20px; margin-top: 5px;">
+            <li>Top 3 High-Coverage Relationships identifizieren und priorisieren</li>
+            <li>Template für gemeinsame Kontroll-Dokumentation erstellen</li>
+            <li>Pilotprojekt mit erstem High-Coverage Relationship starten</li>
+            <li>Stakeholder-Meeting für Multi-Framework-Strategie planen</li>
+            <li>Ressourcen für Mapping-Vervollständigung allokieren</li>
+            <li>Monatliches Transitive Compliance Review etablieren</li>
+        </ol>
+        <p style="margin-top: 10px; font-weight: bold;">
+            💡 Pro-Tipp: Nutzen Sie das nächste Audit als "Multi-Framework-Audit" für 2+ Frameworks gleichzeitig!
+            Potentielle Zeitersparnis: {{ (high_coverage|reduce((carry, rel) => carry + (rel.mapped * 1.5), 0))|round }} Stunden.
+        </p>
+    </div>
+{% endblock %}
