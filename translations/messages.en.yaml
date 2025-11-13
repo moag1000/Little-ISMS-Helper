@@ -2424,6 +2424,230 @@ data:
   setup:
     title: Setup Wizard
     link: Link to existing Deployment Wizard
+    progress:
+      title: Setup Progress
+      step: 'Step %current% of %total%'
+    navigation:
+      back: Back
+      next: Continue
+    welcome:
+      title: Welcome
+      header: Little ISMS Helper - Setup Wizard
+      greeting: Welcome to the Setup Wizard
+      description: This wizard will guide you through setting up your ISMS system in just a few steps
+      steps:
+        title: 'What will be set up?'
+        database: Configure database
+        admin: Create administrator account
+        requirements: Check system requirements
+        modules: Select modules
+        migrations: Create database schema
+        base_data: Import base data
+        sample_data: 'Optional: Load sample data'
+      requirements:
+        title: Duration & Requirements
+        duration: '~5-10 minutes'
+        database: Database access required
+        php: PHP 8.2+ and extensions
+        permissions: Write permissions for directories
+      info:
+        title: Important Notes
+        description: The setup wizard helps you with initial configuration
+        point1: 'The database will be created automatically (if it does not exist)'
+        point2: 'You will create an administrator account for first access'
+        point3: 'All base data will be imported automatically'
+      start_button: Start Setup
+    database:
+      title: Database Configuration
+      header: 'Step 1: Configure Database'
+      description: Configure your database connection. The database will be created automatically if it does not exist.
+      type: Database Type
+      type_help: Select your database type
+      name: Database Name
+      name_help: Name of the database to create or use
+      name_invalid: The database name may only contain letters, numbers, and underscores
+      host: Host
+      host_help: Hostname or IP address of the database server
+      port: Port
+      port_help: "Database server port (default: MySQL 3306, PostgreSQL 5432)"
+      user: Username
+      user_help: Database username
+      password: Password
+      password_help: Database password (special characters are automatically escaped)
+      server_version: Server Version
+      server_version_help: Version number of the database server (e.g. 8.0 for MySQL, 14 for PostgreSQL)
+      test_button: Test Connection
+      info:
+        title: Database Configuration Notes
+        mysql: 'MySQL/MariaDB: Default port 3306, recommended for production'
+        postgresql: 'PostgreSQL: Default port 5432, good performance for large datasets'
+        sqlite: 'SQLite: File-based, no installation needed, ideal for development and small installations'
+        special_chars: 'Special characters in passwords are automatically escaped'
+      test:
+        success: Database connection successful
+        failed: Database connection failed
+        create_needed: The database does not exist yet and will be created automatically in the next step
+      write_failed: 'Error writing configuration: %error%. %hint%'
+      existing_tables: 'Warning: The database already contains %count% tables: %tables%'
+      config_saved: Database configuration saved successfully
+      config_failed: Error saving database configuration
+    admin:
+      title: Create Administrator
+      header: 'Step 2: Create Administrator Account'
+      description: Create the first administrator account for your ISMS system. This account will have full access rights.
+      first_name: First Name
+      last_name: Last Name
+      email: Email Address
+      email_help: This email address will be used for login
+      password: Password
+      password_confirm: Confirm Password
+      password_requirements:
+        title: Password Requirements
+        length: At least 8 characters
+        uppercase: At least one uppercase letter
+        lowercase: At least one lowercase letter
+        number: At least one digit
+      security_note:
+        title: Security Note
+        message: Use a secure password and keep your credentials in a safe place.
+      next_steps:
+        title: Next Steps
+        description: After creating the administrator account, system requirements will be checked and the database will be initialized.
+      first_name_required: First name is required
+      first_name_min: First name must be at least 2 characters long
+      first_name_max: First name may not exceed 50 characters
+      last_name_required: Last name is required
+      last_name_min: Last name must be at least 2 characters long
+      last_name_max: Last name may not exceed 50 characters
+      email_required: Email address is required
+      email_invalid: Invalid email address
+      password_required: Password is required
+      password_min: Password must be at least 8 characters long
+      password_max: Password may not exceed 255 characters
+      password_strength: Password must contain at least one uppercase letter, one lowercase letter, and one digit
+      password_mismatch: The passwords do not match
+      migration_failed: Error executing database migrations
+      creation_failed: Error creating administrator account
+      user_created: Administrator account created successfully
+    state:
+      recovery_detected: 'Note: An incomplete installation was detected. You can continue from here.'
+    error:
+      configure_database_first: Please configure the database first
+      create_admin_first: Please create an administrator first
+    email:
+      title: Email Configuration
+      header: 'Step 3: Email Configuration (Optional)'
+      optional:
+        title: This step is optional
+        message: You can configure email settings later in the system settings.
+      transport: Transport Method
+      transport_help: Select the method for sending emails
+      transport_types:
+        smtp: SMTP Server
+        sendmail: Sendmail
+        native: PHP mail()
+      host: SMTP Host
+      host_help: Hostname or IP address of the SMTP server
+      port: SMTP Port
+      port_help: "SMTP server port (default: 587 for TLS, 465 for SSL)"
+      encryption: Encryption
+      encryption_help: Select the encryption method
+      encryption_types:
+        none: None
+        tls: TLS (recommended)
+        ssl: SSL
+      username: Username
+      username_help: SMTP username (usually the email address)
+      password: Password
+      password_help: SMTP password
+      from_address: Sender Address
+      from_address_help: Email address of the sender
+      from_name: Sender Name
+      from_name_help: Name of the sender
+      sender_info: Sender Information
+      skip_button: Skip
+      skipped: Email configuration skipped
+      config_saved: Email configuration saved successfully
+      config_failed: Error saving email configuration
+      info:
+        title: What is email used for?
+        description: "The email configuration enables the system to:"
+        notifications: Send notifications to users
+        reminders: Send reminders for due tasks
+        reports: Send automated reports
+    organisation:
+      title: Organisation Information
+      header: 'Step 4: Organisation Information'
+      intro: Provide information about your organisation. This will be used for compliance reports and scope definition.
+      name: Organisation Name
+      name_required: Organisation name is required
+      name_min: Organisation name must be at least 2 characters long
+      name_max: Organisation name may not exceed 255 characters
+      name_help: Official name of your organisation
+      industry: Industry
+      industry_required: Please select an industry
+      industry_help: Select your organisation's industry
+      industry_options:
+        select: '-- Select Industry --'
+        automotive: Automotive
+        financial_services: Financial Services
+        healthcare: Healthcare
+        manufacturing: Manufacturing
+        it_services: IT Services
+        energy: Energy
+        telecommunications: Telecommunications
+        retail: Retail
+        public_sector: Public Sector
+        education: Education
+        other: Other
+      employee_count: Employee Count
+      employee_count_required: Please select the employee count
+      employee_count_help: Approximate number of employees
+      employee_count_options:
+        select: '-- Select Employee Count --'
+        1_10: '1-10'
+        11_50: '11-50'
+        51_250: '51-250'
+        251_1000: '251-1000'
+        1001_plus: '1001+'
+      country: Country
+      country_help: Main location of your organisation
+      description: Description
+      description_help: Brief description of your organisation and business activities
+      info_saved: Organisation information saved successfully
+      info_failed: Error saving organisation information
+      usage:
+        title: Use of this Information
+        message: This information will be used to provide industry-specific recommendations and compliance requirements.
+      compliance_info:
+        title: Why is this information important?
+        description: "Based on your input, we can:"
+        scope: Better define the scope of your ISMS
+        reporting: Automatically adapt compliance reports
+        recommendations: Provide industry-specific recommendations
+    compliance:
+      title: Compliance Frameworks
+      header: 'Step 7: Select Compliance Frameworks'
+      description: Select the compliance frameworks that are relevant to your organisation. You can add more frameworks later.
+      recommended:
+        title: Recommended Frameworks for Your Industry
+        description: "Based on your organisation information, we recommend the following frameworks:"
+      mandatory:
+        title: ISO 27001 is Mandatory
+        message: ISO 27001:2022 is the foundation of this ISMS and cannot be deselected.
+      select_frameworks: Select Your Compliance Frameworks
+      recommended_badge: Recommended
+      mandatory_badge: Mandatory
+      frameworks_saved: '%count% compliance frameworks selected'
+      note:
+        title: Important Note
+        message: You can add or remove frameworks at any time. The selection affects which requirements and controls are available in your ISMS.
+      details:
+        title: Framework Details
+        description: Overview of all available frameworks
+      critical_infrastructure:
+        title: Critical Infrastructure Notice
+        message: Your organisation belongs to critical infrastructure (energy/telecommunications). NIS2 may be relevant even for smaller companies, as the directive can cover critical sectors regardless of size.
 
 # Admin Integration - Phase 6L-G
 nav.admin.modules: 'Module Management'
