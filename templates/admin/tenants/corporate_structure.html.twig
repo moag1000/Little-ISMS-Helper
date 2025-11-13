@@ -1,0 +1,287 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block admin_title %}{{ 'corporate.title'|trans }}{% endblock %}
+{% block admin_subtitle %}
+    <p class="text-muted">{{ 'corporate.subtitle'|trans }}</p>
+{% endblock %}
+
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item"><a href="{{ path('tenant_management_index') }}">{{ 'tenant.title'|trans }}</a></li>
+    <li class="breadcrumb-item active">{{ 'corporate.title'|trans }}</li>
+{% endblock %}
+
+{% block admin_content %}
+    {# Statistics Cards #}
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="bg-primary bg-opacity-10 p-3 rounded me-3">
+                            <i class="bi bi-diagram-3 text-primary fs-3"></i>
+                        </div>
+                        <div>
+                            <h6 class="text-muted mb-1">{{ 'corporate.stats.groups'|trans }}</h6>
+                            <h3 class="mb-0">{{ corporateGroups|length }}</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="bg-success bg-opacity-10 p-3 rounded me-3">
+                            <i class="bi bi-building text-success fs-3"></i>
+                        </div>
+                        <div>
+                            <h6 class="text-muted mb-1">{{ 'corporate.stats.standalone'|trans }}</h6>
+                            <h3 class="mb-0">{{ standaloneTenants|length }}</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="bg-info bg-opacity-10 p-3 rounded me-3">
+                            <i class="bi bi-list-nested text-info fs-3"></i>
+                        </div>
+                        <div>
+                            <h6 class="text-muted mb-1">{{ 'corporate.stats.total'|trans }}</h6>
+                            <h3 class="mb-0">{{ allTenants|length }}</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Corporate Groups #}
+    {% if corporateGroups is not empty %}
+        <div class="card mb-4">
+            <div class="card-header bg-white">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-diagram-3 text-primary"></i>
+                    {{ 'corporate.section.groups'|trans }}
+                </h5>
+            </div>
+            <div class="card-body">
+                {% for group in corporateGroups %}
+                    <div class="card border-primary mb-3">
+                        <div class="card-header bg-primary bg-opacity-10">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-0">
+                                        <i class="bi bi-building-fill text-primary"></i>
+                                        <strong>{{ group.name }}</strong>
+                                        <code class="text-muted ms-2">{{ group.code }}</code>
+                                    </h6>
+                                    <small class="text-muted">{{ 'corporate.role.parent'|trans }}</small>
+                                </div>
+                                <a href="{{ path('tenant_management_show', {id: group.id}) }}"
+                                   class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-eye"></i> {{ 'common.view'|trans }}
+                                </a>
+                            </div>
+                        </div>
+                        {% if group.children is not empty %}
+                            <div class="card-body">
+                                <div class="list-group list-group-flush">
+                                    {% for subsidiary in group.children %}
+                                        {{ _self.render_subsidiary(subsidiary, 1) }}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+
+    {# Standalone Tenants #}
+    {% if standaloneTenants is not empty %}
+        <div class="card mb-4">
+            <div class="card-header bg-white">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-building text-success"></i>
+                    {{ 'corporate.section.standalone'|trans }}
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>{{ 'tenant.field.code'|trans }}</th>
+                                <th>{{ 'tenant.field.name'|trans }}</th>
+                                <th>{{ 'corporate.field.actions'|trans }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for tenant in standaloneTenants %}
+                                <tr>
+                                    <td><code class="text-primary">{{ tenant.code }}</code></td>
+                                    <td>{{ tenant.name }}</td>
+                                    <td>
+                                        <button type="button"
+                                                class="btn btn-sm btn-outline-primary"
+                                                onclick="showSetParentModal({{ tenant.id }}, '{{ tenant.name|e('js') }}')">
+                                            <i class="bi bi-diagram-3"></i> {{ 'corporate.action.set_parent'|trans }}
+                                        </button>
+                                        <a href="{{ path('tenant_management_show', {id: tenant.id}) }}"
+                                           class="btn btn-sm btn-outline-secondary">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    {# Info Box #}
+    <div class="alert alert-info">
+        <i class="bi bi-info-circle"></i>
+        <strong>{{ 'corporate.info.title'|trans }}</strong><br>
+        {{ 'corporate.info.text'|trans }}
+    </div>
+
+    {# Set Parent Modal #}
+    <div class="modal fade" id="setParentModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{{ 'corporate.modal.set_parent.title'|trans }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form method="post" id="setParentForm">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">{{ 'corporate.field.subsidiary'|trans }}</label>
+                            <input type="text" class="form-control" id="subsidiaryName" readonly>
+                            <input type="hidden" id="subsidiaryId">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="parentId" class="form-label">{{ 'corporate.field.parent'|trans }}</label>
+                            <select class="form-select" name="parent_id" id="parentId" required>
+                                <option value="">{{ 'corporate.select.parent'|trans }}</option>
+                                {% for tenant in allTenants %}
+                                    <option value="{{ tenant.id }}">{{ tenant.name }} ({{ tenant.code }})</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="governanceModel" class="form-label">{{ 'corporate.field.governance_model'|trans }}</label>
+                            <select class="form-select" name="governance_model" id="governanceModel" required>
+                                <option value="">{{ 'corporate.select.governance'|trans }}</option>
+                                {% for model in governanceModels %}
+                                    <option value="{{ model.value }}">{{ model.label }}</option>
+                                {% endfor %}
+                            </select>
+                            <div class="form-text" id="governanceHelp"></div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            {{ 'common.cancel'|trans }}
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle"></i> {{ 'common.save'|trans }}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        const governanceDescriptions = {
+            {% for model in governanceModels %}
+            '{{ model.value }}': '{{ model.description|e('js') }}'{{ not loop.last ? ',' : '' }}
+            {% endfor %}
+        };
+
+        function showSetParentModal(tenantId, tenantName) {
+            document.getElementById('subsidiaryId').value = tenantId;
+            document.getElementById('subsidiaryName').value = tenantName;
+            document.getElementById('setParentForm').action = `/admin/tenants/${tenantId}/set-parent`;
+
+            // Remove the subsidiary from parent options
+            const parentSelect = document.getElementById('parentId');
+            Array.from(parentSelect.options).forEach(option => {
+                option.disabled = option.value == tenantId;
+            });
+
+            const modal = new bootstrap.Modal(document.getElementById('setParentModal'));
+            modal.show();
+        }
+
+        // Update governance help text when model changes
+        document.getElementById('governanceModel').addEventListener('change', function() {
+            const helpText = document.getElementById('governanceHelp');
+            const description = governanceDescriptions[this.value] || '';
+            helpText.textContent = description;
+        });
+    </script>
+{% endblock %}
+
+{# Macro for rendering subsidiaries recursively #}
+{% macro render_subsidiary(subsidiary, depth) %}
+    <div class="list-group-item" style="padding-left: {{ depth * 2 }}rem;">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                {% for i in 1..depth %}
+                    <i class="bi bi-arrow-return-right text-muted"></i>
+                {% endfor %}
+                <strong>{{ subsidiary.name }}</strong>
+                <code class="text-muted ms-2">{{ subsidiary.code }}</code>
+                {% if subsidiary.governanceLabel %}
+                    <span class="badge bg-{{ subsidiary.governanceModel == 'hierarchical' ? 'primary' : (subsidiary.governanceModel == 'shared' ? 'warning' : 'secondary') }} ms-2">
+                        {{ subsidiary.governanceLabel }}
+                    </span>
+                {% endif %}
+            </div>
+            <div class="btn-group btn-group-sm">
+                <button type="button"
+                        class="btn btn-outline-warning"
+                        onclick="showUpdateGovernanceModal({{ subsidiary.id }}, '{{ subsidiary.name|e('js') }}', '{{ subsidiary.governanceModel }}')"
+                        title="{{ 'corporate.action.update_governance'|trans }}">
+                    <i class="bi bi-gear"></i>
+                </button>
+                <a href="{{ path('tenant_management_show', {id: subsidiary.id}) }}"
+                   class="btn btn-outline-primary"
+                   title="{{ 'common.view'|trans }}">
+                    <i class="bi bi-eye"></i>
+                </a>
+                <form method="post" action="{{ path('tenant_management_set_parent', {id: subsidiary.id}) }}" class="d-inline">
+                    <input type="hidden" name="parent_id" value="">
+                    <button type="submit"
+                            class="btn btn-outline-danger"
+                            title="{{ 'corporate.action.remove_parent'|trans }}"
+                            onclick="return confirm('{{ 'corporate.confirm.remove_parent'|trans }}');">
+                        <i class="bi bi-x-circle"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {% if subsidiary.children is not empty %}
+        {% for child in subsidiary.children %}
+            {{ _self.render_subsidiary(child, depth + 1) }}
+        {% endfor %}
+    {% endif %}
+{% endmacro %}
