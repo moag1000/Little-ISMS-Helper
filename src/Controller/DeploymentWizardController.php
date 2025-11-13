@@ -64,6 +64,19 @@ class DeploymentWizardController extends AbstractController
     #[Route('/step0-welcome', name: 'setup_step0_welcome')]
     public function step0Welcome(): Response
     {
+        // State recovery: Check if partially completed
+        $state = $this->setupChecker->detectSetupState();
+
+        if ($state['database_configured']) {
+            $this->addFlash('info', $this->translator->trans('setup.state.recovery_detected'));
+
+            // Redirect to appropriate step
+            $nextStep = $this->setupChecker->getRecommendedNextStep();
+            if ($nextStep !== 'setup_wizard_index') {
+                return $this->redirectToRoute($nextStep);
+            }
+        }
+
         return $this->render('setup/step0_welcome.html.twig');
     }
 
@@ -91,6 +104,15 @@ class DeploymentWizardController extends AbstractController
             $testResult = $this->dbTestService->testConnection($config);
 
             if ($testResult['success']) {
+                // Check for existing tables (warn user)
+                $existingTables = $this->dbTestService->checkExistingTables($config);
+                if ($existingTables['has_tables']) {
+                    $this->addFlash('warning', $this->translator->trans('setup.database.existing_tables', [
+                        '%count%' => $existingTables['count'],
+                        '%tables%' => implode(', ', array_slice($existingTables['tables'], 0, 5)),
+                    ]));
+                }
+
                 // Test passed - save configuration
                 try {
                     // Ensure APP_SECRET exists

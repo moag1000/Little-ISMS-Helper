@@ -312,6 +312,108 @@ class DatabaseTestService
     }
 
     /**
+     * Check if database has existing tables
+     *
+     * @param array $config Database configuration
+     * @return array Result with 'has_tables' boolean, 'count' int, and 'tables' array
+     */
+    public function checkExistingTables(array $config): array
+    {
+        $type = $config['type'] ?? 'mysql';
+
+        try {
+            return match ($type) {
+                'sqlite' => $this->checkSqliteTables($config),
+                'mysql', 'mariadb' => $this->checkMysqlTables($config),
+                'postgresql' => $this->checkPostgresqlTables($config),
+                default => [
+                    'has_tables' => false,
+                    'count' => 0,
+                    'tables' => [],
+                ],
+            };
+        } catch (\Exception $e) {
+            return [
+                'has_tables' => false,
+                'count' => 0,
+                'tables' => [],
+                'error' => $e->getMessage(),
+            ];
+        }
+    }
+
+    /**
+     * Check SQLite tables
+     */
+    private function checkSqliteTables(array $config): array
+    {
+        $dbName = $config['name'] ?? 'little_isms_helper';
+        $dbPath = $this->params->get('kernel.project_dir') . "/var/{$dbName}.db";
+
+        if (!file_exists($dbPath)) {
+            return ['has_tables' => false, 'count' => 0, 'tables' => []];
+        }
+
+        $pdo = new PDO("sqlite:{$dbPath}");
+        $stmt = $pdo->query("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'");
+        $tables = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+        return [
+            'has_tables' => count($tables) > 0,
+            'count' => count($tables),
+            'tables' => $tables,
+        ];
+    }
+
+    /**
+     * Check MySQL tables
+     */
+    private function checkMysqlTables(array $config): array
+    {
+        $host = $config['host'] ?? 'localhost';
+        $port = $config['port'] ?? 3306;
+        $user = $config['user'] ?? 'root';
+        $password = $config['password'] ?? '';
+        $dbName = $config['name'] ?? 'little_isms_helper';
+
+        $dsn = "mysql:host={$host};port={$port};dbname={$dbName}";
+        $pdo = new PDO($dsn, $user, $password, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+
+        $stmt = $pdo->query("SHOW TABLES");
+        $tables = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+        return [
+            'has_tables' => count($tables) > 0,
+            'count' => count($tables),
+            'tables' => $tables,
+        ];
+    }
+
+    /**
+     * Check PostgreSQL tables
+     */
+    private function checkPostgresqlTables(array $config): array
+    {
+        $host = $config['host'] ?? 'localhost';
+        $port = $config['port'] ?? 5432;
+        $user = $config['user'] ?? 'postgres';
+        $password = $config['password'] ?? '';
+        $dbName = $config['name'] ?? 'little_isms_helper';
+
+        $dsn = "pgsql:host={$host};port={$port};dbname={$dbName}";
+        $pdo = new PDO($dsn, $user, $password, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+
+        $stmt = $pdo->query("SELECT tablename FROM pg_tables WHERE schemaname = 'public'");
+        $tables = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+        return [
+            'has_tables' => count($tables) > 0,
+            'count' => count($tables),
+            'tables' => $tables,
+        ];
+    }
+
+    /**
      * Sanitize error message for user display
      */
     private function sanitizeErrorMessage(string $message): string
