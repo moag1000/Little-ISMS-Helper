@@ -2835,6 +2835,8 @@ corporate:
   modal:
     set_parent:
       title: 'Assign Parent Company'
+    update_governance:
+      title: 'Change Governance Model'
   confirm:
     remove_parent: 'Do you really want to remove the assignment to the parent company?'
   flash:
