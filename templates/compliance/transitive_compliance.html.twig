@@ -12,8 +12,14 @@
         <button id="createAllMappingsBtn" class="btn btn-primary">
             🔗 Fehlende Mappings ergänzen
         </button>
-        <a href="{{ path('app_compliance_export_transitive') }}" class="btn btn-success">
-            📊 {{ 'compliance.action.export_transitive'|trans }}
+        <a href="{{ path('app_compliance_export_transitive_pdf') }}" class="btn btn-danger">
+            📄 PDF Report
+        </a>
+        <a href="{{ path('app_compliance_export_transitive_excel') }}" class="btn btn-success">
+            📊 Excel Export
+        </a>
+        <a href="{{ path('app_compliance_export_transitive') }}" class="btn btn-secondary">
+            📄 CSV Export
         </a>
     </div>
 </div>

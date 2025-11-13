@@ -9,6 +9,8 @@ use App\Repository\ComplianceMappingRepository;
 use App\Service\ComplianceAssessmentService;
 use App\Service\ComplianceMappingService;
 use App\Service\ComplianceFrameworkLoaderService;
+use App\Service\ExcelExportService;
+use App\Service\PdfExportService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -27,7 +29,9 @@ class ComplianceController extends AbstractController
         private ComplianceAssessmentService $assessmentService,
         private ComplianceMappingService $mappingService,
         private ComplianceFrameworkLoaderService $frameworkLoaderService,
-        private CsrfTokenManagerInterface $csrfTokenManager
+        private CsrfTokenManagerInterface $csrfTokenManager,
+        private ExcelExportService $excelExportService,
+        private PdfExportService $pdfExportService
     ) {}
 
     #[Route('/', name: 'app_compliance_index')]
@@ -137,6 +141,575 @@ class ComplianceController extends AbstractController
             'total_time_savings' => $totalTimeSavings,
             'total_days_savings' => round($totalTimeSavings / 8, 1),
         ]);
+    }
+
+    #[Route('/framework/{id}/data-reuse/export', name: 'app_compliance_export_reuse', requirements: ['id' => '\d+'])]
+    public function exportDataReuse(int $id): Response
+    {
+        $framework = $this->frameworkRepository->find($id);
+
+        if (!$framework) {
+            throw $this->createNotFoundException('Framework not found');
+        }
+
+        $requirements = $this->requirementRepository->findApplicableByFramework($framework);
+        $dataReuseAnalysis = [];
+        $totalTimeSavings = 0;
+
+        foreach ($requirements as $requirement) {
+            $analysis = $this->mappingService->getDataReuseAnalysis($requirement);
+            $reuseValue = $this->mappingService->calculateDataReuseValue($requirement);
+
+            $dataReuseAnalysis[] = [
+                'requirement' => $requirement,
+                'analysis' => $analysis,
+                'value' => $reuseValue,
+            ];
+
+            $totalTimeSavings += $reuseValue['estimated_hours_saved'];
+        }
+
+        // Create CSV content
+        $csv = [];
+
+        // CSV Header - Title
+        $csv[] = ['Data Reuse Insights - ' . $framework->getName()];
+        $csv[] = [];
+
+        // Summary section
+        $csv[] = ['Zusammenfassung'];
+        $csv[] = ['Framework', $framework->getName() . ' (' . $framework->getCode() . ')'];
+        $csv[] = ['Gesamt Zeitersparnis (Stunden)', $totalTimeSavings];
+        $csv[] = ['Gesamt Zeitersparnis (Tage)', round($totalTimeSavings / 8, 1)];
+        $csv[] = ['Anzahl analysierten Anforderungen', count($dataReuseAnalysis)];
+        $csv[] = [];
+
+        // CSV Header - Requirements
+        $csv[] = [
+            'Anforderungs-ID',
+            'Titel',
+            'Kategorie',
+            'Wiederverwendbare Daten',
+            'Datenquelle',
+            'Geschätzte Zeitersparnis (h)',
+            'Reuse-Prozentsatz (%)',
+            'Confidence',
+        ];
+
+        // CSV Data - Requirements
+        foreach ($dataReuseAnalysis as $item) {
+            $requirement = $item['requirement'];
+            $value = $item['value'];
+            $analysis = $item['analysis'];
+
+            $reusableDataSources = [];
+            if (!empty($analysis['reusable_data'])) {
+                foreach ($analysis['reusable_data'] as $data) {
+                    $reusableDataSources[] = $data['source'] ?? 'Unknown';
+                }
+            }
+
+            $csv[] = [
+                $requirement->getRequirementId(),
+                $requirement->getTitle(),
+                $requirement->getCategory() ?? '-',
+                !empty($analysis['reusable_data']) ? count($analysis['reusable_data']) : 0,
+                !empty($reusableDataSources) ? implode(', ', $reusableDataSources) : '-',
+                $value['estimated_hours_saved'] ?? 0,
+                $value['reuse_percentage'] ?? 0,
+                $value['confidence'] ?? 'low',
+            ];
+        }
+
+        // Generate CSV file
+        $filename = sprintf(
+            'data_reuse_insights_%s_%s.csv',
+            $framework->getCode(),
+            date('Y-m-d_His')
+        );
+
+        $response = new Response();
+        $response->headers->set('Content-Type', 'text/csv; charset=utf-8');
+        $response->headers->set('Content-Disposition', 'attachment; filename="' . $filename . '"');
+
+        // Add BOM for Excel UTF-8 support
+        $csvContent = "\xEF\xBB\xBF";
+
+        // Create CSV content
+        $handle = fopen('php://temp', 'r+');
+        foreach ($csv as $row) {
+            fputcsv($handle, $row, ';');
+        }
+        rewind($handle);
+        $csvContent .= stream_get_contents($handle);
+        fclose($handle);
+
+        $response->setContent($csvContent);
+
+        return $response;
+    }
+
+    #[Route('/framework/{id}/data-reuse/export/excel', name: 'app_compliance_export_reuse_excel', requirements: ['id' => '\d+'])]
+    public function exportDataReuseExcel(int $id): Response
+    {
+        $framework = $this->frameworkRepository->find($id);
+
+        if (!$framework) {
+            throw $this->createNotFoundException('Framework not found');
+        }
+
+        $requirements = $this->requirementRepository->findApplicableByFramework($framework);
+        $dataReuseAnalysis = [];
+        $totalTimeSavings = 0;
+
+        foreach ($requirements as $requirement) {
+            $analysis = $this->mappingService->getDataReuseAnalysis($requirement);
+            $reuseValue = $this->mappingService->calculateDataReuseValue($requirement);
+
+            $dataReuseAnalysis[] = [
+                'requirement' => $requirement,
+                'analysis' => $analysis,
+                'value' => $reuseValue,
+            ];
+
+            $totalTimeSavings += $reuseValue['estimated_hours_saved'];
+        }
+
+        // Create spreadsheet
+        $spreadsheet = $this->excelExportService->createSpreadsheet('Data Reuse Insights Report');
+
+        // Tab 1: Summary
+        $summarySheet = $spreadsheet->getActiveSheet();
+        $summarySheet->setTitle('Zusammenfassung');
+
+        $metrics = [
+            'Framework' => $framework->getName() . ' (' . $framework->getCode() . ')',
+            'Analysierte Anforderungen' => count($dataReuseAnalysis),
+            'Zeitersparnis (Stunden)' => round($totalTimeSavings, 1),
+            'Zeitersparnis (Tage)' => round($totalTimeSavings / 8, 1),
+            'Export-Datum' => date('d.m.Y H:i'),
+        ];
+
+        $this->excelExportService->addSummarySection($summarySheet, $metrics, 1, 'Data Reuse Insights');
+        $this->excelExportService->autoSizeColumns($summarySheet);
+
+        // Tab 2: Details
+        $detailsSheet = $this->excelExportService->createSheet($spreadsheet, 'Reuse Details');
+
+        $headers = ['ID', 'Titel', 'Kategorie', 'Reusable Data', 'Quellen', 'Zeitersparnis (h)', 'Reuse %', 'Confidence'];
+        $this->excelExportService->addFormattedHeaderRow($detailsSheet, $headers, 1, true);
+
+        $data = [];
+        foreach ($dataReuseAnalysis as $item) {
+            $requirement = $item['requirement'];
+            $value = $item['value'];
+            $analysis = $item['analysis'];
+
+            $reusableDataSources = [];
+            if (!empty($analysis['reusable_data'])) {
+                foreach ($analysis['reusable_data'] as $data) {
+                    $reusableDataSources[] = $data['source'] ?? 'Unknown';
+                }
+            }
+
+            $data[] = [
+                $requirement->getRequirementId(),
+                $requirement->getTitle(),
+                $requirement->getCategory() ?? '-',
+                !empty($analysis['reusable_data']) ? count($analysis['reusable_data']) : 0,
+                !empty($reusableDataSources) ? implode(', ', array_slice($reusableDataSources, 0, 3)) : '-',
+                round($value['estimated_hours_saved'] ?? 0, 1),
+                round($value['reuse_percentage'] ?? 0, 1),
+                $value['confidence'] ?? 'low',
+            ];
+        }
+
+        // Conditional formatting
+        $conditionalFormatting = [
+            6 => [ // Reuse %
+                '>=80' => $this->excelExportService->getColor('success'),
+                '>=50' => $this->excelExportService->getColor('warning'),
+                '<50' => ['color' => $this->excelExportService->getColor('danger'), 'bold' => false],
+            ],
+        ];
+
+        $this->excelExportService->addFormattedDataRows($detailsSheet, $data, 2, $conditionalFormatting);
+        $this->excelExportService->autoSizeColumns($detailsSheet);
+
+        // Generate
+        $content = $this->excelExportService->generateExcel($spreadsheet);
+
+        $filename = sprintf('data_reuse_insights_%s_%s.xlsx', $framework->getCode(), date('Y-m-d_His'));
+
+        $response = new Response($content);
+        $response->headers->set('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        $response->headers->set('Content-Disposition', 'attachment; filename="' . $filename . '"');
+
+        return $response;
+    }
+
+    #[Route('/framework/{id}/data-reuse/export/pdf', name: 'app_compliance_export_reuse_pdf', requirements: ['id' => '\d+'])]
+    public function exportDataReusePdf(int $id): Response
+    {
+        $framework = $this->frameworkRepository->find($id);
+
+        if (!$framework) {
+            throw $this->createNotFoundException('Framework not found');
+        }
+
+        $requirements = $this->requirementRepository->findApplicableByFramework($framework);
+        $dataReuseAnalysis = [];
+        $totalTimeSavings = 0;
+        $totalReusePercentage = 0;
+
+        foreach ($requirements as $requirement) {
+            $analysis = $this->mappingService->getDataReuseAnalysis($requirement);
+            $reuseValue = $this->mappingService->calculateDataReuseValue($requirement);
+
+            $dataReuseAnalysis[] = [
+                'requirement' => $requirement,
+                'analysis' => $analysis,
+                'value' => $reuseValue,
+            ];
+
+            $totalTimeSavings += $reuseValue['estimated_hours_saved'];
+            $totalReusePercentage += $reuseValue['reuse_percentage'] ?? 0;
+        }
+
+        $avgReusePercentage = count($dataReuseAnalysis) > 0 ? $totalReusePercentage / count($dataReuseAnalysis) : 0;
+
+        // Generate PDF
+        $pdfContent = $this->pdfExportService->generatePdf('pdf/data_reuse_insights_report.html.twig', [
+            'framework' => $framework,
+            'data_reuse_analysis' => $dataReuseAnalysis,
+            'total_requirements' => count($requirements),
+            'total_time_savings' => $totalTimeSavings,
+            'total_days_savings' => round($totalTimeSavings / 8, 1),
+            'avg_reuse_percentage' => $avgReusePercentage,
+        ]);
+
+        $filename = sprintf('data_reuse_insights_%s_%s.pdf', $framework->getCode(), date('Y-m-d_His'));
+
+        $response = new Response($pdfContent);
+        $response->headers->set('Content-Type', 'application/pdf');
+        $response->headers->set('Content-Disposition', 'attachment; filename="' . $filename . '"');
+        $response->headers->set('Content-Length', strlen($pdfContent));
+
+        return $response;
+    }
+
+    #[Route('/framework/{id}/gaps/export', name: 'app_compliance_export_gaps', requirements: ['id' => '\d+'])]
+    public function exportGaps(int $id): Response
+    {
+        $framework = $this->frameworkRepository->find($id);
+
+        if (!$framework) {
+            throw $this->createNotFoundException('Framework not found');
+        }
+
+        $gaps = $this->requirementRepository->findGapsByFramework($framework);
+        $requirements = $this->requirementRepository->findByFramework($framework);
+        $metRequirements = count($requirements) - count($gaps);
+
+        // Analyze each gap
+        $gapAnalysis = [];
+        foreach ($gaps as $gap) {
+            $analysis = $this->assessmentService->assessRequirement($gap);
+            $gapAnalysis[] = [
+                'requirement' => $gap,
+                'analysis' => $analysis,
+            ];
+        }
+
+        // Create CSV content
+        $csv = [];
+
+        // CSV Header - Title
+        $csv[] = ['Gap Analysis - ' . $framework->getName()];
+        $csv[] = [];
+
+        // Summary section
+        $csv[] = ['Zusammenfassung'];
+        $csv[] = ['Framework', $framework->getName() . ' (' . $framework->getCode() . ')'];
+        $csv[] = ['Gesamt Anforderungen', count($requirements)];
+        $csv[] = ['Erfüllte Anforderungen', $metRequirements];
+        $csv[] = ['Identifizierte Gaps', count($gaps)];
+        $complianceScore = count($requirements) > 0 ? round(($metRequirements / count($requirements)) * 100, 2) : 0;
+        $csv[] = ['Compliance Score (%)', $complianceScore];
+        $csv[] = [];
+
+        // Gap severity breakdown
+        $criticalCount = 0;
+        $highCount = 0;
+        $mediumCount = 0;
+        $lowCount = 0;
+
+        foreach ($gapAnalysis as $item) {
+            $priority = $item['requirement']->getPriority() ?? 'low';
+            switch ($priority) {
+                case 'critical':
+                    $criticalCount++;
+                    break;
+                case 'high':
+                    $highCount++;
+                    break;
+                case 'medium':
+                    $mediumCount++;
+                    break;
+                default:
+                    $lowCount++;
+            }
+        }
+
+        $csv[] = ['Gaps nach Severity'];
+        $csv[] = ['Kritisch', $criticalCount];
+        $csv[] = ['Hoch', $highCount];
+        $csv[] = ['Mittel', $mediumCount];
+        $csv[] = ['Niedrig', $lowCount];
+        $csv[] = [];
+
+        // CSV Header - Gaps
+        $csv[] = [
+            'Anforderungs-ID',
+            'Titel',
+            'Kategorie',
+            'Beschreibung',
+            'Priority/Severity',
+            'Status',
+            'Erfüllungsgrad (%)',
+            'Gap-Grund',
+        ];
+
+        // CSV Data - Gaps
+        foreach ($gapAnalysis as $item) {
+            $requirement = $item['requirement'];
+            $analysis = $item['analysis'];
+
+            // Translate priority
+            $priorityMap = [
+                'critical' => 'Kritisch',
+                'high' => 'Hoch',
+                'medium' => 'Mittel',
+                'low' => 'Niedrig',
+            ];
+
+            // Translate status
+            $statusMap = [
+                'not_applicable' => 'Nicht anwendbar',
+                'not_implemented' => 'Nicht implementiert',
+                'partially_implemented' => 'Teilweise implementiert',
+                'implemented' => 'Implementiert',
+                'not_assessed' => 'Nicht bewertet',
+            ];
+
+            $csv[] = [
+                $requirement->getRequirementId(),
+                $requirement->getTitle(),
+                $requirement->getCategory() ?? '-',
+                $requirement->getDescription() ?? '-',
+                $priorityMap[$requirement->getPriority() ?? 'low'] ?? 'Niedrig',
+                $statusMap[$requirement->getStatus() ?? 'not_assessed'] ?? 'Nicht bewertet',
+                $requirement->getFulfillmentPercentage() ?? 0,
+                $analysis['gap_reason'] ?? 'Nicht erfüllt',
+            ];
+        }
+
+        // Generate CSV file
+        $filename = sprintf(
+            'gap_analysis_%s_%s.csv',
+            $framework->getCode(),
+            date('Y-m-d_His')
+        );
+
+        $response = new Response();
+        $response->headers->set('Content-Type', 'text/csv; charset=utf-8');
+        $response->headers->set('Content-Disposition', 'attachment; filename="' . $filename . '"');
+
+        // Add BOM for Excel UTF-8 support
+        $csvContent = "\xEF\xBB\xBF";
+
+        // Create CSV content
+        $handle = fopen('php://temp', 'r+');
+        foreach ($csv as $row) {
+            fputcsv($handle, $row, ';');
+        }
+        rewind($handle);
+        $csvContent .= stream_get_contents($handle);
+        fclose($handle);
+
+        $response->setContent($csvContent);
+
+        return $response;
+    }
+
+    #[Route('/framework/{id}/gaps/export/excel', name: 'app_compliance_export_gaps_excel', requirements: ['id' => '\d+'])]
+    public function exportGapsExcel(int $id): Response
+    {
+        $framework = $this->frameworkRepository->find($id);
+
+        if (!$framework) {
+            throw $this->createNotFoundException('Framework not found');
+        }
+
+        $gaps = $this->requirementRepository->findGapsByFramework($framework);
+        $requirements = $this->requirementRepository->findByFramework($framework);
+        $metRequirements = count($requirements) - count($gaps);
+
+        // Analyze gaps
+        $gapAnalysis = [];
+        $severityCounts = ['critical' => 0, 'high' => 0, 'medium' => 0, 'low' => 0];
+
+        foreach ($gaps as $gap) {
+            $analysis = $this->assessmentService->assessRequirement($gap);
+            $priority = $gap->getPriority() ?? 'low';
+            $severityCounts[$priority]++;
+
+            $gapAnalysis[] = [
+                'requirement' => $gap,
+                'analysis' => $analysis,
+            ];
+        }
+
+        // Create spreadsheet
+        $spreadsheet = $this->excelExportService->createSpreadsheet('Gap Analysis Report');
+
+        // Tab 1: Summary
+        $summarySheet = $spreadsheet->getActiveSheet();
+        $summarySheet->setTitle('Zusammenfassung');
+
+        $complianceScore = count($requirements) > 0 ? round(($metRequirements / count($requirements)) * 100, 1) : 0;
+
+        $metrics = [
+            'Framework' => $framework->getName() . ' (' . $framework->getCode() . ')',
+            'Gesamt Anforderungen' => count($requirements),
+            'Erfüllte Anforderungen' => $metRequirements,
+            'Identifizierte Gaps' => count($gaps),
+            'Compliance Score' => $complianceScore . '%',
+            'Export-Datum' => date('d.m.Y H:i'),
+        ];
+
+        $nextRow = $this->excelExportService->addSummarySection($summarySheet, $metrics, 1, 'Gap Analysis');
+
+        // Severity breakdown
+        $severityMetrics = [
+            'Kritische Gaps' => $severityCounts['critical'],
+            'Hohe Gaps' => $severityCounts['high'],
+            'Mittlere Gaps' => $severityCounts['medium'],
+            'Niedrige Gaps' => $severityCounts['low'],
+        ];
+        $this->excelExportService->addSummarySection($summarySheet, $severityMetrics, $nextRow, 'Severity Breakdown');
+        $this->excelExportService->autoSizeColumns($summarySheet);
+
+        // Tab 2: Gap Details
+        $detailsSheet = $this->excelExportService->createSheet($spreadsheet, 'Gap Details');
+
+        $headers = ['ID', 'Titel', 'Kategorie', 'Priority', 'Status', 'Erfüllungsgrad %', 'Gap Grund'];
+        $this->excelExportService->addFormattedHeaderRow($detailsSheet, $headers, 1, true);
+
+        $data = [];
+        foreach ($gapAnalysis as $item) {
+            $requirement = $item['requirement'];
+            $analysis = $item['analysis'];
+
+            $priorityMap = ['critical' => 'Kritisch', 'high' => 'Hoch', 'medium' => 'Mittel', 'low' => 'Niedrig'];
+            $statusMap = [
+                'not_applicable' => 'Nicht anwendbar',
+                'not_implemented' => 'Nicht implementiert',
+                'partially_implemented' => 'Teilweise',
+                'implemented' => 'Implementiert',
+                'not_assessed' => 'Nicht bewertet',
+            ];
+
+            $data[] = [
+                $requirement->getRequirementId(),
+                $requirement->getTitle(),
+                $requirement->getCategory() ?? '-',
+                $priorityMap[$requirement->getPriority() ?? 'low'] ?? 'Niedrig',
+                $statusMap[$requirement->getStatus() ?? 'not_assessed'] ?? '-',
+                $requirement->getFulfillmentPercentage() ?? 0,
+                substr($analysis['gap_reason'] ?? 'Nicht erfüllt', 0, 100),
+            ];
+        }
+
+        // Conditional formatting
+        $conditionalFormatting = [
+            3 => [ // Priority
+                'Kritisch' => $this->excelExportService->getColor('critical'),
+                'Hoch' => $this->excelExportService->getColor('high'),
+                'Mittel' => $this->excelExportService->getColor('medium'),
+                'Niedrig' => $this->excelExportService->getColor('low'),
+            ],
+            5 => [ // Fulfillment %
+                '>=80' => $this->excelExportService->getColor('success'),
+                '>=50' => $this->excelExportService->getColor('warning'),
+                '<50' => $this->excelExportService->getColor('danger'),
+            ],
+        ];
+
+        $this->excelExportService->addFormattedDataRows($detailsSheet, $data, 2, $conditionalFormatting);
+        $this->excelExportService->autoSizeColumns($detailsSheet);
+
+        // Generate
+        $content = $this->excelExportService->generateExcel($spreadsheet);
+
+        $filename = sprintf('gap_analysis_%s_%s.xlsx', $framework->getCode(), date('Y-m-d_His'));
+
+        $response = new Response($content);
+        $response->headers->set('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        $response->headers->set('Content-Disposition', 'attachment; filename="' . $filename . '"');
+
+        return $response;
+    }
+
+    #[Route('/framework/{id}/gaps/export/pdf', name: 'app_compliance_export_gaps_pdf', requirements: ['id' => '\d+'])]
+    public function exportGapsPdf(int $id): Response
+    {
+        $framework = $this->frameworkRepository->find($id);
+
+        if (!$framework) {
+            throw $this->createNotFoundException('Framework not found');
+        }
+
+        $gaps = $this->requirementRepository->findGapsByFramework($framework);
+        $requirements = $this->requirementRepository->findByFramework($framework);
+        $metRequirements = count($requirements) - count($gaps);
+
+        // Analyze gaps
+        $gapAnalysis = [];
+        $severityCounts = ['critical' => 0, 'high' => 0, 'medium' => 0, 'low' => 0];
+
+        foreach ($gaps as $gap) {
+            $analysis = $this->assessmentService->assessRequirement($gap);
+            $priority = $gap->getPriority() ?? 'low';
+            $severityCounts[$priority]++;
+
+            $gapAnalysis[] = [
+                'requirement' => $gap,
+                'analysis' => $analysis,
+            ];
+        }
+
+        $complianceScore = count($requirements) > 0 ? round(($metRequirements / count($requirements)) * 100, 1) : 0;
+
+        // Generate PDF
+        $pdfContent = $this->pdfExportService->generatePdf('pdf/gap_analysis_report.html.twig', [
+            'framework' => $framework,
+            'gaps' => $gapAnalysis,
+            'total_requirements' => count($requirements),
+            'met_requirements' => $metRequirements,
+            'total_gaps' => count($gaps),
+            'compliance_score' => $complianceScore,
+            'severity_counts' => $severityCounts,
+        ]);
+
+        $filename = sprintf('gap_analysis_%s_%s.pdf', $framework->getCode(), date('Y-m-d_His'));
+
+        $response = new Response($pdfContent);
+        $response->headers->set('Content-Type', 'application/pdf');
+        $response->headers->set('Content-Disposition', 'attachment; filename="' . $filename . '"');
+        $response->headers->set('Content-Length', strlen($pdfContent));
+
+        return $response;
     }
 
     #[Route('/cross-framework', name: 'app_compliance_cross_framework')]
@@ -570,15 +1143,678 @@ class ComplianceController extends AbstractController
     #[Route('/export/transitive', name: 'app_compliance_export_transitive')]
     public function exportTransitive(): Response
     {
-        $this->addFlash('info', 'Transitive compliance export feature coming soon.');
-        return $this->redirectToRoute('app_compliance_transitive');
+        $frameworks = $this->frameworkRepository->findActiveFrameworks();
+        $transitiveAnalysis = [];
+        $frameworkRelationships = [];
+
+        // Build transitive analysis data (same as in transitiveCompliance method)
+        foreach ($frameworks as $sourceFramework) {
+            foreach ($frameworks as $targetFramework) {
+                if ($sourceFramework->getId() === $targetFramework->getId()) {
+                    continue;
+                }
+
+                // Calculate coverage
+                $coverage = $this->mappingRepository->calculateFrameworkCoverage(
+                    $sourceFramework,
+                    $targetFramework
+                );
+
+                // Get transitive analysis
+                $transitive = $this->mappingRepository->getTransitiveCompliance(
+                    $sourceFramework,
+                    $targetFramework
+                );
+
+                if ($transitive['requirements_helped'] > 0) {
+                    $transitiveAnalysis[] = $transitive;
+                }
+
+                // Get detailed cross-framework mappings
+                $mappings = $this->mappingRepository->findCrossFrameworkMappings(
+                    $sourceFramework,
+                    $targetFramework
+                );
+
+                if (!empty($mappings) && ($coverage['coverage_percentage'] ?? 0) > 0) {
+                    $frameworkRelationships[] = [
+                        'sourceFramework' => $sourceFramework,
+                        'targetFramework' => $targetFramework,
+                        'mappedRequirements' => $coverage['covered_requirements'] ?? 0,
+                        'totalRequirements' => $coverage['total_requirements'] ?? 0,
+                        'coveragePercentage' => round($coverage['coverage_percentage'] ?? 0, 2),
+                    ];
+                }
+            }
+        }
+
+        // Create CSV content
+        $csv = [];
+
+        // CSV Header - Framework Relationships
+        $csv[] = ['Framework-Beziehungen und Transitive Compliance'];
+        $csv[] = [];
+        $csv[] = [
+            'Quell-Framework',
+            'Ziel-Framework',
+            'Gemappte Anforderungen',
+            'Gesamt-Anforderungen',
+            'Coverage (%)',
+        ];
+
+        // CSV Data - Framework Relationships
+        foreach ($frameworkRelationships as $relationship) {
+            $csv[] = [
+                $relationship['sourceFramework']->getName() . ' (' . $relationship['sourceFramework']->getCode() . ')',
+                $relationship['targetFramework']->getName() . ' (' . $relationship['targetFramework']->getCode() . ')',
+                $relationship['mappedRequirements'],
+                $relationship['totalRequirements'],
+                $relationship['coveragePercentage'],
+            ];
+        }
+
+        // Add summary section
+        $csv[] = [];
+        $csv[] = ['Zusammenfassung'];
+        $csv[] = [];
+        $csv[] = ['Metrik', 'Wert'];
+        $csv[] = ['Anzahl aktiver Frameworks', count($frameworks)];
+        $csv[] = ['Anzahl Framework-Beziehungen', count($frameworkRelationships)];
+        $csv[] = ['Transitive Compliance Opportunities', count($transitiveAnalysis)];
+
+        if (!empty($transitiveAnalysis)) {
+            $totalRequirementsHelped = array_sum(array_column($transitiveAnalysis, 'requirements_helped'));
+            $csv[] = ['Gesamt unterstützte Anforderungen', $totalRequirementsHelped];
+        }
+
+        // Generate CSV file
+        $filename = sprintf(
+            'transitive_compliance_export_%s.csv',
+            date('Y-m-d_His')
+        );
+
+        $response = new Response();
+        $response->headers->set('Content-Type', 'text/csv; charset=utf-8');
+        $response->headers->set('Content-Disposition', 'attachment; filename="' . $filename . '"');
+
+        // Add BOM for Excel UTF-8 support
+        $csvContent = "\xEF\xBB\xBF";
+
+        // Create CSV content
+        $handle = fopen('php://temp', 'r+');
+        foreach ($csv as $row) {
+            fputcsv($handle, $row, ';'); // Use semicolon as delimiter for Excel compatibility
+        }
+        rewind($handle);
+        $csvContent .= stream_get_contents($handle);
+        fclose($handle);
+
+        $response->setContent($csvContent);
+
+        return $response;
+    }
+
+    #[Route('/export/transitive/excel', name: 'app_compliance_export_transitive_excel')]
+    public function exportTransitiveExcel(): Response
+    {
+        $frameworks = $this->frameworkRepository->findActiveFrameworks();
+        $transitiveAnalysis = [];
+        $frameworkRelationships = [];
+
+        // Build data
+        foreach ($frameworks as $sourceFramework) {
+            foreach ($frameworks as $targetFramework) {
+                if ($sourceFramework->getId() === $targetFramework->getId()) {
+                    continue;
+                }
+
+                $coverage = $this->mappingRepository->calculateFrameworkCoverage($sourceFramework, $targetFramework);
+                $transitive = $this->mappingRepository->getTransitiveCompliance($sourceFramework, $targetFramework);
+
+                if ($transitive['requirements_helped'] > 0) {
+                    $transitiveAnalysis[] = $transitive;
+                }
+
+                $mappings = $this->mappingRepository->findCrossFrameworkMappings($sourceFramework, $targetFramework);
+
+                if (!empty($mappings) && ($coverage['coverage_percentage'] ?? 0) > 0) {
+                    $frameworkRelationships[] = [
+                        'source' => $sourceFramework,
+                        'target' => $targetFramework,
+                        'mapped' => $coverage['covered_requirements'] ?? 0,
+                        'total' => $coverage['total_requirements'] ?? 0,
+                        'coverage' => round($coverage['coverage_percentage'] ?? 0, 1),
+                    ];
+                }
+            }
+        }
+
+        // Create spreadsheet
+        $spreadsheet = $this->excelExportService->createSpreadsheet('Transitive Compliance Report');
+
+        // Tab 1: Summary
+        $summarySheet = $spreadsheet->getActiveSheet();
+        $summarySheet->setTitle('Zusammenfassung');
+
+        $totalHelped = !empty($transitiveAnalysis) ? array_sum(array_column($transitiveAnalysis, 'requirements_helped')) : 0;
+
+        $metrics = [
+            'Aktive Frameworks' => count($frameworks),
+            'Framework-Beziehungen' => count($frameworkRelationships),
+            'Transitive Opportunities' => count($transitiveAnalysis),
+            'Unterstützte Anforderungen' => $totalHelped,
+            'Export-Datum' => date('d.m.Y H:i'),
+        ];
+
+        $this->excelExportService->addSummarySection($summarySheet, $metrics, 1, 'Transitive Compliance');
+        $this->excelExportService->autoSizeColumns($summarySheet);
+
+        // Tab 2: Framework Relationships
+        $relationshipsSheet = $this->excelExportService->createSheet($spreadsheet, 'Framework-Beziehungen');
+
+        $headers = ['Quell-Framework', 'Ziel-Framework', 'Gemapped', 'Total', 'Coverage %'];
+        $this->excelExportService->addFormattedHeaderRow($relationshipsSheet, $headers, 1, true);
+
+        $data = [];
+        foreach ($frameworkRelationships as $rel) {
+            $data[] = [
+                $rel['source']->getName() . ' (' . $rel['source']->getCode() . ')',
+                $rel['target']->getName() . ' (' . $rel['target']->getCode() . ')',
+                $rel['mapped'],
+                $rel['total'],
+                $rel['coverage'],
+            ];
+        }
+
+        // Conditional formatting for coverage
+        $conditionalFormatting = [
+            4 => [ // Coverage %
+                '>=80' => $this->excelExportService->getColor('success'),
+                '>=50' => $this->excelExportService->getColor('warning'),
+                '<50' => ['color' => $this->excelExportService->getColor('danger'), 'bold' => false],
+            ],
+        ];
+
+        $this->excelExportService->addFormattedDataRows($relationshipsSheet, $data, 2, $conditionalFormatting);
+        $this->excelExportService->autoSizeColumns($relationshipsSheet);
+
+        // Generate
+        $content = $this->excelExportService->generateExcel($spreadsheet);
+
+        $filename = sprintf('transitive_compliance_%s.xlsx', date('Y-m-d_His'));
+
+        $response = new Response($content);
+        $response->headers->set('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        $response->headers->set('Content-Disposition', 'attachment; filename="' . $filename . '"');
+
+        return $response;
+    }
+
+    #[Route('/export/transitive/pdf', name: 'app_compliance_export_transitive_pdf')]
+    public function exportTransitivePdf(): Response
+    {
+        $frameworks = $this->frameworkRepository->findActiveFrameworks();
+        $transitiveAnalysis = [];
+        $frameworkRelationships = [];
+        $totalHelped = 0;
+
+        // Build data
+        foreach ($frameworks as $sourceFramework) {
+            foreach ($frameworks as $targetFramework) {
+                if ($sourceFramework->getId() === $targetFramework->getId()) {
+                    continue;
+                }
+
+                $coverage = $this->mappingRepository->calculateFrameworkCoverage($sourceFramework, $targetFramework);
+                $transitive = $this->mappingRepository->getTransitiveCompliance($sourceFramework, $targetFramework);
+
+                if ($transitive['requirements_helped'] > 0) {
+                    $transitiveAnalysis[] = $transitive;
+                    $totalHelped += $transitive['requirements_helped'];
+                }
+
+                $mappings = $this->mappingRepository->findCrossFrameworkMappings($sourceFramework, $targetFramework);
+
+                if (!empty($mappings) && ($coverage['coverage_percentage'] ?? 0) > 0) {
+                    $frameworkRelationships[] = [
+                        'source' => $sourceFramework,
+                        'target' => $targetFramework,
+                        'mapped' => $coverage['covered_requirements'] ?? 0,
+                        'total' => $coverage['total_requirements'] ?? 0,
+                        'coverage' => round($coverage['coverage_percentage'] ?? 0, 1),
+                    ];
+                }
+            }
+        }
+
+        // Calculate average coverage
+        $avgCoverage = 0;
+        if (!empty($frameworkRelationships)) {
+            $totalCoverage = array_sum(array_column($frameworkRelationships, 'coverage'));
+            $avgCoverage = $totalCoverage / count($frameworkRelationships);
+        }
+
+        // Generate PDF
+        $pdfContent = $this->pdfExportService->generatePdf('pdf/transitive_compliance_report.html.twig', [
+            'frameworks' => $frameworks,
+            'framework_relationships' => $frameworkRelationships,
+            'transitive_analysis' => $transitiveAnalysis,
+            'total_frameworks' => count($frameworks),
+            'total_relationships' => count($frameworkRelationships),
+            'transitive_count' => count($transitiveAnalysis),
+            'total_helped' => $totalHelped,
+            'avg_coverage' => $avgCoverage,
+        ]);
+
+        $filename = sprintf('transitive_compliance_report_%s.pdf', date('Y-m-d_His'));
+
+        $response = new Response($pdfContent);
+        $response->headers->set('Content-Type', 'application/pdf');
+        $response->headers->set('Content-Disposition', 'attachment; filename="' . $filename . '"');
+        $response->headers->set('Content-Length', strlen($pdfContent));
+
+        return $response;
     }
 
     #[Route('/export/comparison', name: 'app_compliance_export_comparison')]
-    public function exportComparison(): Response
+    public function exportComparison(Request $request): Response
     {
-        $this->addFlash('info', 'Framework comparison export feature coming soon.');
-        return $this->redirectToRoute('app_compliance_compare');
+        $framework1Id = $request->query->get('framework1');
+        $framework2Id = $request->query->get('framework2');
+
+        if (!$framework1Id || !$framework2Id) {
+            $this->addFlash('error', 'Bitte wählen Sie zwei Frameworks zum Vergleich aus.');
+            return $this->redirectToRoute('app_compliance_compare');
+        }
+
+        $framework1 = $this->frameworkRepository->find($framework1Id);
+        $framework2 = $this->frameworkRepository->find($framework2Id);
+
+        if (!$framework1 || !$framework2) {
+            $this->addFlash('error', 'Ein oder beide Frameworks wurden nicht gefunden.');
+            return $this->redirectToRoute('app_compliance_compare');
+        }
+
+        // Build detailed comparison data
+        $comparisonDetails = [];
+
+        foreach ($framework1->getRequirements() as $req1) {
+            $mappedRequirement = null;
+            $matchQuality = null;
+            $isMapped = false;
+
+            // Find mappings where req1 is the source
+            $sourceMappings = $this->mappingRepository->findBy([
+                'sourceRequirement' => $req1
+            ]);
+
+            foreach ($sourceMappings as $mapping) {
+                if ($mapping->getTargetRequirement()->getFramework()->getId() === $framework2->getId()) {
+                    $mappedRequirement = $mapping->getTargetRequirement();
+                    $matchQuality = $mapping->getMappingPercentage();
+                    $isMapped = true;
+                    break;
+                }
+            }
+
+            // Also check reverse mappings where req1 is the target
+            if (!$isMapped) {
+                $targetMappings = $this->mappingRepository->findBy([
+                    'targetRequirement' => $req1
+                ]);
+
+                foreach ($targetMappings as $mapping) {
+                    if ($mapping->getSourceRequirement()->getFramework()->getId() === $framework2->getId()) {
+                        $mappedRequirement = $mapping->getSourceRequirement();
+                        $matchQuality = $mapping->getMappingPercentage();
+                        $isMapped = true;
+                        break;
+                    }
+                }
+            }
+
+            $comparisonDetails[] = [
+                'framework1Requirement' => $req1,
+                'mapped' => $isMapped,
+                'framework2Requirement' => $mappedRequirement,
+                'matchQuality' => $matchQuality,
+            ];
+        }
+
+        // Create CSV content
+        $csv = [];
+
+        // CSV Header
+        $csv[] = [
+            $framework1->getName() . ' - ID',
+            $framework1->getName() . ' - Titel',
+            $framework1->getName() . ' - Kategorie',
+            'Mapping Status',
+            'Match Qualität (%)',
+            $framework2->getName() . ' - ID',
+            $framework2->getName() . ' - Titel',
+            $framework2->getName() . ' - Kategorie',
+        ];
+
+        // CSV Data
+        foreach ($comparisonDetails as $detail) {
+            $csv[] = [
+                $detail['framework1Requirement']->getRequirementId(),
+                $detail['framework1Requirement']->getTitle(),
+                $detail['framework1Requirement']->getCategory() ?? '-',
+                $detail['mapped'] ? 'Gemapped' : 'Nicht gemapped',
+                $detail['matchQuality'] ?? '-',
+                $detail['framework2Requirement'] ? $detail['framework2Requirement']->getRequirementId() : '-',
+                $detail['framework2Requirement'] ? $detail['framework2Requirement']->getTitle() : '-',
+                $detail['framework2Requirement'] ? ($detail['framework2Requirement']->getCategory() ?? '-') : '-',
+            ];
+        }
+
+        // Generate CSV file
+        $filename = sprintf(
+            'framework_comparison_%s_vs_%s_%s.csv',
+            $framework1->getCode(),
+            $framework2->getCode(),
+            date('Y-m-d')
+        );
+
+        $response = new Response();
+        $response->headers->set('Content-Type', 'text/csv; charset=utf-8');
+        $response->headers->set('Content-Disposition', 'attachment; filename="' . $filename . '"');
+
+        // Add BOM for Excel UTF-8 support
+        $csvContent = "\xEF\xBB\xBF";
+
+        // Create CSV content
+        $handle = fopen('php://temp', 'r+');
+        foreach ($csv as $row) {
+            fputcsv($handle, $row, ';'); // Use semicolon as delimiter for Excel compatibility
+        }
+        rewind($handle);
+        $csvContent .= stream_get_contents($handle);
+        fclose($handle);
+
+        $response->setContent($csvContent);
+
+        return $response;
+    }
+
+    #[Route('/export/comparison/excel', name: 'app_compliance_export_comparison_excel')]
+    public function exportComparisonExcel(Request $request): Response
+    {
+        $framework1Id = $request->query->get('framework1');
+        $framework2Id = $request->query->get('framework2');
+
+        if (!$framework1Id || !$framework2Id) {
+            $this->addFlash('error', 'Bitte wählen Sie zwei Frameworks zum Vergleich aus.');
+            return $this->redirectToRoute('app_compliance_compare');
+        }
+
+        $framework1 = $this->frameworkRepository->find($framework1Id);
+        $framework2 = $this->frameworkRepository->find($framework2Id);
+
+        if (!$framework1 || !$framework2) {
+            $this->addFlash('error', 'Ein oder beide Frameworks wurden nicht gefunden.');
+            return $this->redirectToRoute('app_compliance_compare');
+        }
+
+        // Build detailed comparison data
+        $comparisonDetails = [];
+        $mappedCount = 0;
+
+        foreach ($framework1->getRequirements() as $req1) {
+            $mappedRequirement = null;
+            $matchQuality = null;
+            $isMapped = false;
+
+            // Find mappings
+            $sourceMappings = $this->mappingRepository->findBy(['sourceRequirement' => $req1]);
+            foreach ($sourceMappings as $mapping) {
+                if ($mapping->getTargetRequirement()->getFramework()->getId() === $framework2->getId()) {
+                    $mappedRequirement = $mapping->getTargetRequirement();
+                    $matchQuality = $mapping->getMappingPercentage();
+                    $isMapped = true;
+                    $mappedCount++;
+                    break;
+                }
+            }
+
+            if (!$isMapped) {
+                $targetMappings = $this->mappingRepository->findBy(['targetRequirement' => $req1]);
+                foreach ($targetMappings as $mapping) {
+                    if ($mapping->getSourceRequirement()->getFramework()->getId() === $framework2->getId()) {
+                        $mappedRequirement = $mapping->getSourceRequirement();
+                        $matchQuality = $mapping->getMappingPercentage();
+                        $isMapped = true;
+                        $mappedCount++;
+                        break;
+                    }
+                }
+            }
+
+            $comparisonDetails[] = [
+                'framework1Requirement' => $req1,
+                'mapped' => $isMapped,
+                'framework2Requirement' => $mappedRequirement,
+                'matchQuality' => $matchQuality,
+            ];
+        }
+
+        // Create spreadsheet
+        $spreadsheet = $this->excelExportService->createSpreadsheet('Framework Comparison Report');
+
+        // === TAB 1: Summary ===
+        $summarySheet = $spreadsheet->getActiveSheet();
+        $summarySheet->setTitle('Zusammenfassung');
+
+        $framework1Count = count($framework1->getRequirements());
+        $framework2Count = count($framework2->getRequirements());
+        $overlapPercentage = $framework1Count > 0 ? round(($mappedCount / $framework1Count) * 100, 1) : 0;
+
+        $metrics = [
+            'Framework 1' => $framework1->getName() . ' (' . $framework1->getCode() . ')',
+            'Framework 2' => $framework2->getName() . ' (' . $framework2->getCode() . ')',
+            'Framework 1 Anforderungen' => $framework1Count,
+            'Framework 2 Anforderungen' => $framework2Count,
+            'Gemappte Anforderungen' => $mappedCount,
+            'Overlap Prozentsatz' => $overlapPercentage . '%',
+            'Export-Datum' => date('d.m.Y H:i'),
+        ];
+
+        $this->excelExportService->addSummarySection($summarySheet, $metrics, 1, 'Framework Vergleich');
+        $this->excelExportService->autoSizeColumns($summarySheet);
+
+        // === TAB 2: Detailed Comparison ===
+        $detailsSheet = $this->excelExportService->createSheet($spreadsheet, 'Detaillierter Vergleich');
+
+        $headers = [
+            $framework1->getName() . ' ID',
+            $framework1->getName() . ' Titel',
+            $framework1->getName() . ' Kategorie',
+            'Mapping Status',
+            'Match %',
+            $framework2->getName() . ' ID',
+            $framework2->getName() . ' Titel',
+            $framework2->getName() . ' Kategorie',
+        ];
+
+        $this->excelExportService->addFormattedHeaderRow($detailsSheet, $headers, 1, true);
+
+        $data = [];
+        foreach ($comparisonDetails as $detail) {
+            $data[] = [
+                $detail['framework1Requirement']->getRequirementId(),
+                $detail['framework1Requirement']->getTitle(),
+                $detail['framework1Requirement']->getCategory() ?? '-',
+                $detail['mapped'] ? 'Gemapped' : 'Nicht gemapped',
+                $detail['matchQuality'] ?? '-',
+                $detail['framework2Requirement'] ? $detail['framework2Requirement']->getRequirementId() : '-',
+                $detail['framework2Requirement'] ? $detail['framework2Requirement']->getTitle() : '-',
+                $detail['framework2Requirement'] ? ($detail['framework2Requirement']->getCategory() ?? '-') : '-',
+            ];
+        }
+
+        // Conditional formatting for mapping status and match quality
+        $conditionalFormatting = [
+            3 => [ // Mapping Status
+                'Gemapped' => $this->excelExportService->getColor('success'),
+                'Nicht gemapped' => ['color' => $this->excelExportService->getColor('warning'), 'bold' => false],
+            ],
+            4 => [ // Match Quality
+                '>=80' => $this->excelExportService->getColor('success'),
+                '>=60' => $this->excelExportService->getColor('warning'),
+                '<60' => $this->excelExportService->getColor('danger'),
+            ],
+        ];
+
+        $this->excelExportService->addFormattedDataRows($detailsSheet, $data, 2, $conditionalFormatting);
+        $this->excelExportService->autoSizeColumns($detailsSheet);
+
+        // === TAB 3: Framework 1 Unique ===
+        $framework1Unique = array_filter($comparisonDetails, fn($d) => !$d['mapped']);
+        if (!empty($framework1Unique)) {
+            $unique1Sheet = $this->excelExportService->createSheet($spreadsheet, 'Unique ' . substr($framework1->getCode(), 0, 10));
+
+            $uniqueHeaders = ['ID', 'Titel', 'Kategorie', 'Beschreibung'];
+            $this->excelExportService->addFormattedHeaderRow($unique1Sheet, $uniqueHeaders, 1, true);
+
+            $uniqueData = [];
+            foreach ($framework1Unique as $detail) {
+                $req = $detail['framework1Requirement'];
+                $uniqueData[] = [
+                    $req->getRequirementId(),
+                    $req->getTitle(),
+                    $req->getCategory() ?? '-',
+                    substr($req->getDescription() ?? '-', 0, 200), // Limit description length
+                ];
+            }
+
+            $this->excelExportService->addFormattedDataRows($unique1Sheet, $uniqueData, 2);
+            $this->excelExportService->autoSizeColumns($unique1Sheet);
+        }
+
+        // Generate Excel file
+        $content = $this->excelExportService->generateExcel($spreadsheet);
+
+        $filename = sprintf(
+            'framework_comparison_%s_vs_%s_%s.xlsx',
+            $framework1->getCode(),
+            $framework2->getCode(),
+            date('Y-m-d_His')
+        );
+
+        $response = new Response($content);
+        $response->headers->set('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        $response->headers->set('Content-Disposition', 'attachment; filename="' . $filename . '"');
+        $response->headers->set('Content-Length', strlen($content));
+
+        return $response;
+    }
+
+    #[Route('/export/comparison/pdf', name: 'app_compliance_export_comparison_pdf')]
+    public function exportComparisonPdf(Request $request): Response
+    {
+        $framework1Id = $request->query->get('framework1');
+        $framework2Id = $request->query->get('framework2');
+
+        if (!$framework1Id || !$framework2Id) {
+            $this->addFlash('error', 'Bitte wählen Sie zwei Frameworks zum Vergleich aus.');
+            return $this->redirectToRoute('app_compliance_compare');
+        }
+
+        $framework1 = $this->frameworkRepository->find($framework1Id);
+        $framework2 = $this->frameworkRepository->find($framework2Id);
+
+        if (!$framework1 || !$framework2) {
+            $this->addFlash('error', 'Ein oder beide Frameworks wurden nicht gefunden.');
+            return $this->redirectToRoute('app_compliance_compare');
+        }
+
+        // Build detailed comparison data
+        $comparisonDetails = [];
+        $mappedCount = 0;
+        $highQualityMappings = 0;
+
+        foreach ($framework1->getRequirements() as $req1) {
+            $mappedRequirement = null;
+            $matchQuality = null;
+            $isMapped = false;
+
+            // Find mappings
+            $sourceMappings = $this->mappingRepository->findBy(['sourceRequirement' => $req1]);
+            foreach ($sourceMappings as $mapping) {
+                if ($mapping->getTargetRequirement()->getFramework()->getId() === $framework2->getId()) {
+                    $mappedRequirement = $mapping->getTargetRequirement();
+                    $matchQuality = $mapping->getMappingPercentage();
+                    $isMapped = true;
+                    $mappedCount++;
+                    if ($matchQuality >= 80) {
+                        $highQualityMappings++;
+                    }
+                    break;
+                }
+            }
+
+            if (!$isMapped) {
+                $targetMappings = $this->mappingRepository->findBy(['targetRequirement' => $req1]);
+                foreach ($targetMappings as $mapping) {
+                    if ($mapping->getSourceRequirement()->getFramework()->getId() === $framework2->getId()) {
+                        $mappedRequirement = $mapping->getSourceRequirement();
+                        $matchQuality = $mapping->getMappingPercentage();
+                        $isMapped = true;
+                        $mappedCount++;
+                        if ($matchQuality >= 80) {
+                            $highQualityMappings++;
+                        }
+                        break;
+                    }
+                }
+            }
+
+            $comparisonDetails[] = [
+                'framework1Requirement' => $req1,
+                'mapped' => $isMapped,
+                'framework2Requirement' => $mappedRequirement,
+                'matchQuality' => $matchQuality,
+            ];
+        }
+
+        // Calculate metrics
+        $framework1Count = count($framework1->getRequirements());
+        $framework2Count = count($framework2->getRequirements());
+        $overlapPercentage = $framework1Count > 0 ? round(($mappedCount / $framework1Count) * 100, 1) : 0;
+        $unmapped = $framework1Count - $mappedCount;
+
+        // Find unique requirements
+        $uniqueFramework1 = array_filter($comparisonDetails, fn($d) => !$d['mapped']);
+
+        // Generate PDF
+        $pdfContent = $this->pdfExportService->generatePdf('pdf/framework_comparison_report.html.twig', [
+            'framework1' => $framework1,
+            'framework2' => $framework2,
+            'comparison_details' => $comparisonDetails,
+            'framework1_count' => $framework1Count,
+            'framework2_count' => $framework2Count,
+            'mapped_count' => $mappedCount,
+            'overlap_percentage' => $overlapPercentage,
+            'high_quality_mappings' => $highQualityMappings,
+            'unmapped' => $unmapped,
+            'unique_framework1' => $uniqueFramework1,
+        ]);
+
+        $filename = sprintf(
+            'framework_comparison_%s_vs_%s_%s.pdf',
+            $framework1->getCode(),
+            $framework2->getCode(),
+            date('Y-m-d_His')
+        );
+
+        $response = new Response($pdfContent);
+        $response->headers->set('Content-Type', 'application/pdf');
+        $response->headers->set('Content-Disposition', 'attachment; filename="' . $filename . '"');
+        $response->headers->set('Content-Length', strlen($pdfContent));
+
+        return $response;
     }
 
     #[Route('/frameworks/create-comparison-mappings', name: 'app_compliance_create_comparison_mappings', methods: ['POST'])]

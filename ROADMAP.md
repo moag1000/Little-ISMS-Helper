@@ -985,7 +985,7 @@ Diese Phase fokussierte sich auf die Vervollständigung der 5 Haupt-Module, die 
     - Filter nach Status (identified/assessed/treated/monitored/closed)
     - Filter nach Treatment Strategy (mitigate/accept/transfer/avoid)
     - Filter nach Risk Owner (Text-Suche)
-  - ⏸️ Export als PDF/Excel (placeholder - route existiert - deferred to Phase 6K)
+  - ✅ Export als PDF/Excel/CSV (3 Formate, Professional Templates mit Recommendations)
 - ✅ **Risk History**
   - Audit Log Integration (letzte 10 Einträge)
   - Field-by-field Change Tracking
@@ -1024,7 +1024,7 @@ Diese Phase fokussierte sich auf die Vervollständigung der 5 Haupt-Module, die 
 - [x] Risk Treatment Plan UI ✅ (Controller + 4 Templates komplett)
 - [x] Risk Appetite UI ✅ (Controller + 4 Templates komplett)
 - [x] Risk Owner Integration ✅ (angezeigt, Filter, Relation vorhanden)
-- [ ] PDF/Excel Export ⏸️ (deferred to Phase 6K - Export Funktionalität)
+- [x] PDF/Excel/CSV Export ✅ (Risk Management: 3 Export-Formate mit professionellen Templates)
 - [ ] Tests geschrieben (deferred - Phase 6B)
 - [x] **Hinweis-Text entfernt** ✅ (keine Platzhalter mehr im UI)
 
