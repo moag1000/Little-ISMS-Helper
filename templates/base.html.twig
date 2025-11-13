@@ -17,17 +17,20 @@
         {# Custom styles - Loaded via AssetMapper with automatic versioning #}
         <link rel="stylesheet" href="{{ asset('styles.css') }}">
         <style>
-            /* Turbo Progress Bar */
+            /* Turbo Progress Bar - Cyberpunk Style */
             .turbo-progress-bar {
                 position: fixed;
                 display: block;
                 top: 0;
                 left: 0;
                 height: 3px;
-                background: #0d6efd;
-                z-index: 2147483647;
+                background: linear-gradient(90deg, #06b6d4, #ec4899, #8b5cf6);
+                z-index: var(--z-turbo-bar);
                 transition: width 300ms ease-out, opacity 150ms 150ms ease-in;
                 transform: translate3d(0, 0, 0);
+                box-shadow: 0 0 10px rgba(6, 182, 212, 0.6),
+                            0 0 20px rgba(236, 72, 153, 0.4),
+                            0 0 30px rgba(139, 92, 246, 0.3);
             }
 
             /* Loading state for body */
@@ -50,11 +53,20 @@
         </style>
     {% endblock %}
 </head>
-<body data-turbo="true" data-controller="modal-manager">
-    <header class="header">
+<body data-turbo="true" data-controller="modal-manager sidebar-toggle">
+    <header class="header" role="banner">
         <div class="header-container">
             <div class="header-logo">
-                <img src="{{ asset('favicon.svg') }}" alt="Little ISMS Helper Logo">
+                <button class="mobile-menu-btn"
+                        data-action="click->sidebar-toggle#toggle"
+                        aria-label="Toggle navigation menu"
+                        aria-expanded="false"
+                        data-sidebar-toggle-target="menuBtn">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <img src="{{ asset('favicon.svg') }}" alt="Little ISMS Helper Logo" width="40" height="40">
                 <div>
                     <h1>{{ 'app.title'|trans }}</h1>
                     <p>{{ 'app.subtitle'|trans }}</p>
@@ -75,54 +87,139 @@
     </header>
 
     {% set current_route = app.request.get('_route') %}
-    <nav class="nav" data-turbo-permanent>
-        <ul>
-            <li><a href="{{ path('app_home') }}" class="{% if current_route starts with 'app_home' %}active{% endif %}" data-turbo-action="advance"><i class="bi bi-house"></i> {{ 'nav.home'|trans }}</a></li>
-            <li><a href="{{ path('app_dashboard') }}" class="{% if current_route starts with 'app_dashboard' %}active{% endif %}" data-turbo-action="advance"><i class="bi bi-speedometer2"></i> {{ 'nav.dashboard'|trans }}</a></li>
-            <li><a href="{{ path('app_analytics_dashboard') }}" class="{% if current_route starts with 'app_analytics_' %}active{% endif %}" data-turbo-action="advance"><i class="bi bi-graph-up"></i> {{ 'nav.analytics'|trans }}</a></li>
-            <li><a href="{{ path('app_context_index') }}" class="{% if current_route starts with 'app_context_' %}active{% endif %}" data-turbo-action="advance"><i class="bi bi-diagram-3"></i> {{ 'nav.context'|trans }}</a></li>
-            <li><a href="{{ path('app_interested_party_index') }}" class="{% if current_route starts with 'app_interested_party_' %}active{% endif %}" data-turbo-action="advance"><i class="bi bi-people-fill"></i> {{ 'nav.interested_parties'|trans }}</a></li>
-            <li><a href="{{ path('app_soa_index') }}" class="{% if current_route starts with 'app_soa_' %}active{% endif %}" data-turbo-action="advance"><i class="bi bi-shield-check"></i> {{ 'nav.soa'|trans }}</a></li>
-            <li><a href="{{ path('app_asset_index') }}" class="{% if current_route starts with 'app_asset_' %}active{% endif %}" data-turbo-action="advance"><i class="bi bi-cpu"></i> {{ 'nav.assets'|trans }}</a></li>
-            <li><a href="{{ path('app_supplier_index') }}" class="{% if current_route starts with 'app_supplier_' %}active{% endif %}" data-turbo-action="advance"><i class="bi bi-truck"></i> {{ 'nav.suppliers'|trans }}</a></li>
-            <li><a href="{{ path('app_risk_index') }}" class="{% if current_route starts with 'app_risk_' %}active{% endif %}" data-turbo-action="advance"><i class="bi bi-exclamation-triangle"></i> {{ 'nav.risks'|trans }}</a></li>
-            <li><a href="{{ path('app_change_request_index') }}" class="{% if current_route starts with 'app_change_request_' %}active{% endif %}" data-turbo-action="advance"><i class="bi bi-arrow-left-right"></i> {{ 'nav.change_requests'|trans }}</a></li>
-            <li><a href="{{ path('app_business_process_index') }}" class="{% if current_route starts with 'app_business_process_' %}active{% endif %}" data-turbo-action="advance"><i class="bi bi-diagram-2"></i> {{ 'nav.bcm'|trans }}</a></li>
-            <li><a href="{{ path('app_bc_plan_index') }}" class="{% if current_route starts with 'app_bc_plan_' %}active{% endif %}" data-turbo-action="advance"><i class="bi bi-file-earmark-text"></i> {{ 'nav.bc_plans'|trans }}</a></li>
-            <li><a href="{{ path('app_bc_exercise_index') }}" class="{% if current_route starts with 'app_bc_exercise_' %}active{% endif %}" data-turbo-action="advance"><i class="bi bi-flag"></i> {{ 'nav.bc_exercises'|trans }}</a></li>
-            <li><a href="{{ path('app_incident_index') }}" class="{% if current_route starts with 'app_incident_' %}active{% endif %}" data-turbo-action="advance"><i class="bi bi-bug"></i> {{ 'nav.incidents'|trans }}</a></li>
-            <li><a href="{{ path('app_audit_index') }}" class="{% if current_route starts with 'app_audit_' and not current_route starts with 'app_audit_log_' %}active{% endif %}" data-turbo-action="advance"><i class="bi bi-clipboard-check"></i> {{ 'nav.audits'|trans }}</a></li>
-            <li><a href="{{ path('app_compliance_index') }}" class="{% if current_route starts with 'app_compliance_' %}active{% endif %}" data-turbo-action="advance"><i class="bi bi-check-circle"></i> {{ 'nav.compliance'|trans }}</a></li>
-            <li><a href="{{ path('app_audit_log_index') }}" class="{% if current_route starts with 'app_audit_log_' %}active{% endif %}" data-turbo-action="advance"><i class="bi bi-journal-text"></i> {{ 'nav.audit_log'|trans }}</a></li>
-            {% if is_granted('ROLE_ADMIN') %}
-            <li><a href="{{ path('admin_dashboard') }}" class="{% if current_route starts with 'admin_' or current_route starts with 'user_management_' or current_route starts with 'role_management_' or current_route starts with 'tenant_management_' %}active{% endif %}" data-turbo-action="advance"><i class="bi bi-gear-fill"></i> {{ 'nav.admin_portal'|trans }}</a></li>
-            {% endif %}
-        </ul>
-    </nav>
 
-    <div class="container" data-controller="turbo">
-        <div class="content">
-            {# Flash Messages Container (will be converted to toasts) #}
-            <div id="flash-messages" style="display: none;">
-                {% for label, messages in app.flashes %}
-                    {% for message in messages %}
-                        <div class="alert alert-{{ label }}" role="alert">
-                            {{ message }}
-                        </div>
-                    {% endfor %}
-                {% endfor %}
+    {# Main App Layout with Sidebar #}
+    <div class="app-layout">
+        {# Mobile Sidebar Backdrop #}
+        <div class="sidebar-backdrop" data-sidebar-toggle-target="backdrop" data-action="click->sidebar-toggle#close"></div>
+
+        {# Sidebar Navigation #}
+        <aside class="app-sidebar" role="complementary" aria-label="Main navigation" data-sidebar-toggle-target="sidebar">
+            <nav role="navigation">
+                <ul>
+                    <li><a href="{{ path('app_home') }}" class="{% if current_route starts with 'app_home' %}active{% endif %}" {% if current_route starts with 'app_home' %}aria-current="page"{% endif %} data-turbo-action="advance">
+                        <i class="bi bi-house" aria-hidden="true"></i>
+                        <span>{{ 'nav.home'|trans }}</span>
+                    </a></li>
+                    <li><a href="{{ path('app_dashboard') }}" class="{% if current_route starts with 'app_dashboard' %}active{% endif %}" data-turbo-action="advance">
+                        <i class="bi bi-speedometer2" aria-hidden="true"></i>
+                        <span>{{ 'nav.dashboard'|trans }}</span>
+                    </a></li>
+                    <li><a href="{{ path('app_analytics_dashboard') }}" class="{% if current_route starts with 'app_analytics_' %}active{% endif %}" data-turbo-action="advance">
+                        <i class="bi bi-graph-up" aria-hidden="true"></i>
+                        <span>{{ 'nav.analytics'|trans }}</span>
+                    </a></li>
+
+                    {# ISMS Core #}
+                    <li class="nav-divider">ISMS Core</li>
+                    <li><a href="{{ path('app_context_index') }}" class="{% if current_route starts with 'app_context_' %}active{% endif %}" data-turbo-action="advance">
+                        <i class="bi bi-diagram-3" aria-hidden="true"></i>
+                        <span>{{ 'nav.context'|trans }}</span>
+                    </a></li>
+                    <li><a href="{{ path('app_interested_party_index') }}" class="{% if current_route starts with 'app_interested_party_' %}active{% endif %}" data-turbo-action="advance">
+                        <i class="bi bi-people-fill" aria-hidden="true"></i>
+                        <span>{{ 'nav.interested_parties'|trans }}</span>
+                    </a></li>
+                    <li><a href="{{ path('app_soa_index') }}" class="{% if current_route starts with 'app_soa_' %}active{% endif %}" data-turbo-action="advance">
+                        <i class="bi bi-shield-check" aria-hidden="true"></i>
+                        <span>{{ 'nav.soa'|trans }}</span>
+                    </a></li>
+
+                    {# Assets & Risk #}
+                    <li class="nav-divider">Assets & Risk</li>
+                    <li><a href="{{ path('app_asset_index') }}" class="{% if current_route starts with 'app_asset_' %}active{% endif %}" data-turbo-action="advance">
+                        <i class="bi bi-cpu" aria-hidden="true"></i>
+                        <span>{{ 'nav.assets'|trans }}</span>
+                    </a></li>
+                    <li><a href="{{ path('app_supplier_index') }}" class="{% if current_route starts with 'app_supplier_' %}active{% endif %}" data-turbo-action="advance">
+                        <i class="bi bi-truck" aria-hidden="true"></i>
+                        <span>{{ 'nav.suppliers'|trans }}</span>
+                    </a></li>
+                    <li><a href="{{ path('app_risk_index') }}" class="{% if current_route starts with 'app_risk_' %}active{% endif %}" data-turbo-action="advance">
+                        <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+                        <span>{{ 'nav.risks'|trans }}</span>
+                    </a></li>
+
+                    {# BCM #}
+                    <li class="nav-divider">Business Continuity</li>
+                    <li><a href="{{ path('app_business_process_index') }}" class="{% if current_route starts with 'app_business_process_' %}active{% endif %}" data-turbo-action="advance">
+                        <i class="bi bi-diagram-2" aria-hidden="true"></i>
+                        <span>{{ 'nav.bcm'|trans }}</span>
+                    </a></li>
+                    <li><a href="{{ path('app_bc_plan_index') }}" class="{% if current_route starts with 'app_bc_plan_' %}active{% endif %}" data-turbo-action="advance">
+                        <i class="bi bi-file-earmark-text" aria-hidden="true"></i>
+                        <span>{{ 'nav.bc_plans'|trans }}</span>
+                    </a></li>
+                    <li><a href="{{ path('app_bc_exercise_index') }}" class="{% if current_route starts with 'app_bc_exercise_' %}active{% endif %}" data-turbo-action="advance">
+                        <i class="bi bi-flag" aria-hidden="true"></i>
+                        <span>{{ 'nav.bc_exercises'|trans }}</span>
+                    </a></li>
+
+                    {# Operations #}
+                    <li class="nav-divider">Operations</li>
+                    <li><a href="{{ path('app_change_request_index') }}" class="{% if current_route starts with 'app_change_request_' %}active{% endif %}" data-turbo-action="advance">
+                        <i class="bi bi-arrow-left-right" aria-hidden="true"></i>
+                        <span>{{ 'nav.change_requests'|trans }}</span>
+                    </a></li>
+                    <li><a href="{{ path('app_incident_index') }}" class="{% if current_route starts with 'app_incident_' %}active{% endif %}" data-turbo-action="advance">
+                        <i class="bi bi-bug" aria-hidden="true"></i>
+                        <span>{{ 'nav.incidents'|trans }}</span>
+                    </a></li>
+
+                    {# Compliance #}
+                    <li class="nav-divider">Compliance</li>
+                    <li><a href="{{ path('app_audit_index') }}" class="{% if current_route starts with 'app_audit_' and not current_route starts with 'app_audit_log_' %}active{% endif %}" data-turbo-action="advance">
+                        <i class="bi bi-clipboard-check" aria-hidden="true"></i>
+                        <span>{{ 'nav.audits'|trans }}</span>
+                    </a></li>
+                    <li><a href="{{ path('app_compliance_index') }}" class="{% if current_route starts with 'app_compliance_' %}active{% endif %}" data-turbo-action="advance">
+                        <i class="bi bi-check-circle" aria-hidden="true"></i>
+                        <span>{{ 'nav.compliance'|trans }}</span>
+                    </a></li>
+                    <li><a href="{{ path('app_audit_log_index') }}" class="{% if current_route starts with 'app_audit_log_' %}active{% endif %}" data-turbo-action="advance">
+                        <i class="bi bi-journal-text" aria-hidden="true"></i>
+                        <span>{{ 'nav.audit_log'|trans }}</span>
+                    </a></li>
+
+                    {% if is_granted('ROLE_ADMIN') %}
+                    {# Admin #}
+                    <li class="nav-divider">Admin</li>
+                    <li><a href="{{ path('admin_dashboard') }}" class="{% if current_route starts with 'admin_' or current_route starts with 'user_management_' or current_route starts with 'role_management_' or current_route starts with 'tenant_management_' %}active{% endif %}" data-turbo-action="advance">
+                        <i class="bi bi-gear-fill" aria-hidden="true"></i>
+                        <span>{{ 'nav.admin_portal'|trans }}</span>
+                    </a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </aside>
+
+        {# Main Content Area #}
+        <main class="app-main">
+            <div class="container" data-controller="turbo">
+                <div class="content">
+                    {# Flash Messages Container (will be converted to toasts) #}
+                    <div id="flash-messages" class="d-none">
+                        {% for label, messages in app.flashes %}
+                            {% for message in messages %}
+                                <div class="alert alert-{{ label }}" role="alert">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        {% endfor %}
+                    </div>
+
+                    {% block body %}{% endblock %}
+                </div>
             </div>
-
-            {% block body %}{% endblock %}
-        </div>
+        </main>
     </div>
 
-    <footer class="footer">
+    <footer class="footer" role="contentinfo">
         <p>{{ 'app.footer'|trans }}</p>
-        <p style="font-size: 0.9rem; margin-top: 0.5rem;">
+        <p class="footer-text-small">
             {{ 'app.powered_by'|trans({'%version%': constant('Symfony\\Component\\HttpKernel\\Kernel::VERSION')}) }}
-            <span style="opacity: 0.5;">• Press <kbd>?</kbd> for shortcuts • <kbd>⌘K</kbd> to search</span>
-            <span style="opacity: 0.7;"> • <a href="{{ path('app_reports_overview') }}" style="color: inherit; text-decoration: none;"><i class="bi-file-earmark-bar-graph"></i> Reports</a></span>
+            <span class="opacity-50">• Press <kbd>?</kbd> for shortcuts • <kbd>⌘K</kbd> to search</span>
+            <span class="opacity-70"> • <a href="{{ path('app_reports_overview') }}" class="text-inherit text-decoration-none"><i class="bi-file-earmark-bar-graph"></i> Reports</a></span>
         </p>
     </footer>
 

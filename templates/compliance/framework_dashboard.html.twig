@@ -6,7 +6,7 @@
 <div class="container">
     <div class="page-header">
         <div>
-            <h1>{{ framework.name }}{% if framework.version %} <span style="color: var(--color-text-muted); font-size: 0.8em;">(v{{ framework.version }})</span>{% endif %}</h1>
+            <h1>{{ framework.name }}{% if framework.version %} <span class="version-muted-small">(v{{ framework.version }})</span>{% endif %}</h1>
             <p class="text-muted">{{ framework.description|length > 100 ? framework.description|slice(0, 100) ~ '...' : framework.description }}</p>
         </div>
         <div class="button-group">
@@ -31,11 +31,11 @@
         </div>
         <div class="stat-item">
             <div class="stat-label">{{ 'compliance.label.fulfilled'|trans }}</div>
-            <div class="stat-value" style="color: var(--color-success);">{{ dashboard.statistics.fulfilled }}</div>
+            <div class="stat-value stat-value-success">{{ dashboard.statistics.fulfilled }}</div>
         </div>
         <div class="stat-item">
             <div class="stat-label">{{ 'compliance.label.gaps'|trans }}</div>
-            <div class="stat-value" style="color: var(--color-danger);">{{ dashboard.gaps.total }}</div>
+            <div class="stat-value stat-value-danger">{{ dashboard.gaps.total }}</div>
         </div>
         <div class="stat-item">
             <div class="stat-label">{{ 'compliance.label.time_savings'|trans }}</div>
@@ -137,7 +137,7 @@
                 </div>
 
                 {# Filter Panel - Hidden by Default #}
-                <div class="filter-panel" data-toggle-target="filterPanel" style="display: none;">
+                <div class="filter-panel d-none" data-toggle-target="filterPanel">
                     <input type="text" class="search-input" placeholder="{{ 'compliance.search'|trans }}" id="reqSearch">
                     <select id="reqPriority">
                         <option value="">{{ 'compliance.priority.all'|trans }}</option>
@@ -184,7 +184,7 @@
 
                             {# Detailed Requirements - Hidden by Default #}
                             {% if requirement.hasDetailedRequirements() %}
-                                <div class="requirement-details" data-toggle-target="content" style="display: none;">
+                                <div class="requirement-details d-none" data-toggle-target="content">
                                     <div class="detailed-requirements">
                                         {% for detailed in requirement.detailedRequirements %}
                                             <div class="detailed-requirement">
@@ -230,15 +230,15 @@
                                 </div>
                                 <div class="gap-progress">
                                     <div class="progress-bar">
-                                        <div class="progress-fill" style="width: {{ gap.fulfillmentPercentage }}%; background: var(--color-danger);"></div>
+                                        <div class="progress-fill bg-danger" style="width: {{ gap.fulfillmentPercentage }}%;"></div>
                                     </div>
                                     <span>{{ gap.fulfillmentPercentage }}{{ 'compliance.gaps.fulfilled_percentage'|trans }}</span>
                                 </div>
                             </div>
                         {% endfor %}
                     {% else %}
-                        <div class="text-center" style="padding: var(--spacing-xl);">
-                            <div style="font-size: 3rem; margin-bottom: var(--spacing-md);">✅</div>
+                        <div class="text-center p-xl">
+                            <div class="icon-3rem-mb-md">✅</div>
                             <h3>{{ 'compliance.gaps.none'|trans }}</h3>
                             <p class="text-muted">{{ 'compliance.gaps.none_description'|trans }}</p>
                         </div>

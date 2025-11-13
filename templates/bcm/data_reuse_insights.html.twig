@@ -19,7 +19,7 @@
     {# Summary Cards #}
     <div class="kpi-grid">
         <div class="kpi-card">
-            <div class="kpi-icon" style="background: var(--gradient-primary);">📊</div>
+            <div class="kpi-icon bg-gradient-primary">📊</div>
             <div class="kpi-content">
                 <div class="kpi-value">{{ total_processes }}</div>
                 <div class="kpi-label">Business Processes</div>
@@ -27,7 +27,7 @@
         </div>
 
         <div class="kpi-card">
-            <div class="kpi-icon" style="background: var(--gradient-success);">✓</div>
+            <div class="kpi-icon bg-gradient-success">✓</div>
             <div class="kpi-content">
                 <div class="kpi-value">{{ assets_influenced }}</div>
                 <div class="kpi-label">Assets Influenced</div>
@@ -35,7 +35,7 @@
         </div>
 
         <div class="kpi-card">
-            <div class="kpi-icon" style="background: var(--gradient-info);">🔄</div>
+            <div class="kpi-icon bg-gradient-info">🔄</div>
             <div class="kpi-content">
                 <div class="kpi-value">{{ insights|length }}</div>
                 <div class="kpi-label">Recommendations</div>
@@ -43,7 +43,7 @@
         </div>
 
         <div class="kpi-card">
-            <div class="kpi-icon" style="background: var(--gradient-warning);">💡</div>
+            <div class="kpi-icon bg-gradient-warning">💡</div>
             <div class="kpi-content">
                 <div class="kpi-value">{{ (assets_influenced > 0 ? (assets_influenced / total_processes * 100)|number_format(0) : 0) }}%</div>
                 <div class="kpi-label">Data Reuse Rate</div>
@@ -52,7 +52,7 @@
     </div>
 
     {# Explanation Card #}
-    <div class="card" style="margin-bottom: var(--spacing-lg);">
+    <div class="card mb-lg">
         <div class="card-header">
             <h2>How Data Reuse Works</h2>
         </div>
@@ -196,7 +196,7 @@
     </div>
 
     {# Benefits Section #}
-    <div class="card" style="margin-top: var(--spacing-lg);">
+    <div class="card mt-lg">
         <div class="card-header">
             <h2>Benefits of Data Reuse</h2>
         </div>

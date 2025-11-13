@@ -5,21 +5,50 @@
 {% block stylesheets %}
     {{ parent() }}
     <style>
+        /* Override base layout for admin portal */
+        /* Using :has() for modern browsers with fallback */
+        body:has(.admin-wrapper) .container,
+        body .admin-wrapper ~ * .container,
+        .admin-layout .container {
+            max-width: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        body:has(.admin-wrapper) .content,
+        body .admin-wrapper ~ * .content,
+        .admin-layout .content {
+            background: transparent;
+            padding: 0;
+            box-shadow: none;
+            animation: none;
+        }
+
         /* Admin-specific layout */
         .admin-wrapper {
             display: flex;
             min-height: calc(100vh - 200px);
+            background: var(--color-bg);
+        }
+
+        [data-theme="dark"] .admin-wrapper {
+            background: var(--bg-primary);
         }
 
         .admin-sidebar {
-            width: 280px;
-            background: #f8f9fa;
-            border-right: 1px solid #dee2e6;
-            padding: 1.5rem 0;
+            width: 240px;
+            background: linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%);
+            border-right: 2px solid transparent;
+            border-image: linear-gradient(180deg,
+                          rgba(6, 182, 212, 0.3),
+                          rgba(236, 72, 153, 0.2),
+                          rgba(139, 92, 246, 0.15)) 1;
+            padding: 1rem 0;
             position: sticky;
             top: 0;
             height: calc(100vh - 200px);
             overflow-y: auto;
+            box-shadow: inset -2px 0 10px rgba(6, 182, 212, 0.05);
         }
 
         .admin-sidebar nav {
@@ -27,16 +56,18 @@
         }
 
         .admin-sidebar .sidebar-section {
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
         }
 
         .admin-sidebar .sidebar-section-title {
-            padding: 0.5rem 1.5rem;
-            font-size: 0.75rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.7rem;
             font-weight: 600;
             text-transform: uppercase;
-            color: #6c757d;
+            color: #06b6d4;
             letter-spacing: 0.5px;
+            text-shadow: 0 0 5px rgba(6, 182, 212, 0.3);
+            border-left: 2px solid rgba(6, 182, 212, 0.3);
         }
 
         .admin-sidebar ul {
@@ -52,27 +83,38 @@
         .admin-sidebar ul li a {
             display: flex;
             align-items: center;
-            padding: 0.75rem 1.5rem;
+            padding: 0.625rem 1rem;
             color: #495057;
             text-decoration: none;
             transition: all 0.2s;
+            font-size: 0.9rem;
         }
 
         .admin-sidebar ul li a:hover {
-            background: #e9ecef;
-            color: #0d6efd;
+            background: linear-gradient(90deg,
+                        rgba(6, 182, 212, 0.1),
+                        rgba(236, 72, 153, 0.05));
+            color: #06b6d4;
+            border-left: 3px solid #06b6d4;
+            padding-left: calc(1rem - 3px);
+            box-shadow: inset 0 0 10px rgba(6, 182, 212, 0.1);
         }
 
         .admin-sidebar ul li a.active {
-            background: #0d6efd;
+            background: linear-gradient(135deg, #06b6d4, #8b5cf6);
             color: white;
             font-weight: 500;
+            border-left: 3px solid #ec4899;
+            padding-left: calc(1rem - 3px);
+            box-shadow: 0 0 15px rgba(6, 182, 212, 0.3),
+                        inset 0 0 10px rgba(255, 255, 255, 0.1);
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
         }
 
         .admin-sidebar ul li a i {
-            margin-right: 0.75rem;
-            font-size: 1.1rem;
-            width: 20px;
+            margin-right: 0.5rem;
+            font-size: 1rem;
+            width: 18px;
             text-align: center;
         }
 
@@ -82,8 +124,14 @@
 
         .admin-content {
             flex: 1;
-            padding: 2rem;
+            padding: 1.5rem;
             max-width: 100%;
+            background: white;
+            overflow-x: auto;
+        }
+
+        [data-theme="dark"] .admin-content {
+            background: var(--bg-secondary);
         }
 
         .admin-header {
@@ -124,8 +172,49 @@
             color: #212529;
         }
 
+        /* Dark mode support */
+        [data-theme="dark"] .admin-sidebar {
+            background: linear-gradient(180deg, var(--bg-elevated) 0%, var(--bg-secondary) 100%);
+            box-shadow: inset -2px 0 10px rgba(6, 182, 212, 0.1);
+        }
+
+        [data-theme="dark"] .admin-sidebar ul li a {
+            color: var(--text-primary);
+        }
+
+        [data-theme="dark"] .admin-sidebar ul li a:hover {
+            background: linear-gradient(90deg,
+                        rgba(6, 182, 212, 0.2),
+                        rgba(236, 72, 153, 0.1));
+            color: var(--color-primary);
+            box-shadow: inset 0 0 10px rgba(6, 182, 212, 0.2);
+        }
+
+        [data-theme="dark"] .admin-sidebar ul li a.active {
+            background: linear-gradient(135deg, #06b6d4, #8b5cf6);
+            color: white;
+            box-shadow: 0 0 15px rgba(6, 182, 212, 0.4),
+                        inset 0 0 10px rgba(255, 255, 255, 0.1);
+        }
+
+        [data-theme="dark"] .admin-sidebar .sidebar-section-title {
+            color: var(--text-muted);
+        }
+
+        [data-theme="dark"] .admin-header {
+            border-bottom-color: var(--border-color);
+        }
+
+        [data-theme="dark"] .admin-header h1 {
+            color: var(--text-primary);
+        }
+
+        [data-theme="dark"] .admin-header p {
+            color: var(--text-secondary);
+        }
+
         /* Responsive adjustments */
-        @media (max-width: 992px) {
+        @media (max-width: 768px) {
             .admin-wrapper {
                 flex-direction: column;
             }
@@ -136,6 +225,15 @@
                 position: relative;
                 border-right: none;
                 border-bottom: 1px solid #dee2e6;
+                padding: 0.75rem 0;
+            }
+
+            .admin-sidebar .sidebar-section {
+                margin-bottom: 0.5rem;
+            }
+
+            .admin-content {
+                padding: 1rem;
             }
         }
     </style>
@@ -144,8 +242,8 @@
 {% block body %}
     <div class="admin-wrapper">
         {# Admin Sidebar Navigation #}
-        <aside class="admin-sidebar">
-            <nav>
+        <aside class="admin-sidebar" role="complementary" aria-label="Admin navigation">
+            <nav role="navigation">
                 {# Admin Dashboard #}
                 <div class="sidebar-section">
                     <ul>
