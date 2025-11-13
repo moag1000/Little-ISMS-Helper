@@ -337,6 +337,7 @@ common:
   not_set: Not Set
   not_started: Not Started
   refresh: Refresh
+  save: Save
   search: Search
   success: Success
   to: To
@@ -2865,3 +2866,54 @@ corporate:
     parent: 'No parent (standalone)'
     governance_model: 'Select governance model...'
     corporate_notes: 'E.g. Special agreements or particularities...'
+  single_tenant:
+    title: 'Single Tenant Environment'
+    message: 'There is currently only %count% active tenant in your system.'
+    hint: 'Corporate structures become relevant when you manage multiple tenants.'
+  granular:
+    title: 'Granular Governance Rules'
+    subtitle: 'Specific governance rules for individual areas'
+    add_rule: 'Add Rule'
+    no_rules: 'No specific rules defined. Default governance model applies.'
+    loading: 'Loading governance rules...'
+    modal:
+      title: 'Add Governance Rule'
+      edit_title: 'Edit Governance Rule'
+    field:
+      scope: 'Scope'
+      scope_id: 'Scope ID (optional)'
+      notes: 'Notes'
+    help:
+      scope_id: 'Optional: Specific ID for the scope (e.g., "A.5.1" for a control)'
+    scope:
+      control: 'Control'
+      isms_context: 'ISMS Context'
+      risk: 'Risk'
+      asset: 'Asset'
+      process: 'Process'
+      default: 'Default'
+    action:
+      delete: 'Delete Rule'
+    confirm:
+      delete: 'Do you really want to delete this governance rule?'
+    flash:
+      saved: 'Governance rule saved'
+      deleted: 'Governance rule deleted'
+      error: 'Error saving governance rule'
+  inheritance:
+    title: 'ISMS Context & Organization'
+    subtitle: 'Effective ISMS context for this tenant'
+    organization: 'Organization'
+    inherited_from: 'Inherited from'
+    own_context: 'Uses own ISMS context'
+    no_context: 'No ISMS context available'
+    load_error: 'Error loading ISMS context'
+    propagate: 'Propagate to Subsidiaries'
+    propagate_error: 'Error propagating context'
+    confirm_propagate: 'Do you really want to propagate the ISMS context to all hierarchical subsidiaries? This will overwrite their current contexts.'
+
+# Governance Model Labels
+governance:
+  hierarchical: 'Hierarchical'
+  shared: 'Shared'
+  independent: 'Independent'
