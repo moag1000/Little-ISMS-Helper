@@ -42,7 +42,7 @@ final class Version20251113173000 extends AbstractMigration
 
         // Add foreign key constraint
         $this->addSql('ALTER TABLE user_sessions ADD CONSTRAINT FK_31BBDC26A76ED395
-            FOREIGN KEY (user_id) REFERENCES user (id) ON DELETE CASCADE');
+            FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE');
     }
 
     public function down(Schema $schema): void
