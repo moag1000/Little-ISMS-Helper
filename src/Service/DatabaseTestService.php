@@ -276,6 +276,17 @@ class DatabaseTestService
             $exists = $stmt->fetchColumn();
 
             if (!$exists) {
+                // Check if user has CREATEDB privilege
+                $stmt = $pdo->query("SELECT rolcreatedb FROM pg_roles WHERE rolname = current_user");
+                $canCreateDb = $stmt->fetchColumn();
+
+                if (!$canCreateDb) {
+                    return [
+                        'success' => false,
+                        'message' => 'Permission denied: User does not have CREATEDB privilege. Please ask your database administrator to create the database "' . $dbName . '" or grant CREATEDB permission.',
+                    ];
+                }
+
                 // Create database
                 $pdo->exec("CREATE DATABASE {$dbName} WITH ENCODING 'UTF8'");
             }
@@ -285,6 +296,14 @@ class DatabaseTestService
                 'message' => 'PostgreSQL database created successfully',
             ];
         } catch (PDOException $e) {
+            // Check for permission-related errors
+            if (str_contains($e->getMessage(), 'permission denied')) {
+                return [
+                    'success' => false,
+                    'message' => 'Permission denied: You do not have permission to create databases. Please ask your database administrator to create the database "' . $dbName . '" manually, or use an existing database.',
+                ];
+            }
+
             return [
                 'success' => false,
                 'message' => 'Failed to create PostgreSQL database: ' . $this->sanitizeErrorMessage($e->getMessage()),

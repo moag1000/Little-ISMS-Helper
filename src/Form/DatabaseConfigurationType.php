@@ -20,16 +20,41 @@ class DatabaseConfigurationType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        // Build available DB types based on loaded PHP extensions
+        $availableTypes = [];
+        $defaultType = null;
+
+        // Check for MySQL/MariaDB support
+        if (extension_loaded('pdo_mysql')) {
+            $availableTypes['MySQL'] = 'mysql';
+            $availableTypes['MariaDB'] = 'mariadb';
+            $defaultType = $defaultType ?? 'mysql';
+        }
+
+        // Check for PostgreSQL support
+        if (extension_loaded('pdo_pgsql')) {
+            $availableTypes['PostgreSQL'] = 'postgresql';
+            $defaultType = $defaultType ?? 'postgresql';
+        }
+
+        // Check for SQLite support (usually available)
+        if (extension_loaded('pdo_sqlite')) {
+            $availableTypes['SQLite'] = 'sqlite';
+            $defaultType = $defaultType ?? 'sqlite';
+        }
+
+        // If no PDO extensions available, show error
+        if (empty($availableTypes)) {
+            throw new \RuntimeException(
+                'No PDO database extensions found. Please install at least one of: pdo_mysql, pdo_pgsql, or pdo_sqlite'
+            );
+        }
+
         $builder
             ->add('type', ChoiceType::class, [
                 'label' => 'setup.database.type',
-                'choices' => [
-                    'MySQL' => 'mysql',
-                    'MariaDB' => 'mariadb',
-                    'PostgreSQL' => 'postgresql',
-                    'SQLite' => 'sqlite',
-                ],
-                'data' => 'mysql',
+                'choices' => $availableTypes,
+                'data' => $defaultType,
                 'required' => true,
                 'attr' => [
                     'class' => 'form-select',
