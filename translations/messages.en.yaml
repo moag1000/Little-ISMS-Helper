@@ -2865,3 +2865,7 @@ corporate:
     parent: 'No parent (standalone)'
     governance_model: 'Select governance model...'
     corporate_notes: 'E.g. Special agreements or particularities...'
+  single_tenant:
+    title: 'Single Tenant Environment'
+    message: 'There is currently only %count% active tenant in your system.'
+    hint: 'Corporate structures become relevant when you manage multiple tenants.'

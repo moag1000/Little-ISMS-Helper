@@ -9,6 +9,7 @@ use App\Form\TenantType;
 use App\Repository\CorporateGovernanceRepository;
 use App\Repository\TenantRepository;
 use App\Service\CorporateStructureService;
+use App\Service\MultiTenantCheckService;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -27,6 +28,7 @@ class TenantManagementController extends AbstractController
         private readonly CorporateGovernanceRepository $governanceRepository,
         private readonly LoggerInterface $logger,
         private readonly CorporateStructureService $corporateStructureService,
+        private readonly MultiTenantCheckService $multiTenantCheckService,
     ) {
     }
 
@@ -252,6 +254,9 @@ class TenantManagementController extends AbstractController
     #[Route('/corporate-structure', name: 'tenant_management_corporate_structure', methods: ['GET'])]
     public function corporateStructure(): Response
     {
+        // Check if corporate structure features should be available
+        $isMultiTenant = $this->multiTenantCheckService->isMultiTenant();
+
         // Get all root tenants (corporate parents without parents)
         $allTenants = $this->tenantRepository->findBy(['isActive' => true], ['name' => 'ASC']);
         $corporateGroups = [];
@@ -273,6 +278,8 @@ class TenantManagementController extends AbstractController
             'standaloneTenants' => $standaloneTenants,
             'allTenants' => $allTenants,
             'governanceModels' => GovernanceModel::cases(),
+            'isMultiTenant' => $isMultiTenant,
+            'activeTenantCount' => $this->multiTenantCheckService->getActiveTenantCount(),
         ]);
     }
 
