@@ -173,13 +173,16 @@ class IncidentController extends AbstractController
      */
     #[Route('/{id}/nis2-report.pdf', name: 'app_incident_nis2_report', requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_USER')]
-    public function downloadNis2Report(Incident $incident): Response
+    public function downloadNis2Report(Request $request, Incident $incident): Response
     {
         // Verify that the incident requires NIS2 reporting
         if (!$incident->requiresNis2Reporting()) {
             $this->addFlash('warning', 'This incident does not require NIS2 reporting.');
             return $this->redirectToRoute('app_incident_show', ['id' => $incident->getId()]);
         }
+
+        // Close session to prevent blocking other requests during PDF generation
+        $request->getSession()->save();
 
         // Generate filename with incident number and timestamp
         $filename = sprintf(

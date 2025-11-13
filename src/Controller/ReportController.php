@@ -43,9 +43,12 @@ class ReportController extends AbstractController
     // ===================== DASHBOARD REPORTS =====================
 
     #[Route('/dashboard/pdf', name: 'app_reports_dashboard_pdf')]
-    public function dashboardPdf(): Response
+    public function dashboardPdf(Request $request): Response
     {
         $data = $this->getDashboardData();
+
+        // Close session to prevent blocking other requests during PDF generation
+        $request->getSession()->save();
 
         $pdf = $this->pdfService->generatePdf('reports/dashboard_pdf.html.twig', [
             'data' => $data,
@@ -59,9 +62,12 @@ class ReportController extends AbstractController
     }
 
     #[Route('/dashboard/excel', name: 'app_reports_dashboard_excel')]
-    public function dashboardExcel(): Response
+    public function dashboardExcel(Request $request): Response
     {
         $data = $this->getDashboardData();
+
+        // Close session to prevent blocking other requests during Excel generation
+        $request->getSession()->save();
 
         $spreadsheet = $this->excelService->createSpreadsheet('ISMS Dashboard');
         $sheet = $spreadsheet->getActiveSheet();
@@ -100,9 +106,12 @@ class ReportController extends AbstractController
     // ===================== RISK REPORTS =====================
 
     #[Route('/risks/pdf', name: 'app_reports_risks_pdf')]
-    public function risksPdf(): Response
+    public function risksPdf(Request $request): Response
     {
         $risks = $this->riskRepository->findAll();
+
+        // Close session to prevent blocking other requests during PDF generation
+        $request->getSession()->save();
 
         $pdf = $this->pdfService->generatePdf('reports/risks_pdf.html.twig', [
             'risks' => $risks,
@@ -116,9 +125,12 @@ class ReportController extends AbstractController
     }
 
     #[Route('/risks/excel', name: 'app_reports_risks_excel')]
-    public function risksExcel(): Response
+    public function risksExcel(Request $request): Response
     {
         $risks = $this->riskRepository->findAll();
+
+        // Close session to prevent blocking other requests during Excel generation
+        $request->getSession()->save();
 
         $headers = ['ID', 'Title', 'Category', 'Likelihood', 'Impact', 'Risk Score', 'Treatment', 'Status', 'Owner'];
         $data = [];
@@ -149,9 +161,12 @@ class ReportController extends AbstractController
     // ===================== CONTROL REPORTS (SoA) =====================
 
     #[Route('/controls/pdf', name: 'app_reports_controls_pdf')]
-    public function controlsPdf(): Response
+    public function controlsPdf(Request $request): Response
     {
         $controls = $this->controlRepository->findAll();
+
+        // Close session to prevent blocking other requests during PDF generation
+        $request->getSession()->save();
 
         $pdf = $this->pdfService->generatePdf('reports/controls_pdf.html.twig', [
             'controls' => $controls,
@@ -165,9 +180,12 @@ class ReportController extends AbstractController
     }
 
     #[Route('/controls/excel', name: 'app_reports_controls_excel')]
-    public function controlsExcel(): Response
+    public function controlsExcel(Request $request): Response
     {
         $controls = $this->controlRepository->findAll();
+
+        // Close session to prevent blocking other requests during Excel generation
+        $request->getSession()->save();
 
         $headers = ['Control ID', 'Name', 'Category', 'Applicability', 'Status', 'Progress %', 'Responsible', 'Target Date'];
         $data = [];
@@ -197,9 +215,12 @@ class ReportController extends AbstractController
     // ===================== INCIDENT REPORTS =====================
 
     #[Route('/incidents/pdf', name: 'app_reports_incidents_pdf')]
-    public function incidentsPdf(): Response
+    public function incidentsPdf(Request $request): Response
     {
         $incidents = $this->incidentRepository->findAll();
+
+        // Close session to prevent blocking other requests during PDF generation
+        $request->getSession()->save();
 
         $pdf = $this->pdfService->generatePdf('reports/incidents_pdf.html.twig', [
             'incidents' => $incidents,
@@ -213,9 +234,12 @@ class ReportController extends AbstractController
     }
 
     #[Route('/incidents/excel', name: 'app_reports_incidents_excel')]
-    public function incidentsExcel(): Response
+    public function incidentsExcel(Request $request): Response
     {
         $incidents = $this->incidentRepository->findAll();
+
+        // Close session to prevent blocking other requests during Excel generation
+        $request->getSession()->save();
 
         $headers = ['ID', 'Title', 'Severity', 'Category', 'Status', 'Detected Date', 'Resolved Date', 'Reporter'];
         $data = [];
@@ -245,9 +269,12 @@ class ReportController extends AbstractController
     // ===================== TRAINING REPORTS =====================
 
     #[Route('/trainings/pdf', name: 'app_reports_trainings_pdf')]
-    public function trainingsPdf(): Response
+    public function trainingsPdf(Request $request): Response
     {
         $trainings = $this->trainingRepository->findAll();
+
+        // Close session to prevent blocking other requests during PDF generation
+        $request->getSession()->save();
 
         $pdf = $this->pdfService->generatePdf('reports/trainings_pdf.html.twig', [
             'trainings' => $trainings,
@@ -261,9 +288,12 @@ class ReportController extends AbstractController
     }
 
     #[Route('/trainings/excel', name: 'app_reports_trainings_excel')]
-    public function trainingsExcel(): Response
+    public function trainingsExcel(Request $request): Response
     {
         $trainings = $this->trainingRepository->findAll();
+
+        // Close session to prevent blocking other requests during Excel generation
+        $request->getSession()->save();
 
         $headers = ['ID', 'Title', 'Type', 'Date', 'Duration (min)', 'Participants', 'Mandatory', 'Status'];
         $data = [];

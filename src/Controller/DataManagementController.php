@@ -209,6 +209,9 @@ class DataManagementController extends AbstractController
             return $this->redirectToRoute('data_export_index');
         }
 
+        // Close session to prevent blocking other requests during export generation
+        $request->getSession()->save();
+
         $exportData = [];
 
         foreach ($selectedEntities as $entityClass) {

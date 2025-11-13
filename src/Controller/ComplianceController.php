@@ -144,7 +144,7 @@ class ComplianceController extends AbstractController
     }
 
     #[Route('/framework/{id}/data-reuse/export', name: 'app_compliance_export_reuse', requirements: ['id' => '\d+'])]
-    public function exportDataReuse(int $id): Response
+    public function exportDataReuse(Request $request, int $id): Response
     {
         $framework = $this->frameworkRepository->find($id);
 
@@ -168,6 +168,9 @@ class ComplianceController extends AbstractController
 
             $totalTimeSavings += $reuseValue['estimated_hours_saved'];
         }
+
+        // Close session to prevent blocking other requests during CSV generation
+        $request->getSession()->save();
 
         // Create CSV content
         $csv = [];
@@ -250,7 +253,7 @@ class ComplianceController extends AbstractController
     }
 
     #[Route('/framework/{id}/data-reuse/export/excel', name: 'app_compliance_export_reuse_excel', requirements: ['id' => '\d+'])]
-    public function exportDataReuseExcel(int $id): Response
+    public function exportDataReuseExcel(Request $request, int $id): Response
     {
         $framework = $this->frameworkRepository->find($id);
 
@@ -274,6 +277,9 @@ class ComplianceController extends AbstractController
 
             $totalTimeSavings += $reuseValue['estimated_hours_saved'];
         }
+
+        // Close session to prevent blocking other requests during Excel generation
+        $request->getSession()->save();
 
         // Create spreadsheet
         $spreadsheet = $this->excelExportService->createSpreadsheet('Data Reuse Insights Report');
@@ -349,7 +355,7 @@ class ComplianceController extends AbstractController
     }
 
     #[Route('/framework/{id}/data-reuse/export/pdf', name: 'app_compliance_export_reuse_pdf', requirements: ['id' => '\d+'])]
-    public function exportDataReusePdf(int $id): Response
+    public function exportDataReusePdf(Request $request, int $id): Response
     {
         $framework = $this->frameworkRepository->find($id);
 
@@ -378,6 +384,9 @@ class ComplianceController extends AbstractController
 
         $avgReusePercentage = count($dataReuseAnalysis) > 0 ? $totalReusePercentage / count($dataReuseAnalysis) : 0;
 
+        // Close session to prevent blocking other requests during PDF generation
+        $request->getSession()->save();
+
         // Generate PDF
         $pdfContent = $this->pdfExportService->generatePdf('pdf/data_reuse_insights_report.html.twig', [
             'framework' => $framework,
@@ -386,6 +395,7 @@ class ComplianceController extends AbstractController
             'total_time_savings' => $totalTimeSavings,
             'total_days_savings' => round($totalTimeSavings / 8, 1),
             'avg_reuse_percentage' => $avgReusePercentage,
+            'pdf_generation_date' => new \DateTime(),
         ]);
 
         $filename = sprintf('data_reuse_insights_%s_%s.pdf', $framework->getCode(), date('Y-m-d_His'));
@@ -399,7 +409,7 @@ class ComplianceController extends AbstractController
     }
 
     #[Route('/framework/{id}/gaps/export', name: 'app_compliance_export_gaps', requirements: ['id' => '\d+'])]
-    public function exportGaps(int $id): Response
+    public function exportGaps(Request $request, int $id): Response
     {
         $framework = $this->frameworkRepository->find($id);
 
@@ -420,6 +430,9 @@ class ComplianceController extends AbstractController
                 'analysis' => $analysis,
             ];
         }
+
+        // Close session to prevent blocking other requests during CSV generation
+        $request->getSession()->save();
 
         // Create CSV content
         $csv = [];
@@ -543,7 +556,7 @@ class ComplianceController extends AbstractController
     }
 
     #[Route('/framework/{id}/gaps/export/excel', name: 'app_compliance_export_gaps_excel', requirements: ['id' => '\d+'])]
-    public function exportGapsExcel(int $id): Response
+    public function exportGapsExcel(Request $request, int $id): Response
     {
         $framework = $this->frameworkRepository->find($id);
 
@@ -569,6 +582,9 @@ class ComplianceController extends AbstractController
                 'analysis' => $analysis,
             ];
         }
+
+        // Close session to prevent blocking other requests during Excel generation
+        $request->getSession()->save();
 
         // Create spreadsheet
         $spreadsheet = $this->excelExportService->createSpreadsheet('Gap Analysis Report');
@@ -662,7 +678,7 @@ class ComplianceController extends AbstractController
     }
 
     #[Route('/framework/{id}/gaps/export/pdf', name: 'app_compliance_export_gaps_pdf', requirements: ['id' => '\d+'])]
-    public function exportGapsPdf(int $id): Response
+    public function exportGapsPdf(Request $request, int $id): Response
     {
         $framework = $this->frameworkRepository->find($id);
 
@@ -691,6 +707,9 @@ class ComplianceController extends AbstractController
 
         $complianceScore = count($requirements) > 0 ? round(($metRequirements / count($requirements)) * 100, 1) : 0;
 
+        // Close session to prevent blocking other requests during PDF generation
+        $request->getSession()->save();
+
         // Generate PDF
         $pdfContent = $this->pdfExportService->generatePdf('pdf/gap_analysis_report.html.twig', [
             'framework' => $framework,
@@ -700,6 +719,7 @@ class ComplianceController extends AbstractController
             'total_gaps' => count($gaps),
             'compliance_score' => $complianceScore,
             'severity_counts' => $severityCounts,
+            'pdf_generation_date' => new \DateTime(),
         ]);
 
         $filename = sprintf('gap_analysis_%s_%s.pdf', $framework->getCode(), date('Y-m-d_His'));
@@ -1141,7 +1161,7 @@ class ComplianceController extends AbstractController
     }
 
     #[Route('/export/transitive', name: 'app_compliance_export_transitive')]
-    public function exportTransitive(): Response
+    public function exportTransitive(Request $request): Response
     {
         $frameworks = $this->frameworkRepository->findActiveFrameworks();
         $transitiveAnalysis = [];
@@ -1187,6 +1207,9 @@ class ComplianceController extends AbstractController
                 }
             }
         }
+
+        // Close session to prevent blocking other requests during CSV generation
+        $request->getSession()->save();
 
         // Create CSV content
         $csv = [];
@@ -1255,7 +1278,7 @@ class ComplianceController extends AbstractController
     }
 
     #[Route('/export/transitive/excel', name: 'app_compliance_export_transitive_excel')]
-    public function exportTransitiveExcel(): Response
+    public function exportTransitiveExcel(Request $request): Response
     {
         $frameworks = $this->frameworkRepository->findActiveFrameworks();
         $transitiveAnalysis = [];
@@ -1288,6 +1311,9 @@ class ComplianceController extends AbstractController
                 }
             }
         }
+
+        // Close session to prevent blocking other requests during Excel generation
+        $request->getSession()->save();
 
         // Create spreadsheet
         $spreadsheet = $this->excelExportService->createSpreadsheet('Transitive Compliance Report');
@@ -1351,7 +1377,7 @@ class ComplianceController extends AbstractController
     }
 
     #[Route('/export/transitive/pdf', name: 'app_compliance_export_transitive_pdf')]
-    public function exportTransitivePdf(): Response
+    public function exportTransitivePdf(Request $request): Response
     {
         $frameworks = $this->frameworkRepository->findActiveFrameworks();
         $transitiveAnalysis = [];
@@ -1394,6 +1420,9 @@ class ComplianceController extends AbstractController
             $avgCoverage = $totalCoverage / count($frameworkRelationships);
         }
 
+        // Close session to prevent blocking other requests during PDF generation
+        $request->getSession()->save();
+
         // Generate PDF
         $pdfContent = $this->pdfExportService->generatePdf('pdf/transitive_compliance_report.html.twig', [
             'frameworks' => $frameworks,
@@ -1404,6 +1433,7 @@ class ComplianceController extends AbstractController
             'transitive_count' => count($transitiveAnalysis),
             'total_helped' => $totalHelped,
             'avg_coverage' => $avgCoverage,
+            'pdf_generation_date' => new \DateTime(),
         ]);
 
         $filename = sprintf('transitive_compliance_report_%s.pdf', date('Y-m-d_His'));
@@ -1480,6 +1510,9 @@ class ComplianceController extends AbstractController
                 'matchQuality' => $matchQuality,
             ];
         }
+
+        // Close session to prevent blocking other requests during CSV generation
+        $request->getSession()->save();
 
         // Create CSV content
         $csv = [];
@@ -1599,6 +1632,9 @@ class ComplianceController extends AbstractController
                 'matchQuality' => $matchQuality,
             ];
         }
+
+        // Close session to prevent blocking other requests during Excel generation
+        $request->getSession()->save();
 
         // Create spreadsheet
         $spreadsheet = $this->excelExportService->createSpreadsheet('Framework Comparison Report');
@@ -1788,6 +1824,9 @@ class ComplianceController extends AbstractController
         // Find unique requirements
         $uniqueFramework1 = array_filter($comparisonDetails, fn($d) => !$d['mapped']);
 
+        // Close session to prevent blocking other requests during PDF generation
+        $request->getSession()->save();
+
         // Generate PDF
         $pdfContent = $this->pdfExportService->generatePdf('pdf/framework_comparison_report.html.twig', [
             'framework1' => $framework1,
@@ -1800,6 +1839,7 @@ class ComplianceController extends AbstractController
             'high_quality_mappings' => $highQualityMappings,
             'unmapped' => $unmapped,
             'unique_framework1' => $uniqueFramework1,
+            'pdf_generation_date' => new \DateTime(),
         ]);
 
         $filename = sprintf(
