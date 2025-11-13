@@ -300,4 +300,131 @@ class CorporateStructureController extends AbstractController
             'message' => sprintf('ISMS context propagated to %d subsidiary(ies)', $updatedCount)
         ]);
     }
+
+    /**
+     * Get all governance rules for a tenant
+     */
+    #[Route('/{tenantId}/governance', name: 'api_corporate_structure_get_governance', methods: ['GET'])]
+    public function getGovernanceRules(int $tenantId): JsonResponse
+    {
+        $tenant = $this->tenantRepository->find($tenantId);
+        if (!$tenant) {
+            return $this->json(['error' => 'Tenant not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        $rules = $this->governanceRepository->findBy(['tenant' => $tenant], ['scope' => 'ASC', 'scopeId' => 'ASC']);
+
+        $result = array_map(function ($rule) {
+            return [
+                'id' => $rule->getId(),
+                'scope' => $rule->getScope(),
+                'scopeId' => $rule->getScopeId(),
+                'governanceModel' => $rule->getGovernanceModel()->value,
+                'governanceLabel' => $rule->getGovernanceModel()->getLabel(),
+                'notes' => $rule->getNotes(),
+                'parent' => [
+                    'id' => $rule->getParent()->getId(),
+                    'name' => $rule->getParent()->getName(),
+                ],
+                'createdAt' => $rule->getCreatedAt()->format('Y-m-d H:i:s'),
+            ];
+        }, $rules);
+
+        return $this->json([
+            'tenant' => [
+                'id' => $tenant->getId(),
+                'name' => $tenant->getName(),
+            ],
+            'rules' => $result,
+            'total' => count($result),
+        ]);
+    }
+
+    /**
+     * Create or update governance rule for specific scope
+     */
+    #[Route('/{tenantId}/governance/{scope}', name: 'api_corporate_structure_set_scope_governance', methods: ['POST'])]
+    public function setScopeGovernance(int $tenantId, string $scope, Request $request): JsonResponse
+    {
+        $tenant = $this->tenantRepository->find($tenantId);
+        if (!$tenant) {
+            return $this->json(['error' => 'Tenant not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        if (!$tenant->getParent()) {
+            return $this->json(['error' => 'Tenant must have a parent to set governance'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $data = json_decode($request->getContent(), true);
+        $scopeId = $data['scopeId'] ?? null;
+        $governanceModel = $data['governanceModel'] ?? null;
+        $notes = $data['notes'] ?? null;
+
+        if (!$governanceModel || !in_array($governanceModel, ['hierarchical', 'shared', 'independent'])) {
+            return $this->json(['error' => 'Valid governance model is required'], Response::HTTP_BAD_REQUEST);
+        }
+
+        // Find existing rule or create new one
+        $governance = $this->governanceRepository->findGovernanceForScope($tenant, $scope, $scopeId);
+
+        if (!$governance) {
+            $governance = new CorporateGovernance();
+            $governance->setTenant($tenant);
+            $governance->setParent($tenant->getParent());
+            $governance->setScope($scope);
+            $governance->setScopeId($scopeId);
+            $governance->setCreatedBy($this->getUser());
+        }
+
+        $governance->setGovernanceModel(GovernanceModel::from($governanceModel));
+        if ($notes !== null) {
+            $governance->setNotes($notes);
+        }
+
+        $this->entityManager->persist($governance);
+        $this->entityManager->flush();
+
+        return $this->json([
+            'success' => true,
+            'rule' => [
+                'id' => $governance->getId(),
+                'scope' => $governance->getScope(),
+                'scopeId' => $governance->getScopeId(),
+                'governanceModel' => $governance->getGovernanceModel()->value,
+                'governanceLabel' => $governance->getGovernanceModel()->getLabel(),
+                'notes' => $governance->getNotes(),
+            ],
+        ]);
+    }
+
+    /**
+     * Delete governance rule for specific scope
+     */
+    #[Route('/{tenantId}/governance/{scope}/{scopeId}', name: 'api_corporate_structure_delete_scope_governance', methods: ['DELETE'])]
+    public function deleteScopeGovernance(int $tenantId, string $scope, ?string $scopeId = null): JsonResponse
+    {
+        $tenant = $this->tenantRepository->find($tenantId);
+        if (!$tenant) {
+            return $this->json(['error' => 'Tenant not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        $governance = $this->governanceRepository->findGovernanceForScope($tenant, $scope, $scopeId);
+
+        if (!$governance) {
+            return $this->json(['error' => 'Governance rule not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        // Don't allow deletion of default governance if tenant has parent
+        if ($governance->getScope() === 'default' && $governance->getScopeId() === null && $tenant->getParent()) {
+            return $this->json(['error' => 'Cannot delete default governance for subsidiary'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $this->entityManager->remove($governance);
+        $this->entityManager->flush();
+
+        return $this->json([
+            'success' => true,
+            'message' => 'Governance rule deleted',
+        ]);
+    }
 }
