@@ -41,3 +41,40 @@ workflow_instance:
     entity_type_max_length: 'The entity type cannot exceed {{ limit }} characters.'
     entity_id_required: 'Please enter an entity ID.'
     status_required: 'Please select a status.'
+
+# Compliance Validators
+compliance_framework:
+  validation:
+    code_required: 'Please enter a framework code.'
+    code_max_length: 'The framework code cannot exceed {{ limit }} characters.'
+    name_required: 'Please enter a framework name.'
+    name_max_length: 'The framework name cannot exceed {{ limit }} characters.'
+    version_required: 'Please enter a framework version.'
+    version_max_length: 'The framework version cannot exceed {{ limit }} characters.'
+    applicable_industry_required: 'Please select the applicable industry.'
+    regulatory_body_required: 'Please enter the regulatory body.'
+    regulatory_body_max_length: 'The regulatory body cannot exceed {{ limit }} characters.'
+
+compliance_requirement:
+  validation:
+    framework_required: 'Please select a compliance framework.'
+    requirement_id_required: 'Please enter a requirement ID.'
+    requirement_id_max_length: 'The requirement ID cannot exceed {{ limit }} characters.'
+    title_required: 'Please enter a title.'
+    title_max_length: 'The title cannot exceed {{ limit }} characters.'
+    description_required: 'Please enter a description.'
+    category_max_length: 'The category cannot exceed {{ limit }} characters.'
+    priority_required: 'Please select a priority.'
+    requirement_type_required: 'Please select a requirement type.'
+    fulfillment_percentage_required: 'Please enter the fulfillment percentage.'
+    fulfillment_percentage_range: 'The fulfillment percentage must be between {{ min }} and {{ max }}.'
+
+compliance_mapping:
+  validation:
+    source_requirement_required: 'Please select a source requirement.'
+    target_requirement_required: 'Please select a target requirement.'
+    mapping_type_required: 'Please select a mapping type.'
+    mapping_percentage_required: 'Please enter the mapping percentage.'
+    mapping_percentage_range: 'The mapping percentage must be between {{ min }} and {{ max }}.'
+    confidence_required: 'Please select a confidence level.'
+    verified_by_max_length: 'The verified by field cannot exceed {{ limit }} characters.'

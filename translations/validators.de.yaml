@@ -41,3 +41,40 @@ workflow_instance:
     entity_type_max_length: 'Der Entitätstyp darf maximal {{ limit }} Zeichen lang sein.'
     entity_id_required: 'Bitte geben Sie eine Entitäts-ID ein.'
     status_required: 'Bitte wählen Sie einen Status aus.'
+
+# Compliance Validators
+compliance_framework:
+  validation:
+    code_required: 'Bitte geben Sie einen Framework-Code ein.'
+    code_max_length: 'Der Framework-Code darf maximal {{ limit }} Zeichen lang sein.'
+    name_required: 'Bitte geben Sie einen Framework-Namen ein.'
+    name_max_length: 'Der Framework-Name darf maximal {{ limit }} Zeichen lang sein.'
+    version_required: 'Bitte geben Sie eine Framework-Version ein.'
+    version_max_length: 'Die Framework-Version darf maximal {{ limit }} Zeichen lang sein.'
+    applicable_industry_required: 'Bitte wählen Sie die anwendbare Branche aus.'
+    regulatory_body_required: 'Bitte geben Sie die Regulierungsbehörde ein.'
+    regulatory_body_max_length: 'Die Regulierungsbehörde darf maximal {{ limit }} Zeichen lang sein.'
+
+compliance_requirement:
+  validation:
+    framework_required: 'Bitte wählen Sie ein Compliance-Framework aus.'
+    requirement_id_required: 'Bitte geben Sie eine Anforderungs-ID ein.'
+    requirement_id_max_length: 'Die Anforderungs-ID darf maximal {{ limit }} Zeichen lang sein.'
+    title_required: 'Bitte geben Sie einen Titel ein.'
+    title_max_length: 'Der Titel darf maximal {{ limit }} Zeichen lang sein.'
+    description_required: 'Bitte geben Sie eine Beschreibung ein.'
+    category_max_length: 'Die Kategorie darf maximal {{ limit }} Zeichen lang sein.'
+    priority_required: 'Bitte wählen Sie eine Priorität aus.'
+    requirement_type_required: 'Bitte wählen Sie einen Anforderungstyp aus.'
+    fulfillment_percentage_required: 'Bitte geben Sie den Erfüllungsgrad ein.'
+    fulfillment_percentage_range: 'Der Erfüllungsgrad muss zwischen {{ min }} und {{ max }} liegen.'
+
+compliance_mapping:
+  validation:
+    source_requirement_required: 'Bitte wählen Sie eine Quell-Anforderung aus.'
+    target_requirement_required: 'Bitte wählen Sie eine Ziel-Anforderung aus.'
+    mapping_type_required: 'Bitte wählen Sie einen Mapping-Typ aus.'
+    mapping_percentage_required: 'Bitte geben Sie den Mapping-Prozentsatz ein.'
+    mapping_percentage_range: 'Der Mapping-Prozentsatz muss zwischen {{ min }} und {{ max }} liegen.'
+    confidence_required: 'Bitte wählen Sie ein Konfidenzniveau aus.'
+    verified_by_max_length: 'Das Feld "Verifiziert von" darf maximal {{ limit }} Zeichen lang sein.'
