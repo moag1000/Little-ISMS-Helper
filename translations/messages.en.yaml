@@ -664,6 +664,7 @@ audit:
     in_progress: In Progress
     completed: Completed
     cancelled: Cancelled
+    reported: Reported
   scope_type:
     internal: Internal Audit
     external: External Audit

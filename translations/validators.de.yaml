@@ -152,3 +152,9 @@ objective:
 'Risk must be associated with an asset': 'Risiko muss einem Asset zugeordnet sein'
 'Risk is required': 'Risiko ist erforderlich'
 'Risk appetite description is required': 'Risikobereitschafts-Beschreibung ist erforderlich'
+
+# Audit Validators
+audit:
+  validation:
+    title_required: 'Bitte geben Sie einen Titel ein.'
+    date_required: 'Bitte wählen Sie ein Datum.'
