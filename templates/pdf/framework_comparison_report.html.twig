@@ -1,109 +1,221 @@
-{% extends 'pdf/base.html.twig' %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>Framework Comparison Report</title>
+    <style>
+        @page {
+            margin: 2cm 1.5cm;
+        }
 
-{% block pdf_title %}Framework Comparison - {{ framework1.name }} vs {{ framework2.name }}{% endblock %}
+        body {
+            font-family: DejaVu Sans, sans-serif;
+            font-size: 9pt;
+            line-height: 1.4;
+            color: #333;
+        }
 
-{% block header_title %}Framework Comparison Report{% endblock %}
-{% block header_subtitle %}{{ framework1.name }} ↔ {{ framework2.name }}{% endblock %}
+        h1 {
+            font-size: 18pt;
+            color: #1a56db;
+            text-align: center;
+            margin-bottom: 5pt;
+            border-bottom: 3px solid #1a56db;
+            padding-bottom: 10pt;
+        }
 
-{% block extra_styles %}
-    .stats-grid {
-        display: table;
-        width: 100%;
-        margin-bottom: 20pt;
-        border: 1px solid #cbd5e1;
-        border-collapse: collapse;
-    }
+        h2 {
+            font-size: 14pt;
+            color: #1a56db;
+            margin-top: 15pt;
+            margin-bottom: 8pt;
+            border-bottom: 1px solid #cbd5e1;
+            padding-bottom: 5pt;
+        }
 
-    .stats-row {
-        display: table-row;
-    }
+        h3 {
+            font-size: 11pt;
+            color: #334155;
+            margin-top: 12pt;
+            margin-bottom: 6pt;
+            font-weight: bold;
+        }
 
-    .stats-cell {
-        display: table-cell;
-        padding: 10pt;
-        text-align: center;
-        border: 1px solid #cbd5e1;
-        width: 20%;
-    }
+        .header-info {
+            text-align: center;
+            font-size: 9pt;
+            color: #64748b;
+            margin-bottom: 20pt;
+        }
 
-    .stats-label {
-        font-size: 8pt;
-        color: #64748b;
-        font-weight: bold;
-        margin-bottom: 4pt;
-    }
+        .stats-grid {
+            display: table;
+            width: 100%;
+            margin-bottom: 20pt;
+            border: 1px solid #cbd5e1;
+            border-collapse: collapse;
+        }
 
-    .stats-value {
-        font-size: 16pt;
-        color: #1F4E78;
-        font-weight: bold;
-    }
+        .stats-row {
+            display: table-row;
+        }
 
-    .stats-value-success {
-        color: #10b981;
-    }
+        .stats-cell {
+            display: table-cell;
+            padding: 10pt;
+            text-align: center;
+            border: 1px solid #cbd5e1;
+            width: 20%;
+        }
 
-    .stats-value-warning {
-        color: #f59e0b;
-    }
+        .stats-label {
+            font-size: 8pt;
+            color: #64748b;
+            font-weight: bold;
+            margin-bottom: 4pt;
+        }
 
-    .category-section {
-        margin-top: 20pt;
-        padding-top: 10pt;
-        border-top: 1px solid #cbd5e1;
-    }
+        .stats-value {
+            font-size: 16pt;
+            color: #1a56db;
+            font-weight: bold;
+        }
 
-    .insight-box {
-        background: #f8fafc;
-        border-left: 4px solid #1F4E78;
-        padding: 10pt;
-        margin: 10pt 0;
-        font-size: 9pt;
-        color: #475569;
-    }
+        .stats-value-success {
+            color: #10b981;
+        }
 
-    .insight-box strong {
-        color: #1e293b;
-    }
+        .stats-value-warning {
+            color: #f59e0b;
+        }
 
-    .quality-good {
-        color: #10b981;
-        font-weight: bold;
-    }
+        .insight-box {
+            background: #f8fafc;
+            border-left: 4px solid #1a56db;
+            padding: 10pt;
+            margin: 10pt 0;
+            font-size: 8pt;
+            color: #475569;
+        }
 
-    .quality-medium {
-        color: #f59e0b;
-        font-weight: bold;
-    }
+        .insight-box strong {
+            color: #1e293b;
+        }
 
-    .quality-weak {
-        color: #ef4444;
-        font-weight: bold;
-    }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10pt 0;
+            font-size: 8pt;
+        }
 
-    .coverage-row {
-        font-weight: bold;
-        background: #f1f5f9;
-    }
+        table th {
+            background-color: #1a56db;
+            color: white;
+            padding: 6pt;
+            text-align: left;
+            font-weight: bold;
+            border: 1px solid #1e3a8a;
+        }
 
-    .w-15 {
-        width: 15%;
-    }
+        table td {
+            padding: 5pt;
+            border: 1px solid #cbd5e1;
+            vertical-align: top;
+        }
 
-    .w-20 {
-        width: 20%;
-    }
+        table tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
 
-    .w-30 {
-        width: 30%;
-    }
+        .highlight-row {
+            font-weight: bold;
+            background: #e0e7ff !important;
+        }
 
-    .w-50 {
-        width: 50%;
-    }
-{% endblock %}
+        .badge {
+            display: inline-block;
+            padding: 2pt 6pt;
+            border-radius: 3pt;
+            font-size: 7pt;
+            font-weight: bold;
+        }
 
-{% block content %}
+        .badge-success {
+            background-color: #10b981;
+            color: white;
+        }
+
+        .badge-info {
+            background-color: #3b82f6;
+            color: white;
+        }
+
+        .badge-warning {
+            background-color: #f59e0b;
+            color: white;
+        }
+
+        .badge-danger {
+            background-color: #ef4444;
+            color: white;
+        }
+
+        .badge-secondary {
+            background-color: #6b7280;
+            color: white;
+        }
+
+        .quality-good {
+            color: #10b981;
+            font-weight: bold;
+        }
+
+        .quality-medium {
+            color: #f59e0b;
+            font-weight: bold;
+        }
+
+        .quality-weak {
+            color: #ef4444;
+            font-weight: bold;
+        }
+
+        .page-break {
+            page-break-before: always;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .w-10 { width: 10%; }
+        .w-15 { width: 15%; }
+        .w-20 { width: 20%; }
+        .w-30 { width: 30%; }
+        .w-50 { width: 50%; }
+
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 30pt;
+            text-align: center;
+            font-size: 7pt;
+            color: #64748b;
+            border-top: 1px solid #cbd5e1;
+            padding-top: 5pt;
+        }
+    </style>
+</head>
+<body>
+    <h1>Framework Comparison Report</h1>
+    <div class="header-info">
+        {{ framework1.name }} ↔ {{ framework2.name }}<br>
+        Generated: {{ pdf_generation_date|date('d.m.Y H:i') }}
+    </div>
+
     {# Executive Summary #}
     <h2>Executive Summary</h2>
     <div class="stats-grid">
@@ -168,11 +280,11 @@
                     </span>
                 </td>
             </tr>
-            <tr class="coverage-row">
+            <tr class="highlight-row">
                 <td>Bidirectional Overlap (Average)</td>
                 <td colspan="2" class="text-center">{{ bidirectional_overlap }}%</td>
             </tr>
-            <tr class="coverage-row">
+            <tr class="highlight-row">
                 <td>Symmetric Coverage (Minimum)</td>
                 <td colspan="2" class="text-center">{{ symmetric_coverage }}%</td>
             </tr>
@@ -232,7 +344,7 @@
                 <td class="text-center">{{ mapped_count > 0 ? ((quality_distribution.weak / mapped_count * 100)|round(1)) : 0 }}%</td>
                 <td>Low alignment, optimization needed</td>
             </tr>
-            <tr class="coverage-row">
+            <tr class="highlight-row">
                 <td><strong>Average Mapping Quality</strong></td>
                 <td colspan="4" class="text-center"><strong>{{ avg_mapping_quality }}%</strong></td>
             </tr>
@@ -280,7 +392,7 @@
         </tbody>
     </table>
 
-    <h3 style="margin-top: 20pt;">{{ framework2.code }} → {{ framework1.code }}</h3>
+    <h3 style="margin-top: 15pt;">{{ framework2.code }} → {{ framework1.code }}</h3>
     <table>
         <thead>
             <tr>
@@ -330,7 +442,7 @@
             {% for detail in comparison_details %}
             <tr>
                 <td><strong>{{ detail.framework1Requirement.requirementId }}</strong></td>
-                <td>{{ detail.framework1Requirement.description|slice(0, 80) }}{% if detail.framework1Requirement.description|length > 80 %}...{% endif %}</td>
+                <td>{{ detail.framework1Requirement.description|slice(0, 60) }}{% if detail.framework1Requirement.description|length > 60 %}...{% endif %}</td>
                 <td class="text-center">
                     {% if detail.mapped %}
                         <span class="badge badge-success">Mapped</span>
@@ -349,7 +461,7 @@
                 </td>
                 <td>
                     {% if detail.framework2Requirement %}
-                        {{ detail.framework2Requirement.description|slice(0, 80) }}{% if detail.framework2Requirement.description|length > 80 %}...{% endif %}
+                        {{ detail.framework2Requirement.description|slice(0, 60) }}{% if detail.framework2Requirement.description|length > 60 %}...{% endif %}
                     {% else %}
                         <span style="color: #94a3b8;">No mapping</span>
                     {% endif %}
@@ -358,4 +470,9 @@
             {% endfor %}
         </tbody>
     </table>
-{% endblock %}
+
+    <div class="footer">
+        Framework Comparison Report - Generated on {{ pdf_generation_date|date('d.m.Y H:i:s') }} - Page <span class="pagenum"></span>
+    </div>
+</body>
+</html>
