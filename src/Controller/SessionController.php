@@ -15,10 +15,10 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route('/admin/sessions')]
-#[IsGranted('ROLE_ADMIN')]
 class SessionController extends AbstractController
 {
     #[Route('', name: 'session_index', methods: ['GET'])]
+    #[IsGranted('SESSION_VIEW')]
     public function index(
         SessionManager $sessionManager,
         Request $request
@@ -42,6 +42,7 @@ class SessionController extends AbstractController
     }
 
     #[Route('/{userName}/show', name: 'session_show', methods: ['GET'])]
+    #[IsGranted('SESSION_VIEW')]
     public function show(
         string $userName,
         AuditLogRepository $auditLogRepository
@@ -86,6 +87,7 @@ class SessionController extends AbstractController
     }
 
     #[Route('/terminate/{userName}', name: 'session_terminate', methods: ['POST'])]
+    #[IsGranted('SESSION_TERMINATE')]
     public function terminate(
         string $userName,
         Request $request,
@@ -129,6 +131,7 @@ class SessionController extends AbstractController
     }
 
     #[Route('/terminate-session/{sessionId}', name: 'session_terminate_single', methods: ['POST'])]
+    #[IsGranted('SESSION_TERMINATE')]
     public function terminateSingle(
         string $sessionId,
         Request $request,
