@@ -9,7 +9,7 @@ use Doctrine\Migrations\AbstractMigration;
 
 /**
  * Add tenant_id foreign keys to all tenant-scoped entities for complete multi-tenancy
- * This migration checks if tables exist before attempting to modify them
+ * This migration checks if tables and columns exist before attempting to modify them
  */
 final class Version20251113000001 extends AbstractMigration
 {
@@ -36,14 +36,22 @@ final class Version20251113000001 extends AbstractMigration
 
     public function up(Schema $schema): void
     {
-        // Get existing tables
-        $existingTables = $this->getExistingTables();
-
         // Add tenant_id columns for existing tables only
         foreach ($this->tables as $table) {
-            if (in_array($table, $existingTables)) {
-                // Check if column already exists
-                if (!$this->columnExists($table, 'tenant_id')) {
+            $tableExists = $this->connection->fetchOne(
+                "SELECT COUNT(*) FROM information_schema.tables
+                 WHERE table_schema = DATABASE() AND table_name = ?",
+                [$table]
+            );
+
+            if ($tableExists) {
+                $columnExists = $this->connection->fetchOne(
+                    "SELECT COUNT(*) FROM information_schema.columns
+                     WHERE table_schema = DATABASE() AND table_name = ? AND column_name = 'tenant_id'",
+                    [$table]
+                );
+
+                if (!$columnExists) {
                     $this->addSql("ALTER TABLE $table ADD tenant_id INT DEFAULT NULL");
                 }
             }
@@ -51,20 +59,60 @@ final class Version20251113000001 extends AbstractMigration
 
         // Add foreign key constraints for existing tables
         foreach ($this->tables as $table) {
-            if (in_array($table, $existingTables) && $this->columnExists($table, 'tenant_id')) {
-                $constraintName = 'FK_' . $table . '_tenant';
-                if (!$this->constraintExists($table, $constraintName)) {
-                    $this->addSql("ALTER TABLE $table ADD CONSTRAINT $constraintName FOREIGN KEY (tenant_id) REFERENCES tenant (id)");
+            $tableExists = $this->connection->fetchOne(
+                "SELECT COUNT(*) FROM information_schema.tables
+                 WHERE table_schema = DATABASE() AND table_name = ?",
+                [$table]
+            );
+
+            if ($tableExists) {
+                $columnExists = $this->connection->fetchOne(
+                    "SELECT COUNT(*) FROM information_schema.columns
+                     WHERE table_schema = DATABASE() AND table_name = ? AND column_name = 'tenant_id'",
+                    [$table]
+                );
+
+                if ($columnExists) {
+                    $constraintName = 'FK_' . $table . '_tenant';
+                    $constraintExists = $this->connection->fetchOne(
+                        "SELECT COUNT(*) FROM information_schema.table_constraints
+                         WHERE table_schema = DATABASE() AND table_name = ? AND constraint_name = ?",
+                        [$table, $constraintName]
+                    );
+
+                    if (!$constraintExists) {
+                        $this->addSql("ALTER TABLE $table ADD CONSTRAINT $constraintName FOREIGN KEY (tenant_id) REFERENCES tenant (id)");
+                    }
                 }
             }
         }
 
         // Add indexes for existing tables
         foreach ($this->tables as $table) {
-            if (in_array($table, $existingTables) && $this->columnExists($table, 'tenant_id')) {
-                $indexName = 'IDX_' . $table . '_tenant';
-                if (!$this->indexExists($table, $indexName)) {
-                    $this->addSql("CREATE INDEX $indexName ON $table (tenant_id)");
+            $tableExists = $this->connection->fetchOne(
+                "SELECT COUNT(*) FROM information_schema.tables
+                 WHERE table_schema = DATABASE() AND table_name = ?",
+                [$table]
+            );
+
+            if ($tableExists) {
+                $columnExists = $this->connection->fetchOne(
+                    "SELECT COUNT(*) FROM information_schema.columns
+                     WHERE table_schema = DATABASE() AND table_name = ? AND column_name = 'tenant_id'",
+                    [$table]
+                );
+
+                if ($columnExists) {
+                    $indexName = 'IDX_' . $table . '_tenant';
+                    $indexExists = $this->connection->fetchOne(
+                        "SELECT COUNT(*) FROM information_schema.statistics
+                         WHERE table_schema = DATABASE() AND table_name = ? AND index_name = ?",
+                        [$table, $indexName]
+                    );
+
+                    if (!$indexExists) {
+                        $this->addSql("CREATE INDEX $indexName ON $table (tenant_id)");
+                    }
                 }
             }
         }
@@ -72,13 +120,23 @@ final class Version20251113000001 extends AbstractMigration
 
     public function down(Schema $schema): void
     {
-        $existingTables = $this->getExistingTables();
-
         // Drop foreign keys
         foreach ($this->tables as $table) {
-            if (in_array($table, $existingTables)) {
+            $tableExists = $this->connection->fetchOne(
+                "SELECT COUNT(*) FROM information_schema.tables
+                 WHERE table_schema = DATABASE() AND table_name = ?",
+                [$table]
+            );
+
+            if ($tableExists) {
                 $constraintName = 'FK_' . $table . '_tenant';
-                if ($this->constraintExists($table, $constraintName)) {
+                $constraintExists = $this->connection->fetchOne(
+                    "SELECT COUNT(*) FROM information_schema.table_constraints
+                     WHERE table_schema = DATABASE() AND table_name = ? AND constraint_name = ?",
+                    [$table, $constraintName]
+                );
+
+                if ($constraintExists) {
                     $this->addSql("ALTER TABLE $table DROP FOREIGN KEY $constraintName");
                 }
             }
@@ -86,9 +144,21 @@ final class Version20251113000001 extends AbstractMigration
 
         // Drop indexes
         foreach ($this->tables as $table) {
-            if (in_array($table, $existingTables)) {
+            $tableExists = $this->connection->fetchOne(
+                "SELECT COUNT(*) FROM information_schema.tables
+                 WHERE table_schema = DATABASE() AND table_name = ?",
+                [$table]
+            );
+
+            if ($tableExists) {
                 $indexName = 'IDX_' . $table . '_tenant';
-                if ($this->indexExists($table, $indexName)) {
+                $indexExists = $this->connection->fetchOne(
+                    "SELECT COUNT(*) FROM information_schema.statistics
+                     WHERE table_schema = DATABASE() AND table_name = ? AND index_name = ?",
+                    [$table, $indexName]
+                );
+
+                if ($indexExists) {
                     $this->addSql("DROP INDEX $indexName ON $table");
                 }
             }
@@ -96,54 +166,23 @@ final class Version20251113000001 extends AbstractMigration
 
         // Drop columns
         foreach ($this->tables as $table) {
-            if (in_array($table, $existingTables) && $this->columnExists($table, 'tenant_id')) {
-                $this->addSql("ALTER TABLE $table DROP tenant_id");
-            }
-        }
-    }
+            $tableExists = $this->connection->fetchOne(
+                "SELECT COUNT(*) FROM information_schema.tables
+                 WHERE table_schema = DATABASE() AND table_name = ?",
+                [$table]
+            );
 
-    private function getExistingTables(): array
-    {
-        $sm = $this->connection->createSchemaManager();
-        $tables = $sm->listTableNames();
-        return $tables;
-    }
+            if ($tableExists) {
+                $columnExists = $this->connection->fetchOne(
+                    "SELECT COUNT(*) FROM information_schema.columns
+                     WHERE table_schema = DATABASE() AND table_name = ? AND column_name = 'tenant_id'",
+                    [$table]
+                );
 
-    private function columnExists(string $table, string $column): bool
-    {
-        try {
-            $sm = $this->connection->createSchemaManager();
-            $columns = $sm->listTableColumns($table);
-            return isset($columns[$column]);
-        } catch (\Exception $e) {
-            return false;
-        }
-    }
-
-    private function constraintExists(string $table, string $constraint): bool
-    {
-        try {
-            $sm = $this->connection->createSchemaManager();
-            $foreignKeys = $sm->listTableForeignKeys($table);
-            foreach ($foreignKeys as $fk) {
-                if ($fk->getName() === $constraint) {
-                    return true;
+                if ($columnExists) {
+                    $this->addSql("ALTER TABLE $table DROP tenant_id");
                 }
             }
-            return false;
-        } catch (\Exception $e) {
-            return false;
-        }
-    }
-
-    private function indexExists(string $table, string $index): bool
-    {
-        try {
-            $sm = $this->connection->createSchemaManager();
-            $indexes = $sm->listTableIndexes($table);
-            return isset($indexes[strtolower($index)]);
-        } catch (\Exception $e) {
-            return false;
         }
     }
 }
