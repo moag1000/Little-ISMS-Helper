@@ -193,7 +193,7 @@ class InternalAudit
 
     
     #[ORM\ManyToOne(targetEntity: Tenant::class)]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?Tenant $tenant = null;
 
 public function __construct()
