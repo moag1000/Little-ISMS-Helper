@@ -38,7 +38,9 @@ class SetupPermissionsCommand extends Command
         $this
             ->addOption('reset', null, InputOption::VALUE_NONE, 'Reset all permissions and roles (WARNING: deletes existing data)')
             ->addOption('admin-email', null, InputOption::VALUE_REQUIRED, 'Create admin user with this email')
-            ->addOption('admin-password', null, InputOption::VALUE_REQUIRED, 'Password for admin user');
+            ->addOption('admin-password', null, InputOption::VALUE_REQUIRED, 'Password for admin user')
+            ->addOption('admin-firstname', null, InputOption::VALUE_OPTIONAL, 'First name for admin user', 'Admin')
+            ->addOption('admin-lastname', null, InputOption::VALUE_OPTIONAL, 'Last name for admin user', 'User');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -71,6 +73,8 @@ class SetupPermissionsCommand extends Command
             $this->createAdminUser(
                 $input->getOption('admin-email'),
                 $input->getOption('admin-password'),
+                $input->getOption('admin-firstname'),
+                $input->getOption('admin-lastname'),
                 $io
             );
         }
@@ -245,7 +249,7 @@ class SetupPermissionsCommand extends Command
         $io->success("Created $count roles.");
     }
 
-    private function createAdminUser(string $email, string $password, SymfonyStyle $io): void
+    private function createAdminUser(string $email, string $password, string $firstName, string $lastName, SymfonyStyle $io): void
     {
         $existingUser = $this->userRepository->findOneBy(['email' => $email]);
         if ($existingUser) {
@@ -255,8 +259,8 @@ class SetupPermissionsCommand extends Command
 
         $user = new User();
         $user->setEmail($email);
-        $user->setFirstName('Admin');
-        $user->setLastName('User');
+        $user->setFirstName($firstName);
+        $user->setLastName($lastName);
         $user->setRoles(['ROLE_ADMIN']);
         $user->setAuthProvider('local');
         $user->setIsActive(true);
@@ -268,6 +272,6 @@ class SetupPermissionsCommand extends Command
         $this->entityManager->persist($user);
         $this->entityManager->flush();
 
-        $io->success("Admin user created with email: $email");
+        $io->success("Admin user created: $firstName $lastName ($email)");
     }
 }

@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Schritt 1: System-Anforderungen - Deployment Wizard{% endblock %}
+{% block title %}Schritt 5: System-Anforderungen - Deployment Wizard{% endblock %}
 
 {% block body %}
 <div class="container mt-5">
@@ -11,10 +11,10 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center mb-2">
                         <h6 class="mb-0">Setup-Fortschritt</h6>
-                        <small class="text-muted">Schritt 1 von 6</small>
+                        <small class="text-muted">Schritt 5 von 10</small>
                     </div>
                     <div class="progress" style="height: 10px;">
-                        <div class="progress-bar" role="progressbar" style="width: 16%;" aria-valuenow="16" aria-valuemin="0" aria-valuemax="100"></div>
+                        <div class="progress-bar" role="progressbar" style="width: 50%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
                     </div>
                 </div>
             </div>
@@ -23,7 +23,7 @@
                 <div class="card-header bg-primary text-white">
                     <h2 class="mb-0">
                         <i class="fas fa-check-circle me-2"></i>
-                        Schritt 1: System-Anforderungen prüfen
+                        Schritt 5: System-Anforderungen prüfen
                     </h2>
                 </div>
                 <div class="card-body p-4">
@@ -168,14 +168,14 @@
 
                     {# Navigation #}
                     <div class="d-flex justify-content-between mt-4">
-                        <a href="{{ path('setup_wizard_index') }}" class="btn btn-outline-secondary">
+                        <a href="{{ path('setup_step4_organisation_info') }}" class="btn btn-outline-secondary">
                             <i class="fas fa-arrow-left me-2"></i>
                             Zurück
                         </a>
 
                         {% if can_proceed %}
-                            <a href="{{ path('setup_step2_modules') }}" class="btn btn-primary">
-                                Weiter zu Schritt 2: Module auswählen
+                            <a href="{{ path('setup_step6_modules') }}" class="btn btn-primary">
+                                Weiter zu Schritt 6: Module auswählen
                                 <i class="fas fa-arrow-right ms-2"></i>
                             </a>
                         {% else %}
