@@ -1797,6 +1797,46 @@ compliance:
     strategic:
       title: Strategische Compliance
       description: Identifizieren Sie, welche Frameworks sich am meisten überschneiden und priorisieren Sie die Umsetzung basierend auf Multi-Framework-Vorteilen.
+  # Data Reuse Insights & Gap Analysis Pages (Additional translations)
+  title:
+    data_reuse: Datenwiederverwendungs-Insights
+    gaps: Gap-Analyse
+  description:
+    data_reuse: Analysieren Sie Datenwiederverwendungsmöglichkeiten über Frameworks hinweg
+    reuse_matrix: Sehen Sie, welche Daten über mehrere Frameworks hinweg genutzt werden können
+    gap_analysis: Identifizieren Sie Compliance-Lücken und Verbesserungsmöglichkeiten
+  section:
+    reuse_opportunities: Wiederverwendungsmöglichkeiten
+    reuse_matrix: Datenwiederverwendungs-Matrix
+    framework_coverage: Framework-Abdeckung
+    gap_details: Gap-Details
+    recommendations: Empfehlungen
+  stats:
+    total_data_points: Gesamt Datenpunkte
+    reused_data: Wiederverwendete Daten
+    reuse_rate: Wiederverwendungsrate
+    effort_saved: Eingesparte Arbeit
+    time_saved_hours: Zeitersparnis (Stunden)
+  field:
+    data_element: Datenelement
+    source: Quelle
+    reuse_count: Wiederverwendungszähler
+    used_in_frameworks: Verwendet in Frameworks
+    quality_score: Qualitätsscore
+    reused_data: Wiederverwendete Daten
+    new_data_needed: Neue Daten erforderlich
+    coverage: Abdeckung
+    frameworks: Frameworks
+    gap_reason: Grund für Lücke
+    assessment: Bewertung
+    risk_level: Risikolevel
+  badge:
+    overdue: Überfällig
+  message:
+    no_opportunities: Keine Wiederverwendungsmöglichkeiten gefunden
+    no_data_elements: Keine Datenelemente gefunden
+    no_frameworks: Keine Frameworks geladen
+    no_gaps: Keine Gaps gefunden - Alle Anforderungen erfüllt!
 
 # Risk Appetite (ISO 27005:2022)
 risk_appetite:
