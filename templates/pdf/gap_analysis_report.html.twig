@@ -159,31 +159,23 @@
     <h2>Empfehlungen zur Gap-Schließung</h2>
 
     <h3>Priorität 1: Kritische Gaps</h3>
-    <div style="background: #FFC7CE; padding: 15px; margin: 10px 0; border-left: 4px solid #9C0006; font-size: 9pt;">
-        <strong>Sofortmaßnahmen erforderlich:</strong>
-        <ul style="margin-left: 20px; margin-top: 5px;">
-            {% if severity_counts.critical > 0 %}
-                <li>{{ severity_counts.critical }} kritische Gap(s) identifiziert - Diese erfordern sofortige Aufmerksamkeit</li>
-                <li>Empfehlung: Wöchentliche Reviews und dedizierte Ressourcen für kritische Anforderungen</li>
-                <li>Ziel: 100% der kritischen Gaps innerhalb von 30 Tagen schließen</li>
-            {% else %}
-                <li>Keine kritischen Gaps identifiziert - Guter Status!</li>
-            {% endif %}
-        </ul>
+    <div style="background: #FFC7CE; padding: 8px; margin: 5px 0; border-left: 3px solid #9C0006; font-size: 9pt;">
+        <strong>Sofortmaßnahmen:</strong>
+        {% if severity_counts.critical > 0 %}
+        {{ severity_counts.critical }} kritische Gap(s) identifiziert - sofortige Aufmerksamkeit erforderlich. Wöchentliche Reviews & dedizierte Ressourcen einplanen. <strong>Ziel: 100% innerhalb von 30 Tagen schließen</strong>
+        {% else %}
+        Keine kritischen Gaps identifiziert - Guter Status!
+        {% endif %}
     </div>
 
     <h3>Priorität 2: Hohe Gaps</h3>
-    <div style="background: #FFEB9C; padding: 15px; margin: 10px 0; border-left: 4px solid #9C5700; font-size: 9pt;">
+    <div style="background: #FFEB9C; padding: 8px; margin: 5px 0; border-left: 3px solid #9C5700; font-size: 9pt;">
         <strong>Mittelfristige Maßnahmen:</strong>
-        <ul style="margin-left: 20px; margin-top: 5px;">
-            {% if severity_counts.high > 0 %}
-                <li>{{ severity_counts.high }} hohe Gap(s) identifiziert - Sollten zeitnah adressiert werden</li>
-                <li>Empfehlung: Monatliche Reviews und klare Verantwortlichkeiten definieren</li>
-                <li>Ziel: 80% der hohen Gaps innerhalb von 90 Tagen schließen</li>
-            {% else %}
-                <li>Keine hohen Gaps identifiziert - Weiter so!</li>
-            {% endif %}
-        </ul>
+        {% if severity_counts.high > 0 %}
+        {{ severity_counts.high }} hohe Gap(s) identifiziert - zeitnah adressieren. Monatliche Reviews & klare Verantwortlichkeiten definieren. <strong>Ziel: 80% innerhalb von 90 Tagen schließen</strong>
+        {% else %}
+        Keine hohen Gaps identifiziert - Weiter so!
+        {% endif %}
     </div>
 
     <h3>Compliance Roadmap</h3>
@@ -214,14 +206,7 @@
         </tbody>
     </table>
 
-    <div style="background: #E8F4F8; padding: 15px; margin-top: 20px; border-radius: 4px; font-size: 9pt;">
-        <strong>📋 Nächste Schritte:</strong>
-        <ol style="margin-left: 20px; margin-top: 5px;">
-            <li>Review Meeting mit Stakeholdern zur Priorisierung der Gaps einplanen</li>
-            <li>Verantwortlichkeiten für kritische und hohe Gaps zuweisen</li>
-            <li>Detaillierte Implementierungspläne für Top 5 Gaps erstellen</li>
-            <li>Monatliches Gap-Tracking und Fortschrittsberichte etablieren</li>
-            <li>Quarterly Compliance Reviews durchführen</li>
-        </ol>
+    <div style="background: #E8F4F8; padding: 8px; margin-top: 10px; border-radius: 4px; font-size: 9pt;">
+        <strong>Nächste Schritte:</strong> (1) Review Meeting mit Stakeholdern zur Gap-Priorisierung einplanen, (2) Verantwortlichkeiten für kritische/hohe Gaps zuweisen, (3) Detaillierte Implementierungspläne für Top 5 Gaps erstellen, (4) Monatliches Gap-Tracking & Fortschrittsberichte etablieren, (5) Quarterly Compliance Reviews durchführen.
     </div>
 {% endblock %}
