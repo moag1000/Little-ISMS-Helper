@@ -1,37 +1,173 @@
 {% extends 'base.html.twig' %}
 {% block title %}{{ 'mfa_token.title'|trans }} - {{ parent() }}{% endblock %}
+
 {% block body %}
 <div class="container-fluid py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1><i class="bi bi-shield-lock"></i> {{ 'mfa_token.title'|trans }}</h1>
-        <a href="{{ path('admin_mfa_new') }}" class="btn btn-primary"><i class="bi bi-plus-circle"></i> {{ 'mfa_token.new'|trans }}</a>
     </div>
+
+    {# Statistics Cards #}
     <div class="row mb-4">
-        <div class="col-md-4"><div class="card"><div class="card-body text-center"><h3>{{ active_count }}</h3><p class="mb-0">{{ 'mfa_token.kpi.active'|trans }}</p></div></div></div>
-        <div class="col-md-4"><div class="card"><div class="card-body text-center"><h3>{{ totp_count }}</h3><p class="mb-0">TOTP</p></div></div></div>
-        <div class="col-md-4"><div class="card"><div class="card-body text-center"><h3>{{ webauthn_count }}</h3><p class="mb-0">WebAuthn</p></div></div></div>
+        <div class="col-md-3">
+            <div class="card border-success">
+                <div class="card-body text-center">
+                    <h3 class="text-success">{{ active_count }}</h3>
+                    <p class="mb-0"><i class="bi bi-check-circle"></i> {{ 'mfa_token.kpi.active'|trans }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h3 class="text-primary">{{ totp_count }}</h3>
+                    <p class="mb-0"><i class="bi bi-phone"></i> TOTP</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h3 class="text-info">{{ webauthn_count }}</h3>
+                    <p class="mb-0"><i class="bi bi-key"></i> WebAuthn</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h3 class="text-secondary">{{ tokens_by_user|length }}</h3>
+                    <p class="mb-0"><i class="bi bi-people"></i> {{ 'mfa_token.kpi.users'|trans }}</p>
+                </div>
+            </div>
+        </div>
     </div>
-    {% if mfa_tokens|length == 0 %}
-        <div class="alert alert-info">{{ 'mfa_token.empty'|trans }}</div>
+
+    {# Users with MFA Tokens #}
+    {% if tokens_by_user|length == 0 %}
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i> {{ 'mfa_token.empty'|trans }}
+        </div>
     {% else %}
-        <div class="card"><div class="table-responsive"><table class="table table-hover mb-0">
-            <thead><tr><th>{{ 'mfa_token.field.user'|trans }}</th><th>{{ 'mfa_token.field.token_type'|trans }}</th><th>{{ 'mfa_token.field.device_name'|trans }}</th><th>{{ 'common.actions'|trans }}</th></tr></thead>
-            <tbody>
-                {% for token in mfa_tokens %}
-                    <tr>
-                        <td>{{ token.user.email }}</td>
-                        <td><span class="badge bg-primary">{{ ('mfa_token.type.' ~ token.tokenType)|trans }}</span></td>
-                        <td>{{ token.deviceName ?? 'N/A' }}</td>
-                        <td>
-                            <div class="btn-group btn-group-sm">
-                                <a href="{{ path('admin_mfa_show', {id: token.id}) }}" class="btn btn-outline-primary"><i class="bi bi-eye"></i></a>
-                                <a href="{{ path('admin_mfa_edit', {id: token.id}) }}" class="btn btn-outline-secondary"><i class="bi bi-pencil"></i></a>
-                            </div>
-                        </td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table></div></div>
+        {% for user_id, user_data in tokens_by_user %}
+            <div class="card mb-3">
+                <div class="card-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            <i class="bi bi-person-circle"></i>
+                            {{ user_data.user.firstName }} {{ user_data.user.lastName }}
+                            <span class="text-muted">{{ user_data.user.email }}</span>
+                        </h5>
+                        <div class="btn-group">
+                            <a href="{{ path('admin_mfa_setup_totp', {id: user_data.user.id}) }}"
+                               class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-plus-circle"></i> {{ 'mfa_token.setup_new'|trans }}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-sm mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th style="width: 50px;">{{ 'mfa_token.field.status'|trans }}</th>
+                                    <th>{{ 'mfa_token.field.token_type'|trans }}</th>
+                                    <th>{{ 'mfa_token.field.device_name'|trans }}</th>
+                                    <th>{{ 'mfa_token.field.enrolled_at'|trans }}</th>
+                                    <th>{{ 'mfa_token.field.last_used'|trans }}</th>
+                                    <th>{{ 'mfa_token.field.usage_count'|trans }}</th>
+                                    <th style="width: 150px;">{{ 'common.actions'|trans }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for token in user_data.tokens %}
+                                    <tr class="{{ token.isActive ? '' : 'table-secondary' }}">
+                                        <td>
+                                            {% if token.isActive %}
+                                                <span class="badge bg-success" title="{{ 'mfa_token.status.active'|trans }}">
+                                                    <i class="bi bi-check-circle"></i>
+                                                </span>
+                                            {% else %}
+                                                <span class="badge bg-secondary" title="{{ 'mfa_token.status.inactive'|trans }}">
+                                                    <i class="bi bi-dash-circle"></i>
+                                                </span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-primary">
+                                                {% if token.tokenType == 'totp' %}
+                                                    <i class="bi bi-phone"></i>
+                                                {% elseif token.tokenType == 'webauthn' %}
+                                                    <i class="bi bi-key"></i>
+                                                {% endif %}
+                                                {{ ('mfa_token.type.' ~ token.tokenType)|trans }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <i class="bi bi-{{ token.tokenType == 'totp' ? 'phone' : 'key' }}"></i>
+                                            {{ token.deviceName ?? 'N/A' }}
+                                        </td>
+                                        <td>
+                                            <small class="text-muted">
+                                                <i class="bi bi-calendar"></i>
+                                                {{ token.enrolledAt|date('Y-m-d H:i') }}
+                                            </small>
+                                        </td>
+                                        <td>
+                                            {% if token.lastUsedAt %}
+                                                <small class="text-muted">
+                                                    <i class="bi bi-clock"></i>
+                                                    {{ token.lastUsedAt|date('Y-m-d H:i') }}
+                                                </small>
+                                            {% else %}
+                                                <span class="text-muted">{{ 'mfa_token.never_used'|trans }}</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-info">{{ token.usageCount }}</span>
+                                        </td>
+                                        <td>
+                                            <div class="btn-group btn-group-sm">
+                                                <a href="{{ path('admin_mfa_show', {id: token.id}) }}"
+                                                   class="btn btn-outline-primary"
+                                                   title="{{ 'common.view'|trans }}">
+                                                    <i class="bi bi-eye"></i>
+                                                </a>
+                                                {% if token.isActive %}
+                                                    <form method="post"
+                                                          action="{{ path('admin_mfa_disable', {id: token.id}) }}"
+                                                          style="display: inline;"
+                                                          onsubmit="return confirm('{{ 'mfa_token.confirm_disable'|trans }}');">
+                                                        <input type="hidden" name="_token" value="{{ csrf_token('disable_' ~ token.id) }}">
+                                                        <button type="submit"
+                                                                class="btn btn-outline-warning"
+                                                                title="{{ 'mfa_token.action.disable'|trans }}">
+                                                            <i class="bi bi-pause-circle"></i>
+                                                        </button>
+                                                    </form>
+                                                {% endif %}
+                                                <form method="post"
+                                                      action="{{ path('admin_mfa_delete', {id: token.id}) }}"
+                                                      style="display: inline;"
+                                                      onsubmit="return confirm('{{ 'mfa_token.confirm_delete'|trans }}');">
+                                                    <input type="hidden" name="_token" value="{{ csrf_token('delete_' ~ token.id) }}">
+                                                    <button type="submit"
+                                                            class="btn btn-outline-danger"
+                                                            title="{{ 'common.delete'|trans }}">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
     {% endif %}
 </div>
 {% endblock %}
