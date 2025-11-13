@@ -576,6 +576,7 @@ audit:
     recommendations: Empfehlungen
     conclusion: Fazit
     summary: Zusammenfassung
+    audited_subsidiaries: Auditierte Tochtergesellschaften
   validation:
     title_required: Bitte geben Sie einen Titel ein.
     date_required: Bitte wählen Sie ein Datum.
