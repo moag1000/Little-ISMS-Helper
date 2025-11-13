@@ -207,6 +207,17 @@ jobs:
           build-args: |
             BUILDKIT_PROGRESS=plain
 
+      - name: Upload Repository Logo to Docker Hub
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: |
+          chmod +x .github/scripts/upload-dockerhub-logo.sh
+          .github/scripts/upload-dockerhub-logo.sh \
+            "${{ secrets.DOCKERHUB_USERNAME }}" \
+            "little-isms-helper" \
+            "${{ secrets.DOCKERHUB_TOKEN }}" \
+            "public/logo-512.png"
+        continue-on-error: true
+
       - name: Test Docker Compose
         timeout-minutes: 10
         run: |
