@@ -41,7 +41,39 @@ forgot_password: Forgot Password
 remember_me: Remember Me
 login_title: Login
 welcome_back: Welcome Back
-home: Home
+home:
+  _default: Home
+  welcome: Welcome
+  title: Overview
+  description: Manage your Information Security Management System
+  modules: Modules
+  module:
+    assets:
+      title: Assets
+      description: Manage your IT assets and resources
+      action: Go to Assets
+    risks:
+      title: Risks
+      description: Identify and assess security risks
+      action: Go to Risks
+    incidents:
+      title: Incidents
+      description: Record and manage security incidents
+      action: Go to Incidents
+    compliance:
+      title: Compliance
+      description: Manage compliance frameworks and requirements
+      action: Go to Compliance
+    dashboard:
+      title: Dashboard
+      description: Overview of current security status
+      action: Go to Dashboard
+    documents:
+      title: Documents
+      description: Manage policies and documentation
+      action: Go to Documents
+  development_notice: This feature is under development
+  go_to_dashboard: Go to Dashboard
 # Phase 6L-A: Admin Panel Translation Keys
 admin:
   title: Administration
