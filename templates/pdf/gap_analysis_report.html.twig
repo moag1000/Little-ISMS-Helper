@@ -30,6 +30,61 @@
         </div>
     </div>
 
+    {# Risk Score & Weighted Compliance #}
+    <h2>Risiko-Bewertung & Prioritäten</h2>
+    <div style="background: {% if risk_score >= 50 %}#FFC7CE{% elseif risk_score >= 20 %}#FFEB9C{% else %}#C6EFCE{% endif %}; padding: 8px; margin: 8px 0; border-left: 3px solid {% if risk_score >= 50 %}#9C0006{% elseif risk_score >= 20 %}#FFA500{% else %}#28A745{% endif %}; font-size: 9pt;">
+        <strong>Gesamt-Risk-Score:</strong> <strong style="font-size: 14pt;">{{ risk_score }}</strong>
+        (Berechnung: {{ uncovered_critical|length }} kritische × 10 + {{ uncovered_high|length }} hohe × 5)
+        {% if risk_score >= 50 %}
+        | <strong style="color: #9C0006;">⚠ KRITISCH</strong> - Sofortmaßnahmen erforderlich!
+        {% elseif risk_score >= 20 %}
+        | <strong style="color: #FFA500;">⚠ HOCH</strong> - Dringende Aufmerksamkeit nötig
+        {% elseif risk_score > 0 %}
+        | <strong style="color: #2196F3;">ℹ MITTEL</strong> - Planmäßige Gap-Schließung
+        {% else %}
+        | <strong style="color: #28A745;">✓ NIEDRIG</strong> - Guter Status
+        {% endif %}
+    </div>
+
+    <table style="width: 90%;">
+        <thead>
+            <tr>
+                <th>Metrik</th>
+                <th class="text-center">Standard Score</th>
+                <th class="text-center">Weighted Score</th>
+                <th class="text-center">Differenz</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Compliance Score</td>
+                <td class="text-center">{{ compliance_score }}%</td>
+                <td class="text-center">
+                    <strong {% if weighted_compliance_score < compliance_score %}style="color: #C00;"{% endif %}>
+                        {{ weighted_compliance_score }}%
+                    </strong>
+                </td>
+                <td class="text-center">
+                    {% set diff = weighted_compliance_score - compliance_score %}
+                    <span style="color: {% if diff < 0 %}#C00{% elseif diff > 0 %}#0A0{% else %}#666{% endif %};">
+                        {{ diff > 0 ? '+' : '' }}{{ diff }}%
+                    </span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div style="background: #E8F4F8; padding: 8px; margin: 8px 0; border-left: 3px solid #2196F3; font-size: 9pt;">
+        <strong>Interpretation:</strong>
+        {% if weighted_compliance_score < compliance_score %}
+        Der gewichtete Score ist niedriger, was bedeutet, dass <strong>kritische/hohe Priority-Requirements</strong> schlechter erfüllt sind als Medium/Low-Requirements. <strong>Fokus auf High-Impact-Gaps erforderlich!</strong>
+        {% elseif weighted_compliance_score > compliance_score %}
+        Der gewichtete Score ist höher - Kritische Requirements sind besser erfüllt. Gute Priorisierung!
+        {% else %}
+        Ausgewogene Compliance über alle Prioritäts-Stufen.
+        {% endif %}
+    </div>
+
     {# Severity Breakdown #}
     <h2>Gap-Verteilung nach Severity</h2>
     <table style="width: 70%;">
@@ -64,45 +119,126 @@
         </tbody>
     </table>
 
-    {# Critical Gaps First #}
-    {% set critical_gaps = gaps|filter(g => g.requirement.priority == 'critical') %}
-    {% if critical_gaps|length > 0 %}
+    {# Priority-Weighted Recommendations #}
+    {% if gap_recommendations|length > 0 %}
     <div class="page-break"></div>
-    <h2>Kritische Gaps (Sofortmaßnahmen erforderlich)</h2>
+    <h2>Priorisierte Gap-Schließungs-Roadmap</h2>
+    <p style="font-size: 9pt; color: #666; margin-bottom: 10px;">
+        Automatisch generierte Empfehlungen basierend auf Priority-Weights und Risk-Score.
+    </p>
+
     <table>
         <thead>
             <tr>
-                <th style="width: 12%;">ID</th>
-                <th style="width: 25%;">Anforderung</th>
-                <th style="width: 15%;">Kategorie</th>
-                <th style="width: 10%;">Severity</th>
-                <th style="width: 10%;">Status</th>
-                <th style="width: 28%;">Gap-Beschreibung</th>
+                <th style="width: 15%;">Priorität</th>
+                <th style="width: 50%;">Maßnahme</th>
+                <th style="width: 20%;">Timeline</th>
+                <th style="width: 15%;">Risk-Reduktion</th>
             </tr>
         </thead>
         <tbody>
-            {% for gap_item in critical_gaps %}
-            {% set req = gap_item.requirement %}
+            {% for rec in gap_recommendations %}
             <tr class="no-break">
-                <td><strong>{{ req.requirementId }}</strong></td>
-                <td>{{ req.title }}</td>
-                <td><span class="badge badge-info">{{ req.category ?? '-' }}</span></td>
-                <td><span class="badge badge-critical">Kritisch</span></td>
                 <td>
-                    {% set status = req.status %}
-                    <span class="badge {% if status == 'not_implemented' %}badge-danger{% elseif status == 'partially_implemented' %}badge-warning{% else %}badge-secondary{% endif %}">
-                        {% if status == 'not_implemented' %}Nicht impl.
-                        {% elseif status == 'partially_implemented' %}Teilweise
-                        {% elseif status == 'not_applicable' %}N/A
-                        {% else %}{{ status }}
-                        {% endif %}
+                    <span class="badge {% if rec.priority == 'CRITICAL' %}badge-critical{% elseif rec.priority == 'HIGH' %}badge-high{% elseif rec.priority == 'MEDIUM' %}badge-medium{% else %}badge-low{% endif %}">
+                        {{ rec.priority }}
                     </span>
                 </td>
-                <td style="font-size: 8pt;">{{ gap_item.analysis.gap_reason ?? 'Anforderung nicht erfüllt' }}</td>
+                <td style="font-size: 8pt;">{{ rec.action }}</td>
+                <td class="text-center">{{ rec.timeline }}</td>
+                <td class="text-center"><strong>-{{ rec.risk_reduction }}</strong></td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
+
+    <div style="background: #FFF2CC; padding: 8px; margin: 8px 0; border-left: 3px solid #F4D03F; font-size: 9pt;">
+        <strong>Potenzielle Gesamt-Risk-Reduktion:</strong>
+        Durch Umsetzung aller Empfehlungen kann der Risk-Score von <strong>{{ risk_score }}</strong> auf
+        <strong>{{ risk_score - gap_recommendations|reduce((carry, rec) => carry + rec.risk_reduction, 0) }}</strong>
+        reduziert werden (-{{ gap_recommendations|reduce((carry, rec) => carry + rec.risk_reduction, 0) }} Punkte).
+    </div>
+    {% endif %}
+
+    {# Critical Gaps Detailed Table #}
+    {% if uncovered_critical|length > 0 %}
+    <div class="page-break"></div>
+    <h2>⚠ Kritische Gaps - Sofortmaßnahmen erforderlich</h2>
+    <p style="font-size: 9pt; color: #C00; margin-bottom: 10px;">
+        Diese {{ uncovered_critical|length }} kritischen Anforderungen sind NICHT erfüllt und erfordern höchste Priorität!
+    </p>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 12%;">ID</th>
+                <th style="width: 30%;">Anforderung</th>
+                <th style="width: 18%;">Kategorie</th>
+                <th style="width: 12%;">Erfüllung</th>
+                <th style="width: 28%;">Beschreibung (gekürzt)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for critical in uncovered_critical %}
+            <tr class="no-break">
+                <td><strong style="color: #9C0006;">{{ critical.id }}</strong></td>
+                <td style="font-size: 8pt;"><strong>{{ critical.title|length > 50 ? (critical.title|slice(0, 50) ~ '...') : critical.title }}</strong></td>
+                <td><span class="badge badge-info">{{ critical.category ?? 'Uncategorized' }}</span></td>
+                <td class="text-center">
+                    <span style="color: #C00;"><strong>{{ critical.fulfillment }}%</strong></span>
+                </td>
+                <td style="font-size: 7pt;">{{ critical.description|length > 80 ? (critical.description|slice(0, 80) ~ '...') : (critical.description ?? '-') }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div style="background: #FFC7CE; padding: 8px; margin: 8px 0; border-left: 3px solid #9C0006; font-size: 9pt;">
+        <strong>⚠ Dringende Handlungsempfehlung:</strong> Diese {{ uncovered_critical|length }} kritischen Gaps tragen
+        <strong>{{ uncovered_critical|length * 10 }} Punkte</strong> zum Gesamt-Risk-Score bei. Sofortige Maßnahmen binnen
+        30 Tagen erforderlich!
+    </div>
+    {% endif %}
+
+    {# High Priority Gaps Table #}
+    {% if uncovered_high|length > 0 %}
+    <div class="page-break"></div>
+    <h2>Hohe Priorität Gaps</h2>
+    <p style="font-size: 9pt; color: #F90; margin-bottom: 10px;">
+        {{ uncovered_high|length }} Anforderungen mit hoher Priorität sind nicht erfüllt (Timeline: 30-90 Tage).
+    </p>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 12%;">ID</th>
+                <th style="width: 35%;">Anforderung</th>
+                <th style="width: 20%;">Kategorie</th>
+                <th style="width: 12%;">Erfüllung</th>
+                <th style="width: 21%;">Impact</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for high in uncovered_high|slice(0, 15) %}
+            <tr class="no-break">
+                <td><strong>{{ high.id }}</strong></td>
+                <td style="font-size: 8pt;">{{ high.title|length > 50 ? (high.title|slice(0, 50) ~ '...') : high.title }}</td>
+                <td><span class="badge badge-info">{{ high.category ?? 'Uncategorized' }}</span></td>
+                <td class="text-center">{{ high.fulfillment }}%</td>
+                <td class="text-center" style="font-size: 7pt;">Risk: +5 Punkte</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% if uncovered_high|length > 15 %}
+    <p style="font-size: 8pt; color: #666; margin-top: 5px;">
+        ... und {{ uncovered_high|length - 15 }} weitere hohe Priorität Gaps
+    </p>
+    {% endif %}
+
+    <div style="background: #FFEB9C; padding: 8px; margin: 8px 0; border-left: 3px solid #FFA500; font-size: 9pt;">
+        <strong>Empfehlung:</strong> Diese {{ uncovered_high|length }} hohen Gaps tragen
+        <strong>{{ uncovered_high|length * 5 }} Punkte</strong> zum Risk-Score bei. Zeitnahe Bearbeitung innerhalb
+        90 Tagen empfohlen.
+    </div>
     {% endif %}
 
     {# All Gaps Detailed Table #}
