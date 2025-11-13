@@ -76,6 +76,7 @@
                         <table class="table table-hover">
                             <thead>
                                 <tr>
+                                    <th style="width: 60px;"></th>
                                     <th>Name</th>
                                     <th>E-Mail</th>
                                     <th>Rollen</th>
@@ -88,6 +89,19 @@
                             <tbody id="users-table-body">
                                 {% for user in users %}
                                     <tr id="user-{{ user.id }}">
+                                        <td>
+                                            {% if user.profilePicture %}
+                                                <img src="{{ asset(user.profilePicture) }}"
+                                                     alt="{{ user.firstName }} {{ user.lastName }}"
+                                                     class="rounded-circle"
+                                                     style="width: 40px; height: 40px; object-fit: cover;">
+                                            {% else %}
+                                                <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center"
+                                                     style="width: 40px; height: 40px; font-weight: 600;">
+                                                    {{ user.firstName|slice(0, 1)|upper }}{{ user.lastName|slice(0, 1)|upper }}
+                                                </div>
+                                            {% endif %}
+                                        </td>
                                         <td>
                                             <a href="{{ path('user_management_show', {'id': user.id}) }}"
                                                data-turbo-frame="_top">

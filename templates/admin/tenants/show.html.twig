@@ -10,23 +10,36 @@
 {% block admin_content %}
     {# Tenant Header #}
     <div class="d-flex justify-content-between align-items-start mb-4">
-        <div>
-            <h2>{{ tenant.name }}</h2>
-            <p class="text-muted mb-2">
-                <code class="text-primary">{{ tenant.code }}</code>
-                {% if tenant.isActive %}
-                    <span class="badge bg-success ms-2">
-                        <i class="bi bi-check-circle"></i> {{ 'tenant.status.active'|trans }}
-                    </span>
-                {% else %}
-                    <span class="badge bg-secondary ms-2">
-                        <i class="bi bi-x-circle"></i> {{ 'tenant.status.inactive'|trans }}
-                    </span>
-                {% endif %}
-            </p>
-            {% if tenant.description %}
-                <p>{{ tenant.description }}</p>
+        <div class="d-flex align-items-start">
+            {% if tenant.logoPath %}
+                <img src="{{ asset(tenant.logoPath) }}"
+                     alt="{{ tenant.name }}"
+                     class="rounded me-3"
+                     style="width: 80px; height: 80px; object-fit: contain; border: 1px solid #dee2e6;">
+            {% else %}
+                <div class="bg-light rounded d-flex align-items-center justify-content-center me-3"
+                     style="width: 80px; height: 80px; border: 1px solid #dee2e6;">
+                    <i class="bi bi-building text-muted fs-2"></i>
+                </div>
             {% endif %}
+            <div>
+                <h2>{{ tenant.name }}</h2>
+                <p class="text-muted mb-2">
+                    <code class="text-primary">{{ tenant.code }}</code>
+                    {% if tenant.isActive %}
+                        <span class="badge bg-success ms-2">
+                            <i class="bi bi-check-circle"></i> {{ 'tenant.status.active'|trans }}
+                        </span>
+                    {% else %}
+                        <span class="badge bg-secondary ms-2">
+                            <i class="bi bi-x-circle"></i> {{ 'tenant.status.inactive'|trans }}
+                        </span>
+                    {% endif %}
+                </p>
+                {% if tenant.description %}
+                    <p>{{ tenant.description }}</p>
+                {% endif %}
+            </div>
         </div>
         <div class="btn-group">
             <a href="{{ path('tenant_management_edit', {id: tenant.id}) }}" class="btn btn-primary">
@@ -105,6 +118,19 @@
                 <div class="card-body">
                     <table class="table table-sm">
                         <tbody>
+                            <tr>
+                                <th style="width: 40%;">{{ 'tenant.field.logo'|trans }}</th>
+                                <td>
+                                    {% if tenant.logoPath %}
+                                        <img src="{{ asset(tenant.logoPath) }}"
+                                             alt="{{ tenant.name }}"
+                                             class="rounded"
+                                             style="width: 60px; height: 60px; object-fit: contain;">
+                                    {% else %}
+                                        <span class="text-muted">{{ 'tenant.no_logo'|trans }}</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
                             <tr>
                                 <th style="width: 40%;">{{ 'tenant.field.code'|trans }}</th>
                                 <td><code class="text-primary">{{ tenant.code }}</code></td>

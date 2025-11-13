@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Tenant;
 use App\Form\TenantType;
 use App\Repository\TenantRepository;
+use App\Service\AuditLogger;
 use App\Service\FileUploadSecurityService;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -24,6 +25,7 @@ class TenantManagementController extends AbstractController
         private readonly EntityManagerInterface $entityManager,
         private readonly TenantRepository $tenantRepository,
         private readonly LoggerInterface $logger,
+        private readonly AuditLogger $auditLogger,
         private readonly FileUploadSecurityService $fileUploadService,
         private readonly SluggerInterface $slugger,
         private readonly string $uploadsDirectory = 'uploads/tenants',
@@ -102,6 +104,21 @@ class TenantManagementController extends AbstractController
                     'user' => $this->getUser()?->getUserIdentifier(),
                 ]);
 
+                // Audit log
+                $this->auditLogger->logCustom(
+                    'tenant_created',
+                    'Tenant',
+                    $tenant->getId(),
+                    null,
+                    [
+                        'code' => $tenant->getCode(),
+                        'name' => $tenant->getName(),
+                        'is_active' => $tenant->isActive(),
+                        'has_logo' => $tenant->getLogoPath() !== null,
+                    ],
+                    sprintf('Tenant "%s" created', $tenant->getName())
+                );
+
                 $this->addFlash('success', 'tenant.flash.created');
 
                 return $this->redirectToRoute('tenant_management_show', ['id' => $tenant->getId()]);
@@ -150,6 +167,16 @@ class TenantManagementController extends AbstractController
     #[Route('/{id}/edit', name: 'tenant_management_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Tenant $tenant): Response
     {
+        // Capture old values for audit log
+        $oldValues = [
+            'code' => $tenant->getCode(),
+            'name' => $tenant->getName(),
+            'description' => $tenant->getDescription(),
+            'is_active' => $tenant->isActive(),
+            'azure_tenant_id' => $tenant->getAzureTenantId(),
+            'has_logo' => $tenant->getLogoPath() !== null,
+        ];
+
         $oldLogoPath = $tenant->getLogoPath();
         $form = $this->createForm(TenantType::class, $tenant);
         $form->handleRequest($request);
@@ -185,6 +212,25 @@ class TenantManagementController extends AbstractController
                     'logo_updated' => $logoFile !== null,
                     'user' => $this->getUser()?->getUserIdentifier(),
                 ]);
+
+                // Audit log with before/after values
+                $newValues = [
+                    'code' => $tenant->getCode(),
+                    'name' => $tenant->getName(),
+                    'description' => $tenant->getDescription(),
+                    'is_active' => $tenant->isActive(),
+                    'azure_tenant_id' => $tenant->getAzureTenantId(),
+                    'has_logo' => $tenant->getLogoPath() !== null,
+                ];
+
+                $this->auditLogger->logCustom(
+                    'tenant_updated',
+                    'Tenant',
+                    $tenant->getId(),
+                    $oldValues,
+                    $newValues,
+                    sprintf('Tenant "%s" updated', $tenant->getName())
+                );
 
                 $this->addFlash('success', 'tenant.flash.updated');
 
@@ -223,6 +269,16 @@ class TenantManagementController extends AbstractController
                 'user' => $this->getUser()?->getUserIdentifier(),
             ]);
 
+            // Audit log
+            $this->auditLogger->logCustom(
+                'tenant_status_toggled',
+                'Tenant',
+                $tenant->getId(),
+                ['is_active' => $previousStatus],
+                ['is_active' => $tenant->isActive()],
+                sprintf('Tenant "%s" %s', $tenant->getName(), $tenant->isActive() ? 'activated' : 'deactivated')
+            );
+
             $message = $tenant->isActive() ? 'tenant.flash.activated' : 'tenant.flash.deactivated';
             $this->addFlash('success', $message);
         } catch (\Exception $e) {
@@ -254,16 +310,35 @@ class TenantManagementController extends AbstractController
         }
 
         try {
+            $tenantId = $tenant->getId();
             $tenantCode = $tenant->getCode();
+            $tenantName = $tenant->getName();
+
+            // Capture tenant data for audit log before deletion
+            $oldValues = [
+                'code' => $tenantCode,
+                'name' => $tenantName,
+                'is_active' => $tenant->isActive(),
+            ];
 
             $this->entityManager->remove($tenant);
             $this->entityManager->flush();
 
             $this->logger->warning('Tenant deleted', [
-                'tenant_id' => $tenant->getId(),
+                'tenant_id' => $tenantId,
                 'tenant_code' => $tenantCode,
                 'user' => $this->getUser()?->getUserIdentifier(),
             ]);
+
+            // Audit log
+            $this->auditLogger->logCustom(
+                'tenant_deleted',
+                'Tenant',
+                $tenantId,
+                $oldValues,
+                null,
+                sprintf('Tenant "%s" (code: %s) deleted', $tenantName, $tenantCode)
+            );
 
             $this->addFlash('success', 'tenant.flash.deleted');
         } catch (\Exception $e) {
