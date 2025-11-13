@@ -21,3 +21,8 @@ setup:
     name_min: 'Der Organisationsname muss mindestens {{ limit }} Zeichen lang sein.'
     industry_required: 'Bitte wählen Sie eine Branche aus.'
     employee_count_required: 'Bitte wählen Sie die Mitarbeiteranzahl aus.'
+
+# Document Validators
+document:
+  validation:
+    mime_types: 'Bitte laden Sie ein gültiges Dokument hoch (PDF, Word, Excel, Bild oder Textdatei).'
