@@ -54,9 +54,24 @@ class Tenant
     #[ORM\OneToMany(mappedBy: 'tenant', targetEntity: User::class)]
     private Collection $users;
 
+    // Corporate Structure fields
+    #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'subsidiaries')]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    private ?Tenant $parent = null;
+
+    #[ORM\OneToMany(mappedBy: 'parent', targetEntity: self::class)]
+    private Collection $subsidiaries;
+
+    #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
+    private bool $isCorporateParent = false;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $corporateNotes = null;
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
+        $this->subsidiaries = new ArrayCollection();
         $this->createdAt = new \DateTimeImmutable();
     }
 
@@ -197,5 +212,115 @@ class Tenant
     public function setUpdatedAtValue(): void
     {
         $this->updatedAt = new \DateTimeImmutable();
+    }
+
+    // Corporate Structure methods
+    public function getParent(): ?Tenant
+    {
+        return $this->parent;
+    }
+
+    public function setParent(?Tenant $parent): static
+    {
+        $this->parent = $parent;
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Tenant>
+     */
+    public function getSubsidiaries(): Collection
+    {
+        return $this->subsidiaries;
+    }
+
+    public function addSubsidiary(Tenant $subsidiary): static
+    {
+        if (!$this->subsidiaries->contains($subsidiary)) {
+            $this->subsidiaries->add($subsidiary);
+            $subsidiary->setParent($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSubsidiary(Tenant $subsidiary): static
+    {
+        if ($this->subsidiaries->removeElement($subsidiary)) {
+            if ($subsidiary->getParent() === $this) {
+                $subsidiary->setParent(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function isCorporateParent(): bool
+    {
+        return $this->isCorporateParent;
+    }
+
+    public function setIsCorporateParent(bool $isCorporateParent): static
+    {
+        $this->isCorporateParent = $isCorporateParent;
+        return $this;
+    }
+
+    public function getCorporateNotes(): ?string
+    {
+        return $this->corporateNotes;
+    }
+
+    public function setCorporateNotes(?string $corporateNotes): static
+    {
+        $this->corporateNotes = $corporateNotes;
+        return $this;
+    }
+
+    /**
+     * Check if this tenant is part of a corporate structure
+     */
+    public function isPartOfCorporateStructure(): bool
+    {
+        return $this->parent !== null || $this->subsidiaries->count() > 0;
+    }
+
+    /**
+     * Get the root parent (top of corporate hierarchy)
+     */
+    public function getRootParent(): Tenant
+    {
+        $current = $this;
+        while ($current->getParent() !== null) {
+            $current = $current->getParent();
+        }
+        return $current;
+    }
+
+    /**
+     * Get all subsidiaries recursively (including sub-subsidiaries)
+     */
+    public function getAllSubsidiaries(): array
+    {
+        $allSubsidiaries = [];
+        foreach ($this->subsidiaries as $subsidiary) {
+            $allSubsidiaries[] = $subsidiary;
+            $allSubsidiaries = array_merge($allSubsidiaries, $subsidiary->getAllSubsidiaries());
+        }
+        return $allSubsidiaries;
+    }
+
+    /**
+     * Get depth in corporate hierarchy (0 = root/parent, 1 = direct subsidiary, etc.)
+     */
+    public function getHierarchyDepth(): int
+    {
+        $depth = 0;
+        $current = $this;
+        while ($current->getParent() !== null) {
+            $depth++;
+            $current = $current->getParent();
+        }
+        return $depth;
     }
 }
