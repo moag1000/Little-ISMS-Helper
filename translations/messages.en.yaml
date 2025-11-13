@@ -569,6 +569,7 @@ audit:
     recommendations: Recommendations
     conclusion: Conclusion
     summary: Summary
+    audited_subsidiaries: Audited Subsidiaries
   validation:
     title_required: Please enter a title.
     date_required: Please select a date.
