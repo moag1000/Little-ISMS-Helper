@@ -5,8 +5,10 @@ namespace App\Controller;
 use App\Entity\Supplier;
 use App\Form\SupplierType;
 use App\Repository\SupplierRepository;
+use App\Service\SupplierService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -18,26 +20,42 @@ class SupplierController extends AbstractController
 {
     public function __construct(
         private SupplierRepository $supplierRepository,
+        private SupplierService $supplierService,
         private EntityManagerInterface $entityManager,
-        private TranslatorInterface $translator
+        private TranslatorInterface $translator,
+        private Security $security
     ) {}
 
     #[Route('/', name: 'app_supplier_index')]
     #[IsGranted('ROLE_USER')]
     public function index(): Response
     {
-        $suppliers = $this->supplierRepository->findAll();
-        $statistics = $this->supplierRepository->getStatistics();
-        $overdueAssessments = $this->supplierRepository->findOverdueAssessments();
-        $criticalSuppliers = $this->supplierRepository->findCriticalSuppliers();
-        $nonCompliant = $this->supplierRepository->findNonCompliant();
+        // Get current tenant
+        $user = $this->security->getUser();
+        $tenant = $user?->getTenant();
+
+        if (!$tenant) {
+            throw $this->createAccessDeniedException('No tenant associated with user');
+        }
+
+        // Get suppliers based on governance model
+        $suppliers = $this->supplierService->getSuppliersForTenant($tenant);
+
+        // Get statistics for tenant
+        $statistics = $this->supplierRepository->getStatisticsByTenant($tenant);
+
+        // Get critical suppliers for tenant
+        $criticalSuppliers = $this->supplierRepository->findCriticalSuppliersByTenant($tenant);
+
+        // Get inheritance info
+        $inheritanceInfo = $this->supplierService->getSupplierInheritanceInfo($tenant);
 
         return $this->render('supplier/index.html.twig', [
             'suppliers' => $suppliers,
             'statistics' => $statistics,
-            'overdueAssessments' => $overdueAssessments,
             'criticalSuppliers' => $criticalSuppliers,
-            'nonCompliant' => $nonCompliant,
+            'inheritanceInfo' => $inheritanceInfo,
+            'currentTenant' => $tenant,
         ]);
     }
 
@@ -67,8 +85,22 @@ class SupplierController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function show(Supplier $supplier): Response
     {
+        $user = $this->security->getUser();
+        $tenant = $user?->getTenant();
+
+        if (!$tenant) {
+            throw $this->createAccessDeniedException('No tenant associated with user');
+        }
+
+        // Check if supplier is inherited and can be edited
+        $isInherited = $this->supplierService->isInheritedSupplier($supplier, $tenant);
+        $canEdit = $this->supplierService->canEditSupplier($supplier, $tenant);
+
         return $this->render('supplier/show.html.twig', [
             'supplier' => $supplier,
+            'isInherited' => $isInherited,
+            'canEdit' => $canEdit,
+            'currentTenant' => $tenant,
         ]);
     }
 
@@ -76,6 +108,19 @@ class SupplierController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function edit(Request $request, Supplier $supplier): Response
     {
+        $user = $this->security->getUser();
+        $tenant = $user?->getTenant();
+
+        if (!$tenant) {
+            throw $this->createAccessDeniedException('No tenant associated with user');
+        }
+
+        // Check if supplier can be edited (not inherited)
+        if (!$this->supplierService->canEditSupplier($supplier, $tenant)) {
+            $this->addFlash('error', $this->translator->trans('corporate.inheritance.cannot_edit_inherited'));
+            return $this->redirectToRoute('app_supplier_show', ['id' => $supplier->getId()]);
+        }
+
         $form = $this->createForm(SupplierType::class, $supplier);
         $form->handleRequest($request);
 
@@ -97,6 +142,19 @@ class SupplierController extends AbstractController
     #[IsGranted('ROLE_ADMIN')]
     public function delete(Request $request, Supplier $supplier): Response
     {
+        $user = $this->security->getUser();
+        $tenant = $user?->getTenant();
+
+        if (!$tenant) {
+            throw $this->createAccessDeniedException('No tenant associated with user');
+        }
+
+        // Check if supplier can be deleted (not inherited)
+        if (!$this->supplierService->canEditSupplier($supplier, $tenant)) {
+            $this->addFlash('error', $this->translator->trans('corporate.inheritance.cannot_delete_inherited'));
+            return $this->redirectToRoute('app_supplier_index');
+        }
+
         if ($this->isCsrfTokenValid('delete'.$supplier->getId(), $request->request->get('_token'))) {
             $this->entityManager->remove($supplier);
             $this->entityManager->flush();
