@@ -3,6 +3,8 @@
 namespace App\Service;
 
 use App\Entity\User;
+use App\Service\AuditLogger;
+use App\Service\SessionManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -31,7 +33,8 @@ class SecurityEventLogger
         private readonly LoggerInterface $logger,
         private readonly RequestStack $requestStack,
         private readonly EntityManagerInterface $entityManager,
-        private readonly AuditLogger $auditLogger
+        private readonly AuditLogger $auditLogger,
+        private readonly SessionManager $sessionManager
     ) {}
 
     /**
@@ -53,6 +56,16 @@ class SecurityEventLogger
             ['username' => $user->getUserIdentifier()],
             'User logged in successfully'
         );
+
+        // Create session record for session management
+        if ($user instanceof User) {
+            $request = $this->requestStack->getCurrentRequest();
+            $session = $request?->getSession();
+
+            if ($session) {
+                $this->sessionManager->createSession($user, $session->getId());
+            }
+        }
     }
 
     /**
@@ -95,6 +108,14 @@ class SecurityEventLogger
             ['username' => $user->getUserIdentifier()],
             'User logged out'
         );
+
+        // End session record
+        $request = $this->requestStack->getCurrentRequest();
+        $session = $request?->getSession();
+
+        if ($session) {
+            $this->sessionManager->endSession($session->getId(), 'logout');
+        }
     }
 
     /**

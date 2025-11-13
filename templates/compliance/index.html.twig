@@ -10,9 +10,11 @@
             <p class="text-muted">{{ 'compliance.page_subtitle'|trans }}</p>
         </div>
         <div class="button-group">
-            <a href="{{ path('app_compliance_manage_frameworks') }}" class="btn btn-primary">
-                <span class="icon">➕</span> {{ 'compliance.manage_frameworks'|trans }}
+            {% if is_granted('ROLE_ADMIN') %}
+            <a href="{{ path('admin_compliance_index') }}" class="btn btn-primary">
+                <span class="icon">⚙️</span> {{ 'compliance.manage_frameworks'|trans }}
             </a>
+            {% endif %}
             <a href="{{ path('app_compliance_cross_framework') }}" class="btn btn-secondary">
                 <span class="icon">🔗</span> {{ 'compliance.button.cross_framework'|trans }}
             </a>
@@ -86,9 +88,13 @@
         {% else %}
             <div class="col-span-all text-center p-xl">
                 <p class="text-muted">{{ 'compliance.no_frameworks_loaded'|trans }}</p>
-                <a href="{{ path('app_compliance_manage_frameworks') }}" class="btn btn-primary btn-lg">
-                    <span class="icon">➕</span> {{ 'compliance.add_frameworks'|trans }}
+                {% if is_granted('ROLE_ADMIN') %}
+                <a href="{{ path('admin_compliance_index') }}" class="btn btn-primary btn-lg">
+                    <span class="icon">⚙️</span> {{ 'compliance.add_frameworks'|trans }}
                 </a>
+                {% else %}
+                <p class="text-muted"><small>{{ 'compliance.contact_admin_to_add_frameworks'|trans }}</small></p>
+                {% endif %}
             </div>
         {% endfor %}
     </div>

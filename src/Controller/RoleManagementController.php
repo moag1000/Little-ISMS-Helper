@@ -15,7 +15,6 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route('/admin/roles')]
-#[IsGranted('ROLE_ADMIN')]
 class RoleManagementController extends AbstractController
 {
     #[Route('', name: 'role_management_index')]
