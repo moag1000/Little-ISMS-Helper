@@ -3,11 +3,9 @@
 namespace App\Form;
 
 use App\Entity\Tenant;
-use App\Enum\GovernanceModel;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -99,14 +97,6 @@ class TenantType extends AbstractType
 
                     return $qb;
                 },
-            ])
-            ->add('governanceModel', EnumType::class, [
-                'class' => GovernanceModel::class,
-                'label' => 'corporate.field.governance_model',
-                'help' => 'corporate.field.governance_model_help',
-                'required' => false,
-                'placeholder' => 'corporate.placeholder.governance_model',
-                'choice_label' => fn(GovernanceModel $model) => $model->getLabel(),
             ])
             ->add('isCorporateParent', CheckboxType::class, [
                 'label' => 'corporate.field.is_corporate_parent',
