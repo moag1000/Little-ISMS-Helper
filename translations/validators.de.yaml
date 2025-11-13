@@ -135,3 +135,12 @@ objective:
     name_max_length: 'Name darf maximal {{ limit }} Zeichen lang sein'
     target_date_required: 'Zieldatum ist erforderlich'
     status_required: 'Status ist erforderlich'
+
+# Control Validators
+'Control ID is required': 'Control-ID ist erforderlich'
+'Control ID cannot exceed {{ limit }} characters': 'Control-ID darf maximal {{ limit }} Zeichen lang sein'
+'Control ID must follow ISO 27001 format (e.g., 5.1, 8.3)': 'Control-ID muss dem ISO 27001 Format folgen (z.B. 5.1, 8.3)'
+'Control name is required': 'Control-Name ist erforderlich'
+'Control name cannot exceed {{ limit }} characters': 'Control-Name darf maximal {{ limit }} Zeichen lang sein'
+'Control description is required': 'Control-Beschreibung ist erforderlich'
+'Control category is required': 'Control-Kategorie ist erforderlich'
