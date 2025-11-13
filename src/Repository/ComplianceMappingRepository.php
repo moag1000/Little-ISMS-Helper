@@ -225,6 +225,149 @@ class ComplianceMappingRepository extends ServiceEntityRepository
     }
 
     /**
+     * Calculate bidirectional framework coverage in both directions.
+     *
+     * Analyzes coverage from Framework1 → Framework2 AND Framework2 → Framework1
+     * to provide comprehensive overlap analysis.
+     *
+     * @param ComplianceFramework $framework1 First framework
+     * @param ComplianceFramework $framework2 Second framework
+     * @return array{framework1_to_framework2: array, framework2_to_framework1: array, bidirectional_overlap: float, symmetric_coverage: float} Bidirectional coverage analysis
+     */
+    public function calculateBidirectionalCoverage(
+        ComplianceFramework $framework1,
+        ComplianceFramework $framework2
+    ): array {
+        // Coverage from Framework1 → Framework2
+        $coverage1to2 = $this->calculateFrameworkCoverage($framework1, $framework2);
+
+        // Coverage from Framework2 → Framework1 (reverse)
+        $coverage2to1 = $this->calculateFrameworkCoverage($framework2, $framework1);
+
+        // Calculate bidirectional overlap (weighted average)
+        $bidirectionalOverlap = ($coverage1to2['coverage_percentage'] + $coverage2to1['coverage_percentage']) / 2;
+
+        // Symmetric coverage (minimum of both directions = guaranteed mutual coverage)
+        $symmetricCoverage = min($coverage1to2['coverage_percentage'], $coverage2to1['coverage_percentage']);
+
+        return [
+            'framework1_to_framework2' => $coverage1to2,
+            'framework2_to_framework1' => $coverage2to1,
+            'bidirectional_overlap' => round($bidirectionalOverlap, 2),
+            'symmetric_coverage' => round($symmetricCoverage, 2),
+        ];
+    }
+
+    /**
+     * Calculate category-specific coverage between two frameworks.
+     *
+     * Analyzes coverage breakdown by requirement category (e.g., "Access Control", "Encryption")
+     * to identify strong and weak areas in cross-framework mappings.
+     *
+     * @param ComplianceFramework $sourceFramework Source framework
+     * @param ComplianceFramework $targetFramework Target framework
+     * @return array<string, array{total: int, mapped: int, coverage: float, avg_quality: float, unmapped_requirements: array}> Category coverage statistics
+     */
+    public function calculateCategoryCoverage(
+        ComplianceFramework $sourceFramework,
+        ComplianceFramework $targetFramework
+    ): array {
+        $categoryStats = [];
+
+        foreach ($sourceFramework->getRequirements() as $req) {
+            $category = $req->getCategory() ?? 'Uncategorized';
+
+            if (!isset($categoryStats[$category])) {
+                $categoryStats[$category] = [
+                    'total' => 0,
+                    'mapped' => 0,
+                    'coverage' => 0,
+                    'avg_quality' => 0,
+                    'quality_sum' => 0,
+                    'unmapped_requirements' => [],
+                ];
+            }
+
+            $categoryStats[$category]['total']++;
+
+            // Find mapping to target framework
+            $mapping = $this->findMappingBetweenRequirementAndFramework($req, $targetFramework);
+
+            if ($mapping) {
+                $categoryStats[$category]['mapped']++;
+                $categoryStats[$category]['quality_sum'] += $mapping->getMappingPercentage();
+            } else {
+                $categoryStats[$category]['unmapped_requirements'][] = [
+                    'id' => $req->getRequirementId(),
+                    'title' => $req->getTitle(),
+                    'priority' => $req->getPriority(),
+                ];
+            }
+        }
+
+        // Calculate percentages and averages
+        foreach ($categoryStats as $cat => &$stats) {
+            $stats['coverage'] = $stats['total'] > 0
+                ? round(($stats['mapped'] / $stats['total']) * 100, 1)
+                : 0;
+
+            $stats['avg_quality'] = $stats['mapped'] > 0
+                ? round($stats['quality_sum'] / $stats['mapped'], 1)
+                : 0;
+
+            // Remove quality_sum as it's just for calculation
+            unset($stats['quality_sum']);
+        }
+
+        // Sort by coverage (lowest first to highlight problem areas)
+        uasort($categoryStats, fn($a, $b) => $a['coverage'] <=> $b['coverage']);
+
+        return $categoryStats;
+    }
+
+    /**
+     * Find the best mapping between a requirement and any requirement in the target framework.
+     *
+     * @param ComplianceRequirement $requirement Source requirement
+     * @param ComplianceFramework $targetFramework Target framework
+     * @return ComplianceMapping|null Best mapping found, or null if no mapping exists
+     */
+    private function findMappingBetweenRequirementAndFramework(
+        ComplianceRequirement $requirement,
+        ComplianceFramework $targetFramework
+    ): ?ComplianceMapping {
+        // Check outbound mappings (where requirement is source)
+        $outboundMappings = $this->createQueryBuilder('cm')
+            ->join('cm.targetRequirement', 'tr')
+            ->where('cm.sourceRequirement = :requirement')
+            ->andWhere('tr.framework = :targetFramework')
+            ->setParameter('requirement', $requirement)
+            ->setParameter('targetFramework', $targetFramework)
+            ->orderBy('cm.mappingPercentage', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getResult();
+
+        if (!empty($outboundMappings)) {
+            return $outboundMappings[0];
+        }
+
+        // Check inbound mappings (where requirement is target)
+        $inboundMappings = $this->createQueryBuilder('cm')
+            ->join('cm.sourceRequirement', 'sr')
+            ->where('cm.targetRequirement = :requirement')
+            ->andWhere('sr.framework = :targetFramework')
+            ->setParameter('requirement', $requirement)
+            ->setParameter('targetFramework', $targetFramework)
+            ->orderBy('cm.mappingPercentage', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getResult();
+
+        return !empty($inboundMappings) ? $inboundMappings[0] : null;
+    }
+
+    /**
      * Find bidirectional mappings where requirements mutually satisfy each other.
      *
      * Bidirectional mappings indicate strong equivalence between requirements across frameworks,
