@@ -123,3 +123,15 @@ training:
   validation:
     title_required: 'Bitte geben Sie einen Titel ein.'
     date_required: 'Bitte wählen Sie ein Datum.'
+
+# Objective Validators
+objective:
+  validation:
+    title_required: 'Titel ist erforderlich'
+    title_max_length: 'Titel darf maximal {{ limit }} Zeichen lang sein'
+    description_required: 'Beschreibung ist erforderlich'
+    category_required: 'Kategorie ist erforderlich'
+    responsible_person_required: 'Verantwortliche Person ist erforderlich'
+    name_max_length: 'Name darf maximal {{ limit }} Zeichen lang sein'
+    target_date_required: 'Zieldatum ist erforderlich'
+    status_required: 'Status ist erforderlich'
