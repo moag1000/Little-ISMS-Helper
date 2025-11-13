@@ -14,7 +14,6 @@ doctrine:
         # enable_native_lazy_objects is a no-op in DoctrineBundle 3.0 (always enabled)
         entity_managers:
             default:
-                validate_xml_mapping: true
                 naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
                 identity_generation_preferences:
                     Doctrine\DBAL\Platforms\PostgreSQLPlatform: identity

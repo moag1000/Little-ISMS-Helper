@@ -16,11 +16,13 @@ This project uses **163 third-party packages**:
 |--------------|-------|----------------|--------------|
 | MIT | 134 | ✅ Allowed | Attribution, preserve copyright notices |
 | BSD-3-Clause | 26 | ✅ Allowed | Attribution, preserve copyright notices, no endorsement |
-| LGPL-2.1 | 1 | ✅ Allowed | Dynamic linking permitted, attribution required |
-| LGPL-2.1-or-later | 1 | ✅ Allowed | Dynamic linking permitted, attribution required |
-| LGPL-3.0-or-later | 1 | ✅ Allowed | Dynamic linking permitted, attribution required |
+| LGPL-2.1 | 1 | ✅ Allowed (Copyleft) | Dynamic linking permitted, attribution required |
+| LGPL-2.1-or-later | 1 | ✅ Allowed (Copyleft) | Dynamic linking permitted, attribution required |
+| LGPL-3.0-or-later | 1 | ✅ Allowed (Copyleft) | Dynamic linking permitted, attribution required |
 
 **Overall Status:** ✅ **Compliant for commercial use**
+
+**Note:** LGPL licenses are copyleft but allow commercial use through dynamic linking. All 3 LGPL packages are used as libraries and do not require source code disclosure of the main application.
 
 For a detailed license report, see: [`docs/reports/license-report.md`](docs/reports/license-report.md)
 
