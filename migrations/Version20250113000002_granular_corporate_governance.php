@@ -32,17 +32,19 @@ final class Version20250113000002_granular_corporate_governance extends Abstract
             created_at DATETIME NOT NULL COMMENT \'(DC2Type:datetime_immutable)\',
             updated_at DATETIME DEFAULT NULL COMMENT \'(DC2Type:datetime_immutable)\',
             created_by_id INT DEFAULT NULL,
-            INDEX IDX_tenant_scope (tenant_id, scope, scope_id),
-            UNIQUE INDEX uniq_tenant_scope (tenant_id, scope, scope_id),
-            INDEX IDX_9815E5739033212A (tenant_id),
-            INDEX IDX_9815E573727ACA70 (parent_id),
-            INDEX IDX_9815E573B03A8386 (created_by_id),
             PRIMARY KEY(id)
         ) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
 
+        // Add indices
+        $this->addSql('CREATE INDEX IDX_9815E5739033212A ON corporate_governance (tenant_id)');
+        $this->addSql('CREATE INDEX IDX_9815E573727ACA70 ON corporate_governance (parent_id)');
+        $this->addSql('CREATE INDEX IDX_9815E573B03A8386 ON corporate_governance (created_by_id)');
+        $this->addSql('CREATE UNIQUE INDEX uniq_tenant_scope ON corporate_governance (tenant_id, scope, scope_id)');
+
+        // Add foreign key constraints
         $this->addSql('ALTER TABLE corporate_governance ADD CONSTRAINT FK_9815E5739033212A FOREIGN KEY (tenant_id) REFERENCES tenant (id) ON DELETE CASCADE');
         $this->addSql('ALTER TABLE corporate_governance ADD CONSTRAINT FK_9815E573727ACA70 FOREIGN KEY (parent_id) REFERENCES tenant (id) ON DELETE CASCADE');
-        $this->addSql('ALTER TABLE corporate_governance ADD CONSTRAINT FK_9815E573B03A8386 FOREIGN KEY (created_by_id) REFERENCES user (id)');
+        $this->addSql('ALTER TABLE corporate_governance ADD CONSTRAINT FK_9815E573B03A8386 FOREIGN KEY (created_by_id) REFERENCES user (id) ON DELETE SET NULL');
 
         // Migrate existing governance_model data from tenant to corporate_governance
         // If a tenant has both parent and governance_model set, create a default governance rule
