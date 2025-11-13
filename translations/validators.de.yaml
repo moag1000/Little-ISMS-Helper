@@ -117,3 +117,9 @@ risk_treatment_plan:
     description_required: 'Beschreibung ist erforderlich'
     target_completion_date_required: 'Ziel-Fertigstellungsdatum ist erforderlich'
     completion_percentage_range: 'Fertigstellungsgrad muss zwischen {{ min }} und {{ max }} liegen'
+
+# Training Validators
+training:
+  validation:
+    title_required: 'Bitte geben Sie einen Titel ein.'
+    date_required: 'Bitte wählen Sie ein Datum.'
