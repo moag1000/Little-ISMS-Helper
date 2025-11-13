@@ -100,6 +100,14 @@ compliance_mapping:
 'Status is required': 'Please select a status.'
 'Status must be one of: {{ choices }}': 'The status must be one of: {{ choices }}.'
 
+# Risk Appetite Validators
+risk_appetite:
+  validation:
+    category_max_length: 'Category name cannot exceed {{ limit }} characters'
+    max_acceptable_risk_required: 'Maximum acceptable risk is required'
+    max_acceptable_risk_range: 'Maximum acceptable risk must be between {{ min }} and {{ max }}'
+    description_required: 'Description is required'
+
 # Risk Treatment Plan Validators
 risk_treatment_plan:
   validation:

@@ -2266,29 +2266,95 @@ compliance:
 
 # Risk Appetite (ISO 27005:2022)
 risk_appetite:
+  title: 'Risk Appetites'
+  title_singular: 'Risk Appetite'
+  description: 'Define acceptable risk levels according to ISO 27005:2022'
+  new: 'New Risk Appetite'
+  edit: 'Edit Risk Appetite'
+  no_appetites: 'No risk appetites defined yet'
+  scale: 'Risk Scale (1-25)'
+  approved: 'Approved'
+
+  new.description: 'Define the maximum acceptable risk levels for different categories'
+
+  list:
+    title: 'Risk Appetites'
+
+  show:
+    subtitle: 'Risk Appetite Details'
+
+  success:
+    created: 'Risk appetite created successfully.'
+    updated: 'Risk appetite updated successfully.'
+    deleted: 'Risk appetite deleted successfully.'
+
+  delete:
+    warning: 'Are you sure you want to delete this risk appetite?'
+    confirm: 'Delete Risk Appetite'
+
+  section:
+    details: 'Details'
+    history: 'Change History'
+
+  stats:
+    total: 'Total'
+    global_threshold: 'Global Threshold'
+    categories: 'Categories'
+    total_risks: 'Total Risks'
+    exceeding: 'Exceeding'
+
+  category:
+    global: 'Global'
+
+  status:
+    active: 'Active'
+    inactive: 'Inactive'
+
+  filter:
+    active_only: 'Active only'
+
+  exceeding:
+    title: 'Risks Above Threshold'
+    description: 'These risks exceed the defined risk appetite and require treatment measures'
+
+  risks_exceeding_title: 'Risks exceeding the threshold'
+  risks_exceeding_description: 'These risks exceed the maximum acceptable risk level'
+  risks_within_title: 'Accepted Risks'
+  risks_within_description: 'These risks are within the defined risk appetite'
+  risks_within: 'Risks within'
+  risks_exceeding: 'Risks exceeding'
+  exceeds_by: 'Exceeds by %value%'
+  and_more: 'and %count% more'
+  and_more_risks: 'and %count% more risks'
+  acceptance_rate: 'Acceptance Rate'
+  appetite_percentage: 'Risk Appetite (%)'
+
+  info:
+    iso27005: 'According to ISO 27005:2022, risk appetite should be formally approved by management'
+
   field:
     category: Category
     max_acceptable_risk: Maximum Acceptable Risk
     description: Description
     is_active: Active
+    status: 'Status'
     approved_by: Approved By
     approved_at: Approved At
+    created_at: 'Created At'
+
   placeholder:
     category: 'e.g. Financial Risks, Operational Risks, Compliance Risks'
     approved_by: Select person
     description: 'Describe the risk appetite and its rationale...'
+
   help:
+    category_empty: 'Leave empty for global risk appetite'
     category: 'Optional: Leave empty for global risk appetite, or specify category (e.g. "Financial Risks")'
     max_acceptable_risk: 'Maximum risk score (1-25) on the 5×5 risk matrix. Risks above require treatment.'
     description: 'Explanation of risk appetite, rationale, and guidelines for risk acceptance'
     is_active: 'Only one risk appetite per category should be active'
     approved_by: 'Person who approved this risk appetite (ISO 27005 compliance)'
     approved_at: 'Timestamp of formal approval'
-  validation:
-    category_max_length: 'Category name cannot exceed {{ limit }} characters'
-    max_acceptable_risk_required: 'Maximum acceptable risk is required'
-    max_acceptable_risk_range: 'Maximum acceptable risk must be between {{ min }} and {{ max }}'
-    description_required: 'Description is required'
 
 # Risk Treatment Plan (ISO 27005:2022)
 risk_treatment_plan:
