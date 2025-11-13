@@ -2469,7 +2469,7 @@ data:
       host: Host
       host_help: Hostname or IP address of the database server
       port: Port
-      port_help: Database server port (default: MySQL 3306, PostgreSQL 5432)
+      port_help: "Database server port (default: MySQL 3306, PostgreSQL 5432)"
       user: Username
       user_help: Database username
       password: Password
