@@ -109,7 +109,8 @@ class CorporateStructureService
 
         // User's tenant is in same corporate group with SHARED governance
         if ($this->isInSameCorporateGroup($userTenant, $targetTenant)) {
-            $targetGovernance = $targetTenant->getGovernanceModel();
+            $governance = $this->governanceRepository->findDefaultGovernance($targetTenant);
+            $targetGovernance = $governance?->getGovernanceModel();
             return $targetGovernance === GovernanceModel::SHARED;
         }
 
@@ -163,8 +164,11 @@ class CorporateStructureService
         }
 
         // Validate governance model requirements
-        if ($tenant->getParent() !== null && $tenant->getGovernanceModel() === null) {
-            $errors[] = 'Subsidiaries must have a governance model defined';
+        if ($tenant->getParent() !== null) {
+            $governance = $this->governanceRepository->findDefaultGovernance($tenant);
+            if (!$governance) {
+                $errors[] = 'Subsidiaries must have a default governance model defined';
+            }
         }
 
         // Parent should be marked as corporate parent if it has subsidiaries
