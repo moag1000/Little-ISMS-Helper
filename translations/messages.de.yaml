@@ -2743,6 +2743,7 @@ nav.admin_portal: 'Admin Portal'
 admin.title: 'Administration'
 admin.nav.dashboard: 'Dashboard'
 admin.nav.tenants: 'Mandanten'
+admin.nav.corporate_structure: 'Konzernstrukturen'
 admin.nav.users: 'Benutzer'
 admin.nav.roles: 'Rollen'
 admin.nav.permissions: 'Berechtigungen'
@@ -2848,3 +2849,63 @@ common.cancel: 'Abbrechen'
 common.view: 'Anzeigen'
 common.edit: 'Bearbeiten'
 common.actions: 'Aktionen'
+
+# Corporate Structure Management
+corporate:
+  title: 'Konzernstrukturen'
+  subtitle: 'Verwaltung von Muttergesellschaften und Tochtergesellschaften'
+  role:
+    parent: 'Muttergesellschaft'
+    subsidiary: 'Tochtergesellschaft'
+  section:
+    groups: 'Konzerngruppen'
+    standalone: 'Eigenständige Mandanten'
+    structure: 'Konzernstruktur'
+  stats:
+    groups: 'Konzerngruppen'
+    standalone: 'Eigenständig'
+    total: 'Gesamt Mandanten'
+  field:
+    subsidiary: 'Tochtergesellschaft'
+    parent: 'Muttergesellschaft'
+    governance_model: 'Governance-Modell'
+    actions: 'Aktionen'
+    hierarchy_depth: 'Hierarchieebene'
+    subsidiaries: 'Tochtergesellschaften'
+    is_corporate_parent: 'Ist Muttergesellschaft'
+    is_corporate_parent_help: 'Markieren Sie dies, wenn dieser Mandant eine Muttergesellschaft ist'
+    parent_help: 'Wählen Sie die Muttergesellschaft für diesen Mandanten'
+    governance_model_help: 'Wählen Sie, wie ISMS-Verantwortlichkeiten verwaltet werden'
+    corporate_notes: 'Konzernnotizen'
+    corporate_notes_help: 'Optionale Notizen zur Konzernstruktur'
+  select:
+    parent: 'Muttergesellschaft auswählen...'
+    governance: 'Governance-Modell auswählen...'
+  action:
+    set_parent: 'Muttergesellschaft zuweisen'
+    remove_parent: 'Zuordnung entfernen'
+    update_governance: 'Governance-Modell ändern'
+    view_structure: 'Gesamte Struktur anzeigen'
+  modal:
+    set_parent:
+      title: 'Muttergesellschaft zuweisen'
+    update_governance:
+      title: 'Governance-Modell ändern'
+  confirm:
+    remove_parent: 'Möchten Sie die Zuordnung zur Muttergesellschaft wirklich entfernen?'
+  flash:
+    parent_set: 'Muttergesellschaft erfolgreich zugewiesen'
+    parent_removed: 'Zuordnung zur Muttergesellschaft entfernt'
+    parent_not_found: 'Muttergesellschaft nicht gefunden'
+    invalid_governance: 'Ungültiges Governance-Modell'
+    governance_updated: 'Governance-Modell aktualisiert'
+    error: 'Fehler bei der Konzernstruktur-Verwaltung'
+    no_governance_found: 'Keine Governance-Regel gefunden für diesen Mandanten'
+  info:
+    title: 'Information zur Konzernstruktur'
+    text: 'Hier können Sie Beziehungen zwischen Muttergesellschaften und Tochtergesellschaften verwalten. Das Governance-Modell bestimmt, wie ISMS-Verantwortlichkeiten zwischen Mutter- und Tochtergesellschaften aufgeteilt werden.'
+  level: 'Ebene %level%'
+  placeholder:
+    parent: 'Keine Muttergesellschaft (eigenständig)'
+    governance_model: 'Governance-Modell auswählen...'
+    corporate_notes: 'Z.B. Spezielle Vereinbarungen oder Besonderheiten...'
