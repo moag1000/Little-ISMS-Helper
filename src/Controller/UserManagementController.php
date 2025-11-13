@@ -27,7 +27,6 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route('/admin/users')]
-#[IsGranted('ROLE_ADMIN')]
 class UserManagementController extends AbstractController
 {
     public function __construct(

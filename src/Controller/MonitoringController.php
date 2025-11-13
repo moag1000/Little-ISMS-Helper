@@ -13,10 +13,10 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/admin/monitoring')]
-#[IsGranted('ROLE_ADMIN')]
 class MonitoringController extends AbstractController
 {
     #[Route('/health', name: 'monitoring_health', methods: ['GET'])]
+    #[IsGranted('MONITORING_VIEW')]
     public function health(Connection $connection): Response
     {
         // Perform health checks
@@ -122,6 +122,7 @@ class MonitoringController extends AbstractController
     }
 
     #[Route('/health/json', name: 'monitoring_health_json', methods: ['GET'])]
+    #[IsGranted('MONITORING_VIEW')]
     public function healthJson(Connection $connection): JsonResponse
     {
         // Simple health check for monitoring tools
@@ -141,6 +142,7 @@ class MonitoringController extends AbstractController
     }
 
     #[Route('/performance', name: 'monitoring_performance', methods: ['GET'])]
+    #[IsGranted('MONITORING_VIEW')]
     public function performance(
         AuditLogRepository $auditLogRepository,
         Request $request
@@ -201,6 +203,7 @@ class MonitoringController extends AbstractController
     }
 
     #[Route('/errors', name: 'monitoring_errors', methods: ['GET'])]
+    #[IsGranted('MONITORING_VIEW')]
     public function errors(Request $request): Response
     {
         $logDir = $this->getParameter('kernel.logs_dir');
@@ -241,6 +244,7 @@ class MonitoringController extends AbstractController
     }
 
     #[Route('/audit-log', name: 'monitoring_audit_log', methods: ['GET'])]
+    #[IsGranted('AUDIT_VIEW')]
     public function auditLog(
         AuditLogRepository $auditLogRepository,
         Request $request
