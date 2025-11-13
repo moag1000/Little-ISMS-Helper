@@ -165,3 +165,32 @@ audit:
 'Incident title is required': 'Incident title is required'
 'Incident description is required': 'Incident description is required'
 'Incident category is required': 'Incident category is required'
+
+# Audit Validators (Additional)
+'Planned date is required': 'Planned date is required'
+'Lead auditor is required': 'Lead auditor is required'
+'Lead auditor name cannot exceed {{ limit }} characters': 'Lead auditor name cannot exceed {{ limit }} characters'
+
+# User/Account Validators
+'There is already an account with this email': 'There is already an account with this email'
+
+# Change Request Validators
+'Change title is required': 'Change title is required'
+'Justification is required': 'Justification is required'
+
+# Business Continuity Plan Validators
+'Plan name is required': 'Plan name is required'
+'Business process is required': 'Business process is required'
+'Activation criteria must be defined': 'Activation criteria must be defined'
+'Recovery procedures must be documented': 'Recovery procedures must be documented'
+
+# Tenant Validators
+tenant:
+  validation:
+    code_format: 'Tenant code must match the required format'
+    azure_tenant_id_format: 'Azure Tenant ID must be a valid GUID'
+
+# Risk Appetite Validators (Additional)
+'Category name cannot exceed {{ limit }} characters': 'Category name cannot exceed {{ limit }} characters'
+'Maximum acceptable risk level is required': 'Maximum acceptable risk level is required'
+'Maximum acceptable risk must be between {{ min }} and {{ max }}': 'Maximum acceptable risk must be between {{ min }} and {{ max }}'
