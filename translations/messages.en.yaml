@@ -415,6 +415,7 @@ common:
   not_started: Not Started
   refresh: Refresh
   search: Search
+  subsidiaries: Subsidiaries
   success: Success
   to: To
   size: Size
@@ -735,6 +736,7 @@ audit:
     recommendations: Recommendations
     conclusion: Conclusion
     summary: Summary
+    audited_subsidiaries: Audited Subsidiaries
   validation:
     title_required: Please enter a title.
     date_required: Please select a date.
@@ -3861,6 +3863,18 @@ corporate:
     organization: 'Organization'
     propagate: 'Propagate to Subsidiaries'
     from: 'From'
+    edit_at_parent: 'To modify this context, please edit it at the parent company.'
+    cannot_edit_inherited: 'Inherited contexts cannot be edited'
+    cannot_edit_inherited_long: 'This ISMS context is inherited from parent company "%parent%" and cannot be edited here. Please edit the context at the parent company.'
+    cannot_delete_inherited: 'Inherited entries cannot be deleted'
+    view_only_title: 'View Only - Inherited Entry'
+    risk_inherited_message: 'This risk is inherited from the parent company and cannot be edited here.'
+    asset_inherited_message: 'This asset is inherited from the parent company and cannot be edited here.'
+    document_inherited_message: 'This document is inherited from the parent company and cannot be edited here.'
+    supplier_inherited_message: 'This supplier is inherited from the parent company and cannot be edited here.'
+  inherited: 'Inherited'
+
+# Governance Model Labels
 governance:
   hierarchical: 'Hierarchical'
   shared: 'Shared'

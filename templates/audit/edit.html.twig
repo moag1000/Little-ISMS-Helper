@@ -59,6 +59,14 @@
                                 <div class="col-md-6 mb-3">
                                     {{ form_row(form.auditType) }}
                                 </div>
+                                <div class="col-md-12 mb-3" id="subsidiaries-container" style="display: none;">
+                                    <div class="alert alert-info">
+                                        <i class="bi bi-info-circle"></i>
+                                        <strong>Konzernaudit:</strong> Wählen Sie die Tochtergesellschaften aus, die in dieses Audit einbezogen werden sollen.
+                                        Bei "Konzernweites Audit" sollten alle relevanten Tochtergesellschaften ausgewählt werden.
+                                    </div>
+                                    {{ form_row(form.auditedSubsidiaries) }}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -273,4 +281,46 @@
         min-height: 150px;
     }
 </style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const scopeTypeSelect = document.querySelector('[data-corporate-scope]');
+        const subsidiariesContainer = document.getElementById('subsidiaries-container');
+        const subsidiariesSelect = document.querySelector('[data-corporate-subsidiaries]');
+
+        if (!scopeTypeSelect) {
+            return; // Exit if scope type field not found
+        }
+
+        function toggleSubsidiariesField() {
+            const selectedScope = scopeTypeSelect.value;
+            const isCorporateScope = selectedScope === 'corporate_wide' || selectedScope === 'corporate_subsidiaries';
+
+            if (isCorporateScope) {
+                subsidiariesContainer.style.display = 'block';
+
+                // Auto-select all for corporate_wide
+                if (selectedScope === 'corporate_wide' && subsidiariesSelect) {
+                    for (let option of subsidiariesSelect.options) {
+                        option.selected = true;
+                    }
+                }
+            } else {
+                subsidiariesContainer.style.display = 'none';
+                // Deselect all when hiding
+                if (subsidiariesSelect) {
+                    for (let option of subsidiariesSelect.options) {
+                        option.selected = false;
+                    }
+                }
+            }
+        }
+
+        // Run on page load to show field if already corporate scope
+        toggleSubsidiariesField();
+
+        // Run on scope type change
+        scopeTypeSelect.addEventListener('change', toggleSubsidiariesField);
+    });
+</script>
 {% endblock %}
