@@ -1,0 +1,246 @@
+{% extends 'pdf/base.html.twig' %}
+
+{% block pdf_title %}Framework Comparison - {{ framework1.name }} vs {{ framework2.name }}{% endblock %}
+
+{% block header_title %}Framework Comparison Report{% endblock %}
+{% block header_subtitle %}{{ framework1.name }} ↔ {{ framework2.name }}{% endblock %}
+
+{% block content %}
+    {# Summary Section #}
+    <div class="summary-box">
+        <div class="metric">
+            <span class="metric-label">{{ framework1.code }}</span>
+            <span class="metric-value">{{ framework1_count }} Anforderungen</span>
+        </div>
+        <div class="metric">
+            <span class="metric-label">{{ framework2.code }}</span>
+            <span class="metric-value">{{ framework2_count }} Anforderungen</span>
+        </div>
+        <div class="metric">
+            <span class="metric-label">Gemappte Anforderungen</span>
+            <span class="metric-value" style="color: #0A0;">{{ mapped_count }}</span>
+        </div>
+        <div class="metric">
+            <span class="metric-label">Overlap</span>
+            <span class="metric-value">{{ overlap_percentage }}%</span>
+        </div>
+        <div class="metric">
+            <span class="metric-label">Unique zu {{ framework1.code }}</span>
+            <span class="metric-value" style="color: #F90;">{{ unique_framework1_count }}</span>
+        </div>
+    </div>
+
+    {# Comparison Summary #}
+    <h2>Vergleichs-Übersicht</h2>
+    <table style="width: 80%;">
+        <thead>
+            <tr>
+                <th>Metrik</th>
+                <th class="text-center">{{ framework1.code }}</th>
+                <th class="text-center">{{ framework2.code }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Gesamt Anforderungen</td>
+                <td class="text-center">{{ framework1_count }}</td>
+                <td class="text-center">{{ framework2_count }}</td>
+            </tr>
+            <tr>
+                <td>Gemappte Anforderungen</td>
+                <td class="text-center">{{ mapped_count }}</td>
+                <td class="text-center">{{ mapped_count }}</td>
+            </tr>
+            <tr>
+                <td>Unique Anforderungen</td>
+                <td class="text-center">{{ unique_framework1_count }}</td>
+                <td class="text-center">{{ unique_framework2_count }}</td>
+            </tr>
+            <tr>
+                <td>Coverage</td>
+                <td class="text-center">{{ framework1_count > 0 ? ((mapped_count / framework1_count * 100)|round(1)) : 0 }}%</td>
+                <td class="text-center">{{ framework2_count > 0 ? ((mapped_count / framework2_count * 100)|round(1)) : 0 }}%</td>
+            </tr>
+        </tbody>
+    </table>
+
+    {# High-Quality Mappings #}
+    {% set high_quality = comparison_details|filter(d => d.mapped and d.matchQuality >= 80) %}
+    {% if high_quality|length > 0 %}
+    <div class="page-break"></div>
+    <h2>High-Quality Mappings (≥80% Match)</h2>
+    <p style="font-size: 9pt; color: #666; margin-bottom: 10px;">
+        Diese Anforderungen sind gut aufeinander abgestimmt und können für Harmonisierung genutzt werden.
+    </p>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 15%;">{{ framework1.code }} ID</th>
+                <th style="width: 30%;">{{ framework1.code }} Titel</th>
+                <th style="width: 15%;">{{ framework2.code }} ID</th>
+                <th style="width: 30%;">{{ framework2.code }} Titel</th>
+                <th style="width: 10%;">Match %</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for detail in high_quality|slice(0, 15) %}
+            <tr class="no-break">
+                <td><strong>{{ detail.framework1Requirement.requirementId }}</strong></td>
+                <td style="font-size: 8pt;">{{ detail.framework1Requirement.title|length > 60 ? (detail.framework1Requirement.title|slice(0, 60) ~ '...') : detail.framework1Requirement.title }}</td>
+                <td><strong>{{ detail.framework2Requirement.requirementId }}</strong></td>
+                <td style="font-size: 8pt;">{{ detail.framework2Requirement.title|length > 60 ? (detail.framework2Requirement.title|slice(0, 60) ~ '...') : detail.framework2Requirement.title }}</td>
+                <td class="text-center"><span class="badge badge-success">{{ detail.matchQuality }}%</span></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+
+    {# Unique Requirements (Gaps) #}
+    {% if unique_framework1|length > 0 %}
+    <div class="page-break"></div>
+    <h2>Unique Requirements: {{ framework1.code }}</h2>
+    <p style="font-size: 9pt; color: #666; margin-bottom: 10px;">
+        Diese Anforderungen existieren nur in {{ framework1.code }} und haben keine Entsprechung in {{ framework2.code }}.
+    </p>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 15%;">ID</th>
+                <th style="width: 35%;">Titel</th>
+                <th style="width: 20%;">Kategorie</th>
+                <th style="width: 30%;">Beschreibung</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for req in unique_framework1|slice(0, 20) %}
+            <tr class="no-break">
+                <td><strong>{{ req.requirementId }}</strong></td>
+                <td style="font-size: 8pt;">{{ req.title|length > 50 ? (req.title|slice(0, 50) ~ '...') : req.title }}</td>
+                <td><span class="badge badge-info">{{ req.category ?? '-' }}</span></td>
+                <td style="font-size: 7pt;">{{ req.description|length > 80 ? (req.description|slice(0, 80) ~ '...') : (req.description ?? '-') }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% if unique_framework1|length > 20 %}
+    <p style="font-size: 8pt; color: #666; margin-top: 5px;">
+        ... und {{ unique_framework1|length - 20 }} weitere unique Anforderungen
+    </p>
+    {% endif %}
+    {% endif %}
+
+    {# Recommendations Section #}
+    <div class="page-break"></div>
+    <h2>Harmonisierungs-Empfehlungen</h2>
+
+    <h3>Strategie: Framework-Harmonisierung</h3>
+    <div style="background: #E8F4F8; padding: 15px; margin: 10px 0; border-left: 4px solid #2196F3; font-size: 9pt;">
+        <strong>Aktueller Status:</strong>
+        <ul style="margin-left: 20px; margin-top: 5px;">
+            <li>{{ mapped_count }} von {{ framework1_count }} Anforderungen gemapped ({{ overlap_percentage }}%)</li>
+            <li>{{ high_quality|length }} High-Quality Mappings (≥80% Match) identifiziert</li>
+            <li>{{ unique_framework1|length }} unique Anforderungen in {{ framework1.code }}</li>
+            <li>{{ unique_framework2|length }} unique Anforderungen in {{ framework2.code }}</li>
+        </ul>
+    </div>
+
+    <h3>Empfehlung 1: Mapping-Lücken schließen</h3>
+    <div style="background: #FFF2CC; padding: 15px; margin: 10px 0; border-left: 4px solid #F4D03F; font-size: 9pt;">
+        <strong>Priorität: Hoch</strong>
+        <p style="margin: 5px 0;">
+            {% set unmapped = framework1_count - mapped_count %}
+            Derzeit sind {{ unmapped }} Anforderungen nicht gemapped. Empfohlene Maßnahmen:
+        </p>
+        <ul style="margin-left: 20px;">
+            <li>Review der {{ unique_framework1|length }} unique {{ framework1.code }}-Anforderungen</li>
+            <li>Identifikation potentieller Partial-Mappings (60-80% Match)</li>
+            <li>Dokumentation von bewusst nicht gemappten Anforderungen</li>
+        </ul>
+        <p style="margin: 5px 0;"><strong>Zeitaufwand:</strong> ~{{ (unmapped * 15 / 60)|round(1) }} Stunden</p>
+    </div>
+
+    <h3>Empfehlung 2: Compliance-Hebel nutzen</h3>
+    <div style="background: #C6EFCE; padding: 15px; margin: 10px 0; border-left: 4px solid #28A745; font-size: 9pt;">
+        <strong>Quick Win!</strong>
+        <p style="margin: 5px 0;">
+            Mit {{ high_quality|length }} High-Quality Mappings können Sie signifikante Synergien realisieren:
+        </p>
+        <ul style="margin-left: 20px;">
+            <li>Wiederverwendung von Nachweisen und Dokumentation</li>
+            <li>Gemeinsame Kontroll-Implementierungen für beide Frameworks</li>
+            <li>Reduzierung des Audit-Aufwands durch kombinierte Assessments</li>
+        </ul>
+        <p style="margin: 5px 0;">
+            <strong>Geschätzte Zeitersparnis:</strong> ~{{ (high_quality|length * 2)|round }} Stunden bei der nächsten Compliance-Bewertung
+        </p>
+    </div>
+
+    <h3>Empfehlung 3: Gap-Analyse für Unique Requirements</h3>
+    <div style="background: #FFEB9C; padding: 15px; margin: 10px 0; border-left: 4px solid #FFA500; font-size: 9pt;">
+        <strong>Mittelfristig</strong>
+        <p style="margin: 5px 0;">
+            Die {{ unique_framework1|length + unique_framework2|length }} unique Anforderungen erfordern separate Bearbeitung:
+        </p>
+        <ul style="margin-left: 20px;">
+            <li><strong>{{ framework1.code }} Unique ({{ unique_framework1|length }}):</strong> Zusätzliche Kontrollen für {{ framework1.code }}-Compliance</li>
+            <li><strong>{{ framework2.code }} Unique ({{ unique_framework2|length }}):</strong> Zusätzliche Kontrollen für {{ framework2.code }}-Compliance</li>
+            <li>Prüfung auf indirekte Coverage durch bestehende Maßnahmen</li>
+        </ul>
+    </div>
+
+    <h3>Implementierungs-Roadmap</h3>
+    <table style="width: 95%;">
+        <thead>
+            <tr>
+                <th style="width: 20%;">Phase</th>
+                <th style="width: 50%;">Aktivitäten</th>
+                <th style="width: 15%;">Dauer</th>
+                <th style="width: 15%;">Nutzen</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Phase 1<br/>(Woche 1-2)</strong></td>
+                <td style="font-size: 8pt;">
+                    • High-Quality Mappings dokumentieren<br/>
+                    • Gemeinsame Kontroll-Implementierungen identifizieren<br/>
+                    • Quick Wins realisieren
+                </td>
+                <td class="text-center">2 Wochen</td>
+                <td class="text-center"><span class="badge badge-success">Hoch</span></td>
+            </tr>
+            <tr>
+                <td><strong>Phase 2<br/>(Woche 3-6)</strong></td>
+                <td style="font-size: 8pt;">
+                    • Fehlende Mappings erstellen<br/>
+                    • Partial Mappings (60-80%) bewerten<br/>
+                    • Mapping-Dokumentation vervollständigen
+                </td>
+                <td class="text-center">4 Wochen</td>
+                <td class="text-center"><span class="badge badge-warning">Mittel</span></td>
+            </tr>
+            <tr>
+                <td><strong>Phase 3<br/>(Woche 7-12)</strong></td>
+                <td style="font-size: 8pt;">
+                    • Unique Requirements Gap-Analyse<br/>
+                    • Zusätzliche Kontrollen implementieren<br/>
+                    • Kombinierte Compliance-Bewertung durchführen
+                </td>
+                <td class="text-center">6 Wochen</td>
+                <td class="text-center"><span class="badge badge-info">Langfristig</span></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div style="background: #E8F4F8; padding: 15px; margin-top: 20px; border-radius: 4px; font-size: 9pt;">
+        <strong>📋 Nächste Schritte:</strong>
+        <ol style="margin-left: 20px; margin-top: 5px;">
+            <li>Stakeholder-Meeting zur Priorisierung der Harmonisierung</li>
+            <li>Ressourcen-Planung für Mapping-Vervollständigung</li>
+            <li>Template für gemeinsame Kontroll-Dokumentation erstellen</li>
+            <li>Pilotprojekt mit Top 10 High-Quality Mappings starten</li>
+            <li>Monatliches Mapping-Review etablieren</li>
+        </ol>
+    </div>
+{% endblock %}

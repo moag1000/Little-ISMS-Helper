@@ -348,6 +348,56 @@ class ComplianceController extends AbstractController
         return $response;
     }
 
+    #[Route('/framework/{id}/data-reuse/export/pdf', name: 'app_compliance_export_reuse_pdf', requirements: ['id' => '\d+'])]
+    public function exportDataReusePdf(int $id): Response
+    {
+        $framework = $this->frameworkRepository->find($id);
+
+        if (!$framework) {
+            throw $this->createNotFoundException('Framework not found');
+        }
+
+        $requirements = $this->requirementRepository->findApplicableByFramework($framework);
+        $dataReuseAnalysis = [];
+        $totalTimeSavings = 0;
+        $totalReusePercentage = 0;
+
+        foreach ($requirements as $requirement) {
+            $analysis = $this->mappingService->getDataReuseAnalysis($requirement);
+            $reuseValue = $this->mappingService->calculateDataReuseValue($requirement);
+
+            $dataReuseAnalysis[] = [
+                'requirement' => $requirement,
+                'analysis' => $analysis,
+                'value' => $reuseValue,
+            ];
+
+            $totalTimeSavings += $reuseValue['estimated_hours_saved'];
+            $totalReusePercentage += $reuseValue['reuse_percentage'] ?? 0;
+        }
+
+        $avgReusePercentage = count($dataReuseAnalysis) > 0 ? $totalReusePercentage / count($dataReuseAnalysis) : 0;
+
+        // Generate PDF
+        $pdfContent = $this->pdfExportService->generatePdf('pdf/data_reuse_insights_report.html.twig', [
+            'framework' => $framework,
+            'data_reuse_analysis' => $dataReuseAnalysis,
+            'total_requirements' => count($requirements),
+            'total_time_savings' => $totalTimeSavings,
+            'total_days_savings' => round($totalTimeSavings / 8, 1),
+            'avg_reuse_percentage' => $avgReusePercentage,
+        ]);
+
+        $filename = sprintf('data_reuse_insights_%s_%s.pdf', $framework->getCode(), date('Y-m-d_His'));
+
+        $response = new Response($pdfContent);
+        $response->headers->set('Content-Type', 'application/pdf');
+        $response->headers->set('Content-Disposition', 'attachment; filename="' . $filename . '"');
+        $response->headers->set('Content-Length', strlen($pdfContent));
+
+        return $response;
+    }
+
     #[Route('/framework/{id}/gaps/export', name: 'app_compliance_export_gaps', requirements: ['id' => '\d+'])]
     public function exportGaps(int $id): Response
     {
@@ -1300,6 +1350,72 @@ class ComplianceController extends AbstractController
         return $response;
     }
 
+    #[Route('/export/transitive/pdf', name: 'app_compliance_export_transitive_pdf')]
+    public function exportTransitivePdf(): Response
+    {
+        $frameworks = $this->frameworkRepository->findActiveFrameworks();
+        $transitiveAnalysis = [];
+        $frameworkRelationships = [];
+        $totalHelped = 0;
+
+        // Build data
+        foreach ($frameworks as $sourceFramework) {
+            foreach ($frameworks as $targetFramework) {
+                if ($sourceFramework->getId() === $targetFramework->getId()) {
+                    continue;
+                }
+
+                $coverage = $this->mappingRepository->calculateFrameworkCoverage($sourceFramework, $targetFramework);
+                $transitive = $this->mappingRepository->getTransitiveCompliance($sourceFramework, $targetFramework);
+
+                if ($transitive['requirements_helped'] > 0) {
+                    $transitiveAnalysis[] = $transitive;
+                    $totalHelped += $transitive['requirements_helped'];
+                }
+
+                $mappings = $this->mappingRepository->findCrossFrameworkMappings($sourceFramework, $targetFramework);
+
+                if (!empty($mappings) && ($coverage['coverage_percentage'] ?? 0) > 0) {
+                    $frameworkRelationships[] = [
+                        'source' => $sourceFramework,
+                        'target' => $targetFramework,
+                        'mapped' => $coverage['covered_requirements'] ?? 0,
+                        'total' => $coverage['total_requirements'] ?? 0,
+                        'coverage' => round($coverage['coverage_percentage'] ?? 0, 1),
+                    ];
+                }
+            }
+        }
+
+        // Calculate average coverage
+        $avgCoverage = 0;
+        if (!empty($frameworkRelationships)) {
+            $totalCoverage = array_sum(array_column($frameworkRelationships, 'coverage'));
+            $avgCoverage = $totalCoverage / count($frameworkRelationships);
+        }
+
+        // Generate PDF
+        $pdfContent = $this->pdfExportService->generatePdf('pdf/transitive_compliance_report.html.twig', [
+            'frameworks' => $frameworks,
+            'framework_relationships' => $frameworkRelationships,
+            'transitive_analysis' => $transitiveAnalysis,
+            'total_frameworks' => count($frameworks),
+            'total_relationships' => count($frameworkRelationships),
+            'transitive_count' => count($transitiveAnalysis),
+            'total_helped' => $totalHelped,
+            'avg_coverage' => $avgCoverage,
+        ]);
+
+        $filename = sprintf('transitive_compliance_report_%s.pdf', date('Y-m-d_His'));
+
+        $response = new Response($pdfContent);
+        $response->headers->set('Content-Type', 'application/pdf');
+        $response->headers->set('Content-Disposition', 'attachment; filename="' . $filename . '"');
+        $response->headers->set('Content-Length', strlen($pdfContent));
+
+        return $response;
+    }
+
     #[Route('/export/comparison', name: 'app_compliance_export_comparison')]
     public function exportComparison(Request $request): Response
     {
@@ -1591,6 +1707,112 @@ class ComplianceController extends AbstractController
         $response->headers->set('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         $response->headers->set('Content-Disposition', 'attachment; filename="' . $filename . '"');
         $response->headers->set('Content-Length', strlen($content));
+
+        return $response;
+    }
+
+    #[Route('/export/comparison/pdf', name: 'app_compliance_export_comparison_pdf')]
+    public function exportComparisonPdf(Request $request): Response
+    {
+        $framework1Id = $request->query->get('framework1');
+        $framework2Id = $request->query->get('framework2');
+
+        if (!$framework1Id || !$framework2Id) {
+            $this->addFlash('error', 'Bitte wählen Sie zwei Frameworks zum Vergleich aus.');
+            return $this->redirectToRoute('app_compliance_compare');
+        }
+
+        $framework1 = $this->frameworkRepository->find($framework1Id);
+        $framework2 = $this->frameworkRepository->find($framework2Id);
+
+        if (!$framework1 || !$framework2) {
+            $this->addFlash('error', 'Ein oder beide Frameworks wurden nicht gefunden.');
+            return $this->redirectToRoute('app_compliance_compare');
+        }
+
+        // Build detailed comparison data
+        $comparisonDetails = [];
+        $mappedCount = 0;
+        $highQualityMappings = 0;
+
+        foreach ($framework1->getRequirements() as $req1) {
+            $mappedRequirement = null;
+            $matchQuality = null;
+            $isMapped = false;
+
+            // Find mappings
+            $sourceMappings = $this->mappingRepository->findBy(['sourceRequirement' => $req1]);
+            foreach ($sourceMappings as $mapping) {
+                if ($mapping->getTargetRequirement()->getFramework()->getId() === $framework2->getId()) {
+                    $mappedRequirement = $mapping->getTargetRequirement();
+                    $matchQuality = $mapping->getMappingPercentage();
+                    $isMapped = true;
+                    $mappedCount++;
+                    if ($matchQuality >= 80) {
+                        $highQualityMappings++;
+                    }
+                    break;
+                }
+            }
+
+            if (!$isMapped) {
+                $targetMappings = $this->mappingRepository->findBy(['targetRequirement' => $req1]);
+                foreach ($targetMappings as $mapping) {
+                    if ($mapping->getSourceRequirement()->getFramework()->getId() === $framework2->getId()) {
+                        $mappedRequirement = $mapping->getSourceRequirement();
+                        $matchQuality = $mapping->getMappingPercentage();
+                        $isMapped = true;
+                        $mappedCount++;
+                        if ($matchQuality >= 80) {
+                            $highQualityMappings++;
+                        }
+                        break;
+                    }
+                }
+            }
+
+            $comparisonDetails[] = [
+                'framework1Requirement' => $req1,
+                'mapped' => $isMapped,
+                'framework2Requirement' => $mappedRequirement,
+                'matchQuality' => $matchQuality,
+            ];
+        }
+
+        // Calculate metrics
+        $framework1Count = count($framework1->getRequirements());
+        $framework2Count = count($framework2->getRequirements());
+        $overlapPercentage = $framework1Count > 0 ? round(($mappedCount / $framework1Count) * 100, 1) : 0;
+        $unmapped = $framework1Count - $mappedCount;
+
+        // Find unique requirements
+        $uniqueFramework1 = array_filter($comparisonDetails, fn($d) => !$d['mapped']);
+
+        // Generate PDF
+        $pdfContent = $this->pdfExportService->generatePdf('pdf/framework_comparison_report.html.twig', [
+            'framework1' => $framework1,
+            'framework2' => $framework2,
+            'comparison_details' => $comparisonDetails,
+            'framework1_count' => $framework1Count,
+            'framework2_count' => $framework2Count,
+            'mapped_count' => $mappedCount,
+            'overlap_percentage' => $overlapPercentage,
+            'high_quality_mappings' => $highQualityMappings,
+            'unmapped' => $unmapped,
+            'unique_framework1' => $uniqueFramework1,
+        ]);
+
+        $filename = sprintf(
+            'framework_comparison_%s_vs_%s_%s.pdf',
+            $framework1->getCode(),
+            $framework2->getCode(),
+            date('Y-m-d_His')
+        );
+
+        $response = new Response($pdfContent);
+        $response->headers->set('Content-Type', 'application/pdf');
+        $response->headers->set('Content-Disposition', 'attachment; filename="' . $filename . '"');
+        $response->headers->set('Content-Length', strlen($pdfContent));
 
         return $response;
     }

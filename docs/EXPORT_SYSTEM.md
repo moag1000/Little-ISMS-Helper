@@ -9,10 +9,10 @@ Das Little ISMS Helper verfügt über ein professionelles Export-System mit **CS
 | Modul | CSV Export | Excel Export (Multi-Tab) | PDF Export | Status |
 |-------|-----------|--------------------------|------------|--------|
 | **Risk Management** | ✅ `/risk/export` | ✅ `/risk/export/excel` | ✅ `/risk/export/pdf` | **LIVE** |
-| **Framework Comparison** | ✅ `/compliance/export/comparison` | ✅ `/compliance/export/comparison/excel` | ⏳ Template ready | **LIVE** |
+| **Framework Comparison** | ✅ `/compliance/export/comparison` | ✅ `/compliance/export/comparison/excel` | ✅ `/compliance/export/comparison/pdf` | **LIVE** |
 | **Gap Analysis** | ✅ `/compliance/framework/{id}/gaps/export` | ✅ `/compliance/framework/{id}/gaps/export/excel` | ✅ `/compliance/framework/{id}/gaps/export/pdf` | **LIVE** |
-| **Data Reuse Insights** | ✅ `/compliance/framework/{id}/data-reuse/export` | ✅ `/compliance/framework/{id}/data-reuse/export/excel` | ⏳ Template ready | **LIVE** |
-| **Transitive Compliance** | ✅ `/compliance/export/transitive` | ✅ `/compliance/export/transitive/excel` | ⏳ Template ready | **LIVE** |
+| **Data Reuse Insights** | ✅ `/compliance/framework/{id}/data-reuse/export` | ✅ `/compliance/framework/{id}/data-reuse/export/excel` | ✅ `/compliance/framework/{id}/data-reuse/export/pdf` | **LIVE** |
+| **Transitive Compliance** | ✅ `/compliance/export/transitive` | ✅ `/compliance/export/transitive/excel` | ✅ `/compliance/export/transitive/pdf` | **LIVE** |
 
 ---
 
@@ -68,6 +68,77 @@ Das Little ISMS Helper verfügt über ein professionelles Export-System mit **CS
 
 **Special Feature:** Management-ready recommendations with actionable timelines
 
+### 3. Framework Comparison PDF Export
+
+**Route:** `GET /compliance/export/comparison/pdf?framework1={id}&framework2={id}`
+**Button:** Framework Compare → "PDF Report" (rot)
+
+**Content:**
+- Executive Summary with Framework Metrics
+- Overlap Percentage and Mapping Statistics
+- **High-Quality Mappings Table** (≥80% Match)
+- **All Mappings Detailed Comparison**
+- **Unique Requirements Analysis**
+- **Recommendations Section:**
+  - Harmonization Strategy
+  - Mapping Gap Closure Plan (with estimated hours)
+  - Implementation Roadmap (3 Phases)
+  - Quick Win Opportunities
+- ROI calculations for mapping completion
+
+**Example Filename:** `framework_comparison_ISO27001_vs_TISAX_2025-11-13_153045.pdf`
+
+**Special Feature:** Multi-framework harmonization recommendations with time estimates
+
+### 4. Data Reuse Insights PDF Export
+
+**Route:** `GET /compliance/framework/{id}/data-reuse/export/pdf`
+**Button:** Data Reuse Insights → "PDF Report" (rot)
+
+**Content:**
+- Executive Summary with Time Savings
+- Average Reuse Percentage
+- **Quick Wins Section** (≥80% reuse + high confidence)
+  - Calculated time savings per opportunity
+  - Total estimated hours saved
+- **All Data Reuse Analysis Table**
+- **Recommendations Section:**
+  - Priority 1: Quick Wins (Week 1-2)
+  - Priority 2: High-Value Opportunities (Month 1-2)
+  - Implementation Roadmap (3 Phases)
+  - ROI Analysis
+- Next Steps with specific action items
+
+**Example Filename:** `data_reuse_insights_ISO27001_2025-11-13_153045.pdf`
+
+**Special Feature:** Quick Wins identification with calculated ROI and time savings
+
+### 5. Transitive Compliance PDF Export
+
+**Route:** `GET /compliance/export/transitive/pdf`
+**Button:** Transitive Compliance → "PDF Report" (rot)
+
+**Content:**
+- Executive Summary with Framework Statistics
+- Framework Relationships Matrix
+- **High-Coverage Relationships** (≥70%)
+  - Cross-framework synergies
+  - Estimated time savings per relationship
+- **Compliance Leverage Analysis**
+  - Current leverage score
+  - Performance assessment
+- **Multi-Framework Strategy Recommendations:**
+  - Recommendation 1: High-Coverage Relationships (Very High Priority)
+  - Recommendation 2: Mapping Gap Closure (High Priority)
+  - Recommendation 3: Compliance Hub Strategy
+  - Implementation Roadmap (6 months, 3 phases)
+  - Quick Win Scorecard
+- Next Steps with actionable 6-item checklist
+
+**Example Filename:** `transitive_compliance_report_2025-11-13_153045.pdf`
+
+**Special Feature:** Multi-framework strategy with compliance hub vision and leverage optimization
+
 ### PDF Template System
 
 **Base Template:** `templates/pdf/base.html.twig`
@@ -79,6 +150,9 @@ Das Little ISMS Helper verfügt über ein professionelles Export-System mit **CS
 **Specific Templates:**
 - `templates/pdf/risk_report.html.twig`
 - `templates/pdf/gap_analysis_report.html.twig`
+- `templates/pdf/framework_comparison_report.html.twig`
+- `templates/pdf/data_reuse_insights_report.html.twig`
+- `templates/pdf/transitive_compliance_report.html.twig`
 
 **Usage Example:**
 ```php
@@ -418,23 +492,22 @@ Alle Exporte nutzen:
 
 ## 📝 Next Steps
 
-### Priorität 1: Remaining Excel Exports
-1. Gap Analysis Excel Export (~15min)
-2. Data Reuse Insights Excel Export (~15min)
-3. Transitive Compliance Excel Export (~15min)
+### ✅ Completed Features
+1. ✅ **CSV Exports** - All 5 modules (Risk, Gap Analysis, Framework Comparison, Data Reuse, Transitive)
+2. ✅ **Excel Exports** - All 5 modules with multi-tab professional layouts
+3. ✅ **PDF Exports** - All 5 modules with management recommendations
+   - Risk Management with statistics
+   - Gap Analysis with Q1-Q4 roadmap
+   - Framework Comparison with harmonization strategy
+   - Data Reuse Insights with Quick Wins
+   - Transitive Compliance with multi-framework strategy
 
-### Priorität 2: PDF Exports
-- PDF Template System mit Twig
-- Logo/CI Integration
-- Professional Header/Footer
-- Management Summary PDFs
-
-### Priorität 3: Konfigurationssystem
+### Priorität 1: Konfigurationssystem
 - Tenant-Entity erweitern mit Export-Config
 - Admin-UI für Farben/Logo-Upload
 - Preview-Funktion für Exporte
 
-### Priorität 4: Advanced Features
+### Priorität 2: Advanced Features
 - Charts/Diagramme in Excel (PhpSpreadsheet Charts)
 - Pivot Tables
 - Email-Versand von Reports
