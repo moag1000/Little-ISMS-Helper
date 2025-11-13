@@ -14,13 +14,13 @@
             🔗 Mappings erstellen
         </button>
         {% endif %}
-        <a href="{{ path('app_compliance_export_comparison_pdf', {framework1: selectedFramework1 ? selectedFramework1.id : '', framework2: selectedFramework2 ? selectedFramework2.id : ''}) }}" class="btn btn-danger" {% if not selectedFramework1 or not selectedFramework2 %}disabled{% endif %}>
+        <a href="{{ path('app_compliance_export_comparison_pdf', {framework1: selectedFramework1 ? selectedFramework1.id : '', framework2: selectedFramework2 ? selectedFramework2.id : ''}) }}" class="btn btn-danger" data-turbo="false" {% if not selectedFramework1 or not selectedFramework2 %}disabled{% endif %}>
             📄 PDF Report
         </a>
-        <a href="{{ path('app_compliance_export_comparison_excel', {framework1: selectedFramework1 ? selectedFramework1.id : '', framework2: selectedFramework2 ? selectedFramework2.id : ''}) }}" class="btn btn-success" {% if not selectedFramework1 or not selectedFramework2 %}disabled{% endif %}>
+        <a href="{{ path('app_compliance_export_comparison_excel', {framework1: selectedFramework1 ? selectedFramework1.id : '', framework2: selectedFramework2 ? selectedFramework2.id : ''}) }}" class="btn btn-success" data-turbo="false" {% if not selectedFramework1 or not selectedFramework2 %}disabled{% endif %}>
             📊 Excel Export
         </a>
-        <a href="{{ path('app_compliance_export_comparison', {framework1: selectedFramework1 ? selectedFramework1.id : '', framework2: selectedFramework2 ? selectedFramework2.id : ''}) }}" class="btn btn-secondary" {% if not selectedFramework1 or not selectedFramework2 %}disabled{% endif %}>
+        <a href="{{ path('app_compliance_export_comparison', {framework1: selectedFramework1 ? selectedFramework1.id : '', framework2: selectedFramework2 ? selectedFramework2.id : ''}) }}" class="btn btn-secondary" data-turbo="false" {% if not selectedFramework1 or not selectedFramework2 %}disabled{% endif %}>
             📄 CSV Export
         </a>
     </div>
