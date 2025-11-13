@@ -9,11 +9,8 @@
         <div class="mt-2">
             {% if role.systemRole %}
                 <span class="badge badge-info">{{ 'role_management.badge.system'|trans }}</span>
-            {% endif %}
-            {% if role.active %}
-                <span class="badge badge-success">{{ 'role_management.badge.active'|trans }}</span>
             {% else %}
-                <span class="badge badge-danger">{{ 'role_management.badge.inactive'|trans }}</span>
+                <span class="badge badge-secondary">{{ 'role_management.badge.custom'|trans }}</span>
             {% endif %}
         </div>
     </div>
