@@ -808,6 +808,68 @@ class LoadDoraRequirementsCommand extends Command
                 ],
             ],
             [
+                'id' => 'DORA-ITS-REG-1.1',
+                'title' => 'Register Content - Service Provider Information',
+                'description' => 'The register shall include detailed information about each ICT third-party service provider including name, legal entity identifier, country of establishment, and contact details.',
+                'category' => 'ITS Register Templates',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['5.19'],
+                ],
+            ],
+            [
+                'id' => 'DORA-ITS-REG-1.2',
+                'title' => 'Register Content - Service Description',
+                'description' => 'The register shall include comprehensive service descriptions, contract dates, nature of services, and data categories processed.',
+                'category' => 'ITS Register Templates',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['5.19', '5.20'],
+                ],
+            ],
+            [
+                'id' => 'DORA-ITS-REG-1.3',
+                'title' => 'Register Content - Criticality Assessment',
+                'description' => 'The register shall document the criticality level of each service and the supporting functions it serves.',
+                'category' => 'ITS Register Templates',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['5.19', '5.20'],
+                ],
+            ],
+            [
+                'id' => 'DORA-ITS-REG-1.4',
+                'title' => 'Register Content - Data Location',
+                'description' => 'The register shall specify data storage locations, data processing locations, and applicable jurisdictions.',
+                'category' => 'ITS Register Templates',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['5.19', '8.11'],
+                    'asset_types' => ['data', 'cloud'],
+                ],
+            ],
+            [
+                'id' => 'DORA-ITS-REG-1.5',
+                'title' => 'Register Content - Substitutability',
+                'description' => 'The register shall assess the substitutability of each service and identify alternative providers or solutions.',
+                'category' => 'ITS Register Templates',
+                'priority' => 'high',
+                'data_source_mapping' => [
+                    'iso_controls' => ['5.20', '5.30'],
+                ],
+            ],
+            [
+                'id' => 'DORA-ITS-REG-2.1',
+                'title' => 'Register Reporting to Authorities',
+                'description' => 'Financial entities shall report register content to competent authorities in standardized format as per ITS 2024/2956.',
+                'category' => 'ITS Register Reporting',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['5.31'],
+                    'audit_evidence' => true,
+                ],
+            ],
+            [
                 'id' => 'DORA-RTS-TPR-4.2',
                 'title' => 'Concentration Risk Assessment',
                 'description' => 'Financial entities shall assess and address concentration risks arising from dependencies on ICT third-party service providers.',
@@ -942,6 +1004,84 @@ class LoadDoraRequirementsCommand extends Command
                 'priority' => 'medium',
                 'data_source_mapping' => [
                     'iso_controls' => ['5.31'],
+                ],
+            ],
+
+            // RTS 2025/532 on Subcontracting
+            [
+                'id' => 'DORA-RTS-SUB-1.1',
+                'title' => 'Subcontracting Authorization Requirements',
+                'description' => 'Financial entities shall ensure contracts require prior written authorization for any subcontracting of critical or important functions.',
+                'category' => 'RTS Subcontracting',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['5.19', '5.20'],
+                ],
+            ],
+            [
+                'id' => 'DORA-RTS-SUB-1.2',
+                'title' => 'Subcontractor Due Diligence',
+                'description' => 'Financial entities shall ensure ICT third-party service providers conduct appropriate due diligence on subcontractors.',
+                'category' => 'RTS Subcontracting',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['5.19', '5.20'],
+                ],
+            ],
+            [
+                'id' => 'DORA-RTS-SUB-1.3',
+                'title' => 'Subcontractor Notification',
+                'description' => 'Financial entities shall be notified of any material changes to subcontracting arrangements including new subcontractors.',
+                'category' => 'RTS Subcontracting',
+                'priority' => 'high',
+                'data_source_mapping' => [
+                    'iso_controls' => ['5.19', '5.22'],
+                ],
+            ],
+            [
+                'id' => 'DORA-RTS-SUB-2.1',
+                'title' => 'Subcontractor Audit Rights',
+                'description' => 'Financial entities shall maintain audit rights over subcontractors providing critical ICT services.',
+                'category' => 'RTS Subcontracting',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['5.20', '5.21'],
+                    'audit_evidence' => true,
+                ],
+            ],
+
+            // Guidelines on Cost and Loss Estimation
+            [
+                'id' => 'DORA-GL-COST-1.1',
+                'title' => 'Incident Cost Tracking Methodology',
+                'description' => 'Financial entities shall establish methodology for tracking direct and indirect costs arising from major ICT incidents.',
+                'category' => 'Cost and Loss Estimation',
+                'priority' => 'high',
+                'data_source_mapping' => [
+                    'iso_controls' => ['5.24', '5.27'],
+                    'incident_management' => true,
+                ],
+            ],
+            [
+                'id' => 'DORA-GL-COST-1.2',
+                'title' => 'Business Impact Assessment',
+                'description' => 'Financial entities shall assess business impact including revenue loss, regulatory fines, remediation costs, and reputational damage.',
+                'category' => 'Cost and Loss Estimation',
+                'priority' => 'high',
+                'data_source_mapping' => [
+                    'iso_controls' => ['5.24', '5.29'],
+                    'incident_management' => true,
+                ],
+            ],
+            [
+                'id' => 'DORA-GL-COST-1.3',
+                'title' => 'Aggregated Annual Cost Reporting',
+                'description' => 'Financial entities shall aggregate and report annual costs and losses from major ICT incidents to management and authorities.',
+                'category' => 'Cost and Loss Estimation',
+                'priority' => 'medium',
+                'data_source_mapping' => [
+                    'iso_controls' => ['5.27', '5.31'],
+                    'audit_evidence' => true,
                 ],
             ],
         ];
