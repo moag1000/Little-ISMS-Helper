@@ -147,7 +147,7 @@ class AnalyticsController extends AbstractController
     }
 
     #[Route('/api/export/{type}', name: 'app_analytics_export')]
-    public function exportData(string $type): Response
+    public function exportData(Request $request, string $type): Response
     {
         $data = [];
         $filename = 'analytics_' . $type . '_' . date('Y-m-d') . '.csv';
@@ -163,6 +163,9 @@ class AnalyticsController extends AbstractController
                 $data = $this->exportCompliance();
                 break;
         }
+
+        // Close session to prevent blocking other requests during CSV generation
+        $request->getSession()->save();
 
         $csv = $this->generateCSV($data);
 
