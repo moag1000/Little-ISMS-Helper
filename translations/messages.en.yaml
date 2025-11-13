@@ -337,6 +337,7 @@ common:
   not_set: Not Set
   not_started: Not Started
   refresh: Refresh
+  save: Save
   search: Search
   success: Success
   to: To
@@ -2882,6 +2883,8 @@ corporate:
       scope: 'Scope'
       scope_id: 'Scope ID (optional)'
       notes: 'Notes'
+    help:
+      scope_id: 'Optional: Specific ID for the scope (e.g., "A.5.1" for a control)'
     scope:
       control: 'Control'
       isms_context: 'ISMS Context'
@@ -2908,3 +2911,9 @@ corporate:
     propagate: 'Propagate to Subsidiaries'
     propagate_error: 'Error propagating context'
     confirm_propagate: 'Do you really want to propagate the ISMS context to all hierarchical subsidiaries? This will overwrite their current contexts.'
+
+# Governance Model Labels
+governance:
+  hierarchical: 'Hierarchical'
+  shared: 'Shared'
+  independent: 'Independent'

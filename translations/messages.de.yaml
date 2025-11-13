@@ -337,6 +337,7 @@ common:
   not_set: Nicht festgelegt
   not_started: Nicht begonnen
   refresh: Aktualisieren
+  save: Speichern
   search: Suchen
   success: Erfolgreich
   to: Bis
@@ -2926,6 +2927,8 @@ corporate:
       scope: 'Bereich'
       scope_id: 'Bereichs-ID (optional)'
       notes: 'Notizen'
+    help:
+      scope_id: 'Optional: Spezifische ID für den Bereich (z.B. "A.5.1" für ein Control)'
     scope:
       control: 'Control'
       isms_context: 'ISMS-Kontext'
@@ -2952,3 +2955,9 @@ corporate:
     propagate: 'An Tochtergesellschaften verteilen'
     propagate_error: 'Fehler beim Verteilen des Kontexts'
     confirm_propagate: 'Möchten Sie den ISMS-Kontext wirklich an alle hierarchischen Tochtergesellschaften verteilen? Dies überschreibt deren aktuelle Kontexte.'
+
+# Governance Model Labels
+governance:
+  hierarchical: 'Hierarchisch'
+  shared: 'Geteilt'
+  independent: 'Unabhängig'

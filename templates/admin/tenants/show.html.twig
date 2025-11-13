@@ -467,14 +467,20 @@
                     let html = '<div class="list-group list-group-flush">';
                     data.rules.forEach(rule => {
                         const badgeColor = rule.governanceModel === 'hierarchical' ? 'primary' : (rule.governanceModel === 'shared' ? 'warning' : 'secondary');
+                        const scopeIdParam = rule.scopeId ? `'${rule.scopeId}'` : 'null';
                         html += `<div class="list-group-item d-flex justify-content-between align-items-center">
                             <div><strong>${rule.scope}</strong>${rule.scopeId ? ': ' + rule.scopeId : ''}<br>
                             <span class="badge bg-${badgeColor}">${rule.governanceLabel}</span></div>
-                            <button class="btn btn-sm btn-danger" onclick="deleteRule(${rule.id})"><i class="bi bi-trash"></i></button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteRule(${rule.id}, '${rule.scope}', ${scopeIdParam})"><i class="bi bi-trash"></i></button>
                         </div>`;
                     });
                     html += '</div>';
                     container.innerHTML = html;
+                })
+                .catch(err => {
+                    console.error('Error loading governance rules:', err);
+                    document.getElementById('governanceRulesContainer').innerHTML =
+                        '<div class="alert alert-danger small mb-0">{{ 'corporate.granular.flash.error'|trans }}</div>';
                 });
         }
 
@@ -492,17 +498,46 @@
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({scopeId, governanceModel})
-            }).then(() => {
-                bootstrap.Modal.getInstance(document.getElementById('governanceRuleModal')).hide();
-                loadGovernanceRules();
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    bootstrap.Modal.getInstance(document.getElementById('governanceRuleModal')).hide();
+                    loadGovernanceRules();
+                } else {
+                    alert('{{ 'corporate.granular.flash.error'|trans }}');
+                }
+            })
+            .catch(err => {
+                console.error('Error saving governance rule:', err);
+                alert('{{ 'corporate.granular.flash.error'|trans }}');
             });
         }
 
-        function deleteRule(id) {
-            if (confirm('{{ 'corporate.granular.confirm.delete'|trans }}')) {
-                // Implementation simplified - would need proper DELETE call
-                loadGovernanceRules();
+        function deleteRule(ruleId, scope, scopeId) {
+            if (!confirm('{{ 'corporate.granular.confirm.delete'|trans }}')) {
+                return;
             }
+
+            const url = scopeId
+                ? `/api/corporate-structure/${tenantId}/governance/${scope}/${scopeId}`
+                : `/api/corporate-structure/${tenantId}/governance/${scope}/null`;
+
+            fetch(url, {
+                method: 'DELETE'
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    loadGovernanceRules();
+                } else {
+                    alert('{{ 'corporate.granular.flash.error'|trans }}');
+                }
+            })
+            .catch(err => {
+                console.error('Error deleting governance rule:', err);
+                alert('{{ 'corporate.granular.flash.error'|trans }}');
+            });
         }
         {% endif %}
 
