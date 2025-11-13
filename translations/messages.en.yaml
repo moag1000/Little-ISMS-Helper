@@ -1146,7 +1146,7 @@ incident:
 document:
   doc_title: 'Documents'
   title: 'Documents'
-  title_by_type: 'Documents by Type'
+  'title.by_type': 'Documents by Type'
   subtitle: 'Document Management'
   new: 'New Document'
   edit: 'Edit Document'
@@ -2951,8 +2951,8 @@ crisis_team:
 
 tenant:
   title: Tenant Management
-  title_edit: Edit Tenant
-  title_create: Create New Tenant
+  'title.edit': Edit Tenant
+  'title.create': Create New Tenant
   subtitle: Manage organizations and tenants
   empty: No tenants available
   stats:
