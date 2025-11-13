@@ -7,10 +7,12 @@ use App\Form\RiskType;
 use App\Repository\AuditLogRepository;
 use App\Repository\RiskRepository;
 use App\Service\RiskMatrixService;
+use App\Service\RiskService;
 use App\Service\ExcelExportService;
 use App\Service\PdfExportService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -22,26 +24,36 @@ class RiskController extends AbstractController
 {
     public function __construct(
         private RiskRepository $riskRepository,
+        private RiskService $riskService,
         private AuditLogRepository $auditLogRepository,
         private EntityManagerInterface $entityManager,
         private RiskMatrixService $riskMatrixService,
         private TranslatorInterface $translator,
         private ExcelExportService $excelExportService,
-        private PdfExportService $pdfExportService
+        private PdfExportService $pdfExportService,
+        private Security $security
     ) {}
 
     #[Route('/', name: 'app_risk_index')]
     #[IsGranted('ROLE_USER')]
     public function index(Request $request): Response
     {
+        // Get current user's tenant
+        $user = $this->security->getUser();
+        $tenant = $user?->getTenant();
+
+        if (!$tenant) {
+            throw $this->createAccessDeniedException('No tenant associated with user');
+        }
+
         // Get filter parameters
         $level = $request->query->get('level'); // critical, high, medium, low
         $status = $request->query->get('status');
         $treatment = $request->query->get('treatment');
         $owner = $request->query->get('owner');
 
-        // Get all risks
-        $risks = $this->riskRepository->findAll();
+        // Get risks for tenant (including inherited if governance allows)
+        $risks = $this->riskService->getRisksForTenant($tenant);
 
         // Apply filters
         if ($level) {
@@ -74,13 +86,19 @@ class RiskController extends AbstractController
         // Re-index array after filtering
         $risks = array_values($risks);
 
-        $highRisks = $this->riskRepository->findHighRisks();
+        // Get high risks for tenant
+        $highRisks = $this->riskService->getHighRisksForTenant($tenant);
         $treatmentStats = $this->riskRepository->countByTreatmentStrategy();
+
+        // Get inheritance info for UI
+        $inheritanceInfo = $this->riskService->getRiskInheritanceInfo($tenant);
 
         return $this->render('risk/index_modern.html.twig', [
             'risks' => $risks,
             'highRisks' => $highRisks,
             'treatmentStats' => $treatmentStats,
+            'inheritanceInfo' => $inheritanceInfo,
+            'currentTenant' => $tenant,
         ]);
     }
 
@@ -88,14 +106,22 @@ class RiskController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function export(Request $request): Response
     {
+        // Get current user's tenant
+        $user = $this->security->getUser();
+        $tenant = $user?->getTenant();
+
+        if (!$tenant) {
+            throw $this->createAccessDeniedException('No tenant associated with user');
+        }
+
         // Get filter parameters (same as index)
         $level = $request->query->get('level');
         $status = $request->query->get('status');
         $treatment = $request->query->get('treatment');
         $owner = $request->query->get('owner');
 
-        // Get all risks
-        $risks = $this->riskRepository->findAll();
+        // Get risks for tenant (including inherited if governance allows)
+        $risks = $this->riskService->getRisksForTenant($tenant);
 
         // Apply filters (same logic as index)
         if ($level) {
@@ -249,14 +275,22 @@ class RiskController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function exportExcel(Request $request): Response
     {
+        // Get current user's tenant
+        $user = $this->security->getUser();
+        $tenant = $user?->getTenant();
+
+        if (!$tenant) {
+            throw $this->createAccessDeniedException('No tenant associated with user');
+        }
+
         // Get filter parameters (same as index)
         $level = $request->query->get('level');
         $status = $request->query->get('status');
         $treatment = $request->query->get('treatment');
         $owner = $request->query->get('owner');
 
-        // Get all risks
-        $risks = $this->riskRepository->findAll();
+        // Get risks for tenant (including inherited if governance allows)
+        $risks = $this->riskService->getRisksForTenant($tenant);
 
         // Apply filters (same logic as index)
         if ($level) {
@@ -490,14 +524,22 @@ class RiskController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function exportPdf(Request $request): Response
     {
+        // Get current user's tenant
+        $user = $this->security->getUser();
+        $tenant = $user?->getTenant();
+
+        if (!$tenant) {
+            throw $this->createAccessDeniedException('No tenant associated with user');
+        }
+
         // Get filter parameters (same as index)
         $level = $request->query->get('level');
         $status = $request->query->get('status');
         $treatment = $request->query->get('treatment');
         $owner = $request->query->get('owner');
 
-        // Get all risks
-        $risks = $this->riskRepository->findAll();
+        // Get risks for tenant (including inherited if governance allows)
+        $risks = $this->riskService->getRisksForTenant($tenant);
 
         // Build filter info string
         $filterParts = [];
@@ -609,14 +651,29 @@ class RiskController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function show(Risk $risk): Response
     {
+        // Get current user's tenant
+        $user = $this->security->getUser();
+        $tenant = $user?->getTenant();
+
+        if (!$tenant) {
+            throw $this->createAccessDeniedException('No tenant associated with user');
+        }
+
         // Get audit log history for this risk (last 10 entries)
         $auditLogs = $this->auditLogRepository->findByEntity('Risk', $risk->getId());
         $recentAuditLogs = array_slice($auditLogs, 0, 10);
+
+        // Check if risk is inherited
+        $isInherited = $this->riskService->isInheritedRisk($risk, $tenant);
+        $canEdit = $this->riskService->canEditRisk($risk, $tenant);
 
         return $this->render('risk/show.html.twig', [
             'risk' => $risk,
             'auditLogs' => $recentAuditLogs,
             'totalAuditLogs' => count($auditLogs),
+            'isInherited' => $isInherited,
+            'canEdit' => $canEdit,
+            'currentTenant' => $tenant,
         ]);
     }
 
@@ -624,6 +681,20 @@ class RiskController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function edit(Request $request, Risk $risk): Response
     {
+        // Get current user's tenant
+        $user = $this->security->getUser();
+        $tenant = $user?->getTenant();
+
+        if (!$tenant) {
+            throw $this->createAccessDeniedException('No tenant associated with user');
+        }
+
+        // Check if risk can be edited (not inherited)
+        if (!$this->riskService->canEditRisk($risk, $tenant)) {
+            $this->addFlash('error', $this->translator->trans('corporate.inheritance.cannot_edit_inherited'));
+            return $this->redirectToRoute('app_risk_show', ['id' => $risk->getId()]);
+        }
+
         $form = $this->createForm(RiskType::class, $risk);
         $form->handleRequest($request);
 
@@ -644,6 +715,20 @@ class RiskController extends AbstractController
     #[IsGranted('ROLE_ADMIN')]
     public function delete(Request $request, Risk $risk): Response
     {
+        // Get current user's tenant
+        $user = $this->security->getUser();
+        $tenant = $user?->getTenant();
+
+        if (!$tenant) {
+            throw $this->createAccessDeniedException('No tenant associated with user');
+        }
+
+        // Check if risk can be deleted (not inherited)
+        if (!$this->riskService->canEditRisk($risk, $tenant)) {
+            $this->addFlash('error', $this->translator->trans('corporate.inheritance.cannot_edit_inherited'));
+            return $this->redirectToRoute('app_risk_index');
+        }
+
         if ($this->isCsrfTokenValid('delete'.$risk->getId(), $request->request->get('_token'))) {
             $this->entityManager->remove($risk);
             $this->entityManager->flush();
@@ -657,7 +742,16 @@ class RiskController extends AbstractController
     #[Route('/matrix', name: 'app_risk_matrix')]
     public function matrix(): Response
     {
-        $risks = $this->riskRepository->findAll();
+        // Get current user's tenant
+        $user = $this->security->getUser();
+        $tenant = $user?->getTenant();
+
+        if (!$tenant) {
+            throw $this->createAccessDeniedException('No tenant associated with user');
+        }
+
+        // Get risks for tenant (including inherited if governance allows)
+        $risks = $this->riskService->getRisksForTenant($tenant);
         $matrixData = $this->riskMatrixService->generateMatrix();
         $statistics = $this->riskMatrixService->getRiskStatistics();
         $risksByLevel = $this->riskMatrixService->getRisksByLevel();
