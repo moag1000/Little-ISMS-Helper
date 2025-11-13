@@ -1824,6 +1824,43 @@ class ComplianceController extends AbstractController
         // Find unique requirements
         $uniqueFramework1 = array_filter($comparisonDetails, fn($d) => !$d['mapped']);
 
+        // Calculate bidirectional coverage
+        $bidirectionalCoverage = $this->mappingRepository->calculateBidirectionalCoverage($framework1, $framework2);
+
+        // Calculate category-specific coverage (both directions)
+        $categoryCoverageF1toF2 = $this->mappingRepository->calculateCategoryCoverage($framework1, $framework2);
+        $categoryCoverageF2toF1 = $this->mappingRepository->calculateCategoryCoverage($framework2, $framework1);
+
+        // Calculate mapping quality distribution
+        $qualityDistribution = [
+            'excellent' => 0,  // 90-100%
+            'good' => 0,       // 70-89%
+            'medium' => 0,     // 50-69%
+            'weak' => 0,       // <50%
+        ];
+        $qualitySum = 0;
+        $qualityCount = 0;
+
+        foreach ($comparisonDetails as $detail) {
+            if ($detail['mapped'] && $detail['matchQuality'] !== null) {
+                $quality = $detail['matchQuality'];
+                $qualitySum += $quality;
+                $qualityCount++;
+
+                if ($quality >= 90) {
+                    $qualityDistribution['excellent']++;
+                } elseif ($quality >= 70) {
+                    $qualityDistribution['good']++;
+                } elseif ($quality >= 50) {
+                    $qualityDistribution['medium']++;
+                } else {
+                    $qualityDistribution['weak']++;
+                }
+            }
+        }
+
+        $avgMappingQuality = $qualityCount > 0 ? round($qualitySum / $qualityCount, 1) : 0;
+
         // Close session to prevent blocking other requests during PDF generation
         $request->getSession()->save();
 
@@ -1839,6 +1876,18 @@ class ComplianceController extends AbstractController
             'high_quality_mappings' => $highQualityMappings,
             'unmapped' => $unmapped,
             'unique_framework1' => $uniqueFramework1,
+            // New bidirectional coverage metrics
+            'bidirectional_coverage' => $bidirectionalCoverage,
+            'coverage_f1_to_f2' => $bidirectionalCoverage['framework1_to_framework2']['coverage_percentage'],
+            'coverage_f2_to_f1' => $bidirectionalCoverage['framework2_to_framework1']['coverage_percentage'],
+            'bidirectional_overlap' => $bidirectionalCoverage['bidirectional_overlap'],
+            'symmetric_coverage' => $bidirectionalCoverage['symmetric_coverage'],
+            // Category coverage
+            'category_coverage_f1_to_f2' => $categoryCoverageF1toF2,
+            'category_coverage_f2_to_f1' => $categoryCoverageF2toF1,
+            // Mapping quality distribution
+            'quality_distribution' => $qualityDistribution,
+            'avg_mapping_quality' => $avgMappingQuality,
             'pdf_generation_date' => new \DateTime(),
         ]);
 
