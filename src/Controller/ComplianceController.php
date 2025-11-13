@@ -1417,7 +1417,11 @@ class ComplianceController extends AbstractController
         $frameworkRelationships = [];
         $totalHelped = 0;
 
-        // Build data
+        // Build data with impact scoring
+        $quickWins = [];
+        $highImpactRelationships = [];
+        $totalImpactScore = 0;
+
         foreach ($frameworks as $sourceFramework) {
             foreach ($frameworks as $targetFramework) {
                 if ($sourceFramework->getId() === $targetFramework->getId()) {
@@ -1435,22 +1439,56 @@ class ComplianceController extends AbstractController
                 $mappings = $this->mappingRepository->findCrossFrameworkMappings($sourceFramework, $targetFramework);
 
                 if (!empty($mappings) && ($coverage['coverage_percentage'] ?? 0) > 0) {
-                    $frameworkRelationships[] = [
+                    $coveragePercentage = round($coverage['coverage_percentage'] ?? 0, 1);
+
+                    // Calculate impact score and ROI
+                    $impactAnalysis = $this->mappingRepository->calculateFrameworkImpactScore(
+                        $sourceFramework,
+                        $targetFramework,
+                        $coveragePercentage
+                    );
+
+                    $relationship = [
                         'source' => $sourceFramework,
                         'target' => $targetFramework,
                         'mapped' => $coverage['covered_requirements'] ?? 0,
                         'total' => $coverage['total_requirements'] ?? 0,
-                        'coverage' => round($coverage['coverage_percentage'] ?? 0, 1),
+                        'coverage' => $coveragePercentage,
+                        'impact_score' => $impactAnalysis['impact_score'],
+                        'roi' => $impactAnalysis['roi'],
+                        'is_quick_win' => $impactAnalysis['is_quick_win'],
+                        'effort_estimate' => $impactAnalysis['effort_estimate'],
+                        'priority_multiplier' => $impactAnalysis['factors']['priority_multiplier'],
                     ];
+
+                    $frameworkRelationships[] = $relationship;
+                    $totalImpactScore += $impactAnalysis['impact_score'];
+
+                    // Track quick wins
+                    if ($impactAnalysis['is_quick_win']) {
+                        $quickWins[] = $relationship;
+                    }
+
+                    // Track high impact relationships (top tier)
+                    if ($impactAnalysis['impact_score'] >= 50) {
+                        $highImpactRelationships[] = $relationship;
+                    }
                 }
             }
         }
 
-        // Calculate average coverage
+        // Sort framework relationships by impact score (highest first)
+        usort($frameworkRelationships, fn($a, $b) => $b['impact_score'] <=> $a['impact_score']);
+        usort($quickWins, fn($a, $b) => $b['roi'] <=> $a['roi']);
+        usort($highImpactRelationships, fn($a, $b) => $b['impact_score'] <=> $a['impact_score']);
+
+        // Calculate average coverage and impact
         $avgCoverage = 0;
+        $avgImpactScore = 0;
         if (!empty($frameworkRelationships)) {
             $totalCoverage = array_sum(array_column($frameworkRelationships, 'coverage'));
             $avgCoverage = $totalCoverage / count($frameworkRelationships);
+            $avgImpactScore = $totalImpactScore / count($frameworkRelationships);
         }
 
         // Close session to prevent blocking other requests during PDF generation
@@ -1466,6 +1504,12 @@ class ComplianceController extends AbstractController
             'transitive_count' => count($transitiveAnalysis),
             'total_helped' => $totalHelped,
             'avg_coverage' => $avgCoverage,
+            'avg_impact_score' => round($avgImpactScore, 1),
+            'total_impact_score' => round($totalImpactScore, 1),
+            'quick_wins' => $quickWins,
+            'high_impact_relationships' => $highImpactRelationships,
+            'quick_win_count' => count($quickWins),
+            'high_impact_count' => count($highImpactRelationships),
             'pdf_generation_date' => new \DateTime(),
         ]);
 
