@@ -9,6 +9,7 @@ use App\Repository\ComplianceMappingRepository;
 use App\Service\ComplianceAssessmentService;
 use App\Service\ComplianceMappingService;
 use App\Service\ComplianceFrameworkLoaderService;
+use App\Service\ExcelExportService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -27,7 +28,8 @@ class ComplianceController extends AbstractController
         private ComplianceAssessmentService $assessmentService,
         private ComplianceMappingService $mappingService,
         private ComplianceFrameworkLoaderService $frameworkLoaderService,
-        private CsrfTokenManagerInterface $csrfTokenManager
+        private CsrfTokenManagerInterface $csrfTokenManager,
+        private ExcelExportService $excelExportService
     ) {}
 
     #[Route('/', name: 'app_compliance_index')]
@@ -1050,6 +1052,178 @@ class ComplianceController extends AbstractController
         fclose($handle);
 
         $response->setContent($csvContent);
+
+        return $response;
+    }
+
+    #[Route('/export/comparison/excel', name: 'app_compliance_export_comparison_excel')]
+    public function exportComparisonExcel(Request $request): Response
+    {
+        $framework1Id = $request->query->get('framework1');
+        $framework2Id = $request->query->get('framework2');
+
+        if (!$framework1Id || !$framework2Id) {
+            $this->addFlash('error', 'Bitte wählen Sie zwei Frameworks zum Vergleich aus.');
+            return $this->redirectToRoute('app_compliance_compare');
+        }
+
+        $framework1 = $this->frameworkRepository->find($framework1Id);
+        $framework2 = $this->frameworkRepository->find($framework2Id);
+
+        if (!$framework1 || !$framework2) {
+            $this->addFlash('error', 'Ein oder beide Frameworks wurden nicht gefunden.');
+            return $this->redirectToRoute('app_compliance_compare');
+        }
+
+        // Build detailed comparison data
+        $comparisonDetails = [];
+        $mappedCount = 0;
+
+        foreach ($framework1->getRequirements() as $req1) {
+            $mappedRequirement = null;
+            $matchQuality = null;
+            $isMapped = false;
+
+            // Find mappings
+            $sourceMappings = $this->mappingRepository->findBy(['sourceRequirement' => $req1]);
+            foreach ($sourceMappings as $mapping) {
+                if ($mapping->getTargetRequirement()->getFramework()->getId() === $framework2->getId()) {
+                    $mappedRequirement = $mapping->getTargetRequirement();
+                    $matchQuality = $mapping->getMappingPercentage();
+                    $isMapped = true;
+                    $mappedCount++;
+                    break;
+                }
+            }
+
+            if (!$isMapped) {
+                $targetMappings = $this->mappingRepository->findBy(['targetRequirement' => $req1]);
+                foreach ($targetMappings as $mapping) {
+                    if ($mapping->getSourceRequirement()->getFramework()->getId() === $framework2->getId()) {
+                        $mappedRequirement = $mapping->getSourceRequirement();
+                        $matchQuality = $mapping->getMappingPercentage();
+                        $isMapped = true;
+                        $mappedCount++;
+                        break;
+                    }
+                }
+            }
+
+            $comparisonDetails[] = [
+                'framework1Requirement' => $req1,
+                'mapped' => $isMapped,
+                'framework2Requirement' => $mappedRequirement,
+                'matchQuality' => $matchQuality,
+            ];
+        }
+
+        // Create spreadsheet
+        $spreadsheet = $this->excelExportService->createSpreadsheet('Framework Comparison Report');
+
+        // === TAB 1: Summary ===
+        $summarySheet = $spreadsheet->getActiveSheet();
+        $summarySheet->setTitle('Zusammenfassung');
+
+        $framework1Count = count($framework1->getRequirements());
+        $framework2Count = count($framework2->getRequirements());
+        $overlapPercentage = $framework1Count > 0 ? round(($mappedCount / $framework1Count) * 100, 1) : 0;
+
+        $metrics = [
+            'Framework 1' => $framework1->getName() . ' (' . $framework1->getCode() . ')',
+            'Framework 2' => $framework2->getName() . ' (' . $framework2->getCode() . ')',
+            'Framework 1 Anforderungen' => $framework1Count,
+            'Framework 2 Anforderungen' => $framework2Count,
+            'Gemappte Anforderungen' => $mappedCount,
+            'Overlap Prozentsatz' => $overlapPercentage . '%',
+            'Export-Datum' => date('d.m.Y H:i'),
+        ];
+
+        $this->excelExportService->addSummarySection($summarySheet, $metrics, 1, 'Framework Vergleich');
+        $this->excelExportService->autoSizeColumns($summarySheet);
+
+        // === TAB 2: Detailed Comparison ===
+        $detailsSheet = $this->excelExportService->createSheet($spreadsheet, 'Detaillierter Vergleich');
+
+        $headers = [
+            $framework1->getName() . ' ID',
+            $framework1->getName() . ' Titel',
+            $framework1->getName() . ' Kategorie',
+            'Mapping Status',
+            'Match %',
+            $framework2->getName() . ' ID',
+            $framework2->getName() . ' Titel',
+            $framework2->getName() . ' Kategorie',
+        ];
+
+        $this->excelExportService->addFormattedHeaderRow($detailsSheet, $headers, 1, true);
+
+        $data = [];
+        foreach ($comparisonDetails as $detail) {
+            $data[] = [
+                $detail['framework1Requirement']->getRequirementId(),
+                $detail['framework1Requirement']->getTitle(),
+                $detail['framework1Requirement']->getCategory() ?? '-',
+                $detail['mapped'] ? 'Gemapped' : 'Nicht gemapped',
+                $detail['matchQuality'] ?? '-',
+                $detail['framework2Requirement'] ? $detail['framework2Requirement']->getRequirementId() : '-',
+                $detail['framework2Requirement'] ? $detail['framework2Requirement']->getTitle() : '-',
+                $detail['framework2Requirement'] ? ($detail['framework2Requirement']->getCategory() ?? '-') : '-',
+            ];
+        }
+
+        // Conditional formatting for mapping status and match quality
+        $conditionalFormatting = [
+            3 => [ // Mapping Status
+                'Gemapped' => $this->excelExportService->getColor('success'),
+                'Nicht gemapped' => ['color' => $this->excelExportService->getColor('warning'), 'bold' => false],
+            ],
+            4 => [ // Match Quality
+                '>=80' => $this->excelExportService->getColor('success'),
+                '>=60' => $this->excelExportService->getColor('warning'),
+                '<60' => $this->excelExportService->getColor('danger'),
+            ],
+        ];
+
+        $this->excelExportService->addFormattedDataRows($detailsSheet, $data, 2, $conditionalFormatting);
+        $this->excelExportService->autoSizeColumns($detailsSheet);
+
+        // === TAB 3: Framework 1 Unique ===
+        $framework1Unique = array_filter($comparisonDetails, fn($d) => !$d['mapped']);
+        if (!empty($framework1Unique)) {
+            $unique1Sheet = $this->excelExportService->createSheet($spreadsheet, 'Unique ' . substr($framework1->getCode(), 0, 10));
+
+            $uniqueHeaders = ['ID', 'Titel', 'Kategorie', 'Beschreibung'];
+            $this->excelExportService->addFormattedHeaderRow($unique1Sheet, $uniqueHeaders, 1, true);
+
+            $uniqueData = [];
+            foreach ($framework1Unique as $detail) {
+                $req = $detail['framework1Requirement'];
+                $uniqueData[] = [
+                    $req->getRequirementId(),
+                    $req->getTitle(),
+                    $req->getCategory() ?? '-',
+                    substr($req->getDescription() ?? '-', 0, 200), // Limit description length
+                ];
+            }
+
+            $this->excelExportService->addFormattedDataRows($unique1Sheet, $uniqueData, 2);
+            $this->excelExportService->autoSizeColumns($unique1Sheet);
+        }
+
+        // Generate Excel file
+        $content = $this->excelExportService->generateExcel($spreadsheet);
+
+        $filename = sprintf(
+            'framework_comparison_%s_vs_%s_%s.xlsx',
+            $framework1->getCode(),
+            $framework2->getCode(),
+            date('Y-m-d_His')
+        );
+
+        $response = new Response($content);
+        $response->headers->set('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        $response->headers->set('Content-Disposition', 'attachment; filename="' . $filename . '"');
+        $response->headers->set('Content-Length', strlen($content));
 
         return $response;
     }
