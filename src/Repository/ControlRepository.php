@@ -137,4 +137,115 @@ class ControlRepository extends ServiceEntityRepository
 
         return $stats;
     }
+
+    /**
+     * Find all controls for a tenant (own controls only)
+     *
+     * @param \App\Entity\Tenant $tenant The tenant to find controls for
+     * @return Control[] Array of Control entities
+     */
+    public function findByTenant($tenant): array
+    {
+        return $this->createQueryBuilder('c')
+            ->where('c.tenant = :tenant')
+            ->setParameter('tenant', $tenant)
+            ->orderBy('LENGTH(c.controlId)', 'ASC')
+            ->addOrderBy('c.controlId', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Find controls by tenant or parent tenant (for hierarchical governance)
+     * This allows viewing inherited controls from parent companies
+     *
+     * @param \App\Entity\Tenant $tenant The tenant to find controls for
+     * @param \App\Entity\Tenant|null $parentTenant Optional parent tenant for inherited controls
+     * @return Control[] Array of Control entities (own + inherited)
+     */
+    public function findByTenantIncludingParent($tenant, $parentTenant = null): array
+    {
+        $qb = $this->createQueryBuilder('c')
+            ->where('c.tenant = :tenant')
+            ->setParameter('tenant', $tenant);
+
+        if ($parentTenant) {
+            $qb->orWhere('c.tenant = :parentTenant')
+               ->setParameter('parentTenant', $parentTenant);
+        }
+
+        return $qb
+            ->orderBy('LENGTH(c.controlId)', 'ASC')
+            ->addOrderBy('c.controlId', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Find a specific control by controlId and tenant
+     *
+     * @param string $controlId The ISO 27001 control ID (e.g., "5.1", "8.3")
+     * @param \App\Entity\Tenant $tenant The tenant
+     * @return Control|null The control or null if not found
+     */
+    public function findByControlIdAndTenant(string $controlId, $tenant): ?Control
+    {
+        return $this->createQueryBuilder('c')
+            ->where('c.controlId = :controlId')
+            ->andWhere('c.tenant = :tenant')
+            ->setParameter('controlId', $controlId)
+            ->setParameter('tenant', $tenant)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /**
+     * Get implementation statistics for a specific tenant
+     *
+     * @param \App\Entity\Tenant $tenant The tenant
+     * @return array{total: int, implemented: int, in_progress: int, not_started: int, not_applicable: int} Control statistics
+     */
+    public function getImplementationStatsByTenant($tenant): array
+    {
+        $rawStats = $this->createQueryBuilder('c')
+            ->select('c.implementationStatus, COUNT(c.id) as count')
+            ->where('c.tenant = :tenant')
+            ->andWhere('c.applicable = :applicable')
+            ->setParameter('tenant', $tenant)
+            ->setParameter('applicable', true)
+            ->groupBy('c.implementationStatus')
+            ->getQuery()
+            ->getResult();
+
+        $stats = [
+            'total' => 0,
+            'implemented' => 0,
+            'in_progress' => 0,
+            'not_started' => 0,
+            'not_applicable' => 0,
+        ];
+
+        foreach ($rawStats as $stat) {
+            $status = $stat['implementationStatus'] ?? 'not_started';
+            $count = (int) $stat['count'];
+            $stats['total'] += $count;
+
+            if (isset($stats[$status])) {
+                $stats[$status] = $count;
+            }
+        }
+
+        $notApplicableCount = $this->createQueryBuilder('c')
+            ->select('COUNT(c.id)')
+            ->where('c.tenant = :tenant')
+            ->andWhere('c.applicable = :applicable')
+            ->setParameter('tenant', $tenant)
+            ->setParameter('applicable', false)
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        $stats['not_applicable'] = (int) $notApplicableCount;
+
+        return $stats;
+    }
 }

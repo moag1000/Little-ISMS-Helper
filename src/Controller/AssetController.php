@@ -7,9 +7,11 @@ use App\Form\AssetType;
 use App\Repository\AssetRepository;
 use App\Repository\AuditLogRepository;
 use App\Repository\BusinessProcessRepository;
+use App\Service\AssetService;
 use App\Service\ProtectionRequirementService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -21,25 +23,38 @@ class AssetController extends AbstractController
 {
     public function __construct(
         private AssetRepository $assetRepository,
+        private AssetService $assetService,
         private AuditLogRepository $auditLogRepository,
         private ProtectionRequirementService $protectionRequirementService,
         private BusinessProcessRepository $businessProcessRepository,
         private EntityManagerInterface $entityManager,
-        private TranslatorInterface $translator
+        private TranslatorInterface $translator,
+        private Security $security
     ) {}
 
     #[Route('/', name: 'app_asset_index')]
     #[IsGranted('ROLE_USER')]
     public function index(Request $request): Response
     {
+        // Get current tenant
+        $user = $this->security->getUser();
+        $tenant = $user?->getTenant();
+
+        if (!$tenant) {
+            throw $this->createAccessDeniedException('No tenant associated with user');
+        }
+
         // Get filter parameters
         $type = $request->query->get('type');
         $classification = $request->query->get('classification');
         $owner = $request->query->get('owner');
         $status = $request->query->get('status');
 
-        // Apply filters
-        $assets = $this->assetRepository->findActiveAssets();
+        // Get assets based on governance model
+        $assets = $this->assetService->getAssetsForTenant($tenant);
+
+        // Filter to active only first
+        $assets = array_filter($assets, fn($asset) => $asset->getStatus() === 'active');
 
         if ($type) {
             $assets = array_filter($assets, fn($asset) => $asset->getAssetType() === $type);
@@ -76,10 +91,15 @@ class AssetController extends AbstractController
             ];
         }
 
+        // Get inheritance info
+        $inheritanceInfo = $this->assetService->getAssetInheritanceInfo($tenant);
+
         return $this->render('asset/index.html.twig', [
             'assets' => $assets,
             'typeStats' => $typeStats,
             'recommendations' => $assetRecommendations,
+            'inheritanceInfo' => $inheritanceInfo,
+            'currentTenant' => $tenant,
         ]);
     }
 
@@ -109,6 +129,13 @@ class AssetController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function show(Asset $asset): Response
     {
+        $user = $this->security->getUser();
+        $tenant = $user?->getTenant();
+
+        if (!$tenant) {
+            throw $this->createAccessDeniedException('No tenant associated with user');
+        }
+
         $analysis = $this->protectionRequirementService->getCompleteProtectionRequirementAnalysis($asset);
         $processes = $this->businessProcessRepository->findByAsset($asset->getId());
 
@@ -116,12 +143,19 @@ class AssetController extends AbstractController
         $auditLogs = $this->auditLogRepository->findByEntity('Asset', $asset->getId());
         $recentAuditLogs = array_slice($auditLogs, 0, 10);
 
+        // Check if asset is inherited and can be edited
+        $isInherited = $this->assetService->isInheritedAsset($asset, $tenant);
+        $canEdit = $this->assetService->canEditAsset($asset, $tenant);
+
         return $this->render('asset/show.html.twig', [
             'asset' => $asset,
             'analysis' => $analysis,
             'processes' => $processes,
             'auditLogs' => $recentAuditLogs,
             'totalAuditLogs' => count($auditLogs),
+            'isInherited' => $isInherited,
+            'canEdit' => $canEdit,
+            'currentTenant' => $tenant,
         ]);
     }
 
@@ -129,6 +163,19 @@ class AssetController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function edit(Request $request, Asset $asset): Response
     {
+        $user = $this->security->getUser();
+        $tenant = $user?->getTenant();
+
+        if (!$tenant) {
+            throw $this->createAccessDeniedException('No tenant associated with user');
+        }
+
+        // Check if asset can be edited (not inherited)
+        if (!$this->assetService->canEditAsset($asset, $tenant)) {
+            $this->addFlash('error', $this->translator->trans('corporate.inheritance.cannot_edit_inherited'));
+            return $this->redirectToRoute('app_asset_show', ['id' => $asset->getId()]);
+        }
+
         $form = $this->createForm(AssetType::class, $asset);
         $form->handleRequest($request);
 
@@ -149,6 +196,19 @@ class AssetController extends AbstractController
     #[IsGranted('ROLE_ADMIN')]
     public function delete(Request $request, Asset $asset): Response
     {
+        $user = $this->security->getUser();
+        $tenant = $user?->getTenant();
+
+        if (!$tenant) {
+            throw $this->createAccessDeniedException('No tenant associated with user');
+        }
+
+        // Check if asset can be deleted (not inherited)
+        if (!$this->assetService->canEditAsset($asset, $tenant)) {
+            $this->addFlash('error', $this->translator->trans('corporate.inheritance.cannot_delete_inherited'));
+            return $this->redirectToRoute('app_asset_index');
+        }
+
         if ($this->isCsrfTokenValid('delete'.$asset->getId(), $request->request->get('_token'))) {
             $this->entityManager->remove($asset);
             $this->entityManager->flush();
@@ -163,6 +223,13 @@ class AssetController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function bcmInsights(int $id): Response
     {
+        $user = $this->security->getUser();
+        $tenant = $user?->getTenant();
+
+        if (!$tenant) {
+            throw $this->createAccessDeniedException('No tenant associated with user');
+        }
+
         $asset = $this->assetRepository->find($id);
 
         if (!$asset) {
@@ -172,10 +239,17 @@ class AssetController extends AbstractController
         $analysis = $this->protectionRequirementService->getCompleteProtectionRequirementAnalysis($asset);
         $processes = $this->businessProcessRepository->findByAsset($id);
 
+        // Check if asset is inherited
+        $isInherited = $this->assetService->isInheritedAsset($asset, $tenant);
+        $canEdit = $this->assetService->canEditAsset($asset, $tenant);
+
         return $this->render('asset/bcm_insights.html.twig', [
             'asset' => $asset,
             'analysis' => $analysis,
             'processes' => $processes,
+            'isInherited' => $isInherited,
+            'canEdit' => $canEdit,
+            'currentTenant' => $tenant,
         ]);
     }
 }
