@@ -158,3 +158,10 @@ audit:
   validation:
     title_required: 'Please enter a title.'
     date_required: 'Please select a date.'
+
+# Incident Validators
+'Incident number is required': 'Incident number is required'
+'Incident number cannot exceed {{ limit }} characters': 'Incident number cannot exceed {{ limit }} characters'
+'Incident title is required': 'Incident title is required'
+'Incident description is required': 'Incident description is required'
+'Incident category is required': 'Incident category is required'
