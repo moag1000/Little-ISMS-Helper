@@ -707,6 +707,31 @@ class ComplianceController extends AbstractController
 
         $complianceScore = count($requirements) > 0 ? round(($metRequirements / count($requirements)) * 100, 1) : 0;
 
+        // Calculate priority-weighted gap analysis
+        $priorityWeightedAnalysis = $this->mappingRepository->calculatePriorityWeightedGaps($framework, $gaps);
+
+        // Calculate weighted compliance score (how well critical/high requirements are met)
+        $totalRequirements = count($requirements);
+        $weightedScore = 0;
+        if ($totalRequirements > 0) {
+            $priorityWeights = ['critical' => 4.0, 'high' => 2.0, 'medium' => 1.0, 'low' => 0.5];
+            $totalPossibleWeight = 0;
+            $achievedWeight = 0;
+
+            foreach ($requirements as $req) {
+                $priority = $req->getPriority() ?? 'medium';
+                $weight = $priorityWeights[$priority] ?? 1.0;
+                $fulfillment = $req->getFulfillmentPercentage() ?? 0;
+
+                $totalPossibleWeight += $weight;
+                $achievedWeight += ($weight * ($fulfillment / 100));
+            }
+
+            $weightedScore = $totalPossibleWeight > 0
+                ? round(($achievedWeight / $totalPossibleWeight) * 100, 1)
+                : 0;
+        }
+
         // Close session to prevent blocking other requests during PDF generation
         $request->getSession()->save();
 
@@ -719,6 +744,14 @@ class ComplianceController extends AbstractController
             'total_gaps' => count($gaps),
             'compliance_score' => $complianceScore,
             'severity_counts' => $severityCounts,
+            // Priority-weighted analysis
+            'priority_weighted_analysis' => $priorityWeightedAnalysis,
+            'weighted_compliance_score' => $weightedScore,
+            'risk_score' => $priorityWeightedAnalysis['risk_score'],
+            'uncovered_critical' => $priorityWeightedAnalysis['uncovered_critical'],
+            'uncovered_high' => $priorityWeightedAnalysis['uncovered_high'],
+            'priority_distribution' => $priorityWeightedAnalysis['priority_distribution'],
+            'gap_recommendations' => $priorityWeightedAnalysis['recommendations'],
             'pdf_generation_date' => new \DateTime(),
         ]);
 
