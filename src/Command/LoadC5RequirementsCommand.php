@@ -132,6 +132,37 @@ class LoadC5RequirementsCommand extends Command
                     'iso_controls' => ['5.6'],
                 ],
             ],
+            [
+                'id' => 'C5-ORP-7',
+                'title' => 'Independent Review of Information Security',
+                'description' => 'The organization approach to managing information security shall be reviewed independently at planned intervals.',
+                'category' => 'Organisation and Personnel',
+                'priority' => 'high',
+                'data_source_mapping' => [
+                    'iso_controls' => ['5.35'],
+                    'audit_evidence' => true,
+                ],
+            ],
+            [
+                'id' => 'C5-ORP-8',
+                'title' => 'Project Management Security',
+                'description' => 'Information security shall be integrated into project management methodologies.',
+                'category' => 'Organisation and Personnel',
+                'priority' => 'high',
+                'data_source_mapping' => [
+                    'iso_controls' => ['5.8'],
+                ],
+            ],
+            [
+                'id' => 'C5-ORP-9',
+                'title' => 'Information Security Continuity',
+                'description' => 'Information security continuity shall be embedded in the organization business continuity management systems.',
+                'category' => 'Organisation and Personnel',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['5.29', '5.30'],
+                ],
+            ],
 
             // OIS - Organization of Information Security
             [
@@ -152,6 +183,16 @@ class LoadC5RequirementsCommand extends Command
                 'priority' => 'high',
                 'data_source_mapping' => [
                     'iso_controls' => ['6.7', '8.13'],
+                ],
+            ],
+            [
+                'id' => 'C5-OIS-3',
+                'title' => 'Information Security in Project Management',
+                'description' => 'Information security shall be addressed in project management regardless of project type.',
+                'category' => 'Organization of Information Security',
+                'priority' => 'high',
+                'data_source_mapping' => [
+                    'iso_controls' => ['5.8'],
                 ],
             ],
 
@@ -236,6 +277,28 @@ class LoadC5RequirementsCommand extends Command
                 'priority' => 'high',
                 'data_source_mapping' => [
                     'iso_controls' => ['5.36', '8.8'],
+                    'audit_evidence' => true,
+                ],
+            ],
+            [
+                'id' => 'C5-CCC-9',
+                'title' => 'Regulatory Reporting',
+                'description' => 'The cloud service provider shall support customers in meeting regulatory reporting obligations.',
+                'category' => 'Compliance and Legal Conformity',
+                'priority' => 'high',
+                'data_source_mapping' => [
+                    'iso_controls' => ['5.31', '5.36'],
+                    'audit_evidence' => true,
+                ],
+            ],
+            [
+                'id' => 'C5-CCC-10',
+                'title' => 'Evidence Collection for Compliance',
+                'description' => 'Mechanisms shall be established to collect and retain evidence for compliance audits.',
+                'category' => 'Compliance and Legal Conformity',
+                'priority' => 'high',
+                'data_source_mapping' => [
+                    'iso_controls' => ['5.36'],
                     'audit_evidence' => true,
                 ],
             ],
@@ -352,6 +415,16 @@ class LoadC5RequirementsCommand extends Command
                     'iso_controls' => ['5.18', '8.5'],
                 ],
             ],
+            [
+                'id' => 'C5-IAM-12',
+                'title' => 'Access Control Policy',
+                'description' => 'An access control policy shall be established, documented and reviewed based on business and security requirements.',
+                'category' => 'Identity and Access Management',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['5.15'],
+                ],
+            ],
 
             // HRS - Human Resources Security
             [
@@ -412,6 +485,16 @@ class LoadC5RequirementsCommand extends Command
                 'priority' => 'high',
                 'data_source_mapping' => [
                     'iso_controls' => ['6.6'],
+                ],
+            ],
+            [
+                'id' => 'C5-HRS-7',
+                'title' => 'Remote Working Security',
+                'description' => 'Security measures shall be implemented when personnel work remotely to protect information accessed, processed or stored.',
+                'category' => 'Human Resources Security',
+                'priority' => 'high',
+                'data_source_mapping' => [
+                    'iso_controls' => ['6.7'],
                 ],
             ],
 
@@ -549,6 +632,27 @@ class LoadC5RequirementsCommand extends Command
                     'iso_controls' => ['8.24'],
                 ],
             ],
+            [
+                'id' => 'C5-ENC-4',
+                'title' => 'Encryption of Data in Use',
+                'description' => 'Cryptographic controls shall be considered for protecting data during processing where technically feasible.',
+                'category' => 'Encryption and Key Management',
+                'priority' => 'medium',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.24'],
+                    'asset_types' => ['data'],
+                ],
+            ],
+            [
+                'id' => 'C5-ENC-5',
+                'title' => 'Digital Signatures',
+                'description' => 'Digital signatures shall be used to protect the authenticity and integrity of information where appropriate.',
+                'category' => 'Encryption and Key Management',
+                'priority' => 'high',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.24'],
+                ],
+            ],
 
             // SKM - Security Key Management
             [
@@ -611,6 +715,16 @@ class LoadC5RequirementsCommand extends Command
                     'iso_controls' => ['8.24'],
                 ],
             ],
+            [
+                'id' => 'C5-SKM-7',
+                'title' => 'Key Backup and Recovery',
+                'description' => 'Cryptographic keys shall be backed up and recovery procedures shall be established to prevent data loss.',
+                'category' => 'Security Key Management',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.13', '8.24'],
+                ],
+            ],
 
             // IDS - Identity and Subscriber Management
             [
@@ -641,6 +755,17 @@ class LoadC5RequirementsCommand extends Command
                 'priority' => 'medium',
                 'data_source_mapping' => [
                     'iso_controls' => ['5.18'],
+                ],
+            ],
+            [
+                'id' => 'C5-IDS-4',
+                'title' => 'Customer Access Auditing',
+                'description' => 'Customer access events shall be logged and made available for audit purposes.',
+                'category' => 'Identity and Subscriber Management',
+                'priority' => 'high',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.15'],
+                    'audit_evidence' => true,
                 ],
             ],
 
@@ -822,6 +947,18 @@ class LoadC5RequirementsCommand extends Command
                     'asset_types' => ['data'],
                 ],
             ],
+            [
+                'id' => 'C5-DSI-7',
+                'title' => 'Data Sovereignty',
+                'description' => 'Data sovereignty requirements shall be clearly defined and contractually agreed with customers.',
+                'category' => 'Data Security and Isolation',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['5.20'],
+                    'asset_types' => ['data'],
+                    'gdpr_relevant' => true,
+                ],
+            ],
 
             // SEA - Security Incident Management
             [
@@ -899,6 +1036,17 @@ class LoadC5RequirementsCommand extends Command
                     'iso_controls' => ['5.28'],
                 ],
             ],
+            [
+                'id' => 'C5-SEA-8',
+                'title' => 'Customer Incident Notification',
+                'description' => 'Customers shall be promptly notified of security incidents that affect their data or services.',
+                'category' => 'Security Incident Management',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['5.26'],
+                    'incident_management' => true,
+                ],
+            ],
 
             // BCM - Business Continuity Management
             [
@@ -956,6 +1104,18 @@ class LoadC5RequirementsCommand extends Command
                     'iso_controls' => ['8.6', '8.14'],
                 ],
             ],
+            [
+                'id' => 'C5-BCM-6',
+                'title' => 'Disaster Recovery Planning',
+                'description' => 'Disaster recovery procedures shall be established and tested to ensure timely recovery.',
+                'category' => 'Business Continuity Management',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['5.30'],
+                    'bcm_required' => true,
+                    'audit_evidence' => true,
+                ],
+            ],
 
             // LOM - Logging and Monitoring
             [
@@ -983,6 +1143,16 @@ class LoadC5RequirementsCommand extends Command
                 'id' => 'C5-LOM-3',
                 'title' => 'Alerting and Correlation',
                 'description' => 'Security events shall be correlated and analyzed to detect incidents.',
+                'category' => 'Logging and Monitoring',
+                'priority' => 'critical',
+                'data_source_mapping' => [
+                    'iso_controls' => ['8.16'],
+                ],
+            ],
+            [
+                'id' => 'C5-LOM-4',
+                'title' => 'Real-Time Monitoring',
+                'description' => 'Critical systems and infrastructure shall be monitored in real-time for security events.',
                 'category' => 'Logging and Monitoring',
                 'priority' => 'critical',
                 'data_source_mapping' => [
@@ -1033,6 +1203,16 @@ class LoadC5RequirementsCommand extends Command
                     'iso_controls' => ['8.8'],
                 ],
             ],
+            [
+                'id' => 'C5-THR-5',
+                'title' => 'Threat Modeling',
+                'description' => 'Threat modeling shall be conducted for critical systems and applications.',
+                'category' => 'Threat and Vulnerability Management',
+                'priority' => 'high',
+                'data_source_mapping' => [
+                    'iso_controls' => ['5.7', '8.25'],
+                ],
+            ],
 
             // SUP - Supply Chain Security
             [
@@ -1073,6 +1253,26 @@ class LoadC5RequirementsCommand extends Command
                 'priority' => 'high',
                 'data_source_mapping' => [
                     'iso_controls' => ['5.22'],
+                ],
+            ],
+            [
+                'id' => 'C5-SUP-5',
+                'title' => 'Subcontractor Management',
+                'description' => 'Use of subcontractors shall be controlled and monitored to ensure security requirements are met.',
+                'category' => 'Supply Chain Security',
+                'priority' => 'high',
+                'data_source_mapping' => [
+                    'iso_controls' => ['5.19', '5.21'],
+                ],
+            ],
+            [
+                'id' => 'C5-SUP-6',
+                'title' => 'Supply Chain Transparency',
+                'description' => 'The cloud service provider shall provide transparency about the supply chain to customers.',
+                'category' => 'Supply Chain Security',
+                'priority' => 'medium',
+                'data_source_mapping' => [
+                    'iso_controls' => ['5.20'],
                 ],
             ],
 
@@ -1139,6 +1339,17 @@ class LoadC5RequirementsCommand extends Command
                 'priority' => 'critical',
                 'data_source_mapping' => [
                     'iso_controls' => ['5.20'],
+                    'asset_types' => ['cloud'],
+                ],
+            ],
+            [
+                'id' => 'C5-CLD-7',
+                'title' => 'Cloud Service Level Agreements',
+                'description' => 'SLAs shall clearly define availability, performance, and security commitments with measurable metrics.',
+                'category' => 'Cloud-Specific Controls',
+                'priority' => 'high',
+                'data_source_mapping' => [
+                    'iso_controls' => ['5.20', '5.21'],
                     'asset_types' => ['cloud'],
                 ],
             ],
