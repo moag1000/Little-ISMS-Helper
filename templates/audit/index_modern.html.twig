@@ -28,7 +28,8 @@
                 label: 'Excel Export',
                 url: path('app_audit_export_excel'),
                 variant: 'success',
-                icon: 'bi-file-earmark-spreadsheet'
+                icon: 'bi-file-earmark-spreadsheet',
+                turbo: false
             }
         ]
     } %}
@@ -274,6 +275,7 @@
                                     </a>
                                     <a href="{{ path('app_audit_export_pdf', {id: audit.id}) }}"
                                        class="btn btn-sm btn-outline-success"
+                                       data-turbo="false"
                                        title="PDF Export">
                                         <i class="bi bi-file-pdf"></i>
                                     </a>

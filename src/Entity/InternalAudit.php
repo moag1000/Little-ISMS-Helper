@@ -89,11 +89,13 @@ class InternalAudit
      * - asset_group: Logical grouping of assets
      * - location: Physical location/site
      * - department: Organizational unit
+     * - corporate_wide: Audit across entire corporate group (all subsidiaries)
+     * - corporate_subsidiaries: Audit specific subsidiaries
      */
     #[ORM\Column(length: 50, nullable: true)]
     #[Groups(['audit:read', 'audit:write'])]
     #[Assert\Choice(
-        choices: ['full_isms', 'compliance_framework', 'asset', 'asset_type', 'asset_group', 'location', 'department'],
+        choices: ['full_isms', 'compliance_framework', 'asset', 'asset_type', 'asset_group', 'location', 'department', 'corporate_wide', 'corporate_subsidiaries'],
         message: 'Scope type must be one of: {{ choices }}'
     )]
     private ?string $scopeType = 'full_isms';
@@ -116,6 +118,16 @@ class InternalAudit
     #[Groups(['audit:read'])]
     #[MaxDepth(1)]
     private Collection $scopedAssets;
+
+    /**
+     * @var Collection<int, Tenant>
+     * Subsidiaries included in corporate audit scope
+     */
+    #[ORM\ManyToMany(targetEntity: Tenant::class)]
+    #[ORM\JoinTable(name: 'internal_audit_subsidiary')]
+    #[Groups(['audit:read'])]
+    #[MaxDepth(1)]
+    private Collection $auditedSubsidiaries;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: true)]
@@ -199,6 +211,7 @@ class InternalAudit
 public function __construct()
     {
         $this->scopedAssets = new ArrayCollection();
+        $this->auditedSubsidiaries = new ArrayCollection();
         $this->createdAt = new \DateTimeImmutable();
     }
 
@@ -450,6 +463,29 @@ public function __construct()
         return $this;
     }
 
+    /**
+     * @return Collection<int, Tenant>
+     */
+    public function getAuditedSubsidiaries(): Collection
+    {
+        return $this->auditedSubsidiaries;
+    }
+
+    public function addAuditedSubsidiary(Tenant $tenant): static
+    {
+        if (!$this->auditedSubsidiaries->contains($tenant)) {
+            $this->auditedSubsidiaries->add($tenant);
+        }
+
+        return $this;
+    }
+
+    public function removeAuditedSubsidiary(Tenant $tenant): static
+    {
+        $this->auditedSubsidiaries->removeElement($tenant);
+        return $this;
+    }
+
     public function getScopedFramework(): ?ComplianceFramework
     {
         return $this->scopedFramework;
@@ -476,6 +512,8 @@ public function __construct()
             'asset_group' => 'Asset-Gruppe Audit: ' . ($this->scopeDetails['group'] ?? 'N/A'),
             'location' => 'Standort Audit: ' . ($this->scopeDetails['location'] ?? 'N/A'),
             'department' => 'Abteilungs Audit: ' . ($this->scopeDetails['department'] ?? 'N/A'),
+            'corporate_wide' => sprintf('Konzernweites Audit (%d Tochtergesellschaften)', $this->auditedSubsidiaries->count()),
+            'corporate_subsidiaries' => sprintf('Tochtergesellschafts-Audit (%d Gesellschaften)', $this->auditedSubsidiaries->count()),
             default => 'Unbekannter Scope',
         };
     }
@@ -494,6 +532,22 @@ public function __construct()
     public function isComplianceAudit(): bool
     {
         return $this->scopeType === 'compliance_framework' && $this->scopedFramework !== null;
+    }
+
+    /**
+     * Check if audit is corporate-scoped (covers multiple tenants)
+     */
+    public function isCorporateAudit(): bool
+    {
+        return in_array($this->scopeType, ['corporate_wide', 'corporate_subsidiaries']);
+    }
+
+    /**
+     * Check if audit is corporate-wide (all subsidiaries)
+     */
+    public function isCorporateWideAudit(): bool
+    {
+        return $this->scopeType === 'corporate_wide';
     }
 
     public function getTenant(): ?Tenant
