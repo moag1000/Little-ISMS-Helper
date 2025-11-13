@@ -135,112 +135,67 @@
     <h2>Harmonisierungs-Empfehlungen</h2>
 
     <h3>Strategie: Framework-Harmonisierung</h3>
-    <div style="background: #E8F4F8; padding: 15px; margin: 10px 0; border-left: 4px solid #2196F3; font-size: 9pt;">
-        <strong>Aktueller Status:</strong>
-        <ul style="margin-left: 20px; margin-top: 5px;">
-            <li>{{ mapped_count }} von {{ framework1_count }} Anforderungen gemapped ({{ overlap_percentage }}%)</li>
-            <li>{{ high_quality|length }} High-Quality Mappings (≥80% Match) identifiziert</li>
-            <li>{{ unique_framework1|length }} unique Anforderungen in {{ framework1.code }}</li>
-            <li>{{ framework2_count - mapped_count }} unmapped Anforderungen in {{ framework2.code }}</li>
-        </ul>
+    <div style="background: #E8F4F8; padding: 8px; margin: 5px 0; border-left: 3px solid #2196F3; font-size: 9pt;">
+        <strong>Status:</strong> {{ mapped_count }}/{{ framework1_count }} gemapped ({{ overlap_percentage }}%),
+        {{ high_quality|length }} High-Quality Mappings, {{ unique_framework1|length }} unique {{ framework1.code }}
     </div>
 
-    <h3>Empfehlung 1: Mapping-Lücken schließen</h3>
-    <div style="background: #FFF2CC; padding: 15px; margin: 10px 0; border-left: 4px solid #F4D03F; font-size: 9pt;">
-        <strong>Priorität: Hoch</strong>
-        <p style="margin: 5px 0;">
-            {% set unmapped = framework1_count - mapped_count %}
-            Derzeit sind {{ unmapped }} Anforderungen nicht gemapped. Empfohlene Maßnahmen:
-        </p>
-        <ul style="margin-left: 20px;">
-            <li>Review der {{ unique_framework1|length }} unique {{ framework1.code }}-Anforderungen</li>
-            <li>Identifikation potentieller Partial-Mappings (60-80% Match)</li>
-            <li>Dokumentation von bewusst nicht gemappten Anforderungen</li>
-        </ul>
-        <p style="margin: 5px 0;"><strong>Zeitaufwand:</strong> ~{{ (unmapped * 15 / 60)|round(1) }} Stunden</p>
+    <h3>Empfehlung 1: Mapping-Lücken schließen (Priorität: Hoch)</h3>
+    <div style="background: #FFF2CC; padding: 8px; margin: 5px 0; border-left: 3px solid #F4D03F; font-size: 9pt;">
+        {% set unmapped = framework1_count - mapped_count %}
+        {{ unmapped }} Anforderungen nicht gemapped. Review unique {{ framework1.code }}-Anforderungen,
+        Partial-Mappings identifizieren. <strong>Zeitaufwand:</strong> ~{{ (unmapped * 15 / 60)|round(1) }} Stunden
     </div>
 
-    <h3>Empfehlung 2: Compliance-Hebel nutzen</h3>
-    <div style="background: #C6EFCE; padding: 15px; margin: 10px 0; border-left: 4px solid #28A745; font-size: 9pt;">
-        <strong>Quick Win!</strong>
-        <p style="margin: 5px 0;">
-            Mit {{ high_quality|length }} High-Quality Mappings können Sie signifikante Synergien realisieren:
-        </p>
-        <ul style="margin-left: 20px;">
-            <li>Wiederverwendung von Nachweisen und Dokumentation</li>
-            <li>Gemeinsame Kontroll-Implementierungen für beide Frameworks</li>
-            <li>Reduzierung des Audit-Aufwands durch kombinierte Assessments</li>
-        </ul>
-        <p style="margin: 5px 0;">
-            <strong>Geschätzte Zeitersparnis:</strong> ~{{ (high_quality|length * 2)|round }} Stunden bei der nächsten Compliance-Bewertung
-        </p>
+    <h3>Empfehlung 2: Compliance-Hebel nutzen (Quick Win)</h3>
+    <div style="background: #C6EFCE; padding: 8px; margin: 5px 0; border-left: 3px solid #28A745; font-size: 9pt;">
+        {{ high_quality|length }} High-Quality Mappings ermöglichen Wiederverwendung von Nachweisen,
+        gemeinsame Kontrollen, kombinierte Assessments.
+        <strong>Zeitersparnis:</strong> ~{{ (high_quality|length * 2)|round }} Stunden
     </div>
 
-    <h3>Empfehlung 3: Gap-Analyse für Unique Requirements</h3>
-    <div style="background: #FFEB9C; padding: 15px; margin: 10px 0; border-left: 4px solid #FFA500; font-size: 9pt;">
-        <strong>Mittelfristig</strong>
-        <p style="margin: 5px 0;">
-            Die {{ unique_framework1|length + (framework2_count - mapped_count) }} unmapped Anforderungen erfordern separate Bearbeitung:
-        </p>
-        <ul style="margin-left: 20px;">
-            <li><strong>{{ framework1.code }} Unique ({{ unique_framework1|length }}):</strong> Zusätzliche Kontrollen für {{ framework1.code }}-Compliance</li>
-            <li><strong>{{ framework2.code }} Unmapped ({{ framework2_count - mapped_count }}):</strong> Zusätzliche Kontrollen für {{ framework2.code }}-Compliance</li>
-            <li>Prüfung auf indirekte Coverage durch bestehende Maßnahmen</li>
-        </ul>
+    <h3>Empfehlung 3: Gap-Analyse (Mittelfristig)</h3>
+    <div style="background: #FFEB9C; padding: 8px; margin: 5px 0; border-left: 3px solid #FFA500; font-size: 9pt;">
+        {{ unique_framework1|length + (framework2_count - mapped_count) }} unmapped Requirements:
+        {{ unique_framework1|length }} unique {{ framework1.code }},
+        {{ framework2_count - mapped_count }} unmapped {{ framework2.code }}
     </div>
 
     <h3>Implementierungs-Roadmap</h3>
-    <table style="width: 95%;">
+    <table style="width: 95%; font-size: 8pt;">
         <thead>
             <tr>
                 <th style="width: 20%;">Phase</th>
-                <th style="width: 50%;">Aktivitäten</th>
-                <th style="width: 15%;">Dauer</th>
-                <th style="width: 15%;">Nutzen</th>
+                <th style="width: 55%;">Aktivitäten</th>
+                <th style="width: 12%;">Dauer</th>
+                <th style="width: 13%;">Nutzen</th>
             </tr>
         </thead>
         <tbody>
             <tr>
-                <td><strong>Phase 1<br/>(Woche 1-2)</strong></td>
-                <td style="font-size: 8pt;">
-                    • High-Quality Mappings dokumentieren<br/>
-                    • Gemeinsame Kontroll-Implementierungen identifizieren<br/>
-                    • Quick Wins realisieren
-                </td>
-                <td class="text-center">2 Wochen</td>
+                <td><strong>Phase 1 (Woche 1-2)</strong></td>
+                <td>High-Quality Mappings dokumentieren, Kontroll-Implementierungen identifizieren, Quick Wins</td>
+                <td class="text-center">2 Wo.</td>
                 <td class="text-center"><span class="badge badge-success">Hoch</span></td>
             </tr>
             <tr>
-                <td><strong>Phase 2<br/>(Woche 3-6)</strong></td>
-                <td style="font-size: 8pt;">
-                    • Fehlende Mappings erstellen<br/>
-                    • Partial Mappings (60-80%) bewerten<br/>
-                    • Mapping-Dokumentation vervollständigen
-                </td>
-                <td class="text-center">4 Wochen</td>
+                <td><strong>Phase 2 (Woche 3-6)</strong></td>
+                <td>Mappings erstellen, Partial Mappings bewerten, Dokumentation vervollständigen</td>
+                <td class="text-center">4 Wo.</td>
                 <td class="text-center"><span class="badge badge-warning">Mittel</span></td>
             </tr>
             <tr>
-                <td><strong>Phase 3<br/>(Woche 7-12)</strong></td>
-                <td style="font-size: 8pt;">
-                    • Unique Requirements Gap-Analyse<br/>
-                    • Zusätzliche Kontrollen implementieren<br/>
-                    • Kombinierte Compliance-Bewertung durchführen
-                </td>
-                <td class="text-center">6 Wochen</td>
-                <td class="text-center"><span class="badge badge-info">Langfristig</span></td>
+                <td><strong>Phase 3 (Woche 7-12)</strong></td>
+                <td>Gap-Analyse, zusätzliche Kontrollen, kombinierte Compliance-Bewertung</td>
+                <td class="text-center">6 Wo.</td>
+                <td class="text-center"><span class="badge badge-info">Lang</span></td>
             </tr>
         </tbody>
     </table>
 
-    <div style="background: #E8F4F8; padding: 15px; margin-top: 20px; border-radius: 4px; font-size: 9pt;">
+    <div style="background: #E8F4F8; padding: 8px; margin-top: 10px; font-size: 9pt;">
         <strong>📋 Nächste Schritte:</strong>
-        <ol style="margin-left: 20px; margin-top: 5px;">
-            <li>Stakeholder-Meeting zur Priorisierung der Harmonisierung</li>
-            <li>Ressourcen-Planung für Mapping-Vervollständigung</li>
-            <li>Template für gemeinsame Kontroll-Dokumentation erstellen</li>
-            <li>Pilotprojekt mit Top 10 High-Quality Mappings starten</li>
-            <li>Monatliches Mapping-Review etablieren</li>
-        </ol>
+        Stakeholder-Meeting, Ressourcen-Planung, Kontroll-Dokumentation Template,
+        Pilotprojekt mit Top 10 Mappings, monatliches Review etablieren
     </div>
 {% endblock %}
