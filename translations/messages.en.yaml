@@ -348,13 +348,19 @@ common:
   description: Description
   status: Status
   date: Date
+  created: Created
   created_at: Created at
+  updated: Updated
   updated_at: Updated at
   cancel: Cancel
+  save: Save
+  save_changes: Save Changes
   back: Back
   back_to_list: Back to List
   back_to_overview: Back to Overview
+  to_list: To List
   delete: Delete
+  reset: Reset
   metadata: Metadata
   action_irreversible: This action cannot be undone.
   'true': true
@@ -362,14 +368,17 @@ common:
   yes: Yes
   no: No
   note: Note
+  warning: Warning
   to_home: To Home Page
   actions: Actions
   view: View
   view_details: View Details
+  view_all: View All
   edit: Edit
   show_all: Show All
   active: Active
   all: All
+  selected: Selected
   category: Category
   create: Create
   danger_zone: Danger Zone
@@ -381,6 +390,7 @@ common:
   error: Error
   export: Export
   filter: Filter
+  filters: Filters
   from: From
   help: Help
   history: History
@@ -390,6 +400,7 @@ common:
   loading: Loading...
   never: Never
   not_applicable: Not Applicable
+  not_approved: Not Approved
   not_assigned: Not Assigned
   not_completed: Not Completed
   not_set: Not Set
@@ -398,6 +409,10 @@ common:
   search: Search
   success: Success
   to: To
+  size: Size
+  seconds: Seconds
+  minutes: Minutes
+  days: Days
 asset:
   new: New Asset
   create: Create Asset
