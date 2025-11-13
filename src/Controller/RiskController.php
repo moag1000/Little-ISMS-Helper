@@ -128,6 +128,9 @@ class RiskController extends AbstractController
         // Re-index array after filtering
         $risks = array_values($risks);
 
+        // Close session to prevent blocking other requests during CSV generation
+        $request->getSession()->save();
+
         // Create CSV content
         $csv = [];
 
@@ -292,6 +295,9 @@ class RiskController extends AbstractController
         $highRisks = count(array_filter($risks, fn($risk) => $risk->getRiskScore() >= 8 && $risk->getRiskScore() < 15));
         $mediumRisks = count(array_filter($risks, fn($risk) => $risk->getRiskScore() >= 4 && $risk->getRiskScore() < 8));
         $lowRisks = count(array_filter($risks, fn($risk) => $risk->getRiskScore() < 4));
+
+        // Close session to prevent blocking other requests during Excel generation
+        $request->getSession()->save();
 
         // Create spreadsheet
         $spreadsheet = $this->excelExportService->createSpreadsheet('Risk Management Report');
@@ -551,6 +557,9 @@ class RiskController extends AbstractController
         // Remove zero counts
         $statusBreakdown = array_filter($statusBreakdown, fn($count) => $count > 0);
 
+        // Close session to prevent blocking other requests during PDF generation
+        $request->getSession()->save();
+
         // Generate PDF
         $pdfContent = $this->pdfExportService->generatePdf('pdf/risk_report.html.twig', [
             'risks' => $risks,
@@ -561,6 +570,7 @@ class RiskController extends AbstractController
             'low_risks' => $lowRisks,
             'status_breakdown' => $statusBreakdown,
             'filter_info' => $filterInfo,
+            'pdf_generation_date' => new \DateTime(),
         ]);
 
         $filename = sprintf('risk_management_report_%s.pdf', date('Y-m-d_His'));

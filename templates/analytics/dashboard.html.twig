@@ -33,19 +33,22 @@
                 <ul class="dropdown-menu">
                     <li>
                         <a class="dropdown-item"
-                           href="{{ path('app_analytics_export', {type: 'risks'}) }}">
+                           href="{{ path('app_analytics_export', {type: 'risks'}) }}"
+                           data-turbo="false">
                             <i class="bi-exclamation-triangle"></i> Export Risks CSV
                         </a>
                     </li>
                     <li>
                         <a class="dropdown-item"
-                           href="{{ path('app_analytics_export', {type: 'assets'}) }}">
+                           href="{{ path('app_analytics_export', {type: 'assets'}) }}"
+                           data-turbo="false">
                             <i class="bi-server"></i> Export Assets CSV
                         </a>
                     </li>
                     <li>
                         <a class="dropdown-item"
-                           href="{{ path('app_analytics_export', {type: 'compliance'}) }}">
+                           href="{{ path('app_analytics_export', {type: 'compliance'}) }}"
+                           data-turbo="false">
                             <i class="bi-shield-check"></i> Export Compliance CSV
                         </a>
                     </li>
