@@ -26,3 +26,18 @@ setup:
 document:
   validation:
     mime_types: 'Please upload a valid document (PDF, Word, Excel, Image or Text file).'
+
+# Workflow Validators
+workflow:
+  validation:
+    name_required: 'Please enter a workflow name.'
+    name_max_length: 'The workflow name cannot exceed {{ limit }} characters.'
+    entity_type_required: 'Please select an entity type.'
+
+workflow_instance:
+  validation:
+    workflow_required: 'Please select a workflow definition.'
+    entity_type_required: 'Please enter an entity type.'
+    entity_type_max_length: 'The entity type cannot exceed {{ limit }} characters.'
+    entity_id_required: 'Please enter an entity ID.'
+    status_required: 'Please select a status.'

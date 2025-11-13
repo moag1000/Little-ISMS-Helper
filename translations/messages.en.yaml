@@ -1312,16 +1312,103 @@ ui:
   required: Required
   n_a: N/A
 workflow:
+  title:
+    list: 'Workflows'
+    definitions: 'Workflow Definitions'
+    active: 'Active Workflows'
+    pending: 'Pending Workflows'
+    overdue: 'Overdue Workflows'
+    instance_show: 'Workflow Details'
+
+  step: 'Step'
+  days: 'Days'
+
+  action:
+    start: 'Start Workflow'
+    cancel: 'Cancel Workflow'
+    complete_step: 'Complete Step'
+    definitions: 'Manage Definitions'
+
+  badge:
+    completed: 'Completed'
+    critical: 'Critical'
+    current: 'Current'
+    due_soon: 'Due Soon'
+    overdue: 'Overdue'
+    my_task: 'My Task'
+
+  confirm:
+    cancel: 'Do you really want to cancel this workflow?'
+
+  description:
+    active: 'Active Workflows'
+    active_detail: 'Workflows currently in progress'
+    definitions: 'Manage workflow definitions'
+    overdue: 'Overdue Workflows'
+    overdue_detail: 'Workflows that have passed their due date'
+    overview: 'Workflow Overview'
+    pending: 'Pending Workflows'
+    pending_detail: 'Workflows awaiting action'
+
+  field:
+    assignee: 'Assignee'
+    completed_at: 'Completed At'
+    current_step: 'Current Step'
+    days_overdue: 'Days Overdue'
+    definition: 'Definition'
+    due_date: 'Due Date'
+    priority: 'Priority'
+    progress: 'Progress'
+
+  message:
+    no_active: 'No active workflows'
+    no_activities: 'No activities'
+    no_overdue: 'No overdue workflows'
+    no_overdue_desc: 'All workflows are on schedule'
+    no_pending: 'No pending workflows'
+    unassigned: 'Unassigned'
+
+  section:
+    active: 'Active Workflows'
+    activity_log: 'Activity Log'
+    overdue: 'Overdue'
+    overview: 'Overview'
+    pending: 'Pending'
+
+  stats:
+    active: 'Active'
+    avg_progress: 'Average Progress'
+    critical_overdue: 'Critical Overdue'
+    due_this_week: 'Due This Week'
+    my_overdue: 'My Overdue'
+    my_tasks: 'My Tasks'
+    my_workflows: 'My Workflows'
+    overdue: 'Overdue'
+    overdue_days_avg: 'Average Days Overdue'
+    pending: 'Pending'
+    total: 'Total'
+
+  activity:
+    action: 'Action'
+    details: 'Details'
+    timestamp: 'Timestamp'
+    user: 'User'
+
+  warning:
+    overdue_count: '{{ count }} overdue workflows'
+    overdue_message: 'You have overdue workflows that require attention'
+    rejected: 'Workflow step rejected'
+
   success:
     approved: Workflow step approved successfully.
     started: Workflow started successfully.
+
   error:
     not_authorized_approve: You are not authorized to approve this step.
     not_authorized_reject: You are not authorized to reject this step.
     comments_required: Comments are required when rejecting a workflow step.
     not_found: No workflow found for this entity type.
-  warning:
-    rejected: Workflow step rejected.
+
   info:
     cancelled: Workflow instance cancelled.
     no_active_workflow: No active workflow found for this entity.
