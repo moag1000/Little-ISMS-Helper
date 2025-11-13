@@ -1,27 +1,24 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin/layout.html.twig' %}
 
 {% block title %}{{ role.name }} - {{ 'role_management.title.show'|trans }} - Little ISMS Helper{% endblock %}
 
-{% block body %}
+{% block admin_content %}
 <div class="page-header">
     <div>
         <h1>{{ role.name }}</h1>
         <div class="mt-2">
             {% if role.systemRole %}
                 <span class="badge badge-info">{{ 'role_management.badge.system'|trans }}</span>
-            {% endif %}
-            {% if role.active %}
-                <span class="badge badge-success">{{ 'role_management.badge.active'|trans }}</span>
             {% else %}
-                <span class="badge badge-danger">{{ 'role_management.badge.inactive'|trans }}</span>
+                <span class="badge badge-secondary">{{ 'role_management.badge.custom'|trans }}</span>
             {% endif %}
         </div>
     </div>
     <div class="button-group">
-        <a href="{{ path('app_role_management_edit', {id: role.id}) }}" class="btn btn-primary">
+        <a href="{{ path('role_management_edit', {id: role.id}) }}" class="btn btn-primary">
             ✏️ {{ 'common.edit'|trans }}
         </a>
-        <a href="{{ path('app_role_management_index') }}" class="btn btn-secondary">
+        <a href="{{ path('role_management_index') }}" class="btn btn-secondary">
             ← {{ 'common.back_to_list'|trans }}
         </a>
     </div>
@@ -124,17 +121,17 @@
 
 {# Action Buttons #}
 <div class="button-group mt-xl">
-    <a href="{{ path('app_role_management_edit', {id: role.id}) }}" class="btn btn-primary">
+    <a href="{{ path('role_management_edit', {id: role.id}) }}" class="btn btn-primary">
         ✏️ {{ 'common.edit'|trans }}
     </a>
-    <a href="{{ path('app_role_management_index') }}" class="btn btn-secondary">
+    <a href="{{ path('role_management_index') }}" class="btn btn-secondary">
         📋 {{ 'common.back_to_list'|trans }}
     </a>
     {% if not role.systemRole %}
-    <form method="post" action="{{ path('app_role_management_delete', {id: role.id}) }}" onsubmit="return confirm('{{ 'role_management.confirm.delete'|trans }}');" class="d-inline">
+    <form method="post" action="{{ path('role_management_delete', {id: role.id}) }}" onsubmit="return confirm('{{ 'role_management.confirm.delete'|trans }}');" class="d-inline">
         <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ role.id) }}">
         <button type="submit" class="btn btn-danger">🗑️ {{ 'common.delete'|trans }}</button>
     </form>
     {% endif %}
 </div>
-{% endblock %}
+{% endblock admin_content %}

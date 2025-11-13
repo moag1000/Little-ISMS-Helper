@@ -8,6 +8,8 @@ import { Controller } from '@hotwired/stimulus';
  * <div data-controller="keyboard-shortcuts">
  *   <div data-keyboard-shortcuts-target="modal">...</div>
  * </div>
+ *
+ * @version 1.0.1
  */
 export default class extends Controller {
     static targets = ['modal'];
