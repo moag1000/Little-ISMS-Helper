@@ -115,10 +115,10 @@
         <tbody>
             {% for req in unique_framework1|slice(0, 20) %}
             <tr class="no-break">
-                <td><strong>{{ req.requirementId }}</strong></td>
-                <td style="font-size: 8pt;">{{ req.title|length > 50 ? (req.title|slice(0, 50) ~ '...') : req.title }}</td>
-                <td><span class="badge badge-info">{{ req.category ?? '-' }}</span></td>
-                <td style="font-size: 7pt;">{{ req.description|length > 80 ? (req.description|slice(0, 80) ~ '...') : (req.description ?? '-') }}</td>
+                <td><strong>{{ req.framework1Requirement.requirementId }}</strong></td>
+                <td style="font-size: 8pt;">{{ req.framework1Requirement.title|length > 50 ? (req.framework1Requirement.title|slice(0, 50) ~ '...') : req.framework1Requirement.title }}</td>
+                <td><span class="badge badge-info">{{ req.framework1Requirement.category ?? '-' }}</span></td>
+                <td style="font-size: 7pt;">{{ req.framework1Requirement.description|length > 80 ? (req.framework1Requirement.description|slice(0, 80) ~ '...') : (req.framework1Requirement.description ?? '-') }}</td>
             </tr>
             {% endfor %}
         </tbody>
