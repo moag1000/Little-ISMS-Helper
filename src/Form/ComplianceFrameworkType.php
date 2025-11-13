@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Entity\ComplianceFramework;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -69,18 +70,31 @@ class ComplianceFrameworkType extends AbstractType
                 ],
                 'help' => 'compliance_framework.help.version'
             ])
-            ->add('applicableIndustry', TextType::class, [
+            ->add('applicableIndustry', ChoiceType::class, [
                 'label' => 'compliance_framework.field.applicable_industry',
-                'attr' => [
-                    'class' => 'form-control',
-                    'placeholder' => 'compliance_framework.placeholder.applicable_industry'
+                'choices' => [
+                    'compliance_framework.industry.all_sectors' => 'all_sectors',
+                    'compliance_framework.industry.automotive' => 'automotive',
+                    'compliance_framework.industry.financial_services' => 'financial_services',
+                    'compliance_framework.industry.healthcare' => 'healthcare',
+                    'compliance_framework.industry.telecommunications' => 'telecommunications',
+                    'compliance_framework.industry.pharmaceutical' => 'pharmaceutical',
+                    'compliance_framework.industry.cloud_services' => 'cloud_services',
+                    'compliance_framework.industry.critical_infrastructure' => 'critical_infrastructure',
+                    'compliance_framework.industry.energy' => 'energy',
+                    'compliance_framework.industry.manufacturing' => 'manufacturing',
+                    'compliance_framework.industry.retail' => 'retail',
+                    'compliance_framework.industry.transportation' => 'transportation',
+                    'compliance_framework.industry.public_sector' => 'public_sector',
+                    'compliance_framework.industry.education' => 'education',
+                    'compliance_framework.industry.insurance' => 'insurance',
                 ],
+                'attr' => [
+                    'class' => 'form-control form-select',
+                ],
+                'placeholder' => 'compliance_framework.placeholder.select_industry',
                 'constraints' => [
                     new Assert\NotBlank(['message' => 'compliance_framework.validation.applicable_industry_required']),
-                    new Assert\Length([
-                        'max' => 100,
-                        'maxMessage' => 'compliance_framework.validation.applicable_industry_max_length'
-                    ])
                 ],
                 'help' => 'compliance_framework.help.applicable_industry'
             ])
