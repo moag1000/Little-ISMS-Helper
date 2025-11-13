@@ -530,4 +530,136 @@ class ComplianceMappingRepository extends ServiceEntityRepository
                 ->getSingleScalarResult(),
         ];
     }
+
+    /**
+     * Calculate impact score for a framework relationship.
+     *
+     * Impact score quantifies the business value of a framework relationship based on:
+     * - Coverage percentage (how well frameworks overlap)
+     * - Number of requirements (scope of potential reuse)
+     * - Framework priority (critical frameworks weighted higher)
+     *
+     * Higher impact scores indicate more valuable compliance leverage opportunities.
+     *
+     * @param ComplianceFramework $sourceFramework Source framework
+     * @param ComplianceFramework $targetFramework Target framework
+     * @param float $coveragePercentage Coverage percentage between frameworks
+     * @return array{impact_score: float, roi: float, is_quick_win: bool, effort_estimate: int, factors: array} Impact analysis
+     */
+    public function calculateFrameworkImpactScore(
+        ComplianceFramework $sourceFramework,
+        ComplianceFramework $targetFramework,
+        float $coveragePercentage
+    ): array {
+        // Get requirement counts
+        $sourceReqCount = count($sourceFramework->getRequirements());
+        $targetReqCount = count($targetFramework->getRequirements());
+        $avgReqCount = ($sourceReqCount + $targetReqCount) / 2;
+
+        // Priority multiplier based on framework importance
+        $priorityMultiplier = $this->getFrameworkPriorityMultiplier($sourceFramework);
+
+        // Calculate base impact score
+        // Formula: Coverage × Avg_Requirements × Priority_Multiplier / 100
+        $impactScore = ($coveragePercentage * $avgReqCount * $priorityMultiplier) / 100;
+
+        // Estimate effort to improve/maintain mappings
+        $effortEstimate = $this->estimateMappingEffort($sourceFramework, $targetFramework, $coveragePercentage);
+
+        // Calculate ROI (Return on Investment): Impact per unit effort
+        $roi = $effortEstimate > 0 ? round($impactScore / $effortEstimate, 2) : 0;
+
+        // Quick Win Detection:
+        // - High ROI (>= 3.0 = high impact, low effort)
+        // - Good coverage (>= 60%)
+        $isQuickWin = $roi >= 3.0 && $coveragePercentage >= 60;
+
+        return [
+            'impact_score' => round($impactScore, 1),
+            'roi' => $roi,
+            'is_quick_win' => $isQuickWin,
+            'effort_estimate' => $effortEstimate,
+            'factors' => [
+                'coverage' => $coveragePercentage,
+                'avg_requirements' => round($avgReqCount, 0),
+                'priority_multiplier' => $priorityMultiplier,
+            ],
+        ];
+    }
+
+    /**
+     * Estimate effort required to improve/maintain framework mappings.
+     *
+     * Effort is estimated in person-hours based on:
+     * - Number of requirements to map
+     * - Current coverage level (lower coverage = more work)
+     * - Complexity of the frameworks involved
+     *
+     * @param ComplianceFramework $sourceFramework Source framework
+     * @param ComplianceFramework $targetFramework Target framework
+     * @param float $currentCoverage Current coverage percentage
+     * @return int Estimated effort in person-hours
+     */
+    private function estimateMappingEffort(
+        ComplianceFramework $sourceFramework,
+        ComplianceFramework $targetFramework,
+        float $currentCoverage
+    ): int {
+        $sourceReqCount = count($sourceFramework->getRequirements());
+        $targetReqCount = count($targetFramework->getRequirements());
+
+        // Base effort: 0.5 hours per requirement for initial mapping
+        $baseEffortPerReq = 0.5;
+
+        // Calculate number of unmapped requirements
+        $unmappedCount = (int) round(($sourceReqCount * (100 - $currentCoverage)) / 100);
+
+        // Base effort for unmapped requirements
+        $baseEffort = $unmappedCount * $baseEffortPerReq;
+
+        // Complexity multiplier based on target framework size
+        // Larger frameworks are harder to map to (more options to consider)
+        if ($targetReqCount > 200) {
+            $complexityMultiplier = 1.5; // Large framework (e.g., ISO 27001)
+        } elseif ($targetReqCount > 100) {
+            $complexityMultiplier = 1.2; // Medium framework
+        } else {
+            $complexityMultiplier = 1.0; // Small framework
+        }
+
+        // Add maintenance overhead (20% of base effort)
+        $maintenanceOverhead = 0.2;
+
+        $totalEffort = $baseEffort * $complexityMultiplier * (1 + $maintenanceOverhead);
+
+        // Minimum 1 hour, maximum 200 hours (for sanity)
+        return max(1, min(200, (int) round($totalEffort)));
+    }
+
+    /**
+     * Get priority multiplier for a framework based on its importance.
+     *
+     * More critical/widely-used frameworks get higher multipliers to reflect
+     * their higher business value.
+     *
+     * @param ComplianceFramework $framework The framework
+     * @return float Priority multiplier (1.0 - 2.0)
+     */
+    private function getFrameworkPriorityMultiplier(ComplianceFramework $framework): float
+    {
+        $code = $framework->getCode();
+
+        // Critical frameworks (legal requirements, industry standards)
+        if (in_array($code, ['GDPR', 'ISO27001', 'SOC2', 'HIPAA', 'PCI-DSS'], true)) {
+            return 2.0; // High priority
+        }
+
+        // Important frameworks (best practices, certifications)
+        if (in_array($code, ['NIST', 'CIS', 'COBIT', 'ITIL'], true)) {
+            return 1.5; // Medium-high priority
+        }
+
+        // Standard frameworks
+        return 1.0; // Normal priority
+    }
 }
