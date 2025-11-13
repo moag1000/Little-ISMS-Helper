@@ -222,7 +222,7 @@
         Requirements with highest data reuse potential (≥50% reuse)
     </div>
 
-    {% set high_reuse = data_reuse_analysis|filter(item => item.value.reuse_percentage >= 50)|sort((a, b) => b.value.reuse_percentage <=> a.value.reuse_percentage) %}
+    {% set high_reuse = data_reuse_analysis|filter(item => item.value.reuse_percentage >= 50)|sort((a, b) => b.value.reuse_percentage - a.value.reuse_percentage) %}
 
     <table>
         <thead>
@@ -245,7 +245,7 @@
                 <td><strong>{{ req.requirementId }}</strong></td>
                 <td style="font-size: 8pt;">{{ req.title|length > 50 ? (req.title|slice(0, 50) ~ '...') : req.title }}</td>
                 <td><span class="badge badge-info">{{ req.category ?? '-' }}</span></td>
-                <td class="text-center">{{ analysis.reusable_data|length ?? 0 }}</td>
+                <td class="text-center">{{ (analysis.reusable_data ?? [])|length }}</td>
                 <td class="text-center">
                     {% if value.reuse_percentage >= 80 %}
                         <span class="badge badge-success">{{ value.reuse_percentage|round }}%</span>
@@ -266,7 +266,7 @@
     <div class="page-break"></div>
     <h2>Quick Wins - Immediate Reuse Opportunities</h2>
 
-    {% set quick_wins = data_reuse_analysis|filter(item => item.value.reuse_percentage >= 80 and item.value.confidence == 'high')|sort((a, b) => b.value.estimated_hours_saved <=> a.value.estimated_hours_saved) %}
+    {% set quick_wins = data_reuse_analysis|filter(item => item.value.reuse_percentage >= 80 and item.value.confidence == 'high')|sort((a, b) => b.value.estimated_hours_saved - a.value.estimated_hours_saved) %}
 
     {% if quick_wins|length > 0 %}
     <div class="quick-win-box">

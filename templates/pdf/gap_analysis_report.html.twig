@@ -256,7 +256,7 @@
     <h2>Risk Assessment</h2>
     <div class="{% if risk_score >= 50 %}risk-box-high{% elseif risk_score >= 20 %}risk-box-medium{% else %}risk-box-low{% endif %} insight-box">
         <strong>Overall Risk Score: {{ risk_score }}</strong>
-        (Calculation: {{ uncovered_critical|length }} critical × 10 + {{ uncovered_high|length }} high × 5)
+        (Calculation: {{ (uncovered_critical ?? [])|length }} critical × 10 + {{ (uncovered_high ?? [])|length }} high × 5)
         <br>
         {% if risk_score >= 50 %}
             <strong>Status: CRITICAL</strong> - Immediate action required
@@ -497,7 +497,7 @@
             {% for gap in gaps %}
             <tr>
                 <td><strong>{{ gap.requirementId }}</strong></td>
-                <td>{{ gap.description|slice(0, 80) }}{% if gap.description|length > 80 %}...{% endif %}</td>
+                <td>{{ (gap.description ?? '')|slice(0, 80) }}{% if (gap.description ?? '')|length > 80 %}...{% endif %}</td>
                 <td class="text-center">
                     {% set priority = gap.priority|default('medium') %}
                     <span class="badge badge-{{ priority }}">{{ priority|upper }}</span>
