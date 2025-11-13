@@ -21,3 +21,8 @@ setup:
     name_min: 'The organization name must be at least {{ limit }} characters long.'
     industry_required: 'Please select an industry.'
     employee_count_required: 'Please select the employee count.'
+
+# Document Validators
+document:
+  validation:
+    mime_types: 'Please upload a valid document (PDF, Word, Excel, Image or Text file).'
