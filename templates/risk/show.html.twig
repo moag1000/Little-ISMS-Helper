@@ -5,11 +5,24 @@
 {% block body %}
 <div class="container">
     <div class="page-header">
-        <h1>{{ risk.title }}</h1>
+        <h1>
+            {{ risk.title }}
+            {% if isInherited is defined and isInherited %}
+                <span class="badge bg-info ms-2">
+                    <i class="bi bi-building"></i> {{ 'corporate.inherited'|trans }}
+                </span>
+            {% endif %}
+        </h1>
         <div class="actions">
-            <a href="{{ path('app_risk_edit', {id: risk.id}) }}" class="btn btn-primary">Edit</a>
+            {% if canEdit is defined and canEdit %}
+                <a href="{{ path('app_risk_edit', {id: risk.id}) }}" class="btn btn-primary">Edit</a>
+            {% else %}
+                <button class="btn btn-primary" disabled title="{{ 'corporate.inheritance.cannot_edit_inherited'|trans }}">
+                    <i class="bi bi-lock"></i> Edit
+                </button>
+            {% endif %}
             <a href="{{ path('app_risk_index') }}" class="btn btn-secondary">Back to List</a>
-            {% if is_granted('ROLE_ADMIN') %}
+            {% if is_granted('ROLE_ADMIN') and (canEdit is not defined or canEdit) %}
                 <form method="post" action="{{ path('app_risk_delete', {id: risk.id}) }}" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this risk?');">
                     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ risk.id) }}">
                     <button type="submit" class="btn btn-danger">Delete</button>
@@ -17,6 +30,18 @@
             {% endif %}
         </div>
     </div>
+
+    {% if isInherited is defined and isInherited %}
+        <div class="alert alert-info mb-3">
+            <div class="d-flex align-items-start">
+                <i class="bi bi-info-circle-fill me-2 mt-1"></i>
+                <div>
+                    <strong>{{ 'corporate.inheritance.view_only_title'|trans }}</strong>
+                    <p class="mb-0">{{ 'corporate.inheritance.risk_inherited_message'|trans }}</p>
+                </div>
+            </div>
+        </div>
+    {% endif %}
 
     <div class="card">
         <div class="card-header">
