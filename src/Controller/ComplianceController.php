@@ -1431,6 +1431,16 @@ class ComplianceController extends AbstractController
         $highImpactRelationships = [];
         $totalImpactScore = 0;
 
+        // Calculate mapping quality distribution across all framework relationships
+        $qualityDistribution = [
+            'excellent' => 0,  // 90-100%
+            'good' => 0,       // 70-89%
+            'medium' => 0,     // 50-69%
+            'weak' => 0,       // <50%
+        ];
+        $qualitySum = 0;
+        $qualityCount = 0;
+
         foreach ($frameworks as $sourceFramework) {
             foreach ($frameworks as $targetFramework) {
                 if ($sourceFramework->getId() === $targetFramework->getId()) {
@@ -1446,6 +1456,25 @@ class ComplianceController extends AbstractController
                 }
 
                 $mappings = $this->mappingRepository->findCrossFrameworkMappings($sourceFramework, $targetFramework);
+
+                // Calculate quality distribution for these mappings
+                foreach ($mappings as $mapping) {
+                    $quality = $mapping->getMappingPercentage();
+                    if ($quality !== null) {
+                        $qualitySum += $quality;
+                        $qualityCount++;
+
+                        if ($quality >= 90) {
+                            $qualityDistribution['excellent']++;
+                        } elseif ($quality >= 70) {
+                            $qualityDistribution['good']++;
+                        } elseif ($quality >= 50) {
+                            $qualityDistribution['medium']++;
+                        } else {
+                            $qualityDistribution['weak']++;
+                        }
+                    }
+                }
 
                 if (!empty($mappings) && ($coverage['coverage_percentage'] ?? 0) > 0) {
                     $coveragePercentage = round($coverage['coverage_percentage'] ?? 0, 1);
@@ -1486,6 +1515,8 @@ class ComplianceController extends AbstractController
             }
         }
 
+        $avgMappingQuality = $qualityCount > 0 ? round($qualitySum / $qualityCount, 1) : 0;
+
         // Sort framework relationships by impact score (highest first)
         usort($frameworkRelationships, fn($a, $b) => $b['impact_score'] <=> $a['impact_score']);
         usort($quickWins, fn($a, $b) => $b['roi'] <=> $a['roi']);
@@ -1519,6 +1550,10 @@ class ComplianceController extends AbstractController
             'high_impact_relationships' => $highImpactRelationships,
             'quick_win_count' => count($quickWins),
             'high_impact_count' => count($highImpactRelationships),
+            // Mapping quality distribution
+            'quality_distribution' => $qualityDistribution,
+            'avg_mapping_quality' => $avgMappingQuality,
+            'total_mappings' => $qualityCount,
             'pdf_generation_date' => new \DateTime(),
         ]);
 
