@@ -1,0 +1,105 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  db:
+    image: postgres:16-alpine
+    container_name: isms-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: little_isms
+      POSTGRES_USER: isms_user
+      POSTGRES_PASSWORD: isms_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U isms_user -d little_isms"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - isms-network
+
+  # Little ISMS Helper Application
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    container_name: isms-app
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+      mailhog:
+        condition: service_started
+    ports:
+      - "8000:80"
+    volumes:
+      - ./:/var/www/html:cached
+      - vendor_data:/var/www/html/vendor
+      - var_cache:/var/www/html/var/cache
+      - var_log:/var/www/html/var/log
+    environment:
+      # Note: APP_SECRET and DATABASE_URL will be configured via the Deployment Wizard
+      # These are just defaults for the container - the wizard will write to .env.local
+      APP_ENV: dev
+      APP_DEBUG: 1
+      # MailHog for email testing
+      MAILER_DSN: smtp://mailhog:1025
+    networks:
+      - isms-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # MailHog - Email Testing
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: isms-mailhog
+    restart: unless-stopped
+    ports:
+      - "1025:1025"  # SMTP port
+      - "8025:8025"  # Web UI port
+    networks:
+      - isms-network
+
+  # pgAdmin - Database Management (Optional)
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: isms-pgadmin
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@isms.local
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: 'False'
+    ports:
+      - "5050:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    networks:
+      - isms-network
+    depends_on:
+      - db
+
+volumes:
+  db_data:
+    driver: local
+  vendor_data:
+    driver: local
+  var_cache:
+    driver: local
+  var_log:
+    driver: local
+  pgadmin_data:
+    driver: local
+
+networks:
+  isms-network:
+    driver: bridge

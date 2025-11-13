@@ -17,35 +17,105 @@ This Docker setup provides a complete development and production environment for
 - Docker Compose 2.0+
 - At least 4GB RAM available for Docker
 
-## Quick Start
+## Quick Start (With Deployment Wizard - Recommended) 🧙
+
+### 1. Start Docker Environment
+
+```bash
+# Clone the repository (if not done yet)
+git clone https://github.com/moag1000/Little-ISMS-Helper.git
+cd Little-ISMS-Helper
+
+# Start all services (PostgreSQL, Application, MailHog, pgAdmin)
+docker-compose up -d
+
+# Check status - wait until all services are healthy
+docker-compose ps
+```
+
+### 2. Complete Setup with Deployment Wizard
+
+**That's it!** 🎉 Open your browser and navigate to:
+
+```
+http://localhost:8000/setup
+```
+
+The **10-Step Deployment Wizard** will guide you through the complete setup:
+
+- ✅ **Step 1**: Database Configuration - Use these settings:
+  - **Database Type**: PostgreSQL
+  - **Host**: `db` (Docker service name)
+  - **Port**: `5432`
+  - **Database Name**: `little_isms`
+  - **Username**: `isms_user`
+  - **Password**: `isms_password`
+
+  The wizard will automatically test the connection and create tables!
+
+- ✅ **Step 2**: Admin User Creation
+- ✅ **Step 3**: Email Configuration - Use MailHog:
+  - **Provider**: SMTP
+  - **Host**: `mailhog`
+  - **Port**: `1025`
+  - **No authentication needed**
+- ✅ **Step 4-10**: Follow the wizard (organisation info, modules, frameworks, etc.)
+
+**No manual commands needed!** The wizard handles:
+- Database migrations
+- ISO 27001 Controls import
+- Admin user creation
+- Role/permission setup
+- Everything else!
+
+### 3. Access the Services
+
+After completing the wizard:
+
+- **Application**: http://localhost:8000
+- **API Documentation**: http://localhost:8000/api/docs
+- **MailHog (Email Testing)**: http://localhost:8025
+  - All emails sent by the application appear here
+  - Perfect for testing notifications
+- **pgAdmin (Database GUI)**: http://localhost:5050
+  - Email: `admin@isms.local`
+  - Password: `admin`
+  - Add server: Host=`db`, Port=`5432`, Username=`isms_user`, Password=`isms_password`
+
+---
+
+## Alternative: Manual Setup (Advanced Users)
+
+If you prefer manual setup without the wizard:
 
 ### 1. Start the Environment
 
 ```bash
-# Clone the repository
-cd Little-ISMS-Helper
-
-# Start all services
 docker-compose up -d
-
-# Check status
 docker-compose ps
 ```
 
-### 2. Initialize the Application
+### 2. Manual Initialization
 
 ```bash
 # Enter the app container
 docker-compose exec app sh
 
-# Install dependencies (if not done during build)
-composer install
+# Create .env.local with database configuration
+cat > .env.local << EOF
+APP_SECRET=$(openssl rand -hex 32)
+DATABASE_URL="postgresql://isms_user:isms_password@db:5432/little_isms?serverVersion=16&charset=utf8"
+MAILER_DSN=smtp://mailhog:1025
+EOF
 
 # Run database migrations
 php bin/console doctrine:migrations:migrate --no-interaction
 
-# Load fixtures (optional - sample data)
-php bin/console doctrine:fixtures:load --no-interaction
+# Create admin user and load permissions
+php bin/console app:setup-permissions --admin-email=admin@example.com --admin-password=admin123
+
+# Load ISO 27001 Controls
+php bin/console isms:load-annex-a-controls
 
 # Exit container
 exit
@@ -54,11 +124,7 @@ exit
 ### 3. Access the Application
 
 - **Application**: http://localhost:8000
-- **API Documentation**: http://localhost:8000/api
-- **MailHog (Email Testing)**: http://localhost:8025
-- **pgAdmin (Database GUI)**: http://localhost:5050
-  - Email: `admin@isms.local`
-  - Password: `admin`
+- **Login**: admin@example.com / admin123 (⚠️ **Change immediately!**)
 
 ## Services
 
