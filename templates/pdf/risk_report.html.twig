@@ -461,7 +461,7 @@
         {% endif %}
     </div>
 
-    {% if status_breakdown %}
+    {% if status_breakdown is defined and status_breakdown|length > 0 %}
     <h3 class="mt-2">Distribution by Status</h3>
     <table style="width: 60%;">
         <thead>
