@@ -44,7 +44,7 @@ class WorkflowStep
     private ?int $daysToComplete = null; // SLA in days
 
     #[ORM\ManyToOne(targetEntity: Tenant::class)]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?Tenant $tenant = null;
 
     public function getId(): ?int
