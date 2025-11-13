@@ -20,6 +20,9 @@ final class Version20250113000002_granular_corporate_governance extends Abstract
 
     public function up(Schema $schema): void
     {
+        // Drop table if it exists from previous failed migration attempt
+        $this->addSql('DROP TABLE IF EXISTS corporate_governance');
+
         // Create new corporate_governance table
         $this->addSql('CREATE TABLE corporate_governance (
             id INT AUTO_INCREMENT NOT NULL,
@@ -46,24 +49,33 @@ final class Version20250113000002_granular_corporate_governance extends Abstract
         $this->addSql('ALTER TABLE corporate_governance ADD CONSTRAINT FK_9815E573727ACA70 FOREIGN KEY (parent_id) REFERENCES tenant (id) ON DELETE CASCADE');
         $this->addSql('ALTER TABLE corporate_governance ADD CONSTRAINT FK_9815E573B03A8386 FOREIGN KEY (created_by_id) REFERENCES user (id) ON DELETE SET NULL');
 
-        // Migrate existing governance_model data from tenant to corporate_governance
-        // If a tenant has both parent and governance_model set, create a default governance rule
-        $this->addSql('
-            INSERT INTO corporate_governance (tenant_id, parent_id, scope, scope_id, governance_model, created_at)
-            SELECT
-                t.id as tenant_id,
-                t.parent_id as parent_id,
-                \'default\' as scope,
-                NULL as scope_id,
-                t.governance_model,
-                NOW() as created_at
-            FROM tenant t
-            WHERE t.parent_id IS NOT NULL
-              AND t.governance_model IS NOT NULL
-        ');
+        // Check if governance_model column exists before migrating data
+        $columnExists = $this->connection->fetchOne(
+            "SELECT COUNT(*) FROM information_schema.COLUMNS
+             WHERE TABLE_SCHEMA = DATABASE()
+               AND TABLE_NAME = 'tenant'
+               AND COLUMN_NAME = 'governance_model'"
+        );
 
-        // Remove governance_model column from tenant table (no longer needed)
-        $this->addSql('ALTER TABLE tenant DROP COLUMN governance_model');
+        if ($columnExists > 0) {
+            // Migrate existing governance_model data from tenant to corporate_governance
+            $this->addSql('
+                INSERT INTO corporate_governance (tenant_id, parent_id, scope, scope_id, governance_model, created_at)
+                SELECT
+                    t.id as tenant_id,
+                    t.parent_id as parent_id,
+                    \'default\' as scope,
+                    NULL as scope_id,
+                    t.governance_model,
+                    NOW() as created_at
+                FROM tenant t
+                WHERE t.parent_id IS NOT NULL
+                  AND t.governance_model IS NOT NULL
+            ');
+
+            // Remove governance_model column from tenant table
+            $this->addSql('ALTER TABLE tenant DROP COLUMN governance_model');
+        }
     }
 
     public function down(Schema $schema): void
