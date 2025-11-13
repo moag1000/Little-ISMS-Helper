@@ -26,7 +26,7 @@
         </div>
         <div class="metric">
             <span class="metric-label">Unique zu {{ framework1.code }}</span>
-            <span class="metric-value" style="color: #F90;">{{ unique_framework1_count }}</span>
+            <span class="metric-value" style="color: #F90;">{{ unique_framework1|length }}</span>
         </div>
     </div>
 
@@ -53,8 +53,8 @@
             </tr>
             <tr>
                 <td>Unique Anforderungen</td>
-                <td class="text-center">{{ unique_framework1_count }}</td>
-                <td class="text-center">{{ unique_framework2_count }}</td>
+                <td class="text-center">{{ unique_framework1|length }}</td>
+                <td class="text-center">{{ framework2_count - mapped_count }}</td>
             </tr>
             <tr>
                 <td>Coverage</td>
@@ -141,7 +141,7 @@
             <li>{{ mapped_count }} von {{ framework1_count }} Anforderungen gemapped ({{ overlap_percentage }}%)</li>
             <li>{{ high_quality|length }} High-Quality Mappings (≥80% Match) identifiziert</li>
             <li>{{ unique_framework1|length }} unique Anforderungen in {{ framework1.code }}</li>
-            <li>{{ unique_framework2|length }} unique Anforderungen in {{ framework2.code }}</li>
+            <li>{{ framework2_count - mapped_count }} unmapped Anforderungen in {{ framework2.code }}</li>
         </ul>
     </div>
 
@@ -180,11 +180,11 @@
     <div style="background: #FFEB9C; padding: 15px; margin: 10px 0; border-left: 4px solid #FFA500; font-size: 9pt;">
         <strong>Mittelfristig</strong>
         <p style="margin: 5px 0;">
-            Die {{ unique_framework1|length + unique_framework2|length }} unique Anforderungen erfordern separate Bearbeitung:
+            Die {{ unique_framework1|length + (framework2_count - mapped_count) }} unmapped Anforderungen erfordern separate Bearbeitung:
         </p>
         <ul style="margin-left: 20px;">
             <li><strong>{{ framework1.code }} Unique ({{ unique_framework1|length }}):</strong> Zusätzliche Kontrollen für {{ framework1.code }}-Compliance</li>
-            <li><strong>{{ framework2.code }} Unique ({{ unique_framework2|length }}):</strong> Zusätzliche Kontrollen für {{ framework2.code }}-Compliance</li>
+            <li><strong>{{ framework2.code }} Unmapped ({{ framework2_count - mapped_count }}):</strong> Zusätzliche Kontrollen für {{ framework2.code }}-Compliance</li>
             <li>Prüfung auf indirekte Coverage durch bestehende Maßnahmen</li>
         </ul>
     </div>
