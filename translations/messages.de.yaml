@@ -183,32 +183,48 @@ compliance_label: Compliance
 training:
   title: Schulungen
   all_trainings: Alle Schulungen
+  new: Neue Schulung
+  new_help: Erstellen Sie eine neue Schulung für Mitarbeiter
   create: Schulung erstellen
   create_first: Erstellen Sie Ihre erste Schulung
   edit: Schulung bearbeiten
   edit_help: Schulungsdetails bearbeiten
+  mandatory: Verpflichtend
+  mandatory_label: Verpflichtende Schulung
   mandatory_training: Verpflichtende Schulung
   mandatory_info: Diese Schulung ist für alle Teilnehmer verpflichtend.
   no_participants: Noch keine Teilnehmer registriert.
+  no_trainings: Keine Schulungen vorhanden. Erstellen Sie die erste Schulung.
   no_trainings_found: Keine Schulungen gefunden
   participant_count: Teilnehmerzahl
+  participants_count: Teilnehmer
   participants_label: Teilnehmer
+  upcoming_trainings: Anstehende Schulungen
+  location: Ort
   covered_controls: Abgedeckte Maßnahmen
   compliance_coverage: Compliance-Abdeckung
   controls_help: Wählen Sie die Maßnahmen, die diese Schulung abdeckt
   description: Beschreibung
+  statistics:
+    total: Schulungen gesamt
+    upcoming: Anstehend
+    completed: Abgeschlossen
+    mandatory: Verpflichtend
   delivery:
     in_person: Präsenz
     online: Online
     hybrid: Hybrid
     self_paced: Selbststudium
-  type:
+  delivery_method: Durchführungsart
+  type: Schulungsart
+  type_values:
     awareness: Awareness
     technical: Technisch
     compliance: Compliance
     security: Sicherheit
     other: Sonstiges
-  status:
+  status: Status
+  status_values:
     planned: Geplant
     confirmed: Bestätigt
     completed: Abgeschlossen
@@ -257,11 +273,21 @@ training:
     type: Schulungsart wählen
   section:
     attendance: Teilnahme & Teilnehmer
+    basic_info: Grundinformationen
     details: Schulungsdetails
+    schedule: Zeitplanung
+    people: Personen
+    status: Status
+    controls: Verknüpfte Controls
+    materials: Schulungsmaterialien
   show:
     title: Schulungsdetails
   table:
     trainer: Trainer
+  success:
+    created: Schulung erfolgreich erstellt.
+    updated: Schulung erfolgreich aktualisiert.
+    deleted: Schulung erfolgreich gelöscht.
   validation:
     title_required: Bitte geben Sie einen Titel ein.
     date_required: Bitte wählen Sie ein Datum.
