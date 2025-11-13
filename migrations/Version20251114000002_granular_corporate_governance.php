@@ -11,7 +11,7 @@ use Doctrine\Migrations\AbstractMigration;
  * Refactor corporate governance to be granular (per control/scope)
  * instead of global per tenant
  */
-final class Version20250113000002_granular_corporate_governance extends AbstractMigration
+final class Version20251114000002_granular_corporate_governance extends AbstractMigration
 {
     public function getDescription(): string
     {
