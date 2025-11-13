@@ -54,49 +54,106 @@ final class Version20251113130000 extends AbstractMigration
 
     public function up(Schema $schema): void
     {
-        $this->write('Adding tenant_id columns to all tenant-scoped entities...');
+        $this->write('Adding tenant_id columns, indexes, and foreign keys to all tenant-scoped entities...');
 
-        $addedCount = 0;
+        $addedColumns = 0;
+        $addedIndexes = 0;
+        $addedForeignKeys = 0;
         $skippedCount = 0;
         $notFoundCount = 0;
 
+        // First pass: Add columns
         foreach ($this->tables as $table) {
-            // Check if table exists
-            $tableExists = $this->connection->fetchOne(
-                "SELECT COUNT(*) FROM information_schema.tables
-                 WHERE table_schema = DATABASE() AND table_name = ?",
-                [$table]
-            );
-
-            if (!$tableExists) {
+            if (!$this->tableExists($table)) {
                 $this->write("⏭️  Skipping $table (table does not exist)");
                 $notFoundCount++;
                 continue;
             }
 
-            // Check if column already exists
-            $columnExists = $this->connection->fetchOne(
-                "SELECT COUNT(*) FROM information_schema.columns
-                 WHERE table_schema = DATABASE() AND table_name = ? AND column_name = 'tenant_id'",
-                [$table]
-            );
-
-            if ($columnExists) {
-                $this->write("✅ Skipping $table (tenant_id already exists)");
+            if ($this->columnExists($table, 'tenant_id')) {
+                $this->write("✅ Column exists: $table.tenant_id");
                 $skippedCount++;
+            } else {
+                $this->addSql("ALTER TABLE `$table` ADD `tenant_id` INT DEFAULT NULL");
+                $this->write("✨ Added column: $table.tenant_id");
+                $addedColumns++;
+            }
+        }
+
+        // Second pass: Add indexes
+        foreach ($this->tables as $table) {
+            if (!$this->tableExists($table) || !$this->columnExists($table, 'tenant_id')) {
                 continue;
             }
 
-            // Add the column
-            $this->addSql("ALTER TABLE $table ADD tenant_id INT DEFAULT NULL");
-            $this->write("✨ Added tenant_id to $table");
-            $addedCount++;
+            $indexName = "IDX_{$table}_tenant";
+            if (!$this->indexExists($table, $indexName)) {
+                $this->addSql("CREATE INDEX `$indexName` ON `$table` (`tenant_id`)");
+                $this->write("🔍 Added index: $indexName");
+                $addedIndexes++;
+            }
+        }
+
+        // Third pass: Add foreign keys (only if tenant table exists)
+        if ($this->tableExists('tenant')) {
+            foreach ($this->tables as $table) {
+                if (!$this->tableExists($table) || !$this->columnExists($table, 'tenant_id')) {
+                    continue;
+                }
+
+                $fkName = "FK_{$table}_tenant";
+                if (!$this->foreignKeyExists($table, $fkName)) {
+                    $this->addSql("ALTER TABLE `$table` ADD CONSTRAINT `$fkName` FOREIGN KEY (`tenant_id`) REFERENCES `tenant` (`id`)");
+                    $this->write("🔗 Added foreign key: $fkName");
+                    $addedForeignKeys++;
+                }
+            }
+        } else {
+            $this->write("⚠️  Skipping foreign keys (tenant table does not exist)");
         }
 
         $this->write("\n📊 Summary:");
-        $this->write("   ✨ Added: $addedCount tables");
-        $this->write("   ✅ Skipped (already exists): $skippedCount tables");
-        $this->write("   ⏭️  Not found: $notFoundCount tables");
+        $this->write("   ✨ Added columns: $addedColumns");
+        $this->write("   🔍 Added indexes: $addedIndexes");
+        $this->write("   🔗 Added foreign keys: $addedForeignKeys");
+        $this->write("   ✅ Skipped (already exists): $skippedCount");
+        $this->write("   ⏭️  Tables not found: $notFoundCount");
+    }
+
+    private function tableExists(string $table): bool
+    {
+        return (bool) $this->connection->fetchOne(
+            "SELECT COUNT(*) FROM information_schema.tables
+             WHERE table_schema = DATABASE() AND table_name = ?",
+            [$table]
+        );
+    }
+
+    private function columnExists(string $table, string $column): bool
+    {
+        return (bool) $this->connection->fetchOne(
+            "SELECT COUNT(*) FROM information_schema.columns
+             WHERE table_schema = DATABASE() AND table_name = ? AND column_name = ?",
+            [$table, $column]
+        );
+    }
+
+    private function indexExists(string $table, string $indexName): bool
+    {
+        return (bool) $this->connection->fetchOne(
+            "SELECT COUNT(*) FROM information_schema.statistics
+             WHERE table_schema = DATABASE() AND table_name = ? AND index_name = ?",
+            [$table, $indexName]
+        );
+    }
+
+    private function foreignKeyExists(string $table, string $fkName): bool
+    {
+        return (bool) $this->connection->fetchOne(
+            "SELECT COUNT(*) FROM information_schema.table_constraints
+             WHERE table_schema = DATABASE() AND table_name = ? AND constraint_name = ? AND constraint_type = 'FOREIGN KEY'",
+            [$table, $fkName]
+        );
     }
 
     public function down(Schema $schema): void
