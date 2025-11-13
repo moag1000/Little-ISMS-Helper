@@ -329,8 +329,8 @@
         <tbody>
             {% for detail in comparison_details %}
             <tr>
-                <td><strong>{{ detail.requirement1_id }}</strong></td>
-                <td>{{ detail.requirement1_name|slice(0, 80) }}{% if detail.requirement1_name|length > 80 %}...{% endif %}</td>
+                <td><strong>{{ detail.framework1Requirement.requirementId }}</strong></td>
+                <td>{{ detail.framework1Requirement.description|slice(0, 80) }}{% if detail.framework1Requirement.description|length > 80 %}...{% endif %}</td>
                 <td class="text-center">
                     {% if detail.mapped %}
                         <span class="badge badge-success">Mapped</span>
@@ -348,8 +348,8 @@
                     {% endif %}
                 </td>
                 <td>
-                    {% if detail.requirement2_name %}
-                        {{ detail.requirement2_name|slice(0, 80) }}{% if detail.requirement2_name|length > 80 %}...{% endif %}
+                    {% if detail.framework2Requirement %}
+                        {{ detail.framework2Requirement.description|slice(0, 80) }}{% if detail.framework2Requirement.description|length > 80 %}...{% endif %}
                     {% else %}
                         <span style="color: #94a3b8;">No mapping</span>
                     {% endif %}
