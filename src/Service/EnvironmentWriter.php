@@ -116,13 +116,32 @@ class EnvironmentWriter
         // Build .env.local content
         $content = $this->buildEnvFileContent($mergedVars);
 
-        // Write to file
-        if (file_put_contents($envFilePath, $content) === false) {
-            throw new \RuntimeException("Failed to write to {$envFilePath}");
-        }
+        // Atomic write: Write to temp file first, then rename
+        // This prevents corruption if disk full or process killed
+        $tmpFilePath = $envFilePath . '.tmp';
 
-        // Set proper permissions (readable/writable by owner only)
-        chmod($envFilePath, 0600);
+        try {
+            // Write to temporary file
+            $bytesWritten = file_put_contents($tmpFilePath, $content);
+
+            if ($bytesWritten === false || $bytesWritten !== strlen($content)) {
+                throw new \RuntimeException("Failed to write to temporary file {$tmpFilePath}");
+            }
+
+            // Set proper permissions before rename
+            chmod($tmpFilePath, 0600);
+
+            // Atomic rename (this is atomic on POSIX systems)
+            if (!rename($tmpFilePath, $envFilePath)) {
+                throw new \RuntimeException("Failed to rename temporary file to {$envFilePath}");
+            }
+        } catch (\Exception $e) {
+            // Cleanup: Remove temp file if it exists
+            if (file_exists($tmpFilePath)) {
+                @unlink($tmpFilePath);
+            }
+            throw $e;
+        }
     }
 
     /**
@@ -271,6 +290,60 @@ class EnvironmentWriter
     public function envLocalExists(): bool
     {
         return file_exists($this->getEnvLocalPath());
+    }
+
+    /**
+     * Check if we can write to .env.local
+     *
+     * @return array Result with 'writable' boolean and 'message' string
+     */
+    public function checkWritePermissions(): array
+    {
+        $envFilePath = $this->getEnvLocalPath();
+        $projectDir = $this->params->get('kernel.project_dir');
+
+        // Check if .env.local exists
+        if (file_exists($envFilePath)) {
+            // File exists - check if writable
+            if (!is_writable($envFilePath)) {
+                return [
+                    'writable' => false,
+                    'message' => "File {$envFilePath} exists but is not writable. Please check file permissions (should be 0600 or 0644).",
+                ];
+            }
+        } else {
+            // File doesn't exist - check if parent directory is writable
+            if (!is_writable($projectDir)) {
+                return [
+                    'writable' => false,
+                    'message' => "Project directory {$projectDir} is not writable. Cannot create .env.local file.",
+                ];
+            }
+        }
+
+        // Check var/ directory (needed for SQLite)
+        $varDir = $projectDir . '/var';
+        if (!is_dir($varDir)) {
+            // Try to create it
+            if (!@mkdir($varDir, 0755, true)) {
+                return [
+                    'writable' => false,
+                    'message' => "Cannot create var/ directory. Please create it manually with: mkdir -p {$varDir} && chmod 755 {$varDir}",
+                ];
+            }
+        }
+
+        if (!is_writable($varDir)) {
+            return [
+                'writable' => false,
+                'message' => "Directory {$varDir} is not writable. This is required for SQLite databases and file storage.",
+            ];
+        }
+
+        return [
+            'writable' => true,
+            'message' => 'All filesystem permissions OK',
+        ];
     }
 
     /**

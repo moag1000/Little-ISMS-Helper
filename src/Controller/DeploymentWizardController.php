@@ -73,6 +73,12 @@ class DeploymentWizardController extends AbstractController
     #[Route('/step1-database-config', name: 'setup_step1_database_config')]
     public function step1DatabaseConfig(Request $request, SessionInterface $session): Response
     {
+        // Pre-check: Filesystem permissions
+        $permCheck = $this->envWriter->checkWritePermissions();
+        if (!$permCheck['writable']) {
+            $this->addFlash('error', $permCheck['message']);
+        }
+
         $form = $this->createForm(DatabaseConfigurationType::class);
         $form->handleRequest($request);
 
@@ -113,6 +119,16 @@ class DeploymentWizardController extends AbstractController
                     $this->addFlash('success', $this->translator->trans('setup.database.config_saved'));
 
                     return $this->redirectToRoute('setup_step2_admin_user');
+                } catch (\RuntimeException $e) {
+                    // File system errors (permissions, disk full, etc.)
+                    if (str_contains($e->getMessage(), 'Failed to write') || str_contains($e->getMessage(), 'Failed to rename')) {
+                        $this->addFlash('error', $this->translator->trans('setup.database.write_failed',  [
+                            '%error%' => $e->getMessage(),
+                            '%hint%' => 'Please check file permissions for .env.local and ensure sufficient disk space.'
+                        ]));
+                    } else {
+                        $this->addFlash('error', $this->translator->trans('setup.database.config_failed') . ': ' . $e->getMessage());
+                    }
                 } catch (\Exception $e) {
                     $this->addFlash('error', $this->translator->trans('setup.database.config_failed') . ': ' . $e->getMessage());
                 }
@@ -142,6 +158,9 @@ class DeploymentWizardController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
+
+            // Normalize email to lowercase for consistent lookup
+            $data['email'] = strtolower($data['email']);
 
             try {
                 // First run migrations to create database structure
