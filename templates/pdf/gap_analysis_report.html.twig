@@ -1,111 +1,230 @@
-{% extends 'pdf/base.html.twig' %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>Gap Analysis Report - {{ framework.name }}</title>
+    <style>
+        @page {
+            margin: 2cm 1.5cm;
+        }
 
-{% block pdf_title %}Gap Analysis Report - {{ framework.name }}{% endblock %}
+        body {
+            font-family: DejaVu Sans, sans-serif;
+            font-size: 9pt;
+            line-height: 1.4;
+            color: #333;
+        }
 
-{% block header_title %}Gap Analysis Report{% endblock %}
-{% block header_subtitle %}{{ framework.name }} ({{ framework.code }}){% endblock %}
+        h1 {
+            font-size: 18pt;
+            color: #1a56db;
+            text-align: center;
+            margin-bottom: 5pt;
+            border-bottom: 3px solid #1a56db;
+            padding-bottom: 10pt;
+        }
 
-{% block extra_styles %}
-    .stats-grid {
-        display: table;
-        width: 100%;
-        margin-bottom: 20pt;
-        border: 1px solid #cbd5e1;
-        border-collapse: collapse;
-    }
+        h2 {
+            font-size: 14pt;
+            color: #1a56db;
+            margin-top: 15pt;
+            margin-bottom: 8pt;
+            border-bottom: 1px solid #cbd5e1;
+            padding-bottom: 5pt;
+        }
 
-    .stats-row {
-        display: table-row;
-    }
+        h3 {
+            font-size: 11pt;
+            color: #334155;
+            margin-top: 12pt;
+            margin-bottom: 6pt;
+            font-weight: bold;
+        }
 
-    .stats-cell {
-        display: table-cell;
-        padding: 10pt;
-        text-align: center;
-        border: 1px solid #cbd5e1;
-        width: 20%;
-    }
+        .header-info {
+            text-align: center;
+            font-size: 9pt;
+            color: #64748b;
+            margin-bottom: 20pt;
+        }
 
-    .stats-label {
-        font-size: 8pt;
-        color: #64748b;
-        font-weight: bold;
-        margin-bottom: 4pt;
-    }
+        .stats-grid {
+            display: table;
+            width: 100%;
+            margin-bottom: 20pt;
+            border: 1px solid #cbd5e1;
+            border-collapse: collapse;
+        }
 
-    .stats-value {
-        font-size: 16pt;
-        color: #1F4E78;
-        font-weight: bold;
-    }
+        .stats-row {
+            display: table-row;
+        }
 
-    .stats-value-success {
-        color: #10b981;
-    }
+        .stats-cell {
+            display: table-cell;
+            padding: 10pt;
+            text-align: center;
+            border: 1px solid #cbd5e1;
+            width: 20%;
+        }
 
-    .stats-value-warning {
-        color: #f59e0b;
-    }
+        .stats-label {
+            font-size: 8pt;
+            color: #64748b;
+            font-weight: bold;
+            margin-bottom: 4pt;
+        }
 
-    .stats-value-danger {
-        color: #ef4444;
-    }
+        .stats-value {
+            font-size: 16pt;
+            color: #1a56db;
+            font-weight: bold;
+        }
 
-    .insight-box {
-        background: #f8fafc;
-        border-left: 4px solid #1F4E78;
-        padding: 10pt;
-        margin: 10pt 0;
-        font-size: 9pt;
-        color: #475569;
-    }
+        .stats-value-success {
+            color: #10b981;
+        }
 
-    .insight-box strong {
-        color: #1e293b;
-    }
+        .stats-value-warning {
+            color: #f59e0b;
+        }
 
-    .risk-box-low {
-        background: #f0fdf4;
-        border-left: 4px solid #10b981;
-    }
+        .stats-value-danger {
+            color: #ef4444;
+        }
 
-    .risk-box-medium {
-        background: #fffbeb;
-        border-left: 4px solid #f59e0b;
-    }
+        .insight-box {
+            background: #f8fafc;
+            border-left: 4pt solid #1a56db;
+            padding: 10pt;
+            margin: 10pt 0;
+            font-size: 8pt;
+            color: #475569;
+        }
 
-    .risk-box-high {
-        background: #fef2f2;
-        border-left: 4px solid #ef4444;
-    }
+        .insight-box strong {
+            color: #1e293b;
+        }
 
-    .highlight-row {
-        font-weight: bold;
-        background: #f1f5f9;
-    }
+        .risk-box-low {
+            background: #f0fdf4;
+            border-left: 4pt solid #10b981;
+        }
 
-    .w-15 {
-        width: 15%;
-    }
+        .risk-box-medium {
+            background: #fffbeb;
+            border-left: 4pt solid #f59e0b;
+        }
 
-    .w-20 {
-        width: 20%;
-    }
+        .risk-box-high {
+            background: #fef2f2;
+            border-left: 4pt solid #ef4444;
+        }
 
-    .w-25 {
-        width: 25%;
-    }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10pt 0;
+            font-size: 8pt;
+        }
 
-    .w-30 {
-        width: 30%;
-    }
+        table th {
+            background-color: #1a56db;
+            color: white;
+            padding: 6pt;
+            text-align: left;
+            font-weight: bold;
+            border: 1px solid #1e3a8a;
+        }
 
-    .w-40 {
-        width: 40%;
-    }
-{% endblock %}
+        table td {
+            padding: 5pt;
+            border: 1px solid #cbd5e1;
+            vertical-align: top;
+        }
 
-{% block content %}
+        table tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+
+        .highlight-row {
+            font-weight: bold;
+            background: #e0e7ff !important;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 2pt 6pt;
+            border-radius: 3pt;
+            font-size: 7pt;
+            font-weight: bold;
+        }
+
+        .badge-critical {
+            background-color: #ef4444;
+            color: white;
+        }
+
+        .badge-high {
+            background-color: #f59e0b;
+            color: white;
+        }
+
+        .badge-warning {
+            background-color: #f59e0b;
+            color: white;
+        }
+
+        .badge-low {
+            background-color: #3b82f6;
+            color: white;
+        }
+
+        .badge-info {
+            background-color: #3b82f6;
+            color: white;
+        }
+
+        .badge-medium {
+            background-color: #10b981;
+            color: white;
+        }
+
+        .page-break {
+            page-break-before: always;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .w-15 { width: 15%; }
+        .w-20 { width: 20%; }
+        .w-25 { width: 25%; }
+        .w-30 { width: 30%; }
+        .w-40 { width: 40%; }
+
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 30pt;
+            text-align: center;
+            font-size: 7pt;
+            color: #64748b;
+            border-top: 1px solid #cbd5e1;
+            padding-top: 5pt;
+        }
+    </style>
+</head>
+<body>
+    <h1>Gap Analysis Report</h1>
+    <div class="header-info">
+        {{ framework.name }} ({{ framework.code }})<br>
+        Generated: {{ pdf_generation_date|date('d.m.Y H:i') }}
+    </div>
+
     {# Executive Summary #}
     <h2>Executive Summary</h2>
     <div class="stats-grid">
@@ -164,9 +283,7 @@
             <tr>
                 <td>Compliance Score</td>
                 <td class="text-center">{{ compliance_score }}%</td>
-                <td class="text-center">
-                    <strong>{{ weighted_compliance_score }}%</strong>
-                </td>
+                <td class="text-center"><strong>{{ weighted_compliance_score }}%</strong></td>
                 <td class="text-center">
                     {% set diff = weighted_compliance_score - compliance_score %}
                     <span style="color: {% if diff < 0 %}#ef4444{% elseif diff > 0 %}#10b981{% else %}#64748b{% endif %}; font-weight: bold;">
@@ -380,7 +497,7 @@
             {% for gap in gaps %}
             <tr>
                 <td><strong>{{ gap.requirementId }}</strong></td>
-                <td>{{ gap.description|slice(0, 100) }}{% if gap.description|length > 100 %}...{% endif %}</td>
+                <td>{{ gap.description|slice(0, 80) }}{% if gap.description|length > 80 %}...{% endif %}</td>
                 <td class="text-center">
                     {% set priority = gap.priority|default('medium') %}
                     <span class="badge badge-{{ priority }}">{{ priority|upper }}</span>
@@ -396,4 +513,9 @@
             {% endfor %}
         </tbody>
     </table>
-{% endblock %}
+
+    <div class="footer">
+        Gap Analysis Report - Generated on {{ pdf_generation_date|date('d.m.Y H:i:s') }} - Page <span class="pagenum"></span>
+    </div>
+</body>
+</html>
