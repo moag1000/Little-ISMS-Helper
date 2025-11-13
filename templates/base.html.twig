@@ -111,7 +111,10 @@
                     </a></li>
 
                     {# ISMS Core #}
+                    {% if is_module_active('core') or is_module_active('controls') %}
                     <li class="nav-divider">ISMS Core</li>
+                    {% endif %}
+                    {% if is_module_active('core') %}
                     <li><a href="{{ path('app_context_index') }}" class="{% if current_route starts with 'app_context_' %}active{% endif %}" data-turbo-action="advance">
                         <i class="bi bi-diagram-3" aria-hidden="true"></i>
                         <span>{{ 'nav.context'|trans }}</span>
@@ -120,13 +123,19 @@
                         <i class="bi bi-people-fill" aria-hidden="true"></i>
                         <span>{{ 'nav.interested_parties'|trans }}</span>
                     </a></li>
+                    {% endif %}
+                    {% if is_module_active('controls') %}
                     <li><a href="{{ path('app_soa_index') }}" class="{% if current_route starts with 'app_soa_' %}active{% endif %}" data-turbo-action="advance">
                         <i class="bi bi-shield-check" aria-hidden="true"></i>
                         <span>{{ 'nav.soa'|trans }}</span>
                     </a></li>
+                    {% endif %}
 
                     {# Assets & Risk #}
+                    {% if is_module_active('assets') or is_module_active('risks') %}
                     <li class="nav-divider">Assets & Risk</li>
+                    {% endif %}
+                    {% if is_module_active('assets') %}
                     <li><a href="{{ path('app_asset_index') }}" class="{% if current_route starts with 'app_asset_' %}active{% endif %}" data-turbo-action="advance">
                         <i class="bi bi-cpu" aria-hidden="true"></i>
                         <span>{{ 'nav.assets'|trans }}</span>
@@ -135,12 +144,16 @@
                         <i class="bi bi-truck" aria-hidden="true"></i>
                         <span>{{ 'nav.suppliers'|trans }}</span>
                     </a></li>
+                    {% endif %}
+                    {% if is_module_active('risks') %}
                     <li><a href="{{ path('app_risk_index') }}" class="{% if current_route starts with 'app_risk_' %}active{% endif %}" data-turbo-action="advance">
                         <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
                         <span>{{ 'nav.risks'|trans }}</span>
                     </a></li>
+                    {% endif %}
 
                     {# BCM #}
+                    {% if is_module_active('bcm') %}
                     <li class="nav-divider">Business Continuity</li>
                     <li><a href="{{ path('app_business_process_index') }}" class="{% if current_route starts with 'app_business_process_' %}active{% endif %}" data-turbo-action="advance">
                         <i class="bi bi-diagram-2" aria-hidden="true"></i>
@@ -154,32 +167,47 @@
                         <i class="bi bi-flag" aria-hidden="true"></i>
                         <span>{{ 'nav.bc_exercises'|trans }}</span>
                     </a></li>
+                    {% endif %}
 
                     {# Operations #}
+                    {% if is_module_active('core') or is_module_active('incidents') %}
                     <li class="nav-divider">Operations</li>
+                    {% endif %}
+                    {% if is_module_active('core') %}
                     <li><a href="{{ path('app_change_request_index') }}" class="{% if current_route starts with 'app_change_request_' %}active{% endif %}" data-turbo-action="advance">
                         <i class="bi bi-arrow-left-right" aria-hidden="true"></i>
                         <span>{{ 'nav.change_requests'|trans }}</span>
                     </a></li>
+                    {% endif %}
+                    {% if is_module_active('incidents') %}
                     <li><a href="{{ path('app_incident_index') }}" class="{% if current_route starts with 'app_incident_' %}active{% endif %}" data-turbo-action="advance">
                         <i class="bi bi-bug" aria-hidden="true"></i>
                         <span>{{ 'nav.incidents'|trans }}</span>
                     </a></li>
+                    {% endif %}
 
                     {# Compliance #}
+                    {% if is_module_active('audits') or is_module_active('compliance') or is_module_active('audit_logging') %}
                     <li class="nav-divider">Compliance</li>
+                    {% endif %}
+                    {% if is_module_active('audits') %}
                     <li><a href="{{ path('app_audit_index') }}" class="{% if current_route starts with 'app_audit_' and not current_route starts with 'app_audit_log_' %}active{% endif %}" data-turbo-action="advance">
                         <i class="bi bi-clipboard-check" aria-hidden="true"></i>
                         <span>{{ 'nav.audits'|trans }}</span>
                     </a></li>
+                    {% endif %}
+                    {% if is_module_active('compliance') %}
                     <li><a href="{{ path('app_compliance_index') }}" class="{% if current_route starts with 'app_compliance_' %}active{% endif %}" data-turbo-action="advance">
                         <i class="bi bi-check-circle" aria-hidden="true"></i>
                         <span>{{ 'nav.compliance'|trans }}</span>
                     </a></li>
+                    {% endif %}
+                    {% if is_module_active('audit_logging') %}
                     <li><a href="{{ path('app_audit_log_index') }}" class="{% if current_route starts with 'app_audit_log_' %}active{% endif %}" data-turbo-action="advance">
                         <i class="bi bi-journal-text" aria-hidden="true"></i>
                         <span>{{ 'nav.audit_log'|trans }}</span>
                     </a></li>
+                    {% endif %}
 
                     {% if is_granted('ROLE_ADMIN') %}
                     {# Admin #}
