@@ -6,6 +6,9 @@ import './stimulus_bootstrap.js';
  * which should already be in your base.html.twig.
  */
 
+// Extension Error Handler - Suppress browser extension errors
+import './extension_error_handler.js';
+
 // CSRF Protection - Global script (not a Stimulus controller)
 import './csrf_protection.js';
 
