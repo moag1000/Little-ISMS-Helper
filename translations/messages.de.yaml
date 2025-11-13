@@ -1320,17 +1320,104 @@ ui:
   required: Erforderlich
   n_a: N/A
 workflow:
+  title:
+    list: 'Workflows'
+    definitions: 'Workflow-Definitionen'
+    active: 'Aktive Workflows'
+    pending: 'Ausstehende Workflows'
+    overdue: 'Überfällige Workflows'
+    instance_show: 'Workflow-Details'
+
+  step: 'Schritt'
+  days: 'Tage'
+
+  action:
+    start: 'Workflow starten'
+    cancel: 'Workflow abbrechen'
+    complete_step: 'Schritt abschließen'
+    definitions: 'Definitionen verwalten'
+
+  badge:
+    completed: 'Abgeschlossen'
+    critical: 'Kritisch'
+    current: 'Aktuell'
+    due_soon: 'Bald fällig'
+    overdue: 'Überfällig'
+    my_task: 'Meine Aufgabe'
+
+  confirm:
+    cancel: 'Möchten Sie diesen Workflow wirklich abbrechen?'
+
+  description:
+    active: 'Aktive Workflows'
+    active_detail: 'Workflows, die derzeit in Bearbeitung sind'
+    definitions: 'Workflow-Definitionen verwalten'
+    overdue: 'Überfällige Workflows'
+    overdue_detail: 'Workflows, die ihr Fälligkeitsdatum überschritten haben'
+    overview: 'Workflow-Übersicht'
+    pending: 'Ausstehende Workflows'
+    pending_detail: 'Workflows, die auf eine Aktion warten'
+
+  field:
+    assignee: 'Zugewiesen an'
+    completed_at: 'Abgeschlossen am'
+    current_step: 'Aktueller Schritt'
+    days_overdue: 'Tage überfällig'
+    definition: 'Definition'
+    due_date: 'Fälligkeitsdatum'
+    priority: 'Priorität'
+    progress: 'Fortschritt'
+
+  message:
+    no_active: 'Keine aktiven Workflows'
+    no_activities: 'Keine Aktivitäten'
+    no_overdue: 'Keine überfälligen Workflows'
+    no_overdue_desc: 'Alle Workflows sind im Zeitplan'
+    no_pending: 'Keine ausstehenden Workflows'
+    unassigned: 'Nicht zugewiesen'
+
+  section:
+    active: 'Aktive Workflows'
+    activity_log: 'Aktivitätsprotokoll'
+    overdue: 'Überfällig'
+    overview: 'Übersicht'
+    pending: 'Ausstehend'
+
+  stats:
+    active: 'Aktive'
+    avg_progress: 'Durchschnittlicher Fortschritt'
+    critical_overdue: 'Kritisch überfällig'
+    due_this_week: 'Fällig diese Woche'
+    my_overdue: 'Meine überfälligen'
+    my_tasks: 'Meine Aufgaben'
+    my_workflows: 'Meine Workflows'
+    overdue: 'Überfällig'
+    overdue_days_avg: 'Durchschnitt Tage überfällig'
+    pending: 'Ausstehend'
+    total: 'Gesamt'
+
+  activity:
+    action: 'Aktion'
+    details: 'Details'
+    timestamp: 'Zeitstempel'
+    user: 'Benutzer'
+
+  warning:
+    overdue_count: '{{ count }} überfällige Workflows'
+    overdue_message: 'Sie haben überfällige Workflows, die Aufmerksamkeit erfordern'
+    rejected: 'Workflow-Schritt abgelehnt'
+
   success:
     approved: Workflow-Schritt erfolgreich genehmigt.
     started: Workflow erfolgreich gestartet.
+
   error:
     not_authorized_approve: Sie sind nicht berechtigt, diesen Schritt zu genehmigen.
     not_authorized_reject: Sie sind nicht berechtigt, diesen Schritt abzulehnen.
     comments_required: Kommentare sind erforderlich, wenn ein Workflow-Schritt abgelehnt
       wird.
     not_found: Kein Workflow für diesen Entity-Typ gefunden.
-  warning:
-    rejected: Workflow-Schritt abgelehnt.
+
   info:
     cancelled: Workflow-Instanz abgebrochen.
     no_active_workflow: Kein aktiver Workflow für diese Entität gefunden.
