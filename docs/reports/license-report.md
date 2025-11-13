@@ -1,7 +1,7 @@
 # Lizenzbericht - Little ISMS Helper
 
-**Generiert am:** 2025-11-12 17:46
-**Status:** ✅ Lizenzkonform (159/162 Pakete freigegeben)
+**Generiert am:** 2025-11-13 16:48
+**Status:** ✅ Lizenzkonform (160/163 Pakete freigegeben)
 
 > **Wichtiger Hinweis:** Diese Auswertung fokussiert sich auf die **kommerzielle Nutzbarkeit** von Softwarekomponenten.
 > Lizenzen können zusätzliche Pflichten (Attribution, Quelloffenlegung, NOTICE-Dateien) erfordern, die unbedingt eingehalten werden müssen.
@@ -10,33 +10,19 @@
 ## Wichtigste Erkenntnisse
 
 - **Gesamtstatus:** Lizenzkonform für kommerzielle Nutzung
-- **Handlungsbedarf:** 2 Pakete mit unbekannter Lizenz müssen manuell geprüft werden
-- **Risikobewertung:** Mittel (98.1% der Abhängigkeiten mit unkritischen Lizenzen)
+- **Handlungsbedarf:** Keine unbekannten Lizenzen gefunden
+- **Risikobewertung:** Niedrig (98.2% der Abhängigkeiten mit unkritischen Lizenzen)
 
 ## Zusammenfassung
 
 | Einstufung | Beschreibung | Composer (PHP) | ImportMap (JS) | Manuell | Gesamt |
 |------------|--------------|----------------|----------------|---------|--------|
-| <span class="status-allowed">✅ Erlaubt</span> | Kommerzielle Nutzung ohne Copyleft (MIT, BSD, Apache-2.0) | 152 | 5 | 2 | **159** |
+| <span class="status-allowed">✅ Erlaubt</span> | Kommerzielle Nutzung ohne Copyleft (MIT, BSD, Apache-2.0) | 153 | 5 | 2 | **160** |
 | <span class="status-restricted">⚠️ Eingeschränkt</span> | Kommerziell nutzbar mit Auflagen (MPL-2.0, EPL, CC-BY) | 0 | 0 | 0 | **0** |
-| <span class="status-copyleft">🔄 Copyleft</span> | Kommerziell nutzbar mit Quelloffenlegungspflicht (GPL/LGPL) | 1 | 0 | 0 | **1** |
+| <span class="status-copyleft">🔄 Copyleft</span> | Kommerziell nutzbar mit Quelloffenlegungspflicht (GPL/LGPL) | 3 | 0 | 0 | **3** |
 | <span class="status-not-allowed">❌ Nicht erlaubt</span> | Keine kommerzielle Nutzung (NC-Lizenzen) | 0 | 0 | 0 | **0** |
-| <span class="status-unknown">❓ Unbekannt</span> | Manuelle Prüfung erforderlich | 2 | 0 | 0 | **2** |
-| **Gesamt** | | **155** | **5** | **2** | **162** |
-
-## Prüfbedürftige Pakete
-
-### Unbekannte Lizenzen (Manuelle Prüfung erforderlich)
-
-1. **dompdf/php-font-lib@1.0.1** (PHP)
-   - Lizenz: LGPL-2.1-or-later
-   - Repository: https://github.com/dompdf/php-font-lib.git
-   - Empfehlung: Prüfung auf kommerzielle Nutzbarkeit
-
-2. **dompdf/php-svg-lib@1.0.0** (PHP)
-   - Lizenz: LGPL-3.0-or-later
-   - Repository: https://github.com/dompdf/php-svg-lib.git
-   - Empfehlung: Prüfung auf kommerzielle Nutzbarkeit
+| <span class="status-unknown">❓ Unbekannt</span> | Manuelle Prüfung erforderlich | 0 | 0 | 0 | **0** |
+| **Gesamt** | | **156** | **5** | **2** | **163** |
 
 ## Manuell eingebundene Pakete
 
@@ -62,7 +48,7 @@ Die folgenden Pakete werden nicht über Composer oder ImportMap verwaltet und wu
 ## Lizenztypen nach Häufigkeit
 
 ```
-MIT           :  133 (82.1%)
+MIT           :  134 (82.2%)
 BSD-3-CLAUSE  :   26 (16%)
 LGPL-2.1      :    1 (0.6%)
 LGPL-2.1-OR-LATER:    1 (0.6%)
@@ -73,7 +59,7 @@ LGPL-3.0-OR-LATER:    1 (0.6%)
 ## Handlungsempfehlungen
 
 1. **Sofort:**
-   - Prüfung der 2 Pakete mit unbekannter Lizenz
+   - Keine sofortigen Maßnahmen erforderlich
 
 2. **Kurzfristig:**
    - NOTICE-Datei mit Attributionen erstellen
@@ -86,10 +72,9 @@ LGPL-3.0-OR-LATER:    1 (0.6%)
 ## Details nach Ökosystem
 
 <details>
-<summary><strong>PHP-Pakete mit unbekannter/eingeschränkter Lizenz</strong> (2 Pakete)</summary>
+<summary><strong>PHP-Pakete mit unbekannter/eingeschränkter Lizenz</strong> (0 Pakete)</summary>
 
-- dompdf/php-font-lib@1.0.1 — Lizenz: LGPL-2.1-or-later — Einstufung: unknown (Unbekannte Lizenz; manuelle Prüfung empfohlen) | https://github.com/dompdf/php-font-lib.git
-- dompdf/php-svg-lib@1.0.0 — Lizenz: LGPL-3.0-or-later — Einstufung: unknown (Unbekannte Lizenz; manuelle Prüfung empfohlen) | https://github.com/dompdf/php-svg-lib.git
+Keine PHP-Pakete mit problematischen Lizenzen gefunden.
 
 </details>
 
@@ -101,7 +86,7 @@ Keine JavaScript-Pakete mit problematischen Lizenzen gefunden.
 </details>
 
 <details>
-<summary><strong>Vollständige Liste der PHP-Pakete</strong> (155 Pakete)</summary>
+<summary><strong>Vollständige Liste der PHP-Pakete</strong> (156 Pakete)</summary>
 
 - api-platform/core@v4.2.3 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/api-platform/core.git
 - composer/pcre@3.3.2 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/composer/pcre.git
@@ -120,8 +105,8 @@ Keine JavaScript-Pakete mit problematischen Lizenzen gefunden.
 - doctrine/persistence@4.1.1 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/doctrine/persistence.git
 - doctrine/sql-formatter@1.5.3 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/doctrine/sql-formatter.git
 - dompdf/dompdf@v3.1.4 — Lizenz(e): LGPL-2.1 — Einstufung: copyleft | https://github.com/dompdf/dompdf.git
-- dompdf/php-font-lib@1.0.1 — Lizenz(e): LGPL-2.1-or-later — Einstufung: unknown | https://github.com/dompdf/php-font-lib.git
-- dompdf/php-svg-lib@1.0.0 — Lizenz(e): LGPL-3.0-or-later — Einstufung: unknown | https://github.com/dompdf/php-svg-lib.git
+- dompdf/php-font-lib@1.0.1 — Lizenz(e): LGPL-2.1-or-later — Einstufung: copyleft | https://github.com/dompdf/php-font-lib.git
+- dompdf/php-svg-lib@1.0.0 — Lizenz(e): LGPL-3.0-or-later — Einstufung: copyleft | https://github.com/dompdf/php-svg-lib.git
 - egulias/email-validator@4.0.4 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/egulias/EmailValidator.git
 - firebase/php-jwt@v6.11.1 — Lizenz(e): BSD-3-Clause — Einstufung: allowed | https://github.com/firebase/php-jwt.git
 - guzzlehttp/guzzle@7.10.0 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/guzzle/guzzle.git
@@ -223,6 +208,7 @@ Keine JavaScript-Pakete mit problematischen Lizenzen gefunden.
 - symfony/yaml@v7.4.0-BETA1 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/symfony/yaml.git
 - thenetworg/oauth2-azure@v2.2.2 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/TheNetworg/oauth2-azure.git
 - twig/extra-bundle@v3.22.0 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/twigphp/twig-extra-bundle.git
+- twig/string-extra@v3.22.0 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/twigphp/string-extra.git
 - twig/twig@v3.22.0 — Lizenz(e): BSD-3-Clause — Einstufung: allowed | https://github.com/twigphp/Twig.git
 - vich/uploader-bundle@v2.8.1 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/dustin10/VichUploaderBundle.git
 - webmozart/assert@1.12.1 — Lizenz(e): MIT — Einstufung: allowed | https://github.com/webmozarts/assert.git
@@ -236,7 +222,7 @@ Keine JavaScript-Pakete mit problematischen Lizenzen gefunden.
 - phpunit/php-invoker@6.0.0 — Lizenz(e): BSD-3-Clause — Einstufung: allowed | https://github.com/sebastianbergmann/php-invoker.git
 - phpunit/php-text-template@5.0.0 — Lizenz(e): BSD-3-Clause — Einstufung: allowed | https://github.com/sebastianbergmann/php-text-template.git
 - phpunit/php-timer@8.0.0 — Lizenz(e): BSD-3-Clause — Einstufung: allowed | https://github.com/sebastianbergmann/php-timer.git
-- phpunit/phpunit@12.4.2 — Lizenz(e): BSD-3-Clause — Einstufung: allowed | https://github.com/sebastianbergmann/phpunit.git
+- phpunit/phpunit@12.4.3 — Lizenz(e): BSD-3-Clause — Einstufung: allowed | https://github.com/sebastianbergmann/phpunit.git
 - sebastian/cli-parser@4.2.0 — Lizenz(e): BSD-3-Clause — Einstufung: allowed | https://github.com/sebastianbergmann/cli-parser.git
 - sebastian/comparator@7.1.3 — Lizenz(e): BSD-3-Clause — Einstufung: allowed | https://github.com/sebastianbergmann/comparator.git
 - sebastian/complexity@5.0.0 — Lizenz(e): BSD-3-Clause — Einstufung: allowed | https://github.com/sebastianbergmann/complexity.git
