@@ -2816,6 +2816,7 @@ corporate:
   section:
     groups: 'Corporate Groups'
     standalone: 'Standalone Tenants'
+    structure: 'Corporate Structure'
   stats:
     groups: 'Corporate Groups'
     standalone: 'Standalone'
@@ -2825,6 +2826,14 @@ corporate:
     parent: 'Parent Company'
     governance_model: 'Governance Model'
     actions: 'Actions'
+    hierarchy_depth: 'Hierarchy Level'
+    subsidiaries: 'Subsidiaries'
+    is_corporate_parent: 'Is Corporate Parent'
+    is_corporate_parent_help: 'Check this if this tenant is a parent company'
+    parent_help: 'Select the parent company for this tenant'
+    governance_model_help: 'Choose how ISMS responsibilities are managed'
+    corporate_notes: 'Corporate Notes'
+    corporate_notes_help: 'Optional notes about the corporate structure'
   select:
     parent: 'Select parent company...'
     governance: 'Select governance model...'
@@ -2832,6 +2841,7 @@ corporate:
     set_parent: 'Assign parent'
     remove_parent: 'Remove assignment'
     update_governance: 'Change governance model'
+    view_structure: 'View Complete Structure'
   modal:
     set_parent:
       title: 'Assign Parent Company'
@@ -2846,27 +2856,12 @@ corporate:
     invalid_governance: 'Invalid governance model'
     governance_updated: 'Governance model updated'
     error: 'Error in corporate structure management'
+    no_governance_found: 'No governance rule found for this tenant'
   info:
     title: 'Corporate Structure Information'
     text: 'Here you can manage relationships between parent companies and subsidiaries. The governance model determines how ISMS responsibilities are divided between parent and subsidiary companies.'
-  section:
-    structure: 'Corporate Structure'
-  field:
-    hierarchy_depth: 'Hierarchy Level'
-    subsidiaries: 'Subsidiaries'
   level: 'Level %level%'
-  action:
-    view_structure: 'View Complete Structure'
-  field:
-    is_corporate_parent: 'Is Corporate Parent'
-    is_corporate_parent_help: 'Check this if this tenant is a parent company'
-    parent_help: 'Select the parent company for this tenant'
-    governance_model_help: 'Choose how ISMS responsibilities are managed'
-    corporate_notes: 'Corporate Notes'
-    corporate_notes_help: 'Optional notes about the corporate structure'
   placeholder:
     parent: 'No parent (standalone)'
     governance_model: 'Select governance model...'
     corporate_notes: 'E.g. Special agreements or particularities...'
-  flash:
-    no_governance_found: 'No governance rule found for this tenant'
