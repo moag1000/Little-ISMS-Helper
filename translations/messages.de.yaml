@@ -2816,3 +2816,139 @@ common.cancel: 'Abbrechen'
 common.view: 'Anzeigen'
 common.edit: 'Bearbeiten'
 common.actions: 'Aktionen'
+
+# Setup Wizard Translations
+setup:
+  welcome:
+    title: 'Willkommen beim Little ISMS Helper'
+    greeting: 'Willkommen zur Ersteinrichtung'
+    header: 'Setup-Assistent'
+    description: 'Dieser Assistent führt Sie durch die Erstkonfiguration Ihres ISMS-Systems.'
+    start_button: 'Setup starten'
+    info:
+      title: 'Über diesen Setup-Assistenten'
+      description: 'Wir führen Sie Schritt für Schritt durch die Konfiguration Ihres Informationssicherheits-Managementsystems.'
+      point1: 'Datenbankverbindung einrichten'
+      point2: 'Administrator-Account erstellen'
+      point3: 'Organisationsdaten eingeben'
+    steps:
+      title: 'Setup-Schritte'
+      requirements: 'Systemvoraussetzungen'
+      database: 'Datenbankverbindung'
+      migrations: 'Datenbank-Migrationen'
+      admin: 'Administrator anlegen'
+      base_data: 'Basisdaten'
+      modules: 'Module aktivieren'
+      sample_data: 'Beispieldaten'
+    requirements:
+      title: 'Systemvoraussetzungen'
+      php: 'PHP Version {{ version }} oder höher'
+      database: 'MySQL, PostgreSQL oder SQLite Datenbank'
+      permissions: 'Schreibrechte im Installationsverzeichnis'
+      duration: 'Geschätzte Dauer: 5-10 Minuten'
+
+  progress:
+    title: 'Fortschritt'
+    step: 'Schritt {{ current }} von {{ total }}'
+
+  navigation:
+    next: 'Weiter'
+    back: 'Zurück'
+
+  state:
+    recovery_detected: 'Eine vorherige Setup-Sitzung wurde erkannt. Sie können von dort fortfahren.'
+
+  database:
+    title: 'Datenbankverbindung'
+    header: 'Datenbankkonfiguration'
+    description: 'Bitte geben Sie die Verbindungsdaten für Ihre Datenbank ein.'
+    type: 'Datenbanktyp'
+    host: 'Host'
+    port: 'Port'
+    name: 'Datenbankname'
+    user: 'Benutzername'
+    password: 'Passwort'
+    test_button: 'Verbindung testen'
+    existing_tables: 'Achtung: Die Datenbank enthält bereits Tabellen. Eine Migration kann bestehende Daten überschreiben.'
+    info:
+      title: 'Datenbank-Hinweise'
+      mysql: 'MySQL: Standardport ist 3306'
+      postgresql: 'PostgreSQL: Standardport ist 5432'
+      sqlite: 'SQLite: Geben Sie den Pfad zur Datenbankdatei an'
+      special_chars: 'Vermeiden Sie Sonderzeichen im Passwort, die escaped werden müssen'
+    test:
+      success: 'Datenbankverbindung erfolgreich getestet'
+      failed: 'Verbindung fehlgeschlagen: {{ error }}'
+      create_needed: 'Datenbank existiert nicht und wird bei der Migration erstellt'
+    config_saved: 'Datenbankkonfiguration erfolgreich gespeichert'
+    config_failed: 'Fehler beim Speichern der Konfiguration: {{ error }}'
+    write_failed: 'Konnte Konfigurationsdatei nicht schreiben. Bitte prüfen Sie die Dateiberechtigungen.'
+
+  admin:
+    title: 'Administrator erstellen'
+    header: 'Administrator-Account'
+    description: 'Erstellen Sie den ersten Administrator-Account für Ihr System.'
+    email: 'E-Mail-Adresse'
+    email_help: 'Diese E-Mail wird für die Anmeldung verwendet'
+    first_name: 'Vorname'
+    last_name: 'Nachname'
+    password: 'Passwort'
+    password_confirm: 'Passwort bestätigen'
+    password_requirements:
+      title: 'Passwortanforderungen'
+      length: 'Mindestens 8 Zeichen'
+      uppercase: 'Mindestens ein Großbuchstabe'
+      lowercase: 'Mindestens ein Kleinbuchstabe'
+      number: 'Mindestens eine Ziffer'
+    security_note:
+      title: 'Sicherheitshinweis'
+      message: 'Dieser Account erhält volle Administratorrechte. Wählen Sie ein starkes Passwort!'
+    user_created: 'Administrator-Account erfolgreich erstellt'
+    creation_failed: 'Fehler beim Erstellen des Administrators: {{ error }}'
+    migration_failed: 'Datenbank-Migrationen fehlgeschlagen: {{ error }}'
+    next_steps:
+      title: 'Nächste Schritte'
+      description: 'Nach Abschluss des Setups können Sie sich mit diesem Account anmelden.'
+
+  organisation:
+    title: 'Organisationsdaten'
+    header: 'Ihre Organisation'
+    description: 'Bitte geben Sie die Daten Ihrer Organisation ein.'
+    info_saved: 'Organisationsdaten erfolgreich gespeichert'
+    info_failed: 'Fehler beim Speichern: {{ error }}'
+    usage:
+      title: 'Verwendungszweck'
+      message: 'Diese Daten werden in Berichten und Dokumentationen verwendet.'
+    compliance_info:
+      title: 'Compliance-Informationen'
+      scope: 'Diese Informationen helfen bei der Anpassung des Systems an Ihre Compliance-Anforderungen'
+      relevant_frameworks: 'Relevante Frameworks'
+      regulatory_requirements: 'Regulatorische Anforderungen'
+      description: 'Optionale Zusatzinformationen zur Compliance-Situation Ihrer Organisation'
+      reporting: 'Compliance-Berichte automatisch anpassen'
+      recommendations: 'Branchenspezifische Empfehlungen bereitstellen'
+
+  email:
+    title: 'E-Mail-Konfiguration'
+    header: 'E-Mail-Server'
+    sender_info: 'Absenderadresse für System-E-Mails'
+    skip_button: 'Überspringen'
+    skipped: 'E-Mail-Konfiguration übersprungen. Sie können diese später vornehmen.'
+    config_saved: 'E-Mail-Konfiguration gespeichert'
+    config_failed: 'Fehler beim Speichern der E-Mail-Konfiguration: {{ error }}'
+    optional:
+      title: 'Optionaler Schritt'
+      message: 'Die E-Mail-Konfiguration kann auch später vorgenommen werden.'
+    info:
+      title: 'E-Mail-Verwendung'
+      description: 'Das System versendet E-Mails für:'
+      notifications: 'Benachrichtigungen bei wichtigen Ereignissen'
+      reminders: 'Erinnerungen für anstehende Aufgaben'
+      reports: 'Automatische Berichte'
+
+  compliance:
+    frameworks_saved: 'Compliance-Frameworks wurden konfiguriert'
+
+  error:
+    configure_database_first: 'Bitte konfigurieren Sie zuerst die Datenbankverbindung'
+    create_admin_first: 'Bitte erstellen Sie zuerst einen Administrator-Account'
