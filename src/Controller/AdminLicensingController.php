@@ -15,13 +15,13 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  * Integrates existing license functionality into admin panel
  */
 #[Route('/admin/licensing')]
-#[IsGranted('ROLE_ADMIN')]
 class AdminLicensingController extends AbstractController
 {
     /**
      * License Overview - Third-Party Licenses
      */
     #[Route('', name: 'admin_licensing_index', methods: ['GET'])]
+    #[IsGranted('ADMIN_VIEW')]
     public function index(): Response
     {
         $noticeFile = $this->getParameter('kernel.project_dir') . '/NOTICE.md';
@@ -47,6 +47,7 @@ class AdminLicensingController extends AbstractController
      * License Report - Detailed License Analysis
      */
     #[Route('/report', name: 'admin_licensing_report', methods: ['GET'])]
+    #[IsGranted('ADMIN_VIEW')]
     public function report(): Response
     {
         $reportFile = $this->getParameter('kernel.project_dir') . '/docs/reports/license-report.md';
@@ -68,6 +69,7 @@ class AdminLicensingController extends AbstractController
      * License Summary - Statistics Overview
      */
     #[Route('/summary', name: 'admin_licensing_summary', methods: ['GET'])]
+    #[IsGranted('ADMIN_VIEW')]
     public function summary(): Response
     {
         $reportFile = $this->getParameter('kernel.project_dir') . '/docs/reports/license-report.md';
@@ -134,6 +136,7 @@ class AdminLicensingController extends AbstractController
      * Generate License Report
      */
     #[Route('/generate', name: 'admin_licensing_generate', methods: ['POST'])]
+    #[IsGranted('ADMIN_VIEW')]
     public function generate(LicenseReportService $licenseReportService): JsonResponse
     {
         try {

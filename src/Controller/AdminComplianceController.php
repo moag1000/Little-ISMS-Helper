@@ -18,7 +18,6 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  * Integrates existing compliance framework functionality into admin panel
  */
 #[Route('/admin/compliance')]
-#[IsGranted('ROLE_ADMIN')]
 class AdminComplianceController extends AbstractController
 {
     public function __construct(
@@ -32,6 +31,7 @@ class AdminComplianceController extends AbstractController
      * Compliance Framework Management Overview
      */
     #[Route('', name: 'admin_compliance_index', methods: ['GET'])]
+    #[IsGranted('COMPLIANCE_VIEW')]
     public function index(): Response
     {
         $availableFrameworks = $this->frameworkLoaderService->getAvailableFrameworks();
@@ -47,6 +47,7 @@ class AdminComplianceController extends AbstractController
      * Load/Activate a Compliance Framework
      */
     #[Route('/frameworks/load/{code}', name: 'admin_compliance_load_framework', methods: ['POST'])]
+    #[IsGranted('COMPLIANCE_MANAGE')]
     public function loadFramework(string $code, Request $request): JsonResponse
     {
         // Validate CSRF token
@@ -73,6 +74,7 @@ class AdminComplianceController extends AbstractController
      * Get Available Frameworks (API)
      */
     #[Route('/frameworks/available', name: 'admin_compliance_available_frameworks', methods: ['GET'])]
+    #[IsGranted('COMPLIANCE_VIEW')]
     public function getAvailableFrameworks(): JsonResponse
     {
         $frameworks = $this->frameworkLoaderService->getAvailableFrameworks();
@@ -88,6 +90,7 @@ class AdminComplianceController extends AbstractController
      * Delete a Compliance Framework
      */
     #[Route('/frameworks/delete/{code}', name: 'admin_compliance_delete_framework', methods: ['POST'])]
+    #[IsGranted('COMPLIANCE_MANAGE')]
     public function deleteFramework(string $code, Request $request): JsonResponse
     {
         // Validate CSRF token
@@ -137,6 +140,7 @@ class AdminComplianceController extends AbstractController
      * Framework Statistics Dashboard
      */
     #[Route('/statistics', name: 'admin_compliance_statistics', methods: ['GET'])]
+    #[IsGranted('COMPLIANCE_VIEW')]
     public function statistics(): Response
     {
         $statistics = $this->frameworkLoaderService->getFrameworkStatistics();
