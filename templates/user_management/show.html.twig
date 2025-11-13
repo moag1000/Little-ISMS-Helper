@@ -5,9 +5,22 @@
 {% block admin_content %}
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h1><i class="bi bi-person"></i> {{ user.firstName }} {{ user.lastName }}</h1>
-            <p class="text-muted">{{ user.email }}</p>
+        <div class="d-flex align-items-center">
+            {% if user.profilePicture %}
+                <img src="{{ asset(user.profilePicture) }}"
+                     alt="{{ user.firstName }} {{ user.lastName }}"
+                     class="rounded-circle me-3"
+                     style="width: 80px; height: 80px; object-fit: cover; border: 2px solid #0d6efd;">
+            {% else %}
+                <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3"
+                     style="width: 80px; height: 80px; font-size: 2rem; font-weight: 600; border: 2px solid #0d6efd;">
+                    {{ user.firstName|slice(0, 1)|upper }}{{ user.lastName|slice(0, 1)|upper }}
+                </div>
+            {% endif %}
+            <div>
+                <h1>{{ user.firstName }} {{ user.lastName }}</h1>
+                <p class="text-muted mb-0">{{ user.email }}</p>
+            </div>
         </div>
         <div>
             <a href="{{ path('user_management_edit', {'id': user.id}) }}" class="btn btn-secondary">
@@ -29,6 +42,19 @@
                 <div class="card-body">
                     <table class="table table-sm">
                         <tbody>
+                            <tr>
+                                <th width="40%">Profilbild:</th>
+                                <td>
+                                    {% if user.profilePicture %}
+                                        <img src="{{ asset(user.profilePicture) }}"
+                                             alt="{{ user.firstName }} {{ user.lastName }}"
+                                             class="rounded-circle"
+                                             style="width: 60px; height: 60px; object-fit: cover;">
+                                    {% else %}
+                                        <span class="text-muted">Kein Profilbild</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
                             <tr>
                                 <th width="40%">Vorname:</th>
                                 <td>{{ user.firstName }}</td>
