@@ -18,6 +18,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Csrf\CsrfToken;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/compliance')]
 class ComplianceController extends AbstractController
@@ -707,6 +708,34 @@ class ComplianceController extends AbstractController
 
         $complianceScore = count($requirements) > 0 ? round(($metRequirements / count($requirements)) * 100, 1) : 0;
 
+        // Calculate priority-weighted gap analysis
+        $priorityWeightedAnalysis = $this->mappingRepository->calculatePriorityWeightedGaps($framework, $gaps);
+
+        // Perform root cause analysis for gaps
+        $rootCauseAnalysis = $this->mappingRepository->analyzeGapRootCauses($gaps);
+
+        // Calculate weighted compliance score (how well critical/high requirements are met)
+        $totalRequirements = count($requirements);
+        $weightedScore = 0;
+        if ($totalRequirements > 0) {
+            $priorityWeights = ['critical' => 4.0, 'high' => 2.0, 'medium' => 1.0, 'low' => 0.5];
+            $totalPossibleWeight = 0;
+            $achievedWeight = 0;
+
+            foreach ($requirements as $req) {
+                $priority = $req->getPriority() ?? 'medium';
+                $weight = $priorityWeights[$priority] ?? 1.0;
+                $fulfillment = $req->getFulfillmentPercentage() ?? 0;
+
+                $totalPossibleWeight += $weight;
+                $achievedWeight += ($weight * ($fulfillment / 100));
+            }
+
+            $weightedScore = $totalPossibleWeight > 0
+                ? round(($achievedWeight / $totalPossibleWeight) * 100, 1)
+                : 0;
+        }
+
         // Close session to prevent blocking other requests during PDF generation
         $request->getSession()->save();
 
@@ -719,6 +748,20 @@ class ComplianceController extends AbstractController
             'total_gaps' => count($gaps),
             'compliance_score' => $complianceScore,
             'severity_counts' => $severityCounts,
+            // Priority-weighted analysis
+            'priority_weighted_analysis' => $priorityWeightedAnalysis,
+            'weighted_compliance_score' => $weightedScore,
+            'risk_score' => $priorityWeightedAnalysis['risk_score'],
+            'uncovered_critical' => $priorityWeightedAnalysis['uncovered_critical'],
+            'uncovered_high' => $priorityWeightedAnalysis['uncovered_high'],
+            'priority_distribution' => $priorityWeightedAnalysis['priority_distribution'],
+            'gap_recommendations' => $priorityWeightedAnalysis['recommendations'],
+            // Root cause analysis
+            'root_cause_analysis' => $rootCauseAnalysis,
+            'root_causes' => $rootCauseAnalysis['root_causes'],
+            'root_cause_summary' => $rootCauseAnalysis['summary'],
+            'category_patterns' => $rootCauseAnalysis['category_patterns'],
+            'root_cause_recommendations' => $rootCauseAnalysis['recommendations'],
             'pdf_generation_date' => new \DateTime(),
         ]);
 
@@ -1017,149 +1060,17 @@ class ComplianceController extends AbstractController
         return $this->redirectToRoute('app_compliance_framework', ['id' => $id]);
     }
 
+        /**
+     * Redirect to admin framework management
+     * Framework management is now centralized in the admin panel
+     */
     #[Route('/frameworks/manage', name: 'app_compliance_manage_frameworks')]
+    #[IsGranted('ROLE_ADMIN')]
     public function manageFrameworks(): Response
     {
-        $availableFrameworks = $this->frameworkLoaderService->getAvailableFrameworks();
-        $statistics = $this->frameworkLoaderService->getFrameworkStatistics();
-
-        return $this->render('compliance/manage_frameworks.html.twig', [
-            'available_frameworks' => $availableFrameworks,
-            'statistics' => $statistics,
-        ]);
+        // Redirect to centralized admin framework management
+        return $this->redirectToRoute('admin_compliance_index');
     }
-
-    #[Route('/frameworks/load/{code}', name: 'app_compliance_load_framework', methods: ['POST'])]
-    public function loadFramework(string $code, Request $request): JsonResponse
-    {
-        // Validate CSRF token
-        $token = $request->headers->get('X-CSRF-Token');
-        if (!$this->csrfTokenManager->isTokenValid(new CsrfToken('load_framework', $token))) {
-            return new JsonResponse([
-                'success' => false,
-                'message' => 'Invalid CSRF token'
-            ], 403);
-        }
-
-        $result = $this->frameworkLoaderService->loadFramework($code);
-
-        if ($result['success']) {
-            $this->addFlash('success', $result['message']);
-        } else {
-            $this->addFlash('error', $result['message']);
-        }
-
-        return new JsonResponse($result);
-    }
-
-    #[Route('/frameworks/available', name: 'app_compliance_available_frameworks', methods: ['GET'])]
-    public function getAvailableFrameworks(): JsonResponse
-    {
-        $frameworks = $this->frameworkLoaderService->getAvailableFrameworks();
-        $statistics = $this->frameworkLoaderService->getFrameworkStatistics();
-
-        return new JsonResponse([
-            'frameworks' => $frameworks,
-            'statistics' => $statistics,
-        ]);
-    }
-
-    #[Route('/frameworks/delete/{code}', name: 'app_compliance_delete_framework', methods: ['POST'])]
-    public function deleteFramework(string $code, Request $request): JsonResponse
-    {
-        // Validate CSRF token
-        $token = $request->headers->get('X-CSRF-Token');
-        if (!$this->csrfTokenManager->isTokenValid(new CsrfToken('delete_framework', $token))) {
-            return new JsonResponse([
-                'success' => false,
-                'message' => 'Invalid CSRF token'
-            ], 403);
-        }
-
-        try {
-            $em = $this->frameworkRepository->getEntityManager();
-
-            // Find the framework by code
-            $framework = $this->frameworkRepository->findOneBy(['code' => $code]);
-
-            if (!$framework) {
-                return new JsonResponse([
-                    'success' => false,
-                    'message' => 'Framework nicht gefunden!'
-                ], 404);
-            }
-
-            $frameworkName = $framework->getName();
-
-            // Get all requirements for this framework
-            $requirements = $this->requirementRepository->findBy(['framework' => $framework]);
-
-            $deletedMappings = 0;
-            $deletedRequirements = 0;
-            $deletedMappingIds = []; // Track deleted mapping IDs to avoid duplicates
-
-            // Delete all mappings associated with these requirements
-            foreach ($requirements as $requirement) {
-                // Find mappings where this requirement is the source
-                $sourceMappings = $this->mappingRepository->findBy(['sourceRequirement' => $requirement]);
-                foreach ($sourceMappings as $mapping) {
-                    $mappingId = $mapping->getId();
-                    if (!isset($deletedMappingIds[$mappingId])) {
-                        $em->remove($mapping);
-                        $deletedMappings++;
-                        $deletedMappingIds[$mappingId] = true;
-                    }
-                }
-
-                // Find mappings where this requirement is the target
-                $targetMappings = $this->mappingRepository->findBy(['targetRequirement' => $requirement]);
-                foreach ($targetMappings as $mapping) {
-                    $mappingId = $mapping->getId();
-                    if (!isset($deletedMappingIds[$mappingId])) {
-                        $em->remove($mapping);
-                        $deletedMappings++;
-                        $deletedMappingIds[$mappingId] = true;
-                    }
-                }
-
-                // Delete the requirement
-                $em->remove($requirement);
-                $deletedRequirements++;
-            }
-
-            // Delete the framework itself
-            $em->remove($framework);
-
-            // Flush all changes
-            $em->flush();
-
-            $this->addFlash('success', sprintf(
-                'Framework "%s" wurde erfolgreich gelöscht (%d Anforderungen, %d Mappings).',
-                $frameworkName,
-                $deletedRequirements,
-                $deletedMappings
-            ));
-
-            return new JsonResponse([
-                'success' => true,
-                'message' => sprintf(
-                    'Framework "%s" wurde erfolgreich gelöscht (%d Anforderungen, %d Mappings).',
-                    $frameworkName,
-                    $deletedRequirements,
-                    $deletedMappings
-                ),
-                'deleted_requirements' => $deletedRequirements,
-                'deleted_mappings' => $deletedMappings,
-            ]);
-
-        } catch (\Exception $e) {
-            return new JsonResponse([
-                'success' => false,
-                'message' => 'Fehler beim Löschen des Frameworks: ' . $e->getMessage()
-            ], 500);
-        }
-    }
-
     #[Route('/export/transitive', name: 'app_compliance_export_transitive')]
     public function exportTransitive(Request $request): Response
     {
@@ -1384,7 +1295,21 @@ class ComplianceController extends AbstractController
         $frameworkRelationships = [];
         $totalHelped = 0;
 
-        // Build data
+        // Build data with impact scoring
+        $quickWins = [];
+        $highImpactRelationships = [];
+        $totalImpactScore = 0;
+
+        // Calculate mapping quality distribution across all framework relationships
+        $qualityDistribution = [
+            'excellent' => 0,  // 90-100%
+            'good' => 0,       // 70-89%
+            'medium' => 0,     // 50-69%
+            'weak' => 0,       // <50%
+        ];
+        $qualitySum = 0;
+        $qualityCount = 0;
+
         foreach ($frameworks as $sourceFramework) {
             foreach ($frameworks as $targetFramework) {
                 if ($sourceFramework->getId() === $targetFramework->getId()) {
@@ -1401,23 +1326,78 @@ class ComplianceController extends AbstractController
 
                 $mappings = $this->mappingRepository->findCrossFrameworkMappings($sourceFramework, $targetFramework);
 
+                // Calculate quality distribution for these mappings
+                foreach ($mappings as $mapping) {
+                    $quality = $mapping->getMappingPercentage();
+                    if ($quality !== null) {
+                        $qualitySum += $quality;
+                        $qualityCount++;
+
+                        if ($quality >= 90) {
+                            $qualityDistribution['excellent']++;
+                        } elseif ($quality >= 70) {
+                            $qualityDistribution['good']++;
+                        } elseif ($quality >= 50) {
+                            $qualityDistribution['medium']++;
+                        } else {
+                            $qualityDistribution['weak']++;
+                        }
+                    }
+                }
+
                 if (!empty($mappings) && ($coverage['coverage_percentage'] ?? 0) > 0) {
-                    $frameworkRelationships[] = [
+                    $coveragePercentage = round($coverage['coverage_percentage'] ?? 0, 1);
+
+                    // Calculate impact score and ROI
+                    $impactAnalysis = $this->mappingRepository->calculateFrameworkImpactScore(
+                        $sourceFramework,
+                        $targetFramework,
+                        $coveragePercentage
+                    );
+
+                    $relationship = [
                         'source' => $sourceFramework,
                         'target' => $targetFramework,
                         'mapped' => $coverage['covered_requirements'] ?? 0,
                         'total' => $coverage['total_requirements'] ?? 0,
-                        'coverage' => round($coverage['coverage_percentage'] ?? 0, 1),
+                        'coverage' => $coveragePercentage,
+                        'impact_score' => $impactAnalysis['impact_score'],
+                        'roi' => $impactAnalysis['roi'],
+                        'is_quick_win' => $impactAnalysis['is_quick_win'],
+                        'effort_estimate' => $impactAnalysis['effort_estimate'],
+                        'priority_multiplier' => $impactAnalysis['factors']['priority_multiplier'],
                     ];
+
+                    $frameworkRelationships[] = $relationship;
+                    $totalImpactScore += $impactAnalysis['impact_score'];
+
+                    // Track quick wins
+                    if ($impactAnalysis['is_quick_win']) {
+                        $quickWins[] = $relationship;
+                    }
+
+                    // Track high impact relationships (top tier)
+                    if ($impactAnalysis['impact_score'] >= 50) {
+                        $highImpactRelationships[] = $relationship;
+                    }
                 }
             }
         }
 
-        // Calculate average coverage
+        $avgMappingQuality = $qualityCount > 0 ? round($qualitySum / $qualityCount, 1) : 0;
+
+        // Sort framework relationships by impact score (highest first)
+        usort($frameworkRelationships, fn($a, $b) => $b['impact_score'] <=> $a['impact_score']);
+        usort($quickWins, fn($a, $b) => $b['roi'] <=> $a['roi']);
+        usort($highImpactRelationships, fn($a, $b) => $b['impact_score'] <=> $a['impact_score']);
+
+        // Calculate average coverage and impact
         $avgCoverage = 0;
+        $avgImpactScore = 0;
         if (!empty($frameworkRelationships)) {
             $totalCoverage = array_sum(array_column($frameworkRelationships, 'coverage'));
             $avgCoverage = $totalCoverage / count($frameworkRelationships);
+            $avgImpactScore = $totalImpactScore / count($frameworkRelationships);
         }
 
         // Close session to prevent blocking other requests during PDF generation
@@ -1433,6 +1413,16 @@ class ComplianceController extends AbstractController
             'transitive_count' => count($transitiveAnalysis),
             'total_helped' => $totalHelped,
             'avg_coverage' => $avgCoverage,
+            'avg_impact_score' => round($avgImpactScore, 1),
+            'total_impact_score' => round($totalImpactScore, 1),
+            'quick_wins' => $quickWins,
+            'high_impact_relationships' => $highImpactRelationships,
+            'quick_win_count' => count($quickWins),
+            'high_impact_count' => count($highImpactRelationships),
+            // Mapping quality distribution
+            'quality_distribution' => $qualityDistribution,
+            'avg_mapping_quality' => $avgMappingQuality,
+            'total_mappings' => $qualityCount,
             'pdf_generation_date' => new \DateTime(),
         ]);
 
@@ -1824,6 +1814,43 @@ class ComplianceController extends AbstractController
         // Find unique requirements
         $uniqueFramework1 = array_filter($comparisonDetails, fn($d) => !$d['mapped']);
 
+        // Calculate bidirectional coverage
+        $bidirectionalCoverage = $this->mappingRepository->calculateBidirectionalCoverage($framework1, $framework2);
+
+        // Calculate category-specific coverage (both directions)
+        $categoryCoverageF1toF2 = $this->mappingRepository->calculateCategoryCoverage($framework1, $framework2);
+        $categoryCoverageF2toF1 = $this->mappingRepository->calculateCategoryCoverage($framework2, $framework1);
+
+        // Calculate mapping quality distribution
+        $qualityDistribution = [
+            'excellent' => 0,  // 90-100%
+            'good' => 0,       // 70-89%
+            'medium' => 0,     // 50-69%
+            'weak' => 0,       // <50%
+        ];
+        $qualitySum = 0;
+        $qualityCount = 0;
+
+        foreach ($comparisonDetails as $detail) {
+            if ($detail['mapped'] && $detail['matchQuality'] !== null) {
+                $quality = $detail['matchQuality'];
+                $qualitySum += $quality;
+                $qualityCount++;
+
+                if ($quality >= 90) {
+                    $qualityDistribution['excellent']++;
+                } elseif ($quality >= 70) {
+                    $qualityDistribution['good']++;
+                } elseif ($quality >= 50) {
+                    $qualityDistribution['medium']++;
+                } else {
+                    $qualityDistribution['weak']++;
+                }
+            }
+        }
+
+        $avgMappingQuality = $qualityCount > 0 ? round($qualitySum / $qualityCount, 1) : 0;
+
         // Close session to prevent blocking other requests during PDF generation
         $request->getSession()->save();
 
@@ -1839,6 +1866,18 @@ class ComplianceController extends AbstractController
             'high_quality_mappings' => $highQualityMappings,
             'unmapped' => $unmapped,
             'unique_framework1' => $uniqueFramework1,
+            // New bidirectional coverage metrics
+            'bidirectional_coverage' => $bidirectionalCoverage,
+            'coverage_f1_to_f2' => $bidirectionalCoverage['framework1_to_framework2']['coverage_percentage'],
+            'coverage_f2_to_f1' => $bidirectionalCoverage['framework2_to_framework1']['coverage_percentage'],
+            'bidirectional_overlap' => $bidirectionalCoverage['bidirectional_overlap'],
+            'symmetric_coverage' => $bidirectionalCoverage['symmetric_coverage'],
+            // Category coverage
+            'category_coverage_f1_to_f2' => $categoryCoverageF1toF2,
+            'category_coverage_f2_to_f1' => $categoryCoverageF2toF1,
+            // Mapping quality distribution
+            'quality_distribution' => $qualityDistribution,
+            'avg_mapping_quality' => $avgMappingQuality,
             'pdf_generation_date' => new \DateTime(),
         ]);
 
