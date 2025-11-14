@@ -71,9 +71,10 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    # ✅ Security: Nur App-Port öffentlich
+    # ✅ Security: Nur App-Ports öffentlich (HTTP & HTTPS)
     ports:
       - "${APP_PORT:-8000}:80"
+      - "${APP_PORT_HTTPS:-8443}:443"
     volumes:
       # ✅ Bind mount für Konfiguration (persistiert .env.local, config/, etc.)
       - ./:/var/www/html:ro  # Read-only für Security
