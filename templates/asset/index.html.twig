@@ -49,7 +49,12 @@
 <div class="stats-grid mb-4">
     <div class="stat-card">
         <div class="stat-icon"><i class="bi bi-collection"></i></div>
-        <div class="stat-value">{{ assets|length }}</div>
+        <div class="stat-value">{{ detailedStats.total }}</div>
+        {% if currentTenant %}
+            <small style="font-size: 11px; color: #6c757d; opacity: 0.85; display: block; margin-top: 0.5rem;">
+                {{ 'corporate.stats.breakdown'|trans({'%own%': detailedStats.own, '%inherited%': detailedStats.inherited, '%subsidiaries%': detailedStats.subsidiaries}) }}
+            </small>
+        {% endif %}
         <div class="stat-label">{{ 'asset_management.active_assets'|trans }}</div>
     </div>
 
