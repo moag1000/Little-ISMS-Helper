@@ -126,23 +126,23 @@
                 <table class="table">
                     <tbody>
                         <tr>
-                            <th class="w-200px">Prozessverantwortlicher</th>
+                            <th scope="row" class="w-200px">Prozessverantwortlicher</th>
                             <td>{{ business_process.processOwner }}</td>
                         </tr>
                         <tr>
-                            <th>Beschreibung</th>
+                            <th scope="row">Beschreibung</th>
                             <td>{{ business_process.description ?? '-' }}</td>
                         </tr>
                         <tr>
-                            <th>Upstream-Abhängigkeiten</th>
+                            <th scope="row">Upstream-Abhängigkeiten</th>
                             <td>{{ business_process.dependenciesUpstream ?? '-' }}</td>
                         </tr>
                         <tr>
-                            <th>Downstream-Abhängigkeiten</th>
+                            <th scope="row">Downstream-Abhängigkeiten</th>
                             <td>{{ business_process.dependenciesDownstream ?? '-' }}</td>
                         </tr>
                         <tr>
-                            <th>Wiederherstellungsstrategie</th>
+                            <th scope="row">Wiederherstellungsstrategie</th>
                             <td>{{ business_process.recoveryStrategy ?? '-' }}</td>
                         </tr>
                     </tbody>
@@ -157,19 +157,19 @@
                         <table class="table">
                             <tbody>
                                 <tr>
-                                    <th>RTO (Recovery Time Objective)</th>
+                                    <th scope="row">RTO (Recovery Time Objective)</th>
                                     <td>{{ business_process.rto }} Stunden</td>
                                 </tr>
                                 <tr>
-                                    <th>RPO (Recovery Point Objective)</th>
+                                    <th scope="row">RPO (Recovery Point Objective)</th>
                                     <td>{{ business_process.rpo }} Stunden</td>
                                 </tr>
                                 <tr>
-                                    <th>MTPD (Maximum Tolerable Period)</th>
+                                    <th scope="row">MTPD (Maximum Tolerable Period)</th>
                                     <td>{{ business_process.mtpd }} Stunden</td>
                                 </tr>
                                 <tr>
-                                    <th>Empfohlenes RTO (basierend auf Risiken)</th>
+                                    <th scope="row">Empfohlenes RTO (basierend auf Risiken)</th>
                                     <td>
                                         {{ metrics.suggested_rto }} Stunden
                                         {% if metrics.suggested_rto != business_process.rto %}
@@ -185,23 +185,23 @@
                         <table class="table">
                             <tbody>
                                 <tr>
-                                    <th>Reputationsschaden</th>
+                                    <th scope="row">Reputationsschaden</th>
                                     <td>{{ business_process.reputationalImpact }}/5</td>
                                 </tr>
                                 <tr>
-                                    <th>Regulatorischer Impact</th>
+                                    <th scope="row">Regulatorischer Impact</th>
                                     <td>{{ business_process.regulatoryImpact }}/5</td>
                                 </tr>
                                 <tr>
-                                    <th>Operationaler Impact</th>
+                                    <th scope="row">Operationaler Impact</th>
                                     <td>{{ business_process.operationalImpact }}/5</td>
                                 </tr>
                                 <tr>
-                                    <th>Finanzieller Schaden/Stunde</th>
+                                    <th scope="row">Finanzieller Schaden/Stunde</th>
                                     <td>{{ business_process.financialImpactPerHour ? (business_process.financialImpactPerHour|number_format(2, ',', '.') ~ ' €') : '-' }}</td>
                                 </tr>
                                 <tr>
-                                    <th>Finanzieller Schaden/Tag</th>
+                                    <th scope="row">Finanzieller Schaden/Tag</th>
                                     <td>{{ business_process.financialImpactPerDay ? (business_process.financialImpactPerDay|number_format(2, ',', '.') ~ ' €') : '-' }}</td>
                                 </tr>
                             </tbody>
@@ -223,10 +223,10 @@
                     <table class="table">
                         <thead>
                             <tr>
-                                <th>Asset</th>
-                                <th>Typ</th>
-                                <th>CIA-Bewertung</th>
-                                <th>Status</th>
+                                <th scope="col">Asset</th>
+                                <th scope="col">Typ</th>
+                                <th scope="col">CIA-Bewertung</th>
+                                <th scope="col">Status</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -257,11 +257,11 @@
                     <table class="table">
                         <thead>
                             <tr>
-                                <th>Risiko</th>
-                                <th>Status</th>
-                                <th>Inherent Risk</th>
-                                <th>Residual Risk</th>
-                                <th>Behandlung</th>
+                                <th scope="col">Risiko</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Inherent Risk</th>
+                                <th scope="col">Residual Risk</th>
+                                <th scope="col">Behandlung</th>
                             </tr>
                         </thead>
                         <tbody>
