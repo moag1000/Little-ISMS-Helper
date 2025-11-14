@@ -252,8 +252,16 @@
     {# Empty State #}
     {% if mappings_requiring_review is empty and low_confidence_mappings is empty and discrepancies is empty %}
     <div class="alert alert-success">
-        <h5>✅ Keine Mappings benötigen Review!</h5>
-        <p class="mb-0">Alle Mappings haben akzeptable Confidence-Scores oder wurden bereits reviewed.</p>
+        <h4>✅ Keine Mappings benötigen Review!</h4>
+        <p>Alle Mappings haben akzeptable Confidence-Scores oder wurden bereits reviewed.</p>
+        <hr>
+        <h6>Status:</h6>
+        <ul>
+            <li>✅ Alle Mappings mit niedrigem Confidence (<70) wurden geprüft</li>
+            <li>✅ Keine großen Diskrepanzen gefunden</li>
+            <li>✅ Review Queue ist leer</li>
+        </ul>
+        <a href="{{ path('app_mapping_quality_dashboard') }}" class="btn btn-primary mt-2">← Zurück zum Dashboard</a>
     </div>
     {% endif %}
 </div>
