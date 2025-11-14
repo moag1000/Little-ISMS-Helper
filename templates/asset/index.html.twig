@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_macros/inheritance_badge.html.twig' as inheritance %}
 
 {% block title %}{{ 'asset_management.title'|trans }} - {{ 'app.title'|trans }}{% endblock %}
 
@@ -114,6 +115,7 @@
                 <tr>
                     <td>
                         <strong>{{ asset.name }}</strong>
+                        {{ inheritance.small_badge(asset, currentTenant) }}
                         {% if asset.description %}
                             <br><small class="text-muted">{{ asset.description|length > 60 ? asset.description|slice(0, 60) ~ '...' : asset.description }}</small>
                         {% endif %}
