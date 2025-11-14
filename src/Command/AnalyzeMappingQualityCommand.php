@@ -58,9 +58,9 @@ class AnalyzeMappingQualityCommand extends Command
             $io->note('Running in DRY-RUN mode - no changes will be saved');
         }
 
-        // Get mappings to analyze
-        $mappings = $this->getMappingsToAnalyze($reanalyze, $frameworkCode, $lowQualityOnly, $limit);
-        $totalMappings = count($mappings);
+        // Get mapping IDs to analyze (not full entities to avoid detached entity issues)
+        $mappingIds = $this->getMappingIdsToAnalyze($reanalyze, $frameworkCode, $lowQualityOnly, $limit);
+        $totalMappings = count($mappingIds);
 
         if ($totalMappings === 0) {
             $io->success('No mappings found to analyze.');
@@ -88,8 +88,17 @@ class AnalyzeMappingQualityCommand extends Command
 
         $batchCount = 0;
 
-        foreach ($mappings as $mapping) {
+        foreach ($mappingIds as $mappingId) {
             try {
+                // Fetch fresh entity from database to avoid detached entity issues
+                $mapping = $this->entityManager->find(ComplianceMapping::class, $mappingId);
+
+                if (!$mapping) {
+                    $io->warning(sprintf('Mapping %d not found, skipping', $mappingId));
+                    $progressBar->advance();
+                    continue;
+                }
+
                 $oldPercentage = $mapping->getCalculatedPercentage();
                 $oldConfidence = $mapping->getAnalysisConfidence();
 
@@ -167,7 +176,7 @@ class AnalyzeMappingQualityCommand extends Command
                 $statistics['errors']++;
                 $io->error(sprintf(
                     'Error analyzing mapping %d: %s',
-                    $mapping->getId(),
+                    $mappingId,
                     $e->getMessage()
                 ));
             }
@@ -192,16 +201,17 @@ class AnalyzeMappingQualityCommand extends Command
     }
 
     /**
-     * Get mappings to analyze based on options
+     * Get mapping IDs to analyze based on options
+     * Returns only IDs to avoid detached entity issues after EntityManager::clear()
      */
-    private function getMappingsToAnalyze(
+    private function getMappingIdsToAnalyze(
         bool $reanalyze,
         ?string $frameworkCode,
         bool $lowQualityOnly,
         ?int $limit
     ): array {
         $qb = $this->entityManager->createQueryBuilder();
-        $qb->select('cm')
+        $qb->select('cm.id')
             ->from(ComplianceMapping::class, 'cm')
             ->join('cm.sourceRequirement', 'sr')
             ->join('cm.targetRequirement', 'tr');
@@ -232,7 +242,8 @@ class AnalyzeMappingQualityCommand extends Command
         $qb->orderBy('cm.analysisConfidence', 'ASC')
             ->addOrderBy('cm.qualityScore', 'ASC');
 
-        return $qb->getQuery()->getResult();
+        // Return array of IDs only (flatten the result)
+        return array_column($qb->getQuery()->getResult(), 'id');
     }
 
     /**
