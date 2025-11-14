@@ -142,7 +142,7 @@ class Training
     /**
      * @var Collection<int, Control>
      */
-    #[ORM\ManyToMany(targetEntity: Control::class)]
+    #[ORM\ManyToMany(targetEntity: Control::class, inversedBy: 'trainings')]
     #[ORM\JoinTable(name: 'training_control')]
     #[Groups(['training:read'])]
     #[MaxDepth(1)]
