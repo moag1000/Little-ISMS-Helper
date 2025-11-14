@@ -61,7 +61,8 @@
     {% include '_components/_kpi_card.html.twig' with {
         icon: 'bi-exclamation-triangle',
         label: 'Identifizierte Risiken',
-        value: risks|length,
+        value: detailedStats.total,
+        detail: currentTenant ? 'Eigene: ' ~ detailedStats.own ~ ' | Geerbt: ' ~ detailedStats.inherited ~ ' | Tochter: ' ~ detailedStats.subsidiaries : null,
         variant: 'primary',
         link: '#all-risks'
     } %}
