@@ -734,6 +734,7 @@
                 // Automatically fix permission issues
                 if (permissionIssues.length > 0) {
                     console.log('Auto-fixing permission issues:', permissionIssues);
+                    let anySuccessful = false;
 
                     for (const issue of permissionIssues) {
                         console.log(`Attempting to fix ${issue.type}...`);
@@ -741,16 +742,20 @@
 
                         if (result.success) {
                             console.log(`✓ ${issue.type} fixed successfully`);
+                            anySuccessful = true;
                         } else {
                             console.warn(`✗ Failed to fix ${issue.type}:`, result.message);
                         }
                     }
 
-                    // Reload the page after all fixes are attempted
-                    if (permissionIssues.length > 0) {
+                    // Only reload if at least one fix was successful to avoid infinite loops
+                    if (anySuccessful) {
+                        console.log('Reloading page to reflect changes...');
                         setTimeout(() => {
                             window.location.reload();
                         }, 2000);
+                    } else {
+                        console.warn('No fixes were successful. Manual intervention may be required.');
                     }
                 }
             {% endif %}
