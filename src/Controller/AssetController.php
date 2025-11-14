@@ -45,14 +45,39 @@ class AssetController extends AbstractController
         $classification = $request->query->get('classification');
         $owner = $request->query->get('owner');
         $status = $request->query->get('status');
+        $view = $request->query->get('view', 'inherited'); // Default: inherited
 
-        // Get assets: tenant-filtered if user has tenant, all if not
+        // Get assets based on view filter
         if ($tenant) {
-            $assets = $this->assetService->getAssetsForTenant($tenant);
+            // Determine which assets to load based on view parameter
+            switch ($view) {
+                case 'own':
+                    // Only own assets
+                    $assets = $this->assetRepository->findByTenant($tenant);
+                    break;
+                case 'subsidiaries':
+                    // Own + from all subsidiaries (for parent companies)
+                    $assets = $this->assetRepository->findByTenantIncludingSubsidiaries($tenant);
+                    break;
+                case 'inherited':
+                default:
+                    // Own + inherited from parents (default behavior)
+                    $assets = $this->assetService->getAssetsForTenant($tenant);
+                    break;
+            }
+
             $inheritanceInfo = $this->assetService->getAssetInheritanceInfo($tenant);
+            $inheritanceInfo['hasSubsidiaries'] = $tenant->getSubsidiaries()->count() > 0;
+            $inheritanceInfo['currentView'] = $view;
         } else {
             $assets = $this->assetRepository->findAll();
-            $inheritanceInfo = ['hasParent' => false, 'canInherit' => false, 'governanceModel' => null];
+            $inheritanceInfo = [
+                'hasParent' => false,
+                'canInherit' => false,
+                'governanceModel' => null,
+                'hasSubsidiaries' => false,
+                'currentView' => 'own'
+            ];
         }
 
         // Filter to active only first
