@@ -2164,6 +2164,19 @@ user:
   name: Name
   email: Email
   department: Department
+  new: 'New User'
+  edit: 'Edit User'
+  create: 'Create User'
+  save_changes: 'Save Changes'
+  edit_suffix: 'edit'
+
+  section:
+    basic_info: 'Basic Information'
+    tenant: 'Tenant Assignment'
+    authentication: 'Authentication'
+    roles: 'Roles & Permissions'
+    status: 'Status'
+
   field:
     first_name: First Name
     last_name: Last Name
@@ -2175,11 +2188,37 @@ user:
     avatar_help: Profile picture (max. 2MB, JPG/PNG/GIF/WebP)
     password: Password
     system_roles: System Roles
-    custom_roles: Custom Roles
+    roles: 'System Roles'
+    custom_roles: 'Custom Roles'
     tenant: Tenant
     tenant_help: Assign the user to a tenant
     active: Active
+    is_active: 'Active'
+    is_verified: 'Verified'
     email_verified: Email Verified
+    auth_provider: 'Auth Provider'
+    created_at: 'Created at'
+    updated_at: 'Last updated'
+    last_login: 'Last login'
+
+  help:
+    first_name: 'User first name'
+    last_name: 'User last name'
+    email: 'Email address for login and communication'
+    department: 'User organizational unit'
+    job_title: 'User function or position'
+    phone_number: 'Contact phone number'
+    avatar: 'Upload profile picture (optional)'
+    tenant: 'Tenant this user is assigned to'
+    password: 'Secure password for the user'
+    password_edit: 'Leave blank to keep the current password'
+
+  auth_provider:
+    local: 'Local'
+
+  message:
+    no_custom_roles: 'No custom roles available.'
+
   placeholder:
     tenant: Not assigned to any tenant
   error:
