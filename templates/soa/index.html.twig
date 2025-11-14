@@ -62,7 +62,7 @@
             <span class="value">{{ detailedStats.total }}</span>
             {% if currentTenant %}
                 <div style="font-size: 11px; color: #6c757d; opacity: 0.85; margin-top: 0.5rem;">
-                    Eigene: {{ detailedStats.own }} | Geerbt: {{ detailedStats.inherited }} | Tochter: {{ detailedStats.subsidiaries }}
+                    {{ 'corporate.stats.breakdown'|trans({'%own%': detailedStats.own, '%inherited%': detailedStats.inherited, '%subsidiaries%': detailedStats.subsidiaries}) }}
                 </div>
             {% endif %}
         </div>
