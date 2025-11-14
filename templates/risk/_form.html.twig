@@ -1,0 +1,200 @@
+{#
+    Risk Form Partial (Accessible)
+    Used by both new.html.twig and edit.html.twig
+    WCAG 2.1 AA Compliant
+#}
+
+{# Basic Information #}
+<fieldset class="mb-4">
+    <legend class="h5 mb-3">
+        <i class="bi bi-info-circle" aria-hidden="true"></i>
+        {{ 'risk.section.basic_info'|trans|default('Grundinformationen') }}
+    </legend>
+
+    <div class="row">
+        <div class="col-md-6">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.title,
+                'label': 'risk.field.title'|trans|default('Titel'),
+                'help': 'risk.help.title'|trans|default('Kurzer, prägnanter Titel des Risikos'),
+                'required': true
+            } %}
+        </div>
+
+        <div class="col-md-6">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.asset,
+                'label': 'risk.field.asset'|trans|default('Betroffenes Asset'),
+                'help': 'risk.help.asset'|trans|default('Asset, das von diesem Risiko betroffen ist')
+            } %}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.description,
+                'label': 'risk.field.description'|trans|default('Beschreibung'),
+                'help': 'risk.help.description'|trans|default('Detaillierte Beschreibung des Risikos und seiner potenziellen Auswirkungen')
+            } %}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.threat,
+                'label': 'risk.field.threat'|trans|default('Bedrohung'),
+                'help': 'risk.help.threat'|trans|default('Welche Bedrohung könnte dieses Risiko auslösen?')
+            } %}
+        </div>
+
+        <div class="col-md-6">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.vulnerability,
+                'label': 'risk.field.vulnerability'|trans|default('Verwundbarkeit'),
+                'help': 'risk.help.vulnerability'|trans|default('Welche Schwachstelle könnte ausgenutzt werden?')
+            } %}
+        </div>
+    </div>
+</fieldset>
+
+{# Inherent Risk (Brutto-Risiko) #}
+<fieldset class="mb-4">
+    <legend class="h5 mb-3">
+        <i class="bi bi-exclamation-diamond" aria-hidden="true"></i>
+        {{ 'risk.section.inherent_risk'|trans|default('Brutto-Risiko (ohne Controls)') }}
+    </legend>
+
+    <div class="alert alert-info" role="status">
+        <i class="bi bi-info-circle" aria-hidden="true"></i>
+        {{ 'risk.help.inherent'|trans|default('Bewertung des Risikos ohne bestehende Sicherheitsmaßnahmen') }}
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.probability,
+                'label': 'risk.field.probability'|trans|default('Eintrittswahrscheinlichkeit'),
+                'help': 'risk.help.probability'|trans|default('Wie wahrscheinlich ist das Eintreten? (1=sehr unwahrscheinlich, 5=sehr wahrscheinlich)'),
+                'required': true
+            } %}
+        </div>
+
+        <div class="col-md-6">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.impact,
+                'label': 'risk.field.impact'|trans|default('Schadensausmaß'),
+                'help': 'risk.help.impact'|trans|default('Wie hoch wäre der Schaden? (1=minimal, 5=katastrophal)'),
+                'required': true
+            } %}
+        </div>
+    </div>
+</fieldset>
+
+{# Residual Risk (Netto-Risiko) #}
+<fieldset class="mb-4">
+    <legend class="h5 mb-3">
+        <i class="bi bi-shield-check" aria-hidden="true"></i>
+        {{ 'risk.section.residual_risk'|trans|default('Netto-Risiko (mit Controls)') }}
+    </legend>
+
+    <div class="alert alert-info" role="status">
+        <i class="bi bi-info-circle" aria-hidden="true"></i>
+        {{ 'risk.help.residual'|trans|default('Bewertung des Risikos nach Anwendung von Sicherheitsmaßnahmen') }}
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.residualProbability,
+                'label': 'risk.field.residual_probability'|trans|default('Rest-Wahrscheinlichkeit'),
+                'help': 'risk.help.residual_probability'|trans|default('Verbleibende Wahrscheinlichkeit nach Maßnahmen')
+            } %}
+        </div>
+
+        <div class="col-md-6">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.residualImpact,
+                'label': 'risk.field.residual_impact'|trans|default('Rest-Schadensausmaß'),
+                'help': 'risk.help.residual_impact'|trans|default('Verbleibendes Schadensausmaß nach Maßnahmen')
+            } %}
+        </div>
+    </div>
+</fieldset>
+
+{# Treatment Strategy #}
+<fieldset class="mb-4">
+    <legend class="h5 mb-3">
+        <i class="bi bi-clipboard-check" aria-hidden="true"></i>
+        {{ 'risk.section.treatment'|trans|default('Risikobehandlung') }}
+    </legend>
+
+    <div class="row">
+        <div class="col-md-6">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.treatmentStrategy,
+                'label': 'risk.field.treatment_strategy'|trans|default('Behandlungsstrategie'),
+                'help': 'risk.help.treatment_strategy'|trans|default('Wie soll mit diesem Risiko umgegangen werden?')
+            } %}
+        </div>
+
+        <div class="col-md-6">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.riskOwner,
+                'label': 'risk.field.risk_owner'|trans|default('Risiko-Verantwortlicher'),
+                'help': 'risk.help.risk_owner'|trans|default('Person, die für die Behandlung dieses Risikos verantwortlich ist')
+            } %}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.treatmentDescription,
+                'label': 'risk.field.treatment_description'|trans|default('Behandlungsplan'),
+                'help': 'risk.help.treatment_description'|trans|default('Detaillierte Beschreibung der geplanten Maßnahmen')
+            } %}
+        </div>
+    </div>
+</fieldset>
+
+{# Risk Acceptance #}
+<fieldset class="mb-4">
+    <legend class="h5 mb-3">
+        <i class="bi bi-check-circle" aria-hidden="true"></i>
+        {{ 'risk.section.acceptance'|trans|default('Risikoakzeptanz') }}
+    </legend>
+
+    <div class="row">
+        <div class="col-md-6">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.acceptanceApprovedBy,
+                'label': 'risk.field.acceptance_approved_by'|trans|default('Genehmigt durch'),
+                'help': 'risk.help.acceptance_approved_by'|trans|default('Person, die die Risikoakzeptanz genehmigt hat')
+            } %}
+        </div>
+
+        <div class="col-md-6">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.acceptanceApprovedAt,
+                'label': 'risk.field.acceptance_approved_at'|trans|default('Genehmigungsdatum'),
+                'help': 'risk.help.acceptance_approved_at'|trans|default('Datum der Risikoakzeptanz-Genehmigung')
+            } %}
+        </div>
+    </div>
+</fieldset>
+
+{# Form Actions #}
+<div class="form-actions d-flex gap-2 justify-content-end">
+    <a href="{{ path('app_risk_index') }}"
+       class="btn btn-secondary">
+        <i class="bi bi-x-circle" aria-hidden="true"></i>
+        {{ 'common.cancel'|trans }}
+    </a>
+
+    <button type="submit" class="btn btn-primary">
+        <i class="{{ button_icon|default('bi-save') }}" aria-hidden="true"></i>
+        {{ button_label|default('common.save'|trans) }}
+    </button>
+</div>
