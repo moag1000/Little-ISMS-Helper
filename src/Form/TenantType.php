@@ -39,7 +39,6 @@ class TenantType extends AbstractType
                     'maxlength' => 100,
                     'pattern' => '[a-zA-Z0-9_-]+',
                     'id' => 'tenant_code',
-                    'readonly' => true,
                     'class' => 'bg-light',
                 ],
                 'constraints' => [

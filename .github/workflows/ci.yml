@@ -159,7 +159,7 @@ jobs:
             type=ref,event=pr
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
-            type=sha,prefix={{branch}}-
+            type=sha
             type=raw,value=latest,enable={{is_default_branch}}
           labels: |
             org.opencontainers.image.title=Little ISMS Helper
@@ -182,41 +182,6 @@ jobs:
           push: true
           build-args: |
             BUILDKIT_PROGRESS=plain
-
-      - name: Sanitize branch name for Docker tag
-        id: sanitize
-        run: |
-          # Replace slashes with dashes for valid Docker tags
-          BRANCH_NAME="${{ github.ref_name }}"
-          SANITIZED_BRANCH=$(echo "$BRANCH_NAME" | sed 's/\//-/g')
-          echo "branch=$SANITIZED_BRANCH" >> $GITHUB_OUTPUT
-          echo "Sanitized branch name: $SANITIZED_BRANCH"
-
-      - name: Build and Push Docker image (development)
-        uses: docker/build-push-action@v5
-        timeout-minutes: 15
-        if: github.ref == 'refs/heads/develop' || startsWith(github.ref, 'refs/heads/claude/')
-        with:
-          context: .
-          target: development
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/little-isms-helper:dev-${{ steps.sanitize.outputs.branch }}
-          labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-          push: true
-          build-args: |
-            BUILDKIT_PROGRESS=plain
-
-      - name: Upload Repository Logo to Docker Hub
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        run: |
-          chmod +x .github/scripts/upload-dockerhub-logo.sh
-          .github/scripts/upload-dockerhub-logo.sh \
-            "${{ secrets.DOCKERHUB_USERNAME }}" \
-            "little-isms-helper" \
-            "${{ secrets.DOCKERHUB_TOKEN }}" \
-            "public/logo-512.png"
-        continue-on-error: true
 
       - name: Test Docker Compose
         timeout-minutes: 10
