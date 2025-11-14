@@ -2,6 +2,23 @@
 
 {% block title %}Mapping Quality Dashboard{% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .chart-container {
+            position: relative;
+            height: 300px;
+        }
+        .stat-card {
+            transition: transform 0.2s;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+    </style>
+{% endblock %}
+
 {% block body %}
 <div class="container">
     <div class="page-header">
@@ -25,7 +42,7 @@
     {# Quality Statistics Cards #}
     <div class="row mb-4">
         <div class="col-md-3">
-            <div class="card">
+            <div class="card stat-card">
                 <div class="card-body text-center">
                     <h3 class="text-primary">{{ quality_stats.total_mappings }}</h3>
                     <p class="text-muted mb-0">Total Mappings</p>
@@ -33,7 +50,7 @@
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card">
+            <div class="card stat-card">
                 <div class="card-body text-center">
                     <h3 class="text-success">{{ quality_stats.analyzed_mappings }}</h3>
                     <p class="text-muted mb-0">Analysiert</p>
@@ -42,7 +59,7 @@
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card">
+            <div class="card stat-card">
                 <div class="card-body text-center">
                     <h3 class="text-warning">{{ quality_stats.requires_review }}</h3>
                     <p class="text-muted mb-0">Benötigt Review</p>
@@ -50,7 +67,7 @@
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card">
+            <div class="card stat-card">
                 <div class="card-body text-center">
                     <h3 class="text-danger">{{ quality_stats.with_unresolved_gaps }}</h3>
                     <p class="text-muted mb-0">Mit Gaps</p>
@@ -101,7 +118,7 @@
         </div>
     </div>
 
-    {# Confidence Distribution #}
+    {# Charts Row #}
     <div class="row mb-4">
         <div class="col-md-6">
             <div class="card">
@@ -109,32 +126,8 @@
                     <h5 class="mb-0">📊 Confidence-Verteilung</h5>
                 </div>
                 <div class="card-body">
-                    <div class="mb-3">
-                        <div class="d-flex justify-content-between mb-1">
-                            <span>🟢 High Confidence (≥80)</span>
-                            <strong>{{ quality_stats.high_confidence }}</strong>
-                        </div>
-                        <div class="progress" style="height: 20px;">
-                            <div class="progress-bar bg-success" style="width: {% if quality_stats.analyzed_mappings > 0 %}{{ (quality_stats.high_confidence / quality_stats.analyzed_mappings * 100)|round }}{% else %}0{% endif %}%"></div>
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <div class="d-flex justify-content-between mb-1">
-                            <span>🟡 Medium Confidence (60-79)</span>
-                            <strong>{{ quality_stats.medium_confidence }}</strong>
-                        </div>
-                        <div class="progress" style="height: 20px;">
-                            <div class="progress-bar bg-warning" style="width: {% if quality_stats.analyzed_mappings > 0 %}{{ (quality_stats.medium_confidence / quality_stats.analyzed_mappings * 100)|round }}{% else %}0{% endif %}%"></div>
-                        </div>
-                    </div>
-                    <div class="mb-0">
-                        <div class="d-flex justify-content-between mb-1">
-                            <span>🔴 Low Confidence (<60)</span>
-                            <strong>{{ quality_stats.low_confidence }}</strong>
-                        </div>
-                        <div class="progress" style="height: 20px;">
-                            <div class="progress-bar bg-danger" style="width: {% if quality_stats.analyzed_mappings > 0 %}{{ (quality_stats.low_confidence / quality_stats.analyzed_mappings * 100)|round }}{% else %}0{% endif %}%"></div>
-                        </div>
+                    <div class="chart-container">
+                        <canvas id="confidenceChart"></canvas>
                     </div>
                 </div>
             </div>
@@ -143,30 +136,15 @@
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header">
-                    <h5 class="mb-0">🔍 Gap-Statistiken</h5>
+                    <h5 class="mb-0">🔍 Gap-Statistiken nach Priorität</h5>
                 </div>
                 <div class="card-body">
                     {% if gap_stats is empty %}
-                        <p class="text-muted">Keine Gap-Daten verfügbar</p>
+                        <p class="text-muted text-center">Keine Gap-Daten verfügbar</p>
                     {% else %}
-                        {% for stat in gap_stats %}
-                            <div class="mb-3">
-                                <div class="d-flex justify-content-between mb-1">
-                                    <span>
-                                        {% if stat.priority == 'critical' %}🔴
-                                        {% elseif stat.priority == 'high' %}🟠
-                                        {% elseif stat.priority == 'medium' %}🟡
-                                        {% else %}⚪
-                                        {% endif %}
-                                        {{ stat.priority|upper }}
-                                    </span>
-                                    <strong>{{ stat.count }} Gaps ({{ stat.totalImpact|round }}% Impact)</strong>
-                                </div>
-                                {% if stat.avgEffort %}
-                                    <small class="text-muted">Ø {{ stat.avgEffort|round(1) }}h Aufwand</small>
-                                {% endif %}
-                            </div>
-                        {% endfor %}
+                        <div class="chart-container">
+                            <canvas id="gapStatsChart"></canvas>
+                        </div>
                     {% endif %}
                 </div>
             </div>
@@ -230,9 +208,48 @@
     </div>
     {% endif %}
 
+    {# Help Box #}
+    <div class="card mb-4">
+        <div class="card-header bg-light">
+            <h5 class="mb-0">ℹ️ Wie funktioniert die Qualitätsanalyse?</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <h6>🎯 Confidence Score</h6>
+                    <p class="small">Misst die Zuverlässigkeit der automatischen Analyse:</p>
+                    <ul class="small">
+                        <li><strong>High (≥80):</strong> Sehr zuverlässig, kann auto-approved werden</li>
+                        <li><strong>Medium (60-79):</strong> Gute Basis, optionale Review</li>
+                        <li><strong>Low (<60):</strong> Unsicher, manuelle Review erforderlich</li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h6>⭐ Quality Score</h6>
+                    <p class="small">Gesamtqualität des Mappings basierend auf:</p>
+                    <ul class="small">
+                        <li>Confidence (40%)</li>
+                        <li>Mapping Percentage (30%)</li>
+                        <li>Verification Status (30%)</li>
+                    </ul>
+                    <p class="small mb-0"><strong>Ziel:</strong> Alle Mappings ≥75 Quality Score</p>
+                </div>
+                <div class="col-md-4">
+                    <h6>🔬 Similarity Metriken</h6>
+                    <p class="small">Automatische Berechnung durch:</p>
+                    <ul class="small">
+                        <li><strong>Keyword Overlap (40%):</strong> Sicherheitsbegriffe</li>
+                        <li><strong>Textual Similarity (35%):</strong> Jaccard & Cosine</li>
+                        <li><strong>Structural Similarity (25%):</strong> Kategorie, Priorität</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
     {# Quick Actions #}
     <div class="alert alert-info">
-        <h5>ℹ️ Nächste Schritte</h5>
+        <h5>🚀 Nächste Schritte</h5>
         <ul class="mb-0">
             <li><a href="{{ path('app_mapping_quality_review_queue') }}">Review Queue ansehen</a> - Prüfen Sie Mappings mit niedrigem Confidence</li>
             <li><a href="{{ path('app_mapping_quality_gaps') }}">Gap-Übersicht</a> - Identifizierte Lücken adressieren</li>
@@ -242,4 +259,135 @@
         </ul>
     </div>
 </div>
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script>
+        // Confidence Distribution Donut Chart
+        const confidenceCtx = document.getElementById('confidenceChart');
+        if (confidenceCtx) {
+            new Chart(confidenceCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['High (≥80)', 'Medium (60-79)', 'Low (<60)'],
+                    datasets: [{
+                        data: [
+                            {{ quality_stats.high_confidence }},
+                            {{ quality_stats.medium_confidence }},
+                            {{ quality_stats.low_confidence }}
+                        ],
+                        backgroundColor: [
+                            'rgba(40, 167, 69, 0.8)',
+                            'rgba(255, 193, 7, 0.8)',
+                            'rgba(220, 53, 69, 0.8)'
+                        ],
+                        borderColor: [
+                            'rgba(40, 167, 69, 1)',
+                            'rgba(255, 193, 7, 1)',
+                            'rgba(220, 53, 69, 1)'
+                        ],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.parsed || 0;
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                                    return label + ': ' + value + ' (' + percentage + '%)';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Gap Stats Bar Chart
+        const gapStatsCtx = document.getElementById('gapStatsChart');
+        if (gapStatsCtx) {
+            {% if gap_stats is not empty %}
+            const gapLabels = [
+                {% for stat in gap_stats %}
+                    '{{ stat.priority|upper }}'{% if not loop.last %},{% endif %}
+                {% endfor %}
+            ];
+            const gapCounts = [
+                {% for stat in gap_stats %}
+                    {{ stat.count }}{% if not loop.last %},{% endif %}
+                {% endfor %}
+            ];
+            const gapImpacts = [
+                {% for stat in gap_stats %}
+                    {{ stat.totalImpact|round }}{% if not loop.last %},{% endif %}
+                {% endfor %}
+            ];
+            const gapEfforts = [
+                {% for stat in gap_stats %}
+                    {{ stat.avgEffort|round(1) }}{% if not loop.last %},{% endif %}
+                {% endfor %}
+            ];
+
+            const backgroundColors = gapLabels.map(label => {
+                if (label === 'CRITICAL') return 'rgba(220, 53, 69, 0.8)';
+                if (label === 'HIGH') return 'rgba(255, 152, 0, 0.8)';
+                if (label === 'MEDIUM') return 'rgba(255, 193, 7, 0.8)';
+                return 'rgba(108, 117, 125, 0.8)';
+            });
+
+            new Chart(gapStatsCtx, {
+                type: 'bar',
+                data: {
+                    labels: gapLabels,
+                    datasets: [{
+                        label: 'Anzahl Gaps',
+                        data: gapCounts,
+                        backgroundColor: backgroundColors,
+                        borderColor: backgroundColors.map(c => c.replace('0.8', '1')),
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                afterLabel: function(context) {
+                                    const index = context.dataIndex;
+                                    return [
+                                        'Impact: ' + gapImpacts[index] + '%',
+                                        'Ø Effort: ' + gapEfforts[index] + 'h'
+                                    ];
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    }
+                }
+            });
+            {% endif %}
+        }
+    </script>
+{% endblock %}
 {% endblock %}
