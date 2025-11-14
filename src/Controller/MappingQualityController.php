@@ -364,6 +364,197 @@ class MappingQualityController extends AbstractController
     }
 
     /**
+     * Batch analyze mappings (for UI-based analysis in chunks)
+     */
+    #[Route('/batch-analyze', name: 'app_mapping_quality_batch_analyze', methods: ['POST'])]
+    public function batchAnalyze(Request $request): JsonResponse
+    {
+        try {
+            $data = json_decode($request->getContent(), true);
+
+            // Validate JSON
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                return $this->json([
+                    'success' => false,
+                    'error' => 'Invalid JSON: ' . json_last_error_msg()
+                ], 400);
+            }
+
+            // Get parameters with defaults
+            $limit = isset($data['limit']) ? (int) $data['limit'] : 10;
+            $offset = isset($data['offset']) ? (int) $data['offset'] : 0;
+            $reanalyze = isset($data['reanalyze']) ? (bool) $data['reanalyze'] : false;
+
+            // Validate limit
+            if ($limit < 1 || $limit > 100) {
+                return $this->json([
+                    'success' => false,
+                    'error' => 'Limit must be between 1 and 100'
+                ], 400);
+            }
+
+            // Get mapping IDs to analyze
+            $qb = $this->entityManager->createQueryBuilder();
+            $qb->select('cm.id')
+                ->from(ComplianceMapping::class, 'cm');
+
+            // Filter by analysis status
+            if (!$reanalyze) {
+                $qb->where('cm.calculatedPercentage IS NULL OR cm.analysisConfidence IS NULL');
+            }
+
+            // Order by priority
+            $qb->orderBy('cm.analysisConfidence', 'ASC')
+                ->addOrderBy('cm.qualityScore', 'ASC')
+                ->setFirstResult($offset)
+                ->setMaxResults($limit);
+
+            $mappingIds = array_column($qb->getQuery()->getResult(), 'id');
+
+            if (empty($mappingIds)) {
+                return $this->json([
+                    'success' => true,
+                    'analyzed' => 0,
+                    'remaining' => 0,
+                    'message' => 'No mappings to analyze',
+                    'results' => []
+                ]);
+            }
+
+            // Analyze each mapping
+            $results = [];
+            $analyzed = 0;
+            $errors = 0;
+
+            foreach ($mappingIds as $mappingId) {
+                try {
+                    // Fetch fresh entity
+                    $mapping = $this->entityManager->find(ComplianceMapping::class, $mappingId);
+
+                    if (!$mapping) {
+                        $errors++;
+                        continue;
+                    }
+
+                    // Analyze quality
+                    $analysisResults = $this->qualityAnalysisService->analyzeMappingQuality($mapping);
+
+                    // Apply results
+                    $mapping->setCalculatedPercentage($analysisResults['calculated_percentage']);
+                    $mapping->setTextualSimilarity($analysisResults['textual_similarity']);
+                    $mapping->setKeywordOverlap($analysisResults['keyword_overlap']);
+                    $mapping->setStructuralSimilarity($analysisResults['structural_similarity']);
+                    $mapping->setAnalysisConfidence($analysisResults['analysis_confidence']);
+                    $mapping->setQualityScore($analysisResults['quality_score']);
+                    $mapping->setAnalysisAlgorithmVersion($analysisResults['algorithm_version']);
+                    $mapping->setRequiresReview($analysisResults['requires_review']);
+
+                    // Remove old gaps if reanalyzing
+                    if ($reanalyze) {
+                        foreach ($mapping->getGapItems() as $oldGap) {
+                            $this->entityManager->remove($oldGap);
+                        }
+                        $this->entityManager->flush();
+                    }
+
+                    // Analyze gaps
+                    $gapItems = $this->gapAnalysisService->analyzeGaps($mapping, $analysisResults);
+
+                    foreach ($gapItems as $gapItem) {
+                        $mapping->addGapItem($gapItem);
+                        $this->entityManager->persist($gapItem);
+                    }
+
+                    $this->entityManager->persist($mapping);
+                    $analyzed++;
+
+                    $results[] = [
+                        'id' => $mapping->getId(),
+                        'calculated_percentage' => $analysisResults['calculated_percentage'],
+                        'confidence' => $analysisResults['analysis_confidence'],
+                        'quality_score' => $analysisResults['quality_score'],
+                        'gaps_found' => count($gapItems),
+                    ];
+
+                } catch (\Exception $e) {
+                    $errors++;
+                    $results[] = [
+                        'id' => $mappingId,
+                        'error' => $e->getMessage(),
+                    ];
+                }
+            }
+
+            // Flush all changes
+            $this->entityManager->flush();
+            $this->entityManager->clear();
+
+            // Get remaining count
+            $remainingQb = $this->entityManager->createQueryBuilder();
+            $remainingQb->select('COUNT(cm.id)')
+                ->from(ComplianceMapping::class, 'cm');
+
+            if (!$reanalyze) {
+                $remainingQb->where('cm.calculatedPercentage IS NULL OR cm.analysisConfidence IS NULL');
+            }
+
+            $remaining = (int) $remainingQb->getQuery()->getSingleScalarResult();
+
+            return $this->json([
+                'success' => true,
+                'analyzed' => $analyzed,
+                'errors' => $errors,
+                'remaining' => $remaining,
+                'offset' => $offset + $analyzed,
+                'message' => sprintf('Analyzed %d mappings, %d remaining', $analyzed, $remaining),
+                'results' => $results,
+            ]);
+
+        } catch (\Exception $e) {
+            return $this->json([
+                'success' => false,
+                'error' => 'Internal error: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Get analysis statistics (for UI polling)
+     */
+    #[Route('/stats', name: 'app_mapping_quality_stats', methods: ['GET'])]
+    public function stats(): JsonResponse
+    {
+        try {
+            $qb = $this->entityManager->createQueryBuilder();
+            $qb->select('COUNT(cm.id)')
+                ->from(ComplianceMapping::class, 'cm');
+
+            $total = (int) $qb->getQuery()->getSingleScalarResult();
+
+            $qb2 = $this->entityManager->createQueryBuilder();
+            $qb2->select('COUNT(cm.id)')
+                ->from(ComplianceMapping::class, 'cm')
+                ->where('cm.calculatedPercentage IS NOT NULL AND cm.analysisConfidence IS NOT NULL');
+
+            $analyzed = (int) $qb2->getQuery()->getSingleScalarResult();
+
+            return $this->json([
+                'success' => true,
+                'total' => $total,
+                'analyzed' => $analyzed,
+                'remaining' => $total - $analyzed,
+                'percentage' => $total > 0 ? round(($analyzed / $total) * 100, 1) : 0,
+            ]);
+
+        } catch (\Exception $e) {
+            return $this->json([
+                'success' => false,
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
      * Export quality report
      */
     #[Route('/export', name: 'app_mapping_quality_export')]
