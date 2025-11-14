@@ -147,6 +147,94 @@
         </div>
     </div>
 
+    {# Batch Analysis UI #}
+    {% if quality_stats.unanalyzed_mappings > 0 %}
+    <div class="card mb-4" id="batchAnalysisCard">
+        <div class="card-header bg-info text-white">
+            <h5 class="mb-0">🚀 Mapping-Analyse starten</h5>
+        </div>
+        <div class="card-body">
+            <p class="mb-3">
+                <strong>{{ quality_stats.unanalyzed_mappings }} Mappings</strong> warten auf Analyse.
+                Starten Sie die Analyse in kleineren Batches direkt hier in der UI.
+            </p>
+
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-outline-primary" onclick="startBatchAnalysis(10)">
+                            10 analysieren
+                        </button>
+                        <button type="button" class="btn btn-outline-primary" onclick="startBatchAnalysis(25)">
+                            25 analysieren
+                        </button>
+                        <button type="button" class="btn btn-outline-primary" onclick="startBatchAnalysis(50)">
+                            50 analysieren
+                        </button>
+                        <button type="button" class="btn btn-outline-success" onclick="startBatchAnalysis(100)">
+                            100 analysieren
+                        </button>
+                        <button type="button" class="btn btn-success" onclick="startBatchAnalysis('all')">
+                            🎯 Alle analysieren
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            {# Progress Section (hidden initially) #}
+            <div id="analysisProgress" style="display: none;">
+                <hr>
+                <h6 class="mb-3">Analyse läuft...</h6>
+
+                <div class="progress mb-3" style="height: 30px;">
+                    <div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated bg-info"
+                         role="progressbar" style="width: 0%">
+                        <strong id="progressText">0%</strong>
+                    </div>
+                </div>
+
+                <div class="row text-center mb-3">
+                    <div class="col-md-3">
+                        <small class="text-muted">Analysiert</small>
+                        <h5 id="analyzedCount">0</h5>
+                    </div>
+                    <div class="col-md-3">
+                        <small class="text-muted">Verbleibend</small>
+                        <h5 id="remainingCount">{{ quality_stats.unanalyzed_mappings }}</h5>
+                    </div>
+                    <div class="col-md-3">
+                        <small class="text-muted">Fehler</small>
+                        <h5 id="errorCount" class="text-danger">0</h5>
+                    </div>
+                    <div class="col-md-3">
+                        <small class="text-muted">Status</small>
+                        <h5 id="statusText" class="text-info">Bereit</h5>
+                    </div>
+                </div>
+
+                <button type="button" class="btn btn-danger btn-sm" id="cancelBtn" onclick="cancelAnalysis()">
+                    ⏸️ Abbrechen
+                </button>
+
+                <div id="analysisLog" class="mt-3" style="max-height: 200px; overflow-y: auto; font-family: monospace; font-size: 12px; background: #f5f5f5; padding: 10px; border-radius: 4px; display: none;">
+                </div>
+            </div>
+
+            {# Results Section (shown after completion) #}
+            <div id="analysisResults" style="display: none;">
+                <hr>
+                <div class="alert alert-success">
+                    <h5>✅ Analyse abgeschlossen!</h5>
+                    <p id="resultsMessage"></p>
+                    <button type="button" class="btn btn-primary mt-2" onclick="location.reload()">
+                        🔄 Seite neu laden
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
     {# Charts Row #}
     <div class="row mb-4">
         <div class="col-md-6">
@@ -420,6 +508,139 @@
             });
             {% endif %}
         }
+
+        // ========================================
+        // Batch Analysis Functions
+        // ========================================
+
+        let analysisRunning = false;
+        let cancelRequested = false;
+        let totalToAnalyze = 0;
+        let totalAnalyzed = 0;
+        let totalErrors = 0;
+
+        function startBatchAnalysis(batchSize) {
+            if (analysisRunning) {
+                alert('Eine Analyse läuft bereits!');
+                return;
+            }
+
+            // Hide buttons, show progress
+            document.querySelectorAll('.btn-group button').forEach(btn => btn.disabled = true);
+            document.getElementById('analysisProgress').style.display = 'block';
+            document.getElementById('analysisResults').style.display = 'none';
+
+            analysisRunning = true;
+            cancelRequested = false;
+            totalAnalyzed = 0;
+            totalErrors = 0;
+
+            // Determine chunk size and total
+            const chunkSize = batchSize === 'all' ? 25 : Math.min(parseInt(batchSize), 25);
+            totalToAnalyze = batchSize === 'all' ? {{ quality_stats.unanalyzed_mappings }} : parseInt(batchSize);
+
+            updateStatus('Starte Analyse...');
+            runBatchAnalysis(0, chunkSize, totalToAnalyze);
+        }
+
+        async function runBatchAnalysis(offset, chunkSize, totalTarget) {
+            if (cancelRequested) {
+                finishAnalysis('Analyse abgebrochen', false);
+                return;
+            }
+
+            if (totalAnalyzed >= totalTarget) {
+                finishAnalysis(`✅ Erfolgreich ${totalAnalyzed} Mappings analysiert!`, true);
+                return;
+            }
+
+            updateStatus('Analysiere...');
+
+            try {
+                const response = await fetch('{{ path('app_mapping_quality_batch_analyze') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        limit: chunkSize,
+                        offset: offset,
+                        reanalyze: false
+                    })
+                });
+
+                const data = await response.json();
+
+                if (!data.success) {
+                    throw new Error(data.error || 'Unknown error');
+                }
+
+                // Update counters
+                totalAnalyzed += data.analyzed;
+                totalErrors += data.errors;
+
+                document.getElementById('analyzedCount').textContent = totalAnalyzed;
+                document.getElementById('remainingCount').textContent = data.remaining;
+                document.getElementById('errorCount').textContent = totalErrors;
+
+                // Update progress bar
+                const progress = Math.min(100, Math.round((totalAnalyzed / totalTarget) * 100));
+                document.getElementById('progressBar').style.width = progress + '%';
+                document.getElementById('progressText').textContent = progress + '%';
+
+                // Check if done or should continue
+                if (data.remaining === 0 || totalAnalyzed >= totalTarget) {
+                    finishAnalysis(`✅ Erfolgreich ${totalAnalyzed} Mappings analysiert! ${totalErrors > 0 ? `(${totalErrors} Fehler)` : ''}`, true);
+                } else {
+                    // Continue with next batch
+                    setTimeout(() => {
+                        runBatchAnalysis(offset + chunkSize, chunkSize, totalTarget);
+                    }, 500); // Small delay between batches
+                }
+
+            } catch (error) {
+                console.error('Analysis error:', error);
+                updateStatus('Fehler: ' + error.message);
+                finishAnalysis(`❌ Fehler bei Analyse: ${error.message}`, false);
+            }
+        }
+
+        function cancelAnalysis() {
+            if (confirm('Möchten Sie die Analyse wirklich abbrechen?')) {
+                cancelRequested = true;
+                updateStatus('Wird abgebrochen...');
+            }
+        }
+
+        function updateStatus(status) {
+            document.getElementById('statusText').textContent = status;
+        }
+
+        function finishAnalysis(message, success) {
+            analysisRunning = false;
+
+            document.getElementById('analysisProgress').style.display = 'none';
+            document.getElementById('analysisResults').style.display = 'block';
+            document.getElementById('resultsMessage').innerHTML = message;
+
+            if (success) {
+                // Update the alert class
+                document.querySelector('#analysisResults .alert').className = 'alert alert-success';
+            } else {
+                document.querySelector('#analysisResults .alert').className = 'alert alert-warning';
+            }
+
+            // Re-enable buttons
+            document.querySelectorAll('.btn-group button').forEach(btn => btn.disabled = false);
+        }
+
+        // Auto-hide batch analysis card when complete
+        {% if quality_stats.unanalyzed_mappings == 0 %}
+        const batchCard = document.getElementById('batchAnalysisCard');
+        if (batchCard) {
+            batchCard.style.display = 'none';
+        }
+        {% endif %}
     </script>
 {% endblock %}
 {% endblock %}
