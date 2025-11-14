@@ -34,21 +34,18 @@ class SupplierController extends AbstractController
         $user = $this->security->getUser();
         $tenant = $user?->getTenant();
 
-        if (!$tenant) {
-            throw $this->createAccessDeniedException('No tenant associated with user');
+        // Get suppliers: tenant-filtered if user has tenant, all if not
+        if ($tenant) {
+            $suppliers = $this->supplierService->getSuppliersForTenant($tenant);
+            $statistics = $this->supplierRepository->getStatisticsByTenant($tenant);
+            $criticalSuppliers = $this->supplierRepository->findCriticalSuppliersByTenant($tenant);
+            $inheritanceInfo = $this->supplierService->getSupplierInheritanceInfo($tenant);
+        } else {
+            $suppliers = $this->supplierRepository->findAll();
+            $statistics = [];
+            $criticalSuppliers = [];
+            $inheritanceInfo = ['hasParent' => false, 'canInherit' => false, 'governanceModel' => null];
         }
-
-        // Get suppliers based on governance model
-        $suppliers = $this->supplierService->getSuppliersForTenant($tenant);
-
-        // Get statistics for tenant
-        $statistics = $this->supplierRepository->getStatisticsByTenant($tenant);
-
-        // Get critical suppliers for tenant
-        $criticalSuppliers = $this->supplierRepository->findCriticalSuppliersByTenant($tenant);
-
-        // Get inheritance info
-        $inheritanceInfo = $this->supplierService->getSupplierInheritanceInfo($tenant);
 
         return $this->render('supplier/index.html.twig', [
             'suppliers' => $suppliers,
@@ -88,13 +85,14 @@ class SupplierController extends AbstractController
         $user = $this->security->getUser();
         $tenant = $user?->getTenant();
 
-        if (!$tenant) {
-            throw $this->createAccessDeniedException('No tenant associated with user');
+        // Check if supplier is inherited and can be edited (only if user has tenant)
+        if ($tenant) {
+            $isInherited = $this->supplierService->isInheritedSupplier($supplier, $tenant);
+            $canEdit = $this->supplierService->canEditSupplier($supplier, $tenant);
+        } else {
+            $isInherited = false;
+            $canEdit = true;
         }
-
-        // Check if supplier is inherited and can be edited
-        $isInherited = $this->supplierService->isInheritedSupplier($supplier, $tenant);
-        $canEdit = $this->supplierService->canEditSupplier($supplier, $tenant);
 
         return $this->render('supplier/show.html.twig', [
             'supplier' => $supplier,
@@ -111,12 +109,8 @@ class SupplierController extends AbstractController
         $user = $this->security->getUser();
         $tenant = $user?->getTenant();
 
-        if (!$tenant) {
-            throw $this->createAccessDeniedException('No tenant associated with user');
-        }
-
-        // Check if supplier can be edited (not inherited)
-        if (!$this->supplierService->canEditSupplier($supplier, $tenant)) {
+        // Check if supplier can be edited (not inherited) - only if user has tenant
+        if ($tenant && !$this->supplierService->canEditSupplier($supplier, $tenant)) {
             $this->addFlash('error', $this->translator->trans('corporate.inheritance.cannot_edit_inherited'));
             return $this->redirectToRoute('app_supplier_show', ['id' => $supplier->getId()]);
         }
@@ -145,12 +139,8 @@ class SupplierController extends AbstractController
         $user = $this->security->getUser();
         $tenant = $user?->getTenant();
 
-        if (!$tenant) {
-            throw $this->createAccessDeniedException('No tenant associated with user');
-        }
-
-        // Check if supplier can be deleted (not inherited)
-        if (!$this->supplierService->canEditSupplier($supplier, $tenant)) {
+        // Check if supplier can be deleted (not inherited) - only if user has tenant
+        if ($tenant && !$this->supplierService->canEditSupplier($supplier, $tenant)) {
             $this->addFlash('error', $this->translator->trans('corporate.inheritance.cannot_delete_inherited'));
             return $this->redirectToRoute('app_supplier_index');
         }
