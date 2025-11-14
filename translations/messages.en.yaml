@@ -3987,3 +3987,8 @@ governance:
   hierarchical: 'Hierarchical'
   shared: 'Shared'
   independent: 'Independent'
+
+# Accessibility
+accessibility:
+  skip_to_content: 'Skip to main content'
+  skip_to_navigation: 'Skip to navigation'
