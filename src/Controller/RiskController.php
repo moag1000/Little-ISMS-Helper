@@ -47,17 +47,44 @@ class RiskController extends AbstractController
         $status = $request->query->get('status');
         $treatment = $request->query->get('treatment');
         $owner = $request->query->get('owner');
+        $view = $request->query->get('view', 'inherited'); // Default: inherited
 
-        // Get risks: tenant-filtered if user has tenant, all risks if not (e.g., super admin)
+        // Get risks based on view filter
         if ($tenant) {
-            $risks = $this->riskService->getRisksForTenant($tenant);
-            $highRisks = $this->riskService->getHighRisksForTenant($tenant);
+            // Determine which risks to load based on view parameter
+            switch ($view) {
+                case 'own':
+                    // Only own risks
+                    $risks = $this->riskRepository->findByTenant($tenant);
+                    break;
+                case 'subsidiaries':
+                    // Own + from all subsidiaries (for parent companies)
+                    $risks = $this->riskRepository->findByTenantIncludingSubsidiaries($tenant);
+                    break;
+                case 'inherited':
+                default:
+                    // Own + inherited from parents (default behavior)
+                    $risks = $this->riskService->getRisksForTenant($tenant);
+                    break;
+            }
+
+            // Filter high risks from the selected risk set
+            $highRisks = array_filter($risks, fn($risk) => $risk->getRiskScore() >= 12);
+
             $inheritanceInfo = $this->riskService->getRiskInheritanceInfo($tenant);
+            $inheritanceInfo['hasSubsidiaries'] = $tenant->getSubsidiaries()->count() > 0;
+            $inheritanceInfo['currentView'] = $view;
         } else {
             // Fallback for users without tenant (e.g., super admins)
             $risks = $this->riskRepository->findAll();
             $highRisks = $this->riskRepository->findHighRisks();
-            $inheritanceInfo = ['hasParent' => false, 'canInherit' => false, 'governanceModel' => null];
+            $inheritanceInfo = [
+                'hasParent' => false,
+                'canInherit' => false,
+                'governanceModel' => null,
+                'hasSubsidiaries' => false,
+                'currentView' => 'own'
+            ];
         }
 
         // Apply filters
