@@ -76,16 +76,27 @@ class HealthAutoFixService
             }
 
             // If still not writable, log detailed information
-            $this->logger->warning('Cache directory is still not writable after permission fix attempt', [
+            $logContext = [
                 'directory' => $this->cacheDir,
                 'exists' => is_dir($this->cacheDir),
                 'readable' => is_readable($this->cacheDir),
                 'writable' => is_writable($this->cacheDir),
                 'permissions' => is_dir($this->cacheDir) ? substr(sprintf('%o', fileperms($this->cacheDir)), -4) : 'N/A',
-                'owner' => is_dir($this->cacheDir) ? posix_getpwuid(fileowner($this->cacheDir))['name'] ?? 'unknown' : 'N/A',
-                'group' => is_dir($this->cacheDir) ? posix_getgrgid(filegroup($this->cacheDir))['name'] ?? 'unknown' : 'N/A',
-                'current_user' => posix_getpwuid(posix_geteuid())['name'] ?? 'unknown',
-            ]);
+            ];
+
+            // Add POSIX info if available (not available on Windows)
+            if (function_exists('posix_getpwuid') && function_exists('posix_getgrgid') && function_exists('posix_geteuid')) {
+                if (is_dir($this->cacheDir)) {
+                    $ownerInfo = @posix_getpwuid(@fileowner($this->cacheDir));
+                    $groupInfo = @posix_getgrgid(@filegroup($this->cacheDir));
+                    $logContext['owner'] = $ownerInfo['name'] ?? 'unknown';
+                    $logContext['group'] = $groupInfo['name'] ?? 'unknown';
+                }
+                $currentUserInfo = @posix_getpwuid(@posix_geteuid());
+                $logContext['current_user'] = $currentUserInfo['name'] ?? 'unknown';
+            }
+
+            $this->logger->warning('Cache directory is still not writable after permission fix attempt', $logContext);
 
             return [
                 'success' => false,
