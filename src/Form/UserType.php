@@ -133,7 +133,8 @@ class UserType extends AbstractType
                 'multiple' => true,
                 'expanded' => true,
                 'required' => false,
-                'data' => $isEdit ? null : ['ROLE_USER'], // Default for new users
+                // Only set default data for new users, let Symfony use entity data for edit mode
+                ...($isEdit ? [] : ['data' => ['ROLE_USER']]),
                 'help' => 'Systemrollen definieren grundlegende Zugriffsrechte',
             ])
             ->add('customRoles', EntityType::class, [
@@ -170,7 +171,8 @@ class UserType extends AbstractType
             ->add('isActive', CheckboxType::class, [
                 'label' => 'user.field.active',
                 'required' => false,
-                'data' => $isEdit ? null : true, // Default active for new users
+                // Only set default data for new users, let Symfony use entity data for edit mode
+                ...($isEdit ? [] : ['data' => true]),
                 'help' => 'Nur aktive Benutzer können sich anmelden',
                 'attr' => ['class' => 'form-check-input'],
             ])

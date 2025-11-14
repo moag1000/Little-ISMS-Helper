@@ -2173,6 +2173,7 @@ user:
   error:
     no_users_selected: No users selected
     no_file_uploaded: No file uploaded
+    cannot_deactivate_initial_admin: The initial setup administrator cannot be deactivated to ensure that a system administrator is always available.
   warning:
     own_password_changed: 'Warning: You have changed your own password. You may be automatically logged out.'
     session_will_be_invalidated: 'Warning: For security reasons, your session may be invalidated after this change. Please log in again if necessary.'

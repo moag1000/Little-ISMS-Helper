@@ -23,6 +23,14 @@
                     <h5 class="mb-0">{{ user.fullName }} bearbeiten</h5>
                 </div>
                 <div class="card-body">
+                    {% if is_initial_admin is defined and is_initial_admin %}
+                        <div class="alert alert-warning" role="alert">
+                            <i class="bi bi-shield-exclamation"></i>
+                            <strong>Achtung:</strong> Dies ist der initiale Setup-Administrator.
+                            Dieser Benutzer kann nicht deaktiviert werden, um sicherzustellen, dass immer ein Systemadministrator verfügbar ist.
+                        </div>
+                    {% endif %}
+
                     {{ form_start(form) }}
 
                     {# Basic Information #}
@@ -128,10 +136,18 @@
                     <h5 class="mb-3"><i class="bi bi-toggle-on"></i> Status</h5>
                     <div class="mb-3">
                         <div class="form-check form-switch">
-                            {{ form_widget(form.isActive) }}
+                            {{ form_widget(form.isActive, {
+                                'disabled': is_initial_admin is defined and is_initial_admin,
+                                'attr': is_initial_admin is defined and is_initial_admin ? {'title': 'Der initiale Admin kann nicht deaktiviert werden'} : {}
+                            }) }}
                             {{ form_label(form.isActive, null, {'label_attr': {'class': 'form-check-label'}}) }}
                         </div>
                         {{ form_help(form.isActive) }}
+                        {% if is_initial_admin is defined and is_initial_admin %}
+                            <small class="text-muted">
+                                <i class="bi bi-lock"></i> Status kann nicht geändert werden (Initialer Administrator)
+                            </small>
+                        {% endif %}
                     </div>
 
                     <div class="mb-3">

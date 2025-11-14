@@ -2182,6 +2182,7 @@ user:
   error:
     no_users_selected: Keine Benutzer ausgewählt
     no_file_uploaded: Keine Datei hochgeladen
+    cannot_deactivate_initial_admin: Der initiale Setup-Administrator kann nicht deaktiviert werden, um sicherzustellen, dass immer ein Systemadministrator verfügbar ist.
   warning:
     own_password_changed: 'Achtung: Sie haben Ihr eigenes Passwort geändert. Sie werden möglicherweise automatisch ausgeloggt.'
     session_will_be_invalidated: 'Achtung: Aus Sicherheitsgründen wird Ihre Session nach dieser Änderung möglicherweise invalidiert. Bitte loggen Sie sich erneut ein, falls erforderlich.'
