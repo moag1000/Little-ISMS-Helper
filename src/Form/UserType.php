@@ -133,7 +133,7 @@ class UserType extends AbstractType
                 'multiple' => true,
                 'expanded' => true,
                 'required' => false,
-                'data' => $isEdit ? null : ['ROLE_USER'], // Default for new users
+                'data' => !$isEdit ? ['ROLE_USER'] : null, // Default only for new users
                 'help' => 'Systemrollen definieren grundlegende Zugriffsrechte',
             ])
             ->add('customRoles', EntityType::class, [
@@ -170,7 +170,7 @@ class UserType extends AbstractType
             ->add('isActive', CheckboxType::class, [
                 'label' => 'user.field.active',
                 'required' => false,
-                'data' => $isEdit ? null : true, // Default active for new users
+                'data' => !$isEdit ? true : null, // Default only for new users
                 'help' => 'Nur aktive Benutzer können sich anmelden',
                 'attr' => ['class' => 'form-check-input'],
             ])
