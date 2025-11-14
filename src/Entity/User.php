@@ -152,6 +152,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
+     * Get only the stored system roles (without automatic ROLE_USER and custom roles)
+     * This is used for form pre-population
+     *
+     * @return list<string>
+     */
+    public function getStoredRoles(): array
+    {
+        return $this->roles;
+    }
+
+    /**
      * @param list<string> $roles
      */
     public function setRoles(array $roles): static
