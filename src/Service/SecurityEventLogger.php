@@ -57,7 +57,9 @@ class SecurityEventLogger
             'User logged in successfully'
         );
 
-        // Create session record for session management
+        // TEMPORARILY DISABLED: Create session record for session management
+        // This is disabled for debugging login issues
+        /*
         if ($user instanceof User) {
             $request = $this->requestStack->getCurrentRequest();
             $session = $request?->getSession();
@@ -75,6 +77,7 @@ class SecurityEventLogger
                 }
             }
         }
+        */
     }
 
     /**
@@ -118,7 +121,9 @@ class SecurityEventLogger
             'User logged out'
         );
 
-        // End session record
+        // TEMPORARILY DISABLED: End session record
+        // This is disabled for debugging login issues
+        /*
         $request = $this->requestStack->getCurrentRequest();
         $session = $request?->getSession();
 
@@ -134,6 +139,7 @@ class SecurityEventLogger
                 ]);
             }
         }
+        */
     }
 
     /**
