@@ -255,10 +255,25 @@
 
     {# Empty State #}
     {% if high_priority_gaps is empty and low_confidence_gaps is empty %}
-    <div class="alert alert-success">
-        <h5>✅ Keine kritischen Gaps!</h5>
-        <p class="mb-0">Alle Gaps haben niedrige Priorität oder wurden bereits behoben.</p>
-    </div>
+        {% if remediation_effort.total_gaps == 0 %}
+        <div class="alert alert-info">
+            <h4>ℹ️ Keine Gaps gefunden</h4>
+            <p>Es wurden noch keine Gap-Analysen durchgeführt.</p>
+            <hr>
+            <h6>Nächste Schritte:</h6>
+            <ol>
+                <li>Führen Sie die Qualitätsanalyse aus: <code>php bin/console app:analyze-mapping-quality</code></li>
+                <li>Gaps werden automatisch während der Analyse identifiziert</li>
+                <li>Kehren Sie dann zu dieser Seite zurück</li>
+            </ol>
+            <a href="{{ path('app_mapping_quality_dashboard') }}" class="btn btn-primary mt-2">← Zurück zum Dashboard</a>
+        </div>
+        {% else %}
+        <div class="alert alert-success">
+            <h5>✅ Keine kritischen Gaps!</h5>
+            <p class="mb-0">Alle Gaps haben niedrige Priorität oder wurden bereits behoben.</p>
+        </div>
+        {% endif %}
     {% endif %}
 
     {# Action Buttons #}
