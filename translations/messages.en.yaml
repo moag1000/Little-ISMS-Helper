@@ -4006,3 +4006,20 @@ governance:
 accessibility:
   skip_to_content: 'Skip to main content'
   skip_to_navigation: 'Skip to navigation'
+
+# Bulk Delete Confirmation
+bulk_delete:
+  confirm:
+    title: 'Confirm Deletion'
+    warning: 'This action cannot be undone.'
+  selection:
+    title: 'Selected Entries'
+  dependencies:
+    title: 'Affected Dependencies'
+    list: 'List of affected dependencies'
+  loading: 'Checking dependencies...'
+
+# Common
+common:
+  entries: 'Entries'
+  loading: 'Loading...'

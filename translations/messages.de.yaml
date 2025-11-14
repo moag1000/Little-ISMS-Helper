@@ -4044,3 +4044,20 @@ governance:
 accessibility:
   skip_to_content: 'Zum Hauptinhalt springen'
   skip_to_navigation: 'Zur Navigation springen'
+
+# Bulk Delete Confirmation
+bulk_delete:
+  confirm:
+    title: 'Löschen bestätigen'
+    warning: 'Diese Aktion kann nicht rückgängig gemacht werden.'
+  selection:
+    title: 'Ausgewählte Einträge'
+  dependencies:
+    title: 'Betroffene Verknüpfungen'
+    list: 'Liste der betroffenen Verknüpfungen'
+  loading: 'Abhängigkeiten werden geprüft...'
+
+# Common
+common:
+  entries: 'Einträge'
+  loading: 'Lädt...'
