@@ -46,8 +46,12 @@ class AdminDashboardController extends AbstractController
     #[Route('', name: 'admin_dashboard', methods: ['GET'])]
     public function index(): Response
     {
+        // Get current user's tenant
+        $currentUser = $this->getUser();
+        $currentTenant = $currentUser?->getTenant();
+
         // System Health Stats
-        $stats = $this->getSystemHealthStats();
+        $stats = $this->getSystemHealthStats($currentTenant);
 
         // Recent Activity (using configured limit)
         $recentActivity = $this->auditLogRepository->findBy(
@@ -63,20 +67,35 @@ class AdminDashboardController extends AbstractController
             'stats' => $stats,
             'recentActivity' => $recentActivity,
             'alerts' => $alerts,
+            'currentTenant' => $currentTenant,
         ]);
     }
 
-    private function getSystemHealthStats(): array
+    private function getSystemHealthStats(?\App\Entity\Tenant $currentTenant): array
     {
         // User Statistics
         $totalUsers = $this->userRepository->count([]);
         $activeUsers = $this->userRepository->count(['isActive' => true]);
         $inactiveUsers = $totalUsers - $activeUsers;
 
-        // Module Statistics (using allowed tables only)
+        // Module Statistics with Corporate Hierarchy
         $moduleStats = [];
-        foreach (self::ALLOWED_TABLES as $tableName) {
-            $moduleStats[$tableName] = $this->getTableCount($tableName);
+        if ($currentTenant) {
+            // Get corporate statistics for tenant-aware modules
+            foreach (self::ALLOWED_TABLES as $tableName) {
+                $moduleStats[$tableName] = $this->getCorporateTableStats($tableName, $currentTenant);
+            }
+        } else {
+            // Fallback to global statistics if no tenant
+            foreach (self::ALLOWED_TABLES as $tableName) {
+                $count = $this->getTableCount($tableName);
+                $moduleStats[$tableName] = [
+                    'own' => $count,
+                    'inherited' => 0,
+                    'subsidiaries' => 0,
+                    'total' => $count,
+                ];
+            }
         }
 
         // Session Statistics (active sessions in configured time window)
@@ -103,6 +122,67 @@ class AdminDashboardController extends AbstractController
                 'size_mb' => $this->getDatabaseSize(),
             ],
         ];
+    }
+
+    private function getCorporateTableStats(string $tableName, \App\Entity\Tenant $currentTenant): array
+    {
+        // Security: Validate table name against whitelist
+        if (!in_array($tableName, self::ALLOWED_TABLES, true)) {
+            $this->logger->warning('Attempted to query non-whitelisted table', [
+                'table' => $tableName,
+                'allowed_tables' => self::ALLOWED_TABLES,
+            ]);
+            return ['own' => 0, 'inherited' => 0, 'subsidiaries' => 0, 'total' => 0];
+        }
+
+        try {
+            $conn = $this->entityManager->getConnection();
+
+            // Get own records
+            $own = $this->getTenantTableCount($tableName, $currentTenant->getId());
+
+            // Get inherited records from parent
+            $inherited = 0;
+            if ($currentTenant->getParent()) {
+                $inherited = $this->getTenantTableCount($tableName, $currentTenant->getParent()->getId());
+            }
+
+            // Get subsidiaries records
+            $subsidiaries = 0;
+            foreach ($currentTenant->getSubsidiaries() as $subsidiary) {
+                $subsidiaries += $this->getTenantTableCount($tableName, $subsidiary->getId());
+            }
+
+            return [
+                'own' => $own,
+                'inherited' => $inherited,
+                'subsidiaries' => $subsidiaries,
+                'total' => $own + $inherited + $subsidiaries,
+            ];
+        } catch (\Exception $e) {
+            $this->logger->error('Failed to get corporate table stats', [
+                'table' => $tableName,
+                'tenant' => $currentTenant->getId(),
+                'error' => $e->getMessage(),
+            ]);
+            return ['own' => 0, 'inherited' => 0, 'subsidiaries' => 0, 'total' => 0];
+        }
+    }
+
+    private function getTenantTableCount(string $tableName, int $tenantId): int
+    {
+        try {
+            $conn = $this->entityManager->getConnection();
+            // Safe to use since $tableName is validated in getCorporateTableStats
+            $result = $conn->executeQuery(
+                "SELECT COUNT(*) as count FROM {$tableName} WHERE tenant_id = :tenantId",
+                ['tenantId' => $tenantId]
+            )->fetchAssociative();
+            return (int) ($result['count'] ?? 0);
+        } catch (\Exception $e) {
+            // Table might not have tenant_id column, return 0
+            return 0;
+        }
     }
 
     private function getTableCount(string $tableName): int
