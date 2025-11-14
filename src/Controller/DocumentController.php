@@ -44,21 +44,20 @@ class DocumentController extends AbstractController
         $user = $this->security->getUser();
         $tenant = $user?->getTenant();
 
-        if (!$tenant) {
-            throw $this->createAccessDeniedException('No tenant associated with user');
+        // Get documents: tenant-filtered if user has tenant, all if not
+        if ($tenant) {
+            $allDocuments = $this->documentService->getDocumentsForTenant($tenant);
+            $inheritanceInfo = $this->documentService->getDocumentInheritanceInfo($tenant);
+        } else {
+            $allDocuments = $this->documentRepository->findAll();
+            $inheritanceInfo = ['hasParent' => false, 'canInherit' => false, 'governanceModel' => null];
         }
-
-        // Get documents based on governance model
-        $allDocuments = $this->documentService->getDocumentsForTenant($tenant);
 
         // Filter to active only
         $documents = array_filter($allDocuments, fn($doc) => $doc->getStatus() === 'active');
 
         // Sort by upload date descending
         usort($documents, fn($a, $b) => $b->getUploadedAt() <=> $a->getUploadedAt());
-
-        // Get inheritance info
-        $inheritanceInfo = $this->documentService->getDocumentInheritanceInfo($tenant);
 
         return $this->render('document/index_modern.html.twig', [
             'documents' => $documents,
@@ -164,13 +163,14 @@ class DocumentController extends AbstractController
         $user = $this->security->getUser();
         $tenant = $user?->getTenant();
 
-        if (!$tenant) {
-            throw $this->createAccessDeniedException('No tenant associated with user');
+        // Check if document is inherited and can be edited (only if user has tenant)
+        if ($tenant) {
+            $isInherited = $this->documentService->isInheritedDocument($document, $tenant);
+            $canEdit = $this->documentService->canEditDocument($document, $tenant);
+        } else {
+            $isInherited = false;
+            $canEdit = true;
         }
-
-        // Check if document is inherited and can be edited
-        $isInherited = $this->documentService->isInheritedDocument($document, $tenant);
-        $canEdit = $this->documentService->canEditDocument($document, $tenant);
 
         return $this->render('document/show.html.twig', [
             'document' => $document,
@@ -226,12 +226,8 @@ class DocumentController extends AbstractController
         $user = $this->security->getUser();
         $tenant = $user?->getTenant();
 
-        if (!$tenant) {
-            throw $this->createAccessDeniedException('No tenant associated with user');
-        }
-
-        // Check if document can be edited (not inherited)
-        if (!$this->documentService->canEditDocument($document, $tenant)) {
+        // Check if document can be edited (not inherited) - only if user has tenant
+        if ($tenant && !$this->documentService->canEditDocument($document, $tenant)) {
             $this->addFlash('error', $this->translator->trans('corporate.inheritance.cannot_edit_inherited'));
             return $this->redirectToRoute('app_document_show', ['id' => $document->getId()]);
         }
@@ -259,12 +255,8 @@ class DocumentController extends AbstractController
         $user = $this->security->getUser();
         $tenant = $user?->getTenant();
 
-        if (!$tenant) {
-            throw $this->createAccessDeniedException('No tenant associated with user');
-        }
-
-        // Check if document can be deleted (not inherited)
-        if (!$this->documentService->canEditDocument($document, $tenant)) {
+        // Check if document can be deleted (not inherited) - only if user has tenant
+        if ($tenant && !$this->documentService->canEditDocument($document, $tenant)) {
             $this->addFlash('error', $this->translator->trans('corporate.inheritance.cannot_delete_inherited'));
             return $this->redirectToRoute('app_document_index');
         }
@@ -286,12 +278,12 @@ class DocumentController extends AbstractController
         $user = $this->security->getUser();
         $tenant = $user?->getTenant();
 
-        if (!$tenant) {
-            throw $this->createAccessDeniedException('No tenant associated with user');
+        // Get documents: tenant-filtered if user has tenant, all if not
+        if ($tenant) {
+            $allDocuments = $this->documentService->getDocumentsForTenant($tenant);
+        } else {
+            $allDocuments = $this->documentRepository->findAll();
         }
-
-        // Get documents based on governance model
-        $allDocuments = $this->documentService->getDocumentsForTenant($tenant);
 
         // Filter by type
         $documents = array_filter($allDocuments, fn($doc) => $doc->getType() === $type);
