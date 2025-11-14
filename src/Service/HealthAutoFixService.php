@@ -336,6 +336,295 @@ class HealthAutoFixService
     }
 
     /**
+     * Fix file permissions for var/ directory
+     */
+    public function fixVarPermissions(): array
+    {
+        try {
+            $varDir = $this->projectDir . '/var';
+
+            $this->logger->info('Attempting to fix var/ directory permissions', [
+                'directory' => $varDir,
+            ]);
+
+            if (!is_writable($varDir)) {
+                @chmod($varDir, 0775);
+
+                // Recursively fix permissions for subdirectories
+                $this->fixDirectoryPermissionsRecursive($varDir);
+
+                if (is_writable($varDir)) {
+                    $this->logger->info('var/ directory permissions fixed successfully');
+                    return [
+                        'success' => true,
+                        'message' => 'var/ directory permissions fixed successfully',
+                    ];
+                }
+            }
+
+            return [
+                'success' => false,
+                'message' => 'var/ directory is not writable. Please check permissions manually.',
+            ];
+        } catch (\Exception $e) {
+            $this->logger->error('Failed to fix var/ permissions', [
+                'error' => $e->getMessage(),
+            ]);
+
+            return [
+                'success' => false,
+                'message' => 'Error: ' . $e->getMessage(),
+            ];
+        }
+    }
+
+    /**
+     * Fix file permissions for uploads directory
+     */
+    public function fixUploadsPermissions(): array
+    {
+        try {
+            $uploadsDir = $this->projectDir . '/public/uploads';
+
+            $this->logger->info('Attempting to fix uploads/ directory permissions', [
+                'directory' => $uploadsDir,
+            ]);
+
+            if (!is_dir($uploadsDir)) {
+                // Create uploads directory if it doesn't exist
+                $this->filesystem->mkdir($uploadsDir, 0775);
+
+                $this->logger->info('uploads/ directory created successfully');
+                return [
+                    'success' => true,
+                    'message' => 'uploads/ directory created successfully',
+                ];
+            }
+
+            if (!is_writable($uploadsDir)) {
+                @chmod($uploadsDir, 0775);
+
+                if (is_writable($uploadsDir)) {
+                    $this->logger->info('uploads/ directory permissions fixed successfully');
+                    return [
+                        'success' => true,
+                        'message' => 'uploads/ directory permissions fixed successfully',
+                    ];
+                }
+            }
+
+            return [
+                'success' => false,
+                'message' => 'uploads/ directory is not writable. Please check permissions manually.',
+            ];
+        } catch (\Exception $e) {
+            $this->logger->error('Failed to fix uploads/ permissions', [
+                'error' => $e->getMessage(),
+            ]);
+
+            return [
+                'success' => false,
+                'message' => 'Error: ' . $e->getMessage(),
+            ];
+        }
+    }
+
+    /**
+     * Fix session directory permissions
+     */
+    public function fixSessionPermissions(): array
+    {
+        try {
+            $sessionSavePath = session_save_path();
+            if (empty($sessionSavePath)) {
+                $sessionSavePath = sys_get_temp_dir();
+            }
+
+            $this->logger->info('Attempting to fix session directory permissions', [
+                'directory' => $sessionSavePath,
+            ]);
+
+            if (!is_writable($sessionSavePath)) {
+                @chmod($sessionSavePath, 0775);
+
+                if (is_writable($sessionSavePath)) {
+                    $this->logger->info('Session directory permissions fixed successfully');
+                    return [
+                        'success' => true,
+                        'message' => 'Session directory permissions fixed successfully',
+                    ];
+                }
+            }
+
+            return [
+                'success' => false,
+                'message' => 'Session directory is not writable. Please check permissions manually.',
+            ];
+        } catch (\Exception $e) {
+            $this->logger->error('Failed to fix session permissions', [
+                'error' => $e->getMessage(),
+            ]);
+
+            return [
+                'success' => false,
+                'message' => 'Error: ' . $e->getMessage(),
+            ];
+        }
+    }
+
+    /**
+     * Clear uploads directory (old files)
+     */
+    public function clearOldUploads(int $daysToKeep = 90): array
+    {
+        try {
+            $uploadsDir = $this->projectDir . '/public/uploads';
+
+            if (!is_dir($uploadsDir)) {
+                return [
+                    'success' => false,
+                    'message' => 'Uploads directory does not exist',
+                ];
+            }
+
+            $this->logger->info('Cleaning old uploads', [
+                'days_to_keep' => $daysToKeep,
+            ]);
+
+            $sizeBefore = $this->getDirectorySize($uploadsDir);
+            $deletedCount = 0;
+            $cutoffTime = time() - ($daysToKeep * 86400);
+
+            $files = glob($uploadsDir . '/*');
+            foreach ($files as $file) {
+                if (is_file($file) && filemtime($file) < $cutoffTime) {
+                    @unlink($file);
+                    $deletedCount++;
+                }
+            }
+
+            $sizeAfter = $this->getDirectorySize($uploadsDir);
+            $freedSpace = $sizeBefore - $sizeAfter;
+
+            $this->logger->info('Old uploads cleaned successfully', [
+                'deleted_files' => $deletedCount,
+                'freed_space' => $this->formatBytes($freedSpace),
+            ]);
+
+            return [
+                'success' => true,
+                'message' => "Cleaned $deletedCount old uploads. Freed: " . $this->formatBytes($freedSpace),
+            ];
+        } catch (\Exception $e) {
+            $this->logger->error('Failed to clean old uploads', [
+                'error' => $e->getMessage(),
+            ]);
+
+            return [
+                'success' => false,
+                'message' => 'Error: ' . $e->getMessage(),
+            ];
+        }
+    }
+
+    /**
+     * Run composer install (with retry)
+     */
+    public function runComposerInstall(): array
+    {
+        try {
+            $this->logger->info('Running composer install');
+
+            $composerBin = $this->findComposerBinary();
+            if (!$composerBin) {
+                return [
+                    'success' => false,
+                    'message' => 'Composer binary not found. Please install composer manually.',
+                ];
+            }
+
+            $output = [];
+            $returnCode = 0;
+
+            exec("cd {$this->projectDir} && $composerBin install --no-interaction --optimize-autoloader 2>&1", $output, $returnCode);
+
+            if ($returnCode === 0) {
+                $this->logger->info('Composer install completed successfully');
+                return [
+                    'success' => true,
+                    'message' => 'Composer dependencies installed successfully',
+                ];
+            }
+
+            return [
+                'success' => false,
+                'message' => 'Composer install failed: ' . implode("\n", $output),
+            ];
+        } catch (\Exception $e) {
+            $this->logger->error('Failed to run composer install', [
+                'error' => $e->getMessage(),
+            ]);
+
+            return [
+                'success' => false,
+                'message' => 'Error: ' . $e->getMessage(),
+            ];
+        }
+    }
+
+    /**
+     * Fix directory permissions recursively
+     */
+    private function fixDirectoryPermissionsRecursive(string $directory): void
+    {
+        try {
+            $items = new \RecursiveIteratorIterator(
+                new \RecursiveDirectoryIterator($directory, \RecursiveDirectoryIterator::SKIP_DOTS),
+                \RecursiveIteratorIterator::SELF_FIRST
+            );
+
+            foreach ($items as $item) {
+                if ($item->isDir()) {
+                    @chmod($item->getPathname(), 0775);
+                } else {
+                    @chmod($item->getPathname(), 0664);
+                }
+            }
+        } catch (\Exception $e) {
+            $this->logger->warning('Failed to fix some permissions recursively', [
+                'error' => $e->getMessage(),
+            ]);
+        }
+    }
+
+    /**
+     * Find composer binary
+     */
+    private function findComposerBinary(): ?string
+    {
+        // Check common locations
+        $locations = [
+            '/usr/local/bin/composer',
+            '/usr/bin/composer',
+            $this->projectDir . '/composer.phar',
+        ];
+
+        foreach ($locations as $location) {
+            if (file_exists($location) && is_executable($location)) {
+                return $location;
+            }
+        }
+
+        // Try to find in PATH
+        $which = shell_exec('which composer 2>/dev/null');
+        if ($which) {
+            return trim($which);
+        }
+
+        return null;
+    }
+
+    /**
      * Format bytes to human-readable format
      */
     private function formatBytes(int|float $bytes, int $precision = 2): string

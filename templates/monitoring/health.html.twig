@@ -304,6 +304,301 @@
                 </div>
             </div>
         </div>
+
+        {# File Permissions #}
+        {% if health_checks.permissions is defined %}
+        <div class="col-md-6 mb-4">
+            <div class="card h-100 border-{{ health_checks.permissions.status == 'healthy' ? 'success' : 'danger' }}">
+                <div class="card-header bg-{{ health_checks.permissions.status == 'healthy' ? 'success' : 'danger' }} text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-shield-lock"></i> File Permissions
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-5">var/ Writable:</dt>
+                        <dd class="col-sm-7">
+                            {% if health_checks.permissions.var_writable %}
+                                <i class="bi bi-check-circle text-success"></i> Yes
+                            {% else %}
+                                <i class="bi bi-x-circle text-danger"></i> No
+                            {% endif %}
+                        </dd>
+
+                        <dt class="col-sm-5">uploads/ Writable:</dt>
+                        <dd class="col-sm-7">
+                            {% if health_checks.permissions.uploads_writable is null %}
+                                <span class="text-muted">N/A</span>
+                            {% elseif health_checks.permissions.uploads_writable %}
+                                <i class="bi bi-check-circle text-success"></i> Yes
+                            {% else %}
+                                <i class="bi bi-x-circle text-danger"></i> No
+                            {% endif %}
+                        </dd>
+
+                        {% if health_checks.permissions.issues|length > 0 %}
+                            <dt class="col-sm-5">Issues:</dt>
+                            <dd class="col-sm-7">
+                                {% for issue in health_checks.permissions.issues %}
+                                    <span class="badge bg-danger">{{ issue }}</span><br>
+                                {% endfor %}
+                            </dd>
+                        {% endif %}
+                    </dl>
+
+                    {% if is_granted('MONITORING_MANAGE') and health_checks.permissions.status != 'healthy' %}
+                        <div class="mt-3">
+                            {% if not health_checks.permissions.var_writable %}
+                                <button class="btn btn-sm btn-danger auto-fix-btn"
+                                        onclick="autoFix('var-permissions', this)">
+                                    <i class="bi bi-wrench"></i> Fix var/ Permissions
+                                </button>
+                            {% endif %}
+                            {% if health_checks.permissions.uploads_writable is not null and not health_checks.permissions.uploads_writable %}
+                                <button class="btn btn-sm btn-danger auto-fix-btn"
+                                        onclick="autoFix('uploads-permissions', this)">
+                                    <i class="bi bi-wrench"></i> Fix uploads/ Permissions
+                                </button>
+                            {% endif %}
+                            <div id="fix-result-var-permissions"></div>
+                            <div id="fix-result-uploads-permissions"></div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {# Composer Dependencies #}
+        {% if health_checks.composer is defined %}
+        <div class="col-md-6 mb-4">
+            <div class="card h-100 border-{{ health_checks.composer.status == 'healthy' ? 'success' : 'danger' }}">
+                <div class="card-header bg-{{ health_checks.composer.status == 'healthy' ? 'success' : 'danger' }} text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-box-seam"></i> Composer
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-5">Status:</dt>
+                        <dd class="col-sm-7">
+                            <span class="badge bg-{{ health_checks.composer.status == 'healthy' ? 'success' : 'danger' }}">
+                                {{ health_checks.composer.status|upper }}
+                            </span>
+                        </dd>
+
+                        <dt class="col-sm-5">composer.lock:</dt>
+                        <dd class="col-sm-7">
+                            {% if health_checks.composer.lock_exists %}
+                                <i class="bi bi-check-circle text-success"></i> Exists
+                            {% else %}
+                                <i class="bi bi-x-circle text-danger"></i> Missing
+                            {% endif %}
+                        </dd>
+
+                        <dt class="col-sm-5">vendor/:</dt>
+                        <dd class="col-sm-7">
+                            {% if health_checks.composer.vendor_exists %}
+                                <i class="bi bi-check-circle text-success"></i> Exists
+                            {% else %}
+                                <i class="bi bi-x-circle text-danger"></i> Missing
+                            {% endif %}
+                        </dd>
+
+                        <dt class="col-sm-5">Message:</dt>
+                        <dd class="col-sm-7">{{ health_checks.composer.message }}</dd>
+                    </dl>
+
+                    {% if is_granted('MONITORING_MANAGE') and health_checks.composer.status != 'healthy' %}
+                        <div class="mt-3">
+                            <button class="btn btn-sm btn-danger auto-fix-btn"
+                                    onclick="autoFix('composer-install', this)">
+                                <i class="bi bi-download"></i> Run Composer Install
+                            </button>
+                            <div id="fix-result-composer-install"></div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {# Environment Variables #}
+        {% if health_checks.environment is defined %}
+        <div class="col-md-6 mb-4">
+            <div class="card h-100 border-{{ health_checks.environment.status == 'healthy' ? 'success' : 'danger' }}">
+                <div class="card-header bg-{{ health_checks.environment.status == 'healthy' ? 'success' : 'danger' }} text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-file-earmark-text"></i> Environment
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-5">.env File:</dt>
+                        <dd class="col-sm-7">
+                            {% if health_checks.environment.env_file_exists %}
+                                <i class="bi bi-check-circle text-success"></i> Exists
+                            {% else %}
+                                <i class="bi bi-x-circle text-danger"></i> Missing
+                            {% endif %}
+                        </dd>
+
+                        <dt class="col-sm-5">.env.local File:</dt>
+                        <dd class="col-sm-7">
+                            {% if health_checks.environment.env_local_exists %}
+                                <i class="bi bi-check-circle text-success"></i> Exists
+                            {% else %}
+                                <span class="text-muted">Not used</span>
+                            {% endif %}
+                        </dd>
+
+                        {% if health_checks.environment.missing_vars|length > 0 %}
+                            <dt class="col-sm-5">Missing Vars:</dt>
+                            <dd class="col-sm-7">
+                                {% for var in health_checks.environment.missing_vars %}
+                                    <code class="text-danger">{{ var }}</code>{% if not loop.last %}, {% endif %}
+                                {% endfor %}
+                            </dd>
+                        {% else %}
+                            <dt class="col-sm-5">All Required Vars:</dt>
+                            <dd class="col-sm-7">
+                                <i class="bi bi-check-circle text-success"></i> Present
+                            </dd>
+                        {% endif %}
+                    </dl>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {# PHP Configuration #}
+        {% if health_checks.php_config is defined %}
+        <div class="col-md-6 mb-4">
+            <div class="card h-100 border-{{ health_checks.php_config.status == 'healthy' ? 'success' : 'warning' }}">
+                <div class="card-header bg-{{ health_checks.php_config.status == 'healthy' ? 'success' : 'warning' }} text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-sliders"></i> PHP Configuration
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-5">OPcache:</dt>
+                        <dd class="col-sm-7">
+                            {% if health_checks.php_config.opcache_enabled %}
+                                <i class="bi bi-check-circle text-success"></i> Enabled
+                            {% else %}
+                                <i class="bi bi-x-circle text-warning"></i> Disabled
+                            {% endif %}
+                        </dd>
+
+                        <dt class="col-sm-5">Memory Limit:</dt>
+                        <dd class="col-sm-7">
+                            <code>{{ health_checks.php_config.memory_limit }}</code>
+                            {% if health_checks.php_config.memory_sufficient %}
+                                <i class="bi bi-check-circle text-success"></i>
+                            {% else %}
+                                <i class="bi bi-exclamation-triangle text-warning"></i>
+                            {% endif %}
+                        </dd>
+
+                        {% if health_checks.php_config.issues|length > 0 %}
+                            <dt class="col-sm-5">Issues:</dt>
+                            <dd class="col-sm-7">
+                                {% for issue in health_checks.php_config.issues %}
+                                    <span class="badge bg-warning">{{ issue }}</span><br>
+                                {% endfor %}
+                            </dd>
+                        {% endif %}
+                    </dl>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {# Session Storage #}
+        {% if health_checks.sessions is defined %}
+        <div class="col-md-6 mb-4">
+            <div class="card h-100 border-{{ health_checks.sessions.status == 'healthy' ? 'success' : 'danger' }}">
+                <div class="card-header bg-{{ health_checks.sessions.status == 'healthy' ? 'success' : 'danger' }} text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-key"></i> Sessions
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-5">Handler:</dt>
+                        <dd class="col-sm-7"><code>{{ health_checks.sessions.handler }}</code></dd>
+
+                        <dt class="col-sm-5">Save Path:</dt>
+                        <dd class="col-sm-7"><code class="small">{{ health_checks.sessions.save_path }}</code></dd>
+
+                        <dt class="col-sm-5">Writable:</dt>
+                        <dd class="col-sm-7">
+                            {% if health_checks.sessions.writable %}
+                                <i class="bi bi-check-circle text-success"></i> Yes
+                            {% else %}
+                                <i class="bi bi-x-circle text-danger"></i> No
+                            {% endif %}
+                        </dd>
+                    </dl>
+
+                    {% if is_granted('MONITORING_MANAGE') and not health_checks.sessions.writable %}
+                        <div class="mt-3">
+                            <button class="btn btn-sm btn-danger auto-fix-btn"
+                                    onclick="autoFix('session-permissions', this)">
+                                <i class="bi bi-wrench"></i> Fix Permissions
+                            </button>
+                            <div id="fix-result-session-permissions"></div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {# Uploads Directory #}
+        {% if health_checks.uploads is defined %}
+        <div class="col-md-6 mb-4">
+            <div class="card h-100 border-success">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-cloud-upload"></i> Uploads
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-5">Directory:</dt>
+                        <dd class="col-sm-7"><code class="small">{{ health_checks.uploads.directory }}</code></dd>
+
+                        <dt class="col-sm-5">Current Size:</dt>
+                        <dd class="col-sm-7">{{ health_checks.uploads.size }}</dd>
+
+                        <dt class="col-sm-5">Free Space:</dt>
+                        <dd class="col-sm-7">{{ health_checks.uploads.free_space }}</dd>
+
+                        <dt class="col-sm-5">Writable:</dt>
+                        <dd class="col-sm-7">
+                            {% if health_checks.uploads.writable %}
+                                <i class="bi bi-check-circle text-success"></i> Yes
+                            {% else %}
+                                <i class="bi bi-x-circle text-danger"></i> No
+                            {% endif %}
+                        </dd>
+                    </dl>
+
+                    {% if is_granted('MONITORING_MANAGE') %}
+                        <div class="mt-3">
+                            <button class="btn btn-sm btn-warning auto-fix-btn"
+                                    onclick="autoFix('clean-uploads', this)">
+                                <i class="bi bi-trash"></i> Clean Old Uploads
+                            </button>
+                            <div id="fix-result-clean-uploads"></div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
     </div>
 
     {# Quick Actions #}
