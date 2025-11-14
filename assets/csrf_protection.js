@@ -39,7 +39,7 @@ export function generateCsrfToken (formElement) {
     csrfField.dispatchEvent(new Event('change', { bubbles: true }));
 
     if (csrfCookie && tokenCheck.test(csrfToken)) {
-        const cookie = csrfCookie + '_' + csrfToken + '=' + csrfCookie + '; path=/; samesite=strict';
+        const cookie = csrfCookie + '_' + csrfToken + '=' + csrfCookie + '; path=/; samesite=lax';
         document.cookie = window.location.protocol === 'https:' ? '__Host-' + cookie + '; secure' : cookie;
     }
 }
@@ -71,7 +71,7 @@ export function removeCsrfToken (formElement) {
     const csrfCookie = csrfField.getAttribute('data-csrf-protection-cookie-value');
 
     if (tokenCheck.test(csrfField.value) && nameCheck.test(csrfCookie)) {
-        const cookie = csrfCookie + '_' + csrfField.value + '=0; path=/; samesite=strict; max-age=0';
+        const cookie = csrfCookie + '_' + csrfField.value + '=0; path=/; samesite=lax; max-age=0';
 
         document.cookie = window.location.protocol === 'https:' ? '__Host-' + cookie + '; secure' : cookie;
     }
