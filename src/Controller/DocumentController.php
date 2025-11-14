@@ -38,19 +38,46 @@ class DocumentController extends AbstractController
     ) {}
 
     #[Route('/', name: 'app_document_index')]
-    public function index(): Response
+    public function index(Request $request): Response
     {
         // Get current tenant
         $user = $this->security->getUser();
         $tenant = $user?->getTenant();
 
-        // Get documents: tenant-filtered if user has tenant, all if not
+        // Get view filter parameter
+        $view = $request->query->get('view', 'inherited'); // Default: inherited
+
+        // Get documents based on view filter
         if ($tenant) {
-            $allDocuments = $this->documentService->getDocumentsForTenant($tenant);
+            // Determine which documents to load based on view parameter
+            switch ($view) {
+                case 'own':
+                    // Only own documents
+                    $allDocuments = $this->documentRepository->findByTenant($tenant);
+                    break;
+                case 'subsidiaries':
+                    // Own + from all subsidiaries (for parent companies)
+                    $allDocuments = $this->documentRepository->findByTenantIncludingSubsidiaries($tenant);
+                    break;
+                case 'inherited':
+                default:
+                    // Own + inherited from parents (default behavior)
+                    $allDocuments = $this->documentService->getDocumentsForTenant($tenant);
+                    break;
+            }
+
             $inheritanceInfo = $this->documentService->getDocumentInheritanceInfo($tenant);
+            $inheritanceInfo['hasSubsidiaries'] = $tenant->getSubsidiaries()->count() > 0;
+            $inheritanceInfo['currentView'] = $view;
         } else {
             $allDocuments = $this->documentRepository->findAll();
-            $inheritanceInfo = ['hasParent' => false, 'canInherit' => false, 'governanceModel' => null];
+            $inheritanceInfo = [
+                'hasParent' => false,
+                'canInherit' => false,
+                'governanceModel' => null,
+                'hasSubsidiaries' => false,
+                'currentView' => 'own'
+            ];
         }
 
         // Filter to active only
