@@ -68,4 +68,49 @@ class IncidentRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * Find all incidents for a tenant (own incidents only)
+     *
+     * @param \App\Entity\Tenant $tenant The tenant to find incidents for
+     * @return Incident[] Array of Incident entities
+     */
+    public function findByTenant($tenant): array
+    {
+        return $this->createQueryBuilder('i')
+            ->where('i.tenant = :tenant')
+            ->setParameter('tenant', $tenant)
+            ->orderBy('i.detectedAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Find incidents by tenant including all ancestors (for hierarchical governance)
+     * This allows viewing inherited incidents from parent companies, grandparents, etc.
+     *
+     * @param \App\Entity\Tenant $tenant The tenant to find incidents for
+     * @param \App\Entity\Tenant|null $parentTenant DEPRECATED: Use tenant's getAllAncestors() instead
+     * @return Incident[] Array of Incident entities (own + inherited from all ancestors)
+     */
+    public function findByTenantIncludingParent($tenant, $parentTenant = null): array
+    {
+        // Get all ancestors (parent, grandparent, great-grandparent, etc.)
+        $ancestors = $tenant->getAllAncestors();
+
+        $qb = $this->createQueryBuilder('i')
+            ->where('i.tenant = :tenant')
+            ->setParameter('tenant', $tenant);
+
+        // Include incidents from all ancestors in the hierarchy
+        if (!empty($ancestors)) {
+            $qb->orWhere('i.tenant IN (:ancestors)')
+               ->setParameter('ancestors', $ancestors);
+        }
+
+        return $qb
+            ->orderBy('i.detectedAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 }
