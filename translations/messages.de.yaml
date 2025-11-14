@@ -1182,6 +1182,10 @@ document:
   update: 'Dokument aktualisieren'
   upload: 'Dokument hochladen'
 
+  section:
+    basic_info: 'Dokumentinformationen'
+    file_upload: 'Datei-Upload'
+
   field:
     name: Dokumentname
     description: Beschreibung
@@ -1206,7 +1210,12 @@ document:
     description: Kurze Beschreibung des Dokuments...
 
   help:
-    file: Maximal 10 MB. Erlaubte Formate PDF, Word, Excel, Bilder, Text
+    name: 'Eindeutiger Name des Dokuments'
+    description: 'Detaillierte Beschreibung des Dokumentinhalts und Zwecks'
+    document_type: 'Kategorie des Dokuments (Richtlinie, Verfahren, etc.)'
+    file: 'Wählen Sie eine Datei zum Hochladen'
+    file_edit: 'Neue Datei hochladen (optional)'
+    edit_file: 'Lassen Sie das Feld leer, um die vorhandene Datei beizubehalten'
 
   file_help: 'Erlaubte Dateitypen: PDF, Word, Excel, Bilder, Text'
   edit_file_help: 'Laden Sie eine neue Datei hoch, um die bestehende zu ersetzen'
@@ -1252,6 +1261,8 @@ document:
 
   confirm:
     delete: 'Möchten Sie dieses Dokument wirklich löschen?'
+
+  delete_warning: 'Das Löschen dieses Dokuments kann nicht rückgängig gemacht werden.'
 
   description:
     by_type: 'Dokumente nach Typ'
