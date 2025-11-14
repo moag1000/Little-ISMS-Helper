@@ -2173,6 +2173,9 @@ user:
   error:
     no_users_selected: No users selected
     no_file_uploaded: No file uploaded
+    cannot_deactivate_initial_admin: The initial setup administrator cannot be deactivated to ensure that a system administrator is always available.
+    cannot_delete_initial_admin: The initial setup administrator cannot be deleted to ensure that a system administrator is always available.
+    cannot_remove_admin_role_from_initial_admin: The admin role cannot be removed from the initial setup administrator. The system requires at least one administrator.
   warning:
     own_password_changed: 'Warning: You have changed your own password. You may be automatically logged out.'
     session_will_be_invalidated: 'Warning: For security reasons, your session may be invalidated after this change. Please log in again if necessary.'
@@ -2184,6 +2187,11 @@ user:
     created: User created successfully.
     updated: User updated successfully.
     deleted: User deleted successfully.
+  info:
+    bulk_skipped_initial_admin: '%count% users skipped: Initial setup administrator (protected)'
+    bulk_skipped_current_user: '%count% users skipped: Your own account (self-deactivation not allowed)'
+    bulk_skipped_no_permission: '%count% users skipped: Missing permission'
+    bulk_skipped_already_has_role: '%count% users skipped: Role already assigned'
   action:
     export: Export
     import: Import
