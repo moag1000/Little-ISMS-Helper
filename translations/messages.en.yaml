@@ -1176,6 +1176,10 @@ document:
   update: 'Update Document'
   upload: 'Upload Document'
 
+  section:
+    basic_info: 'Document Information'
+    file_upload: 'File Upload'
+
   field:
     name: Document Name
     description: Description
@@ -1200,7 +1204,12 @@ document:
     description: Brief description of the document...
 
   help:
-    file: Maximum 10 MB. Allowed formats PDF, Word, Excel, images, text
+    name: 'Unique name of the document'
+    description: 'Detailed description of the document content and purpose'
+    document_type: 'Category of the document (Policy, Procedure, etc.)'
+    file: 'Choose a file to upload'
+    file_edit: 'Upload new file (optional)'
+    edit_file: 'Leave blank to keep the existing file'
 
   file_help: 'Allowed file types: PDF, Word, Excel, Images, Text'
   edit_file_help: 'Upload a new file to replace the existing one'
@@ -1245,6 +1254,8 @@ document:
 
   confirm:
     delete: 'Do you really want to delete this document?'
+
+  delete_warning: 'Deleting this document cannot be undone.'
 
   description:
     by_type: 'Documents by Type'

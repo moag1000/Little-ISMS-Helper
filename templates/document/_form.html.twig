@@ -1,0 +1,87 @@
+{#
+    Document Form Partial (Accessible)
+    Used by both new.html.twig and edit.html.twig
+    WCAG 2.1 AA Compliant
+#}
+
+{# Basic Information #}
+<fieldset class="mb-4">
+    <legend class="h5 mb-3">
+        <i class="bi bi-info-circle" aria-hidden="true"></i>
+        {{ 'document.section.basic_info'|trans|default('Dokumentinformationen') }}
+    </legend>
+
+    <div class="row">
+        <div class="col-12">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.name,
+                'label': 'document.field.name'|trans|default('Name'),
+                'help': 'document.help.name'|trans|default('Eindeutiger Name des Dokuments'),
+                'required': true
+            } %}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.description,
+                'label': 'document.field.description'|trans|default('Beschreibung'),
+                'help': 'document.help.description'|trans|default('Detaillierte Beschreibung des Dokumentinhalts und Zwecks')
+            } %}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.documentType,
+                'label': 'document.field.document_type'|trans|default('Dokumenttyp'),
+                'help': 'document.help.document_type'|trans|default('Kategorie des Dokuments (Richtlinie, Verfahren, etc.)'),
+                'required': true
+            } %}
+        </div>
+    </div>
+</fieldset>
+
+{# File Upload #}
+<fieldset class="mb-4">
+    <legend class="h5 mb-3">
+        <i class="bi bi-cloud-upload" aria-hidden="true"></i>
+        {{ 'document.section.file_upload'|trans|default('Datei-Upload') }}
+    </legend>
+
+    {% if is_edit_mode|default(false) %}
+        <div class="alert alert-info" role="status">
+            <i class="bi bi-info-circle" aria-hidden="true"></i>
+            {{ 'document.help.edit_file'|trans|default('Lassen Sie das Feld leer, um die vorhandene Datei beizubehalten') }}
+        </div>
+    {% endif %}
+
+    <div class="row">
+        <div class="col-12">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.file,
+                'label': 'document.field.file'|trans|default('Datei'),
+                'help': is_edit_mode|default(false)
+                    ? ('document.help.file_edit'|trans|default('Neue Datei hochladen (optional)'))
+                    : ('document.help.file'|trans|default('Wählen Sie eine Datei zum Hochladen')),
+                'required': not is_edit_mode|default(false)
+            } %}
+        </div>
+    </div>
+</fieldset>
+
+{# Form Actions #}
+<div class="form-actions d-flex gap-2 justify-content-end">
+    <a href="{{ path('app_document_index') }}"
+       class="btn btn-secondary">
+        <i class="bi bi-x-circle" aria-hidden="true"></i>
+        {{ 'common.cancel'|trans }}
+    </a>
+
+    <button type="submit" class="btn btn-primary">
+        <i class="{{ button_icon|default('bi-save') }}" aria-hidden="true"></i>
+        {{ button_label|default('common.save'|trans) }}
+    </button>
+</div>
