@@ -3019,6 +3019,7 @@ tenant:
   field:
     code: Mandanten-Code
     code_help: Eindeutiger alphanumerischer Code (nur a-z, 0-9, _, -)
+    code_auto_generated: Wird automatisch aus dem Namen generiert
     name: Name
     name_help: Vollständiger Name der Organisation
     description: Beschreibung
@@ -3062,6 +3063,22 @@ tenant:
   users:
     empty: Keine Benutzer in diesem Mandanten
     showing: 'Zeige %count% von %total% Benutzern'
+    manage: Benutzer verwalten
+    manage_title: Benutzer verwalten
+    add_user: Benutzer hinzufügen
+    enter_email: E-Mail-Adresse des Benutzers eingeben
+    add: Hinzufügen
+    add_help: Geben Sie die E-Mail-Adresse eines existierenden Benutzers ein, um ihn diesem Mandanten zuzuordnen
+    current_users: Aktuelle Benutzer
+    confirm_remove: Möchten Sie den Benutzer %email% wirklich aus diesem Mandanten entfernen?
+    flash:
+      email_required: E-Mail-Adresse ist erforderlich
+      user_not_found: Benutzer mit dieser E-Mail-Adresse wurde nicht gefunden
+      already_assigned: Benutzer ist bereits diesem Mandanten zugeordnet
+      user_added: Benutzer erfolgreich zum Mandanten hinzugefügt
+      user_removed: Benutzer erfolgreich vom Mandanten entfernt
+      not_assigned: Benutzer ist nicht diesem Mandanten zugeordnet
+      error: Fehler bei der Benutzer-Verwaltung
   form:
     create_title: Neuen Mandanten anlegen
     edit_title: Mandant bearbeiten
@@ -3868,6 +3885,10 @@ corporate:
     inherited: 'Geerbt'
     subsidiaries: 'Tochter'
     breakdown: 'Eigene: %own% | Geerbt: %inherited% | Tochter: %subsidiaries%'
+  view:
+    own_only: 'Nur Eigene'
+    including_inherited: 'Inkl. Geerbt'
+    including_subsidiaries: 'Inkl. Tochtergesellschaften'
   field:
     actions: 'Aktionen'
     subsidiaries: 'Tochtergesellschaften'

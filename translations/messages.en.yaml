@@ -2981,6 +2981,7 @@ tenant:
   field:
     code: Tenant Code
     code_help: Unique alphanumeric code (only a-z, 0-9, _, -)
+    code_auto_generated: Automatically generated from name
     name: Name
     name_help: Full organization name
     description: Description
@@ -3024,6 +3025,38 @@ tenant:
   users:
     empty: No users in this tenant
     showing: 'Showing %count% of %total% users'
+    manage: Manage Users
+    manage_title: Manage Users
+    add_user: Add User
+    enter_email: Enter user email address
+    add: Add
+    add_help: Enter the email address of an existing user to assign them to this tenant
+    current_users: Current Users
+    confirm_remove: Do you really want to remove user %email% from this tenant?
+    flash:
+      email_required: Email address is required
+      user_not_found: User with this email address was not found
+      already_assigned: User is already assigned to this tenant
+      user_added: User successfully added to tenant
+      user_removed: User successfully removed from tenant
+      not_assigned: User is not assigned to this tenant
+      error: Error managing users
+    manage: Manage Users
+    manage_title: Manage Users
+    add_user: Add User
+    enter_email: Enter user email address
+    add: Add
+    add_help: Enter the email address of an existing user to assign them to this tenant
+    current_users: Current Users
+    confirm_remove: Do you really want to remove user %email% from this tenant?
+    flash:
+      email_required: Email address is required
+      user_not_found: User with this email address was not found
+      already_assigned: User is already assigned to this tenant
+      user_added: User successfully added to tenant
+      user_removed: User successfully removed from tenant
+      not_assigned: User is not assigned to this tenant
+      error: Error managing users
   form:
     create_title: Create New Tenant
     edit_title: Edit Tenant
@@ -3830,6 +3863,10 @@ corporate:
     inherited: 'Inherited'
     subsidiaries: 'Subsidiaries'
     breakdown: 'Own: %own% | Inherited: %inherited% | Subs: %subsidiaries%'
+  view:
+    own_only: 'Own Only'
+    including_inherited: 'Incl. Inherited'
+    including_subsidiaries: 'Incl. Subsidiaries'
   field:
     actions: 'Actions'
     subsidiaries: 'Subsidiaries'
