@@ -81,16 +81,26 @@ RUN chown -R www-data:www-data /var/www/html && \
     chown -R root:root /var/log/supervisor /var/log/nginx
 
 # Configure PHP for production
-RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" && \
-    echo "opcache.enable=1" >> "$PHP_INI_DIR/conf.d/opcache.ini" && \
-    echo "opcache.enable_cli=1" >> "$PHP_INI_DIR/conf.d/opcache.ini" && \
-    echo "opcache.memory_consumption=256" >> "$PHP_INI_DIR/conf.d/opcache.ini" && \
-    echo "opcache.interned_strings_buffer=16" >> "$PHP_INI_DIR/conf.d/opcache.ini" && \
-    echo "opcache.max_accelerated_files=20000" >> "$PHP_INI_DIR/conf.d/opcache.ini" && \
-    echo "opcache.validate_timestamps=0" >> "$PHP_INI_DIR/conf.d/opcache.ini"
+RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 
-# Configure PHP-FPM to listen on TCP port instead of socket (required for nginx config)
-RUN sed -i 's/listen = .*/listen = 127.0.0.1:9000/' /usr/local/etc/php-fpm.d/www.conf
+# Configure OPcache for production (separate file for better management)
+RUN cat > "$PHP_INI_DIR/conf.d/opcache-prod.ini" <<'EOF'
+opcache.enable=1
+opcache.enable_cli=1
+opcache.memory_consumption=256
+opcache.interned_strings_buffer=16
+opcache.max_accelerated_files=20000
+opcache.validate_timestamps=0
+opcache.revalidate_freq=0
+EOF
+
+# Configure PHP-FPM to use Unix socket for better performance
+RUN sed -i 's|listen = .*|listen = /run/php-fpm.sock|' /usr/local/etc/php-fpm.d/www.conf && \
+    sed -i 's|;listen.owner|listen.owner|' /usr/local/etc/php-fpm.d/www.conf && \
+    sed -i 's|;listen.group|listen.group|' /usr/local/etc/php-fpm.d/www.conf && \
+    sed -i 's|;listen.mode = 0660|listen.mode = 0660|' /usr/local/etc/php-fpm.d/www.conf && \
+    mkdir -p /run/php-fpm && \
+    chown www-data:www-data /run/php-fpm
 
 # Configure Nginx
 COPY docker/nginx/default.conf /etc/nginx/http.d/default.conf
@@ -132,8 +142,15 @@ RUN rm -rf vendor/ && \
     composer install --optimize-autoloader --no-interaction --no-scripts --verbose && \
     composer run-script auto-scripts || true
 
-# Enable opcache validation in development
-RUN echo "opcache.validate_timestamps=1" >> "$PHP_INI_DIR/conf.d/opcache.ini" && \
-    echo "opcache.revalidate_freq=2" >> "$PHP_INI_DIR/conf.d/opcache.ini"
+# Replace production OPcache config with development version
+RUN cat > "$PHP_INI_DIR/conf.d/opcache-prod.ini" <<'EOF'
+opcache.enable=1
+opcache.enable_cli=1
+opcache.memory_consumption=256
+opcache.interned_strings_buffer=16
+opcache.max_accelerated_files=20000
+opcache.validate_timestamps=1
+opcache.revalidate_freq=2
+EOF
 
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
