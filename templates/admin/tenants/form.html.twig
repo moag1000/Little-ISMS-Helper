@@ -61,6 +61,41 @@
                                 {{ form_help(form.description) }}
                                 {{ form_errors(form.description) }}
                             </div>
+
+                            <div class="mb-3">
+                                {{ form_label(form.logoFile) }}
+                                {{ form_widget(form.logoFile, {'attr': {'class': 'form-control'}}) }}
+                                {{ form_help(form.logoFile) }}
+                                {{ form_errors(form.logoFile) }}
+                            </div>
+                        </div>
+
+                        {# Corporate Structure #}
+                        <div class="mb-4">
+                            <h6 class="border-bottom pb-2 mb-3">{{ 'corporate.title'|trans }}</h6>
+
+                            <div class="mb-3">
+                                {{ form_label(form.parent) }}
+                                {{ form_widget(form.parent, {'attr': {'class': 'form-select'}}) }}
+                                {{ form_help(form.parent) }}
+                                {{ form_errors(form.parent) }}
+                            </div>
+
+                            <div class="mb-3">
+                                <div class="form-check form-switch">
+                                    {{ form_widget(form.isCorporateParent, {'attr': {'class': 'form-check-input', 'role': 'switch'}}) }}
+                                    {{ form_label(form.isCorporateParent, null, {'label_attr': {'class': 'form-check-label'}}) }}
+                                </div>
+                                {{ form_help(form.isCorporateParent) }}
+                                {{ form_errors(form.isCorporateParent) }}
+                            </div>
+
+                            <div class="mb-3">
+                                {{ form_label(form.corporateNotes) }}
+                                {{ form_widget(form.corporateNotes, {'attr': {'class': 'form-control'}}) }}
+                                {{ form_help(form.corporateNotes) }}
+                                {{ form_errors(form.corporateNotes) }}
+                            </div>
                         </div>
 
                         {# Azure Integration #}
@@ -186,43 +221,55 @@
     {{ parent() }}
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const nameField = document.getElementById('tenant_name');
-            const codeField = document.getElementById('tenant_code');
+            // Find fields by name attribute instead of ID (more reliable)
+            const nameField = document.querySelector('input[name="tenant[name]"]');
+            const codeField = document.querySelector('input[name="tenant[code]"]');
+
+            console.log('Auto-generation script loaded');
+            console.log('Name field:', nameField);
+            console.log('Code field:', codeField);
+
+            if (!nameField || !codeField) {
+                console.error('Could not find name or code fields');
+                return;
+            }
 
             // Only auto-generate for new tenants (when code is empty)
             const isNewTenant = !codeField.value || codeField.value.trim() === '';
+            console.log('Is new tenant:', isNewTenant);
 
-            if (nameField && codeField) {
-                if (isNewTenant) {
-                    // Set readonly for new tenants to prevent manual editing
-                    codeField.setAttribute('readonly', 'readonly');
+            if (isNewTenant) {
+                // Set readonly for new tenants to prevent manual editing
+                codeField.setAttribute('readonly', 'readonly');
+                console.log('Code field set to readonly');
 
-                    nameField.addEventListener('input', function() {
-                        const name = this.value;
+                nameField.addEventListener('input', function() {
+                    const name = this.value;
 
-                        // Convert umlauts and special characters
-                        let code = name
-                            .replace(/ä/g, 'ae')
-                            .replace(/ö/g, 'oe')
-                            .replace(/ü/g, 'ue')
-                            .replace(/Ä/g, 'Ae')
-                            .replace(/Ö/g, 'Oe')
-                            .replace(/Ü/g, 'Ue')
-                            .replace(/ß/g, 'ss')
-                            .replace(/\s+/g, '_')  // Spaces to underscores
-                            .toLowerCase()
-                            .replace(/[^a-z0-9_-]/g, '');  // Remove invalid characters
+                    // Convert umlauts and special characters
+                    let code = name
+                        .replace(/ä/g, 'ae')
+                        .replace(/ö/g, 'oe')
+                        .replace(/ü/g, 'ue')
+                        .replace(/Ä/g, 'Ae')
+                        .replace(/Ö/g, 'Oe')
+                        .replace(/Ü/g, 'Ue')
+                        .replace(/ß/g, 'ss')
+                        .replace(/\s+/g, '_')  // Spaces to underscores
+                        .toLowerCase()
+                        .replace(/[^a-z0-9_-]/g, '');  // Remove invalid characters
 
-                        codeField.value = code;
+                    codeField.value = code;
+                    console.log('Generated code:', code);
+                });
+
+                // Remove readonly before submit so the value is included
+                const form = codeField.closest('form');
+                if (form) {
+                    form.addEventListener('submit', function() {
+                        codeField.removeAttribute('readonly');
+                        console.log('Readonly removed before submit');
                     });
-
-                    // Remove readonly before submit so the value is included
-                    const form = codeField.closest('form');
-                    if (form) {
-                        form.addEventListener('submit', function() {
-                            codeField.removeAttribute('readonly');
-                        });
-                    }
                 }
             }
         });

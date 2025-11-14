@@ -2159,11 +2159,17 @@ user:
     department: Department
     job_title: Job Title
     phone_number: Phone Number
+    avatar: Profile Picture
+    avatar_help: Profile picture (max. 2MB, JPG/PNG/GIF/WebP)
     password: Password
     system_roles: System Roles
     custom_roles: Custom Roles
+    tenant: Tenant
+    tenant_help: Assign the user to a tenant
     active: Active
     email_verified: Email Verified
+  placeholder:
+    tenant: Not assigned to any tenant
   error:
     no_users_selected: No users selected
     no_file_uploaded: No file uploaded
