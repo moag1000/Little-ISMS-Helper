@@ -164,11 +164,19 @@ class UserManagementController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // Check if user is editing themselves
+            $isEditingSelf = $this->getUser() && $this->getUser()->getId() === $user->getId();
+
             // Update password only if provided
             $plainPassword = $form->get('plainPassword')->getData();
             if ($plainPassword) {
                 $hashedPassword = $passwordHasher->hashPassword($user, $plainPassword);
                 $user->setPassword($hashedPassword);
+
+                // Warn user if they changed their own password
+                if ($isEditingSelf) {
+                    $this->addFlash('warning', $translator->trans('user.warning.own_password_changed'));
+                }
             }
 
             // Handle avatar upload
@@ -216,6 +224,30 @@ class UserManagementController extends AbstractController
                 $newValues,
                 sprintf('User "%s %s" (%s) updated', $user->getFirstName(), $user->getLastName(), $user->getEmail())
             );
+
+            // Warn if user edited critical properties of their own account
+            if ($isEditingSelf) {
+                $criticalChanges = false;
+
+                // Check for email change
+                if ($oldValues['email'] !== $newValues['email']) {
+                    $criticalChanges = true;
+                }
+
+                // Check for role changes
+                if ($oldValues['roles'] !== $newValues['roles']) {
+                    $criticalChanges = true;
+                }
+
+                // Check for account deactivation
+                if ($oldValues['is_active'] && !$newValues['is_active']) {
+                    $criticalChanges = true;
+                }
+
+                if ($criticalChanges || $plainPassword) {
+                    $this->addFlash('warning', $translator->trans('user.warning.session_will_be_invalidated'));
+                }
+            }
 
             $this->addFlash('success', $translator->trans('user.success.updated'));
 
