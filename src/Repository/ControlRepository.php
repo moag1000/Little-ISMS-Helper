@@ -252,4 +252,33 @@ class ControlRepository extends ServiceEntityRepository
 
         return $stats;
     }
+
+    /**
+     * Find controls by tenant including all subsidiaries (for corporate parent view)
+     * This allows viewing aggregated controls from all subsidiary companies
+     *
+     * @param \App\Entity\Tenant $tenant The tenant to find controls for
+     * @return Control[] Array of Control entities (own + from all subsidiaries)
+     */
+    public function findByTenantIncludingSubsidiaries($tenant): array
+    {
+        // Get all subsidiaries recursively
+        $subsidiaries = $tenant->getAllSubsidiaries();
+
+        $qb = $this->createQueryBuilder('c')
+            ->where('c.tenant = :tenant')
+            ->setParameter('tenant', $tenant);
+
+        // Include controls from all subsidiaries in the hierarchy
+        if (!empty($subsidiaries)) {
+            $qb->orWhere('c.tenant IN (:subsidiaries)')
+               ->setParameter('subsidiaries', $subsidiaries);
+        }
+
+        return $qb
+            ->orderBy('LENGTH(c.controlId)', 'ASC')
+            ->addOrderBy('c.controlId', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }
