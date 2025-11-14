@@ -4025,3 +4025,25 @@ governance:
   hierarchical: 'Hierarchisch'
   shared: 'Geteilt'
   independent: 'Unabhängig'
+
+# Accessibility
+accessibility:
+  skip_to_content: 'Zum Hauptinhalt springen'
+  skip_to_navigation: 'Zur Navigation springen'
+
+# Form Accessibility
+form:
+  required: 'Pflichtfeld'
+  optional: 'Optional'
+  action:
+    save: 'Speichern'
+    cancel: 'Abbrechen'
+    submit: 'Absenden'
+    delete: 'Löschen'
+    edit: 'Bearbeiten'
+    create: 'Erstellen'
+  validation:
+    required_field: 'Dieses Feld ist erforderlich'
+    invalid_format: 'Ungültiges Format'
+    too_short: 'Zu kurz (min. %min% Zeichen)'
+    too_long: 'Zu lang (max. %max% Zeichen)'
