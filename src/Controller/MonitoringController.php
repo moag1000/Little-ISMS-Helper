@@ -210,10 +210,16 @@ class MonitoringController extends AbstractController
         if (empty($sessionSavePath)) {
             $sessionSavePath = sys_get_temp_dir();
         }
-        $sessionWritable = is_writable($sessionSavePath);
+
+        // Handle open_basedir restrictions gracefully
+        try {
+            $sessionWritable = @is_writable($sessionSavePath);
+        } catch (\Throwable $e) {
+            $sessionWritable = false;
+        }
 
         $healthChecks['sessions'] = [
-            'status' => $sessionWritable ? 'healthy' : 'error',
+            'status' => $sessionWritable ? 'healthy' : 'warning',
             'save_path' => $sessionSavePath,
             'writable' => $sessionWritable,
             'handler' => ini_get('session.save_handler'),
