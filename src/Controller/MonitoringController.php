@@ -174,7 +174,17 @@ class MonitoringController extends AbstractController
         ];
 
         // 10. PHP Configuration Check
-        $opcacheEnabled = function_exists('opcache_get_status') && opcache_get_status();
+        $opcacheEnabled = false;
+        if (function_exists('opcache_get_status')) {
+            try {
+                $opcacheStatus = @opcache_get_status(false);
+                $opcacheEnabled = $opcacheStatus !== false && isset($opcacheStatus['opcache_enabled']) && $opcacheStatus['opcache_enabled'];
+            } catch (\Exception $e) {
+                // OPcache not available
+                $opcacheEnabled = false;
+            }
+        }
+
         $memoryLimit = ini_get('memory_limit');
         $memoryLimitBytes = $this->convertToBytes($memoryLimit);
         $recommendedMemory = 256 * 1024 * 1024; // 256MB
@@ -574,22 +584,33 @@ class MonitoringController extends AbstractController
     private function convertToBytes(string $value): int
     {
         $value = trim($value);
-        $unit = strtolower($value[strlen($value) - 1]);
-        $value = (int) $value;
 
-        switch ($unit) {
+        // Handle -1 (unlimited)
+        if ($value === '-1') {
+            return -1;
+        }
+
+        // Handle empty or invalid values
+        if (empty($value)) {
+            return 0;
+        }
+
+        $lastChar = strtolower($value[strlen($value) - 1]);
+        $numericValue = (int) $value;
+
+        switch ($lastChar) {
             case 'g':
-                $value *= 1024 * 1024 * 1024;
+                $numericValue *= 1024 * 1024 * 1024;
                 break;
             case 'm':
-                $value *= 1024 * 1024;
+                $numericValue *= 1024 * 1024;
                 break;
             case 'k':
-                $value *= 1024;
+                $numericValue *= 1024;
                 break;
         }
 
-        return $value;
+        return $numericValue;
     }
 
     /**
