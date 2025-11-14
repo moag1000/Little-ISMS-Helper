@@ -55,9 +55,10 @@ security:
                 path: /
                 always_remember_me: false
                 # Security: Use secure and httponly cookies
-                secure: true
+                # Note: secure=auto allows HTTP in dev, HTTPS in prod
+                secure: auto
                 httponly: true
-                samesite: 'strict'
+                samesite: 'lax'
 
             # Allow user impersonation (for admins)
             switch_user: true
