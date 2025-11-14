@@ -7,6 +7,7 @@ use App\Repository\ControlRepository;
 use App\Service\SoAReportService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -19,20 +20,69 @@ class StatementOfApplicabilityController extends AbstractController
         private ControlRepository $controlRepository,
         private EntityManagerInterface $entityManager,
         private TranslatorInterface $translator,
-        private SoAReportService $soaReportService
+        private SoAReportService $soaReportService,
+        private Security $security
     ) {}
 
     #[Route('/', name: 'app_soa_index')]
-    public function index(): Response
+    public function index(Request $request): Response
     {
-        $controls = $this->controlRepository->findAllInIsoOrder();
+        // Get current user's tenant
+        $user = $this->security->getUser();
+        $tenant = $user?->getTenant();
+
+        // Get view filter parameter
+        $view = $request->query->get('view', 'inherited'); // Default: inherited
+
+        // Get controls based on view filter
+        if ($tenant) {
+            switch ($view) {
+                case 'own':
+                    $controls = $this->controlRepository->findByTenant($tenant);
+                    break;
+                case 'subsidiaries':
+                    $controls = $this->controlRepository->findByTenantIncludingSubsidiaries($tenant);
+                    break;
+                case 'inherited':
+                default:
+                    $controls = $this->controlRepository->findByTenantIncludingParent($tenant);
+                    break;
+            }
+
+            // Sort by ISO order
+            usort($controls, fn($a, $b) => strcmp($a->getIsoReference() ?? '', $b->getIsoReference() ?? ''));
+
+            $inheritanceInfo = [
+                'hasParent' => $tenant->getParent() !== null,
+                'hasSubsidiaries' => $tenant->getSubsidiaries()->count() > 0,
+                'currentView' => $view
+            ];
+        } else {
+            $controls = $this->controlRepository->findAllInIsoOrder();
+            $inheritanceInfo = [
+                'hasParent' => false,
+                'hasSubsidiaries' => false,
+                'currentView' => 'own'
+            ];
+        }
+
         $stats = $this->controlRepository->getImplementationStats();
         $categoryStats = $this->controlRepository->countByCategory();
+
+        // Calculate detailed statistics based on origin
+        if ($tenant) {
+            $detailedStats = $this->calculateDetailedStats($controls, $tenant);
+        } else {
+            $detailedStats = ['own' => count($controls), 'inherited' => 0, 'subsidiaries' => 0, 'total' => count($controls)];
+        }
 
         return $this->render('soa/index.html.twig', [
             'controls' => $controls,
             'stats' => $stats,
             'categoryStats' => $categoryStats,
+            'inheritanceInfo' => $inheritanceInfo,
+            'currentTenant' => $tenant,
+            'detailedStats' => $detailedStats,
         ]);
     }
 
@@ -119,5 +169,47 @@ class StatementOfApplicabilityController extends AbstractController
     public function previewPdf(): Response
     {
         return $this->soaReportService->streamSoAReport();
+    }
+
+    /**
+     * Calculate detailed statistics showing breakdown by origin
+     */
+    private function calculateDetailedStats(array $items, $currentTenant): array
+    {
+        $ownCount = 0;
+        $inheritedCount = 0;
+        $subsidiariesCount = 0;
+
+        // Get ancestors and subsidiaries for comparison
+        $ancestors = $currentTenant->getAllAncestors();
+        $ancestorIds = array_map(fn($t) => $t->getId(), $ancestors);
+
+        $subsidiaries = $currentTenant->getAllSubsidiaries();
+        $subsidiaryIds = array_map(fn($t) => $t->getId(), $subsidiaries);
+
+        foreach ($items as $item) {
+            $itemTenant = $item->getTenant();
+            if (!$itemTenant) {
+                continue;
+            }
+
+            $itemTenantId = $itemTenant->getId();
+            $currentTenantId = $currentTenant->getId();
+
+            if ($itemTenantId === $currentTenantId) {
+                $ownCount++;
+            } elseif (in_array($itemTenantId, $ancestorIds)) {
+                $inheritedCount++;
+            } elseif (in_array($itemTenantId, $subsidiaryIds)) {
+                $subsidiariesCount++;
+            }
+        }
+
+        return [
+            'own' => $ownCount,
+            'inherited' => $inheritedCount,
+            'subsidiaries' => $subsidiariesCount,
+            'total' => $ownCount + $inheritedCount + $subsidiariesCount
+        ];
     }
 }

@@ -156,22 +156,26 @@ class ControlRepository extends ServiceEntityRepository
     }
 
     /**
-     * Find controls by tenant or parent tenant (for hierarchical governance)
-     * This allows viewing inherited controls from parent companies
+     * Find controls by tenant including all ancestors (for hierarchical governance)
+     * This allows viewing inherited controls from parent companies, grandparents, etc.
      *
      * @param \App\Entity\Tenant $tenant The tenant to find controls for
-     * @param \App\Entity\Tenant|null $parentTenant Optional parent tenant for inherited controls
-     * @return Control[] Array of Control entities (own + inherited)
+     * @param \App\Entity\Tenant|null $parentTenant DEPRECATED: Use tenant's getAllAncestors() instead
+     * @return Control[] Array of Control entities (own + inherited from all ancestors)
      */
     public function findByTenantIncludingParent($tenant, $parentTenant = null): array
     {
+        // Get all ancestors (parent, grandparent, great-grandparent, etc.)
+        $ancestors = $tenant->getAllAncestors();
+
         $qb = $this->createQueryBuilder('c')
             ->where('c.tenant = :tenant')
             ->setParameter('tenant', $tenant);
 
-        if ($parentTenant) {
-            $qb->orWhere('c.tenant = :parentTenant')
-               ->setParameter('parentTenant', $parentTenant);
+        // Include controls from all ancestors in the hierarchy
+        if (!empty($ancestors)) {
+            $qb->orWhere('c.tenant IN (:ancestors)')
+               ->setParameter('ancestors', $ancestors);
         }
 
         return $qb
@@ -247,5 +251,34 @@ class ControlRepository extends ServiceEntityRepository
         $stats['not_applicable'] = (int) $notApplicableCount;
 
         return $stats;
+    }
+
+    /**
+     * Find controls by tenant including all subsidiaries (for corporate parent view)
+     * This allows viewing aggregated controls from all subsidiary companies
+     *
+     * @param \App\Entity\Tenant $tenant The tenant to find controls for
+     * @return Control[] Array of Control entities (own + from all subsidiaries)
+     */
+    public function findByTenantIncludingSubsidiaries($tenant): array
+    {
+        // Get all subsidiaries recursively
+        $subsidiaries = $tenant->getAllSubsidiaries();
+
+        $qb = $this->createQueryBuilder('c')
+            ->where('c.tenant = :tenant')
+            ->setParameter('tenant', $tenant);
+
+        // Include controls from all subsidiaries in the hierarchy
+        if (!empty($subsidiaries)) {
+            $qb->orWhere('c.tenant IN (:subsidiaries)')
+               ->setParameter('subsidiaries', $subsidiaries);
+        }
+
+        return $qb
+            ->orderBy('LENGTH(c.controlId)', 'ASC')
+            ->addOrderBy('c.controlId', 'ASC')
+            ->getQuery()
+            ->getResult();
     }
 }

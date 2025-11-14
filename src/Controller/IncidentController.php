@@ -11,6 +11,7 @@ use App\Service\PdfExportService;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -27,22 +28,63 @@ class IncidentController extends AbstractController
         private EmailNotificationService $emailService,
         private PdfExportService $pdfService,
         private UserRepository $userRepository,
-        private TranslatorInterface $translator
+        private TranslatorInterface $translator,
+        private Security $security
     ) {}
 
     #[Route('/', name: 'app_incident_index')]
     #[IsGranted('ROLE_USER')]
     public function index(Request $request): Response
     {
+        // Get current user's tenant
+        $user = $this->security->getUser();
+        $tenant = $user?->getTenant();
+
         // Get filter parameters
         $severity = $request->query->get('severity');
         $category = $request->query->get('category');
         $status = $request->query->get('status');
         $dataBreachOnly = $request->query->get('data_breach_only');
         $nis2Only = $request->query->get('nis2_only');
+        $view = $request->query->get('view', 'inherited'); // Default: inherited
 
-        // Get all incidents
-        $allIncidents = $this->incidentRepository->findAll();
+        // Get incidents based on view filter
+        if ($tenant) {
+            // Determine which incidents to load based on view parameter
+            switch ($view) {
+                case 'own':
+                    // Only own incidents
+                    $allIncidents = $this->incidentRepository->findByTenant($tenant);
+                    $openIncidents = array_filter($allIncidents, fn($i) => in_array($i->getStatus(), ['new', 'in_progress', 'investigating']));
+                    break;
+                case 'subsidiaries':
+                    // Own + from all subsidiaries (for parent companies)
+                    $allIncidents = $this->incidentRepository->findByTenantIncludingSubsidiaries($tenant);
+                    $openIncidents = array_filter($allIncidents, fn($i) => in_array($i->getStatus(), ['new', 'in_progress', 'investigating']));
+                    break;
+                case 'inherited':
+                default:
+                    // Own + inherited from parents (default behavior)
+                    $allIncidents = $this->incidentRepository->findByTenantIncludingParent($tenant);
+                    $openIncidents = array_filter($allIncidents, fn($i) => in_array($i->getStatus(), ['new', 'in_progress', 'investigating']));
+                    break;
+            }
+
+            $inheritanceInfo = [
+                'hasParent' => $tenant->getParent() !== null,
+                'hasSubsidiaries' => $tenant->getSubsidiaries()->count() > 0,
+                'currentView' => $view
+            ];
+        } else {
+            // Fallback for users without tenant (e.g., super admins)
+            $allIncidents = $this->incidentRepository->findAll();
+            $openIncidents = $this->incidentRepository->findOpenIncidents();
+            $inheritanceInfo = [
+                'hasParent' => false,
+                'hasSubsidiaries' => false,
+                'currentView' => 'own'
+            ];
+        }
 
         // Apply filters
         if ($severity) {
@@ -65,18 +107,28 @@ class IncidentController extends AbstractController
             $allIncidents = array_filter($allIncidents, fn($incident) => $incident->requiresNis2Reporting());
         }
 
-        // Re-index array after filtering to avoid gaps in keys
+        // Re-index arrays after filtering to avoid gaps in keys
         $allIncidents = array_values($allIncidents);
+        $openIncidents = array_values($openIncidents);
 
-        $openIncidents = $this->incidentRepository->findOpenIncidents();
         $categoryStats = $this->incidentRepository->countByCategory();
         $severityStats = $this->incidentRepository->countBySeverity();
+
+        // Calculate detailed statistics based on origin
+        if ($tenant) {
+            $detailedStats = $this->calculateDetailedStats($allIncidents, $tenant);
+        } else {
+            $detailedStats = ['own' => count($allIncidents), 'inherited' => 0, 'subsidiaries' => 0, 'total' => count($allIncidents)];
+        }
 
         return $this->render('incident/index.html.twig', [
             'openIncidents' => $openIncidents,
             'allIncidents' => $allIncidents,
             'categoryStats' => $categoryStats,
             'severityStats' => $severityStats,
+            'inheritanceInfo' => $inheritanceInfo,
+            'currentTenant' => $tenant,
+            'detailedStats' => $detailedStats,
         ]);
     }
 
@@ -204,5 +256,47 @@ class IncidentController extends AbstractController
             'Content-Disposition' => sprintf('attachment; filename="%s"', $filename),
             'Content-Length' => strlen($pdf),
         ]);
+    }
+
+    /**
+     * Calculate detailed statistics showing breakdown by origin
+     */
+    private function calculateDetailedStats(array $items, $currentTenant): array
+    {
+        $ownCount = 0;
+        $inheritedCount = 0;
+        $subsidiariesCount = 0;
+
+        // Get ancestors and subsidiaries for comparison
+        $ancestors = $currentTenant->getAllAncestors();
+        $ancestorIds = array_map(fn($t) => $t->getId(), $ancestors);
+
+        $subsidiaries = $currentTenant->getAllSubsidiaries();
+        $subsidiaryIds = array_map(fn($t) => $t->getId(), $subsidiaries);
+
+        foreach ($items as $item) {
+            $itemTenant = $item->getTenant();
+            if (!$itemTenant) {
+                continue;
+            }
+
+            $itemTenantId = $itemTenant->getId();
+            $currentTenantId = $currentTenant->getId();
+
+            if ($itemTenantId === $currentTenantId) {
+                $ownCount++;
+            } elseif (in_array($itemTenantId, $ancestorIds)) {
+                $inheritedCount++;
+            } elseif (in_array($itemTenantId, $subsidiaryIds)) {
+                $subsidiariesCount++;
+            }
+        }
+
+        return [
+            'own' => $ownCount,
+            'inherited' => $inheritedCount,
+            'subsidiaries' => $subsidiariesCount,
+            'total' => $ownCount + $inheritedCount + $subsidiariesCount
+        ];
     }
 }

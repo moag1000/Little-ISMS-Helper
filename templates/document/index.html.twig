@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_macros/inheritance_badge.html.twig' as inheritance %}
 
 {% block title %}Documents{% endblock %}
 
@@ -43,6 +44,7 @@
                                 <a href="{{ path('app_document_show', {id: document.id}) }}">
                                     {{ document.name }}
                                 </a>
+                                {{ inheritance.small_badge(document, currentTenant) }}
                             </td>
                             <td><span class="badge">{{ document.documentType|upper }}</span></td>
                             <td>{{ document.fileSizeFormatted }}</td>

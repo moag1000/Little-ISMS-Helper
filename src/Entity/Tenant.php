@@ -323,4 +323,23 @@ class Tenant
         }
         return $depth;
     }
+
+    /**
+     * Get all ancestors in the corporate hierarchy (parent, grandparent, etc.)
+     * Returns array with immediate parent first, root parent last
+     *
+     * @return Tenant[] Array of ancestor tenants
+     */
+    public function getAllAncestors(): array
+    {
+        $ancestors = [];
+        $current = $this->parent;
+
+        while ($current !== null) {
+            $ancestors[] = $current;
+            $current = $current->getParent();
+        }
+
+        return $ancestors;
+    }
 }

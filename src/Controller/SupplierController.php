@@ -28,31 +28,72 @@ class SupplierController extends AbstractController
 
     #[Route('/', name: 'app_supplier_index')]
     #[IsGranted('ROLE_USER')]
-    public function index(): Response
+    public function index(Request $request): Response
     {
         // Get current tenant
         $user = $this->security->getUser();
         $tenant = $user?->getTenant();
 
-        // Get suppliers: tenant-filtered if user has tenant, all if not
+        // Get view filter parameter
+        $view = $request->query->get('view', 'inherited'); // Default: inherited
+
+        // Get suppliers based on view filter
         if ($tenant) {
-            $suppliers = $this->supplierService->getSuppliersForTenant($tenant);
+            // Determine which suppliers to load based on view parameter
+            switch ($view) {
+                case 'own':
+                    // Only own suppliers
+                    $suppliers = $this->supplierRepository->findByTenant($tenant);
+                    break;
+                case 'subsidiaries':
+                    // Own + from all subsidiaries (for parent companies)
+                    $suppliers = $this->supplierRepository->findByTenantIncludingSubsidiaries($tenant);
+                    break;
+                case 'inherited':
+                default:
+                    // Own + inherited from parents (default behavior)
+                    $suppliers = $this->supplierService->getSuppliersForTenant($tenant);
+                    break;
+            }
+
             $statistics = $this->supplierRepository->getStatisticsByTenant($tenant);
             $criticalSuppliers = $this->supplierRepository->findCriticalSuppliersByTenant($tenant);
+            $overdueAssessments = $this->supplierRepository->findOverdueAssessmentsByTenant($tenant);
+            $nonCompliant = $this->supplierRepository->findNonCompliantByTenant($tenant);
             $inheritanceInfo = $this->supplierService->getSupplierInheritanceInfo($tenant);
+            $inheritanceInfo['hasSubsidiaries'] = $tenant->getSubsidiaries()->count() > 0;
+            $inheritanceInfo['currentView'] = $view;
         } else {
             $suppliers = $this->supplierRepository->findAll();
             $statistics = [];
             $criticalSuppliers = [];
-            $inheritanceInfo = ['hasParent' => false, 'canInherit' => false, 'governanceModel' => null];
+            $overdueAssessments = [];
+            $nonCompliant = [];
+            $inheritanceInfo = [
+                'hasParent' => false,
+                'canInherit' => false,
+                'governanceModel' => null,
+                'hasSubsidiaries' => false,
+                'currentView' => 'own'
+            ];
+        }
+
+        // Calculate detailed statistics based on origin
+        if ($tenant) {
+            $detailedStats = $this->calculateDetailedStats($suppliers, $tenant);
+        } else {
+            $detailedStats = ['own' => count($suppliers), 'inherited' => 0, 'subsidiaries' => 0, 'total' => count($suppliers)];
         }
 
         return $this->render('supplier/index.html.twig', [
             'suppliers' => $suppliers,
             'statistics' => $statistics,
             'criticalSuppliers' => $criticalSuppliers,
+            'overdueAssessments' => $overdueAssessments,
+            'nonCompliant' => $nonCompliant,
             'inheritanceInfo' => $inheritanceInfo,
             'currentTenant' => $tenant,
+            'detailedStats' => $detailedStats,
         ]);
     }
 
@@ -153,5 +194,47 @@ class SupplierController extends AbstractController
         }
 
         return $this->redirectToRoute('app_supplier_index');
+    }
+
+    /**
+     * Calculate detailed statistics showing breakdown by origin
+     */
+    private function calculateDetailedStats(array $items, $currentTenant): array
+    {
+        $ownCount = 0;
+        $inheritedCount = 0;
+        $subsidiariesCount = 0;
+
+        // Get ancestors and subsidiaries for comparison
+        $ancestors = $currentTenant->getAllAncestors();
+        $ancestorIds = array_map(fn($t) => $t->getId(), $ancestors);
+
+        $subsidiaries = $currentTenant->getAllSubsidiaries();
+        $subsidiaryIds = array_map(fn($t) => $t->getId(), $subsidiaries);
+
+        foreach ($items as $item) {
+            $itemTenant = $item->getTenant();
+            if (!$itemTenant) {
+                continue;
+            }
+
+            $itemTenantId = $itemTenant->getId();
+            $currentTenantId = $currentTenant->getId();
+
+            if ($itemTenantId === $currentTenantId) {
+                $ownCount++;
+            } elseif (in_array($itemTenantId, $ancestorIds)) {
+                $inheritedCount++;
+            } elseif (in_array($itemTenantId, $subsidiaryIds)) {
+                $subsidiariesCount++;
+            }
+        }
+
+        return [
+            'own' => $ownCount,
+            'inherited' => $inheritedCount,
+            'subsidiaries' => $subsidiariesCount,
+            'total' => $ownCount + $inheritedCount + $subsidiariesCount
+        ];
     }
 }
