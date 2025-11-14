@@ -46,9 +46,25 @@ class UserManagementController extends AbstractController
         $users = $userRepository->findAll();
         $statistics = $userRepository->getUserStatistics();
 
+        // Identify the initial admin for UI display
+        $initialAdminId = null;
+        $firstAdmin = $userRepository->createQueryBuilder('u')
+            ->where('u.roles LIKE :role_admin OR u.roles LIKE :role_super_admin')
+            ->setParameter('role_admin', '%ROLE_ADMIN%')
+            ->setParameter('role_super_admin', '%ROLE_SUPER_ADMIN%')
+            ->orderBy('u.id', 'ASC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+
+        if ($firstAdmin) {
+            $initialAdminId = $firstAdmin->getId();
+        }
+
         return $this->render('user_management/index.html.twig', [
             'users' => $users,
             'statistics' => $statistics,
+            'initial_admin_id' => $initialAdminId,
         ]);
     }
 
@@ -126,12 +142,16 @@ class UserManagementController extends AbstractController
     }
 
     #[Route('/{id}', name: 'user_management_show', requirements: ['id' => '\d+'])]
-    public function show(User $user): Response
+    public function show(User $user, UserRepository $userRepository): Response
     {
         $this->denyAccessUnlessGranted(UserVoter::VIEW, $user);
 
+        // Check if this is the initial setup admin
+        $isInitialAdmin = $this->isInitialSetupAdmin($user, $userRepository);
+
         return $this->render('user_management/show.html.twig', [
             'user' => $user,
+            'is_initial_admin' => $isInitialAdmin,
         ]);
     }
 
@@ -141,9 +161,13 @@ class UserManagementController extends AbstractController
         Request $request,
         EntityManagerInterface $entityManager,
         UserPasswordHasherInterface $passwordHasher,
-        TranslatorInterface $translator
+        TranslatorInterface $translator,
+        UserRepository $userRepository
     ): Response {
         $this->denyAccessUnlessGranted(UserVoter::EDIT, $user);
+
+        // Check if this is the initial setup admin
+        $isInitialAdmin = $this->isInitialSetupAdmin($user, $userRepository);
 
         // Capture old values for audit log
         $oldValues = [
@@ -161,15 +185,40 @@ class UserManagementController extends AbstractController
         $form = $this->createForm(UserType::class, $user, [
             'is_edit' => true,
         ]);
-
-        // Pre-fill form with stored roles (not the manipulated getRoles() result)
-        $form->get('roles')->setData($user->getStoredRoles());
-
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             // Check if user is editing themselves
             $isEditingSelf = $this->getUser() && $this->getUser()->getId() === $user->getId();
+
+            // Protect initial setup admin from being deactivated
+            if ($isInitialAdmin && !$user->isActive()) {
+                $user->setIsActive(true);
+                $this->addFlash('error', $translator->trans('user.error.cannot_deactivate_initial_admin', [], 'messages'));
+            }
+
+            // Protect initial setup admin from having ROLE_ADMIN removed
+            if ($isInitialAdmin) {
+                $newRoles = $user->getRoles();
+                if (!in_array('ROLE_ADMIN', $newRoles) && !in_array('ROLE_SUPER_ADMIN', $newRoles)) {
+                    // Force ROLE_ADMIN back
+                    $storedRoles = $user->getStoredRoles();
+                    if (!in_array('ROLE_ADMIN', $storedRoles)) {
+                        $storedRoles[] = 'ROLE_ADMIN';
+                        $user->setRoles($storedRoles);
+                    }
+
+                    $this->addFlash('error', $translator->trans('user.error.cannot_remove_admin_role_from_initial_admin', [], 'messages'));
+
+                    // Log security-relevant attempt
+                    $this->logger->warning('Attempt to remove ROLE_ADMIN from initial setup admin', [
+                        'target_user_id' => $user->getId(),
+                        'target_user_email' => $user->getEmail(),
+                        'current_user_id' => $this->getUser()?->getId(),
+                        'current_user_email' => $this->getUser()?->getUserIdentifier(),
+                    ]);
+                }
+            }
 
             // Update password only if provided (and not empty)
             $plainPassword = $form->get('plainPassword')->getData();
@@ -261,6 +310,7 @@ class UserManagementController extends AbstractController
         return $this->render('user_management/edit.html.twig', [
             'user' => $user,
             'form' => $form,
+            'is_initial_admin' => $isInitialAdmin,
         ]);
     }
 
@@ -269,9 +319,26 @@ class UserManagementController extends AbstractController
         User $user,
         Request $request,
         EntityManagerInterface $entityManager,
-        TranslatorInterface $translator
+        TranslatorInterface $translator,
+        UserRepository $userRepository
     ): Response {
         $this->denyAccessUnlessGranted(UserVoter::DELETE, $user);
+
+        // Check if this is the initial setup admin
+        $isInitialAdmin = $this->isInitialSetupAdmin($user, $userRepository);
+
+        if ($isInitialAdmin) {
+            // Log security-relevant attempt
+            $this->logger->warning('Attempt to delete initial setup admin blocked', [
+                'target_user_id' => $user->getId(),
+                'target_user_email' => $user->getEmail(),
+                'current_user_id' => $this->getUser()?->getId(),
+                'current_user_email' => $this->getUser()?->getUserIdentifier(),
+            ]);
+
+            $this->addFlash('error', $translator->trans('user.error.cannot_delete_initial_admin', [], 'messages'));
+            return $this->redirectToRoute('user_management_show', ['id' => $user->getId()]);
+        }
 
         if ($this->isCsrfTokenValid('delete' . $user->getId(), $request->request->get('_token'))) {
             // Capture user data for audit log before deletion
@@ -310,11 +377,28 @@ class UserManagementController extends AbstractController
         User $user,
         Request $request,
         EntityManagerInterface $entityManager,
-        TranslatorInterface $translator
+        TranslatorInterface $translator,
+        UserRepository $userRepository
     ): Response {
         $this->denyAccessUnlessGranted(UserVoter::EDIT, $user);
 
         if ($this->isCsrfTokenValid('toggle-active' . $user->getId(), $request->request->get('_token'))) {
+            // Check if this is the initial setup admin
+            $isInitialAdmin = $this->isInitialSetupAdmin($user, $userRepository);
+
+            if ($isInitialAdmin && $user->isActive()) {
+                // Log security-relevant attempt
+                $this->logger->warning('Attempt to deactivate initial setup admin blocked', [
+                    'target_user_id' => $user->getId(),
+                    'target_user_email' => $user->getEmail(),
+                    'current_user_id' => $this->getUser()?->getId(),
+                    'current_user_email' => $this->getUser()?->getUserIdentifier(),
+                ]);
+
+                $this->addFlash('error', $translator->trans('user.error.cannot_deactivate_initial_admin', [], 'messages'));
+                return $this->redirectToRoute('user_management_show', ['id' => $user->getId()]);
+            }
+
             $previousStatus = $user->isActive();
             $user->setIsActive(!$user->isActive());
             $user->setUpdatedAt(new \DateTimeImmutable());
@@ -361,22 +445,45 @@ class UserManagementController extends AbstractController
 
         $users = $userRepository->findBy(['id' => $userIds]);
         $count = 0;
+        $skippedCount = 0;
+        $skippedReasons = [];
 
         foreach ($users as $user) {
+            $skipped = false;
+            $skipReason = null;
+
             switch ($action) {
                 case 'activate':
                     if ($this->isGranted(UserVoter::EDIT, $user)) {
                         $user->setIsActive(true);
                         $user->setUpdatedAt(new \DateTimeImmutable());
                         $count++;
+                    } else {
+                        $skipped = true;
+                        $skipReason = 'no_permission';
                     }
                     break;
 
                 case 'deactivate':
                     if ($this->isGranted(UserVoter::EDIT, $user)) {
-                        $user->setIsActive(false);
-                        $user->setUpdatedAt(new \DateTimeImmutable());
-                        $count++;
+                        // Protect initial setup admin and current user
+                        $isInitialAdmin = $this->isInitialSetupAdmin($user, $userRepository);
+                        $isCurrentUser = $this->getUser() && $this->getUser()->getId() === $user->getId();
+
+                        if ($isInitialAdmin) {
+                            $skipped = true;
+                            $skipReason = 'initial_admin';
+                        } elseif ($isCurrentUser) {
+                            $skipped = true;
+                            $skipReason = 'current_user';
+                        } else {
+                            $user->setIsActive(false);
+                            $user->setUpdatedAt(new \DateTimeImmutable());
+                            $count++;
+                        }
+                    } else {
+                        $skipped = true;
+                        $skipReason = 'no_permission';
                     }
                     break;
 
@@ -389,25 +496,95 @@ class UserManagementController extends AbstractController
                             $user->addCustomRole($role);
                             $user->setUpdatedAt(new \DateTimeImmutable());
                             $count++;
+                        } else {
+                            $skipped = true;
+                            $skipReason = 'already_has_role';
                         }
+                    } else {
+                        $skipped = true;
+                        $skipReason = !$role ? 'role_not_found' : 'no_permission';
                     }
                     break;
 
                 case 'delete':
                     if ($this->isGranted(UserVoter::DELETE, $user)) {
-                        $entityManager->remove($user);
-                        $count++;
+                        // Protect initial setup admin from deletion
+                        $isInitialAdmin = $this->isInitialSetupAdmin($user, $userRepository);
+
+                        if ($isInitialAdmin) {
+                            $skipped = true;
+                            $skipReason = 'initial_admin';
+                        } else {
+                            $entityManager->remove($user);
+                            $count++;
+                        }
+                    } else {
+                        $skipped = true;
+                        $skipReason = 'no_permission';
                     }
                     break;
+            }
+
+            if ($skipped) {
+                $skippedCount++;
+                if ($skipReason) {
+                    $skippedReasons[$skipReason] = ($skippedReasons[$skipReason] ?? 0) + 1;
+                }
             }
         }
 
         $entityManager->flush();
 
-        $this->addFlash('success', $translator->trans('user.success.bulk_action_completed', [
-            'count' => $count,
+        // Log bulk action
+        $this->logger->info('Bulk action executed', [
             'action' => $action,
-        ]));
+            'selected_users' => count($userIds),
+            'processed' => $count,
+            'skipped' => $skippedCount,
+            'skipped_reasons' => $skippedReasons,
+            'executor_id' => $this->getUser()?->getId(),
+        ]);
+
+        // Success message
+        if ($count > 0) {
+            $this->addFlash('success', $translator->trans('user.success.bulk_action_completed', [
+                'count' => $count,
+                'action' => $action,
+            ]));
+        }
+
+        // Detailed feedback for skipped users
+        if ($skippedCount > 0) {
+            $reasonMessages = [];
+
+            if (isset($skippedReasons['initial_admin'])) {
+                $reasonMessages[] = $translator->trans('user.info.bulk_skipped_initial_admin', [
+                    'count' => $skippedReasons['initial_admin'],
+                ], 'messages');
+            }
+
+            if (isset($skippedReasons['current_user'])) {
+                $reasonMessages[] = $translator->trans('user.info.bulk_skipped_current_user', [
+                    'count' => $skippedReasons['current_user'],
+                ], 'messages');
+            }
+
+            if (isset($skippedReasons['no_permission'])) {
+                $reasonMessages[] = $translator->trans('user.info.bulk_skipped_no_permission', [
+                    'count' => $skippedReasons['no_permission'],
+                ], 'messages');
+            }
+
+            if (isset($skippedReasons['already_has_role'])) {
+                $reasonMessages[] = $translator->trans('user.info.bulk_skipped_already_has_role', [
+                    'count' => $skippedReasons['already_has_role'],
+                ], 'messages');
+            }
+
+            foreach ($reasonMessages as $message) {
+                $this->addFlash('info', $message);
+            }
+        }
 
         return $this->redirectToRoute('user_management_index');
     }
@@ -744,5 +921,30 @@ class UserManagementController extends AbstractController
                 'error' => $e->getMessage(),
             ]);
         }
+    }
+
+    /**
+     * Check if a user is the initial setup admin
+     * The initial admin is identified as the first admin user created
+     */
+    private function isInitialSetupAdmin(User $user, UserRepository $userRepository): bool
+    {
+        // Only check for users with ROLE_ADMIN or ROLE_SUPER_ADMIN
+        $roles = $user->getRoles();
+        if (!in_array('ROLE_ADMIN', $roles) && !in_array('ROLE_SUPER_ADMIN', $roles)) {
+            return false;
+        }
+
+        // Find the first admin user by ID (assuming the first admin has the lowest ID)
+        $firstAdmin = $userRepository->createQueryBuilder('u')
+            ->where('u.roles LIKE :role_admin OR u.roles LIKE :role_super_admin')
+            ->setParameter('role_admin', '%ROLE_ADMIN%')
+            ->setParameter('role_super_admin', '%ROLE_SUPER_ADMIN%')
+            ->orderBy('u.id', 'ASC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+
+        return $firstAdmin && $firstAdmin->getId() === $user->getId();
     }
 }
