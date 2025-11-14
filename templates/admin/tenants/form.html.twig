@@ -239,10 +239,7 @@
             console.log('Is new tenant:', isNewTenant);
 
             if (isNewTenant) {
-                // Set readonly for new tenants to prevent manual editing
-                codeField.setAttribute('readonly', 'readonly');
-                console.log('Code field set to readonly');
-
+                // Don't use readonly - just update the value on input
                 nameField.addEventListener('input', function() {
                     const name = this.value;
 
@@ -262,15 +259,6 @@
                     codeField.value = code;
                     console.log('Generated code:', code);
                 });
-
-                // Remove readonly before submit so the value is included
-                const form = codeField.closest('form');
-                if (form) {
-                    form.addEventListener('submit', function() {
-                        codeField.removeAttribute('readonly');
-                        console.log('Readonly removed before submit');
-                    });
-                }
             }
         });
     </script>
