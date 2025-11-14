@@ -160,11 +160,25 @@ class HealthAutoFixService
                 'days_to_keep' => $daysToKeep,
             ]);
 
+            if (!is_dir($this->logsDir) || !is_readable($this->logsDir)) {
+                return [
+                    'success' => false,
+                    'message' => 'Logs directory is not accessible',
+                ];
+            }
+
             $sizeBefore = $this->getDirectorySize($this->logsDir);
             $deletedCount = 0;
             $cutoffTime = time() - ($daysToKeep * 86400);
 
             $logFiles = glob($this->logsDir . '/*.log');
+            if ($logFiles === false) {
+                return [
+                    'success' => false,
+                    'message' => 'Failed to read logs directory',
+                ];
+            }
+
             foreach ($logFiles as $file) {
                 if (is_file($file) && filemtime($file) < $cutoffTime) {
                     @unlink($file);
@@ -204,10 +218,24 @@ class HealthAutoFixService
         try {
             $this->logger->info('Rotating log files');
 
+            if (!is_dir($this->logsDir) || !is_readable($this->logsDir)) {
+                return [
+                    'success' => false,
+                    'message' => 'Logs directory is not accessible',
+                ];
+            }
+
             $rotatedCount = 0;
             $freedSpace = 0;
 
             $logFiles = glob($this->logsDir . '/*.log');
+            if ($logFiles === false) {
+                return [
+                    'success' => false,
+                    'message' => 'Failed to read logs directory',
+                ];
+            }
+
             foreach ($logFiles as $file) {
                 if (is_file($file) && filesize($file) > 10 * 1024 * 1024) { // > 10MB
                     $sizeBefore = filesize($file);
@@ -487,6 +515,13 @@ class HealthAutoFixService
                 ];
             }
 
+            if (!is_readable($uploadsDir)) {
+                return [
+                    'success' => false,
+                    'message' => 'Uploads directory is not readable',
+                ];
+            }
+
             $this->logger->info('Cleaning old uploads', [
                 'days_to_keep' => $daysToKeep,
             ]);
@@ -496,6 +531,13 @@ class HealthAutoFixService
             $cutoffTime = time() - ($daysToKeep * 86400);
 
             $files = glob($uploadsDir . '/*');
+            if ($files === false) {
+                return [
+                    'success' => false,
+                    'message' => 'Failed to read uploads directory',
+                ];
+            }
+
             foreach ($files as $file) {
                 if (is_file($file) && filemtime($file) < $cutoffTime) {
                     @unlink($file);
@@ -543,10 +585,22 @@ class HealthAutoFixService
                 ];
             }
 
+            // Validate composer binary path to prevent command injection
+            if (!is_executable($composerBin)) {
+                return [
+                    'success' => false,
+                    'message' => 'Composer binary is not executable.',
+                ];
+            }
+
             $output = [];
             $returnCode = 0;
 
-            exec("cd {$this->projectDir} && $composerBin install --no-interaction --optimize-autoloader 2>&1", $output, $returnCode);
+            // Use escapeshellarg for security
+            $projectDir = escapeshellarg($this->projectDir);
+            $composerBin = escapeshellarg($composerBin);
+
+            exec("cd $projectDir && $composerBin install --no-interaction --optimize-autoloader 2>&1", $output, $returnCode);
 
             if ($returnCode === 0) {
                 $this->logger->info('Composer install completed successfully');
@@ -558,7 +612,7 @@ class HealthAutoFixService
 
             return [
                 'success' => false,
-                'message' => 'Composer install failed: ' . implode("\n", $output),
+                'message' => 'Composer install failed. Check logs for details.',
             ];
         } catch (\Exception $e) {
             $this->logger->error('Failed to run composer install', [
