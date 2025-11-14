@@ -44,6 +44,21 @@ services:
     tmpfs:
       - /tmp
       - /var/run/postgresql
+    # Security: Drop all capabilities
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - DAC_OVERRIDE
+      - SETUID
+      - SETGID
+    # Logging configuration
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "5"
+        labels: "service=database,environment=production"
 
   # Little ISMS Helper Application
   app:
@@ -91,6 +106,21 @@ services:
         reservations:
           cpus: '1'
           memory: 1G
+    # Security: Drop all capabilities except necessary ones
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_BIND_SERVICE
+      - CHOWN
+      - SETUID
+      - SETGID
+    # Logging configuration
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "5"
+        labels: "service=application,environment=production"
 
 volumes:
   # ✅ Production Volumes - persistent und performant

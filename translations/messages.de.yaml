@@ -4025,3 +4025,8 @@ governance:
   hierarchical: 'Hierarchisch'
   shared: 'Geteilt'
   independent: 'Unabhängig'
+
+# Accessibility
+accessibility:
+  skip_to_content: 'Zum Hauptinhalt springen'
+  skip_to_navigation: 'Zur Navigation springen'
