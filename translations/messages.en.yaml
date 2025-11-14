@@ -422,6 +422,16 @@ common:
   seconds: Seconds
   minutes: Minutes
   days: Days
+  roles: Roles
+  close: Close
+  copy: Copy
+  apply: Apply
+  copied: Copied
+  copy_failed: Copy failed
+  downloaded: Downloaded
+  system_info: System Information
+  verifying: Verifying...
+  generated: Generated
 asset:
   new: New Asset
   create: Create Asset
@@ -2986,6 +2996,8 @@ tenant:
     name_help: Full organization name
     description: Description
     description_help: Optional tenant description
+    logo: Logo
+    logo_help: Tenant logo (max. 2MB, JPG/PNG/GIF/WebP)
     azure_tenant_id: Azure Tenant ID
     azure_tenant_id_help: Azure AD Tenant ID (UUID format) for SSO integration
     is_active: Active
@@ -3005,6 +3017,7 @@ tenant:
   validation:
     code_format: The code may only contain letters, numbers, underscores, and hyphens
     azure_tenant_id_format: The Azure Tenant ID must be in UUID format
+    logo_format: The logo must be in JPG, PNG, GIF or WebP format
   status:
     active: Active
     inactive: Inactive
@@ -3061,6 +3074,7 @@ tenant:
     title: About Tenants
     text: Tenants allow managing multiple organizations in a single instance. Each user belongs to a tenant.
     metadata: Metadata
+  no_logo: No logo available
   help:
     title: Help
     code_title: Tenant Code
@@ -3832,6 +3846,7 @@ form:
   document_policies: Document policies
   plan_awareness_training: Plan awareness training
 corporate:
+  title: 'Corporate Structure'
   subtitle: 'Management of parent companies and subsidiaries'
   role:
     parent: 'Parent Company'
@@ -3847,6 +3862,7 @@ corporate:
     inherited: 'Inherited'
     subsidiaries: 'Subsidiaries'
     breakdown: 'Own: %own% | Inherited: %inherited% | Subs: %subsidiaries%'
+    groups: 'Corporate Groups'
   view:
     own_only: 'Own Only'
     including_inherited: 'Incl. Inherited'
@@ -3854,23 +3870,63 @@ corporate:
   field:
     actions: 'Actions'
     subsidiaries: 'Subsidiaries'
+    parent: 'Parent Company'
+    parent_help: 'Assign this tenant to a parent company to model corporate structures'
+    subsidiary: 'Subsidiary'
+    is_corporate_parent: 'Is Corporate Parent'
+    is_corporate_parent_help: 'Enable if this tenant is a parent company with subsidiaries'
+    corporate_notes: 'Corporate Notes'
+    corporate_notes_help: 'Additional information about corporate structure and relationships'
+    governance_model: 'Governance Model'
+    hierarchy_depth: 'Hierarchy Depth'
   select:
     parent: 'Select parent company...'
     governance: 'Select governance model...'
+  action:
+    set_parent: 'Set Parent Company'
+    update_governance: 'Update Governance'
+    remove_parent: 'Remove Parent Company'
+    view_structure: 'View Structure'
+  info:
+    title: 'Corporate Structure Information'
+    text: 'Here you can manage hierarchical relationships between tenants'
   modal:
+    set_parent:
+      title: 'Set Parent Company'
+    update_governance:
+      title: 'Update Governance Model'
   confirm:
+    remove_parent: 'Do you really want to remove the connection to the parent company?'
+  single_tenant:
+    title: 'Single Tenant'
+    message: 'There is only one tenant in the system'
+    hint: 'Corporate structures only become relevant when you manage multiple tenants'
   flash:
     text: 'Here you can manage relationships between parent companies and subsidiaries. The governance model determines how ISMS responsibilities are divided between parent and subsidiary companies.'
+    error: 'Error processing corporate structure'
   level: 'Level %level%'
   placeholder:
     parent: 'No parent (standalone)'
+    corporate_notes: 'e.g., Holding structure, responsibilities, etc.'
     hint: 'Corporate structures become relevant when you manage multiple tenants.'
   granular:
+    title: 'Granular Governance Rules'
     subtitle: 'Specific governance rules for individual areas'
     loading: 'Loading governance rules...'
+    add_rule: 'Add Rule'
+    no_rules: 'No governance rules defined yet'
     modal:
+      title: 'Edit Governance Rule'
     field:
       notes: 'Notes'
+      scope: 'Scope'
+      scope_id: 'Scope ID'
+    scope:
+      control: 'Control'
+      isms_context: 'ISMS Context'
+      risk: 'Risk'
+      asset: 'Asset'
+      process: 'Business Process'
     help:
       control: 'Control'
       risk: 'Risk'
@@ -3878,12 +3934,15 @@ corporate:
       process: 'Process'
       default: 'Default'
       delete: 'Delete Rule'
+      scope_id: 'ID of the specific item (optional)'
     confirm:
       delete: 'Do you really want to delete this governance rule?'
     flash:
       saved: 'Governance rule saved'
       deleted: 'Governance rule deleted'
+      error: 'Error saving governance rule'
   inheritance:
+    title: 'Inheritance'
     subtitle: 'Effective ISMS context for this tenant'
     organization: 'Organization'
     propagate: 'Propagate to Subsidiaries'
@@ -3897,6 +3956,13 @@ corporate:
     asset_inherited_message: 'This asset is inherited from the parent company and cannot be edited here.'
     document_inherited_message: 'This document is inherited from the parent company and cannot be edited here.'
     supplier_inherited_message: 'This supplier is inherited from the parent company and cannot be edited here.'
+    isms_context_inherited: 'This ISMS context is inherited'
+    no_context: 'No ISMS context available'
+    inherited_from: 'Inherited from'
+    own_context: 'Own Context'
+    load_error: 'Error loading inherited data'
+    confirm_propagate: 'Do you really want to distribute these changes to all subsidiaries?'
+    propagate_error: 'Error distributing changes'
   inherited: 'Inherited'
 
 # Governance Model Labels

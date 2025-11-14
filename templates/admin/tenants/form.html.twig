@@ -192,32 +192,37 @@
             // Only auto-generate for new tenants (when code is empty)
             const isNewTenant = !codeField.value || codeField.value.trim() === '';
 
-            if (nameField && codeField && isNewTenant) {
-                nameField.addEventListener('input', function() {
-                    const name = this.value;
+            if (nameField && codeField) {
+                if (isNewTenant) {
+                    // Set readonly for new tenants to prevent manual editing
+                    codeField.setAttribute('readonly', 'readonly');
 
-                    // Convert umlauts and special characters
-                    let code = name
-                        .replace(/ä/g, 'ae')
-                        .replace(/ö/g, 'oe')
-                        .replace(/ü/g, 'ue')
-                        .replace(/Ä/g, 'Ae')
-                        .replace(/Ö/g, 'Oe')
-                        .replace(/Ü/g, 'Ue')
-                        .replace(/ß/g, 'ss')
-                        .replace(/\s+/g, '_')  // Spaces to underscores
-                        .toLowerCase()
-                        .replace(/[^a-z0-9_-]/g, '');  // Remove invalid characters
+                    nameField.addEventListener('input', function() {
+                        const name = this.value;
 
-                    codeField.value = code;
-                });
+                        // Convert umlauts and special characters
+                        let code = name
+                            .replace(/ä/g, 'ae')
+                            .replace(/ö/g, 'oe')
+                            .replace(/ü/g, 'ue')
+                            .replace(/Ä/g, 'Ae')
+                            .replace(/Ö/g, 'Oe')
+                            .replace(/Ü/g, 'Ue')
+                            .replace(/ß/g, 'ss')
+                            .replace(/\s+/g, '_')  // Spaces to underscores
+                            .toLowerCase()
+                            .replace(/[^a-z0-9_-]/g, '');  // Remove invalid characters
 
-                // Make readonly field still submittable
-                const form = codeField.closest('form');
-                if (form) {
-                    form.addEventListener('submit', function() {
-                        codeField.removeAttribute('readonly');
+                        codeField.value = code;
                     });
+
+                    // Remove readonly before submit so the value is included
+                    const form = codeField.closest('form');
+                    if (form) {
+                        form.addEventListener('submit', function() {
+                            codeField.removeAttribute('readonly');
+                        });
+                    }
                 }
             }
         });
