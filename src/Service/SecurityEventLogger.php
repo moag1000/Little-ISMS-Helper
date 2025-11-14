@@ -57,27 +57,17 @@ class SecurityEventLogger
             'User logged in successfully'
         );
 
-        // TEMPORARILY DISABLED: Create session record for session management
-        // This is disabled for debugging login issues
-        /*
+        // Create session record for session management
+        // SessionManager gracefully handles missing user_sessions table
         if ($user instanceof User) {
             $request = $this->requestStack->getCurrentRequest();
             $session = $request?->getSession();
 
             if ($session) {
-                try {
-                    $this->sessionManager->createSession($user, $session->getId());
-                } catch (\Exception $e) {
-                    // Log error but don't fail the login if session tracking fails
-                    // This ensures login works even if user_sessions table doesn't exist yet
-                    $this->logger->error('Failed to create session record', [
-                        'user' => $user->getUserIdentifier(),
-                        'error' => $e->getMessage(),
-                    ]);
-                }
+                // SessionManager now checks table existence and handles errors internally
+                $this->sessionManager->createSession($user, $session->getId());
             }
         }
-        */
     }
 
     /**
@@ -121,25 +111,15 @@ class SecurityEventLogger
             'User logged out'
         );
 
-        // TEMPORARILY DISABLED: End session record
-        // This is disabled for debugging login issues
-        /*
+        // End session record
+        // SessionManager gracefully handles missing user_sessions table
         $request = $this->requestStack->getCurrentRequest();
         $session = $request?->getSession();
 
         if ($session) {
-            try {
-                $this->sessionManager->endSession($session->getId(), 'logout');
-            } catch (\Exception $e) {
-                // Log error but don't fail the logout if session tracking fails
-                // This ensures logout works even if user_sessions table doesn't exist yet
-                $this->logger->error('Failed to end session record', [
-                    'user' => $user->getUserIdentifier(),
-                    'error' => $e->getMessage(),
-                ]);
-            }
+            // SessionManager now checks table existence and handles errors internally
+            $this->sessionManager->endSession($session->getId(), 'logout');
         }
-        */
     }
 
     /**
