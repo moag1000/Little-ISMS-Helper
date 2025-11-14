@@ -2182,6 +2182,9 @@ user:
   error:
     no_users_selected: Keine Benutzer ausgewählt
     no_file_uploaded: Keine Datei hochgeladen
+    cannot_deactivate_initial_admin: Der initiale Setup-Administrator kann nicht deaktiviert werden, um sicherzustellen, dass immer ein Systemadministrator verfügbar ist.
+    cannot_delete_initial_admin: Der initiale Setup-Administrator kann nicht gelöscht werden, um sicherzustellen, dass immer ein Systemadministrator verfügbar ist.
+    cannot_remove_admin_role_from_initial_admin: Die Admin-Rolle kann nicht vom initialen Setup-Administrator entfernt werden. Das System benötigt mindestens einen Administrator.
   warning:
     own_password_changed: 'Achtung: Sie haben Ihr eigenes Passwort geändert. Sie werden möglicherweise automatisch ausgeloggt.'
     session_will_be_invalidated: 'Achtung: Aus Sicherheitsgründen wird Ihre Session nach dieser Änderung möglicherweise invalidiert. Bitte loggen Sie sich erneut ein, falls erforderlich.'
@@ -2193,6 +2196,11 @@ user:
     created: Benutzer erfolgreich erstellt.
     updated: Benutzer erfolgreich aktualisiert.
     deleted: Benutzer erfolgreich gelöscht.
+  info:
+    bulk_skipped_initial_admin: '%count% Benutzer übersprungen: Initialer Setup-Administrator (geschützt)'
+    bulk_skipped_current_user: '%count% Benutzer übersprungen: Ihr eigener Account (Selbst-Deaktivierung nicht erlaubt)'
+    bulk_skipped_no_permission: '%count% Benutzer übersprungen: Fehlende Berechtigung'
+    bulk_skipped_already_has_role: '%count% Benutzer übersprungen: Rolle bereits zugewiesen'
   action:
     export: Exportieren
     import: Importieren
