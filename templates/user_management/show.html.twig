@@ -43,7 +43,7 @@
                     <table class="table table-sm">
                         <tbody>
                             <tr>
-                                <th width="40%">Profilbild:</th>
+                                <th scope="row" width="40%">Profilbild:</th>
                                 <td>
                                     {% if user.profilePicture %}
                                         <img src="{{ asset(user.profilePicture) }}"
@@ -56,27 +56,27 @@
                                 </td>
                             </tr>
                             <tr>
-                                <th width="40%">Vorname:</th>
+                                <th scope="row" width="40%">Vorname:</th>
                                 <td>{{ user.firstName }}</td>
                             </tr>
                             <tr>
-                                <th>Nachname:</th>
+                                <th scope="row">Nachname:</th>
                                 <td>{{ user.lastName }}</td>
                             </tr>
                             <tr>
-                                <th>E-Mail:</th>
+                                <th scope="row">E-Mail:</th>
                                 <td>{{ user.email }}</td>
                             </tr>
                             <tr>
-                                <th>Abteilung:</th>
+                                <th scope="row">Abteilung:</th>
                                 <td>{{ user.department ?? '-' }}</td>
                             </tr>
                             <tr>
-                                <th>Position:</th>
+                                <th scope="row">Position:</th>
                                 <td>{{ user.jobTitle ?? '-' }}</td>
                             </tr>
                             <tr>
-                                <th>Telefon:</th>
+                                <th scope="row">Telefon:</th>
                                 <td>{{ user.phoneNumber ?? '-' }}</td>
                             </tr>
                         </tbody>
@@ -95,7 +95,7 @@
                     <table class="table table-sm">
                         <tbody>
                             <tr>
-                                <th width="40%">Status:</th>
+                                <th scope="row" width="40%">Status:</th>
                                 <td>
                                     {% if user.isActive %}
                                         <span class="badge bg-success">
@@ -109,7 +109,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <th>Verifiziert:</th>
+                                <th scope="row">Verifiziert:</th>
                                 <td>
                                     {% if user.isVerified %}
                                         <span class="badge bg-success">
@@ -123,7 +123,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <th>Auth Provider:</th>
+                                <th scope="row">Auth Provider:</th>
                                 <td>
                                     {% if user.authProvider == 'azure_oauth' %}
                                         <i class="bi bi-microsoft"></i> Azure OAuth
@@ -136,16 +136,16 @@
                             </tr>
                             {% if user.azureObjectId %}
                                 <tr>
-                                    <th>Azure Object ID:</th>
+                                    <th scope="row">Azure Object ID:</th>
                                     <td><code>{{ user.azureObjectId }}</code></td>
                                 </tr>
                             {% endif %}
                             <tr>
-                                <th>Erstellt am:</th>
+                                <th scope="row">Erstellt am:</th>
                                 <td>{{ user.createdAt|date('d.m.Y H:i') }}</td>
                             </tr>
                             <tr>
-                                <th>Letzte Anmeldung:</th>
+                                <th scope="row">Letzte Anmeldung:</th>
                                 <td>
                                     {% if user.lastLoginAt %}
                                         {{ user.lastLoginAt|date('d.m.Y H:i') }}

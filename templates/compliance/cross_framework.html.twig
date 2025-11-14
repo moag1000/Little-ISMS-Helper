@@ -28,9 +28,9 @@
                     <table class="matrix-table">
                         <thead>
                             <tr>
-                                <th class="matrix-corner-cell">{{ 'compliance.cross_framework.source_target_label'|trans }}</th>
+                                <th scope="col" class="matrix-corner-cell">{{ 'compliance.cross_framework.source_target_label'|trans }}</th>
                                 {% for framework in frameworks %}
-                                    <th class="matrix-header-cell">
+                                    <th scope="col" class="matrix-header-cell">
                                         <div class="matrix-header-content">
                                             <strong>{{ framework.code }}</strong>
                                             <small class="framework-name">{{ framework.name }}</small>
@@ -129,11 +129,11 @@
                 <table class="table">
                     <thead>
                         <tr>
-                            <th>{{ 'compliance.cross_framework.table.source'|trans }}</th>
-                            <th>{{ 'compliance.cross_framework.table.target'|trans }}</th>
-                            <th>{{ 'compliance.cross_framework.table.type'|trans }}</th>
-                            <th>{{ 'compliance.cross_framework.table.strength'|trans }}</th>
-                            <th>{{ 'compliance.cross_framework.table.bidirectional'|trans }}</th>
+                            <th scope="col">{{ 'compliance.cross_framework.table.source'|trans }}</th>
+                            <th scope="col">{{ 'compliance.cross_framework.table.target'|trans }}</th>
+                            <th scope="col">{{ 'compliance.cross_framework.table.type'|trans }}</th>
+                            <th scope="col">{{ 'compliance.cross_framework.table.strength'|trans }}</th>
+                            <th scope="col">{{ 'compliance.cross_framework.table.bidirectional'|trans }}</th>
                         </tr>
                     </thead>
                     <tbody>

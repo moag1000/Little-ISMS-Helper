@@ -119,7 +119,7 @@
                     <table class="table table-sm">
                         <tbody>
                             <tr>
-                                <th style="width: 40%;">{{ 'tenant.field.logo'|trans }}</th>
+                                <th scope="row" style="width: 40%;">{{ 'tenant.field.logo'|trans }}</th>
                                 <td>
                                     {% if tenant.logoPath %}
                                         <img src="{{ asset(tenant.logoPath) }}"
@@ -132,15 +132,15 @@
                                 </td>
                             </tr>
                             <tr>
-                                <th style="width: 40%;">{{ 'tenant.field.code'|trans }}</th>
+                                <th scope="row" style="width: 40%;">{{ 'tenant.field.code'|trans }}</th>
                                 <td><code class="text-primary">{{ tenant.code }}</code></td>
                             </tr>
                             <tr>
-                                <th>{{ 'tenant.field.name'|trans }}</th>
+                                <th scope="row">{{ 'tenant.field.name'|trans }}</th>
                                 <td>{{ tenant.name }}</td>
                             </tr>
                             <tr>
-                                <th>{{ 'tenant.field.azure_tenant_id'|trans }}</th>
+                                <th scope="row">{{ 'tenant.field.azure_tenant_id'|trans }}</th>
                                 <td>
                                     {% if tenant.azureTenantId %}
                                         <code class="text-muted small">{{ tenant.azureTenantId }}</code>
@@ -150,7 +150,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <th>{{ 'tenant.field.status'|trans }}</th>
+                                <th scope="row">{{ 'tenant.field.status'|trans }}</th>
                                 <td>
                                     {% if tenant.isActive %}
                                         <span class="badge bg-success">{{ 'tenant.status.active'|trans }}</span>
@@ -160,12 +160,12 @@
                                 </td>
                             </tr>
                             <tr>
-                                <th>{{ 'tenant.field.created'|trans }}</th>
+                                <th scope="row">{{ 'tenant.field.created'|trans }}</th>
                                 <td>{{ tenant.createdAt|date('d.m.Y H:i') }}</td>
                             </tr>
                             {% if tenant.updatedAt %}
                                 <tr>
-                                    <th>{{ 'tenant.field.updated'|trans }}</th>
+                                    <th scope="row">{{ 'tenant.field.updated'|trans }}</th>
                                     <td>{{ tenant.updatedAt|date('d.m.Y H:i') }}</td>
                                 </tr>
                             {% endif %}
@@ -182,7 +182,7 @@
                             <tbody>
                                 {% if tenant.parent %}
                                     <tr>
-                                        <th style="width: 40%;">{{ 'corporate.field.parent'|trans }}</th>
+                                        <th scope="row" style="width: 40%;">{{ 'corporate.field.parent'|trans }}</th>
                                         <td>
                                             <a href="{{ path('tenant_management_show', {id: tenant.parent.id}) }}">
                                                 {{ tenant.parent.name }}
@@ -192,7 +192,7 @@
                                     </tr>
                                     {% if defaultGovernance %}
                                         <tr>
-                                            <th>{{ 'corporate.field.governance_model'|trans }}</th>
+                                            <th scope="row">{{ 'corporate.field.governance_model'|trans }}</th>
                                             <td>
                                                 <span class="badge bg-{{ defaultGovernance.governanceModel.value == 'hierarchical' ? 'primary' : (defaultGovernance.governanceModel.value == 'shared' ? 'warning' : 'secondary') }}">
                                                     {{ defaultGovernance.governanceModel.label }}
@@ -202,13 +202,13 @@
                                         </tr>
                                     {% endif %}
                                     <tr>
-                                        <th>{{ 'corporate.field.hierarchy_depth'|trans }}</th>
+                                        <th scope="row">{{ 'corporate.field.hierarchy_depth'|trans }}</th>
                                         <td>{{ 'corporate.level'|trans({'%level%': tenant.hierarchyDepth}) }}</td>
                                     </tr>
                                 {% endif %}
                                 {% if tenant.isCorporateParent %}
                                     <tr>
-                                        <th>{{ 'corporate.field.subsidiaries'|trans }}</th>
+                                        <th scope="row">{{ 'corporate.field.subsidiaries'|trans }}</th>
                                         <td>
                                             <span class="badge bg-info">{{ tenant.subsidiaries|length }}</span>
                                             {% if tenant.subsidiaries|length > 0 %}

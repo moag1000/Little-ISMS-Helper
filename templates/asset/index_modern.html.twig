@@ -96,35 +96,38 @@
         action: { label: 'Erstes Asset erstellen', url: path('app_asset_new'), icon: 'bi-plus-circle' }
     } %}
 {% else %}
-<div class="card" data-controller="bulk-actions" data-bulk-actions-endpoint-value="/asset">
+<div class="card" data-controller="bulk-actions" data-bulk-actions-endpoint-value="/asset" data-bulk-actions-entity-label="Assets">
     <div class="card-header d-flex justify-content-between align-items-center">
-        <h5 class="mb-0"><i class="bi bi-list"></i> Alle Assets ({{ assets|length }})</h5>
+        <h5 class="mb-0"><i class="bi bi-list" aria-hidden="true"></i> Alle Assets ({{ assets|length }})</h5>
         <div>
+            <label for="asset-search" class="visually-hidden">Assets durchsuchen</label>
             <input type="search"
                    class="form-control form-control-sm w-200px"
                    placeholder="Suche..."
-                   id="asset-search">
+                   id="asset-search"
+                   aria-label="Assets durchsuchen">
         </div>
     </div>
     <div class="table-responsive">
         <table class="table table-hover mb-0">
+            <caption class="visually-hidden">Liste aller Assets mit CIA-Bewertung, Risiken und Controls</caption>
             <thead>
                 <tr>
-                    <th class="w-40px">
+                    <th scope="col" class="w-40px">
                         <input type="checkbox"
                                class="form-check-input"
                                data-action="bulk-actions#selectAll"
                                data-bulk-actions-target="selectAllCheckbox"
-                               title="Alle auswählen">
+                               aria-label="Alle Assets auswählen">
                     </th>
-                    <th>Name</th>
-                    <th>Typ</th>
-                    <th class="text-center">Confidentiality</th>
-                    <th class="text-center">Integrity</th>
-                    <th class="text-center">Availability</th>
-                    <th class="text-center">Risiken</th>
-                    <th class="text-center">Controls</th>
-                    <th class="text-center">Aktionen</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Typ</th>
+                    <th scope="col" class="text-center">Confidentiality</th>
+                    <th scope="col" class="text-center">Integrity</th>
+                    <th scope="col" class="text-center">Availability</th>
+                    <th scope="col" class="text-center">Risiken</th>
+                    <th scope="col" class="text-center">Controls</th>
+                    <th scope="col" class="text-center">Aktionen</th>
                 </tr>
             </thead>
             <tbody>
@@ -135,7 +138,8 @@
                                class="form-check-input"
                                data-bulk-actions-target="item"
                                data-action="bulk-actions#selectItem"
-                               value="{{ asset.id }}">
+                               value="{{ asset.id }}"
+                               aria-label="Asset {{ asset.name }} auswählen">
                     </td>
                     <td>
                         <strong>{{ asset.name }}</strong>
@@ -163,7 +167,9 @@
                     </td>
                     <td class="text-center">
                         {% if asset.risks|length > 0 %}
-                            <a href="{{ path('app_asset_risks', {id: asset.id}) }}" class="badge bg-warning text-dark">
+                            <a href="{{ path('app_asset_risks', {id: asset.id}) }}"
+                               class="badge bg-warning text-dark"
+                               aria-label="{{ asset.risks|length }} Risiken für Asset {{ asset.name }}">
                                 {{ asset.risks|length }}
                             </a>
                         {% else %}
@@ -172,7 +178,9 @@
                     </td>
                     <td class="text-center">
                         {% if asset.protectingControls|length > 0 %}
-                            <a href="{{ path('app_asset_controls', {id: asset.id}) }}" class="badge bg-success">
+                            <a href="{{ path('app_asset_controls', {id: asset.id}) }}"
+                               class="badge bg-success"
+                               aria-label="{{ asset.protectingControls|length }} Controls für Asset {{ asset.name }}">
                                 {{ asset.protectingControls|length }}
                             </a>
                         {% else %}
@@ -180,19 +188,19 @@
                         {% endif %}
                     </td>
                     <td class="text-center">
-                        <div class="btn-group btn-group-sm">
+                        <div class="btn-group btn-group-sm" role="group" aria-label="Aktionen für Asset {{ asset.name }}">
                             <a href="{{ path('app_asset_show', {id: asset.id}) }}"
                                class="btn btn-outline-primary"
                                data-turbo-action="advance"
-                               title="Anzeigen">
-                                <i class="bi bi-eye"></i>
+                               aria-label="Asset {{ asset.name }} anzeigen">
+                                <i class="bi bi-eye" aria-hidden="true"></i>
                             </a>
                             {% if is_granted('ROLE_USER') %}
                             <a href="{{ path('app_asset_edit', {id: asset.id}) }}"
                                class="btn btn-outline-secondary"
                                data-turbo-action="advance"
-                               title="Bearbeiten">
-                                <i class="bi bi-pencil"></i>
+                               aria-label="Asset {{ asset.name }} bearbeiten">
+                                <i class="bi bi-pencil" aria-hidden="true"></i>
                             </a>
                             {% endif %}
                         </div>

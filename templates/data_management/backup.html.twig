@@ -97,10 +97,10 @@
                             <table class="table table-hover">
                                 <thead>
                                     <tr>
-                                        <th>Dateiname</th>
-                                        <th>Erstellt am</th>
-                                        <th>Größe</th>
-                                        <th>Aktionen</th>
+                                        <th scope="col">Dateiname</th>
+                                        <th scope="col">Erstellt am</th>
+                                        <th scope="col">Größe</th>
+                                        <th scope="col">Aktionen</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -465,7 +465,7 @@
 
                         if (result.success) {
                             let html = '<div class="table-responsive"><table class="table table-sm">';
-                            html += '<thead><tr><th>Entity</th><th>Wiederherzustellen</th><th>Bereits vorhanden</th><th>Beispieldaten</th></tr></thead><tbody>';
+                            html += '<thead><tr><th scope="col">Entity</th><th scope="col">Wiederherzustellen</th><th scope="col">Bereits vorhanden</th><th scope="col">Beispieldaten</th></tr></thead><tbody>';
 
                             for (const [entity, data] of Object.entries(result.preview.entities)) {
                                 html += `<tr><td><strong>${entity}</strong></td><td>${data.to_restore}</td><td>${data.existing}</td>`;
@@ -524,7 +524,7 @@
 
                         if (result.statistics) {
                             html += '<br><br><strong>Statistiken:</strong><table class="table table-sm mt-2">';
-                            html += '<thead><tr><th>Entity</th><th>Erstellt</th><th>Aktualisiert</th><th>Übersprungen</th><th>Fehler</th></tr></thead><tbody>';
+                            html += '<thead><tr><th scope="col">Entity</th><th scope="col">Erstellt</th><th scope="col">Aktualisiert</th><th scope="col">Übersprungen</th><th scope="col">Fehler</th></tr></thead><tbody>';
                             for (const [entity, stats] of Object.entries(result.statistics)) {
                                 html += `<tr><td>${entity}</td><td>${stats.created}</td><td>${stats.updated}</td><td>${stats.skipped}</td><td>${stats.errors}</td></tr>`;
                             }
