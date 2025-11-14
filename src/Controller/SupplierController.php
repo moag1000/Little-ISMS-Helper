@@ -28,27 +28,54 @@ class SupplierController extends AbstractController
 
     #[Route('/', name: 'app_supplier_index')]
     #[IsGranted('ROLE_USER')]
-    public function index(): Response
+    public function index(Request $request): Response
     {
         // Get current tenant
         $user = $this->security->getUser();
         $tenant = $user?->getTenant();
 
-        // Get suppliers: tenant-filtered if user has tenant, all if not
+        // Get view filter parameter
+        $view = $request->query->get('view', 'inherited'); // Default: inherited
+
+        // Get suppliers based on view filter
         if ($tenant) {
-            $suppliers = $this->supplierService->getSuppliersForTenant($tenant);
+            // Determine which suppliers to load based on view parameter
+            switch ($view) {
+                case 'own':
+                    // Only own suppliers
+                    $suppliers = $this->supplierRepository->findByTenant($tenant);
+                    break;
+                case 'subsidiaries':
+                    // Own + from all subsidiaries (for parent companies)
+                    $suppliers = $this->supplierRepository->findByTenantIncludingSubsidiaries($tenant);
+                    break;
+                case 'inherited':
+                default:
+                    // Own + inherited from parents (default behavior)
+                    $suppliers = $this->supplierService->getSuppliersForTenant($tenant);
+                    break;
+            }
+
             $statistics = $this->supplierRepository->getStatisticsByTenant($tenant);
             $criticalSuppliers = $this->supplierRepository->findCriticalSuppliersByTenant($tenant);
             $overdueAssessments = $this->supplierRepository->findOverdueAssessmentsByTenant($tenant);
             $nonCompliant = $this->supplierRepository->findNonCompliantByTenant($tenant);
             $inheritanceInfo = $this->supplierService->getSupplierInheritanceInfo($tenant);
+            $inheritanceInfo['hasSubsidiaries'] = $tenant->getSubsidiaries()->count() > 0;
+            $inheritanceInfo['currentView'] = $view;
         } else {
             $suppliers = $this->supplierRepository->findAll();
             $statistics = [];
             $criticalSuppliers = [];
             $overdueAssessments = [];
             $nonCompliant = [];
-            $inheritanceInfo = ['hasParent' => false, 'canInherit' => false, 'governanceModel' => null];
+            $inheritanceInfo = [
+                'hasParent' => false,
+                'canInherit' => false,
+                'governanceModel' => null,
+                'hasSubsidiaries' => false,
+                'currentView' => 'own'
+            ];
         }
 
         return $this->render('supplier/index.html.twig', [
