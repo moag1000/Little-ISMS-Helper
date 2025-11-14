@@ -70,9 +70,9 @@ class UserManagementController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Hash password if provided
+            // Hash password if provided (and not empty)
             $plainPassword = $form->get('plainPassword')->getData();
-            if ($plainPassword) {
+            if (!empty($plainPassword) && trim($plainPassword) !== '') {
                 $hashedPassword = $passwordHasher->hashPassword($user, $plainPassword);
                 $user->setPassword($hashedPassword);
             }
@@ -167,9 +167,9 @@ class UserManagementController extends AbstractController
             // Check if user is editing themselves
             $isEditingSelf = $this->getUser() && $this->getUser()->getId() === $user->getId();
 
-            // Update password only if provided
+            // Update password only if provided (and not empty)
             $plainPassword = $form->get('plainPassword')->getData();
-            if ($plainPassword) {
+            if (!empty($plainPassword) && trim($plainPassword) !== '') {
                 $hashedPassword = $passwordHasher->hashPassword($user, $plainPassword);
                 $user->setPassword($hashedPassword);
 
