@@ -73,10 +73,13 @@ services:
         arguments:
             $projectDir: '%kernel.project_dir%'
 
-    # Configure Data Management Controller
-    App\Controller\DataManagementController:
+    # Configure Backup Service
+    App\Service\BackupService:
         arguments:
             $projectDir: '%kernel.project_dir%'
+
+    # Configure Restore Service
+    App\Service\RestoreService: ~
 
     # Configure Health Auto Fix Service
     App\Service\HealthAutoFixService:
