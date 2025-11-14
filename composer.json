@@ -98,10 +98,12 @@
             "importmap:install": "symfony-cmd"
         },
         "post-install-cmd": [
-            "@auto-scripts"
+            "@auto-scripts",
+            "@php -r \"is_dir('var/sessions') || mkdir('var/sessions', 0700, true);\""
         ],
         "post-update-cmd": [
-            "@auto-scripts"
+            "@auto-scripts",
+            "@php -r \"is_dir('var/sessions') || mkdir('var/sessions', 0700, true);\""
         ]
     },
     "conflict": {
