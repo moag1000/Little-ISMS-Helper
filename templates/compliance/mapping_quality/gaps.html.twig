@@ -1,0 +1,314 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gap Overview{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="page-header">
+        <div>
+            <h1>🔍 Gap-Übersicht</h1>
+            <p class="text-muted">Identifizierte Lücken in Compliance-Mappings</p>
+        </div>
+        <div class="button-group">
+            <a href="{{ path('app_mapping_quality_dashboard') }}" class="btn btn-secondary">
+                <span class="icon">←</span> Dashboard
+            </a>
+        </div>
+    </div>
+
+    {# Remediation Effort Summary #}
+    {% if remediation_effort %}
+    <div class="alert alert-info">
+        <div class="row">
+            <div class="col-md-4">
+                <h5>📊 Total Gaps</h5>
+                <h3>{{ remediation_effort.total_gaps }}</h3>
+            </div>
+            <div class="col-md-4">
+                <h5>⏱️ Geschätzter Aufwand</h5>
+                <h3>{{ remediation_effort.total_effort }} Stunden</h3>
+                <small class="text-muted">≈ {{ (remediation_effort.total_effort / 8)|round(1) }} Arbeitstage</small>
+            </div>
+            <div class="col-md-4">
+                <h5>📈 By Priority</h5>
+                {% for priority in remediation_effort.by_priority %}
+                    <div>
+                        <span class="badge badge-{{ priority.priority == 'critical' ? 'danger' : (priority.priority == 'high' ? 'warning' : 'info') }}">
+                            {{ priority.priority|upper }}
+                        </span>
+                        {{ priority.count }} ({{ priority.effort }}h)
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {# Statistics Cards #}
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">📊 Gaps nach Typ</h5>
+                </div>
+                <div class="card-body">
+                    {% if gap_stats_by_type is empty %}
+                        <p class="text-muted">Keine Gap-Daten verfügbar</p>
+                    {% else %}
+                        {% for stat in gap_stats_by_type %}
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span>
+                                    {% if stat.gapType == 'missing_control' %}🔴
+                                    {% elseif stat.gapType == 'partial_coverage' %}🟡
+                                    {% elseif stat.gapType == 'scope_difference' %}🔵
+                                    {% elseif stat.gapType == 'additional_requirement' %}🟠
+                                    {% else %}⚪
+                                    {% endif %}
+                                    {{ stat.gapType|replace({'_': ' '})|title }}
+                                </span>
+                                <strong>{{ stat.count }}</strong>
+                            </div>
+                            <div class="progress" style="height: 20px;">
+                                <div class="progress-bar bg-info"
+                                     style="width: {% if gap_stats_by_type|map(s => s.count)|sum > 0 %}{{ (stat.count / (gap_stats_by_type|map(s => s.count)|sum) * 100)|round }}{% else %}0{% endif %}%">
+                                </div>
+                            </div>
+                            {% if stat.totalImpact %}
+                                <small class="text-muted">Total Impact: {{ stat.totalImpact|round }}%</small>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">⚡ Gaps nach Priorität</h5>
+                </div>
+                <div class="card-body">
+                    {% if gap_stats_by_priority is empty %}
+                        <p class="text-muted">Keine Gap-Daten verfügbar</p>
+                    {% else %}
+                        {% for stat in gap_stats_by_priority %}
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span>
+                                    {% if stat.priority == 'critical' %}🔴
+                                    {% elseif stat.priority == 'high' %}🟠
+                                    {% elseif stat.priority == 'medium' %}🟡
+                                    {% else %}⚪
+                                    {% endif %}
+                                    {{ stat.priority|upper }}
+                                </span>
+                                <strong>{{ stat.count }}</strong>
+                            </div>
+                            <div class="progress" style="height: 20px;">
+                                <div class="progress-bar bg-{{ stat.priority == 'critical' ? 'danger' : (stat.priority == 'high' ? 'warning' : 'info') }}"
+                                     style="width: {% if gap_stats_by_priority|map(s => s.count)|sum > 0 %}{{ (stat.count / (gap_stats_by_priority|map(s => s.count)|sum) * 100)|round }}{% else %}0{% endif %}%">
+                                </div>
+                            </div>
+                            <small class="text-muted">
+                                Impact: {{ stat.totalImpact|round }}% |
+                                Ø Effort: {{ stat.avgEffort|round(1) }}h
+                            </small>
+                        </div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# High Priority Gaps #}
+    {% if high_priority_gaps is not empty %}
+    <div class="card mb-4">
+        <div class="card-header bg-danger text-white">
+            <h5 class="mb-0">🔥 Critical & High Priority Gaps ({{ high_priority_gaps|length }})</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Mapping</th>
+                            <th>Gap Type</th>
+                            <th>Priority</th>
+                            <th>Impact</th>
+                            <th>Effort</th>
+                            <th>Status</th>
+                            <th>Aktion</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for gap in high_priority_gaps|slice(0, 20) %}
+                        <tr>
+                            <td>
+                                <small>
+                                    <strong>{{ gap.mapping.sourceRequirement.framework.code }}</strong>
+                                    {{ gap.mapping.sourceRequirement.requirementId }}
+                                    →
+                                    <strong>{{ gap.mapping.targetRequirement.framework.code }}</strong>
+                                    {{ gap.mapping.targetRequirement.requirementId }}
+                                </small>
+                            </td>
+                            <td>
+                                <span class="badge badge-light">{{ gap.gapTypeLabel }}</span>
+                            </td>
+                            <td>
+                                <span class="badge badge-{{ gap.priorityBadgeClass }}">
+                                    {{ gap.priority|upper }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge badge-danger">-{{ gap.percentageImpact }}%</span>
+                            </td>
+                            <td>
+                                <span class="badge badge-info">{{ gap.estimatedEffort }}h</span>
+                            </td>
+                            <td>
+                                <span class="badge badge-{{ gap.statusBadgeClass }}">
+                                    {{ gap.status }}
+                                </span>
+                            </td>
+                            <td>
+                                <a href="{{ path('app_mapping_quality_review', {id: gap.mapping.id}) }}" class="btn btn-sm btn-primary">
+                                    Details
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% if high_priority_gaps|length > 20 %}
+                <p class="text-muted text-center mb-0">... und {{ high_priority_gaps|length - 20 }} weitere</p>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+
+    {# Low Confidence Gaps #}
+    {% if low_confidence_gaps is not empty %}
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">⚠️ Low Confidence Gaps ({{ low_confidence_gaps|length }})</h5>
+        </div>
+        <div class="card-body">
+            <p class="text-muted">Diese Gaps haben niedrige Confidence-Scores und sollten manuell überprüft werden.</p>
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Mapping</th>
+                            <th>Description</th>
+                            <th>Priority</th>
+                            <th>Confidence</th>
+                            <th>Impact</th>
+                            <th>Aktion</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for gap in low_confidence_gaps|slice(0, 15) %}
+                        <tr>
+                            <td>
+                                <small>
+                                    {{ gap.mapping.sourceRequirement.framework.code }}
+                                    →
+                                    {{ gap.mapping.targetRequirement.framework.code }}
+                                </small>
+                            </td>
+                            <td>
+                                <span class="badge badge-light">{{ gap.gapTypeLabel }}</span>
+                                <small class="d-block text-muted">{{ gap.description|slice(0, 80) }}...</small>
+                            </td>
+                            <td>
+                                <span class="badge badge-{{ gap.priorityBadgeClass }}">
+                                    {{ gap.priority }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge badge-warning">{{ gap.confidence }}%</span>
+                            </td>
+                            <td>
+                                <span class="badge badge-danger">-{{ gap.percentageImpact }}%</span>
+                            </td>
+                            <td>
+                                <a href="{{ path('app_mapping_quality_review', {id: gap.mapping.id}) }}" class="btn btn-sm btn-primary">
+                                    Review
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% if low_confidence_gaps|length > 15 %}
+                <p class="text-muted text-center mb-0">... und {{ low_confidence_gaps|length - 15 }} weitere</p>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+
+    {# Empty State #}
+    {% if high_priority_gaps is empty and low_confidence_gaps is empty %}
+        {% if remediation_effort.total_gaps == 0 %}
+        <div class="alert alert-info">
+            <h4>ℹ️ Keine Gaps gefunden</h4>
+            <p>Es wurden noch keine Gap-Analysen durchgeführt.</p>
+            <hr>
+            <h6>Nächste Schritte:</h6>
+            <ol>
+                <li>Führen Sie die Qualitätsanalyse aus: <code>php bin/console app:analyze-mapping-quality</code></li>
+                <li>Gaps werden automatisch während der Analyse identifiziert</li>
+                <li>Kehren Sie dann zu dieser Seite zurück</li>
+            </ol>
+            <a href="{{ path('app_mapping_quality_dashboard') }}" class="btn btn-primary mt-2">← Zurück zum Dashboard</a>
+        </div>
+        {% else %}
+        <div class="alert alert-success">
+            <h5>✅ Keine kritischen Gaps!</h5>
+            <p class="mb-0">Alle Gaps haben niedrige Priorität oder wurden bereits behoben.</p>
+        </div>
+        {% endif %}
+    {% endif %}
+
+    {# Action Buttons #}
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">🛠️ Aktionen</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <h6>📋 Priorisierung</h6>
+                    <ol>
+                        <li>Critical Gaps zuerst ({{ gap_stats_by_priority[0].count ?? 0 }})</li>
+                        <li>High Priority Gaps ({{ gap_stats_by_priority[1].count ?? 0 }})</li>
+                        <li>Low Confidence Gaps überprüfen</li>
+                    </ol>
+                </div>
+                <div class="col-md-4">
+                    <h6>⏱️ Zeitplanung</h6>
+                    <p>
+                        <strong>Total:</strong> {{ remediation_effort.total_effort }} Stunden<br>
+                        <strong>≈ {{ (remediation_effort.total_effort / 8)|round(1) }} Tage</strong> bei einem 8h-Arbeitstag
+                    </p>
+                </div>
+                <div class="col-md-4">
+                    <h6>📊 Tracking</h6>
+                    <p>Ändern Sie den Gap-Status in den jeweiligen Mapping-Reviews:</p>
+                    <ul>
+                        <li>identified → planned</li>
+                        <li>planned → in_progress</li>
+                        <li>in_progress → resolved</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
