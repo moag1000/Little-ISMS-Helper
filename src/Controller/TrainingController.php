@@ -7,6 +7,7 @@ use App\Form\TrainingType;
 use App\Repository\TrainingRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -19,25 +20,54 @@ class TrainingController extends AbstractController
     public function __construct(
         private TrainingRepository $trainingRepository,
         private EntityManagerInterface $entityManager,
-        private TranslatorInterface $translator
+        private TranslatorInterface $translator,
+        private Security $security
     ) {}
 
     #[Route('/', name: 'app_training_index')]
-    public function index(): Response
+    public function index(Request $request): Response
     {
-        $trainings = $this->trainingRepository->findAll();
+        $user = $this->security->getUser();
+        $tenant = $user?->getTenant();
+        $view = $request->query->get('view', 'inherited');
+
+        if ($tenant) {
+            switch ($view) {
+                case 'own':
+                    $trainings = $this->trainingRepository->findByTenant($tenant);
+                    break;
+                case 'subsidiaries':
+                    $trainings = $this->trainingRepository->findByTenantIncludingSubsidiaries($tenant);
+                    break;
+                case 'inherited':
+                default:
+                    $trainings = $this->trainingRepository->findByTenantIncludingParent($tenant);
+                    break;
+            }
+            $inheritanceInfo = [
+                'hasParent' => $tenant->getParent() !== null,
+                'hasSubsidiaries' => $tenant->getSubsidiaries()->count() > 0,
+                'currentView' => $view
+            ];
+        } else {
+            $trainings = $this->trainingRepository->findAll();
+            $inheritanceInfo = ['hasParent' => false, 'hasSubsidiaries' => false, 'currentView' => 'own'];
+        }
+
         $upcoming = $this->trainingRepository->findUpcoming();
         $statistics = [
             'total' => count($trainings),
             'upcoming' => count($upcoming),
-            'completed' => count($this->trainingRepository->findBy(['status' => 'completed'])),
-            'mandatory' => count($this->trainingRepository->findBy(['mandatory' => true])),
+            'completed' => count(array_filter($trainings, fn($t) => $t->getStatus() === 'completed')),
+            'mandatory' => count(array_filter($trainings, fn($t) => $t->getMandatory())),
         ];
 
         return $this->render('training/index.html.twig', [
             'trainings' => $trainings,
             'upcoming' => $upcoming,
             'statistics' => $statistics,
+            'inheritanceInfo' => $inheritanceInfo,
+            'currentTenant' => $tenant,
         ]);
     }
 
