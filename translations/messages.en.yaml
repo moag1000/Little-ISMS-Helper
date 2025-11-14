@@ -3862,6 +3862,20 @@ form:
   conduct_risk_analysis: Conduct risk analysis
   document_policies: Document policies
   plan_awareness_training: Plan awareness training
+  required: 'Required field'
+  optional: 'Optional'
+  action:
+    save: 'Save'
+    cancel: 'Cancel'
+    submit: 'Submit'
+    delete: 'Delete'
+    edit: 'Edit'
+    create: 'Create'
+  validation:
+    required_field: 'This field is required'
+    invalid_format: 'Invalid format'
+    too_short: 'Too short (min. %min% characters)'
+    too_long: 'Too long (max. %max% characters)'
 corporate:
   title: 'Corporate Structure'
   subtitle: 'Management of parent companies and subsidiaries'
@@ -3992,20 +4006,3 @@ governance:
 accessibility:
   skip_to_content: 'Skip to main content'
   skip_to_navigation: 'Skip to navigation'
-
-# Form Accessibility
-form:
-  required: 'Required field'
-  optional: 'Optional'
-  action:
-    save: 'Save'
-    cancel: 'Cancel'
-    submit: 'Submit'
-    delete: 'Delete'
-    edit: 'Edit'
-    create: 'Create'
-  validation:
-    required_field: 'This field is required'
-    invalid_format: 'Invalid format'
-    too_short: 'Too short (min. %min% characters)'
-    too_long: 'Too long (max. %max% characters)'
