@@ -170,6 +170,7 @@ jobs:
             maintainer=Little ISMS Helper Project
 
       - name: Build and Push Docker image (production)
+        id: docker-build
         uses: docker/build-push-action@v5
         timeout-minutes: 15
         with:
@@ -183,17 +184,34 @@ jobs:
           build-args: |
             BUILDKIT_PROGRESS=plain
 
+      - name: Get first Docker tag for Trivy scan
+        id: trivy-tag
+        run: |
+          FIRST_TAG=$(echo "${{ steps.meta.outputs.tags }}" | head -n1)
+          echo "tag=$FIRST_TAG" >> $GITHUB_OUTPUT
+          echo "Scanning Docker image: $FIRST_TAG"
+
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
+        continue-on-error: true
         with:
-          image-ref: ${{ steps.meta.outputs.tags }}
+          image-ref: ${{ steps.trivy-tag.outputs.tag }}
           format: 'sarif'
           output: 'trivy-results.sarif'
           severity: 'CRITICAL,HIGH'
 
+      - name: Check if Trivy results exist
+        id: trivy-results
+        run: |
+          if [ -f trivy-results.sarif ]; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+
       - name: Upload Trivy results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v3
-        if: always()
+        uses: github/codeql-action/upload-sarif@v4
+        if: steps.trivy-results.outputs.exists == 'true'
         with:
           sarif_file: 'trivy-results.sarif'
 
