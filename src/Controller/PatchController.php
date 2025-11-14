@@ -68,12 +68,20 @@ class PatchController extends AbstractController
         $deploymentStats = $this->patchRepository->getDeploymentStatistics();
         $pendingPatches = array_filter($patches, fn($p) => in_array($p->getStatus(), ['available', 'tested', 'approved']));
 
+        // Calculate detailed statistics based on origin
+        if ($tenant) {
+            $detailedStats = $this->calculateDetailedStats($patches, $tenant);
+        } else {
+            $detailedStats = ['own' => count($patches), 'inherited' => 0, 'subsidiaries' => 0, 'total' => count($patches)];
+        }
+
         return $this->render('patch/index.html.twig', [
             'patches' => $patches,
             'deployment_stats' => $deploymentStats,
             'pending_count' => count($pendingPatches),
             'inheritanceInfo' => $inheritanceInfo,
             'currentTenant' => $tenant,
+            'detailedStats' => $detailedStats,
         ]);
     }
 
@@ -136,5 +144,47 @@ class PatchController extends AbstractController
         }
 
         return $this->redirectToRoute('app_patch_index');
+    }
+
+    /**
+     * Calculate detailed statistics showing breakdown by origin
+     */
+    private function calculateDetailedStats(array $items, $currentTenant): array
+    {
+        $ownCount = 0;
+        $inheritedCount = 0;
+        $subsidiariesCount = 0;
+
+        // Get ancestors and subsidiaries for comparison
+        $ancestors = $currentTenant->getAllAncestors();
+        $ancestorIds = array_map(fn($t) => $t->getId(), $ancestors);
+
+        $subsidiaries = $currentTenant->getAllSubsidiaries();
+        $subsidiaryIds = array_map(fn($t) => $t->getId(), $subsidiaries);
+
+        foreach ($items as $item) {
+            $itemTenant = $item->getTenant();
+            if (!$itemTenant) {
+                continue;
+            }
+
+            $itemTenantId = $itemTenant->getId();
+            $currentTenantId = $currentTenant->getId();
+
+            if ($itemTenantId === $currentTenantId) {
+                $ownCount++;
+            } elseif (in_array($itemTenantId, $ancestorIds)) {
+                $inheritedCount++;
+            } elseif (in_array($itemTenantId, $subsidiaryIds)) {
+                $subsidiariesCount++;
+            }
+        }
+
+        return [
+            'own' => $ownCount,
+            'inherited' => $inheritedCount,
+            'subsidiaries' => $subsidiariesCount,
+            'total' => $ownCount + $inheritedCount + $subsidiariesCount
+        ];
     }
 }
