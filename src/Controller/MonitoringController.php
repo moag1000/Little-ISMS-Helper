@@ -111,6 +111,118 @@ class MonitoringController extends AbstractController
             'writable' => $logWritable,
         ];
 
+        // 7. File Permissions Check
+        $varDir = $projectDir . '/var';
+        $publicDir = $projectDir . '/public';
+        $uploadsDir = $publicDir . '/uploads';
+
+        $permissionIssues = [];
+        if (!is_writable($varDir)) {
+            $permissionIssues[] = 'var/ not writable';
+        }
+        if (is_dir($uploadsDir) && !is_writable($uploadsDir)) {
+            $permissionIssues[] = 'public/uploads/ not writable';
+        }
+
+        $healthChecks['permissions'] = [
+            'status' => empty($permissionIssues) ? 'healthy' : 'error',
+            'var_writable' => is_writable($varDir),
+            'uploads_writable' => is_dir($uploadsDir) ? is_writable($uploadsDir) : null,
+            'issues' => $permissionIssues,
+        ];
+
+        // 8. Composer Check
+        $composerLock = $projectDir . '/composer.lock';
+        $vendorDir = $projectDir . '/vendor';
+        $composerUpToDate = false;
+        $composerMessage = '';
+
+        if (!file_exists($composerLock)) {
+            $composerMessage = 'composer.lock not found';
+        } elseif (!is_dir($vendorDir)) {
+            $composerMessage = 'vendor/ directory not found - run composer install';
+        } else {
+            $composerUpToDate = true;
+            $composerMessage = 'Dependencies installed';
+        }
+
+        $healthChecks['composer'] = [
+            'status' => $composerUpToDate ? 'healthy' : 'error',
+            'message' => $composerMessage,
+            'lock_exists' => file_exists($composerLock),
+            'vendor_exists' => is_dir($vendorDir),
+        ];
+
+        // 9. Environment Variables Check
+        $envFile = $projectDir . '/.env';
+        $envLocalFile = $projectDir . '/.env.local';
+
+        $requiredEnvVars = ['APP_ENV', 'APP_SECRET', 'DATABASE_URL'];
+        $missingEnvVars = [];
+
+        foreach ($requiredEnvVars as $var) {
+            if (empty($_ENV[$var]) && empty($_SERVER[$var])) {
+                $missingEnvVars[] = $var;
+            }
+        }
+
+        $healthChecks['environment'] = [
+            'status' => empty($missingEnvVars) ? 'healthy' : 'error',
+            'env_file_exists' => file_exists($envFile),
+            'env_local_exists' => file_exists($envLocalFile),
+            'missing_vars' => $missingEnvVars,
+        ];
+
+        // 10. PHP Configuration Check
+        $opcacheEnabled = function_exists('opcache_get_status') && opcache_get_status();
+        $memoryLimit = ini_get('memory_limit');
+        $memoryLimitBytes = $this->convertToBytes($memoryLimit);
+        $recommendedMemory = 256 * 1024 * 1024; // 256MB
+
+        $configIssues = [];
+        if (!$opcacheEnabled && $this->getParameter('kernel.environment') === 'prod') {
+            $configIssues[] = 'OPcache not enabled in production';
+        }
+        if ($memoryLimitBytes < $recommendedMemory && $memoryLimitBytes !== -1) {
+            $configIssues[] = 'Memory limit below recommended 256M';
+        }
+
+        $healthChecks['php_config'] = [
+            'status' => empty($configIssues) ? 'healthy' : 'warning',
+            'opcache_enabled' => $opcacheEnabled,
+            'memory_limit' => $memoryLimit,
+            'memory_sufficient' => $memoryLimitBytes >= $recommendedMemory || $memoryLimitBytes === -1,
+            'issues' => $configIssues,
+        ];
+
+        // 11. Session Storage Check
+        $sessionSavePath = session_save_path();
+        if (empty($sessionSavePath)) {
+            $sessionSavePath = sys_get_temp_dir();
+        }
+        $sessionWritable = is_writable($sessionSavePath);
+
+        $healthChecks['sessions'] = [
+            'status' => $sessionWritable ? 'healthy' : 'error',
+            'save_path' => $sessionSavePath,
+            'writable' => $sessionWritable,
+            'handler' => ini_get('session.save_handler'),
+        ];
+
+        // 12. Uploads Directory Check
+        if (is_dir($uploadsDir)) {
+            $uploadsFree = disk_free_space($uploadsDir);
+            $uploadsSize = $this->getDirectorySize($uploadsDir);
+
+            $healthChecks['uploads'] = [
+                'status' => 'healthy',
+                'directory' => $uploadsDir,
+                'size' => $this->formatBytes($uploadsSize),
+                'free_space' => $this->formatBytes($uploadsFree),
+                'writable' => is_writable($uploadsDir),
+            ];
+        }
+
         // Calculate overall status
         $overallStatus = 'healthy';
         foreach ($healthChecks as $check) {
@@ -399,6 +511,47 @@ class MonitoringController extends AbstractController
         return $this->json($result);
     }
 
+    #[Route('/health/fix/var-permissions', name: 'monitoring_health_fix_var', methods: ['POST'])]
+    #[IsGranted('MONITORING_MANAGE')]
+    public function fixVarPermissions(HealthAutoFixService $autoFixService): JsonResponse
+    {
+        $result = $autoFixService->fixVarPermissions();
+        return $this->json($result);
+    }
+
+    #[Route('/health/fix/uploads-permissions', name: 'monitoring_health_fix_uploads', methods: ['POST'])]
+    #[IsGranted('MONITORING_MANAGE')]
+    public function fixUploadsPermissions(HealthAutoFixService $autoFixService): JsonResponse
+    {
+        $result = $autoFixService->fixUploadsPermissions();
+        return $this->json($result);
+    }
+
+    #[Route('/health/fix/session-permissions', name: 'monitoring_health_fix_sessions', methods: ['POST'])]
+    #[IsGranted('MONITORING_MANAGE')]
+    public function fixSessionPermissions(HealthAutoFixService $autoFixService): JsonResponse
+    {
+        $result = $autoFixService->fixSessionPermissions();
+        return $this->json($result);
+    }
+
+    #[Route('/health/fix/clean-uploads', name: 'monitoring_health_clean_uploads', methods: ['POST'])]
+    #[IsGranted('MONITORING_MANAGE')]
+    public function cleanUploads(HealthAutoFixService $autoFixService, Request $request): JsonResponse
+    {
+        $days = (int) $request->request->get('days', 90);
+        $result = $autoFixService->clearOldUploads($days);
+        return $this->json($result);
+    }
+
+    #[Route('/health/fix/composer-install', name: 'monitoring_health_composer_install', methods: ['POST'])]
+    #[IsGranted('MONITORING_MANAGE')]
+    public function composerInstall(HealthAutoFixService $autoFixService): JsonResponse
+    {
+        $result = $autoFixService->runComposerInstall();
+        return $this->json($result);
+    }
+
     /**
      * Format bytes to human-readable format
      */
@@ -413,5 +566,58 @@ class MonitoringController extends AbstractController
         $bytes /= (1 << (10 * $pow));
 
         return round($bytes, $precision) . ' ' . $units[$pow];
+    }
+
+    /**
+     * Convert PHP memory notation to bytes
+     */
+    private function convertToBytes(string $value): int
+    {
+        $value = trim($value);
+        $unit = strtolower($value[strlen($value) - 1]);
+        $value = (int) $value;
+
+        switch ($unit) {
+            case 'g':
+                $value *= 1024 * 1024 * 1024;
+                break;
+            case 'm':
+                $value *= 1024 * 1024;
+                break;
+            case 'k':
+                $value *= 1024;
+                break;
+        }
+
+        return $value;
+    }
+
+    /**
+     * Get directory size in bytes
+     */
+    private function getDirectorySize(string $directory): int
+    {
+        $size = 0;
+
+        if (!is_dir($directory)) {
+            return 0;
+        }
+
+        try {
+            $files = new \RecursiveIteratorIterator(
+                new \RecursiveDirectoryIterator($directory, \RecursiveDirectoryIterator::SKIP_DOTS)
+            );
+
+            foreach ($files as $file) {
+                if ($file->isFile()) {
+                    $size += $file->getSize();
+                }
+            }
+        } catch (\Exception $e) {
+            // Directory not accessible
+            return 0;
+        }
+
+        return $size;
     }
 }
