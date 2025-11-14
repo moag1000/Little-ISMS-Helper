@@ -54,8 +54,13 @@
                     <div class="card-body">
                         <h5 class="card-title">Gesamt</h5>
                         <p class="display-6">
-                            <span id="bcm-total-count">{{ stats.total }}</span>
+                            <span id="bcm-total-count">{{ detailedStats.total }}</span>
                         </p>
+                        {% if currentTenant %}
+                            <small style="font-size: 11px; color: #6c757d; opacity: 0.85; display: block; margin-top: 0.5rem;">
+                                Eigene: {{ detailedStats.own }} | Geerbt: {{ detailedStats.inherited }} | Tochter: {{ detailedStats.subsidiaries }}
+                            </small>
+                        {% endif %}
                         <small class="text-muted">Geschäftsprozesse</small>
                     </div>
                 </div>
