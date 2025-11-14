@@ -1,0 +1,245 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mapping Quality Dashboard{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="page-header">
+        <div>
+            <h1>🔍 Mapping Quality Dashboard</h1>
+            <p class="text-muted">Automatisierte Qualitätsanalyse für Compliance-Mappings</p>
+        </div>
+        <div class="button-group">
+            <a href="{{ path('app_mapping_quality_review_queue') }}" class="btn btn-primary">
+                <span class="icon">📋</span> Review Queue
+            </a>
+            <a href="{{ path('app_mapping_quality_gaps') }}" class="btn btn-secondary">
+                <span class="icon">🔍</span> Gap-Übersicht
+            </a>
+            <a href="{{ path('app_compliance_index') }}" class="btn btn-secondary">
+                <span class="icon">←</span> Zurück zu Compliance
+            </a>
+        </div>
+    </div>
+
+    {# Quality Statistics Cards #}
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h3 class="text-primary">{{ quality_stats.total_mappings }}</h3>
+                    <p class="text-muted mb-0">Total Mappings</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h3 class="text-success">{{ quality_stats.analyzed_mappings }}</h3>
+                    <p class="text-muted mb-0">Analysiert</p>
+                    <small class="text-success">{{ quality_stats.analysis_coverage }}%</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h3 class="text-warning">{{ quality_stats.requires_review }}</h3>
+                    <p class="text-muted mb-0">Benötigt Review</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h3 class="text-danger">{{ quality_stats.with_unresolved_gaps }}</h3>
+                    <p class="text-muted mb-0">Mit Gaps</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Average Scores #}
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">⭐ Durchschnittliche Qualität</h5>
+                </div>
+                <div class="card-body">
+                    <div class="progress mb-2" style="height: 30px;">
+                        <div class="progress-bar {% if quality_stats.avg_quality_score >= 75 %}bg-success{% elseif quality_stats.avg_quality_score >= 50 %}bg-warning{% else %}bg-danger{% endif %}"
+                             role="progressbar"
+                             style="width: {{ quality_stats.avg_quality_score }}%"
+                             aria-valuenow="{{ quality_stats.avg_quality_score }}"
+                             aria-valuemin="0"
+                             aria-valuemax="100">
+                            <strong>{{ quality_stats.avg_quality_score }}%</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">🎯 Durchschnittliches Confidence</h5>
+                </div>
+                <div class="card-body">
+                    <div class="progress mb-2" style="height: 30px;">
+                        <div class="progress-bar {% if quality_stats.avg_confidence >= 80 %}bg-success{% elseif quality_stats.avg_confidence >= 60 %}bg-warning{% else %}bg-danger{% endif %}"
+                             role="progressbar"
+                             style="width: {{ quality_stats.avg_confidence }}%"
+                             aria-valuenow="{{ quality_stats.avg_confidence }}"
+                             aria-valuemin="0"
+                             aria-valuemax="100">
+                            <strong>{{ quality_stats.avg_confidence }}%</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Confidence Distribution #}
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">📊 Confidence-Verteilung</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span>🟢 High Confidence (≥80)</span>
+                            <strong>{{ quality_stats.high_confidence }}</strong>
+                        </div>
+                        <div class="progress" style="height: 20px;">
+                            <div class="progress-bar bg-success" style="width: {% if quality_stats.analyzed_mappings > 0 %}{{ (quality_stats.high_confidence / quality_stats.analyzed_mappings * 100)|round }}{% else %}0{% endif %}%"></div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span>🟡 Medium Confidence (60-79)</span>
+                            <strong>{{ quality_stats.medium_confidence }}</strong>
+                        </div>
+                        <div class="progress" style="height: 20px;">
+                            <div class="progress-bar bg-warning" style="width: {% if quality_stats.analyzed_mappings > 0 %}{{ (quality_stats.medium_confidence / quality_stats.analyzed_mappings * 100)|round }}{% else %}0{% endif %}%"></div>
+                        </div>
+                    </div>
+                    <div class="mb-0">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span>🔴 Low Confidence (<60)</span>
+                            <strong>{{ quality_stats.low_confidence }}</strong>
+                        </div>
+                        <div class="progress" style="height: 20px;">
+                            <div class="progress-bar bg-danger" style="width: {% if quality_stats.analyzed_mappings > 0 %}{{ (quality_stats.low_confidence / quality_stats.analyzed_mappings * 100)|round }}{% else %}0{% endif %}%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">🔍 Gap-Statistiken</h5>
+                </div>
+                <div class="card-body">
+                    {% if gap_stats is empty %}
+                        <p class="text-muted">Keine Gap-Daten verfügbar</p>
+                    {% else %}
+                        {% for stat in gap_stats %}
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span>
+                                        {% if stat.priority == 'critical' %}🔴
+                                        {% elseif stat.priority == 'high' %}🟠
+                                        {% elseif stat.priority == 'medium' %}🟡
+                                        {% else %}⚪
+                                        {% endif %}
+                                        {{ stat.priority|upper }}
+                                    </span>
+                                    <strong>{{ stat.count }} Gaps ({{ stat.totalImpact|round }}% Impact)</strong>
+                                </div>
+                                {% if stat.avgEffort %}
+                                    <small class="text-muted">Ø {{ stat.avgEffort|round(1) }}h Aufwand</small>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Framework Comparison #}
+    {% if framework_comparison is not empty %}
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">🌍 Framework-Qualitätsvergleich (Top 10)</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Source Framework</th>
+                            <th>Target Framework</th>
+                            <th class="text-center">Mappings</th>
+                            <th class="text-center">Ø Percentage</th>
+                            <th class="text-center">Ø Quality</th>
+                            <th class="text-center">Ø Confidence</th>
+                            <th class="text-center">Review nötig</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for comparison in framework_comparison|slice(0, 10) %}
+                        <tr>
+                            <td><strong>{{ comparison.source_framework }}</strong></td>
+                            <td>{{ comparison.target_framework }}</td>
+                            <td class="text-center">{{ comparison.mapping_count }}</td>
+                            <td class="text-center">
+                                <span class="badge {% if comparison.avg_percentage >= 75 %}badge-success{% elseif comparison.avg_percentage >= 50 %}badge-warning{% else %}badge-danger{% endif %}">
+                                    {{ comparison.avg_percentage|round }}%
+                                </span>
+                            </td>
+                            <td class="text-center">
+                                <span class="badge {% if comparison.avg_quality >= 75 %}badge-success{% elseif comparison.avg_quality >= 50 %}badge-warning{% else %}badge-danger{% endif %}">
+                                    {{ comparison.avg_quality|round }}
+                                </span>
+                            </td>
+                            <td class="text-center">
+                                <span class="badge {% if comparison.avg_confidence >= 80 %}badge-success{% elseif comparison.avg_confidence >= 60 %}badge-warning{% else %}badge-danger{% endif %}">
+                                    {{ comparison.avg_confidence|round }}
+                                </span>
+                            </td>
+                            <td class="text-center">
+                                {% if comparison.review_count > 0 %}
+                                    <span class="badge badge-warning">{{ comparison.review_count }}</span>
+                                {% else %}
+                                    <span class="text-success">✓</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {# Quick Actions #}
+    <div class="alert alert-info">
+        <h5>ℹ️ Nächste Schritte</h5>
+        <ul class="mb-0">
+            <li><a href="{{ path('app_mapping_quality_review_queue') }}">Review Queue ansehen</a> - Prüfen Sie Mappings mit niedrigem Confidence</li>
+            <li><a href="{{ path('app_mapping_quality_gaps') }}">Gap-Übersicht</a> - Identifizierte Lücken adressieren</li>
+            {% if quality_stats.unanalyzed_mappings > 0 %}
+            <li><strong>{{ quality_stats.unanalyzed_mappings }} Mappings noch nicht analysiert</strong> - Führen Sie <code>php bin/console app:analyze-mapping-quality</code> aus</li>
+            {% endif %}
+        </ul>
+    </div>
+</div>
+{% endblock %}
