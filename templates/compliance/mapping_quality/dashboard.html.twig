@@ -39,7 +39,36 @@
         </div>
     </div>
 
+    {# Empty State for No Mappings #}
+    {% if quality_stats.total_mappings == 0 %}
+    <div class="alert alert-warning">
+        <h4>⚠️ Keine Mappings gefunden</h4>
+        <p>Es wurden keine Compliance-Mappings in der Datenbank gefunden.</p>
+        <hr>
+        <h6>Nächste Schritte:</h6>
+        <ol>
+            <li>Prüfen Sie ob Frameworks importiert sind: <code>php bin/console app:list-frameworks</code></li>
+            <li>Erstellen Sie Mappings: <code>php bin/console app:create-cross-framework-mappings</code></li>
+            <li>Kehren Sie dann hierher zurück</li>
+        </ol>
+        <a href="{{ path('app_compliance_index') }}" class="btn btn-primary mt-2">← Zurück zu Compliance</a>
+    </div>
+    {% elseif quality_stats.analyzed_mappings == 0 %}
+    <div class="alert alert-info">
+        <h4>ℹ️ Noch keine Analyse durchgeführt</h4>
+        <p>{{ quality_stats.total_mappings }} Mappings gefunden, aber noch nicht analysiert.</p>
+        <hr>
+        <h6>Analyse starten:</h6>
+        <ol>
+            <li>Sanity Check durchführen: <code>php bin/console app:mapping-quality:sanity-check</code></li>
+            <li>Analyse starten: <code>php bin/console app:analyze-mapping-quality</code></li>
+            <li>Seite neu laden</li>
+        </ol>
+    </div>
+    {% endif %}
+
     {# Quality Statistics Cards #}
+    {% if quality_stats.total_mappings > 0 %}
     <div class="row mb-4">
         <div class="col-md-3">
             <div class="card stat-card">
@@ -246,8 +275,10 @@
             </div>
         </div>
     </div>
+    {% endif %}
 
-    {# Quick Actions #}
+    {# Quick Actions - Show only if mappings exist #}
+    {% if quality_stats.total_mappings > 0 %}
     <div class="alert alert-info">
         <h5>🚀 Nächste Schritte</h5>
         <ul class="mb-0">
@@ -258,6 +289,7 @@
             {% endif %}
         </ul>
     </div>
+    {% endif %}
 </div>
 
 {% block javascripts %}
