@@ -422,6 +422,16 @@ common:
   seconds: Sekunden
   minutes: Minuten
   days: Tage
+  roles: Rollen
+  close: Schließen
+  copy: Kopieren
+  apply: Anwenden
+  copied: Kopiert
+  copy_failed: Kopieren fehlgeschlagen
+  downloaded: Heruntergeladen
+  system_info: Systeminformationen
+  verifying: Überprüfe...
+  generated: Generiert
 asset:
   new: Neues Asset
   create: Asset erstellen
@@ -3024,6 +3034,8 @@ tenant:
     name_help: Vollständiger Name der Organisation
     description: Beschreibung
     description_help: Optionale Beschreibung des Mandanten
+    logo: Logo
+    logo_help: Mandanten-Logo (max. 2MB, JPG/PNG/GIF/WebP)
     azure_tenant_id: Azure Tenant ID
     azure_tenant_id_help: Azure AD Tenant ID (UUID-Format) für SSO-Integration
     is_active: Aktiv
@@ -3043,6 +3055,7 @@ tenant:
   validation:
     code_format: Der Code darf nur Buchstaben, Zahlen, Unterstriche und Bindestriche enthalten
     azure_tenant_id_format: Die Azure Tenant ID muss im UUID-Format vorliegen
+    logo_format: Das Logo muss im Format JPG, PNG, GIF oder WebP vorliegen
   status:
     active: Aktiv
     inactive: Inaktiv
@@ -3099,6 +3112,7 @@ tenant:
     title: Über Mandanten
     text: Mandanten ermöglichen es, mehrere Organisationen in einer Instanz zu verwalten. Jeder Benutzer gehört zu einem Mandanten.
     metadata: Metadaten
+  no_logo: Kein Logo vorhanden
   help:
     title: Hilfe
     code_title: Mandanten-Code
@@ -3870,6 +3884,7 @@ form:
   document_policies: Richtlinien dokumentieren
   plan_awareness_training: Awareness-Schulung planen
 corporate:
+  title: 'Konzernstruktur'
   subtitle: 'Verwaltung von Muttergesellschaften und Tochtergesellschaften'
   role:
     parent: 'Muttergesellschaft'
@@ -3885,6 +3900,7 @@ corporate:
     inherited: 'Geerbt'
     subsidiaries: 'Tochter'
     breakdown: 'Eigene: %own% | Geerbt: %inherited% | Tochter: %subsidiaries%'
+    groups: 'Konzerngruppen'
   view:
     own_only: 'Nur Eigene'
     including_inherited: 'Inkl. Geerbt'
@@ -3892,23 +3908,63 @@ corporate:
   field:
     actions: 'Aktionen'
     subsidiaries: 'Tochtergesellschaften'
+    parent: 'Muttergesellschaft'
+    parent_help: 'Ordnen Sie diesen Mandanten einer Muttergesellschaft zu, um Konzernstrukturen abzubilden'
+    subsidiary: 'Tochtergesellschaft'
+    is_corporate_parent: 'Ist Muttergesellschaft'
+    is_corporate_parent_help: 'Aktivieren, wenn dieser Mandant eine Muttergesellschaft mit Tochtergesellschaften ist'
+    corporate_notes: 'Konzernnotizen'
+    corporate_notes_help: 'Zusätzliche Informationen zur Konzernstruktur und Beziehungen'
+    governance_model: 'Governance-Modell'
+    hierarchy_depth: 'Hierarchietiefe'
   select:
     parent: 'Muttergesellschaft auswählen...'
     governance: 'Governance-Modell auswählen...'
+  action:
+    set_parent: 'Muttergesellschaft zuweisen'
+    update_governance: 'Governance aktualisieren'
+    remove_parent: 'Muttergesellschaft entfernen'
+    view_structure: 'Struktur anzeigen'
+  info:
+    title: 'Konzernstruktur-Informationen'
+    text: 'Hier können Sie hierarchische Beziehungen zwischen Mandanten verwalten'
   modal:
+    set_parent:
+      title: 'Muttergesellschaft zuweisen'
+    update_governance:
+      title: 'Governance-Modell aktualisieren'
   confirm:
+    remove_parent: 'Möchten Sie die Verbindung zur Muttergesellschaft wirklich entfernen?'
+  single_tenant:
+    title: 'Einzelner Mandant'
+    message: 'Es ist nur ein Mandant im System vorhanden'
+    hint: 'Konzernstrukturen werden erst relevant, wenn Sie mehrere Mandanten verwalten'
   flash:
     text: 'Hier können Sie Beziehungen zwischen Muttergesellschaften und Tochtergesellschaften verwalten. Das Governance-Modell bestimmt, wie ISMS-Verantwortlichkeiten zwischen Mutter- und Tochtergesellschaften aufgeteilt werden.'
+    error: 'Fehler beim Verarbeiten der Konzernstruktur'
   level: 'Ebene %level%'
   placeholder:
     parent: 'Keine Muttergesellschaft (eigenständig)'
+    corporate_notes: 'z.B. Holdingstruktur, Verantwortlichkeiten, etc.'
     hint: 'Konzernstrukturen werden erst relevant, wenn Sie mehrere Mandanten verwalten.'
   granular:
+    title: 'Granulare Governance-Regeln'
     subtitle: 'Spezifische Governance-Regeln für einzelne Bereiche'
     loading: 'Lade Governance-Regeln...'
+    add_rule: 'Regel hinzufügen'
+    no_rules: 'Noch keine Governance-Regeln definiert'
     modal:
+      title: 'Governance-Regel bearbeiten'
     field:
       notes: 'Notizen'
+      scope: 'Bereich'
+      scope_id: 'Bereichs-ID'
+    scope:
+      control: 'Maßnahme'
+      isms_context: 'ISMS-Kontext'
+      risk: 'Risiko'
+      asset: 'Asset'
+      process: 'Geschäftsprozess'
     help:
       control: 'Control'
       risk: 'Risiko'
@@ -3916,12 +3972,15 @@ corporate:
       process: 'Prozess'
       default: 'Standard'
       delete: 'Regel löschen'
+      scope_id: 'ID des spezifischen Elements (optional)'
     confirm:
       delete: 'Möchten Sie diese Governance-Regel wirklich löschen?'
     flash:
       saved: 'Governance-Regel gespeichert'
       deleted: 'Governance-Regel gelöscht'
+      error: 'Fehler beim Speichern der Governance-Regel'
   inheritance:
+    title: 'Vererbung'
     subtitle: 'Effektiver ISMS-Kontext für diesen Mandanten'
     organization: 'Organisation'
     propagate: 'An Tochtergesellschaften verteilen'
@@ -3935,6 +3994,13 @@ corporate:
     asset_inherited_message: 'Dieses Asset wird von der Muttergesellschaft geerbt und kann hier nicht bearbeitet werden.'
     document_inherited_message: 'Dieses Dokument wird von der Muttergesellschaft geerbt und kann hier nicht bearbeitet werden.'
     supplier_inherited_message: 'Dieser Lieferant wird von der Muttergesellschaft geerbt und kann hier nicht bearbeitet werden.'
+    isms_context_inherited: 'Dieser ISMS-Kontext wird geerbt'
+    no_context: 'Kein ISMS-Kontext vorhanden'
+    inherited_from: 'Geerbt von'
+    own_context: 'Eigener Kontext'
+    load_error: 'Fehler beim Laden der geerbten Daten'
+    confirm_propagate: 'Möchten Sie diese Änderungen wirklich an alle Tochtergesellschaften verteilen?'
+    propagate_error: 'Fehler beim Verteilen der Änderungen'
   inherited: 'Geerbt'
 
 # Governance Model Labels
