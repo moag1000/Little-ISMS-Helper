@@ -29,11 +29,19 @@ class SecurityController extends AbstractController
         if (false === $limiter->consume(1)->isAccepted()) {
             $this->addFlash('error', $this->translator->trans('security.error.too_many_attempts'));
 
-            return $this->render('security/login.html.twig', [
+            $response = $this->render('security/login.html.twig', [
                 'last_username' => '',
                 'error' => null,
                 'rate_limited' => true,
             ]);
+
+            // Prevent caching of login page to ensure fresh CSRF tokens
+            $response->setSharedMaxAge(0);
+            $response->headers->addCacheControlDirective('no-cache', true);
+            $response->headers->addCacheControlDirective('no-store', true);
+            $response->headers->addCacheControlDirective('must-revalidate', true);
+
+            return $response;
         }
 
         // Store locale preference from query parameter or browser preference
@@ -56,11 +64,19 @@ class SecurityController extends AbstractController
         // Last username entered by the user
         $lastUsername = $authenticationUtils->getLastUsername();
 
-        return $this->render('security/login.html.twig', [
+        $response = $this->render('security/login.html.twig', [
             'last_username' => $lastUsername,
             'error' => $error,
             'rate_limited' => false,
         ]);
+
+        // Prevent caching of login page to ensure fresh CSRF tokens
+        $response->setSharedMaxAge(0);
+        $response->headers->addCacheControlDirective('no-cache', true);
+        $response->headers->addCacheControlDirective('no-store', true);
+        $response->headers->addCacheControlDirective('must-revalidate', true);
+
+        return $response;
     }
 
     #[Route('/logout', name: 'app_logout')]
