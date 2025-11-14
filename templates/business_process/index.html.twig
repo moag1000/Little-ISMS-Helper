@@ -58,7 +58,7 @@
                         </p>
                         {% if currentTenant %}
                             <small style="font-size: 11px; color: #6c757d; opacity: 0.85; display: block; margin-top: 0.5rem;">
-                                Eigene: {{ detailedStats.own }} | Geerbt: {{ detailedStats.inherited }} | Tochter: {{ detailedStats.subsidiaries }}
+                                {{ 'corporate.stats.breakdown'|trans({'%own%': detailedStats.own, '%inherited%': detailedStats.inherited, '%subsidiaries%': detailedStats.subsidiaries}) }}
                             </small>
                         {% endif %}
                         <small class="text-muted">Geschäftsprozesse</small>
