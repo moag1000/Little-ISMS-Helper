@@ -1,0 +1,309 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mapping Review Queue{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .badge-tooltip {
+            cursor: help;
+        }
+        .sortable {
+            cursor: pointer;
+            user-select: none;
+        }
+        .sortable:hover {
+            background-color: #f8f9fa;
+        }
+        .sortable::after {
+            content: ' ⇅';
+            opacity: 0.3;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="page-header">
+        <div>
+            <h1>📋 Mapping Review Queue</h1>
+            <p class="text-muted">Mappings mit niedrigem Confidence für manuelle Überprüfung</p>
+        </div>
+        <div class="button-group">
+            <a href="{{ path('app_mapping_quality_dashboard') }}" class="btn btn-secondary">
+                <span class="icon">←</span> Dashboard
+            </a>
+        </div>
+    </div>
+
+    {# Mappings Requiring Review #}
+    {% if mappings_requiring_review is not empty %}
+    <div class="card mb-4">
+        <div class="card-header bg-warning">
+            <h5 class="mb-0">⚠️ Benötigt dringend Review ({{ mappings_requiring_review|length }})</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Source → Target</th>
+                            <th class="text-center">Alt %</th>
+                            <th class="text-center">Berechnet %</th>
+                            <th class="text-center">Confidence</th>
+                            <th class="text-center">Quality</th>
+                            <th class="text-center">Gaps</th>
+                            <th>Aktion</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for mapping in mappings_requiring_review %}
+                        <tr>
+                            <td><small>{{ mapping.id }}</small></td>
+                            <td>
+                                <strong>{{ mapping.sourceRequirement.requirementId }}</strong>
+                                <small class="text-muted d-block">{{ mapping.sourceRequirement.framework.code }}</small>
+                                →
+                                <strong>{{ mapping.targetRequirement.requirementId }}</strong>
+                                <small class="text-muted d-block">{{ mapping.targetRequirement.framework.code }}</small>
+                            </td>
+                            <td class="text-center">
+                                <span class="badge badge-secondary">{{ mapping.mappingPercentage }}%</span>
+                            </td>
+                            <td class="text-center">
+                                {% if mapping.calculatedPercentage is not null %}
+                                    <span class="badge {% if mapping.calculatedPercentage >= 75 %}badge-success{% elseif mapping.calculatedPercentage >= 50 %}badge-warning{% else %}badge-danger{% endif %}">
+                                        {{ mapping.calculatedPercentage }}%
+                                    </span>
+                                {% else %}
+                                    <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-center">
+                                {% if mapping.analysisConfidence is not null %}
+                                    <span class="badge {% if mapping.analysisConfidence >= 80 %}badge-success{% elseif mapping.analysisConfidence >= 60 %}badge-warning{% else %}badge-danger{% endif %}">
+                                        {{ mapping.analysisConfidence }}
+                                    </span>
+                                {% else %}
+                                    <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-center">
+                                {% if mapping.qualityScore is not null %}
+                                    <span class="badge {% if mapping.qualityScore >= 75 %}badge-success{% elseif mapping.qualityScore >= 50 %}badge-warning{% else %}badge-danger{% endif %}">
+                                        {{ mapping.qualityScore }}
+                                    </span>
+                                {% else %}
+                                    <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-center">
+                                {% if mapping.unresolvedGapCount > 0 %}
+                                    <span class="badge badge-warning">{{ mapping.unresolvedGapCount }}</span>
+                                {% else %}
+                                    <span class="text-success">✓</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{{ path('app_mapping_quality_review', {id: mapping.id}) }}" class="btn btn-sm btn-primary">
+                                    Review
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {# Low Confidence Mappings #}
+    {% if low_confidence_mappings is not empty %}
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">🔴 Niedriges Confidence (<70) ({{ low_confidence_mappings|length }})</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Source → Target</th>
+                            <th class="text-center">Berechnet %</th>
+                            <th class="text-center">Confidence</th>
+                            <th class="text-center">Similarity</th>
+                            <th class="text-center">Review Status</th>
+                            <th>Aktion</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for mapping in low_confidence_mappings|slice(0, 20) %}
+                        <tr>
+                            <td>
+                                <strong>{{ mapping.sourceRequirement.framework.code }}</strong>
+                                {{ mapping.sourceRequirement.requirementId }}
+                                →
+                                <strong>{{ mapping.targetRequirement.framework.code }}</strong>
+                                {{ mapping.targetRequirement.requirementId }}
+                            </td>
+                            <td class="text-center">
+                                <span class="badge badge-warning">{{ mapping.calculatedPercentage }}%</span>
+                            </td>
+                            <td class="text-center">
+                                <span class="badge badge-danger">{{ mapping.analysisConfidence }}</span>
+                            </td>
+                            <td class="text-center">
+                                {% if mapping.textualSimilarity is not null %}
+                                    {{ (mapping.textualSimilarity * 100)|round }}%
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                            <td class="text-center">
+                                <span class="badge badge-{{ mapping.reviewStatusBadgeClass }}">
+                                    {{ mapping.reviewStatus }}
+                                </span>
+                            </td>
+                            <td>
+                                <a href="{{ path('app_mapping_quality_review', {id: mapping.id}) }}" class="btn btn-sm btn-primary">
+                                    Review
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% if low_confidence_mappings|length > 20 %}
+                <p class="text-muted text-center mb-0">... und {{ low_confidence_mappings|length - 20 }} weitere</p>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+
+    {# Discrepancies (Large differences between old and calculated) #}
+    {% if discrepancies is not empty %}
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">🔍 Große Diskrepanzen (≥20% Unterschied) ({{ discrepancies|length }})</h5>
+        </div>
+        <div class="card-body">
+            <p class="text-muted">Mappings wo der neu berechnete Prozentsatz stark vom ursprünglichen abweicht</p>
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Source → Target</th>
+                            <th class="text-center">Original %</th>
+                            <th class="text-center">Berechnet %</th>
+                            <th class="text-center">Differenz</th>
+                            <th class="text-center">Confidence</th>
+                            <th>Aktion</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for mapping in discrepancies|slice(0, 15) %}
+                        {% set diff = mapping.calculatedPercentage - mapping.mappingPercentage %}
+                        <tr>
+                            <td>
+                                <strong>{{ mapping.sourceRequirement.framework.code }}</strong>
+                                {{ mapping.sourceRequirement.requirementId }}
+                                →
+                                <strong>{{ mapping.targetRequirement.framework.code }}</strong>
+                                {{ mapping.targetRequirement.requirementId }}
+                            </td>
+                            <td class="text-center">
+                                <span class="badge badge-secondary">{{ mapping.mappingPercentage }}%</span>
+                            </td>
+                            <td class="text-center">
+                                <span class="badge {% if mapping.calculatedPercentage >= 75 %}badge-success{% elseif mapping.calculatedPercentage >= 50 %}badge-warning{% else %}badge-danger{% endif %}">
+                                    {{ mapping.calculatedPercentage }}%
+                                </span>
+                            </td>
+                            <td class="text-center">
+                                <strong class="{% if diff > 0 %}text-success{% else %}text-danger{% endif %}">
+                                    {{ diff > 0 ? '+' : '' }}{{ diff }}%
+                                </strong>
+                            </td>
+                            <td class="text-center">
+                                <span class="badge {% if mapping.analysisConfidence >= 80 %}badge-success{% elseif mapping.analysisConfidence >= 60 %}badge-warning{% else %}badge-danger{% endif %}">
+                                    {{ mapping.analysisConfidence }}
+                                </span>
+                            </td>
+                            <td>
+                                <a href="{{ path('app_mapping_quality_review', {id: mapping.id}) }}" class="btn btn-sm btn-primary">
+                                    Review
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% if discrepancies|length > 15 %}
+                <p class="text-muted text-center mb-0">... und {{ discrepancies|length - 15 }} weitere</p>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+
+    {# Empty State #}
+    {% if mappings_requiring_review is empty and low_confidence_mappings is empty and discrepancies is empty %}
+    <div class="alert alert-success">
+        <h4>✅ Keine Mappings benötigen Review!</h4>
+        <p>Alle Mappings haben akzeptable Confidence-Scores oder wurden bereits reviewed.</p>
+        <hr>
+        <h6>Status:</h6>
+        <ul>
+            <li>✅ Alle Mappings mit niedrigem Confidence (<70) wurden geprüft</li>
+            <li>✅ Keine großen Diskrepanzen gefunden</li>
+            <li>✅ Review Queue ist leer</li>
+        </ul>
+        <a href="{{ path('app_mapping_quality_dashboard') }}" class="btn btn-primary mt-2">← Zurück zum Dashboard</a>
+    </div>
+    {% endif %}
+</div>
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        // Initialize Bootstrap tooltips
+        document.addEventListener('DOMContentLoaded', function() {
+            // Enable tooltips on badges
+            const badges = document.querySelectorAll('.badge');
+            badges.forEach(badge => {
+                badge.setAttribute('data-bs-toggle', 'tooltip');
+                badge.setAttribute('data-bs-placement', 'top');
+
+                // Add helpful tooltips
+                if (badge.textContent.includes('%')) {
+                    badge.setAttribute('title', 'Mapping-Prozentsatz: Wie gut deckt das Source-Requirement das Target ab');
+                }
+                if (badge.classList.contains('badge-danger')) {
+                    badge.setAttribute('title', 'Niedriger Wert - Manuelle Review empfohlen');
+                }
+                if (badge.classList.contains('badge-success')) {
+                    badge.setAttribute('title', 'Hoher Wert - Gute Qualität');
+                }
+            });
+
+            // Initialize all tooltips
+            const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+
+            // Add loading state to review buttons
+            const reviewButtons = document.querySelectorAll('a.btn-primary');
+            reviewButtons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    this.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Laden...';
+                    this.classList.add('disabled');
+                });
+            });
+        });
+    </script>
+{% endblock %}
+{% endblock %}

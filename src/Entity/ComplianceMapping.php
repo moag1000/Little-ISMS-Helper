@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ComplianceMappingRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -66,9 +68,97 @@ class ComplianceMapping
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     private ?\DateTimeInterface $updatedAt = null;
 
+    /**
+     * Collection of gap items for this mapping
+     */
+    #[ORM\OneToMany(mappedBy: 'mapping', targetEntity: MappingGapItem::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
+    private Collection $gapItems;
+
+    /**
+     * Automatically calculated percentage based on text analysis and similarity algorithms
+     */
+    #[ORM\Column(nullable: true)]
+    private ?int $calculatedPercentage = null;
+
+    /**
+     * Manually overridden percentage (takes precedence over calculated)
+     */
+    #[ORM\Column(nullable: true)]
+    private ?int $manualPercentage = null;
+
+    /**
+     * Confidence score of the automated analysis (0-100)
+     * Higher = more confident in the calculated percentage
+     */
+    #[ORM\Column(nullable: true)]
+    private ?int $analysisConfidence = null;
+
+    /**
+     * Version of the analysis algorithm used
+     */
+    #[ORM\Column(length: 20, nullable: true)]
+    private ?string $analysisAlgorithmVersion = null;
+
+    /**
+     * Whether this mapping requires manual review
+     */
+    #[ORM\Column]
+    private bool $requiresReview = false;
+
+    /**
+     * Review status: unreviewed, in_review, approved, rejected
+     */
+    #[ORM\Column(length: 30)]
+    private string $reviewStatus = 'unreviewed';
+
+    /**
+     * Overall quality score of this mapping (0-100)
+     * Based on multiple factors: confidence, completeness, verification
+     */
+    #[ORM\Column(nullable: true)]
+    private ?int $qualityScore = null;
+
+    /**
+     * Textual similarity score between source and target requirements (0-1)
+     */
+    #[ORM\Column(type: Types::DECIMAL, precision: 5, scale: 4, nullable: true)]
+    private ?string $textualSimilarity = null;
+
+    /**
+     * Keyword overlap score (0-1)
+     */
+    #[ORM\Column(type: Types::DECIMAL, precision: 5, scale: 4, nullable: true)]
+    private ?string $keywordOverlap = null;
+
+    /**
+     * Structural similarity score (0-1)
+     * Based on category, scope, control type alignment
+     */
+    #[ORM\Column(type: Types::DECIMAL, precision: 5, scale: 4, nullable: true)]
+    private ?string $structuralSimilarity = null;
+
+    /**
+     * Notes from manual review
+     */
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $reviewNotes = null;
+
+    /**
+     * User who reviewed this mapping
+     */
+    #[ORM\Column(length: 100, nullable: true)]
+    private ?string $reviewedBy = null;
+
+    /**
+     * Date when this mapping was reviewed
+     */
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?\DateTimeInterface $reviewedAt = null;
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
+        $this->gapItems = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -253,4 +343,241 @@ class ComplianceMapping
 
         return round($sourceFulfillment * $mappingStrength, 2);
     }
+
+    /**
+     * @return Collection<int, MappingGapItem>
+     */
+    public function getGapItems(): Collection
+    {
+        return $this->gapItems;
+    }
+
+    public function addGapItem(MappingGapItem $gapItem): static
+    {
+        if (!$this->gapItems->contains($gapItem)) {
+            $this->gapItems->add($gapItem);
+            $gapItem->setMapping($this);
+        }
+
+        return $this;
+    }
+
+    public function removeGapItem(MappingGapItem $gapItem): static
+    {
+        if ($this->gapItems->removeElement($gapItem)) {
+            if ($gapItem->getMapping() === $this) {
+                $gapItem->setMapping(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getCalculatedPercentage(): ?int
+    {
+        return $this->calculatedPercentage;
+    }
+
+    public function setCalculatedPercentage(?int $calculatedPercentage): static
+    {
+        $this->calculatedPercentage = $calculatedPercentage !== null ? max(0, min(150, $calculatedPercentage)) : null;
+        return $this;
+    }
+
+    public function getManualPercentage(): ?int
+    {
+        return $this->manualPercentage;
+    }
+
+    public function setManualPercentage(?int $manualPercentage): static
+    {
+        $this->manualPercentage = $manualPercentage !== null ? max(0, min(150, $manualPercentage)) : null;
+        return $this;
+    }
+
+    /**
+     * Get the final percentage (manual takes precedence over calculated)
+     */
+    public function getFinalPercentage(): int
+    {
+        return $this->manualPercentage ?? $this->calculatedPercentage ?? $this->mappingPercentage;
+    }
+
+    public function getAnalysisConfidence(): ?int
+    {
+        return $this->analysisConfidence;
+    }
+
+    public function setAnalysisConfidence(?int $analysisConfidence): static
+    {
+        $this->analysisConfidence = $analysisConfidence !== null ? max(0, min(100, $analysisConfidence)) : null;
+        return $this;
+    }
+
+    public function getAnalysisAlgorithmVersion(): ?string
+    {
+        return $this->analysisAlgorithmVersion;
+    }
+
+    public function setAnalysisAlgorithmVersion(?string $analysisAlgorithmVersion): static
+    {
+        $this->analysisAlgorithmVersion = $analysisAlgorithmVersion;
+        return $this;
+    }
+
+    public function isRequiresReview(): bool
+    {
+        return $this->requiresReview;
+    }
+
+    public function setRequiresReview(bool $requiresReview): static
+    {
+        $this->requiresReview = $requiresReview;
+        return $this;
+    }
+
+    public function getReviewStatus(): string
+    {
+        return $this->reviewStatus;
+    }
+
+    public function setReviewStatus(string $reviewStatus): static
+    {
+        $this->reviewStatus = $reviewStatus;
+        return $this;
+    }
+
+    public function getQualityScore(): ?int
+    {
+        return $this->qualityScore;
+    }
+
+    public function setQualityScore(?int $qualityScore): static
+    {
+        $this->qualityScore = $qualityScore !== null ? max(0, min(100, $qualityScore)) : null;
+        return $this;
+    }
+
+    public function getTextualSimilarity(): ?float
+    {
+        return $this->textualSimilarity !== null ? (float) $this->textualSimilarity : null;
+    }
+
+    public function setTextualSimilarity(?float $textualSimilarity): static
+    {
+        $this->textualSimilarity = $textualSimilarity !== null ? (string) max(0, min(1, $textualSimilarity)) : null;
+        return $this;
+    }
+
+    public function getKeywordOverlap(): ?float
+    {
+        return $this->keywordOverlap !== null ? (float) $this->keywordOverlap : null;
+    }
+
+    public function setKeywordOverlap(?float $keywordOverlap): static
+    {
+        $this->keywordOverlap = $keywordOverlap !== null ? (string) max(0, min(1, $keywordOverlap)) : null;
+        return $this;
+    }
+
+    public function getStructuralSimilarity(): ?float
+    {
+        return $this->structuralSimilarity !== null ? (float) $this->structuralSimilarity : null;
+    }
+
+    public function setStructuralSimilarity(?float $structuralSimilarity): static
+    {
+        $this->structuralSimilarity = $structuralSimilarity !== null ? (string) max(0, min(1, $structuralSimilarity)) : null;
+        return $this;
+    }
+
+    public function getReviewNotes(): ?string
+    {
+        return $this->reviewNotes;
+    }
+
+    public function setReviewNotes(?string $reviewNotes): static
+    {
+        $this->reviewNotes = $reviewNotes;
+        return $this;
+    }
+
+    public function getReviewedBy(): ?string
+    {
+        return $this->reviewedBy;
+    }
+
+    public function setReviewedBy(?string $reviewedBy): static
+    {
+        $this->reviewedBy = $reviewedBy;
+        return $this;
+    }
+
+    public function getReviewedAt(): ?\DateTimeInterface
+    {
+        return $this->reviewedAt;
+    }
+
+    public function setReviewedAt(?\DateTimeInterface $reviewedAt): static
+    {
+        $this->reviewedAt = $reviewedAt;
+        return $this;
+    }
+
+    /**
+     * Get badge class for review status
+     */
+    public function getReviewStatusBadgeClass(): string
+    {
+        return match($this->reviewStatus) {
+            'approved' => 'success',
+            'in_review' => 'warning',
+            'rejected' => 'danger',
+            'unreviewed' => 'secondary',
+            default => 'secondary',
+        };
+    }
+
+    /**
+     * Check if mapping has been analyzed by the quality system
+     */
+    public function isAnalyzed(): bool
+    {
+        return $this->calculatedPercentage !== null && $this->analysisConfidence !== null;
+    }
+
+    /**
+     * Check if mapping uses manual override
+     */
+    public function hasManualOverride(): bool
+    {
+        return $this->manualPercentage !== null;
+    }
+
+    /**
+     * Get total percentage impact of all gaps
+     */
+    public function getTotalGapImpact(): int
+    {
+        $total = 0;
+        foreach ($this->gapItems as $gap) {
+            $total += $gap->getPercentageImpact();
+        }
+        return $total;
+    }
+
+    /**
+     * Get count of unresolved gaps
+     */
+    public function getUnresolvedGapCount(): int
+    {
+        $count = 0;
+        foreach ($this->gapItems as $gap) {
+            if (!in_array($gap->getStatus(), ['resolved', 'wont_fix'], true)) {
+                $count++;
+            }
+        }
+        return $count;
+    }
 }
+
