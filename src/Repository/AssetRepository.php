@@ -149,4 +149,32 @@ class AssetRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * Find assets by tenant including all subsidiaries (for corporate parent view)
+     * This allows viewing aggregated assets from all subsidiary companies
+     *
+     * @param \App\Entity\Tenant $tenant The tenant to find assets for
+     * @return Asset[] Array of Asset entities (own + from all subsidiaries)
+     */
+    public function findByTenantIncludingSubsidiaries($tenant): array
+    {
+        // Get all subsidiaries recursively
+        $subsidiaries = $tenant->getAllSubsidiaries();
+
+        $qb = $this->createQueryBuilder('a')
+            ->where('a.tenant = :tenant')
+            ->setParameter('tenant', $tenant);
+
+        // Include assets from all subsidiaries in the hierarchy
+        if (!empty($subsidiaries)) {
+            $qb->orWhere('a.tenant IN (:subsidiaries)')
+               ->setParameter('subsidiaries', $subsidiaries);
+        }
+
+        return $qb
+            ->orderBy('a.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }
