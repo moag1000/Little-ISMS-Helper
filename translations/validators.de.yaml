@@ -189,6 +189,7 @@ tenant:
   validation:
     code_format: 'Der Mandanten-Code muss dem Format entsprechen'
     azure_tenant_id_format: 'Die Azure-Tenant-ID muss eine gültige GUID sein'
+    logo_format: 'Das Logo muss im Format JPG, PNG, GIF oder WebP vorliegen'
 
 # Risk Appetite Validators (Additional)
 'Category name cannot exceed {{ limit }} characters': 'Kategoriename darf maximal {{ limit }} Zeichen lang sein'
