@@ -131,7 +131,7 @@ class Location
     #[ORM\OneToMany(targetEntity: PhysicalAccessLog::class, mappedBy: 'locationEntity')]
     private Collection $accessLogs;
 
-    #[ORM\OneToMany(targetEntity: Asset::class, mappedBy: 'locationEntity')]
+    #[ORM\OneToMany(targetEntity: Asset::class, mappedBy: 'physicalLocation')]
     private Collection $assets;
 
     #[ORM\ManyToOne(targetEntity: Tenant::class)]
