@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\User;
 use App\Entity\Role;
+use App\Entity\Tenant;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -145,6 +146,24 @@ class UserType extends AbstractType
                 'expanded' => true,
                 'required' => false,
                 'help' => 'Benutzerdefinierte Rollen mit spezifischen Berechtigungen',
+            ])
+
+            // Tenant Assignment
+            ->add('tenant', EntityType::class, [
+                'label' => 'user.field.tenant',
+                'class' => Tenant::class,
+                'choice_label' => function (Tenant $tenant) {
+                    return $tenant->getName() . ' (' . $tenant->getCode() . ')';
+                },
+                'placeholder' => 'user.placeholder.tenant',
+                'required' => false,
+                'help' => 'user.field.tenant_help',
+                'query_builder' => function ($repository) {
+                    return $repository->createQueryBuilder('t')
+                        ->where('t.isActive = :active')
+                        ->setParameter('active', true)
+                        ->orderBy('t.name', 'ASC');
+                },
             ])
 
             // Status
