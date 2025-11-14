@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Repository\AuditLogRepository;
+use App\Service\HealthAutoFixService;
 use Doctrine\DBAL\Connection;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -347,6 +348,55 @@ class MonitoringController extends AbstractController
         }
 
         return $errors;
+    }
+
+    #[Route('/health/fix/cache', name: 'monitoring_health_fix_cache', methods: ['POST'])]
+    #[IsGranted('MONITORING_MANAGE')]
+    public function fixCache(HealthAutoFixService $autoFixService): JsonResponse
+    {
+        $result = $autoFixService->fixCachePermissions();
+        return $this->json($result);
+    }
+
+    #[Route('/health/fix/logs', name: 'monitoring_health_fix_logs', methods: ['POST'])]
+    #[IsGranted('MONITORING_MANAGE')]
+    public function fixLogs(HealthAutoFixService $autoFixService): JsonResponse
+    {
+        $result = $autoFixService->fixLogPermissions();
+        return $this->json($result);
+    }
+
+    #[Route('/health/fix/clear-cache', name: 'monitoring_health_clear_cache', methods: ['POST'])]
+    #[IsGranted('MONITORING_MANAGE')]
+    public function clearCache(HealthAutoFixService $autoFixService): JsonResponse
+    {
+        $result = $autoFixService->clearCache();
+        return $this->json($result);
+    }
+
+    #[Route('/health/fix/clean-logs', name: 'monitoring_health_clean_logs', methods: ['POST'])]
+    #[IsGranted('MONITORING_MANAGE')]
+    public function cleanLogs(HealthAutoFixService $autoFixService, Request $request): JsonResponse
+    {
+        $days = (int) $request->request->get('days', 30);
+        $result = $autoFixService->cleanOldLogs($days);
+        return $this->json($result);
+    }
+
+    #[Route('/health/fix/rotate-logs', name: 'monitoring_health_rotate_logs', methods: ['POST'])]
+    #[IsGranted('MONITORING_MANAGE')]
+    public function rotateLogs(HealthAutoFixService $autoFixService): JsonResponse
+    {
+        $result = $autoFixService->rotateLogs();
+        return $this->json($result);
+    }
+
+    #[Route('/health/fix/optimize-disk', name: 'monitoring_health_optimize_disk', methods: ['POST'])]
+    #[IsGranted('MONITORING_MANAGE')]
+    public function optimizeDisk(HealthAutoFixService $autoFixService): JsonResponse
+    {
+        $result = $autoFixService->optimizeDiskSpace();
+        return $this->json($result);
     }
 
     /**
