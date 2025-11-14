@@ -191,6 +191,11 @@ tenant:
     azure_tenant_id_format: 'Die Azure-Tenant-ID muss eine gültige GUID sein'
     logo_format: 'Das Logo muss im Format JPG, PNG, GIF oder WebP vorliegen'
 
+# User Validators
+user:
+  validation:
+    avatar_format: 'Das Profilbild muss im Format JPG, PNG, GIF oder WebP vorliegen'
+
 # Risk Appetite Validators (Additional)
 'Category name cannot exceed {{ limit }} characters': 'Kategoriename darf maximal {{ limit }} Zeichen lang sein'
 'Maximum acceptable risk level is required': 'Maximales akzeptables Risikoniveau ist erforderlich'
