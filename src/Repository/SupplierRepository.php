@@ -299,4 +299,32 @@ class SupplierRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * Find suppliers by tenant including all subsidiaries (for corporate parent view)
+     * This allows viewing aggregated suppliers from all subsidiary companies
+     *
+     * @param \App\Entity\Tenant $tenant The tenant to find suppliers for
+     * @return Supplier[] Array of Supplier entities (own + from all subsidiaries)
+     */
+    public function findByTenantIncludingSubsidiaries($tenant): array
+    {
+        // Get all subsidiaries recursively
+        $subsidiaries = $tenant->getAllSubsidiaries();
+
+        $qb = $this->createQueryBuilder('s')
+            ->where('s.tenant = :tenant')
+            ->setParameter('tenant', $tenant);
+
+        // Include suppliers from all subsidiaries in the hierarchy
+        if (!empty($subsidiaries)) {
+            $qb->orWhere('s.tenant IN (:subsidiaries)')
+               ->setParameter('subsidiaries', $subsidiaries);
+        }
+
+        return $qb
+            ->orderBy('s.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }

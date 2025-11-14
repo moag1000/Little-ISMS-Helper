@@ -152,4 +152,32 @@ class RiskRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * Find risks by tenant including all subsidiaries (for corporate parent view)
+     * This allows viewing aggregated risks from all subsidiary companies
+     *
+     * @param \App\Entity\Tenant $tenant The tenant to find risks for
+     * @return Risk[] Array of Risk entities (own + from all subsidiaries)
+     */
+    public function findByTenantIncludingSubsidiaries($tenant): array
+    {
+        // Get all subsidiaries recursively
+        $subsidiaries = $tenant->getAllSubsidiaries();
+
+        $qb = $this->createQueryBuilder('r')
+            ->where('r.tenant = :tenant')
+            ->setParameter('tenant', $tenant);
+
+        // Include risks from all subsidiaries in the hierarchy
+        if (!empty($subsidiaries)) {
+            $qb->orWhere('r.tenant IN (:subsidiaries)')
+               ->setParameter('subsidiaries', $subsidiaries);
+        }
+
+        return $qb
+            ->orderBy('r.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 }
