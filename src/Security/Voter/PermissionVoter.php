@@ -73,6 +73,7 @@ class PermissionVoter extends Voter
 
     // System monitoring permissions
     public const MONITORING_VIEW = 'MONITORING_VIEW';
+    public const MONITORING_MANAGE = 'MONITORING_MANAGE';
     public const MONITORING_EXPORT = 'MONITORING_EXPORT';
 
     // Backup permissions
@@ -114,6 +115,7 @@ class PermissionVoter extends Voter
             self::AUDIT_VIEW,
             self::AUDIT_EXPORT,
             self::MONITORING_VIEW,
+            self::MONITORING_MANAGE,
             self::MONITORING_EXPORT,
             self::BACKUP_CREATE,
             self::BACKUP_RESTORE,
@@ -224,6 +226,7 @@ class PermissionVoter extends Voter
             ],
             'monitoring' => [
                 self::MONITORING_VIEW => 'View monitoring data',
+                self::MONITORING_MANAGE => 'Manage monitoring (auto-fix)',
                 self::MONITORING_EXPORT => 'Export monitoring data',
             ],
             'backup' => [
