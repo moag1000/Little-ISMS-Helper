@@ -97,10 +97,18 @@
             "assets:install %PUBLIC_DIR%": "symfony-cmd",
             "importmap:install": "symfony-cmd"
         },
+        "setup-directories": [
+            "@php -r \"is_dir('var/cache') || mkdir('var/cache', 0755, true);\"",
+            "@php -r \"is_dir('var/log') || mkdir('var/log', 0755, true);\"",
+            "@php -r \"is_dir('var/sessions') || mkdir('var/sessions', 0700, true);\"",
+            "@php -r \"is_dir('public/uploads') || mkdir('public/uploads', 0755, true);\""
+        ],
         "post-install-cmd": [
+            "@setup-directories",
             "@auto-scripts"
         ],
         "post-update-cmd": [
+            "@setup-directories",
             "@auto-scripts"
         ]
     },
