@@ -3900,6 +3900,20 @@ form:
   conduct_risk_analysis: Risikoanalyse durchführen
   document_policies: Richtlinien dokumentieren
   plan_awareness_training: Awareness-Schulung planen
+  required: 'Pflichtfeld'
+  optional: 'Optional'
+  action:
+    save: 'Speichern'
+    cancel: 'Abbrechen'
+    submit: 'Absenden'
+    delete: 'Löschen'
+    edit: 'Bearbeiten'
+    create: 'Erstellen'
+  validation:
+    required_field: 'Dieses Feld ist erforderlich'
+    invalid_format: 'Ungültiges Format'
+    too_short: 'Zu kurz (min. %min% Zeichen)'
+    too_long: 'Zu lang (max. %max% Zeichen)'
 corporate:
   title: 'Konzernstruktur'
   subtitle: 'Verwaltung von Muttergesellschaften und Tochtergesellschaften'
@@ -4030,20 +4044,3 @@ governance:
 accessibility:
   skip_to_content: 'Zum Hauptinhalt springen'
   skip_to_navigation: 'Zur Navigation springen'
-
-# Form Accessibility
-form:
-  required: 'Pflichtfeld'
-  optional: 'Optional'
-  action:
-    save: 'Speichern'
-    cancel: 'Abbrechen'
-    submit: 'Absenden'
-    delete: 'Löschen'
-    edit: 'Bearbeiten'
-    create: 'Erstellen'
-  validation:
-    required_field: 'Dieses Feld ist erforderlich'
-    invalid_format: 'Ungültiges Format'
-    too_short: 'Zu kurz (min. %min% Zeichen)'
-    too_long: 'Zu lang (max. %max% Zeichen)'
