@@ -54,6 +54,10 @@
     {% endblock %}
 </head>
 <body data-turbo="true" data-controller="modal-manager sidebar-toggle">
+    {# Skip Links for Accessibility - WCAG 2.4.1 #}
+    <a href="#main-content" class="skip-link">{{ 'accessibility.skip_to_content'|trans }}</a>
+    <a href="#main-navigation" class="skip-link">{{ 'accessibility.skip_to_navigation'|trans }}</a>
+
     <header class="header" role="banner">
         <div class="header-container">
             <div class="header-logo">
@@ -95,7 +99,7 @@
 
         {# Sidebar Navigation #}
         <aside class="app-sidebar" role="complementary" aria-label="Main navigation" data-sidebar-toggle-target="sidebar">
-            <nav role="navigation">
+            <nav id="main-navigation" role="navigation">
                 <ul>
                     <li><a href="{{ path('app_home') }}" class="{% if current_route starts with 'app_home' %}active{% endif %}" {% if current_route starts with 'app_home' %}aria-current="page"{% endif %} data-turbo-action="advance">
                         <i class="bi bi-house" aria-hidden="true"></i>
@@ -222,7 +226,7 @@
         </aside>
 
         {# Main Content Area #}
-        <main class="app-main">
+        <main id="main-content" class="app-main" role="main">
             <div class="container" data-controller="turbo">
                 <div class="content">
                     {# Flash Messages Container (will be converted to toasts) #}
