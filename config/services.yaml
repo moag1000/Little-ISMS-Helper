@@ -78,6 +78,13 @@ services:
         arguments:
             $projectDir: '%kernel.project_dir%'
 
+    # Configure Health Auto Fix Service
+    App\Service\HealthAutoFixService:
+        arguments:
+            $projectDir: '%kernel.project_dir%'
+            $cacheDir: '%kernel.cache_dir%'
+            $logsDir: '%kernel.logs_dir%'
+
     # Bind rate limiter factories for autowiring
     # Symfony automatically creates services named limiter.<name> from rate_limiter.yaml
     Symfony\Component\RateLimiter\RateLimiterFactory $loginLimiter: '@limiter.login'
