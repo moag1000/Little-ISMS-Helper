@@ -7,6 +7,7 @@ use App\Form\PatchType;
 use App\Repository\PatchRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -20,13 +21,48 @@ class PatchController extends AbstractController
     public function __construct(
         private PatchRepository $patchRepository,
         private EntityManagerInterface $entityManager,
-        private TranslatorInterface $translator
+        private TranslatorInterface $translator,
+        private Security $security
     ) {}
 
     #[Route('/', name: 'app_patch_index')]
-    public function index(): Response
+    public function index(Request $request): Response
     {
-        $patches = $this->patchRepository->findAll();
+        // Get current user's tenant
+        $user = $this->security->getUser();
+        $tenant = $user?->getTenant();
+
+        // Get view filter parameter
+        $view = $request->query->get('view', 'inherited'); // Default: inherited
+
+        // Get patches based on view filter
+        if ($tenant) {
+            switch ($view) {
+                case 'own':
+                    $patches = $this->patchRepository->findByTenant($tenant);
+                    break;
+                case 'subsidiaries':
+                    $patches = $this->patchRepository->findByTenantIncludingSubsidiaries($tenant);
+                    break;
+                case 'inherited':
+                default:
+                    $patches = $this->patchRepository->findByTenantIncludingParent($tenant);
+                    break;
+            }
+
+            $inheritanceInfo = [
+                'hasParent' => $tenant->getParent() !== null,
+                'hasSubsidiaries' => $tenant->getSubsidiaries()->count() > 0,
+                'currentView' => $view
+            ];
+        } else {
+            $patches = $this->patchRepository->findAll();
+            $inheritanceInfo = [
+                'hasParent' => false,
+                'hasSubsidiaries' => false,
+                'currentView' => 'own'
+            ];
+        }
 
         // Statistics
         $deploymentStats = $this->patchRepository->getDeploymentStatistics();
@@ -36,6 +72,8 @@ class PatchController extends AbstractController
             'patches' => $patches,
             'deployment_stats' => $deploymentStats,
             'pending_count' => count($pendingPatches),
+            'inheritanceInfo' => $inheritanceInfo,
+            'currentTenant' => $tenant,
         ]);
     }
 
