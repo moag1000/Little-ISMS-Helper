@@ -107,6 +107,11 @@
                                                data-turbo-frame="_top">
                                                 {{ user.firstName }} {{ user.lastName }}
                                             </a>
+                                            {% if initial_admin_id is defined and user.id == initial_admin_id %}
+                                                <span class="badge bg-warning text-dark ms-1" title="Initialer Setup-Administrator - Geschützt">
+                                                    <i class="bi bi-shield-fill-exclamation"></i> Setup-Admin
+                                                </span>
+                                            {% endif %}
                                         </td>
                                         <td>{{ user.email }}</td>
                                         <td>
@@ -159,7 +164,7 @@
                                                    data-turbo-frame="_top">
                                                     <i class="bi bi-pencil"></i>
                                                 </a>
-                                                {% if user.id != app.user.id %}
+                                                {% if user.id != app.user.id and not (initial_admin_id is defined and user.id == initial_admin_id) %}
                                                     <button type="button" class="btn btn-outline-danger"
                                                             title="Löschen"
                                                             data-bs-toggle="modal"
@@ -172,6 +177,7 @@
                                     </tr>
 
                                     {# Delete Confirmation Modal #}
+                                    {% if user.id != app.user.id and not (initial_admin_id is defined and user.id == initial_admin_id) %}
                                     <div class="modal fade" id="deleteModal{{ user.id }}" tabindex="-1">
                                         <div class="modal-dialog">
                                             <div class="modal-content">
@@ -192,6 +198,7 @@
                                             </div>
                                         </div>
                                     </div>
+                                    {% endif %}
                                 {% endfor %}
                             </tbody>
                         </table>

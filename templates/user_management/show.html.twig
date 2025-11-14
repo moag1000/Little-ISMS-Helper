@@ -37,7 +37,14 @@
         <div class="col-md-6">
             <div class="card mb-4">
                 <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0"><i class="bi bi-info-circle"></i> Grundinformationen</h5>
+                    <h5 class="mb-0">
+                        <i class="bi bi-info-circle"></i> Grundinformationen
+                        {% if is_initial_admin is defined and is_initial_admin %}
+                            <span class="badge bg-warning text-dark ms-2">
+                                <i class="bi bi-shield-fill-exclamation"></i> Initialer Administrator
+                            </span>
+                        {% endif %}
+                    </h5>
                 </div>
                 <div class="card-body">
                     <table class="table table-sm">
@@ -280,7 +287,7 @@
                 <a href="{{ path('user_management_edit', {'id': user.id}) }}" class="btn btn-primary">
                     <i class="bi bi-pencil"></i> Bearbeiten
                 </a>
-                {% if user.id != app.user.id %}
+                {% if user.id != app.user.id and not (is_initial_admin is defined and is_initial_admin) %}
                     <form method="post" action="{{ path('user_management_toggle_active', {'id': user.id}) }}" style="display: inline;">
                         <input type="hidden" name="_token" value="{{ csrf_token('toggle-active' ~ user.id) }}">
                         {% if user.isActive %}
@@ -297,13 +304,18 @@
                         <i class="bi bi-trash"></i> Löschen
                     </button>
                 {% endif %}
+                {% if is_initial_admin is defined and is_initial_admin %}
+                    <span class="text-muted ms-3">
+                        <i class="bi bi-shield-lock"></i> Dieser Administrator ist geschützt und kann nicht deaktiviert oder gelöscht werden.
+                    </span>
+                {% endif %}
             </div>
         </div>
     </div>
 </div>
 
 {# Delete Confirmation Modal #}
-{% if user.id != app.user.id %}
+{% if user.id != app.user.id and not (is_initial_admin is defined and is_initial_admin) %}
 <div class="modal fade" id="deleteModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">

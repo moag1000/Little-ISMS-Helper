@@ -46,9 +46,25 @@ class UserManagementController extends AbstractController
         $users = $userRepository->findAll();
         $statistics = $userRepository->getUserStatistics();
 
+        // Identify the initial admin for UI display
+        $initialAdminId = null;
+        $firstAdmin = $userRepository->createQueryBuilder('u')
+            ->where('u.roles LIKE :role_admin OR u.roles LIKE :role_super_admin')
+            ->setParameter('role_admin', '%ROLE_ADMIN%')
+            ->setParameter('role_super_admin', '%ROLE_SUPER_ADMIN%')
+            ->orderBy('u.id', 'ASC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+
+        if ($firstAdmin) {
+            $initialAdminId = $firstAdmin->getId();
+        }
+
         return $this->render('user_management/index.html.twig', [
             'users' => $users,
             'statistics' => $statistics,
+            'initial_admin_id' => $initialAdminId,
         ]);
     }
 
@@ -126,12 +142,16 @@ class UserManagementController extends AbstractController
     }
 
     #[Route('/{id}', name: 'user_management_show', requirements: ['id' => '\d+'])]
-    public function show(User $user): Response
+    public function show(User $user, UserRepository $userRepository): Response
     {
         $this->denyAccessUnlessGranted(UserVoter::VIEW, $user);
 
+        // Check if this is the initial setup admin
+        $isInitialAdmin = $this->isInitialSetupAdmin($user, $userRepository);
+
         return $this->render('user_management/show.html.twig', [
             'user' => $user,
+            'is_initial_admin' => $isInitialAdmin,
         ]);
     }
 
@@ -276,9 +296,18 @@ class UserManagementController extends AbstractController
         User $user,
         Request $request,
         EntityManagerInterface $entityManager,
-        TranslatorInterface $translator
+        TranslatorInterface $translator,
+        UserRepository $userRepository
     ): Response {
         $this->denyAccessUnlessGranted(UserVoter::DELETE, $user);
+
+        // Check if this is the initial setup admin
+        $isInitialAdmin = $this->isInitialSetupAdmin($user, $userRepository);
+
+        if ($isInitialAdmin) {
+            $this->addFlash('error', $translator->trans('user.error.cannot_delete_initial_admin', [], 'messages'));
+            return $this->redirectToRoute('user_management_show', ['id' => $user->getId()]);
+        }
 
         if ($this->isCsrfTokenValid('delete' . $user->getId(), $request->request->get('_token'))) {
             // Capture user data for audit log before deletion
@@ -417,8 +446,13 @@ class UserManagementController extends AbstractController
 
                 case 'delete':
                     if ($this->isGranted(UserVoter::DELETE, $user)) {
-                        $entityManager->remove($user);
-                        $count++;
+                        // Protect initial setup admin from deletion
+                        $isInitialAdmin = $this->isInitialSetupAdmin($user, $userRepository);
+
+                        if (!$isInitialAdmin) {
+                            $entityManager->remove($user);
+                            $count++;
+                        }
                     }
                     break;
             }
