@@ -39,11 +39,15 @@ class SupplierController extends AbstractController
             $suppliers = $this->supplierService->getSuppliersForTenant($tenant);
             $statistics = $this->supplierRepository->getStatisticsByTenant($tenant);
             $criticalSuppliers = $this->supplierRepository->findCriticalSuppliersByTenant($tenant);
+            $overdueAssessments = $this->supplierRepository->findOverdueAssessmentsByTenant($tenant);
+            $nonCompliant = $this->supplierRepository->findNonCompliantByTenant($tenant);
             $inheritanceInfo = $this->supplierService->getSupplierInheritanceInfo($tenant);
         } else {
             $suppliers = $this->supplierRepository->findAll();
             $statistics = [];
             $criticalSuppliers = [];
+            $overdueAssessments = [];
+            $nonCompliant = [];
             $inheritanceInfo = ['hasParent' => false, 'canInherit' => false, 'governanceModel' => null];
         }
 
@@ -51,6 +55,8 @@ class SupplierController extends AbstractController
             'suppliers' => $suppliers,
             'statistics' => $statistics,
             'criticalSuppliers' => $criticalSuppliers,
+            'overdueAssessments' => $overdueAssessments,
+            'nonCompliant' => $nonCompliant,
             'inheritanceInfo' => $inheritanceInfo,
             'currentTenant' => $tenant,
         ]);
