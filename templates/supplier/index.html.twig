@@ -46,7 +46,12 @@
         <div class="stats-grid">
             <div class="stat-item">
                 <span class="stat-label">{{ 'supplier.statistics.total'|trans }}</span>
-                <span class="stat-value">{{ statistics.total }}</span>
+                <span class="stat-value">{{ detailedStats.total }}</span>
+                {% if currentTenant %}
+                    <small style="font-size: 11px; color: #6c757d; opacity: 0.85; display: block; margin-top: 0.25rem;">
+                        Eigene: {{ detailedStats.own }} | Geerbt: {{ detailedStats.inherited }} | Tochter: {{ detailedStats.subsidiaries }}
+                    </small>
+                {% endif %}
             </div>
             <div class="stat-item">
                 <span class="stat-label">{{ 'supplier.statistics.critical'|trans }}</span>

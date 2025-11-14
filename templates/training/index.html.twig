@@ -60,8 +60,13 @@
                             <div class="ms-3">
                                 <h6 class="text-muted mb-1">{{ 'training.statistics.total'|trans }}</h6>
                                 <h3 class="mb-0">
-                                    <span id="training-total-count">{{ statistics.total ?? trainings|length }}</span>
+                                    <span id="training-total-count">{{ detailedStats.total }}</span>
                                 </h3>
+                                {% if currentTenant %}
+                                    <small style="font-size: 11px; color: #6c757d; opacity: 0.85; display: block;">
+                                        Eigene: {{ detailedStats.own }} | Geerbt: {{ detailedStats.inherited }} | Tochter: {{ detailedStats.subsidiaries }}
+                                    </small>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
