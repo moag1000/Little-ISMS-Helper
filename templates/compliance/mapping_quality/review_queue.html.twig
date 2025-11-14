@@ -2,6 +2,26 @@
 
 {% block title %}Mapping Review Queue{% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .badge-tooltip {
+            cursor: help;
+        }
+        .sortable {
+            cursor: pointer;
+            user-select: none;
+        }
+        .sortable:hover {
+            background-color: #f8f9fa;
+        }
+        .sortable::after {
+            content: ' ⇅';
+            opacity: 0.3;
+        }
+    </style>
+{% endblock %}
+
 {% block body %}
 <div class="container">
     <div class="page-header">
@@ -237,4 +257,45 @@
     </div>
     {% endif %}
 </div>
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        // Initialize Bootstrap tooltips
+        document.addEventListener('DOMContentLoaded', function() {
+            // Enable tooltips on badges
+            const badges = document.querySelectorAll('.badge');
+            badges.forEach(badge => {
+                badge.setAttribute('data-bs-toggle', 'tooltip');
+                badge.setAttribute('data-bs-placement', 'top');
+
+                // Add helpful tooltips
+                if (badge.textContent.includes('%')) {
+                    badge.setAttribute('title', 'Mapping-Prozentsatz: Wie gut deckt das Source-Requirement das Target ab');
+                }
+                if (badge.classList.contains('badge-danger')) {
+                    badge.setAttribute('title', 'Niedriger Wert - Manuelle Review empfohlen');
+                }
+                if (badge.classList.contains('badge-success')) {
+                    badge.setAttribute('title', 'Hoher Wert - Gute Qualität');
+                }
+            });
+
+            // Initialize all tooltips
+            const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+
+            // Add loading state to review buttons
+            const reviewButtons = document.querySelectorAll('a.btn-primary');
+            reviewButtons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    this.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Laden...';
+                    this.classList.add('disabled');
+                });
+            });
+        });
+    </script>
+{% endblock %}
 {% endblock %}
