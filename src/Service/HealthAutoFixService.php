@@ -33,30 +33,79 @@ class HealthAutoFixService
                 'directory' => $this->cacheDir,
             ]);
 
-            // Clear cache first
-            $this->clearCache();
-
-            // Fix permissions
-            if (!is_writable($this->cacheDir)) {
-                @chmod($this->cacheDir, 0775);
-
-                // Check if it worked
-                if (is_writable($this->cacheDir)) {
-                    $this->logger->info('Cache directory permissions fixed successfully');
+            // Ensure cache directory exists
+            if (!is_dir($this->cacheDir)) {
+                $this->logger->info('Cache directory does not exist, creating it', [
+                    'directory' => $this->cacheDir,
+                ]);
+                try {
+                    $this->filesystem->mkdir($this->cacheDir, 0775);
+                } catch (\Exception $e) {
+                    $this->logger->error('Failed to create cache directory', [
+                        'error' => $e->getMessage(),
+                    ]);
                     return [
-                        'success' => true,
-                        'message' => 'Cache directory permissions fixed successfully',
+                        'success' => false,
+                        'message' => 'Failed to create cache directory: ' . $e->getMessage(),
                     ];
                 }
             }
 
+            // Check if already writable
+            if (is_writable($this->cacheDir)) {
+                $this->logger->info('Cache directory is already writable');
+                return [
+                    'success' => true,
+                    'message' => 'Cache directory is already writable',
+                ];
+            }
+
+            // Try to fix directory permissions
+            @chmod($this->cacheDir, 0775);
+
+            // Fix permissions recursively for all subdirectories and files
+            $this->fixDirectoryPermissionsRecursive($this->cacheDir);
+
+            // Check if it worked
+            if (is_writable($this->cacheDir)) {
+                $this->logger->info('Cache directory permissions fixed successfully');
+                return [
+                    'success' => true,
+                    'message' => 'Cache directory permissions fixed successfully',
+                ];
+            }
+
+            // If still not writable, log detailed information
+            $logContext = [
+                'directory' => $this->cacheDir,
+                'exists' => is_dir($this->cacheDir),
+                'readable' => is_readable($this->cacheDir),
+                'writable' => is_writable($this->cacheDir),
+                'permissions' => is_dir($this->cacheDir) ? substr(sprintf('%o', fileperms($this->cacheDir)), -4) : 'N/A',
+            ];
+
+            // Add POSIX info if available (not available on Windows)
+            if (function_exists('posix_getpwuid') && function_exists('posix_getgrgid') && function_exists('posix_geteuid')) {
+                if (is_dir($this->cacheDir)) {
+                    $ownerInfo = @posix_getpwuid(@fileowner($this->cacheDir));
+                    $groupInfo = @posix_getgrgid(@filegroup($this->cacheDir));
+                    $logContext['owner'] = $ownerInfo['name'] ?? 'unknown';
+                    $logContext['group'] = $groupInfo['name'] ?? 'unknown';
+                }
+                $currentUserInfo = @posix_getpwuid(@posix_geteuid());
+                $logContext['current_user'] = $currentUserInfo['name'] ?? 'unknown';
+            }
+
+            $this->logger->warning('Cache directory is still not writable after permission fix attempt', $logContext);
+
             return [
                 'success' => false,
-                'message' => 'Cache directory is not writable. Please check permissions manually.',
+                'message' => 'Cache directory permissions could not be automatically fixed. The web server user may not have sufficient privileges.',
             ];
         } catch (\Exception $e) {
             $this->logger->error('Failed to fix cache permissions', [
                 'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
             ]);
 
             return [
@@ -76,22 +125,60 @@ class HealthAutoFixService
                 'directory' => $this->logsDir,
             ]);
 
-            if (!is_writable($this->logsDir)) {
-                @chmod($this->logsDir, 0775);
-
-                // Check if it worked
-                if (is_writable($this->logsDir)) {
-                    $this->logger->info('Log directory permissions fixed successfully');
+            // Ensure log directory exists
+            if (!is_dir($this->logsDir)) {
+                $this->logger->info('Log directory does not exist, creating it', [
+                    'directory' => $this->logsDir,
+                ]);
+                try {
+                    $this->filesystem->mkdir($this->logsDir, 0775);
+                } catch (\Exception $e) {
+                    $this->logger->error('Failed to create log directory', [
+                        'error' => $e->getMessage(),
+                    ]);
                     return [
-                        'success' => true,
-                        'message' => 'Log directory permissions fixed successfully',
+                        'success' => false,
+                        'message' => 'Failed to create log directory: ' . $e->getMessage(),
                     ];
                 }
             }
 
+            // Check if already writable
+            if (is_writable($this->logsDir)) {
+                $this->logger->info('Log directory is already writable');
+                return [
+                    'success' => true,
+                    'message' => 'Log directory is already writable',
+                ];
+            }
+
+            // Try to fix directory permissions
+            @chmod($this->logsDir, 0775);
+
+            // Fix permissions recursively for all subdirectories and files
+            $this->fixDirectoryPermissionsRecursive($this->logsDir);
+
+            // Check if it worked
+            if (is_writable($this->logsDir)) {
+                $this->logger->info('Log directory permissions fixed successfully');
+                return [
+                    'success' => true,
+                    'message' => 'Log directory permissions fixed successfully',
+                ];
+            }
+
+            // If still not writable, log detailed information
+            $this->logger->warning('Log directory is still not writable after permission fix attempt', [
+                'directory' => $this->logsDir,
+                'exists' => is_dir($this->logsDir),
+                'readable' => is_readable($this->logsDir),
+                'writable' => is_writable($this->logsDir),
+                'permissions' => is_dir($this->logsDir) ? substr(sprintf('%o', fileperms($this->logsDir)), -4) : 'N/A',
+            ]);
+
             return [
                 'success' => false,
-                'message' => 'Log directory is not writable. Please check permissions manually.',
+                'message' => 'Log directory permissions could not be automatically fixed. The web server user may not have sufficient privileges.',
             ];
         } catch (\Exception $e) {
             $this->logger->error('Failed to fix log permissions', [
@@ -375,24 +462,63 @@ class HealthAutoFixService
                 'directory' => $varDir,
             ]);
 
-            if (!is_writable($varDir)) {
-                @chmod($varDir, 0775);
-
-                // Recursively fix permissions for subdirectories
-                $this->fixDirectoryPermissionsRecursive($varDir);
-
-                if (is_writable($varDir)) {
-                    $this->logger->info('var/ directory permissions fixed successfully');
+            // Ensure var directory exists
+            if (!is_dir($varDir)) {
+                $this->logger->info('var/ directory does not exist, creating it', [
+                    'directory' => $varDir,
+                ]);
+                try {
+                    $this->filesystem->mkdir($varDir, 0775);
+                } catch (\Exception $e) {
+                    $this->logger->error('Failed to create var/ directory', [
+                        'error' => $e->getMessage(),
+                    ]);
                     return [
-                        'success' => true,
-                        'message' => 'var/ directory permissions fixed successfully',
+                        'success' => false,
+                        'message' => 'Failed to create var/ directory: ' . $e->getMessage(),
                     ];
                 }
             }
 
+            // Check if already writable
+            if (is_writable($varDir)) {
+                // Still fix permissions recursively to ensure subdirectories are also writable
+                $this->fixDirectoryPermissionsRecursive($varDir);
+
+                $this->logger->info('var/ directory permissions fixed successfully');
+                return [
+                    'success' => true,
+                    'message' => 'var/ directory permissions fixed successfully',
+                ];
+            }
+
+            // Try to fix directory permissions
+            @chmod($varDir, 0775);
+
+            // Recursively fix permissions for subdirectories
+            $this->fixDirectoryPermissionsRecursive($varDir);
+
+            // Check if it worked
+            if (is_writable($varDir)) {
+                $this->logger->info('var/ directory permissions fixed successfully');
+                return [
+                    'success' => true,
+                    'message' => 'var/ directory permissions fixed successfully',
+                ];
+            }
+
+            // If still not writable, log detailed information
+            $this->logger->warning('var/ directory is still not writable after permission fix attempt', [
+                'directory' => $varDir,
+                'exists' => is_dir($varDir),
+                'readable' => is_readable($varDir),
+                'writable' => is_writable($varDir),
+                'permissions' => is_dir($varDir) ? substr(sprintf('%o', fileperms($varDir)), -4) : 'N/A',
+            ]);
+
             return [
                 'success' => false,
-                'message' => 'var/ directory is not writable. Please check permissions manually.',
+                'message' => 'var/ directory permissions could not be automatically fixed. The web server user may not have sufficient privileges.',
             ];
         } catch (\Exception $e) {
             $this->logger->error('Failed to fix var/ permissions', [
