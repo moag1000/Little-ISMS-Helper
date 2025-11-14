@@ -81,6 +81,28 @@ body {
     font-size: 16px;
 }
 
+/* Skip Links for Accessibility - WCAG 2.4.1 */
+.skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: var(--color-secondary);
+    color: white;
+    padding: 8px 16px;
+    text-decoration: none;
+    font-weight: 600;
+    border-radius: 0 0 var(--border-radius-sm) 0;
+    z-index: calc(var(--z-turbo-bar) + 1);
+    box-shadow: var(--shadow-neon);
+    transition: top var(--transition-fast);
+}
+
+.skip-link:focus {
+    top: 0;
+    outline: 3px solid var(--color-accent-pink);
+    outline-offset: 2px;
+}
+
 /* Header - Cyberpunk Style with Dark Mode Support */
 .header {
     background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);

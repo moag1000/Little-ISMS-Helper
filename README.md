@@ -216,7 +216,7 @@ Für Produktions-Deployments beachten Sie:
 ### 👥 User Management
 - **RBAC** - Role-Based Access Control, 50+ Permissions
 - **Multi-Auth** - Local, Azure OAuth, SAML
-- **MFA** - TOTP, WebAuthn, SMS (NIS2)
+- **MFA** - TOTP with Backup Codes (WebAuthn & SMS planned)
 - **Training Management** - Schulungsplanung
 - **Audit Logging** - Vollständige Änderungsverfolgung
 

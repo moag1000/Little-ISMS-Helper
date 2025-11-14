@@ -11,9 +11,8 @@ services:
       POSTGRES_USER: ${POSTGRES_USER:-isms_user}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-isms_password}
     ports:
-      # ⚠️ Security: In Produktion sollte Port 5432 NICHT öffentlich sein!
-      # Verwenden Sie 127.0.0.1:5432:5432 oder entfernen Sie die Port-Mapping ganz
-      - "${DB_PORT:-5432}:5432"
+      # ✅ Security: Port nur auf localhost verfügbar
+      - "127.0.0.1:${DB_PORT:-5432}:5432"
     volumes:
       - db_data:/var/lib/postgresql/data
     healthcheck:
@@ -32,6 +31,12 @@ services:
         reservations:
           cpus: '0.5'
           memory: 512M
+    # Logging configuration
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   # Little ISMS Helper Application
   app:
@@ -79,6 +84,12 @@ services:
         reservations:
           cpus: '0.5'
           memory: 512M
+    # Logging configuration
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   # MailHog - Email Testing
   mailhog:
@@ -86,10 +97,15 @@ services:
     container_name: isms-mailhog
     restart: unless-stopped
     ports:
-      - "${MAILHOG_SMTP_PORT:-1025}:1025"  # SMTP port
-      - "${MAILHOG_WEB_PORT:-8025}:8025"   # Web UI port
+      - "127.0.0.1:${MAILHOG_SMTP_PORT:-1025}:1025"  # SMTP port
+      - "127.0.0.1:${MAILHOG_WEB_PORT:-8025}:8025"   # Web UI port
     networks:
       - isms-network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8025/api/v1/events"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
     # Security: Resource Limits
     deploy:
       resources:
@@ -99,6 +115,12 @@ services:
         reservations:
           cpus: '0.1'
           memory: 64M
+    # Logging configuration
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   # pgAdmin - Database Management (Optional - nur für Development!)
   pgadmin:
@@ -111,15 +133,19 @@ services:
       PGADMIN_CONFIG_SERVER_MODE: 'False'
       PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: 'False'
     ports:
-      # ⚠️ Security: In Produktion sollte pgAdmin NICHT öffentlich sein!
-      # Verwenden Sie 127.0.0.1:5050:80 oder entfernen Sie pgAdmin komplett
-      - "${PGADMIN_PORT:-5050}:80"
+      # ✅ Security: Port nur auf localhost verfügbar
+      - "127.0.0.1:${PGADMIN_PORT:-5050}:80"
     volumes:
       - pgadmin_data:/var/lib/pgadmin
     networks:
       - isms-network
     depends_on:
       - db
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/misc/ping"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
     # Security: Resource Limits
     deploy:
       resources:
@@ -129,6 +155,12 @@ services:
         reservations:
           cpus: '0.25'
           memory: 128M
+    # Logging configuration
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
 volumes:
   # ✅ Alle Volumes sind persistent - überleben docker-compose down und Reboot!
