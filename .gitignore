@@ -28,6 +28,9 @@ PR_DESCRIPTION.md
 ###> docker ###
 .env.docker.local
 /docker-compose.override.yml
+/docker/ssl/*.pem
+/docker/ssl/*.key
+/docker/ssl/*.crt
 ###< docker ###
 /public/uploads/*
 !public/uploads/*/.gitkeep
