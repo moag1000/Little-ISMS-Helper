@@ -60,7 +60,7 @@
     {% endif %}
 
     {# Calculate Stats #}
-    {% set total = documents|length %}
+    {% set total = detailedStats.total %}
     {% set totalSize = documents|reduce((carry, doc) => carry + doc.fileSize, 0) %}
     {% set totalSizeMB = (totalSize / 1024 / 1024)|number_format(2) %}
     {% set pdfDocs = documents|filter(d => d.mimeType == 'application/pdf')|length %}
@@ -73,6 +73,7 @@
             icon: 'bi-file-earmark-text',
             label: 'document.kpi.total_documents'|trans,
             value: total,
+            detail: currentTenant ? 'Eigene: ' ~ detailedStats.own ~ ' | Geerbt: ' ~ detailedStats.inherited ~ ' | Tochter: ' ~ detailedStats.subsidiaries : null,
             variant: 'primary',
             link: null
         } %}
