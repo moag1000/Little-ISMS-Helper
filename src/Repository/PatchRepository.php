@@ -158,4 +158,49 @@ class PatchRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * Find all patches for a tenant (own patches only)
+     *
+     * @param \App\Entity\Tenant $tenant The tenant to find patches for
+     * @return Patch[] Array of Patch entities
+     */
+    public function findByTenant($tenant): array
+    {
+        return $this->createQueryBuilder('p')
+            ->where('p.tenant = :tenant')
+            ->setParameter('tenant', $tenant)
+            ->orderBy('p.releaseDate', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Find patches by tenant including all ancestors (for hierarchical governance)
+     * This allows viewing inherited patches from parent companies, grandparents, etc.
+     *
+     * @param \App\Entity\Tenant $tenant The tenant to find patches for
+     * @param \App\Entity\Tenant|null $parentTenant DEPRECATED: Use tenant's getAllAncestors() instead
+     * @return Patch[] Array of Patch entities (own + inherited from all ancestors)
+     */
+    public function findByTenantIncludingParent($tenant, $parentTenant = null): array
+    {
+        // Get all ancestors (parent, grandparent, great-grandparent, etc.)
+        $ancestors = $tenant->getAllAncestors();
+
+        $qb = $this->createQueryBuilder('p')
+            ->where('p.tenant = :tenant')
+            ->setParameter('tenant', $tenant);
+
+        // Include patches from all ancestors in the hierarchy
+        if (!empty($ancestors)) {
+            $qb->orWhere('p.tenant IN (:ancestors)')
+               ->setParameter('ancestors', $ancestors);
+        }
+
+        return $qb
+            ->orderBy('p.releaseDate', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 }
