@@ -906,4 +906,286 @@ class ComplianceMappingRepository extends ServiceEntityRepository
 
         return $translations[$rootCause] ?? $rootCause;
     }
+
+    /**
+     * Find mappings that require manual review
+     *
+     * @return ComplianceMapping[]
+     */
+    public function findMappingsRequiringReview(): array
+    {
+        return $this->createQueryBuilder('cm')
+            ->where('cm.requiresReview = :requiresReview')
+            ->andWhere('cm.reviewStatus = :status')
+            ->setParameter('requiresReview', true)
+            ->setParameter('status', 'unreviewed')
+            ->orderBy('cm.analysisConfidence', 'ASC')
+            ->addOrderBy('cm.qualityScore', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Find mappings with low confidence
+     *
+     * @param int $confidenceThreshold
+     * @return ComplianceMapping[]
+     */
+    public function findLowConfidenceMappings(int $confidenceThreshold = 60): array
+    {
+        return $this->createQueryBuilder('cm')
+            ->where('cm.analysisConfidence < :threshold')
+            ->setParameter('threshold', $confidenceThreshold)
+            ->orderBy('cm.analysisConfidence', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Find mappings with low quality score
+     *
+     * @param int $qualityThreshold
+     * @return ComplianceMapping[]
+     */
+    public function findLowQualityMappings(int $qualityThreshold = 50): array
+    {
+        return $this->createQueryBuilder('cm')
+            ->where('cm.qualityScore < :threshold')
+            ->setParameter('threshold', $qualityThreshold)
+            ->orderBy('cm.qualityScore', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Find mappings with manual overrides
+     *
+     * @return ComplianceMapping[]
+     */
+    public function findMappingsWithManualOverride(): array
+    {
+        return $this->createQueryBuilder('cm')
+            ->where('cm.manualPercentage IS NOT NULL')
+            ->orderBy('cm.updatedAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Get quality statistics for all mappings
+     *
+     * @return array
+     */
+    public function getQualityStatistics(): array
+    {
+        $qb = $this->createQueryBuilder('cm');
+
+        $totalMappings = $qb->select('COUNT(cm.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        $analyzedMappings = $this->createQueryBuilder('cm')
+            ->select('COUNT(cm.id)')
+            ->where('cm.calculatedPercentage IS NOT NULL')
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        $highConfidence = $this->createQueryBuilder('cm')
+            ->select('COUNT(cm.id)')
+            ->where('cm.analysisConfidence >= 80')
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        $mediumConfidence = $this->createQueryBuilder('cm')
+            ->select('COUNT(cm.id)')
+            ->where('cm.analysisConfidence >= 60 AND cm.analysisConfidence < 80')
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        $lowConfidence = $this->createQueryBuilder('cm')
+            ->select('COUNT(cm.id)')
+            ->where('cm.analysisConfidence < 60')
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        $requiresReview = $this->createQueryBuilder('cm')
+            ->select('COUNT(cm.id)')
+            ->where('cm.requiresReview = :requiresReview')
+            ->andWhere('cm.reviewStatus = :status')
+            ->setParameter('requiresReview', true)
+            ->setParameter('status', 'unreviewed')
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        $withGaps = $this->createQueryBuilder('cm')
+            ->select('COUNT(DISTINCT cm.id)')
+            ->join('cm.gapItems', 'gi')
+            ->where('gi.status NOT IN (:resolvedStatuses)')
+            ->setParameter('resolvedStatuses', ['resolved', 'wont_fix'])
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        $avgQualityScore = $this->createQueryBuilder('cm')
+            ->select('AVG(cm.qualityScore)')
+            ->where('cm.qualityScore IS NOT NULL')
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        $avgConfidence = $this->createQueryBuilder('cm')
+            ->select('AVG(cm.analysisConfidence)')
+            ->where('cm.analysisConfidence IS NOT NULL')
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        return [
+            'total_mappings' => (int) $totalMappings,
+            'analyzed_mappings' => (int) $analyzedMappings,
+            'unanalyzed_mappings' => (int) ($totalMappings - $analyzedMappings),
+            'analysis_coverage' => $totalMappings > 0 ? round(($analyzedMappings / $totalMappings) * 100, 1) : 0,
+            'high_confidence' => (int) $highConfidence,
+            'medium_confidence' => (int) $mediumConfidence,
+            'low_confidence' => (int) $lowConfidence,
+            'requires_review' => (int) $requiresReview,
+            'with_unresolved_gaps' => (int) $withGaps,
+            'avg_quality_score' => round((float) $avgQualityScore, 1),
+            'avg_confidence' => round((float) $avgConfidence, 1),
+        ];
+    }
+
+    /**
+     * Get quality distribution by confidence levels
+     *
+     * @return array
+     */
+    public function getQualityDistribution(): array
+    {
+        $results = $this->createQueryBuilder('cm')
+            ->select('
+                CASE
+                    WHEN cm.analysisConfidence >= 80 THEN \'high\'
+                    WHEN cm.analysisConfidence >= 60 THEN \'medium\'
+                    ELSE \'low\'
+                END as confidence_level,
+                COUNT(cm.id) as count,
+                AVG(cm.calculatedPercentage) as avg_percentage,
+                AVG(cm.qualityScore) as avg_quality
+            ')
+            ->where('cm.analysisConfidence IS NOT NULL')
+            ->groupBy('confidence_level')
+            ->getQuery()
+            ->getResult();
+
+        return $results;
+    }
+
+    /**
+     * Find mappings with significant discrepancies between calculated and original percentage
+     *
+     * @param int $discrepancyThreshold Minimum percentage point difference
+     * @return ComplianceMapping[]
+     */
+    public function findMappingsWithDiscrepancies(int $discrepancyThreshold = 20): array
+    {
+        return $this->createQueryBuilder('cm')
+            ->where('cm.calculatedPercentage IS NOT NULL')
+            ->andWhere('ABS(cm.calculatedPercentage - cm.mappingPercentage) >= :threshold')
+            ->setParameter('threshold', $discrepancyThreshold)
+            ->orderBy('ABS(cm.calculatedPercentage - cm.mappingPercentage)', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Get top quality mappings for a framework
+     *
+     * @param ComplianceFramework $framework
+     * @param int $limit
+     * @return ComplianceMapping[]
+     */
+    public function getTopQualityMappings(
+        \App\Entity\ComplianceFramework $framework,
+        int $limit = 10
+    ): array {
+        return $this->createQueryBuilder('cm')
+            ->join('cm.sourceRequirement', 'sr')
+            ->where('sr.framework = :framework')
+            ->andWhere('cm.qualityScore IS NOT NULL')
+            ->setParameter('framework', $framework)
+            ->orderBy('cm.qualityScore', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Get framework quality comparison
+     *
+     * @return array
+     */
+    public function getFrameworkQualityComparison(): array
+    {
+        $results = $this->createQueryBuilder('cm')
+            ->select('
+                sf.code as source_framework,
+                tf.code as target_framework,
+                COUNT(cm.id) as mapping_count,
+                AVG(cm.calculatedPercentage) as avg_percentage,
+                AVG(cm.qualityScore) as avg_quality,
+                AVG(cm.analysisConfidence) as avg_confidence,
+                SUM(CASE WHEN cm.requiresReview = 1 THEN 1 ELSE 0 END) as review_count
+            ')
+            ->join('cm.sourceRequirement', 'sr')
+            ->join('sr.framework', 'sf')
+            ->join('cm.targetRequirement', 'tr')
+            ->join('tr.framework', 'tf')
+            ->where('cm.calculatedPercentage IS NOT NULL')
+            ->groupBy('sf.code, tf.code')
+            ->orderBy('avg_quality', 'DESC')
+            ->getQuery()
+            ->getResult();
+
+        return $results;
+    }
+
+    /**
+     * Get mappings by review status
+     *
+     * @param string $status
+     * @return ComplianceMapping[]
+     */
+    public function findByReviewStatus(string $status): array
+    {
+        return $this->createQueryBuilder('cm')
+            ->where('cm.reviewStatus = :status')
+            ->setParameter('status', $status)
+            ->orderBy('cm.qualityScore', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Get similarity distribution statistics
+     *
+     * @return array
+     */
+    public function getSimilarityDistribution(): array
+    {
+        $results = $this->createQueryBuilder('cm')
+            ->select('
+                CASE
+                    WHEN cm.textualSimilarity >= 0.8 THEN \'very_high\'
+                    WHEN cm.textualSimilarity >= 0.6 THEN \'high\'
+                    WHEN cm.textualSimilarity >= 0.4 THEN \'medium\'
+                    WHEN cm.textualSimilarity >= 0.2 THEN \'low\'
+                    ELSE \'very_low\'
+                END as similarity_level,
+                COUNT(cm.id) as count
+            ')
+            ->where('cm.textualSimilarity IS NOT NULL')
+            ->groupBy('similarity_level')
+            ->getQuery()
+            ->getResult();
+
+        return $results;
+    }
 }
