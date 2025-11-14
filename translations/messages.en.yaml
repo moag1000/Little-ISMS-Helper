@@ -407,6 +407,7 @@ common:
   last_updated: Last Updated
   loading: Loading...
   never: Never
+  entries: 'Entries'
   not_applicable: Not Applicable
   not_approved: Not Approved
   not_assigned: Not Assigned
@@ -4019,7 +4020,3 @@ bulk_delete:
     list: 'List of affected dependencies'
   loading: 'Checking dependencies...'
 
-# Common
-common:
-  entries: 'Entries'
-  loading: 'Loading...'

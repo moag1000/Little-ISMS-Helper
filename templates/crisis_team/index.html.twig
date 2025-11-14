@@ -15,7 +15,7 @@
         <div class="alert alert-info">{{ 'crisis_team.empty'|trans }}</div>
     {% else %}
         <div class="card"><div class="table-responsive"><table class="table table-hover mb-0">
-            <thead><tr><th>{{ 'crisis_team.field.team_name'|trans }}</th><th>{{ 'crisis_team.field.team_type'|trans }}</th><th>{{ 'crisis_team.field.team_leader'|trans }}</th><th>{{ 'common.actions'|trans }}</th></tr></thead>
+            <thead><tr><th scope="col">{{ 'crisis_team.field.team_name'|trans }}</th><th scope="col">{{ 'crisis_team.field.team_type'|trans }}</th><th scope="col">{{ 'crisis_team.field.team_leader'|trans }}</th><th scope="col">{{ 'common.actions'|trans }}</th></tr></thead>
             <tbody>
                 {% for team in crisis_teams %}
                     <tr class="{{ team.isActive ? '' : 'table-secondary' }}">

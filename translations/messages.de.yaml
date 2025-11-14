@@ -407,6 +407,7 @@ common:
   last_updated: Zuletzt aktualisiert
   loading: Wird geladen...
   never: Nie
+  entries: 'Einträge'
   not_applicable: Nicht zutreffend
   not_approved: Nicht genehmigt
   not_assigned: Nicht zugewiesen
@@ -4057,7 +4058,3 @@ bulk_delete:
     list: 'Liste der betroffenen Verknüpfungen'
   loading: 'Abhängigkeiten werden geprüft...'
 
-# Common
-common:
-  entries: 'Einträge'
-  loading: 'Lädt...'
