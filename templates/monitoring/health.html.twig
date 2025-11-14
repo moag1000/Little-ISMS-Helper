@@ -641,13 +641,17 @@
     <script>
         async function autoFix(action, button) {
             // Disable button and show loading state
-            const originalHtml = button.innerHTML;
-            button.disabled = true;
-            button.innerHTML = '<i class="bi bi-hourglass-split"></i> Processing...';
+            const originalHtml = button ? button.innerHTML : null;
+            if (button) {
+                button.disabled = true;
+                button.innerHTML = '<i class="bi bi-hourglass-split"></i> Processing...';
+            }
 
             // Get result container
             const resultContainer = document.getElementById('fix-result-' + action);
-            resultContainer.innerHTML = '';
+            if (resultContainer) {
+                resultContainer.innerHTML = '';
+            }
 
             try {
                 // Call the auto-fix endpoint
@@ -663,37 +667,98 @@
 
                 // Display result
                 if (result.success) {
-                    resultContainer.innerHTML = `
-                        <div class="alert alert-success fix-result">
-                            <i class="bi bi-check-circle"></i> ${result.message}
-                            ${result.details ? '<hr class="my-2"><ul class="mb-0 small">' + result.details.map(d => '<li>' + d + '</li>').join('') + '</ul>' : ''}
-                        </div>
-                    `;
+                    if (resultContainer) {
+                        resultContainer.innerHTML = `
+                            <div class="alert alert-success fix-result">
+                                <i class="bi bi-check-circle"></i> ${result.message}
+                                ${result.details ? '<hr class="my-2"><ul class="mb-0 small">' + result.details.map(d => '<li>' + d + '</li>').join('') + '</ul>' : ''}
+                            </div>
+                        `;
+                    }
 
                     // Reload page after 2 seconds if it was a permission fix
-                    if (action === 'cache' || action === 'logs') {
+                    if (action === 'cache' || action === 'logs' || action === 'var-permissions') {
                         setTimeout(() => {
                             window.location.reload();
                         }, 2000);
                     }
                 } else {
+                    if (resultContainer) {
+                        resultContainer.innerHTML = `
+                            <div class="alert alert-danger fix-result">
+                                <i class="bi bi-x-circle"></i> ${result.message}
+                            </div>
+                        `;
+                    }
+                }
+
+                return result;
+            } catch (error) {
+                if (resultContainer) {
                     resultContainer.innerHTML = `
                         <div class="alert alert-danger fix-result">
-                            <i class="bi bi-x-circle"></i> ${result.message}
+                            <i class="bi bi-exclamation-triangle"></i> Error: ${error.message}
                         </div>
                     `;
                 }
-            } catch (error) {
-                resultContainer.innerHTML = `
-                    <div class="alert alert-danger fix-result">
-                        <i class="bi bi-exclamation-triangle"></i> Error: ${error.message}
-                    </div>
-                `;
+                return { success: false, message: error.message };
             } finally {
                 // Re-enable button
-                button.disabled = false;
-                button.innerHTML = originalHtml;
+                if (button) {
+                    button.disabled = false;
+                    button.innerHTML = originalHtml;
+                }
             }
         }
+
+        // Auto-fix permission issues on page load
+        document.addEventListener('DOMContentLoaded', async function() {
+            {% if is_granted('MONITORING_MANAGE') %}
+                const permissionIssues = [];
+
+                // Check cache permissions
+                {% if not health_checks.cache.writable %}
+                    permissionIssues.push({ action: 'cache', type: 'Cache directory' });
+                {% endif %}
+
+                // Check log permissions
+                {% if not health_checks.logs.writable %}
+                    permissionIssues.push({ action: 'logs', type: 'Log directory' });
+                {% endif %}
+
+                // Check var permissions
+                {% if health_checks.permissions is defined and not health_checks.permissions.var_writable %}
+                    permissionIssues.push({ action: 'var-permissions', type: 'var/ directory' });
+                {% endif %}
+
+                // Automatically fix permission issues
+                if (permissionIssues.length > 0) {
+                    console.log('Auto-fixing permission issues:', permissionIssues);
+                    let anySuccessful = false;
+
+                    for (const issue of permissionIssues) {
+                        console.log(`Attempting to fix ${issue.type}...`);
+                        const result = await autoFix(issue.action, null);
+
+                        if (result.success) {
+                            console.log(`✓ ${issue.type} fixed successfully`);
+                            anySuccessful = true;
+                        } else {
+                            console.warn(`✗ Failed to fix ${issue.type}:`, result.message);
+                        }
+                    }
+
+                    // Only reload if at least one fix was successful to avoid infinite loops
+                    if (anySuccessful) {
+                        console.log('Reloading page to reflect changes...');
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 2000);
+                    } else {
+                        console.warn('No fixes were successful. Manual intervention may be required.');
+                    }
+                }
+            {% endif %}
+        });
     </script>
 {% endblock %}
