@@ -161,6 +161,10 @@ class UserManagementController extends AbstractController
         $form = $this->createForm(UserType::class, $user, [
             'is_edit' => true,
         ]);
+
+        // Pre-fill form with stored roles (not the manipulated getRoles() result)
+        $form->get('roles')->setData($user->getStoredRoles());
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
