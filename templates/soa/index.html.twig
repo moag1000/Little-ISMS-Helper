@@ -59,7 +59,12 @@
         <div class="icon">📋</div>
         <div class="label">Gesamt Controls</div>
         <div>
-            <span class="value">{{ controls|length }}</span>
+            <span class="value">{{ detailedStats.total }}</span>
+            {% if currentTenant %}
+                <div style="font-size: 11px; color: #6c757d; opacity: 0.85; margin-top: 0.5rem;">
+                    Eigene: {{ detailedStats.own }} | Geerbt: {{ detailedStats.inherited }} | Tochter: {{ detailedStats.subsidiaries }}
+                </div>
+            {% endif %}
         </div>
     </div>
 
