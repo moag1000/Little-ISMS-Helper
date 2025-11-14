@@ -8,7 +8,8 @@
       value: 42,
       unit: '',
       trend: '+12%',
-      variant: 'primary'
+      variant: 'primary',
+      detail: 'corporate.stats.breakdown'|trans({'%own%': 15, '%inherited%': 20, '%subsidiaries%': 7})
   } %}
 
   Variants: primary, success, warning, danger, info
@@ -19,6 +20,7 @@
 {% set trend = trend|default(null) %}
 {% set unit = unit|default('') %}
 {% set link = link|default(null) %}
+{% set detail = detail|default(null) %}
 
 <div class="kpi-card kpi-card-{{ variant }}">
     <div class="kpi-card-icon">
@@ -32,6 +34,11 @@
                 <span class="kpi-card-unit">{{ unit }}</span>
             {% endif %}
         </div>
+        {% if detail %}
+            <div class="kpi-card-detail">
+                {{ detail }}
+            </div>
+        {% endif %}
         {% if trend %}
             <div class="kpi-card-trend {{ trend starts with '+' ? 'trend-up' : 'trend-down' }}">
                 <i class="bi {{ trend starts with '+' ? 'bi-arrow-up' : 'bi-arrow-down' }}"></i>

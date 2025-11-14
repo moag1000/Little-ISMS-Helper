@@ -18,6 +18,19 @@ class TenantType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
+            ->add('name', TextType::class, [
+                'label' => 'tenant.field.name',
+                'help' => 'tenant.field.name_help',
+                'attr' => [
+                    'placeholder' => 'tenant.placeholder.name',
+                    'maxlength' => 255,
+                    'id' => 'tenant_name',
+                ],
+                'constraints' => [
+                    new Assert\NotBlank(),
+                    new Assert\Length(['max' => 255]),
+                ],
+            ])
             ->add('code', TextType::class, [
                 'label' => 'tenant.field.code',
                 'help' => 'tenant.field.code_help',
@@ -25,6 +38,9 @@ class TenantType extends AbstractType
                     'placeholder' => 'tenant.placeholder.code',
                     'maxlength' => 100,
                     'pattern' => '[a-zA-Z0-9_-]+',
+                    'id' => 'tenant_code',
+                    'readonly' => true,
+                    'class' => 'bg-light',
                 ],
                 'constraints' => [
                     new Assert\NotBlank(),
@@ -33,18 +49,6 @@ class TenantType extends AbstractType
                         'pattern' => '/^[a-zA-Z0-9_-]+$/',
                         'message' => 'tenant.validation.code_format',
                     ]),
-                ],
-            ])
-            ->add('name', TextType::class, [
-                'label' => 'tenant.field.name',
-                'help' => 'tenant.field.name_help',
-                'attr' => [
-                    'placeholder' => 'tenant.placeholder.name',
-                    'maxlength' => 255,
-                ],
-                'constraints' => [
-                    new Assert\NotBlank(),
-                    new Assert\Length(['max' => 255]),
                 ],
             ])
             ->add('description', TextareaType::class, [

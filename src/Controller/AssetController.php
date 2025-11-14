@@ -45,14 +45,39 @@ class AssetController extends AbstractController
         $classification = $request->query->get('classification');
         $owner = $request->query->get('owner');
         $status = $request->query->get('status');
+        $view = $request->query->get('view', 'inherited'); // Default: inherited
 
-        // Get assets: tenant-filtered if user has tenant, all if not
+        // Get assets based on view filter
         if ($tenant) {
-            $assets = $this->assetService->getAssetsForTenant($tenant);
+            // Determine which assets to load based on view parameter
+            switch ($view) {
+                case 'own':
+                    // Only own assets
+                    $assets = $this->assetRepository->findByTenant($tenant);
+                    break;
+                case 'subsidiaries':
+                    // Own + from all subsidiaries (for parent companies)
+                    $assets = $this->assetRepository->findByTenantIncludingSubsidiaries($tenant);
+                    break;
+                case 'inherited':
+                default:
+                    // Own + inherited from parents (default behavior)
+                    $assets = $this->assetService->getAssetsForTenant($tenant);
+                    break;
+            }
+
             $inheritanceInfo = $this->assetService->getAssetInheritanceInfo($tenant);
+            $inheritanceInfo['hasSubsidiaries'] = $tenant->getSubsidiaries()->count() > 0;
+            $inheritanceInfo['currentView'] = $view;
         } else {
             $assets = $this->assetRepository->findAll();
-            $inheritanceInfo = ['hasParent' => false, 'canInherit' => false, 'governanceModel' => null];
+            $inheritanceInfo = [
+                'hasParent' => false,
+                'canInherit' => false,
+                'governanceModel' => null,
+                'hasSubsidiaries' => false,
+                'currentView' => 'own'
+            ];
         }
 
         // Filter to active only first
@@ -93,12 +118,20 @@ class AssetController extends AbstractController
             ];
         }
 
+        // Calculate detailed statistics based on origin
+        if ($tenant) {
+            $detailedStats = $this->calculateDetailedStats($assets, $tenant);
+        } else {
+            $detailedStats = ['own' => count($assets), 'inherited' => 0, 'subsidiaries' => 0, 'total' => count($assets)];
+        }
+
         return $this->render('asset/index.html.twig', [
             'assets' => $assets,
             'typeStats' => $typeStats,
             'recommendations' => $assetRecommendations,
             'inheritanceInfo' => $inheritanceInfo,
             'currentTenant' => $tenant,
+            'detailedStats' => $detailedStats,
         ]);
     }
 
@@ -244,5 +277,47 @@ class AssetController extends AbstractController
             'canEdit' => $canEdit,
             'currentTenant' => $tenant,
         ]);
+    }
+
+    /**
+     * Calculate detailed statistics showing breakdown by origin
+     */
+    private function calculateDetailedStats(array $items, $currentTenant): array
+    {
+        $ownCount = 0;
+        $inheritedCount = 0;
+        $subsidiariesCount = 0;
+
+        // Get ancestors and subsidiaries for comparison
+        $ancestors = $currentTenant->getAllAncestors();
+        $ancestorIds = array_map(fn($t) => $t->getId(), $ancestors);
+
+        $subsidiaries = $currentTenant->getAllSubsidiaries();
+        $subsidiaryIds = array_map(fn($t) => $t->getId(), $subsidiaries);
+
+        foreach ($items as $item) {
+            $itemTenant = $item->getTenant();
+            if (!$itemTenant) {
+                continue;
+            }
+
+            $itemTenantId = $itemTenant->getId();
+            $currentTenantId = $currentTenant->getId();
+
+            if ($itemTenantId === $currentTenantId) {
+                $ownCount++;
+            } elseif (in_array($itemTenantId, $ancestorIds)) {
+                $inheritedCount++;
+            } elseif (in_array($itemTenantId, $subsidiaryIds)) {
+                $subsidiariesCount++;
+            }
+        }
+
+        return [
+            'own' => $ownCount,
+            'inherited' => $inheritedCount,
+            'subsidiaries' => $subsidiariesCount,
+            'total' => $ownCount + $inheritedCount + $subsidiariesCount
+        ];
     }
 }

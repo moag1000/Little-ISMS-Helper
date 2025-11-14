@@ -183,6 +183,15 @@
     color: var(--color-text-muted);
 }
 
+.kpi-card-detail {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--color-text-muted);
+    margin-top: 6px;
+    line-height: 1.4;
+    opacity: 0.85;
+}
+
 .kpi-card-trend {
     font-size: 13px;
     font-weight: 600;
