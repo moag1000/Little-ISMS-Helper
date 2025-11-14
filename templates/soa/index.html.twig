@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_macros/inheritance_badge.html.twig' as inheritance %}
 
 {% block title %}Statement of Applicability - Little ISMS Helper{% endblock %}
 
@@ -20,6 +21,37 @@
         </a>
     </div>
 </div>
+
+{# View Filter #}
+{% if currentTenant %}
+<div class="card mb-3">
+    <div class="card-body py-2">
+        <form method="get" action="{{ path('app_soa_index') }}" class="d-flex align-items-center gap-2">
+            <label for="view-filter" class="mb-0 fw-bold">
+                <i class="bi bi-eye"></i> {{ 'common.view'|trans }}:
+            </label>
+            <select class="form-select form-select-sm" style="width: auto;" id="view-filter" name="view" onchange="this.form.submit()">
+                <option value="own" {{ inheritanceInfo.currentView == 'own' ? 'selected' : '' }}>
+                    {{ 'corporate.view.own_only'|trans }}
+                </option>
+                {% if inheritanceInfo.hasParent %}
+                <option value="inherited" {{ inheritanceInfo.currentView == 'inherited' ? 'selected' : '' }}>
+                    {{ 'corporate.view.including_inherited'|trans }}
+                </option>
+                {% endif %}
+                {% if inheritanceInfo.hasSubsidiaries %}
+                <option value="subsidiaries" {{ inheritanceInfo.currentView == 'subsidiaries' ? 'selected' : '' }}>
+                    {{ 'corporate.view.including_subsidiaries'|trans }}
+                </option>
+                {% endif %}
+            </select>
+            <noscript>
+                <button type="submit" class="btn btn-sm btn-secondary">{{ 'common.apply'|trans }}</button>
+            </noscript>
+        </form>
+    </div>
+</div>
+{% endif %}
 
 {# KPI Cards #}
 <div class="kpi-grid">
@@ -176,7 +208,10 @@
             {% for control in controls|sort((a, b) => a.controlId <=> b.controlId) %}
             <tr data-filter-target="filterableRow" data-category="{{ control.category }}" data-status="{{ control.implementationStatus }}">
                 <td><strong>{{ control.controlId }}</strong></td>
-                <td>{{ control.name }}</td>
+                <td>
+                    {{ control.name }}
+                    {{ inheritance.small_badge(control, currentTenant) }}
+                </td>
                 <td>
                     <span class="badge badge-info">{{ control.category }}</span>
                 </td>
