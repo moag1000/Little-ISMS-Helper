@@ -44,10 +44,11 @@ class InitialAdminService
             $adminId = $this->cache->get(self::CACHE_KEY, function (ItemInterface $item): ?int {
                 $item->expiresAfter(self::CACHE_TTL);
 
-                // Find the first admin user (lowest ID with ROLE_ADMIN)
+                // Find the first admin user (lowest ID with ROLE_ADMIN or ROLE_SUPER_ADMIN)
                 $admin = $this->userRepository->createQueryBuilder('u')
-                    ->where('u.roles LIKE :role')
-                    ->setParameter('role', '%"ROLE_ADMIN"%')
+                    ->where('u.roles LIKE :role_admin OR u.roles LIKE :role_super_admin')
+                    ->setParameter('role_admin', '%"ROLE_ADMIN"%')
+                    ->setParameter('role_super_admin', '%"ROLE_SUPER_ADMIN"%')
                     ->orderBy('u.id', 'ASC')
                     ->setMaxResults(1)
                     ->getQuery()
@@ -80,6 +81,11 @@ class InitialAdminService
         $initialAdmin = $this->getInitialAdmin();
 
         if ($initialAdmin === null) {
+            return false;
+        }
+
+        // User must have an ID to be compared (not a new, unpersisted entity)
+        if ($user->getId() === null) {
             return false;
         }
 
