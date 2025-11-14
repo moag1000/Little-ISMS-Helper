@@ -3,6 +3,7 @@
 namespace App\Security\Voter;
 
 use App\Entity\User;
+use App\Service\InitialAdminService;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
@@ -23,9 +24,10 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
  *
  * Security Rules:
  * - Inactive users cannot perform any actions
- * - ROLE_ADMIN bypasses all permission checks
+ * - ROLE_ADMIN bypasses all permission checks (except initial admin protection)
  * - Users can always view and edit themselves
  * - Users cannot delete themselves
+ * - Initial setup admin cannot be deleted or deactivated
  * - Permission checks via hasPermission() method
  *
  * Multi-tenancy:
@@ -33,6 +35,10 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
  */
 class UserVoter extends Voter
 {
+    public function __construct(
+        private readonly InitialAdminService $initialAdminService
+    ) {
+    }
     public const VIEW = 'user.view';
     public const CREATE = 'user.create';
     public const EDIT = 'user.edit';
@@ -122,6 +128,11 @@ class UserVoter extends Voter
     {
         // Users cannot delete themselves
         if ($currentUser->getId() === $targetUser->getId()) {
+            return false;
+        }
+
+        // Cannot delete the initial setup admin
+        if ($this->initialAdminService->isInitialAdmin($targetUser)) {
             return false;
         }
 
