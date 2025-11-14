@@ -601,4 +601,138 @@ class TenantManagementController extends AbstractController
 
         return $this->redirectToRoute('tenant_management_corporate_structure');
     }
+
+    /**
+     * Add a user to the tenant
+     */
+    #[Route('/{id}/add-user', name: 'tenant_management_add_user', methods: ['POST'])]
+    #[IsGranted('TENANT_EDIT')]
+    public function addUser(Request $request, Tenant $tenant): Response
+    {
+        // Verify CSRF token
+        if (!$this->isCsrfTokenValid('add_user_' . $tenant->getId(), $request->request->get('_token'))) {
+            $this->addFlash('danger', 'common.csrf_error');
+            return $this->redirectToRoute('tenant_management_show', ['id' => $tenant->getId()]);
+        }
+
+        $userEmail = $request->request->get('user_email');
+
+        if (!$userEmail) {
+            $this->addFlash('warning', 'tenant.users.flash.email_required');
+            return $this->redirectToRoute('tenant_management_show', ['id' => $tenant->getId()]);
+        }
+
+        try {
+            // Find user by email
+            $user = $this->entityManager->getRepository(\App\Entity\User::class)->findOneBy(['email' => $userEmail]);
+
+            if (!$user) {
+                $this->addFlash('warning', 'tenant.users.flash.user_not_found');
+                return $this->redirectToRoute('tenant_management_show', ['id' => $tenant->getId()]);
+            }
+
+            // Check if user already assigned to this tenant
+            if ($user->getTenant() && $user->getTenant()->getId() === $tenant->getId()) {
+                $this->addFlash('info', 'tenant.users.flash.already_assigned');
+                return $this->redirectToRoute('tenant_management_show', ['id' => $tenant->getId()]);
+            }
+
+            // Assign user to tenant
+            $user->setTenant($tenant);
+            $this->entityManager->flush();
+
+            $this->logger->info('User added to tenant', [
+                'tenant_id' => $tenant->getId(),
+                'user_id' => $user->getId(),
+                'user_email' => $user->getEmail(),
+                'admin' => $this->getUser()?->getUserIdentifier(),
+            ]);
+
+            // Audit log
+            $this->auditLogger->logCustom(
+                'tenant_user_added',
+                'Tenant',
+                $tenant->getId(),
+                null,
+                ['user_email' => $user->getEmail()],
+                sprintf('User "%s" added to tenant "%s"', $user->getEmail(), $tenant->getName())
+            );
+
+            $this->addFlash('success', 'tenant.users.flash.user_added');
+        } catch (\Exception $e) {
+            $this->logger->error('Failed to add user to tenant', [
+                'tenant_id' => $tenant->getId(),
+                'user_email' => $userEmail,
+                'error' => $e->getMessage(),
+            ]);
+
+            $this->addFlash('danger', 'tenant.users.flash.error');
+        }
+
+        return $this->redirectToRoute('tenant_management_show', ['id' => $tenant->getId()]);
+    }
+
+    /**
+     * Remove a user from the tenant
+     */
+    #[Route('/{id}/remove-user/{userId}', name: 'tenant_management_remove_user', methods: ['POST'])]
+    #[IsGranted('TENANT_EDIT')]
+    public function removeUser(Request $request, Tenant $tenant, int $userId): Response
+    {
+        // Verify CSRF token
+        if (!$this->isCsrfTokenValid('remove_user_' . $tenant->getId() . '_' . $userId, $request->request->get('_token'))) {
+            $this->addFlash('danger', 'common.csrf_error');
+            return $this->redirectToRoute('tenant_management_show', ['id' => $tenant->getId()]);
+        }
+
+        try {
+            $user = $this->entityManager->getRepository(\App\Entity\User::class)->find($userId);
+
+            if (!$user) {
+                $this->addFlash('warning', 'tenant.users.flash.user_not_found');
+                return $this->redirectToRoute('tenant_management_show', ['id' => $tenant->getId()]);
+            }
+
+            // Check if user belongs to this tenant
+            if (!$user->getTenant() || $user->getTenant()->getId() !== $tenant->getId()) {
+                $this->addFlash('warning', 'tenant.users.flash.not_assigned');
+                return $this->redirectToRoute('tenant_management_show', ['id' => $tenant->getId()]);
+            }
+
+            $userEmail = $user->getEmail();
+
+            // Remove user from tenant (set to null)
+            $user->setTenant(null);
+            $this->entityManager->flush();
+
+            $this->logger->info('User removed from tenant', [
+                'tenant_id' => $tenant->getId(),
+                'user_id' => $user->getId(),
+                'user_email' => $userEmail,
+                'admin' => $this->getUser()?->getUserIdentifier(),
+            ]);
+
+            // Audit log
+            $this->auditLogger->logCustom(
+                'tenant_user_removed',
+                'Tenant',
+                $tenant->getId(),
+                ['user_email' => $userEmail],
+                null,
+                sprintf('User "%s" removed from tenant "%s"', $userEmail, $tenant->getName())
+            );
+
+            $this->addFlash('success', 'tenant.users.flash.user_removed');
+        } catch (\Exception $e) {
+            $this->logger->error('Failed to remove user from tenant', [
+                'tenant_id' => $tenant->getId(),
+                'user_id' => $userId,
+                'error' => $e->getMessage(),
+            ]);
+
+            $this->addFlash('danger', 'tenant.users.flash.error');
+        }
+
+        return $this->redirectToRoute('tenant_management_show', ['id' => $tenant->getId()]);
+    }
 }
