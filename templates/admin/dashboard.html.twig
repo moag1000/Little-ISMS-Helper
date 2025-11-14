@@ -112,7 +112,7 @@
                         <div>
                             <h6 class="card-subtitle text-muted mb-2">{{ 'admin.dashboard.stats.total_records'|trans }}</h6>
                             <h2 class="card-title mb-0">
-                                {{ stats.modules.assets + stats.modules.risks + stats.modules.controls + stats.modules.incidents }}
+                                {{ stats.modules.assets.total + stats.modules.risks.total + stats.modules.controls.total + stats.modules.incidents.total }}
                             </h2>
                         </div>
                         <div class="bg-warning bg-opacity-10 p-3 rounded">
@@ -143,56 +143,104 @@
                             <thead>
                                 <tr>
                                     <th>{{ 'admin.dashboard.modules.module'|trans }}</th>
-                                    <th class="text-end">{{ 'admin.dashboard.modules.records'|trans }}</th>
+                                    {% if currentTenant %}
+                                        <th class="text-end">{{ 'corporate.view.own_only'|trans }}</th>
+                                        <th class="text-end">{{ 'corporate.view.including_inherited'|trans }}</th>
+                                        <th class="text-end">{{ 'corporate.view.including_subsidiaries'|trans }}</th>
+                                    {% else %}
+                                        <th class="text-end">{{ 'admin.dashboard.modules.records'|trans }}</th>
+                                    {% endif %}
                                     <th class="text-end">{{ 'admin.dashboard.modules.action'|trans }}</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
                                     <td><i class="bi bi-cpu text-primary"></i> {{ 'admin.dashboard.modules.assets'|trans }}</td>
-                                    <td class="text-end"><span class="badge bg-primary">{{ stats.modules.assets }}</span></td>
+                                    {% if currentTenant %}
+                                        <td class="text-end"><span class="badge bg-primary">{{ stats.modules.assets.own }}</span></td>
+                                        <td class="text-end"><span class="badge bg-primary">{{ stats.modules.assets.own + stats.modules.assets.inherited }}</span></td>
+                                        <td class="text-end"><span class="badge bg-primary">{{ stats.modules.assets.total }}</span></td>
+                                    {% else %}
+                                        <td class="text-end"><span class="badge bg-primary">{{ stats.modules.assets.total }}</span></td>
+                                    {% endif %}
                                     <td class="text-end">
                                         <a href="{{ path('app_asset_index') }}" class="btn btn-sm btn-outline-secondary">{{ 'common.view'|trans }}</a>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td><i class="bi bi-exclamation-triangle text-danger"></i> {{ 'admin.dashboard.modules.risks'|trans }}</td>
-                                    <td class="text-end"><span class="badge bg-danger">{{ stats.modules.risks }}</span></td>
+                                    {% if currentTenant %}
+                                        <td class="text-end"><span class="badge bg-danger">{{ stats.modules.risks.own }}</span></td>
+                                        <td class="text-end"><span class="badge bg-danger">{{ stats.modules.risks.own + stats.modules.risks.inherited }}</span></td>
+                                        <td class="text-end"><span class="badge bg-danger">{{ stats.modules.risks.total }}</span></td>
+                                    {% else %}
+                                        <td class="text-end"><span class="badge bg-danger">{{ stats.modules.risks.total }}</span></td>
+                                    {% endif %}
                                     <td class="text-end">
                                         <a href="{{ path('app_risk_index') }}" class="btn btn-sm btn-outline-secondary">{{ 'common.view'|trans }}</a>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td><i class="bi bi-shield-check text-success"></i> {{ 'admin.dashboard.modules.controls'|trans }}</td>
-                                    <td class="text-end"><span class="badge bg-success">{{ stats.modules.controls }}</span></td>
+                                    {% if currentTenant %}
+                                        <td class="text-end"><span class="badge bg-success">{{ stats.modules.controls.own }}</span></td>
+                                        <td class="text-end"><span class="badge bg-success">{{ stats.modules.controls.own + stats.modules.controls.inherited }}</span></td>
+                                        <td class="text-end"><span class="badge bg-success">{{ stats.modules.controls.total }}</span></td>
+                                    {% else %}
+                                        <td class="text-end"><span class="badge bg-success">{{ stats.modules.controls.total }}</span></td>
+                                    {% endif %}
                                     <td class="text-end">
                                         <a href="{{ path('app_soa_index') }}" class="btn btn-sm btn-outline-secondary">{{ 'common.view'|trans }}</a>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td><i class="bi bi-bug text-warning"></i> {{ 'admin.dashboard.modules.incidents'|trans }}</td>
-                                    <td class="text-end"><span class="badge bg-warning">{{ stats.modules.incidents }}</span></td>
+                                    {% if currentTenant %}
+                                        <td class="text-end"><span class="badge bg-warning">{{ stats.modules.incidents.own }}</span></td>
+                                        <td class="text-end"><span class="badge bg-warning">{{ stats.modules.incidents.own + stats.modules.incidents.inherited }}</span></td>
+                                        <td class="text-end"><span class="badge bg-warning">{{ stats.modules.incidents.total }}</span></td>
+                                    {% else %}
+                                        <td class="text-end"><span class="badge bg-warning">{{ stats.modules.incidents.total }}</span></td>
+                                    {% endif %}
                                     <td class="text-end">
                                         <a href="{{ path('app_incident_index') }}" class="btn btn-sm btn-outline-secondary">{{ 'common.view'|trans }}</a>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td><i class="bi bi-clipboard-check text-info"></i> {{ 'admin.dashboard.modules.audits'|trans }}</td>
-                                    <td class="text-end"><span class="badge bg-info">{{ stats.modules.audits }}</span></td>
+                                    {% if currentTenant %}
+                                        <td class="text-end"><span class="badge bg-info">{{ stats.modules.audits.own }}</span></td>
+                                        <td class="text-end"><span class="badge bg-info">{{ stats.modules.audits.own + stats.modules.audits.inherited }}</span></td>
+                                        <td class="text-end"><span class="badge bg-info">{{ stats.modules.audits.total }}</span></td>
+                                    {% else %}
+                                        <td class="text-end"><span class="badge bg-info">{{ stats.modules.audits.total }}</span></td>
+                                    {% endif %}
                                     <td class="text-end">
                                         <a href="{{ path('app_audit_index') }}" class="btn btn-sm btn-outline-secondary">{{ 'common.view'|trans }}</a>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td><i class="bi bi-check-circle text-secondary"></i> {{ 'admin.dashboard.modules.compliance'|trans }}</td>
-                                    <td class="text-end"><span class="badge bg-secondary">{{ stats.modules.compliance_requirements }}</span></td>
+                                    {% if currentTenant %}
+                                        <td class="text-end"><span class="badge bg-secondary">{{ stats.modules.compliance_requirements.own }}</span></td>
+                                        <td class="text-end"><span class="badge bg-secondary">{{ stats.modules.compliance_requirements.own + stats.modules.compliance_requirements.inherited }}</span></td>
+                                        <td class="text-end"><span class="badge bg-secondary">{{ stats.modules.compliance_requirements.total }}</span></td>
+                                    {% else %}
+                                        <td class="text-end"><span class="badge bg-secondary">{{ stats.modules.compliance_requirements.total }}</span></td>
+                                    {% endif %}
                                     <td class="text-end">
                                         <a href="{{ path('app_compliance_index') }}" class="btn btn-sm btn-outline-secondary">{{ 'common.view'|trans }}</a>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td><i class="bi bi-book text-dark"></i> {{ 'admin.dashboard.modules.trainings'|trans }}</td>
-                                    <td class="text-end"><span class="badge bg-dark">{{ stats.modules.trainings }}</span></td>
+                                    {% if currentTenant %}
+                                        <td class="text-end"><span class="badge bg-dark">{{ stats.modules.trainings.own }}</span></td>
+                                        <td class="text-end"><span class="badge bg-dark">{{ stats.modules.trainings.own + stats.modules.trainings.inherited }}</span></td>
+                                        <td class="text-end"><span class="badge bg-dark">{{ stats.modules.trainings.total }}</span></td>
+                                    {% else %}
+                                        <td class="text-end"><span class="badge bg-dark">{{ stats.modules.trainings.total }}</span></td>
+                                    {% endif %}
                                     <td class="text-end">
                                         <a href="{{ path('app_training_index') }}" class="btn btn-sm btn-outline-secondary">{{ 'common.view'|trans }}</a>
                                     </td>
