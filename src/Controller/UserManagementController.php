@@ -12,6 +12,7 @@ use App\Repository\MfaTokenRepository;
 use App\Security\Voter\UserVoter;
 use App\Service\AuditLogger;
 use App\Service\FileUploadSecurityService;
+use App\Service\InitialAdminService;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -34,6 +35,7 @@ class UserManagementController extends AbstractController
         private readonly SluggerInterface $slugger,
         private readonly LoggerInterface $logger,
         private readonly AuditLogger $auditLogger,
+        private readonly InitialAdminService $initialAdminService,
         private readonly string $uploadsDirectory = 'uploads/users',
     ) {
     }
@@ -47,19 +49,8 @@ class UserManagementController extends AbstractController
         $statistics = $userRepository->getUserStatistics();
 
         // Identify the initial admin for UI display
-        $initialAdminId = null;
-        $firstAdmin = $userRepository->createQueryBuilder('u')
-            ->where('u.roles LIKE :role_admin OR u.roles LIKE :role_super_admin')
-            ->setParameter('role_admin', '%ROLE_ADMIN%')
-            ->setParameter('role_super_admin', '%ROLE_SUPER_ADMIN%')
-            ->orderBy('u.id', 'ASC')
-            ->setMaxResults(1)
-            ->getQuery()
-            ->getOneOrNullResult();
-
-        if ($firstAdmin) {
-            $initialAdminId = $firstAdmin->getId();
-        }
+        $initialAdmin = $this->initialAdminService->getInitialAdmin();
+        $initialAdminId = $initialAdmin?->getId();
 
         return $this->render('user_management/index.html.twig', [
             'users' => $users,
@@ -142,12 +133,12 @@ class UserManagementController extends AbstractController
     }
 
     #[Route('/{id}', name: 'user_management_show', requirements: ['id' => '\d+'])]
-    public function show(User $user, UserRepository $userRepository): Response
+    public function show(User $user): Response
     {
         $this->denyAccessUnlessGranted(UserVoter::VIEW, $user);
 
         // Check if this is the initial setup admin
-        $isInitialAdmin = $this->isInitialSetupAdmin($user, $userRepository);
+        $isInitialAdmin = $this->initialAdminService->isInitialAdmin($user);
 
         return $this->render('user_management/show.html.twig', [
             'user' => $user,
@@ -161,13 +152,12 @@ class UserManagementController extends AbstractController
         Request $request,
         EntityManagerInterface $entityManager,
         UserPasswordHasherInterface $passwordHasher,
-        TranslatorInterface $translator,
-        UserRepository $userRepository
+        TranslatorInterface $translator
     ): Response {
         $this->denyAccessUnlessGranted(UserVoter::EDIT, $user);
 
         // Check if this is the initial setup admin
-        $isInitialAdmin = $this->isInitialSetupAdmin($user, $userRepository);
+        $isInitialAdmin = $this->initialAdminService->isInitialAdmin($user);
 
         // Capture old values for audit log
         $oldValues = [
@@ -319,13 +309,12 @@ class UserManagementController extends AbstractController
         User $user,
         Request $request,
         EntityManagerInterface $entityManager,
-        TranslatorInterface $translator,
-        UserRepository $userRepository
+        TranslatorInterface $translator
     ): Response {
         $this->denyAccessUnlessGranted(UserVoter::DELETE, $user);
 
         // Check if this is the initial setup admin
-        $isInitialAdmin = $this->isInitialSetupAdmin($user, $userRepository);
+        $isInitialAdmin = $this->initialAdminService->isInitialAdmin($user);
 
         if ($isInitialAdmin) {
             // Log security-relevant attempt
@@ -377,14 +366,13 @@ class UserManagementController extends AbstractController
         User $user,
         Request $request,
         EntityManagerInterface $entityManager,
-        TranslatorInterface $translator,
-        UserRepository $userRepository
+        TranslatorInterface $translator
     ): Response {
         $this->denyAccessUnlessGranted(UserVoter::EDIT, $user);
 
         if ($this->isCsrfTokenValid('toggle-active' . $user->getId(), $request->request->get('_token'))) {
             // Check if this is the initial setup admin
-            $isInitialAdmin = $this->isInitialSetupAdmin($user, $userRepository);
+            $isInitialAdmin = $this->initialAdminService->isInitialAdmin($user);
 
             if ($isInitialAdmin && $user->isActive()) {
                 // Log security-relevant attempt
@@ -467,7 +455,7 @@ class UserManagementController extends AbstractController
                 case 'deactivate':
                     if ($this->isGranted(UserVoter::EDIT, $user)) {
                         // Protect initial setup admin and current user
-                        $isInitialAdmin = $this->isInitialSetupAdmin($user, $userRepository);
+                        $isInitialAdmin = $this->initialAdminService->isInitialAdmin($user);
                         $isCurrentUser = $this->getUser() && $this->getUser()->getId() === $user->getId();
 
                         if ($isInitialAdmin) {
@@ -509,7 +497,7 @@ class UserManagementController extends AbstractController
                 case 'delete':
                     if ($this->isGranted(UserVoter::DELETE, $user)) {
                         // Protect initial setup admin from deletion
-                        $isInitialAdmin = $this->isInitialSetupAdmin($user, $userRepository);
+                        $isInitialAdmin = $this->initialAdminService->isInitialAdmin($user);
 
                         if ($isInitialAdmin) {
                             $skipped = true;
@@ -921,30 +909,5 @@ class UserManagementController extends AbstractController
                 'error' => $e->getMessage(),
             ]);
         }
-    }
-
-    /**
-     * Check if a user is the initial setup admin
-     * The initial admin is identified as the first admin user created
-     */
-    private function isInitialSetupAdmin(User $user, UserRepository $userRepository): bool
-    {
-        // Only check for users with ROLE_ADMIN or ROLE_SUPER_ADMIN
-        $roles = $user->getRoles();
-        if (!in_array('ROLE_ADMIN', $roles) && !in_array('ROLE_SUPER_ADMIN', $roles)) {
-            return false;
-        }
-
-        // Find the first admin user by ID (assuming the first admin has the lowest ID)
-        $firstAdmin = $userRepository->createQueryBuilder('u')
-            ->where('u.roles LIKE :role_admin OR u.roles LIKE :role_super_admin')
-            ->setParameter('role_admin', '%ROLE_ADMIN%')
-            ->setParameter('role_super_admin', '%ROLE_SUPER_ADMIN%')
-            ->orderBy('u.id', 'ASC')
-            ->setMaxResults(1)
-            ->getQuery()
-            ->getOneOrNullResult();
-
-        return $firstAdmin && $firstAdmin->getId() === $user->getId();
     }
 }
