@@ -73,22 +73,26 @@ class AssetRepository extends ServiceEntityRepository
     }
 
     /**
-     * Find assets by tenant or parent tenant (for hierarchical governance)
-     * This allows viewing inherited assets from parent companies
+     * Find assets by tenant including all ancestors (for hierarchical governance)
+     * This allows viewing inherited assets from parent companies, grandparents, etc.
      *
      * @param \App\Entity\Tenant $tenant The tenant to find assets for
-     * @param \App\Entity\Tenant|null $parentTenant Optional parent tenant for inherited assets
-     * @return Asset[] Array of Asset entities (own + inherited)
+     * @param \App\Entity\Tenant|null $parentTenant DEPRECATED: Use tenant's getAllAncestors() instead
+     * @return Asset[] Array of Asset entities (own + inherited from all ancestors)
      */
     public function findByTenantIncludingParent($tenant, $parentTenant = null): array
     {
+        // Get all ancestors (parent, grandparent, great-grandparent, etc.)
+        $ancestors = $tenant->getAllAncestors();
+
         $qb = $this->createQueryBuilder('a')
             ->where('a.tenant = :tenant')
             ->setParameter('tenant', $tenant);
 
-        if ($parentTenant) {
-            $qb->orWhere('a.tenant = :parentTenant')
-               ->setParameter('parentTenant', $parentTenant);
+        // Include assets from all ancestors in the hierarchy
+        if (!empty($ancestors)) {
+            $qb->orWhere('a.tenant IN (:ancestors)')
+               ->setParameter('ancestors', $ancestors);
         }
 
         return $qb
