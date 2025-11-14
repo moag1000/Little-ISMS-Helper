@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_macros/inheritance_badge.html.twig' as inheritance %}
 
 {% block title %}{{ 'patch.title'|trans }} - {{ parent() }}{% endblock %}
 
@@ -10,6 +11,37 @@
             <i class="bi bi-plus-circle"></i> {{ 'patch.new'|trans }}
         </a>
     </div>
+
+    {# View Filter #}
+    {% if currentTenant %}
+    <div class="card mb-3">
+        <div class="card-body py-2">
+            <form method="get" action="{{ path('app_patch_index') }}" class="d-flex align-items-center gap-2">
+                <label for="view-filter" class="mb-0 fw-bold">
+                    <i class="bi bi-eye"></i> {{ 'common.view'|trans }}:
+                </label>
+                <select class="form-select form-select-sm" style="width: auto;" id="view-filter" name="view" onchange="this.form.submit()">
+                    <option value="own" {{ inheritanceInfo.currentView == 'own' ? 'selected' : '' }}>
+                        {{ 'corporate.view.own_only'|trans }}
+                    </option>
+                    {% if inheritanceInfo.hasParent %}
+                    <option value="inherited" {{ inheritanceInfo.currentView == 'inherited' ? 'selected' : '' }}>
+                        {{ 'corporate.view.including_inherited'|trans }}
+                    </option>
+                    {% endif %}
+                    {% if inheritanceInfo.hasSubsidiaries %}
+                    <option value="subsidiaries" {{ inheritanceInfo.currentView == 'subsidiaries' ? 'selected' : '' }}>
+                        {{ 'corporate.view.including_subsidiaries'|trans }}
+                    </option>
+                    {% endif %}
+                </select>
+                <noscript>
+                    <button type="submit" class="btn btn-sm btn-secondary">{{ 'common.apply'|trans }}</button>
+                </noscript>
+            </form>
+        </div>
+    </div>
+    {% endif %}
 
     <div class="row mb-4">
         <div class="col-md-4">
@@ -31,7 +63,12 @@
         <div class="col-md-4">
             <div class="card">
                 <div class="card-body text-center">
-                    <h3>{{ patches|length }}</h3>
+                    <h3>{{ detailedStats.total }}</h3>
+                    {% if currentTenant %}
+                        <p class="mb-0" style="font-size: 11px; color: #6c757d; opacity: 0.85;">
+                            {{ 'corporate.stats.breakdown'|trans({'%own%': detailedStats.own, '%inherited%': detailedStats.inherited, '%subsidiaries%': detailedStats.subsidiaries}) }}
+                        </p>
+                    {% endif %}
                     <p class="mb-0">{{ 'patch.kpi.total'|trans }}</p>
                 </div>
             </div>
@@ -59,7 +96,10 @@
                         {% for patch in patches %}
                             <tr>
                                 <td><code>{{ patch.patchId }}</code></td>
-                                <td><strong>{{ patch.title }}</strong></td>
+                                <td>
+                                    <strong>{{ patch.title }}</strong>
+                                    {{ inheritance.small_badge(patch, currentTenant) }}
+                                </td>
                                 <td><span class="badge bg-secondary">{{ ('patch.type.' ~ patch.patchType)|trans }}</span></td>
                                 <td><span class="badge bg-info">{{ ('patch.status.' ~ patch.status)|trans }}</span></td>
                                 <td>

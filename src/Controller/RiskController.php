@@ -47,17 +47,48 @@ class RiskController extends AbstractController
         $status = $request->query->get('status');
         $treatment = $request->query->get('treatment');
         $owner = $request->query->get('owner');
+        $view = $request->query->get('view', 'inherited'); // Default: inherited
 
-        // Get risks: tenant-filtered if user has tenant, all risks if not (e.g., super admin)
+        // Get risks based on view filter
         if ($tenant) {
-            $risks = $this->riskService->getRisksForTenant($tenant);
-            $highRisks = $this->riskService->getHighRisksForTenant($tenant);
+            // Determine which risks to load based on view parameter
+            switch ($view) {
+                case 'own':
+                    // Only own risks
+                    $risks = $this->riskRepository->findByTenant($tenant);
+                    break;
+                case 'subsidiaries':
+                    // Own + from all subsidiaries (for parent companies)
+                    $risks = $this->riskRepository->findByTenantIncludingSubsidiaries($tenant);
+                    break;
+                case 'inherited':
+                default:
+                    // Own + inherited from parents (default behavior)
+                    $risks = $this->riskService->getRisksForTenant($tenant);
+                    break;
+            }
+
+            // Filter high risks from the selected risk set
+            $highRisks = array_filter($risks, fn($risk) => $risk->getRiskScore() >= 12);
+
+            // Calculate detailed statistics based on origin
+            $detailedStats = $this->calculateDetailedStats($risks, $tenant);
+
             $inheritanceInfo = $this->riskService->getRiskInheritanceInfo($tenant);
+            $inheritanceInfo['hasSubsidiaries'] = $tenant->getSubsidiaries()->count() > 0;
+            $inheritanceInfo['currentView'] = $view;
         } else {
             // Fallback for users without tenant (e.g., super admins)
             $risks = $this->riskRepository->findAll();
             $highRisks = $this->riskRepository->findHighRisks();
-            $inheritanceInfo = ['hasParent' => false, 'canInherit' => false, 'governanceModel' => null];
+            $detailedStats = ['own' => count($risks), 'inherited' => 0, 'subsidiaries' => 0, 'total' => count($risks)];
+            $inheritanceInfo = [
+                'hasParent' => false,
+                'canInherit' => false,
+                'governanceModel' => null,
+                'hasSubsidiaries' => false,
+                'currentView' => 'own'
+            ];
         }
 
         // Apply filters
@@ -99,6 +130,7 @@ class RiskController extends AbstractController
             'treatmentStats' => $treatmentStats,
             'inheritanceInfo' => $inheritanceInfo,
             'currentTenant' => $tenant,
+            'detailedStats' => $detailedStats ?? ['own' => 0, 'inherited' => 0, 'subsidiaries' => 0, 'total' => 0],
         ]);
     }
 
@@ -757,5 +789,54 @@ class RiskController extends AbstractController
             'statistics' => $statistics,
             'risksByLevel' => $risksByLevel,
         ]);
+    }
+
+    /**
+     * Calculate detailed statistics showing breakdown by origin
+     *
+     * @param array $items Array of entities to analyze
+     * @param mixed $currentTenant Current tenant for comparison
+     * @return array Statistics with keys: own, inherited, subsidiaries, total
+     */
+    private function calculateDetailedStats(array $items, $currentTenant): array
+    {
+        $ownCount = 0;
+        $inheritedCount = 0;
+        $subsidiariesCount = 0;
+
+        // Get ancestors and subsidiaries for comparison
+        $ancestors = $currentTenant->getAllAncestors();
+        $ancestorIds = array_map(fn($t) => $t->getId(), $ancestors);
+
+        $subsidiaries = $currentTenant->getAllSubsidiaries();
+        $subsidiaryIds = array_map(fn($t) => $t->getId(), $subsidiaries);
+
+        foreach ($items as $item) {
+            $itemTenant = $item->getTenant();
+            if (!$itemTenant) {
+                continue;
+            }
+
+            $itemTenantId = $itemTenant->getId();
+            $currentTenantId = $currentTenant->getId();
+
+            if ($itemTenantId === $currentTenantId) {
+                // Own record
+                $ownCount++;
+            } elseif (in_array($itemTenantId, $ancestorIds)) {
+                // Inherited from parent/ancestor
+                $inheritedCount++;
+            } elseif (in_array($itemTenantId, $subsidiaryIds)) {
+                // From subsidiary
+                $subsidiariesCount++;
+            }
+        }
+
+        return [
+            'own' => $ownCount,
+            'inherited' => $inheritedCount,
+            'subsidiaries' => $subsidiariesCount,
+            'total' => $ownCount + $inheritedCount + $subsidiariesCount
+        ];
     }
 }

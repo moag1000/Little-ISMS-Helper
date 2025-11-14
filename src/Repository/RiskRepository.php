@@ -73,22 +73,26 @@ class RiskRepository extends ServiceEntityRepository
     }
 
     /**
-     * Find risks by tenant or parent tenant (for hierarchical governance)
-     * This allows viewing inherited risks from parent companies
+     * Find risks by tenant including all ancestors (for hierarchical governance)
+     * This allows viewing inherited risks from parent companies, grandparents, etc.
      *
      * @param \App\Entity\Tenant $tenant The tenant to find risks for
-     * @param \App\Entity\Tenant|null $parentTenant Optional parent tenant for inherited risks
-     * @return Risk[] Array of Risk entities (own + inherited)
+     * @param \App\Entity\Tenant|null $parentTenant DEPRECATED: Use tenant's getAllAncestors() instead
+     * @return Risk[] Array of Risk entities (own + inherited from all ancestors)
      */
     public function findByTenantIncludingParent($tenant, $parentTenant = null): array
     {
+        // Get all ancestors (parent, grandparent, great-grandparent, etc.)
+        $ancestors = $tenant->getAllAncestors();
+
         $qb = $this->createQueryBuilder('r')
             ->where('r.tenant = :tenant')
             ->setParameter('tenant', $tenant);
 
-        if ($parentTenant) {
-            $qb->orWhere('r.tenant = :parentTenant')
-               ->setParameter('parentTenant', $parentTenant);
+        // Include risks from all ancestors in the hierarchy
+        if (!empty($ancestors)) {
+            $qb->orWhere('r.tenant IN (:ancestors)')
+               ->setParameter('ancestors', $ancestors);
         }
 
         return $qb
@@ -145,6 +149,34 @@ class RiskRepository extends ServiceEntityRepository
             ->setParameter('threshold', $threshold)
             ->orderBy('r.probability', 'DESC')
             ->addOrderBy('r.impact', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Find risks by tenant including all subsidiaries (for corporate parent view)
+     * This allows viewing aggregated risks from all subsidiary companies
+     *
+     * @param \App\Entity\Tenant $tenant The tenant to find risks for
+     * @return Risk[] Array of Risk entities (own + from all subsidiaries)
+     */
+    public function findByTenantIncludingSubsidiaries($tenant): array
+    {
+        // Get all subsidiaries recursively
+        $subsidiaries = $tenant->getAllSubsidiaries();
+
+        $qb = $this->createQueryBuilder('r')
+            ->where('r.tenant = :tenant')
+            ->setParameter('tenant', $tenant);
+
+        // Include risks from all subsidiaries in the hierarchy
+        if (!empty($subsidiaries)) {
+            $qb->orWhere('r.tenant IN (:subsidiaries)')
+               ->setParameter('subsidiaries', $subsidiaries);
+        }
+
+        return $qb
+            ->orderBy('r.createdAt', 'DESC')
             ->getQuery()
             ->getResult();
     }
