@@ -1,0 +1,124 @@
+{#
+  Bulk Delete Confirmation Modal
+  Accessible confirmation dialog for bulk delete operations
+
+  Features:
+  - WCAG 2.1 AA compliant
+  - Shows dependencies and impact
+  - Keyboard navigable
+  - Screen reader friendly
+
+  Usage: Include this template in your layout and trigger via JavaScript
+#}
+
+<div class="modal fade"
+     id="bulkDeleteModal"
+     data-controller="bulk-delete-confirmation"
+     data-bulk-delete-confirmation-target="modal"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="bulkDeleteModalTitle"
+     aria-describedby="bulkDeleteModalDescription"
+     aria-modal="true"
+     aria-hidden="true">
+
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            {# Header #}
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title d-flex align-items-center gap-2" id="bulkDeleteModalTitle">
+                    <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
+                    <span>{{ 'bulk_delete.confirm.title'|trans|default('Löschen bestätigen') }}</span>
+                </h5>
+                <button type="button"
+                        class="btn-close btn-close-white"
+                        data-bs-dismiss="modal"
+                        data-action="click->bulk-delete-confirmation#cancel"
+                        aria-label="{{ 'action.close'|trans|default('Schließen') }}">
+                </button>
+            </div>
+
+            {# Body #}
+            <div class="modal-body">
+                {# Main message #}
+                <div class="alert alert-warning d-flex align-items-start gap-3" role="alert">
+                    <i class="bi bi-exclamation-circle-fill fs-4 flex-shrink-0 mt-1" aria-hidden="true"></i>
+                    <div class="flex-grow-1">
+                        <p id="bulkDeleteModalDescription"
+                           class="mb-2 fw-semibold"
+                           data-bulk-delete-confirmation-target="message">
+                            {# Dynamic message will be inserted here #}
+                        </p>
+                        <p class="mb-0 small text-muted">
+                            {{ 'bulk_delete.confirm.warning'|trans|default('Diese Aktion kann nicht rückgängig gemacht werden.') }}
+                        </p>
+                    </div>
+                </div>
+
+                {# Selection summary #}
+                <div class="mb-3">
+                    <h6 class="fw-semibold mb-2">
+                        {{ 'bulk_delete.selection.title'|trans|default('Ausgewählte Einträge') }}
+                    </h6>
+                    <div class="d-flex align-items-center gap-2 p-2 bg-light rounded">
+                        <i class="bi bi-check2-square text-primary" aria-hidden="true"></i>
+                        <span>
+                            <strong data-bulk-delete-confirmation-target="count">0</strong>
+                            <span data-bulk-delete-confirmation-target="entityLabel">{{ 'common.entries'|trans|default('Einträge') }}</span>
+                        </span>
+                    </div>
+                </div>
+
+                {# Dependencies and impact (dynamically populated) #}
+                <div data-bulk-delete-confirmation-target="dependencies" class="d-none">
+                    <h6 class="fw-semibold mb-2">
+                        {{ 'bulk_delete.dependencies.title'|trans|default('Betroffene Verknüpfungen') }}
+                    </h6>
+                    <div class="alert alert-info" role="status">
+                        <ul class="mb-0 ps-3"
+                            data-bulk-delete-confirmation-target="dependencyList"
+                            aria-label="{{ 'bulk_delete.dependencies.list'|trans|default('Liste der betroffenen Verknüpfungen') }}">
+                            {# Dependencies will be injected here #}
+                        </ul>
+                    </div>
+                </div>
+
+                {# Loading state #}
+                <div data-bulk-delete-confirmation-target="loading" class="text-center py-3 d-none">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">{{ 'common.loading'|trans|default('Lädt...') }}</span>
+                    </div>
+                    <p class="mt-2 text-muted small">
+                        {{ 'bulk_delete.loading'|trans|default('Abhängigkeiten werden geprüft...') }}
+                    </p>
+                </div>
+
+                {# Error state #}
+                <div data-bulk-delete-confirmation-target="error" class="alert alert-danger d-none" role="alert">
+                    <i class="bi bi-x-circle-fill me-2" aria-hidden="true"></i>
+                    <span data-bulk-delete-confirmation-target="errorMessage"></span>
+                </div>
+            </div>
+
+            {# Footer #}
+            <div class="modal-footer">
+                <button type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal"
+                        data-action="click->bulk-delete-confirmation#cancel"
+                        data-bulk-delete-confirmation-target="cancelButton">
+                    <i class="bi bi-x-lg me-1" aria-hidden="true"></i>
+                    {{ 'action.cancel'|trans|default('Abbrechen') }}
+                </button>
+                <button type="button"
+                        class="btn btn-danger"
+                        data-action="click->bulk-delete-confirmation#confirm"
+                        data-bulk-delete-confirmation-target="confirmButton"
+                        autofocus>
+                    <i class="bi bi-trash me-1" aria-hidden="true"></i>
+                    {{ 'action.delete'|trans|default('Löschen') }}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
