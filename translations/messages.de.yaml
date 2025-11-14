@@ -3864,6 +3864,10 @@ corporate:
   stats:
     standalone: 'Eigenständig'
     total: 'Gesamt Mandanten'
+    own: 'Eigene'
+    inherited: 'Geerbt'
+    subsidiaries: 'Tochter'
+    breakdown: 'Eigene: %own% | Geerbt: %inherited% | Tochter: %subsidiaries%'
   field:
     actions: 'Aktionen'
     subsidiaries: 'Tochtergesellschaften'

@@ -27,7 +27,7 @@
         icon: 'bi-server',
         label: 'Total Assets',
         value: detailedStats.total,
-        detail: currentTenant ? 'Eigene: ' ~ detailedStats.own ~ ' | Geerbt: ' ~ detailedStats.inherited ~ ' | Tochter: ' ~ detailedStats.subsidiaries : null,
+        detail: currentTenant ? ('corporate.stats.breakdown'|trans({'%own%': detailedStats.own, '%inherited%': detailedStats.inherited, '%subsidiaries%': detailedStats.subsidiaries})) : null,
         variant: 'primary',
         link: '#all-assets'
     } %}

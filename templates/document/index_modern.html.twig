@@ -73,7 +73,7 @@
             icon: 'bi-file-earmark-text',
             label: 'document.kpi.total_documents'|trans,
             value: total,
-            detail: currentTenant ? 'Eigene: ' ~ detailedStats.own ~ ' | Geerbt: ' ~ detailedStats.inherited ~ ' | Tochter: ' ~ detailedStats.subsidiaries : null,
+            detail: currentTenant ? ('corporate.stats.breakdown'|trans({'%own%': detailedStats.own, '%inherited%': detailedStats.inherited, '%subsidiaries%': detailedStats.subsidiaries})) : null,
             variant: 'primary',
             link: null
         } %}
