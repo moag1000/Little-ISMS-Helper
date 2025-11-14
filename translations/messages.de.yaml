@@ -2168,11 +2168,17 @@ user:
     department: Abteilung
     job_title: Position
     phone_number: Telefonnummer
+    avatar: Profilbild
+    avatar_help: Profilbild (max. 2MB, JPG/PNG/GIF/WebP)
     password: Passwort
     system_roles: Systemrollen
     custom_roles: Benutzerdefinierte Rollen
+    tenant: Mandant
+    tenant_help: Ordnen Sie den Benutzer einem Mandanten zu
     active: Aktiv
     email_verified: E-Mail verifiziert
+  placeholder:
+    tenant: Keinem Mandanten zugeordnet
   error:
     no_users_selected: Keine Benutzer ausgewählt
     no_file_uploaded: Keine Datei hochgeladen
