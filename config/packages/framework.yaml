@@ -5,6 +5,10 @@ framework:
     # Security: Comprehensive session configuration
     # Protects against session hijacking and fixation attacks (OWASP A07:2021)
     session:
+        # Session storage configuration
+        handler_id: session.handler.native_file
+        save_path: '%kernel.project_dir%/var/sessions'
+
         # Session cookie security settings
         cookie_secure: 'auto'        # Only send cookie over HTTPS in production
         cookie_httponly: true         # Prevent JavaScript access to session cookie (XSS protection)
