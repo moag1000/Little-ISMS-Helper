@@ -294,8 +294,11 @@
                         <h5 class="card-title mb-0">
                             <i class="bi bi-people text-primary"></i>
                             {{ 'tenant.section.users'|trans }}
+                            <span class="badge bg-primary ms-2">{{ userCount }}</span>
                         </h5>
-                        <span class="badge bg-primary">{{ userCount }}</span>
+                        <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#manageUsersModal">
+                            <i class="bi bi-person-plus"></i> {{ 'tenant.users.manage'|trans }}
+                        </button>
                     </div>
                 </div>
                 <div class="card-body">
@@ -367,6 +370,103 @@
             </div>
         </div>
     {% endif %}
+
+    {# Manage Users Modal #}
+    <div class="modal fade" id="manageUsersModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="bi bi-people"></i> {{ 'tenant.users.manage_title'|trans }}
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    {# Add User Section #}
+                    <div class="mb-4">
+                        <h6 class="border-bottom pb-2 mb-3">
+                            <i class="bi bi-person-plus"></i> {{ 'tenant.users.add_user'|trans }}
+                        </h6>
+                        <form method="post" action="{{ path('tenant_management_add_user', {id: tenant.id}) }}" id="addUserForm">
+                            <input type="hidden" name="_token" value="{{ csrf_token('add_user_' ~ tenant.id) }}">
+                            <div class="input-group">
+                                <input type="email"
+                                       class="form-control"
+                                       name="user_email"
+                                       placeholder="{{ 'tenant.users.enter_email'|trans }}"
+                                       required>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-plus-circle"></i> {{ 'tenant.users.add'|trans }}
+                                </button>
+                            </div>
+                            <small class="form-text text-muted">
+                                {{ 'tenant.users.add_help'|trans }}
+                            </small>
+                        </form>
+                    </div>
+
+                    {# Current Users List #}
+                    <div>
+                        <h6 class="border-bottom pb-2 mb-3">
+                            <i class="bi bi-people-fill"></i> {{ 'tenant.users.current_users'|trans }} ({{ userCount }})
+                        </h6>
+                        {% if userCount == 0 %}
+                            <div class="text-center text-muted py-3">
+                                <i class="bi bi-people" style="font-size: 2rem;"></i>
+                                <p class="mt-2 mb-0">{{ 'tenant.users.empty'|trans }}</p>
+                            </div>
+                        {% else %}
+                            <div class="list-group list-group-flush" style="max-height: 400px; overflow-y: auto;">
+                                {% for user in tenant.users %}
+                                    <div class="list-group-item px-0">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div class="flex-grow-1">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="me-3">
+                                                        <i class="bi bi-person-circle fs-3 text-muted"></i>
+                                                    </div>
+                                                    <div>
+                                                        <strong>{{ user.email }}</strong>
+                                                        {% if user.firstName or user.lastName %}
+                                                            <br><small class="text-muted">{{ user.firstName }} {{ user.lastName }}</small>
+                                                        {% endif %}
+                                                        <br>
+                                                        <small class="text-muted">
+                                                            {{ 'common.roles'|trans }}: {{ user.roles|join(', ') }}
+                                                        </small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex align-items-center gap-2">
+                                                {% if user.isActive %}
+                                                    <span class="badge bg-success">{{ 'common.active'|trans }}</span>
+                                                {% else %}
+                                                    <span class="badge bg-secondary">{{ 'common.inactive'|trans }}</span>
+                                                {% endif %}
+                                                <form method="post" action="{{ path('tenant_management_remove_user', {id: tenant.id, userId: user.id}) }}" class="d-inline">
+                                                    <input type="hidden" name="_token" value="{{ csrf_token('remove_user_' ~ tenant.id ~ '_' ~ user.id) }}">
+                                                    <button type="submit"
+                                                            class="btn btn-sm btn-outline-danger"
+                                                            onclick="return confirm('{{ 'tenant.users.confirm_remove'|trans({'%email%': user.email}) }}');">
+                                                        <i class="bi bi-person-dash"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle"></i> {{ 'common.close'|trans }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     {# Governance Rule Modal #}
     {% if tenant.parent %}

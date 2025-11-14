@@ -1,0 +1,27 @@
+{#
+    Macro for displaying inheritance status badge
+
+    Usage:
+        {% import '_macros/inheritance_badge.html.twig' as inheritance %}
+        {{ inheritance.badge(item, currentTenant) }}
+
+    Parameters:
+        - item: The entity to check (must have getTenant() method)
+        - currentTenant: The current user's tenant
+#}
+
+{% macro badge(item, currentTenant) %}
+    {% if item.tenant is defined and currentTenant is not null and item.tenant.id != currentTenant.id %}
+        <span class="badge bg-info" title="{{ 'corporate.inheritance.inherited_from'|trans }}: {{ item.tenant.name }}">
+            <i class="bi bi-building"></i> {{ 'corporate.inherited'|trans }}
+        </span>
+    {% endif %}
+{% endmacro %}
+
+{% macro small_badge(item, currentTenant) %}
+    {% if item.tenant is defined and currentTenant is not null and item.tenant.id != currentTenant.id %}
+        <span class="badge bg-info badge-sm" title="{{ 'corporate.inheritance.inherited_from'|trans }}: {{ item.tenant.name }}">
+            <i class="bi bi-building"></i>
+        </span>
+    {% endif %}
+{% endmacro %}
