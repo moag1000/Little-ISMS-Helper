@@ -16,6 +16,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/admin')]
+#[IsGranted('ROLE_ADMIN')]
 class AdminDashboardController extends AbstractController
 {
     // Constants for configuration
@@ -43,7 +44,6 @@ class AdminDashboardController extends AbstractController
     }
 
     #[Route('', name: 'admin_dashboard', methods: ['GET'])]
-    #[IsGranted('ADMIN_VIEW')]
     public function index(): Response
     {
         // System Health Stats
