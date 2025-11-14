@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_macros/inheritance_badge.html.twig' as inheritance %}
 
 {% block title %}{{ 'supplier.title'|trans }}{% endblock %}
 
@@ -82,7 +83,10 @@
                 <tbody>
                     {% for supplier in suppliers %}
                     <tr>
-                        <td><a href="{{ path('app_supplier_show', {id: supplier.id}) }}">{{ supplier.name }}</a></td>
+                        <td>
+                            <a href="{{ path('app_supplier_show', {id: supplier.id}) }}">{{ supplier.name }}</a>
+                            {{ inheritance.small_badge(supplier, currentTenant) }}
+                        </td>
                         <td>{{ supplier.serviceProvided|slice(0, 50) }}...</td>
                         <td><span class="badge badge-{{ supplier.criticality }}">{{ supplier.criticality|upper }}</span></td>
                         <td><span class="badge badge-{{ supplier.status }}">{{ supplier.status }}</span></td>
