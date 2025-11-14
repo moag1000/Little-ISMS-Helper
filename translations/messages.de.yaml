@@ -2173,6 +2173,19 @@ user:
   name: Name
   email: E-Mail
   department: Abteilung
+  new: 'Neuer Benutzer'
+  edit: 'Benutzer bearbeiten'
+  create: 'Benutzer erstellen'
+  save_changes: 'Änderungen speichern'
+  edit_suffix: 'bearbeiten'
+
+  section:
+    basic_info: 'Grundinformationen'
+    tenant: 'Mandantenzuordnung'
+    authentication: 'Authentifizierung'
+    roles: 'Rollen & Berechtigungen'
+    status: 'Status'
+
   field:
     first_name: Vorname
     last_name: Nachname
@@ -2184,11 +2197,37 @@ user:
     avatar_help: Profilbild (max. 2MB, JPG/PNG/GIF/WebP)
     password: Passwort
     system_roles: Systemrollen
-    custom_roles: Benutzerdefinierte Rollen
+    roles: 'Systemrollen'
+    custom_roles: 'Benutzerdefinierte Rollen'
     tenant: Mandant
     tenant_help: Ordnen Sie den Benutzer einem Mandanten zu
     active: Aktiv
+    is_active: 'Aktiv'
+    is_verified: 'Verifiziert'
     email_verified: E-Mail verifiziert
+    auth_provider: 'Auth Provider'
+    created_at: 'Erstellt am'
+    updated_at: 'Zuletzt geändert'
+    last_login: 'Letzte Anmeldung'
+
+  help:
+    first_name: 'Vorname des Benutzers'
+    last_name: 'Nachname des Benutzers'
+    email: 'E-Mail-Adresse für Login und Kommunikation'
+    department: 'Organisationseinheit des Benutzers'
+    job_title: 'Funktion oder Position des Benutzers'
+    phone_number: 'Kontakttelefonnummer'
+    avatar: 'Profilbild hochladen (optional)'
+    tenant: 'Mandant, dem dieser Benutzer zugeordnet ist'
+    password: 'Sicheres Passwort für den Benutzer'
+    password_edit: 'Leer lassen, um das Passwort nicht zu ändern'
+
+  auth_provider:
+    local: 'Lokal'
+
+  message:
+    no_custom_roles: 'Keine benutzerdefinierten Rollen verfügbar.'
+
   placeholder:
     tenant: Keinem Mandanten zugeordnet
   error:
