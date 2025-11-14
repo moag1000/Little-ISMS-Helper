@@ -113,4 +113,32 @@ class IncidentRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * Find incidents by tenant including all subsidiaries (for corporate parent view)
+     * This allows viewing aggregated incidents from all subsidiary companies
+     *
+     * @param \App\Entity\Tenant $tenant The tenant to find incidents for
+     * @return Incident[] Array of Incident entities (own + from all subsidiaries)
+     */
+    public function findByTenantIncludingSubsidiaries($tenant): array
+    {
+        // Get all subsidiaries recursively
+        $subsidiaries = $tenant->getAllSubsidiaries();
+
+        $qb = $this->createQueryBuilder('i')
+            ->where('i.tenant = :tenant')
+            ->setParameter('tenant', $tenant);
+
+        // Include incidents from all subsidiaries in the hierarchy
+        if (!empty($subsidiaries)) {
+            $qb->orWhere('i.tenant IN (:subsidiaries)')
+               ->setParameter('subsidiaries', $subsidiaries);
+        }
+
+        return $qb
+            ->orderBy('i.detectedAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 }

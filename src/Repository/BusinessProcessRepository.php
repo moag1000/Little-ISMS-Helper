@@ -180,4 +180,32 @@ class BusinessProcessRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * Find business processes by tenant including all subsidiaries (for corporate parent view)
+     * This allows viewing aggregated processes from all subsidiary companies
+     *
+     * @param \App\Entity\Tenant $tenant The tenant to find processes for
+     * @return BusinessProcess[] Array of BusinessProcess entities (own + from all subsidiaries)
+     */
+    public function findByTenantIncludingSubsidiaries($tenant): array
+    {
+        // Get all subsidiaries recursively
+        $subsidiaries = $tenant->getAllSubsidiaries();
+
+        $qb = $this->createQueryBuilder('bp')
+            ->where('bp.tenant = :tenant')
+            ->setParameter('tenant', $tenant);
+
+        // Include processes from all subsidiaries in the hierarchy
+        if (!empty($subsidiaries)) {
+            $qb->orWhere('bp.tenant IN (:subsidiaries)')
+               ->setParameter('subsidiaries', $subsidiaries);
+        }
+
+        return $qb
+            ->orderBy('bp.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }

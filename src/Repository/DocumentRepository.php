@@ -122,4 +122,33 @@ class DocumentRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * Find documents by tenant including all subsidiaries (for corporate parent view)
+     * This allows viewing aggregated documents from all subsidiary companies
+     *
+     * @param \App\Entity\Tenant $tenant The tenant to find documents for
+     * @return Document[] Array of Document entities (own + from all subsidiaries)
+     */
+    public function findByTenantIncludingSubsidiaries($tenant): array
+    {
+        // Get all subsidiaries recursively
+        $subsidiaries = $tenant->getAllSubsidiaries();
+
+        $qb = $this->createQueryBuilder('d')
+            ->where('d.tenant = :tenant')
+            ->andWhere('d.isArchived = false')
+            ->setParameter('tenant', $tenant);
+
+        // Include documents from all subsidiaries in the hierarchy
+        if (!empty($subsidiaries)) {
+            $qb->orWhere('d.tenant IN (:subsidiaries) AND d.isArchived = false')
+               ->setParameter('subsidiaries', $subsidiaries);
+        }
+
+        return $qb
+            ->orderBy('d.uploadedAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 }

@@ -203,4 +203,32 @@ class PatchRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * Find patches by tenant including all subsidiaries (for corporate parent view)
+     * This allows viewing aggregated patches from all subsidiary companies
+     *
+     * @param \App\Entity\Tenant $tenant The tenant to find patches for
+     * @return Patch[] Array of Patch entities (own + from all subsidiaries)
+     */
+    public function findByTenantIncludingSubsidiaries($tenant): array
+    {
+        // Get all subsidiaries recursively
+        $subsidiaries = $tenant->getAllSubsidiaries();
+
+        $qb = $this->createQueryBuilder('p')
+            ->where('p.tenant = :tenant')
+            ->setParameter('tenant', $tenant);
+
+        // Include patches from all subsidiaries in the hierarchy
+        if (!empty($subsidiaries)) {
+            $qb->orWhere('p.tenant IN (:subsidiaries)')
+               ->setParameter('subsidiaries', $subsidiaries);
+        }
+
+        return $qb
+            ->orderBy('p.releaseDate', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 }

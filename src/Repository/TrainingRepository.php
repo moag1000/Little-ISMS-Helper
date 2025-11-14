@@ -86,4 +86,32 @@ class TrainingRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * Find trainings by tenant including all subsidiaries (for corporate parent view)
+     * This allows viewing aggregated trainings from all subsidiary companies
+     *
+     * @param \App\Entity\Tenant $tenant The tenant to find trainings for
+     * @return Training[] Array of Training entities (own + from all subsidiaries)
+     */
+    public function findByTenantIncludingSubsidiaries($tenant): array
+    {
+        // Get all subsidiaries recursively
+        $subsidiaries = $tenant->getAllSubsidiaries();
+
+        $qb = $this->createQueryBuilder('t')
+            ->where('t.tenant = :tenant')
+            ->setParameter('tenant', $tenant);
+
+        // Include trainings from all subsidiaries in the hierarchy
+        if (!empty($subsidiaries)) {
+            $qb->orWhere('t.tenant IN (:subsidiaries)')
+               ->setParameter('subsidiaries', $subsidiaries);
+        }
+
+        return $qb
+            ->orderBy('t.scheduledDate', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 }
