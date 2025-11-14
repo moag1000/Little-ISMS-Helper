@@ -53,6 +53,7 @@ services:
         condition: service_started
     ports:
       - "${APP_PORT:-8000}:80"
+      - "${APP_PORT_HTTPS:-8443}:443"
     volumes:
       # ✅ Bind mount für Code - persistiert .env.local, config/setup_complete.lock nach Reboot!
       - ./:/var/www/html:cached
