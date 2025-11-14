@@ -39,17 +39,20 @@
                             <h6 class="border-bottom pb-2 mb-3">{{ 'tenant.section.basic_info'|trans }}</h6>
 
                             <div class="mb-3">
-                                {{ form_label(form.code) }}
-                                {{ form_widget(form.code, {'attr': {'class': 'form-control'}}) }}
-                                {{ form_help(form.code) }}
-                                {{ form_errors(form.code) }}
-                            </div>
-
-                            <div class="mb-3">
                                 {{ form_label(form.name) }}
                                 {{ form_widget(form.name, {'attr': {'class': 'form-control'}}) }}
                                 {{ form_help(form.name) }}
                                 {{ form_errors(form.name) }}
+                            </div>
+
+                            <div class="mb-3">
+                                {{ form_label(form.code) }}
+                                {{ form_widget(form.code, {'attr': {'class': 'form-control bg-light'}}) }}
+                                <div class="form-text">
+                                    <i class="bi bi-info-circle"></i> {{ 'tenant.field.code_auto_generated'|trans }}
+                                </div>
+                                {{ form_help(form.code) }}
+                                {{ form_errors(form.code) }}
                             </div>
 
                             <div class="mb-3">
@@ -177,4 +180,46 @@
             {% endif %}
         </div>
     </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const nameField = document.getElementById('tenant_name');
+            const codeField = document.getElementById('tenant_code');
+
+            // Only auto-generate for new tenants (when code is empty)
+            const isNewTenant = !codeField.value || codeField.value.trim() === '';
+
+            if (nameField && codeField && isNewTenant) {
+                nameField.addEventListener('input', function() {
+                    const name = this.value;
+
+                    // Convert umlauts and special characters
+                    let code = name
+                        .replace(/ä/g, 'ae')
+                        .replace(/ö/g, 'oe')
+                        .replace(/ü/g, 'ue')
+                        .replace(/Ä/g, 'Ae')
+                        .replace(/Ö/g, 'Oe')
+                        .replace(/Ü/g, 'Ue')
+                        .replace(/ß/g, 'ss')
+                        .replace(/\s+/g, '_')  // Spaces to underscores
+                        .toLowerCase()
+                        .replace(/[^a-z0-9_-]/g, '');  // Remove invalid characters
+
+                    codeField.value = code;
+                });
+
+                // Make readonly field still submittable
+                const form = codeField.closest('form');
+                if (form) {
+                    form.addEventListener('submit', function() {
+                        codeField.removeAttribute('readonly');
+                    });
+                }
+            }
+        });
+    </script>
 {% endblock %}
