@@ -267,7 +267,7 @@
                             <td>
                                 <div class="d-flex align-items-center">
                                     <i class="bi bi-person-circle me-1"></i>
-                                    {{ document.uploadedBy.fullName }}
+                                    {{ document.uploadedBy ? document.uploadedBy.fullName : '-' }}
                                 </div>
                             </td>
                             <td>
