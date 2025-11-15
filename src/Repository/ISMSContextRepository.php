@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\ISMSContext;
+use App\Entity\Tenant;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -38,5 +39,20 @@ class ISMSContextRepository extends ServiceEntityRepository
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();
+    }
+
+    /**
+     * Get ISMS context for a specific tenant.
+     *
+     * @param Tenant|null $tenant The tenant to get context for
+     * @return ISMSContext|null Context for tenant or null if none exists
+     */
+    public function getContextForTenant(?Tenant $tenant): ?ISMSContext
+    {
+        if (!$tenant) {
+            return $this->getCurrentContext();
+        }
+
+        return $this->findOneBy(['tenant' => $tenant]);
     }
 }
