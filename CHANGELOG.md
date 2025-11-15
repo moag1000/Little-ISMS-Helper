@@ -15,6 +15,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.6.2] - 2025-11-15 - ARM64 Support & CI/CD Fixes
+
+### Added
+- **ARM64/ARM Support** - Multi-architecture Docker builds (linux/amd64 + linux/arm64)
+- **QEMU Integration** for cross-platform compilation in CI/CD
+- Support for Raspberry Pi, Apple Silicon, and other ARM-based systems
+
+### Fixed
+- **Trivy SARIF Upload** - Added security-events permission for vulnerability scan uploads
+- **Docker Build Timeout** - Increased to 60 minutes for multi-architecture builds
+- **Docker Hub Logo Upload** - Automated logo upload on release tags
+
+### Changed
+- Build timeout increased from 30 to 60 minutes for multi-arch support
+- CI/CD pipeline now properly uploads security scan results to GitHub Security tab
+
+### Technical Details
+- Uses docker/setup-qemu-action@v3 for ARM64 emulation
+- Uses docker/build-push-action@v5 with platforms: linux/amd64,linux/arm64
+- Permissions block added: security-events: write, contents: read, actions: read
+
+---
+
 ## [1.6.0] - 2025-11-15 - Enterprise Features ✅
 
 ### Added - Multi-Tenancy & Enterprise Management
