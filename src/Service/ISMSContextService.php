@@ -19,13 +19,28 @@ class ISMSContextService
     /**
      * Get the current ISMS context or create a new one if none exists
      * Automatically syncs organization name from tenant
+     * Respects current user's tenant in multi-tenant environment
      */
     public function getCurrentContext(): ISMSContext
     {
-        $context = $this->contextRepository->getCurrentContext();
+        // Get current user's tenant if available
+        $currentTenant = $this->getCurrentUserTenant();
+
+        // Try to get context for current tenant
+        $context = null;
+        if ($currentTenant) {
+            $context = $this->contextRepository->getContextForTenant($currentTenant);
+        } else {
+            $context = $this->contextRepository->getCurrentContext();
+        }
 
         if (!$context) {
             $context = new ISMSContext();
+            // Assign to current user's tenant if available
+            if ($currentTenant) {
+                $context->setTenant($currentTenant);
+                $context->setOrganizationName($currentTenant->getName());
+            }
             $this->entityManager->persist($context);
         }
 
@@ -33,6 +48,23 @@ class ISMSContextService
         $this->syncOrganizationNameFromTenant($context);
 
         return $context;
+    }
+
+    /**
+     * Get the current user's tenant
+     */
+    private function getCurrentUserTenant(): ?object
+    {
+        if (!$this->security) {
+            return null;
+        }
+
+        $user = $this->security->getUser();
+        if (!$user || !method_exists($user, 'getTenant')) {
+            return null;
+        }
+
+        return $user->getTenant();
     }
 
     /**

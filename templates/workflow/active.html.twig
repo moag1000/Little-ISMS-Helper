@@ -81,12 +81,12 @@
                     {% endif %}
                 </td>
                 <td>
-                    <span class="badge badge-info">{{ instance.definition.name }}</span>
+                    <span class="badge badge-info">{{ instance.definition ? instance.definition.name : '-' }}</span>
                 </td>
                 <td>
-                    {{ instance.currentStep.name }}
+                    {{ instance.currentStep ? instance.currentStep.name : '-' }}
                     <br><small class="text-muted-color">
-                        {{ 'workflow.step'|trans }} {{ instance.currentStepNumber }} / {{ instance.definition.steps|length }}
+                        {{ 'workflow.step'|trans }} {{ instance.currentStepNumber }} / {{ instance.definition ? instance.definition.steps|length : 0 }}
                     </small>
                 </td>
                 <td>
