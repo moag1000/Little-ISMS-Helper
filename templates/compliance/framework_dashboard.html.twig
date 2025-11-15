@@ -113,6 +113,49 @@
         </div>
     </div>
 
+    {# Module Dependencies - NEW! #}
+    {% if framework.requiredModules|length > 0 %}
+    <div class="card" style="margin-bottom: var(--spacing-lg);">
+        <div class="card-header">
+            <h2>🔧 {{ 'compliance.required_modules'|trans }}</h2>
+        </div>
+        <div class="card-body">
+            <p class="text-muted" style="margin-bottom: var(--spacing-md);">
+                This framework requires the following ISMS modules to be activated for full compliance.
+            </p>
+            <div class="modules-grid">
+                {% for moduleKey in framework.requiredModules %}
+                    {% set module = all_modules[moduleKey] ?? null %}
+                    {% set isActive = moduleKey in active_modules %}
+
+                    {% if module %}
+                        <div class="module-card {% if isActive %}active{% else %}inactive{% endif %}">
+                            <div class="module-status">
+                                {% if isActive %}
+                                    <span class="status-icon active">✅</span>
+                                    <span class="status-text active">Active</span>
+                                {% else %}
+                                    <span class="status-icon inactive">⚠️</span>
+                                    <span class="status-text inactive">Not Active</span>
+                                {% endif %}
+                            </div>
+                            <h3 class="module-title">{{ module.name }}</h3>
+                            <p class="module-description">{{ module.description }}</p>
+                            {% if not isActive %}
+                                <a href="{{ path('admin_modules_index') }}" class="btn btn-primary btn-sm"
+                                   data-bs-toggle="tooltip" data-bs-placement="top"
+                                   title="Activate this module in the module management">
+                                    Activate Module →
+                                </a>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
     {# Next Action Recommendation - NEW! #}
     {% set next_action = null %}
     {% if dashboard.gaps.total > 0 and dashboard.gaps.critical > 0 %}
@@ -828,6 +871,72 @@
     .next-action-icon {
         font-size: 3rem;
     }
+}
+
+/* Module Cards */
+.modules-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: var(--spacing-lg);
+}
+
+.module-card {
+    padding: var(--spacing-lg);
+    border-radius: var(--border-radius);
+    transition: all 0.2s;
+    border: 2px solid;
+}
+
+.module-card.active {
+    background: rgba(40, 167, 69, 0.05);
+    border-color: rgba(40, 167, 69, 0.3);
+}
+
+.module-card.inactive {
+    background: rgba(255, 193, 7, 0.05);
+    border-color: rgba(255, 193, 7, 0.3);
+}
+
+.module-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.module-status {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    margin-bottom: var(--spacing-md);
+}
+
+.status-icon {
+    font-size: 1.5rem;
+}
+
+.status-text {
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.status-text.active {
+    color: #28a745;
+}
+
+.status-text.inactive {
+    color: #856404;
+}
+
+.module-title {
+    margin: 0 0 var(--spacing-sm) 0;
+    font-size: 1.1rem;
+    color: var(--color-text);
+}
+
+.module-description {
+    margin: 0 0 var(--spacing-md) 0;
+    color: var(--color-text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.5;
 }
 </style>
 
