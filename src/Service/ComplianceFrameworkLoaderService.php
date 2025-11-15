@@ -64,6 +64,7 @@ class ComplianceFrameworkLoaderService
                 'version' => '6.0.2',
                 'loaded' => in_array('TISAX', $loadedCodes),
                 'icon' => '🚗',
+                'required_modules' => ['compliance', 'controls', 'risks', 'assets', 'incidents'],
             ],
             [
                 'code' => 'DORA',
@@ -75,6 +76,7 @@ class ComplianceFrameworkLoaderService
                 'version' => '2022/2554',
                 'loaded' => in_array('DORA', $loadedCodes),
                 'icon' => '🏦',
+                'required_modules' => ['compliance', 'controls', 'risks', 'bcm', 'incidents', 'audit_logging'],
             ],
             [
                 'code' => 'NIS2',
@@ -86,6 +88,7 @@ class ComplianceFrameworkLoaderService
                 'version' => '2022/2555',
                 'loaded' => in_array('NIS2', $loadedCodes),
                 'icon' => '🛡️',
+                'required_modules' => ['compliance', 'controls', 'risks', 'bcm', 'incidents', 'audit_logging'],
             ],
             [
                 'code' => 'BSI_GRUNDSCHUTZ',
@@ -97,6 +100,7 @@ class ComplianceFrameworkLoaderService
                 'version' => 'Edition 2023',
                 'loaded' => in_array('BSI_GRUNDSCHUTZ', $loadedCodes),
                 'icon' => '🇩🇪',
+                'required_modules' => ['compliance', 'controls', 'risks', 'assets'],
             ],
             [
                 'code' => 'GDPR',
@@ -108,6 +112,7 @@ class ComplianceFrameworkLoaderService
                 'version' => '2016/679',
                 'loaded' => in_array('GDPR', $loadedCodes),
                 'icon' => '🔒',
+                'required_modules' => ['compliance', 'controls', 'audit_logging', 'training', 'incidents'],
             ],
             [
                 'code' => 'ISO27001',
@@ -119,6 +124,7 @@ class ComplianceFrameworkLoaderService
                 'version' => '2022',
                 'loaded' => in_array('ISO27001', $loadedCodes),
                 'icon' => '📋',
+                'required_modules' => ['compliance', 'controls'],
             ],
             [
                 'code' => 'ISO27701',
@@ -130,6 +136,7 @@ class ComplianceFrameworkLoaderService
                 'version' => '2019',
                 'loaded' => in_array('ISO27701', $loadedCodes),
                 'icon' => '🔐',
+                'required_modules' => ['compliance', 'controls', 'audit_logging'],
             ],
             [
                 'code' => 'ISO27701_2025',
@@ -141,6 +148,7 @@ class ComplianceFrameworkLoaderService
                 'version' => '2025',
                 'loaded' => in_array('ISO27701_2025', $loadedCodes),
                 'icon' => '🤖',
+                'required_modules' => ['compliance', 'controls', 'audit_logging'],
             ],
             [
                 'code' => 'BSI-C5',
@@ -152,6 +160,7 @@ class ComplianceFrameworkLoaderService
                 'version' => '2020',
                 'loaded' => in_array('BSI-C5', $loadedCodes),
                 'icon' => '☁️',
+                'required_modules' => ['compliance', 'controls', 'risks', 'audit_logging'],
             ],
             [
                 'code' => 'BSI-C5-2025',
@@ -163,6 +172,7 @@ class ComplianceFrameworkLoaderService
                 'version' => '2025 Community Draft',
                 'loaded' => in_array('BSI-C5-2025', $loadedCodes),
                 'icon' => '🔮',
+                'required_modules' => ['compliance', 'controls', 'risks', 'audit_logging'],
             ],
             [
                 'code' => 'KRITIS',
@@ -174,6 +184,7 @@ class ComplianceFrameworkLoaderService
                 'version' => '§8a BSIG (IT-SiG 2.0)',
                 'loaded' => in_array('KRITIS', $loadedCodes),
                 'icon' => '⚡',
+                'required_modules' => ['compliance', 'controls', 'risks', 'bcm', 'incidents', 'audit_logging'],
             ],
             [
                 'code' => 'KRITIS-HEALTH',
@@ -185,6 +196,7 @@ class ComplianceFrameworkLoaderService
                 'version' => 'KHPatSiG/KHZG 2024',
                 'loaded' => in_array('KRITIS-HEALTH', $loadedCodes),
                 'icon' => '🏥',
+                'required_modules' => ['compliance', 'controls', 'risks', 'bcm', 'incidents', 'audit_logging', 'training'],
             ],
             [
                 'code' => 'DIGAV',
@@ -196,6 +208,7 @@ class ComplianceFrameworkLoaderService
                 'version' => 'DiGAV 2024',
                 'loaded' => in_array('DIGAV', $loadedCodes),
                 'icon' => '📱',
+                'required_modules' => ['compliance', 'controls', 'audit_logging'],
             ],
             [
                 'code' => 'TKG-2024',
@@ -207,6 +220,7 @@ class ComplianceFrameworkLoaderService
                 'version' => 'TKG 2024',
                 'loaded' => in_array('TKG-2024', $loadedCodes),
                 'icon' => '📡',
+                'required_modules' => ['compliance', 'controls', 'risks', 'incidents', 'audit_logging'],
             ],
             [
                 'code' => 'GXP',
@@ -218,6 +232,7 @@ class ComplianceFrameworkLoaderService
                 'version' => 'EU GMP Annex 11 (2024) / FDA 21 CFR Part 11',
                 'loaded' => in_array('GXP', $loadedCodes),
                 'icon' => '💊',
+                'required_modules' => ['compliance', 'controls', 'audit_logging', 'training'],
             ],
         ];
     }
@@ -274,10 +289,15 @@ class ComplianceFrameworkLoaderService
             $returnCode = $command->run($input, $output);
 
             if ($returnCode === 0) {
+                // Get framework ID for "Start Working" button
+                $framework = $this->frameworkRepository->findOneBy(['code' => $code]);
+                $frameworkId = $framework ? $framework->getId() : null;
+
                 return [
                     'success' => true,
                     'message' => sprintf('Successfully loaded %s framework', $code),
                     'output' => $output->fetch(),
+                    'framework_id' => $frameworkId,
                 ];
             } else {
                 return [
