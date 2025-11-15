@@ -10,6 +10,7 @@ use App\Service\ComplianceAssessmentService;
 use App\Service\ComplianceMappingService;
 use App\Service\ComplianceFrameworkLoaderService;
 use App\Service\ExcelExportService;
+use App\Service\ModuleConfigurationService;
 use App\Service\PdfExportService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -32,6 +33,7 @@ class ComplianceController extends AbstractController
         private ComplianceFrameworkLoaderService $frameworkLoaderService,
         private CsrfTokenManagerInterface $csrfTokenManager,
         private ExcelExportService $excelExportService,
+        private ModuleConfigurationService $moduleConfigurationService,
         private PdfExportService $pdfExportService
     ) {}
 
@@ -73,10 +75,15 @@ class ComplianceController extends AbstractController
         $dashboard = $this->assessmentService->getComplianceDashboard($framework);
         $requirements = $this->requirementRepository->findByFramework($framework);
 
+        $allModules = $this->moduleConfigurationService->getAllModules();
+        $activeModules = $this->moduleConfigurationService->getActiveModules();
+
         return $this->render('compliance/framework_dashboard.html.twig', [
             'framework' => $framework,
             'dashboard' => $dashboard,
             'requirements' => $requirements,
+            'all_modules' => $allModules,
+            'active_modules' => $activeModules,
         ]);
     }
 
