@@ -3,6 +3,8 @@ name: CI/CD Pipeline
 on:
   push:
     branches: [ main, develop, 'claude/**' ]
+    tags:
+      - 'v*.*.*'  # Trigger on version tags for Docker releases
   pull_request:
     branches: [ main, develop ]
 
@@ -151,7 +153,8 @@ jobs:
   docker:
     name: Docker Build & Push
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
+    # Only build Docker images on release tags (v1.6.0, v2.0.0, etc.)
+    if: startsWith(github.ref, 'refs/tags/v')
 
     steps:
       - name: Checkout code
