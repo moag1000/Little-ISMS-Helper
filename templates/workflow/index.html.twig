@@ -119,9 +119,9 @@
             <tr>
                 <td><strong>{{ instance.name }}</strong></td>
                 <td>
-                    <span class="badge badge-info">{{ instance.definition.name }}</span>
+                    <span class="badge badge-info">{{ instance.definition ? instance.definition.name : '-' }}</span>
                 </td>
-                <td>{{ instance.currentStep.name }}</td>
+                <td>{{ instance.currentStep ? instance.currentStep.name : '-' }}</td>
                 <td>
                     {% set statusColors = {
                         'pending': 'warning',
@@ -133,7 +133,7 @@
                         {{ ('workflow.status.' ~ instance.status)|trans }}
                     </span>
                 </td>
-                <td>{{ instance.assignee.fullName|default('-') }}</td>
+                <td>{{ instance.assignee ? instance.assignee.fullName : '-' }}</td>
                 <td>
                     {% if instance.dueDate %}
                         {{ instance.dueDate|date('d.m.Y') }}
