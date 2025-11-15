@@ -34,3 +34,7 @@ PR_DESCRIPTION.md
 ###< docker ###
 /public/uploads/*
 !public/uploads/*/.gitkeep
+
+###> claude-code ###
+.claude.md
+###< claude-code ###
