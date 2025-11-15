@@ -1,0 +1,118 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit {{ requirement.requirementId }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="bi bi-pencil"></i> Edit {{ requirement.requirementId }}</h1>
+        <div>
+            <a href="{{ path('app_compliance_requirement_show', {id: requirement.id}) }}" class="btn btn-outline-secondary">
+                <i class="bi bi-eye"></i> View
+            </a>
+            <a href="{{ path('app_compliance_requirement_index') }}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Back to List
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    {{ form_start(form) }}
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            {{ form_row(form.framework) }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form_row(form.requirementId) }}
+                        </div>
+                    </div>
+
+                    {{ form_row(form.title) }}
+                    {{ form_row(form.description) }}
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            {{ form_row(form.category) }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form_row(form.priority) }}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            {{ form_row(form.requirementType) }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form_row(form.parentRequirement) }}
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <h5>Applicability</h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            {{ form_row(form.applicable) }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form_row(form.fulfillmentPercentage) }}
+                        </div>
+                    </div>
+
+                    {{ form_row(form.applicabilityJustification) }}
+
+                    <div class="d-flex justify-content-between mt-4">
+                        <a href="{{ path('app_compliance_requirement_show', {id: requirement.id}) }}" class="btn btn-secondary">
+                            <i class="bi bi-x-circle"></i> Cancel
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-save"></i> Save Changes
+                        </button>
+                    </div>
+
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0">Current Status</h6>
+                </div>
+                <div class="card-body">
+                    <div class="progress mb-2" style="height: 25px;">
+                        <div class="progress-bar bg-{{ requirement.fulfillmentStatusBadge }}"
+                             role="progressbar"
+                             style="width: {{ requirement.fulfillmentPercentage }}%">
+                            {{ requirement.fulfillmentPercentage }}%
+                        </div>
+                    </div>
+
+                    <ul class="list-unstyled small">
+                        <li><i class="bi bi-link-45deg"></i> {{ requirement.mappedControls|length }} mapped controls</li>
+                        <li><i class="bi bi-diagram-3"></i> {{ requirement.detailedRequirements|length }} sub-requirements</li>
+                        <li><i class="bi bi-calendar"></i> Created {{ requirement.createdAt|date('Y-m-d') }}</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card mt-3 bg-light">
+                <div class="card-header">
+                    <h6 class="mb-0"><i class="bi bi-info-circle"></i> Tips</h6>
+                </div>
+                <div class="card-body">
+                    <p class="small mb-0">
+                        <i class="bi bi-lightbulb"></i> Use the "Quick Update" form on the view page for fast fulfillment percentage updates.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
