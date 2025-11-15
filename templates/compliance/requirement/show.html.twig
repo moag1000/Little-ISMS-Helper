@@ -4,13 +4,23 @@
 
 {% block body %}
 <div class="container-fluid mt-4">
+    {# Breadcrumb Navigation #}
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('app_compliance_index') }}">Compliance</a></li>
+            <li class="breadcrumb-item"><a href="{{ path('app_compliance_framework', {id: requirement.framework.id}) }}">{{ requirement.framework.code }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ path('app_compliance_requirement_index') }}?framework={{ requirement.framework.id }}">Requirements</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ requirement.requirementId }}</li>
+        </ol>
+    </nav>
+
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1><i class="bi bi-list-check"></i> {{ requirement.requirementId }}</h1>
         <div>
             <a href="{{ path('app_compliance_requirement_edit', {id: requirement.id}) }}" class="btn btn-secondary">
                 <i class="bi bi-pencil"></i> Edit
             </a>
-            <a href="{{ path('app_compliance_requirement_index') }}" class="btn btn-outline-secondary">
+            <a href="{{ path('app_compliance_requirement_index') }}?framework={{ requirement.framework.id }}" class="btn btn-outline-secondary">
                 <i class="bi bi-arrow-left"></i> Back to List
             </a>
         </div>
@@ -163,28 +173,89 @@
                         <p class="text-muted small">{{ requirement.fulfillmentNotes }}</p>
                     {% endif %}
 
-                    {# Quick Update Form #}
-                    <form method="post" action="{{ path('app_compliance_requirement_quick_update', {id: requirement.id}) }}" class="mt-3">
+                    {# Quick Update Form - Enhanced with Visual Slider #}
+                    <form method="post" action="{{ path('app_compliance_requirement_quick_update', {id: requirement.id}) }}" class="mt-3" id="quickUpdateForm">
                         <input type="hidden" name="_token" value="{{ csrf_token('quick-update' ~ requirement.id) }}">
 
                         <div class="mb-3">
-                            <label for="fulfillmentPercentage" class="form-label">Update Fulfillment %</label>
-                            <input type="number" class="form-control" id="fulfillmentPercentage" name="fulfillmentPercentage"
-                                   value="{{ requirement.fulfillmentPercentage }}" min="0" max="100">
+                            <label for="fulfillmentPercentage" class="form-label d-flex justify-content-between">
+                                <span>Fulfillment</span>
+                                <span id="sliderValue" class="badge bg-primary">{{ requirement.fulfillmentPercentage }}%</span>
+                            </label>
+
+                            {# Visual Slider #}
+                            <input type="range" class="form-range" id="fulfillmentSlider"
+                                   min="0" max="100" step="5" value="{{ requirement.fulfillmentPercentage }}"
+                                   style="cursor: pointer;">
+
+                            {# Hidden input for form submission #}
+                            <input type="hidden" id="fulfillmentPercentage" name="fulfillmentPercentage" value="{{ requirement.fulfillmentPercentage }}">
+
+                            {# Visual Progress Bar #}
+                            <div class="progress mt-2" style="height: 8px;">
+                                <div id="progressBar" class="progress-bar" role="progressbar"
+                                     style="width: {{ requirement.fulfillmentPercentage }}%; background-color: {{ requirement.fulfillmentPercentage >= 75 ? '#28a745' : (requirement.fulfillmentPercentage >= 50 ? '#ffc107' : '#dc3545') }};"
+                                     aria-valuenow="{{ requirement.fulfillmentPercentage }}" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+
+                            {# Quick Preset Buttons #}
+                            <div class="d-flex gap-1 mt-2">
+                                <button type="button" class="btn btn-sm btn-outline-secondary flex-fill" onclick="setFulfillment(0)">0%</button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary flex-fill" onclick="setFulfillment(25)">25%</button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary flex-fill" onclick="setFulfillment(50)">50%</button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary flex-fill" onclick="setFulfillment(75)">75%</button>
+                                <button type="button" class="btn btn-sm btn-outline-success flex-fill" onclick="setFulfillment(100)">100%</button>
+                            </div>
                         </div>
 
                         <div class="form-check mb-3">
                             <input class="form-check-input" type="checkbox" id="applicable" name="applicable" value="1"
                                    {% if requirement.applicable %}checked{% endif %}>
                             <label class="form-check-label" for="applicable">
-                                Applicable
+                                <strong>Applicable</strong>
+                                <small class="d-block text-muted">This requirement applies to our organization</small>
                             </label>
                         </div>
 
-                        <button type="submit" class="btn btn-primary btn-sm w-100">
-                            <i class="bi bi-check-circle"></i> Quick Update
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="bi bi-check-circle"></i> Save Quick Update
                         </button>
                     </form>
+
+                    <script>
+                    // Update slider value and progress bar in real-time
+                    const slider = document.getElementById('fulfillmentSlider');
+                    const hiddenInput = document.getElementById('fulfillmentPercentage');
+                    const sliderValue = document.getElementById('sliderValue');
+                    const progressBar = document.getElementById('progressBar');
+
+                    function updateSlider(value) {
+                        slider.value = value;
+                        hiddenInput.value = value;
+                        sliderValue.textContent = value + '%';
+                        sliderValue.className = 'badge bg-' + (value >= 75 ? 'success' : (value >= 50 ? 'warning' : 'danger'));
+                        progressBar.style.width = value + '%';
+                        progressBar.style.backgroundColor = value >= 75 ? '#28a745' : (value >= 50 ? '#ffc107' : '#dc3545');
+                        progressBar.setAttribute('aria-valuenow', value);
+                    }
+
+                    slider.addEventListener('input', function() {
+                        updateSlider(this.value);
+                    });
+
+                    function setFulfillment(value) {
+                        updateSlider(value);
+                    }
+
+                    // Show success message after update
+                    const form = document.getElementById('quickUpdateForm');
+                    form.addEventListener('submit', function(e) {
+                        // Let form submit naturally, but show loading state
+                        const btn = form.querySelector('button[type="submit"]');
+                        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Saving...';
+                        btn.disabled = true;
+                    });
+                    </script>
                 </div>
             </div>
 

@@ -274,10 +274,15 @@ class ComplianceFrameworkLoaderService
             $returnCode = $command->run($input, $output);
 
             if ($returnCode === 0) {
+                // Get framework ID for "Start Working" button
+                $framework = $this->frameworkRepository->findOneBy(['code' => $code]);
+                $frameworkId = $framework ? $framework->getId() : null;
+
                 return [
                     'success' => true,
                     'message' => sprintf('Successfully loaded %s framework', $code),
                     'output' => $output->fetch(),
+                    'framework_id' => $frameworkId,
                 ];
             } else {
                 return [

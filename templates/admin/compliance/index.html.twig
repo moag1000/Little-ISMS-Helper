@@ -286,10 +286,26 @@ function initializeFrameworkButtons() {
                     // Mark card as loaded
                     this.closest('.framework-card').classList.add('loaded');
 
-                    // Reload page after 2 seconds
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 2000);
+                    // Show "Start Working" button instead of reload
+                    if (result.framework_id) {
+                        const actionContainer = this.closest('.framework-actions');
+                        actionContainer.innerHTML = `
+                            <button class="btn btn-success btn-block" disabled>
+                                <span class="icon">✅</span> {{ 'compliance.successfully_loaded'|trans }}
+                            </button>
+                            <a href="/{{ app.request.locale }}/compliance/framework/${result.framework_id}" class="btn btn-primary btn-block" style="margin-top: var(--spacing-sm);">
+                                <span class="icon">🚀</span> Start Working →
+                            </a>
+                            <button class="btn btn-secondary btn-block" onclick="window.location.reload()" style="margin-top: var(--spacing-sm);">
+                                <span class="icon">🔄</span> {{ 'common.reload'|trans }}
+                            </button>
+                        `;
+                    } else {
+                        // Fallback: Reload page after 2 seconds
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 2000);
+                    }
                 } else {
                     this.innerHTML = '<span class="icon">❌</span> {{ 'compliance.load_failed'|trans }}';
                     this.classList.add('btn-danger');
