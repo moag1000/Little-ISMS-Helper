@@ -24,7 +24,8 @@ class InputValidationService
      */
     public function sanitizeForOutput(string $input): string
     {
-        return htmlspecialchars($input, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        // Use ENT_QUOTES without ENT_HTML5 to get numeric entities (&#039; instead of &apos;)
+        return htmlspecialchars($input, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
     }
 
     /**
