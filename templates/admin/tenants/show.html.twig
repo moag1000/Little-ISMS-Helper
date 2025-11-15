@@ -755,7 +755,13 @@
             const container = document.getElementById('ismsContextContainer');
 
             fetch(`{{ path('api_tenant_isms_context', {id: tenant.id}) }}`)
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok && response.status !== 200) {
+                        // Handle HTTP errors (500, 404, etc.)
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+                    return response.json();
+                })
                 .then(data => {
                     if (data.error) {
                         container.innerHTML = `
@@ -881,10 +887,21 @@
                 })
                 .catch(error => {
                     console.error('Error loading ISMS context:', error);
+                    let errorMessage = '{{ 'tenant.isms_context.load_error'|trans }}';
+
+                    // Provide more specific error info for debugging
+                    if (error.message) {
+                        errorMessage += '<br><small class="text-muted">' + escapeHtml(error.message) + '</small>';
+                    }
+
                     container.innerHTML = `
                         <div class="alert alert-danger">
                             <i class="bi bi-exclamation-triangle"></i>
-                            {{ 'tenant.isms_context.load_error'|trans }}
+                            ${errorMessage}
+                            <br><br>
+                            <button class="btn btn-sm btn-outline-danger" onclick="loadISMSContext()">
+                                <i class="bi bi-arrow-clockwise"></i> {{ 'common.retry'|trans|default('Erneut versuchen') }}
+                            </button>
                         </div>
                     `;
                 });
