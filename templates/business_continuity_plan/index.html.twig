@@ -63,7 +63,7 @@
                     {% for plan in bc_plans %}
                     <tr>
                         <td><a href="{{ path('app_bc_plan_show', {id: plan.id}) }}">{{ plan.name }}</a></td>
-                        <td>{{ plan.businessProcess.name }}</td>
+                        <td>{{ plan.businessProcess ? plan.businessProcess.name : '-' }}</td>
                         <td>{{ plan.planOwner }}</td>
                         <td><span class="badge badge-{{ plan.status }}">{{ plan.status }}</span></td>
                         <td>

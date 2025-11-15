@@ -39,12 +39,12 @@
 
     <div class="stats-grid mt-3 grid-responsive-250">
         <div class="stat-item">
-            <strong>{{ instance.definition.name }}</strong>
+            <strong>{{ instance.definition ? instance.definition.name : '-' }}</strong>
             <span>{{ 'workflow.field.definition'|trans }}</span>
         </div>
 
         <div class="stat-item">
-            <strong>{{ instance.currentStep.name }}</strong>
+            <strong>{{ instance.currentStep ? instance.currentStep.name : '-' }}</strong>
             <span>{{ 'workflow.field.current_step'|trans }}</span>
         </div>
 

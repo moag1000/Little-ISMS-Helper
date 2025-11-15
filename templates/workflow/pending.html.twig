@@ -77,9 +77,9 @@
                     {% endif %}
                 </td>
                 <td>
-                    <span class="badge badge-info">{{ instance.definition.name }}</span>
+                    <span class="badge badge-info">{{ instance.definition ? instance.definition.name : '-' }}</span>
                 </td>
-                <td>{{ instance.currentStep.name }}</td>
+                <td>{{ instance.currentStep ? instance.currentStep.name : '-' }}</td>
                 <td>
                     {% if instance.assignee %}
                         {{ instance.assignee.fullName }}
