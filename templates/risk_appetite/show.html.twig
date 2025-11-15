@@ -260,7 +260,7 @@
                         {{ log.action|upper }}
                     </span>
                     <span class="text-muted">
-                        {{ log.performedBy ? log.performedBy.fullName : 'System' }}
+                        {{ log.userName|default('System') }}
                         &bull; {{ log.createdAt|date('Y-m-d H:i:s') }}
                     </span>
                 </div>
