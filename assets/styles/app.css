@@ -505,6 +505,105 @@ body {
     color: white;
 }
 
+/* Sidebar Submenu (Expandable Navigation) */
+.app-sidebar .has-submenu {
+    position: relative;
+}
+
+.app-sidebar .submenu-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.app-sidebar .submenu-toggle .submenu-icon {
+    margin-left: auto;
+    font-size: 0.75rem;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 0.7;
+}
+
+.app-sidebar .submenu-toggle .submenu-icon.rotated {
+    transform: rotate(180deg);
+}
+
+.app-sidebar .submenu {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    background: rgba(0, 0, 0, 0.2);
+    margin: 0 var(--spacing-xs);
+    border-radius: var(--border-radius-sm);
+}
+
+.app-sidebar .submenu.expanded {
+    max-height: 500px;
+}
+
+.app-sidebar .submenu li {
+    margin: 0;
+}
+
+.app-sidebar .submenu a {
+    padding: 0.5rem var(--spacing-md) 0.5rem calc(var(--spacing-md) + 8px);
+    margin: 0.15rem var(--spacing-xs);
+    font-size: 0.8rem;
+}
+
+.app-sidebar .submenu a i {
+    font-size: 0.95rem;
+    min-width: 20px;
+}
+
+.app-sidebar .submenu a span {
+    font-size: 0.8rem;
+}
+
+.app-sidebar .submenu-divider {
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: 0.6rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #67e8f9;
+    letter-spacing: 1px;
+    opacity: 0.8;
+    user-select: none;
+    border-top: 1px solid rgba(6, 182, 212, 0.2);
+    margin-top: var(--spacing-xs);
+}
+
+.app-sidebar .submenu-divider:first-child {
+    border-top: none;
+    margin-top: 0;
+}
+
+.app-sidebar .badge-mini {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.6rem;
+    font-weight: 700;
+    padding: 0.1rem 0.3rem;
+    border-radius: 3px;
+    margin-left: auto;
+    min-width: 14px;
+    height: 14px;
+}
+
+.app-sidebar .badge-mini.badge-danger {
+    background: rgba(239, 68, 68, 0.8);
+    color: white;
+    box-shadow: 0 0 8px rgba(239, 68, 68, 0.5);
+}
+
+.app-sidebar .framework-link {
+    position: relative;
+}
+
+.app-sidebar .framework-link::before {
+    display: none;
+}
+
 /* Main Content Area */
 .app-main {
     flex: 1;
