@@ -35,53 +35,47 @@
                 <div class="card-body">
                     {{ form_start(form) }}
                         {# Basic Information #}
-                        <div class="mb-4">
-                            <h6 class="border-bottom pb-2 mb-3">{{ 'tenant.section.basic_info'|trans }}</h6>
+                        <fieldset class="mb-4">
+                            <legend class="h6 border-bottom pb-2 mb-3">{{ 'tenant.section.basic_info'|trans }}</legend>
 
-                            <div class="mb-3">
-                                {{ form_label(form.name) }}
-                                {{ form_widget(form.name, {'attr': {'class': 'form-control'}}) }}
-                                {{ form_help(form.name) }}
-                                {{ form_errors(form.name) }}
-                            </div>
+                            {% include '_components/_form_field.html.twig' with {
+                                'field': form.name,
+                                'label': 'tenant.field.name'|trans|default('Name'),
+                                'help': 'tenant.help.name'|trans|default('Name des Tenants'),
+                                'required': true
+                            } %}
 
-                            <div class="mb-3">
-                                {{ form_label(form.code) }}
-                                {{ form_widget(form.code, {'attr': {'class': 'form-control bg-light'}}) }}
-                                <div class="form-text">
-                                    <i class="bi bi-info-circle"></i> {{ 'tenant.field.code_auto_generated'|trans }}
-                                </div>
-                                {{ form_help(form.code) }}
-                                {{ form_errors(form.code) }}
-                            </div>
+                            {% include '_components/_form_field.html.twig' with {
+                                'field': form.code,
+                                'label': 'tenant.field.code'|trans|default('Code'),
+                                'help': 'tenant.field.code_auto_generated'|trans|default('Automatisch generiert aus dem Namen')
+                            } %}
 
-                            <div class="mb-3">
-                                {{ form_label(form.description) }}
-                                {{ form_widget(form.description, {'attr': {'class': 'form-control'}}) }}
-                                {{ form_help(form.description) }}
-                                {{ form_errors(form.description) }}
-                            </div>
+                            {% include '_components/_form_field.html.twig' with {
+                                'field': form.description,
+                                'label': 'tenant.field.description'|trans|default('Beschreibung'),
+                                'help': 'tenant.help.description'|trans|default('Beschreibung des Tenants')
+                            } %}
 
-                            <div class="mb-3">
-                                {{ form_label(form.logoFile) }}
-                                {{ form_widget(form.logoFile, {'attr': {'class': 'form-control'}}) }}
-                                {{ form_help(form.logoFile) }}
-                                {{ form_errors(form.logoFile) }}
-                            </div>
-                        </div>
+                            {% include '_components/_form_field.html.twig' with {
+                                'field': form.logoFile,
+                                'label': 'tenant.field.logo'|trans|default('Logo'),
+                                'help': 'tenant.help.logo'|trans|default('Tenant-Logo hochladen')
+                            } %}
+                        </fieldset>
 
                         {# Corporate Structure #}
-                        <div class="mb-4">
-                            <h6 class="border-bottom pb-2 mb-3">{{ 'corporate.title'|trans }}</h6>
+                        <fieldset class="mb-4">
+                            <legend class="h6 border-bottom pb-2 mb-3">{{ 'corporate.title'|trans }}</legend>
 
-                            <div class="mb-3">
-                                {{ form_label(form.parent) }}
-                                {{ form_widget(form.parent, {'attr': {'class': 'form-select'}}) }}
-                                {{ form_help(form.parent) }}
-                                {{ form_errors(form.parent) }}
-                            </div>
+                            {% include '_components/_form_field.html.twig' with {
+                                'field': form.parent,
+                                'label': 'tenant.field.parent'|trans|default('Parent Tenant'),
+                                'help': 'tenant.help.parent'|trans|default('Übergeordneter Tenant in der Unternehmensstruktur')
+                            } %}
 
-                            <div class="mb-3">
+                            {# Switch field - special handling #}
+                            <div class="form-group mb-3">
                                 <div class="form-check form-switch">
                                     {{ form_widget(form.isCorporateParent, {'attr': {'class': 'form-check-input', 'role': 'switch'}}) }}
                                     {{ form_label(form.isCorporateParent, null, {'label_attr': {'class': 'form-check-label'}}) }}
@@ -90,31 +84,30 @@
                                 {{ form_errors(form.isCorporateParent) }}
                             </div>
 
-                            <div class="mb-3">
-                                {{ form_label(form.corporateNotes) }}
-                                {{ form_widget(form.corporateNotes, {'attr': {'class': 'form-control'}}) }}
-                                {{ form_help(form.corporateNotes) }}
-                                {{ form_errors(form.corporateNotes) }}
-                            </div>
-                        </div>
+                            {% include '_components/_form_field.html.twig' with {
+                                'field': form.corporateNotes,
+                                'label': 'tenant.field.corporate_notes'|trans|default('Corporate Notes'),
+                                'help': 'tenant.help.corporate_notes'|trans|default('Notizen zur Unternehmensstruktur')
+                            } %}
+                        </fieldset>
 
                         {# Azure Integration #}
-                        <div class="mb-4">
-                            <h6 class="border-bottom pb-2 mb-3">{{ 'tenant.section.azure_integration'|trans }}</h6>
+                        <fieldset class="mb-4">
+                            <legend class="h6 border-bottom pb-2 mb-3">{{ 'tenant.section.azure_integration'|trans }}</legend>
 
-                            <div class="mb-3">
-                                {{ form_label(form.azureTenantId) }}
-                                {{ form_widget(form.azureTenantId, {'attr': {'class': 'form-control'}}) }}
-                                {{ form_help(form.azureTenantId) }}
-                                {{ form_errors(form.azureTenantId) }}
-                            </div>
-                        </div>
+                            {% include '_components/_form_field.html.twig' with {
+                                'field': form.azureTenantId,
+                                'label': 'tenant.field.azure_tenant_id'|trans|default('Azure Tenant ID'),
+                                'help': 'tenant.help.azure_tenant_id'|trans|default('Azure AD Tenant ID für SSO Integration')
+                            } %}
+                        </fieldset>
 
                         {# Settings #}
-                        <div class="mb-4">
-                            <h6 class="border-bottom pb-2 mb-3">{{ 'tenant.section.settings'|trans }}</h6>
+                        <fieldset class="mb-4">
+                            <legend class="h6 border-bottom pb-2 mb-3">{{ 'tenant.section.settings'|trans }}</legend>
 
-                            <div class="mb-3">
+                            {# Switch field - special handling #}
+                            <div class="form-group mb-3">
                                 <div class="form-check form-switch">
                                     {{ form_widget(form.isActive, {'attr': {'class': 'form-check-input', 'role': 'switch'}}) }}
                                     {{ form_label(form.isActive, null, {'label_attr': {'class': 'form-check-label'}}) }}
@@ -123,14 +116,14 @@
                                 {{ form_errors(form.isActive) }}
                             </div>
 
-                            <div class="mb-3">
-                                {{ form_label(form.settings) }}
-                                {{ form_widget(form.settings, {'attr': {'class': 'form-control'}}) }}
-                                {{ form_help(form.settings) }}
-                                {{ form_errors(form.settings) }}
-                                <div class="form-text">
-                                    <strong>{{ 'tenant.settings.example_title'|trans }}</strong><br>
-                                    <pre class="bg-light p-2 rounded small mb-0"><code>{
+                            {% include '_components/_form_field.html.twig' with {
+                                'field': form.settings,
+                                'label': 'tenant.field.settings'|trans|default('Settings (JSON)'),
+                                'help': 'tenant.help.settings'|trans|default('Tenant-spezifische Einstellungen im JSON-Format')
+                            } %}
+                            <div class="form-text mt-2">
+                                <strong>{{ 'tenant.settings.example_title'|trans }}</strong><br>
+                                <pre class="bg-light p-2 rounded small mb-0"><code>{
   "branding": {
     "primaryColor": "#0d6efd",
     "logoUrl": "/uploads/tenant-logo.png"
@@ -140,9 +133,8 @@
     "globalSearch": false
   }
 }</code></pre>
-                                </div>
                             </div>
-                        </div>
+                        </fieldset>
 
                         {# Form Actions #}
                         <div class="d-flex justify-content-between">
