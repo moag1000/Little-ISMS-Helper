@@ -97,7 +97,7 @@
     </div>
     {% endif %}
 
-    <div class="card">
+    <div class="card" data-controller="bulk-actions" data-bulk-actions-endpoint-value="/supplier">
         <div class="card-header">
             <h2>{{ 'supplier.list.title'|trans({'count': suppliers|length}) }}</h2>
         </div>
@@ -106,6 +106,13 @@
             <table class="data-table">
                 <thead>
                     <tr>
+                        <th scope="col" class="w-40px">
+                            <input type="checkbox"
+                                   class="form-check-input"
+                                   data-action="bulk-actions#selectAll"
+                                   data-bulk-actions-target="selectAllCheckbox"
+                                   aria-label="{{ 'common.select_all'|trans }}">
+                        </th>
                         <th scope="col">{{ 'supplier.table.name'|trans }}</th>
                         <th scope="col">{{ 'supplier.table.service_provided'|trans }}</th>
                         <th scope="col">{{ 'supplier.table.criticality'|trans }}</th>
@@ -117,7 +124,15 @@
                 </thead>
                 <tbody>
                     {% for supplier in suppliers %}
-                    <tr>
+                    <tr data-supplier-id="{{ supplier.id }}">
+                        <td>
+                            <input type="checkbox"
+                                   class="form-check-input"
+                                   data-bulk-actions-target="item"
+                                   data-action="bulk-actions#selectItem"
+                                   value="{{ supplier.id }}"
+                                   aria-label="{{ 'common.select'|trans }} {{ supplier.name }}">
+                        </td>
                         <td>
                             <a href="{{ path('app_supplier_show', {id: supplier.id}) }}">{{ supplier.name }}</a>
                             {{ inheritance.small_badge(supplier, currentTenant) }}
@@ -144,6 +159,13 @@
             <p>{{ 'supplier.empty.message'|trans }} <a href="{{ path('app_supplier_new') }}">{{ 'supplier.empty.add_first'|trans }}</a>.</p>
             {% endif %}
         </div>
+
+        {# Bulk Action Bar #}
+        {% if suppliers|length > 0 %}
+        {% include '_components/_bulk_action_bar.html.twig' with {
+            actions: ['export', 'delete']
+        } %}
+        {% endif %}
     </div>
 </div>
 
