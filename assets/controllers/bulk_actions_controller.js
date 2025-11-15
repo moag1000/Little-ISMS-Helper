@@ -107,9 +107,34 @@ export default class extends Controller {
             return;
         }
 
-        const confirmed = confirm(`Möchten Sie ${ids.length} Einträge wirklich löschen?`);
-        if (!confirmed) {
-            return;
+        // Get entity label from data attribute or endpoint
+        const entityLabel = this.element.dataset.bulkActionsEntityLabel || 'Einträge';
+
+        // Get confirmation modal controller
+        const confirmModal = document.getElementById('bulkDeleteModal');
+        if (!confirmModal) {
+            // Fallback to simple confirm if modal not available
+            const confirmed = confirm(`Möchten Sie ${ids.length} ${entityLabel} wirklich löschen?`);
+            if (!confirmed) {
+                return;
+            }
+        } else {
+            const confirmController = this.application.getControllerForElementAndIdentifier(
+                confirmModal,
+                'bulk-delete-confirmation'
+            );
+
+            // Show confirmation dialog with dependency check
+            const confirmed = await confirmController.show({
+                count: ids.length,
+                entityLabel: entityLabel,
+                endpoint: this.endpointValue + '/bulk-delete-check',
+                ids: ids
+            });
+
+            if (!confirmed) {
+                return;
+            }
         }
 
         try {
@@ -127,13 +152,14 @@ export default class extends Controller {
             }
 
             // Show success toast
-            this.showToast('Erfolgreich gelöscht', 'success');
+            this.showToast(`${ids.length} ${entityLabel} erfolgreich gelöscht`, 'success');
 
-            // Remove rows from DOM
+            // Remove rows from DOM with animation
             this.getSelectedItems().forEach(item => {
                 const row = item.closest('tr');
                 if (row) {
                     row.style.opacity = '0';
+                    row.style.transition = 'opacity 0.2s ease-out';
                     setTimeout(() => row.remove(), 200);
                 }
             });
@@ -141,9 +167,15 @@ export default class extends Controller {
             // Reset action bar
             this.hideActionBar();
 
+            // Optionally reload page if no rows left
+            const remainingRows = this.element.querySelectorAll('tbody tr').length - ids.length;
+            if (remainingRows === 0) {
+                setTimeout(() => window.location.reload(), 500);
+            }
+
         } catch (error) {
             console.error('Bulk delete error:', error);
-            this.showToast('Fehler beim Löschen', 'error');
+            this.showToast('Fehler beim Löschen: ' + error.message, 'error');
         }
     }
 

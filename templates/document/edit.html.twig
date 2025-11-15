@@ -3,58 +3,49 @@
 {% block title %}{{ 'document.edit'|trans }} - {{ parent() }}{% endblock %}
 
 {% block body %}
-<div class="container">
-    <nav aria-label="breadcrumb" class="mb-3">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item">
-                <a href="{{ path('app_document_index') }}"><i class="bi bi-file-earmark-text"></i> {{ 'nav.documents'|trans }}</a>
-            </li>
-            <li class="breadcrumb-item">
-                <a href="{{ path('app_document_show', {id: document.id}) }}">{{ document.name }}</a>
-            </li>
-            <li class="breadcrumb-item active" aria-current="page">{{ 'document.edit'|trans }}</li>
-        </ol>
-    </nav>
+{# Breadcrumb Navigation #}
+{% include '_components/_breadcrumb.html.twig' with {
+    breadcrumbs: [
+        { label: 'nav.documents'|trans, url: path('app_document_index'), icon: 'bi-file-earmark-text' },
+        { label: document.name, url: path('app_document_show', {id: document.id}) },
+        { label: 'document.edit'|trans }
+    ]
+} %}
 
-    <div class="page-header">
-        <h1><i class="bi bi-pencil"></i> {{ 'document.edit'|trans }}: {{ document.name }}</h1>
-        <a href="{{ path('app_document_show', {id: document.id}) }}" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> {{ 'common.back'|trans }}</a>
+{# Page Header #}
+{% include '_components/_page_header.html.twig' with {
+    title: 'document.edit'|trans ~ ': ' ~ document.name,
+    icon: 'bi-pencil',
+    actions: [
+        { label: 'common.back'|trans, url: path('app_document_show', {id: document.id}), variant: 'secondary', icon: 'bi-arrow-left' }
+    ]
+} %}
+
+<div class="card">
+    <div class="card-body">
+        {{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
+            {% include 'document/_form.html.twig' with {
+                'button_label': 'document.update'|trans,
+                'button_icon': 'bi-check-circle',
+                'is_edit_mode': true
+            } %}
+        {{ form_end(form) }}
     </div>
+</div>
 
-    <div class="card">
-        <div class="card-content">
-            {{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
-                <div class="form-group">
-                    {{ form_label(form.name) }}
-                    {{ form_widget(form.name) }}
-                    {{ form_errors(form.name) }}
-                </div>
-
-                <div class="form-group">
-                    {{ form_label(form.description) }}
-                    {{ form_widget(form.description) }}
-                    {{ form_errors(form.description) }}
-                </div>
-
-                <div class="form-group">
-                    {{ form_label(form.documentType) }}
-                    {{ form_widget(form.documentType) }}
-                    {{ form_errors(form.documentType) }}
-                </div>
-
-                <div class="form-group">
-                    {{ form_label(form.file) }}
-                    {{ form_widget(form.file) }}
-                    {{ form_errors(form.file) }}
-                    <small class="help-text">{{ 'document.edit_file_help'|trans }}</small>
-                </div>
-
-                <div class="form-actions">
-                    <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> {{ 'document.update'|trans }}</button>
-                    <a href="{{ path('app_document_show', {id: document.id}) }}" class="btn btn-secondary"><i class="bi bi-x-circle"></i> {{ 'common.cancel'|trans }}</a>
-                </div>
-            {{ form_end(form) }}
-        </div>
+{# Delete Danger Zone #}
+<div class="card border-danger mt-4">
+    <div class="card-header bg-danger text-white">
+        <h5 class="mb-0">
+            <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+            {{ 'common.danger_zone'|trans }}
+        </h5>
+    </div>
+    <div class="card-body">
+        <p class="text-muted">
+            {{ 'document.delete_warning'|trans|default('Das Löschen dieses Dokuments kann nicht rückgängig gemacht werden.') }}
+        </p>
+        {{ include('document/_delete_form.html.twig') }}
     </div>
 </div>
 {% endblock %}

@@ -407,6 +407,7 @@ common:
   last_updated: Zuletzt aktualisiert
   loading: Wird geladen...
   never: Nie
+  entries: 'Einträge'
   not_applicable: Nicht zutreffend
   not_approved: Nicht genehmigt
   not_assigned: Nicht zugewiesen
@@ -1181,6 +1182,10 @@ document:
   update: 'Dokument aktualisieren'
   upload: 'Dokument hochladen'
 
+  section:
+    basic_info: 'Dokumentinformationen'
+    file_upload: 'Datei-Upload'
+
   field:
     name: Dokumentname
     description: Beschreibung
@@ -1205,7 +1210,12 @@ document:
     description: Kurze Beschreibung des Dokuments...
 
   help:
-    file: Maximal 10 MB. Erlaubte Formate PDF, Word, Excel, Bilder, Text
+    name: 'Eindeutiger Name des Dokuments'
+    description: 'Detaillierte Beschreibung des Dokumentinhalts und Zwecks'
+    document_type: 'Kategorie des Dokuments (Richtlinie, Verfahren, etc.)'
+    file: 'Wählen Sie eine Datei zum Hochladen'
+    file_edit: 'Neue Datei hochladen (optional)'
+    edit_file: 'Lassen Sie das Feld leer, um die vorhandene Datei beizubehalten'
 
   file_help: 'Erlaubte Dateitypen: PDF, Word, Excel, Bilder, Text'
   edit_file_help: 'Laden Sie eine neue Datei hoch, um die bestehende zu ersetzen'
@@ -1251,6 +1261,8 @@ document:
 
   confirm:
     delete: 'Möchten Sie dieses Dokument wirklich löschen?'
+
+  delete_warning: 'Das Löschen dieses Dokuments kann nicht rückgängig gemacht werden.'
 
   description:
     by_type: 'Dokumente nach Typ'
@@ -2161,6 +2173,19 @@ user:
   name: Name
   email: E-Mail
   department: Abteilung
+  new: 'Neuer Benutzer'
+  edit: 'Benutzer bearbeiten'
+  create: 'Benutzer erstellen'
+  save_changes: 'Änderungen speichern'
+  edit_suffix: 'bearbeiten'
+
+  section:
+    basic_info: 'Grundinformationen'
+    tenant: 'Mandantenzuordnung'
+    authentication: 'Authentifizierung'
+    roles: 'Rollen & Berechtigungen'
+    status: 'Status'
+
   field:
     first_name: Vorname
     last_name: Nachname
@@ -2172,11 +2197,37 @@ user:
     avatar_help: Profilbild (max. 2MB, JPG/PNG/GIF/WebP)
     password: Passwort
     system_roles: Systemrollen
-    custom_roles: Benutzerdefinierte Rollen
+    roles: 'Systemrollen'
+    custom_roles: 'Benutzerdefinierte Rollen'
     tenant: Mandant
     tenant_help: Ordnen Sie den Benutzer einem Mandanten zu
     active: Aktiv
+    is_active: 'Aktiv'
+    is_verified: 'Verifiziert'
     email_verified: E-Mail verifiziert
+    auth_provider: 'Auth Provider'
+    created_at: 'Erstellt am'
+    updated_at: 'Zuletzt geändert'
+    last_login: 'Letzte Anmeldung'
+
+  help:
+    first_name: 'Vorname des Benutzers'
+    last_name: 'Nachname des Benutzers'
+    email: 'E-Mail-Adresse für Login und Kommunikation'
+    department: 'Organisationseinheit des Benutzers'
+    job_title: 'Funktion oder Position des Benutzers'
+    phone_number: 'Kontakttelefonnummer'
+    avatar: 'Profilbild hochladen (optional)'
+    tenant: 'Mandant, dem dieser Benutzer zugeordnet ist'
+    password: 'Sicheres Passwort für den Benutzer'
+    password_edit: 'Leer lassen, um das Passwort nicht zu ändern'
+
+  auth_provider:
+    local: 'Lokal'
+
+  message:
+    no_custom_roles: 'Keine benutzerdefinierten Rollen verfügbar.'
+
   placeholder:
     tenant: Keinem Mandanten zugeordnet
   error:
@@ -3900,6 +3951,20 @@ form:
   conduct_risk_analysis: Risikoanalyse durchführen
   document_policies: Richtlinien dokumentieren
   plan_awareness_training: Awareness-Schulung planen
+  required: 'Pflichtfeld'
+  optional: 'Optional'
+  action:
+    save: 'Speichern'
+    cancel: 'Abbrechen'
+    submit: 'Absenden'
+    delete: 'Löschen'
+    edit: 'Bearbeiten'
+    create: 'Erstellen'
+  validation:
+    required_field: 'Dieses Feld ist erforderlich'
+    invalid_format: 'Ungültiges Format'
+    too_short: 'Zu kurz (min. %min% Zeichen)'
+    too_long: 'Zu lang (max. %max% Zeichen)'
 corporate:
   title: 'Konzernstruktur'
   subtitle: 'Verwaltung von Muttergesellschaften und Tochtergesellschaften'
@@ -4025,3 +4090,90 @@ governance:
   hierarchical: 'Hierarchisch'
   shared: 'Geteilt'
   independent: 'Unabhängig'
+
+# Accessibility
+accessibility:
+  skip_to_content: 'Zum Hauptinhalt springen'
+  skip_to_navigation: 'Zur Navigation springen'
+
+# Bulk Delete Confirmation
+bulk_delete:
+  confirm:
+    title: 'Löschen bestätigen'
+    warning: 'Diese Aktion kann nicht rückgängig gemacht werden.'
+  selection:
+    title: 'Ausgewählte Einträge'
+  dependencies:
+    title: 'Betroffene Verknüpfungen'
+    list: 'Liste der betroffenen Verknüpfungen'
+  loading: 'Abhängigkeiten werden geprüft...'
+
+  section:
+    basic_info: 'Grundinformationen'
+    assignment: 'Zuordnung'
+    financial: 'Finanzielle Informationen'
+    cia_values: 'CIA-Bewertung (Schutzbedarf)'
+  field:
+    name: 'Name'
+    type: 'Asset-Typ'
+    description: 'Beschreibung'
+    owner: 'Eigentümer'
+    location: 'Standort'
+    acquisition_value: 'Anschaffungswert'
+    current_value: 'Aktueller Wert'
+    confidentiality: 'Vertraulichkeit'
+    integrity: 'Integrität'
+    availability: 'Verfügbarkeit'
+  help:
+    name: 'Eindeutiger Name des Assets'
+    type: 'Kategorie des Assets (Hardware, Software, Daten, etc.)'
+    description: 'Detaillierte Beschreibung des Assets und seiner Funktion'
+    owner: 'Verantwortliche Person für dieses Asset'
+    location: 'Physischer oder logischer Standort des Assets'
+    acquisition_value: 'Ursprünglicher Kaufpreis oder Anschaffungskosten'
+    current_value: 'Geschätzter aktueller Marktwert'
+    confidentiality: 'Schutzbedarf bzgl. Vertraulichkeit der Informationen'
+    integrity: 'Schutzbedarf bzgl. Unversehrtheit und Korrektheit der Daten'
+    availability: 'Schutzbedarf bzgl. ständiger Erreichbarkeit und Nutzbarkeit'
+  cia_help: 'Bewerten Sie den Schutzbedarf nach Vertraulichkeit, Integrität und Verfügbarkeit (1=sehr niedrig, 5=sehr hoch)'
+  delete_warning: 'Das Löschen dieses Assets kann nicht rückgängig gemacht werden. Alle zugehörigen Risiken und Controls werden ebenfalls entfernt.'
+  section:
+    basic_info: 'Grundinformationen'
+    inherent_risk: 'Brutto-Risiko (ohne Controls)'
+    residual_risk: 'Netto-Risiko (mit Controls)'
+    treatment: 'Risikobehandlung'
+    acceptance: 'Risikoakzeptanz'
+    status: 'Status und Review'
+  field:
+    title: 'Titel'
+    asset: 'Betroffenes Asset'
+    description: 'Beschreibung'
+    threat: 'Bedrohung'
+    vulnerability: 'Verwundbarkeit'
+    probability: 'Eintrittswahrscheinlichkeit'
+    impact: 'Schadensausmaß'
+    residual_probability: 'Rest-Wahrscheinlichkeit'
+    residual_impact: 'Rest-Schadensausmaß'
+    treatment_strategy: 'Behandlungsstrategie'
+    risk_owner: 'Risiko-Verantwortlicher'
+    treatment_description: 'Behandlungsplan'
+    acceptance_approved_by: 'Genehmigt durch'
+    acceptance_approved_at: 'Genehmigungsdatum'
+  help:
+    title: 'Kurzer, prägnanter Titel des Risikos'
+    asset: 'Asset, das von diesem Risiko betroffen ist'
+    description: 'Detaillierte Beschreibung des Risikos und seiner potenziellen Auswirkungen'
+    threat: 'Welche Bedrohung könnte dieses Risiko auslösen?'
+    vulnerability: 'Welche Schwachstelle könnte ausgenutzt werden?'
+    probability: 'Wie wahrscheinlich ist das Eintreten? (1=sehr unwahrscheinlich, 5=sehr wahrscheinlich)'
+    impact: 'Wie hoch wäre der Schaden? (1=minimal, 5=katastrophal)'
+    residual_probability: 'Verbleibende Wahrscheinlichkeit nach Maßnahmen'
+    residual_impact: 'Verbleibendes Schadensausmaß nach Maßnahmen'
+    treatment_strategy: 'Wie soll mit diesem Risiko umgegangen werden?'
+    risk_owner: 'Person, die für die Behandlung dieses Risikos verantwortlich ist'
+    treatment_description: 'Detaillierte Beschreibung der geplanten Maßnahmen'
+    acceptance_approved_by: 'Person, die die Risikoakzeptanz genehmigt hat'
+    acceptance_approved_at: 'Datum der Risikoakzeptanz-Genehmigung'
+    inherent: 'Bewertung des Risikos ohne bestehende Sicherheitsmaßnahmen'
+    residual: 'Bewertung des Risikos nach Anwendung von Sicherheitsmaßnahmen'
+  delete_warning: 'Das Löschen dieses Risikos kann nicht rückgängig gemacht werden.'
