@@ -110,7 +110,7 @@ COPY docker/supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # Health check to verify the application is running
 HEALTHCHECK --interval=30s --timeout=10s --retries=3 --start-period=40s \
-    CMD curl -f http://localhost/ || exit 1
+    CMD curl -f -s http://localhost/login || curl -f -s http://localhost/ || exit 1
 
 # Expose port
 EXPOSE 80
