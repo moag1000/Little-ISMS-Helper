@@ -21,7 +21,7 @@
         </div>
     </div>
 
-    <div class="card">
+    <div class="card" data-controller="bulk-actions" data-bulk-actions-endpoint-value="/document">
         <div class="card-header">
             <h2>Documents</h2>
         </div>
@@ -29,6 +29,13 @@
             <table class="data-table">
                 <thead>
                     <tr>
+                        <th scope="col" class="w-40px">
+                            <input type="checkbox"
+                                   class="form-check-input"
+                                   data-action="bulk-actions#selectAll"
+                                   data-bulk-actions-target="selectAllCheckbox"
+                                   aria-label="{{ 'common.select_all'|trans }}">
+                        </th>
                         <th scope="col">Name</th>
                         <th scope="col">Type</th>
                         <th scope="col">Size</th>
@@ -39,7 +46,15 @@
                 </thead>
                 <tbody>
                     {% for document in documents %}
-                        <tr>
+                        <tr data-document-id="{{ document.id }}">
+                            <td>
+                                <input type="checkbox"
+                                       class="form-check-input"
+                                       data-bulk-actions-target="item"
+                                       data-action="bulk-actions#selectItem"
+                                       value="{{ document.id }}"
+                                       aria-label="{{ 'common.select'|trans }} {{ document.name }}">
+                            </td>
                             <td>
                                 <a href="{{ path('app_document_show', {id: document.id}) }}">
                                     {{ document.name }}
@@ -63,6 +78,13 @@
                 </tbody>
             </table>
         </div>
+
+        {# Bulk Action Bar #}
+        {% if documents|length > 0 %}
+        {% include '_components/_bulk_action_bar.html.twig' with {
+            actions: ['export', 'delete']
+        } %}
+        {% endif %}
     </div>
 </div>
 {% endblock %}

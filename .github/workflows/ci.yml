@@ -64,7 +64,24 @@ jobs:
         env:
           DATABASE_URL: postgresql://isms_user:isms_password@127.0.0.1:5432/isms_test?serverVersion=16&charset=utf8
           APP_ENV: test
-        run: php bin/phpunit --coverage-text
+        run: php bin/phpunit --coverage-text --coverage-clover=coverage.xml
+
+      - name: Check Code Coverage Threshold
+        if: matrix.php-version == '8.4'
+        run: |
+          echo "Checking test coverage threshold..."
+          COVERAGE=$(php -r '$xml = simplexml_load_file("coverage.xml"); $metrics = $xml->project->metrics; $percentage = round(($metrics["coveredstatements"] / $metrics["statements"]) * 100, 2); echo $percentage;')
+          echo "Current coverage: $COVERAGE%"
+
+          THRESHOLD=40
+          if (( $(echo "$COVERAGE < $THRESHOLD" | bc -l) )); then
+            echo "❌ Coverage ($COVERAGE%) is below threshold ($THRESHOLD%)"
+            echo "::warning::Code coverage is below $THRESHOLD%. Current: $COVERAGE%. Target: 60%"
+            # Don't fail the build yet, just warn
+            exit 0
+          else
+            echo "✅ Coverage ($COVERAGE%) meets threshold ($THRESHOLD%)"
+          fi
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
