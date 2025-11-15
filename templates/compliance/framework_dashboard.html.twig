@@ -43,6 +43,183 @@
         </div>
     </div>
 
+    {# Workflow Steps Checklist - NEW! #}
+    <div class="workflow-steps-card">
+        <div class="workflow-header">
+            <h2>🎯 Your Compliance Workflow</h2>
+            <p class="text-muted">Follow these steps to achieve 100% compliance</p>
+        </div>
+        <div class="workflow-steps">
+            <div class="workflow-step {% if dashboard.statistics.total > 0 %}completed{% endif %}"
+                 data-bs-toggle="tooltip" data-bs-placement="top"
+                 title="The framework has been successfully loaded into your system with all requirements.">
+                <div class="step-icon">{% if dashboard.statistics.total > 0 %}✅{% else %}1️⃣{% endif %}</div>
+                <div class="step-content">
+                    <h3>Framework Loaded</h3>
+                    <p>{{ dashboard.statistics.total }} requirements loaded</p>
+                </div>
+            </div>
+
+            <div class="workflow-step {% if dashboard.statistics.applicable > 0 %}active{% endif %} {% if dashboard.statistics.applicable == dashboard.statistics.total %}completed{% endif %}"
+                 data-bs-toggle="tooltip" data-bs-placement="top"
+                 title="Review each requirement and mark whether it applies to your organization. Non-applicable requirements won't count towards your compliance score.">
+                <div class="step-icon">{% if dashboard.statistics.applicable == dashboard.statistics.total %}✅{% else %}{% if dashboard.statistics.applicable > 0 %}🔄{% else %}2️⃣{% endif %}{% endif %}</div>
+                <div class="step-content">
+                    <h3>Review & Mark Applicable</h3>
+                    <p>{{ dashboard.statistics.applicable }} of {{ dashboard.statistics.total }} reviewed</p>
+                    {% if dashboard.statistics.applicable < dashboard.statistics.total %}
+                        <a href="{{ path('app_compliance_requirement_index') }}?framework={{ framework.id }}" class="step-action"
+                           data-bs-toggle="tooltip" data-bs-placement="right"
+                           title="Opens the requirements list filtered by this framework">
+                            → Review Requirements
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="workflow-step {% if dashboard.statistics.fulfilled > 0 %}active{% endif %} {% if dashboard.statistics.fulfilled == dashboard.statistics.applicable %}completed{% endif %}"
+                 data-bs-toggle="tooltip" data-bs-placement="top"
+                 title="Link requirements to existing controls or create new controls to implement them. This shows how you're fulfilling each requirement.">
+                <div class="step-icon">{% if dashboard.statistics.fulfilled == dashboard.statistics.applicable %}✅{% else %}{% if dashboard.statistics.fulfilled > 0 %}🔄{% else %}3️⃣{% endif %}{% endif %}</div>
+                <div class="step-content">
+                    <h3>Implement Requirements</h3>
+                    <p>{{ dashboard.statistics.fulfilled }} of {{ dashboard.statistics.applicable }} requirements fully implemented</p>
+                    {% if dashboard.gaps.total > 0 %}
+                        <a href="{{ path('app_compliance_requirement_index') }}?framework={{ framework.id }}&sort=fulfillment" class="step-action"
+                           data-bs-toggle="tooltip" data-bs-placement="right"
+                           title="Shows requirements sorted by fulfillment (lowest first) so you can focus on gaps">
+                            → Implement Requirements
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="workflow-step {% if dashboard.compliance_percentage >= 75 %}active{% endif %} {% if dashboard.compliance_percentage == 100 %}completed{% endif %}"
+                 data-bs-toggle="tooltip" data-bs-placement="top"
+                 title="Reach 100% by implementing all applicable requirements. Track your progress and address any remaining gaps.">
+                <div class="step-icon">{% if dashboard.compliance_percentage == 100 %}✅{% else %}{% if dashboard.compliance_percentage >= 75 %}🔄{% else %}4️⃣{% endif %}{% endif %}</div>
+                <div class="step-content">
+                    <h3>Achieve 100% Compliance</h3>
+                    <p>Currently at {{ dashboard.compliance_percentage }}%</p>
+                    {% if dashboard.compliance_percentage < 100 %}
+                        <a href="{{ path('app_compliance_gaps', {id: framework.id}) }}" class="step-action"
+                           data-bs-toggle="tooltip" data-bs-placement="right"
+                           title="View detailed gap analysis with recommendations for improvement">
+                            → View {{ dashboard.gaps.total }} Gaps
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Module Dependencies - NEW! #}
+    {% if framework.requiredModules|length > 0 %}
+    <div class="card" style="margin-bottom: var(--spacing-lg);">
+        <div class="card-header">
+            <h2>🔧 {{ 'compliance.required_modules'|trans }}</h2>
+        </div>
+        <div class="card-body">
+            <p class="text-muted" style="margin-bottom: var(--spacing-md);">
+                This framework requires the following ISMS modules to be activated for full compliance.
+            </p>
+            <div class="modules-grid">
+                {% for moduleKey in framework.requiredModules %}
+                    {% set module = all_modules[moduleKey] ?? null %}
+                    {% set isActive = moduleKey in active_modules %}
+
+                    {% if module %}
+                        <div class="module-card {% if isActive %}active{% else %}inactive{% endif %}">
+                            <div class="module-status">
+                                {% if isActive %}
+                                    <span class="status-icon active">✅</span>
+                                    <span class="status-text active">Active</span>
+                                {% else %}
+                                    <span class="status-icon inactive">⚠️</span>
+                                    <span class="status-text inactive">Not Active</span>
+                                {% endif %}
+                            </div>
+                            <h3 class="module-title">{{ module.name }}</h3>
+                            <p class="module-description">{{ module.description }}</p>
+                            {% if not isActive %}
+                                <a href="{{ path('admin_modules_index') }}" class="btn btn-primary btn-sm"
+                                   data-bs-toggle="tooltip" data-bs-placement="top"
+                                   title="Activate this module in the module management">
+                                    Activate Module →
+                                </a>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {# Next Action Recommendation - NEW! #}
+    {% set next_action = null %}
+    {% if dashboard.gaps.total > 0 and dashboard.gaps.critical > 0 %}
+        {% set next_action = {
+            'title': 'Address Critical Gaps',
+            'description': 'You have ' ~ dashboard.gaps.critical ~ ' critical requirement(s) with low fulfillment',
+            'action_url': path('app_compliance_requirement_index') ~ '?framework=' ~ framework.id ~ '&priority=critical&sort=fulfillment',
+            'action_text': 'View Critical Requirements',
+            'icon': '🔴',
+            'priority': 'high'
+        } %}
+    {% elseif dashboard.statistics.applicable < dashboard.statistics.total %}
+        {% set next_action = {
+            'title': 'Review Remaining Requirements',
+            'description': (dashboard.statistics.total - dashboard.statistics.applicable) ~ ' requirements need applicability review',
+            'action_url': path('app_compliance_requirement_index') ~ '?framework=' ~ framework.id,
+            'action_text': 'Review Requirements',
+            'icon': '📝',
+            'priority': 'medium'
+        } %}
+    {% elseif dashboard.gaps.total > 0 %}
+        {% set next_action = {
+            'title': 'Fill Compliance Gaps',
+            'description': dashboard.gaps.total ~ ' requirements need controls or improved implementation',
+            'action_url': path('app_compliance_gaps', {id: framework.id}),
+            'action_text': 'View Gap Analysis',
+            'icon': '⚠️',
+            'priority': 'medium'
+        } %}
+    {% elseif dashboard.compliance_percentage < 100 %}
+        {% set next_action = {
+            'title': 'Complete Remaining Items',
+            'description': 'You\'re at ' ~ dashboard.compliance_percentage ~ '% - almost there!',
+            'action_url': path('app_compliance_requirement_index') ~ '?framework=' ~ framework.id ~ '&sort=fulfillment',
+            'action_text': 'View All Requirements',
+            'icon': '🎯',
+            'priority': 'low'
+        } %}
+    {% endif %}
+
+    {% if next_action %}
+    <div class="next-action-card priority-{{ next_action.priority }}">
+        <div class="next-action-icon">{{ next_action.icon }}</div>
+        <div class="next-action-content">
+            <h3>{{ next_action.title }}</h3>
+            <p>{{ next_action.description }}</p>
+            <a href="{{ next_action.action_url }}" class="btn btn-primary">
+                {{ next_action.action_text }} →
+            </a>
+        </div>
+    </div>
+    {% else %}
+    <div class="next-action-card success">
+        <div class="next-action-icon">🎉</div>
+        <div class="next-action-content">
+            <h3>Congratulations!</h3>
+            <p>You have achieved 100% compliance with {{ framework.name }}!</p>
+            <a href="{{ path('app_compliance_index') }}" class="btn btn-success">
+                Back to All Frameworks →
+            </a>
+        </div>
+    </div>
+    {% endif %}
+
     {# Tab Navigation - Clean and Simple #}
     <div class="tabs" data-controller="toggle">
         <div class="tab-nav">
@@ -542,5 +719,248 @@
     margin: 0;
     opacity: 0.9;
 }
+
+/* Workflow Steps Card */
+.workflow-steps-card {
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-md);
+    padding: var(--spacing-xl);
+    margin-bottom: var(--spacing-lg);
+}
+
+.workflow-header {
+    margin-bottom: var(--spacing-lg);
+    text-align: center;
+}
+
+.workflow-header h2 {
+    margin: 0 0 var(--spacing-xs) 0;
+    color: var(--color-primary);
+}
+
+.workflow-steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--spacing-lg);
+}
+
+.workflow-step {
+    position: relative;
+    padding: var(--spacing-lg);
+    border-radius: var(--border-radius);
+    border: 2px solid var(--color-border);
+    background: var(--color-background);
+    transition: all 0.3s;
+}
+
+.workflow-step.active {
+    border-color: var(--color-primary);
+    background: rgba(var(--color-primary-rgb), 0.05);
+}
+
+.workflow-step.completed {
+    border-color: var(--color-success);
+    background: rgba(var(--color-success-rgb), 0.05);
+}
+
+.workflow-step .step-icon {
+    font-size: 2rem;
+    margin-bottom: var(--spacing-md);
+    text-align: center;
+}
+
+.workflow-step .step-content h3 {
+    font-size: 1rem;
+    margin: 0 0 var(--spacing-xs) 0;
+    color: var(--color-text);
+}
+
+.workflow-step .step-content p {
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+    margin: 0 0 var(--spacing-sm) 0;
+}
+
+.workflow-step .step-action {
+    display: inline-block;
+    color: var(--color-primary);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: color 0.2s;
+}
+
+.workflow-step .step-action:hover {
+    color: var(--color-primary-dark);
+    text-decoration: underline;
+}
+
+/* Next Action Card */
+.next-action-card {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xl);
+    padding: var(--spacing-xl);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-lg);
+    margin-bottom: var(--spacing-lg);
+}
+
+.next-action-card.priority-high {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.next-action-card.priority-medium {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.next-action-card.priority-low {
+    background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+}
+
+.next-action-card.success {
+    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+}
+
+.next-action-icon {
+    font-size: 4rem;
+    flex-shrink: 0;
+}
+
+.next-action-content {
+    flex: 1;
+}
+
+.next-action-content h3 {
+    margin: 0 0 var(--spacing-sm) 0;
+    font-size: 1.5rem;
+    color: white;
+}
+
+.next-action-content p {
+    margin: 0 0 var(--spacing-md) 0;
+    opacity: 0.95;
+    font-size: 1.1rem;
+}
+
+.next-action-content .btn {
+    background: white;
+    color: var(--color-primary);
+    font-weight: 600;
+}
+
+.next-action-content .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .workflow-steps {
+        grid-template-columns: 1fr;
+    }
+
+    .next-action-card {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .next-action-icon {
+        font-size: 3rem;
+    }
+}
+
+/* Module Cards */
+.modules-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: var(--spacing-lg);
+}
+
+.module-card {
+    padding: var(--spacing-lg);
+    border-radius: var(--border-radius);
+    transition: all 0.2s;
+    border: 2px solid;
+}
+
+.module-card.active {
+    background: rgba(40, 167, 69, 0.05);
+    border-color: rgba(40, 167, 69, 0.3);
+}
+
+.module-card.inactive {
+    background: rgba(255, 193, 7, 0.05);
+    border-color: rgba(255, 193, 7, 0.3);
+}
+
+.module-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.module-status {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    margin-bottom: var(--spacing-md);
+}
+
+.status-icon {
+    font-size: 1.5rem;
+}
+
+.status-text {
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.status-text.active {
+    color: #28a745;
+}
+
+.status-text.inactive {
+    color: #856404;
+}
+
+.module-title {
+    margin: 0 0 var(--spacing-sm) 0;
+    font-size: 1.1rem;
+    color: var(--color-text);
+}
+
+.module-description {
+    margin: 0 0 var(--spacing-md) 0;
+    color: var(--color-text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
 </style>
+
+<script>
+// Initialize Bootstrap tooltips
+document.addEventListener('DOMContentLoaded', function() {
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl, {
+            trigger: 'hover',
+            html: false
+        });
+    });
+});
+
+// Also initialize on Turbo/AJAX navigation (if used)
+document.addEventListener('turbo:load', function() {
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl, {
+            trigger: 'hover',
+            html: false
+        });
+    });
+});
+</script>
 {% endblock %}
