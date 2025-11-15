@@ -105,6 +105,30 @@
         </div>
     </div>
 
+    {# Tab Navigation #}
+    <ul class="nav nav-tabs mb-4" id="tenantTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="details-tab" data-bs-toggle="tab" data-bs-target="#details" type="button" role="tab">
+                <i class="bi bi-info-circle"></i> {{ 'tenant.tabs.details'|trans }}
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="isms-context-tab" data-bs-toggle="tab" data-bs-target="#isms-context" type="button" role="tab">
+                <i class="bi bi-building-gear"></i> {{ 'tenant.tabs.isms_context'|trans }}
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="users-tab" data-bs-toggle="tab" data-bs-target="#users" type="button" role="tab">
+                <i class="bi bi-people"></i> {{ 'tenant.tabs.users'|trans }}
+                <span class="badge bg-primary ms-1">{{ userCount }}</span>
+            </button>
+        </li>
+    </ul>
+
+    {# Tab Content #}
+    <div class="tab-content" id="tenantTabsContent">
+        {# Details Tab #}
+        <div class="tab-pane fade show active" id="details" role="tabpanel">
     <div class="row">
         {# Tenant Information #}
         <div class="col-lg-6 mb-4">
@@ -285,9 +309,28 @@
                 </div>
             </div>
         </div>
+    </div>
+        </div>
+        {# End Details Tab #}
 
+        {# ISMS Context Tab #}
+        <div class="tab-pane fade" id="isms-context" role="tabpanel">
+            <div id="ismsContextContainer">
+                <div class="text-center text-muted py-5">
+                    <div class="spinner-border" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2">{{ 'common.loading'|trans }}</p>
+                </div>
+            </div>
+        </div>
+        {# End ISMS Context Tab #}
+
+        {# Users Tab #}
+        <div class="tab-pane fade" id="users" role="tabpanel">
+    <div class="row">
         {# Users List #}
-        <div class="col-lg-6 mb-4">
+        <div class="col-lg-12 mb-4">
             <div class="card h-100">
                 <div class="card-header bg-white">
                     <div class="d-flex justify-content-between align-items-center">
@@ -342,10 +385,14 @@
             </div>
         </div>
     </div>
+        </div>
+        {# End Users Tab #}
+    </div>
+    {# End Tab Content #}
 
-    {# Danger Zone #}
+    {# Danger Zone - Outside tabs, always visible #}
     {% if userCount == 0 %}
-        <div class="card border-danger">
+        <div class="card border-danger mt-4">
             <div class="card-header bg-danger text-white">
                 <h5 class="card-title mb-0">
                     <i class="bi bi-exclamation-triangle"></i>
@@ -676,4 +723,188 @@
         });
     </script>
     {% endif %}
+
+    <script>
+        // Load ISMS Context when tab is activated
+        const ismsContextTab = document.getElementById('isms-context-tab');
+        let ismsContextLoaded = false;
+
+        if (ismsContextTab) {
+            ismsContextTab.addEventListener('shown.bs.tab', function() {
+                if (!ismsContextLoaded) {
+                    loadISMSContext();
+                    ismsContextLoaded = true;
+                }
+            });
+        }
+
+        // XSS protection: escape HTML entities
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Convert newlines to <br> after escaping
+        function nl2br(text) {
+            return escapeHtml(text).replace(/\n/g, '<br>');
+        }
+
+        function loadISMSContext() {
+            const container = document.getElementById('ismsContextContainer');
+
+            fetch(`{{ path('api_tenant_isms_context', {id: tenant.id}) }}`)
+                .then(response => {
+                    if (!response.ok && response.status !== 200) {
+                        // Handle HTTP errors (500, 404, etc.)
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.error) {
+                        container.innerHTML = `
+                            <div class="alert alert-info">
+                                <i class="bi bi-info-circle"></i>
+                                <strong>{{ 'tenant.isms_context.not_configured'|trans }}</strong><br>
+                                <p class="mb-0 mt-2">{{ 'tenant.isms_context.configure_prompt'|trans }}</p>
+                                <a href="${escapeHtml(data.editUrl) || '{{ path('app_context_edit') }}'}" class="btn btn-primary mt-3">
+                                    <i class="bi bi-plus-circle"></i> {{ 'tenant.isms_context.configure_now'|trans }}
+                                </a>
+                            </div>
+                        `;
+                        return;
+                    }
+
+                    const context = data.context;
+                    const inheritanceInfo = data.inheritanceInfo || {};
+                    const completeness = data.completeness || 0;
+                    const canEdit = data.canEdit !== false;
+
+                    let html = '';
+
+                    // Corporate Inheritance Alert
+                    if (inheritanceInfo.isInherited) {
+                        const parentId = parseInt(inheritanceInfo.inheritedFrom?.id) || 0;
+                        const parentName = escapeHtml(inheritanceInfo.inheritedFrom?.name || 'Parent');
+                        html += `
+                            <div class="alert alert-warning mb-4">
+                                <div class="d-flex align-items-start">
+                                    <i class="bi bi-diagram-3 me-2 mt-1"></i>
+                                    <div>
+                                        <strong>{{ 'corporate.inheritance.isms_context_inherited'|trans }}</strong><br>
+                                        <span class="small">
+                                            {{ 'corporate.inheritance.from'|trans }}:
+                                            <a href="{{ path('tenant_management_show', {id: '__PARENT_ID__'}) }}" class="alert-link">
+                                                ${parentName}
+                                            </a>
+                                        </span><br>
+                                        <span class="small text-muted">{{ 'corporate.inheritance.edit_at_parent'|trans }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        `.replace('__PARENT_ID__', parentId);
+                    }
+
+                    // Completeness Card - completeness is already a number, safe to use directly
+                    const safeCompleteness = parseInt(completeness) || 0;
+                    html += `
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted mb-2">{{ 'context.kpi.completeness'|trans }}</h6>
+                                        <h2 class="mb-0">${safeCompleteness}%</h2>
+                                    </div>
+                                    <div>
+                                        ${canEdit ?
+                                            `<a href="${escapeHtml(data.editUrl) || '{{ path('app_context_edit') }}'}" class="btn btn-primary">
+                                                <i class="bi bi-pencil"></i> {{ 'common.edit'|trans }}
+                                            </a>` :
+                                            `<button class="btn btn-secondary" disabled title="{{ 'corporate.inheritance.cannot_edit_inherited'|trans }}">
+                                                <i class="bi bi-lock"></i> {{ 'common.edit'|trans }}
+                                            </button>`
+                                        }
+                                    </div>
+                                </div>
+                                <div class="progress mt-2" style="height: 8px;">
+                                    <div class="progress-bar ${safeCompleteness >= 80 ? 'bg-success' : safeCompleteness >= 50 ? 'bg-warning' : 'bg-danger'}"
+                                         style="width: ${safeCompleteness}%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+
+                    // ISMS Context Details
+                    html += '<div class="row">';
+
+                    const fields = [
+                        { key: 'organizationName', label: '{{ 'context.field.organization_name'|trans }}', icon: 'building' },
+                        { key: 'ismsScope', label: '{{ 'context.field.isms_scope'|trans }}', icon: 'bullseye', multiline: true },
+                        { key: 'scopeExclusions', label: '{{ 'context.field.scope_exclusions'|trans }}', icon: 'x-circle', multiline: true },
+                        { key: 'externalIssues', label: '{{ 'context.field.external_issues'|trans }}', icon: 'globe', multiline: true },
+                        { key: 'internalIssues', label: '{{ 'context.field.internal_issues'|trans }}', icon: 'house', multiline: true },
+                        { key: 'interestedParties', label: '{{ 'context.field.interested_parties'|trans }}', icon: 'people', multiline: true },
+                        { key: 'legalRequirements', label: '{{ 'context.field.legal_requirements'|trans }}', icon: 'file-text', multiline: true },
+                        { key: 'ismsPolicy', label: '{{ 'context.field.isms_policy'|trans }}', icon: 'shield-check', multiline: true },
+                        { key: 'rolesAndResponsibilities', label: '{{ 'context.field.roles_and_responsibilities'|trans }}', icon: 'person-badge', multiline: true }
+                    ];
+
+                    fields.forEach((field, index) => {
+                        const value = context[field.key];
+                        if (value) {
+                            const displayValue = field.multiline && value.length > 200 ?
+                                value.substring(0, 200) + '...' : value;
+
+                            html += `
+                                <div class="col-md-6 mb-3">
+                                    <div class="card h-100">
+                                        <div class="card-body">
+                                            <h6 class="text-muted mb-2">
+                                                <i class="bi bi-${escapeHtml(field.icon)}"></i> ${escapeHtml(field.label)}
+                                            </h6>
+                                            <p class="mb-0">${nl2br(displayValue)}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        }
+                    });
+
+                    html += '</div>';
+
+                    // Link to full context view
+                    html += `
+                        <div class="text-center mt-4">
+                            <a href="{{ path('app_context_index') }}" class="btn btn-outline-primary">
+                                <i class="bi bi-arrow-right-circle"></i> {{ 'tenant.isms_context.view_full'|trans }}
+                            </a>
+                        </div>
+                    `;
+
+                    container.innerHTML = html;
+                })
+                .catch(error => {
+                    console.error('Error loading ISMS context:', error);
+                    let errorMessage = '{{ 'tenant.isms_context.load_error'|trans }}';
+
+                    // Provide more specific error info for debugging
+                    if (error.message) {
+                        errorMessage += '<br><small class="text-muted">' + escapeHtml(error.message) + '</small>';
+                    }
+
+                    container.innerHTML = `
+                        <div class="alert alert-danger">
+                            <i class="bi bi-exclamation-triangle"></i>
+                            ${errorMessage}
+                            <br><br>
+                            <button class="btn btn-sm btn-outline-danger" onclick="loadISMSContext()">
+                                <i class="bi bi-arrow-clockwise"></i> {{ 'common.retry'|trans|default('Erneut versuchen') }}
+                            </button>
+                        </div>
+                    `;
+                });
+        }
+    </script>
 {% endblock %}

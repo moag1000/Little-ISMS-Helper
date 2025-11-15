@@ -4,21 +4,55 @@
 
 {% block body %}
 <div class="container-fluid py-4">
+    {# Breadcrumb Navigation #}
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('app_context_index') }}">{{ 'context_management.title'|trans }}</a></li>
+            {% if tenant is defined and tenant %}
+                <li class="breadcrumb-item">
+                    <a href="{{ path('tenant_management_show', {id: tenant.id}) }}">
+                        <i class="bi bi-building"></i> {{ tenant.name }}
+                    </a>
+                </li>
+            {% endif %}
+            <li class="breadcrumb-item active">{{ 'context.link.edit'|trans }}</li>
+        </ol>
+    </nav>
+
     <div class="card shadow">
         <div class="card-header bg-primary text-white">
-            <h4 class="mb-0"><i class="bi bi-building"></i> Edit ISMS Context</h4>
+            <div class="d-flex justify-content-between align-items-center">
+                <h4 class="mb-0"><i class="bi bi-building"></i> Edit ISMS Context</h4>
+                {% if tenant is defined and tenant %}
+                    <a href="{{ path('tenant_management_show', {id: tenant.id}) }}" class="btn btn-sm btn-light">
+                        <i class="bi bi-arrow-left"></i> {{ 'tenant.link.back_to_tenant'|trans|default('Zurück zum Mandanten') }}
+                    </a>
+                {% endif %}
+            </div>
         </div>
         <div class="card-body">
             <div class="alert alert-info mb-4">
                 <strong>ISO 27001 Clause 4:</strong> Understanding the organization and its context
             </div>
 
+            {% if tenant is defined and tenant %}
+                <div class="alert alert-secondary mb-4">
+                    <i class="bi bi-info-circle"></i>
+                    <strong>{{ 'tenant.isms_context.linked_to'|trans|default('Verknüpft mit Mandant') }}:</strong>
+                    {{ tenant.name }} ({{ tenant.code }})
+                </div>
+            {% endif %}
+
             {{ form_start(form) }}
             {{ form_widget(form) }}
 
             <div class="d-flex justify-content-between pt-3 border-top mt-4">
-                <a href="{{ path('app_context_index') }}" class="btn btn-outline-secondary">Cancel</a>
-                <button type="submit" class="btn btn-primary btn-lg">Save Context</button>
+                <a href="{{ path('app_context_index') }}" class="btn btn-outline-secondary">
+                    <i class="bi bi-x-circle"></i> Cancel
+                </a>
+                <button type="submit" class="btn btn-primary btn-lg">
+                    <i class="bi bi-check-circle"></i> Save Context
+                </button>
             </div>
             {{ form_end(form) }}
         </div>
