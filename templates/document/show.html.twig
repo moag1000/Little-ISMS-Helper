@@ -69,7 +69,7 @@
                 </div>
                 <div class="detail-item">
                     <span class="label">{{ 'document.label.uploaded_by'|trans }}</span>
-                    <span class="value">{{ document.uploadedBy.fullName }}</span>
+                    <span class="value">{{ document.uploadedBy ? document.uploadedBy.fullName : '-' }}</span>
                 </div>
                 <div class="detail-item">
                     <span class="label">{{ 'document.label.uploaded_at'|trans }}</span>
