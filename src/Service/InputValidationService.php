@@ -32,10 +32,15 @@ class InputValidationService
      */
     public function validateEmail(string $email): ?string
     {
-        $email = filter_var($email, FILTER_SANITIZE_EMAIL);
+        $sanitized = filter_var($email, FILTER_SANITIZE_EMAIL);
 
-        if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            return $email;
+        // Reject if sanitization changed the email (e.g., spaces removed)
+        if ($sanitized !== $email) {
+            return null;
+        }
+
+        if (filter_var($sanitized, FILTER_VALIDATE_EMAIL)) {
+            return $sanitized;
         }
 
         return null;
@@ -229,8 +234,8 @@ class InputValidationService
      */
     public function validateCsrfTokenFormat(string $token): bool
     {
-        // CSRF tokens should be alphanumeric with dashes/underscores, typically 32-64 characters
-        return preg_match('/^[a-zA-Z0-9_-]{32,64}$/', $token) === 1;
+        // CSRF tokens should be alphanumeric with dashes/underscores, typically 40-48 characters
+        return preg_match('/^[a-zA-Z0-9_-]{40,48}$/', $token) === 1;
     }
 
     /**
