@@ -174,12 +174,15 @@ class EmailNotificationService
 
     /**
      * Security: Sanitize email subject to prevent header injection
-     * Removes newlines, carriage returns, and other control characters
+     * Removes newlines, carriage returns, control characters, and email header keywords
      */
     private function sanitizeEmailSubject(string $subject): string
     {
         // Remove newlines, carriage returns, and control characters
         $subject = preg_replace('/[\r\n\x00-\x1F\x7F]/', '', $subject);
+
+        // Remove potential email header injection keywords
+        $subject = preg_replace('/(Bcc|Cc|To|From|Subject|Content-Type|MIME-Version):/i', '', $subject);
 
         // Limit length to prevent overly long subjects
         $subject = mb_substr($subject, 0, 255);
