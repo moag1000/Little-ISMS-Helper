@@ -293,13 +293,23 @@ function initializeFrameworkButtons() {
                             <button class="btn btn-success btn-block" disabled>
                                 <span class="icon">✅</span> {{ 'compliance.successfully_loaded'|trans }}
                             </button>
-                            <a href="/{{ app.request.locale }}/compliance/framework/${result.framework_id}" class="btn btn-primary btn-block" style="margin-top: var(--spacing-sm);">
+                            <a href="/{{ app.request.locale }}/compliance/framework/${result.framework_id}" class="btn btn-primary btn-block" style="margin-top: var(--spacing-sm);"
+                               data-bs-toggle="tooltip" data-bs-placement="right"
+                               data-bs-title="Opens the framework dashboard with workflow steps, progress tracking, and recommended next actions">
                                 <span class="icon">🚀</span> Start Working →
                             </a>
-                            <button class="btn btn-secondary btn-block" onclick="window.location.reload()" style="margin-top: var(--spacing-sm);">
+                            <button class="btn btn-secondary btn-block" onclick="window.location.reload()" style="margin-top: var(--spacing-sm);"
+                                    data-bs-toggle="tooltip" data-bs-placement="right"
+                                    data-bs-title="Reload the page to see the framework in the loaded list">
                                 <span class="icon">🔄</span> {{ 'common.reload'|trans }}
                             </button>
                         `;
+
+                        // Re-initialize tooltips for newly created buttons
+                        var newTooltips = actionContainer.querySelectorAll('[data-bs-toggle="tooltip"]');
+                        newTooltips.forEach(function(el) {
+                            new bootstrap.Tooltip(el, { trigger: 'hover', html: false });
+                        });
                     } else {
                         // Fallback: Reload page after 2 seconds
                         setTimeout(() => {

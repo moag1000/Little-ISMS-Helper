@@ -186,7 +186,9 @@
                             {# Visual Slider #}
                             <input type="range" class="form-range" id="fulfillmentSlider"
                                    min="0" max="100" step="5" value="{{ requirement.fulfillmentPercentage }}"
-                                   style="cursor: pointer;">
+                                   style="cursor: pointer;"
+                                   data-bs-toggle="tooltip" data-bs-placement="top"
+                                   title="Drag to adjust how well this requirement is fulfilled (0-100%). Color indicates status: red < 50% < yellow < 75% < green.">
 
                             {# Hidden input for form submission #}
                             <input type="hidden" id="fulfillmentPercentage" name="fulfillmentPercentage" value="{{ requirement.fulfillmentPercentage }}">
@@ -200,24 +202,38 @@
 
                             {# Quick Preset Buttons #}
                             <div class="d-flex gap-1 mt-2">
-                                <button type="button" class="btn btn-sm btn-outline-secondary flex-fill" onclick="setFulfillment(0)">0%</button>
-                                <button type="button" class="btn btn-sm btn-outline-secondary flex-fill" onclick="setFulfillment(25)">25%</button>
-                                <button type="button" class="btn btn-sm btn-outline-secondary flex-fill" onclick="setFulfillment(50)">50%</button>
-                                <button type="button" class="btn btn-sm btn-outline-secondary flex-fill" onclick="setFulfillment(75)">75%</button>
-                                <button type="button" class="btn btn-sm btn-outline-success flex-fill" onclick="setFulfillment(100)">100%</button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary flex-fill" onclick="setFulfillment(0)"
+                                        data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                        title="Not started - No implementation yet">0%</button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary flex-fill" onclick="setFulfillment(25)"
+                                        data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                        title="Planning phase - Requirements analyzed, plan drafted">25%</button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary flex-fill" onclick="setFulfillment(50)"
+                                        data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                        title="In progress - Implementation started, partially complete">50%</button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary flex-fill" onclick="setFulfillment(75)"
+                                        data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                        title="Nearly complete - Most requirements met, minor gaps remain">75%</button>
+                                <button type="button" class="btn btn-sm btn-outline-success flex-fill" onclick="setFulfillment(100)"
+                                        data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                        title="Fully implemented - All aspects of this requirement are met">100%</button>
                             </div>
                         </div>
 
                         <div class="form-check mb-3">
                             <input class="form-check-input" type="checkbox" id="applicable" name="applicable" value="1"
-                                   {% if requirement.applicable %}checked{% endif %}>
+                                   {% if requirement.applicable %}checked{% endif %}
+                                   data-bs-toggle="tooltip" data-bs-placement="right"
+                                   title="Check if this requirement applies to your organization. Unchecked requirements won't count towards compliance percentage.">
                             <label class="form-check-label" for="applicable">
                                 <strong>Applicable</strong>
                                 <small class="d-block text-muted">This requirement applies to our organization</small>
                             </label>
                         </div>
 
-                        <button type="submit" class="btn btn-primary w-100">
+                        <button type="submit" class="btn btn-primary w-100"
+                                data-bs-toggle="tooltip" data-bs-placement="top"
+                                title="Save your changes and return to this page. You'll see a success message and can continue editing.">
                             <i class="bi bi-check-circle"></i> Save Quick Update
                         </button>
                     </form>
@@ -254,6 +270,17 @@
                         const btn = form.querySelector('button[type="submit"]');
                         btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Saving...';
                         btn.disabled = true;
+                    });
+
+                    // Initialize Bootstrap tooltips
+                    document.addEventListener('DOMContentLoaded', function() {
+                        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+                        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                            return new bootstrap.Tooltip(tooltipTriggerEl, {
+                                trigger: 'hover',
+                                html: false
+                            });
+                        });
                     });
                     </script>
                 </div>

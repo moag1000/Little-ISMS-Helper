@@ -50,7 +50,9 @@
             <p class="text-muted">Follow these steps to achieve 100% compliance</p>
         </div>
         <div class="workflow-steps">
-            <div class="workflow-step {% if dashboard.statistics.total > 0 %}completed{% endif %}">
+            <div class="workflow-step {% if dashboard.statistics.total > 0 %}completed{% endif %}"
+                 data-bs-toggle="tooltip" data-bs-placement="top"
+                 title="The framework has been successfully loaded into your system with all requirements.">
                 <div class="step-icon">{% if dashboard.statistics.total > 0 %}✅{% else %}1️⃣{% endif %}</div>
                 <div class="step-content">
                     <h3>Framework Loaded</h3>
@@ -58,39 +60,51 @@
                 </div>
             </div>
 
-            <div class="workflow-step {% if dashboard.statistics.applicable > 0 %}active{% endif %} {% if dashboard.statistics.applicable == dashboard.statistics.total %}completed{% endif %}">
+            <div class="workflow-step {% if dashboard.statistics.applicable > 0 %}active{% endif %} {% if dashboard.statistics.applicable == dashboard.statistics.total %}completed{% endif %}"
+                 data-bs-toggle="tooltip" data-bs-placement="top"
+                 title="Review each requirement and mark whether it applies to your organization. Non-applicable requirements won't count towards your compliance score.">
                 <div class="step-icon">{% if dashboard.statistics.applicable == dashboard.statistics.total %}✅{% else %}{% if dashboard.statistics.applicable > 0 %}🔄{% else %}2️⃣{% endif %}{% endif %}</div>
                 <div class="step-content">
                     <h3>Review & Mark Applicable</h3>
                     <p>{{ dashboard.statistics.applicable }} of {{ dashboard.statistics.total }} reviewed</p>
                     {% if dashboard.statistics.applicable < dashboard.statistics.total %}
-                        <a href="{{ path('app_compliance_requirement_index') }}?framework={{ framework.id }}" class="step-action">
+                        <a href="{{ path('app_compliance_requirement_index') }}?framework={{ framework.id }}" class="step-action"
+                           data-bs-toggle="tooltip" data-bs-placement="right"
+                           title="Opens the requirements list filtered by this framework">
                             → Review Requirements
                         </a>
                     {% endif %}
                 </div>
             </div>
 
-            <div class="workflow-step {% if dashboard.statistics.mapped > 0 %}active{% endif %} {% if dashboard.statistics.mapped == dashboard.statistics.applicable %}completed{% endif %}">
+            <div class="workflow-step {% if dashboard.statistics.mapped > 0 %}active{% endif %} {% if dashboard.statistics.mapped == dashboard.statistics.applicable %}completed{% endif %}"
+                 data-bs-toggle="tooltip" data-bs-placement="top"
+                 title="Link requirements to existing controls or create new controls to implement them. This shows how you're fulfilling each requirement.">
                 <div class="step-icon">{% if dashboard.statistics.mapped == dashboard.statistics.applicable %}✅{% else %}{% if dashboard.statistics.mapped > 0 %}🔄{% else %}3️⃣{% endif %}{% endif %}</div>
                 <div class="step-content">
                     <h3>Map to Controls</h3>
                     <p>{{ dashboard.statistics.mapped|default(0) }} of {{ dashboard.statistics.applicable }} requirements mapped</p>
                     {% if dashboard.gaps.total > 0 %}
-                        <a href="{{ path('app_compliance_requirement_index') }}?framework={{ framework.id }}&sort=fulfillment" class="step-action">
+                        <a href="{{ path('app_compliance_requirement_index') }}?framework={{ framework.id }}&sort=fulfillment" class="step-action"
+                           data-bs-toggle="tooltip" data-bs-placement="right"
+                           title="Shows requirements sorted by fulfillment (lowest first) so you can focus on gaps">
                             → Map Controls
                         </a>
                     {% endif %}
                 </div>
             </div>
 
-            <div class="workflow-step {% if dashboard.compliance_percentage >= 75 %}active{% endif %} {% if dashboard.compliance_percentage == 100 %}completed{% endif %}">
+            <div class="workflow-step {% if dashboard.compliance_percentage >= 75 %}active{% endif %} {% if dashboard.compliance_percentage == 100 %}completed{% endif %}"
+                 data-bs-toggle="tooltip" data-bs-placement="top"
+                 title="Reach 100% by implementing all applicable requirements. Track your progress and address any remaining gaps.">
                 <div class="step-icon">{% if dashboard.compliance_percentage == 100 %}✅{% else %}{% if dashboard.compliance_percentage >= 75 %}🔄{% else %}4️⃣{% endif %}{% endif %}</div>
                 <div class="step-content">
                     <h3>Achieve 100% Compliance</h3>
                     <p>Currently at {{ dashboard.compliance_percentage }}%</p>
                     {% if dashboard.compliance_percentage < 100 %}
-                        <a href="{{ path('app_compliance_gaps', {id: framework.id}) }}" class="step-action">
+                        <a href="{{ path('app_compliance_gaps', {id: framework.id}) }}" class="step-action"
+                           data-bs-toggle="tooltip" data-bs-placement="right"
+                           title="View detailed gap analysis with recommendations for improvement">
                             → View {{ dashboard.gaps.total }} Gaps
                         </a>
                     {% endif %}
@@ -816,4 +830,28 @@
     }
 }
 </style>
+
+<script>
+// Initialize Bootstrap tooltips
+document.addEventListener('DOMContentLoaded', function() {
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl, {
+            trigger: 'hover',
+            html: false
+        });
+    });
+});
+
+// Also initialize on Turbo/AJAX navigation (if used)
+document.addEventListener('turbo:load', function() {
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl, {
+            trigger: 'hover',
+            html: false
+        });
+    });
+});
+</script>
 {% endblock %}
