@@ -1,17 +1,22 @@
 {% extends 'admin/layout.html.twig' %}
 
-{% block title %}Benutzer bearbeiten - {{ user.fullName }}{% endblock %}
+{% block title %}{{ 'user.edit'|trans|default('Benutzer bearbeiten') }} - {{ user.fullName }}{% endblock %}
 
 {% block admin_content %}
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1><i class="bi bi-person-gear"></i> Benutzer bearbeiten</h1>
+        <h1>
+            <i class="bi bi-person-gear" aria-hidden="true"></i>
+            {{ 'user.edit'|trans|default('Benutzer bearbeiten') }}
+        </h1>
         <div>
             <a href="{{ path('user_management_show', {'id': user.id}) }}" class="btn btn-outline-info">
-                <i class="bi bi-eye"></i> Ansehen
+                <i class="bi bi-eye" aria-hidden="true"></i>
+                {{ 'common.view'|trans|default('Ansehen') }}
             </a>
             <a href="{{ path('user_management_index') }}" class="btn btn-outline-secondary">
-                <i class="bi bi-arrow-left"></i> Zurück
+                <i class="bi bi-arrow-left" aria-hidden="true"></i>
+                {{ 'common.back'|trans }}
             </a>
         </div>
     </div>
@@ -20,154 +25,17 @@
         <div class="col-md-8 offset-md-2">
             <div class="card">
                 <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">{{ user.fullName }} bearbeiten</h5>
+                    <h5 class="mb-0">{{ user.fullName }} {{ 'user.edit_suffix'|trans|default('bearbeiten') }}</h5>
                 </div>
                 <div class="card-body">
                     {{ form_start(form) }}
-
-                    {# Basic Information #}
-                    <h5 class="mb-3"><i class="bi bi-info-circle"></i> Grundinformationen</h5>
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            {{ form_row(form.firstName) }}
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            {{ form_row(form.lastName) }}
-                        </div>
-                    </div>
-
-                    <div class="mb-3">
-                        {{ form_row(form.email) }}
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            {{ form_row(form.department) }}
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            {{ form_row(form.jobTitle) }}
-                        </div>
-                    </div>
-
-                    <div class="mb-3">
-                        {{ form_row(form.phoneNumber) }}
-                    </div>
-
-                    <div class="mb-3">
-                        {{ form_row(form.avatarFile) }}
-                    </div>
-
-                    <hr class="my-4">
-
-                    {# Tenant Assignment #}
-                    <h5 class="mb-3"><i class="bi bi-building"></i> Mandantenzuordnung</h5>
-
-                    <div class="mb-3">
-                        {{ form_row(form.tenant) }}
-                    </div>
-
-                    <hr class="my-4">
-
-                    {# Authentication #}
-                    <h5 class="mb-3"><i class="bi bi-shield-lock"></i> Authentifizierung</h5>
-
-                    <div class="mb-3">
-                        <div class="alert alert-info">
-                            <i class="bi bi-info-circle"></i>
-                            <strong>Auth Provider:</strong>
-                            {% if user.authProvider == 'azure_oauth' %}
-                                Azure OAuth
-                            {% elseif user.authProvider == 'azure_saml' %}
-                                Azure SAML
-                            {% else %}
-                                Lokal
-                            {% endif %}
-                        </div>
-                    </div>
-
-                    <div class="mb-3">
-                        {{ form_row(form.plainPassword) }}
-                    </div>
-
-                    <hr class="my-4">
-
-                    {# Roles & Permissions #}
-                    <h5 class="mb-3"><i class="bi bi-shield"></i> Rollen & Berechtigungen</h5>
-
-                    <div class="mb-3">
-                        {{ form_label(form.roles) }}
-                        {% for child in form.roles %}
-                            <div class="form-check">
-                                {{ form_widget(child, {'attr': {'class': 'form-check-input'}}) }}
-                                {{ form_label(child, null, {'label_attr': {'class': 'form-check-label'}}) }}
-                            </div>
-                        {% endfor %}
-                        {{ form_help(form.roles) }}
-                        {{ form_errors(form.roles) }}
-                    </div>
-
-                    <div class="mb-3">
-                        {{ form_label(form.customRoles) }}
-                        {% if form.customRoles|length > 0 %}
-                            {% for child in form.customRoles %}
-                                <div class="form-check">
-                                    {{ form_widget(child, {'attr': {'class': 'form-check-input'}}) }}
-                                    {{ form_label(child, null, {'label_attr': {'class': 'form-check-label'}}) }}
-                                </div>
-                            {% endfor %}
-                        {% else %}
-                            <p class="text-muted">Keine benutzerdefinierten Rollen verfügbar.</p>
-                        {% endif %}
-                        {{ form_help(form.customRoles) }}
-                        {{ form_errors(form.customRoles) }}
-                    </div>
-
-                    <hr class="my-4">
-
-                    {# Status #}
-                    <h5 class="mb-3"><i class="bi bi-toggle-on"></i> Status</h5>
-                    <div class="mb-3">
-                        <div class="form-check form-switch">
-                            {{ form_widget(form.isActive) }}
-                            {{ form_label(form.isActive, null, {'label_attr': {'class': 'form-check-label'}}) }}
-                        </div>
-                        {{ form_help(form.isActive) }}
-                    </div>
-
-                    <div class="mb-3">
-                        <div class="form-check form-switch">
-                            {{ form_widget(form.isVerified) }}
-                            {{ form_label(form.isVerified, null, {'label_attr': {'class': 'form-check-label'}}) }}
-                        </div>
-                        {{ form_help(form.isVerified) }}
-                    </div>
-
-                    <hr class="my-4">
-
-                    {# Metadata #}
-                    <div class="alert alert-secondary">
-                        <small>
-                            <strong>Erstellt am:</strong> {{ user.createdAt|date('d.m.Y H:i') }}<br>
-                            {% if user.updatedAt %}
-                            <strong>Zuletzt geändert:</strong> {{ user.updatedAt|date('d.m.Y H:i') }}<br>
-                            {% endif %}
-                            {% if user.lastLoginAt %}
-                            <strong>Letzte Anmeldung:</strong> {{ user.lastLoginAt|date('d.m.Y H:i') }}
-                            {% endif %}
-                        </small>
-                    </div>
-
-                    <hr class="my-4">
-
-                    <div class="d-flex justify-content-between">
-                        <a href="{{ path('user_management_show', {'id': user.id}) }}" class="btn btn-secondary">
-                            <i class="bi bi-x-circle"></i> Abbrechen
-                        </a>
-                        <button type="submit" class="btn btn-primary">
-                            <i class="bi bi-save"></i> Änderungen speichern
-                        </button>
-                    </div>
-
+                        {% include 'user_management/_form.html.twig' with {
+                            'button_label': 'user.save_changes'|trans|default('Änderungen speichern'),
+                            'button_icon': 'bi-check-circle',
+                            'is_edit_mode': true,
+                            'user': user,
+                            'back_url': path('user_management_show', {'id': user.id})
+                        } %}
                     {{ form_end(form) }}
                 </div>
             </div>
