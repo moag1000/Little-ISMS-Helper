@@ -3,6 +3,40 @@
 
 {% block title %}Statement of Applicability - Little ISMS Helper{% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        /* Sticky table header with better visibility */
+        .table thead.sticky-top {
+            position: sticky;
+            top: 60px; /* Adjust based on your navbar height */
+            z-index: 10;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .table thead.sticky-top th {
+            background-color: #f8f9fa !important;
+            font-weight: 600;
+            border-bottom: 2px solid #dee2e6;
+            padding: 12px 8px;
+            white-space: nowrap;
+        }
+
+        /* Better table container */
+        .table-container {
+            position: relative;
+            max-height: 800px;
+            overflow-y: auto;
+            margin-top: 1rem;
+        }
+
+        /* Improve readability */
+        .table tbody tr:hover {
+            background-color: #f1f3f5;
+        }
+    </style>
+{% endblock %}
+
 {% block body %}
 <div class="page-header">
     <div>
@@ -197,20 +231,20 @@
 </div>
 
 <div class="table-container">
-    <table>
-        <thead>
+    <table class="table table-hover">
+        <thead class="table-light sticky-top">
             <tr>
-                <th scope="col">Control ID</th>
-                <th scope="col">Name</th>
-                <th scope="col">Kategorie</th>
-                <th scope="col" class="text-center">Anwendbar</th>
-                <th scope="col">Implementierungsstatus</th>
-                <th scope="col" class="text-center">Fortschritt</th>
-                <th scope="col" class="text-center">Aktionen</th>
+                <th scope="col" style="min-width: 100px;">Control ID</th>
+                <th scope="col" style="min-width: 250px;">Name</th>
+                <th scope="col" style="min-width: 120px;">Kategorie</th>
+                <th scope="col" class="text-center" style="min-width: 100px;">Anwendbar</th>
+                <th scope="col" style="min-width: 150px;">Implementierungsstatus</th>
+                <th scope="col" class="text-center" style="min-width: 120px;">Fortschritt</th>
+                <th scope="col" class="text-center" style="min-width: 180px;">Aktionen</th>
             </tr>
         </thead>
         <tbody>
-            {% for control in controls|sort((a, b) => a.controlId <=> b.controlId) %}
+            {% for control in controls %}
             <tr data-filter-target="filterableRow" data-category="{{ control.category }}" data-status="{{ control.implementationStatus }}">
                 <td><strong>{{ control.controlId }}</strong></td>
                 <td>

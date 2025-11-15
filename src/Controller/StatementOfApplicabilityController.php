@@ -49,8 +49,12 @@ class StatementOfApplicabilityController extends AbstractController
                     break;
             }
 
-            // Sort by ISO order
-            usort($controls, fn($a, $b) => strcmp($a->getIsoReference() ?? '', $b->getIsoReference() ?? ''));
+            // Sort by ISO order using natural sort for proper numeric ordering (A.5.2 before A.5.10)
+            usort($controls, function($a, $b) {
+                $aRef = $a->getIsoReference() ?? $a->getControlId() ?? '';
+                $bRef = $b->getIsoReference() ?? $b->getControlId() ?? '';
+                return strnatcmp($aRef, $bRef);
+            });
 
             $inheritanceInfo = [
                 'hasParent' => $tenant->getParent() !== null,
