@@ -1,0 +1,92 @@
+{#
+    Accessible Form Field Component
+
+    This component provides WCAG 2.1 AA compliant form field rendering with:
+    - Proper ARIA attributes (aria-invalid, aria-describedby, aria-required)
+    - Error message association
+    - Help text association
+    - Clear visual and programmatic error states
+
+    Usage:
+        {% include '_components/_form_field.html.twig' with {
+            'field': form.fieldName,
+            'label': 'form.label.fieldName'|trans,
+            'help': 'form.help.fieldName'|trans,
+            'required': true
+        } %}
+
+    @param field      FormView  The form field to render
+    @param label      string    The label text (already translated)
+    @param help       string    Optional help text (already translated)
+    @param required   boolean   Whether the field is required
+    @param type       string    Input type override (default: from field)
+#}
+
+{% set field_id = field.vars.id %}
+{% set field_name = field.vars.full_name %}
+{% set has_errors = field.vars.errors|length > 0 %}
+{% set is_required = required|default(field.vars.required) %}
+
+<div class="form-group mb-3">
+    {# Label with required indicator #}
+    <label for="{{ field_id }}" class="form-label">
+        {{ label }}
+        {% if is_required %}
+            <span class="text-danger" aria-label="{{ 'form.required'|trans }}">*</span>
+        {% endif %}
+    </label>
+
+    {# Help text (if provided) #}
+    {% if help is defined and help %}
+        <div id="{{ field_id }}_help" class="form-text text-muted">
+            <i class="bi bi-info-circle" aria-hidden="true"></i>
+            {{ help }}
+        </div>
+    {% endif %}
+
+    {# Input field with ARIA attributes #}
+    <div class="input-wrapper">
+        {{ form_widget(field, {
+            'attr': {
+                'class': (field.vars.attr.class|default('') ~ (has_errors ? ' is-invalid' : ''))|trim,
+                'aria-invalid': has_errors ? 'true' : 'false',
+                'aria-describedby': [
+                    help is defined and help ? field_id ~ '_help',
+                    has_errors ? field_id ~ '_error'
+                ]|filter(v => v)|join(' ')|default(null),
+                'aria-required': is_required ? 'true' : 'false'
+            }
+        }) }}
+    </div>
+
+    {# Error messages with ARIA live region #}
+    {% if has_errors %}
+        <div id="{{ field_id }}_error" class="invalid-feedback d-block" role="alert" aria-live="assertive">
+            <i class="bi bi-exclamation-circle" aria-hidden="true"></i>
+            {% for error in field.vars.errors %}
+                <span class="error-message">{{ error.message }}</span>
+                {% if not loop.last %}<br>{% endif %}
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+
+{#
+    Accessibility Features Implemented:
+
+    1. aria-invalid: Indicates validation state to screen readers
+    2. aria-describedby: Links help text and error messages to input
+    3. aria-required: Announces required fields to screen readers
+    4. role="alert": Error messages are announced immediately
+    5. aria-live="assertive": Ensures errors interrupt screen reader flow
+    6. aria-label: Required indicator has semantic meaning
+    7. Visual indicators: Icons are marked aria-hidden (decorative)
+    8. Unique IDs: All helper elements have unique IDs for association
+
+    WCAG 2.1 Criteria Met:
+    - 1.3.1 Info and Relationships (Level A)
+    - 3.3.1 Error Identification (Level A)
+    - 3.3.2 Labels or Instructions (Level A)
+    - 3.3.3 Error Suggestion (Level AA)
+    - 4.1.3 Status Messages (Level AA)
+#}
