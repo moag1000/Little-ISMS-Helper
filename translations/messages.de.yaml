@@ -1185,6 +1185,14 @@ document:
   section:
     basic_info: 'Dokumentinformationen'
     file_upload: 'Datei-Upload'
+    all_documents: 'Alle Dokumente'
+    all_types: 'Alle Typen'
+    documents: 'Dokumente'
+    recent_activity: 'Letzte Aktivitäten'
+    select_type: 'Typ auswählen'
+    type_overview: 'Typübersicht'
+    type_statistics: 'Typ-Statistiken'
+    types_overview: 'Typen-Übersicht'
 
   field:
     name: Dokumentname
@@ -1292,16 +1300,6 @@ document:
 
   option:
     all_types: 'Alle Typen'
-
-  section:
-    all_documents: 'Alle Dokumente'
-    all_types: 'Alle Typen'
-    documents: 'Dokumente'
-    recent_activity: 'Letzte Aktivitäten'
-    select_type: 'Typ auswählen'
-    type_overview: 'Typübersicht'
-    type_statistics: 'Typ-Statistiken'
-    types_overview: 'Typen-Übersicht'
 
   stats:
     active_documents: 'Aktive Dokumente'
