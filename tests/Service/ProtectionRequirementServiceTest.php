@@ -167,23 +167,21 @@ class ProtectionRequirementServiceTest extends TestCase
 
         $incident = $this->createMock(Incident::class);
 
-        $queryBuilder = $this->createMock(QueryBuilder::class);
-        $query = $this->createMock(Query::class);
-
-        $queryBuilder->method('where')->willReturnSelf();
-        $queryBuilder->method('andWhere')->willReturnSelf();
-        $queryBuilder->method('setParameter')->willReturnSelf();
-        $queryBuilder->method('getQuery')->willReturn($query);
-
         // Incidents query returns 1 breach
-        $incidentQueryBuilder = clone $queryBuilder;
+        $incidentQueryBuilder = $this->createMock(QueryBuilder::class);
         $incidentQuery = $this->createMock(Query::class);
+        $incidentQueryBuilder->method('where')->willReturnSelf();
+        $incidentQueryBuilder->method('andWhere')->willReturnSelf();
+        $incidentQueryBuilder->method('setParameter')->willReturnSelf();
         $incidentQueryBuilder->method('getQuery')->willReturn($incidentQuery);
         $incidentQuery->method('getResult')->willReturn([$incident]);
 
         // Risks query returns empty
-        $riskQueryBuilder = clone $queryBuilder;
+        $riskQueryBuilder = $this->createMock(QueryBuilder::class);
         $riskQuery = $this->createMock(Query::class);
+        $riskQueryBuilder->method('where')->willReturnSelf();
+        $riskQueryBuilder->method('andWhere')->willReturnSelf();
+        $riskQueryBuilder->method('setParameter')->willReturnSelf();
         $riskQueryBuilder->method('getQuery')->willReturn($riskQuery);
         $riskQuery->method('getResult')->willReturn([]);
 
@@ -210,23 +208,21 @@ class ProtectionRequirementServiceTest extends TestCase
         $risk2 = $this->createMock(Risk::class);
         $risk3 = $this->createMock(Risk::class);
 
-        $queryBuilder = $this->createMock(QueryBuilder::class);
-        $query = $this->createMock(Query::class);
-
-        $queryBuilder->method('where')->willReturnSelf();
-        $queryBuilder->method('andWhere')->willReturnSelf();
-        $queryBuilder->method('setParameter')->willReturnSelf();
-        $queryBuilder->method('getQuery')->willReturn($query);
-
         // Incidents query returns empty
-        $incidentQueryBuilder = clone $queryBuilder;
+        $incidentQueryBuilder = $this->createMock(QueryBuilder::class);
         $incidentQuery = $this->createMock(Query::class);
+        $incidentQueryBuilder->method('where')->willReturnSelf();
+        $incidentQueryBuilder->method('andWhere')->willReturnSelf();
+        $incidentQueryBuilder->method('setParameter')->willReturnSelf();
         $incidentQueryBuilder->method('getQuery')->willReturn($incidentQuery);
         $incidentQuery->method('getResult')->willReturn([]);
 
         // Risks query returns 3 risks
-        $riskQueryBuilder = clone $queryBuilder;
+        $riskQueryBuilder = $this->createMock(QueryBuilder::class);
         $riskQuery = $this->createMock(Query::class);
+        $riskQueryBuilder->method('where')->willReturnSelf();
+        $riskQueryBuilder->method('andWhere')->willReturnSelf();
+        $riskQueryBuilder->method('setParameter')->willReturnSelf();
         $riskQueryBuilder->method('getQuery')->willReturn($riskQuery);
         $riskQuery->method('getResult')->willReturn([$risk1, $risk2, $risk3]);
 
