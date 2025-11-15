@@ -371,4 +371,68 @@ class DocumentController extends AbstractController
             'total' => $ownCount + $inheritedCount + $subsidiariesCount
         ];
     }
+
+    #[Route('/bulk-delete', name: 'app_document_bulk_delete', methods: ['POST'])]
+    #[IsGranted('ROLE_ADMIN')]
+    public function bulkDelete(Request $request): Response
+    {
+        $data = json_decode($request->getContent(), true);
+        $ids = $data['ids'] ?? [];
+
+        if (empty($ids)) {
+            return $this->json(['error' => 'No items selected'], 400);
+        }
+
+        $user = $this->security->getUser();
+        $tenant = $user?->getTenant();
+
+        $deleted = 0;
+        $errors = [];
+
+        foreach ($ids as $id) {
+            try {
+                $document = $this->documentRepository->find($id);
+
+                if (!$document) {
+                    $errors[] = "Document ID $id not found";
+                    continue;
+                }
+
+                // Security check: only allow deletion of own tenant's documents
+                if ($tenant && $document->getTenant() !== $tenant) {
+                    $errors[] = "Document ID $id does not belong to your organization";
+                    continue;
+                }
+
+                // Delete physical file if exists
+                $filePath = $document->getFilePath();
+                if ($filePath && file_exists($filePath)) {
+                    @unlink($filePath);
+                }
+
+                $this->entityManager->remove($document);
+                $deleted++;
+            } catch (\Exception $e) {
+                $errors[] = "Error deleting document ID $id: " . $e->getMessage();
+            }
+        }
+
+        if ($deleted > 0) {
+            $this->entityManager->flush();
+        }
+
+        if (!empty($errors)) {
+            return $this->json([
+                'success' => $deleted > 0,
+                'deleted' => $deleted,
+                'errors' => $errors
+            ], $deleted > 0 ? 200 : 400);
+        }
+
+        return $this->json([
+            'success' => true,
+            'deleted' => $deleted,
+            'message' => "$deleted documents deleted successfully"
+        ]);
+    }
 }
