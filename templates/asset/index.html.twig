@@ -127,7 +127,7 @@
 </div>
 
 {# Assets Table #}
-<div class="card">
+<div class="card" data-controller="bulk-actions" data-bulk-actions-endpoint-value="/asset">
     <div class="card-header">
         <h5><i class="bi bi-list"></i> {{ 'asset.list.title'|trans }} ({{ assets|length }})</h5>
     </div>
@@ -135,6 +135,13 @@
         <table class="table table-hover mb-0">
             <thead>
                 <tr>
+                    <th scope="col" class="w-40px">
+                        <input type="checkbox"
+                               class="form-check-input"
+                               data-action="bulk-actions#selectAll"
+                               data-bulk-actions-target="selectAllCheckbox"
+                               aria-label="{{ 'common.select_all'|trans }}">
+                    </th>
                     <th scope="col">{{ 'asset.label.name'|trans }}</th>
                     <th scope="col">{{ 'asset.label.type'|trans }}</th>
                     <th scope="col">{{ 'asset.label.owner'|trans }}</th>
@@ -147,7 +154,15 @@
             </thead>
             <tbody>
                 {% for asset in assets %}
-                <tr>
+                <tr data-asset-id="{{ asset.id }}">
+                    <td>
+                        <input type="checkbox"
+                               class="form-check-input"
+                               data-bulk-actions-target="item"
+                               data-action="bulk-actions#selectItem"
+                               value="{{ asset.id }}"
+                               aria-label="{{ 'common.select'|trans }} {{ asset.name }}">
+                    </td>
                     <td>
                         <strong>{{ asset.name }}</strong>
                         {{ inheritance.small_badge(asset, currentTenant) }}
@@ -217,6 +232,13 @@
             </tbody>
         </table>
     </div>
+
+    {# Bulk Action Bar #}
+    {% if assets|length > 0 %}
+    {% include '_components/_bulk_action_bar.html.twig' with {
+        actions: ['export', 'delete']
+    } %}
+    {% endif %}
 </div>
 
 <style>
