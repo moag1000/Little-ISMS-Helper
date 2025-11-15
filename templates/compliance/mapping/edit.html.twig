@@ -1,0 +1,97 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Mapping{% endblock %}
+
+{% block body %}
+<div class="container-fluid mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="bi bi-pencil"></i> Edit Mapping</h1>
+        <div>
+            <a href="{{ path('app_compliance_mapping_show', {id: mapping.id}) }}" class="btn btn-outline-secondary">
+                <i class="bi bi-eye"></i> View
+            </a>
+            <a href="{{ path('app_compliance_mapping_index') }}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Back to List
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    {{ form_start(form) }}
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            {{ form_row(form.sourceRequirement) }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form_row(form.targetRequirement) }}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            {{ form_row(form.mappingPercentage) }}
+                        </div>
+                        <div class="col-md-4">
+                            {{ form_row(form.mappingType) }}
+                        </div>
+                        <div class="col-md-4">
+                            {{ form_row(form.confidence) }}
+                        </div>
+                    </div>
+
+                    {{ form_row(form.mappingRationale) }}
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            {{ form_row(form.bidirectional) }}
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between mt-4">
+                        <a href="{{ path('app_compliance_mapping_show', {id: mapping.id}) }}" class="btn btn-secondary">
+                            <i class="bi bi-x-circle"></i> Cancel
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-save"></i> Save Changes
+                        </button>
+                    </div>
+
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0">Current Mapping</h6>
+                </div>
+                <div class="card-body">
+                    <p class="small">
+                        <strong>Source:</strong><br>
+                        {{ mapping.sourceRequirement.framework.code }} - {{ mapping.sourceRequirement.requirementId }}
+                    </p>
+                    <p class="small">
+                        <strong>Target:</strong><br>
+                        {{ mapping.targetRequirement.framework.code }} - {{ mapping.targetRequirement.requirementId }}
+                    </p>
+                    <p class="small">
+                        <strong>Current Type:</strong>
+                        <span class="badge bg-{{ mapping.mappingBadgeClass }}">{{ mapping.mappingType }}</span>
+                    </p>
+                    {% if mapping.isAnalyzed %}
+                        <p class="small">
+                            <strong>Calculated:</strong> {{ mapping.calculatedPercentage }}%<br>
+                            <strong>Analysis Confidence:</strong> {{ mapping.analysisConfidence }}%
+                        </p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

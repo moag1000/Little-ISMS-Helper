@@ -1,0 +1,237 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ requirement.requirementId }} - {{ requirement.title }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="bi bi-list-check"></i> {{ requirement.requirementId }}</h1>
+        <div>
+            <a href="{{ path('app_compliance_requirement_edit', {id: requirement.id}) }}" class="btn btn-secondary">
+                <i class="bi bi-pencil"></i> Edit
+            </a>
+            <a href="{{ path('app_compliance_requirement_index') }}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Back to List
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            {# Main Information #}
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Requirement Details</h5>
+                </div>
+                <div class="card-body">
+                    <h4>{{ requirement.title }}</h4>
+
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <p><strong>Framework:</strong>
+                                <a href="{{ path('app_compliance_framework', {id: requirement.framework.id}) }}">
+                                    {{ requirement.framework.name }}
+                                </a>
+                            </p>
+                            <p><strong>Requirement ID:</strong> <code>{{ requirement.requirementId }}</code></p>
+                            <p><strong>Category:</strong> {{ requirement.category|default('-') }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Priority:</strong>
+                                {% set priorityClass = requirement.priority == 'critical' ? 'danger' : (requirement.priority == 'high' ? 'warning' : 'secondary') %}
+                                <span class="badge bg-{{ priorityClass }}">{{ requirement.priority }}</span>
+                            </p>
+                            <p><strong>Type:</strong> <span class="badge bg-info">{{ requirement.requirementType }}</span></p>
+                            <p><strong>Applicable:</strong>
+                                {% if requirement.applicable %}
+                                    <span class="badge bg-success">Yes</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">No</span>
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <h5>Description</h5>
+                    <p class="text-muted">{{ requirement.description }}</p>
+
+                    {% if requirement.applicabilityJustification %}
+                        <h5 class="mt-3">Applicability Justification</h5>
+                        <p class="text-muted">{{ requirement.applicabilityJustification }}</p>
+                    {% endif %}
+
+                    {% if requirement.evidenceDescription %}
+                        <h5 class="mt-3">Evidence Description</h5>
+                        <p class="text-muted">{{ requirement.evidenceDescription }}</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            {# Mapped Controls #}
+            {% if requirement.mappedControls|length > 0 %}
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="bi bi-link-45deg"></i> Mapped Controls ({{ requirement.mappedControls|length }})</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Control ID</th>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">Status</th>
+                                        <th scope="col">Progress</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for control in requirement.mappedControls %}
+                                        <tr>
+                                            <td><code>{{ control.controlId }}</code></td>
+                                            <td>{{ control.name }}</td>
+                                            <td>
+                                                <span class="badge bg-secondary">{{ control.implementationStatus }}</span>
+                                            </td>
+                                            <td>{{ control.implementationPercentage|default(0) }}%</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+            {# Detailed Sub-Requirements #}
+            {% if requirement.detailedRequirements|length > 0 %}
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="bi bi-diagram-3"></i> Detailed Sub-Requirements ({{ requirement.detailedRequirements|length }})</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group">
+                            {% for subReq in requirement.detailedRequirements %}
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong>{{ subReq.requirementId }}</strong> - {{ subReq.title }}
+                                        <br>
+                                        <small class="text-muted">{{ subReq.description|u.truncate(100, '...') }}</small>
+                                    </div>
+                                    <div>
+                                        <span class="badge bg-{{ subReq.fulfillmentStatusBadge }} rounded-pill">
+                                            {{ subReq.fulfillmentPercentage }}%
+                                        </span>
+                                    </div>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="col-md-4">
+            {# Fulfillment Status #}
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Fulfillment Status</h5>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-3">
+                        <div class="progress" style="height: 30px;">
+                            <div class="progress-bar bg-{{ requirement.fulfillmentStatusBadge }}"
+                                 role="progressbar"
+                                 style="width: {{ requirement.fulfillmentPercentage }}%"
+                                 aria-valuenow="{{ requirement.fulfillmentPercentage }}"
+                                 aria-valuemin="0"
+                                 aria-valuemax="100">
+                                <strong>{{ requirement.fulfillmentPercentage }}%</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% if calculated_fulfillment != requirement.fulfillmentPercentage %}
+                        <div class="alert alert-info">
+                            <small><i class="bi bi-calculator"></i> Calculated from controls: <strong>{{ calculated_fulfillment }}%</strong></small>
+                        </div>
+                    {% endif %}
+
+                    {% if requirement.fulfillmentNotes %}
+                        <h6 class="mt-3">Notes</h6>
+                        <p class="text-muted small">{{ requirement.fulfillmentNotes }}</p>
+                    {% endif %}
+
+                    {# Quick Update Form #}
+                    <form method="post" action="{{ path('app_compliance_requirement_quick_update', {id: requirement.id}) }}" class="mt-3">
+                        <input type="hidden" name="_token" value="{{ csrf_token('quick-update' ~ requirement.id) }}">
+
+                        <div class="mb-3">
+                            <label for="fulfillmentPercentage" class="form-label">Update Fulfillment %</label>
+                            <input type="number" class="form-control" id="fulfillmentPercentage" name="fulfillmentPercentage"
+                                   value="{{ requirement.fulfillmentPercentage }}" min="0" max="100">
+                        </div>
+
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="applicable" name="applicable" value="1"
+                                   {% if requirement.applicable %}checked{% endif %}>
+                            <label class="form-check-label" for="applicable">
+                                Applicable
+                            </label>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-sm w-100">
+                            <i class="bi bi-check-circle"></i> Quick Update
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            {# Metadata #}
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Metadata</h5>
+                </div>
+                <div class="card-body">
+                    <p><small><strong>Responsible:</strong> {{ requirement.responsiblePerson|default('-') }}</small></p>
+                    <p><small><strong>Target Date:</strong>
+                        {% if requirement.targetDate %}
+                            {{ requirement.targetDate|date('Y-m-d') }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </small></p>
+                    <p><small><strong>Last Assessment:</strong>
+                        {% if requirement.lastAssessmentDate %}
+                            {{ requirement.lastAssessmentDate|date('Y-m-d') }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </small></p>
+                    <p><small><strong>Created:</strong> {{ requirement.createdAt|date('Y-m-d H:i') }}</small></p>
+                    {% if requirement.updatedAt %}
+                        <p><small><strong>Updated:</strong> {{ requirement.updatedAt|date('Y-m-d H:i') }}</small></p>
+                    {% endif %}
+                </div>
+            </div>
+
+            {# Delete Button #}
+            <div class="card border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h6 class="mb-0">Danger Zone</h6>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="{{ path('app_compliance_requirement_delete', {id: requirement.id}) }}"
+                          onsubmit="return confirm('Are you sure you want to delete this requirement?');">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ requirement.id) }}">
+                        <button type="submit" class="btn btn-danger btn-sm w-100">
+                            <i class="bi bi-trash"></i> Delete Requirement
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
