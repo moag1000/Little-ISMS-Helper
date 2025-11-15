@@ -26,7 +26,7 @@ services:
       mailer:
         condition: service_healthy
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost/ || exit 1"]
+      test: ["CMD-SHELL", "curl -f -s http://localhost/login || curl -f -s http://localhost/ || exit 1"]
       interval: 10s
       timeout: 10s
       retries: 10
@@ -77,9 +77,10 @@ services:
     container_name: isms-pgadmin
     restart: unless-stopped
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@isms.local
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
       PGADMIN_DEFAULT_PASSWORD: admin
       PGADMIN_CONFIG_SERVER_MODE: 'False'
+      PGADMIN_DISABLE_POSTFIX: 'true'
     volumes:
       - pgadmin_data:/var/lib/pgadmin
     ports:
