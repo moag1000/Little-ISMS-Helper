@@ -10,7 +10,7 @@ use App\Repository\IncidentRepository;
 use App\Service\RiskIntelligenceService;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\QueryBuilder;
-use Doctrine\ORM\AbstractQuery;
+use Doctrine\ORM\Query;
 use PHPUnit\Framework\TestCase;
 
 class RiskIntelligenceServiceTest extends TestCase
@@ -243,7 +243,7 @@ class RiskIntelligenceServiceTest extends TestCase
         $risk->method('getControls')->willReturn(new ArrayCollection());
 
         $queryBuilder = $this->createMock(QueryBuilder::class);
-        $query = $this->createMock(AbstractQuery::class);
+        $query = $this->createMock(Query::class);
 
         $queryBuilder->method('where')->willReturnSelf();
         $queryBuilder->method('setParameter')->willReturnSelf();
@@ -278,7 +278,7 @@ class RiskIntelligenceServiceTest extends TestCase
         $risk->method('getControls')->willReturn(new ArrayCollection()); // No existing controls
 
         $queryBuilder = $this->createMock(QueryBuilder::class);
-        $query = $this->createMock(AbstractQuery::class);
+        $query = $this->createMock(Query::class);
 
         $queryBuilder->method('where')->willReturnSelf();
         $queryBuilder->method('setParameter')->willReturnSelf();
@@ -309,13 +309,11 @@ class RiskIntelligenceServiceTest extends TestCase
         $risk = $this->createMock(Risk::class);
         $risk->method('getImpact')->willReturn(3);
         $risk->method('getDescription')->willReturn('Test risk');
-        // Risk already has this control
-        $existingControls = new ArrayCollection([$control]);
-        $existingControls->method('contains')->with($control)->willReturn(true);
-        $risk->method('getControls')->willReturn($existingControls);
+        // Risk already has this control - ArrayCollection's contains() will return true automatically
+        $risk->method('getControls')->willReturn(new ArrayCollection([$control]));
 
         $queryBuilder = $this->createMock(QueryBuilder::class);
-        $query = $this->createMock(AbstractQuery::class);
+        $query = $this->createMock(Query::class);
 
         $queryBuilder->method('where')->willReturnSelf();
         $queryBuilder->method('setParameter')->willReturnSelf();
