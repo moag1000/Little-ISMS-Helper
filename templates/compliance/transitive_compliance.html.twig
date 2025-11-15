@@ -165,11 +165,11 @@
             <table class="table-full-collapse">
                 <thead>
                     <tr class="bg-alt">
-                        <th class="th-sticky-left">
+                        <th scope="col" class="th-sticky-left">
                             Von → Nach
                         </th>
                         {% for framework in frameworks %}
-                            <th class="th-center">
+                            <th scope="col" class="th-center">
                                 {{ framework.code }}
                             </th>
                         {% endfor %}

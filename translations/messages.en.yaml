@@ -407,6 +407,7 @@ common:
   last_updated: Last Updated
   loading: Loading...
   never: Never
+  entries: 'Entries'
   not_applicable: Not Applicable
   not_approved: Not Approved
   not_assigned: Not Assigned
@@ -1175,6 +1176,10 @@ document:
   update: 'Update Document'
   upload: 'Upload Document'
 
+  section:
+    basic_info: 'Document Information'
+    file_upload: 'File Upload'
+
   field:
     name: Document Name
     description: Description
@@ -1199,7 +1204,12 @@ document:
     description: Brief description of the document...
 
   help:
-    file: Maximum 10 MB. Allowed formats PDF, Word, Excel, images, text
+    name: 'Unique name of the document'
+    description: 'Detailed description of the document content and purpose'
+    document_type: 'Category of the document (Policy, Procedure, etc.)'
+    file: 'Choose a file to upload'
+    file_edit: 'Upload new file (optional)'
+    edit_file: 'Leave blank to keep the existing file'
 
   file_help: 'Allowed file types: PDF, Word, Excel, Images, Text'
   edit_file_help: 'Upload a new file to replace the existing one'
@@ -1244,6 +1254,8 @@ document:
 
   confirm:
     delete: 'Do you really want to delete this document?'
+
+  delete_warning: 'Deleting this document cannot be undone.'
 
   description:
     by_type: 'Documents by Type'
@@ -2152,6 +2164,19 @@ user:
   name: Name
   email: Email
   department: Department
+  new: 'New User'
+  edit: 'Edit User'
+  create: 'Create User'
+  save_changes: 'Save Changes'
+  edit_suffix: 'edit'
+
+  section:
+    basic_info: 'Basic Information'
+    tenant: 'Tenant Assignment'
+    authentication: 'Authentication'
+    roles: 'Roles & Permissions'
+    status: 'Status'
+
   field:
     first_name: First Name
     last_name: Last Name
@@ -2163,11 +2188,37 @@ user:
     avatar_help: Profile picture (max. 2MB, JPG/PNG/GIF/WebP)
     password: Password
     system_roles: System Roles
-    custom_roles: Custom Roles
+    roles: 'System Roles'
+    custom_roles: 'Custom Roles'
     tenant: Tenant
     tenant_help: Assign the user to a tenant
     active: Active
+    is_active: 'Active'
+    is_verified: 'Verified'
     email_verified: Email Verified
+    auth_provider: 'Auth Provider'
+    created_at: 'Created at'
+    updated_at: 'Last updated'
+    last_login: 'Last login'
+
+  help:
+    first_name: 'User first name'
+    last_name: 'User last name'
+    email: 'Email address for login and communication'
+    department: 'User organizational unit'
+    job_title: 'User function or position'
+    phone_number: 'Contact phone number'
+    avatar: 'Upload profile picture (optional)'
+    tenant: 'Tenant this user is assigned to'
+    password: 'Secure password for the user'
+    password_edit: 'Leave blank to keep the current password'
+
+  auth_provider:
+    local: 'Local'
+
+  message:
+    no_custom_roles: 'No custom roles available.'
+
   placeholder:
     tenant: Not assigned to any tenant
   error:
@@ -3862,6 +3913,20 @@ form:
   conduct_risk_analysis: Conduct risk analysis
   document_policies: Document policies
   plan_awareness_training: Plan awareness training
+  required: 'Required field'
+  optional: 'Optional'
+  action:
+    save: 'Save'
+    cancel: 'Cancel'
+    submit: 'Submit'
+    delete: 'Delete'
+    edit: 'Edit'
+    create: 'Create'
+  validation:
+    required_field: 'This field is required'
+    invalid_format: 'Invalid format'
+    too_short: 'Too short (min. %min% characters)'
+    too_long: 'Too long (max. %max% characters)'
 corporate:
   title: 'Corporate Structure'
   subtitle: 'Management of parent companies and subsidiaries'
@@ -3987,3 +4052,90 @@ governance:
   hierarchical: 'Hierarchical'
   shared: 'Shared'
   independent: 'Independent'
+
+# Accessibility
+accessibility:
+  skip_to_content: 'Skip to main content'
+  skip_to_navigation: 'Skip to navigation'
+
+# Bulk Delete Confirmation
+bulk_delete:
+  confirm:
+    title: 'Confirm Deletion'
+    warning: 'This action cannot be undone.'
+  selection:
+    title: 'Selected Entries'
+  dependencies:
+    title: 'Affected Dependencies'
+    list: 'List of affected dependencies'
+  loading: 'Checking dependencies...'
+
+  section:
+    basic_info: 'Basic Information'
+    assignment: 'Assignment'
+    financial: 'Financial Information'
+    cia_values: 'CIA Assessment (Protection Requirements)'
+  field:
+    name: 'Name'
+    type: 'Asset Type'
+    description: 'Description'
+    owner: 'Owner'
+    location: 'Location'
+    acquisition_value: 'Acquisition Value'
+    current_value: 'Current Value'
+    confidentiality: 'Confidentiality'
+    integrity: 'Integrity'
+    availability: 'Availability'
+  help:
+    name: 'Unique name of the asset'
+    type: 'Category of the asset (Hardware, Software, Data, etc.)'
+    description: 'Detailed description of the asset and its function'
+    owner: 'Responsible person for this asset'
+    location: 'Physical or logical location of the asset'
+    acquisition_value: 'Original purchase price or acquisition costs'
+    current_value: 'Estimated current market value'
+    confidentiality: 'Protection requirement regarding confidentiality of information'
+    integrity: 'Protection requirement regarding integrity and correctness of data'
+    availability: 'Protection requirement regarding constant accessibility and usability'
+  cia_help: 'Rate the protection requirements for Confidentiality, Integrity and Availability (1=very low, 5=very high)'
+  delete_warning: 'Deleting this asset cannot be undone. All associated risks and controls will also be removed.'
+  section:
+    basic_info: 'Basic Information'
+    inherent_risk: 'Inherent Risk (without Controls)'
+    residual_risk: 'Residual Risk (with Controls)'
+    treatment: 'Risk Treatment'
+    acceptance: 'Risk Acceptance'
+    status: 'Status and Review'
+  field:
+    title: 'Title'
+    asset: 'Affected Asset'
+    description: 'Description'
+    threat: 'Threat'
+    vulnerability: 'Vulnerability'
+    probability: 'Probability'
+    impact: 'Impact'
+    residual_probability: 'Residual Probability'
+    residual_impact: 'Residual Impact'
+    treatment_strategy: 'Treatment Strategy'
+    risk_owner: 'Risk Owner'
+    treatment_description: 'Treatment Plan'
+    acceptance_approved_by: 'Approved By'
+    acceptance_approved_at: 'Approval Date'
+  help:
+    title: 'Short, concise title of the risk'
+    asset: 'Asset affected by this risk'
+    description: 'Detailed description of the risk and its potential impacts'
+    threat: 'What threat could trigger this risk?'
+    vulnerability: 'What vulnerability could be exploited?'
+    probability: 'How likely is it to occur? (1=very unlikely, 5=very likely)'
+    impact: 'How severe would the damage be? (1=minimal, 5=catastrophal)'
+    residual_probability: 'Remaining probability after controls'
+    residual_impact: 'Remaining impact after controls'
+    treatment_strategy: 'How should this risk be handled?'
+    risk_owner: 'Person responsible for treating this risk'
+    treatment_description: 'Detailed description of planned measures'
+    acceptance_approved_by: 'Person who approved the risk acceptance'
+    acceptance_approved_at: 'Date of risk acceptance approval'
+    inherent: 'Assessment of risk without existing security measures'
+    residual: 'Assessment of risk after applying security measures'
+  delete_warning: 'Deleting this risk cannot be undone.'

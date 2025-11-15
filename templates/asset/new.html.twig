@@ -3,95 +3,31 @@
 {% block title %}{{ 'asset.new'|trans }} - {{ parent() }}{% endblock %}
 
 {% block body %}
-<div class="container">
-    <nav aria-label="breadcrumb" class="mb-3">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item">
-                <a href="{{ path('app_asset_index') }}"><i class="bi bi-cpu"></i> {{ 'nav.assets'|trans }}</a>
-            </li>
-            <li class="breadcrumb-item active" aria-current="page">{{ 'asset.new'|trans }}</li>
-        </ol>
-    </nav>
+{# Breadcrumb Navigation #}
+{% include '_components/_breadcrumb.html.twig' with {
+    breadcrumbs: [
+        { label: 'nav.assets'|trans, url: path('app_asset_index'), icon: 'bi-cpu' },
+        { label: 'asset.new'|trans }
+    ]
+} %}
 
-    <div class="page-header">
-        <h1><i class="bi bi-plus-circle"></i> {{ 'asset.new'|trans }}</h1>
-        <a href="{{ path('app_asset_index') }}" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> {{ 'common.back'|trans }}</a>
-    </div>
+{# Page Header #}
+{% include '_components/_page_header.html.twig' with {
+    title: 'asset.new'|trans,
+    icon: 'bi-plus-circle',
+    actions: [
+        { label: 'common.back'|trans, url: path('app_asset_index'), variant: 'secondary', icon: 'bi-arrow-left' }
+    ]
+} %}
 
-    <div class="card">
-        <div class="card-content">
-            {{ form_start(form) }}
-                <div class="form-row">
-                    <div class="form-group">
-                        {{ form_label(form.name) }}
-                        {{ form_widget(form.name) }}
-                        {{ form_errors(form.name) }}
-                    </div>
-                    <div class="form-group">
-                        {{ form_label(form.assetType) }}
-                        {{ form_widget(form.assetType) }}
-                        {{ form_errors(form.assetType) }}
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    {{ form_label(form.description) }}
-                    {{ form_widget(form.description) }}
-                    {{ form_errors(form.description) }}
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        {{ form_label(form.owner) }}
-                        {{ form_widget(form.owner) }}
-                        {{ form_errors(form.owner) }}
-                    </div>
-                    <div class="form-group">
-                        {{ form_label(form.location) }}
-                        {{ form_widget(form.location) }}
-                        {{ form_errors(form.location) }}
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        {{ form_label(form.acquisitionValue) }}
-                        {{ form_widget(form.acquisitionValue) }}
-                        {{ form_errors(form.acquisitionValue) }}
-                    </div>
-                    <div class="form-group">
-                        {{ form_label(form.currentValue) }}
-                        {{ form_widget(form.currentValue) }}
-                        {{ form_errors(form.currentValue) }}
-                    </div>
-                </div>
-
-                <h3><i class="bi bi-shield-lock"></i> {{ 'asset.cia_values'|trans }}</h3>
-                <p class="text-muted small">{{ 'asset.cia_help'|trans }}</p>
-                <div class="form-row">
-                    <div class="form-group">
-                        {{ form_label(form.confidentialityValue) }}
-                        {{ form_widget(form.confidentialityValue) }}
-                        {{ form_errors(form.confidentialityValue) }}
-                    </div>
-                    <div class="form-group">
-                        {{ form_label(form.integrityValue) }}
-                        {{ form_widget(form.integrityValue) }}
-                        {{ form_errors(form.integrityValue) }}
-                    </div>
-                    <div class="form-group">
-                        {{ form_label(form.availabilityValue) }}
-                        {{ form_widget(form.availabilityValue) }}
-                        {{ form_errors(form.availabilityValue) }}
-                    </div>
-                </div>
-
-                <div class="form-actions">
-                    <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> {{ 'asset.create'|trans }}</button>
-                    <a href="{{ path('app_asset_index') }}" class="btn btn-secondary"><i class="bi bi-x-circle"></i> {{ 'common.cancel'|trans }}</a>
-                </div>
-            {{ form_end(form) }}
-        </div>
+<div class="card">
+    <div class="card-body">
+        {{ form_start(form) }}
+            {% include 'asset/_form.html.twig' with {
+                'button_label': 'asset.create'|trans,
+                'button_icon': 'bi-save'
+            } %}
+        {{ form_end(form) }}
     </div>
 </div>
 {% endblock %}
