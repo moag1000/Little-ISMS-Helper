@@ -98,10 +98,10 @@
                     {% endif %}
                 </td>
                 <td>
-                    <span class="badge badge-info">{{ instance.definition.name }}</span>
+                    <span class="badge badge-info">{{ instance.definition ? instance.definition.name : '-' }}</span>
                 </td>
                 <td>
-                    {{ instance.currentStep.name }}
+                    {{ instance.currentStep ? instance.currentStep.name : '-' }}
                     <br><small class="text-muted">
                         {{ ('workflow.status.' ~ instance.status)|trans }}
                     </small>

@@ -63,7 +63,7 @@
                             </td>
                             <td><span class="badge">{{ document.documentType|upper }}</span></td>
                             <td>{{ document.fileSizeFormatted }}</td>
-                            <td>{{ document.uploadedBy.fullName }}</td>
+                            <td>{{ document.uploadedBy ? document.uploadedBy.fullName : '-' }}</td>
                             <td>{{ document.uploadedAt|date('d.m.Y H:i') }}</td>
                             <td>
                                 <a href="{{ path('app_document_download', {id: document.id}) }}" class="btn btn-sm btn-secondary">Download</a>
