@@ -77,18 +77,18 @@
                 </div>
             </div>
 
-            <div class="workflow-step {% if dashboard.statistics.mapped > 0 %}active{% endif %} {% if dashboard.statistics.mapped == dashboard.statistics.applicable %}completed{% endif %}"
+            <div class="workflow-step {% if dashboard.statistics.fulfilled > 0 %}active{% endif %} {% if dashboard.statistics.fulfilled == dashboard.statistics.applicable %}completed{% endif %}"
                  data-bs-toggle="tooltip" data-bs-placement="top"
                  title="Link requirements to existing controls or create new controls to implement them. This shows how you're fulfilling each requirement.">
-                <div class="step-icon">{% if dashboard.statistics.mapped == dashboard.statistics.applicable %}✅{% else %}{% if dashboard.statistics.mapped > 0 %}🔄{% else %}3️⃣{% endif %}{% endif %}</div>
+                <div class="step-icon">{% if dashboard.statistics.fulfilled == dashboard.statistics.applicable %}✅{% else %}{% if dashboard.statistics.fulfilled > 0 %}🔄{% else %}3️⃣{% endif %}{% endif %}</div>
                 <div class="step-content">
-                    <h3>Map to Controls</h3>
-                    <p>{{ dashboard.statistics.mapped|default(0) }} of {{ dashboard.statistics.applicable }} requirements mapped</p>
+                    <h3>Implement Requirements</h3>
+                    <p>{{ dashboard.statistics.fulfilled }} of {{ dashboard.statistics.applicable }} requirements fully implemented</p>
                     {% if dashboard.gaps.total > 0 %}
                         <a href="{{ path('app_compliance_requirement_index') }}?framework={{ framework.id }}&sort=fulfillment" class="step-action"
                            data-bs-toggle="tooltip" data-bs-placement="right"
                            title="Shows requirements sorted by fulfillment (lowest first) so you can focus on gaps">
-                            → Map Controls
+                            → Implement Requirements
                         </a>
                     {% endif %}
                 </div>
