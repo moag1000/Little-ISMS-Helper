@@ -30,6 +30,35 @@
         </div>
     </div>
 
+    {# Quick Access Bar - One-Click Navigation #}
+    {% if frameworks|length > 0 %}
+    <div class="quick-access-bar">
+        <div class="quick-access-header">
+            <h3>{{ 'compliance.quick_access'|trans|default('Quick Access') }}</h3>
+            <span class="quick-access-hint">{{ 'compliance.quick_access_hint'|trans|default('Click to jump directly to framework') }}</span>
+        </div>
+        <div class="quick-access-items">
+            {% for item in overview %}
+                {% set framework = frameworks|filter(f => f.id == item.id)|first %}
+                <a href="{{ path('app_compliance_framework', {id: item.id}) }}"
+                   class="quick-access-item {% if framework.mandatory %}mandatory{% endif %}"
+                   title="{{ item.name }}">
+                    <div class="quick-access-code">{{ item.code }}</div>
+                    <div class="quick-access-progress">
+                        <div class="progress-bar-mini">
+                            <div class="progress-fill-mini" style="width: {{ item.compliance_percentage }}%; background: {{ item.compliance_percentage >= 75 ? '#28a745' : (item.compliance_percentage >= 50 ? '#ffc107' : '#dc3545') }};"></div>
+                        </div>
+                        <span class="progress-text">{{ item.compliance_percentage }}%</span>
+                    </div>
+                    {% if framework.mandatory %}
+                        <span class="mandatory-indicator">!</span>
+                    {% endif %}
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
     {# Data Reuse Value Highlight #}
     <div class="alert alert-success alert-gradient-success">
         <h3 class="h3-m0-mb-sm">💎 {{ 'compliance.data_reuse.title'|trans }}</h3>
@@ -173,6 +202,117 @@
 </div>
 
 <style>
+/* Quick Access Bar */
+.quick-access-bar {
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-md);
+    padding: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
+}
+
+.quick-access-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-md);
+}
+
+.quick-access-header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: var(--color-primary);
+}
+
+.quick-access-hint {
+    font-size: 0.8rem;
+    color: var(--color-text-secondary);
+}
+
+.quick-access-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+}
+
+.quick-access-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: var(--spacing-md);
+    background: var(--color-background);
+    border-radius: var(--border-radius);
+    text-decoration: none;
+    color: var(--color-text);
+    transition: all 0.2s;
+    min-width: 100px;
+    position: relative;
+    border: 2px solid transparent;
+}
+
+.quick-access-item:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--color-primary);
+    background: white;
+}
+
+.quick-access-item.mandatory {
+    border-color: rgba(220, 53, 69, 0.3);
+}
+
+.quick-access-item.mandatory:hover {
+    border-color: #dc3545;
+}
+
+.quick-access-code {
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--color-primary);
+    margin-bottom: var(--spacing-xs);
+}
+
+.quick-access-progress {
+    width: 100%;
+    text-align: center;
+}
+
+.progress-bar-mini {
+    height: 6px;
+    background: var(--color-border);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 4px;
+}
+
+.progress-fill-mini {
+    height: 100%;
+    transition: width 0.3s;
+}
+
+.progress-text {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+}
+
+.mandatory-indicator {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #dc3545;
+    color: white;
+    font-size: 0.7rem;
+    font-weight: 700;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 4px rgba(220, 53, 69, 0.4);
+}
+
 .framework-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
