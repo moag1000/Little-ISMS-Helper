@@ -1,57 +1,222 @@
-<div class="row">
-    <div class="col-md-6">
-        <h4 class="mb-3">Grundinformationen</h4>
-        {{ form_row(form.name) }}
-        {{ form_row(form.description) }}
-        {{ form_row(form.processOwner) }}
-        {{ form_row(form.criticality) }}
-    </div>
-    <div class="col-md-6">
-        <h4 class="mb-3">Recovery-Ziele (BIA)</h4>
-        {{ form_row(form.rto) }}
-        {{ form_row(form.rpo) }}
-        {{ form_row(form.mtpd) }}
-    </div>
-</div>
+{#
+    Business Process Form Partial (Accessible)
+    Used by both new.html.twig and edit.html.twig
 
-<div class="row mt-4">
-    <div class="col-md-6">
-        <h4 class="mb-3">Finanzielle Auswirkungen</h4>
-        {{ form_row(form.financialImpactPerHour) }}
-        {{ form_row(form.financialImpactPerDay) }}
-    </div>
-    <div class="col-md-6">
-        <h4 class="mb-3">Impact-Bewertung</h4>
-        {{ form_row(form.reputationalImpact) }}
-        {{ form_row(form.regulatoryImpact) }}
-        {{ form_row(form.operationalImpact) }}
-    </div>
-</div>
+    WCAG 2.1 AA Compliant Form with:
+    - Proper ARIA attributes
+    - Error handling
+    - Help texts
+    - Required field indicators
+#}
 
-<div class="row mt-4">
-    <div class="col-md-12">
-        <h4 class="mb-3">Abhängigkeiten</h4>
-        {{ form_row(form.dependenciesUpstream) }}
-        {{ form_row(form.dependenciesDownstream) }}
-    </div>
-</div>
+{# Basic Information Section #}
+<fieldset class="mb-4">
+    <legend class="h5 mb-3">
+        <i class="bi bi-info-circle" aria-hidden="true"></i>
+        {{ 'business_process.section.basic_info'|trans|default('Grundinformationen') }}
+    </legend>
 
-<div class="row mt-4">
-    <div class="col-md-12">
-        <h4 class="mb-3">Wiederherstellung</h4>
-        {{ form_row(form.recoveryStrategy) }}
-    </div>
-</div>
+    <div class="row">
+        <div class="col-md-6">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.name,
+                'label': 'business_process.field.name'|trans|default('Name'),
+                'help': 'business_process.help.name'|trans|default('Eindeutiger Name des Geschäftsprozesses'),
+                'required': true
+            } %}
+        </div>
 
-<div class="row mt-4">
-    <div class="col-md-6">
-        <h4 class="mb-3">Unterstützende Assets</h4>
-        {{ form_row(form.supportingAssets) }}
+        <div class="col-md-6">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.processOwner,
+                'label': 'business_process.field.process_owner'|trans|default('Process Owner'),
+                'help': 'business_process.help.process_owner'|trans|default('Verantwortliche Person für diesen Prozess')
+            } %}
+        </div>
     </div>
-    <div class="col-md-6">
-        <h4 class="mb-3">Identifizierte Risiken</h4>
-        {{ form_row(form.identifiedRisks) }}
+
+    <div class="row">
+        <div class="col-md-6">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.description,
+                'label': 'business_process.field.description'|trans|default('Beschreibung'),
+                'help': 'business_process.help.description'|trans|default('Detaillierte Beschreibung des Prozesses')
+            } %}
+        </div>
+
+        <div class="col-md-6">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.criticality,
+                'label': 'business_process.field.criticality'|trans|default('Kritikalität'),
+                'help': 'business_process.help.criticality'|trans|default('Wie kritisch ist dieser Prozess für das Unternehmen?'),
+                'required': true
+            } %}
+        </div>
     </div>
-</div>
+</fieldset>
+
+{# Recovery Objectives (BIA) Section #}
+<fieldset class="mb-4">
+    <legend class="h5 mb-3">
+        <i class="bi bi-clock-history" aria-hidden="true"></i>
+        {{ 'business_process.section.recovery_objectives'|trans|default('Recovery-Ziele (BIA)') }}
+    </legend>
+
+    <div class="row">
+        <div class="col-md-4">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.rto,
+                'label': 'business_process.field.rto'|trans|default('RTO (Recovery Time Objective)'),
+                'help': 'business_process.help.rto'|trans|default('Maximale Ausfallzeit in Stunden')
+            } %}
+        </div>
+
+        <div class="col-md-4">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.rpo,
+                'label': 'business_process.field.rpo'|trans|default('RPO (Recovery Point Objective)'),
+                'help': 'business_process.help.rpo'|trans|default('Maximaler Datenverlust in Stunden')
+            } %}
+        </div>
+
+        <div class="col-md-4">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.mtpd,
+                'label': 'business_process.field.mtpd'|trans|default('MTPD (Maximum Tolerable Period of Disruption)'),
+                'help': 'business_process.help.mtpd'|trans|default('Maximale tolerierbare Ausfallzeit in Stunden')
+            } %}
+        </div>
+    </div>
+</fieldset>
+
+{# Financial Impact Section #}
+<fieldset class="mb-4">
+    <legend class="h5 mb-3">
+        <i class="bi bi-currency-dollar" aria-hidden="true"></i>
+        {{ 'business_process.section.financial_impact'|trans|default('Finanzielle Auswirkungen') }}
+    </legend>
+
+    <div class="row">
+        <div class="col-md-6">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.financialImpactPerHour,
+                'label': 'business_process.field.financial_impact_per_hour'|trans|default('Finanzieller Impact pro Stunde'),
+                'help': 'business_process.help.financial_impact_per_hour'|trans|default('Geschätzter finanzieller Verlust pro Stunde Ausfall')
+            } %}
+        </div>
+
+        <div class="col-md-6">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.financialImpactPerDay,
+                'label': 'business_process.field.financial_impact_per_day'|trans|default('Finanzieller Impact pro Tag'),
+                'help': 'business_process.help.financial_impact_per_day'|trans|default('Geschätzter finanzieller Verlust pro Tag Ausfall')
+            } %}
+        </div>
+    </div>
+</fieldset>
+
+{# Impact Assessment Section #}
+<fieldset class="mb-4">
+    <legend class="h5 mb-3">
+        <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+        {{ 'business_process.section.impact_assessment'|trans|default('Impact-Bewertung') }}
+    </legend>
+
+    <div class="row">
+        <div class="col-md-4">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.reputationalImpact,
+                'label': 'business_process.field.reputational_impact'|trans|default('Reputationsrisiko'),
+                'help': 'business_process.help.reputational_impact'|trans|default('Auswirkungen auf die Reputation (1-5)')
+            } %}
+        </div>
+
+        <div class="col-md-4">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.regulatoryImpact,
+                'label': 'business_process.field.regulatory_impact'|trans|default('Regulatorisches Risiko'),
+                'help': 'business_process.help.regulatory_impact'|trans|default('Auswirkungen bezüglich Compliance (1-5)')
+            } %}
+        </div>
+
+        <div class="col-md-4">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.operationalImpact,
+                'label': 'business_process.field.operational_impact'|trans|default('Operationelles Risiko'),
+                'help': 'business_process.help.operational_impact'|trans|default('Auswirkungen auf den Betrieb (1-5)')
+            } %}
+        </div>
+    </div>
+</fieldset>
+
+{# Dependencies Section #}
+<fieldset class="mb-4">
+    <legend class="h5 mb-3">
+        <i class="bi bi-diagram-3" aria-hidden="true"></i>
+        {{ 'business_process.section.dependencies'|trans|default('Abhängigkeiten') }}
+    </legend>
+
+    <div class="row">
+        <div class="col-md-6">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.dependenciesUpstream,
+                'label': 'business_process.field.dependencies_upstream'|trans|default('Upstream-Abhängigkeiten'),
+                'help': 'business_process.help.dependencies_upstream'|trans|default('Prozesse/Services, von denen dieser Prozess abhängt')
+            } %}
+        </div>
+
+        <div class="col-md-6">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.dependenciesDownstream,
+                'label': 'business_process.field.dependencies_downstream'|trans|default('Downstream-Abhängigkeiten'),
+                'help': 'business_process.help.dependencies_downstream'|trans|default('Prozesse/Services, die von diesem Prozess abhängen')
+            } %}
+        </div>
+    </div>
+</fieldset>
+
+{# Recovery Strategy Section #}
+<fieldset class="mb-4">
+    <legend class="h5 mb-3">
+        <i class="bi bi-shield-check" aria-hidden="true"></i>
+        {{ 'business_process.section.recovery'|trans|default('Wiederherstellung') }}
+    </legend>
+
+    <div class="row">
+        <div class="col-12">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.recoveryStrategy,
+                'label': 'business_process.field.recovery_strategy'|trans|default('Recovery-Strategie'),
+                'help': 'business_process.help.recovery_strategy'|trans|default('Beschreibung der Wiederherstellungsstrategie')
+            } %}
+        </div>
+    </div>
+</fieldset>
+
+{# Supporting Resources Section #}
+<fieldset class="mb-4">
+    <legend class="h5 mb-3">
+        <i class="bi bi-link-45deg" aria-hidden="true"></i>
+        {{ 'business_process.section.supporting_resources'|trans|default('Unterstützende Ressourcen') }}
+    </legend>
+
+    <div class="row">
+        <div class="col-md-6">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.supportingAssets,
+                'label': 'business_process.field.supporting_assets'|trans|default('Unterstützende Assets'),
+                'help': 'business_process.help.supporting_assets'|trans|default('Assets, die für diesen Prozess benötigt werden')
+            } %}
+        </div>
+
+        <div class="col-md-6">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.identifiedRisks,
+                'label': 'business_process.field.identified_risks'|trans|default('Identifizierte Risiken'),
+                'help': 'business_process.help.identified_risks'|trans|default('Risiken, die diesen Prozess betreffen')
+            } %}
+        </div>
+    </div>
+</fieldset>
 
 {{ form_rest(form) }}
