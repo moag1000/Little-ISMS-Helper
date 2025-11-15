@@ -66,7 +66,7 @@ class RiskIntelligenceServiceTest extends TestCase
         $this->assertEquals(4, $suggestedRisk['impact']); // high severity -> impact 4
     }
 
-    public function testSuggestRisksFromIncidentsMapsSevert yToImpact(): void
+    public function testSuggestRisksFromIncidentsMapsSeverityToImpact(): void
     {
         $severityMappings = [
             'critical' => 5,
