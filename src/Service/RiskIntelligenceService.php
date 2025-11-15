@@ -66,9 +66,9 @@ class RiskIntelligenceService
         if ($controls->isEmpty()) {
             // Even with no controls, provide risk-level-based recommendation
             $recommendation = 'Keine Controls zugeordnet. ';
-            if ($inherentRisk > 12) {
+            if ($inherentRisk > 18) {
                 $recommendation .= 'Restrisiko kritisch - Controls dringend erforderlich.';
-            } elseif ($inherentRisk > 6) {
+            } elseif ($inherentRisk > 12) {
                 $recommendation .= 'Restrisiko moderat - Controls empfohlen.';
             } else {
                 $recommendation .= 'Restrisiko akzeptabel, aber Controls zur Verbesserung empfohlen.';
@@ -108,9 +108,9 @@ class RiskIntelligenceService
         $recommendation = '';
         if ($implementedControls === 0) {
             $recommendation = 'Controls in Planung. Restrisiko bleibt hoch.';
-        } elseif ($residualRisk > 12) {
+        } elseif ($residualRisk > 18) {
             $recommendation = 'Restrisiko noch kritisch. Zusätzliche Controls erforderlich.';
-        } elseif ($residualRisk > 6) {
+        } elseif ($residualRisk > 12) {
             $recommendation = 'Restrisiko moderat. Weitere Controls empfohlen.';
         } else {
             $recommendation = 'Restrisiko akzeptabel.';
