@@ -101,25 +101,25 @@ class RiskMatrixServiceTest extends TestCase
 
         // Create critical risk (5x5 = 25)
         $criticalRisk = $this->createMock(Risk::class);
-        $criticalRisk->method('getLikelihood')->willReturn(5);
+        $criticalRisk->method('getProbability')->willReturn(5);
         $criticalRisk->method('getImpact')->willReturn(5);
         $risks[] = $criticalRisk;
 
         // Create high risk (4x4 = 16)
         $highRisk = $this->createMock(Risk::class);
-        $highRisk->method('getLikelihood')->willReturn(4);
+        $highRisk->method('getProbability')->willReturn(4);
         $highRisk->method('getImpact')->willReturn(4);
         $risks[] = $highRisk;
 
         // Create medium risk (3x3 = 9)
         $mediumRisk = $this->createMock(Risk::class);
-        $mediumRisk->method('getLikelihood')->willReturn(3);
+        $mediumRisk->method('getProbability')->willReturn(3);
         $mediumRisk->method('getImpact')->willReturn(3);
         $risks[] = $mediumRisk;
 
         // Create low risk (1x1 = 1)
         $lowRisk = $this->createMock(Risk::class);
-        $lowRisk->method('getLikelihood')->willReturn(1);
+        $lowRisk->method('getProbability')->willReturn(1);
         $lowRisk->method('getImpact')->willReturn(1);
         $risks[] = $lowRisk;
 
@@ -148,7 +148,7 @@ class RiskMatrixServiceTest extends TestCase
     public function testGenerateMatrixHandlesNullLikelihoodAndImpact(): void
     {
         $risk = $this->createMock(Risk::class);
-        $risk->method('getLikelihood')->willReturn(null);
+        $risk->method('getProbability')->willReturn(null);
         $risk->method('getImpact')->willReturn(null);
 
         $result = $this->service->generateMatrix([$risk]);
@@ -163,12 +163,12 @@ class RiskMatrixServiceTest extends TestCase
     {
         // Test lower bound clamping
         $riskLow = $this->createMock(Risk::class);
-        $riskLow->method('getLikelihood')->willReturn(0);
+        $riskLow->method('getProbability')->willReturn(0);
         $riskLow->method('getImpact')->willReturn(-1);
 
         // Test upper bound clamping
         $riskHigh = $this->createMock(Risk::class);
-        $riskHigh->method('getLikelihood')->willReturn(10);
+        $riskHigh->method('getProbability')->willReturn(10);
         $riskHigh->method('getImpact')->willReturn(15);
 
         $result = $this->service->generateMatrix([$riskLow, $riskHigh]);
@@ -181,7 +181,7 @@ class RiskMatrixServiceTest extends TestCase
     public function testGenerateHeatmapDataReturnsCorrectStructure(): void
     {
         $risk = $this->createMock(Risk::class);
-        $risk->method('getLikelihood')->willReturn(4);
+        $risk->method('getProbability')->willReturn(4);
         $risk->method('getImpact')->willReturn(5);
 
         $result = $this->service->generateHeatmapData([$risk]);
@@ -214,26 +214,26 @@ class RiskMatrixServiceTest extends TestCase
         // Create 2 critical risks
         for ($i = 0; $i < 2; $i++) {
             $risk = $this->createMock(Risk::class);
-            $risk->method('getLikelihood')->willReturn(5);
+            $risk->method('getProbability')->willReturn(5);
             $risk->method('getImpact')->willReturn(5);
             $risks[] = $risk;
         }
 
         // Create 1 high risk
         $risk = $this->createMock(Risk::class);
-        $risk->method('getLikelihood')->willReturn(4);
+        $risk->method('getProbability')->willReturn(4);
         $risk->method('getImpact')->willReturn(3);
         $risks[] = $risk;
 
         // Create 1 medium risk
         $risk = $this->createMock(Risk::class);
-        $risk->method('getLikelihood')->willReturn(3);
+        $risk->method('getProbability')->willReturn(3);
         $risk->method('getImpact')->willReturn(2);
         $risks[] = $risk;
 
         // Create 1 low risk
         $risk = $this->createMock(Risk::class);
-        $risk->method('getLikelihood')->willReturn(1);
+        $risk->method('getProbability')->willReturn(1);
         $risk->method('getImpact')->willReturn(2);
         $risks[] = $risk;
 
@@ -253,12 +253,12 @@ class RiskMatrixServiceTest extends TestCase
 
         // Create various risks
         $criticalRisk = $this->createMock(Risk::class);
-        $criticalRisk->method('getLikelihood')->willReturn(5);
+        $criticalRisk->method('getProbability')->willReturn(5);
         $criticalRisk->method('getImpact')->willReturn(5);
         $risks[] = $criticalRisk;
 
         $lowRisk = $this->createMock(Risk::class);
-        $lowRisk->method('getLikelihood')->willReturn(1);
+        $lowRisk->method('getProbability')->willReturn(1);
         $lowRisk->method('getImpact')->willReturn(1);
         $risks[] = $lowRisk;
 

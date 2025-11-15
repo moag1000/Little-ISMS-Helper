@@ -24,7 +24,8 @@ class InputValidationService
      */
     public function sanitizeForOutput(string $input): string
     {
-        return htmlspecialchars($input, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        // Use ENT_QUOTES without ENT_HTML5 to get numeric entities (&#039; instead of &apos;)
+        return htmlspecialchars($input, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
     }
 
     /**
@@ -32,10 +33,15 @@ class InputValidationService
      */
     public function validateEmail(string $email): ?string
     {
-        $email = filter_var($email, FILTER_SANITIZE_EMAIL);
+        $sanitized = filter_var($email, FILTER_SANITIZE_EMAIL);
 
-        if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            return $email;
+        // Reject if sanitization changed the email (e.g., spaces removed)
+        if ($sanitized !== $email) {
+            return null;
+        }
+
+        if (filter_var($sanitized, FILTER_VALIDATE_EMAIL)) {
+            return $sanitized;
         }
 
         return null;
@@ -229,8 +235,8 @@ class InputValidationService
      */
     public function validateCsrfTokenFormat(string $token): bool
     {
-        // CSRF tokens should be alphanumeric and specific length
-        return preg_match('/^[a-zA-Z0-9_-]{43}$/', $token) === 1;
+        // CSRF tokens should be alphanumeric with dashes/underscores, typically 40-48 characters
+        return preg_match('/^[a-zA-Z0-9_-]{40,48}$/', $token) === 1;
     }
 
     /**
@@ -269,10 +275,21 @@ class InputValidationService
     public function detectSqlInjectionPatterns(string $input): bool
     {
         $sqlPatterns = [
-            '/(\b(SELECT|INSERT|UPDATE|DELETE|DROP|CREATE|ALTER|EXEC|EXECUTE)\b)/i',
-            '/(UNION.*SELECT)/i',
-            '/;.*--/i',
-            '/\/\*.*\*\//i',
+            // Classic quote-based injections: ' OR '1'='1, " OR 1=1, etc.
+            '/[\'"\;]\s*(OR|AND)\s*[\'"\d]/i',
+
+            // UNION-based attacks
+            '/UNION.*SELECT/i',
+
+            // SQL keywords with suspicious context (quotes, semicolons, operators)
+            '/[\'";]\s*(SELECT|INSERT|UPDATE|DELETE|DROP|CREATE|ALTER|EXEC|EXECUTE)\b/i',
+
+            // Comment-based injection
+            '/;\s*--/i',
+            '/\/\*.*\*\//s',
+
+            // Multiple statements (stacked queries)
+            '/;\s*(DROP|DELETE|UPDATE|INSERT)\b/i',
         ];
 
         foreach ($sqlPatterns as $pattern) {
