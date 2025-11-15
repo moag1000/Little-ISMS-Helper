@@ -8,9 +8,25 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h1 class="h3 mb-1">{{ 'context_management.title'|trans }}</h1>
-            <p class="text-muted mb-0">{{ 'context_management.description'|trans }}</p>
+            <p class="text-muted mb-0">
+                {{ 'context_management.description'|trans }}
+                {% if tenant is defined and tenant %}
+                    <br>
+                    <small>
+                        <i class="bi bi-building"></i>
+                        <a href="{{ path('tenant_management_show', {id: tenant.id}) }}" class="text-decoration-none">
+                            {{ tenant.name }} <i class="bi bi-box-arrow-up-right small"></i>
+                        </a>
+                    </small>
+                {% endif %}
+            </p>
         </div>
         <div>
+            {% if tenant is defined and tenant %}
+                <a href="{{ path('tenant_management_show', {id: tenant.id}) }}" class="btn btn-outline-secondary">
+                    <i class="bi bi-building"></i> {{ 'tenant.link.view'|trans|default('Mandant anzeigen') }}
+                </a>
+            {% endif %}
             {% if is_granted('ROLE_ADMIN') %}
                 {% if canEdit is defined and canEdit %}
                     <a href="{{ path('app_context_edit') }}" class="btn btn-primary">

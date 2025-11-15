@@ -12,7 +12,10 @@ use App\Service\AuditLogger;
 use App\Service\FileUploadSecurityService;
 use App\Service\CorporateStructureService;
 use App\Service\MultiTenantCheckService;
+use App\Service\ISMSContextService;
+use App\Repository\ISMSContextRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -35,6 +38,8 @@ class TenantManagementController extends AbstractController
         private readonly SluggerInterface $slugger,
         private readonly CorporateStructureService $corporateStructureService,
         private readonly MultiTenantCheckService $multiTenantCheckService,
+        private readonly ISMSContextService $ismsContextService,
+        private readonly ISMSContextRepository $ismsContextRepository,
         private readonly string $uploadsDirectory = 'uploads/tenants',
     ) {
     }
@@ -734,5 +739,89 @@ class TenantManagementController extends AbstractController
         }
 
         return $this->redirectToRoute('tenant_management_show', ['id' => $tenant->getId()]);
+    }
+
+    /**
+     * API endpoint to get ISMS Context for a tenant
+     */
+    #[Route('/api/tenants/{id}/isms-context', name: 'api_tenant_isms_context', methods: ['GET'])]
+    #[IsGranted('TENANT_VIEW')]
+    public function getISMSContext(Tenant $tenant): JsonResponse
+    {
+        try {
+            // Get ISMS Context for this tenant
+            $context = $this->ismsContextRepository->findOneBy(['tenant' => $tenant]);
+
+            if (!$context) {
+                return new JsonResponse([
+                    'error' => true,
+                    'message' => 'No ISMS context found for this tenant',
+                    'editUrl' => $this->generateUrl('app_context_edit'),
+                ]);
+            }
+
+            // Sync organization name from tenant
+            $this->ismsContextService->syncOrganizationNameFromTenant($context);
+            $this->entityManager->flush();
+
+            // Get effective context (considering corporate inheritance)
+            $effectiveContext = $this->ismsContextService->getEffectiveContext($context);
+            $inheritanceInfo = $this->ismsContextService->getContextInheritanceInfo($context);
+            $completeness = $this->ismsContextService->calculateCompleteness($effectiveContext);
+            $canEdit = $this->ismsContextService->canEditContext($context);
+
+            // Serialize context data
+            $contextData = [
+                'id' => $effectiveContext->getId(),
+                'organizationName' => $effectiveContext->getOrganizationName(),
+                'ismsScope' => $effectiveContext->getIsmsScope(),
+                'scopeExclusions' => $effectiveContext->getScopeExclusions(),
+                'externalIssues' => $effectiveContext->getExternalIssues(),
+                'internalIssues' => $effectiveContext->getInternalIssues(),
+                'interestedParties' => $effectiveContext->getInterestedParties(),
+                'interestedPartiesRequirements' => $effectiveContext->getInterestedPartiesRequirements(),
+                'legalRequirements' => $effectiveContext->getLegalRequirements(),
+                'regulatoryRequirements' => $effectiveContext->getRegulatoryRequirements(),
+                'contractualObligations' => $effectiveContext->getContractualObligations(),
+                'ismsPolicy' => $effectiveContext->getIsmsPolicy(),
+                'rolesAndResponsibilities' => $effectiveContext->getRolesAndResponsibilities(),
+                'lastReviewDate' => $effectiveContext->getLastReviewDate()?->format('Y-m-d'),
+                'nextReviewDate' => $effectiveContext->getNextReviewDate()?->format('Y-m-d'),
+            ];
+
+            // Serialize inheritance info
+            $inheritanceData = [
+                'isInherited' => $inheritanceInfo['isInherited'],
+                'hasParent' => $inheritanceInfo['hasParent'],
+            ];
+
+            if ($inheritanceInfo['inheritedFrom']) {
+                $inheritanceData['inheritedFrom'] = [
+                    'id' => $inheritanceInfo['inheritedFrom']->getId(),
+                    'name' => $inheritanceInfo['inheritedFrom']->getName(),
+                    'code' => $inheritanceInfo['inheritedFrom']->getCode(),
+                ];
+            }
+
+            return new JsonResponse([
+                'context' => $contextData,
+                'inheritanceInfo' => $inheritanceData,
+                'completeness' => $completeness,
+                'canEdit' => $canEdit,
+                'editUrl' => $this->generateUrl('app_context_edit'),
+            ]);
+
+        } catch (\Exception $e) {
+            $this->logger->error('Failed to get ISMS context for tenant', [
+                'tenant_id' => $tenant->getId(),
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return new JsonResponse([
+                'error' => true,
+                'message' => 'Failed to load ISMS context',
+            ], 500);
+        }
     }
 }
