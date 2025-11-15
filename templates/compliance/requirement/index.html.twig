@@ -1,0 +1,132 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Compliance Requirements{% endblock %}
+
+{% block body %}
+<div class="container-fluid mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="bi bi-list-check"></i> Compliance Requirements</h1>
+        <a href="{{ path('app_compliance_requirement_new', {framework: selected_framework}) }}" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> New Requirement
+        </a>
+    </div>
+
+    {# Framework Filter #}
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-md-6">
+                    <label for="framework" class="form-label">Filter by Framework</label>
+                    <select name="framework" id="framework" class="form-select" onchange="this.form.submit()">
+                        <option value="">All Frameworks</option>
+                        {% for framework in frameworks %}
+                            <option value="{{ framework.id }}" {% if selected_framework == framework.id %}selected{% endif %}>
+                                {{ framework.name }} ({{ framework.code }})
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-6 d-flex align-items-end">
+                    <button type="submit" class="btn btn-secondary">
+                        <i class="bi bi-funnel"></i> Filter
+                    </button>
+                    {% if selected_framework %}
+                        <a href="{{ path('app_compliance_requirement_index') }}" class="btn btn-outline-secondary ms-2">
+                            <i class="bi bi-x-circle"></i> Clear
+                        </a>
+                    {% endif %}
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {# Requirements Table #}
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">Requirements ({{ requirements|length }})</h5>
+        </div>
+        <div class="card-body p-0">
+            {% if requirements is empty %}
+                <div class="alert alert-info m-3">
+                    <i class="bi bi-info-circle"></i> No requirements found.
+                    {% if selected_framework %}
+                        Try selecting a different framework.
+                    {% else %}
+                        <a href="{{ path('admin_compliance_index') }}">Load frameworks</a> to get started.
+                    {% endif %}
+                </div>
+            {% else %}
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th scope="col">ID</th>
+                                <th scope="col">Title</th>
+                                <th scope="col">Framework</th>
+                                <th scope="col">Category</th>
+                                <th scope="col">Priority</th>
+                                <th scope="col">Fulfillment</th>
+                                <th scope="col">Applicable</th>
+                                <th scope="col">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for requirement in requirements %}
+                                <tr>
+                                    <td><code>{{ requirement.requirementId }}</code></td>
+                                    <td>
+                                        <a href="{{ path('app_compliance_requirement_show', {id: requirement.id}) }}" class="text-decoration-none">
+                                            {{ requirement.title }}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-secondary">{{ requirement.framework.code }}</span>
+                                    </td>
+                                    <td>{{ requirement.category|default('-') }}</td>
+                                    <td>
+                                        {% set priorityClass = requirement.priority == 'critical' ? 'danger' : (requirement.priority == 'high' ? 'warning' : 'secondary') %}
+                                        <span class="badge bg-{{ priorityClass }}">{{ requirement.priority }}</span>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="progress flex-grow-1 me-2" style="height: 20px; min-width: 100px;">
+                                                <div class="progress-bar bg-{{ requirement.fulfillmentStatusBadge }}"
+                                                     role="progressbar"
+                                                     style="width: {{ requirement.fulfillmentPercentage }}%"
+                                                     aria-valuenow="{{ requirement.fulfillmentPercentage }}"
+                                                     aria-valuemin="0"
+                                                     aria-valuemax="100">
+                                                    {{ requirement.fulfillmentPercentage }}%
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        {% if requirement.applicable %}
+                                            <span class="badge bg-success">Yes</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">No</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm" role="group">
+                                            <a href="{{ path('app_compliance_requirement_show', {id: requirement.id}) }}"
+                                               class="btn btn-outline-primary" title="View">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                            <a href="{{ path('app_compliance_requirement_edit', {id: requirement.id}) }}"
+                                               class="btn btn-outline-secondary" title="Edit">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

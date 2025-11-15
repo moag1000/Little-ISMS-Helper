@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Repository\ComplianceFrameworkRepository;
 use App\Service\ComplianceFrameworkLoaderService;
+use App\Service\ModuleConfigurationService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,7 +24,8 @@ class AdminComplianceController extends AbstractController
     public function __construct(
         private readonly ComplianceFrameworkRepository $frameworkRepository,
         private readonly ComplianceFrameworkLoaderService $frameworkLoaderService,
-        private readonly CsrfTokenManagerInterface $csrfTokenManager
+        private readonly CsrfTokenManagerInterface $csrfTokenManager,
+        private readonly ModuleConfigurationService $moduleConfigurationService
     ) {
     }
 
@@ -37,9 +39,14 @@ class AdminComplianceController extends AbstractController
         $availableFrameworks = $this->frameworkLoaderService->getAvailableFrameworks();
         $statistics = $this->frameworkLoaderService->getFrameworkStatistics();
 
+        $allModules = $this->moduleConfigurationService->getAllModules();
+        $activeModules = $this->moduleConfigurationService->getActiveModules();
+
         return $this->render('admin/compliance/index.html.twig', [
             'available_frameworks' => $availableFrameworks,
             'statistics' => $statistics,
+            'all_modules' => $allModules,
+            'active_modules' => $activeModules,
         ]);
     }
 

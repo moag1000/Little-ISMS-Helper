@@ -2370,6 +2370,7 @@ compliance:
   industry: Industry
   regulatory_body: Regulatory Body
   mandatory: Mandatory
+  required_modules: Required Modules
   industry.automotive: Automotive Industry
   industry.financial_services: Financial Services
   industry.all_sectors: All Sectors
