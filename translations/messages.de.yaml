@@ -2379,6 +2379,7 @@ compliance:
   industry: Branche
   regulatory_body: Regulierungsbehörde
   mandatory: Verpflichtend
+  required_modules: Erforderliche Module
   industry.automotive: Automobilindustrie
   industry.financial_services: Finanzdienstleistungen
   industry.all_sectors: Alle Branchen

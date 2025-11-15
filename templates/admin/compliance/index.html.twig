@@ -95,6 +95,34 @@
 
                         <p class="framework-description">{{ framework.description }}</p>
 
+                        {% if framework.required_modules is defined and framework.required_modules|length > 0 %}
+                            <div class="framework-modules">
+                                <h4 class="modules-title">{{ 'compliance.required_modules'|trans }}</h4>
+                                <div class="modules-list">
+                                    {% for moduleKey in framework.required_modules %}
+                                        {% set module = all_modules[moduleKey] ?? null %}
+                                        {% set isActive = moduleKey in active_modules %}
+
+                                        {% if module %}
+                                            <div class="module-badge {% if isActive %}active{% else %}inactive{% endif %}"
+                                                 data-bs-toggle="tooltip" data-bs-placement="top"
+                                                 title="{{ module.description }}">
+                                                <span class="module-icon">{% if isActive %}✅{% else %}⚠️{% endif %}</span>
+                                                <span class="module-name">{{ module.name }}</span>
+                                                {% if not isActive %}
+                                                    <a href="{{ path('admin_modules_index') }}" class="module-activate-link"
+                                                       data-bs-toggle="tooltip" data-bs-placement="right"
+                                                       title="Go to module management to activate this module">
+                                                        Activate →
+                                                    </a>
+                                                {% endif %}
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endif %}
+
                         <div class="framework-actions">
                             {% if framework.loaded %}
                                 <button class="btn btn-success btn-block" disabled>
@@ -240,6 +268,71 @@
 .load-framework-btn:disabled {
     opacity: 0.6;
     cursor: not-allowed;
+}
+
+/* Module Dependencies */
+.framework-modules {
+    margin: var(--spacing-md) 0;
+    padding: var(--spacing-md);
+    background: var(--color-background);
+    border-radius: var(--border-radius);
+}
+
+.modules-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin: 0 0 var(--spacing-sm) 0;
+    color: var(--color-text-secondary);
+}
+
+.modules-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-xs);
+}
+
+.module-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--border-radius);
+    font-size: 0.85rem;
+    transition: all 0.2s;
+}
+
+.module-badge.active {
+    background: rgba(40, 167, 69, 0.1);
+    border: 1px solid rgba(40, 167, 69, 0.3);
+    color: #28a745;
+}
+
+.module-badge.inactive {
+    background: rgba(255, 193, 7, 0.1);
+    border: 1px solid rgba(255, 193, 7, 0.3);
+    color: #856404;
+}
+
+.module-icon {
+    font-size: 1rem;
+}
+
+.module-name {
+    font-weight: 500;
+}
+
+.module-activate-link {
+    margin-left: var(--spacing-xs);
+    color: var(--color-primary);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.8rem;
+    transition: color 0.2s;
+}
+
+.module-activate-link:hover {
+    color: var(--color-primary-dark);
+    text-decoration: underline;
 }
 </style>
 

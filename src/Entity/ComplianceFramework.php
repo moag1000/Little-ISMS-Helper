@@ -44,6 +44,13 @@ class ComplianceFramework
     private ?bool $active = true;
 
     /**
+     * Required ISMS modules for this framework
+     * @var array<string>
+     */
+    #[ORM\Column(type: Types::JSON, nullable: true)]
+    private ?array $requiredModules = [];
+
+    /**
      * @var Collection<int, ComplianceRequirement>
      */
     #[ORM\OneToMany(targetEntity: ComplianceRequirement::class, mappedBy: 'framework', cascade: ['persist', 'remove'])]
@@ -214,6 +221,51 @@ class ComplianceFramework
     {
         $this->updatedAt = $updatedAt;
         return $this;
+    }
+
+    /**
+     * @return array<string>
+     */
+    public function getRequiredModules(): array
+    {
+        return $this->requiredModules ?? [];
+    }
+
+    /**
+     * @param array<string> $requiredModules
+     */
+    public function setRequiredModules(?array $requiredModules): static
+    {
+        $this->requiredModules = $requiredModules;
+        return $this;
+    }
+
+    /**
+     * Add a required module
+     */
+    public function addRequiredModule(string $moduleKey): static
+    {
+        if (!in_array($moduleKey, $this->requiredModules ?? [])) {
+            $this->requiredModules[] = $moduleKey;
+        }
+        return $this;
+    }
+
+    /**
+     * Remove a required module
+     */
+    public function removeRequiredModule(string $moduleKey): static
+    {
+        $this->requiredModules = array_diff($this->requiredModules ?? [], [$moduleKey]);
+        return $this;
+    }
+
+    /**
+     * Check if a module is required
+     */
+    public function requiresModule(string $moduleKey): bool
+    {
+        return in_array($moduleKey, $this->requiredModules ?? []);
     }
 
     /**
