@@ -82,7 +82,7 @@ class RiskMatrixService
         ];
 
         foreach ($risks as $risk) {
-            $likelihood = $risk->getLikelihood() ?? 3;
+            $likelihood = $risk->getProbability() ?? 3;
             $impact = $risk->getImpact() ?? 3;
 
             // Ensure values are within range
@@ -221,7 +221,7 @@ class RiskMatrixService
         ];
 
         foreach ($risks as $risk) {
-            $likelihood = $risk->getLikelihood() ?? 3;
+            $likelihood = $risk->getProbability() ?? 3;
             $impact = $risk->getImpact() ?? 3;
             $level = $this->calculateRiskLevel($likelihood, $impact);
 
