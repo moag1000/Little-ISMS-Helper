@@ -4009,3 +4009,36 @@ form:
     invalid_format: 'Invalid format'
     too_short: 'Too short (min. %min% characters)'
     too_long: 'Too long (max. %max% characters)'
+
+# Table Accessibility
+table:
+  summary: '%count% entries in %caption%'
+  entries: 'entries'
+  empty: 'No entries available'
+  sort_by: 'Sort by %column%'
+  actions: 'Actions'
+  actions_for: 'Actions for %user%'
+
+# User Table
+user:
+  table:
+    caption: 'User Management'
+    empty: 'No users found'
+  status:
+    active: 'Active'
+    inactive: 'Inactive'
+  action:
+    view: 'View'
+    edit: 'Edit'
+    view_user: 'View user %user%'
+    edit_user: 'Edit user %user%'
+  help:
+    email: 'Enter a valid email address for login'
+    password_requirements: 'Minimum 8 characters with uppercase, lowercase, number and special character'
+    phone_optional: 'Optional: Phone number for notifications'
+    enabled: 'Disabled accounts cannot log in'
+
+# Example Pages
+example:
+  table:
+    title: 'Accessible Tables - Examples'

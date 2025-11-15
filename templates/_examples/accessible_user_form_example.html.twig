@@ -1,0 +1,232 @@
+{#
+    Example: Accessible User Form Implementation
+
+    This example shows how to migrate from standard Symfony form rendering
+    to the accessible form component with full WCAG 2.1 AA compliance.
+
+    Location: templates/_examples/accessible_user_form_example.html.twig
+
+    Before/After comparison included for educational purposes.
+#}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'user.title.edit'|trans }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="page-header mb-4">
+        <h1>{{ 'user.title.edit'|trans }}</h1>
+        <p class="text-muted">{{ 'user.subtitle.edit'|trans }}</p>
+    </div>
+
+    {# ============================================
+       BEFORE: Standard Symfony Form Rendering
+       ============================================ #}
+    {% if false %}  {# Hidden for comparison #}
+    <div class="card mb-4">
+        <div class="card-header bg-warning text-dark">
+            <i class="bi bi-exclamation-triangle"></i> OLD WAY (Not Accessible)
+        </div>
+        <div class="card-body">
+            {{ form_start(form) }}
+
+            {# ❌ Not Accessible: Missing ARIA attributes #}
+            <div class="mb-3">
+                {{ form_label(form.firstName) }}
+                {{ form_widget(form.firstName, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.firstName) }}
+            </div>
+
+            {# ❌ Not Accessible: Error not linked to input #}
+            <div class="mb-3">
+                {{ form_label(form.email) }}
+                {{ form_widget(form.email, {'attr': {'class': 'form-control'}}) }}
+                <small class="text-muted">Enter your email address</small>
+                {{ form_errors(form.email) }}
+            </div>
+
+            {# ❌ Not Accessible: Required status not announced #}
+            <div class="mb-3">
+                {{ form_label(form.password) }}
+                {{ form_widget(form.password, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.password) }}
+            </div>
+
+            <button type="submit" class="btn btn-primary">Save</button>
+            {{ form_end(form) }}
+        </div>
+    </div>
+    {% endif %}
+
+    {# ============================================
+       AFTER: Accessible Form Component
+       ============================================ #}
+    <div class="card">
+        <div class="card-header bg-success text-white">
+            <i class="bi bi-check-circle"></i> NEW WAY (Fully Accessible - WCAG 2.1 AA)
+        </div>
+        <div class="card-body">
+            {{ form_start(form, {
+                'attr': {
+                    'novalidate': 'novalidate',
+                    'class': 'needs-validation'
+                }
+            }) }}
+
+            <div class="row">
+                {# ✅ Accessible: Full ARIA attributes, required indicator #}
+                <div class="col-md-6">
+                    {% include '_components/_form_field.html.twig' with {
+                        'field': form.firstName,
+                        'label': 'user.field.first_name'|trans,
+                        'required': true
+                    } %}
+                </div>
+
+                {# ✅ Accessible: Full ARIA attributes, required indicator #}
+                <div class="col-md-6">
+                    {% include '_components/_form_field.html.twig' with {
+                        'field': form.lastName,
+                        'label': 'user.field.last_name'|trans,
+                        'required': true
+                    } %}
+                </div>
+            </div>
+
+            {# ✅ Accessible: Help text linked via aria-describedby #}
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.email,
+                'label': 'user.field.email'|trans,
+                'help': 'user.help.email'|trans,
+                'required': true
+            } %}
+
+            {# ✅ Accessible: Password with security requirements help #}
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.password,
+                'label': 'user.field.password'|trans,
+                'help': 'user.help.password_requirements'|trans,
+                'required': false
+            } %}
+
+            {# ✅ Accessible: Optional field clearly marked #}
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.phoneNumber,
+                'label': 'user.field.phone'|trans,
+                'help': 'user.help.phone_optional'|trans,
+                'required': false
+            } %}
+
+            {# ✅ Accessible: Checkbox with proper label association #}
+            <div class="form-group mb-3">
+                <div class="form-check">
+                    {{ form_widget(form.enabled, {
+                        'attr': {
+                            'class': 'form-check-input',
+                            'aria-describedby': 'user_enabled_help'
+                        }
+                    }) }}
+                    <label class="form-check-label" for="{{ form.enabled.vars.id }}">
+                        {{ 'user.field.enabled'|trans }}
+                    </label>
+                    <div id="user_enabled_help" class="form-text">
+                        {{ 'user.help.enabled'|trans }}
+                    </div>
+                </div>
+            </div>
+
+            {# Form Actions with Accessible Buttons #}
+            <div class="form-actions mt-4">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-save" aria-hidden="true"></i>
+                    {{ 'form.action.save'|trans }}
+                </button>
+                <a href="{{ path('app_user_index') }}" class="btn btn-secondary">
+                    <i class="bi bi-x-circle" aria-hidden="true"></i>
+                    {{ 'form.action.cancel'|trans }}
+                </a>
+            </div>
+
+            {{ form_end(form) }}
+        </div>
+    </div>
+
+    {# ============================================
+       Accessibility Features Demonstrated
+       ============================================ #}
+    <div class="card mt-4">
+        <div class="card-header bg-info text-white">
+            <i class="bi bi-info-circle"></i> Accessibility Features
+        </div>
+        <div class="card-body">
+            <h5>What Makes This Form WCAG 2.1 AA Compliant?</h5>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <h6 class="text-success">✅ ARIA Attributes</h6>
+                    <ul>
+                        <li><code>aria-invalid="true/false"</code> - Validation state</li>
+                        <li><code>aria-describedby</code> - Links help text & errors</li>
+                        <li><code>aria-required="true"</code> - Required fields</li>
+                        <li><code>role="alert"</code> - Error announcements</li>
+                        <li><code>aria-live="assertive"</code> - Immediate feedback</li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <h6 class="text-success">✅ User Experience</h6>
+                    <ul>
+                        <li>Clear required field indicators (*)</li>
+                        <li>Helpful inline guidance</li>
+                        <li>Immediate error feedback</li>
+                        <li>Screen reader compatible</li>
+                        <li>Keyboard navigation friendly</li>
+                    </ul>
+                </div>
+            </div>
+
+            <hr>
+
+            <h6 class="text-primary">WCAG 2.1 Criteria Met:</h6>
+            <ul class="list-unstyled">
+                <li><i class="bi bi-check-circle text-success"></i> 1.3.1 Info and Relationships (Level A)</li>
+                <li><i class="bi bi-check-circle text-success"></i> 3.3.1 Error Identification (Level A)</li>
+                <li><i class="bi bi-check-circle text-success"></i> 3.3.2 Labels or Instructions (Level A)</li>
+                <li><i class="bi bi-check-circle text-success"></i> 3.3.3 Error Suggestion (Level AA)</li>
+                <li><i class="bi bi-check-circle text-success"></i> 4.1.3 Status Messages (Level AA)</li>
+            </ul>
+
+            <hr>
+
+            <h6 class="text-warning">Testing Tools:</h6>
+            <ul>
+                <li><strong>Automated:</strong> axe DevTools, WAVE</li>
+                <li><strong>Manual:</strong> Keyboard navigation (Tab through fields)</li>
+                <li><strong>Screen Reader:</strong> VoiceOver (macOS), NVDA (Windows)</li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{#
+    Required Translations (add to messages.de.yaml):
+
+    user:
+      title:
+        edit: 'Benutzer bearbeiten'
+      subtitle:
+        edit: 'Bearbeiten Sie die Benutzerdaten'
+      field:
+        first_name: 'Vorname'
+        last_name: 'Nachname'
+        email: 'E-Mail-Adresse'
+        password: 'Passwort'
+        phone: 'Telefonnummer'
+        enabled: 'Konto aktiviert'
+      help:
+        email: 'Geben Sie eine gültige E-Mail-Adresse für die Anmeldung ein'
+        password_requirements: 'Mindestens 8 Zeichen mit Groß-/Kleinbuchstaben, Zahl und Sonderzeichen'
+        phone_optional: 'Optional: Telefonnummer für Benachrichtigungen'
+        enabled: 'Deaktivierte Konten können sich nicht anmelden'
+#}

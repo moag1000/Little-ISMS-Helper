@@ -1,0 +1,108 @@
+{#
+    Example: User Table Row Template
+
+    This template is used by the accessible table component to render each user row.
+    It demonstrates proper use of scope attributes and ARIA roles.
+
+    @param item   User    The user object to display
+    @param loop   Loop    Twig loop variable
+    @param mobile boolean Whether rendering in mobile card view
+#}
+
+{% if mobile|default(false) %}
+    {# Mobile Card View #}
+    <div class="row g-2">
+        <div class="col-12">
+            <strong>{{ item.firstName }} {{ item.lastName }}</strong>
+        </div>
+        <div class="col-12 text-muted">
+            <i class="bi bi-envelope"></i> {{ item.email }}
+        </div>
+        <div class="col-6">
+            <span class="badge bg-primary">{{ item.roles|first }}</span>
+        </div>
+        <div class="col-6">
+            <span class="badge bg-{{ item.enabled ? 'success' : 'danger' }}">
+                {{ item.enabled ? 'Active' : 'Inactive' }}
+            </span>
+        </div>
+        <div class="col-12 mt-2">
+            <a href="{{ path('app_user_show', {'id': item.id}) }}" class="btn btn-sm btn-primary me-1">
+                View
+            </a>
+            <a href="{{ path('app_user_edit', {'id': item.id}) }}" class="btn btn-sm btn-secondary">
+                Edit
+            </a>
+        </div>
+    </div>
+{% else %}
+    {# Desktop Table View #}
+    <tr role="row">
+        {# Name column with row header #}
+        <th scope="row" role="rowheader">
+            {{ item.firstName }} {{ item.lastName }}
+        </th>
+
+        {# Email column #}
+        <td role="cell">
+            <a href="mailto:{{ item.email }}">{{ item.email }}</a>
+        </td>
+
+        {# Role column #}
+        <td role="cell">
+            <span class="badge bg-primary">
+                {{ item.roles|first|replace({'ROLE_': ''})|lower|capitalize }}
+            </span>
+        </td>
+
+        {# Status column #}
+        <td role="cell">
+            <span
+                class="badge bg-{{ item.enabled ? 'success' : 'danger' }}"
+                aria-label="{{ item.enabled ? 'user.status.active'|trans : 'user.status.inactive'|trans }}"
+            >
+                <i class="bi bi-{{ item.enabled ? 'check-circle' : 'x-circle' }}" aria-hidden="true"></i>
+                {{ item.enabled ? 'user.status.active'|trans : 'user.status.inactive'|trans }}
+            </span>
+        </td>
+
+        {# Actions column #}
+        <td role="cell" class="text-end">
+            <div class="btn-group" role="group" aria-label="{{ 'table.actions_for'|trans({'%user%': item.firstName ~ ' ' ~ item.lastName}) }}">
+                <a
+                    href="{{ path('app_user_show', {'id': item.id}) }}"
+                    class="btn btn-sm btn-outline-primary"
+                    title="{{ 'user.action.view'|trans }}"
+                    aria-label="{{ 'user.action.view_user'|trans({'%user%': item.firstName ~ ' ' ~ item.lastName}) }}"
+                >
+                    <i class="bi bi-eye" aria-hidden="true"></i>
+                    <span class="d-none d-lg-inline">{{ 'user.action.view'|trans }}</span>
+                </a>
+                <a
+                    href="{{ path('app_user_edit', {'id': item.id}) }}"
+                    class="btn btn-sm btn-outline-secondary"
+                    title="{{ 'user.action.edit'|trans }}"
+                    aria-label="{{ 'user.action.edit_user'|trans({'%user%': item.firstName ~ ' ' ~ item.lastName}) }}"
+                >
+                    <i class="bi bi-pencil" aria-hidden="true"></i>
+                    <span class="d-none d-lg-inline">{{ 'user.action.edit'|trans }}</span>
+                </a>
+            </div>
+        </td>
+    </tr>
+{% endif %}
+
+{#
+    Accessibility Features:
+
+    1. scope="row" on first cell: Identifies row header
+    2. role="rowheader" and role="cell": ARIA roles for clarity
+    3. aria-label on status badge: Screen reader friendly status
+    4. aria-hidden="true" on icons: Icons are decorative
+    5. aria-label on action buttons: Context for screen readers
+    6. Mobile card view: Alternative layout for small screens
+    7. Touch-friendly targets: 44×44px minimum button size
+
+    Note: This template demonstrates best practices for table rows.
+    Customize as needed for your specific entity type.
+#}

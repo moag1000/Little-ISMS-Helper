@@ -1,0 +1,226 @@
+{#
+    Accessible Data Table Component
+
+    This component provides WCAG 2.1 AA compliant table rendering with:
+    - Proper scope attributes for headers
+    - Table caption for context
+    - Responsive design with mobile card view
+    - Sortable column support
+    - Pagination integration
+    - Empty state handling
+
+    Usage:
+        {% include '_components/_accessible_table.html.twig' with {
+            'caption': 'User list'|trans,
+            'headers': [
+                {'label': 'Name', 'sortable': true, 'sort_field': 'name'},
+                {'label': 'Email', 'sortable': true, 'sort_field': 'email'},
+                {'label': 'Status', 'sortable': false},
+                {'label': 'Actions', 'sortable': false}
+            ],
+            'rows': users,
+            'row_template': 'user/_table_row.html.twig',
+            'empty_message': 'No users found'|trans,
+            'responsive': true
+        } %}
+
+    @param caption          string     Table caption (required for accessibility)
+    @param headers          array      Column headers with labels and sort info
+    @param rows             array      Data rows to display
+    @param row_template     string     Template to render each row
+    @param empty_message    string     Message when no data
+    @param responsive       boolean    Enable mobile card view
+    @param striped          boolean    Zebra striping
+    @param hoverable        boolean    Highlight on hover
+    @param current_sort     string     Current sort field
+    @param sort_direction   string     Current sort direction (asc/desc)
+#}
+
+{% set table_id = 'table_' ~ random() %}
+{% set responsive = responsive|default(true) %}
+{% set striped = striped|default(true) %}
+{% set hoverable = hoverable|default(true) %}
+
+<div class="table-wrapper">
+    {# Screen reader summary #}
+    <div class="sr-only" role="status" aria-live="polite">
+        {{ 'table.summary'|trans({'%count%': rows|length, '%caption%': caption}) }}
+    </div>
+
+    {# Responsive wrapper for horizontal scroll #}
+    <div class="table-responsive{% if responsive %} table-responsive-md{% endif %}">
+        <table
+            id="{{ table_id }}"
+            class="table{% if striped %} table-striped{% endif %}{% if hoverable %} table-hover{% endif %}"
+            role="table"
+            aria-label="{{ caption }}"
+        >
+            {# Caption provides context for screen readers #}
+            <caption class="{% if caption_hidden|default(false) %}sr-only{% endif %}">
+                {{ caption }}
+                {% if rows|length > 0 %}
+                    <span class="text-muted">({{ rows|length }} {{ 'table.entries'|trans }})</span>
+                {% endif %}
+            </caption>
+
+            {# Table Head with proper scope attributes #}
+            <thead class="table-light">
+                <tr role="row">
+                    {% for header in headers %}
+                        <th
+                            scope="col"
+                            role="columnheader"
+                            {% if header.sortable|default(false) %}
+                                aria-sort="{% if current_sort == header.sort_field %}{{ sort_direction == 'asc' ? 'ascending' : 'descending' }}{% else %}none{% endif %}"
+                            {% endif %}
+                            {% if header.class is defined %}class="{{ header.class }}"{% endif %}
+                        >
+                            {% if header.sortable|default(false) %}
+                                {# Sortable column header #}
+                                <a
+                                    href="{{ path(app.request.get('_route'), app.request.query.all|merge({
+                                        'sort': header.sort_field,
+                                        'direction': (current_sort == header.sort_field and sort_direction == 'asc') ? 'desc' : 'asc'
+                                    })) }}"
+                                    class="sortable-header{% if current_sort == header.sort_field %} active{% endif %}"
+                                    aria-label="{{ 'table.sort_by'|trans({'%column%': header.label}) }}"
+                                >
+                                    {{ header.label }}
+                                    <span class="sort-indicator" aria-hidden="true">
+                                        {% if current_sort == header.sort_field %}
+                                            <i class="bi bi-{{ sort_direction == 'asc' ? 'sort-up' : 'sort-down' }}"></i>
+                                        {% else %}
+                                            <i class="bi bi-sort-down-alt text-muted"></i>
+                                        {% endif %}
+                                    </span>
+                                </a>
+                            {% else %}
+                                {# Non-sortable column header #}
+                                {{ header.label }}
+                            {% endif %}
+                        </th>
+                    {% endfor %}
+                </tr>
+            </thead>
+
+            {# Table Body #}
+            <tbody>
+                {% if rows|length > 0 %}
+                    {% for row in rows %}
+                        {# Include custom row template for flexibility #}
+                        {% include row_template with {'item': row, 'loop': loop} %}
+                    {% endfor %}
+                {% else %}
+                    {# Empty state #}
+                    <tr role="row">
+                        <td colspan="{{ headers|length }}" class="text-center text-muted py-5" role="cell">
+                            <i class="bi bi-inbox fs-1 d-block mb-2" aria-hidden="true"></i>
+                            {{ empty_message|default('table.empty'|trans) }}
+                        </td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+
+    {# Mobile Card View (optional, for very small screens) #}
+    {% if responsive and rows|length > 0 %}
+        <div class="mobile-card-view d-md-none">
+            {% for row in rows %}
+                <div class="card mb-3">
+                    <div class="card-body">
+                        {% include row_template with {'item': row, 'loop': loop, 'mobile': true} %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+
+<style>
+/* Accessible Table Styles */
+.table-wrapper {
+    position: relative;
+}
+
+/* Screen reader only class */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+/* Sortable header styling */
+.sortable-header {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.sortable-header:hover {
+    color: var(--color-secondary);
+    text-decoration: underline;
+}
+
+.sortable-header.active {
+    color: var(--color-secondary);
+    font-weight: 600;
+}
+
+.sort-indicator {
+    margin-left: 0.5rem;
+    display: inline-flex;
+    align-items: center;
+}
+
+/* Mobile card view hidden on desktop */
+.mobile-card-view {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .mobile-card-view {
+        display: block;
+    }
+    .table-responsive {
+        display: none;
+    }
+}
+
+/* Improve focus visibility for sortable headers */
+.sortable-header:focus {
+    outline: 3px solid var(--color-accent-pink);
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+</style>
+
+{#
+    Accessibility Features:
+
+    1. <caption>: Provides context for screen reader users
+    2. scope="col": Identifies column headers
+    3. role="table", "row", "columnheader", "cell": ARIA roles for clarity
+    4. aria-sort: Announces sort direction to screen readers
+    5. aria-label: Provides accessible names for interactive elements
+    6. aria-live="polite": Announces table changes
+    7. Keyboard navigation: All sortable headers are focusable
+    8. Focus indicators: Clear outline on keyboard focus
+    9. Empty state: Clear message when no data
+    10. Mobile responsive: Card view for touch screens
+
+    WCAG 2.1 Criteria Met:
+    - 1.3.1 Info and Relationships (Level A) - scope attributes
+    - 2.4.6 Headings and Labels (Level AA) - clear headers
+    - 2.4.7 Focus Visible (Level AA) - focus indicators
+    - 4.1.2 Name, Role, Value (Level A) - ARIA attributes
+#}

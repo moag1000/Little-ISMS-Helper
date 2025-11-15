@@ -4047,3 +4047,36 @@ form:
     invalid_format: 'Ungültiges Format'
     too_short: 'Zu kurz (min. %min% Zeichen)'
     too_long: 'Zu lang (max. %max% Zeichen)'
+
+# Table Accessibility
+table:
+  summary: '%count% Einträge in %caption%'
+  entries: 'Einträge'
+  empty: 'Keine Einträge vorhanden'
+  sort_by: 'Sortieren nach %column%'
+  actions: 'Aktionen'
+  actions_for: 'Aktionen für %user%'
+
+# User Table
+user:
+  table:
+    caption: 'Benutzerverwaltung'
+    empty: 'Keine Benutzer gefunden'
+  status:
+    active: 'Aktiv'
+    inactive: 'Inaktiv'
+  action:
+    view: 'Ansehen'
+    edit: 'Bearbeiten'
+    view_user: 'Benutzer %user% ansehen'
+    edit_user: 'Benutzer %user% bearbeiten'
+  help:
+    email: 'Geben Sie eine gültige E-Mail-Adresse für die Anmeldung ein'
+    password_requirements: 'Mindestens 8 Zeichen mit Groß-/Kleinbuchstaben, Zahl und Sonderzeichen'
+    phone_optional: 'Optional: Telefonnummer für Benachrichtigungen'
+    enabled: 'Deaktivierte Konten können sich nicht anmelden'
+
+# Example Pages
+example:
+  table:
+    title: 'Barrierefreie Tabellen - Beispiele'

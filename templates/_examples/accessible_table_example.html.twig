@@ -1,0 +1,165 @@
+{#
+    Example: Accessible Table Implementation
+
+    This example demonstrates how to use the accessible table component
+    with proper WCAG 2.1 AA compliance.
+
+    Location: templates/_examples/accessible_table_example.html.twig
+#}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'example.table.title'|trans }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>{{ 'example.table.title'|trans }}</h1>
+
+    {# Example 1: Basic Table with Sortable Columns #}
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">Example 1: User Management Table</h5>
+        </div>
+        <div class="card-body">
+            {% include '_components/_accessible_table.html.twig' with {
+                'caption': 'user.table.caption'|trans,
+                'headers': [
+                    {
+                        'label': 'user.field.name'|trans,
+                        'sortable': true,
+                        'sort_field': 'name',
+                        'class': 'col-3'
+                    },
+                    {
+                        'label': 'user.field.email'|trans,
+                        'sortable': true,
+                        'sort_field': 'email',
+                        'class': 'col-3'
+                    },
+                    {
+                        'label': 'user.field.role'|trans,
+                        'sortable': true,
+                        'sort_field': 'role',
+                        'class': 'col-2'
+                    },
+                    {
+                        'label': 'user.field.status'|trans,
+                        'sortable': true,
+                        'sort_field': 'enabled',
+                        'class': 'col-2'
+                    },
+                    {
+                        'label': 'table.actions'|trans,
+                        'sortable': false,
+                        'class': 'col-2 text-end'
+                    }
+                ],
+                'rows': example_users,
+                'row_template': '_examples/_user_table_row.html.twig',
+                'empty_message': 'user.table.empty'|trans,
+                'current_sort': app.request.query.get('sort', 'name'),
+                'sort_direction': app.request.query.get('direction', 'asc'),
+                'responsive': true,
+                'striped': true,
+                'hoverable': true
+            } %}
+        </div>
+    </div>
+
+    {# Example 2: Simple Table without Sorting #}
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">Example 2: Simple Data Table</h5>
+        </div>
+        <div class="card-body">
+            {% include '_components/_accessible_table.html.twig' with {
+                'caption': 'Recent Login Activity',
+                'headers': [
+                    {'label': 'Date/Time', 'sortable': false},
+                    {'label': 'IP Address', 'sortable': false},
+                    {'label': 'Location', 'sortable': false},
+                    {'label': 'Status', 'sortable': false}
+                ],
+                'rows': example_logins,
+                'row_template': '_examples/_login_table_row.html.twig',
+                'empty_message': 'No recent logins',
+                'responsive': true
+            } %}
+        </div>
+    </div>
+
+    {# Accessibility Information #}
+    <div class="card">
+        <div class="card-header bg-info text-white">
+            <i class="bi bi-info-circle"></i> Accessibility Features
+        </div>
+        <div class="card-body">
+            <h5>What Makes This Table WCAG 2.1 AA Compliant?</h5>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <h6 class="text-success">✅ Semantic HTML</h6>
+                    <ul>
+                        <li><code>&lt;caption&gt;</code> - Table description</li>
+                        <li><code>scope="col"</code> - Column headers</li>
+                        <li><code>scope="row"</code> - Row headers (if applicable)</li>
+                        <li>Proper <code>&lt;thead&gt;</code> and <code>&lt;tbody&gt;</code></li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <h6 class="text-success">✅ ARIA Attributes</h6>
+                    <ul>
+                        <li><code>role="table"</code> - Table role</li>
+                        <li><code>aria-label</code> - Accessible name</li>
+                        <li><code>aria-sort</code> - Sort direction</li>
+                        <li><code>aria-live</code> - Dynamic updates</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <h6 class="text-success">✅ Keyboard Navigation</h6>
+                    <ul>
+                        <li>Tab to sortable headers</li>
+                        <li>Enter/Space to sort</li>
+                        <li>Clear focus indicators</li>
+                        <li>Logical tab order</li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <h6 class="text-success">✅ Responsive Design</h6>
+                    <ul>
+                        <li>Horizontal scroll on small screens</li>
+                        <li>Optional card view for mobile</li>
+                        <li>Touch-friendly targets (44×44px)</li>
+                        <li>Readable on all devices</li>
+                    </ul>
+                </div>
+            </div>
+
+            <hr>
+
+            <h6 class="text-primary">WCAG 2.1 Criteria Met:</h6>
+            <ul class="list-unstyled">
+                <li><i class="bi bi-check-circle text-success"></i> 1.3.1 Info and Relationships (Level A)</li>
+                <li><i class="bi bi-check-circle text-success"></i> 2.4.6 Headings and Labels (Level AA)</li>
+                <li><i class="bi bi-check-circle text-success"></i> 2.4.7 Focus Visible (Level AA)</li>
+                <li><i class="bi bi-check-circle text-success"></i> 4.1.2 Name, Role, Value (Level A)</li>
+            </ul>
+
+            <hr>
+
+            <h6 class="text-warning">Testing Checklist:</h6>
+            <ul>
+                <li>✅ Tab through sortable columns</li>
+                <li>✅ Sort by clicking headers</li>
+                <li>✅ Verify focus indicators are visible</li>
+                <li>✅ Test with screen reader (announces column headers)</li>
+                <li>✅ Resize browser to test responsive behavior</li>
+                <li>✅ Run axe DevTools scan (0 table violations)</li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}
