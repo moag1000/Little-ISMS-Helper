@@ -18,6 +18,7 @@ class ISMSContextService
 
     /**
      * Get the current ISMS context or create a new one if none exists
+     * Automatically syncs organization name from tenant
      */
     public function getCurrentContext(): ISMSContext
     {
@@ -28,14 +29,21 @@ class ISMSContextService
             $this->entityManager->persist($context);
         }
 
+        // Auto-sync organization name from tenant
+        $this->syncOrganizationNameFromTenant($context);
+
         return $context;
     }
 
     /**
      * Save or update ISMS context
+     * Automatically syncs organization name from tenant if available
      */
     public function saveContext(ISMSContext $context): void
     {
+        // Auto-sync organization name from tenant
+        $this->syncOrganizationNameFromTenant($context);
+
         $context->setUpdatedAt(new \DateTime());
 
         if (!$context->getId()) {
@@ -43,6 +51,18 @@ class ISMSContextService
         }
 
         $this->entityManager->flush();
+    }
+
+    /**
+     * Sync organization name from associated tenant
+     * This prevents redundancy between Tenant.name and ISMSContext.organizationName
+     */
+    public function syncOrganizationNameFromTenant(ISMSContext $context): void
+    {
+        $tenant = $context->getTenant();
+        if ($tenant) {
+            $context->setOrganizationName($tenant->getName());
+        }
     }
 
     /**

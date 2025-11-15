@@ -20,8 +20,10 @@ class ISMSContextType extends AbstractType
                 'label' => 'context.field.organization_name',
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => 'Name der Organisation'
+                    'placeholder' => 'Name der Organisation',
+                    'readonly' => true,
                 ],
+                'help' => 'Dieser Name wird automatisch vom zugeordneten Mandanten übernommen. Um ihn zu ändern, bearbeiten Sie den Mandanten in der Mandantenverwaltung.',
                 'constraints' => [
                     new Assert\NotBlank(['message' => 'context.validation.organization_name_required']),
                     new Assert\Length([

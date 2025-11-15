@@ -41,6 +41,9 @@ class ContextController extends AbstractController
             $auditLogs = array_slice($auditLogs, 0, 10);
         }
 
+        // Get current tenant for navigation
+        $tenant = $context->getTenant();
+
         return $this->render('context/index.html.twig', [
             'context' => $effectiveContext, // Show effective context
             'ownContext' => $context, // Keep reference to own context
@@ -52,6 +55,7 @@ class ContextController extends AbstractController
             'totalAuditLogs' => $totalAuditLogs,
             'inheritanceInfo' => $inheritanceInfo, // NEW: Corporate inheritance info
             'canEdit' => $this->contextService->canEditContext($context), // NEW: Edit permission
+            'tenant' => $tenant, // NEW: Current tenant for navigation links
         ]);
     }
 
@@ -91,9 +95,13 @@ class ContextController extends AbstractController
             return $this->redirectToRoute('app_context_index');
         }
 
+        // Get current tenant for navigation
+        $tenant = $context->getTenant();
+
         return $this->render('context/edit.html.twig', [
             'context' => $context,
             'form' => $form,
+            'tenant' => $tenant, // NEW: Current tenant for navigation links
         ]);
     }
 }

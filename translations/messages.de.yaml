@@ -3174,6 +3174,20 @@ tenant:
     toggle: Möchten Sie den Status dieses Mandanten wirklich ändern?
   delete:
     warning: Mandanten können nur gelöscht werden, wenn sie keine zugewiesenen Benutzer mehr haben.
+  tabs:
+    details: Details
+    isms_context: ISMS Kontext
+    users: Benutzer
+  isms_context:
+    not_configured: ISMS Kontext nicht konfiguriert
+    configure_prompt: Konfigurieren Sie den ISMS Kontext für diesen Mandanten.
+    configure_now: Jetzt konfigurieren
+    load_error: Fehler beim Laden des ISMS Kontexts
+    view_full: Vollständigen ISMS Kontext anzeigen
+    linked_to: Verknüpft mit Mandant
+  link:
+    view: Mandant anzeigen
+    back_to_tenant: Zurück zum Mandanten
   info:
     title: Über Mandanten
     text: Mandanten ermöglichen es, mehrere Organisationen in einer Instanz zu verwalten. Jeder Benutzer gehört zu einem Mandanten.
