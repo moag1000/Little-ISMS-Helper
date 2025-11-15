@@ -1,0 +1,259 @@
+{#
+    Reusable Bulk Delete Confirmation Dialog Component
+
+    WCAG 2.1 AA Compliant Modal Dialog with:
+    - Proper ARIA attributes for accessibility
+    - Keyboard navigation support
+    - Screen reader announcements
+    - Clear visual indicators
+
+    Usage:
+        {% include '_components/_bulk_delete_modal.html.twig' with {
+            'entity_name': 'Assets',
+            'entity_name_plural': 'Assets',
+            'delete_route': 'app_asset_bulk_delete',
+            'dependencies_info': 'Risks and Controls may be affected'
+        } %}
+#}
+
+{% set entity_lower = entity_name|lower %}
+{% set modal_id = 'bulkDelete' ~ entity_name ~ 'Modal' %}
+
+{# Modal Dialog #}
+<div class="modal fade" id="{{ modal_id }}" tabindex="-1"
+     aria-labelledby="{{ modal_id }}Label" aria-hidden="true"
+     role="dialog" aria-modal="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-danger">
+            {# Header #}
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="{{ modal_id }}Label">
+                    <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
+                    {{ 'bulk_delete.confirm.title'|trans|default('Confirm Bulk Delete') }}
+                </h5>
+                <button type="button" class="btn-close btn-close-white"
+                        data-bs-dismiss="modal"
+                        aria-label="{{ 'action.close'|trans|default('Close') }}">
+                </button>
+            </div>
+
+            {# Body #}
+            <div class="modal-body">
+                {# Selected count announcement (screen reader) #}
+                <div class="alert alert-danger" role="alert">
+                    <p class="mb-2">
+                        <strong>{{ 'bulk_delete.warning'|trans|default('Warning') }}:</strong>
+                        <span id="{{ modal_id }}SelectedCount">0</span>
+                        {{ entity_name_plural|default(entity_name) }}
+                        {{ 'bulk_delete.will_be_deleted'|trans|default('will be permanently deleted.') }}
+                    </p>
+
+                    {% if dependencies_info is defined and dependencies_info %}
+                        <p class="mb-0 small">
+                            <i class="bi bi-info-circle" aria-hidden="true"></i>
+                            {{ dependencies_info }}
+                        </p>
+                    {% endif %}
+                </div>
+
+                {# Selected items list #}
+                <div class="mb-3">
+                    <h6>{{ 'bulk_delete.selected_items'|trans|default('Selected items') }}:</h6>
+                    <div id="{{ modal_id }}ItemsList"
+                         class="border rounded p-2 bg-light"
+                         style="max-height: 200px; overflow-y: auto;"
+                         role="region"
+                         aria-label="{{ 'bulk_delete.selected_items'|trans|default('Selected items') }}">
+                        {# Populated by JavaScript #}
+                    </div>
+                </div>
+
+                {# Confirmation checkbox #}
+                <div class="form-check">
+                    <input class="form-check-input"
+                           type="checkbox"
+                           id="{{ modal_id }}Confirm"
+                           aria-required="true"
+                           aria-describedby="{{ modal_id }}ConfirmHelp">
+                    <label class="form-check-label" for="{{ modal_id }}Confirm">
+                        {{ 'bulk_delete.understand'|trans|default('I understand that this action cannot be undone') }}
+                    </label>
+                    <div id="{{ modal_id }}ConfirmHelp" class="form-text">
+                        {{ 'bulk_delete.confirm_help'|trans|default('You must confirm to proceed with deletion') }}
+                    </div>
+                </div>
+            </div>
+
+            {# Footer #}
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle" aria-hidden="true"></i>
+                    {{ 'action.cancel'|trans|default('Cancel') }}
+                </button>
+                <button type="button"
+                        class="btn btn-danger"
+                        id="{{ modal_id }}ConfirmButton"
+                        disabled
+                        data-delete-route="{{ delete_route }}"
+                        aria-describedby="{{ modal_id }}ConfirmHelp">
+                    <i class="bi bi-trash" aria-hidden="true"></i>
+                    {{ 'action.delete_selected'|trans|default('Delete Selected') }}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{# JavaScript for Modal Functionality #}
+<script>
+(function() {
+    const modalId = '{{ modal_id }}';
+    const modal = document.getElementById(modalId);
+    const confirmCheckbox = document.getElementById(modalId + 'Confirm');
+    const confirmButton = document.getElementById(modalId + 'ConfirmButton');
+    const selectedCountSpan = document.getElementById(modalId + 'SelectedCount');
+    const itemsList = document.getElementById(modalId + 'ItemsList');
+
+    let selectedIds = [];
+    let selectedItems = [];
+
+    // Enable/disable confirm button based on checkbox
+    confirmCheckbox?.addEventListener('change', function() {
+        if (confirmButton) {
+            confirmButton.disabled = !this.checked;
+        }
+    });
+
+    // Handle delete confirmation
+    confirmButton?.addEventListener('click', async function() {
+        if (selectedIds.length === 0) {
+            return;
+        }
+
+        const deleteRoute = this.dataset.deleteRoute;
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
+
+        try {
+            const response = await fetch(deleteRoute, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-Token': csrfToken
+                },
+                body: JSON.stringify({
+                    ids: selectedIds
+                })
+            });
+
+            if (response.ok) {
+                // Close modal
+                const bsModal = bootstrap.Modal.getInstance(modal);
+                bsModal?.hide();
+
+                // Show success message
+                showSuccessMessage(selectedIds.length + ' {{ entity_name_plural|default(entity_name)|lower }} deleted successfully');
+
+                // Reload page after short delay
+                setTimeout(() => window.location.reload(), 1000);
+            } else {
+                const error = await response.text();
+                showErrorMessage('Error deleting items: ' + error);
+            }
+        } catch (error) {
+            showErrorMessage('Error: ' + error.message);
+        }
+    });
+
+    // Public function to show modal with selected items
+    window.showBulkDeleteModal = function(ids, items) {
+        selectedIds = ids;
+        selectedItems = items;
+
+        // Update count
+        if (selectedCountSpan) {
+            selectedCountSpan.textContent = ids.length;
+        }
+
+        // Update items list
+        if (itemsList) {
+            itemsList.innerHTML = '<ul class="mb-0">' +
+                items.map(item => `<li>${escapeHtml(item)}</li>`).join('') +
+                '</ul>';
+        }
+
+        // Reset checkbox and button
+        if (confirmCheckbox) {
+            confirmCheckbox.checked = false;
+        }
+        if (confirmButton) {
+            confirmButton.disabled = true;
+        }
+
+        // Show modal
+        const bsModal = new bootstrap.Modal(modal);
+        bsModal.show();
+
+        // Focus on checkbox when modal is shown
+        modal.addEventListener('shown.bs.modal', function() {
+            confirmCheckbox?.focus();
+        }, { once: true });
+    };
+
+    // Helper function to escape HTML
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    // Helper functions for flash messages
+    function showSuccessMessage(message) {
+        showFlashMessage(message, 'success');
+    }
+
+    function showErrorMessage(message) {
+        showFlashMessage(message, 'danger');
+    }
+
+    function showFlashMessage(message, type) {
+        const alertDiv = document.createElement('div');
+        alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+        alertDiv.setAttribute('role', 'alert');
+        alertDiv.innerHTML = `
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        `;
+
+        const container = document.querySelector('.container-fluid') || document.body;
+        container.insertBefore(alertDiv, container.firstChild);
+
+        // Auto-dismiss after 5 seconds
+        setTimeout(() => {
+            alertDiv.remove();
+        }, 5000);
+    }
+})();
+</script>
+
+{#
+    Accessibility Features:
+
+    1. role="dialog" + aria-modal="true": Identifies modal dialog
+    2. aria-labelledby: Links modal title
+    3. tabindex="-1": Modal is focusable
+    4. role="alert": Warning message announced
+    5. role="region": Selected items list is a landmark
+    6. aria-label: Descriptive labels for all interactive elements
+    7. aria-required: Checkbox is required
+    8. aria-describedby: Links help text to checkbox
+    9. Keyboard navigation: Tab through elements, Esc to close
+    10. Focus management: Auto-focus on checkbox when opened
+
+    WCAG 2.1 Criteria Met:
+    - 2.1.1 Keyboard (Level A)
+    - 2.4.3 Focus Order (Level A)
+    - 3.2.1 On Focus (Level A)
+    - 3.2.2 On Input (Level A)
+    - 4.1.2 Name, Role, Value (Level A)
+    - 2.4.7 Focus Visible (Level AA)
+#}
