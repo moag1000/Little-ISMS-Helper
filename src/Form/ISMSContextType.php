@@ -8,6 +8,8 @@ use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -21,7 +23,6 @@ class ISMSContextType extends AbstractType
                 'attr' => [
                     'class' => 'form-control',
                     'placeholder' => 'Name der Organisation',
-                    'readonly' => true,
                 ],
                 'help' => 'Dieser Name wird automatisch vom zugeordneten Mandanten übernommen. Um ihn zu ändern, bearbeiten Sie den Mandanten in der Mandantenverwaltung.',
                 'constraints' => [
@@ -161,6 +162,32 @@ class ISMSContextType extends AbstractType
                 'help' => 'Wann soll die nächste Überprüfung stattfinden? (Empfohlen: jährlich)'
             ])
         ;
+
+        // Dynamically set organizationName to readonly if tenant is assigned
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+            $context = $event->getData();
+            $form = $event->getForm();
+
+            if ($context && $context->getTenant() !== null) {
+                // Re-add organizationName field with readonly attribute
+                $form->add('organizationName', TextType::class, [
+                    'label' => 'context.field.organization_name',
+                    'attr' => [
+                        'class' => 'form-control',
+                        'placeholder' => 'Name der Organisation',
+                        'readonly' => true,
+                    ],
+                    'help' => 'Dieser Name wird automatisch vom zugeordneten Mandanten übernommen. Um ihn zu ändern, bearbeiten Sie den Mandanten in der Mandantenverwaltung.',
+                    'constraints' => [
+                        new Assert\NotBlank(['message' => 'context.validation.organization_name_required']),
+                        new Assert\Length([
+                            'max' => 255,
+                            'maxMessage' => 'context.validation.name_max_length'
+                        ])
+                    ]
+                ]);
+            }
+        });
     }
 
     public function configureOptions(OptionsResolver $resolver): void

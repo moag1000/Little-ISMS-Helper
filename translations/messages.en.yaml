@@ -3136,6 +3136,20 @@ tenant:
     toggle: Do you really want to change the status of this tenant?
   delete:
     warning: Tenants can only be deleted when they have no assigned users.
+  tabs:
+    details: Details
+    isms_context: ISMS Context
+    users: Users
+  isms_context:
+    not_configured: ISMS Context not configured
+    configure_prompt: Configure the ISMS Context for this tenant.
+    configure_now: Configure Now
+    load_error: Error loading ISMS Context
+    view_full: View Full ISMS Context
+    linked_to: Linked to Tenant
+  link:
+    view: View Tenant
+    back_to_tenant: Back to Tenant
   info:
     title: About Tenants
     text: Tenants allow managing multiple organizations in a single instance. Each user belongs to a tenant.

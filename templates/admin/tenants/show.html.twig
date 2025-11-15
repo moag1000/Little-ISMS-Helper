@@ -741,7 +741,7 @@
         function loadISMSContext() {
             const container = document.getElementById('ismsContextContainer');
 
-            fetch(`/api/tenants/{{ tenant.id }}/isms-context`)
+            fetch(`{{ path('api_tenant_isms_context', {id: tenant.id}) }}`)
                 .then(response => response.json())
                 .then(data => {
                     if (data.error) {
