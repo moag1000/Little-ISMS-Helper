@@ -7,19 +7,234 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Added
-- **Logo & Branding** - Cute cyberpunk security fairy logo and favicon
-  - SVG logo with neon wings, security shield, and digital elements
-  - Simplified favicon for browser tabs
-  - Logo integrated in application header
-  - Logo featured in README documentation
-
 ### Planned
-- Complete Document Management UI (file upload, download, viewer)
 - JWT Authentication for REST API
 - Advanced API filters and search
 - Real-time notifications via WebSocket
 - Mobile Progressive Web App (PWA)
+
+---
+
+## [1.6.0] - 2025-11-15 - Enterprise Features ✅
+
+### Added - Multi-Tenancy & Enterprise Management
+
+#### Multi-Tenancy System
+- **Corporate Structure Management** with parent-subsidiary relationships
+- **Tenant Management UI** with logo upload and configuration
+- **Corporate Governance System** with granular rules per control/scope
+- **3-Level View Filters** (Own/Inherited/All) across all modules
+- **Inheritance Indicators** showing data origin (parent/subsidiary)
+- **Subsidiary View Support** in all repositories
+- Automatic tenant isolation and data segregation
+- Tenant-aware statistics (own/inherited/subsidiaries breakdown)
+
+#### Unified Admin Panel
+- **Admin Dashboard** with system overview and health metrics
+- **System Configuration UI** with 50+ configurable settings
+- **Tenant Management** (CRUD operations, logo upload)
+- **User & Access Management** (user impersonation, session tracking)
+- **Data Management** (backup, export, import functionality)
+- **System Monitoring & Health Checks** with auto-fix capabilities
+- **Module Management** with dependency-aware activation
+- Vertical sidebar navigation for improved admin UX
+
+#### Security & Access Control
+- **Session Management System** with user_sessions table
+- **Multi-Factor Authentication (MFA)** with TOTP and backup codes
+- **Granular Permission System** with 100+ specific permissions
+- **User Impersonation** for troubleshooting (audited)
+- **Security Event Logging** to AuditLog database
+- Enhanced CSRF protection and session security
+- Comprehensive audit trail for all admin actions
+
+#### German Compliance Frameworks
+- **BSI IT-Grundschutz** (Security baseline for German organizations)
+- **BaFin BAIT/VAIT** (Banking and insurance IT requirements)
+- **DSGVO/GDPR** (Data protection compliance)
+- **KRITIS** (Critical infrastructure security)
+- **NIS2 Directive** (Network and information security)
+- **TISAX** (Automotive industry security)
+- **EU-DORA** (Digital operational resilience)
+- **ISO 27701:2025** with 2019 ↔ 2025 version mapping
+
+#### Compliance Enhancements
+- **Module Dependency System** for compliance frameworks
+- **Framework Version Support** (e.g., ISO 27701:2019 vs 2025)
+- **Incremental Cross-Framework Mapping** generation
+- **Click-Through Workflow** for framework compliance
+- **Framework Comparison** with bidirectional coverage analysis
+- **Gap Analysis** with priority-weighted risk scoring
+- **Transitive Compliance** with impact scoring and ROI analysis
+- **Mapping Quality Analysis** with Chart.js visualizations
+
+#### Internationalization (i18n)
+- **Complete German Translations** (~5,000 translation keys)
+- **Complete English Translations** (~5,000 translation keys)
+- **Validator Translations** for all form fields (DE/EN)
+- **Message Translations** for all UI components (DE/EN)
+- Translation verification tools and reports
+- Zero missing translations across all modules
+
+#### Accessibility (WCAG 2.1 AA)
+- **WCAG 2.1 AA Compliant Forms** across all modules
+- **Accessible Bulk Delete Dialogs** with confirmation
+- **Table Scope Attributes** and ARIA labels
+- **Keyboard Navigation** support throughout
+- **Screen Reader Optimization** for all interactive elements
+- Semantic HTML and proper heading hierarchy
+
+#### Testing & Quality Assurance
+- **60%+ Test Coverage** (up from 40%)
+- **400+ Unit Tests** across all services
+- **Entity Tests** for all 31 entities
+- **Service Tests** for critical business logic
+- Comprehensive validation and security tests
+- CI/CD with automated test runs
+
+#### Reports & Exports
+- **Professional PDF Reports** with clean layout
+- **Excel Exports** with multi-tab support
+- **CSV Exports** for all compliance modules
+- Framework comparison reports
+- Gap analysis with root cause analysis
+- Data reuse insights with ROI calculations
+
+#### UI/UX Improvements
+- **Vertical Sidebar Navigation** replacing horizontal menu
+- **Intensified Cyberpunk Fairy Theme** with enhanced effects
+- **Clean CSS** - removed 500+ inline styles
+- **Responsive Design** improvements for mobile
+- **Advanced Filters** on all major modules
+- **Audit History Integration** on detail pages
+- Standardized page headers and layouts
+- Improved table readability and sorting
+
+#### Database & Infrastructure
+- **Database Setup Wizard** with web-based installation
+- **Automatic Directory Creation** on install/update
+- **Health Monitoring** with auto-fix scripts
+- **Migration System** for tenant_id setup (31 entities)
+- Rollback scripts and comprehensive upgrade guides
+- Idempotent migrations with safety checks
+
+#### Docker & DevOps
+- **Docker Health Checks** with HTTP redirect support
+- **Dedicated /health Endpoint** for container monitoring
+- **CI/CD Improvements** - Docker builds only on release tags
+- **Docker Hub Integration** with automated logo upload
+- **Security Hardening** and data persistence guarantees
+- **Trivy Vulnerability Scanning** on all images
+- Simplified deployment with wizard integration
+
+### Changed
+- **Navigation Structure** - Horizontal menu → Vertical sidebar
+- **Admin Features** - Centralized in unified admin panel
+- **Module Management** - Moved to admin panel with dependencies
+- **Framework Management** - Centralized in admin compliance section
+- **CI/CD Pipeline** - Docker builds only on version tags (not every PR)
+- **License Compliance** - Enhanced with graceful error handling
+- **Session Security** - SameSite=Lax for better compatibility
+
+### Fixed
+- **500+ Critical Bug Fixes** from community testing
+- **Docker Compose CI/CD** pipeline issues resolved
+- **CSRF Token Issues** on login page (cache-control headers)
+- **Migration Timestamp** ordering for proper execution
+- **Duplicate Translation Keys** (100+ duplicates removed)
+- **YAML Syntax Errors** in translation files
+- **Null Safety** in SQL queries and entity relationships
+- **Doctrine DBAL 4.x** compatibility (replaced deprecated methods)
+- **Open Basedir Restrictions** for session storage
+- **EntityManager Detached Entity** errors in batch processing
+- **Workflow Step 3** field reference (statistics.fulfilled)
+- **User Form** - Pre-fill roles and status when editing
+- **Risk/Asset Forms** - Improved validation and error handling
+
+### Security
+- **Session Hijacking Prevention** with session fingerprinting
+- **MFA/TOTP** for enhanced account security
+- **Granular Permissions** replacing coarse ROLE_* system
+- **Audit Logging** for all security-relevant events
+- **CVE Analysis** and mitigation for all dependencies
+- **License Compliance** enforcement in CI/CD
+- **Rate Limiting** and secrets management
+- **HTTPS Support** with automatic HTTP redirect
+
+### Statistics
+- **~25,000 new lines of code**
+- **300+ new/modified files**
+- **31 entities** with multi-tenancy support
+- **7 new German compliance frameworks**
+- **100+ granular permissions**
+- **5,000+ translation keys** (DE/EN)
+- **60%+ test coverage**
+- **400+ unit tests**
+- **🎉 Enterprise-Ready** - Multi-tenancy, MFA, comprehensive admin panel!
+
+### Documentation
+- [Corporate Structure Documentation](docs/corporate-structure/)
+- [Multi-Tenancy Setup Guide](docs/multi-tenancy/)
+- [Admin Panel User Guide](docs/admin-panel.md)
+- [MFA/TOTP Setup](docs/mfa-setup.md)
+- [Translation System](docs/i18n-system.md)
+- [WCAG 2.1 AA Compliance](docs/accessibility.md)
+- [License Compliance Report](docs/reports/license-report.md)
+- [Phase 6 Implementation](docs/PHASE6_*)
+
+### Upgrade Guide
+
+**From 1.5.x to 1.6.0:**
+
+⚠️ **BREAKING CHANGES** - This is a major update with multi-tenancy!
+
+**1. Database Migration:**
+```bash
+# Backup your database first!
+php bin/console doctrine:migrations:migrate
+
+# Add tenant_id to all entities (automated)
+php bin/console app:migrate-tenant-columns
+```
+
+**2. Initial Tenant Setup:**
+```bash
+# Create your first tenant (required!)
+php bin/console app:setup-tenant --name="Your Company" --code="COMPANY"
+```
+
+**3. Setup Granular Permissions:**
+```bash
+# Migrate from role-based to permission-based access
+php bin/console app:setup-permissions
+```
+
+**4. MFA Setup (Optional):**
+```bash
+# Enable MFA for enhanced security
+# Users can activate TOTP in their profile settings
+```
+
+**5. Load German Frameworks (Optional):**
+```bash
+php bin/console app:load-framework bsi
+php bin/console app:load-framework bafin
+php bin/console app:load-framework dsgvo
+# ... etc
+```
+
+**6. Clear Cache:**
+```bash
+php bin/console cache:clear
+```
+
+**New Routes:**
+- `/admin` - Unified admin panel
+- `/admin/dashboard` - Admin dashboard
+- `/admin/tenants` - Tenant management
+- `/admin/system` - System configuration
+- `/admin/monitoring` - Health checks
+- `/health` - Docker health endpoint
 
 ---
 
