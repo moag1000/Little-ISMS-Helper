@@ -1,0 +1,105 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'compliance.framework.new.title'|trans }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid mt-4">
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-plus-circle"></i> {{ 'compliance.framework.new.heading'|trans }}
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {{ form_start(form) }}
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            {{ form_row(form.code, {
+                                'label': 'compliance.framework.field.code'|trans,
+                                'attr': {'placeholder': 'e.g., ISO27001'}
+                            }) }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form_row(form.version, {
+                                'label': 'compliance.framework.field.version'|trans,
+                                'attr': {'placeholder': 'e.g., 2022'}
+                            }) }}
+                        </div>
+                    </div>
+
+                    {{ form_row(form.name, {
+                        'label': 'compliance.framework.field.name'|trans,
+                        'attr': {'placeholder': 'e.g., ISO/IEC 27001:2022'}
+                    }) }}
+
+                    {{ form_row(form.description, {
+                        'label': 'compliance.framework.field.description'|trans
+                    }) }}
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            {{ form_row(form.applicableIndustry, {
+                                'label': 'compliance.framework.field.industry'|trans
+                            }) }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form_row(form.regulatoryBody, {
+                                'label': 'compliance.framework.field.regulatory_body'|trans,
+                                'attr': {'placeholder': 'e.g., ISO'}
+                            }) }}
+                        </div>
+                    </div>
+
+                    {{ form_row(form.scopeDescription, {
+                        'label': 'compliance.framework.field.scope'|trans
+                    }) }}
+
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            {{ form_row(form.mandatory, {
+                                'label': 'compliance.framework.field.mandatory'|trans
+                            }) }}
+                        </div>
+                        <div class="col-md-4">
+                            {{ form_row(form.active, {
+                                'label': 'compliance.framework.field.active'|trans
+                            }) }}
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-success">
+                            <i class="bi bi-check-circle"></i> {{ 'common.create'|trans }}
+                        </button>
+                        <a href="{{ path('app_compliance_framework_index') }}" class="btn btn-outline-secondary">
+                            <i class="bi bi-x-circle"></i> {{ 'common.cancel'|trans }}
+                        </a>
+                    </div>
+
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h6 class="mb-0"><i class="bi bi-info-circle"></i> {{ 'common.help'|trans }}</h6>
+                </div>
+                <div class="card-body">
+                    <h6>{{ 'compliance.framework.help.code.title'|trans }}</h6>
+                    <p class="small text-muted">{{ 'compliance.framework.help.code.text'|trans }}</p>
+
+                    <h6>{{ 'compliance.framework.help.mandatory.title'|trans }}</h6>
+                    <p class="small text-muted">{{ 'compliance.framework.help.mandatory.text'|trans }}</p>
+
+                    <h6>{{ 'compliance.framework.help.active.title'|trans }}</h6>
+                    <p class="small text-muted">{{ 'compliance.framework.help.active.text'|trans }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
