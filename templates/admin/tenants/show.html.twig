@@ -715,27 +715,59 @@
         {% endif %}
 
         // Load data on page load
-        document.addEventListener('DOMContentLoaded', () => {
+        function initTenantShow() {
+            if (window.tenantShowInitialized) return;
+            window.tenantShowInitialized = true;
+
             loadEffectiveContext();
             {% if tenant.parent %}
             loadGovernanceRules();
             {% endif %}
+        }
+
+        // Turbo-compatible initialization
+        document.addEventListener('turbo:load', function() {
+            window.tenantShowInitialized = false;
+            initTenantShow();
         });
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initTenantShow);
+        } else {
+            initTenantShow();
+        }
     </script>
     {% endif %}
 
     <script>
         // Load ISMS Context when tab is activated
-        const ismsContextTab = document.getElementById('isms-context-tab');
-        let ismsContextLoaded = false;
+        function initIsmsContextTab() {
+            if (window.ismsContextTabInitialized) return;
+            window.ismsContextTabInitialized = true;
 
-        if (ismsContextTab) {
-            ismsContextTab.addEventListener('shown.bs.tab', function() {
-                if (!ismsContextLoaded) {
-                    loadISMSContext();
-                    ismsContextLoaded = true;
-                }
-            });
+            const ismsContextTab = document.getElementById('isms-context-tab');
+            let ismsContextLoaded = false;
+
+            if (ismsContextTab) {
+                ismsContextTab.addEventListener('shown.bs.tab', function() {
+                    if (!ismsContextLoaded) {
+                        loadISMSContext();
+                        ismsContextLoaded = true;
+                    }
+                });
+            }
+        }
+
+        // Initialize tab listener on both Turbo navigation and direct load
+        document.addEventListener('turbo:load', function() {
+            window.ismsContextTabInitialized = false;
+            initIsmsContextTab();
+        });
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initIsmsContextTab);
+        } else {
+            initIsmsContextTab();
         }
 
         // XSS protection: escape HTML entities
