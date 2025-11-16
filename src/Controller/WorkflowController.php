@@ -214,6 +214,7 @@ class WorkflowController extends AbstractController
     {
         return $this->render('workflow/builder.html.twig', [
             'workflow' => $workflow,
+            'api_base_url' => '/api/workflow',
         ]);
     }
 
