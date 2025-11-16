@@ -11,7 +11,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Security\Core\Exception\TooManyRequestsException;
+use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 
 class MfaServiceTest extends TestCase
 {
@@ -163,7 +163,7 @@ class MfaServiceTest extends TestCase
         $token->method('isActive')->willReturn(false);
         $token->method('getLastUsedAt')->willReturn($lastUsed);
 
-        $this->expectException(TooManyRequestsException::class);
+        $this->expectException(TooManyRequestsHttpException::class);
 
         $this->service->verifyTotp($token, '123456');
     }
