@@ -112,20 +112,38 @@
 
 ### 3. Quality Assurance
 
-#### Test Coverage erhöhen (26% → 60%)
+#### Test Coverage erhöhen (26% → 60%) 🔄 IN BEARBEITUNG
 - **Ziel**: Test Coverage signifikant verbessern
 - **Priorität**: Hoch
 - **Aufwand**: ~5-7 Tage
-- **Aktueller Stand**: 26% Coverage
+- **Aktueller Stand**: ~35% Coverage (geschätzt nach neuen Tests)
 - **Ziel**: 60% Coverage
+- **Fortschritt** (November 2025):
+  - ✅ **14 Service-Tests** (11 existierend + 3 neu):
+    - TenantContextTest ✅
+    - RiskMatrixServiceTest ✅
+    - RiskIntelligenceServiceTest ✅
+    - RiskImpactCalculatorServiceTest ✅
+    - ProtectionRequirementServiceTest ✅
+    - ComplianceMappingServiceTest ✅
+    - EmailNotificationServiceTest ✅
+    - InputValidationServiceTest ✅
+    - PdfExportServiceTest ✅
+    - ExcelExportServiceTest ✅
+    - AssetRiskCalculatorTest ✅
+    - **DashboardStatisticsServiceTest** ✅ (NEU - 7 Tests)
+    - **CorporateStructureServiceTest** ✅ (NEU - 15 Tests)
+    - **ControlServiceTest** ✅ (NEU - 14 Tests)
+  - ✅ **26 Entity-Tests** für alle Haupt-Entities
+  - 📊 **Total: 40 Test-Dateien, 766 neue Test-Zeilen**
 - **Schritte**:
-  - [ ] Coverage-Report analysieren
-  - [ ] Kritische Business-Logic identifizieren
-  - [ ] Unit Tests für Services schreiben:
-    - [ ] TenantContext
-    - [ ] CorporateStructure
-    - [ ] RiskManagement
-    - [ ] ControlManagement
+  - [x] Coverage-Report analysieren
+  - [x] Kritische Business-Logic identifizieren
+  - [x] Unit Tests für Services schreiben:
+    - [x] TenantContext
+    - [x] CorporateStructure
+    - [ ] RiskManagement (RiskService)
+    - [x] ControlManagement
   - [ ] Integration Tests für kritische Workflows:
     - [ ] Tenant-Erstellung & Setup
     - [ ] Risk Assessment Flow
