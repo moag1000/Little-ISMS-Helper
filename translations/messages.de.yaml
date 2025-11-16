@@ -23,6 +23,23 @@ nav:
   audit_log: Audit Log
   users: Benutzer
   documents: Dokumente
+  assets_risk_hub: 'Assets & Risiken'
+  risk_matrix: 'Risikomatrix'
+  bcm_hub: 'BCM Hub'
+  compliance_overview: 'Übersicht'
+  frameworks: 'Frameworks'
+  tools: 'Werkzeuge'
+  cross_framework: 'Framework-übergreifend'
+  compare: 'Vergleichen'
+  section:
+    isms_core: 'ISMS Kern'
+    assets_risk: 'Assets & Risiken'
+    bcm: 'Geschäftskontinuität'
+    operations: 'Betrieb'
+    compliance: 'Compliance'
+    admin: 'Administration'
+breadcrumb:
+  home: 'Startseite'
 login:
   title: Anmelden
   already_logged_in: Sie sind bereits als {{ user }} angemeldet.
@@ -85,6 +102,8 @@ admin:
     modules: Module & Features
     monitoring: Überwachung & Logs
     navigation: Navigation
+    data_management: Daten-Verwaltung
+    licensing: Lizenzierung
   nav:
     tenants: Mandanten
     users: Benutzer
@@ -93,6 +112,18 @@ admin:
     compliance: Compliance-Frameworks
     audit_log: Audit Log
     back_to_app: Zurück zur Anwendung
+    dashboard: Dashboard
+    corporate_structure: Unternehmensstrukturen
+    permissions: Berechtigungen
+    sessions: Sitzungen
+    mfa: MFA Verwaltung
+    module_management: Modul-Verwaltung
+    compliance_management: Compliance-Verwaltung
+    system_health: System-Status
+    backup: Backup
+    export: Export
+    import: Import
+    license_management: Lizenz-Verwaltung
   dashboard:
     title: Admin Dashboard
     subtitle: Zentrale Verwaltung und Systemübersicht
@@ -3790,41 +3821,6 @@ admin.licensing.summary: 'Lizenz-Zusammenfassung'
 
 admin.panel.title: 'Admin Panel'
 
-# Admin Navigation
-nav.admin_portal: 'Admin Portal'
-admin.title: 'Administration'
-admin.nav.dashboard: 'Dashboard'
-admin.nav.tenants: 'Mandanten'
-admin.nav.corporate_structure: 'Konzernstrukturen'
-admin.nav.users: 'Benutzer'
-admin.nav.roles: 'Rollen'
-admin.nav.permissions: 'Berechtigungen'
-admin.nav.sessions: 'Sitzungen'
-admin.nav.mfa: 'MFA Verwaltung'
-admin.nav.settings: 'Einstellungen'
-admin.nav.module_management: 'Modul-Verwaltung'
-admin.nav.compliance_management: 'Compliance-Verwaltung'
-admin.nav.system_health: 'System-Status'
-admin.nav.audit_log: 'Audit-Protokoll'
-admin.nav.backup: 'Backup'
-admin.nav.export: 'Export'
-admin.nav.import: 'Import'
-admin.nav.license_management: 'Lizenz-Verwaltung'
-admin.nav.back_to_app: 'Zurück zur Anwendung'
-admin.section.user_access: 'Benutzer & Zugriffsrechte'
-admin.section.system_config: 'System-Konfiguration'
-admin.section.modules: 'Module & Features'
-admin.section.monitoring: 'Monitoring & Logs'
-admin.section.data_management: 'Daten-Verwaltung'
-admin.section.licensing: 'Lizenzierung'
-admin.section.navigation: 'Navigation'
-admin.breadcrumb.home: 'Admin'
-
-# Common translations
-common.back: 'Zurück'
-common.yes: 'Ja'
-common.no: 'Nein'
-
 # Workflow Definition Management - Phase 6C
 workflow.definition.title: 'Workflow-Definition'
 workflow.definition.new_title: 'Neue Workflow-Definition'
@@ -3941,12 +3937,6 @@ role.iso_officer: 'ISO-Beauftragter'
 role.risk_manager: 'Risikomanager'
 role.auditor: 'Auditor'
 role.admin: 'Administrator'
-common.select: '-- Auswählen --'
-common.loading: 'Laden...'
-common.cancel: 'Abbrechen'
-common.view: 'Anzeigen'
-common.edit: 'Bearbeiten'
-common.actions: 'Aktionen'
 
 # Setup Wizard Translations
 setup:

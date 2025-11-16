@@ -395,6 +395,18 @@ class WorkflowStepApiController extends AbstractController
                     ['name' => 'Implementation Sign-off', 'stepType' => 'approval', 'approverRole' => 'ROLE_ADMIN', 'daysToComplete' => 3],
                 ]
             ],
+            'training' => [
+                'name' => 'Training Workflow',
+                'description' => 'Workflow for planning, executing and verifying training sessions',
+                'entityType' => 'Training',
+                'steps' => [
+                    ['name' => 'Training Scheduled', 'stepType' => 'notification', 'approverRole' => 'ROLE_USER', 'daysToComplete' => 2],
+                    ['name' => 'Participants Confirmed', 'stepType' => 'approval', 'approverRole' => 'ROLE_MANAGER', 'daysToComplete' => 5],
+                    ['name' => 'Training Completed', 'stepType' => 'notification', 'approverRole' => 'ROLE_USER', 'daysToComplete' => 1],
+                    ['name' => 'Completion Verified', 'stepType' => 'approval', 'approverRole' => 'ROLE_ISO_OFFICER', 'daysToComplete' => 3],
+                    ['name' => 'Certificates Issued', 'stepType' => 'notification', 'approverRole' => 'ROLE_ADMIN', 'daysToComplete' => 5],
+                ]
+            ],
         ];
 
         return $this->json([
