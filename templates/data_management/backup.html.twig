@@ -142,19 +142,19 @@
         </div>
     </div>
 
-    {# Restore Options Modal #}
-    <div class="modal fade" id="restoreModal" tabindex="-1"
+    {# Restore Options Modal - Using custom modal pattern like global search #}
+    <div class="backup-modal d-none" id="restoreModal"
          aria-labelledby="restoreModalLabel"
          role="dialog" aria-modal="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header bg-warning text-dark">
-                    <h5 class="modal-title" id="restoreModalLabel">
+        <div class="backup-modal-container backup-modal-lg">
+            <div class="backup-modal-content">
+                <div class="backup-modal-header bg-warning text-dark">
+                    <h5 class="backup-modal-title" id="restoreModalLabel">
                         <i class="bi bi-exclamation-triangle"></i> Backup wiederherstellen
                     </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close backup-modal-close" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
+                <div class="backup-modal-body">
                     <div class="alert alert-warning">
                         <i class="bi bi-exclamation-triangle-fill"></i>
                         <strong>Achtung:</strong> Die Wiederherstellung eines Backups kann bestehende Daten überschreiben.
@@ -216,6 +216,16 @@
 
                         <div class="mb-3">
                             <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="clearBeforeRestore" name="clear_before_restore">
+                                <label class="form-check-label" for="clearBeforeRestore">
+                                    <strong class="text-danger">Alle bestehenden Daten löschen vor Wiederherstellung</strong>
+                                    <small class="text-muted d-block">Löscht ALLE Daten und stellt das Backup vollständig wieder her (konsistenter Zustand)</small>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="dryRun" name="dry_run" checked>
                                 <label class="form-check-label" for="dryRun">
                                     <strong>Testlauf durchführen (empfohlen)</strong>
@@ -227,8 +237,8 @@
                         <div id="restoreStatus"></div>
                     </form>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abbrechen</button>
+                <div class="backup-modal-footer">
+                    <button type="button" class="btn btn-secondary backup-modal-close">Abbrechen</button>
                     <button type="button" class="btn btn-warning" id="confirmRestoreBtn">
                         <i class="bi bi-arrow-clockwise me-2"></i>Wiederherstellung starten
                     </button>
@@ -237,19 +247,19 @@
         </div>
     </div>
 
-    {# Preview Modal #}
-    <div class="modal fade" id="previewModal" tabindex="-1"
+    {# Preview Modal - Using custom modal pattern like global search #}
+    <div class="backup-modal d-none" id="previewModal"
          aria-labelledby="previewModalLabel"
          role="dialog" aria-modal="true">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="previewModalLabel">
+        <div class="backup-modal-container backup-modal-xl">
+            <div class="backup-modal-content">
+                <div class="backup-modal-header">
+                    <h5 class="backup-modal-title" id="previewModalLabel">
                         <i class="bi bi-eye"></i> Backup-Vorschau
                     </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close backup-modal-close" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
+                <div class="backup-modal-body">
                     <div id="previewContent">
                         <div class="text-center">
                             <div class="spinner-border text-primary" role="status">
@@ -258,12 +268,108 @@
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Schließen</button>
+                <div class="backup-modal-footer">
+                    <button type="button" class="btn btn-secondary backup-modal-close">Schließen</button>
                 </div>
             </div>
         </div>
     </div>
+
+    {# Custom Modal CSS - Same pattern as global-search-modal #}
+    <style>
+        .backup-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 9999;
+            display: flex;
+            align-items: flex-start;
+            padding-top: 5vh;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .backup-modal.d-none {
+            display: none !important;
+        }
+
+        .backup-modal-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 90%;
+            max-height: 85vh;
+            display: flex;
+            flex-direction: column;
+            animation: backupModalSlideIn 0.3s ease-out;
+            overflow: hidden;
+        }
+
+        .backup-modal-lg {
+            max-width: 800px;
+        }
+
+        .backup-modal-xl {
+            max-width: 1140px;
+        }
+
+        @keyframes backupModalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .backup-modal-content {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            max-height: 85vh;
+            overflow: hidden;
+        }
+
+        .backup-modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem;
+            border-bottom: 1px solid #dee2e6;
+            border-radius: 12px 12px 0 0;
+            flex-shrink: 0;
+        }
+
+        .backup-modal-title {
+            margin: 0;
+            font-size: 1.25rem;
+            font-weight: 500;
+        }
+
+        .backup-modal-body {
+            padding: 1rem;
+            overflow-y: auto;
+            flex: 1;
+            min-height: 0;
+        }
+
+        .backup-modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.5rem;
+            padding: 1rem;
+            border-top: 1px solid #dee2e6;
+            border-radius: 0 0 12px 12px;
+            background: #f8f9fa;
+            flex-shrink: 0;
+        }
+    </style>
 
 {% endblock %}
 
@@ -482,20 +588,11 @@
                 });
             });
 
-            // Preview Backup
-            // Fix aria-hidden focus issue: remove focus before hiding (like in bulk delete modal)
+            // Preview Backup - Using simple d-none toggle like global search modal
             const previewModalEl = document.getElementById('previewModal');
             const restoreModalEl = document.getElementById('restoreModal');
 
-            previewModalEl?.addEventListener('hide.bs.modal', function() {
-                document.activeElement?.blur();
-            });
-
-            restoreModalEl?.addEventListener('hide.bs.modal', function() {
-                document.activeElement?.blur();
-            });
-
-            // Show modal using Bootstrap 5 (same pattern as bulk delete modal)
+            // Simple modal show/hide using d-none class (like global search modal)
             function showModal(modalId) {
                 const modalEl = document.getElementById(modalId);
                 if (!modalEl) {
@@ -503,26 +600,70 @@
                     return false;
                 }
 
-                if (!window.bootstrap || !window.bootstrap.Modal) {
-                    alert('Bootstrap Modal nicht verfügbar. Bitte Seite neu laden.');
-                    return false;
-                }
+                // Simply remove d-none - CSS handles everything else
+                modalEl.classList.remove('d-none');
+                modalEl.setAttribute('aria-hidden', 'false');
+                document.body.style.overflow = 'hidden';
 
-                const bsModal = new window.bootstrap.Modal(modalEl);
-                bsModal.show();
+                // Close on backdrop click
+                modalEl.onclick = function(e) {
+                    if (e.target === modalEl) {
+                        hideModal(modalId);
+                    }
+                };
+
+                // Close on ESC key
+                const escHandler = function(e) {
+                    if (e.key === 'Escape') {
+                        hideModal(modalId);
+                        document.removeEventListener('keydown', escHandler);
+                    }
+                };
+                document.addEventListener('keydown', escHandler);
+                modalEl._escHandler = escHandler;
+
                 return true;
             }
 
             function hideModal(modalId) {
                 const modalEl = document.getElementById(modalId);
-                if (modalEl && window.bootstrap && window.bootstrap.Modal) {
-                    const modal = window.bootstrap.Modal.getInstance(modalEl);
-                    if (modal) modal.hide();
+                if (!modalEl) return;
+
+                modalEl.classList.add('d-none');
+                modalEl.setAttribute('aria-hidden', 'true');
+                document.body.style.overflow = '';
+
+                // Remove ESC handler
+                if (modalEl._escHandler) {
+                    document.removeEventListener('keydown', modalEl._escHandler);
+                    modalEl._escHandler = null;
                 }
             }
 
-            document.querySelectorAll('.preview-backup').forEach(btn => {
-                btn.addEventListener('click', async function() {
+            // Close buttons
+            document.querySelectorAll('.backup-modal-close').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const modal = this.closest('.backup-modal');
+                    if (modal) {
+                        hideModal(modal.id);
+                    }
+                });
+            });
+
+            const previewButtons = document.querySelectorAll('.preview-backup');
+            const restoreButtons = document.querySelectorAll('.restore-backup');
+
+            console.log('Event Listeners registriert:', {
+                previewButtons: previewButtons.length,
+                restoreButtons: restoreButtons.length
+            });
+
+            previewButtons.forEach(btn => {
+                btn.addEventListener('click', async function(event) {
+                    console.log('Preview button clicked:', this.getAttribute('data-filename'));
+                    event.preventDefault();
+                    event.stopPropagation();
+
                     const filename = this.getAttribute('data-filename');
                     const previewContent = document.getElementById('previewContent');
 
@@ -563,8 +704,12 @@
             });
 
             // Restore Backup
-            document.querySelectorAll('.restore-backup').forEach(btn => {
-                btn.addEventListener('click', function() {
+            restoreButtons.forEach(btn => {
+                btn.addEventListener('click', function(event) {
+                    console.log('Restore button clicked:', this.getAttribute('data-filename'));
+                    event.preventDefault();
+                    event.stopPropagation();
+
                     const filename = this.getAttribute('data-filename');
                     document.getElementById('restoreFilename').value = filename;
                     document.getElementById('restoreModalLabel').innerHTML = `<i class="bi bi-exclamation-triangle"></i> ${filename} wiederherstellen`;
@@ -665,17 +810,34 @@
         // But NOT both - prevent double initialization
         let turboLoadRegistered = false;
 
+        // Helper function to wait for Bootstrap to be available
+        function waitForBootstrap(callback, maxAttempts = 10) {
+            let attempts = 0;
+            const checkBootstrap = () => {
+                attempts++;
+                if (window.bootstrap && window.bootstrap.Modal) {
+                    callback();
+                } else if (attempts < maxAttempts) {
+                    setTimeout(checkBootstrap, 100);
+                } else {
+                    console.error('Bootstrap konnte nicht geladen werden nach', maxAttempts, 'Versuchen');
+                    callback(); // Initialize anyway, will show errors when trying to use modals
+                }
+            };
+            checkBootstrap();
+        }
+
         document.addEventListener('turbo:load', function() {
             turboLoadRegistered = true;
             window.backupPageInitialized = false; // Reset on each Turbo navigation
-            initBackupPage();
+            waitForBootstrap(initBackupPage);
         });
 
         // Only use DOMContentLoaded/immediate if turbo:load hasn't fired yet
         // Give turbo:load 100ms to fire first
         setTimeout(function() {
             if (!turboLoadRegistered && !window.backupPageInitialized) {
-                initBackupPage();
+                waitForBootstrap(initBackupPage);
             }
         }, 100);
     </script>

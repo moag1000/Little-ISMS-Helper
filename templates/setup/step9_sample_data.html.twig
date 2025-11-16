@@ -43,6 +43,65 @@
                         </ul>
                     </div>
 
+                    {# Backup Restore Option #}
+                    <div class="card border-info mb-4">
+                        <div class="card-header bg-info text-white">
+                            <h5 class="mb-0">
+                                <i class="fas fa-cloud-upload-alt me-2"></i>
+                                Backup wiederherstellen (Empfohlen für Migration)
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <p class="text-muted">
+                                Haben Sie ein Backup von einer anderen Installation? Sie können es hier hochladen und wiederherstellen.
+                            </p>
+                            <form method="post" action="{{ path('setup_step9_restore_backup') }}" enctype="multipart/form-data" id="backupRestoreForm">
+                                <div class="mb-3">
+                                    <label for="backupFile" class="form-label">Backup-Datei auswählen</label>
+                                    <input type="file" class="form-control" id="backupFile" name="backup_file" accept=".json,.gz">
+                                    <div class="form-text">Erlaubte Formate: .json, .json.gz</div>
+                                </div>
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="checkbox" id="clearBeforeRestoreSetup" name="clear_before_restore" checked>
+                                    <label class="form-check-label" for="clearBeforeRestoreSetup">
+                                        Alle bestehenden Daten löschen vor Wiederherstellung (empfohlen)
+                                    </label>
+                                </div>
+                                <button type="submit" class="btn btn-info">
+                                    <i class="fas fa-upload me-2"></i>
+                                    Backup hochladen und wiederherstellen
+                                </button>
+                            </form>
+
+                            {% if backup_restore_result is defined and backup_restore_result %}
+                                <div class="mt-3">
+                                    {% if backup_restore_result.success %}
+                                        <div class="alert alert-success">
+                                            <i class="fas fa-check-circle me-2"></i>
+                                            <strong>Backup erfolgreich wiederhergestellt!</strong>
+                                            <ul class="mb-0 mt-2">
+                                                {% for entity, stats in backup_restore_result.statistics %}
+                                                    <li>{{ entity }}: {{ stats.created }} erstellt, {{ stats.updated }} aktualisiert</li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                    {% else %}
+                                        <div class="alert alert-danger">
+                                            <i class="fas fa-exclamation-circle me-2"></i>
+                                            <strong>Fehler bei der Wiederherstellung:</strong> {{ backup_restore_result.message }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+                    <h5 class="mb-3">
+                        <i class="fas fa-database me-2"></i>
+                        Oder: Beispiel-Daten importieren
+                    </h5>
+
                     {% if sample_data|length > 0 %}
                         <form method="post" action="{{ path('setup_step9_sample_data_import') }}">
                             <h5 class="mb-3 mt-4">
