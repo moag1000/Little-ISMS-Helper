@@ -1,11 +1,12 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin/layout.html.twig' %}
 
-{% block title %}Performance Metrics - Monitoring{% endblock %}
+{% block admin_title %}Performance Metrics{% endblock %}
+{% block admin_subtitle %}
+    <p class="text-muted">Leistungsüberwachung und Systemmetriken</p>
+{% endblock %}
 
-{% block body %}
-<div class="container-fluid">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1><i class="bi bi-speedometer"></i> Performance Metrics</h1>
+{% block admin_content %}
+    <div class="mb-3">
         <a href="{{ path('monitoring_health') }}" class="btn btn-outline-secondary">
             <i class="bi bi-arrow-left"></i> Back to Health
         </a>

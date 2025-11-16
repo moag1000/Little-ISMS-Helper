@@ -1,12 +1,15 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin/layout.html.twig' %}
 
-{% block title %}Audit Log Statistiken - Little ISMS Helper{% endblock %}
+{% block admin_title %}Audit Log Statistiken{% endblock %}
+{% block admin_subtitle %}
+    <p class="text-muted">Statistische Auswertung der Protokolleinträge</p>
+{% endblock %}
 
-{% block body %}
-<h1>Audit Log Statistiken</h1>
-
+{% block admin_content %}
 <p>
-    <a href="{{ path('app_audit_log_index') }}" class="link-primary">« Zurück zur Übersicht</a>
+    <a href="{{ path('app_audit_log_index') }}" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left"></i> Zurück zur Übersicht
+    </a>
 </p>
 
 <div class="info-box">

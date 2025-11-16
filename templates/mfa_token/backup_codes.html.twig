@@ -1,11 +1,12 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin/layout.html.twig' %}
 
-{% block title %}{{ 'mfa_token.backup_codes.title'|trans }} - {{ parent() }}{% endblock %}
+{% block admin_title %}{{ 'mfa_token.backup_codes.title'|trans }}{% endblock %}
+{% block admin_subtitle %}
+    <p class="text-muted">{{ 'mfa_token.backup_codes.subtitle'|trans|default('Backup-Codes für Notfallzugriff') }}</p>
+{% endblock %}
 
-{% block body %}
-<div class="container py-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1><i class="bi bi-key-fill"></i> {{ 'mfa_token.backup_codes.title'|trans }}</h1>
+{% block admin_content %}
+    <div class="mb-4">
         <a href="{{ path('admin_mfa_show', {id: mfa_token.id}) }}" class="btn btn-outline-secondary">
             <i class="bi bi-arrow-left"></i> {{ 'common.back'|trans }}
         </a>
@@ -87,183 +88,185 @@
             </div>
         </div>
     </div>
-</div>
+{% endblock %}
 
-<script>
-const backupCodes = {{ backup_codes|json_encode|raw }};
-const userEmail = '{{ mfa_token.user.email }}';
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+    const backupCodes = {{ backup_codes|json_encode|raw }};
+    const userEmail = '{{ mfa_token.user.email }}';
 
-function copyBackupCodes() {
-    const text = backupCodes.join('\n');
+    function copyBackupCodes() {
+        const text = backupCodes.join('\n');
 
-    navigator.clipboard.writeText(text).then(() => {
+        navigator.clipboard.writeText(text).then(() => {
+            const btn = event.target.closest('button');
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = '<i class="bi bi-check"></i> {{ 'common.copied'|trans }}';
+            btn.classList.remove('btn-primary');
+            btn.classList.add('btn-success');
+
+            setTimeout(() => {
+                btn.innerHTML = originalHTML;
+                btn.classList.remove('btn-success');
+                btn.classList.add('btn-primary');
+            }, 2000);
+        }).catch(err => {
+            alert('{{ 'common.copy_failed'|trans }}: ' + err);
+        });
+    }
+
+    function printBackupCodes() {
+        const printWindow = window.open('', '', 'width=600,height=800');
+
+        printWindow.document.write(`
+            <html>
+            <head>
+                <title>{{ 'mfa_token.backup_codes.title'|trans }} - ${userEmail}</title>
+                <style>
+                    body {
+                        font-family: Arial, sans-serif;
+                        padding: 20px;
+                        max-width: 800px;
+                        margin: 0 auto;
+                    }
+                    h1 {
+                        font-size: 24px;
+                        border-bottom: 2px solid #333;
+                        padding-bottom: 10px;
+                    }
+                    .info {
+                        background: #f8f9fa;
+                        padding: 15px;
+                        border-left: 4px solid #007bff;
+                        margin: 20px 0;
+                    }
+                    .warning {
+                        background: #fff3cd;
+                        padding: 15px;
+                        border: 2px solid #ffc107;
+                        margin: 20px 0;
+                    }
+                    .codes {
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+                        gap: 10px;
+                        margin: 20px 0;
+                    }
+                    .code-item {
+                        font-family: monospace;
+                        font-size: 18px;
+                        padding: 10px;
+                        background: #f8f9fa;
+                        border: 1px solid #dee2e6;
+                        border-radius: 4px;
+                    }
+                    .code-number {
+                        display: inline-block;
+                        background: #6c757d;
+                        color: white;
+                        padding: 2px 8px;
+                        border-radius: 3px;
+                        font-size: 12px;
+                        margin-right: 10px;
+                    }
+                    @media print {
+                        body { padding: 0; }
+                        .no-print { display: none; }
+                    }
+                </style>
+            </head>
+            <body>
+                <h1>{{ 'mfa_token.backup_codes.title'|trans }}</h1>
+
+                <div class="info">
+                    <p><strong>{{ 'mfa_token.field.user'|trans }}:</strong> ${userEmail}</p>
+                    <p><strong>{{ 'mfa_token.field.device_name'|trans }}:</strong> {{ mfa_token.deviceName }}</p>
+                    <p><strong>{{ 'common.generated'|trans }}:</strong> ${new Date().toLocaleString()}</p>
+                </div>
+
+                <div class="warning">
+                    <strong>⚠️ {{ 'mfa_token.backup_codes.warning'|trans }}</strong><br>
+                    {{ 'mfa_token.backup_codes.warning_text'|trans }}
+                </div>
+
+                <h2>{{ 'mfa_token.backup_codes.codes'|trans }} (${backupCodes.length})</h2>
+                <div class="codes">
+                    ${backupCodes.map((code, i) =>
+                        '<div class="code-item"><span class="code-number">' + (i+1) + '</span>' + code + '</div>'
+                    ).join('')}
+                </div>
+
+                <div class="info">
+                    <h3>{{ 'mfa_token.backup_codes.usage_title'|trans }}</h3>
+                    <ul>
+                        <li>{{ 'mfa_token.backup_codes.usage_1'|trans }}</li>
+                        <li>{{ 'mfa_token.backup_codes.usage_2'|trans }}</li>
+                        <li>{{ 'mfa_token.backup_codes.usage_3'|trans }}</li>
+                        <li>{{ 'mfa_token.backup_codes.usage_4'|trans }}</li>
+                    </ul>
+                </div>
+            </body>
+            </html>
+        `);
+
+        printWindow.document.close();
+        printWindow.focus();
+        setTimeout(() => printWindow.print(), 250);
+    }
+
+    function downloadBackupCodes() {
+        const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
+        const filename = `mfa-backup-codes-${userEmail}-${timestamp}.txt`;
+
+        let content = '='.repeat(60) + '\n';
+        content += 'MFA BACKUP CODES\n';
+        content += '='.repeat(60) + '\n\n';
+        content += 'User: ' + userEmail + '\n';
+        content += 'Device: {{ mfa_token.deviceName }}\n';
+        content += 'Generated: ' + new Date().toLocaleString() + '\n\n';
+        content += '⚠️  WARNING: Keep these codes secure!\n';
+        content += 'These codes can be used to access your account if you lose\n';
+        content += 'access to your authenticator device. Each code can only be\n';
+        content += 'used once.\n\n';
+        content += '='.repeat(60) + '\n';
+        content += 'BACKUP CODES (' + backupCodes.length + ')\n';
+        content += '='.repeat(60) + '\n\n';
+
+        backupCodes.forEach((code, i) => {
+            content += `${(i+1).toString().padStart(2, '0')}. ${code}\n`;
+        });
+
+        content += '\n' + '='.repeat(60) + '\n';
+        content += 'USAGE INSTRUCTIONS\n';
+        content += '='.repeat(60) + '\n';
+        content += '1. Use backup codes when you cannot access your authenticator\n';
+        content += '2. Each code can only be used once\n';
+        content += '3. Generate new codes before running out\n';
+        content += '4. Store these codes in a secure location\n';
+
+        const blob = new Blob([content], { type: 'text/plain' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+
+        // Show success feedback
         const btn = event.target.closest('button');
         const originalHTML = btn.innerHTML;
-        btn.innerHTML = '<i class="bi bi-check"></i> {{ 'common.copied'|trans }}';
-        btn.classList.remove('btn-primary');
+        btn.innerHTML = '<i class="bi bi-check"></i> {{ 'common.downloaded'|trans }}';
         btn.classList.add('btn-success');
+        btn.classList.remove('btn-outline-secondary');
 
         setTimeout(() => {
             btn.innerHTML = originalHTML;
             btn.classList.remove('btn-success');
-            btn.classList.add('btn-primary');
+            btn.classList.add('btn-outline-secondary');
         }, 2000);
-    }).catch(err => {
-        alert('{{ 'common.copy_failed'|trans }}: ' + err);
-    });
-}
-
-function printBackupCodes() {
-    const printWindow = window.open('', '', 'width=600,height=800');
-
-    printWindow.document.write(`
-        <html>
-        <head>
-            <title>{{ 'mfa_token.backup_codes.title'|trans }} - ${userEmail}</title>
-            <style>
-                body {
-                    font-family: Arial, sans-serif;
-                    padding: 20px;
-                    max-width: 800px;
-                    margin: 0 auto;
-                }
-                h1 {
-                    font-size: 24px;
-                    border-bottom: 2px solid #333;
-                    padding-bottom: 10px;
-                }
-                .info {
-                    background: #f8f9fa;
-                    padding: 15px;
-                    border-left: 4px solid #007bff;
-                    margin: 20px 0;
-                }
-                .warning {
-                    background: #fff3cd;
-                    padding: 15px;
-                    border: 2px solid #ffc107;
-                    margin: 20px 0;
-                }
-                .codes {
-                    display: grid;
-                    grid-template-columns: 1fr 1fr;
-                    gap: 10px;
-                    margin: 20px 0;
-                }
-                .code-item {
-                    font-family: monospace;
-                    font-size: 18px;
-                    padding: 10px;
-                    background: #f8f9fa;
-                    border: 1px solid #dee2e6;
-                    border-radius: 4px;
-                }
-                .code-number {
-                    display: inline-block;
-                    background: #6c757d;
-                    color: white;
-                    padding: 2px 8px;
-                    border-radius: 3px;
-                    font-size: 12px;
-                    margin-right: 10px;
-                }
-                @media print {
-                    body { padding: 0; }
-                    .no-print { display: none; }
-                }
-            </style>
-        </head>
-        <body>
-            <h1>{{ 'mfa_token.backup_codes.title'|trans }}</h1>
-
-            <div class="info">
-                <p><strong>{{ 'mfa_token.field.user'|trans }}:</strong> ${userEmail}</p>
-                <p><strong>{{ 'mfa_token.field.device_name'|trans }}:</strong> {{ mfa_token.deviceName }}</p>
-                <p><strong>{{ 'common.generated'|trans }}:</strong> ${new Date().toLocaleString()}</p>
-            </div>
-
-            <div class="warning">
-                <strong>⚠️ {{ 'mfa_token.backup_codes.warning'|trans }}</strong><br>
-                {{ 'mfa_token.backup_codes.warning_text'|trans }}
-            </div>
-
-            <h2>{{ 'mfa_token.backup_codes.codes'|trans }} (${backupCodes.length})</h2>
-            <div class="codes">
-                ${backupCodes.map((code, i) =>
-                    '<div class="code-item"><span class="code-number">' + (i+1) + '</span>' + code + '</div>'
-                ).join('')}
-            </div>
-
-            <div class="info">
-                <h3>{{ 'mfa_token.backup_codes.usage_title'|trans }}</h3>
-                <ul>
-                    <li>{{ 'mfa_token.backup_codes.usage_1'|trans }}</li>
-                    <li>{{ 'mfa_token.backup_codes.usage_2'|trans }}</li>
-                    <li>{{ 'mfa_token.backup_codes.usage_3'|trans }}</li>
-                    <li>{{ 'mfa_token.backup_codes.usage_4'|trans }}</li>
-                </ul>
-            </div>
-        </body>
-        </html>
-    `);
-
-    printWindow.document.close();
-    printWindow.focus();
-    setTimeout(() => printWindow.print(), 250);
-}
-
-function downloadBackupCodes() {
-    const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
-    const filename = `mfa-backup-codes-${userEmail}-${timestamp}.txt`;
-
-    let content = '='.repeat(60) + '\n';
-    content += 'MFA BACKUP CODES\n';
-    content += '='.repeat(60) + '\n\n';
-    content += 'User: ' + userEmail + '\n';
-    content += 'Device: {{ mfa_token.deviceName }}\n';
-    content += 'Generated: ' + new Date().toLocaleString() + '\n\n';
-    content += '⚠️  WARNING: Keep these codes secure!\n';
-    content += 'These codes can be used to access your account if you lose\n';
-    content += 'access to your authenticator device. Each code can only be\n';
-    content += 'used once.\n\n';
-    content += '='.repeat(60) + '\n';
-    content += 'BACKUP CODES (' + backupCodes.length + ')\n';
-    content += '='.repeat(60) + '\n\n';
-
-    backupCodes.forEach((code, i) => {
-        content += `${(i+1).toString().padStart(2, '0')}. ${code}\n`;
-    });
-
-    content += '\n' + '='.repeat(60) + '\n';
-    content += 'USAGE INSTRUCTIONS\n';
-    content += '='.repeat(60) + '\n';
-    content += '1. Use backup codes when you cannot access your authenticator\n';
-    content += '2. Each code can only be used once\n';
-    content += '3. Generate new codes before running out\n';
-    content += '4. Store these codes in a secure location\n';
-
-    const blob = new Blob([content], { type: 'text/plain' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    window.URL.revokeObjectURL(url);
-
-    // Show success feedback
-    const btn = event.target.closest('button');
-    const originalHTML = btn.innerHTML;
-    btn.innerHTML = '<i class="bi bi-check"></i> {{ 'common.downloaded'|trans }}';
-    btn.classList.add('btn-success');
-    btn.classList.remove('btn-outline-secondary');
-
-    setTimeout(() => {
-        btn.innerHTML = originalHTML;
-        btn.classList.remove('btn-success');
-        btn.classList.add('btn-outline-secondary');
-    }, 2000);
-}
-</script>
+    }
+    </script>
 {% endblock %}

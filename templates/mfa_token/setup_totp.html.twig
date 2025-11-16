@@ -1,11 +1,12 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin/layout.html.twig' %}
 
-{% block title %}{{ 'mfa_token.setup_totp.title'|trans }} - {{ parent() }}{% endblock %}
+{% block admin_title %}{{ 'mfa_token.setup_totp.title'|trans }}{% endblock %}
+{% block admin_subtitle %}
+    <p class="text-muted">{{ 'mfa_token.setup_totp.subtitle'|trans|default('Einrichtung eines neuen TOTP-Authentifikators') }}</p>
+{% endblock %}
 
-{% block body %}
-<div class="container py-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1><i class="bi bi-shield-lock"></i> {{ 'mfa_token.setup_totp.title'|trans }}</h1>
+{% block admin_content %}
+    <div class="mb-4">
         <a href="{{ path('admin_mfa_index') }}" class="btn btn-outline-secondary">
             <i class="bi bi-arrow-left"></i> {{ 'common.back'|trans }}
         </a>
@@ -123,148 +124,150 @@
             </div>
         </div>
     </div>
-</div>
+{% endblock %}
 
-<script>
-function copyToClipboard(elementId) {
-    const element = document.getElementById(elementId);
-    element.select();
-    document.execCommand('copy');
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+    function copyToClipboard(elementId) {
+        const element = document.getElementById(elementId);
+        element.select();
+        document.execCommand('copy');
 
-    // Show feedback
-    const btn = event.target.closest('button');
-    const originalHTML = btn.innerHTML;
-    btn.innerHTML = '<i class="bi bi-check"></i> {{ 'common.copied'|trans }}';
-    btn.classList.add('btn-success');
-    btn.classList.remove('btn-outline-secondary');
-
-    setTimeout(() => {
-        btn.innerHTML = originalHTML;
-        btn.classList.remove('btn-success');
-        btn.classList.add('btn-outline-secondary');
-    }, 2000);
-}
-
-function copyBackupCodes() {
-    const codes = {{ backup_codes|json_encode|raw }};
-    const text = codes.join('\n');
-
-    navigator.clipboard.writeText(text).then(() => {
+        // Show feedback
         const btn = event.target.closest('button');
         const originalHTML = btn.innerHTML;
         btn.innerHTML = '<i class="bi bi-check"></i> {{ 'common.copied'|trans }}';
         btn.classList.add('btn-success');
+        btn.classList.remove('btn-outline-secondary');
 
         setTimeout(() => {
             btn.innerHTML = originalHTML;
             btn.classList.remove('btn-success');
+            btn.classList.add('btn-outline-secondary');
         }, 2000);
-    });
-}
+    }
 
-function printBackupCodes() {
-    const codes = {{ backup_codes|json_encode|raw }};
-    const printWindow = window.open('', '', 'width=600,height=800');
+    function copyBackupCodes() {
+        const codes = {{ backup_codes|json_encode|raw }};
+        const text = codes.join('\n');
 
-    printWindow.document.write(`
-        <html>
-        <head>
-            <title>{{ 'mfa_token.backup_codes.title'|trans }} - {{ user.email }}</title>
-            <style>
-                body { font-family: monospace; padding: 20px; }
-                h1 { font-size: 18px; }
-                .code { padding: 5px; margin: 5px 0; }
-                .warning { background: #fff3cd; padding: 10px; border: 2px solid #ffc107; margin: 10px 0; }
-            </style>
-        </head>
-        <body>
-            <h1>{{ 'mfa_token.backup_codes.title'|trans }}</h1>
-            <p><strong>{{ 'mfa_token.field.user'|trans }}:</strong> {{ user.email }}</p>
-            <p><strong>{{ 'common.date'|trans }}:</strong> ${new Date().toLocaleString()}</p>
-            <div class="warning">
-                <strong>{{ 'mfa_token.backup_codes.warning'|trans }}</strong><br>
-                {{ 'mfa_token.backup_codes.warning_text'|trans }}
-            </div>
-            <h2>{{ 'mfa_token.backup_codes.codes'|trans }}</h2>
-            ${codes.map((code, i) => '<div class="code">' + (i+1) + '. ' + code + '</div>').join('')}
-        </body>
-        </html>
-    `);
+        navigator.clipboard.writeText(text).then(() => {
+            const btn = event.target.closest('button');
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = '<i class="bi bi-check"></i> {{ 'common.copied'|trans }}';
+            btn.classList.add('btn-success');
 
-    printWindow.document.close();
-    printWindow.focus();
-    setTimeout(() => printWindow.print(), 250);
-}
-
-function verifyCode(event) {
-    event.preventDefault();
-
-    const form = document.getElementById('verify-form');
-    const code = document.getElementById('verification-code').value;
-    const btn = document.getElementById('verify-btn');
-    const feedback = document.getElementById('verify-feedback');
-
-    // Disable button during verification
-    btn.disabled = true;
-    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>{{ 'common.verifying'|trans }}...';
-
-    // Send verification request
-    fetch('{{ path('admin_mfa_verify', {id: mfa_token.id}) }}', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: 'code=' + encodeURIComponent(code)
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            feedback.innerHTML = `
-                <div class="alert alert-success">
-                    <i class="bi bi-check-circle"></i> ${data.message}
-                </div>
-            `;
-
-            // Redirect after 2 seconds
             setTimeout(() => {
-                window.location.href = '{{ path('admin_mfa_show', {id: mfa_token.id}) }}';
+                btn.innerHTML = originalHTML;
+                btn.classList.remove('btn-success');
             }, 2000);
-        } else {
+        });
+    }
+
+    function printBackupCodes() {
+        const codes = {{ backup_codes|json_encode|raw }};
+        const printWindow = window.open('', '', 'width=600,height=800');
+
+        printWindow.document.write(`
+            <html>
+            <head>
+                <title>{{ 'mfa_token.backup_codes.title'|trans }} - {{ user.email }}</title>
+                <style>
+                    body { font-family: monospace; padding: 20px; }
+                    h1 { font-size: 18px; }
+                    .code { padding: 5px; margin: 5px 0; }
+                    .warning { background: #fff3cd; padding: 10px; border: 2px solid #ffc107; margin: 10px 0; }
+                </style>
+            </head>
+            <body>
+                <h1>{{ 'mfa_token.backup_codes.title'|trans }}</h1>
+                <p><strong>{{ 'mfa_token.field.user'|trans }}:</strong> {{ user.email }}</p>
+                <p><strong>{{ 'common.date'|trans }}:</strong> ${new Date().toLocaleString()}</p>
+                <div class="warning">
+                    <strong>{{ 'mfa_token.backup_codes.warning'|trans }}</strong><br>
+                    {{ 'mfa_token.backup_codes.warning_text'|trans }}
+                </div>
+                <h2>{{ 'mfa_token.backup_codes.codes'|trans }}</h2>
+                ${codes.map((code, i) => '<div class="code">' + (i+1) + '. ' + code + '</div>').join('')}
+            </body>
+            </html>
+        `);
+
+        printWindow.document.close();
+        printWindow.focus();
+        setTimeout(() => printWindow.print(), 250);
+    }
+
+    function verifyCode(event) {
+        event.preventDefault();
+
+        const form = document.getElementById('verify-form');
+        const code = document.getElementById('verification-code').value;
+        const btn = document.getElementById('verify-btn');
+        const feedback = document.getElementById('verify-feedback');
+
+        // Disable button during verification
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>{{ 'common.verifying'|trans }}...';
+
+        // Send verification request
+        fetch('{{ path('admin_mfa_verify', {id: mfa_token.id}) }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: 'code=' + encodeURIComponent(code)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                feedback.innerHTML = `
+                    <div class="alert alert-success">
+                        <i class="bi bi-check-circle"></i> ${data.message}
+                    </div>
+                `;
+
+                // Redirect after 2 seconds
+                setTimeout(() => {
+                    window.location.href = '{{ path('admin_mfa_show', {id: mfa_token.id}) }}';
+                }, 2000);
+            } else {
+                feedback.innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="bi bi-x-circle"></i> ${data.message}
+                    </div>
+                `;
+
+                btn.disabled = false;
+                btn.innerHTML = '<i class="bi bi-check-circle"></i> {{ 'mfa_token.setup_totp.verify_button'|trans }}';
+
+                // Clear code field for retry
+                document.getElementById('verification-code').value = '';
+                document.getElementById('verification-code').focus();
+            }
+        })
+        .catch(error => {
             feedback.innerHTML = `
                 <div class="alert alert-danger">
-                    <i class="bi bi-x-circle"></i> ${data.message}
+                    <i class="bi bi-x-circle"></i> {{ 'common.error'|trans }}: ${error.message}
                 </div>
             `;
 
             btn.disabled = false;
             btn.innerHTML = '<i class="bi bi-check-circle"></i> {{ 'mfa_token.setup_totp.verify_button'|trans }}';
+        });
 
-            // Clear code field for retry
-            document.getElementById('verification-code').value = '';
-            document.getElementById('verification-code').focus();
-        }
-    })
-    .catch(error => {
-        feedback.innerHTML = `
-            <div class="alert alert-danger">
-                <i class="bi bi-x-circle"></i> {{ 'common.error'|trans }}: ${error.message}
-            </div>
-        `;
-
-        btn.disabled = false;
-        btn.innerHTML = '<i class="bi bi-check-circle"></i> {{ 'mfa_token.setup_totp.verify_button'|trans }}';
-    });
-
-    return false;
-}
-
-// Auto-submit when 6 digits entered
-document.getElementById('verification-code').addEventListener('input', function(e) {
-    if (this.value.length === 6 && /^\d{6}$/.test(this.value)) {
-        setTimeout(() => {
-            document.getElementById('verify-form').dispatchEvent(new Event('submit', {cancelable: true}));
-        }, 500);
+        return false;
     }
-});
-</script>
+
+    // Auto-submit when 6 digits entered
+    document.getElementById('verification-code').addEventListener('input', function(e) {
+        if (this.value.length === 6 && /^\d{6}$/.test(this.value)) {
+            setTimeout(() => {
+                document.getElementById('verify-form').dispatchEvent(new Event('submit', {cancelable: true}));
+            }, 500);
+        }
+    });
+    </script>
 {% endblock %}
