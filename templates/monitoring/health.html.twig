@@ -710,7 +710,11 @@
         }
 
         // Auto-fix permission issues on page load
-        document.addEventListener('DOMContentLoaded', async function() {
+        async function initHealthMonitoring() {
+            // Prevent re-initialization
+            if (window.healthMonitoringInitialized) return;
+            window.healthMonitoringInitialized = true;
+
             {% if is_granted('MONITORING_MANAGE') %}
                 const permissionIssues = [];
 
@@ -757,6 +761,18 @@
                     }
                 }
             {% endif %}
+        }
+
+        // Initialize on turbo:load (for Turbo navigation) and DOMContentLoaded (for direct page load)
+        document.addEventListener('turbo:load', function() {
+            window.healthMonitoringInitialized = false;
+            initHealthMonitoring();
         });
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initHealthMonitoring);
+        } else {
+            initHealthMonitoring();
+        }
     </script>
 {% endblock %}
