@@ -8,6 +8,7 @@ use App\Entity\WorkflowStep;
 use App\Entity\User;
 use App\Repository\WorkflowRepository;
 use App\Repository\WorkflowInstanceRepository;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 
@@ -39,6 +40,8 @@ class WorkflowService
         private EntityManagerInterface $entityManager,
         private WorkflowRepository $workflowRepository,
         private WorkflowInstanceRepository $workflowInstanceRepository,
+        private UserRepository $userRepository,
+        private EmailNotificationService $emailService,
         private Security $security
     ) {}
 
@@ -88,6 +91,9 @@ class WorkflowService
             }
 
             $instance->setStatus('in_progress');
+
+            // Handle notification step auto-progression or send assignment notification
+            $this->handleStepAssignment($instance, $firstStep);
         }
 
         $this->entityManager->persist($instance);
@@ -130,7 +136,12 @@ class WorkflowService
         $instance->addCompletedStep($currentStep->getId());
 
         // Move to next step or complete workflow
-        $this->moveToNextStep($instance);
+        $nextStep = $this->moveToNextStep($instance);
+
+        // Handle next step (notification or approval notification)
+        if ($nextStep) {
+            $this->handleStepAssignment($instance, $nextStep);
+        }
 
         $this->entityManager->flush();
 
@@ -190,8 +201,10 @@ class WorkflowService
 
     /**
      * Move workflow to next step or complete
+     *
+     * @return WorkflowStep|null The next step, or null if workflow is complete
      */
-    private function moveToNextStep(WorkflowInstance $instance): void
+    private function moveToNextStep(WorkflowInstance $instance): ?WorkflowStep
     {
         $workflow = $instance->getWorkflow();
         $currentStep = $instance->getCurrentStep();
@@ -209,12 +222,111 @@ class WorkflowService
                 $dueDate = (new \DateTimeImmutable())->modify('+' . $nextStep->getDaysToComplete() . ' days');
                 $instance->setDueDate($dueDate);
             }
+
+            return $nextStep;
         } else {
             // Workflow completed
             $instance->setStatus('approved');
             $instance->setCompletedAt(new \DateTimeImmutable());
             $instance->setCurrentStep(null);
+
+            return null;
         }
+    }
+
+    /**
+     * Handle step assignment - send notifications or auto-progress notification steps
+     */
+    private function handleStepAssignment(WorkflowInstance $instance, WorkflowStep $step): void
+    {
+        if ($step->getStepType() === 'notification') {
+            // Auto-progress notification steps
+            $this->autoProgressNotificationStep($instance, $step);
+        } else {
+            // Send assignment notification for approval steps
+            $this->sendStepAssignmentNotification($instance, $step);
+        }
+    }
+
+    /**
+     * Auto-progress a notification step (no approval required)
+     */
+    private function autoProgressNotificationStep(WorkflowInstance $instance, WorkflowStep $step): void
+    {
+        // Add to history
+        $instance->addApprovalHistoryEntry([
+            'step_id' => $step->getId(),
+            'step_name' => $step->getName(),
+            'action' => 'notification_sent',
+            'approver_id' => null,
+            'approver_name' => 'System',
+            'comments' => 'Notification step automatically processed',
+            'timestamp' => (new \DateTimeImmutable())->format('Y-m-d H:i:s'),
+        ]);
+
+        // Mark step as completed
+        $instance->addCompletedStep($step->getId());
+
+        // Send notification to assigned users
+        $recipients = $this->getStepApprovers($step);
+        if (!empty($recipients)) {
+            $this->emailService->sendWorkflowNotificationStepEmail($instance, $step, $recipients);
+        }
+
+        // Move to next step
+        $nextStep = $this->moveToNextStep($instance);
+
+        // Handle next step recursively (in case of consecutive notification steps)
+        if ($nextStep) {
+            $this->handleStepAssignment($instance, $nextStep);
+        }
+    }
+
+    /**
+     * Send notification to approvers when a step is assigned
+     */
+    private function sendStepAssignmentNotification(WorkflowInstance $instance, WorkflowStep $step): void
+    {
+        $recipients = $this->getStepApprovers($step);
+        if (!empty($recipients)) {
+            $this->emailService->sendWorkflowAssignmentNotification($instance, $step, $recipients);
+        }
+    }
+
+    /**
+     * Get all users who can approve a step
+     *
+     * @return User[]
+     */
+    private function getStepApprovers(WorkflowStep $step): array
+    {
+        $recipients = [];
+
+        // Get approvers by user IDs
+        $approverUserIds = $step->getApproverUsers() ?? [];
+        if (!empty($approverUserIds)) {
+            $usersByIds = $this->userRepository->findBy(['id' => $approverUserIds]);
+            $recipients = array_merge($recipients, $usersByIds);
+        }
+
+        // Get approvers by role
+        $approverRole = $step->getApproverRole();
+        if ($approverRole) {
+            $usersByRole = $this->userRepository->findByRole($approverRole);
+            $recipients = array_merge($recipients, $usersByRole);
+        }
+
+        // Remove duplicates
+        $recipientIds = [];
+        $uniqueRecipients = [];
+        foreach ($recipients as $user) {
+            if (!in_array($user->getId(), $recipientIds)) {
+                $recipientIds[] = $user->getId();
+                $uniqueRecipients[] = $user;
+            }
+        }
+
+        return $uniqueRecipients;
     }
 
     /**
