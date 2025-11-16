@@ -545,6 +545,10 @@ class WorkflowStepApiController extends AbstractController
             $errors[] = 'Days to complete must be positive';
         }
 
+        if ($step->getDaysToComplete() !== null && $step->getDaysToComplete() > 365) {
+            $errors[] = 'Days to complete cannot exceed 365';
+        }
+
         return $errors;
     }
 }
