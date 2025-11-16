@@ -224,7 +224,7 @@
                             </li>
                             {% for framework in compliance_frameworks %}
                             <li><a href="{{ path('app_compliance_framework', {id: framework.id}) }}"
-                                   class="framework-link {% if current_route == 'app_compliance_framework' and app.request.get('id') == framework.id %}active{% endif %}"
+                                   class="framework-link {% if current_route == 'app_compliance_framework' and app.request.attributes.get('id')|default(0) == framework.id %}active{% endif %}"
                                    data-turbo-action="advance"
                                    title="{{ framework.name }}">
                                 <i class="bi bi-{% if framework.mandatory %}shield-exclamation{% else %}shield{% endif %}" aria-hidden="true"></i>
