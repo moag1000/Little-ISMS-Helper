@@ -116,7 +116,7 @@
 
                     {# ISMS Core #}
                     {% if is_module_active('core') or is_module_active('controls') %}
-                    <li class="nav-divider">ISMS Core</li>
+                    <li class="nav-divider">{{ 'nav.section.isms_core'|trans }}</li>
                     {% endif %}
                     {% if is_module_active('core') %}
                     <li><a href="{{ path('app_context_index') }}" class="{% if current_route starts with 'app_context_' %}active{% endif %}" data-turbo-action="advance">
@@ -137,7 +137,7 @@
 
                     {# Assets & Risk #}
                     {% if is_module_active('assets') or is_module_active('risks') %}
-                    <li class="nav-divider">Assets & Risk</li>
+                    <li class="nav-divider">{{ 'nav.section.assets_risk'|trans }}</li>
                     <li class="has-submenu" data-controller="sidebar-dropdown" data-sidebar-dropdown-key-value="sidebar-assets-risk-expanded">
                         <a href="{{ path('app_asset_index') }}"
                            class="submenu-toggle {% if current_route starts with 'app_asset_' or current_route starts with 'app_supplier_' or current_route starts with 'app_risk_' %}active{% endif %}"
@@ -176,7 +176,7 @@
 
                     {# BCM #}
                     {% if is_module_active('bcm') %}
-                    <li class="nav-divider">Business Continuity</li>
+                    <li class="nav-divider">{{ 'nav.section.bcm'|trans }}</li>
                     <li class="has-submenu" data-controller="sidebar-dropdown" data-sidebar-dropdown-key-value="sidebar-bcm-expanded">
                         <a href="{{ path('app_business_process_index') }}"
                            class="submenu-toggle {% if current_route starts with 'app_business_process_' or current_route starts with 'app_bc_plan_' or current_route starts with 'app_bc_exercise_' %}active{% endif %}"
@@ -207,7 +207,7 @@
 
                     {# Operations #}
                     {% if is_module_active('core') or is_module_active('incidents') %}
-                    <li class="nav-divider">Operations</li>
+                    <li class="nav-divider">{{ 'nav.section.operations'|trans }}</li>
                     {% endif %}
                     {% if is_module_active('core') %}
                     <li><a href="{{ path('app_change_request_index') }}" class="{% if current_route starts with 'app_change_request_' %}active{% endif %}" data-turbo-action="advance">
@@ -224,7 +224,7 @@
 
                     {# Compliance #}
                     {% if is_module_active('audits') or is_module_active('compliance') or is_module_active('audit_logging') %}
-                    <li class="nav-divider">Compliance</li>
+                    <li class="nav-divider">{{ 'nav.section.compliance'|trans }}</li>
                     {% endif %}
                     {% if is_module_active('audits') %}
                     <li><a href="{{ path('app_audit_index') }}" class="{% if current_route starts with 'app_audit_' and not current_route starts with 'app_audit_log_' %}active{% endif %}" data-turbo-action="advance">
@@ -288,7 +288,7 @@
 
                     {% if is_granted('ROLE_ADMIN') %}
                     {# Admin #}
-                    <li class="nav-divider">Admin</li>
+                    <li class="nav-divider">{{ 'nav.section.admin'|trans }}</li>
                     <li><a href="{{ path('admin_dashboard') }}" class="{% if current_route starts with 'admin_' or current_route starts with 'user_management_' or current_route starts with 'role_management_' or current_route starts with 'tenant_management_' %}active{% endif %}" data-turbo-action="advance">
                         <i class="bi bi-gear-fill" aria-hidden="true"></i>
                         <span>{{ 'nav.admin_portal'|trans }}</span>
