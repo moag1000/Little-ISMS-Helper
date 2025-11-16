@@ -212,7 +212,10 @@
 {% block javascripts %}
     {{ parent() }}
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        function initTenantForm() {
+            if (window.tenantFormInitialized) return;
+            window.tenantFormInitialized = true;
+
             // Find fields by name attribute instead of ID (more reliable)
             const nameField = document.querySelector('input[name="tenant[name]"]');
             const codeField = document.querySelector('input[name="tenant[code]"]');
@@ -252,6 +255,18 @@
                     console.log('Generated code:', code);
                 });
             }
+        }
+
+        // Turbo-compatible initialization
+        document.addEventListener('turbo:load', function() {
+            window.tenantFormInitialized = false;
+            initTenantForm();
         });
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initTenantForm);
+        } else {
+            initTenantForm();
+        }
     </script>
 {% endblock %}
