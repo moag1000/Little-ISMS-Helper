@@ -201,10 +201,51 @@
                     </a></li>
                     {% endif %}
                     {% if is_module_active('compliance') %}
-                    <li><a href="{{ path('app_compliance_index') }}" class="{% if current_route starts with 'app_compliance_' %}active{% endif %}" data-turbo-action="advance">
-                        <i class="bi bi-check-circle" aria-hidden="true"></i>
-                        <span>{{ 'nav.compliance'|trans }}</span>
-                    </a></li>
+                    {% set compliance_frameworks = get_compliance_frameworks_quick() %}
+                    <li class="has-submenu" data-controller="sidebar-dropdown" data-sidebar-dropdown-key-value="sidebar-compliance-expanded">
+                        <a href="{{ path('app_compliance_index') }}"
+                           class="submenu-toggle {% if current_route starts with 'app_compliance_' %}active{% endif %}"
+                           data-turbo-action="advance"
+                           data-action="click->sidebar-dropdown#toggle:prevent"
+                           data-sidebar-dropdown-target="toggle"
+                           aria-expanded="false">
+                            <i class="bi bi-check-circle" aria-hidden="true"></i>
+                            <span>{{ 'nav.compliance'|trans }}</span>
+                            <i class="bi bi-chevron-down submenu-icon" data-sidebar-dropdown-target="icon" aria-hidden="true"></i>
+                        </a>
+                        <ul class="submenu" data-sidebar-dropdown-target="submenu">
+                            <li><a href="{{ path('app_compliance_index') }}" class="{% if current_route == 'app_compliance_index' %}active{% endif %}" data-turbo-action="advance">
+                                <i class="bi bi-grid" aria-hidden="true"></i>
+                                <span>{{ 'nav.compliance_overview'|trans|default('Overview') }}</span>
+                            </a></li>
+                            {% if compliance_frameworks|length > 0 %}
+                            <li class="submenu-divider">
+                                <span>{{ 'nav.frameworks'|trans|default('Frameworks') }}</span>
+                            </li>
+                            {% for framework in compliance_frameworks %}
+                            <li><a href="{{ path('app_compliance_framework', {id: framework.id}) }}"
+                                   class="framework-link {% if current_route == 'app_compliance_framework' and app.request.attributes.get('id')|default(0) == framework.id %}active{% endif %}"
+                                   data-turbo-action="advance"
+                                   title="{{ framework.name }}">
+                                <i class="bi bi-{% if framework.mandatory %}shield-exclamation{% else %}shield{% endif %}" aria-hidden="true"></i>
+                                <span>{{ framework.code }}</span>
+                                {% if framework.mandatory %}<span class="badge-mini badge-danger">!</span>{% endif %}
+                            </a></li>
+                            {% endfor %}
+                            {% endif %}
+                            <li class="submenu-divider">
+                                <span>{{ 'nav.tools'|trans|default('Tools') }}</span>
+                            </li>
+                            <li><a href="{{ path('app_compliance_cross_framework') }}" class="{% if current_route == 'app_compliance_cross_framework' %}active{% endif %}" data-turbo-action="advance">
+                                <i class="bi bi-link-45deg" aria-hidden="true"></i>
+                                <span>{{ 'nav.cross_framework'|trans|default('Cross-Framework') }}</span>
+                            </a></li>
+                            <li><a href="{{ path('app_compliance_compare') }}" class="{% if current_route == 'app_compliance_compare' %}active{% endif %}" data-turbo-action="advance">
+                                <i class="bi bi-columns" aria-hidden="true"></i>
+                                <span>{{ 'nav.compare'|trans|default('Compare') }}</span>
+                            </a></li>
+                        </ul>
+                    </li>
                     {% endif %}
                     {% if is_module_active('audit_logging') %}
                     <li><a href="{{ path('app_audit_log_index') }}" class="{% if current_route starts with 'app_audit_log_' %}active{% endif %}" data-turbo-action="advance">
