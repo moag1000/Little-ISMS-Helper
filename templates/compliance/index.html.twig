@@ -41,7 +41,7 @@
             {% for item in overview %}
                 {% set framework = frameworks|filter(f => f.id == item.id)|first %}
                 <a href="{{ path('app_compliance_framework', {id: item.id}) }}"
-                   class="quick-access-item {% if framework.mandatory %}mandatory{% endif %}"
+                   class="quick-access-item {% if framework and framework.mandatory %}mandatory{% endif %}"
                    title="{{ item.name }}">
                     <div class="quick-access-code">{{ item.code }}</div>
                     <div class="quick-access-progress">
@@ -50,7 +50,7 @@
                         </div>
                         <span class="progress-text">{{ item.compliance_percentage }}%</span>
                     </div>
-                    {% if framework.mandatory %}
+                    {% if framework and framework.mandatory %}
                         <span class="mandatory-indicator">!</span>
                     {% endif %}
                 </a>
@@ -72,12 +72,12 @@
         {% for item in overview %}
             {% set framework = frameworks|filter(f => f.id == item.id)|first %}
             <div class="framework-card">
-                <div class="framework-header" style="background: {{ framework.mandatory ? 'var(--gradient-danger)' : 'var(--gradient-primary)' }};">
+                <div class="framework-header" style="background: {{ (framework and framework.mandatory) ? 'var(--gradient-danger)' : 'var(--gradient-primary)' }};">
                     <div>
                         <h3>{{ item.code }}</h3>
                         <p class="framework-subtitle">{{ item.name|length > 40 ? item.name|slice(0, 40) ~ '...' : item.name }}</p>
                     </div>
-                    {% if framework.mandatory %}
+                    {% if framework and framework.mandatory %}
                         <span class="badge badge-light">{{ 'compliance.mandatory'|trans }}</span>
                     {% endif %}
                 </div>
