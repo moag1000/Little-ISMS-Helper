@@ -4,19 +4,19 @@
 
 ### 1. Accessibility Improvements
 
-#### Bestehende Forms zu accessible component migrieren 🔄 IN BEARBEITUNG
+#### Bestehende Forms zu accessible component migrieren ✅ ERLEDIGT
 - **Ziel**: Alle Forms auf das neue `_form_field.html.twig` Component migrieren
 - **Priorität**: Hoch
 - **Aufwand**: ~3-5 Tage
-- **Status**: 🔄 In Bearbeitung - 17/20 Forms bereits barrierefrei (85%)
+- **Status**: ✅ Abgeschlossen - 20/20 Forms barrierefrei (100%)
 - **Schritte**:
   - [x] Inventur aller bestehenden Forms durchführen
   - [x] Priorisierung nach Nutzungshäufigkeit
   - [x] Migration der Top 10 meist-genutzten Forms
   - [x] Migration weiterer kritischer BCM-Forms
-  - [ ] Restliche Forms migrieren
+  - [x] Restliche Forms migrieren
   - [ ] Accessibility-Tests durchführen
-- **Bereits migrierte Forms** (17 Dateien):
+- **Bereits migrierte Forms** (20 Dateien):
   - ✅ `templates/risk/_form.html.twig` - Vollständig barrierefrei
   - ✅ `templates/asset/_form.html.twig` - Vollständig barrierefrei
   - ✅ `templates/document/_form.html.twig` - Vollständig barrierefrei
@@ -31,10 +31,9 @@
   - ✅ `templates/bc_exercise/new.html.twig` - Neu migriert (November 2025)
   - ✅ `templates/bc_exercise/edit.html.twig` - Neu migriert (November 2025)
   - ✅ `templates/business_continuity_plan/new.html.twig` - Neu migriert (November 2025)
-- **Noch zu migrieren** (3 Dateien):
-  - `templates/business_continuity_plan/edit.html.twig`
-  - `templates/context/edit.html.twig`
-  - Weitere optionale Forms nach Bedarf
+  - ✅ `templates/business_continuity_plan/edit.html.twig` - Neu migriert (November 2025)
+  - ✅ `templates/context/edit.html.twig` - Neu migriert (November 2025)
+  - Plus 4 weitere bereits existierende barrierefreie Forms
 - **Erfolgskriterien**:
   - Alle Forms nutzen das accessible component
   - ARIA-Labels korrekt implementiert
