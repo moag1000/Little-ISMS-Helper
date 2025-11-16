@@ -63,7 +63,8 @@
             <div class="card"
                  data-controller="workflow-builder"
                  data-workflow-builder-workflow-id-value="{{ workflow.id }}"
-                 data-workflow-builder-api-url-value="{{ api_base_url }}">
+                 data-workflow-builder-api-url-value="{{ api_base_url }}"
+                 data-workflow-builder-csrf-token-value="{{ csrf_token('workflow_api') }}">
 
                 {# Notifications #}
                 <div data-workflow-builder-target="notification"></div>
