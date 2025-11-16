@@ -8,11 +8,11 @@
     <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
 
     {% block stylesheets %}
-        {# Bootstrap CSS - Required for Bootstrap classes used throughout the app #}
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+        {# Bootstrap CSS - Loaded locally to avoid CDN certificate issues #}
+        <link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
 
-        {# Bootstrap Icons - Loaded via CDN due to AssetMapper issue #52620 with fonts/ subfolder #}
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" integrity="sha384-XGjxtQfXaH2tnPFa9x+ruJTuLE3Aa6LhHSWRr1XeTyhezb4abCG4ccI5AkVDxqC+" crossorigin="anonymous">
+        {# Bootstrap Icons - Loaded locally to avoid CDN certificate issues #}
+        <link rel="stylesheet" href="{{ asset('vendor/bootstrap-icons/font/bootstrap-icons.min.css') }}">
 
         {# Custom styles - Loaded via AssetMapper with automatic versioning #}
         {{ importmap('styles') }}
