@@ -5,6 +5,86 @@
     <p class="text-muted">Sichern und Wiederherstellen von Systemdaten</p>
 {% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    {# Fallback modal styles in case Bootstrap CSS fails to load from CDN #}
+    <style>
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1055;
+            width: 100%;
+            height: 100%;
+            overflow-x: hidden;
+            overflow-y: auto;
+            outline: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        .modal.fade:not(.show) {
+            opacity: 0;
+            pointer-events: none;
+        }
+        .modal.show {
+            display: block !important;
+            opacity: 1;
+        }
+        .modal-dialog {
+            position: relative;
+            width: auto;
+            margin: 1.75rem auto;
+            max-width: 500px;
+        }
+        .modal-dialog-lg {
+            max-width: 800px;
+        }
+        .modal-content {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            background-color: #fff;
+            border: 1px solid rgba(0, 0, 0, 0.2);
+            border-radius: 0.5rem;
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.5);
+        }
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .modal-title {
+            margin: 0;
+            font-size: 1.25rem;
+        }
+        .modal-body {
+            position: relative;
+            flex: 1 1 auto;
+            padding: 1rem;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            padding: 1rem;
+            border-top: 1px solid #dee2e6;
+            gap: 0.5rem;
+        }
+        .btn-close {
+            background: transparent;
+            border: 0;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        .modal-backdrop {
+            display: none;
+        }
+    </style>
+{% endblock %}
+
 {% block admin_content %}
     {# Create Backup Section #}
     <div class="row mb-4">
