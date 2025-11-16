@@ -22,7 +22,7 @@
             </p>
         </div>
         <div>
-            <a href="{{ path('app_compliance_framework_dashboard', {id: framework.id}) }}" class="btn btn-info">
+            <a href="{{ path('app_compliance_framework', {id: framework.id}) }}" class="btn btn-info">
                 <i class="bi bi-speedometer2"></i> {{ 'compliance.framework.action.dashboard'|trans }}
             </a>
             {% if is_granted('ROLE_ADMIN') %}
@@ -242,10 +242,10 @@
                     <a href="{{ path('app_compliance_requirement_new', {framework: framework.id}) }}" class="btn btn-outline-success">
                         <i class="bi bi-plus-circle"></i> {{ 'compliance.requirement.action.new'|trans }}
                     </a>
-                    <a href="{{ path('app_compliance_gap_analysis', {id: framework.id}) }}" class="btn btn-outline-warning">
+                    <a href="{{ path('app_compliance_gaps', {id: framework.id}) }}" class="btn btn-outline-warning">
                         <i class="bi bi-search"></i> {{ 'compliance.framework.action.gap_analysis'|trans }}
                     </a>
-                    <a href="{{ path('app_compliance_assess_framework', {id: framework.id}) }}" class="btn btn-outline-info">
+                    <a href="{{ path('app_compliance_assess', {id: framework.id}) }}" class="btn btn-outline-info">
                         <i class="bi bi-clipboard-check"></i> {{ 'compliance.framework.action.assess'|trans }}
                     </a>
                 </div>
