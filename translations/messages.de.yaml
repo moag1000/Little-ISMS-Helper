@@ -433,6 +433,11 @@ common:
   system_info: Systeminformationen
   verifying: Überprüfe...
   generated: Generiert
+  activate: Aktivieren
+  deactivate: Deaktivieren
+  duplicate: Duplizieren
+  quick_actions: Schnellaktionen
+  select: Auswählen
 asset:
   new: Neues Asset
   create: Asset erstellen
@@ -2639,6 +2644,92 @@ compliance:
     medium: 'Mittel'
     low: 'Niedrig'
 
+  # Framework CRUD translations
+  framework:
+    title: Compliance Frameworks
+    heading: Framework-Verwaltung
+    subtitle: Verwalten Sie Ihre Compliance-Frameworks und deren Anforderungen
+    breadcrumb:
+      home: Compliance
+      frameworks: Frameworks
+      new: Neues Framework
+      edit: Framework bearbeiten
+    field:
+      name: Name
+      code: Code
+      version: Version
+      description: Beschreibung
+      active: Aktiv
+      mandatory: Verpflichtend
+      industry: Branche
+      regulatory_body: Regulierungsbehörde
+      scope: Geltungsbereich
+      applicable_industry: Anwendbare Branche
+    action:
+      new: Neues Framework
+      edit: Framework bearbeiten
+      delete: Framework löschen
+      duplicate: Duplizieren
+      dashboard: Dashboard
+      view: Details anzeigen
+      gap_analysis: Gap-Analyse
+      assess: Bewertung starten
+      back_to_list: Zur Übersicht
+    stats:
+      total_requirements: Gesamt-Anforderungen
+      applicable: Anwendbar
+      fulfilled: Erfüllt
+      compliance: Compliance-Grad
+      total: Gesamt
+      active_frameworks: Aktive Frameworks
+      total_frameworks: Frameworks gesamt
+    badge:
+      mandatory: Verpflichtend
+      active: Aktiv
+      inactive: Inaktiv
+    flash:
+      created: Framework wurde erfolgreich erstellt
+      updated: Framework wurde erfolgreich aktualisiert
+      deleted: Framework wurde erfolgreich gelöscht
+      activated: Framework wurde aktiviert
+      deactivated: Framework wurde deaktiviert
+      duplicated: Framework wurde erfolgreich dupliziert
+      delete_failed: Framework konnte nicht gelöscht werden
+    details: Framework-Details
+    requirements_by_category: Anforderungen nach Kategorie
+    no_requirements: Noch keine Anforderungen definiert
+    priority_distribution: Prioritätsverteilung
+    filter:
+      search: Suche nach Name oder Code...
+      status: Status filtern
+      industry: Branche filtern
+      all_status: Alle Status
+      all_industries: Alle Branchen
+      active_only: Nur aktive
+      inactive_only: Nur inaktive
+    confirm:
+      delete: Sind Sie sicher, dass Sie dieses Framework löschen möchten? Alle zugehörigen Anforderungen werden ebenfalls gelöscht.
+      duplicate: Möchten Sie dieses Framework inklusive aller Anforderungen duplizieren?
+    info:
+      no_frameworks: Noch keine Frameworks vorhanden
+      create_first: Erstellen Sie Ihr erstes Compliance-Framework
+    help:
+      code: Eindeutiger Kurzcode (z.B. ISO27001, TISAX, DORA)
+      version: Versionsnummer des Frameworks (z.B. 2022, 6.0.2)
+      mandatory: Verpflichtende Frameworks müssen umgesetzt werden
+      scope: Beschreibung des Geltungsbereichs
+
+  # Requirement translations
+  requirement:
+    title: Anforderungen
+    action:
+      new: Neue Anforderung
+    priority:
+      critical: Kritisch
+      high: Hoch
+      medium: Mittel
+      low: Niedrig
+
 # Risk Appetite (ISO 27005:2022)
 risk_appetite:
   title: 'Risikobereitschaften'
@@ -3806,6 +3897,52 @@ workflow.info.steps_note_title: 'Hinweis zu Workflow-Schritten'
 workflow.info.steps_note_text: 'Workflow-Schritte müssen nach dem Erstellen der Definition separat konfiguriert werden.'
 workflow.placeholder.name: 'z.B. Risk Assessment Approval'
 workflow.placeholder.description: 'z.B. Genehmigungsprozess für Risikoanalysen'
+workflow.action.builder: 'Schritt-Builder'
+workflow.action.back: 'Zurück'
+workflow.builder.title: 'Workflow-Builder'
+workflow.builder.heading: 'Workflow-Schritt-Builder'
+workflow.builder.breadcrumb: 'Schritt-Builder'
+workflow.builder.steps: 'Workflow-Schritte'
+workflow.builder.add_step: 'Schritt hinzufügen'
+workflow.builder.new_step: 'Neuen Schritt hinzufügen'
+workflow.builder.templates: 'Schnellvorlagen'
+workflow.builder.templates_help: 'Vorkonfigurierte Workflow-Vorlagen anwenden'
+workflow.builder.info: 'Workflow-Informationen'
+workflow.builder.help: 'Schnellhilfe'
+workflow.builder.drag_help: 'Ziehen Sie Schritte am Griff, um sie neu zu ordnen. Änderungen werden automatisch gespeichert.'
+workflow.builder.help_drag: 'Ziehen zum Neuordnen'
+workflow.builder.help_edit: 'Schrittdetails bearbeiten'
+workflow.builder.help_duplicate: 'Kopie des Schritts erstellen'
+workflow.builder.help_delete: 'Schritt aus Workflow entfernen'
+workflow.builder.help_template: 'Vorgefertigte Workflow-Vorlagen anwenden'
+workflow.step.name: 'Schrittname'
+workflow.step.type: 'Schritttyp'
+workflow.step.description: 'Beschreibung'
+workflow.step.approver_role: 'Genehmiger-Rolle'
+workflow.step.days_to_complete: 'Tage bis zur Fertigstellung (SLA)'
+workflow.step.days_help: 'Anzahl der Tage, die für diesen Schritt erlaubt sind'
+workflow.step.is_required: 'Dieser Schritt ist erforderlich'
+workflow.step.type.approval: 'Genehmigung'
+workflow.step.type.notification: 'Benachrichtigung'
+workflow.step.type.auto_action: 'Automatische Aktion'
+workflow.template.risk_assessment: 'Risikobewertung'
+workflow.template.risk_assessment_desc: 'Standard-Workflow für Risikobewertung und Genehmigung'
+workflow.template.control_implementation: 'Kontrollimplementierung'
+workflow.template.control_implementation_desc: 'Genehmigung für Sicherheitskontrollimplementierung'
+workflow.template.incident_response: 'Vorfallreaktion'
+workflow.template.incident_response_desc: 'Workflow für Sicherheitsvorfallbehandlung'
+workflow.template.document_review: 'Dokumentenprüfung'
+workflow.template.document_review_desc: 'Dokumentenprüfungs- und Genehmigungsprozess'
+workflow.template.change_request: 'Änderungsanfrage'
+workflow.template.change_request_desc: 'Genehmigungsworkflow für Systemänderungen'
+role.user: 'Benutzer'
+role.manager: 'Manager'
+role.iso_officer: 'ISO-Beauftragter'
+role.risk_manager: 'Risikomanager'
+role.auditor: 'Auditor'
+role.admin: 'Administrator'
+common.select: '-- Auswählen --'
+common.loading: 'Laden...'
 common.cancel: 'Abbrechen'
 common.view: 'Anzeigen'
 common.edit: 'Bearbeiten'

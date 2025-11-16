@@ -13,7 +13,7 @@ use Endroid\QrCode\RoundBlockSizeMode;
 use Endroid\QrCode\Writer\PngWriter;
 use OTPHP\TOTP;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Security\Core\Exception\TooManyRequestsException;
+use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 
 /**
  * MFA Service for NIS2 Compliance (Art. 21.2.b)
@@ -89,16 +89,16 @@ class MfaService
         $provisioningUri = $totp->getProvisioningUri();
 
         // Generate QR code
-        $result = Builder::create()
-            ->writer(new PngWriter())
-            ->writerOptions([])
-            ->data($provisioningUri)
-            ->encoding(new Encoding('UTF-8'))
-            ->errorCorrectionLevel(ErrorCorrectionLevel::High)
-            ->size(300)
-            ->margin(10)
-            ->roundBlockSizeMode(RoundBlockSizeMode::Margin)
-            ->build();
+        $result = (new Builder(
+            writer: new PngWriter(),
+            writerOptions: [],
+            data: $provisioningUri,
+            encoding: new Encoding('UTF-8'),
+            errorCorrectionLevel: ErrorCorrectionLevel::High,
+            size: 300,
+            margin: 10,
+            roundBlockSizeMode: RoundBlockSizeMode::Margin,
+        ))->build();
 
         // Return base64 encoded PNG
         return base64_encode($result->getString());
@@ -334,7 +334,7 @@ class MfaService
 
             // If last attempt was < 2 seconds ago, rate limit
             if ($diff < 2) {
-                throw new TooManyRequestsException('Too many verification attempts. Please wait.');
+                throw new TooManyRequestsHttpException(2, 'Too many verification attempts. Please wait.');
             }
         }
     }

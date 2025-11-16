@@ -27,6 +27,12 @@ class MfaToken
     private ?User $user = null;
 
     /**
+     * Temporary storage for unhashed backup codes (not persisted)
+     * Used only during token generation to display codes to user once
+     */
+    public ?array $temporaryBackupCodes = null;
+
+    /**
      * Type of MFA token
      * - totp: Time-based One-Time Password (Google Authenticator, Authy)
      * - webauthn: WebAuthn/FIDO2 (YubiKey, Windows Hello)

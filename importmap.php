@@ -39,6 +39,9 @@ return [
     '@popperjs/core' => [
         'version' => '2.11.8',
     ],
+    'sortablejs' => [
+        'version' => '1.15.3',
+    ],
     // Bootstrap Icons removed from importmap due to AssetMapper issue #52620
     // Icons are now loaded via CDN in base.html.twig
 ];

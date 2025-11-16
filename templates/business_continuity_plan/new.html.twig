@@ -4,180 +4,100 @@
 
 {% block body %}
 <div class="container-fluid py-4">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.bcm'|trans|default('BCM'), url: path('app_bc_plan_index'), icon: 'bi-shield-exclamation' },
+            { label: 'bc_plan.title'|trans|default('BC Plans'), url: path('app_bc_plan_index') },
+            { label: 'bc_plan.new'|trans|default('New Plan') }
+        ]
+    } %}
+
+    {% include '_components/_page_header.html.twig' with {
+        title: 'bc_plan.create'|trans|default('Create BC Plan'),
+        icon: 'bi-plus-circle',
+        actions: [{ label: 'common.back'|trans, url: path('app_bc_plan_index'), variant: 'secondary', icon: 'bi-arrow-left' }]
+    } %}
+
     <div class="row">
         <div class="col-lg-10 col-xl-9 mx-auto">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h1 class="h3 mb-0">{{ 'bc_plan.create'|trans }}</h1>
-                <a href="{{ path('app_bc_plan_index') }}" class="btn btn-outline-secondary">
-                    <i class="bi bi-arrow-left"></i> {{ 'common.back'|trans }}
-                </a>
-            </div>
-
             <div class="card shadow">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">
-                        <i class="bi bi-plus-circle"></i> {{ 'bc_plan.new'|trans }}
-                    </h5>
-                </div>
                 <div class="card-body">
                     {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
 
-                    {# Basic Information Section #}
-                    <div class="card mb-4">
-                        <div class="card-header bg-light">
-                            <h6 class="mb-0"><i class="bi bi-info-square"></i> {{ 'bc_plan.section.basic_info'|trans }}</h6>
+                    {# Basic Information #}
+                    <fieldset class="mb-4">
+                        <legend class="h5 mb-3"><i class="bi bi-info-square" aria-hidden="true"></i> {{ 'bc_plan.section.basic_info'|trans|default('Basic Information') }}</legend>
+                        {% include '_components/_form_field.html.twig' with {'field': form.name, 'label': 'bc_plan.field.name'|trans|default('Plan Name'), 'help': 'bc_plan.help.name'|trans|default('Name of the BC plan'), 'required': true} %}
+                        {% include '_components/_form_field.html.twig' with {'field': form.businessProcess, 'label': 'bc_plan.field.business_process'|trans|default('Business Process'), 'help': 'bc_plan.help.business_process'|trans|default('Associated business process')} %}
+                        {% include '_components/_form_field.html.twig' with {'field': form.description, 'label': 'bc_plan.field.description'|trans|default('Description'), 'help': 'bc_plan.help.description'|trans|default('Detailed plan description')} %}
+                        <div class="row">
+                            <div class="col-md-6">{% include '_components/_form_field.html.twig' with {'field': form.planOwner, 'label': 'bc_plan.field.plan_owner'|trans|default('Plan Owner'), 'help': 'bc_plan.help.plan_owner'|trans|default('Person responsible for the plan')} %}</div>
+                            <div class="col-md-6">{% include '_components/_form_field.html.twig' with {'field': form.status, 'label': 'bc_plan.field.status'|trans|default('Status'), 'help': 'bc_plan.help.status'|trans|default('Current status of the plan')} %}</div>
                         </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-12 mb-3">
-                                    {{ form_row(form.name) }}
-                                </div>
-                                <div class="col-md-12 mb-3">
-                                    {{ form_row(form.businessProcess) }}
-                                </div>
-                                <div class="col-md-12 mb-3">
-                                    {{ form_row(form.description) }}
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    {{ form_row(form.planOwner) }}
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    {{ form_row(form.status) }}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    </fieldset>
 
-                    {# Team Section #}
-                    <div class="card mb-4">
-                        <div class="card-header bg-light">
-                            <h6 class="mb-0"><i class="bi bi-people"></i> {{ 'bc_plan.section.team'|trans }}</h6>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-12 mb-3">
-                                    {{ form_row(form.bcTeam) }}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    {# Team #}
+                    <fieldset class="mb-4">
+                        <legend class="h5 mb-3"><i class="bi bi-people" aria-hidden="true"></i> {{ 'bc_plan.section.team'|trans|default('Team') }}</legend>
+                        {% include '_components/_form_field.html.twig' with {'field': form.bcTeam, 'label': 'bc_plan.field.bc_team'|trans|default('BC Team'), 'help': 'bc_plan.help.bc_team'|trans|default('Team members responsible for BC')} %}
+                    </fieldset>
 
-                    {# Activation & Response Section #}
-                    <div class="card mb-4">
-                        <div class="card-header bg-light">
-                            <h6 class="mb-0"><i class="bi bi-lightning"></i> {{ 'bc_plan.section.activation'|trans }}</h6>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-12 mb-3">
-                                    {{ form_row(form.activationCriteria) }}
-                                </div>
-                                <div class="col-md-12 mb-3">
-                                    {{ form_row(form.rolesAndResponsibilities) }}
-                                </div>
-                                <div class="col-md-12 mb-3">
-                                    {{ form_row(form.recoveryProcedures) }}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    {# Activation & Response #}
+                    <fieldset class="mb-4">
+                        <legend class="h5 mb-3"><i class="bi bi-lightning" aria-hidden="true"></i> {{ 'bc_plan.section.activation'|trans|default('Activation & Response') }}</legend>
+                        {% include '_components/_form_field.html.twig' with {'field': form.activationCriteria, 'label': 'bc_plan.field.activation_criteria'|trans|default('Activation Criteria'), 'help': 'bc_plan.help.activation_criteria'|trans|default('Conditions that trigger plan activation')} %}
+                        {% include '_components/_form_field.html.twig' with {'field': form.rolesAndResponsibilities, 'label': 'bc_plan.field.roles_responsibilities'|trans|default('Roles & Responsibilities'), 'help': 'bc_plan.help.roles_responsibilities'|trans|default('Who does what during an incident')} %}
+                        {% include '_components/_form_field.html.twig' with {'field': form.recoveryProcedures, 'label': 'bc_plan.field.recovery_procedures'|trans|default('Recovery Procedures'), 'help': 'bc_plan.help.recovery_procedures'|trans|default('Step-by-step recovery process')} %}
+                    </fieldset>
 
-                    {# Communication Section #}
-                    <div class="card mb-4">
-                        <div class="card-header bg-light">
-                            <h6 class="mb-0"><i class="bi bi-chat-dots"></i> {{ 'bc_plan.section.communication'|trans }}</h6>
+                    {# Communication #}
+                    <fieldset class="mb-4">
+                        <legend class="h5 mb-3"><i class="bi bi-chat-dots" aria-hidden="true"></i> {{ 'bc_plan.section.communication'|trans|default('Communication') }}</legend>
+                        {% include '_components/_form_field.html.twig' with {'field': form.communicationPlan, 'label': 'bc_plan.field.communication_plan'|trans|default('Communication Plan'), 'help': 'bc_plan.help.communication_plan'|trans|default('Overall communication strategy')} %}
+                        <div class="row">
+                            <div class="col-md-6">{% include '_components/_form_field.html.twig' with {'field': form.internalCommunication, 'label': 'bc_plan.field.internal_communication'|trans|default('Internal Communication'), 'help': 'bc_plan.help.internal_communication'|trans|default('Internal stakeholder communication')} %}</div>
+                            <div class="col-md-6">{% include '_components/_form_field.html.twig' with {'field': form.externalCommunication, 'label': 'bc_plan.field.external_communication'|trans|default('External Communication'), 'help': 'bc_plan.help.external_communication'|trans|default('External stakeholder communication')} %}</div>
                         </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-12 mb-3">
-                                    {{ form_row(form.communicationPlan) }}
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    {{ form_row(form.internalCommunication) }}
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    {{ form_row(form.externalCommunication) }}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    </fieldset>
 
-                    {# Alternative Site Section #}
-                    <div class="card mb-4">
-                        <div class="card-header bg-light">
-                            <h6 class="mb-0"><i class="bi bi-building"></i> {{ 'bc_plan.section.alternative_site'|trans }}</h6>
+                    {# Alternative Site #}
+                    <fieldset class="mb-4">
+                        <legend class="h5 mb-3"><i class="bi bi-building" aria-hidden="true"></i> {{ 'bc_plan.section.alternative_site'|trans|default('Alternative Site') }}</legend>
+                        {% include '_components/_form_field.html.twig' with {'field': form.alternativeSite, 'label': 'bc_plan.field.alternative_site'|trans|default('Alternative Site'), 'help': 'bc_plan.help.alternative_site'|trans|default('Backup location details')} %}
+                        <div class="row">
+                            <div class="col-md-6">{% include '_components/_form_field.html.twig' with {'field': form.alternativeSiteAddress, 'label': 'bc_plan.field.alternative_site_address'|trans|default('Address'), 'help': 'bc_plan.help.alternative_site_address'|trans|default('Physical address of alternative site')} %}</div>
+                            <div class="col-md-6">{% include '_components/_form_field.html.twig' with {'field': form.alternativeSiteCapacity, 'label': 'bc_plan.field.alternative_site_capacity'|trans|default('Capacity'), 'help': 'bc_plan.help.alternative_site_capacity'|trans|default('Maximum capacity of the site')} %}</div>
                         </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-12 mb-3">
-                                    {{ form_row(form.alternativeSite) }}
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    {{ form_row(form.alternativeSiteAddress) }}
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    {{ form_row(form.alternativeSiteCapacity) }}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    </fieldset>
 
-                    {# Backup & Recovery Section #}
-                    <div class="card mb-4">
-                        <div class="card-header bg-light">
-                            <h6 class="mb-0"><i class="bi bi-hdd"></i> {{ 'bc_plan.section.backup_recovery'|trans }}</h6>
+                    {# Backup & Recovery #}
+                    <fieldset class="mb-4">
+                        <legend class="h5 mb-3"><i class="bi bi-hdd" aria-hidden="true"></i> {{ 'bc_plan.section.backup_recovery'|trans|default('Backup & Recovery') }}</legend>
+                        <div class="row">
+                            <div class="col-md-6">{% include '_components/_form_field.html.twig' with {'field': form.backupProcedures, 'label': 'bc_plan.field.backup_procedures'|trans|default('Backup Procedures'), 'help': 'bc_plan.help.backup_procedures'|trans|default('Data backup procedures')} %}</div>
+                            <div class="col-md-6">{% include '_components/_form_field.html.twig' with {'field': form.restoreProcedures, 'label': 'bc_plan.field.restore_procedures'|trans|default('Restore Procedures'), 'help': 'bc_plan.help.restore_procedures'|trans|default('Data restoration procedures')} %}</div>
                         </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    {{ form_row(form.backupProcedures) }}
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    {{ form_row(form.restoreProcedures) }}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    </fieldset>
 
-                    {# Version & Review Section #}
-                    <div class="card mb-4">
-                        <div class="card-header bg-light">
-                            <h6 class="mb-0"><i class="bi bi-calendar-check"></i> {{ 'bc_plan.section.version_review'|trans }}</h6>
+                    {# Version & Review #}
+                    <fieldset class="mb-4">
+                        <legend class="h5 mb-3"><i class="bi bi-calendar-check" aria-hidden="true"></i> {{ 'bc_plan.section.version_review'|trans|default('Version & Review') }}</legend>
+                        <div class="row">
+                            <div class="col-md-4">{% include '_components/_form_field.html.twig' with {'field': form.version, 'label': 'bc_plan.field.version'|trans|default('Version'), 'help': 'bc_plan.help.version'|trans|default('Plan version number')} %}</div>
+                            <div class="col-md-4">{% include '_components/_form_field.html.twig' with {'field': form.lastTested, 'label': 'bc_plan.field.last_tested'|trans|default('Last Tested'), 'help': 'bc_plan.help.last_tested'|trans|default('Date of last test')} %}</div>
+                            <div class="col-md-4">{% include '_components/_form_field.html.twig' with {'field': form.nextTestDate, 'label': 'bc_plan.field.next_test_date'|trans|default('Next Test'), 'help': 'bc_plan.help.next_test_date'|trans|default('Scheduled next test date')} %}</div>
                         </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-4 mb-3">
-                                    {{ form_row(form.version) }}
-                                </div>
-                                <div class="col-md-4 mb-3">
-                                    {{ form_row(form.lastTested) }}
-                                </div>
-                                <div class="col-md-4 mb-3">
-                                    {{ form_row(form.nextTestDate) }}
-                                </div>
-                                <div class="col-md-4 mb-3">
-                                    {{ form_row(form.lastReviewDate) }}
-                                </div>
-                                <div class="col-md-4 mb-3">
-                                    {{ form_row(form.nextReviewDate) }}
-                                </div>
-                                <div class="col-md-12 mb-3">
-                                    {{ form_row(form.reviewNotes) }}
-                                </div>
-                            </div>
+                        <div class="row">
+                            <div class="col-md-6">{% include '_components/_form_field.html.twig' with {'field': form.lastReviewDate, 'label': 'bc_plan.field.last_review_date'|trans|default('Last Review'), 'help': 'bc_plan.help.last_review_date'|trans|default('Date of last review')} %}</div>
+                            <div class="col-md-6">{% include '_components/_form_field.html.twig' with {'field': form.nextReviewDate, 'label': 'bc_plan.field.next_review_date'|trans|default('Next Review'), 'help': 'bc_plan.help.next_review_date'|trans|default('Scheduled next review date')} %}</div>
                         </div>
-                    </div>
+                        {% include '_components/_form_field.html.twig' with {'field': form.reviewNotes, 'label': 'bc_plan.field.review_notes'|trans|default('Review Notes'), 'help': 'bc_plan.help.review_notes'|trans|default('Notes from the last review')} %}
+                    </fieldset>
 
                     {# Form Actions #}
-                    <div class="d-flex justify-content-between align-items-center pt-3 border-top">
-                        <a href="{{ path('app_bc_plan_index') }}"
-                           class="btn btn-outline-secondary"
-                           data-turbo-action="advance">
-                            <i class="bi bi-arrow-left"></i> {{ 'common.back'|trans }}
-                        </a>
-                        <button type="submit" class="btn btn-primary btn-lg">
-                            <i class="bi bi-save"></i> {{ 'bc_plan.create'|trans }}
-                        </button>
+                    <div class="form-actions d-flex gap-2 justify-content-between pt-3 border-top">
+                        <a href="{{ path('app_bc_plan_index') }}" class="btn btn-secondary"><i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'common.cancel'|trans }}</a>
+                        <button type="submit" class="btn btn-primary btn-lg"><i class="bi bi-save" aria-hidden="true"></i> {{ 'bc_plan.create'|trans }}</button>
                     </div>
 
                     {{ form_end(form) }}

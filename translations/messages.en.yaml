@@ -433,6 +433,11 @@ common:
   system_info: System Information
   verifying: Verifying...
   generated: Generated
+  activate: Activate
+  deactivate: Deactivate
+  duplicate: Duplicate
+  quick_actions: Quick Actions
+  select: Select
 asset:
   new: New Asset
   create: Create Asset
@@ -2601,6 +2606,92 @@ compliance:
     none_description: All applicable requirements are fully satisfied.
     fulfilled_percentage: "% Fulfilled"
 
+  # Framework CRUD translations
+  framework:
+    title: Compliance Frameworks
+    heading: Framework Management
+    subtitle: Manage your compliance frameworks and their requirements
+    breadcrumb:
+      home: Compliance
+      frameworks: Frameworks
+      new: New Framework
+      edit: Edit Framework
+    field:
+      name: Name
+      code: Code
+      version: Version
+      description: Description
+      active: Active
+      mandatory: Mandatory
+      industry: Industry
+      regulatory_body: Regulatory Body
+      scope: Scope
+      applicable_industry: Applicable Industry
+    action:
+      new: New Framework
+      edit: Edit Framework
+      delete: Delete Framework
+      duplicate: Duplicate
+      dashboard: Dashboard
+      view: View Details
+      gap_analysis: Gap Analysis
+      assess: Start Assessment
+      back_to_list: Back to List
+    stats:
+      total_requirements: Total Requirements
+      applicable: Applicable
+      fulfilled: Fulfilled
+      compliance: Compliance Rate
+      total: Total
+      active_frameworks: Active Frameworks
+      total_frameworks: Total Frameworks
+    badge:
+      mandatory: Mandatory
+      active: Active
+      inactive: Inactive
+    flash:
+      created: Framework created successfully
+      updated: Framework updated successfully
+      deleted: Framework deleted successfully
+      activated: Framework activated
+      deactivated: Framework deactivated
+      duplicated: Framework duplicated successfully
+      delete_failed: Framework could not be deleted
+    details: Framework Details
+    requirements_by_category: Requirements by Category
+    no_requirements: No requirements defined yet
+    priority_distribution: Priority Distribution
+    filter:
+      search: Search by name or code...
+      status: Filter by status
+      industry: Filter by industry
+      all_status: All Statuses
+      all_industries: All Industries
+      active_only: Active only
+      inactive_only: Inactive only
+    confirm:
+      delete: Are you sure you want to delete this framework? All associated requirements will also be deleted.
+      duplicate: Do you want to duplicate this framework including all requirements?
+    info:
+      no_frameworks: No frameworks available yet
+      create_first: Create your first compliance framework
+    help:
+      code: Unique short code (e.g. ISO27001, TISAX, DORA)
+      version: Framework version number (e.g. 2022, 6.0.2)
+      mandatory: Mandatory frameworks must be implemented
+      scope: Description of the scope
+
+  # Requirement translations
+  requirement:
+    title: Requirements
+    action:
+      new: New Requirement
+    priority:
+      critical: Critical
+      high: High
+      medium: Medium
+      low: Low
+
 # Risk Appetite (ISO 27005:2022)
 risk_appetite:
   title: 'Risk Appetites'
@@ -3768,6 +3859,52 @@ workflow.info.steps_note_title: 'Note about Workflow Steps'
 workflow.info.steps_note_text: 'Workflow steps must be configured separately after creating the definition.'
 workflow.placeholder.name: 'e.g. Risk Assessment Approval'
 workflow.placeholder.description: 'e.g. Approval process for risk assessments'
+workflow.action.builder: 'Step Builder'
+workflow.action.back: 'Back'
+workflow.builder.title: 'Workflow Builder'
+workflow.builder.heading: 'Workflow Step Builder'
+workflow.builder.breadcrumb: 'Step Builder'
+workflow.builder.steps: 'Workflow Steps'
+workflow.builder.add_step: 'Add Step'
+workflow.builder.new_step: 'Add New Step'
+workflow.builder.templates: 'Quick Templates'
+workflow.builder.templates_help: 'Apply pre-configured workflow templates'
+workflow.builder.info: 'Workflow Information'
+workflow.builder.help: 'Quick Help'
+workflow.builder.drag_help: 'Drag steps by the grip handle to reorder them. Changes are saved automatically.'
+workflow.builder.help_drag: 'Drag to reorder steps'
+workflow.builder.help_edit: 'Edit step details'
+workflow.builder.help_duplicate: 'Create a copy of step'
+workflow.builder.help_delete: 'Remove step from workflow'
+workflow.builder.help_template: 'Apply pre-built workflow templates'
+workflow.step.name: 'Step Name'
+workflow.step.type: 'Step Type'
+workflow.step.description: 'Description'
+workflow.step.approver_role: 'Approver Role'
+workflow.step.days_to_complete: 'Days to Complete (SLA)'
+workflow.step.days_help: 'Number of days allowed to complete this step'
+workflow.step.is_required: 'This step is required'
+workflow.step.type.approval: 'Approval'
+workflow.step.type.notification: 'Notification'
+workflow.step.type.auto_action: 'Auto Action'
+workflow.template.risk_assessment: 'Risk Assessment'
+workflow.template.risk_assessment_desc: 'Standard risk assessment and approval workflow'
+workflow.template.control_implementation: 'Control Implementation'
+workflow.template.control_implementation_desc: 'Security control implementation approval'
+workflow.template.incident_response: 'Incident Response'
+workflow.template.incident_response_desc: 'Security incident handling workflow'
+workflow.template.document_review: 'Document Review'
+workflow.template.document_review_desc: 'Document review and approval process'
+workflow.template.change_request: 'Change Request'
+workflow.template.change_request_desc: 'System change approval workflow'
+role.user: 'User'
+role.manager: 'Manager'
+role.iso_officer: 'ISO Officer'
+role.risk_manager: 'Risk Manager'
+role.auditor: 'Auditor'
+role.admin: 'Administrator'
+common.select: '-- Select --'
+common.loading: 'Loading...'
 common.cancel: 'Cancel'
 common.view: 'View'
 common.edit: 'Edit'

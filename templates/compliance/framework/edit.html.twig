@@ -1,0 +1,121 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'compliance.framework.edit.title'|trans }} - {{ framework.name }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid mt-4">
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header bg-warning">
+                    <h5 class="mb-0">
+                        <i class="bi bi-pencil"></i> {{ 'compliance.framework.edit.heading'|trans }}
+                        <small class="text-muted">{{ framework.name }}</small>
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {{ form_start(form) }}
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            {{ form_row(form.code, {
+                                'label': 'compliance.framework.field.code'|trans
+                            }) }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form_row(form.version, {
+                                'label': 'compliance.framework.field.version'|trans
+                            }) }}
+                        </div>
+                    </div>
+
+                    {{ form_row(form.name, {
+                        'label': 'compliance.framework.field.name'|trans
+                    }) }}
+
+                    {{ form_row(form.description, {
+                        'label': 'compliance.framework.field.description'|trans
+                    }) }}
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            {{ form_row(form.applicableIndustry, {
+                                'label': 'compliance.framework.field.industry'|trans
+                            }) }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form_row(form.regulatoryBody, {
+                                'label': 'compliance.framework.field.regulatory_body'|trans
+                            }) }}
+                        </div>
+                    </div>
+
+                    {{ form_row(form.scopeDescription, {
+                        'label': 'compliance.framework.field.scope'|trans
+                    }) }}
+
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            {{ form_row(form.mandatory, {
+                                'label': 'compliance.framework.field.mandatory'|trans
+                            }) }}
+                        </div>
+                        <div class="col-md-4">
+                            {{ form_row(form.active, {
+                                'label': 'compliance.framework.field.active'|trans
+                            }) }}
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-warning">
+                            <i class="bi bi-check-circle"></i> {{ 'common.save'|trans }}
+                        </button>
+                        <a href="{{ path('app_compliance_framework_show', {id: framework.id}) }}" class="btn btn-outline-secondary">
+                            <i class="bi bi-x-circle"></i> {{ 'common.cancel'|trans }}
+                        </a>
+                    </div>
+
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card mb-3">
+                <div class="card-header bg-secondary text-white">
+                    <h6 class="mb-0"><i class="bi bi-info-circle"></i> {{ 'compliance.framework.info'|trans }}</h6>
+                </div>
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-6">{{ 'common.created_at'|trans }}</dt>
+                        <dd class="col-sm-6">{{ framework.createdAt|date('d.m.Y H:i') }}</dd>
+
+                        <dt class="col-sm-6">{{ 'common.updated_at'|trans }}</dt>
+                        <dd class="col-sm-6">{{ framework.updatedAt ? framework.updatedAt|date('d.m.Y H:i') : '-' }}</dd>
+
+                        <dt class="col-sm-6">{{ 'compliance.framework.field.requirements'|trans }}</dt>
+                        <dd class="col-sm-6"><span class="badge bg-info">{{ framework.requirements|length }}</span></dd>
+                    </dl>
+                </div>
+            </div>
+
+            {% if is_granted('ROLE_ADMIN') %}
+            <div class="card border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h6 class="mb-0"><i class="bi bi-exclamation-triangle"></i> {{ 'common.danger_zone'|trans }}</h6>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="{{ path('app_compliance_framework_delete', {id: framework.id}) }}"
+                          onsubmit="return confirm('{{ 'compliance.framework.confirm.delete'|trans }}');">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ framework.id) }}">
+                        <button type="submit" class="btn btn-outline-danger w-100">
+                            <i class="bi bi-trash"></i> {{ 'common.delete'|trans }}
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

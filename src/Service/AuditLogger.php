@@ -40,7 +40,7 @@ class AuditLogger
     {
         // Only log if there are actual changes
         $changes = $this->getChanges($oldValues, $newValues);
-        if (!empty($changes)) {
+        if (!empty($changes['old']) || !empty($changes['new'])) {
             $this->log(self::ACTION_UPDATE, $entityType, $entityId, $changes['old'], $changes['new'], $description);
         }
     }

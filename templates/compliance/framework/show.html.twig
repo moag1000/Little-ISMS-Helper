@@ -1,0 +1,256 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ framework.name }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1>
+                <i class="bi bi-shield-check"></i> {{ framework.name }}
+                {% if framework.active %}
+                    <span class="badge bg-success">{{ 'common.active'|trans }}</span>
+                {% else %}
+                    <span class="badge bg-secondary">{{ 'common.inactive'|trans }}</span>
+                {% endif %}
+                {% if framework.mandatory %}
+                    <span class="badge bg-danger">{{ 'compliance.framework.badge.mandatory'|trans }}</span>
+                {% endif %}
+            </h1>
+            <p class="text-muted">
+                <code>{{ framework.code }}</code> | {{ 'compliance.framework.field.version'|trans }}: {{ framework.version }}
+            </p>
+        </div>
+        <div>
+            <a href="{{ path('app_compliance_framework', {id: framework.id}) }}" class="btn btn-info">
+                <i class="bi bi-speedometer2"></i> {{ 'compliance.framework.action.dashboard'|trans }}
+            </a>
+            {% if is_granted('ROLE_ADMIN') %}
+                <a href="{{ path('app_compliance_framework_edit', {id: framework.id}) }}" class="btn btn-warning">
+                    <i class="bi bi-pencil"></i> {{ 'common.edit'|trans }}
+                </a>
+                <form method="post" action="{{ path('app_compliance_framework_toggle', {id: framework.id}) }}" class="d-inline">
+                    <input type="hidden" name="_token" value="{{ csrf_token('toggle' ~ framework.id) }}">
+                    <button type="submit" class="btn btn-{{ framework.active ? 'secondary' : 'success' }}">
+                        <i class="bi bi-{{ framework.active ? 'pause-circle' : 'play-circle' }}"></i>
+                        {{ framework.active ? 'common.deactivate'|trans : 'common.activate'|trans }}
+                    </button>
+                </form>
+                <form method="post" action="{{ path('app_compliance_framework_duplicate', {id: framework.id}) }}" class="d-inline">
+                    <input type="hidden" name="_token" value="{{ csrf_token('duplicate' ~ framework.id) }}">
+                    <button type="submit" class="btn btn-outline-secondary">
+                        <i class="bi bi-copy"></i> {{ 'common.duplicate'|trans }}
+                    </button>
+                </form>
+            {% endif %}
+            <a href="{{ path('app_compliance_framework_index') }}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> {{ 'common.back'|trans }}
+            </a>
+        </div>
+    </div>
+
+    {# Statistics Row #}
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body text-center">
+                    <h2>{{ total_requirements }}</h2>
+                    <p class="mb-0">{{ 'compliance.framework.stats.total_requirements'|trans }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-info text-white">
+                <div class="card-body text-center">
+                    <h2>{{ applicable_requirements }}</h2>
+                    <p class="mb-0">{{ 'compliance.framework.stats.applicable'|trans }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-success text-white">
+                <div class="card-body text-center">
+                    <h2>{{ fulfilled_requirements }}</h2>
+                    <p class="mb-0">{{ 'compliance.framework.stats.fulfilled'|trans }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card {% if compliance_percentage >= 80 %}bg-success{% elseif compliance_percentage >= 50 %}bg-warning{% else %}bg-danger{% endif %} text-white">
+                <div class="card-body text-center">
+                    <h2>{{ compliance_percentage|round }}%</h2>
+                    <p class="mb-0">{{ 'compliance.framework.stats.compliance'|trans }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            {# Framework Details #}
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-info-circle"></i> {{ 'compliance.framework.details'|trans }}</h5>
+                </div>
+                <div class="card-body">
+                    {% if framework.description %}
+                        <h6>{{ 'compliance.framework.field.description'|trans }}</h6>
+                        <p>{{ framework.description }}</p>
+                    {% endif %}
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <dl>
+                                <dt>{{ 'compliance.framework.field.industry'|trans }}</dt>
+                                <dd>{{ framework.applicableIndustry }}</dd>
+
+                                <dt>{{ 'compliance.framework.field.regulatory_body'|trans }}</dt>
+                                <dd>{{ framework.regulatoryBody }}</dd>
+                            </dl>
+                        </div>
+                        <div class="col-md-6">
+                            <dl>
+                                <dt>{{ 'common.created_at'|trans }}</dt>
+                                <dd>{{ framework.createdAt|date('d.m.Y H:i') }}</dd>
+
+                                <dt>{{ 'common.updated_at'|trans }}</dt>
+                                <dd>{{ framework.updatedAt ? framework.updatedAt|date('d.m.Y H:i') : '-' }}</dd>
+                            </dl>
+                        </div>
+                    </div>
+
+                    {% if framework.scopeDescription %}
+                        <h6>{{ 'compliance.framework.field.scope'|trans }}</h6>
+                        <p>{{ framework.scopeDescription }}</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            {# Requirements by Category #}
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="bi bi-list-check"></i> {{ 'compliance.framework.requirements_by_category'|trans }}</h5>
+                    <a href="{{ path('app_compliance_requirement_index', {framework: framework.id}) }}" class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-list"></i> {{ 'common.view_all'|trans }}
+                    </a>
+                </div>
+                <div class="card-body">
+                    {% if requirements_by_category|length > 0 %}
+                        <div class="accordion" id="categoryAccordion">
+                            {% for category, requirements in requirements_by_category %}
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button collapsed" type="button"
+                                                data-bs-toggle="collapse"
+                                                data-bs-target="#category{{ loop.index }}">
+                                            {{ category }}
+                                            <span class="badge bg-secondary ms-2">{{ requirements|length }}</span>
+                                        </button>
+                                    </h2>
+                                    <div id="category{{ loop.index }}" class="accordion-collapse collapse"
+                                         data-bs-parent="#categoryAccordion">
+                                        <div class="accordion-body">
+                                            <div class="list-group">
+                                                {% for req in requirements %}
+                                                    <a href="{{ path('app_compliance_requirement_show', {id: req.id}) }}"
+                                                       class="list-group-item list-group-item-action">
+                                                        <div class="d-flex justify-content-between align-items-center">
+                                                            <div>
+                                                                <strong>{{ req.requirementId }}</strong> - {{ req.title }}
+                                                            </div>
+                                                            <div>
+                                                                <span class="badge bg-{{ req.fulfillmentStatusBadge }}">
+                                                                    {{ req.fulfillmentPercentage }}%
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </a>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-4">
+                            <i class="bi bi-list-check fs-1 text-muted"></i>
+                            <p class="mt-2 text-muted">{{ 'compliance.framework.no_requirements'|trans }}</p>
+                            {% if is_granted('ROLE_ADMIN') %}
+                                <a href="{{ path('app_compliance_requirement_new', {framework: framework.id}) }}" class="btn btn-success">
+                                    <i class="bi bi-plus-circle"></i> {{ 'compliance.requirement.action.new'|trans }}
+                                </a>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            {# Priority Distribution #}
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h6 class="mb-0"><i class="bi bi-bar-chart"></i> {{ 'compliance.framework.priority_distribution'|trans }}</h6>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="badge bg-danger">{{ 'compliance.requirement.priority.critical'|trans }}</span>
+                            <span>{{ priority_distribution.critical }}</span>
+                        </div>
+                        <div class="progress" style="height: 10px;">
+                            <div class="progress-bar bg-danger" style="width: {{ total_requirements > 0 ? (priority_distribution.critical / total_requirements * 100) : 0 }}%"></div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="badge bg-warning text-dark">{{ 'compliance.requirement.priority.high'|trans }}</span>
+                            <span>{{ priority_distribution.high }}</span>
+                        </div>
+                        <div class="progress" style="height: 10px;">
+                            <div class="progress-bar bg-warning" style="width: {{ total_requirements > 0 ? (priority_distribution.high / total_requirements * 100) : 0 }}%"></div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="badge bg-info">{{ 'compliance.requirement.priority.medium'|trans }}</span>
+                            <span>{{ priority_distribution.medium }}</span>
+                        </div>
+                        <div class="progress" style="height: 10px;">
+                            <div class="progress-bar bg-info" style="width: {{ total_requirements > 0 ? (priority_distribution.medium / total_requirements * 100) : 0 }}%"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="badge bg-secondary">{{ 'compliance.requirement.priority.low'|trans }}</span>
+                            <span>{{ priority_distribution.low }}</span>
+                        </div>
+                        <div class="progress" style="height: 10px;">
+                            <div class="progress-bar bg-secondary" style="width: {{ total_requirements > 0 ? (priority_distribution.low / total_requirements * 100) : 0 }}%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {# Quick Actions #}
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0"><i class="bi bi-lightning"></i> {{ 'common.quick_actions'|trans }}</h6>
+                </div>
+                <div class="card-body d-grid gap-2">
+                    <a href="{{ path('app_compliance_requirement_new', {framework: framework.id}) }}" class="btn btn-outline-success">
+                        <i class="bi bi-plus-circle"></i> {{ 'compliance.requirement.action.new'|trans }}
+                    </a>
+                    <a href="{{ path('app_compliance_gaps', {id: framework.id}) }}" class="btn btn-outline-warning">
+                        <i class="bi bi-search"></i> {{ 'compliance.framework.action.gap_analysis'|trans }}
+                    </a>
+                    <a href="{{ path('app_compliance_assess', {id: framework.id}) }}" class="btn btn-outline-info">
+                        <i class="bi bi-clipboard-check"></i> {{ 'compliance.framework.action.assess'|trans }}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
