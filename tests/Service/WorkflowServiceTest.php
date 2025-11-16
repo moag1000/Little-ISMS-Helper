@@ -8,7 +8,9 @@ use App\Entity\WorkflowInstance;
 use App\Entity\WorkflowStep;
 use App\Repository\WorkflowInstanceRepository;
 use App\Repository\WorkflowRepository;
+use App\Repository\UserRepository;
 use App\Service\WorkflowService;
+use App\Service\EmailNotificationService;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -20,6 +22,8 @@ class WorkflowServiceTest extends TestCase
     private MockObject $entityManager;
     private MockObject $workflowRepository;
     private MockObject $workflowInstanceRepository;
+    private MockObject $userRepository;
+    private MockObject $emailService;
     private MockObject $security;
     private WorkflowService $service;
 
@@ -28,12 +32,16 @@ class WorkflowServiceTest extends TestCase
         $this->entityManager = $this->createMock(EntityManagerInterface::class);
         $this->workflowRepository = $this->createMock(WorkflowRepository::class);
         $this->workflowInstanceRepository = $this->createMock(WorkflowInstanceRepository::class);
+        $this->userRepository = $this->createMock(UserRepository::class);
+        $this->emailService = $this->createMock(EmailNotificationService::class);
         $this->security = $this->createMock(Security::class);
 
         $this->service = new WorkflowService(
             $this->entityManager,
             $this->workflowRepository,
             $this->workflowInstanceRepository,
+            $this->userRepository,
+            $this->emailService,
             $this->security
         );
     }
