@@ -21,7 +21,7 @@
 
 {# Modal Dialog #}
 <div class="modal fade" id="{{ modal_id }}" tabindex="-1"
-     aria-labelledby="{{ modal_id }}Label" aria-hidden="true"
+     aria-labelledby="{{ modal_id }}Label"
      role="dialog" aria-modal="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-danger">
@@ -116,6 +116,12 @@
 
     let selectedIds = [];
     let selectedItems = [];
+
+    // Fix aria-hidden focus issue: remove focus from modal before hiding
+    modal?.addEventListener('hide.bs.modal', function() {
+        // Move focus to body to prevent aria-hidden conflict
+        document.activeElement?.blur();
+    });
 
     // Enable/disable confirm button based on checkbox
     confirmCheckbox?.addEventListener('change', function() {
