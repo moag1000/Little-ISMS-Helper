@@ -142,6 +142,7 @@ class RestoreService
             'existing_data_strategy' => self::EXISTING_UPDATE,
             'skip_entities' => [],
             'dry_run' => false,
+            'clear_before_restore' => false, // New option: clear all data before restore
         ], $options);
 
         // Validate first
@@ -161,6 +162,11 @@ class RestoreService
         try {
             // Order entities by dependency (users and tenants first)
             $orderedEntities = $this->orderEntitiesByDependency(array_keys($backup['data']));
+
+            // If clear_before_restore is set, delete all existing data first (in reverse order)
+            if ($options['clear_before_restore'] && !$options['dry_run']) {
+                $this->clearExistingData(array_reverse($orderedEntities), $options['skip_entities']);
+            }
 
             foreach ($orderedEntities as $entityName) {
                 if (in_array($entityName, $options['skip_entities'])) {
@@ -201,13 +207,70 @@ class RestoreService
                 'dry_run' => $options['dry_run'],
             ];
         } catch (\Exception $e) {
-            $this->entityManager->rollback();
+            // Try to rollback, but EntityManager might be closed
+            try {
+                if ($this->entityManager->isOpen() && $this->entityManager->getConnection()->isTransactionActive()) {
+                    $this->entityManager->rollback();
+                }
+            } catch (\Exception $rollbackException) {
+                $this->logger->error('Rollback failed', [
+                    'error' => $rollbackException->getMessage(),
+                ]);
+            }
+
             $this->logger->error('Restore failed', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
             ]);
 
             throw $e;
+        }
+    }
+
+    /**
+     * Clear all existing data for the given entities
+     *
+     * @param array $entityNames Entities to clear (should be in reverse dependency order)
+     * @param array $skipEntities Entities to skip
+     */
+    private function clearExistingData(array $entityNames, array $skipEntities = []): void
+    {
+        $this->logger->info('Clearing existing data before restore');
+
+        foreach ($entityNames as $entityName) {
+            if (in_array($entityName, $skipEntities)) {
+                continue;
+            }
+
+            $entityClass = 'App\\Entity\\' . $entityName;
+            if (!class_exists($entityClass)) {
+                continue;
+            }
+
+            try {
+                // Use DQL DELETE for efficiency
+                $query = $this->entityManager->createQuery(
+                    sprintf('DELETE FROM %s e', $entityClass)
+                );
+                $deleted = $query->execute();
+
+                $this->logger->info('Cleared entity data', [
+                    'entity' => $entityName,
+                    'deleted' => $deleted,
+                ]);
+
+                $this->statistics[$entityName . '_cleared'] = $deleted;
+            } catch (\Exception $e) {
+                $this->warnings[] = sprintf(
+                    'Failed to clear %s: %s',
+                    $entityName,
+                    $e->getMessage()
+                );
+                $this->logger->error('Failed to clear entity', [
+                    'entity' => $entityName,
+                    'error' => $e->getMessage(),
+                ]);
+            }
         }
     }
 
@@ -276,12 +339,99 @@ class RestoreService
             'errors' => 0,
         ];
 
+        // Get unique constraint fields for this entity (e.g., 'name' for Role)
+        $uniqueFields = $this->getUniqueConstraintFields($entityClass, $entityName);
+
         foreach ($entities as $index => $data) {
             try {
-                // Check if entity already exists by ID
+                // Check if EntityManager is still open
+                if (!$this->entityManager->isOpen()) {
+                    $this->warnings[] = sprintf(
+                        'EntityManager closed, skipping remaining %s entities from index %d',
+                        $entityName,
+                        $index
+                    );
+                    break;
+                }
+
+                // Check if entity already exists by ID first
                 $existingEntity = null;
+                $foundById = false;
                 if (isset($data['id'])) {
                     $existingEntity = $repository->find($data['id']);
+                    $foundById = ($existingEntity !== null);
+                }
+
+                // If not found by ID, check by unique constraint fields
+                if ($existingEntity === null && !empty($uniqueFields)) {
+                    $criteria = [];
+                    foreach ($uniqueFields as $field) {
+                        if (isset($data[$field])) {
+                            $criteria[$field] = $data[$field];
+                        }
+                    }
+                    if (!empty($criteria)) {
+                        $existingEntity = $repository->findOneBy($criteria);
+                        $this->logger->debug('Unique field lookup', [
+                            'entity' => $entityName,
+                            'criteria' => $criteria,
+                            'found' => $existingEntity !== null,
+                        ]);
+                    }
+                }
+
+                // IMPORTANT: If found by ID but updating unique fields, check for conflicts
+                // Example: Backup has ID=1 name="A", DB has ID=1 name="B", DB also has ID=2 name="A"
+                // Updating ID=1 to name="A" would conflict with ID=2
+                $conflictingEntity = null;
+                if ($existingEntity !== null && $foundById && !empty($uniqueFields)) {
+                    $criteria = [];
+                    foreach ($uniqueFields as $field) {
+                        if (isset($data[$field])) {
+                            $criteria[$field] = $data[$field];
+                        }
+                    }
+                    if (!empty($criteria)) {
+                        $potentialConflict = $repository->findOneBy($criteria);
+                        // If another entity (different ID) has the same unique field value
+                        if ($potentialConflict !== null && $potentialConflict->getId() !== $existingEntity->getId()) {
+                            $conflictingEntity = $potentialConflict;
+                            $this->logger->warning('Unique field conflict detected', [
+                                'entity' => $entityName,
+                                'backup_id' => $data['id'],
+                                'target_id' => $existingEntity->getId(),
+                                'conflicting_id' => $conflictingEntity->getId(),
+                                'criteria' => $criteria,
+                            ]);
+                        }
+                    }
+                }
+
+                // Log what we're doing
+                $this->logger->debug('Processing entity', [
+                    'entity' => $entityName,
+                    'index' => $index,
+                    'has_id' => isset($data['id']),
+                    'id' => $data['id'] ?? null,
+                    'existing_found' => $existingEntity !== null,
+                    'found_by_id' => $foundById,
+                    'has_conflict' => $conflictingEntity !== null,
+                    'strategy' => $options['existing_data_strategy'],
+                ]);
+
+                // Handle conflicting entity first - must resolve this before updating
+                if ($conflictingEntity !== null) {
+                    // We need to update or remove the conflicting entity first
+                    // Skip this backup entry and log a warning
+                    $this->warnings[] = sprintf(
+                        'Skipping %s at index %d: unique field conflict (backup ID %s wants value that belongs to existing ID %s)',
+                        $entityName,
+                        $index,
+                        $data['id'] ?? 'none',
+                        $conflictingEntity->getId()
+                    );
+                    $stats['skipped']++;
+                    continue;
                 }
 
                 // Handle existing data
@@ -348,6 +498,37 @@ class RestoreService
                     }
                 }
 
+                // Restore associations (ManyToOne, OneToOne)
+                foreach ($metadata->getAssociationNames() as $assocName) {
+                    if ($metadata->isSingleValuedAssociation($assocName)) {
+                        $assocIdKey = $assocName . '_id';
+                        if (isset($data[$assocIdKey])) {
+                            $targetClass = $metadata->getAssociationTargetClass($assocName);
+                            $assocId = $data[$assocIdKey];
+
+                            // Handle array format from backup (e.g., ['id' => 5])
+                            if (is_array($assocId) && isset($assocId['id'])) {
+                                $assocId = $assocId['id'];
+                            }
+
+                            if ($assocId !== null) {
+                                try {
+                                    $relatedEntity = $this->entityManager->getReference($targetClass, $assocId);
+                                    $propertyAccessor->setValue($entity, $assocName, $relatedEntity);
+                                } catch (\Exception $e) {
+                                    $this->logger->warning('Failed to restore association', [
+                                        'entity' => $entityName,
+                                        'association' => $assocName,
+                                        'target_id' => $assocId,
+                                        'error' => $e->getMessage(),
+                                    ]);
+                                }
+                            }
+                        }
+                    }
+                    // Skip collections (ManyToMany, OneToMany) for now - they're more complex
+                }
+
                 // Persist entity
                 $this->entityManager->persist($entity);
 
@@ -355,12 +536,6 @@ class RestoreService
                     $stats['updated']++;
                 } else {
                     $stats['created']++;
-                }
-
-                // Flush every 50 entities to avoid memory issues
-                if (($index + 1) % 50 === 0) {
-                    $this->entityManager->flush();
-                    $this->entityManager->clear();
                 }
             } catch (\Exception $e) {
                 $stats['errors']++;
@@ -375,6 +550,38 @@ class RestoreService
                     'index' => $index,
                     'error' => $e->getMessage(),
                 ]);
+
+                // If EntityManager is closed due to error, we can't continue
+                if (!$this->entityManager->isOpen()) {
+                    $this->warnings[] = 'EntityManager closed due to database error. Restore aborted.';
+                    break;
+                }
+            }
+        }
+
+        // Flush all entities of this type at once
+        if ($this->entityManager->isOpen()) {
+            try {
+                $this->entityManager->flush();
+            } catch (\Exception $e) {
+                $stats['errors']++;
+                $this->warnings[] = sprintf(
+                    'Error flushing %s entities (database constraint error): %s',
+                    $entityName,
+                    $e->getMessage()
+                );
+                $this->logger->error('Error flushing entities', [
+                    'entity' => $entityName,
+                    'error' => $e->getMessage(),
+                ]);
+
+                // Check if EntityManager is closed
+                if (!$this->entityManager->isOpen()) {
+                    $this->warnings[] = sprintf(
+                        'EntityManager closed after %s flush error. Remaining entities will be skipped.',
+                        $entityName
+                    );
+                }
             }
         }
 
@@ -387,6 +594,29 @@ class RestoreService
     }
 
     /**
+     * Get unique constraint fields for an entity
+     *
+     * @param string $entityClass
+     * @param string $entityName
+     * @return array
+     */
+    private function getUniqueConstraintFields(string $entityClass, string $entityName): array
+    {
+        // Map of entity names to their unique constraint fields
+        $uniqueFieldsMap = [
+            'Role' => ['name'],
+            'User' => ['email'],
+            'Tenant' => ['slug'],
+            'Permission' => ['name'],
+            'ComplianceFramework' => ['code'],
+            'Control' => ['controlId'],
+            'ComplianceRequirement' => ['requirementId'],
+        ];
+
+        return $uniqueFieldsMap[$entityName] ?? [];
+    }
+
+    /**
      * Order entities by dependency
      * Users and Tenants should be restored first
      *
@@ -395,18 +625,42 @@ class RestoreService
      */
     private function orderEntitiesByDependency(array $entityNames): array
     {
+        // Priority order: lower number = restored first
+        // Entities without foreign keys first, then entities that depend on them
         $priorityOrder = [
+            // Base entities (no dependencies)
             'Tenant' => 1,
             'User' => 2,
             'Role' => 3,
             'Permission' => 4,
             'SystemSettings' => 5,
             'Location' => 6,
+
+            // Framework/Control entities (depend on base)
+            'ComplianceFramework' => 10,
+            'Control' => 11,
+
+            // Entities that depend on frameworks/controls
+            'ComplianceRequirement' => 20,
+            'Risk' => 21,
+            'Asset' => 22,
+            'Supplier' => 23,
+            'InterestedParty' => 24,
+            'ISMSContext' => 25,
+            'ISMSObjective' => 26,
+
+            // Mapping entities (depend on requirements)
+            'ComplianceMapping' => 30,
+            'MappingGapItem' => 31,
+
+            // Logs and audit trails (last)
+            'AuditLog' => 90,
+            'UserSession' => 91,
         ];
 
         usort($entityNames, function ($a, $b) use ($priorityOrder) {
-            $priorityA = $priorityOrder[$a] ?? 100;
-            $priorityB = $priorityOrder[$b] ?? 100;
+            $priorityA = $priorityOrder[$a] ?? 50; // Default priority for unknown entities
+            $priorityB = $priorityOrder[$b] ?? 50;
 
             return $priorityA <=> $priorityB;
         });
