@@ -7,8 +7,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[Route('/audit-log')]
+#[Route('/admin/audit-log')]
+#[IsGranted('ROLE_ADMIN')]
 class AuditLogController extends AbstractController
 {
     public function __construct(
