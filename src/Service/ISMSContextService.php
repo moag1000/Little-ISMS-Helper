@@ -5,7 +5,7 @@ namespace App\Service;
 use App\Entity\ISMSContext;
 use App\Repository\ISMSContextRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Security\Core\Security;
+use Symfony\Bundle\SecurityBundle\Security;
 
 class ISMSContextService
 {
