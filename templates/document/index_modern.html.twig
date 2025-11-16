@@ -209,18 +209,19 @@
                 <table class="table table-hover table-bulk-selectable mb-0">
                     <thead class="thead-sticky">
                         <tr>
-                            <th class="bulk-select-column">
+                            <th scope="col" class="bulk-select-column">
                                 <input type="checkbox"
                                        data-action="bulk-actions#selectAll"
-                                       data-bulk-actions-target="selectAllCheckbox">
+                                       data-bulk-actions-target="selectAllCheckbox"
+                                       aria-label="{{ 'bulk_actions.select_all'|trans|default('Alle auswählen') }}">
                             </th>
-                            <th class="w-50px"></th>
-                            <th>{{ 'common.name'|trans }}</th>
-                            <th class="w-150px">{{ 'common.category'|trans }}</th>
-                            <th class="w-100px">{{ 'common.size'|trans }}</th>
-                            <th class="w-150px">{{ 'document.table.uploaded_by'|trans }}</th>
-                            <th class="w-130px">{{ 'common.date'|trans }}</th>
-                            <th class="w-180px text-right">{{ 'common.actions'|trans }}</th>
+                            <th scope="col" class="w-50px"><span class="visually-hidden">{{ 'document.table.icon'|trans|default('Dateityp') }}</span></th>
+                            <th scope="col">{{ 'common.name'|trans }}</th>
+                            <th scope="col" class="w-150px">{{ 'common.category'|trans }}</th>
+                            <th scope="col" class="w-100px">{{ 'common.size'|trans }}</th>
+                            <th scope="col" class="w-150px">{{ 'document.table.uploaded_by'|trans }}</th>
+                            <th scope="col" class="w-130px">{{ 'common.date'|trans }}</th>
+                            <th scope="col" class="w-180px text-right">{{ 'common.actions'|trans }}</th>
                         </tr>
                     </thead>
                     <tbody id="documentTableBody">
