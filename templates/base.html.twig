@@ -14,8 +14,7 @@
         {# Bootstrap Icons - Loaded via CDN due to AssetMapper issue #52620 with fonts/ subfolder #}
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" integrity="sha384-XGjxtQfXaH2tnPFa9x+ruJTuLE3Aa6LhHSWRr1XeTyhezb4abCG4ccI5AkVDxqC+" crossorigin="anonymous">
 
-        {# Custom styles - Loaded via AssetMapper with automatic versioning #}
-        {{ importmap('styles') }}
+        {# Custom styles - Now combined with app importmap at end of body to avoid duplicate import map rules #}
         <style>
             /* Turbo Progress Bar - Cyberpunk Style */
             .turbo-progress-bar {
@@ -371,7 +370,7 @@
     </script>
 
     {% block javascripts %}
-        {% block importmap %}{{ importmap('app') }}{% endblock %}
+        {% block importmap %}{{ importmap(['app', 'styles']) }}{% endblock %}
     {% endblock %}
 </body>
 </html>
