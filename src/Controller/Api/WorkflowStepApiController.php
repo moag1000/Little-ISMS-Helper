@@ -6,12 +6,15 @@ use App\Entity\Workflow;
 use App\Entity\WorkflowStep;
 use App\Form\WorkflowStepType;
 use App\Repository\WorkflowRepository;
+use Doctrine\DBAL\Exception as DBALException;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Csrf\CsrfToken;
+use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/api/workflow')]
@@ -20,8 +23,21 @@ class WorkflowStepApiController extends AbstractController
 {
     public function __construct(
         private EntityManagerInterface $entityManager,
-        private WorkflowRepository $workflowRepository
+        private WorkflowRepository $workflowRepository,
+        private CsrfTokenManagerInterface $csrfTokenManager
     ) {}
+
+    /**
+     * Validate CSRF token from request header
+     */
+    private function validateCsrfToken(Request $request, string $tokenId = 'workflow_api'): bool
+    {
+        $token = $request->headers->get('X-CSRF-Token');
+        if (!$token) {
+            return false;
+        }
+        return $this->csrfTokenManager->isTokenValid(new CsrfToken($tokenId, $token));
+    }
 
     #[Route('/{id}/steps', name: 'api_workflow_steps_list', methods: ['GET'])]
     public function listSteps(Workflow $workflow): JsonResponse
@@ -40,6 +56,10 @@ class WorkflowStepApiController extends AbstractController
     #[Route('/{id}/steps', name: 'api_workflow_steps_add', methods: ['POST'])]
     public function addStep(Request $request, Workflow $workflow): JsonResponse
     {
+        if (!$this->validateCsrfToken($request)) {
+            return $this->json(['success' => false, 'error' => 'Invalid CSRF token'], Response::HTTP_FORBIDDEN);
+        }
+
         $data = json_decode($request->getContent(), true);
 
         if ($data === null && json_last_error() !== JSON_ERROR_NONE) {
@@ -71,20 +91,33 @@ class WorkflowStepApiController extends AbstractController
             return $this->json(['success' => false, 'errors' => $errors], Response::HTTP_BAD_REQUEST);
         }
 
-        $workflow->addStep($step);
-        $this->entityManager->persist($step);
-        $this->entityManager->flush();
+        try {
+            $this->entityManager->beginTransaction();
 
-        return $this->json([
-            'success' => true,
-            'step' => $this->serializeStep($step),
-            'message' => 'Step added successfully'
-        ], Response::HTTP_CREATED);
+            $workflow->addStep($step);
+            $this->entityManager->persist($step);
+            $this->entityManager->flush();
+
+            $this->entityManager->commit();
+
+            return $this->json([
+                'success' => true,
+                'step' => $this->serializeStep($step),
+                'message' => 'Step added successfully'
+            ], Response::HTTP_CREATED);
+        } catch (DBALException $e) {
+            $this->entityManager->rollback();
+            return $this->json(['success' => false, 'error' => 'Database error: ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
     #[Route('/step/{id}', name: 'api_workflow_step_update', methods: ['PUT', 'PATCH'])]
     public function updateStep(Request $request, WorkflowStep $step): JsonResponse
     {
+        if (!$this->validateCsrfToken($request)) {
+            return $this->json(['success' => false, 'error' => 'Invalid CSRF token'], Response::HTTP_FORBIDDEN);
+        }
+
         $data = json_decode($request->getContent(), true);
 
         if ($data === null && json_last_error() !== JSON_ERROR_NONE) {
@@ -103,18 +136,29 @@ class WorkflowStepApiController extends AbstractController
             return $this->json(['success' => false, 'errors' => $errors], Response::HTTP_BAD_REQUEST);
         }
 
-        $this->entityManager->flush();
+        try {
+            $this->entityManager->beginTransaction();
+            $this->entityManager->flush();
+            $this->entityManager->commit();
 
-        return $this->json([
-            'success' => true,
-            'step' => $this->serializeStep($step),
-            'message' => 'Step updated successfully'
-        ]);
+            return $this->json([
+                'success' => true,
+                'step' => $this->serializeStep($step),
+                'message' => 'Step updated successfully'
+            ]);
+        } catch (DBALException $e) {
+            $this->entityManager->rollback();
+            return $this->json(['success' => false, 'error' => 'Database error: ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
     #[Route('/step/{id}', name: 'api_workflow_step_delete', methods: ['DELETE'])]
-    public function deleteStep(WorkflowStep $step): JsonResponse
+    public function deleteStep(Request $request, WorkflowStep $step): JsonResponse
     {
+        if (!$this->validateCsrfToken($request)) {
+            return $this->json(['success' => false, 'error' => 'Invalid CSRF token'], Response::HTTP_FORBIDDEN);
+        }
+
         $workflow = $step->getWorkflow();
 
         if ($workflow === null) {
@@ -123,27 +167,39 @@ class WorkflowStepApiController extends AbstractController
 
         $deletedOrder = $step->getStepOrder();
 
-        $workflow->removeStep($step);
-        $this->entityManager->remove($step);
+        try {
+            $this->entityManager->beginTransaction();
 
-        // Reorder remaining steps
-        foreach ($workflow->getSteps() as $remainingStep) {
-            if ($remainingStep->getStepOrder() > $deletedOrder) {
-                $remainingStep->setStepOrder($remainingStep->getStepOrder() - 1);
+            $workflow->removeStep($step);
+            $this->entityManager->remove($step);
+
+            // Reorder remaining steps
+            foreach ($workflow->getSteps() as $remainingStep) {
+                if ($remainingStep->getStepOrder() > $deletedOrder) {
+                    $remainingStep->setStepOrder($remainingStep->getStepOrder() - 1);
+                }
             }
+
+            $this->entityManager->flush();
+            $this->entityManager->commit();
+
+            return $this->json([
+                'success' => true,
+                'message' => 'Step deleted successfully'
+            ]);
+        } catch (DBALException $e) {
+            $this->entityManager->rollback();
+            return $this->json(['success' => false, 'error' => 'Database error: ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-
-        $this->entityManager->flush();
-
-        return $this->json([
-            'success' => true,
-            'message' => 'Step deleted successfully'
-        ]);
     }
 
     #[Route('/{id}/steps/reorder', name: 'api_workflow_steps_reorder', methods: ['POST'])]
     public function reorderSteps(Request $request, Workflow $workflow): JsonResponse
     {
+        if (!$this->validateCsrfToken($request)) {
+            return $this->json(['success' => false, 'error' => 'Invalid CSRF token'], Response::HTTP_FORBIDDEN);
+        }
+
         $data = json_decode($request->getContent(), true);
 
         if (!isset($data['stepIds']) || !is_array($data['stepIds'])) {
@@ -168,22 +224,34 @@ class WorkflowStepApiController extends AbstractController
             }
         }
 
-        // Apply new order (starting from 1, not 0)
-        foreach ($stepIds as $index => $stepId) {
-            $steps[$stepId]->setStepOrder($index + 1);
+        try {
+            $this->entityManager->beginTransaction();
+
+            // Apply new order (starting from 1, not 0)
+            foreach ($stepIds as $index => $stepId) {
+                $steps[$stepId]->setStepOrder($index + 1);
+            }
+
+            $this->entityManager->flush();
+            $this->entityManager->commit();
+
+            return $this->json([
+                'success' => true,
+                'message' => 'Steps reordered successfully'
+            ]);
+        } catch (DBALException $e) {
+            $this->entityManager->rollback();
+            return $this->json(['success' => false, 'error' => 'Database error: ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-
-        $this->entityManager->flush();
-
-        return $this->json([
-            'success' => true,
-            'message' => 'Steps reordered successfully'
-        ]);
     }
 
     #[Route('/step/{id}/duplicate', name: 'api_workflow_step_duplicate', methods: ['POST'])]
-    public function duplicateStep(WorkflowStep $step): JsonResponse
+    public function duplicateStep(Request $request, WorkflowStep $step): JsonResponse
     {
+        if (!$this->validateCsrfToken($request)) {
+            return $this->json(['success' => false, 'error' => 'Invalid CSRF token'], Response::HTTP_FORBIDDEN);
+        }
+
         $workflow = $step->getWorkflow();
 
         if ($workflow === null) {
@@ -203,24 +271,32 @@ class WorkflowStepApiController extends AbstractController
         // Insert after the original step
         $newOrder = $step->getStepOrder() + 1;
 
-        // Shift all steps after the original
-        foreach ($workflow->getSteps() as $existingStep) {
-            if ($existingStep->getStepOrder() >= $newOrder) {
-                $existingStep->setStepOrder($existingStep->getStepOrder() + 1);
+        try {
+            $this->entityManager->beginTransaction();
+
+            // Shift all steps after the original
+            foreach ($workflow->getSteps() as $existingStep) {
+                if ($existingStep->getStepOrder() >= $newOrder) {
+                    $existingStep->setStepOrder($existingStep->getStepOrder() + 1);
+                }
             }
+
+            $newStep->setStepOrder($newOrder);
+            $workflow->addStep($newStep);
+
+            $this->entityManager->persist($newStep);
+            $this->entityManager->flush();
+            $this->entityManager->commit();
+
+            return $this->json([
+                'success' => true,
+                'step' => $this->serializeStep($newStep),
+                'message' => 'Step duplicated successfully'
+            ], Response::HTTP_CREATED);
+        } catch (DBALException $e) {
+            $this->entityManager->rollback();
+            return $this->json(['success' => false, 'error' => 'Database error: ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-
-        $newStep->setStepOrder($newOrder);
-        $workflow->addStep($newStep);
-
-        $this->entityManager->persist($newStep);
-        $this->entityManager->flush();
-
-        return $this->json([
-            'success' => true,
-            'step' => $this->serializeStep($newStep),
-            'message' => 'Step duplicated successfully'
-        ], Response::HTTP_CREATED);
     }
 
     #[Route('/templates', name: 'api_workflow_templates', methods: ['GET'])]
@@ -293,6 +369,10 @@ class WorkflowStepApiController extends AbstractController
     #[Route('/{id}/apply-template', name: 'api_workflow_apply_template', methods: ['POST'])]
     public function applyTemplate(Request $request, Workflow $workflow): JsonResponse
     {
+        if (!$this->validateCsrfToken($request)) {
+            return $this->json(['success' => false, 'error' => 'Invalid CSRF token'], Response::HTTP_FORBIDDEN);
+        }
+
         $data = json_decode($request->getContent(), true);
 
         if (!isset($data['templateKey'])) {
@@ -309,37 +389,45 @@ class WorkflowStepApiController extends AbstractController
 
         $template = $templates[$data['templateKey']];
 
-        // Clear existing steps if requested
-        if (isset($data['clearExisting']) && $data['clearExisting']) {
-            foreach ($workflow->getSteps()->toArray() as $step) {
-                $workflow->removeStep($step);
-                $this->entityManager->remove($step);
+        try {
+            $this->entityManager->beginTransaction();
+
+            // Clear existing steps if requested
+            if (isset($data['clearExisting']) && $data['clearExisting']) {
+                foreach ($workflow->getSteps()->toArray() as $step) {
+                    $workflow->removeStep($step);
+                    $this->entityManager->remove($step);
+                }
             }
+
+            // Apply template steps (starting from 1)
+            $startOrder = $workflow->getSteps()->count() + 1;
+            foreach ($template['steps'] as $index => $stepData) {
+                $step = new WorkflowStep();
+                $step->setWorkflow($workflow);
+                $step->setStepOrder($startOrder + $index);
+                $step->setName($stepData['name']);
+                $step->setStepType($stepData['stepType']);
+                $step->setApproverRole($stepData['approverRole']);
+                $step->setDaysToComplete($stepData['daysToComplete']);
+                $step->setIsRequired(true);
+
+                $workflow->addStep($step);
+                $this->entityManager->persist($step);
+            }
+
+            $this->entityManager->flush();
+            $this->entityManager->commit();
+
+            return $this->json([
+                'success' => true,
+                'message' => 'Template applied successfully',
+                'stepsAdded' => count($template['steps'])
+            ]);
+        } catch (DBALException $e) {
+            $this->entityManager->rollback();
+            return $this->json(['success' => false, 'error' => 'Database error: ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-
-        // Apply template steps
-        $startOrder = $workflow->getSteps()->count();
-        foreach ($template['steps'] as $index => $stepData) {
-            $step = new WorkflowStep();
-            $step->setWorkflow($workflow);
-            $step->setStepOrder($startOrder + $index);
-            $step->setName($stepData['name']);
-            $step->setStepType($stepData['stepType']);
-            $step->setApproverRole($stepData['approverRole']);
-            $step->setDaysToComplete($stepData['daysToComplete']);
-            $step->setIsRequired(true);
-
-            $workflow->addStep($step);
-            $this->entityManager->persist($step);
-        }
-
-        $this->entityManager->flush();
-
-        return $this->json([
-            'success' => true,
-            'message' => 'Template applied successfully',
-            'stepsAdded' => count($template['steps'])
-        ]);
     }
 
     private function serializeStep(WorkflowStep $step): array
