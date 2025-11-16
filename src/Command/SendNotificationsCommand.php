@@ -308,21 +308,40 @@ Recommended cron setup (daily at 8 AM):
 
             $recipients = [];
 
-            // Get approvers for current step
-            if ($currentStep->getApproverUsers()) {
-                $recipients = $currentStep->getApproverUsers()->toArray();
+            // Get approvers for current step by user IDs
+            $approverUserIds = $currentStep->getApproverUsers() ?? [];
+            if (!empty($approverUserIds)) {
+                $usersByIds = $this->userRepository->findBy(['id' => $approverUserIds]);
+                $recipients = array_merge($recipients, $usersByIds);
             }
 
-            if (!empty($recipients)) {
+            // Get approvers by role (Bug #3 fix)
+            $approverRole = $currentStep->getApproverRole();
+            if ($approverRole) {
+                $usersByRole = $this->userRepository->findByRole($approverRole);
+                $recipients = array_merge($recipients, $usersByRole);
+            }
+
+            // Remove duplicates
+            $recipientIds = [];
+            $uniqueRecipients = [];
+            foreach ($recipients as $user) {
+                if (!in_array($user->getId(), $recipientIds)) {
+                    $recipientIds[] = $user->getId();
+                    $uniqueRecipients[] = $user;
+                }
+            }
+
+            if (!empty($uniqueRecipients)) {
                 $io->text(sprintf('  - Workflow "%s" for %s (ID: %d) overdue → %d recipients',
                     $instance->getWorkflow()->getName(),
                     $instance->getEntityType(),
                     $instance->getEntityId(),
-                    count($recipients)
+                    count($uniqueRecipients)
                 ));
 
                 if (!$dryRun) {
-                    $this->emailService->sendWorkflowOverdueNotification($instance, $recipients);
+                    $this->emailService->sendWorkflowOverdueNotification($instance, $uniqueRecipients);
                 }
                 $sent++;
             }
