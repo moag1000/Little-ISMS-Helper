@@ -42,12 +42,17 @@ export default class extends Controller {
         this.showLoading();
         try {
             const response = await fetch(`${this.apiUrlValue}/${this.workflowIdValue}/steps`);
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
             const data = await response.json();
 
             if (data.success) {
-                this.renderSteps(data.steps);
+                this.renderSteps(data.steps || []);
             } else {
-                this.showNotification('Error loading steps', 'error');
+                this.showNotification(data.error || 'Error loading steps', 'error');
             }
         } catch (error) {
             console.error('Error loading steps:', error);
