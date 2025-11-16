@@ -263,9 +263,9 @@ class WorkflowServiceTest extends TestCase
         $step->method('getApproverRole')->willReturn(null);
         $step->method('getApproverUsers')->willReturn([5]); // User ID 5 is allowed
 
-        $instance = $this->createMock(WorkflowInstance::class);
-        $instance->method('getStatus')->willReturn('in_progress');
-        $instance->method('getCurrentStep')->willReturn($step);
+        $workflow = $this->createWorkflow('Test', 'Risk', [$step]);
+
+        $instance = $this->createWorkflowInstance('in_progress', $step, $workflow);
 
         // User should be able to approve because they are in the approver list
         $this->assertTrue($this->service->approveStep($instance, $approver));

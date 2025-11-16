@@ -35,7 +35,7 @@ class ComplianceAssessmentServiceTest extends TestCase
 
     public function testAssessFrameworkWithNoRequirements(): void
     {
-        $framework = $this->createFramework('Test Framework', 100);
+        $framework = $this->createFramework('Test Framework', 100.0);
 
         $this->requirementRepository->method('findByFramework')
             ->with($framework)
@@ -51,7 +51,7 @@ class ComplianceAssessmentServiceTest extends TestCase
 
     public function testAssessFrameworkWithRequirements(): void
     {
-        $framework = $this->createFramework('NIS2', 75);
+        $framework = $this->createFramework('NIS2', 75.0);
 
         $req1 = $this->createRequirement('NIS2-1', 'Req 1', true);
         $req2 = $this->createRequirement('NIS2-2', 'Req 2', true);
@@ -292,7 +292,7 @@ class ComplianceAssessmentServiceTest extends TestCase
 
     public function testGetComplianceDashboard(): void
     {
-        $framework = $this->createFramework('DORA', 85);
+        $framework = $this->createFramework('DORA', 85.0);
 
         $this->requirementRepository->method('getFrameworkStatistics')
             ->with($framework)
@@ -320,7 +320,7 @@ class ComplianceAssessmentServiceTest extends TestCase
         $this->assertArrayHasKey('framework', $dashboard);
         $this->assertSame('DORA', $dashboard['framework']['name']);
         $this->assertArrayHasKey('statistics', $dashboard);
-        $this->assertSame(85, $dashboard['compliance_percentage']);
+        $this->assertSame(85.0, $dashboard['compliance_percentage']);
         $this->assertArrayHasKey('gaps', $dashboard);
         $this->assertSame(2, $dashboard['gaps']['total']);
         $this->assertSame(1, $dashboard['gaps']['critical']);
@@ -328,7 +328,7 @@ class ComplianceAssessmentServiceTest extends TestCase
 
     public function testGetComplianceDashboardWithTimeSavings(): void
     {
-        $framework = $this->createFramework('NIS2', 90);
+        $framework = $this->createFramework('NIS2', 90.0);
         $requirement = $this->createRequirement('NIS2-1', 'Req 1', true);
 
         $this->requirementRepository->method('getFrameworkStatistics')
@@ -354,7 +354,7 @@ class ComplianceAssessmentServiceTest extends TestCase
 
     public function testGetComplianceDashboardRecommendationsWithGaps(): void
     {
-        $framework = $this->createFramework('DORA', 60);
+        $framework = $this->createFramework('DORA', 60.0);
 
         $this->requirementRepository->method('getFrameworkStatistics')
             ->willReturn(['total' => 100, 'applicable' => 90, 'fulfilled' => 54]);
@@ -394,7 +394,7 @@ class ComplianceAssessmentServiceTest extends TestCase
 
     public function testGetComplianceDashboardRecommendationsWithNoGaps(): void
     {
-        $framework = $this->createFramework('ISO 27001', 100);
+        $framework = $this->createFramework('ISO 27001', 100.0);
 
         $this->requirementRepository->method('getFrameworkStatistics')
             ->willReturn(['total' => 100, 'applicable' => 100, 'fulfilled' => 100]);
@@ -418,8 +418,8 @@ class ComplianceAssessmentServiceTest extends TestCase
 
     public function testCompareFrameworks(): void
     {
-        $framework1 = $this->createFramework('NIS2', 85);
-        $framework2 = $this->createFramework('DORA', 90);
+        $framework1 = $this->createFramework('NIS2', 85.0);
+        $framework2 = $this->createFramework('DORA', 90.0);
 
         $this->requirementRepository->method('getFrameworkStatistics')
             ->willReturnCallback(function ($framework) {
@@ -434,13 +434,13 @@ class ComplianceAssessmentServiceTest extends TestCase
         $this->assertCount(2, $result);
 
         $this->assertSame('NIS2', $result[0]['framework']);
-        $this->assertSame(85, $result[0]['compliance_percentage']);
+        $this->assertSame(85.0, $result[0]['compliance_percentage']);
         $this->assertSame(100, $result[0]['total_requirements']);
         $this->assertSame(76, $result[0]['fulfilled']);
         $this->assertSame(14, $result[0]['gaps']); // 90 applicable - 76 fulfilled
 
         $this->assertSame('DORA', $result[1]['framework']);
-        $this->assertSame(90, $result[1]['compliance_percentage']);
+        $this->assertSame(90.0, $result[1]['compliance_percentage']);
     }
 
     public function testCompareEmptyFrameworks(): void
@@ -450,7 +450,7 @@ class ComplianceAssessmentServiceTest extends TestCase
         $this->assertEmpty($result);
     }
 
-    private function createFramework(string $name, int $compliance): MockObject
+    private function createFramework(string $name, float $compliance): MockObject
     {
         $framework = $this->createMock(ComplianceFramework::class);
         $framework->method('getId')->willReturn(1);

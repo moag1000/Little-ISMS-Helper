@@ -294,7 +294,7 @@ class SupplierServiceTest extends TestCase
             ->with($child)
             ->willReturn($ownSuppliers);
 
-        $this->supplierRepository->method('getSupplierStatsByTenant')
+        $this->supplierRepository->method('getStatisticsByTenant')
             ->with($child)
             ->willReturn([
                 'total' => 5,
@@ -359,7 +359,7 @@ class SupplierServiceTest extends TestCase
             ->with($tenant)
             ->willReturn($ownSuppliers);
 
-        $this->supplierRepository->method('getSupplierStatsByTenant')
+        $this->supplierRepository->method('getStatisticsByTenant')
             ->with($tenant)
             ->willReturn([
                 'total' => 2,
