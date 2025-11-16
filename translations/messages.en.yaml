@@ -433,6 +433,11 @@ common:
   system_info: System Information
   verifying: Verifying...
   generated: Generated
+  activate: Activate
+  deactivate: Deactivate
+  duplicate: Duplicate
+  quick_actions: Quick Actions
+  select: Select
 asset:
   new: New Asset
   create: Create Asset
@@ -2600,6 +2605,92 @@ compliance:
     none: No gaps found!
     none_description: All applicable requirements are fully satisfied.
     fulfilled_percentage: "% Fulfilled"
+
+  # Framework CRUD translations
+  framework:
+    title: Compliance Frameworks
+    heading: Framework Management
+    subtitle: Manage your compliance frameworks and their requirements
+    breadcrumb:
+      home: Compliance
+      frameworks: Frameworks
+      new: New Framework
+      edit: Edit Framework
+    field:
+      name: Name
+      code: Code
+      version: Version
+      description: Description
+      active: Active
+      mandatory: Mandatory
+      industry: Industry
+      regulatory_body: Regulatory Body
+      scope: Scope
+      applicable_industry: Applicable Industry
+    action:
+      new: New Framework
+      edit: Edit Framework
+      delete: Delete Framework
+      duplicate: Duplicate
+      dashboard: Dashboard
+      view: View Details
+      gap_analysis: Gap Analysis
+      assess: Start Assessment
+      back_to_list: Back to List
+    stats:
+      total_requirements: Total Requirements
+      applicable: Applicable
+      fulfilled: Fulfilled
+      compliance: Compliance Rate
+      total: Total
+      active_frameworks: Active Frameworks
+      total_frameworks: Total Frameworks
+    badge:
+      mandatory: Mandatory
+      active: Active
+      inactive: Inactive
+    flash:
+      created: Framework created successfully
+      updated: Framework updated successfully
+      deleted: Framework deleted successfully
+      activated: Framework activated
+      deactivated: Framework deactivated
+      duplicated: Framework duplicated successfully
+      delete_failed: Framework could not be deleted
+    details: Framework Details
+    requirements_by_category: Requirements by Category
+    no_requirements: No requirements defined yet
+    priority_distribution: Priority Distribution
+    filter:
+      search: Search by name or code...
+      status: Filter by status
+      industry: Filter by industry
+      all_status: All Statuses
+      all_industries: All Industries
+      active_only: Active only
+      inactive_only: Inactive only
+    confirm:
+      delete: Are you sure you want to delete this framework? All associated requirements will also be deleted.
+      duplicate: Do you want to duplicate this framework including all requirements?
+    info:
+      no_frameworks: No frameworks available yet
+      create_first: Create your first compliance framework
+    help:
+      code: Unique short code (e.g. ISO27001, TISAX, DORA)
+      version: Framework version number (e.g. 2022, 6.0.2)
+      mandatory: Mandatory frameworks must be implemented
+      scope: Description of the scope
+
+  # Requirement translations
+  requirement:
+    title: Requirements
+    action:
+      new: New Requirement
+    priority:
+      critical: Critical
+      high: High
+      medium: Medium
+      low: Low
 
 # Risk Appetite (ISO 27005:2022)
 risk_appetite:
