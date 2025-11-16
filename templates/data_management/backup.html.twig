@@ -457,14 +457,37 @@
             });
 
             // Preview Backup
-            const previewModal = new window.bootstrap.Modal(document.getElementById('previewModal'));
+            // Lazy-initialize modals to ensure Bootstrap is available
+            let previewModal = null;
+            let restoreModal = null;
+
+            function getPreviewModal() {
+                if (!previewModal && window.bootstrap) {
+                    previewModal = new window.bootstrap.Modal(document.getElementById('previewModal'));
+                }
+                return previewModal;
+            }
+
+            function getRestoreModal() {
+                if (!restoreModal && window.bootstrap) {
+                    restoreModal = new window.bootstrap.Modal(document.getElementById('restoreModal'));
+                }
+                return restoreModal;
+            }
+
             document.querySelectorAll('.preview-backup').forEach(btn => {
                 btn.addEventListener('click', async function() {
                     const filename = this.getAttribute('data-filename');
                     const previewContent = document.getElementById('previewContent');
 
                     previewContent.innerHTML = '<div class="text-center"><div class="spinner-border text-primary"></div></div>';
-                    previewModal.show();
+
+                    const modal = getPreviewModal();
+                    if (!modal) {
+                        alert('Bootstrap Modal nicht verfügbar. Bitte Seite neu laden.');
+                        return;
+                    }
+                    modal.show();
 
                     try {
                         const response = await fetch(`{{ path('data_backup_preview', {filename: '__FILENAME__'}) }}`.replace('__FILENAME__', filename));
@@ -497,14 +520,19 @@
             });
 
             // Restore Backup
-            const restoreModal = new window.bootstrap.Modal(document.getElementById('restoreModal'));
             document.querySelectorAll('.restore-backup').forEach(btn => {
                 btn.addEventListener('click', function() {
                     const filename = this.getAttribute('data-filename');
                     document.getElementById('restoreFilename').value = filename;
                     document.getElementById('restoreModalLabel').innerHTML = `<i class="bi bi-exclamation-triangle"></i> ${filename} wiederherstellen`;
                     document.getElementById('restoreStatus').innerHTML = '';
-                    restoreModal.show();
+
+                    const modal = getRestoreModal();
+                    if (!modal) {
+                        alert('Bootstrap Modal nicht verfügbar. Bitte Seite neu laden.');
+                        return;
+                    }
+                    modal.show();
                 });
             });
 
