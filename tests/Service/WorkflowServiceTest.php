@@ -2,7 +2,6 @@
 
 namespace App\Tests\Service;
 
-use App\Entity\Role;
 use App\Entity\User;
 use App\Entity\Workflow;
 use App\Entity\WorkflowInstance;
@@ -123,12 +122,11 @@ class WorkflowServiceTest extends TestCase
     public function testApproveStepSucceeds(): void
     {
         $user = $this->createUser(1, 'John', 'Doe');
-        $role = $this->createRole('ROLE_MANAGER');
         $user->method('getRoles')->willReturn(['ROLE_MANAGER']);
 
         $step = $this->createWorkflowStep(1, 'Manager Approval', 5);
-        $step->method('getApproverRole')->willReturn($role);
-        $step->method('getApproverUser')->willReturn(null);
+        $step->method('getApproverRole')->willReturn('ROLE_MANAGER');
+        $step->method('getApproverUsers')->willReturn(null);
 
         $nextStep = $this->createWorkflowStep(2, 'Final Review', 3);
 
@@ -180,10 +178,9 @@ class WorkflowServiceTest extends TestCase
         $user = $this->createUser(1, 'John', 'Doe');
         $user->method('getRoles')->willReturn(['ROLE_USER']);
 
-        $role = $this->createRole('ROLE_ADMIN');
         $step = $this->createWorkflowStep(1, 'Admin Approval', 5);
-        $step->method('getApproverRole')->willReturn($role);
-        $step->method('getApproverUser')->willReturn(null);
+        $step->method('getApproverRole')->willReturn('ROLE_ADMIN');
+        $step->method('getApproverUsers')->willReturn(null);
 
         $instance = $this->createMock(WorkflowInstance::class);
         $instance->method('getStatus')->willReturn('in_progress');
@@ -199,10 +196,9 @@ class WorkflowServiceTest extends TestCase
         $user = $this->createUser(1, 'Jane', 'Smith');
         $user->method('getRoles')->willReturn(['ROLE_MANAGER']);
 
-        $role = $this->createRole('ROLE_MANAGER');
         $step = $this->createWorkflowStep(1, 'Review', 5);
-        $step->method('getApproverRole')->willReturn($role);
-        $step->method('getApproverUser')->willReturn(null);
+        $step->method('getApproverRole')->willReturn('ROLE_MANAGER');
+        $step->method('getApproverUsers')->willReturn(null);
 
         $instance = $this->createWorkflowInstance('in_progress', $step);
 
@@ -263,18 +259,16 @@ class WorkflowServiceTest extends TestCase
         $approver = $this->createUser(5, 'Approved', 'User');
         $approver->method('getRoles')->willReturn(['ROLE_USER']);
 
-        $specificUser = $this->createUser(5, 'Approved', 'User');
-
         $step = $this->createWorkflowStep(1, 'Specific User Approval', 5);
         $step->method('getApproverRole')->willReturn(null);
-        $step->method('getApproverUser')->willReturn($specificUser);
+        $step->method('getApproverUsers')->willReturn([5]); // User ID 5 is allowed
 
         $instance = $this->createMock(WorkflowInstance::class);
         $instance->method('getStatus')->willReturn('in_progress');
         $instance->method('getCurrentStep')->willReturn($step);
 
-        // User should be able to approve because they are the specific approver
-        $this->assertFalse($this->service->approveStep($instance, $approver));
+        // User should be able to approve because they are in the approver list
+        $this->assertTrue($this->service->approveStep($instance, $approver));
     }
 
     public function testWorkflowInstancePendingStatus(): void
@@ -304,13 +298,6 @@ class WorkflowServiceTest extends TestCase
         $user->method('getFirstName')->willReturn($firstName);
         $user->method('getLastName')->willReturn($lastName);
         return $user;
-    }
-
-    private function createRole(string $name): MockObject
-    {
-        $role = $this->createMock(Role::class);
-        $role->method('getName')->willReturn($name);
-        return $role;
     }
 
     private function createWorkflowStep(int $id, string $name, int $daysToComplete): MockObject
