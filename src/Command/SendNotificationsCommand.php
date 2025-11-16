@@ -109,6 +109,11 @@ Recommended cron setup (daily at 8 AM):
             $sent = $this->sendWorkflowNotifications($dryRun, $io);
             $totalSent += $sent;
             $io->success(sprintf('Sent %d workflow notifications', $sent));
+
+            $io->section('Checking Workflows Approaching Deadline');
+            $sent = $this->sendWorkflowDeadlineWarnings($daysAhead, $dryRun, $io);
+            $totalSent += $sent;
+            $io->success(sprintf('Sent %d workflow deadline warnings', $sent));
         }
 
         $io->success(sprintf('Total notifications sent: %d', $totalSent));
@@ -342,6 +347,79 @@ Recommended cron setup (daily at 8 AM):
 
                 if (!$dryRun) {
                     $this->emailService->sendWorkflowOverdueNotification($instance, $uniqueRecipients);
+                }
+                $sent++;
+            }
+        }
+
+        return $sent;
+    }
+
+    private function sendWorkflowDeadlineWarnings(int $daysAhead, bool $dryRun, SymfonyStyle $io): int
+    {
+        $today = new \DateTimeImmutable();
+        $warningDate = $today->modify("+{$daysAhead} days");
+
+        // Get active workflows approaching deadline (but not yet overdue)
+        $instances = $this->workflowInstanceRepository->createQueryBuilder('wi')
+            ->where('wi.status IN (:statuses)')
+            ->andWhere('wi.dueDate IS NOT NULL')
+            ->andWhere('wi.dueDate > :today')
+            ->andWhere('wi.dueDate <= :warningDate')
+            ->setParameter('statuses', ['pending', 'in_progress'])
+            ->setParameter('today', $today)
+            ->setParameter('warningDate', $warningDate)
+            ->getQuery()
+            ->getResult();
+
+        $sent = 0;
+        foreach ($instances as $instance) {
+            $currentStep = $instance->getCurrentStep();
+            if (!$currentStep) {
+                continue;
+            }
+
+            // Calculate days remaining
+            $dueDate = $instance->getDueDate();
+            $daysRemaining = (int) $today->diff($dueDate)->days;
+
+            $recipients = [];
+
+            // Get approvers for current step by user IDs
+            $approverUserIds = $currentStep->getApproverUsers() ?? [];
+            if (!empty($approverUserIds)) {
+                $usersByIds = $this->userRepository->findBy(['id' => $approverUserIds]);
+                $recipients = array_merge($recipients, $usersByIds);
+            }
+
+            // Get approvers by role
+            $approverRole = $currentStep->getApproverRole();
+            if ($approverRole) {
+                $usersByRole = $this->userRepository->findByRole($approverRole);
+                $recipients = array_merge($recipients, $usersByRole);
+            }
+
+            // Remove duplicates
+            $recipientIds = [];
+            $uniqueRecipients = [];
+            foreach ($recipients as $user) {
+                if (!in_array($user->getId(), $recipientIds)) {
+                    $recipientIds[] = $user->getId();
+                    $uniqueRecipients[] = $user;
+                }
+            }
+
+            if (!empty($uniqueRecipients)) {
+                $io->text(sprintf('  - Workflow "%s" for %s (ID: %d) due in %d days → %d recipients',
+                    $instance->getWorkflow()->getName(),
+                    $instance->getEntityType(),
+                    $instance->getEntityId(),
+                    $daysRemaining,
+                    count($uniqueRecipients)
+                ));
+
+                if (!$dryRun) {
+                    $this->emailService->sendWorkflowDeadlineWarning($instance, $uniqueRecipients, $daysRemaining);
                 }
                 $sent++;
             }
