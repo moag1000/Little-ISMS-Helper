@@ -1,17 +1,27 @@
-{% extends 'base.html.twig' %}
-{% block title %}{{ 'mfa_token.edit'|trans }} - {{ parent() }}{% endblock %}
-{% block body %}
-<div class="container py-4">
+{% extends 'admin/layout.html.twig' %}
+
+{% block admin_title %}{{ 'mfa_token.edit'|trans }}{% endblock %}
+{% block admin_subtitle %}
+    <p class="text-muted">{{ 'mfa_token.edit.subtitle'|trans|default('MFA-Token bearbeiten') }}</p>
+{% endblock %}
+
+{% block admin_content %}
     <div class="card">
-        <div class="card-header bg-primary text-white"><h4 class="mb-0">{{ 'mfa_token.edit'|trans }}</h4></div>
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">{{ 'mfa_token.edit'|trans }}</h4>
+        </div>
         <div class="card-body">
-            {{ form_start(form) }}{{ form_widget(form) }}
-                <div class="d-flex justify-content-between pt-3 border-top">
-                    <a href="{{ path('admin_mfa_show', {id: mfa_token.id}) }}" class="btn btn-outline-secondary">{{ 'common.back'|trans }}</a>
-                    <button type="submit" class="btn btn-primary">{{ 'common.save'|trans }}</button>
-                </div>
+            {{ form_start(form) }}
+            {{ form_widget(form) }}
+            <div class="d-flex justify-content-between pt-3 border-top">
+                <a href="{{ path('admin_mfa_show', {id: mfa_token.id}) }}" class="btn btn-outline-secondary">
+                    {{ 'common.back'|trans }}
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    {{ 'common.save'|trans }}
+                </button>
+            </div>
             {{ form_end(form) }}
         </div>
     </div>
-</div>
 {% endblock %}
