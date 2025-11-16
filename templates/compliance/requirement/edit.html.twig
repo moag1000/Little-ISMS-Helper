@@ -4,17 +4,25 @@
 
 {% block body %}
 <div class="container-fluid mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1><i class="bi bi-pencil"></i> Edit {{ requirement.requirementId }}</h1>
-        <div>
-            <a href="{{ path('app_compliance_requirement_show', {id: requirement.id}) }}" class="btn btn-outline-secondary">
-                <i class="bi bi-eye"></i> View
-            </a>
-            <a href="{{ path('app_compliance_requirement_index') }}" class="btn btn-outline-secondary">
-                <i class="bi bi-arrow-left"></i> Back to List
-            </a>
-        </div>
-    </div>
+    {# Breadcrumb Navigation #}
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'Compliance', url: path('app_compliance_index'), icon: 'bi-shield-check' },
+            { label: 'Requirements', url: path('app_compliance_requirement_index') },
+            { label: requirement.requirementId, url: path('app_compliance_requirement_show', {id: requirement.id}) },
+            { label: 'Edit' }
+        ]
+    } %}
+
+    {# Page Header #}
+    {% include '_components/_page_header.html.twig' with {
+        title: 'Edit ' ~ requirement.requirementId,
+        icon: 'bi-pencil',
+        actions: [
+            { label: 'View', url: path('app_compliance_requirement_show', {id: requirement.id}), variant: 'outline-primary', icon: 'bi-eye' },
+            { label: 'Back to List', url: path('app_compliance_requirement_index'), variant: 'secondary', icon: 'bi-arrow-left' }
+        ]
+    } %}
 
     <div class="row">
         <div class="col-md-8">
@@ -22,56 +30,134 @@
                 <div class="card-body">
                     {{ form_start(form) }}
 
-                    <div class="row">
-                        <div class="col-md-6">
-                            {{ form_row(form.framework) }}
-                        </div>
-                        <div class="col-md-6">
-                            {{ form_row(form.requirementId) }}
-                        </div>
-                    </div>
+                    {# Framework & ID #}
+                    <fieldset class="mb-4">
+                        <legend class="h5 mb-3">
+                            <i class="bi bi-bookmark" aria-hidden="true"></i>
+                            Framework & Identifier
+                        </legend>
 
-                    {{ form_row(form.title) }}
-                    {{ form_row(form.description) }}
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            {{ form_row(form.category) }}
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.framework,
+                                    'label': 'Framework',
+                                    'help': 'Compliance framework this requirement belongs to',
+                                    'required': true
+                                } %}
+                            </div>
+                            <div class="col-md-6">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.requirementId,
+                                    'label': 'Requirement ID',
+                                    'help': 'Unique identifier (e.g., ISO 27001:2022 A.5.1)',
+                                    'required': true
+                                } %}
+                            </div>
                         </div>
-                        <div class="col-md-6">
-                            {{ form_row(form.priority) }}
-                        </div>
-                    </div>
+                    </fieldset>
 
-                    <div class="row">
-                        <div class="col-md-6">
-                            {{ form_row(form.requirementType) }}
-                        </div>
-                        <div class="col-md-6">
-                            {{ form_row(form.parentRequirement) }}
-                        </div>
-                    </div>
+                    {# Basic Information #}
+                    <fieldset class="mb-4">
+                        <legend class="h5 mb-3">
+                            <i class="bi bi-info-circle" aria-hidden="true"></i>
+                            Basic Information
+                        </legend>
 
-                    <hr>
+                        {% include '_components/_form_field.html.twig' with {
+                            'field': form.title,
+                            'label': 'Title',
+                            'help': 'Short, descriptive title of the requirement',
+                            'required': true
+                        } %}
 
-                    <h5>Applicability</h5>
-                    <div class="row">
-                        <div class="col-md-6">
-                            {{ form_row(form.applicable) }}
+                        {% include '_components/_form_field.html.twig' with {
+                            'field': form.description,
+                            'label': 'Description',
+                            'help': 'Detailed description of what this requirement entails'
+                        } %}
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.category,
+                                    'label': 'Category',
+                                    'help': 'Functional category (e.g., Access Control, Cryptography)'
+                                } %}
+                            </div>
+                            <div class="col-md-6">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.priority,
+                                    'label': 'Priority',
+                                    'help': 'How urgent is this requirement?'
+                                } %}
+                            </div>
                         </div>
-                        <div class="col-md-6">
-                            {{ form_row(form.fulfillmentPercentage) }}
+                    </fieldset>
+
+                    {# Structure #}
+                    <fieldset class="mb-4">
+                        <legend class="h5 mb-3">
+                            <i class="bi bi-diagram-3" aria-hidden="true"></i>
+                            Requirement Structure
+                        </legend>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.requirementType,
+                                    'label': 'Type',
+                                    'help': 'Core, Detailed, or Sub-requirement'
+                                } %}
+                            </div>
+                            <div class="col-md-6">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.parentRequirement,
+                                    'label': 'Parent Requirement',
+                                    'help': 'Optional parent for hierarchical structure'
+                                } %}
+                            </div>
                         </div>
-                    </div>
+                    </fieldset>
 
-                    {{ form_row(form.applicabilityJustification) }}
+                    {# Applicability #}
+                    <fieldset class="mb-4">
+                        <legend class="h5 mb-3">
+                            <i class="bi bi-check-square" aria-hidden="true"></i>
+                            Applicability & Fulfillment
+                        </legend>
 
-                    <div class="d-flex justify-content-between mt-4">
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.applicable,
+                                    'label': 'Applicable',
+                                    'help': 'Is this requirement applicable to your organization?'
+                                } %}
+                            </div>
+                            <div class="col-md-6">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.fulfillmentPercentage,
+                                    'label': 'Fulfillment Percentage',
+                                    'help': 'Current implementation progress (0-100%)'
+                                } %}
+                            </div>
+                        </div>
+
+                        {% include '_components/_form_field.html.twig' with {
+                            'field': form.applicabilityJustification,
+                            'label': 'Applicability Justification',
+                            'help': 'Explain why this requirement is or is not applicable'
+                        } %}
+                    </fieldset>
+
+                    {# Form Actions #}
+                    <div class="form-actions d-flex gap-2 justify-content-between">
                         <a href="{{ path('app_compliance_requirement_show', {id: requirement.id}) }}" class="btn btn-secondary">
-                            <i class="bi bi-x-circle"></i> Cancel
+                            <i class="bi bi-x-circle" aria-hidden="true"></i> Cancel
                         </a>
                         <button type="submit" class="btn btn-primary">
-                            <i class="bi bi-save"></i> Save Changes
+                            <i class="bi bi-save" aria-hidden="true"></i> Save Changes
                         </button>
                     </div>
 
@@ -83,32 +169,31 @@
         <div class="col-md-4">
             <div class="card">
                 <div class="card-header">
-                    <h6 class="mb-0">Current Status</h6>
+                    <h6 class="mb-0"><i class="bi bi-speedometer2" aria-hidden="true"></i> Current Status</h6>
                 </div>
                 <div class="card-body">
-                    <div class="progress mb-2" style="height: 25px;">
+                    <div class="progress mb-2" style="height: 25px;" role="progressbar" aria-valuenow="{{ requirement.fulfillmentPercentage }}" aria-valuemin="0" aria-valuemax="100">
                         <div class="progress-bar bg-{{ requirement.fulfillmentStatusBadge }}"
-                             role="progressbar"
                              style="width: {{ requirement.fulfillmentPercentage }}%">
                             {{ requirement.fulfillmentPercentage }}%
                         </div>
                     </div>
 
                     <ul class="list-unstyled small">
-                        <li><i class="bi bi-link-45deg"></i> {{ requirement.mappedControls|length }} mapped controls</li>
-                        <li><i class="bi bi-diagram-3"></i> {{ requirement.detailedRequirements|length }} sub-requirements</li>
-                        <li><i class="bi bi-calendar"></i> Created {{ requirement.createdAt|date('Y-m-d') }}</li>
+                        <li><i class="bi bi-link-45deg" aria-hidden="true"></i> {{ requirement.mappedControls|length }} mapped controls</li>
+                        <li><i class="bi bi-diagram-3" aria-hidden="true"></i> {{ requirement.detailedRequirements|length }} sub-requirements</li>
+                        <li><i class="bi bi-calendar" aria-hidden="true"></i> Created {{ requirement.createdAt|date('Y-m-d') }}</li>
                     </ul>
                 </div>
             </div>
 
             <div class="card mt-3 bg-light">
                 <div class="card-header">
-                    <h6 class="mb-0"><i class="bi bi-info-circle"></i> Tips</h6>
+                    <h6 class="mb-0"><i class="bi bi-lightbulb" aria-hidden="true"></i> Tips</h6>
                 </div>
                 <div class="card-body">
                     <p class="small mb-0">
-                        <i class="bi bi-lightbulb"></i> Use the "Quick Update" form on the view page for fast fulfillment percentage updates.
+                        Use the "Quick Update" form on the view page for fast fulfillment percentage updates without editing the entire requirement.
                     </p>
                 </div>
             </div>
