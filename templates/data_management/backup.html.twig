@@ -353,30 +353,22 @@
 {% block javascripts %}
     {{ parent() }}
     <script>
-        console.log('Backup script loaded');
-
         // Use turbo:load for Turbo navigation compatibility, with DOMContentLoaded fallback
         function initBackupPage() {
-            console.log('initBackupPage() called');
-
             // Prevent re-initialization
             if (window.backupPageInitialized) {
-                console.log('Already initialized, skipping');
                 return;
             }
 
             // Check if we're on the backup page (elements exist)
             const createBackupForm = document.getElementById('createBackupForm');
-            console.log('createBackupForm found:', !!createBackupForm);
 
             if (!createBackupForm) {
                 // Not on backup page, skip initialization
-                console.log('Not on backup page, skipping');
                 return;
             }
 
             window.backupPageInitialized = true;
-            console.log('Initializing backup page...');
 
             // Bootstrap is available globally via window.bootstrap (loaded in app.js)
             // Create Backup Form
@@ -612,13 +604,8 @@
                 return restoreModal;
             }
 
-            console.log('Backup page init - Bootstrap available:', !!window.bootstrap);
-            console.log('Preview buttons found:', document.querySelectorAll('.preview-backup').length);
-            console.log('Restore buttons found:', document.querySelectorAll('.restore-backup').length);
-
             document.querySelectorAll('.preview-backup').forEach(btn => {
                 btn.addEventListener('click', async function() {
-                    console.log('Preview button clicked');
                     const filename = this.getAttribute('data-filename');
                     const previewContent = document.getElementById('previewContent');
 
@@ -664,7 +651,6 @@
             // Restore Backup
             document.querySelectorAll('.restore-backup').forEach(btn => {
                 btn.addEventListener('click', function() {
-                    console.log('Restore button clicked');
                     const filename = this.getAttribute('data-filename');
                     document.getElementById('restoreFilename').value = filename;
                     document.getElementById('restoreModalLabel').innerHTML = `<i class="bi bi-exclamation-triangle"></i> ${filename} wiederherstellen`;
@@ -780,7 +766,6 @@
         // Give turbo:load 100ms to fire first
         setTimeout(function() {
             if (!turboLoadRegistered && !window.backupPageInitialized) {
-                console.log('Turbo not detected, using fallback initialization');
                 initBackupPage();
             }
         }, 100);
