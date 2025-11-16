@@ -440,7 +440,8 @@
                             existingAlert.remove();
                         }
 
-                        const newRow = row.parentNode.insertRow(row.rowIndex + 1);
+                        // Use sectionRowIndex for tbody-relative index, +1 to insert after current row
+                        const newRow = row.parentNode.insertRow(row.sectionRowIndex + 1);
                         newRow.classList.add('validation-result');
                         const cell = newRow.insertCell(0);
                         cell.colSpan = 4;
