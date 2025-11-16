@@ -7,6 +7,7 @@ use App\Entity\InternalAudit;
 use App\Entity\Training;
 use App\Entity\Control;
 use App\Entity\WorkflowInstance;
+use App\Entity\WorkflowStep;
 use App\Entity\User;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\MailerInterface;
@@ -166,6 +167,83 @@ class EmailNotificationService
                 ->htmlTemplate('emails/workflow_overdue_notification.html.twig')
                 ->context([
                     'instance' => $instance,
+                ]);
+
+            $this->mailer->send($email);
+        }
+    }
+
+    /**
+     * Send notification when a workflow step is assigned to approvers
+     *
+     * @param User[] $recipients
+     */
+    public function sendWorkflowAssignmentNotification(WorkflowInstance $instance, WorkflowStep $step, array $recipients): void
+    {
+        foreach ($recipients as $recipient) {
+            $safeWorkflowName = $this->sanitizeEmailSubject($instance->getWorkflow()->getName());
+            $safeStepName = $this->sanitizeEmailSubject($step->getName());
+
+            $email = (new TemplatedEmail())
+                ->from(new Address($this->fromEmail, $this->fromName))
+                ->to($recipient->getEmail())
+                ->subject('[ISMS Action Required] Approval Needed: ' . $safeStepName . ' - ' . $safeWorkflowName)
+                ->htmlTemplate('emails/workflow_assignment_notification.html.twig')
+                ->context([
+                    'instance' => $instance,
+                    'step' => $step,
+                    'recipient' => $recipient,
+                ]);
+
+            $this->mailer->send($email);
+        }
+    }
+
+    /**
+     * Send notification for notification-type workflow steps (informational, no approval required)
+     *
+     * @param User[] $recipients
+     */
+    public function sendWorkflowNotificationStepEmail(WorkflowInstance $instance, WorkflowStep $step, array $recipients): void
+    {
+        foreach ($recipients as $recipient) {
+            $safeWorkflowName = $this->sanitizeEmailSubject($instance->getWorkflow()->getName());
+            $safeStepName = $this->sanitizeEmailSubject($step->getName());
+
+            $email = (new TemplatedEmail())
+                ->from(new Address($this->fromEmail, $this->fromName))
+                ->to($recipient->getEmail())
+                ->subject('[ISMS Info] Workflow Update: ' . $safeStepName . ' - ' . $safeWorkflowName)
+                ->htmlTemplate('emails/workflow_notification_step.html.twig')
+                ->context([
+                    'instance' => $instance,
+                    'step' => $step,
+                    'recipient' => $recipient,
+                ]);
+
+            $this->mailer->send($email);
+        }
+    }
+
+    /**
+     * Send deadline warning notification for workflows nearing their due date
+     *
+     * @param User[] $recipients
+     */
+    public function sendWorkflowDeadlineWarning(WorkflowInstance $instance, array $recipients, int $daysRemaining): void
+    {
+        foreach ($recipients as $recipient) {
+            $safeWorkflowName = $this->sanitizeEmailSubject($instance->getWorkflow()->getName());
+
+            $email = (new TemplatedEmail())
+                ->from(new Address($this->fromEmail, $this->fromName))
+                ->to($recipient->getEmail())
+                ->subject('[ISMS Warning] Workflow Deadline in ' . $daysRemaining . ' days: ' . $safeWorkflowName)
+                ->htmlTemplate('emails/workflow_deadline_warning.html.twig')
+                ->context([
+                    'instance' => $instance,
+                    'daysRemaining' => $daysRemaining,
+                    'recipient' => $recipient,
                 ]);
 
             $this->mailer->send($email);

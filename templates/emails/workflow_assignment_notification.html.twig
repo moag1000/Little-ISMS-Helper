@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background: #2563eb; color: white; padding: 20px; text-align: center; }
+        .content { background: #f9fafb; padding: 20px; margin: 20px 0; }
+        .field { margin: 10px 0; }
+        .label { font-weight: bold; color: #666; }
+        .value { color: #000; }
+        .action-required { background: #dbeafe; border: 1px solid #2563eb; padding: 15px; margin: 15px 0; border-radius: 4px; color: #1e40af; }
+        .info { background: #f3f4f6; border-left: 4px solid #3b82f6; padding: 10px; margin: 15px 0; }
+        .footer { text-align: center; color: #666; font-size: 12px; padding: 20px; }
+        .btn { display: inline-block; background: #2563eb; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔔 Approval Required</h1>
+        </div>
+
+        <div class="content">
+            <p>Dear {{ recipient.firstName }},</p>
+
+            <div class="action-required">
+                <strong>✅ Your approval is needed for the following workflow step:</strong>
+            </div>
+
+            <div class="field">
+                <span class="label">Workflow:</span>
+                <span class="value">{{ instance.workflow.name }}</span>
+            </div>
+
+            <div class="field">
+                <span class="label">Current Step:</span>
+                <span class="value">{{ step.name }}</span>
+            </div>
+
+            <div class="field">
+                <span class="label">Related Entity:</span>
+                <span class="value">{{ instance.entityType }} (ID: {{ instance.entityId }})</span>
+            </div>
+
+            <div class="field">
+                <span class="label">Step Type:</span>
+                <span class="value">{{ step.stepType|upper }}</span>
+            </div>
+
+            {% if step.daysToComplete %}
+            <div class="field">
+                <span class="label">Time to Complete:</span>
+                <span class="value">{{ step.daysToComplete }} days</span>
+            </div>
+            {% endif %}
+
+            {% if instance.dueDate %}
+            <div class="field">
+                <span class="label">Due Date:</span>
+                <span class="value">{{ instance.dueDate|date('d.m.Y') }}</span>
+            </div>
+            {% endif %}
+
+            <div class="field">
+                <span class="label">Initiated By:</span>
+                <span class="value">{{ instance.initiatedBy.firstName }} {{ instance.initiatedBy.lastName }}</span>
+            </div>
+
+            <div class="field">
+                <span class="label">Started:</span>
+                <span class="value">{{ instance.startedAt|date('d.m.Y H:i') }}</span>
+            </div>
+
+            <div class="info">
+                <strong>Next Steps:</strong> Please log in to the ISMS system to review the details and provide your approval or rejection with comments.
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>This is an automated notification from Little ISMS Helper</p>
+            <p>Please log in to the system to process this approval request</p>
+        </div>
+    </div>
+</body>
+</html>
