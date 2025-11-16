@@ -32,14 +32,6 @@
             display: block !important;
             opacity: 1;
         }
-        .modal[style*="display: block"] {
-            display: block !important;
-            opacity: 1 !important;
-        }
-        .modal[aria-modal="true"] {
-            display: block !important;
-            opacity: 1 !important;
-        }
         .modal-dialog {
             position: relative;
             width: auto;
@@ -774,17 +766,23 @@
             });
         }
 
-        // Initialize on turbo:load (for Turbo navigation) and DOMContentLoaded (for direct page load)
+        // Initialize on turbo:load (for Turbo navigation) OR on immediate/DOMContentLoaded
+        // But NOT both - prevent double initialization
+        let turboLoadRegistered = false;
+
         document.addEventListener('turbo:load', function() {
+            turboLoadRegistered = true;
             window.backupPageInitialized = false; // Reset on each Turbo navigation
             initBackupPage();
         });
 
-        // Fallback for direct page load without Turbo
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initBackupPage);
-        } else {
-            initBackupPage();
-        }
+        // Only use DOMContentLoaded/immediate if turbo:load hasn't fired yet
+        // Give turbo:load 100ms to fire first
+        setTimeout(function() {
+            if (!turboLoadRegistered && !window.backupPageInitialized) {
+                console.log('Turbo not detected, using fallback initialization');
+                initBackupPage();
+            }
+        }, 100);
     </script>
 {% endblock %}
