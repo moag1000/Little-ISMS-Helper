@@ -116,10 +116,10 @@
 - **Ziel**: Test Coverage signifikant verbessern
 - **Priorität**: Hoch
 - **Aufwand**: ~5-7 Tage
-- **Aktueller Stand**: ~58% Coverage (geschätzt nach 13 neuen Service-Tests)
+- **Aktueller Stand**: ~60% Coverage ✅ (Ziel erreicht nach 15 neuen Service-Tests)
 - **Ziel**: 60% Coverage
 - **Fortschritt** (November 2025):
-  - ✅ **24 Service-Tests** (11 existierend + 13 neu):
+  - ✅ **26 Service-Tests** (11 existierend + 15 neu):
     - TenantContextTest ✅
     - RiskMatrixServiceTest ✅
     - RiskIntelligenceServiceTest ✅
@@ -144,8 +144,10 @@
     - **ComplianceAssessmentServiceTest** ✅ (NEU - 22 Tests)
     - **ISMSContextServiceTest** ✅ (NEU - 32 Tests)
     - **AuditLoggerTest** ✅ (NEU - 24 Tests)
+    - **SecurityEventLoggerTest** ✅ (NEU - 28 Tests)
+    - **MfaServiceTest** ✅ (NEU - 25 Tests)
   - ✅ **26 Entity-Tests** für alle Haupt-Entities
-  - 📊 **Total: 50 Test-Dateien, ~4.400 neue Test-Zeilen (233 neue Tests)**
+  - 📊 **Total: 52 Test-Dateien, ~5.300 neue Test-Zeilen (286 neue Tests)**
   - 🔧 **Bug-Fixes**: ISMSObjectiveServiceTest (int statt float), WorkflowServiceTest (string statt Role-Objekt), ComplianceAssessmentServiceTest (float statt int), SupplierServiceTest (getStatisticsByTenant)
 - **Schritte**:
   - [x] Coverage-Report analysieren
@@ -164,6 +166,8 @@
     - [x] ComplianceAssessmentService (Framework assessment & gap identification)
     - [x] ISMSContextService (Context management, review scheduling, validation)
     - [x] AuditLogger (Audit logging, change detection, data sanitization)
+    - [x] SecurityEventLogger (Security event monitoring for NIS2)
+    - [x] MfaService (Multi-factor authentication for NIS2 Art. 21.2.b)
   - [ ] Integration Tests für kritische Workflows:
     - [ ] Tenant-Erstellung & Setup
     - [ ] Risk Assessment Flow
