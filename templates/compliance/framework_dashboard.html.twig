@@ -4,12 +4,34 @@
 
 {% block body %}
 <div class="container">
+    {# Breadcrumb Navigation #}
+    <nav aria-label="breadcrumb" class="compliance-breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('app_compliance_index') }}">{{ 'nav.compliance'|trans }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ framework.code }}</li>
+        </ol>
+    </nav>
+
     <div class="page-header">
         <div>
             <h1>{{ framework.name }}{% if framework.version %} <span class="version-muted-small">(v{{ framework.version }})</span>{% endif %}</h1>
             <p class="text-muted">{{ framework.description|length > 100 ? framework.description|slice(0, 100) ~ '...' : framework.description }}</p>
         </div>
         <div class="button-group">
+            {# Framework Quick Switcher #}
+            {% set all_frameworks = get_compliance_frameworks_quick() %}
+            {% if all_frameworks|length > 1 %}
+            <div class="framework-switcher">
+                <select id="framework-switcher" class="form-select form-select-sm" onchange="window.location.href=this.value">
+                    <option value="" disabled>{{ 'compliance.switch_framework'|trans|default('Switch Framework') }}</option>
+                    {% for fw in all_frameworks %}
+                    <option value="{{ path('app_compliance_framework', {id: fw.id}) }}" {% if fw.id == framework.id %}selected{% endif %}>
+                        {{ fw.code }} {% if fw.mandatory %}(!){% endif %}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            {% endif %}
             <a href="{{ path('app_compliance_index') }}" class="btn btn-secondary">
                 ← {{ 'compliance.button.back'|trans }}
             </a>
@@ -448,6 +470,73 @@
 </div>
 
 <style>
+/* Compliance Breadcrumb */
+.compliance-breadcrumb {
+    margin-bottom: var(--spacing-md);
+}
+
+.compliance-breadcrumb .breadcrumb {
+    background: transparent;
+    padding: 0;
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+.compliance-breadcrumb .breadcrumb-item a {
+    color: var(--color-primary);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.compliance-breadcrumb .breadcrumb-item a:hover {
+    color: var(--color-primary-dark);
+    text-decoration: underline;
+}
+
+.compliance-breadcrumb .breadcrumb-item.active {
+    color: var(--color-text-secondary);
+    font-weight: 600;
+}
+
+.compliance-breadcrumb .breadcrumb-item + .breadcrumb-item::before {
+    content: "›";
+    color: var(--color-text-secondary);
+}
+
+/* Framework Switcher */
+.framework-switcher {
+    display: inline-block;
+}
+
+.framework-switcher select {
+    min-width: 150px;
+    background: white;
+    border: 2px solid var(--color-primary);
+    border-radius: var(--border-radius);
+    padding: 0.4rem 2rem 0.4rem 0.8rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-primary);
+    cursor: pointer;
+    transition: all 0.2s;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23667eea' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 0.5rem center;
+    background-size: 12px;
+}
+
+.framework-switcher select:hover {
+    border-color: var(--color-primary-dark);
+    box-shadow: 0 0 0 3px rgba(103, 126, 234, 0.1);
+}
+
+.framework-switcher select:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(103, 126, 234, 0.2);
+}
+
 .stats-bar {
     display: flex;
     gap: var(--spacing-md);
