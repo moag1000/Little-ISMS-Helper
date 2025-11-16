@@ -7,7 +7,7 @@
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
             { label: 'context_management.title'|trans|default('ISMS Context'), url: path('app_context_index'), icon: 'bi-building' },
-            { label: isms_context.organizationName, url: path('app_context_index') },
+            { label: context.organizationName, url: path('app_context_index') },
             { label: 'common.edit'|trans|default('Edit') }
         ]
     } %}
