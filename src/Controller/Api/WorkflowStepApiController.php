@@ -42,8 +42,12 @@ class WorkflowStepApiController extends AbstractController
     {
         $data = json_decode($request->getContent(), true);
 
-        if (!$data) {
-            return $this->json(['success' => false, 'error' => 'Invalid JSON'], Response::HTTP_BAD_REQUEST);
+        if ($data === null && json_last_error() !== JSON_ERROR_NONE) {
+            return $this->json(['success' => false, 'error' => 'Invalid JSON: ' . json_last_error_msg()], Response::HTTP_BAD_REQUEST);
+        }
+
+        if (!is_array($data) || empty($data)) {
+            return $this->json(['success' => false, 'error' => 'Empty or invalid request body'], Response::HTTP_BAD_REQUEST);
         }
 
         $step = new WorkflowStep();
@@ -83,8 +87,12 @@ class WorkflowStepApiController extends AbstractController
     {
         $data = json_decode($request->getContent(), true);
 
-        if (!$data) {
-            return $this->json(['success' => false, 'error' => 'Invalid JSON'], Response::HTTP_BAD_REQUEST);
+        if ($data === null && json_last_error() !== JSON_ERROR_NONE) {
+            return $this->json(['success' => false, 'error' => 'Invalid JSON: ' . json_last_error_msg()], Response::HTTP_BAD_REQUEST);
+        }
+
+        if (!is_array($data) || empty($data)) {
+            return $this->json(['success' => false, 'error' => 'Empty or invalid request body'], Response::HTTP_BAD_REQUEST);
         }
 
         $this->applyStepData($step, $data);
@@ -108,6 +116,11 @@ class WorkflowStepApiController extends AbstractController
     public function deleteStep(WorkflowStep $step): JsonResponse
     {
         $workflow = $step->getWorkflow();
+
+        if ($workflow === null) {
+            return $this->json(['success' => false, 'error' => 'Workflow not found'], Response::HTTP_NOT_FOUND);
+        }
+
         $deletedOrder = $step->getStepOrder();
 
         $workflow->removeStep($step);
@@ -155,9 +168,9 @@ class WorkflowStepApiController extends AbstractController
             }
         }
 
-        // Apply new order
-        foreach ($stepIds as $order => $stepId) {
-            $steps[$stepId]->setStepOrder($order);
+        // Apply new order (starting from 1, not 0)
+        foreach ($stepIds as $index => $stepId) {
+            $steps[$stepId]->setStepOrder($index + 1);
         }
 
         $this->entityManager->flush();
@@ -172,6 +185,10 @@ class WorkflowStepApiController extends AbstractController
     public function duplicateStep(WorkflowStep $step): JsonResponse
     {
         $workflow = $step->getWorkflow();
+
+        if ($workflow === null) {
+            return $this->json(['success' => false, 'error' => 'Workflow not found'], Response::HTTP_NOT_FOUND);
+        }
 
         $newStep = new WorkflowStep();
         $newStep->setWorkflow($workflow);
@@ -334,7 +351,7 @@ class WorkflowStepApiController extends AbstractController
             'stepOrder' => $step->getStepOrder(),
             'stepType' => $step->getStepType(),
             'approverRole' => $step->getApproverRole(),
-            'approverUsers' => $step->getApproverUsers(),
+            'approverUsers' => $step->getApproverUsers() ?? [],
             'isRequired' => $step->isRequired(),
             'daysToComplete' => $step->getDaysToComplete(),
         ];
