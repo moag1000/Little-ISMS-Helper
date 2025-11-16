@@ -20,37 +20,59 @@
   - Keyboard-Navigation funktioniert
   - Screen Reader kompatibel
 
-#### Table Scope Attributes für Accessibility
+#### Table Scope Attributes für Accessibility ✅ ERLEDIGT
 - **Ziel**: Alle Tabellen mit korrekten scope-Attributen versehen
 - **Priorität**: Mittel
 - **Aufwand**: ~1-2 Tage
+- **Status**: ✅ Abgeschlossen (November 2025)
 - **Schritte**:
-  - [ ] Audit aller Tabellen im System
-  - [ ] `scope="col"` für Spaltenheader hinzufügen
-  - [ ] `scope="row"` für Zeilenheader hinzufügen
-  - [ ] Komplexe Tabellen mit `headers` und `id` Attributen versehen
-- **Erfolgskriterien**:
+  - [x] Audit aller Tabellen im System
+  - [x] `scope="col"` für Spaltenheader hinzufügen
+  - [x] `scope="row"` für Zeilenheader hinzufügen
+  - [x] Komplexe Tabellen mit `headers` und `id` Attributen versehen
+- **Implementierte Templates** (10 Dateien):
+  - `templates/monitoring/audit_log.html.twig` - 6 Spaltenheader
+  - `templates/audit/index_modern.html.twig` - 6 Spaltenheader
+  - `templates/mfa_token/index.html.twig` - 7 Spaltenheader
+  - `templates/compliance/transitive_compliance.html.twig` - 3 Spaltenheader
+  - `templates/reports/dashboard_pdf.html.twig` - 3 Spaltenheader
+  - `templates/incident/nis2_report_pdf.html.twig` - 8 Spaltenheader
+  - `templates/data_management/import_preview.html.twig` - Dynamische Spaltenheader
+  - `templates/role_management/compare.html.twig` - Dynamische Spaltenheader
+  - `templates/admin/tenants/form.html.twig` - 3 Zeilenheader (scope="row")
+  - `templates/document/index_modern.html.twig` - 9 Spaltenheader
+- **Erfolgskriterien**: ✅
   - WCAG 2.1 AA konform
   - Screen Reader können Tabellen korrekt interpretieren
 
 ### 2. UX Improvements
 
-#### Bulk Delete Confirmation Dialogs hinzufügen
+#### Bulk Delete Confirmation Dialogs hinzufügen ✅ ERLEDIGT
 - **Ziel**: Sichere Bulk-Delete-Operationen mit Confirmation
 - **Priorität**: Hoch
 - **Aufwand**: ~2-3 Tage
+- **Status**: ✅ Abgeschlossen (bereits implementiert)
 - **Schritte**:
-  - [ ] Reusable Confirmation Dialog Component erstellen
-  - [ ] Bulk-Delete für folgende Entities implementieren:
-    - [ ] Assets
-    - [ ] Risks
-    - [ ] Controls
-    - [ ] Documents
-    - [ ] Suppliers
-    - [ ] Trainings
-  - [ ] "Undo" Funktionalität evaluieren (optional)
-  - [ ] Accessibility des Dialogs sicherstellen
-- **Erfolgskriterien**:
+  - [x] Reusable Confirmation Dialog Component erstellen
+  - [x] Bulk-Delete für folgende Entities implementieren:
+    - [x] Assets
+    - [x] Risks
+    - [x] Controls
+    - [x] Documents
+    - [x] Suppliers
+    - [x] Trainings
+  - [x] "Undo" Funktionalität evaluieren (optional) - Nicht implementiert, da zu komplex
+  - [x] Accessibility des Dialogs sicherstellen
+- **Implementierung**:
+  - `templates/_components/_bulk_delete_confirmation.html.twig` - Wiederverwendbares Dialog-Component
+  - Vollständige WCAG 2.1 AA Konformität:
+    - `role="alertdialog"`, `aria-modal="true"`
+    - `aria-labelledby` und `aria-describedby`
+    - Keyboard Focus Trapping (Tab/Shift+Tab/Escape)
+    - High-Contrast Warning Design
+  - Turbo Stream Integration für nahtlose UX
+  - Stimulus Controller für Interaktivität
+- **Erfolgskriterien**: ✅
   - Keine versehentlichen Löschungen möglich
   - Klare Information über Anzahl der zu löschenden Items
   - Abhängigkeiten werden angezeigt (z.B. "X Controls sind betroffen")
@@ -216,7 +238,8 @@
 - **Test Coverage**: 26% → 60%
 - **Accessibility Score**: ? → 95+ (Lighthouse)
 - **Forms migriert**: 0 → 100%
-- **Bulk Delete Dialogs**: 0 → 6 Entities
+- **Bulk Delete Dialogs**: ✅ 6/6 Entities (bereits implementiert)
+- **Table Scope Attributes**: ✅ 10/10 Templates (abgeschlossen)
 
 ### Mittelfristig (1 Monat)
 - **Workflow Templates**: 0 → 5
@@ -229,14 +252,15 @@
 ## Next Steps
 
 1. **Diese Woche**:
+   - ~~Bulk Delete Dialog Component erstellen~~ ✅ Bereits implementiert
+   - ~~Table Scope Attributes hinzufügen~~ ✅ Abgeschlossen
    - Accessible Form Component Migration starten
-   - Bulk Delete Dialog Component erstellen
    - Test Coverage Analyse durchführen
 
 2. **Nächste Woche**:
-   - Table Scope Attributes hinzufügen
    - Erste 5 Forms migrieren
    - Unit Tests für kritische Services schreiben
+   - Compliance Module UX Improvements reviewen
 
 3. **Monat 1**:
    - Alle kurzfristigen Ziele abschließen
