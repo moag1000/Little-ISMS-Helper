@@ -2244,3 +2244,40 @@
     background: #6f42c1;
     color: white;
 }
+
+/* Dark Mode - Audit Log Badges */
+[data-theme="dark"] .badge-create {
+    background: #10b981;
+    color: #0f172a;
+    box-shadow: 0 0 8px rgba(16, 185, 129, 0.3);
+}
+
+[data-theme="dark"] .badge-update {
+    background: #f59e0b;
+    color: #0f172a;
+    box-shadow: 0 0 8px rgba(245, 158, 11, 0.3);
+}
+
+[data-theme="dark"] .badge-delete {
+    background: #ef4444;
+    color: white;
+    box-shadow: 0 0 8px rgba(239, 68, 68, 0.3);
+}
+
+[data-theme="dark"] .badge-view {
+    background: #06b6d4;
+    color: #0f172a;
+    box-shadow: 0 0 8px rgba(6, 182, 212, 0.3);
+}
+
+[data-theme="dark"] .badge-export {
+    background: #64748b;
+    color: white;
+    box-shadow: 0 0 8px rgba(100, 116, 139, 0.3);
+}
+
+[data-theme="dark"] .badge-import {
+    background: #8b5cf6;
+    color: white;
+    box-shadow: 0 0 8px rgba(139, 92, 246, 0.3);
+}
