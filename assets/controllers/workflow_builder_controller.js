@@ -17,12 +17,20 @@ export default class extends Controller {
     static targets = ['stepsList', 'stepForm', 'stepTemplate', 'notification', 'loadingSpinner'];
     static values = {
         workflowId: Number,
-        apiUrl: String
+        apiUrl: String,
+        csrfToken: String
     };
 
     connect() {
         this.loadSteps();
         this.initializeSortable();
+    }
+
+    getHeaders() {
+        return {
+            'Content-Type': 'application/json',
+            'X-CSRF-Token': this.csrfTokenValue
+        };
     }
 
     initializeSortable() {
@@ -184,11 +192,13 @@ export default class extends Controller {
         try {
             const response = await fetch(`${this.apiUrlValue}/${this.workflowIdValue}/steps/reorder`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: this.getHeaders(),
                 body: JSON.stringify({ stepIds })
             });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
 
             const data = await response.json();
 
@@ -197,7 +207,7 @@ export default class extends Controller {
                 // Update step numbers in UI
                 this.updateStepNumbers();
             } else {
-                this.showNotification('Failed to reorder steps', 'error');
+                this.showNotification(data.error || 'Failed to reorder steps', 'error');
                 this.loadSteps(); // Reload to revert
             }
         } catch (error) {
@@ -234,11 +244,13 @@ export default class extends Controller {
         try {
             const response = await fetch(`${this.apiUrlValue}/${this.workflowIdValue}/steps`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: this.getHeaders(),
                 body: JSON.stringify(stepData)
             });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
 
             const data = await response.json();
 
@@ -247,7 +259,7 @@ export default class extends Controller {
                 form.reset();
                 this.loadSteps();
             } else {
-                const errorMsg = data.errors ? data.errors.join(', ') : 'Failed to add step';
+                const errorMsg = data.errors ? data.errors.join(', ') : (data.error || 'Failed to add step');
                 this.showNotification(errorMsg, 'error');
             }
         } catch (error) {
@@ -268,10 +280,12 @@ export default class extends Controller {
         try {
             const response = await fetch(`${this.apiUrlValue}/step/${stepId}/duplicate`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                }
+                headers: this.getHeaders()
             });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
 
             const data = await response.json();
 
@@ -279,7 +293,7 @@ export default class extends Controller {
                 this.showNotification('Step duplicated successfully', 'success');
                 this.loadSteps();
             } else {
-                this.showNotification('Failed to duplicate step', 'error');
+                this.showNotification(data.error || 'Failed to duplicate step', 'error');
             }
         } catch (error) {
             console.error('Duplicate error:', error);
@@ -297,10 +311,12 @@ export default class extends Controller {
         try {
             const response = await fetch(`${this.apiUrlValue}/step/${stepId}`, {
                 method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                }
+                headers: this.getHeaders()
             });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
 
             const data = await response.json();
 
@@ -308,7 +324,7 @@ export default class extends Controller {
                 this.showNotification('Step deleted successfully', 'success');
                 this.loadSteps();
             } else {
-                this.showNotification('Failed to delete step', 'error');
+                this.showNotification(data.error || 'Failed to delete step', 'error');
             }
         } catch (error) {
             console.error('Delete error:', error);
@@ -323,11 +339,13 @@ export default class extends Controller {
         try {
             const response = await fetch(`${this.apiUrlValue}/${this.workflowIdValue}/apply-template`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: this.getHeaders(),
                 body: JSON.stringify({ templateKey, clearExisting })
             });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
 
             const data = await response.json();
 
@@ -335,7 +353,7 @@ export default class extends Controller {
                 this.showNotification(`Template applied: ${data.stepsAdded} steps added`, 'success');
                 this.loadSteps();
             } else {
-                this.showNotification('Failed to apply template', 'error');
+                this.showNotification(data.error || 'Failed to apply template', 'error');
             }
         } catch (error) {
             console.error('Apply template error:', error);
