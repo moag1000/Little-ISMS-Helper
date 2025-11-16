@@ -15,6 +15,16 @@
 
 [Features](#-funktionen) • [Quick Start](#-quick-start-mit-docker) • [Dokumentation](#-dokumentation) • [Roadmap](#-roadmap) • [Contributing](#-beitragen)
 
+---
+
+### ☕ Support this Project
+
+If you find Little ISMS Helper useful, please consider supporting its development:
+
+<a href="https://www.buymeacoffee.com/moag1000" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
+
+Your support helps maintain and improve this open-source ISMS solution!
+
 </div>
 
 ---
