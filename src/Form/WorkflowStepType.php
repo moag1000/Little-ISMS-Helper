@@ -133,11 +133,20 @@ class WorkflowStepType extends AbstractType
 
     private function getUserChoices(): array
     {
-        $users = $this->userRepository->findBy(['isActive' => true], ['lastName' => 'ASC', 'firstName' => 'ASC']);
+        try {
+            $users = $this->userRepository->findBy(['isActive' => true], ['lastName' => 'ASC', 'firstName' => 'ASC']);
+        } catch (\Exception $e) {
+            // Fallback if isActive field doesn't exist
+            $users = $this->userRepository->findAll();
+        }
+
         $choices = [];
 
         foreach ($users as $user) {
-            $label = sprintf('%s %s (%s)', $user->getFirstName(), $user->getLastName(), $user->getEmail());
+            $firstName = $user->getFirstName() ?? 'Unknown';
+            $lastName = $user->getLastName() ?? 'User';
+            $email = $user->getEmail() ?? 'no-email';
+            $label = sprintf('%s %s (%s)', $firstName, $lastName, $email);
             $choices[$label] = $user->getId();
         }
 
