@@ -433,6 +433,11 @@ common:
   system_info: Systeminformationen
   verifying: Überprüfe...
   generated: Generiert
+  activate: Aktivieren
+  deactivate: Deaktivieren
+  duplicate: Duplizieren
+  quick_actions: Schnellaktionen
+  select: Auswählen
 asset:
   new: Neues Asset
   create: Asset erstellen
