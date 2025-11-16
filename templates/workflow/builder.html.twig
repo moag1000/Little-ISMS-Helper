@@ -1,0 +1,298 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'workflow.builder.title'|trans }} - {{ workflow.name }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .sortable-ghost {
+            opacity: 0.4;
+            background-color: #c8ebfb;
+        }
+        .sortable-chosen {
+            background-color: #f8f9fa;
+        }
+        .sortable-drag {
+            opacity: 0.9;
+        }
+        .drag-handle {
+            cursor: grab;
+        }
+        .drag-handle:active {
+            cursor: grabbing;
+        }
+        .step-card {
+            transition: transform 0.2s ease;
+        }
+        .step-card:hover {
+            transform: translateX(5px);
+        }
+        .cursor-grab {
+            cursor: grab;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="container-fluid mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ path('app_workflow_index') }}">{{ 'workflow.breadcrumb.home'|trans }}</a></li>
+                    <li class="breadcrumb-item"><a href="{{ path('app_workflow_definitions') }}">{{ 'workflow.breadcrumb.definitions'|trans }}</a></li>
+                    <li class="breadcrumb-item"><a href="{{ path('app_workflow_definition_show', {id: workflow.id}) }}">{{ workflow.name }}</a></li>
+                    <li class="breadcrumb-item active">{{ 'workflow.builder.breadcrumb'|trans }}</li>
+                </ol>
+            </nav>
+            <h1>
+                <i class="bi bi-diagram-3"></i> {{ 'workflow.builder.heading'|trans }}
+                <small class="text-muted">{{ workflow.name }}</small>
+            </h1>
+        </div>
+        <div>
+            <a href="{{ path('app_workflow_definition_show', {id: workflow.id}) }}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> {{ 'workflow.action.back'|trans }}
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            {# Main Builder Area #}
+            <div class="card"
+                 data-controller="workflow-builder"
+                 data-workflow-builder-workflow-id-value="{{ workflow.id }}"
+                 data-workflow-builder-api-url-value="{{ path('api_workflow_steps_list', {id: workflow.id})|replace({'/' ~ workflow.id ~ '/steps': ''}) }}">
+
+                {# Notifications #}
+                <div data-workflow-builder-target="notification"></div>
+
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="bi bi-list-check"></i> {{ 'workflow.builder.steps'|trans }}
+                    </h5>
+                    <div class="d-flex align-items-center">
+                        <span data-workflow-builder-target="loadingSpinner" class="spinner-border spinner-border-sm me-2 d-none" role="status">
+                            <span class="visually-hidden">{{ 'common.loading'|trans }}</span>
+                        </span>
+                        <span class="badge bg-primary rounded-pill" id="stepCount">{{ workflow.steps|length }}</span>
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <div class="mb-3">
+                        <div class="alert alert-info alert-dismissible fade show" role="alert">
+                            <i class="bi bi-info-circle me-2"></i>
+                            {{ 'workflow.builder.drag_help'|trans }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    </div>
+
+                    {# Steps List - Dynamic Content #}
+                    <div data-workflow-builder-target="stepsList" class="steps-container">
+                        {# Steps will be loaded dynamically #}
+                    </div>
+                </div>
+
+                <div class="card-footer">
+                    <button type="button" class="btn btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#addStepForm">
+                        <i class="bi bi-plus-circle"></i> {{ 'workflow.builder.add_step'|trans }}
+                    </button>
+                </div>
+            </div>
+
+            {# Add Step Form (collapsible) #}
+            <div class="collapse mt-3" id="addStepForm">
+                <div class="card">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0">
+                            <i class="bi bi-plus-circle"></i> {{ 'workflow.builder.new_step'|trans }}
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <form data-action="submit->workflow-builder#addStep" data-workflow-builder-target="stepForm">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="stepName" class="form-label">{{ 'workflow.step.name'|trans }} *</label>
+                                    <input type="text" class="form-control" id="stepName" name="name" required maxlength="255">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="stepType" class="form-label">{{ 'workflow.step.type'|trans }} *</label>
+                                    <select class="form-select" id="stepType" name="stepType" required>
+                                        <option value="approval">{{ 'workflow.step.type.approval'|trans }}</option>
+                                        <option value="notification">{{ 'workflow.step.type.notification'|trans }}</option>
+                                        <option value="auto_action">{{ 'workflow.step.type.auto_action'|trans }}</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="stepDescription" class="form-label">{{ 'workflow.step.description'|trans }}</label>
+                                <textarea class="form-control" id="stepDescription" name="description" rows="2"></textarea>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="approverRole" class="form-label">{{ 'workflow.step.approver_role'|trans }}</label>
+                                    <select class="form-select" id="approverRole" name="approverRole">
+                                        <option value="">{{ 'common.select'|trans }}</option>
+                                        <option value="ROLE_USER">{{ 'role.user'|trans }}</option>
+                                        <option value="ROLE_MANAGER">{{ 'role.manager'|trans }}</option>
+                                        <option value="ROLE_ISO_OFFICER">{{ 'role.iso_officer'|trans }}</option>
+                                        <option value="ROLE_RISK_MANAGER">{{ 'role.risk_manager'|trans }}</option>
+                                        <option value="ROLE_AUDITOR">{{ 'role.auditor'|trans }}</option>
+                                        <option value="ROLE_ADMIN">{{ 'role.admin'|trans }}</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="daysToComplete" class="form-label">{{ 'workflow.step.days_to_complete'|trans }}</label>
+                                    <input type="number" class="form-control" id="daysToComplete" name="daysToComplete" min="1" max="365">
+                                    <div class="form-text">{{ 'workflow.step.days_help'|trans }}</div>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="isRequired" name="isRequired" checked>
+                                    <label class="form-check-label" for="isRequired">
+                                        {{ 'workflow.step.is_required'|trans }}
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="d-flex gap-2">
+                                <button type="submit" class="btn btn-success">
+                                    <i class="bi bi-plus-circle"></i> {{ 'workflow.builder.add_step'|trans }}
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary" data-bs-toggle="collapse" data-bs-target="#addStepForm">
+                                    {{ 'common.cancel'|trans }}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            {# Templates #}
+            <div class="card mb-4">
+                <div class="card-header bg-info text-white">
+                    <h6 class="mb-0">
+                        <i class="bi bi-lightning"></i> {{ 'workflow.builder.templates'|trans }}
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted small">{{ 'workflow.builder.templates_help'|trans }}</p>
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-outline-primary text-start"
+                                data-action="click->workflow-builder#applyTemplate"
+                                data-template-key="risk_assessment">
+                            <i class="bi bi-shield-exclamation me-2"></i>
+                            <strong>{{ 'workflow.template.risk_assessment'|trans }}</strong>
+                            <br>
+                            <small class="text-muted">{{ 'workflow.template.risk_assessment_desc'|trans }}</small>
+                        </button>
+                        <button class="btn btn-outline-success text-start"
+                                data-action="click->workflow-builder#applyTemplate"
+                                data-template-key="control_implementation">
+                            <i class="bi bi-sliders me-2"></i>
+                            <strong>{{ 'workflow.template.control_implementation'|trans }}</strong>
+                            <br>
+                            <small class="text-muted">{{ 'workflow.template.control_implementation_desc'|trans }}</small>
+                        </button>
+                        <button class="btn btn-outline-danger text-start"
+                                data-action="click->workflow-builder#applyTemplate"
+                                data-template-key="incident_response">
+                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            <strong>{{ 'workflow.template.incident_response'|trans }}</strong>
+                            <br>
+                            <small class="text-muted">{{ 'workflow.template.incident_response_desc'|trans }}</small>
+                        </button>
+                        <button class="btn btn-outline-warning text-start"
+                                data-action="click->workflow-builder#applyTemplate"
+                                data-template-key="document_review">
+                            <i class="bi bi-file-text me-2"></i>
+                            <strong>{{ 'workflow.template.document_review'|trans }}</strong>
+                            <br>
+                            <small class="text-muted">{{ 'workflow.template.document_review_desc'|trans }}</small>
+                        </button>
+                        <button class="btn btn-outline-secondary text-start"
+                                data-action="click->workflow-builder#applyTemplate"
+                                data-template-key="change_request">
+                            <i class="bi bi-arrow-repeat me-2"></i>
+                            <strong>{{ 'workflow.template.change_request'|trans }}</strong>
+                            <br>
+                            <small class="text-muted">{{ 'workflow.template.change_request_desc'|trans }}</small>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            {# Workflow Info #}
+            <div class="card mb-4">
+                <div class="card-header bg-secondary text-white">
+                    <h6 class="mb-0">
+                        <i class="bi bi-info-circle"></i> {{ 'workflow.builder.info'|trans }}
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-5">{{ 'workflow.field.name'|trans }}</dt>
+                        <dd class="col-sm-7">{{ workflow.name }}</dd>
+
+                        <dt class="col-sm-5">{{ 'workflow.field.entity_type'|trans }}</dt>
+                        <dd class="col-sm-7"><span class="badge bg-info">{{ workflow.entityType }}</span></dd>
+
+                        <dt class="col-sm-5">{{ 'workflow.field.status'|trans }}</dt>
+                        <dd class="col-sm-7">
+                            {% if workflow.isActive %}
+                                <span class="badge bg-success">{{ 'workflow.status.active'|trans }}</span>
+                            {% else %}
+                                <span class="badge bg-secondary">{{ 'workflow.status.inactive'|trans }}</span>
+                            {% endif %}
+                        </dd>
+
+                        <dt class="col-sm-5">{{ 'workflow.field.created_at'|trans }}</dt>
+                        <dd class="col-sm-7">{{ workflow.createdAt|date('d.m.Y') }}</dd>
+                    </dl>
+                </div>
+            </div>
+
+            {# Help #}
+            <div class="card">
+                <div class="card-header bg-light">
+                    <h6 class="mb-0">
+                        <i class="bi bi-question-circle"></i> {{ 'workflow.builder.help'|trans }}
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled mb-0 small">
+                        <li class="mb-2">
+                            <i class="bi bi-grip-vertical text-muted me-1"></i>
+                            {{ 'workflow.builder.help_drag'|trans }}
+                        </li>
+                        <li class="mb-2">
+                            <i class="bi bi-pencil text-primary me-1"></i>
+                            {{ 'workflow.builder.help_edit'|trans }}
+                        </li>
+                        <li class="mb-2">
+                            <i class="bi bi-copy text-secondary me-1"></i>
+                            {{ 'workflow.builder.help_duplicate'|trans }}
+                        </li>
+                        <li class="mb-2">
+                            <i class="bi bi-trash text-danger me-1"></i>
+                            {{ 'workflow.builder.help_delete'|trans }}
+                        </li>
+                        <li>
+                            <i class="bi bi-lightning text-info me-1"></i>
+                            {{ 'workflow.builder.help_template'|trans }}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
