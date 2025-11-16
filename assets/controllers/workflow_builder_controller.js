@@ -22,6 +22,7 @@ export default class extends Controller {
     };
 
     connect() {
+        this.reorderInProgress = false;
         this.loadSteps();
         this.initializeSortable();
     }
@@ -55,12 +56,19 @@ export default class extends Controller {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
-            const data = await response.json();
+            let data;
+            try {
+                data = await response.json();
+            } catch (jsonError) {
+                console.error('Invalid JSON response:', jsonError);
+                this.showNotification('Invalid server response format', 'error');
+                return;
+            }
 
-            if (data.success) {
+            if (data && data.success) {
                 this.renderSteps(data.steps || []);
             } else {
-                this.showNotification(data.error || 'Error loading steps', 'error');
+                this.showNotification(data?.error || 'Error loading steps', 'error');
             }
         } catch (error) {
             console.error('Error loading steps:', error);
@@ -186,9 +194,30 @@ export default class extends Controller {
     }
 
     async onReorder(evt) {
-        const stepCards = this.stepsListTarget.querySelectorAll('.step-card');
-        const stepIds = Array.from(stepCards).map(card => parseInt(card.dataset.stepId));
+        if (this.reorderInProgress) {
+            console.warn('Reorder already in progress');
+            return;
+        }
 
+        const stepCards = this.stepsListTarget.querySelectorAll('.step-card');
+        const stepIds = Array.from(stepCards)
+            .map(card => {
+                const id = parseInt(card.dataset.stepId, 10);
+                if (isNaN(id)) {
+                    console.warn('Invalid step ID in DOM:', card.dataset.stepId);
+                    return null;
+                }
+                return id;
+            })
+            .filter(id => id !== null);
+
+        if (stepIds.length !== stepCards.length) {
+            this.showNotification('Invalid step data detected', 'error');
+            this.loadSteps();
+            return;
+        }
+
+        this.reorderInProgress = true;
         try {
             const response = await fetch(`${this.apiUrlValue}/${this.workflowIdValue}/steps/reorder`, {
                 method: 'POST',
@@ -200,20 +229,30 @@ export default class extends Controller {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
-            const data = await response.json();
+            let data;
+            try {
+                data = await response.json();
+            } catch (jsonError) {
+                console.error('Invalid JSON response:', jsonError);
+                this.showNotification('Invalid server response', 'error');
+                this.loadSteps();
+                return;
+            }
 
-            if (data.success) {
+            if (data && data.success) {
                 this.showNotification('Steps reordered successfully', 'success');
                 // Update step numbers in UI
                 this.updateStepNumbers();
             } else {
-                this.showNotification(data.error || 'Failed to reorder steps', 'error');
+                this.showNotification(data?.error || 'Failed to reorder steps', 'error');
                 this.loadSteps(); // Reload to revert
             }
         } catch (error) {
             console.error('Reorder error:', error);
             this.showNotification('Error reordering steps', 'error');
             this.loadSteps(); // Reload to revert
+        } finally {
+            this.reorderInProgress = false;
         }
     }
 
@@ -230,16 +269,22 @@ export default class extends Controller {
     async addStep(event) {
         event.preventDefault();
         const form = event.target;
+        const submitBtn = form.querySelector('[type="submit"]');
+
+        // Disable button to prevent multiple submissions
+        if (submitBtn) submitBtn.disabled = true;
+
         const formData = new FormData(form);
         const stepData = Object.fromEntries(formData);
 
         // Convert checkbox to boolean
         stepData.isRequired = formData.has('isRequired');
 
-        // Convert approverUsers to array
-        if (formData.getAll('approverUsers').length > 0) {
-            stepData.approverUsers = formData.getAll('approverUsers').map(id => parseInt(id));
-        }
+        // Convert approverUsers to array with NaN protection
+        const userIds = formData.getAll('approverUsers')
+            .map(id => parseInt(id, 10))
+            .filter(id => !isNaN(id));
+        stepData.approverUsers = userIds.length > 0 ? userIds : null;
 
         try {
             const response = await fetch(`${this.apiUrlValue}/${this.workflowIdValue}/steps`, {
@@ -252,19 +297,28 @@ export default class extends Controller {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
-            const data = await response.json();
+            let data;
+            try {
+                data = await response.json();
+            } catch (jsonError) {
+                console.error('Invalid JSON response:', jsonError);
+                this.showNotification('Invalid server response', 'error');
+                return;
+            }
 
-            if (data.success) {
+            if (data && data.success) {
                 this.showNotification('Step added successfully', 'success');
                 form.reset();
                 this.loadSteps();
             } else {
-                const errorMsg = data.errors ? data.errors.join(', ') : (data.error || 'Failed to add step');
+                const errorMsg = data?.errors ? data.errors.join(', ') : (data?.error || 'Failed to add step');
                 this.showNotification(errorMsg, 'error');
             }
         } catch (error) {
             console.error('Add step error:', error);
             this.showNotification('Error adding step', 'error');
+        } finally {
+            if (submitBtn) submitBtn.disabled = false;
         }
     }
 
@@ -303,11 +357,13 @@ export default class extends Controller {
 
     async deleteStep(event) {
         const stepId = event.currentTarget.dataset.stepId;
+        const button = event.currentTarget;
 
         if (!confirm('Are you sure you want to delete this step?')) {
             return;
         }
 
+        button.disabled = true;
         try {
             const response = await fetch(`${this.apiUrlValue}/step/${stepId}`, {
                 method: 'DELETE',
@@ -318,17 +374,26 @@ export default class extends Controller {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
-            const data = await response.json();
+            let data;
+            try {
+                data = await response.json();
+            } catch (jsonError) {
+                console.error('Invalid JSON response:', jsonError);
+                this.showNotification('Invalid server response', 'error');
+                return;
+            }
 
-            if (data.success) {
+            if (data && data.success) {
                 this.showNotification('Step deleted successfully', 'success');
                 this.loadSteps();
             } else {
-                this.showNotification(data.error || 'Failed to delete step', 'error');
+                this.showNotification(data?.error || 'Failed to delete step', 'error');
             }
         } catch (error) {
             console.error('Delete error:', error);
             this.showNotification('Error deleting step', 'error');
+        } finally {
+            button.disabled = false;
         }
     }
 
