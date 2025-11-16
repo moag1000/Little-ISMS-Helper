@@ -188,32 +188,55 @@
 
 ### 1. Workflow System
 
-#### Workflow UI Templates erstellen
+#### Workflow UI Templates erstellen ✅ TEILWEISE ERLEDIGT
 - **Ziel**: Wiederverwendbare Workflow-Templates für gängige ISMS-Prozesse
 - **Priorität**: Mittel
 - **Aufwand**: ~7-10 Tage
+- **Status**: ✅ Drag & Drop Builder und 5 Templates implementiert (November 2025)
 - **Templates**:
-  - [ ] Risk Assessment Workflow
-    - Risiko identifizieren → Bewerten → Behandlung planen → Review
-  - [ ] Control Implementation Workflow
-    - Planung → Implementierung → Test → Review → Approval
-  - [ ] Incident Response Workflow
-    - Melden → Klassifizieren → Untersuchen → Beheben → Dokumentieren
-  - [ ] Document Review Workflow
-    - Erstellen → Review → Approval → Veröffentlichung → Revision
+  - [x] Risk Assessment Workflow ✅
+    - Risk Identification → Risk Analysis → Treatment Plan Review → Final Approval
+  - [x] Control Implementation Workflow ✅
+    - Implementation Planning → Technical Review → Security Assessment → Management Approval
+  - [x] Incident Response Workflow ✅
+    - Initial Classification → Investigation → Containment Approval → Resolution Review → Lessons Learned
+  - [x] Document Review Workflow ✅
+    - Initial Review → Technical Review → Final Approval
+  - [x] Change Request Workflow ✅ (NEU)
+    - Impact Assessment → Security Review → CAB Approval → Implementation Sign-off
   - [ ] Training Workflow
     - Planen → Einladen → Durchführen → Follow-up → Zertifizierung
 - **Features**:
-  - [ ] Drag & Drop Workflow Builder
-  - [ ] Status-Tracking
+  - [x] Drag & Drop Workflow Builder ✅
+    - SortableJS Integration mit Stimulus Controller
+    - Echtzeit-Neuordnung mit automatischer Persistenz
+  - [x] REST API für Step-Management ✅
+    - 10 API Endpoints (CRUD, reorder, duplicate, templates)
+    - WorkflowStepApiController mit vollständiger Validierung
+  - [x] Visual Builder Template ✅
+    - Bootstrap 5 UI mit Drag-Handles
+    - Template-Auswahl-Sidebar
+    - Inline Step-Hinzufügung
+  - [x] Role-based Approver Assignment ✅
+    - ROLE_USER, ROLE_MANAGER, ROLE_ISO_OFFICER, etc.
+  - [x] SLA-Tracking (Days to Complete) ✅
+  - [x] Step Types (Approval, Notification, Auto Action) ✅
+  - [x] i18n Support (EN/DE) ✅
+  - [ ] Status-Tracking (existiert bereits)
   - [ ] Automatische Benachrichtigungen
   - [ ] Deadline-Management
-  - [ ] Approval-Mechanismus
-  - [ ] Audit-Trail
-- **Erfolgskriterien**:
-  - Workflows sind wiederverwendbar
-  - Anpassbar an Tenant-spezifische Anforderungen
-  - Dashboard zeigt Workflow-Status
+  - [ ] Approval-Mechanismus (existiert bereits)
+  - [ ] Audit-Trail (existiert bereits)
+- **Neue Dateien** (November 2025):
+  - `src/Controller/Api/WorkflowStepApiController.php` - REST API (390 Zeilen)
+  - `src/Form/WorkflowStepType.php` - Form Type (146 Zeilen)
+  - `assets/controllers/workflow_builder_controller.js` - Stimulus Controller (384 Zeilen)
+  - `templates/workflow/builder.html.twig` - Visual Builder UI (298 Zeilen)
+  - Gesamt: ~1.325 neue Zeilen Code
+- **Erfolgskriterien**: ✅ Teilweise erfüllt
+  - ✅ Workflows sind wiederverwendbar
+  - ✅ Anpassbar an Tenant-spezifische Anforderungen
+  - ✅ Dashboard zeigt Workflow-Status
 
 ### 2. Compliance Framework
 
