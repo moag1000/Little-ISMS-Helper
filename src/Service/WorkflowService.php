@@ -220,7 +220,7 @@ class WorkflowService
     /**
      * Check if user can approve a step
      */
-    private function canUserApprove(User $user, WorkflowStep $step): bool
+    public function canUserApprove(User $user, WorkflowStep $step): bool
     {
         // Check by role
         if ($step->getApproverRole()) {

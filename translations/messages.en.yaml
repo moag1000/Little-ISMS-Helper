@@ -24,6 +24,23 @@ nav:
   audit_log: Audit Log
   users: Users
   documents: Documents
+  assets_risk_hub: 'Assets & Risks'
+  risk_matrix: 'Risk Matrix'
+  bcm_hub: 'BCM Hub'
+  compliance_overview: 'Overview'
+  frameworks: 'Frameworks'
+  tools: 'Tools'
+  cross_framework: 'Cross-Framework'
+  compare: 'Compare'
+  section:
+    isms_core: 'ISMS Core'
+    assets_risk: 'Assets & Risk'
+    bcm: 'Business Continuity'
+    operations: 'Operations'
+    compliance: 'Compliance'
+    admin: 'Admin'
+breadcrumb:
+  home: 'Home'
 login:
   title: Login
   already_logged_in: You are already logged in as {{ user }}.
@@ -86,6 +103,8 @@ admin:
     modules: Modules & Features
     monitoring: Monitoring & Logs
     navigation: Navigation
+    data_management: Data Management
+    licensing: Licensing
   nav:
     tenants: Tenants
     users: Users
@@ -94,6 +113,18 @@ admin:
     compliance: Compliance Frameworks
     audit_log: Audit Log
     back_to_app: Back to Application
+    dashboard: Dashboard
+    corporate_structure: Corporate Structures
+    permissions: Permissions
+    sessions: Sessions
+    mfa: MFA Management
+    module_management: Module Management
+    compliance_management: Compliance Management
+    system_health: System Health
+    backup: Backup
+    export: Export
+    import: Import
+    license_management: License Management
   dashboard:
     title: Admin Dashboard
     subtitle: Central administration and system overview
@@ -2382,6 +2413,7 @@ compliance:
   title:
     transitive: Transitive Compliance
     compare: Compare Frameworks
+    gaps: 'Gap Analysis'
     gap_analysis: 'Gap Analysis'
     data_reuse: 'Data Reuse'
   description:
@@ -2400,6 +2432,26 @@ compliance:
     export_transitive: Export Transitive Analysis
     export_comparison: Export Comparison
     compare: Compare Frameworks
+  stats:
+    total_relationships: Total Framework Relationships
+    transitive_compliance: Transitive Compliance Benefits
+    leverage_rate: Leverage Rate
+    frameworks_leveraged: Frameworks Leveraged
+    common_requirements: Common Requirements
+    overlap_percentage: Overlap Percentage
+    total_mappings: Total Mappings
+    full_exceeds: Full/Exceeds
+    partial_mappings: Partial Mappings
+    bidirectional_mappings: Bidirectional
+    total_data_points: Total Data Points
+    reused_data: Reused Data
+    reuse_rate: Reuse Rate
+    effort_saved: Effort Saved
+    time_saved_hours: Time Saved (Hours)
+    total_requirements: 'Total Requirements'
+    met_requirements: 'Met Requirements'
+    gaps_identified: 'Gaps Identified'
+    compliance_score: 'Compliance Score'
   unit:
     requirements: Requirements
   info:
@@ -2418,6 +2470,8 @@ compliance:
     reuse_opportunities: 'Reuse Opportunities'
     detailed_comparison: Detailed Comparison
     unique_to: "Unique to"
+    gap_details: Gap Details
+    recommendations: Recommendations
   explanation:
     what_are_mappings_title: "🎯 What are Mappings?"
     what_are_mappings: "Mappings show how requirements from one framework relate to requirements in another framework. For example, a TISAX requirement might fully satisfy a DORA requirement."
@@ -2457,6 +2511,9 @@ compliance:
     gap_description: 'Gap Description'
     remediation: 'Remediation'
     due_date: 'Due Date'
+    assessment: 'Assessment'
+    gap_reason: 'Gap Reason'
+    risk_level: 'Risk Level'
     data_element: 'Data Element'
     source: 'Source'
     used_in_frameworks: 'Used in Frameworks'
@@ -2467,6 +2524,12 @@ compliance:
     quality_score: 'Quality Score'
   option:
     select_framework: -- Select a framework --
+    all_frameworks: 'All Frameworks'
+  severity:
+    critical: 'Critical'
+    high: 'High'
+    medium: 'Medium'
+    low: 'Low'
   badge:
     mapped: Mapped
     no_mapping: No Mapping
@@ -2479,6 +2542,11 @@ compliance:
     no_comparison_data: No comparison data available. Please select two frameworks to compare.
     no_unique: No unique requirements found
     more_requirements: "+ %count% more requirements"
+    no_opportunities: No reuse opportunities found
+    no_gaps: No gaps found - All requirements fulfilled!
+    no_frameworks: 'No frameworks available'
+    no_gaps_desc: 'All requirements are fulfilled'
+    no_data_elements: 'No data elements available'
   mapping:
     type:
       full: Full Coverage
@@ -2573,17 +2641,6 @@ compliance:
     source_target_matrix: "Source ↓ / Target →"
     time_savings: Time Savings
     yes: Yes
-  stats:
-    bidirectional_mappings: Bidirectional
-    common_requirements: Common Requirements
-    frameworks_leveraged: Frameworks Leveraged
-    full_exceeds: Full/Exceeds
-    leverage_rate: Leverage Rate
-    overlap_percentage: Overlap Percentage
-    partial_mappings: Partial Mappings
-    total_mappings: Total Mappings
-    total_relationships: Total Framework Relationships
-    transitive_compliance: Transitive Compliance Benefits
   priority:
     all: All Priorities
     critical: Critical
@@ -3752,41 +3809,6 @@ admin.licensing.summary: 'License Summary'
 
 admin.panel.title: 'Admin Panel'
 
-# Admin Navigation
-nav.admin_portal: 'Admin Portal'
-admin.title: 'Administration'
-admin.nav.dashboard: 'Dashboard'
-admin.nav.tenants: 'Tenants'
-admin.nav.corporate_structure: 'Corporate Structures'
-admin.nav.users: 'Users'
-admin.nav.roles: 'Roles'
-admin.nav.permissions: 'Permissions'
-admin.nav.sessions: 'Sessions'
-admin.nav.mfa: 'MFA Management'
-admin.nav.settings: 'Settings'
-admin.nav.module_management: 'Module Management'
-admin.nav.compliance_management: 'Compliance Management'
-admin.nav.system_health: 'System Health'
-admin.nav.audit_log: 'Audit Log'
-admin.nav.backup: 'Backup'
-admin.nav.export: 'Export'
-admin.nav.import: 'Import'
-admin.nav.license_management: 'License Management'
-admin.nav.back_to_app: 'Back to Application'
-admin.section.user_access: 'User & Access Management'
-admin.section.system_config: 'System Configuration'
-admin.section.modules: 'Modules & Features'
-admin.section.monitoring: 'Monitoring & Logs'
-admin.section.data_management: 'Data Management'
-admin.section.licensing: 'Licensing'
-admin.section.navigation: 'Navigation'
-admin.breadcrumb.home: 'Admin'
-
-# Common translations
-common.back: 'Back'
-common.yes: 'Yes'
-common.no: 'No'
-
 # Workflow Definition Management - Phase 6C
 workflow.definition.title: 'Workflow Definition'
 workflow.definition.new_title: 'New Workflow Definition'
@@ -3903,12 +3925,6 @@ role.iso_officer: 'ISO Officer'
 role.risk_manager: 'Risk Manager'
 role.auditor: 'Auditor'
 role.admin: 'Administrator'
-common.select: '-- Select --'
-common.loading: 'Loading...'
-common.cancel: 'Cancel'
-common.view: 'View'
-common.edit: 'Edit'
-common.actions: 'Actions'
 
 # Setup Wizard Translations
 setup:
