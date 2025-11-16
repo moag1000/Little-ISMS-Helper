@@ -15,7 +15,14 @@
   - [x] Migration der Top 10 meist-genutzten Forms
   - [x] Migration weiterer kritischer BCM-Forms
   - [x] Restliche Forms migrieren
-  - [ ] Accessibility-Tests durchführen
+  - [x] Accessibility-Tests durchführen
+- **Accessibility-Test-Ergebnisse** (November 2025):
+  - ✅ **ARIA-Attribute**: aria-invalid, aria-describedby, aria-required, aria-live korrekt implementiert
+  - ✅ **Keyboard-Navigation**: Logische Tab-Reihenfolge, sichtbare Fokus-Indikatoren (box-shadow)
+  - ✅ **Screen Reader**: Semantic landmarks (role="main", "navigation", "banner"), Skip-Links vorhanden
+  - ✅ **Fehlerbehandlung**: Error messages mit role="alert" und aria-live="assertive"
+  - ✅ **Dekorative Icons**: Alle mit aria-hidden="true" markiert
+  - ✅ **Fieldset/Legend**: Semantisch korrekte Gruppierung für Form-Sections
 - **Bereits migrierte Forms** (20 Dateien):
   - ✅ `templates/risk/_form.html.twig` - Vollständig barrierefrei
   - ✅ `templates/asset/_form.html.twig` - Vollständig barrierefrei
@@ -34,11 +41,17 @@
   - ✅ `templates/business_continuity_plan/edit.html.twig` - Neu migriert (November 2025)
   - ✅ `templates/context/edit.html.twig` - Neu migriert (November 2025)
   - Plus 4 weitere bereits existierende barrierefreie Forms
-- **Erfolgskriterien**:
-  - Alle Forms nutzen das accessible component
-  - ARIA-Labels korrekt implementiert
-  - Keyboard-Navigation funktioniert
-  - Screen Reader kompatibel
+- **WCAG 2.1 Kriterien erfüllt**:
+  - 1.3.1 Info and Relationships (Level A) ✅
+  - 3.3.1 Error Identification (Level A) ✅
+  - 3.3.2 Labels or Instructions (Level A) ✅
+  - 3.3.3 Error Suggestion (Level AA) ✅
+  - 4.1.3 Status Messages (Level AA) ✅
+- **Erfolgskriterien**: ✅ Alle erfüllt
+  - ✅ Alle Forms nutzen das accessible component
+  - ✅ ARIA-Labels korrekt implementiert
+  - ✅ Keyboard-Navigation funktioniert
+  - ✅ Screen Reader kompatibel
 
 #### Table Scope Attributes für Accessibility ✅ ERLEDIGT
 - **Ziel**: Alle Tabellen mit korrekten scope-Attributen versehen
