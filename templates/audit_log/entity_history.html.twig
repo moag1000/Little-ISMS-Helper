@@ -1,12 +1,15 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin/layout.html.twig' %}
 
-{% block title %}{{ 'entity_history.title'|trans }} - {{ 'app.title'|trans }}{% endblock %}
+{% block admin_title %}{{ 'entity_history.title'|trans }}{% endblock %}
+{% block admin_subtitle %}
+    <p class="text-muted">{{ 'entity_history.subtitle'|trans|default('Verlauf einer Entität') }}</p>
+{% endblock %}
 
-{% block body %}
-<h1>{{ 'entity_history.title'|trans }}</h1>
-
+{% block admin_content %}
 <p>
-    <a href="{{ path('app_audit_log_index') }}" class="link-primary">« {{ 'common.back_to_overview'|trans }}</a>
+    <a href="{{ path('app_audit_log_index') }}" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left"></i> {{ 'common.back_to_overview'|trans }}
+    </a>
 </p>
 
 <div class="info-box">

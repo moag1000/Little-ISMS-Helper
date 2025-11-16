@@ -1,11 +1,12 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin/layout.html.twig' %}
 
-{% block title %}Audit Log - Monitoring{% endblock %}
+{% block admin_title %}Audit Log{% endblock %}
+{% block admin_subtitle %}
+    <p class="text-muted">Sicherheits- und Aktivitätsprotokoll</p>
+{% endblock %}
 
-{% block body %}
-<div class="container-fluid">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1><i class="bi bi-journal-text"></i> Audit Log</h1>
+{% block admin_content %}
+    <div class="mb-3">
         <a href="{{ path('monitoring_health') }}" class="btn btn-outline-secondary">
             <i class="bi bi-arrow-left"></i> Back to Health
         </a>
@@ -200,7 +201,7 @@
             The audit log tracks all significant actions in the system including create, update, and delete operations.
             This provides a complete audit trail for compliance and security purposes.
             For more detailed audit log functionality, visit the dedicated
-            <a href="{{ path('audit_log_index') }}" class="alert-link">Audit Log module</a>.
+            <a href="{{ path('app_audit_log_index') }}" class="alert-link">Audit Log module</a>.
         </p>
     </div>
 </div>
