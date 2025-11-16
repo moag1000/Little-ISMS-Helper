@@ -15,6 +15,95 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.6.4] - 2025-11-16 - Compliance Framework CRUD & Workflow Builder
+
+### Added - Phase 6C & 6D Complete
+
+#### Compliance Framework CRUD (Phase 6D)
+- **ComplianceFrameworkController** - Full CRUD operations for frameworks
+- **Framework Index Page** - List, search, and manage compliance frameworks
+- **Framework Show Page** - Detailed view with requirements and mappings
+- **Framework Create/Edit** - Form-based framework management
+- **Cache Invalidation Subscriber** - Automatic cache clearing on framework changes
+- **ComplianceExtension Twig** - Helper functions for compliance templates
+
+#### Workflow Builder (Phase 6C)
+- **Visual Workflow Builder** - Drag-and-drop step management
+- **WorkflowStepApiController** - RESTful API for workflow steps (554 lines)
+- **WorkflowStepType Form** - Comprehensive step configuration
+- **Sidebar Dropdown Controller** - Interactive navigation for workflows
+- **workflow_builder_controller.js** - Frontend logic (494 lines)
+
+#### Enhanced Service Tests (~5,000 new test lines)
+- **AssetServiceTest** (282 lines)
+- **AuditLoggerTest** (420 lines)
+- **AutomatedGapAnalysisServiceTest** (309 lines)
+- **ComplianceAssessmentServiceTest** (481 lines)
+- **ControlServiceTest** (258 lines)
+- **CorporateStructureServiceTest** (280 lines)
+- **DashboardStatisticsServiceTest** (228 lines)
+- **DocumentServiceTest** (300 lines)
+- **ISMSContextServiceTest** (486 lines)
+- **ISMSObjectiveServiceTest** (289 lines)
+- **MfaServiceTest** (428 lines)
+- **RiskServiceTest** (331 lines)
+- **SecurityEventLoggerTest** (473 lines)
+- **SupplierServiceTest** (399 lines)
+- **WorkflowServiceTest** (333 lines)
+- **WorkflowStepApiControllerTest** (459 lines)
+
+#### Navigation & UX Improvements
+- **Navigation UX Analysis** - Comprehensive documentation
+- **Navigation Patterns Quick Reference** - Best practices guide
+- **Improved Breadcrumb Component** - Better hierarchy display
+- **Enhanced Page Headers** - Consistent styling
+
+### Fixed
+
+#### Test Infrastructure (59 failures resolved)
+- **Symfony 7 Compatibility** - Exception handling updates
+- **PHPUnit 10 Compatibility** - Test method signatures fixed
+- **Entity Validation** - Constraints aligned with controller expectations
+- **Mock Object Improvements** - Better test isolation
+
+#### Security Improvements
+- **CSRF Protection** - Added to all form submissions
+- **XSS Protection** - Input sanitization for all user data
+- **Entity Validation** - Server-side validation for all entities
+- **Transaction Management** - Database operations wrapped in transactions
+- **Robust Error Handling** - Graceful failure modes
+
+#### Critical Runtime Fixes
+- **Null Safety Checks** - Prevent runtime errors
+- **AuditLog Property Names** - Corrected to `userName` in templates
+- **ISMS Context Tenant Isolation** - Respects current user's tenant
+- **MfaToken Entity** - Added missing properties
+- **WorkflowStep Entity** - Extended with new fields
+
+### Changed
+- **ISMSContextService** - Improved tenant awareness (36+ lines)
+- **MfaService** - Enhanced token validation (24+ lines)
+- **AuditLogger** - Better error handling
+- **BC Exercise Templates** - Improved forms (edit/new)
+- **Business Continuity Plan Templates** - Better UX
+- **Compliance Mapping/Requirement Templates** - Enhanced forms
+
+### Statistics
+- **~11,000+ new lines of code**
+- **83 files modified**
+- **16 new service test files** (~5,000 test lines)
+- **4 new Compliance Framework templates**
+- **1 new Workflow Builder UI**
+- **59 test failures fixed**
+- **137 new translation keys** (DE/EN each)
+
+### Documentation
+- [Navigation UX Analysis](NAVIGATION_UX_ANALYSIS.md)
+- [Navigation Patterns Quick Reference](NAVIGATION_PATTERNS_QUICK_REFERENCE.md)
+- [Updated ROADMAP - Phase 6C & 6D complete](ROADMAP.md)
+
+---
+
 ## [1.6.2] - 2025-11-15 - ARM64 Support & CI/CD Fixes
 
 ### Added
