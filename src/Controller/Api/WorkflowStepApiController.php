@@ -106,8 +106,15 @@ class WorkflowStepApiController extends AbstractController
                 'message' => 'Step added successfully'
             ], Response::HTTP_CREATED);
         } catch (DBALException $e) {
-            $this->entityManager->rollback();
+            if ($this->entityManager->getConnection()->isTransactionActive()) {
+                $this->entityManager->rollback();
+            }
             return $this->json(['success' => false, 'error' => 'Database error: ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        } catch (\Exception $e) {
+            if ($this->entityManager->getConnection()->isTransactionActive()) {
+                $this->entityManager->rollback();
+            }
+            return $this->json(['success' => false, 'error' => 'Server error: ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -147,8 +154,15 @@ class WorkflowStepApiController extends AbstractController
                 'message' => 'Step updated successfully'
             ]);
         } catch (DBALException $e) {
-            $this->entityManager->rollback();
+            if ($this->entityManager->getConnection()->isTransactionActive()) {
+                $this->entityManager->rollback();
+            }
             return $this->json(['success' => false, 'error' => 'Database error: ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        } catch (\Exception $e) {
+            if ($this->entityManager->getConnection()->isTransactionActive()) {
+                $this->entityManager->rollback();
+            }
+            return $this->json(['success' => false, 'error' => 'Server error: ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -188,8 +202,15 @@ class WorkflowStepApiController extends AbstractController
                 'message' => 'Step deleted successfully'
             ]);
         } catch (DBALException $e) {
-            $this->entityManager->rollback();
+            if ($this->entityManager->getConnection()->isTransactionActive()) {
+                $this->entityManager->rollback();
+            }
             return $this->json(['success' => false, 'error' => 'Database error: ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        } catch (\Exception $e) {
+            if ($this->entityManager->getConnection()->isTransactionActive()) {
+                $this->entityManager->rollback();
+            }
+            return $this->json(['success' => false, 'error' => 'Server error: ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -216,7 +237,8 @@ class WorkflowStepApiController extends AbstractController
 
         // Validate all step IDs belong to this workflow
         foreach ($stepIds as $stepId) {
-            if (!isset($steps[$stepId])) {
+            $stepIdInt = (int) $stepId;
+            if (!isset($steps[$stepIdInt])) {
                 return $this->json([
                     'success' => false,
                     'error' => 'Invalid step ID: ' . $stepId
@@ -229,7 +251,8 @@ class WorkflowStepApiController extends AbstractController
 
             // Apply new order (starting from 1, not 0)
             foreach ($stepIds as $index => $stepId) {
-                $steps[$stepId]->setStepOrder($index + 1);
+                $stepIdInt = (int) $stepId;
+                $steps[$stepIdInt]->setStepOrder($index + 1);
             }
 
             $this->entityManager->flush();
@@ -240,8 +263,15 @@ class WorkflowStepApiController extends AbstractController
                 'message' => 'Steps reordered successfully'
             ]);
         } catch (DBALException $e) {
-            $this->entityManager->rollback();
+            if ($this->entityManager->getConnection()->isTransactionActive()) {
+                $this->entityManager->rollback();
+            }
             return $this->json(['success' => false, 'error' => 'Database error: ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        } catch (\Exception $e) {
+            if ($this->entityManager->getConnection()->isTransactionActive()) {
+                $this->entityManager->rollback();
+            }
+            return $this->json(['success' => false, 'error' => 'Server error: ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -294,8 +324,15 @@ class WorkflowStepApiController extends AbstractController
                 'message' => 'Step duplicated successfully'
             ], Response::HTTP_CREATED);
         } catch (DBALException $e) {
-            $this->entityManager->rollback();
+            if ($this->entityManager->getConnection()->isTransactionActive()) {
+                $this->entityManager->rollback();
+            }
             return $this->json(['success' => false, 'error' => 'Database error: ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        } catch (\Exception $e) {
+            if ($this->entityManager->getConnection()->isTransactionActive()) {
+                $this->entityManager->rollback();
+            }
+            return $this->json(['success' => false, 'error' => 'Server error: ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -380,7 +417,18 @@ class WorkflowStepApiController extends AbstractController
         }
 
         $templatesResponse = $this->getTemplates();
-        $templatesData = json_decode($templatesResponse->getContent(), true);
+        $content = $templatesResponse->getContent();
+
+        if (empty($content)) {
+            return $this->json(['success' => false, 'error' => 'Template data unavailable'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        $templatesData = json_decode($content, true);
+
+        if ($templatesData === null || !isset($templatesData['templates'])) {
+            return $this->json(['success' => false, 'error' => 'Invalid template data'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
         $templates = $templatesData['templates'];
 
         if (!isset($templates[$data['templateKey']])) {
@@ -425,8 +473,15 @@ class WorkflowStepApiController extends AbstractController
                 'stepsAdded' => count($template['steps'])
             ]);
         } catch (DBALException $e) {
-            $this->entityManager->rollback();
+            if ($this->entityManager->getConnection()->isTransactionActive()) {
+                $this->entityManager->rollback();
+            }
             return $this->json(['success' => false, 'error' => 'Database error: ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        } catch (\Exception $e) {
+            if ($this->entityManager->getConnection()->isTransactionActive()) {
+                $this->entityManager->rollback();
+            }
+            return $this->json(['success' => false, 'error' => 'Server error: ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -466,7 +521,7 @@ class WorkflowStepApiController extends AbstractController
             $step->setIsRequired((bool) $data['isRequired']);
         }
         if (array_key_exists('daysToComplete', $data)) {
-            $step->setDaysToComplete($data['daysToComplete'] ? (int) $data['daysToComplete'] : null);
+            $step->setDaysToComplete($data['daysToComplete'] !== null && $data['daysToComplete'] !== '' ? (int) $data['daysToComplete'] : null);
         }
     }
 
