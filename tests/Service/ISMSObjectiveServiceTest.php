@@ -105,9 +105,9 @@ class ISMSObjectiveServiceTest extends TestCase
 
     public function testCalculateOverallProgressWithObjectives(): void
     {
-        $obj1 = $this->createObjectiveWithProgress(50.0);
-        $obj2 = $this->createObjectiveWithProgress(100.0);
-        $obj3 = $this->createObjectiveWithProgress(75.0);
+        $obj1 = $this->createObjectiveWithProgress(50);
+        $obj2 = $this->createObjectiveWithProgress(100);
+        $obj3 = $this->createObjectiveWithProgress(75);
 
         $this->objectiveRepository->method('findAll')
             ->willReturn([$obj1, $obj2, $obj3]);
@@ -120,7 +120,7 @@ class ISMSObjectiveServiceTest extends TestCase
 
     public function testCalculateOverallProgressIgnoresObjectivesWithoutValues(): void
     {
-        $withProgress = $this->createObjectiveWithProgress(80.0);
+        $withProgress = $this->createObjectiveWithProgress(80);
         $withoutTarget = $this->createObjectiveWithoutValues();
 
         $this->objectiveRepository->method('findAll')
@@ -270,7 +270,7 @@ class ISMSObjectiveServiceTest extends TestCase
         return $objective;
     }
 
-    private function createObjectiveWithProgress(float $progressPercentage): MockObject
+    private function createObjectiveWithProgress(int $progressPercentage): MockObject
     {
         $objective = $this->createMock(ISMSObjective::class);
         $objective->method('getTargetValue')->willReturn('100');
