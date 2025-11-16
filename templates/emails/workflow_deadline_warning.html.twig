@@ -66,10 +66,12 @@
             </div>
             {% endif %}
 
+            {% if instance.initiatedBy %}
             <div class="field">
                 <span class="label">Initiated By:</span>
                 <span class="value">{{ instance.initiatedBy.firstName }} {{ instance.initiatedBy.lastName }}</span>
             </div>
+            {% endif %}
 
             <div class="field">
                 <span class="label">Started:</span>
