@@ -414,7 +414,11 @@ class ISMSContextServiceTest extends TestCase
     public function testGetContextInheritanceInfoInheritedContext(): void
     {
         $parentTenant = $this->createTenant(1, 'Parent Corp');
-        $childTenant = $this->createTenant(2, 'Child Corp');
+
+        // Create child tenant with parent configured directly (can't override mock after creation)
+        $childTenant = $this->createMock(Tenant::class);
+        $childTenant->method('getId')->willReturn(2);
+        $childTenant->method('getName')->willReturn('Child Corp');
         $childTenant->method('getParent')->willReturn($parentTenant);
 
         $childContext = $this->createContext(2, $childTenant, 'Child Corp');
