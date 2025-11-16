@@ -116,10 +116,10 @@
 - **Ziel**: Test Coverage signifikant verbessern
 - **Priorität**: Hoch
 - **Aufwand**: ~5-7 Tage
-- **Aktueller Stand**: ~35% Coverage (geschätzt nach neuen Tests)
+- **Aktueller Stand**: ~45% Coverage (geschätzt nach 6 neuen Service-Tests)
 - **Ziel**: 60% Coverage
 - **Fortschritt** (November 2025):
-  - ✅ **14 Service-Tests** (11 existierend + 3 neu):
+  - ✅ **17 Service-Tests** (11 existierend + 6 neu):
     - TenantContextTest ✅
     - RiskMatrixServiceTest ✅
     - RiskIntelligenceServiceTest ✅
@@ -134,16 +134,21 @@
     - **DashboardStatisticsServiceTest** ✅ (NEU - 7 Tests)
     - **CorporateStructureServiceTest** ✅ (NEU - 15 Tests)
     - **ControlServiceTest** ✅ (NEU - 14 Tests)
+    - **RiskServiceTest** ✅ (NEU - 18 Tests)
+    - **AssetServiceTest** ✅ (NEU - 16 Tests)
+    - **AutomatedGapAnalysisServiceTest** ✅ (NEU - 15 Tests)
   - ✅ **26 Entity-Tests** für alle Haupt-Entities
-  - 📊 **Total: 40 Test-Dateien, 766 neue Test-Zeilen**
+  - 📊 **Total: 43 Test-Dateien, 1.688 neue Test-Zeilen (85 neue Tests)**
 - **Schritte**:
   - [x] Coverage-Report analysieren
   - [x] Kritische Business-Logic identifizieren
   - [x] Unit Tests für Services schreiben:
     - [x] TenantContext
     - [x] CorporateStructure
-    - [ ] RiskManagement (RiskService)
+    - [x] RiskManagement (RiskService)
     - [x] ControlManagement
+    - [x] AssetManagement (AssetService)
+    - [x] ComplianceAnalysis (AutomatedGapAnalysisService)
   - [ ] Integration Tests für kritische Workflows:
     - [ ] Tenant-Erstellung & Setup
     - [ ] Risk Assessment Flow
