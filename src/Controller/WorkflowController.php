@@ -208,6 +208,15 @@ class WorkflowController extends AbstractController
         ]);
     }
 
+    #[Route('/definition/{id}/builder', name: 'app_workflow_definition_builder', requirements: ['id' => '\d+'])]
+    #[IsGranted('ROLE_ADMIN')]
+    public function builder(Workflow $workflow): Response
+    {
+        return $this->render('workflow/builder.html.twig', [
+            'workflow' => $workflow,
+        ]);
+    }
+
     #[Route('/definition/new', name: 'app_workflow_definition_new', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function newDefinition(Request $request): Response
