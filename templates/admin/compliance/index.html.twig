@@ -544,14 +544,19 @@ document.addEventListener('turbo:before-cache', function() {
     });
 });
 
-// Initialize on both DOMContentLoaded (first page load) and turbo:load (Turbo navigation)
-document.addEventListener('DOMContentLoaded', function() {
-    initializeFrameworkButtons();
-    initializeDeleteButtons();
-});
+// Initialize on turbo:load (for Turbo navigation) OR on DOMContentLoaded (for direct page load/non-Turbo)
+let turboLoadRegistered = false;
 document.addEventListener('turbo:load', function() {
+    turboLoadRegistered = true;
     initializeFrameworkButtons();
     initializeDeleteButtons();
 });
+// Fallback for non-Turbo environments or if turbo:load hasn't fired
+setTimeout(function() {
+    if (!turboLoadRegistered) {
+        initializeFrameworkButtons();
+        initializeDeleteButtons();
+    }
+}, 100);
 </script>
 {% endblock admin_content %}
