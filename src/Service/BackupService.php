@@ -219,7 +219,13 @@ class BackupService
             return [];
         }
 
-        $files = glob($backupDir . '/backup_*.json.gz');
+        // Include both created backups (backup_*) and uploaded files (uploaded_*)
+        $files = array_merge(
+            glob($backupDir . '/backup_*.json.gz') ?: [],
+            glob($backupDir . '/uploaded_*.json.gz') ?: [],
+            glob($backupDir . '/uploaded_*.json') ?: [],
+            glob($backupDir . '/uploaded_*.gz') ?: []
+        );
         $backups = [];
 
         foreach ($files as $file) {
