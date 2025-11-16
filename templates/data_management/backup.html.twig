@@ -266,19 +266,30 @@
 {% block javascripts %}
     {{ parent() }}
     <script>
+        console.log('Backup script loaded');
+
         // Use turbo:load for Turbo navigation compatibility, with DOMContentLoaded fallback
         function initBackupPage() {
+            console.log('initBackupPage() called');
+
             // Prevent re-initialization
-            if (window.backupPageInitialized) return;
+            if (window.backupPageInitialized) {
+                console.log('Already initialized, skipping');
+                return;
+            }
 
             // Check if we're on the backup page (elements exist)
             const createBackupForm = document.getElementById('createBackupForm');
+            console.log('createBackupForm found:', !!createBackupForm);
+
             if (!createBackupForm) {
                 // Not on backup page, skip initialization
+                console.log('Not on backup page, skipping');
                 return;
             }
 
             window.backupPageInitialized = true;
+            console.log('Initializing backup page...');
 
             // Bootstrap is available globally via window.bootstrap (loaded in app.js)
             // Create Backup Form
