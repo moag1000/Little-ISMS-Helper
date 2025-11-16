@@ -17,7 +17,7 @@
     <div class="page-header-content">
         <h1 class="page-header-title">
             {% if icon is defined %}
-                <i class="bi {{ icon }}"></i>
+                <i class="bi {{ icon }}" aria-hidden="true"></i>
             {% endif %}
             {{ title }}
         </h1>
@@ -32,7 +32,7 @@
                    class="btn btn-{{ action.variant|default('secondary') }}"
                    {% if action.turbo is defined and action.turbo == false %}data-turbo="false"{% else %}data-turbo-action="advance"{% endif %}>
                     {% if action.icon is defined %}
-                        <i class="bi {{ action.icon }}"></i>
+                        <i class="bi {{ action.icon }}" aria-hidden="true"></i>
                     {% endif %}
                     {{ action.label }}
                 </a>
