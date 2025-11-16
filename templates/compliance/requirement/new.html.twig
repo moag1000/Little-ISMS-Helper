@@ -4,12 +4,23 @@
 
 {% block body %}
 <div class="container-fluid mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1><i class="bi bi-plus-circle"></i> New Compliance Requirement</h1>
-        <a href="{{ path('app_compliance_requirement_index') }}" class="btn btn-outline-secondary">
-            <i class="bi bi-arrow-left"></i> Back to List
-        </a>
-    </div>
+    {# Breadcrumb Navigation #}
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'Compliance', url: path('app_compliance_index'), icon: 'bi-shield-check' },
+            { label: 'Requirements', url: path('app_compliance_requirement_index') },
+            { label: 'New Requirement' }
+        ]
+    } %}
+
+    {# Page Header #}
+    {% include '_components/_page_header.html.twig' with {
+        title: 'New Compliance Requirement',
+        icon: 'bi-plus-circle',
+        actions: [
+            { label: 'Back to List', url: path('app_compliance_requirement_index'), variant: 'secondary', icon: 'bi-arrow-left' }
+        ]
+    } %}
 
     <div class="row">
         <div class="col-md-8">
@@ -17,56 +28,134 @@
                 <div class="card-body">
                     {{ form_start(form) }}
 
-                    <div class="row">
-                        <div class="col-md-6">
-                            {{ form_row(form.framework) }}
-                        </div>
-                        <div class="col-md-6">
-                            {{ form_row(form.requirementId) }}
-                        </div>
-                    </div>
+                    {# Framework & ID #}
+                    <fieldset class="mb-4">
+                        <legend class="h5 mb-3">
+                            <i class="bi bi-bookmark" aria-hidden="true"></i>
+                            Framework & Identifier
+                        </legend>
 
-                    {{ form_row(form.title) }}
-                    {{ form_row(form.description) }}
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            {{ form_row(form.category) }}
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.framework,
+                                    'label': 'Framework',
+                                    'help': 'Select the compliance framework this requirement belongs to',
+                                    'required': true
+                                } %}
+                            </div>
+                            <div class="col-md-6">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.requirementId,
+                                    'label': 'Requirement ID',
+                                    'help': 'Unique identifier (e.g., ISO 27001:2022 A.5.1)',
+                                    'required': true
+                                } %}
+                            </div>
                         </div>
-                        <div class="col-md-6">
-                            {{ form_row(form.priority) }}
-                        </div>
-                    </div>
+                    </fieldset>
 
-                    <div class="row">
-                        <div class="col-md-6">
-                            {{ form_row(form.requirementType) }}
-                        </div>
-                        <div class="col-md-6">
-                            {{ form_row(form.parentRequirement) }}
-                        </div>
-                    </div>
+                    {# Basic Information #}
+                    <fieldset class="mb-4">
+                        <legend class="h5 mb-3">
+                            <i class="bi bi-info-circle" aria-hidden="true"></i>
+                            Basic Information
+                        </legend>
 
-                    <hr>
+                        {% include '_components/_form_field.html.twig' with {
+                            'field': form.title,
+                            'label': 'Title',
+                            'help': 'Short, descriptive title of the requirement',
+                            'required': true
+                        } %}
 
-                    <h5>Applicability</h5>
-                    <div class="row">
-                        <div class="col-md-6">
-                            {{ form_row(form.applicable) }}
+                        {% include '_components/_form_field.html.twig' with {
+                            'field': form.description,
+                            'label': 'Description',
+                            'help': 'Detailed description of what this requirement entails'
+                        } %}
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.category,
+                                    'label': 'Category',
+                                    'help': 'Functional category (e.g., Access Control, Cryptography)'
+                                } %}
+                            </div>
+                            <div class="col-md-6">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.priority,
+                                    'label': 'Priority',
+                                    'help': 'How urgent is this requirement?'
+                                } %}
+                            </div>
                         </div>
-                        <div class="col-md-6">
-                            {{ form_row(form.fulfillmentPercentage) }}
+                    </fieldset>
+
+                    {# Structure #}
+                    <fieldset class="mb-4">
+                        <legend class="h5 mb-3">
+                            <i class="bi bi-diagram-3" aria-hidden="true"></i>
+                            Requirement Structure
+                        </legend>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.requirementType,
+                                    'label': 'Type',
+                                    'help': 'Core, Detailed, or Sub-requirement'
+                                } %}
+                            </div>
+                            <div class="col-md-6">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.parentRequirement,
+                                    'label': 'Parent Requirement',
+                                    'help': 'Optional parent requirement for hierarchical structure'
+                                } %}
+                            </div>
                         </div>
-                    </div>
+                    </fieldset>
 
-                    {{ form_row(form.applicabilityJustification) }}
+                    {# Applicability #}
+                    <fieldset class="mb-4">
+                        <legend class="h5 mb-3">
+                            <i class="bi bi-check-square" aria-hidden="true"></i>
+                            Applicability & Fulfillment
+                        </legend>
 
-                    <div class="d-flex justify-content-between mt-4">
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.applicable,
+                                    'label': 'Applicable',
+                                    'help': 'Is this requirement applicable to your organization?'
+                                } %}
+                            </div>
+                            <div class="col-md-6">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.fulfillmentPercentage,
+                                    'label': 'Fulfillment Percentage',
+                                    'help': 'Current implementation progress (0-100%)'
+                                } %}
+                            </div>
+                        </div>
+
+                        {% include '_components/_form_field.html.twig' with {
+                            'field': form.applicabilityJustification,
+                            'label': 'Applicability Justification',
+                            'help': 'Explain why this requirement is or is not applicable'
+                        } %}
+                    </fieldset>
+
+                    {# Form Actions #}
+                    <div class="form-actions d-flex gap-2 justify-content-between">
                         <a href="{{ path('app_compliance_requirement_index') }}" class="btn btn-secondary">
-                            <i class="bi bi-x-circle"></i> Cancel
+                            <i class="bi bi-x-circle" aria-hidden="true"></i> Cancel
                         </a>
                         <button type="submit" class="btn btn-primary">
-                            <i class="bi bi-save"></i> Create Requirement
+                            <i class="bi bi-save" aria-hidden="true"></i> Create Requirement
                         </button>
                     </div>
 
@@ -78,7 +167,7 @@
         <div class="col-md-4">
             <div class="card bg-light">
                 <div class="card-header">
-                    <h6 class="mb-0"><i class="bi bi-info-circle"></i> Help</h6>
+                    <h6 class="mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> Help</h6>
                 </div>
                 <div class="card-body">
                     <h6>Requirement Types</h6>
