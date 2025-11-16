@@ -265,7 +265,9 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script>
+    <script type="module">
+        import * as bootstrap from 'bootstrap';
+
         document.addEventListener('DOMContentLoaded', function() {
             // Create Backup Form
             const createBackupForm = document.getElementById('createBackupForm');
