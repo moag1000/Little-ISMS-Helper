@@ -186,17 +186,17 @@
                     <div class="card-body">
                         <table class="table table-sm mb-0">
                             <tr>
-                                <th class="text-muted small">{{ 'common.created'|trans }}</th>
+                                <th scope="row" class="text-muted small">{{ 'common.created'|trans }}</th>
                                 <td class="small">{{ tenant.createdAt|date('d.m.Y H:i') }}</td>
                             </tr>
                             {% if tenant.updatedAt %}
                                 <tr>
-                                    <th class="text-muted small">{{ 'common.updated'|trans }}</th>
+                                    <th scope="row" class="text-muted small">{{ 'common.updated'|trans }}</th>
                                     <td class="small">{{ tenant.updatedAt|date('d.m.Y H:i') }}</td>
                                 </tr>
                             {% endif %}
                             <tr>
-                                <th class="text-muted small">{{ 'tenant.field.users'|trans }}</th>
+                                <th scope="row" class="text-muted small">{{ 'tenant.field.users'|trans }}</th>
                                 <td class="small">
                                     <span class="badge bg-info">{{ tenant.users|length }}</span>
                                 </td>
