@@ -99,8 +99,19 @@ export default class extends Controller {
         const stepTypeBadge = this.getStepTypeBadge(step.stepType);
         const approverInfo = this.getApproverInfo(step);
 
+        // Validate numeric values to prevent injection
+        const stepId = parseInt(step.id, 10);
+        const stepOrder = parseInt(step.stepOrder, 10);
+        const daysToComplete = step.daysToComplete ? parseInt(step.daysToComplete, 10) : null;
+
+        // Skip rendering if critical values are invalid
+        if (isNaN(stepId) || isNaN(stepOrder)) {
+            console.error('Invalid step data:', step);
+            return '';
+        }
+
         return `
-            <div class="card mb-3 step-card" data-step-id="${step.id}" data-step-order="${step.stepOrder}">
+            <div class="card mb-3 step-card" data-step-id="${stepId}" data-step-order="${stepOrder}">
                 <div class="card-body">
                     <div class="d-flex align-items-center">
                         <div class="drag-handle me-3 cursor-grab text-muted">
@@ -113,11 +124,11 @@ export default class extends Controller {
                             <i class="bi ${stepTypeIcon} fs-4 text-${this.getStepTypeColor(step.stepType)}"></i>
                         </div>
                         <div class="flex-grow-1">
-                            <h5 class="card-title mb-1">${this.escapeHtml(step.name)}</h5>
+                            <h5 class="card-title mb-1">${this.escapeHtml(step.name || 'Unnamed Step')}</h5>
                             <div class="d-flex flex-wrap gap-2 mb-2">
                                 ${stepTypeBadge}
                                 ${step.isRequired ? '<span class="badge bg-warning text-dark">Required</span>' : '<span class="badge bg-secondary">Optional</span>'}
-                                ${step.daysToComplete ? `<span class="badge bg-info"><i class="bi bi-clock me-1"></i>${step.daysToComplete} days SLA</span>` : ''}
+                                ${daysToComplete && !isNaN(daysToComplete) ? `<span class="badge bg-info"><i class="bi bi-clock me-1"></i>${daysToComplete} days SLA</span>` : ''}
                             </div>
                             ${approverInfo}
                             ${step.description ? `<p class="card-text text-muted small mt-2">${this.escapeHtml(step.description)}</p>` : ''}
@@ -126,19 +137,19 @@ export default class extends Controller {
                             <div class="btn-group">
                                 <button class="btn btn-sm btn-outline-primary"
                                         data-action="click->workflow-builder#editStep"
-                                        data-step-id="${step.id}"
+                                        data-step-id="${stepId}"
                                         title="Edit">
                                     <i class="bi bi-pencil"></i>
                                 </button>
                                 <button class="btn btn-sm btn-outline-secondary"
                                         data-action="click->workflow-builder#duplicateStep"
-                                        data-step-id="${step.id}"
+                                        data-step-id="${stepId}"
                                         title="Duplicate">
                                     <i class="bi bi-copy"></i>
                                 </button>
                                 <button class="btn btn-sm btn-outline-danger"
                                         data-action="click->workflow-builder#deleteStep"
-                                        data-step-id="${step.id}"
+                                        data-step-id="${stepId}"
                                         title="Delete">
                                     <i class="bi bi-trash"></i>
                                 </button>
@@ -175,19 +186,30 @@ export default class extends Controller {
             'auto_action': 'Auto Action'
         };
         const color = this.getStepTypeColor(stepType);
-        return `<span class="badge bg-${color}">${labels[stepType] || stepType}</span>`;
+        // Escape stepType if not in predefined labels to prevent XSS
+        const label = labels[stepType] || this.escapeHtml(String(stepType));
+        return `<span class="badge bg-${color}">${label}</span>`;
     }
 
     getApproverInfo(step) {
         let info = [];
 
-        if (step.approverRole) {
-            const roleName = step.approverRole.replace('ROLE_', '').replace(/_/g, ' ');
-            info.push(`<span class="badge bg-light text-dark"><i class="bi bi-person-badge me-1"></i>${roleName}</span>`);
+        if (step.approverRole && typeof step.approverRole === 'string') {
+            // Sanitize role name by only allowing alphanumeric characters and spaces
+            const roleName = step.approverRole
+                .replace('ROLE_', '')
+                .replace(/_/g, ' ')
+                .replace(/[^a-zA-Z0-9\s]/g, ''); // Remove any non-alphanumeric characters
+            const escapedRoleName = this.escapeHtml(roleName);
+            info.push(`<span class="badge bg-light text-dark"><i class="bi bi-person-badge me-1"></i>${escapedRoleName}</span>`);
         }
 
-        if (step.approverUsers && step.approverUsers.length > 0) {
-            info.push(`<span class="badge bg-light text-dark"><i class="bi bi-people me-1"></i>${step.approverUsers.length} users</span>`);
+        if (step.approverUsers && Array.isArray(step.approverUsers) && step.approverUsers.length > 0) {
+            // Number is safe, but ensure it's actually a number
+            const userCount = parseInt(step.approverUsers.length, 10);
+            if (!isNaN(userCount)) {
+                info.push(`<span class="badge bg-light text-dark"><i class="bi bi-people me-1"></i>${userCount} users</span>`);
+            }
         }
 
         return info.length > 0 ? `<div class="approver-info">${info.join(' ')}</div>` : '';
