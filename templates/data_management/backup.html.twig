@@ -270,11 +270,18 @@
         function initBackupPage() {
             // Prevent re-initialization
             if (window.backupPageInitialized) return;
+
+            // Check if we're on the backup page (elements exist)
+            const createBackupForm = document.getElementById('createBackupForm');
+            if (!createBackupForm) {
+                // Not on backup page, skip initialization
+                return;
+            }
+
             window.backupPageInitialized = true;
 
             // Bootstrap is available globally via window.bootstrap (loaded in app.js)
             // Create Backup Form
-            const createBackupForm = document.getElementById('createBackupForm');
             const createBackupBtn = document.getElementById('createBackupBtn');
             const createBackupStatus = document.getElementById('createBackupStatus');
 
@@ -304,8 +311,14 @@
                                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                             </div>
                         `;
-                        // Reload page after 2 seconds to show new backup
-                        setTimeout(() => location.reload(), 2000);
+                        // Reload page after 2 seconds to show new backup (Turbo-compatible)
+                        setTimeout(() => {
+                            if (window.Turbo) {
+                                window.Turbo.visit(window.location.href, { action: 'replace' });
+                            } else {
+                                location.reload();
+                            }
+                        }, 2000);
                     } else {
                         createBackupStatus.innerHTML = `
                             <div class="alert alert-danger alert-dismissible fade show">
@@ -366,8 +379,14 @@
                             </div>
                         `;
                         fileInput.value = '';
-                        // Reload page after 2 seconds
-                        setTimeout(() => location.reload(), 2000);
+                        // Reload page after 2 seconds (Turbo-compatible)
+                        setTimeout(() => {
+                            if (window.Turbo) {
+                                window.Turbo.visit(window.location.href, { action: 'replace' });
+                            } else {
+                                location.reload();
+                            }
+                        }, 2000);
                     } else {
                         uploadBackupStatus.innerHTML = `
                             <div class="alert alert-danger alert-dismissible fade show">
@@ -536,7 +555,7 @@
                 });
             });
 
-            document.getElementById('confirmRestoreBtn').addEventListener('click', async function() {
+            document.getElementById('confirmRestoreBtn')?.addEventListener('click', async function() {
                 const filename = document.getElementById('restoreFilename').value;
                 const restoreStatus = document.getElementById('restoreStatus');
                 const confirmBtn = this;
