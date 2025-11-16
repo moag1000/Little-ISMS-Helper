@@ -138,39 +138,71 @@
                     {# Assets & Risk #}
                     {% if is_module_active('assets') or is_module_active('risks') %}
                     <li class="nav-divider">Assets & Risk</li>
-                    {% endif %}
-                    {% if is_module_active('assets') %}
-                    <li><a href="{{ path('app_asset_index') }}" class="{% if current_route starts with 'app_asset_' %}active{% endif %}" data-turbo-action="advance">
-                        <i class="bi bi-cpu" aria-hidden="true"></i>
-                        <span>{{ 'nav.assets'|trans }}</span>
-                    </a></li>
-                    <li><a href="{{ path('app_supplier_index') }}" class="{% if current_route starts with 'app_supplier_' %}active{% endif %}" data-turbo-action="advance">
-                        <i class="bi bi-truck" aria-hidden="true"></i>
-                        <span>{{ 'nav.suppliers'|trans }}</span>
-                    </a></li>
-                    {% endif %}
-                    {% if is_module_active('risks') %}
-                    <li><a href="{{ path('app_risk_index') }}" class="{% if current_route starts with 'app_risk_' %}active{% endif %}" data-turbo-action="advance">
-                        <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
-                        <span>{{ 'nav.risks'|trans }}</span>
-                    </a></li>
+                    <li class="has-submenu" data-controller="sidebar-dropdown" data-sidebar-dropdown-key-value="sidebar-assets-risk-expanded">
+                        <a href="{{ path('app_asset_index') }}"
+                           class="submenu-toggle {% if current_route starts with 'app_asset_' or current_route starts with 'app_supplier_' or current_route starts with 'app_risk_' %}active{% endif %}"
+                           data-turbo-action="advance"
+                           data-action="click->sidebar-dropdown#toggle:prevent"
+                           data-sidebar-dropdown-target="toggle"
+                           aria-expanded="false">
+                            <i class="bi bi-box-seam" aria-hidden="true"></i>
+                            <span>{{ 'nav.assets_risk_hub'|trans|default('Assets & Risks') }}</span>
+                            <i class="bi bi-chevron-down submenu-icon" data-sidebar-dropdown-target="icon" aria-hidden="true"></i>
+                        </a>
+                        <ul class="submenu" data-sidebar-dropdown-target="submenu">
+                            {% if is_module_active('assets') %}
+                            <li><a href="{{ path('app_asset_index') }}" class="{% if current_route starts with 'app_asset_' %}active{% endif %}" data-turbo-action="advance">
+                                <i class="bi bi-cpu" aria-hidden="true"></i>
+                                <span>{{ 'nav.assets'|trans }}</span>
+                            </a></li>
+                            <li><a href="{{ path('app_supplier_index') }}" class="{% if current_route starts with 'app_supplier_' %}active{% endif %}" data-turbo-action="advance">
+                                <i class="bi bi-truck" aria-hidden="true"></i>
+                                <span>{{ 'nav.suppliers'|trans }}</span>
+                            </a></li>
+                            {% endif %}
+                            {% if is_module_active('risks') %}
+                            <li><a href="{{ path('app_risk_index') }}" class="{% if current_route starts with 'app_risk_' %}active{% endif %}" data-turbo-action="advance">
+                                <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+                                <span>{{ 'nav.risks'|trans }}</span>
+                            </a></li>
+                            <li><a href="{{ path('app_risk_matrix') }}" class="{% if current_route == 'app_risk_matrix' %}active{% endif %}" data-turbo-action="advance">
+                                <i class="bi bi-grid-3x3" aria-hidden="true"></i>
+                                <span>{{ 'nav.risk_matrix'|trans|default('Risk Matrix') }}</span>
+                            </a></li>
+                            {% endif %}
+                        </ul>
+                    </li>
                     {% endif %}
 
                     {# BCM #}
                     {% if is_module_active('bcm') %}
                     <li class="nav-divider">Business Continuity</li>
-                    <li><a href="{{ path('app_business_process_index') }}" class="{% if current_route starts with 'app_business_process_' %}active{% endif %}" data-turbo-action="advance">
-                        <i class="bi bi-diagram-2" aria-hidden="true"></i>
-                        <span>{{ 'nav.bcm'|trans }}</span>
-                    </a></li>
-                    <li><a href="{{ path('app_bc_plan_index') }}" class="{% if current_route starts with 'app_bc_plan_' %}active{% endif %}" data-turbo-action="advance">
-                        <i class="bi bi-file-earmark-text" aria-hidden="true"></i>
-                        <span>{{ 'nav.bc_plans'|trans }}</span>
-                    </a></li>
-                    <li><a href="{{ path('app_bc_exercise_index') }}" class="{% if current_route starts with 'app_bc_exercise_' %}active{% endif %}" data-turbo-action="advance">
-                        <i class="bi bi-flag" aria-hidden="true"></i>
-                        <span>{{ 'nav.bc_exercises'|trans }}</span>
-                    </a></li>
+                    <li class="has-submenu" data-controller="sidebar-dropdown" data-sidebar-dropdown-key-value="sidebar-bcm-expanded">
+                        <a href="{{ path('app_business_process_index') }}"
+                           class="submenu-toggle {% if current_route starts with 'app_business_process_' or current_route starts with 'app_bc_plan_' or current_route starts with 'app_bc_exercise_' %}active{% endif %}"
+                           data-turbo-action="advance"
+                           data-action="click->sidebar-dropdown#toggle:prevent"
+                           data-sidebar-dropdown-target="toggle"
+                           aria-expanded="false">
+                            <i class="bi bi-shield-shaded" aria-hidden="true"></i>
+                            <span>{{ 'nav.bcm_hub'|trans|default('BCM Hub') }}</span>
+                            <i class="bi bi-chevron-down submenu-icon" data-sidebar-dropdown-target="icon" aria-hidden="true"></i>
+                        </a>
+                        <ul class="submenu" data-sidebar-dropdown-target="submenu">
+                            <li><a href="{{ path('app_business_process_index') }}" class="{% if current_route starts with 'app_business_process_' %}active{% endif %}" data-turbo-action="advance">
+                                <i class="bi bi-diagram-2" aria-hidden="true"></i>
+                                <span>{{ 'nav.bcm'|trans }}</span>
+                            </a></li>
+                            <li><a href="{{ path('app_bc_plan_index') }}" class="{% if current_route starts with 'app_bc_plan_' %}active{% endif %}" data-turbo-action="advance">
+                                <i class="bi bi-file-earmark-text" aria-hidden="true"></i>
+                                <span>{{ 'nav.bc_plans'|trans }}</span>
+                            </a></li>
+                            <li><a href="{{ path('app_bc_exercise_index') }}" class="{% if current_route starts with 'app_bc_exercise_' %}active{% endif %}" data-turbo-action="advance">
+                                <i class="bi bi-flag" aria-hidden="true"></i>
+                                <span>{{ 'nav.bc_exercises'|trans }}</span>
+                            </a></li>
+                        </ul>
+                    </li>
                     {% endif %}
 
                     {# Operations #}
