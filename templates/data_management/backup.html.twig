@@ -266,7 +266,12 @@
 {% block javascripts %}
     {{ parent() }}
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        // Use turbo:load for Turbo navigation compatibility, with DOMContentLoaded fallback
+        function initBackupPage() {
+            // Prevent re-initialization
+            if (window.backupPageInitialized) return;
+            window.backupPageInitialized = true;
+
             // Bootstrap is available globally via window.bootstrap (loaded in app.js)
             // Create Backup Form
             const createBackupForm = document.getElementById('createBackupForm');
@@ -587,6 +592,19 @@
                     }
                 });
             });
+        }
+
+        // Initialize on turbo:load (for Turbo navigation) and DOMContentLoaded (for direct page load)
+        document.addEventListener('turbo:load', function() {
+            window.backupPageInitialized = false; // Reset on each Turbo navigation
+            initBackupPage();
         });
+
+        // Fallback for direct page load without Turbo
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initBackupPage);
+        } else {
+            initBackupPage();
+        }
     </script>
 {% endblock %}
