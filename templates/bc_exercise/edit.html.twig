@@ -3,46 +3,247 @@
 {% block title %}Edit {{ bc_exercise.name }}{% endblock %}
 
 {% block body %}
-<div class="container">
-    <div class="page-header">
-        <h1>Edit Exercise: {{ bc_exercise.name }}</h1>
-        <div class="actions">
-            <a href="{{ path('app_bc_exercise_show', {id: bc_exercise.id}) }}" class="btn btn-secondary">View</a>
-            <a href="{{ path('app_bc_exercise_index') }}" class="btn btn-secondary">Back</a>
-        </div>
-    </div>
+<div class="container-fluid py-4">
+    {# Breadcrumb Navigation #}
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.bcm'|trans|default('BCM'), url: path('app_bc_exercise_index'), icon: 'bi-shield-exclamation' },
+            { label: 'bc_exercise.title'|trans|default('BC Exercises'), url: path('app_bc_exercise_index') },
+            { label: bc_exercise.name, url: path('app_bc_exercise_show', {id: bc_exercise.id}) },
+            { label: 'common.edit'|trans|default('Edit') }
+        ]
+    } %}
 
-    <div class="card">
-        <div class="card-content">
-            {{ form_start(form) }}
-                {{ form_row(form.name) }}
-                {{ form_row(form.exerciseType) }}
-                {{ form_row(form.description) }}
-                {{ form_row(form.scope) }}
-                {{ form_row(form.objectives) }}
-                {{ form_row(form.scenario) }}
-                {{ form_row(form.exerciseDate) }}
-                {{ form_row(form.durationHours) }}
-                {{ form_row(form.participants) }}
-                {{ form_row(form.facilitator) }}
-                {{ form_row(form.observers) }}
-                {{ form_row(form.status) }}
-                {{ form_row(form.results) }}
-                {{ form_row(form.whatWentWell) }}
-                {{ form_row(form.areasForImprovement) }}
-                {{ form_row(form.findings) }}
-                {{ form_row(form.actionItems) }}
-                {{ form_row(form.lessonsLearned) }}
-                {{ form_row(form.planUpdatesRequired) }}
-                {{ form_row(form.successRating) }}
-                {{ form_row(form.reportCompleted) }}
-                {{ form_row(form.reportDate) }}
+    {# Page Header #}
+    {% include '_components/_page_header.html.twig' with {
+        title: 'Edit: ' ~ bc_exercise.name,
+        icon: 'bi-pencil',
+        actions: [
+            { label: 'common.view'|trans|default('View'), url: path('app_bc_exercise_show', {id: bc_exercise.id}), variant: 'outline-primary', icon: 'bi-eye' },
+            { label: 'common.back'|trans, url: path('app_bc_exercise_index'), variant: 'secondary', icon: 'bi-arrow-left' }
+        ]
+    } %}
 
-                <div class="form-actions">
-                    <button type="submit" class="btn btn-primary">Update Exercise</button>
-                    <a href="{{ path('app_bc_exercise_show', {id: bc_exercise.id}) }}" class="btn btn-secondary">Cancel</a>
+    <div class="row">
+        <div class="col-lg-10 col-xl-9 mx-auto">
+            <div class="card shadow">
+                <div class="card-body">
+                    {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+
+                    {# Basic Information Section #}
+                    <fieldset class="mb-4">
+                        <legend class="h5 mb-3">
+                            <i class="bi bi-info-square" aria-hidden="true"></i>
+                            {{ 'bc_exercise.section.basic_info'|trans|default('Basic Information') }}
+                        </legend>
+
+                        {% include '_components/_form_field.html.twig' with {
+                            'field': form.name,
+                            'label': 'bc_exercise.field.name'|trans|default('Exercise Name'),
+                            'help': 'bc_exercise.help.name'|trans|default('Descriptive name for the exercise'),
+                            'required': true
+                        } %}
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.exerciseType,
+                                    'label': 'bc_exercise.field.exercise_type'|trans|default('Exercise Type'),
+                                    'help': 'bc_exercise.help.exercise_type'|trans|default('Type of business continuity exercise')
+                                } %}
+                            </div>
+                            <div class="col-md-6">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.status,
+                                    'label': 'bc_exercise.field.status'|trans|default('Status'),
+                                    'help': 'bc_exercise.help.status'|trans|default('Current status of the exercise')
+                                } %}
+                            </div>
+                        </div>
+
+                        {% include '_components/_form_field.html.twig' with {
+                            'field': form.description,
+                            'label': 'bc_exercise.field.description'|trans|default('Description'),
+                            'help': 'bc_exercise.help.description'|trans|default('Detailed description of the exercise')
+                        } %}
+
+                        {% include '_components/_form_field.html.twig' with {
+                            'field': form.scope,
+                            'label': 'bc_exercise.field.scope'|trans|default('Scope'),
+                            'help': 'bc_exercise.help.scope'|trans|default('Scope and boundaries of the exercise')
+                        } %}
+                    </fieldset>
+
+                    {# Planning Section #}
+                    <fieldset class="mb-4">
+                        <legend class="h5 mb-3">
+                            <i class="bi bi-calendar-event" aria-hidden="true"></i>
+                            {{ 'bc_exercise.section.planning'|trans|default('Planning') }}
+                        </legend>
+
+                        {% include '_components/_form_field.html.twig' with {
+                            'field': form.objectives,
+                            'label': 'bc_exercise.field.objectives'|trans|default('Objectives'),
+                            'help': 'bc_exercise.help.objectives'|trans|default('Goals and objectives of the exercise')
+                        } %}
+
+                        {% include '_components/_form_field.html.twig' with {
+                            'field': form.scenario,
+                            'label': 'bc_exercise.field.scenario'|trans|default('Scenario'),
+                            'help': 'bc_exercise.help.scenario'|trans|default('The scenario to be tested')
+                        } %}
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.exerciseDate,
+                                    'label': 'bc_exercise.field.exercise_date'|trans|default('Exercise Date'),
+                                    'help': 'bc_exercise.help.exercise_date'|trans|default('Scheduled date for the exercise')
+                                } %}
+                            </div>
+                            <div class="col-md-6">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.durationHours,
+                                    'label': 'bc_exercise.field.duration_hours'|trans|default('Duration (Hours)'),
+                                    'help': 'bc_exercise.help.duration_hours'|trans|default('Expected duration in hours')
+                                } %}
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    {# Participants Section #}
+                    <fieldset class="mb-4">
+                        <legend class="h5 mb-3">
+                            <i class="bi bi-people" aria-hidden="true"></i>
+                            {{ 'bc_exercise.section.participants'|trans|default('Participants') }}
+                        </legend>
+
+                        {% include '_components/_form_field.html.twig' with {
+                            'field': form.participants,
+                            'label': 'bc_exercise.field.participants'|trans|default('Participants'),
+                            'help': 'bc_exercise.help.participants'|trans|default('List of participants in the exercise')
+                        } %}
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.facilitator,
+                                    'label': 'bc_exercise.field.facilitator'|trans|default('Facilitator'),
+                                    'help': 'bc_exercise.help.facilitator'|trans|default('Person responsible for facilitating')
+                                } %}
+                            </div>
+                            <div class="col-md-6">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.observers,
+                                    'label': 'bc_exercise.field.observers'|trans|default('Observers'),
+                                    'help': 'bc_exercise.help.observers'|trans|default('List of observers')
+                                } %}
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    {# Results Section #}
+                    <fieldset class="mb-4">
+                        <legend class="h5 mb-3">
+                            <i class="bi bi-clipboard-check" aria-hidden="true"></i>
+                            {{ 'bc_exercise.section.results'|trans|default('Results') }}
+                        </legend>
+
+                        {% include '_components/_form_field.html.twig' with {
+                            'field': form.results,
+                            'label': 'bc_exercise.field.results'|trans|default('Results'),
+                            'help': 'bc_exercise.help.results'|trans|default('Summary of exercise results')
+                        } %}
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.whatWentWell,
+                                    'label': 'bc_exercise.field.what_went_well'|trans|default('What Went Well'),
+                                    'help': 'bc_exercise.help.what_went_well'|trans|default('Positive outcomes')
+                                } %}
+                            </div>
+                            <div class="col-md-6">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.areasForImprovement,
+                                    'label': 'bc_exercise.field.areas_for_improvement'|trans|default('Areas for Improvement'),
+                                    'help': 'bc_exercise.help.areas_for_improvement'|trans|default('Areas that need improvement')
+                                } %}
+                            </div>
+                        </div>
+
+                        {% include '_components/_form_field.html.twig' with {
+                            'field': form.findings,
+                            'label': 'bc_exercise.field.findings'|trans|default('Findings'),
+                            'help': 'bc_exercise.help.findings'|trans|default('Key findings from the exercise')
+                        } %}
+
+                        {% include '_components/_form_field.html.twig' with {
+                            'field': form.actionItems,
+                            'label': 'bc_exercise.field.action_items'|trans|default('Action Items'),
+                            'help': 'bc_exercise.help.action_items'|trans|default('Follow-up actions required')
+                        } %}
+
+                        {% include '_components/_form_field.html.twig' with {
+                            'field': form.lessonsLearned,
+                            'label': 'bc_exercise.field.lessons_learned'|trans|default('Lessons Learned'),
+                            'help': 'bc_exercise.help.lessons_learned'|trans|default('Key lessons from the exercise')
+                        } %}
+
+                        {% include '_components/_form_field.html.twig' with {
+                            'field': form.planUpdatesRequired,
+                            'label': 'bc_exercise.field.plan_updates_required'|trans|default('Plan Updates Required'),
+                            'help': 'bc_exercise.help.plan_updates_required'|trans|default('Updates needed for BC plans')
+                        } %}
+                    </fieldset>
+
+                    {# Report Section #}
+                    <fieldset class="mb-4">
+                        <legend class="h5 mb-3">
+                            <i class="bi bi-file-earmark-text" aria-hidden="true"></i>
+                            {{ 'bc_exercise.section.report'|trans|default('Report') }}
+                        </legend>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.successRating,
+                                    'label': 'bc_exercise.field.success_rating'|trans|default('Success Rating'),
+                                    'help': 'bc_exercise.help.success_rating'|trans|default('Overall success rating (1-5)')
+                                } %}
+                            </div>
+                            <div class="col-md-4">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.reportCompleted,
+                                    'label': 'bc_exercise.field.report_completed'|trans|default('Report Completed'),
+                                    'help': 'bc_exercise.help.report_completed'|trans|default('Has the report been completed?')
+                                } %}
+                            </div>
+                            <div class="col-md-4">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.reportDate,
+                                    'label': 'bc_exercise.field.report_date'|trans|default('Report Date'),
+                                    'help': 'bc_exercise.help.report_date'|trans|default('Date the report was completed')
+                                } %}
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    {# Form Actions #}
+                    <div class="form-actions d-flex gap-2 justify-content-between pt-3 border-top">
+                        <a href="{{ path('app_bc_exercise_show', {id: bc_exercise.id}) }}" class="btn btn-secondary">
+                            <i class="bi bi-x-circle" aria-hidden="true"></i>
+                            {{ 'common.cancel'|trans }}
+                        </a>
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="bi bi-save" aria-hidden="true"></i>
+                            {{ 'common.save'|trans }}
+                        </button>
+                    </div>
+
+                    {{ form_end(form) }}
                 </div>
-            {{ form_end(form) }}
+            </div>
         </div>
     </div>
 </div>
