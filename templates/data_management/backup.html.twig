@@ -479,42 +479,38 @@
             });
 
             // Preview Backup
-            // Lazy-initialize modals to ensure Bootstrap is available
-            let previewModal = null;
-            let restoreModal = null;
-
-            function getPreviewModal() {
-                if (!previewModal) {
-                    const modalEl = document.getElementById('previewModal');
-                    if (!modalEl) {
-                        console.error('Preview modal element not found');
-                        return null;
-                    }
-                    if (window.bootstrap) {
-                        previewModal = new window.bootstrap.Modal(modalEl);
-                    } else {
-                        console.error('Bootstrap not available for preview modal');
-                        return null;
-                    }
+            // Show modal using Bootstrap 5's getOrCreateInstance (most reliable method)
+            function showModal(modalId) {
+                const modalEl = document.getElementById(modalId);
+                if (!modalEl) {
+                    console.error('Modal element not found:', modalId);
+                    alert('Modal nicht gefunden: ' + modalId);
+                    return false;
                 }
-                return previewModal;
+
+                if (!window.bootstrap || !window.bootstrap.Modal) {
+                    console.error('Bootstrap Modal not available');
+                    alert('Bootstrap Modal nicht verfügbar. Bitte Seite neu laden.');
+                    return false;
+                }
+
+                try {
+                    const modal = window.bootstrap.Modal.getOrCreateInstance(modalEl);
+                    modal.show();
+                    return true;
+                } catch (error) {
+                    console.error('Error showing modal:', error);
+                    alert('Fehler beim Öffnen des Modals: ' + error.message);
+                    return false;
+                }
             }
 
-            function getRestoreModal() {
-                if (!restoreModal) {
-                    const modalEl = document.getElementById('restoreModal');
-                    if (!modalEl) {
-                        console.error('Restore modal element not found');
-                        return null;
-                    }
-                    if (window.bootstrap) {
-                        restoreModal = new window.bootstrap.Modal(modalEl);
-                    } else {
-                        console.error('Bootstrap not available for restore modal');
-                        return null;
-                    }
+            function hideModal(modalId) {
+                const modalEl = document.getElementById(modalId);
+                if (modalEl && window.bootstrap && window.bootstrap.Modal) {
+                    const modal = window.bootstrap.Modal.getInstance(modalEl);
+                    if (modal) modal.hide();
                 }
-                return restoreModal;
             }
 
             document.querySelectorAll('.preview-backup').forEach(btn => {
@@ -524,12 +520,9 @@
 
                     previewContent.innerHTML = '<div class="text-center"><div class="spinner-border text-primary"></div></div>';
 
-                    const modal = getPreviewModal();
-                    if (!modal) {
-                        alert('Bootstrap Modal nicht verfügbar. Bitte Seite neu laden.');
+                    if (!showModal('previewModal')) {
                         return;
                     }
-                    modal.show();
 
                     try {
                         const response = await fetch(`{{ path('data_backup_preview', {filename: '__FILENAME__'}) }}`.replace('__FILENAME__', filename));
@@ -569,12 +562,7 @@
                     document.getElementById('restoreModalLabel').innerHTML = `<i class="bi bi-exclamation-triangle"></i> ${filename} wiederherstellen`;
                     document.getElementById('restoreStatus').innerHTML = '';
 
-                    const modal = getRestoreModal();
-                    if (!modal) {
-                        alert('Bootstrap Modal nicht verfügbar. Bitte Seite neu laden.');
-                        return;
-                    }
-                    modal.show();
+                    showModal('restoreModal');
                 });
             });
 
