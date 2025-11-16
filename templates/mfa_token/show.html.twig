@@ -1,18 +1,15 @@
-{% extends 'base.html.twig' %}
-{% block title %}{{ 'mfa_token.title'|trans }} - {{ parent() }}{% endblock %}
+{% extends 'admin/layout.html.twig' %}
 
-{% block body %}
-<div class="container py-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1>
-            <i class="bi bi-shield-lock"></i>
-            {{ mfa_token.tokenTypeName }}
-        </h1>
-        <div>
-            <a href="{{ path('admin_mfa_index') }}" class="btn btn-outline-secondary">
-                <i class="bi bi-arrow-left"></i> {{ 'common.back'|trans }}
-            </a>
-        </div>
+{% block admin_title %}{{ mfa_token.tokenTypeName }}{% endblock %}
+{% block admin_subtitle %}
+    <p class="text-muted">{{ 'mfa_token.details.subtitle'|trans|default('Details und Verwaltung des MFA-Tokens') }}</p>
+{% endblock %}
+
+{% block admin_content %}
+    <div class="mb-4">
+        <a href="{{ path('admin_mfa_index') }}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> {{ 'common.back'|trans }}
+        </a>
     </div>
 
     <div class="row">
@@ -217,5 +214,4 @@
             </div>
         </div>
     </div>
-</div>
 {% endblock %}
