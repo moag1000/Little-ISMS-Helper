@@ -116,10 +116,10 @@
 - **Ziel**: Test Coverage signifikant verbessern
 - **Priorität**: Hoch
 - **Aufwand**: ~5-7 Tage
-- **Aktueller Stand**: ~50% Coverage (geschätzt nach 8 neuen Service-Tests)
+- **Aktueller Stand**: ~55% Coverage (geschätzt nach 11 neuen Service-Tests)
 - **Ziel**: 60% Coverage
 - **Fortschritt** (November 2025):
-  - ✅ **19 Service-Tests** (11 existierend + 8 neu):
+  - ✅ **22 Service-Tests** (11 existierend + 11 neu):
     - TenantContextTest ✅
     - RiskMatrixServiceTest ✅
     - RiskIntelligenceServiceTest ✅
@@ -139,8 +139,12 @@
     - **AutomatedGapAnalysisServiceTest** ✅ (NEU - 15 Tests)
     - **ISMSObjectiveServiceTest** ✅ (NEU - 18 Tests)
     - **WorkflowServiceTest** ✅ (NEU - 16 Tests)
+    - **DocumentServiceTest** ✅ (NEU - 16 Tests)
+    - **SupplierServiceTest** ✅ (NEU - 20 Tests)
+    - **ComplianceAssessmentServiceTest** ✅ (NEU - 22 Tests)
   - ✅ **26 Entity-Tests** für alle Haupt-Entities
-  - 📊 **Total: 45 Test-Dateien, 2.323 neue Test-Zeilen (119 neue Tests)**
+  - 📊 **Total: 48 Test-Dateien, ~3.500 neue Test-Zeilen (177 neue Tests)**
+  - 🔧 **Bug-Fixes**: ISMSObjectiveServiceTest (int statt float), WorkflowServiceTest (string statt Role-Objekt)
 - **Schritte**:
   - [x] Coverage-Report analysieren
   - [x] Kritische Business-Logic identifizieren
@@ -153,6 +157,9 @@
     - [x] ComplianceAnalysis (AutomatedGapAnalysisService)
     - [x] ISMSObjectives (ISMSObjectiveService)
     - [x] WorkflowManagement (WorkflowService)
+    - [x] DocumentService (Governance-based inheritance)
+    - [x] SupplierService (Governance-based inheritance)
+    - [x] ComplianceAssessmentService (Framework assessment & gap identification)
   - [ ] Integration Tests für kritische Workflows:
     - [ ] Tenant-Erstellung & Setup
     - [ ] Risk Assessment Flow
