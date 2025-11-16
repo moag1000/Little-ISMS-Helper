@@ -79,8 +79,8 @@ class AdminBackupController extends AbstractController
     #[Route('/backup/download/{filename}', name: 'data_backup_download', methods: ['GET'])]
     public function downloadBackup(string $filename): Response
     {
-        // Validate filename to prevent directory traversal
-        if (!preg_match('/^backup_\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2}\.json\.gz$/', $filename)) {
+        // Validate filename to prevent directory traversal (accept both backup_ and uploaded_ files)
+        if (!preg_match('/^(backup_|uploaded_)\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2}\.(json\.gz|json|gz)$/', $filename)) {
             throw $this->createNotFoundException('Invalid backup filename');
         }
 
@@ -99,7 +99,9 @@ class AdminBackupController extends AbstractController
             fclose($outputStream);
         });
 
-        $response->headers->set('Content-Type', 'application/gzip');
+        // Set content type based on file extension
+        $contentType = str_ends_with($filename, '.gz') ? 'application/gzip' : 'application/json';
+        $response->headers->set('Content-Type', $contentType);
         $response->headers->set('Content-Disposition', 'attachment; filename="' . $filename . '"');
         $response->headers->set('Content-Length', (string) filesize($filepath));
 
