@@ -265,10 +265,9 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script type="module">
-        import * as bootstrap from 'bootstrap';
-
+    <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Bootstrap is available globally via window.bootstrap (loaded in app.js)
             // Create Backup Form
             const createBackupForm = document.getElementById('createBackupForm');
             const createBackupBtn = document.getElementById('createBackupBtn');
@@ -452,7 +451,7 @@
             });
 
             // Preview Backup
-            const previewModal = new bootstrap.Modal(document.getElementById('previewModal'));
+            const previewModal = new window.bootstrap.Modal(document.getElementById('previewModal'));
             document.querySelectorAll('.preview-backup').forEach(btn => {
                 btn.addEventListener('click', async function() {
                     const filename = this.getAttribute('data-filename');
@@ -492,7 +491,7 @@
             });
 
             // Restore Backup
-            const restoreModal = new bootstrap.Modal(document.getElementById('restoreModal'));
+            const restoreModal = new window.bootstrap.Modal(document.getElementById('restoreModal'));
             document.querySelectorAll('.restore-backup').forEach(btn => {
                 btn.addEventListener('click', function() {
                     const filename = this.getAttribute('data-filename');

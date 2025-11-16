@@ -12,5 +12,9 @@ import './extension_error_handler.js';
 // CSRF Protection - Global script (not a Stimulus controller)
 import './csrf_protection.js';
 
+// Import Bootstrap and expose globally for inline scripts (avoids Turbo/importmap conflicts)
+import * as bootstrap from 'bootstrap';
+window.bootstrap = bootstrap;
+
 // NOTE: CSS is loaded separately via assets/styles.css (see importmap.php)
 // This avoids AssetMapper issues with CSS imports from JavaScript at APP_DEBUG=0
