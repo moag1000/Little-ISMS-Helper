@@ -10,6 +10,7 @@
     {# Fallback modal styles in case Bootstrap CSS fails to load from CDN #}
     <style>
         .modal {
+            display: none;
             position: fixed;
             top: 0;
             left: 0;
@@ -21,32 +22,46 @@
             outline: 0;
             background-color: rgba(0, 0, 0, 0.5);
         }
+        .modal.fade {
+            transition: opacity 0.15s linear;
+        }
         .modal.fade:not(.show) {
             opacity: 0;
-            pointer-events: none;
         }
         .modal.show {
             display: block !important;
             opacity: 1;
+        }
+        .modal[style*="display: block"] {
+            display: block !important;
+            opacity: 1 !important;
+        }
+        .modal[aria-modal="true"] {
+            display: block !important;
+            opacity: 1 !important;
         }
         .modal-dialog {
             position: relative;
             width: auto;
             margin: 1.75rem auto;
             max-width: 500px;
+            pointer-events: none;
         }
         .modal-dialog-lg {
             max-width: 800px;
         }
         .modal-content {
             position: relative;
-            display: flex;
+            display: flex !important;
             flex-direction: column;
             width: 100%;
-            background-color: #fff;
+            pointer-events: auto;
+            background-color: #fff !important;
+            background-clip: padding-box;
             border: 1px solid rgba(0, 0, 0, 0.2);
             border-radius: 0.5rem;
             box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.5);
+            color: #212529 !important;
         }
         .modal-header {
             display: flex;
