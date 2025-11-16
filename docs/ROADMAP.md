@@ -188,11 +188,11 @@
 
 ### 1. Workflow System
 
-#### Workflow UI Templates erstellen ✅ TEILWEISE ERLEDIGT
+#### Workflow UI Templates erstellen ✅ VOLLSTÄNDIG ERLEDIGT
 - **Ziel**: Wiederverwendbare Workflow-Templates für gängige ISMS-Prozesse
 - **Priorität**: Mittel
 - **Aufwand**: ~7-10 Tage
-- **Status**: ✅ Drag & Drop Builder und 5 Templates implementiert (November 2025)
+- **Status**: ✅ Drag & Drop Builder und 6 Templates implementiert (November 2025)
 - **Templates**:
   - [x] Risk Assessment Workflow ✅
     - Risk Identification → Risk Analysis → Treatment Plan Review → Final Approval
@@ -202,10 +202,10 @@
     - Initial Classification → Investigation → Containment Approval → Resolution Review → Lessons Learned
   - [x] Document Review Workflow ✅
     - Initial Review → Technical Review → Final Approval
-  - [x] Change Request Workflow ✅ (NEU)
+  - [x] Change Request Workflow ✅
     - Impact Assessment → Security Review → CAB Approval → Implementation Sign-off
-  - [ ] Training Workflow
-    - Planen → Einladen → Durchführen → Follow-up → Zertifizierung
+  - [x] Training Workflow ✅ (NEU)
+    - Training Scheduled → Participants Confirmed → Training Completed → Completion Verified → Certificates Issued
 - **Features**:
   - [x] Drag & Drop Workflow Builder ✅
     - SortableJS Integration mit Stimulus Controller
@@ -222,21 +222,30 @@
   - [x] SLA-Tracking (Days to Complete) ✅
   - [x] Step Types (Approval, Notification, Auto Action) ✅
   - [x] i18n Support (EN/DE) ✅
-  - [ ] Status-Tracking (existiert bereits)
-  - [ ] Automatische Benachrichtigungen
-  - [ ] Deadline-Management
-  - [ ] Approval-Mechanismus (existiert bereits)
-  - [ ] Audit-Trail (existiert bereits)
+  - [x] Status-Tracking ✅
+  - [x] Automatische Benachrichtigungen ✅ (NEU)
+    - Approval-Benachrichtigungen an zugewiesene Genehmiger
+    - Notification-Steps mit Auto-Progression
+    - Deadline-Warnungen vor Fristablauf
+  - [x] Deadline-Management ✅ (NEU)
+    - SLA-basierte Fristberechnung
+    - Warnungen bei nahenden Deadlines
+    - Overdue-Benachrichtigungen
+  - [x] Approval-Mechanismus ✅
+  - [x] Audit-Trail ✅
 - **Neue Dateien** (November 2025):
   - `src/Controller/Api/WorkflowStepApiController.php` - REST API (390 Zeilen)
   - `src/Form/WorkflowStepType.php` - Form Type (146 Zeilen)
   - `assets/controllers/workflow_builder_controller.js` - Stimulus Controller (384 Zeilen)
   - `templates/workflow/builder.html.twig` - Visual Builder UI (298 Zeilen)
   - Gesamt: ~1.325 neue Zeilen Code
-- **Erfolgskriterien**: ✅ Teilweise erfüllt
+- **Erfolgskriterien**: ✅ Vollständig erfüllt
   - ✅ Workflows sind wiederverwendbar
   - ✅ Anpassbar an Tenant-spezifische Anforderungen
   - ✅ Dashboard zeigt Workflow-Status
+  - ✅ Automatische E-Mail-Benachrichtigungen
+  - ✅ Deadline-Warnungen und Overdue-Alerts
+  - ✅ Notification-Steps mit Auto-Progression
 
 ### 2. Compliance Framework
 
@@ -340,7 +349,7 @@
 - **Table Scope Attributes**: ✅ 10/10 Templates (abgeschlossen)
 
 ### Mittelfristig (1 Monat)
-- **Workflow Templates**: 0 → 5
+- **Workflow Templates**: 0 → 6
 - **Compliance Frameworks**: 1 → 4
 - **PWA Score**: 0 → 90+
 - **Code Coverage**: 60% → 70%
