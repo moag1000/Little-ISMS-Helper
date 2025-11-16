@@ -260,6 +260,7 @@ class AdminBackupController extends AbstractController
                 'existing_data_strategy' => $request->request->get('existing_data_strategy', RestoreService::EXISTING_UPDATE),
                 'skip_entities' => $request->request->all('skip_entities') ?? [],
                 'dry_run' => $request->request->getBoolean('dry_run', false),
+                'clear_before_restore' => $request->request->getBoolean('clear_before_restore', false),
             ];
 
             $this->logger->info('Starting restore', [

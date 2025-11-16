@@ -8,17 +8,20 @@ use App\Form\DatabaseConfigurationType;
 use App\Form\EmailConfigurationType;
 use App\Form\OrganisationInfoType;
 use App\Security\SetupAccessChecker;
+use App\Service\BackupService;
 use App\Service\ComplianceFrameworkLoaderService;
 use App\Service\DatabaseTestService;
 use App\Service\DataImportService;
 use App\Service\EnvironmentWriter;
 use App\Service\ModuleConfigurationService;
+use App\Service\RestoreService;
 use App\Service\SystemRequirementsChecker;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\BufferedOutput;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -26,6 +29,7 @@ use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Psr\Log\LoggerInterface;
 
 #[Route('/setup')]
 class DeploymentWizardController extends AbstractController
@@ -670,6 +674,111 @@ class DeploymentWizardController extends AbstractController
     {
         $this->addFlash('info', $this->translator->trans('deployment.info.sample_data_skipped'));
         return $this->redirectToRoute('setup_step10_complete');
+    }
+
+    /**
+     * Step 9: Restore Backup
+     */
+    #[Route('/step9-restore-backup', name: 'setup_step9_restore_backup', methods: ['POST'])]
+    public function step9RestoreBackup(
+        Request $request,
+        SessionInterface $session,
+        BackupService $backupService,
+        RestoreService $restoreService,
+        LoggerInterface $logger
+    ): Response {
+        $selectedModules = $session->get('setup_selected_modules', []);
+        $sampleData = $this->moduleConfigService->getAvailableSampleData($selectedModules);
+
+        /** @var UploadedFile|null $file */
+        $file = $request->files->get('backup_file');
+
+        if (!$file) {
+            $this->addFlash('error', 'Keine Backup-Datei hochgeladen');
+            return $this->render('setup/step9_sample_data.html.twig', [
+                'selected_modules' => $selectedModules,
+                'sample_data' => $sampleData,
+                'backup_restore_result' => [
+                    'success' => false,
+                    'message' => 'Keine Backup-Datei hochgeladen',
+                ],
+            ]);
+        }
+
+        // Validate file extension
+        $extension = $file->getClientOriginalExtension();
+        if (!in_array($extension, ['json', 'gz'])) {
+            $this->addFlash('error', 'Ungültiges Dateiformat. Nur .json oder .gz Dateien sind erlaubt.');
+            return $this->render('setup/step9_sample_data.html.twig', [
+                'selected_modules' => $selectedModules,
+                'sample_data' => $sampleData,
+                'backup_restore_result' => [
+                    'success' => false,
+                    'message' => 'Ungültiges Dateiformat',
+                ],
+            ]);
+        }
+
+        try {
+            // Save file temporarily
+            $backupDir = $this->getParameter('kernel.project_dir') . '/var/backups';
+            if (!is_dir($backupDir)) {
+                mkdir($backupDir, 0755, true);
+            }
+
+            $filename = 'setup_restore_' . date('Y-m-d_H-i-s') . '.' . $extension;
+            $filepath = $backupDir . '/' . $filename;
+            $file->move($backupDir, $filename);
+
+            $logger->info('Backup file uploaded for setup restore', [
+                'filename' => $filename,
+            ]);
+
+            // Load and restore backup
+            $backup = $backupService->loadBackupFromFile($filepath);
+
+            $options = [
+                'missing_field_strategy' => RestoreService::STRATEGY_USE_DEFAULT,
+                'existing_data_strategy' => RestoreService::EXISTING_UPDATE,
+                'dry_run' => false,
+                'clear_before_restore' => $request->request->getBoolean('clear_before_restore', true),
+            ];
+
+            $result = $restoreService->restoreFromBackup($backup, $options);
+
+            $logger->info('Backup restored during setup', [
+                'statistics' => $result['statistics'],
+                'warnings' => count($result['warnings']),
+            ]);
+
+            $this->addFlash('success', 'Backup erfolgreich wiederhergestellt! Sie können jetzt das Setup abschließen.');
+
+            return $this->render('setup/step9_sample_data.html.twig', [
+                'selected_modules' => $selectedModules,
+                'sample_data' => $sampleData,
+                'backup_restore_result' => [
+                    'success' => true,
+                    'statistics' => $result['statistics'],
+                    'warnings' => $result['warnings'],
+                ],
+            ]);
+        } catch (\Exception $e) {
+            $logger->error('Backup restore failed during setup', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            $this->addFlash('error', 'Fehler bei der Wiederherstellung: ' . $e->getMessage());
+
+            return $this->render('setup/step9_sample_data.html.twig', [
+                'selected_modules' => $selectedModules,
+                'sample_data' => $sampleData,
+                'backup_restore_result' => [
+                    'success' => false,
+                    'message' => $e->getMessage(),
+                ],
+            ]);
+        }
     }
 
     /**

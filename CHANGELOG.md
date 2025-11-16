@@ -15,6 +15,82 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.7.0] - 2025-11-17 - Backup/Restore System Overhaul & Setup Wizard Integration
+
+### Added
+
+#### Backup Restore in Setup Wizard
+- **Setup Step 9 Integration** - Restore backups directly during initial setup
+- **Migration Support** - Easy migration from other Little ISMS Helper instances
+- **Clear Before Restore Option** - Clean restore for consistent database state
+- **File Upload Support** - Upload .json or .gz backup files during setup
+
+#### Enhanced Restore Service
+- **ManyToOne Relation Support** - Associations are now restored (not just scalar fields)
+- **Unique Constraint Detection** - Prevents duplicate key errors for Role, Permission, User, Tenant, ComplianceFramework, Control, ComplianceRequirement
+- **Entity Dependency Ordering** - 30+ entities ordered by foreign key dependencies
+- **Clear Before Restore** - Option to delete all existing data before restore
+- **Robust Error Recovery** - EntityManager state checks and safe rollback
+
+#### Project Support
+- **BuyMeACoffee Link** - Support development via donations (README.md)
+
+### Fixed
+
+#### Backup Modal Display Issues
+- **Custom Modal Pattern** - Replaced Bootstrap Modal JS with custom CSS-based modals
+- **Consistent with Global Search** - Same pattern as working command palette
+- **Proper Scrolling** - Modal body scrolls, header/footer fixed
+- **Backdrop and ESC Handling** - Click outside or ESC to close
+
+#### Database Restore Reliability
+- **EntityManager Close Prevention** - Checks if EM is open before operations
+- **Safe Rollback Logic** - Handles closed EntityManager during rollback
+- **Flush Error Handling** - Catches and logs constraint violations without crashing
+- **Transaction Safety** - Proper transaction management throughout restore
+
+#### Unique Constraint Conflicts
+- **ID + Unique Field Lookup** - Finds existing entities by both primary key and unique constraints
+- **Conflict Detection** - Warns when backup ID wants a value owned by different existing ID
+- **Skip with Warning** - Gracefully skips conflicts instead of crashing
+
+### Changed
+
+#### CLAUDE.md Optimization
+- **Pre-Commit/Push Checklist** - Mandatory quality checks before commits
+- **Token Efficiency** - Reduced from ~254 to 134 lines (47% reduction)
+- **Common Pitfalls Section** - Documents solved issues for future reference
+- **Focused Content** - Essential information only, external docs when needed
+
+#### RestoreService Improvements
+- **Entity Priority Map** - Extended to 30+ entities with proper dependency order
+- **Association Restoration** - Uses `getReference()` for ManyToOne relations
+- **Better Logging** - Debug logs for conflict detection and entity processing
+- **Statistics Tracking** - Tracks cleared, created, updated, skipped, error counts
+
+### Security
+
+- **Backup File Validation** - Only .json and .gz files accepted
+- **CSRF Protection** - All restore forms protected
+- **Tenant Isolation** - Backup/restore respects multi-tenant boundaries
+- **Audit Logging** - All restore operations logged
+
+### Statistics
+- **~800 new lines of code** in RestoreService
+- **~200 new lines** in DeploymentWizardController
+- **~120 lines** of custom modal CSS
+- **6 files modified** (RestoreService, AdminBackupController, DeploymentWizardController, backup.html.twig, step9_sample_data.html.twig, README.md)
+- **1 file optimized** (CLAUDE.md - 47% smaller)
+- **909 tests passing** (2573 assertions)
+
+### Documentation
+- Updated CLAUDE.md with pre-commit/push quality checklist
+- Added common pitfalls and troubleshooting guide
+- Documented Modal and Turbo patterns
+- Security checklist for new features
+
+---
+
 ## [1.6.4] - 2025-11-16 - Compliance Framework CRUD & Workflow Builder
 
 ### Added - Phase 6C & 6D Complete
