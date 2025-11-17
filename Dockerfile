@@ -42,6 +42,11 @@ RUN apk add --no-cache \
 RUN pip3 install --break-system-packages --upgrade pip setuptools && \
     pip3 install --break-system-packages --upgrade supervisor
 
+# Prevent Docker from creating automatic volume for /var/lib/mysql
+# We store MySQL data in /var/www/html/var/mysql instead (part of the app volume)
+# This removes the VOLUME directive that MariaDB package adds
+RUN rm -rf /var/lib/mysql && mkdir -p /var/lib/mysql && chown mysql:mysql /var/lib/mysql
+
 # Install PHP extensions
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg && \
     docker-php-ext-install -j$(nproc) \
@@ -129,9 +134,10 @@ RUN sed -i 's|listen = .*|listen = /run/php-fpm.sock|' /usr/local/etc/php-fpm.d/
     chown www-data:www-data /run/php-fpm
 
 # Configure MariaDB for standalone deployment
-RUN mkdir -p /var/lib/mysql /run/mysqld && \
-    chown -R mysql:mysql /var/lib/mysql /run/mysqld && \
-    chmod 755 /var/lib/mysql /run/mysqld
+# Note: Data is stored in /var/www/html/var/mysql (part of app volume), not /var/lib/mysql
+RUN mkdir -p /run/mysqld && \
+    chown -R mysql:mysql /run/mysqld && \
+    chmod 755 /run/mysqld
 
 # Copy MariaDB initialization script
 COPY docker/scripts/init-mysql.sh /var/www/html/docker/scripts/init-mysql.sh
@@ -150,8 +156,8 @@ HEALTHCHECK --interval=30s --timeout=5s --retries=3 --start-period=40s \
 # Expose port
 EXPOSE 80
 
-# Volume for persistent database storage
-VOLUME ["/var/lib/mysql"]
+# No VOLUME directive for /var/lib/mysql - we use /var/www/html/var/mysql instead
+# Users should mount a volume to /var/www/html/var for persistent data
 
 # Start supervisor (use supervisord from PATH - pip installs to /usr/local/bin)
 CMD ["supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
