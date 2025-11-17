@@ -210,10 +210,11 @@ class DatabaseConfigurationType extends AbstractType
     private function detectStandaloneDocker(): bool
     {
         // Check if the MySQL socket exists (indicates MariaDB is running locally)
-        $socketExists = file_exists('/run/mysqld/mysqld.sock');
+        // Use @ to suppress open_basedir warnings on non-Docker servers
+        $socketExists = @file_exists('/run/mysqld/mysqld.sock');
 
         // Check if the init script exists (indicates standalone Docker image)
-        $initScriptExists = file_exists('/var/www/html/docker/scripts/init-mysql.sh');
+        $initScriptExists = @file_exists('/var/www/html/docker/scripts/init-mysql.sh');
 
         // Check if DATABASE_URL contains the local socket configuration
         $dbUrl = $_ENV['DATABASE_URL'] ?? $_SERVER['DATABASE_URL'] ?? '';
