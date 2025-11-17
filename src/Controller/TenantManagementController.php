@@ -824,4 +824,78 @@ class TenantManagementController extends AbstractController
             ], 500);
         }
     }
+
+    /**
+     * Edit organisation context settings (industries, size, country)
+     */
+    #[Route('/{id}/organisation-context', name: 'tenant_management_organisation_context', methods: ['GET', 'POST'])]
+    #[IsGranted('TENANT_EDIT')]
+    public function editOrganisationContext(Request $request, Tenant $tenant): Response
+    {
+        $settings = $tenant->getSettings() ?? [];
+        $orgSettings = $settings['organisation'] ?? [];
+
+        // Prepare form data
+        $formData = [
+            'industries' => $orgSettings['industries'] ?? ['other'],
+            'employee_count' => $orgSettings['employee_count'] ?? '1-10',
+            'country' => $orgSettings['country'] ?? 'DE',
+            'description' => $orgSettings['description'] ?? '',
+        ];
+
+        $form = $this->createForm(\App\Form\OrganisationInfoType::class, $formData, [
+            'include_name' => false, // Name is managed via Tenant entity
+        ]);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+
+            try {
+                // Store old values for audit
+                $oldOrgSettings = $orgSettings;
+
+                // Update organisation settings
+                $settings['organisation'] = [
+                    'industries' => $data['industries'] ?? ['other'],
+                    'employee_count' => $data['employee_count'],
+                    'country' => $data['country'],
+                    'description' => $data['description'] ?? '',
+                    'selected_modules' => $orgSettings['selected_modules'] ?? [],
+                    'selected_frameworks' => $orgSettings['selected_frameworks'] ?? [],
+                    'setup_completed_at' => $orgSettings['setup_completed_at'] ?? null,
+                    'last_modified_at' => (new \DateTimeImmutable())->format('c'),
+                ];
+
+                $tenant->setSettings($settings);
+                $this->entityManager->flush();
+
+                // Audit log
+                $this->auditLogger->logCustom(
+                    'organisation_context_updated',
+                    'Tenant',
+                    $tenant->getId(),
+                    ['organisation' => $oldOrgSettings],
+                    ['organisation' => $settings['organisation']],
+                    sprintf('Organisation context updated for tenant "%s"', $tenant->getName())
+                );
+
+                $this->addFlash('success', 'tenant.flash.organisation_context_updated');
+
+                return $this->redirectToRoute('tenant_management_show', ['id' => $tenant->getId()]);
+            } catch (\Exception $e) {
+                $this->logger->error('Failed to update organisation context', [
+                    'tenant_id' => $tenant->getId(),
+                    'error' => $e->getMessage(),
+                ]);
+                $this->addFlash('danger', 'tenant.flash.organisation_context_error');
+            }
+        }
+
+        return $this->render('admin/tenants/organisation_context.html.twig', [
+            'tenant' => $tenant,
+            'form' => $form,
+            'current_settings' => $orgSettings,
+        ]);
+    }
 }

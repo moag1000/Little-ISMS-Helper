@@ -48,17 +48,22 @@
                         {{ form_row(form.name) }}
                     </div>
 
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            {{ form_row(form.industry) }}
+                    {# Multi-Industry Selection for Corporate Structures #}
+                    <div class="mb-3">
+                        <div class="alert alert-light mb-2">
+                            <i class="fas fa-sitemap me-2 text-primary"></i>
+                            <small>{{ 'setup.organisation.industries_help'|trans }}</small>
                         </div>
+                        {{ form_row(form.industries) }}
+                    </div>
+
+                    <div class="row">
                         <div class="col-md-6 mb-3">
                             {{ form_row(form.employee_count) }}
                         </div>
-                    </div>
-
-                    <div class="mb-3">
-                        {{ form_row(form.country) }}
+                        <div class="col-md-6 mb-3">
+                            {{ form_row(form.country) }}
+                        </div>
                     </div>
 
                     <div class="mb-3">
