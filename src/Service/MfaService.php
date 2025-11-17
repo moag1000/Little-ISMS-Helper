@@ -162,7 +162,7 @@ class MfaService
     {
         $backupCodes = $mfaToken->getBackupCodes();
 
-        if (!$backupCodes || empty($backupCodes)) {
+        if (!$backupCodes || count($backupCodes) === 0) {
             return false;
         }
 

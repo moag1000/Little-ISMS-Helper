@@ -130,7 +130,7 @@ class RiskController extends AbstractController
             'treatmentStats' => $treatmentStats,
             'inheritanceInfo' => $inheritanceInfo,
             'currentTenant' => $tenant,
-            'detailedStats' => $detailedStats ?? ['own' => 0, 'inherited' => 0, 'subsidiaries' => 0, 'total' => 0],
+            'detailedStats' => $detailedStats,
         ]);
     }
 

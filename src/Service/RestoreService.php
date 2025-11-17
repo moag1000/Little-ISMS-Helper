@@ -361,7 +361,7 @@ class RestoreService
             }
 
             // Re-enable foreign key checks in case of error
-            if (isset($disableFKChecks) && $disableFKChecks) {
+            if ($disableFKChecks) {
                 try {
                     $connection->executeStatement('SET FOREIGN_KEY_CHECKS = 1');
                 } catch (\Exception $fkException) {
