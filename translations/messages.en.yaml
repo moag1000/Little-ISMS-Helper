@@ -3280,6 +3280,8 @@ tenant:
     deactivated: Tenant deactivated successfully
     error: Error saving tenant
     has_users: Tenant cannot be deleted as it still has assigned users
+    organisation_context_updated: Organisation context successfully updated
+    organisation_context_error: Error updating organisation context
   confirm:
     delete: Are you sure you want to delete this tenant? This action cannot be undone.
     toggle: Do you really want to change the status of this tenant?
@@ -3296,6 +3298,26 @@ tenant:
     load_error: Error loading ISMS Context
     view_full: View Full ISMS Context
     linked_to: Linked to Tenant
+  organisation_context:
+    title: Organisation Context
+    header: Edit Organisation Context
+    description: Edit the industry assignment, company size and location of your organisation. This data influences compliance recommendations.
+    name_info: The organisation name is taken from the tenant configuration.
+    current_config: Current Configuration
+    active_modules: Active Modules
+    active_frameworks: Active Frameworks
+    setup_date: Setup completed on
+    last_modified: Last modified
+    impact_warning:
+      title: Impact Notice
+      message: Changes to the organisation context affect future recommendations for modules and compliance frameworks. Already activated modules remain unchanged.
+    info:
+      title: About Organisation Context
+      description: The organisation context determines which regulatory requirements are relevant to your organisation.
+      industries: Multiple selection enables corporate structures with different business areas
+      size: Company size affects NIS2 and other size-dependent regulations
+      country: Location determines national regulations (e.g. KRITIS, TKG for Germany)
+      corporate: In corporate structures, subsidiaries can cover different industries
   link:
     view: View Tenant
     back_to_tenant: Back to Tenant
@@ -3951,14 +3973,14 @@ setup:
       sample_data: 'Sample Data'
     requirements:
       title: 'System Requirements'
-      php: 'PHP version {{ version }} or higher'
+      php: 'PHP version 8.4 or higher'
       database: 'MySQL, PostgreSQL or SQLite database'
       permissions: 'Write permissions in installation directory'
       duration: 'Estimated duration: 5-10 minutes'
 
   progress:
     title: 'Progress'
-    step: 'Step {{ current }} of {{ total }}'
+    step: 'Step %current% of %total%'
 
   navigation:
     next: 'Next'
@@ -3972,11 +3994,21 @@ setup:
     header: 'Database Configuration'
     description: 'Please enter the connection details for your database.'
     type: 'Database Type'
+    type_help: 'Select the type of your database'
     host: 'Host'
+    host_help: 'Hostname or IP address of the database server'
     port: 'Port'
+    port_help: 'Port of the database server (auto-set if empty)'
     name: 'Database Name'
+    name_help: 'Name of the database (only letters, numbers and underscores)'
+    name_invalid: 'Database name can only contain letters, numbers and underscores'
     user: 'Username'
+    user_help: 'Username for the database connection'
     password: 'Password'
+    password_help: 'Password for the database connection'
+    password_help_standalone: 'Password for local MariaDB (default: isms)'
+    server_version: 'Server Version'
+    server_version_help: 'Version of the database server (e.g. 8.0, mariadb-11.4.0)'
     test_button: 'Test Connection'
     existing_tables: 'Warning: The database already contains tables. Migration may overwrite existing data.'
     info:
@@ -3987,10 +4019,10 @@ setup:
       special_chars: 'Avoid special characters in the password that need to be escaped'
     test:
       success: 'Database connection successfully tested'
-      failed: 'Connection failed: {{ error }}'
+      failed: 'Connection failed'
       create_needed: 'Database does not exist and will be created during migration'
     config_saved: 'Database configuration successfully saved'
-    config_failed: 'Error saving configuration: {{ error }}'
+    config_failed: 'Error saving configuration'
     write_failed: 'Could not write configuration file. Please check file permissions.'
 
   admin:
@@ -4002,6 +4034,7 @@ setup:
     first_name: 'First Name'
     last_name: 'Last Name'
     password: 'Password'
+    password_help: 'Choose a secure password'
     password_confirm: 'Confirm Password'
     password_requirements:
       title: 'Password Requirements'
@@ -4013,8 +4046,8 @@ setup:
       title: 'Security Note'
       message: 'This account will receive full administrator privileges. Choose a strong password!'
     user_created: 'Administrator account successfully created'
-    creation_failed: 'Error creating administrator: {{ error }}'
-    migration_failed: 'Database migrations failed: {{ error }}'
+    creation_failed: 'Error creating administrator'
+    migration_failed: 'Database migrations failed'
     next_steps:
       title: 'Next Steps'
       description: 'After completing the setup, you can log in with this account.'
@@ -4022,18 +4055,59 @@ setup:
   organisation:
     title: 'Organization Data'
     header: 'Your Organization'
-    description: 'Please enter your organization data.'
+    description: 'Please enter your organization data. This information will be used to recommend appropriate modules and compliance frameworks.'
     info_saved: 'Organization data successfully saved'
-    info_failed: 'Error saving data: {{ error }}'
+    info_failed: 'Error saving data'
+    name: 'Organization Name'
+    name_help: 'The official name of your organization'
+    name_required: 'Please enter the organization name'
+    name_min: 'The name must be at least %limit% characters long'
+    name_max: 'The name cannot exceed %limit% characters'
+    industry: 'Industry'
+    industries: 'Industries'
+    industries_help: 'Select all industries your organization (including subsidiaries) operates in. Hold Ctrl/Cmd for multiple selection.'
+    industries_required: 'Please select at least one industry'
+    industries_min: 'Please select at least one industry'
+    industry_help: 'Your industry determines which compliance frameworks are relevant to you'
+    industry_required: 'Please select an industry'
+    industry.select: 'Please select...'
+    industry.automotive: 'Automotive Industry'
+    industry.financial_services: 'Financial Services'
+    industry.healthcare: 'Healthcare'
+    industry.pharmaceutical: 'Pharmaceutical & Life Sciences'
+    industry.digital_health: 'Digital Health Applications'
+    industry.manufacturing: 'Manufacturing'
+    industry.it_services: 'IT Services'
+    industry.cloud_services: 'Cloud Services'
+    industry.energy: 'Energy Supply'
+    industry.telecommunications: 'Telecommunications'
+    industry.critical_infrastructure: 'Critical Infrastructure'
+    industry.retail: 'Retail'
+    industry.public_sector: 'Public Sector'
+    industry.education: 'Education'
+    industry.other: 'Other'
+    employee_count: 'Number of Employees'
+    employee_count_help: 'Company size determines regulatory requirements (e.g. NIS2)'
+    employee_count_required: 'Please select the number of employees'
+    employee_count.select: 'Please select...'
+    employee_count.1_10: '1-10 employees'
+    employee_count.11_50: '11-50 employees'
+    employee_count.51_250: '51-250 employees'
+    employee_count.251_1000: '251-1000 employees'
+    employee_count.1001_plus: 'More than 1000 employees'
+    country: 'Country'
+    country_help: 'Your location determines applicable regulations (e.g. GDPR for EU)'
+    description_label: 'Description'
+    description_help: 'Brief description of your business activities (optional, helps with assessment)'
     usage:
       title: 'Purpose of Use'
-      message: 'This data will be used in reports and documentation.'
+      message: 'This data is used for: module recommendations, compliance framework selection, regulatory requirements and reporting.'
     compliance_info:
-      title: 'Compliance Information'
-      scope: 'This information helps to adapt the system to your compliance requirements'
+      title: 'Why This Information Matters'
+      scope: 'Adapting the ISMS to your specific organizational structure'
       relevant_frameworks: 'Relevant Frameworks'
       regulatory_requirements: 'Regulatory Requirements'
-      description: 'Optional additional information about your organization compliance situation'
+      description: 'Your industry and size determine which compliance requirements apply to you.'
       reporting: 'Automatically adapt compliance reports'
       recommendations: 'Provide industry-specific recommendations'
 
@@ -4044,7 +4118,7 @@ setup:
     skip_button: 'Skip'
     skipped: 'Email configuration skipped. You can configure this later.'
     config_saved: 'Email configuration saved'
-    config_failed: 'Error saving email configuration: {{ error }}'
+    config_failed: 'Error saving email configuration'
     optional:
       title: 'Optional Step'
       message: 'Email configuration can also be done later.'
@@ -4056,7 +4130,27 @@ setup:
       reports: 'Automatic reports'
 
   compliance:
+    title: 'Compliance Frameworks'
+    header: 'Compliance Framework Selection'
+    description: 'Select the compliance frameworks relevant to your organization.'
     frameworks_saved: 'Compliance frameworks have been configured'
+    select_frameworks: 'Available Frameworks'
+    recommended:
+      title: 'Recommended Frameworks'
+      description: 'Based on your organization data, we recommend the following frameworks:'
+    mandatory:
+      title: 'Mandatory Framework'
+      message: 'ISO 27001 is pre-selected as the base framework and cannot be deselected.'
+    critical_infrastructure:
+      title: 'Critical Infrastructure'
+      message: 'NIS2 is usually only relevant for small businesses if you are part of critical infrastructure.'
+    recommended_badge: 'Recommended'
+    mandatory_badge: 'Mandatory'
+    note:
+      title: 'Note'
+      message: 'You can adjust the framework selection later in the settings.'
+    details:
+      title: 'Framework Details'
 
   error:
     configure_database_first: 'Please configure the database connection first'
