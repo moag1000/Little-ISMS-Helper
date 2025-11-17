@@ -40,7 +40,19 @@ class MultiTenantCheckService
             return $this->cachedCount;
         }
 
-        $this->cachedCount = $this->tenantRepository->count(['isActive' => true]);
+        try {
+            $this->cachedCount = $this->tenantRepository->count(['isActive' => true]);
+        } catch (\Doctrine\DBAL\Exception\TableNotFoundException $e) {
+            // Database tables not yet created (setup wizard not completed)
+            $this->cachedCount = 0;
+        } catch (\Doctrine\DBAL\Exception\ConnectionException $e) {
+            // Database connection not available
+            $this->cachedCount = 0;
+        } catch (\Exception $e) {
+            // Any other database error during setup
+            $this->cachedCount = 0;
+        }
+
         return $this->cachedCount;
     }
 

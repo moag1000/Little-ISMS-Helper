@@ -9,13 +9,13 @@
         "php": ">=8.4",
         "ext-ctype": "*",
         "ext-iconv": "*",
-        "api-platform/core": "^4.2.3",
+        "api-platform/core": "^4.2.4",
         "doctrine/dbal": "^4.3.4",
         "doctrine/doctrine-bundle": "^3.0",
-        "doctrine/doctrine-migrations-bundle": "^3.6",
+        "doctrine/doctrine-migrations-bundle": "^3.7",
         "doctrine/orm": "^3.5.7",
         "dompdf/dompdf": ">=3.1.4",
-        "endroid/qr-code": "^6.0",
+        "endroid/qr-code": "^6.0.9",
         "knpuniversity/oauth2-client-bundle": ">=2.19",
         "onelogin/php-saml": "^4.3",
         "phpdocumentor/reflection-docblock": "^5.6.3",
@@ -28,7 +28,7 @@
         "symfony/doctrine-messenger": "7.4.*",
         "symfony/dotenv": "7.4.*",
         "symfony/expression-language": "7.4.*",
-        "symfony/flex": "^2.9",
+        "symfony/flex": "^2.10",
         "symfony/form": "7.4.*",
         "symfony/framework-bundle": "7.4.*",
         "symfony/http-client": "7.4.*",
@@ -55,8 +55,8 @@
         "symfony/web-link": "7.4.*",
         "symfony/yaml": "7.4.*",
         "thenetworg/oauth2-azure": "^2.2.2",
-        "twig/extra-bundle": "^3.22",
-        "twig/string-extra": "^3.22",
+        "twig/extra-bundle": "^3.22.1",
+        "twig/string-extra": "^3.22.1",
         "twig/twig": "^3.22",
         "vich/uploader-bundle": ">=2.8.1"
     },
@@ -95,7 +95,8 @@
         "auto-scripts": {
             "cache:clear": "symfony-cmd",
             "assets:install %PUBLIC_DIR%": "symfony-cmd",
-            "importmap:install": "symfony-cmd"
+            "importmap:install": "symfony-cmd",
+            "asset-map:compile": "symfony-cmd"
         },
         "setup-directories": [
             "@php -r \"is_dir('var/cache') || mkdir('var/cache', 0755, true);\"",
