@@ -72,12 +72,15 @@ if ! mysql -e "SELECT 1 FROM mysql.user WHERE user = '$DB_USER'" 2>/dev/null | g
     mysql -e "FLUSH PRIVILEGES;"
     echo "Database '$DB_NAME' and user '$DB_USER' created successfully"
     NEEDS_MIGRATION=1
-
-    # Update DATABASE_URL in .env.local for the application
-    echo "DATABASE_URL=\"mysql://$DB_USER:$DB_PASS@localhost/$DB_NAME?unix_socket=/run/mysqld/mysqld.sock&serverVersion=mariadb-11.4.0&charset=utf8mb4\"" > /var/www/html/.env.local
-    chown www-data:www-data /var/www/html/.env.local
-    chmod 600 /var/www/html/.env.local
 fi
+
+# ALWAYS update DATABASE_URL in .env.local to ensure correct connection
+# This is critical for container restarts where the container is rebuilt
+# but the volume (with the database) persists
+echo "DATABASE_URL=\"mysql://$DB_USER:$DB_PASS@localhost/$DB_NAME?unix_socket=/run/mysqld/mysqld.sock&serverVersion=mariadb-11.4.0&charset=utf8mb4\"" > /var/www/html/.env.local
+chown www-data:www-data /var/www/html/.env.local
+chmod 600 /var/www/html/.env.local
+echo "DATABASE_URL configured in .env.local"
 
 # Run migrations if database was just created
 if [ "$NEEDS_MIGRATION" = "1" ]; then
@@ -93,6 +96,13 @@ if [ "$NEEDS_MIGRATION" = "1" ]; then
     php bin/console cache:clear --env=prod 2>&1 || echo "Cache clear failed"
     php bin/console cache:warmup --env=prod 2>&1 || echo "Cache warmup failed"
     echo "Cache rebuilt"
+else
+    # Even if no migration needed, clear cache to ensure correct DATABASE_URL is used
+    echo "Clearing application cache to apply DATABASE_URL configuration..."
+    cd /var/www/html
+    export DATABASE_URL="mysql://$DB_USER:$DB_PASS@localhost/$DB_NAME?unix_socket=/run/mysqld/mysqld.sock&serverVersion=mariadb-11.4.0&charset=utf8mb4"
+    php bin/console cache:clear --env=prod 2>&1 || echo "Cache clear failed"
+    echo "Cache cleared"
 fi
 
 # Keep MariaDB running in foreground

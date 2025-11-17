@@ -439,6 +439,16 @@ class Risk
         return $this->probability * $this->impact;
     }
 
+    /**
+     * Alias for getInherentRiskLevel() for backward compatibility
+     * Risk score is calculated as probability * impact (inherent risk)
+     */
+    #[Groups(['risk:read'])]
+    public function getRiskScore(): int
+    {
+        return $this->getInherentRiskLevel();
+    }
+
     #[Groups(['risk:read'])]
     public function getResidualRiskLevel(): int
     {
