@@ -115,7 +115,18 @@ class DatabaseTestService
         $dbName = $config['name'] ?? 'little_isms_helper';
 
         try {
-            $dsn = "mysql:host={$host};port={$port};dbname={$dbName};charset=utf8mb4";
+            // Check if we should use Unix socket for localhost connections
+            $unixSocketPath = '/run/mysqld/mysqld.sock';
+            $useUnixSocket = ($host === 'localhost' && file_exists($unixSocketPath));
+
+            if ($useUnixSocket) {
+                // Unix socket connection (standalone Docker container)
+                $dsn = "mysql:unix_socket={$unixSocketPath};dbname={$dbName};charset=utf8mb4";
+            } else {
+                // Standard TCP connection
+                $dsn = "mysql:host={$host};port={$port};dbname={$dbName};charset=utf8mb4";
+            }
+
             $pdo = new PDO($dsn, $user, $password, [
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                 PDO::ATTR_TIMEOUT => 5,
@@ -126,7 +137,7 @@ class DatabaseTestService
 
             return [
                 'success' => true,
-                'message' => 'MySQL connection successful',
+                'message' => $useUnixSocket ? 'MariaDB connection successful (via Unix socket)' : 'MySQL connection successful',
             ];
         } catch (PDOException $e) {
             // If database doesn't exist, that's okay - we can create it
@@ -229,8 +240,18 @@ class DatabaseTestService
         $dbName = $config['name'] ?? 'little_isms_helper';
 
         try {
-            // Connect without database name
-            $dsn = "mysql:host={$host};port={$port};charset=utf8mb4";
+            // Check if we should use Unix socket for localhost connections
+            $unixSocketPath = '/run/mysqld/mysqld.sock';
+            $useUnixSocket = ($host === 'localhost' && file_exists($unixSocketPath));
+
+            if ($useUnixSocket) {
+                // Unix socket connection (standalone Docker container)
+                $dsn = "mysql:unix_socket={$unixSocketPath};charset=utf8mb4";
+            } else {
+                // Standard TCP connection
+                $dsn = "mysql:host={$host};port={$port};charset=utf8mb4";
+            }
+
             $pdo = new PDO($dsn, $user, $password, [
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                 PDO::ATTR_TIMEOUT => 5,
@@ -376,7 +397,16 @@ class DatabaseTestService
         $password = $config['password'] ?? '';
         $dbName = $config['name'] ?? 'little_isms_helper';
 
-        $dsn = "mysql:host={$host};port={$port};dbname={$dbName}";
+        // Check if we should use Unix socket for localhost connections
+        $unixSocketPath = '/run/mysqld/mysqld.sock';
+        $useUnixSocket = ($host === 'localhost' && file_exists($unixSocketPath));
+
+        if ($useUnixSocket) {
+            $dsn = "mysql:unix_socket={$unixSocketPath};dbname={$dbName}";
+        } else {
+            $dsn = "mysql:host={$host};port={$port};dbname={$dbName}";
+        }
+
         $pdo = new PDO($dsn, $user, $password, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
 
         $stmt = $pdo->query("SHOW TABLES");
