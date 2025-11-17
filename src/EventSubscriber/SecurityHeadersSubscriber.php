@@ -79,7 +79,7 @@ class SecurityHeadersSubscriber implements EventSubscriberInterface
         // Future: Migrate to nonce-based CSP for maximum security
         $csp = implode('; ', [
             "default-src 'self'",
-            "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net", // Stimulus + CDN, removed unsafe-eval
+            "script-src 'self' 'unsafe-inline' data: https://cdn.jsdelivr.net", // Stimulus + CDN + data: for AssetMapper stubs
             "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com", // Bootstrap + Fonts
             "img-src 'self' data: https: blob:", // Allow images from any HTTPS source and data URIs
             "font-src 'self' data: https://fonts.gstatic.com https://cdn.jsdelivr.net", // Local + Google Fonts + Bootstrap Icons CDN
@@ -88,7 +88,8 @@ class SecurityHeadersSubscriber implements EventSubscriberInterface
             "base-uri 'self'", // Prevent base tag injection
             "form-action 'self'", // Forms can only submit to same origin
             "object-src 'none'", // Block plugins (Flash, Java, etc.)
-            "upgrade-insecure-requests", // Automatically upgrade HTTP to HTTPS
+            // Note: upgrade-insecure-requests removed - breaks localhost/HTTP deployments
+            // Add it back for production HTTPS-only deployments if needed
         ]);
         $response->headers->set('Content-Security-Policy', $csp);
 
