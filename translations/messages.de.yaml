@@ -3292,6 +3292,8 @@ tenant:
     deactivated: Mandant erfolgreich deaktiviert
     error: Fehler beim Speichern des Mandanten
     has_users: Mandant kann nicht gelöscht werden, da er noch Benutzer hat
+    organisation_context_updated: Organisations-Kontext erfolgreich aktualisiert
+    organisation_context_error: Fehler beim Aktualisieren des Organisations-Kontexts
   confirm:
     delete: Sind Sie sicher, dass Sie diesen Mandanten löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.
     toggle: Möchten Sie den Status dieses Mandanten wirklich ändern?
@@ -3308,6 +3310,26 @@ tenant:
     load_error: Fehler beim Laden des ISMS Kontexts
     view_full: Vollständigen ISMS Kontext anzeigen
     linked_to: Verknüpft mit Mandant
+  organisation_context:
+    title: Organisations-Kontext
+    header: Organisations-Kontext bearbeiten
+    description: Bearbeiten Sie die Branchenzuordnung, Unternehmensgröße und Standort Ihrer Organisation. Diese Daten beeinflussen Compliance-Empfehlungen.
+    name_info: Der Organisationsname wird aus der Mandanten-Konfiguration übernommen.
+    current_config: Aktuelle Konfiguration
+    active_modules: Aktive Module
+    active_frameworks: Aktive Frameworks
+    setup_date: Setup abgeschlossen am
+    last_modified: Zuletzt geändert
+    impact_warning:
+      title: Hinweis zur Auswirkung
+      message: Änderungen am Organisations-Kontext beeinflussen zukünftige Empfehlungen für Module und Compliance-Frameworks. Bereits aktivierte Module bleiben unverändert.
+    info:
+      title: Über den Organisations-Kontext
+      description: Der Organisations-Kontext bestimmt, welche regulatorischen Anforderungen für Ihre Organisation relevant sind.
+      industries: Mehrfachauswahl ermöglicht Konzernstrukturen mit verschiedenen Geschäftsfeldern
+      size: Unternehmensgröße beeinflusst NIS2 und andere größenabhängige Regulierungen
+      country: Standort bestimmt nationale Regulierungen (z.B. KRITIS, TKG für Deutschland)
+      corporate: Bei Konzernstrukturen können Tochtergesellschaften unterschiedliche Branchen abdecken
   link:
     view: Mandant anzeigen
     back_to_tenant: Zurück zum Mandanten
@@ -3963,14 +3985,14 @@ setup:
       sample_data: 'Beispieldaten'
     requirements:
       title: 'Systemvoraussetzungen'
-      php: 'PHP Version {{ version }} oder höher'
+      php: 'PHP Version 8.4 oder höher'
       database: 'MySQL, PostgreSQL oder SQLite Datenbank'
       permissions: 'Schreibrechte im Installationsverzeichnis'
       duration: 'Geschätzte Dauer: 5-10 Minuten'
 
   progress:
     title: 'Fortschritt'
-    step: 'Schritt {{ current }} von {{ total }}'
+    step: 'Schritt %current% von %total%'
 
   navigation:
     next: 'Weiter'
@@ -3984,11 +4006,21 @@ setup:
     header: 'Datenbankkonfiguration'
     description: 'Bitte geben Sie die Verbindungsdaten für Ihre Datenbank ein.'
     type: 'Datenbanktyp'
+    type_help: 'Wählen Sie den Typ Ihrer Datenbank'
     host: 'Host'
+    host_help: 'Hostname oder IP-Adresse des Datenbankservers'
     port: 'Port'
+    port_help: 'Port des Datenbankservers (wird automatisch gesetzt wenn leer)'
     name: 'Datenbankname'
+    name_help: 'Name der Datenbank (nur Buchstaben, Zahlen und Unterstriche)'
+    name_invalid: 'Datenbankname darf nur Buchstaben, Zahlen und Unterstriche enthalten'
     user: 'Benutzername'
+    user_help: 'Benutzername für die Datenbankverbindung'
     password: 'Passwort'
+    password_help: 'Passwort für die Datenbankverbindung'
+    password_help_standalone: 'Passwort für die lokale MariaDB (Standard: isms)'
+    server_version: 'Server-Version'
+    server_version_help: 'Version des Datenbankservers (z.B. 8.0, mariadb-11.4.0)'
     test_button: 'Verbindung testen'
     existing_tables: 'Achtung: Die Datenbank enthält bereits Tabellen. Eine Migration kann bestehende Daten überschreiben.'
     info:
@@ -3999,10 +4031,10 @@ setup:
       special_chars: 'Vermeiden Sie Sonderzeichen im Passwort, die escaped werden müssen'
     test:
       success: 'Datenbankverbindung erfolgreich getestet'
-      failed: 'Verbindung fehlgeschlagen: {{ error }}'
+      failed: 'Verbindung fehlgeschlagen'
       create_needed: 'Datenbank existiert nicht und wird bei der Migration erstellt'
     config_saved: 'Datenbankkonfiguration erfolgreich gespeichert'
-    config_failed: 'Fehler beim Speichern der Konfiguration: {{ error }}'
+    config_failed: 'Fehler beim Speichern der Konfiguration'
     write_failed: 'Konnte Konfigurationsdatei nicht schreiben. Bitte prüfen Sie die Dateiberechtigungen.'
 
   admin:
@@ -4014,6 +4046,7 @@ setup:
     first_name: 'Vorname'
     last_name: 'Nachname'
     password: 'Passwort'
+    password_help: 'Wählen Sie ein sicheres Passwort'
     password_confirm: 'Passwort bestätigen'
     password_requirements:
       title: 'Passwortanforderungen'
@@ -4025,8 +4058,8 @@ setup:
       title: 'Sicherheitshinweis'
       message: 'Dieser Account erhält volle Administratorrechte. Wählen Sie ein starkes Passwort!'
     user_created: 'Administrator-Account erfolgreich erstellt'
-    creation_failed: 'Fehler beim Erstellen des Administrators: {{ error }}'
-    migration_failed: 'Datenbank-Migrationen fehlgeschlagen: {{ error }}'
+    creation_failed: 'Fehler beim Erstellen des Administrators'
+    migration_failed: 'Datenbank-Migrationen fehlgeschlagen'
     next_steps:
       title: 'Nächste Schritte'
       description: 'Nach Abschluss des Setups können Sie sich mit diesem Account anmelden.'
@@ -4034,18 +4067,59 @@ setup:
   organisation:
     title: 'Organisationsdaten'
     header: 'Ihre Organisation'
-    description: 'Bitte geben Sie die Daten Ihrer Organisation ein.'
+    description: 'Bitte geben Sie die Daten Ihrer Organisation ein. Diese Informationen werden verwendet, um passende Module und Compliance-Frameworks zu empfehlen.'
     info_saved: 'Organisationsdaten erfolgreich gespeichert'
-    info_failed: 'Fehler beim Speichern: {{ error }}'
+    info_failed: 'Fehler beim Speichern'
+    name: 'Organisationsname'
+    name_help: 'Der offizielle Name Ihrer Organisation'
+    name_required: 'Bitte geben Sie den Organisationsnamen ein'
+    name_min: 'Der Name muss mindestens %limit% Zeichen lang sein'
+    name_max: 'Der Name darf maximal %limit% Zeichen lang sein'
+    industry: 'Branche'
+    industries: 'Branchen'
+    industries_help: 'Wählen Sie alle Branchen aus, in denen Ihre Organisation (inkl. Tochtergesellschaften) tätig ist. Halten Sie Strg/Cmd gedrückt für Mehrfachauswahl.'
+    industries_required: 'Bitte wählen Sie mindestens eine Branche'
+    industries_min: 'Bitte wählen Sie mindestens eine Branche aus'
+    industry_help: 'Die Branche beeinflusst welche Compliance-Frameworks für Sie relevant sind'
+    industry_required: 'Bitte wählen Sie eine Branche'
+    industry.select: 'Bitte wählen Sie...'
+    industry.automotive: 'Automobilindustrie'
+    industry.financial_services: 'Finanzdienstleistungen'
+    industry.healthcare: 'Gesundheitswesen'
+    industry.pharmaceutical: 'Pharmazie & Life Sciences'
+    industry.digital_health: 'Digitale Gesundheitsanwendungen (DiGA)'
+    industry.manufacturing: 'Fertigungsindustrie'
+    industry.it_services: 'IT-Dienstleistungen'
+    industry.cloud_services: 'Cloud-Dienste'
+    industry.energy: 'Energieversorgung'
+    industry.telecommunications: 'Telekommunikation'
+    industry.critical_infrastructure: 'Kritische Infrastrukturen (KRITIS)'
+    industry.retail: 'Einzelhandel'
+    industry.public_sector: 'Öffentlicher Sektor'
+    industry.education: 'Bildung'
+    industry.other: 'Andere'
+    employee_count: 'Anzahl Mitarbeiter'
+    employee_count_help: 'Die Unternehmensgröße bestimmt regulatorische Anforderungen (z.B. NIS2)'
+    employee_count_required: 'Bitte wählen Sie die Mitarbeiteranzahl'
+    employee_count.select: 'Bitte wählen Sie...'
+    employee_count.1_10: '1-10 Mitarbeiter'
+    employee_count.11_50: '11-50 Mitarbeiter'
+    employee_count.51_250: '51-250 Mitarbeiter'
+    employee_count.251_1000: '251-1000 Mitarbeiter'
+    employee_count.1001_plus: 'Mehr als 1000 Mitarbeiter'
+    country: 'Land'
+    country_help: 'Der Standort bestimmt anwendbare Regulierungen (z.B. DSGVO für EU)'
+    description_label: 'Beschreibung'
+    description_help: 'Kurze Beschreibung Ihrer Geschäftstätigkeit (optional, hilft bei der Einschätzung)'
     usage:
       title: 'Verwendungszweck'
-      message: 'Diese Daten werden in Berichten und Dokumentationen verwendet.'
+      message: 'Diese Daten werden verwendet für: Modul-Empfehlungen, Compliance-Framework-Auswahl, regulatorische Anforderungen und Berichterstattung.'
     compliance_info:
-      title: 'Compliance-Informationen'
-      scope: 'Diese Informationen helfen bei der Anpassung des Systems an Ihre Compliance-Anforderungen'
+      title: 'Warum diese Informationen wichtig sind'
+      scope: 'Anpassung des ISMS an Ihre spezifische Organisationsstruktur'
       relevant_frameworks: 'Relevante Frameworks'
       regulatory_requirements: 'Regulatorische Anforderungen'
-      description: 'Optionale Zusatzinformationen zur Compliance-Situation Ihrer Organisation'
+      description: 'Ihre Branche und Größe bestimmen, welche Compliance-Anforderungen für Sie gelten.'
       reporting: 'Compliance-Berichte automatisch anpassen'
       recommendations: 'Branchenspezifische Empfehlungen bereitstellen'
 
@@ -4056,7 +4130,7 @@ setup:
     skip_button: 'Überspringen'
     skipped: 'E-Mail-Konfiguration übersprungen. Sie können diese später vornehmen.'
     config_saved: 'E-Mail-Konfiguration gespeichert'
-    config_failed: 'Fehler beim Speichern der E-Mail-Konfiguration: {{ error }}'
+    config_failed: 'Fehler beim Speichern der E-Mail-Konfiguration'
     optional:
       title: 'Optionaler Schritt'
       message: 'Die E-Mail-Konfiguration kann auch später vorgenommen werden.'
@@ -4068,7 +4142,27 @@ setup:
       reports: 'Automatische Berichte'
 
   compliance:
+    title: 'Compliance-Frameworks'
+    header: 'Compliance-Framework-Auswahl'
+    description: 'Wählen Sie die für Ihre Organisation relevanten Compliance-Frameworks aus.'
     frameworks_saved: 'Compliance-Frameworks wurden konfiguriert'
+    select_frameworks: 'Verfügbare Frameworks'
+    recommended:
+      title: 'Empfohlene Frameworks'
+      description: 'Basierend auf Ihren Organisationsdaten empfehlen wir folgende Frameworks:'
+    mandatory:
+      title: 'Pflicht-Framework'
+      message: 'ISO 27001 ist als Basis-Framework vorausgewählt und kann nicht abgewählt werden.'
+    critical_infrastructure:
+      title: 'Kritische Infrastruktur'
+      message: 'NIS2 ist für kleine Unternehmen meist nur relevant, wenn Sie zur kritischen Infrastruktur gehören.'
+    recommended_badge: 'Empfohlen'
+    mandatory_badge: 'Pflicht'
+    note:
+      title: 'Hinweis'
+      message: 'Sie können die Framework-Auswahl später in den Einstellungen anpassen.'
+    details:
+      title: 'Framework-Details'
 
   error:
     configure_database_first: 'Bitte konfigurieren Sie zuerst die Datenbankverbindung'
