@@ -27,18 +27,17 @@
             {# Debug info - will be removed after debugging #}
             <div class="alert alert-info">
                 <strong>DEBUG INFO:</strong><br>
-                Form submitted: {{ form.submitted ? 'YES' : 'NO' }}<br>
-                {% if form.submitted %}
-                    Form valid: {{ form.valid ? 'YES' : 'NO' }}<br>
-                    {% if not form.valid %}
-                        <strong>Form errors:</strong>
-                        <ul>
-                            {% for error in form.errors %}
-                                <li>{{ error.message }}</li>
-                            {% endfor %}
-                        </ul>
-                    {% endif %}
+                Form has errors: {{ form.vars.errors|length > 0 ? 'YES' : 'NO' }}<br>
+                {% if form.vars.errors|length > 0 %}
+                    <strong>Form errors:</strong>
+                    <ul>
+                        {% for error in form.vars.errors %}
+                            <li>{{ error.message }}</li>
+                        {% endfor %}
+                    </ul>
                 {% endif %}
+                Request method: {{ app.request.method }}<br>
+                Is POST: {{ app.request.method == 'POST' ? 'YES' : 'NO' }}
             </div>
 
             {# Progress Bar #}
