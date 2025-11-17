@@ -109,19 +109,19 @@
 
                     {# Actions #}
                     <div class="d-grid gap-3">
-                        <a href="{{ path('home_index') }}" class="btn btn-lg btn-success">
+                        <a href="{{ path('app_dashboard', {'_locale': app.request.locale}) }}" class="btn btn-lg btn-success">
                             <i class="fas fa-home me-2"></i>
                             Zum Dashboard
                         </a>
                         <div class="row g-2">
                             <div class="col-md-6">
-                                <a href="{{ path('module_management_index') }}" class="btn btn-outline-primary w-100">
+                                <a href="{{ path('module_management_index', {'_locale': app.request.locale}) }}" class="btn btn-outline-primary w-100">
                                     <i class="fas fa-puzzle-piece me-2"></i>
                                     Module verwalten
                                 </a>
                             </div>
                             <div class="col-md-6">
-                                <a href="{{ path('context_index') }}" class="btn btn-outline-primary w-100">
+                                <a href="{{ path('app_context_index', {'_locale': app.request.locale}) }}" class="btn btn-outline-primary w-100">
                                     <i class="fas fa-cog me-2"></i>
                                     ISMS-Kontext konfigurieren
                                 </a>

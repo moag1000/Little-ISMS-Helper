@@ -54,11 +54,14 @@ class DatabaseConfigurationType extends AbstractType
             );
         }
 
+        // Detect if running in standalone Docker container (local MariaDB)
+        $isStandaloneDocker = $this->detectStandaloneDocker();
+
         $builder
             ->add('type', ChoiceType::class, [
                 'label' => 'setup.database.type',
                 'choices' => $availableTypes,
-                'data' => $defaultType,
+                'data' => $isStandaloneDocker ? 'mariadb' : $defaultType,
                 'required' => true,
                 'attr' => [
                     'class' => 'form-select',
@@ -96,7 +99,7 @@ class DatabaseConfigurationType extends AbstractType
             ])
             ->add('name', TextType::class, [
                 'label' => 'setup.database.name',
-                'data' => 'little_isms_helper',
+                'data' => $isStandaloneDocker ? 'isms' : 'little_isms_helper',
                 'required' => true,
                 'constraints' => [
                     new Assert\NotBlank(),
@@ -107,12 +110,13 @@ class DatabaseConfigurationType extends AbstractType
                 ],
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => 'little_isms_helper',
+                    'placeholder' => $isStandaloneDocker ? 'isms' : 'little_isms_helper',
                 ],
                 'help' => 'setup.database.name_help',
             ])
             ->add('user', TextType::class, [
                 'label' => 'setup.database.user',
+                'data' => $isStandaloneDocker ? 'isms' : '',
                 'required' => false,
                 'constraints' => [
                     new Assert\When(
@@ -122,7 +126,7 @@ class DatabaseConfigurationType extends AbstractType
                 ],
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => 'root',
+                    'placeholder' => $isStandaloneDocker ? 'isms' : 'root',
                     'data-database-type-target' => 'userField',
                 ],
                 'help' => 'setup.database.user_help',
@@ -135,14 +139,17 @@ class DatabaseConfigurationType extends AbstractType
                     'placeholder' => '••••••••',
                     'data-database-type-target' => 'passwordField',
                 ],
-                'help' => 'setup.database.password_help',
+                'help' => $isStandaloneDocker
+                    ? 'setup.database.password_help_standalone'
+                    : 'setup.database.password_help',
             ])
             ->add('serverVersion', TextType::class, [
                 'label' => 'setup.database.server_version',
+                'data' => $isStandaloneDocker ? 'mariadb-11.4.0' : '',
                 'required' => false,
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => '8.0',
+                    'placeholder' => $isStandaloneDocker ? 'mariadb-11.4.0' : '8.0',
                     'data-database-type-target' => 'versionField',
                 ],
                 'help' => 'setup.database.server_version_help',
@@ -192,5 +199,26 @@ class DatabaseConfigurationType extends AbstractType
             'csrf_field_name' => '_token',
             'csrf_token_id' => 'database_config',
         ]);
+    }
+
+    /**
+     * Detect if running in standalone Docker container with embedded MariaDB.
+     *
+     * This checks for the presence of the local MySQL socket and the init script,
+     * which indicates a standalone Docker deployment.
+     */
+    private function detectStandaloneDocker(): bool
+    {
+        // Check if the MySQL socket exists (indicates MariaDB is running locally)
+        $socketExists = file_exists('/run/mysqld/mysqld.sock');
+
+        // Check if the init script exists (indicates standalone Docker image)
+        $initScriptExists = file_exists('/var/www/html/docker/scripts/init-mysql.sh');
+
+        // Check if DATABASE_URL contains the local socket configuration
+        $dbUrl = $_ENV['DATABASE_URL'] ?? $_SERVER['DATABASE_URL'] ?? '';
+        $usesLocalSocket = str_contains($dbUrl, 'unix_socket=/run/mysqld');
+
+        return $socketExists && $initScriptExists && $usesLocalSocket;
     }
 }

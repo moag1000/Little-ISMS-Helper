@@ -67,7 +67,14 @@ class SystemRequirementsChecker
         $loadedExtensions = [];
 
         foreach ($requiredExtensions as $extension) {
-            if (extension_loaded($extension)) {
+            // Special handling for OPcache which is a Zend extension
+            if ($extension === 'opcache' || $extension === 'Zend OPcache') {
+                if (extension_loaded('Zend OPcache') || function_exists('opcache_get_status')) {
+                    $loadedExtensions[] = $extension;
+                } else {
+                    $missingExtensions[] = $extension;
+                }
+            } elseif (extension_loaded($extension)) {
                 $loadedExtensions[] = $extension;
             } else {
                 $missingExtensions[] = $extension;
@@ -246,8 +253,10 @@ class SystemRequirementsChecker
             ];
         }
 
+        // Normalize version: remove 'v' prefix and stability suffixes for comparison
+        $normalizedVersion = $this->normalizeVersion($symfonyVersion);
         $requiredVersion = $this->requirements['symfony']['version'] ?? '7.3.0';
-        $passed = version_compare($symfonyVersion, $requiredVersion, '>=');
+        $passed = version_compare($normalizedVersion, $requiredVersion, '>=');
 
         return [
             'status' => $passed ? 'success' : 'error',
@@ -258,6 +267,23 @@ class SystemRequirementsChecker
             'required' => $requiredVersion,
             'critical' => true,
         ];
+    }
+
+    /**
+     * Normalizes version string for comparison
+     * Removes 'v' prefix and converts stability suffixes to version_compare format
+     */
+    private function normalizeVersion(string $version): string
+    {
+        // Remove 'v' prefix
+        $version = ltrim($version, 'vV');
+
+        // Convert stability suffixes to version_compare compatible format
+        // RC, alpha, beta are understood by version_compare
+        // But they need to be lowercase and without dash
+        $version = preg_replace('/-?(RC|alpha|beta|dev|patch|pl|p)(\d*)/i', '$1$2', $version);
+
+        return $version;
     }
 
     /**
