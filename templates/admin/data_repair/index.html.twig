@@ -270,5 +270,135 @@
             </div>
         </div>
     </div>
+
+    {# Asset Assignment Repair for Risks #}
+    {% if allRisks is defined and allRisks|length > 0 %}
+    <div class="card mt-4">
+        <div class="card-header bg-info text-white">
+            <h5 class="mb-0">
+                <i class="bi bi-link-45deg"></i> {{ 'admin.data_repair.risk_asset_assignment'|trans|default('Risk-Asset Zuordnung reparieren') }}
+            </h5>
+        </div>
+        <div class="card-body">
+            <p class="text-muted">{{ 'admin.data_repair.risk_asset_assignment_desc'|trans|default('Hier können Sie Risiken ihren korrekten Assets zuordnen.') }}</p>
+            <div class="table-responsive">
+                <table class="table table-sm table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>{{ 'risk.label.title'|trans }}</th>
+                            <th>{{ 'admin.data_repair.current_asset'|trans|default('Aktuelles Asset') }}</th>
+                            <th>{{ 'admin.data_repair.assign_to_asset'|trans|default('Neues Asset zuweisen') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for risk in allRisks %}
+                        <tr{% if risk.asset is null %} class="table-warning"{% endif %}>
+                            <td>{{ risk.id }}</td>
+                            <td>
+                                {{ risk.title }}
+                                {% if risk.tenant %}
+                                    <br><small class="text-muted">{{ risk.tenant.name }}</small>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if risk.asset %}
+                                    <span class="badge bg-success">{{ risk.asset.name }}</span>
+                                {% else %}
+                                    <span class="badge bg-danger">{{ 'admin.data_repair.no_asset'|trans|default('Kein Asset') }}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <form method="post" action="{{ path('admin_data_repair_assign_asset', {type: 'risk', id: risk.id}) }}" class="d-inline">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('assign_asset_' ~ risk.id) }}">
+                                    <div class="input-group input-group-sm">
+                                        <select name="asset_id" class="form-select form-select-sm" required>
+                                            <option value="">{{ 'admin.data_repair.select_asset'|trans|default('Asset auswählen...') }}</option>
+                                            {% for asset in allAssets %}
+                                                <option value="{{ asset.id }}"{% if risk.asset and risk.asset.id == asset.id %} selected{% endif %}>
+                                                    {{ asset.name }} ({{ asset.tenant ? asset.tenant.name : 'Kein Tenant' }})
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                        <button type="submit" class="btn btn-sm btn-outline-info">
+                                            <i class="bi bi-arrow-right"></i>
+                                        </button>
+                                    </div>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {# Asset Assignment Repair for Incidents #}
+    {% if allIncidents is defined and allIncidents|length > 0 %}
+    <div class="card mt-4">
+        <div class="card-header bg-info text-white">
+            <h5 class="mb-0">
+                <i class="bi bi-link-45deg"></i> {{ 'admin.data_repair.incident_asset_assignment'|trans|default('Incident-Asset Zuordnung reparieren') }}
+            </h5>
+        </div>
+        <div class="card-body">
+            <p class="text-muted">{{ 'admin.data_repair.incident_asset_assignment_desc'|trans|default('Hier können Sie Incidents ihren korrekten Assets zuordnen.') }}</p>
+            <div class="table-responsive">
+                <table class="table table-sm table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>{{ 'incident.label.title'|trans }}</th>
+                            <th>{{ 'admin.data_repair.current_asset'|trans|default('Aktuelles Asset') }}</th>
+                            <th>{{ 'admin.data_repair.assign_to_asset'|trans|default('Neues Asset zuweisen') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for incident in allIncidents %}
+                        <tr{% if incident.affectedAssets|length == 0 %} class="table-warning"{% endif %}>
+                            <td>{{ incident.id }}</td>
+                            <td>
+                                {{ incident.title }}
+                                {% if incident.tenant %}
+                                    <br><small class="text-muted">{{ incident.tenant.name }}</small>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if incident.affectedAssets|length > 0 %}
+                                    {% for asset in incident.affectedAssets %}
+                                        <span class="badge bg-success">{{ asset.name }}</span>
+                                    {% endfor %}
+                                {% else %}
+                                    <span class="badge bg-danger">{{ 'admin.data_repair.no_asset'|trans|default('Kein Asset') }}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <form method="post" action="{{ path('admin_data_repair_assign_asset', {type: 'incident', id: incident.id}) }}" class="d-inline">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('assign_asset_' ~ incident.id) }}">
+                                    <div class="input-group input-group-sm">
+                                        <select name="asset_id" class="form-select form-select-sm" required>
+                                            <option value="">{{ 'admin.data_repair.select_asset'|trans|default('Asset auswählen...') }}</option>
+                                            {% for asset in allAssets %}
+                                                <option value="{{ asset.id }}">
+                                                    {{ asset.name }} ({{ asset.tenant ? asset.tenant.name : 'Kein Tenant' }})
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                        <button type="submit" class="btn btn-sm btn-outline-info">
+                                            <i class="bi bi-arrow-right"></i>
+                                        </button>
+                                    </div>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% endif %}
 </div>
 {% endblock %}
