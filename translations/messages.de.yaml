@@ -31,6 +31,7 @@ nav:
   tools: 'Werkzeuge'
   cross_framework: 'Framework-übergreifend'
   compare: 'Vergleichen'
+  admin_portal: 'Admin Portal'
   section:
     isms_core: 'ISMS Kern'
     assets_risk: 'Assets & Risiken'
@@ -124,6 +125,33 @@ admin:
     export: Export
     import: Import
     license_management: Lizenz-Verwaltung
+    data_repair: Daten-Reparatur
+  data_repair:
+    title: Daten-Reparatur
+    description: Reparatur defekter Tenant-Zuordnungen nach Backup/Restore
+    orphaned_entities: Verwaiste Entitäten
+    no_orphans: Alle Entitäten sind korrekt einem Tenant zugeordnet.
+    orphans_found: Es wurden Entitäten ohne Tenant-Zuordnung gefunden. Diese müssen einem Tenant zugewiesen werden.
+    orphaned_assets: Verwaiste Assets
+    orphaned_risks: Verwaiste Risiken
+    orphaned_incidents: Verwaiste Vorfälle
+    orphaned_assets_list: Liste der verwaisten Assets
+    orphaned_risks_list: Liste der verwaisten Risiken
+    orphaned_incidents_list: Liste der verwaisten Vorfälle
+    assign_to_tenant: Zuweisen an Tenant
+    select_tenant: Tenant auswählen...
+    entity_type: Entitätstyp
+    all_orphans: Alle verwaisten Entitäten
+    assets_only: Nur Assets
+    risks_only: Nur Risiken
+    incidents_only: Nur Vorfälle
+    assign_orphans: Verwaiste Entitäten zuweisen
+    tenant_not_found: Tenant nicht gefunden
+    invalid_entity_type: Ungültiger Entitätstyp
+    assigned_count: '%count% Entitäten wurden erfolgreich an %tenant% zugewiesen.'
+    entity_not_found: Entität nicht gefunden
+    entity_reassigned: '%entity% wurde erfolgreich an %tenant% zugewiesen.'
+    tenant_statistics: Tenant-Statistiken
   dashboard:
     title: Admin Dashboard
     subtitle: Zentrale Verwaltung und Systemübersicht
@@ -461,6 +489,10 @@ common:
   apply: Anwenden
   copied: Kopiert
   copy_failed: Kopieren fehlgeschlagen
+  items: Elemente
+  reload: Neu laden
+  retry: Erneut versuchen
+  select_all: Alle auswählen
   downloaded: Heruntergeladen
   system_info: Systeminformationen
   verifying: Überprüfe...
@@ -4066,6 +4098,54 @@ setup:
       title: 'Nächste Schritte'
       description: 'Nach Abschluss des Setups können Sie sich mit diesem Account anmelden.'
 
+  email:
+    title: 'E-Mail-Konfiguration'
+    header: 'SMTP-Server einrichten'
+    optional:
+      title: 'Dieser Schritt ist optional'
+      message: 'Sie können die E-Mail-Konfiguration überspringen und später im Admin-Bereich nachholen.'
+    sender_info: 'Absenderinformationen'
+    skip_button: 'Überspringen'
+    skipped: 'E-Mail-Konfiguration übersprungen'
+    config_saved: 'E-Mail-Konfiguration erfolgreich gespeichert'
+    config_failed: 'Fehler beim Speichern der E-Mail-Konfiguration'
+    info:
+      title: 'Warum E-Mail konfigurieren?'
+      description: 'E-Mail-Benachrichtigungen ermöglichen:'
+      notifications: 'Automatische Benachrichtigungen bei wichtigen Ereignissen'
+      reminders: 'Erinnerungen für ausstehende Aufgaben und Reviews'
+      reports: 'Versand von Berichten und Zusammenfassungen'
+    field:
+      transport: 'Transport-Methode'
+      host: 'SMTP-Server'
+      port: 'Port'
+      username: 'Benutzername'
+      password: 'Passwort'
+      encryption: 'Verschlüsselung'
+      sender_email: 'Absender-E-Mail'
+      sender_name: 'Absender-Name'
+    help:
+      transport: 'Wählen Sie die Methode zum Versenden von E-Mails'
+      host: 'Hostname des SMTP-Servers (z.B. smtp.example.com)'
+      port: 'SMTP-Port (587 für TLS, 465 für SSL, 25 für unverschlüsselt)'
+      username: 'SMTP-Benutzername für die Authentifizierung'
+      password: 'SMTP-Passwort'
+      encryption: 'Verschlüsselungsmethode (TLS empfohlen)'
+      sender_email: 'E-Mail-Adresse, von der Nachrichten gesendet werden'
+      sender_name: 'Name, der als Absender angezeigt wird'
+    transport:
+      'null': 'Deaktiviert (keine E-Mails)'
+      smtp: 'SMTP-Server'
+      sendmail: 'Sendmail'
+    encryption:
+      none: 'Keine'
+      ssl: 'SSL'
+      tls: 'TLS (empfohlen)'
+    test:
+      button: 'Testmail senden'
+      success: 'Testmail erfolgreich gesendet'
+      failed: 'Testmail konnte nicht gesendet werden'
+
   organisation:
     title: 'Organisationsdaten'
     header: 'Ihre Organisation'
@@ -4125,24 +4205,6 @@ setup:
       reporting: 'Compliance-Berichte automatisch anpassen'
       recommendations: 'Branchenspezifische Empfehlungen bereitstellen'
 
-  email:
-    title: 'E-Mail-Konfiguration'
-    header: 'E-Mail-Server'
-    sender_info: 'Absenderadresse für System-E-Mails'
-    skip_button: 'Überspringen'
-    skipped: 'E-Mail-Konfiguration übersprungen. Sie können diese später vornehmen.'
-    config_saved: 'E-Mail-Konfiguration gespeichert'
-    config_failed: 'Fehler beim Speichern der E-Mail-Konfiguration'
-    optional:
-      title: 'Optionaler Schritt'
-      message: 'Die E-Mail-Konfiguration kann auch später vorgenommen werden.'
-    info:
-      title: 'E-Mail-Verwendung'
-      description: 'Das System versendet E-Mails für:'
-      notifications: 'Benachrichtigungen bei wichtigen Ereignissen'
-      reminders: 'Erinnerungen für anstehende Aufgaben'
-      reports: 'Automatische Berichte'
-
   compliance:
     title: 'Compliance-Frameworks'
     header: 'Compliance-Framework-Auswahl'
@@ -4180,6 +4242,11 @@ action:
   new_asset: Neues Asset
   assess_risk: Risiko bewerten
   report_incident: Vorfall melden
+  cancel: Abbrechen
+  close: Schließen
+  delete: Löschen
+  delete_selected: Ausgewählte löschen
+  label: Aktion
 
 # Form Translations
 form:
@@ -4333,10 +4400,18 @@ accessibility:
   skip_to_navigation: 'Zur Navigation springen'
 
 # Bulk Delete Confirmation
+bulk_actions:
+  select_all: 'Alle auswählen'
+
 bulk_delete:
   confirm:
     title: 'Löschen bestätigen'
     warning: 'Diese Aktion kann nicht rückgängig gemacht werden.'
+  confirm_help: 'Geben Sie "DELETE" ein, um das Löschen zu bestätigen'
+  selected_items: 'Ausgewählte Elemente'
+  understand: 'Ich verstehe die Konsequenzen'
+  warning: 'Warnung: Diese Aktion kann nicht rückgängig gemacht werden'
+  will_be_deleted: 'werden gelöscht'
   selection:
     title: 'Ausgewählte Einträge'
   dependencies:
