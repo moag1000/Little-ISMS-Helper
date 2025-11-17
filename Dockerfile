@@ -31,7 +31,13 @@ RUN apk add --no-cache \
     libxml2-dev \
     nginx \
     supervisor \
+    py3-pip \
     curl
+
+# Upgrade pip and setuptools first, then supervisor to latest version (4.3+)
+# This fixes pkg_resources deprecation warning by using importlib.metadata
+RUN pip3 install --break-system-packages --upgrade pip setuptools && \
+    pip3 install --break-system-packages --upgrade supervisor
 
 # Install PHP extensions
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg && \
@@ -47,8 +53,8 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg && \
     xml \
     soap
 
-# Install Composer
-COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+# Install Composer (latest 2.x version)
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Set working directory
 WORKDIR /var/www/html
@@ -126,8 +132,9 @@ RUN apk add --no-cache \
     linux-headers \
     $PHPIZE_DEPS
 
-# Install Xdebug for development
-RUN pecl install xdebug && docker-php-ext-enable xdebug
+# Install Xdebug for development (latest stable version)
+RUN pecl channel-update pecl.php.net && \
+    pecl install xdebug && docker-php-ext-enable xdebug
 
 # Configure Xdebug
 RUN echo "xdebug.mode=debug,coverage" >> "$PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini" && \
