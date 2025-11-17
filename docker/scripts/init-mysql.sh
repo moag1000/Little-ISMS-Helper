@@ -3,7 +3,8 @@
 
 set -e
 
-DATADIR=/var/lib/mysql
+# Store MariaDB data in the application's var directory to keep all data in one volume
+DATADIR=/var/www/html/var/mysql
 
 # Database configuration from environment variables (with secure defaults)
 DB_NAME="${MYSQL_DATABASE:-isms}"
@@ -31,6 +32,11 @@ fi
 mkdir -p /run/mysqld
 chown mysql:mysql /run/mysqld
 chmod 755 /run/mysqld
+
+# Ensure MySQL data directory exists with correct ownership
+mkdir -p "$DATADIR"
+chown mysql:mysql "$DATADIR"
+chmod 755 "$DATADIR"
 
 # Initialize database if needed
 if [ ! -d "$DATADIR/mysql" ]; then
