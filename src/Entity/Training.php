@@ -152,7 +152,7 @@ class Training
      * @var Collection<int, ComplianceRequirement>
      * Phase 6J: Training ↔ ComplianceRequirement relationship for compliance training tracking
      */
-    #[ORM\ManyToMany(targetEntity: ComplianceRequirement::class)]
+    #[ORM\ManyToMany(targetEntity: ComplianceRequirement::class, inversedBy: 'trainings')]
     #[ORM\JoinTable(name: 'training_compliance_requirement')]
     #[Groups(['training:read'])]
     #[MaxDepth(1)]

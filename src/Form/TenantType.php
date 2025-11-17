@@ -44,10 +44,10 @@ class TenantType extends AbstractType
                 'constraints' => [
                     new Assert\NotBlank(),
                     new Assert\Length(['max' => 100]),
-                    new Assert\Regex([
-                        'pattern' => '/^[a-zA-Z0-9_-]+$/',
-                        'message' => 'tenant.validation.code_format',
-                    ]),
+                    new Assert\Regex(
+                        pattern: '/^[a-zA-Z0-9_-]+$/',
+                        message: 'tenant.validation.code_format'
+                    ),
                 ],
             ])
             ->add('description', TextareaType::class, [
