@@ -62,12 +62,20 @@ class DataRepairController extends AbstractController
             ];
         }
 
+        // Get all risks and incidents for asset assignment repair
+        $allRisks = $this->riskRepository->findAll();
+        $allIncidents = $this->incidentRepository->findAll();
+        $allAssets = $this->assetRepository->findAll();
+
         return $this->render('admin/data_repair/index.html.twig', [
             'tenants' => $tenants,
             'orphanedAssets' => $orphanedAssets,
             'orphanedRisks' => $orphanedRisks,
             'orphanedIncidents' => $orphanedIncidents,
             'tenantStats' => $tenantStats,
+            'allRisks' => $allRisks,
+            'allIncidents' => $allIncidents,
+            'allAssets' => $allAssets,
         ]);
     }
 
@@ -215,6 +223,69 @@ class DataRepairController extends AbstractController
             '%entity%' => $entityName,
             '%tenant%' => $tenant->getName(),
         ]));
+
+        return $this->redirectToRoute('admin_data_repair_index');
+    }
+
+    #[Route('/assign-asset/{type}/{id}', name: 'admin_data_repair_assign_asset', methods: ['POST'])]
+    public function assignAsset(Request $request, string $type, int $id): Response
+    {
+        $assetId = $request->request->get('asset_id');
+
+        if (!$this->isCsrfTokenValid('assign_asset_' . $id, $request->request->get('_token'))) {
+            $this->addFlash('error', $this->translator->trans('common.csrf_error'));
+            return $this->redirectToRoute('admin_data_repair_index');
+        }
+
+        if (!$assetId) {
+            $this->addFlash('error', $this->translator->trans('admin.data_repair.select_asset', [], 'messages') ?: 'Bitte wählen Sie ein Asset aus.');
+            return $this->redirectToRoute('admin_data_repair_index');
+        }
+
+        $asset = $this->assetRepository->find($assetId);
+        if (!$asset) {
+            $this->addFlash('error', $this->translator->trans('admin.data_repair.asset_not_found', [], 'messages') ?: 'Asset nicht gefunden.');
+            return $this->redirectToRoute('admin_data_repair_index');
+        }
+
+        $entityName = '';
+
+        switch ($type) {
+            case 'risk':
+                $entity = $this->riskRepository->find($id);
+                if (!$entity) {
+                    $this->addFlash('error', $this->translator->trans('admin.data_repair.entity_not_found'));
+                    return $this->redirectToRoute('admin_data_repair_index');
+                }
+                $entity->setAsset($asset);
+                $entityName = $entity->getTitle();
+                break;
+
+            case 'incident':
+                $entity = $this->incidentRepository->find($id);
+                if (!$entity) {
+                    $this->addFlash('error', $this->translator->trans('admin.data_repair.entity_not_found'));
+                    return $this->redirectToRoute('admin_data_repair_index');
+                }
+                // Incidents have ManyToMany relationship with assets
+                if (!$entity->getAffectedAssets()->contains($asset)) {
+                    $entity->addAffectedAsset($asset);
+                }
+                $entityName = $entity->getTitle();
+                break;
+
+            default:
+                $this->addFlash('error', $this->translator->trans('admin.data_repair.invalid_entity_type'));
+                return $this->redirectToRoute('admin_data_repair_index');
+        }
+
+        $this->entityManager->flush();
+
+        $this->addFlash('success', sprintf(
+            '%s wurde erfolgreich dem Asset "%s" zugewiesen.',
+            $entityName,
+            $asset->getName()
+        ));
 
         return $this->redirectToRoute('admin_data_repair_index');
     }

@@ -8,6 +8,9 @@ use App\Form\ComplianceFrameworkSelectionType;
 use App\Form\DatabaseConfigurationType;
 use App\Form\EmailConfigurationType;
 use App\Form\OrganisationInfoType;
+use App\Repository\AssetRepository;
+use App\Repository\IncidentRepository;
+use App\Repository\RiskRepository;
 use App\Repository\TenantRepository;
 use App\Security\SetupAccessChecker;
 use App\Service\BackupService;
@@ -48,6 +51,9 @@ class DeploymentWizardController extends AbstractController
         private readonly ComplianceFrameworkLoaderService $complianceLoader,
         private readonly EntityManagerInterface $entityManager,
         private readonly TenantRepository $tenantRepository,
+        private readonly AssetRepository $assetRepository,
+        private readonly RiskRepository $riskRepository,
+        private readonly IncidentRepository $incidentRepository,
     ) {
     }
 
@@ -941,9 +947,21 @@ class DeploymentWizardController extends AbstractController
 
         $sampleData = $this->moduleConfigService->getAvailableSampleData($selectedModules);
 
+        // Check for backup restore result from session (set after POST redirect)
+        $backupRestoreResult = $session->get('backup_restore_result');
+        if ($backupRestoreResult !== null) {
+            // Add tenant list for orphan repair UI
+            if (isset($backupRestoreResult['orphaned_entities']) && $backupRestoreResult['orphaned_entities']['total'] > 0) {
+                $backupRestoreResult['tenants'] = $this->tenantRepository->findAll();
+            }
+            // Remove from session after reading (one-time display)
+            $session->remove('backup_restore_result');
+        }
+
         return $this->render('setup/step9_sample_data.html.twig', [
             'selected_modules' => $selectedModules,
             'sample_data' => $sampleData,
+            'backup_restore_result' => $backupRestoreResult,
         ]);
     }
 
@@ -1083,17 +1101,62 @@ class DeploymentWizardController extends AbstractController
                 'warnings' => count($result['warnings']),
             ]);
 
-            $this->addFlash('success', 'Backup erfolgreich wiederhergestellt! Sie können jetzt das Setup abschließen.');
+            // Check for orphaned entities after restore
+            $orphanedAssets = $this->assetRepository->createQueryBuilder('a')
+                ->where('a.tenant IS NULL')
+                ->getQuery()
+                ->getResult();
 
-            return $this->render('setup/step9_sample_data.html.twig', [
-                'selected_modules' => $selectedModules,
-                'sample_data' => $sampleData,
-                'backup_restore_result' => [
-                    'success' => true,
-                    'statistics' => $result['statistics'],
-                    'warnings' => $result['warnings'],
+            $orphanedRisks = $this->riskRepository->createQueryBuilder('r')
+                ->where('r.tenant IS NULL')
+                ->getQuery()
+                ->getResult();
+
+            $orphanedIncidents = $this->incidentRepository->createQueryBuilder('i')
+                ->where('i.tenant IS NULL')
+                ->getQuery()
+                ->getResult();
+
+            // Check for risks without asset assignment
+            $risksWithoutAssets = $this->riskRepository->createQueryBuilder('r')
+                ->where('r.asset IS NULL')
+                ->getQuery()
+                ->getResult();
+
+            $hasOrphanedEntities = count($orphanedAssets) > 0 || count($orphanedRisks) > 0 || count($orphanedIncidents) > 0;
+
+            if ($hasOrphanedEntities) {
+                $this->addFlash('warning', sprintf(
+                    'Backup wiederhergestellt, aber %d verwaiste Entitäten gefunden (Assets: %d, Risiken: %d, Vorfälle: %d). Bitte reparieren Sie diese.',
+                    count($orphanedAssets) + count($orphanedRisks) + count($orphanedIncidents),
+                    count($orphanedAssets),
+                    count($orphanedRisks),
+                    count($orphanedIncidents)
+                ));
+            } elseif (count($risksWithoutAssets) > 0) {
+                $this->addFlash('info', sprintf(
+                    'Backup wiederhergestellt! %d Risiken haben keine Asset-Zuordnung. Sie können diese im Admin Data Repair Tool korrigieren.',
+                    count($risksWithoutAssets)
+                ));
+            } else {
+                $this->addFlash('success', 'Backup erfolgreich wiederhergestellt! Sie können jetzt das Setup abschließen.');
+            }
+
+            // Store result in session for display after redirect (Turbo compatibility)
+            $session->set('backup_restore_result', [
+                'success' => true,
+                'statistics' => $result['statistics'],
+                'warnings' => $result['warnings'],
+                'orphaned_entities' => [
+                    'assets' => count($orphanedAssets),
+                    'risks' => count($orphanedRisks),
+                    'incidents' => count($orphanedIncidents),
+                    'total' => count($orphanedAssets) + count($orphanedRisks) + count($orphanedIncidents),
                 ],
+                'risks_without_assets' => count($risksWithoutAssets),
             ]);
+
+            return $this->redirectToRoute('setup_step9_sample_data');
         } catch (\Exception $e) {
             $logger->error('Backup restore failed during setup', [
                 'error' => $e->getMessage(),
@@ -1102,15 +1165,105 @@ class DeploymentWizardController extends AbstractController
 
             $this->addFlash('error', 'Fehler bei der Wiederherstellung: ' . $e->getMessage());
 
-            return $this->render('setup/step9_sample_data.html.twig', [
-                'selected_modules' => $selectedModules,
-                'sample_data' => $sampleData,
-                'backup_restore_result' => [
-                    'success' => false,
-                    'message' => $e->getMessage(),
-                ],
+            $session->set('backup_restore_result', [
+                'success' => false,
+                'message' => $e->getMessage(),
             ]);
+
+            return $this->redirectToRoute('setup_step9_sample_data');
         }
+    }
+
+    /**
+     * Step 9: Repair Orphaned Entities
+     */
+    #[Route('/step9-repair-orphans', name: 'setup_step9_repair_orphans', methods: ['POST'])]
+    public function step9RepairOrphans(
+        Request $request,
+        SessionInterface $session,
+        LoggerInterface $logger
+    ): Response {
+        $selectedModules = $session->get('setup_selected_modules', []);
+        $sampleData = $this->moduleConfigService->getAvailableSampleData($selectedModules);
+
+        // Validate CSRF token
+        $token = $request->request->get('_token');
+        if (!$this->isCsrfTokenValid('setup_repair_orphans', $token)) {
+            $this->addFlash('error', $this->translator->trans('common.csrf_error'));
+            return $this->redirectToRoute('setup_step9_sample_data');
+        }
+
+        $targetTenantId = $request->request->get('target_tenant_id');
+        if (!$targetTenantId) {
+            $this->addFlash('error', 'Bitte wählen Sie einen Ziel-Mandanten aus.');
+            return $this->redirectToRoute('setup_step9_sample_data');
+        }
+
+        $targetTenant = $this->tenantRepository->find($targetTenantId);
+        if (!$targetTenant) {
+            $this->addFlash('error', 'Ziel-Mandant nicht gefunden.');
+            return $this->redirectToRoute('setup_step9_sample_data');
+        }
+
+        try {
+            // Repair orphaned Assets
+            $orphanedAssets = $this->assetRepository->createQueryBuilder('a')
+                ->where('a.tenant IS NULL')
+                ->getQuery()
+                ->getResult();
+
+            foreach ($orphanedAssets as $asset) {
+                $asset->setTenant($targetTenant);
+            }
+
+            // Repair orphaned Risks
+            $orphanedRisks = $this->riskRepository->createQueryBuilder('r')
+                ->where('r.tenant IS NULL')
+                ->getQuery()
+                ->getResult();
+
+            foreach ($orphanedRisks as $risk) {
+                $risk->setTenant($targetTenant);
+            }
+
+            // Repair orphaned Incidents
+            $orphanedIncidents = $this->incidentRepository->createQueryBuilder('i')
+                ->where('i.tenant IS NULL')
+                ->getQuery()
+                ->getResult();
+
+            foreach ($orphanedIncidents as $incident) {
+                $incident->setTenant($targetTenant);
+            }
+
+            $this->entityManager->flush();
+
+            $totalRepaired = count($orphanedAssets) + count($orphanedRisks) + count($orphanedIncidents);
+
+            $logger->info('Orphaned entities repaired during setup', [
+                'target_tenant' => $targetTenant->getName(),
+                'assets_repaired' => count($orphanedAssets),
+                'risks_repaired' => count($orphanedRisks),
+                'incidents_repaired' => count($orphanedIncidents),
+            ]);
+
+            $this->addFlash('success', sprintf(
+                '%d verwaiste Entitäten erfolgreich dem Mandanten "%s" zugewiesen (Assets: %d, Risiken: %d, Vorfälle: %d).',
+                $totalRepaired,
+                $targetTenant->getName(),
+                count($orphanedAssets),
+                count($orphanedRisks),
+                count($orphanedIncidents)
+            ));
+        } catch (\Exception $e) {
+            $logger->error('Failed to repair orphaned entities', [
+                'error' => $e->getMessage(),
+            ]);
+
+            $this->addFlash('error', 'Fehler beim Reparieren: ' . $e->getMessage());
+        }
+
+        return $this->redirectToRoute('setup_step9_sample_data');
     }
 
     /**
