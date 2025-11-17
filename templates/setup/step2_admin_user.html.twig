@@ -42,7 +42,10 @@
                 Form submitted (from session): {{ app.session.get('debug_form_submitted') ? 'YES' : 'NO' }}<br>
                 Form valid (from session): {{ app.session.get('debug_form_valid') ? 'YES' : 'NO' }}<br>
                 {% if app.session.get('debug_processing') %}
-                    Processing: {{ app.session.get('debug_processing') }}<br>
+                    <span class="text-success">✓ Processing: {{ app.session.get('debug_processing') }}</span><br>
+                {% endif %}
+                {% if app.session.get('debug_error') %}
+                    <span class="text-danger">✗ Error: {{ app.session.get('debug_error') }}</span><br>
                 {% endif %}
             </div>
 
