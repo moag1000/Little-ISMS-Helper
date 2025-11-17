@@ -81,6 +81,12 @@ if [ "$NEEDS_MIGRATION" = "1" ]; then
     export DATABASE_URL="mysql://$DB_USER:$DB_PASS@localhost/$DB_NAME?unix_socket=/run/mysqld/mysqld.sock&serverVersion=mariadb-11.4.0&charset=utf8mb4"
     php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration 2>&1 || echo "Migration failed, will retry on next request"
     echo "Migrations completed"
+
+    # Clear and rebuild cache with the correct DATABASE_URL
+    echo "Rebuilding application cache with correct database configuration..."
+    php bin/console cache:clear --env=prod 2>&1 || echo "Cache clear failed"
+    php bin/console cache:warmup --env=prod 2>&1 || echo "Cache warmup failed"
+    echo "Cache rebuilt"
 fi
 
 # Keep MariaDB running in foreground
