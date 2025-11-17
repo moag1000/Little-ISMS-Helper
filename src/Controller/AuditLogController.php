@@ -38,7 +38,7 @@ class AuditLogController extends AbstractController
         $filters = array_filter($filters, fn($value) => $value !== null && $value !== '');
 
         // Get logs based on filters
-        if (!empty($filters) && count($filters) > 1) { // More than just 'limit'
+        if (count($filters) > 1) { // More than just 'limit'
             $auditLogs = $this->auditLogRepository->search($filters);
             $totalLogs = count($auditLogs); // Simplified for filtered results
         } else {
