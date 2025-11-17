@@ -89,6 +89,9 @@ RUN chown -R www-data:www-data /var/www/html && \
 # Configure PHP for production
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 
+# Increase PHP memory limit for Symfony cache:clear and other CLI operations
+RUN echo "memory_limit=512M" > "$PHP_INI_DIR/conf.d/memory-limit.ini"
+
 # Configure OPcache for production (separate file for better management)
 RUN cat > "$PHP_INI_DIR/conf.d/opcache-prod.ini" <<'EOF'
 opcache.enable=1
