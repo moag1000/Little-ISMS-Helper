@@ -243,9 +243,8 @@ class DeploymentWizardController extends AbstractController
 
                 if (!$migrationResult['success']) {
                     $this->addFlash('error', $this->translator->trans('setup.admin.migration_failed') . ': ' . $migrationResult['message']);
-                    return $this->render('setup/step2_admin_user.html.twig', [
-                        'form' => $form,
-                    ]);
+                    // Turbo requires redirect after POST
+                    return $this->redirectToRoute('setup_step2_admin_user');
                 }
 
                 // Create admin user via command
@@ -260,9 +259,13 @@ class DeploymentWizardController extends AbstractController
                     return $this->redirectToRoute('setup_step3_email_config');
                 } else {
                     $this->addFlash('error', $result['message']);
+                    // Turbo requires redirect after POST
+                    return $this->redirectToRoute('setup_step2_admin_user');
                 }
             } catch (\Exception $e) {
                 $this->addFlash('error', $this->translator->trans('setup.admin.creation_failed') . ': ' . $e->getMessage());
+                // Turbo requires redirect after POST
+                return $this->redirectToRoute('setup_step2_admin_user');
             }
         }
 
