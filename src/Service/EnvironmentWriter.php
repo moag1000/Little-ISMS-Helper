@@ -58,10 +58,9 @@ class EnvironmentWriter
             // Build DATABASE_URL using variable references
             // This avoids URL-encoding issues with special characters in passwords
             $databaseUrl = match ($type) {
-                'mysql', 'mariadb' => $this->buildMysqlDatabaseUrlWithVars($name, $config['serverVersion'] ?? '8.0', $unixSocket),
+                'mysql', 'mariadb' => $this->buildMysqlDatabaseUrlWithVars($config['serverVersion'] ?? '8.0', $unixSocket),
                 'postgresql' => sprintf(
-                    'postgresql://${DB_USER}:${DB_PASS}@${DB_HOST}:${DB_PORT}/%s?serverVersion=%s&charset=utf8',
-                    $name,
+                    'postgresql://${DB_USER}:${DB_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME}?serverVersion=%s&charset=utf8',
                     $config['serverVersion'] ?? '14'
                 ),
                 default => throw new \InvalidArgumentException("Unsupported database type: {$type}")
@@ -84,14 +83,13 @@ class EnvironmentWriter
      * Build MySQL/MariaDB DATABASE_URL using environment variable references
      * This avoids URL-encoding issues with special characters in passwords
      */
-    private function buildMysqlDatabaseUrlWithVars(string $name, string $serverVersion, ?string $unixSocket = null): string
+    private function buildMysqlDatabaseUrlWithVars(string $serverVersion, ?string $unixSocket = null): string
     {
         // Use Unix socket if explicitly provided
         if (!empty($unixSocket)) {
             // Unix socket connection (better performance, no TCP overhead)
             return sprintf(
-                'mysql://${DB_USER}:${DB_PASS}@localhost/%s?unix_socket=%s&serverVersion=%s&charset=utf8mb4',
-                $name,
+                'mysql://${DB_USER}:${DB_PASS}@localhost/${DB_NAME}?unix_socket=%s&serverVersion=%s&charset=utf8mb4',
                 $unixSocket,
                 $serverVersion
             );
@@ -99,8 +97,7 @@ class EnvironmentWriter
 
         // Standard TCP connection using variable references
         return sprintf(
-            'mysql://${DB_USER}:${DB_PASS}@${DB_HOST}:${DB_PORT}/%s?serverVersion=%s&charset=utf8mb4',
-            $name,
+            'mysql://${DB_USER}:${DB_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME}?serverVersion=%s&charset=utf8mb4',
             $serverVersion
         );
     }
