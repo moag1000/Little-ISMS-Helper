@@ -4019,7 +4019,7 @@ setup:
     user_help: 'Benutzername für die Datenbankverbindung'
     password: 'Passwort'
     password_help: 'Passwort für die Datenbankverbindung'
-    password_help_standalone: 'Passwort für die lokale MariaDB (Standard: isms)'
+    password_help_standalone: 'Passwort für die lokale MariaDB (leer lassen für auto-generiertes Passwort)'
     server_version: 'Server-Version'
     server_version_help: 'Version des Datenbankservers (z.B. 8.0, mariadb-11.4.0)'
     test_button: 'Verbindung testen'
