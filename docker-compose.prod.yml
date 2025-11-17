@@ -72,16 +72,14 @@ services:
       db:
         condition: service_healthy
     # ✅ Security: Nur App-Ports öffentlich (HTTP & HTTPS)
+    # Defaults: Port 80 und 443 - kann via APP_PORT/APP_PORT_HTTPS überschrieben werden
     ports:
-      - "${APP_PORT:-8000}:80"
-      - "${APP_PORT_HTTPS:-8443}:443"
+      - "${APP_PORT:-80}:80"
+      - "${APP_PORT_HTTPS:-443}:443"
     volumes:
-      # ✅ Bind mount für Konfiguration (persistiert .env.local, config/, etc.)
-      - ./:/var/www/html:ro  # Read-only für Security
-      # Config-Ordner beschreibbar für setup_complete.lock
-      - ./config:/var/www/html/config:rw
-      # var/ beschreibbar für Cache, Logs, Sessions
-      - ./var:/var/www/html/var:rw
+      # ✅ REQUIRED: Persistente Daten - ohne diese gehen alle Daten bei Container-Neustart verloren!
+      - isms_data:/var/www/html/var
+      - isms_config:/var/www/html/config
       # Named volumes für Dependencies
       - vendor_data:/var/www/html/vendor:ro
     environment:
@@ -125,12 +123,13 @@ services:
 
 volumes:
   # ✅ Production Volumes - persistent und performant
+  # REQUIRED: Diese Volumes sind essentiell für Datenpersistenz!
   db_data:
     driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: /var/lib/docker/volumes/isms_db_data
+  isms_data:
+    driver: local
+  isms_config:
+    driver: local
   vendor_data:
     driver: local
 
