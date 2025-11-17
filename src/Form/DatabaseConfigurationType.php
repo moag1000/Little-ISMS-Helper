@@ -28,13 +28,17 @@ class DatabaseConfigurationType extends AbstractType
         if (extension_loaded('pdo_mysql')) {
             $availableTypes['MySQL'] = 'mysql';
             $availableTypes['MariaDB'] = 'mariadb';
-            $defaultType = $defaultType ?? 'mysql';
+            if ($defaultType === null) {
+                $defaultType = 'mysql';
+            }
         }
 
         // Check for PostgreSQL support
         if (extension_loaded('pdo_pgsql')) {
             $availableTypes['PostgreSQL'] = 'postgresql';
-            $defaultType = $defaultType ?? 'postgresql';
+            if ($defaultType === null) {
+                $defaultType = 'postgresql';
+            }
         }
 
         // Check for SQLite support (usually available)
