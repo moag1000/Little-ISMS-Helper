@@ -15,6 +15,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.7.1] - 2025-11-17 - Critical Hotfix: Backup Restore Functionality
+
+### Fixed
+
+#### Critical Restore Issues
+- **Foreign Key Constraint Violations** - Disabled FK checks during restore (SET FOREIGN_KEY_CHECKS = 0)
+- **Entity ID Preservation** - Original IDs from backup are now preserved using AssignedGenerator
+- **DateTime Type Mismatches** - Automatic conversion between DateTime and DateTimeImmutable
+- **Lifecycle Callback Conflicts** - Disabled PrePersist/PreUpdate listeners during restore
+- **Entity Dependency Ordering** - Fixed Asset, Supplier, InterestedParty to load before Risk
+
+#### Entity DateTime Fixes
+- **Supplier Entity** - Fixed updateTimestamps() to use DateTime instead of DateTimeImmutable
+- **InterestedParty Entity** - Fixed updateTimestamps() to use DateTime instead of DateTimeImmutable
+
+#### Password Security
+- **Admin Password Option** - Option to set admin password during restore (passwords not stored in backups for security)
+- **Password Warning** - Clear warning when no admin password is provided
+- **Setup Wizard Support** - Required admin password field in setup wizard restore
+
+### Added
+
+#### User Experience
+- **Admin Password Field** - Form field to set admin password during restore
+- **Security Information** - Clear explanation why passwords are not in backups
+- **Automatic Password Setting** - First admin user gets password set after restore
+
+---
+
 ## [1.7.0] - 2025-11-17 - Backup/Restore System Overhaul & Setup Wizard Integration
 
 ### Added
