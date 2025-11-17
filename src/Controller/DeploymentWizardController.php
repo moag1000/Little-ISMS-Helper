@@ -113,7 +113,8 @@ class DeploymentWizardController extends AbstractController
 
         // Auto-detect Docker standalone deployment and pre-fill credentials
         $defaultData = [];
-        $isDockerStandalone = file_exists('/run/mysqld/mysqld.sock') || file_exists('/.dockerenv');
+        // Use @ to suppress open_basedir warnings on non-Docker servers
+        $isDockerStandalone = @file_exists('/run/mysqld/mysqld.sock') || @file_exists('/.dockerenv');
 
         if ($isDockerStandalone) {
             // Pre-fill with Docker internal MySQL configuration
