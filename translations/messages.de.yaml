@@ -4052,6 +4052,8 @@ setup:
     password: 'Passwort'
     password_help: 'Passwort für die Datenbankverbindung'
     password_help_standalone: 'Passwort für die lokale MariaDB (leer lassen für auto-generiertes Passwort)'
+    unix_socket: 'Unix-Socket'
+    unix_socket_help: 'Pfad zum MySQL/MariaDB Unix-Socket (leer lassen für TCP-Verbindung)'
     server_version: 'Server-Version'
     server_version_help: 'Version des Datenbankservers (z.B. 8.0, mariadb-11.4.0)'
     test_button: 'Verbindung testen'

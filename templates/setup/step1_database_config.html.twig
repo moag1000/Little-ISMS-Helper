@@ -98,6 +98,12 @@
                                     'attr': {'class': 'form-control'}
                                 }) }}
                             </div>
+                            <div class="col-md-6 mb-3" id="unix-socket-field">
+                                {{ form_row(form.unixSocket, {
+                                    'label': 'setup.database.unix_socket'|trans,
+                                    'attr': {'class': 'form-control'}
+                                }) }}
+                            </div>
                         </div>
                     </div>
 
@@ -164,10 +170,20 @@
 document.addEventListener('DOMContentLoaded', function() {
     const typeSelect = document.querySelector('select[name*="[type]"]');
     const serverFields = document.getElementById('server-fields');
+    const unixSocketField = document.getElementById('unix-socket-field');
 
     function toggleServerFields() {
-        const isSqlite = typeSelect.value === 'sqlite';
+        const dbType = typeSelect.value;
+        const isSqlite = dbType === 'sqlite';
+        const isMysqlOrMariadb = dbType === 'mysql' || dbType === 'mariadb';
+
+        // Hide all server fields for SQLite
         serverFields.style.display = isSqlite ? 'none' : 'block';
+
+        // Unix socket only for MySQL/MariaDB
+        if (unixSocketField) {
+            unixSocketField.style.display = isMysqlOrMariadb ? 'block' : 'none';
+        }
     }
 
     if (typeSelect) {

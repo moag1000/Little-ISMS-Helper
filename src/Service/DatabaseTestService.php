@@ -113,15 +113,15 @@ class DatabaseTestService
         $user = $config['user'] ?? 'root';
         $password = $config['password'] ?? '';
         $dbName = $config['name'] ?? 'little_isms_helper';
+        $unixSocket = $config['unixSocket'] ?? null;
 
         try {
-            // Check if we should use Unix socket for localhost connections
-            $unixSocketPath = '/run/mysqld/mysqld.sock';
-            $useUnixSocket = ($host === 'localhost' && file_exists($unixSocketPath));
+            // Use Unix socket if explicitly provided
+            $useUnixSocket = !empty($unixSocket);
 
             if ($useUnixSocket) {
-                // Unix socket connection (standalone Docker container)
-                $dsn = "mysql:unix_socket={$unixSocketPath};dbname={$dbName};charset=utf8mb4";
+                // Unix socket connection
+                $dsn = "mysql:unix_socket={$unixSocket};dbname={$dbName};charset=utf8mb4";
             } else {
                 // Standard TCP connection
                 $dsn = "mysql:host={$host};port={$port};dbname={$dbName};charset=utf8mb4";
@@ -137,7 +137,7 @@ class DatabaseTestService
 
             return [
                 'success' => true,
-                'message' => $useUnixSocket ? 'MariaDB connection successful (via Unix socket)' : 'MySQL connection successful',
+                'message' => $useUnixSocket ? 'MySQL/MariaDB connection successful (via Unix socket)' : 'MySQL connection successful',
             ];
         } catch (PDOException $e) {
             // If database doesn't exist, that's okay - we can create it
@@ -238,15 +238,15 @@ class DatabaseTestService
         $user = $config['user'] ?? 'root';
         $password = $config['password'] ?? '';
         $dbName = $config['name'] ?? 'little_isms_helper';
+        $unixSocket = $config['unixSocket'] ?? null;
 
         try {
-            // Check if we should use Unix socket for localhost connections
-            $unixSocketPath = '/run/mysqld/mysqld.sock';
-            $useUnixSocket = ($host === 'localhost' && file_exists($unixSocketPath));
+            // Use Unix socket if explicitly provided
+            $useUnixSocket = !empty($unixSocket);
 
             if ($useUnixSocket) {
-                // Unix socket connection (standalone Docker container)
-                $dsn = "mysql:unix_socket={$unixSocketPath};charset=utf8mb4";
+                // Unix socket connection
+                $dsn = "mysql:unix_socket={$unixSocket};charset=utf8mb4";
             } else {
                 // Standard TCP connection
                 $dsn = "mysql:host={$host};port={$port};charset=utf8mb4";

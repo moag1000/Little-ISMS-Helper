@@ -26,7 +26,7 @@ class EnvironmentWriter
     /**
      * Write database configuration to .env.local
      *
-     * @param array $config Configuration array with keys: type, host, port, name, user, password
+     * @param array $config Configuration array with keys: type, host, port, name, user, password, unixSocket
      * @throws \RuntimeException if write fails
      */
     public function writeDatabaseConfig(array $config): void
@@ -37,11 +37,13 @@ class EnvironmentWriter
         $name = $config['name'] ?? 'little_isms_helper';
         $user = $config['user'] ?? 'root';
         $password = $config['password'] ?? '';
+        $unixSocket = $config['unixSocket'] ?? null;
 
         // Build DATABASE_URL based on type
         // Important: URL-encode user and password to handle special characters
+        // The escapeEnvValue() will wrap the URL in quotes if it contains %, preventing Symfony from interpreting it as parameter
         $databaseUrl = match ($type) {
-            'mysql', 'mariadb' => $this->buildMysqlDatabaseUrl($host, $port, $user, $password, $name, $config['serverVersion'] ?? '8.0'),
+            'mysql', 'mariadb' => $this->buildMysqlDatabaseUrl($host, $port, $user, $password, $name, $config['serverVersion'] ?? '8.0', $unixSocket),
             'postgresql' => sprintf(
                 'postgresql://%s:%s@%s:%s/%s?serverVersion=%s&charset=utf8',
                 urlencode($user),
@@ -72,6 +74,9 @@ class EnvironmentWriter
             $envVars['DB_NAME'] = $name;
             $envVars['DB_USER'] = $user;
             $envVars['DB_PASS'] = $password;
+            if (!empty($unixSocket)) {
+                $envVars['DB_SOCKET'] = $unixSocket;
+            }
         }
 
         $this->writeEnvVariables($envVars);
@@ -80,28 +85,22 @@ class EnvironmentWriter
     /**
      * Build MySQL/MariaDB DATABASE_URL with optional Unix socket support
      */
-    private function buildMysqlDatabaseUrl(string $host, int $port, string $user, string $password, string $name, string $serverVersion): string
+    private function buildMysqlDatabaseUrl(string $host, int $port, string $user, string $password, string $name, string $serverVersion, ?string $unixSocket = null): string
     {
-        // Check if we should use Unix socket for localhost connections in Docker
-        $useUnixSocket = false;
-        $unixSocketPath = '/run/mysqld/mysqld.sock';
+        // URL-encode user and password
+        // The resulting URL will contain % which will trigger escapeEnvValue() to wrap it in quotes
+        $encodedUser = urlencode($user);
+        $encodedPassword = urlencode($password);
 
-        // Use Unix socket if:
-        // 1. Host is localhost AND
-        // 2. Unix socket file exists (we're in standalone Docker container)
-        if ($host === 'localhost' && file_exists($unixSocketPath)) {
-            $useUnixSocket = true;
-        }
-
-        if ($useUnixSocket) {
+        // Use Unix socket if explicitly provided
+        if (!empty($unixSocket)) {
             // Unix socket connection (better performance, no TCP overhead)
-            // Note: Do NOT urlencode the socket path - Symfony's container interprets %2F as parameter placeholder
             return sprintf(
                 'mysql://%s:%s@localhost/%s?unix_socket=%s&serverVersion=%s&charset=utf8mb4',
-                urlencode($user),
-                urlencode($password),
+                $encodedUser,
+                $encodedPassword,
                 $name,
-                $unixSocketPath,  // Raw path, not URL-encoded
+                $unixSocket,  // Raw path, not URL-encoded
                 $serverVersion
             );
         }
@@ -109,8 +108,8 @@ class EnvironmentWriter
         // Standard TCP connection
         return sprintf(
             'mysql://%s:%s@%s:%s/%s?serverVersion=%s&charset=utf8mb4',
-            urlencode($user),
-            urlencode($password),
+            $encodedUser,
+            $encodedPassword,
             $host,
             $port,
             $name,
@@ -269,7 +268,8 @@ class EnvironmentWriter
     private function escapeEnvValue(string $value): string
     {
         // If value contains special characters, wrap in double quotes
-        if (preg_match('/[\\s#$&*(){}[\]|;\'"`<>]/', $value)) {
+        // Important: Include % because Symfony interprets it as parameter placeholder
+        if (preg_match('/[\\s#$&*(){}[\]|;\'"`<>%]/', $value)) {
             // Escape existing double quotes and backslashes
             $value = str_replace(['\\', '"'], ['\\\\', '\\"'], $value);
             return "\"{$value}\"";
