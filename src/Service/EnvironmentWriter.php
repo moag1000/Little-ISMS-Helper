@@ -39,51 +39,75 @@ class EnvironmentWriter
         $password = $config['password'] ?? '';
         $unixSocket = $config['unixSocket'] ?? null;
 
-        // Build DATABASE_URL based on type
-        // Important: URL-encode user and password to handle special characters
-        // The escapeEnvValue() will wrap the URL in quotes if it contains %, preventing Symfony from interpreting it as parameter
-        $databaseUrl = match ($type) {
-            'mysql', 'mariadb' => $this->buildMysqlDatabaseUrl($host, $port, $user, $password, $name, $config['serverVersion'] ?? '8.0', $unixSocket),
-            'postgresql' => sprintf(
-                'postgresql://%s:%s@%s:%s/%s?serverVersion=%s&charset=utf8',
-                urlencode($user),
-                urlencode($password),
-                $host,
-                $port,
-                $name,
-                $config['serverVersion'] ?? '14'
-            ),
-            'sqlite' => sprintf(
-                'sqlite:///%s/var/%s.db',
-                '%kernel.project_dir%',
-                $name
-            ),
-            default => throw new \InvalidArgumentException("Unsupported database type: {$type}")
-        };
-
         // Prepare environment variables
-        $envVars = [
-            'DATABASE_URL' => $databaseUrl,
-        ];
+        // Store individual components first, then reference them in DATABASE_URL
+        $envVars = [];
 
-        // If not SQLite, also store individual components for easier access
+        // If not SQLite, store individual components and use variable references in URL
         if ($type !== 'sqlite') {
             $envVars['DB_TYPE'] = $type;
             $envVars['DB_HOST'] = $host;
-            $envVars['DB_PORT'] = $port;
+            $envVars['DB_PORT'] = (string)$port;
             $envVars['DB_NAME'] = $name;
             $envVars['DB_USER'] = $user;
             $envVars['DB_PASS'] = $password;
             if (!empty($unixSocket)) {
                 $envVars['DB_SOCKET'] = $unixSocket;
             }
+
+            // Build DATABASE_URL using variable references
+            // This avoids URL-encoding issues with special characters in passwords
+            $databaseUrl = match ($type) {
+                'mysql', 'mariadb' => $this->buildMysqlDatabaseUrlWithVars($name, $config['serverVersion'] ?? '8.0', $unixSocket),
+                'postgresql' => sprintf(
+                    'postgresql://${DB_USER}:${DB_PASS}@${DB_HOST}:${DB_PORT}/%s?serverVersion=%s&charset=utf8',
+                    $name,
+                    $config['serverVersion'] ?? '14'
+                ),
+                default => throw new \InvalidArgumentException("Unsupported database type: {$type}")
+            };
+        } else {
+            // SQLite doesn't need credentials
+            $databaseUrl = sprintf(
+                'sqlite:///%s/var/%s.db',
+                '%%kernel.project_dir%%',  // %% escapes to single % in .env
+                $name
+            );
         }
+
+        $envVars['DATABASE_URL'] = $databaseUrl;
 
         $this->writeEnvVariables($envVars);
     }
 
     /**
+     * Build MySQL/MariaDB DATABASE_URL using environment variable references
+     * This avoids URL-encoding issues with special characters in passwords
+     */
+    private function buildMysqlDatabaseUrlWithVars(string $name, string $serverVersion, ?string $unixSocket = null): string
+    {
+        // Use Unix socket if explicitly provided
+        if (!empty($unixSocket)) {
+            // Unix socket connection (better performance, no TCP overhead)
+            return sprintf(
+                'mysql://${DB_USER}:${DB_PASS}@localhost/%s?unix_socket=%s&serverVersion=%s&charset=utf8mb4',
+                $name,
+                $unixSocket,
+                $serverVersion
+            );
+        }
+
+        // Standard TCP connection using variable references
+        return sprintf(
+            'mysql://${DB_USER}:${DB_PASS}@${DB_HOST}:${DB_PORT}/%s?serverVersion=%s&charset=utf8mb4',
+            $name,
+            $serverVersion
+        );
+    }
+
+    /**
      * Build MySQL/MariaDB DATABASE_URL with optional Unix socket support
+     * @deprecated Use buildMysqlDatabaseUrlWithVars() instead to avoid special character issues
      */
     private function buildMysqlDatabaseUrl(string $host, int $port, string $user, string $password, string $name, string $serverVersion, ?string $unixSocket = null): string
     {
@@ -267,9 +291,12 @@ class EnvironmentWriter
      */
     private function escapeEnvValue(string $value): string
     {
+        // IMPORTANT: Symfony's .env parser interprets % as parameter placeholder even in quotes
+        // We must escape % as %% BEFORE any other escaping
+        $value = str_replace('%', '%%', $value);
+
         // If value contains special characters, wrap in double quotes
-        // Important: Include % because Symfony interprets it as parameter placeholder
-        if (preg_match('/[\\s#$&*(){}[\]|;\'"`<>%]/', $value)) {
+        if (preg_match('/[\\s#$&*(){}[\]|;\'"`<>]/', $value)) {
             // Escape existing double quotes and backslashes
             $value = str_replace(['\\', '"'], ['\\\\', '\\"'], $value);
             return "\"{$value}\"";
