@@ -17,12 +17,14 @@ LABEL maintainer="Little ISMS Helper Project"
 # Addresses CVE-2025-10966 (curl) and other potential vulnerabilities
 RUN apk update && apk upgrade --no-cache
 
-# Install system dependencies
+# Install system dependencies including MariaDB server for standalone deployment
 RUN apk add --no-cache \
     git \
     unzip \
     libzip-dev \
-    postgresql-dev \
+    mariadb-dev \
+    mariadb \
+    mariadb-client \
     icu-dev \
     oniguruma-dev \
     libpng-dev \
@@ -32,7 +34,8 @@ RUN apk add --no-cache \
     nginx \
     supervisor \
     py3-pip \
-    curl
+    curl \
+    su-exec
 
 # Upgrade pip and setuptools first, then supervisor to latest version (4.3+)
 # This fixes pkg_resources deprecation warning by using importlib.metadata
@@ -43,8 +46,8 @@ RUN pip3 install --break-system-packages --upgrade pip setuptools && \
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg && \
     docker-php-ext-install -j$(nproc) \
     pdo \
-    pdo_pgsql \
-    pgsql \
+    pdo_mysql \
+    mysqli \
     intl \
     zip \
     opcache \
@@ -73,8 +76,21 @@ COPY . .
 # Set environment variables for production
 ENV APP_ENV=prod
 ENV APP_DEBUG=0
+# Default database URL for local MariaDB via Unix socket (Setup Wizard will configure actual credentials)
+ENV DATABASE_URL="mysql://isms:isms@localhost/isms?unix_socket=/run/mysqld/mysqld.sock&serverVersion=mariadb-11.4.0&charset=utf8mb4"
+# Dummy app secret for build-time (Setup Wizard will generate secure secret)
+ENV APP_SECRET="build-time-secret-will-be-replaced"
 
-# Now run Symfony scripts (bin/console is now available)
+# Configure PHP for production BEFORE running scripts
+RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
+
+# Increase PHP memory limit for Symfony cache:clear and other CLI operations
+RUN echo "memory_limit=512M" > "$PHP_INI_DIR/conf.d/memory-limit.ini"
+
+# Set max_execution_time for long-running operations (migrations, imports)
+RUN echo "max_execution_time=300" > "$PHP_INI_DIR/conf.d/execution-time.ini"
+
+# Now run Symfony scripts (bin/console is now available, memory limit is set)
 RUN composer run-script --no-dev auto-scripts || true
 
 # Create required directories for logs and cache
@@ -85,12 +101,6 @@ RUN mkdir -p var/cache var/log /var/log/supervisor /var/log/nginx && \
 RUN chown -R www-data:www-data /var/www/html && \
     chmod -R 755 /var/www/html/var && \
     chown -R root:root /var/log/supervisor /var/log/nginx
-
-# Configure PHP for production
-RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
-
-# Increase PHP memory limit for Symfony cache:clear and other CLI operations
-RUN echo "memory_limit=512M" > "$PHP_INI_DIR/conf.d/memory-limit.ini"
 
 # Configure OPcache for production (separate file for better management)
 RUN cat > "$PHP_INI_DIR/conf.d/opcache-prod.ini" <<'EOF'
@@ -108,8 +118,18 @@ RUN sed -i 's|listen = .*|listen = /run/php-fpm.sock|' /usr/local/etc/php-fpm.d/
     sed -i 's|;listen.owner|listen.owner|' /usr/local/etc/php-fpm.d/www.conf && \
     sed -i 's|;listen.group|listen.group|' /usr/local/etc/php-fpm.d/www.conf && \
     sed -i 's|;listen.mode = 0660|listen.mode = 0660|' /usr/local/etc/php-fpm.d/www.conf && \
+    sed -i 's|listen = 9000|listen = /run/php-fpm.sock|' /usr/local/etc/php-fpm.d/zz-docker.conf && \
     mkdir -p /run/php-fpm && \
     chown www-data:www-data /run/php-fpm
+
+# Configure MariaDB for standalone deployment
+RUN mkdir -p /var/lib/mysql /run/mysqld && \
+    chown -R mysql:mysql /var/lib/mysql /run/mysqld && \
+    chmod 755 /var/lib/mysql /run/mysqld
+
+# Copy MariaDB initialization script
+COPY docker/scripts/init-mysql.sh /var/www/html/docker/scripts/init-mysql.sh
+RUN chmod +x /var/www/html/docker/scripts/init-mysql.sh
 
 # Configure Nginx
 COPY docker/nginx/default.conf /etc/nginx/http.d/default.conf
@@ -123,6 +143,9 @@ HEALTHCHECK --interval=30s --timeout=5s --retries=3 --start-period=40s \
 
 # Expose port
 EXPOSE 80
+
+# Volume for persistent database storage
+VOLUME ["/var/lib/mysql"]
 
 # Start supervisor (use supervisord from PATH - pip installs to /usr/local/bin)
 CMD ["supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
