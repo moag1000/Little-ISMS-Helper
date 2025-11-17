@@ -742,6 +742,7 @@ class DeploymentWizardController extends AbstractController
                 'existing_data_strategy' => RestoreService::EXISTING_UPDATE,
                 'dry_run' => false,
                 'clear_before_restore' => $request->request->getBoolean('clear_before_restore', true),
+                'admin_password' => $request->request->get('admin_password', ''),
             ];
 
             $result = $restoreService->restoreFromBackup($backup, $options);
