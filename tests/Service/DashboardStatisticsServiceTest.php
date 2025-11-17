@@ -13,6 +13,7 @@ use App\Repository\RiskRepository;
 use App\Service\DashboardStatisticsService;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Symfony\Bundle\SecurityBundle\Security;
 
 class DashboardStatisticsServiceTest extends TestCase
 {
@@ -20,6 +21,7 @@ class DashboardStatisticsServiceTest extends TestCase
     private MockObject $riskRepository;
     private MockObject $incidentRepository;
     private MockObject $controlRepository;
+    private MockObject $security;
     private DashboardStatisticsService $service;
 
     protected function setUp(): void
@@ -28,12 +30,14 @@ class DashboardStatisticsServiceTest extends TestCase
         $this->riskRepository = $this->createMock(RiskRepository::class);
         $this->incidentRepository = $this->createMock(IncidentRepository::class);
         $this->controlRepository = $this->createMock(ControlRepository::class);
+        $this->security = $this->createMock(Security::class);
 
         $this->service = new DashboardStatisticsService(
             $this->assetRepository,
             $this->riskRepository,
             $this->incidentRepository,
-            $this->controlRepository
+            $this->controlRepository,
+            $this->security
         );
     }
 
