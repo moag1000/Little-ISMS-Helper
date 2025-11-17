@@ -2,11 +2,13 @@
 
 namespace App\Controller;
 
+use App\Entity\Tenant;
 use App\Form\AdminUserType;
 use App\Form\ComplianceFrameworkSelectionType;
 use App\Form\DatabaseConfigurationType;
 use App\Form\EmailConfigurationType;
 use App\Form\OrganisationInfoType;
+use App\Repository\TenantRepository;
 use App\Security\SetupAccessChecker;
 use App\Service\BackupService;
 use App\Service\ComplianceFrameworkLoaderService;
@@ -44,6 +46,8 @@ class DeploymentWizardController extends AbstractController
         private readonly DatabaseTestService $dbTestService,
         private readonly KernelInterface $kernel,
         private readonly ComplianceFrameworkLoaderService $complianceLoader,
+        private readonly EntityManagerInterface $entityManager,
+        private readonly TenantRepository $tenantRepository,
     ) {
     }
 
@@ -213,7 +217,7 @@ class DeploymentWizardController extends AbstractController
 
                     $this->addFlash('success', $this->translator->trans('setup.admin.user_created'));
 
-                    return $this->redirectToRoute('setup_step5_requirements');
+                    return $this->redirectToRoute('setup_step3_email_config');
                 } else {
                     $this->addFlash('error', $result['message']);
                 }
@@ -334,7 +338,11 @@ class DeploymentWizardController extends AbstractController
             try {
                 // Store in session for later use (will be used during base data import)
                 $session->set('setup_organisation_name', $data['name']);
-                $session->set('setup_organisation_industry', $data['industry']);
+                // Support multiple industries (for corporate structures)
+                $industries = $data['industries'] ?? [];
+                $session->set('setup_organisation_industries', $industries);
+                // Keep backward compatibility - use first industry as primary
+                $session->set('setup_organisation_industry', $industries[0] ?? 'other');
                 $session->set('setup_organisation_employee_count', $data['employee_count']);
                 $session->set('setup_organisation_country', $data['country']);
                 $session->set('setup_organisation_description', $data['description'] ?? '');
@@ -388,14 +396,26 @@ class DeploymentWizardController extends AbstractController
         $requiredModules = array_keys($this->moduleConfigService->getRequiredModules());
         $optionalModules = $this->moduleConfigService->getOptionalModules();
 
-        // Load previous selection from session
-        $selectedModules = $session->get('setup_selected_modules', $requiredModules);
+        // Get organization context for recommendations
+        $organisationIndustries = $session->get('setup_organisation_industries', ['other']);
+        $employeeCount = $session->get('setup_organisation_employee_count', '1-10');
+
+        // Get recommended modules based on organization data (supports multiple industries)
+        $recommendedModules = $this->getRecommendedModulesForIndustries($organisationIndustries, $employeeCount);
+
+        // Load previous selection from session, default to required + recommended
+        if (!$session->has('setup_selected_modules')) {
+            $selectedModules = array_unique(array_merge($requiredModules, $recommendedModules));
+        } else {
+            $selectedModules = $session->get('setup_selected_modules');
+        }
 
         return $this->render('setup/step6_modules.html.twig', [
             'all_modules' => $allModules,
             'required_modules' => $requiredModules,
             'optional_modules' => $optionalModules,
             'selected_modules' => $selectedModules,
+            'recommended_modules' => $recommendedModules,
             'dependency_graph' => $this->moduleConfigService->getDependencyGraph(),
         ]);
     }
@@ -455,12 +475,12 @@ class DeploymentWizardController extends AbstractController
         $availableFrameworks = $this->complianceLoader->getAvailableFrameworks();
 
         // Get context for recommendations
-        $organisationIndustry = $session->get('setup_organisation_industry', 'other');
+        $organisationIndustries = $session->get('setup_organisation_industries', ['other']);
         $employeeCount = $session->get('setup_organisation_employee_count', '1-10');
         $country = $session->get('setup_organisation_country', 'DE');
 
-        // Get industry-specific recommendations
-        $recommendedFrameworks = $this->getRecommendedFrameworks($organisationIndustry, $employeeCount, $country);
+        // Get industry-specific recommendations (supports multiple industries)
+        $recommendedFrameworks = $this->getRecommendedFrameworksForIndustries($organisationIndustries, $employeeCount, $country);
 
         // Pre-select recommended frameworks (including ISO27001 which is mandatory)
         $form = $this->createForm(ComplianceFrameworkSelectionType::class, [
@@ -508,17 +528,26 @@ class DeploymentWizardController extends AbstractController
     {
         $recommendations = ['ISO27001']; // Always recommend ISO 27001
 
-        // Determine if company is large enough for NIS2 (typically 50+ employees)
+        // Determine company size thresholds
         $isNis2Size = in_array($employeeCount, ['51-250', '251-1000', '1001+'], true);
+        $isLargeOrg = in_array($employeeCount, ['251-1000', '1001+'], true);
+
+        // Determine country/region specific frameworks
+        $isDACH = in_array($country, ['DE', 'AT', 'CH'], true);
+        $isGermany = $country === 'DE';
+        $isEU = in_array($country, ['DE', 'AT', 'BE', 'DK', 'FI', 'FR', 'IT', 'LU', 'NL', 'PL', 'ES', 'SE', 'CZ', 'EU_OTHER'], true);
 
         // Use ISO 27701 for DACH region (covers GDPR), otherwise recommend GDPR
-        $privacyFramework = in_array($country, ['DE', 'AT', 'CH'], true) ? 'ISO27701' : 'GDPR';
+        $privacyFramework = $isDACH ? 'ISO27701' : 'GDPR';
 
         // Industry-specific recommendations
         switch ($industry) {
             case 'automotive':
                 $recommendations[] = 'TISAX';
                 $recommendations[] = $privacyFramework;
+                if ($isNis2Size) {
+                    $recommendations[] = 'NIS2';
+                }
                 break;
 
             case 'financial_services':
@@ -531,24 +560,75 @@ class DeploymentWizardController extends AbstractController
 
             case 'healthcare':
                 $recommendations[] = $privacyFramework;
+                if ($isGermany) {
+                    $recommendations[] = 'KRITIS-HEALTH';
+                }
                 if ($isNis2Size) {
                     $recommendations[] = 'NIS2';
                 }
+                break;
+
+            case 'pharmaceutical':
+                $recommendations[] = 'GXP';
+                $recommendations[] = $privacyFramework;
+                if ($isNis2Size) {
+                    $recommendations[] = 'NIS2';
+                }
+                break;
+
+            case 'digital_health':
+                if ($isGermany) {
+                    $recommendations[] = 'DIGAV';
+                }
+                $recommendations[] = $privacyFramework;
                 break;
 
             case 'energy':
-            case 'telecommunications':
                 // Critical infrastructure - NIS2 often applies regardless of size
                 $recommendations[] = 'NIS2';
+                if ($isGermany) {
+                    $recommendations[] = 'KRITIS';
+                }
                 $recommendations[] = $privacyFramework;
                 break;
 
-            case 'public_sector':
-                $recommendations[] = 'BSI_GRUNDSCHUTZ';
+            case 'telecommunications':
+                // Critical infrastructure - NIS2 often applies regardless of size
+                $recommendations[] = 'NIS2';
+                if ($isGermany) {
+                    $recommendations[] = 'TKG-2024';
+                    $recommendations[] = 'KRITIS';
+                }
+                $recommendations[] = $privacyFramework;
+                break;
+
+            case 'cloud_services':
+                if ($isGermany) {
+                    $recommendations[] = 'BSI-C5';
+                }
                 $recommendations[] = $privacyFramework;
                 if ($isNis2Size) {
                     $recommendations[] = 'NIS2';
                 }
+                break;
+
+            case 'public_sector':
+                if ($isGermany) {
+                    $recommendations[] = 'BSI_GRUNDSCHUTZ';
+                }
+                $recommendations[] = $privacyFramework;
+                if ($isNis2Size) {
+                    $recommendations[] = 'NIS2';
+                }
+                break;
+
+            case 'critical_infrastructure':
+                $recommendations[] = 'NIS2';
+                if ($isGermany) {
+                    $recommendations[] = 'KRITIS';
+                    $recommendations[] = 'BSI_GRUNDSCHUTZ';
+                }
+                $recommendations[] = $privacyFramework;
                 break;
 
             case 'it_services':
@@ -565,13 +645,191 @@ class DeploymentWizardController extends AbstractController
                 }
                 break;
 
+            case 'retail':
+                $recommendations[] = $privacyFramework;
+                if ($isLargeOrg) {
+                    $recommendations[] = 'NIS2';
+                }
+                break;
+
+            case 'education':
+                $recommendations[] = $privacyFramework;
+                if ($isGermany) {
+                    $recommendations[] = 'BSI_GRUNDSCHUTZ';
+                }
+                break;
+
             default:
                 // Default recommendation for other industries
                 $recommendations[] = $privacyFramework;
+                if ($isNis2Size && $isEU) {
+                    $recommendations[] = 'NIS2';
+                }
                 break;
         }
 
         return array_unique($recommendations);
+    }
+
+    /**
+     * Get recommended modules based on industry and company size
+     *
+     * @param string $industry Organisation industry
+     * @param string $employeeCount Employee count range (1-10, 11-50, 51-250, 251-1000, 1001+)
+     * @return array List of recommended module keys
+     */
+    private function getRecommendedModules(string $industry, string $employeeCount): array
+    {
+        $recommendations = [];
+
+        // Larger organizations typically need more structure
+        $isLargeOrg = in_array($employeeCount, ['251-1000', '1001+'], true);
+        $isMediumOrg = in_array($employeeCount, ['51-250', '251-1000', '1001+'], true);
+
+        // Core modules recommended for all
+        $recommendations[] = 'asset_management';
+        $recommendations[] = 'risk_management';
+        $recommendations[] = 'controls';
+
+        // Industry-specific recommendations
+        switch ($industry) {
+            case 'automotive':
+                // TISAX requires strong asset and risk management
+                $recommendations[] = 'compliance';
+                $recommendations[] = 'document_management';
+                if ($isMediumOrg) {
+                    $recommendations[] = 'training';
+                }
+                break;
+
+            case 'financial_services':
+                // DORA requires BCM and incident management
+                $recommendations[] = 'bcm';
+                $recommendations[] = 'incident_management';
+                $recommendations[] = 'compliance';
+                $recommendations[] = 'audit_management';
+                break;
+
+            case 'healthcare':
+                // Healthcare needs incident tracking and compliance
+                $recommendations[] = 'incident_management';
+                $recommendations[] = 'compliance';
+                $recommendations[] = 'training';
+                if ($isMediumOrg) {
+                    $recommendations[] = 'bcm';
+                }
+                break;
+
+            case 'pharmaceutical':
+                // GxP requires strong training and audit
+                $recommendations[] = 'compliance';
+                $recommendations[] = 'audit_management';
+                $recommendations[] = 'training';
+                $recommendations[] = 'document_management';
+                break;
+
+            case 'digital_health':
+                // DiGA needs compliance and audit trail
+                $recommendations[] = 'compliance';
+                $recommendations[] = 'audit_management';
+                break;
+
+            case 'energy':
+            case 'telecommunications':
+            case 'critical_infrastructure':
+                // Critical infrastructure needs BCM and incident management
+                $recommendations[] = 'bcm';
+                $recommendations[] = 'incident_management';
+                $recommendations[] = 'compliance';
+                $recommendations[] = 'audit_management';
+                break;
+
+            case 'cloud_services':
+                // Cloud services need strong controls and audit
+                $recommendations[] = 'compliance';
+                $recommendations[] = 'audit_management';
+                if ($isMediumOrg) {
+                    $recommendations[] = 'bcm';
+                }
+                break;
+
+            case 'public_sector':
+                // Public sector has strict audit requirements
+                $recommendations[] = 'audit_management';
+                $recommendations[] = 'compliance';
+                $recommendations[] = 'document_management';
+                break;
+
+            case 'it_services':
+                // IT services need incident management
+                $recommendations[] = 'incident_management';
+                if ($isMediumOrg) {
+                    $recommendations[] = 'bcm';
+                }
+                break;
+
+            case 'manufacturing':
+                // Manufacturing needs BCM
+                $recommendations[] = 'bcm';
+                if ($isMediumOrg) {
+                    $recommendations[] = 'incident_management';
+                }
+                break;
+
+            default:
+                // Basic recommendations for other industries
+                if ($isMediumOrg) {
+                    $recommendations[] = 'incident_management';
+                }
+                break;
+        }
+
+        // Large organizations benefit from training and audit
+        if ($isLargeOrg) {
+            $recommendations[] = 'training';
+            $recommendations[] = 'audit_management';
+        }
+
+        return array_unique($recommendations);
+    }
+
+    /**
+     * Get recommended compliance frameworks for multiple industries (corporate structures)
+     *
+     * @param array $industries List of industry codes
+     * @param string $employeeCount Employee count range
+     * @param string $country Country code
+     * @return array Aggregated list of recommended framework codes
+     */
+    private function getRecommendedFrameworksForIndustries(array $industries, string $employeeCount, string $country): array
+    {
+        $allRecommendations = [];
+
+        foreach ($industries as $industry) {
+            $industryRecommendations = $this->getRecommendedFrameworks($industry, $employeeCount, $country);
+            $allRecommendations = array_merge($allRecommendations, $industryRecommendations);
+        }
+
+        return array_unique($allRecommendations);
+    }
+
+    /**
+     * Get recommended modules for multiple industries (corporate structures)
+     *
+     * @param array $industries List of industry codes
+     * @param string $employeeCount Employee count range
+     * @return array Aggregated list of recommended module keys
+     */
+    private function getRecommendedModulesForIndustries(array $industries, string $employeeCount): array
+    {
+        $allRecommendations = [];
+
+        foreach ($industries as $industry) {
+            $industryRecommendations = $this->getRecommendedModules($industry, $employeeCount);
+            $allRecommendations = array_merge($allRecommendations, $industryRecommendations);
+        }
+
+        return array_unique($allRecommendations);
     }
 
     /**
@@ -798,6 +1056,9 @@ class DeploymentWizardController extends AbstractController
         // Save active modules
         $this->moduleConfigService->saveActiveModules($selectedModules);
 
+        // Save organization data to Tenant settings
+        $this->saveOrganisationDataToTenant($session);
+
         // Mark setup as complete
         $this->setupChecker->markSetupComplete();
 
@@ -829,6 +1090,61 @@ class DeploymentWizardController extends AbstractController
 
         $this->addFlash('success', $this->translator->trans('deployment.success.reset'));
         return $this->redirectToRoute('setup_wizard_index');
+    }
+
+    /**
+     * Save organization data to Tenant settings
+     *
+     * This stores the organization context (industries, size, country) in the Tenant entity
+     * so it can be modified later via Tenant settings.
+     */
+    private function saveOrganisationDataToTenant(SessionInterface $session): void
+    {
+        try {
+            // Get the first (and typically only) tenant created during setup
+            $tenant = $this->tenantRepository->findOneBy([]);
+
+            if (!$tenant) {
+                // If no tenant exists, create one with default code
+                $tenant = new Tenant();
+                $tenant->setCode('default');
+                $tenant->setName($session->get('setup_organisation_name', 'Default Organization'));
+                $this->entityManager->persist($tenant);
+            } else {
+                // Update tenant name if provided
+                $orgName = $session->get('setup_organisation_name');
+                if ($orgName) {
+                    $tenant->setName($orgName);
+                }
+            }
+
+            // Get current settings or initialize empty array
+            $settings = $tenant->getSettings() ?? [];
+
+            // Store organization context in settings
+            $settings['organisation'] = [
+                'industries' => $session->get('setup_organisation_industries', ['other']),
+                'employee_count' => $session->get('setup_organisation_employee_count', '1-10'),
+                'country' => $session->get('setup_organisation_country', 'DE'),
+                'description' => $session->get('setup_organisation_description', ''),
+                'selected_modules' => $session->get('setup_selected_modules', []),
+                'selected_frameworks' => $session->get('setup_selected_frameworks', []),
+                'setup_completed_at' => (new \DateTimeImmutable())->format('c'),
+            ];
+
+            $tenant->setSettings($settings);
+
+            // Update tenant description if provided
+            $orgDescription = $session->get('setup_organisation_description');
+            if ($orgDescription && !$tenant->getDescription()) {
+                $tenant->setDescription($orgDescription);
+            }
+
+            $this->entityManager->flush();
+        } catch (\Exception $e) {
+            // Log error but don't fail setup
+            // The organization data is already saved in session and modules are configured
+        }
     }
 
     /**
