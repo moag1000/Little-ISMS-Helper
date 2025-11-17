@@ -238,13 +238,26 @@ class DeploymentWizardController extends AbstractController
         $form = $this->createForm(AdminUserType::class);
         $form->handleRequest($request);
 
+        // Debug logging
+        error_log('DEBUG step2: Form submitted: ' . ($form->isSubmitted() ? 'YES' : 'NO'));
+        error_log('DEBUG step2: Form valid: ' . ($form->isValid() ? 'YES' : 'NO'));
+        if (!$form->isValid()) {
+            $errors = [];
+            foreach ($form->getErrors(true) as $error) {
+                $errors[] = $error->getMessage();
+            }
+            error_log('DEBUG step2: Form errors: ' . json_encode($errors));
+        }
+
         if ($form->isSubmitted() && $form->isValid()) {
+            error_log('DEBUG step2: Entering form processing block');
             $data = $form->getData();
 
             // Normalize email to lowercase for consistent lookup
             $data['email'] = strtolower($data['email']);
 
             try {
+                error_log('DEBUG step2: Starting admin user creation process');
                 // Check if database already has tables (from previous failed setup attempt)
                 // If so, drop the database and recreate it to ensure clean state
                 $dbConfig = [
@@ -267,15 +280,18 @@ class DeploymentWizardController extends AbstractController
                 $migrationResult = $this->runMigrationsInternal();
 
                 if (!$migrationResult['success']) {
+                    error_log('DEBUG step2: Migration failed: ' . $migrationResult['message']);
                     $this->addFlash('error', $this->translator->trans('setup.admin.migration_failed') . ': ' . $migrationResult['message']);
                     // Turbo requires redirect after POST
                     return $this->redirectToRoute('setup_step2_admin_user');
                 }
 
+                error_log('DEBUG step2: Migration successful, creating admin user');
                 // Create admin user via command
                 $result = $this->createAdminUserViaCommand($data);
 
                 if ($result['success']) {
+                    error_log('DEBUG step2: Admin user created successfully');
                     $session->set('setup_admin_created', true);
                     $session->set('setup_admin_email', $data['email']);
 
@@ -283,15 +299,19 @@ class DeploymentWizardController extends AbstractController
 
                     return $this->redirectToRoute('setup_step3_email_config');
                 } else {
+                    error_log('DEBUG step2: Admin user creation failed: ' . $result['message']);
                     $this->addFlash('error', $result['message']);
                     // Turbo requires redirect after POST
                     return $this->redirectToRoute('setup_step2_admin_user');
                 }
             } catch (\Exception $e) {
+                error_log('DEBUG step2: Exception during admin user creation: ' . $e->getMessage());
                 $this->addFlash('error', $this->translator->trans('setup.admin.creation_failed') . ': ' . $e->getMessage());
                 // Turbo requires redirect after POST
                 return $this->redirectToRoute('setup_step2_admin_user');
             }
+        } else {
+            error_log('DEBUG step2: Form not submitted or not valid - rendering form');
         }
 
         // For validation errors, return 422 status so Turbo displays the form with errors
