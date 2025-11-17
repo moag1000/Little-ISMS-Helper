@@ -251,7 +251,14 @@ class DeploymentWizardController extends AbstractController
             }
         }
 
+        // Store debug info in session to survive redirects
+        if ($form->isSubmitted()) {
+            $session->set('debug_form_submitted', true);
+            $session->set('debug_form_valid', $form->isValid());
+        }
+
         if ($form->isSubmitted() && $form->isValid()) {
+            $session->set('debug_processing', 'Entering form processing block');
             $this->addFlash('info', 'DEBUG: Entering form processing block');
             $data = $form->getData();
 
