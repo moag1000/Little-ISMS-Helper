@@ -134,7 +134,9 @@ class DeploymentWizardController extends AbstractController
         $form = $this->createForm(DatabaseConfigurationType::class, $defaultData);
         $form->handleRequest($request);
 
-        $testResult = null;
+        // Retrieve test result from session (for displaying after redirect)
+        $testResult = $session->get('setup_db_test_result');
+        $session->remove('setup_db_test_result');
 
         if ($form->isSubmitted() && $form->isValid()) {
             $config = $form->getData();
@@ -171,10 +173,8 @@ class DeploymentWizardController extends AbstractController
 
                         if (!$createResult['success']) {
                             $this->addFlash('error', $createResult['message']);
-                            return $this->render('setup/step1_database_config.html.twig', [
-                                'form' => $form,
-                                'test_result' => $testResult,
-                            ]);
+                            $session->set('setup_db_test_result', $testResult);
+                            return $this->redirectToRoute('setup_step1_database_config');
                         }
                     }
 
@@ -195,9 +195,18 @@ class DeploymentWizardController extends AbstractController
                     } else {
                         $this->addFlash('error', $this->translator->trans('setup.database.config_failed') . ': ' . $e->getMessage());
                     }
+                    // Redirect to same page to show error (Turbo compatibility)
+                    return $this->redirectToRoute('setup_step1_database_config');
                 } catch (\Exception $e) {
                     $this->addFlash('error', $this->translator->trans('setup.database.config_failed') . ': ' . $e->getMessage());
+                    // Redirect to same page to show error (Turbo compatibility)
+                    return $this->redirectToRoute('setup_step1_database_config');
                 }
+            } else {
+                // Test failed - store result in session and redirect (Turbo compatibility)
+                $session->set('setup_db_test_result', $testResult);
+                $this->addFlash('error', $testResult['message'] ?? $this->translator->trans('setup.database.test_failed'));
+                return $this->redirectToRoute('setup_step1_database_config');
             }
         }
 

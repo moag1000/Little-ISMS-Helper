@@ -103,10 +103,10 @@ class DatabaseConfigurationType extends AbstractType
                 'required' => true,
                 'constraints' => [
                     new Assert\NotBlank(),
-                    new Assert\Regex([
-                        'pattern' => '/^[a-zA-Z0-9_]+$/',
-                        'message' => 'setup.database.name_invalid',
-                    ]),
+                    new Assert\Regex(
+                        pattern: '/^[a-zA-Z0-9_]+$/',
+                        message: 'setup.database.name_invalid'
+                    ),
                 ],
                 'attr' => [
                     'class' => 'form-control',
