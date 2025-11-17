@@ -240,13 +240,15 @@ class DeploymentWizardController extends AbstractController
 
         // Debug logging
         error_log('DEBUG step2: Form submitted: ' . ($form->isSubmitted() ? 'YES' : 'NO'));
-        error_log('DEBUG step2: Form valid: ' . ($form->isValid() ? 'YES' : 'NO'));
-        if (!$form->isValid()) {
-            $errors = [];
-            foreach ($form->getErrors(true) as $error) {
-                $errors[] = $error->getMessage();
+        if ($form->isSubmitted()) {
+            error_log('DEBUG step2: Form valid: ' . ($form->isValid() ? 'YES' : 'NO'));
+            if (!$form->isValid()) {
+                $errors = [];
+                foreach ($form->getErrors(true) as $error) {
+                    $errors[] = $error->getMessage();
+                }
+                error_log('DEBUG step2: Form errors: ' . json_encode($errors));
             }
-            error_log('DEBUG step2: Form errors: ' . json_encode($errors));
         }
 
         if ($form->isSubmitted() && $form->isValid()) {
