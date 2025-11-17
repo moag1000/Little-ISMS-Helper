@@ -245,6 +245,24 @@ class DeploymentWizardController extends AbstractController
             $data['email'] = strtolower($data['email']);
 
             try {
+                // Check if database already has tables (from previous failed setup attempt)
+                // If so, drop the database and recreate it to ensure clean state
+                $dbConfig = [
+                    'type' => $session->get('setup_db_type', 'mysql'),
+                    'host' => $session->get('setup_db_host', 'localhost'),
+                    'port' => $session->get('setup_db_port', 3306),
+                    'name' => $session->get('setup_db_name', 'little_isms_helper'),
+                    'user' => $session->get('setup_db_user', 'root'),
+                    'password' => $session->get('setup_db_password', ''),
+                    'unixSocket' => $session->get('setup_db_socket'),
+                ];
+
+                $tableCheck = $this->databaseTestService->checkExistingTables($dbConfig);
+                if ($tableCheck['has_tables'] && $tableCheck['count'] > 0) {
+                    // Database has tables - drop and recreate for clean setup
+                    $this->dropAndRecreateDatabase($dbConfig);
+                }
+
                 // First run migrations to create database structure
                 $migrationResult = $this->runMigrationsInternal();
 
@@ -1502,6 +1520,131 @@ class DeploymentWizardController extends AbstractController
                 'message' => $e->getMessage(),
             ];
         }
+    }
+
+    /**
+     * Drop and recreate database to ensure clean state
+     */
+    private function dropAndRecreateDatabase(array $config): void
+    {
+        $type = $config['type'] ?? 'mysql';
+        $name = $config['name'] ?? 'little_isms_helper';
+
+        if ($type === 'sqlite') {
+            // For SQLite, just delete the file
+            $dbPath = $this->getParameter('kernel.project_dir') . "/var/{$name}.db";
+            if (file_exists($dbPath)) {
+                @unlink($dbPath);
+            }
+            return;
+        }
+
+        // For MySQL/MariaDB and PostgreSQL, use SQL
+        try {
+            $pdo = $this->connectToDatabase($config);
+
+            if ($type === 'postgresql') {
+                // PostgreSQL: disconnect all clients first
+                $pdo->exec("SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname = '{$name}' AND pid <> pg_backend_pid()");
+                $pdo->exec("DROP DATABASE IF EXISTS {$name}");
+                $pdo->exec("CREATE DATABASE {$name} WITH ENCODING 'UTF8'");
+            } else {
+                // MySQL/MariaDB
+                $pdo->exec("DROP DATABASE IF EXISTS `{$name}`");
+                $pdo->exec("CREATE DATABASE `{$name}` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
+            }
+        } catch (\Exception $e) {
+            // If drop fails, try to just truncate all tables
+            $this->truncateAllTables($config);
+        }
+    }
+
+    /**
+     * Truncate all tables in database (fallback if DROP DATABASE fails)
+     */
+    private function truncateAllTables(array $config): void
+    {
+        try {
+            $pdo = $this->connectToDatabaseWithDbName($config);
+            $type = $config['type'] ?? 'mysql';
+
+            if ($type === 'postgresql') {
+                // PostgreSQL: Get all tables and truncate
+                $stmt = $pdo->query("SELECT tablename FROM pg_tables WHERE schemaname = 'public'");
+                $tables = $stmt->fetchAll(\PDO::FETCH_COLUMN);
+                foreach ($tables as $table) {
+                    $pdo->exec("TRUNCATE TABLE \"{$table}\" CASCADE");
+                }
+            } else {
+                // MySQL/MariaDB: Disable foreign key checks, truncate all, re-enable
+                $pdo->exec("SET FOREIGN_KEY_CHECKS = 0");
+                $stmt = $pdo->query("SHOW TABLES");
+                $tables = $stmt->fetchAll(\PDO::FETCH_COLUMN);
+                foreach ($tables as $table) {
+                    $pdo->exec("DROP TABLE IF EXISTS `{$table}`");
+                }
+                $pdo->exec("SET FOREIGN_KEY_CHECKS = 1");
+            }
+        } catch (\Exception $e) {
+            // Silently fail - migrations will handle it
+        }
+    }
+
+    /**
+     * Connect to database server (without selecting database)
+     */
+    private function connectToDatabase(array $config): \PDO
+    {
+        $type = $config['type'] ?? 'mysql';
+        $host = $config['host'] ?? 'localhost';
+        $port = $config['port'] ?? ($type === 'postgresql' ? 5432 : 3306);
+        $user = $config['user'] ?? 'root';
+        $password = $config['password'] ?? '';
+        $unixSocket = $config['unixSocket'] ?? null;
+
+        if ($type === 'postgresql') {
+            $dsn = "pgsql:host={$host};port={$port};dbname=postgres";
+        } else {
+            if (!empty($unixSocket)) {
+                $dsn = "mysql:unix_socket={$unixSocket};charset=utf8mb4";
+            } else {
+                $dsn = "mysql:host={$host};port={$port};charset=utf8mb4";
+            }
+        }
+
+        return new \PDO($dsn, $user, $password, [
+            \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+            \PDO::ATTR_TIMEOUT => 5,
+        ]);
+    }
+
+    /**
+     * Connect to specific database
+     */
+    private function connectToDatabaseWithDbName(array $config): \PDO
+    {
+        $type = $config['type'] ?? 'mysql';
+        $host = $config['host'] ?? 'localhost';
+        $port = $config['port'] ?? ($type === 'postgresql' ? 5432 : 3306);
+        $name = $config['name'] ?? 'little_isms_helper';
+        $user = $config['user'] ?? 'root';
+        $password = $config['password'] ?? '';
+        $unixSocket = $config['unixSocket'] ?? null;
+
+        if ($type === 'postgresql') {
+            $dsn = "pgsql:host={$host};port={$port};dbname={$name}";
+        } else {
+            if (!empty($unixSocket)) {
+                $dsn = "mysql:unix_socket={$unixSocket};dbname={$name};charset=utf8mb4";
+            } else {
+                $dsn = "mysql:host={$host};port={$port};dbname={$name};charset=utf8mb4";
+            }
+        }
+
+        return new \PDO($dsn, $user, $password, [
+            \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+            \PDO::ATTR_TIMEOUT => 5,
+        ]);
     }
 
     /**
