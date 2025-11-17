@@ -7,7 +7,7 @@ use App\Repository\UserRepository;
 use Doctrine\DBAL\Platforms\MariaDBPlatform;
 use Doctrine\DBAL\Platforms\MySQLPlatform;
 use Doctrine\DBAL\Platforms\PostgreSQLPlatform;
-use Doctrine\DBAL\Platforms\SqlitePlatform;
+use Doctrine\DBAL\Platforms\SQLitePlatform;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -219,7 +219,7 @@ class AdminDashboardController extends AbstractController
             $platform = $conn->getDatabasePlatform();
 
             // SQLite - Check using instanceof (Doctrine DBAL 4.x compatible)
-            if ($platform instanceof SqlitePlatform) {
+            if ($platform instanceof SQLitePlatform) {
                 $dbPath = $conn->getParams()['path'] ?? null;
                 if ($dbPath && file_exists($dbPath)) {
                     return round(filesize($dbPath) / 1024 / 1024, 2);

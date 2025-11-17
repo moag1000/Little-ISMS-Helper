@@ -56,8 +56,8 @@ class MappingQualityController extends AbstractController
                 'quality_stats' => $qualityStats,
                 'quality_distribution' => $qualityDistribution,
                 'similarity_distribution' => $similarityDistribution,
-                'gap_stats' => $gapStats ?? [],
-                'framework_comparison' => $frameworkComparison ?? [],
+                'gap_stats' => $gapStats,
+                'framework_comparison' => $frameworkComparison,
             ]);
         } catch (\Exception $e) {
             $this->addFlash('error', 'Fehler beim Laden des Dashboards: ' . $e->getMessage());
@@ -77,9 +77,9 @@ class MappingQualityController extends AbstractController
             $discrepancies = $this->mappingRepository->findMappingsWithDiscrepancies(20);
 
             return $this->render('compliance/mapping_quality/review_queue.html.twig', [
-                'mappings_requiring_review' => $mappingsRequiringReview ?? [],
-                'low_confidence_mappings' => $lowConfidenceMappings ?? [],
-                'discrepancies' => $discrepancies ?? [],
+                'mappings_requiring_review' => $mappingsRequiringReview,
+                'low_confidence_mappings' => $lowConfidenceMappings,
+                'discrepancies' => $discrepancies,
             ]);
         } catch (\Exception $e) {
             $this->addFlash('error', 'Fehler beim Laden der Review Queue: ' . $e->getMessage());
@@ -271,11 +271,11 @@ class MappingQualityController extends AbstractController
             $remediationEffort = $this->gapItemRepository->calculateTotalRemediationEffort();
 
             return $this->render('compliance/mapping_quality/gaps.html.twig', [
-                'high_priority_gaps' => $highPriorityGaps ?? [],
-                'low_confidence_gaps' => $lowConfidenceGaps ?? [],
-                'gap_stats_by_type' => $gapStatsByType ?? [],
-                'gap_stats_by_priority' => $gapStatsByPriority ?? [],
-                'remediation_effort' => $remediationEffort ?? null,
+                'high_priority_gaps' => $highPriorityGaps,
+                'low_confidence_gaps' => $lowConfidenceGaps,
+                'gap_stats_by_type' => $gapStatsByType,
+                'gap_stats_by_priority' => $gapStatsByPriority,
+                'remediation_effort' => $remediationEffort,
             ]);
         } catch (\Exception $e) {
             $this->addFlash('error', 'Fehler beim Laden der Gap-Übersicht: ' . $e->getMessage());
