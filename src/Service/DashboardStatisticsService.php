@@ -6,6 +6,9 @@ use App\Repository\AssetRepository;
 use App\Repository\ControlRepository;
 use App\Repository\IncidentRepository;
 use App\Repository\RiskRepository;
+use App\Service\AssetService;
+use App\Service\RiskService;
+use Symfony\Bundle\SecurityBundle\Security;
 
 /**
  * Dashboard Statistics Service
@@ -31,7 +34,10 @@ class DashboardStatisticsService
         private readonly AssetRepository $assetRepository,
         private readonly RiskRepository $riskRepository,
         private readonly IncidentRepository $incidentRepository,
-        private readonly ControlRepository $controlRepository
+        private readonly ControlRepository $controlRepository,
+        private readonly Security $security,
+        private readonly ?AssetService $assetService = null,
+        private readonly ?RiskService $riskService = null
     ) {
     }
 
@@ -54,12 +60,35 @@ class DashboardStatisticsService
      */
     public function getDashboardStatistics(): array
     {
-        // Basic counts
-        $assetCount = count($this->assetRepository->findActiveAssets());
-        $riskCount = count($this->riskRepository->findAll());
-        $openIncidentCount = count($this->incidentRepository->findOpenIncidents());
+        // Get current tenant from authenticated user
+        $user = $this->security->getUser();
+        $tenant = $user?->getTenant();
 
-        // Control statistics
+        // Basic counts - show ALL accessible entities (own + inherited + subsidiaries)
+        if ($tenant) {
+            // Get all accessible assets (own + inherited from parent + from subsidiaries)
+            $allAccessibleAssets = $this->getAllAccessibleAssets($tenant);
+            $activeAssets = array_filter($allAccessibleAssets, fn($asset) => $asset->getStatus() === 'active');
+            $assetCount = count($activeAssets);
+
+            // Get all accessible risks
+            $allAccessibleRisks = $this->getAllAccessibleRisks($tenant);
+            $riskCount = count($allAccessibleRisks);
+
+            // Get all accessible incidents
+            $allAccessibleIncidents = $this->getAllAccessibleIncidents($tenant);
+            $openIncidents = array_filter($allAccessibleIncidents, fn($incident) => $incident->getStatus() === 'open');
+            $openIncidentCount = count($openIncidents);
+        } else {
+            // Fallback for users without tenant (admin view)
+            $activeAssets = $this->assetRepository->findActiveAssets();
+            $assetCount = count($activeAssets);
+            $allAccessibleRisks = $this->riskRepository->findAll();
+            $riskCount = count($allAccessibleRisks);
+            $openIncidentCount = count($this->incidentRepository->findOpenIncidents());
+        }
+
+        // Control statistics (controls are global, not tenant-specific)
         $applicableControls = $this->controlRepository->findApplicableControls();
         $implementedControls = $this->countImplementedControls($applicableControls);
         $compliancePercentage = $this->calculateCompliancePercentage(
@@ -67,9 +96,13 @@ class DashboardStatisticsService
             count($applicableControls)
         );
 
-        // Critical/High items
-        $criticalAssetCount = $this->countCriticalAssets();
-        $highRiskCount = $this->countHighRisks();
+        // Critical/High items - using all accessible data
+        $criticalAssetCount = $tenant
+            ? $this->countCriticalAssetsAccessible($tenant)
+            : $this->countCriticalAssets();
+        $highRiskCount = $tenant
+            ? $this->countHighRisksAccessible($tenant)
+            : $this->countHighRisks();
 
         return [
             // Basic KPIs
@@ -105,6 +138,23 @@ class DashboardStatisticsService
     }
 
     /**
+     * Count critical assets for a specific tenant
+     *
+     * @param \App\Entity\Tenant $tenant The tenant to filter by
+     * @return int Number of critical assets
+     */
+    private function countCriticalAssetsForTenant($tenant): int
+    {
+        $tenantAssets = $this->assetRepository->findByTenant($tenant);
+        $activeAssets = array_filter($tenantAssets, fn($asset) => $asset->getStatus() === 'active');
+
+        return count(array_filter(
+            $activeAssets,
+            fn($asset) => $asset->getConfidentialityValue() >= 4
+        ));
+    }
+
+    /**
      * Count high-risk items (inherent risk level >= 12)
      *
      * @return int Number of high risks
@@ -112,6 +162,154 @@ class DashboardStatisticsService
     private function countHighRisks(): int
     {
         $allRisks = $this->riskRepository->findAll();
+
+        return count(array_filter(
+            $allRisks,
+            fn($risk) => $risk->getInherentRiskLevel() >= 12
+        ));
+    }
+
+    /**
+     * Count high-risk items for a specific tenant
+     *
+     * @param \App\Entity\Tenant $tenant The tenant to filter by
+     * @return int Number of high risks
+     */
+    private function countHighRisksForTenant($tenant): int
+    {
+        $tenantRisks = $this->riskRepository->findByTenant($tenant);
+
+        return count(array_filter(
+            $tenantRisks,
+            fn($risk) => $risk->getInherentRiskLevel() >= 12
+        ));
+    }
+
+    /**
+     * Get all accessible assets for a tenant (own + inherited + subsidiaries)
+     *
+     * @param \App\Entity\Tenant $tenant The tenant
+     * @return array All accessible assets
+     */
+    private function getAllAccessibleAssets($tenant): array
+    {
+        $allAssets = [];
+
+        // Own assets
+        $ownAssets = $this->assetRepository->findByTenant($tenant);
+        foreach ($ownAssets as $asset) {
+            $allAssets[$asset->getId()] = $asset;
+        }
+
+        // Inherited from parent (if AssetService available)
+        if ($this->assetService) {
+            $inheritedAssets = $this->assetService->getAssetsForTenant($tenant);
+            foreach ($inheritedAssets as $asset) {
+                $allAssets[$asset->getId()] = $asset;
+            }
+        }
+
+        // From subsidiaries
+        $subsidiaryAssets = $this->assetRepository->findByTenantIncludingSubsidiaries($tenant);
+        foreach ($subsidiaryAssets as $asset) {
+            $allAssets[$asset->getId()] = $asset;
+        }
+
+        return array_values($allAssets);
+    }
+
+    /**
+     * Get all accessible risks for a tenant (own + inherited + subsidiaries)
+     *
+     * @param \App\Entity\Tenant $tenant The tenant
+     * @return array All accessible risks
+     */
+    private function getAllAccessibleRisks($tenant): array
+    {
+        $allRisks = [];
+
+        // Own risks
+        $ownRisks = $this->riskRepository->findByTenant($tenant);
+        foreach ($ownRisks as $risk) {
+            $allRisks[$risk->getId()] = $risk;
+        }
+
+        // Inherited from parent (if RiskService available)
+        if ($this->riskService) {
+            $inheritedRisks = $this->riskService->getRisksForTenant($tenant);
+            foreach ($inheritedRisks as $risk) {
+                $allRisks[$risk->getId()] = $risk;
+            }
+        }
+
+        // From subsidiaries
+        $subsidiaryRisks = $this->riskRepository->findByTenantIncludingSubsidiaries($tenant);
+        foreach ($subsidiaryRisks as $risk) {
+            $allRisks[$risk->getId()] = $risk;
+        }
+
+        return array_values($allRisks);
+    }
+
+    /**
+     * Get all accessible incidents for a tenant (own + inherited + subsidiaries)
+     *
+     * @param \App\Entity\Tenant $tenant The tenant
+     * @return array All accessible incidents
+     */
+    private function getAllAccessibleIncidents($tenant): array
+    {
+        $allIncidents = [];
+
+        // Own incidents
+        $ownIncidents = $this->incidentRepository->findByTenant($tenant);
+        foreach ($ownIncidents as $incident) {
+            $allIncidents[$incident->getId()] = $incident;
+        }
+
+        // Inherited from parent
+        if ($tenant->getParent()) {
+            $parentIncidents = $this->incidentRepository->findByTenantIncludingParent($tenant, $tenant->getParent());
+            foreach ($parentIncidents as $incident) {
+                $allIncidents[$incident->getId()] = $incident;
+            }
+        }
+
+        // From subsidiaries
+        $subsidiaryIncidents = $this->incidentRepository->findByTenantIncludingSubsidiaries($tenant);
+        foreach ($subsidiaryIncidents as $incident) {
+            $allIncidents[$incident->getId()] = $incident;
+        }
+
+        return array_values($allIncidents);
+    }
+
+    /**
+     * Count critical assets from all accessible assets
+     *
+     * @param \App\Entity\Tenant $tenant The tenant
+     * @return int Number of critical assets
+     */
+    private function countCriticalAssetsAccessible($tenant): int
+    {
+        $allAssets = $this->getAllAccessibleAssets($tenant);
+        $activeAssets = array_filter($allAssets, fn($asset) => $asset->getStatus() === 'active');
+
+        return count(array_filter(
+            $activeAssets,
+            fn($asset) => $asset->getConfidentialityValue() >= 4
+        ));
+    }
+
+    /**
+     * Count high-risk items from all accessible risks
+     *
+     * @param \App\Entity\Tenant $tenant The tenant
+     * @return int Number of high risks
+     */
+    private function countHighRisksAccessible($tenant): int
+    {
+        $allRisks = $this->getAllAccessibleRisks($tenant);
 
         return count(array_filter(
             $allRisks,

@@ -1,0 +1,274 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}{{ 'admin.data_repair.title'|trans }} - {{ 'admin.panel.title'|trans }}{% endblock %}
+
+{% block admin_content %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 mb-0">
+                <i class="bi bi-tools"></i> {{ 'admin.data_repair.title'|trans }}
+            </h1>
+            <p class="text-muted mb-0">{{ 'admin.data_repair.description'|trans }}</p>
+        </div>
+    </div>
+
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    {% endfor %}
+
+    {% for message in app.flashes('error') %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    {% endfor %}
+
+    {# Orphaned Entities Section #}
+    <div class="card mb-4">
+        <div class="card-header bg-warning text-dark">
+            <h5 class="mb-0">
+                <i class="bi bi-exclamation-triangle"></i> {{ 'admin.data_repair.orphaned_entities'|trans }}
+            </h5>
+        </div>
+        <div class="card-body">
+            {% if orphanedAssets|length == 0 and orphanedRisks|length == 0 and orphanedIncidents|length == 0 %}
+                <div class="alert alert-success mb-0">
+                    <i class="bi bi-check-circle"></i> {{ 'admin.data_repair.no_orphans'|trans }}
+                </div>
+            {% else %}
+                <div class="alert alert-warning">
+                    <strong>{{ 'common.warning'|trans }}:</strong> {{ 'admin.data_repair.orphans_found'|trans }}
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <h3 class="text-danger">{{ orphanedAssets|length }}</h3>
+                                <p class="mb-0">{{ 'admin.data_repair.orphaned_assets'|trans }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <h3 class="text-danger">{{ orphanedRisks|length }}</h3>
+                                <p class="mb-0">{{ 'admin.data_repair.orphaned_risks'|trans }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <h3 class="text-danger">{{ orphanedIncidents|length }}</h3>
+                                <p class="mb-0">{{ 'admin.data_repair.orphaned_incidents'|trans }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {# Bulk Assignment Form #}
+                <form method="post" action="{{ path('admin_data_repair_assign_orphans') }}" class="mb-4">
+                    <input type="hidden" name="_token" value="{{ csrf_token('assign_orphans') }}">
+                    <div class="row align-items-end">
+                        <div class="col-md-4">
+                            <label for="tenant_id" class="form-label">{{ 'admin.data_repair.assign_to_tenant'|trans }}</label>
+                            <select name="tenant_id" id="tenant_id" class="form-select" required>
+                                <option value="">{{ 'admin.data_repair.select_tenant'|trans }}</option>
+                                {% for tenant in tenants %}
+                                    <option value="{{ tenant.id }}">{{ tenant.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="entity_type" class="form-label">{{ 'admin.data_repair.entity_type'|trans }}</label>
+                            <select name="entity_type" id="entity_type" class="form-select" required>
+                                <option value="all">{{ 'admin.data_repair.all_orphans'|trans }}</option>
+                                <option value="assets">{{ 'admin.data_repair.assets_only'|trans }} ({{ orphanedAssets|length }})</option>
+                                <option value="risks">{{ 'admin.data_repair.risks_only'|trans }} ({{ orphanedRisks|length }})</option>
+                                <option value="incidents">{{ 'admin.data_repair.incidents_only'|trans }} ({{ orphanedIncidents|length }})</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <button type="submit" class="btn btn-warning w-100">
+                                <i class="bi bi-arrow-right-circle"></i> {{ 'admin.data_repair.assign_orphans'|trans }}
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+                {# Detailed Lists #}
+                {% if orphanedAssets|length > 0 %}
+                <div class="mb-4">
+                    <h6>{{ 'admin.data_repair.orphaned_assets_list'|trans }}</h6>
+                    <div class="table-responsive">
+                        <table class="table table-sm table-striped">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>{{ 'common.name'|trans }}</th>
+                                    <th>{{ 'asset.label.type'|trans }}</th>
+                                    <th>{{ 'common.actions'|trans }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for asset in orphanedAssets %}
+                                <tr>
+                                    <td>{{ asset.id }}</td>
+                                    <td>{{ asset.name }}</td>
+                                    <td>{{ asset.assetType }}</td>
+                                    <td>
+                                        <form method="post" action="{{ path('admin_data_repair_reassign_entity', {type: 'asset', id: asset.id}) }}" class="d-inline">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('reassign_entity_' ~ asset.id) }}">
+                                            <div class="input-group input-group-sm">
+                                                <select name="tenant_id" class="form-select form-select-sm" required>
+                                                    {% for tenant in tenants %}
+                                                        <option value="{{ tenant.id }}">{{ tenant.name }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                                <button type="submit" class="btn btn-sm btn-outline-primary">
+                                                    <i class="bi bi-check"></i>
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if orphanedRisks|length > 0 %}
+                <div class="mb-4">
+                    <h6>{{ 'admin.data_repair.orphaned_risks_list'|trans }}</h6>
+                    <div class="table-responsive">
+                        <table class="table table-sm table-striped">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>{{ 'risk.label.title'|trans }}</th>
+                                    <th>{{ 'risk.label.inherent_risk'|trans }}</th>
+                                    <th>{{ 'common.actions'|trans }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for risk in orphanedRisks %}
+                                <tr>
+                                    <td>{{ risk.id }}</td>
+                                    <td>{{ risk.title }}</td>
+                                    <td>{{ risk.inherentRiskLevel }}</td>
+                                    <td>
+                                        <form method="post" action="{{ path('admin_data_repair_reassign_entity', {type: 'risk', id: risk.id}) }}" class="d-inline">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('reassign_entity_' ~ risk.id) }}">
+                                            <div class="input-group input-group-sm">
+                                                <select name="tenant_id" class="form-select form-select-sm" required>
+                                                    {% for tenant in tenants %}
+                                                        <option value="{{ tenant.id }}">{{ tenant.name }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                                <button type="submit" class="btn btn-sm btn-outline-primary">
+                                                    <i class="bi bi-check"></i>
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if orphanedIncidents|length > 0 %}
+                <div class="mb-4">
+                    <h6>{{ 'admin.data_repair.orphaned_incidents_list'|trans }}</h6>
+                    <div class="table-responsive">
+                        <table class="table table-sm table-striped">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>{{ 'incident.label.title'|trans }}</th>
+                                    <th>{{ 'incident.label.severity'|trans }}</th>
+                                    <th>{{ 'common.actions'|trans }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for incident in orphanedIncidents %}
+                                <tr>
+                                    <td>{{ incident.id }}</td>
+                                    <td>{{ incident.title }}</td>
+                                    <td>{{ incident.severity }}</td>
+                                    <td>
+                                        <form method="post" action="{{ path('admin_data_repair_reassign_entity', {type: 'incident', id: incident.id}) }}" class="d-inline">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('reassign_entity_' ~ incident.id) }}">
+                                            <div class="input-group input-group-sm">
+                                                <select name="tenant_id" class="form-select form-select-sm" required>
+                                                    {% for tenant in tenants %}
+                                                        <option value="{{ tenant.id }}">{{ tenant.name }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                                <button type="submit" class="btn btn-sm btn-outline-primary">
+                                                    <i class="bi bi-check"></i>
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+
+    {# Tenant Statistics #}
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">
+                <i class="bi bi-building"></i> {{ 'admin.data_repair.tenant_statistics'|trans }}
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>{{ 'tenant.name'|trans }}</th>
+                            <th class="text-center">{{ 'nav.assets'|trans }}</th>
+                            <th class="text-center">{{ 'nav.risks'|trans }}</th>
+                            <th class="text-center">{{ 'nav.incidents'|trans }}</th>
+                            <th class="text-center">{{ 'common.all'|trans }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for stat in tenantStats %}
+                        <tr>
+                            <td>
+                                <strong>{{ stat.tenant.name }}</strong>
+                                {% if stat.tenant.description %}
+                                    <br><small class="text-muted">{{ stat.tenant.description }}</small>
+                                {% endif %}
+                            </td>
+                            <td class="text-center">{{ stat.assets }}</td>
+                            <td class="text-center">{{ stat.risks }}</td>
+                            <td class="text-center">{{ stat.incidents }}</td>
+                            <td class="text-center"><strong>{{ stat.assets + stat.risks + stat.incidents }}</strong></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

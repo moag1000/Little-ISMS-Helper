@@ -124,7 +124,34 @@ admin:
     backup: Backup
     export: Export
     import: Import
+    data_repair: Data Repair
     license_management: License Management
+  data_repair:
+    title: Data Repair
+    description: Repair broken tenant associations after backup/restore
+    orphaned_entities: Orphaned Entities
+    no_orphans: All entities are correctly assigned to a tenant.
+    orphans_found: Entities without tenant assignment were found. These must be assigned to a tenant.
+    orphaned_assets: Orphaned Assets
+    orphaned_risks: Orphaned Risks
+    orphaned_incidents: Orphaned Incidents
+    orphaned_assets_list: List of Orphaned Assets
+    orphaned_risks_list: List of Orphaned Risks
+    orphaned_incidents_list: List of Orphaned Incidents
+    assign_to_tenant: Assign to Tenant
+    select_tenant: Select tenant...
+    entity_type: Entity Type
+    all_orphans: All orphaned entities
+    assets_only: Assets only
+    risks_only: Risks only
+    incidents_only: Incidents only
+    assign_orphans: Assign Orphaned Entities
+    tenant_not_found: Tenant not found
+    invalid_entity_type: Invalid entity type
+    assigned_count: '%count% entities were successfully assigned to %tenant%.'
+    entity_not_found: Entity not found
+    entity_reassigned: '%entity% was successfully assigned to %tenant%.'
+    tenant_statistics: Tenant Statistics
   dashboard:
     title: Admin Dashboard
     subtitle: Central administration and system overview
@@ -4054,6 +4081,54 @@ setup:
       title: 'Next Steps'
       description: 'After completing the setup, you can log in with this account.'
 
+  email:
+    title: 'Email Configuration'
+    header: 'Configure SMTP Server'
+    optional:
+      title: 'This step is optional'
+      message: 'You can skip the email configuration and set it up later in the admin area.'
+    sender_info: 'Sender Information'
+    skip_button: 'Skip'
+    skipped: 'Email configuration skipped'
+    config_saved: 'Email configuration successfully saved'
+    config_failed: 'Error saving email configuration'
+    info:
+      title: 'Why configure email?'
+      description: 'Email notifications enable:'
+      notifications: 'Automatic notifications for important events'
+      reminders: 'Reminders for pending tasks and reviews'
+      reports: 'Sending reports and summaries'
+    field:
+      transport: 'Transport Method'
+      host: 'SMTP Server'
+      port: 'Port'
+      username: 'Username'
+      password: 'Password'
+      encryption: 'Encryption'
+      sender_email: 'Sender Email'
+      sender_name: 'Sender Name'
+    help:
+      transport: 'Select the method for sending emails'
+      host: 'Hostname of the SMTP server (e.g. smtp.example.com)'
+      port: 'SMTP port (587 for TLS, 465 for SSL, 25 for unencrypted)'
+      username: 'SMTP username for authentication'
+      password: 'SMTP password'
+      encryption: 'Encryption method (TLS recommended)'
+      sender_email: 'Email address from which messages are sent'
+      sender_name: 'Name displayed as the sender'
+    transport:
+      'null': 'Disabled (no emails)'
+      smtp: 'SMTP Server'
+      sendmail: 'Sendmail'
+    encryption:
+      none: 'None'
+      ssl: 'SSL'
+      tls: 'TLS (recommended)'
+    test:
+      button: 'Send Test Email'
+      success: 'Test email sent successfully'
+      failed: 'Test email could not be sent'
+
   organisation:
     title: 'Organization Data'
     header: 'Your Organization'
@@ -4112,24 +4187,6 @@ setup:
       description: 'Your industry and size determine which compliance requirements apply to you.'
       reporting: 'Automatically adapt compliance reports'
       recommendations: 'Provide industry-specific recommendations'
-
-  email:
-    title: 'Email Configuration'
-    header: 'Email Server'
-    sender_info: 'Sender address for system emails'
-    skip_button: 'Skip'
-    skipped: 'Email configuration skipped. You can configure this later.'
-    config_saved: 'Email configuration saved'
-    config_failed: 'Error saving email configuration'
-    optional:
-      title: 'Optional Step'
-      message: 'Email configuration can also be done later.'
-    info:
-      title: 'Email Usage'
-      description: 'The system sends emails for:'
-      notifications: 'Notifications for important events'
-      reminders: 'Reminders for upcoming tasks'
-      reports: 'Automatic reports'
 
   compliance:
     title: 'Compliance Frameworks'
