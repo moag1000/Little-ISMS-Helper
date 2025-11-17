@@ -2,6 +2,12 @@
 
 {% block title %}{{ 'setup.admin.title'|trans }} - Deployment Wizard{% endblock %}
 
+{% block head %}
+    {{ parent() }}
+    {# Disable Turbo cache to ensure CSRF tokens are always fresh #}
+    <meta name="turbo-cache-control" content="no-cache">
+{% endblock %}
+
 {% block body %}
 <div class="container mt-5">
     <div class="row justify-content-center">
