@@ -411,6 +411,7 @@ common:
   to_home: Zur Startseite
   actions: Aktionen
   view: Ansehen
+  csrf_error: Ungültiges Sicherheitstoken. Bitte laden Sie die Seite neu und versuchen Sie es erneut.
   view_details: Details ansehen
   view_all: Alle anzeigen
   edit: Bearbeiten
