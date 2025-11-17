@@ -289,17 +289,20 @@ class DeploymentWizardController extends AbstractController
                 $migrationResult = $this->runMigrationsInternal();
 
                 if (!$migrationResult['success']) {
+                    $session->set('debug_error', 'Migration failed: ' . $migrationResult['message']);
                     $this->addFlash('error', 'DEBUG: Migration failed - ' . $migrationResult['message']);
                     $this->addFlash('error', $this->translator->trans('setup.admin.migration_failed') . ': ' . $migrationResult['message']);
                     // Turbo requires redirect after POST
                     return $this->redirectToRoute('setup_step2_admin_user');
                 }
 
+                $session->set('debug_processing', 'Migration successful, creating admin user');
                 $this->addFlash('info', 'DEBUG: Migration successful, creating admin user');
                 // Create admin user via command
                 $result = $this->createAdminUserViaCommand($data);
 
                 if ($result['success']) {
+                    $session->set('debug_processing', 'Admin user created successfully - redirecting to step3');
                     $this->addFlash('success', 'DEBUG: Admin user created successfully');
                     $session->set('setup_admin_created', true);
                     $session->set('setup_admin_email', $data['email']);
@@ -308,18 +311,21 @@ class DeploymentWizardController extends AbstractController
 
                     return $this->redirectToRoute('setup_step3_email_config');
                 } else {
+                    $session->set('debug_error', 'Admin user creation failed: ' . $result['message']);
                     $this->addFlash('error', 'DEBUG: Admin user creation failed - ' . $result['message']);
                     $this->addFlash('error', $result['message']);
                     // Turbo requires redirect after POST
                     return $this->redirectToRoute('setup_step2_admin_user');
                 }
             } catch (\Exception $e) {
+                $session->set('debug_error', 'Exception: ' . $e->getMessage());
                 $this->addFlash('error', 'DEBUG: Exception - ' . $e->getMessage());
                 $this->addFlash('error', $this->translator->trans('setup.admin.creation_failed') . ': ' . $e->getMessage());
                 // Turbo requires redirect after POST
                 return $this->redirectToRoute('setup_step2_admin_user');
             }
         } else {
+            $session->set('debug_error', 'Form not submitted or not valid');
             $this->addFlash('info', 'DEBUG: Form not submitted or not valid - rendering form');
         }
 
