@@ -308,8 +308,15 @@ class DeploymentWizardController extends AbstractController
      * Step 3: Skip Email Configuration
      */
     #[Route('/step3-email-config/skip', name: 'setup_step3_email_config_skip', methods: ['POST'])]
-    public function step3EmailConfigSkip(SessionInterface $session): Response
+    public function step3EmailConfigSkip(Request $request, SessionInterface $session): Response
     {
+        // Validate CSRF token
+        $token = $request->request->get('_token');
+        if (!$this->isCsrfTokenValid('setup_email_skip', $token)) {
+            $this->addFlash('error', $this->translator->trans('common.csrf_error'));
+            return $this->redirectToRoute('setup_step3_email_config');
+        }
+
         $session->set('setup_email_configured', false);
         $this->addFlash('info', $this->translator->trans('setup.email.skipped'));
 
@@ -426,6 +433,13 @@ class DeploymentWizardController extends AbstractController
     #[Route('/step6-modules/save', name: 'setup_step6_modules_save', methods: ['POST'])]
     public function step6ModulesSave(Request $request, SessionInterface $session): Response
     {
+        // Validate CSRF token
+        $token = $request->request->get('_token');
+        if (!$this->isCsrfTokenValid('setup_modules', $token)) {
+            $this->addFlash('error', $this->translator->trans('common.csrf_error'));
+            return $this->redirectToRoute('setup_step6_modules');
+        }
+
         $selectedModules = $request->request->all('modules') ?? [];
 
         // Validate and resolve dependencies
@@ -857,8 +871,15 @@ class DeploymentWizardController extends AbstractController
      * Step 8: Import Base Data
      */
     #[Route('/step8-base-data/import', name: 'setup_step8_base_data_import', methods: ['POST'])]
-    public function step8BaseDataImport(SessionInterface $session): Response
+    public function step8BaseDataImport(Request $request, SessionInterface $session): Response
     {
+        // Validate CSRF token
+        $token = $request->request->get('_token');
+        if (!$this->isCsrfTokenValid('setup_base_data', $token)) {
+            $this->addFlash('error', $this->translator->trans('common.csrf_error'));
+            return $this->redirectToRoute('setup_step8_base_data');
+        }
+
         $selectedModules = $session->get('setup_selected_modules', []);
 
         $result = $this->dataImportService->importBaseData($selectedModules);
@@ -908,6 +929,13 @@ class DeploymentWizardController extends AbstractController
     #[Route('/step9-sample-data/import', name: 'setup_step9_sample_data_import', methods: ['POST'])]
     public function step9SampleDataImport(Request $request, SessionInterface $session): Response
     {
+        // Validate CSRF token
+        $token = $request->request->get('_token');
+        if (!$this->isCsrfTokenValid('setup_sample_data', $token)) {
+            $this->addFlash('error', $this->translator->trans('common.csrf_error'));
+            return $this->redirectToRoute('setup_step9_sample_data');
+        }
+
         $selectedModules = $session->get('setup_selected_modules', []);
         $selectedSamples = $request->request->all('samples') ?? [];
 
@@ -928,8 +956,15 @@ class DeploymentWizardController extends AbstractController
      * Step 9: Skip Sample Data
      */
     #[Route('/step9-sample-data/skip', name: 'setup_step9_sample_data_skip', methods: ['POST'])]
-    public function step9SampleDataSkip(): Response
+    public function step9SampleDataSkip(Request $request): Response
     {
+        // Validate CSRF token
+        $token = $request->request->get('_token');
+        if (!$this->isCsrfTokenValid('setup_sample_skip', $token)) {
+            $this->addFlash('error', $this->translator->trans('common.csrf_error'));
+            return $this->redirectToRoute('setup_step9_sample_data');
+        }
+
         $this->addFlash('info', $this->translator->trans('deployment.info.sample_data_skipped'));
         return $this->redirectToRoute('setup_step10_complete');
     }
@@ -947,6 +982,20 @@ class DeploymentWizardController extends AbstractController
     ): Response {
         $selectedModules = $session->get('setup_selected_modules', []);
         $sampleData = $this->moduleConfigService->getAvailableSampleData($selectedModules);
+
+        // Validate CSRF token
+        $token = $request->request->get('_token');
+        if (!$this->isCsrfTokenValid('setup_restore_backup', $token)) {
+            $this->addFlash('error', $this->translator->trans('common.csrf_error'));
+            return $this->render('setup/step9_sample_data.html.twig', [
+                'selected_modules' => $selectedModules,
+                'sample_data' => $sampleData,
+                'backup_restore_result' => [
+                    'success' => false,
+                    'message' => $this->translator->trans('common.csrf_error'),
+                ],
+            ]);
+        }
 
         /** @var UploadedFile|null $file */
         $file = $request->files->get('backup_file');
