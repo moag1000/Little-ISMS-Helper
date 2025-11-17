@@ -4025,6 +4025,7 @@ setup:
     config_saved: 'Database configuration successfully saved'
     config_failed: 'Error saving configuration'
     write_failed: 'Could not write configuration file. Please check file permissions.'
+    docker_detected: 'Docker standalone deployment detected. Database configuration has been auto-filled.'
 
   admin:
     title: 'Create Administrator'

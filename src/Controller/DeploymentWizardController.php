@@ -105,7 +105,26 @@ class DeploymentWizardController extends AbstractController
             $this->addFlash('error', $permCheck['message']);
         }
 
-        $form = $this->createForm(DatabaseConfigurationType::class);
+        // Auto-detect Docker standalone deployment and pre-fill credentials
+        $defaultData = [];
+        $isDockerStandalone = file_exists('/run/mysqld/mysqld.sock') || file_exists('/.dockerenv');
+
+        if ($isDockerStandalone) {
+            // Pre-fill with Docker internal MySQL configuration
+            $defaultData = [
+                'type' => 'mysql',
+                'host' => 'localhost',
+                'port' => 3306,
+                'name' => $_ENV['MYSQL_DATABASE'] ?? 'isms',
+                'user' => $_ENV['MYSQL_USER'] ?? 'isms',
+                'password' => $_ENV['MYSQL_PASSWORD'] ?? $this->getDockerMysqlPassword(),
+                'serverVersion' => 'mariadb-11.4.0',
+            ];
+
+            $this->addFlash('info', $this->translator->trans('setup.database.docker_detected'));
+        }
+
+        $form = $this->createForm(DatabaseConfigurationType::class, $defaultData);
         $form->handleRequest($request);
 
         $testResult = null;
@@ -1276,5 +1295,24 @@ class DeploymentWizardController extends AbstractController
                 'message' => $e->getMessage(),
             ];
         }
+    }
+
+    /**
+     * Get Docker MySQL password from auto-generated credentials file
+     */
+    private function getDockerMysqlPassword(): string
+    {
+        $credentialsFile = $this->getParameter('kernel.project_dir') . '/var/mysql_credentials.txt';
+
+        if (file_exists($credentialsFile)) {
+            $content = file_get_contents($credentialsFile);
+            // Extract password from "Auto-generated MySQL password: PASSWORD"
+            if (preg_match('/password:\s*(.+)/', $content, $matches)) {
+                return trim($matches[1]);
+            }
+        }
+
+        // Fallback to default if no auto-generated password found
+        return 'isms';
     }
 }
