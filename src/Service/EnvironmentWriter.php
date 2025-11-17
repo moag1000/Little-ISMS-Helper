@@ -41,15 +41,7 @@ class EnvironmentWriter
         // Build DATABASE_URL based on type
         // Important: URL-encode user and password to handle special characters
         $databaseUrl = match ($type) {
-            'mysql', 'mariadb' => sprintf(
-                'mysql://%s:%s@%s:%s/%s?serverVersion=%s&charset=utf8mb4',
-                urlencode($user),
-                urlencode($password),
-                $host,
-                $port,
-                $name,
-                $config['serverVersion'] ?? '8.0'
-            ),
+            'mysql', 'mariadb' => $this->buildMysqlDatabaseUrl($host, $port, $user, $password, $name, $config['serverVersion'] ?? '8.0'),
             'postgresql' => sprintf(
                 'postgresql://%s:%s@%s:%s/%s?serverVersion=%s&charset=utf8',
                 urlencode($user),
@@ -83,6 +75,46 @@ class EnvironmentWriter
         }
 
         $this->writeEnvVariables($envVars);
+    }
+
+    /**
+     * Build MySQL/MariaDB DATABASE_URL with optional Unix socket support
+     */
+    private function buildMysqlDatabaseUrl(string $host, int $port, string $user, string $password, string $name, string $serverVersion): string
+    {
+        // Check if we should use Unix socket for localhost connections in Docker
+        $useUnixSocket = false;
+        $unixSocketPath = '/run/mysqld/mysqld.sock';
+
+        // Use Unix socket if:
+        // 1. Host is localhost AND
+        // 2. Unix socket file exists (we're in standalone Docker container)
+        if ($host === 'localhost' && file_exists($unixSocketPath)) {
+            $useUnixSocket = true;
+        }
+
+        if ($useUnixSocket) {
+            // Unix socket connection (better performance, no TCP overhead)
+            return sprintf(
+                'mysql://%s:%s@localhost/%s?unix_socket=%s&serverVersion=%s&charset=utf8mb4',
+                urlencode($user),
+                urlencode($password),
+                $name,
+                urlencode($unixSocketPath),
+                $serverVersion
+            );
+        }
+
+        // Standard TCP connection
+        return sprintf(
+            'mysql://%s:%s@%s:%s/%s?serverVersion=%s&charset=utf8mb4',
+            urlencode($user),
+            urlencode($password),
+            $host,
+            $port,
+            $name,
+            $serverVersion
+        );
     }
 
     /**

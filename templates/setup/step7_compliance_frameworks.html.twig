@@ -49,7 +49,7 @@
                             <p class="mb-2">{{ 'setup.compliance.recommended.description'|trans }}</p>
                             <div class="d-flex flex-wrap gap-2">
                                 {% for code in recommended_frameworks %}
-                                    {% for framework in available_frameworks if framework.code == code %}
+                                    {% for framework in available_frameworks|filter(f => f.code == code) %}
                                         <span class="badge bg-success">
                                             {{ framework.icon }} {{ framework.name }}
                                         </span>
@@ -92,7 +92,7 @@
 
                                         {# Find matching framework for description #}
                                         {% set framework_code = child.vars.value %}
-                                        {% for framework in available_frameworks if framework.code == framework_code %}
+                                        {% for framework in available_frameworks|filter(f => f.code == framework_code) %}
                                             <small class="text-muted d-block mt-2">
                                                 {{ framework.description }}
                                             </small>
