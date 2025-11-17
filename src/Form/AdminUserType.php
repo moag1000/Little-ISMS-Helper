@@ -108,10 +108,10 @@ class AdminUserType extends AbstractType
                         'minMessage' => 'setup.admin.password_min',
                         'maxMessage' => 'setup.admin.password_max',
                     ]),
-                    new Assert\Regex([
-                        'pattern' => '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/',
-                        'message' => 'setup.admin.password_strength',
-                    ]),
+                    new Assert\Regex(
+                        pattern: '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/',
+                        message: 'setup.admin.password_strength'
+                    ),
                 ],
             ]);
     }
