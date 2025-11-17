@@ -76,7 +76,9 @@ security:
         # Setup wizard - access control is handled by SetupSecuritySubscriber
         # Before setup: PUBLIC_ACCESS
         # After setup: ROLE_ADMIN required (enforced by subscriber)
+        # IMPORTANT: Must match both /setup and /{locale}/setup/ patterns
         - { path: ^/setup, roles: PUBLIC_ACCESS }
+        - { path: '^/(de|en)/setup', roles: PUBLIC_ACCESS }
 
         # Public routes (security routes are now WITHOUT locale prefix)
         - { path: ^/$, roles: PUBLIC_ACCESS }
