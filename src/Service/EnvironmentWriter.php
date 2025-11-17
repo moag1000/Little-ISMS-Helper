@@ -95,12 +95,13 @@ class EnvironmentWriter
 
         if ($useUnixSocket) {
             // Unix socket connection (better performance, no TCP overhead)
+            // Note: Do NOT urlencode the socket path - Symfony's container interprets %2F as parameter placeholder
             return sprintf(
                 'mysql://%s:%s@localhost/%s?unix_socket=%s&serverVersion=%s&charset=utf8mb4',
                 urlencode($user),
                 urlencode($password),
                 $name,
-                urlencode($unixSocketPath),
+                $unixSocketPath,  // Raw path, not URL-encoded
                 $serverVersion
             );
         }
