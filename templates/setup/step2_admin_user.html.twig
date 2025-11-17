@@ -27,6 +27,8 @@
             {# Debug info - will be removed after debugging #}
             <div class="alert alert-info">
                 <strong>DEBUG INFO:</strong><br>
+                Request method: {{ app.request.method }}<br>
+                Is POST: {{ app.request.method == 'POST' ? 'YES' : 'NO' }}<br>
                 Form has errors: {{ form.vars.errors|length > 0 ? 'YES' : 'NO' }}<br>
                 {% if form.vars.errors|length > 0 %}
                     <strong>Form errors:</strong>
@@ -36,8 +38,12 @@
                         {% endfor %}
                     </ul>
                 {% endif %}
-                Request method: {{ app.request.method }}<br>
-                Is POST: {{ app.request.method == 'POST' ? 'YES' : 'NO' }}
+                <strong>Session debug data:</strong><br>
+                Form submitted (from session): {{ app.session.get('debug_form_submitted') ? 'YES' : 'NO' }}<br>
+                Form valid (from session): {{ app.session.get('debug_form_valid') ? 'YES' : 'NO' }}<br>
+                {% if app.session.get('debug_processing') %}
+                    Processing: {{ app.session.get('debug_processing') }}<br>
+                {% endif %}
             </div>
 
             {# Progress Bar #}
