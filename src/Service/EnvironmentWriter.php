@@ -278,9 +278,15 @@ class EnvironmentWriter
         $content .= "# =============================================================================\n\n";
 
         foreach ($variables as $key => $value) {
-            // Escape special characters in value
-            $escapedValue = $this->escapeEnvValue($value);
-            $content .= "{$key}={$escapedValue}\n";
+            // DATABASE_URL contains ${VAR} references - must NOT be quoted or escaped
+            // Symfony's .env parser only expands variables outside of quotes
+            if ($key === 'DATABASE_URL' && str_contains($value, '${')) {
+                $content .= "{$key}={$value}\n";
+            } else {
+                // Escape special characters in value
+                $escapedValue = $this->escapeEnvValue($value);
+                $content .= "{$key}={$escapedValue}\n";
+            }
         }
 
         return $content;
