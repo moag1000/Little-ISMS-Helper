@@ -77,6 +77,7 @@ class ExcelExportService
     {
         $sheet = $spreadsheet->getActiveSheet();
         $row = $startRow;
+        $col = 'A'; // Initialize to prevent undefined variable when $data is empty
 
         foreach ($data as $rowData) {
             $col = 'A';
