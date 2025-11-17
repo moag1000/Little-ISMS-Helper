@@ -76,7 +76,11 @@ COPY . .
 # Set environment variables for production
 ENV APP_ENV=prod
 ENV APP_DEBUG=0
-# Default database URL for local MariaDB via Unix socket (Setup Wizard will configure actual credentials)
+# Default database credentials (can be overridden at runtime via -e flags)
+ENV MYSQL_DATABASE=isms
+ENV MYSQL_USER=isms
+# MYSQL_PASSWORD should be set at runtime for security - if not set, auto-generated
+# Default database URL for local MariaDB via Unix socket (init-mysql.sh will update .env.local with actual credentials)
 ENV DATABASE_URL="mysql://isms:isms@localhost/isms?unix_socket=/run/mysqld/mysqld.sock&serverVersion=mariadb-11.4.0&charset=utf8mb4"
 # Dummy app secret for build-time (Setup Wizard will generate secure secret)
 ENV APP_SECRET="build-time-secret-will-be-replaced"
