@@ -210,10 +210,17 @@ class DeploymentWizardController extends AbstractController
             }
         }
 
-        return $this->render('setup/step1_database_config.html.twig', [
+        // Return 422 status for validation errors so Turbo displays errors
+        $response = $this->render('setup/step1_database_config.html.twig', [
             'form' => $form,
             'test_result' => $testResult,
         ]);
+
+        if ($form->isSubmitted() && !$form->isValid()) {
+            $response->setStatusCode(422);
+        }
+
+        return $response;
     }
 
     /**
@@ -269,9 +276,17 @@ class DeploymentWizardController extends AbstractController
             }
         }
 
-        return $this->render('setup/step2_admin_user.html.twig', [
+        // For validation errors, return 422 status so Turbo displays the form with errors
+        $response = $this->render('setup/step2_admin_user.html.twig', [
             'form' => $form,
         ]);
+
+        // If form was submitted but invalid, set 422 status
+        if ($form->isSubmitted() && !$form->isValid()) {
+            $response->setStatusCode(422);
+        }
+
+        return $response;
     }
 
     /**
@@ -342,9 +357,16 @@ class DeploymentWizardController extends AbstractController
             }
         }
 
-        return $this->render('setup/step3_email_config.html.twig', [
+        // Return 422 status for validation errors so Turbo displays errors
+        $response = $this->render('setup/step3_email_config.html.twig', [
             'form' => $form,
         ]);
+
+        if ($form->isSubmitted() && !$form->isValid()) {
+            $response->setStatusCode(422);
+        }
+
+        return $response;
     }
 
     /**
@@ -405,9 +427,16 @@ class DeploymentWizardController extends AbstractController
             }
         }
 
-        return $this->render('setup/step4_organisation_info.html.twig', [
+        // Return 422 status for validation errors so Turbo displays errors
+        $response = $this->render('setup/step4_organisation_info.html.twig', [
             'form' => $form,
         ]);
+
+        if ($form->isSubmitted() && !$form->isValid()) {
+            $response->setStatusCode(422);
+        }
+
+        return $response;
     }
 
     /**
@@ -566,11 +595,18 @@ class DeploymentWizardController extends AbstractController
             return $this->redirectToRoute('setup_step8_base_data');
         }
 
-        return $this->render('setup/step7_compliance_frameworks.html.twig', [
+        // Return 422 status for validation errors so Turbo displays errors
+        $response = $this->render('setup/step7_compliance_frameworks.html.twig', [
             'form' => $form,
             'available_frameworks' => $availableFrameworks,
             'recommended_frameworks' => $recommendedFrameworks,
         ]);
+
+        if ($form->isSubmitted() && !$form->isValid()) {
+            $response->setStatusCode(422);
+        }
+
+        return $response;
     }
 
     /**
