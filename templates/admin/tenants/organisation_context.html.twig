@@ -1,0 +1,139 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block admin_title %}
+    {{ 'tenant.organisation_context.title'|trans }}
+{% endblock %}
+
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item"><a href="{{ path('tenant_management_index') }}">{{ 'tenant.title'|trans }}</a></li>
+    <li class="breadcrumb-item"><a href="{{ path('tenant_management_show', {id: tenant.id}) }}">{{ tenant.code }}</a></li>
+    <li class="breadcrumb-item active">{{ 'tenant.organisation_context.title'|trans }}</li>
+{% endblock %}
+
+{% block admin_content %}
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header bg-white">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-building-gear text-primary"></i>
+                        {{ 'tenant.organisation_context.header'|trans }}
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted mb-4">
+                        {{ 'tenant.organisation_context.description'|trans }}
+                    </p>
+
+                    {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+
+                    {# Organisation Name (read-only, from tenant) #}
+                    <div class="mb-3">
+                        <label class="form-label">{{ 'tenant.field.name'|trans }}</label>
+                        <input type="text" class="form-control" value="{{ tenant.name }}" disabled>
+                        <div class="form-text">{{ 'tenant.organisation_context.name_info'|trans }}</div>
+                    </div>
+
+                    {# Industries Multi-Select #}
+                    <div class="mb-3">
+                        {{ form_row(form.industries) }}
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            {{ form_row(form.employee_count) }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            {{ form_row(form.country) }}
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form_row(form.description) }}
+                    </div>
+
+                    {# Current Configuration Info #}
+                    {% if current_settings %}
+                    <div class="alert alert-info">
+                        <h6 class="alert-heading">
+                            <i class="bi bi-info-circle me-2"></i>
+                            {{ 'tenant.organisation_context.current_config'|trans }}
+                        </h6>
+                        <ul class="mb-0">
+                            {% if current_settings.selected_modules is defined and current_settings.selected_modules %}
+                            <li>
+                                <strong>{{ 'tenant.organisation_context.active_modules'|trans }}:</strong>
+                                {{ current_settings.selected_modules|join(', ') }}
+                            </li>
+                            {% endif %}
+                            {% if current_settings.selected_frameworks is defined and current_settings.selected_frameworks %}
+                            <li>
+                                <strong>{{ 'tenant.organisation_context.active_frameworks'|trans }}:</strong>
+                                {{ current_settings.selected_frameworks|join(', ') }}
+                            </li>
+                            {% endif %}
+                            {% if current_settings.setup_completed_at is defined %}
+                            <li>
+                                <strong>{{ 'tenant.organisation_context.setup_date'|trans }}:</strong>
+                                {{ current_settings.setup_completed_at|date('d.m.Y H:i') }}
+                            </li>
+                            {% endif %}
+                            {% if current_settings.last_modified_at is defined %}
+                            <li>
+                                <strong>{{ 'tenant.organisation_context.last_modified'|trans }}:</strong>
+                                {{ current_settings.last_modified_at|date('d.m.Y H:i') }}
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                    {% endif %}
+
+                    {# Impact Warning #}
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        <strong>{{ 'tenant.organisation_context.impact_warning.title'|trans }}</strong>
+                        <p class="mb-0 mt-2">{{ 'tenant.organisation_context.impact_warning.message'|trans }}</p>
+                    </div>
+
+                    {# Form Actions #}
+                    <div class="d-flex justify-content-between mt-4">
+                        <a href="{{ path('tenant_management_show', {id: tenant.id}) }}" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left me-2"></i>
+                            {{ 'common.back'|trans }}
+                        </a>
+
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-lg me-2"></i>
+                            {{ 'common.save'|trans }}
+                        </button>
+                    </div>
+
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+
+        {# Sidebar Info #}
+        <div class="col-lg-4">
+            <div class="card border-info">
+                <div class="card-header bg-info bg-opacity-10">
+                    <h6 class="card-title mb-0">
+                        <i class="bi bi-lightbulb text-info me-2"></i>
+                        {{ 'tenant.organisation_context.info.title'|trans }}
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <p class="small text-muted">
+                        {{ 'tenant.organisation_context.info.description'|trans }}
+                    </p>
+                    <ul class="small text-muted mb-0">
+                        <li>{{ 'tenant.organisation_context.info.industries'|trans }}</li>
+                        <li>{{ 'tenant.organisation_context.info.size'|trans }}</li>
+                        <li>{{ 'tenant.organisation_context.info.country'|trans }}</li>
+                        <li>{{ 'tenant.organisation_context.info.corporate'|trans }}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

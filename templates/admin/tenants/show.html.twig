@@ -45,6 +45,9 @@
             <a href="{{ path('tenant_management_edit', {id: tenant.id}) }}" class="btn btn-primary">
                 <i class="bi bi-pencil"></i> {{ 'common.edit'|trans }}
             </a>
+            <a href="{{ path('tenant_management_organisation_context', {id: tenant.id}) }}" class="btn btn-info">
+                <i class="bi bi-building-gear"></i> {{ 'tenant.organisation_context.title'|trans }}
+            </a>
             <form method="post" action="{{ path('tenant_management_toggle', {id: tenant.id}) }}" class="d-inline">
                 <button type="submit"
                         class="btn btn-{% if tenant.isActive %}warning{% else %}success{% endif %}"
