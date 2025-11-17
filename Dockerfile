@@ -80,8 +80,8 @@ ENV APP_DEBUG=0
 ENV MYSQL_DATABASE=isms
 ENV MYSQL_USER=isms
 # MYSQL_PASSWORD should be set at runtime for security - if not set, auto-generated
-# Default database URL for local MariaDB via Unix socket (init-mysql.sh will update .env.local with actual credentials)
-ENV DATABASE_URL="mysql://isms:isms@localhost/isms?unix_socket=/run/mysqld/mysqld.sock&serverVersion=mariadb-11.4.0&charset=utf8mb4"
+# NOTE: DATABASE_URL is NOT set here - it will be configured by init-mysql.sh in .env.local
+# This allows the auto-generated password to be used correctly
 # Dummy app secret for build-time (Setup Wizard will generate secure secret)
 ENV APP_SECRET="build-time-secret-will-be-replaced"
 
@@ -95,7 +95,9 @@ RUN echo "memory_limit=512M" > "$PHP_INI_DIR/conf.d/memory-limit.ini"
 RUN echo "max_execution_time=300" > "$PHP_INI_DIR/conf.d/execution-time.ini"
 
 # Now run Symfony scripts (bin/console is now available, memory limit is set)
-RUN composer run-script --no-dev auto-scripts || true
+# Use a build-time DATABASE_URL that won't persist (init-mysql.sh will set the real one)
+RUN DATABASE_URL="mysql://build:build@localhost/isms?serverVersion=mariadb-11.4.0" \
+    composer run-script --no-dev auto-scripts || true
 
 # Create required directories for logs and cache
 RUN mkdir -p var/cache var/log /var/log/supervisor /var/log/nginx && \
