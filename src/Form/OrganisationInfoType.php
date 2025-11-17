@@ -19,8 +19,9 @@ class OrganisationInfoType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder
-            ->add('name', TextType::class, [
+        // Only add name field during setup wizard (not when editing tenant context)
+        if ($options['include_name']) {
+            $builder->add('name', TextType::class, [
                 'label' => 'setup.organisation.name',
                 'required' => true,
                 'constraints' => [
@@ -39,33 +40,45 @@ class OrganisationInfoType extends AbstractType
                     'placeholder' => 'Beispiel GmbH',
                 ],
                 'help' => 'setup.organisation.name_help',
-            ])
-            ->add('industry', ChoiceType::class, [
-                'label' => 'setup.organisation.industry',
+            ]);
+        }
+
+        $builder->add('industries', ChoiceType::class, [
+                'label' => 'setup.organisation.industries',
                 'choices' => [
                     'setup.organisation.industry.automotive' => 'automotive',
                     'setup.organisation.industry.financial_services' => 'financial_services',
                     'setup.organisation.industry.healthcare' => 'healthcare',
+                    'setup.organisation.industry.pharmaceutical' => 'pharmaceutical',
+                    'setup.organisation.industry.digital_health' => 'digital_health',
                     'setup.organisation.industry.manufacturing' => 'manufacturing',
                     'setup.organisation.industry.it_services' => 'it_services',
+                    'setup.organisation.industry.cloud_services' => 'cloud_services',
                     'setup.organisation.industry.energy' => 'energy',
                     'setup.organisation.industry.telecommunications' => 'telecommunications',
+                    'setup.organisation.industry.critical_infrastructure' => 'critical_infrastructure',
                     'setup.organisation.industry.retail' => 'retail',
                     'setup.organisation.industry.public_sector' => 'public_sector',
                     'setup.organisation.industry.education' => 'education',
                     'setup.organisation.industry.other' => 'other',
                 ],
                 'required' => true,
-                'placeholder' => 'setup.organisation.industry.select',
+                'multiple' => true,
+                'expanded' => false,
                 'constraints' => [
                     new Assert\NotBlank([
-                        'message' => 'setup.organisation.industry_required',
+                        'message' => 'setup.organisation.industries_required',
+                    ]),
+                    new Assert\Count([
+                        'min' => 1,
+                        'minMessage' => 'setup.organisation.industries_min',
                     ]),
                 ],
                 'attr' => [
                     'class' => 'form-select',
+                    'size' => 6,
                 ],
-                'help' => 'setup.organisation.industry_help',
+                'help' => 'setup.organisation.industries_help',
             ])
             ->add('employee_count', ChoiceType::class, [
                 'label' => 'setup.organisation.employee_count',
@@ -118,7 +131,7 @@ class OrganisationInfoType extends AbstractType
                 'help' => 'setup.organisation.country_help',
             ])
             ->add('description', TextareaType::class, [
-                'label' => 'setup.organisation.description',
+                'label' => 'setup.organisation.description_label',
                 'required' => false,
                 'attr' => [
                     'class' => 'form-control',
@@ -136,6 +149,7 @@ class OrganisationInfoType extends AbstractType
             'csrf_protection' => true,
             'csrf_field_name' => '_token',
             'csrf_token_id' => 'organisation_info',
+            'include_name' => true, // Set to false when editing tenant context (name comes from Tenant entity)
         ]);
     }
 }
