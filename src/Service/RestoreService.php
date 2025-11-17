@@ -2,8 +2,10 @@
 
 namespace App\Service;
 
+use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
 class RestoreService
@@ -27,7 +29,8 @@ class RestoreService
     public function __construct(
         private EntityManagerInterface $entityManager,
         private AuditLogger $auditLogger,
-        private LoggerInterface $logger
+        private LoggerInterface $logger,
+        private UserPasswordHasherInterface $passwordHasher
     ) {
     }
 
@@ -160,12 +163,62 @@ class RestoreService
         $this->entityManager->beginTransaction();
 
         try {
+            // Disable foreign key checks for the duration of restore
+            // This prevents FK constraint violations during entity restoration
+            // Also needed for dry-run to properly test the restore process
+            $connection = $this->entityManager->getConnection();
+            $disableFKChecks = false;
+
+            try {
+                $connection->executeStatement('SET FOREIGN_KEY_CHECKS = 0');
+                $disableFKChecks = true;
+                $this->logger->info('Disabled foreign key checks for restore');
+            } catch (\Exception $e) {
+                $this->logger->warning('Could not disable foreign key checks', [
+                    'error' => $e->getMessage(),
+                ]);
+            }
+
+            // Disable Doctrine event listeners during restore to prevent PrePersist/PreUpdate callbacks
+            // from overwriting restored data with incorrect types (e.g., DateTimeImmutable instead of DateTime)
+            $eventManager = $this->entityManager->getEventManager();
+            $originalListeners = [];
+            $eventsToDisable = [
+                \Doctrine\ORM\Events::prePersist,
+                \Doctrine\ORM\Events::preUpdate,
+                \Doctrine\ORM\Events::postPersist,
+                \Doctrine\ORM\Events::postUpdate,
+            ];
+
+            // Get listeners for each event (Symfony's ContainerAwareEventManager requires event name)
+            foreach ($eventsToDisable as $eventName) {
+                try {
+                    $listeners = $eventManager->getListeners($eventName);
+                    $originalListeners[$eventName] = $listeners;
+                    foreach ($listeners as $listener) {
+                        $eventManager->removeEventListener($eventName, $listener);
+                    }
+                } catch (\Exception $e) {
+                    $originalListeners[$eventName] = [];
+                    $this->logger->debug('No listeners for event', [
+                        'event' => $eventName,
+                    ]);
+                }
+            }
+            $this->logger->info('Disabled Doctrine lifecycle event listeners for restore');
+
             // Order entities by dependency (users and tenants first)
             $orderedEntities = $this->orderEntitiesByDependency(array_keys($backup['data']));
 
             // If clear_before_restore is set, delete all existing data first (in reverse order)
-            if ($options['clear_before_restore'] && !$options['dry_run']) {
+            // This applies to BOTH dry-run and real restore - dry-run will rollback at the end anyway
+            if ($options['clear_before_restore']) {
                 $this->clearExistingData(array_reverse($orderedEntities), $options['skip_entities']);
+                // Clear the identity map after deleting to avoid stale references
+                $this->entityManager->clear();
+                if ($options['dry_run']) {
+                    $this->warnings[] = 'Dry-run: Bestehende Daten wurden gelöscht (wird am Ende zurückgesetzt)';
+                }
             }
 
             foreach ($orderedEntities as $entityName) {
@@ -187,17 +240,106 @@ class RestoreService
             if ($options['dry_run']) {
                 $this->entityManager->rollback();
                 $this->logger->info('Dry run completed, rolling back');
+
+                // Re-enable foreign key checks after dry-run
+                if ($disableFKChecks) {
+                    try {
+                        $connection->executeStatement('SET FOREIGN_KEY_CHECKS = 1');
+                        $this->logger->info('Re-enabled foreign key checks after dry-run');
+                    } catch (\Exception $fkException) {
+                        $this->logger->error('Failed to re-enable foreign key checks', [
+                            'error' => $fkException->getMessage(),
+                        ]);
+                    }
+                }
+
+                // Re-enable Doctrine event listeners after dry-run
+                foreach ($originalListeners as $eventName => $listeners) {
+                    foreach ($listeners as $listener) {
+                        $eventManager->addEventListener($eventName, $listener);
+                    }
+                }
+                $this->logger->info('Re-enabled Doctrine lifecycle event listeners after dry-run');
             } else {
+                // Check if EntityManager is still open before final commit
+                if (!$this->entityManager->isOpen()) {
+                    $this->warnings[] = 'EntityManager was closed during restore. Some changes may not have been persisted.';
+                    $this->logger->warning('EntityManager closed before final commit');
+
+                    // Re-enable foreign key checks before returning
+                    if ($disableFKChecks) {
+                        try {
+                            $connection->executeStatement('SET FOREIGN_KEY_CHECKS = 1');
+                        } catch (\Exception $fkException) {
+                            $this->logger->error('Failed to re-enable foreign key checks', [
+                                'error' => $fkException->getMessage(),
+                            ]);
+                        }
+                    }
+
+                    // Re-enable Doctrine event listeners
+                    foreach ($originalListeners as $eventName => $listeners) {
+                        foreach ($listeners as $listener) {
+                            $eventManager->addEventListener($eventName, $listener);
+                        }
+                    }
+
+                    // Return partial success with warnings
+                    return [
+                        'success' => false,
+                        'message' => 'Wiederherstellung teilweise fehlgeschlagen: Der EntityManager wurde während des Vorgangs geschlossen. Einige Daten wurden möglicherweise nicht gespeichert. Bitte aktivieren Sie "Bestehende Daten löschen" und versuchen Sie es erneut.',
+                        'statistics' => $this->statistics,
+                        'warnings' => $this->warnings,
+                        'dry_run' => $options['dry_run'],
+                    ];
+                }
+
                 $this->entityManager->flush();
                 $this->entityManager->commit();
                 $this->logger->info('Restore completed successfully');
 
+                // Re-enable foreign key checks
+                if ($disableFKChecks) {
+                    try {
+                        $connection->executeStatement('SET FOREIGN_KEY_CHECKS = 1');
+                        $this->logger->info('Re-enabled foreign key checks');
+                    } catch (\Exception $fkException) {
+                        $this->logger->error('Failed to re-enable foreign key checks', [
+                            'error' => $fkException->getMessage(),
+                        ]);
+                    }
+                }
+
+                // Re-enable Doctrine event listeners
+                foreach ($originalListeners as $eventName => $listeners) {
+                    foreach ($listeners as $listener) {
+                        $eventManager->addEventListener($eventName, $listener);
+                    }
+                }
+                $this->logger->info('Re-enabled Doctrine lifecycle event listeners');
+
                 // Log the restore operation
+                $totalRestored = 0;
+                foreach ($this->statistics as $entityStats) {
+                    if (is_array($entityStats) && isset($entityStats['created'])) {
+                        $totalRestored += $entityStats['created'] + ($entityStats['updated'] ?? 0);
+                    }
+                }
                 $this->auditLogger->logImport(
-                    'System Restore',
-                    sprintf('Restored backup from %s', $backup['metadata']['created_at']),
-                    $this->statistics
+                    'Backup',
+                    $totalRestored,
+                    sprintf('Restored backup from %s. Statistics: %s', $backup['metadata']['created_at'], json_encode($this->statistics))
                 );
+            }
+
+            // Add warning about password fields not being restored (security feature)
+            if (isset($this->statistics['User']) && $this->statistics['User']['created'] > 0 && !$options['dry_run']) {
+                // If admin password was provided, set it for the first admin user
+                if (!empty($options['admin_password'])) {
+                    $this->setAdminPassword($options['admin_password']);
+                } else {
+                    $this->warnings[] = 'WICHTIG: Benutzer-Passwörter werden aus Sicherheitsgründen nicht im Backup gespeichert. Alle wiederhergestellten Benutzer müssen ihr Passwort zurücksetzen oder neu setzen lassen. Nutzen Sie: php bin/console app:setup-permissions --admin-email=EMAIL --admin-password=PASSWORT';
+                }
             }
 
             return [
@@ -218,10 +360,41 @@ class RestoreService
                 ]);
             }
 
+            // Re-enable foreign key checks in case of error
+            if (isset($disableFKChecks) && $disableFKChecks) {
+                try {
+                    $connection->executeStatement('SET FOREIGN_KEY_CHECKS = 1');
+                } catch (\Exception $fkException) {
+                    $this->logger->error('Failed to re-enable foreign key checks after error', [
+                        'error' => $fkException->getMessage(),
+                    ]);
+                }
+            }
+
+            // Re-enable Doctrine event listeners in case of error
+            if (isset($originalListeners) && isset($eventManager)) {
+                foreach ($originalListeners as $eventName => $listeners) {
+                    foreach ($listeners as $listener) {
+                        $eventManager->addEventListener($eventName, $listener);
+                    }
+                }
+            }
+
             $this->logger->error('Restore failed', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
             ]);
+
+            // Check if this is an EntityManager closed error
+            if (strpos($e->getMessage(), 'EntityManager is closed') !== false) {
+                return [
+                    'success' => false,
+                    'message' => 'Der EntityManager wurde geschlossen (Datenbankfehler). Bitte aktivieren Sie "Bestehende Daten löschen" um Konflikte zu vermeiden.',
+                    'statistics' => $this->statistics,
+                    'warnings' => $this->warnings,
+                    'dry_run' => $options['dry_run'],
+                ];
+            }
 
             throw $e;
         }
@@ -331,6 +504,20 @@ class RestoreService
         $metadata = $this->entityManager->getClassMetadata($entityClass);
         $repository = $this->entityManager->getRepository($entityClass);
         $propertyAccessor = PropertyAccess::createPropertyAccessor();
+
+        // If clear_before_restore is enabled, temporarily change ID generator to NONE
+        // This allows us to preserve original IDs from the backup
+        $originalIdGenerator = null;
+        $originalGeneratorType = null;
+        if ($options['clear_before_restore']) {
+            $originalIdGenerator = $metadata->idGenerator;
+            $originalGeneratorType = $metadata->generatorType;
+            $metadata->setIdGeneratorType(\Doctrine\ORM\Mapping\ClassMetadata::GENERATOR_TYPE_NONE);
+            $metadata->setIdGenerator(new \Doctrine\ORM\Id\AssignedGenerator());
+            $this->logger->debug('Changed ID generator to ASSIGNED for entity', [
+                'entity' => $entityName,
+            ]);
+        }
 
         $stats = [
             'created' => 0,
@@ -456,6 +643,41 @@ class RestoreService
                         continue; // Don't overwrite ID of existing entity
                     }
 
+                    // For new entities with clear_before_restore, preserve the original ID
+                    // This is critical for maintaining foreign key references
+                    if ($fieldName === 'id' && $existingEntity === null && isset($data['id']) && $options['clear_before_restore']) {
+                        // Set the ID using reflection to bypass Doctrine's ID generation
+                        try {
+                            $reflection = new \ReflectionClass($entity);
+                            if ($reflection->hasProperty('id')) {
+                                $property = $reflection->getProperty('id');
+                                $property->setAccessible(true);
+                                $property->setValue($entity, $data['id']);
+                                $this->logger->debug('Set entity ID from backup', [
+                                    'entity' => $entityName,
+                                    'id' => $data['id'],
+                                ]);
+                            }
+                        } catch (\Exception $e) {
+                            $this->logger->warning('Failed to set entity ID from backup', [
+                                'entity' => $entityName,
+                                'id' => $data['id'],
+                                'error' => $e->getMessage(),
+                            ]);
+                        }
+                        continue;
+                    }
+
+                    // Skip foreign key fields that are handled via associations
+                    // These end with _id and represent ManyToOne relationships
+                    if (str_ends_with($fieldName, '_id') && $fieldName !== 'id') {
+                        // Check if this is actually a mapped association
+                        $assocName = substr($fieldName, 0, -3); // Remove _id suffix
+                        if ($metadata->hasAssociation($assocName)) {
+                            continue; // Will be handled in association restoration below
+                        }
+                    }
+
                     if (!array_key_exists($fieldName, $data)) {
                         // Handle missing field
                         if ($options['missing_field_strategy'] === self::STRATEGY_FAIL) {
@@ -468,12 +690,36 @@ class RestoreService
 
                     $value = $data[$fieldName] ?? null;
 
-                    // Convert ISO 8601 strings back to DateTime
+                    // Convert ISO 8601 strings back to DateTime/DateTimeImmutable
                     $type = $metadata->getTypeOfField($fieldName);
-                    if (in_array($type, ['datetime', 'datetime_immutable', 'date', 'time']) && is_string($value)) {
-                        $value = new \DateTime($value);
-                        if ($type === 'datetime_immutable') {
-                            $value = \DateTimeImmutable::createFromMutable($value);
+                    if (in_array($type, ['datetime', 'datetime_immutable', 'date', 'date_immutable', 'time', 'time_immutable'])) {
+                        try {
+                            // Check if type expects immutable or mutable
+                            $expectsImmutable = str_contains($type, 'immutable');
+
+                            if (is_string($value)) {
+                                // Convert string to appropriate DateTime type
+                                if ($expectsImmutable) {
+                                    $value = new \DateTimeImmutable($value);
+                                } else {
+                                    $value = new \DateTime($value);
+                                }
+                            } elseif ($value instanceof \DateTimeImmutable && !$expectsImmutable) {
+                                // Convert DateTimeImmutable to DateTime for mutable types
+                                $value = \DateTime::createFromImmutable($value);
+                            } elseif ($value instanceof \DateTime && $expectsImmutable) {
+                                // Convert DateTime to DateTimeImmutable for immutable types
+                                $value = \DateTimeImmutable::createFromMutable($value);
+                            }
+                            // If value is already the correct type, leave it as is
+                        } catch (\Exception $dateException) {
+                            $this->logger->warning('Failed to parse date/time value', [
+                                'entity' => $entityName,
+                                'field' => $fieldName,
+                                'value' => is_object($value) ? get_class($value) : $value,
+                                'error' => $dateException->getMessage(),
+                            ]);
+                            // Keep original value and let Doctrine handle it
                         }
                     }
 
@@ -490,11 +736,19 @@ class RestoreService
                             }
                         }
                     } catch (\Exception $e) {
+                        // Log but don't fail - try to continue with other fields
                         $this->logger->warning('Failed to set property', [
                             'entity' => $entityName,
                             'field' => $fieldName,
+                            'value_type' => is_object($value) ? get_class($value) : gettype($value),
                             'error' => $e->getMessage(),
                         ]);
+                        $this->warnings[] = sprintf(
+                            'Warning: Could not set %s.%s: %s',
+                            $entityName,
+                            $fieldName,
+                            $e->getMessage()
+                        );
                     }
                 }
 
@@ -585,6 +839,15 @@ class RestoreService
             }
         }
 
+        // Restore original ID generator if it was changed
+        if ($originalIdGenerator !== null && $originalGeneratorType !== null) {
+            $metadata->setIdGeneratorType($originalGeneratorType);
+            $metadata->setIdGenerator($originalIdGenerator);
+            $this->logger->debug('Restored original ID generator for entity', [
+                'entity' => $entityName,
+            ]);
+        }
+
         $this->statistics[$entityName] = $stats;
 
         $this->logger->info('Entity restore completed', [
@@ -627,8 +890,9 @@ class RestoreService
     {
         // Priority order: lower number = restored first
         // Entities without foreign keys first, then entities that depend on them
+        // IMPORTANT: If entity A has ManyToOne to entity B, then B must have lower priority than A
         $priorityOrder = [
-            // Base entities (no dependencies)
+            // Base entities (no dependencies except tenant)
             'Tenant' => 1,
             'User' => 2,
             'Role' => 3,
@@ -640,16 +904,22 @@ class RestoreService
             'ComplianceFramework' => 10,
             'Control' => 11,
 
+            // Independent entities (depend only on Tenant)
+            'Asset' => 15,           // Asset has no other dependencies
+            'Supplier' => 16,        // Supplier has no other dependencies
+            'InterestedParty' => 17, // InterestedParty has no other dependencies
+
             // Entities that depend on frameworks/controls
             'ComplianceRequirement' => 20,
+
+            // Risk depends on Asset, so must come after Asset
             'Risk' => 21,
-            'Asset' => 22,
-            'Supplier' => 23,
-            'InterestedParty' => 24,
+
+            // Context entities (may depend on other entities)
             'ISMSContext' => 25,
             'ISMSObjective' => 26,
 
-            // Mapping entities (depend on requirements)
+            // Mapping entities (depend on requirements and controls)
             'ComplianceMapping' => 30,
             'MappingGapItem' => 31,
 
@@ -686,6 +956,54 @@ class RestoreService
     public function getWarnings(): array
     {
         return $this->warnings;
+    }
+
+    /**
+     * Set password for the first admin user after restore
+     *
+     * @param string $password Plain text password
+     * @return void
+     */
+    private function setAdminPassword(string $password): void
+    {
+        try {
+            // Find the first user with ROLE_ADMIN
+            $adminUser = $this->entityManager->getRepository(User::class)->createQueryBuilder('u')
+                ->where('u.roles LIKE :role')
+                ->setParameter('role', '%ROLE_ADMIN%')
+                ->setMaxResults(1)
+                ->getQuery()
+                ->getOneOrNullResult();
+
+            if ($adminUser === null) {
+                // Find the first user if no admin role found
+                $adminUser = $this->entityManager->getRepository(User::class)->findOneBy([], ['id' => 'ASC']);
+            }
+
+            if ($adminUser !== null) {
+                $hashedPassword = $this->passwordHasher->hashPassword($adminUser, $password);
+                $adminUser->setPassword($hashedPassword);
+                $this->entityManager->flush();
+
+                $this->warnings[] = sprintf(
+                    'Admin-Passwort wurde für Benutzer "%s" gesetzt.',
+                    $adminUser->getEmail()
+                );
+                $this->logger->info('Set admin password after restore', [
+                    'user_email' => $adminUser->getEmail(),
+                ]);
+            } else {
+                $this->warnings[] = 'Kein Benutzer gefunden, um Admin-Passwort zu setzen.';
+            }
+        } catch (\Exception $e) {
+            $this->warnings[] = sprintf(
+                'Fehler beim Setzen des Admin-Passworts: %s',
+                $e->getMessage()
+            );
+            $this->logger->error('Failed to set admin password', [
+                'error' => $e->getMessage(),
+            ]);
+        }
     }
 
     /**

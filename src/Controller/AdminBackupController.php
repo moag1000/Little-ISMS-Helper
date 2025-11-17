@@ -261,12 +261,13 @@ class AdminBackupController extends AbstractController
                 'skip_entities' => $request->request->all('skip_entities') ?? [],
                 'dry_run' => $request->request->getBoolean('dry_run', false),
                 'clear_before_restore' => $request->request->getBoolean('clear_before_restore', false),
+                'admin_password' => $request->request->get('admin_password', ''),
             ];
 
             $this->logger->info('Starting restore', [
                 'user' => $this->getUser()?->getUserIdentifier(),
                 'filename' => $filename,
-                'options' => $options,
+                'options' => array_diff_key($options, ['admin_password' => '']), // Don't log password
             ]);
 
             // Load backup

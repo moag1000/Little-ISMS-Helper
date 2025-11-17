@@ -225,6 +225,18 @@
                         </div>
 
                         <div class="mb-3">
+                            <label for="adminPassword" class="form-label">
+                                <strong>Admin-Passwort setzen (optional)</strong>
+                            </label>
+                            <input type="password" class="form-control" id="adminPassword" name="admin_password" placeholder="Neues Passwort für Admin-Benutzer">
+                            <div class="form-text">
+                                <i class="bi bi-info-circle"></i>
+                                Passwörter werden aus Sicherheitsgründen nicht im Backup gespeichert.
+                                Geben Sie hier ein neues Passwort für den ersten Admin-Benutzer an, damit Sie sich nach der Wiederherstellung einloggen können.
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="dryRun" name="dry_run" checked>
                                 <label class="form-check-label" for="dryRun">
