@@ -411,6 +411,7 @@ common:
   to_home: To Home Page
   actions: Actions
   view: View
+  csrf_error: Invalid security token. Please reload the page and try again.
   view_details: View Details
   view_all: View All
   edit: Edit

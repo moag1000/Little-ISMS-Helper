@@ -46,6 +46,8 @@
                     {% endif %}
 
                     <form method="post" action="{{ path('setup_step6_modules_save') }}">
+                        <input type="hidden" name="_token" value="{{ csrf_token('setup_modules') }}">
+
                         {# Required Modules #}
                         <h5 class="mb-3">
                             <i class="fas fa-star text-warning me-2"></i>
