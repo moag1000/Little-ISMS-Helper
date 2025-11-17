@@ -4007,7 +4007,7 @@ setup:
     user_help: 'Username for the database connection'
     password: 'Password'
     password_help: 'Password for the database connection'
-    password_help_standalone: 'Password for local MariaDB (default: isms)'
+    password_help_standalone: 'Password for local MariaDB (leave empty for auto-generated password)'
     server_version: 'Server Version'
     server_version_help: 'Version of the database server (e.g. 8.0, mariadb-11.4.0)'
     test_button: 'Test Connection'

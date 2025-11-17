@@ -132,6 +132,11 @@ class DeploymentWizardController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $config = $form->getData();
 
+            // For Docker standalone: If password is empty, use the auto-generated one
+            if ($isDockerStandalone && empty($config['password'])) {
+                $config['password'] = $this->getDockerMysqlPassword();
+            }
+
             // Test database connection
             $testResult = $this->dbTestService->testConnection($config);
 
