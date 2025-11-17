@@ -121,8 +121,8 @@ HEALTHCHECK --interval=30s --timeout=5s --retries=3 --start-period=40s \
 # Expose port
 EXPOSE 80
 
-# Start supervisor
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+# Start supervisor (use supervisord from PATH - pip installs to /usr/local/bin)
+CMD ["supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
 
 # Stage 2: Development Build
 FROM production AS development
@@ -164,4 +164,4 @@ opcache.validate_timestamps=1
 opcache.revalidate_freq=2
 EOF
 
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+CMD ["supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
