@@ -31,6 +31,9 @@ PR_DESCRIPTION.md
 /docker/ssl/*.pem
 /docker/ssl/*.key
 /docker/ssl/*.crt
+*.tar
+*.tar.gz
+.docker/
 ###< docker ###
 /public/uploads/*
 !public/uploads/*/.gitkeep
