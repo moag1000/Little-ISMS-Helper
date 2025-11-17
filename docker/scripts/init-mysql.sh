@@ -8,14 +8,23 @@ DATADIR=/var/lib/mysql
 # Database configuration from environment variables (with secure defaults)
 DB_NAME="${MYSQL_DATABASE:-isms}"
 DB_USER="${MYSQL_USER:-isms}"
-DB_PASS="${MYSQL_PASSWORD:-$(openssl rand -base64 32 | tr -dc 'a-zA-Z0-9' | head -c 24)}"
 
-# If password was auto-generated, save it for reference
+# Check if password was already generated in a previous run
 if [ -z "$MYSQL_PASSWORD" ]; then
-    echo "Auto-generated MySQL password: $DB_PASS" > /var/www/html/var/mysql_credentials.txt
-    chmod 600 /var/www/html/var/mysql_credentials.txt
-    chown www-data:www-data /var/www/html/var/mysql_credentials.txt
-    echo "WARNING: No MYSQL_PASSWORD provided. Auto-generated password saved to /var/www/html/var/mysql_credentials.txt"
+    if [ -f "/var/www/html/var/mysql_credentials.txt" ]; then
+        # Reuse existing password from previous run
+        DB_PASS=$(grep -o 'password: .*' /var/www/html/var/mysql_credentials.txt | cut -d' ' -f2)
+        echo "Using existing MySQL password from previous run"
+    else
+        # Generate new password only on first run
+        DB_PASS=$(openssl rand -base64 32 | tr -dc 'a-zA-Z0-9' | head -c 24)
+        echo "Auto-generated MySQL password: $DB_PASS" > /var/www/html/var/mysql_credentials.txt
+        chmod 600 /var/www/html/var/mysql_credentials.txt
+        chown www-data:www-data /var/www/html/var/mysql_credentials.txt
+        echo "WARNING: No MYSQL_PASSWORD provided. Auto-generated password saved to /var/www/html/var/mysql_credentials.txt"
+    fi
+else
+    DB_PASS="$MYSQL_PASSWORD"
 fi
 
 # Ensure directories exist with correct permissions
@@ -68,6 +77,8 @@ fi
 if [ "$NEEDS_MIGRATION" = "1" ]; then
     echo "Running database migrations..."
     cd /var/www/html
+    # Export the correct DATABASE_URL for migrations (override the ENV default)
+    export DATABASE_URL="mysql://$DB_USER:$DB_PASS@localhost/$DB_NAME?unix_socket=/run/mysqld/mysqld.sock&serverVersion=mariadb-11.4.0&charset=utf8mb4"
     php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration 2>&1 || echo "Migration failed, will retry on next request"
     echo "Migrations completed"
 fi
