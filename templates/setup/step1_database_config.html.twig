@@ -13,15 +13,17 @@
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-10">
-            {# Flash Messages #}
-            {% for label, messages in app.flashes %}
-                {% for message in messages %}
-                    <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
-                        {{ message|raw }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
+            {# Flash Messages - Permanent Turbo Frame to persist across redirects #}
+            <turbo-frame id="flash-messages" data-turbo-permanent>
+                {% for label, messages in app.flashes %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+                            {{ message|raw }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
                 {% endfor %}
-            {% endfor %}
+            </turbo-frame>
 
             {# Progress Bar #}
             <div class="card mb-4">
