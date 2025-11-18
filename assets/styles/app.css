@@ -1709,3 +1709,48 @@ textarea.form-control {
         font-size: 1rem;
     }
 }
+
+/* ===============================
+   Dashboard Widget Sizing
+   =============================== */
+.widget-size-small {
+    flex: 0 0 calc(25% - 15px);
+    max-width: calc(25% - 15px);
+}
+
+.widget-size-medium {
+    flex: 0 0 calc(50% - 15px);
+    max-width: calc(50% - 15px);
+}
+
+.widget-size-large {
+    flex: 0 0 calc(75% - 15px);
+    max-width: calc(75% - 15px);
+}
+
+.widget-size-full {
+    flex: 0 0 100%;
+    max-width: 100%;
+}
+
+/* Responsive widget sizes */
+@media (max-width: 768px) {
+    .widget-size-small,
+    .widget-size-medium,
+    .widget-size-large,
+    .widget-size-full {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+}
+
+/* Widget drag state */
+.widget.dragging {
+    opacity: 0.5;
+    transform: scale(0.95);
+}
+
+.widget.drag-over {
+    border: 2px dashed var(--color-secondary, #06b6d4);
+    background: rgba(6, 182, 212, 0.05);
+}
