@@ -783,8 +783,18 @@ class RiskController extends AbstractController
         $statistics = $this->riskMatrixService->getRiskStatistics();
         $risksByLevel = $this->riskMatrixService->getRisksByLevel();
 
+        // Serialize risks for JavaScript consumption
+        $serializedRisks = array_map(function(Risk $risk) {
+            return [
+                'id' => $risk->getId(),
+                'title' => $risk->getTitle(),
+                'probability' => $risk->getProbability() ?? 1,
+                'impact' => $risk->getImpact() ?? 1,
+            ];
+        }, $risks instanceof \Traversable ? iterator_to_array($risks) : $risks);
+
         return $this->render('risk/matrix.html.twig', [
-            'risks' => $risks,
+            'risks' => $serializedRisks,
             'matrixData' => $matrixData,
             'statistics' => $statistics,
             'risksByLevel' => $risksByLevel,
