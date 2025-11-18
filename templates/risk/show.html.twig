@@ -43,10 +43,14 @@
         </div>
     {% endif %}
 
+    {% set riskClass = risk.inherentRiskLevel >= 15 ? 'critical' : (risk.inherentRiskLevel >= 8 ? 'high' : (risk.inherentRiskLevel >= 4 ? 'medium' : 'low')) %}
+
     <div class="card">
         <div class="card-header">
             <h2>Risk Details</h2>
-            <span class="badge badge-{{ risk.inherentRiskLevel }}">{{ risk.inherentRiskLevel|upper }}</span>
+            <span class="badge bg-{{ riskClass == 'critical' ? 'danger' : (riskClass == 'high' ? 'warning' : (riskClass == 'medium' ? 'info' : 'success')) }}">
+                {{ riskClass|upper }} ({{ risk.inherentRiskLevel }})
+            </span>
         </div>
         <div class="card-content">
             <div class="detail-grid">
@@ -75,7 +79,7 @@
                 <div class="assessment-card">
                     <h3>Inherent Risk</h3>
                     <div class="risk-matrix-mini">
-                        <div class="risk-score risk-level-{{ risk.inherentRiskLevel }}">
+                        <div class="risk-score risk-level-{{ riskClass }}" style="background-color: {{ riskClass == 'critical' ? '#fecaca' : (riskClass == 'high' ? '#fed7aa' : (riskClass == 'medium' ? '#fef3c7' : '#d1fae5')) }}; color: #1f2937; font-weight: bold; padding: 1rem; border-radius: 8px; text-align: center;">
                             {{ risk.inherentRiskLevel }}
                         </div>
                         <div class="risk-components">
@@ -83,14 +87,15 @@
                             <div>Impact: {{ risk.impact }}/5</div>
                         </div>
                     </div>
-                    <p class="risk-level-text">Level: <strong>{{ risk.inherentRiskLevel|upper }}</strong></p>
+                    <p class="risk-level-text">Level: <strong>{{ riskClass|upper }} (Score: {{ risk.inherentRiskLevel }})</strong></p>
                 </div>
 
                 {% if risk.residualProbability and risk.residualImpact %}
+                {% set residualClass = risk.residualRiskLevel >= 15 ? 'critical' : (risk.residualRiskLevel >= 8 ? 'high' : (risk.residualRiskLevel >= 4 ? 'medium' : 'low')) %}
                 <div class="assessment-card">
                     <h3>Residual Risk</h3>
                     <div class="risk-matrix-mini">
-                        <div class="risk-score risk-level-{{ risk.residualRiskLevel }}">
+                        <div class="risk-score risk-level-{{ residualClass }}" style="background-color: {{ residualClass == 'critical' ? '#fecaca' : (residualClass == 'high' ? '#fed7aa' : (residualClass == 'medium' ? '#fef3c7' : '#d1fae5')) }}; color: #1f2937; font-weight: bold; padding: 1rem; border-radius: 8px; text-align: center;">
                             {{ risk.residualRiskLevel }}
                         </div>
                         <div class="risk-components">
@@ -98,7 +103,7 @@
                             <div>Impact: {{ risk.residualImpact }}/5</div>
                         </div>
                     </div>
-                    <p class="risk-level-text">Level: <strong>{{ risk.residualRiskLevel|upper }}</strong></p>
+                    <p class="risk-level-text">Level: <strong>{{ residualClass|upper }} (Score: {{ risk.residualRiskLevel }})</strong></p>
                 </div>
                 {% endif %}
             </div>
@@ -329,5 +334,73 @@
 .badge-action-insert { background: #10b981; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; }
 .badge-action-update { background: #3b82f6; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; }
 .badge-action-delete { background: #ef4444; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; }
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+    .assessment-card {
+        background: #1f2937;
+        border-color: #374151;
+    }
+    .risk-components {
+        color: #9ca3af;
+    }
+    .control-item, .incident-item {
+        background: #1f2937;
+        border-left-color: #60a5fa;
+    }
+    .asset-info {
+        background: #1f2937;
+    }
+    .audit-log-item {
+        background: #1f2937;
+        border-left-color: #818cf8;
+    }
+    .alert-warning {
+        background: #451a03;
+        border-left-color: #f59e0b;
+        color: #fbbf24;
+    }
+    .alert-info {
+        background: #1e3a8a;
+        border-left-color: #3b82f6;
+        color: #93c5fd;
+    }
+    .field-name {
+        color: #9ca3af;
+    }
+}
+
+[data-bs-theme="dark"] .assessment-card {
+    background: #1f2937;
+    border-color: #374151;
+}
+[data-bs-theme="dark"] .risk-components {
+    color: #9ca3af;
+}
+[data-bs-theme="dark"] .control-item,
+[data-bs-theme="dark"] .incident-item {
+    background: #1f2937;
+    border-left-color: #60a5fa;
+}
+[data-bs-theme="dark"] .asset-info {
+    background: #1f2937;
+}
+[data-bs-theme="dark"] .audit-log-item {
+    background: #1f2937;
+    border-left-color: #818cf8;
+}
+[data-bs-theme="dark"] .alert-warning {
+    background: #451a03;
+    border-left-color: #f59e0b;
+    color: #fbbf24;
+}
+[data-bs-theme="dark"] .alert-info {
+    background: #1e3a8a;
+    border-left-color: #3b82f6;
+    color: #93c5fd;
+}
+[data-bs-theme="dark"] .field-name {
+    color: #9ca3af;
+}
 </style>
 {% endblock %}
