@@ -1754,3 +1754,189 @@ textarea.form-control {
     border: 2px dashed var(--color-secondary, #06b6d4);
     background: rgba(6, 182, 212, 0.05);
 }
+
+/* ============================================================
+   Real-time Validation & Feedback Styles
+   ============================================================ */
+
+/* Field wrapper for feedback icon positioning */
+.field-with-feedback {
+    position: relative;
+}
+
+/* Validation feedback icons (checkmark and X) */
+.validation-feedback-icon {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    z-index: 5;
+    font-size: 1.25rem;
+    transition: opacity var(--transition-fast), transform var(--transition-fast);
+    animation: feedbackAppear 0.2s ease-out;
+}
+
+@keyframes feedbackAppear {
+    from {
+        opacity: 0;
+        transform: translateY(-50%) scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(-50%) scale(1);
+    }
+}
+
+/* Adjust icon position for input groups */
+.input-group .field-with-feedback .validation-feedback-icon {
+    right: -35px;
+}
+
+/* Valid field styling with checkmark */
+.form-control.is-valid,
+.form-select.is-valid,
+input.is-valid,
+select.is-valid,
+textarea.is-valid {
+    border-color: var(--color-success);
+    padding-right: calc(1.5em + 0.75rem);
+}
+
+.form-control.is-valid:focus,
+input.is-valid:focus {
+    border-color: var(--color-success);
+    box-shadow: 0 0 0 0.2rem rgba(16, 185, 129, 0.25);
+}
+
+/* Valid feedback message */
+.valid-feedback {
+    display: none;
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--color-success);
+    font-weight: 500;
+    line-height: 1.4;
+}
+
+.valid-feedback.d-block {
+    display: block;
+}
+
+.is-valid ~ .valid-feedback {
+    display: block;
+}
+
+/* Dark mode adjustments */
+[data-theme="dark"] .invalid-feedback,
+[data-theme="dark"] .form-error {
+    color: #f87171;
+}
+
+[data-theme="dark"] .valid-feedback {
+    color: #34d399;
+}
+
+[data-theme="dark"] .form-control.is-invalid,
+[data-theme="dark"] input.is-invalid {
+    border-color: #f87171;
+}
+
+[data-theme="dark"] .form-control.is-valid,
+[data-theme="dark"] input.is-valid {
+    border-color: #34d399;
+}
+
+/* ============================================================
+   Password Strength Indicator
+   ============================================================ */
+
+.password-strength-meter {
+    margin-top: 0.75rem;
+}
+
+.password-strength-meter .progress {
+    height: 6px;
+    border-radius: 3px;
+    background-color: #e5e7eb;
+    overflow: hidden;
+}
+
+[data-theme="dark"] .password-strength-meter .progress {
+    background-color: #374151;
+}
+
+.password-strength-meter .progress-bar {
+    transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+.password-strength-meter small {
+    display: block;
+    margin-top: 0.5rem;
+    font-size: 0.8125rem;
+    line-height: 1.4;
+}
+
+/* Strength level colors */
+.password-strength-meter .bg-danger {
+    background-color: #ef4444 !important;
+}
+
+.password-strength-meter .bg-warning {
+    background-color: #f59e0b !important;
+}
+
+.password-strength-meter .bg-info {
+    background-color: #06b6d4 !important;
+}
+
+.password-strength-meter .bg-success {
+    background-color: #10b981 !important;
+}
+
+/* Dark mode strength colors */
+[data-theme="dark"] .password-strength-meter .bg-danger {
+    background-color: #f87171 !important;
+}
+
+[data-theme="dark"] .password-strength-meter .bg-warning {
+    background-color: #fbbf24 !important;
+}
+
+[data-theme="dark"] .password-strength-meter .bg-info {
+    background-color: #22d3ee !important;
+}
+
+[data-theme="dark"] .password-strength-meter .bg-success {
+    background-color: #34d399 !important;
+}
+
+/* ============================================================
+   Unique Field Validation (AJAX Loading)
+   ============================================================ */
+
+.unique-check-spinner {
+    display: none;
+    color: var(--color-secondary);
+    z-index: 10;
+}
+
+.unique-check-spinner .spinner-icon {
+    animation: spin 1s linear infinite;
+    font-size: 1.25rem;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Adjust field padding when spinner is visible */
+.field-with-feedback:has(.unique-check-spinner[style*="display: block"]) input,
+.field-with-feedback:has(.unique-check-spinner[style*="display: block"]) .form-control {
+    padding-right: calc(2.5em + 0.75rem);
+}
