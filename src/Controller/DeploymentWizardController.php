@@ -100,11 +100,17 @@ class DeploymentWizardController extends AbstractController
     }
 
     /**
-     * Step 1: Database Configuration
+     * Step 2: Database Configuration
      */
-    #[Route('/step1-database-config', name: 'setup_step1_database_config')]
-    public function step1DatabaseConfig(Request $request, SessionInterface $session): Response
+    #[Route('/step2-database-config', name: 'setup_step2_database_config')]
+    public function step2DatabaseConfig(Request $request, SessionInterface $session): Response
     {
+        // Check if system requirements are met (step 1)
+        if (!$this->requirementsChecker->isSystemReady()) {
+            $this->addFlash('error', $this->translator->trans('deployment.error.fix_requirements'));
+            return $this->redirectToRoute('setup_step1_requirements');
+        }
+
         // Pre-check: Filesystem permissions
         $permCheck = $this->envWriter->checkWritePermissions();
         if (!$permCheck['writable']) {
@@ -211,7 +217,7 @@ class DeploymentWizardController extends AbstractController
                         if (!$createResult['success']) {
                             $this->addFlash('error', $createResult['message']);
                             $session->set('setup_db_test_result', $testResult);
-                            return $this->redirectToRoute('setup_step1_database_config');
+                            return $this->redirectToRoute('setup_step2_database_config');
                         }
                     }
 
@@ -230,7 +236,7 @@ class DeploymentWizardController extends AbstractController
 
                     $this->addFlash('success', $this->translator->trans('setup.database.config_saved'));
 
-                    return $this->redirectToRoute('setup_step2_admin_user');
+                    return $this->redirectToRoute('setup_step4_admin_user');
                 } catch (\RuntimeException $e) {
                     // File system errors (permissions, disk full, etc.)
                     if (str_contains($e->getMessage(), 'Failed to write') || str_contains($e->getMessage(), 'Failed to rename')) {
@@ -242,22 +248,22 @@ class DeploymentWizardController extends AbstractController
                         $this->addFlash('error', $this->translator->trans('setup.database.config_failed') . ': ' . $e->getMessage());
                     }
                     // Redirect to same page to show error (Turbo compatibility)
-                    return $this->redirectToRoute('setup_step1_database_config');
+                    return $this->redirectToRoute('setup_step2_database_config');
                 } catch (\Exception $e) {
                     $this->addFlash('error', $this->translator->trans('setup.database.config_failed') . ': ' . $e->getMessage());
                     // Redirect to same page to show error (Turbo compatibility)
-                    return $this->redirectToRoute('setup_step1_database_config');
+                    return $this->redirectToRoute('setup_step2_database_config');
                 }
             } else {
                 // Test failed - store result in session and redirect (Turbo compatibility)
                 $session->set('setup_db_test_result', $testResult);
                 $this->addFlash('error', $testResult['message'] ?? $this->translator->trans('setup.database.test_failed'));
-                return $this->redirectToRoute('setup_step1_database_config');
+                return $this->redirectToRoute('setup_step2_database_config');
             }
         }
 
         // Return 422 status for validation errors so Turbo displays errors
-        $response = $this->render('setup/step1_database_config.html.twig', [
+        $response = $this->render('setup/step2_database_config.html.twig', [
             'form' => $form,
             'test_result' => $testResult,
         ]);
@@ -270,15 +276,144 @@ class DeploymentWizardController extends AbstractController
     }
 
     /**
-     * Step 2: Admin User Creation
+     * Step 3: Backup Restore (Optional)
+     * User can restore an existing backup or skip to create fresh installation
      */
-    #[Route('/step2-admin-user', name: 'setup_step2_admin_user')]
-    public function step2AdminUser(Request $request, SessionInterface $session): Response
+    #[Route('/step3-restore-backup', name: 'setup_step3_restore_backup')]
+    public function step3RestoreBackup(SessionInterface $session): Response
     {
         // Check if database is configured
         if (!$session->get('setup_database_configured')) {
             $this->addFlash('error', $this->translator->trans('setup.error.configure_database_first'));
-            return $this->redirectToRoute('setup_step1_database_config');
+            return $this->redirectToRoute('setup_step2_database_config');
+        }
+
+        // Retrieve restore result from session if exists (after redirect from POST)
+        $restoreResult = $session->get('backup_restore_result');
+        $session->remove('backup_restore_result');
+
+        return $this->render('setup/step3_restore_backup.html.twig', [
+            'backup_restore_result' => $restoreResult,
+        ]);
+    }
+
+    /**
+     * Step 3: Process Backup Restore Upload
+     */
+    #[Route('/step3-restore-backup/upload', name: 'setup_step3_restore_backup_upload', methods: ['POST'])]
+    public function step3RestoreBackupUpload(
+        Request $request,
+        SessionInterface $session,
+        BackupService $backupService,
+        RestoreService $restoreService,
+        LoggerInterface $logger
+    ): Response {
+        // Validate CSRF token
+        $token = $request->request->get('_token');
+        if (!$this->isCsrfTokenValid('setup_restore_backup', $token)) {
+            $this->addFlash('error', $this->translator->trans('common.csrf_error'));
+            return $this->redirectToRoute('setup_step3_restore_backup');
+        }
+
+        /** @var UploadedFile|null $file */
+        $file = $request->files->get('backup_file');
+
+        if (!$file) {
+            $this->addFlash('error', 'Keine Backup-Datei hochgeladen');
+            return $this->redirectToRoute('setup_step3_restore_backup');
+        }
+
+        // Validate file extension
+        $extension = $file->getClientOriginalExtension();
+        if (!in_array($extension, ['json', 'gz'])) {
+            $this->addFlash('error', 'Ungültiges Dateiformat. Nur .json oder .gz Dateien sind erlaubt.');
+            return $this->redirectToRoute('setup_step3_restore_backup');
+        }
+
+        try {
+            // Save file temporarily
+            $backupDir = $this->getParameter('kernel.project_dir') . '/var/backups';
+            if (!is_dir($backupDir)) {
+                mkdir($backupDir, 0755, true);
+            }
+
+            $filename = 'setup_restore_' . date('Y-m-d_H-i-s') . '.' . $extension;
+            $filepath = $backupDir . '/' . $filename;
+            $file->move($backupDir, $filename);
+
+            // Load and restore backup
+            $backup = $backupService->loadBackupFromFile($filepath);
+
+            $options = [
+                'missing_field_strategy' => RestoreService::STRATEGY_USE_DEFAULT,
+                'existing_data_strategy' => RestoreService::EXISTING_UPDATE,
+                'dry_run' => false,
+                'clear_before_restore' => $request->request->getBoolean('clear_before_restore', true),
+                'admin_password' => $request->request->get('admin_password', ''),
+            ];
+
+            $result = $restoreService->restoreFromBackup($backup, $options);
+
+            // Mark backup as restored - this allows skipping steps 4-10
+            $session->set('setup_backup_restored', true);
+
+            $this->addFlash('success', 'Backup erfolgreich wiederhergestellt! Setup ist abgeschlossen.');
+
+            $session->set('backup_restore_result', [
+                'success' => true,
+                'statistics' => $result['statistics'],
+                'warnings' => $result['warnings'],
+            ]);
+
+            // Redirect directly to completion - skip all remaining steps
+            return $this->redirectToRoute('setup_step11_complete');
+        } catch (\Exception $e) {
+            $logger->error('Backup restore failed during setup step 3', [
+                'error' => $e->getMessage(),
+            ]);
+
+            $this->addFlash('error', 'Fehler bei der Wiederherstellung: ' . $e->getMessage());
+
+            $session->set('backup_restore_result', [
+                'success' => false,
+                'message' => $e->getMessage(),
+            ]);
+
+            return $this->redirectToRoute('setup_step3_restore_backup');
+        }
+    }
+
+    /**
+     * Step 3: Skip Backup Restore
+     */
+    #[Route('/step3-restore-backup/skip', name: 'setup_step3_restore_backup_skip', methods: ['POST'])]
+    public function step3RestoreBackupSkip(SessionInterface $session): Response
+    {
+        // Validate database is configured
+        if (!$session->get('setup_database_configured')) {
+            return $this->redirectToRoute('setup_step2_database_config');
+        }
+
+        // Proceed to step 4 (admin user creation)
+        return $this->redirectToRoute('setup_step4_admin_user');
+    }
+
+    /**
+     * Step 4: Admin User Creation
+     */
+    #[Route('/step4-admin-user', name: 'setup_step4_admin_user')]
+    public function step4AdminUser(Request $request, SessionInterface $session): Response
+    {
+        // If backup was restored in step 3, skip to completion
+        if ($session->get('setup_backup_restored')) {
+            $this->addFlash('info', $this->translator->trans('setup.info.backup_restored_skip_steps'));
+            return $this->redirectToRoute('setup_step11_complete');
+        }
+
+        // Check if database is configured
+        if (!$session->get('setup_database_configured')) {
+            $this->addFlash('error', $this->translator->trans('setup.error.configure_database_first'));
+            return $this->redirectToRoute('setup_step2_database_config');
         }
 
         // Clear previous debug info only on GET (to show results from previous POST)
@@ -379,7 +514,7 @@ class DeploymentWizardController extends AbstractController
                     $this->addFlash('error', 'DEBUG: Migration failed - ' . $migrationResult['message']);
                     $this->addFlash('error', $this->translator->trans('setup.admin.migration_failed') . ': ' . $migrationResult['message']);
                     // Turbo requires redirect after POST
-                    return $this->redirectToRoute('setup_step2_admin_user');
+                    return $this->redirectToRoute('setup_step4_admin_user');
                 }
 
                 $session->set('debug_processing', 'Step 3: Migration successful, creating admin user');
@@ -401,21 +536,21 @@ class DeploymentWizardController extends AbstractController
 
                     $this->addFlash('success', $this->translator->trans('setup.admin.user_created'));
 
-                    return $this->redirectToRoute('setup_step3_email_config');
+                    return $this->redirectToRoute('setup_step5_email_config');
                 } else {
                     $session->set('debug_error', 'Step 4 ERROR: Admin user creation failed: ' . $result['message']);
                     // Turbo requires redirect after POST
-                    return $this->redirectToRoute('setup_step2_admin_user');
+                    return $this->redirectToRoute('setup_step4_admin_user');
                 }
             } catch (\Exception $e) {
                 $session->set('debug_error', 'EXCEPTION: ' . $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine());
                 // Turbo requires redirect after POST
-                return $this->redirectToRoute('setup_step2_admin_user');
+                return $this->redirectToRoute('setup_step4_admin_user');
             }
         }
 
         // For validation errors, return 422 status so Turbo displays the form with errors
-        $response = $this->render('setup/step2_admin_user.html.twig', [
+        $response = $this->render('setup/step4_admin_user.html.twig', [
             'form' => $form,
         ]);
 
@@ -428,15 +563,21 @@ class DeploymentWizardController extends AbstractController
     }
 
     /**
-     * Step 3: Email Configuration (Optional)
+     * Step 5: Email Configuration (Optional)
      */
-    #[Route('/step3-email-config', name: 'setup_step3_email_config')]
-    public function step3EmailConfig(Request $request, SessionInterface $session): Response
+    #[Route('/step5-email-config', name: 'setup_step5_email_config')]
+    public function step5EmailConfig(Request $request, SessionInterface $session): Response
     {
+        // If backup was restored in step 3, skip to completion
+        if ($session->get('setup_backup_restored')) {
+            $this->addFlash('info', $this->translator->trans('setup.info.backup_restored_skip_steps'));
+            return $this->redirectToRoute('setup_step11_complete');
+        }
+
         // Check if admin user is created
         if (!$session->get('setup_admin_created')) {
             $this->addFlash('error', $this->translator->trans('setup.error.create_admin_first'));
-            return $this->redirectToRoute('setup_step2_admin_user');
+            return $this->redirectToRoute('setup_step4_admin_user');
         }
 
         $form = $this->createForm(EmailConfigurationType::class);
@@ -489,14 +630,14 @@ class DeploymentWizardController extends AbstractController
                 $session->set('setup_email_configured', true);
                 $this->addFlash('success', $this->translator->trans('setup.email.config_saved'));
 
-                return $this->redirectToRoute('setup_step4_organisation_info');
+                return $this->redirectToRoute('setup_step6_organisation_info');
             } catch (\Exception $e) {
                 $this->addFlash('error', $this->translator->trans('setup.email.config_failed') . ': ' . $e->getMessage());
             }
         }
 
         // Return 422 status for validation errors so Turbo displays errors
-        $response = $this->render('setup/step3_email_config.html.twig', [
+        $response = $this->render('setup/step5_email_config.html.twig', [
             'form' => $form,
         ]);
 
@@ -508,35 +649,41 @@ class DeploymentWizardController extends AbstractController
     }
 
     /**
-     * Step 3: Skip Email Configuration
+     * Step 5: Skip Email Configuration
      */
-    #[Route('/step3-email-config/skip', name: 'setup_step3_email_config_skip', methods: ['POST'])]
-    public function step3EmailConfigSkip(Request $request, SessionInterface $session): Response
+    #[Route('/step5-email-config/skip', name: 'setup_step5_email_config_skip', methods: ['POST'])]
+    public function step5EmailConfigSkip(Request $request, SessionInterface $session): Response
     {
         // Validate CSRF token
         $token = $request->request->get('_token');
         if (!$this->isCsrfTokenValid('setup_email_skip', $token)) {
             $this->addFlash('error', $this->translator->trans('common.csrf_error'));
-            return $this->redirectToRoute('setup_step3_email_config');
+            return $this->redirectToRoute('setup_step5_email_config');
         }
 
         $session->set('setup_email_configured', false);
         $this->addFlash('info', $this->translator->trans('setup.email.skipped'));
 
-        return $this->redirectToRoute('setup_step4_organisation_info');
+        return $this->redirectToRoute('setup_step6_organisation_info');
     }
 
     /**
-     * Step 4: Organisation Information
+     * Step 6: Organisation Information
      */
-    #[Route('/step4-organisation-info', name: 'setup_step4_organisation_info')]
-    public function step4OrganisationInfo(Request $request, SessionInterface $session): Response
+    #[Route('/step6-organisation-info', name: 'setup_step6_organisation_info')]
+    public function step6OrganisationInfo(Request $request, SessionInterface $session): Response
     {
+        // If backup was restored in step 3, skip to completion
+        if ($session->get('setup_backup_restored')) {
+            $this->addFlash('info', $this->translator->trans('setup.info.backup_restored_skip_steps'));
+            return $this->redirectToRoute('setup_step11_complete');
+        }
+
         // User can skip email config, so we don't check for it
         // But admin must be created
         if (!$session->get('setup_admin_created')) {
             $this->addFlash('error', $this->translator->trans('setup.error.create_admin_first'));
-            return $this->redirectToRoute('setup_step2_admin_user');
+            return $this->redirectToRoute('setup_step4_admin_user');
         }
 
         $form = $this->createForm(OrganisationInfoType::class);
@@ -559,14 +706,14 @@ class DeploymentWizardController extends AbstractController
 
                 $this->addFlash('success', $this->translator->trans('setup.organisation.info_saved'));
 
-                return $this->redirectToRoute('setup_step5_requirements');
+                return $this->redirectToRoute('setup_step1_requirements');
             } catch (\Exception $e) {
                 $this->addFlash('error', $this->translator->trans('setup.organisation.info_failed') . ': ' . $e->getMessage());
             }
         }
 
         // Return 422 status for validation errors so Turbo displays errors
-        $response = $this->render('setup/step4_organisation_info.html.twig', [
+        $response = $this->render('setup/step6_organisation_info.html.twig', [
             'form' => $form,
         ]);
 
@@ -578,35 +725,37 @@ class DeploymentWizardController extends AbstractController
     }
 
     /**
-     * Step 5: System Requirements Check
+     * Step 1: System Requirements Check
+     * This is the first step - checks if system meets minimum requirements
      */
-    #[Route('/step5-requirements', name: 'setup_step5_requirements')]
-    public function step5Requirements(SessionInterface $session): Response
+    #[Route('/step1-requirements', name: 'setup_step1_requirements')]
+    public function step1Requirements(SessionInterface $session): Response
     {
-        // Check if admin user is created
-        if (!$session->get('setup_admin_created')) {
-            $this->addFlash('error', $this->translator->trans('setup.error.create_admin_first'));
-            return $this->redirectToRoute('setup_step2_admin_user');
-        }
-
+        // No prerequisites - this is the first step after welcome
         $results = $this->requirementsChecker->checkAll();
 
-        return $this->render('setup/step5_requirements.html.twig', [
+        return $this->render('setup/step1_requirements.html.twig', [
             'results' => $results,
             'can_proceed' => $results['overall']['can_proceed'],
         ]);
     }
 
     /**
-     * Step 6: Module Selection
+     * Step 7: Module Selection
      */
-    #[Route('/step6-modules', name: 'setup_step6_modules')]
-    public function step6Modules(SessionInterface $session): Response
+    #[Route('/step7-modules', name: 'setup_step7_modules')]
+    public function step7Modules(SessionInterface $session): Response
     {
+        // If backup was restored in step 3, skip to completion
+        if ($session->get('setup_backup_restored')) {
+            $this->addFlash('info', $this->translator->trans('setup.info.backup_restored_skip_steps'));
+            return $this->redirectToRoute('setup_step11_complete');
+        }
+
         // Check if requirements passed
         if (!$this->requirementsChecker->isSystemReady()) {
             $this->addFlash('error', $this->translator->trans('deployment.error.fix_requirements'));
-            return $this->redirectToRoute('setup_step5_requirements');
+            return $this->redirectToRoute('setup_step1_requirements');
         }
 
         $allModules = $this->moduleConfigService->getAllModules();
@@ -627,7 +776,7 @@ class DeploymentWizardController extends AbstractController
             $selectedModules = $session->get('setup_selected_modules');
         }
 
-        return $this->render('setup/step6_modules.html.twig', [
+        return $this->render('setup/step7_modules.html.twig', [
             'all_modules' => $allModules,
             'required_modules' => $requiredModules,
             'optional_modules' => $optionalModules,
@@ -638,16 +787,16 @@ class DeploymentWizardController extends AbstractController
     }
 
     /**
-     * Step 6: Save Module Selection
+     * Step 7: Save Module Selection
      */
-    #[Route('/step6-modules/save', name: 'setup_step6_modules_save', methods: ['POST'])]
-    public function step6ModulesSave(Request $request, SessionInterface $session): Response
+    #[Route('/step7-modules/save', name: 'setup_step7_modules_save', methods: ['POST'])]
+    public function step7ModulesSave(Request $request, SessionInterface $session): Response
     {
         // Validate CSRF token
         $token = $request->request->get('_token');
         if (!$this->isCsrfTokenValid('setup_modules', $token)) {
             $this->addFlash('error', $this->translator->trans('common.csrf_error'));
-            return $this->redirectToRoute('setup_step6_modules');
+            return $this->redirectToRoute('setup_step7_modules');
         }
 
         $selectedModules = $request->request->all('modules') ?? [];
@@ -660,7 +809,7 @@ class DeploymentWizardController extends AbstractController
                 $this->addFlash('error', $error);
             }
 
-            return $this->redirectToRoute('setup_step6_modules');
+            return $this->redirectToRoute('setup_step7_modules');
         }
 
         // Resolve dependencies
@@ -679,20 +828,26 @@ class DeploymentWizardController extends AbstractController
             $this->addFlash('warning', $warning);
         }
 
-        return $this->redirectToRoute('setup_step7_compliance_frameworks');
+        return $this->redirectToRoute('setup_step8_compliance_frameworks');
     }
 
     /**
-     * Step 7: Compliance Frameworks Selection
+     * Step 8: Compliance Frameworks Selection
      */
-    #[Route('/step7-compliance-frameworks', name: 'setup_step7_compliance_frameworks')]
-    public function step7ComplianceFrameworks(Request $request, SessionInterface $session): Response
+    #[Route('/step8-compliance-frameworks', name: 'setup_step8_compliance_frameworks')]
+    public function step8ComplianceFrameworks(Request $request, SessionInterface $session): Response
     {
+        // If backup was restored in step 3, skip to completion
+        if ($session->get('setup_backup_restored')) {
+            $this->addFlash('info', $this->translator->trans('setup.info.backup_restored_skip_steps'));
+            return $this->redirectToRoute('setup_step11_complete');
+        }
+
         $selectedModules = $session->get('setup_selected_modules', []);
 
         if (empty($selectedModules)) {
             $this->addFlash('error', $this->translator->trans('deployment.error.select_modules'));
-            return $this->redirectToRoute('setup_step6_modules');
+            return $this->redirectToRoute('setup_step7_modules');
         }
 
         // Get available frameworks
@@ -730,11 +885,11 @@ class DeploymentWizardController extends AbstractController
                 '%count%' => count($selectedFrameworks),
             ]));
 
-            return $this->redirectToRoute('setup_step8_base_data');
+            return $this->redirectToRoute('setup_step9_base_data');
         }
 
         // Return 422 status for validation errors so Turbo displays errors
-        $response = $this->render('setup/step7_compliance_frameworks.html.twig', [
+        $response = $this->render('setup/step8_compliance_frameworks.html.twig', [
             'form' => $form,
             'available_frameworks' => $availableFrameworks,
             'recommended_frameworks' => $recommendedFrameworks,
@@ -1064,37 +1219,43 @@ class DeploymentWizardController extends AbstractController
     }
 
     /**
-     * Step 8: Base Data Import
+     * Step 9: Base Data Import
      */
-    #[Route('/step8-base-data', name: 'setup_step8_base_data')]
-    public function step8BaseData(SessionInterface $session): Response
+    #[Route('/step9-base-data', name: 'setup_step9_base_data')]
+    public function step9BaseData(SessionInterface $session): Response
     {
+        // If backup was restored in step 3, skip to completion
+        if ($session->get('setup_backup_restored')) {
+            $this->addFlash('info', $this->translator->trans('setup.info.backup_restored_skip_steps'));
+            return $this->redirectToRoute('setup_step11_complete');
+        }
+
         $selectedModules = $session->get('setup_selected_modules', []);
 
         if (empty($selectedModules)) {
             $this->addFlash('error', $this->translator->trans('deployment.error.select_modules'));
-            return $this->redirectToRoute('setup_step6_modules');
+            return $this->redirectToRoute('setup_step7_modules');
         }
 
         $baseData = $this->moduleConfigService->getBaseData();
 
-        return $this->render('setup/step8_base_data.html.twig', [
+        return $this->render('setup/step9_base_data.html.twig', [
             'selected_modules' => $selectedModules,
             'base_data' => $baseData,
         ]);
     }
 
     /**
-     * Step 8: Import Base Data
+     * Step 9: Import Base Data
      */
-    #[Route('/step8-base-data/import', name: 'setup_step8_base_data_import', methods: ['POST'])]
-    public function step8BaseDataImport(Request $request, SessionInterface $session): Response
+    #[Route('/step9-base-data/import', name: 'setup_step9_base_data_import', methods: ['POST'])]
+    public function step9BaseDataImport(Request $request, SessionInterface $session): Response
     {
         // Validate CSRF token
         $token = $request->request->get('_token');
         if (!$this->isCsrfTokenValid('setup_base_data', $token)) {
             $this->addFlash('error', $this->translator->trans('common.csrf_error'));
-            return $this->redirectToRoute('setup_step8_base_data');
+            return $this->redirectToRoute('setup_step9_base_data');
         }
 
         $selectedModules = $session->get('setup_selected_modules', []);
@@ -1116,20 +1277,26 @@ class DeploymentWizardController extends AbstractController
 
         $session->set('setup_base_data_imported', true);
 
-        return $this->redirectToRoute('setup_step9_sample_data');
+        return $this->redirectToRoute('setup_step10_sample_data');
     }
 
     /**
-     * Step 9: Sample Data (Optional)
+     * Step 10: Sample Data (Optional)
      */
-    #[Route('/step9-sample-data', name: 'setup_step9_sample_data')]
-    public function step9SampleData(SessionInterface $session): Response
+    #[Route('/step10-sample-data', name: 'setup_step10_sample_data')]
+    public function step10SampleData(SessionInterface $session): Response
     {
+        // If backup was restored in step 3, skip to completion
+        if ($session->get('setup_backup_restored')) {
+            $this->addFlash('info', $this->translator->trans('setup.info.backup_restored_skip_steps'));
+            return $this->redirectToRoute('setup_step11_complete');
+        }
+
         $selectedModules = $session->get('setup_selected_modules', []);
 
         if (empty($selectedModules)) {
             $this->addFlash('error', $this->translator->trans('deployment.error.select_modules'));
-            return $this->redirectToRoute('setup_step6_modules');
+            return $this->redirectToRoute('setup_step7_modules');
         }
 
         $sampleData = $this->moduleConfigService->getAvailableSampleData($selectedModules);
@@ -1145,7 +1312,7 @@ class DeploymentWizardController extends AbstractController
             $session->remove('backup_restore_result');
         }
 
-        return $this->render('setup/step9_sample_data.html.twig', [
+        return $this->render('setup/step10_sample_data.html.twig', [
             'selected_modules' => $selectedModules,
             'sample_data' => $sampleData,
             'backup_restore_result' => $backupRestoreResult,
@@ -1153,16 +1320,16 @@ class DeploymentWizardController extends AbstractController
     }
 
     /**
-     * Step 9: Import Sample Data
+     * Step 10: Import Sample Data
      */
-    #[Route('/step9-sample-data/import', name: 'setup_step9_sample_data_import', methods: ['POST'])]
-    public function step9SampleDataImport(Request $request, SessionInterface $session): Response
+    #[Route('/step10-sample-data/import', name: 'setup_step10_sample_data_import', methods: ['POST'])]
+    public function step10SampleDataImport(Request $request, SessionInterface $session): Response
     {
         // Validate CSRF token
         $token = $request->request->get('_token');
         if (!$this->isCsrfTokenValid('setup_sample_data', $token)) {
             $this->addFlash('error', $this->translator->trans('common.csrf_error'));
-            return $this->redirectToRoute('setup_step9_sample_data');
+            return $this->redirectToRoute('setup_step10_sample_data');
         }
 
         $selectedModules = $session->get('setup_selected_modules', []);
@@ -1178,30 +1345,30 @@ class DeploymentWizardController extends AbstractController
             }
         }
 
-        return $this->redirectToRoute('setup_step10_complete');
+        return $this->redirectToRoute('setup_step11_complete');
     }
 
     /**
-     * Step 9: Skip Sample Data
+     * Step 10: Skip Sample Data
      */
-    #[Route('/step9-sample-data/skip', name: 'setup_step9_sample_data_skip', methods: ['POST'])]
-    public function step9SampleDataSkip(Request $request): Response
+    #[Route('/step10-sample-data/skip', name: 'setup_step10_sample_data_skip', methods: ['POST'])]
+    public function step10SampleDataSkip(Request $request): Response
     {
         // Validate CSRF token
         $token = $request->request->get('_token');
         if (!$this->isCsrfTokenValid('setup_sample_skip', $token)) {
             $this->addFlash('error', $this->translator->trans('common.csrf_error'));
-            return $this->redirectToRoute('setup_step9_sample_data');
+            return $this->redirectToRoute('setup_step10_sample_data');
         }
 
         $this->addFlash('info', $this->translator->trans('deployment.info.sample_data_skipped'));
-        return $this->redirectToRoute('setup_step10_complete');
+        return $this->redirectToRoute('setup_step11_complete');
     }
 
     /**
-     * Step 9: Restore Backup
+     * Step 10: Restore Backup
      */
-    #[Route('/step9-restore-backup', name: 'setup_step9_restore_backup', methods: ['POST'])]
+    #[Route('/step10-restore-backup', name: 'setup_step10_restore_backup', methods: ['POST'])]
     public function step9RestoreBackup(
         Request $request,
         SessionInterface $session,
@@ -1216,7 +1383,7 @@ class DeploymentWizardController extends AbstractController
         $token = $request->request->get('_token');
         if (!$this->isCsrfTokenValid('setup_restore_backup', $token)) {
             $this->addFlash('error', $this->translator->trans('common.csrf_error'));
-            return $this->render('setup/step9_sample_data.html.twig', [
+            return $this->render('setup/step10_sample_data.html.twig', [
                 'selected_modules' => $selectedModules,
                 'sample_data' => $sampleData,
                 'backup_restore_result' => [
@@ -1231,7 +1398,7 @@ class DeploymentWizardController extends AbstractController
 
         if (!$file) {
             $this->addFlash('error', 'Keine Backup-Datei hochgeladen');
-            return $this->render('setup/step9_sample_data.html.twig', [
+            return $this->render('setup/step10_sample_data.html.twig', [
                 'selected_modules' => $selectedModules,
                 'sample_data' => $sampleData,
                 'backup_restore_result' => [
@@ -1245,7 +1412,7 @@ class DeploymentWizardController extends AbstractController
         $extension = $file->getClientOriginalExtension();
         if (!in_array($extension, ['json', 'gz'])) {
             $this->addFlash('error', 'Ungültiges Dateiformat. Nur .json oder .gz Dateien sind erlaubt.');
-            return $this->render('setup/step9_sample_data.html.twig', [
+            return $this->render('setup/step10_sample_data.html.twig', [
                 'selected_modules' => $selectedModules,
                 'sample_data' => $sampleData,
                 'backup_restore_result' => [
@@ -1343,7 +1510,7 @@ class DeploymentWizardController extends AbstractController
                 'risks_without_assets' => count($risksWithoutAssets),
             ]);
 
-            return $this->redirectToRoute('setup_step9_sample_data');
+            return $this->redirectToRoute('setup_step10_sample_data');
         } catch (\Exception $e) {
             $logger->error('Backup restore failed during setup', [
                 'error' => $e->getMessage(),
@@ -1357,14 +1524,14 @@ class DeploymentWizardController extends AbstractController
                 'message' => $e->getMessage(),
             ]);
 
-            return $this->redirectToRoute('setup_step9_sample_data');
+            return $this->redirectToRoute('setup_step10_sample_data');
         }
     }
 
     /**
-     * Step 9: Repair Orphaned Entities
+     * Step 10: Repair Orphaned Entities
      */
-    #[Route('/step9-repair-orphans', name: 'setup_step9_repair_orphans', methods: ['POST'])]
+    #[Route('/step10-repair-orphans', name: 'setup_step10_repair_orphans', methods: ['POST'])]
     public function step9RepairOrphans(
         Request $request,
         SessionInterface $session,
@@ -1377,19 +1544,19 @@ class DeploymentWizardController extends AbstractController
         $token = $request->request->get('_token');
         if (!$this->isCsrfTokenValid('setup_repair_orphans', $token)) {
             $this->addFlash('error', $this->translator->trans('common.csrf_error'));
-            return $this->redirectToRoute('setup_step9_sample_data');
+            return $this->redirectToRoute('setup_step10_sample_data');
         }
 
         $targetTenantId = $request->request->get('target_tenant_id');
         if (!$targetTenantId) {
             $this->addFlash('error', 'Bitte wählen Sie einen Ziel-Mandanten aus.');
-            return $this->redirectToRoute('setup_step9_sample_data');
+            return $this->redirectToRoute('setup_step10_sample_data');
         }
 
         $targetTenant = $this->tenantRepository->find($targetTenantId);
         if (!$targetTenant) {
             $this->addFlash('error', 'Ziel-Mandant nicht gefunden.');
-            return $this->redirectToRoute('setup_step9_sample_data');
+            return $this->redirectToRoute('setup_step10_sample_data');
         }
 
         try {
@@ -1450,20 +1617,20 @@ class DeploymentWizardController extends AbstractController
             $this->addFlash('error', 'Fehler beim Reparieren: ' . $e->getMessage());
         }
 
-        return $this->redirectToRoute('setup_step9_sample_data');
+        return $this->redirectToRoute('setup_step10_sample_data');
     }
 
     /**
-     * Step 10: Setup Complete
+     * Step 11: Setup Complete
      */
-    #[Route('/step10-complete', name: 'setup_step10_complete')]
-    public function step10Complete(SessionInterface $session): Response
+    #[Route('/step11-complete', name: 'setup_step11_complete')]
+    public function step11Complete(SessionInterface $session): Response
     {
         $selectedModules = $session->get('setup_selected_modules', []);
 
         if (empty($selectedModules)) {
             $this->addFlash('error', $this->translator->trans('deployment.error.select_modules'));
-            return $this->redirectToRoute('setup_step6_modules');
+            return $this->redirectToRoute('setup_step7_modules');
         }
 
         // Save active modules
@@ -1477,7 +1644,7 @@ class DeploymentWizardController extends AbstractController
 
         $statistics = $this->moduleConfigService->getStatistics();
 
-        return $this->render('setup/step10_complete.html.twig', [
+        return $this->render('setup/step11_complete.html.twig', [
             'selected_modules' => $selectedModules,
             'statistics' => $statistics,
             'admin_email' => $session->get('setup_admin_email'),

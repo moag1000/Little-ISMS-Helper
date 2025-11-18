@@ -71,7 +71,7 @@
                             </div>
                             <div class="progress" style="height: 20px;">
                                 <div class="progress-bar bg-info"
-                                     style="width: {% if gap_stats_by_type|map(s => s.count)|sum > 0 %}{{ (stat.count / (gap_stats_by_type|map(s => s.count)|sum) * 100)|round }}{% else %}0{% endif %}%">
+                                     style="width: {% set total = gap_stats_by_type|map(s => s.count)|reduce((carry, v) => carry + v, 0) %}{% if total > 0 %}{{ (stat.count / total * 100)|round }}{% else %}0{% endif %}%">
                                 </div>
                             </div>
                             {% if stat.totalImpact %}
@@ -108,7 +108,7 @@
                             </div>
                             <div class="progress" style="height: 20px;">
                                 <div class="progress-bar bg-{{ stat.priority == 'critical' ? 'danger' : (stat.priority == 'high' ? 'warning' : 'info') }}"
-                                     style="width: {% if gap_stats_by_priority|map(s => s.count)|sum > 0 %}{{ (stat.count / (gap_stats_by_priority|map(s => s.count)|sum) * 100)|round }}{% else %}0{% endif %}%">
+                                     style="width: {% set total = gap_stats_by_priority|map(s => s.count)|reduce((carry, v) => carry + v, 0) %}{% if total > 0 %}{{ (stat.count / total * 100)|round }}{% else %}0{% endif %}%">
                                 </div>
                             </div>
                             <small class="text-muted">
