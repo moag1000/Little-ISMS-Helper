@@ -160,7 +160,38 @@
                         </div>
                     {% endif %}
 
-                    {# Backup Restore Form #}
+                    {# Phase 1: Create Database Schema #}
+                    {% if not schema_created %}
+                    <div class="card border-warning mb-4">
+                        <div class="card-header bg-warning text-dark">
+                            <h5 class="mb-0">
+                                <i class="fas fa-database me-2"></i>
+                                Schritt 1: Datenbank-Struktur erstellen
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <p class="text-muted mb-3">
+                                Bevor Sie ein Backup wiederherstellen können, muss die Datenbank-Struktur (Tabellen) erstellt werden.
+                                Dieser Vorgang kann einige Minuten dauern.
+                            </p>
+                            <div class="alert alert-info" role="alert">
+                                <i class="fas fa-info-circle me-2"></i>
+                                <strong>Hinweis:</strong> Die Migrationen werden ausgeführt und erstellen alle benötigten Tabellen.
+                                Bitte warten Sie, bis der Vorgang abgeschlossen ist.
+                            </div>
+                            <form method="post" action="{{ path('setup_step3_create_schema') }}">
+                                <input type="hidden" name="_token" value="{{ csrf_token('setup_create_schema') }}">
+                                <button type="submit" class="btn btn-warning btn-lg">
+                                    <i class="fas fa-cogs me-2"></i>
+                                    Datenbank-Struktur jetzt erstellen
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {# Phase 2: Backup Restore Form (only shown after schema is created) #}
+                    {% if schema_created %}
                     <div class="card border-info mb-4">
                         <div class="card-header bg-info text-white">
                             <h5 class="mb-0">
@@ -169,6 +200,10 @@
                             </h5>
                         </div>
                         <div class="card-body">
+                            <div class="alert alert-success mb-3" role="alert">
+                                <i class="fas fa-check-circle me-2"></i>
+                                <strong>Datenbank-Struktur erfolgreich erstellt!</strong> Sie können jetzt ein Backup hochladen.
+                            </div>
                             <p class="text-muted">
                                 Haben Sie ein Backup von einer anderen Installation? Laden Sie es hier hoch.
                                 Nach erfolgreicher Wiederherstellung wird das Setup automatisch abgeschlossen.
@@ -208,6 +243,7 @@
                             </form>
                         </div>
                     </div>
+                    {% endif %}
 
                     {# Skip Option #}
                     <div class="card border-secondary">
