@@ -1,0 +1,141 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'mfa.challenge.title'|trans }}{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-5">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">
+                        <i class="bi bi-shield-lock"></i>
+                        {{ 'mfa.challenge.title'|trans }}
+                    </h4>
+                </div>
+                <div class="card-body">
+                    {% if error %}
+                        <div class="alert alert-danger">
+                            <i class="bi bi-exclamation-triangle"></i>
+                            {{ error }}
+                        </div>
+                    {% endif %}
+
+                    <p class="text-muted mb-4">
+                        {{ 'mfa.challenge.description'|trans }}
+                    </p>
+
+                    <form method="post" action="{{ path('app_mfa_verify', {_locale: app.request.locale}) }}">
+                        <div class="mb-3">
+                            <label for="token_id" class="form-label">
+                                {{ 'mfa.challenge.device'|trans }}
+                            </label>
+                            <select name="token_id" id="token_id" class="form-select" required>
+                                {% for token in mfaTokens %}
+                                    <option value="{{ token.id }}">
+                                        {% if token.tokenType == 'totp' %}
+                                            <i class="bi bi-phone"></i>
+                                        {% elseif token.tokenType == 'webauthn' %}
+                                            <i class="bi bi-key"></i>
+                                        {% endif %}
+                                        {{ token.deviceName }}
+                                        {% if token.isPrimary %}
+                                            ({{ 'mfa.token.primary'|trans }})
+                                        {% endif %}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                            <small class="form-text text-muted">
+                                {{ 'mfa.challenge.device_help'|trans }}
+                            </small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="code" class="form-label">
+                                {{ 'mfa.challenge.code'|trans }}
+                            </label>
+                            <input
+                                type="text"
+                                name="code"
+                                id="code"
+                                class="form-control form-control-lg text-center font-monospace"
+                                placeholder="000000"
+                                pattern="[0-9]{6}|[A-Za-z0-9]{8}"
+                                maxlength="8"
+                                autocomplete="one-time-code"
+                                inputmode="numeric"
+                                autofocus
+                                required
+                            >
+                            <small class="form-text text-muted">
+                                {{ 'mfa.challenge.code_help'|trans }}
+                            </small>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-check-circle"></i>
+                                {{ 'mfa.challenge.verify'|trans }}
+                            </button>
+                        </div>
+                    </form>
+
+                    <hr class="my-4">
+
+                    <div class="text-center">
+                        <p class="text-muted small mb-2">
+                            {{ 'mfa.challenge.backup_code_hint'|trans }}
+                        </p>
+                        <details class="small">
+                            <summary class="text-primary" style="cursor: pointer;">
+                                {{ 'mfa.challenge.using_backup_code'|trans }}
+                            </summary>
+                            <div class="mt-2 text-muted">
+                                <p>{{ 'mfa.challenge.backup_code_info'|trans }}</p>
+                            </div>
+                        </details>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <div class="text-center">
+                        <a href="{{ path('app_logout') }}" class="btn btn-link btn-sm text-danger">
+                            <i class="bi bi-box-arrow-right"></i>
+                            {{ 'mfa.challenge.cancel'|trans }}
+                        </a>
+                    </div>
+                </div>
+                <div class="card-footer text-muted small text-center">
+                    <i class="bi bi-shield-check"></i>
+                    {{ 'mfa.challenge.nis2_compliance'|trans }}
+                </div>
+            </div>
+
+            <div class="alert alert-info mt-3">
+                <i class="bi bi-info-circle"></i>
+                <strong>{{ 'mfa.challenge.help_title'|trans }}</strong><br>
+                {{ 'mfa.challenge.help_text'|trans }}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Auto-submit when 6-digit code is entered
+    document.getElementById('code').addEventListener('input', function(e) {
+        const value = e.target.value.replace(/\D/g, ''); // Remove non-digits for TOTP codes
+        if (value.length === 6) {
+            e.target.value = value;
+            // Auto-submit after short delay for UX
+            setTimeout(() => {
+                e.target.form.submit();
+            }, 300);
+        }
+    });
+
+    // Focus code input on page load
+    window.addEventListener('load', function() {
+        document.getElementById('code').focus();
+    });
+</script>
+{% endblock %}

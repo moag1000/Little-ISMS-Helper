@@ -87,6 +87,11 @@ security:
         - { path: ^/oauth, roles: PUBLIC_ACCESS }
         - { path: ^/saml, roles: PUBLIC_ACCESS }
 
+        # MFA Challenge (NIS2 Compliance - Art. 21.2.b)
+        # User is authenticated but hasn't completed MFA yet
+        - { path: '^/(de|en)/mfa-challenge$', roles: IS_AUTHENTICATED_REMEMBERED }
+        - { path: '^/(de|en)/mfa-verify$', roles: IS_AUTHENTICATED_REMEMBERED }
+
         # Defensive safeguard: Prevent locale-prefixed security routes from requiring authentication
         # These routes should NEVER exist (SecurityController is excluded from locale routing),
         # but if accidentally created, this ensures they remain public to prevent redirect loops
