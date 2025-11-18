@@ -20,9 +20,9 @@
              data-riskmatrix-risks-value="{{ risks|json_encode|e('html_attr') }}">
 
             <div class="risk-matrix-container">
-                <div class="y-label">Impact →</div>
-
                 <div class="matrix-wrapper">
+                    <div class="y-label-vertical">Impact</div>
+
                     <div class="y-axis-labels">
                         {% for i in 5..1 %}
                             <div class="axis-label">{{ i }}</div>
@@ -50,10 +50,10 @@
                                 <div class="axis-label">{{ i }}</div>
                             {% endfor %}
                         </div>
+
+                        <div class="x-label-horizontal">Probability</div>
                     </div>
                 </div>
-
-                <div class="x-label">← Probability</div>
             </div>
 
             <div class="matrix-legend">
@@ -85,30 +85,46 @@
 .risk-matrix-container {
     padding: 2rem;
     display: flex;
-    flex-direction: column;
+    justify-content: center;
     align-items: center;
-    gap: 1rem;
 }
 
 .matrix-wrapper {
     display: flex;
     gap: 0.5rem;
-    align-items: flex-start;
+    align-items: center;
 }
 
-.y-axis-labels, .x-axis-labels {
-    display: flex;
-    gap: 2px;
+.y-label-vertical {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    font-weight: bold;
+    font-size: 18px;
+    color: #374151;
+    margin-right: 0.5rem;
+}
+
+.x-label-horizontal {
+    text-align: center;
+    font-weight: bold;
+    font-size: 18px;
+    color: #374151;
+    margin-top: 0.5rem;
+    width: 100%;
 }
 
 .y-axis-labels {
+    display: flex;
     flex-direction: column;
+    gap: 2px;
     padding-top: 2px;
 }
 
 .x-axis-labels {
-    margin-top: 0.5rem;
+    display: flex;
+    gap: 2px;
     justify-content: center;
+    margin-top: 0.5rem;
 }
 
 .axis-label {
@@ -118,19 +134,13 @@
     align-items: center;
     justify-content: center;
     font-weight: bold;
-    font-size: 14px;
-    color: #6b7280;
+    font-size: 16px;
+    color: #4b5563;
 }
 
 .x-axis-labels .axis-label {
     height: auto;
     padding: 0.5rem;
-}
-
-.y-label, .x-label {
-    font-weight: bold;
-    font-size: 16px;
-    color: #374151;
 }
 
 .risk-matrix {
@@ -195,8 +205,11 @@
 
 .legend-items {
     display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
     gap: 1.5rem;
     margin-top: 1rem;
+    justify-content: center;
 }
 
 .legend-item {
