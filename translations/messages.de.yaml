@@ -169,6 +169,9 @@ admin:
     broken_references: Defekte Referenzen
     broken_references_desc: Folgende Datensätze referenzieren nicht existierende Entitäten. Diese Referenzen müssen manuell bereinigt werden.
     issue: Problem
+    assign_risk: Risiko zuordnen
+    select_risk: Risiko auswählen...
+    assign_asset: Asset zuordnen
   dashboard:
     title: Admin Dashboard
     subtitle: Zentrale Verwaltung und Systemübersicht
