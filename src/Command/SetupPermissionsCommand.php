@@ -68,12 +68,12 @@ class SetupPermissionsCommand extends Command
             try {
                 $connection->rollBack();
             } catch (\Exception $e) {
-                // If rollback fails due to missing savepoint, try to close and reconnect
+                // If rollback fails due to missing savepoint, close the connection
+                // Doctrine will automatically reconnect on next use
                 try {
                     $connection->close();
-                    $connection->connect();
-                } catch (\Exception $reconnectException) {
-                    $io->warning('Could not reset database connection: ' . $reconnectException->getMessage());
+                } catch (\Exception $closeException) {
+                    $io->warning('Could not close database connection: ' . $closeException->getMessage());
                 }
                 break; // Exit loop to avoid infinite attempts
             }
