@@ -235,21 +235,19 @@ class DeploymentWizardController extends AbstractController
             return $this->redirectToRoute('setup_step1_database_config');
         }
 
+        // Clear previous debug info only on GET (to show results from previous POST)
+        if ($request->getMethod() === 'GET') {
+            // Don't clear - we want to see debug info from the POST that redirected here
+        } else {
+            // Clear on POST to start fresh
+            $session->remove('debug_form_submitted');
+            $session->remove('debug_form_valid');
+            $session->remove('debug_processing');
+            $session->remove('debug_error');
+        }
+
         $form = $this->createForm(AdminUserType::class);
         $form->handleRequest($request);
-
-        // Debug info as flash messages (temporary for debugging)
-        $this->addFlash('info', 'DEBUG: Form submitted: ' . ($form->isSubmitted() ? 'YES' : 'NO'));
-        if ($form->isSubmitted()) {
-            $this->addFlash('info', 'DEBUG: Form valid: ' . ($form->isValid() ? 'YES' : 'NO'));
-            if (!$form->isValid()) {
-                $errors = [];
-                foreach ($form->getErrors(true) as $error) {
-                    $errors[] = $error->getMessage();
-                }
-                $this->addFlash('warning', 'DEBUG: Form errors: ' . implode(', ', $errors));
-            }
-        }
 
         // Store debug info in session to survive redirects
         if ($form->isSubmitted()) {
@@ -258,15 +256,14 @@ class DeploymentWizardController extends AbstractController
         }
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $session->set('debug_processing', 'Entering form processing block');
-            $this->addFlash('info', 'DEBUG: Entering form processing block');
+            $session->set('debug_processing', 'Step 1: Entering form processing block');
             $data = $form->getData();
 
             // Normalize email to lowercase for consistent lookup
             $data['email'] = strtolower($data['email']);
 
             try {
-                $this->addFlash('info', 'DEBUG: Starting admin user creation process');
+                $session->set('debug_processing', 'Step 2: Starting admin user creation process');
                 // Check if database already has tables (from previous failed setup attempt)
                 // If so, drop the database and recreate it to ensure clean state
                 $dbConfig = [
@@ -296,14 +293,12 @@ class DeploymentWizardController extends AbstractController
                     return $this->redirectToRoute('setup_step2_admin_user');
                 }
 
-                $session->set('debug_processing', 'Migration successful, creating admin user');
-                $this->addFlash('info', 'DEBUG: Migration successful, creating admin user');
+                $session->set('debug_processing', 'Step 3: Migration successful, creating admin user');
                 // Create admin user via command
                 $result = $this->createAdminUserViaCommand($data);
 
                 if ($result['success']) {
-                    $session->set('debug_processing', 'Admin user created successfully - redirecting to step3');
-                    $this->addFlash('success', 'DEBUG: Admin user created successfully');
+                    $session->set('debug_processing', 'Step 4: Admin user created successfully - redirecting to step3');
                     $session->set('setup_admin_created', true);
                     $session->set('setup_admin_email', $data['email']);
 
@@ -311,22 +306,15 @@ class DeploymentWizardController extends AbstractController
 
                     return $this->redirectToRoute('setup_step3_email_config');
                 } else {
-                    $session->set('debug_error', 'Admin user creation failed: ' . $result['message']);
-                    $this->addFlash('error', 'DEBUG: Admin user creation failed - ' . $result['message']);
-                    $this->addFlash('error', $result['message']);
+                    $session->set('debug_error', 'Step 4 ERROR: Admin user creation failed: ' . $result['message']);
                     // Turbo requires redirect after POST
                     return $this->redirectToRoute('setup_step2_admin_user');
                 }
             } catch (\Exception $e) {
-                $session->set('debug_error', 'Exception: ' . $e->getMessage());
-                $this->addFlash('error', 'DEBUG: Exception - ' . $e->getMessage());
-                $this->addFlash('error', $this->translator->trans('setup.admin.creation_failed') . ': ' . $e->getMessage());
+                $session->set('debug_error', 'EXCEPTION: ' . $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine());
                 // Turbo requires redirect after POST
                 return $this->redirectToRoute('setup_step2_admin_user');
             }
-        } else {
-            $session->set('debug_error', 'Form not submitted or not valid');
-            $this->addFlash('info', 'DEBUG: Form not submitted or not valid - rendering form');
         }
 
         // For validation errors, return 422 status so Turbo displays the form with errors
