@@ -1,0 +1,254 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'nis2.dashboard.title'|trans }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="mb-3">
+                <i class="bi bi-shield-check"></i>
+                {{ 'nis2.dashboard.title'|trans }}
+            </h1>
+            <p class="text-muted">{{ 'nis2.dashboard.description'|trans }}</p>
+        </div>
+    </div>
+
+    {# Overall Compliance Score #}
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card {% if overall_compliance_score >= 95 %}border-success{% elseif overall_compliance_score >= 75 %}border-warning{% else %}border-danger{% endif %}">
+                <div class="card-body text-center">
+                    <h2 class="mb-3">{{ 'nis2.dashboard.overall_compliance'|trans }}</h2>
+                    <div class="display-1 {% if overall_compliance_score >= 95 %}text-success{% elseif overall_compliance_score >= 75 %}text-warning{% else %}text-danger{% endif %}">
+                        {{ overall_compliance_score }}%
+                    </div>
+                    <div class="progress mt-3" style="height: 30px;">
+                        <div class="progress-bar {% if overall_compliance_score >= 95 %}bg-success{% elseif overall_compliance_score >= 75 %}bg-warning{% else %}bg-danger{% endif %}"
+                             role="progressbar"
+                             style="width: {{ overall_compliance_score }}%"
+                             aria-valuenow="{{ overall_compliance_score }}"
+                             aria-valuemin="0"
+                             aria-valuemax="100">
+                            {{ overall_compliance_score }}%
+                        </div>
+                    </div>
+                    <p class="mt-3 mb-0">
+                        {% if overall_compliance_score >= 95 %}
+                            <span class="badge bg-success"><i class="bi bi-check-circle"></i> {{ 'nis2.dashboard.status.compliant'|trans }}</span>
+                        {% elseif overall_compliance_score >= 75 %}
+                            <span class="badge bg-warning"><i class="bi bi-exclamation-triangle"></i> {{ 'nis2.dashboard.status.partial'|trans }}</span>
+                        {% else %}
+                            <span class="badge bg-danger"><i class="bi bi-x-circle"></i> {{ 'nis2.dashboard.status.non_compliant'|trans }}</span>
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Key Metrics #}
+    <div class="row g-3 mb-4">
+        {# MFA Adoption #}
+        <div class="col-md-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h6 class="card-title text-muted">
+                        <i class="bi bi-shield-lock"></i>
+                        {{ 'nis2.dashboard.mfa.title'|trans }}
+                    </h6>
+                    <div class="display-6 {% if mfa_adoption_rate >= 95 %}text-success{% elseif mfa_adoption_rate >= 75 %}text-warning{% else %}text-danger{% endif %}">
+                        {{ mfa_adoption_rate }}%
+                    </div>
+                    <p class="small text-muted mb-0">
+                        {{ users_with_mfa }} / {{ total_users }} {{ 'nis2.dashboard.mfa.users'|trans }}
+                    </p>
+                    <small class="text-muted">{{ 'nis2.article'|trans({'%article%': '21.2.b'}) }}</small>
+                </div>
+            </div>
+        </div>
+
+        {# Incident Reporting #}
+        <div class="col-md-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h6 class="card-title text-muted">
+                        <i class="bi bi-exclamation-triangle"></i>
+                        {{ 'nis2.dashboard.incident_reporting.title'|trans }}
+                    </h6>
+                    <div class="display-6 {% if reporting_compliance_rate >= 95 %}text-success{% elseif reporting_compliance_rate >= 75 %}text-warning{% else %}text-danger{% endif %}">
+                        {{ reporting_compliance_rate }}%
+                    </div>
+                    <p class="small text-muted mb-0">
+                        {{ total_nis2_incidents }} {{ 'nis2.dashboard.incident_reporting.incidents'|trans }}
+                    </p>
+                    <small class="text-muted">{{ 'nis2.article'|trans({'%article%': '23'}) }}</small>
+                </div>
+            </div>
+        </div>
+
+        {# Vulnerability Management #}
+        <div class="col-md-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h6 class="card-title text-muted">
+                        <i class="bi bi-bug"></i>
+                        {{ 'nis2.dashboard.vulnerability.title'|trans }}
+                    </h6>
+                    <div class="display-6 {% if critical_vulnerabilities + high_vulnerabilities == 0 %}text-success{% elseif critical_vulnerabilities > 0 %}text-danger{% else %}text-warning{% endif %}">
+                        {{ critical_vulnerabilities + high_vulnerabilities }}
+                    </div>
+                    <p class="small text-muted mb-0">
+                        {{ 'nis2.dashboard.vulnerability.critical_high'|trans }}
+                    </p>
+                    <small class="text-muted">{{ 'nis2.article'|trans({'%article%': '21.2.d'}) }}</small>
+                </div>
+            </div>
+        </div>
+
+        {# Patch Deployment #}
+        <div class="col-md-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h6 class="card-title text-muted">
+                        <i class="bi bi-download"></i>
+                        {{ 'nis2.dashboard.patch.title'|trans }}
+                    </h6>
+                    <div class="display-6 {% if patch_deployment_rate >= 95 %}text-success{% elseif patch_deployment_rate >= 75 %}text-warning{% else %}text-danger{% endif %}">
+                        {{ patch_deployment_rate }}%
+                    </div>
+                    <p class="small text-muted mb-0">
+                        {{ deployed_patches }} / {{ total_patches }} {{ 'nis2.dashboard.patch.patches'|trans }}
+                    </p>
+                    <small class="text-muted">{{ 'nis2.article'|trans({'%article%': '21.2.d'}) }}</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Overdue Incidents Alert #}
+    {% if overdue_incidents|length > 0 %}
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="alert alert-danger">
+                    <h5 class="alert-heading">
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+                        {{ 'nis2.dashboard.overdue.title'|trans }}
+                    </h5>
+                    <p>{{ 'nis2.dashboard.overdue.description'|trans({'%count%': overdue_incidents|length}) }}</p>
+                    <hr>
+                    <ul class="mb-0">
+                        {% for incident in overdue_incidents %}
+                            <li>
+                                <a href="{{ path('app_incident_show', {id: incident.id}) }}" class="alert-link">
+                                    {{ incident.title }}
+                                </a>
+                                -
+                                {% if incident.isEarlyWarningOverdue %}
+                                    <span class="badge bg-danger">{{ 'nis2.dashboard.overdue.early_warning'|trans }}</span>
+                                {% endif %}
+                                {% if incident.isDetailedNotificationOverdue %}
+                                    <span class="badge bg-danger">{{ 'nis2.dashboard.overdue.detailed'|trans }}</span>
+                                {% endif %}
+                                {% if incident.isFinalReportOverdue %}
+                                    <span class="badge bg-danger">{{ 'nis2.dashboard.overdue.final'|trans }}</span>
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    {# Detailed Metrics #}
+    <div class="row g-3">
+        {# Incident Reporting Details #}
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">{{ 'nis2.dashboard.incident_details.title'|trans }}</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>{{ 'nis2.dashboard.incident_details.stage'|trans }}</th>
+                                    <th class="text-end">{{ 'nis2.dashboard.incident_details.compliant'|trans }}</th>
+                                    <th class="text-end">{{ 'nis2.dashboard.incident_details.total'|trans }}</th>
+                                    <th class="text-end">{{ 'nis2.dashboard.incident_details.rate'|trans }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>{{ 'nis2.dashboard.incident_details.early_warning'|trans }} (24h)</td>
+                                    <td class="text-end">{{ early_warning_compliant }}</td>
+                                    <td class="text-end">{{ total_nis2_incidents }}</td>
+                                    <td class="text-end">
+                                        {% set rate = total_nis2_incidents > 0 ? (early_warning_compliant / total_nis2_incidents * 100)|round(1) : 100 %}
+                                        <span class="badge bg-{% if rate >= 95 %}success{% elseif rate >= 75 %}warning{% else %}danger{% endif %}">
+                                            {{ rate }}%
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>{{ 'nis2.dashboard.incident_details.detailed'|trans }} (72h)</td>
+                                    <td class="text-end">{{ detailed_notification_compliant }}</td>
+                                    <td class="text-end">{{ total_nis2_incidents }}</td>
+                                    <td class="text-end">
+                                        {% set rate = total_nis2_incidents > 0 ? (detailed_notification_compliant / total_nis2_incidents * 100)|round(1) : 100 %}
+                                        <span class="badge bg-{% if rate >= 95 %}success{% elseif rate >= 75 %}warning{% else %}danger{% endif %}">
+                                            {{ rate }}%
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>{{ 'nis2.dashboard.incident_details.final'|trans }} (30d)</td>
+                                    <td class="text-end">{{ final_report_compliant }}</td>
+                                    <td class="text-end">{{ total_nis2_incidents }}</td>
+                                    <td class="text-end">
+                                        {% set rate = total_nis2_incidents > 0 ? (final_report_compliant / total_nis2_incidents * 100)|round(1) : 100 %}
+                                        <span class="badge bg-{% if rate >= 95 %}success{% elseif rate >= 75 %}warning{% else %}danger{% endif %}">
+                                            {{ rate }}%
+                                        </span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# Quick Actions #}
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">{{ 'nis2.dashboard.actions.title'|trans }}</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a href="{{ path('app_incident_index') }}" class="btn btn-outline-primary">
+                            <i class="bi bi-list-ul"></i>
+                            {{ 'nis2.dashboard.actions.view_incidents'|trans }}
+                        </a>
+                        <a href="{{ path('app_vulnerability_index') }}" class="btn btn-outline-primary">
+                            <i class="bi bi-bug"></i>
+                            {{ 'nis2.dashboard.actions.view_vulnerabilities'|trans }}
+                        </a>
+                        <a href="{{ path('app_patch_index') }}" class="btn btn-outline-primary">
+                            <i class="bi bi-download"></i>
+                            {{ 'nis2.dashboard.actions.view_patches'|trans }}
+                        </a>
+                        <a href="{{ path('admin_mfa_index') }}" class="btn btn-outline-primary">
+                            <i class="bi bi-shield-lock"></i>
+                            {{ 'nis2.dashboard.actions.manage_mfa'|trans }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
