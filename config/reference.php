@@ -1499,6 +1499,7 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
  *         hide_hydra_operation?: mixed,
  *         json_stream?: mixed,
  *         extra_properties?: mixed,
+ *         map?: mixed,
  *         route_name?: mixed,
  *         errors?: mixed,
  *         read?: mixed,
