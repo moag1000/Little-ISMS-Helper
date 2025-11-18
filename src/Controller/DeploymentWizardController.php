@@ -111,24 +111,46 @@ class DeploymentWizardController extends AbstractController
             $this->addFlash('error', $permCheck['message']);
         }
 
-        // Auto-detect Docker standalone deployment and pre-fill credentials
+        // Auto-detect existing configuration and pre-fill credentials
         $defaultData = [];
-        // Use @ to suppress open_basedir warnings on non-Docker servers
-        $isDockerStandalone = @file_exists('/run/mysqld/mysqld.sock') || @file_exists('/.dockerenv');
 
-        if ($isDockerStandalone) {
-            // Pre-fill with Docker internal MySQL configuration
-            $defaultData = [
-                'type' => 'mysql',
-                'host' => 'localhost',
-                'port' => 3306,
-                'name' => $_ENV['MYSQL_DATABASE'] ?? 'isms',
-                'user' => $_ENV['MYSQL_USER'] ?? 'isms',
-                'password' => $_ENV['MYSQL_PASSWORD'] ?? $this->getDockerMysqlPassword(),
-                'serverVersion' => 'mariadb-11.4.0',
-            ];
+        // First, try to load from .env.local if it exists
+        if (file_exists($this->envWriter->getEnvLocalPath())) {
+            $envVars = $this->envWriter->readEnvLocal();
+            if (!empty($envVars['DB_TYPE']) || !empty($envVars['DB_HOST'])) {
+                $defaultData = [
+                    'type' => $envVars['DB_TYPE'] ?? 'mysql',
+                    'host' => $envVars['DB_HOST'] ?? 'localhost',
+                    'port' => (int)($envVars['DB_PORT'] ?? 3306),
+                    'name' => $envVars['DB_NAME'] ?? 'little_isms_helper',
+                    'user' => $envVars['DB_USER'] ?? 'root',
+                    'password' => $envVars['DB_PASS'] ?? '',
+                    'serverVersion' => $envVars['DB_SERVER_VERSION'] ?? 'mariadb-11.4.0',
+                    'unixSocket' => $envVars['DB_SOCKET'] ?? null,
+                ];
+                $this->addFlash('info', $this->translator->trans('setup.database.config_loaded'));
+            }
+        }
 
-            $this->addFlash('info', $this->translator->trans('setup.database.docker_detected'));
+        // If no .env.local, check for Docker standalone deployment
+        if (empty($defaultData)) {
+            // Use @ to suppress open_basedir warnings on non-Docker servers
+            $isDockerStandalone = @file_exists('/run/mysqld/mysqld.sock') || @file_exists('/.dockerenv');
+
+            if ($isDockerStandalone) {
+                // Pre-fill with Docker internal MySQL configuration
+                $defaultData = [
+                    'type' => 'mysql',
+                    'host' => 'localhost',
+                    'port' => 3306,
+                    'name' => $_ENV['MYSQL_DATABASE'] ?? 'isms',
+                    'user' => $_ENV['MYSQL_USER'] ?? 'isms',
+                    'password' => $_ENV['MYSQL_PASSWORD'] ?? $this->getDockerMysqlPassword(),
+                    'serverVersion' => 'mariadb-11.4.0',
+                ];
+
+                $this->addFlash('info', $this->translator->trans('setup.database.docker_detected'));
+            }
         }
 
         $form = $this->createForm(DatabaseConfigurationType::class, $defaultData);
