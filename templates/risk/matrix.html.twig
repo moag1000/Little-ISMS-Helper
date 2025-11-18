@@ -58,22 +58,22 @@
 
             <div class="matrix-legend">
                 <h3>Risk Levels</h3>
-                <div class="legend-items">
-                    <div class="legend-item">
-                        <span class="legend-color risk-critical"></span>
-                        <span>Critical (15-25)</span>
+                <div class="legend-items" style="display: flex; flex-direction: row; flex-wrap: wrap; gap: 1rem; justify-content: center; align-items: center; margin-top: 1rem;">
+                    <div class="legend-item" style="display: flex; flex-direction: row; align-items: center; gap: 0.625rem; padding: 0.5rem 1rem; background: white; border: 1px solid #e5e7eb; border-radius: 6px; white-space: nowrap; position: relative;">
+                        <span class="legend-color risk-critical" style="width: 20px; height: 20px; display: inline-block; flex-shrink: 0;"></span>
+                        <span style="display: inline-block;">Critical (15-25)</span>
                     </div>
-                    <div class="legend-item">
-                        <span class="legend-color risk-high"></span>
-                        <span>High (8-14)</span>
+                    <div class="legend-item" style="display: flex; flex-direction: row; align-items: center; gap: 0.625rem; padding: 0.5rem 1rem; background: white; border: 1px solid #e5e7eb; border-radius: 6px; white-space: nowrap; position: relative;">
+                        <span class="legend-color risk-high" style="width: 20px; height: 20px; display: inline-block; flex-shrink: 0;"></span>
+                        <span style="display: inline-block;">High (8-14)</span>
                     </div>
-                    <div class="legend-item">
-                        <span class="legend-color risk-medium"></span>
-                        <span>Medium (4-7)</span>
+                    <div class="legend-item" style="display: flex; flex-direction: row; align-items: center; gap: 0.625rem; padding: 0.5rem 1rem; background: white; border: 1px solid #e5e7eb; border-radius: 6px; white-space: nowrap; position: relative;">
+                        <span class="legend-color risk-medium" style="width: 20px; height: 20px; display: inline-block; flex-shrink: 0;"></span>
+                        <span style="display: inline-block;">Medium (4-7)</span>
                     </div>
-                    <div class="legend-item">
-                        <span class="legend-color risk-low"></span>
-                        <span>Low (1-3)</span>
+                    <div class="legend-item" style="display: flex; flex-direction: row; align-items: center; gap: 0.625rem; padding: 0.5rem 1rem; background: white; border: 1px solid #e5e7eb; border-radius: 6px; white-space: nowrap; position: relative;">
+                        <span class="legend-color risk-low" style="width: 20px; height: 20px; display: inline-block; flex-shrink: 0;"></span>
+                        <span style="display: inline-block;">Low (1-3)</span>
                     </div>
                 </div>
             </div>
@@ -201,39 +201,54 @@
     padding: 1rem;
     background: #f9fafb;
     border-radius: 8px;
+    width: 100%;
 }
 
-.legend-items {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 1rem;
-    row-gap: 0.75rem;
-    margin-top: 1rem;
-    justify-content: center;
-    align-items: center;
+.matrix-legend .legend-items {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    gap: 1rem !important;
+    row-gap: 0.75rem !important;
+    margin-top: 1rem !important;
+    justify-content: center !important;
+    align-items: center !important;
 }
 
-.legend-item {
-    display: flex;
-    align-items: center;
-    gap: 0.625rem;
-    padding: 0.5rem 1rem;
-    background: white;
-    border: 1px solid #e5e7eb;
-    border-radius: 6px;
-    font-size: 0.875rem;
-    font-weight: 500;
-    white-space: nowrap;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+.matrix-legend .legend-item {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 0.625rem !important;
+    padding: 0.5rem 1rem !important;
+    background: white !important;
+    border: 1px solid #e5e7eb !important;
+    border-radius: 6px !important;
+    font-size: 0.875rem !important;
+    font-weight: 500 !important;
+    white-space: nowrap !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+    position: relative !important;
+    margin: 0 !important;
+    flex: 0 0 auto !important;
+    min-width: fit-content !important;
 }
 
-.legend-color {
-    width: 20px;
-    height: 20px;
-    border-radius: 3px;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    flex-shrink: 0;
+.matrix-legend .legend-color {
+    width: 20px !important;
+    height: 20px !important;
+    border-radius: 3px !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+    flex-shrink: 0 !important;
+    flex-grow: 0 !important;
+    display: inline-block !important;
+    position: static !important;
+}
+
+.matrix-legend .legend-item > span:not(.legend-color) {
+    display: inline-block !important;
+    position: static !important;
+    flex-shrink: 0 !important;
 }
 </style>
 {% endblock %}
