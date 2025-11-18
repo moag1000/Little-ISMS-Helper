@@ -282,7 +282,7 @@
             <tbody>
                 {% for risk in risks %}
                 {% set riskScore = risk.getRiskScore() %}
-                {% set residual = risk.getResidualRisk() %}
+                {% set residual = risk.getResidualRiskLevel() %}
                 <tr data-risk-id="{{ risk.id }}"
                     data-risk-level="{{ riskScore >= 15 ? 'critical' : (riskScore >= 8 ? 'high' : (riskScore >= 4 ? 'medium' : 'low')) }}">
                     <td>
