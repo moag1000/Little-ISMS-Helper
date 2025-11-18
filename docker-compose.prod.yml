@@ -1,84 +1,45 @@
 version: '3.8'
 
-# 🔒 PRODUCTION Docker Compose Configuration
+# 🔒 PRODUCTION Docker Compose Configuration - Self-Contained (embedded MariaDB)
 # ⚠️ WICHTIG: Vor Produktion-Deployment:
-# 1. Ändern Sie ALLE Passwörter in .env.docker.local
+# 1. Ändern Sie MYSQL_PASSWORD via Environment Variable (oder leer lassen für auto-generiert)
 # 2. Verwenden Sie HTTPS mit Reverse Proxy (Nginx/Traefik)
 # 3. Deaktivieren Sie Debug-Mode
-# 4. Entfernen Sie pgAdmin und MailHog
-# 5. Beschränken Sie Port-Zugriff mit Firewall
+# 4. Beschränken Sie Port-Zugriff mit Firewall
 
 services:
-  # MariaDB Database
-  db:
-    image: mariadb:11.4
-    container_name: isms-db-prod
-    restart: always
-    environment:
-      MARIADB_DATABASE: ${MYSQL_DATABASE:-isms}
-      MARIADB_USER: ${MYSQL_USER:-isms}
-      MARIADB_PASSWORD: ${MYSQL_PASSWORD:-isms_secure_password}
-      MARIADB_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root_secure_password}
-    # ✅ Security: Keine öffentlichen Ports! Nur über Docker-Netzwerk erreichbar
-    expose:
-      - "3306"
-    volumes:
-      - db_data:/var/lib/mysql
-    healthcheck:
-      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    networks:
-      - isms-network
-    # Security: Resource Limits
-    deploy:
-      resources:
-        limits:
-          cpus: '4'
-          memory: 4G
-        reservations:
-          cpus: '1'
-          memory: 1G
-    # Logging configuration
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "5"
-        labels: "service=database,environment=production"
-
-  # Little ISMS Helper Application
+  # Little ISMS Helper Application (Self-Contained with embedded MariaDB)
   app:
     build:
       context: .
       dockerfile: Dockerfile
       target: production
+      platforms:
+        - linux/amd64
+        - linux/arm64
     container_name: isms-app-prod
     restart: always
-    depends_on:
-      db:
-        condition: service_healthy
     # ✅ Security: Nur App-Ports öffentlich (HTTP & HTTPS)
     # Defaults: Port 80 und 443 - kann via APP_PORT/APP_PORT_HTTPS überschrieben werden
     ports:
       - "${APP_PORT:-80}:80"
       - "${APP_PORT_HTTPS:-443}:443"
     volumes:
-      # ✅ REQUIRED: Persistente Daten - ohne diese gehen alle Daten bei Container-Neustart verloren!
+      # ✅ REQUIRED: Persistente Daten (inkl. embedded MariaDB)
+      # Ohne dieses Volume gehen alle Daten bei Container-Neustart verloren!
       - isms_data:/var/www/html/var
-      - isms_config:/var/www/html/config
-      # Named volumes für Dependencies
-      - vendor_data:/var/www/html/vendor:ro
     environment:
       # ⚠️ WICHTIG: Diese müssen in .env.docker.local gesetzt werden!
       APP_ENV: prod
       APP_DEBUG: 0
-      DATABASE_URL: "mysql://${MYSQL_USER:-isms}:${MYSQL_PASSWORD:-isms_secure_password}@db:3306/${MYSQL_DATABASE:-isms}?serverVersion=11.4.1-MariaDB"
+      # MySQL Credentials (leer lassen für auto-generiertes Passwort)
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-isms}
+      MYSQL_USER: ${MYSQL_USER:-isms}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-}
       # MAILER_DSN muss für echte SMTP konfiguriert werden
-      MAILER_DSN: ${MAILER_DSN}
-    networks:
-      - isms-network
+      MAILER_DSN: ${MAILER_DSN:-}
+      # Docker-Flag (für Setup-Wizard Detection)
+      DOCKER_CONTAINER: "1"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost"]
       interval: 30s
@@ -94,17 +55,6 @@ services:
         reservations:
           cpus: '1'
           memory: 1G
-    # Security: Drop all capabilities except necessary ones
-    # NOTE: cap_drop disabled temporarily for testing
-    # cap_drop:
-    #   - ALL
-    # cap_add:
-    #   - NET_BIND_SERVICE
-    #   - CHOWN
-    #   - SETUID
-    #   - SETGID
-    #   - DAC_OVERRIDE
-    #   - FOWNER
     # Logging configuration
     logging:
       driver: "json-file"
@@ -115,18 +65,6 @@ services:
 
 volumes:
   # ✅ Production Volumes - persistent und performant
-  # REQUIRED: Diese Volumes sind essentiell für Datenpersistenz!
-  db_data:
-    driver: local
+  # REQUIRED: Enthält App-Daten UND embedded MariaDB!
   isms_data:
     driver: local
-  isms_config:
-    driver: local
-  vendor_data:
-    driver: local
-
-networks:
-  isms-network:
-    driver: bridge
-    # Security: Isoliertes Netzwerk
-    internal: false  # Auf true setzen wenn keine externe Kommunikation nötig
