@@ -125,9 +125,10 @@ export default class extends Controller {
     }
 
     getLevelClass(level) {
-        if (level <= 6) return 'success';
-        if (level <= 14) return 'warning';
-        return 'danger';
+        if (level < 4) return 'success';      // Low (1-3)
+        if (level < 8) return 'info';         // Medium (4-7)
+        if (level < 15) return 'warning';     // High (8-14)
+        return 'danger';                       // Critical (15-25)
     }
 
     refresh() {
