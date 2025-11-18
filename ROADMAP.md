@@ -34,7 +34,8 @@ Phase 6 konzentriert sich auf die Vervollständigung aller Module und die Sicher
 
 **Aktueller Stand:**
 - **Technische Vollständigkeit:** ~80%
-- **Test Coverage:** ~26% (Ziel: 80%+)
+- **Test Coverage:** ~34% (909 Tests, 2.570 Assertions - Ziel: 80%+)
+- **Test Success Rate:** 100% (alle Tests bestehen)
 - **Zertifizierungsbereitschaft:** ISO 27001: 94.5%, ISO 22301: 100%, NIS2: 68%
 
 ### ✅ Abgeschlossene Subphasen
@@ -45,7 +46,13 @@ Phase 6 konzentriert sich auf die Vervollständigung aller Module und die Sicher
 - ✅ Phase 6L: Multi-Tenancy & Subsidiary Management
 
 ### 🚧 In Arbeit
-- 🧪 Phase 6B: Test Coverage (KRITISCH - Ziel: 80%+)
+- 🧪 Phase 6B: Test Coverage (KRITISCH - Aktuell: 34%, Ziel: 80%+)
+  - ✅ 50 Test-Dateien (23 Entity, 26 Service, 1 Controller)
+  - ✅ 909 Tests mit 2.570 Assertions
+  - ✅ 100% Success Rate
+  - ❌ 20 Entities ohne Tests (u.a. MfaToken, Patch, RiskAppetite, User, Tenant)
+  - ❌ 21 Services ohne Tests (u.a. BackupService, RestoreService, SecurityAuditService)
+  - ❌ 56 Controllers ohne Tests (nur WorkflowStepApiController getestet)
 
 ### 🔄 Ausstehend
 - 🔄 Phase 6E: Datenbank-Konsistenz & Constraints
@@ -476,8 +483,8 @@ Phase 7 führt umfassende Management-Reporting-Funktionen und erweiterte Analyti
 - **Templates:** 160+ Twig Templates
 - **Services:** 20+ Business Logic Services
 - **Commands:** 9+ Console Commands
-- **Tests:** 122 tests, 228 assertions (100% passing)
-- **Test Coverage:** ~26% (Ziel Phase 6B: 80%+)
+- **Tests:** 909 tests, 2.570 assertions (100% passing)
+- **Test Coverage:** ~34% (Ziel Phase 6B: 80%+)
 - **API Endpoints:** 30+ REST Endpoints
 - **Report Types:** 10 (5 PDF + 5 Excel)
 
