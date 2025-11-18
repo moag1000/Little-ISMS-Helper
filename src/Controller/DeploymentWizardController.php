@@ -121,20 +121,16 @@ class DeploymentWizardController extends AbstractController
         // First priority: Check if we have form data from a previous submit (preserves user input on validation errors)
         if ($session->has('setup_step1_form_data')) {
             $defaultData = $session->get('setup_step1_form_data');
-            $this->addFlash('info', 'DEBUG: Loaded form data from session (previous submit)');
         }
 
         // Second priority: Try to load from .env.local if it exists
         $envLocalPath = $this->envWriter->getEnvLocalPath();
-        $this->addFlash('info', 'DEBUG: .env.local path: ' . $envLocalPath . ' | exists: ' . (file_exists($envLocalPath) ? 'YES' : 'NO'));
 
         if (empty($defaultData) && file_exists($envLocalPath)) {
             $envVars = $this->envWriter->readEnvLocal();
 
             // Enrich from DATABASE_URL if DB_TYPE or DB_SERVER_VERSION are missing
             $envVars = $this->envWriter->enrichFromDatabaseUrl($envVars);
-
-            $this->addFlash('info', 'DEBUG: Read ' . count($envVars) . ' env vars. DB_TYPE=' . ($envVars['DB_TYPE'] ?? 'NOT SET') . ', DB_HOST=' . ($envVars['DB_HOST'] ?? 'NOT SET') . ', DB_SERVER_VERSION=' . ($envVars['DB_SERVER_VERSION'] ?? 'NOT SET'));
 
             if (!empty($envVars['DB_TYPE']) || !empty($envVars['DB_HOST'])) {
                 $defaultData = [
@@ -148,8 +144,6 @@ class DeploymentWizardController extends AbstractController
                     'unixSocket' => $envVars['DB_SOCKET'] ?? null,
                 ];
                 $this->addFlash('info', $this->translator->trans('setup.database.config_loaded'));
-            } else {
-                $this->addFlash('warning', 'DEBUG: .env.local exists but no DB_TYPE or DB_HOST found');
             }
         }
 
@@ -167,13 +161,6 @@ class DeploymentWizardController extends AbstractController
             ];
 
             $this->addFlash('info', $this->translator->trans('setup.database.docker_detected'));
-        }
-
-        // Final debug: Show what defaults we're using
-        if (!empty($defaultData)) {
-            $this->addFlash('success', 'DEBUG: Using defaults - Type: ' . ($defaultData['type'] ?? 'NOT SET') . ', Host: ' . ($defaultData['host'] ?? 'NOT SET') . ', User: ' . ($defaultData['user'] ?? 'NOT SET'));
-        } else {
-            $this->addFlash('warning', 'DEBUG: No defaults found - form will be empty');
         }
 
         $form = $this->createForm(DatabaseConfigurationType::class, $defaultData);

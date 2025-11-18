@@ -52,7 +52,8 @@
         </style>
     {% endblock %}
 </head>
-<body data-turbo="true" data-controller="modal-manager sidebar-toggle">
+{% set is_setup_route = app.request.attributes.get('_route') starts with 'setup_' %}
+<body data-turbo="true" data-controller="modal-manager{{ is_setup_route ? '' : ' sidebar-toggle' }}">
     {# Skip Links for Accessibility - WCAG 2.4.1 #}
     <a href="#main-content" class="skip-link">{{ 'accessibility.skip_to_content'|trans }}</a>
     <a href="#main-navigation" class="skip-link">{{ 'accessibility.skip_to_navigation'|trans }}</a>
@@ -60,6 +61,7 @@
     <header class="header" role="banner">
         <div class="header-container">
             <div class="header-logo">
+                {% if not is_setup_route %}
                 <button class="mobile-menu-btn"
                         data-action="click->sidebar-toggle#toggle"
                         aria-label="Toggle navigation menu"
@@ -69,6 +71,7 @@
                     <span></span>
                     <span></span>
                 </button>
+                {% endif %}
                 <img src="{{ asset('favicon.svg') }}" alt="Little ISMS Helper Logo" width="40" height="40">
                 <div>
                     <h1>{{ 'app.title'|trans }}</h1>
@@ -93,12 +96,13 @@
 
     {# Main App Layout with Sidebar #}
     <div class="app-layout">
+        {% if not is_setup_route %}
         {# Mobile Sidebar Backdrop #}
         <div class="sidebar-backdrop" data-sidebar-toggle-target="backdrop" data-action="click->sidebar-toggle#close"></div>
+        {% endif %}
 
         {# Sidebar Navigation #}
         {# Hide sidebar during setup to avoid database access before DB is configured #}
-        {% set is_setup_route = app.request.attributes.get('_route') starts with 'setup_' %}
         {% if not is_setup_route %}
         <aside class="app-sidebar" role="complementary" aria-label="Main navigation" data-sidebar-toggle-target="sidebar">
             <nav id="main-navigation" role="navigation">
@@ -305,12 +309,13 @@
         <main id="main-content" class="app-main" role="main">
             <div class="container" data-controller="turbo">
                 <div class="content">
-                    {# Flash Messages Container (will be converted to toasts) #}
-                    <div id="flash-messages" class="d-none">
+                    {# Flash Messages Container #}
+                    <div id="flash-messages">
                         {% for label, messages in app.flashes %}
                             {% for message in messages %}
-                                <div class="alert alert-{{ label }}" role="alert">
-                                    {{ message }}
+                                <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+                                    {{ message|raw }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                                 </div>
                             {% endfor %}
                         {% endfor %}

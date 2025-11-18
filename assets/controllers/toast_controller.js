@@ -45,13 +45,19 @@ export default class extends Controller {
         const flashContainer = document.querySelector('#flash-messages');
         if (!flashContainer) return;
 
+        // Skip conversion if container has data-skip-toast attribute
+        if (flashContainer.hasAttribute('data-skip-toast')) return;
+
         const flashes = flashContainer.querySelectorAll('.alert');
         flashes.forEach(flash => {
             const type = this.getTypeFromClass(flash.className);
             const message = flash.textContent.trim();
 
             if (message) {
-                this.show(message, type, 5000);
+                // Show debug messages (starting with "DEBUG:") for longer (30s)
+                // Regular messages disappear after 5s
+                const duration = message.startsWith('DEBUG:') ? 30000 : 5000;
+                this.show(message, type, duration);
             }
 
             flash.remove();
@@ -81,9 +87,17 @@ export default class extends Controller {
         const toast = this.createToast(message, type);
         this.containerTarget.appendChild(toast);
 
+        // Set progress bar animation duration dynamically
+        if (duration > 0) {
+            const progressBar = toast.querySelector('.toast-progress');
+            if (progressBar) {
+                progressBar.style.animationDuration = `${duration}ms`;
+            }
+        }
+
         // Trigger animation
         requestAnimationFrame(() => {
-            toast.classList.add('toast-visible');
+            toast.classList.add('toast-visible', 'show');
         });
 
         // Auto-dismiss
@@ -110,6 +124,7 @@ export default class extends Controller {
             <button class="toast-close" aria-label="Schließen" data-action="click->toast#dismissButton">
                 <i class="bi bi-x"></i>
             </button>
+            <div class="toast-progress"></div>
         `;
 
         return toast;
@@ -131,7 +146,7 @@ export default class extends Controller {
     }
 
     dismiss(toast) {
-        toast.classList.remove('toast-visible');
+        toast.classList.remove('toast-visible', 'show');
         toast.classList.add('toast-exit');
 
         setTimeout(() => {
