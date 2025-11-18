@@ -32,7 +32,9 @@ export default class extends Controller {
 
                 // Add click handler to show risk details
                 riskDot.addEventListener('click', () => {
-                    window.location.href = `/risk/${risk.id}`;
+                    // Extract locale from current URL path (e.g., /de/ or /en/)
+                    const locale = window.location.pathname.match(/^\/([a-z]{2})\//)?.[1] || 'de';
+                    window.location.href = `/${locale}/risk/${risk.id}`;
                 });
 
                 cell.appendChild(riskDot);
@@ -41,9 +43,9 @@ export default class extends Controller {
     }
 
     getRiskColor(score) {
-        if (score >= 20) return '#dc2626'; // Critical - Red
-        if (score >= 12) return '#ea580c'; // High - Orange
-        if (score >= 6) return '#d97706';  // Medium - Yellow
-        return '#059669'; // Low - Green
+        if (score >= 15) return '#dc2626'; // Critical (15-25) - Red
+        if (score >= 8) return '#ea580c';  // High (8-14) - Orange
+        if (score >= 4) return '#d97706';  // Medium (4-7) - Yellow
+        return '#059669';                   // Low (1-3) - Green
     }
 }
