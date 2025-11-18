@@ -276,7 +276,7 @@ class DeploymentWizardController extends AbstractController
                     'unixSocket' => $session->get('setup_db_socket'),
                 ];
 
-                $tableCheck = $this->databaseTestService->checkExistingTables($dbConfig);
+                $tableCheck = $this->dbTestService->checkExistingTables($dbConfig);
                 if ($tableCheck['has_tables'] && $tableCheck['count'] > 0) {
                     // Database has tables - drop and recreate for clean setup
                     $this->dropAndRecreateDatabase($dbConfig);
