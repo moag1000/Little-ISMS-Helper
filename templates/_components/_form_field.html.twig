@@ -59,13 +59,12 @@
         }) }}
     </div>
 
-    {# Error messages with ARIA live region #}
+    {# Error messages with ARIA live region - Always positioned below field #}
     {% if has_errors %}
         <div id="{{ field_id }}_error" class="invalid-feedback d-block" role="alert" aria-live="assertive">
-            <i class="bi bi-exclamation-circle" aria-hidden="true"></i>
+            <i class="bi bi-exclamation-circle-fill" aria-hidden="true"></i>
             {% for error in field.vars.errors %}
-                <span class="error-message">{{ error.message }}</span>
-                {% if not loop.last %}<br>{% endif %}
+                {{ error.message }}{% if not loop.last %}<br>{% endif %}
             {% endfor %}
         </div>
     {% endif %}
