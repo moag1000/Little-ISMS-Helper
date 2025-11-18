@@ -59,6 +59,19 @@ class SetupPermissionsCommand extends Command
 
         $io->title('Setting up Permissions and Roles');
 
+        // Ensure EntityManager is in a clean state (important when called from web context)
+        // Clear any pending transactions or savepoints
+        if ($this->entityManager->getConnection()->isTransactionActive()) {
+            try {
+                $this->entityManager->getConnection()->rollBack();
+            } catch (\Exception $e) {
+                // Ignore - connection might be in a bad state
+            }
+        }
+
+        // Clear EntityManager to reset any cached state
+        $this->entityManager->clear();
+
         // Create permissions
         $io->section('Creating Permissions');
         $this->createPermissions($io);
@@ -175,8 +188,13 @@ class SetupPermissionsCommand extends Command
             }
         }
 
-        $this->entityManager->flush();
-        $io->success("Created $count permissions.");
+        try {
+            $this->entityManager->flush();
+            $io->success("Created $count permissions.");
+        } catch (\Exception $e) {
+            $io->error("Failed to create permissions: " . $e->getMessage());
+            throw $e;
+        }
     }
 
     private function createRoles(SymfonyStyle $io): void
@@ -245,8 +263,13 @@ class SetupPermissionsCommand extends Command
             }
         }
 
-        $this->entityManager->flush();
-        $io->success("Created $count roles.");
+        try {
+            $this->entityManager->flush();
+            $io->success("Created $count roles.");
+        } catch (\Exception $e) {
+            $io->error("Failed to create roles: " . $e->getMessage());
+            throw $e;
+        }
     }
 
     private function createAdminUser(string $email, string $password, string $firstName, string $lastName, SymfonyStyle $io): void
@@ -270,8 +293,13 @@ class SetupPermissionsCommand extends Command
         $user->setPassword($hashedPassword);
 
         $this->entityManager->persist($user);
-        $this->entityManager->flush();
 
-        $io->success("Admin user created: $firstName $lastName ($email)");
+        try {
+            $this->entityManager->flush();
+            $io->success("Admin user created: $firstName $lastName ($email)");
+        } catch (\Exception $e) {
+            $io->error("Failed to create admin user: " . $e->getMessage());
+            throw $e;
+        }
     }
 }
