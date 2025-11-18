@@ -152,6 +152,23 @@ admin:
     entity_not_found: Entity not found
     entity_reassigned: '%entity% was successfully assigned to %tenant%.'
     tenant_statistics: Tenant Statistics
+    risk_asset_assignment: Repair Risk-Asset Assignment
+    risk_asset_assignment_desc: The following risks have no asset assigned and should be corrected.
+    incident_asset_assignment: Repair Incident-Asset Assignment
+    incident_asset_assignment_desc: The following incidents have no assets assigned and should be corrected.
+    current_asset: Current Asset
+    assign_to_asset: Assign New Asset
+    no_asset: No Asset
+    select_asset: Select asset...
+    asset_not_found: Asset not found
+    controls_without_risks: Controls Without Risk Assignment
+    controls_without_risks_desc: The following applicable controls have no risks assigned. Controls should be linked to risks to assess their effectiveness.
+    controls_without_assets: Controls Without Asset Assignment
+    controls_without_assets_desc: The following applicable controls protect no assets. This is informational and may be normal depending on the control type.
+    controls_count: '{%count%} control(s) found'
+    broken_references: Broken References
+    broken_references_desc: The following records reference non-existent entities. These references must be manually cleaned up.
+    issue: Issue
   dashboard:
     title: Admin Dashboard
     subtitle: Central administration and system overview
@@ -662,6 +679,7 @@ risk:
     treatment_strategy: Treatment Strategy
     status: Status
   label:
+    title: Risk Title
     risk_owner: Risk Owner
   placeholder:
     title: e.g. Data leak from database
@@ -703,6 +721,12 @@ control:
     last_review_date: Last Review
     next_review_date: Next Review
     protected_assets: Related Assets
+  status:
+    not_started: Not Started
+    planned: Planned
+    in_progress: In Progress
+    implemented: Implemented
+    verified: Verified
   success:
     updated: Control updated successfully.
 # Phase 6K Translation Update - Audit Module
@@ -1155,6 +1179,9 @@ incident:
     national_authority_notified: Notified National Authority
     authority_reference_number: Authority Reference Number
     affected_assets: Affected Assets
+  label:
+    title: Incident Title
+    severity: Severity
   action:
     download_nis2_report: Download NIS2 Report (PDF)
     report_new: Report New Incident

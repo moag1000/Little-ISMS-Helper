@@ -86,7 +86,7 @@
         link: '#filter-high'
     } %}
 
-    {% set avgResidualRisk = risks|length > 0 ? (risks|reduce((carry, risk) => carry + risk.getResidualRisk(), 0) / risks|length)|round(1) : 0 %}
+    {% set avgResidualRisk = risks|length > 0 ? (risks|reduce((carry, risk) => carry + risk.getResidualRiskLevel(), 0) / risks|length)|round(1) : 0 %}
     {% include '_components/_kpi_card.html.twig' with {
         icon: 'bi-graph-down',
         label: 'Durchschn. Restrisiko',
