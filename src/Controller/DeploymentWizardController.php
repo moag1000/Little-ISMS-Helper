@@ -81,18 +81,25 @@ class DeploymentWizardController extends AbstractController
      * Step 0: Welcome & Language Selection
      */
     #[Route('/step0-welcome', name: 'setup_step0_welcome')]
-    public function step0Welcome(): Response
+    public function step0Welcome(SessionInterface $session): Response
     {
-        // State recovery: Check if partially completed
-        $state = $this->setupChecker->detectSetupState();
+        // State recovery: Only if there's an active session with progress
+        // If session is empty (fresh start), always begin from step 1
+        $hasSessionProgress = $session->get('setup_database_configured') ||
+                             $session->get('setup_admin_created') ||
+                             $session->get('setup_selected_modules');
 
-        if ($state['database_configured']) {
-            $this->addFlash('info', $this->translator->trans('setup.state.recovery_detected'));
+        if ($hasSessionProgress) {
+            $state = $this->setupChecker->detectSetupState();
 
-            // Redirect to appropriate step
-            $nextStep = $this->setupChecker->getRecommendedNextStep();
-            if ($nextStep !== 'setup_wizard_index') {
-                return $this->redirectToRoute($nextStep);
+            if ($state['database_configured']) {
+                $this->addFlash('info', $this->translator->trans('setup.state.recovery_detected'));
+
+                // Redirect to appropriate step
+                $nextStep = $this->setupChecker->getRecommendedNextStep();
+                if ($nextStep !== 'setup_wizard_index') {
+                    return $this->redirectToRoute($nextStep);
+                }
             }
         }
 
