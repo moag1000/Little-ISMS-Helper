@@ -4072,6 +4072,7 @@ setup:
     config_failed: 'Fehler beim Speichern der Konfiguration'
     write_failed: 'Konnte Konfigurationsdatei nicht schreiben. Bitte prüfen Sie die Dateiberechtigungen.'
     docker_detected: 'Docker-Standalone-Deployment erkannt. Die Datenbankkonfiguration wurde automatisch ausgefüllt.'
+    config_loaded: 'Datenbankkonfiguration aus .env.local geladen. Die Felder wurden mit den vorhandenen Werten ausgefüllt.'
 
   admin:
     title: 'Administrator erstellen'
