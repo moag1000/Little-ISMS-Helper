@@ -4487,3 +4487,45 @@ nis2:
     detailed_notification_overdue: 'ÜBERFÄLLIG: NIS2 Detailmeldung für Incident "%incident%" nicht gemeldet! Deadline war: %deadline%'
     final_report: 'NIS2 Abschlussbericht für Incident "%incident%" fällig in %days% Tagen. Deadline: %deadline%'
     final_report_overdue: 'ÜBERFÄLLIG: NIS2 Abschlussbericht für Incident "%incident%" nicht gemeldet! Deadline war: %deadline%'
+  dashboard:
+    title: 'NIS2 Compliance Dashboard'
+    description: 'Echtzeit-Überwachung der NIS2-Directive (EU 2022/2555) Compliance'
+    overall_compliance: 'Gesamt-Compliance-Score'
+    status:
+      compliant: 'Compliant (≥95%)'
+      partial: 'Teilweise Compliant (75-94%)'
+      non_compliant: 'Nicht Compliant (<75%)'
+    mfa:
+      title: 'MFA-Adoption'
+      users: 'Benutzer'
+    incident_reporting:
+      title: 'Incident-Meldungen'
+      incidents: 'NIS2-Incidents'
+    vulnerability:
+      title: 'Schwachstellen'
+      critical_high: 'Kritisch/Hoch'
+    patch:
+      title: 'Patch-Deployment'
+      patches: 'Patches'
+    overdue:
+      title: 'Überfällige Meldungen!'
+      description: '%count% Incident(s) haben überfällige NIS2-Meldefristen'
+      early_warning: 'Frühwarnung'
+      detailed: 'Detailmeldung'
+      final: 'Abschlussbericht'
+    incident_details:
+      title: 'Incident-Meldungs-Details'
+      stage: 'Meldephase'
+      compliant: 'Compliant'
+      total: 'Gesamt'
+      rate: 'Quote'
+      early_warning: 'Frühwarnung'
+      detailed: 'Detailmeldung'
+      final: 'Abschlussbericht'
+    actions:
+      title: 'Schnellzugriff'
+      view_incidents: 'Incidents anzeigen'
+      view_vulnerabilities: 'Schwachstellen anzeigen'
+      view_patches: 'Patches anzeigen'
+      manage_mfa: 'MFA verwalten'
+  article: 'NIS2 Art. %article%'

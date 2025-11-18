@@ -33,16 +33,17 @@ Dieses Dokument enthält die vollständige Projekt-Roadmap mit allen Phasen, Mei
 Phase 6 konzentriert sich auf die Vervollständigung aller Module und die Sicherstellung der Zertifizierungsbereitschaft.
 
 **Aktueller Stand:**
-- **Technische Vollständigkeit:** ~80%
+- **Technische Vollständigkeit:** ~85%
 - **Test Coverage:** ~34% (909 Tests, 2.570 Assertions - Ziel: 80%+)
 - **Test Success Rate:** 100% (alle Tests bestehen)
-- **Zertifizierungsbereitschaft:** ISO 27001: 94.5%, ISO 22301: 100%, NIS2: 68%
+- **Zertifizierungsbereitschaft:** ISO 27001: 94.5%, ISO 22301: 100%, **NIS2: 90%+** ✅
 
 ### ✅ Abgeschlossene Subphasen
 - ✅ Phase 6A: Form Types (5 von 6)
 - ✅ Phase 6C: Workflow-Management
 - ✅ Phase 6D: Compliance-Detail-Management
 - ✅ Phase 6F: ISO 27001 Inhaltliche Vervollständigung
+- ✅ Phase 6H: NIS2 Compliance Completion (90%+ compliant)
 - ✅ Phase 6L: Multi-Tenancy & Subsidiary Management
 
 ### 🚧 In Arbeit
@@ -57,7 +58,6 @@ Phase 6 konzentriert sich auf die Vervollständigung aller Module und die Sicher
 ### 🔄 Ausstehend
 - 🔄 Phase 6E: Datenbank-Konsistenz & Constraints
 - 🔄 Phase 6G: Advanced Compliance Features (TISAX AL3, DORA TPP)
-- 🔄 Phase 6H: NIS2 Compliance Completion (KRITISCH)
 - 🔄 Phase 6I: BSI IT-Grundschutz Integration
 - 🔄 Phase 6J: Performance Optimierung
 - 🔄 Phase 6K: Internationalisierung (i18n) Vervollständigung
@@ -510,9 +510,8 @@ Phase 7 führt umfassende Management-Reporting-Funktionen und erweiterte Analyti
 - **Nach Phase 7A:** 100% ✅ (Enhanced Reporting)
 
 ### NIS2 Directive (EU 2022/2555)
-- **Aktuell:** 68% ⚠️
-- **Nach Phase 6H:** 95%+ ✅
-- **Nach Phase 7A:** 98%+ ✅ (Art. 23 Incident Reporting)
+- **Aktuell:** 90%+ ✅ (Phase 6H abgeschlossen)
+- **Nach Phase 7A:** 98%+ ✅ (Enhanced Dashboard & Analytics)
 
 ---
 
