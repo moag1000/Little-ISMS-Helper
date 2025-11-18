@@ -7,6 +7,7 @@ use App\Form\AssetType;
 use App\Repository\AssetRepository;
 use App\Repository\AuditLogRepository;
 use App\Repository\BusinessProcessRepository;
+use App\Repository\RiskRepository;
 use App\Service\AssetService;
 use App\Service\ProtectionRequirementService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -27,6 +28,7 @@ class AssetController extends AbstractController
         private AuditLogRepository $auditLogRepository,
         private ProtectionRequirementService $protectionRequirementService,
         private BusinessProcessRepository $businessProcessRepository,
+        private RiskRepository $riskRepository,
         private EntityManagerInterface $entityManager,
         private TranslatorInterface $translator,
         private Security $security
@@ -104,17 +106,19 @@ class AssetController extends AbstractController
 
         $typeStats = $this->assetRepository->countByType();
 
-        // Calculate BCM-based suggestions for each asset
+        // Calculate BCM-based suggestions and risk count for each asset
         $assetRecommendations = [];
         foreach ($assets as $asset) {
             $analysis = $this->protectionRequirementService->getCompleteProtectionRequirementAnalysis($asset);
             $processes = $this->businessProcessRepository->findByAsset($asset->getId());
+            $risks = $this->riskRepository->findBy(['asset' => $asset]);
 
             $assetRecommendations[$asset->getId()] = [
                 'availability_analysis' => $analysis['availability'],
                 'has_bcm_data' => !empty($processes),
                 'process_count' => count($processes),
                 'processes' => $processes,
+                'risk_count' => count($risks),
             ];
         }
 
