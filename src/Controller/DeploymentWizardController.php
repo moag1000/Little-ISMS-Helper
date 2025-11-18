@@ -348,6 +348,17 @@ class DeploymentWizardController extends AbstractController
             $filepath = $backupDir . '/' . $filename;
             $file->move($backupDir, $filename);
 
+            // Run migrations first to create database schema
+            $logger->info('Running database migrations before backup restore');
+            $migrationResult = $this->runMigrationsInternal();
+
+            if (!$migrationResult['success']) {
+                $this->addFlash('error', 'Fehler beim Erstellen der Datenbank-Struktur: ' . $migrationResult['message']);
+                return $this->redirectToRoute('setup_step3_restore_backup');
+            }
+
+            $logger->info('Database migrations completed successfully');
+
             // Load and restore backup
             $backup = $backupService->loadBackupFromFile($filepath);
 
