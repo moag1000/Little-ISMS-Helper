@@ -243,7 +243,7 @@ class DeploymentWizardController extends AbstractController
 
                     $this->addFlash('success', $this->translator->trans('setup.database.config_saved'));
 
-                    return $this->redirectToRoute('setup_step4_admin_user');
+                    return $this->redirectToRoute('setup_step3_restore_backup');
                 } catch (\RuntimeException $e) {
                     // File system errors (permissions, disk full, etc.)
                     if (str_contains($e->getMessage(), 'Failed to write') || str_contains($e->getMessage(), 'Failed to rename')) {
