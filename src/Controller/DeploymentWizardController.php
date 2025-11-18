@@ -277,19 +277,23 @@ class DeploymentWizardController extends AbstractController
                 ];
 
                 $tableCheck = $this->dbTestService->checkExistingTables($dbConfig);
+                $session->set('debug_processing', 'Step 2b: Checked for tables - has_tables=' . ($tableCheck['has_tables'] ? 'YES' : 'NO') . ', count=' . $tableCheck['count']);
+
                 if ($tableCheck['has_tables'] && $tableCheck['count'] > 0) {
                     // Database has tables - drop and recreate for clean setup
-                    $session->set('debug_processing', 'Step 2b: Found ' . $tableCheck['count'] . ' existing tables, dropping database');
+                    $session->set('debug_processing', 'Step 2c: Found ' . $tableCheck['count'] . ' existing tables, dropping all tables');
                     $this->dropAndRecreateDatabase($dbConfig);
 
                     // Verify tables were actually dropped
                     $tableCheckAfter = $this->dbTestService->checkExistingTables($dbConfig);
                     if ($tableCheckAfter['has_tables'] && $tableCheckAfter['count'] > 0) {
-                        $session->set('debug_error', 'Step 2b ERROR: Failed to drop tables, still have ' . $tableCheckAfter['count'] . ' tables');
+                        $session->set('debug_error', 'Step 2c ERROR: Failed to drop tables, still have ' . $tableCheckAfter['count'] . ' tables after cleanup');
                         $this->addFlash('error', 'Failed to clean database. Please manually drop all tables or use a fresh database.');
                         return $this->redirectToRoute('setup_step2_admin_user');
                     }
-                    $session->set('debug_processing', 'Step 2c: Database cleaned successfully');
+                    $session->set('debug_processing', 'Step 2d: Database cleaned successfully');
+                } else {
+                    $session->set('debug_processing', 'Step 2c: No existing tables found, database is clean');
                 }
 
                 // First run migrations to create database structure
