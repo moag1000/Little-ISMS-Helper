@@ -114,6 +114,10 @@ class DeploymentWizardController extends AbstractController
         // Auto-detect existing configuration and pre-fill credentials
         $defaultData = [];
 
+        // Check for Docker standalone deployment first (needed later for auto-password)
+        // Use @ to suppress open_basedir warnings on non-Docker servers
+        $isDockerStandalone = @file_exists('/run/mysqld/mysqld.sock') || @file_exists('/.dockerenv');
+
         // First, try to load from .env.local if it exists
         if (file_exists($this->envWriter->getEnvLocalPath())) {
             $envVars = $this->envWriter->readEnvLocal();
@@ -132,25 +136,20 @@ class DeploymentWizardController extends AbstractController
             }
         }
 
-        // If no .env.local, check for Docker standalone deployment
-        if (empty($defaultData)) {
-            // Use @ to suppress open_basedir warnings on non-Docker servers
-            $isDockerStandalone = @file_exists('/run/mysqld/mysqld.sock') || @file_exists('/.dockerenv');
+        // If no .env.local, check for Docker standalone deployment and pre-fill
+        if (empty($defaultData) && $isDockerStandalone) {
+            // Pre-fill with Docker internal MySQL configuration
+            $defaultData = [
+                'type' => 'mysql',
+                'host' => 'localhost',
+                'port' => 3306,
+                'name' => $_ENV['MYSQL_DATABASE'] ?? 'isms',
+                'user' => $_ENV['MYSQL_USER'] ?? 'isms',
+                'password' => $_ENV['MYSQL_PASSWORD'] ?? $this->getDockerMysqlPassword(),
+                'serverVersion' => 'mariadb-11.4.0',
+            ];
 
-            if ($isDockerStandalone) {
-                // Pre-fill with Docker internal MySQL configuration
-                $defaultData = [
-                    'type' => 'mysql',
-                    'host' => 'localhost',
-                    'port' => 3306,
-                    'name' => $_ENV['MYSQL_DATABASE'] ?? 'isms',
-                    'user' => $_ENV['MYSQL_USER'] ?? 'isms',
-                    'password' => $_ENV['MYSQL_PASSWORD'] ?? $this->getDockerMysqlPassword(),
-                    'serverVersion' => 'mariadb-11.4.0',
-                ];
-
-                $this->addFlash('info', $this->translator->trans('setup.database.docker_detected'));
-            }
+            $this->addFlash('info', $this->translator->trans('setup.database.docker_detected'));
         }
 
         $form = $this->createForm(DatabaseConfigurationType::class, $defaultData);
