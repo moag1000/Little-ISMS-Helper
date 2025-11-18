@@ -4422,3 +4422,38 @@ bulk_delete:
     title: 'Affected Dependencies'
     list: 'List of affected dependencies'
   loading: 'Checking dependencies...'
+
+# MFA Login Challenge (NIS2 Compliance)
+mfa:
+  challenge:
+    title: 'Two-Factor Authentication'
+    description: 'Please enter the verification code from your authenticator.'
+    device: 'Authentication Device'
+    device_help: 'Select the device you want to use.'
+    code: 'Verification Code'
+    code_help: 'Enter the 6-digit code from your authenticator app or an 8-digit backup code.'
+    verify: 'Verify Code'
+    success: 'Two-factor authentication successful!'
+    cancel: 'Cancel and logout'
+    backup_code_hint: 'No access to your device?'
+    using_backup_code: 'Use backup code'
+    backup_code_info: 'Enter one of your 8-digit backup codes that you received during setup. Each backup code can only be used once.'
+    help_title: 'Need help?'
+    help_text: 'Contact your administrator if you don''t have access to your authentication devices.'
+    nis2_compliance: 'NIS2-compliant Multi-Factor Authentication (Art. 21.2.b)'
+    error:
+      code_required: 'Please enter a verification code.'
+      invalid_code: 'Invalid code. Please try again.'
+      invalid_token: 'Invalid or inactive authentication device.'
+  token:
+    primary: 'Primary'
+
+# NIS2 Notifications
+nis2:
+  notification:
+    early_warning: 'NIS2 Early Warning for incident "%incident%" due in %hours% hours. Deadline: %deadline%'
+    early_warning_overdue: 'OVERDUE: NIS2 Early Warning for incident "%incident%" not reported! Deadline was: %deadline%'
+    detailed_notification: 'NIS2 Detailed Notification for incident "%incident%" due in %hours% hours. Deadline: %deadline%'
+    detailed_notification_overdue: 'OVERDUE: NIS2 Detailed Notification for incident "%incident%" not reported! Deadline was: %deadline%'
+    final_report: 'NIS2 Final Report for incident "%incident%" due in %days% days. Deadline: %deadline%'
+    final_report_overdue: 'OVERDUE: NIS2 Final Report for incident "%incident%" not reported! Deadline was: %deadline%'
