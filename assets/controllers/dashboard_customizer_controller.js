@@ -11,12 +11,16 @@ import * as bootstrap from 'bootstrap';
  * - Reset to defaults
  */
 export default class extends Controller {
-    static targets = ['widget', 'settingsModal', 'toggleButton', 'widgetContainer'];
+    static targets = ['widget', 'settingsModal', 'toggleButton', 'widgetContainer', 'sizeSelector'];
     static values = {
-        storageKey: { type: String, default: 'dashboard_widget_preferences' }
+        storageKey: { type: String, default: 'dashboard_widget_preferences' },
+        apiUrl: { type: String, default: '/dashboard-layout/config' },
+        useDatabaseSync: { type: Boolean, default: true }
     };
 
     connect() {
+        this.isSyncing = false;
+        this.syncQueue = [];
         this.loadPreferences();
         this.applyPreferences();
         this.enableDragAndDrop();
@@ -132,8 +136,32 @@ export default class extends Controller {
         });
     }
 
-    // Load preferences from LocalStorage
-    loadPreferences() {
+    // Load preferences from API or LocalStorage
+    async loadPreferences() {
+        if (this.useDatabaseSyncValue) {
+            try {
+                const response = await fetch(this.apiUrlValue, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    this.preferences = data.layout || this.getDefaultPreferences();
+                    this.lastSyncedAt = data.updated_at;
+
+                    // Also save to localStorage as backup
+                    this.saveToLocalStorage();
+                    return;
+                }
+            } catch (error) {
+                console.warn('Failed to load from API, falling back to localStorage:', error);
+            }
+        }
+
+        // Fallback to localStorage
         try {
             const stored = localStorage.getItem(this.storageKeyValue);
             this.preferences = stored ? JSON.parse(stored) : this.getDefaultPreferences();
@@ -159,13 +187,23 @@ export default class extends Controller {
     applyPreferences() {
         this.widgetTargets.forEach(widget => {
             const widgetId = widget.dataset.widgetId;
-            if (widgetId && this.preferences[widgetId]) {
-                const isVisible = this.preferences[widgetId].visible;
+            const widgetConfig = this.preferences.widgets?.[widgetId] || this.preferences[widgetId];
 
+            if (widgetId && widgetConfig) {
+                const isVisible = widgetConfig.visible !== undefined ? widgetConfig.visible : true;
+                const size = widgetConfig.size || 'default';
+
+                // Apply visibility
                 if (isVisible) {
                     widget.classList.remove('d-none');
                 } else {
                     widget.classList.add('d-none');
+                }
+
+                // Apply size
+                widget.classList.remove('widget-size-small', 'widget-size-medium', 'widget-size-large', 'widget-size-full');
+                if (size !== 'default') {
+                    widget.classList.add(`widget-size-${size}`);
                 }
 
                 // Update toggle button state in settings modal
@@ -176,6 +214,12 @@ export default class extends Controller {
                         checkbox.checked = isVisible;
                     }
                 }
+
+                // Update size selector in settings modal
+                const sizeSelector = this.element.querySelector(`[data-widget-id="${widgetId}"].widget-size-selector`);
+                if (sizeSelector) {
+                    sizeSelector.value = size;
+                }
             }
         });
 
@@ -184,12 +228,49 @@ export default class extends Controller {
     }
 
     // Save preferences to LocalStorage
-    savePreferences() {
+    saveToLocalStorage() {
         try {
             localStorage.setItem(this.storageKeyValue, JSON.stringify(this.preferences));
         } catch (error) {
-            console.error('Failed to save dashboard preferences:', error);
+            console.error('Failed to save to localStorage:', error);
         }
+    }
+
+    // Save preferences to API and LocalStorage
+    async savePreferences() {
+        // Always save to localStorage immediately
+        this.saveToLocalStorage();
+
+        if (!this.useDatabaseSyncValue) {
+            return;
+        }
+
+        // Debounced API save to avoid too many requests
+        if (this.saveTimeout) {
+            clearTimeout(this.saveTimeout);
+        }
+
+        this.saveTimeout = setTimeout(async () => {
+            try {
+                const response = await fetch(this.apiUrlValue, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                    },
+                    body: JSON.stringify(this.preferences)
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    this.lastSyncedAt = data.updated_at;
+                } else {
+                    console.error('Failed to sync to server:', response.statusText);
+                }
+            } catch (error) {
+                console.error('Failed to sync dashboard preferences to server:', error);
+            }
+        }, 1000); // Debounce 1 second
     }
 
     // Toggle widget visibility
@@ -202,16 +283,49 @@ export default class extends Controller {
         const isVisible = checkbox.checked;
 
         // Update preferences
-        if (!this.preferences[widgetId]) {
-            this.preferences[widgetId] = {};
+        if (!this.preferences.widgets) {
+            this.preferences.widgets = {};
         }
-        this.preferences[widgetId].visible = isVisible;
+        if (!this.preferences.widgets[widgetId]) {
+            this.preferences.widgets[widgetId] = {};
+        }
+        this.preferences.widgets[widgetId].visible = isVisible;
 
         // Save immediately
         this.savePreferences();
 
         // Apply to widget
         this.applyPreferences();
+    }
+
+    // Change widget size
+    changeWidgetSize(event) {
+        const widgetId = event.currentTarget.dataset.widgetId;
+        const size = event.currentTarget.value;
+
+        if (!widgetId) return;
+
+        // Update preferences
+        if (!this.preferences.widgets) {
+            this.preferences.widgets = {};
+        }
+        if (!this.preferences.widgets[widgetId]) {
+            this.preferences.widgets[widgetId] = { visible: true };
+        }
+        this.preferences.widgets[widgetId].size = size;
+
+        // Apply size to widget
+        const widget = this.widgetTargets.find(w => w.dataset.widgetId === widgetId);
+        if (widget) {
+            // Remove old size classes
+            widget.classList.remove('widget-size-small', 'widget-size-medium', 'widget-size-large', 'widget-size-full');
+
+            // Add new size class
+            widget.classList.add(`widget-size-${size}`);
+        }
+
+        // Save preferences
+        this.savePreferences();
     }
 
     // Open settings modal
