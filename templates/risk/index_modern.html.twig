@@ -303,8 +303,8 @@
                         <span class="badge bg-secondary">{{ risk.threat }}</span>
                     </td>
                     <td class="text-center">
-                        <span class="badge bg-{{ risk.likelihood >= 4 ? 'danger' : (risk.likelihood >= 3 ? 'warning' : 'success') }}">
-                            {{ risk.likelihood }}/5
+                        <span class="badge bg-{{ risk.probability >= 4 ? 'danger' : (risk.probability >= 3 ? 'warning' : 'success') }}">
+                            {{ risk.probability }}/5
                         </span>
                     </td>
                     <td class="text-center">
