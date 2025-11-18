@@ -12,6 +12,8 @@ docs/
 .env.local
 .env.*.local
 .env.test
+/config/setup_complete.lock
+/config/active_modules.yaml
 
 # Dependencies
 /vendor/
