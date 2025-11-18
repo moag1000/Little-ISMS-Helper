@@ -3455,6 +3455,28 @@ mfa:
   statistics:
     active_tokens: Active Tokens
     by_type: By Type
+  challenge:
+    title: 'Two-Factor Authentication'
+    description: 'Please enter the verification code from your authenticator.'
+    device: 'Authentication Device'
+    device_help: 'Select the device you want to use.'
+    code: 'Verification Code'
+    code_help: 'Enter the 6-digit code from your authenticator app or an 8-digit backup code.'
+    verify: 'Verify Code'
+    success: 'Two-factor authentication successful!'
+    cancel: 'Cancel and logout'
+    backup_code_hint: 'No access to your device?'
+    using_backup_code: 'Use backup code'
+    backup_code_info: 'Enter one of your 8-digit backup codes that you received during setup. Each backup code can only be used once.'
+    help_title: 'Need help?'
+    help_text: 'Contact your administrator if you don''t have access to your authentication devices.'
+    nis2_compliance: 'NIS2-compliant Multi-Factor Authentication (Art. 21.2.b)'
+    error:
+      code_required: 'Please enter a verification code.'
+      invalid_code: 'Invalid code. Please try again.'
+      invalid_token: 'Invalid or inactive authentication device.'
+  token:
+    primary: 'Primary'
 
 # Phase 6L-E: System Monitoring & Health
 monitoring:
@@ -4424,29 +4446,7 @@ bulk_delete:
   loading: 'Checking dependencies...'
 
 # MFA Login Challenge (NIS2 Compliance)
-mfa:
-  challenge:
-    title: 'Two-Factor Authentication'
-    description: 'Please enter the verification code from your authenticator.'
-    device: 'Authentication Device'
-    device_help: 'Select the device you want to use.'
-    code: 'Verification Code'
-    code_help: 'Enter the 6-digit code from your authenticator app or an 8-digit backup code.'
-    verify: 'Verify Code'
-    success: 'Two-factor authentication successful!'
-    cancel: 'Cancel and logout'
-    backup_code_hint: 'No access to your device?'
-    using_backup_code: 'Use backup code'
-    backup_code_info: 'Enter one of your 8-digit backup codes that you received during setup. Each backup code can only be used once.'
-    help_title: 'Need help?'
-    help_text: 'Contact your administrator if you don''t have access to your authentication devices.'
-    nis2_compliance: 'NIS2-compliant Multi-Factor Authentication (Art. 21.2.b)'
-    error:
-      code_required: 'Please enter a verification code.'
-      invalid_code: 'Invalid code. Please try again.'
-      invalid_token: 'Invalid or inactive authentication device.'
-  token:
-    primary: 'Primary'
+# MFA Login Challenge translations merged into main mfa section (line 3437)
 
 # NIS2 Notifications
 nis2:
@@ -4457,3 +4457,45 @@ nis2:
     detailed_notification_overdue: 'OVERDUE: NIS2 Detailed Notification for incident "%incident%" not reported! Deadline was: %deadline%'
     final_report: 'NIS2 Final Report for incident "%incident%" due in %days% days. Deadline: %deadline%'
     final_report_overdue: 'OVERDUE: NIS2 Final Report for incident "%incident%" not reported! Deadline was: %deadline%'
+  dashboard:
+    title: 'NIS2 Compliance Dashboard'
+    description: 'Real-time monitoring of NIS2 Directive (EU 2022/2555) compliance'
+    overall_compliance: 'Overall Compliance Score'
+    status:
+      compliant: 'Compliant (≥95%)'
+      partial: 'Partially Compliant (75-94%)'
+      non_compliant: 'Non-Compliant (<75%)'
+    mfa:
+      title: 'MFA Adoption'
+      users: 'Users'
+    incident_reporting:
+      title: 'Incident Reporting'
+      incidents: 'NIS2 Incidents'
+    vulnerability:
+      title: 'Vulnerabilities'
+      critical_high: 'Critical/High'
+    patch:
+      title: 'Patch Deployment'
+      patches: 'Patches'
+    overdue:
+      title: 'Overdue Reports!'
+      description: '%count% incident(s) have overdue NIS2 reporting deadlines'
+      early_warning: 'Early Warning'
+      detailed: 'Detailed Notification'
+      final: 'Final Report'
+    incident_details:
+      title: 'Incident Reporting Details'
+      stage: 'Reporting Stage'
+      compliant: 'Compliant'
+      total: 'Total'
+      rate: 'Rate'
+      early_warning: 'Early Warning'
+      detailed: 'Detailed Notification'
+      final: 'Final Report'
+    actions:
+      title: 'Quick Actions'
+      view_incidents: 'View Incidents'
+      view_vulnerabilities: 'View Vulnerabilities'
+      view_patches: 'View Patches'
+      manage_mfa: 'Manage MFA'
+  article: 'NIS2 Art. %article%'
