@@ -169,6 +169,9 @@ admin:
     broken_references: Broken References
     broken_references_desc: The following records reference non-existent entities. These references must be manually cleaned up.
     issue: Issue
+    assign_risk: Assign Risk
+    select_risk: Select risk...
+    assign_asset: Assign Asset
   dashboard:
     title: Admin Dashboard
     subtitle: Central administration and system overview
