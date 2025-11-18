@@ -199,9 +199,15 @@ class DeploymentWizardController extends AbstractController
                         }
                     }
 
-                    // Store in session for display
+                    // Store in session for later use (especially in step2)
                     $session->set('setup_database_configured', true);
-                    $session->set('setup_database_type', $config['type']);
+                    $session->set('setup_db_type', $config['type']);
+                    $session->set('setup_db_host', $config['host']);
+                    $session->set('setup_db_port', $config['port']);
+                    $session->set('setup_db_name', $config['name']);
+                    $session->set('setup_db_user', $config['user']);
+                    $session->set('setup_db_password', $config['password']);
+                    $session->set('setup_db_socket', $config['unixSocket'] ?? null);
 
                     $this->addFlash('success', $this->translator->trans('setup.database.config_saved'));
 
@@ -285,16 +291,38 @@ class DeploymentWizardController extends AbstractController
 
             try {
                 $session->set('debug_processing', 'Step 2: Starting admin user creation process');
-                // Check if database already has tables (from previous failed setup attempt)
-                // If so, drop the database and recreate it to ensure clean state
+
+                // Build database configuration from session (set in step1)
+                // If session doesn't have values, try to read from .env.local as fallback
+                // For Docker, use Docker-specific defaults
+                $isDockerStandalone = @file_exists('/run/mysqld/mysqld.sock') || @file_exists('/.dockerenv');
+
+                // Try to get defaults from .env.local if session is empty
+                $envDefaults = [];
+                if (file_exists($this->envWriter->getEnvLocalPath())) {
+                    $envVars = $this->envWriter->readEnvLocal();
+                    if (!empty($envVars['DB_TYPE']) || !empty($envVars['DB_HOST'])) {
+                        $envDefaults = [
+                            'type' => $envVars['DB_TYPE'] ?? 'mysql',
+                            'host' => $envVars['DB_HOST'] ?? ($isDockerStandalone ? 'localhost' : 'localhost'),
+                            'port' => isset($envVars['DB_PORT']) ? (int)$envVars['DB_PORT'] : 3306,
+                            'name' => $envVars['DB_NAME'] ?? ($isDockerStandalone ? 'isms' : 'little_isms_helper'),
+                            'user' => $envVars['DB_USER'] ?? ($isDockerStandalone ? 'isms' : 'root'),
+                            'password' => $envVars['DB_PASS'] ?? '',
+                            'unixSocket' => $envVars['DB_SOCKET'] ?? null,
+                        ];
+                    }
+                }
+
+                // Build config: Session takes priority, then .env.local, then hardcoded defaults
                 $dbConfig = [
-                    'type' => $session->get('setup_db_type', 'mysql'),
-                    'host' => $session->get('setup_db_host', 'localhost'),
-                    'port' => $session->get('setup_db_port', 3306),
-                    'name' => $session->get('setup_db_name', 'little_isms_helper'),
-                    'user' => $session->get('setup_db_user', 'root'),
-                    'password' => $session->get('setup_db_password', ''),
-                    'unixSocket' => $session->get('setup_db_socket'),
+                    'type' => $session->get('setup_db_type', $envDefaults['type'] ?? 'mysql'),
+                    'host' => $session->get('setup_db_host', $envDefaults['host'] ?? 'localhost'),
+                    'port' => $session->get('setup_db_port', $envDefaults['port'] ?? 3306),
+                    'name' => $session->get('setup_db_name', $envDefaults['name'] ?? ($isDockerStandalone ? 'isms' : 'little_isms_helper')),
+                    'user' => $session->get('setup_db_user', $envDefaults['user'] ?? ($isDockerStandalone ? 'isms' : 'root')),
+                    'password' => $session->get('setup_db_password', $envDefaults['password'] ?? ''),
+                    'unixSocket' => $session->get('setup_db_socket', $envDefaults['unixSocket'] ?? null),
                 ];
 
                 // ALWAYS drop all existing tables to ensure clean state
