@@ -9,7 +9,7 @@
         "php": ">=8.4",
         "ext-ctype": "*",
         "ext-iconv": "*",
-        "api-platform/core": "^4.2.4",
+        "api-platform/core": "^4.2.6",
         "doctrine/dbal": "^4.3.4",
         "doctrine/doctrine-bundle": "^3.0",
         "doctrine/doctrine-migrations-bundle": "^3.7",
@@ -99,7 +99,7 @@
             "asset-map:compile": "symfony-cmd"
         },
         "setup-directories": [
-            "@php -r \"is_dir('var/cache') || mkdir('var/cache', 0755, true);\"",
+            "@php -r \"if (is_dir('var/cache')) { array_map('unlink', glob('var/cache/*/*')); array_map('rmdir', glob('var/cache/*')); } else { mkdir('var/cache', 0755, true); }\"",
             "@php -r \"is_dir('var/log') || mkdir('var/log', 0755, true);\"",
             "@php -r \"is_dir('var/sessions') || mkdir('var/sessions', 0700, true);\"",
             "@php -r \"is_dir('public/uploads') || mkdir('public/uploads', 0755, true);\""

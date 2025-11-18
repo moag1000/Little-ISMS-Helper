@@ -54,20 +54,25 @@ class DatabaseConfigurationType extends AbstractType
             );
         }
 
-        // Parse existing .env.local DATABASE_URL if available
+        // Get data passed from controller (if any)
+        $formData = $options['data'] ?? [];
+
+        // Parse existing .env.local DATABASE_URL if available (fallback only)
         $existingConfig = $this->parseExistingDatabaseUrl();
 
         // Detect if running in standalone Docker container (local MariaDB)
         $isStandaloneDocker = $this->detectStandaloneDocker();
 
-        // Determine default values (existing config takes priority, then Docker detection)
-        $defaultDbType = $existingConfig['type'] ?? ($isStandaloneDocker ? 'mariadb' : $defaultType);
-        $defaultHost = $existingConfig['host'] ?? 'localhost';
-        $defaultPort = $existingConfig['port'] ?? null;
-        $defaultName = $existingConfig['name'] ?? ($isStandaloneDocker ? 'isms' : 'little_isms_helper');
-        $defaultUser = $existingConfig['user'] ?? ($isStandaloneDocker ? 'isms' : '');
-        $defaultSocket = $existingConfig['socket'] ?? $this->detectUnixSocket();
-        $defaultVersion = $existingConfig['serverVersion'] ?? ($isStandaloneDocker ? 'mariadb-11.4.0' : '');
+        // Determine default values: Controller data takes priority, then existing config, then Docker detection
+        // IMPORTANT: Only use fallback defaults if controller didn't provide data
+        $defaultDbType = $formData['type'] ?? $existingConfig['type'] ?? ($isStandaloneDocker ? 'mariadb' : $defaultType);
+        $defaultHost = $formData['host'] ?? $existingConfig['host'] ?? 'localhost';
+        $defaultPort = $formData['port'] ?? $existingConfig['port'] ?? null;
+        $defaultName = $formData['name'] ?? $existingConfig['name'] ?? ($isStandaloneDocker ? 'isms' : 'little_isms_helper');
+        $defaultUser = $formData['user'] ?? $existingConfig['user'] ?? ($isStandaloneDocker ? 'isms' : '');
+        $defaultPassword = $formData['password'] ?? $existingConfig['password'] ?? '';
+        $defaultSocket = $formData['unixSocket'] ?? $existingConfig['socket'] ?? $this->detectUnixSocket();
+        $defaultVersion = $formData['serverVersion'] ?? $existingConfig['serverVersion'] ?? ($isStandaloneDocker ? 'mariadb-11.4.0' : '');
 
         $builder
             ->add('type', ChoiceType::class, [
