@@ -130,7 +130,11 @@ class DeploymentWizardController extends AbstractController
 
         if (empty($defaultData) && file_exists($envLocalPath)) {
             $envVars = $this->envWriter->readEnvLocal();
-            $this->addFlash('info', 'DEBUG: Read ' . count($envVars) . ' env vars. DB_TYPE=' . ($envVars['DB_TYPE'] ?? 'NOT SET') . ', DB_HOST=' . ($envVars['DB_HOST'] ?? 'NOT SET'));
+
+            // Enrich from DATABASE_URL if DB_TYPE or DB_SERVER_VERSION are missing
+            $envVars = $this->envWriter->enrichFromDatabaseUrl($envVars);
+
+            $this->addFlash('info', 'DEBUG: Read ' . count($envVars) . ' env vars. DB_TYPE=' . ($envVars['DB_TYPE'] ?? 'NOT SET') . ', DB_HOST=' . ($envVars['DB_HOST'] ?? 'NOT SET') . ', DB_SERVER_VERSION=' . ($envVars['DB_SERVER_VERSION'] ?? 'NOT SET'));
 
             if (!empty($envVars['DB_TYPE']) || !empty($envVars['DB_HOST'])) {
                 $defaultData = [

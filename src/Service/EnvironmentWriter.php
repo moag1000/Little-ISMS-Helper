@@ -263,6 +263,85 @@ class EnvironmentWriter
     }
 
     /**
+     * Parse DATABASE_URL and extract missing DB_* variables
+     * This helps when .env.local has DATABASE_URL but missing DB_TYPE, DB_SERVER_VERSION etc.
+     *
+     * @param array $envVars Existing environment variables from .env.local
+     * @return array Environment variables with missing values extracted from DATABASE_URL
+     */
+    public function enrichFromDatabaseUrl(array $envVars): array
+    {
+        // If DATABASE_URL doesn't exist, return unchanged
+        if (empty($envVars['DATABASE_URL'])) {
+            return $envVars;
+        }
+
+        $databaseUrl = $envVars['DATABASE_URL'];
+
+        // Replace ${VAR} references with actual values from envVars
+        $databaseUrl = preg_replace_callback('/\$\{([A-Z_]+)\}/', function($matches) use ($envVars) {
+            return $envVars[$matches[1]] ?? $matches[0];
+        }, $databaseUrl);
+
+        // Parse DATABASE_URL: mysql://user:pass@host:port/dbname?serverVersion=X&charset=Y
+        // Example: mysql://banda:MeinSicheresPw987%21@127.0.0.1:3306/LittleHelper?serverVersion=11.4.1-MariaDB
+        if (preg_match('#^([^:]+)://([^:]+):([^@]+)@([^:/]+)(?::(\d+))?/([^?]+)(?:\?(.+))?$#', $databaseUrl, $matches)) {
+            $scheme = $matches[1];  // mysql, postgresql, etc.
+            $user = urldecode($matches[2]);
+            $password = urldecode($matches[3]);
+            $host = $matches[4];
+            $port = $matches[5] ?? null;
+            $dbname = $matches[6];
+            $queryString = $matches[7] ?? '';
+
+            // Extract serverVersion from query string
+            $serverVersion = null;
+            if ($queryString) {
+                parse_str($queryString, $queryParams);
+                $serverVersion = $queryParams['serverVersion'] ?? null;
+            }
+
+            // Determine DB_TYPE from scheme
+            if (empty($envVars['DB_TYPE'])) {
+                $envVars['DB_TYPE'] = match($scheme) {
+                    'mysql' => 'mysql',
+                    'mariadb' => 'mysql',  // MariaDB uses mysql driver
+                    'postgresql', 'pgsql' => 'postgresql',
+                    'sqlite' => 'sqlite',
+                    default => $scheme,
+                };
+            }
+
+            // Set other missing values
+            if (empty($envVars['DB_HOST'])) {
+                $envVars['DB_HOST'] = $host;
+            }
+
+            if (empty($envVars['DB_PORT']) && $port) {
+                $envVars['DB_PORT'] = $port;
+            }
+
+            if (empty($envVars['DB_NAME'])) {
+                $envVars['DB_NAME'] = $dbname;
+            }
+
+            if (empty($envVars['DB_USER'])) {
+                $envVars['DB_USER'] = $user;
+            }
+
+            if (empty($envVars['DB_PASS'])) {
+                $envVars['DB_PASS'] = $password;
+            }
+
+            if (empty($envVars['DB_SERVER_VERSION']) && $serverVersion) {
+                $envVars['DB_SERVER_VERSION'] = $serverVersion;
+            }
+        }
+
+        return $envVars;
+    }
+
+    /**
      * Build .env.local file content from variables
      */
     private function buildEnvFileContent(array $variables): string
