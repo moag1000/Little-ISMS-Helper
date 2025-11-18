@@ -60,12 +60,22 @@ class SetupPermissionsCommand extends Command
         $io->title('Setting up Permissions and Roles');
 
         // Ensure EntityManager is in a clean state (important when called from web context)
-        // Clear any pending transactions or savepoints
-        if ($this->entityManager->getConnection()->isTransactionActive()) {
+        // Roll back ALL nested transactions/savepoints, not just one level
+        $connection = $this->entityManager->getConnection();
+
+        // Get transaction nesting level (Doctrine uses this internally)
+        while ($connection->isTransactionActive()) {
             try {
-                $this->entityManager->getConnection()->rollBack();
+                $connection->rollBack();
             } catch (\Exception $e) {
-                // Ignore - connection might be in a bad state
+                // If rollback fails due to missing savepoint, try to close and reconnect
+                try {
+                    $connection->close();
+                    $connection->connect();
+                } catch (\Exception $reconnectException) {
+                    $io->warning('Could not reset database connection: ' . $reconnectException->getMessage());
+                }
+                break; // Exit loop to avoid infinite attempts
             }
         }
 
