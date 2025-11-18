@@ -54,7 +54,7 @@
    KPI Card
    ==================== */
 .kpi-card {
-    background: white;
+    background: var(--bg-elevated);
     border-radius: var(--border-radius);
     padding: var(--spacing-lg);
     box-shadow: var(--shadow-sm);

@@ -5,36 +5,7 @@
 
 {% block stylesheets %}
     {{ parent() }}
-    <style>
-        /* Sticky table header with better visibility */
-        .table thead.sticky-top {
-            position: sticky;
-            top: 60px; /* Adjust based on your navbar height */
-            z-index: 10;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .table thead.sticky-top th {
-            background-color: #f8f9fa !important;
-            font-weight: 600;
-            border-bottom: 2px solid #dee2e6;
-            padding: 12px 8px;
-            white-space: nowrap;
-        }
-
-        /* Better table container */
-        .table-container {
-            position: relative;
-            max-height: 800px;
-            overflow-y: auto;
-            margin-top: 1rem;
-        }
-
-        /* Improve readability */
-        .table tbody tr:hover {
-            background-color: #f1f3f5;
-        }
-    </style>
+    {# Sticky header styles now in app.css - Dark mode compatible #}
 {% endblock %}
 
 {% block body %}

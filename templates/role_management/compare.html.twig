@@ -57,7 +57,7 @@
             <div class="card-body p-0">
                 <div class="table-responsive">
                     <table class="table table-bordered table-hover mb-0">
-                        <thead class="table-light sticky-top">
+                        <thead class="sticky-top">
                             <tr>
                                 <th scope="col" style="width: 30%">Berechtigung</th>
                                 {% for role in roles %}
@@ -129,12 +129,5 @@
     {% endif %}
 </div>
 
-<style>
-.sticky-top {
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    background-color: #f8f9fa;
-}
-</style>
+{# Sticky header styles now in app.css - Dark mode compatible #}
 {% endblock admin_content %}
