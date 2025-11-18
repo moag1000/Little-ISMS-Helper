@@ -8,6 +8,7 @@ use App\Repository\RiskRepository;
 use App\Repository\IncidentRepository;
 use App\Repository\TenantRepository;
 use App\Repository\ControlRepository;
+use App\Repository\ComplianceRequirementRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -27,6 +28,7 @@ class DataRepairController extends AbstractController
         private readonly IncidentRepository $incidentRepository,
         private readonly TenantRepository $tenantRepository,
         private readonly ControlRepository $controlRepository,
+        private readonly ComplianceRequirementRepository $complianceRequirementRepository,
         private readonly TranslatorInterface $translator
     ) {
     }
@@ -69,10 +71,24 @@ class DataRepairController extends AbstractController
         $allIncidents = $this->incidentRepository->findAll();
         $allAssets = $this->assetRepository->findAll();
 
-        // Find controls without risks (applicable controls that have no risk assignments)
+        // Find controls without risks AND without framework assignments
+        // (applicable controls that have neither risk nor framework assignments)
         $allControls = $this->controlRepository->findAll();
-        $controlsWithoutRisks = array_filter($allControls, function($control) {
-            return $control->isApplicable() && $control->getRisks()->isEmpty();
+        $allComplianceRequirements = $this->complianceRequirementRepository->findAll();
+
+        // Build a set of control IDs that are mapped to compliance requirements
+        $controlsWithFrameworks = [];
+        foreach ($allComplianceRequirements as $requirement) {
+            foreach ($requirement->getMappedControls() as $control) {
+                $controlsWithFrameworks[$control->getId()] = true;
+            }
+        }
+
+        $controlsWithoutRisks = array_filter($allControls, function($control) use ($controlsWithFrameworks) {
+            // Only show controls that are applicable AND have no risks AND no framework assignments
+            return $control->isApplicable()
+                && $control->getRisks()->isEmpty()
+                && !isset($controlsWithFrameworks[$control->getId()]);
         });
 
         // Find controls without assets (applicable controls with no protected assets)

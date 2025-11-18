@@ -161,8 +161,8 @@ admin:
     no_asset: No Asset
     select_asset: Select asset...
     asset_not_found: Asset not found
-    controls_without_risks: Controls Without Risk Assignment
-    controls_without_risks_desc: The following applicable controls have no risks assigned. Controls should be linked to risks to assess their effectiveness.
+    controls_without_risks: Controls Without Risk or Framework Assignment
+    controls_without_risks_desc: The following applicable controls have neither risks nor compliance framework assignments. Controls should be linked to either risks or frameworks.
     controls_without_assets: Controls Without Asset Assignment
     controls_without_assets_desc: The following applicable controls protect no assets. This is informational and may be normal depending on the control type.
     controls_count: '{%count%} control(s) found'
