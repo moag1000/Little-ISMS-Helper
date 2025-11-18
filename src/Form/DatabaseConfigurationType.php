@@ -162,6 +162,7 @@ class DatabaseConfigurationType extends AbstractType
             ])
             ->add('password', PasswordType::class, [
                 'label' => 'setup.database.password',
+                'data' => $defaultPassword,
                 'required' => false,
                 'attr' => [
                     'class' => 'form-control',
