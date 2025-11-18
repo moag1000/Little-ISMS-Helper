@@ -180,12 +180,14 @@ class AnalyticsController extends AbstractController
 
     private function getRiskColor(int $score): string
     {
-        if ($score <= 6) {
-            return '#2ecc71'; // Green
-        } elseif ($score <= 14) {
-            return '#f39c12'; // Orange
+        if ($score >= 15) {
+            return '#fecaca'; // Critical (15-25) - Light Red
+        } elseif ($score >= 8) {
+            return '#fed7aa'; // High (8-14) - Light Orange
+        } elseif ($score >= 4) {
+            return '#fef3c7'; // Medium (4-7) - Light Yellow
         } else {
-            return '#e74c3c'; // Red
+            return '#d1fae5'; // Low (1-3) - Light Green
         }
     }
 
@@ -227,16 +229,18 @@ class AnalyticsController extends AbstractController
                 return $risk->getCreatedAt() <= $monthEnd;
             });
 
-            // Count by level
-            $low = count(array_filter($monthRisks, fn($r) => $r->getInherentRiskLevel() <= 6));
-            $medium = count(array_filter($monthRisks, fn($r) => $r->getInherentRiskLevel() > 6 && $r->getInherentRiskLevel() <= 14));
-            $high = count(array_filter($monthRisks, fn($r) => $r->getInherentRiskLevel() > 14));
+            // Count by level (using thresholds: 15/8/4)
+            $low = count(array_filter($monthRisks, fn($r) => $r->getInherentRiskLevel() < 4));
+            $medium = count(array_filter($monthRisks, fn($r) => $r->getInherentRiskLevel() >= 4 && $r->getInherentRiskLevel() < 8));
+            $high = count(array_filter($monthRisks, fn($r) => $r->getInherentRiskLevel() >= 8 && $r->getInherentRiskLevel() < 15));
+            $critical = count(array_filter($monthRisks, fn($r) => $r->getInherentRiskLevel() >= 15));
 
             $trend[] = [
                 'month' => $date->format('M Y'),
                 'low' => $low,
                 'medium' => $medium,
                 'high' => $high,
+                'critical' => $critical,
                 'total' => count($monthRisks)
             ];
         }
