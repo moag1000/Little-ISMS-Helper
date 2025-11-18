@@ -276,27 +276,27 @@ class DeploymentWizardController extends AbstractController
                     'unixSocket' => $session->get('setup_db_socket'),
                 ];
 
-                $tableCheck = $this->dbTestService->checkExistingTables($dbConfig);
-                $session->set('debug_processing', 'Step 2b: Checked for tables - has_tables=' . ($tableCheck['has_tables'] ? 'YES' : 'NO') . ', count=' . $tableCheck['count']);
+                // ALWAYS drop all existing tables to ensure clean state
+                // This is safer than trying to detect tables, as the detection might use
+                // a different connection than the migrations
+                $session->set('debug_processing', 'Step 2b: Dropping all existing tables to ensure clean state');
+                $this->dropAndRecreateDatabase($dbConfig);
 
-                if ($tableCheck['has_tables'] && $tableCheck['count'] > 0) {
-                    // Database has tables - drop and recreate for clean setup
-                    $session->set('debug_processing', 'Step 2c: Found ' . $tableCheck['count'] . ' existing tables, dropping all tables');
-                    $this->dropAndRecreateDatabase($dbConfig);
-
-                    // Verify tables were actually dropped
-                    $tableCheckAfter = $this->dbTestService->checkExistingTables($dbConfig);
-                    if ($tableCheckAfter['has_tables'] && $tableCheckAfter['count'] > 0) {
-                        $session->set('debug_error', 'Step 2c ERROR: Failed to drop tables, still have ' . $tableCheckAfter['count'] . ' tables after cleanup');
-                        $this->addFlash('error', 'Failed to clean database. Please manually drop all tables or use a fresh database.');
-                        return $this->redirectToRoute('setup_step2_admin_user');
-                    }
-                    $session->set('debug_processing', 'Step 2d: Database cleaned successfully');
-                } else {
-                    $session->set('debug_processing', 'Step 2c: No existing tables found, database is clean');
-                }
+                // Ensure DATABASE_URL is written to .env.local before running migrations
+                // This is critical because migrations use Doctrine which reads from .env.local
+                $session->set('debug_processing', 'Step 2d: Writing DATABASE_URL to .env.local');
+                $this->envWriter->writeDatabaseConfig([
+                    'type' => $dbConfig['type'],
+                    'host' => $dbConfig['host'],
+                    'port' => $dbConfig['port'],
+                    'name' => $dbConfig['name'],
+                    'user' => $dbConfig['user'],
+                    'password' => $dbConfig['password'],
+                    'unix_socket' => $dbConfig['unixSocket'] ?? null,
+                ]);
 
                 // First run migrations to create database structure
+                $session->set('debug_processing', 'Step 2e: Running migrations');
                 $migrationResult = $this->runMigrationsInternal();
 
                 if (!$migrationResult['success']) {
