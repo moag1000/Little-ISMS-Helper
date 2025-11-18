@@ -167,7 +167,7 @@
     flex-wrap: wrap;
     gap: 1rem;
     row-gap: 0.75rem;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
     padding: 15px;
     background: var(--bg-secondary, #f8f9fa);
     border-radius: 8px;
