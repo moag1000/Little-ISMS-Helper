@@ -93,7 +93,14 @@
                                             <strong>Backup erfolgreich wiederhergestellt!</strong>
                                             <ul class="mb-0 mt-2">
                                                 {% for entity, stats in backup_restore_result.statistics %}
-                                                    <li>{{ entity }}: {{ stats.created }} erstellt, {{ stats.updated }} aktualisiert</li>
+                                                    <li>
+                                                        {{ entity }}:
+                                                        {% if stats is iterable and stats.created is defined %}
+                                                            {{ stats.created }} erstellt, {{ stats.updated }} aktualisiert
+                                                        {% else %}
+                                                            {{ stats }} Einträge
+                                                        {% endif %}
+                                                    </li>
                                                 {% endfor %}
                                             </ul>
                                         </div>
