@@ -227,6 +227,16 @@
                         <span>{{ 'nav.incidents'|trans }}</span>
                     </a></li>
                     {% endif %}
+                    {% if is_granted('ROLE_MANAGER') %}
+                    <li><a href="{{ path('app_vulnerability_index') }}" class="{% if current_route starts with 'app_vulnerability_' %}active{% endif %}" data-turbo-action="advance">
+                        <i class="bi bi-bug-fill" aria-hidden="true"></i>
+                        <span>{{ 'nav.vulnerabilities'|trans }}</span>
+                    </a></li>
+                    <li><a href="{{ path('app_patch_index') }}" class="{% if current_route starts with 'app_patch_' %}active{% endif %}" data-turbo-action="advance">
+                        <i class="bi bi-bandaid-fill" aria-hidden="true"></i>
+                        <span>{{ 'nav.patches'|trans }}</span>
+                    </a></li>
+                    {% endif %}
 
                     {# Compliance #}
                     {% if is_module_active('audits') or is_module_active('compliance') or is_module_active('audit_logging') %}
@@ -289,6 +299,12 @@
                     <li><a href="{{ path('app_audit_log_index') }}" class="{% if current_route starts with 'app_audit_log_' %}active{% endif %}" data-turbo-action="advance">
                         <i class="bi bi-journal-text" aria-hidden="true"></i>
                         <span>{{ 'nav.audit_log'|trans }}</span>
+                    </a></li>
+                    {% endif %}
+                    {% if is_granted('ROLE_MANAGER') %}
+                    <li><a href="{{ path('app_nis2_compliance_dashboard') }}" class="{% if current_route starts with 'app_nis2_compliance_' %}active{% endif %}" data-turbo-action="advance">
+                        <i class="bi bi-shield-fill-exclamation" aria-hidden="true"></i>
+                        <span>{{ 'nav.nis2_dashboard'|trans }}</span>
                     </a></li>
                     {% endif %}
 

@@ -1,0 +1,243 @@
+{#
+  Reusable Form Field Macros with WCAG AA Compliance
+
+  Usage:
+  {% import '_macros/form_fields.html.twig' as fields %}
+
+  {{ fields.text_field('username', 'Email', {required: true, help: 'Use your organization email'}) }}
+#}
+
+{#
+  Text Input Field
+
+  Parameters:
+    - name: Field name attribute
+    - label: Field label text
+    - options: {
+        required: boolean (default: false)
+        value: string (default value)
+        placeholder: string
+        help: string (help text)
+        error: string (error message)
+        type: string (default: 'text', can be 'email', 'password', etc.)
+        class: string (additional CSS classes)
+        autocomplete: string
+        aria_describedby: string
+      }
+#}
+{% macro text_field(name, label, options = {}) %}
+    {% set required = options.required|default(false) %}
+    {% set value = options.value|default('') %}
+    {% set placeholder = options.placeholder|default('') %}
+    {% set help = options.help|default('') %}
+    {% set error = options.error|default('') %}
+    {% set type = options.type|default('text') %}
+    {% set css_class = options.class|default('') %}
+    {% set autocomplete = options.autocomplete|default('') %}
+    {% set aria_describedby = options.aria_describedby|default('') %}
+
+    {% set describedby_ids = [] %}
+    {% if help %}
+        {% set describedby_ids = describedby_ids|merge([name ~ '-help']) %}
+    {% endif %}
+    {% if error %}
+        {% set describedby_ids = describedby_ids|merge([name ~ '-error']) %}
+    {% endif %}
+    {% if aria_describedby %}
+        {% set describedby_ids = describedby_ids|merge([aria_describedby]) %}
+    {% endif %}
+
+    <div class="mb-3">
+        <label for="{{ name }}" class="form-label">
+            {{ label }}
+            {% if required %}
+                <span class="required" aria-label="required">*</span>
+            {% endif %}
+        </label>
+        <input type="{{ type }}"
+               class="form-control {{ error ? 'is-invalid' : '' }} {{ css_class }}"
+               id="{{ name }}"
+               name="{{ name }}"
+               value="{{ value }}"
+               {% if placeholder %}placeholder="{{ placeholder }}"{% endif %}
+               {% if required %}required aria-required="true"{% endif %}
+               {% if autocomplete %}autocomplete="{{ autocomplete }}"{% endif %}
+               {% if describedby_ids|length > 0 %}aria-describedby="{{ describedby_ids|join(' ') }}"{% endif %}
+               {% if error %}aria-invalid="true"{% endif %}>
+
+        {% if error %}
+            <div class="invalid-feedback" id="{{ name }}-error" role="alert">
+                {{ error }}
+            </div>
+        {% endif %}
+
+        {% if help %}
+            <small class="form-text text-muted" id="{{ name }}-help">
+                {{ help }}
+            </small>
+        {% endif %}
+    </div>
+{% endmacro %}
+
+{#
+  Textarea Field
+
+  Similar to text_field but for multi-line input
+#}
+{% macro textarea_field(name, label, options = {}) %}
+    {% set required = options.required|default(false) %}
+    {% set value = options.value|default('') %}
+    {% set placeholder = options.placeholder|default('') %}
+    {% set help = options.help|default('') %}
+    {% set error = options.error|default('') %}
+    {% set rows = options.rows|default(4) %}
+    {% set css_class = options.class|default('') %}
+
+    {% set describedby_ids = [] %}
+    {% if help %}
+        {% set describedby_ids = describedby_ids|merge([name ~ '-help']) %}
+    {% endif %}
+    {% if error %}
+        {% set describedby_ids = describedby_ids|merge([name ~ '-error']) %}
+    {% endif %}
+
+    <div class="mb-3">
+        <label for="{{ name }}" class="form-label">
+            {{ label }}
+            {% if required %}
+                <span class="required" aria-label="required">*</span>
+            {% endif %}
+        </label>
+        <textarea class="form-control {{ error ? 'is-invalid' : '' }} {{ css_class }}"
+                  id="{{ name }}"
+                  name="{{ name }}"
+                  rows="{{ rows }}"
+                  {% if placeholder %}placeholder="{{ placeholder }}"{% endif %}
+                  {% if required %}required aria-required="true"{% endif %}
+                  {% if describedby_ids|length > 0 %}aria-describedby="{{ describedby_ids|join(' ') }}"{% endif %}
+                  {% if error %}aria-invalid="true"{% endif %}>{{ value }}</textarea>
+
+        {% if error %}
+            <div class="invalid-feedback" id="{{ name }}-error" role="alert">
+                {{ error }}
+            </div>
+        {% endif %}
+
+        {% if help %}
+            <small class="form-text text-muted" id="{{ name }}-help">
+                {{ help }}
+            </small>
+        {% endif %}
+    </div>
+{% endmacro %}
+
+{#
+  Select Dropdown Field
+#}
+{% macro select_field(name, label, choices, options = {}) %}
+    {% set required = options.required|default(false) %}
+    {% set selected = options.selected|default('') %}
+    {% set help = options.help|default('') %}
+    {% set error = options.error|default('') %}
+    {% set css_class = options.class|default('') %}
+
+    {% set describedby_ids = [] %}
+    {% if help %}
+        {% set describedby_ids = describedby_ids|merge([name ~ '-help']) %}
+    {% endif %}
+    {% if error %}
+        {% set describedby_ids = describedby_ids|merge([name ~ '-error']) %}
+    {% endif %}
+
+    <div class="mb-3">
+        <label for="{{ name }}" class="form-label">
+            {{ label }}
+            {% if required %}
+                <span class="required" aria-label="required">*</span>
+            {% endif %}
+        </label>
+        <select class="form-select {{ error ? 'is-invalid' : '' }} {{ css_class }}"
+                id="{{ name }}"
+                name="{{ name }}"
+                {% if required %}required aria-required="true"{% endif %}
+                {% if describedby_ids|length > 0 %}aria-describedby="{{ describedby_ids|join(' ') }}"{% endif %}
+                {% if error %}aria-invalid="true"{% endif %}>
+            {% for value, text in choices %}
+                <option value="{{ value }}" {% if value == selected %}selected{% endif %}>{{ text }}</option>
+            {% endfor %}
+        </select>
+
+        {% if error %}
+            <div class="invalid-feedback" id="{{ name }}-error" role="alert">
+                {{ error }}
+            </div>
+        {% endif %}
+
+        {% if help %}
+            <small class="form-text text-muted" id="{{ name }}-help">
+                {{ help }}
+            </small>
+        {% endif %}
+    </div>
+{% endmacro %}
+
+{#
+  Form Required Legend
+
+  Add this at the top of forms to explain the asterisk
+#}
+{% macro required_legend() %}
+    <p class="form-required-legend">
+        <span class="required">*</span> = Required field
+    </p>
+{% endmacro %}
+
+{#
+  Password Field with Strength Indicator
+#}
+{% macro password_field(name, label, options = {}) %}
+    {% set required = options.required|default(true) %}
+    {% set help = options.help|default('') %}
+    {% set error = options.error|default('') %}
+    {% set show_strength = options.show_strength|default(false) %}
+
+    <div class="mb-3">
+        <label for="{{ name }}" class="form-label">
+            {{ label }}
+            {% if required %}
+                <span class="required" aria-label="required">*</span>
+            {% endif %}
+        </label>
+        <input type="password"
+               class="form-control {{ error ? 'is-invalid' : '' }}"
+               id="{{ name }}"
+               name="{{ name }}"
+               {% if required %}required aria-required="true"{% endif %}
+               {% if show_strength %}data-controller="password-strength"
+                    data-action="input->password-strength#check"
+                    data-password-strength-target="input"{% endif %}
+               {% if help or error %}aria-describedby="{{ name }}-{% if error %}error{% else %}help{% endif %}"{% endif %}
+               {% if error %}aria-invalid="true"{% endif %}>
+
+        {% if show_strength %}
+        <div class="password-strength-meter mt-2" data-password-strength-target="meter" style="display: none;">
+            <div class="progress" style="height: 5px;">
+                <div class="progress-bar" data-password-strength-target="bar" role="progressbar"></div>
+            </div>
+            <small class="form-text" data-password-strength-target="feedback"></small>
+        </div>
+        {% endif %}
+
+        {% if error %}
+            <div class="invalid-feedback" id="{{ name }}-error" role="alert">
+                {{ error }}
+            </div>
+        {% endif %}
+
+        {% if help %}
+            <small class="form-text text-muted" id="{{ name }}-help">
+                {{ help }}
+            </small>
+        {% endif %}
+    </div>
+{% endmacro %}
