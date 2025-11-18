@@ -97,6 +97,9 @@
         <div class="sidebar-backdrop" data-sidebar-toggle-target="backdrop" data-action="click->sidebar-toggle#close"></div>
 
         {# Sidebar Navigation #}
+        {# Hide sidebar during setup to avoid database access before DB is configured #}
+        {% set is_setup_route = app.request.attributes.get('_route') starts with 'setup_' %}
+        {% if not is_setup_route %}
         <aside class="app-sidebar" role="complementary" aria-label="Main navigation" data-sidebar-toggle-target="sidebar">
             <nav id="main-navigation" role="navigation">
                 <ul>
@@ -231,7 +234,7 @@
                         <span>{{ 'nav.audits'|trans }}</span>
                     </a></li>
                     {% endif %}
-                    {% if is_module_active('compliance') %}
+                    {% if is_module_active('compliance') and app.request.attributes.get('_route') is not same as('setup_wizard_index') and not (app.request.attributes.get('_route') starts with 'setup_step') %}
                     {% set compliance_frameworks = get_compliance_frameworks_quick() %}
                     <li class="has-submenu" data-controller="sidebar-dropdown" data-sidebar-dropdown-key-value="sidebar-compliance-expanded">
                         <a href="{{ path('app_compliance_index') }}"
@@ -296,6 +299,7 @@
                 </ul>
             </nav>
         </aside>
+        {% endif %}
 
         {# Main Content Area #}
         <main id="main-content" class="app-main" role="main">
