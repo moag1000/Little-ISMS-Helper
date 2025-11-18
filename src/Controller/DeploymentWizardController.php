@@ -279,7 +279,17 @@ class DeploymentWizardController extends AbstractController
                 $tableCheck = $this->dbTestService->checkExistingTables($dbConfig);
                 if ($tableCheck['has_tables'] && $tableCheck['count'] > 0) {
                     // Database has tables - drop and recreate for clean setup
+                    $session->set('debug_processing', 'Step 2b: Found ' . $tableCheck['count'] . ' existing tables, dropping database');
                     $this->dropAndRecreateDatabase($dbConfig);
+
+                    // Verify tables were actually dropped
+                    $tableCheckAfter = $this->dbTestService->checkExistingTables($dbConfig);
+                    if ($tableCheckAfter['has_tables'] && $tableCheckAfter['count'] > 0) {
+                        $session->set('debug_error', 'Step 2b ERROR: Failed to drop tables, still have ' . $tableCheckAfter['count'] . ' tables');
+                        $this->addFlash('error', 'Failed to clean database. Please manually drop all tables or use a fresh database.');
+                        return $this->redirectToRoute('setup_step2_admin_user');
+                    }
+                    $session->set('debug_processing', 'Step 2c: Database cleaned successfully');
                 }
 
                 // First run migrations to create database structure
@@ -1562,24 +1572,9 @@ class DeploymentWizardController extends AbstractController
             return;
         }
 
-        // For MySQL/MariaDB and PostgreSQL, use SQL
-        try {
-            $pdo = $this->connectToDatabase($config);
-
-            if ($type === 'postgresql') {
-                // PostgreSQL: disconnect all clients first
-                $pdo->exec("SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname = '{$name}' AND pid <> pg_backend_pid()");
-                $pdo->exec("DROP DATABASE IF EXISTS {$name}");
-                $pdo->exec("CREATE DATABASE {$name} WITH ENCODING 'UTF8'");
-            } else {
-                // MySQL/MariaDB
-                $pdo->exec("DROP DATABASE IF EXISTS `{$name}`");
-                $pdo->exec("CREATE DATABASE `{$name}` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
-            }
-        } catch (\Exception $e) {
-            // If drop fails, try to just truncate all tables
-            $this->truncateAllTables($config);
-        }
+        // For MySQL/MariaDB and PostgreSQL, directly drop all tables instead of dropping the database
+        // This avoids permission issues and connection problems with existing Doctrine connections
+        $this->truncateAllTables($config);
     }
 
     /**
