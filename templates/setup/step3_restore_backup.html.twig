@@ -62,6 +62,94 @@
                                         {% endfor %}
                                     </ul>
                                 </div>
+
+                                {# Orphaned Entities Detection and Repair #}
+                                {% if backup_restore_result.orphaned_entities is defined and backup_restore_result.orphaned_entities.total > 0 %}
+                                    <div class="alert alert-warning mt-3">
+                                        <h6 class="alert-heading">
+                                            <i class="fas fa-exclamation-triangle me-2"></i>
+                                            Verwaiste Entitäten gefunden
+                                        </h6>
+                                        <p>
+                                            Nach der Wiederherstellung wurden <strong>{{ backup_restore_result.orphaned_entities.total }}</strong> Entitäten ohne Mandanten-Zuordnung gefunden:
+                                        </p>
+                                        <ul class="mb-3">
+                                            {% if backup_restore_result.orphaned_entities.assets > 0 %}
+                                                <li><strong>{{ backup_restore_result.orphaned_entities.assets }}</strong> Assets</li>
+                                            {% endif %}
+                                            {% if backup_restore_result.orphaned_entities.risks > 0 %}
+                                                <li><strong>{{ backup_restore_result.orphaned_entities.risks }}</strong> Risiken</li>
+                                            {% endif %}
+                                            {% if backup_restore_result.orphaned_entities.incidents > 0 %}
+                                                <li><strong>{{ backup_restore_result.orphaned_entities.incidents }}</strong> Vorfälle</li>
+                                            {% endif %}
+                                        </ul>
+
+                                        <div class="card border-warning">
+                                            <div class="card-body">
+                                                <h6 class="card-title">
+                                                    <i class="fas fa-tools me-2"></i>
+                                                    Verwaiste Entitäten reparieren
+                                                </h6>
+                                                <p class="card-text text-muted">
+                                                    Wählen Sie einen Mandanten, dem die verwaisten Entitäten zugewiesen werden sollen:
+                                                </p>
+                                                <form method="post" action="{{ path('setup_step3_repair_orphans') }}">
+                                                    <input type="hidden" name="_token" value="{{ csrf_token('setup_repair_orphans') }}">
+                                                    <div class="row g-3 align-items-end">
+                                                        <div class="col-md-8">
+                                                            <label for="targetTenant" class="form-label">Ziel-Mandant</label>
+                                                            <select class="form-select" id="targetTenant" name="target_tenant_id" required>
+                                                                <option value="">Bitte Mandanten auswählen...</option>
+                                                                {% if backup_restore_result.tenants is defined %}
+                                                                    {% for tenant in backup_restore_result.tenants %}
+                                                                        <option value="{{ tenant.id }}">
+                                                                            {{ tenant.name }}
+                                                                            {% if tenant.identifier is defined and tenant.identifier %}
+                                                                                ({{ tenant.identifier }})
+                                                                            {% endif %}
+                                                                        </option>
+                                                                    {% endfor %}
+                                                                {% endif %}
+                                                            </select>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <button type="submit" class="btn btn-warning w-100">
+                                                                <i class="fas fa-wrench me-2"></i>
+                                                                Jetzt reparieren
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+
+                                {# Risk-Asset and Incident-Asset Repair #}
+                                {% if backup_restore_result.risks_without_assets is defined and backup_restore_result.risks_without_assets > 0 %}
+                                    <div class="alert alert-info mt-3">
+                                        <h6 class="alert-heading">
+                                            <i class="fas fa-link me-2"></i>
+                                            Asset-Zuordnungen reparieren
+                                        </h6>
+                                        <p>
+                                            <strong>{{ backup_restore_result.risks_without_assets }}</strong> Risiken haben keine Asset-Zuordnung. Sie können diese im
+                                            <a href="{{ path('admin_data_repair_index') }}" class="alert-link">Admin Data Repair Tool</a>
+                                            korrigieren.
+                                        </p>
+                                    </div>
+                                {% endif %}
+
+                                {# Continue to Completion Button #}
+                                {% if backup_restore_result.orphaned_entities is not defined or backup_restore_result.orphaned_entities.total == 0 %}
+                                    <div class="mt-4">
+                                        <a href="{{ path('setup_step11_complete') }}" class="btn btn-success btn-lg">
+                                            <i class="fas fa-check me-2"></i>
+                                            Setup abschließen
+                                        </a>
+                                    </div>
+                                {% endif %}
                             {% else %}
                                 <div class="alert alert-danger">
                                     <i class="fas fa-exclamation-circle me-2"></i>
