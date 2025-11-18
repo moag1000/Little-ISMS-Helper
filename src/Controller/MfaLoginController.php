@@ -67,7 +67,7 @@ class MfaLoginController extends AbstractController
         ]);
     }
 
-    #[Route('/{_locale}/mfa-verify', name: 'app_mfa_verify', methods: ['POST'], requirements: ['_locale' => 'de|en'])]
+    #[Route('/mfa-verify', name: 'app_mfa_verify', methods: ['POST'])]
     public function verify(Request $request): Response
     {
         $session = $request->getSession();
