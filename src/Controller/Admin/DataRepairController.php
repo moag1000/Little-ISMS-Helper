@@ -7,6 +7,7 @@ use App\Repository\AssetRepository;
 use App\Repository\RiskRepository;
 use App\Repository\IncidentRepository;
 use App\Repository\TenantRepository;
+use App\Repository\ControlRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -25,6 +26,7 @@ class DataRepairController extends AbstractController
         private readonly RiskRepository $riskRepository,
         private readonly IncidentRepository $incidentRepository,
         private readonly TenantRepository $tenantRepository,
+        private readonly ControlRepository $controlRepository,
         private readonly TranslatorInterface $translator
     ) {
     }
@@ -67,6 +69,20 @@ class DataRepairController extends AbstractController
         $allIncidents = $this->incidentRepository->findAll();
         $allAssets = $this->assetRepository->findAll();
 
+        // Find controls without risks (applicable controls that have no risk assignments)
+        $allControls = $this->controlRepository->findAll();
+        $controlsWithoutRisks = array_filter($allControls, function($control) {
+            return $control->isApplicable() && $control->getRisks()->isEmpty();
+        });
+
+        // Find controls without assets (applicable controls with no protected assets)
+        $controlsWithoutAssets = array_filter($allControls, function($control) {
+            return $control->isApplicable() && $control->getProtectedAssets()->isEmpty();
+        });
+
+        // Find broken references
+        $brokenReferences = $this->findBrokenReferences();
+
         return $this->render('admin/data_repair/index.html.twig', [
             'tenants' => $tenants,
             'orphanedAssets' => $orphanedAssets,
@@ -76,6 +92,9 @@ class DataRepairController extends AbstractController
             'allRisks' => $allRisks,
             'allIncidents' => $allIncidents,
             'allAssets' => $allAssets,
+            'controlsWithoutRisks' => $controlsWithoutRisks,
+            'controlsWithoutAssets' => $controlsWithoutAssets,
+            'brokenReferences' => $brokenReferences,
         ]);
     }
 
@@ -288,5 +307,65 @@ class DataRepairController extends AbstractController
         ));
 
         return $this->redirectToRoute('admin_data_repair_index');
+    }
+
+    /**
+     * Find broken references in the database
+     * Checks for foreign key references that point to non-existent entities
+     */
+    private function findBrokenReferences(): array
+    {
+        $broken = [];
+
+        // Check risks with invalid asset references
+        $allRisks = $this->riskRepository->findAll();
+        foreach ($allRisks as $risk) {
+            $asset = $risk->getAsset();
+            if ($asset && !$this->entityManager->contains($asset)) {
+                $broken[] = [
+                    'type' => 'risk_invalid_asset',
+                    'entity_type' => 'Risk',
+                    'entity_id' => $risk->getId(),
+                    'entity_name' => $risk->getTitle(),
+                    'issue' => 'References non-existent asset',
+                ];
+            }
+        }
+
+        // Check incidents with invalid asset references
+        $allIncidents = $this->incidentRepository->findAll();
+        foreach ($allIncidents as $incident) {
+            foreach ($incident->getAffectedAssets() as $asset) {
+                if (!$this->entityManager->contains($asset)) {
+                    $broken[] = [
+                        'type' => 'incident_invalid_asset',
+                        'entity_type' => 'Incident',
+                        'entity_id' => $incident->getId(),
+                        'entity_name' => $incident->getTitle(),
+                        'issue' => 'References non-existent asset',
+                    ];
+                    break;
+                }
+            }
+        }
+
+        // Check controls with invalid risk references
+        $allControls = $this->controlRepository->findAll();
+        foreach ($allControls as $control) {
+            foreach ($control->getRisks() as $risk) {
+                if (!$this->entityManager->contains($risk)) {
+                    $broken[] = [
+                        'type' => 'control_invalid_risk',
+                        'entity_type' => 'Control',
+                        'entity_id' => $control->getId(),
+                        'entity_name' => $control->getName(),
+                        'issue' => 'References non-existent risk',
+                    ];
+                    break;
+                }
+            }
+        }
+
+        return $broken;
     }
 }

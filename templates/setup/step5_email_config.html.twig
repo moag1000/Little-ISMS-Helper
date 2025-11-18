@@ -95,7 +95,7 @@
 
                     {# Navigation #}
                     <div class="d-flex justify-content-between mt-4">
-                        <a href="{{ path('setup_step2_admin_user') }}" class="btn btn-outline-secondary">
+                        <a href="{{ path('setup_step4_admin_user') }}" class="btn btn-outline-secondary">
                             <i class="fas fa-arrow-left me-2"></i>
                             {{ 'setup.navigation.back'|trans }}
                         </a>
@@ -112,7 +112,7 @@
 
                     {# Skip Option #}
                     <div class="text-center mt-3">
-                        <form method="post" action="{{ path('setup_step3_email_config_skip') }}" class="d-inline">
+                        <form method="post" action="{{ path('setup_step5_email_config_skip') }}" class="d-inline">
                             <input type="hidden" name="_token" value="{{ csrf_token('setup_email_skip') }}">
                             <button type="submit" class="btn btn-sm btn-outline-secondary">
                                 <i class="fas fa-forward me-1"></i>

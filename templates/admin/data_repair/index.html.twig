@@ -272,15 +272,18 @@
     </div>
 
     {# Asset Assignment Repair for Risks #}
-    {% if allRisks is defined and allRisks|length > 0 %}
+    {% set risksWithoutAsset = allRisks|filter(r => r.asset is null) %}
+    {% if risksWithoutAsset|length > 0 %}
     <div class="card mt-4">
-        <div class="card-header bg-info text-white">
+        <div class="card-header bg-warning text-dark">
             <h5 class="mb-0">
-                <i class="bi bi-link-45deg"></i> {{ 'admin.data_repair.risk_asset_assignment'|trans|default('Risk-Asset Zuordnung reparieren') }}
+                <i class="bi bi-exclamation-triangle"></i> {{ 'admin.data_repair.risk_asset_assignment'|trans|default('Risk-Asset Zuordnung reparieren') }}
             </h5>
         </div>
         <div class="card-body">
-            <p class="text-muted">{{ 'admin.data_repair.risk_asset_assignment_desc'|trans|default('Hier können Sie Risiken ihren korrekten Assets zuordnen.') }}</p>
+            <div class="alert alert-warning">
+                <strong>{{ 'common.warning'|trans }}:</strong> {{ 'admin.data_repair.risk_asset_assignment_desc'|trans|default('Folgende Risiken haben kein Asset zugewiesen und sollten korrigiert werden.') }}
+            </div>
             <div class="table-responsive">
                 <table class="table table-sm table-striped">
                     <thead>
@@ -292,8 +295,8 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for risk in allRisks %}
-                        <tr{% if risk.asset is null %} class="table-warning"{% endif %}>
+                        {% for risk in risksWithoutAsset %}
+                        <tr class="table-warning">
                             <td>{{ risk.id }}</td>
                             <td>
                                 {{ risk.title }}
@@ -336,15 +339,18 @@
     {% endif %}
 
     {# Asset Assignment Repair for Incidents #}
-    {% if allIncidents is defined and allIncidents|length > 0 %}
+    {% set incidentsWithoutAsset = allIncidents|filter(i => i.affectedAssets|length == 0) %}
+    {% if incidentsWithoutAsset|length > 0 %}
     <div class="card mt-4">
-        <div class="card-header bg-info text-white">
+        <div class="card-header bg-warning text-dark">
             <h5 class="mb-0">
-                <i class="bi bi-link-45deg"></i> {{ 'admin.data_repair.incident_asset_assignment'|trans|default('Incident-Asset Zuordnung reparieren') }}
+                <i class="bi bi-exclamation-triangle"></i> {{ 'admin.data_repair.incident_asset_assignment'|trans|default('Incident-Asset Zuordnung reparieren') }}
             </h5>
         </div>
         <div class="card-body">
-            <p class="text-muted">{{ 'admin.data_repair.incident_asset_assignment_desc'|trans|default('Hier können Sie Incidents ihren korrekten Assets zuordnen.') }}</p>
+            <div class="alert alert-warning">
+                <strong>{{ 'common.warning'|trans }}:</strong> {{ 'admin.data_repair.incident_asset_assignment_desc'|trans|default('Folgende Incidents haben keine Assets zugewiesen und sollten korrigiert werden.') }}
+            </div>
             <div class="table-responsive">
                 <table class="table table-sm table-striped">
                     <thead>
@@ -356,8 +362,8 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for incident in allIncidents %}
-                        <tr{% if incident.affectedAssets|length == 0 %} class="table-warning"{% endif %}>
+                        {% for incident in incidentsWithoutAsset %}
+                        <tr class="table-warning">
                             <td>{{ incident.id }}</td>
                             <td>
                                 {{ incident.title }}
@@ -392,6 +398,130 @@
                                     </div>
                                 </form>
                             </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {# Controls Without Risks #}
+    {% if controlsWithoutRisks|length > 0 %}
+    <div class="card mt-4">
+        <div class="card-header bg-warning text-dark">
+            <h5 class="mb-0">
+                <i class="bi bi-shield-exclamation"></i> {{ 'admin.data_repair.controls_without_risks'|trans }}
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="alert alert-warning">
+                <strong>{{ 'common.warning'|trans }}:</strong> {{ 'admin.data_repair.controls_without_risks_desc'|trans }}
+            </div>
+            <p class="text-muted">{{ 'admin.data_repair.controls_count'|trans({'%count%': controlsWithoutRisks|length}) }}</p>
+            <div class="table-responsive">
+                <table class="table table-sm table-striped">
+                    <thead>
+                        <tr>
+                            <th>{{ 'control.field.control_id'|trans }}</th>
+                            <th>{{ 'control.field.name'|trans }}</th>
+                            <th>{{ 'control.field.category'|trans }}</th>
+                            <th>{{ 'control.field.implementation_status'|trans }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for control in controlsWithoutRisks %}
+                        <tr class="table-warning">
+                            <td><span class="badge bg-primary">{{ control.controlId }}</span></td>
+                            <td>{{ control.name }}</td>
+                            <td>{{ control.category }}</td>
+                            <td>
+                                <span class="badge bg-{{ control.implementationStatus == 'implemented' ? 'success' : (control.implementationStatus == 'in_progress' ? 'warning' : 'secondary') }}">
+                                    {{ ('control.status.' ~ control.implementationStatus)|trans }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {# Controls Without Assets #}
+    {% if controlsWithoutAssets|length > 0 %}
+    <div class="card mt-4">
+        <div class="card-header bg-info text-white">
+            <h5 class="mb-0">
+                <i class="bi bi-shield-check"></i> {{ 'admin.data_repair.controls_without_assets'|trans }}
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="alert alert-info">
+                <strong>{{ 'common.info'|trans }}:</strong> {{ 'admin.data_repair.controls_without_assets_desc'|trans }}
+            </div>
+            <p class="text-muted">{{ 'admin.data_repair.controls_count'|trans({'%count%': controlsWithoutAssets|length}) }}</p>
+            <div class="table-responsive">
+                <table class="table table-sm table-striped">
+                    <thead>
+                        <tr>
+                            <th>{{ 'control.field.control_id'|trans }}</th>
+                            <th>{{ 'control.field.name'|trans }}</th>
+                            <th>{{ 'control.field.category'|trans }}</th>
+                            <th>{{ 'control.field.implementation_status'|trans }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for control in controlsWithoutAssets %}
+                        <tr>
+                            <td><span class="badge bg-primary">{{ control.controlId }}</span></td>
+                            <td>{{ control.name }}</td>
+                            <td>{{ control.category }}</td>
+                            <td>
+                                <span class="badge bg-{{ control.implementationStatus == 'implemented' ? 'success' : (control.implementationStatus == 'in_progress' ? 'warning' : 'secondary') }}">
+                                    {{ ('control.status.' ~ control.implementationStatus)|trans }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {# Broken References #}
+    {% if brokenReferences|length > 0 %}
+    <div class="card mt-4">
+        <div class="card-header bg-danger text-white">
+            <h5 class="mb-0">
+                <i class="bi bi-exclamation-octagon"></i> {{ 'admin.data_repair.broken_references'|trans }}
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="alert alert-danger">
+                <strong>{{ 'common.error'|trans }}:</strong> {{ 'admin.data_repair.broken_references_desc'|trans }}
+            </div>
+            <div class="table-responsive">
+                <table class="table table-sm table-striped">
+                    <thead>
+                        <tr>
+                            <th>{{ 'admin.data_repair.entity_type'|trans }}</th>
+                            <th>ID</th>
+                            <th>{{ 'common.name'|trans }}</th>
+                            <th>{{ 'admin.data_repair.issue'|trans }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for ref in brokenReferences %}
+                        <tr class="table-danger">
+                            <td><span class="badge bg-secondary">{{ ref.entity_type }}</span></td>
+                            <td>{{ ref.entity_id }}</td>
+                            <td>{{ ref.entity_name }}</td>
+                            <td>{{ ref.issue }}</td>
                         </tr>
                         {% endfor %}
                     </tbody>

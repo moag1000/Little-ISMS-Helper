@@ -152,6 +152,23 @@ admin:
     entity_not_found: Entität nicht gefunden
     entity_reassigned: '%entity% wurde erfolgreich an %tenant% zugewiesen.'
     tenant_statistics: Tenant-Statistiken
+    risk_asset_assignment: Risk-Asset Zuordnung reparieren
+    risk_asset_assignment_desc: Folgende Risiken haben kein Asset zugewiesen und sollten korrigiert werden.
+    incident_asset_assignment: Incident-Asset Zuordnung reparieren
+    incident_asset_assignment_desc: Folgende Incidents haben keine Assets zugewiesen und sollten korrigiert werden.
+    current_asset: Aktuelles Asset
+    assign_to_asset: Neues Asset zuweisen
+    no_asset: Kein Asset
+    select_asset: Asset auswählen...
+    asset_not_found: Asset nicht gefunden
+    controls_without_risks: Maßnahmen ohne Risikozuordnung
+    controls_without_risks_desc: Folgende anwendbare Maßnahmen haben keine Risiken zugeordnet. Maßnahmen sollten mit Risiken verknüpft werden, um deren Wirksamkeit zu bewerten.
+    controls_without_assets: Maßnahmen ohne Asset-Zuordnung
+    controls_without_assets_desc: Folgende anwendbare Maßnahmen schützen keine Assets. Dies ist informativ und kann je nach Maßnahmentyp normal sein.
+    controls_count: '{%count%} Maßnahme(n) gefunden'
+    broken_references: Defekte Referenzen
+    broken_references_desc: Folgende Datensätze referenzieren nicht existierende Entitäten. Diese Referenzen müssen manuell bereinigt werden.
+    issue: Problem
   dashboard:
     title: Admin Dashboard
     subtitle: Zentrale Verwaltung und Systemübersicht
@@ -673,6 +690,7 @@ risk:
     treatment_strategy: Behandlungsstrategie
     status: Status
   label:
+    title: Risikotitel
     risk_owner: Risikoverantwortlicher
   placeholder:
     title: z.B. Datenleck aus der Datenbank
@@ -714,6 +732,12 @@ control:
     last_review_date: Letztes Review
     next_review_date: Nächstes Review
     protected_assets: Verknüpfte Assets
+  status:
+    not_started: Nicht begonnen
+    planned: Geplant
+    in_progress: In Bearbeitung
+    implemented: Implementiert
+    verified: Verifiziert
   success:
     updated: Control erfolgreich aktualisiert.
 # Phase 6K Translation Update - Audit Module
@@ -1166,6 +1190,9 @@ incident:
     national_authority_notified: Gemeldete Behörde
     authority_reference_number: Aktenzeichen der Behörde
     affected_assets: Betroffene Assets
+  label:
+    title: Vorfallstitel
+    severity: Schweregrad
   action:
     download_nis2_report: NIS2-Bericht herunterladen (PDF)
     report_new: Neuen Vorfall melden

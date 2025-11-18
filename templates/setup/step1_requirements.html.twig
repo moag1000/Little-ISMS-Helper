@@ -168,14 +168,14 @@
 
                     {# Navigation #}
                     <div class="d-flex justify-content-between mt-4">
-                        <a href="{{ path('setup_step4_organisation_info') }}" class="btn btn-outline-secondary">
+                        <a href="{{ path('setup_step0_welcome') }}" class="btn btn-outline-secondary">
                             <i class="fas fa-arrow-left me-2"></i>
                             Zurück
                         </a>
 
                         {% if can_proceed %}
-                            <a href="{{ path('setup_step6_modules') }}" class="btn btn-primary">
-                                Weiter zu Schritt 6: Module auswählen
+                            <a href="{{ path('setup_step2_database_config') }}" class="btn btn-primary">
+                                Weiter zu Schritt 2: Datenbank konfigurieren
                                 <i class="fas fa-arrow-right ms-2"></i>
                             </a>
                         {% else %}
