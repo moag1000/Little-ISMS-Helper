@@ -45,12 +45,15 @@ class EnvironmentWriter
 
         // If not SQLite, store individual components and use variable references in URL
         if ($type !== 'sqlite') {
+            // IMPORTANT: Define all DB_* variables BEFORE DATABASE_URL
+            // because DATABASE_URL references them using ${VAR} syntax
             $envVars['DB_TYPE'] = $type;
             $envVars['DB_HOST'] = $host;
             $envVars['DB_PORT'] = (string)$port;
             $envVars['DB_NAME'] = $name;
             $envVars['DB_USER'] = $user;
             $envVars['DB_PASS'] = $password;
+            $envVars['DB_SERVER_VERSION'] = $config['serverVersion'] ?? '8.0';
             if (!empty($unixSocket)) {
                 $envVars['DB_SOCKET'] = $unixSocket;
             }
@@ -58,10 +61,10 @@ class EnvironmentWriter
             // Build DATABASE_URL using variable references
             // This avoids URL-encoding issues with special characters in passwords
             $databaseUrl = match ($type) {
-                'mysql', 'mariadb' => $this->buildMysqlDatabaseUrlWithVars($config['serverVersion'] ?? '8.0', $unixSocket),
+                'mysql', 'mariadb' => $this->buildMysqlDatabaseUrlWithVars($envVars['DB_SERVER_VERSION'], $unixSocket),
                 'postgresql' => sprintf(
                     'postgresql://${DB_USER}:${DB_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME}?serverVersion=%s&charset=utf8',
-                    $config['serverVersion'] ?? '14'
+                    $envVars['DB_SERVER_VERSION']
                 ),
                 default => throw new \InvalidArgumentException("Unsupported database type: {$type}")
             };
@@ -74,6 +77,7 @@ class EnvironmentWriter
             );
         }
 
+        // Add DATABASE_URL LAST so it comes after all variables it references
         $envVars['DATABASE_URL'] = $databaseUrl;
 
         $this->writeEnvVariables($envVars);
@@ -353,12 +357,17 @@ class EnvironmentWriter
         $content .= "# Generated at: " . date('Y-m-d H:i:s') . "\n";
         $content .= "# =============================================================================\n\n";
 
+        // IMPORTANT: Write DATABASE_URL LAST because it may reference other variables using ${VAR} syntax
+        // Extract DATABASE_URL if present, write it after all other variables
+        $databaseUrl = null;
+        if (isset($variables['DATABASE_URL'])) {
+            $databaseUrl = $variables['DATABASE_URL'];
+            unset($variables['DATABASE_URL']);
+        }
+
+        // Write all variables except DATABASE_URL
         foreach ($variables as $key => $value) {
-            // DATABASE_URL contains ${VAR} references - must NOT be quoted or escaped
-            // Symfony's .env parser only expands variables outside of quotes
-            if ($key === 'DATABASE_URL' && str_contains($value, '${')) {
-                $content .= "{$key}={$value}\n";
-            } elseif ($key === 'DB_PASS') {
+            if ($key === 'DB_PASS') {
                 // ALWAYS quote DB_PASS to handle ALL special characters (^, !, @, etc.)
                 $escapedValue = $this->escapeEnvValue($value, true);
                 $content .= "{$key}={$escapedValue}\n";
@@ -367,6 +376,13 @@ class EnvironmentWriter
                 $escapedValue = $this->escapeEnvValue($value);
                 $content .= "{$key}={$escapedValue}\n";
             }
+        }
+
+        // Write DATABASE_URL last (after all variables it might reference)
+        if ($databaseUrl !== null) {
+            // DATABASE_URL contains ${VAR} references - must NOT be quoted or escaped
+            // Symfony's .env parser only expands variables outside of quotes
+            $content .= "DATABASE_URL={$databaseUrl}\n";
         }
 
         return $content;
