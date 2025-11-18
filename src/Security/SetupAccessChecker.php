@@ -151,10 +151,10 @@ class SetupAccessChecker
         }
 
         if (!$state['database_configured']) {
-            return 'setup_step1_database_config';
+            return 'setup_step2_database_config';
         }
 
         // If DB configured but not sure about admin, go to admin creation
-        return 'setup_step2_admin_user';
+        return 'setup_step4_admin_user';
     }
 }
