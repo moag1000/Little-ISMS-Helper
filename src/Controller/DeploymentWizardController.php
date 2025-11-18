@@ -1655,12 +1655,12 @@ class DeploymentWizardController extends AbstractController
                 try {
                     $connection->rollBack();
                 } catch (\Exception $e) {
-                    // If rollback fails, close and reconnect
+                    // If rollback fails, close the connection
+                    // Doctrine will automatically reconnect on next use
                     try {
                         $connection->close();
-                        $connection->connect();
-                    } catch (\Exception $reconnectException) {
-                        // Log but don't fail - command will handle it
+                    } catch (\Exception $closeException) {
+                        // Ignore - connection might already be closed
                     }
                     break;
                 }
