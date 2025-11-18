@@ -73,6 +73,84 @@
     box-sizing: border-box;
 }
 
+/* Global Keyboard Focus Indicators - WCAG 2.1 AA Compliant */
+/* Focus-visible only shows when keyboard navigating, not on mouse clicks */
+*:focus-visible {
+    outline: 3px solid var(--color-secondary);
+    outline-offset: 2px;
+    border-radius: 2px;
+}
+
+/* Remove outline for mouse users */
+*:focus:not(:focus-visible) {
+    outline: none;
+}
+
+/* High contrast focus for dark mode */
+[data-theme="dark"] *:focus-visible {
+    outline-color: #22d3ee;
+    box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.4);
+}
+
+/* Specific focus styles for buttons */
+.btn:focus-visible,
+button:focus-visible {
+    outline: 3px solid var(--color-accent-pink);
+    outline-offset: 3px;
+    box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.3);
+}
+
+[data-theme="dark"] .btn:focus-visible,
+[data-theme="dark"] button:focus-visible {
+    outline-color: #f472b6;
+    box-shadow: 0 0 0 3px rgba(244, 114, 182, 0.4);
+}
+
+/* Enhanced focus for form inputs to override default */
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+    outline: 3px solid var(--color-secondary) !important;
+    outline-offset: 2px;
+    border-color: var(--color-secondary);
+    box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.2), var(--glow-cyan);
+}
+
+[data-theme="dark"] input:focus-visible,
+[data-theme="dark"] select:focus-visible,
+[data-theme="dark"] textarea:focus-visible {
+    outline-color: #22d3ee !important;
+    border-color: #22d3ee;
+    box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.4);
+}
+
+/* Link focus indicators */
+a:focus-visible {
+    outline: 3px solid var(--color-secondary);
+    outline-offset: 2px;
+    text-decoration: underline;
+    text-decoration-color: var(--color-secondary);
+    text-decoration-thickness: 2px;
+}
+
+[data-theme="dark"] a:focus-visible {
+    outline-color: #22d3ee;
+    text-decoration-color: #22d3ee;
+}
+
+/* Focus for custom checkbox/radio inputs */
+input[type="checkbox"]:focus-visible,
+input[type="radio"]:focus-visible {
+    outline: 3px solid var(--color-secondary);
+    outline-offset: 3px;
+}
+
+[data-theme="dark"] input[type="checkbox"]:focus-visible,
+[data-theme="dark"] input[type="radio"]:focus-visible {
+    outline-color: #22d3ee;
+    box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.4);
+}
+
 body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     line-height: 1.6;
@@ -173,7 +251,7 @@ body {
     border: none;
     cursor: pointer;
     padding: 0;
-    z-index: 1001;
+    z-index: calc(var(--z-fixed) + 1); /* 501 - above sidebar, below modals */
     position: relative;
 }
 
@@ -217,7 +295,7 @@ body {
     height: 100%;
     background: rgba(15, 23, 42, 0.8);
     backdrop-filter: blur(4px);
-    z-index: 999;
+    z-index: calc(var(--z-fixed) - 1); /* 499 - below sidebar, above page content */
     opacity: 0;
     transition: opacity 0.3s ease;
 }
@@ -668,8 +746,8 @@ h3 {
 
 /* Cards - Cyberpunk Style with Dark Mode Support */
 .card {
-    background: white;
-    border: 1px solid #e2e8f0;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-color);
     border-radius: var(--border-radius);
     padding: var(--spacing-lg);
     box-shadow: var(--shadow-sm);
@@ -920,6 +998,46 @@ h3 {
     font-size: 0.875rem;
 }
 
+/* Button Loading State */
+.btn-loading {
+    position: relative;
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+.btn-loading:hover {
+    transform: none;
+    box-shadow: var(--shadow-sm);
+}
+
+/* Spinner - Bootstrap-like */
+.spinner-border {
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    vertical-align: -0.125em;
+    border: 0.15em solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: spinner-border-spin 0.75s linear infinite;
+}
+
+.spinner-border-sm {
+    width: 0.875rem;
+    height: 0.875rem;
+    border-width: 0.125em;
+}
+
+@keyframes spinner-border-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Spacing helper for spinner */
+.me-2 {
+    margin-right: 0.5rem;
+}
+
 /* Info/Warning Boxes */
 .info-box,
 .warning-box,
@@ -1016,6 +1134,38 @@ tbody td {
     padding: var(--spacing-md);
 }
 
+/* Sticky Table Headers */
+.table thead.sticky-top,
+.table thead.thead-sticky {
+    position: sticky;
+    top: 60px; /* Adjust based on navbar height */
+    z-index: 10;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.table thead.sticky-top th,
+.table thead.thead-sticky th {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    font-weight: 600;
+    border-bottom: 2px solid var(--border-color);
+    padding: 12px 8px;
+    white-space: nowrap;
+}
+
+[data-theme="dark"] .table thead.sticky-top,
+[data-theme="dark"] .table thead.thead-sticky {
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* Table container for scrollable tables */
+.table-container {
+    position: relative;
+    max-height: 800px;
+    overflow-y: auto;
+    margin-top: 1rem;
+}
+
 /* Badges */
 .badge {
     display: inline-block;
@@ -1059,6 +1209,77 @@ tbody td {
 
 [data-theme="dark"] .form-label {
     color: var(--text-primary);
+}
+
+/* Required Field Indicator */
+.form-label .required,
+.required-indicator {
+    color: #ef4444;
+    margin-left: 0.25rem;
+    font-weight: 700;
+}
+
+[data-theme="dark"] .form-label .required,
+[data-theme="dark"] .required-indicator {
+    color: #f87171;
+}
+
+/* Required Field Legend */
+.form-required-legend {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+    padding: 0.5rem 0.75rem;
+    background: var(--bg-secondary);
+    border-left: 3px solid #ef4444;
+    border-radius: var(--border-radius-sm);
+}
+
+.form-required-legend .required {
+    color: #ef4444;
+    font-weight: 700;
+    margin-right: 0.25rem;
+}
+
+[data-theme="dark"] .form-required-legend {
+    background: var(--bg-tertiary);
+}
+
+/* Invalid Field Feedback */
+.invalid-feedback {
+    display: none;
+    margin-top: 0.25rem;
+    font-size: 0.875rem;
+    color: #ef4444;
+}
+
+.is-invalid ~ .invalid-feedback {
+    display: block;
+}
+
+.form-control.is-invalid {
+    border-color: #ef4444;
+}
+
+.form-control.is-invalid:focus {
+    border-color: #ef4444;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+}
+
+/* Valid Field Feedback */
+.valid-feedback {
+    display: none;
+    margin-top: 0.25rem;
+    font-size: 0.875rem;
+    color: #10b981;
+}
+
+.is-valid ~ .valid-feedback {
+    display: block;
+}
+
+.form-control.is-valid {
+    border-color: #10b981;
 }
 
 .form-control {
@@ -1343,7 +1564,7 @@ textarea.form-control {
         left: -280px;
         width: 280px;
         height: 100vh;
-        z-index: 1000;
+        z-index: var(--z-fixed); /* 500 - below modals (1000+), above page content */
         transition: left 0.3s ease;
         box-shadow: 5px 0 30px rgba(6, 182, 212, 0.3);
     }
