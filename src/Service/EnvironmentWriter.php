@@ -373,9 +373,23 @@ class EnvironmentWriter
 
         // Write DATABASE_URL last (after all variables it might reference)
         if ($databaseUrl !== null) {
-            // DATABASE_URL contains ${VAR} references - must NOT be quoted or escaped
-            // Symfony's .env parser only expands variables outside of quotes
-            $content .= "DATABASE_URL={$databaseUrl}\n";
+            // If DATABASE_URL contains ${VAR} references, resolve them first
+            // Then quote the final URL to handle special characters safely
+            if (str_contains($databaseUrl, '${')) {
+                // Resolve variable references: replace ${VAR_NAME} with actual values
+                $resolvedUrl = preg_replace_callback('/\$\{([A-Z_]+)\}/', function($matches) use ($variables) {
+                    $varName = $matches[1];
+                    return $variables[$varName] ?? $matches[0];
+                }, $databaseUrl);
+
+                // Quote the resolved URL to handle special characters
+                $escapedValue = $this->escapeEnvValue($resolvedUrl, true);
+                $content .= "DATABASE_URL={$escapedValue}\n";
+            } else {
+                // No variable references - just quote it
+                $escapedValue = $this->escapeEnvValue($databaseUrl, true);
+                $content .= "DATABASE_URL={$escapedValue}\n";
+            }
         }
 
         return $content;
