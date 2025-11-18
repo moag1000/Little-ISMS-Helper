@@ -383,6 +383,11 @@ class DeploymentWizardController extends AbstractController
                 }
 
                 $session->set('debug_processing', 'Step 3: Migration successful, creating admin user');
+
+                // Clean up database connection state after migrations
+                // Migrations can leave orphaned transactions/savepoints
+                $this->cleanupDatabaseConnection();
+
                 // Create admin user via command
                 $result = $this->createAdminUserViaCommand($data);
 
@@ -1634,6 +1639,37 @@ class DeploymentWizardController extends AbstractController
                 'success' => false,
                 'message' => $e->getMessage(),
             ];
+        }
+    }
+
+    /**
+     * Clean up database connection state to prevent savepoint errors
+     */
+    private function cleanupDatabaseConnection(): void
+    {
+        try {
+            $connection = $this->entityManager->getConnection();
+
+            // Roll back all active transactions
+            while ($connection->isTransactionActive()) {
+                try {
+                    $connection->rollBack();
+                } catch (\Exception $e) {
+                    // If rollback fails, close and reconnect
+                    try {
+                        $connection->close();
+                        $connection->connect();
+                    } catch (\Exception $reconnectException) {
+                        // Log but don't fail - command will handle it
+                    }
+                    break;
+                }
+            }
+
+            // Clear EntityManager cache
+            $this->entityManager->clear();
+        } catch (\Exception $e) {
+            // Silently ignore - the setup command will handle connection issues
         }
     }
 
