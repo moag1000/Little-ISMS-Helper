@@ -335,9 +335,9 @@
                         {% endif %}
                     </td>
                     <td class="text-center">
-                        {% if risk.affectedAssets|length > 0 %}
-                            <a href="{{ path('app_risk_assets', {id: risk.id}) }}" class="badge bg-warning text-dark">
-                                {{ risk.affectedAssets|length }}
+                        {% if risk.asset %}
+                            <a href="{{ path('app_asset_show', {id: risk.asset.id}) }}" class="badge bg-info text-dark" title="{{ risk.asset.name }}">
+                                1
                             </a>
                         {% else %}
                             <span class="text-muted">0</span>
