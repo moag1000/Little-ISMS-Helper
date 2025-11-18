@@ -1633,15 +1633,20 @@ class DeploymentWizardController extends AbstractController
     #[Route('/step11-complete', name: 'setup_step11_complete')]
     public function step11Complete(SessionInterface $session): Response
     {
+        $backupRestored = $session->get('setup_backup_restored', false);
         $selectedModules = $session->get('setup_selected_modules', []);
 
-        if (empty($selectedModules)) {
+        // If backup was restored, skip module requirement check
+        // (backup already contains all necessary configuration)
+        if (empty($selectedModules) && !$backupRestored) {
             $this->addFlash('error', $this->translator->trans('deployment.error.select_modules'));
             return $this->redirectToRoute('setup_step7_modules');
         }
 
-        // Save active modules
-        $this->moduleConfigService->saveActiveModules($selectedModules);
+        // Save active modules (only if we have any)
+        if (!empty($selectedModules)) {
+            $this->moduleConfigService->saveActiveModules($selectedModules);
+        }
 
         // Save organization data to Tenant settings
         $this->saveOrganisationDataToTenant($session);
