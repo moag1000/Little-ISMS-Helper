@@ -309,6 +309,86 @@ class DataRepairController extends AbstractController
         return $this->redirectToRoute('admin_data_repair_index');
     }
 
+    #[Route('/assign-risk/{id}', name: 'admin_data_repair_assign_risk', methods: ['POST'])]
+    public function assignRisk(Request $request, int $id): Response
+    {
+        $riskId = $request->request->get('risk_id');
+
+        if (!$this->isCsrfTokenValid('assign_risk_' . $id, $request->request->get('_token'))) {
+            $this->addFlash('error', $this->translator->trans('common.csrf_error'));
+            return $this->redirectToRoute('admin_data_repair_index');
+        }
+
+        if (!$riskId) {
+            $this->addFlash('error', $this->translator->trans('admin.data_repair.select_risk'));
+            return $this->redirectToRoute('admin_data_repair_index');
+        }
+
+        $control = $this->controlRepository->find($id);
+        if (!$control) {
+            $this->addFlash('error', $this->translator->trans('admin.data_repair.entity_not_found'));
+            return $this->redirectToRoute('admin_data_repair_index');
+        }
+
+        $risk = $this->riskRepository->find($riskId);
+        if (!$risk) {
+            $this->addFlash('error', $this->translator->trans('admin.data_repair.entity_not_found'));
+            return $this->redirectToRoute('admin_data_repair_index');
+        }
+
+        // Add risk to control
+        $control->addRisk($risk);
+        $this->entityManager->flush();
+
+        $this->addFlash('success', sprintf(
+            'Risiko "%s" wurde erfolgreich der Maßnahme "%s" zugeordnet.',
+            $risk->getTitle(),
+            $control->getName()
+        ));
+
+        return $this->redirectToRoute('admin_data_repair_index');
+    }
+
+    #[Route('/assign-asset-to-control/{id}', name: 'admin_data_repair_assign_asset_to_control', methods: ['POST'])]
+    public function assignAssetToControl(Request $request, int $id): Response
+    {
+        $assetId = $request->request->get('asset_id');
+
+        if (!$this->isCsrfTokenValid('assign_asset_to_control_' . $id, $request->request->get('_token'))) {
+            $this->addFlash('error', $this->translator->trans('common.csrf_error'));
+            return $this->redirectToRoute('admin_data_repair_index');
+        }
+
+        if (!$assetId) {
+            $this->addFlash('error', $this->translator->trans('admin.data_repair.select_asset'));
+            return $this->redirectToRoute('admin_data_repair_index');
+        }
+
+        $control = $this->controlRepository->find($id);
+        if (!$control) {
+            $this->addFlash('error', $this->translator->trans('admin.data_repair.entity_not_found'));
+            return $this->redirectToRoute('admin_data_repair_index');
+        }
+
+        $asset = $this->assetRepository->find($assetId);
+        if (!$asset) {
+            $this->addFlash('error', $this->translator->trans('admin.data_repair.asset_not_found'));
+            return $this->redirectToRoute('admin_data_repair_index');
+        }
+
+        // Add asset to control's protected assets
+        $control->addProtectedAsset($asset);
+        $this->entityManager->flush();
+
+        $this->addFlash('success', sprintf(
+            'Asset "%s" wurde erfolgreich der Maßnahme "%s" zugeordnet.',
+            $asset->getName(),
+            $control->getName()
+        ));
+
+        return $this->redirectToRoute('admin_data_repair_index');
+    }
+
     /**
      * Find broken references in the database
      * Checks for foreign key references that point to non-existent entities
