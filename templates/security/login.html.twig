@@ -20,26 +20,44 @@
             </div>
         {% else %}
             {# Local Login Form #}
-            <form method="post" action="{{ path('app_login') }}">
+            <form method="post" action="{{ path('app_login') }}" novalidate>
+                <p class="form-required-legend">
+                    <span class="required">*</span> = {{ 'form.required_field'|trans }}
+                </p>
+
                 <div class="mb-3">
-                    <label for="username" class="form-label">{{ 'login.field.email'|trans }}</label>
+                    <label for="username" class="form-label">
+                        {{ 'login.field.email'|trans }}
+                        <span class="required" aria-label="required">*</span>
+                    </label>
                     <input type="email"
                            class="form-control"
                            id="username"
                            name="_username"
                            value="{{ last_username }}"
                            required
+                           aria-required="true"
                            autofocus
-                           placeholder="ihre-email@example.com">
+                           autocomplete="email"
+                           placeholder="ihre-email@example.com"
+                           aria-describedby="username-help">
+                    <small class="form-text text-muted" id="username-help">
+                        {{ 'login.help.email'|trans }}
+                    </small>
                 </div>
 
                 <div class="mb-3">
-                    <label for="password" class="form-label">{{ 'login.field.password'|trans }}</label>
+                    <label for="password" class="form-label">
+                        {{ 'login.field.password'|trans }}
+                        <span class="required" aria-label="required">*</span>
+                    </label>
                     <input type="password"
                            class="form-control"
                            id="password"
                            name="_password"
                            required
+                           aria-required="true"
+                           autocomplete="current-password"
                            placeholder="Ihr Passwort">
                 </div>
 

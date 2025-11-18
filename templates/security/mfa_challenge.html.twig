@@ -73,7 +73,10 @@
                         </div>
 
                         <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-primary btn-lg">
+                            <button type="submit"
+                                    class="btn btn-primary btn-lg"
+                                    data-controller="button-loading"
+                                    data-action="button-loading#start">
                                 <i class="bi bi-check-circle"></i>
                                 {{ 'mfa.challenge.verify'|trans }}
                             </button>
@@ -128,7 +131,11 @@
             e.target.value = value;
             // Auto-submit after short delay for UX
             setTimeout(() => {
-                e.target.form.submit();
+                // Trigger loading state before submit
+                const submitBtn = e.target.form.querySelector('button[type="submit"]');
+                if (submitBtn) {
+                    submitBtn.click(); // This will trigger the button-loading controller
+                }
             }, 300);
         }
     });

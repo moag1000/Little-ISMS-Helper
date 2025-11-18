@@ -21,6 +21,9 @@ nav:
   audits: Audits
   compliance: Compliance
   audit_log: Audit Log
+  nis2_dashboard: 'NIS2 Dashboard'
+  vulnerabilities: 'Schwachstellen'
+  patches: 'Patches'
   users: Benutzer
   documents: Dokumente
   assets_risk_hub: 'Assets & Risiken'
@@ -43,10 +46,12 @@ breadcrumb:
   home: 'Startseite'
 login:
   title: Anmelden
-  already_logged_in: Sie sind bereits als {{ user }} angemeldet.
+  already_logged_in: Sie sind bereits als %user% angemeldet.
   field:
     email: E-Mail
     password: Passwort
+  help:
+    email: Verwenden Sie Ihre geschäftliche E-Mail-Adresse
   remember_me: Angemeldet bleiben
   submit: Anmelden
   azure_oauth: Mit Microsoft Azure anmelden (OAuth)
@@ -4312,6 +4317,7 @@ form:
   document_policies: Richtlinien dokumentieren
   plan_awareness_training: Awareness-Schulung planen
   required: 'Pflichtfeld'
+  required_field: 'Pflichtfeld'
   optional: 'Optional'
   action:
     save: 'Speichern'
