@@ -352,12 +352,24 @@ class DeploymentWizardController extends AbstractController
             $logger->info('Running database migrations before backup restore');
             $migrationResult = $this->runMigrationsInternal();
 
+            $logger->info('Migration result', [
+                'success' => $migrationResult['success'],
+                'message' => $migrationResult['message'],
+                'output' => $migrationResult['output'] ?? 'no output',
+            ]);
+
             if (!$migrationResult['success']) {
-                $this->addFlash('error', 'Fehler beim Erstellen der Datenbank-Struktur: ' . $migrationResult['message']);
+                $errorMsg = 'Fehler beim Erstellen der Datenbank-Struktur: ' . $migrationResult['message'];
+                if (isset($migrationResult['output'])) {
+                    $errorMsg .= '<br><pre>' . htmlspecialchars($migrationResult['output']) . '</pre>';
+                }
+                $this->addFlash('error', $errorMsg);
+                $logger->error('Migration failed', ['result' => $migrationResult]);
                 return $this->redirectToRoute('setup_step3_restore_backup');
             }
 
             $logger->info('Database migrations completed successfully');
+            $this->addFlash('info', 'Datenbank-Struktur wurde erfolgreich erstellt');
 
             // Load and restore backup
             $backup = $backupService->loadBackupFromFile($filepath);
@@ -1651,27 +1663,32 @@ class DeploymentWizardController extends AbstractController
             $input = new ArrayInput([
                 'command' => 'doctrine:migrations:migrate',
                 '--no-interaction' => true,
-                '--quiet' => true,
+                '--allow-no-migration' => true,
             ]);
 
             $output = new BufferedOutput();
             $exitCode = $application->run($input, $output);
 
+            $outputText = $output->fetch();
+
             if ($exitCode === 0) {
                 return [
                     'success' => true,
                     'message' => 'Database migrations executed successfully',
+                    'output' => $outputText,
                 ];
             }
 
             return [
                 'success' => false,
-                'message' => 'Migration failed: ' . $output->fetch(),
+                'message' => 'Migration failed with exit code ' . $exitCode . ': ' . $outputText,
+                'output' => $outputText,
             ];
         } catch (\Exception $e) {
             return [
                 'success' => false,
-                'message' => $e->getMessage(),
+                'message' => 'Migration exception: ' . $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine(),
+                'exception' => get_class($e),
             ];
         }
     }
