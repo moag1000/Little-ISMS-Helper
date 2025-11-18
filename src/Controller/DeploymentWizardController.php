@@ -854,7 +854,7 @@ class DeploymentWizardController extends AbstractController
 
                 $this->addFlash('success', $this->translator->trans('setup.organisation.info_saved'));
 
-                return $this->redirectToRoute('setup_step1_requirements');
+                return $this->redirectToRoute('setup_step7_modules');
             } catch (\Exception $e) {
                 $this->addFlash('error', $this->translator->trans('setup.organisation.info_failed') . ': ' . $e->getMessage());
             }
