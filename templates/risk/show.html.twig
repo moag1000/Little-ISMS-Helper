@@ -55,12 +55,12 @@
                     <span class="value">{{ risk.status|upper|replace({'_': ' '}) }}</span>
                 </div>
                 <div class="detail-item">
-                    <span class="label">Identified:</span>
-                    <span class="value">{{ risk.identifiedDate|date('d.m.Y') }}</span>
+                    <span class="label">Created:</span>
+                    <span class="value">{{ risk.createdAt|date('d.m.Y') }}</span>
                 </div>
                 <div class="detail-item">
-                    <span class="label">Identified By:</span>
-                    <span class="value">{{ risk.identifiedBy ?? 'N/A' }}</span>
+                    <span class="label">Last Review:</span>
+                    <span class="value">{{ risk.reviewDate ? risk.reviewDate|date('d.m.Y') : 'Not reviewed' }}</span>
                 </div>
             </div>
 
@@ -76,11 +76,11 @@
                     <h3>Inherent Risk</h3>
                     <div class="risk-matrix-mini">
                         <div class="risk-score risk-level-{{ risk.inherentRiskLevel }}">
-                            {{ risk.inherentRiskScore }}
+                            {{ risk.inherentRiskLevel }}
                         </div>
                         <div class="risk-components">
-                            <div>Probability: {{ risk.inherentProbability }}/5</div>
-                            <div>Impact: {{ risk.inherentImpact }}/5</div>
+                            <div>Probability: {{ risk.probability }}/5</div>
+                            <div>Impact: {{ risk.impact }}/5</div>
                         </div>
                     </div>
                     <p class="risk-level-text">Level: <strong>{{ risk.inherentRiskLevel|upper }}</strong></p>
@@ -91,7 +91,7 @@
                     <h3>Residual Risk</h3>
                     <div class="risk-matrix-mini">
                         <div class="risk-score risk-level-{{ risk.residualRiskLevel }}">
-                            {{ risk.residualRiskScore }}
+                            {{ risk.residualRiskLevel }}
                         </div>
                         <div class="risk-components">
                             <div>Probability: {{ risk.residualProbability }}/5</div>
