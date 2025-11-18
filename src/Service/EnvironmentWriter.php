@@ -62,10 +62,7 @@ class EnvironmentWriter
             // This avoids URL-encoding issues with special characters in passwords
             $databaseUrl = match ($type) {
                 'mysql', 'mariadb' => $this->buildMysqlDatabaseUrlWithVars($envVars['DB_SERVER_VERSION'], $unixSocket),
-                'postgresql' => sprintf(
-                    'postgresql://${DB_USER}:${DB_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME}?serverVersion=%s&charset=utf8',
-                    $envVars['DB_SERVER_VERSION']
-                ),
+                'postgresql' => 'postgresql://${DB_USER}:${DB_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME}?serverVersion=${DB_SERVER_VERSION}&charset=utf8',
                 default => throw new \InvalidArgumentException("Unsupported database type: {$type}")
             };
         } else {
@@ -93,17 +90,13 @@ class EnvironmentWriter
         if (!empty($unixSocket)) {
             // Unix socket connection (better performance, no TCP overhead)
             return sprintf(
-                'mysql://${DB_USER}:${DB_PASS}@localhost/${DB_NAME}?unix_socket=%s&serverVersion=%s&charset=utf8mb4',
-                $unixSocket,
-                $serverVersion
+                'mysql://${DB_USER}:${DB_PASS}@localhost/${DB_NAME}?unix_socket=%s&serverVersion=${DB_SERVER_VERSION}&charset=utf8mb4',
+                $unixSocket
             );
         }
 
         // Standard TCP connection using variable references
-        return sprintf(
-            'mysql://${DB_USER}:${DB_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME}?serverVersion=%s&charset=utf8mb4',
-            $serverVersion
-        );
+        return 'mysql://${DB_USER}:${DB_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME}?serverVersion=${DB_SERVER_VERSION}&charset=utf8mb4';
     }
 
     /**
