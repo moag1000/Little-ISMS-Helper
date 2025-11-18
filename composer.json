@@ -102,14 +102,21 @@
             "@php -r \"is_dir('var/cache') || mkdir('var/cache', 0755, true);\"",
             "@php -r \"is_dir('var/log') || mkdir('var/log', 0755, true);\"",
             "@php -r \"is_dir('var/sessions') || mkdir('var/sessions', 0700, true);\"",
-            "@php -r \"is_dir('public/uploads') || mkdir('public/uploads', 0755, true);\""
+            "@php -r \"is_dir('public/uploads') || mkdir('public/uploads', 0755, true);\"",
+            "@php -r \"is_dir('public/assets') || mkdir('public/assets', 0755, true);\""
+        ],
+        "clean-assets": [
+            "@php -r \"array_map('unlink', glob('public/assets/*.{js,css,map,json}', GLOB_BRACE) ?: []);\"",
+            "@php -r \"array_map('unlink', glob('public/assets/*/*.{js,css,map,json}', GLOB_BRACE) ?: []);\""
         ],
         "post-install-cmd": [
             "@setup-directories",
+            "@clean-assets",
             "@auto-scripts"
         ],
         "post-update-cmd": [
             "@setup-directories",
+            "@clean-assets",
             "@auto-scripts"
         ]
     },
