@@ -20,7 +20,11 @@
             </div>
         {% else %}
             {# Local Login Form #}
-            <form method="post" action="{{ path('app_login') }}" novalidate>
+            <form method="post"
+                  action="{{ path('app_login') }}"
+                  novalidate
+                  data-controller="form-validation"
+                  data-action="submit->form-validation#handleSubmit">
                 <p class="form-required-legend">
                     <span class="required">*</span> = {{ 'form.required_field'|trans }}
                 </p>
