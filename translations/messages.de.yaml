@@ -161,8 +161,8 @@ admin:
     no_asset: Kein Asset
     select_asset: Asset auswählen...
     asset_not_found: Asset nicht gefunden
-    controls_without_risks: Maßnahmen ohne Risikozuordnung
-    controls_without_risks_desc: Folgende anwendbare Maßnahmen haben keine Risiken zugeordnet. Maßnahmen sollten mit Risiken verknüpft werden, um deren Wirksamkeit zu bewerten.
+    controls_without_risks: Maßnahmen ohne Risiko- oder Framework-Zuordnung
+    controls_without_risks_desc: Folgende anwendbare Maßnahmen haben weder Risiken noch Compliance-Framework-Zuordnungen. Maßnahmen sollten entweder mit Risiken oder Frameworks verknüpft werden.
     controls_without_assets: Maßnahmen ohne Asset-Zuordnung
     controls_without_assets_desc: Folgende anwendbare Maßnahmen schützen keine Assets. Dies ist informativ und kann je nach Maßnahmentyp normal sein.
     controls_count: '{%count%} Maßnahme(n) gefunden'
