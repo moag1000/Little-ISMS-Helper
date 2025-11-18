@@ -131,14 +131,14 @@ class RiskMatrixService
     {
         $score = $likelihood * $impact;
 
-        if ($score >= 15) {
-            return 'critical'; // Red (15-25)
-        } elseif ($score >= 8) {
-            return 'high';     // Orange (8-14)
-        } elseif ($score >= 4) {
-            return 'medium';   // Yellow (4-7)
+        if ($score >= 20) {
+            return 'critical'; // Red (20-25)
+        } elseif ($score >= 12) {
+            return 'high';     // Orange (12-19)
+        } elseif ($score >= 6) {
+            return 'medium';   // Yellow (6-11)
         } else {
-            return 'low';      // Green (1-3)
+            return 'low';      // Green (1-5)
         }
     }
 
