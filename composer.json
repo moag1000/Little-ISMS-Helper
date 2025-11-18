@@ -106,8 +106,9 @@
             "@php -r \"is_dir('public/assets') || mkdir('public/assets', 0755, true);\""
         ],
         "clean-assets": [
-            "@php -r \"array_map('unlink', glob('public/assets/*.{js,css,map,json}', GLOB_BRACE) ?: []);\"",
-            "@php -r \"array_map('unlink', glob('public/assets/*/*.{js,css,map,json}', GLOB_BRACE) ?: []);\""
+            "@php -r \"array_map(function($f) { is_file($f) && unlink($f); }, glob('public/assets/*.{js,css,map,json}', GLOB_BRACE) ?: []);\"",
+            "@php -r \"array_map(function($f) { is_file($f) && unlink($f); }, glob('public/assets/*/*.{js,css,map,json}', GLOB_BRACE) ?: []);\"",
+            "@php -r \"array_map(function($f) { is_file($f) && unlink($f); }, glob('public/assets/*/*/*.{js,css,map,json}', GLOB_BRACE) ?: []);\""
         ],
         "post-install-cmd": [
             "@setup-directories",
