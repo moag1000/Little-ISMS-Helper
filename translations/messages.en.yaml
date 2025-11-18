@@ -4064,7 +4064,7 @@ setup:
     user_help: 'Username for the database connection'
     password: 'Password'
     password_help: 'Password for the database connection'
-    password_help_standalone: 'Password for local MariaDB (leave empty for auto-generated password)'
+    password_help_standalone: 'Password has been auto-generated and is already pre-filled (see /var/www/html/var/mysql_credentials.txt)'
     unix_socket: 'Unix Socket'
     unix_socket_help: 'Path to MySQL/MariaDB Unix socket (leave empty for TCP connection)'
     server_version: 'Server Version'
@@ -4085,6 +4085,9 @@ setup:
     config_failed: 'Error saving configuration'
     write_failed: 'Could not write configuration file. Please check file permissions.'
     docker_detected: 'Docker standalone deployment detected. Database configuration has been auto-filled.'
+    docker_password_title: 'Auto-Generated MariaDB Password'
+    docker_password_info: 'The password has been automatically generated and is already pre-filled in the form:'
+    docker_password_location: 'Saved in: /var/www/html/var/mysql_credentials.txt'
     config_loaded: 'Database configuration loaded from .env.local. Fields have been pre-filled with existing values.'
 
   admin:

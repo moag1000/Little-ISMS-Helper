@@ -146,13 +146,19 @@ class DeploymentWizardController extends AbstractController
             $envVars = $this->envWriter->enrichFromDatabaseUrl($envVars);
 
             if (!empty($envVars['DB_TYPE']) || !empty($envVars['DB_HOST'])) {
+                // For Docker standalone: If password is empty in .env.local, try to get it from auto-generated credentials
+                $password = $envVars['DB_PASS'] ?? '';
+                if (empty($password) && $isDockerStandalone) {
+                    $password = $_ENV['MYSQL_PASSWORD'] ?? $this->getDockerMysqlPassword();
+                }
+
                 $defaultData = [
                     'type' => $envVars['DB_TYPE'] ?? 'mysql',
                     'host' => $envVars['DB_HOST'] ?? 'localhost',
                     'port' => (int)($envVars['DB_PORT'] ?? 3306),
                     'name' => $envVars['DB_NAME'] ?? 'little_isms_helper',
                     'user' => $envVars['DB_USER'] ?? 'root',
-                    'password' => $envVars['DB_PASS'] ?? '',
+                    'password' => $password,
                     'serverVersion' => $envVars['DB_SERVER_VERSION'] ?? 'mariadb-11.4.0',
                     'unixSocket' => $envVars['DB_SOCKET'] ?? null,
                 ];
@@ -269,10 +275,18 @@ class DeploymentWizardController extends AbstractController
             }
         }
 
+        // Pass Docker-specific data to template
+        $dockerPassword = null;
+        if ($isDockerStandalone) {
+            $dockerPassword = $_ENV['MYSQL_PASSWORD'] ?? $this->getDockerMysqlPassword();
+        }
+
         // Return 422 status for validation errors so Turbo displays errors
         $response = $this->render('setup/step2_database_config.html.twig', [
             'form' => $form,
             'test_result' => $testResult,
+            'is_docker_standalone' => $isDockerStandalone,
+            'docker_password' => $dockerPassword,
         ]);
 
         if ($form->isSubmitted() && !$form->isValid()) {

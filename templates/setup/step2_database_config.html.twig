@@ -48,6 +48,28 @@
                         {{ 'setup.database.description'|trans }}
                     </p>
 
+                    {# Docker Auto-Generated Password Display #}
+                    {% if is_docker_standalone and docker_password %}
+                        <div class="alert alert-success border-success">
+                            <h5 class="alert-heading">
+                                <i class="fas fa-key me-2"></i>
+                                {{ 'setup.database.docker_password_title'|trans }}
+                            </h5>
+                            <p class="mb-2">{{ 'setup.database.docker_password_info'|trans }}</p>
+                            <div class="p-3 bg-light border rounded">
+                                <code style="font-size: 1.1rem; color: #0d6efd; font-weight: bold;">{{ docker_password }}</code>
+                                <button type="button" class="btn btn-sm btn-outline-primary ms-3" onclick="navigator.clipboard.writeText('{{ docker_password }}')">
+                                    <i class="fas fa-copy me-1"></i>
+                                    {{ 'common.copy'|trans }}
+                                </button>
+                            </div>
+                            <small class="text-muted mt-2 d-block">
+                                <i class="fas fa-info-circle me-1"></i>
+                                {{ 'setup.database.docker_password_location'|trans }}
+                            </small>
+                        </div>
+                    {% endif %}
+
                     {# Database Configuration Form #}
                     {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
 
