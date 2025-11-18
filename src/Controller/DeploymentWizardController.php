@@ -118,8 +118,13 @@ class DeploymentWizardController extends AbstractController
         // Use @ to suppress open_basedir warnings on non-Docker servers
         $isDockerStandalone = @file_exists('/run/mysqld/mysqld.sock') || @file_exists('/.dockerenv');
 
-        // First, try to load from .env.local if it exists
-        if (file_exists($this->envWriter->getEnvLocalPath())) {
+        // First priority: Check if we have form data from a previous submit (preserves user input on validation errors)
+        if ($session->has('setup_step1_form_data')) {
+            $defaultData = $session->get('setup_step1_form_data');
+        }
+
+        // Second priority: Try to load from .env.local if it exists
+        if (empty($defaultData) && file_exists($this->envWriter->getEnvLocalPath())) {
             $envVars = $this->envWriter->readEnvLocal();
             if (!empty($envVars['DB_TYPE']) || !empty($envVars['DB_HOST'])) {
                 $defaultData = [
@@ -158,6 +163,11 @@ class DeploymentWizardController extends AbstractController
         // Retrieve test result from session (for displaying after redirect)
         $testResult = $session->get('setup_db_test_result');
         $session->remove('setup_db_test_result');
+
+        // Save form data to session on submit (even if invalid) to preserve user input
+        if ($form->isSubmitted()) {
+            $session->set('setup_step1_form_data', $form->getData());
+        }
 
         if ($form->isSubmitted() && $form->isValid()) {
             $config = $form->getData();
@@ -208,6 +218,9 @@ class DeploymentWizardController extends AbstractController
                     $session->set('setup_db_user', $config['user']);
                     $session->set('setup_db_password', $config['password']);
                     $session->set('setup_db_socket', $config['unixSocket'] ?? null);
+
+                    // Clear form data from session (success - no need to preserve)
+                    $session->remove('setup_step1_form_data');
 
                     $this->addFlash('success', $this->translator->trans('setup.database.config_saved'));
 
@@ -273,8 +286,15 @@ class DeploymentWizardController extends AbstractController
             $session->remove('debug_error');
         }
 
-        $form = $this->createForm(AdminUserType::class);
+        // Restore form data from session if available (preserves input on validation errors)
+        $formData = $session->get('setup_step2_form_data', []);
+        $form = $this->createForm(AdminUserType::class, $formData);
         $form->handleRequest($request);
+
+        // Save form data to session on submit (even if invalid) to preserve user input
+        if ($form->isSubmitted()) {
+            $session->set('setup_step2_form_data', $form->getData());
+        }
 
         // Store debug info in session to survive redirects
         if ($form->isSubmitted()) {
@@ -364,6 +384,9 @@ class DeploymentWizardController extends AbstractController
                     $session->set('debug_processing', 'Step 4: Admin user created successfully - redirecting to step3');
                     $session->set('setup_admin_created', true);
                     $session->set('setup_admin_email', $data['email']);
+
+                    // Clear form data from session (success - no need to preserve)
+                    $session->remove('setup_step2_form_data');
 
                     $this->addFlash('success', $this->translator->trans('setup.admin.user_created'));
 
