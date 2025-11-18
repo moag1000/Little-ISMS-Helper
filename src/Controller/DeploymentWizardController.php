@@ -295,13 +295,73 @@ class DeploymentWizardController extends AbstractController
             return $this->redirectToRoute('setup_step2_database_config');
         }
 
+        // Check if schema has been created (migrations run)
+        $schemaCreated = $session->get('setup_schema_created', false);
+
         // Retrieve restore result from session if exists (after redirect from POST)
         $restoreResult = $session->get('backup_restore_result');
         $session->remove('backup_restore_result');
 
         return $this->render('setup/step3_restore_backup.html.twig', [
             'backup_restore_result' => $restoreResult,
+            'schema_created' => $schemaCreated,
         ]);
+    }
+
+    /**
+     * Step 3: Create Database Schema (run migrations)
+     */
+    #[Route('/step3-restore-backup/create-schema', name: 'setup_step3_create_schema', methods: ['POST'])]
+    public function step3CreateSchema(
+        Request $request,
+        SessionInterface $session,
+        LoggerInterface $logger
+    ): Response {
+        // Validate CSRF token
+        $token = $request->request->get('_token');
+        if (!$this->isCsrfTokenValid('setup_create_schema', $token)) {
+            $this->addFlash('error', $this->translator->trans('common.csrf_error'));
+            return $this->redirectToRoute('setup_step3_restore_backup');
+        }
+
+        // Increase timeout for migrations (can take several minutes)
+        set_time_limit(300);
+
+        try {
+            $logger->info('Creating database schema (running migrations)');
+            $migrationResult = $this->runMigrationsInternal();
+
+            $logger->info('Migration result', [
+                'success' => $migrationResult['success'],
+                'message' => $migrationResult['message'],
+                'output' => $migrationResult['output'] ?? 'no output',
+            ]);
+
+            if (!$migrationResult['success']) {
+                $errorMsg = 'Fehler beim Erstellen der Datenbank-Struktur: ' . $migrationResult['message'];
+                if (isset($migrationResult['output'])) {
+                    $errorMsg .= '<br><pre>' . htmlspecialchars($migrationResult['output']) . '</pre>';
+                }
+                $this->addFlash('error', $errorMsg);
+                $logger->error('Migration failed', ['result' => $migrationResult]);
+                return $this->redirectToRoute('setup_step3_restore_backup');
+            }
+
+            // Mark schema as created
+            $session->set('setup_schema_created', true);
+
+            $logger->info('Database schema created successfully');
+            $this->addFlash('success', 'Datenbank-Struktur wurde erfolgreich erstellt. Sie können jetzt ein Backup wiederherstellen.');
+
+            return $this->redirectToRoute('setup_step3_restore_backup');
+        } catch (\Exception $e) {
+            $logger->error('Schema creation failed', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+            $this->addFlash('error', 'Fehler beim Erstellen der Datenbank-Struktur: ' . $e->getMessage());
+            return $this->redirectToRoute('setup_step3_restore_backup');
+        }
     }
 
     /**
@@ -337,6 +397,15 @@ class DeploymentWizardController extends AbstractController
             return $this->redirectToRoute('setup_step3_restore_backup');
         }
 
+        // Check if schema has been created first
+        if (!$session->get('setup_schema_created', false)) {
+            $this->addFlash('error', 'Bitte erstellen Sie zuerst die Datenbank-Struktur, bevor Sie ein Backup wiederherstellen.');
+            return $this->redirectToRoute('setup_step3_restore_backup');
+        }
+
+        // Increase timeout for restore (can take several minutes for large backups)
+        set_time_limit(300);
+
         try {
             // Save file temporarily
             $backupDir = $this->getParameter('kernel.project_dir') . '/var/backups';
@@ -348,28 +417,7 @@ class DeploymentWizardController extends AbstractController
             $filepath = $backupDir . '/' . $filename;
             $file->move($backupDir, $filename);
 
-            // Run migrations first to create database schema
-            $logger->info('Running database migrations before backup restore');
-            $migrationResult = $this->runMigrationsInternal();
-
-            $logger->info('Migration result', [
-                'success' => $migrationResult['success'],
-                'message' => $migrationResult['message'],
-                'output' => $migrationResult['output'] ?? 'no output',
-            ]);
-
-            if (!$migrationResult['success']) {
-                $errorMsg = 'Fehler beim Erstellen der Datenbank-Struktur: ' . $migrationResult['message'];
-                if (isset($migrationResult['output'])) {
-                    $errorMsg .= '<br><pre>' . htmlspecialchars($migrationResult['output']) . '</pre>';
-                }
-                $this->addFlash('error', $errorMsg);
-                $logger->error('Migration failed', ['result' => $migrationResult]);
-                return $this->redirectToRoute('setup_step3_restore_backup');
-            }
-
-            $logger->info('Database migrations completed successfully');
-            $this->addFlash('info', 'Datenbank-Struktur wurde erfolgreich erstellt');
+            $logger->info('Starting backup restore from file: ' . $filename);
 
             // Load and restore backup
             $backup = $backupService->loadBackupFromFile($filepath);
