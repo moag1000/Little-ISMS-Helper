@@ -221,7 +221,7 @@ class EnvironmentWriter
      *
      * @return array Key-value pairs of environment variables
      */
-    private function readEnvLocal(): array
+    public function readEnvLocal(): array
     {
         $envFilePath = $this->getEnvLocalPath();
 
@@ -279,6 +279,10 @@ class EnvironmentWriter
             // Symfony's .env parser only expands variables outside of quotes
             if ($key === 'DATABASE_URL' && str_contains($value, '${')) {
                 $content .= "{$key}={$value}\n";
+            } elseif ($key === 'DB_PASS') {
+                // ALWAYS quote DB_PASS to handle ALL special characters (^, !, @, etc.)
+                $escapedValue = $this->escapeEnvValue($value, true);
+                $content .= "{$key}={$escapedValue}\n";
             } else {
                 // Escape special characters in value
                 $escapedValue = $this->escapeEnvValue($value);
@@ -292,14 +296,15 @@ class EnvironmentWriter
     /**
      * Escape environment variable value for safe storage
      */
-    private function escapeEnvValue(string $value): string
+    private function escapeEnvValue(string $value, bool $forceQuotes = false): string
     {
         // IMPORTANT: Symfony's .env parser interprets % as parameter placeholder even in quotes
         // We must escape % as %% BEFORE any other escaping
         $value = str_replace('%', '%%', $value);
 
         // If value contains special characters, wrap in double quotes
-        if (preg_match('/[\\s#$&*(){}[\]|;\'"`<>]/', $value)) {
+        // Or if forceQuotes is true (for passwords which may contain ANY special character)
+        if ($forceQuotes || preg_match('/[\\s#$&*(){}[\]|;\'"`<>^!@~]/', $value)) {
             // Escape existing double quotes and backslashes
             $value = str_replace(['\\', '"'], ['\\\\', '\\"'], $value);
             return "\"{$value}\"";
@@ -342,7 +347,7 @@ class EnvironmentWriter
     /**
      * Get path to .env.local file
      */
-    private function getEnvLocalPath(): string
+    public function getEnvLocalPath(): string
     {
         return $this->params->get('kernel.project_dir') . self::ENV_LOCAL_FILE;
     }
