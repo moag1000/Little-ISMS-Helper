@@ -106,9 +106,9 @@
             "@php -r \"is_dir('public/assets') || mkdir('public/assets', 0755, true);\""
         ],
         "clean-assets": [
-            "@php -r \"foreach (glob('public/assets/*.{js,css,map,json}', GLOB_BRACE) ?: [] as $file) { if (is_file($file)) @unlink($file); }\"",
-            "@php -r \"foreach (glob('public/assets/*/*.{js,css,map,json}', GLOB_BRACE) ?: [] as $file) { if (is_file($file)) @unlink($file); }\"",
-            "@php -r \"foreach (glob('public/assets/*/*/*.{js,css,map,json}', GLOB_BRACE) ?: [] as $file) { if (is_file($file)) @unlink($file); }\""
+            "@php -r '$files = glob(\"public/assets/*.{js,css,map,json}\", GLOB_BRACE) ?: []; foreach ($files as $f) { if (is_file($f)) @unlink($f); }'",
+            "@php -r '$files = glob(\"public/assets/*/*.{js,css,map,json}\", GLOB_BRACE) ?: []; foreach ($files as $f) { if (is_file($f)) @unlink($f); }'",
+            "@php -r '$files = glob(\"public/assets/*/*/*.{js,css,map,json}\", GLOB_BRACE) ?: []; foreach ($files as $f) { if (is_file($f)) @unlink($f); }'"
         ],
         "post-install-cmd": [
             "@setup-directories",
