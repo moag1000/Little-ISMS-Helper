@@ -52,7 +52,7 @@
                 <td>{{ risk.id }}</td>
                 <td>{{ risk.title|slice(0, 40) }}{% if risk.title|length > 40 %}...{% endif %}</td>
                 <td>{{ risk.category }}</td>
-                <td>{{ risk.likelihood }}</td>
+                <td>{{ risk.probability }}</td>
                 <td>{{ risk.impact }}</td>
                 <td><span class="score-badge score-{{ riskLevel }}">{{ risk.riskScore }}</span></td>
                 <td>{{ riskLevel|upper }}</td>
