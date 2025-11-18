@@ -18,6 +18,11 @@
         </h5>
         <div class="card-actions">
             <button class="btn btn-sm btn-outline-secondary"
+                    data-action="click->heat-map#toggleFilters"
+                    title="Filter">
+                <i class="bi-funnel"></i>
+            </button>
+            <button class="btn btn-sm btn-outline-secondary"
                     data-action="click->heat-map#refresh"
                     title="Refresh">
                 <i class="bi-arrow-clockwise"></i>
@@ -28,6 +33,55 @@
                 <i class="bi-image"></i>
             </button>
         </div>
+    </div>
+
+    {# Filter Panel #}
+    <div class="heat-map-filters d-none" data-heat-map-target="filters">
+        <div class="filter-group">
+            <label class="filter-label">
+                <i class="bi-check-circle"></i> Status
+            </label>
+            <select class="form-select form-select-sm"
+                    data-action="change->heat-map#applyFilters"
+                    data-heat-map-target="statusFilter">
+                <option value="">Alle</option>
+                <option value="open">Offen</option>
+                <option value="in_progress">In Bearbeitung</option>
+                <option value="mitigated">Mitigiert</option>
+                <option value="closed">Geschlossen</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label class="filter-label">
+                <i class="bi-tag"></i> Kategorie
+            </label>
+            <select class="form-select form-select-sm"
+                    data-action="change->heat-map#applyFilters"
+                    data-heat-map-target="categoryFilter">
+                <option value="">Alle</option>
+                <option value="technical">Technisch</option>
+                <option value="organizational">Organisatorisch</option>
+                <option value="physical">Physisch</option>
+                <option value="compliance">Compliance</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label class="filter-label">
+                <i class="bi-calendar"></i> Zeitraum
+            </label>
+            <select class="form-select form-select-sm"
+                    data-action="change->heat-map#applyFilters"
+                    data-heat-map-target="timeFilter">
+                <option value="">Alle</option>
+                <option value="30">Letzte 30 Tage</option>
+                <option value="90">Letzte 90 Tage</option>
+                <option value="365">Letztes Jahr</option>
+            </select>
+        </div>
+        <button class="btn btn-sm btn-outline-danger"
+                data-action="click->heat-map#clearFilters">
+            <i class="bi-x-circle"></i> Filter zurücksetzen
+        </button>
     </div>
     <div class="card-body">
         {# Loading State #}
