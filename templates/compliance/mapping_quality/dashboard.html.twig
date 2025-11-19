@@ -275,52 +275,54 @@
             <h3 class="mb-0">🌍 Framework-Qualitätsvergleich (Top 10)</h3>
         </div>
         <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th scope="col">Source Framework</th>
-                            <th scope="col">Target Framework</th>
-                            <th scope="col" class="text-center">Mappings</th>
-                            <th scope="col" class="text-center">Ø Percentage</th>
-                            <th scope="col" class="text-center">Ø Quality</th>
-                            <th scope="col" class="text-center">Ø Confidence</th>
-                            <th scope="col" class="text-center">Review nötig</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for comparison in framework_comparison|slice(0, 10) %}
-                        <tr>
-                            <td><strong>{{ comparison.source_framework }}</strong></td>
-                            <td>{{ comparison.target_framework }}</td>
-                            <td class="text-center">{{ comparison.mapping_count }}</td>
-                            <td class="text-center">
-                                <span class="badge {% if comparison.avg_percentage >= 75 %}badge-success{% elseif comparison.avg_percentage >= 50 %}badge-warning{% else %}badge-danger{% endif %}">
-                                    {{ comparison.avg_percentage|round }}%
-                                </span>
-                            </td>
-                            <td class="text-center">
-                                <span class="badge {% if comparison.avg_quality >= 75 %}badge-success{% elseif comparison.avg_quality >= 50 %}badge-warning{% else %}badge-danger{% endif %}">
-                                    {{ comparison.avg_quality|round }}
-                                </span>
-                            </td>
-                            <td class="text-center">
-                                <span class="badge {% if comparison.avg_confidence >= 80 %}badge-success{% elseif comparison.avg_confidence >= 60 %}badge-warning{% else %}badge-danger{% endif %}">
-                                    {{ comparison.avg_confidence|round }}
-                                </span>
-                            </td>
-                            <td class="text-center">
-                                {% if comparison.review_count > 0 %}
-                                    <span class="badge badge-warning">{{ comparison.review_count }}</span>
-                                {% else %}
-                                    <span class="text-success">✓</span>
-                                {% endif %}
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+            {% embed '_components/_table.html.twig' with {
+                'class': 'table-hover',
+                'noMargin': true,
+                'responsive': true
+            } %}
+                {% block table_head %}
+                    <tr>
+                        <th scope="col">Source Framework</th>
+                        <th scope="col">Target Framework</th>
+                        <th scope="col" class="text-center">Mappings</th>
+                        <th scope="col" class="text-center">Ø Percentage</th>
+                        <th scope="col" class="text-center">Ø Quality</th>
+                        <th scope="col" class="text-center">Ø Confidence</th>
+                        <th scope="col" class="text-center">Review nötig</th>
+                    </tr>
+                {% endblock %}
+                {% block table_body %}
+                    {% for comparison in framework_comparison|slice(0, 10) %}
+                    <tr>
+                        <td><strong>{{ comparison.source_framework }}</strong></td>
+                        <td>{{ comparison.target_framework }}</td>
+                        <td class="text-center">{{ comparison.mapping_count }}</td>
+                        <td class="text-center">
+                            <span class="badge {% if comparison.avg_percentage >= 75 %}badge-success{% elseif comparison.avg_percentage >= 50 %}badge-warning{% else %}badge-danger{% endif %}">
+                                {{ comparison.avg_percentage|round }}%
+                            </span>
+                        </td>
+                        <td class="text-center">
+                            <span class="badge {% if comparison.avg_quality >= 75 %}badge-success{% elseif comparison.avg_quality >= 50 %}badge-warning{% else %}badge-danger{% endif %}">
+                                {{ comparison.avg_quality|round }}
+                            </span>
+                        </td>
+                        <td class="text-center">
+                            <span class="badge {% if comparison.avg_confidence >= 80 %}badge-success{% elseif comparison.avg_confidence >= 60 %}badge-warning{% else %}badge-danger{% endif %}">
+                                {{ comparison.avg_confidence|round }}
+                            </span>
+                        </td>
+                        <td class="text-center">
+                            {% if comparison.review_count > 0 %}
+                                <span class="badge bg-warning">{{ comparison.review_count }}</span>
+                            {% else %}
+                                <span class="text-success">✓</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
     {% endif %}
