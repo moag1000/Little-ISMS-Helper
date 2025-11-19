@@ -97,12 +97,14 @@
                     {% endif %}
                 </td>
                 <td class="text-center">
-                    <a href="{{ path('role_management_show', {id: role.id}) }}" class="btn btn-sm mr-025">
-                        👁 {{ 'common.view'|trans }}
-                    </a>
-                    <a href="{{ path('role_management_edit', {id: role.id}) }}" class="btn btn-sm btn-secondary">
-                        ✏️ {{ 'common.edit'|trans }}
-                    </a>
+                    <div class="btn-group btn-group-sm">
+                        <a href="{{ path('role_management_show', {id: role.id}) }}" class="btn btn-outline-primary">
+                            👁 {{ 'common.view'|trans }}
+                        </a>
+                        <a href="{{ path('role_management_edit', {id: role.id}) }}" class="btn btn-outline-secondary">
+                            ✏️ {{ 'common.edit'|trans }}
+                        </a>
+                    </div>
                 </td>
             </tr>
             {% else %}

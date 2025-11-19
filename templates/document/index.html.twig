@@ -66,8 +66,10 @@
                             <td>{{ document.uploadedBy ? document.uploadedBy.fullName : '-' }}</td>
                             <td>{{ document.uploadedAt|date('d.m.Y H:i') }}</td>
                             <td>
-                                <a href="{{ path('app_document_download', {id: document.id}) }}" class="btn btn-sm btn-secondary">Download</a>
-                                <a href="{{ path('app_document_edit', {id: document.id}) }}" class="btn btn-sm btn-primary">Edit</a>
+                                <div class="btn-group btn-group-sm">
+                                    <a href="{{ path('app_document_download', {id: document.id}) }}" class="btn btn-outline-secondary">Download</a>
+                                    <a href="{{ path('app_document_edit', {id: document.id}) }}" class="btn btn-outline-primary">Edit</a>
+                                </div>
                             </td>
                         </tr>
                     {% else %}

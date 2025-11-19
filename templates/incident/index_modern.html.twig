@@ -261,14 +261,14 @@
                             <a href="{{ path('app_incident_show', {id: incident.id}) }}"
                                class="btn btn-outline-primary"
                                data-turbo-action="advance"
-                               title="Anzeigen">
+                               title="Anzeigen" aria-label="{{ 'common.view'|trans }}">
                                 <i class="bi bi-eye" aria-hidden="true"></i>
                             </a>
                             {% if is_granted('ROLE_USER') and incident.status != 'closed' %}
                             <a href="{{ path('app_incident_edit', {id: incident.id}) }}"
                                class="btn btn-outline-secondary"
                                data-turbo-action="advance"
-                               title="Bearbeiten">
+                               title="Bearbeiten" aria-label="{{ 'common.edit'|trans }}">
                                 <i class="bi bi-pencil" aria-hidden="true"></i>
                             </a>
                             {% endif %}

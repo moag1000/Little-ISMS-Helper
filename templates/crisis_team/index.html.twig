@@ -24,8 +24,8 @@
                         <td>{{ team.teamLeader ? team.teamLeader.email : 'N/A' }}</td>
                         <td>
                             <div class="btn-group btn-group-sm">
-                                <a href="{{ path('app_crisis_team_show', {id: team.id}) }}" class="btn btn-outline-primary"><i class="bi bi-eye" aria-hidden="true"></i></a>
-                                <a href="{{ path('app_crisis_team_edit', {id: team.id}) }}" class="btn btn-outline-secondary"><i class="bi bi-pencil" aria-hidden="true"></i></a>
+                                <a href="{{ path('app_crisis_team_show', {id: team.id}) }}" class="btn btn-outline-primary" aria-label="{{ 'common.view'|trans }}"><i class="bi bi-eye" aria-hidden="true"></i></a>
+                                <a href="{{ path('app_crisis_team_edit', {id: team.id}) }}" class="btn btn-outline-secondary" aria-label="{{ 'common.edit'|trans }}"><i class="bi bi-pencil" aria-hidden="true"></i></a>
                             </div>
                         </td>
                     </tr>

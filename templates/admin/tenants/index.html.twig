@@ -169,19 +169,19 @@
                                         <div class="btn-group btn-group-sm" role="group">
                                             <a href="{{ path('tenant_management_show', {id: tenant.id}) }}"
                                                class="btn btn-outline-primary"
-                                               title="{{ 'common.view'|trans }}">
+                                               title="{{ 'common.view'|trans }}" aria-label="{{ 'common.view'|trans }}">
                                                 <i class="bi bi-eye" aria-hidden="true"></i>
                                             </a>
                                             <a href="{{ path('tenant_management_edit', {id: tenant.id}) }}"
                                                class="btn btn-outline-secondary"
-                                               title="{{ 'common.edit'|trans }}">
+                                               title="{{ 'common.edit'|trans }}" aria-label="{{ 'common.edit'|trans }}">
                                                 <i class="bi bi-pencil" aria-hidden="true"></i>
                                             </a>
                                             <form method="post" action="{{ path('tenant_management_toggle', {id: tenant.id}) }}" class="d-inline">
                                                 <button type="submit"
                                                         class="btn btn-outline-{% if tenant.isActive %}warning{% else %}success{% endif %}"
                                                         title="{{ (tenant.isActive ? 'tenant.action.deactivate' : 'tenant.action.activate')|trans }}"
-                                                        onclick="return confirm('{{ 'tenant.confirm.toggle'|trans }}');">
+                                                        onclick="return confirm('{{ 'tenant.confirm.toggle'|trans }}');" aria-label="{{ 'common.view'|trans }}">
                                                     <i class="bi bi-{% if tenant.isActive %}pause{% else %}play{% endif %}-circle" aria-hidden="true"></i>
                                                 </button>
                                             </form>

@@ -132,11 +132,11 @@
                             </td>
                             <td>{{ audit.leadAuditor }}</td>
                             <td class="text-center">
-                                <a href="{{ path('app_audit_show', {id: audit.id}) }}" class="btn btn-sm btn-outline-primary">
+                                <a href="{{ path('app_audit_show', {id: audit.id}) }}" class="btn btn-sm btn-outline-primary" aria-label="{{ 'common.view'|trans }}">
                                     <i class="bi bi-eye" aria-hidden="true"></i>
                                 </a>
                                 {% if is_granted('ROLE_USER') %}
-                                <a href="{{ path('app_audit_edit', {id: audit.id}) }}" class="btn btn-sm btn-outline-secondary">
+                                <a href="{{ path('app_audit_edit', {id: audit.id}) }}" class="btn btn-sm btn-outline-secondary" aria-label="{{ 'common.edit'|trans }}">
                                     <i class="bi bi-pencil" aria-hidden="true"></i>
                                 </a>
                                 {% endif %}
