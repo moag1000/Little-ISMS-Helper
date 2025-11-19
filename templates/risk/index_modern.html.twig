@@ -159,8 +159,8 @@
                 {% set count = risks|filter(r => r.treatmentStrategy == strategy)|length %}
                 <div class="col-md-3 mb-3">
                     <div class="treatment-stat">
-                        <div class="treatment-icon text-{{ data.color }}">
-                            <i class="bi {{ data.icon }}"></i>
+                        <div class="treatment-icon text-{{ data.color }}" aria-hidden="true">
+                            <i class="bi {{ data.icon }}" aria-hidden="true"></i>
                         </div>
                         <div class="treatment-info">
                             <div class="treatment-label">{{ data.label }}</div>
@@ -259,115 +259,117 @@
                    id="risk-search">
         </div>
     </div>
-    <div class="table-responsive">
-        <table class="table table-hover mb-0">
-            <thead>
-                <tr>
-                    <th scope="col" class="w-40px">
-                        <input type="checkbox"
-                               class="form-check-input"
-                               data-action="bulk-actions#selectAll"
-                               data-bulk-actions-target="selectAllCheckbox"
-                               aria-label="Alle auswählen">
-                    </th>
-                    <th scope="col">Titel</th>
-                    <th scope="col">Bedrohung</th>
-                    <th scope="col" class="text-center">Wahrscheinlichkeit</th>
-                    <th scope="col" class="text-center">Auswirkung</th>
-                    <th scope="col" class="text-center">Risikoscore</th>
-                    <th scope="col" class="text-center">Restrisiko</th>
-                    <th scope="col">Behandlung</th>
-                    <th scope="col" class="text-center">Betroffene Assets</th>
-                    <th scope="col" class="text-center">Aktionen</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for risk in risks %}
-                {% set riskScore = risk.getRiskScore() %}
-                {% set residual = risk.getResidualRiskLevel() %}
-                <tr data-risk-id="{{ risk.id }}"
-                    data-risk-level="{{ riskScore >= 20 ? 'critical' : (riskScore >= 12 ? 'high' : (riskScore >= 6 ? 'medium' : 'low')) }}">
-                    <td>
-                        <input type="checkbox"
-                               class="form-check-input"
-                               data-bulk-actions-target="item"
-                               data-action="bulk-actions#selectItem"
-                               value="{{ risk.id }}">
-                    </td>
-                    <td>
-                        <strong>{{ risk.title }}</strong>
-                        {{ inheritance.small_badge(risk, currentTenant) }}
-                        {% if risk.description %}
-                        <br><small class="text-muted">{{ risk.description|length > 60 ? risk.description|slice(0, 60) ~ '...' : risk.description }}</small>
-                        {% endif %}
-                    </td>
-                    <td>
-                        <span class="badge bg-secondary">{{ risk.threat }}</span>
-                    </td>
-                    <td class="text-center">
-                        <span class="badge bg-{{ risk.probability >= 4 ? 'danger' : (risk.probability >= 3 ? 'warning' : 'success') }}">
-                            {{ risk.probability }}/5
+    {% embed '_components/_table.html.twig' with {
+        'class': 'table-hover mb-0',
+        'noMargin': true,
+        'responsive': true
+    } %}
+        {% block table_head %}
+            <tr>
+                <th scope="col" class="w-40px">
+                    <input type="checkbox"
+                           class="form-check-input"
+                           data-action="bulk-actions#selectAll"
+                           data-bulk-actions-target="selectAllCheckbox"
+                           aria-label="Alle auswählen">
+                </th>
+                <th scope="col">Titel</th>
+                <th scope="col">Bedrohung</th>
+                <th scope="col" class="text-center">Wahrscheinlichkeit</th>
+                <th scope="col" class="text-center">Auswirkung</th>
+                <th scope="col" class="text-center">Risikoscore</th>
+                <th scope="col" class="text-center">Restrisiko</th>
+                <th scope="col">Behandlung</th>
+                <th scope="col" class="text-center">Betroffene Assets</th>
+                <th scope="col" class="text-center">Aktionen</th>
+            </tr>
+        {% endblock %}
+        {% block table_body %}
+            {% for risk in risks %}
+            {% set riskScore = risk.getRiskScore() %}
+            {% set residual = risk.getResidualRiskLevel() %}
+            <tr data-risk-id="{{ risk.id }}"
+                data-risk-level="{{ riskScore >= 20 ? 'critical' : (riskScore >= 12 ? 'high' : (riskScore >= 6 ? 'medium' : 'low')) }}">
+                <td>
+                    <input type="checkbox"
+                           class="form-check-input"
+                           data-bulk-actions-target="item"
+                           data-action="bulk-actions#selectItem"
+                           value="{{ risk.id }}">
+                </td>
+                <td>
+                    <strong>{{ risk.title }}</strong>
+                    {{ inheritance.small_badge(risk, currentTenant) }}
+                    {% if risk.description %}
+                    <br><small class="text-muted">{{ risk.description|length > 60 ? risk.description|slice(0, 60) ~ '...' : risk.description }}</small>
+                    {% endif %}
+                </td>
+                <td>
+                    <span class="badge bg-secondary">{{ risk.threat }}</span>
+                </td>
+                <td class="text-center">
+                    <span class="badge bg-{{ risk.probability >= 4 ? 'danger' : (risk.probability >= 3 ? 'warning' : 'success') }}">
+                        {{ risk.probability }}/5
+                    </span>
+                </td>
+                <td class="text-center">
+                    <span class="badge bg-{{ risk.impact >= 4 ? 'danger' : (risk.impact >= 3 ? 'warning' : 'success') }}">
+                        {{ risk.impact }}/5
+                    </span>
+                </td>
+                <td class="text-center">
+                    <span class="risk-score risk-score-{{ riskScore >= 20 ? 'critical' : (riskScore >= 12 ? 'high' : (riskScore >= 6 ? 'medium' : 'low')) }}">
+                        {{ riskScore }}
+                    </span>
+                </td>
+                <td class="text-center">
+                    {% if residual < riskScore %}
+                        <span class="risk-score risk-score-improved">
+                            {{ residual }}
+                            <i class="bi bi-arrow-down text-success" aria-hidden="true"></i>
                         </span>
-                    </td>
-                    <td class="text-center">
-                        <span class="badge bg-{{ risk.impact >= 4 ? 'danger' : (risk.impact >= 3 ? 'warning' : 'success') }}">
-                            {{ risk.impact }}/5
-                        </span>
-                    </td>
-                    <td class="text-center">
-                        <span class="risk-score risk-score-{{ riskScore >= 20 ? 'critical' : (riskScore >= 12 ? 'high' : (riskScore >= 6 ? 'medium' : 'low')) }}">
-                            {{ riskScore }}
-                        </span>
-                    </td>
-                    <td class="text-center">
-                        {% if residual < riskScore %}
-                            <span class="risk-score risk-score-improved">
-                                {{ residual }}
-                                <i class="bi bi-arrow-down text-success" aria-hidden="true"></i>
-                            </span>
-                        {% else %}
-                            <span class="risk-score">{{ residual }}</span>
+                    {% else %}
+                        <span class="risk-score">{{ residual }}</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if risk.treatmentStrategy %}
+                        <span class="badge bg-info">{{ risk.treatmentStrategy|replace({'_': ' '})|title }}</span>
+                    {% else %}
+                        <span class="text-muted">Nicht definiert</span>
+                    {% endif %}
+                </td>
+                <td class="text-center">
+                    {% if risk.asset %}
+                        <a href="{{ path('app_asset_show', {id: risk.asset.id}) }}" class="badge bg-info text-dark" title="{{ risk.asset.name }}">
+                            1
+                        </a>
+                    {% else %}
+                        <span class="text-muted">0</span>
+                    {% endif %}
+                </td>
+                <td class="text-center">
+                    <div class="btn-group btn-group-sm">
+                        <a href="{{ path('app_risk_show', {id: risk.id}) }}"
+                           class="btn btn-outline-primary"
+                           data-turbo-action="advance"
+                           title="Anzeigen" aria-label="{{ 'common.view'|trans }}">
+                            <i class="bi bi-eye" aria-hidden="true"></i>
+                        </a>
+                        {% if is_granted('ROLE_USER') %}
+                        <a href="{{ path('app_risk_edit', {id: risk.id}) }}"
+                           class="btn btn-outline-secondary"
+                           data-turbo-action="advance"
+                           title="Bearbeiten" aria-label="{{ 'common.edit'|trans }}">
+                            <i class="bi bi-pencil" aria-hidden="true"></i>
+                        </a>
                         {% endif %}
-                    </td>
-                    <td>
-                        {% if risk.treatmentStrategy %}
-                            <span class="badge bg-info">{{ risk.treatmentStrategy|replace({'_': ' '})|title }}</span>
-                        {% else %}
-                            <span class="text-muted">Nicht definiert</span>
-                        {% endif %}
-                    </td>
-                    <td class="text-center">
-                        {% if risk.asset %}
-                            <a href="{{ path('app_asset_show', {id: risk.asset.id}) }}" class="badge bg-info text-dark" title="{{ risk.asset.name }}">
-                                1
-                            </a>
-                        {% else %}
-                            <span class="text-muted">0</span>
-                        {% endif %}
-                    </td>
-                    <td class="text-center">
-                        <div class="btn-group btn-group-sm">
-                            <a href="{{ path('app_risk_show', {id: risk.id}) }}"
-                               class="btn btn-outline-primary"
-                               data-turbo-action="advance"
-                               title="Anzeigen" aria-label="{{ 'common.view'|trans }}">
-                                <i class="bi bi-eye" aria-hidden="true"></i>
-                            </a>
-                            {% if is_granted('ROLE_USER') %}
-                            <a href="{{ path('app_risk_edit', {id: risk.id}) }}"
-                               class="btn btn-outline-secondary"
-                               data-turbo-action="advance"
-                               title="Bearbeiten" aria-label="{{ 'common.edit'|trans }}">
-                                <i class="bi bi-pencil" aria-hidden="true"></i>
-                            </a>
-                            {% endif %}
-                        </div>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        {% endblock %}
+    {% endembed %}
 
     {# Bulk Action Bar #}
     {% include '_components/_bulk_action_bar.html.twig' with {
