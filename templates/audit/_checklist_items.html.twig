@@ -33,43 +33,43 @@
             {# Detailed View - Expandable #}
             <div class="checklist-details" data-toggle-target="content" style="display: none;">
                 <div class="detail-section">
-                    <label>Anforderungsbeschreibung:</label>
+                    <div class="fw-bold mb-2 text-muted" style="font-size: 0.9rem;">Anforderungsbeschreibung:</div>
                     <p>{{ item.requirement.description }}</p>
                 </div>
 
                 <div class="detail-section">
-                    <label>Audit-Notizen:</label>
-                    <textarea class="form-control" data-item-id="{{ item.id }}" data-field="auditNotes" rows="2">{{ item.auditNotes }}</textarea>
+                    <label for="audit-notes-{{ item.id }}">Audit-Notizen:</label>
+                    <textarea class="form-control" id="audit-notes-{{ item.id }}" data-item-id="{{ item.id }}" data-field="auditNotes" rows="2">{{ item.auditNotes }}</textarea>
                 </div>
 
                 <div class="detail-section">
-                    <label>Gefundene Nachweise:</label>
-                    <textarea class="form-control" data-item-id="{{ item.id }}" data-field="evidenceFound" rows="2">{{ item.evidenceFound }}</textarea>
+                    <label for="evidence-{{ item.id }}">Gefundene Nachweise:</label>
+                    <textarea class="form-control" id="evidence-{{ item.id }}" data-item-id="{{ item.id }}" data-field="evidenceFound" rows="2">{{ item.evidenceFound }}</textarea>
                 </div>
 
                 {% if item.verificationStatus in ['non_compliant', 'partial'] %}
                     <div class="detail-section alert-warning">
-                        <label>Feststellungen:</label>
-                        <textarea class="form-control" data-item-id="{{ item.id }}" data-field="findings" rows="2">{{ item.findings }}</textarea>
+                        <label for="findings-{{ item.id }}">Feststellungen:</label>
+                        <textarea class="form-control" id="findings-{{ item.id }}" data-item-id="{{ item.id }}" data-field="findings" rows="2">{{ item.findings }}</textarea>
                     </div>
 
                     <div class="detail-section">
-                        <label>Empfehlungen:</label>
-                        <textarea class="form-control" data-item-id="{{ item.id }}" data-field="recommendations" rows="2">{{ item.recommendations }}</textarea>
+                        <label for="recommendations-{{ item.id }}">Empfehlungen:</label>
+                        <textarea class="form-control" id="recommendations-{{ item.id }}" data-item-id="{{ item.id }}" data-field="recommendations" rows="2">{{ item.recommendations }}</textarea>
                     </div>
                 {% endif %}
 
                 <div class="detail-section">
-                    <label>Compliance Score (0-100):</label>
+                    <label for="compliance-score-{{ item.id }}">Compliance Score (0-100):</label>
                     <input type="range" min="0" max="100" value="{{ item.complianceScore }}"
-                           class="score-slider" data-item-id="{{ item.id }}"
+                           id="compliance-score-{{ item.id }}" class="score-slider" data-item-id="{{ item.id }}"
                            oninput="this.nextElementSibling.textContent = this.value + '%'">
                     <span class="score-value">{{ item.complianceScore }}%</span>
                 </div>
 
                 {% if item.requirement.hasDetailedRequirements() %}
                     <div class="detail-section">
-                        <label>Detailanforderungen ({{ item.requirement.detailedRequirements|length }}):</label>
+                        <div class="fw-bold mb-2 text-muted" style="font-size: 0.9rem;">Detailanforderungen ({{ item.requirement.detailedRequirements|length }}):</div>
                         <div class="detailed-requirements-list">
                             {% for detailed in item.requirement.detailedRequirements %}
                                 <div class="detailed-req">

@@ -17,8 +17,10 @@
 
     {# View Filter #}
     {% if currentTenant %}
-    <div class="card mb-3">
-        <div class="card-body py-2">
+    {% embed '_components/_card.html.twig' with {
+        'class': 'mb-3'
+    } %}
+        {% block card_body %}
             <form method="get" action="{{ path('app_business_process_index') }}" class="d-flex align-items-center gap-2">
                 <label for="view-filter" class="mb-0 fw-bold">
                     <i class="bi bi-eye" aria-hidden="true"></i> {{ 'common.view'|trans }}:
@@ -42,8 +44,8 @@
                     <button type="submit" class="btn btn-sm btn-secondary">{{ 'common.apply'|trans }}</button>
                 </noscript>
             </form>
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
     {% endif %}
 
     {# Statistics Cards with Turbo Frame #}
@@ -101,7 +103,7 @@
     <turbo-frame id="business-processes-list">
         <div class="card">
             <div class="card-header">
-                <h5 class="mb-0">Geschäftsprozesse</h5>
+                <h3 class="mb-0">Geschäftsprozesse</h3>
             </div>
             <div class="card-body">
                 {% if business_processes|length > 0 %}

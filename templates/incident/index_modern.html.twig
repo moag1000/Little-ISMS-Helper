@@ -61,7 +61,7 @@
 {# Status Overview #}
 <div class="card mb-4">
     <div class="card-header">
-        <h5 class="mb-0"><i class="bi bi-kanban" aria-hidden="true"></i> Status-Übersicht</h5>
+        <h3 class="mb-0"><i class="bi bi-kanban" aria-hidden="true"></i> Status-Übersicht</h3>
     </div>
     <div class="card-body">
         <div class="row">
@@ -98,7 +98,7 @@
 {# Severity Distribution #}
 <div class="card mb-4">
     <div class="card-header">
-        <h5 class="mb-0"><i class="bi bi-speedometer" aria-hidden="true"></i> Schweregrade</h5>
+        <h3 class="mb-0"><i class="bi bi-speedometer" aria-hidden="true"></i> Schweregrade</h3>
     </div>
     <div class="card-body">
         <div class="row">
@@ -133,7 +133,7 @@
 {% else %}
 <div class="card" data-controller="bulk-actions" data-bulk-actions-endpoint-value="/incident">
     <div class="card-header d-flex justify-content-between align-items-center">
-        <h5 class="mb-0"><i class="bi bi-list" aria-hidden="true"></i> Alle Vorfälle ({{ allIncidents|length }})</h5>
+        <h3 class="mb-0"><i class="bi bi-list" aria-hidden="true"></i> Alle Vorfälle ({{ allIncidents|length }})</h3>
         <div class="d-flex gap-2">
             <select class="form-select form-select-sm w-150px" id="incident-status-filter">
                 <option value="">Alle Status</option>

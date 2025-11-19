@@ -78,7 +78,7 @@
     {% if corporateGroups is not empty %}
         <div class="card mb-4">
             <div class="card-header bg-white">
-                <h5 class="card-title mb-0">
+                <h3 class="card-title mb-0">
                     <i class="bi bi-diagram-3 text-primary" aria-hidden="true"></i>
                     {{ 'corporate.section.groups'|trans }}
                 </h5>
@@ -121,7 +121,7 @@
     {% if standaloneTenants is not empty %}
         <div class="card mb-4">
             <div class="card-header bg-white">
-                <h5 class="card-title mb-0">
+                <h3 class="card-title mb-0">
                     <i class="bi bi-building text-success" aria-hidden="true"></i>
                     {{ 'corporate.section.standalone'|trans }}
                 </h5>
@@ -179,7 +179,7 @@
                 <form method="post" id="setParentForm">
                     <div class="modal-body">
                         <div class="mb-3">
-                            <label class="form-label">{{ 'corporate.field.subsidiary'|trans }}</label>
+                            <label class="form-label" for="subsidiaryName">{{ 'corporate.field.subsidiary'|trans }}</label>
                             <input type="text" class="form-control" id="subsidiaryName" readonly>
                             <input type="hidden" id="subsidiaryId">
                         </div>
@@ -229,7 +229,7 @@
                 <form method="post" id="updateGovernanceForm">
                     <div class="modal-body">
                         <div class="mb-3">
-                            <label class="form-label">{{ 'tenant.field.name'|trans }}</label>
+                            <label class="form-label" for="governanceTenantName">{{ 'tenant.field.name'|trans }}</label>
                             <input type="text" class="form-control" id="governanceTenantName" readonly>
                             <input type="hidden" id="governanceTenantId">
                         </div>

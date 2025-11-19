@@ -32,7 +32,7 @@
 {# Filter Section #}
 <div class="card mb-4">
     <div class="card-header">
-        <h5 class="mb-0"><i class="bi bi-funnel" aria-hidden="true"></i> {{ 'common.filters'|trans }}</h5>
+        <h3 class="mb-0"><i class="bi bi-funnel" aria-hidden="true"></i> {{ 'common.filters'|trans }}</h3>
     </div>
     <div class="card-body">
         <form method="get" action="{{ path('app_audit_index') }}" class="row g-3">
@@ -85,7 +85,7 @@
 {# Audits List #}
 <div class="card">
     <div class="card-header">
-        <h5 class="mb-0"><i class="bi bi-list-check" aria-hidden="true"></i> {{ 'audit_management.audits_list'|trans }} ({{ audits|length }})</h5>
+        <h3 class="mb-0"><i class="bi bi-list-check" aria-hidden="true"></i> {{ 'audit_management.audits_list'|trans }} ({{ audits|length }})</h3>
     </div>
     <div class="card-body">
         {% if audits|length > 0 %}

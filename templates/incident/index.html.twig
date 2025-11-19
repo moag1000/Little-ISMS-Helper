@@ -97,11 +97,12 @@
     </div>
 
     {# Filter Section #}
-    <div class="card mb-4">
-        <div class="card-header">
-            <h5 class="mb-0"><i class="bi bi-funnel" aria-hidden="true"></i> {{ 'common.filters'|trans }}</h5>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with {
+        'title': 'common.filters',
+        'headerIcon': 'bi-funnel',
+        'class': 'mb-4'
+    } %}
+        {% block card_body %}
             <form method="get" action="{{ path('app_incident_index') }}" class="row g-3">
                 <div class="col-md-2">
                     <label for="filter-severity" class="form-label">{{ 'incident.field.severity'|trans }}</label>
@@ -160,16 +161,16 @@
                     </a>
                 </div>
             </form>
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 
     {# Category Statistics #}
     {% if categoryStats|length > 0 %}
-        <div class="card mb-4">
-            <div class="card-header">
-                <h5 class="mb-0">{{ 'incident.kpi.by_category'|trans|default('Incidents by Category') }}</h5>
-            </div>
-            <div class="card-body">
+        {% embed '_components/_card.html.twig' with {
+            'title': 'incident.kpi.by_category',
+            'class': 'mb-4'
+        } %}
+            {% block card_body %}
                 <div class="row">
                     {% for stat in categoryStats %}
                         <div class="col-md-2">
@@ -180,8 +181,8 @@
                         </div>
                     {% endfor %}
                 </div>
-            </div>
-        </div>
+            {% endblock %}
+        {% endembed %}
     {% endif %}
 
     {# Incidents Table #}
@@ -192,7 +193,7 @@
     {% else %}
         <div class="card">
             <div class="card-header">
-                <h5 class="mb-0">{{ 'incident.list.title'|trans|default('All Incidents') }}</h5>
+                <h3 class="mb-0">{{ 'incident.list.title'|trans|default('All Incidents') }}</h3>
             </div>
             <div class="table-responsive">
                 <table class="table table-hover mb-0">

@@ -19,7 +19,7 @@
 
 <div class="card related-items-card">
     <div class="card-header">
-        <h5>
+        <h3>
             <i class="bi bi-link-45deg" aria-hidden="true"></i>
             Zusammenhänge
         </h5>
@@ -27,7 +27,7 @@
     <div class="card-body">
         {% for section in sections %}
             <div class="related-section {% if not loop.last %}mb-4{% endif %}">
-                <h6 class="related-section-title">
+                <h4 class="related-section-title">
                     <i class="bi {{ section.icon }}"></i>
                     {{ section.title }}
                     <span class="badge bg-secondary">{{ section.items|length }}</span>

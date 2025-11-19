@@ -10,7 +10,7 @@
 
     {# Info Box #}
     <div class="alert alert-info mb-4">
-        <h5><i class="bi bi-info-circle" aria-hidden="true"></i> About Data Export</h5>
+        <h2><i class="bi bi-info-circle" aria-hidden="true"></i> About Data Export</h2>
         <p class="mb-0">
             Export your data in JSON or CSV format. You can select specific entities to export or export all data.
             <strong>Note:</strong> Large datasets may take some time to export.
@@ -20,7 +20,7 @@
     {# Export Form #}
     <div class="card">
         <div class="card-header bg-primary text-white">
-            <h5 class="mb-0">
+            <h3 class="mb-0">
                 <i class="bi bi-file-earmark-arrow-up" aria-hidden="true"></i> Configure Export
             </h5>
         </div>
@@ -30,8 +30,8 @@
 
                 {# Export Format #}
                 <div class="mb-4">
-                    <label class="form-label"><strong>Export Format:</strong></label>
-                    <div class="btn-group" role="group">
+                    <label class="form-label" for="format_json"><strong>Export Format:</strong></label>
+                    <div class="btn-group" role="group" aria-label="Export format selection">
                         <input type="radio" class="btn-check" name="format" id="format_json" value="json" checked>
                         <label class="btn btn-outline-primary" for="format_json">
                             <i class="bi bi-filetype-json" aria-hidden="true"></i> JSON
@@ -49,9 +49,9 @@
 
                 {# Entity Selection #}
                 <div class="mb-4">
-                    <label class="form-label"><strong>Select Entities to Export:</strong></label>
+                    <label class="form-label" id="entity-selection-label"><strong>Select Entities to Export:</strong></label>
 
-                    <div class="mb-2">
+                    <div class="mb-2" role="group" aria-labelledby="entity-selection-label">
                         <button type="button" class="btn btn-sm btn-outline-secondary" onclick="selectAllEntities()">
                             <i class="bi bi-check-all" aria-hidden="true"></i> Select All
                         </button>

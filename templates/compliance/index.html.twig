@@ -34,7 +34,7 @@
     {% if frameworks|length > 0 %}
     <div class="quick-access-bar">
         <div class="quick-access-header">
-            <h3>{{ 'compliance.quick_access'|trans|default('Quick Access') }}</h3>
+            <h2>{{ 'compliance.quick_access'|trans|default('Quick Access') }}</h2>
             <span class="quick-access-hint">{{ 'compliance.quick_access_hint'|trans|default('Click to jump directly to framework') }}</span>
         </div>
         <div class="quick-access-items">
@@ -61,7 +61,7 @@
 
     {# Data Reuse Value Highlight #}
     <div class="alert alert-success alert-gradient-success">
-        <h3 class="h3-m0-mb-sm">💎 {{ 'compliance.data_reuse.title'|trans }}</h3>
+        <h2 class="h3-m0-mb-sm">💎 {{ 'compliance.data_reuse.title'|trans }}</h2>
         <p class="text-lg-m0">
             {{ 'compliance.data_reuse.description'|trans({'%hours%': total_time_savings, '%days%': total_days_savings})|raw }}
         </p>

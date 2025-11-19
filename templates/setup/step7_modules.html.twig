@@ -10,7 +10,7 @@
             <div class="card mb-4">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center mb-2">
-                        <h6 class="mb-0">Setup-Fortschritt</h6>
+                        <h4 class="mb-0">Setup-Fortschritt</h4>
                         <small class="text-muted">Schritt 7 von 11</small>
                     </div>
                     <div class="progress" style="height: 10px;">
@@ -34,7 +34,7 @@
 
                     {% if recommended_modules is defined and recommended_modules|length > 0 %}
                     <div class="alert alert-info mb-4">
-                        <h6 class="alert-heading">
+                        <h4 class="alert-heading">
                             <i class="fas fa-lightbulb me-2"></i>
                             Empfehlungen basierend auf Ihren Organisationsdaten
                         </h6>
@@ -64,7 +64,7 @@
                                         <label class="form-check-label w-100" for="module_{{ key }}">
                                             <div class="d-flex justify-content-between align-items-start">
                                                 <div>
-                                                    <h6 class="mb-1">
+                                                    <h4 class="mb-1">
                                                         <i class="fas fa-{{ module.icon }} me-2"></i>
                                                         {{ module.name }}
                                                         <span class="badge bg-warning text-dark ms-2">Erforderlich</span>
@@ -101,7 +101,7 @@
                                             <label class="form-check-label w-100" for="module_{{ key }}">
                                                 <div class="d-flex justify-content-between align-items-start">
                                                     <div class="flex-grow-1">
-                                                        <h6 class="mb-1">
+                                                        <h4 class="mb-1">
                                                             <i class="fas fa-{{ module.icon }} me-2"></i>
                                                             {{ module.name }}
                                                             {% if recommended_modules is defined and key in recommended_modules %}
@@ -149,7 +149,7 @@
                         {# Summary #}
                         <div class="card bg-light mt-4 mb-4">
                             <div class="card-body">
-                                <h6 class="mb-2">
+                                <h4 class="mb-2">
                                     <i class="fas fa-chart-pie me-2"></i>
                                     Zusammenfassung
                                 </h6>

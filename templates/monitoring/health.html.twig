@@ -54,7 +54,7 @@
         <div class="col-md-6 mb-4">
             <div class="card h-100 border-{{ health_checks.database.status == 'healthy' ? 'success' : 'danger' }}">
                 <div class="card-header bg-{{ health_checks.database.status == 'healthy' ? 'success' : 'danger' }} text-white">
-                    <h5 class="mb-0">
+                    <h3 class="mb-0">
                         <i class="bi bi-database" aria-hidden="true"></i> Database
                     </h5>
                 </div>
@@ -88,7 +88,7 @@
         <div class="col-md-6 mb-4">
             <div class="card h-100 border-{{ health_checks.disk.status == 'healthy' ? 'success' : 'warning' }}">
                 <div class="card-header bg-{{ health_checks.disk.status == 'healthy' ? 'success' : 'warning' }} text-white">
-                    <h5 class="mb-0">
+                    <h3 class="mb-0">
                         <i class="bi bi-hdd" aria-hidden="true"></i> Disk Space
                     </h5>
                 </div>
@@ -132,7 +132,7 @@
         <div class="col-md-6 mb-4">
             <div class="card h-100 border-{{ health_checks.php.status == 'healthy' ? 'success' : 'danger' }}">
                 <div class="card-header bg-{{ health_checks.php.status == 'healthy' ? 'success' : 'danger' }} text-white">
-                    <h5 class="mb-0">
+                    <h3 class="mb-0">
                         <i class="bi bi-code-slash" aria-hidden="true"></i> PHP
                     </h5>
                 </div>
@@ -172,7 +172,7 @@
         <div class="col-md-6 mb-4">
             <div class="card h-100 border-success">
                 <div class="card-header bg-success text-white">
-                    <h5 class="mb-0">
+                    <h3 class="mb-0">
                         <i class="bi bi-gear" aria-hidden="true"></i> Symfony
                     </h5>
                 </div>
@@ -203,7 +203,7 @@
         <div class="col-md-6 mb-4">
             <div class="card h-100 border-{{ health_checks.cache.status == 'healthy' ? 'success' : 'danger' }}">
                 <div class="card-header bg-{{ health_checks.cache.status == 'healthy' ? 'success' : 'danger' }} text-white">
-                    <h5 class="mb-0">
+                    <h3 class="mb-0">
                         <i class="bi bi-lightning" aria-hidden="true"></i> Cache
                     </h5>
                 </div>
@@ -253,7 +253,7 @@
         <div class="col-md-6 mb-4">
             <div class="card h-100 border-{{ health_checks.logs.status == 'healthy' ? 'success' : 'danger' }}">
                 <div class="card-header bg-{{ health_checks.logs.status == 'healthy' ? 'success' : 'danger' }} text-white">
-                    <h5 class="mb-0">
+                    <h3 class="mb-0">
                         <i class="bi bi-file-text" aria-hidden="true"></i> Logs
                     </h5>
                 </div>
@@ -309,7 +309,7 @@
         <div class="col-md-6 mb-4">
             <div class="card h-100 border-{{ health_checks.permissions.status == 'healthy' ? 'success' : 'danger' }}">
                 <div class="card-header bg-{{ health_checks.permissions.status == 'healthy' ? 'success' : 'danger' }} text-white">
-                    <h5 class="mb-0">
+                    <h3 class="mb-0">
                         <i class="bi bi-shield-lock" aria-hidden="true"></i> File Permissions
                     </h5>
                 </div>
@@ -373,7 +373,7 @@
         <div class="col-md-6 mb-4">
             <div class="card h-100 border-{{ health_checks.composer.status == 'healthy' ? 'success' : 'danger' }}">
                 <div class="card-header bg-{{ health_checks.composer.status == 'healthy' ? 'success' : 'danger' }} text-white">
-                    <h5 class="mb-0">
+                    <h3 class="mb-0">
                         <i class="bi bi-box-seam" aria-hidden="true"></i> Composer
                     </h5>
                 </div>
@@ -427,7 +427,7 @@
         <div class="col-md-6 mb-4">
             <div class="card h-100 border-{{ health_checks.environment.status == 'healthy' ? 'success' : 'danger' }}">
                 <div class="card-header bg-{{ health_checks.environment.status == 'healthy' ? 'success' : 'danger' }} text-white">
-                    <h5 class="mb-0">
+                    <h3 class="mb-0">
                         <i class="bi bi-file-earmark-text" aria-hidden="true"></i> Environment
                     </h5>
                 </div>
@@ -475,7 +475,7 @@
         <div class="col-md-6 mb-4">
             <div class="card h-100 border-{{ health_checks.php_config.status == 'healthy' ? 'success' : 'warning' }}">
                 <div class="card-header bg-{{ health_checks.php_config.status == 'healthy' ? 'success' : 'warning' }} text-white">
-                    <h5 class="mb-0">
+                    <h3 class="mb-0">
                         <i class="bi bi-sliders" aria-hidden="true"></i> PHP Configuration
                     </h5>
                 </div>
@@ -519,7 +519,7 @@
         <div class="col-md-6 mb-4">
             <div class="card h-100 border-{{ health_checks.sessions.status == 'healthy' ? 'success' : 'danger' }}">
                 <div class="card-header bg-{{ health_checks.sessions.status == 'healthy' ? 'success' : 'danger' }} text-white">
-                    <h5 class="mb-0">
+                    <h3 class="mb-0">
                         <i class="bi bi-key" aria-hidden="true"></i> Sessions
                     </h5>
                 </div>
@@ -560,7 +560,7 @@
         <div class="col-md-6 mb-4">
             <div class="card h-100 border-success">
                 <div class="card-header bg-success text-white">
-                    <h5 class="mb-0">
+                    <h3 class="mb-0">
                         <i class="bi bi-cloud-upload" aria-hidden="true"></i> Uploads
                     </h5>
                 </div>
@@ -603,7 +603,7 @@
     {# Quick Actions #}
     <div class="card mt-4">
         <div class="card-header bg-primary text-white">
-            <h5 class="mb-0">
+            <h3 class="mb-0">
                 <i class="bi bi-link-45deg" aria-hidden="true"></i> Related Monitoring
             </h5>
         </div>
