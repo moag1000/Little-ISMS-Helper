@@ -36,7 +36,7 @@ class DataBreachService
         User $createdBy,
         ?ProcessingActivity $processingActivity = null
     ): DataBreach {
-        $tenant = $this->tenantContext->getTenant();
+        $tenant = $this->tenantContext->getCurrentTenant();
         if (!$tenant) {
             throw new \RuntimeException('No tenant context available');
         }
@@ -433,7 +433,7 @@ class DataBreachService
 
     public function findAll(): array
     {
-        $tenant = $this->tenantContext->getTenant();
+        $tenant = $this->tenantContext->getCurrentTenant();
         if (!$tenant) {
             return [];
         }
@@ -448,7 +448,7 @@ class DataBreachService
 
     public function findByStatus(string $status): array
     {
-        $tenant = $this->tenantContext->getTenant();
+        $tenant = $this->tenantContext->getCurrentTenant();
         if (!$tenant) {
             return [];
         }
@@ -458,7 +458,7 @@ class DataBreachService
 
     public function findByRiskLevel(string $riskLevel): array
     {
-        $tenant = $this->tenantContext->getTenant();
+        $tenant = $this->tenantContext->getCurrentTenant();
         if (!$tenant) {
             return [];
         }
@@ -468,7 +468,7 @@ class DataBreachService
 
     public function findHighRisk(): array
     {
-        $tenant = $this->tenantContext->getTenant();
+        $tenant = $this->tenantContext->getCurrentTenant();
         if (!$tenant) {
             return [];
         }
@@ -481,7 +481,7 @@ class DataBreachService
      */
     public function findRequiringAuthorityNotification(): array
     {
-        $tenant = $this->tenantContext->getTenant();
+        $tenant = $this->tenantContext->getCurrentTenant();
         if (!$tenant) {
             return [];
         }
@@ -494,7 +494,7 @@ class DataBreachService
      */
     public function findAuthorityNotificationOverdue(): array
     {
-        $tenant = $this->tenantContext->getTenant();
+        $tenant = $this->tenantContext->getCurrentTenant();
         if (!$tenant) {
             return [];
         }
@@ -504,7 +504,7 @@ class DataBreachService
 
     public function findRequiringSubjectNotification(): array
     {
-        $tenant = $this->tenantContext->getTenant();
+        $tenant = $this->tenantContext->getCurrentTenant();
         if (!$tenant) {
             return [];
         }
@@ -514,7 +514,7 @@ class DataBreachService
 
     public function findWithSpecialCategories(): array
     {
-        $tenant = $this->tenantContext->getTenant();
+        $tenant = $this->tenantContext->getCurrentTenant();
         if (!$tenant) {
             return [];
         }
@@ -524,7 +524,7 @@ class DataBreachService
 
     public function findIncomplete(): array
     {
-        $tenant = $this->tenantContext->getTenant();
+        $tenant = $this->tenantContext->getCurrentTenant();
         if (!$tenant) {
             return [];
         }
@@ -534,7 +534,7 @@ class DataBreachService
 
     public function findByProcessingActivity(ProcessingActivity $processingActivity): array
     {
-        $tenant = $this->tenantContext->getTenant();
+        $tenant = $this->tenantContext->getCurrentTenant();
         if (!$tenant) {
             return [];
         }
@@ -544,7 +544,7 @@ class DataBreachService
 
     public function findRecent(int $days = 30): array
     {
-        $tenant = $this->tenantContext->getTenant();
+        $tenant = $this->tenantContext->getCurrentTenant();
         if (!$tenant) {
             return [];
         }
