@@ -686,34 +686,106 @@ risk:
   create: Risiko erstellen
   edit: Risiko bearbeiten
   update: Risiko aktualisieren
+  delete_warning: Möchten Sie dieses Risiko wirklich löschen?
   inherent_assessment: Inhärente Risikobewertung
   inherent_help: Bewerten Sie das Risiko ohne Berücksichtigung bestehender Sicherheitsmaßnahmen
   probability_help: Wahrscheinlichkeit des Eintritts (1=Sehr unwahrscheinlich, 5=Sehr wahrscheinlich)
   impact_help: Schwere der Auswirkung bei Eintritt (1=Vernachlässigbar, 5=Katastrophal)
   residual_assessment: Restrisikobewertung
   residual_help: Bewerten Sie das verbleibende Risiko nach Implementierung von Sicherheitsmaßnahmen
+
+  # Confirm Messages
+  confirm:
+    delete: Risiko löschen
+
+  # Success Messages
   success:
     created: Risiko erfolgreich erstellt.
     updated: Risiko erfolgreich aktualisiert.
     deleted: Risiko erfolgreich gelöscht.
+
+  # Field Labels (Form Labels)
   field:
     title: Risikotitel
     description: Beschreibung
-    score: Risikoscore
+    threat: Bedrohung
+    vulnerability: Verwundbarkeit
+    asset: Betroffenes Asset
+    probability: Eintrittswahrscheinlichkeit
+    impact: Schadensausmaß
+    residual_probability: Rest-Wahrscheinlichkeit
+    residual_impact: Rest-Schadensausmaß
+    risk_owner: Risikoverantwortlicher
     treatment_strategy: Behandlungsstrategie
+    treatment_description: Behandlungsplan
+    acceptance_approved_by: Genehmigt durch
+    acceptance_approved_at: Genehmigungsdatum
+    acceptance_justification: Begründung für Akzeptanz
     status: Status
+    review_date: Überprüfungsdatum
+    score: Risikoscore
+
+  # Deprecated Labels (kept for compatibility)
   label:
     title: Risikotitel
     risk_owner: Risikoverantwortlicher
+    inherent_risk: Inhärentes Risiko
+
+  # Placeholders
   placeholder:
-    title: z.B. Datenleck aus der Datenbank
+    title: z.B. Datenverlust durch Ransomware-Angriff
+    description: Beschreiben Sie das Risiko detailliert...
+    threat: z.B. Externe Angreifer, Malware, Social Engineering
+    vulnerability: z.B. Fehlende Backups, ungepatchte Systeme
+    asset: Asset auswählen...
+    risk_owner: Risikoverantwortlichen auswählen...
+    treatment_description: Beschreiben Sie die geplanten Maßnahmen...
+    acceptance_approved_by: z.B. Max Mustermann (Geschäftsführer)
+    acceptance_justification: Begründung für die Risikoakzeptanz...
+
+  # Help Text
   help:
-    description: Detaillierte Beschreibung des Risikos
+    title: Kurzer, prägnanter Titel des Risikos
+    description: Detaillierte Beschreibung des Risikos und seiner potenziellen Auswirkungen
+    threat: Welche Bedrohung könnte dieses Risiko auslösen?
+    vulnerability: Welche Schwachstelle könnte ausgenutzt werden?
+    asset: Wählen Sie das betroffene Asset aus
+    probability: 'Eintrittswahrscheinlichkeit (1=sehr unwahrscheinlich, 2=unwahrscheinlich, 3=möglich, 4=wahrscheinlich, 5=sehr wahrscheinlich)'
+    impact: 'Schadensausmaß (1=unbedeutend, 2=gering, 3=moderat, 4=hoch, 5=kritisch)'
+    residual_probability: Verbleibende Wahrscheinlichkeit nach Umsetzung von Maßnahmen
+    residual_impact: Verbleibendes Schadensausmaß nach Umsetzung von Maßnahmen
+    risk_owner: Person, die für die Behandlung dieses Risikos verantwortlich ist
+    treatment: Wählen Sie die Behandlungsstrategie (Mindern, Akzeptieren, Übertragen, Vermeiden)
+    treatment_strategy: Wählen Sie die Behandlungsstrategie (Mindern, Akzeptieren, Übertragen, Vermeiden)
+    treatment_description: Detaillierte Beschreibung der geplanten Maßnahmen zur Risikobehandlung
+    acceptance_approved_by: Name der Person, die die Risikoakzeptanz genehmigt hat
+    acceptance_approved_at: Datum der Genehmigung der Risikoakzeptanz
+    acceptance_justification: Begründung für die Akzeptanz des Risikos
+    review_date: Datum der nächsten Überprüfung des Risikos
     inherent: 'Bewertung des Risikos ohne Berücksichtigung bestehender Maßnahmen (inhärentes Risiko)'
     residual: 'Bewertung des Risikos nach Implementierung von Maßnahmen (Restrisiko)'
+
+  # Treatment Strategies
+  treatment:
+    mitigate: Mindern
+    transfer: Übertragen
+    accept: Akzeptieren
+    avoid: Vermeiden
+
+  # Status Values
+  status:
+    identified: Identifiziert
+    assessed: Bewertet
+    treated: Behandelt
+    monitored: Überwacht
+    closed: Geschlossen
+    accepted: Akzeptiert
+
+  # Sections
   section:
-    inherent_risk: 'Inhärente Risikobewertung'
-    residual_risk: 'Restrisikobewertung'
+    basic_info: Grundinformationen
+    inherent_risk: 'Inhärente Risikobewertung (Brutto-Risiko)'
+    residual_risk: 'Restrisikobewertung (Netto-Risiko)'
     treatment: 'Risikobehandlung'
     acceptance: 'Risikoakzeptanz (ISO 27005)'
     status: 'Status & Review'
