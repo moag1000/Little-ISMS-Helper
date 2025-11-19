@@ -5,6 +5,9 @@ namespace App\Controller;
 use App\Entity\ComplianceFramework;
 use App\Form\ComplianceFrameworkType;
 use App\Repository\ComplianceFrameworkRepository;
+use App\Repository\ComplianceRequirementRepository;
+use App\Service\ComplianceRequirementFulfillmentService;
+use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,6 +22,9 @@ class ComplianceFrameworkController extends AbstractController
     public function __construct(
         private EntityManagerInterface $entityManager,
         private ComplianceFrameworkRepository $frameworkRepository,
+        private ComplianceRequirementRepository $requirementRepository,
+        private ComplianceRequirementFulfillmentService $fulfillmentService,
+        private TenantContext $tenantContext,
         private TranslatorInterface $translator
     ) {}
 
@@ -94,11 +100,23 @@ class ComplianceFrameworkController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function show(ComplianceFramework $framework): Response
     {
-        // Calculate statistics
-        $totalRequirements = $framework->getRequirements()->count();
-        $applicableRequirements = $framework->getApplicableRequirementsCount();
-        $fulfilledRequirements = $framework->getFulfilledRequirementsCount();
-        $compliancePercentage = $framework->getCompliancePercentage();
+        // Calculate statistics using tenant-specific fulfillment data
+        $tenant = $this->tenantContext->getCurrentTenant();
+        $stats = $this->requirementRepository->getFrameworkStatisticsForTenant($framework, $tenant);
+
+        $totalRequirements = $stats['total'];
+        $applicableRequirements = $stats['applicable'];
+        $fulfilledRequirements = $stats['fulfilled'];
+        $compliancePercentage = $applicableRequirements > 0
+            ? round(($fulfilledRequirements / $applicableRequirements) * 100, 2)
+            : 0;
+
+        // Get fulfillments for all requirements (for template access)
+        $requirementFulfillments = [];
+        foreach ($framework->getRequirements() as $requirement) {
+            $fulfillment = $this->fulfillmentService->getOrCreateFulfillment($tenant, $requirement);
+            $requirementFulfillments[$requirement->getId()] = $fulfillment;
+        }
 
         // Group requirements by category
         $requirementsByCategory = [];
@@ -131,6 +149,7 @@ class ComplianceFrameworkController extends AbstractController
             'applicable_requirements' => $applicableRequirements,
             'fulfilled_requirements' => $fulfilledRequirements,
             'compliance_percentage' => $compliancePercentage,
+            'requirement_fulfillments' => $requirementFulfillments,
             'requirements_by_category' => $requirementsByCategory,
             'priority_distribution' => $priorityDistribution,
         ]);

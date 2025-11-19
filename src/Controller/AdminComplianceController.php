@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Service\ComplianceFrameworkLoaderService;
 use App\Service\ModuleConfigurationService;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -25,7 +26,8 @@ class AdminComplianceController extends AbstractController
         private readonly ComplianceFrameworkRepository $frameworkRepository,
         private readonly ComplianceFrameworkLoaderService $frameworkLoaderService,
         private readonly CsrfTokenManagerInterface $csrfTokenManager,
-        private readonly ModuleConfigurationService $moduleConfigurationService
+        private readonly ModuleConfigurationService $moduleConfigurationService,
+        private readonly LoggerInterface $logger
     ) {
     }
 
@@ -136,9 +138,21 @@ class AdminComplianceController extends AbstractController
             ]);
 
         } catch (\Exception $e) {
+            // Log full exception for debugging
+            $this->logger->error('Framework deletion error', [
+                'code' => $code,
+                'exception' => $e->getMessage(),
+                'class' => get_class($e),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
             return new JsonResponse([
                 'success' => false,
-                'message' => 'Error deleting framework: ' . $e->getMessage()
+                'message' => 'Error deleting framework: ' . $e->getMessage(),
+                'error_details' => get_class($e),
+                'trace' => $e->getTraceAsString()
             ], 500);
         }
     }

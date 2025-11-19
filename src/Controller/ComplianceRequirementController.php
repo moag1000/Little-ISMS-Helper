@@ -109,12 +109,20 @@ class ComplianceRequirementController extends AbstractController
         $isInherited = $this->fulfillmentService->isInheritedFulfillment($fulfillment, $tenant);
         $canEdit = $this->fulfillmentService->canEditFulfillment($fulfillment, $tenant);
 
+        // Get fulfillments for sub-requirements (for template access)
+        $subRequirementFulfillments = [];
+        foreach ($requirement->getDetailedRequirements() as $subReq) {
+            $subFulfillment = $this->fulfillmentService->getOrCreateFulfillment($tenant, $subReq);
+            $subRequirementFulfillments[$subReq->getId()] = $subFulfillment;
+        }
+
         return $this->render('compliance/requirement/show.html.twig', [
             'requirement' => $requirement,
             'fulfillment' => $fulfillment,
             'calculated_fulfillment' => $calculatedFulfillment,
             'is_inherited' => $isInherited,
             'can_edit' => $canEdit,
+            'sub_requirement_fulfillments' => $subRequirementFulfillments,
         ]);
     }
 

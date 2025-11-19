@@ -251,7 +251,7 @@ class ProcessingActivityController extends AbstractController
         // Close session to prevent blocking
         $request->getSession()->save();
 
-        $html = $this->renderView('processing_activity/vvt_pdf.html.twig', [
+        $pdf = $this->pdfService->generatePdf('processing_activity/vvt_pdf.html.twig', [
             'export' => $exportData,
         ]);
 
@@ -260,7 +260,11 @@ class ProcessingActivityController extends AbstractController
             (new \DateTime())->format('Y-m-d')
         );
 
-        return $this->pdfService->generatePdfResponse($html, $filename);
+        return new Response($pdf, 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => sprintf('attachment; filename="%s"', $filename),
+            'Content-Length' => strlen($pdf),
+        ]);
     }
 
     /**
