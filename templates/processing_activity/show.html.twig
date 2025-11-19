@@ -230,14 +230,16 @@
             <div class="card">
                 <div class="card-body">
                     <h5>Compliance Checks (Art. 30)</h5>
-                    <table class="table">
-                        <thead>
+                    {% embed '_components/_table.html.twig' with {
+                        'noMargin': true
+                    } %}
+                        {% block table_head %}
                             <tr>
                                 <th>Check</th>
                                 <th>Status</th>
                             </tr>
-                        </thead>
-                        <tbody>
+                        {% endblock %}
+                        {% block table_body %}
                             {% for check, passed in compliance_report.compliance_checks %}
                                 <tr>
                                     <td>{{ check|replace({'_': ' '})|title }}</td>
@@ -250,8 +252,8 @@
                                     </td>
                                 </tr>
                             {% endfor %}
-                        </tbody>
-                    </table>
+                        {% endblock %}
+                    {% endembed %}</div>
 
                     <h5 class="mt-4">Technical & Organizational Measures (Art. 30(1)(g))</h5>
                     <p>{{ processing_activity.technicalOrganizationalMeasures ?? 'Not documented' }}</p>
