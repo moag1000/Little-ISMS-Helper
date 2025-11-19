@@ -148,7 +148,7 @@
                                             <i class="bi bi-diagram-3" aria-hidden="true"></i> {{ 'corporate.action.set_parent'|trans }}
                                         </button>
                                         <a href="{{ path('tenant_management_show', {id: tenant.id}) }}"
-                                           class="btn btn-sm btn-outline-secondary">
+                                           class="btn btn-sm btn-outline-secondary" aria-label="{{ 'common.view'|trans }}">
                                             <i class="bi bi-eye" aria-hidden="true"></i>
                                         </a>
                                     </td>
@@ -337,12 +337,12 @@
                 <button type="button"
                         class="btn btn-outline-warning"
                         onclick="showUpdateGovernanceModal({{ subsidiary.id }}, '{{ subsidiary.name|e('js') }}', '{{ subsidiary.governanceModel }}')"
-                        title="{{ 'corporate.action.update_governance'|trans }}">
+                        title="{{ 'corporate.action.update_governance'|trans }}" aria-label="{{ 'common.view'|trans }}">
                     <i class="bi bi-gear" aria-hidden="true"></i>
                 </button>
                 <a href="{{ path('tenant_management_show', {id: subsidiary.id}) }}"
                    class="btn btn-outline-primary"
-                   title="{{ 'common.view'|trans }}">
+                   title="{{ 'common.view'|trans }}" aria-label="{{ 'common.view'|trans }}">
                     <i class="bi bi-eye" aria-hidden="true"></i>
                 </a>
                 <form method="post" action="{{ path('tenant_management_set_parent', {id: subsidiary.id}) }}" class="d-inline">
@@ -350,7 +350,7 @@
                     <button type="submit"
                             class="btn btn-outline-danger"
                             title="{{ 'corporate.action.remove_parent'|trans }}"
-                            onclick="return confirm('{{ 'corporate.confirm.remove_parent'|trans }}');">
+                            onclick="return confirm('{{ 'corporate.confirm.remove_parent'|trans }}');" aria-label="{{ 'common.close'|trans }}">
                         <i class="bi bi-x-circle" aria-hidden="true"></i>
                     </button>
                 </form>

@@ -168,7 +168,7 @@
                                             </td>
                                             <td>{{ instance.createdAt|date('d.m.Y H:i') }}</td>
                                             <td>
-                                                <a href="{{ path('app_workflow_instance_show', {id: instance.id}) }}" class="btn btn-sm btn-outline-primary">
+                                                <a href="{{ path('app_workflow_instance_show', {id: instance.id}) }}" class="btn btn-sm btn-outline-primary" aria-label="{{ 'common.view'|trans }}">
                                                     <i class="bi bi-eye" aria-hidden="true"></i>
                                                 </a>
                                             </td>

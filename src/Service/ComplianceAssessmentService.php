@@ -208,7 +208,8 @@ class ComplianceAssessmentService
      */
     public function getComplianceDashboard(ComplianceFramework $framework): array
     {
-        $stats = $this->requirementRepository->getFrameworkStatistics($framework);
+        $tenant = $this->tenantContext->getCurrentTenant();
+        $stats = $this->requirementRepository->getFrameworkStatisticsForTenant($framework, $tenant);
         $gaps = $this->requirementRepository->findGapsByFramework($framework);
         $criticalGaps = $this->requirementRepository->findByFrameworkAndPriority($framework, 'critical');
 
@@ -313,8 +314,9 @@ class ComplianceAssessmentService
     {
         $comparison = [];
 
+        $tenant = $this->tenantContext->getCurrentTenant();
         foreach ($frameworks as $framework) {
-            $stats = $this->requirementRepository->getFrameworkStatistics($framework);
+            $stats = $this->requirementRepository->getFrameworkStatisticsForTenant($framework, $tenant);
             $comparison[] = [
                 'framework' => $framework->getName(),
                 'code' => $framework->getCode(),

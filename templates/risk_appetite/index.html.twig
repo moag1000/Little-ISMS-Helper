@@ -155,13 +155,13 @@
                         <div class="btn-group btn-group-sm">
                             <a href="{{ path('app_risk_appetite_show', {id: appetite.id}) }}"
                                class="btn btn-outline-primary"
-                               title="{{ 'common.view'|trans }}">
+                               title="{{ 'common.view'|trans }}" aria-label="{{ 'common.view'|trans }}">
                                 <i class="bi bi-eye" aria-hidden="true"></i>
                             </a>
                             {% if is_granted('ROLE_ADMIN') %}
                             <a href="{{ path('app_risk_appetite_edit', {id: appetite.id}) }}"
                                class="btn btn-outline-secondary"
-                               title="{{ 'common.edit'|trans }}">
+                               title="{{ 'common.edit'|trans }}" aria-label="{{ 'common.edit'|trans }}">
                                 <i class="bi bi-pencil" aria-hidden="true"></i>
                             </a>
                             {% endif %}

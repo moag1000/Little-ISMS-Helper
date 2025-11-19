@@ -152,21 +152,21 @@
                                     <a href="{{ path('app_management_review_show', {id: review.id}) }}"
                                        class="btn btn-outline-primary"
                                        data-turbo-action="advance"
-                                       title="{{ 'common.view'|trans }}">
+                                       title="{{ 'common.view'|trans }}" aria-label="{{ 'common.view'|trans }}">
                                         <i class="bi bi-eye" aria-hidden="true"></i>
                                     </a>
                                     {% if is_granted('ROLE_ADMIN') %}
                                     <a href="{{ path('app_management_review_edit', {id: review.id}) }}"
                                        class="btn btn-outline-secondary"
                                        data-turbo-action="advance"
-                                       title="{{ 'common.edit'|trans }}">
+                                       title="{{ 'common.edit'|trans }}" aria-label="{{ 'common.edit'|trans }}">
                                         <i class="bi bi-pencil" aria-hidden="true"></i>
                                     </a>
                                     <button type="button"
                                             class="btn btn-outline-danger"
                                             data-bs-toggle="modal"
                                             data-bs-target="#deleteModal{{ review.id }}"
-                                            title="{{ 'common.delete'|trans }}">
+                                            title="{{ 'common.delete'|trans }}" aria-label="{{ 'common.delete'|trans }}">
                                         <i class="bi bi-trash" aria-hidden="true"></i>
                                     </button>
                                     {% endif %}
