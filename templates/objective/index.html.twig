@@ -26,31 +26,42 @@
             {% if objectives|length == 0 %}
             <div class="alert alert-info">No objectives defined yet.</div>
             {% else %}
-            <table class="table table-hover">
-                <thead><tr><th scope="col">Title</th><th scope="col">Category</th><th scope="col">Target</th><th scope="col">Progress</th><th scope="col">Status</th><th scope="col">Actions</th></tr></thead>
-                <tbody>
-                {% for objective in objectives %}
-                <tr>
-                    <td><strong>{{ objective.title }}</strong></td>
-                    <td><span class="badge bg-secondary">{{ objective.category }}</span></td>
-                    <td>{{ objective.targetDate|date('d.m.Y') }}</td>
-                    <td>
-                        <div class="progress" style="height: 20px;">
-                            <div class="progress-bar {% if objective.progressPercentage >= 75 %}bg-success{% elseif objective.progressPercentage >= 50 %}bg-warning{% else %}bg-danger{% endif %}" 
-                                 style="width: {{ objective.progressPercentage }}%">{{ objective.progressPercentage }}%</div>
-                        </div>
-                    </td>
-                    <td><span class="badge bg-{{ objective.status == 'achieved' ? 'success' : (objective.status == 'in_progress' ? 'info' : 'warning') }}">{{ objective.status }}</span></td>
-                    <td>
-                        <a href="{{ path('app_objective_show', {id: objective.id}) }}" class="btn btn-sm btn-outline-primary" aria-label="{{ 'common.view'|trans }}"><i class="bi bi-eye" aria-hidden="true"></i></a>
-                        {% if is_granted('ROLE_ADMIN') %}
-                        <a href="{{ path('app_objective_edit', {id: objective.id}) }}" class="btn btn-sm btn-outline-secondary" aria-label="{{ 'common.edit'|trans }}"><i class="bi bi-pencil" aria-hidden="true"></i></a>
-                        {% endif %}
-                    </td>
-                </tr>
-                {% endfor %}
-                </tbody>
-            </table>
+            {% embed '_components/_table.html.twig' with {
+                'noMargin': true
+            } %}
+                {% block table_head %}
+                    <tr>
+                        <th scope="col">Title</th>
+                        <th scope="col">Category</th>
+                        <th scope="col">Target</th>
+                        <th scope="col">Progress</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                {% endblock %}
+                {% block table_body %}
+                    {% for objective in objectives %}
+                    <tr>
+                        <td><strong>{{ objective.title }}</strong></td>
+                        <td><span class="badge bg-secondary">{{ objective.category }}</span></td>
+                        <td>{{ objective.targetDate|date('d.m.Y') }}</td>
+                        <td>
+                            <div class="progress" style="height: 20px;">
+                                <div class="progress-bar {% if objective.progressPercentage >= 75 %}bg-success{% elseif objective.progressPercentage >= 50 %}bg-warning{% else %}bg-danger{% endif %}"
+                                     style="width: {{ objective.progressPercentage }}%">{{ objective.progressPercentage }}%</div>
+                            </div>
+                        </td>
+                        <td><span class="badge bg-{{ objective.status == 'achieved' ? 'success' : (objective.status == 'in_progress' ? 'info' : 'warning') }}">{{ objective.status }}</span></td>
+                        <td>
+                            <a href="{{ path('app_objective_show', {id: objective.id}) }}" class="btn btn-sm btn-outline-primary" aria-label="{{ 'common.view'|trans }}"><i class="bi bi-eye" aria-hidden="true"></i></a>
+                            {% if is_granted('ROLE_ADMIN') %}
+                            <a href="{{ path('app_objective_edit', {id: objective.id}) }}" class="btn btn-sm btn-outline-secondary" aria-label="{{ 'common.edit'|trans }}"><i class="bi bi-pencil" aria-hidden="true"></i></a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% endblock %}
+            {% endembed %}
             {% endif %}
         </div>
     </div>
