@@ -21,6 +21,7 @@ export default class extends Controller {
     connect() {
         this.isSyncing = false;
         this.syncQueue = [];
+        this.preferences = {}; // Initialize to avoid undefined errors
         this.loadPreferences();
         this.applyPreferences();
         this.enableDragAndDrop();
@@ -185,6 +186,10 @@ export default class extends Controller {
 
     // Apply preferences to widgets
     applyPreferences() {
+        if (!this.preferences) {
+            this.preferences = {};
+        }
+
         this.widgetTargets.forEach(widget => {
             const widgetId = widget.dataset.widgetId;
             const widgetConfig = this.preferences.widgets?.[widgetId] || this.preferences[widgetId];
