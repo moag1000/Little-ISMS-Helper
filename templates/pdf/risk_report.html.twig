@@ -281,7 +281,8 @@
     {% endif %}
 
     {# Critical and High Risks Table #}
-    {% set critical_and_high = risks|filter(r => r.riskScore >= 10) %}
+    {# ISO 27001 compliant threshold: High >= 12 #}
+    {% set critical_and_high = risks|filter(r => r.riskScore >= 12) %}
     {% if critical_and_high|length > 0 %}
     <h2>Critical & High Risks (Top Priority)</h2>
     <div class="insight-box">
@@ -308,9 +309,9 @@
                 <td>{{ risk.asset ? risk.asset.name : '-' }}</td>
                 <td class="text-center"><strong style="font-size: 9pt;">{{ risk.riskScore }}</strong></td>
                 <td>
-                    {% if risk.riskScore >= 15 %}
+                    {% if risk.riskScore >= 20 %}
                         <span class="badge badge-critical">Critical</span>
-                    {% elseif risk.riskScore >= 10 %}
+                    {% elseif risk.riskScore >= 12 %}
                         <span class="badge badge-high">High</span>
                     {% endif %}
                 </td>
@@ -367,11 +368,11 @@
                 <td class="text-center">{{ risk.impact ?? '-' }}</td>
                 <td class="text-center"><strong>{{ risk.riskScore }}</strong></td>
                 <td>
-                    {% if risk.riskScore >= 15 %}
+                    {% if risk.riskScore >= 20 %}
                         <span class="badge badge-critical">Critical</span>
-                    {% elseif risk.riskScore >= 10 %}
+                    {% elseif risk.riskScore >= 12 %}
                         <span class="badge badge-high">High</span>
-                    {% elseif risk.riskScore >= 5 %}
+                    {% elseif risk.riskScore >= 6 %}
                         <span class="badge badge-medium">Medium</span>
                     {% else %}
                         <span class="badge badge-low">Low</span>
@@ -426,22 +427,22 @@
         </thead>
         <tbody>
             <tr>
-                <td><span class="badge badge-critical">Critical (≥15)</span></td>
+                <td><span class="badge badge-critical">Critical (≥20)</span></td>
                 <td class="text-center"><strong>{{ critical_risks }}</strong></td>
                 <td class="text-center">{{ total_risks > 0 ? ((critical_risks / total_risks * 100)|round(1)) : 0 }}%</td>
             </tr>
             <tr>
-                <td><span class="badge badge-high">High (10-14)</span></td>
+                <td><span class="badge badge-high">High (12-19)</span></td>
                 <td class="text-center"><strong>{{ high_risks }}</strong></td>
                 <td class="text-center">{{ total_risks > 0 ? ((high_risks / total_risks * 100)|round(1)) : 0 }}%</td>
             </tr>
             <tr>
-                <td><span class="badge badge-medium">Medium (5-9)</span></td>
+                <td><span class="badge badge-medium">Medium (6-11)</span></td>
                 <td class="text-center"><strong>{{ medium_risks }}</strong></td>
                 <td class="text-center">{{ total_risks > 0 ? ((medium_risks / total_risks * 100)|round(1)) : 0 }}%</td>
             </tr>
             <tr>
-                <td><span class="badge badge-low">Low (<5)</span></td>
+                <td><span class="badge badge-low">Low (<6)</span></td>
                 <td class="text-center"><strong>{{ low_risks }}</strong></td>
                 <td class="text-center">{{ total_risks > 0 ? ((low_risks / total_risks * 100)|round(1)) : 0 }}%</td>
             </tr>

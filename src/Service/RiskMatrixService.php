@@ -45,7 +45,10 @@ class RiskMatrixService
     ];
 
     public function __construct(
-        private RiskRepository $riskRepository
+        private RiskRepository $riskRepository,
+        private int $criticalThreshold = 20,
+        private int $highThreshold = 12,
+        private int $mediumThreshold = 6
     ) {}
 
     /**
@@ -94,11 +97,11 @@ class RiskMatrixService
 
             // Calculate risk level
             $riskScore = $likelihood * $impact;
-            if ($riskScore >= 20) {
+            if ($riskScore >= $this->criticalThreshold) {
                 $statistics['critical']++;
-            } elseif ($riskScore >= 12) {
+            } elseif ($riskScore >= $this->highThreshold) {
                 $statistics['high']++;
-            } elseif ($riskScore >= 6) {
+            } elseif ($riskScore >= $this->mediumThreshold) {
                 $statistics['medium']++;
             } else {
                 $statistics['low']++;
@@ -131,15 +134,28 @@ class RiskMatrixService
     {
         $score = $likelihood * $impact;
 
-        if ($score >= 20) {
-            return 'critical'; // Red (20-25)
-        } elseif ($score >= 12) {
-            return 'high';     // Orange (12-19)
-        } elseif ($score >= 6) {
-            return 'medium';   // Yellow (6-11)
+        if ($score >= $this->criticalThreshold) {
+            return 'critical'; // Red
+        } elseif ($score >= $this->highThreshold) {
+            return 'high';     // Orange
+        } elseif ($score >= $this->mediumThreshold) {
+            return 'medium';   // Yellow
         } else {
-            return 'low';      // Green (1-5)
+            return 'low';      // Green
         }
+    }
+
+    /**
+     * Get configured thresholds for use in templates and services
+     * @return array{critical: int, high: int, medium: int}
+     */
+    public function getThresholds(): array
+    {
+        return [
+            'critical' => $this->criticalThreshold,
+            'high' => $this->highThreshold,
+            'medium' => $this->mediumThreshold,
+        ];
     }
 
     /**
