@@ -51,80 +51,80 @@
 </div>
 
 {# Locations Table #}
-<div class="table-container">
-    <table>
-        <thead>
-            <tr>
-                <th scope="col">{{ 'location.field.name'|trans }}</th>
-                <th scope="col">{{ 'location.field.type'|trans }}</th>
-                <th scope="col">{{ 'location.field.code'|trans }}</th>
-                <th scope="col">{{ 'location.field.city'|trans }}</th>
-                <th scope="col">{{ 'location.field.security_level'|trans }}</th>
-                <th scope="col" class="text-center">{{ 'location.field.badge_access'|trans }}</th>
-                <th scope="col" class="text-center">{{ 'common.actions'|trans }}</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for location in locations %}
-            <tr>
-                <td>
-                    <strong>{{ location.name }}</strong>
-                    {% if location.parentLocation %}
-                        <br><small class="text-muted-color">↳ {{ location.parentLocation.name }}</small>
-                    {% endif %}
-                </td>
-                <td>
-                    <span class="badge badge-info">{{ ('location.type.' ~ location.locationType)|trans }}</span>
-                </td>
-                <td>
-                    {% if location.code %}
-                        <code>{{ location.code }}</code>
-                    {% else %}
-                        <span class="text-muted-color">-</span>
-                    {% endif %}
-                </td>
-                <td>
-                    {{ location.city ?? '-' }}
-                    {% if location.country %}
-                        <br><small class="text-muted-color">{{ location.country }}</small>
-                    {% endif %}
-                </td>
-                <td>
-                    {% set securityColors = {
-                        'public': 'secondary',
-                        'restricted': 'info',
-                        'controlled': 'warning',
-                        'secure': 'warning',
-                        'high_security': 'danger'
-                    } %}
-                    <span class="badge badge-{{ securityColors[location.securityLevel] ?? 'secondary' }}">
-                        {{ ('location.security.' ~ location.securityLevel)|trans }}
-                    </span>
-                </td>
-                <td class="text-center">
-                    {% if location.requiresBadgeAccess %}
-                        <span class="badge badge-success">✓</span>
-                    {% else %}
-                        <span class="badge badge-secondary">✗</span>
-                    {% endif %}
-                </td>
-                <td class="text-center">
-                    <a href="{{ path('app_location_show', {id: location.id}) }}" class="btn btn-sm mr-025">
-                        👁 {{ 'common.view'|trans }}
-                    </a>
-                    <a href="{{ path('app_location_edit', {id: location.id}) }}" class="btn btn-sm btn-secondary">
-                        ✏️ {{ 'common.edit'|trans }}
-                    </a>
-                </td>
-            </tr>
-            {% else %}
-            <tr>
-                <td colspan="7" class="text-center-p-xl-muted">
-                    {{ 'location.message.no_locations'|trans }}
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
+{% embed '_components/_table.html.twig' with {
+    'wrapperClass': 'table-container'
+} %}
+    {% block table_head %}
+        <tr>
+            <th scope="col">{{ 'location.field.name'|trans }}</th>
+            <th scope="col">{{ 'location.field.type'|trans }}</th>
+            <th scope="col">{{ 'location.field.code'|trans }}</th>
+            <th scope="col">{{ 'location.field.city'|trans }}</th>
+            <th scope="col">{{ 'location.field.security_level'|trans }}</th>
+            <th scope="col" class="text-center">{{ 'location.field.badge_access'|trans }}</th>
+            <th scope="col" class="text-center">{{ 'common.actions'|trans }}</th>
+        </tr>
+    {% endblock %}
+    {% block table_body %}
+        {% for location in locations %}
+        <tr>
+            <td>
+                <strong>{{ location.name }}</strong>
+                {% if location.parentLocation %}
+                    <br><small class="text-muted-color">↳ {{ location.parentLocation.name }}</small>
+                {% endif %}
+            </td>
+            <td>
+                <span class="badge bg-info">{{ ('location.type.' ~ location.locationType)|trans }}</span>
+            </td>
+            <td>
+                {% if location.code %}
+                    <code>{{ location.code }}</code>
+                {% else %}
+                    <span class="text-muted-color">-</span>
+                {% endif %}
+            </td>
+            <td>
+                {{ location.city ?? '-' }}
+                {% if location.country %}
+                    <br><small class="text-muted-color">{{ location.country }}</small>
+                {% endif %}
+            </td>
+            <td>
+                {% set securityColors = {
+                    'public': 'secondary',
+                    'restricted': 'info',
+                    'controlled': 'warning',
+                    'secure': 'warning',
+                    'high_security': 'danger'
+                } %}
+                <span class="badge badge-{{ securityColors[location.securityLevel] ?? 'secondary' }}">
+                    {{ ('location.security.' ~ location.securityLevel)|trans }}
+                </span>
+            </td>
+            <td class="text-center">
+                {% if location.requiresBadgeAccess %}
+                    <span class="badge bg-success">✓</span>
+                {% else %}
+                    <span class="badge bg-secondary">✗</span>
+                {% endif %}
+            </td>
+            <td class="text-center">
+                <a href="{{ path('app_location_show', {id: location.id}) }}" class="btn btn-sm mr-025">
+                    👁 {{ 'common.view'|trans }}
+                </a>
+                <a href="{{ path('app_location_edit', {id: location.id}) }}" class="btn btn-sm btn-secondary">
+                    ✏️ {{ 'common.edit'|trans }}
+                </a>
+            </td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="7" class="text-center-p-xl-muted">
+                {{ 'location.message.no_locations'|trans }}
+            </td>
+        </tr>
+        {% endfor %}
+    {% endblock %}
+{% endembed %}
 {% endblock %}
