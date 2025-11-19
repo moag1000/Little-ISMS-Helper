@@ -94,7 +94,7 @@ class RiskType extends AbstractType
                     return $user->getFullName() . ' (' . $user->getEmail() . ')';
                 },
                 'placeholder' => 'risk.placeholder.risk_owner',
-                'required' => false,
+                'required' => true,
                 'help' => 'risk.help.risk_owner',
                 'attr' => [
                     'class' => 'form-select',
