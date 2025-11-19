@@ -711,6 +711,7 @@ risk:
   # Field Labels (Form Labels)
   field:
     title: Risikotitel
+    category: Risikokategorie
     description: Beschreibung
     threat: Bedrohung
     vulnerability: Verwundbarkeit
@@ -738,6 +739,7 @@ risk:
   # Placeholders
   placeholder:
     title: z.B. Datenverlust durch Ransomware-Angriff
+    category: Kategorie auswählen...
     description: Beschreiben Sie das Risiko detailliert...
     threat: z.B. Externe Angreifer, Malware, Social Engineering
     vulnerability: z.B. Fehlende Backups, ungepatchte Systeme
@@ -750,6 +752,7 @@ risk:
   # Help Text
   help:
     title: Kurzer, prägnanter Titel des Risikos
+    category: Wählen Sie die Kategorie für bessere Gruppierung und Reporting (ISO 27005:2022)
     description: Detaillierte Beschreibung des Risikos und seiner potenziellen Auswirkungen
     threat: Welche Bedrohung könnte dieses Risiko auslösen?
     vulnerability: Welche Schwachstelle könnte ausgenutzt werden?
@@ -784,6 +787,15 @@ risk:
     monitored: Überwacht
     closed: Geschlossen
     accepted: Akzeptiert
+
+  # Risk Categories (ISO 27005:2022 Section 8.2.3)
+  category:
+    financial: Finanzielle Risiken
+    operational: Betriebliche Risiken
+    compliance: Compliance-Risiken
+    strategic: Strategische Risiken
+    reputational: Reputationsrisiken
+    security: Informationssicherheitsrisiken
 
   # Sections
   section:
