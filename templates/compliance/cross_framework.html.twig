@@ -25,8 +25,11 @@
             </div>
             <div class="card-body">
                 <div class="coverage-matrix">
-                    <table class="matrix-table">
-                        <thead>
+                    {% embed '_components/_table.html.twig' with {
+                        'class': 'matrix-table',
+                        'noMargin': true
+                    } %}
+                        {% block table_head %}
                             <tr>
                                 <th scope="col" class="matrix-corner-cell">{{ 'compliance.cross_framework.source_target_label'|trans }}</th>
                                 {% for framework in frameworks %}
@@ -38,8 +41,8 @@
                                     </th>
                                 {% endfor %}
                             </tr>
-                        </thead>
-                        <tbody>
+                        {% endblock %}
+                        {% block table_body %}
                             {% for sourceFramework in frameworks %}
                                 <tr>
                                     <td class="matrix-row-header">
@@ -67,8 +70,8 @@
                                     {% endfor %}
                                 </tr>
                             {% endfor %}
-                        </tbody>
-                    </table>
+                        {% endblock %}
+                    {% endembed %}
                 </div>
                 <div class="matrix-legend">
                     <div class="legend-item">
@@ -125,53 +128,54 @@
                 </div>
             </div>
 
-            <div class="table-responsive">
-                <table class="table">
-                    <thead>
+            {% embed '_components/_table.html.twig' with {
+                'noMargin': true,
+                'responsive': true
+            } %}
+                {% block table_head %}
+                    <tr>
+                        <th scope="col">{{ 'compliance.cross_framework.table.source'|trans }}</th>
+                        <th scope="col">{{ 'compliance.cross_framework.table.target'|trans }}</th>
+                        <th scope="col">{{ 'compliance.cross_framework.table.type'|trans }}</th>
+                        <th scope="col">{{ 'compliance.cross_framework.table.strength'|trans }}</th>
+                        <th scope="col">{{ 'compliance.cross_framework.table.bidirectional'|trans }}</th>
+                    </tr>
+                {% endblock %}
+                {% block table_body %}
+                    {% for mapping in mapping_group.mappings|slice(0, 20) %}
                         <tr>
-                            <th scope="col">{{ 'compliance.cross_framework.table.source'|trans }}</th>
-                            <th scope="col">{{ 'compliance.cross_framework.table.target'|trans }}</th>
-                            <th scope="col">{{ 'compliance.cross_framework.table.type'|trans }}</th>
-                            <th scope="col">{{ 'compliance.cross_framework.table.strength'|trans }}</th>
-                            <th scope="col">{{ 'compliance.cross_framework.table.bidirectional'|trans }}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for mapping in mapping_group.mappings|slice(0, 20) %}
-                            <tr>
-                                <td>
-                                    <strong>{{ mapping.sourceRequirement.requirementId }}</strong><br>
-                                    <small>{{ mapping.sourceRequirement.title|length > 60 ? mapping.sourceRequirement.title|slice(0, 60) ~ '...' : mapping.sourceRequirement.title }}</small>
-                                </td>
-                                <td>
-                                    <strong>{{ mapping.targetRequirement.requirementId }}</strong><br>
-                                    <small>{{ mapping.targetRequirement.title|length > 60 ? mapping.targetRequirement.title|slice(0, 60) ~ '...' : mapping.targetRequirement.title }}</small>
-                                </td>
-                                <td>
-                                    <span class="badge badge-{{ mapping.mappingBadgeClass }}">
-                                        {{ mapping.mappingType|upper }}
-                                    </span>
-                                </td>
-                                <td>
-                                    <div class="mapping-strength">
-                                        <div class="strength-bar">
-                                            <div class="strength-fill" style="width: {{ mapping.mappingPercentage }}%; background: {{ mapping.mappingPercentage >= 100 ? 'var(--color-success)' : (mapping.mappingPercentage >= 50 ? 'var(--color-warning)' : 'var(--color-secondary)') }};"></div>
-                                        </div>
-                                        <span class="strength-value">{{ mapping.mappingPercentage }}%</span>
+                            <td>
+                                <strong>{{ mapping.sourceRequirement.requirementId }}</strong><br>
+                                <small>{{ mapping.sourceRequirement.title|length > 60 ? mapping.sourceRequirement.title|slice(0, 60) ~ '...' : mapping.sourceRequirement.title }}</small>
+                            </td>
+                            <td>
+                                <strong>{{ mapping.targetRequirement.requirementId }}</strong><br>
+                                <small>{{ mapping.targetRequirement.title|length > 60 ? mapping.targetRequirement.title|slice(0, 60) ~ '...' : mapping.targetRequirement.title }}</small>
+                            </td>
+                            <td>
+                                <span class="badge badge-{{ mapping.mappingBadgeClass }}">
+                                    {{ mapping.mappingType|upper }}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="mapping-strength">
+                                    <div class="strength-bar">
+                                        <div class="strength-fill" style="width: {{ mapping.mappingPercentage }}%; background: {{ mapping.mappingPercentage >= 100 ? 'var(--color-success)' : (mapping.mappingPercentage >= 50 ? 'var(--color-warning)' : 'var(--color-secondary)') }};"></div>
                                     </div>
-                                </td>
-                                <td class="text-center">
-                                    {% if mapping.bidirectional %}
-                                        <span class="badge badge-success">{{ 'compliance.cross_framework.yes_bidirectional'|trans }}</span>
-                                    {% else %}
-                                        <span class="badge badge-secondary">→</span>
-                                    {% endif %}
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+                                    <span class="strength-value">{{ mapping.mappingPercentage }}%</span>
+                                </div>
+                            </td>
+                            <td class="text-center">
+                                {% if mapping.bidirectional %}
+                                    <span class="badge bg-success">{{ 'compliance.cross_framework.yes_bidirectional'|trans }}</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">→</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% endblock %}
+            {% endembed %}
 
             {% if mapping_group.mappings|length > 20 %}
                 <div class="card-footer text-center">
