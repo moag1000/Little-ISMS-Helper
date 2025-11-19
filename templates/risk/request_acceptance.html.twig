@@ -1,0 +1,142 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'risk.acceptance.title'|trans }} - {{ risk.title }} - {{ parent() }}{% endblock %}
+
+{% block body %}
+{# Breadcrumb Navigation #}
+{% include '_components/_breadcrumb.html.twig' with {
+    breadcrumbs: [
+        { label: 'nav.risks'|trans, url: path('app_risk_index'), icon: 'bi-exclamation-triangle' },
+        { label: risk.title, url: path('app_risk_show', {id: risk.id}) },
+        { label: 'risk.acceptance.title'|trans }
+    ]
+} %}
+
+{# Page Header #}
+{% include '_components/_page_header.html.twig' with {
+    title: 'risk.acceptance.title'|trans,
+    icon: 'bi-check-circle',
+    actions: [
+        { label: 'common.back'|trans, url: path('app_risk_show', {id: risk.id}), variant: 'secondary', icon: 'bi-arrow-left' }
+    ]
+} %}
+
+{# ISO 27005:2022 Section 8.4.4 - Risk Acceptance #}
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="mb-0">
+                    <i class="bi bi-shield-check" aria-hidden="true"></i>
+                    {{ 'risk.acceptance.request'|trans }}
+                </h3>
+            </div>
+            <div class="card-body">
+                {# Risk Summary #}
+                <div class="alert alert-info mb-4">
+                    <h5 class="alert-heading">
+                        <i class="bi bi-info-circle" aria-hidden="true"></i>
+                        {{ risk.title }}
+                    </h5>
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <strong>{{ 'risk.field.inherent_risk'|trans }}:</strong>
+                            {{ risk.inherentRiskLevel }}
+                            ({{ risk.probability }} × {{ risk.impact }})
+                        </div>
+                        <div class="col-md-6">
+                            <strong>{{ 'risk.residual_assessment'|trans }}:</strong>
+                            {{ risk.residualRiskLevel }}
+                            ({{ risk.residualProbability }} × {{ risk.residualImpact }})
+                        </div>
+                    </div>
+                </div>
+
+                {# Acceptance Request Form #}
+                <form method="post" action="{{ path('app_risk_request_acceptance', {id: risk.id}) }}">
+                    <input type="hidden" name="_token" value="{{ csrf_token('request-acceptance' ~ risk.id) }}">
+
+                    <div class="mb-4">
+                        <label for="justification" class="form-label required">
+                            {{ 'risk.acceptance.justification_label'|trans }}
+                        </label>
+                        <textarea
+                            class="form-control"
+                            id="justification"
+                            name="justification"
+                            rows="6"
+                            required
+                            placeholder="{{ 'risk.acceptance.justification_help'|trans }}"
+                        ></textarea>
+                        <div class="form-text">
+                            {{ 'risk.acceptance.justification_help'|trans }}
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <a href="{{ path('app_risk_show', {id: risk.id}) }}" class="btn btn-secondary">
+                            <i class="bi bi-x-circle" aria-hidden="true"></i>
+                            {{ 'common.cancel'|trans }}
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle" aria-hidden="true"></i>
+                            {{ 'risk.acceptance.submit_request'|trans }}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {# Sidebar: Approval Level Information #}
+    <div class="col-lg-4">
+        <div class="card border-{{ required_level == 'automatic' ? 'success' : (required_level == 'manager' ? 'warning' : 'danger') }}">
+            <div class="card-header bg-{{ required_level == 'automatic' ? 'success' : (required_level == 'manager' ? 'warning' : 'danger') }}-subtle">
+                <h4 class="mb-0">
+                    <i class="bi bi-shield-check" aria-hidden="true"></i>
+                    {{ 'risk.acceptance.required_approval_level'|trans }}
+                </h4>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-{{ required_level == 'automatic' ? 'success' : (required_level == 'manager' ? 'warning' : 'danger') }} mb-3">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-{{ required_level == 'automatic' ? 'check-circle-fill' : (required_level == 'manager' ? 'person-fill' : 'person-badge-fill') }} fs-3 me-3" aria-hidden="true"></i>
+                        <div>
+                            <strong class="d-block">{{ ('risk.acceptance.approval_levels.' ~ required_level)|trans }}</strong>
+                            <small>{{ 'risk.acceptance.approval_threshold_info'|trans({'%score%': risk.residualRiskLevel}) }}</small>
+                        </div>
+                    </div>
+                </div>
+
+                <h5>{{ 'risk.guidance.title'|trans }}</h5>
+                <div class="list-group list-group-flush">
+                    {% for level, config in thresholds %}
+                        <div class="list-group-item {{ required_level == level ? 'active' : '' }}">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div>
+                                    <h6 class="mb-1">{{ config.label }}</h6>
+                                    <small class="{{ required_level == level ? 'text-white' : 'text-muted' }}">
+                                        {{ config.description }}
+                                    </small>
+                                </div>
+                                {% if required_level == level %}
+                                    <i class="bi bi-check-circle-fill fs-4" aria-hidden="true"></i>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <div class="mt-3">
+                    <h6>{{ 'common.info'|trans }}</h6>
+                    <p class="small text-muted mb-0">
+                        <i class="bi bi-info-circle" aria-hidden="true"></i>
+                        ISO 27005:2022 Section 8.4.4 requires formal approval for risk acceptance based on residual risk level.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

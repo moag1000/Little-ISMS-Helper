@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background: #ea580c; color: white; padding: 20px; text-align: center; }
+        .content { background: #f9fafb; padding: 20px; margin: 20px 0; }
+        .field { margin: 10px 0; }
+        .label { font-weight: bold; color: #666; }
+        .value { color: #000; }
+        .warning { background: #fed7aa; border: 1px solid #ea580c; padding: 15px; margin: 15px 0; border-radius: 4px; color: #9a3412; }
+        .info { background: #f3f4f6; border-left: 4px solid #dc2626; padding: 10px; margin: 15px 0; }
+        .action-required { background: #dbeafe; border: 1px solid #2563eb; padding: 15px; margin: 15px 0; border-radius: 4px; color: #1e40af; }
+        .footer { text-align: center; color: #666; font-size: 12px; padding: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>❌ Risk Acceptance Rejected</h1>
+        </div>
+
+        <div class="content">
+            <p>Dear {{ requester.firstName }} {{ requester.lastName }},</p>
+
+            <div class="warning">
+                <strong>⚠️ Your risk acceptance request has been rejected.</strong>
+            </div>
+
+            <div class="field">
+                <span class="label">Risk Title:</span>
+                <span class="value"><strong>{{ risk.title }}</strong></span>
+            </div>
+
+            <div class="field">
+                <span class="label">Residual Risk Score:</span>
+                <span class="value">{{ risk.residualRiskLevel }} ({{ risk.residualProbability }} × {{ risk.residualImpact }})</span>
+            </div>
+
+            <div class="field">
+                <span class="label">Rejected By:</span>
+                <span class="value">{{ rejector.fullName }} ({{ rejector.email }})</span>
+            </div>
+
+            <div class="field">
+                <span class="label">Rejection Date:</span>
+                <span class="value">{{ rejected_at|date('d.m.Y H:i') }}</span>
+            </div>
+
+            <div class="info">
+                <strong>📝 Reason for Rejection:</strong><br>
+                {{ reason }}
+            </div>
+
+            <div class="action-required">
+                <strong>🔧 Required Actions:</strong><br>
+                The risk has been returned to "Assessed" status. You must implement additional mitigation measures before requesting acceptance again. Please:
+                <ul style="margin-top: 10px; margin-bottom: 0;">
+                    <li>Review the rejection reason carefully</li>
+                    <li>Identify and implement additional controls to reduce the residual risk</li>
+                    <li>Update the risk assessment to reflect the new controls</li>
+                    <li>Re-assess the residual risk level</li>
+                    <li>If the risk is sufficiently reduced, you may request acceptance again</li>
+                </ul>
+            </div>
+
+            <div class="info">
+                <strong>ℹ️ ISO 27005:2022 Guidance:</strong><br>
+                According to ISO 27005:2022 Section 8.4, risks that exceed the organization's risk appetite should be treated with additional controls rather than accepted. Consider the following treatment strategies:
+                <ul style="margin-top: 10px; margin-bottom: 0;">
+                    <li><strong>Modify:</strong> Implement additional security controls to reduce likelihood or impact</li>
+                    <li><strong>Share:</strong> Transfer part of the risk through insurance or outsourcing</li>
+                    <li><strong>Avoid:</strong> Change processes to eliminate the risk entirely</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>This is an automated notification from Little ISMS Helper</p>
+            <p>ISO 27001:2022 & ISO 27005:2022 Compliant Risk Management System</p>
+        </div>
+    </div>
+</body>
+</html>
