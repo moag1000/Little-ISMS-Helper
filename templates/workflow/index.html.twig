@@ -101,65 +101,66 @@
 {# Workflow Instances Table #}
 <h2>{{ 'workflow.section.recent_instances'|trans }}</h2>
 
-<div class="table-container">
-    <table>
-        <thead>
-            <tr>
-                <th scope="col">{{ 'workflow.field.name'|trans }}</th>
-                <th scope="col">{{ 'workflow.field.definition'|trans }}</th>
-                <th scope="col">{{ 'workflow.field.current_step'|trans }}</th>
-                <th scope="col">{{ 'workflow.field.status'|trans }}</th>
-                <th scope="col">{{ 'workflow.field.assignee'|trans }}</th>
-                <th scope="col">{{ 'workflow.field.due_date'|trans }}</th>
-                <th scope="col" class="text-center">{{ 'common.actions'|trans }}</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for instance in instances|slice(0, 20) %}
-            <tr>
-                <td><strong>{{ instance.name }}</strong></td>
-                <td>
-                    <span class="badge badge-info">{{ instance.definition ? instance.definition.name : '-' }}</span>
-                </td>
-                <td>{{ instance.currentStep ? instance.currentStep.name : '-' }}</td>
-                <td>
-                    {% set statusColors = {
-                        'pending': 'warning',
-                        'active': 'info',
-                        'completed': 'success',
-                        'cancelled': 'secondary'
-                    } %}
-                    <span class="badge badge-{{ statusColors[instance.status] ?? 'secondary' }}">
-                        {{ ('workflow.status.' ~ instance.status)|trans }}
-                    </span>
-                </td>
-                <td>{{ instance.assignee ? instance.assignee.fullName : '-' }}</td>
-                <td>
-                    {% if instance.dueDate %}
-                        {{ instance.dueDate|date('d.m.Y') }}
-                        {% if instance.overdue %}
-                            <span class="badge badge-danger ml-xs">
-                                {{ 'workflow.badge.overdue'|trans }}
-                            </span>
-                        {% endif %}
-                    {% else %}
-                        <span class="text-muted">-</span>
+{% embed '_components/_table.html.twig' with {
+    'wrapperClass': 'table-container',
+    'noMargin': true
+} %}
+    {% block table_head %}
+        <tr>
+            <th scope="col">{{ 'workflow.field.name'|trans }}</th>
+            <th scope="col">{{ 'workflow.field.definition'|trans }}</th>
+            <th scope="col">{{ 'workflow.field.current_step'|trans }}</th>
+            <th scope="col">{{ 'workflow.field.status'|trans }}</th>
+            <th scope="col">{{ 'workflow.field.assignee'|trans }}</th>
+            <th scope="col">{{ 'workflow.field.due_date'|trans }}</th>
+            <th scope="col" class="text-center">{{ 'common.actions'|trans }}</th>
+        </tr>
+    {% endblock %}
+    {% block table_body %}
+        {% for instance in instances|slice(0, 20) %}
+        <tr>
+            <td><strong>{{ instance.name }}</strong></td>
+            <td>
+                <span class="badge bg-info">{{ instance.definition ? instance.definition.name : '-' }}</span>
+            </td>
+            <td>{{ instance.currentStep ? instance.currentStep.name : '-' }}</td>
+            <td>
+                {% set statusColors = {
+                    'pending': 'warning',
+                    'active': 'info',
+                    'completed': 'success',
+                    'cancelled': 'secondary'
+                } %}
+                <span class="badge badge-{{ statusColors[instance.status] ?? 'secondary' }}">
+                    {{ ('workflow.status.' ~ instance.status)|trans }}
+                </span>
+            </td>
+            <td>{{ instance.assignee ? instance.assignee.fullName : '-' }}</td>
+            <td>
+                {% if instance.dueDate %}
+                    {{ instance.dueDate|date('d.m.Y') }}
+                    {% if instance.overdue %}
+                        <span class="badge bg-danger ml-xs">
+                            {{ 'workflow.badge.overdue'|trans }}
+                        </span>
                     {% endif %}
-                </td>
-                <td class="text-center">
-                    <a href="{{ path('app_workflow_instance_show', {id: instance.id}) }}" class="btn btn-sm">
-                        👁 {{ 'common.view'|trans }}
-                    </a>
-                </td>
-            </tr>
-            {% else %}
-            <tr>
-                <td colspan="7" class="text-center-p-xl-muted">
-                    {{ 'workflow.message.no_instances'|trans }}
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
+                {% else %}
+                    <span class="text-muted">-</span>
+                {% endif %}
+            </td>
+            <td class="text-center">
+                <a href="{{ path('app_workflow_instance_show', {id: instance.id}) }}" class="btn btn-sm">
+                    👁 {{ 'common.view'|trans }}
+                </a>
+            </td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="7" class="text-center-p-xl-muted">
+                {{ 'workflow.message.no_instances'|trans }}
+            </td>
+        </tr>
+        {% endfor %}
+    {% endblock %}
+{% endembed %}
 {% endblock %}
