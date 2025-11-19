@@ -151,10 +151,10 @@
                         <dd class="col-sm-9">{{ processing_activity.responsibleDepartment ?? '—' }}</dd>
 
                         <dt class="col-sm-3">Contact Person:</dt>
-                        <dd class="col-sm-9">{{ processing_activity.contactPerson ? processing_activity.contactPerson.username : '—' }}</dd>
+                        <dd class="col-sm-9">{{ processing_activity.contactPerson ? processing_activity.contactPerson.userIdentifier : '—' }}</dd>
 
                         <dt class="col-sm-3">DPO:</dt>
-                        <dd class="col-sm-9">{{ processing_activity.dataProtectionOfficer ? processing_activity.dataProtectionOfficer.username : '—' }}</dd>
+                        <dd class="col-sm-9">{{ processing_activity.dataProtectionOfficer ? processing_activity.dataProtectionOfficer.userIdentifier : '—' }}</dd>
                     </dl>
                 </div>
             </div>
