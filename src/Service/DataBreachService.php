@@ -581,11 +581,14 @@ class DataBreachService
                 'notification_compliance' => 0,
                 'timeliness_score' => 0,
                 'completeness_score' => 0,
+                'overdue_notifications' => 0,
+                'total_affected_subjects' => 0,
             ];
         }
 
         $statistics = $this->repository->getDashboardStatistics($tenant);
         $allBreaches = $this->repository->findByTenant($tenant);
+        $overdueCount = $this->repository->countAuthorityNotificationOverdue($tenant);
 
         $total = count($allBreaches);
         if ($total === 0) {
@@ -594,6 +597,8 @@ class DataBreachService
                 'notification_compliance' => 100,
                 'timeliness_score' => 100,
                 'completeness_score' => 100,
+                'overdue_notifications' => 0,
+                'total_affected_subjects' => 0,
             ];
         }
 
@@ -607,8 +612,7 @@ class DataBreachService
         }
 
         // 2. Timeliness Score (40% weight)
-        // No overdue notifications
-        $overdueCount = count($this->repository->findAuthorityNotificationOverdue($tenant));
+        // No overdue notifications (already calculated above)
         $timelinessScore = 100;
         if ($overdueCount > 0) {
             $timelinessScore = max(0, 100 - ($overdueCount / $total * 100));
