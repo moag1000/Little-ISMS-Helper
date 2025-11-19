@@ -146,6 +146,14 @@ objective:
 'Control category is required': 'Control-Kategorie ist erforderlich'
 
 # Risk Validators
+risk:
+  validation:
+    category_required: 'Eine Risikokategorie muss ausgewählt werden'
+    category_invalid: 'Ungültige Risikokategorie'
+    legal_basis_invalid: 'Ungültige Rechtsgrundlage gemäß Art. 6 DSGVO'
+    processing_scale_invalid: 'Ungültiger Verarbeitungsumfang'
+    risk_owner_required: 'Ein Risikoverantwortlicher muss zugewiesen werden'
+
 'Risk title is required': 'Risikotitel ist erforderlich'
 'Risk title cannot exceed {{ limit }} characters': 'Risikotitel darf maximal {{ limit }} Zeichen lang sein'
 'Risk description is required': 'Risikobeschreibung ist erforderlich'
