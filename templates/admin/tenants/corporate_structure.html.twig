@@ -127,36 +127,38 @@
                 </h5>
             </div>
             <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle">
-                        <thead>
+                {% embed '_components/_table.html.twig' with {
+                    'class': 'table-hover align-middle',
+                    'noMargin': true,
+                    'responsive': true
+                } %}
+                    {% block table_head %}
+                        <tr>
+                            <th scope="col">{{ 'tenant.field.code'|trans }}</th>
+                            <th scope="col">{{ 'tenant.field.name'|trans }}</th>
+                            <th scope="col">{{ 'corporate.field.actions'|trans }}</th>
+                        </tr>
+                    {% endblock %}
+                    {% block table_body %}
+                        {% for tenant in standaloneTenants %}
                             <tr>
-                                <th scope="col">{{ 'tenant.field.code'|trans }}</th>
-                                <th scope="col">{{ 'tenant.field.name'|trans }}</th>
-                                <th scope="col">{{ 'corporate.field.actions'|trans }}</th>
+                                <td><code class="text-primary">{{ tenant.code }}</code></td>
+                                <td>{{ tenant.name }}</td>
+                                <td>
+                                    <button type="button"
+                                            class="btn btn-sm btn-outline-primary"
+                                            onclick="showSetParentModal({{ tenant.id }}, '{{ tenant.name|e('js') }}')">
+                                        <i class="bi bi-diagram-3" aria-hidden="true"></i> {{ 'corporate.action.set_parent'|trans }}
+                                    </button>
+                                    <a href="{{ path('tenant_management_show', {id: tenant.id}) }}"
+                                       class="btn btn-sm btn-outline-secondary" aria-label="{{ 'common.view'|trans }}">
+                                        <i class="bi bi-eye" aria-hidden="true"></i>
+                                    </a>
+                                </td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            {% for tenant in standaloneTenants %}
-                                <tr>
-                                    <td><code class="text-primary">{{ tenant.code }}</code></td>
-                                    <td>{{ tenant.name }}</td>
-                                    <td>
-                                        <button type="button"
-                                                class="btn btn-sm btn-outline-primary"
-                                                onclick="showSetParentModal({{ tenant.id }}, '{{ tenant.name|e('js') }}')">
-                                            <i class="bi bi-diagram-3" aria-hidden="true"></i> {{ 'corporate.action.set_parent'|trans }}
-                                        </button>
-                                        <a href="{{ path('tenant_management_show', {id: tenant.id}) }}"
-                                           class="btn btn-sm btn-outline-secondary" aria-label="{{ 'common.view'|trans }}">
-                                            <i class="bi bi-eye" aria-hidden="true"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+                        {% endfor %}
+                    {% endblock %}
+                {% endembed %}
             </div>
         </div>
     {% endif %}
