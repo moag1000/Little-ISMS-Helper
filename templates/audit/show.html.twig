@@ -8,7 +8,7 @@
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 <a href="{{ path('app_audit_index') }}" data-turbo-action="advance">
-                    <i class="bi bi-clipboard-check"></i> {{ 'audit.title'|trans }}
+                    <i class="bi bi-clipboard-check" aria-hidden="true"></i> {{ 'audit.title'|trans }}
                 </a>
             </li>
             <li class="breadcrumb-item active" aria-current="page">{{ audit.title }}</li>
@@ -21,7 +21,7 @@
             <div class="card shadow mb-4">
                 <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
                     <h4 class="mb-0">
-                        <i class="bi bi-clipboard-check"></i> {{ audit.title }}
+                        <i class="bi bi-clipboard-check" aria-hidden="true"></i> {{ audit.title }}
                     </h4>
                     {% set statusClass = {
                         'planned': 'info',
@@ -36,7 +36,7 @@
                 <div class="card-body">
                     {# Scope #}
                     <div class="mb-4">
-                        <h5><i class="bi bi-bullseye"></i> {{ 'audit.scope'|trans }}</h5>
+                        <h5><i class="bi bi-bullseye" aria-hidden="true"></i> {{ 'audit.scope'|trans }}</h5>
                         <p class="text-muted">{{ audit.scope|nl2br }}</p>
                         <div class="mt-2">
                             <span class="badge bg-secondary me-2">
@@ -51,7 +51,7 @@
                         {% if audit.auditedSubsidiaries|length > 0 %}
                         <div class="mt-3 p-3 border border-primary rounded bg-light">
                             <h6 class="text-primary mb-2">
-                                <i class="bi bi-building"></i> {{ 'audit.field.audited_subsidiaries'|trans }}
+                                <i class="bi bi-building" aria-hidden="true"></i> {{ 'audit.field.audited_subsidiaries'|trans }}
                             </h6>
                             <div class="d-flex flex-wrap gap-2">
                                 {% for subsidiary in audit.auditedSubsidiaries %}
@@ -61,7 +61,7 @@
                                 {% endfor %}
                             </div>
                             <small class="text-muted d-block mt-2">
-                                <i class="bi bi-info-circle"></i>
+                                <i class="bi bi-info-circle" aria-hidden="true"></i>
                                 Dieses Konzernaudit umfasst {{ audit.auditedSubsidiaries|length }} Tochtergesellschaft(en)
                             </small>
                         </div>
@@ -73,7 +73,7 @@
                     <div class="row mb-4">
                         <div class="col-md-6">
                             <h6 class="text-muted mb-2">
-                                <i class="bi bi-shield-check"></i> {{ 'audit.framework'|trans }}
+                                <i class="bi bi-shield-check" aria-hidden="true"></i> {{ 'audit.framework'|trans }}
                             </h6>
                             <p>
                                 <span class="badge bg-primary fs-6">
@@ -91,13 +91,13 @@
                     <div class="row mb-4">
                         <div class="col-md-6">
                             <h6 class="text-muted mb-2">
-                                <i class="bi bi-calendar-event"></i> {{ 'audit.planned_date'|trans }}
+                                <i class="bi bi-calendar-event" aria-hidden="true"></i> {{ 'audit.planned_date'|trans }}
                             </h6>
                             <p class="fs-5">{{ audit.plannedDate|date('d.m.Y') }}</p>
                         </div>
                         <div class="col-md-6">
                             <h6 class="text-muted mb-2">
-                                <i class="bi bi-calendar-check"></i> {{ 'audit.actual_date'|trans }}
+                                <i class="bi bi-calendar-check" aria-hidden="true"></i> {{ 'audit.actual_date'|trans }}
                             </h6>
                             <p class="fs-5">{{ audit.actualDate ? audit.actualDate|date('d.m.Y') : '-' }}</p>
                         </div>
@@ -107,7 +107,7 @@
                     <div class="row mb-4">
                         <div class="col-md-6">
                             <h6 class="text-muted mb-2">
-                                <i class="bi bi-person-badge"></i> {{ 'audit.lead_auditor'|trans }}
+                                <i class="bi bi-person-badge" aria-hidden="true"></i> {{ 'audit.lead_auditor'|trans }}
                             </h6>
                             <p>
                                 {% if audit.leadAuditor %}
@@ -134,7 +134,7 @@
                     {% if audit.auditTeam|length > 0 %}
                     <div class="mb-4">
                         <h6 class="text-muted mb-2">
-                            <i class="bi bi-people"></i> {{ 'audit.audit_team'|trans }}
+                            <i class="bi bi-people" aria-hidden="true"></i> {{ 'audit.audit_team'|trans }}
                         </h6>
                         <div class="d-flex flex-wrap gap-2">
                             {% for member in audit.auditTeam %}
@@ -171,7 +171,7 @@
             <div class="card shadow mb-4">
                 <div class="card-header bg-light">
                     <h5 class="mb-0">
-                        <i class="bi bi-bullseye"></i> {{ 'audit.section.objectives'|trans }}
+                        <i class="bi bi-bullseye" aria-hidden="true"></i> {{ 'audit.section.objectives'|trans }}
                     </h5>
                 </div>
                 <div class="card-body">
@@ -204,7 +204,7 @@
             <div class="card shadow mb-4 border-warning">
                 <div class="card-header bg-warning">
                     <h5 class="mb-0">
-                        <i class="bi bi-exclamation-triangle"></i> {{ 'audit.section.findings'|trans }}
+                        <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'audit.section.findings'|trans }}
                     </h5>
                 </div>
                 <div class="card-body">
@@ -237,7 +237,7 @@
             <div class="card shadow mb-4">
                 <div class="card-header bg-light">
                     <h5 class="mb-0">
-                        <i class="bi bi-lightbulb"></i> {{ 'audit.section.recommendations'|trans }}
+                        <i class="bi bi-lightbulb" aria-hidden="true"></i> {{ 'audit.section.recommendations'|trans }}
                     </h5>
                 </div>
                 <div class="card-body">
@@ -270,7 +270,7 @@
             <div class="card shadow mb-4">
                 <div class="card-header bg-light">
                     <h5 class="mb-0">
-                        <i class="bi bi-file-earmark-text"></i> {{ 'audit.section.documentation'|trans }}
+                        <i class="bi bi-file-earmark-text" aria-hidden="true"></i> {{ 'audit.section.documentation'|trans }}
                     </h5>
                 </div>
                 <div class="card-body">
@@ -303,7 +303,7 @@
             {# Action Buttons #}
             <div class="card shadow mb-4">
                 <div class="card-header bg-light">
-                    <h5 class="mb-0"><i class="bi bi-tools"></i> {{ 'common.actions'|trans }}</h5>
+                    <h5 class="mb-0"><i class="bi bi-tools" aria-hidden="true"></i> {{ 'common.actions'|trans }}</h5>
                 </div>
                 <div class="card-body">
                     <div class="d-grid gap-2">
@@ -311,20 +311,20 @@
                         <a href="{{ path('app_audit_edit', {id: audit.id}) }}"
                            class="btn btn-primary"
                            data-turbo-action="advance">
-                            <i class="bi bi-pencil"></i> {{ 'common.edit'|trans }}
+                            <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'common.edit'|trans }}
                         </a>
                         {% endif %}
 
                         <a href="{{ path('app_audit_export_pdf', {id: audit.id}) }}"
                            class="btn btn-outline-danger"
                            data-turbo="false">
-                            <i class="bi bi-file-pdf"></i> {{ 'audit.export_pdf'|trans }}
+                            <i class="bi bi-file-pdf" aria-hidden="true"></i> {{ 'audit.export_pdf'|trans }}
                         </a>
 
                         <a href="{{ path('app_audit_index') }}"
                            class="btn btn-outline-secondary"
                            data-turbo-action="advance">
-                            <i class="bi bi-arrow-left"></i> {{ 'common.back_to_list'|trans }}
+                            <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back_to_list'|trans }}
                         </a>
 
                         {% if is_granted('ROLE_ADMIN') %}
@@ -333,7 +333,7 @@
                                 class="btn btn-outline-danger"
                                 data-bs-toggle="modal"
                                 data-bs-target="#deleteModal">
-                            <i class="bi bi-trash"></i> {{ 'common.delete'|trans }}
+                            <i class="bi bi-trash" aria-hidden="true"></i> {{ 'common.delete'|trans }}
                         </button>
                         {% endif %}
                     </div>
@@ -343,7 +343,7 @@
             {# Quick Stats #}
             <div class="card shadow mb-4">
                 <div class="card-header bg-light">
-                    <h5 class="mb-0"><i class="bi bi-bar-chart"></i> {{ 'audit.quick_stats'|trans }}</h5>
+                    <h5 class="mb-0"><i class="bi bi-bar-chart" aria-hidden="true"></i> {{ 'audit.quick_stats'|trans }}</h5>
                 </div>
                 <div class="card-body">
                     <dl class="row mb-0 small">
@@ -381,7 +381,7 @@
             {# Metadata #}
             <div class="card shadow mb-4">
                 <div class="card-header bg-light">
-                    <h5 class="mb-0"><i class="bi bi-info-circle"></i> {{ 'common.metadata'|trans }}</h5>
+                    <h5 class="mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'common.metadata'|trans }}</h5>
                 </div>
                 <div class="card-body">
                     <dl class="row mb-0 small">
@@ -406,7 +406,7 @@
     <div class="card shadow mb-4">
         <div class="card-header bg-light">
             <h5 class="mb-0">
-                <i class="bi bi-clock-history"></i> {{ 'audit.section.history'|trans }}
+                <i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'audit.section.history'|trans }}
                 ({{ totalAuditLogs }} {{ 'audit_log.entries'|trans }})
             </h5>
         </div>
@@ -491,7 +491,7 @@
         <div class="modal-content">
             <div class="modal-header bg-danger text-white">
                 <h5 class="modal-title" id="deleteModalLabel">
-                    <i class="bi bi-exclamation-triangle"></i> {{ 'audit.confirm_delete'|trans }}
+                    <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'audit.confirm_delete'|trans }}
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -506,7 +506,7 @@
                 <form method="post" action="{{ path('app_audit_delete', {id: audit.id}) }}" style="display: inline;">
                     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ audit.id) }}">
                     <button type="submit" class="btn btn-danger">
-                        <i class="bi bi-trash"></i> {{ 'common.delete'|trans }}
+                        <i class="bi bi-trash" aria-hidden="true"></i> {{ 'common.delete'|trans }}
                     </button>
                 </form>
             </div>

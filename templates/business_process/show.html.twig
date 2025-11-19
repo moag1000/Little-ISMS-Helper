@@ -16,15 +16,15 @@
         <h1>{{ business_process.name }}</h1>
         <div>
             <a href="{{ path('app_business_process_bia', {'id': business_process.id}) }}" class="btn btn-info">
-                <i class="bi bi-graph-up"></i> BIA Ansicht
+                <i class="bi bi-graph-up" aria-hidden="true"></i> BIA Ansicht
             </a>
             <a href="{{ path('app_business_process_edit', {'id': business_process.id}) }}" class="btn btn-primary">
-                <i class="bi bi-pencil"></i> Bearbeiten
+                <i class="bi bi-pencil" aria-hidden="true"></i> Bearbeiten
             </a>
             <form method="post" action="{{ path('app_business_process_delete', {'id': business_process.id}) }}" class="d-inline-block" onsubmit="return confirm('Möchten Sie diesen Geschäftsprozess wirklich löschen?');">
                 <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ business_process.id) }}">
                 <button class="btn btn-danger">
-                    <i class="bi bi-trash"></i> Löschen
+                    <i class="bi bi-trash" aria-hidden="true"></i> Löschen
                 </button>
             </form>
         </div>
@@ -85,9 +85,9 @@
                     <h6 class="card-subtitle mb-2 text-muted">Alignment-Status</h6>
                     <p class="h3">
                         {% if metrics.criticality_aligned %}
-                            <i class="bi bi-check-circle text-success"></i>
+                            <i class="bi bi-check-circle text-success" aria-hidden="true"></i>
                         {% else %}
-                            <i class="bi bi-exclamation-triangle text-warning"></i>
+                            <i class="bi bi-exclamation-triangle text-warning" aria-hidden="true"></i>
                         {% endif %}
                     </p>
                     <small class="text-muted">
@@ -211,7 +211,7 @@
 
                 {% if metrics.unmitigated_high_risks %}
                     <div class="alert alert-danger mt-3">
-                        <i class="bi bi-exclamation-triangle-fill"></i>
+                        <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
                         <strong>Warnung:</strong> Dieser Prozess hat unbehandelte Hochrisiken!
                     </div>
                 {% endif %}

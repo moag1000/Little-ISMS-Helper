@@ -6,17 +6,17 @@
 <div class="container-fluid mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h1><i class="bi bi-shield-check"></i> {{ 'compliance.framework.heading'|trans }}</h1>
+            <h1><i class="bi bi-shield-check" aria-hidden="true"></i> {{ 'compliance.framework.heading'|trans }}</h1>
             <p class="text-muted">{{ 'compliance.framework.description'|trans }}</p>
         </div>
         <div>
             {% if is_granted('ROLE_ADMIN') %}
                 <a href="{{ path('app_compliance_framework_new') }}" class="btn btn-success">
-                    <i class="bi bi-plus-circle"></i> {{ 'compliance.framework.action.new'|trans }}
+                    <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'compliance.framework.action.new'|trans }}
                 </a>
             {% endif %}
             <a href="{{ path('app_compliance_index') }}" class="btn btn-outline-secondary">
-                <i class="bi bi-arrow-left"></i> {{ 'common.back'|trans }}
+                <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans }}
             </a>
         </div>
     </div>
@@ -24,7 +24,7 @@
     {# Filters #}
     <div class="card mb-4">
         <div class="card-header">
-            <i class="bi bi-funnel"></i> {{ 'common.filters'|trans }}
+            <i class="bi bi-funnel" aria-hidden="true"></i> {{ 'common.filters'|trans }}
         </div>
         <div class="card-body">
             <form method="get" class="row g-3">
@@ -55,10 +55,10 @@
                 </div>
                 <div class="col-md-3 d-flex align-items-end">
                     <button type="submit" class="btn btn-primary me-2">
-                        <i class="bi bi-search"></i> {{ 'common.filter'|trans }}
+                        <i class="bi bi-search" aria-hidden="true"></i> {{ 'common.filter'|trans }}
                     </button>
                     <a href="{{ path('app_compliance_framework_index') }}" class="btn btn-outline-secondary">
-                        <i class="bi bi-x-circle"></i> {{ 'common.reset'|trans }}
+                        <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'common.reset'|trans }}
                     </a>
                 </div>
             </form>
@@ -68,7 +68,7 @@
     {# Frameworks List #}
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
-            <span><i class="bi bi-list"></i> {{ 'compliance.framework.list'|trans }}</span>
+            <span><i class="bi bi-list" aria-hidden="true"></i> {{ 'compliance.framework.list'|trans }}</span>
             <span class="badge bg-primary">{{ frameworks|length }} {{ 'common.items'|trans }}</span>
         </div>
         <div class="card-body">
@@ -133,16 +133,16 @@
                                         <div class="btn-group btn-group-sm">
                                             <a href="{{ path('app_compliance_framework_show', {id: framework.id}) }}"
                                                class="btn btn-outline-primary" title="{{ 'common.view'|trans }}">
-                                                <i class="bi bi-eye"></i>
+                                                <i class="bi bi-eye" aria-hidden="true"></i>
                                             </a>
                                             <a href="{{ path('app_compliance_framework', {id: framework.id}) }}"
                                                class="btn btn-outline-info" title="{{ 'compliance.framework.action.dashboard'|trans }}">
-                                                <i class="bi bi-speedometer2"></i>
+                                                <i class="bi bi-speedometer2" aria-hidden="true"></i>
                                             </a>
                                             {% if is_granted('ROLE_ADMIN') %}
                                                 <a href="{{ path('app_compliance_framework_edit', {id: framework.id}) }}"
                                                    class="btn btn-outline-warning" title="{{ 'common.edit'|trans }}">
-                                                    <i class="bi bi-pencil"></i>
+                                                    <i class="bi bi-pencil" aria-hidden="true"></i>
                                                 </a>
                                             {% endif %}
                                         </div>
@@ -154,11 +154,11 @@
                 </div>
             {% else %}
                 <div class="text-center py-5">
-                    <i class="bi bi-shield-x fs-1 text-muted"></i>
+                    <i class="bi bi-shield-x fs-1 text-muted" aria-hidden="true"></i>
                     <p class="mt-3 text-muted">{{ 'compliance.framework.empty'|trans }}</p>
                     {% if is_granted('ROLE_ADMIN') %}
                         <a href="{{ path('app_compliance_framework_new') }}" class="btn btn-success">
-                            <i class="bi bi-plus-circle"></i> {{ 'compliance.framework.action.new'|trans }}
+                            <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'compliance.framework.action.new'|trans }}
                         </a>
                     {% endif %}
                 </div>

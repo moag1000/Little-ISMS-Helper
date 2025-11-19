@@ -8,7 +8,7 @@
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 <a href="{{ path('app_training_index') }}" data-turbo-action="advance">
-                    <i class="bi bi-mortarboard"></i> {{ 'training.title'|trans }}
+                    <i class="bi bi-mortarboard" aria-hidden="true"></i> {{ 'training.title'|trans }}
                 </a>
             </li>
             <li class="breadcrumb-item">
@@ -25,12 +25,12 @@
             <div class="card shadow">
                 <div class="card-header bg-primary text-white">
                     <h4 class="mb-0">
-                        <i class="bi bi-pencil"></i> {{ 'training.edit'|trans }}: {{ training.title }}
+                        <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'training.edit'|trans }}: {{ training.title }}
                     </h4>
                 </div>
                 <div class="card-body">
                     <p class="text-muted mb-4">
-                        <i class="bi bi-info-circle"></i> {{ 'training.edit_help'|trans }}
+                        <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'training.edit_help'|trans }}
                     </p>
 
                     {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
@@ -38,7 +38,7 @@
                     {# Basic Information Section #}
                     <div class="card mb-4">
                         <div class="card-header bg-light">
-                            <h5 class="mb-0"><i class="bi bi-info-square"></i> {{ 'training.section.basic_info'|trans }}</h5>
+                            <h5 class="mb-0"><i class="bi bi-info-square" aria-hidden="true"></i> {{ 'training.section.basic_info'|trans }}</h5>
                         </div>
                         <div class="card-body">
                             <div class="row">
@@ -61,7 +61,7 @@
                     {# Schedule & Location Section #}
                     <div class="card mb-4">
                         <div class="card-header bg-light">
-                            <h5 class="mb-0"><i class="bi bi-calendar-event"></i> {{ 'training.section.schedule'|trans }}</h5>
+                            <h5 class="mb-0"><i class="bi bi-calendar-event" aria-hidden="true"></i> {{ 'training.section.schedule'|trans }}</h5>
                         </div>
                         <div class="card-body">
                             <div class="row">
@@ -81,7 +81,7 @@
                     {# Trainer & Participants Section #}
                     <div class="card mb-4">
                         <div class="card-header bg-light">
-                            <h5 class="mb-0"><i class="bi bi-people"></i> {{ 'training.section.people'|trans }}</h5>
+                            <h5 class="mb-0"><i class="bi bi-people" aria-hidden="true"></i> {{ 'training.section.people'|trans }}</h5>
                         </div>
                         <div class="card-body">
                             <div class="row">
@@ -101,7 +101,7 @@
                     {# Status & Requirements Section #}
                     <div class="card mb-4 {% if training.mandatory %}border-warning{% endif %}">
                         <div class="card-header bg-light">
-                            <h5 class="mb-0"><i class="bi bi-flag"></i> {{ 'training.section.status'|trans }}</h5>
+                            <h5 class="mb-0"><i class="bi bi-flag" aria-hidden="true"></i> {{ 'training.section.status'|trans }}</h5>
                         </div>
                         <div class="card-body">
                             <div class="row">
@@ -118,14 +118,14 @@
                     {# ISO 27001 Controls Section #}
                     <div class="card mb-4">
                         <div class="card-header bg-light">
-                            <h5 class="mb-0"><i class="bi bi-shield-check"></i> {{ 'training.section.controls'|trans }}</h5>
+                            <h5 class="mb-0"><i class="bi bi-shield-check" aria-hidden="true"></i> {{ 'training.section.controls'|trans }}</h5>
                         </div>
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-md-12 mb-3">
                                     {{ form_row(form.relatedControls) }}
                                     <div class="form-text">
-                                        <i class="bi bi-lightbulb"></i> {{ 'training.controls_help'|trans }}
+                                        <i class="bi bi-lightbulb" aria-hidden="true"></i> {{ 'training.controls_help'|trans }}
                                     </div>
                                 </div>
                             </div>
@@ -135,7 +135,7 @@
                     {# Materials & Feedback Section #}
                     <div class="card mb-4">
                         <div class="card-header bg-light">
-                            <h5 class="mb-0"><i class="bi bi-file-earmark-text"></i> {{ 'training.section.materials'|trans }}</h5>
+                            <h5 class="mb-0"><i class="bi bi-file-earmark-text" aria-hidden="true"></i> {{ 'training.section.materials'|trans }}</h5>
                         </div>
                         <div class="card-body">
                             <div class="row">
@@ -155,16 +155,16 @@
                             <a href="{{ path('app_training_show', {id: training.id}) }}"
                                class="btn btn-outline-secondary"
                                data-turbo-action="advance">
-                                <i class="bi bi-arrow-left"></i> {{ 'common.back'|trans }}
+                                <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans }}
                             </a>
                             <a href="{{ path('app_training_index') }}"
                                class="btn btn-outline-secondary"
                                data-turbo-action="advance">
-                                <i class="bi bi-list"></i> {{ 'common.to_list'|trans }}
+                                <i class="bi bi-list" aria-hidden="true"></i> {{ 'common.to_list'|trans }}
                             </a>
                         </div>
                         <button type="submit" class="btn btn-primary btn-lg">
-                            <i class="bi bi-save"></i> {{ 'common.save_changes'|trans }}
+                            <i class="bi bi-save" aria-hidden="true"></i> {{ 'common.save_changes'|trans }}
                         </button>
                     </div>
 
@@ -175,7 +175,7 @@
             {# Metadata Card #}
             <div class="card shadow mt-4">
                 <div class="card-header bg-light">
-                    <h5 class="mb-0"><i class="bi bi-info-circle"></i> {{ 'common.metadata'|trans }}</h5>
+                    <h5 class="mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'common.metadata'|trans }}</h5>
                 </div>
                 <div class="card-body">
                     <dl class="row mb-0">

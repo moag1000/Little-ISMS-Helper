@@ -34,7 +34,7 @@
         <div class="card-body py-2">
             <form method="get" action="{{ path('app_document_index') }}" class="d-flex align-items-center gap-2">
                 <label for="view-filter" class="mb-0 fw-bold">
-                    <i class="bi bi-eye"></i> {{ 'common.view'|trans }}:
+                    <i class="bi bi-eye" aria-hidden="true"></i> {{ 'common.view'|trans }}:
                 </label>
                 <select class="form-select form-select-sm" style="width: auto;" id="view-filter" name="view" onchange="this.form.submit()">
                     <option value="own" {{ inheritanceInfo.currentView == 'own' ? 'selected' : '' }}>
@@ -108,7 +108,7 @@
     <div class="card mb-4">
         <div class="card-header">
             <h2 class="mb-0">
-                <i class="bi bi-pie-chart"></i>
+                <i class="bi bi-pie-chart" aria-hidden="true"></i>
                 {{ 'document.section.type_overview'|trans }}
             </h2>
         </div>
@@ -118,7 +118,7 @@
                 <div class="col-md-3">
                     <div class="type-card text-center p-4 bg-pdf-light">
                         <div class="type-icon mb-3 fs-25 color-pdf">
-                            <i class="bi bi-file-pdf"></i>
+                            <i class="bi bi-file-pdf" aria-hidden="true"></i>
                         </div>
                         <div class="type-label text-muted mb-2">{{ 'document.type.pdf'|trans }}</div>
                         <div class="type-count fs-2 fw-700 color-pdf">
@@ -131,7 +131,7 @@
                 <div class="col-md-3">
                     <div class="type-card text-center p-4 bg-image-light">
                         <div class="type-icon mb-3 fs-25 color-image">
-                            <i class="bi bi-image"></i>
+                            <i class="bi bi-image" aria-hidden="true"></i>
                         </div>
                         <div class="type-label text-muted mb-2">{{ 'document.type.images'|trans }}</div>
                         <div class="type-count fs-2 fw-700 color-image">
@@ -144,7 +144,7 @@
                 <div class="col-md-3">
                     <div class="type-card text-center p-4 bg-excel-light">
                         <div class="type-icon mb-3 fs-25 color-excel">
-                            <i class="bi bi-file-earmark-spreadsheet"></i>
+                            <i class="bi bi-file-earmark-spreadsheet" aria-hidden="true"></i>
                         </div>
                         <div class="type-label text-muted mb-2">{{ 'document.type.tables'|trans }}</div>
                         <div class="type-count fs-2 fw-700 color-excel">
@@ -157,7 +157,7 @@
                 <div class="col-md-3">
                     <div class="type-card text-center p-4 bg-other-light">
                         <div class="type-icon mb-3 fs-25 color-other">
-                            <i class="bi bi-file-earmark"></i>
+                            <i class="bi bi-file-earmark" aria-hidden="true"></i>
                         </div>
                         <div class="type-label text-muted mb-2">{{ 'document.type.other'|trans }}</div>
                         <div class="type-count fs-2 fw-700 color-other">
@@ -173,7 +173,7 @@
     <div class="card" data-controller="bulk-actions" data-bulk-actions-endpoint-value="/document">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h2 class="mb-0">
-                <i class="bi bi-list-ul"></i>
+                <i class="bi bi-list-ul" aria-hidden="true"></i>
                 {{ 'document.section.all_documents'|trans }}
                 <span class="bulk-selected-badge" data-bulk-actions-target="countBadge" class="d-none">
                     <span data-bulk-actions-target="count">0</span> {{ 'common.selected'|trans }}
@@ -238,15 +238,15 @@
                             <td>
                                 {# File Type Icon #}
                                 {% if document.mimeType == 'application/pdf' %}
-                                    <i class="bi bi-file-pdf-fill text-danger fs-15"></i>
+                                    <i class="bi bi-file-pdf-fill text-danger fs-15" aria-hidden="true"></i>
                                 {% elseif document.mimeType starts with 'image/' %}
-                                    <i class="bi bi-file-image-fill text-primary fs-15"></i>
+                                    <i class="bi bi-file-image-fill text-primary fs-15" aria-hidden="true"></i>
                                 {% elseif document.mimeType matches '/spreadsheet/' %}
-                                    <i class="bi bi-file-earmark-spreadsheet-fill text-success fs-15"></i>
+                                    <i class="bi bi-file-earmark-spreadsheet-fill text-success fs-15" aria-hidden="true"></i>
                                 {% elseif document.mimeType matches '/word/' or document.mimeType matches '/document/' %}
-                                    <i class="bi bi-file-word-fill text-info fs-15"></i>
+                                    <i class="bi bi-file-word-fill text-info fs-15" aria-hidden="true"></i>
                                 {% else %}
-                                    <i class="bi bi-file-earmark-fill text-secondary fs-15"></i>
+                                    <i class="bi bi-file-earmark-fill text-secondary fs-15" aria-hidden="true"></i>
                                 {% endif %}
                             </td>
                             <td>
@@ -267,12 +267,12 @@
                             </td>
                             <td>
                                 <div class="d-flex align-items-center">
-                                    <i class="bi bi-person-circle me-1"></i>
+                                    <i class="bi bi-person-circle me-1" aria-hidden="true"></i>
                                     {{ document.uploadedBy ? document.uploadedBy.fullName : '-' }}
                                 </div>
                             </td>
                             <td>
-                                <i class="bi bi-calendar3"></i>
+                                <i class="bi bi-calendar3" aria-hidden="true"></i>
                                 {{ document.uploadedAt|date('d.m.Y') }}
                                 <br>
                                 <small class="text-muted">{{ document.uploadedAt|date('H:i') }}</small>
@@ -282,17 +282,17 @@
                                     <a href="{{ path('app_document_download', {id: document.id}) }}"
                                        class="btn btn-sm btn-outline-success"
                                        title="{{ 'common.download'|trans }}">
-                                        <i class="bi bi-download"></i>
+                                        <i class="bi bi-download" aria-hidden="true"></i>
                                     </a>
                                     <a href="{{ path('app_document_show', {id: document.id}) }}"
                                        class="btn btn-sm btn-outline-primary"
                                        title="{{ 'common.details'|trans }}">
-                                        <i class="bi bi-eye"></i>
+                                        <i class="bi bi-eye" aria-hidden="true"></i>
                                     </a>
                                     <a href="{{ path('app_document_edit', {id: document.id}) }}"
                                        class="btn btn-sm btn-outline-secondary"
                                        title="{{ 'common.edit'|trans }}">
-                                        <i class="bi bi-pencil"></i>
+                                        <i class="bi bi-pencil" aria-hidden="true"></i>
                                     </a>
                                 </div>
                             </td>
@@ -304,7 +304,7 @@
 
             {# No Results Message #}
             <div id="noResults" class="text-center p-5 d-none">
-                <i class="bi bi-search icon-search-empty"></i>
+                <i class="bi bi-search icon-search-empty" aria-hidden="true"></i>
                 <p class="text-muted mt-3">{{ 'document.message.no_results'|trans }}</p>
             </div>
 

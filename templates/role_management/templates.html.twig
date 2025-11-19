@@ -5,15 +5,15 @@
 {% block admin_content %}
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1><i class="bi bi-file-earmark-text"></i> {{ 'role.templates.title'|trans }}</h1>
+        <h1><i class="bi bi-file-earmark-text" aria-hidden="true"></i> {{ 'role.templates.title'|trans }}</h1>
         <a href="{{ path('role_management_index') }}" class="btn btn-outline-secondary">
-            <i class="bi bi-arrow-left"></i> Zurück
+            <i class="bi bi-arrow-left" aria-hidden="true"></i> Zurück
         </a>
     </div>
 
     {# Description #}
     <div class="alert alert-info mb-4">
-        <i class="bi bi-info-circle"></i>
+        <i class="bi bi-info-circle" aria-hidden="true"></i>
         <strong>{{ 'role.templates.description'|trans }}</strong>
         <p class="mb-0 mt-2">
             Wählen Sie eine vordefinierte Rollenvorlage aus und passen Sie optional den Namen an.
@@ -29,17 +29,17 @@
                     <div class="card-header bg-primary text-white">
                         <h5 class="mb-0">
                             {% if key == 'auditor' %}
-                                <i class="bi bi-search"></i>
+                                <i class="bi bi-search" aria-hidden="true"></i>
                             {% elseif key == 'risk_manager' %}
-                                <i class="bi bi-exclamation-triangle"></i>
+                                <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
                             {% elseif key == 'compliance_officer' %}
-                                <i class="bi bi-clipboard-check"></i>
+                                <i class="bi bi-clipboard-check" aria-hidden="true"></i>
                             {% elseif key == 'incident_manager' %}
-                                <i class="bi bi-shield-exclamation"></i>
+                                <i class="bi bi-shield-exclamation" aria-hidden="true"></i>
                             {% elseif key == 'asset_manager' %}
-                                <i class="bi bi-hdd-stack"></i>
+                                <i class="bi bi-hdd-stack" aria-hidden="true"></i>
                             {% elseif key == 'readonly' %}
-                                <i class="bi bi-eye"></i>
+                                <i class="bi bi-eye" aria-hidden="true"></i>
                             {% endif %}
                             {{ template.name }}
                         </h5>
@@ -65,7 +65,7 @@
                                 class="btn btn-primary w-100"
                                 data-bs-toggle="modal"
                                 data-bs-target="#templateModal{{ key }}">
-                            <i class="bi bi-plus-circle"></i> Vorlage verwenden
+                            <i class="bi bi-plus-circle" aria-hidden="true"></i> Vorlage verwenden
                         </button>
                     </div>
                 </div>
@@ -116,7 +116,7 @@
                                     Abbrechen
                                 </button>
                                 <button type="submit" class="btn btn-primary">
-                                    <i class="bi bi-check-circle"></i> Rolle erstellen
+                                    <i class="bi bi-check-circle" aria-hidden="true"></i> Rolle erstellen
                                 </button>
                             </div>
                         </form>
@@ -128,7 +128,7 @@
 
     {# Info Box #}
     <div class="alert alert-warning mt-4">
-        <h5><i class="bi bi-exclamation-triangle"></i> Wichtige Hinweise</h5>
+        <h5><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> Wichtige Hinweise</h5>
         <ul class="mb-0">
             <li>Die erstellte Rolle kann nach der Erstellung angepasst werden</li>
             <li>Fehlende Berechtigungen werden übersprungen (z.B. wenn sie noch nicht existieren)</li>

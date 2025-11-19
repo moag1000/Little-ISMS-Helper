@@ -19,7 +19,7 @@
             {% else %}
                 <div class="bg-light rounded d-flex align-items-center justify-content-center me-3"
                      style="width: 80px; height: 80px; border: 1px solid #dee2e6;">
-                    <i class="bi bi-building text-muted fs-2"></i>
+                    <i class="bi bi-building text-muted fs-2" aria-hidden="true"></i>
                 </div>
             {% endif %}
             <div>
@@ -28,11 +28,11 @@
                     <code class="text-primary">{{ tenant.code }}</code>
                     {% if tenant.isActive %}
                         <span class="badge bg-success ms-2">
-                            <i class="bi bi-check-circle"></i> {{ 'tenant.status.active'|trans }}
+                            <i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'tenant.status.active'|trans }}
                         </span>
                     {% else %}
                         <span class="badge bg-secondary ms-2">
-                            <i class="bi bi-x-circle"></i> {{ 'tenant.status.inactive'|trans }}
+                            <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'tenant.status.inactive'|trans }}
                         </span>
                     {% endif %}
                 </p>
@@ -43,16 +43,16 @@
         </div>
         <div class="btn-group">
             <a href="{{ path('tenant_management_edit', {id: tenant.id}) }}" class="btn btn-primary">
-                <i class="bi bi-pencil"></i> {{ 'common.edit'|trans }}
+                <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'common.edit'|trans }}
             </a>
             <a href="{{ path('tenant_management_organisation_context', {id: tenant.id}) }}" class="btn btn-info">
-                <i class="bi bi-building-gear"></i> {{ 'tenant.organisation_context.title'|trans }}
+                <i class="bi bi-building-gear" aria-hidden="true"></i> {{ 'tenant.organisation_context.title'|trans }}
             </a>
             <form method="post" action="{{ path('tenant_management_toggle', {id: tenant.id}) }}" class="d-inline">
                 <button type="submit"
                         class="btn btn-{% if tenant.isActive %}warning{% else %}success{% endif %}"
                         onclick="return confirm('{{ 'tenant.confirm.toggle'|trans }}');">
-                    <i class="bi bi-{% if tenant.isActive %}pause{% else %}play{% endif %}-circle"></i>
+                    <i class="bi bi-{% if tenant.isActive %}pause{% else %}play{% endif %}-circle" aria-hidden="true"></i>
                     {{ (tenant.isActive ? 'tenant.action.deactivate' : 'tenant.action.activate')|trans }}
                 </button>
             </form>
@@ -66,7 +66,7 @@
                 <div class="card-body">
                     <div class="d-flex align-items-center">
                         <div class="bg-primary bg-opacity-10 p-3 rounded me-3">
-                            <i class="bi bi-people text-primary fs-3"></i>
+                            <i class="bi bi-people text-primary fs-3" aria-hidden="true"></i>
                         </div>
                         <div>
                             <h6 class="text-muted mb-1">{{ 'tenant.stats.total_users'|trans }}</h6>
@@ -81,7 +81,7 @@
                 <div class="card-body">
                     <div class="d-flex align-items-center">
                         <div class="bg-success bg-opacity-10 p-3 rounded me-3">
-                            <i class="bi bi-person-check text-success fs-3"></i>
+                            <i class="bi bi-person-check text-success fs-3" aria-hidden="true"></i>
                         </div>
                         <div>
                             <h6 class="text-muted mb-1">{{ 'tenant.stats.active_users'|trans }}</h6>
@@ -96,7 +96,7 @@
                 <div class="card-body">
                     <div class="d-flex align-items-center">
                         <div class="bg-secondary bg-opacity-10 p-3 rounded me-3">
-                            <i class="bi bi-person-x text-secondary fs-3"></i>
+                            <i class="bi bi-person-x text-secondary fs-3" aria-hidden="true"></i>
                         </div>
                         <div>
                             <h6 class="text-muted mb-1">{{ 'tenant.stats.inactive_users'|trans }}</h6>
@@ -112,17 +112,17 @@
     <ul class="nav nav-tabs mb-4" id="tenantTabs" role="tablist">
         <li class="nav-item" role="presentation">
             <button class="nav-link active" id="details-tab" data-bs-toggle="tab" data-bs-target="#details" type="button" role="tab">
-                <i class="bi bi-info-circle"></i> {{ 'tenant.tabs.details'|trans }}
+                <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'tenant.tabs.details'|trans }}
             </button>
         </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link" id="isms-context-tab" data-bs-toggle="tab" data-bs-target="#isms-context" type="button" role="tab">
-                <i class="bi bi-building-gear"></i> {{ 'tenant.tabs.isms_context'|trans }}
+                <i class="bi bi-building-gear" aria-hidden="true"></i> {{ 'tenant.tabs.isms_context'|trans }}
             </button>
         </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link" id="users-tab" data-bs-toggle="tab" data-bs-target="#users" type="button" role="tab">
-                <i class="bi bi-people"></i> {{ 'tenant.tabs.users'|trans }}
+                <i class="bi bi-people" aria-hidden="true"></i> {{ 'tenant.tabs.users'|trans }}
                 <span class="badge bg-primary ms-1">{{ userCount }}</span>
             </button>
         </li>
@@ -138,7 +138,7 @@
             <div class="card h-100">
                 <div class="card-header bg-white">
                     <h5 class="card-title mb-0">
-                        <i class="bi bi-info-circle text-primary"></i>
+                        <i class="bi bi-info-circle text-primary" aria-hidden="true"></i>
                         {{ 'tenant.section.information'|trans }}
                     </h5>
                 </div>
@@ -203,7 +203,7 @@
                     {% if tenant.isPartOfCorporateStructure %}
                         <hr>
                         <h6 class="text-muted mb-3">
-                            <i class="bi bi-diagram-3"></i> {{ 'corporate.section.structure'|trans }}
+                            <i class="bi bi-diagram-3" aria-hidden="true"></i> {{ 'corporate.section.structure'|trans }}
                         </h6>
                         <table class="table table-sm">
                             <tbody>
@@ -257,7 +257,7 @@
                         </table>
                         <div class="d-grid">
                             <a href="{{ path('tenant_management_corporate_structure') }}" class="btn btn-sm btn-outline-primary">
-                                <i class="bi bi-diagram-3"></i> {{ 'corporate.action.view_structure'|trans }}
+                                <i class="bi bi-diagram-3" aria-hidden="true"></i> {{ 'corporate.action.view_structure'|trans }}
                             </a>
                         </div>
 
@@ -265,11 +265,11 @@
                         <hr>
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <h6 class="text-muted mb-0">
-                                <i class="bi bi-building-gear"></i> {{ 'corporate.inheritance.title'|trans }}
+                                <i class="bi bi-building-gear" aria-hidden="true"></i> {{ 'corporate.inheritance.title'|trans }}
                             </h6>
                             {% if tenant.isCorporateParent %}
                                 <button type="button" class="btn btn-sm btn-primary" onclick="propagateContext()">
-                                    <i class="bi bi-arrow-down-circle"></i> {{ 'corporate.inheritance.propagate'|trans }}
+                                    <i class="bi bi-arrow-down-circle" aria-hidden="true"></i> {{ 'corporate.inheritance.propagate'|trans }}
                                 </button>
                             {% endif %}
                         </div>
@@ -287,10 +287,10 @@
                             <hr>
                             <div class="d-flex justify-content-between align-items-center mb-3">
                                 <h6 class="text-muted mb-0">
-                                    <i class="bi bi-gear"></i> {{ 'corporate.granular.title'|trans }}
+                                    <i class="bi bi-gear" aria-hidden="true"></i> {{ 'corporate.granular.title'|trans }}
                                 </h6>
                                 <button type="button" class="btn btn-sm btn-success" onclick="showAddGovernanceRuleModal()">
-                                    <i class="bi bi-plus-circle"></i> {{ 'corporate.granular.add_rule'|trans }}
+                                    <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'corporate.granular.add_rule'|trans }}
                                 </button>
                             </div>
                             <div id="governanceRulesContainer">
@@ -338,19 +338,19 @@
                 <div class="card-header bg-white">
                     <div class="d-flex justify-content-between align-items-center">
                         <h5 class="card-title mb-0">
-                            <i class="bi bi-people text-primary"></i>
+                            <i class="bi bi-people text-primary" aria-hidden="true"></i>
                             {{ 'tenant.section.users'|trans }}
                             <span class="badge bg-primary ms-2">{{ userCount }}</span>
                         </h5>
                         <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#manageUsersModal">
-                            <i class="bi bi-person-plus"></i> {{ 'tenant.users.manage'|trans }}
+                            <i class="bi bi-person-plus" aria-hidden="true"></i> {{ 'tenant.users.manage'|trans }}
                         </button>
                     </div>
                 </div>
                 <div class="card-body">
                     {% if userCount == 0 %}
                         <div class="text-center text-muted py-4">
-                            <i class="bi bi-people" style="font-size: 3rem;"></i>
+                            <i class="bi bi-people" style="font-size: 3rem;" aria-hidden="true"></i>
                             <p class="mt-2">{{ 'tenant.users.empty'|trans }}</p>
                         </div>
                     {% else %}
@@ -398,7 +398,7 @@
         <div class="card border-danger mt-4">
             <div class="card-header bg-danger text-white">
                 <h5 class="card-title mb-0">
-                    <i class="bi bi-exclamation-triangle"></i>
+                    <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
                     {{ 'tenant.section.danger_zone'|trans }}
                 </h5>
             </div>
@@ -413,7 +413,7 @@
                         <button type="submit"
                                 class="btn btn-danger"
                                 onclick="return confirm('{{ 'tenant.confirm.delete'|trans }}');">
-                            <i class="bi bi-trash"></i> {{ 'tenant.action.delete'|trans }}
+                            <i class="bi bi-trash" aria-hidden="true"></i> {{ 'tenant.action.delete'|trans }}
                         </button>
                     </form>
                 </div>
@@ -427,7 +427,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">
-                        <i class="bi bi-people"></i> {{ 'tenant.users.manage_title'|trans }}
+                        <i class="bi bi-people" aria-hidden="true"></i> {{ 'tenant.users.manage_title'|trans }}
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
@@ -435,7 +435,7 @@
                     {# Add User Section #}
                     <div class="mb-4">
                         <h6 class="border-bottom pb-2 mb-3">
-                            <i class="bi bi-person-plus"></i> {{ 'tenant.users.add_user'|trans }}
+                            <i class="bi bi-person-plus" aria-hidden="true"></i> {{ 'tenant.users.add_user'|trans }}
                         </h6>
                         <form method="post" action="{{ path('tenant_management_add_user', {id: tenant.id}) }}" id="addUserForm">
                             <input type="hidden" name="_token" value="{{ csrf_token('add_user_' ~ tenant.id) }}">
@@ -446,7 +446,7 @@
                                        placeholder="{{ 'tenant.users.enter_email'|trans }}"
                                        required>
                                 <button type="submit" class="btn btn-primary">
-                                    <i class="bi bi-plus-circle"></i> {{ 'tenant.users.add'|trans }}
+                                    <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'tenant.users.add'|trans }}
                                 </button>
                             </div>
                             <small class="form-text text-muted">
@@ -458,11 +458,11 @@
                     {# Current Users List #}
                     <div>
                         <h6 class="border-bottom pb-2 mb-3">
-                            <i class="bi bi-people-fill"></i> {{ 'tenant.users.current_users'|trans }} ({{ userCount }})
+                            <i class="bi bi-people-fill" aria-hidden="true"></i> {{ 'tenant.users.current_users'|trans }} ({{ userCount }})
                         </h6>
                         {% if userCount == 0 %}
                             <div class="text-center text-muted py-3">
-                                <i class="bi bi-people" style="font-size: 2rem;"></i>
+                                <i class="bi bi-people" style="font-size: 2rem;" aria-hidden="true"></i>
                                 <p class="mt-2 mb-0">{{ 'tenant.users.empty'|trans }}</p>
                             </div>
                         {% else %}
@@ -473,7 +473,7 @@
                                             <div class="flex-grow-1">
                                                 <div class="d-flex align-items-center">
                                                     <div class="me-3">
-                                                        <i class="bi bi-person-circle fs-3 text-muted"></i>
+                                                        <i class="bi bi-person-circle fs-3 text-muted" aria-hidden="true"></i>
                                                     </div>
                                                     <div>
                                                         <strong>{{ user.email }}</strong>
@@ -498,7 +498,7 @@
                                                     <button type="submit"
                                                             class="btn btn-sm btn-outline-danger"
                                                             onclick="return confirm('{{ 'tenant.users.confirm_remove'|trans({'%email%': user.email}) }}');">
-                                                        <i class="bi bi-person-dash"></i>
+                                                        <i class="bi bi-person-dash" aria-hidden="true"></i>
                                                     </button>
                                                 </form>
                                             </div>
@@ -511,7 +511,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                        <i class="bi bi-x-circle"></i> {{ 'common.close'|trans }}
+                        <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'common.close'|trans }}
                     </button>
                 </div>
             </div>
@@ -575,7 +575,7 @@
                 .then(data => {
                     const container = document.getElementById('effectiveContextContainer');
                     if (data.error) {
-                        container.innerHTML = '<div class="alert alert-warning small mb-0"><i class="bi bi-exclamation-triangle"></i> {{ 'corporate.inheritance.no_context'|trans }}</div>';
+                        container.innerHTML = '<div class="alert alert-warning small mb-0"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'corporate.inheritance.no_context'|trans }}</div>';
                         return;
                     }
 
@@ -585,14 +585,14 @@
 
                     if (data.context.isInherited) {
                         html += '<div class="alert alert-info small mb-0">';
-                        html += '<i class="bi bi-arrow-up-right"></i> ';
+                        html += '<i class="bi bi-arrow-up-right" aria-hidden="true"></i> ';
                         html += '{{ 'corporate.inheritance.inherited_from'|trans }}: ';
                         html += '<a href="{{ path('tenant_management_show', {id: '__ID__'}) }}" class="alert-link">' + data.context.inheritedFrom.name + '</a>';
                         html = html.replace('__ID__', data.context.inheritedFrom.id);
                         html += '</div>';
                     } else {
                         html += '<div class="alert alert-success small mb-0">';
-                        html += '<i class="bi bi-check-circle"></i> {{ 'corporate.inheritance.own_context'|trans }}';
+                        html += '<i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'corporate.inheritance.own_context'|trans }}';
                         html += '</div>';
                     }
 
@@ -647,7 +647,7 @@
                         html += `<div class="list-group-item d-flex justify-content-between align-items-center">
                             <div><strong>${rule.scope}</strong>${rule.scopeId ? ': ' + rule.scopeId : ''}<br>
                             <span class="badge bg-${badgeColor}">${rule.governanceLabel}</span></div>
-                            <button class="btn btn-sm btn-danger" onclick="deleteRule(${rule.id}, '${rule.scope}', ${scopeIdParam})"><i class="bi bi-trash"></i></button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteRule(${rule.id}, '${rule.scope}', ${scopeIdParam})"><i class="bi bi-trash" aria-hidden="true"></i></button>
                         </div>`;
                     });
                     html += '</div>';
@@ -801,11 +801,11 @@
                     if (data.error) {
                         container.innerHTML = `
                             <div class="alert alert-info">
-                                <i class="bi bi-info-circle"></i>
+                                <i class="bi bi-info-circle" aria-hidden="true"></i>
                                 <strong>{{ 'tenant.isms_context.not_configured'|trans }}</strong><br>
                                 <p class="mb-0 mt-2">{{ 'tenant.isms_context.configure_prompt'|trans }}</p>
                                 <a href="${escapeHtml(data.editUrl) || '{{ path('app_context_edit') }}'}" class="btn btn-primary mt-3">
-                                    <i class="bi bi-plus-circle"></i> {{ 'tenant.isms_context.configure_now'|trans }}
+                                    <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'tenant.isms_context.configure_now'|trans }}
                                 </a>
                             </div>
                         `;
@@ -826,7 +826,7 @@
                         html += `
                             <div class="alert alert-warning mb-4">
                                 <div class="d-flex align-items-start">
-                                    <i class="bi bi-diagram-3 me-2 mt-1"></i>
+                                    <i class="bi bi-diagram-3 me-2 mt-1" aria-hidden="true"></i>
                                     <div>
                                         <strong>{{ 'corporate.inheritance.isms_context_inherited'|trans }}</strong><br>
                                         <span class="small">
@@ -855,10 +855,10 @@
                                     <div>
                                         ${canEdit ?
                                             `<a href="${escapeHtml(data.editUrl) || '{{ path('app_context_edit') }}'}" class="btn btn-primary">
-                                                <i class="bi bi-pencil"></i> {{ 'common.edit'|trans }}
+                                                <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'common.edit'|trans }}
                                             </a>` :
                                             `<button class="btn btn-secondary" disabled title="{{ 'corporate.inheritance.cannot_edit_inherited'|trans }}">
-                                                <i class="bi bi-lock"></i> {{ 'common.edit'|trans }}
+                                                <i class="bi bi-lock" aria-hidden="true"></i> {{ 'common.edit'|trans }}
                                             </button>`
                                         }
                                     </div>
@@ -897,7 +897,7 @@
                                     <div class="card h-100">
                                         <div class="card-body">
                                             <h6 class="text-muted mb-2">
-                                                <i class="bi bi-${escapeHtml(field.icon)}"></i> ${escapeHtml(field.label)}
+                                                <i class="bi bi-${escapeHtml(field.icon)}" aria-hidden="true"></i> ${escapeHtml(field.label)}
                                             </h6>
                                             <p class="mb-0">${nl2br(displayValue)}</p>
                                         </div>
@@ -913,7 +913,7 @@
                     html += `
                         <div class="text-center mt-4">
                             <a href="{{ path('app_context_index') }}" class="btn btn-outline-primary">
-                                <i class="bi bi-arrow-right-circle"></i> {{ 'tenant.isms_context.view_full'|trans }}
+                                <i class="bi bi-arrow-right-circle" aria-hidden="true"></i> {{ 'tenant.isms_context.view_full'|trans }}
                             </a>
                         </div>
                     `;
@@ -931,11 +931,11 @@
 
                     container.innerHTML = `
                         <div class="alert alert-danger">
-                            <i class="bi bi-exclamation-triangle"></i>
+                            <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
                             ${errorMessage}
                             <br><br>
                             <button class="btn btn-sm btn-outline-danger" onclick="loadISMSContext()">
-                                <i class="bi bi-arrow-clockwise"></i> {{ 'common.retry'|trans|default('Erneut versuchen') }}
+                                <i class="bi bi-arrow-clockwise" aria-hidden="true"></i> {{ 'common.retry'|trans|default('Erneut versuchen') }}
                             </button>
                         </div>
                     `;

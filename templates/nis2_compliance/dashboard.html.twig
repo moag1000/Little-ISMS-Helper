@@ -7,7 +7,7 @@
     <div class="row mb-4">
         <div class="col-12">
             <h1 class="mb-3">
-                <i class="bi bi-shield-check"></i>
+                <i class="bi bi-shield-check" aria-hidden="true"></i>
                 {{ 'nis2.dashboard.title'|trans }}
             </h1>
             <p class="text-muted">{{ 'nis2.dashboard.description'|trans }}</p>
@@ -35,11 +35,11 @@
                     </div>
                     <p class="mt-3 mb-0">
                         {% if overall_compliance_score >= 95 %}
-                            <span class="badge bg-success"><i class="bi bi-check-circle"></i> {{ 'nis2.dashboard.status.compliant'|trans }}</span>
+                            <span class="badge bg-success"><i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'nis2.dashboard.status.compliant'|trans }}</span>
                         {% elseif overall_compliance_score >= 75 %}
-                            <span class="badge bg-warning"><i class="bi bi-exclamation-triangle"></i> {{ 'nis2.dashboard.status.partial'|trans }}</span>
+                            <span class="badge bg-warning"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'nis2.dashboard.status.partial'|trans }}</span>
                         {% else %}
-                            <span class="badge bg-danger"><i class="bi bi-x-circle"></i> {{ 'nis2.dashboard.status.non_compliant'|trans }}</span>
+                            <span class="badge bg-danger"><i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'nis2.dashboard.status.non_compliant'|trans }}</span>
                         {% endif %}
                     </p>
                 </div>
@@ -54,7 +54,7 @@
             <div class="card h-100">
                 <div class="card-body">
                     <h6 class="card-title text-muted">
-                        <i class="bi bi-shield-lock"></i>
+                        <i class="bi bi-shield-lock" aria-hidden="true"></i>
                         {{ 'nis2.dashboard.mfa.title'|trans }}
                     </h6>
                     <div class="display-6 {% if mfa_adoption_rate >= 95 %}text-success{% elseif mfa_adoption_rate >= 75 %}text-warning{% else %}text-danger{% endif %}">
@@ -73,7 +73,7 @@
             <div class="card h-100">
                 <div class="card-body">
                     <h6 class="card-title text-muted">
-                        <i class="bi bi-exclamation-triangle"></i>
+                        <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
                         {{ 'nis2.dashboard.incident_reporting.title'|trans }}
                     </h6>
                     <div class="display-6 {% if reporting_compliance_rate >= 95 %}text-success{% elseif reporting_compliance_rate >= 75 %}text-warning{% else %}text-danger{% endif %}">
@@ -92,7 +92,7 @@
             <div class="card h-100">
                 <div class="card-body">
                     <h6 class="card-title text-muted">
-                        <i class="bi bi-bug"></i>
+                        <i class="bi bi-bug" aria-hidden="true"></i>
                         {{ 'nis2.dashboard.vulnerability.title'|trans }}
                     </h6>
                     <div class="display-6 {% if critical_vulnerabilities + high_vulnerabilities == 0 %}text-success{% elseif critical_vulnerabilities > 0 %}text-danger{% else %}text-warning{% endif %}">
@@ -111,7 +111,7 @@
             <div class="card h-100">
                 <div class="card-body">
                     <h6 class="card-title text-muted">
-                        <i class="bi bi-download"></i>
+                        <i class="bi bi-download" aria-hidden="true"></i>
                         {{ 'nis2.dashboard.patch.title'|trans }}
                     </h6>
                     <div class="display-6 {% if patch_deployment_rate >= 95 %}text-success{% elseif patch_deployment_rate >= 75 %}text-warning{% else %}text-danger{% endif %}">
@@ -132,7 +132,7 @@
             <div class="col-12">
                 <div class="alert alert-danger">
                     <h5 class="alert-heading">
-                        <i class="bi bi-exclamation-triangle-fill"></i>
+                        <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
                         {{ 'nis2.dashboard.overdue.title'|trans }}
                     </h5>
                     <p>{{ 'nis2.dashboard.overdue.description'|trans({'%count%': overdue_incidents|length}) }}</p>
@@ -230,19 +230,19 @@
                 <div class="card-body">
                     <div class="d-grid gap-2">
                         <a href="{{ path('app_incident_index') }}" class="btn btn-outline-primary">
-                            <i class="bi bi-list-ul"></i>
+                            <i class="bi bi-list-ul" aria-hidden="true"></i>
                             {{ 'nis2.dashboard.actions.view_incidents'|trans }}
                         </a>
                         <a href="{{ path('app_vulnerability_index') }}" class="btn btn-outline-primary">
-                            <i class="bi bi-bug"></i>
+                            <i class="bi bi-bug" aria-hidden="true"></i>
                             {{ 'nis2.dashboard.actions.view_vulnerabilities'|trans }}
                         </a>
                         <a href="{{ path('app_patch_index') }}" class="btn btn-outline-primary">
-                            <i class="bi bi-download"></i>
+                            <i class="bi bi-download" aria-hidden="true"></i>
                             {{ 'nis2.dashboard.actions.view_patches'|trans }}
                         </a>
                         <a href="{{ path('admin_mfa_index') }}" class="btn btn-outline-primary">
-                            <i class="bi bi-shield-lock"></i>
+                            <i class="bi bi-shield-lock" aria-hidden="true"></i>
                             {{ 'nis2.dashboard.actions.manage_mfa'|trans }}
                         </a>
                     </div>

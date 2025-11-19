@@ -8,7 +8,7 @@
 {% block admin_content %}
     <div class="mb-4">
         <a href="{{ path('admin_mfa_show', {id: mfa_token.id}) }}" class="btn btn-outline-secondary">
-            <i class="bi bi-arrow-left"></i> {{ 'common.back'|trans }}
+            <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans }}
         </a>
     </div>
 
@@ -16,7 +16,7 @@
         <div class="col-lg-8 offset-lg-2">
             <div class="alert alert-danger">
                 <h4 class="alert-heading">
-                    <i class="bi bi-shield-exclamation"></i> {{ 'mfa_token.backup_codes.warning'|trans }}
+                    <i class="bi bi-shield-exclamation" aria-hidden="true"></i> {{ 'mfa_token.backup_codes.warning'|trans }}
                 </h4>
                 <p>{{ 'mfa_token.backup_codes.warning_text'|trans }}</p>
                 <hr>
@@ -34,9 +34,9 @@
                 </div>
                 <div class="card-body">
                     <div class="alert alert-info">
-                        <strong><i class="bi bi-person"></i> {{ 'mfa_token.field.user'|trans }}:</strong> {{ mfa_token.user.email }}<br>
-                        <strong><i class="bi bi-phone"></i> {{ 'mfa_token.field.device_name'|trans }}:</strong> {{ mfa_token.deviceName }}<br>
-                        <strong><i class="bi bi-calendar"></i> {{ 'common.generated'|trans }}:</strong> {{ 'now'|date('Y-m-d H:i:s') }}
+                        <strong><i class="bi bi-person" aria-hidden="true"></i> {{ 'mfa_token.field.user'|trans }}:</strong> {{ mfa_token.user.email }}<br>
+                        <strong><i class="bi bi-phone" aria-hidden="true"></i> {{ 'mfa_token.field.device_name'|trans }}:</strong> {{ mfa_token.deviceName }}<br>
+                        <strong><i class="bi bi-calendar" aria-hidden="true"></i> {{ 'common.generated'|trans }}:</strong> {{ 'now'|date('Y-m-d H:i:s') }}
                     </div>
 
                     <div class="row">
@@ -54,17 +54,17 @@
                         <button type="button"
                                 class="btn btn-primary"
                                 onclick="copyBackupCodes()">
-                            <i class="bi bi-clipboard"></i> {{ 'mfa_token.backup_codes.copy_all'|trans }}
+                            <i class="bi bi-clipboard" aria-hidden="true"></i> {{ 'mfa_token.backup_codes.copy_all'|trans }}
                         </button>
                         <button type="button"
                                 class="btn btn-outline-secondary"
                                 onclick="printBackupCodes()">
-                            <i class="bi bi-printer"></i> {{ 'mfa_token.backup_codes.print'|trans }}
+                            <i class="bi bi-printer" aria-hidden="true"></i> {{ 'mfa_token.backup_codes.print'|trans }}
                         </button>
                         <button type="button"
                                 class="btn btn-outline-secondary"
                                 onclick="downloadBackupCodes()">
-                            <i class="bi bi-download"></i> {{ 'mfa_token.backup_codes.download'|trans }}
+                            <i class="bi bi-download" aria-hidden="true"></i> {{ 'mfa_token.backup_codes.download'|trans }}
                         </button>
                     </div>
                 </div>
@@ -72,7 +72,7 @@
 
             <div class="card">
                 <div class="card-body">
-                    <h5><i class="bi bi-info-circle"></i> {{ 'mfa_token.backup_codes.usage_title'|trans }}</h5>
+                    <h5><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'mfa_token.backup_codes.usage_title'|trans }}</h5>
                     <ul>
                         <li>{{ 'mfa_token.backup_codes.usage_1'|trans }}</li>
                         <li>{{ 'mfa_token.backup_codes.usage_2'|trans }}</li>
@@ -81,7 +81,7 @@
                     </ul>
 
                     <div class="alert alert-warning">
-                        <i class="bi bi-exclamation-triangle"></i>
+                        <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
                         {{ 'mfa_token.backup_codes.regenerate_warning'|trans }}
                     </div>
                 </div>
@@ -102,7 +102,7 @@
         navigator.clipboard.writeText(text).then(() => {
             const btn = event.target.closest('button');
             const originalHTML = btn.innerHTML;
-            btn.innerHTML = '<i class="bi bi-check"></i> {{ 'common.copied'|trans }}';
+            btn.innerHTML = '<i class="bi bi-check" aria-hidden="true"></i> {{ 'common.copied'|trans }}';
             btn.classList.remove('btn-primary');
             btn.classList.add('btn-success');
 
@@ -258,7 +258,7 @@
         // Show success feedback
         const btn = event.target.closest('button');
         const originalHTML = btn.innerHTML;
-        btn.innerHTML = '<i class="bi bi-check"></i> {{ 'common.downloaded'|trans }}';
+        btn.innerHTML = '<i class="bi bi-check" aria-hidden="true"></i> {{ 'common.downloaded'|trans }}';
         btn.classList.add('btn-success');
         btn.classList.remove('btn-outline-secondary');
 

@@ -5,15 +5,15 @@
 {% block admin_content %}
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1><i class="bi bi-upload"></i> {{ 'user.import.title'|trans }}</h1>
+        <h1><i class="bi bi-upload" aria-hidden="true"></i> {{ 'user.import.title'|trans }}</h1>
         <a href="{{ path('user_management_index') }}" class="btn btn-outline-secondary">
-            <i class="bi bi-arrow-left"></i> Zurück
+            <i class="bi bi-arrow-left" aria-hidden="true"></i> Zurück
         </a>
     </div>
 
     {# Instructions #}
     <div class="alert alert-info mb-4">
-        <h5><i class="bi bi-info-circle"></i> {{ 'user.import.description'|trans }}</h5>
+        <h5><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'user.import.description'|trans }}</h5>
         <p class="mb-2">{{ 'user.import.format'|trans }}</p>
         <code>email, first_name, last_name, password, is_active, roles</code>
 
@@ -29,7 +29,7 @@ jane.smith@example.com,Jane,Smith,SecurePass456,yes,"User"</pre>
     <div class="card">
         <div class="card-header bg-primary text-white">
             <h5 class="mb-0">
-                <i class="bi bi-file-earmark-arrow-up"></i> CSV-Datei hochladen
+                <i class="bi bi-file-earmark-arrow-up" aria-hidden="true"></i> CSV-Datei hochladen
             </h5>
         </div>
         <div class="card-body">
@@ -49,10 +49,10 @@ jane.smith@example.com,Jane,Smith,SecurePass456,yes,"User"</pre>
 
                 <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                     <a href="{{ path('user_management_index') }}" class="btn btn-secondary">
-                        <i class="bi bi-x-circle"></i> Abbrechen
+                        <i class="bi bi-x-circle" aria-hidden="true"></i> Abbrechen
                     </a>
                     <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-upload"></i> Importieren
+                        <i class="bi bi-upload" aria-hidden="true"></i> Importieren
                     </button>
                 </div>
             </form>
@@ -63,7 +63,7 @@ jane.smith@example.com,Jane,Smith,SecurePass456,yes,"User"</pre>
     <div class="card mt-4">
         <div class="card-header bg-secondary text-white">
             <h5 class="mb-0">
-                <i class="bi bi-download"></i> Vorlage herunterladen
+                <i class="bi bi-download" aria-hidden="true"></i> Vorlage herunterladen
             </h5>
         </div>
         <div class="card-body">
@@ -71,14 +71,14 @@ jane.smith@example.com,Jane,Smith,SecurePass456,yes,"User"</pre>
             <a href="data:text/csv;charset=utf-8,email%2Cfirst_name%2Clast_name%2Cpassword%2Cis_active%2Croles%0A"
                download="user_import_template.csv"
                class="btn btn-outline-primary">
-                <i class="bi bi-file-earmark-spreadsheet"></i> CSV-Vorlage herunterladen
+                <i class="bi bi-file-earmark-spreadsheet" aria-hidden="true"></i> CSV-Vorlage herunterladen
             </a>
         </div>
     </div>
 
     {# Important Notes #}
     <div class="alert alert-warning mt-4">
-        <h5><i class="bi bi-exclamation-triangle"></i> Wichtige Hinweise</h5>
+        <h5><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> Wichtige Hinweise</h5>
         <ul class="mb-0">
             <li>Benutzer mit bereits existierenden E-Mail-Adressen werden übersprungen</li>
             <li>Wenn kein Passwort angegeben wird, wird ein zufälliges Passwort generiert</li>

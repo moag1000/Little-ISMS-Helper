@@ -6,12 +6,12 @@
 {% block body %}
 <div class="page-header">
     <div>
-        <h1><i class="bi bi-cpu"></i> {{ 'asset_management.title'|trans }}</h1>
+        <h1><i class="bi bi-cpu" aria-hidden="true"></i> {{ 'asset_management.title'|trans }}</h1>
         <p class="text-muted">{{ 'asset_management.description'|trans }}</p>
     </div>
     <div class="button-group">
         <a href="{{ path('app_asset_new') }}" class="btn btn-primary">
-            <i class="bi bi-plus-circle"></i> {{ 'asset.new'|trans }}
+            <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'asset.new'|trans }}
         </a>
     </div>
 </div>
@@ -23,7 +23,7 @@
     {% block card_body %}
         <form method="get" action="{{ path('app_asset_index') }}" class="d-flex align-items-center gap-2">
             <label for="view-filter" class="mb-0 fw-bold">
-                <i class="bi bi-eye"></i> {{ 'common.view'|trans }}:
+                <i class="bi bi-eye" aria-hidden="true"></i> {{ 'common.view'|trans }}:
             </label>
             <select class="form-select form-select-sm" style="width: auto;" id="view-filter" name="view" onchange="this.form.submit()">
                 <option value="own" {{ inheritanceInfo.currentView == 'own' ? 'selected' : '' }}>
@@ -50,7 +50,7 @@
 
 <div class="stats-grid mb-4">
     <div class="stat-card">
-        <div class="stat-icon"><i class="bi bi-collection"></i></div>
+        <div class="stat-icon"><i class="bi bi-collection" aria-hidden="true"></i></div>
         <div class="stat-value">{{ detailedStats.total }}</div>
         {% if currentTenant %}
             <small class="text-muted d-block mt-2" style="font-size: 11px; opacity: 0.85;">
@@ -63,7 +63,7 @@
     {% if typeStats|length > 0 %}
         {% for stat in typeStats %}
         <div class="stat-card">
-            <div class="stat-icon"><i class="bi bi-box"></i></div>
+            <div class="stat-icon"><i class="bi bi-box" aria-hidden="true"></i></div>
             <div class="stat-value">{{ stat.count }}</div>
             <div class="stat-label">{{ stat.assetType }}</div>
         </div>
@@ -119,10 +119,10 @@
             </div>
             <div class="col-12">
                 <button type="submit" class="btn btn-primary">
-                    <i class="bi bi-search"></i> {{ 'common.filter'|trans }}
+                    <i class="bi bi-search" aria-hidden="true"></i> {{ 'common.filter'|trans }}
                 </button>
                 <a href="{{ path('app_asset_index') }}" class="btn btn-secondary">
-                    <i class="bi bi-x-circle"></i> {{ 'common.reset'|trans }}
+                    <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'common.reset'|trans }}
                 </a>
             </div>
         </form>
@@ -132,7 +132,7 @@
 {# Assets Table #}
 <div class="card" data-controller="bulk-actions" data-bulk-actions-endpoint-value="/asset">
     <div class="card-header">
-        <h5><i class="bi bi-list"></i> {{ 'asset.list.title'|trans }} ({{ assets|length }})</h5>
+        <h5><i class="bi bi-list" aria-hidden="true"></i> {{ 'asset.list.title'|trans }} ({{ assets|length }})</h5>
     </div>
     <div class="table-responsive">
         <table class="table table-hover mb-0">
@@ -221,12 +221,12 @@
                             <a href="{{ path('app_asset_show', {id: asset.id}) }}"
                                class="btn btn-outline-primary"
                                title="{{ 'common.view'|trans }}">
-                                <i class="bi bi-eye"></i>
+                                <i class="bi bi-eye" aria-hidden="true"></i>
                             </a>
                             <a href="{{ path('app_asset_edit', {id: asset.id}) }}"
                                class="btn btn-outline-secondary"
                                title="{{ 'common.edit'|trans }}">
-                                <i class="bi bi-pencil"></i>
+                                <i class="bi bi-pencil" aria-hidden="true"></i>
                             </a>
                         </div>
                     </td>

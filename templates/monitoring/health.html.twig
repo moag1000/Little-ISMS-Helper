@@ -23,14 +23,14 @@
 {% block admin_content %}
     <div class="mb-3">
         <a href="{{ path('monitoring_health_json') }}" class="btn btn-outline-secondary" target="_blank">
-            <i class="bi bi-code-square"></i> JSON API
+            <i class="bi bi-code-square" aria-hidden="true"></i> JSON API
         </a>
     </div>
 
     {# Overall Status Banner #}
     <div class="alert alert-{{ overall_status == 'healthy' ? 'success' : (overall_status == 'warning' ? 'warning' : 'danger') }} mb-4">
         <div class="d-flex align-items-center">
-            <i class="bi bi-{{ overall_status == 'healthy' ? 'check-circle-fill' : (overall_status == 'warning' ? 'exclamation-triangle-fill' : 'x-circle-fill') }} fs-1 me-3"></i>
+            <i class="bi bi-{{ overall_status == 'healthy' ? 'check-circle-fill' : (overall_status == 'warning' ? 'exclamation-triangle-fill' : 'x-circle-fill') }} fs-1 me-3" aria-hidden="true"></i>
             <div>
                 <h4 class="mb-1">
                     System Status:
@@ -55,7 +55,7 @@
             <div class="card h-100 border-{{ health_checks.database.status == 'healthy' ? 'success' : 'danger' }}">
                 <div class="card-header bg-{{ health_checks.database.status == 'healthy' ? 'success' : 'danger' }} text-white">
                     <h5 class="mb-0">
-                        <i class="bi bi-database"></i> Database
+                        <i class="bi bi-database" aria-hidden="true"></i> Database
                     </h5>
                 </div>
                 <div class="card-body">
@@ -89,7 +89,7 @@
             <div class="card h-100 border-{{ health_checks.disk.status == 'healthy' ? 'success' : 'warning' }}">
                 <div class="card-header bg-{{ health_checks.disk.status == 'healthy' ? 'success' : 'warning' }} text-white">
                     <h5 class="mb-0">
-                        <i class="bi bi-hdd"></i> Disk Space
+                        <i class="bi bi-hdd" aria-hidden="true"></i> Disk Space
                     </h5>
                 </div>
                 <div class="card-body">
@@ -119,7 +119,7 @@
                         <div class="mt-3">
                             <button class="btn btn-sm btn-warning auto-fix-btn"
                                     onclick="autoFix('optimize-disk', this)">
-                                <i class="bi bi-tools"></i> Optimize Disk Space
+                                <i class="bi bi-tools" aria-hidden="true"></i> Optimize Disk Space
                             </button>
                             <div id="fix-result-optimize-disk"></div>
                         </div>
@@ -133,7 +133,7 @@
             <div class="card h-100 border-{{ health_checks.php.status == 'healthy' ? 'success' : 'danger' }}">
                 <div class="card-header bg-{{ health_checks.php.status == 'healthy' ? 'success' : 'danger' }} text-white">
                     <h5 class="mb-0">
-                        <i class="bi bi-code-slash"></i> PHP
+                        <i class="bi bi-code-slash" aria-hidden="true"></i> PHP
                     </h5>
                 </div>
                 <div class="card-body">
@@ -173,7 +173,7 @@
             <div class="card h-100 border-success">
                 <div class="card-header bg-success text-white">
                     <h5 class="mb-0">
-                        <i class="bi bi-gear"></i> Symfony
+                        <i class="bi bi-gear" aria-hidden="true"></i> Symfony
                     </h5>
                 </div>
                 <div class="card-body">
@@ -204,7 +204,7 @@
             <div class="card h-100 border-{{ health_checks.cache.status == 'healthy' ? 'success' : 'danger' }}">
                 <div class="card-header bg-{{ health_checks.cache.status == 'healthy' ? 'success' : 'danger' }} text-white">
                     <h5 class="mb-0">
-                        <i class="bi bi-lightning"></i> Cache
+                        <i class="bi bi-lightning" aria-hidden="true"></i> Cache
                     </h5>
                 </div>
                 <div class="card-body">
@@ -222,9 +222,9 @@
                         <dt class="col-sm-4">Writable:</dt>
                         <dd class="col-sm-8">
                             {% if health_checks.cache.writable %}
-                                <i class="bi bi-check-circle text-success"></i> Yes
+                                <i class="bi bi-check-circle text-success" aria-hidden="true"></i> Yes
                             {% else %}
-                                <i class="bi bi-x-circle text-danger"></i> No
+                                <i class="bi bi-x-circle text-danger" aria-hidden="true"></i> No
                             {% endif %}
                         </dd>
                     </dl>
@@ -234,12 +234,12 @@
                             {% if not health_checks.cache.writable %}
                                 <button class="btn btn-sm btn-danger auto-fix-btn"
                                         onclick="autoFix('cache', this)">
-                                    <i class="bi bi-wrench"></i> Fix Permissions
+                                    <i class="bi bi-wrench" aria-hidden="true"></i> Fix Permissions
                                 </button>
                             {% endif %}
                             <button class="btn btn-sm btn-primary auto-fix-btn"
                                     onclick="autoFix('clear-cache', this)">
-                                <i class="bi bi-trash"></i> Clear Cache
+                                <i class="bi bi-trash" aria-hidden="true"></i> Clear Cache
                             </button>
                             <div id="fix-result-cache"></div>
                             <div id="fix-result-clear-cache"></div>
@@ -254,7 +254,7 @@
             <div class="card h-100 border-{{ health_checks.logs.status == 'healthy' ? 'success' : 'danger' }}">
                 <div class="card-header bg-{{ health_checks.logs.status == 'healthy' ? 'success' : 'danger' }} text-white">
                     <h5 class="mb-0">
-                        <i class="bi bi-file-text"></i> Logs
+                        <i class="bi bi-file-text" aria-hidden="true"></i> Logs
                     </h5>
                 </div>
                 <div class="card-body">
@@ -272,9 +272,9 @@
                         <dt class="col-sm-4">Writable:</dt>
                         <dd class="col-sm-8">
                             {% if health_checks.logs.writable %}
-                                <i class="bi bi-check-circle text-success"></i> Yes
+                                <i class="bi bi-check-circle text-success" aria-hidden="true"></i> Yes
                             {% else %}
-                                <i class="bi bi-x-circle text-danger"></i> No
+                                <i class="bi bi-x-circle text-danger" aria-hidden="true"></i> No
                             {% endif %}
                         </dd>
                     </dl>
@@ -284,16 +284,16 @@
                             {% if not health_checks.logs.writable %}
                                 <button class="btn btn-sm btn-danger auto-fix-btn"
                                         onclick="autoFix('logs', this)">
-                                    <i class="bi bi-wrench"></i> Fix Permissions
+                                    <i class="bi bi-wrench" aria-hidden="true"></i> Fix Permissions
                                 </button>
                             {% endif %}
                             <button class="btn btn-sm btn-warning auto-fix-btn"
                                     onclick="autoFix('clean-logs', this)">
-                                <i class="bi bi-trash"></i> Clean Old Logs
+                                <i class="bi bi-trash" aria-hidden="true"></i> Clean Old Logs
                             </button>
                             <button class="btn btn-sm btn-info auto-fix-btn"
                                     onclick="autoFix('rotate-logs', this)">
-                                <i class="bi bi-arrow-repeat"></i> Rotate Logs
+                                <i class="bi bi-arrow-repeat" aria-hidden="true"></i> Rotate Logs
                             </button>
                             <div id="fix-result-logs"></div>
                             <div id="fix-result-clean-logs"></div>
@@ -310,7 +310,7 @@
             <div class="card h-100 border-{{ health_checks.permissions.status == 'healthy' ? 'success' : 'danger' }}">
                 <div class="card-header bg-{{ health_checks.permissions.status == 'healthy' ? 'success' : 'danger' }} text-white">
                     <h5 class="mb-0">
-                        <i class="bi bi-shield-lock"></i> File Permissions
+                        <i class="bi bi-shield-lock" aria-hidden="true"></i> File Permissions
                     </h5>
                 </div>
                 <div class="card-body">
@@ -318,9 +318,9 @@
                         <dt class="col-sm-5">var/ Writable:</dt>
                         <dd class="col-sm-7">
                             {% if health_checks.permissions.var_writable %}
-                                <i class="bi bi-check-circle text-success"></i> Yes
+                                <i class="bi bi-check-circle text-success" aria-hidden="true"></i> Yes
                             {% else %}
-                                <i class="bi bi-x-circle text-danger"></i> No
+                                <i class="bi bi-x-circle text-danger" aria-hidden="true"></i> No
                             {% endif %}
                         </dd>
 
@@ -329,9 +329,9 @@
                             {% if health_checks.permissions.uploads_writable is null %}
                                 <span class="text-muted">N/A</span>
                             {% elseif health_checks.permissions.uploads_writable %}
-                                <i class="bi bi-check-circle text-success"></i> Yes
+                                <i class="bi bi-check-circle text-success" aria-hidden="true"></i> Yes
                             {% else %}
-                                <i class="bi bi-x-circle text-danger"></i> No
+                                <i class="bi bi-x-circle text-danger" aria-hidden="true"></i> No
                             {% endif %}
                         </dd>
 
@@ -350,13 +350,13 @@
                             {% if not health_checks.permissions.var_writable %}
                                 <button class="btn btn-sm btn-danger auto-fix-btn"
                                         onclick="autoFix('var-permissions', this)">
-                                    <i class="bi bi-wrench"></i> Fix var/ Permissions
+                                    <i class="bi bi-wrench" aria-hidden="true"></i> Fix var/ Permissions
                                 </button>
                             {% endif %}
                             {% if health_checks.permissions.uploads_writable is not null and not health_checks.permissions.uploads_writable %}
                                 <button class="btn btn-sm btn-danger auto-fix-btn"
                                         onclick="autoFix('uploads-permissions', this)">
-                                    <i class="bi bi-wrench"></i> Fix uploads/ Permissions
+                                    <i class="bi bi-wrench" aria-hidden="true"></i> Fix uploads/ Permissions
                                 </button>
                             {% endif %}
                             <div id="fix-result-var-permissions"></div>
@@ -374,7 +374,7 @@
             <div class="card h-100 border-{{ health_checks.composer.status == 'healthy' ? 'success' : 'danger' }}">
                 <div class="card-header bg-{{ health_checks.composer.status == 'healthy' ? 'success' : 'danger' }} text-white">
                     <h5 class="mb-0">
-                        <i class="bi bi-box-seam"></i> Composer
+                        <i class="bi bi-box-seam" aria-hidden="true"></i> Composer
                     </h5>
                 </div>
                 <div class="card-body">
@@ -389,18 +389,18 @@
                         <dt class="col-sm-5">composer.lock:</dt>
                         <dd class="col-sm-7">
                             {% if health_checks.composer.lock_exists %}
-                                <i class="bi bi-check-circle text-success"></i> Exists
+                                <i class="bi bi-check-circle text-success" aria-hidden="true"></i> Exists
                             {% else %}
-                                <i class="bi bi-x-circle text-danger"></i> Missing
+                                <i class="bi bi-x-circle text-danger" aria-hidden="true"></i> Missing
                             {% endif %}
                         </dd>
 
                         <dt class="col-sm-5">vendor/:</dt>
                         <dd class="col-sm-7">
                             {% if health_checks.composer.vendor_exists %}
-                                <i class="bi bi-check-circle text-success"></i> Exists
+                                <i class="bi bi-check-circle text-success" aria-hidden="true"></i> Exists
                             {% else %}
-                                <i class="bi bi-x-circle text-danger"></i> Missing
+                                <i class="bi bi-x-circle text-danger" aria-hidden="true"></i> Missing
                             {% endif %}
                         </dd>
 
@@ -412,7 +412,7 @@
                         <div class="mt-3">
                             <button class="btn btn-sm btn-danger auto-fix-btn"
                                     onclick="autoFix('composer-install', this)">
-                                <i class="bi bi-download"></i> Run Composer Install
+                                <i class="bi bi-download" aria-hidden="true"></i> Run Composer Install
                             </button>
                             <div id="fix-result-composer-install"></div>
                         </div>
@@ -428,7 +428,7 @@
             <div class="card h-100 border-{{ health_checks.environment.status == 'healthy' ? 'success' : 'danger' }}">
                 <div class="card-header bg-{{ health_checks.environment.status == 'healthy' ? 'success' : 'danger' }} text-white">
                     <h5 class="mb-0">
-                        <i class="bi bi-file-earmark-text"></i> Environment
+                        <i class="bi bi-file-earmark-text" aria-hidden="true"></i> Environment
                     </h5>
                 </div>
                 <div class="card-body">
@@ -436,16 +436,16 @@
                         <dt class="col-sm-5">.env File:</dt>
                         <dd class="col-sm-7">
                             {% if health_checks.environment.env_file_exists %}
-                                <i class="bi bi-check-circle text-success"></i> Exists
+                                <i class="bi bi-check-circle text-success" aria-hidden="true"></i> Exists
                             {% else %}
-                                <i class="bi bi-x-circle text-danger"></i> Missing
+                                <i class="bi bi-x-circle text-danger" aria-hidden="true"></i> Missing
                             {% endif %}
                         </dd>
 
                         <dt class="col-sm-5">.env.local File:</dt>
                         <dd class="col-sm-7">
                             {% if health_checks.environment.env_local_exists %}
-                                <i class="bi bi-check-circle text-success"></i> Exists
+                                <i class="bi bi-check-circle text-success" aria-hidden="true"></i> Exists
                             {% else %}
                                 <span class="text-muted">Not used</span>
                             {% endif %}
@@ -461,7 +461,7 @@
                         {% else %}
                             <dt class="col-sm-5">All Required Vars:</dt>
                             <dd class="col-sm-7">
-                                <i class="bi bi-check-circle text-success"></i> Present
+                                <i class="bi bi-check-circle text-success" aria-hidden="true"></i> Present
                             </dd>
                         {% endif %}
                     </dl>
@@ -476,7 +476,7 @@
             <div class="card h-100 border-{{ health_checks.php_config.status == 'healthy' ? 'success' : 'warning' }}">
                 <div class="card-header bg-{{ health_checks.php_config.status == 'healthy' ? 'success' : 'warning' }} text-white">
                     <h5 class="mb-0">
-                        <i class="bi bi-sliders"></i> PHP Configuration
+                        <i class="bi bi-sliders" aria-hidden="true"></i> PHP Configuration
                     </h5>
                 </div>
                 <div class="card-body">
@@ -484,9 +484,9 @@
                         <dt class="col-sm-5">OPcache:</dt>
                         <dd class="col-sm-7">
                             {% if health_checks.php_config.opcache_enabled %}
-                                <i class="bi bi-check-circle text-success"></i> Enabled
+                                <i class="bi bi-check-circle text-success" aria-hidden="true"></i> Enabled
                             {% else %}
-                                <i class="bi bi-x-circle text-warning"></i> Disabled
+                                <i class="bi bi-x-circle text-warning" aria-hidden="true"></i> Disabled
                             {% endif %}
                         </dd>
 
@@ -494,9 +494,9 @@
                         <dd class="col-sm-7">
                             <code>{{ health_checks.php_config.memory_limit }}</code>
                             {% if health_checks.php_config.memory_sufficient %}
-                                <i class="bi bi-check-circle text-success"></i>
+                                <i class="bi bi-check-circle text-success" aria-hidden="true"></i>
                             {% else %}
-                                <i class="bi bi-exclamation-triangle text-warning"></i>
+                                <i class="bi bi-exclamation-triangle text-warning" aria-hidden="true"></i>
                             {% endif %}
                         </dd>
 
@@ -520,7 +520,7 @@
             <div class="card h-100 border-{{ health_checks.sessions.status == 'healthy' ? 'success' : 'danger' }}">
                 <div class="card-header bg-{{ health_checks.sessions.status == 'healthy' ? 'success' : 'danger' }} text-white">
                     <h5 class="mb-0">
-                        <i class="bi bi-key"></i> Sessions
+                        <i class="bi bi-key" aria-hidden="true"></i> Sessions
                     </h5>
                 </div>
                 <div class="card-body">
@@ -534,9 +534,9 @@
                         <dt class="col-sm-5">Writable:</dt>
                         <dd class="col-sm-7">
                             {% if health_checks.sessions.writable %}
-                                <i class="bi bi-check-circle text-success"></i> Yes
+                                <i class="bi bi-check-circle text-success" aria-hidden="true"></i> Yes
                             {% else %}
-                                <i class="bi bi-x-circle text-danger"></i> No
+                                <i class="bi bi-x-circle text-danger" aria-hidden="true"></i> No
                             {% endif %}
                         </dd>
                     </dl>
@@ -545,7 +545,7 @@
                         <div class="mt-3">
                             <button class="btn btn-sm btn-danger auto-fix-btn"
                                     onclick="autoFix('session-permissions', this)">
-                                <i class="bi bi-wrench"></i> Fix Permissions
+                                <i class="bi bi-wrench" aria-hidden="true"></i> Fix Permissions
                             </button>
                             <div id="fix-result-session-permissions"></div>
                         </div>
@@ -561,7 +561,7 @@
             <div class="card h-100 border-success">
                 <div class="card-header bg-success text-white">
                     <h5 class="mb-0">
-                        <i class="bi bi-cloud-upload"></i> Uploads
+                        <i class="bi bi-cloud-upload" aria-hidden="true"></i> Uploads
                     </h5>
                 </div>
                 <div class="card-body">
@@ -578,9 +578,9 @@
                         <dt class="col-sm-5">Writable:</dt>
                         <dd class="col-sm-7">
                             {% if health_checks.uploads.writable %}
-                                <i class="bi bi-check-circle text-success"></i> Yes
+                                <i class="bi bi-check-circle text-success" aria-hidden="true"></i> Yes
                             {% else %}
-                                <i class="bi bi-x-circle text-danger"></i> No
+                                <i class="bi bi-x-circle text-danger" aria-hidden="true"></i> No
                             {% endif %}
                         </dd>
                     </dl>
@@ -589,7 +589,7 @@
                         <div class="mt-3">
                             <button class="btn btn-sm btn-warning auto-fix-btn"
                                     onclick="autoFix('clean-uploads', this)">
-                                <i class="bi bi-trash"></i> Clean Old Uploads
+                                <i class="bi bi-trash" aria-hidden="true"></i> Clean Old Uploads
                             </button>
                             <div id="fix-result-clean-uploads"></div>
                         </div>
@@ -604,29 +604,29 @@
     <div class="card mt-4">
         <div class="card-header bg-primary text-white">
             <h5 class="mb-0">
-                <i class="bi bi-link-45deg"></i> Related Monitoring
+                <i class="bi bi-link-45deg" aria-hidden="true"></i> Related Monitoring
             </h5>
         </div>
         <div class="card-body">
             <div class="row">
                 <div class="col-md-3 mb-2">
                     <a href="{{ path('monitoring_performance') }}" class="btn btn-outline-primary w-100">
-                        <i class="bi bi-speedometer"></i> Performance Metrics
+                        <i class="bi bi-speedometer" aria-hidden="true"></i> Performance Metrics
                     </a>
                 </div>
                 <div class="col-md-3 mb-2">
                     <a href="{{ path('monitoring_errors') }}" class="btn btn-outline-danger w-100">
-                        <i class="bi bi-exclamation-triangle"></i> Error Logs
+                        <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> Error Logs
                     </a>
                 </div>
                 <div class="col-md-3 mb-2">
                     <a href="{{ path('monitoring_audit_log') }}" class="btn btn-outline-info w-100">
-                        <i class="bi bi-journal-text"></i> Audit Log
+                        <i class="bi bi-journal-text" aria-hidden="true"></i> Audit Log
                     </a>
                 </div>
                 <div class="col-md-3 mb-2">
                     <button onclick="location.reload()" class="btn btn-outline-secondary w-100">
-                        <i class="bi bi-arrow-clockwise"></i> Refresh
+                        <i class="bi bi-arrow-clockwise" aria-hidden="true"></i> Refresh
                     </button>
                 </div>
             </div>
@@ -642,7 +642,7 @@
             const originalHtml = button ? button.innerHTML : null;
             if (button) {
                 button.disabled = true;
-                button.innerHTML = '<i class="bi bi-hourglass-split"></i> Processing...';
+                button.innerHTML = '<i class="bi bi-hourglass-split" aria-hidden="true"></i> Processing...';
             }
 
             // Get result container
@@ -668,7 +668,7 @@
                     if (resultContainer) {
                         resultContainer.innerHTML = `
                             <div class="alert alert-success fix-result">
-                                <i class="bi bi-check-circle"></i> ${result.message}
+                                <i class="bi bi-check-circle" aria-hidden="true"></i> ${result.message}
                                 ${result.details ? '<hr class="my-2"><ul class="mb-0 small">' + result.details.map(d => '<li>' + d + '</li>').join('') + '</ul>' : ''}
                             </div>
                         `;
@@ -684,7 +684,7 @@
                     if (resultContainer) {
                         resultContainer.innerHTML = `
                             <div class="alert alert-danger fix-result">
-                                <i class="bi bi-x-circle"></i> ${result.message}
+                                <i class="bi bi-x-circle" aria-hidden="true"></i> ${result.message}
                             </div>
                         `;
                     }
@@ -695,7 +695,7 @@
                 if (resultContainer) {
                     resultContainer.innerHTML = `
                         <div class="alert alert-danger fix-result">
-                            <i class="bi bi-exclamation-triangle"></i> Error: ${error.message}
+                            <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> Error: ${error.message}
                         </div>
                     `;
                 }

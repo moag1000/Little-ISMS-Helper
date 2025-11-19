@@ -3,8 +3,8 @@
 {% block body %}
 <div class="container-fluid py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1><i class="bi bi-shield-exclamation"></i> {{ 'crisis_team.title'|trans }}</h1>
-        <a href="{{ path('app_crisis_team_new') }}" class="btn btn-primary"><i class="bi bi-plus-circle"></i> {{ 'crisis_team.new'|trans }}</a>
+        <h1><i class="bi bi-shield-exclamation" aria-hidden="true"></i> {{ 'crisis_team.title'|trans }}</h1>
+        <a href="{{ path('app_crisis_team_new') }}" class="btn btn-primary"><i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'crisis_team.new'|trans }}</a>
     </div>
     <div class="row mb-4">
         <div class="col-md-4"><div class="card border-success"><div class="card-body text-center"><h3 class="text-success">{{ active_count }}</h3><p class="mb-0">{{ 'crisis_team.kpi.active'|trans }}</p></div></div></div>
@@ -24,8 +24,8 @@
                         <td>{{ team.teamLeader ? team.teamLeader.email : 'N/A' }}</td>
                         <td>
                             <div class="btn-group btn-group-sm">
-                                <a href="{{ path('app_crisis_team_show', {id: team.id}) }}" class="btn btn-outline-primary"><i class="bi bi-eye"></i></a>
-                                <a href="{{ path('app_crisis_team_edit', {id: team.id}) }}" class="btn btn-outline-secondary"><i class="bi bi-pencil"></i></a>
+                                <a href="{{ path('app_crisis_team_show', {id: team.id}) }}" class="btn btn-outline-primary"><i class="bi bi-eye" aria-hidden="true"></i></a>
+                                <a href="{{ path('app_crisis_team_edit', {id: team.id}) }}" class="btn btn-outline-secondary"><i class="bi bi-pencil" aria-hidden="true"></i></a>
                             </div>
                         </td>
                     </tr>

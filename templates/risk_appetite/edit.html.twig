@@ -5,12 +5,12 @@
 {% block body %}
 <div class="page-header">
     <div>
-        <h1><i class="bi bi-pencil"></i> {{ 'risk_appetite.edit'|trans }}</h1>
+        <h1><i class="bi bi-pencil" aria-hidden="true"></i> {{ 'risk_appetite.edit'|trans }}</h1>
         <p class="text-muted">{{ appetite.displayName }}</p>
     </div>
     <div class="button-group">
         <a href="{{ path('app_risk_appetite_show', {id: appetite.id}) }}" class="btn btn-secondary">
-            <i class="bi bi-arrow-left"></i> {{ 'common.back'|trans }}
+            <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans }}
         </a>
     </div>
 </div>
@@ -47,12 +47,12 @@
             </div>
 
             <div class="alert alert-info mt-3">
-                <i class="bi bi-info-circle"></i> {{ 'risk_appetite.info.iso27005'|trans }}
+                <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'risk_appetite.info.iso27005'|trans }}
             </div>
 
             <div class="form-actions">
                 <button type="submit" class="btn btn-primary">
-                    <i class="bi bi-check-circle"></i> {{ 'common.save'|trans }}
+                    <i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'common.save'|trans }}
                 </button>
                 <a href="{{ path('app_risk_appetite_show', {id: appetite.id}) }}" class="btn btn-secondary">
                     {{ 'common.cancel'|trans }}

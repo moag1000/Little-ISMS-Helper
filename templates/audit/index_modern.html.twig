@@ -80,7 +80,7 @@
     <div class="card mb-4">
         <div class="card-header">
             <h2 class="mb-0">
-                <i class="bi bi-pie-chart"></i>
+                <i class="bi bi-pie-chart" aria-hidden="true"></i>
                 Status-Übersicht
             </h2>
         </div>
@@ -90,7 +90,7 @@
                 <div class="col-md-3">
                     <div class="status-card text-center p-4 bg-audit-planned">
                         <div class="status-icon mb-3 audit-icon-planned">
-                            <i class="bi bi-calendar3"></i>
+                            <i class="bi bi-calendar3" aria-hidden="true"></i>
                         </div>
                         <div class="status-label text-muted mb-2">Geplant</div>
                         <div class="status-count audit-count-planned">
@@ -103,7 +103,7 @@
                 <div class="col-md-3">
                     <div class="status-card text-center p-4 bg-audit-in-progress">
                         <div class="status-icon mb-3 audit-icon-in-progress">
-                            <i class="bi bi-hourglass-split"></i>
+                            <i class="bi bi-hourglass-split" aria-hidden="true"></i>
                         </div>
                         <div class="status-label text-muted mb-2">In Bearbeitung</div>
                         <div class="status-count audit-count-in-progress">
@@ -116,7 +116,7 @@
                 <div class="col-md-3">
                     <div class="status-card text-center p-4 bg-audit-completed">
                         <div class="status-icon mb-3 audit-icon-completed">
-                            <i class="bi bi-check-circle"></i>
+                            <i class="bi bi-check-circle" aria-hidden="true"></i>
                         </div>
                         <div class="status-label text-muted mb-2">Abgeschlossen</div>
                         <div class="status-count audit-count-completed">
@@ -129,7 +129,7 @@
                 <div class="col-md-3">
                     <div class="status-card text-center p-4 bg-audit-cancelled">
                         <div class="status-icon mb-3 audit-icon-cancelled">
-                            <i class="bi bi-x-circle"></i>
+                            <i class="bi bi-x-circle" aria-hidden="true"></i>
                         </div>
                         <div class="status-label text-muted mb-2">Abgebrochen</div>
                         <div class="status-count audit-count-cancelled">
@@ -145,7 +145,7 @@
     {% if upcoming|length > 0 %}
     <div class="alert alert-info mb-4 border-left-info">
         <div class="d-flex align-items-center">
-            <i class="bi bi-calendar-event fs-2-mr-md"></i>
+            <i class="bi bi-calendar-event fs-2-mr-md" aria-hidden="true"></i>
             <div>
                 <h4 class="mb-1">Bevorstehende Audits</h4>
                 <p class="mb-0">Sie haben <strong>{{ upcoming|length }}</strong> bevorstehende Audits geplant.</p>
@@ -158,7 +158,7 @@
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h2 class="mb-0">
-                <i class="bi bi-list-ul"></i>
+                <i class="bi bi-list-ul" aria-hidden="true"></i>
                 Alle Audits
             </h2>
 
@@ -234,7 +234,7 @@
                             </td>
                             <td>
                                 {% if audit.plannedDate %}
-                                <i class="bi bi-calendar3"></i>
+                                <i class="bi bi-calendar3" aria-hidden="true"></i>
                                 {{ audit.plannedDate|date('d.m.Y') }}
                                 {% else %}
                                 <span class="text-muted">-</span>
@@ -243,19 +243,19 @@
                             <td>
                                 {% if audit.status == 'planned' %}
                                     <span class="badge bg-info">
-                                        <i class="bi bi-calendar3"></i> Geplant
+                                        <i class="bi bi-calendar3" aria-hidden="true"></i> Geplant
                                     </span>
                                 {% elseif audit.status == 'in_progress' %}
                                     <span class="badge bg-warning">
-                                        <i class="bi bi-hourglass-split"></i> In Bearbeitung
+                                        <i class="bi bi-hourglass-split" aria-hidden="true"></i> In Bearbeitung
                                     </span>
                                 {% elseif audit.status == 'completed' %}
                                     <span class="badge bg-success">
-                                        <i class="bi bi-check-circle"></i> Abgeschlossen
+                                        <i class="bi bi-check-circle" aria-hidden="true"></i> Abgeschlossen
                                     </span>
                                 {% elseif audit.status == 'cancelled' %}
                                     <span class="badge bg-secondary">
-                                        <i class="bi bi-x-circle"></i> Abgebrochen
+                                        <i class="bi bi-x-circle" aria-hidden="true"></i> Abgebrochen
                                     </span>
                                 {% else %}
                                     <span class="badge bg-secondary">{{ audit.status }}</span>
@@ -266,18 +266,18 @@
                                     <a href="{{ path('app_audit_show', {id: audit.id}) }}"
                                        class="btn btn-sm btn-outline-primary"
                                        title="Details anzeigen">
-                                        <i class="bi bi-eye"></i>
+                                        <i class="bi bi-eye" aria-hidden="true"></i>
                                     </a>
                                     <a href="{{ path('app_audit_edit', {id: audit.id}) }}"
                                        class="btn btn-sm btn-outline-secondary"
                                        title="Bearbeiten">
-                                        <i class="bi bi-pencil"></i>
+                                        <i class="bi bi-pencil" aria-hidden="true"></i>
                                     </a>
                                     <a href="{{ path('app_audit_export_pdf', {id: audit.id}) }}"
                                        class="btn btn-sm btn-outline-success"
                                        data-turbo="false"
                                        title="PDF Export">
-                                        <i class="bi bi-file-pdf"></i>
+                                        <i class="bi bi-file-pdf" aria-hidden="true"></i>
                                     </a>
                                 </div>
                             </td>
@@ -289,7 +289,7 @@
 
             {# No Results Message #}
             <div id="noResults" class="text-center p-5 d-none">
-                <i class="bi bi-search fs-3-text-muted-opacity-50"></i>
+                <i class="bi bi-search fs-3-text-muted-opacity-50" aria-hidden="true"></i>
                 <p class="text-muted mt-3">Keine Audits gefunden, die den Filterkriterien entsprechen.</p>
             </div>
             {% else %}

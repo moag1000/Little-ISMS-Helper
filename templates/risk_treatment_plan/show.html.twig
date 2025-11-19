@@ -5,22 +5,22 @@
 {% block body %}
 <div class="page-header">
     <div>
-        <h1><i class="bi bi-clipboard-check"></i> {{ plan.title }}</h1>
+        <h1><i class="bi bi-clipboard-check" aria-hidden="true"></i> {{ plan.title }}</h1>
         <p class="text-muted">
             {{ 'risk_treatment_plan.show.subtitle'|trans }}
             {% if plan.isOverdue() %}
                 <span class="badge bg-danger ms-2">
-                    <i class="bi bi-exclamation-triangle"></i> {{ 'risk_treatment_plan.overdue'|trans }}
+                    <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'risk_treatment_plan.overdue'|trans }}
                 </span>
             {% endif %}
         </p>
     </div>
     <div class="button-group">
         <a href="{{ path('app_risk_treatment_plan_edit', {id: plan.id}) }}" class="btn btn-primary">
-            <i class="bi bi-pencil"></i> {{ 'common.edit'|trans }}
+            <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'common.edit'|trans }}
         </a>
         <a href="{{ path('app_risk_treatment_plan_index') }}" class="btn btn-secondary">
-            <i class="bi bi-arrow-left"></i> {{ 'common.back'|trans }}
+            <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans }}
         </a>
     </div>
 </div>
@@ -84,7 +84,7 @@
 {# Main Details #}
 <div class="card mb-4">
     <div class="card-header">
-        <h5><i class="bi bi-info-circle"></i> {{ 'risk_treatment_plan.section.details'|trans }}</h5>
+        <h5><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'risk_treatment_plan.section.details'|trans }}</h5>
     </div>
     <div class="card-body">
         <div class="row">
@@ -165,7 +165,7 @@
 {% if plan.controls|length > 0 %}
 <div class="card mb-4">
     <div class="card-header">
-        <h5><i class="bi bi-shield-check"></i> {{ 'risk_treatment_plan.section.controls'|trans }} ({{ plan.controls|length }})</h5>
+        <h5><i class="bi bi-shield-check" aria-hidden="true"></i> {{ 'risk_treatment_plan.section.controls'|trans }} ({{ plan.controls|length }})</h5>
     </div>
     <div class="card-body">
         <div class="table-responsive">
@@ -202,7 +202,7 @@
 {% if auditLogs is defined and auditLogs|length > 0 %}
 <div class="card mb-4">
     <div class="card-header">
-        <h5><i class="bi bi-clock-history"></i> {{ 'risk_treatment_plan.section.history'|trans }} ({{ totalAuditLogs }} {{ 'audit_log.entries'|trans }})</h5>
+        <h5><i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'risk_treatment_plan.section.history'|trans }} ({{ totalAuditLogs }} {{ 'audit_log.entries'|trans }})</h5>
     </div>
     <div class="card-body">
         <div class="audit-log-list">
@@ -251,14 +251,14 @@
 {% if is_granted('ROLE_ADMIN') %}
 <div class="card border-danger">
     <div class="card-header bg-danger text-white">
-        <h5><i class="bi bi-exclamation-triangle"></i> {{ 'common.danger_zone'|trans }}</h5>
+        <h5><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'common.danger_zone'|trans }}</h5>
     </div>
     <div class="card-body">
         <p>{{ 'risk_treatment_plan.delete.warning'|trans }}</p>
         <form method="post" action="{{ path('app_risk_treatment_plan_delete', {id: plan.id}) }}" onsubmit="return confirm('{{ 'risk_treatment_plan.delete.confirm'|trans }}');">
             <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ plan.id) }}">
             <button type="submit" class="btn btn-danger">
-                <i class="bi bi-trash"></i> {{ 'common.delete'|trans }}
+                <i class="bi bi-trash" aria-hidden="true"></i> {{ 'common.delete'|trans }}
             </button>
         </form>
     </div>
