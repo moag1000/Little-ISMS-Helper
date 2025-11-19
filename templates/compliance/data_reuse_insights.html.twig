@@ -82,7 +82,7 @@
         </div>
 
         <div class="mt-2">
-            <span class="badge badge-success">{{ opportunity.reusePercentage }}% {{ 'compliance.badge.reusable'|trans }}</span>
+            <span class="badge bg-success">{{ opportunity.reusePercentage }}% {{ 'compliance.badge.reusable'|trans }}</span>
         </div>
 
         <div class="mt-3">
@@ -108,94 +108,96 @@
         {{ 'compliance.description.reuse_matrix'|trans }}
     </p>
 
-    <div class="table-container">
-        <table>
-            <thead>
-                <tr>
-                    <th scope="col">{{ 'compliance.field.data_element'|trans }}</th>
-                    <th scope="col">{{ 'compliance.field.source'|trans }}</th>
-                    <th scope="col" class="text-center">{{ 'compliance.field.reuse_count'|trans }}</th>
-                    <th scope="col">{{ 'compliance.field.used_in_frameworks'|trans }}</th>
-                    <th scope="col" class="text-center">{{ 'compliance.field.quality_score'|trans }}</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for element in dataElements %}
-                <tr>
-                    <td>
-                        <strong>{{ element.name }}</strong>
-                        <br><small class="text-muted">{{ element.type }}</small>
-                    </td>
-                    <td>{{ element.source }}</td>
-                    <td class="text-center">
-                        <span class="badge badge-info">{{ element.reuseCount }}</span>
-                    </td>
-                    <td>
-                        {% for framework in element.frameworks %}
-                            <span class="badge badge-secondary mr-xs">
-                                {{ framework.name }}
-                            </span>
-                        {% endfor %}
-                    </td>
-                    <td class="text-center">
-                        {% set qualityColor = element.qualityScore >= 80 ? 'success' : (element.qualityScore >= 60 ? 'warning' : 'danger') %}
-                        <span class="badge badge-{{ qualityColor }}">{{ element.qualityScore }}%</span>
-                    </td>
-                </tr>
-                {% else %}
-                <tr>
-                    <td colspan="5" class="text-center-p-xl-muted">
-                        {{ 'compliance.message.no_data_elements'|trans }}
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-</div>
-
-{# Framework Coverage Map #}
-<h2>{{ 'compliance.section.framework_coverage'|trans }}</h2>
-
-<div class="table-container">
-    <table>
-        <thead>
+    {% embed '_components/_table.html.twig' with {
+        'class': 'table-container',
+        'noMargin': true
+    } %}
+        {% block table_head %}
             <tr>
-                <th scope="col">{{ 'compliance.field.framework'|trans }}</th>
-                <th scope="col" class="text-center">{{ 'compliance.field.total_requirements'|trans }}</th>
-                <th scope="col" class="text-center">{{ 'compliance.field.reused_data'|trans }}</th>
-                <th scope="col" class="text-center">{{ 'compliance.field.new_data_needed'|trans }}</th>
-                <th scope="col" class="text-center">{{ 'compliance.field.coverage'|trans }}</th>
+                <th scope="col">{{ 'compliance.field.data_element'|trans }}</th>
+                <th scope="col">{{ 'compliance.field.source'|trans }}</th>
+                <th scope="col" class="text-center">{{ 'compliance.field.reuse_count'|trans }}</th>
+                <th scope="col">{{ 'compliance.field.used_in_frameworks'|trans }}</th>
+                <th scope="col" class="text-center">{{ 'compliance.field.quality_score'|trans }}</th>
             </tr>
-        </thead>
-        <tbody>
-            {% for framework in frameworkCoverage %}
+        {% endblock %}
+        {% block table_body %}
+            {% for element in dataElements %}
             <tr>
-                <td><strong>{{ framework.name }}</strong></td>
-                <td class="text-center">{{ framework.totalRequirements }}</td>
-                <td class="text-center">
-                    <span class="badge badge-success">{{ framework.reusedData }}</span>
+                <td>
+                    <strong>{{ element.name }}</strong>
+                    <br><small class="text-muted">{{ element.type }}</small>
                 </td>
+                <td>{{ element.source }}</td>
                 <td class="text-center">
-                    <span class="badge badge-warning">{{ framework.newDataNeeded }}</span>
+                    <span class="badge bg-info">{{ element.reuseCount }}</span>
                 </td>
                 <td>
-                    {% set coverage = (framework.reusedData / framework.totalRequirements * 100)|round %}
-                    <div class="progress progress-compact">
-                        <div class="progress-bar" style="width: {{ coverage }}%; font-size: 0.75rem;">
-                            {{ coverage }}%
-                        </div>
-                    </div>
+                    {% for framework in element.frameworks %}
+                        <span class="badge bg-secondary mr-xs">
+                            {{ framework.name }}
+                        </span>
+                    {% endfor %}
+                </td>
+                <td class="text-center">
+                    {% set qualityColor = element.qualityScore >= 80 ? 'success' : (element.qualityScore >= 60 ? 'warning' : 'danger') %}
+                    <span class="badge badge-{{ qualityColor }}">{{ element.qualityScore }}%</span>
                 </td>
             </tr>
             {% else %}
             <tr>
                 <td colspan="5" class="text-center-p-xl-muted">
-                    {{ 'compliance.message.no_frameworks'|trans }}
+                    {{ 'compliance.message.no_data_elements'|trans }}
                 </td>
             </tr>
             {% endfor %}
-        </tbody>
-    </table>
+        {% endblock %}
+    {% endembed %}
 </div>
+
+{# Framework Coverage Map #}
+<h2>{{ 'compliance.section.framework_coverage'|trans }}</h2>
+
+{% embed '_components/_table.html.twig' with {
+    'class': 'table-container',
+    'noMargin': true
+} %}
+    {% block table_head %}
+        <tr>
+            <th scope="col">{{ 'compliance.field.framework'|trans }}</th>
+            <th scope="col" class="text-center">{{ 'compliance.field.total_requirements'|trans }}</th>
+            <th scope="col" class="text-center">{{ 'compliance.field.reused_data'|trans }}</th>
+            <th scope="col" class="text-center">{{ 'compliance.field.new_data_needed'|trans }}</th>
+            <th scope="col" class="text-center">{{ 'compliance.field.coverage'|trans }}</th>
+        </tr>
+    {% endblock %}
+    {% block table_body %}
+        {% for framework in frameworkCoverage %}
+        <tr>
+            <td><strong>{{ framework.name }}</strong></td>
+            <td class="text-center">{{ framework.totalRequirements }}</td>
+            <td class="text-center">
+                <span class="badge bg-success">{{ framework.reusedData }}</span>
+            </td>
+            <td class="text-center">
+                <span class="badge bg-warning">{{ framework.newDataNeeded }}</span>
+            </td>
+            <td>
+                {% set coverage = (framework.reusedData / framework.totalRequirements * 100)|round %}
+                <div class="progress progress-compact">
+                    <div class="progress-bar" style="width: {{ coverage }}%; font-size: 0.75rem;">
+                        {{ coverage }}%
+                    </div>
+                </div>
+            </td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="5" class="text-center-p-xl-muted">
+                {{ 'compliance.message.no_frameworks'|trans }}
+            </td>
+        </tr>
+        {% endfor %}
+    {% endblock %}
+{% endembed %}
 {% endblock %}
