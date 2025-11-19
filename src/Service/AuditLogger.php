@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Entity\AuditLog;
+use App\Entity\Risk;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -271,7 +272,7 @@ class AuditLogger
      * Log risk acceptance (automatic)
      * Priority 2.1 - Risk Acceptance Workflow
      */
-    public function logRiskAcceptance($risk, User $user, string $reason): void
+    public function logRiskAcceptance(Risk $risk, User $user, string $reason): void
     {
         $this->logCustom(
             action: 'risk_acceptance',
@@ -296,7 +297,7 @@ class AuditLogger
     /**
      * Log risk acceptance request
      */
-    public function logRiskAcceptanceRequested($risk, User $requester, User $approver, string $approvalLevel): void
+    public function logRiskAcceptanceRequested(Risk $risk, User $requester, User $approver, string $approvalLevel): void
     {
         $this->logCustom(
             action: 'risk_acceptance_requested',
@@ -324,7 +325,7 @@ class AuditLogger
     /**
      * Log risk acceptance approval
      */
-    public function logRiskAcceptanceApproved($risk, User $approver, string $comments): void
+    public function logRiskAcceptanceApproved(Risk $risk, User $approver, string $comments): void
     {
         $this->logCustom(
             action: 'risk_acceptance_approved',
@@ -349,7 +350,7 @@ class AuditLogger
     /**
      * Log risk acceptance rejection
      */
-    public function logRiskAcceptanceRejected($risk, User $rejector, string $reason): void
+    public function logRiskAcceptanceRejected(Risk $risk, User $rejector, string $reason): void
     {
         $this->logCustom(
             action: 'risk_acceptance_rejected',
