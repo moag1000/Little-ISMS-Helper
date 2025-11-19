@@ -8,7 +8,7 @@
     <div class="page-header">
         <div>
             <h1>
-                <i class="bi-graph-up"></i>
+                <i class="bi bi-graph-up"></i>
                 Analytics Dashboard
             </h1>
             <p class="text-muted">Advanced data analysis and visualizations</p>
@@ -28,28 +28,28 @@
                 <button class="btn btn-outline-primary dropdown-toggle"
                         type="button"
                         data-bs-toggle="dropdown">
-                    <i class="bi-download"></i> Export
+                    <i class="bi bi-download"></i> Export
                 </button>
                 <ul class="dropdown-menu">
                     <li>
                         <a class="dropdown-item"
                            href="{{ path('app_analytics_export', {type: 'risks'}) }}"
                            data-turbo="false">
-                            <i class="bi-exclamation-triangle"></i> Export Risks CSV
+                            <i class="bi bi-exclamation-triangle"></i> Export Risks CSV
                         </a>
                     </li>
                     <li>
                         <a class="dropdown-item"
                            href="{{ path('app_analytics_export', {type: 'assets'}) }}"
                            data-turbo="false">
-                            <i class="bi-server"></i> Export Assets CSV
+                            <i class="bi bi-server"></i> Export Assets CSV
                         </a>
                     </li>
                     <li>
                         <a class="dropdown-item"
                            href="{{ path('app_analytics_export', {type: 'compliance'}) }}"
                            data-turbo="false">
-                            <i class="bi-shield-check"></i> Export Compliance CSV
+                            <i class="bi bi-shield-check"></i> Export Compliance CSV
                         </a>
                     </li>
                     <li><hr class="dropdown-divider"></li>
@@ -57,7 +57,7 @@
                         <a class="dropdown-item"
                            href="#"
                            data-action="click->analytics#printDashboard">
-                            <i class="bi-printer"></i> Print Dashboard
+                            <i class="bi bi-printer"></i> Print Dashboard
                         </a>
                     </li>
                 </ul>
@@ -73,7 +73,7 @@
                     data-bs-target="#overview-tab"
                     type="button"
                     role="tab">
-                <i class="bi-speedometer2"></i> Overview
+                <i class="bi bi-speedometer2"></i> Overview
             </button>
         </li>
         <li class="nav-item" role="presentation">
@@ -82,7 +82,7 @@
                     data-bs-target="#heat-map-tab"
                     type="button"
                     role="tab">
-                <i class="bi-grid-3x3-gap"></i> Risk Heat Map
+                <i class="bi bi-grid-3x3-gap"></i> Risk Heat Map
             </button>
         </li>
         <li class="nav-item" role="presentation">
@@ -91,7 +91,7 @@
                     data-bs-target="#compliance-tab"
                     type="button"
                     role="tab">
-                <i class="bi-diagram-3"></i> Compliance Radar
+                <i class="bi bi-diagram-3"></i> Compliance Radar
             </button>
         </li>
         <li class="nav-item" role="presentation">
@@ -100,7 +100,7 @@
                     data-bs-target="#trends-tab"
                     type="button"
                     role="tab">
-                <i class="bi-graph-up-arrow"></i> Trends
+                <i class="bi bi-graph-up-arrow"></i> Trends
             </button>
         </li>
     </ul>

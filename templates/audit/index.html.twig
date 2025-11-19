@@ -29,6 +29,9 @@
     </div>
 </div>
 
+{# Skip link for filters section - WCAG 2.4.1 #}
+<a href="#filter-section" class="skip-link">{{ 'accessibility.skip_to_filters'|trans }}</a>
+
 {# Filter Section #}
 {% embed '_components/_card.html.twig' with {
     'title': 'common.filters',
@@ -36,7 +39,8 @@
     'class': 'mb-4'
 } %}
     {% block card_body %}
-        <form method="get" action="{{ path('app_audit_index') }}" class="row g-3">
+        <form method="get" action="{{ path('app_audit_index') }}" class="row g-3" role="search" aria-label="{{ 'common.filters'|trans }}">
+            <div id="filter-section" tabindex="-1"></div>
             <div class="col-md-3">
                 <label for="filter-status" class="form-label">{{ 'audit.field.status'|trans }}</label>
                 <select class="form-select" id="filter-status" name="status" onchange="this.form.submit()">

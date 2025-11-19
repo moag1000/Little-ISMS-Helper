@@ -34,7 +34,7 @@
 
     <div class="preview-section">
         <h6 class="preview-section-title">
-            <i class="bi-bar-chart"></i>
+            <i class="bi bi-bar-chart"></i>
             Risikobewertung
         </h6>
         <div class="row g-3">
@@ -64,7 +64,7 @@
         {% if risk.riskReduction > 0 %}
         <div class="mt-2">
             <small class="text-success">
-                <i class="bi-arrow-down"></i>
+                <i class="bi bi-arrow-down"></i>
                 Risikoreduktion: {{ risk.riskReduction }}%
             </small>
         </div>
@@ -73,7 +73,7 @@
 
     <div class="preview-section">
         <h6 class="preview-section-title">
-            <i class="bi-file-text"></i>
+            <i class="bi bi-file-text"></i>
             Beschreibung
         </h6>
         <p class="mb-0">{{ risk.description }}</p>
@@ -81,7 +81,7 @@
 
     <div class="preview-section">
         <h6 class="preview-section-title">
-            <i class="bi-shield"></i>
+            <i class="bi bi-shield"></i>
             Behandlungsstrategie
         </h6>
         <div class="mb-2">
@@ -94,7 +94,7 @@
 
     <div class="preview-section">
         <h6 class="preview-section-title">
-            <i class="bi-graph-up"></i>
+            <i class="bi bi-graph-up"></i>
             Maßnahmen
         </h6>
         <div class="stat-mini">
@@ -105,10 +105,10 @@
 
     <div class="preview-actions">
         <a href="{{ path('app_risk_show', {id: risk.id}) }}" class="btn btn-primary btn-sm">
-            <i class="bi-arrow-right"></i> Details anzeigen
+            <i class="bi bi-arrow-right"></i> Details anzeigen
         </a>
         <a href="{{ path('app_risk_edit', {id: risk.id}) }}" class="btn btn-outline-secondary btn-sm">
-            <i class="bi-pencil"></i> Bearbeiten
+            <i class="bi bi-pencil"></i> Bearbeiten
         </a>
     </div>
 </div>

@@ -23,7 +23,7 @@
         <button class="btn btn-outline-secondary"
                 data-action="click->dashboard-customizer#openSettings"
                 title="Dashboard anpassen">
-            <i class="bi-sliders"></i> Anpassen
+            <i class="bi bi-sliders"></i> Anpassen
         </button>
     </div>
 
@@ -35,12 +35,12 @@
         <div class="col-lg-3 col-md-6">
             <div class="stat-card">
                 <div class="stat-card-icon bg-primary">
-                    <i class="bi-server"></i>
+                    <i class="bi bi-server"></i>
                 </div>
                 <div class="stat-card-title">Registrierte Assets</div>
                 <div class="stat-card-value">{{ stats.assets_total|default(0) }}</div>
                 <div class="stat-card-change positive">
-                    <i class="bi-arrow-up"></i>
+                    <i class="bi bi-arrow-up"></i>
                     <span>{{ stats.assets_critical|default(0) }} kritisch</span>
                 </div>
             </div>
@@ -50,12 +50,12 @@
         <div class="col-lg-3 col-md-6">
             <div class="stat-card">
                 <div class="stat-card-icon bg-warning">
-                    <i class="bi-exclamation-triangle"></i>
+                    <i class="bi bi-exclamation-triangle"></i>
                 </div>
                 <div class="stat-card-title">Identifizierte Risiken</div>
                 <div class="stat-card-value">{{ stats.risks_total|default(0) }}</div>
                 <div class="stat-card-change negative">
-                    <i class="bi-arrow-up"></i>
+                    <i class="bi bi-arrow-up"></i>
                     <span>{{ stats.risks_high|default(0) }} hoch</span>
                 </div>
             </div>
@@ -65,12 +65,12 @@
         <div class="col-lg-3 col-md-6">
             <div class="stat-card">
                 <div class="stat-card-icon bg-success">
-                    <i class="bi-shield-check"></i>
+                    <i class="bi bi-shield-check"></i>
                 </div>
                 <div class="stat-card-title">Sicherheitsmaßnahmen</div>
                 <div class="stat-card-value">{{ stats.controls_implemented|default(0) }}/{{ stats.controls_total|default(0) }}</div>
                 <div class="stat-card-change positive">
-                    <i class="bi-check-circle"></i>
+                    <i class="bi bi-check-circle"></i>
                     <span>{{ stats.compliance_percentage|default(0) }}% implementiert</span>
                 </div>
             </div>
@@ -80,12 +80,12 @@
         <div class="col-lg-3 col-md-6">
             <div class="stat-card">
                 <div class="stat-card-icon bg-danger">
-                    <i class="bi-exclamation-circle"></i>
+                    <i class="bi bi-exclamation-circle"></i>
                 </div>
                 <div class="stat-card-title">Offene Vorfälle</div>
                 <div class="stat-card-value">{{ stats.incidents_open|default(0) }}</div>
                 <div class="stat-card-change">
-                    <i class="bi-clock-history"></i>
+                    <i class="bi bi-clock-history"></i>
                     <span>In Bearbeitung</span>
                 </div>
             </div>
@@ -102,12 +102,12 @@
                  data-dashboard-customizer-target="widget">
                 <div class="widget-header">
                     <h3 class="widget-title">
-                        <i class="bi-pie-chart"></i>
+                        <i class="bi bi-pie-chart"></i>
                         Risikoverteilung
                     </h3>
                     <div class="widget-actions">
                         <button class="widget-action" title="Aktualisieren">
-                            <i class="bi-arrow-clockwise"></i>
+                            <i class="bi bi-arrow-clockwise"></i>
                         </button>
                     </div>
                 </div>
@@ -125,7 +125,7 @@
                  data-dashboard-customizer-target="widget">
                 <div class="widget-header">
                     <h3 class="widget-title">
-                        <i class="bi-bar-chart"></i>
+                        <i class="bi bi-bar-chart"></i>
                         Assets nach Kategorie
                     </h3>
                 </div>
@@ -146,12 +146,12 @@
                  data-dashboard-customizer-target="widget">
                 <div class="widget-header">
                     <h3 class="widget-title">
-                        <i class="bi-activity"></i>
+                        <i class="bi bi-activity"></i>
                         Letzte Aktivitäten
                     </h3>
                     <div class="widget-actions">
                         <button class="widget-action" title="Alle anzeigen">
-                            <i class="bi-arrows-fullscreen"></i>
+                            <i class="bi bi-arrows-fullscreen"></i>
                         </button>
                     </div>
                 </div>
@@ -166,7 +166,7 @@
                  data-dashboard-customizer-target="widget">
                 <div class="widget-header">
                     <h3 class="widget-title">
-                        <i class="bi-lightning"></i>
+                        <i class="bi bi-lightning"></i>
                         Schnellzugriff
                     </h3>
                 </div>
