@@ -60,56 +60,58 @@
                 </h5>
             </div>
             <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead>
+                {% embed '_components/_table.html.twig' with {
+                    'class': 'table-hover',
+                    'noMargin': true,
+                    'responsive': true
+                } %}
+                    {% block table_head %}
+                        <tr>
+                            <th scope="col">{{ 'admin.compliance.framework'|trans }}</th>
+                            <th scope="col" class="text-center">{{ 'admin.compliance.total_requirements'|trans }}</th>
+                            <th scope="col" class="text-center">{{ 'admin.compliance.assessed'|trans }}</th>
+                            <th scope="col" class="text-center">{{ 'admin.compliance.compliant'|trans }}</th>
+                            <th scope="col" class="text-center">{{ 'admin.compliance.compliance_rate'|trans }}</th>
+                            <th scope="col" class="text-center">{{ 'admin.compliance.progress'|trans }}</th>
+                        </tr>
+                    {% endblock %}
+                    {% block table_body %}
+                        {% for data in compliance_data %}
                             <tr>
-                                <th scope="col">{{ 'admin.compliance.framework'|trans }}</th>
-                                <th scope="col" class="text-center">{{ 'admin.compliance.total_requirements'|trans }}</th>
-                                <th scope="col" class="text-center">{{ 'admin.compliance.assessed'|trans }}</th>
-                                <th scope="col" class="text-center">{{ 'admin.compliance.compliant'|trans }}</th>
-                                <th scope="col" class="text-center">{{ 'admin.compliance.compliance_rate'|trans }}</th>
-                                <th scope="col" class="text-center">{{ 'admin.compliance.progress'|trans }}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for data in compliance_data %}
-                                <tr>
-                                    <td>
-                                        <strong>{{ data.framework.name }}</strong><br>
-                                        <small class="text-muted">{{ data.framework.code }}</small>
-                                    </td>
-                                    <td class="text-center">
-                                        <span class="badge bg-secondary">{{ data.total_requirements }}</span>
-                                    </td>
-                                    <td class="text-center">
-                                        <span class="badge bg-info">{{ data.assessed_requirements }}</span>
-                                    </td>
-                                    <td class="text-center">
-                                        <span class="badge bg-success">{{ data.compliant_requirements }}</span>
-                                    </td>
-                                    <td class="text-center">
-                                        <strong class="{% if data.compliance_percentage >= 75 %}text-success{% elseif data.compliance_percentage >= 50 %}text-warning{% else %}text-danger{% endif %}">
+                                <td>
+                                    <strong>{{ data.framework.name }}</strong><br>
+                                    <small class="text-muted">{{ data.framework.code }}</small>
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge bg-secondary">{{ data.total_requirements }}</span>
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge bg-info">{{ data.assessed_requirements }}</span>
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge bg-success">{{ data.compliant_requirements }}</span>
+                                </td>
+                                <td class="text-center">
+                                    <strong class="{% if data.compliance_percentage >= 75 %}text-success{% elseif data.compliance_percentage >= 50 %}text-warning{% else %}text-danger{% endif %}">
+                                        {{ data.compliance_percentage }}%
+                                    </strong>
+                                </td>
+                                <td>
+                                    <div class="progress" style="height: 25px;">
+                                        <div class="progress-bar {% if data.compliance_percentage >= 75 %}bg-success{% elseif data.compliance_percentage >= 50 %}bg-warning{% else %}bg-danger{% endif %}"
+                                             role="progressbar"
+                                             style="width: {{ data.compliance_percentage }}%"
+                                             aria-valuenow="{{ data.compliance_percentage }}"
+                                             aria-valuemin="0"
+                                             aria-valuemax="100">
                                             {{ data.compliance_percentage }}%
-                                        </strong>
-                                    </td>
-                                    <td>
-                                        <div class="progress" style="height: 25px;">
-                                            <div class="progress-bar {% if data.compliance_percentage >= 75 %}bg-success{% elseif data.compliance_percentage >= 50 %}bg-warning{% else %}bg-danger{% endif %}"
-                                                 role="progressbar"
-                                                 style="width: {{ data.compliance_percentage }}%"
-                                                 aria-valuenow="{{ data.compliance_percentage }}"
-                                                 aria-valuemin="0"
-                                                 aria-valuemax="100">
-                                                {{ data.compliance_percentage }}%
-                                            </div>
                                         </div>
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% endblock %}
+                {% endembed %}
             </div>
         </div>
     {% else %}
