@@ -20,7 +20,7 @@ class ComplianceRequirementTest extends TestCase
         $this->assertNull($requirement->getDescription());
         $this->assertNull($requirement->getCategory());
         $this->assertNull($requirement->getPriority());
-        $this->assertEquals(0, $requirement->getFulfillmentPercentage());
+        // Note: fulfillmentPercentage and fulfillmentNotes moved to ComplianceRequirementFulfillment entity (CRITICAL-03)
         $this->assertInstanceOf(\DateTimeImmutable::class, $requirement->getCreatedAt());
         $this->assertNull($requirement->getUpdatedAt());
         $this->assertCount(0, $requirement->getMappedControls());
@@ -78,21 +78,8 @@ class ComplianceRequirementTest extends TestCase
         $this->assertEquals('high', $requirement->getPriority());
     }
 
-    public function testSetAndGetFulfillmentPercentage(): void
-    {
-        $requirement = new ComplianceRequirement();
-        $requirement->setFulfillmentPercentage(75);
-
-        $this->assertEquals(75, $requirement->getFulfillmentPercentage());
-    }
-
-    public function testSetAndGetFulfillmentNotes(): void
-    {
-        $requirement = new ComplianceRequirement();
-        $requirement->setFulfillmentNotes('Partially implemented, needs review');
-
-        $this->assertEquals('Partially implemented, needs review', $requirement->getFulfillmentNotes());
-    }
+    // NOTE: testSetAndGetFulfillmentPercentage() and testSetAndGetFulfillmentNotes() removed
+    // Fulfillment tracking moved to ComplianceRequirementFulfillment entity (CRITICAL-03 Multi-Tenancy)
 
     public function testAddAndRemoveMappedControl(): void
     {
