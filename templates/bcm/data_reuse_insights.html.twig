@@ -67,19 +67,19 @@
             <div class="info-grid">
                 <div class="info-item">
                     <strong>RTO ≤ 1 hour</strong>
-                    <p>Suggests Availability: <span class="badge badge-danger">5 - Very High</span></p>
+                    <p>Suggests Availability: <span class="badge bg-danger">5 - Very High</span></p>
                 </div>
                 <div class="info-item">
                     <strong>RTO ≤ 4 hours</strong>
-                    <p>Suggests Availability: <span class="badge badge-warning">4 - High</span></p>
+                    <p>Suggests Availability: <span class="badge bg-warning">4 - High</span></p>
                 </div>
                 <div class="info-item">
                     <strong>RTO ≤ 24 hours</strong>
-                    <p>Suggests Availability: <span class="badge badge-info">3 - Medium</span></p>
+                    <p>Suggests Availability: <span class="badge bg-info">3 - Medium</span></p>
                 </div>
                 <div class="info-item">
                     <strong>RTO ≤ 72 hours</strong>
-                    <p>Suggests Availability: <span class="badge badge-success">2 - Low</span></p>
+                    <p>Suggests Availability: <span class="badge bg-success">2 - Low</span></p>
                 </div>
             </div>
         </div>
@@ -91,108 +91,109 @@
             <h2>Asset Recommendations Based on BCM Data</h2>
         </div>
 
-        <div class="table-responsive">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th scope="col">Business Process</th>
-                        <th scope="col">Supporting Asset</th>
-                        <th scope="col">RTO/MTPD</th>
-                        <th scope="col">Current Availability</th>
-                        <th scope="col">Suggested Availability</th>
-                        <th scope="col">Recommendation</th>
-                        <th scope="col">Confidence</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for insight in insights %}
-                        {% set availability = insight.analysis.availability %}
-                        {% set matchStatus = insight.current_availability == insight.suggested_availability ? 'match' : 'mismatch' %}
-                        <tr class="insight-row insight-{{ matchStatus }}">
-                            <td>
-                                <strong>{{ insight.process.name }}</strong>
-                                <br>
-                                {% set criticality_colors = {
-                                    'critical': 'danger',
-                                    'high': 'warning',
-                                    'medium': 'info',
-                                    'low': 'success'
-                                } %}
-                                <span class="badge badge-{{ criticality_colors[insight.process.criticality] ?? 'secondary' }}">
-                                    {{ insight.process.criticality|upper }}
-                                </span>
-                            </td>
-                            <td>
-                                <strong>{{ insight.asset.name }}</strong>
-                                <br>
-                                <small class="text-muted">{{ insight.asset.type|default('N/A') }}</small>
-                            </td>
-                            <td>
-                                <div class="metric-stack">
-                                    <span class="metric-value">RTO: {{ insight.process.rto }}h</span>
-                                    <span class="metric-value">MTPD: {{ insight.process.mtpd }}h</span>
+        {% embed '_components/_table.html.twig' with {
+            'noMargin': true,
+            'responsive': true
+        } %}
+            {% block table_head %}
+                <tr>
+                    <th scope="col">Business Process</th>
+                    <th scope="col">Supporting Asset</th>
+                    <th scope="col">RTO/MTPD</th>
+                    <th scope="col">Current Availability</th>
+                    <th scope="col">Suggested Availability</th>
+                    <th scope="col">Recommendation</th>
+                    <th scope="col">Confidence</th>
+                </tr>
+            {% endblock %}
+            {% block table_body %}
+                {% for insight in insights %}
+                    {% set availability = insight.analysis.availability %}
+                    {% set matchStatus = insight.current_availability == insight.suggested_availability ? 'match' : 'mismatch' %}
+                    <tr class="insight-row insight-{{ matchStatus }}">
+                        <td>
+                            <strong>{{ insight.process.name }}</strong>
+                            <br>
+                            {% set criticality_colors = {
+                                'critical': 'danger',
+                                'high': 'warning',
+                                'medium': 'info',
+                                'low': 'success'
+                            } %}
+                            <span class="badge badge-{{ criticality_colors[insight.process.criticality] ?? 'secondary' }}">
+                                {{ insight.process.criticality|upper }}
+                            </span>
+                        </td>
+                        <td>
+                            <strong>{{ insight.asset.name }}</strong>
+                            <br>
+                            <small class="text-muted">{{ insight.asset.type|default('N/A') }}</small>
+                        </td>
+                        <td>
+                            <div class="metric-stack">
+                                <span class="metric-value">RTO: {{ insight.process.rto }}h</span>
+                                <span class="metric-value">MTPD: {{ insight.process.mtpd }}h</span>
+                            </div>
+                        </td>
+                        <td class="text-center">
+                            {% set availability_labels = {
+                                1: 'Very Low',
+                                2: 'Low',
+                                3: 'Medium',
+                                4: 'High',
+                                5: 'Very High'
+                            } %}
+                            {% set availability_colors = {
+                                1: 'success',
+                                2: 'info',
+                                3: 'warning',
+                                4: 'warning',
+                                5: 'danger'
+                            } %}
+                            <span class="badge badge-{{ availability_colors[insight.current_availability] ?? 'secondary' }}">
+                                {{ insight.current_availability }} - {{ availability_labels[insight.current_availability] ?? 'N/A' }}
+                            </span>
+                        </td>
+                        <td class="text-center">
+                            <span class="badge badge-{{ availability_colors[availability.value] ?? 'secondary' }}">
+                                {{ availability.value }} - {{ availability_labels[availability.value] ?? 'N/A' }}
+                            </span>
+                        </td>
+                        <td>
+                            {% if matchStatus == 'match' %}
+                                <div class="recommendation recommendation-match">
+                                    ✓ Current rating aligns with BCM data
                                 </div>
-                            </td>
-                            <td class="text-center">
-                                {% set availability_labels = {
-                                    1: 'Very Low',
-                                    2: 'Low',
-                                    3: 'Medium',
-                                    4: 'High',
-                                    5: 'Very High'
-                                } %}
-                                {% set availability_colors = {
-                                    1: 'success',
-                                    2: 'info',
-                                    3: 'warning',
-                                    4: 'warning',
-                                    5: 'danger'
-                                } %}
-                                <span class="badge badge-{{ availability_colors[insight.current_availability] ?? 'secondary' }}">
-                                    {{ insight.current_availability }} - {{ availability_labels[insight.current_availability] ?? 'N/A' }}
-                                </span>
-                            </td>
-                            <td class="text-center">
-                                <span class="badge badge-{{ availability_colors[availability.value] ?? 'secondary' }}">
-                                    {{ availability.value }} - {{ availability_labels[availability.value] ?? 'N/A' }}
-                                </span>
-                            </td>
-                            <td>
-                                {% if matchStatus == 'match' %}
-                                    <div class="recommendation recommendation-match">
-                                        ✓ Current rating aligns with BCM data
-                                    </div>
-                                {% else %}
-                                    <div class="recommendation recommendation-mismatch">
-                                        <strong>Consider updating:</strong><br>
-                                        {{ availability.recommendation }}
-                                    </div>
-                                {% endif %}
-                                <small class="text-muted">{{ availability.reasoning }}</small>
-                            </td>
-                            <td class="text-center">
-                                {% set confidence_colors = {
-                                    'high': 'success',
-                                    'medium': 'warning',
-                                    'low': 'secondary'
-                                } %}
-                                <span class="badge badge-{{ confidence_colors[availability.confidence] ?? 'secondary' }}">
-                                    {{ availability.confidence|upper }}
-                                </span>
-                            </td>
-                        </tr>
-                    {% else %}
-                        <tr>
-                            <td colspan="7" class="text-center text-muted">
-                                No BCM-based recommendations available.
-                                <br>
-                                Start by creating business processes and linking them to assets.
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
+                            {% else %}
+                                <div class="recommendation recommendation-mismatch">
+                                    <strong>Consider updating:</strong><br>
+                                    {{ availability.recommendation }}
+                                </div>
+                            {% endif %}
+                            <small class="text-muted">{{ availability.reasoning }}</small>
+                        </td>
+                        <td class="text-center">
+                            {% set confidence_colors = {
+                                'high': 'success',
+                                'medium': 'warning',
+                                'low': 'secondary'
+                            } %}
+                            <span class="badge badge-{{ confidence_colors[availability.confidence] ?? 'secondary' }}">
+                                {{ availability.confidence|upper }}
+                            </span>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="7" class="text-center text-muted">
+                            No BCM-based recommendations available.
+                            <br>
+                            Start by creating business processes and linking them to assets.
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% endblock %}
+        {% endembed %}
     </div>
 
     {# Benefits Section #}
