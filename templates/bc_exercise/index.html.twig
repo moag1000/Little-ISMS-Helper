@@ -62,8 +62,11 @@
         </div>
         <div class="card-content">
             {% if bc_exercises|length > 0 %}
-            <table class="data-table">
-                <thead>
+            {% embed '_components/_table.html.twig' with {
+                'wrapperClass': 'card-content',
+                'noMargin': true
+            } %}
+                {% block table_head %}
                     <tr>
                         <th scope="col">Name</th>
                         <th scope="col">Type</th>
@@ -72,12 +75,12 @@
                         <th scope="col">Effectiveness</th>
                         <th scope="col">Actions</th>
                     </tr>
-                </thead>
-                <tbody>
+                {% endblock %}
+                {% block table_body %}
                     {% for exercise in bc_exercises %}
                     <tr>
                         <td><a href="{{ path('app_bc_exercise_show', {id: exercise.id}) }}">{{ exercise.name }}</a></td>
-                        <td><span class="badge badge-info">{{ exercise.exerciseType }}</span></td>
+                        <td><span class="badge bg-info">{{ exercise.exerciseType }}</span></td>
                         <td>{{ exercise.exerciseDate|date('Y-m-d') }}</td>
                         <td><span class="badge badge-{{ exercise.status }}">{{ exercise.status }}</span></td>
                         <td>
@@ -93,8 +96,8 @@
                         </td>
                     </tr>
                     {% endfor %}
-                </tbody>
-            </table>
+                {% endblock %}
+            {% endembed %}
             {% else %}
             <p>No BC exercises found. <a href="{{ path('app_bc_exercise_new') }}">Schedule your first exercise</a>.</p>
             {% endif %}
