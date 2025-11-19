@@ -143,8 +143,11 @@
                     </h5>
                 </div>
                 <div class="card-body">
-                    <table class="table table-sm">
-                        <tbody>
+                    {% embed '_components/_table.html.twig' with {
+                        'class': 'table-sm',
+                        'noMargin': true
+                    } %}
+                        {% block table_body %}
                             <tr>
                                 <th scope="row" style="width: 40%;">{{ 'tenant.field.logo'|trans }}</th>
                                 <td>
@@ -196,8 +199,9 @@
                                     <td>{{ tenant.updatedAt|date('d.m.Y H:i') }}</td>
                                 </tr>
                             {% endif %}
-                        </tbody>
-                    </table>
+                        {% endblock %}
+                    {% endembed %}
+                </div>
 
                     {# Corporate Structure Information #}
                     {% if tenant.isPartOfCorporateStructure %}
@@ -205,8 +209,11 @@
                         <h6 class="text-muted mb-3">
                             <i class="bi bi-diagram-3" aria-hidden="true"></i> {{ 'corporate.section.structure'|trans }}
                         </h6>
-                        <table class="table table-sm">
-                            <tbody>
+                        {% embed '_components/_table.html.twig' with {
+                            'class': 'table-sm',
+                            'noMargin': true
+                        } %}
+                            {% block table_body %}
                                 {% if tenant.parent %}
                                     <tr>
                                         <th scope="row" style="width: 40%;">{{ 'corporate.field.parent'|trans }}</th>
@@ -253,8 +260,8 @@
                                         </td>
                                     </tr>
                                 {% endif %}
-                            </tbody>
-                        </table>
+                            {% endblock %}
+                        {% endembed %}</div>
                         <div class="d-grid">
                             <a href="{{ path('tenant_management_corporate_structure') }}" class="btn btn-sm btn-outline-primary">
                                 <i class="bi bi-diagram-3" aria-hidden="true"></i> {{ 'corporate.action.view_structure'|trans }}
