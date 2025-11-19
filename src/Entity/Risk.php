@@ -137,6 +137,7 @@ class Risk
     #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     #[Groups(['risk:read', 'risk:write'])]
     #[MaxDepth(1)]
+    #[Assert\NotNull(message: 'risk.validation.risk_owner_required')]
     private ?User $riskOwner = null;
 
     #[ORM\Column(length: 50)]
