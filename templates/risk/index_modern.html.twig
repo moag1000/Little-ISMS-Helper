@@ -98,14 +98,13 @@
 </div>
 
 {# Risk Matrix Overview #}
-<div class="card mb-4">
-    <div class="card-header d-flex justify-content-between align-items-center">
-        <h3 class="mb-0"><i class="bi bi-grid-3x3" aria-hidden="true"></i> Risikomatrix-Übersicht</h3>
-        <a href="{{ path('app_risk_matrix') }}" class="btn btn-sm btn-outline-primary">
-            Vollständige Matrix anzeigen <i class="bi bi-arrow-right" aria-hidden="true"></i>
-        </a>
-    </div>
-    <div class="card-body">
+{% embed '_components/_card.html.twig' with {
+    'title': 'Risikomatrix-Übersicht',
+    'headerIcon': 'bi-grid-3x3',
+    'actions': '<a href="' ~ path('app_risk_matrix') ~ '" class="btn btn-sm btn-outline-primary">Vollständige Matrix anzeigen <i class="bi bi-arrow-right" aria-hidden="true"></i></a>',
+    'class': 'mb-4'
+} %}
+    {% block card_body %}
         <div class="risk-matrix-preview">
             {# Risk Distribution by Severity #}
             <div class="row">
@@ -139,15 +138,16 @@
                 </div>
             </div>
         </div>
-    </div>
-</div>
+    {% endblock %}
+{% endembed %}
 
 {# Treatment Status #}
-<div class="card mb-4">
-    <div class="card-header">
-        <h3 class="mb-0"><i class="bi bi-shield-check" aria-hidden="true"></i> Behandlungsstatus</h3>
-    </div>
-    <div class="card-body">
+{% embed '_components/_card.html.twig' with {
+    'title': 'Behandlungsstatus',
+    'headerIcon': 'bi-shield-check',
+    'class': 'mb-4'
+} %}
+    {% block card_body %}
         <div class="row">
             {% set treatments = {
                 'mitigate': { label: 'Mindern', icon: 'bi-shield-check', color: 'success' },
@@ -173,15 +173,16 @@
                 </div>
             {% endfor %}
         </div>
-    </div>
-</div>
+    {% endblock %}
+{% endembed %}
 
 {# Risk Filters #}
-<div class="card mb-4">
-    <div class="card-header">
-        <h3><i class="bi bi-funnel" aria-hidden="true"></i> Filteroptionen</h3>
-    </div>
-    <div class="card-body">
+{% embed '_components/_card.html.twig' with {
+    'title': 'Filteroptionen',
+    'headerIcon': 'bi-funnel',
+    'class': 'mb-4'
+} %}
+    {% block card_body %}
         <form method="get" action="{{ path('app_risk_index') }}" class="row g-3">
             <div class="col-md-3">
                 <label for="filter-level" class="form-label">Risikolevel</label>
@@ -229,8 +230,8 @@
                 </a>
             </div>
         </form>
-    </div>
-</div>
+    {% endblock %}
+{% endembed %}
 
 {# Risks Table or Empty State #}
 {% if risks|length == 0 %}
