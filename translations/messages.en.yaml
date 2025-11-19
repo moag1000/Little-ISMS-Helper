@@ -795,6 +795,38 @@ risk:
     reputational: Reputational Risks
     security: Information Security Risks
 
+  # Risk Assessment Guidance (Priority 2.3)
+  guidance:
+    title: 'Assessment Guide'
+    intro: 'Use these tables as a reference for assessing likelihood and impact.'
+    scale: 'Rating'
+    description: 'Description'
+    probability_title: 'Likelihood of Occurrence'
+    impact_title: 'Impact Severity'
+    tip: 'Tip: Consider both financial and non-financial impacts (reputation, business interruption, legal consequences) when assessing.'
+    probability:
+      very_unlikely: 'Very Unlikely'
+      very_unlikely_desc: '< 5% probability within 5 years. Event is theoretically possible but extremely rare.'
+      unlikely: 'Unlikely'
+      unlikely_desc: '5-25% probability within 5 years. Event could occur but is rare.'
+      possible: 'Possible'
+      possible_desc: '25-50% probability within 5 years. Event occurs occasionally.'
+      likely: 'Likely'
+      likely_desc: '50-75% probability within 5 years. Event occurs regularly.'
+      very_likely: 'Very Likely'
+      very_likely_desc: '> 75% probability within 5 years. Event occurs frequently or almost certainly.'
+    impact:
+      negligible: 'Negligible'
+      negligible_desc: '< €5,000 damage, no business interruption, minimal reputational damage.'
+      minor: 'Minor'
+      minor_desc: '€5,000-25,000 damage, < 1 day interruption, limited reputational damage.'
+      moderate: 'Moderate'
+      moderate_desc: '€25,000-100,000 damage, 1-3 days interruption, moderate reputational damage.'
+      major: 'Major'
+      major_desc: '€100,000-500,000 damage, > 3 days interruption, significant reputational damage.'
+      catastrophic: 'Catastrophic'
+      catastrophic_desc: '> €500,000 damage, existential threat, severe reputational damage, possible legal consequences.'
+
   # Sections
   section:
     basic_info: Basic Information
