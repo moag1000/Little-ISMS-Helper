@@ -24,7 +24,7 @@
             <div class="card">
                 <div class="card-header bg-white">
                     <h5 class="card-title mb-0">
-                        <i class="bi bi-building text-primary"></i>
+                        <i class="bi bi-building text-primary" aria-hidden="true"></i>
                         {% if isEdit %}
                             {{ 'tenant.form.edit_title'|trans }}
                         {% else %}
@@ -140,10 +140,10 @@
                         <div class="d-flex justify-content-between">
                             <a href="{% if isEdit %}{{ path('tenant_management_show', {id: tenant.id}) }}{% else %}{{ path('tenant_management_index') }}{% endif %}"
                                class="btn btn-secondary">
-                                <i class="bi bi-x-circle"></i> {{ 'common.cancel'|trans }}
+                                <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'common.cancel'|trans }}
                             </a>
                             <button type="submit" class="btn btn-primary">
-                                <i class="bi bi-save"></i>
+                                <i class="bi bi-save" aria-hidden="true"></i>
                                 {% if isEdit %}
                                     {{ 'common.save'|trans }}
                                 {% else %}

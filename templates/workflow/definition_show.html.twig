@@ -14,7 +14,7 @@
                 </ol>
             </nav>
             <h1>
-                <i class="bi bi-diagram-3"></i> {{ workflow.name }}
+                <i class="bi bi-diagram-3" aria-hidden="true"></i> {{ workflow.name }}
                 {% if workflow.isActive %}
                     <span class="badge bg-success">{{ 'workflow.status.active'|trans }}</span>
                 {% else %}
@@ -24,15 +24,15 @@
         </div>
         <div>
             <a href="{{ path('app_workflow_definition_builder', {id: workflow.id}) }}" class="btn btn-success">
-                <i class="bi bi-diagram-3"></i> {{ 'workflow.action.builder'|trans }}
+                <i class="bi bi-diagram-3" aria-hidden="true"></i> {{ 'workflow.action.builder'|trans }}
             </a>
             <a href="{{ path('app_workflow_definition_edit', {id: workflow.id}) }}" class="btn btn-primary">
-                <i class="bi bi-pencil"></i> {{ 'workflow.action.edit'|trans }}
+                <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'workflow.action.edit'|trans }}
             </a>
             <form method="post" action="{{ path('app_workflow_definition_toggle', {id: workflow.id}) }}" class="d-inline">
                 <input type="hidden" name="_token" value="{{ csrf_token('toggle' ~ workflow.id) }}">
                 <button type="submit" class="btn btn-{{ workflow.isActive ? 'warning' : 'success' }}">
-                    <i class="bi bi-{{ workflow.isActive ? 'pause-circle' : 'play-circle' }}"></i>
+                    <i class="bi bi-{{ workflow.isActive ? 'pause-circle' : 'play-circle' }}" aria-hidden="true"></i>
                     {{ workflow.isActive ? 'workflow.action.deactivate'|trans : 'workflow.action.activate'|trans }}
                 </button>
             </form>
@@ -45,7 +45,7 @@
             <div class="card mb-4">
                 <div class="card-header">
                     <h5 class="mb-0">
-                        <i class="bi bi-info-circle"></i> {{ 'workflow.section.information'|trans }}
+                        <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'workflow.section.information'|trans }}
                     </h5>
                 </div>
                 <div class="card-body">
@@ -85,7 +85,7 @@
             <div class="card mb-4">
                 <div class="card-header">
                     <h5 class="mb-0">
-                        <i class="bi bi-list-check"></i> {{ 'workflow.section.steps'|trans }} ({{ workflow.steps|length }})
+                        <i class="bi bi-list-check" aria-hidden="true"></i> {{ 'workflow.section.steps'|trans }} ({{ workflow.steps|length }})
                     </h5>
                 </div>
                 <div class="card-body">
@@ -103,7 +103,7 @@
                                                 <p class="mb-1 text-muted small">{{ step.description }}</p>
                                             {% endif %}
                                             <small class="text-muted">
-                                                <i class="bi bi-person"></i> {{ step.approverRole ?: '—' }}
+                                                <i class="bi bi-person" aria-hidden="true"></i> {{ step.approverRole ?: '—' }}
                                             </small>
                                         </div>
                                         <div>
@@ -120,7 +120,7 @@
                         </div>
                     {% else %}
                         <p class="text-muted text-center py-4">
-                            <i class="bi bi-info-circle"></i> {{ 'workflow.message.no_steps'|trans }}
+                            <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'workflow.message.no_steps'|trans }}
                         </p>
                     {% endif %}
                 </div>
@@ -130,7 +130,7 @@
             <div class="card">
                 <div class="card-header">
                     <h5 class="mb-0">
-                        <i class="bi bi-clock-history"></i> {{ 'workflow.section.recent_instances'|trans }}
+                        <i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'workflow.section.recent_instances'|trans }}
                     </h5>
                 </div>
                 <div class="card-body">
@@ -169,7 +169,7 @@
                                             <td>{{ instance.createdAt|date('d.m.Y H:i') }}</td>
                                             <td>
                                                 <a href="{{ path('app_workflow_instance_show', {id: instance.id}) }}" class="btn btn-sm btn-outline-primary">
-                                                    <i class="bi bi-eye"></i>
+                                                    <i class="bi bi-eye" aria-hidden="true"></i>
                                                 </a>
                                             </td>
                                         </tr>
@@ -179,7 +179,7 @@
                         </div>
                     {% else %}
                         <p class="text-muted text-center py-4">
-                            <i class="bi bi-info-circle"></i> {{ 'workflow.message.no_instances'|trans }}
+                            <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'workflow.message.no_instances'|trans }}
                         </p>
                     {% endif %}
                 </div>
@@ -191,18 +191,18 @@
             <div class="card mb-4">
                 <div class="card-header bg-primary text-white">
                     <h6 class="mb-0">
-                        <i class="bi bi-lightning"></i> {{ 'workflow.section.actions'|trans }}
+                        <i class="bi bi-lightning" aria-hidden="true"></i> {{ 'workflow.section.actions'|trans }}
                     </h6>
                 </div>
                 <div class="card-body">
                     <div class="d-grid gap-2">
                         <a href="{{ path('app_workflow_definition_edit', {id: workflow.id}) }}" class="btn btn-primary">
-                            <i class="bi bi-pencil"></i> {{ 'workflow.action.edit'|trans }}
+                            <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'workflow.action.edit'|trans }}
                         </a>
                         <form method="post" action="{{ path('app_workflow_definition_toggle', {id: workflow.id}) }}">
                             <input type="hidden" name="_token" value="{{ csrf_token('toggle' ~ workflow.id) }}">
                             <button type="submit" class="btn btn-{{ workflow.isActive ? 'warning' : 'success' }} w-100">
-                                <i class="bi bi-{{ workflow.isActive ? 'pause-circle' : 'play-circle' }}"></i>
+                                <i class="bi bi-{{ workflow.isActive ? 'pause-circle' : 'play-circle' }}" aria-hidden="true"></i>
                                 {{ workflow.isActive ? 'workflow.action.deactivate'|trans : 'workflow.action.activate'|trans }}
                             </button>
                         </form>
@@ -211,7 +211,7 @@
                               onsubmit="return confirm('{{ 'workflow.confirm.delete'|trans }}')">
                             <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ workflow.id) }}">
                             <button type="submit" class="btn btn-danger w-100">
-                                <i class="bi bi-trash"></i> {{ 'workflow.action.delete'|trans }}
+                                <i class="bi bi-trash" aria-hidden="true"></i> {{ 'workflow.action.delete'|trans }}
                             </button>
                         </form>
                     </div>
@@ -222,7 +222,7 @@
             <div class="card">
                 <div class="card-header bg-info text-white">
                     <h6 class="mb-0">
-                        <i class="bi bi-bar-chart"></i> {{ 'workflow.section.statistics'|trans }}
+                        <i class="bi bi-bar-chart" aria-hidden="true"></i> {{ 'workflow.section.statistics'|trans }}
                     </h6>
                 </div>
                 <div class="card-body">

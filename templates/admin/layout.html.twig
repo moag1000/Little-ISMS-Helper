@@ -250,7 +250,7 @@
                         <li>
                             <a href="{{ path('admin_dashboard') }}"
                                class="{% if app.request.get('_route') == 'admin_dashboard' %}active{% endif %}">
-                                <i class="bi bi-speedometer2"></i> {{ 'admin.nav.dashboard'|trans }}
+                                <i class="bi bi-speedometer2" aria-hidden="true"></i> {{ 'admin.nav.dashboard'|trans }}
                             </a>
                         </li>
                     </ul>
@@ -263,45 +263,45 @@
                         <li>
                             <a href="{{ path('tenant_management_index') }}"
                                class="{% if app.request.get('_route') starts with 'tenant_management_' and app.request.get('_route') != 'tenant_management_corporate_structure' %}active{% endif %}">
-                                <i class="bi bi-building"></i> {{ 'admin.nav.tenants'|trans }}
+                                <i class="bi bi-building" aria-hidden="true"></i> {{ 'admin.nav.tenants'|trans }}
                             </a>
                         </li>
                         {% if is_multi_tenant_environment %}
                             <li>
                                 <a href="{{ path('tenant_management_corporate_structure') }}"
                                    class="{% if app.request.get('_route') == 'tenant_management_corporate_structure' %}active{% endif %}">
-                                    <i class="bi bi-diagram-3"></i> {{ 'admin.nav.corporate_structure'|trans }}
+                                    <i class="bi bi-diagram-3" aria-hidden="true"></i> {{ 'admin.nav.corporate_structure'|trans }}
                                 </a>
                             </li>
                         {% endif %}
                         <li>
                             <a href="{{ path('user_management_index') }}"
                                class="{% if app.request.get('_route') starts with 'user_management_' %}active{% endif %}">
-                                <i class="bi bi-people"></i> {{ 'admin.nav.users'|trans }}
+                                <i class="bi bi-people" aria-hidden="true"></i> {{ 'admin.nav.users'|trans }}
                             </a>
                         </li>
                         <li>
                             <a href="{{ path('role_management_index') }}"
                                class="{% if app.request.get('_route') starts with 'role_management_' %}active{% endif %}">
-                                <i class="bi bi-shield-lock"></i> {{ 'admin.nav.roles'|trans }}
+                                <i class="bi bi-shield-lock" aria-hidden="true"></i> {{ 'admin.nav.roles'|trans }}
                             </a>
                         </li>
                         <li>
                             <a href="{{ path('permission_index') }}"
                                class="{% if app.request.get('_route') starts with 'permission_' %}active{% endif %}">
-                                <i class="bi bi-key"></i> {{ 'admin.nav.permissions'|trans }}
+                                <i class="bi bi-key" aria-hidden="true"></i> {{ 'admin.nav.permissions'|trans }}
                             </a>
                         </li>
                         <li>
                             <a href="{{ path('session_index') }}"
                                class="{% if app.request.get('_route') starts with 'session_' %}active{% endif %}">
-                                <i class="bi bi-clock-history"></i> {{ 'admin.nav.sessions'|trans }}
+                                <i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'admin.nav.sessions'|trans }}
                             </a>
                         </li>
                         <li>
                             <a href="{{ path('admin_mfa_index') }}"
                                class="{% if app.request.get('_route') starts with 'admin_mfa_' %}active{% endif %}">
-                                <i class="bi bi-shield-check"></i> {{ 'admin.nav.mfa'|trans }}
+                                <i class="bi bi-shield-check" aria-hidden="true"></i> {{ 'admin.nav.mfa'|trans }}
                             </a>
                         </li>
                     </ul>
@@ -314,7 +314,7 @@
                         <li>
                             <a href="{{ path('admin_settings_index') }}"
                                class="{% if app.request.get('_route') starts with 'admin_settings_' %}active{% endif %}">
-                                <i class="bi bi-gear"></i> {{ 'admin.nav.settings'|trans }}
+                                <i class="bi bi-gear" aria-hidden="true"></i> {{ 'admin.nav.settings'|trans }}
                             </a>
                         </li>
                     </ul>
@@ -327,13 +327,13 @@
                         <li>
                             <a href="{{ path('admin_modules_index') }}"
                                class="{% if app.request.get('_route') starts with 'admin_modules_' %}active{% endif %}">
-                                <i class="bi bi-puzzle"></i> {{ 'admin.nav.module_management'|trans }}
+                                <i class="bi bi-puzzle" aria-hidden="true"></i> {{ 'admin.nav.module_management'|trans }}
                             </a>
                         </li>
                         <li>
                             <a href="{{ path('admin_compliance_index') }}"
                                class="{% if app.request.get('_route') starts with 'admin_compliance_' %}active{% endif %}">
-                                <i class="bi bi-check-circle"></i> {{ 'admin.nav.compliance_management'|trans }}
+                                <i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'admin.nav.compliance_management'|trans }}
                             </a>
                         </li>
                     </ul>
@@ -346,13 +346,13 @@
                         <li>
                             <a href="{{ path('monitoring_health') }}"
                                class="{% if app.request.get('_route') starts with 'monitoring_' %}active{% endif %}">
-                                <i class="bi bi-heart-pulse"></i> {{ 'admin.nav.system_health'|trans }}
+                                <i class="bi bi-heart-pulse" aria-hidden="true"></i> {{ 'admin.nav.system_health'|trans }}
                             </a>
                         </li>
                         <li>
                             <a href="{{ path('app_audit_log_index') }}"
                                class="{% if app.request.get('_route') starts with 'app_audit_log_' %}active{% endif %}">
-                                <i class="bi bi-journal-text"></i> {{ 'admin.nav.audit_log'|trans }}
+                                <i class="bi bi-journal-text" aria-hidden="true"></i> {{ 'admin.nav.audit_log'|trans }}
                             </a>
                         </li>
                     </ul>
@@ -365,25 +365,25 @@
                         <li>
                             <a href="{{ path('data_backup_index') }}"
                                class="{% if app.request.get('_route') starts with 'data_backup' %}active{% endif %}">
-                                <i class="bi bi-hdd"></i> {{ 'admin.nav.backup'|trans }}
+                                <i class="bi bi-hdd" aria-hidden="true"></i> {{ 'admin.nav.backup'|trans }}
                             </a>
                         </li>
                         <li>
                             <a href="{{ path('data_export_index') }}"
                                class="{% if app.request.get('_route') starts with 'data_export' %}active{% endif %}">
-                                <i class="bi bi-download"></i> {{ 'admin.nav.export'|trans }}
+                                <i class="bi bi-download" aria-hidden="true"></i> {{ 'admin.nav.export'|trans }}
                             </a>
                         </li>
                         <li>
                             <a href="{{ path('data_import_index') }}"
                                class="{% if app.request.get('_route') starts with 'data_import' %}active{% endif %}">
-                                <i class="bi bi-upload"></i> {{ 'admin.nav.import'|trans }}
+                                <i class="bi bi-upload" aria-hidden="true"></i> {{ 'admin.nav.import'|trans }}
                             </a>
                         </li>
                         <li>
                             <a href="{{ path('admin_data_repair_index') }}"
                                class="{% if app.request.get('_route') starts with 'admin_data_repair' %}active{% endif %}">
-                                <i class="bi bi-tools"></i> {{ 'admin.nav.data_repair'|trans }}
+                                <i class="bi bi-tools" aria-hidden="true"></i> {{ 'admin.nav.data_repair'|trans }}
                             </a>
                         </li>
                     </ul>
@@ -396,7 +396,7 @@
                         <li>
                             <a href="{{ path('admin_licensing_index') }}"
                                class="{% if app.request.get('_route') starts with 'admin_licensing' %}active{% endif %}">
-                                <i class="bi bi-file-text"></i> {{ 'admin.nav.license_management'|trans }}
+                                <i class="bi bi-file-text" aria-hidden="true"></i> {{ 'admin.nav.license_management'|trans }}
                             </a>
                         </li>
                     </ul>
@@ -408,7 +408,7 @@
                     <ul>
                         <li>
                             <a href="{{ path('app_dashboard') }}">
-                                <i class="bi bi-arrow-left"></i> {{ 'admin.nav.back_to_app'|trans }}
+                                <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'admin.nav.back_to_app'|trans }}
                             </a>
                         </li>
                     </ul>

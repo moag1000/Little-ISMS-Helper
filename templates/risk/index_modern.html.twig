@@ -31,7 +31,7 @@
     <div class="card-body py-2">
         <form method="get" action="{{ path('app_risk_index') }}" class="d-flex align-items-center gap-2">
             <label for="view-filter" class="mb-0 fw-bold">
-                <i class="bi bi-eye"></i> {{ 'common.view'|trans }}:
+                <i class="bi bi-eye" aria-hidden="true"></i> {{ 'common.view'|trans }}:
             </label>
             <select class="form-select form-select-sm" style="width: auto;" id="view-filter" name="view" onchange="this.form.submit()">
                 <option value="own" {{ inheritanceInfo.currentView == 'own' ? 'selected' : '' }}>
@@ -100,9 +100,9 @@
 {# Risk Matrix Overview #}
 <div class="card mb-4">
     <div class="card-header d-flex justify-content-between align-items-center">
-        <h5 class="mb-0"><i class="bi bi-grid-3x3"></i> Risikomatrix-Übersicht</h5>
+        <h5 class="mb-0"><i class="bi bi-grid-3x3" aria-hidden="true"></i> Risikomatrix-Übersicht</h5>
         <a href="{{ path('app_risk_matrix') }}" class="btn btn-sm btn-outline-primary">
-            Vollständige Matrix anzeigen <i class="bi bi-arrow-right"></i>
+            Vollständige Matrix anzeigen <i class="bi bi-arrow-right" aria-hidden="true"></i>
         </a>
     </div>
     <div class="card-body">
@@ -145,7 +145,7 @@
 {# Treatment Status #}
 <div class="card mb-4">
     <div class="card-header">
-        <h5 class="mb-0"><i class="bi bi-shield-check"></i> Behandlungsstatus</h5>
+        <h5 class="mb-0"><i class="bi bi-shield-check" aria-hidden="true"></i> Behandlungsstatus</h5>
     </div>
     <div class="card-body">
         <div class="row">
@@ -179,7 +179,7 @@
 {# Risk Filters #}
 <div class="card mb-4">
     <div class="card-header">
-        <h5><i class="bi bi-funnel"></i> Filteroptionen</h5>
+        <h5><i class="bi bi-funnel" aria-hidden="true"></i> Filteroptionen</h5>
     </div>
     <div class="card-body">
         <form method="get" action="{{ path('app_risk_index') }}" class="row g-3">
@@ -222,10 +222,10 @@
             </div>
             <div class="col-12">
                 <button type="submit" class="btn btn-primary">
-                    <i class="bi bi-search"></i> Filtern
+                    <i class="bi bi-search" aria-hidden="true"></i> Filtern
                 </button>
                 <a href="{{ path('app_risk_index') }}" class="btn btn-secondary">
-                    <i class="bi bi-x-circle"></i> Zurücksetzen
+                    <i class="bi bi-x-circle" aria-hidden="true"></i> Zurücksetzen
                 </a>
             </div>
         </form>
@@ -243,7 +243,7 @@
 {% else %}
 <div class="card" data-controller="bulk-actions" data-bulk-actions-endpoint-value="/risk">
     <div class="card-header d-flex justify-content-between align-items-center">
-        <h5 class="mb-0"><i class="bi bi-list"></i> Alle Risiken ({{ risks|length }})</h5>
+        <h5 class="mb-0"><i class="bi bi-list" aria-hidden="true"></i> Alle Risiken ({{ risks|length }})</h5>
         <div class="d-flex gap-2">
             <select class="form-select form-select-sm w-150px" id="risk-filter">
                 <option value="">Alle Risiken</option>
@@ -322,7 +322,7 @@
                         {% if residual < riskScore %}
                             <span class="risk-score risk-score-improved">
                                 {{ residual }}
-                                <i class="bi bi-arrow-down text-success"></i>
+                                <i class="bi bi-arrow-down text-success" aria-hidden="true"></i>
                             </span>
                         {% else %}
                             <span class="risk-score">{{ residual }}</span>
@@ -350,14 +350,14 @@
                                class="btn btn-outline-primary"
                                data-turbo-action="advance"
                                title="Anzeigen">
-                                <i class="bi bi-eye"></i>
+                                <i class="bi bi-eye" aria-hidden="true"></i>
                             </a>
                             {% if is_granted('ROLE_USER') %}
                             <a href="{{ path('app_risk_edit', {id: risk.id}) }}"
                                class="btn btn-outline-secondary"
                                data-turbo-action="advance"
                                title="Bearbeiten">
-                                <i class="bi bi-pencil"></i>
+                                <i class="bi bi-pencil" aria-hidden="true"></i>
                             </a>
                             {% endif %}
                         </div>

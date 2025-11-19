@@ -8,7 +8,7 @@
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 <a href="{{ path('app_management_review_index') }}" data-turbo-action="advance">
-                    <i class="bi bi-clipboard2-check"></i> {{ 'management_review.title'|trans }}
+                    <i class="bi bi-clipboard2-check" aria-hidden="true"></i> {{ 'management_review.title'|trans }}
                 </a>
             </li>
             <li class="breadcrumb-item active" aria-current="page">{{ review.title }}</li>
@@ -21,7 +21,7 @@
             <div class="card shadow mb-4">
                 <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
                     <h4 class="mb-0">
-                        <i class="bi bi-clipboard2-check"></i> {{ review.title }}
+                        <i class="bi bi-clipboard2-check" aria-hidden="true"></i> {{ review.title }}
                     </h4>
                     {% set statusClass = {
                         'planned': 'warning',
@@ -37,13 +37,13 @@
                     <div class="row mb-4">
                         <div class="col-md-6">
                             <h6 class="text-muted mb-2">
-                                <i class="bi bi-calendar-event"></i> {{ 'management_review.review_date'|trans }}
+                                <i class="bi bi-calendar-event" aria-hidden="true"></i> {{ 'management_review.review_date'|trans }}
                             </h6>
                             <p class="fs-5">{{ review.reviewDate|date('d.m.Y') }}</p>
                         </div>
                         <div class="col-md-6">
                             <h6 class="text-muted mb-2">
-                                <i class="bi bi-people"></i> {{ 'management_review.participants'|trans }}
+                                <i class="bi bi-people" aria-hidden="true"></i> {{ 'management_review.participants'|trans }}
                             </h6>
                             <p>{{ review.participants ?? '-' }}</p>
                         </div>
@@ -55,7 +55,7 @@
             <div class="card shadow mb-4">
                 <div class="card-header bg-light">
                     <h5 class="mb-0">
-                        <i class="bi bi-inbox"></i> {{ 'management_review.section.inputs'|trans }}
+                        <i class="bi bi-inbox" aria-hidden="true"></i> {{ 'management_review.section.inputs'|trans }}
                     </h5>
                 </div>
                 <div class="card-body">
@@ -93,7 +93,7 @@
             <div class="card shadow mb-4">
                 <div class="card-header bg-light">
                     <h5 class="mb-0">
-                        <i class="bi bi-arrow-clockwise"></i> {{ 'management_review.section.followup'|trans }}
+                        <i class="bi bi-arrow-clockwise" aria-hidden="true"></i> {{ 'management_review.section.followup'|trans }}
                     </h5>
                 </div>
                 <div class="card-body">
@@ -124,7 +124,7 @@
             <div class="card shadow mb-4 border-success">
                 <div class="card-header bg-success text-white">
                     <h5 class="mb-0">
-                        <i class="bi bi-send"></i> {{ 'management_review.section.outputs'|trans }}
+                        <i class="bi bi-send" aria-hidden="true"></i> {{ 'management_review.section.outputs'|trans }}
                     </h5>
                 </div>
                 <div class="card-body">
@@ -146,7 +146,7 @@
                     <div class="mb-3">
                         <h6 class="text-muted">{{ 'management_review.decisions'|trans }}</h6>
                         <div class="alert alert-warning">
-                            <strong><i class="bi bi-gavel"></i> {{ 'management_review.management_decisions'|trans }}</strong>
+                            <strong><i class="bi bi-gavel" aria-hidden="true"></i> {{ 'management_review.management_decisions'|trans }}</strong>
                             <p class="mb-0 mt-2">{{ review.decisions|nl2br }}</p>
                         </div>
                     </div>
@@ -156,7 +156,7 @@
                     <div class="mb-0">
                         <h6 class="text-muted">{{ 'management_review.action_items'|trans }}</h6>
                         <div class="alert alert-info">
-                            <strong><i class="bi bi-list-check"></i> {{ 'management_review.action_items_label'|trans }}</strong>
+                            <strong><i class="bi bi-list-check" aria-hidden="true"></i> {{ 'management_review.action_items_label'|trans }}</strong>
                             <p class="mb-0 mt-2">{{ review.actionItems|nl2br }}</p>
                         </div>
                     </div>
@@ -169,7 +169,7 @@
             {# Action Buttons #}
             <div class="card shadow mb-4">
                 <div class="card-header bg-light">
-                    <h5 class="mb-0"><i class="bi bi-tools"></i> {{ 'common.actions'|trans }}</h5>
+                    <h5 class="mb-0"><i class="bi bi-tools" aria-hidden="true"></i> {{ 'common.actions'|trans }}</h5>
                 </div>
                 <div class="card-body">
                     <div class="d-grid gap-2">
@@ -177,14 +177,14 @@
                         <a href="{{ path('app_management_review_edit', {id: review.id}) }}"
                            class="btn btn-primary"
                            data-turbo-action="advance">
-                            <i class="bi bi-pencil"></i> {{ 'common.edit'|trans }}
+                            <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'common.edit'|trans }}
                         </a>
                         {% endif %}
 
                         <a href="{{ path('app_management_review_index') }}"
                            class="btn btn-outline-secondary"
                            data-turbo-action="advance">
-                            <i class="bi bi-arrow-left"></i> {{ 'common.back_to_list'|trans }}
+                            <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back_to_list'|trans }}
                         </a>
 
                         {% if is_granted('ROLE_ADMIN') %}
@@ -193,7 +193,7 @@
                                 class="btn btn-outline-danger"
                                 data-bs-toggle="modal"
                                 data-bs-target="#deleteModal">
-                            <i class="bi bi-trash"></i> {{ 'common.delete'|trans }}
+                            <i class="bi bi-trash" aria-hidden="true"></i> {{ 'common.delete'|trans }}
                         </button>
                         {% endif %}
                     </div>
@@ -203,7 +203,7 @@
             {# ISO 27001 Clause Reference #}
             <div class="card shadow mb-4 border-info">
                 <div class="card-header bg-info text-white">
-                    <h5 class="mb-0"><i class="bi bi-shield-check"></i> ISO 27001:2022</h5>
+                    <h5 class="mb-0"><i class="bi bi-shield-check" aria-hidden="true"></i> ISO 27001:2022</h5>
                 </div>
                 <div class="card-body">
                     <h6 class="fw-bold">{{ 'management_review.clause_93'|trans }}</h6>
@@ -231,7 +231,7 @@
             {# Metadata #}
             <div class="card shadow mb-4">
                 <div class="card-header bg-light">
-                    <h5 class="mb-0"><i class="bi bi-info-circle"></i> {{ 'common.metadata'|trans }}</h5>
+                    <h5 class="mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'common.metadata'|trans }}</h5>
                 </div>
                 <div class="card-body">
                     <dl class="row mb-0 small">
@@ -257,7 +257,7 @@
         <div class="modal-content">
             <div class="modal-header bg-danger text-white">
                 <h5 class="modal-title" id="deleteModalLabel">
-                    <i class="bi bi-exclamation-triangle"></i> {{ 'management_review.confirm_delete'|trans }}
+                    <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'management_review.confirm_delete'|trans }}
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -272,7 +272,7 @@
                 <form method="post" action="{{ path('app_management_review_delete', {id: review.id}) }}" style="display: inline;">
                     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ review.id) }}">
                     <button type="submit" class="btn btn-danger">
-                        <i class="bi bi-trash"></i> {{ 'common.delete'|trans }}
+                        <i class="bi bi-trash" aria-hidden="true"></i> {{ 'common.delete'|trans }}
                     </button>
                 </form>
             </div>

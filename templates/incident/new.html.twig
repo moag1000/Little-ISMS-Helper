@@ -10,7 +10,7 @@
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
                         <a href="{{ path('app_incident_index') }}" data-turbo-action="advance">
-                            <i class="bi bi-bug"></i> {{ 'nav.incidents'|trans }}
+                            <i class="bi bi-bug" aria-hidden="true"></i> {{ 'nav.incidents'|trans }}
                         </a>
                     </li>
                     <li class="breadcrumb-item active" aria-current="page">{{ 'incident.new'|trans }}</li>
@@ -18,16 +18,16 @@
             </nav>
 
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <h1 class="h3 mb-0"><i class="bi bi-plus-circle"></i> {{ 'incident.new'|trans }}</h1>
+                <h1 class="h3 mb-0"><i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'incident.new'|trans }}</h1>
                 <a href="{{ path('app_incident_index') }}" class="btn btn-outline-secondary" data-turbo-action="advance">
-                    <i class="bi bi-arrow-left"></i> {{ 'common.back'|trans }}
+                    <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans }}
                 </a>
             </div>
 
             {# NIS2 Reporting Alert Banner #}
             <div id="nis2-alert" class="alert alert-warning d-none mb-4" role="alert">
                 <h6 class="alert-heading">
-                    <i class="bi bi-exclamation-triangle-fill"></i> {{ 'incident.nis2_alert.title'|trans }}
+                    <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i> {{ 'incident.nis2_alert.title'|trans }}
                 </h6>
                 <p class="mb-2 small">{{ 'incident.nis2_alert.description'|trans }}</p>
                 <ul class="mb-0 small">
@@ -47,7 +47,7 @@
                     {# Basic Information Section #}
                     <div class="card mb-4">
                         <div class="card-header bg-light">
-                            <h6 class="mb-0"><i class="bi bi-info-square"></i> {{ 'incident.section.basic_info'|trans }}</h6>
+                            <h6 class="mb-0"><i class="bi bi-info-square" aria-hidden="true"></i> {{ 'incident.section.basic_info'|trans }}</h6>
                         </div>
                         <div class="card-body">
                             <div class="row">
@@ -67,7 +67,7 @@
                     {# Severity & Status Section #}
                     <div class="card mb-4">
                         <div class="card-header bg-light">
-                            <h6 class="mb-0"><i class="bi bi-thermometer-half"></i> {{ 'incident.section.severity_status'|trans }}</h6>
+                            <h6 class="mb-0"><i class="bi bi-thermometer-half" aria-hidden="true"></i> {{ 'incident.section.severity_status'|trans }}</h6>
                         </div>
                         <div class="card-body">
                             <div class="row">
@@ -84,7 +84,7 @@
                     {# Detection & Reporting Section #}
                     <div class="card mb-4">
                         <div class="card-header bg-light">
-                            <h6 class="mb-0"><i class="bi bi-calendar-event"></i> {{ 'incident.section.detection_reporting'|trans }}</h6>
+                            <h6 class="mb-0"><i class="bi bi-calendar-event" aria-hidden="true"></i> {{ 'incident.section.detection_reporting'|trans }}</h6>
                         </div>
                         <div class="card-body">
                             <div class="row">
@@ -104,7 +104,7 @@
                     {# Affected Systems & Assets Section #}
                     <div class="card mb-4">
                         <div class="card-header bg-light">
-                            <h6 class="mb-0"><i class="bi bi-hdd-network"></i> {{ 'incident.section.affected_systems'|trans }}</h6>
+                            <h6 class="mb-0"><i class="bi bi-hdd-network" aria-hidden="true"></i> {{ 'incident.section.affected_systems'|trans }}</h6>
                         </div>
                         <div class="card-body">
                             <div class="row">
@@ -121,7 +121,7 @@
                     {# Analysis Section #}
                     <div class="card mb-4">
                         <div class="card-header bg-light">
-                            <h6 class="mb-0"><i class="bi bi-search"></i> {{ 'incident.section.analysis'|trans }}</h6>
+                            <h6 class="mb-0"><i class="bi bi-search" aria-hidden="true"></i> {{ 'incident.section.analysis'|trans }}</h6>
                         </div>
                         <div class="card-body">
                             <div class="row">
@@ -146,10 +146,10 @@
                         <div class="card-header bg-warning text-dark">
                             <div class="d-flex justify-content-between align-items-center">
                                 <h6 class="mb-0">
-                                    <i class="bi bi-shield-exclamation"></i> {{ 'incident.section.nis2_reporting'|trans }}
+                                    <i class="bi bi-shield-exclamation" aria-hidden="true"></i> {{ 'incident.section.nis2_reporting'|trans }}
                                 </h6>
                                 <button type="button" class="btn btn-sm btn-outline-dark" id="hide-nis2-btn">
-                                    <i class="bi bi-eye-slash"></i> {{ 'incident.nis2_toggle.hide'|trans }}
+                                    <i class="bi bi-eye-slash" aria-hidden="true"></i> {{ 'incident.nis2_toggle.hide'|trans }}
                                 </button>
                             </div>
                             <small class="d-block mt-2">{{ 'incident.section.nis2_info'|trans }}</small>
@@ -207,7 +207,7 @@
                     {# Manual NIS2 Toggle Button #}
                     <div id="show-nis2-container" class="text-center mb-4 d-none">
                         <button type="button" class="btn btn-outline-warning" id="show-nis2-btn">
-                            <i class="bi bi-shield-exclamation"></i> {{ 'incident.nis2_toggle.show'|trans }}
+                            <i class="bi bi-shield-exclamation" aria-hidden="true"></i> {{ 'incident.nis2_toggle.show'|trans }}
                         </button>
                     </div>
 
@@ -216,10 +216,10 @@
                         <a href="{{ path('app_incident_index') }}"
                            class="btn btn-outline-secondary"
                            data-turbo-action="advance">
-                            <i class="bi bi-arrow-left"></i> {{ 'common.back'|trans }}
+                            <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans }}
                         </a>
                         <button type="submit" class="btn btn-primary btn-lg">
-                            <i class="bi bi-save"></i> {{ 'incident.create'|trans }}
+                            <i class="bi bi-save" aria-hidden="true"></i> {{ 'incident.create'|trans }}
                         </button>
                     </div>
 

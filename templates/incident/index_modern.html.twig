@@ -61,7 +61,7 @@
 {# Status Overview #}
 <div class="card mb-4">
     <div class="card-header">
-        <h5 class="mb-0"><i class="bi bi-kanban"></i> Status-Übersicht</h5>
+        <h5 class="mb-0"><i class="bi bi-kanban" aria-hidden="true"></i> Status-Übersicht</h5>
     </div>
     <div class="card-body">
         <div class="row">
@@ -98,7 +98,7 @@
 {# Severity Distribution #}
 <div class="card mb-4">
     <div class="card-header">
-        <h5 class="mb-0"><i class="bi bi-speedometer"></i> Schweregrade</h5>
+        <h5 class="mb-0"><i class="bi bi-speedometer" aria-hidden="true"></i> Schweregrade</h5>
     </div>
     <div class="card-body">
         <div class="row">
@@ -133,7 +133,7 @@
 {% else %}
 <div class="card" data-controller="bulk-actions" data-bulk-actions-endpoint-value="/incident">
     <div class="card-header d-flex justify-content-between align-items-center">
-        <h5 class="mb-0"><i class="bi bi-list"></i> Alle Vorfälle ({{ allIncidents|length }})</h5>
+        <h5 class="mb-0"><i class="bi bi-list" aria-hidden="true"></i> Alle Vorfälle ({{ allIncidents|length }})</h5>
         <div class="d-flex gap-2">
             <select class="form-select form-select-sm w-150px" id="incident-status-filter">
                 <option value="">Alle Status</option>
@@ -250,7 +250,7 @@
                     <td class="text-center">
                         {% if incident.dataBreachRelevant %}
                             <span class="badge bg-danger" title="Datenschutzverletzung">
-                                <i class="bi bi-shield-exclamation"></i> Ja
+                                <i class="bi bi-shield-exclamation" aria-hidden="true"></i> Ja
                             </span>
                         {% else %}
                             <span class="text-muted">Nein</span>
@@ -262,14 +262,14 @@
                                class="btn btn-outline-primary"
                                data-turbo-action="advance"
                                title="Anzeigen">
-                                <i class="bi bi-eye"></i>
+                                <i class="bi bi-eye" aria-hidden="true"></i>
                             </a>
                             {% if is_granted('ROLE_USER') and incident.status != 'closed' %}
                             <a href="{{ path('app_incident_edit', {id: incident.id}) }}"
                                class="btn btn-outline-secondary"
                                data-turbo-action="advance"
                                title="Bearbeiten">
-                                <i class="bi bi-pencil"></i>
+                                <i class="bi bi-pencil" aria-hidden="true"></i>
                             </a>
                             {% endif %}
                         </div>

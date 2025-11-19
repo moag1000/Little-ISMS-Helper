@@ -24,10 +24,10 @@
         </div>
         <div>
             <a href="{{ path('user_management_edit', {'id': user.id}) }}" class="btn btn-secondary">
-                <i class="bi bi-pencil"></i> Bearbeiten
+                <i class="bi bi-pencil" aria-hidden="true"></i> Bearbeiten
             </a>
             <a href="{{ path('user_management_index') }}" class="btn btn-outline-secondary">
-                <i class="bi bi-arrow-left"></i> Zurück
+                <i class="bi bi-arrow-left" aria-hidden="true"></i> Zurück
             </a>
         </div>
     </div>
@@ -37,7 +37,7 @@
         <div class="col-md-6">
             <div class="card mb-4">
                 <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0"><i class="bi bi-info-circle"></i> Grundinformationen</h5>
+                    <h5 class="mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> Grundinformationen</h5>
                 </div>
                 <div class="card-body">
                     <table class="table table-sm">
@@ -89,7 +89,7 @@
         <div class="col-md-6">
             <div class="card mb-4">
                 <div class="card-header bg-success text-white">
-                    <h5 class="mb-0"><i class="bi bi-shield-check"></i> Sicherheit & Status</h5>
+                    <h5 class="mb-0"><i class="bi bi-shield-check" aria-hidden="true"></i> Sicherheit & Status</h5>
                 </div>
                 <div class="card-body">
                     <table class="table table-sm">
@@ -99,11 +99,11 @@
                                 <td>
                                     {% if user.isActive %}
                                         <span class="badge bg-success">
-                                            <i class="bi bi-check-circle"></i> Aktiv
+                                            <i class="bi bi-check-circle" aria-hidden="true"></i> Aktiv
                                         </span>
                                     {% else %}
                                         <span class="badge bg-danger">
-                                            <i class="bi bi-x-circle"></i> Inaktiv
+                                            <i class="bi bi-x-circle" aria-hidden="true"></i> Inaktiv
                                         </span>
                                     {% endif %}
                                 </td>
@@ -113,11 +113,11 @@
                                 <td>
                                     {% if user.isVerified %}
                                         <span class="badge bg-success">
-                                            <i class="bi bi-check-circle"></i> Ja
+                                            <i class="bi bi-check-circle" aria-hidden="true"></i> Ja
                                         </span>
                                     {% else %}
                                         <span class="badge bg-warning">
-                                            <i class="bi bi-exclamation-triangle"></i> Nein
+                                            <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> Nein
                                         </span>
                                     {% endif %}
                                 </td>
@@ -126,11 +126,11 @@
                                 <th scope="row">Auth Provider:</th>
                                 <td>
                                     {% if user.authProvider == 'azure_oauth' %}
-                                        <i class="bi bi-microsoft"></i> Azure OAuth
+                                        <i class="bi bi-microsoft" aria-hidden="true"></i> Azure OAuth
                                     {% elseif user.authProvider == 'azure_saml' %}
-                                        <i class="bi bi-microsoft"></i> Azure SAML
+                                        <i class="bi bi-microsoft" aria-hidden="true"></i> Azure SAML
                                     {% else %}
-                                        <i class="bi bi-person-circle"></i> Lokal
+                                        <i class="bi bi-person-circle" aria-hidden="true"></i> Lokal
                                     {% endif %}
                                 </td>
                             </tr>
@@ -166,7 +166,7 @@
         <div class="col-md-6">
             <div class="card mb-4">
                 <div class="card-header bg-warning text-dark">
-                    <h5 class="mb-0"><i class="bi bi-shield"></i> Systemrollen</h5>
+                    <h5 class="mb-0"><i class="bi bi-shield" aria-hidden="true"></i> Systemrollen</h5>
                 </div>
                 <div class="card-body">
                     {% if user.roles|length > 0 %}
@@ -175,7 +175,7 @@
                                 <div class="list-group-item">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <span>
-                                            <i class="bi bi-shield-fill text-warning"></i>
+                                            <i class="bi bi-shield-fill text-warning" aria-hidden="true"></i>
                                             {{ role }}
                                         </span>
                                         {% if role == 'ROLE_SUPER_ADMIN' %}
@@ -205,7 +205,7 @@
         <div class="col-md-6">
             <div class="card mb-4">
                 <div class="card-header bg-info text-white">
-                    <h5 class="mb-0"><i class="bi bi-key"></i> Benutzerdefinierte Rollen</h5>
+                    <h5 class="mb-0"><i class="bi bi-key" aria-hidden="true"></i> Benutzerdefinierte Rollen</h5>
                 </div>
                 <div class="card-body">
                     {% if user.customRoles|length > 0 %}
@@ -240,7 +240,7 @@
         <div class="col-md-12">
             <div class="card mb-4">
                 <div class="card-header bg-secondary text-white">
-                    <h5 class="mb-0"><i class="bi bi-unlock"></i> Alle Berechtigungen</h5>
+                    <h5 class="mb-0"><i class="bi bi-unlock" aria-hidden="true"></i> Alle Berechtigungen</h5>
                 </div>
                 <div class="card-body">
                     {% set allPermissions = [] %}
@@ -255,7 +255,7 @@
                             {% for permission in allPermissions %}
                                 <div class="col-md-3 mb-2">
                                     <span class="badge bg-secondary w-100">
-                                        <i class="bi bi-check"></i> {{ permission.name }}
+                                        <i class="bi bi-check" aria-hidden="true"></i> {{ permission.name }}
                                     </span>
                                 </div>
                             {% endfor %}
@@ -273,31 +273,31 @@
     {# Actions #}
     <div class="card mb-4">
         <div class="card-header bg-dark text-white">
-            <h5 class="mb-0"><i class="bi bi-gear"></i> Aktionen</h5>
+            <h5 class="mb-0"><i class="bi bi-gear" aria-hidden="true"></i> Aktionen</h5>
         </div>
         <div class="card-body">
             <div class="btn-group" role="group">
                 <a href="{{ path('user_management_edit', {'id': user.id}) }}" class="btn btn-primary">
-                    <i class="bi bi-pencil"></i> Bearbeiten
+                    <i class="bi bi-pencil" aria-hidden="true"></i> Bearbeiten
                 </a>
                 {% if user.id != app.user.id %}
                     {% if user.isActive %}
                         <form method="post" action="{{ path('user_management_deactivate', {'id': user.id}) }}" style="display: inline;">
                             <input type="hidden" name="_token" value="{{ csrf_token('deactivate' ~ user.id) }}">
                             <button type="submit" class="btn btn-warning">
-                                <i class="bi bi-pause-circle"></i> Deaktivieren
+                                <i class="bi bi-pause-circle" aria-hidden="true"></i> Deaktivieren
                             </button>
                         </form>
                     {% else %}
                         <form method="post" action="{{ path('user_management_activate', {'id': user.id}) }}" style="display: inline;">
                             <input type="hidden" name="_token" value="{{ csrf_token('activate' ~ user.id) }}">
                             <button type="submit" class="btn btn-success">
-                                <i class="bi bi-play-circle"></i> Aktivieren
+                                <i class="bi bi-play-circle" aria-hidden="true"></i> Aktivieren
                             </button>
                         </form>
                     {% endif %}
                     <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
-                        <i class="bi bi-trash"></i> Löschen
+                        <i class="bi bi-trash" aria-hidden="true"></i> Löschen
                     </button>
                 {% endif %}
             </div>

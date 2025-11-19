@@ -5,12 +5,12 @@
 {% block body %}
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1><i class="bi bi-box-arrow-up"></i> Data Export</h1>
+        <h1><i class="bi bi-box-arrow-up" aria-hidden="true"></i> Data Export</h1>
     </div>
 
     {# Info Box #}
     <div class="alert alert-info mb-4">
-        <h5><i class="bi bi-info-circle"></i> About Data Export</h5>
+        <h5><i class="bi bi-info-circle" aria-hidden="true"></i> About Data Export</h5>
         <p class="mb-0">
             Export your data in JSON or CSV format. You can select specific entities to export or export all data.
             <strong>Note:</strong> Large datasets may take some time to export.
@@ -21,7 +21,7 @@
     <div class="card">
         <div class="card-header bg-primary text-white">
             <h5 class="mb-0">
-                <i class="bi bi-file-earmark-arrow-up"></i> Configure Export
+                <i class="bi bi-file-earmark-arrow-up" aria-hidden="true"></i> Configure Export
             </h5>
         </div>
         <div class="card-body">
@@ -34,12 +34,12 @@
                     <div class="btn-group" role="group">
                         <input type="radio" class="btn-check" name="format" id="format_json" value="json" checked>
                         <label class="btn btn-outline-primary" for="format_json">
-                            <i class="bi bi-filetype-json"></i> JSON
+                            <i class="bi bi-filetype-json" aria-hidden="true"></i> JSON
                         </label>
 
                         <input type="radio" class="btn-check" name="format" id="format_csv" value="csv">
                         <label class="btn btn-outline-primary" for="format_csv">
-                            <i class="bi bi-filetype-csv"></i> CSV
+                            <i class="bi bi-filetype-csv" aria-hidden="true"></i> CSV
                         </label>
                     </div>
                     <div class="form-text">
@@ -53,10 +53,10 @@
 
                     <div class="mb-2">
                         <button type="button" class="btn btn-sm btn-outline-secondary" onclick="selectAllEntities()">
-                            <i class="bi bi-check-all"></i> Select All
+                            <i class="bi bi-check-all" aria-hidden="true"></i> Select All
                         </button>
                         <button type="button" class="btn btn-sm btn-outline-secondary" onclick="deselectAllEntities()">
-                            <i class="bi bi-x"></i> Deselect All
+                            <i class="bi bi-x" aria-hidden="true"></i> Deselect All
                         </button>
                     </div>
 
@@ -82,7 +82,7 @@
                 {# Submit Button #}
                 <div class="d-grid gap-2">
                     <button type="submit" class="btn btn-primary btn-lg">
-                        <i class="bi bi-download"></i> Export Selected Entities
+                        <i class="bi bi-download" aria-hidden="true"></i> Export Selected Entities
                     </button>
                 </div>
             </form>
@@ -91,7 +91,7 @@
 
     {# Warning Box #}
     <div class="alert alert-warning mt-4">
-        <h5><i class="bi bi-exclamation-triangle"></i> Important Notes</h5>
+        <h5><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> Important Notes</h5>
         <ul class="mb-0">
             <li>Exported data includes all records from selected entities</li>
             <li>Sensitive data (passwords, tokens) are included - store exports securely</li>

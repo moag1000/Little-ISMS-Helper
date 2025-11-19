@@ -10,7 +10,7 @@
             <a href="{{ path('app_incident_edit', {id: incident.id}) }}" class="btn btn-primary">Edit</a>
             {% if incident.requiresNis2Reporting %}
                 <a href="{{ path('app_incident_nis2_report', {id: incident.id}) }}" class="btn btn-success" data-turbo="false" title="{{ 'incident.action.download_nis2_report'|trans|default('Download NIS2 Report') }}">
-                    <i class="bi bi-file-earmark-pdf"></i> NIS2 Report (PDF)
+                    <i class="bi bi-file-earmark-pdf" aria-hidden="true"></i> NIS2 Report (PDF)
                 </a>
             {% endif %}
             <a href="{{ path('app_incident_index') }}" class="btn btn-secondary">Back to List</a>
@@ -32,7 +32,7 @@
                 {% if incident.requiresNis2Reporting %}
                     {% set nis2Status = incident.nis2ComplianceStatus %}
                     <span class="badge badge-nis2-{{ nis2Status }}">
-                        <i class="bi bi-shield-check"></i>
+                        <i class="bi bi-shield-check" aria-hidden="true"></i>
                         {{ ('incident.nis2_compliance.' ~ nis2Status)|trans }}
                     </span>
                 {% endif %}
@@ -64,7 +64,7 @@
             {% if incident.requiresNis2Reporting and incident.detectedAt %}
                 <div class="detail-section nis2-timeline-section">
                     <h3>
-                        <i class="bi bi-clock-history"></i>
+                        <i class="bi bi-clock-history" aria-hidden="true"></i>
                         {{ 'incident.nis2_timeline.title'|trans }}
                     </h3>
                     <p class="text-muted">{{ 'incident.nis2_timeline.description'|trans }}</p>
@@ -74,11 +74,11 @@
                         <div class="timeline-stage {% if incident.earlyWarningReportedAt %}completed{% elseif incident.isEarlyWarningOverdue %}overdue{% else %}pending{% endif %}">
                             <div class="timeline-icon">
                                 {% if incident.earlyWarningReportedAt %}
-                                    <i class="bi bi-check-circle-fill text-success"></i>
+                                    <i class="bi bi-check-circle-fill text-success" aria-hidden="true"></i>
                                 {% elseif incident.isEarlyWarningOverdue %}
-                                    <i class="bi bi-exclamation-triangle-fill text-danger"></i>
+                                    <i class="bi bi-exclamation-triangle-fill text-danger" aria-hidden="true"></i>
                                 {% else %}
-                                    <i class="bi bi-clock-fill text-warning"></i>
+                                    <i class="bi bi-clock-fill text-warning" aria-hidden="true"></i>
                                 {% endif %}
                             </div>
                             <div class="timeline-content">
@@ -89,19 +89,19 @@
                                 </p>
                                 {% if incident.earlyWarningReportedAt %}
                                     <div class="timeline-completed">
-                                        <i class="bi bi-check-circle"></i>
+                                        <i class="bi bi-check-circle" aria-hidden="true"></i>
                                         {{ 'incident.timeline.reported_at'|trans }}:
                                         <strong>{{ incident.earlyWarningReportedAt|date('d.m.Y H:i') }}</strong>
                                     </div>
                                 {% elseif incident.isEarlyWarningOverdue %}
                                     <div class="timeline-overdue">
-                                        <i class="bi bi-exclamation-triangle"></i>
+                                        <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
                                         {{ 'incident.timeline.overdue'|trans }}
                                     </div>
                                 {% else %}
                                     <div class="timeline-countdown">
                                         {% set hoursRemaining = incident.hoursUntilEarlyWarningDeadline %}
-                                        <i class="bi bi-hourglass-split"></i>
+                                        <i class="bi bi-hourglass-split" aria-hidden="true"></i>
                                         {{ 'incident.timeline.hours_remaining'|trans({'%hours%': hoursRemaining}) }}
                                     </div>
                                 {% endif %}
@@ -112,11 +112,11 @@
                         <div class="timeline-stage {% if incident.detailedNotificationReportedAt %}completed{% elseif incident.isDetailedNotificationOverdue %}overdue{% else %}pending{% endif %}">
                             <div class="timeline-icon">
                                 {% if incident.detailedNotificationReportedAt %}
-                                    <i class="bi bi-check-circle-fill text-success"></i>
+                                    <i class="bi bi-check-circle-fill text-success" aria-hidden="true"></i>
                                 {% elseif incident.isDetailedNotificationOverdue %}
-                                    <i class="bi bi-exclamation-triangle-fill text-danger"></i>
+                                    <i class="bi bi-exclamation-triangle-fill text-danger" aria-hidden="true"></i>
                                 {% else %}
-                                    <i class="bi bi-clock-fill text-secondary"></i>
+                                    <i class="bi bi-clock-fill text-secondary" aria-hidden="true"></i>
                                 {% endif %}
                             </div>
                             <div class="timeline-content">
@@ -127,19 +127,19 @@
                                 </p>
                                 {% if incident.detailedNotificationReportedAt %}
                                     <div class="timeline-completed">
-                                        <i class="bi bi-check-circle"></i>
+                                        <i class="bi bi-check-circle" aria-hidden="true"></i>
                                         {{ 'incident.timeline.reported_at'|trans }}:
                                         <strong>{{ incident.detailedNotificationReportedAt|date('d.m.Y H:i') }}</strong>
                                     </div>
                                 {% elseif incident.isDetailedNotificationOverdue %}
                                     <div class="timeline-overdue">
-                                        <i class="bi bi-exclamation-triangle"></i>
+                                        <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
                                         {{ 'incident.timeline.overdue'|trans }}
                                     </div>
                                 {% else %}
                                     <div class="timeline-countdown">
                                         {% set hoursRemaining = incident.hoursUntilDetailedNotificationDeadline %}
-                                        <i class="bi bi-hourglass-split"></i>
+                                        <i class="bi bi-hourglass-split" aria-hidden="true"></i>
                                         {{ 'incident.timeline.hours_remaining'|trans({'%hours%': hoursRemaining}) }}
                                     </div>
                                 {% endif %}
@@ -150,11 +150,11 @@
                         <div class="timeline-stage {% if incident.finalReportSubmittedAt %}completed{% elseif incident.isFinalReportOverdue %}overdue{% else %}pending{% endif %}">
                             <div class="timeline-icon">
                                 {% if incident.finalReportSubmittedAt %}
-                                    <i class="bi bi-check-circle-fill text-success"></i>
+                                    <i class="bi bi-check-circle-fill text-success" aria-hidden="true"></i>
                                 {% elseif incident.isFinalReportOverdue %}
-                                    <i class="bi bi-exclamation-triangle-fill text-danger"></i>
+                                    <i class="bi bi-exclamation-triangle-fill text-danger" aria-hidden="true"></i>
                                 {% else %}
-                                    <i class="bi bi-clock-fill text-secondary"></i>
+                                    <i class="bi bi-clock-fill text-secondary" aria-hidden="true"></i>
                                 {% endif %}
                             </div>
                             <div class="timeline-content">
@@ -165,19 +165,19 @@
                                 </p>
                                 {% if incident.finalReportSubmittedAt %}
                                     <div class="timeline-completed">
-                                        <i class="bi bi-check-circle"></i>
+                                        <i class="bi bi-check-circle" aria-hidden="true"></i>
                                         {{ 'incident.timeline.reported_at'|trans }}:
                                         <strong>{{ incident.finalReportSubmittedAt|date('d.m.Y H:i') }}</strong>
                                     </div>
                                 {% elseif incident.isFinalReportOverdue %}
                                     <div class="timeline-overdue">
-                                        <i class="bi bi-exclamation-triangle"></i>
+                                        <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
                                         {{ 'incident.timeline.overdue'|trans }}
                                     </div>
                                 {% else %}
                                     <div class="timeline-countdown">
                                         {% set daysRemaining = incident.daysUntilFinalReportDeadline %}
-                                        <i class="bi bi-hourglass-split"></i>
+                                        <i class="bi bi-hourglass-split" aria-hidden="true"></i>
                                         {{ 'incident.timeline.days_remaining'|trans({'%days%': daysRemaining}) }}
                                     </div>
                                 {% endif %}
@@ -276,7 +276,7 @@
             {# Audit Log History #}
             {% if auditLogs is defined and auditLogs|length > 0 %}
                 <div class="detail-section">
-                    <h3><i class="bi bi-clock-history"></i> {{ 'incident.section.history'|trans|default('Incident History') }} ({{ totalAuditLogs }} {{ 'audit_log.entries'|trans|default('entries') }})</h3>
+                    <h3><i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'incident.section.history'|trans|default('Incident History') }} ({{ totalAuditLogs }} {{ 'audit_log.entries'|trans|default('entries') }})</h3>
                     <div class="audit-log-list">
                         {% for log in auditLogs %}
                         <div class="audit-log-entry">

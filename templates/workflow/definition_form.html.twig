@@ -23,7 +23,7 @@
 
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h1>
-                    <i class="bi bi-{{ is_edit ? 'pencil' : 'plus-circle' }}"></i>
+                    <i class="bi bi-{{ is_edit ? 'pencil' : 'plus-circle' }}" aria-hidden="true"></i>
                     {{ is_edit ? 'workflow.definition.edit_title'|trans : 'workflow.definition.new_title'|trans }}
                 </h1>
             </div>
@@ -31,7 +31,7 @@
             <div class="card">
                 <div class="card-header">
                     <h5 class="mb-0">
-                        <i class="bi bi-diagram-3"></i> {{ 'workflow.section.basic_information'|trans }}
+                        <i class="bi bi-diagram-3" aria-hidden="true"></i> {{ 'workflow.section.basic_information'|trans }}
                     </h5>
                 </div>
                 <div class="card-body">
@@ -70,7 +70,7 @@
                     {{ form_rest(form) }}
 
                     <div class="alert alert-info">
-                        <i class="bi bi-info-circle"></i>
+                        <i class="bi bi-info-circle" aria-hidden="true"></i>
                         <strong>{{ 'workflow.info.steps_note_title'|trans }}</strong><br>
                         {{ 'workflow.info.steps_note_text'|trans }}
                     </div>
@@ -78,10 +78,10 @@
                     <div class="d-flex justify-content-between mt-4">
                         <a href="{{ is_edit ? path('app_workflow_definition_show', {id: workflow.id}) : path('app_workflow_definitions') }}"
                            class="btn btn-secondary">
-                            <i class="bi bi-x-circle"></i> {{ 'common.cancel'|trans }}
+                            <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'common.cancel'|trans }}
                         </a>
                         <button type="submit" class="btn btn-primary">
-                            <i class="bi bi-check-circle"></i>
+                            <i class="bi bi-check-circle" aria-hidden="true"></i>
                             {{ is_edit ? 'workflow.action.update'|trans : 'workflow.action.create'|trans }}
                         </button>
                     </div>
@@ -94,7 +94,7 @@
                 <div class="card mt-4">
                     <div class="card-header bg-warning">
                         <h5 class="mb-0">
-                            <i class="bi bi-exclamation-triangle"></i> {{ 'workflow.section.danger_zone'|trans }}
+                            <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'workflow.section.danger_zone'|trans }}
                         </h5>
                     </div>
                     <div class="card-body">
@@ -103,7 +103,7 @@
                               onsubmit="return confirm('{{ 'workflow.confirm.delete'|trans }}')">
                             <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ workflow.id) }}">
                             <button type="submit" class="btn btn-danger">
-                                <i class="bi bi-trash"></i> {{ 'workflow.action.delete_definition'|trans }}
+                                <i class="bi bi-trash" aria-hidden="true"></i> {{ 'workflow.action.delete_definition'|trans }}
                             </button>
                         </form>
                     </div>

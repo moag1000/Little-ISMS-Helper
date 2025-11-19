@@ -7,7 +7,7 @@
     <nav aria-label="breadcrumb" class="mb-3">
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
-                <a href="{{ path('app_incident_index') }}"><i class="bi bi-bug"></i> {{ 'nav.incidents'|trans }}</a>
+                <a href="{{ path('app_incident_index') }}"><i class="bi bi-bug" aria-hidden="true"></i> {{ 'nav.incidents'|trans }}</a>
             </li>
             <li class="breadcrumb-item">
                 <a href="{{ path('app_incident_show', {id: incident.id}) }}">{{ incident.title }}</a>
@@ -17,8 +17,8 @@
     </nav>
 
     <div class="page-header">
-        <h1><i class="bi bi-pencil"></i> {{ 'incident.edit'|trans }}: {{ incident.title }}</h1>
-        <a href="{{ path('app_incident_show', {id: incident.id}) }}" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> {{ 'common.back'|trans }}</a>
+        <h1><i class="bi bi-pencil" aria-hidden="true"></i> {{ 'incident.edit'|trans }}: {{ incident.title }}</h1>
+        <a href="{{ path('app_incident_show', {id: incident.id}) }}" class="btn btn-secondary"><i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans }}</a>
     </div>
 
     <div class="card">
@@ -86,7 +86,7 @@
                     {{ form_errors(form.affectedSystems) }}
                 </div>
 
-                <h3><i class="bi bi-search"></i> {{ 'incident.analysis_resolution'|trans }}</h3>
+                <h3><i class="bi bi-search" aria-hidden="true"></i> {{ 'incident.analysis_resolution'|trans }}</h3>
                 <div class="form-group">
                     {{ form_label(form.rootCause) }}
                     {{ form_widget(form.rootCause) }}
@@ -112,8 +112,8 @@
                 </div>
 
                 <div class="form-actions">
-                    <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> {{ 'incident.update'|trans }}</button>
-                    <a href="{{ path('app_incident_show', {id: incident.id}) }}" class="btn btn-secondary"><i class="bi bi-x-circle"></i> {{ 'common.cancel'|trans }}</a>
+                    <button type="submit" class="btn btn-primary"><i class="bi bi-save" aria-hidden="true"></i> {{ 'incident.update'|trans }}</button>
+                    <a href="{{ path('app_incident_show', {id: incident.id}) }}" class="btn btn-secondary"><i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'common.cancel'|trans }}</a>
                 </div>
             {{ form_end(form) }}
         </div>

@@ -5,25 +5,25 @@
 {% block body %}
 <div class="page-header">
     <div>
-        <h1><i class="bi bi-clipboard-check"></i> {{ 'audit_management.title'|trans }}</h1>
+        <h1><i class="bi bi-clipboard-check" aria-hidden="true"></i> {{ 'audit_management.title'|trans }}</h1>
         <p class="text-muted">{{ 'audit_management.description'|trans }}</p>
     </div>
     <div class="button-group">
         <a href="{{ path('app_audit_new') }}" class="btn btn-primary">
-            <i class="bi bi-plus-circle"></i> {{ 'audit.new'|trans }}
+            <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'audit.new'|trans }}
         </a>
     </div>
 </div>
 
 <div class="stats-grid mb-4">
     <div class="stat-card">
-        <div class="stat-icon"><i class="bi bi-calendar-event"></i></div>
+        <div class="stat-icon"><i class="bi bi-calendar-event" aria-hidden="true"></i></div>
         <div class="stat-value">{{ upcoming|length }}</div>
         <div class="stat-label">{{ 'audit_management.planned_audits'|trans }}</div>
     </div>
 
     <div class="stat-card">
-        <div class="stat-icon"><i class="bi bi-collection"></i></div>
+        <div class="stat-icon"><i class="bi bi-collection" aria-hidden="true"></i></div>
         <div class="stat-value">{{ audits|length }}</div>
         <div class="stat-label">{{ 'audit_management.total_audits'|trans }}</div>
     </div>
@@ -32,7 +32,7 @@
 {# Filter Section #}
 <div class="card mb-4">
     <div class="card-header">
-        <h5 class="mb-0"><i class="bi bi-funnel"></i> {{ 'common.filters'|trans }}</h5>
+        <h5 class="mb-0"><i class="bi bi-funnel" aria-hidden="true"></i> {{ 'common.filters'|trans }}</h5>
     </div>
     <div class="card-body">
         <form method="get" action="{{ path('app_audit_index') }}" class="row g-3">
@@ -75,7 +75,7 @@
 
             <div class="col-md-2 d-flex align-items-end">
                 <a href="{{ path('app_audit_index') }}" class="btn btn-secondary w-100">
-                    <i class="bi bi-x-circle"></i> {{ 'common.reset'|trans }}
+                    <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'common.reset'|trans }}
                 </a>
             </div>
         </form>
@@ -85,7 +85,7 @@
 {# Audits List #}
 <div class="card">
     <div class="card-header">
-        <h5 class="mb-0"><i class="bi bi-list-check"></i> {{ 'audit_management.audits_list'|trans }} ({{ audits|length }})</h5>
+        <h5 class="mb-0"><i class="bi bi-list-check" aria-hidden="true"></i> {{ 'audit_management.audits_list'|trans }} ({{ audits|length }})</h5>
     </div>
     <div class="card-body">
         {% if audits|length > 0 %}
@@ -114,7 +114,7 @@
                                 {% if audit.auditedSubsidiaries|length > 0 %}
                                 <br>
                                 <small class="text-muted">
-                                    <i class="bi bi-building"></i> {{ audit.auditedSubsidiaries|length }} {{ 'common.subsidiaries'|trans }}
+                                    <i class="bi bi-building" aria-hidden="true"></i> {{ audit.auditedSubsidiaries|length }} {{ 'common.subsidiaries'|trans }}
                                 </small>
                                 {% endif %}
                             </td>
@@ -133,11 +133,11 @@
                             <td>{{ audit.leadAuditor }}</td>
                             <td class="text-center">
                                 <a href="{{ path('app_audit_show', {id: audit.id}) }}" class="btn btn-sm btn-outline-primary">
-                                    <i class="bi bi-eye"></i>
+                                    <i class="bi bi-eye" aria-hidden="true"></i>
                                 </a>
                                 {% if is_granted('ROLE_USER') %}
                                 <a href="{{ path('app_audit_edit', {id: audit.id}) }}" class="btn btn-sm btn-outline-secondary">
-                                    <i class="bi bi-pencil"></i>
+                                    <i class="bi bi-pencil" aria-hidden="true"></i>
                                 </a>
                                 {% endif %}
                             </td>
@@ -148,7 +148,7 @@
             </div>
         {% else %}
             <div class="alert alert-info">
-                <i class="bi bi-info-circle"></i> {{ 'audit_management.no_audits'|trans }}
+                <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'audit_management.no_audits'|trans }}
             </div>
         {% endif %}
     </div>

@@ -6,11 +6,11 @@
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1>
-            <i class="bi bi-shield-lock"></i>
+            <i class="bi bi-shield-lock" aria-hidden="true"></i>
             {{ 'mfa.title'|trans }}: {{ user.fullName }}
         </h1>
         <a href="{{ path('user_management_show', {id: user.id}) }}" class="btn btn-outline-secondary">
-            <i class="bi bi-arrow-left"></i> Zurück
+            <i class="bi bi-arrow-left" aria-hidden="true"></i> Zurück
         </a>
     </div>
 
@@ -74,7 +74,7 @@
     <div class="card">
         <div class="card-header bg-primary text-white">
             <h5 class="mb-0">
-                <i class="bi bi-key"></i> {{ 'mfa.tokens'|trans }}
+                <i class="bi bi-key" aria-hidden="true"></i> {{ 'mfa.tokens'|trans }}
             </h5>
         </div>
         <div class="card-body">
@@ -97,17 +97,17 @@
                                 <tr class="{{ not token.isActive ? 'table-secondary' : '' }}">
                                     <td>
                                         {% if token.tokenType == 'totp' %}
-                                            <i class="bi bi-phone"></i> Authenticator App
+                                            <i class="bi bi-phone" aria-hidden="true"></i> Authenticator App
                                         {% elseif token.tokenType == 'webauthn' %}
-                                            <i class="bi bi-fingerprint"></i> Security Key
+                                            <i class="bi bi-fingerprint" aria-hidden="true"></i> Security Key
                                         {% elseif token.tokenType == 'sms' %}
-                                            <i class="bi bi-chat"></i> SMS
+                                            <i class="bi bi-chat" aria-hidden="true"></i> SMS
                                         {% elseif token.tokenType == 'hardware' %}
-                                            <i class="bi bi-cpu"></i> Hardware Token
+                                            <i class="bi bi-cpu" aria-hidden="true"></i> Hardware Token
                                         {% elseif token.tokenType == 'backup' %}
-                                            <i class="bi bi-lock"></i> Backup Codes
+                                            <i class="bi bi-lock" aria-hidden="true"></i> Backup Codes
                                         {% else %}
-                                            <i class="bi bi-question-circle"></i> {{ token.tokenType }}
+                                            <i class="bi bi-question-circle" aria-hidden="true"></i> {{ token.tokenType }}
                                         {% endif %}
                                     </td>
                                     <td>
@@ -148,7 +148,7 @@
                                                 <button type="submit"
                                                         class="btn btn-sm btn-outline-danger"
                                                         onclick="return confirm('Möchten Sie diesen MFA-Token wirklich zurücksetzen?')">
-                                                    <i class="bi bi-trash"></i> {{ 'mfa.action.reset'|trans }}
+                                                    <i class="bi bi-trash" aria-hidden="true"></i> {{ 'mfa.action.reset'|trans }}
                                                 </button>
                                             </form>
                                         {% else %}
@@ -162,7 +162,7 @@
                 </div>
             {% else %}
                 <div class="alert alert-info">
-                    <i class="bi bi-info-circle"></i>
+                    <i class="bi bi-info-circle" aria-hidden="true"></i>
                     Dieser Benutzer hat noch keine MFA-Tokens registriert.
                 </div>
             {% endif %}
@@ -172,7 +172,7 @@
     {# Info Box for Super Admins #}
     {% if is_granted('ROLE_SUPER_ADMIN') %}
         <div class="alert alert-warning mt-4">
-            <h5><i class="bi bi-exclamation-triangle"></i> Administratorhinweis</h5>
+            <h5><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> Administratorhinweis</h5>
             <p class="mb-0">
                 Als Super-Administrator können Sie MFA-Tokens zurücksetzen, falls ein Benutzer den Zugriff auf sein
                 MFA-Gerät verloren hat. Dies sollte nur in Notfällen durchgeführt werden.
