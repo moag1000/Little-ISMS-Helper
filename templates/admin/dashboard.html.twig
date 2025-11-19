@@ -130,14 +130,11 @@
     <div class="row g-4">
         {# Module Statistics #}
         <div class="col-lg-8">
-            <div class="card">
-                <div class="card-header bg-white">
-                    <h3 class="card-title mb-0">
-                        <i class="bi bi-bar-chart-fill text-primary" aria-hidden="true"></i>
-                        {{ 'admin.dashboard.modules.title'|trans }}
-                    </h5>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with {
+                'title': 'admin.dashboard.modules.title',
+                'headerIcon': 'bi-bar-chart-fill text-primary'
+            } %}
+                {% block card_body %}
                     <div class="table-responsive">
                         <table class="table table-hover">
                             <thead>
@@ -248,21 +245,19 @@
                             </tbody>
                         </table>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
 
         {# Recent Activity & Quick Actions #}
         <div class="col-lg-4">
             {# Quick Actions #}
-            <div class="card mb-4">
-                <div class="card-header bg-white">
-                    <h3 class="card-title mb-0">
-                        <i class="bi bi-lightning-fill text-warning" aria-hidden="true"></i>
-                        {{ 'admin.dashboard.quick_actions.title'|trans }}
-                    </h5>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with {
+                'title': 'admin.dashboard.quick_actions.title',
+                'headerIcon': 'bi-lightning-fill text-warning',
+                'class': 'mb-4'
+            } %}
+                {% block card_body %}
                     <div class="d-grid gap-2">
                         <a href="{{ path('user_management_new') }}" class="btn btn-outline-primary">
                             <i class="bi bi-person-plus" aria-hidden="true"></i> {{ 'admin.dashboard.quick_actions.add_user'|trans }}
@@ -277,18 +272,16 @@
                             <i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'admin.dashboard.quick_actions.manage_compliance'|trans }}
                         </a>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
 
             {# Recent Activity #}
-            <div class="card">
-                <div class="card-header bg-white">
-                    <h3 class="card-title mb-0">
-                        <i class="bi bi-clock-history text-info" aria-hidden="true"></i>
-                        {{ 'admin.dashboard.activity.title'|trans }}
-                    </h5>
-                </div>
-                <div class="card-body p-0">
+            {% embed '_components/_card.html.twig' with {
+                'title': 'admin.dashboard.activity.title',
+                'headerIcon': 'bi-clock-history text-info',
+                'noPadding': true
+            } %}
+                {% block card_body %}
                     {% if recentActivity is empty %}
                         <div class="p-3 text-center text-muted">
                             <i class="bi bi-inbox fs-3" aria-hidden="true"></i>
@@ -316,13 +309,13 @@
                             {% endfor %}
                         </div>
                     {% endif %}
-                </div>
-                <div class="card-footer bg-transparent">
-                    <a href="{{ path('app_audit_log_index') }}" class="btn btn-sm btn-outline-secondary w-100">
-                        {{ 'admin.dashboard.activity.view_all'|trans }} <i class="bi bi-arrow-right ms-1" aria-hidden="true"></i>
-                    </a>
-                </div>
-            </div>
+                    <div class="p-3 bg-transparent border-top">
+                        <a href="{{ path('app_audit_log_index') }}" class="btn btn-sm btn-outline-secondary w-100">
+                            {{ 'admin.dashboard.activity.view_all'|trans }} <i class="bi bi-arrow-right ms-1" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 {% endblock %}

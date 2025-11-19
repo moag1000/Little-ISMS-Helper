@@ -30,11 +30,12 @@
 </div>
 
 {# Filter Section #}
-<div class="card mb-4">
-    <div class="card-header">
-        <h3 class="mb-0"><i class="bi bi-funnel" aria-hidden="true"></i> {{ 'common.filters'|trans }}</h3>
-    </div>
-    <div class="card-body">
+{% embed '_components/_card.html.twig' with {
+    'title': 'common.filters',
+    'headerIcon': 'bi-funnel',
+    'class': 'mb-4'
+} %}
+    {% block card_body %}
         <form method="get" action="{{ path('app_audit_index') }}" class="row g-3">
             <div class="col-md-3">
                 <label for="filter-status" class="form-label">{{ 'audit.field.status'|trans }}</label>
@@ -79,15 +80,15 @@
                 </a>
             </div>
         </form>
-    </div>
-</div>
+    {% endblock %}
+{% endembed %}
 
 {# Audits List #}
-<div class="card">
-    <div class="card-header">
-        <h3 class="mb-0"><i class="bi bi-list-check" aria-hidden="true"></i> {{ 'audit_management.audits_list'|trans }} ({{ audits|length }})</h3>
-    </div>
-    <div class="card-body">
+{% embed '_components/_card.html.twig' with {
+    'title': 'audit_management.audits_list',
+    'headerIcon': 'bi-list-check'
+} %}
+    {% block card_body %}
         {% if audits|length > 0 %}
             <div class="table-responsive">
                 <table class="table table-hover">
@@ -151,8 +152,8 @@
                 <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'audit_management.no_audits'|trans }}
             </div>
         {% endif %}
-    </div>
-</div>
+    {% endblock %}
+{% endembed %}
 
 <style>
 .stats-grid {
