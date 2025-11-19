@@ -76,85 +76,85 @@
         </div>
         <div class="card-body">
             {% if frameworks|length > 0 %}
-                <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead>
+                {% embed '_components/_table.html.twig' with {
+                    'noMargin': true
+                } %}
+                    {% block table_head %}
+                        <tr>
+                            <th scope="col">{{ 'compliance.framework.field.code'|trans }}</th>
+                            <th scope="col">{{ 'compliance.framework.field.name'|trans }}</th>
+                            <th scope="col">{{ 'compliance.framework.field.version'|trans }}</th>
+                            <th scope="col">{{ 'compliance.framework.field.industry'|trans }}</th>
+                            <th scope="col">{{ 'compliance.framework.field.mandatory'|trans }}</th>
+                            <th scope="col">{{ 'compliance.framework.field.status'|trans }}</th>
+                            <th scope="col">{{ 'compliance.framework.field.requirements'|trans }}</th>
+                            <th scope="col">{{ 'compliance.framework.field.compliance'|trans }}</th>
+                            <th scope="col">{{ 'common.actions'|trans }}</th>
+                        </tr>
+                    {% endblock %}
+                    {% block table_body %}
+                        {% for framework in frameworks %}
                             <tr>
-                                <th>{{ 'compliance.framework.field.code'|trans }}</th>
-                                <th>{{ 'compliance.framework.field.name'|trans }}</th>
-                                <th>{{ 'compliance.framework.field.version'|trans }}</th>
-                                <th>{{ 'compliance.framework.field.industry'|trans }}</th>
-                                <th>{{ 'compliance.framework.field.mandatory'|trans }}</th>
-                                <th>{{ 'compliance.framework.field.status'|trans }}</th>
-                                <th>{{ 'compliance.framework.field.requirements'|trans }}</th>
-                                <th>{{ 'compliance.framework.field.compliance'|trans }}</th>
-                                <th>{{ 'common.actions'|trans }}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for framework in frameworks %}
-                                <tr>
-                                    <td><code>{{ framework.code }}</code></td>
-                                    <td>
-                                        <a href="{{ path('app_compliance_framework_show', {id: framework.id}) }}" class="text-decoration-none fw-bold">
-                                            {{ framework.name }}
+                                <td><code>{{ framework.code }}</code></td>
+                                <td>
+                                    <a href="{{ path('app_compliance_framework_show', {id: framework.id}) }}" class="text-decoration-none fw-bold">
+                                        {{ framework.name }}
+                                    </a>
+                                </td>
+                                <td>{{ framework.version }}</td>
+                                <td>{{ framework.applicableIndustry }}</td>
+                                <td>
+                                    {% if framework.mandatory %}
+                                        <span class="badge bg-danger">{{ 'common.yes'|trans }}</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">{{ 'common.no'|trans }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if framework.active %}
+                                        <span class="badge bg-success">{{ 'common.active'|trans }}</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">{{ 'common.inactive'|trans }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <span class="badge bg-info">{{ framework.requirements|length }}</span>
+                                </td>
+                                <td>
+                                    {% set percentage = framework.compliancePercentage %}
+                                    <div class="progress" style="height: 20px;">
+                                        <div class="progress-bar {% if percentage >= 80 %}bg-success{% elseif percentage >= 50 %}bg-warning{% else %}bg-danger{% endif %}"
+                                             role="progressbar"
+                                             style="width: {{ percentage }}%"
+                                             aria-valuenow="{{ percentage }}"
+                                             aria-valuemin="0"
+                                             aria-valuemax="100">
+                                            {{ percentage|round }}%
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <a href="{{ path('app_compliance_framework_show', {id: framework.id}) }}"
+                                           class="btn btn-outline-primary" title="{{ 'common.view'|trans }}" aria-label="{{ 'common.view'|trans }}">
+                                            <i class="bi bi-eye" aria-hidden="true"></i>
                                         </a>
-                                    </td>
-                                    <td>{{ framework.version }}</td>
-                                    <td>{{ framework.applicableIndustry }}</td>
-                                    <td>
-                                        {% if framework.mandatory %}
-                                            <span class="badge bg-danger">{{ 'common.yes'|trans }}</span>
-                                        {% else %}
-                                            <span class="badge bg-secondary">{{ 'common.no'|trans }}</span>
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        {% if framework.active %}
-                                            <span class="badge bg-success">{{ 'common.active'|trans }}</span>
-                                        {% else %}
-                                            <span class="badge bg-secondary">{{ 'common.inactive'|trans }}</span>
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        <span class="badge bg-info">{{ framework.requirements|length }}</span>
-                                    </td>
-                                    <td>
-                                        {% set percentage = framework.compliancePercentage %}
-                                        <div class="progress" style="height: 20px;">
-                                            <div class="progress-bar {% if percentage >= 80 %}bg-success{% elseif percentage >= 50 %}bg-warning{% else %}bg-danger{% endif %}"
-                                                 role="progressbar"
-                                                 style="width: {{ percentage }}%"
-                                                 aria-valuenow="{{ percentage }}"
-                                                 aria-valuemin="0"
-                                                 aria-valuemax="100">
-                                                {{ percentage|round }}%
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="btn-group btn-group-sm">
-                                            <a href="{{ path('app_compliance_framework_show', {id: framework.id}) }}"
-                                               class="btn btn-outline-primary" title="{{ 'common.view'|trans }}" aria-label="{{ 'common.view'|trans }}">
-                                                <i class="bi bi-eye" aria-hidden="true"></i>
+                                        <a href="{{ path('app_compliance_framework', {id: framework.id}) }}"
+                                           class="btn btn-outline-info" title="{{ 'compliance.framework.action.dashboard'|trans }}" aria-label="{{ 'common.view'|trans }}">
+                                            <i class="bi bi-speedometer2" aria-hidden="true"></i>
+                                        </a>
+                                        {% if is_granted('ROLE_ADMIN') %}
+                                            <a href="{{ path('app_compliance_framework_edit', {id: framework.id}) }}"
+                                               class="btn btn-outline-warning" title="{{ 'common.edit'|trans }}" aria-label="{{ 'common.edit'|trans }}">
+                                                <i class="bi bi-pencil" aria-hidden="true"></i>
                                             </a>
-                                            <a href="{{ path('app_compliance_framework', {id: framework.id}) }}"
-                                               class="btn btn-outline-info" title="{{ 'compliance.framework.action.dashboard'|trans }}" aria-label="{{ 'common.view'|trans }}">
-                                                <i class="bi bi-speedometer2" aria-hidden="true"></i>
-                                            </a>
-                                            {% if is_granted('ROLE_ADMIN') %}
-                                                <a href="{{ path('app_compliance_framework_edit', {id: framework.id}) }}"
-                                                   class="btn btn-outline-warning" title="{{ 'common.edit'|trans }}" aria-label="{{ 'common.edit'|trans }}">
-                                                    <i class="bi bi-pencil" aria-hidden="true"></i>
-                                                </a>
-                                            {% endif %}
-                                        </div>
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% endblock %}
+                {% endembed %}
             {% else %}
                 <div class="text-center py-5">
                     <i class="bi bi-shield-x fs-1 text-muted" aria-hidden="true"></i>
