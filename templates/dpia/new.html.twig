@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New DPIA{% endblock %}
+
+{% block body %}
+<div class="container-fluid mt-4">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'GDPR', icon: 'bi-shield-check' },
+            { label: 'DPIA', url: path('app_dpia_index') },
+            { label: 'New DPIA' }
+        ]
+    } %}
+
+    {% include '_components/_page_header.html.twig' with {
+        title: 'New Data Protection Impact Assessment',
+        subtitle: 'Create new DPIA per Art. 35 GDPR',
+        icon: 'bi-plus-circle',
+        actions: [
+            { label: 'Cancel', url: path('app_dpia_index'), variant: 'secondary', icon: 'bi-x-lg' }
+        ]
+    } %}
+
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0"><i class="bi bi-clipboard-check"></i> DPIA Form</h5>
+        </div>
+        <div class="card-body">
+            {{ form_start(form) }}
+                {{ form_widget(form) }}
+
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-save"></i> Create DPIA
+                    </button>
+                    <a href="{{ path('app_dpia_index') }}" class="btn btn-secondary">
+                        <i class="bi bi-x-lg"></i> Cancel
+                    </a>
+                </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit DPIA - {{ dpia.referenceNumber }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid mt-4">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'GDPR', icon: 'bi-shield-check' },
+            { label: 'DPIA', url: path('app_dpia_index') },
+            { label: dpia.referenceNumber, url: path('app_dpia_show', {id: dpia.id}) },
+            { label: 'Edit' }
+        ]
+    } %}
+
+    {% include '_components/_page_header.html.twig' with {
+        title: 'Edit DPIA: ' ~ dpia.title,
+        subtitle: dpia.referenceNumber ~ ' - Version ' ~ dpia.version,
+        icon: 'bi-pencil-square',
+        actions: [
+            { label: 'Cancel', url: path('app_dpia_show', {id: dpia.id}), variant: 'secondary', icon: 'bi-x-lg' }
+        ]
+    } %}
+
+    {% if dpia.status == 'requires_revision' and dpia.rejectionReason %}
+        <div class="alert alert-warning">
+            <h6><i class="bi bi-exclamation-triangle"></i> Revision Required</h6>
+            <p class="mb-0">{{ dpia.rejectionReason }}</p>
+        </div>
+    {% endif %}
+
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0"><i class="bi bi-clipboard-check"></i> DPIA Form</h5>
+        </div>
+        <div class="card-body">
+            {{ form_start(form) }}
+                {{ form_widget(form) }}
+
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-save"></i> Save Changes
+                    </button>
+                    <a href="{{ path('app_dpia_show', {id: dpia.id}) }}" class="btn btn-secondary">
+                        <i class="bi bi-x-lg"></i> Cancel
+                    </a>
+                </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>
+{% endblock %}
