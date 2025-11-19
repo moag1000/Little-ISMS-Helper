@@ -267,49 +267,4 @@ class ComplianceFramework
     {
         return in_array($moduleKey, $this->requiredModules ?? []);
     }
-
-    /**
-     * Get count of applicable requirements
-     *
-     * @deprecated Use ComplianceRequirementRepository->getFrameworkStatistics() with tenant context instead
-     * This method uses global deprecated fields instead of tenant-specific ComplianceRequirementFulfillment
-     */
-    public function getApplicableRequirementsCount(): int
-    {
-        return $this->requirements->filter(fn($req) => $req->isApplicable())->count();
-    }
-
-    /**
-     * Get count of fulfilled requirements
-     *
-     * @deprecated Use ComplianceRequirementRepository->getFrameworkStatistics() with tenant context instead
-     * This method uses global deprecated fields instead of tenant-specific ComplianceRequirementFulfillment
-     */
-    public function getFulfilledRequirementsCount(): int
-    {
-        return $this->requirements->filter(fn($req) => $req->isApplicable() && $req->getFulfillmentPercentage() >= 100)->count();
-    }
-
-    /**
-     * Get overall compliance percentage
-     *
-     * @deprecated Use ComplianceRequirementRepository->getFrameworkStatistics() with tenant context instead
-     * This method uses global deprecated fields instead of tenant-specific ComplianceRequirementFulfillment
-     */
-    public function getCompliancePercentage(): float
-    {
-        $applicable = $this->getApplicableRequirementsCount();
-        if ($applicable === 0) {
-            return 0.0;
-        }
-
-        $totalFulfillment = 0;
-        foreach ($this->requirements as $requirement) {
-            if ($requirement->isApplicable()) {
-                $totalFulfillment += $requirement->getFulfillmentPercentage();
-            }
-        }
-
-        return round($totalFulfillment / $applicable, 2);
-    }
 }
