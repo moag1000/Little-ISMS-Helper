@@ -53,10 +53,12 @@
                             </p>
                             <p><strong>Type:</strong> <span class="badge bg-info">{{ requirement.requirementType }}</span></p>
                             <p><strong>Applicable:</strong>
-                                {% if requirement.applicable %}
+                                {% if fulfillment.applicable %}
                                     <span class="badge bg-success">Yes</span>
+                                    {% if is_inherited %}<small class="text-muted">(inherited)</small>{% endif %}
                                 {% else %}
                                     <span class="badge bg-secondary">No</span>
+                                    {% if is_inherited %}<small class="text-muted">(inherited)</small>{% endif %}
                                 {% endif %}
                             </p>
                         </div>
@@ -67,14 +69,14 @@
                     <h5>Description</h5>
                     <p class="text-muted">{{ requirement.description }}</p>
 
-                    {% if requirement.applicabilityJustification %}
-                        <h5 class="mt-3">Applicability Justification</h5>
-                        <p class="text-muted">{{ requirement.applicabilityJustification }}</p>
+                    {% if fulfillment.applicabilityJustification %}
+                        <h5 class="mt-3">Applicability Justification {% if is_inherited %}<small class="text-muted">(from parent tenant)</small>{% endif %}</h5>
+                        <p class="text-muted">{{ fulfillment.applicabilityJustification }}</p>
                     {% endif %}
 
-                    {% if requirement.evidenceDescription %}
-                        <h5 class="mt-3">Evidence Description</h5>
-                        <p class="text-muted">{{ requirement.evidenceDescription }}</p>
+                    {% if fulfillment.evidenceDescription %}
+                        <h5 class="mt-3">Evidence Description {% if is_inherited %}<small class="text-muted">(from parent tenant)</small>{% endif %}</h5>
+                        <p class="text-muted">{{ fulfillment.evidenceDescription }}</p>
                     {% endif %}
                 </div>
             </div>
@@ -149,56 +151,66 @@
                     <h5 class="mb-0">Fulfillment Status</h5>
                 </div>
                 <div class="card-body">
+                    {% if is_inherited %}
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle"></i> <strong>Inherited from parent tenant</strong>
+                            <br><small>This fulfillment data is inherited from your parent organization. You cannot edit it directly.</small>
+                        </div>
+                    {% endif %}
+
                     <div class="text-center mb-3">
                         <div class="progress" style="height: 30px;">
-                            <div class="progress-bar bg-{{ requirement.fulfillmentStatusBadge }}"
+                            {% set statusBadge = fulfillment.fulfillmentPercentage >= 100 ? 'success' : (fulfillment.fulfillmentPercentage >= 75 ? 'info' : (fulfillment.fulfillmentPercentage >= 50 ? 'warning' : 'danger')) %}
+                            <div class="progress-bar bg-{{ statusBadge }}"
                                  role="progressbar"
-                                 style="width: {{ requirement.fulfillmentPercentage }}%"
-                                 aria-valuenow="{{ requirement.fulfillmentPercentage }}"
+                                 style="width: {{ fulfillment.fulfillmentPercentage }}%"
+                                 aria-valuenow="{{ fulfillment.fulfillmentPercentage }}"
                                  aria-valuemin="0"
                                  aria-valuemax="100">
-                                <strong>{{ requirement.fulfillmentPercentage }}%</strong>
+                                <strong>{{ fulfillment.fulfillmentPercentage }}%</strong>
                             </div>
                         </div>
+                        <small class="text-muted">Status: <span class="badge bg-{{ statusBadge }}">{{ fulfillment.status }}</span></small>
                     </div>
 
-                    {% if calculated_fulfillment != requirement.fulfillmentPercentage %}
+                    {% if calculated_fulfillment != fulfillment.fulfillmentPercentage %}
                         <div class="alert alert-info">
                             <small><i class="bi bi-calculator"></i> Calculated from controls: <strong>{{ calculated_fulfillment }}%</strong></small>
                         </div>
                     {% endif %}
 
-                    {% if requirement.fulfillmentNotes %}
-                        <h6 class="mt-3">Notes</h6>
-                        <p class="text-muted small">{{ requirement.fulfillmentNotes }}</p>
+                    {% if fulfillment.fulfillmentNotes %}
+                        <h6 class="mt-3">Notes {% if is_inherited %}<small class="text-muted">(from parent)</small>{% endif %}</h6>
+                        <p class="text-muted small">{{ fulfillment.fulfillmentNotes }}</p>
                     {% endif %}
 
                     {# Quick Update Form - Enhanced with Visual Slider #}
-                    <form method="post" action="{{ path('app_compliance_requirement_quick_update', {id: requirement.id}) }}" class="mt-3" id="quickUpdateForm">
-                        <input type="hidden" name="_token" value="{{ csrf_token('quick-update' ~ requirement.id) }}">
+                    {% if can_edit %}
+                        <form method="post" action="{{ path('app_compliance_requirement_quick_update', {id: requirement.id}) }}" class="mt-3" id="quickUpdateForm">
+                            <input type="hidden" name="_token" value="{{ csrf_token('quick-update' ~ requirement.id) }}">
 
-                        <div class="mb-3">
-                            <label for="fulfillmentPercentage" class="form-label d-flex justify-content-between">
-                                <span>Fulfillment</span>
-                                <span id="sliderValue" class="badge bg-primary">{{ requirement.fulfillmentPercentage }}%</span>
-                            </label>
+                            <div class="mb-3">
+                                <label for="fulfillmentPercentage" class="form-label d-flex justify-content-between">
+                                    <span>Fulfillment</span>
+                                    <span id="sliderValue" class="badge bg-primary">{{ fulfillment.fulfillmentPercentage }}%</span>
+                                </label>
 
-                            {# Visual Slider #}
-                            <input type="range" class="form-range" id="fulfillmentSlider"
-                                   min="0" max="100" step="5" value="{{ requirement.fulfillmentPercentage }}"
-                                   style="cursor: pointer;"
-                                   data-bs-toggle="tooltip" data-bs-placement="top"
-                                   title="Drag to adjust how well this requirement is fulfilled (0-100%). Color indicates status: red < 50% < yellow < 75% < green.">
+                                {# Visual Slider #}
+                                <input type="range" class="form-range" id="fulfillmentSlider"
+                                       min="0" max="100" step="5" value="{{ fulfillment.fulfillmentPercentage }}"
+                                       style="cursor: pointer;"
+                                       data-bs-toggle="tooltip" data-bs-placement="top"
+                                       title="Drag to adjust how well this requirement is fulfilled (0-100%). Color indicates status: red < 50% < yellow < 75% < green.">
 
-                            {# Hidden input for form submission #}
-                            <input type="hidden" id="fulfillmentPercentage" name="fulfillmentPercentage" value="{{ requirement.fulfillmentPercentage }}">
+                                {# Hidden input for form submission #}
+                                <input type="hidden" id="fulfillmentPercentage" name="fulfillmentPercentage" value="{{ fulfillment.fulfillmentPercentage }}">
 
-                            {# Visual Progress Bar #}
-                            <div class="progress mt-2" style="height: 8px;">
-                                <div id="progressBar" class="progress-bar" role="progressbar"
-                                     style="width: {{ requirement.fulfillmentPercentage }}%; background-color: {{ requirement.fulfillmentPercentage >= 75 ? '#28a745' : (requirement.fulfillmentPercentage >= 50 ? '#ffc107' : '#dc3545') }};"
-                                     aria-valuenow="{{ requirement.fulfillmentPercentage }}" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div>
+                                {# Visual Progress Bar #}
+                                <div class="progress mt-2" style="height: 8px;">
+                                    <div id="progressBar" class="progress-bar" role="progressbar"
+                                         style="width: {{ fulfillment.fulfillmentPercentage }}%; background-color: {{ fulfillment.fulfillmentPercentage >= 75 ? '#28a745' : (fulfillment.fulfillmentPercentage >= 50 ? '#ffc107' : '#dc3545') }};"
+                                         aria-valuenow="{{ fulfillment.fulfillmentPercentage }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
 
                             {# Quick Preset Buttons #}
                             <div class="d-flex gap-1 mt-2">
@@ -220,23 +232,28 @@
                             </div>
                         </div>
 
-                        <div class="form-check mb-3">
-                            <input class="form-check-input" type="checkbox" id="applicable" name="applicable" value="1"
-                                   {% if requirement.applicable %}checked{% endif %}
-                                   data-bs-toggle="tooltip" data-bs-placement="right"
-                                   title="Check if this requirement applies to your organization. Unchecked requirements won't count towards compliance percentage.">
-                            <label class="form-check-label" for="applicable">
-                                <strong>Applicable</strong>
-                                <small class="d-block text-muted">This requirement applies to our organization</small>
-                            </label>
-                        </div>
+                            <div class="form-check mb-3">
+                                <input class="form-check-input" type="checkbox" id="applicable" name="applicable" value="1"
+                                       {% if fulfillment.applicable %}checked{% endif %}
+                                       data-bs-toggle="tooltip" data-bs-placement="right"
+                                       title="Check if this requirement applies to your organization. Unchecked requirements won't count towards compliance percentage.">
+                                <label class="form-check-label" for="applicable">
+                                    <strong>Applicable</strong>
+                                    <small class="d-block text-muted">This requirement applies to our organization</small>
+                                </label>
+                            </div>
 
-                        <button type="submit" class="btn btn-primary w-100"
-                                data-bs-toggle="tooltip" data-bs-placement="top"
-                                title="Save your changes and return to this page. You'll see a success message and can continue editing.">
-                            <i class="bi bi-check-circle"></i> Save Quick Update
-                        </button>
-                    </form>
+                            <button type="submit" class="btn btn-primary w-100"
+                                    data-bs-toggle="tooltip" data-bs-placement="top"
+                                    title="Save your changes and return to this page. You'll see a success message and can continue editing.">
+                                <i class="bi bi-check-circle"></i> Save Quick Update
+                            </button>
+                        </form>
+                    {% else %}
+                        <div class="alert alert-warning mt-3">
+                            <i class="bi bi-lock"></i> You cannot edit inherited fulfillment data. Only the parent tenant can modify this.
+                        </div>
+                    {% endif %}
 
                     <script>
                     // Update slider value and progress bar in real-time
@@ -292,15 +309,39 @@
                     <h5 class="mb-0">Metadata</h5>
                 </div>
                 <div class="card-body">
-                    <p><small><strong>Responsible:</strong> {{ requirement.responsiblePerson|default('-') }}</small></p>
-                    <p><small><strong>Target Date:</strong>
-                        {% if requirement.targetDate %}
-                            {{ requirement.targetDate|date('Y-m-d') }}
+                    <p><small><strong>Responsible:</strong>
+                        {% if fulfillment.responsiblePerson %}
+                            {{ fulfillment.responsiblePerson.fullName|default(fulfillment.responsiblePerson.email) }}
+                            {% if is_inherited %}<span class="text-muted">(from parent)</span>{% endif %}
                         {% else %}
                             -
                         {% endif %}
                     </small></p>
-                    <p><small><strong>Last Assessment:</strong>
+                    <p><small><strong>Last Review:</strong>
+                        {% if fulfillment.lastReviewDate %}
+                            {{ fulfillment.lastReviewDate|date('Y-m-d') }}
+                            {% if is_inherited %}<span class="text-muted">(from parent)</span>{% endif %}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </small></p>
+                    <p><small><strong>Next Review:</strong>
+                        {% if fulfillment.nextReviewDate %}
+                            {{ fulfillment.nextReviewDate|date('Y-m-d') }}
+                            {% if fulfillment.isOverdueForReview() %}<span class="badge bg-danger">Overdue</span>{% endif %}
+                            {% if is_inherited %}<span class="text-muted">(from parent)</span>{% endif %}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </small></p>
+                    <p><small><strong>Last Updated By:</strong>
+                        {% if fulfillment.lastUpdatedBy %}
+                            {{ fulfillment.lastUpdatedBy.fullName|default(fulfillment.lastUpdatedBy.email) }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </small></p>
+                    <p><small><strong>Created (Requirement):</strong>
                         {% if requirement.lastAssessmentDate %}
                             {{ requirement.lastAssessmentDate|date('Y-m-d') }}
                         {% else %}
