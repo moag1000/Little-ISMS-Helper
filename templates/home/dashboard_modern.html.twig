@@ -3,7 +3,9 @@
 {% block title %}Dashboard{% endblock %}
 
 {% block body %}
-<div class="container-fluid" data-controller="dashboard-customizer">
+<div class="container-fluid"
+     data-controller="dashboard-customizer"
+     data-dashboard-customizer-api-url-value="{{ path('app_dashboard_layout_get') }}">
     {# Breadcrumb Navigation #}
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
@@ -23,7 +25,7 @@
         <button class="btn btn-outline-secondary"
                 data-action="click->dashboard-customizer#openSettings"
                 title="Dashboard anpassen">
-            <i class="bi bi-sliders"></i> Anpassen
+            <i class="bi bi-sliders" aria-hidden="true"></i> Anpassen
         </button>
     </div>
 
@@ -34,13 +36,13 @@
         {# Assets Card #}
         <div class="col-lg-3 col-md-6">
             <div class="stat-card">
-                <div class="stat-card-icon bg-primary">
-                    <i class="bi bi-server"></i>
+                <div class="stat-card-icon bg-primary" aria-hidden="true">
+                    <i class="bi bi-server" aria-hidden="true"></i>
                 </div>
                 <div class="stat-card-title">Registrierte Assets</div>
                 <div class="stat-card-value">{{ stats.assets_total|default(0) }}</div>
                 <div class="stat-card-change positive">
-                    <i class="bi bi-arrow-up"></i>
+                    <i class="bi bi-arrow-up" aria-hidden="true"></i>
                     <span>{{ stats.assets_critical|default(0) }} kritisch</span>
                 </div>
             </div>
@@ -49,13 +51,13 @@
         {# Risks Card #}
         <div class="col-lg-3 col-md-6">
             <div class="stat-card">
-                <div class="stat-card-icon bg-warning">
-                    <i class="bi bi-exclamation-triangle"></i>
+                <div class="stat-card-icon bg-warning" aria-hidden="true">
+                    <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
                 </div>
                 <div class="stat-card-title">Identifizierte Risiken</div>
                 <div class="stat-card-value">{{ stats.risks_total|default(0) }}</div>
                 <div class="stat-card-change negative">
-                    <i class="bi bi-arrow-up"></i>
+                    <i class="bi bi-arrow-up" aria-hidden="true"></i>
                     <span>{{ stats.risks_high|default(0) }} hoch</span>
                 </div>
             </div>
@@ -64,13 +66,13 @@
         {# Controls Card #}
         <div class="col-lg-3 col-md-6">
             <div class="stat-card">
-                <div class="stat-card-icon bg-success">
-                    <i class="bi bi-shield-check"></i>
+                <div class="stat-card-icon bg-success" aria-hidden="true">
+                    <i class="bi bi-shield-check" aria-hidden="true"></i>
                 </div>
                 <div class="stat-card-title">Sicherheitsmaßnahmen</div>
                 <div class="stat-card-value">{{ stats.controls_implemented|default(0) }}/{{ stats.controls_total|default(0) }}</div>
                 <div class="stat-card-change positive">
-                    <i class="bi bi-check-circle"></i>
+                    <i class="bi bi-check-circle" aria-hidden="true"></i>
                     <span>{{ stats.compliance_percentage|default(0) }}% implementiert</span>
                 </div>
             </div>
@@ -79,13 +81,13 @@
         {# Incidents Card #}
         <div class="col-lg-3 col-md-6">
             <div class="stat-card">
-                <div class="stat-card-icon bg-danger">
-                    <i class="bi bi-exclamation-circle"></i>
+                <div class="stat-card-icon bg-danger" aria-hidden="true">
+                    <i class="bi bi-exclamation-circle" aria-hidden="true"></i>
                 </div>
                 <div class="stat-card-title">Offene Vorfälle</div>
                 <div class="stat-card-value">{{ stats.incidents_open|default(0) }}</div>
                 <div class="stat-card-change">
-                    <i class="bi bi-clock-history"></i>
+                    <i class="bi bi-clock-history" aria-hidden="true"></i>
                     <span>In Bearbeitung</span>
                 </div>
             </div>
@@ -102,12 +104,12 @@
                  data-dashboard-customizer-target="widget">
                 <div class="widget-header">
                     <h3 class="widget-title">
-                        <i class="bi bi-pie-chart"></i>
+                        <i class="bi bi-pie-chart" aria-hidden="true"></i>
                         Risikoverteilung
                     </h3>
                     <div class="widget-actions">
-                        <button class="widget-action" title="Aktualisieren">
-                            <i class="bi bi-arrow-clockwise"></i>
+                        <button class="widget-action" title="Aktualisieren" aria-label="Aktualisieren">
+                            <i class="bi bi-arrow-clockwise" aria-hidden="true"></i>
                         </button>
                     </div>
                 </div>
@@ -125,7 +127,7 @@
                  data-dashboard-customizer-target="widget">
                 <div class="widget-header">
                     <h3 class="widget-title">
-                        <i class="bi bi-bar-chart"></i>
+                        <i class="bi bi-bar-chart" aria-hidden="true"></i>
                         Assets nach Kategorie
                     </h3>
                 </div>
@@ -146,12 +148,12 @@
                  data-dashboard-customizer-target="widget">
                 <div class="widget-header">
                     <h3 class="widget-title">
-                        <i class="bi bi-activity"></i>
+                        <i class="bi bi-activity" aria-hidden="true"></i>
                         Letzte Aktivitäten
                     </h3>
                     <div class="widget-actions">
-                        <button class="widget-action" title="Alle anzeigen">
-                            <i class="bi bi-arrows-fullscreen"></i>
+                        <button class="widget-action" title="Alle anzeigen" aria-label="Alle anzeigen">
+                            <i class="bi bi-arrows-fullscreen" aria-hidden="true"></i>
                         </button>
                     </div>
                 </div>
@@ -166,32 +168,32 @@
                  data-dashboard-customizer-target="widget">
                 <div class="widget-header">
                     <h3 class="widget-title">
-                        <i class="bi bi-lightning"></i>
+                        <i class="bi bi-lightning" aria-hidden="true"></i>
                         Schnellzugriff
                     </h3>
                 </div>
                 <div class="quick-actions">
                     <a href="{{ path('app_asset_new') }}" class="quick-action-btn">
-                        <div class="quick-action-icon">
-                            <i class="bi-plus-circle text-primary"></i>
+                        <div class="quick-action-icon" aria-hidden="true">
+                            <i class="bi-plus-circle text-primary" aria-hidden="true"></i>
                         </div>
                         <div class="quick-action-label">Neues Asset</div>
                     </a>
                     <a href="{{ path('app_risk_new') }}" class="quick-action-btn">
-                        <div class="quick-action-icon">
-                            <i class="bi-exclamation-triangle text-warning"></i>
+                        <div class="quick-action-icon" aria-hidden="true">
+                            <i class="bi-exclamation-triangle text-warning" aria-hidden="true"></i>
                         </div>
                         <div class="quick-action-label">Risiko erfassen</div>
                     </a>
                     <a href="{{ path('app_compliance_index') }}" class="quick-action-btn">
-                        <div class="quick-action-icon">
-                            <i class="bi-shield-check text-success"></i>
+                        <div class="quick-action-icon" aria-hidden="true">
+                            <i class="bi-shield-check text-success" aria-hidden="true"></i>
                         </div>
                         <div class="quick-action-label">Maßnahmen</div>
                     </a>
                     <a href="{{ path('app_incident_new') }}" class="quick-action-btn">
-                        <div class="quick-action-icon">
-                            <i class="bi-exclamation-circle text-danger"></i>
+                        <div class="quick-action-icon" aria-hidden="true">
+                            <i class="bi-exclamation-circle text-danger" aria-hidden="true"></i>
                         </div>
                         <div class="quick-action-label">Vorfall melden</div>
                     </a>
