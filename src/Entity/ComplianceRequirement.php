@@ -48,18 +48,34 @@ class ComplianceRequirement
     #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parentRequirement', cascade: ['persist', 'remove'])]
     private Collection $detailedRequirements;
 
+    /**
+     * @deprecated Use ComplianceRequirementFulfillment instead
+     * These fields will be removed in Phase 2B after full migration
+     */
     #[ORM\Column]
     private ?bool $applicable = true;
 
+    /**
+     * @deprecated Use ComplianceRequirementFulfillment instead
+     */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $applicabilityJustification = null;
 
+    /**
+     * @deprecated Use ComplianceRequirementFulfillment instead
+     */
     #[ORM\Column]
     private int $fulfillmentPercentage = 0;
 
+    /**
+     * @deprecated Use ComplianceRequirementFulfillment instead
+     */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $fulfillmentNotes = null;
 
+    /**
+     * @deprecated Use ComplianceRequirementFulfillment instead
+     */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $evidenceDescription = null;
 
@@ -81,12 +97,21 @@ class ComplianceRequirement
     #[ORM\Column(type: Types::JSON, nullable: true)]
     private ?array $dataSourceMapping = null; // Maps to Asset, Risk, BCM, etc.
 
+    /**
+     * @deprecated Use ComplianceRequirementFulfillment instead
+     */
     #[ORM\Column(length: 100, nullable: true)]
     private ?string $responsiblePerson = null;
 
+    /**
+     * @deprecated Use ComplianceRequirementFulfillment instead
+     */
     #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
     private ?\DateTimeInterface $targetDate = null;
 
+    /**
+     * @deprecated Use ComplianceRequirementFulfillment instead
+     */
     #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
     private ?\DateTimeInterface $lastAssessmentDate = null;
 
@@ -175,55 +200,85 @@ class ComplianceRequirement
         return $this;
     }
 
+    /**
+     * @deprecated Use ComplianceRequirementFulfillment instead
+     */
     public function isApplicable(): ?bool
     {
         return $this->applicable;
     }
 
+    /**
+     * @deprecated Use ComplianceRequirementFulfillment instead
+     */
     public function setApplicable(bool $applicable): static
     {
         $this->applicable = $applicable;
         return $this;
     }
 
+    /**
+     * @deprecated Use ComplianceRequirementFulfillment instead
+     */
     public function getApplicabilityJustification(): ?string
     {
         return $this->applicabilityJustification;
     }
 
+    /**
+     * @deprecated Use ComplianceRequirementFulfillment instead
+     */
     public function setApplicabilityJustification(?string $applicabilityJustification): static
     {
         $this->applicabilityJustification = $applicabilityJustification;
         return $this;
     }
 
+    /**
+     * @deprecated Use ComplianceRequirementFulfillment instead
+     */
     public function getFulfillmentPercentage(): int
     {
         return $this->fulfillmentPercentage;
     }
 
+    /**
+     * @deprecated Use ComplianceRequirementFulfillment instead
+     */
     public function setFulfillmentPercentage(int $fulfillmentPercentage): static
     {
         $this->fulfillmentPercentage = $fulfillmentPercentage;
         return $this;
     }
 
+    /**
+     * @deprecated Use ComplianceRequirementFulfillment instead
+     */
     public function getFulfillmentNotes(): ?string
     {
         return $this->fulfillmentNotes;
     }
 
+    /**
+     * @deprecated Use ComplianceRequirementFulfillment instead
+     */
     public function setFulfillmentNotes(?string $fulfillmentNotes): static
     {
         $this->fulfillmentNotes = $fulfillmentNotes;
         return $this;
     }
 
+    /**
+     * @deprecated Use ComplianceRequirementFulfillment instead
+     */
     public function getEvidenceDescription(): ?string
     {
         return $this->evidenceDescription;
     }
 
+    /**
+     * @deprecated Use ComplianceRequirementFulfillment instead
+     */
     public function setEvidenceDescription(?string $evidenceDescription): static
     {
         $this->evidenceDescription = $evidenceDescription;
@@ -323,33 +378,51 @@ class ComplianceRequirement
         return $this;
     }
 
+    /**
+     * @deprecated Use ComplianceRequirementFulfillment instead
+     */
     public function getResponsiblePerson(): ?string
     {
         return $this->responsiblePerson;
     }
 
+    /**
+     * @deprecated Use ComplianceRequirementFulfillment instead
+     */
     public function setResponsiblePerson(?string $responsiblePerson): static
     {
         $this->responsiblePerson = $responsiblePerson;
         return $this;
     }
 
+    /**
+     * @deprecated Use ComplianceRequirementFulfillment instead
+     */
     public function getTargetDate(): ?\DateTimeInterface
     {
         return $this->targetDate;
     }
 
+    /**
+     * @deprecated Use ComplianceRequirementFulfillment instead
+     */
     public function setTargetDate(?\DateTimeInterface $targetDate): static
     {
         $this->targetDate = $targetDate;
         return $this;
     }
 
+    /**
+     * @deprecated Use ComplianceRequirementFulfillment instead
+     */
     public function getLastAssessmentDate(): ?\DateTimeInterface
     {
         return $this->lastAssessmentDate;
     }
 
+    /**
+     * @deprecated Use ComplianceRequirementFulfillment instead
+     */
     public function setLastAssessmentDate(?\DateTimeInterface $lastAssessmentDate): static
     {
         $this->lastAssessmentDate = $lastAssessmentDate;
