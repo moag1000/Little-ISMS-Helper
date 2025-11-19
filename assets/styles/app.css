@@ -753,24 +753,91 @@ h3 {
 }
 
 /* Cards - Cyberpunk Style with Dark Mode Support */
+/* ============================================================
+   Card Component System - Standardized
+   Based on UI/UX Audit Issue 3.1
+   ============================================================ */
+
+/* Base Card (Bootstrap compatible) */
 .card {
     background: var(--bg-elevated);
     border: 1px solid var(--border-color);
     border-radius: var(--border-radius);
-    padding: var(--spacing-lg);
     box-shadow: var(--shadow-sm);
     transition: all var(--transition-normal);
     position: relative;
     overflow: hidden;
+    margin-bottom: var(--spacing-md);
 }
 
+/* Card Header */
+.card-header {
+    padding: var(--spacing-md) var(--spacing-lg);
+    background: var(--bg-elevated);
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 60px;
+}
+
+.card-header h5,
+.card-header h4,
+.card-header h3 {
+    margin: 0;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.card-header h5 i,
+.card-header h4 i,
+.card-header h3 i {
+    margin-right: 0.5rem;
+    color: var(--color-secondary);
+}
+
+/* Card Actions (header buttons) */
+.card-actions {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+/* Card Body */
+.card-body {
+    padding: var(--spacing-lg);
+}
+
+/* Card Footer */
+.card-footer {
+    padding: var(--spacing-md) var(--spacing-lg);
+    background: var(--bg-secondary);
+    border-top: 1px solid var(--border-color);
+}
+
+/* Dark Mode */
 [data-theme="dark"] .card {
     background: var(--bg-elevated);
     border-color: var(--border-color);
     color: var(--text-primary);
 }
 
-.card::before {
+[data-theme="dark"] .card-header {
+    background: var(--bg-secondary);
+    border-bottom-color: var(--border-color);
+}
+
+[data-theme="dark"] .card-footer {
+    background: var(--bg-tertiary);
+    border-top-color: var(--border-color);
+}
+
+/* Hoverable Card Variant */
+.card-hoverable {
+    cursor: pointer;
+}
+
+.card-hoverable::before {
     content: '';
     position: absolute;
     top: 0;
@@ -782,8 +849,13 @@ h3 {
     transition: opacity var(--transition-normal);
 }
 
-.card:hover::before {
+.card-hoverable:hover::before {
     opacity: 1;
+}
+
+.card-hoverable:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
 }
 
 .card:hover {
