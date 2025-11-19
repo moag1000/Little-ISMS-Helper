@@ -13,9 +13,9 @@
                 {% if tenant is defined and tenant %}
                     <br>
                     <small>
-                        <i class="bi bi-building"></i>
+                        <i class="bi bi-building" aria-hidden="true"></i>
                         <a href="{{ path('tenant_management_show', {id: tenant.id}) }}" class="text-decoration-none">
-                            {{ tenant.name }} <i class="bi bi-box-arrow-up-right small"></i>
+                            {{ tenant.name }} <i class="bi bi-box-arrow-up-right small" aria-hidden="true"></i>
                         </a>
                     </small>
                 {% endif %}
@@ -24,21 +24,21 @@
         <div>
             {% if tenant is defined and tenant %}
                 <a href="{{ path('tenant_management_show', {id: tenant.id}) }}" class="btn btn-outline-secondary">
-                    <i class="bi bi-building"></i> {{ 'tenant.link.view'|trans|default('Mandant anzeigen') }}
+                    <i class="bi bi-building" aria-hidden="true"></i> {{ 'tenant.link.view'|trans|default('Mandant anzeigen') }}
                 </a>
             {% endif %}
             {% if is_granted('ROLE_ADMIN') %}
                 {% if canEdit is defined and canEdit %}
                     <a href="{{ path('app_context_edit') }}" class="btn btn-primary">
-                        <i class="bi bi-pencil"></i> {{ 'context.link.edit'|trans }}
+                        <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'context.link.edit'|trans }}
                     </a>
                 {% else %}
                     <button class="btn btn-primary" disabled title="{{ 'corporate.inheritance.cannot_edit_inherited'|trans }}">
-                        <i class="bi bi-lock"></i> {{ 'context.link.edit'|trans }}
+                        <i class="bi bi-lock" aria-hidden="true"></i> {{ 'context.link.edit'|trans }}
                     </button>
                 {% endif %}
                 <a href="{{ path('app_objective_new') }}" class="btn btn-success">
-                    <i class="bi bi-plus-circle"></i> {{ 'objective.link.new'|trans }}
+                    <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'objective.link.new'|trans }}
                 </a>
             {% endif %}
         </div>
@@ -46,7 +46,7 @@
 
     {# ISO 27001 Info Box #}
     <div class="alert alert-info mb-4">
-        <i class="bi bi-info-circle"></i>
+        <i class="bi bi-info-circle" aria-hidden="true"></i>
         <strong>{{ 'context.info.iso_clause'|trans }}</strong> {{ 'context.info.iso_description'|trans }}
     </div>
 
@@ -54,7 +54,7 @@
     {% if inheritanceInfo is defined and inheritanceInfo.isInherited %}
     <div class="alert alert-warning mb-4">
         <div class="d-flex align-items-start">
-            <i class="bi bi-diagram-3 me-2 mt-1"></i>
+            <i class="bi bi-diagram-3 me-2 mt-1" aria-hidden="true"></i>
             <div>
                 <strong>{{ 'corporate.inheritance.isms_context_inherited'|trans }}</strong><br>
                 <span class="small">
@@ -152,11 +152,11 @@
                     {% if is_granted('ROLE_ADMIN') %}
                         {% if canEdit is defined and canEdit %}
                             <a href="{{ path('app_context_edit') }}" class="btn btn-sm btn-outline-primary">
-                                <i class="bi bi-pencil"></i> {{ 'common.edit'|trans }}
+                                <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'common.edit'|trans }}
                             </a>
                         {% else %}
                             <button class="btn btn-sm btn-outline-secondary" disabled title="{{ 'corporate.inheritance.cannot_edit_inherited'|trans }}">
-                                <i class="bi bi-lock"></i> {{ 'common.edit'|trans }}
+                                <i class="bi bi-lock" aria-hidden="true"></i> {{ 'common.edit'|trans }}
                             </button>
                         {% endif %}
                     {% endif %}
@@ -190,7 +190,7 @@
                         {% endif %}
                     {% else %}
                         <div class="alert alert-warning">
-                            <i class="bi bi-exclamation-triangle"></i>
+                            <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
                             {{ 'context_management.no_context_defined'|trans }}
                             {% if is_granted('ROLE_ADMIN') and canEdit is defined and canEdit %}
                                 <a href="{{ path('app_context_edit') }}" class="alert-link">{{ 'context.link.create_now'|trans }}</a>
@@ -207,7 +207,7 @@
                 <div class="card-header bg-white d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">{{ 'context_management.isms_objectives'|trans }}</h5>
                     <a href="{{ path('app_objective_index') }}" class="btn btn-sm btn-outline-secondary">
-                        {{ 'common.show_all'|trans }} <i class="bi bi-arrow-right"></i>
+                        {{ 'common.show_all'|trans }} <i class="bi bi-arrow-right" aria-hidden="true"></i>
                     </a>
                 </div>
                 <div class="card-body">
@@ -239,7 +239,7 @@
                     {% if is_granted('ROLE_ADMIN') %}
                         <div class="d-grid mt-3">
                             <a href="{{ path('app_objective_new') }}" class="btn btn-success">
-                                <i class="bi bi-plus-circle"></i> {{ 'objective.link.create_new'|trans }}
+                                <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'objective.link.create_new'|trans }}
                             </a>
                         </div>
                     {% endif %}
@@ -327,7 +327,7 @@
             <div class="card shadow-sm">
                 <div class="card-header bg-white">
                     <h5 class="mb-0">
-                        <i class="bi bi-clock-history"></i> {{ 'context.section.history'|trans|default('Context History') }}
+                        <i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'context.section.history'|trans|default('Context History') }}
                         ({{ totalAuditLogs }} {{ 'audit_log.entries'|trans|default('entries') }})
                     </h5>
                 </div>

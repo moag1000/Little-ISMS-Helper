@@ -8,7 +8,7 @@
 {% block admin_content %}
     <div class="mb-3">
         <a href="{{ path('monitoring_health') }}" class="btn btn-outline-secondary">
-            <i class="bi bi-arrow-left"></i> Back to Health
+            <i class="bi bi-arrow-left" aria-hidden="true"></i> Back to Health
         </a>
     </div>
 
@@ -79,7 +79,7 @@
         <div class="card">
             <div class="card-header bg-danger text-white">
                 <h5 class="mb-0">
-                    <i class="bi bi-list-ul"></i> Recent Errors
+                    <i class="bi bi-list-ul" aria-hidden="true"></i> Recent Errors
                 </h5>
             </div>
             <div class="card-body p-0">
@@ -94,14 +94,14 @@
                                                 {{ error.level }}
                                             </span>
                                             <small class="text-muted">
-                                                <i class="bi bi-clock"></i> {{ error.timestamp }}
+                                                <i class="bi bi-clock" aria-hidden="true"></i> {{ error.timestamp }}
                                             </small>
                                             <span class="badge bg-secondary ms-2">{{ error.channel }}</span>
                                         </div>
                                         <p class="mb-1 font-monospace small">{{ error.message|slice(0, 300) }}{% if error.message|length > 300 %}...{% endif %}</p>
                                         <details class="mt-2">
                                             <summary class="text-muted small" style="cursor: pointer;">
-                                                <i class="bi bi-code-square"></i> Show full log entry
+                                                <i class="bi bi-code-square" aria-hidden="true"></i> Show full log entry
                                             </summary>
                                             <pre class="mt-2 mb-0 small bg-light p-3 rounded">{{ error.raw }}</pre>
                                         </details>
@@ -112,7 +112,7 @@
                     </div>
                 {% else %}
                     <div class="p-4 text-center">
-                        <i class="bi bi-check-circle text-success fs-1"></i>
+                        <i class="bi bi-check-circle text-success fs-1" aria-hidden="true"></i>
                         <p class="mt-2">No errors found in the log file!</p>
                     </div>
                 {% endif %}
@@ -121,7 +121,7 @@
 
         {# Warning Box #}
         <div class="alert alert-warning mt-4">
-            <h5><i class="bi bi-exclamation-triangle"></i> Important Notes</h5>
+            <h5><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> Important Notes</h5>
             <ul class="mb-0">
                 <li>Log entries are shown in reverse chronological order (most recent first)</li>
                 <li>Only the most recent entries are displayed based on the selected limit</li>
@@ -131,7 +131,7 @@
         </div>
     {% else %}
         <div class="alert alert-info">
-            <h5><i class="bi bi-info-circle"></i> No Log File Found</h5>
+            <h5><i class="bi bi-info-circle" aria-hidden="true"></i> No Log File Found</h5>
             <p class="mb-0">
                 The log file <code>{{ log_file }}</code> does not exist yet.
                 Errors will be logged here once they occur.

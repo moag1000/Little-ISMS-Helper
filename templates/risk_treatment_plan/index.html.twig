@@ -5,49 +5,49 @@
 {% block body %}
 <div class="page-header">
     <div>
-        <h1><i class="bi bi-clipboard-check"></i> {{ 'risk_treatment_plan.title'|trans }}</h1>
+        <h1><i class="bi bi-clipboard-check" aria-hidden="true"></i> {{ 'risk_treatment_plan.title'|trans }}</h1>
         <p class="text-muted">{{ 'risk_treatment_plan.description'|trans }}</p>
     </div>
     <div class="button-group">
         <a href="{{ path('app_risk_treatment_plan_new') }}" class="btn btn-primary">
-            <i class="bi bi-plus-circle"></i> {{ 'risk_treatment_plan.new'|trans }}
+            <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'risk_treatment_plan.new'|trans }}
         </a>
     </div>
 </div>
 
 <div class="stats-grid mb-4">
     <div class="stat-card">
-        <div class="stat-icon"><i class="bi bi-collection"></i></div>
+        <div class="stat-icon"><i class="bi bi-collection" aria-hidden="true"></i></div>
         <div class="stat-value">{{ stats.total }}</div>
         <div class="stat-label">{{ 'risk_treatment_plan.stats.total'|trans }}</div>
     </div>
 
     <div class="stat-card">
-        <div class="stat-icon"><i class="bi bi-clock-history"></i></div>
+        <div class="stat-icon"><i class="bi bi-clock-history" aria-hidden="true"></i></div>
         <div class="stat-value">{{ stats.planned }}</div>
         <div class="stat-label">{{ 'risk_treatment_plan.stats.planned'|trans }}</div>
     </div>
 
     <div class="stat-card">
-        <div class="stat-icon"><i class="bi bi-play-circle"></i></div>
+        <div class="stat-icon"><i class="bi bi-play-circle" aria-hidden="true"></i></div>
         <div class="stat-value">{{ stats.in_progress }}</div>
         <div class="stat-label">{{ 'risk_treatment_plan.stats.in_progress'|trans }}</div>
     </div>
 
     <div class="stat-card">
-        <div class="stat-icon"><i class="bi bi-check-circle"></i></div>
+        <div class="stat-icon"><i class="bi bi-check-circle" aria-hidden="true"></i></div>
         <div class="stat-value">{{ stats.completed }}</div>
         <div class="stat-label">{{ 'risk_treatment_plan.stats.completed'|trans }}</div>
     </div>
 
     <div class="stat-card">
-        <div class="stat-icon"><i class="bi bi-exclamation-triangle"></i></div>
+        <div class="stat-icon"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i></div>
         <div class="stat-value">{{ overduePlans|length }}</div>
         <div class="stat-label">{{ 'risk_treatment_plan.stats.overdue'|trans }}</div>
     </div>
 
     <div class="stat-card">
-        <div class="stat-icon"><i class="bi bi-percent"></i></div>
+        <div class="stat-icon"><i class="bi bi-percent" aria-hidden="true"></i></div>
         <div class="stat-value">{{ stats.avg_completion|number_format(0) }}%</div>
         <div class="stat-label">{{ 'risk_treatment_plan.stats.avg_completion'|trans }}</div>
     </div>
@@ -56,7 +56,7 @@
 {# Filter Section #}
 <div class="card mb-4">
     <div class="card-header">
-        <h5><i class="bi bi-funnel"></i> {{ 'common.filters'|trans }}</h5>
+        <h5><i class="bi bi-funnel" aria-hidden="true"></i> {{ 'common.filters'|trans }}</h5>
     </div>
     <div class="card-body">
         <form method="get" action="{{ path('app_risk_treatment_plan_index') }}" class="row g-3">
@@ -96,10 +96,10 @@
             </div>
             <div class="col-12">
                 <button type="submit" class="btn btn-primary">
-                    <i class="bi bi-search"></i> {{ 'common.filter'|trans }}
+                    <i class="bi bi-search" aria-hidden="true"></i> {{ 'common.filter'|trans }}
                 </button>
                 <a href="{{ path('app_risk_treatment_plan_index') }}" class="btn btn-secondary">
-                    <i class="bi bi-x-circle"></i> {{ 'common.reset'|trans }}
+                    <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'common.reset'|trans }}
                 </a>
             </div>
         </form>
@@ -109,7 +109,7 @@
 {# Treatment Plans Table #}
 <div class="card">
     <div class="card-header">
-        <h5><i class="bi bi-list"></i> {{ 'risk_treatment_plan.list.title'|trans }} ({{ plans|length }})</h5>
+        <h5><i class="bi bi-list" aria-hidden="true"></i> {{ 'risk_treatment_plan.list.title'|trans }} ({{ plans|length }})</h5>
     </div>
     <div class="table-responsive">
         <table class="table table-hover mb-0">
@@ -132,7 +132,7 @@
                         <strong>{{ plan.title }}</strong>
                         {% if plan.isOverdue() %}
                             <span class="badge bg-danger ms-2">
-                                <i class="bi bi-exclamation-triangle"></i> {{ 'risk_treatment_plan.overdue'|trans }}
+                                <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'risk_treatment_plan.overdue'|trans }}
                             </span>
                         {% endif %}
                     </td>
@@ -191,12 +191,12 @@
                             <a href="{{ path('app_risk_treatment_plan_show', {id: plan.id}) }}"
                                class="btn btn-outline-primary"
                                title="{{ 'common.view'|trans }}">
-                                <i class="bi bi-eye"></i>
+                                <i class="bi bi-eye" aria-hidden="true"></i>
                             </a>
                             <a href="{{ path('app_risk_treatment_plan_edit', {id: plan.id}) }}"
                                class="btn btn-outline-secondary"
                                title="{{ 'common.edit'|trans }}">
-                                <i class="bi bi-pencil"></i>
+                                <i class="bi bi-pencil" aria-hidden="true"></i>
                             </a>
                         </div>
                     </td>

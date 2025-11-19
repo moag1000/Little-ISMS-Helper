@@ -9,7 +9,7 @@
             {{ asset.name }}
             {% if isInherited is defined and isInherited %}
                 <span class="badge bg-info ms-2">
-                    <i class="bi bi-building"></i> {{ 'corporate.inherited'|trans }}
+                    <i class="bi bi-building" aria-hidden="true"></i> {{ 'corporate.inherited'|trans }}
                 </span>
             {% endif %}
         </h1>
@@ -18,7 +18,7 @@
                 <a href="{{ path('app_asset_edit', {id: asset.id}) }}" class="btn btn-primary">{{ 'common.edit'|trans }}</a>
             {% else %}
                 <button class="btn btn-primary" disabled title="{{ 'corporate.inheritance.cannot_edit_inherited'|trans }}">
-                    <i class="bi bi-lock"></i> {{ 'common.edit'|trans }}
+                    <i class="bi bi-lock" aria-hidden="true"></i> {{ 'common.edit'|trans }}
                 </button>
             {% endif %}
             <a href="{{ path('app_asset_bcm_insights', {id: asset.id}) }}" class="btn btn-secondary">{{ 'asset.action.bcm_insights'|trans }}</a>
@@ -35,7 +35,7 @@
     {% if isInherited is defined and isInherited %}
         <div class="alert alert-info mb-3">
             <div class="d-flex align-items-start">
-                <i class="bi bi-info-circle-fill me-2 mt-1"></i>
+                <i class="bi bi-info-circle-fill me-2 mt-1" aria-hidden="true"></i>
                 <div>
                     <strong>{{ 'corporate.inheritance.view_only_title'|trans }}</strong>
                     <p class="mb-0">{{ 'corporate.inheritance.asset_inherited_message'|trans }}</p>
@@ -258,7 +258,7 @@
                                                     <span class="field-name">{{ field }}:</span>
                                                     {% if oldValues and oldValues[field] is defined %}
                                                         <span class="old-value">{{ oldValues[field] }}</span>
-                                                        <i class="bi bi-arrow-right"></i>
+                                                        <i class="bi bi-arrow-right" aria-hidden="true"></i>
                                                     {% endif %}
                                                     <span class="new-value">{{ newValue }}</span>
                                                 </div>
@@ -272,7 +272,7 @@
                     {% if totalAuditLogs > 10 %}
                         <div class="text-center mt-3">
                             <a href="{{ path('app_audit_log_index', {entity: 'Asset', entityId: asset.id}) }}" class="btn btn-sm btn-outline-secondary">
-                                <i class="bi bi-clock-history"></i> {{ 'audit_log.view_all'|trans }} ({{ totalAuditLogs }})
+                                <i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'audit_log.view_all'|trans }} ({{ totalAuditLogs }})
                             </a>
                         </div>
                     {% endif %}

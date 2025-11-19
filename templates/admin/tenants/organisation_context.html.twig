@@ -16,7 +16,7 @@
             <div class="card">
                 <div class="card-header bg-white">
                     <h5 class="card-title mb-0">
-                        <i class="bi bi-building-gear text-primary"></i>
+                        <i class="bi bi-building-gear text-primary" aria-hidden="true"></i>
                         {{ 'tenant.organisation_context.header'|trans }}
                     </h5>
                 </div>
@@ -56,7 +56,7 @@
                     {% if current_settings %}
                     <div class="alert alert-info">
                         <h6 class="alert-heading">
-                            <i class="bi bi-info-circle me-2"></i>
+                            <i class="bi bi-info-circle me-2" aria-hidden="true"></i>
                             {{ 'tenant.organisation_context.current_config'|trans }}
                         </h6>
                         <ul class="mb-0">
@@ -90,7 +90,7 @@
 
                     {# Impact Warning #}
                     <div class="alert alert-warning">
-                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        <i class="bi bi-exclamation-triangle me-2" aria-hidden="true"></i>
                         <strong>{{ 'tenant.organisation_context.impact_warning.title'|trans }}</strong>
                         <p class="mb-0 mt-2">{{ 'tenant.organisation_context.impact_warning.message'|trans }}</p>
                     </div>
@@ -98,12 +98,12 @@
                     {# Form Actions #}
                     <div class="d-flex justify-content-between mt-4">
                         <a href="{{ path('tenant_management_show', {id: tenant.id}) }}" class="btn btn-outline-secondary">
-                            <i class="bi bi-arrow-left me-2"></i>
+                            <i class="bi bi-arrow-left me-2" aria-hidden="true"></i>
                             {{ 'common.back'|trans }}
                         </a>
 
                         <button type="submit" class="btn btn-primary">
-                            <i class="bi bi-check-lg me-2"></i>
+                            <i class="bi bi-check-lg me-2" aria-hidden="true"></i>
                             {{ 'common.save'|trans }}
                         </button>
                     </div>
@@ -118,7 +118,7 @@
             <div class="card border-info">
                 <div class="card-header bg-info bg-opacity-10">
                     <h6 class="card-title mb-0">
-                        <i class="bi bi-lightbulb text-info me-2"></i>
+                        <i class="bi bi-lightbulb text-info me-2" aria-hidden="true"></i>
                         {{ 'tenant.organisation_context.info.title'|trans }}
                     </h6>
                 </div>

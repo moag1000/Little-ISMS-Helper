@@ -46,13 +46,13 @@
                 </ol>
             </nav>
             <h1>
-                <i class="bi bi-diagram-3"></i> {{ 'workflow.builder.heading'|trans }}
+                <i class="bi bi-diagram-3" aria-hidden="true"></i> {{ 'workflow.builder.heading'|trans }}
                 <small class="text-muted">{{ workflow.name }}</small>
             </h1>
         </div>
         <div>
             <a href="{{ path('app_workflow_definition_show', {id: workflow.id}) }}" class="btn btn-outline-secondary">
-                <i class="bi bi-arrow-left"></i> {{ 'workflow.action.back'|trans }}
+                <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'workflow.action.back'|trans }}
             </a>
         </div>
     </div>
@@ -71,7 +71,7 @@
 
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">
-                        <i class="bi bi-list-check"></i> {{ 'workflow.builder.steps'|trans }}
+                        <i class="bi bi-list-check" aria-hidden="true"></i> {{ 'workflow.builder.steps'|trans }}
                     </h5>
                     <div class="d-flex align-items-center">
                         <span data-workflow-builder-target="loadingSpinner" class="spinner-border spinner-border-sm me-2 d-none" role="status">
@@ -84,7 +84,7 @@
                 <div class="card-body">
                     <div class="mb-3">
                         <div class="alert alert-info alert-dismissible fade show" role="alert">
-                            <i class="bi bi-info-circle me-2"></i>
+                            <i class="bi bi-info-circle me-2" aria-hidden="true"></i>
                             {{ 'workflow.builder.drag_help'|trans }}
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
@@ -98,7 +98,7 @@
 
                 <div class="card-footer">
                     <button type="button" class="btn btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#addStepForm">
-                        <i class="bi bi-plus-circle"></i> {{ 'workflow.builder.add_step'|trans }}
+                        <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'workflow.builder.add_step'|trans }}
                     </button>
                 </div>
             </div>
@@ -108,7 +108,7 @@
                 <div class="card">
                     <div class="card-header bg-success text-white">
                         <h5 class="mb-0">
-                            <i class="bi bi-plus-circle"></i> {{ 'workflow.builder.new_step'|trans }}
+                            <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'workflow.builder.new_step'|trans }}
                         </h5>
                     </div>
                     <div class="card-body">
@@ -164,7 +164,7 @@
 
                             <div class="d-flex gap-2">
                                 <button type="submit" class="btn btn-success">
-                                    <i class="bi bi-plus-circle"></i> {{ 'workflow.builder.add_step'|trans }}
+                                    <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'workflow.builder.add_step'|trans }}
                                 </button>
                                 <button type="button" class="btn btn-outline-secondary" data-bs-toggle="collapse" data-bs-target="#addStepForm">
                                     {{ 'common.cancel'|trans }}
@@ -181,7 +181,7 @@
             <div class="card mb-4">
                 <div class="card-header bg-info text-white">
                     <h6 class="mb-0">
-                        <i class="bi bi-lightning"></i> {{ 'workflow.builder.templates'|trans }}
+                        <i class="bi bi-lightning" aria-hidden="true"></i> {{ 'workflow.builder.templates'|trans }}
                     </h6>
                 </div>
                 <div class="card-body">
@@ -190,7 +190,7 @@
                         <button class="btn btn-outline-primary text-start"
                                 data-action="click->workflow-builder#applyTemplate"
                                 data-template-key="risk_assessment">
-                            <i class="bi bi-shield-exclamation me-2"></i>
+                            <i class="bi bi-shield-exclamation me-2" aria-hidden="true"></i>
                             <strong>{{ 'workflow.template.risk_assessment'|trans }}</strong>
                             <br>
                             <small class="text-muted">{{ 'workflow.template.risk_assessment_desc'|trans }}</small>
@@ -198,7 +198,7 @@
                         <button class="btn btn-outline-success text-start"
                                 data-action="click->workflow-builder#applyTemplate"
                                 data-template-key="control_implementation">
-                            <i class="bi bi-sliders me-2"></i>
+                            <i class="bi bi-sliders me-2" aria-hidden="true"></i>
                             <strong>{{ 'workflow.template.control_implementation'|trans }}</strong>
                             <br>
                             <small class="text-muted">{{ 'workflow.template.control_implementation_desc'|trans }}</small>
@@ -206,7 +206,7 @@
                         <button class="btn btn-outline-danger text-start"
                                 data-action="click->workflow-builder#applyTemplate"
                                 data-template-key="incident_response">
-                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            <i class="bi bi-exclamation-triangle me-2" aria-hidden="true"></i>
                             <strong>{{ 'workflow.template.incident_response'|trans }}</strong>
                             <br>
                             <small class="text-muted">{{ 'workflow.template.incident_response_desc'|trans }}</small>
@@ -214,7 +214,7 @@
                         <button class="btn btn-outline-warning text-start"
                                 data-action="click->workflow-builder#applyTemplate"
                                 data-template-key="document_review">
-                            <i class="bi bi-file-text me-2"></i>
+                            <i class="bi bi-file-text me-2" aria-hidden="true"></i>
                             <strong>{{ 'workflow.template.document_review'|trans }}</strong>
                             <br>
                             <small class="text-muted">{{ 'workflow.template.document_review_desc'|trans }}</small>
@@ -222,7 +222,7 @@
                         <button class="btn btn-outline-secondary text-start"
                                 data-action="click->workflow-builder#applyTemplate"
                                 data-template-key="change_request">
-                            <i class="bi bi-arrow-repeat me-2"></i>
+                            <i class="bi bi-arrow-repeat me-2" aria-hidden="true"></i>
                             <strong>{{ 'workflow.template.change_request'|trans }}</strong>
                             <br>
                             <small class="text-muted">{{ 'workflow.template.change_request_desc'|trans }}</small>
@@ -235,7 +235,7 @@
             <div class="card mb-4">
                 <div class="card-header bg-secondary text-white">
                     <h6 class="mb-0">
-                        <i class="bi bi-info-circle"></i> {{ 'workflow.builder.info'|trans }}
+                        <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'workflow.builder.info'|trans }}
                     </h6>
                 </div>
                 <div class="card-body">
@@ -265,29 +265,29 @@
             <div class="card">
                 <div class="card-header bg-light">
                     <h6 class="mb-0">
-                        <i class="bi bi-question-circle"></i> {{ 'workflow.builder.help'|trans }}
+                        <i class="bi bi-question-circle" aria-hidden="true"></i> {{ 'workflow.builder.help'|trans }}
                     </h6>
                 </div>
                 <div class="card-body">
                     <ul class="list-unstyled mb-0 small">
                         <li class="mb-2">
-                            <i class="bi bi-grip-vertical text-muted me-1"></i>
+                            <i class="bi bi-grip-vertical text-muted me-1" aria-hidden="true"></i>
                             {{ 'workflow.builder.help_drag'|trans }}
                         </li>
                         <li class="mb-2">
-                            <i class="bi bi-pencil text-primary me-1"></i>
+                            <i class="bi bi-pencil text-primary me-1" aria-hidden="true"></i>
                             {{ 'workflow.builder.help_edit'|trans }}
                         </li>
                         <li class="mb-2">
-                            <i class="bi bi-copy text-secondary me-1"></i>
+                            <i class="bi bi-copy text-secondary me-1" aria-hidden="true"></i>
                             {{ 'workflow.builder.help_duplicate'|trans }}
                         </li>
                         <li class="mb-2">
-                            <i class="bi bi-trash text-danger me-1"></i>
+                            <i class="bi bi-trash text-danger me-1" aria-hidden="true"></i>
                             {{ 'workflow.builder.help_delete'|trans }}
                         </li>
                         <li>
-                            <i class="bi bi-lightning text-info me-1"></i>
+                            <i class="bi bi-lightning text-info me-1" aria-hidden="true"></i>
                             {{ 'workflow.builder.help_template'|trans }}
                         </li>
                     </ul>

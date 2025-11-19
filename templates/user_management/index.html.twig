@@ -5,9 +5,9 @@
 {% block admin_content %}
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1><i class="bi bi-people"></i> Benutzerverwaltung</h1>
+        <h1><i class="bi bi-people" aria-hidden="true"></i> Benutzerverwaltung</h1>
         <a href="{{ path('user_management_new') }}" class="btn btn-primary" data-turbo-frame="_top">
-            <i class="bi bi-person-plus"></i> Neuer Benutzer
+            <i class="bi bi-person-plus" aria-hidden="true"></i> Neuer Benutzer
         </a>
     </div>
 
@@ -67,7 +67,7 @@
         <div class="card">
             <div class="card-header bg-primary text-white">
                 <h5 class="mb-0">
-                    <i class="bi bi-list-ul"></i> Alle Benutzer
+                    <i class="bi bi-list-ul" aria-hidden="true"></i> Alle Benutzer
                 </h5>
             </div>
             <div class="card-body">
@@ -119,21 +119,21 @@
                                         </td>
                                         <td>
                                             {% if user.authProvider == 'azure_oauth' %}
-                                                <i class="bi bi-microsoft"></i> Azure OAuth
+                                                <i class="bi bi-microsoft" aria-hidden="true"></i> Azure OAuth
                                             {% elseif user.authProvider == 'azure_saml' %}
-                                                <i class="bi bi-microsoft"></i> Azure SAML
+                                                <i class="bi bi-microsoft" aria-hidden="true"></i> Azure SAML
                                             {% else %}
-                                                <i class="bi bi-person-circle"></i> Lokal
+                                                <i class="bi bi-person-circle" aria-hidden="true"></i> Lokal
                                             {% endif %}
                                         </td>
                                         <td>
                                             {% if user.isActive %}
                                                 <span class="badge bg-success">
-                                                    <i class="bi bi-check-circle"></i> Aktiv
+                                                    <i class="bi bi-check-circle" aria-hidden="true"></i> Aktiv
                                                 </span>
                                             {% else %}
                                                 <span class="badge bg-danger">
-                                                    <i class="bi bi-x-circle"></i> Inaktiv
+                                                    <i class="bi bi-x-circle" aria-hidden="true"></i> Inaktiv
                                                 </span>
                                             {% endif %}
                                             {% if not user.isVerified %}
@@ -152,19 +152,19 @@
                                                 <a href="{{ path('user_management_show', {'id': user.id}) }}"
                                                    class="btn btn-outline-primary" title="Ansehen"
                                                    data-turbo-frame="_top">
-                                                    <i class="bi bi-eye"></i>
+                                                    <i class="bi bi-eye" aria-hidden="true"></i>
                                                 </a>
                                                 <a href="{{ path('user_management_edit', {'id': user.id}) }}"
                                                    class="btn btn-outline-secondary" title="Bearbeiten"
                                                    data-turbo-frame="_top">
-                                                    <i class="bi bi-pencil"></i>
+                                                    <i class="bi bi-pencil" aria-hidden="true"></i>
                                                 </a>
                                                 {% if user.id != app.user.id %}
                                                     <button type="button" class="btn btn-outline-danger"
                                                             title="Löschen"
                                                             data-bs-toggle="modal"
                                                             data-bs-target="#deleteModal{{ user.id }}">
-                                                        <i class="bi bi-trash"></i>
+                                                        <i class="bi bi-trash" aria-hidden="true"></i>
                                                     </button>
                                                 {% endif %}
                                             </div>
@@ -198,7 +198,7 @@
                     </div>
                 {% else %}
                     <div class="alert alert-info">
-                        <i class="bi bi-info-circle"></i>
+                        <i class="bi bi-info-circle" aria-hidden="true"></i>
                         Noch keine Benutzer vorhanden.
                         <a href="{{ path('user_management_new') }}" class="alert-link">Erstellen Sie den ersten Benutzer</a>.
                     </div>

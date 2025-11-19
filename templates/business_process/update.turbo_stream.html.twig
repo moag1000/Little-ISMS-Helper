@@ -23,11 +23,11 @@
             <td>
                 <a href="{{ path('app_business_process_show', {'id': business_process.id}) }}"
                    class="btn btn-sm btn-primary" data-turbo-frame="_top">
-                    <i class="bi bi-eye"></i>
+                    <i class="bi bi-eye" aria-hidden="true"></i>
                 </a>
                 <a href="{{ path('app_business_process_edit', {'id': business_process.id}) }}"
                    class="btn btn-sm btn-secondary" data-turbo-frame="_top">
-                    <i class="bi bi-pencil"></i>
+                    <i class="bi bi-pencil" aria-hidden="true"></i>
                 </a>
             </td>
         </tr>
@@ -56,7 +56,7 @@
 <turbo-stream action="append" target="notifications">
     <template>
         <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <i class="bi bi-check-circle"></i> <strong>Erfolg!</strong> Geschäftsprozess "{{ business_process.name }}" wurde aktualisiert.
+            <i class="bi bi-check-circle" aria-hidden="true"></i> <strong>Erfolg!</strong> Geschäftsprozess "{{ business_process.name }}" wurde aktualisiert.
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     </template>

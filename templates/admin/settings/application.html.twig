@@ -13,7 +13,7 @@
             <div class="card">
                 <div class="card-header bg-white">
                     <h5 class="card-title mb-0">
-                        <i class="bi bi-gear-fill text-primary"></i>
+                        <i class="bi bi-gear-fill text-primary" aria-hidden="true"></i>
                         {{ 'admin.settings.application.title'|trans }}
                     </h5>
                 </div>
@@ -93,10 +93,10 @@
 
                         <div class="d-flex justify-content-between">
                             <a href="{{ path('admin_settings_index') }}" class="btn btn-secondary">
-                                <i class="bi bi-arrow-left"></i> {{ 'common.back'|trans }}
+                                <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans }}
                             </a>
                             <button type="submit" class="btn btn-primary">
-                                <i class="bi bi-save"></i> {{ 'common.save'|trans }}
+                                <i class="bi bi-save" aria-hidden="true"></i> {{ 'common.save'|trans }}
                             </button>
                         </div>
                     </form>

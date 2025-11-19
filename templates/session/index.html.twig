@@ -67,11 +67,11 @@
                 </div>
                 <div class="col-auto">
                     <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-search"></i> Filtern
+                        <i class="bi bi-search" aria-hidden="true"></i> Filtern
                     </button>
                     {% if search_email %}
                         <a href="{{ path('session_index') }}" class="btn btn-outline-secondary">
-                            <i class="bi bi-x"></i> Zurücksetzen
+                            <i class="bi bi-x" aria-hidden="true"></i> Zurücksetzen
                         </a>
                     {% endif %}
                 </div>
@@ -83,7 +83,7 @@
     <div class="card">
         <div class="card-header bg-primary text-white">
             <h5 class="mb-0">
-                <i class="bi bi-list-ul"></i> Aktive Sitzungen
+                <i class="bi bi-list-ul" aria-hidden="true"></i> Aktive Sitzungen
             </h5>
         </div>
         <div class="card-body">
@@ -105,7 +105,7 @@
                             {% for session in sessions %}
                                 <tr>
                                     <td>
-                                        <i class="bi bi-person"></i>
+                                        <i class="bi bi-person" aria-hidden="true"></i>
                                         <strong>{{ session.user.firstName }} {{ session.user.lastName }}</strong>
                                         <br>
                                         <small class="text-muted">{{ session.user.email }}</small>
@@ -117,15 +117,15 @@
                                         <small class="text-muted" title="{{ session.userAgent }}">
                                             {% if session.userAgent %}
                                                 {% if 'Chrome' in session.userAgent %}
-                                                    <i class="bi bi-browser-chrome"></i> Chrome
+                                                    <i class="bi bi-browser-chrome" aria-hidden="true"></i> Chrome
                                                 {% elseif 'Firefox' in session.userAgent %}
-                                                    <i class="bi bi-browser-firefox"></i> Firefox
+                                                    <i class="bi bi-browser-firefox" aria-hidden="true"></i> Firefox
                                                 {% elseif 'Safari' in session.userAgent %}
-                                                    <i class="bi bi-browser-safari"></i> Safari
+                                                    <i class="bi bi-browser-safari" aria-hidden="true"></i> Safari
                                                 {% elseif 'Edge' in session.userAgent %}
-                                                    <i class="bi bi-browser-edge"></i> Edge
+                                                    <i class="bi bi-browser-edge" aria-hidden="true"></i> Edge
                                                 {% else %}
-                                                    <i class="bi bi-globe"></i> {{ session.userAgent|slice(0, 20) }}...
+                                                    <i class="bi bi-globe" aria-hidden="true"></i> {{ session.userAgent|slice(0, 20) }}...
                                                 {% endif %}
                                             {% else %}
                                                 N/A
@@ -156,7 +156,7 @@
                                             <a href="{{ path('session_show', {userName: session.user.email}) }}"
                                                class="btn btn-outline-primary"
                                                title="Details anzeigen">
-                                                <i class="bi bi-eye"></i>
+                                                <i class="bi bi-eye" aria-hidden="true"></i>
                                             </a>
                                             <form method="post"
                                                   action="{{ path('session_terminate_single', {sessionId: session.sessionId}) }}"
@@ -167,7 +167,7 @@
                                                         class="btn btn-outline-danger"
                                                         title="Session beenden"
                                                         onclick="return confirm('Möchten Sie diese Sitzung wirklich beenden?')">
-                                                    <i class="bi bi-x-circle"></i>
+                                                    <i class="bi bi-x-circle" aria-hidden="true"></i>
                                                 </button>
                                             </form>
                                         </div>
@@ -179,7 +179,7 @@
                 </div>
             {% else %}
                 <div class="alert alert-info">
-                    <i class="bi bi-info-circle"></i>
+                    <i class="bi bi-info-circle" aria-hidden="true"></i>
                     Keine aktiven Sitzungen im gewählten Zeitraum gefunden.
                 </div>
             {% endif %}
@@ -188,7 +188,7 @@
 
     {# Info Box #}
     <div class="alert alert-success mt-4">
-        <i class="bi bi-check-circle"></i>
+        <i class="bi bi-check-circle" aria-hidden="true"></i>
         <strong>Session Management:</strong> Aktive Sitzungen werden in der Datenbank getrackt.
         Administratoren können Sitzungen einzeln oder für alle Benutzer beenden.
         Maximale gleichzeitige Sitzungen pro Benutzer: {{ statistics.max_concurrent }}

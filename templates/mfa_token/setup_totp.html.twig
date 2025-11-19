@@ -8,7 +8,7 @@
 {% block admin_content %}
     <div class="mb-4">
         <a href="{{ path('admin_mfa_index') }}" class="btn btn-outline-secondary">
-            <i class="bi bi-arrow-left"></i> {{ 'common.back'|trans }}
+            <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans }}
         </a>
     </div>
 
@@ -16,7 +16,7 @@
         <div class="col-lg-8">
             <div class="card mb-4">
                 <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0"><i class="bi bi-qr-code"></i> {{ 'mfa_token.setup_totp.step1'|trans }}</h5>
+                    <h5 class="mb-0"><i class="bi bi-qr-code" aria-hidden="true"></i> {{ 'mfa_token.setup_totp.step1'|trans }}</h5>
                 </div>
                 <div class="card-body">
                     <p class="lead">{{ 'mfa_token.setup_totp.scan_instructions'|trans }}</p>
@@ -29,7 +29,7 @@
                     </div>
 
                     <div class="alert alert-info">
-                        <h6><i class="bi bi-info-circle"></i> {{ 'mfa_token.setup_totp.manual_entry'|trans }}</h6>
+                        <h6><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'mfa_token.setup_totp.manual_entry'|trans }}</h6>
                         <p class="mb-2">{{ 'mfa_token.setup_totp.manual_instructions'|trans }}</p>
                         <div class="input-group">
                             <input type="text"
@@ -40,21 +40,21 @@
                             <button class="btn btn-outline-secondary"
                                     type="button"
                                     onclick="copyToClipboard('secret-key')">
-                                <i class="bi bi-clipboard"></i> {{ 'common.copy'|trans }}
+                                <i class="bi bi-clipboard" aria-hidden="true"></i> {{ 'common.copy'|trans }}
                             </button>
                         </div>
                     </div>
 
                     <div class="alert alert-secondary">
-                        <strong><i class="bi bi-person"></i> {{ 'mfa_token.field.user'|trans }}:</strong> {{ user.email }}<br>
-                        <strong><i class="bi bi-phone"></i> {{ 'mfa_token.field.device_name'|trans }}:</strong> {{ mfa_token.deviceName }}
+                        <strong><i class="bi bi-person" aria-hidden="true"></i> {{ 'mfa_token.field.user'|trans }}:</strong> {{ user.email }}<br>
+                        <strong><i class="bi bi-phone" aria-hidden="true"></i> {{ 'mfa_token.field.device_name'|trans }}:</strong> {{ mfa_token.deviceName }}
                     </div>
                 </div>
             </div>
 
             <div class="card mb-4">
                 <div class="card-header bg-success text-white">
-                    <h5 class="mb-0"><i class="bi bi-check-circle"></i> {{ 'mfa_token.setup_totp.step2'|trans }}</h5>
+                    <h5 class="mb-0"><i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'mfa_token.setup_totp.step2'|trans }}</h5>
                 </div>
                 <div class="card-body">
                     <p class="lead">{{ 'mfa_token.setup_totp.verify_instructions'|trans }}</p>
@@ -80,7 +80,7 @@
                         <div id="verify-feedback"></div>
 
                         <button type="submit" class="btn btn-success btn-lg w-100" id="verify-btn">
-                            <i class="bi bi-check-circle"></i> {{ 'mfa_token.setup_totp.verify_button'|trans }}
+                            <i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'mfa_token.setup_totp.verify_button'|trans }}
                         </button>
                     </form>
                 </div>
@@ -90,11 +90,11 @@
         <div class="col-lg-4">
             <div class="card border-warning">
                 <div class="card-header bg-warning">
-                    <h5 class="mb-0"><i class="bi bi-exclamation-triangle"></i> {{ 'mfa_token.backup_codes.title'|trans }}</h5>
+                    <h5 class="mb-0"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'mfa_token.backup_codes.title'|trans }}</h5>
                 </div>
                 <div class="card-body">
                     <div class="alert alert-danger">
-                        <strong><i class="bi bi-shield-exclamation"></i> {{ 'mfa_token.backup_codes.warning'|trans }}</strong>
+                        <strong><i class="bi bi-shield-exclamation" aria-hidden="true"></i> {{ 'mfa_token.backup_codes.warning'|trans }}</strong>
                         <p class="mb-0 small">{{ 'mfa_token.backup_codes.warning_text'|trans }}</p>
                     </div>
 
@@ -103,7 +103,7 @@
                     <div class="bg-light p-3 rounded border font-monospace small" style="max-height: 300px; overflow-y: auto;">
                         {% for code in backup_codes %}
                             <div class="py-1">
-                                <i class="bi bi-key-fill text-warning"></i> {{ code }}
+                                <i class="bi bi-key-fill text-warning" aria-hidden="true"></i> {{ code }}
                             </div>
                         {% endfor %}
                     </div>
@@ -112,12 +112,12 @@
                         <button type="button"
                                 class="btn btn-outline-primary btn-sm"
                                 onclick="copyBackupCodes()">
-                            <i class="bi bi-clipboard"></i> {{ 'mfa_token.backup_codes.copy_all'|trans }}
+                            <i class="bi bi-clipboard" aria-hidden="true"></i> {{ 'mfa_token.backup_codes.copy_all'|trans }}
                         </button>
                         <button type="button"
                                 class="btn btn-outline-secondary btn-sm"
                                 onclick="printBackupCodes()">
-                            <i class="bi bi-printer"></i> {{ 'mfa_token.backup_codes.print'|trans }}
+                            <i class="bi bi-printer" aria-hidden="true"></i> {{ 'mfa_token.backup_codes.print'|trans }}
                         </button>
                     </div>
                 </div>
@@ -137,7 +137,7 @@
         // Show feedback
         const btn = event.target.closest('button');
         const originalHTML = btn.innerHTML;
-        btn.innerHTML = '<i class="bi bi-check"></i> {{ 'common.copied'|trans }}';
+        btn.innerHTML = '<i class="bi bi-check" aria-hidden="true"></i> {{ 'common.copied'|trans }}';
         btn.classList.add('btn-success');
         btn.classList.remove('btn-outline-secondary');
 
@@ -155,7 +155,7 @@
         navigator.clipboard.writeText(text).then(() => {
             const btn = event.target.closest('button');
             const originalHTML = btn.innerHTML;
-            btn.innerHTML = '<i class="bi bi-check"></i> {{ 'common.copied'|trans }}';
+            btn.innerHTML = '<i class="bi bi-check" aria-hidden="true"></i> {{ 'common.copied'|trans }}';
             btn.classList.add('btn-success');
 
             setTimeout(() => {
@@ -224,7 +224,7 @@
             if (data.success) {
                 feedback.innerHTML = `
                     <div class="alert alert-success">
-                        <i class="bi bi-check-circle"></i> ${data.message}
+                        <i class="bi bi-check-circle" aria-hidden="true"></i> ${data.message}
                     </div>
                 `;
 
@@ -235,12 +235,12 @@
             } else {
                 feedback.innerHTML = `
                     <div class="alert alert-danger">
-                        <i class="bi bi-x-circle"></i> ${data.message}
+                        <i class="bi bi-x-circle" aria-hidden="true"></i> ${data.message}
                     </div>
                 `;
 
                 btn.disabled = false;
-                btn.innerHTML = '<i class="bi bi-check-circle"></i> {{ 'mfa_token.setup_totp.verify_button'|trans }}';
+                btn.innerHTML = '<i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'mfa_token.setup_totp.verify_button'|trans }}';
 
                 // Clear code field for retry
                 document.getElementById('verification-code').value = '';
@@ -250,12 +250,12 @@
         .catch(error => {
             feedback.innerHTML = `
                 <div class="alert alert-danger">
-                    <i class="bi bi-x-circle"></i> {{ 'common.error'|trans }}: ${error.message}
+                    <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'common.error'|trans }}: ${error.message}
                 </div>
             `;
 
             btn.disabled = false;
-            btn.innerHTML = '<i class="bi bi-check-circle"></i> {{ 'mfa_token.setup_totp.verify_button'|trans }}';
+            btn.innerHTML = '<i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'mfa_token.setup_totp.verify_button'|trans }}';
         });
 
         return false;
