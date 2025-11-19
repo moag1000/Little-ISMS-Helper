@@ -440,14 +440,17 @@ class IncidentController extends AbstractController
     {
         $reportData = $this->bcmImpactService->generateImpactReport($incident);
 
-        $html = $this->renderView('incident/bcm_impact_report_pdf.html.twig', $reportData);
+        $pdf = $this->pdfService->generatePdf('incident/bcm_impact_report_pdf.html.twig', $reportData);
 
-        return $this->pdfService->generatePdfResponse(
-            $html,
-            sprintf('BCM_Impact_Analysis_%s_%s.pdf',
-                $incident->getIncidentNumber(),
-                date('Y-m-d')
-            )
+        $filename = sprintf('BCM_Impact_Analysis_%s_%s.pdf',
+            $incident->getIncidentNumber(),
+            date('Y-m-d')
         );
+
+        return new Response($pdf, 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => sprintf('attachment; filename="%s"', $filename),
+            'Content-Length' => strlen($pdf),
+        ]);
     }
 }

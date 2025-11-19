@@ -83,42 +83,42 @@
         </div>
     {% else %}
         <div class="card">
-            <div class="table-responsive">
-                <table class="table table-hover mb-0">
-                    <thead>
+            {% embed '_components/_table.html.twig' with {
+                'noMargin': true
+            } %}
+                {% block table_head %}
+                    <tr>
+                        <th scope="col">{{ 'patch.field.patch_id'|trans }}</th>
+                        <th scope="col">{{ 'patch.field.title'|trans }}</th>
+                        <th scope="col">{{ 'patch.field.patch_type'|trans }}</th>
+                        <th scope="col">{{ 'patch.field.status'|trans }}</th>
+                        <th scope="col">{{ 'common.actions'|trans }}</th>
+                    </tr>
+                {% endblock %}
+                {% block table_body %}
+                    {% for patch in patches %}
                         <tr>
-                            <th scope="col">{{ 'patch.field.patch_id'|trans }}</th>
-                            <th scope="col">{{ 'patch.field.title'|trans }}</th>
-                            <th scope="col">{{ 'patch.field.patch_type'|trans }}</th>
-                            <th scope="col">{{ 'patch.field.status'|trans }}</th>
-                            <th scope="col">{{ 'common.actions'|trans }}</th>
+                            <td><code>{{ patch.patchId }}</code></td>
+                            <td>
+                                <strong>{{ patch.title }}</strong>
+                                {{ inheritance.small_badge(patch, currentTenant) }}
+                            </td>
+                            <td><span class="badge bg-secondary">{{ ('patch.type.' ~ patch.patchType)|trans }}</span></td>
+                            <td><span class="badge bg-info">{{ ('patch.status.' ~ patch.status)|trans }}</span></td>
+                            <td>
+                                <div class="btn-group btn-group-sm">
+                                    <a href="{{ path('app_patch_show', {id: patch.id}) }}" class="btn btn-outline-primary" aria-label="{{ 'common.view'|trans }}">
+                                        <i class="bi bi-eye" aria-hidden="true"></i>
+                                    </a>
+                                    <a href="{{ path('app_patch_edit', {id: patch.id}) }}" class="btn btn-outline-secondary" aria-label="{{ 'common.edit'|trans }}">
+                                        <i class="bi bi-pencil" aria-hidden="true"></i>
+                                    </a>
+                                </div>
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        {% for patch in patches %}
-                            <tr>
-                                <td><code>{{ patch.patchId }}</code></td>
-                                <td>
-                                    <strong>{{ patch.title }}</strong>
-                                    {{ inheritance.small_badge(patch, currentTenant) }}
-                                </td>
-                                <td><span class="badge bg-secondary">{{ ('patch.type.' ~ patch.patchType)|trans }}</span></td>
-                                <td><span class="badge bg-info">{{ ('patch.status.' ~ patch.status)|trans }}</span></td>
-                                <td>
-                                    <div class="btn-group btn-group-sm">
-                                        <a href="{{ path('app_patch_show', {id: patch.id}) }}" class="btn btn-outline-primary" aria-label="{{ 'common.view'|trans }}">
-                                            <i class="bi bi-eye" aria-hidden="true"></i>
-                                        </a>
-                                        <a href="{{ path('app_patch_edit', {id: patch.id}) }}" class="btn btn-outline-secondary" aria-label="{{ 'common.edit'|trans }}">
-                                            <i class="bi bi-pencil" aria-hidden="true"></i>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+                    {% endfor %}
+                {% endblock %}
+            {% endembed %}
         </div>
     {% endif %}
 </div>
