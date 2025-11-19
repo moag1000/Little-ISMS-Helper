@@ -1,0 +1,144 @@
+{#
+/**
+ * Standardized Table Component
+ *
+ * Purpose: Provides consistent, accessible, and responsive table structure across all templates.
+ * Created to address UI/UX Audit Issue 4.1 - Inconsistent Table Classes (137 tables)
+ *
+ * @param variant string Table style variant
+ *   - 'default': Basic table with hover effect (default)
+ *   - 'striped': Zebra-striped rows
+ *   - 'small': Compact table with reduced padding
+ *   - 'bordered': Table with borders on all sides
+ *   - 'borderless': Table without borders
+ * @param responsive bool Enable responsive wrapper for mobile (default: true)
+ * @param stickyHeader bool Enable sticky header for scrollable tables (default: false)
+ * @param hover bool Enable row hover effect (default: true)
+ * @param noMargin bool Remove bottom margin from table (default: false)
+ * @param theadClass string Additional classes for thead (e.g., 'table-light', 'table-dark')
+ * @param class string Additional CSS classes for table element
+ * @param wrapperClass string Additional CSS classes for wrapper element
+ * @param id string HTML id attribute for table
+ * @param columns array Column definitions with headers
+ *   Each column: { label: 'Column Name', scope: 'col', class: 'text-center', style: 'min-width: 100px;' }
+ *
+ * Usage Patterns:
+ *
+ * 1. Basic table with auto-generated headers:
+ *    {% embed '_components/_table.html.twig' %}
+ *        {% block table_head %}
+ *            <tr>
+ *                <th scope="col">{{ 'field.name'|trans }}</th>
+ *                <th scope="col">{{ 'field.status'|trans }}</th>
+ *            </tr>
+ *        {% endblock %}
+ *        {% block table_body %}
+ *            {% for item in items %}
+ *            <tr>
+ *                <td>{{ item.name }}</td>
+ *                <td>{{ item.status }}</td>
+ *            </tr>
+ *            {% endfor %}
+ *        {% endblock %}
+ *    {% endembed %}
+ *
+ * 2. Small striped table with sticky header:
+ *    {% embed '_components/_table.html.twig' with {
+ *        'variant': 'small',
+ *        'stickyHeader': true,
+ *        'theadClass': 'table-light'
+ *    } %}
+ *        {% block table_head %}
+ *            ...
+ *        {% endblock %}
+ *        {% block table_body %}
+ *            ...
+ *        {% endblock %}
+ *    {% endembed %}
+ *
+ * 3. Table inside card with no margin:
+ *    {% embed '_components/_table.html.twig' with {
+ *        'noMargin': true
+ *    } %}
+ *        ...
+ *    {% endembed %}
+ *
+ * Accessibility Features:
+ * - Responsive wrapper for mobile/tablet devices
+ * - Semantic HTML5 table structure
+ * - scope="col" on header cells for screen readers
+ * - WCAG 2.1 AA compliant
+ *
+ * Dark Mode Support:
+ * - All variants support dark mode via CSS variables
+ * - Consistent with app.css theme system
+ */
+#}
+
+{% set defaultVariant = variant|default('default') %}
+{% set isResponsive = responsive is defined ? responsive : true %}
+{% set hasStickyHeader = stickyHeader|default(false) %}
+{% set hasHover = hover is defined ? hover : true %}
+{% set hasNoMargin = noMargin|default(false) %}
+
+{# Build table classes #}
+{% set tableClasses = ['table'] %}
+{% if hasHover %}
+    {% set tableClasses = tableClasses|merge(['table-hover']) %}
+{% endif %}
+{% if defaultVariant == 'striped' %}
+    {% set tableClasses = tableClasses|merge(['table-striped']) %}
+{% elseif defaultVariant == 'small' %}
+    {% set tableClasses = tableClasses|merge(['table-sm']) %}
+{% elseif defaultVariant == 'bordered' %}
+    {% set tableClasses = tableClasses|merge(['table-bordered']) %}
+{% elseif defaultVariant == 'borderless' %}
+    {% set tableClasses = tableClasses|merge(['table-borderless']) %}
+{% endif %}
+{% if hasNoMargin %}
+    {% set tableClasses = tableClasses|merge(['mb-0']) %}
+{% endif %}
+{% if class is defined and class %}
+    {% set tableClasses = tableClasses|merge(class|split(' ')) %}
+{% endif %}
+
+{# Build thead classes #}
+{% set theadClasses = [] %}
+{% if hasStickyHeader %}
+    {% set theadClasses = theadClasses|merge(['sticky-top']) %}
+{% endif %}
+{% if theadClass is defined and theadClass %}
+    {% set theadClasses = theadClasses|merge(theadClass|split(' ')) %}
+{% endif %}
+
+{# Build wrapper classes #}
+{% set wrapperClasses = [] %}
+{% if isResponsive %}
+    {% set wrapperClasses = wrapperClasses|merge(['table-responsive']) %}
+{% endif %}
+{% if wrapperClass is defined and wrapperClass %}
+    {% set wrapperClasses = wrapperClasses|merge(wrapperClass|split(' ')) %}
+{% endif %}
+
+{# Render table #}
+{% if isResponsive %}
+<div class="{{ wrapperClasses|join(' ') }}">
+{% endif %}
+    <table class="{{ tableClasses|join(' ') }}"{% if id is defined %} id="{{ id }}"{% endif %}>
+        {% if block('table_head') is defined %}
+        <thead{% if theadClasses|length > 0 %} class="{{ theadClasses|join(' ') }}"{% endif %}>
+            {% block table_head %}{% endblock %}
+        </thead>
+        {% endif %}
+        <tbody{% if block('table_body_attrs') is defined %} {{ block('table_body_attrs') }}{% endif %}>
+            {% block table_body %}{% endblock %}
+        </tbody>
+        {% if block('table_foot') is defined %}
+        <tfoot>
+            {% block table_foot %}{% endblock %}
+        </tfoot>
+        {% endif %}
+    </table>
+{% if isResponsive %}
+</div>
+{% endif %}

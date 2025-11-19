@@ -107,71 +107,70 @@
             </div>
             <div class="card-body">
                 {% if business_processes|length > 0 %}
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th scope="col">Name</th>
-                                    <th scope="col">Verantwortlicher</th>
-                                    <th scope="col">Kritikalität</th>
-                                    <th scope="col">RTO</th>
-                                    <th scope="col">RPO</th>
-                                    <th scope="col">MTPD</th>
-                                    <th scope="col">Impact Score</th>
-                                    <th scope="col">Aktionen</th>
-                                </tr>
-                            </thead>
-                            <tbody id="business-processes-table-body">
-                                {% for process in business_processes %}
-                                    <tr id="business-process-{{ process.id }}">
-                                        <td>
-                                            <a href="{{ path('app_business_process_show', {'id': process.id}) }}" data-turbo-frame="_top">
-                                                {{ process.name }}
+                    {% embed '_components/_table.html.twig' %}
+                        {% block table_head %}
+                            <tr>
+                                <th scope="col">Name</th>
+                                <th scope="col">Verantwortlicher</th>
+                                <th scope="col">Kritikalität</th>
+                                <th scope="col">RTO</th>
+                                <th scope="col">RPO</th>
+                                <th scope="col">MTPD</th>
+                                <th scope="col">Impact Score</th>
+                                <th scope="col">Aktionen</th>
+                            </tr>
+                        {% endblock %}
+                        {% block table_body_attrs %}id="business-processes-table-body"{% endblock %}
+                        {% block table_body %}
+                            {% for process in business_processes %}
+                                <tr id="business-process-{{ process.id }}">
+                                    <td>
+                                        <a href="{{ path('app_business_process_show', {'id': process.id}) }}" data-turbo-frame="_top">
+                                            {{ process.name }}
+                                        </a>
+                                        {{ inheritance.small_badge(process, currentTenant) }}
+                                    </td>
+                                    <td>{{ process.processOwner }}</td>
+                                    <td>
+                                        {% set criticality_class = {
+                                            'critical': 'danger',
+                                            'high': 'warning',
+                                            'medium': 'info',
+                                            'low': 'secondary'
+                                        } %}
+                                        <span class="badge bg-{{ criticality_class[process.criticality] ?? 'secondary' }}">
+                                            {{ process.criticality|capitalize }}
+                                        </span>
+                                    </td>
+                                    <td>{{ process.rto }}h</td>
+                                    <td>{{ process.rpo }}h</td>
+                                    <td>{{ process.mtpd }}h</td>
+                                    <td>
+                                        {% set score = process.businessImpactScore %}
+                                        <span class="badge bg-{{ score >= 4 ? 'danger' : (score >= 3 ? 'warning' : 'success') }}">
+                                            {{ score }}/5
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm" role="group">
+                                            <a href="{{ path('app_business_process_show', {'id': process.id}) }}"
+                                               class="btn btn-outline-primary" title="Ansehen" data-turbo-frame="_top" aria-label="{{ 'common.view'|trans }}">
+                                                <i class="bi bi-eye" aria-hidden="true"></i>
                                             </a>
-                                            {{ inheritance.small_badge(process, currentTenant) }}
-                                        </td>
-                                        <td>{{ process.processOwner }}</td>
-                                        <td>
-                                            {% set criticality_class = {
-                                                'critical': 'danger',
-                                                'high': 'warning',
-                                                'medium': 'info',
-                                                'low': 'secondary'
-                                            } %}
-                                            <span class="badge bg-{{ criticality_class[process.criticality] ?? 'secondary' }}">
-                                                {{ process.criticality|capitalize }}
-                                            </span>
-                                        </td>
-                                        <td>{{ process.rto }}h</td>
-                                        <td>{{ process.rpo }}h</td>
-                                        <td>{{ process.mtpd }}h</td>
-                                        <td>
-                                            {% set score = process.businessImpactScore %}
-                                            <span class="badge bg-{{ score >= 4 ? 'danger' : (score >= 3 ? 'warning' : 'success') }}">
-                                                {{ score }}/5
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <div class="btn-group btn-group-sm" role="group">
-                                                <a href="{{ path('app_business_process_show', {'id': process.id}) }}" 
-                                                   class="btn btn-outline-primary" title="Ansehen" data-turbo-frame="_top" aria-label="{{ 'common.view'|trans }}">
-                                                    <i class="bi bi-eye" aria-hidden="true"></i>
-                                                </a>
-                                                <a href="{{ path('app_business_process_edit', {'id': process.id}) }}" 
-                                                   class="btn btn-outline-secondary" title="Bearbeiten" data-turbo-frame="_top" aria-label="{{ 'common.edit'|trans }}">
-                                                    <i class="bi bi-pencil" aria-hidden="true"></i>
-                                                </a>
-                                                <a href="{{ path('app_business_process_bia', {'id': process.id}) }}" 
-                                                   class="btn btn-outline-info" title="BIA" data-turbo-frame="_top" aria-label="{{ 'common.view_details'|trans }}">
-                                                    <i class="bi bi-graph-up" aria-hidden="true"></i>
-                                                </a>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
+                                            <a href="{{ path('app_business_process_edit', {'id': process.id}) }}"
+                                               class="btn btn-outline-secondary" title="Bearbeiten" data-turbo-frame="_top" aria-label="{{ 'common.edit'|trans }}">
+                                                <i class="bi bi-pencil" aria-hidden="true"></i>
+                                            </a>
+                                            <a href="{{ path('app_business_process_bia', {'id': process.id}) }}"
+                                               class="btn btn-outline-info" title="BIA" data-turbo-frame="_top" aria-label="{{ 'common.view_details'|trans }}">
+                                                <i class="bi bi-graph-up" aria-hidden="true"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        {% endblock %}
+                    {% endembed %}
                 {% else %}
                     <div class="alert alert-info">
                         <i class="bi bi-info-circle" aria-hidden="true"></i>
