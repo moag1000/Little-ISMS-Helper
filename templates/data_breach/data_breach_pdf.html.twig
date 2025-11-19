@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Data Breach Report - {{ breach.referenceNumber }}</title>
+    <style>
+        @page {
+            margin: 2cm;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 11pt;
+            line-height: 1.6;
+            color: #333;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #dc3545;
+            padding-bottom: 15px;
+        }
+        .header h1 {
+            color: #dc3545;
+            margin: 0;
+            font-size: 24pt;
+        }
+        .header p {
+            margin: 5px 0;
+            color: #666;
+        }
+        .meta-info {
+            background: #f8f9fa;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-left: 4px solid #dc3545;
+        }
+        .meta-info table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .meta-info td {
+            padding: 5px 10px;
+        }
+        .meta-info td:first-child {
+            font-weight: bold;
+            width: 35%;
+        }
+        .section {
+            margin-bottom: 25px;
+            page-break-inside: avoid;
+        }
+        .section h2 {
+            color: #dc3545;
+            border-bottom: 1px solid #dc3545;
+            padding-bottom: 5px;
+            margin-top: 0;
+            font-size: 14pt;
+        }
+        .section h3 {
+            color: #666;
+            font-size: 12pt;
+            margin-top: 15px;
+            margin-bottom: 8px;
+        }
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 9pt;
+            font-weight: bold;
+            color: white;
+        }
+        .badge-danger { background: #dc3545; }
+        .badge-warning { background: #ffc107; color: #333; }
+        .badge-success { background: #28a745; }
+        .badge-info { background: #17a2b8; }
+        .badge-secondary { background: #6c757d; }
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        .table th,
+        .table td {
+            border: 1px solid #dee2e6;
+            padding: 8px;
+            text-align: left;
+        }
+        .table th {
+            background: #f8f9fa;
+            font-weight: bold;
+        }
+        .alert {
+            padding: 12px 15px;
+            margin: 15px 0;
+            border-left: 4px solid;
+        }
+        .alert-danger {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+        .alert-warning {
+            background: #fff3cd;
+            border-color: #ffc107;
+            color: #856404;
+        }
+        .footer {
+            margin-top: 40px;
+            padding-top: 15px;
+            border-top: 1px solid #dee2e6;
+            font-size: 9pt;
+            color: #666;
+            text-align: center;
+        }
+        ul {
+            margin: 5px 0;
+            padding-left: 20px;
+        }
+        .page-break {
+            page-break-after: always;
+        }
+    </style>
+</head>
+<body>
+    {# Header #}
+    <div class="header">
+        <h1>Data Breach Notification Report</h1>
+        <p>Personal Data Breach per GDPR Art. 33/34</p>
+        <p><strong>{{ breach.title }}</strong></p>
+        <p>{{ breach.referenceNumber }} - {{ "now"|date('Y-m-d H:i') }}</p>
+    </div>
+
+    {# Meta Information #}
+    <div class="meta-info">
+        <table>
+            <tr>
+                <td>Reference Number:</td>
+                <td><strong>{{ breach.referenceNumber }}</strong></td>
+            </tr>
+            <tr>
+                <td>Status:</td>
+                <td>
+                    {% set status_class = {
+                        'draft': 'secondary',
+                        'under_assessment': 'info',
+                        'authority_notified': 'success',
+                        'subjects_notified': 'success',
+                        'closed': 'secondary'
+                    }[breach.status] %}
+                    <span class="badge badge-{{ status_class }}">{{ breach.status|replace({'_': ' '})|upper }}</span>
+                </td>
+            </tr>
+            <tr>
+                <td>Risk Level:</td>
+                <td>
+                    {% if breach.riskLevel %}
+                        {% set risk_class = {'low': 'success', 'medium': 'info', 'high': 'warning', 'critical': 'danger'}[breach.riskLevel] %}
+                        <span class="badge badge-{{ risk_class }}">{{ breach.riskLevel|upper }}</span>
+                    {% else %}
+                        Not assessed
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td>Affected Data Subjects:</td>
+                <td>{{ breach.affectedDataSubjects|default('Unknown')|number_format }}</td>
+            </tr>
+            <tr>
+                <td>Detection Date/Time:</td>
+                <td>{{ breach.incident.detectedAt|date('Y-m-d H:i') }}</td>
+            </tr>
+            <tr>
+                <td>Report Generated:</td>
+                <td>{{ "now"|date('Y-m-d H:i') }}</td>
+            </tr>
+        </table>
+    </div>
+
+    {# 72-Hour Deadline Status #}
+    {% if breach.requiresAuthorityNotification %}
+        <div class="section">
+            <h2>⏰ Art. 33 - 72-Hour Notification Requirement</h2>
+            {% if breach.supervisoryAuthorityNotifiedAt %}
+                <p>
+                    <strong>✓ Supervisory authority notified:</strong> {{ breach.supervisoryAuthorityNotifiedAt|date('Y-m-d H:i') }}
+                </p>
+                <p><strong>Authority:</strong> {{ breach.supervisoryAuthorityName }}</p>
+                <p><strong>Method:</strong> {{ breach.notificationMethod }}</p>
+                {% if breach.supervisoryAuthorityReference %}
+                    <p><strong>Reference Number:</strong> {{ breach.supervisoryAuthorityReference }}</p>
+                {% endif %}
+                {% if breach.notificationDelayReason %}
+                    <div class="alert alert-warning">
+                        <strong>Notification Delay Justification:</strong><br>
+                        {{ breach.notificationDelayReason }}
+                    </div>
+                {% endif %}
+            {% else %}
+                {% set hours = breach.hoursUntilAuthorityDeadline %}
+                {% if hours < 0 %}
+                    <div class="alert alert-danger">
+                        <strong>⚠ OVERDUE:</strong> Supervisory authority notification is {{ (hours * -1)|number_format }} hours overdue!<br>
+                        <strong>Detection:</strong> {{ breach.incident.detectedAt|date('Y-m-d H:i') }}<br>
+                        <strong>Deadline:</strong> {{ breach.authorityNotificationDeadline|date('Y-m-d H:i') }}
+                    </div>
+                {% else %}
+                    <div class="alert alert-warning">
+                        <strong>⏰ PENDING:</strong> {{ hours|number_format }} hours remaining until 72-hour deadline<br>
+                        <strong>Deadline:</strong> {{ breach.authorityNotificationDeadline|date('Y-m-d H:i') }}
+                    </div>
+                {% endif %}
+            {% endif %}
+        </div>
+    {% endif %}
+
+    {# Linked Incident & VVT #}
+    <div class="section">
+        <h2>📋 Linked Security Incident & Processing Activity</h2>
+        <p><strong>Security Incident:</strong> {{ breach.incident.referenceNumber }} - {{ breach.incident.title }}</p>
+        <p><strong>Incident Severity:</strong>
+            {% set sev_class = {'low': 'success', 'medium': 'info', 'high': 'warning', 'critical': 'danger'}[breach.incident.severity] %}
+            <span class="badge badge-{{ sev_class }}">{{ breach.incident.severity|upper }}</span>
+        </p>
+        {% if breach.processingActivity %}
+            <p><strong>Processing Activity (VVT - Art. 30):</strong> {{ breach.processingActivity.name }}</p>
+        {% endif %}
+    </div>
+
+    <div class="page-break"></div>
+
+    {# Art. 33(3)(a) - Nature of Breach #}
+    <div class="section">
+        <h2>1. Art. 33(3)(a) - Nature of the Personal Data Breach</h2>
+
+        <h3>Breach Description:</h3>
+        <p>{{ breach.breachNature|nl2br }}</p>
+
+        <h3>Categories of Personal Data Concerned:</h3>
+        {% if breach.dataCategories|length > 0 %}
+            <ul>
+                {% for category in breach.dataCategories %}
+                    <li>{{ category }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p><em>Not specified</em></p>
+        {% endif %}
+
+        <h3>Categories of Data Subjects Concerned:</h3>
+        {% if breach.dataSubjectCategories|length > 0 %}
+            <ul>
+                {% for category in breach.dataSubjectCategories %}
+                    <li>{{ category }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p><em>Not specified</em></p>
+        {% endif %}
+
+        <h3>Approximate Number of Data Subjects Concerned:</h3>
+        <p>{{ breach.affectedDataSubjects|default('Unknown') }}</p>
+
+        {% if breach.specialCategoriesAffected %}
+            <div class="alert alert-warning">
+                <strong>⚠ Special Categories of Personal Data Affected (Art. 9 GDPR)</strong><br>
+                This breach involves special categories of data (racial/ethnic origin, political opinions,
+                religious beliefs, trade union membership, genetic data, biometric data, health data,
+                sex life or sexual orientation).
+            </div>
+        {% endif %}
+
+        {% if breach.criminalDataAffected %}
+            <div class="alert alert-warning">
+                <strong>⚠ Criminal Conviction Data Affected (Art. 10 GDPR)</strong><br>
+                This breach involves data concerning criminal convictions and offences.
+            </div>
+        {% endif %}
+    </div>
+
+    {# Art. 33(3)(b) - Likely Consequences #}
+    <div class="section">
+        <h2>2. Art. 33(3)(b) - Likely Consequences of the Breach</h2>
+        <p>{{ breach.likelyConsequences|nl2br }}</p>
+    </div>
+
+    {# Art. 33(3)(c) & (d) - Measures #}
+    <div class="section">
+        <h2>3. Art. 33(3)(c) & (d) - Measures Taken or Proposed</h2>
+
+        <h3>Measures Taken to Address the Breach:</h3>
+        <p>{{ breach.measuresTaken|nl2br }}</p>
+
+        {% if breach.mitigationMeasures %}
+            <h3>Measures to Mitigate Possible Adverse Effects:</h3>
+            <p>{{ breach.mitigationMeasures|nl2br }}</p>
+        {% endif %}
+    </div>
+
+    <div class="page-break"></div>
+
+    {# Risk Assessment #}
+    {% if breach.riskLevel or breach.riskAssessment %}
+        <div class="section">
+            <h2>4. Risk Assessment</h2>
+            {% if breach.riskLevel %}
+                <p><strong>Risk Level:</strong>
+                    {% set risk_class = {'low': 'success', 'medium': 'info', 'high': 'warning', 'critical': 'danger'}[breach.riskLevel] %}
+                    <span class="badge badge-{{ risk_class }}">{{ breach.riskLevel|upper }}</span>
+                </p>
+            {% endif %}
+            {% if breach.riskAssessment %}
+                <p>{{ breach.riskAssessment|nl2br }}</p>
+            {% endif %}
+        </div>
+    {% endif %}
+
+    {# Art. 34 - Data Subject Notification #}
+    <div class="section">
+        <h2>5. Art. 34 - Communication to Data Subjects</h2>
+        {% if breach.requiresSubjectNotification %}
+            <p><strong>Subject Notification Required:</strong> Yes (High risk to rights and freedoms)</p>
+            {% if breach.dataSubjectsNotifiedAt %}
+                <p><strong>Notification Date:</strong> {{ breach.dataSubjectsNotifiedAt|date('Y-m-d H:i') }}</p>
+                <p><strong>Notification Method:</strong> {{ breach.subjectNotificationMethod }}</p>
+                <p><strong>Number of Subjects Notified:</strong> {{ breach.subjectsNotified|number_format }}</p>
+            {% else %}
+                <p class="alert alert-warning"><strong>Pending:</strong> Data subjects not yet notified.</p>
+            {% endif %}
+        {% else %}
+            <p><strong>Subject Notification Required:</strong> No</p>
+            {% if breach.noSubjectNotificationReason %}
+                <p><strong>Exemption Reason (Art. 34(3)):</strong><br>
+                {{ breach.noSubjectNotificationReason }}</p>
+            {% endif %}
+        {% endif %}
+    </div>
+
+    {# Investigation & Follow-up #}
+    {% if breach.rootCause or breach.lessonsLearned or breach.followUpActions|length > 0 %}
+        <div class="section">
+            <h2>6. Investigation & Lessons Learned</h2>
+
+            {% if breach.rootCause %}
+                <h3>Root Cause Analysis:</h3>
+                <p>{{ breach.rootCause|nl2br }}</p>
+            {% endif %}
+
+            {% if breach.lessonsLearned %}
+                <h3>Lessons Learned:</h3>
+                <p>{{ breach.lessonsLearned|nl2br }}</p>
+            {% endif %}
+
+            {% if breach.followUpActions|length > 0 %}
+                <h3>Follow-up Actions:</h3>
+                <ul>
+                    {% for action in breach.followUpActions %}
+                        <li>{{ action }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+    {% endif %}
+
+    {# DPO Consultation #}
+    {% if breach.dataProtectionOfficer %}
+        <div class="section">
+            <h2>7. Data Protection Officer Involvement</h2>
+            <p><strong>DPO:</strong> {{ breach.dataProtectionOfficer.firstName }} {{ breach.dataProtectionOfficer.lastName }}</p>
+            <p><strong>Email:</strong> {{ breach.dataProtectionOfficer.email }}</p>
+        </div>
+    {% endif %}
+
+    {# Declaration #}
+    <div class="section">
+        <h2>8. Declaration</h2>
+        <p>
+            This report is submitted in accordance with Art. 33 of the General Data Protection Regulation (GDPR).
+            The information provided is accurate to the best of our knowledge at the time of reporting.
+        </p>
+        {% if breach.assessor %}
+            <p>
+                <strong>Prepared by:</strong> {{ breach.assessor.firstName }} {{ breach.assessor.lastName }}<br>
+                <strong>Email:</strong> {{ breach.assessor.email }}
+            </p>
+        {% endif %}
+    </div>
+
+    {# Footer #}
+    <div class="footer">
+        <p>
+            Data Breach Report - {{ breach.referenceNumber }}<br>
+            Generated: {{ "now"|date('Y-m-d H:i:s') }}<br>
+            GDPR Art. 33/34 Compliance Report
+        </p>
+    </div>
+</body>
+</html>
