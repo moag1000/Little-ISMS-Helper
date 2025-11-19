@@ -123,145 +123,147 @@
         {{ 'asset.description.rto_analysis'|trans }}
     </p>
 
-    <div class="table-container">
-        <table>
-            <thead>
-                <tr>
-                    <th scope="col">{{ 'asset.field.rto_category'|trans }}</th>
-                    <th scope="col" class="text-center">{{ 'asset.field.asset_count'|trans }}</th>
-                    <th scope="col">{{ 'asset.field.examples'|trans }}</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>
-                        <strong>{{ 'asset.rto.immediate'|trans }}</strong>
-                        <br><small class="text-muted">&lt; 1h</small>
-                    </td>
-                    <td class="text-center">
-                        <span class="badge badge-danger">{{ rtoCategories.immediate|length }}</span>
-                    </td>
-                    <td>
-                        {% for asset in rtoCategories.immediate|slice(0, 3) %}
-                            <span class="badge badge-secondary mr-xs">{{ asset.name }}</span>
-                        {% endfor %}
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <strong>{{ 'asset.rto.urgent'|trans }}</strong>
-                        <br><small class="text-muted">1-4h</small>
-                    </td>
-                    <td class="text-center">
-                        <span class="badge badge-warning">{{ rtoCategories.urgent|length }}</span>
-                    </td>
-                    <td>
-                        {% for asset in rtoCategories.urgent|slice(0, 3) %}
-                            <span class="badge badge-secondary mr-xs">{{ asset.name }}</span>
-                        {% endfor %}
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <strong>{{ 'asset.rto.standard'|trans }}</strong>
-                        <br><small class="text-muted">4-24h</small>
-                    </td>
-                    <td class="text-center">
-                        <span class="badge badge-info">{{ rtoCategories.standard|length }}</span>
-                    </td>
-                    <td>
-                        {% for asset in rtoCategories.standard|slice(0, 3) %}
-                            <span class="badge badge-secondary mr-xs">{{ asset.name }}</span>
-                        {% endfor %}
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <strong>{{ 'asset.rto.flexible'|trans }}</strong>
-                        <br><small class="text-muted">&gt; 24h</small>
-                    </td>
-                    <td class="text-center">
-                        <span class="badge badge-secondary">{{ rtoCategories.flexible|length }}</span>
-                    </td>
-                    <td>
-                        {% for asset in rtoCategories.flexible|slice(0, 3) %}
-                            <span class="badge badge-secondary mr-xs">{{ asset.name }}</span>
-                        {% endfor %}
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+    {% embed '_components/_table.html.twig' with {
+        'noMargin': true,
+        'responsive': true
+    } %}
+        {% block table_head %}
+            <tr>
+                <th scope="col">{{ 'asset.field.rto_category'|trans }}</th>
+                <th scope="col" class="text-center">{{ 'asset.field.asset_count'|trans }}</th>
+                <th scope="col">{{ 'asset.field.examples'|trans }}</th>
+            </tr>
+        {% endblock %}
+        {% block table_body %}
+            <tr>
+                <td>
+                    <strong>{{ 'asset.rto.immediate'|trans }}</strong>
+                    <br><small class="text-muted">&lt; 1h</small>
+                </td>
+                <td class="text-center">
+                    <span class="badge bg-danger">{{ rtoCategories.immediate|length }}</span>
+                </td>
+                <td>
+                    {% for asset in rtoCategories.immediate|slice(0, 3) %}
+                        <span class="badge bg-secondary mr-xs">{{ asset.name }}</span>
+                    {% endfor %}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>{{ 'asset.rto.urgent'|trans }}</strong>
+                    <br><small class="text-muted">1-4h</small>
+                </td>
+                <td class="text-center">
+                    <span class="badge bg-warning">{{ rtoCategories.urgent|length }}</span>
+                </td>
+                <td>
+                    {% for asset in rtoCategories.urgent|slice(0, 3) %}
+                        <span class="badge bg-secondary mr-xs">{{ asset.name }}</span>
+                    {% endfor %}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>{{ 'asset.rto.standard'|trans }}</strong>
+                    <br><small class="text-muted">4-24h</small>
+                </td>
+                <td class="text-center">
+                    <span class="badge bg-info">{{ rtoCategories.standard|length }}</span>
+                </td>
+                <td>
+                    {% for asset in rtoCategories.standard|slice(0, 3) %}
+                        <span class="badge bg-secondary mr-xs">{{ asset.name }}</span>
+                    {% endfor %}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>{{ 'asset.rto.flexible'|trans }}</strong>
+                    <br><small class="text-muted">&gt; 24h</small>
+                </td>
+                <td class="text-center">
+                    <span class="badge bg-secondary">{{ rtoCategories.flexible|length }}</span>
+                </td>
+                <td>
+                    {% for asset in rtoCategories.flexible|slice(0, 3) %}
+                        <span class="badge bg-secondary mr-xs">{{ asset.name }}</span>
+                    {% endfor %}
+                </td>
+            </tr>
+        {% endblock %}
+    {% endembed %}
 </div>
 
 {# Critical Assets Details #}
 <h2>{{ 'asset.section.critical_assets'|trans }}</h2>
 
-<div class="table-container">
-    <table>
-        <thead>
-            <tr>
-                <th scope="col">{{ 'asset.field.asset_name'|trans }}</th>
-                <th scope="col">{{ 'asset.field.type'|trans }}</th>
-                <th scope="col">{{ 'asset.field.business_criticality'|trans }}</th>
-                <th scope="col">{{ 'asset.field.rto'|trans }}</th>
-                <th scope="col">{{ 'asset.field.rpo'|trans }}</th>
-                <th scope="col">{{ 'asset.field.recovery_strategy'|trans }}</th>
-                <th scope="col" class="text-center">{{ 'common.actions'|trans }}</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for asset in criticalAssetsList %}
-            <tr>
-                <td>
-                    <strong>{{ asset.name }}</strong>
-                    {% if asset.isBusinessCritical %}
-                        <span class="badge badge-danger ml-xs">
-                            {{ 'asset.badge.business_critical'|trans }}
-                        </span>
-                    {% endif %}
-                </td>
-                <td>
-                    <span class="badge badge-info">{{ ('asset.type.' ~ asset.type)|trans }}</span>
-                </td>
-                <td>
-                    {% set criticalityColors = {
-                        'critical': 'danger',
-                        'high': 'warning',
-                        'medium': 'info',
-                        'low': 'secondary'
-                    } %}
-                    <span class="badge badge-{{ criticalityColors[asset.businessCriticality] ?? 'secondary' }}">
-                        {{ ('asset.criticality.' ~ asset.businessCriticality)|trans }}
+{% embed '_components/_table.html.twig' with {
+    'noMargin': true,
+    'responsive': true
+} %}
+    {% block table_head %}
+        <tr>
+            <th scope="col">{{ 'asset.field.asset_name'|trans }}</th>
+            <th scope="col">{{ 'asset.field.type'|trans }}</th>
+            <th scope="col">{{ 'asset.field.business_criticality'|trans }}</th>
+            <th scope="col">{{ 'asset.field.rto'|trans }}</th>
+            <th scope="col">{{ 'asset.field.rpo'|trans }}</th>
+            <th scope="col">{{ 'asset.field.recovery_strategy'|trans }}</th>
+            <th scope="col" class="text-center">{{ 'common.actions'|trans }}</th>
+        </tr>
+    {% endblock %}
+    {% block table_body %}
+        {% for asset in criticalAssetsList %}
+        <tr>
+            <td>
+                <strong>{{ asset.name }}</strong>
+                {% if asset.isBusinessCritical %}
+                    <span class="badge bg-danger ml-xs">
+                        {{ 'asset.badge.business_critical'|trans }}
                     </span>
-                </td>
-                <td>
-                    <strong>{{ asset.rto }}h</strong>
-                </td>
-                <td>
-                    <strong>{{ asset.rpo }}h</strong>
-                </td>
-                <td>
-                    <small class="text-muted">
-                        {{ asset.recoveryStrategy|default('-') }}
-                    </small>
-                </td>
-                <td class="text-center">
-                    <a href="{{ path('app_asset_show', {id: asset.id}) }}" class="btn btn-sm">
-                        👁 {{ 'common.view'|trans }}
-                    </a>
-                </td>
-            </tr>
-            {% else %}
-            <tr>
-                <td colspan="7" class="text-center-p-xl">
-                    {{ 'asset.message.no_critical_assets'|trans }}
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
+                {% endif %}
+            </td>
+            <td>
+                <span class="badge bg-info">{{ ('asset.type.' ~ asset.type)|trans }}</span>
+            </td>
+            <td>
+                {% set criticalityColors = {
+                    'critical': 'danger',
+                    'high': 'warning',
+                    'medium': 'info',
+                    'low': 'secondary'
+                } %}
+                <span class="badge badge-{{ criticalityColors[asset.businessCriticality] ?? 'secondary' }}">
+                    {{ ('asset.criticality.' ~ asset.businessCriticality)|trans }}
+                </span>
+            </td>
+            <td>
+                <strong>{{ asset.rto }}h</strong>
+            </td>
+            <td>
+                <strong>{{ asset.rpo }}h</strong>
+            </td>
+            <td>
+                <small class="text-muted">
+                    {{ asset.recoveryStrategy|default('-') }}
+                </small>
+            </td>
+            <td class="text-center">
+                <a href="{{ path('app_asset_show', {id: asset.id}) }}" class="btn btn-sm">
+                    👁 {{ 'common.view'|trans }}
+                </a>
+            </td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="7" class="text-center-p-xl">
+                {{ 'asset.message.no_critical_assets'|trans }}
+            </td>
+        </tr>
+        {% endfor %}
+    {% endblock %}
+{% endembed %}
 
 {# Dependency Map #}
 <div class="card mt-4">
