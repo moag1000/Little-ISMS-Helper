@@ -71,6 +71,114 @@
         {{ 'risk.help.inherent'|trans|default('Bewertung des Risikos ohne bestehende Sicherheitsmaßnahmen') }}
     </div>
 
+    {# Risk Assessment Guidance Helper (Priority 2.3) #}
+    <div class="card border-primary mb-3">
+        <div class="card-header bg-primary-subtle">
+            <h6 class="mb-0">
+                <button class="btn btn-link text-decoration-none p-0 w-100 text-start"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#riskAssessmentGuidance"
+                        aria-expanded="false"
+                        aria-controls="riskAssessmentGuidance">
+                    <i class="bi bi-question-circle-fill text-primary" aria-hidden="true"></i>
+                    {{ 'risk.guidance.title'|trans }}
+                    <i class="bi bi-chevron-down float-end" aria-hidden="true"></i>
+                </button>
+            </h6>
+        </div>
+        <div class="collapse" id="riskAssessmentGuidance">
+            <div class="card-body">
+                <p class="text-muted mb-3">
+                    {{ 'risk.guidance.intro'|trans }}
+                </p>
+
+                {# Probability Scale #}
+                <h6 class="fw-bold mb-2">
+                    <i class="bi bi-graph-up" aria-hidden="true"></i>
+                    {{ 'risk.guidance.probability_title'|trans }}
+                </h6>
+                <div class="table-responsive mb-4">
+                    <table class="table table-sm table-bordered">
+                        <thead class="table-light">
+                            <tr>
+                                <th style="width: 25%;">{{ 'risk.guidance.scale'|trans }}</th>
+                                <th>{{ 'risk.guidance.description'|trans }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>1 - {{ 'risk.guidance.probability.very_unlikely'|trans }}</strong></td>
+                                <td>{{ 'risk.guidance.probability.very_unlikely_desc'|trans }}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>2 - {{ 'risk.guidance.probability.unlikely'|trans }}</strong></td>
+                                <td>{{ 'risk.guidance.probability.unlikely_desc'|trans }}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>3 - {{ 'risk.guidance.probability.possible'|trans }}</strong></td>
+                                <td>{{ 'risk.guidance.probability.possible_desc'|trans }}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>4 - {{ 'risk.guidance.probability.likely'|trans }}</strong></td>
+                                <td>{{ 'risk.guidance.probability.likely_desc'|trans }}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>5 - {{ 'risk.guidance.probability.very_likely'|trans }}</strong></td>
+                                <td>{{ 'risk.guidance.probability.very_likely_desc'|trans }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                {# Impact Scale #}
+                <h6 class="fw-bold mb-2">
+                    <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+                    {{ 'risk.guidance.impact_title'|trans }}
+                </h6>
+                <div class="table-responsive">
+                    <table class="table table-sm table-bordered">
+                        <thead class="table-light">
+                            <tr>
+                                <th style="width: 25%;">{{ 'risk.guidance.scale'|trans }}</th>
+                                <th>{{ 'risk.guidance.description'|trans }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>1 - {{ 'risk.guidance.impact.negligible'|trans }}</strong></td>
+                                <td>{{ 'risk.guidance.impact.negligible_desc'|trans }}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>2 - {{ 'risk.guidance.impact.minor'|trans }}</strong></td>
+                                <td>{{ 'risk.guidance.impact.minor_desc'|trans }}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>3 - {{ 'risk.guidance.impact.moderate'|trans }}</strong></td>
+                                <td>{{ 'risk.guidance.impact.moderate_desc'|trans }}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>4 - {{ 'risk.guidance.impact.major'|trans }}</strong></td>
+                                <td>{{ 'risk.guidance.impact.major_desc'|trans }}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>5 - {{ 'risk.guidance.impact.catastrophic'|trans }}</strong></td>
+                                <td>{{ 'risk.guidance.impact.catastrophic_desc'|trans }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="alert alert-warning mt-3 mb-0" role="status">
+                    <small>
+                        <i class="bi bi-lightbulb" aria-hidden="true"></i>
+                        {{ 'risk.guidance.tip'|trans }}
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="row">
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
