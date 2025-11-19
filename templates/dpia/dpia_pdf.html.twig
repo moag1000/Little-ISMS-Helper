@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>DPIA - {{ dpia.referenceNumber }}</title>
+    <style>
+        @page {
+            margin: 2cm;
+            @bottom-right {
+                content: "Seite " counter(page) " von " counter(pages);
+            }
+        }
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 10pt;
+            line-height: 1.4;
+        }
+        h1 {
+            font-size: 18pt;
+            color: #2c3e50;
+            border-bottom: 3px solid #e74c3c;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        h2 {
+            font-size: 14pt;
+            color: #34495e;
+            margin-top: 25px;
+            margin-bottom: 10px;
+            page-break-after: avoid;
+        }
+        h3 {
+            font-size: 12pt;
+            color: #7f8c8d;
+            margin-top: 15px;
+            margin-bottom: 8px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            page-break-inside: avoid;
+        }
+        th {
+            background-color: #ecf0f1;
+            font-weight: bold;
+            padding: 8px;
+            text-align: left;
+            border: 1px solid #bdc3c7;
+        }
+        td {
+            padding: 8px;
+            border: 1px solid #bdc3c7;
+            vertical-align: top;
+        }
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 9pt;
+            font-weight: bold;
+            margin-right: 5px;
+        }
+        .badge-danger { background-color: #e74c3c; color: white; }
+        .badge-warning { background-color: #f39c12; color: white; }
+        .badge-success { background-color: #27ae60; color: white; }
+        .badge-info { background-color: #3498db; color: white; }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .metadata {
+            background-color: #ecf0f1;
+            padding: 10px;
+            margin-bottom: 20px;
+            font-size: 9pt;
+        }
+        ul {
+            margin: 5px 0;
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 3px;
+        }
+        .section {
+            page-break-inside: avoid;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Datenschutz-Folgenabschätzung (DPIA)</h1>
+        <p style="font-size: 11pt; color: #7f8c8d;">Art. 35 GDPR - Data Protection Impact Assessment</p>
+        <p style="font-size: 14pt; font-weight: bold; margin-top: 10px;">{{ dpia.title }}</p>
+        <p style="font-size: 11pt;">{{ dpia.referenceNumber }} - Version {{ dpia.version }}</p>
+    </div>
+
+    <div class="metadata">
+        <strong>Status:</strong> {{ dpia.status|upper }}
+        {% if dpia.approvalDate %}
+            | <strong>Approved:</strong> {{ dpia.approvalDate|date('Y-m-d') }}
+        {% endif %}
+        | <strong>Generated:</strong> {{ "now"|date('Y-m-d H:i:s') }}<br>
+        {% if dpia.conductor %}
+            <strong>Conductor:</strong> {{ dpia.conductor.firstName }} {{ dpia.conductor.lastName }}<br>
+        {% endif %}
+        {% if dpia.approver %}
+            <strong>Approver:</strong> {{ dpia.approver.firstName }} {{ dpia.approver.lastName }}<br>
+        {% endif %}
+        <strong>Completeness:</strong> {{ dpia.completenessPercentage }}%
+    </div>
+
+    {# Risk Assessment Summary #}
+    <div class="section">
+        <h2>Risk Assessment Summary</h2>
+        <table>
+            <tr>
+                <th style="width: 30%;">Assessment</th>
+                <th>Value</th>
+            </tr>
+            {% if dpia.riskLevel %}
+                <tr>
+                    <td>Initial Risk Level</td>
+                    <td>
+                        {% set risk_class = {'low': 'success', 'medium': 'info', 'high': 'warning', 'critical': 'danger'}[dpia.riskLevel] %}
+                        <span class="badge badge-{{ risk_class }}">{{ dpia.riskLevel|upper }}</span>
+                    </td>
+                </tr>
+            {% endif %}
+            {% if dpia.residualRiskLevel %}
+                <tr>
+                    <td>Residual Risk Level</td>
+                    <td>
+                        {% set risk_class = {'low': 'success', 'medium': 'info', 'high': 'warning', 'critical': 'danger'}[dpia.residualRiskLevel] %}
+                        <span class="badge badge-{{ risk_class }}">{{ dpia.residualRiskLevel|upper }}</span>
+                        {% if dpia.isResidualRiskAcceptable %}
+                            <span class="badge badge-success">ACCEPTABLE</span>
+                        {% else %}
+                            <span class="badge badge-danger">REQUIRES SUPERVISORY CONSULTATION (Art. 36)</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endif %}
+            {% if dpia.likelihood %}
+                <tr>
+                    <td>Likelihood</td>
+                    <td>{{ dpia.likelihood|upper }}</td>
+                </tr>
+            {% endif %}
+            {% if dpia.impact %}
+                <tr>
+                    <td>Impact</td>
+                    <td>{{ dpia.impact|upper }}</td>
+                </tr>
+            {% endif %}
+        </table>
+    </div>
+
+    {# Art. 35(7)(a) - Description of Processing #}
+    <div class="section">
+        <h2>Art. 35(7)(a) - Systematic Description of Processing Operations</h2>
+
+        <h3>Processing Description</h3>
+        <p>{{ dpia.processingDescription|nl2br }}</p>
+
+        <h3>Purposes of Processing</h3>
+        <p>{{ dpia.processingPurposes|nl2br }}</p>
+
+        <table>
+            <tr>
+                <th style="width: 30%;">Category</th>
+                <th>Details</th>
+            </tr>
+            <tr>
+                <td>Data Categories</td>
+                <td>
+                    <ul>
+                        {% for category in dpia.dataCategories %}
+                            <li>{{ category|replace({'_': ' '})|title }}</li>
+                        {% endfor %}
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>Data Subject Categories</td>
+                <td>
+                    <ul>
+                        {% for category in dpia.dataSubjectCategories %}
+                            <li>{{ category|replace({'_': ' '})|title }}</li>
+                        {% endfor %}
+                    </ul>
+                </td>
+            </tr>
+            {% if dpia.estimatedDataSubjects %}
+                <tr>
+                    <td>Estimated Data Subjects</td>
+                    <td>{{ dpia.estimatedDataSubjects }}</td>
+                </tr>
+            {% endif %}
+            {% if dpia.dataRetentionPeriod %}
+                <tr>
+                    <td>Data Retention Period</td>
+                    <td>{{ dpia.dataRetentionPeriod }}</td>
+                </tr>
+            {% endif %}
+        </table>
+
+        {% if dpia.dataFlowDescription %}
+            <h3>Data Flow Description</h3>
+            <p>{{ dpia.dataFlowDescription|nl2br }}</p>
+        {% endif %}
+    </div>
+
+    {# Art. 35(7)(b) - Necessity and Proportionality #}
+    <div class="section">
+        <h2>Art. 35(7)(b) - Assessment of Necessity and Proportionality</h2>
+
+        <h3>Necessity Assessment</h3>
+        <p>{{ dpia.necessityAssessment|nl2br }}</p>
+
+        <h3>Proportionality Assessment</h3>
+        <p>{{ dpia.proportionalityAssessment|nl2br }}</p>
+
+        <table>
+            <tr>
+                <th style="width: 30%;">Legal Compliance</th>
+                <th>Details</th>
+            </tr>
+            <tr>
+                <td>Legal Basis (Art. 6 GDPR)</td>
+                <td><strong>{{ dpia.legalBasis|replace({'_': ' '})|title }}</strong></td>
+            </tr>
+            {% if dpia.legislativeCompliance %}
+                <tr>
+                    <td>Legislative Compliance</td>
+                    <td>{{ dpia.legislativeCompliance|nl2br }}</td>
+                </tr>
+            {% endif %}
+        </table>
+    </div>
+
+    {# Art. 35(7)(c) - Risk Assessment #}
+    <div class="section">
+        <h2>Art. 35(7)(c) - Assessment of Risks to Rights and Freedoms</h2>
+
+        {% if dpia.identifiedRisks|length > 0 %}
+            <h3>Identified Risks</h3>
+            <table>
+                <tr>
+                    <th>#</th>
+                    <th>Risk</th>
+                </tr>
+                {% for risk in dpia.identifiedRisks %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>
+                            {% if risk.title is defined %}
+                                <strong>{{ risk.title }}</strong><br>
+                            {% endif %}
+                            {% if risk.description is defined %}
+                                {{ risk.description }}<br>
+                            {% endif %}
+                            {% if risk.likelihood is defined and risk.impact is defined %}
+                                Likelihood: {{ risk.likelihood|upper }} | Impact: {{ risk.impact|upper }}
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        {% endif %}
+
+        {% if dpia.dataSubjectRisks %}
+            <h3>Specific Risks to Data Subjects</h3>
+            <p>{{ dpia.dataSubjectRisks|nl2br }}</p>
+        {% endif %}
+    </div>
+
+    {# Art. 35(7)(d) - Measures to Address Risks #}
+    <div class="section">
+        <h2>Art. 35(7)(d) - Measures Envisaged to Address Risks</h2>
+
+        <h3>Technical Measures (Art. 32 GDPR)</h3>
+        <p>{{ dpia.technicalMeasures|nl2br }}</p>
+
+        <h3>Organizational Measures (Art. 32 GDPR)</h3>
+        <p>{{ dpia.organizationalMeasures|nl2br }}</p>
+
+        {% if dpia.implementedControls|length > 0 %}
+            <h3>ISO 27001 Controls Implemented</h3>
+            <ul>
+                {% for control in dpia.implementedControls %}
+                    <li>{{ control.controlId }} - {{ control.name }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        {% if dpia.complianceMeasures %}
+            <h3>Compliance Measures (Art. 24 GDPR - Accountability)</h3>
+            <p>{{ dpia.complianceMeasures|nl2br }}</p>
+        {% endif %}
+
+        {% if dpia.residualRiskAssessment %}
+            <h3>Residual Risk Assessment</h3>
+            <p>{{ dpia.residualRiskAssessment|nl2br }}</p>
+        {% endif %}
+    </div>
+
+    {# Stakeholder Consultation #}
+    <div class="section">
+        <h2>Stakeholder Consultation</h2>
+
+        <table>
+            <tr>
+                <th style="width: 30%;">Consultation</th>
+                <th>Status</th>
+            </tr>
+            <tr>
+                <td>DPO Consultation (Art. 35(4))</td>
+                <td>
+                    {% if dpia.dpoConsultationDate %}
+                        <span class="badge badge-success">COMPLETED</span> {{ dpia.dpoConsultationDate|date('Y-m-d') }}
+                        {% if dpia.dataProtectionOfficer %}
+                            <br><strong>DPO:</strong> {{ dpia.dataProtectionOfficer.firstName }} {{ dpia.dataProtectionOfficer.lastName }}
+                        {% endif %}
+                        {% if dpia.dpoAdvice %}
+                            <br><strong>Advice:</strong> {{ dpia.dpoAdvice }}
+                        {% endif %}
+                    {% else %}
+                        <span class="badge badge-warning">PENDING</span>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td>Data Subjects Consulted (Art. 35(9))</td>
+                <td>
+                    {% if dpia.dataSubjectsConsulted %}
+                        <span class="badge badge-success">YES</span>
+                        {% if dpia.dataSubjectConsultationDetails %}
+                            <br>{{ dpia.dataSubjectConsultationDetails }}
+                        {% endif %}
+                    {% else %}
+                        <span class="badge badge-info">NO</span>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td>Supervisory Authority (Art. 36)</td>
+                <td>
+                    {% if dpia.requiresSupervisoryConsultation %}
+                        {% if dpia.supervisoryConsultationDate %}
+                            <span class="badge badge-success">COMPLETED</span> {{ dpia.supervisoryConsultationDate|date('Y-m-d') }}
+                            {% if dpia.supervisoryAuthorityFeedback %}
+                                <br><strong>Feedback:</strong> {{ dpia.supervisoryAuthorityFeedback }}
+                            {% endif %}
+                        {% else %}
+                            <span class="badge badge-danger">REQUIRED - PENDING</span>
+                        {% endif %}
+                    {% else %}
+                        <span class="badge badge-info">NOT REQUIRED</span>
+                    {% endif %}
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    {# Review Information #}
+    {% if dpia.lastReviewDate or dpia.nextReviewDate %}
+        <div class="section">
+            <h2>Review Information (Art. 35(11))</h2>
+
+            <table>
+                <tr>
+                    <th style="width: 30%;">Review</th>
+                    <th>Date</th>
+                </tr>
+                {% if dpia.lastReviewDate %}
+                    <tr>
+                        <td>Last Review Date</td>
+                        <td>{{ dpia.lastReviewDate|date('Y-m-d') }}</td>
+                    </tr>
+                {% endif %}
+                {% if dpia.nextReviewDate %}
+                    <tr>
+                        <td>Next Review Date</td>
+                        <td>{{ dpia.nextReviewDate|date('Y-m-d') }}</td>
+                    </tr>
+                {% endif %}
+                {% if dpia.reviewFrequencyMonths %}
+                    <tr>
+                        <td>Review Frequency</td>
+                        <td>Every {{ dpia.reviewFrequencyMonths }} months</td>
+                    </tr>
+                {% endif %}
+            </table>
+        </div>
+    {% endif %}
+
+    {# Approval Information #}
+    {% if dpia.status == 'approved' %}
+        <div class="section">
+            <h2>Approval Information</h2>
+
+            <table>
+                <tr>
+                    <th style="width: 30%;">Field</th>
+                    <th>Value</th>
+                </tr>
+                <tr>
+                    <td>Status</td>
+                    <td><span class="badge badge-success">APPROVED</span></td>
+                </tr>
+                {% if dpia.approver %}
+                    <tr>
+                        <td>Approved By</td>
+                        <td>{{ dpia.approver.firstName }} {{ dpia.approver.lastName }}</td>
+                    </tr>
+                {% endif %}
+                {% if dpia.approvalDate %}
+                    <tr>
+                        <td>Approval Date</td>
+                        <td>{{ dpia.approvalDate|date('Y-m-d') }}</td>
+                    </tr>
+                {% endif %}
+                {% if dpia.approvalComments %}
+                    <tr>
+                        <td>Comments</td>
+                        <td>{{ dpia.approvalComments }}</td>
+                    </tr>
+                {% endif %}
+            </table>
+        </div>
+    {% endif %}
+
+    <div style="page-break-before: always;"></div>
+
+    <h2>Declaration</h2>
+    <p>This Data Protection Impact Assessment (DPIA) has been prepared in accordance with Article 35 of the General Data Protection Regulation (GDPR) and documents the assessment of processing operations likely to result in high risk to the rights and freedoms of natural persons.</p>
+
+    <p style="margin-top: 40px;">
+        <strong>Signature:</strong> ____________________________<br>
+        <strong>Date:</strong> ____________________________<br>
+        <strong>Name/Position:</strong> ____________________________
+    </p>
+</body>
+</html>
