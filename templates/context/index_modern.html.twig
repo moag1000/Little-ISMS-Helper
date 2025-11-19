@@ -377,54 +377,56 @@
             </a>
         </div>
         <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-hover mb-0">
-                    <thead>
-                        <tr>
-                            <th scope="col">Titel</th>
-                            <th scope="col">Kategorie</th>
-                            <th scope="col">Verantwortlich</th>
-                            <th scope="col">Zieldatum</th>
-                            <th scope="col">Status</th>
-                            <th scope="col">Aktionen</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for objective in objectives|slice(0, 5) %}
-                        <tr>
-                            <td>
-                                <strong>{{ objective.title }}</strong>
-                            </td>
-                            <td>
-                                <span class="badge bg-secondary">{{ objective.category }}</span>
-                            </td>
-                            <td>{{ objective.responsiblePerson }}</td>
-                            <td>
-                                <i class="bi bi-calendar3" aria-hidden="true"></i>
-                                {{ objective.targetDate|date('d.m.Y') }}
-                            </td>
-                            <td>
-                                {% set statusClasses = {
-                                    'achieved': 'success',
-                                    'in_progress': 'info',
-                                    'not_started': 'warning',
-                                    'delayed': 'danger'
-                                } %}
-                                <span class="badge bg-{{ statusClasses[objective.status] ?? 'secondary' }}">
-                                    {{ objective.status|replace({'_': ' '})|title }}
-                                </span>
-                            </td>
-                            <td>
-                                <a href="{{ path('app_objective_show', {id: objective.id}) }}"
-                                   class="btn btn-sm btn-outline-primary" aria-label="{{ 'common.view'|trans }}">
-                                    <i class="bi bi-eye" aria-hidden="true"></i>
-                                </a>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+            {% embed '_components/_table.html.twig' with {
+                'class': 'table-hover mb-0',
+                'responsive': true,
+                'noMargin': true
+            } %}
+                {% block table_head %}
+                    <tr>
+                        <th scope="col">Titel</th>
+                        <th scope="col">Kategorie</th>
+                        <th scope="col">Verantwortlich</th>
+                        <th scope="col">Zieldatum</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Aktionen</th>
+                    </tr>
+                {% endblock %}
+                {% block table_body %}
+                    {% for objective in objectives|slice(0, 5) %}
+                    <tr>
+                        <td>
+                            <strong>{{ objective.title }}</strong>
+                        </td>
+                        <td>
+                            <span class="badge bg-secondary">{{ objective.category }}</span>
+                        </td>
+                        <td>{{ objective.responsiblePerson }}</td>
+                        <td>
+                            <i class="bi bi-calendar3" aria-hidden="true"></i>
+                            {{ objective.targetDate|date('d.m.Y') }}
+                        </td>
+                        <td>
+                            {% set statusClasses = {
+                                'achieved': 'success',
+                                'in_progress': 'info',
+                                'not_started': 'warning',
+                                'delayed': 'danger'
+                            } %}
+                            <span class="badge bg-{{ statusClasses[objective.status] ?? 'secondary' }}">
+                                {{ objective.status|replace({'_': ' '})|title }}
+                            </span>
+                        </td>
+                        <td>
+                            <a href="{{ path('app_objective_show', {id: objective.id}) }}"
+                               class="btn btn-sm btn-outline-primary" aria-label="{{ 'common.view'|trans }}">
+                                <i class="bi bi-eye" aria-hidden="true"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% endblock %}
+            {% endembed %}
             {% if objectives|length > 5 %}
             <div class="text-center mt-3">
                 <a href="{{ path('app_objective_index') }}" class="btn btn-sm btn-outline-secondary">

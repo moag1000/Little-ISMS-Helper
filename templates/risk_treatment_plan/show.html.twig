@@ -168,32 +168,34 @@
         <h3><i class="bi bi-shield-check" aria-hidden="true"></i> {{ 'risk_treatment_plan.section.controls'|trans }} ({{ plan.controls|length }})</h3>
     </div>
     <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-sm">
-                <thead>
-                    <tr>
-                        <th scope="col">{{ 'control.field.control_id'|trans }}</th>
-                        <th scope="col">{{ 'control.field.title'|trans }}</th>
-                        <th scope="col">{{ 'control.field.status'|trans }}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for control in plan.controls %}
-                    <tr>
-                        <td>
-                            <a href="{{ path('app_control_show', {id: control.id}) }}">{{ control.controlId }}</a>
-                        </td>
-                        <td>{{ control.title }}</td>
-                        <td>
-                            <span class="badge bg-{{ control.implementationStatus == 'implemented' ? 'success' : (control.implementationStatus == 'partial' ? 'warning' : 'secondary') }}">
-                                {{ control.implementationStatus|upper }}
-                            </span>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
+        {% embed '_components/_table.html.twig' with {
+            'class': 'table-sm',
+            'responsive': true,
+            'noMargin': true
+        } %}
+            {% block table_head %}
+                <tr>
+                    <th scope="col">{{ 'control.field.control_id'|trans }}</th>
+                    <th scope="col">{{ 'control.field.title'|trans }}</th>
+                    <th scope="col">{{ 'control.field.status'|trans }}</th>
+                </tr>
+            {% endblock %}
+            {% block table_body %}
+                {% for control in plan.controls %}
+                <tr>
+                    <td>
+                        <a href="{{ path('app_control_show', {id: control.id}) }}">{{ control.controlId }}</a>
+                    </td>
+                    <td>{{ control.title }}</td>
+                    <td>
+                        <span class="badge bg-{{ control.implementationStatus == 'implemented' ? 'success' : (control.implementationStatus == 'partial' ? 'warning' : 'secondary') }}">
+                            {{ control.implementationStatus|upper }}
+                        </span>
+                    </td>
+                </tr>
+                {% endfor %}
+            {% endblock %}
+        {% endembed %}
     </div>
 </div>
 {% endif %}

@@ -123,8 +123,10 @@
         <div class="card-body">
             {# General Tab #}
             <div class="tab-content active" data-tab-content="general">
-                <table class="table">
-                    <tbody>
+                {% embed '_components/_table.html.twig' with {
+                    'noMargin': true
+                } %}
+                    {% block table_body %}
                         <tr>
                             <th scope="row" class="w-200px">Prozessverantwortlicher</th>
                             <td>{{ business_process.processOwner }}</td>
@@ -145,8 +147,8 @@
                             <th scope="row">Wiederherstellungsstrategie</th>
                             <td>{{ business_process.recoveryStrategy ?? '-' }}</td>
                         </tr>
-                    </tbody>
-                </table>
+                    {% endblock %}
+                {% endembed %}
             </div>
 
             {# BIA Tab #}
@@ -154,8 +156,10 @@
                 <div class="row">
                     <div class="col-md-6">
                         <h5>Recovery-Ziele</h5>
-                        <table class="table">
-                            <tbody>
+                        {% embed '_components/_table.html.twig' with {
+                            'noMargin': true
+                        } %}
+                            {% block table_body %}
                                 <tr>
                                     <th scope="row">RTO (Recovery Time Objective)</th>
                                     <td>{{ business_process.rto }} Stunden</td>
@@ -177,13 +181,15 @@
                                         {% endif %}
                                     </td>
                                 </tr>
-                            </tbody>
-                        </table>
+                            {% endblock %}
+                        {% endembed %}
                     </div>
                     <div class="col-md-6">
                         <h2>Impact-Bewertung</h2>
-                        <table class="table">
-                            <tbody>
+                        {% embed '_components/_table.html.twig' with {
+                            'noMargin': true
+                        } %}
+                            {% block table_body %}
                                 <tr>
                                     <th scope="row">Reputationsschaden</th>
                                     <td>{{ business_process.reputationalImpact }}/5</td>
@@ -204,8 +210,8 @@
                                     <th scope="row">Finanzieller Schaden/Tag</th>
                                     <td>{{ business_process.financialImpactPerDay ? (business_process.financialImpactPerDay|number_format(2, ',', '.') ~ ' €') : '-' }}</td>
                                 </tr>
-                            </tbody>
-                        </table>
+                            {% endblock %}
+                        {% endembed %}
                     </div>
                 </div>
 
@@ -220,30 +226,32 @@
             {# Assets Tab #}
             <turbo-frame id="process-assets" data-tab-content="assets" class="d-none">
                 {% if business_process.supportingAssets|length > 0 %}
-                    <table class="table">
-                        <thead>
+                    {% embed '_components/_table.html.twig' with {
+                        'noMargin': true
+                    } %}
+                        {% block table_head %}
                             <tr>
                                 <th scope="col">Asset</th>
                                 <th scope="col">Typ</th>
                                 <th scope="col">CIA-Bewertung</th>
                                 <th scope="col">Status</th>
                             </tr>
-                        </thead>
-                        <tbody>
+                        {% endblock %}
+                        {% block table_body %}
                             {% for asset in business_process.supportingAssets %}
                                 <tr>
                                     <td>{{ asset.name }}</td>
                                     <td>{{ asset.assetType }}</td>
                                     <td>
-                                        C: {{ asset.confidentialityValue }}, 
-                                        I: {{ asset.integrityValue }}, 
+                                        C: {{ asset.confidentialityValue }},
+                                        I: {{ asset.integrityValue }},
                                         A: {{ asset.availabilityValue }}
                                     </td>
                                     <td>{{ asset.status }}</td>
                                 </tr>
                             {% endfor %}
-                        </tbody>
-                    </table>
+                        {% endblock %}
+                    {% endembed %}
                 {% else %}
                     <div class="alert alert-info">
                         Keine unterstützenden Assets verknüpft.
@@ -254,8 +262,10 @@
             {# Risks Tab #}
             <turbo-frame id="process-risks" data-tab-content="risks" class="d-none">
                 {% if business_process.identifiedRisks|length > 0 %}
-                    <table class="table">
-                        <thead>
+                    {% embed '_components/_table.html.twig' with {
+                        'noMargin': true
+                    } %}
+                        {% block table_head %}
                             <tr>
                                 <th scope="col">Risiko</th>
                                 <th scope="col">Status</th>
@@ -263,8 +273,8 @@
                                 <th scope="col">Residual Risk</th>
                                 <th scope="col">Behandlung</th>
                             </tr>
-                        </thead>
-                        <tbody>
+                        {% endblock %}
+                        {% block table_body %}
                             {% for risk in business_process.identifiedRisks %}
                                 <tr>
                                     <td>{{ risk.title }}</td>
@@ -278,8 +288,8 @@
                                     <td>{{ risk.treatmentStrategy }}</td>
                                 </tr>
                             {% endfor %}
-                        </tbody>
-                    </table>
+                        {% endblock %}
+                    {% endembed %}
                 {% else %}
                     <div class="alert alert-info">
                         Keine Risiken verknüpft.
