@@ -9,9 +9,11 @@ use App\Repository\ComplianceMappingRepository;
 use App\Service\ComplianceAssessmentService;
 use App\Service\ComplianceMappingService;
 use App\Service\ComplianceFrameworkLoaderService;
+use App\Service\ComplianceRequirementFulfillmentService;
 use App\Service\ExcelExportService;
 use App\Service\ModuleConfigurationService;
 use App\Service\PdfExportService;
+use App\Service\TenantContext;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -34,7 +36,9 @@ class ComplianceController extends AbstractController
         private CsrfTokenManagerInterface $csrfTokenManager,
         private ExcelExportService $excelExportService,
         private ModuleConfigurationService $moduleConfigurationService,
-        private PdfExportService $pdfExportService
+        private PdfExportService $pdfExportService,
+        private ComplianceRequirementFulfillmentService $fulfillmentService,
+        private TenantContext $tenantContext
     ) {}
 
     #[Route('/', name: 'app_compliance_index')]
@@ -78,10 +82,29 @@ class ComplianceController extends AbstractController
         $allModules = $this->moduleConfigurationService->getAllModules();
         $activeModules = $this->moduleConfigurationService->getActiveModules();
 
+        $tenant = $this->tenantContext->getCurrentTenant();
+
+        // Load tenant-specific fulfillments for all requirements (batch)
+        // Including detailed requirements (nested)
+        $fulfillments = [];
+        foreach ($requirements as $requirement) {
+            $fulfillment = $this->fulfillmentService->getOrCreateFulfillment($tenant, $requirement);
+            $fulfillments[$requirement->getId()] = $fulfillment;
+
+            // Also load fulfillments for detailed requirements
+            if ($requirement->hasDetailedRequirements()) {
+                foreach ($requirement->getDetailedRequirements() as $detailedRequirement) {
+                    $detailedFulfillment = $this->fulfillmentService->getOrCreateFulfillment($tenant, $detailedRequirement);
+                    $fulfillments[$detailedRequirement->getId()] = $detailedFulfillment;
+                }
+            }
+        }
+
         return $this->render('compliance/framework_dashboard.html.twig', [
             'framework' => $framework,
             'dashboard' => $dashboard,
             'requirements' => $requirements,
+            'fulfillments' => $fulfillments,
             'all_modules' => $allModules,
             'active_modules' => $activeModules,
         ]);
