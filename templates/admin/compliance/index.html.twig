@@ -97,7 +97,7 @@
 
                         {% if framework.required_modules is defined and framework.required_modules|length > 0 %}
                             <div class="framework-modules">
-                                <h4 class="modules-title">{{ 'compliance.required_modules'|trans }}</h4>
+                                <h2 class="modules-title">{{ 'compliance.required_modules'|trans }}</h2>
                                 <div class="modules-list">
                                     {% for moduleKey in framework.required_modules %}
                                         {% set module = all_modules[moduleKey] ?? null %}

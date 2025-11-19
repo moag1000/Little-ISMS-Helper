@@ -42,7 +42,7 @@
     {# Empty State for No Mappings #}
     {% if quality_stats.total_mappings == 0 %}
     <div class="alert alert-warning">
-        <h4>⚠️ Keine Mappings gefunden</h4>
+        <h2>⚠️ Keine Mappings gefunden</h2>
         <p>Es wurden keine Compliance-Mappings in der Datenbank gefunden.</p>
         <hr>
         <h6>Nächste Schritte:</h6>
@@ -110,7 +110,7 @@
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header">
-                    <h5 class="mb-0">⭐ Durchschnittliche Qualität</h5>
+                    <h3 class="mb-0">⭐ Durchschnittliche Qualität</h3>
                 </div>
                 <div class="card-body">
                     <div class="progress mb-2" style="height: 30px;">
@@ -129,7 +129,7 @@
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header">
-                    <h5 class="mb-0">🎯 Durchschnittliches Confidence</h5>
+                    <h3 class="mb-0">🎯 Durchschnittliches Confidence</h3>
                 </div>
                 <div class="card-body">
                     <div class="progress mb-2" style="height: 30px;">
@@ -151,7 +151,7 @@
     {% if quality_stats.unanalyzed_mappings > 0 %}
     <div class="card mb-4" id="batchAnalysisCard">
         <div class="card-header bg-info text-white">
-            <h5 class="mb-0">🚀 Mapping-Analyse starten</h5>
+            <h3 class="mb-0">🚀 Mapping-Analyse starten</h3>
         </div>
         <div class="card-body">
             <p class="mb-3">
@@ -184,7 +184,7 @@
             {# Progress Section (hidden initially) #}
             <div id="analysisProgress" style="display: none;">
                 <hr>
-                <h6 class="mb-3">Analyse läuft...</h6>
+                <h4 class="mb-3">Analyse läuft...</h4>
 
                 <div class="progress mb-3" style="height: 30px;">
                     <div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated bg-info"
@@ -240,7 +240,7 @@
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header">
-                    <h5 class="mb-0">📊 Confidence-Verteilung</h5>
+                    <h3 class="mb-0">📊 Confidence-Verteilung</h3>
                 </div>
                 <div class="card-body">
                     <div class="chart-container">
@@ -253,7 +253,7 @@
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header">
-                    <h5 class="mb-0">🔍 Gap-Statistiken nach Priorität</h5>
+                    <h3 class="mb-0">🔍 Gap-Statistiken nach Priorität</h3>
                 </div>
                 <div class="card-body">
                     {% if gap_stats is empty %}
@@ -272,7 +272,7 @@
     {% if framework_comparison is not empty %}
     <div class="card mb-4">
         <div class="card-header">
-            <h5 class="mb-0">🌍 Framework-Qualitätsvergleich (Top 10)</h5>
+            <h3 class="mb-0">🌍 Framework-Qualitätsvergleich (Top 10)</h3>
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -328,12 +328,12 @@
     {# Help Box #}
     <div class="card mb-4">
         <div class="card-header bg-light">
-            <h5 class="mb-0">ℹ️ Wie funktioniert die Qualitätsanalyse?</h5>
+            <h3 class="mb-0">ℹ️ Wie funktioniert die Qualitätsanalyse?</h3>
         </div>
         <div class="card-body">
             <div class="row">
                 <div class="col-md-4">
-                    <h6>🎯 Confidence Score</h6>
+                    <h4>🎯 Confidence Score</h4>
                     <p class="small">Misst die Zuverlässigkeit der automatischen Analyse:</p>
                     <ul class="small">
                         <li><strong>High (≥80):</strong> Sehr zuverlässig, kann auto-approved werden</li>
@@ -342,7 +342,7 @@
                     </ul>
                 </div>
                 <div class="col-md-4">
-                    <h6>⭐ Quality Score</h6>
+                    <h4>⭐ Quality Score</h4>
                     <p class="small">Gesamtqualität des Mappings basierend auf:</p>
                     <ul class="small">
                         <li>Confidence (40%)</li>
@@ -352,7 +352,7 @@
                     <p class="small mb-0"><strong>Ziel:</strong> Alle Mappings ≥75 Quality Score</p>
                 </div>
                 <div class="col-md-4">
-                    <h6>🔬 Similarity Metriken</h6>
+                    <h4>🔬 Similarity Metriken</h4>
                     <p class="small">Automatische Berechnung durch:</p>
                     <ul class="small">
                         <li><strong>Keyword Overlap (40%):</strong> Sicherheitsbegriffe</li>

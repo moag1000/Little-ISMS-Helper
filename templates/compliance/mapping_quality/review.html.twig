@@ -22,7 +22,7 @@
     {# Mapping Overview #}
     <div class="card mb-4">
         <div class="card-header">
-            <h5 class="mb-0">📊 Mapping-Übersicht</h5>
+            <h3 class="mb-0">📊 Mapping-Übersicht</h3>
         </div>
         <div class="card-body">
             <div class="row">
@@ -45,7 +45,7 @@
                 </div>
                 <div class="col-md-5">
                     <h6 class="text-muted">Target Requirement</h6>
-                    <h5><span class="badge badge-success">{{ mapping.targetRequirement.framework.code }}</span> {{ mapping.targetRequirement.requirementId }}</h5>
+                    <h2><span class="badge badge-success">{{ mapping.targetRequirement.framework.code }}</span> {{ mapping.targetRequirement.requirementId }}</h2>
                     <p><strong>{{ mapping.targetRequirement.title }}</strong></p>
                     <p class="text-muted small">{{ mapping.targetRequirement.description|slice(0, 200) }}...</p>
                     {% if mapping.targetRequirement.category %}
@@ -187,7 +187,7 @@
     {% if gap_items is not empty %}
     <div class="card mb-4">
         <div class="card-header">
-            <h5 class="mb-0">🔍 Identifizierte Gaps ({{ gap_items|length }})</h5>
+            <h3 class="mb-0">🔍 Identifizierte Gaps ({{ gap_items|length }})</h3>
         </div>
         <div class="card-body">
             {% if gap_summary %}
@@ -258,21 +258,21 @@
     {# Review Form #}
     <div class="card mb-4">
         <div class="card-header bg-primary text-white">
-            <h5 class="mb-0">📝 Review durchführen</h5>
+            <h3 class="mb-0">📝 Review durchführen</h3>
         </div>
         <div class="card-body">
             <form id="reviewForm">
                 <div class="row">
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label>Manueller Prozentsatz (Override)</label>
+                            <label for="manualPercentage">Manueller Prozentsatz (Override)</label>
                             <input type="number" class="form-control" id="manualPercentage" min="0" max="150" value="{{ mapping.manualPercentage }}" placeholder="Optional">
                             <small class="form-text text-muted">Leer lassen = automatischer Wert verwenden</small>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label>Review Status</label>
+                            <label for="reviewStatus">Review Status</label>
                             <select class="form-control" id="reviewStatus">
                                 <option value="unreviewed" {% if mapping.reviewStatus == 'unreviewed' %}selected{% endif %}>Unreviewed</option>
                                 <option value="in_review" {% if mapping.reviewStatus == 'in_review' %}selected{% endif %}>In Review</option>
@@ -283,7 +283,7 @@
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label>&nbsp;</label>
+                            <div class="form-label">&nbsp;</div>
                             <button type="submit" class="btn btn-success btn-block">
                                 💾 Review speichern
                             </button>
@@ -292,7 +292,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Review Notes</label>
+                    <label for="reviewNotes">Review Notes</label>
                     <textarea class="form-control" id="reviewNotes" rows="3" placeholder="Optionale Notizen...">{{ mapping.reviewNotes }}</textarea>
                 </div>
             </form>

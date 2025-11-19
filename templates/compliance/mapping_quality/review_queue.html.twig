@@ -40,7 +40,7 @@
     {% if mappings_requiring_review is not empty %}
     <div class="card mb-4">
         <div class="card-header bg-warning">
-            <h5 class="mb-0">⚠️ Benötigt dringend Review ({{ mappings_requiring_review|length }})</h5>
+            <h3 class="mb-0">⚠️ Benötigt dringend Review ({{ mappings_requiring_review|length }})</h3>
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -123,7 +123,7 @@
     {% if low_confidence_mappings is not empty %}
     <div class="card mb-4">
         <div class="card-header">
-            <h5 class="mb-0">🔴 Niedriges Confidence (<70) ({{ low_confidence_mappings|length }})</h5>
+            <h3 class="mb-0">🔴 Niedriges Confidence (<70) ({{ low_confidence_mappings|length }})</h3>
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -187,7 +187,7 @@
     {% if discrepancies is not empty %}
     <div class="card mb-4">
         <div class="card-header">
-            <h5 class="mb-0">🔍 Große Diskrepanzen (≥20% Unterschied) ({{ discrepancies|length }})</h5>
+            <h3 class="mb-0">🔍 Große Diskrepanzen (≥20% Unterschied) ({{ discrepancies|length }})</h3>
         </div>
         <div class="card-body">
             <p class="text-muted">Mappings wo der neu berechnete Prozentsatz stark vom ursprünglichen abweicht</p>
@@ -252,10 +252,10 @@
     {# Empty State #}
     {% if mappings_requiring_review is empty and low_confidence_mappings is empty and discrepancies is empty %}
     <div class="alert alert-success">
-        <h4>✅ Keine Mappings benötigen Review!</h4>
+        <h2>✅ Keine Mappings benötigen Review!</h2>
         <p>Alle Mappings haben akzeptable Confidence-Scores oder wurden bereits reviewed.</p>
         <hr>
-        <h6>Status:</h6>
+        <h4>Status:</h4>
         <ul>
             <li>✅ Alle Mappings mit niedrigem Confidence (<70) wurden geprüft</li>
             <li>✅ Keine großen Diskrepanzen gefunden</li>

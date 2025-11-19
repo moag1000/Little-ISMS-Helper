@@ -12,7 +12,7 @@
      data-controller="trend-chart"
      data-trend-chart-url-value="{{ path('app_analytics_trends_data') }}">
     <div class="card-header">
-        <h5 class="card-title">
+        <h3 class="card-title">
             <i class="bi-graph-up-arrow text-info"></i>
             Trend Analysis
         </h5>
@@ -67,7 +67,7 @@
 
             {# Risk Trend Chart #}
             <div class="trend-chart-wrapper" data-trend-chart-target="riskChart">
-                <h6 class="chart-title">Risk Trends (Last 12 Months)</h6>
+                <h4 class="chart-title">Risk Trends (Last 12 Months)</h4>
                 <canvas data-trend-chart-target="riskCanvas"
                         width="800"
                         height="300"></canvas>
@@ -89,7 +89,7 @@
 
             {# Asset Trend Chart #}
             <div class="trend-chart-wrapper d-none" data-trend-chart-target="assetChart">
-                <h6 class="chart-title">Asset Growth (Last 12 Months)</h6>
+                <h4 class="chart-title">Asset Growth (Last 12 Months)</h4>
                 <canvas data-trend-chart-target="assetCanvas"
                         width="800"
                         height="300"></canvas>
@@ -107,7 +107,7 @@
 
             {# Incident Trend Chart #}
             <div class="trend-chart-wrapper d-none" data-trend-chart-target="incidentChart">
-                <h6 class="chart-title">Incident Trends (Last 12 Months)</h6>
+                <h4 class="chart-title">Incident Trends (Last 12 Months)</h4>
                 <canvas data-trend-chart-target="incidentCanvas"
                         width="800"
                         height="300"></canvas>

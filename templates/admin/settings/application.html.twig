@@ -12,7 +12,7 @@
         <div class="col-lg-8">
             <div class="card">
                 <div class="card-header bg-white">
-                    <h5 class="card-title mb-0">
+                    <h3 class="card-title mb-0">
                         <i class="bi bi-gear-fill text-primary" aria-hidden="true"></i>
                         {{ 'admin.settings.application.title'|trans }}
                     </h5>
@@ -21,7 +21,7 @@
                     <form method="post">
                         {# Locale Settings #}
                         <div class="mb-4">
-                            <h6 class="border-bottom pb-2 mb-3">{{ 'admin.settings.application.locale_settings'|trans }}</h6>
+                            <h4 class="border-bottom pb-2 mb-3">{{ 'admin.settings.application.locale_settings'|trans }}</h4>
 
                             <div class="mb-3">
                                 <label for="default_locale" class="form-label">{{ 'admin.settings.application.default_locale'|trans }}</label>
@@ -33,8 +33,8 @@
                             </div>
 
                             <div class="mb-3">
-                                <label class="form-label">{{ 'admin.settings.application.supported_locales'|trans }}</label>
-                                <div class="form-check">
+                                <label class="form-label" id="supported-locales-label">{{ 'admin.settings.application.supported_locales'|trans }}</label>
+                                <div class="form-check" role="group" aria-labelledby="supported-locales-label">
                                     <input class="form-check-input" type="checkbox" name="supported_locales[]" value="de" id="locale_de"
                                            {% if 'de' in settings.supported_locales %}checked{% endif %}>
                                     <label class="form-check-label" for="locale_de">Deutsch (de)</label>
@@ -50,7 +50,7 @@
 
                         {# Display Settings #}
                         <div class="mb-4">
-                            <h6 class="border-bottom pb-2 mb-3">{{ 'admin.settings.application.display_settings'|trans }}</h6>
+                            <h4 class="border-bottom pb-2 mb-3">{{ 'admin.settings.application.display_settings'|trans }}</h4>
 
                             <div class="mb-3">
                                 <label for="items_per_page" class="form-label">{{ 'admin.settings.application.items_per_page'|trans }}</label>

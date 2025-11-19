@@ -123,7 +123,7 @@
             {# Participants Section #}
             <div class="card shadow mb-4">
                 <div class="card-header bg-light">
-                    <h5 class="mb-0">
+                    <h3 class="mb-0">
                         <i class="bi bi-people" aria-hidden="true"></i> {{ 'training.participants'|trans }}
                         <span class="badge bg-primary">{{ training.participants|length }}</span>
                     </h5>
@@ -162,7 +162,7 @@
             {% if training.materials %}
             <div class="card shadow mb-4">
                 <div class="card-header bg-light">
-                    <h5 class="mb-0">
+                    <h3 class="mb-0">
                         <i class="bi bi-file-earmark-text" aria-hidden="true"></i> {{ 'training.materials'|trans }}
                     </h5>
                 </div>
@@ -176,7 +176,7 @@
             {% if training.feedback %}
             <div class="card shadow mb-4">
                 <div class="card-header bg-light">
-                    <h5 class="mb-0">
+                    <h3 class="mb-0">
                         <i class="bi bi-chat-left-text" aria-hidden="true"></i> {{ 'training.feedback'|trans }}
                     </h5>
                 </div>
@@ -191,7 +191,7 @@
             {# Action Buttons #}
             <div class="card shadow mb-4">
                 <div class="card-header bg-light">
-                    <h5 class="mb-0"><i class="bi bi-tools" aria-hidden="true"></i> {{ 'common.actions'|trans }}</h5>
+                    <h3 class="mb-0"><i class="bi bi-tools" aria-hidden="true"></i> {{ 'common.actions'|trans }}</h3>
                 </div>
                 <div class="card-body">
                     <div class="d-grid gap-2">
@@ -226,7 +226,7 @@
             {% if training.coveredControls is defined and training.coveredControls|length > 0 %}
             <div class="card shadow mb-4">
                 <div class="card-header bg-light">
-                    <h5 class="mb-0">
+                    <h3 class="mb-0">
                         <i class="bi bi-shield-check" aria-hidden="true"></i> {{ 'training.covered_controls'|trans }}
                         <span class="badge bg-primary">{{ training.coveredControls|length }}</span>
                     </h5>
@@ -237,7 +237,7 @@
                         <div class="list-group-item px-0">
                             <div class="d-flex w-100 justify-content-between align-items-start">
                                 <div>
-                                    <h6 class="mb-1">{{ control.controlId }}</h6>
+                                    <h4 class="mb-1">{{ control.controlId }}</h4>
                                     <p class="mb-1 small text-muted">{{ control.name }}</p>
                                 </div>
                                 <span class="badge bg-{{ control.implementationStatus == 'implemented' ? 'success' : (control.implementationStatus == 'in_progress' ? 'warning' : 'secondary') }} rounded-pill">
@@ -255,7 +255,7 @@
             {% if training.complianceRequirements is defined and training.complianceRequirements|length > 0 %}
             <div class="card shadow mb-4">
                 <div class="card-header bg-light">
-                    <h5 class="mb-0">
+                    <h3 class="mb-0">
                         <i class="bi bi-clipboard-check" aria-hidden="true"></i> Compliance Coverage
                         <span class="badge bg-success">{{ training.complianceRequirements|length }}</span>
                     </h5>
@@ -278,7 +278,7 @@
             {% if training.status == 'completed' %}
             <div class="card shadow mb-4">
                 <div class="card-header bg-light">
-                    <h5 class="mb-0">
+                    <h3 class="mb-0">
                         <i class="bi bi-graph-up" aria-hidden="true"></i> Training Statistics
                     </h5>
                 </div>
@@ -315,7 +315,7 @@
             {# Metadata #}
             <div class="card shadow mb-4">
                 <div class="card-header bg-light">
-                    <h5 class="mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'common.metadata'|trans }}</h5>
+                    <h3 class="mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'common.metadata'|trans }}</h3>
                 </div>
                 <div class="card-body">
                     <dl class="row mb-0 small">

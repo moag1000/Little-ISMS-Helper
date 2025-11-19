@@ -29,24 +29,24 @@
         <div class="card-body">
             <form method="get" class="row g-3">
                 <div class="col-md-3">
-                    <label class="form-label">{{ 'compliance.framework.field.active'|trans }}</label>
-                    <select name="active" class="form-select">
+                    <label class="form-label" for="filter-active">{{ 'compliance.framework.field.active'|trans }}</label>
+                    <select name="active" id="filter-active" class="form-select">
                         <option value="">{{ 'common.all'|trans }}</option>
                         <option value="1" {{ filters.active == '1' ? 'selected' }}>{{ 'common.yes'|trans }}</option>
                         <option value="0" {{ filters.active == '0' ? 'selected' }}>{{ 'common.no'|trans }}</option>
                     </select>
                 </div>
                 <div class="col-md-3">
-                    <label class="form-label">{{ 'compliance.framework.field.mandatory'|trans }}</label>
-                    <select name="mandatory" class="form-select">
+                    <label class="form-label" for="filter-mandatory">{{ 'compliance.framework.field.mandatory'|trans }}</label>
+                    <select name="mandatory" id="filter-mandatory" class="form-select">
                         <option value="">{{ 'common.all'|trans }}</option>
                         <option value="1" {{ filters.mandatory == '1' ? 'selected' }}>{{ 'common.yes'|trans }}</option>
                         <option value="0" {{ filters.mandatory == '0' ? 'selected' }}>{{ 'common.no'|trans }}</option>
                     </select>
                 </div>
                 <div class="col-md-3">
-                    <label class="form-label">{{ 'compliance.framework.field.industry'|trans }}</label>
-                    <select name="industry" class="form-select">
+                    <label class="form-label" for="filter-industry">{{ 'compliance.framework.field.industry'|trans }}</label>
+                    <select name="industry" id="filter-industry" class="form-select">
                         <option value="">{{ 'common.all'|trans }}</option>
                         {% for industry in industries %}
                             <option value="{{ industry }}" {{ filters.industry == industry ? 'selected' }}>{{ industry }}</option>
