@@ -21,15 +21,18 @@
     <div class="info-box">
         <h3>Aktionen</h3>
         {% if actionStats|length > 0 %}
-        <table class="table-stats">
-            <thead>
+        {% embed '_components/_table.html.twig' with {
+            'class': 'table-stats',
+            'noMargin': true
+        } %}
+            {% block table_head %}
                 <tr class="tr-header">
                     <th scope="col" class="th-stats-left">Aktion</th>
                     <th scope="col" class="td-stats-right">Anzahl</th>
                     <th scope="col" class="td-stats-right">Anteil</th>
                 </tr>
-            </thead>
-            <tbody>
+            {% endblock %}
+            {% block table_body %}
                 {% for stat in actionStats %}
                 <tr>
                     <td class="td-stats">
@@ -43,8 +46,8 @@
                     </td>
                 </tr>
                 {% endfor %}
-            </tbody>
-        </table>
+            {% endblock %}
+        {% endembed %}
         {% else %}
         <p>Keine Daten verfügbar</p>
         {% endif %}
@@ -53,15 +56,18 @@
     <div class="info-box">
         <h3>Entitätstypen</h3>
         {% if entityTypeStats|length > 0 %}
-        <table class="table-stats">
-            <thead>
+        {% embed '_components/_table.html.twig' with {
+            'class': 'table-stats',
+            'noMargin': true
+        } %}
+            {% block table_head %}
                 <tr class="tr-header">
                     <th scope="col" class="th-stats-left">Entitätstyp</th>
                     <th scope="col" class="td-stats-right">Anzahl</th>
                     <th scope="col" class="td-stats-right">Anteil</th>
                 </tr>
-            </thead>
-            <tbody>
+            {% endblock %}
+            {% block table_body %}
                 {% for stat in entityTypeStats %}
                 <tr>
                     <td class="td-stats">
@@ -75,8 +81,8 @@
                     </td>
                 </tr>
                 {% endfor %}
-            </tbody>
-        </table>
+            {% endblock %}
+        {% endembed %}
         {% else %}
         <p>Keine Daten verfügbar</p>
         {% endif %}
