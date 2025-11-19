@@ -72,40 +72,42 @@
         </div>
         <div class="card-body">
             {% if roles|length > 0 %}
-                <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead>
+                {% embed '_components/_table.html.twig' with {
+                    'class': 'table-hover',
+                    'noMargin': true,
+                    'responsive': true
+                } %}
+                    {% block table_head %}
+                        <tr>
+                            <th scope="col">Rollenname</th>
+                            <th scope="col">Beschreibung</th>
+                            <th scope="col">Benutzer</th>
+                            <th scope="col" class="text-end">Aktion</th>
+                        </tr>
+                    {% endblock %}
+                    {% block table_body %}
+                        {% for role in roles %}
                             <tr>
-                                <th scope="col">Rollenname</th>
-                                <th scope="col">Beschreibung</th>
-                                <th scope="col">Benutzer</th>
-                                <th scope="col" class="text-end">Aktion</th>
+                                <td>
+                                    <strong>{{ role.name }}</strong>
+                                    {% if role.isSystemRole %}
+                                        <span class="badge bg-warning text-dark">System</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ role.description }}</td>
+                                <td>
+                                    <span class="badge bg-secondary">{{ role.users|length }}</span>
+                                </td>
+                                <td class="text-end">
+                                    <a href="{{ path('role_management_show', {id: role.id}) }}"
+                                       class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-eye" aria-hidden="true"></i> Details
+                                    </a>
+                                </td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            {% for role in roles %}
-                                <tr>
-                                    <td>
-                                        <strong>{{ role.name }}</strong>
-                                        {% if role.isSystemRole %}
-                                            <span class="badge bg-warning text-dark">System</span>
-                                        {% endif %}
-                                    </td>
-                                    <td>{{ role.description }}</td>
-                                    <td>
-                                        <span class="badge bg-secondary">{{ role.users|length }}</span>
-                                    </td>
-                                    <td class="text-end">
-                                        <a href="{{ path('role_management_show', {id: role.id}) }}"
-                                           class="btn btn-sm btn-outline-primary">
-                                            <i class="bi bi-eye" aria-hidden="true"></i> Details
-                                        </a>
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+                        {% endfor %}
+                    {% endblock %}
+                {% endembed %}
 
                 <div class="alert alert-info mt-3">
                     <i class="bi bi-info-circle" aria-hidden="true"></i>
