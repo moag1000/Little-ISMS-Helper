@@ -138,107 +138,107 @@
     <div class="card-header">
         <h3><i class="bi bi-list" aria-hidden="true"></i> {{ 'asset.list.title'|trans }} ({{ assets|length }})</h3>
     </div>
-    <div class="table-responsive">
-        <table class="table table-hover mb-0">
-            <thead>
-                <tr>
-                    <th scope="col" class="w-40px">
-                        <input type="checkbox"
-                               class="form-check-input"
-                               data-action="bulk-actions#selectAll"
-                               data-bulk-actions-target="selectAllCheckbox"
-                               aria-label="{{ 'common.select_all'|trans }}">
-                    </th>
-                    <th scope="col">{{ 'asset.label.name'|trans }}</th>
-                    <th scope="col">{{ 'asset.label.type'|trans }}</th>
-                    <th scope="col">{{ 'asset.label.owner'|trans }}</th>
-                    <th scope="col" class="text-center">{{ 'asset.label.classification'|trans }}</th>
-                    <th scope="col" class="text-center">CIA</th>
-                    <th scope="col" class="text-center">{{ 'asset.label.risks'|trans }}</th>
-                    <th scope="col">{{ 'asset.label.status'|trans }}</th>
-                    <th scope="col" class="text-center">{{ 'common.actions'|trans }}</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for asset in assets %}
-                <tr data-asset-id="{{ asset.id }}">
-                    <td>
-                        <input type="checkbox"
-                               class="form-check-input"
-                               data-bulk-actions-target="item"
-                               data-action="bulk-actions#selectItem"
-                               value="{{ asset.id }}"
-                               aria-label="{{ 'common.select'|trans }} {{ asset.name }}">
-                    </td>
-                    <td>
-                        <strong>{{ asset.name }}</strong>
-                        {{ inheritance.small_badge(asset, currentTenant) }}
-                        {% if asset.description %}
-                            <br><small class="text-muted">{{ asset.description|length > 60 ? asset.description|slice(0, 60) ~ '...' : asset.description }}</small>
-                        {% endif %}
-                    </td>
-                    <td><span class="badge bg-secondary">{{ asset.assetType }}</span></td>
-                    <td>{{ asset.owner }}</td>
-                    <td class="text-center">
-                        {% if asset.dataClassification %}
-                            <span class="badge badge-classification-{{ asset.dataClassification }}">
-                                {{ ('asset.classification.' ~ asset.dataClassification)|trans|upper }}
-                            </span>
-                        {% else %}
-                            <span class="text-muted">-</span>
-                        {% endif %}
-                    </td>
-                    <td class="text-center">
-                        <small>
-                            <span class="badge bg-{{ asset.confidentialityValue >= 4 ? 'danger' : (asset.confidentialityValue >= 3 ? 'warning' : 'success') }}">
-                                C:{{ asset.confidentialityValue }}
-                            </span>
-                            <span class="badge bg-{{ asset.integrityValue >= 4 ? 'danger' : (asset.integrityValue >= 3 ? 'warning' : 'success') }}">
-                                I:{{ asset.integrityValue }}
-                            </span>
-                            <span class="badge bg-{{ asset.availabilityValue >= 4 ? 'danger' : (asset.availabilityValue >= 3 ? 'warning' : 'success') }}">
-                                A:{{ asset.availabilityValue }}
-                            </span>
-                        </small>
-                    </td>
-                    <td class="text-center">
-                        {% if recommendations[asset.id] is defined %}
-                            {% set recData = recommendations[asset.id] %}
-                            {% if recData.risk_count > 0 %}
-                                <a href="{{ path('app_risk_index') }}?asset={{ asset.id }}" class="badge bg-{{ recData.risk_count >= 5 ? 'danger' : (recData.risk_count >= 3 ? 'warning' : 'info') }}" title="{{ recData.risk_count }} {{ 'asset.label.risks'|trans }}">
-                                    {{ recData.risk_count }}
-                                </a>
-                            {% else %}
-                                <span class="text-muted">0</span>
-                            {% endif %}
-                        {% else %}
-                            <span class="text-muted">-</span>
-                        {% endif %}
-                    </td>
-                    <td>
-                        <span class="badge bg-{{ asset.status == 'active' ? 'success' : (asset.status == 'inactive' ? 'warning' : 'secondary') }}">
-                            {{ asset.status|upper }}
+    {% embed '_components/_table.html.twig' with {
+        'noMargin': true
+    } %}
+        {% block table_head %}
+            <tr>
+                <th scope="col" class="w-40px">
+                    <input type="checkbox"
+                           class="form-check-input"
+                           data-action="bulk-actions#selectAll"
+                           data-bulk-actions-target="selectAllCheckbox"
+                           aria-label="{{ 'common.select_all'|trans }}">
+                </th>
+                <th scope="col">{{ 'asset.label.name'|trans }}</th>
+                <th scope="col">{{ 'asset.label.type'|trans }}</th>
+                <th scope="col">{{ 'asset.label.owner'|trans }}</th>
+                <th scope="col" class="text-center">{{ 'asset.label.classification'|trans }}</th>
+                <th scope="col" class="text-center">CIA</th>
+                <th scope="col" class="text-center">{{ 'asset.label.risks'|trans }}</th>
+                <th scope="col">{{ 'asset.label.status'|trans }}</th>
+                <th scope="col" class="text-center">{{ 'common.actions'|trans }}</th>
+            </tr>
+        {% endblock %}
+        {% block table_body %}
+            {% for asset in assets %}
+            <tr data-asset-id="{{ asset.id }}">
+                <td>
+                    <input type="checkbox"
+                           class="form-check-input"
+                           data-bulk-actions-target="item"
+                           data-action="bulk-actions#selectItem"
+                           value="{{ asset.id }}"
+                           aria-label="{{ 'common.select'|trans }} {{ asset.name }}">
+                </td>
+                <td>
+                    <strong>{{ asset.name }}</strong>
+                    {{ inheritance.small_badge(asset, currentTenant) }}
+                    {% if asset.description %}
+                        <br><small class="text-muted">{{ asset.description|length > 60 ? asset.description|slice(0, 60) ~ '...' : asset.description }}</small>
+                    {% endif %}
+                </td>
+                <td><span class="badge bg-secondary">{{ asset.assetType }}</span></td>
+                <td>{{ asset.owner }}</td>
+                <td class="text-center">
+                    {% if asset.dataClassification %}
+                        <span class="badge badge-classification-{{ asset.dataClassification }}">
+                            {{ ('asset.classification.' ~ asset.dataClassification)|trans|upper }}
                         </span>
-                    </td>
-                    <td class="text-center">
-                        <div class="btn-group btn-group-sm">
-                            <a href="{{ path('app_asset_show', {id: asset.id}) }}"
-                               class="btn btn-outline-primary"
-                               title="{{ 'common.view'|trans }}" aria-label="{{ 'common.view'|trans }}">
-                                <i class="bi bi-eye" aria-hidden="true"></i>
+                    {% else %}
+                        <span class="text-muted">-</span>
+                    {% endif %}
+                </td>
+                <td class="text-center">
+                    <small>
+                        <span class="badge bg-{{ asset.confidentialityValue >= 4 ? 'danger' : (asset.confidentialityValue >= 3 ? 'warning' : 'success') }}">
+                            C:{{ asset.confidentialityValue }}
+                        </span>
+                        <span class="badge bg-{{ asset.integrityValue >= 4 ? 'danger' : (asset.integrityValue >= 3 ? 'warning' : 'success') }}">
+                            I:{{ asset.integrityValue }}
+                        </span>
+                        <span class="badge bg-{{ asset.availabilityValue >= 4 ? 'danger' : (asset.availabilityValue >= 3 ? 'warning' : 'success') }}">
+                            A:{{ asset.availabilityValue }}
+                        </span>
+                    </small>
+                </td>
+                <td class="text-center">
+                    {% if recommendations[asset.id] is defined %}
+                        {% set recData = recommendations[asset.id] %}
+                        {% if recData.risk_count > 0 %}
+                            <a href="{{ path('app_risk_index') }}?asset={{ asset.id }}" class="badge bg-{{ recData.risk_count >= 5 ? 'danger' : (recData.risk_count >= 3 ? 'warning' : 'info') }}" title="{{ recData.risk_count }} {{ 'asset.label.risks'|trans }}">
+                                {{ recData.risk_count }}
                             </a>
-                            <a href="{{ path('app_asset_edit', {id: asset.id}) }}"
-                               class="btn btn-outline-secondary"
-                               title="{{ 'common.edit'|trans }}" aria-label="{{ 'common.edit'|trans }}">
-                                <i class="bi bi-pencil" aria-hidden="true"></i>
-                            </a>
-                        </div>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+                        {% else %}
+                            <span class="text-muted">0</span>
+                        {% endif %}
+                    {% else %}
+                        <span class="text-muted">-</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <span class="badge bg-{{ asset.status == 'active' ? 'success' : (asset.status == 'inactive' ? 'warning' : 'secondary') }}">
+                        {{ asset.status|upper }}
+                    </span>
+                </td>
+                <td class="text-center">
+                    <div class="btn-group btn-group-sm">
+                        <a href="{{ path('app_asset_show', {id: asset.id}) }}"
+                           class="btn btn-outline-primary"
+                           title="{{ 'common.view'|trans }}" aria-label="{{ 'common.view'|trans }}">
+                            <i class="bi bi-eye" aria-hidden="true"></i>
+                        </a>
+                        <a href="{{ path('app_asset_edit', {id: asset.id}) }}"
+                           class="btn btn-outline-secondary"
+                           title="{{ 'common.edit'|trans }}" aria-label="{{ 'common.edit'|trans }}">
+                            <i class="bi bi-pencil" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        {% endblock %}
+    {% endembed %}
 
     {# Bulk Action Bar #}
     {% if assets|length > 0 %}
