@@ -806,6 +806,38 @@ risk:
     reputational: Reputationsrisiken
     security: Informationssicherheitsrisiken
 
+  # Risk Assessment Guidance (Priority 2.3)
+  guidance:
+    title: 'Bewertungshilfe'
+    intro: 'Verwenden Sie diese Tabellen als Orientierung für die Bewertung von Eintrittswahrscheinlichkeit und Schadensausmaß.'
+    scale: 'Bewertung'
+    description: 'Beschreibung'
+    probability_title: 'Eintrittswahrscheinlichkeit'
+    impact_title: 'Schadensausmaß'
+    tip: 'Tipp: Berücksichtigen Sie bei der Bewertung sowohl finanzielle als auch nicht-finanzielle Auswirkungen (Reputation, Betriebsunterbrechung, rechtliche Konsequenzen).'
+    probability:
+      very_unlikely: 'Sehr unwahrscheinlich'
+      very_unlikely_desc: '< 5% Wahrscheinlichkeit innerhalb von 5 Jahren. Ereignis ist theoretisch möglich, aber extrem selten.'
+      unlikely: 'Unwahrscheinlich'
+      unlikely_desc: '5-25% Wahrscheinlichkeit innerhalb von 5 Jahren. Ereignis könnte eintreten, ist aber selten.'
+      possible: 'Möglich'
+      possible_desc: '25-50% Wahrscheinlichkeit innerhalb von 5 Jahren. Ereignis tritt gelegentlich ein.'
+      likely: 'Wahrscheinlich'
+      likely_desc: '50-75% Wahrscheinlichkeit innerhalb von 5 Jahren. Ereignis tritt regelmäßig ein.'
+      very_likely: 'Sehr wahrscheinlich'
+      very_likely_desc: '> 75% Wahrscheinlichkeit innerhalb von 5 Jahren. Ereignis tritt häufig oder fast sicher ein.'
+    impact:
+      negligible: 'Unbedeutend'
+      negligible_desc: '< 5.000 € Schaden, keine Betriebsunterbrechung, minimale Reputationsschäden.'
+      minor: 'Gering'
+      minor_desc: '5.000-25.000 € Schaden, < 1 Tag Betriebsunterbrechung, begrenzte Reputationsschäden.'
+      moderate: 'Moderat'
+      moderate_desc: '25.000-100.000 € Schaden, 1-3 Tage Betriebsunterbrechung, mittlere Reputationsschäden.'
+      major: 'Hoch'
+      major_desc: '100.000-500.000 € Schaden, > 3 Tage Betriebsunterbrechung, erhebliche Reputationsschäden.'
+      catastrophic: 'Katastrophal'
+      catastrophic_desc: '> 500.000 € Schaden, existenzbedrohend, schwere Reputationsschäden, mögliche rechtliche Konsequenzen.'
+
   # Sections
   section:
     basic_info: Grundinformationen
