@@ -302,6 +302,15 @@ dashboard:
   error:
     import_failed: Fehler beim Importieren der Einstellungen. Bitte überprüfen Sie
       die Datei.
+  overdue_reviews:
+    title: 'Überfällige Risikobewertungen'
+    description: '%count% Risiken erfordern eine Überprüfung (ISO 27001:2022 Clause 6.1.3.d)'
+    last_review: 'Letzte Überprüfung'
+    never_reviewed: 'Noch nie überprüft'
+    view_all: 'Alle %count% anzeigen'
+  upcoming_reviews:
+    title: 'Anstehende Risikobewertungen'
+    description: 'Risiken, die in den nächsten 30 Tagen überprüft werden müssen'
 assets: Assets
 risks: Risiken
 controls: Maßnahmen

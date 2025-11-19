@@ -142,6 +142,96 @@
 
         {# Activity Feed Column #}
         <div class="col-lg-4">
+            {# Overdue Risk Reviews Widget (ISO 27001:2022 Clause 6.1.3.d) #}
+            {% if overdue_reviews|default([])|length > 0 %}
+            <div class="widget-card mb-4 border-warning"
+                 data-widget-id="overdue-reviews"
+                 data-dashboard-customizer-target="widget">
+                <div class="widget-header bg-warning-subtle">
+                    <h3 class="widget-title text-warning">
+                        <i class="bi bi-calendar-x" aria-hidden="true"></i>
+                        {{ 'dashboard.overdue_reviews.title'|trans }}
+                    </h3>
+                    <span class="badge bg-warning">{{ overdue_reviews|length }}</span>
+                </div>
+                <div class="widget-body p-3">
+                    <p class="text-muted mb-3">
+                        {{ 'dashboard.overdue_reviews.description'|trans({ '%count%': overdue_reviews|length }) }}
+                    </p>
+                    <ul class="list-unstyled mb-0">
+                        {% for risk in overdue_reviews|slice(0, 5) %}
+                        <li class="mb-2 pb-2 {% if not loop.last %}border-bottom{% endif %}">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div class="flex-grow-1">
+                                    <a href="{{ path('app_risk_show', {id: risk.id}) }}" class="text-decoration-none fw-bold">
+                                        {{ risk.title }}
+                                    </a>
+                                    <div class="small text-muted">
+                                        {% if risk.reviewDate %}
+                                            <i class="bi bi-calendar-event" aria-hidden="true"></i>
+                                            {{ 'dashboard.overdue_reviews.last_review'|trans }}: {{ risk.reviewDate|date('d.m.Y') }}
+                                        {% else %}
+                                            <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+                                            {{ 'dashboard.overdue_reviews.never_reviewed'|trans }}
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <span class="badge bg-{{ risk.probability * risk.impact >= 20 ? 'danger' : (risk.probability * risk.impact >= 12 ? 'warning' : 'info') }} ms-2">
+                                    {{ risk.probability * risk.impact }}
+                                </span>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% if overdue_reviews|length > 5 %}
+                        <div class="text-center mt-3">
+                            <a href="{{ path('app_risk_index') }}" class="btn btn-sm btn-outline-warning">
+                                <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                                {{ 'dashboard.overdue_reviews.view_all'|trans({ '%count%': overdue_reviews|length - 5 }) }}
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+
+            {# Upcoming Risk Reviews Widget (ISO 27001:2022 Clause 6.1.3.d) #}
+            {% if upcoming_reviews|default([])|length > 0 %}
+            <div class="widget-card mb-4 border-info"
+                 data-widget-id="upcoming-reviews"
+                 data-dashboard-customizer-target="widget">
+                <div class="widget-header bg-info-subtle">
+                    <h3 class="widget-title text-info">
+                        <i class="bi bi-calendar-check" aria-hidden="true"></i>
+                        {{ 'dashboard.upcoming_reviews.title'|trans }}
+                    </h3>
+                    <span class="badge bg-info">{{ upcoming_reviews|length }}</span>
+                </div>
+                <div class="widget-body p-3">
+                    <p class="text-muted mb-3 small">
+                        {{ 'dashboard.upcoming_reviews.description'|trans }}
+                    </p>
+                    <ul class="list-unstyled mb-0">
+                        {% for risk in upcoming_reviews|slice(0, 3) %}
+                        <li class="mb-2 pb-2 {% if not loop.last %}border-bottom{% endif %}">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div class="flex-grow-1">
+                                    <a href="{{ path('app_risk_show', {id: risk.id}) }}" class="text-decoration-none">
+                                        {{ risk.title|length > 40 ? risk.title|slice(0, 40) ~ '...' : risk.title }}
+                                    </a>
+                                    <div class="small text-muted">
+                                        <i class="bi bi-calendar-event" aria-hidden="true"></i>
+                                        {{ risk.reviewDate|date('d.m.Y') }}
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            {% endif %}
+
             {# Activity Feed Widget #}
             <div class="widget-card mb-4"
                  data-widget-id="activity-feed"

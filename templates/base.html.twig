@@ -7,6 +7,13 @@
     <title>{% block title %}{{ 'app.title'|trans }}{% endblock %}</title>
     <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
 
+    {% block importmap %}
+        {# Import map in head with data-turbo-permanent to prevent reload on navigation #}
+        <div data-turbo-permanent id="importmap-container">
+            {{ importmap(['app', 'styles']) }}
+        </div>
+    {% endblock %}
+
     {% block stylesheets %}
         {# Bootstrap CSS - Loaded locally to avoid CDN certificate issues #}
         <link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
@@ -14,7 +21,7 @@
         {# Bootstrap Icons - Loaded locally to avoid CDN certificate issues #}
         <link rel="stylesheet" href="{{ asset('vendor/bootstrap-icons/font/bootstrap-icons.min.css') }}">
 
-        {# Custom styles - Now combined with app importmap at end of body to avoid duplicate import map rules #}
+        {# Custom styles #}
         <style>
             /* Turbo Progress Bar - Cyberpunk Style */
             .turbo-progress-bar {
@@ -377,7 +384,7 @@
         <p class="footer-text-small">
             {{ 'app.powered_by'|trans({'%version%': constant('Symfony\\Component\\HttpKernel\\Kernel::VERSION')}) }}
             <span class="opacity-50">• Press <kbd>?</kbd> for shortcuts • <kbd>⌘K</kbd> to search</span>
-            <span class="opacity-70"> • <a href="{{ path('app_reports_overview') }}" class="text-inherit text-decoration-none"><i class="bi bi-file-earmark-bar-graph"></i> Reports</a></span>
+            <span class="opacity-70"> • <a href="{{ path('app_reports_overview') }}" class="text-inherit text-decoration-none"><i class="bi bi-file-earmark-bar-graph" aria-hidden="true"></i> Reports</a></span>
         </p>
     </footer>
 
@@ -424,7 +431,7 @@
     </script>
 
     {% block javascripts %}
-        {% block importmap %}{{ importmap(['app', 'styles']) }}{% endblock %}
+        {# Import map moved to head section to prevent Turbo reload conflicts #}
     {% endblock %}
 </body>
 </html>
