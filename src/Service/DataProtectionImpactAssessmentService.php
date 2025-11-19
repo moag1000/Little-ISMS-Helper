@@ -635,7 +635,11 @@ class DataProtectionImpactAssessmentService
                 'overall_score' => 100,
                 'completeness_score' => 100,
                 'approval_score' => 100,
+                'review_compliance_score' => 100,
                 'total_dpias' => 0,
+                'complete_dpias' => 0,
+                'approved_dpias' => 0,
+                'due_for_review' => 0,
             ];
         }
 
