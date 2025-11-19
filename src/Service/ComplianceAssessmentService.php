@@ -9,37 +9,67 @@ use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * Service for assessing compliance and calculating fulfillment percentages
+ *
+ * Architecture: Tenant-aware assessment service
+ * - Assessments are tenant-specific (each tenant assesses their own fulfillment)
+ * - Updates ComplianceRequirementFulfillment instead of deprecated ComplianceRequirement fields
  */
 class ComplianceAssessmentService
 {
     public function __construct(
         private ComplianceRequirementRepository $requirementRepository,
         private ComplianceMappingService $mappingService,
-        private EntityManagerInterface $entityManager
+        private EntityManagerInterface $entityManager,
+        private ComplianceRequirementFulfillmentService $fulfillmentService,
+        private TenantContext $tenantContext
     ) {}
 
     /**
      * Assess entire framework and update all requirement fulfillment percentages
+     *
+     * Architecture: Tenant-specific assessment
+     * - Updates the current tenant's ComplianceRequirementFulfillment records
+     * - Does NOT modify the global ComplianceRequirement entity
      */
     public function assessFramework(ComplianceFramework $framework): array
     {
         $requirements = $this->requirementRepository->findByFramework($framework);
         $assessmentResults = [];
+        $tenant = $this->tenantContext->getCurrentTenant();
 
         foreach ($requirements as $requirement) {
             $result = $this->assessRequirement($requirement);
             $assessmentResults[] = $result;
 
-            // Update requirement with calculated fulfillment
-            $requirement->setFulfillmentPercentage($result['calculated_fulfillment']);
-            $requirement->setLastAssessmentDate(new \DateTime());
+            // Update tenant-specific fulfillment (not global requirement!)
+            $fulfillment = $this->fulfillmentService->getOrCreateFulfillment($tenant, $requirement);
+
+            // Only update if tenant can edit (not inherited from parent)
+            if ($this->fulfillmentService->canEditFulfillment($fulfillment, $tenant)) {
+                $fulfillment->setFulfillmentPercentage($result['calculated_fulfillment']);
+                $fulfillment->setLastReviewDate(new \DateTimeImmutable());
+                $fulfillment->setUpdatedAt(new \DateTimeImmutable());
+
+                // Auto-update status based on percentage
+                if ($result['calculated_fulfillment'] >= 100) {
+                    $fulfillment->setStatus('implemented');
+                } elseif ($result['calculated_fulfillment'] > 0) {
+                    $fulfillment->setStatus('in_progress');
+                } else {
+                    $fulfillment->setStatus('not_started');
+                }
+
+                if (!$fulfillment->getId()) {
+                    $this->entityManager->persist($fulfillment);
+                }
+            }
         }
 
         $this->entityManager->flush();
 
         return [
             'framework' => $framework->getName(),
-            'assessment_date' => new \DateTime(),
+            'assessment_date' => new \DateTimeImmutable(),
             'total_requirements' => count($requirements),
             'requirements_assessed' => count($assessmentResults),
             'overall_compliance' => $framework->getCompliancePercentage(),
@@ -49,10 +79,16 @@ class ComplianceAssessmentService
 
     /**
      * Assess a single requirement based on mapped data sources
+     *
+     * Architecture: Tenant-aware assessment
+     * - Checks tenant-specific applicability from ComplianceRequirementFulfillment
      */
     public function assessRequirement(ComplianceRequirement $requirement): array
     {
-        if (!$requirement->isApplicable()) {
+        $tenant = $this->tenantContext->getCurrentTenant();
+        $fulfillment = $this->fulfillmentService->getOrCreateFulfillment($tenant, $requirement);
+
+        if (!$fulfillment->isApplicable()) {
             return [
                 'requirement_id' => $requirement->getRequirementId(),
                 'calculated_fulfillment' => 0,

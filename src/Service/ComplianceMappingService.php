@@ -12,6 +12,9 @@ use App\Repository\InternalAuditRepository;
 /**
  * Service for mapping ISMS data to various compliance frameworks
  * Maximizes data value by reusing existing information
+ *
+ * Architecture: Tenant-aware data reuse analysis
+ * - Analyzes tenant-specific fulfillment data from ComplianceRequirementFulfillment
  */
 class ComplianceMappingService
 {
@@ -20,7 +23,9 @@ class ComplianceMappingService
         private AssetRepository $assetRepository,
         private BusinessProcessRepository $businessProcessRepository,
         private IncidentRepository $incidentRepository,
-        private InternalAuditRepository $internalAuditRepository
+        private InternalAuditRepository $internalAuditRepository,
+        private ComplianceRequirementFulfillmentService $fulfillmentService,
+        private TenantContext $tenantContext
     ) {}
 
     /**
@@ -48,15 +53,21 @@ class ComplianceMappingService
     /**
      * Get data reuse analysis for a requirement
      * Shows which existing ISMS data contributes to fulfilling this requirement
+     *
+     * Architecture: Tenant-aware analysis
+     * - Returns tenant-specific fulfillment percentage from ComplianceRequirementFulfillment
      */
     public function getDataReuseAnalysis(ComplianceRequirement $requirement): array
     {
+        $tenant = $this->tenantContext->getCurrentTenant();
+        $fulfillment = $this->fulfillmentService->getOrCreateFulfillment($tenant, $requirement);
+
         $analysis = [
             'requirement_id' => $requirement->getRequirementId(),
             'title' => $requirement->getTitle(),
             'sources' => [],
             'confidence' => 'unknown',
-            'fulfillment_percentage' => $requirement->getFulfillmentPercentage(),
+            'fulfillment_percentage' => $fulfillment->getFulfillmentPercentage(),
         ];
 
         $mapping = $requirement->getDataSourceMapping() ?? [];
