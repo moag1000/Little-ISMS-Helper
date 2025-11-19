@@ -129,45 +129,9 @@ class ComplianceRequirementType extends AbstractType
                 ],
                 'help' => 'compliance_requirement.help.parent_requirement'
             ])
-            ->add('applicable', CheckboxType::class, [
-                'label' => 'compliance_requirement.field.applicable',
-                'required' => false,
-                'attr' => [
-                    'class' => 'form-check-input'
-                ],
-                'label_attr' => [
-                    'class' => 'form-check-label'
-                ],
-                'help' => 'compliance_requirement.help.applicable'
-            ])
-            ->add('applicabilityJustification', TextareaType::class, [
-                'label' => 'compliance_requirement.field.applicability_justification',
-                'required' => false,
-                'attr' => [
-                    'class' => 'form-control',
-                    'rows' => 3,
-                    'placeholder' => 'compliance_requirement.placeholder.applicability_justification'
-                ],
-                'help' => 'compliance_requirement.help.applicability_justification'
-            ])
-            ->add('fulfillmentPercentage', IntegerType::class, [
-                'label' => 'compliance_requirement.field.fulfillment_percentage',
-                'attr' => [
-                    'class' => 'form-control',
-                    'min' => 0,
-                    'max' => 100,
-                    'placeholder' => '0-100'
-                ],
-                'constraints' => [
-                    new Assert\NotBlank(['message' => 'compliance_requirement.validation.fulfillment_percentage_required']),
-                    new Assert\Range([
-                        'min' => 0,
-                        'max' => 100,
-                        'notInRangeMessage' => 'compliance_requirement.validation.fulfillment_percentage_range'
-                    ])
-                ],
-                'help' => 'compliance_requirement.help.fulfillment_percentage'
-            ])
+            // Note: applicable, applicabilityJustification, and fulfillmentPercentage
+            // are now tenant-specific and managed via ComplianceRequirementFulfillment.
+            // Use the "Quick Update" form on the requirement show page to edit fulfillment data.
         ;
     }
 

@@ -371,10 +371,11 @@
                                     <span class="badge badge-{{ requirement.priority == 'critical' ? 'danger' : (requirement.priority == 'high' ? 'warning' : 'secondary') }}">
                                         {{ requirement.priority|upper }}
                                     </span>
+                                    {% set fulfillment = fulfillments[requirement.id] %}
                                     <div class="progress-mini">
-                                        <div class="progress-fill" style="width: {{ requirement.fulfillmentPercentage }}%; background: {{ requirement.fulfillmentPercentage >= 75 ? 'var(--color-success)' : (requirement.fulfillmentPercentage >= 50 ? 'var(--color-warning)' : 'var(--color-danger)') }};"></div>
+                                        <div class="progress-fill" style="width: {{ fulfillment.fulfillmentPercentage }}%; background: {{ fulfillment.fulfillmentPercentage >= 75 ? 'var(--color-success)' : (fulfillment.fulfillmentPercentage >= 50 ? 'var(--color-warning)' : 'var(--color-danger)') }};"></div>
                                     </div>
-                                    <span class="percentage">{{ requirement.fulfillmentPercentage }}%</span>
+                                    <span class="percentage">{{ fulfillment.fulfillmentPercentage }}%</span>
                                     {% if requirement.hasDetailedRequirements() %}
                                         <span class="expand-icon" data-toggle-target="expandIcon">▼</span>
                                     {% endif %}
@@ -386,6 +387,7 @@
                                 <div class="requirement-details d-none" data-toggle-target="content">
                                     <div class="detailed-requirements">
                                         {% for detailed in requirement.detailedRequirements %}
+                                            {% set detailedFulfillment = fulfillments[detailed.id] %}
                                             <div class="detailed-requirement">
                                                 <div class="detailed-header">
                                                     <span class="detailed-id">{{ detailed.requirementId }}</span>
@@ -393,9 +395,9 @@
                                                 </div>
                                                 <div class="detailed-status">
                                                     <div class="progress-mini">
-                                                        <div class="progress-fill" style="width: {{ detailed.fulfillmentPercentage }}%;"></div>
+                                                        <div class="progress-fill" style="width: {{ detailedFulfillment.fulfillmentPercentage }}%;"></div>
                                                     </div>
-                                                    <span class="percentage-small">{{ detailed.fulfillmentPercentage }}%</span>
+                                                    <span class="percentage-small">{{ detailedFulfillment.fulfillmentPercentage }}%</span>
                                                 </div>
                                             </div>
                                         {% endfor %}

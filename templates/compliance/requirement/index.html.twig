@@ -88,21 +88,24 @@
                                         <span class="badge bg-{{ priorityClass }}">{{ requirement.priority }}</span>
                                     </td>
                                     <td>
+                                        {% set fulfillment = fulfillments[requirement.id] %}
                                         <div class="d-flex align-items-center">
                                             <div class="progress flex-grow-1 me-2" style="height: 20px; min-width: 100px;">
-                                                <div class="progress-bar bg-{{ requirement.fulfillmentStatusBadge }}"
+                                                {% set statusBadge = fulfillment.fulfillmentPercentage >= 100 ? 'success' : (fulfillment.fulfillmentPercentage >= 75 ? 'info' : (fulfillment.fulfillmentPercentage >= 50 ? 'warning' : 'danger')) %}
+                                                <div class="progress-bar bg-{{ statusBadge }}"
                                                      role="progressbar"
-                                                     style="width: {{ requirement.fulfillmentPercentage }}%"
-                                                     aria-valuenow="{{ requirement.fulfillmentPercentage }}"
+                                                     style="width: {{ fulfillment.fulfillmentPercentage }}%"
+                                                     aria-valuenow="{{ fulfillment.fulfillmentPercentage }}"
                                                      aria-valuemin="0"
                                                      aria-valuemax="100">
-                                                    {{ requirement.fulfillmentPercentage }}%
+                                                    {{ fulfillment.fulfillmentPercentage }}%
                                                 </div>
                                             </div>
+                                            <small class="text-muted">{{ fulfillment.status }}</small>
                                         </div>
                                     </td>
                                     <td>
-                                        {% if requirement.applicable %}
+                                        {% if fulfillment.applicable %}
                                             <span class="badge bg-success">Yes</span>
                                         {% else %}
                                             <span class="badge bg-secondary">No</span>
