@@ -88,30 +88,32 @@
                         <h3 class="mb-0"><i class="bi bi-link-45deg" aria-hidden="true"></i> Mapped Controls ({{ requirement.mappedControls|length }})</h3>
                     </div>
                     <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-sm">
-                                <thead>
+                        {% embed '_components/_table.html.twig' with {
+                            'class': 'table-sm',
+                            'noMargin': true,
+                            'responsive': true
+                        } %}
+                            {% block table_head %}
+                                <tr>
+                                    <th scope="col">Control ID</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col">Progress</th>
+                                </tr>
+                            {% endblock %}
+                            {% block table_body %}
+                                {% for control in requirement.mappedControls %}
                                     <tr>
-                                        <th scope="col">Control ID</th>
-                                        <th scope="col">Name</th>
-                                        <th scope="col">Status</th>
-                                        <th scope="col">Progress</th>
+                                        <td><code>{{ control.controlId }}</code></td>
+                                        <td>{{ control.name }}</td>
+                                        <td>
+                                            <span class="badge bg-secondary">{{ control.implementationStatus }}</span>
+                                        </td>
+                                        <td>{{ control.implementationPercentage|default(0) }}%</td>
                                     </tr>
-                                </thead>
-                                <tbody>
-                                    {% for control in requirement.mappedControls %}
-                                        <tr>
-                                            <td><code>{{ control.controlId }}</code></td>
-                                            <td>{{ control.name }}</td>
-                                            <td>
-                                                <span class="badge bg-secondary">{{ control.implementationStatus }}</span>
-                                            </td>
-                                            <td>{{ control.implementationPercentage|default(0) }}%</td>
-                                        </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
+                                {% endfor %}
+                            {% endblock %}
+                        {% endembed %}
                     </div>
                 </div>
             {% endif %}
@@ -125,6 +127,9 @@
                     <div class="card-body">
                         <ul class="list-group">
                             {% for subReq in requirement.detailedRequirements %}
+                                {% set subFulfillment = sub_requirement_fulfillments[subReq.id] %}
+                                {% set subPct = subFulfillment ? subFulfillment.fulfillmentPercentage : 0 %}
+                                {% set subBadge = subPct >= 100 ? 'success' : (subPct >= 75 ? 'info' : (subPct >= 50 ? 'warning' : 'danger')) %}
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
                                     <div>
                                         <strong>{{ subReq.requirementId }}</strong> - {{ subReq.title }}
@@ -132,8 +137,8 @@
                                         <small class="text-muted">{{ subReq.description|u.truncate(100, '...') }}</small>
                                     </div>
                                     <div>
-                                        <span class="badge bg-{{ subReq.fulfillmentStatusBadge }} rounded-pill">
-                                            {{ subReq.fulfillmentPercentage }}%
+                                        <span class="badge bg-{{ subBadge }} rounded-pill">
+                                            {{ subPct }}%
                                         </span>
                                     </div>
                                 </li>
