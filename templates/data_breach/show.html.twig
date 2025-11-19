@@ -1,0 +1,499 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Data Breach - {{ breach.referenceNumber }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid mt-4">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'Privacy', icon: 'bi-shield-lock' },
+            { label: 'Data Breaches', url: path('app_data_breach_index') },
+            { label: breach.referenceNumber }
+        ]
+    } %}
+
+    {% include '_components/_page_header.html.twig' with {
+        title: breach.title,
+        subtitle: breach.referenceNumber ~ ' - ' ~ breach.status|replace({'_': ' '})|title,
+        icon: 'bi-exclamation-triangle-fill',
+        actions: [
+            { label: 'Export PDF', url: path('app_data_breach_export_pdf', {id: breach.id}), variant: 'success', icon: 'bi-file-pdf' },
+            { label: 'Back to List', url: path('app_data_breach_index'), variant: 'secondary', icon: 'bi-arrow-left' }
+        ]
+    } %}
+
+    {# CRITICAL: 72-Hour Deadline Alert #}
+    {% if breach.requiresAuthorityNotification and not breach.supervisoryAuthorityNotifiedAt %}
+        {% set hours = breach.hoursUntilAuthorityDeadline %}
+        {% if hours < 0 %}
+            <div class="alert alert-danger" role="alert">
+                <h5 class="alert-heading"><i class="bi bi-exclamation-triangle-fill"></i> CRITICAL: Notification OVERDUE</h5>
+                <p>
+                    Supervisory authority notification is <strong>{{ (hours * -1)|number_format }} hours OVERDUE</strong>.
+                    Art. 33(1) GDPR requires notification within 72 hours of detection.
+                </p>
+                <hr>
+                <p class="mb-0">
+                    <strong>Detected:</strong> {{ breach.incident.detectedAt|date('Y-m-d H:i') }} ·
+                    <strong>Deadline:</strong> {{ breach.authorityNotificationDeadline|date('Y-m-d H:i') }}
+                </p>
+            </div>
+        {% elseif hours < 24 %}
+            <div class="alert alert-warning" role="alert">
+                <h5 class="alert-heading"><i class="bi bi-clock"></i> URGENT: Deadline Approaching</h5>
+                <p>
+                    Supervisory authority notification required within <strong>{{ hours|number_format }} hours</strong>.
+                </p>
+                <p class="mb-0">
+                    <strong>Detected:</strong> {{ breach.incident.detectedAt|date('Y-m-d H:i') }} ·
+                    <strong>Deadline:</strong> {{ breach.authorityNotificationDeadline|date('Y-m-d H:i') }}
+                </p>
+            </div>
+        {% else %}
+            <div class="alert alert-info" role="alert">
+                <i class="bi bi-info-circle"></i>
+                Supervisory authority notification required within <strong>{{ hours|number_format }} hours</strong>
+                (Deadline: {{ breach.authorityNotificationDeadline|date('Y-m-d H:i') }}).
+            </div>
+        {% endif %}
+    {% endif %}
+
+    {# Status & Workflow Actions #}
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0"><i class="bi bi-diagram-3"></i> Status & Workflow</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>Status:</strong>
+                        {% set status_class = {
+                            'draft': 'secondary',
+                            'under_assessment': 'info',
+                            'authority_notified': 'success',
+                            'subjects_notified': 'success',
+                            'closed': 'dark'
+                        }[breach.status] %}
+                        <span class="badge bg-{{ status_class }}">{{ breach.status|replace({'_': ' '})|upper }}</span>
+                    </p>
+                    <p><strong>Completeness:</strong> {{ breach.completenessPercentage }}%</p>
+                    {% if breach.assessor %}
+                        <p><strong>Assessor:</strong> {{ breach.assessor.firstName }} {{ breach.assessor.lastName }}</p>
+                    {% endif %}
+                </div>
+                <div class="col-md-6">
+                    {% if breach.affectedDataSubjects %}
+                        <p><strong>Affected Data Subjects:</strong> {{ breach.affectedDataSubjects|number_format }}</p>
+                    {% endif %}
+                    {% if breach.riskLevel %}
+                        <p><strong>Risk Level:</strong>
+                            {% set risk_class = {'low': 'success', 'medium': 'info', 'high': 'warning', 'critical': 'danger'}[breach.riskLevel] %}
+                            <span class="badge bg-{{ risk_class }}">{{ breach.riskLevel|upper }}</span>
+                        </p>
+                    {% endif %}
+                    <p><strong>Created:</strong> {{ breach.createdAt|date('Y-m-d H:i') }}</p>
+                </div>
+            </div>
+
+            {# Workflow Actions #}
+            <div class="mt-3">
+                {% if breach.status == 'draft' and breach.isComplete %}
+                    <form action="{{ path('app_data_breach_submit_for_assessment', {id: breach.id}) }}" method="post" class="d-inline">
+                        <input type="hidden" name="_token" value="{{ csrf_token('submit' ~ breach.id) }}">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-send"></i> Submit for Assessment
+                        </button>
+                    </form>
+                {% endif %}
+
+                {% if breach.status in ['draft', 'under_assessment'] %}
+                    <a href="{{ path('app_data_breach_edit', {id: breach.id}) }}" class="btn btn-secondary">
+                        <i class="bi bi-pencil"></i> Edit Breach
+                    </a>
+                {% endif %}
+
+                {% if is_granted('ROLE_AUDITOR') and breach.requiresAuthorityNotification and not breach.supervisoryAuthorityNotifiedAt %}
+                    <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#authorityModal">
+                        <i class="bi bi-building"></i> Notify Supervisory Authority
+                    </button>
+                {% endif %}
+
+                {% if is_granted('ROLE_AUDITOR') and breach.requiresSubjectNotification and not breach.dataSubjectsNotifiedAt and breach.supervisoryAuthorityNotifiedAt %}
+                    <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#subjectsModal">
+                        <i class="bi bi-people"></i> Notify Data Subjects
+                    </button>
+                {% endif %}
+
+                {% if is_granted('ROLE_AUDITOR') and not breach.requiresSubjectNotification and not breach.noSubjectNotificationReason %}
+                    <button type="button" class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#exemptionModal">
+                        <i class="bi bi-shield-check"></i> Record Exemption (Art. 34(3))
+                    </button>
+                {% endif %}
+
+                {% if is_granted('ROLE_AUDITOR') and breach.status in ['authority_notified', 'subjects_notified'] %}
+                    <form action="{{ path('app_data_breach_close', {id: breach.id}) }}" method="post" class="d-inline">
+                        <input type="hidden" name="_token" value="{{ csrf_token('close' ~ breach.id) }}">
+                        <button type="submit" class="btn btn-success">
+                            <i class="bi bi-check-circle"></i> Close Investigation
+                        </button>
+                    </form>
+                {% endif %}
+
+                {% if is_granted('ROLE_MANAGER') and breach.status == 'closed' %}
+                    <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#reopenModal">
+                        <i class="bi bi-folder2-open"></i> Reopen
+                    </button>
+                {% endif %}
+
+                {% if is_granted('ROLE_MANAGER') %}
+                    <form action="{{ path('app_data_breach_delete', {id: breach.id}) }}" method="post" class="d-inline"
+                          onsubmit="return confirm('Are you sure you want to delete this data breach?');">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ breach.id) }}">
+                        <button type="submit" class="btn btn-outline-danger">
+                            <i class="bi bi-trash"></i> Delete
+                        </button>
+                    </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    {# Linked Incident #}
+    <div class="card mb-4">
+        <div class="card-header">
+            <h6 class="mb-0"><i class="bi bi-link-45deg"></i> Linked Security Incident</h6>
+        </div>
+        <div class="card-body">
+            <p><strong>Incident:</strong>
+                <a href="{{ path('app_incident_show', {id: breach.incident.id}) }}">
+                    {{ breach.incident.referenceNumber }} - {{ breach.incident.title }}
+                </a>
+            </p>
+            <p><strong>Detected:</strong> {{ breach.incident.detectedAt|date('Y-m-d H:i') }}</p>
+            <p><strong>Severity:</strong>
+                {% set sev_class = {'low': 'success', 'medium': 'info', 'high': 'warning', 'critical': 'danger'}[breach.incident.severity] %}
+                <span class="badge bg-{{ sev_class }}">{{ breach.incident.severity|upper }}</span>
+            </p>
+            {% if breach.processingActivity %}
+                <p><strong>Processing Activity (VVT):</strong>
+                    <a href="{{ path('app_processing_activity_show', {id: breach.processingActivity.id}) }}">
+                        {{ breach.processingActivity.name }}
+                    </a>
+                </p>
+            {% endif %}
+        </div>
+    </div>
+
+    {# Art. 33/34 Notifications #}
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0"><i class="bi bi-building"></i> Art. 33 - Supervisory Authority</h6>
+                </div>
+                <div class="card-body">
+                    <p><strong>Notification Required:</strong>
+                        {% if breach.requiresAuthorityNotification %}
+                            <span class="text-warning"><i class="bi bi-exclamation-triangle"></i> Yes</span>
+                        {% else %}
+                            <span class="text-muted">No</span>
+                            {% if breach.noNotificationReason %}
+                                <br><small class="text-muted">Reason: {{ breach.noNotificationReason }}</small>
+                            {% endif %}
+                        {% endif %}
+                    </p>
+                    {% if breach.supervisoryAuthorityNotifiedAt %}
+                        <p><strong>Notified:</strong>
+                            <span class="text-success"><i class="bi bi-check-circle"></i> {{ breach.supervisoryAuthorityNotifiedAt|date('Y-m-d H:i') }}</span>
+                        </p>
+                        <p><strong>Authority:</strong> {{ breach.supervisoryAuthorityName }}</p>
+                        {% if breach.supervisoryAuthorityReference %}
+                            <p><strong>Reference:</strong> {{ breach.supervisoryAuthorityReference }}</p>
+                        {% endif %}
+                        <p><strong>Method:</strong> {{ breach.notificationMethod }}</p>
+                        {% if breach.notificationDelayReason %}
+                            <div class="alert alert-warning">
+                                <strong>Delay Reason:</strong> {{ breach.notificationDelayReason }}
+                            </div>
+                        {% endif %}
+                    {% elseif breach.requiresAuthorityNotification %}
+                        <p class="text-danger"><i class="bi bi-x-circle"></i> Not yet notified</p>
+                        <p><strong>Deadline:</strong> {{ breach.authorityNotificationDeadline|date('Y-m-d H:i') }}</p>
+                        <p><strong>Time Remaining:</strong>
+                            {% set hours = breach.hoursUntilAuthorityDeadline %}
+                            {% if hours < 0 %}
+                                <span class="text-danger">OVERDUE by {{ (hours * -1)|number_format }}h</span>
+                            {% else %}
+                                <span class="{% if hours < 24 %}text-warning{% else %}text-info{% endif %}">
+                                    {{ hours|number_format }} hours
+                                </span>
+                            {% endif %}
+                        </p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0"><i class="bi bi-people"></i> Art. 34 - Data Subjects</h6>
+                </div>
+                <div class="card-body">
+                    <p><strong>Notification Required:</strong>
+                        {% if breach.requiresSubjectNotification %}
+                            <span class="text-warning"><i class="bi bi-exclamation-triangle"></i> Yes (High Risk)</span>
+                        {% else %}
+                            <span class="text-muted">No</span>
+                            {% if breach.noSubjectNotificationReason %}
+                                <br><small class="text-muted">Exemption: {{ breach.noSubjectNotificationReason }}</small>
+                            {% endif %}
+                        {% endif %}
+                    </p>
+                    {% if breach.dataSubjectsNotifiedAt %}
+                        <p><strong>Notified:</strong>
+                            <span class="text-success"><i class="bi bi-check-circle"></i> {{ breach.dataSubjectsNotifiedAt|date('Y-m-d H:i') }}</span>
+                        </p>
+                        <p><strong>Subjects Notified:</strong> {{ breach.subjectsNotified|number_format }}</p>
+                        <p><strong>Method:</strong> {{ breach.subjectNotificationMethod }}</p>
+                    {% elseif breach.requiresSubjectNotification %}
+                        <p class="text-warning"><i class="bi bi-x-circle"></i> Not yet notified</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Breach Details - Art. 33(3) Content #}
+    <div class="card mb-4">
+        <div class="card-header">
+            <h6 class="mb-0"><i class="bi bi-info-circle"></i> Art. 33(3) - Nature of the Breach</h6>
+        </div>
+        <div class="card-body">
+            {% if breach.breachNature %}
+                <h6>Nature of the Breach (Art. 33(3)(a)):</h6>
+                <p>{{ breach.breachNature|nl2br }}</p>
+            {% endif %}
+            {% if breach.dataCategories|length > 0 %}
+                <h6>Data Categories:</h6>
+                <p>{{ breach.dataCategories|join(', ') }}</p>
+            {% endif %}
+            {% if breach.dataSubjectCategories|length > 0 %}
+                <h6>Data Subject Categories:</h6>
+                <p>{{ breach.dataSubjectCategories|join(', ') }}</p>
+            {% endif %}
+            {% if breach.specialCategoriesAffected %}
+                <div class="alert alert-warning">
+                    <i class="bi bi-shield-lock"></i> <strong>Special categories of data affected (Art. 9 GDPR)</strong>
+                </div>
+            {% endif %}
+            {% if breach.criminalDataAffected %}
+                <div class="alert alert-warning">
+                    <i class="bi bi-exclamation-triangle"></i> <strong>Criminal conviction data affected (Art. 10 GDPR)</strong>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    {# Consequences & Measures #}
+    <div class="card mb-4">
+        <div class="card-header">
+            <h6 class="mb-0"><i class="bi bi-shield-check"></i> Art. 33(3)(b-d) - Consequences & Measures</h6>
+        </div>
+        <div class="card-body">
+            {% if breach.likelyConsequences %}
+                <h6>Likely Consequences (Art. 33(3)(b)):</h6>
+                <p>{{ breach.likelyConsequences|nl2br }}</p>
+            {% endif %}
+            {% if breach.measuresTaken %}
+                <h6>Measures Taken (Art. 33(3)(c)):</h6>
+                <p>{{ breach.measuresTaken|nl2br }}</p>
+            {% endif %}
+            {% if breach.mitigationMeasures %}
+                <h6>Mitigation Measures (Art. 33(3)(d)):</h6>
+                <p>{{ breach.mitigationMeasures|nl2br }}</p>
+            {% endif %}
+        </div>
+    </div>
+
+    {# Investigation & Follow-up #}
+    {% if breach.rootCause or breach.lessonsLearned or breach.followUpActions|length > 0 %}
+        <div class="card mb-4">
+            <div class="card-header">
+                <h6 class="mb-0"><i class="bi bi-search"></i> Investigation & Follow-up</h6>
+            </div>
+            <div class="card-body">
+                {% if breach.rootCause %}
+                    <h6>Root Cause:</h6>
+                    <p>{{ breach.rootCause|nl2br }}</p>
+                {% endif %}
+                {% if breach.lessonsLearned %}
+                    <h6>Lessons Learned:</h6>
+                    <p>{{ breach.lessonsLearned|nl2br }}</p>
+                {% endif %}
+                {% if breach.followUpActions|length > 0 %}
+                    <h6>Follow-up Actions:</h6>
+                    <ul>
+                        {% for action in breach.followUpActions %}
+                            <li>{{ action }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+{# Notify Supervisory Authority Modal #}
+<div class="modal fade" id="authorityModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="{{ path('app_data_breach_notify_authority', {id: breach.id}) }}" method="post">
+                <input type="hidden" name="_token" value="{{ csrf_token('notify_authority' ~ breach.id) }}">
+                <div class="modal-header">
+                    <h5 class="modal-title">Notify Supervisory Authority (Art. 33 GDPR)</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Supervisory Authority *</label>
+                        <select name="authority_name" class="form-select" required>
+                            <option value="">Select authority...</option>
+                            <option value="BfDI">BfDI (Federal Commissioner)</option>
+                            <option value="LfDI Baden-Württemberg">LfDI Baden-Württemberg</option>
+                            <option value="LfDI Bayern">LfDI Bayern</option>
+                            <option value="BlnBDI">BlnBDI (Berlin)</option>
+                            <option value="LDA Brandenburg">LDA Brandenburg</option>
+                            <option value="LfDI Bremen">LfDI Bremen</option>
+                            <option value="HmbBfDI">HmbBfDI (Hamburg)</option>
+                            <option value="HBDI">HBDI (Hessen)</option>
+                            <option value="LfDI Mecklenburg-Vorpommern">LfDI Mecklenburg-Vorpommern</option>
+                            <option value="LfD Niedersachsen">LfD Niedersachsen</option>
+                            <option value="LDI NRW">LDI NRW</option>
+                            <option value="LfDI Rheinland-Pfalz">LfDI Rheinland-Pfalz</option>
+                            <option value="ULD Schleswig-Holstein">ULD Schleswig-Holstein</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Notification Method *</label>
+                        <select name="notification_method" class="form-select" required>
+                            <option value="email">Email</option>
+                            <option value="web_portal">Web Portal</option>
+                            <option value="phone">Phone</option>
+                            <option value="letter">Registered Letter</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Reference Number (optional)</label>
+                        <input type="text" name="authority_reference" class="form-control" placeholder="Case number from authority">
+                    </div>
+                    {% if breach.hoursUntilAuthorityDeadline < 0 %}
+                        <div class="mb-3">
+                            <label class="form-label">Delay Reason * (required for overdue notifications)</label>
+                            <textarea name="delay_reason" class="form-control" rows="3" required
+                                      placeholder="Explain why the 72-hour deadline was exceeded..."></textarea>
+                            <small class="text-muted">Art. 33(1) GDPR requires justification for delays.</small>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-warning">Record Notification</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{# Notify Data Subjects Modal #}
+<div class="modal fade" id="subjectsModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="{{ path('app_data_breach_notify_subjects', {id: breach.id}) }}" method="post">
+                <input type="hidden" name="_token" value="{{ csrf_token('notify_subjects' ~ breach.id) }}">
+                <div class="modal-header">
+                    <h5 class="modal-title">Notify Data Subjects (Art. 34 GDPR)</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Notification Method *</label>
+                        <select name="notification_method" class="form-select" required>
+                            <option value="email">Direct Email</option>
+                            <option value="letter">Registered Letter</option>
+                            <option value="website">Website Notice</option>
+                            <option value="press">Press Release</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Number of Subjects Notified *</label>
+                        <input type="number" name="subjects_notified" class="form-control" min="1" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-info">Record Notification</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{# Exemption Modal #}
+<div class="modal fade" id="exemptionModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="{{ path('app_data_breach_subject_notification_exemption', {id: breach.id}) }}" method="post">
+                <input type="hidden" name="_token" value="{{ csrf_token('exemption' ~ breach.id) }}">
+                <div class="modal-header">
+                    <h5 class="modal-title">Record Exemption from Subject Notification (Art. 34(3) GDPR)</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Exemption Reason *</label>
+                        <select name="exemption_reason" class="form-select" required>
+                            <option value="">Select reason...</option>
+                            <option value="art_34_3_a">Art. 34(3)(a) - Technical/organizational protection measures applied</option>
+                            <option value="art_34_3_b">Art. 34(3)(b) - Subsequent measures ensure high risk no longer likely</option>
+                            <option value="art_34_3_c">Art. 34(3)(c) - Disproportionate effort (public communication instead)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success">Record Exemption</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{# Reopen Modal #}
+<div class="modal fade" id="reopenModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="{{ path('app_data_breach_reopen', {id: breach.id}) }}" method="post">
+                <input type="hidden" name="_token" value="{{ csrf_token('reopen' ~ breach.id) }}">
+                <div class="modal-header">
+                    <h5 class="modal-title">Reopen Data Breach</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Reopen Reason *</label>
+                        <textarea name="reopen_reason" class="form-control" rows="3" required
+                                  placeholder="Explain why this breach is being reopened..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-warning">Reopen Breach</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

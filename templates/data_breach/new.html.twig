@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Data Breach{% endblock %}
+
+{% block body %}
+<div class="container-fluid mt-4">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'Privacy', icon: 'bi-shield-lock' },
+            { label: 'Data Breaches', url: path('app_data_breach_index') },
+            { label: 'New Data Breach' }
+        ]
+    } %}
+
+    {% include '_components/_page_header.html.twig' with {
+        title: 'New Data Breach',
+        subtitle: 'Register personal data breach per Art. 33/34 GDPR',
+        icon: 'bi-exclamation-triangle-fill',
+        actions: [
+            { label: 'Cancel', url: path('app_data_breach_index'), variant: 'secondary', icon: 'bi-x-lg' }
+        ]
+    } %}
+
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0"><i class="bi bi-clipboard-check"></i> Data Breach Form</h5>
+        </div>
+        <div class="card-body">
+            {{ form_start(form) }}
+                {{ form_widget(form) }}
+
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-save"></i> Create Data Breach
+                    </button>
+                    <a href="{{ path('app_data_breach_index') }}" class="btn btn-secondary">
+                        <i class="bi bi-x-lg"></i> Cancel
+                    </a>
+                </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>
+{% endblock %}
