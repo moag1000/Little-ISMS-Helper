@@ -34,7 +34,7 @@
 
     <div class="preview-section">
         <h6 class="preview-section-title">
-            <i class="bi-file-text"></i>
+            <i class="bi bi-file-text"></i>
             Beschreibung
         </h6>
         <p class="mb-0">{{ incident.description }}</p>
@@ -43,7 +43,7 @@
     {% if incident.affectedAssets|length > 0 %}
     <div class="preview-section">
         <h6 class="preview-section-title">
-            <i class="bi-server"></i>
+            <i class="bi bi-server"></i>
             Betroffene Assets ({{ incident.affectedAssets|length }})
         </h6>
         <ul class="list-unstyled mb-0">
@@ -63,10 +63,10 @@
 
     <div class="preview-actions">
         <a href="{{ path('app_incident_show', {id: incident.id}) }}" class="btn btn-primary btn-sm">
-            <i class="bi-arrow-right"></i> Details anzeigen
+            <i class="bi bi-arrow-right"></i> Details anzeigen
         </a>
         <a href="{{ path('app_incident_edit', {id: incident.id}) }}" class="btn btn-outline-secondary btn-sm">
-            <i class="bi-pencil"></i> Bearbeiten
+            <i class="bi bi-pencil"></i> Bearbeiten
         </a>
     </div>
 </div>

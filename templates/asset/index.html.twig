@@ -16,6 +16,9 @@
     </div>
 </div>
 
+{# Skip link for filters section - WCAG 2.4.1 #}
+<a href="#filter-section" class="skip-link">{{ 'accessibility.skip_to_filters'|trans }}</a>
+
 {% if currentTenant %}
 {% embed '_components/_card.html.twig' with {
     'class': 'mb-3'
@@ -78,7 +81,8 @@
     'class': 'mb-4'
 } %}
     {% block card_body %}
-        <form method="get" action="{{ path('app_asset_index') }}" class="row g-3" id="asset-filter-form">
+        <form method="get" action="{{ path('app_asset_index') }}" class="row g-3" id="asset-filter-form" role="search" aria-label="{{ 'common.filters'|trans }}">
+            <div id="filter-section" tabindex="-1"></div>
             <div class="col-md-3">
                 <label for="filter-type" class="form-label">{{ 'asset.label.type'|trans }}</label>
                 <select class="form-select" id="filter-type" name="type" onchange="this.form.submit()">

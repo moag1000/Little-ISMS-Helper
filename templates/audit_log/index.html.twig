@@ -60,9 +60,12 @@
     {% endif %}
 </div>
 
-<div class="filter-container">
+{# Skip link for filters section - WCAG 2.4.1 #}
+<a href="#filter-section" class="skip-link">{{ 'accessibility.skip_to_filters'|trans }}</a>
+
+<div class="filter-container" id="filter-section" tabindex="-1">
     <h3>Filter</h3>
-    <form method="get" action="{{ path('app_audit_log_index') }}">
+    <form method="get" action="{{ path('app_audit_log_index') }}" role="search" aria-label="Filter">
         <div class="d-grid grid-responsive-200 gap-1 mb-md">
             <div>
                 <label for="entityType">Entitätstyp:</label>
@@ -124,7 +127,7 @@
                     data-bs-target="#table-view"
                     type="button"
                     role="tab">
-                <i class="bi-table"></i> Tabelle
+                <i class="bi bi-table"></i> Tabelle
             </button>
         </li>
         <li class="nav-item" role="presentation">
@@ -133,7 +136,7 @@
                     data-bs-target="#timeline-view"
                     type="button"
                     role="tab">
-                <i class="bi-clock-history"></i> Timeline
+                <i class="bi bi-clock-history"></i> Timeline
             </button>
         </li>
     </ul>

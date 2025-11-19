@@ -21,13 +21,16 @@
         </div>
     </div>
 
+    {# Skip link for filters section - WCAG 2.4.1 #}
+    <a href="#filter-section" class="skip-link">{{ 'accessibility.skip_to_filters'|trans }}</a>
+
     {# Filters #}
     <div class="card mb-4">
         <div class="card-header">
             <i class="bi bi-funnel" aria-hidden="true"></i> {{ 'common.filters'|trans }}
         </div>
-        <div class="card-body">
-            <form method="get" class="row g-3">
+        <div class="card-body" id="filter-section" tabindex="-1">
+            <form method="get" class="row g-3" role="search" aria-label="{{ 'common.filters'|trans }}">
                 <div class="col-md-3">
                     <label class="form-label" for="filter-active">{{ 'compliance.framework.field.active'|trans }}</label>
                     <select name="active" id="filter-active" class="form-select">

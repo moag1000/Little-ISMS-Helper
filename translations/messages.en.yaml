@@ -4438,6 +4438,7 @@ governance:
 accessibility:
   skip_to_content: 'Skip to main content'
   skip_to_navigation: 'Skip to navigation'
+  skip_to_filters: 'Skip to filters'
 
 # Bulk Delete Confirmation
 bulk_delete:
