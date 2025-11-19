@@ -59,6 +59,75 @@
     </div>
 </fieldset>
 
+{# GDPR/DSGVO Data Protection Fields (Priority 2.2) #}
+<fieldset class="mb-4">
+    <legend class="h5 mb-3">
+        <i class="bi bi-shield-lock" aria-hidden="true"></i>
+        {{ 'risk.section.gdpr_assessment'|trans|default('DSGVO/GDPR Datenschutz-Bewertung') }}
+    </legend>
+
+    <div class="alert alert-info" role="status">
+        <i class="bi bi-info-circle" aria-hidden="true"></i>
+        {{ 'risk.help.gdpr_section'|trans|default('Bewerten Sie, ob dieses Risiko personenbezogene Daten betrifft (DSGVO Art. 32)') }}
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.involvesPersonalData,
+                'label': 'risk.field.involves_personal_data'|trans|default('Betrifft personenbezogene Daten'),
+                'help': 'risk.help.involves_personal_data'|trans|default('Aktivieren Sie dies, wenn das Risiko die Verarbeitung personenbezogener Daten betrifft')
+            } %}
+        </div>
+
+        <div class="col-md-6">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.involvesSpecialCategoryData,
+                'label': 'risk.field.involves_special_category_data'|trans|default('Betrifft besondere Kategorien'),
+                'help': 'risk.help.involves_special_category_data'|trans|default('Besondere Kategorien gemäß Art. 9 DSGVO')
+            } %}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.legalBasis,
+                'label': 'risk.field.legal_basis'|trans|default('Rechtsgrundlage'),
+                'help': 'risk.help.legal_basis'|trans|default('Rechtsgrundlage für die Datenverarbeitung gemäß DSGVO Art. 6')
+            } %}
+        </div>
+
+        <div class="col-md-6">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.processingScale,
+                'label': 'risk.field.processing_scale'|trans|default('Umfang der Verarbeitung'),
+                'help': 'risk.help.processing_scale'|trans|default('Umfang der Datenverarbeitung')
+            } %}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.requiresDPIA,
+                'label': 'risk.field.requires_dpia'|trans|default('DSFA erforderlich'),
+                'help': 'risk.help.requires_dpia'|trans|default('Datenschutz-Folgenabschätzung erforderlich')
+            } %}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.dataSubjectImpact,
+                'label': 'risk.field.data_subject_impact'|trans|default('Auswirkungen auf betroffene Personen'),
+                'help': 'risk.help.data_subject_impact'|trans|default('Beschreiben Sie die Auswirkungen auf Rechte und Freiheiten')
+            } %}
+        </div>
+    </div>
+</fieldset>
+
 {# Inherent Risk (Brutto-Risiko) #}
 <fieldset class="mb-4">
     <legend class="h5 mb-3">
@@ -100,7 +169,7 @@
                 </h6>
                 <div class="table-responsive mb-4">
                     <table class="table table-sm table-bordered">
-                        <thead class="table-light">
+                        <thead>
                             <tr>
                                 <th style="width: 25%;">{{ 'risk.guidance.scale'|trans }}</th>
                                 <th>{{ 'risk.guidance.description'|trans }}</th>
@@ -138,7 +207,7 @@
                 </h6>
                 <div class="table-responsive">
                     <table class="table table-sm table-bordered">
-                        <thead class="table-light">
+                        <thead>
                             <tr>
                                 <th style="width: 25%;">{{ 'risk.guidance.scale'|trans }}</th>
                                 <th>{{ 'risk.guidance.description'|trans }}</th>
