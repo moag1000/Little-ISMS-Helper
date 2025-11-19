@@ -105,126 +105,132 @@
                 {% if orphanedAssets|length > 0 %}
                 <div class="mb-4">
                     <h2>{{ 'admin.data_repair.orphaned_assets_list'|trans }}</h2>
-                    <div class="table-responsive">
-                        <table class="table table-sm table-striped">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>{{ 'common.name'|trans }}</th>
-                                    <th>{{ 'asset.label.type'|trans }}</th>
-                                    <th>{{ 'common.actions'|trans }}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for asset in orphanedAssets %}
-                                <tr>
-                                    <td>{{ asset.id }}</td>
-                                    <td>{{ asset.name }}</td>
-                                    <td>{{ asset.assetType }}</td>
-                                    <td>
-                                        <form method="post" action="{{ path('admin_data_repair_reassign_entity', {type: 'asset', id: asset.id}) }}" class="d-inline">
-                                            <input type="hidden" name="_token" value="{{ csrf_token('reassign_entity_' ~ asset.id) }}">
-                                            <div class="input-group input-group-sm">
-                                                <select name="tenant_id" class="form-select form-select-sm" required>
-                                                    {% for tenant in tenants %}
-                                                        <option value="{{ tenant.id }}">{{ tenant.name }}</option>
-                                                    {% endfor %}
-                                                </select>
-                                                <button type="submit" class="btn btn-sm btn-outline-primary" aria-label="{{ 'common.apply'|trans }}">
-                                                    <i class="bi bi-check" aria-hidden="true"></i>
-                                                </button>
-                                            </div>
-                                        </form>
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
+                    {% embed '_components/_table.html.twig' with {
+                        'class': 'table-sm table-striped',
+                        'responsive': true,
+                        'noMargin': true
+                    } %}
+                        {% block table_head %}
+                            <tr>
+                                <th scope="col">ID</th>
+                                <th scope="col">{{ 'common.name'|trans }}</th>
+                                <th scope="col">{{ 'asset.label.type'|trans }}</th>
+                                <th scope="col">{{ 'common.actions'|trans }}</th>
+                            </tr>
+                        {% endblock %}
+                        {% block table_body %}
+                            {% for asset in orphanedAssets %}
+                            <tr>
+                                <td>{{ asset.id }}</td>
+                                <td>{{ asset.name }}</td>
+                                <td>{{ asset.assetType }}</td>
+                                <td>
+                                    <form method="post" action="{{ path('admin_data_repair_reassign_entity', {type: 'asset', id: asset.id}) }}" class="d-inline">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('reassign_entity_' ~ asset.id) }}">
+                                        <div class="input-group input-group-sm">
+                                            <select name="tenant_id" class="form-select form-select-sm" required>
+                                                {% for tenant in tenants %}
+                                                    <option value="{{ tenant.id }}">{{ tenant.name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                            <button type="submit" class="btn btn-sm btn-outline-primary" aria-label="{{ 'common.apply'|trans }}">
+                                                <i class="bi bi-check" aria-hidden="true"></i>
+                                            </button>
+                                        </div>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% endblock %}
+                    {% endembed %}
                 </div>
                 {% endif %}
 
                 {% if orphanedRisks|length > 0 %}
                 <div class="mb-4">
                     <h4>{{ 'admin.data_repair.orphaned_risks_list'|trans }}</h4>
-                    <div class="table-responsive">
-                        <table class="table table-sm table-striped">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>{{ 'risk.label.title'|trans }}</th>
-                                    <th>{{ 'risk.label.inherent_risk'|trans }}</th>
-                                    <th>{{ 'common.actions'|trans }}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for risk in orphanedRisks %}
-                                <tr>
-                                    <td>{{ risk.id }}</td>
-                                    <td>{{ risk.title }}</td>
-                                    <td>{{ risk.inherentRiskLevel }}</td>
-                                    <td>
-                                        <form method="post" action="{{ path('admin_data_repair_reassign_entity', {type: 'risk', id: risk.id}) }}" class="d-inline">
-                                            <input type="hidden" name="_token" value="{{ csrf_token('reassign_entity_' ~ risk.id) }}">
-                                            <div class="input-group input-group-sm">
-                                                <select name="tenant_id" class="form-select form-select-sm" required>
-                                                    {% for tenant in tenants %}
-                                                        <option value="{{ tenant.id }}">{{ tenant.name }}</option>
-                                                    {% endfor %}
-                                                </select>
-                                                <button type="submit" class="btn btn-sm btn-outline-primary" aria-label="{{ 'common.apply'|trans }}">
-                                                    <i class="bi bi-check" aria-hidden="true"></i>
-                                                </button>
-                                            </div>
-                                        </form>
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
+                    {% embed '_components/_table.html.twig' with {
+                        'class': 'table-sm table-striped',
+                        'responsive': true,
+                        'noMargin': true
+                    } %}
+                        {% block table_head %}
+                            <tr>
+                                <th scope="col">ID</th>
+                                <th scope="col">{{ 'risk.label.title'|trans }}</th>
+                                <th scope="col">{{ 'risk.label.inherent_risk'|trans }}</th>
+                                <th scope="col">{{ 'common.actions'|trans }}</th>
+                            </tr>
+                        {% endblock %}
+                        {% block table_body %}
+                            {% for risk in orphanedRisks %}
+                            <tr>
+                                <td>{{ risk.id }}</td>
+                                <td>{{ risk.title }}</td>
+                                <td>{{ risk.inherentRiskLevel }}</td>
+                                <td>
+                                    <form method="post" action="{{ path('admin_data_repair_reassign_entity', {type: 'risk', id: risk.id}) }}" class="d-inline">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('reassign_entity_' ~ risk.id) }}">
+                                        <div class="input-group input-group-sm">
+                                            <select name="tenant_id" class="form-select form-select-sm" required>
+                                                {% for tenant in tenants %}
+                                                    <option value="{{ tenant.id }}">{{ tenant.name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                            <button type="submit" class="btn btn-sm btn-outline-primary" aria-label="{{ 'common.apply'|trans }}">
+                                                <i class="bi bi-check" aria-hidden="true"></i>
+                                            </button>
+                                        </div>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% endblock %}
+                    {% endembed %}
                 </div>
                 {% endif %}
 
                 {% if orphanedIncidents|length > 0 %}
                 <div class="mb-4">
                     <h4>{{ 'admin.data_repair.orphaned_incidents_list'|trans }}</h4>
-                    <div class="table-responsive">
-                        <table class="table table-sm table-striped">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>{{ 'incident.label.title'|trans }}</th>
-                                    <th>{{ 'incident.label.severity'|trans }}</th>
-                                    <th>{{ 'common.actions'|trans }}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for incident in orphanedIncidents %}
-                                <tr>
-                                    <td>{{ incident.id }}</td>
-                                    <td>{{ incident.title }}</td>
-                                    <td>{{ incident.severity }}</td>
-                                    <td>
-                                        <form method="post" action="{{ path('admin_data_repair_reassign_entity', {type: 'incident', id: incident.id}) }}" class="d-inline">
-                                            <input type="hidden" name="_token" value="{{ csrf_token('reassign_entity_' ~ incident.id) }}">
-                                            <div class="input-group input-group-sm">
-                                                <select name="tenant_id" class="form-select form-select-sm" required>
-                                                    {% for tenant in tenants %}
-                                                        <option value="{{ tenant.id }}">{{ tenant.name }}</option>
-                                                    {% endfor %}
-                                                </select>
-                                                <button type="submit" class="btn btn-sm btn-outline-primary" aria-label="{{ 'common.apply'|trans }}">
-                                                    <i class="bi bi-check" aria-hidden="true"></i>
-                                                </button>
-                                            </div>
-                                        </form>
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
+                    {% embed '_components/_table.html.twig' with {
+                        'class': 'table-sm table-striped',
+                        'responsive': true,
+                        'noMargin': true
+                    } %}
+                        {% block table_head %}
+                            <tr>
+                                <th scope="col">ID</th>
+                                <th scope="col">{{ 'incident.label.title'|trans }}</th>
+                                <th scope="col">{{ 'incident.label.severity'|trans }}</th>
+                                <th scope="col">{{ 'common.actions'|trans }}</th>
+                            </tr>
+                        {% endblock %}
+                        {% block table_body %}
+                            {% for incident in orphanedIncidents %}
+                            <tr>
+                                <td>{{ incident.id }}</td>
+                                <td>{{ incident.title }}</td>
+                                <td>{{ incident.severity }}</td>
+                                <td>
+                                    <form method="post" action="{{ path('admin_data_repair_reassign_entity', {type: 'incident', id: incident.id}) }}" class="d-inline">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('reassign_entity_' ~ incident.id) }}">
+                                        <div class="input-group input-group-sm">
+                                            <select name="tenant_id" class="form-select form-select-sm" required>
+                                                {% for tenant in tenants %}
+                                                    <option value="{{ tenant.id }}">{{ tenant.name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                            <button type="submit" class="btn btn-sm btn-outline-primary" aria-label="{{ 'common.apply'|trans }}">
+                                                <i class="bi bi-check" aria-hidden="true"></i>
+                                            </button>
+                                        </div>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% endblock %}
+                    {% endembed %}
                 </div>
                 {% endif %}
             {% endif %}
@@ -239,35 +245,37 @@
             </h5>
         </div>
         <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>{{ 'tenant.name'|trans }}</th>
-                            <th class="text-center">{{ 'nav.assets'|trans }}</th>
-                            <th class="text-center">{{ 'nav.risks'|trans }}</th>
-                            <th class="text-center">{{ 'nav.incidents'|trans }}</th>
-                            <th class="text-center">{{ 'common.all'|trans }}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for stat in tenantStats %}
-                        <tr>
-                            <td>
-                                <strong>{{ stat.tenant.name }}</strong>
-                                {% if stat.tenant.description %}
-                                    <br><small class="text-muted">{{ stat.tenant.description }}</small>
-                                {% endif %}
-                            </td>
-                            <td class="text-center">{{ stat.assets }}</td>
-                            <td class="text-center">{{ stat.risks }}</td>
-                            <td class="text-center">{{ stat.incidents }}</td>
-                            <td class="text-center"><strong>{{ stat.assets + stat.risks + stat.incidents }}</strong></td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+            {% embed '_components/_table.html.twig' with {
+                'class': 'table-striped',
+                'responsive': true,
+                'noMargin': true
+            } %}
+                {% block table_head %}
+                    <tr>
+                        <th scope="col">{{ 'tenant.name'|trans }}</th>
+                        <th scope="col" class="text-center">{{ 'nav.assets'|trans }}</th>
+                        <th scope="col" class="text-center">{{ 'nav.risks'|trans }}</th>
+                        <th scope="col" class="text-center">{{ 'nav.incidents'|trans }}</th>
+                        <th scope="col" class="text-center">{{ 'common.all'|trans }}</th>
+                    </tr>
+                {% endblock %}
+                {% block table_body %}
+                    {% for stat in tenantStats %}
+                    <tr>
+                        <td>
+                            <strong>{{ stat.tenant.name }}</strong>
+                            {% if stat.tenant.description %}
+                                <br><small class="text-muted">{{ stat.tenant.description }}</small>
+                            {% endif %}
+                        </td>
+                        <td class="text-center">{{ stat.assets }}</td>
+                        <td class="text-center">{{ stat.risks }}</td>
+                        <td class="text-center">{{ stat.incidents }}</td>
+                        <td class="text-center"><strong>{{ stat.assets + stat.risks + stat.incidents }}</strong></td>
+                    </tr>
+                    {% endfor %}
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 
@@ -284,56 +292,58 @@
             <div class="alert alert-warning">
                 <strong>{{ 'common.warning'|trans }}:</strong> {{ 'admin.data_repair.risk_asset_assignment_desc'|trans|default('Folgende Risiken haben kein Asset zugewiesen und sollten korrigiert werden.') }}
             </div>
-            <div class="table-responsive">
-                <table class="table table-sm table-striped">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>{{ 'risk.label.title'|trans }}</th>
-                            <th>{{ 'admin.data_repair.current_asset'|trans|default('Aktuelles Asset') }}</th>
-                            <th>{{ 'admin.data_repair.assign_to_asset'|trans|default('Neues Asset zuweisen') }}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for risk in risksWithoutAsset %}
-                        <tr class="table-warning">
-                            <td>{{ risk.id }}</td>
-                            <td>
-                                {{ risk.title }}
-                                {% if risk.tenant %}
-                                    <br><small class="text-muted">{{ risk.tenant.name }}</small>
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% if risk.asset %}
-                                    <span class="badge bg-success">{{ risk.asset.name }}</span>
-                                {% else %}
-                                    <span class="badge bg-danger">{{ 'admin.data_repair.no_asset'|trans|default('Kein Asset') }}</span>
-                                {% endif %}
-                            </td>
-                            <td>
-                                <form method="post" action="{{ path('admin_data_repair_assign_asset', {type: 'risk', id: risk.id}) }}" class="d-inline">
-                                    <input type="hidden" name="_token" value="{{ csrf_token('assign_asset_' ~ risk.id) }}">
-                                    <div class="input-group input-group-sm">
-                                        <select name="asset_id" class="form-select form-select-sm" required>
-                                            <option value="">{{ 'admin.data_repair.select_asset'|trans|default('Asset auswählen...') }}</option>
-                                            {% for asset in allAssets %}
-                                                <option value="{{ asset.id }}"{% if risk.asset and risk.asset.id == asset.id %} selected{% endif %}>
-                                                    {{ asset.name }} ({{ asset.tenant ? asset.tenant.name : 'Kein Tenant' }})
-                                                </option>
-                                            {% endfor %}
-                                        </select>
-                                        <button type="submit" class="btn btn-sm btn-outline-info" aria-label="{{ 'common.view_details'|trans }}">
-                                            <i class="bi bi-arrow-right" aria-hidden="true"></i>
-                                        </button>
-                                    </div>
-                                </form>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+            {% embed '_components/_table.html.twig' with {
+                'class': 'table-sm table-striped',
+                'responsive': true,
+                'noMargin': true
+            } %}
+                {% block table_head %}
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">{{ 'risk.label.title'|trans }}</th>
+                        <th scope="col">{{ 'admin.data_repair.current_asset'|trans|default('Aktuelles Asset') }}</th>
+                        <th scope="col">{{ 'admin.data_repair.assign_to_asset'|trans|default('Neues Asset zuweisen') }}</th>
+                    </tr>
+                {% endblock %}
+                {% block table_body %}
+                    {% for risk in risksWithoutAsset %}
+                    <tr class="table-warning">
+                        <td>{{ risk.id }}</td>
+                        <td>
+                            {{ risk.title }}
+                            {% if risk.tenant %}
+                                <br><small class="text-muted">{{ risk.tenant.name }}</small>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if risk.asset %}
+                                <span class="badge bg-success">{{ risk.asset.name }}</span>
+                            {% else %}
+                                <span class="badge bg-danger">{{ 'admin.data_repair.no_asset'|trans|default('Kein Asset') }}</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <form method="post" action="{{ path('admin_data_repair_assign_asset', {type: 'risk', id: risk.id}) }}" class="d-inline">
+                                <input type="hidden" name="_token" value="{{ csrf_token('assign_asset_' ~ risk.id) }}">
+                                <div class="input-group input-group-sm">
+                                    <select name="asset_id" class="form-select form-select-sm" required>
+                                        <option value="">{{ 'admin.data_repair.select_asset'|trans|default('Asset auswählen...') }}</option>
+                                        {% for asset in allAssets %}
+                                            <option value="{{ asset.id }}"{% if risk.asset and risk.asset.id == asset.id %} selected{% endif %}>
+                                                {{ asset.name }} ({{ asset.tenant ? asset.tenant.name : 'Kein Tenant' }})
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                    <button type="submit" class="btn btn-sm btn-outline-info" aria-label="{{ 'common.view_details'|trans }}">
+                                        <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                                    </button>
+                                </div>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
     {% endif %}
@@ -351,58 +361,60 @@
             <div class="alert alert-warning">
                 <strong>{{ 'common.warning'|trans }}:</strong> {{ 'admin.data_repair.incident_asset_assignment_desc'|trans|default('Folgende Incidents haben keine Assets zugewiesen und sollten korrigiert werden.') }}
             </div>
-            <div class="table-responsive">
-                <table class="table table-sm table-striped">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>{{ 'incident.label.title'|trans }}</th>
-                            <th>{{ 'admin.data_repair.current_asset'|trans|default('Aktuelles Asset') }}</th>
-                            <th>{{ 'admin.data_repair.assign_to_asset'|trans|default('Neues Asset zuweisen') }}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for incident in incidentsWithoutAsset %}
-                        <tr class="table-warning">
-                            <td>{{ incident.id }}</td>
-                            <td>
-                                {{ incident.title }}
-                                {% if incident.tenant %}
-                                    <br><small class="text-muted">{{ incident.tenant.name }}</small>
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% if incident.affectedAssets|length > 0 %}
-                                    {% for asset in incident.affectedAssets %}
-                                        <span class="badge bg-success">{{ asset.name }}</span>
-                                    {% endfor %}
-                                {% else %}
-                                    <span class="badge bg-danger">{{ 'admin.data_repair.no_asset'|trans|default('Kein Asset') }}</span>
-                                {% endif %}
-                            </td>
-                            <td>
-                                <form method="post" action="{{ path('admin_data_repair_assign_asset', {type: 'incident', id: incident.id}) }}" class="d-inline">
-                                    <input type="hidden" name="_token" value="{{ csrf_token('assign_asset_' ~ incident.id) }}">
-                                    <div class="input-group input-group-sm">
-                                        <select name="asset_id" class="form-select form-select-sm" required>
-                                            <option value="">{{ 'admin.data_repair.select_asset'|trans|default('Asset auswählen...') }}</option>
-                                            {% for asset in allAssets %}
-                                                <option value="{{ asset.id }}">
-                                                    {{ asset.name }} ({{ asset.tenant ? asset.tenant.name : 'Kein Tenant' }})
-                                                </option>
-                                            {% endfor %}
-                                        </select>
-                                        <button type="submit" class="btn btn-sm btn-outline-info" aria-label="{{ 'common.view_details'|trans }}">
-                                            <i class="bi bi-arrow-right" aria-hidden="true"></i>
-                                        </button>
-                                    </div>
-                                </form>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+            {% embed '_components/_table.html.twig' with {
+                'class': 'table-sm table-striped',
+                'responsive': true,
+                'noMargin': true
+            } %}
+                {% block table_head %}
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">{{ 'incident.label.title'|trans }}</th>
+                        <th scope="col">{{ 'admin.data_repair.current_asset'|trans|default('Aktuelles Asset') }}</th>
+                        <th scope="col">{{ 'admin.data_repair.assign_to_asset'|trans|default('Neues Asset zuweisen') }}</th>
+                    </tr>
+                {% endblock %}
+                {% block table_body %}
+                    {% for incident in incidentsWithoutAsset %}
+                    <tr class="table-warning">
+                        <td>{{ incident.id }}</td>
+                        <td>
+                            {{ incident.title }}
+                            {% if incident.tenant %}
+                                <br><small class="text-muted">{{ incident.tenant.name }}</small>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if incident.affectedAssets|length > 0 %}
+                                {% for asset in incident.affectedAssets %}
+                                    <span class="badge bg-success">{{ asset.name }}</span>
+                                {% endfor %}
+                            {% else %}
+                                <span class="badge bg-danger">{{ 'admin.data_repair.no_asset'|trans|default('Kein Asset') }}</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <form method="post" action="{{ path('admin_data_repair_assign_asset', {type: 'incident', id: incident.id}) }}" class="d-inline">
+                                <input type="hidden" name="_token" value="{{ csrf_token('assign_asset_' ~ incident.id) }}">
+                                <div class="input-group input-group-sm">
+                                    <select name="asset_id" class="form-select form-select-sm" required>
+                                        <option value="">{{ 'admin.data_repair.select_asset'|trans|default('Asset auswählen...') }}</option>
+                                        {% for asset in allAssets %}
+                                            <option value="{{ asset.id }}">
+                                                {{ asset.name }} ({{ asset.tenant ? asset.tenant.name : 'Kein Tenant' }})
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                    <button type="submit" class="btn btn-sm btn-outline-info" aria-label="{{ 'common.view_details'|trans }}">
+                                        <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                                    </button>
+                                </div>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
     {% endif %}
@@ -420,51 +432,53 @@
                 <strong>{{ 'common.warning'|trans }}:</strong> {{ 'admin.data_repair.controls_without_risks_desc'|trans }}
             </div>
             <p class="text-muted">{{ 'admin.data_repair.controls_count'|trans({'%count%': controlsWithoutRisks|length}) }}</p>
-            <div class="table-responsive">
-                <table class="table table-sm table-striped">
-                    <thead>
-                        <tr>
-                            <th>{{ 'control.field.control_id'|trans }}</th>
-                            <th>{{ 'control.field.name'|trans }}</th>
-                            <th>{{ 'control.field.category'|trans }}</th>
-                            <th>{{ 'control.field.implementation_status'|trans }}</th>
-                            <th>{{ 'admin.data_repair.assign_risk'|trans }}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for control in controlsWithoutRisks %}
-                        <tr class="table-warning">
-                            <td><span class="badge bg-primary">{{ control.controlId }}</span></td>
-                            <td>{{ control.name }}</td>
-                            <td>{{ control.category }}</td>
-                            <td>
-                                <span class="badge bg-{{ control.implementationStatus == 'implemented' ? 'success' : (control.implementationStatus == 'in_progress' ? 'warning' : 'secondary') }}">
-                                    {{ ('control.status.' ~ control.implementationStatus)|trans }}
-                                </span>
-                            </td>
-                            <td>
-                                <form method="post" action="{{ path('admin_data_repair_assign_risk', {id: control.id}) }}" class="d-inline">
-                                    <input type="hidden" name="_token" value="{{ csrf_token('assign_risk_' ~ control.id) }}">
-                                    <div class="input-group input-group-sm">
-                                        <select name="risk_id" class="form-select form-select-sm" required>
-                                            <option value="">{{ 'admin.data_repair.select_risk'|trans }}</option>
-                                            {% for risk in allRisks %}
-                                                <option value="{{ risk.id }}">
-                                                    {{ risk.title }} ({{ risk.tenant ? risk.tenant.name : 'Kein Tenant' }})
-                                                </option>
-                                            {% endfor %}
-                                        </select>
-                                        <button type="submit" class="btn btn-sm btn-outline-warning" aria-label="{{ 'common.view'|trans }}">
-                                            <i class="bi bi-link" aria-hidden="true"></i>
-                                        </button>
-                                    </div>
-                                </form>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+            {% embed '_components/_table.html.twig' with {
+                'class': 'table-sm table-striped',
+                'responsive': true,
+                'noMargin': true
+            } %}
+                {% block table_head %}
+                    <tr>
+                        <th scope="col">{{ 'control.field.control_id'|trans }}</th>
+                        <th scope="col">{{ 'control.field.name'|trans }}</th>
+                        <th scope="col">{{ 'control.field.category'|trans }}</th>
+                        <th scope="col">{{ 'control.field.implementation_status'|trans }}</th>
+                        <th scope="col">{{ 'admin.data_repair.assign_risk'|trans }}</th>
+                    </tr>
+                {% endblock %}
+                {% block table_body %}
+                    {% for control in controlsWithoutRisks %}
+                    <tr class="table-warning">
+                        <td><span class="badge bg-primary">{{ control.controlId }}</span></td>
+                        <td>{{ control.name }}</td>
+                        <td>{{ control.category }}</td>
+                        <td>
+                            <span class="badge bg-{{ control.implementationStatus == 'implemented' ? 'success' : (control.implementationStatus == 'in_progress' ? 'warning' : 'secondary') }}">
+                                {{ ('control.status.' ~ control.implementationStatus)|trans }}
+                            </span>
+                        </td>
+                        <td>
+                            <form method="post" action="{{ path('admin_data_repair_assign_risk', {id: control.id}) }}" class="d-inline">
+                                <input type="hidden" name="_token" value="{{ csrf_token('assign_risk_' ~ control.id) }}">
+                                <div class="input-group input-group-sm">
+                                    <select name="risk_id" class="form-select form-select-sm" required>
+                                        <option value="">{{ 'admin.data_repair.select_risk'|trans }}</option>
+                                        {% for risk in allRisks %}
+                                            <option value="{{ risk.id }}">
+                                                {{ risk.title }} ({{ risk.tenant ? risk.tenant.name : 'Kein Tenant' }})
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                    <button type="submit" class="btn btn-sm btn-outline-warning" aria-label="{{ 'common.view'|trans }}">
+                                        <i class="bi bi-link" aria-hidden="true"></i>
+                                    </button>
+                                </div>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
     {% endif %}
@@ -482,51 +496,53 @@
                 <strong>{{ 'common.info'|trans }}:</strong> {{ 'admin.data_repair.controls_without_assets_desc'|trans }}
             </div>
             <p class="text-muted">{{ 'admin.data_repair.controls_count'|trans({'%count%': controlsWithoutAssets|length}) }}</p>
-            <div class="table-responsive">
-                <table class="table table-sm table-striped">
-                    <thead>
-                        <tr>
-                            <th>{{ 'control.field.control_id'|trans }}</th>
-                            <th>{{ 'control.field.name'|trans }}</th>
-                            <th>{{ 'control.field.category'|trans }}</th>
-                            <th>{{ 'control.field.implementation_status'|trans }}</th>
-                            <th>{{ 'admin.data_repair.assign_asset'|trans }}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for control in controlsWithoutAssets %}
-                        <tr>
-                            <td><span class="badge bg-primary">{{ control.controlId }}</span></td>
-                            <td>{{ control.name }}</td>
-                            <td>{{ control.category }}</td>
-                            <td>
-                                <span class="badge bg-{{ control.implementationStatus == 'implemented' ? 'success' : (control.implementationStatus == 'in_progress' ? 'warning' : 'secondary') }}">
-                                    {{ ('control.status.' ~ control.implementationStatus)|trans }}
-                                </span>
-                            </td>
-                            <td>
-                                <form method="post" action="{{ path('admin_data_repair_assign_asset_to_control', {id: control.id}) }}" class="d-inline">
-                                    <input type="hidden" name="_token" value="{{ csrf_token('assign_asset_to_control_' ~ control.id) }}">
-                                    <div class="input-group input-group-sm">
-                                        <select name="asset_id" class="form-select form-select-sm" required>
-                                            <option value="">{{ 'admin.data_repair.select_asset'|trans }}</option>
-                                            {% for asset in allAssets %}
-                                                <option value="{{ asset.id }}">
-                                                    {{ asset.name }} ({{ asset.tenant ? asset.tenant.name : 'Kein Tenant' }})
-                                                </option>
-                                            {% endfor %}
-                                        </select>
-                                        <button type="submit" class="btn btn-sm btn-outline-info" aria-label="{{ 'common.view'|trans }}">
-                                            <i class="bi bi-link" aria-hidden="true"></i>
-                                        </button>
-                                    </div>
-                                </form>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+            {% embed '_components/_table.html.twig' with {
+                'class': 'table-sm table-striped',
+                'responsive': true,
+                'noMargin': true
+            } %}
+                {% block table_head %}
+                    <tr>
+                        <th scope="col">{{ 'control.field.control_id'|trans }}</th>
+                        <th scope="col">{{ 'control.field.name'|trans }}</th>
+                        <th scope="col">{{ 'control.field.category'|trans }}</th>
+                        <th scope="col">{{ 'control.field.implementation_status'|trans }}</th>
+                        <th scope="col">{{ 'admin.data_repair.assign_asset'|trans }}</th>
+                    </tr>
+                {% endblock %}
+                {% block table_body %}
+                    {% for control in controlsWithoutAssets %}
+                    <tr>
+                        <td><span class="badge bg-primary">{{ control.controlId }}</span></td>
+                        <td>{{ control.name }}</td>
+                        <td>{{ control.category }}</td>
+                        <td>
+                            <span class="badge bg-{{ control.implementationStatus == 'implemented' ? 'success' : (control.implementationStatus == 'in_progress' ? 'warning' : 'secondary') }}">
+                                {{ ('control.status.' ~ control.implementationStatus)|trans }}
+                            </span>
+                        </td>
+                        <td>
+                            <form method="post" action="{{ path('admin_data_repair_assign_asset_to_control', {id: control.id}) }}" class="d-inline">
+                                <input type="hidden" name="_token" value="{{ csrf_token('assign_asset_to_control_' ~ control.id) }}">
+                                <div class="input-group input-group-sm">
+                                    <select name="asset_id" class="form-select form-select-sm" required>
+                                        <option value="">{{ 'admin.data_repair.select_asset'|trans }}</option>
+                                        {% for asset in allAssets %}
+                                            <option value="{{ asset.id }}">
+                                                {{ asset.name }} ({{ asset.tenant ? asset.tenant.name : 'Kein Tenant' }})
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                    <button type="submit" class="btn btn-sm btn-outline-info" aria-label="{{ 'common.view'|trans }}">
+                                        <i class="bi bi-link" aria-hidden="true"></i>
+                                    </button>
+                                </div>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
     {% endif %}
@@ -543,28 +559,30 @@
             <div class="alert alert-danger">
                 <strong>{{ 'common.error'|trans }}:</strong> {{ 'admin.data_repair.broken_references_desc'|trans }}
             </div>
-            <div class="table-responsive">
-                <table class="table table-sm table-striped">
-                    <thead>
-                        <tr>
-                            <th>{{ 'admin.data_repair.entity_type'|trans }}</th>
-                            <th>ID</th>
-                            <th>{{ 'common.name'|trans }}</th>
-                            <th>{{ 'admin.data_repair.issue'|trans }}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for ref in brokenReferences %}
-                        <tr class="table-danger">
-                            <td><span class="badge bg-secondary">{{ ref.entity_type }}</span></td>
-                            <td>{{ ref.entity_id }}</td>
-                            <td>{{ ref.entity_name }}</td>
-                            <td>{{ ref.issue }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+            {% embed '_components/_table.html.twig' with {
+                'class': 'table-sm table-striped',
+                'responsive': true,
+                'noMargin': true
+            } %}
+                {% block table_head %}
+                    <tr>
+                        <th scope="col">{{ 'admin.data_repair.entity_type'|trans }}</th>
+                        <th scope="col">ID</th>
+                        <th scope="col">{{ 'common.name'|trans }}</th>
+                        <th scope="col">{{ 'admin.data_repair.issue'|trans }}</th>
+                    </tr>
+                {% endblock %}
+                {% block table_body %}
+                    {% for ref in brokenReferences %}
+                    <tr class="table-danger">
+                        <td><span class="badge bg-secondary">{{ ref.entity_type }}</span></td>
+                        <td>{{ ref.entity_id }}</td>
+                        <td>{{ ref.entity_name }}</td>
+                        <td>{{ ref.issue }}</td>
+                    </tr>
+                    {% endfor %}
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
     {% endif %}
