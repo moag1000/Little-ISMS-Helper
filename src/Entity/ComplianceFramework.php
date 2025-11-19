@@ -270,6 +270,9 @@ class ComplianceFramework
 
     /**
      * Get count of applicable requirements
+     *
+     * @deprecated Use ComplianceRequirementRepository->getFrameworkStatistics() with tenant context instead
+     * This method uses global deprecated fields instead of tenant-specific ComplianceRequirementFulfillment
      */
     public function getApplicableRequirementsCount(): int
     {
@@ -278,6 +281,9 @@ class ComplianceFramework
 
     /**
      * Get count of fulfilled requirements
+     *
+     * @deprecated Use ComplianceRequirementRepository->getFrameworkStatistics() with tenant context instead
+     * This method uses global deprecated fields instead of tenant-specific ComplianceRequirementFulfillment
      */
     public function getFulfilledRequirementsCount(): int
     {
@@ -286,6 +292,9 @@ class ComplianceFramework
 
     /**
      * Get overall compliance percentage
+     *
+     * @deprecated Use ComplianceRequirementRepository->getFrameworkStatistics() with tenant context instead
+     * This method uses global deprecated fields instead of tenant-specific ComplianceRequirementFulfillment
      */
     public function getCompliancePercentage(): float
     {
