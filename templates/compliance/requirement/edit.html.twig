@@ -120,36 +120,8 @@
                         </div>
                     </fieldset>
 
-                    {# Applicability #}
-                    <fieldset class="mb-4">
-                        <legend class="h5 mb-3">
-                            <i class="bi bi-check-square" aria-hidden="true"></i>
-                            Applicability & Fulfillment
-                        </legend>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.applicable,
-                                    'label': 'Applicable',
-                                    'help': 'Is this requirement applicable to your organization?'
-                                } %}
-                            </div>
-                            <div class="col-md-6">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.fulfillmentPercentage,
-                                    'label': 'Fulfillment Percentage',
-                                    'help': 'Current implementation progress (0-100%)'
-                                } %}
-                            </div>
-                        </div>
-
-                        {% include '_components/_form_field.html.twig' with {
-                            'field': form.applicabilityJustification,
-                            'label': 'Applicability Justification',
-                            'help': 'Explain why this requirement is or is not applicable'
-                        } %}
-                    </fieldset>
+                    {# Note: Applicability and Fulfillment are now tenant-specific #}
+                    {# Use the "Quick Update" form on the show page to manage fulfillment data #}
 
                     {# Form Actions #}
                     <div class="form-actions d-flex gap-2 justify-content-between">
@@ -169,16 +141,9 @@
         <div class="col-md-4">
             <div class="card">
                 <div class="card-header">
-                    <h6 class="mb-0"><i class="bi bi-speedometer2" aria-hidden="true"></i> Current Status</h6>
+                    <h6 class="mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> Requirement Info</h6>
                 </div>
                 <div class="card-body">
-                    <div class="progress mb-2" style="height: 25px;" role="progressbar" aria-valuenow="{{ requirement.fulfillmentPercentage }}" aria-valuemin="0" aria-valuemax="100">
-                        <div class="progress-bar bg-{{ requirement.fulfillmentStatusBadge }}"
-                             style="width: {{ requirement.fulfillmentPercentage }}%">
-                            {{ requirement.fulfillmentPercentage }}%
-                        </div>
-                    </div>
-
                     <ul class="list-unstyled small">
                         <li><i class="bi bi-link-45deg" aria-hidden="true"></i> {{ requirement.mappedControls|length }} mapped controls</li>
                         <li><i class="bi bi-diagram-3" aria-hidden="true"></i> {{ requirement.detailedRequirements|length }} sub-requirements</li>
@@ -189,11 +154,11 @@
 
             <div class="card mt-3 bg-light">
                 <div class="card-header">
-                    <h6 class="mb-0"><i class="bi bi-lightbulb" aria-hidden="true"></i> Tips</h6>
+                    <h6 class="mb-0"><i class="bi bi-lightbulb" aria-hidden="true"></i> Note</h6>
                 </div>
                 <div class="card-body">
                     <p class="small mb-0">
-                        Use the "Quick Update" form on the view page for fast fulfillment percentage updates without editing the entire requirement.
+                        This form edits the global requirement definition. To manage tenant-specific fulfillment data (applicable, percentage, justification), use the "Quick Update" form on the <a href="{{ path('app_compliance_requirement_show', {id: requirement.id}) }}">view page</a>.
                     </p>
                 </div>
             </div>
