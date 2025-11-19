@@ -132,6 +132,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
+     * Alias for getUserIdentifier() for backward compatibility
+     * @deprecated Use getUserIdentifier() instead
+     */
+    public function getUsername(): string
+    {
+        return $this->getUserIdentifier();
+    }
+
+    /**
      * @see UserInterface
      *
      * @return list<string>
