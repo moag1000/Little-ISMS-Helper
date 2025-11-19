@@ -51,74 +51,74 @@
 </div>
 
 {# Persons Table #}
-<div class="table-container">
-    <table>
-        <thead>
-            <tr>
-                <th scope="col">{{ 'person.field.name'|trans }}</th>
-                <th scope="col">{{ 'person.field.type'|trans }}</th>
-                <th scope="col">{{ 'person.field.badge_id'|trans }}</th>
-                <th scope="col">{{ 'person.field.company'|trans }}</th>
-                <th scope="col">{{ 'person.field.email'|trans }}</th>
-                <th scope="col">{{ 'person.field.department'|trans }}</th>
-                <th scope="col" class="text-center">{{ 'common.actions'|trans }}</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for person in persons %}
-            <tr>
-                <td>
-                    <strong>{{ person.fullName }}</strong>
-                    {% if person.jobTitle %}
-                        <br><small class="text-muted-color">{{ person.jobTitle }}</small>
-                    {% endif %}
-                </td>
-                <td>
-                    {% set typeColors = {
-                        'employee': 'success',
-                        'contractor': 'info',
-                        'visitor': 'warning',
-                        'vendor': 'info',
-                        'auditor': 'danger',
-                        'consultant': 'info'
-                    } %}
-                    <span class="badge badge-{{ typeColors[person.personType] ?? 'secondary' }}">
-                        {{ ('person.type.' ~ person.personType)|trans }}
-                    </span>
-                </td>
-                <td>
-                    {% if person.badgeId %}
-                        <code>{{ person.badgeId }}</code>
-                    {% else %}
-                        <span class="text-muted-color">-</span>
-                    {% endif %}
-                </td>
-                <td>{{ person.company ?? '-' }}</td>
-                <td>
-                    {% if person.email %}
-                        <a href="mailto:{{ person.email }}">{{ person.email }}</a>
-                    {% else %}
-                        <span class="text-muted-color">-</span>
-                    {% endif %}
-                </td>
-                <td>{{ person.department ?? '-' }}</td>
-                <td class="text-center">
-                    <a href="{{ path('app_person_show', {id: person.id}) }}" class="btn btn-sm mr-025">
-                        👁 {{ 'common.view'|trans }}
-                    </a>
-                    <a href="{{ path('app_person_edit', {id: person.id}) }}" class="btn btn-sm btn-secondary">
-                        ✏️ {{ 'common.edit'|trans }}
-                    </a>
-                </td>
-            </tr>
-            {% else %}
-            <tr>
-                <td colspan="7" class="text-center-p-xl-muted">
-                    {{ 'person.message.no_persons'|trans }}
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
+{% embed '_components/_table.html.twig' with {
+    'wrapperClass': 'table-container'
+} %}
+    {% block table_head %}
+        <tr>
+            <th scope="col">{{ 'person.field.name'|trans }}</th>
+            <th scope="col">{{ 'person.field.type'|trans }}</th>
+            <th scope="col">{{ 'person.field.badge_id'|trans }}</th>
+            <th scope="col">{{ 'person.field.company'|trans }}</th>
+            <th scope="col">{{ 'person.field.email'|trans }}</th>
+            <th scope="col">{{ 'person.field.department'|trans }}</th>
+            <th scope="col" class="text-center">{{ 'common.actions'|trans }}</th>
+        </tr>
+    {% endblock %}
+    {% block table_body %}
+        {% for person in persons %}
+        <tr>
+            <td>
+                <strong>{{ person.fullName }}</strong>
+                {% if person.jobTitle %}
+                    <br><small class="text-muted-color">{{ person.jobTitle }}</small>
+                {% endif %}
+            </td>
+            <td>
+                {% set typeColors = {
+                    'employee': 'success',
+                    'contractor': 'info',
+                    'visitor': 'warning',
+                    'vendor': 'info',
+                    'auditor': 'danger',
+                    'consultant': 'info'
+                } %}
+                <span class="badge badge-{{ typeColors[person.personType] ?? 'secondary' }}">
+                    {{ ('person.type.' ~ person.personType)|trans }}
+                </span>
+            </td>
+            <td>
+                {% if person.badgeId %}
+                    <code>{{ person.badgeId }}</code>
+                {% else %}
+                    <span class="text-muted-color">-</span>
+                {% endif %}
+            </td>
+            <td>{{ person.company ?? '-' }}</td>
+            <td>
+                {% if person.email %}
+                    <a href="mailto:{{ person.email }}">{{ person.email }}</a>
+                {% else %}
+                    <span class="text-muted-color">-</span>
+                {% endif %}
+            </td>
+            <td>{{ person.department ?? '-' }}</td>
+            <td class="text-center">
+                <a href="{{ path('app_person_show', {id: person.id}) }}" class="btn btn-sm mr-025">
+                    👁 {{ 'common.view'|trans }}
+                </a>
+                <a href="{{ path('app_person_edit', {id: person.id}) }}" class="btn btn-sm btn-secondary">
+                    ✏️ {{ 'common.edit'|trans }}
+                </a>
+            </td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="7" class="text-center-p-xl-muted">
+                {{ 'person.message.no_persons'|trans }}
+            </td>
+        </tr>
+        {% endfor %}
+    {% endblock %}
+{% endembed %}
 {% endblock %}
