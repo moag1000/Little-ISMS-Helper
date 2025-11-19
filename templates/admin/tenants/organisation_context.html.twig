@@ -15,7 +15,7 @@
         <div class="col-lg-8">
             <div class="card">
                 <div class="card-header bg-white">
-                    <h5 class="card-title mb-0">
+                    <h3 class="card-title mb-0">
                         <i class="bi bi-building-gear text-primary" aria-hidden="true"></i>
                         {{ 'tenant.organisation_context.header'|trans }}
                     </h5>
@@ -29,8 +29,8 @@
 
                     {# Organisation Name (read-only, from tenant) #}
                     <div class="mb-3">
-                        <label class="form-label">{{ 'tenant.field.name'|trans }}</label>
-                        <input type="text" class="form-control" value="{{ tenant.name }}" disabled>
+                        <label class="form-label" for="tenant-name-display">{{ 'tenant.field.name'|trans }}</label>
+                        <input type="text" class="form-control" id="tenant-name-display" value="{{ tenant.name }}" disabled>
                         <div class="form-text">{{ 'tenant.organisation_context.name_info'|trans }}</div>
                     </div>
 
@@ -55,7 +55,7 @@
                     {# Current Configuration Info #}
                     {% if current_settings %}
                     <div class="alert alert-info">
-                        <h6 class="alert-heading">
+                        <h4 class="alert-heading">
                             <i class="bi bi-info-circle me-2" aria-hidden="true"></i>
                             {{ 'tenant.organisation_context.current_config'|trans }}
                         </h6>

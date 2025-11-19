@@ -135,7 +135,7 @@
     {% if upcoming|length > 0 %}
     <div class="card mb-4 border-info">
         <div class="card-header bg-info text-white">
-            <h5 class="mb-0"><i class="bi bi-calendar-event" aria-hidden="true"></i> {{ 'training.upcoming_trainings'|trans }}</h5>
+            <h3 class="mb-0"><i class="bi bi-calendar-event" aria-hidden="true"></i> {{ 'training.upcoming_trainings'|trans }}</h3>
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -198,7 +198,7 @@
     {# All Trainings Section #}
     <div class="card" data-controller="bulk-actions" data-bulk-actions-endpoint-value="/training">
         <div class="card-header bg-primary text-white">
-            <h5 class="mb-0"><i class="bi bi-list" aria-hidden="true"></i> {{ 'training.all_trainings'|trans }}</h5>
+            <h3 class="mb-0"><i class="bi bi-list" aria-hidden="true"></i> {{ 'training.all_trainings'|trans }}</h3>
         </div>
         <div class="card-body">
             {% if trainings|length == 0 %}

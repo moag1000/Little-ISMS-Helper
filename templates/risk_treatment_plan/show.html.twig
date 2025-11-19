@@ -84,7 +84,7 @@
 {# Main Details #}
 <div class="card mb-4">
     <div class="card-header">
-        <h5><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'risk_treatment_plan.section.details'|trans }}</h5>
+        <h3><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'risk_treatment_plan.section.details'|trans }}</h3>
     </div>
     <div class="card-body">
         <div class="row">
@@ -165,7 +165,7 @@
 {% if plan.controls|length > 0 %}
 <div class="card mb-4">
     <div class="card-header">
-        <h5><i class="bi bi-shield-check" aria-hidden="true"></i> {{ 'risk_treatment_plan.section.controls'|trans }} ({{ plan.controls|length }})</h5>
+        <h3><i class="bi bi-shield-check" aria-hidden="true"></i> {{ 'risk_treatment_plan.section.controls'|trans }} ({{ plan.controls|length }})</h3>
     </div>
     <div class="card-body">
         <div class="table-responsive">
@@ -202,7 +202,7 @@
 {% if auditLogs is defined and auditLogs|length > 0 %}
 <div class="card mb-4">
     <div class="card-header">
-        <h5><i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'risk_treatment_plan.section.history'|trans }} ({{ totalAuditLogs }} {{ 'audit_log.entries'|trans }})</h5>
+        <h3><i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'risk_treatment_plan.section.history'|trans }} ({{ totalAuditLogs }} {{ 'audit_log.entries'|trans }})</h3>
     </div>
     <div class="card-body">
         <div class="audit-log-list">
@@ -251,7 +251,7 @@
 {% if is_granted('ROLE_ADMIN') %}
 <div class="card border-danger">
     <div class="card-header bg-danger text-white">
-        <h5><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'common.danger_zone'|trans }}</h5>
+        <h3><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'common.danger_zone'|trans }}</h3>
     </div>
     <div class="card-body">
         <p>{{ 'risk_treatment_plan.delete.warning'|trans }}</p>

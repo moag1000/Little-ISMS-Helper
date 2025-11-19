@@ -10,7 +10,7 @@
             <div class="card mb-4">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center mb-2">
-                        <h6 class="mb-0">Setup-Fortschritt</h6>
+                        <h4 class="mb-0">Setup-Fortschritt</h4>
                         <small class="text-muted">Schritt 3 von 11</small>
                     </div>
                     <div class="progress" style="height: 10px;">
@@ -32,7 +32,7 @@
                     </p>
 
                     <div class="alert alert-info" role="alert">
-                        <h6 class="alert-heading">
+                        <h4 class="alert-heading">
                             <i class="fas fa-info-circle me-2"></i>
                             Backup vs. Neu-Installation
                         </h6>
@@ -66,7 +66,7 @@
                                 {# Orphaned Entities Detection and Repair #}
                                 {% if backup_restore_result.orphaned_entities is defined and backup_restore_result.orphaned_entities.total > 0 %}
                                     <div class="alert alert-warning mt-3">
-                                        <h6 class="alert-heading">
+                                        <h4 class="alert-heading">
                                             <i class="fas fa-exclamation-triangle me-2"></i>
                                             Verwaiste Entitäten gefunden
                                         </h6>
@@ -87,7 +87,7 @@
 
                                         <div class="card border-warning">
                                             <div class="card-body">
-                                                <h6 class="card-title">
+                                                <h4 class="card-title">
                                                     <i class="fas fa-tools me-2"></i>
                                                     Verwaiste Entitäten reparieren
                                                 </h6>
@@ -129,7 +129,7 @@
                                 {# Risk-Asset and Incident-Asset Repair #}
                                 {% if backup_restore_result.risks_without_assets is defined and backup_restore_result.risks_without_assets > 0 %}
                                     <div class="alert alert-info mt-3">
-                                        <h6 class="alert-heading">
+                                        <h4 class="alert-heading">
                                             <i class="fas fa-link me-2"></i>
                                             Asset-Zuordnungen reparieren
                                         </h6>
@@ -164,7 +164,7 @@
                     {% if not schema_created %}
                     <div class="card border-warning mb-4">
                         <div class="card-header bg-warning text-dark">
-                            <h5 class="mb-0">
+                            <h3 class="mb-0">
                                 <i class="fas fa-database me-2"></i>
                                 Schritt 1: Datenbank-Struktur erstellen
                             </h5>
@@ -194,7 +194,7 @@
                     {% if schema_created %}
                     <div class="card border-info mb-4">
                         <div class="card-header bg-info text-white">
-                            <h5 class="mb-0">
+                            <h3 class="mb-0">
                                 <i class="fas fa-cloud-upload-alt me-2"></i>
                                 Option 1: Backup wiederherstellen
                             </h5>
@@ -248,7 +248,7 @@
                     {# Skip Option #}
                     <div class="card border-secondary">
                         <div class="card-header bg-secondary text-white">
-                            <h5 class="mb-0">
+                            <h3 class="mb-0">
                                 <i class="fas fa-forward me-2"></i>
                                 Option 2: Neu-Installation
                             </h5>

@@ -12,7 +12,7 @@
      data-controller="heat-map"
      data-heat-map-url-value="{{ path('app_analytics_heat_map_data') }}">
     <div class="card-header">
-        <h5 class="card-title">
+        <h3 class="card-title">
             <i class="bi-grid-3x3-gap text-danger"></i>
             Risk Heat Map
         </h5>
@@ -38,10 +38,11 @@
     {# Filter Panel #}
     <div class="heat-map-filters d-none" data-heat-map-target="filters">
         <div class="filter-group">
-            <label class="filter-label">
+            <label class="filter-label" for="heat-map-status-filter">
                 <i class="bi-check-circle"></i> Status
             </label>
             <select class="form-select form-select-sm"
+                    id="heat-map-status-filter"
                     data-action="change->heat-map#applyFilters"
                     data-heat-map-target="statusFilter">
                 <option value="">Alle</option>
@@ -52,10 +53,11 @@
             </select>
         </div>
         <div class="filter-group">
-            <label class="filter-label">
+            <label class="filter-label" for="heat-map-category-filter">
                 <i class="bi-tag"></i> Kategorie
             </label>
             <select class="form-select form-select-sm"
+                    id="heat-map-category-filter"
                     data-action="change->heat-map#applyFilters"
                     data-heat-map-target="categoryFilter">
                 <option value="">Alle</option>
@@ -66,10 +68,11 @@
             </select>
         </div>
         <div class="filter-group">
-            <label class="filter-label">
+            <label class="filter-label" for="heat-map-time-filter">
                 <i class="bi-calendar"></i> Zeitraum
             </label>
             <select class="form-select form-select-sm"
+                    id="heat-map-time-filter"
                     data-action="change->heat-map#applyFilters"
                     data-heat-map-target="timeFilter">
                 <option value="">Alle</option>
@@ -133,7 +136,7 @@
         {# Risk Details Modal #}
         <div class="heat-map-details d-none" data-heat-map-target="details">
             <div class="details-header">
-                <h6 data-heat-map-target="detailsTitle">Risks in this cell</h6>
+                <h4 data-heat-map-target="detailsTitle">Risks in this cell</h4>
                 <button class="btn-close btn-sm"
                         data-action="click->heat-map#closeDetails"></button>
             </div>

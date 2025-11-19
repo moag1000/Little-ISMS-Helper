@@ -73,7 +73,7 @@
     {# MFA Tokens List #}
     <div class="card">
         <div class="card-header bg-primary text-white">
-            <h5 class="mb-0">
+            <h3 class="mb-0">
                 <i class="bi bi-key" aria-hidden="true"></i> {{ 'mfa.tokens'|trans }}
             </h5>
         </div>
@@ -172,7 +172,7 @@
     {# Info Box for Super Admins #}
     {% if is_granted('ROLE_SUPER_ADMIN') %}
         <div class="alert alert-warning mt-4">
-            <h5><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> Administratorhinweis</h5>
+            <h2><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> Administratorhinweis</h2>
             <p class="mb-0">
                 Als Super-Administrator können Sie MFA-Tokens zurücksetzen, falls ein Benutzer den Zugriff auf sein
                 MFA-Gerät verloren hat. Dies sollte nur in Notfällen durchgeführt werden.

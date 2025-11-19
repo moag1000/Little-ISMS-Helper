@@ -21,7 +21,7 @@
     <div class="alert alert-info">
         <div class="row">
             <div class="col-md-4">
-                <h5>📊 Total Gaps</h5>
+                <h2>📊 Total Gaps</h2>
                 <h3>{{ remediation_effort.total_gaps }}</h3>
             </div>
             <div class="col-md-4">
@@ -49,7 +49,7 @@
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header">
-                    <h5 class="mb-0">📊 Gaps nach Typ</h5>
+                    <h3 class="mb-0">📊 Gaps nach Typ</h3>
                 </div>
                 <div class="card-body">
                     {% if gap_stats_by_type is empty %}
@@ -87,7 +87,7 @@
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header">
-                    <h5 class="mb-0">⚡ Gaps nach Priorität</h5>
+                    <h3 class="mb-0">⚡ Gaps nach Priorität</h3>
                 </div>
                 <div class="card-body">
                     {% if gap_stats_by_priority is empty %}
@@ -127,7 +127,7 @@
     {% if high_priority_gaps is not empty %}
     <div class="card mb-4">
         <div class="card-header bg-danger text-white">
-            <h5 class="mb-0">🔥 Critical & High Priority Gaps ({{ high_priority_gaps|length }})</h5>
+            <h3 class="mb-0">🔥 Critical & High Priority Gaps ({{ high_priority_gaps|length }})</h3>
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -195,7 +195,7 @@
     {% if low_confidence_gaps is not empty %}
     <div class="card mb-4">
         <div class="card-header">
-            <h5 class="mb-0">⚠️ Low Confidence Gaps ({{ low_confidence_gaps|length }})</h5>
+            <h3 class="mb-0">⚠️ Low Confidence Gaps ({{ low_confidence_gaps|length }})</h3>
         </div>
         <div class="card-body">
             <p class="text-muted">Diese Gaps haben niedrige Confidence-Scores und sollten manuell überprüft werden.</p>
@@ -260,7 +260,7 @@
             <h4>ℹ️ Keine Gaps gefunden</h4>
             <p>Es wurden noch keine Gap-Analysen durchgeführt.</p>
             <hr>
-            <h6>Nächste Schritte:</h6>
+            <h4>Nächste Schritte:</h4>
             <ol>
                 <li>Führen Sie die Qualitätsanalyse aus: <code>php bin/console app:analyze-mapping-quality</code></li>
                 <li>Gaps werden automatisch während der Analyse identifiziert</li>
@@ -279,12 +279,12 @@
     {# Action Buttons #}
     <div class="card">
         <div class="card-header">
-            <h5 class="mb-0">🛠️ Aktionen</h5>
+            <h3 class="mb-0">🛠️ Aktionen</h3>
         </div>
         <div class="card-body">
             <div class="row">
                 <div class="col-md-4">
-                    <h6>📋 Priorisierung</h6>
+                    <h4>📋 Priorisierung</h4>
                     <ol>
                         <li>Critical Gaps zuerst ({{ gap_stats_by_priority[0].count ?? 0 }})</li>
                         <li>High Priority Gaps ({{ gap_stats_by_priority[1].count ?? 0 }})</li>
@@ -292,14 +292,14 @@
                     </ol>
                 </div>
                 <div class="col-md-4">
-                    <h6>⏱️ Zeitplanung</h6>
+                    <h4>⏱️ Zeitplanung</h4>
                     <p>
                         <strong>Total:</strong> {{ remediation_effort.total_effort }} Stunden<br>
                         <strong>≈ {{ (remediation_effort.total_effort / 8)|round(1) }} Tage</strong> bei einem 8h-Arbeitstag
                     </p>
                 </div>
                 <div class="col-md-4">
-                    <h6>📊 Tracking</h6>
+                    <h4>📊 Tracking</h4>
                     <p>Ändern Sie den Gap-Status in den jeweiligen Mapping-Reviews:</p>
                     <ul>
                         <li>identified → planned</li>

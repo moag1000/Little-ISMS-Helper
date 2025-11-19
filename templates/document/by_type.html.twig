@@ -79,7 +79,7 @@
     {% for type in documentTypes|slice(0, 6) %}
     <div class="card">
         <div class="fs-2-mb-sm">{{ type.icon ?? '📄' }}</div>
-        <h3 class="fs-11-mb-sm">{{ type.name }}</h3>
+        <h2 class="fs-11-mb-sm">{{ type.name }}</h2>
         <p class="text-muted-mb-md">
             {{ type.description|default('-') }}
         </p>

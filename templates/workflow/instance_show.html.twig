@@ -81,7 +81,7 @@
 
     {# Progress Bar #}
     <div class="mt-3">
-        <h3 class="fs-1-mb-sm">{{ 'workflow.field.progress'|trans }}</h3>
+        <h2 class="fs-1-mb-sm">{{ 'workflow.field.progress'|trans }}</h2>
         {% set progress = (instance.completedSteps|length / instance.definition.steps|length * 100)|round %}
         <div class="progress progress-lg">
             <div class="progress-bar" style="width: {{ progress }}%; font-size: 1rem;">

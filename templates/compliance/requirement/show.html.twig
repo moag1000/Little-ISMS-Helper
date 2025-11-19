@@ -31,7 +31,7 @@
             {# Main Information #}
             <div class="card mb-4">
                 <div class="card-header">
-                    <h5 class="mb-0">Requirement Details</h5>
+                    <h3 class="mb-0">Requirement Details</h3>
                 </div>
                 <div class="card-body">
                     <h4>{{ requirement.title }}</h4>
@@ -66,7 +66,7 @@
 
                     <hr>
 
-                    <h5>Description</h5>
+                    <h2>Description</h2>
                     <p class="text-muted">{{ requirement.description }}</p>
 
                     {% if fulfillment.applicabilityJustification %}
@@ -85,7 +85,7 @@
             {% if requirement.mappedControls|length > 0 %}
                 <div class="card mb-4">
                     <div class="card-header">
-                        <h5 class="mb-0"><i class="bi bi-link-45deg" aria-hidden="true"></i> Mapped Controls ({{ requirement.mappedControls|length }})</h5>
+                        <h3 class="mb-0"><i class="bi bi-link-45deg" aria-hidden="true"></i> Mapped Controls ({{ requirement.mappedControls|length }})</h3>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
@@ -120,7 +120,7 @@
             {% if requirement.detailedRequirements|length > 0 %}
                 <div class="card mb-4">
                     <div class="card-header">
-                        <h5 class="mb-0"><i class="bi bi-diagram-3" aria-hidden="true"></i> Detailed Sub-Requirements ({{ requirement.detailedRequirements|length }})</h5>
+                        <h3 class="mb-0"><i class="bi bi-diagram-3" aria-hidden="true"></i> Detailed Sub-Requirements ({{ requirement.detailedRequirements|length }})</h3>
                     </div>
                     <div class="card-body">
                         <ul class="list-group">
@@ -148,7 +148,7 @@
             {# Fulfillment Status #}
             <div class="card mb-4">
                 <div class="card-header">
-                    <h5 class="mb-0">Fulfillment Status</h5>
+                    <h3 class="mb-0">Fulfillment Status</h3>
                 </div>
                 <div class="card-body">
                     {% if is_inherited %}
@@ -306,7 +306,7 @@
             {# Metadata #}
             <div class="card mb-4">
                 <div class="card-header">
-                    <h5 class="mb-0">Metadata</h5>
+                    <h3 class="mb-0">Metadata</h3>
                 </div>
                 <div class="card-body">
                     <p><small><strong>Responsible:</strong>
