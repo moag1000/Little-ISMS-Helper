@@ -199,77 +199,77 @@
             <div class="card-header">
                 <h3 class="mb-0">{{ 'incident.list.title'|trans|default('All Incidents') }}</h3>
             </div>
-            <div class="table-responsive">
-                <table class="table table-hover mb-0">
-                    <thead>
+            {% embed '_components/_table.html.twig' with {
+                'noMargin': true
+            } %}
+                {% block table_head %}
+                    <tr>
+                        <th scope="col">{{ 'incident.field.title'|trans }}</th>
+                        <th scope="col">{{ 'incident.field.category'|trans }}</th>
+                        <th scope="col">{{ 'incident.field.severity'|trans }}</th>
+                        <th scope="col">{{ 'incident.field.status'|trans }}</th>
+                        <th scope="col">{{ 'incident.field.detected_at'|trans }}</th>
+                        <th scope="col">NIS2</th>
+                        <th scope="col">{{ 'common.actions'|trans }}</th>
+                    </tr>
+                {% endblock %}
+                {% block table_body %}
+                    {% for incident in allIncidents %}
                         <tr>
-                            <th scope="col">{{ 'incident.field.title'|trans }}</th>
-                            <th scope="col">{{ 'incident.field.category'|trans }}</th>
-                            <th scope="col">{{ 'incident.field.severity'|trans }}</th>
-                            <th scope="col">{{ 'incident.field.status'|trans }}</th>
-                            <th scope="col">{{ 'incident.field.detected_at'|trans }}</th>
-                            <th scope="col">NIS2</th>
-                            <th scope="col">{{ 'common.actions'|trans }}</th>
+                            <td>
+                                <strong>{{ incident.title }}</strong>
+                                {{ inheritance.small_badge(incident, currentTenant) }}
+                                {% if incident.incidentNumber %}
+                                    <br><small class="text-muted">#{{ incident.incidentNumber }}</small>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span class="badge bg-secondary">
+                                    {{ ('incident.category.' ~ incident.category)|trans }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge badge-severity-{{ incident.severity }}">
+                                    {{ ('incident.severity.' ~ incident.severity)|trans }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge badge-status-{{ incident.status }}">
+                                    {{ ('incident.status.' ~ incident.status)|trans }}
+                                </span>
+                            </td>
+                            <td>{{ incident.detectedAt|date('d.m.Y H:i') }}</td>
+                            <td>
+                                {% if incident.requiresNis2Reporting %}
+                                    {% set nis2Status = incident.nis2ComplianceStatus %}
+                                    <span class="badge badge-nis2-{{ nis2Status }}" title="{{ ('incident.nis2_compliance.' ~ nis2Status)|trans }}">
+                                        {% if nis2Status == 'compliant' %}
+                                            <i class="bi bi-check-circle-fill" aria-hidden="true"></i>
+                                        {% elseif nis2Status == 'overdue' %}
+                                            <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
+                                        {% else %}
+                                            <i class="bi bi-clock-fill" aria-hidden="true"></i>
+                                        {% endif %}
+                                        {{ ('incident.nis2_compliance.' ~ nis2Status)|trans }}
+                                    </span>
+                                {% else %}
+                                    <span class="badge bg-secondary" title="{{ 'incident.nis2_compliance.not_applicable'|trans }}">N/A</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="btn-group btn-group-sm">
+                                    <a href="{{ path('app_incident_show', {id: incident.id}) }}" class="btn btn-outline-primary" title="{{ 'common.view'|trans }}" aria-label="{{ 'common.view'|trans }}">
+                                        <i class="bi bi-eye" aria-hidden="true"></i>
+                                    </a>
+                                    <a href="{{ path('app_incident_edit', {id: incident.id}) }}" class="btn btn-outline-secondary" title="{{ 'common.edit'|trans }}" aria-label="{{ 'common.edit'|trans }}">
+                                        <i class="bi bi-pencil" aria-hidden="true"></i>
+                                    </a>
+                                </div>
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        {% for incident in allIncidents %}
-                            <tr>
-                                <td>
-                                    <strong>{{ incident.title }}</strong>
-                                    {{ inheritance.small_badge(incident, currentTenant) }}
-                                    {% if incident.incidentNumber %}
-                                        <br><small class="text-muted">#{{ incident.incidentNumber }}</small>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    <span class="badge bg-secondary">
-                                        {{ ('incident.category.' ~ incident.category)|trans }}
-                                    </span>
-                                </td>
-                                <td>
-                                    <span class="badge badge-severity-{{ incident.severity }}">
-                                        {{ ('incident.severity.' ~ incident.severity)|trans }}
-                                    </span>
-                                </td>
-                                <td>
-                                    <span class="badge badge-status-{{ incident.status }}">
-                                        {{ ('incident.status.' ~ incident.status)|trans }}
-                                    </span>
-                                </td>
-                                <td>{{ incident.detectedAt|date('d.m.Y H:i') }}</td>
-                                <td>
-                                    {% if incident.requiresNis2Reporting %}
-                                        {% set nis2Status = incident.nis2ComplianceStatus %}
-                                        <span class="badge badge-nis2-{{ nis2Status }}" title="{{ ('incident.nis2_compliance.' ~ nis2Status)|trans }}">
-                                            {% if nis2Status == 'compliant' %}
-                                                <i class="bi bi-check-circle-fill" aria-hidden="true"></i>
-                                            {% elseif nis2Status == 'overdue' %}
-                                                <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
-                                            {% else %}
-                                                <i class="bi bi-clock-fill" aria-hidden="true"></i>
-                                            {% endif %}
-                                            {{ ('incident.nis2_compliance.' ~ nis2Status)|trans }}
-                                        </span>
-                                    {% else %}
-                                        <span class="badge bg-secondary" title="{{ 'incident.nis2_compliance.not_applicable'|trans }}">N/A</span>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    <div class="btn-group btn-group-sm">
-                                        <a href="{{ path('app_incident_show', {id: incident.id}) }}" class="btn btn-outline-primary" title="{{ 'common.view'|trans }}" aria-label="{{ 'common.view'|trans }}">
-                                            <i class="bi bi-eye" aria-hidden="true"></i>
-                                        </a>
-                                        <a href="{{ path('app_incident_edit', {id: incident.id}) }}" class="btn btn-outline-secondary" title="{{ 'common.edit'|trans }}" aria-label="{{ 'common.edit'|trans }}">
-                                            <i class="bi bi-pencil" aria-hidden="true"></i>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+                    {% endfor %}
+                {% endblock %}
+            {% endembed %}
         </div>
     {% endif %}
 </div>
