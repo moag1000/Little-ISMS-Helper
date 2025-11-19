@@ -1,0 +1,244 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}BCM Impact Analysis - {{ incident.incidentNumber }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid mt-4">
+    {# Breadcrumb #}
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'Incidents', url: path('app_incident_index'), icon: 'bi-exclamation-triangle' },
+            { label: incident.incidentNumber, url: path('app_incident_show', {id: incident.id}) },
+            { label: 'BCM Impact Analysis' }
+        ]
+    } %}
+
+    {# Page Header #}
+    {% include '_components/_page_header.html.twig' with {
+        title: 'BCM Impact Analysis',
+        subtitle: incident.title,
+        icon: 'bi-diagram-3',
+        actions: [
+            { label: 'Back to Incident', url: path('app_incident_show', {id: incident.id}), variant: 'secondary', icon: 'bi-arrow-left' },
+            { label: 'Download PDF', url: path('app_incident_bcm_impact_report', {id: incident.id}), variant: 'primary', icon: 'bi-file-earmark-pdf' }
+        ]
+    } %}
+
+    {# Executive Summary #}
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h6 class="text-muted mb-2">Affected Processes</h6>
+                    <h2 class="mb-0">{{ analysis.affected_processes.total_count }}</h2>
+                    {% if analysis.affected_processes.critical_count > 0 %}
+                        <span class="badge bg-danger mt-2">{{ analysis.affected_processes.critical_count }} Critical</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h6 class="text-muted mb-2">Financial Impact</h6>
+                    <h2 class="mb-0">€{{ analysis.financial_impact.total_eur|number_format(0, '.', ',') }}</h2>
+                    <small class="text-muted">€{{ analysis.financial_impact.per_hour_eur|number_format(2) }}/hour</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h6 class="text-muted mb-2">Recovery Priority</h6>
+                    <h3 class="mb-0">
+                        {% set priority_class = {
+                            'immediate': 'danger',
+                            'high': 'warning',
+                            'medium': 'info',
+                            'low': 'secondary'
+                        }[analysis.recovery_priority.level] %}
+                        <span class="badge bg-{{ priority_class }}">{{ analysis.recovery_priority.level|upper }}</span>
+                    </h3>
+                    <small class="text-muted">{{ analysis.recovery_priority.most_critical_process }}</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h6 class="text-muted mb-2">RTO Compliance</h6>
+                    {% if analysis.rto_compliance.is_compliant %}
+                        <h3 class="mb-0 text-success"><i class="bi bi-check-circle-fill" aria-hidden="true"></i> Compliant</h3>
+                    {% else %}
+                        <h3 class="mb-0 text-danger"><i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i> {{ analysis.rto_compliance.violations_count }} Violations</h3>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Downtime Information #}
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0"><i class="bi bi-clock" aria-hidden="true"></i> Downtime Analysis</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>Detected:</strong> {{ analysis.downtime.detected_at|date('Y-m-d H:i') }}</p>
+                    {% if analysis.downtime.resolved_at %}
+                        <p><strong>Resolved:</strong> {{ analysis.downtime.resolved_at|date('Y-m-d H:i') }}</p>
+                    {% else %}
+                        <p><strong>Status:</strong> <span class="badge bg-warning">Ongoing</span></p>
+                    {% endif %}
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Total Downtime:</strong> {{ analysis.downtime.actual_hours }} hours</p>
+                    {% if analysis.downtime.is_estimated %}
+                        <p class="text-muted"><small><i class="bi bi-info-circle" aria-hidden="true"></i> Estimated (incident not yet resolved)</small></p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Affected Processes Detail #}
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0"><i class="bi bi-diagram-3" aria-hidden="true"></i> Affected Business Processes</h5>
+        </div>
+        <div class="card-body">
+            {% if analysis.affected_processes.processes|length > 0 %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Process</th>
+                                <th>Criticality</th>
+                                <th>RTO</th>
+                                <th>Financial Impact</th>
+                                <th>Impact Severity</th>
+                                <th>Compliance</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for process in analysis.affected_processes.processes %}
+                                <tr>
+                                    <td>
+                                        <strong>{{ process.process_name }}</strong><br>
+                                        <small class="text-muted">Owner: {{ process.process_owner }}</small>
+                                    </td>
+                                    <td>
+                                        {% set crit_class = {
+                                            'critical': 'danger',
+                                            'high': 'warning',
+                                            'medium': 'info',
+                                            'low': 'secondary'
+                                        }[process.criticality] %}
+                                        <span class="badge bg-{{ crit_class }}">{{ process.criticality|upper }}</span>
+                                    </td>
+                                    <td>
+                                        {{ process.bia_data.rto_hours }}h
+                                        {% if process.rto_violated %}
+                                            <br><span class="badge bg-danger">Violated (+{{ process.rto_compliance.excess_hours }}h)</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>€{{ process.financial_impact|number_format(2) }}</td>
+                                    <td>
+                                        {% set sev_class = {
+                                            'critical': 'danger',
+                                            'high': 'warning',
+                                            'medium': 'info',
+                                            'low': 'secondary'
+                                        }[process.impact_severity] %}
+                                        <span class="badge bg-{{ sev_class }}">{{ process.impact_severity|upper }}</span>
+                                    </td>
+                                    <td>
+                                        {% if process.rto_violated %}
+                                            <span class="text-danger"><i class="bi bi-x-circle-fill" aria-hidden="true"></i> {{ process.rto_compliance.compliance_percentage }}%</span>
+                                        {% else %}
+                                            <span class="text-success"><i class="bi bi-check-circle-fill" aria-hidden="true"></i> 100%</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle" aria-hidden="true"></i> No business processes have been linked to this incident yet.
+                    Use the "Auto-Detect Processes" feature on the incident details page.
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    {# Recovery Priority Recommendations #}
+    <div class="card mb-4">
+        <div class="card-header bg-{{ priority_class }}">
+            <h5 class="mb-0 text-white"><i class="bi bi-lightbulb" aria-hidden="true"></i> Recovery Priority: {{ analysis.recovery_priority.level|upper }}</h5>
+        </div>
+        <div class="card-body">
+            <p><strong>Reasoning:</strong> {{ analysis.recovery_priority.reasoning }}</p>
+
+            <h6 class="mt-3">Recommended Actions:</h6>
+            <ul>
+                {% for action in analysis.recovery_priority.recommended_actions %}
+                    <li>{{ action }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    {# Recommendations #}
+    {% if analysis.recommendations|length > 0 %}
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-list-check" aria-hidden="true"></i> Recommendations</h5>
+            </div>
+            <div class="card-body">
+                {% for recommendation in analysis.recommendations %}
+                    <div class="alert alert-{{ {
+                        'high': 'danger',
+                        'medium': 'warning',
+                        'low': 'info'
+                    }[recommendation.priority] }} mb-3">
+                        <h6><strong>{{ recommendation.title }}</strong></h6>
+                        <p>{{ recommendation.description }}</p>
+                        <p class="mb-0"><strong>Action:</strong> {{ recommendation.action }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+
+    {# Historical Context #}
+    {% if analysis.historical_context.total_past_incidents > 0 %}
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-clock-history" aria-hidden="true"></i> Historical Context</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3">
+                        <p><strong>Past Incidents:</strong> {{ analysis.historical_context.total_past_incidents }}</p>
+                    </div>
+                    <div class="col-md-3">
+                        <p><strong>Total Downtime:</strong> {{ analysis.historical_context.total_past_downtime_hours }} hours</p>
+                    </div>
+                    <div class="col-md-3">
+                        <p><strong>Financial Loss:</strong> €{{ analysis.historical_context.total_past_financial_loss_eur|number_format(2) }}</p>
+                    </div>
+                    <div class="col-md-3">
+                        <p><strong>RTO Violations:</strong> {{ analysis.historical_context.processes_with_rto_violations }} processes</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
