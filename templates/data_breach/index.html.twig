@@ -171,130 +171,130 @@
         </div>
         <div class="card-body p-0">
             {% if breaches|length > 0 %}
-                <div class="table-responsive">
-                    <table class="table table-hover mb-0">
-                        <thead>
-                            <tr>
-                                <th>Reference</th>
-                                <th>Title</th>
-                                <th>Status</th>
-                                <th>Risk</th>
-                                <th>Affected Subjects</th>
-                                <th>72h Deadline</th>
-                                <th>Authority</th>
-                                <th>Subjects</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for breach in breaches %}
-                                <tr class="{% if breach.isAuthorityNotificationOverdue %}table-danger{% endif %}">
-                                    <td>
-                                        <a href="{{ path('app_data_breach_show', {id: breach.id}) }}">
-                                            {{ breach.referenceNumber }}
-                                        </a>
-                                    </td>
-                                    <td>{{ breach.title }}</td>
-                                    <td>
-                                        {% set status_class = {
-                                            'draft': 'secondary',
-                                            'under_assessment': 'info',
-                                            'authority_notified': 'success',
-                                            'subjects_notified': 'success',
-                                            'closed': 'dark'
-                                        }[breach.status] %}
-                                        <span class="badge bg-{{ status_class }}">
-                                            {{ breach.status|replace({'_': ' '})|upper }}
+                {% embed '_components/_table.html.twig' with {
+                    'noMargin': true
+                } %}
+                    {% block table_head %}
+                        <tr>
+                            <th scope="col">Reference</th>
+                            <th scope="col">Title</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Risk</th>
+                            <th scope="col">Affected Subjects</th>
+                            <th scope="col">72h Deadline</th>
+                            <th scope="col">Authority</th>
+                            <th scope="col">Subjects</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                    {% endblock %}
+                    {% block table_body %}
+                        {% for breach in breaches %}
+                            <tr class="{% if breach.isAuthorityNotificationOverdue %}table-danger{% endif %}">
+                                <td>
+                                    <a href="{{ path('app_data_breach_show', {id: breach.id}) }}">
+                                        {{ breach.referenceNumber }}
+                                    </a>
+                                </td>
+                                <td>{{ breach.title }}</td>
+                                <td>
+                                    {% set status_class = {
+                                        'draft': 'secondary',
+                                        'under_assessment': 'info',
+                                        'authority_notified': 'success',
+                                        'subjects_notified': 'success',
+                                        'closed': 'dark'
+                                    }[breach.status] %}
+                                    <span class="badge bg-{{ status_class }}">
+                                        {{ breach.status|replace({'_': ' '})|upper }}
+                                    </span>
+                                </td>
+                                <td>
+                                    {% if breach.riskLevel %}
+                                        {% set risk_class = {
+                                            'low': 'success',
+                                            'medium': 'info',
+                                            'high': 'warning',
+                                            'critical': 'danger'
+                                        }[breach.riskLevel] %}
+                                        <span class="badge bg-{{ risk_class }}">
+                                            {{ breach.riskLevel|upper }}
                                         </span>
-                                    </td>
-                                    <td>
-                                        {% if breach.riskLevel %}
-                                            {% set risk_class = {
-                                                'low': 'success',
-                                                'medium': 'info',
-                                                'high': 'warning',
-                                                'critical': 'danger'
-                                            }[breach.riskLevel] %}
-                                            <span class="badge bg-{{ risk_class }}">
-                                                {{ breach.riskLevel|upper }}
+                                    {% else %}
+                                        <span class="text-muted">-</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if breach.affectedDataSubjects %}
+                                        {{ breach.affectedDataSubjects|number_format }}
+                                    {% else %}
+                                        <span class="text-muted">Unknown</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if breach.requiresAuthorityNotification and not breach.supervisoryAuthorityNotifiedAt %}
+                                        {% set hours = breach.hoursUntilAuthorityDeadline %}
+                                        {% if hours < 0 %}
+                                            <span class="badge bg-danger">
+                                                OVERDUE {{ (hours * -1)|number_format }}h
+                                            </span>
+                                        {% elseif hours < 24 %}
+                                            <span class="badge bg-warning text-dark">
+                                                {{ hours|number_format }}h left
                                             </span>
                                         {% else %}
-                                            <span class="text-muted">-</span>
+                                            <span class="badge bg-info">
+                                                {{ hours|number_format }}h left
+                                            </span>
                                         {% endif %}
-                                    </td>
-                                    <td>
-                                        {% if breach.affectedDataSubjects %}
-                                            {{ breach.affectedDataSubjects|number_format }}
-                                        {% else %}
-                                            <span class="text-muted">Unknown</span>
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        {% if breach.requiresAuthorityNotification and not breach.supervisoryAuthorityNotifiedAt %}
-                                            {% set hours = breach.hoursUntilAuthorityDeadline %}
-                                            {% if hours < 0 %}
-                                                <span class="badge bg-danger">
-                                                    OVERDUE {{ (hours * -1)|number_format }}h
-                                                </span>
-                                            {% elseif hours < 24 %}
-                                                <span class="badge bg-warning text-dark">
-                                                    {{ hours|number_format }}h left
-                                                </span>
-                                            {% else %}
-                                                <span class="badge bg-info">
-                                                    {{ hours|number_format }}h left
-                                                </span>
-                                            {% endif %}
-                                        {% elseif breach.supervisoryAuthorityNotifiedAt %}
-                                            <i class="bi bi-check-circle text-success" title="Notified {{ breach.supervisoryAuthorityNotifiedAt|date('Y-m-d H:i') }}"></i>
-                                        {% else %}
-                                            <span class="text-muted">Not required</span>
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        {% if breach.supervisoryAuthorityNotifiedAt %}
-                                            <i class="bi bi-check-circle text-success"></i>
-                                        {% elseif breach.requiresAuthorityNotification %}
-                                            <i class="bi bi-x-circle text-warning"></i>
-                                        {% else %}
-                                            <span class="text-muted">-</span>
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        {% if breach.dataSubjectsNotifiedAt %}
-                                            <i class="bi bi-check-circle text-success"></i>
-                                        {% elseif breach.requiresSubjectNotification %}
-                                            <i class="bi bi-x-circle text-warning"></i>
-                                        {% else %}
-                                            <span class="text-muted">-</span>
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        <div class="btn-group btn-group-sm">
-                                            <a href="{{ path('app_data_breach_show', {id: breach.id}) }}"
-                                               class="btn btn-outline-primary"
-                                               title="View">
-                                                <i class="bi bi-eye"></i>
+                                    {% elseif breach.supervisoryAuthorityNotifiedAt %}
+                                        <i class="bi bi-check-circle text-success" aria-hidden="true" title="Notified {{ breach.supervisoryAuthorityNotifiedAt|date('Y-m-d H:i') }}"></i>
+                                    {% else %}
+                                        <span class="text-muted">Not required</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if breach.supervisoryAuthorityNotifiedAt %}
+                                        <i class="bi bi-check-circle text-success" aria-hidden="true"></i>
+                                    {% elseif breach.requiresAuthorityNotification %}
+                                        <i class="bi bi-x-circle text-warning" aria-hidden="true"></i>
+                                    {% else %}
+                                        <span class="text-muted">-</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if breach.dataSubjectsNotifiedAt %}
+                                        <i class="bi bi-check-circle text-success" aria-hidden="true"></i>
+                                    {% elseif breach.requiresSubjectNotification %}
+                                        <i class="bi bi-x-circle text-warning" aria-hidden="true"></i>
+                                    {% else %}
+                                        <span class="text-muted">-</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <a href="{{ path('app_data_breach_show', {id: breach.id}) }}"
+                                           class="btn btn-outline-primary"
+                                           title="View" aria-label="View">
+                                            <i class="bi bi-eye" aria-hidden="true"></i>
+                                        </a>
+                                        {% if breach.status in ['draft', 'under_assessment'] %}
+                                            <a href="{{ path('app_data_breach_edit', {id: breach.id}) }}"
+                                               class="btn btn-outline-secondary"
+                                               title="Edit" aria-label="Edit">
+                                                <i class="bi bi-pencil" aria-hidden="true"></i>
                                             </a>
-                                            {% if breach.status in ['draft', 'under_assessment'] %}
-                                                <a href="{{ path('app_data_breach_edit', {id: breach.id}) }}"
-                                                   class="btn btn-outline-secondary"
-                                                   title="Edit">
-                                                    <i class="bi bi-pencil"></i>
-                                                </a>
-                                            {% endif %}
-                                            <a href="{{ path('app_data_breach_export_pdf', {id: breach.id}) }}"
-                                               class="btn btn-outline-success"
-                                               title="Export PDF">
-                                                <i class="bi bi-file-pdf"></i>
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+                                        {% endif %}
+                                        <a href="{{ path('app_data_breach_export_pdf', {id: breach.id}) }}"
+                                           class="btn btn-outline-success"
+                                           title="Export PDF" aria-label="Export PDF">
+                                            <i class="bi bi-file-pdf" aria-hidden="true"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% endblock %}
+                {% endembed %}
             {% else %}
                 <div class="alert alert-info mb-0">
                     <i class="bi bi-info-circle"></i> No data breaches found for the selected filter.
