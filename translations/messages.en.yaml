@@ -901,6 +901,40 @@ risk:
     mitigating_controls: 'Mitigating Controls'
     realization_history: 'Realization History'
     affected_asset: 'Affected Asset'
+
+  # Risk Acceptance Workflow (Priority 2.1 - ISO 27005:2022 Section 8.4.4)
+  acceptance:
+    title: 'Formal Risk Acceptance'
+    request: 'Request Acceptance'
+    approve: 'Approve Acceptance'
+    reject: 'Reject Acceptance'
+    justification_label: 'Justification for Acceptance'
+    justification_help: 'Explain why this risk should be accepted (despite remaining residual risk)'
+    required_approval_level: 'Required Approval Level'
+    approval_threshold_info: 'Based on Residual Risk Score (%score%), the following approval is required'
+    already_accepted: 'This risk has already been formally accepted'
+    accepted_by: 'Approved by: %approver%'
+    accepted_at: 'Approved on: %date%'
+    submit_request: 'Submit Acceptance Request'
+    comments_label: 'Comments (optional)'
+    reason_label: 'Rejection Reason'
+    reason_help: 'Explain why the acceptance is being rejected'
+    approval_levels:
+      automatic: 'Automatic Acceptance'
+      manager: 'Manager Approval'
+      executive: 'Executive Approval'
+    success:
+      auto_accepted: 'Risk was automatically accepted (low risk)'
+      approval_requested: 'Acceptance request sent to %approver% (%level% approval required)'
+      approved: 'Risk acceptance has been approved'
+      rejected: 'Risk acceptance has been rejected'
+    error:
+      wrong_strategy: 'Only risks with "accept" treatment strategy can be formally accepted'
+      already_accepted: 'This risk has already been accepted'
+      justification_required: 'A justification is required'
+      reason_required: 'A rejection reason is required'
+      no_approver: 'No approver found for level %level%'
+
 control:
   section:
     protected_assets: Protected Assets
