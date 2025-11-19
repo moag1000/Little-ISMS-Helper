@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Data Breach - {{ breach.referenceNumber }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid mt-4">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'Privacy', icon: 'bi-shield-lock' },
+            { label: 'Data Breaches', url: path('app_data_breach_index') },
+            { label: breach.referenceNumber, url: path('app_data_breach_show', {id: breach.id}) },
+            { label: 'Edit' }
+        ]
+    } %}
+
+    {% include '_components/_page_header.html.twig' with {
+        title: 'Edit Data Breach',
+        subtitle: breach.referenceNumber ~ ' - ' ~ breach.title,
+        icon: 'bi-pencil',
+        actions: [
+            { label: 'Cancel', url: path('app_data_breach_show', {id: breach.id}), variant: 'secondary', icon: 'bi-x-lg' }
+        ]
+    } %}
+
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0"><i class="bi bi-clipboard-check"></i> Data Breach Form</h5>
+        </div>
+        <div class="card-body">
+            {{ form_start(form) }}
+                {{ form_widget(form) }}
+
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-save"></i> Update Data Breach
+                    </button>
+                    <a href="{{ path('app_data_breach_show', {id: breach.id}) }}" class="btn btn-secondary">
+                        <i class="bi bi-x-lg"></i> Cancel
+                    </a>
+                </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>
+{% endblock %}
