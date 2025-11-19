@@ -23,7 +23,7 @@
         </div>
 
         <div class="content">
-            <p>Dear {{ requester.firstName }} {{ requester.lastName }},</p>
+            <p>Dear {{ risk_owner.firstName }} {{ risk_owner.lastName }},</p>
 
             <div class="warning">
                 <strong>⚠️ Your risk acceptance request has been rejected.</strong>
@@ -51,7 +51,7 @@
 
             <div class="info">
                 <strong>📝 Reason for Rejection:</strong><br>
-                {{ reason }}
+                {{ rejection_reason }}
             </div>
 
             <div class="action-required">

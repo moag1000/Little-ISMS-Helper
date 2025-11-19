@@ -284,8 +284,9 @@ class EmailNotificationService
      *
      * @param Risk $risk Risk entity
      * @param User $riskOwner Risk owner to notify
+     * @param User $approver User who approved the acceptance
      */
-    public function sendRiskAcceptanceApproved(Risk $risk, User $riskOwner): void
+    public function sendRiskAcceptanceApproved(Risk $risk, User $riskOwner, User $approver): void
     {
         $safeTitle = $this->sanitizeEmailSubject($risk->getTitle());
 
@@ -299,6 +300,7 @@ class EmailNotificationService
                 'risk_owner' => $riskOwner,
                 'approved_by' => $risk->getAcceptanceApprovedBy(),
                 'approved_at' => $risk->getAcceptanceApprovedAt(),
+                'approver' => $approver,
             ]);
 
         $this->mailer->send($email);
@@ -310,8 +312,9 @@ class EmailNotificationService
      * @param Risk $risk Risk entity
      * @param User $riskOwner Risk owner to notify
      * @param string $reason Rejection reason
+     * @param User $rejector User who rejected the acceptance
      */
-    public function sendRiskAcceptanceRejected(Risk $risk, User $riskOwner, string $reason): void
+    public function sendRiskAcceptanceRejected(Risk $risk, User $riskOwner, string $reason, User $rejector): void
     {
         $safeTitle = $this->sanitizeEmailSubject($risk->getTitle());
 
@@ -324,6 +327,8 @@ class EmailNotificationService
                 'risk' => $risk,
                 'risk_owner' => $riskOwner,
                 'rejection_reason' => $reason,
+                'rejector' => $rejector,
+                'rejected_at' => new \DateTime(),
             ]);
 
         $this->mailer->send($email);
