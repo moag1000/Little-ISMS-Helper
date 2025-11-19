@@ -232,6 +232,109 @@
             </div>
             {% endif %}
 
+            {# Overdue Treatment Plans Widget (ISO 27001:2022 Clause 6.1.3 - Priority 2.4) #}
+            {% if overdue_treatment_plans|default([])|length > 0 %}
+            <div class="widget-card mb-4 border-danger"
+                 data-widget-id="overdue-treatment-plans"
+                 data-dashboard-customizer-target="widget">
+                <div class="widget-header bg-danger-subtle">
+                    <h3 class="widget-title text-danger">
+                        <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
+                        {{ 'dashboard.overdue_treatment_plans.title'|trans }}
+                    </h3>
+                    <span class="badge bg-danger">{{ overdue_treatment_plans|length }}</span>
+                </div>
+                <div class="widget-body p-3">
+                    <p class="text-muted mb-3 small">
+                        {{ 'dashboard.overdue_treatment_plans.description'|trans({ '%count%': overdue_treatment_plans|length }) }}
+                    </p>
+                    <ul class="list-unstyled mb-0">
+                        {% for plan in overdue_treatment_plans|slice(0, 5) %}
+                        <li class="mb-2 pb-2 {% if not loop.last %}border-bottom{% endif %}">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div class="flex-grow-1">
+                                    <a href="{{ path('app_risk_treatment_plan_show', {id: plan.id}) }}" class="text-decoration-none fw-bold">
+                                        {{ plan.title|length > 35 ? plan.title|slice(0, 35) ~ '...' : plan.title }}
+                                    </a>
+                                    <div class="small text-muted">
+                                        <i class="bi bi-calendar-x" aria-hidden="true"></i>
+                                        {{ 'dashboard.overdue_treatment_plans.due_date'|trans }}: {{ plan.targetCompletionDate|date('d.m.Y') }}
+                                        {% set daysOverdue = date().diff(plan.targetCompletionDate).days %}
+                                        <span class="text-danger">({{ daysOverdue }} {{ 'dashboard.overdue_treatment_plans.days_overdue'|trans }})</span>
+                                    </div>
+                                    <div class="progress mt-1" style="height: 4px;">
+                                        <div class="progress-bar bg-danger" role="progressbar"
+                                             style="width: {{ plan.completionPercentage }}%"
+                                             aria-valuenow="{{ plan.completionPercentage }}"
+                                             aria-valuemin="0"
+                                             aria-valuemax="100"></div>
+                                    </div>
+                                </div>
+                                <span class="badge bg-{{ plan.priority == 'critical' ? 'danger' : (plan.priority == 'high' ? 'warning' : 'secondary') }} ms-2">
+                                    {{ ('risk_treatment_plan.priority.' ~ plan.priority)|trans }}
+                                </span>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% if overdue_treatment_plans|length > 5 %}
+                        <div class="text-center mt-3">
+                            <a href="{{ path('app_risk_treatment_plan_index') }}" class="btn btn-sm btn-outline-danger">
+                                <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                                {{ 'dashboard.overdue_treatment_plans.view_all'|trans({ '%count%': overdue_treatment_plans|length - 5 }) }}
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+
+            {# Approaching Deadline Treatment Plans Widget (ISO 27001:2022 Clause 6.1.3 - Priority 2.4) #}
+            {% if approaching_treatment_plans|default([])|length > 0 %}
+            <div class="widget-card mb-4 border-warning"
+                 data-widget-id="approaching-treatment-plans"
+                 data-dashboard-customizer-target="widget">
+                <div class="widget-header bg-warning-subtle">
+                    <h3 class="widget-title text-warning">
+                        <i class="bi bi-clock-history" aria-hidden="true"></i>
+                        {{ 'dashboard.approaching_treatment_plans.title'|trans }}
+                    </h3>
+                    <span class="badge bg-warning">{{ approaching_treatment_plans|length }}</span>
+                </div>
+                <div class="widget-body p-3">
+                    <p class="text-muted mb-3 small">
+                        {{ 'dashboard.approaching_treatment_plans.description'|trans }}
+                    </p>
+                    <ul class="list-unstyled mb-0">
+                        {% for plan in approaching_treatment_plans|slice(0, 3) %}
+                        <li class="mb-2 pb-2 {% if not loop.last %}border-bottom{% endif %}">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div class="flex-grow-1">
+                                    <a href="{{ path('app_risk_treatment_plan_show', {id: plan.id}) }}" class="text-decoration-none">
+                                        {{ plan.title|length > 40 ? plan.title|slice(0, 40) ~ '...' : plan.title }}
+                                    </a>
+                                    <div class="small text-muted">
+                                        <i class="bi bi-calendar-event" aria-hidden="true"></i>
+                                        {{ plan.targetCompletionDate|date('d.m.Y') }}
+                                        {% set daysRemaining = date().diff(plan.targetCompletionDate).days %}
+                                        <span>({{ daysRemaining }} {{ 'dashboard.approaching_treatment_plans.days_remaining'|trans }})</span>
+                                    </div>
+                                    <div class="progress mt-1" style="height: 4px;">
+                                        <div class="progress-bar" role="progressbar"
+                                             style="width: {{ plan.completionPercentage }}%"
+                                             aria-valuenow="{{ plan.completionPercentage }}"
+                                             aria-valuemin="0"
+                                             aria-valuemax="100"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            {% endif %}
+
             {# Activity Feed Widget #}
             <div class="widget-card mb-4"
                  data-widget-id="activity-feed"

@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Repository\AssetRepository;
 use App\Repository\RiskRepository;
+use App\Repository\RiskTreatmentPlanRepository;
 use App\Service\DashboardStatisticsService;
 use App\Service\ISOComplianceIntelligenceService;
 use App\Service\RiskReviewService;
@@ -23,6 +24,7 @@ class HomeController extends AbstractController
         private readonly AssetRepository $assetRepository,
         private readonly RiskRepository $riskRepository,
         private readonly RiskReviewService $riskReviewService,
+        private readonly RiskTreatmentPlanRepository $treatmentPlanRepository,
         private readonly TenantContext $tenantContext,
         private readonly TranslatorInterface $translator
     ) {}
@@ -88,6 +90,10 @@ class HomeController extends AbstractController
         $overdueReviews = $this->riskReviewService->getOverdueReviews($tenant);
         $upcomingReviews = $this->riskReviewService->getUpcomingReviews($tenant, 30);
 
+        // Treatment Plan Monitoring (ISO 27001:2022 Clause 6.1.3 - Priority 2.4)
+        $overdueTreatmentPlans = $this->treatmentPlanRepository->findOverdueForTenant($tenant);
+        $approachingTreatmentPlans = $this->treatmentPlanRepository->findDueWithinDays(7, $tenant);
+
         return $this->render('home/dashboard_modern.html.twig', [
             'kpis' => $kpis,
             'stats' => $stats,
@@ -95,6 +101,8 @@ class HomeController extends AbstractController
             'iso_compliance' => $isoCompliance,
             'overdue_reviews' => $overdueReviews,
             'upcoming_reviews' => $upcomingReviews,
+            'overdue_treatment_plans' => $overdueTreatmentPlans,
+            'approaching_treatment_plans' => $approachingTreatmentPlans,
         ]);
     }
 
