@@ -7,6 +7,7 @@ use App\Entity\Risk;
 use App\Entity\User;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -44,6 +45,62 @@ class RiskType extends AbstractType
                 'attr' => [
                     'class' => 'form-select',
                 ],
+            ])
+            // DSGVO Risk Assessment Extension (Priority 2.2)
+            ->add('involvesPersonalData', CheckboxType::class, [
+                'label' => 'risk.field.involves_personal_data',
+                'required' => false,
+                'help' => 'risk.help.involves_personal_data',
+            ])
+            ->add('involvesSpecialCategoryData', CheckboxType::class, [
+                'label' => 'risk.field.involves_special_category_data',
+                'required' => false,
+                'help' => 'risk.help.involves_special_category_data',
+            ])
+            ->add('legalBasis', ChoiceType::class, [
+                'label' => 'risk.field.legal_basis',
+                'choices' => [
+                    'risk.legal_basis.consent' => 'consent',
+                    'risk.legal_basis.contract' => 'contract',
+                    'risk.legal_basis.legal_obligation' => 'legal_obligation',
+                    'risk.legal_basis.vital_interests' => 'vital_interests',
+                    'risk.legal_basis.public_task' => 'public_task',
+                    'risk.legal_basis.legitimate_interests' => 'legitimate_interests',
+                ],
+                'placeholder' => 'risk.placeholder.legal_basis',
+                'required' => false,
+                'help' => 'risk.help.legal_basis',
+                'attr' => [
+                    'class' => 'form-select',
+                ],
+            ])
+            ->add('processingScale', ChoiceType::class, [
+                'label' => 'risk.field.processing_scale',
+                'choices' => [
+                    'risk.processing_scale.small' => 'small',
+                    'risk.processing_scale.medium' => 'medium',
+                    'risk.processing_scale.large_scale' => 'large_scale',
+                ],
+                'placeholder' => 'risk.placeholder.processing_scale',
+                'required' => false,
+                'help' => 'risk.help.processing_scale',
+                'attr' => [
+                    'class' => 'form-select',
+                ],
+            ])
+            ->add('requiresDPIA', CheckboxType::class, [
+                'label' => 'risk.field.requires_dpia',
+                'required' => false,
+                'help' => 'risk.help.requires_dpia',
+            ])
+            ->add('dataSubjectImpact', TextareaType::class, [
+                'label' => 'risk.field.data_subject_impact',
+                'required' => false,
+                'attr' => [
+                    'rows' => 3,
+                    'placeholder' => 'risk.placeholder.data_subject_impact',
+                ],
+                'help' => 'risk.help.data_subject_impact',
             ])
             ->add('description', TextareaType::class, [
                 'label' => 'risk.field.description',
