@@ -266,4 +266,109 @@ class AuditLogger
 
         return $values;
     }
+
+    /**
+     * Log risk acceptance (automatic)
+     * Priority 2.1 - Risk Acceptance Workflow
+     */
+    public function logRiskAcceptance($risk, User $user, string $reason): void
+    {
+        $this->logCustom(
+            action: 'risk_acceptance',
+            entityType: 'Risk',
+            entityId: $risk->getId(),
+            newValues: [
+                'risk_title' => $risk->getTitle(),
+                'risk_score' => $risk->getResidualRiskLevel(),
+                'accepted_by' => $user->getFullName(),
+                'reason' => $reason,
+            ],
+            description: sprintf(
+                'Risk "%s" (ID: %d) accepted: %s',
+                $risk->getTitle(),
+                $risk->getId(),
+                $reason
+            ),
+            userName: $user->getEmail()
+        );
+    }
+
+    /**
+     * Log risk acceptance request
+     */
+    public function logRiskAcceptanceRequested($risk, User $requester, User $approver, string $approvalLevel): void
+    {
+        $this->logCustom(
+            action: 'risk_acceptance_requested',
+            entityType: 'Risk',
+            entityId: $risk->getId(),
+            newValues: [
+                'risk_title' => $risk->getTitle(),
+                'risk_score' => $risk->getResidualRiskLevel(),
+                'requester' => $requester->getFullName(),
+                'approver' => $approver->getFullName(),
+                'approval_level' => $approvalLevel,
+            ],
+            description: sprintf(
+                'Risk "%s" (ID: %d) acceptance requested by %s, requires %s approval from %s',
+                $risk->getTitle(),
+                $risk->getId(),
+                $requester->getFullName(),
+                $approvalLevel,
+                $approver->getFullName()
+            ),
+            userName: $requester->getEmail()
+        );
+    }
+
+    /**
+     * Log risk acceptance approval
+     */
+    public function logRiskAcceptanceApproved($risk, User $approver, string $comments): void
+    {
+        $this->logCustom(
+            action: 'risk_acceptance_approved',
+            entityType: 'Risk',
+            entityId: $risk->getId(),
+            newValues: [
+                'risk_title' => $risk->getTitle(),
+                'risk_score' => $risk->getResidualRiskLevel(),
+                'approved_by' => $approver->getFullName(),
+                'comments' => $comments,
+            ],
+            description: sprintf(
+                'Risk "%s" (ID: %d) acceptance approved by %s',
+                $risk->getTitle(),
+                $risk->getId(),
+                $approver->getFullName()
+            ),
+            userName: $approver->getEmail()
+        );
+    }
+
+    /**
+     * Log risk acceptance rejection
+     */
+    public function logRiskAcceptanceRejected($risk, User $rejector, string $reason): void
+    {
+        $this->logCustom(
+            action: 'risk_acceptance_rejected',
+            entityType: 'Risk',
+            entityId: $risk->getId(),
+            newValues: [
+                'risk_title' => $risk->getTitle(),
+                'risk_score' => $risk->getResidualRiskLevel(),
+                'rejected_by' => $rejector->getFullName(),
+                'reason' => $reason,
+            ],
+            description: sprintf(
+                'Risk "%s" (ID: %d) acceptance rejected by %s: %s',
+                $risk->getTitle(),
+                $risk->getId(),
+                $rejector->getFullName(),
+                $reason
+            ),
+            userName: $rejector->getEmail()
+        );
+    }
 }
