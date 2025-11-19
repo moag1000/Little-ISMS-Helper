@@ -561,7 +561,7 @@ class DataBreachService
      */
     public function getDashboardStatistics(): array
     {
-        $tenant = $this->tenantContext->getTenant();
+        $tenant = $this->tenantContext->getCurrentTenant();
         if (!$tenant) {
             return $this->getEmptyStatistics();
         }
@@ -574,7 +574,7 @@ class DataBreachService
      */
     public function calculateComplianceScore(): array
     {
-        $tenant = $this->tenantContext->getTenant();
+        $tenant = $this->tenantContext->getCurrentTenant();
         if (!$tenant) {
             return [
                 'overall_score' => 0,
@@ -636,7 +636,7 @@ class DataBreachService
      */
     public function getActionItems(): array
     {
-        $tenant = $this->tenantContext->getTenant();
+        $tenant = $this->tenantContext->getCurrentTenant();
         if (!$tenant) {
             return [];
         }
