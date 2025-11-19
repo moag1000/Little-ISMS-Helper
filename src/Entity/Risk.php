@@ -161,11 +161,34 @@ class Risk
     #[Groups(['risk:read', 'risk:write'])]
     private ?string $vulnerability = null;
 
+    /**
+     * Risk Subject - Asset, Person, Location, or Supplier
+     * ISO 27005:2022 Section 7.2.3 - Risk identification
+     * At least one subject must be associated with each risk
+     */
     #[ORM\ManyToOne(inversedBy: 'risks')]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
     #[Groups(['risk:read', 'risk:write'])]
-    #[Assert\NotNull(message: 'Risk must be associated with an asset')]
     #[MaxDepth(1)]
     private ?Asset $asset = null;
+
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
+    #[Groups(['risk:read', 'risk:write'])]
+    #[MaxDepth(1)]
+    private ?Person $person = null;
+
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
+    #[Groups(['risk:read', 'risk:write'])]
+    #[MaxDepth(1)]
+    private ?Location $location = null;
+
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
+    #[Groups(['risk:read', 'risk:write'])]
+    #[MaxDepth(1)]
+    private ?Supplier $supplier = null;
 
     #[ORM\Column(type: Types::INTEGER)]
     #[Groups(['risk:read', 'risk:write'])]
@@ -361,6 +384,80 @@ class Risk
     {
         $this->asset = $asset;
         return $this;
+    }
+
+    public function getPerson(): ?Person
+    {
+        return $this->person;
+    }
+
+    public function setPerson(?Person $person): static
+    {
+        $this->person = $person;
+        return $this;
+    }
+
+    public function getLocation(): ?Location
+    {
+        return $this->location;
+    }
+
+    public function setLocation(?Location $location): static
+    {
+        $this->location = $location;
+        return $this;
+    }
+
+    public function getSupplier(): ?Supplier
+    {
+        return $this->supplier;
+    }
+
+    public function setSupplier(?Supplier $supplier): static
+    {
+        $this->supplier = $supplier;
+        return $this;
+    }
+
+    /**
+     * Get the primary risk subject (Asset, Person, Location, or Supplier)
+     * Returns the first non-null relationship
+     */
+    public function getRiskSubject(): ?object
+    {
+        return $this->asset ?? $this->person ?? $this->location ?? $this->supplier;
+    }
+
+    /**
+     * Get the name/title of the risk subject
+     */
+    public function getRiskSubjectName(): ?string
+    {
+        if ($this->asset) {
+            return $this->asset->getName();
+        }
+        if ($this->person) {
+            return $this->person->getFullName();
+        }
+        if ($this->location) {
+            return $this->location->getName();
+        }
+        if ($this->supplier) {
+            return $this->supplier->getName();
+        }
+        return null;
+    }
+
+    /**
+     * Get the type of risk subject
+     */
+    public function getRiskSubjectType(): ?string
+    {
+        if ($this->asset) return 'asset';
+        if ($this->person) return 'person';
+        if ($this->location) return 'location';
+        if ($this->supplier) return 'supplier';
+        return null;
     }
 
     public function getProbability(): ?int

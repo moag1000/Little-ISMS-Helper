@@ -162,8 +162,11 @@
         </p>
 
         <div class="overflow-auto-mb">
-            <table class="table-full-collapse">
-                <thead>
+            {% embed '_components/_table.html.twig' with {
+                'class': 'table-full-collapse',
+                'noMargin': true
+            } %}
+                {% block table_head %}
                     <tr class="bg-alt">
                         <th scope="col" class="th-sticky-left">
                             Von → Nach
@@ -174,8 +177,8 @@
                             </th>
                         {% endfor %}
                     </tr>
-                </thead>
-                <tbody>
+                {% endblock %}
+                {% block table_body %}
                     {% for sourceFramework in frameworks %}
                         <tr>
                             <td class="td-sticky-left">
@@ -202,8 +205,8 @@
                             {% endfor %}
                         </tr>
                     {% endfor %}
-                </tbody>
-            </table>
+                {% endblock %}
+            {% endembed %}
         </div>
 
         <div class="legend-container">
@@ -286,15 +289,19 @@
                         {% endif %}
 
                         <div class="overflow-auto">
-                            <table class="table-collapse">
-                                <thead class="bg-alt">
+                            {% embed '_components/_table.html.twig' with {
+                                'class': 'table-collapse',
+                                'theadClass': 'bg-alt',
+                                'noMargin': true
+                            } %}
+                                {% block table_head %}
                                     <tr>
                                         <th scope="col" class="th-left-fs-09">{{ 'compliance.field.source_requirement'|trans }}</th>
                                         <th scope="col" class="th-left-fs-09">{{ 'compliance.field.target_requirements'|trans }}</th>
                                         <th scope="col" class="td-center-fs-09">{{ 'compliance.field.mapping_strength'|trans }}</th>
                                     </tr>
-                                </thead>
-                                <tbody>
+                                {% endblock %}
+                                {% block table_body %}
                                     {% for mapping in mapping_group.mappings|slice(0, 5) %}
                                         <tr class="border-bottom-light">
                                             <td class="p-md">
@@ -319,8 +326,8 @@
                                             </td>
                                         </tr>
                                     {% endfor %}
-                                </tbody>
-                            </table>
+                                {% endblock %}
+                            {% endembed %}
                         </div>
                     </div>
                 </details>
