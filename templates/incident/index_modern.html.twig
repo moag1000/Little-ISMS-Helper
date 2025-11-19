@@ -75,8 +75,8 @@
                 {% set count = allIncidents|filter(i => i.status == status)|length %}
                 <div class="col-md-3 mb-3">
                     <div class="status-card status-{{ status }}">
-                        <div class="status-icon text-{{ data.color }}">
-                            <i class="bi {{ data.icon }}"></i>
+                        <div class="status-icon text-{{ data.color }}" aria-hidden="true">
+                            <i class="bi {{ data.icon }}" aria-hidden="true"></i>
                         </div>
                         <div class="status-info">
                             <div class="status-label">{{ data.label }}</div>
@@ -155,130 +155,132 @@
                    id="incident-search">
         </div>
     </div>
-    <div class="table-responsive">
-        <table class="table table-hover mb-0">
-            <thead>
-                <tr>
-                    <th scope="col" class="w-40px">
-                        <input type="checkbox"
-                               class="form-check-input"
-                               data-action="bulk-actions#selectAll"
-                               data-bulk-actions-target="selectAllCheckbox"
-                               aria-label="Alle auswählen">
-                    </th>
-                    <th scope="col">Titel</th>
-                    <th scope="col">Kategorie</th>
-                    <th scope="col" class="text-center">Schweregrad</th>
-                    <th scope="col">Status</th>
-                    <th scope="col">Aufgetreten am</th>
-                    <th scope="col" class="text-center">Betroffene Assets</th>
-                    <th scope="col" class="text-center">Datenschutzrelevant</th>
-                    <th scope="col" class="text-center">Aktionen</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for incident in allIncidents %}
-                <tr data-incident-id="{{ incident.id }}"
-                    data-incident-status="{{ incident.status }}"
-                    data-incident-severity="{{ incident.severity }}">
-                    <td>
-                        <input type="checkbox"
-                               class="form-check-input"
-                               data-bulk-actions-target="item"
-                               data-action="bulk-actions#selectItem"
-                               value="{{ incident.id }}">
-                    </td>
-                    <td>
-                        <strong>{{ incident.title }}</strong>
-                        {% if incident.description %}
-                        <br><small class="text-muted">{{ incident.description|length > 60 ? incident.description|slice(0, 60) ~ '...' : incident.description }}</small>
-                        {% endif %}
-                        {% if incident.status == 'open' %}
-                            <span class="badge bg-danger ms-2">NEU</span>
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if incident.category %}
-                            <span class="badge bg-secondary">{{ incident.category|replace({'_': ' '})|title }}</span>
+    {% embed '_components/_table.html.twig' with {
+        'class': 'table-hover mb-0',
+        'noMargin': true,
+        'responsive': true
+    } %}
+        {% block table_head %}
+            <tr>
+                <th scope="col" class="w-40px">
+                    <input type="checkbox"
+                           class="form-check-input"
+                           data-action="bulk-actions#selectAll"
+                           data-bulk-actions-target="selectAllCheckbox"
+                           aria-label="Alle auswählen">
+                </th>
+                <th scope="col">Titel</th>
+                <th scope="col">Kategorie</th>
+                <th scope="col" class="text-center">Schweregrad</th>
+                <th scope="col">Status</th>
+                <th scope="col">Aufgetreten am</th>
+                <th scope="col" class="text-center">Betroffene Assets</th>
+                <th scope="col" class="text-center">Datenschutzrelevant</th>
+                <th scope="col" class="text-center">Aktionen</th>
+            </tr>
+        {% endblock %}
+        {% block table_body %}
+            {% for incident in allIncidents %}
+            <tr data-incident-id="{{ incident.id }}"
+                data-incident-status="{{ incident.status }}"
+                data-incident-severity="{{ incident.severity }}">
+                <td>
+                    <input type="checkbox"
+                           class="form-check-input"
+                           data-bulk-actions-target="item"
+                           data-action="bulk-actions#selectItem"
+                           value="{{ incident.id }}">
+                </td>
+                <td>
+                    <strong>{{ incident.title }}</strong>
+                    {% if incident.description %}
+                    <br><small class="text-muted">{{ incident.description|length > 60 ? incident.description|slice(0, 60) ~ '...' : incident.description }}</small>
+                    {% endif %}
+                    {% if incident.status == 'open' %}
+                        <span class="badge bg-danger ms-2">NEU</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if incident.category %}
+                        <span class="badge bg-secondary">{{ incident.category|replace({'_': ' '})|title }}</span>
+                    {% else %}
+                        <span class="text-muted">-</span>
+                    {% endif %}
+                </td>
+                <td class="text-center">
+                    {% set severityColors = {
+                        'critical': 'danger',
+                        'high': 'warning',
+                        'medium': 'info',
+                        'low': 'success'
+                    } %}
+                    <span class="badge bg-{{ severityColors[incident.severity] ?? 'secondary' }}">
+                        {{ incident.severity|upper }}
+                    </span>
+                </td>
+                <td>
+                    {% set statusIcons = {
+                        'open': 'bi-circle text-danger',
+                        'in_progress': 'bi-arrow-repeat text-warning',
+                        'resolved': 'bi-check-circle text-success',
+                        'closed': 'bi-check-circle-fill text-secondary'
+                    } %}
+                    <i class="bi {{ statusIcons[incident.status] ?? 'bi-circle' }}" aria-hidden="true"></i>
+                    {{ incident.status|replace({'_': ' '})|title }}
+                </td>
+                <td>
+                    {{ incident.occurredAt|date('d.m.Y H:i') }}
+                    {% if incident.occurredAt %}
+                        {% set daysSince = (date().diff(incident.occurredAt).days) %}
+                        {% if daysSince == 0 %}
+                            <br><small class="text-muted">Heute</small>
+                        {% elseif daysSince == 1 %}
+                            <br><small class="text-muted">Gestern</small>
                         {% else %}
-                            <span class="text-muted">-</span>
+                            <br><small class="text-muted">vor {{ daysSince }} Tagen</small>
                         {% endif %}
-                    </td>
-                    <td class="text-center">
-                        {% set severityColors = {
-                            'critical': 'danger',
-                            'high': 'warning',
-                            'medium': 'info',
-                            'low': 'success'
-                        } %}
-                        <span class="badge bg-{{ severityColors[incident.severity] ?? 'secondary' }}">
-                            {{ incident.severity|upper }}
+                    {% endif %}
+                </td>
+                <td class="text-center">
+                    {% if incident.affectedAssets|length > 0 %}
+                        <a href="{{ path('app_incident_assets', {id: incident.id}) }}" class="badge bg-warning text-dark">
+                            {{ incident.affectedAssets|length }}
+                        </a>
+                    {% else %}
+                        <span class="text-muted">0</span>
+                    {% endif %}
+                </td>
+                <td class="text-center">
+                    {% if incident.dataBreachRelevant %}
+                        <span class="badge bg-danger" title="Datenschutzverletzung">
+                            <i class="bi bi-shield-exclamation" aria-hidden="true"></i> Ja
                         </span>
-                    </td>
-                    <td>
-                        {% set statusIcons = {
-                            'open': 'bi-circle text-danger',
-                            'in_progress': 'bi-arrow-repeat text-warning',
-                            'resolved': 'bi-check-circle text-success',
-                            'closed': 'bi-check-circle-fill text-secondary'
-                        } %}
-                        <i class="bi {{ statusIcons[incident.status] ?? 'bi-circle' }}"></i>
-                        {{ incident.status|replace({'_': ' '})|title }}
-                    </td>
-                    <td>
-                        {{ incident.occurredAt|date('d.m.Y H:i') }}
-                        {% if incident.occurredAt %}
-                            {% set daysSince = (date().diff(incident.occurredAt).days) %}
-                            {% if daysSince == 0 %}
-                                <br><small class="text-muted">Heute</small>
-                            {% elseif daysSince == 1 %}
-                                <br><small class="text-muted">Gestern</small>
-                            {% else %}
-                                <br><small class="text-muted">vor {{ daysSince }} Tagen</small>
-                            {% endif %}
+                    {% else %}
+                        <span class="text-muted">Nein</span>
+                    {% endif %}
+                </td>
+                <td class="text-center">
+                    <div class="btn-group btn-group-sm">
+                        <a href="{{ path('app_incident_show', {id: incident.id}) }}"
+                           class="btn btn-outline-primary"
+                           data-turbo-action="advance"
+                           title="Anzeigen" aria-label="{{ 'common.view'|trans }}">
+                            <i class="bi bi-eye" aria-hidden="true"></i>
+                        </a>
+                        {% if is_granted('ROLE_USER') and incident.status != 'closed' %}
+                        <a href="{{ path('app_incident_edit', {id: incident.id}) }}"
+                           class="btn btn-outline-secondary"
+                           data-turbo-action="advance"
+                           title="Bearbeiten" aria-label="{{ 'common.edit'|trans }}">
+                            <i class="bi bi-pencil" aria-hidden="true"></i>
+                        </a>
                         {% endif %}
-                    </td>
-                    <td class="text-center">
-                        {% if incident.affectedAssets|length > 0 %}
-                            <a href="{{ path('app_incident_assets', {id: incident.id}) }}" class="badge bg-warning text-dark">
-                                {{ incident.affectedAssets|length }}
-                            </a>
-                        {% else %}
-                            <span class="text-muted">0</span>
-                        {% endif %}
-                    </td>
-                    <td class="text-center">
-                        {% if incident.dataBreachRelevant %}
-                            <span class="badge bg-danger" title="Datenschutzverletzung">
-                                <i class="bi bi-shield-exclamation" aria-hidden="true"></i> Ja
-                            </span>
-                        {% else %}
-                            <span class="text-muted">Nein</span>
-                        {% endif %}
-                    </td>
-                    <td class="text-center">
-                        <div class="btn-group btn-group-sm">
-                            <a href="{{ path('app_incident_show', {id: incident.id}) }}"
-                               class="btn btn-outline-primary"
-                               data-turbo-action="advance"
-                               title="Anzeigen" aria-label="{{ 'common.view'|trans }}">
-                                <i class="bi bi-eye" aria-hidden="true"></i>
-                            </a>
-                            {% if is_granted('ROLE_USER') and incident.status != 'closed' %}
-                            <a href="{{ path('app_incident_edit', {id: incident.id}) }}"
-                               class="btn btn-outline-secondary"
-                               data-turbo-action="advance"
-                               title="Bearbeiten" aria-label="{{ 'common.edit'|trans }}">
-                                <i class="bi bi-pencil" aria-hidden="true"></i>
-                            </a>
-                            {% endif %}
-                        </div>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        {% endblock %}
+    {% endembed %}
 
     {# Bulk Action Bar #}
     {% include '_components/_bulk_action_bar.html.twig' with {

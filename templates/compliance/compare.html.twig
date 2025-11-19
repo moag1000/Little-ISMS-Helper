@@ -151,69 +151,71 @@
 {# Detailed Comparison Table #}
 <h2>{{ 'compliance.section.detailed_comparison'|trans }}</h2>
 
-<div class="table-container">
-    <table>
-        <thead>
-            <tr>
-                <th scope="col">{{ selectedFramework1.name }} {{ 'compliance.field.requirement'|trans }}</th>
-                <th scope="col">{{ 'compliance.field.category'|trans }}</th>
-                <th scope="col" class="text-center">{{ 'compliance.field.mapping'|trans }}</th>
-                <th scope="col">{{ selectedFramework2.name }} {{ 'compliance.field.requirement'|trans }}</th>
-                <th scope="col">{{ 'compliance.field.category'|trans }}</th>
-                <th scope="col" class="text-center">{{ 'compliance.field.match_quality'|trans }}</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for comparison in comparisonDetails %}
-            <tr>
-                <td>
-                    <strong>{{ comparison.framework1Requirement.requirementId }}</strong>
-                    <br><small class="text-muted">{{ comparison.framework1Requirement.title }}</small>
-                </td>
-                <td>
-                    <span class="badge badge-info">{{ comparison.framework1Requirement.category }}</span>
-                </td>
-                <td class="text-center">
-                    {% if comparison.mapped %}
-                        <span class="badge badge-success">✓ {{ 'compliance.badge.mapped'|trans }}</span>
-                    {% else %}
-                        <span class="badge badge-secondary">- {{ 'compliance.badge.no_mapping'|trans }}</span>
-                    {% endif %}
-                </td>
-                <td>
-                    {% if comparison.framework2Requirement %}
-                        <strong>{{ comparison.framework2Requirement.requirementId }}</strong>
-                        <br><small class="text-muted">{{ comparison.framework2Requirement.title }}</small>
-                    {% else %}
-                        <span class="text-muted">-</span>
-                    {% endif %}
-                </td>
-                <td>
-                    {% if comparison.framework2Requirement %}
-                        <span class="badge badge-info">{{ comparison.framework2Requirement.category }}</span>
-                    {% else %}
-                        <span class="text-muted">-</span>
-                    {% endif %}
-                </td>
-                <td class="text-center">
-                    {% if comparison.matchQuality %}
-                        {% set qualityColor = comparison.matchQuality >= 80 ? 'success' : (comparison.matchQuality >= 60 ? 'warning' : 'danger') %}
-                        <span class="badge badge-{{ qualityColor }}">{{ comparison.matchQuality }}%</span>
-                    {% else %}
-                        <span class="text-muted">-</span>
-                    {% endif %}
-                </td>
-            </tr>
-            {% else %}
-            <tr>
-                <td colspan="6" class="text-center-p-xl">
-                    {{ 'compliance.message.no_comparison_data'|trans }}
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
+{% embed '_components/_table.html.twig' with {
+    'class': 'table-container',
+    'noMargin': true,
+    'responsive': true
+} %}
+    {% block table_head %}
+        <tr>
+            <th scope="col">{{ selectedFramework1.name }} {{ 'compliance.field.requirement'|trans }}</th>
+            <th scope="col">{{ 'compliance.field.category'|trans }}</th>
+            <th scope="col" class="text-center">{{ 'compliance.field.mapping'|trans }}</th>
+            <th scope="col">{{ selectedFramework2.name }} {{ 'compliance.field.requirement'|trans }}</th>
+            <th scope="col">{{ 'compliance.field.category'|trans }}</th>
+            <th scope="col" class="text-center">{{ 'compliance.field.match_quality'|trans }}</th>
+        </tr>
+    {% endblock %}
+    {% block table_body %}
+        {% for comparison in comparisonDetails %}
+        <tr>
+            <td>
+                <strong>{{ comparison.framework1Requirement.requirementId }}</strong>
+                <br><small class="text-muted">{{ comparison.framework1Requirement.title }}</small>
+            </td>
+            <td>
+                <span class="badge bg-info">{{ comparison.framework1Requirement.category }}</span>
+            </td>
+            <td class="text-center">
+                {% if comparison.mapped %}
+                    <span class="badge bg-success">✓ {{ 'compliance.badge.mapped'|trans }}</span>
+                {% else %}
+                    <span class="badge bg-secondary">- {{ 'compliance.badge.no_mapping'|trans }}</span>
+                {% endif %}
+            </td>
+            <td>
+                {% if comparison.framework2Requirement %}
+                    <strong>{{ comparison.framework2Requirement.requirementId }}</strong>
+                    <br><small class="text-muted">{{ comparison.framework2Requirement.title }}</small>
+                {% else %}
+                    <span class="text-muted">-</span>
+                {% endif %}
+            </td>
+            <td>
+                {% if comparison.framework2Requirement %}
+                    <span class="badge bg-info">{{ comparison.framework2Requirement.category }}</span>
+                {% else %}
+                    <span class="text-muted">-</span>
+                {% endif %}
+            </td>
+            <td class="text-center">
+                {% if comparison.matchQuality %}
+                    {% set qualityColor = comparison.matchQuality >= 80 ? 'success' : (comparison.matchQuality >= 60 ? 'warning' : 'danger') %}
+                    <span class="badge badge-{{ qualityColor }}">{{ comparison.matchQuality }}%</span>
+                {% else %}
+                    <span class="text-muted">-</span>
+                {% endif %}
+            </td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="6" class="text-center-p-xl">
+                {{ 'compliance.message.no_comparison_data'|trans }}
+            </td>
+        </tr>
+        {% endfor %}
+    {% endblock %}
+{% endembed %}
 
 {# Unique Requirements #}
 <div class="module-grid mt-4">

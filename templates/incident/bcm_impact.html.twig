@@ -112,62 +112,64 @@
         </div>
         <div class="card-body">
             {% if analysis.affected_processes.processes|length > 0 %}
-                <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead>
+                {% embed '_components/_table.html.twig' with {
+                    'class': 'table-hover',
+                    'noMargin': true,
+                    'responsive': true
+                } %}
+                    {% block table_head %}
+                        <tr>
+                            <th>Process</th>
+                            <th>Criticality</th>
+                            <th>RTO</th>
+                            <th>Financial Impact</th>
+                            <th>Impact Severity</th>
+                            <th>Compliance</th>
+                        </tr>
+                    {% endblock %}
+                    {% block table_body %}
+                        {% for process in analysis.affected_processes.processes %}
                             <tr>
-                                <th>Process</th>
-                                <th>Criticality</th>
-                                <th>RTO</th>
-                                <th>Financial Impact</th>
-                                <th>Impact Severity</th>
-                                <th>Compliance</th>
+                                <td>
+                                    <strong>{{ process.process_name }}</strong><br>
+                                    <small class="text-muted">Owner: {{ process.process_owner }}</small>
+                                </td>
+                                <td>
+                                    {% set crit_class = {
+                                        'critical': 'danger',
+                                        'high': 'warning',
+                                        'medium': 'info',
+                                        'low': 'secondary'
+                                    }[process.criticality] %}
+                                    <span class="badge bg-{{ crit_class }}">{{ process.criticality|upper }}</span>
+                                </td>
+                                <td>
+                                    {{ process.bia_data.rto_hours }}h
+                                    {% if process.rto_violated %}
+                                        <br><span class="badge bg-danger">Violated (+{{ process.rto_compliance.excess_hours }}h)</span>
+                                    {% endif %}
+                                </td>
+                                <td>€{{ process.financial_impact|number_format(2) }}</td>
+                                <td>
+                                    {% set sev_class = {
+                                        'critical': 'danger',
+                                        'high': 'warning',
+                                        'medium': 'info',
+                                        'low': 'secondary'
+                                    }[process.impact_severity] %}
+                                    <span class="badge bg-{{ sev_class }}">{{ process.impact_severity|upper }}</span>
+                                </td>
+                                <td>
+                                    {% if process.rto_violated %}
+                                        <span class="text-danger"><i class="bi bi-x-circle-fill" aria-hidden="true"></i> {{ process.rto_compliance.compliance_percentage }}%</span>
+                                    {% else %}
+                                        <span class="text-success"><i class="bi bi-check-circle-fill" aria-hidden="true"></i> 100%</span>
+                                    {% endif %}
+                                </td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            {% for process in analysis.affected_processes.processes %}
-                                <tr>
-                                    <td>
-                                        <strong>{{ process.process_name }}</strong><br>
-                                        <small class="text-muted">Owner: {{ process.process_owner }}</small>
-                                    </td>
-                                    <td>
-                                        {% set crit_class = {
-                                            'critical': 'danger',
-                                            'high': 'warning',
-                                            'medium': 'info',
-                                            'low': 'secondary'
-                                        }[process.criticality] %}
-                                        <span class="badge bg-{{ crit_class }}">{{ process.criticality|upper }}</span>
-                                    </td>
-                                    <td>
-                                        {{ process.bia_data.rto_hours }}h
-                                        {% if process.rto_violated %}
-                                            <br><span class="badge bg-danger">Violated (+{{ process.rto_compliance.excess_hours }}h)</span>
-                                        {% endif %}
-                                    </td>
-                                    <td>€{{ process.financial_impact|number_format(2) }}</td>
-                                    <td>
-                                        {% set sev_class = {
-                                            'critical': 'danger',
-                                            'high': 'warning',
-                                            'medium': 'info',
-                                            'low': 'secondary'
-                                        }[process.impact_severity] %}
-                                        <span class="badge bg-{{ sev_class }}">{{ process.impact_severity|upper }}</span>
-                                    </td>
-                                    <td>
-                                        {% if process.rto_violated %}
-                                            <span class="text-danger"><i class="bi bi-x-circle-fill" aria-hidden="true"></i> {{ process.rto_compliance.compliance_percentage }}%</span>
-                                        {% else %}
-                                            <span class="text-success"><i class="bi bi-check-circle-fill" aria-hidden="true"></i> 100%</span>
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+                        {% endfor %}
+                    {% endblock %}
+                {% endembed %}
             {% else %}
                 <div class="alert alert-info">
                     <i class="bi bi-info-circle" aria-hidden="true"></i> No business processes have been linked to this incident yet.
