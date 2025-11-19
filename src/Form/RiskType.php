@@ -28,6 +28,23 @@ class RiskType extends AbstractType
                     'placeholder' => 'risk.placeholder.title',
                 ],
             ])
+            ->add('category', ChoiceType::class, [
+                'label' => 'risk.field.category',
+                'choices' => [
+                    'risk.category.financial' => 'financial',
+                    'risk.category.operational' => 'operational',
+                    'risk.category.compliance' => 'compliance',
+                    'risk.category.strategic' => 'strategic',
+                    'risk.category.reputational' => 'reputational',
+                    'risk.category.security' => 'security',
+                ],
+                'placeholder' => 'risk.placeholder.category',
+                'required' => true,
+                'help' => 'risk.help.category',
+                'attr' => [
+                    'class' => 'form-select',
+                ],
+            ])
             ->add('description', TextareaType::class, [
                 'label' => 'risk.field.description',
                 'required' => true,
