@@ -114,106 +114,106 @@
     <div class="card-header">
         <h3><i class="bi bi-list" aria-hidden="true"></i> {{ 'risk_treatment_plan.list.title'|trans }} ({{ plans|length }})</h3>
     </div>
-    <div class="table-responsive">
-        <table class="table table-hover mb-0">
-            <thead>
-                <tr>
-                    <th scope="col">{{ 'risk_treatment_plan.field.title'|trans }}</th>
-                    <th scope="col">{{ 'risk_treatment_plan.field.risk'|trans }}</th>
-                    <th scope="col" class="text-center">{{ 'risk_treatment_plan.field.status'|trans }}</th>
-                    <th scope="col" class="text-center">{{ 'risk_treatment_plan.field.priority'|trans }}</th>
-                    <th scope="col">{{ 'risk_treatment_plan.field.responsible_person'|trans }}</th>
-                    <th scope="col" class="text-center">{{ 'risk_treatment_plan.field.completion'|trans }}</th>
-                    <th scope="col">{{ 'risk_treatment_plan.field.target_date'|trans }}</th>
-                    <th scope="col" class="text-center">{{ 'common.actions'|trans }}</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for plan in plans %}
-                <tr class="{{ plan.isOverdue() ? 'table-warning' : '' }}">
-                    <td>
-                        <strong>{{ plan.title }}</strong>
-                        {% if plan.isOverdue() %}
-                            <span class="badge bg-danger ms-2">
-                                <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'risk_treatment_plan.overdue'|trans }}
-                            </span>
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if plan.risk %}
-                            <a href="{{ path('app_risk_show', {id: plan.risk.id}) }}">{{ plan.risk.title }}</a>
-                        {% else %}
-                            <span class="text-muted">-</span>
-                        {% endif %}
-                    </td>
-                    <td class="text-center">
-                        <span class="badge bg-{{ plan.status == 'completed' ? 'success' : (plan.status == 'in_progress' ? 'primary' : (plan.status == 'cancelled' ? 'secondary' : (plan.status == 'on_hold' ? 'warning' : 'info'))) }}">
-                            {{ ('risk_treatment_plan.status.' ~ plan.status)|trans|upper }}
+    {% embed '_components/_table.html.twig' with {
+        'noMargin': true
+    } %}
+        {% block table_head %}
+            <tr>
+                <th scope="col">{{ 'risk_treatment_plan.field.title'|trans }}</th>
+                <th scope="col">{{ 'risk_treatment_plan.field.risk'|trans }}</th>
+                <th scope="col" class="text-center">{{ 'risk_treatment_plan.field.status'|trans }}</th>
+                <th scope="col" class="text-center">{{ 'risk_treatment_plan.field.priority'|trans }}</th>
+                <th scope="col">{{ 'risk_treatment_plan.field.responsible_person'|trans }}</th>
+                <th scope="col" class="text-center">{{ 'risk_treatment_plan.field.completion'|trans }}</th>
+                <th scope="col">{{ 'risk_treatment_plan.field.target_date'|trans }}</th>
+                <th scope="col" class="text-center">{{ 'common.actions'|trans }}</th>
+            </tr>
+        {% endblock %}
+        {% block table_body %}
+            {% for plan in plans %}
+            <tr class="{{ plan.isOverdue() ? 'table-warning' : '' }}">
+                <td>
+                    <strong>{{ plan.title }}</strong>
+                    {% if plan.isOverdue() %}
+                        <span class="badge bg-danger ms-2">
+                            <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'risk_treatment_plan.overdue'|trans }}
                         </span>
-                    </td>
-                    <td class="text-center">
-                        <span class="badge bg-{{ plan.priority == 'critical' ? 'danger' : (plan.priority == 'high' ? 'warning' : (plan.priority == 'medium' ? 'info' : 'secondary')) }}">
-                            {{ ('risk_treatment_plan.priority.' ~ plan.priority)|trans|upper }}
-                        </span>
-                    </td>
-                    <td>
-                        {% if plan.responsiblePerson %}
-                            {{ plan.responsiblePerson.fullName }}
+                    {% endif %}
+                </td>
+                <td>
+                    {% if plan.risk %}
+                        <a href="{{ path('app_risk_show', {id: plan.risk.id}) }}">{{ plan.risk.title }}</a>
+                    {% else %}
+                        <span class="text-muted">-</span>
+                    {% endif %}
+                </td>
+                <td class="text-center">
+                    <span class="badge bg-{{ plan.status == 'completed' ? 'success' : (plan.status == 'in_progress' ? 'primary' : (plan.status == 'cancelled' ? 'secondary' : (plan.status == 'on_hold' ? 'warning' : 'info'))) }}">
+                        {{ ('risk_treatment_plan.status.' ~ plan.status)|trans|upper }}
+                    </span>
+                </td>
+                <td class="text-center">
+                    <span class="badge bg-{{ plan.priority == 'critical' ? 'danger' : (plan.priority == 'high' ? 'warning' : (plan.priority == 'medium' ? 'info' : 'secondary')) }}">
+                        {{ ('risk_treatment_plan.priority.' ~ plan.priority)|trans|upper }}
+                    </span>
+                </td>
+                <td>
+                    {% if plan.responsiblePerson %}
+                        {{ plan.responsiblePerson.fullName }}
+                    {% else %}
+                        <span class="text-muted">-</span>
+                    {% endif %}
+                </td>
+                <td class="text-center">
+                    <div class="progress" style="height: 20px;">
+                        <div class="progress-bar bg-{{ plan.completionPercentage >= 75 ? 'success' : (plan.completionPercentage >= 50 ? 'info' : (plan.completionPercentage >= 25 ? 'warning' : 'danger')) }}"
+                             role="progressbar"
+                             style="width: {{ plan.completionPercentage }}%"
+                             aria-valuenow="{{ plan.completionPercentage }}"
+                             aria-valuemin="0"
+                             aria-valuemax="100">
+                            {{ plan.completionPercentage }}%
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    {{ plan.targetCompletionDate|date('Y-m-d') }}
+                    <br>
+                    <small class="text-muted">
+                        {% set daysUntil = plan.daysUntilTarget %}
+                        {% if daysUntil < 0 %}
+                            <span class="text-danger">{{ daysUntil|abs }} {{ 'risk_treatment_plan.days_overdue'|trans }}</span>
+                        {% elseif daysUntil == 0 %}
+                            <span class="text-warning">{{ 'risk_treatment_plan.due_today'|trans }}</span>
                         {% else %}
-                            <span class="text-muted">-</span>
+                            {{ daysUntil }} {{ 'risk_treatment_plan.days_remaining'|trans }}
                         {% endif %}
-                    </td>
-                    <td class="text-center">
-                        <div class="progress" style="height: 20px;">
-                            <div class="progress-bar bg-{{ plan.completionPercentage >= 75 ? 'success' : (plan.completionPercentage >= 50 ? 'info' : (plan.completionPercentage >= 25 ? 'warning' : 'danger')) }}"
-                                 role="progressbar"
-                                 style="width: {{ plan.completionPercentage }}%"
-                                 aria-valuenow="{{ plan.completionPercentage }}"
-                                 aria-valuemin="0"
-                                 aria-valuemax="100">
-                                {{ plan.completionPercentage }}%
-                            </div>
-                        </div>
-                    </td>
-                    <td>
-                        {{ plan.targetCompletionDate|date('Y-m-d') }}
-                        <br>
-                        <small class="text-muted">
-                            {% set daysUntil = plan.daysUntilTarget %}
-                            {% if daysUntil < 0 %}
-                                <span class="text-danger">{{ daysUntil|abs }} {{ 'risk_treatment_plan.days_overdue'|trans }}</span>
-                            {% elseif daysUntil == 0 %}
-                                <span class="text-warning">{{ 'risk_treatment_plan.due_today'|trans }}</span>
-                            {% else %}
-                                {{ daysUntil }} {{ 'risk_treatment_plan.days_remaining'|trans }}
-                            {% endif %}
-                        </small>
-                    </td>
-                    <td class="text-center">
-                        <div class="btn-group btn-group-sm">
-                            <a href="{{ path('app_risk_treatment_plan_show', {id: plan.id}) }}"
-                               class="btn btn-outline-primary"
-                               title="{{ 'common.view'|trans }}" aria-label="{{ 'common.view'|trans }}">
-                                <i class="bi bi-eye" aria-hidden="true"></i>
-                            </a>
-                            <a href="{{ path('app_risk_treatment_plan_edit', {id: plan.id}) }}"
-                               class="btn btn-outline-secondary"
-                               title="{{ 'common.edit'|trans }}" aria-label="{{ 'common.edit'|trans }}">
-                                <i class="bi bi-pencil" aria-hidden="true"></i>
-                            </a>
-                        </div>
-                    </td>
-                </tr>
-                {% else %}
-                <tr>
-                    <td colspan="8" class="text-center text-muted">
-                        {{ 'risk_treatment_plan.no_plans'|trans }}
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+                    </small>
+                </td>
+                <td class="text-center">
+                    <div class="btn-group btn-group-sm">
+                        <a href="{{ path('app_risk_treatment_plan_show', {id: plan.id}) }}"
+                           class="btn btn-outline-primary"
+                           title="{{ 'common.view'|trans }}" aria-label="{{ 'common.view'|trans }}">
+                            <i class="bi bi-eye" aria-hidden="true"></i>
+                        </a>
+                        <a href="{{ path('app_risk_treatment_plan_edit', {id: plan.id}) }}"
+                           class="btn btn-outline-secondary"
+                           title="{{ 'common.edit'|trans }}" aria-label="{{ 'common.edit'|trans }}">
+                            <i class="bi bi-pencil" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="8" class="text-center text-muted">
+                    {{ 'risk_treatment_plan.no_plans'|trans }}
+                </td>
+            </tr>
+            {% endfor %}
+        {% endblock %}
+    {% endembed %}
 </div>
 
 <style>

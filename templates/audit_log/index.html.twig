@@ -145,8 +145,10 @@
     <div class="tab-content mt-md">
         {# Table View #}
         <div class="tab-pane fade show active" id="table-view" role="tabpanel">
-            <table class="table table-full">
-                <thead>
+            {% embed '_components/_table.html.twig' with {
+                'class': 'table-full'
+            } %}
+                {% block table_head %}
                     <tr>
                         <th scope="col" class="table-cell text-left">Zeitstempel</th>
                         <th scope="col" class="table-cell text-left">Aktion</th>
@@ -155,8 +157,8 @@
                         <th scope="col" class="table-cell text-left">Beschreibung</th>
                         <th scope="col" class="table-cell text-left">Details</th>
                     </tr>
-                </thead>
-                <tbody>
+                {% endblock %}
+                {% block table_body %}
                     {% for log in auditLogs %}
                     <tr>
                         <td class="table-cell text-sm">
@@ -191,8 +193,8 @@
                         </td>
                     </tr>
                     {% endfor %}
-                </tbody>
-            </table>
+                {% endblock %}
+            {% endembed %}
         </div>
 
         {# Timeline View #}

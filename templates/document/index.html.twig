@@ -26,8 +26,10 @@
             <h2>Documents</h2>
         </div>
         <div class="card-content">
-            <table class="data-table">
-                <thead>
+            {% embed '_components/_table.html.twig' with {
+                'responsive': true
+            } %}
+                {% block table_head %}
                     <tr>
                         <th scope="col" class="w-40px">
                             <input type="checkbox"
@@ -43,8 +45,8 @@
                         <th scope="col">Uploaded At</th>
                         <th scope="col">Actions</th>
                     </tr>
-                </thead>
-                <tbody>
+                {% endblock %}
+                {% block table_body %}
                     {% for document in documents %}
                         <tr data-document-id="{{ document.id }}">
                             <td>
@@ -77,8 +79,8 @@
                             <td colspan="6" class="text-center">No documents found</td>
                         </tr>
                     {% endfor %}
-                </tbody>
-            </table>
+                {% endblock %}
+            {% endembed %}
         </div>
 
         {# Bulk Action Bar #}
