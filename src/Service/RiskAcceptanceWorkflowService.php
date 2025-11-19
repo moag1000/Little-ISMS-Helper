@@ -178,7 +178,7 @@ class RiskAcceptanceWorkflowService
      * @param Risk $risk
      * @return string 'automatic', 'manager', or 'executive'
      */
-    private function determineApprovalLevel(Risk $risk): string
+    public function determineApprovalLevel(Risk $risk): string
     {
         $residualScore = $risk->getResidualRiskLevel();
 

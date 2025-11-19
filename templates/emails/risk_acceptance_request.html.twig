@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background: #dc2626; color: white; padding: 20px; text-align: center; }
+        .content { background: #f9fafb; padding: 20px; margin: 20px 0; }
+        .field { margin: 10px 0; }
+        .label { font-weight: bold; color: #666; }
+        .value { color: #000; }
+        .action-required { background: #fee2e2; border: 1px solid #dc2626; padding: 15px; margin: 15px 0; border-radius: 4px; color: #991b1b; }
+        .info { background: #f3f4f6; border-left: 4px solid #f59e0b; padding: 10px; margin: 15px 0; }
+        .risk-score { background: #fef3c7; border: 2px solid #f59e0b; padding: 15px; margin: 15px 0; border-radius: 4px; text-align: center; }
+        .risk-score-high { background: #fee2e2; border: 2px solid #dc2626; }
+        .footer { text-align: center; color: #666; font-size: 12px; padding: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⚠️ Risk Acceptance Approval Required</h1>
+        </div>
+
+        <div class="content">
+            <p>Dear {{ approver.firstName }} {{ approver.lastName }},</p>
+
+            <div class="action-required">
+                <strong>✅ Your {{ approval_level|upper }} approval is required for the following risk acceptance:</strong>
+            </div>
+
+            <div class="field">
+                <span class="label">Risk Title:</span>
+                <span class="value"><strong>{{ risk.title }}</strong></span>
+            </div>
+
+            {% if risk.description %}
+            <div class="field">
+                <span class="label">Description:</span>
+                <span class="value">{{ risk.description }}</span>
+            </div>
+            {% endif %}
+
+            <div class="risk-score {{ risk_score >= 8 ? 'risk-score-high' : '' }}">
+                <div class="field">
+                    <span class="label">Residual Risk Score:</span>
+                    <span class="value" style="font-size: 24px; font-weight: bold;">{{ risk_score }}</span>
+                </div>
+                <div style="font-size: 14px; color: #666;">
+                    Probability: {{ risk.residualProbability }}/5 × Impact: {{ risk.residualImpact }}/5
+                </div>
+            </div>
+
+            <div class="field">
+                <span class="label">Treatment Strategy:</span>
+                <span class="value">{{ risk.treatmentStrategy|upper }}</span>
+            </div>
+
+            {% if risk.riskOwner %}
+            <div class="field">
+                <span class="label">Risk Owner:</span>
+                <span class="value">{{ risk.riskOwner.fullName }}</span>
+            </div>
+            {% endif %}
+
+            <div class="field">
+                <span class="label">Approval Level Required:</span>
+                <span class="value"><strong>{{ approval_level|upper }}</strong></span>
+            </div>
+
+            {% if risk_justification %}
+            <div class="info">
+                <strong>Justification for Acceptance:</strong><br>
+                {{ risk_justification }}
+            </div>
+            {% endif %}
+
+            <div class="info">
+                <strong>⚠️ ISO 27005:2022 Section 8.4.4 Compliance:</strong><br>
+                This risk acceptance request requires formal approval before the risk can be formally accepted by the organization. Please review the risk details and the provided justification before making your decision.
+            </div>
+
+            <div class="info">
+                <strong>Next Steps:</strong><br>
+                Please log in to the ISMS system to review the complete risk details and either approve or reject this acceptance request. If you reject the request, please provide a clear explanation of why additional mitigation measures are required.
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>This is an automated notification from Little ISMS Helper</p>
+            <p>ISO 27001:2022 & ISO 27005:2022 Compliant Risk Management System</p>
+        </div>
+    </div>
+</body>
+</html>

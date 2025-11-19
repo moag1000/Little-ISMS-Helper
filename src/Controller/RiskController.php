@@ -8,6 +8,7 @@ use App\Repository\AuditLogRepository;
 use App\Repository\RiskRepository;
 use App\Service\RiskMatrixService;
 use App\Service\RiskService;
+use App\Service\RiskAcceptanceWorkflowService;
 use App\Service\ExcelExportService;
 use App\Service\PdfExportService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -28,6 +29,7 @@ class RiskController extends AbstractController
         private AuditLogRepository $auditLogRepository,
         private EntityManagerInterface $entityManager,
         private RiskMatrixService $riskMatrixService,
+        private RiskAcceptanceWorkflowService $acceptanceWorkflowService,
         private TranslatorInterface $translator,
         private ExcelExportService $excelExportService,
         private PdfExportService $pdfExportService,
@@ -763,6 +765,128 @@ class RiskController extends AbstractController
         }
 
         return $this->redirectToRoute('app_risk_index');
+    }
+
+    /**
+     * Request formal risk acceptance (Priority 2.1 - Risk Acceptance Workflow)
+     * ISO 27005:2022 Section 8.4.4
+     */
+    #[Route('/{id}/request-acceptance', name: 'app_risk_request_acceptance', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
+    #[IsGranted('ROLE_MANAGER')]
+    public function requestAcceptance(Request $request, Risk $risk): Response
+    {
+        $user = $this->security->getUser();
+
+        // Check if risk has "accept" treatment strategy
+        if ($risk->getTreatmentStrategy() !== 'accept') {
+            $this->addFlash('error', $this->translator->trans('risk.acceptance.error.wrong_strategy'));
+            return $this->redirectToRoute('app_risk_show', ['id' => $risk->getId()]);
+        }
+
+        // Check if already formally accepted
+        if ($risk->isFormallyAccepted()) {
+            $this->addFlash('warning', $this->translator->trans('risk.acceptance.error.already_accepted'));
+            return $this->redirectToRoute('app_risk_show', ['id' => $risk->getId()]);
+        }
+
+        // Handle form submission
+        if ($request->isMethod('POST')) {
+            $justification = $request->request->get('justification');
+
+            if (empty($justification)) {
+                $this->addFlash('error', $this->translator->trans('risk.acceptance.error.justification_required'));
+            } else {
+                try {
+                    $result = $this->acceptanceWorkflowService->requestAcceptance(
+                        $risk,
+                        $user,
+                        $justification
+                    );
+
+                    if ($result['status'] === 'accepted') {
+                        // Automatic acceptance
+                        $this->addFlash('success', $this->translator->trans('risk.acceptance.success.auto_accepted'));
+                    } else {
+                        // Pending approval
+                        $this->addFlash('success', $this->translator->trans(
+                            'risk.acceptance.success.approval_requested',
+                            ['%approver%' => $result['approver'], '%level%' => $result['approval_level']]
+                        ));
+                    }
+
+                    return $this->redirectToRoute('app_risk_show', ['id' => $risk->getId()]);
+                } catch (\DomainException $e) {
+                    $this->addFlash('error', $e->getMessage());
+                }
+            }
+        }
+
+        // Get approval thresholds for display
+        $thresholds = $this->acceptanceWorkflowService->getApprovalThresholds();
+        $requiredLevel = $this->acceptanceWorkflowService->determineApprovalLevel($risk);
+
+        return $this->render('risk/request_acceptance.html.twig', [
+            'risk' => $risk,
+            'thresholds' => $thresholds,
+            'required_level' => $requiredLevel,
+        ]);
+    }
+
+    /**
+     * Approve risk acceptance (Priority 2.1 - Risk Acceptance Workflow)
+     */
+    #[Route('/{id}/approve-acceptance', name: 'app_risk_approve_acceptance', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[IsGranted('ROLE_MANAGER')]
+    public function approveAcceptance(Request $request, Risk $risk): Response
+    {
+        $user = $this->security->getUser();
+
+        if (!$this->isCsrfTokenValid('approve-acceptance'.$risk->getId(), $request->request->get('_token'))) {
+            $this->addFlash('error', $this->translator->trans('security.csrf_token_invalid'));
+            return $this->redirectToRoute('app_risk_show', ['id' => $risk->getId()]);
+        }
+
+        $comments = $request->request->get('comments', '');
+
+        try {
+            $result = $this->acceptanceWorkflowService->approveAcceptance($risk, $user, $comments);
+            $this->addFlash('success', $this->translator->trans('risk.acceptance.success.approved'));
+        } catch (\Exception $e) {
+            $this->addFlash('error', $e->getMessage());
+        }
+
+        return $this->redirectToRoute('app_risk_show', ['id' => $risk->getId()]);
+    }
+
+    /**
+     * Reject risk acceptance (Priority 2.1 - Risk Acceptance Workflow)
+     */
+    #[Route('/{id}/reject-acceptance', name: 'app_risk_reject_acceptance', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[IsGranted('ROLE_MANAGER')]
+    public function rejectAcceptance(Request $request, Risk $risk): Response
+    {
+        $user = $this->security->getUser();
+
+        if (!$this->isCsrfTokenValid('reject-acceptance'.$risk->getId(), $request->request->get('_token'))) {
+            $this->addFlash('error', $this->translator->trans('security.csrf_token_invalid'));
+            return $this->redirectToRoute('app_risk_show', ['id' => $risk->getId()]);
+        }
+
+        $reason = $request->request->get('reason');
+
+        if (empty($reason)) {
+            $this->addFlash('error', $this->translator->trans('risk.acceptance.error.reason_required'));
+            return $this->redirectToRoute('app_risk_show', ['id' => $risk->getId()]);
+        }
+
+        try {
+            $result = $this->acceptanceWorkflowService->rejectAcceptance($risk, $user, $reason);
+            $this->addFlash('warning', $this->translator->trans('risk.acceptance.success.rejected'));
+        } catch (\Exception $e) {
+            $this->addFlash('error', $e->getMessage());
+        }
+
+        return $this->redirectToRoute('app_risk_show', ['id' => $risk->getId()]);
     }
 
     #[Route('/matrix', name: 'app_risk_matrix')]
