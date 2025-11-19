@@ -9,7 +9,7 @@
             {{ supplier.name }}
             {% if isInherited is defined and isInherited %}
                 <span class="badge bg-info ms-2">
-                    <i class="bi bi-building"></i> {{ 'corporate.inherited'|trans }}
+                    <i class="bi bi-building" aria-hidden="true"></i> {{ 'corporate.inherited'|trans }}
                 </span>
             {% endif %}
         </h1>
@@ -18,7 +18,7 @@
                 <a href="{{ path('app_supplier_edit', {id: supplier.id}) }}" class="btn btn-primary">Edit</a>
             {% else %}
                 <button class="btn btn-primary" disabled title="{{ 'corporate.inheritance.cannot_edit_inherited'|trans }}">
-                    <i class="bi bi-lock"></i> Edit
+                    <i class="bi bi-lock" aria-hidden="true"></i> Edit
                 </button>
             {% endif %}
             <a href="{{ path('app_supplier_index') }}" class="btn btn-secondary">Back to List</a>
@@ -34,7 +34,7 @@
     {% if isInherited is defined and isInherited %}
         <div class="alert alert-info mb-3">
             <div class="d-flex align-items-start">
-                <i class="bi bi-info-circle-fill me-2 mt-1"></i>
+                <i class="bi bi-info-circle-fill me-2 mt-1" aria-hidden="true"></i>
                 <div>
                     <strong>{{ 'corporate.inheritance.view_only_title'|trans }}</strong>
                     <p class="mb-0">{{ 'corporate.inheritance.supplier_inherited_message'|trans }}</p>

@@ -9,7 +9,7 @@
             <div class="card">
                 <div class="card-header bg-warning">
                     <h5 class="mb-0">
-                        <i class="bi bi-pencil"></i> {{ 'compliance.framework.edit.heading'|trans }}
+                        <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'compliance.framework.edit.heading'|trans }}
                         <small class="text-muted">{{ framework.name }}</small>
                     </h5>
                 </div>
@@ -69,10 +69,10 @@
 
                     <div class="d-flex gap-2">
                         <button type="submit" class="btn btn-warning">
-                            <i class="bi bi-check-circle"></i> {{ 'common.save'|trans }}
+                            <i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'common.save'|trans }}
                         </button>
                         <a href="{{ path('app_compliance_framework_show', {id: framework.id}) }}" class="btn btn-outline-secondary">
-                            <i class="bi bi-x-circle"></i> {{ 'common.cancel'|trans }}
+                            <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'common.cancel'|trans }}
                         </a>
                     </div>
 
@@ -83,7 +83,7 @@
         <div class="col-lg-4">
             <div class="card mb-3">
                 <div class="card-header bg-secondary text-white">
-                    <h6 class="mb-0"><i class="bi bi-info-circle"></i> {{ 'compliance.framework.info'|trans }}</h6>
+                    <h6 class="mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'compliance.framework.info'|trans }}</h6>
                 </div>
                 <div class="card-body">
                     <dl class="row mb-0">
@@ -102,14 +102,14 @@
             {% if is_granted('ROLE_ADMIN') %}
             <div class="card border-danger">
                 <div class="card-header bg-danger text-white">
-                    <h6 class="mb-0"><i class="bi bi-exclamation-triangle"></i> {{ 'common.danger_zone'|trans }}</h6>
+                    <h6 class="mb-0"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'common.danger_zone'|trans }}</h6>
                 </div>
                 <div class="card-body">
                     <form method="post" action="{{ path('app_compliance_framework_delete', {id: framework.id}) }}"
                           onsubmit="return confirm('{{ 'compliance.framework.confirm.delete'|trans }}');">
                         <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ framework.id) }}">
                         <button type="submit" class="btn btn-outline-danger w-100">
-                            <i class="bi bi-trash"></i> {{ 'common.delete'|trans }}
+                            <i class="bi bi-trash" aria-hidden="true"></i> {{ 'common.delete'|trans }}
                         </button>
                     </form>
                 </div>

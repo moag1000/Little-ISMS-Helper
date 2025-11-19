@@ -5,9 +5,9 @@
 {% block body %}
 <div class="container-fluid py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h2"><i class="bi bi-target"></i> ISMS Objectives</h1>
+        <h1 class="h2"><i class="bi bi-target" aria-hidden="true"></i> ISMS Objectives</h1>
         {% if is_granted('ROLE_ADMIN') %}
-        <a href="{{ path('app_objective_new') }}" class="btn btn-primary"><i class="bi bi-plus-circle"></i> New Objective</a>
+        <a href="{{ path('app_objective_new') }}" class="btn btn-primary"><i class="bi bi-plus-circle" aria-hidden="true"></i> New Objective</a>
         {% endif %}
     </div>
 
@@ -42,9 +42,9 @@
                     </td>
                     <td><span class="badge bg-{{ objective.status == 'achieved' ? 'success' : (objective.status == 'in_progress' ? 'info' : 'warning') }}">{{ objective.status }}</span></td>
                     <td>
-                        <a href="{{ path('app_objective_show', {id: objective.id}) }}" class="btn btn-sm btn-outline-primary"><i class="bi bi-eye"></i></a>
+                        <a href="{{ path('app_objective_show', {id: objective.id}) }}" class="btn btn-sm btn-outline-primary"><i class="bi bi-eye" aria-hidden="true"></i></a>
                         {% if is_granted('ROLE_ADMIN') %}
-                        <a href="{{ path('app_objective_edit', {id: objective.id}) }}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-pencil"></i></a>
+                        <a href="{{ path('app_objective_edit', {id: objective.id}) }}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-pencil" aria-hidden="true"></i></a>
                         {% endif %}
                     </td>
                 </tr>

@@ -11,7 +11,7 @@
         <div class="row mb-4">
             <div class="col-12">
                 <h3 class="h5 mb-3">
-                    <i class="bi bi-exclamation-triangle-fill text-warning"></i>
+                    <i class="bi bi-exclamation-triangle-fill text-warning" aria-hidden="true"></i>
                     {{ 'admin.dashboard.alerts.title'|trans }}
                 </h3>
                 {% for alert in alerts %}
@@ -44,21 +44,21 @@
                             <h2 class="card-title mb-0">{{ stats.users.total }}</h2>
                         </div>
                         <div class="bg-primary bg-opacity-10 p-3 rounded">
-                            <i class="bi bi-people-fill text-primary fs-3"></i>
+                            <i class="bi bi-people-fill text-primary fs-3" aria-hidden="true"></i>
                         </div>
                     </div>
                     <div class="small text-muted">
-                        <i class="bi bi-check-circle text-success"></i> {{ stats.users.active }} {{ 'admin.dashboard.stats.active'|trans }}
+                        <i class="bi bi-check-circle text-success" aria-hidden="true"></i> {{ stats.users.active }} {{ 'admin.dashboard.stats.active'|trans }}
                         {% if stats.users.inactive > 0 %}
                             <span class="ms-2">
-                                <i class="bi bi-x-circle text-danger"></i> {{ stats.users.inactive }} {{ 'admin.dashboard.stats.inactive'|trans }}
+                                <i class="bi bi-x-circle text-danger" aria-hidden="true"></i> {{ stats.users.inactive }} {{ 'admin.dashboard.stats.inactive'|trans }}
                             </span>
                         {% endif %}
                     </div>
                 </div>
                 <div class="card-footer bg-transparent border-top-0">
                     <a href="{{ path('user_management_index') }}" class="btn btn-sm btn-outline-primary w-100">
-                        {{ 'admin.dashboard.stats.manage'|trans }} <i class="bi bi-arrow-right ms-1"></i>
+                        {{ 'admin.dashboard.stats.manage'|trans }} <i class="bi bi-arrow-right ms-1" aria-hidden="true"></i>
                     </a>
                 </div>
             </div>
@@ -74,11 +74,11 @@
                             <h2 class="card-title mb-0">{{ stats.sessions.active_24h }}</h2>
                         </div>
                         <div class="bg-success bg-opacity-10 p-3 rounded">
-                            <i class="bi bi-clock-history text-success fs-3"></i>
+                            <i class="bi bi-clock-history text-success fs-3" aria-hidden="true"></i>
                         </div>
                     </div>
                     <div class="small text-muted">
-                        <i class="bi bi-calendar-week"></i> {{ 'admin.dashboard.stats.last_24h'|trans }}
+                        <i class="bi bi-calendar-week" aria-hidden="true"></i> {{ 'admin.dashboard.stats.last_24h'|trans }}
                     </div>
                 </div>
             </div>
@@ -94,11 +94,11 @@
                             <h2 class="card-title mb-0">{{ stats.database.size_mb }}</h2>
                         </div>
                         <div class="bg-info bg-opacity-10 p-3 rounded">
-                            <i class="bi bi-database-fill text-info fs-3"></i>
+                            <i class="bi bi-database-fill text-info fs-3" aria-hidden="true"></i>
                         </div>
                     </div>
                     <div class="small text-muted">
-                        <i class="bi bi-file-earmark-binary"></i> MB
+                        <i class="bi bi-file-earmark-binary" aria-hidden="true"></i> MB
                     </div>
                 </div>
             </div>
@@ -116,11 +116,11 @@
                             </h2>
                         </div>
                         <div class="bg-warning bg-opacity-10 p-3 rounded">
-                            <i class="bi bi-layers-fill text-warning fs-3"></i>
+                            <i class="bi bi-layers-fill text-warning fs-3" aria-hidden="true"></i>
                         </div>
                     </div>
                     <div class="small text-muted">
-                        <i class="bi bi-check-lg"></i> {{ 'admin.dashboard.stats.across_modules'|trans }}
+                        <i class="bi bi-check-lg" aria-hidden="true"></i> {{ 'admin.dashboard.stats.across_modules'|trans }}
                     </div>
                 </div>
             </div>
@@ -133,7 +133,7 @@
             <div class="card">
                 <div class="card-header bg-white">
                     <h5 class="card-title mb-0">
-                        <i class="bi bi-bar-chart-fill text-primary"></i>
+                        <i class="bi bi-bar-chart-fill text-primary" aria-hidden="true"></i>
                         {{ 'admin.dashboard.modules.title'|trans }}
                     </h5>
                 </div>
@@ -155,7 +155,7 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td><i class="bi bi-cpu text-primary"></i> {{ 'admin.dashboard.modules.assets'|trans }}</td>
+                                    <td><i class="bi bi-cpu text-primary" aria-hidden="true"></i> {{ 'admin.dashboard.modules.assets'|trans }}</td>
                                     {% if currentTenant %}
                                         <td class="text-end"><span class="badge bg-primary">{{ stats.modules.assets.own }}</span></td>
                                         <td class="text-end"><span class="badge bg-primary">{{ stats.modules.assets.own + stats.modules.assets.inherited }}</span></td>
@@ -168,7 +168,7 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td><i class="bi bi-exclamation-triangle text-danger"></i> {{ 'admin.dashboard.modules.risks'|trans }}</td>
+                                    <td><i class="bi bi-exclamation-triangle text-danger" aria-hidden="true"></i> {{ 'admin.dashboard.modules.risks'|trans }}</td>
                                     {% if currentTenant %}
                                         <td class="text-end"><span class="badge bg-danger">{{ stats.modules.risks.own }}</span></td>
                                         <td class="text-end"><span class="badge bg-danger">{{ stats.modules.risks.own + stats.modules.risks.inherited }}</span></td>
@@ -181,7 +181,7 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td><i class="bi bi-shield-check text-success"></i> {{ 'admin.dashboard.modules.controls'|trans }}</td>
+                                    <td><i class="bi bi-shield-check text-success" aria-hidden="true"></i> {{ 'admin.dashboard.modules.controls'|trans }}</td>
                                     {% if currentTenant %}
                                         <td class="text-end"><span class="badge bg-success">{{ stats.modules.controls.own }}</span></td>
                                         <td class="text-end"><span class="badge bg-success">{{ stats.modules.controls.own + stats.modules.controls.inherited }}</span></td>
@@ -194,7 +194,7 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td><i class="bi bi-bug text-warning"></i> {{ 'admin.dashboard.modules.incidents'|trans }}</td>
+                                    <td><i class="bi bi-bug text-warning" aria-hidden="true"></i> {{ 'admin.dashboard.modules.incidents'|trans }}</td>
                                     {% if currentTenant %}
                                         <td class="text-end"><span class="badge bg-warning">{{ stats.modules.incidents.own }}</span></td>
                                         <td class="text-end"><span class="badge bg-warning">{{ stats.modules.incidents.own + stats.modules.incidents.inherited }}</span></td>
@@ -207,7 +207,7 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td><i class="bi bi-clipboard-check text-info"></i> {{ 'admin.dashboard.modules.audits'|trans }}</td>
+                                    <td><i class="bi bi-clipboard-check text-info" aria-hidden="true"></i> {{ 'admin.dashboard.modules.audits'|trans }}</td>
                                     {% if currentTenant %}
                                         <td class="text-end"><span class="badge bg-info">{{ stats.modules.audits.own }}</span></td>
                                         <td class="text-end"><span class="badge bg-info">{{ stats.modules.audits.own + stats.modules.audits.inherited }}</span></td>
@@ -220,7 +220,7 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td><i class="bi bi-check-circle text-secondary"></i> {{ 'admin.dashboard.modules.compliance'|trans }}</td>
+                                    <td><i class="bi bi-check-circle text-secondary" aria-hidden="true"></i> {{ 'admin.dashboard.modules.compliance'|trans }}</td>
                                     {% if currentTenant %}
                                         <td class="text-end"><span class="badge bg-secondary">{{ stats.modules.compliance_requirements.own }}</span></td>
                                         <td class="text-end"><span class="badge bg-secondary">{{ stats.modules.compliance_requirements.own + stats.modules.compliance_requirements.inherited }}</span></td>
@@ -233,7 +233,7 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td><i class="bi bi-book text-dark"></i> {{ 'admin.dashboard.modules.trainings'|trans }}</td>
+                                    <td><i class="bi bi-book text-dark" aria-hidden="true"></i> {{ 'admin.dashboard.modules.trainings'|trans }}</td>
                                     {% if currentTenant %}
                                         <td class="text-end"><span class="badge bg-dark">{{ stats.modules.trainings.own }}</span></td>
                                         <td class="text-end"><span class="badge bg-dark">{{ stats.modules.trainings.own + stats.modules.trainings.inherited }}</span></td>
@@ -258,23 +258,23 @@
             <div class="card mb-4">
                 <div class="card-header bg-white">
                     <h5 class="card-title mb-0">
-                        <i class="bi bi-lightning-fill text-warning"></i>
+                        <i class="bi bi-lightning-fill text-warning" aria-hidden="true"></i>
                         {{ 'admin.dashboard.quick_actions.title'|trans }}
                     </h5>
                 </div>
                 <div class="card-body">
                     <div class="d-grid gap-2">
                         <a href="{{ path('user_management_new') }}" class="btn btn-outline-primary">
-                            <i class="bi bi-person-plus"></i> {{ 'admin.dashboard.quick_actions.add_user'|trans }}
+                            <i class="bi bi-person-plus" aria-hidden="true"></i> {{ 'admin.dashboard.quick_actions.add_user'|trans }}
                         </a>
                         <a href="{{ path('role_management_new') }}" class="btn btn-outline-success">
-                            <i class="bi bi-shield-plus"></i> {{ 'admin.dashboard.quick_actions.add_role'|trans }}
+                            <i class="bi bi-shield-plus" aria-hidden="true"></i> {{ 'admin.dashboard.quick_actions.add_role'|trans }}
                         </a>
                         <a href="{{ path('app_audit_log_index') }}" class="btn btn-outline-info">
-                            <i class="bi bi-journal-text"></i> {{ 'admin.dashboard.quick_actions.view_logs'|trans }}
+                            <i class="bi bi-journal-text" aria-hidden="true"></i> {{ 'admin.dashboard.quick_actions.view_logs'|trans }}
                         </a>
                         <a href="{{ path('app_compliance_index') }}" class="btn btn-outline-secondary">
-                            <i class="bi bi-check-circle"></i> {{ 'admin.dashboard.quick_actions.manage_compliance'|trans }}
+                            <i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'admin.dashboard.quick_actions.manage_compliance'|trans }}
                         </a>
                     </div>
                 </div>
@@ -284,14 +284,14 @@
             <div class="card">
                 <div class="card-header bg-white">
                     <h5 class="card-title mb-0">
-                        <i class="bi bi-clock-history text-info"></i>
+                        <i class="bi bi-clock-history text-info" aria-hidden="true"></i>
                         {{ 'admin.dashboard.activity.title'|trans }}
                     </h5>
                 </div>
                 <div class="card-body p-0">
                     {% if recentActivity is empty %}
                         <div class="p-3 text-center text-muted">
-                            <i class="bi bi-inbox fs-3"></i>
+                            <i class="bi bi-inbox fs-3" aria-hidden="true"></i>
                             <p class="mb-0 mt-2">{{ 'admin.dashboard.activity.empty'|trans }}</p>
                         </div>
                     {% else %}
@@ -319,7 +319,7 @@
                 </div>
                 <div class="card-footer bg-transparent">
                     <a href="{{ path('app_audit_log_index') }}" class="btn btn-sm btn-outline-secondary w-100">
-                        {{ 'admin.dashboard.activity.view_all'|trans }} <i class="bi bi-arrow-right ms-1"></i>
+                        {{ 'admin.dashboard.activity.view_all'|trans }} <i class="bi bi-arrow-right ms-1" aria-hidden="true"></i>
                     </a>
                 </div>
             </div>

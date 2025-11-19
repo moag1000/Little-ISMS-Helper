@@ -6,9 +6,9 @@
 {% block body %}
 <div class="container-fluid py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1><i class="bi bi-patch-check"></i> {{ 'patch.title'|trans }}</h1>
+        <h1><i class="bi bi-patch-check" aria-hidden="true"></i> {{ 'patch.title'|trans }}</h1>
         <a href="{{ path('app_patch_new') }}" class="btn btn-primary">
-            <i class="bi bi-plus-circle"></i> {{ 'patch.new'|trans }}
+            <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'patch.new'|trans }}
         </a>
     </div>
 
@@ -18,7 +18,7 @@
         <div class="card-body py-2">
             <form method="get" action="{{ path('app_patch_index') }}" class="d-flex align-items-center gap-2">
                 <label for="view-filter" class="mb-0 fw-bold">
-                    <i class="bi bi-eye"></i> {{ 'common.view'|trans }}:
+                    <i class="bi bi-eye" aria-hidden="true"></i> {{ 'common.view'|trans }}:
                 </label>
                 <select class="form-select form-select-sm" style="width: auto;" id="view-filter" name="view" onchange="this.form.submit()">
                     <option value="own" {{ inheritanceInfo.currentView == 'own' ? 'selected' : '' }}>
@@ -77,7 +77,7 @@
 
     {% if patches|length == 0 %}
         <div class="alert alert-info">
-            <i class="bi bi-info-circle"></i> {{ 'patch.empty'|trans }}
+            <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'patch.empty'|trans }}
         </div>
     {% else %}
         <div class="card">
@@ -105,10 +105,10 @@
                                 <td>
                                     <div class="btn-group btn-group-sm">
                                         <a href="{{ path('app_patch_show', {id: patch.id}) }}" class="btn btn-outline-primary">
-                                            <i class="bi bi-eye"></i>
+                                            <i class="bi bi-eye" aria-hidden="true"></i>
                                         </a>
                                         <a href="{{ path('app_patch_edit', {id: patch.id}) }}" class="btn btn-outline-secondary">
-                                            <i class="bi bi-pencil"></i>
+                                            <i class="bi bi-pencil" aria-hidden="true"></i>
                                         </a>
                                     </div>
                                 </td>

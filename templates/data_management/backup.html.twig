@@ -12,7 +12,7 @@
             <div class="card border-primary">
                 <div class="card-header bg-primary text-white">
                     <h5 class="mb-0">
-                        <i class="bi bi-cloud-download"></i> Neues Backup erstellen
+                        <i class="bi bi-cloud-download" aria-hidden="true"></i> Neues Backup erstellen
                     </h5>
                 </div>
                 <div class="card-body">
@@ -40,7 +40,7 @@
                             </div>
                         </div>
                         <button type="submit" class="btn btn-primary" id="createBackupBtn">
-                            <i class="bi bi-cloud-download me-2"></i>Backup jetzt erstellen
+                            <i class="bi bi-cloud-download me-2" aria-hidden="true"></i>Backup jetzt erstellen
                         </button>
                     </form>
                     <div id="createBackupStatus" class="mt-3"></div>
@@ -55,7 +55,7 @@
             <div class="card border-info">
                 <div class="card-header bg-info text-white">
                     <h5 class="mb-0">
-                        <i class="bi bi-cloud-upload"></i> Backup hochladen
+                        <i class="bi bi-cloud-upload" aria-hidden="true"></i> Backup hochladen
                     </h5>
                 </div>
                 <div class="card-body">
@@ -68,7 +68,7 @@
                             <div class="form-text">Erlaubte Formate: .json, .gz</div>
                         </div>
                         <button type="submit" class="btn btn-info" id="uploadBackupBtn">
-                            <i class="bi bi-cloud-upload me-2"></i>Hochladen
+                            <i class="bi bi-cloud-upload me-2" aria-hidden="true"></i>Hochladen
                         </button>
                     </form>
                     <div id="uploadBackupStatus" class="mt-3"></div>
@@ -83,13 +83,13 @@
             <div class="card">
                 <div class="card-header bg-light">
                     <h5 class="mb-0">
-                        <i class="bi bi-archive"></i> Verfügbare Backups
+                        <i class="bi bi-archive" aria-hidden="true"></i> Verfügbare Backups
                     </h5>
                 </div>
                 <div class="card-body">
                     {% if backups is empty %}
                         <div class="alert alert-info">
-                            <i class="bi bi-info-circle"></i>
+                            <i class="bi bi-info-circle" aria-hidden="true"></i>
                             Noch keine Backups vorhanden. Erstellen Sie Ihr erstes Backup oben.
                         </div>
                     {% else %}
@@ -107,7 +107,7 @@
                                     {% for backup in backups %}
                                         <tr data-backup="{{ backup.filename }}">
                                             <td>
-                                                <i class="bi bi-file-earmark-zip"></i>
+                                                <i class="bi bi-file-earmark-zip" aria-hidden="true"></i>
                                                 {{ backup.filename }}
                                             </td>
                                             <td>{{ backup.created_at }}</td>
@@ -115,19 +115,19 @@
                                             <td>
                                                 <div class="btn-group btn-group-sm" role="group">
                                                     <button type="button" class="btn btn-outline-primary validate-backup" data-filename="{{ backup.filename }}">
-                                                        <i class="bi bi-check-circle"></i> Validieren
+                                                        <i class="bi bi-check-circle" aria-hidden="true"></i> Validieren
                                                     </button>
                                                     <button type="button" class="btn btn-outline-info preview-backup" data-filename="{{ backup.filename }}">
-                                                        <i class="bi bi-eye"></i> Vorschau
+                                                        <i class="bi bi-eye" aria-hidden="true"></i> Vorschau
                                                     </button>
                                                     <a href="{{ path('data_backup_download', {filename: backup.filename}) }}" class="btn btn-outline-success">
-                                                        <i class="bi bi-download"></i> Download
+                                                        <i class="bi bi-download" aria-hidden="true"></i> Download
                                                     </a>
                                                     <button type="button" class="btn btn-outline-warning restore-backup" data-filename="{{ backup.filename }}">
-                                                        <i class="bi bi-arrow-clockwise"></i> Wiederherstellen
+                                                        <i class="bi bi-arrow-clockwise" aria-hidden="true"></i> Wiederherstellen
                                                     </button>
                                                     <button type="button" class="btn btn-outline-danger delete-backup" data-filename="{{ backup.filename }}">
-                                                        <i class="bi bi-trash"></i> Löschen
+                                                        <i class="bi bi-trash" aria-hidden="true"></i> Löschen
                                                     </button>
                                                 </div>
                                             </td>
@@ -150,13 +150,13 @@
             <div class="backup-modal-content">
                 <div class="backup-modal-header bg-warning text-dark">
                     <h5 class="backup-modal-title" id="restoreModalLabel">
-                        <i class="bi bi-exclamation-triangle"></i> Backup wiederherstellen
+                        <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> Backup wiederherstellen
                     </h5>
                     <button type="button" class="btn-close backup-modal-close" aria-label="Close"></button>
                 </div>
                 <div class="backup-modal-body">
                     <div class="alert alert-warning">
-                        <i class="bi bi-exclamation-triangle-fill"></i>
+                        <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
                         <strong>Achtung:</strong> Die Wiederherstellung eines Backups kann bestehende Daten überschreiben.
                         Es wird empfohlen, zuerst einen Testlauf durchzuführen.
                     </div>
@@ -230,7 +230,7 @@
                             </label>
                             <input type="password" class="form-control" id="adminPassword" name="admin_password" placeholder="Neues Passwort für Admin-Benutzer">
                             <div class="form-text">
-                                <i class="bi bi-info-circle"></i>
+                                <i class="bi bi-info-circle" aria-hidden="true"></i>
                                 Passwörter werden aus Sicherheitsgründen nicht im Backup gespeichert.
                                 Geben Sie hier ein neues Passwort für den ersten Admin-Benutzer an, damit Sie sich nach der Wiederherstellung einloggen können.
                             </div>
@@ -252,7 +252,7 @@
                 <div class="backup-modal-footer">
                     <button type="button" class="btn btn-secondary backup-modal-close">Abbrechen</button>
                     <button type="button" class="btn btn-warning" id="confirmRestoreBtn">
-                        <i class="bi bi-arrow-clockwise me-2"></i>Wiederherstellung starten
+                        <i class="bi bi-arrow-clockwise me-2" aria-hidden="true"></i>Wiederherstellung starten
                     </button>
                 </div>
             </div>
@@ -267,7 +267,7 @@
             <div class="backup-modal-content">
                 <div class="backup-modal-header">
                     <h5 class="backup-modal-title" id="previewModalLabel">
-                        <i class="bi bi-eye"></i> Backup-Vorschau
+                        <i class="bi bi-eye" aria-hidden="true"></i> Backup-Vorschau
                     </h5>
                     <button type="button" class="btn-close backup-modal-close" aria-label="Close"></button>
                 </div>
@@ -429,7 +429,7 @@
                     if (result.success) {
                         createBackupStatus.innerHTML = `
                             <div class="alert alert-success alert-dismissible fade show">
-                                <i class="bi bi-check-circle"></i>
+                                <i class="bi bi-check-circle" aria-hidden="true"></i>
                                 <strong>${result.message}</strong><br>
                                 Datei: ${result.filename}<br>
                                 <small>Gesicherte Einträge: ${Object.values(result.statistics).reduce((a, b) => a + b, 0)}</small>
@@ -447,7 +447,7 @@
                     } else {
                         createBackupStatus.innerHTML = `
                             <div class="alert alert-danger alert-dismissible fade show">
-                                <i class="bi bi-x-circle"></i> ${result.message}
+                                <i class="bi bi-x-circle" aria-hidden="true"></i> ${result.message}
                                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                             </div>
                         `;
@@ -455,13 +455,13 @@
                 } catch (error) {
                     createBackupStatus.innerHTML = `
                         <div class="alert alert-danger alert-dismissible fade show">
-                            <i class="bi bi-x-circle"></i> Fehler: ${error.message}
+                            <i class="bi bi-x-circle" aria-hidden="true"></i> Fehler: ${error.message}
                             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                         </div>
                     `;
                 } finally {
                     createBackupBtn.disabled = false;
-                    createBackupBtn.innerHTML = '<i class="bi bi-cloud-download me-2"></i>Backup jetzt erstellen';
+                    createBackupBtn.innerHTML = '<i class="bi bi-cloud-download me-2" aria-hidden="true"></i>Backup jetzt erstellen';
                 }
             });
 
@@ -477,7 +477,7 @@
                 if (!fileInput.files.length) {
                     uploadBackupStatus.innerHTML = `
                         <div class="alert alert-warning">
-                            <i class="bi bi-exclamation-triangle"></i> Bitte wählen Sie eine Datei aus.
+                            <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> Bitte wählen Sie eine Datei aus.
                         </div>
                     `;
                     return;
@@ -499,7 +499,7 @@
                     if (result.success) {
                         uploadBackupStatus.innerHTML = `
                             <div class="alert alert-success alert-dismissible fade show">
-                                <i class="bi bi-check-circle"></i> ${result.message}
+                                <i class="bi bi-check-circle" aria-hidden="true"></i> ${result.message}
                                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                             </div>
                         `;
@@ -515,7 +515,7 @@
                     } else {
                         uploadBackupStatus.innerHTML = `
                             <div class="alert alert-danger alert-dismissible fade show">
-                                <i class="bi bi-x-circle"></i> ${result.message}
+                                <i class="bi bi-x-circle" aria-hidden="true"></i> ${result.message}
                                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                             </div>
                         `;
@@ -523,13 +523,13 @@
                 } catch (error) {
                     uploadBackupStatus.innerHTML = `
                         <div class="alert alert-danger alert-dismissible fade show">
-                            <i class="bi bi-x-circle"></i> Fehler: ${error.message}
+                            <i class="bi bi-x-circle" aria-hidden="true"></i> Fehler: ${error.message}
                             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                         </div>
                     `;
                 } finally {
                     uploadBackupBtn.disabled = false;
-                    uploadBackupBtn.innerHTML = '<i class="bi bi-cloud-upload me-2"></i>Hochladen';
+                    uploadBackupBtn.innerHTML = '<i class="bi bi-cloud-upload me-2" aria-hidden="true"></i>Hochladen';
                 }
             });
 
@@ -553,7 +553,7 @@
                         let icon = result.valid ? 'check-circle' : 'x-circle';
 
                         let message = `<div class="alert ${alertClass} mt-2">`;
-                        message += `<i class="bi bi-${icon}"></i> `;
+                        message += `<i class="bi bi-${icon}" aria-hidden="true"></i> `;
                         message += result.valid ? '<strong>Backup ist gültig</strong>' : '<strong>Backup ist ungültig</strong>';
 
                         if (result.metadata) {
@@ -595,7 +595,7 @@
                         alert('Fehler bei der Validierung: ' + error.message);
                     } finally {
                         this.disabled = false;
-                        this.innerHTML = '<i class="bi bi-check-circle"></i> Validieren';
+                        this.innerHTML = '<i class="bi bi-check-circle" aria-hidden="true"></i> Validieren';
                     }
                 });
             });
@@ -724,7 +724,7 @@
 
                     const filename = this.getAttribute('data-filename');
                     document.getElementById('restoreFilename').value = filename;
-                    document.getElementById('restoreModalLabel').innerHTML = `<i class="bi bi-exclamation-triangle"></i> ${filename} wiederherstellen`;
+                    document.getElementById('restoreModalLabel').innerHTML = `<i class="bi bi-exclamation-triangle" aria-hidden="true"></i> ${filename} wiederherstellen`;
                     document.getElementById('restoreStatus').innerHTML = '';
 
                     showModal('restoreModal');
@@ -750,7 +750,7 @@
                     const result = await response.json();
 
                     if (result.success) {
-                        let html = `<div class="alert alert-success"><i class="bi bi-check-circle"></i> <strong>${result.message}</strong>`;
+                        let html = `<div class="alert alert-success"><i class="bi bi-check-circle" aria-hidden="true"></i> <strong>${result.message}</strong>`;
 
                         if (result.statistics) {
                             html += '<br><br><strong>Statistiken:</strong><table class="table table-sm mt-2">';
@@ -780,13 +780,13 @@
                             setTimeout(() => location.reload(), 3000);
                         }
                     } else {
-                        restoreStatus.innerHTML = `<div class="alert alert-danger"><i class="bi bi-x-circle"></i> ${result.message}</div>`;
+                        restoreStatus.innerHTML = `<div class="alert alert-danger"><i class="bi bi-x-circle" aria-hidden="true"></i> ${result.message}</div>`;
                     }
                 } catch (error) {
-                    restoreStatus.innerHTML = `<div class="alert alert-danger"><i class="bi bi-x-circle"></i> Fehler: ${error.message}</div>`;
+                    restoreStatus.innerHTML = `<div class="alert alert-danger"><i class="bi bi-x-circle" aria-hidden="true"></i> Fehler: ${error.message}</div>`;
                 } finally {
                     confirmBtn.disabled = false;
-                    confirmBtn.innerHTML = '<i class="bi bi-arrow-clockwise me-2"></i>Wiederherstellung starten';
+                    confirmBtn.innerHTML = '<i class="bi bi-arrow-clockwise me-2" aria-hidden="true"></i>Wiederherstellung starten';
                 }
             });
 

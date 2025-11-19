@@ -16,13 +16,13 @@
     </div>
     <div class="button-group">
         <a href="{{ path('app_soa_export') }}" class="btn btn-outline-success" data-turbo="false" title="{{ 'soa.export.html'|trans }}">
-            <i class="bi bi-file-earmark-text"></i> HTML
+            <i class="bi bi-file-earmark-text" aria-hidden="true"></i> HTML
         </a>
         <a href="{{ path('app_soa_export_pdf') }}" class="btn btn-success" data-turbo="false" title="{{ 'soa.export.pdf'|trans }}">
-            <i class="bi bi-file-earmark-pdf"></i> PDF Export
+            <i class="bi bi-file-earmark-pdf" aria-hidden="true"></i> PDF Export
         </a>
         <a href="{{ path('app_soa_preview_pdf') }}" class="btn btn-outline-primary" title="{{ 'soa.preview.pdf'|trans }}" target="_blank">
-            <i class="bi bi-eye"></i> Vorschau
+            <i class="bi bi-eye" aria-hidden="true"></i> Vorschau
         </a>
     </div>
 </div>
@@ -33,7 +33,7 @@
     <div class="card-body py-2">
         <form method="get" action="{{ path('app_soa_index') }}" class="d-flex align-items-center gap-2">
             <label for="view-filter" class="mb-0 fw-bold">
-                <i class="bi bi-eye"></i> {{ 'common.view'|trans }}:
+                <i class="bi bi-eye" aria-hidden="true"></i> {{ 'common.view'|trans }}:
             </label>
             <select class="form-select form-select-sm" style="width: auto;" id="view-filter" name="view" onchange="this.form.submit()">
                 <option value="own" {{ inheritanceInfo.currentView == 'own' ? 'selected' : '' }}>
@@ -259,8 +259,10 @@
                     {% endif %}
                 </td>
                 <td class="text-center">
-                    <a href="{{ path('app_soa_show', {id: control.id}) }}" class="btn btn-sm mr-025">👁 Details</a>
-                    <a href="{{ path('app_soa_edit', {id: control.id}) }}" class="btn btn-sm btn-secondary">✏️ Bearbeiten</a>
+                    <div class="btn-group btn-group-sm">
+                        <a href="{{ path('app_soa_show', {id: control.id}) }}" class="btn btn-outline-primary">👁 Details</a>
+                        <a href="{{ path('app_soa_edit', {id: control.id}) }}" class="btn btn-outline-secondary">✏️ Bearbeiten</a>
+                    </div>
                 </td>
             </tr>
             {% endfor %}

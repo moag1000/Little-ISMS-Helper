@@ -8,7 +8,7 @@
 {% block admin_content %}
     <div class="mb-3">
         <a href="{{ path('monitoring_health') }}" class="btn btn-outline-secondary">
-            <i class="bi bi-arrow-left"></i> Back to Health
+            <i class="bi bi-arrow-left" aria-hidden="true"></i> Back to Health
         </a>
     </div>
 
@@ -54,7 +54,7 @@
     <div class="card mb-4">
         <div class="card-header bg-primary text-white">
             <h5 class="mb-0">
-                <i class="bi bi-funnel"></i> Quick Filters
+                <i class="bi bi-funnel" aria-hidden="true"></i> Quick Filters
             </h5>
         </div>
         <div class="card-body">
@@ -83,7 +83,7 @@
     <div class="card">
         <div class="card-header bg-success text-white">
             <h5 class="mb-0">
-                <i class="bi bi-list-ul"></i> Audit Entries ({{ logs|length }})
+                <i class="bi bi-list-ul" aria-hidden="true"></i> Audit Entries ({{ logs|length }})
             </h5>
         </div>
         <div class="card-body p-0">
@@ -107,7 +107,7 @@
                                         <small>{{ log.createdAt|date('Y-m-d H:i:s') }}</small>
                                     </td>
                                     <td>
-                                        <i class="bi bi-person"></i>
+                                        <i class="bi bi-person" aria-hidden="true"></i>
                                         {{ log.userName }}
                                     </td>
                                     <td>
@@ -134,7 +134,7 @@
                                                     class="btn btn-sm btn-outline-primary"
                                                     data-bs-toggle="modal"
                                                     data-bs-target="#logModal{{ log.id }}">
-                                                <i class="bi bi-eye"></i> View
+                                                <i class="bi bi-eye" aria-hidden="true"></i> View
                                             </button>
                                         {% else %}
                                             <span class="text-muted">-</span>
@@ -187,7 +187,7 @@
                 </div>
             {% else %}
                 <div class="p-4 text-center">
-                    <i class="bi bi-info-circle text-info fs-1"></i>
+                    <i class="bi bi-info-circle text-info fs-1" aria-hidden="true"></i>
                     <p class="mt-2">No audit log entries found for the selected filter.</p>
                 </div>
             {% endif %}
@@ -196,7 +196,7 @@
 
     {# Info Box #}
     <div class="alert alert-info mt-4">
-        <h5><i class="bi bi-info-circle"></i> About Audit Log</h5>
+        <h5><i class="bi bi-info-circle" aria-hidden="true"></i> About Audit Log</h5>
         <p class="mb-0">
             The audit log tracks all significant actions in the system including create, update, and delete operations.
             This provides a complete audit trail for compliance and security purposes.

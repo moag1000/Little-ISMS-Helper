@@ -5,13 +5,13 @@
 {% block body %}
 <div class="page-header">
     <div>
-        <h1><i class="bi bi-speedometer2"></i> {{ 'risk_appetite.title'|trans }}</h1>
+        <h1><i class="bi bi-speedometer2" aria-hidden="true"></i> {{ 'risk_appetite.title'|trans }}</h1>
         <p class="text-muted">{{ 'risk_appetite.description'|trans }}</p>
     </div>
     <div class="button-group">
         {% if is_granted('ROLE_ADMIN') %}
         <a href="{{ path('app_risk_appetite_new') }}" class="btn btn-primary">
-            <i class="bi bi-plus-circle"></i> {{ 'risk_appetite.new'|trans }}
+            <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'risk_appetite.new'|trans }}
         </a>
         {% endif %}
     </div>
@@ -19,33 +19,33 @@
 
 <div class="stats-grid mb-4">
     <div class="stat-card">
-        <div class="stat-icon"><i class="bi bi-collection"></i></div>
+        <div class="stat-icon"><i class="bi bi-collection" aria-hidden="true"></i></div>
         <div class="stat-value">{{ appetites|length }}</div>
         <div class="stat-label">{{ 'risk_appetite.stats.total'|trans }}</div>
     </div>
 
     {% if globalAppetite %}
     <div class="stat-card">
-        <div class="stat-icon"><i class="bi bi-globe"></i></div>
+        <div class="stat-icon"><i class="bi bi-globe" aria-hidden="true"></i></div>
         <div class="stat-value">{{ globalAppetite.maxAcceptableRisk }}</div>
         <div class="stat-label">{{ 'risk_appetite.stats.global_threshold'|trans }}</div>
     </div>
     {% endif %}
 
     <div class="stat-card">
-        <div class="stat-icon"><i class="bi bi-folder"></i></div>
+        <div class="stat-icon"><i class="bi bi-folder" aria-hidden="true"></i></div>
         <div class="stat-value">{{ categories|length }}</div>
         <div class="stat-label">{{ 'risk_appetite.stats.categories'|trans }}</div>
     </div>
 
     <div class="stat-card">
-        <div class="stat-icon"><i class="bi bi-graph-up-arrow"></i></div>
+        <div class="stat-icon"><i class="bi bi-graph-up-arrow" aria-hidden="true"></i></div>
         <div class="stat-value">{{ totalRisks }}</div>
         <div class="stat-label">{{ 'risk_appetite.stats.total_risks'|trans }}</div>
     </div>
 
     <div class="stat-card {{ risksExceedingAppetite|length > 0 ? 'bg-danger text-white' : '' }}">
-        <div class="stat-icon"><i class="bi bi-exclamation-triangle"></i></div>
+        <div class="stat-icon"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i></div>
         <div class="stat-value">{{ risksExceedingAppetite|length }}</div>
         <div class="stat-label">{{ 'risk_appetite.stats.exceeding'|trans }}</div>
     </div>
@@ -54,7 +54,7 @@
 {# Filter Section #}
 <div class="card mb-4">
     <div class="card-header">
-        <h5><i class="bi bi-funnel"></i> {{ 'common.filters'|trans }}</h5>
+        <h5><i class="bi bi-funnel" aria-hidden="true"></i> {{ 'common.filters'|trans }}</h5>
     </div>
     <div class="card-body">
         <form method="get" action="{{ path('app_risk_appetite_index') }}" class="row g-3">
@@ -77,10 +77,10 @@
             </div>
             <div class="col-12">
                 <button type="submit" class="btn btn-primary">
-                    <i class="bi bi-search"></i> {{ 'common.filter'|trans }}
+                    <i class="bi bi-search" aria-hidden="true"></i> {{ 'common.filter'|trans }}
                 </button>
                 <a href="{{ path('app_risk_appetite_index') }}" class="btn btn-secondary">
-                    <i class="bi bi-x-circle"></i> {{ 'common.reset'|trans }}
+                    <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'common.reset'|trans }}
                 </a>
             </div>
         </form>
@@ -90,7 +90,7 @@
 {# Risk Appetites Table #}
 <div class="card">
     <div class="card-header">
-        <h5><i class="bi bi-list"></i> {{ 'risk_appetite.list.title'|trans }} ({{ appetites|length }})</h5>
+        <h5><i class="bi bi-list" aria-hidden="true"></i> {{ 'risk_appetite.list.title'|trans }} ({{ appetites|length }})</h5>
     </div>
     <div class="table-responsive">
         <table class="table table-hover mb-0">
@@ -111,9 +111,9 @@
                     <td>
                         <strong>
                             {% if appetite.isGlobal() %}
-                                <i class="bi bi-globe"></i> {{ 'risk_appetite.category.global'|trans }}
+                                <i class="bi bi-globe" aria-hidden="true"></i> {{ 'risk_appetite.category.global'|trans }}
                             {% else %}
-                                <i class="bi bi-folder"></i> {{ appetite.category }}
+                                <i class="bi bi-folder" aria-hidden="true"></i> {{ appetite.category }}
                             {% endif %}
                         </strong>
                     </td>
@@ -156,13 +156,13 @@
                             <a href="{{ path('app_risk_appetite_show', {id: appetite.id}) }}"
                                class="btn btn-outline-primary"
                                title="{{ 'common.view'|trans }}">
-                                <i class="bi bi-eye"></i>
+                                <i class="bi bi-eye" aria-hidden="true"></i>
                             </a>
                             {% if is_granted('ROLE_ADMIN') %}
                             <a href="{{ path('app_risk_appetite_edit', {id: appetite.id}) }}"
                                class="btn btn-outline-secondary"
                                title="{{ 'common.edit'|trans }}">
-                                <i class="bi bi-pencil"></i>
+                                <i class="bi bi-pencil" aria-hidden="true"></i>
                             </a>
                             {% endif %}
                         </div>
@@ -184,7 +184,7 @@
 {% if risksExceedingAppetite|length > 0 %}
 <div class="card border-danger mt-4">
     <div class="card-header bg-danger text-white">
-        <h5><i class="bi bi-exclamation-triangle"></i> {{ 'risk_appetite.exceeding.title'|trans }}</h5>
+        <h5><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'risk_appetite.exceeding.title'|trans }}</h5>
     </div>
     <div class="card-body">
         <p>{{ 'risk_appetite.exceeding.description'|trans({'%count%': risksExceedingAppetite|length}) }}</p>

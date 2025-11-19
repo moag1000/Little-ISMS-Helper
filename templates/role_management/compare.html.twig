@@ -5,9 +5,9 @@
 {% block admin_content %}
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1><i class="bi bi-diagram-3"></i> {{ 'role.compare.title'|trans }}</h1>
+        <h1><i class="bi bi-diagram-3" aria-hidden="true"></i> {{ 'role.compare.title'|trans }}</h1>
         <a href="{{ path('role_management_index') }}" class="btn btn-outline-secondary">
-            <i class="bi bi-arrow-left"></i> Zurück
+            <i class="bi bi-arrow-left" aria-hidden="true"></i> Zurück
         </a>
     </div>
 
@@ -15,7 +15,7 @@
     <div class="card mb-4">
         <div class="card-header bg-primary text-white">
             <h5 class="mb-0">
-                <i class="bi bi-funnel"></i> {{ 'role.compare.select_roles'|trans }}
+                <i class="bi bi-funnel" aria-hidden="true"></i> {{ 'role.compare.select_roles'|trans }}
             </h5>
         </div>
         <div class="card-body">
@@ -38,7 +38,7 @@
                     </div>
                     <div class="col-md-2 d-flex align-items-end">
                         <button type="submit" class="btn btn-primary w-100">
-                            <i class="bi bi-arrow-repeat"></i> Vergleichen
+                            <i class="bi bi-arrow-repeat" aria-hidden="true"></i> Vergleichen
                         </button>
                     </div>
                 </div>
@@ -51,7 +51,7 @@
         <div class="card">
             <div class="card-header bg-success text-white">
                 <h5 class="mb-0">
-                    <i class="bi bi-table"></i> {{ 'role.compare.permission_matrix'|trans }}
+                    <i class="bi bi-table" aria-hidden="true"></i> {{ 'role.compare.permission_matrix'|trans }}
                 </h5>
             </div>
             <div class="card-body p-0">
@@ -77,7 +77,7 @@
                                     {% set current_category = data.category %}
                                     <tr class="table-secondary">
                                         <td colspan="{{ roles|length + 1 }}" class="fw-bold">
-                                            <i class="bi bi-folder"></i> {{ data.category|title }}
+                                            <i class="bi bi-folder" aria-hidden="true"></i> {{ data.category|title }}
                                         </td>
                                     </tr>
                                 {% endif %}
@@ -91,9 +91,9 @@
                                         {% set has_permission = data.roles[role.id] ?? false %}
                                         <td class="text-center {{ has_permission ? 'table-success' : 'table-light' }}">
                                             {% if has_permission %}
-                                                <i class="bi bi-check-circle-fill text-success fs-4"></i>
+                                                <i class="bi bi-check-circle-fill text-success fs-4" aria-hidden="true"></i>
                                             {% else %}
-                                                <i class="bi bi-x-circle text-muted fs-4"></i>
+                                                <i class="bi bi-x-circle text-muted fs-4" aria-hidden="true"></i>
                                             {% endif %}
                                         </td>
                                     {% endfor %}
@@ -111,11 +111,11 @@
                 <h6>Legende:</h6>
                 <div class="d-flex gap-4">
                     <div>
-                        <i class="bi bi-check-circle-fill text-success"></i>
+                        <i class="bi bi-check-circle-fill text-success" aria-hidden="true"></i>
                         {{ 'role.compare.has_permission'|trans }}
                     </div>
                     <div>
-                        <i class="bi bi-x-circle text-muted"></i>
+                        <i class="bi bi-x-circle text-muted" aria-hidden="true"></i>
                         {{ 'role.compare.no_permission'|trans }}
                     </div>
                 </div>
@@ -123,7 +123,7 @@
         </div>
     {% else %}
         <div class="alert alert-info">
-            <i class="bi bi-info-circle"></i>
+            <i class="bi bi-info-circle" aria-hidden="true"></i>
             Bitte wählen Sie mindestens eine Rolle zum Vergleichen aus.
         </div>
     {% endif %}

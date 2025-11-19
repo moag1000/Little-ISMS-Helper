@@ -17,7 +17,7 @@
                 <div class="card-body">
                     <div class="d-flex align-items-center">
                         <div class="bg-primary bg-opacity-10 p-3 rounded me-3">
-                            <i class="bi bi-building text-primary fs-3"></i>
+                            <i class="bi bi-building text-primary fs-3" aria-hidden="true"></i>
                         </div>
                         <div>
                             <h6 class="text-muted mb-1">{{ 'tenant.stats.total'|trans }}</h6>
@@ -32,7 +32,7 @@
                 <div class="card-body">
                     <div class="d-flex align-items-center">
                         <div class="bg-success bg-opacity-10 p-3 rounded me-3">
-                            <i class="bi bi-check-circle text-success fs-3"></i>
+                            <i class="bi bi-check-circle text-success fs-3" aria-hidden="true"></i>
                         </div>
                         <div>
                             <h6 class="text-muted mb-1">{{ 'tenant.stats.active'|trans }}</h6>
@@ -47,7 +47,7 @@
                 <div class="card-body">
                     <div class="d-flex align-items-center">
                         <div class="bg-secondary bg-opacity-10 p-3 rounded me-3">
-                            <i class="bi bi-x-circle text-secondary fs-3"></i>
+                            <i class="bi bi-x-circle text-secondary fs-3" aria-hidden="true"></i>
                         </div>
                         <div>
                             <h6 class="text-muted mb-1">{{ 'tenant.stats.inactive'|trans }}</h6>
@@ -67,21 +67,21 @@
                 <div class="btn-group" role="group">
                     <a href="{{ path('tenant_management_index', {filter: 'all'}) }}"
                        class="btn btn-sm btn-outline-primary {% if filter == 'all' %}active{% endif %}">
-                        <i class="bi bi-list"></i> {{ 'tenant.filter.all'|trans }}
+                        <i class="bi bi-list" aria-hidden="true"></i> {{ 'tenant.filter.all'|trans }}
                     </a>
                     <a href="{{ path('tenant_management_index', {filter: 'active'}) }}"
                        class="btn btn-sm btn-outline-success {% if filter == 'active' %}active{% endif %}">
-                        <i class="bi bi-check-circle"></i> {{ 'tenant.filter.active'|trans }}
+                        <i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'tenant.filter.active'|trans }}
                     </a>
                     <a href="{{ path('tenant_management_index', {filter: 'inactive'}) }}"
                        class="btn btn-sm btn-outline-secondary {% if filter == 'inactive' %}active{% endif %}">
-                        <i class="bi bi-x-circle"></i> {{ 'tenant.filter.inactive'|trans }}
+                        <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'tenant.filter.inactive'|trans }}
                     </a>
                 </div>
 
                 {# Create Button #}
                 <a href="{{ path('tenant_management_new') }}" class="btn btn-primary">
-                    <i class="bi bi-plus-circle"></i> {{ 'tenant.action.create'|trans }}
+                    <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'tenant.action.create'|trans }}
                 </a>
             </div>
         </div>
@@ -92,10 +92,10 @@
         <div class="card-body">
             {% if tenants is empty %}
                 <div class="text-center py-5">
-                    <i class="bi bi-building text-muted" style="font-size: 4rem;"></i>
+                    <i class="bi bi-building text-muted" style="font-size: 4rem;" aria-hidden="true"></i>
                     <p class="text-muted mt-3">{{ 'tenant.empty'|trans }}</p>
                     <a href="{{ path('tenant_management_new') }}" class="btn btn-primary">
-                        <i class="bi bi-plus-circle"></i> {{ 'tenant.action.create_first'|trans }}
+                        <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'tenant.action.create_first'|trans }}
                     </a>
                 </div>
             {% else %}
@@ -126,7 +126,7 @@
                                         {% else %}
                                             <div class="bg-light rounded d-flex align-items-center justify-content-center"
                                                  style="width: 40px; height: 40px;">
-                                                <i class="bi bi-building text-muted"></i>
+                                                <i class="bi bi-building text-muted" aria-hidden="true"></i>
                                             </div>
                                         {% endif %}
                                     </td>
@@ -141,7 +141,7 @@
                                     </td>
                                     <td>
                                         <span class="badge bg-info">
-                                            <i class="bi bi-people"></i> {{ item.userCount }}
+                                            <i class="bi bi-people" aria-hidden="true"></i> {{ item.userCount }}
                                         </span>
                                     </td>
                                     <td>
@@ -154,11 +154,11 @@
                                     <td>
                                         {% if tenant.isActive %}
                                             <span class="badge bg-success">
-                                                <i class="bi bi-check-circle"></i> {{ 'tenant.status.active'|trans }}
+                                                <i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'tenant.status.active'|trans }}
                                             </span>
                                         {% else %}
                                             <span class="badge bg-secondary">
-                                                <i class="bi bi-x-circle"></i> {{ 'tenant.status.inactive'|trans }}
+                                                <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'tenant.status.inactive'|trans }}
                                             </span>
                                         {% endif %}
                                     </td>
@@ -170,19 +170,19 @@
                                             <a href="{{ path('tenant_management_show', {id: tenant.id}) }}"
                                                class="btn btn-outline-primary"
                                                title="{{ 'common.view'|trans }}">
-                                                <i class="bi bi-eye"></i>
+                                                <i class="bi bi-eye" aria-hidden="true"></i>
                                             </a>
                                             <a href="{{ path('tenant_management_edit', {id: tenant.id}) }}"
                                                class="btn btn-outline-secondary"
                                                title="{{ 'common.edit'|trans }}">
-                                                <i class="bi bi-pencil"></i>
+                                                <i class="bi bi-pencil" aria-hidden="true"></i>
                                             </a>
                                             <form method="post" action="{{ path('tenant_management_toggle', {id: tenant.id}) }}" class="d-inline">
                                                 <button type="submit"
                                                         class="btn btn-outline-{% if tenant.isActive %}warning{% else %}success{% endif %}"
                                                         title="{{ (tenant.isActive ? 'tenant.action.deactivate' : 'tenant.action.activate')|trans }}"
                                                         onclick="return confirm('{{ 'tenant.confirm.toggle'|trans }}');">
-                                                    <i class="bi bi-{% if tenant.isActive %}pause{% else %}play{% endif %}-circle"></i>
+                                                    <i class="bi bi-{% if tenant.isActive %}pause{% else %}play{% endif %}-circle" aria-hidden="true"></i>
                                                 </button>
                                             </form>
                                         </div>
@@ -198,7 +198,7 @@
 
     {# Info Box #}
     <div class="alert alert-info mt-4">
-        <i class="bi bi-info-circle"></i>
+        <i class="bi bi-info-circle" aria-hidden="true"></i>
         <strong>{{ 'tenant.info.title'|trans }}</strong><br>
         {{ 'tenant.info.text'|trans }}
     </div>

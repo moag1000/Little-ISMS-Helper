@@ -8,7 +8,7 @@
 {% block admin_content %}
     <div class="mb-4">
         <a href="{{ path('admin_mfa_index') }}" class="btn btn-outline-secondary">
-            <i class="bi bi-arrow-left"></i> {{ 'common.back'|trans }}
+            <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans }}
         </a>
     </div>
 
@@ -17,13 +17,13 @@
             {# Token Details #}
             <div class="card mb-4">
                 <div class="card-header">
-                    <h5 class="mb-0"><i class="bi bi-info-circle"></i> {{ 'mfa_token.details.title'|trans }}</h5>
+                    <h5 class="mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'mfa_token.details.title'|trans }}</h5>
                 </div>
                 <div class="card-body">
                     <dl class="row">
                         <dt class="col-sm-4">{{ 'mfa_token.field.user'|trans }}</dt>
                         <dd class="col-sm-8">
-                            <i class="bi bi-person-circle"></i>
+                            <i class="bi bi-person-circle" aria-hidden="true"></i>
                             {{ mfa_token.user.firstName }} {{ mfa_token.user.lastName }}
                             <span class="text-muted">({{ mfa_token.user.email }})</span>
                         </dd>
@@ -32,9 +32,9 @@
                         <dd class="col-sm-8">
                             <span class="badge bg-primary">
                                 {% if mfa_token.tokenType == 'totp' %}
-                                    <i class="bi bi-phone"></i>
+                                    <i class="bi bi-phone" aria-hidden="true"></i>
                                 {% elseif mfa_token.tokenType == 'webauthn' %}
-                                    <i class="bi bi-key"></i>
+                                    <i class="bi bi-key" aria-hidden="true"></i>
                                 {% endif %}
                                 {{ ('mfa_token.type.' ~ mfa_token.tokenType)|trans }}
                             </span>
@@ -42,7 +42,7 @@
 
                         <dt class="col-sm-4">{{ 'mfa_token.field.device_name'|trans }}</dt>
                         <dd class="col-sm-8">
-                            <i class="bi bi-{{ mfa_token.tokenType == 'totp' ? 'phone' : 'key' }}"></i>
+                            <i class="bi bi-{{ mfa_token.tokenType == 'totp' ? 'phone' : 'key' }}" aria-hidden="true"></i>
                             {{ mfa_token.deviceName ?? 'N/A' }}
                         </dd>
 
@@ -50,11 +50,11 @@
                         <dd class="col-sm-8">
                             {% if mfa_token.isActive %}
                                 <span class="badge bg-success">
-                                    <i class="bi bi-check-circle"></i> {{ 'mfa_token.status.active'|trans }}
+                                    <i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'mfa_token.status.active'|trans }}
                                 </span>
                             {% else %}
                                 <span class="badge bg-secondary">
-                                    <i class="bi bi-dash-circle"></i> {{ 'mfa_token.status.inactive'|trans }}
+                                    <i class="bi bi-dash-circle" aria-hidden="true"></i> {{ 'mfa_token.status.inactive'|trans }}
                                 </span>
                             {% endif %}
                         </dd>
@@ -63,7 +63,7 @@
                         <dd class="col-sm-8">
                             {% if mfa_token.isPrimary %}
                                 <span class="badge bg-warning">
-                                    <i class="bi bi-star-fill"></i> {{ 'mfa_token.primary'|trans }}
+                                    <i class="bi bi-star-fill" aria-hidden="true"></i> {{ 'mfa_token.primary'|trans }}
                                 </span>
                             {% else %}
                                 <span class="text-muted">{{ 'common.no'|trans }}</span>
@@ -76,13 +76,13 @@
             {# Usage Statistics #}
             <div class="card mb-4">
                 <div class="card-header">
-                    <h5 class="mb-0"><i class="bi bi-graph-up"></i> {{ 'mfa_token.usage.title'|trans }}</h5>
+                    <h5 class="mb-0"><i class="bi bi-graph-up" aria-hidden="true"></i> {{ 'mfa_token.usage.title'|trans }}</h5>
                 </div>
                 <div class="card-body">
                     <dl class="row">
                         <dt class="col-sm-4">{{ 'mfa_token.field.enrolled_at'|trans }}</dt>
                         <dd class="col-sm-8">
-                            <i class="bi bi-calendar-check"></i>
+                            <i class="bi bi-calendar-check" aria-hidden="true"></i>
                             {{ mfa_token.enrolledAt|date('Y-m-d H:i:s') }}
                             <small class="text-muted">({{ mfa_token.enrolledAt|date('r') }})</small>
                         </dd>
@@ -90,7 +90,7 @@
                         <dt class="col-sm-4">{{ 'mfa_token.field.last_used'|trans }}</dt>
                         <dd class="col-sm-8">
                             {% if mfa_token.lastUsedAt %}
-                                <i class="bi bi-clock"></i>
+                                <i class="bi bi-clock" aria-hidden="true"></i>
                                 {{ mfa_token.lastUsedAt|date('Y-m-d H:i:s') }}
                                 <small class="text-muted">({{ mfa_token.lastUsedAt|date('r') }})</small>
                             {% else %}
@@ -107,7 +107,7 @@
                         {% if mfa_token.expiresAt %}
                             <dt class="col-sm-4">{{ 'mfa_token.field.expires_at'|trans }}</dt>
                             <dd class="col-sm-8">
-                                <i class="bi bi-calendar-x"></i>
+                                <i class="bi bi-calendar-x" aria-hidden="true"></i>
                                 {{ mfa_token.expiresAt|date('Y-m-d H:i:s') }}
                                 {% if mfa_token.isExpired %}
                                     <span class="badge bg-danger ms-2">{{ 'mfa_token.status.expired'|trans }}</span>
@@ -122,7 +122,7 @@
             {% if mfa_token.tokenType == 'totp' %}
                 <div class="card mb-4 border-warning">
                     <div class="card-header bg-warning">
-                        <h5 class="mb-0"><i class="bi bi-key-fill"></i> {{ 'mfa_token.backup_codes.title'|trans }}</h5>
+                        <h5 class="mb-0"><i class="bi bi-key-fill" aria-hidden="true"></i> {{ 'mfa_token.backup_codes.title'|trans }}</h5>
                     </div>
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center mb-3">
@@ -137,14 +137,14 @@
                                 <button type="submit"
                                         class="btn btn-warning btn-sm"
                                         onclick="return confirm('{{ 'mfa_token.backup_codes.regenerate_confirm'|trans }}');">
-                                    <i class="bi bi-arrow-clockwise"></i> {{ 'mfa_token.backup_codes.regenerate'|trans }}
+                                    <i class="bi bi-arrow-clockwise" aria-hidden="true"></i> {{ 'mfa_token.backup_codes.regenerate'|trans }}
                                 </button>
                             </form>
                         </div>
 
                         {% if remaining_backup_codes <= 2 %}
                             <div class="alert alert-{{ remaining_backup_codes == 0 ? 'danger' : 'warning' }}">
-                                <i class="bi bi-exclamation-triangle-fill"></i>
+                                <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
                                 {% if remaining_backup_codes == 0 %}
                                     {{ 'mfa_token.backup_codes.no_codes_left'|trans }}
                                 {% else %}
@@ -165,7 +165,7 @@
             {# Actions #}
             <div class="card mb-4">
                 <div class="card-header">
-                    <h5 class="mb-0"><i class="bi bi-gear"></i> {{ 'common.actions'|trans }}</h5>
+                    <h5 class="mb-0"><i class="bi bi-gear" aria-hidden="true"></i> {{ 'common.actions'|trans }}</h5>
                 </div>
                 <div class="card-body">
                     <div class="d-grid gap-2">
@@ -175,7 +175,7 @@
                                 <button type="submit"
                                         class="btn btn-warning w-100"
                                         onclick="return confirm('{{ 'mfa_token.confirm_disable'|trans }}');">
-                                    <i class="bi bi-pause-circle"></i> {{ 'mfa_token.action.disable'|trans }}
+                                    <i class="bi bi-pause-circle" aria-hidden="true"></i> {{ 'mfa_token.action.disable'|trans }}
                                 </button>
                             </form>
                         {% endif %}
@@ -185,7 +185,7 @@
                             <button type="submit"
                                     class="btn btn-danger w-100"
                                     onclick="return confirm('{{ 'mfa_token.confirm_delete'|trans }}');">
-                                <i class="bi bi-trash"></i> {{ 'common.delete'|trans }}
+                                <i class="bi bi-trash" aria-hidden="true"></i> {{ 'common.delete'|trans }}
                             </button>
                         </form>
                     </div>
@@ -195,7 +195,7 @@
             {# System Information #}
             <div class="card">
                 <div class="card-header">
-                    <h5 class="mb-0"><i class="bi bi-database"></i> {{ 'common.system_info'|trans }}</h5>
+                    <h5 class="mb-0"><i class="bi bi-database" aria-hidden="true"></i> {{ 'common.system_info'|trans }}</h5>
                 </div>
                 <div class="card-body">
                     <dl class="mb-0 small">
