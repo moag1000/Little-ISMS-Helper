@@ -47,8 +47,11 @@
         </div>
         <div class="card-content">
             {% if bc_plans|length > 0 %}
-            <table class="data-table">
-                <thead>
+            {% embed '_components/_table.html.twig' with {
+                'wrapperClass': 'card-content',
+                'noMargin': true
+            } %}
+                {% block table_head %}
                     <tr>
                         <th scope="col">Name</th>
                         <th scope="col">Business Process</th>
@@ -58,8 +61,8 @@
                         <th scope="col">Last Tested</th>
                         <th scope="col">Actions</th>
                     </tr>
-                </thead>
-                <tbody>
+                {% endblock %}
+                {% block table_body %}
                     {% for plan in bc_plans %}
                     <tr>
                         <td><a href="{{ path('app_bc_plan_show', {id: plan.id}) }}">{{ plan.name }}</a></td>
@@ -79,8 +82,8 @@
                         </td>
                     </tr>
                     {% endfor %}
-                </tbody>
-            </table>
+                {% endblock %}
+            {% endembed %}
             {% else %}
             <p>No BC plans found. <a href="{{ path('app_bc_plan_new') }}">Create your first BC plan</a>.</p>
             {% endif %}

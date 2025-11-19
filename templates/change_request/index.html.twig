@@ -66,8 +66,11 @@
         </div>
         <div class="card-content">
             {% if change_requests|length > 0 %}
-            <table class="data-table">
-                <thead>
+            {% embed '_components/_table.html.twig' with {
+                'wrapperClass': 'card-content',
+                'noMargin': true
+            } %}
+                {% block table_head %}
                     <tr>
                         <th scope="col">{{ 'change_request.table.change_number'|trans }}</th>
                         <th scope="col">{{ 'change_request.table.title'|trans }}</th>
@@ -78,8 +81,8 @@
                         <th scope="col">{{ 'change_request.table.requested'|trans }}</th>
                         <th scope="col">{{ 'change_request.table.actions'|trans }}</th>
                     </tr>
-                </thead>
-                <tbody>
+                {% endblock %}
+                {% block table_body %}
                     {% for change in change_requests %}
                     <tr>
                         <td><a href="{{ path('app_change_request_show', {id: change.id}) }}">{{ change.changeNumber }}</a></td>
@@ -95,8 +98,8 @@
                         </td>
                     </tr>
                     {% endfor %}
-                </tbody>
-            </table>
+                {% endblock %}
+            {% endembed %}
             {% else %}
             <p>{{ 'change_request.empty.message'|trans }} <a href="{{ path('app_change_request_new') }}">{{ 'change_request.empty.create_first'|trans }}</a>.</p>
             {% endif %}
