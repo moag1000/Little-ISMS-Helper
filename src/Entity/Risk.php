@@ -87,6 +87,67 @@ class Risk
     )]
     private ?string $category = null;
 
+    /**
+     * DSGVO Risk Assessment Extension (Priority 2.2)
+     * DSGVO/GDPR Art. 32 - Security of processing
+     */
+
+    /**
+     * Indicates if this risk involves processing of personal data
+     * DSGVO Art. 4(1) - Personal Data Definition
+     */
+    #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
+    #[Groups(['risk:read', 'risk:write'])]
+    private bool $involvesPersonalData = false;
+
+    /**
+     * Indicates if this risk involves special category data (Art. 9 DSGVO)
+     * Includes: racial/ethnic origin, political opinions, religious beliefs,
+     * trade union membership, genetic data, biometric data, health data, sex life
+     */
+    #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
+    #[Groups(['risk:read', 'risk:write'])]
+    private bool $involvesSpecialCategoryData = false;
+
+    /**
+     * Legal basis for processing (Art. 6 DSGVO)
+     */
+    #[ORM\Column(length: 50, nullable: true)]
+    #[Groups(['risk:read', 'risk:write'])]
+    #[Assert\Choice(
+        choices: ['consent', 'contract', 'legal_obligation', 'vital_interests', 'public_task', 'legitimate_interests'],
+        message: 'risk.validation.legal_basis_invalid'
+    )]
+    private ?string $legalBasis = null;
+
+    /**
+     * Scale of data processing operation
+     * large_scale requires DPIA (Art. 35 DSGVO)
+     */
+    #[ORM\Column(length: 50, nullable: true)]
+    #[Groups(['risk:read', 'risk:write'])]
+    #[Assert\Choice(
+        choices: ['small', 'medium', 'large_scale'],
+        message: 'risk.validation.processing_scale_invalid'
+    )]
+    private ?string $processingScale = null;
+
+    /**
+     * Indicates if a Data Protection Impact Assessment (DPIA) is required
+     * DSGVO Art. 35 - Data Protection Impact Assessment
+     */
+    #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
+    #[Groups(['risk:read', 'risk:write'])]
+    private bool $requiresDPIA = false;
+
+    /**
+     * Assessment of impact on data subjects' rights and freedoms
+     * DSGVO Art. 35(7) - DPIA content requirements
+     */
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['risk:read', 'risk:write'])]
+    private ?string $dataSubjectImpact = null;
+
     #[ORM\Column(type: Types::TEXT)]
     #[Groups(['risk:read', 'risk:write'])]
     #[Assert\NotBlank(message: 'Risk description is required')]
@@ -719,5 +780,73 @@ class Risk
         }
 
         return 'approved';
+    }
+
+    // DSGVO Risk Assessment Extension - Getter/Setter Methods (Priority 2.2)
+
+    public function isInvolvesPersonalData(): bool
+    {
+        return $this->involvesPersonalData;
+    }
+
+    public function setInvolvesPersonalData(bool $involvesPersonalData): static
+    {
+        $this->involvesPersonalData = $involvesPersonalData;
+        return $this;
+    }
+
+    public function isInvolvesSpecialCategoryData(): bool
+    {
+        return $this->involvesSpecialCategoryData;
+    }
+
+    public function setInvolvesSpecialCategoryData(bool $involvesSpecialCategoryData): static
+    {
+        $this->involvesSpecialCategoryData = $involvesSpecialCategoryData;
+        return $this;
+    }
+
+    public function getLegalBasis(): ?string
+    {
+        return $this->legalBasis;
+    }
+
+    public function setLegalBasis(?string $legalBasis): static
+    {
+        $this->legalBasis = $legalBasis;
+        return $this;
+    }
+
+    public function getProcessingScale(): ?string
+    {
+        return $this->processingScale;
+    }
+
+    public function setProcessingScale(?string $processingScale): static
+    {
+        $this->processingScale = $processingScale;
+        return $this;
+    }
+
+    public function isRequiresDPIA(): bool
+    {
+        return $this->requiresDPIA;
+    }
+
+    public function setRequiresDPIA(bool $requiresDPIA): static
+    {
+        $this->requiresDPIA = $requiresDPIA;
+        return $this;
+    }
+
+    public function getDataSubjectImpact(): ?string
+    {
+        return $this->dataSubjectImpact;
+    }
+
+    public function setDataSubjectImpact(?string $dataSubjectImpact): static
+    {
+        $this->dataSubjectImpact = $dataSubjectImpact;
+        return $this;
     }
 }
