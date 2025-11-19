@@ -251,6 +251,84 @@ class EmailNotificationService
     }
 
     /**
+     * Send risk acceptance approval request notification
+     * Priority 2.1 - Risk Acceptance Workflow
+     *
+     * @param mixed $risk Risk entity
+     * @param User $approver User who needs to approve
+     * @param string $approvalLevel 'manager' or 'executive'
+     */
+    public function sendRiskAcceptanceRequest($risk, User $approver, string $approvalLevel): void
+    {
+        $safeTitle = $this->sanitizeEmailSubject($risk->getTitle());
+
+        $email = (new TemplatedEmail())
+            ->from(new Address($this->fromEmail, $this->fromName))
+            ->to($approver->getEmail())
+            ->subject('[ISMS Action Required] Risk Acceptance Approval: ' . $safeTitle)
+            ->htmlTemplate('emails/risk_acceptance_request.html.twig')
+            ->context([
+                'risk' => $risk,
+                'approver' => $approver,
+                'approval_level' => $approvalLevel,
+                'risk_score' => $risk->getResidualRiskLevel(),
+                'risk_justification' => $risk->getAcceptanceJustification(),
+            ]);
+
+        $this->mailer->send($email);
+    }
+
+    /**
+     * Send risk acceptance approval notification (informational)
+     *
+     * @param mixed $risk Risk entity
+     * @param User $riskOwner Risk owner to notify
+     */
+    public function sendRiskAcceptanceApproved($risk, User $riskOwner): void
+    {
+        $safeTitle = $this->sanitizeEmailSubject($risk->getTitle());
+
+        $email = (new TemplatedEmail())
+            ->from(new Address($this->fromEmail, $this->fromName))
+            ->to($riskOwner->getEmail())
+            ->subject('[ISMS Info] Risk Acceptance Approved: ' . $safeTitle)
+            ->htmlTemplate('emails/risk_acceptance_approved.html.twig')
+            ->context([
+                'risk' => $risk,
+                'risk_owner' => $riskOwner,
+                'approved_by' => $risk->getAcceptanceApprovedBy(),
+                'approved_at' => $risk->getAcceptanceApprovedAt(),
+            ]);
+
+        $this->mailer->send($email);
+    }
+
+    /**
+     * Send risk acceptance rejection notification
+     *
+     * @param mixed $risk Risk entity
+     * @param User $riskOwner Risk owner to notify
+     * @param string $reason Rejection reason
+     */
+    public function sendRiskAcceptanceRejected($risk, User $riskOwner, string $reason): void
+    {
+        $safeTitle = $this->sanitizeEmailSubject($risk->getTitle());
+
+        $email = (new TemplatedEmail())
+            ->from(new Address($this->fromEmail, $this->fromName))
+            ->to($riskOwner->getEmail())
+            ->subject('[ISMS Alert] Risk Acceptance Rejected: ' . $safeTitle)
+            ->htmlTemplate('emails/risk_acceptance_rejected.html.twig')
+            ->context([
+                'risk' => $risk,
+                'risk_owner' => $riskOwner,
+                'rejection_reason' => $reason,
+            ]);
+
+        $this->mailer->send($email);
+    }
+
+    /**
      * Security: Sanitize email subject to prevent header injection
      * Removes newlines, carriage returns, control characters, and email header keywords
      */
