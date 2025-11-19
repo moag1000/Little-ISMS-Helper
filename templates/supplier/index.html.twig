@@ -103,8 +103,11 @@
         </div>
         <div class="card-content">
             {% if suppliers|length > 0 %}
-            <table class="data-table">
-                <thead>
+            {% embed '_components/_table.html.twig' with {
+                'wrapperClass': 'card-content',
+                'noMargin': true
+            } %}
+                {% block table_head %}
                     <tr>
                         <th scope="col" class="w-40px">
                             <input type="checkbox"
@@ -121,8 +124,8 @@
                         <th scope="col">{{ 'supplier.table.iso27001'|trans }}</th>
                         <th scope="col">{{ 'supplier.table.actions'|trans }}</th>
                     </tr>
-                </thead>
-                <tbody>
+                {% endblock %}
+                {% block table_body %}
                     {% for supplier in suppliers %}
                     <tr data-supplier-id="{{ supplier.id }}">
                         <td>
@@ -153,8 +156,8 @@
                         </td>
                     </tr>
                     {% endfor %}
-                </tbody>
-            </table>
+                {% endblock %}
+            {% endembed %}
             {% else %}
             <p>{{ 'supplier.empty.message'|trans }} <a href="{{ path('app_supplier_new') }}">{{ 'supplier.empty.add_first'|trans }}</a>.</p>
             {% endif %}
