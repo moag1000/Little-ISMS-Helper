@@ -167,27 +167,107 @@
                 </div>
             {% endif %}
 
-            {# Data Reuse: Asset Information #}
-            {% if risk.asset is defined and risk.asset %}
+            {# Risk Subject: Asset, Person, Location, or Supplier #}
+            {% if risk.asset or risk.person or risk.location or risk.supplier %}
                 <div class="detail-section">
-                    <h3>Affected Asset</h3>
-                    <div class="asset-info">
-                        <strong>{{ risk.asset.name }}</strong>
-                        <p>Type: {{ risk.asset.assetType }}</p>
-                        {% if risk.asset.monetaryValue %}
-                            <p>Monetary Value: €{{ risk.asset.monetaryValue }}</p>
-                            <div class="alert alert-info">
-                                <small>💡 Impact calculation can be derived from asset monetary value</small>
+                    <h3>
+                        <i class="bi bi-bullseye" aria-hidden="true"></i>
+                        Risk Subject
+                        <span class="badge bg-secondary ms-2">{{ risk.riskSubjectType|upper }}</span>
+                    </h3>
+
+                    {% if risk.asset %}
+                        <div class="subject-info card mb-3">
+                            <div class="card-header bg-primary text-white">
+                                <i class="bi bi-cpu" aria-hidden="true"></i> Asset
                             </div>
-                        {% endif %}
-                        {% if risk.asset.dataClassification %}
-                            <p>Classification:
-                                <span class="badge badge-classification-{{ risk.asset.dataClassification }}">
-                                    {{ risk.asset.dataClassification|upper }}
-                                </span>
-                            </p>
-                        {% endif %}
-                    </div>
+                            <div class="card-body">
+                                <h5>{{ risk.asset.name }}</h5>
+                                <p><strong>Type:</strong> {{ risk.asset.assetType }}</p>
+                                {% if risk.asset.monetaryValue %}
+                                    <p><strong>Monetary Value:</strong> €{{ risk.asset.monetaryValue|number_format(2, ',', '.') }}</p>
+                                    <div class="alert alert-info mb-0">
+                                        <i class="bi bi-lightbulb" aria-hidden="true"></i>
+                                        <small>Impact calculation can be derived from asset monetary value</small>
+                                    </div>
+                                {% endif %}
+                                {% if risk.asset.dataClassification %}
+                                    <p><strong>Classification:</strong>
+                                        <span class="badge bg-{{ risk.asset.dataClassification == 'public' ? 'success' : (risk.asset.dataClassification == 'internal' ? 'info' : (risk.asset.dataClassification == 'confidential' ? 'warning' : 'danger')) }}">
+                                            {{ risk.asset.dataClassification|upper }}
+                                        </span>
+                                    </p>
+                                {% endif %}
+                                <a href="{{ path('app_asset_show', {id: risk.asset.id}) }}" class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i> View Asset Details
+                                </a>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    {% if risk.person %}
+                        <div class="subject-info card mb-3">
+                            <div class="card-header bg-info text-white">
+                                <i class="bi bi-person" aria-hidden="true"></i> Person
+                            </div>
+                            <div class="card-body">
+                                <h5>{{ risk.person.fullName }}</h5>
+                                {% if risk.person.email %}
+                                    <p><strong>Email:</strong> <a href="mailto:{{ risk.person.email }}">{{ risk.person.email }}</a></p>
+                                {% endif %}
+                                {% if risk.person.department %}
+                                    <p><strong>Department:</strong> {{ risk.person.department }}</p>
+                                {% endif %}
+                                <a href="{{ path('app_person_show', {id: risk.person.id}) }}" class="btn btn-sm btn-outline-info">
+                                    <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i> View Person Details
+                                </a>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    {% if risk.location %}
+                        <div class="subject-info card mb-3">
+                            <div class="card-header bg-warning text-dark">
+                                <i class="bi bi-geo-alt" aria-hidden="true"></i> Location
+                            </div>
+                            <div class="card-body">
+                                <h5>{{ risk.location.name }}</h5>
+                                {% if risk.location.address %}
+                                    <p><strong>Address:</strong> {{ risk.location.address }}</p>
+                                {% endif %}
+                                {% if risk.location.city and risk.location.country %}
+                                    <p><strong>City/Country:</strong> {{ risk.location.city }}, {{ risk.location.country }}</p>
+                                {% endif %}
+                                <a href="{{ path('app_location_show', {id: risk.location.id}) }}" class="btn btn-sm btn-outline-warning">
+                                    <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i> View Location Details
+                                </a>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    {% if risk.supplier %}
+                        <div class="subject-info card mb-3">
+                            <div class="card-header bg-success text-white">
+                                <i class="bi bi-truck" aria-hidden="true"></i> Supplier
+                            </div>
+                            <div class="card-body">
+                                <h5>{{ risk.supplier.name }}</h5>
+                                {% if risk.supplier.contactEmail %}
+                                    <p><strong>Contact:</strong> <a href="mailto:{{ risk.supplier.contactEmail }}">{{ risk.supplier.contactEmail }}</a></p>
+                                {% endif %}
+                                {% if risk.supplier.riskLevel %}
+                                    <p><strong>Supplier Risk Level:</strong>
+                                        <span class="badge bg-{{ risk.supplier.riskLevel == 'low' ? 'success' : (risk.supplier.riskLevel == 'medium' ? 'warning' : 'danger') }}">
+                                            {{ risk.supplier.riskLevel|upper }}
+                                        </span>
+                                    </p>
+                                {% endif %}
+                                <a href="{{ path('app_supplier_show', {id: risk.supplier.id}) }}" class="btn btn-sm btn-outline-success">
+                                    <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i> View Supplier Details
+                                </a>
+                            </div>
+                        </div>
+                    {% endif %}
                 </div>
             {% endif %}
 

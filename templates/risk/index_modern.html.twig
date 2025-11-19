@@ -280,7 +280,7 @@
                 <th scope="col" class="text-center">Risikoscore</th>
                 <th scope="col" class="text-center">Restrisiko</th>
                 <th scope="col">Behandlung</th>
-                <th scope="col" class="text-center">Betroffene Assets</th>
+                <th scope="col" class="text-center">Risikosubjekt</th>
                 <th scope="col" class="text-center">Aktionen</th>
             </tr>
         {% endblock %}
@@ -341,11 +341,23 @@
                 </td>
                 <td class="text-center">
                     {% if risk.asset %}
-                        <a href="{{ path('app_asset_show', {id: risk.asset.id}) }}" class="badge bg-info text-dark" title="{{ risk.asset.name }}">
-                            1
+                        <a href="{{ path('app_asset_show', {id: risk.asset.id}) }}" class="badge bg-primary" title="{{ risk.asset.name }}">
+                            <i class="bi bi-cpu" aria-hidden="true"></i> Asset
+                        </a>
+                    {% elseif risk.person %}
+                        <a href="{{ path('app_person_show', {id: risk.person.id}) }}" class="badge bg-info" title="{{ risk.person.fullName }}">
+                            <i class="bi bi-person" aria-hidden="true"></i> Person
+                        </a>
+                    {% elseif risk.location %}
+                        <a href="{{ path('app_location_show', {id: risk.location.id}) }}" class="badge bg-warning text-dark" title="{{ risk.location.name }}">
+                            <i class="bi bi-geo-alt" aria-hidden="true"></i> Location
+                        </a>
+                    {% elseif risk.supplier %}
+                        <a href="{{ path('app_supplier_show', {id: risk.supplier.id}) }}" class="badge bg-success" title="{{ risk.supplier.name }}">
+                            <i class="bi bi-truck" aria-hidden="true"></i> Supplier
                         </a>
                     {% else %}
-                        <span class="text-muted">0</span>
+                        <span class="badge bg-secondary">None</span>
                     {% endif %}
                 </td>
                 <td class="text-center">
