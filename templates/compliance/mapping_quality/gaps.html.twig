@@ -130,60 +130,62 @@
             <h3 class="mb-0">🔥 Critical & High Priority Gaps ({{ high_priority_gaps|length }})</h3>
         </div>
         <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th scope="col">Mapping</th>
-                            <th scope="col">Gap Type</th>
-                            <th scope="col">Priority</th>
-                            <th scope="col">Impact</th>
-                            <th scope="col">Effort</th>
-                            <th scope="col">Status</th>
-                            <th scope="col">Aktion</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for gap in high_priority_gaps|slice(0, 20) %}
-                        <tr>
-                            <td>
-                                <small>
-                                    <strong>{{ gap.mapping.sourceRequirement.framework.code }}</strong>
-                                    {{ gap.mapping.sourceRequirement.requirementId }}
-                                    →
-                                    <strong>{{ gap.mapping.targetRequirement.framework.code }}</strong>
-                                    {{ gap.mapping.targetRequirement.requirementId }}
-                                </small>
-                            </td>
-                            <td>
-                                <span class="badge badge-light">{{ gap.gapTypeLabel }}</span>
-                            </td>
-                            <td>
-                                <span class="badge badge-{{ gap.priorityBadgeClass }}">
-                                    {{ gap.priority|upper }}
-                                </span>
-                            </td>
-                            <td>
-                                <span class="badge badge-danger">-{{ gap.percentageImpact }}%</span>
-                            </td>
-                            <td>
-                                <span class="badge badge-info">{{ gap.estimatedEffort }}h</span>
-                            </td>
-                            <td>
-                                <span class="badge badge-{{ gap.statusBadgeClass }}">
-                                    {{ gap.status }}
-                                </span>
-                            </td>
-                            <td>
-                                <a href="{{ path('app_mapping_quality_review', {id: gap.mapping.id}) }}" class="btn btn-sm btn-primary">
-                                    Details
-                                </a>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+            {% embed '_components/_table.html.twig' with {
+                'class': 'table-hover',
+                'noMargin': true,
+                'responsive': true
+            } %}
+                {% block table_head %}
+                    <tr>
+                        <th scope="col">Mapping</th>
+                        <th scope="col">Gap Type</th>
+                        <th scope="col">Priority</th>
+                        <th scope="col">Impact</th>
+                        <th scope="col">Effort</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Aktion</th>
+                    </tr>
+                {% endblock %}
+                {% block table_body %}
+                    {% for gap in high_priority_gaps|slice(0, 20) %}
+                    <tr>
+                        <td>
+                            <small>
+                                <strong>{{ gap.mapping.sourceRequirement.framework.code }}</strong>
+                                {{ gap.mapping.sourceRequirement.requirementId }}
+                                →
+                                <strong>{{ gap.mapping.targetRequirement.framework.code }}</strong>
+                                {{ gap.mapping.targetRequirement.requirementId }}
+                            </small>
+                        </td>
+                        <td>
+                            <span class="badge bg-light">{{ gap.gapTypeLabel }}</span>
+                        </td>
+                        <td>
+                            <span class="badge badge-{{ gap.priorityBadgeClass }}">
+                                {{ gap.priority|upper }}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge bg-danger">-{{ gap.percentageImpact }}%</span>
+                        </td>
+                        <td>
+                            <span class="badge bg-info">{{ gap.estimatedEffort }}h</span>
+                        </td>
+                        <td>
+                            <span class="badge badge-{{ gap.statusBadgeClass }}">
+                                {{ gap.status }}
+                            </span>
+                        </td>
+                        <td>
+                            <a href="{{ path('app_mapping_quality_review', {id: gap.mapping.id}) }}" class="btn btn-sm btn-primary">
+                                Details
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% endblock %}
+            {% endembed %}
             {% if high_priority_gaps|length > 20 %}
                 <p class="text-muted text-center mb-0">... und {{ high_priority_gaps|length - 20 }} weitere</p>
             {% endif %}
@@ -199,53 +201,55 @@
         </div>
         <div class="card-body">
             <p class="text-muted">Diese Gaps haben niedrige Confidence-Scores und sollten manuell überprüft werden.</p>
-            <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th scope="col">Mapping</th>
-                            <th scope="col">Description</th>
-                            <th scope="col">Priority</th>
-                            <th scope="col">Confidence</th>
-                            <th scope="col">Impact</th>
-                            <th scope="col">Aktion</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for gap in low_confidence_gaps|slice(0, 15) %}
-                        <tr>
-                            <td>
-                                <small>
-                                    {{ gap.mapping.sourceRequirement.framework.code }}
-                                    →
-                                    {{ gap.mapping.targetRequirement.framework.code }}
-                                </small>
-                            </td>
-                            <td>
-                                <span class="badge badge-light">{{ gap.gapTypeLabel }}</span>
-                                <small class="d-block text-muted">{{ gap.description|slice(0, 80) }}...</small>
-                            </td>
-                            <td>
-                                <span class="badge badge-{{ gap.priorityBadgeClass }}">
-                                    {{ gap.priority }}
-                                </span>
-                            </td>
-                            <td>
-                                <span class="badge badge-warning">{{ gap.confidence }}%</span>
-                            </td>
-                            <td>
-                                <span class="badge badge-danger">-{{ gap.percentageImpact }}%</span>
-                            </td>
-                            <td>
-                                <a href="{{ path('app_mapping_quality_review', {id: gap.mapping.id}) }}" class="btn btn-sm btn-primary">
-                                    Review
-                                </a>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+            {% embed '_components/_table.html.twig' with {
+                'class': 'table-hover',
+                'noMargin': true,
+                'responsive': true
+            } %}
+                {% block table_head %}
+                    <tr>
+                        <th scope="col">Mapping</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Priority</th>
+                        <th scope="col">Confidence</th>
+                        <th scope="col">Impact</th>
+                        <th scope="col">Aktion</th>
+                    </tr>
+                {% endblock %}
+                {% block table_body %}
+                    {% for gap in low_confidence_gaps|slice(0, 15) %}
+                    <tr>
+                        <td>
+                            <small>
+                                {{ gap.mapping.sourceRequirement.framework.code }}
+                                →
+                                {{ gap.mapping.targetRequirement.framework.code }}
+                            </small>
+                        </td>
+                        <td>
+                            <span class="badge bg-light">{{ gap.gapTypeLabel }}</span>
+                            <small class="d-block text-muted">{{ gap.description|slice(0, 80) }}...</small>
+                        </td>
+                        <td>
+                            <span class="badge badge-{{ gap.priorityBadgeClass }}">
+                                {{ gap.priority }}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge bg-warning">{{ gap.confidence }}%</span>
+                        </td>
+                        <td>
+                            <span class="badge bg-danger">-{{ gap.percentageImpact }}%</span>
+                        </td>
+                        <td>
+                            <a href="{{ path('app_mapping_quality_review', {id: gap.mapping.id}) }}" class="btn btn-sm btn-primary">
+                                Review
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% endblock %}
+            {% endembed %}
             {% if low_confidence_gaps|length > 15 %}
                 <p class="text-muted text-center mb-0">... und {{ low_confidence_gaps|length - 15 }} weitere</p>
             {% endif %}
