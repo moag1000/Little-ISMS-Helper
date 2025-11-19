@@ -21,17 +21,21 @@
 <div style="margin-top: 2rem;">
     <h2>{{ 'entity_history.section'|trans }}</h2>
 
-    <table class="table" style="width: 100%; border-collapse: collapse; margin-top: 1rem;">
-        <thead>
-            <tr style="background: #f0f0f0;">
+    <div style="margin-top: 1rem;">
+    {% embed '_components/_table.html.twig' with {
+        'noMargin': true,
+        'responsive': true
+    } %}
+        {% block table_head %}
+            <tr>
                 <th scope="col" class="table-cell text-left">{{ 'audit_log.field.timestamp'|trans }}</th>
                 <th scope="col" class="table-cell text-left">{{ 'audit_log.field.action'|trans }}</th>
                 <th scope="col" class="table-cell text-left">{{ 'audit_log.field.user'|trans }}</th>
                 <th scope="col" class="table-cell text-left">{{ 'audit_log.field.description'|trans }}</th>
                 <th scope="col" class="table-cell text-left">{{ 'common.details'|trans }}</th>
             </tr>
-        </thead>
-        <tbody>
+        {% endblock %}
+        {% block table_body %}
             {% for log in auditLogs %}
             <tr>
                 <td class="table-cell text-sm">
@@ -57,8 +61,9 @@
                 </td>
             </tr>
             {% endfor %}
-        </tbody>
-    </table>
+        {% endblock %}
+    {% endembed %}
+    </div>
 </div>
 {% else %}
 <div class="info-box" style="margin-top: 2rem;">
