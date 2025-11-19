@@ -3,7 +3,10 @@
 namespace App\Form;
 
 use App\Entity\Asset;
+use App\Entity\Location;
+use App\Entity\Person;
 use App\Entity\Risk;
+use App\Entity\Supplier;
 use App\Entity\User;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -129,13 +132,52 @@ class RiskType extends AbstractType
                 ],
                 'help' => 'risk.help.vulnerability',
             ])
+            // Risk Subject - At least one must be selected (Asset, Person, Location, or Supplier)
             ->add('asset', EntityType::class, [
                 'label' => 'risk.field.asset',
                 'class' => Asset::class,
                 'choice_label' => 'name',
                 'placeholder' => 'risk.placeholder.asset',
-                'required' => true,
+                'required' => false,
                 'help' => 'risk.help.asset',
+                'attr' => [
+                    'class' => 'risk-subject-field',
+                ],
+            ])
+            ->add('person', EntityType::class, [
+                'label' => 'risk.field.person',
+                'class' => Person::class,
+                'choice_label' => function(Person $person) {
+                    return $person->getFullName();
+                },
+                'placeholder' => 'risk.placeholder.person',
+                'required' => false,
+                'help' => 'risk.help.person',
+                'attr' => [
+                    'class' => 'risk-subject-field',
+                ],
+            ])
+            ->add('location', EntityType::class, [
+                'label' => 'risk.field.location',
+                'class' => Location::class,
+                'choice_label' => 'name',
+                'placeholder' => 'risk.placeholder.location',
+                'required' => false,
+                'help' => 'risk.help.location',
+                'attr' => [
+                    'class' => 'risk-subject-field',
+                ],
+            ])
+            ->add('supplier', EntityType::class, [
+                'label' => 'risk.field.supplier',
+                'class' => Supplier::class,
+                'choice_label' => 'name',
+                'placeholder' => 'risk.placeholder.supplier',
+                'required' => false,
+                'help' => 'risk.help.supplier',
+                'attr' => [
+                    'class' => 'risk-subject-field',
+                ],
             ])
             ->add('probability', IntegerType::class, [
                 'label' => 'risk.field.probability',

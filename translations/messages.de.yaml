@@ -732,6 +732,39 @@ risk:
     updated: Risiko erfolgreich aktualisiert.
     deleted: Risiko erfolgreich gelöscht.
 
+  # Risk Acceptance Workflow (Priority 2.1 - ISO 27005:2022 Section 8.4.4)
+  acceptance:
+    title: 'Formale Risikoakzeptanz'
+    request: 'Akzeptanz beantragen'
+    approve: 'Akzeptanz genehmigen'
+    reject: 'Akzeptanz ablehnen'
+    justification_label: 'Begründung für die Akzeptanz'
+    justification_help: 'Erklären Sie, warum dieses Risiko akzeptiert werden sollte (trotz verbleibendem Restrisiko)'
+    required_approval_level: 'Erforderliche Genehmigungsstufe'
+    approval_threshold_info: 'Basierend auf dem Residual Risk Score (%score%) ist folgende Genehmigung erforderlich'
+    already_accepted: 'Dieses Risiko wurde bereits formal akzeptiert'
+    accepted_by: 'Genehmigt durch: %approver%'
+    accepted_at: 'Genehmigt am: %date%'
+    submit_request: 'Akzeptanzantrag einreichen'
+    comments_label: 'Kommentare (optional)'
+    reason_label: 'Ablehnungsgrund'
+    reason_help: 'Erklären Sie, warum die Akzeptanz abgelehnt wird'
+    approval_levels:
+      automatic: 'Automatische Akzeptanz'
+      manager: 'Manager-Genehmigung'
+      executive: 'Executive-Genehmigung'
+    success:
+      auto_accepted: 'Risiko wurde automatisch akzeptiert (geringes Risiko)'
+      approval_requested: 'Akzeptanzantrag wurde an %approver% gesendet (%level% Genehmigung erforderlich)'
+      approved: 'Risikoakzeptanz wurde genehmigt'
+      rejected: 'Risikoakzeptanz wurde abgelehnt'
+    error:
+      wrong_strategy: 'Nur Risiken mit "Akzeptanz"-Strategie können formal akzeptiert werden'
+      already_accepted: 'Dieses Risiko wurde bereits akzeptiert'
+      justification_required: 'Eine Begründung ist erforderlich'
+      reason_required: 'Ein Ablehnungsgrund ist erforderlich'
+      no_approver: 'Kein Genehmiger für Stufe %level% gefunden'
+
   # Validation Messages (ISO 27001 Compliance)
   validation:
     risk_owner_required: 'Ein Risikoverantwortlicher muss zugewiesen werden (ISO 27001 A.5.1/A.5.2)'
@@ -751,6 +784,9 @@ risk:
     threat: Bedrohung
     vulnerability: Verwundbarkeit
     asset: Betroffenes Asset
+    person: Betroffene Person
+    location: Betroffener Standort
+    supplier: Betroffener Lieferant
     probability: Eintrittswahrscheinlichkeit
     impact: Schadensausmaß
     residual_probability: Rest-Wahrscheinlichkeit
@@ -782,6 +818,9 @@ risk:
     threat: z.B. Externe Angreifer, Malware, Social Engineering
     vulnerability: z.B. Fehlende Backups, ungepatchte Systeme
     asset: Asset auswählen...
+    person: Person auswählen...
+    location: Standort auswählen...
+    supplier: Lieferanten auswählen...
     risk_owner: Risikoverantwortlichen auswählen...
     treatment_description: Beschreiben Sie die geplanten Maßnahmen...
     acceptance_approved_by: z.B. Max Mustermann (Geschäftsführer)
@@ -801,7 +840,10 @@ risk:
     description: Detaillierte Beschreibung des Risikos und seiner potenziellen Auswirkungen
     threat: Welche Bedrohung könnte dieses Risiko auslösen?
     vulnerability: Welche Schwachstelle könnte ausgenutzt werden?
-    asset: Wählen Sie das betroffene Asset aus
+    asset: Wählen Sie das betroffene Asset aus (mindestens eine Zuordnung erforderlich)
+    person: Wählen Sie die betroffene Person aus (mindestens eine Zuordnung erforderlich)
+    location: Wählen Sie den betroffenen Standort aus (mindestens eine Zuordnung erforderlich)
+    supplier: Wählen Sie den betroffenen Lieferanten aus (mindestens eine Zuordnung erforderlich)
     probability: 'Eintrittswahrscheinlichkeit (1=sehr unwahrscheinlich, 2=unwahrscheinlich, 3=möglich, 4=wahrscheinlich, 5=sehr wahrscheinlich)'
     impact: 'Schadensausmaß (1=unbedeutend, 2=gering, 3=moderat, 4=hoch, 5=kritisch)'
     residual_probability: Verbleibende Wahrscheinlichkeit nach Umsetzung von Maßnahmen

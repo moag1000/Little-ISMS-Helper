@@ -741,6 +741,9 @@ risk:
     threat: Threat
     vulnerability: Vulnerability
     asset: Affected Asset
+    person: Affected Person
+    location: Affected Location
+    supplier: Affected Supplier
     probability: Likelihood
     impact: Impact
     residual_probability: Residual Likelihood
@@ -772,6 +775,9 @@ risk:
     threat: e.g. External attackers, Malware, Social Engineering
     vulnerability: e.g. Missing backups, Unpatched systems
     asset: Select asset...
+    person: Select person...
+    location: Select location...
+    supplier: Select supplier...
     risk_owner: Select risk owner...
     treatment_description: Describe planned measures...
     acceptance_approved_by: e.g. John Doe (CEO)
@@ -791,7 +797,10 @@ risk:
     description: Detailed description of the risk and its potential impacts
     threat: What threat could trigger this risk?
     vulnerability: What vulnerability could be exploited?
-    asset: Select the affected asset
+    asset: Select the affected asset (at least one assignment required)
+    person: Select the affected person (at least one assignment required)
+    location: Select the affected location (at least one assignment required)
+    supplier: Select the affected supplier (at least one assignment required)
     probability: 'Likelihood of occurrence (1=very unlikely, 2=unlikely, 3=possible, 4=likely, 5=very likely)'
     impact: 'Severity of impact (1=negligible, 2=minor, 3=moderate, 4=major, 5=catastrophic)'
     residual_probability: Remaining likelihood after implementing controls
