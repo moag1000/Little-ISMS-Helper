@@ -43,7 +43,8 @@
         </div>
     {% endif %}
 
-    {% set riskClass = risk.inherentRiskLevel >= 15 ? 'critical' : (risk.inherentRiskLevel >= 8 ? 'high' : (risk.inherentRiskLevel >= 4 ? 'medium' : 'low')) %}
+    {# ISO 27001 compliant thresholds: 20/12/6 #}
+    {% set riskClass = risk.inherentRiskLevel >= 20 ? 'critical' : (risk.inherentRiskLevel >= 12 ? 'high' : (risk.inherentRiskLevel >= 6 ? 'medium' : 'low')) %}
 
     <div class="card">
         <div class="card-header">
@@ -79,7 +80,7 @@
                 <div class="assessment-card">
                     <h3>Inherent Risk</h3>
                     <div class="risk-matrix-mini">
-                        <div class="risk-score risk-level-{{ riskClass }}" style="background-color: {{ riskClass == 'critical' ? '#fecaca' : (riskClass == 'high' ? '#fed7aa' : (riskClass == 'medium' ? '#fef3c7' : '#d1fae5')) }}; color: #1f2937; font-weight: bold; padding: 1rem; border-radius: 8px; text-align: center;">
+                        <div class="risk-score risk-level-{{ riskClass }}" style="padding: 1rem; border-radius: 8px; text-align: center;">
                             {{ risk.inherentRiskLevel }}
                         </div>
                         <div class="risk-components">
@@ -91,11 +92,12 @@
                 </div>
 
                 {% if risk.residualProbability and risk.residualImpact %}
-                {% set residualClass = risk.residualRiskLevel >= 15 ? 'critical' : (risk.residualRiskLevel >= 8 ? 'high' : (risk.residualRiskLevel >= 4 ? 'medium' : 'low')) %}
+                {# ISO 27001 compliant thresholds: 20/12/6 #}
+                {% set residualClass = risk.residualRiskLevel >= 20 ? 'critical' : (risk.residualRiskLevel >= 12 ? 'high' : (risk.residualRiskLevel >= 6 ? 'medium' : 'low')) %}
                 <div class="assessment-card">
                     <h3>Residual Risk</h3>
                     <div class="risk-matrix-mini">
-                        <div class="risk-score risk-level-{{ residualClass }}" style="background-color: {{ residualClass == 'critical' ? '#fecaca' : (residualClass == 'high' ? '#fed7aa' : (residualClass == 'medium' ? '#fef3c7' : '#d1fae5')) }}; color: #1f2937; font-weight: bold; padding: 1rem; border-radius: 8px; text-align: center;">
+                        <div class="risk-score risk-level-{{ residualClass }}" style="padding: 1rem; border-radius: 8px; text-align: center;">
                             {{ risk.residualRiskLevel }}
                         </div>
                         <div class="risk-components">
@@ -265,13 +267,13 @@
     font-size: 2rem;
     font-weight: bold;
     border-radius: 8px;
-    color: white;
+    color: #1f2937;
 }
-.risk-level-low { background: #10b981; }
-.risk-level-medium { background: #f59e0b; }
-.risk-level-high { background: #f97316; }
-.risk-level-critical { background: #dc2626; }
-.risk-components { font-size: 0.9rem; color: #666; }
+.risk-level-low { background: #d1fae5; }
+.risk-level-medium { background: #fef3c7; }
+.risk-level-high { background: #fed7aa; }
+.risk-level-critical { background: #fecaca; }
+.risk-components { font-size: 0.9rem; }
 .risk-level-text { margin-top: 1rem; font-size: 1.1rem; }
 /* Data Reuse Styles */
 .controls-list, .incidents-list { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 1rem; }
@@ -341,6 +343,9 @@
         background: #1f2937;
         border-color: #374151;
     }
+    .risk-score {
+        color: #1f2937;
+    }
     .risk-components {
         color: #9ca3af;
     }
@@ -373,6 +378,9 @@
 [data-bs-theme="dark"] .assessment-card {
     background: #1f2937;
     border-color: #374151;
+}
+[data-bs-theme="dark"] .risk-score {
+    color: #1f2937;
 }
 [data-bs-theme="dark"] .risk-components {
     color: #9ca3af;
