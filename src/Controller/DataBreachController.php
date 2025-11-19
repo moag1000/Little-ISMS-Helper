@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[Route('/{_locale}/data-breach', name: 'app_data_breach_', requirements: ['_locale' => 'de|en'])]
+#[Route('/data-breach', name: 'app_data_breach_')]
 #[IsGranted('ROLE_USER')]
 class DataBreachController extends AbstractController
 {
