@@ -72,130 +72,131 @@
             </div>
             <div class="card-body">
                 {% if users|length > 0 %}
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th scope="col" style="width: 60px;"></th>
-                                    <th scope="col">Name</th>
-                                    <th scope="col">E-Mail</th>
-                                    <th scope="col">Rollen</th>
-                                    <th scope="col">Auth Provider</th>
-                                    <th scope="col">Status</th>
-                                    <th scope="col">Letzte Anmeldung</th>
-                                    <th scope="col">Aktionen</th>
-                                </tr>
-                            </thead>
-                            <tbody id="users-table-body">
-                                {% for user in users %}
-                                    <tr id="user-{{ user.id }}">
-                                        <td>
-                                            {% if user.profilePicture %}
-                                                <img src="{{ asset(user.profilePicture) }}"
-                                                     alt="{{ user.firstName }} {{ user.lastName }}"
-                                                     class="rounded-circle"
-                                                     style="width: 40px; height: 40px; object-fit: cover;">
-                                            {% else %}
-                                                <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center"
-                                                     style="width: 40px; height: 40px; font-weight: 600;">
-                                                    {{ user.firstName|slice(0, 1)|upper }}{{ user.lastName|slice(0, 1)|upper }}
-                                                </div>
-                                            {% endif %}
-                                        </td>
-                                        <td>
-                                            <a href="{{ path('user_management_show', {'id': user.id}) }}"
-                                               data-turbo-frame="_top">
-                                                {{ user.firstName }} {{ user.lastName }}
-                                            </a>
-                                        </td>
-                                        <td>{{ user.email }}</td>
-                                        <td>
-                                            {% for role in user.roles %}
-                                                <span class="badge bg-secondary">{{ role }}</span>
-                                            {% endfor %}
-                                            {% for customRole in user.customRoles %}
-                                                <span class="badge bg-info">{{ customRole.name }}</span>
-                                            {% endfor %}
-                                        </td>
-                                        <td>
-                                            {% if user.authProvider == 'azure_oauth' %}
-                                                <i class="bi bi-microsoft" aria-hidden="true"></i> Azure OAuth
-                                            {% elseif user.authProvider == 'azure_saml' %}
-                                                <i class="bi bi-microsoft" aria-hidden="true"></i> Azure SAML
-                                            {% else %}
-                                                <i class="bi bi-person-circle" aria-hidden="true"></i> Lokal
-                                            {% endif %}
-                                        </td>
-                                        <td>
-                                            {% if user.isActive %}
-                                                <span class="badge bg-success">
-                                                    <i class="bi bi-check-circle" aria-hidden="true"></i> Aktiv
-                                                </span>
-                                            {% else %}
-                                                <span class="badge bg-danger">
-                                                    <i class="bi bi-x-circle" aria-hidden="true"></i> Inaktiv
-                                                </span>
-                                            {% endif %}
-                                            {% if not user.isVerified %}
-                                                <span class="badge bg-warning">Nicht verifiziert</span>
-                                            {% endif %}
-                                        </td>
-                                        <td>
-                                            {% if user.lastLoginAt %}
-                                                {{ user.lastLoginAt|date('d.m.Y H:i') }}
-                                            {% else %}
-                                                <span class="text-muted">Nie</span>
-                                            {% endif %}
-                                        </td>
-                                        <td>
-                                            <div class="btn-group btn-group-sm" role="group">
-                                                <a href="{{ path('user_management_show', {'id': user.id}) }}"
-                                                   class="btn btn-outline-primary" title="Ansehen"
-                                                   data-turbo-frame="_top" aria-label="{{ 'common.view'|trans }}">
-                                                    <i class="bi bi-eye" aria-hidden="true"></i>
-                                                </a>
-                                                <a href="{{ path('user_management_edit', {'id': user.id}) }}"
-                                                   class="btn btn-outline-secondary" title="Bearbeiten"
-                                                   data-turbo-frame="_top" aria-label="{{ 'common.edit'|trans }}">
-                                                    <i class="bi bi-pencil" aria-hidden="true"></i>
-                                                </a>
-                                                {% if user.id != app.user.id %}
-                                                    <button type="button" class="btn btn-outline-danger"
-                                                            title="Löschen"
-                                                            data-bs-toggle="modal"
-                                                            data-bs-target="#deleteModal{{ user.id }}" aria-label="{{ 'common.delete'|trans }}">
-                                                        <i class="bi bi-trash" aria-hidden="true"></i>
-                                                    </button>
-                                                {% endif %}
+                    {% embed '_components/_table.html.twig' with {
+                        'noMargin': true
+                    } %}
+                        {% block table_head %}
+                            <tr>
+                                <th scope="col" style="width: 60px;"></th>
+                                <th scope="col">Name</th>
+                                <th scope="col">E-Mail</th>
+                                <th scope="col">Rollen</th>
+                                <th scope="col">Auth Provider</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Letzte Anmeldung</th>
+                                <th scope="col">Aktionen</th>
+                            </tr>
+                        {% endblock %}
+                        {% block table_body_attrs %}id="users-table-body"{% endblock %}
+                        {% block table_body %}
+                            {% for user in users %}
+                                <tr id="user-{{ user.id }}">
+                                    <td>
+                                        {% if user.profilePicture %}
+                                            <img src="{{ asset(user.profilePicture) }}"
+                                                 alt="{{ user.firstName }} {{ user.lastName }}"
+                                                 class="rounded-circle"
+                                                 style="width: 40px; height: 40px; object-fit: cover;">
+                                        {% else %}
+                                            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center"
+                                                 style="width: 40px; height: 40px; font-weight: 600;">
+                                                {{ user.firstName|slice(0, 1)|upper }}{{ user.lastName|slice(0, 1)|upper }}
                                             </div>
-                                        </td>
-                                    </tr>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <a href="{{ path('user_management_show', {'id': user.id}) }}"
+                                           data-turbo-frame="_top">
+                                            {{ user.firstName }} {{ user.lastName }}
+                                        </a>
+                                    </td>
+                                    <td>{{ user.email }}</td>
+                                    <td>
+                                        {% for role in user.roles %}
+                                            <span class="badge bg-secondary">{{ role }}</span>
+                                        {% endfor %}
+                                        {% for customRole in user.customRoles %}
+                                            <span class="badge bg-info">{{ customRole.name }}</span>
+                                        {% endfor %}
+                                    </td>
+                                    <td>
+                                        {% if user.authProvider == 'azure_oauth' %}
+                                            <i class="bi bi-microsoft" aria-hidden="true"></i> Azure OAuth
+                                        {% elseif user.authProvider == 'azure_saml' %}
+                                            <i class="bi bi-microsoft" aria-hidden="true"></i> Azure SAML
+                                        {% else %}
+                                            <i class="bi bi-person-circle" aria-hidden="true"></i> Lokal
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if user.isActive %}
+                                            <span class="badge bg-success">
+                                                <i class="bi bi-check-circle" aria-hidden="true"></i> Aktiv
+                                            </span>
+                                        {% else %}
+                                            <span class="badge bg-danger">
+                                                <i class="bi bi-x-circle" aria-hidden="true"></i> Inaktiv
+                                            </span>
+                                        {% endif %}
+                                        {% if not user.isVerified %}
+                                            <span class="badge bg-warning">Nicht verifiziert</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if user.lastLoginAt %}
+                                            {{ user.lastLoginAt|date('d.m.Y H:i') }}
+                                        {% else %}
+                                            <span class="text-muted">Nie</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm" role="group">
+                                            <a href="{{ path('user_management_show', {'id': user.id}) }}"
+                                               class="btn btn-outline-primary" title="Ansehen"
+                                               data-turbo-frame="_top" aria-label="{{ 'common.view'|trans }}">
+                                                <i class="bi bi-eye" aria-hidden="true"></i>
+                                            </a>
+                                            <a href="{{ path('user_management_edit', {'id': user.id}) }}"
+                                               class="btn btn-outline-secondary" title="Bearbeiten"
+                                               data-turbo-frame="_top" aria-label="{{ 'common.edit'|trans }}">
+                                                <i class="bi bi-pencil" aria-hidden="true"></i>
+                                            </a>
+                                            {% if user.id != app.user.id %}
+                                                <button type="button" class="btn btn-outline-danger"
+                                                        title="Löschen"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#deleteModal{{ user.id }}" aria-label="{{ 'common.delete'|trans }}">
+                                                    <i class="bi bi-trash" aria-hidden="true"></i>
+                                                </button>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                </tr>
 
-                                    {# Delete Confirmation Modal #}
-                                    <div class="modal fade" id="deleteModal{{ user.id }}" tabindex="-1">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h2 class="modal-title">Benutzer löschen</h2>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    Möchten Sie den Benutzer <strong>{{ user.firstName }} {{ user.lastName }}</strong> wirklich löschen?
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abbrechen</button>
-                                                    <form method="post" action="{{ path('user_management_delete', {'id': user.id}) }}" style="display: inline;">
-                                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
-                                                        <button type="submit" class="btn btn-danger">Löschen</button>
-                                                    </form>
-                                                </div>
+                                {# Delete Confirmation Modal #}
+                                <div class="modal fade" id="deleteModal{{ user.id }}" tabindex="-1">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h2 class="modal-title">Benutzer löschen</h2>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                Möchten Sie den Benutzer <strong>{{ user.firstName }} {{ user.lastName }}</strong> wirklich löschen?
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abbrechen</button>
+                                                <form method="post" action="{{ path('user_management_delete', {'id': user.id}) }}" style="display: inline;">
+                                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
+                                                    <button type="submit" class="btn btn-danger">Löschen</button>
+                                                </form>
                                             </div>
                                         </div>
                                     </div>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
+                                </div>
+                            {% endfor %}
+                        {% endblock %}
+                    {% endembed %}
                 {% else %}
                     <div class="alert alert-info">
                         <i class="bi bi-info-circle" aria-hidden="true"></i>
