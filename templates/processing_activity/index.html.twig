@@ -1,0 +1,229 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}VVT - Verzeichnis von Verarbeitungstätigkeiten{% endblock %}
+
+{% block body %}
+<div class="container-fluid mt-4">
+    {# Breadcrumb #}
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'GDPR', icon: 'bi-shield-check' },
+            { label: 'VVT - Processing Activities' }
+        ]
+    } %}
+
+    {# Page Header #}
+    {% include '_components/_page_header.html.twig' with {
+        title: 'VVT - Verzeichnis von Verarbeitungstätigkeiten',
+        subtitle: 'Art. 30 GDPR - Record of Processing Activities',
+        icon: 'bi-file-earmark-text',
+        actions: [
+            { label: 'Dashboard', url: path('app_processing_activity_dashboard'), variant: 'outline-primary', icon: 'bi-speedometer2' },
+            { label: 'Export PDF', url: path('app_processing_activity_export_pdf'), variant: 'outline-secondary', icon: 'bi-file-earmark-pdf' },
+            { label: 'Export CSV', url: path('app_processing_activity_export_csv'), variant: 'outline-secondary', icon: 'bi-filetype-csv' },
+            { label: 'New Processing Activity', url: path('app_processing_activity_new'), variant: 'primary', icon: 'bi-plus-lg' }
+        ]
+    } %}
+
+    {# Statistics Cards #}
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h6 class="text-muted mb-2">Total Activities</h6>
+                    <h2 class="mb-0">{{ statistics.total }}</h2>
+                    <small class="text-success">{{ statistics.active }} active</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h6 class="text-muted mb-2">Compliance Score</h6>
+                    <h2 class="mb-0
+                        {% if compliance_score.overall_score >= 80 %}text-success
+                        {% elseif compliance_score.overall_score >= 60 %}text-warning
+                        {% else %}text-danger{% endif %}">
+                        {{ compliance_score.overall_score }}%
+                    </h2>
+                    <small class="text-muted">{{ compliance_score.complete_activities }}/{{ compliance_score.total_activities }} complete</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h6 class="text-muted mb-2">High Risk</h6>
+                    <h2 class="mb-0">{{ statistics.high_risk }}</h2>
+                    <small class="text-danger">{{ statistics.missing_dpia }} missing DPIA</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h6 class="text-muted mb-2">Special Categories</h6>
+                    <h2 class="mb-0">{{ statistics.special_categories }}</h2>
+                    <small class="text-muted">Art. 9 data</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Filters #}
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="mb-3"><i class="bi bi-funnel" aria-hidden="true"></i> Filters</h5>
+            <div class="btn-group" role="group">
+                <a href="{{ path('app_processing_activity_index') }}"
+                   class="btn btn-outline-primary {{ current_filter == 'all' ? 'active' : '' }}">
+                    All ({{ statistics.total }})
+                </a>
+                <a href="{{ path('app_processing_activity_index', {filter: 'active'}) }}"
+                   class="btn btn-outline-success {{ current_filter == 'active' ? 'active' : '' }}">
+                    Active ({{ statistics.active }})
+                </a>
+                <a href="{{ path('app_processing_activity_index', {filter: 'incomplete'}) }}"
+                   class="btn btn-outline-warning {{ current_filter == 'incomplete' ? 'active' : '' }}">
+                    Incomplete
+                </a>
+                <a href="{{ path('app_processing_activity_index', {filter: 'requiring_dpia'}) }}"
+                   class="btn btn-outline-danger {{ current_filter == 'requiring_dpia' ? 'active' : '' }}">
+                    Requiring DPIA ({{ statistics.missing_dpia }})
+                </a>
+                <a href="{{ path('app_processing_activity_index', {filter: 'special_categories'}) }}"
+                   class="btn btn-outline-info {{ current_filter == 'special_categories' ? 'active' : '' }}">
+                    Special Categories ({{ statistics.special_categories }})
+                </a>
+                <a href="{{ path('app_processing_activity_index', {filter: 'third_country_transfers'}) }}"
+                   class="btn btn-outline-secondary {{ current_filter == 'third_country_transfers' ? 'active' : '' }}">
+                    Third Country Transfers ({{ statistics.third_country_transfers }})
+                </a>
+            </div>
+        </div>
+    </div>
+
+    {# Processing Activities Table #}
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0"><i class="bi bi-table" aria-hidden="true"></i> Processing Activities</h5>
+            <span class="badge bg-secondary">{{ processing_activities|length }} items</span>
+        </div>
+        <div class="card-body p-0">
+            {% if processing_activities|length > 0 %}
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Legal Basis</th>
+                                <th>Data Subjects</th>
+                                <th>Risk</th>
+                                <th>Status</th>
+                                <th>Completeness</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for pa in processing_activities %}
+                                <tr>
+                                    <td>
+                                        <strong>{{ pa.name }}</strong><br>
+                                        <small class="text-muted">
+                                            {% if pa.processesSpecialCategories %}
+                                                <span class="badge bg-danger">Special Categories</span>
+                                            {% endif %}
+                                            {% if pa.hasThirdCountryTransfer %}
+                                                <span class="badge bg-warning">Third Country</span>
+                                            {% endif %}
+                                            {% if pa.requiresDPIA and not pa.dpiaCompleted %}
+                                                <span class="badge bg-danger">DPIA Required</span>
+                                            {% endif %}
+                                        </small>
+                                    </td>
+                                    <td>
+                                        {% set legal_basis_labels = {
+                                            'consent': 'Consent',
+                                            'contract': 'Contract',
+                                            'legal_obligation': 'Legal Obligation',
+                                            'vital_interests': 'Vital Interests',
+                                            'public_task': 'Public Task',
+                                            'legitimate_interests': 'Legitimate Interests'
+                                        } %}
+                                        {{ legal_basis_labels[pa.legalBasis] ?? pa.legalBasis }}
+                                    </td>
+                                    <td>
+                                        {{ pa.dataSubjectCategories|length }} categories<br>
+                                        {% if pa.estimatedDataSubjectsCount %}
+                                            <small class="text-muted">~{{ pa.estimatedDataSubjectsCount }} subjects</small>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if pa.riskLevel %}
+                                            {% set risk_class = {
+                                                'low': 'success',
+                                                'medium': 'info',
+                                                'high': 'warning',
+                                                'critical': 'danger'
+                                            }[pa.riskLevel] %}
+                                            <span class="badge bg-{{ risk_class }}">{{ pa.riskLevel|upper }}</span>
+                                        {% else %}
+                                            <span class="text-muted">—</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% set status_class = {
+                                            'draft': 'secondary',
+                                            'active': 'success',
+                                            'archived': 'dark'
+                                        }[pa.status] %}
+                                        <span class="badge bg-{{ status_class }}">{{ pa.status|upper }}</span>
+                                    </td>
+                                    <td>
+                                        <div class="progress" style="height: 20px;">
+                                            {% set completeness = pa.completenessPercentage %}
+                                            {% set progress_class = completeness == 100 ? 'bg-success' : (completeness >= 70 ? 'bg-warning' : 'bg-danger') %}
+                                            <div class="progress-bar {{ progress_class }}"
+                                                 role="progressbar"
+                                                 style="width: {{ completeness }}%"
+                                                 aria-valuenow="{{ completeness }}"
+                                                 aria-valuemin="0"
+                                                 aria-valuemax="100">
+                                                {{ completeness }}%
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm" role="group">
+                                            <a href="{{ path('app_processing_activity_show', {id: pa.id}) }}"
+                                               class="btn btn-outline-primary"
+                                               title="View">
+                                                <i class="bi bi-eye" aria-hidden="true"></i>
+                                            </a>
+                                            <a href="{{ path('app_processing_activity_edit', {id: pa.id}) }}"
+                                               class="btn btn-outline-secondary"
+                                               title="Edit">
+                                                <i class="bi bi-pencil" aria-hidden="true"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="alert alert-info m-4">
+                    <i class="bi bi-info-circle" aria-hidden="true"></i>
+                    <strong>No processing activities found.</strong>
+                    {% if current_filter != 'all' %}
+                        Try changing the filter or <a href="{{ path('app_processing_activity_index') }}">view all activities</a>.
+                    {% else %}
+                        Start by <a href="{{ path('app_processing_activity_new') }}">creating your first processing activity</a>.
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

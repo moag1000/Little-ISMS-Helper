@@ -1,0 +1,286 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ processing_activity.name }} - Processing Activity{% endblock %}
+
+{% block body %}
+<div class="container-fluid mt-4">
+    {# Breadcrumb #}
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'GDPR', url: path('app_processing_activity_index'), icon: 'bi-shield-check' },
+            { label: 'VVT', url: path('app_processing_activity_index') },
+            { label: processing_activity.name }
+        ]
+    } %}
+
+    {# Page Header #}
+    {% include '_components/_page_header.html.twig' with {
+        title: processing_activity.name,
+        subtitle: 'Processing Activity Details (Art. 30 GDPR)',
+        icon: 'bi-file-earmark-text',
+        actions: [
+            { label: 'Edit', url: path('app_processing_activity_edit', {id: processing_activity.id}), variant: 'primary', icon: 'bi-pencil' },
+            { label: 'Clone', url: '#', variant: 'outline-secondary', icon: 'bi-files', attributes: 'data-action="clone"' },
+            { label: 'Back to List', url: path('app_processing_activity_index'), variant: 'outline-secondary', icon: 'bi-arrow-left' }
+        ]
+    } %}
+
+    {# Compliance Status Banner #}
+    {% if not compliance_report.is_compliant %}
+        <div class="alert alert-warning">
+            <h5><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> Compliance Issues</h5>
+            <p>This processing activity has {{ compliance_report.validation_errors|length }} validation error(s):</p>
+            <ul>
+                {% for error in compliance_report.validation_errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    {# Quick Stats #}
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h6 class="text-muted mb-2">Completeness</h6>
+                    {% set completeness = compliance_report.completeness_percentage %}
+                    <h2 class="mb-0 {{ completeness == 100 ? 'text-success' : 'text-warning' }}">{{ completeness }}%</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h6 class="text-muted mb-2">Status</h6>
+                    {% set status_class = {
+                        'draft': 'secondary',
+                        'active': 'success',
+                        'archived': 'dark'
+                    }[processing_activity.status] %}
+                    <h3 class="mb-0"><span class="badge bg-{{ status_class }}">{{ processing_activity.status|upper }}</span></h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h6 class="text-muted mb-2">Risk Level</h6>
+                    {% if processing_activity.riskLevel %}
+                        {% set risk_class = {
+                            'low': 'success',
+                            'medium': 'info',
+                            'high': 'warning',
+                            'critical': 'danger'
+                        }[processing_activity.riskLevel] %}
+                        <h3 class="mb-0"><span class="badge bg-{{ risk_class }}">{{ processing_activity.riskLevel|upper }}</span></h3>
+                    {% else %}
+                        <h3 class="mb-0 text-muted">—</h3>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h6 class="text-muted mb-2">DPIA Status</h6>
+                    {% if processing_activity.requiresDPIA %}
+                        {% if processing_activity.dpiaCompleted %}
+                            <h3 class="mb-0 text-success"><i class="bi bi-check-circle-fill" aria-hidden="true"></i></h3>
+                            <small class="text-muted">{{ processing_activity.dpiaDate|date('Y-m-d') }}</small>
+                        {% else %}
+                            <h3 class="mb-0 text-danger"><i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i></h3>
+                            <small class="text-danger">Required</small>
+                        {% endif %}
+                    {% else %}
+                        <h3 class="mb-0 text-muted">Not Required</h3>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Main Content Tabs #}
+    <ul class="nav nav-tabs" id="processingActivityTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button" role="tab">
+                <i class="bi bi-info-circle" aria-hidden="true"></i> Overview
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="data-tab" data-bs-toggle="tab" data-bs-target="#data" type="button" role="tab">
+                <i class="bi bi-database" aria-hidden="true"></i> Data Details
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="compliance-tab" data-bs-toggle="tab" data-bs-target="#compliance" type="button" role="tab">
+                <i class="bi bi-shield-check" aria-hidden="true"></i> Compliance
+            </button>
+        </li>
+    </ul>
+
+    <div class="tab-content" id="processingActivityTabsContent">
+        {# Overview Tab #}
+        <div class="tab-pane fade show active" id="overview" role="tabpanel">
+            <div class="card">
+                <div class="card-body">
+                    <h5>Basic Information</h5>
+                    <dl class="row">
+                        <dt class="col-sm-3">Name:</dt>
+                        <dd class="col-sm-9">{{ processing_activity.name }}</dd>
+
+                        <dt class="col-sm-3">Description:</dt>
+                        <dd class="col-sm-9">{{ processing_activity.description ?? '—' }}</dd>
+
+                        <dt class="col-sm-3">Purposes (Art. 30(1)(a)):</dt>
+                        <dd class="col-sm-9">
+                            {% for purpose in processing_activity.purposes %}
+                                <span class="badge bg-primary">{{ purpose }}</span>
+                            {% endfor %}
+                        </dd>
+
+                        <dt class="col-sm-3">Legal Basis (Art. 6):</dt>
+                        <dd class="col-sm-9">
+                            <strong>{{ processing_activity.legalBasis }}</strong>
+                            {% if processing_activity.legalBasisDetails %}
+                                <br><small class="text-muted">{{ processing_activity.legalBasisDetails }}</small>
+                            {% endif %}
+                        </dd>
+
+                        <dt class="col-sm-3">Responsible Department:</dt>
+                        <dd class="col-sm-9">{{ processing_activity.responsibleDepartment ?? '—' }}</dd>
+
+                        <dt class="col-sm-3">Contact Person:</dt>
+                        <dd class="col-sm-9">{{ processing_activity.contactPerson ? processing_activity.contactPerson.username : '—' }}</dd>
+
+                        <dt class="col-sm-3">DPO:</dt>
+                        <dd class="col-sm-9">{{ processing_activity.dataProtectionOfficer ? processing_activity.dataProtectionOfficer.username : '—' }}</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+
+        {# Data Details Tab #}
+        <div class="tab-pane fade" id="data" role="tabpanel">
+            <div class="card">
+                <div class="card-body">
+                    <h5>Data Subjects (Art. 30(1)(b))</h5>
+                    <dl class="row">
+                        <dt class="col-sm-3">Categories:</dt>
+                        <dd class="col-sm-9">
+                            {% for category in processing_activity.dataSubjectCategories %}
+                                <span class="badge bg-info">{{ category }}</span>
+                            {% endfor %}
+                        </dd>
+                        <dt class="col-sm-3">Estimated Count:</dt>
+                        <dd class="col-sm-9">{{ processing_activity.estimatedDataSubjectsCount ?? '—' }}</dd>
+                    </dl>
+
+                    <hr>
+
+                    <h5>Personal Data (Art. 30(1)(c))</h5>
+                    <dl class="row">
+                        <dt class="col-sm-3">Categories:</dt>
+                        <dd class="col-sm-9">
+                            {% for category in processing_activity.personalDataCategories %}
+                                <span class="badge bg-secondary">{{ category }}</span>
+                            {% endfor %}
+                        </dd>
+
+                        {% if processing_activity.processesSpecialCategories %}
+                            <dt class="col-sm-3">Special Categories (Art. 9):</dt>
+                            <dd class="col-sm-9">
+                                <span class="badge bg-danger">YES</span>
+                                {% for detail in processing_activity.specialCategoriesDetails ?? [] %}
+                                    <span class="badge bg-danger">{{ detail }}</span>
+                                {% endfor %}
+                                {% if processing_activity.legalBasisSpecialCategories %}
+                                    <br><small>Legal basis: {{ processing_activity.legalBasisSpecialCategories }}</small>
+                                {% endif %}
+                            </dd>
+                        {% endif %}
+
+                        {% if processing_activity.processesCriminalData %}
+                            <dt class="col-sm-3">Criminal Data (Art. 10):</dt>
+                            <dd class="col-sm-9"><span class="badge bg-warning">YES</span></dd>
+                        {% endif %}
+                    </dl>
+
+                    <hr>
+
+                    <h5>Retention (Art. 30(1)(f))</h5>
+                    <dl class="row">
+                        <dt class="col-sm-3">Retention Period:</dt>
+                        <dd class="col-sm-9">{{ processing_activity.retentionPeriod ?? '—' }}</dd>
+                        {% if processing_activity.retentionPeriodDays %}
+                            <dt class="col-sm-3">Days:</dt>
+                            <dd class="col-sm-9">{{ processing_activity.retentionPeriodDays }}</dd>
+                        {% endif %}
+                        {% if processing_activity.retentionLegalBasis %}
+                            <dt class="col-sm-3">Legal Basis:</dt>
+                            <dd class="col-sm-9">{{ processing_activity.retentionLegalBasis }}</dd>
+                        {% endif %}
+                    </dl>
+                </div>
+            </div>
+        </div>
+
+        {# Compliance Tab #}
+        <div class="tab-pane fade" id="compliance" role="tabpanel">
+            <div class="card">
+                <div class="card-body">
+                    <h5>Compliance Checks (Art. 30)</h5>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Check</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for check, passed in compliance_report.compliance_checks %}
+                                <tr>
+                                    <td>{{ check|replace({'_': ' '})|title }}</td>
+                                    <td>
+                                        {% if passed %}
+                                            <span class="badge bg-success"><i class="bi bi-check-circle-fill" aria-hidden="true"></i> Pass</span>
+                                        {% else %}
+                                            <span class="badge bg-danger"><i class="bi bi-x-circle-fill" aria-hidden="true"></i> Fail</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+                    <h5 class="mt-4">Technical & Organizational Measures (Art. 30(1)(g))</h5>
+                    <p>{{ processing_activity.technicalOrganizationalMeasures ?? 'Not documented' }}</p>
+
+                    {% if processing_activity.implementedControls|length > 0 %}
+                        <h6>Linked ISO 27001 Controls:</h6>
+                        <ul>
+                            {% for control in processing_activity.implementedControls %}
+                                <li>{{ control.controlId }} - {{ control.name }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Action Forms (hidden) #}
+    <form id="cloneForm" method="post" action="{{ path('app_processing_activity_clone', {id: processing_activity.id}) }}" style="display:none;">
+        <input type="hidden" name="_token" value="{{ csrf_token('clone' ~ processing_activity.id) }}">
+    </form>
+</div>
+
+<script>
+document.querySelector('[data-action="clone"]')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (confirm('Clone this processing activity?')) {
+        document.getElementById('cloneForm').submit();
+    }
+});
+</script>
+{% endblock %}
