@@ -99,99 +99,100 @@
                     </a>
                 </div>
             {% else %}
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle">
-                        <thead>
+                {% embed '_components/_table.html.twig' with {
+                    'class': 'align-middle',
+                    'noMargin': true
+                } %}
+                    {% block table_head %}
+                        <tr>
+                            <th scope="col" style="width: 60px;">{{ 'tenant.field.logo'|trans }}</th>
+                            <th scope="col">{{ 'tenant.field.code'|trans }}</th>
+                            <th scope="col">{{ 'tenant.field.name'|trans }}</th>
+                            <th scope="col">{{ 'tenant.field.users'|trans }}</th>
+                            <th scope="col">{{ 'tenant.field.azure_tenant_id'|trans }}</th>
+                            <th scope="col">{{ 'tenant.field.status'|trans }}</th>
+                            <th scope="col">{{ 'tenant.field.created'|trans }}</th>
+                            <th scope="col" class="text-end">{{ 'common.actions'|trans }}</th>
+                        </tr>
+                    {% endblock %}
+                    {% block table_body %}
+                        {% for item in tenants %}
+                            {% set tenant = item.tenant %}
                             <tr>
-                                <th scope="col" style="width: 60px;">{{ 'tenant.field.logo'|trans }}</th>
-                                <th scope="col">{{ 'tenant.field.code'|trans }}</th>
-                                <th scope="col">{{ 'tenant.field.name'|trans }}</th>
-                                <th scope="col">{{ 'tenant.field.users'|trans }}</th>
-                                <th scope="col">{{ 'tenant.field.azure_tenant_id'|trans }}</th>
-                                <th scope="col">{{ 'tenant.field.status'|trans }}</th>
-                                <th scope="col">{{ 'tenant.field.created'|trans }}</th>
-                                <th scope="col" class="text-end">{{ 'common.actions'|trans }}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for item in tenants %}
-                                {% set tenant = item.tenant %}
-                                <tr>
-                                    <td>
-                                        {% if tenant.logoPath %}
-                                            <img src="{{ asset(tenant.logoPath) }}"
-                                                 alt="{{ tenant.name }}"
-                                                 class="rounded"
-                                                 style="width: 40px; height: 40px; object-fit: contain;">
-                                        {% else %}
-                                            <div class="bg-light rounded d-flex align-items-center justify-content-center"
-                                                 style="width: 40px; height: 40px;">
-                                                <i class="bi bi-building text-muted" aria-hidden="true"></i>
-                                            </div>
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        <code class="text-primary">{{ tenant.code }}</code>
-                                    </td>
-                                    <td>
-                                        <strong>{{ tenant.name }}</strong>
-                                        {% if tenant.description %}
-                                            <br><small class="text-muted">{{ tenant.description|u.truncate(50, '...') }}</small>
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        <span class="badge bg-info">
-                                            <i class="bi bi-people" aria-hidden="true"></i> {{ item.userCount }}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        {% if tenant.azureTenantId %}
-                                            <small class="font-monospace text-muted">{{ tenant.azureTenantId|u.truncate(20, '...') }}</small>
-                                        {% else %}
-                                            <span class="text-muted">—</span>
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        {% if tenant.isActive %}
-                                            <span class="badge bg-success">
-                                                <i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'tenant.status.active'|trans }}
-                                            </span>
-                                        {% else %}
-                                            <span class="badge bg-secondary">
-                                                <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'tenant.status.inactive'|trans }}
-                                            </span>
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        <small class="text-muted">{{ tenant.createdAt|date('d.m.Y') }}</small>
-                                    </td>
-                                    <td>
-                                        <div class="btn-group btn-group-sm" role="group">
-                                            <a href="{{ path('tenant_management_show', {id: tenant.id}) }}"
-                                               class="btn btn-outline-primary"
-                                               title="{{ 'common.view'|trans }}" aria-label="{{ 'common.view'|trans }}">
-                                                <i class="bi bi-eye" aria-hidden="true"></i>
-                                            </a>
-                                            <a href="{{ path('tenant_management_edit', {id: tenant.id}) }}"
-                                               class="btn btn-outline-secondary"
-                                               title="{{ 'common.edit'|trans }}" aria-label="{{ 'common.edit'|trans }}">
-                                                <i class="bi bi-pencil" aria-hidden="true"></i>
-                                            </a>
-                                            <form method="post" action="{{ path('tenant_management_toggle', {id: tenant.id}) }}" class="d-inline">
-                                                <button type="submit"
-                                                        class="btn btn-outline-{% if tenant.isActive %}warning{% else %}success{% endif %}"
-                                                        title="{{ (tenant.isActive ? 'tenant.action.deactivate' : 'tenant.action.activate')|trans }}"
-                                                        onclick="return confirm('{{ 'tenant.confirm.toggle'|trans }}');" aria-label="{{ 'common.view'|trans }}">
-                                                    <i class="bi bi-{% if tenant.isActive %}pause{% else %}play{% endif %}-circle" aria-hidden="true"></i>
-                                                </button>
-                                            </form>
+                                <td>
+                                    {% if tenant.logoPath %}
+                                        <img src="{{ asset(tenant.logoPath) }}"
+                                             alt="{{ tenant.name }}"
+                                             class="rounded"
+                                             style="width: 40px; height: 40px; object-fit: contain;">
+                                    {% else %}
+                                        <div class="bg-light rounded d-flex align-items-center justify-content-center"
+                                             style="width: 40px; height: 40px;">
+                                            <i class="bi bi-building text-muted" aria-hidden="true"></i>
                                         </div>
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <code class="text-primary">{{ tenant.code }}</code>
+                                </td>
+                                <td>
+                                    <strong>{{ tenant.name }}</strong>
+                                    {% if tenant.description %}
+                                        <br><small class="text-muted">{{ tenant.description|u.truncate(50, '...') }}</small>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <span class="badge bg-info">
+                                        <i class="bi bi-people" aria-hidden="true"></i> {{ item.userCount }}
+                                    </span>
+                                </td>
+                                <td>
+                                    {% if tenant.azureTenantId %}
+                                        <small class="font-monospace text-muted">{{ tenant.azureTenantId|u.truncate(20, '...') }}</small>
+                                    {% else %}
+                                        <span class="text-muted">—</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if tenant.isActive %}
+                                        <span class="badge bg-success">
+                                            <i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'tenant.status.active'|trans }}
+                                        </span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">
+                                            <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'tenant.status.inactive'|trans }}
+                                        </span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <small class="text-muted">{{ tenant.createdAt|date('d.m.Y') }}</small>
+                                </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        <a href="{{ path('tenant_management_show', {id: tenant.id}) }}"
+                                           class="btn btn-outline-primary"
+                                           title="{{ 'common.view'|trans }}" aria-label="{{ 'common.view'|trans }}">
+                                            <i class="bi bi-eye" aria-hidden="true"></i>
+                                        </a>
+                                        <a href="{{ path('tenant_management_edit', {id: tenant.id}) }}"
+                                           class="btn btn-outline-secondary"
+                                           title="{{ 'common.edit'|trans }}" aria-label="{{ 'common.edit'|trans }}">
+                                            <i class="bi bi-pencil" aria-hidden="true"></i>
+                                        </a>
+                                        <form method="post" action="{{ path('tenant_management_toggle', {id: tenant.id}) }}" class="d-inline">
+                                            <button type="submit"
+                                                    class="btn btn-outline-{% if tenant.isActive %}warning{% else %}success{% endif %}"
+                                                    title="{{ (tenant.isActive ? 'tenant.action.deactivate' : 'tenant.action.activate')|trans }}"
+                                                    onclick="return confirm('{{ 'tenant.confirm.toggle'|trans }}');" aria-label="{{ 'common.view'|trans }}">
+                                                <i class="bi bi-{% if tenant.isActive %}pause{% else %}play{% endif %}-circle" aria-hidden="true"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% endblock %}
+                {% endembed %}
             {% endif %}
         </div>
     </div>
