@@ -17,7 +17,7 @@
     </div>
 
     {# Statistics Card #}
-    <div class="card" style="margin-bottom: var(--spacing-lg);">
+    <div class="card mb-4">
         <div class="card-header">
             <h2>📊 {{ 'compliance.framework_statistics'|trans }}</h2>
         </div>
@@ -61,9 +61,9 @@
                             <p>{{ framework.name }}</p>
                         </div>
                         {% if framework.loaded %}
-                            <span class="badge badge-success">{{ 'compliance.loaded'|trans }}</span>
+                            <span class="badge bg-success">{{ 'compliance.loaded'|trans }}</span>
                         {% else %}
-                            <span class="badge badge-warning">{{ 'compliance.not_loaded'|trans }}</span>
+                            <span class="badge bg-warning">{{ 'compliance.not_loaded'|trans }}</span>
                         {% endif %}
                     </div>
 
@@ -85,9 +85,9 @@
                                 <span class="label">{{ 'compliance.mandatory'|trans }}:</span>
                                 <span class="value">
                                     {% if framework.mandatory %}
-                                        <span class="badge badge-danger">{{ 'common.yes'|trans }}</span>
+                                        <span class="badge bg-danger">{{ 'common.yes'|trans }}</span>
                                     {% else %}
-                                        <span class="badge badge-secondary">{{ 'common.no'|trans }}</span>
+                                        <span class="badge bg-secondary">{{ 'common.no'|trans }}</span>
                                     {% endif %}
                                 </span>
                             </div>
@@ -545,15 +545,18 @@ document.addEventListener('turbo:before-cache', function() {
 });
 
 // Initialize on turbo:load (for Turbo navigation) OR on DOMContentLoaded (for direct page load/non-Turbo)
-let turboLoadRegistered = false;
+// Use window-scoped flag to prevent redeclaration errors during Turbo navigation
+if (!window.complianceTurboLoadRegistered) {
+    window.complianceTurboLoadRegistered = false;
+}
 document.addEventListener('turbo:load', function() {
-    turboLoadRegistered = true;
+    window.complianceTurboLoadRegistered = true;
     initializeFrameworkButtons();
     initializeDeleteButtons();
 });
 // Fallback for non-Turbo environments or if turbo:load hasn't fired
 setTimeout(function() {
-    if (!turboLoadRegistered) {
+    if (!window.complianceTurboLoadRegistered) {
         initializeFrameworkButtons();
         initializeDeleteButtons();
     }
