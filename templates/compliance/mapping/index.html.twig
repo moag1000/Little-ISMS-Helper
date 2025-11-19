@@ -22,69 +22,71 @@
                     <a href="{{ path('app_compliance_mapping_new') }}">Create a mapping</a> to show how requirements relate across frameworks.
                 </div>
             {% else %}
-                <div class="table-responsive">
-                    <table class="table table-hover mb-0">
-                        <thead class="table-light">
-                            <tr>
-                                <th scope="col">Source</th>
-                                <th scope="col">Target</th>
-                                <th scope="col">Type</th>
-                                <th scope="col">Percentage</th>
-                                <th scope="col">Confidence</th>
-                                <th scope="col">Review Status</th>
-                                <th scope="col">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for mapping in mappings %}
-                                <tr>
-                                    <td>
-                                        <small class="text-muted">{{ mapping.sourceRequirement.framework.code }}</small><br>
-                                        <strong>{{ mapping.sourceRequirement.requirementId }}</strong>
-                                    </td>
-                                    <td>
-                                        <small class="text-muted">{{ mapping.targetRequirement.framework.code }}</small><br>
-                                        <strong>{{ mapping.targetRequirement.requirementId }}</strong>
-                                    </td>
-                                    <td>
-                                        <span class="badge bg-{{ mapping.mappingBadgeClass }}">
-                                            {{ mapping.mappingType }}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <div class="progress" style="width: 100px; height: 20px;">
-                                            <div class="progress-bar bg-{{ mapping.mappingBadgeClass }}"
-                                                 role="progressbar"
-                                                 style="width: {{ mapping.finalPercentage }}%">
-                                                {{ mapping.finalPercentage }}%
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <span class="badge bg-secondary">{{ mapping.confidence }}</span>
-                                    </td>
-                                    <td>
-                                        <span class="badge bg-{{ mapping.reviewStatusBadgeClass }}">
-                                            {{ mapping.reviewStatus }}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <div class="btn-group btn-group-sm">
-                                            <a href="{{ path('app_compliance_mapping_show', {id: mapping.id}) }}"
-                                               class="btn btn-outline-primary" title="View" aria-label="{{ 'common.view'|trans }}">
-                                                <i class="bi bi-eye" aria-hidden="true"></i>
-                                            </a>
-                                            <a href="{{ path('app_compliance_mapping_edit', {id: mapping.id}) }}"
-                                               class="btn btn-outline-secondary" title="Edit" aria-label="{{ 'common.edit'|trans }}">
-                                                <i class="bi bi-pencil" aria-hidden="true"></i>
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+            {% embed '_components/_table.html.twig' with {
+                'class': 'table-hover',
+                'theadClass': 'table-light',
+                'noMargin': true
+            } %}
+                {% block table_head %}
+                    <tr>
+                        <th scope="col">Source</th>
+                        <th scope="col">Target</th>
+                        <th scope="col">Type</th>
+                        <th scope="col">Percentage</th>
+                        <th scope="col">Confidence</th>
+                        <th scope="col">Review Status</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                {% endblock %}
+                {% block table_body %}
+                    {% for mapping in mappings %}
+                        <tr>
+                            <td>
+                                <small class="text-muted">{{ mapping.sourceRequirement.framework.code }}</small><br>
+                                <strong>{{ mapping.sourceRequirement.requirementId }}</strong>
+                            </td>
+                            <td>
+                                <small class="text-muted">{{ mapping.targetRequirement.framework.code }}</small><br>
+                                <strong>{{ mapping.targetRequirement.requirementId }}</strong>
+                            </td>
+                            <td>
+                                <span class="badge bg-{{ mapping.mappingBadgeClass }}">
+                                    {{ mapping.mappingType }}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="progress" style="width: 100px; height: 20px;">
+                                    <div class="progress-bar bg-{{ mapping.mappingBadgeClass }}"
+                                         role="progressbar"
+                                         style="width: {{ mapping.finalPercentage }}%">
+                                        {{ mapping.finalPercentage }}%
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge bg-secondary">{{ mapping.confidence }}</span>
+                            </td>
+                            <td>
+                                <span class="badge bg-{{ mapping.reviewStatusBadgeClass }}">
+                                    {{ mapping.reviewStatus }}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="btn-group btn-group-sm">
+                                    <a href="{{ path('app_compliance_mapping_show', {id: mapping.id}) }}"
+                                       class="btn btn-outline-primary" title="View" aria-label="{{ 'common.view'|trans }}">
+                                        <i class="bi bi-eye" aria-hidden="true"></i>
+                                    </a>
+                                    <a href="{{ path('app_compliance_mapping_edit', {id: mapping.id}) }}"
+                                       class="btn btn-outline-secondary" title="Edit" aria-label="{{ 'common.edit'|trans }}">
+                                        <i class="bi bi-pencil" aria-hidden="true"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% endblock %}
+            {% endembed %}
             {% endif %}
         </div>
     </div>
