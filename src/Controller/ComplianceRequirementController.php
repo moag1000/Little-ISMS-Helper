@@ -42,9 +42,18 @@ class ComplianceRequirementController extends AbstractController
         }
 
         $frameworks = $this->frameworkRepository->findAll();
+        $tenant = $this->tenantContext->getCurrentTenant();
+
+        // Load tenant-specific fulfillments for all requirements (batch)
+        $fulfillments = [];
+        foreach ($requirements as $requirement) {
+            $fulfillment = $this->fulfillmentService->getOrCreateFulfillment($tenant, $requirement);
+            $fulfillments[$requirement->getId()] = $fulfillment;
+        }
 
         return $this->render('compliance/requirement/index.html.twig', [
             'requirements' => $requirements,
+            'fulfillments' => $fulfillments,
             'frameworks' => $frameworks,
             'selected_framework' => $frameworkId,
         ]);
