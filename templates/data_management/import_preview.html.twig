@@ -53,29 +53,31 @@
             </h5>
         </div>
         <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead>
+            {% embed '_components/_table.html.twig' with {
+                'class': 'table-hover',
+                'noMargin': true,
+                'responsive': true
+            } %}
+                {% block table_head %}
+                    <tr>
+                        <th scope="col">Entity</th>
+                        <th scope="col" class="text-end">Record Count</th>
+                    </tr>
+                {% endblock %}
+                {% block table_body %}
+                    {% for entity, count in stats %}
                         <tr>
-                            <th scope="col">Entity</th>
-                            <th scope="col" class="text-end">Record Count</th>
+                            <td>
+                                <i class="bi bi-folder" aria-hidden="true"></i>
+                                <strong>{{ entity }}</strong>
+                            </td>
+                            <td class="text-end">
+                                <span class="badge bg-primary">{{ count }}</span>
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        {% for entity, count in stats %}
-                            <tr>
-                                <td>
-                                    <i class="bi bi-folder" aria-hidden="true"></i>
-                                    <strong>{{ entity }}</strong>
-                                </td>
-                                <td class="text-end">
-                                    <span class="badge bg-primary">{{ count }}</span>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+                    {% endfor %}
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 
@@ -89,28 +91,31 @@
                     </h6>
                 </div>
                 <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-sm table-bordered">
-                            <thead class="table-light">
+                    {% embed '_components/_table.html.twig' with {
+                        'class': 'table-sm table-bordered',
+                        'theadClass': 'table-light',
+                        'noMargin': true,
+                        'responsive': true
+                    } %}
+                        {% block table_head %}
+                            <tr>
+                                {% for field in records[0]|keys %}
+                                    <th scope="col">{{ field }}</th>
+                                {% endfor %}
+                            </tr>
+                        {% endblock %}
+                        {% block table_body %}
+                            {% for record in records|slice(0, 3) %}
                                 <tr>
-                                    {% for field in records[0]|keys %}
-                                        <th scope="col">{{ field }}</th>
+                                    {% for value in record %}
+                                        <td>
+                                            <small>{{ value|slice(0, 50) }}{% if value|length > 50 %}...{% endif %}</small>
+                                        </td>
                                     {% endfor %}
                                 </tr>
-                            </thead>
-                            <tbody>
-                                {% for record in records|slice(0, 3) %}
-                                    <tr>
-                                        {% for value in record %}
-                                            <td>
-                                                <small>{{ value|slice(0, 50) }}{% if value|length > 50 %}...{% endif %}</small>
-                                            </td>
-                                        {% endfor %}
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
+                            {% endfor %}
+                        {% endblock %}
+                    {% endembed %}
                     {% if records|length > 3 %}
                         <small class="text-muted">... and {{ records|length - 3 }} more records</small>
                     {% endif %}

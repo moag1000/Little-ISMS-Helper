@@ -93,49 +93,51 @@
                             Noch keine Backups vorhanden. Erstellen Sie Ihr erstes Backup oben.
                         </div>
                     {% else %}
-                        <div class="table-responsive">
-                            <table class="table table-hover">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Dateiname</th>
-                                        <th scope="col">Erstellt am</th>
-                                        <th scope="col">Größe</th>
-                                        <th scope="col">Aktionen</th>
+                        {% embed '_components/_table.html.twig' with {
+                            'class': 'table-hover',
+                            'noMargin': true,
+                            'responsive': true
+                        } %}
+                            {% block table_head %}
+                                <tr>
+                                    <th scope="col">Dateiname</th>
+                                    <th scope="col">Erstellt am</th>
+                                    <th scope="col">Größe</th>
+                                    <th scope="col">Aktionen</th>
+                                </tr>
+                            {% endblock %}
+                            {% block table_body %}
+                                {% for backup in backups %}
+                                    <tr data-backup="{{ backup.filename }}">
+                                        <td>
+                                            <i class="bi bi-file-earmark-zip" aria-hidden="true"></i>
+                                            {{ backup.filename }}
+                                        </td>
+                                        <td>{{ backup.created_at }}</td>
+                                        <td>{{ (backup.size / 1024 / 1024)|number_format(2) }} MB</td>
+                                        <td>
+                                            <div class="btn-group btn-group-sm" role="group">
+                                                <button type="button" class="btn btn-outline-primary validate-backup" data-filename="{{ backup.filename }}">
+                                                    <i class="bi bi-check-circle" aria-hidden="true"></i> Validieren
+                                                </button>
+                                                <button type="button" class="btn btn-outline-info preview-backup" data-filename="{{ backup.filename }}">
+                                                    <i class="bi bi-eye" aria-hidden="true"></i> Vorschau
+                                                </button>
+                                                <a href="{{ path('data_backup_download', {filename: backup.filename}) }}" class="btn btn-outline-success">
+                                                    <i class="bi bi-download" aria-hidden="true"></i> Download
+                                                </a>
+                                                <button type="button" class="btn btn-outline-warning restore-backup" data-filename="{{ backup.filename }}">
+                                                    <i class="bi bi-arrow-clockwise" aria-hidden="true"></i> Wiederherstellen
+                                                </button>
+                                                <button type="button" class="btn btn-outline-danger delete-backup" data-filename="{{ backup.filename }}">
+                                                    <i class="bi bi-trash" aria-hidden="true"></i> Löschen
+                                                </button>
+                                            </div>
+                                        </td>
                                     </tr>
-                                </thead>
-                                <tbody>
-                                    {% for backup in backups %}
-                                        <tr data-backup="{{ backup.filename }}">
-                                            <td>
-                                                <i class="bi bi-file-earmark-zip" aria-hidden="true"></i>
-                                                {{ backup.filename }}
-                                            </td>
-                                            <td>{{ backup.created_at }}</td>
-                                            <td>{{ (backup.size / 1024 / 1024)|number_format(2) }} MB</td>
-                                            <td>
-                                                <div class="btn-group btn-group-sm" role="group">
-                                                    <button type="button" class="btn btn-outline-primary validate-backup" data-filename="{{ backup.filename }}">
-                                                        <i class="bi bi-check-circle" aria-hidden="true"></i> Validieren
-                                                    </button>
-                                                    <button type="button" class="btn btn-outline-info preview-backup" data-filename="{{ backup.filename }}">
-                                                        <i class="bi bi-eye" aria-hidden="true"></i> Vorschau
-                                                    </button>
-                                                    <a href="{{ path('data_backup_download', {filename: backup.filename}) }}" class="btn btn-outline-success">
-                                                        <i class="bi bi-download" aria-hidden="true"></i> Download
-                                                    </a>
-                                                    <button type="button" class="btn btn-outline-warning restore-backup" data-filename="{{ backup.filename }}">
-                                                        <i class="bi bi-arrow-clockwise" aria-hidden="true"></i> Wiederherstellen
-                                                    </button>
-                                                    <button type="button" class="btn btn-outline-danger delete-backup" data-filename="{{ backup.filename }}">
-                                                        <i class="bi bi-trash" aria-hidden="true"></i> Löschen
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
+                                {% endfor %}
+                            {% endblock %}
+                        {% endembed %}
                     {% endif %}
                 </div>
             </div>
@@ -820,7 +822,10 @@
 
         // Initialize on turbo:load (for Turbo navigation) OR on immediate/DOMContentLoaded
         // But NOT both - prevent double initialization
-        let turboLoadRegistered = false;
+        // Use window-scoped flag to prevent redeclaration errors during Turbo navigation
+        if (!window.backupTurboLoadRegistered) {
+            window.backupTurboLoadRegistered = false;
+        }
 
         // Helper function to wait for Bootstrap to be available
         function waitForBootstrap(callback, maxAttempts = 10) {
@@ -840,7 +845,7 @@
         }
 
         document.addEventListener('turbo:load', function() {
-            turboLoadRegistered = true;
+            window.backupTurboLoadRegistered = true;
             window.backupPageInitialized = false; // Reset on each Turbo navigation
             waitForBootstrap(initBackupPage);
         });
@@ -848,7 +853,7 @@
         // Only use DOMContentLoaded/immediate if turbo:load hasn't fired yet
         // Give turbo:load 100ms to fire first
         setTimeout(function() {
-            if (!turboLoadRegistered && !window.backupPageInitialized) {
+            if (!window.backupTurboLoadRegistered && !window.backupPageInitialized) {
                 waitForBootstrap(initBackupPage);
             }
         }, 100);

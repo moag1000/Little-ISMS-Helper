@@ -74,6 +74,19 @@ class Risk
     #[Assert\Length(max: 255, maxMessage: 'Risk title cannot exceed {{ limit }} characters')]
     private ?string $title = null;
 
+    /**
+     * Risk Category (ISO 27005:2022 Section 8.2.3)
+     * Categorization for better risk grouping and reporting
+     */
+    #[ORM\Column(length: 100)]
+    #[Groups(['risk:read', 'risk:write'])]
+    #[Assert\NotBlank(message: 'risk.validation.category_required')]
+    #[Assert\Choice(
+        choices: ['financial', 'operational', 'compliance', 'strategic', 'reputational', 'security'],
+        message: 'risk.validation.category_invalid'
+    )]
+    private ?string $category = null;
+
     #[ORM\Column(type: Types::TEXT)]
     #[Groups(['risk:read', 'risk:write'])]
     #[Assert\NotBlank(message: 'Risk description is required')]
@@ -231,6 +244,17 @@ class Risk
     public function setTitle(string $title): static
     {
         $this->title = $title;
+        return $this;
+    }
+
+    public function getCategory(): ?string
+    {
+        return $this->category;
+    }
+
+    public function setCategory(string $category): static
+    {
+        $this->category = $category;
         return $this;
     }
 

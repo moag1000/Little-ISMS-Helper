@@ -700,6 +700,7 @@ risk:
   # Field Labels (Form Labels)
   field:
     title: Risk Title
+    category: Risk Category
     description: Description
     threat: Threat
     vulnerability: Vulnerability
@@ -727,6 +728,7 @@ risk:
   # Placeholders
   placeholder:
     title: e.g. Data loss from ransomware attack
+    category: Select risk category...
     description: Describe the risk in detail...
     threat: e.g. External attackers, Malware, Social Engineering
     vulnerability: e.g. Missing backups, Unpatched systems
@@ -739,6 +741,7 @@ risk:
   # Help Text
   help:
     title: Short, concise risk title
+    category: 'Select the risk category for better grouping and reporting (ISO 27005:2022 Section 8.2.3)'
     description: Detailed description of the risk and its potential impacts
     threat: What threat could trigger this risk?
     vulnerability: What vulnerability could be exploited?
@@ -773,6 +776,15 @@ risk:
     monitored: Monitored
     closed: Closed
     accepted: Accepted
+
+  # Risk Categories (ISO 27005:2022 Section 8.2.3)
+  category:
+    financial: Financial Risks
+    operational: Operational Risks
+    compliance: Compliance Risks
+    strategic: Strategic Risks
+    reputational: Reputational Risks
+    security: Information Security Risks
 
   # Sections
   section:
