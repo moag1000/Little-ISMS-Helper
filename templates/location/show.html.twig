@@ -7,7 +7,7 @@
     <div>
         <h1>{{ location.name }}</h1>
         <div class="mt-2">
-            <span class="badge badge-info">{{ ('location.type.' ~ location.locationType)|trans }}</span>
+            <span class="badge bg-info">{{ ('location.type.' ~ location.locationType)|trans }}</span>
             {% if location.code %}
                 <code class="ml-sm">{{ location.code }}</code>
             {% endif %}
@@ -70,9 +70,9 @@
         <div class="stat-item">
             <strong>
                 {% if location.requiresBadgeAccess %}
-                    <span class="badge badge-success">{{ 'common.yes'|trans }}</span>
+                    <span class="badge bg-success">{{ 'common.yes'|trans }}</span>
                 {% else %}
-                    <span class="badge badge-secondary">{{ 'common.no'|trans }}</span>
+                    <span class="badge bg-secondary">{{ 'common.no'|trans }}</span>
                 {% endif %}
             </strong>
             <span>{{ 'location.field.badge_access'|trans }}</span>
@@ -105,42 +105,45 @@
 {% if location.childLocations|length > 0 %}
 <div class="card mb-4">
     <h2>{{ 'location.section.child_locations'|trans }} ({{ location.childLocations|length }})</h2>
-    <div class="table-container mt-2">
-        <table>
-            <thead>
-                <tr>
-                    <th scope="col">{{ 'location.field.name'|trans }}</th>
-                    <th scope="col">{{ 'location.field.type'|trans }}</th>
-                    <th scope="col">{{ 'location.field.security_level'|trans }}</th>
-                    <th scope="col" class="text-center">{{ 'common.actions'|trans }}</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for child in location.childLocations %}
-                <tr>
-                    <td>{{ child.name }}</td>
-                    <td><span class="badge badge-info">{{ ('location.type.' ~ child.locationType)|trans }}</span></td>
-                    <td>
-                        {% set securityColors = {
-                            'public': 'secondary',
-                            'restricted': 'info',
-                            'controlled': 'warning',
-                            'secure': 'warning',
-                            'high_security': 'danger'
-                        } %}
-                        <span class="badge badge-{{ securityColors[child.securityLevel] ?? 'secondary' }}">
-                            {{ ('location.security.' ~ child.securityLevel)|trans }}
-                        </span>
-                    </td>
-                    <td class="text-center">
-                        <a href="{{ path('app_location_show', {id: child.id}) }}" class="btn btn-sm">
-                            👁 {{ 'common.view'|trans }}
-                        </a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    <div class="mt-2">
+    {% embed '_components/_table.html.twig' with {
+        'noMargin': true,
+        'responsive': true
+    } %}
+        {% block table_head %}
+            <tr>
+                <th scope="col">{{ 'location.field.name'|trans }}</th>
+                <th scope="col">{{ 'location.field.type'|trans }}</th>
+                <th scope="col">{{ 'location.field.security_level'|trans }}</th>
+                <th scope="col" class="text-center">{{ 'common.actions'|trans }}</th>
+            </tr>
+        {% endblock %}
+        {% block table_body %}
+            {% for child in location.childLocations %}
+            <tr>
+                <td>{{ child.name }}</td>
+                <td><span class="badge bg-info">{{ ('location.type.' ~ child.locationType)|trans }}</span></td>
+                <td>
+                    {% set securityColors = {
+                        'public': 'secondary',
+                        'restricted': 'info',
+                        'controlled': 'warning',
+                        'secure': 'warning',
+                        'high_security': 'danger'
+                    } %}
+                    <span class="badge badge-{{ securityColors[child.securityLevel] ?? 'secondary' }}">
+                        {{ ('location.security.' ~ child.securityLevel)|trans }}
+                    </span>
+                </td>
+                <td class="text-center">
+                    <a href="{{ path('app_location_show', {id: child.id}) }}" class="btn btn-sm">
+                        👁 {{ 'common.view'|trans }}
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        {% endblock %}
+    {% endembed %}
     </div>
 </div>
 {% endif %}
@@ -152,9 +155,9 @@
         <div class="stat-item">
             <strong>
                 {% if location.active %}
-                    <span class="badge badge-success">{{ 'common.active'|trans }}</span>
+                    <span class="badge bg-success">{{ 'common.active'|trans }}</span>
                 {% else %}
-                    <span class="badge badge-secondary">{{ 'common.inactive'|trans }}</span>
+                    <span class="badge bg-secondary">{{ 'common.inactive'|trans }}</span>
                 {% endif %}
             </strong>
             <span>{{ 'location.field.status'|trans }}</span>
@@ -163,7 +166,7 @@
         <div class="stat-item">
             <strong>
                 {% if location.accessControlSystem %}
-                    <span class="badge badge-info">{{ location.accessControlSystem }}</span>
+                    <span class="badge bg-info">{{ location.accessControlSystem }}</span>
                 {% else %}
                     <span class="text-muted-color">-</span>
                 {% endif %}

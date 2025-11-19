@@ -205,102 +205,106 @@
 
         <div class="card-body p-0">
             {% if documents|length > 0 %}
-            <div class="table-responsive">
-                <table class="table table-hover table-bulk-selectable mb-0">
-                    <thead class="thead-sticky">
-                        <tr>
-                            <th scope="col" class="bulk-select-column">
-                                <input type="checkbox"
-                                       data-action="bulk-actions#selectAll"
-                                       data-bulk-actions-target="selectAllCheckbox"
-                                       aria-label="{{ 'bulk_actions.select_all'|trans|default('Alle auswählen') }}">
-                            </th>
-                            <th scope="col" class="w-50px"><span class="visually-hidden">{{ 'document.table.icon'|trans|default('Dateityp') }}</span></th>
-                            <th scope="col">{{ 'common.name'|trans }}</th>
-                            <th scope="col" class="w-150px">{{ 'common.category'|trans }}</th>
-                            <th scope="col" class="w-100px">{{ 'common.size'|trans }}</th>
-                            <th scope="col" class="w-150px">{{ 'document.table.uploaded_by'|trans }}</th>
-                            <th scope="col" class="w-130px">{{ 'common.date'|trans }}</th>
-                            <th scope="col" class="w-180px text-right">{{ 'common.actions'|trans }}</th>
-                        </tr>
-                    </thead>
-                    <tbody id="documentTableBody">
-                        {% for document in documents %}
-                        <tr class="document-row"
-                            data-category="{{ document.category|lower }}"
-                            data-name="{{ document.originalFilename|lower }}">
-                            <td class="bulk-select-column">
-                                <input type="checkbox"
-                                       data-bulk-actions-target="item"
-                                       data-action="bulk-actions#selectItem"
-                                       value="{{ document.id }}">
-                            </td>
-                            <td>
-                                {# File Type Icon #}
-                                {% if document.mimeType == 'application/pdf' %}
-                                    <i class="bi bi-file-pdf-fill text-danger fs-15" aria-hidden="true"></i>
-                                {% elseif document.mimeType starts with 'image/' %}
-                                    <i class="bi bi-file-image-fill text-primary fs-15" aria-hidden="true"></i>
-                                {% elseif document.mimeType matches '/spreadsheet/' %}
-                                    <i class="bi bi-file-earmark-spreadsheet-fill text-success fs-15" aria-hidden="true"></i>
-                                {% elseif document.mimeType matches '/word/' or document.mimeType matches '/document/' %}
-                                    <i class="bi bi-file-word-fill text-info fs-15" aria-hidden="true"></i>
-                                {% else %}
-                                    <i class="bi bi-file-earmark-fill text-secondary fs-15" aria-hidden="true"></i>
-                                {% endif %}
-                            </td>
-                            <td>
-                                <a href="{{ path('app_document_show', {id: document.id}) }}" class="text-decoration-none">
-                                    <strong>{{ document.originalFilename }}</strong>
+            {% embed '_components/_table.html.twig' with {
+                'class': 'table-hover table-bulk-selectable mb-0',
+                'theadClass': 'thead-sticky',
+                'noMargin': true,
+                'responsive': true
+            } %}
+                {% block table_head %}
+                    <tr>
+                        <th scope="col" class="bulk-select-column">
+                            <input type="checkbox"
+                                   data-action="bulk-actions#selectAll"
+                                   data-bulk-actions-target="selectAllCheckbox"
+                                   aria-label="{{ 'bulk_actions.select_all'|trans|default('Alle auswählen') }}">
+                        </th>
+                        <th scope="col" class="w-50px"><span class="visually-hidden">{{ 'document.table.icon'|trans|default('Dateityp') }}</span></th>
+                        <th scope="col">{{ 'common.name'|trans }}</th>
+                        <th scope="col" class="w-150px">{{ 'common.category'|trans }}</th>
+                        <th scope="col" class="w-100px">{{ 'common.size'|trans }}</th>
+                        <th scope="col" class="w-150px">{{ 'document.table.uploaded_by'|trans }}</th>
+                        <th scope="col" class="w-130px">{{ 'common.date'|trans }}</th>
+                        <th scope="col" class="w-180px text-right">{{ 'common.actions'|trans }}</th>
+                    </tr>
+                {% endblock %}
+                {% block table_body_attrs %}id="documentTableBody"{% endblock %}
+                {% block table_body %}
+                    {% for document in documents %}
+                    <tr class="document-row"
+                        data-category="{{ document.category|lower }}"
+                        data-name="{{ document.originalFilename|lower }}">
+                        <td class="bulk-select-column">
+                            <input type="checkbox"
+                                   data-bulk-actions-target="item"
+                                   data-action="bulk-actions#selectItem"
+                                   value="{{ document.id }}">
+                        </td>
+                        <td>
+                            {# File Type Icon #}
+                            {% if document.mimeType == 'application/pdf' %}
+                                <i class="bi bi-file-pdf-fill text-danger fs-15" aria-hidden="true"></i>
+                            {% elseif document.mimeType starts with 'image/' %}
+                                <i class="bi bi-file-image-fill text-primary fs-15" aria-hidden="true"></i>
+                            {% elseif document.mimeType matches '/spreadsheet/' %}
+                                <i class="bi bi-file-earmark-spreadsheet-fill text-success fs-15" aria-hidden="true"></i>
+                            {% elseif document.mimeType matches '/word/' or document.mimeType matches '/document/' %}
+                                <i class="bi bi-file-word-fill text-info fs-15" aria-hidden="true"></i>
+                            {% else %}
+                                <i class="bi bi-file-earmark-fill text-secondary fs-15" aria-hidden="true"></i>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{{ path('app_document_show', {id: document.id}) }}" class="text-decoration-none">
+                                <strong>{{ document.originalFilename }}</strong>
+                            </a>
+                            {{ inheritance.small_badge(document, currentTenant) }}
+                            {% if document.description %}
+                            <br>
+                            <small class="text-muted">{{ document.description|length > 60 ? document.description|slice(0, 60) ~ '...' : document.description }}</small>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <span class="badge bg-secondary">{{ document.category|capitalize }}</span>
+                        </td>
+                        <td>
+                            {{ document.fileSizeFormatted }}
+                        </td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-person-circle me-1" aria-hidden="true"></i>
+                                {{ document.uploadedBy ? document.uploadedBy.fullName : '-' }}
+                            </div>
+                        </td>
+                        <td>
+                            <i class="bi bi-calendar3" aria-hidden="true"></i>
+                            {{ document.uploadedAt|date('d.m.Y') }}
+                            <br>
+                            <small class="text-muted">{{ document.uploadedAt|date('H:i') }}</small>
+                        </td>
+                        <td class="text-right">
+                            <div class="btn-group btn-group-sm">
+                                <a href="{{ path('app_document_download', {id: document.id}) }}"
+                                   class="btn btn-sm btn-outline-success"
+                                   title="{{ 'common.download'|trans }}" aria-label="{{ 'common.download'|trans }}">
+                                    <i class="bi bi-download" aria-hidden="true"></i>
                                 </a>
-                                {{ inheritance.small_badge(document, currentTenant) }}
-                                {% if document.description %}
-                                <br>
-                                <small class="text-muted">{{ document.description|length > 60 ? document.description|slice(0, 60) ~ '...' : document.description }}</small>
-                                {% endif %}
-                            </td>
-                            <td>
-                                <span class="badge bg-secondary">{{ document.category|capitalize }}</span>
-                            </td>
-                            <td>
-                                {{ document.fileSizeFormatted }}
-                            </td>
-                            <td>
-                                <div class="d-flex align-items-center">
-                                    <i class="bi bi-person-circle me-1" aria-hidden="true"></i>
-                                    {{ document.uploadedBy ? document.uploadedBy.fullName : '-' }}
-                                </div>
-                            </td>
-                            <td>
-                                <i class="bi bi-calendar3" aria-hidden="true"></i>
-                                {{ document.uploadedAt|date('d.m.Y') }}
-                                <br>
-                                <small class="text-muted">{{ document.uploadedAt|date('H:i') }}</small>
-                            </td>
-                            <td class="text-right">
-                                <div class="btn-group btn-group-sm">
-                                    <a href="{{ path('app_document_download', {id: document.id}) }}"
-                                       class="btn btn-sm btn-outline-success"
-                                       title="{{ 'common.download'|trans }}" aria-label="{{ 'common.download'|trans }}">
-                                        <i class="bi bi-download" aria-hidden="true"></i>
-                                    </a>
-                                    <a href="{{ path('app_document_show', {id: document.id}) }}"
-                                       class="btn btn-sm btn-outline-primary"
-                                       title="{{ 'common.details'|trans }}" aria-label="{{ 'common.view'|trans }}">
-                                        <i class="bi bi-eye" aria-hidden="true"></i>
-                                    </a>
-                                    <a href="{{ path('app_document_edit', {id: document.id}) }}"
-                                       class="btn btn-sm btn-outline-secondary"
-                                       title="{{ 'common.edit'|trans }}" aria-label="{{ 'common.edit'|trans }}">
-                                        <i class="bi bi-pencil" aria-hidden="true"></i>
-                                    </a>
-                                </div>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+                                <a href="{{ path('app_document_show', {id: document.id}) }}"
+                                   class="btn btn-sm btn-outline-primary"
+                                   title="{{ 'common.details'|trans }}" aria-label="{{ 'common.view'|trans }}">
+                                    <i class="bi bi-eye" aria-hidden="true"></i>
+                                </a>
+                                <a href="{{ path('app_document_edit', {id: document.id}) }}"
+                                   class="btn btn-sm btn-outline-secondary"
+                                   title="{{ 'common.edit'|trans }}" aria-label="{{ 'common.edit'|trans }}">
+                                    <i class="bi bi-pencil" aria-hidden="true"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% endblock %}
+            {% endembed %}
 
             {# No Results Message #}
             <div id="noResults" class="text-center p-5 d-none">
