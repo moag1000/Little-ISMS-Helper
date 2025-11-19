@@ -49,37 +49,6 @@ class ComplianceRequirement
     private Collection $detailedRequirements;
 
     /**
-     * @deprecated Use ComplianceRequirementFulfillment instead
-     * These fields will be removed in Phase 2B after full migration
-     */
-    #[ORM\Column]
-    private ?bool $applicable = true;
-
-    /**
-     * @deprecated Use ComplianceRequirementFulfillment instead
-     */
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
-    private ?string $applicabilityJustification = null;
-
-    /**
-     * @deprecated Use ComplianceRequirementFulfillment instead
-     */
-    #[ORM\Column]
-    private int $fulfillmentPercentage = 0;
-
-    /**
-     * @deprecated Use ComplianceRequirementFulfillment instead
-     */
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
-    private ?string $fulfillmentNotes = null;
-
-    /**
-     * @deprecated Use ComplianceRequirementFulfillment instead
-     */
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
-    private ?string $evidenceDescription = null;
-
-    /**
      * @var Collection<int, Control>
      */
     #[ORM\ManyToMany(targetEntity: Control::class)]
@@ -96,24 +65,6 @@ class ComplianceRequirement
 
     #[ORM\Column(type: Types::JSON, nullable: true)]
     private ?array $dataSourceMapping = null; // Maps to Asset, Risk, BCM, etc.
-
-    /**
-     * @deprecated Use ComplianceRequirementFulfillment instead
-     */
-    #[ORM\Column(length: 100, nullable: true)]
-    private ?string $responsiblePerson = null;
-
-    /**
-     * @deprecated Use ComplianceRequirementFulfillment instead
-     */
-    #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
-    private ?\DateTimeInterface $targetDate = null;
-
-    /**
-     * @deprecated Use ComplianceRequirementFulfillment instead
-     */
-    #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
-    private ?\DateTimeInterface $lastAssessmentDate = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private ?\DateTimeInterface $createdAt = null;
@@ -197,91 +148,6 @@ class ComplianceRequirement
     public function setPriority(string $priority): static
     {
         $this->priority = $priority;
-        return $this;
-    }
-
-    /**
-     * @deprecated Use ComplianceRequirementFulfillment instead
-     */
-    public function isApplicable(): ?bool
-    {
-        return $this->applicable;
-    }
-
-    /**
-     * @deprecated Use ComplianceRequirementFulfillment instead
-     */
-    public function setApplicable(bool $applicable): static
-    {
-        $this->applicable = $applicable;
-        return $this;
-    }
-
-    /**
-     * @deprecated Use ComplianceRequirementFulfillment instead
-     */
-    public function getApplicabilityJustification(): ?string
-    {
-        return $this->applicabilityJustification;
-    }
-
-    /**
-     * @deprecated Use ComplianceRequirementFulfillment instead
-     */
-    public function setApplicabilityJustification(?string $applicabilityJustification): static
-    {
-        $this->applicabilityJustification = $applicabilityJustification;
-        return $this;
-    }
-
-    /**
-     * @deprecated Use ComplianceRequirementFulfillment instead
-     */
-    public function getFulfillmentPercentage(): int
-    {
-        return $this->fulfillmentPercentage;
-    }
-
-    /**
-     * @deprecated Use ComplianceRequirementFulfillment instead
-     */
-    public function setFulfillmentPercentage(int $fulfillmentPercentage): static
-    {
-        $this->fulfillmentPercentage = $fulfillmentPercentage;
-        return $this;
-    }
-
-    /**
-     * @deprecated Use ComplianceRequirementFulfillment instead
-     */
-    public function getFulfillmentNotes(): ?string
-    {
-        return $this->fulfillmentNotes;
-    }
-
-    /**
-     * @deprecated Use ComplianceRequirementFulfillment instead
-     */
-    public function setFulfillmentNotes(?string $fulfillmentNotes): static
-    {
-        $this->fulfillmentNotes = $fulfillmentNotes;
-        return $this;
-    }
-
-    /**
-     * @deprecated Use ComplianceRequirementFulfillment instead
-     */
-    public function getEvidenceDescription(): ?string
-    {
-        return $this->evidenceDescription;
-    }
-
-    /**
-     * @deprecated Use ComplianceRequirementFulfillment instead
-     */
-    public function setEvidenceDescription(?string $evidenceDescription): static
-    {
-        $this->evidenceDescription = $evidenceDescription;
         return $this;
     }
 
@@ -378,57 +244,6 @@ class ComplianceRequirement
         return $this;
     }
 
-    /**
-     * @deprecated Use ComplianceRequirementFulfillment instead
-     */
-    public function getResponsiblePerson(): ?string
-    {
-        return $this->responsiblePerson;
-    }
-
-    /**
-     * @deprecated Use ComplianceRequirementFulfillment instead
-     */
-    public function setResponsiblePerson(?string $responsiblePerson): static
-    {
-        $this->responsiblePerson = $responsiblePerson;
-        return $this;
-    }
-
-    /**
-     * @deprecated Use ComplianceRequirementFulfillment instead
-     */
-    public function getTargetDate(): ?\DateTimeInterface
-    {
-        return $this->targetDate;
-    }
-
-    /**
-     * @deprecated Use ComplianceRequirementFulfillment instead
-     */
-    public function setTargetDate(?\DateTimeInterface $targetDate): static
-    {
-        $this->targetDate = $targetDate;
-        return $this;
-    }
-
-    /**
-     * @deprecated Use ComplianceRequirementFulfillment instead
-     */
-    public function getLastAssessmentDate(): ?\DateTimeInterface
-    {
-        return $this->lastAssessmentDate;
-    }
-
-    /**
-     * @deprecated Use ComplianceRequirementFulfillment instead
-     */
-    public function setLastAssessmentDate(?\DateTimeInterface $lastAssessmentDate): static
-    {
-        $this->lastAssessmentDate = $lastAssessmentDate;
-        return $this;
-    }
-
     public function getCreatedAt(): ?\DateTimeInterface
     {
         return $this->createdAt;
@@ -477,26 +292,6 @@ class ComplianceRequirement
         }
 
         return (int) round($totalImplementation / $this->mappedControls->count());
-    }
-
-    /**
-     * Get fulfillment status badge class
-     */
-    public function getFulfillmentStatusBadge(): string
-    {
-        if (!$this->applicable) {
-            return 'secondary';
-        }
-
-        if ($this->fulfillmentPercentage >= 100) {
-            return 'success';
-        } elseif ($this->fulfillmentPercentage >= 75) {
-            return 'info';
-        } elseif ($this->fulfillmentPercentage >= 50) {
-            return 'warning';
-        } else {
-            return 'danger';
-        }
     }
 
     public function getRequirementType(): string
@@ -564,46 +359,5 @@ class ComplianceRequirement
     public function hasDetailedRequirements(): bool
     {
         return !$this->detailedRequirements->isEmpty();
-    }
-
-    /**
-     * Get fulfillment including detailed requirements
-     * Aggregates fulfillment from all detailed requirements
-     */
-    public function getAggregatedFulfillment(): float
-    {
-        if ($this->detailedRequirements->isEmpty()) {
-            return $this->fulfillmentPercentage;
-        }
-
-        $totalFulfillment = $this->fulfillmentPercentage;
-        $count = 1;
-
-        foreach ($this->detailedRequirements as $detailed) {
-            if ($detailed->isApplicable()) {
-                $totalFulfillment += $detailed->getFulfillmentPercentage();
-                $count++;
-            }
-        }
-
-        return round($totalFulfillment / $count, 2);
-    }
-
-    /**
-     * Get count of applicable detailed requirements
-     */
-    public function getApplicableDetailedCount(): int
-    {
-        return $this->detailedRequirements->filter(fn($req) => $req->isApplicable())->count();
-    }
-
-    /**
-     * Get count of fulfilled detailed requirements (>= 100%)
-     */
-    public function getFulfilledDetailedCount(): int
-    {
-        return $this->detailedRequirements->filter(
-            fn($req) => $req->isApplicable() && $req->getFulfillmentPercentage() >= 100
-        )->count();
     }
 }
