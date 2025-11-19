@@ -308,7 +308,7 @@ class ProcessingActivityService
         $export = [
             'tenant' => [
                 'name' => $tenant->getName(),
-                'contact' => $tenant->getContactEmail(),
+                'code' => $tenant->getCode(),
             ],
             'generated_at' => new \DateTime(),
             'generated_by' => $this->security->getUser()?->getUsername(),
