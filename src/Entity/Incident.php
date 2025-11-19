@@ -296,12 +296,24 @@ class Incident
     #[MaxDepth(1)]
     private Collection $failedControls;
 
+    /**
+     * @var Collection<int, BusinessProcess>
+     * CRITICAL-05: Incident ↔ BCM Integration
+     * Links incidents to affected business processes for impact analysis
+     */
+    #[ORM\ManyToMany(targetEntity: BusinessProcess::class, inversedBy: 'incidents')]
+    #[ORM\JoinTable(name: 'incident_business_process')]
+    #[Groups(['incident:read', 'incident:write'])]
+    #[MaxDepth(1)]
+    private Collection $affectedBusinessProcesses;
+
     public function __construct()
     {
         $this->relatedControls = new ArrayCollection();
         $this->affectedAssets = new ArrayCollection();
         $this->realizedRisks = new ArrayCollection();
         $this->failedControls = new ArrayCollection();
+        $this->affectedBusinessProcesses = new ArrayCollection();
         $this->createdAt = new \DateTimeImmutable();
         $this->detectedAt = new \DateTimeImmutable();
     }
@@ -664,6 +676,28 @@ class Incident
     }
 
     /**
+     * @return Collection<int, BusinessProcess>
+     */
+    public function getAffectedBusinessProcesses(): Collection
+    {
+        return $this->affectedBusinessProcesses;
+    }
+
+    public function addAffectedBusinessProcess(BusinessProcess $process): static
+    {
+        if (!$this->affectedBusinessProcesses->contains($process)) {
+            $this->affectedBusinessProcesses->add($process);
+        }
+        return $this;
+    }
+
+    public function removeAffectedBusinessProcess(BusinessProcess $process): static
+    {
+        $this->affectedBusinessProcesses->removeElement($process);
+        return $this;
+    }
+
+    /**
      * Check if any critical/high-risk assets were affected
      * Data Reuse: Uses Asset risk scoring
      */
@@ -1000,5 +1034,135 @@ class Incident
         }
 
         return 'awaiting_early_warning';
+    }
+
+    // CRITICAL-05: BCM Integration - Helper Methods
+
+    /**
+     * Check if any critical business processes are affected
+     * Data Reuse: BCM criticality assessment
+     */
+    #[Groups(['incident:read'])]
+    public function hasCriticalProcessesAffected(): bool
+    {
+        return $this->affectedBusinessProcesses->exists(
+            fn($k, $process) => $process->getCriticality() === 'critical'
+        );
+    }
+
+    /**
+     * Get count of affected business processes
+     * Data Reuse: Quick BCM impact overview
+     */
+    #[Groups(['incident:read'])]
+    public function getAffectedProcessCount(): int
+    {
+        return $this->affectedBusinessProcesses->count();
+    }
+
+    /**
+     * Get the most critical affected process (lowest RTO)
+     * Data Reuse: BCM RTO values for recovery prioritization
+     */
+    public function getMostCriticalAffectedProcess(): ?BusinessProcess
+    {
+        if ($this->affectedBusinessProcesses->isEmpty()) {
+            return null;
+        }
+
+        $processes = $this->affectedBusinessProcesses->toArray();
+        usort($processes, fn($a, $b) => $a->getRto() <=> $b->getRto());
+        return $processes[0];
+    }
+
+    /**
+     * Calculate estimated total financial impact based on affected processes
+     * Data Reuse: BCM financial impact data
+     *
+     * @param int $estimatedDowntimeHours Estimated downtime in hours
+     * @return float Total estimated financial impact in EUR
+     */
+    public function calculateEstimatedFinancialImpact(int $estimatedDowntimeHours = 24): float
+    {
+        $totalImpact = 0.0;
+
+        foreach ($this->affectedBusinessProcesses as $process) {
+            $impactPerHour = (float) ($process->getFinancialImpactPerHour() ?? 0);
+            $totalImpact += $impactPerHour * $estimatedDowntimeHours;
+        }
+
+        return $totalImpact;
+    }
+
+    /**
+     * Get suggested recovery priority based on BCM data
+     * Data Reuse: RTO, MTPD, and criticality from BIA
+     *
+     * @return string Priority level: immediate, high, medium, low
+     */
+    #[Groups(['incident:read'])]
+    public function getSuggestedRecoveryPriority(): string
+    {
+        if ($this->affectedBusinessProcesses->isEmpty()) {
+            return 'medium';
+        }
+
+        $mostCritical = $this->getMostCriticalAffectedProcess();
+        if ($mostCritical === null) {
+            return 'medium';
+        }
+
+        $rto = $mostCritical->getRto();
+
+        if ($rto <= 1 || $mostCritical->getCriticality() === 'critical') {
+            return 'immediate'; // RTO ≤ 1 hour or critical process
+        } elseif ($rto <= 4) {
+            return 'high'; // RTO ≤ 4 hours
+        } elseif ($rto <= 24) {
+            return 'medium'; // RTO ≤ 24 hours
+        } else {
+            return 'low'; // RTO > 24 hours
+        }
+    }
+
+    /**
+     * Check if incident violates RTO thresholds
+     * Data Reuse: BCM RTO monitoring
+     *
+     * @param int $actualDowntimeHours Actual or estimated downtime
+     * @return bool True if RTO is exceeded for any affected process
+     */
+    public function isRTOViolated(int $actualDowntimeHours): bool
+    {
+        foreach ($this->affectedBusinessProcesses as $process) {
+            if ($actualDowntimeHours > $process->getRto()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Get aggregated business impact score from affected processes
+     * Data Reuse: BCM impact scoring (reputational, regulatory, operational)
+     *
+     * @return int Average impact score (1-5)
+     */
+    #[Groups(['incident:read'])]
+    public function getAggregatedBusinessImpactScore(): int
+    {
+        if ($this->affectedBusinessProcesses->isEmpty()) {
+            return 0;
+        }
+
+        $totalScore = 0;
+        $count = 0;
+
+        foreach ($this->affectedBusinessProcesses as $process) {
+            $totalScore += $process->getBusinessImpactScore();
+            $count++;
+        }
+
+        return $count > 0 ? (int) round($totalScore / $count) : 0;
     }
 }

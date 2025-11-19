@@ -91,10 +91,19 @@ class BusinessProcess
     #[ORM\JoinTable(name: 'business_process_risk')]
     private Collection $identifiedRisks;
 
+    /**
+     * @var Collection<int, Incident>
+     * CRITICAL-05: Incident ↔ BCM Integration (inverse side)
+     * Tracks incidents that affected this business process
+     */
+    #[ORM\ManyToMany(targetEntity: Incident::class, mappedBy: 'affectedBusinessProcesses')]
+    private Collection $incidents;
+
     public function __construct()
     {
         $this->supportingAssets = new ArrayCollection();
         $this->identifiedRisks = new ArrayCollection();
+        $this->incidents = new ArrayCollection();
         $this->createdAt = new \DateTimeImmutable();
     }
 
@@ -478,5 +487,180 @@ class BusinessProcess
     {
         $this->tenant = $tenant;
         return $this;
+    }
+
+    // CRITICAL-05: Incident ↔ BCM Integration
+
+    /**
+     * @return Collection<int, Incident>
+     */
+    public function getIncidents(): Collection
+    {
+        return $this->incidents;
+    }
+
+    public function addIncident(Incident $incident): static
+    {
+        if (!$this->incidents->contains($incident)) {
+            $this->incidents->add($incident);
+            $incident->addAffectedBusinessProcess($this);
+        }
+        return $this;
+    }
+
+    public function removeIncident(Incident $incident): static
+    {
+        if ($this->incidents->removeElement($incident)) {
+            $incident->removeAffectedBusinessProcess($this);
+        }
+        return $this;
+    }
+
+    /**
+     * Get count of incidents that affected this process
+     * Data Reuse: Historical incident tracking for BIA validation
+     */
+    public function getIncidentCount(): int
+    {
+        return $this->incidents->count();
+    }
+
+    /**
+     * Get count of incidents in last N days
+     * Data Reuse: Recent incident frequency analysis
+     *
+     * @param int $days Number of days to look back (default: 365)
+     * @return int Count of incidents
+     */
+    public function getRecentIncidentCount(int $days = 365): int
+    {
+        $cutoffDate = new \DateTimeImmutable("-{$days} days");
+
+        return $this->incidents->filter(
+            fn($incident) => $incident->getDetectedAt() >= $cutoffDate
+        )->count();
+    }
+
+    /**
+     * Get total downtime from all incidents (in hours)
+     * Data Reuse: Actual availability tracking vs. RTO targets
+     *
+     * @return int Total downtime in hours
+     */
+    public function getTotalDowntimeFromIncidents(): int
+    {
+        $totalHours = 0;
+
+        foreach ($this->incidents as $incident) {
+            if ($incident->getResolvedAt() !== null) {
+                $detectedAt = $incident->getDetectedAt();
+                $resolvedAt = $incident->getResolvedAt();
+
+                $interval = $detectedAt->diff($resolvedAt);
+                $totalHours += ($interval->days * 24) + $interval->h;
+            }
+        }
+
+        return $totalHours;
+    }
+
+    /**
+     * Check if RTO was violated in past incidents
+     * Data Reuse: Validate RTO assumptions with real incident data
+     *
+     * @return bool True if any incident exceeded RTO
+     */
+    public function hasRTOViolations(): bool
+    {
+        foreach ($this->incidents as $incident) {
+            if ($incident->getResolvedAt() !== null) {
+                $detectedAt = $incident->getDetectedAt();
+                $resolvedAt = $incident->getResolvedAt();
+
+                $interval = $detectedAt->diff($resolvedAt);
+                $downtimeHours = ($interval->days * 24) + $interval->h;
+
+                if ($downtimeHours > $this->rto) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Calculate actual average recovery time from incidents
+     * Data Reuse: Real-world RTO validation
+     *
+     * @return int|null Average recovery time in hours, or null if no resolved incidents
+     */
+    public function getActualAverageRecoveryTime(): ?int
+    {
+        $resolvedIncidents = $this->incidents->filter(
+            fn($incident) => $incident->getResolvedAt() !== null
+        );
+
+        if ($resolvedIncidents->isEmpty()) {
+            return null;
+        }
+
+        $totalHours = 0;
+        $count = 0;
+
+        foreach ($resolvedIncidents as $incident) {
+            $detectedAt = $incident->getDetectedAt();
+            $resolvedAt = $incident->getResolvedAt();
+
+            $interval = $detectedAt->diff($resolvedAt);
+            $totalHours += ($interval->days * 24) + $interval->h;
+            $count++;
+        }
+
+        return $count > 0 ? (int) round($totalHours / $count) : null;
+    }
+
+    /**
+     * Get most recent incident affecting this process
+     * Data Reuse: Quick access to latest incident for learning
+     *
+     * @return Incident|null
+     */
+    public function getMostRecentIncident(): ?Incident
+    {
+        if ($this->incidents->isEmpty()) {
+            return null;
+        }
+
+        $incidents = $this->incidents->toArray();
+        usort($incidents, fn($a, $b) => $b->getDetectedAt() <=> $a->getDetectedAt());
+
+        return $incidents[0];
+    }
+
+    /**
+     * Calculate estimated financial loss from past incidents
+     * Data Reuse: Historical financial impact analysis
+     *
+     * @return float Total estimated financial loss in EUR
+     */
+    public function getHistoricalFinancialLoss(): float
+    {
+        $totalLoss = 0.0;
+        $impactPerHour = (float) ($this->financialImpactPerHour ?? 0);
+
+        foreach ($this->incidents as $incident) {
+            if ($incident->getResolvedAt() !== null) {
+                $detectedAt = $incident->getDetectedAt();
+                $resolvedAt = $incident->getResolvedAt();
+
+                $interval = $detectedAt->diff($resolvedAt);
+                $downtimeHours = ($interval->days * 24) + $interval->h;
+
+                $totalLoss += $impactPerHour * $downtimeHours;
+            }
+        }
+
+        return $totalLoss;
     }
 }
