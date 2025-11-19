@@ -111,107 +111,107 @@
         </div>
         <div class="card-body p-0">
             {% if processing_activities|length > 0 %}
-                <div class="table-responsive">
-                    <table class="table table-hover mb-0">
-                        <thead>
+                {% embed '_components/_table.html.twig' with {
+                    'noMargin': true
+                } %}
+                    {% block table_head %}
+                        <tr>
+                            <th scope="col">Name</th>
+                            <th scope="col">Legal Basis</th>
+                            <th scope="col">Data Subjects</th>
+                            <th scope="col">Risk</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Completeness</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                    {% endblock %}
+                    {% block table_body %}
+                        {% for pa in processing_activities %}
                             <tr>
-                                <th>Name</th>
-                                <th>Legal Basis</th>
-                                <th>Data Subjects</th>
-                                <th>Risk</th>
-                                <th>Status</th>
-                                <th>Completeness</th>
-                                <th>Actions</th>
+                                <td>
+                                    <strong>{{ pa.name }}</strong><br>
+                                    <small class="text-muted">
+                                        {% if pa.processesSpecialCategories %}
+                                            <span class="badge bg-danger">Special Categories</span>
+                                        {% endif %}
+                                        {% if pa.hasThirdCountryTransfer %}
+                                            <span class="badge bg-warning">Third Country</span>
+                                        {% endif %}
+                                        {% if pa.requiresDPIA and not pa.dpiaCompleted %}
+                                            <span class="badge bg-danger">DPIA Required</span>
+                                        {% endif %}
+                                    </small>
+                                </td>
+                                <td>
+                                    {% set legal_basis_labels = {
+                                        'consent': 'Consent',
+                                        'contract': 'Contract',
+                                        'legal_obligation': 'Legal Obligation',
+                                        'vital_interests': 'Vital Interests',
+                                        'public_task': 'Public Task',
+                                        'legitimate_interests': 'Legitimate Interests'
+                                    } %}
+                                    {{ legal_basis_labels[pa.legalBasis] ?? pa.legalBasis }}
+                                </td>
+                                <td>
+                                    {{ pa.dataSubjectCategories|length }} categories<br>
+                                    {% if pa.estimatedDataSubjectsCount %}
+                                        <small class="text-muted">~{{ pa.estimatedDataSubjectsCount }} subjects</small>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if pa.riskLevel %}
+                                        {% set risk_class = {
+                                            'low': 'success',
+                                            'medium': 'info',
+                                            'high': 'warning',
+                                            'critical': 'danger'
+                                        }[pa.riskLevel] %}
+                                        <span class="badge bg-{{ risk_class }}">{{ pa.riskLevel|upper }}</span>
+                                    {% else %}
+                                        <span class="text-muted">—</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% set status_class = {
+                                        'draft': 'secondary',
+                                        'active': 'success',
+                                        'archived': 'dark'
+                                    }[pa.status] %}
+                                    <span class="badge bg-{{ status_class }}">{{ pa.status|upper }}</span>
+                                </td>
+                                <td>
+                                    <div class="progress" style="height: 20px;">
+                                        {% set completeness = pa.completenessPercentage %}
+                                        {% set progress_class = completeness == 100 ? 'bg-success' : (completeness >= 70 ? 'bg-warning' : 'bg-danger') %}
+                                        <div class="progress-bar {{ progress_class }}"
+                                             role="progressbar"
+                                             style="width: {{ completeness }}%"
+                                             aria-valuenow="{{ completeness }}"
+                                             aria-valuemin="0"
+                                             aria-valuemax="100">
+                                            {{ completeness }}%
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        <a href="{{ path('app_processing_activity_show', {id: pa.id}) }}"
+                                           class="btn btn-outline-primary"
+                                           title="View">
+                                            <i class="bi bi-eye" aria-hidden="true"></i>
+                                        </a>
+                                        <a href="{{ path('app_processing_activity_edit', {id: pa.id}) }}"
+                                           class="btn btn-outline-secondary"
+                                           title="Edit">
+                                            <i class="bi bi-pencil" aria-hidden="true"></i>
+                                        </a>
+                                    </div>
+                                </td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            {% for pa in processing_activities %}
-                                <tr>
-                                    <td>
-                                        <strong>{{ pa.name }}</strong><br>
-                                        <small class="text-muted">
-                                            {% if pa.processesSpecialCategories %}
-                                                <span class="badge bg-danger">Special Categories</span>
-                                            {% endif %}
-                                            {% if pa.hasThirdCountryTransfer %}
-                                                <span class="badge bg-warning">Third Country</span>
-                                            {% endif %}
-                                            {% if pa.requiresDPIA and not pa.dpiaCompleted %}
-                                                <span class="badge bg-danger">DPIA Required</span>
-                                            {% endif %}
-                                        </small>
-                                    </td>
-                                    <td>
-                                        {% set legal_basis_labels = {
-                                            'consent': 'Consent',
-                                            'contract': 'Contract',
-                                            'legal_obligation': 'Legal Obligation',
-                                            'vital_interests': 'Vital Interests',
-                                            'public_task': 'Public Task',
-                                            'legitimate_interests': 'Legitimate Interests'
-                                        } %}
-                                        {{ legal_basis_labels[pa.legalBasis] ?? pa.legalBasis }}
-                                    </td>
-                                    <td>
-                                        {{ pa.dataSubjectCategories|length }} categories<br>
-                                        {% if pa.estimatedDataSubjectsCount %}
-                                            <small class="text-muted">~{{ pa.estimatedDataSubjectsCount }} subjects</small>
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        {% if pa.riskLevel %}
-                                            {% set risk_class = {
-                                                'low': 'success',
-                                                'medium': 'info',
-                                                'high': 'warning',
-                                                'critical': 'danger'
-                                            }[pa.riskLevel] %}
-                                            <span class="badge bg-{{ risk_class }}">{{ pa.riskLevel|upper }}</span>
-                                        {% else %}
-                                            <span class="text-muted">—</span>
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        {% set status_class = {
-                                            'draft': 'secondary',
-                                            'active': 'success',
-                                            'archived': 'dark'
-                                        }[pa.status] %}
-                                        <span class="badge bg-{{ status_class }}">{{ pa.status|upper }}</span>
-                                    </td>
-                                    <td>
-                                        <div class="progress" style="height: 20px;">
-                                            {% set completeness = pa.completenessPercentage %}
-                                            {% set progress_class = completeness == 100 ? 'bg-success' : (completeness >= 70 ? 'bg-warning' : 'bg-danger') %}
-                                            <div class="progress-bar {{ progress_class }}"
-                                                 role="progressbar"
-                                                 style="width: {{ completeness }}%"
-                                                 aria-valuenow="{{ completeness }}"
-                                                 aria-valuemin="0"
-                                                 aria-valuemax="100">
-                                                {{ completeness }}%
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="btn-group btn-group-sm" role="group">
-                                            <a href="{{ path('app_processing_activity_show', {id: pa.id}) }}"
-                                               class="btn btn-outline-primary"
-                                               title="View">
-                                                <i class="bi bi-eye" aria-hidden="true"></i>
-                                            </a>
-                                            <a href="{{ path('app_processing_activity_edit', {id: pa.id}) }}"
-                                               class="btn btn-outline-secondary"
-                                               title="Edit">
-                                                <i class="bi bi-pencil" aria-hidden="true"></i>
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+                        {% endfor %}
+                    {% endblock %}
+                {% endembed %}
             {% else %}
                 <div class="alert alert-info m-4">
                     <i class="bi bi-info-circle" aria-hidden="true"></i>
