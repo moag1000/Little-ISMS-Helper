@@ -6,6 +6,8 @@ use App\Entity\ComplianceRequirement;
 use App\Form\ComplianceRequirementType;
 use App\Repository\ComplianceRequirementRepository;
 use App\Repository\ComplianceFrameworkRepository;
+use App\Service\ComplianceRequirementFulfillmentService;
+use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,7 +22,9 @@ class ComplianceRequirementController extends AbstractController
     public function __construct(
         private ComplianceRequirementRepository $requirementRepository,
         private ComplianceFrameworkRepository $frameworkRepository,
-        private EntityManagerInterface $entityManager
+        private EntityManagerInterface $entityManager,
+        private ComplianceRequirementFulfillmentService $fulfillmentService,
+        private TenantContext $tenantContext
     ) {}
 
     #[Route('/', name: 'app_compliance_requirement_index', methods: ['GET'])]
@@ -84,12 +88,24 @@ class ComplianceRequirementController extends AbstractController
     #[Route('/{id}', name: 'app_compliance_requirement_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function show(ComplianceRequirement $requirement): Response
     {
-        // Calculate fulfillment from controls
+        $tenant = $this->tenantContext->getCurrentTenant();
+
+        // Get or create tenant-specific fulfillment
+        $fulfillment = $this->fulfillmentService->getOrCreateFulfillment($tenant, $requirement);
+
+        // Calculate fulfillment from controls (legacy method for comparison)
         $calculatedFulfillment = $requirement->calculateFulfillmentFromControls();
+
+        // Check if this is inherited from parent
+        $isInherited = $this->fulfillmentService->isInheritedFulfillment($fulfillment, $tenant);
+        $canEdit = $this->fulfillmentService->canEditFulfillment($fulfillment, $tenant);
 
         return $this->render('compliance/requirement/show.html.twig', [
             'requirement' => $requirement,
+            'fulfillment' => $fulfillment,
             'calculated_fulfillment' => $calculatedFulfillment,
+            'is_inherited' => $isInherited,
+            'can_edit' => $canEdit,
         ]);
     }
 
@@ -148,19 +164,46 @@ class ComplianceRequirementController extends AbstractController
             return $this->redirectToRoute('app_compliance_requirement_show', ['id' => $requirement->getId()]);
         }
 
+        $tenant = $this->tenantContext->getCurrentTenant();
+
+        // Get or create tenant-specific fulfillment
+        $fulfillment = $this->fulfillmentService->getOrCreateFulfillment($tenant, $requirement);
+
+        // Check if user can edit (not inherited)
+        if (!$this->fulfillmentService->canEditFulfillment($fulfillment, $tenant)) {
+            $this->addFlash('error', 'Cannot edit inherited fulfillment from parent tenant.');
+            return $this->redirectToRoute('app_compliance_requirement_show', ['id' => $requirement->getId()]);
+        }
+
+        // Update fulfillment fields
         $fulfillmentPercentage = $request->request->get('fulfillmentPercentage');
         $applicable = $request->request->get('applicable') === '1';
 
         if ($fulfillmentPercentage !== null) {
-            $requirement->setFulfillmentPercentage((int) $fulfillmentPercentage);
+            $fulfillment->setFulfillmentPercentage((int) $fulfillmentPercentage);
+
+            // Auto-update status based on percentage
+            if ($fulfillmentPercentage >= 100) {
+                $fulfillment->setStatus('implemented');
+            } elseif ($fulfillmentPercentage > 0) {
+                $fulfillment->setStatus('in_progress');
+            } else {
+                $fulfillment->setStatus('not_started');
+            }
         }
 
-        $requirement->setApplicable($applicable);
-        $requirement->setUpdatedAt(new \DateTimeImmutable());
+        $fulfillment->setApplicable($applicable);
+        $fulfillment->setUpdatedAt(new \DateTimeImmutable());
+        $fulfillment->setLastUpdatedBy($this->getUser());
+
+        // Persist if new
+        if (!$fulfillment->getId()) {
+            $this->entityManager->persist($fulfillment);
+        }
 
         $this->entityManager->flush();
 
-        $this->addFlash('success', 'Requirement updated successfully.');
+        $this->addFlash('success', 'Requirement fulfillment updated successfully for your tenant.');
 
         return $this->redirectToRoute('app_compliance_requirement_show', ['id' => $requirement->getId()]);
     }
