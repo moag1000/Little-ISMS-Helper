@@ -710,6 +710,13 @@ risk:
   field:
     title: Risk Title
     category: Risk Category
+    # GDPR Risk Assessment Fields (Priority 2.2)
+    involves_personal_data: 'Involves Personal Data'
+    involves_special_category_data: 'Involves Special Category Data (Art. 9 GDPR)'
+    legal_basis: 'Legal Basis (Art. 6 GDPR)'
+    processing_scale: 'Processing Scale'
+    requires_dpia: 'Data Protection Impact Assessment Required (Art. 35 GDPR)'
+    data_subject_impact: 'Impact on Data Subjects'
     description: Description
     threat: Threat
     vulnerability: Vulnerability
@@ -738,6 +745,9 @@ risk:
   placeholder:
     title: e.g. Data loss from ransomware attack
     category: Select risk category...
+    legal_basis: 'Select legal basis...'
+    processing_scale: 'Select processing scale...'
+    data_subject_impact: "Describe the impact on data subjects' rights and freedoms..."
     description: Describe the risk in detail...
     threat: e.g. External attackers, Malware, Social Engineering
     vulnerability: e.g. Missing backups, Unpatched systems
@@ -751,6 +761,12 @@ risk:
   help:
     title: Short, concise risk title
     category: 'Select the risk category for better grouping and reporting (ISO 27005:2022 Section 8.2.3)'
+    involves_personal_data: 'Enable if this risk involves processing of personal data (GDPR Art. 4)'
+    involves_special_category_data: 'Enable for special categories: racial/ethnic origin, political opinions, religious beliefs, trade union membership, genetic/biometric data, health data, sex life (GDPR Art. 9)'
+    legal_basis: 'Legal basis for data processing according to GDPR Art. 6'
+    processing_scale: 'Scale of data processing operations. Large-scale processing often requires DPIA (GDPR Art. 35)'
+    requires_dpia: 'A Data Protection Impact Assessment is required for high risk to rights and freedoms (GDPR Art. 35)'
+    data_subject_impact: "Describe the potential impact on data subjects' rights and freedoms (GDPR Art. 35.7)"
     description: Detailed description of the risk and its potential impacts
     threat: What threat could trigger this risk?
     vulnerability: What vulnerability could be exploited?
@@ -794,6 +810,21 @@ risk:
     strategic: Strategic Risks
     reputational: Reputational Risks
     security: Information Security Risks
+
+  # GDPR Legal Basis (Art. 6 GDPR) - Priority 2.2
+  legal_basis:
+    consent: 'Consent (Art. 6.1.a)'
+    contract: 'Contract Performance (Art. 6.1.b)'
+    legal_obligation: 'Legal Obligation (Art. 6.1.c)'
+    vital_interests: 'Vital Interests (Art. 6.1.d)'
+    public_task: 'Public Task (Art. 6.1.e)'
+    legitimate_interests: 'Legitimate Interests (Art. 6.1.f)'
+
+  # GDPR Processing Scale - Priority 2.2
+  processing_scale:
+    small: 'Small Scale'
+    medium: 'Medium Scale'
+    large_scale: 'Large Scale (DPIA required)'
 
   # Risk Assessment Guidance (Priority 2.3)
   guidance:
