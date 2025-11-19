@@ -139,114 +139,114 @@
         </div>
         <div class="card-body p-0">
             {% if dpias|length > 0 %}
-                <div class="table-responsive">
-                    <table class="table table-hover mb-0">
-                        <thead>
+                {% embed '_components/_table.html.twig' with {
+                    'noMargin': true
+                } %}
+                    {% block table_head %}
+                        <tr>
+                            <th scope="col">Reference</th>
+                            <th scope="col">Title</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Risk Level</th>
+                            <th scope="col">Residual Risk</th>
+                            <th scope="col">Completeness</th>
+                            <th scope="col">DPO</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                    {% endblock %}
+                    {% block table_body %}
+                        {% for dpia in dpias %}
                             <tr>
-                                <th>Reference</th>
-                                <th>Title</th>
-                                <th>Status</th>
-                                <th>Risk Level</th>
-                                <th>Residual Risk</th>
-                                <th>Completeness</th>
-                                <th>DPO</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for dpia in dpias %}
-                                <tr>
-                                    <td>
-                                        <a href="{{ path('app_dpia_show', {id: dpia.id}) }}">
-                                            {{ dpia.referenceNumber }}
-                                        </a>
-                                    </td>
-                                    <td>{{ dpia.title }}</td>
-                                    <td>
-                                        {% set status_class = {
-                                            'draft': 'secondary',
-                                            'in_review': 'info',
-                                            'approved': 'success',
-                                            'rejected': 'danger',
-                                            'requires_revision': 'warning'
-                                        }[dpia.status] %}
-                                        <span class="badge bg-{{ status_class }}">
-                                            {{ dpia.status|replace({'_': ' '})|upper }}
+                                <td>
+                                    <a href="{{ path('app_dpia_show', {id: dpia.id}) }}">
+                                        {{ dpia.referenceNumber }}
+                                    </a>
+                                </td>
+                                <td>{{ dpia.title }}</td>
+                                <td>
+                                    {% set status_class = {
+                                        'draft': 'secondary',
+                                        'in_review': 'info',
+                                        'approved': 'success',
+                                        'rejected': 'danger',
+                                        'requires_revision': 'warning'
+                                    }[dpia.status] %}
+                                    <span class="badge bg-{{ status_class }}">
+                                        {{ dpia.status|replace({'_': ' '})|upper }}
+                                    </span>
+                                </td>
+                                <td>
+                                    {% if dpia.riskLevel %}
+                                        {% set risk_class = {
+                                            'low': 'success',
+                                            'medium': 'info',
+                                            'high': 'warning',
+                                            'critical': 'danger'
+                                        }[dpia.riskLevel] %}
+                                        <span class="badge bg-{{ risk_class }}">
+                                            {{ dpia.riskLevel|upper }}
                                         </span>
-                                    </td>
-                                    <td>
-                                        {% if dpia.riskLevel %}
-                                            {% set risk_class = {
-                                                'low': 'success',
-                                                'medium': 'info',
-                                                'high': 'warning',
-                                                'critical': 'danger'
-                                            }[dpia.riskLevel] %}
-                                            <span class="badge bg-{{ risk_class }}">
-                                                {{ dpia.riskLevel|upper }}
-                                            </span>
-                                        {% else %}
-                                            <span class="text-muted">-</span>
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        {% if dpia.residualRiskLevel %}
-                                            {% set risk_class = {
-                                                'low': 'success',
-                                                'medium': 'info',
-                                                'high': 'warning',
-                                                'critical': 'danger'
-                                            }[dpia.residualRiskLevel] %}
-                                            <span class="badge bg-{{ risk_class }}">
-                                                {{ dpia.residualRiskLevel|upper }}
-                                            </span>
-                                        {% else %}
-                                            <span class="text-muted">-</span>
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        <div class="progress" style="height: 20px;">
-                                            {% set percentage = dpia.completenessPercentage %}
-                                            {% set bar_class = percentage == 100 ? 'bg-success' : 'bg-warning' %}
-                                            <div class="progress-bar {{ bar_class }}"
-                                                 style="width: {{ percentage }}%">
-                                                {{ percentage }}%
-                                            </div>
+                                    {% else %}
+                                        <span class="text-muted">-</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if dpia.residualRiskLevel %}
+                                        {% set risk_class = {
+                                            'low': 'success',
+                                            'medium': 'info',
+                                            'high': 'warning',
+                                            'critical': 'danger'
+                                        }[dpia.residualRiskLevel] %}
+                                        <span class="badge bg-{{ risk_class }}">
+                                            {{ dpia.residualRiskLevel|upper }}
+                                        </span>
+                                    {% else %}
+                                        <span class="text-muted">-</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="progress" style="height: 20px;">
+                                        {% set percentage = dpia.completenessPercentage %}
+                                        {% set bar_class = percentage == 100 ? 'bg-success' : 'bg-warning' %}
+                                        <div class="progress-bar {{ bar_class }}"
+                                             style="width: {{ percentage }}%">
+                                            {{ percentage }}%
                                         </div>
-                                    </td>
-                                    <td>
-                                        {% if dpia.dpoConsultationDate %}
-                                            <i class="bi bi-check-circle text-success" title="DPO consulted {{ dpia.dpoConsultationDate|date('Y-m-d') }}"></i>
-                                        {% else %}
-                                            <i class="bi bi-x-circle text-muted" title="DPO not yet consulted"></i>
+                                    </div>
+                                </td>
+                                <td>
+                                    {% if dpia.dpoConsultationDate %}
+                                        <i class="bi bi-check-circle text-success" aria-hidden="true" title="DPO consulted {{ dpia.dpoConsultationDate|date('Y-m-d') }}"></i>
+                                    {% else %}
+                                        <i class="bi bi-x-circle text-muted" aria-hidden="true" title="DPO not yet consulted"></i>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <a href="{{ path('app_dpia_show', {id: dpia.id}) }}"
+                                           class="btn btn-outline-primary"
+                                           title="View" aria-label="View">
+                                            <i class="bi bi-eye" aria-hidden="true"></i>
+                                        </a>
+                                        {% if dpia.status in ['draft', 'requires_revision'] %}
+                                            <a href="{{ path('app_dpia_edit', {id: dpia.id}) }}"
+                                               class="btn btn-outline-secondary"
+                                               title="Edit" aria-label="Edit">
+                                                <i class="bi bi-pencil" aria-hidden="true"></i>
+                                            </a>
                                         {% endif %}
-                                    </td>
-                                    <td>
-                                        <div class="btn-group btn-group-sm">
-                                            <a href="{{ path('app_dpia_show', {id: dpia.id}) }}"
-                                               class="btn btn-outline-primary"
-                                               title="View">
-                                                <i class="bi bi-eye"></i>
-                                            </a>
-                                            {% if dpia.status in ['draft', 'requires_revision'] %}
-                                                <a href="{{ path('app_dpia_edit', {id: dpia.id}) }}"
-                                                   class="btn btn-outline-secondary"
-                                                   title="Edit">
-                                                    <i class="bi bi-pencil"></i>
-                                                </a>
-                                            {% endif %}
-                                            <a href="{{ path('app_dpia_export_pdf', {id: dpia.id}) }}"
-                                               class="btn btn-outline-success"
-                                               title="Export PDF">
-                                                <i class="bi bi-file-pdf"></i>
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+                                        <a href="{{ path('app_dpia_export_pdf', {id: dpia.id}) }}"
+                                           class="btn btn-outline-success"
+                                           title="Export PDF" aria-label="Export PDF">
+                                            <i class="bi bi-file-pdf" aria-hidden="true"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% endblock %}
+                {% endembed %}
             {% else %}
                 <div class="alert alert-info mb-0">
                     <i class="bi bi-info-circle"></i> No DPIAs found for the selected filter.
