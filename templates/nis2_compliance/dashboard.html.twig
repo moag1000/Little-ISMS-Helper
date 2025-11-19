@@ -170,53 +170,55 @@
                     <h3 class="mb-0">{{ 'nis2.dashboard.incident_details.title'|trans }}</h3>
                 </div>
                 <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-sm">
-                            <thead>
-                                <tr>
-                                    <th>{{ 'nis2.dashboard.incident_details.stage'|trans }}</th>
-                                    <th class="text-end">{{ 'nis2.dashboard.incident_details.compliant'|trans }}</th>
-                                    <th class="text-end">{{ 'nis2.dashboard.incident_details.total'|trans }}</th>
-                                    <th class="text-end">{{ 'nis2.dashboard.incident_details.rate'|trans }}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>{{ 'nis2.dashboard.incident_details.early_warning'|trans }} (24h)</td>
-                                    <td class="text-end">{{ early_warning_compliant }}</td>
-                                    <td class="text-end">{{ total_nis2_incidents }}</td>
-                                    <td class="text-end">
-                                        {% set rate = total_nis2_incidents > 0 ? (early_warning_compliant / total_nis2_incidents * 100)|round(1) : 100 %}
-                                        <span class="badge bg-{% if rate >= 95 %}success{% elseif rate >= 75 %}warning{% else %}danger{% endif %}">
-                                            {{ rate }}%
-                                        </span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>{{ 'nis2.dashboard.incident_details.detailed'|trans }} (72h)</td>
-                                    <td class="text-end">{{ detailed_notification_compliant }}</td>
-                                    <td class="text-end">{{ total_nis2_incidents }}</td>
-                                    <td class="text-end">
-                                        {% set rate = total_nis2_incidents > 0 ? (detailed_notification_compliant / total_nis2_incidents * 100)|round(1) : 100 %}
-                                        <span class="badge bg-{% if rate >= 95 %}success{% elseif rate >= 75 %}warning{% else %}danger{% endif %}">
-                                            {{ rate }}%
-                                        </span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>{{ 'nis2.dashboard.incident_details.final'|trans }} (30d)</td>
-                                    <td class="text-end">{{ final_report_compliant }}</td>
-                                    <td class="text-end">{{ total_nis2_incidents }}</td>
-                                    <td class="text-end">
-                                        {% set rate = total_nis2_incidents > 0 ? (final_report_compliant / total_nis2_incidents * 100)|round(1) : 100 %}
-                                        <span class="badge bg-{% if rate >= 95 %}success{% elseif rate >= 75 %}warning{% else %}danger{% endif %}">
-                                            {{ rate }}%
-                                        </span>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                    {% embed '_components/_table.html.twig' with {
+                        'class': 'table-sm',
+                        'noMargin': true,
+                        'responsive': true
+                    } %}
+                        {% block table_head %}
+                            <tr>
+                                <th>{{ 'nis2.dashboard.incident_details.stage'|trans }}</th>
+                                <th class="text-end">{{ 'nis2.dashboard.incident_details.compliant'|trans }}</th>
+                                <th class="text-end">{{ 'nis2.dashboard.incident_details.total'|trans }}</th>
+                                <th class="text-end">{{ 'nis2.dashboard.incident_details.rate'|trans }}</th>
+                            </tr>
+                        {% endblock %}
+                        {% block table_body %}
+                            <tr>
+                                <td>{{ 'nis2.dashboard.incident_details.early_warning'|trans }} (24h)</td>
+                                <td class="text-end">{{ early_warning_compliant }}</td>
+                                <td class="text-end">{{ total_nis2_incidents }}</td>
+                                <td class="text-end">
+                                    {% set rate = total_nis2_incidents > 0 ? (early_warning_compliant / total_nis2_incidents * 100)|round(1) : 100 %}
+                                    <span class="badge bg-{% if rate >= 95 %}success{% elseif rate >= 75 %}warning{% else %}danger{% endif %}">
+                                        {{ rate }}%
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>{{ 'nis2.dashboard.incident_details.detailed'|trans }} (72h)</td>
+                                <td class="text-end">{{ detailed_notification_compliant }}</td>
+                                <td class="text-end">{{ total_nis2_incidents }}</td>
+                                <td class="text-end">
+                                    {% set rate = total_nis2_incidents > 0 ? (detailed_notification_compliant / total_nis2_incidents * 100)|round(1) : 100 %}
+                                    <span class="badge bg-{% if rate >= 95 %}success{% elseif rate >= 75 %}warning{% else %}danger{% endif %}">
+                                        {{ rate }}%
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>{{ 'nis2.dashboard.incident_details.final'|trans }} (30d)</td>
+                                <td class="text-end">{{ final_report_compliant }}</td>
+                                <td class="text-end">{{ total_nis2_incidents }}</td>
+                                <td class="text-end">
+                                    {% set rate = total_nis2_incidents > 0 ? (final_report_compliant / total_nis2_incidents * 100)|round(1) : 100 %}
+                                    <span class="badge bg-{% if rate >= 95 %}success{% elseif rate >= 75 %}warning{% else %}danger{% endif %}">
+                                        {{ rate }}%
+                                    </span>
+                                </td>
+                            </tr>
+                        {% endblock %}
+                    {% endembed %}
                 </div>
             </div>
         </div>
