@@ -704,6 +704,10 @@ risk:
     updated: Risiko erfolgreich aktualisiert.
     deleted: Risiko erfolgreich gelöscht.
 
+  # Validation Messages (ISO 27001 Compliance)
+  validation:
+    risk_owner_required: 'Ein Risikoverantwortlicher muss zugewiesen werden (ISO 27001 A.5.1/A.5.2)'
+
   # Field Labels (Form Labels)
   field:
     title: Risikotitel
