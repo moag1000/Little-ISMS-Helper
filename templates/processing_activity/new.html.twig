@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Processing Activity{% endblock %}
+
+{% block body %}
+<div class="container-fluid mt-4">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'GDPR', url: path('app_processing_activity_index'), icon: 'bi-shield-check' },
+            { label: 'VVT', url: path('app_processing_activity_index') },
+            { label: 'New Processing Activity' }
+        ]
+    } %}
+
+    {% include '_components/_page_header.html.twig' with {
+        title: 'New Processing Activity',
+        subtitle: 'Create new VVT entry (Art. 30 GDPR)',
+        icon: 'bi-plus-lg'
+    } %}
+
+    {% include 'processing_activity/_form.html.twig' %}
+</div>
+{% endblock %}
