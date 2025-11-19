@@ -311,7 +311,7 @@ class ProcessingActivityService
                 'code' => $tenant->getCode(),
             ],
             'generated_at' => new \DateTime(),
-            'generated_by' => $this->security->getUser()?->getUsername(),
+            'generated_by' => $this->security->getUser()?->getUserIdentifier(),
             'total_activities' => count($processingActivities),
             'processing_activities' => [],
         ];
