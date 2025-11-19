@@ -1,8 +1,8 @@
-# CANCOMPAS Security Audit Report
+# Little ISMS Helper Security Audit Report
 ## OWASP Top 10 Compliance Analysis
 
 **Berichtsdatum:** 2025-11-11
-**Geprüfte Version:** CANCOMPAS Symfony 6.4 + React 19.1.1
+**Geprüfte Version:** Little ISMS Helper Symfony 6.4 + React 19.1.1
 **Prüfumfang:** OWASP Top 10 2025 RC1 (Release Candidate 1 - November 2025)
 **Gesamtbewertung:** 7.7/10 (BEFRIEDIGEND)
 
@@ -10,7 +10,7 @@
 
 ## Executive Summary
 
-CANCOMPAS zeigt eine **starke Sicherheitsposition** mit umfassenden Schutzmaßnahmen auf allen Ebenen.
+Little ISMS Helper zeigt eine **starke Sicherheitsposition** mit umfassenden Schutzmaßnahmen auf allen Ebenen.
 Die automatisierte Prüfung hat **7.7222222222222** von 10 möglichen Punkten erreicht.
 
 ### Kritische Stärken ✅
