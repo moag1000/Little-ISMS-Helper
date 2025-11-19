@@ -195,4 +195,57 @@ class AuditLogRepository extends ServiceEntityRepository
                   ->getQuery()
                   ->getResult();
     }
+
+    /**
+     * Count audit logs older than cutoff date
+     *
+     * @param \DateTimeImmutable $cutoffDate Logs older than this date will be counted
+     * @return int Number of logs older than cutoff date
+     */
+    public function countOldLogs(\DateTimeImmutable $cutoffDate): int
+    {
+        return $this->createQueryBuilder('a')
+            ->select('COUNT(a.id)')
+            ->where('a.createdAt < :cutoffDate')
+            ->setParameter('cutoffDate', $cutoffDate)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    /**
+     * Find audit logs older than cutoff date
+     *
+     * @param \DateTimeImmutable $cutoffDate Logs older than this date will be returned
+     * @param int $limit Maximum number of logs to return
+     * @return AuditLog[] Array of audit logs
+     */
+    public function findOldLogs(\DateTimeImmutable $cutoffDate, int $limit = 100): array
+    {
+        return $this->createQueryBuilder('a')
+            ->where('a.createdAt < :cutoffDate')
+            ->setParameter('cutoffDate', $cutoffDate)
+            ->orderBy('a.createdAt', 'ASC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Delete audit logs older than cutoff date
+     *
+     * DSGVO Art. 5.1(e) - Storage Limitation compliance
+     * NIS2 Art. 21.2 - Audit log retention policy
+     *
+     * @param \DateTimeImmutable $cutoffDate Logs older than this date will be deleted
+     * @return int Number of deleted logs
+     */
+    public function deleteOldLogs(\DateTimeImmutable $cutoffDate): int
+    {
+        return $this->createQueryBuilder('a')
+            ->delete()
+            ->where('a.createdAt < :cutoffDate')
+            ->setParameter('cutoffDate', $cutoffDate)
+            ->getQuery()
+            ->execute();
+    }
 }
