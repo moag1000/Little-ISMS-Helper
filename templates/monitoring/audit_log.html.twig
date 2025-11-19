@@ -88,103 +88,106 @@
         </div>
         <div class="card-body p-0">
             {% if logs|length > 0 %}
-                <div class="table-responsive">
-                    <table class="table table-hover mb-0">
-                        <thead class="table-light">
+                {% embed '_components/_table.html.twig' with {
+                    'class': 'table-hover mb-0',
+                    'theadClass': 'table-light',
+                    'noMargin': true,
+                    'responsive': true
+                } %}
+                    {% block table_head %}
+                        <tr>
+                            <th scope="col">Timestamp</th>
+                            <th scope="col">User</th>
+                            <th scope="col">Action</th>
+                            <th scope="col">Entity</th>
+                            <th scope="col">IP Address</th>
+                            <th scope="col" class="text-end">Details</th>
+                        </tr>
+                    {% endblock %}
+                    {% block table_body %}
+                        {% for log in logs %}
                             <tr>
-                                <th scope="col">Timestamp</th>
-                                <th scope="col">User</th>
-                                <th scope="col">Action</th>
-                                <th scope="col">Entity</th>
-                                <th scope="col">IP Address</th>
-                                <th scope="col" class="text-end">Details</th>
+                                <td>
+                                    <small>{{ log.createdAt|date('Y-m-d H:i:s') }}</small>
+                                </td>
+                                <td>
+                                    <i class="bi bi-person" aria-hidden="true"></i>
+                                    {{ log.userName }}
+                                </td>
+                                <td>
+                                    <span class="badge bg-{{ log.action in ['delete', 'destroy', 'remove'] ? 'danger' : (log.action in ['create', 'add'] ? 'success' : 'primary') }}">
+                                        {{ log.action }}
+                                    </span>
+                                </td>
+                                <td>
+                                    {% if log.entityType %}
+                                        {{ log.entityType }}
+                                        {% if log.entityId %}
+                                            <code>#{{ log.entityId }}</code>
+                                        {% endif %}
+                                    {% else %}
+                                        <span class="text-muted">-</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <code class="small">{{ log.ipAddress ?? '-' }}</code>
+                                </td>
+                                <td class="text-end">
+                                    {% if log.description or log.newValues %}
+                                        <button type="button"
+                                                class="btn btn-sm btn-outline-primary"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#logModal{{ log.id }}">
+                                            <i class="bi bi-eye" aria-hidden="true"></i> View
+                                        </button>
+                                    {% else %}
+                                        <span class="text-muted">-</span>
+                                    {% endif %}
+                                </td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            {% for log in logs %}
-                                <tr>
-                                    <td>
-                                        <small>{{ log.createdAt|date('Y-m-d H:i:s') }}</small>
-                                    </td>
-                                    <td>
-                                        <i class="bi bi-person" aria-hidden="true"></i>
-                                        {{ log.userName }}
-                                    </td>
-                                    <td>
-                                        <span class="badge bg-{{ log.action in ['delete', 'destroy', 'remove'] ? 'danger' : (log.action in ['create', 'add'] ? 'success' : 'primary') }}">
-                                            {{ log.action }}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        {% if log.entityType %}
-                                            {{ log.entityType }}
-                                            {% if log.entityId %}
-                                                <code>#{{ log.entityId }}</code>
-                                            {% endif %}
-                                        {% else %}
-                                            <span class="text-muted">-</span>
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        <code class="small">{{ log.ipAddress ?? '-' }}</code>
-                                    </td>
-                                    <td class="text-end">
-                                        {% if log.description or log.newValues %}
-                                            <button type="button"
-                                                    class="btn btn-sm btn-outline-primary"
-                                                    data-bs-toggle="modal"
-                                                    data-bs-target="#logModal{{ log.id }}">
-                                                <i class="bi bi-eye" aria-hidden="true"></i> View
-                                            </button>
-                                        {% else %}
-                                            <span class="text-muted">-</span>
-                                        {% endif %}
-                                    </td>
-                                </tr>
 
-                                {# Modal for log details #}
-                                {% if log.description or log.newValues %}
-                                    <div class="modal fade" id="logModal{{ log.id }}" tabindex="-1">
-                                        <div class="modal-dialog modal-lg">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title">Audit Log Details</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <dl class="row">
-                                                        <dt class="col-sm-3">Timestamp:</dt>
-                                                        <dd class="col-sm-9">{{ log.createdAt|date('Y-m-d H:i:s') }}</dd>
+                            {# Modal for log details #}
+                            {% if log.description or log.newValues %}
+                                <div class="modal fade" id="logModal{{ log.id }}" tabindex="-1">
+                                    <div class="modal-dialog modal-lg">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Audit Log Details</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <dl class="row">
+                                                    <dt class="col-sm-3">Timestamp:</dt>
+                                                    <dd class="col-sm-9">{{ log.createdAt|date('Y-m-d H:i:s') }}</dd>
 
-                                                        <dt class="col-sm-3">User:</dt>
-                                                        <dd class="col-sm-9">{{ log.userName }}</dd>
+                                                    <dt class="col-sm-3">User:</dt>
+                                                    <dd class="col-sm-9">{{ log.userName }}</dd>
 
-                                                        <dt class="col-sm-3">Action:</dt>
+                                                    <dt class="col-sm-3">Action:</dt>
+                                                    <dd class="col-sm-9">
+                                                        <span class="badge bg-primary">{{ log.action }}</span>
+                                                    </dd>
+
+                                                    {% if log.description %}
+                                                        <dt class="col-sm-3">Description:</dt>
+                                                        <dd class="col-sm-9">{{ log.description }}</dd>
+                                                    {% endif %}
+
+                                                    {% if log.newValues %}
+                                                        <dt class="col-sm-3">Changes:</dt>
                                                         <dd class="col-sm-9">
-                                                            <span class="badge bg-primary">{{ log.action }}</span>
+                                                            <pre class="bg-light p-2 rounded">{{ log.newValues }}</pre>
                                                         </dd>
-
-                                                        {% if log.description %}
-                                                            <dt class="col-sm-3">Description:</dt>
-                                                            <dd class="col-sm-9">{{ log.description }}</dd>
-                                                        {% endif %}
-
-                                                        {% if log.newValues %}
-                                                            <dt class="col-sm-3">Changes:</dt>
-                                                            <dd class="col-sm-9">
-                                                                <pre class="bg-light p-2 rounded">{{ log.newValues }}</pre>
-                                                            </dd>
-                                                        {% endif %}
-                                                    </dl>
-                                                </div>
+                                                    {% endif %}
+                                                </dl>
                                             </div>
                                         </div>
                                     </div>
-                                {% endif %}
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endblock %}
+                {% endembed %}
             {% else %}
                 <div class="p-4 text-center">
                     <i class="bi bi-info-circle text-info fs-1" aria-hidden="true"></i>
