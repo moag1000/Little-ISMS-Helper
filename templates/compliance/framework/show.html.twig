@@ -90,11 +90,11 @@
             {# Framework Details #}
             <div class="card mb-4">
                 <div class="card-header">
-                    <h5 class="mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'compliance.framework.details'|trans }}</h5>
+                    <h3 class="mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'compliance.framework.details'|trans }}</h3>
                 </div>
                 <div class="card-body">
                     {% if framework.description %}
-                        <h6>{{ 'compliance.framework.field.description'|trans }}</h6>
+                        <h4>{{ 'compliance.framework.field.description'|trans }}</h4>
                         <p>{{ framework.description }}</p>
                     {% endif %}
 
@@ -120,7 +120,7 @@
                     </div>
 
                     {% if framework.scopeDescription %}
-                        <h6>{{ 'compliance.framework.field.scope'|trans }}</h6>
+                        <h2>{{ 'compliance.framework.field.scope'|trans }}</h2>
                         <p>{{ framework.scopeDescription }}</p>
                     {% endif %}
                 </div>
@@ -129,7 +129,7 @@
             {# Requirements by Category #}
             <div class="card mb-4">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0"><i class="bi bi-list-check" aria-hidden="true"></i> {{ 'compliance.framework.requirements_by_category'|trans }}</h5>
+                    <h3 class="mb-0"><i class="bi bi-list-check" aria-hidden="true"></i> {{ 'compliance.framework.requirements_by_category'|trans }}</h3>
                     <a href="{{ path('app_compliance_requirement_index', {framework: framework.id}) }}" class="btn btn-sm btn-outline-primary">
                         <i class="bi bi-list" aria-hidden="true"></i> {{ 'common.view_all'|trans }}
                     </a>

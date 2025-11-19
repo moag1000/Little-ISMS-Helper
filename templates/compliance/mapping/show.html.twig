@@ -21,7 +21,7 @@
             {# Mapping Overview #}
             <div class="card mb-4">
                 <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">Mapping Overview</h5>
+                    <h3 class="mb-0">Mapping Overview</h3>
                 </div>
                 <div class="card-body">
                     <div class="row">
@@ -81,7 +81,7 @@
 
                     {% if mapping.mappingRationale %}
                         <hr>
-                        <h6>Mapping Rationale</h6>
+                        <h2>Mapping Rationale</h2>
                         <p class="text-muted">{{ mapping.mappingRationale }}</p>
                     {% endif %}
                 </div>
@@ -91,7 +91,7 @@
             {% if mapping.isAnalyzed %}
                 <div class="card mb-4">
                     <div class="card-header">
-                        <h5 class="mb-0"><i class="bi bi-graph-up" aria-hidden="true"></i> Quality Analysis</h5>
+                        <h3 class="mb-0"><i class="bi bi-graph-up" aria-hidden="true"></i> Quality Analysis</h3>
                     </div>
                     <div class="card-body">
                         <div class="row">
@@ -120,7 +120,7 @@
             {% if mapping.gapItems|length > 0 %}
                 <div class="card mb-4">
                     <div class="card-header">
-                        <h5 class="mb-0"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> Gap Items ({{ mapping.gapItems|length }})</h5>
+                        <h3 class="mb-0"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> Gap Items ({{ mapping.gapItems|length }})</h3>
                     </div>
                     <div class="card-body">
                         <ul class="list-group">
@@ -146,7 +146,7 @@
             {# Transitive Compliance #}
             <div class="card mb-4">
                 <div class="card-header">
-                    <h5 class="mb-0">Transitive Fulfillment</h5>
+                    <h3 class="mb-0">Transitive Fulfillment</h3>
                 </div>
                 <div class="card-body">
                     <p class="text-muted small">
@@ -161,7 +161,7 @@
             {# Review Status #}
             <div class="card mb-4">
                 <div class="card-header">
-                    <h5 class="mb-0">Review Status</h5>
+                    <h3 class="mb-0">Review Status</h3>
                 </div>
                 <div class="card-body">
                     <p>
@@ -174,7 +174,7 @@
                     {% endif %}
                     {% if mapping.reviewNotes %}
                         <hr>
-                        <h6>Review Notes</h6>
+                        <h4>Review Notes</h4>
                         <p class="text-muted small">{{ mapping.reviewNotes }}</p>
                     {% endif %}
 

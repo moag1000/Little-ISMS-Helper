@@ -20,19 +20,19 @@
         </a>
     </div>
 
-    <h3 class="mb-3">{{ business_process.name }}</h3>
+    <h2 class="mb-3">{{ business_process.name }}</h2>
 
     {# Recovery Objectives #}
     <div class="card mb-4">
         <div class="card-header bg-primary text-white">
-            <h5 class="mb-0"><i class="bi bi-clock-history" aria-hidden="true"></i> Recovery Objectives</h5>
+            <h3 class="mb-0"><i class="bi bi-clock-history" aria-hidden="true"></i> Recovery Objectives</h3>
         </div>
         <div class="card-body">
             <div class="row">
                 <div class="col-md-4">
                     <div class="card bg-light">
                         <div class="card-body text-center">
-                            <h6 class="text-muted">RTO</h6>
+                            <h4 class="text-muted">RTO</h4>
                             <p class="display-4">{{ bia_data.rto }}h</p>
                             <small>Recovery Time Objective</small>
                         </div>
@@ -41,7 +41,7 @@
                 <div class="col-md-4">
                     <div class="card bg-light">
                         <div class="card-body text-center">
-                            <h6 class="text-muted">RPO</h6>
+                            <h4 class="text-muted">RPO</h4>
                             <p class="display-4">{{ bia_data.rpo }}h</p>
                             <small>Recovery Point Objective</small>
                         </div>
@@ -50,7 +50,7 @@
                 <div class="col-md-4">
                     <div class="card bg-light">
                         <div class="card-body text-center">
-                            <h6 class="text-muted">MTPD</h6>
+                            <h4 class="text-muted">MTPD</h4>
                             <p class="display-4">{{ bia_data.mtpd }}h</p>
                             <small>Maximum Tolerable Period</small>
                         </div>
@@ -63,16 +63,16 @@
     {# Financial Impact #}
     <div class="card mb-4">
         <div class="card-header bg-success text-white">
-            <h5 class="mb-0"><i class="bi bi-currency-euro" aria-hidden="true"></i> Finanzielle Auswirkungen</h5>
+            <h3 class="mb-0"><i class="bi bi-currency-euro" aria-hidden="true"></i> Finanzielle Auswirkungen</h3>
         </div>
         <div class="card-body">
             <div class="row">
                 <div class="col-md-6">
-                    <h6>Schaden pro Stunde</h6>
+                    <h4>Schaden pro Stunde</h4>
                     <p class="h3">{{ bia_data.financial_impact_hour ? (bia_data.financial_impact_hour|number_format(2, ',', '.') ~ ' €') : 'Nicht angegeben' }}</p>
                 </div>
                 <div class="col-md-6">
-                    <h6>Schaden pro Tag</h6>
+                    <h4>Schaden pro Tag</h4>
                     <p class="h3">{{ bia_data.financial_impact_day ? (bia_data.financial_impact_day|number_format(2, ',', '.') ~ ' €') : 'Nicht angegeben' }}</p>
                 </div>
             </div>
@@ -91,12 +91,12 @@
     {# Impact Assessment #}
     <div class="card mb-4">
         <div class="card-header bg-warning">
-            <h5 class="mb-0"><i class="bi bi-graph-up" aria-hidden="true"></i> Impact-Bewertung</h5>
+            <h3 class="mb-0"><i class="bi bi-graph-up" aria-hidden="true"></i> Impact-Bewertung</h3>
         </div>
         <div class="card-body">
             <div class="row">
                 <div class="col-md-4">
-                    <h6>Reputationsschaden</h6>
+                    <h4>Reputationsschaden</h4>
                     <div class="progress progress-h-30">
                         <div class="progress-bar bg-danger" role="progressbar"
                              style="width: {{ (bia_data.reputational_impact / 5 * 100) }}%">
@@ -105,7 +105,7 @@
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <h6>Regulatorischer Impact</h6>
+                    <h4>Regulatorischer Impact</h4>
                     <div class="progress progress-h-30">
                         <div class="progress-bar bg-warning" role="progressbar"
                              style="width: {{ (bia_data.regulatory_impact / 5 * 100) }}%">
@@ -114,7 +114,7 @@
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <h6>Operationaler Impact</h6>
+                    <h4>Operationaler Impact</h4>
                     <div class="progress progress-h-30">
                         <div class="progress-bar bg-info" role="progressbar"
                              style="width: {{ (bia_data.operational_impact / 5 * 100) }}%">
@@ -124,7 +124,7 @@
                 </div>
             </div>
             <div class="mt-3">
-                <h6>Aggregierter Business Impact Score</h6>
+                <h4>Aggregierter Business Impact Score</h4>
                 <div class="progress progress-h-40">
                     <div class="progress-bar {% if bia_data.business_impact_score >= 4 %}bg-danger{% elseif bia_data.business_impact_score >= 3 %}bg-warning{% else %}bg-success{% endif %}"
                          role="progressbar"
@@ -139,10 +139,10 @@
     {# Data Reuse Recommendations #}
     <div class="card">
         <div class="card-header bg-info text-white">
-            <h5 class="mb-0"><i class="bi bi-lightbulb" aria-hidden="true"></i> Automatische Empfehlungen (Data Reuse)</h5>
+            <h3 class="mb-0"><i class="bi bi-lightbulb" aria-hidden="true"></i> Automatische Empfehlungen (Data Reuse)</h3>
         </div>
         <div class="card-body">
-            <h6>Empfohlener Verfügbarkeitswert für unterstützende Assets</h6>
+            <h4>Empfohlener Verfügbarkeitswert für unterstützende Assets</h4>
             <p class="lead">
                 Basierend auf RTO {{ bia_data.rto }}h wird empfohlen: 
                 <span class="badge bg-primary fs-5">{{ bia_data.suggested_availability }}/5</span>

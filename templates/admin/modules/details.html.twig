@@ -32,7 +32,7 @@
             {# Module Info #}
             <div class="card mb-4">
                 <div class="card-header">
-                    <h5 class="mb-0">
+                    <h3 class="mb-0">
                         <i class="fas fa-info-circle me-2"></i>
                         Modul-Informationen
                     </h5>
@@ -77,14 +77,14 @@
             {% if graph.dependencies|length > 0 or graph.dependents|length > 0 %}
                 <div class="card mb-4">
                     <div class="card-header">
-                        <h5 class="mb-0">
+                        <h3 class="mb-0">
                             <i class="fas fa-project-diagram me-2"></i>
                             Abhängigkeiten
                         </h5>
                     </div>
                     <div class="card-body">
                         {% if graph.dependencies|length > 0 %}
-                            <h6 class="mb-2">
+                            <h4 class="mb-2">
                                 <i class="fas fa-link text-warning me-2"></i>
                                 Benötigt folgende Module:
                             </h6>
@@ -96,7 +96,7 @@
                         {% endif %}
 
                         {% if graph.dependents|length > 0 %}
-                            <h6 class="mb-2">
+                            <h4 class="mb-2">
                                 <i class="fas fa-arrow-right text-info me-2"></i>
                                 Wird benötigt von:
                             </h6>
@@ -121,7 +121,7 @@
             {% if sample_data|length > 0 and is_active %}
                 <div class="card mb-4">
                     <div class="card-header">
-                        <h5 class="mb-0">
+                        <h3 class="mb-0">
                             <i class="fas fa-file-code me-2"></i>
                             Verfügbare Beispiel-Daten
                         </h5>
@@ -152,7 +152,7 @@
             {# Actions #}
             <div class="card mb-4 border-primary">
                 <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">
+                    <h3 class="mb-0">
                         <i class="fas fa-cogs me-2"></i>
                         Aktionen
                     </h5>

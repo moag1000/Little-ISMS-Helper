@@ -11,7 +11,7 @@
         <div class="col-12">
             <div class="card border-primary">
                 <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">
+                    <h3 class="mb-0">
                         <i class="bi bi-cloud-download" aria-hidden="true"></i> Neues Backup erstellen
                     </h5>
                 </div>
@@ -54,7 +54,7 @@
         <div class="col-12">
             <div class="card border-info">
                 <div class="card-header bg-info text-white">
-                    <h5 class="mb-0">
+                    <h3 class="mb-0">
                         <i class="bi bi-cloud-upload" aria-hidden="true"></i> Backup hochladen
                     </h5>
                 </div>
@@ -82,7 +82,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header bg-light">
-                    <h5 class="mb-0">
+                    <h3 class="mb-0">
                         <i class="bi bi-archive" aria-hidden="true"></i> Verfügbare Backups
                     </h5>
                 </div>
@@ -165,7 +165,7 @@
                         <input type="hidden" id="restoreFilename" name="filename">
 
                         <div class="mb-3">
-                            <label class="form-label fw-bold">Strategie für fehlende Felder:</label>
+                            <label class="form-label fw-bold" for="strategyDefault">Strategie für fehlende Felder:</label>
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="missing_field_strategy" id="strategyDefault" value="use_default" checked>
                                 <label class="form-check-label" for="strategyDefault">
@@ -190,7 +190,7 @@
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label fw-bold">Strategie für bestehende Daten:</label>
+                            <label class="form-label fw-bold" for="existingUpdate">Strategie für bestehende Daten:</label>
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="existing_data_strategy" id="existingUpdate" value="update" checked>
                                 <label class="form-check-label" for="existingUpdate">
@@ -702,7 +702,7 @@
                             html += `<div class="alert alert-info"><strong>Gesamtanzahl Datensätze:</strong> ${result.preview.total_records}</div>`;
 
                             if (result.preview.metadata) {
-                                html += `<div class="card"><div class="card-body"><h6>Metadata:</h6><pre>${JSON.stringify(result.preview.metadata, null, 2)}</pre></div></div>`;
+                                html += `<div class="card"><div class="card-body"><h4>Metadata:</h4><pre>${JSON.stringify(result.preview.metadata, null, 2)}</pre></div></div>`;
                             }
 
                             previewContent.innerHTML = html;

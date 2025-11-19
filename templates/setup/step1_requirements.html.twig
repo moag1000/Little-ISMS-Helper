@@ -10,7 +10,7 @@
             <div class="card mb-4">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center mb-2">
-                        <h6 class="mb-0">Setup-Fortschritt</h6>
+                        <h4 class="mb-0">Setup-Fortschritt</h4>
                         <small class="text-muted">Schritt 1 von 11</small>
                     </div>
                     <div class="progress" style="height: 10px;">
@@ -52,7 +52,7 @@
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-start">
                                 <div>
-                                    <h6 class="mb-1">
+                                    <h4 class="mb-1">
                                         <i class="fas fa-{{ results.php.status == 'success' ? 'check-circle text-success' : 'times-circle text-danger' }} me-2"></i>
                                         PHP-Version
                                     </h6>
@@ -71,7 +71,7 @@
                     {# PHP Extensions #}
                     <div class="card mb-3 border-{{ results.extensions.status == 'success' ? 'success' : 'danger' }}">
                         <div class="card-body">
-                            <h6 class="mb-2">
+                            <h4 class="mb-2">
                                 <i class="fas fa-{{ results.extensions.status == 'success' ? 'check-circle text-success' : 'times-circle text-danger' }} me-2"></i>
                                 PHP-Extensions
                             </h6>
@@ -98,7 +98,7 @@
                     {# Database #}
                     <div class="card mb-3 border-{{ results.database.status == 'success' ? 'success' : (results.database.status == 'warning' ? 'warning' : 'danger') }}">
                         <div class="card-body">
-                            <h6 class="mb-1">
+                            <h4 class="mb-1">
                                 <i class="fas fa-database me-2 text-{{ results.database.status == 'success' ? 'success' : (results.database.status == 'warning' ? 'warning' : 'danger') }}"></i>
                                 Datenbank
                             </h6>
@@ -109,7 +109,7 @@
                     {# Permissions #}
                     <div class="card mb-3 border-{{ results.permissions.status == 'success' ? 'success' : 'danger' }}">
                         <div class="card-body">
-                            <h6 class="mb-2">
+                            <h4 class="mb-2">
                                 <i class="fas fa-{{ results.permissions.status == 'success' ? 'check-circle text-success' : 'times-circle text-danger' }} me-2"></i>
                                 Verzeichnis-Berechtigungen
                             </h6>
@@ -132,7 +132,7 @@
                         <div class="col-md-6">
                             <div class="card mb-3 border-{{ results.memory.status == 'success' ? 'success' : 'warning' }}">
                                 <div class="card-body">
-                                    <h6 class="mb-1">
+                                    <h4 class="mb-1">
                                         <i class="fas fa-memory me-2 text-{{ results.memory.status == 'success' ? 'success' : 'warning' }}"></i>
                                         Memory Limit
                                     </h6>
@@ -144,7 +144,7 @@
                         <div class="col-md-6">
                             <div class="card mb-3 border-{{ results.execution_time.status == 'success' ? 'success' : 'warning' }}">
                                 <div class="card-body">
-                                    <h6 class="mb-1">
+                                    <h4 class="mb-1">
                                         <i class="fas fa-clock me-2 text-{{ results.execution_time.status == 'success' ? 'success' : 'warning' }}"></i>
                                         Max Execution Time
                                     </h6>
@@ -158,7 +158,7 @@
                     {# Symfony Version #}
                     <div class="card mb-3 border-{{ results.symfony.status == 'success' ? 'success' : 'danger' }}">
                         <div class="card-body">
-                            <h6 class="mb-1">
+                            <h4 class="mb-1">
                                 <i class="fas fa-{{ results.symfony.status == 'success' ? 'check-circle text-success' : 'times-circle text-danger' }} me-2"></i>
                                 Symfony Version
                             </h6>

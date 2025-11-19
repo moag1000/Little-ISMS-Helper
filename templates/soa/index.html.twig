@@ -29,8 +29,10 @@
 
 {# View Filter #}
 {% if currentTenant %}
-<div class="card mb-3">
-    <div class="card-body py-2">
+{% embed '_components/_card.html.twig' with {
+    'class': 'mb-3'
+} %}
+    {% block card_body %}
         <form method="get" action="{{ path('app_soa_index') }}" class="d-flex align-items-center gap-2">
             <label for="view-filter" class="mb-0 fw-bold">
                 <i class="bi bi-eye" aria-hidden="true"></i> {{ 'common.view'|trans }}:
@@ -54,8 +56,8 @@
                 <button type="submit" class="btn btn-sm btn-secondary">{{ 'common.apply'|trans }}</button>
             </noscript>
         </form>
-    </div>
-</div>
+    {% endblock %}
+{% endembed %}
 {% endif %}
 
 {# KPI Cards #}
@@ -123,7 +125,7 @@
 
         <div class="card">
             <div class="fs-2-mb-sm">{{ icon }}</div>
-            <h3>{{ category }} Controls</h3>
+            <h2>{{ category }} Controls</h2>
             <div class="stats-grid mt-2">
                 <div class="stat-item">
                     <strong>{{ cat_controls|length }}</strong>

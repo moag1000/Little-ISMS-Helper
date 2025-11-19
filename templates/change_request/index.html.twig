@@ -11,7 +11,7 @@
 
     {% if statistics %}
     <div class="info-box">
-        <h3>{{ 'change_request.statistics.title'|trans }}</h3>
+        <h2>{{ 'change_request.statistics.title'|trans }}</h2>
         <div class="stats-grid">
             <div class="stat-item">
                 <span class="stat-label">{{ 'change_request.statistics.total'|trans }}</span>
@@ -35,7 +35,7 @@
 
     {% if pending_approval|length > 0 %}
     <div class="alert alert-info">
-        <h4>📋 {{ 'change_request.alert.pending_approval'|trans }}</h4>
+        <h2>📋 {{ 'change_request.alert.pending_approval'|trans }}</h2>
         <ul>
             {% for change in pending_approval %}
             <li>

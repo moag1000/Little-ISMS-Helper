@@ -370,7 +370,7 @@
     {% for control in controls|sort((a, b) => a.controlId <=> b.controlId) %}
     <div class="control-detail">
         <div class="control-header">
-            <h3>{{ control.controlId }}: {{ control.name }}</h3>
+            <h2>{{ control.controlId }}: {{ control.name }}</h2>
             <span class="badge badge-info">{{ control.category }}</span>
             {% if control.applicable %}
                 <span class="badge badge-success">Anwendbar</span>

@@ -14,7 +14,7 @@
     {# Role Selection #}
     <div class="card mb-4">
         <div class="card-header bg-primary text-white">
-            <h5 class="mb-0">
+            <h3 class="mb-0">
                 <i class="bi bi-funnel" aria-hidden="true"></i> {{ 'role.compare.select_roles'|trans }}
             </h5>
         </div>
@@ -22,8 +22,8 @@
             <form method="get">
                 <div class="row g-3">
                     <div class="col-md-10">
-                        <label class="form-label">Rollen zum Vergleichen auswählen (max. 5):</label>
-                        <select name="roles[]" class="form-select" multiple size="8" required>
+                        <label class="form-label" for="role-select">Rollen zum Vergleichen auswählen (max. 5):</label>
+                        <select name="roles[]" id="role-select" class="form-select" multiple size="8" required>
                             {% for role in all_roles %}
                                 <option value="{{ role.id }}"
                                         {{ role.id in selected_role_ids ? 'selected' : '' }}>
@@ -50,7 +50,7 @@
         {# Comparison Matrix #}
         <div class="card">
             <div class="card-header bg-success text-white">
-                <h5 class="mb-0">
+                <h3 class="mb-0">
                     <i class="bi bi-table" aria-hidden="true"></i> {{ 'role.compare.permission_matrix'|trans }}
                 </h5>
             </div>
@@ -108,7 +108,7 @@
         {# Legend #}
         <div class="card mt-4">
             <div class="card-body">
-                <h6>Legende:</h6>
+                <h4>Legende:</h4>
                 <div class="d-flex gap-4">
                     <div>
                         <i class="bi bi-check-circle-fill text-success" aria-hidden="true"></i>
