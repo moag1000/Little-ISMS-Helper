@@ -791,6 +791,12 @@ class RiskController extends AbstractController
 
         // Handle form submission
         if ($request->isMethod('POST')) {
+            // CSRF token validation
+            if (!$this->isCsrfTokenValid('request-acceptance'.$risk->getId(), $request->request->get('_token'))) {
+                $this->addFlash('error', $this->translator->trans('security.csrf_token_invalid'));
+                return $this->redirectToRoute('app_risk_show', ['id' => $risk->getId()]);
+            }
+
             $justification = $request->request->get('justification');
 
             if (empty($justification)) {
