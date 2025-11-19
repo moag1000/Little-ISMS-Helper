@@ -6,6 +6,8 @@ use App\Repository\AssetRepository;
 use App\Repository\RiskRepository;
 use App\Service\DashboardStatisticsService;
 use App\Service\ISOComplianceIntelligenceService;
+use App\Service\RiskReviewService;
+use App\Service\TenantContext;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,6 +22,8 @@ class HomeController extends AbstractController
         private readonly ISOComplianceIntelligenceService $isoComplianceService,
         private readonly AssetRepository $assetRepository,
         private readonly RiskRepository $riskRepository,
+        private readonly RiskReviewService $riskReviewService,
+        private readonly TenantContext $tenantContext,
         private readonly TranslatorInterface $translator
     ) {}
 
@@ -79,11 +83,18 @@ class HomeController extends AbstractController
         // ISO Compliance Dashboard - zusätzliche Compliance-Informationen
         $isoCompliance = $this->isoComplianceService->getComplianceDashboard();
 
+        // Risk Review Data (ISO 27001:2022 Clause 6.1.3.d)
+        $tenant = $this->tenantContext->getCurrentTenant();
+        $overdueReviews = $this->riskReviewService->getOverdueReviews($tenant);
+        $upcomingReviews = $this->riskReviewService->getUpcomingReviews($tenant, 30);
+
         return $this->render('home/dashboard_modern.html.twig', [
             'kpis' => $kpis,
             'stats' => $stats,
             'activities' => $activities,
             'iso_compliance' => $isoCompliance,
+            'overdue_reviews' => $overdueReviews,
+            'upcoming_reviews' => $upcomingReviews,
         ]);
     }
 
