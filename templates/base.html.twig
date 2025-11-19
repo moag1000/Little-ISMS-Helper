@@ -153,7 +153,7 @@
                     <li class="nav-divider">{{ 'nav.section.assets_risk'|trans }}</li>
                     <li class="has-submenu" data-controller="sidebar-dropdown" data-sidebar-dropdown-key-value="sidebar-assets-risk-expanded">
                         <a href="{{ path('app_asset_index') }}"
-                           class="submenu-toggle {% if current_route starts with 'app_asset_' or current_route starts with 'app_supplier_' or current_route starts with 'app_risk_' %}active{% endif %}"
+                           class="submenu-toggle {% if current_route starts with 'app_asset_' or current_route starts with 'app_supplier_' or current_route starts with 'app_location_' or current_route starts with 'app_person_' or current_route starts with 'app_risk_' %}active{% endif %}"
                            data-turbo-action="advance"
                            data-action="click->sidebar-dropdown#toggle:prevent"
                            data-sidebar-dropdown-target="toggle"
@@ -172,6 +172,14 @@
                                 <i class="bi bi-truck" aria-hidden="true"></i>
                                 <span>{{ 'nav.suppliers'|trans }}</span>
                             </a></li>
+                            <li><a href="{{ path('app_location_index') }}" class="{% if current_route starts with 'app_location_' %}active{% endif %}" data-turbo-action="advance">
+                                <i class="bi bi-geo-alt" aria-hidden="true"></i>
+                                <span>{{ 'nav.locations'|trans }}</span>
+                            </a></li>
+                            <li><a href="{{ path('app_person_index') }}" class="{% if current_route starts with 'app_person_' %}active{% endif %}" data-turbo-action="advance">
+                                <i class="bi bi-person" aria-hidden="true"></i>
+                                <span>{{ 'nav.people'|trans }}</span>
+                            </a></li>
                             {% endif %}
                             {% if is_module_active('risks') %}
                             <li><a href="{{ path('app_risk_index') }}" class="{% if current_route starts with 'app_risk_' %}active{% endif %}" data-turbo-action="advance">
@@ -181,6 +189,14 @@
                             <li><a href="{{ path('app_risk_matrix') }}" class="{% if current_route == 'app_risk_matrix' %}active{% endif %}" data-turbo-action="advance">
                                 <i class="bi bi-grid-3x3" aria-hidden="true"></i>
                                 <span>{{ 'nav.risk_matrix'|trans|default('Risk Matrix') }}</span>
+                            </a></li>
+                            <li><a href="{{ path('app_risk_appetite_index') }}" class="{% if current_route starts with 'app_risk_appetite_' %}active{% endif %}" data-turbo-action="advance">
+                                <i class="bi bi-speedometer" aria-hidden="true"></i>
+                                <span>{{ 'nav.risk_appetite'|trans|default('Risk Appetite') }}</span>
+                            </a></li>
+                            <li><a href="{{ path('app_risk_treatment_plan_index') }}" class="{% if current_route starts with 'app_risk_treatment_plan_' %}active{% endif %}" data-turbo-action="advance">
+                                <i class="bi bi-clipboard-data" aria-hidden="true"></i>
+                                <span>{{ 'nav.risk_treatment_plans'|trans|default('Treatment Plans') }}</span>
                             </a></li>
                             {% endif %}
                         </ul>
@@ -192,7 +208,7 @@
                     <li class="nav-divider">{{ 'nav.section.bcm'|trans }}</li>
                     <li class="has-submenu" data-controller="sidebar-dropdown" data-sidebar-dropdown-key-value="sidebar-bcm-expanded">
                         <a href="{{ path('app_business_process_index') }}"
-                           class="submenu-toggle {% if current_route starts with 'app_business_process_' or current_route starts with 'app_bc_plan_' or current_route starts with 'app_bc_exercise_' %}active{% endif %}"
+                           class="submenu-toggle {% if current_route starts with 'app_business_process_' or current_route starts with 'app_bc_plan_' or current_route starts with 'app_bc_exercise_' or current_route starts with 'app_crisis_team_' %}active{% endif %}"
                            data-turbo-action="advance"
                            data-action="click->sidebar-dropdown#toggle:prevent"
                            data-sidebar-dropdown-target="toggle"
@@ -213,6 +229,10 @@
                             <li><a href="{{ path('app_bc_exercise_index') }}" class="{% if current_route starts with 'app_bc_exercise_' %}active{% endif %}" data-turbo-action="advance">
                                 <i class="bi bi-flag" aria-hidden="true"></i>
                                 <span>{{ 'nav.bc_exercises'|trans }}</span>
+                            </a></li>
+                            <li><a href="{{ path('app_crisis_team_index') }}" class="{% if current_route starts with 'app_crisis_team_' %}active{% endif %}" data-turbo-action="advance">
+                                <i class="bi bi-person-badge" aria-hidden="true"></i>
+                                <span>{{ 'nav.crisis_team'|trans|default('Crisis Team') }}</span>
                             </a></li>
                         </ul>
                     </li>
@@ -252,9 +272,17 @@
                     <li class="nav-divider">{{ 'nav.section.operations'|trans }}</li>
                     {% endif %}
                     {% if is_module_active('core') %}
+                    <li><a href="{{ path('app_document_index') }}" class="{% if current_route starts with 'app_document_' %}active{% endif %}" data-turbo-action="advance">
+                        <i class="bi bi-file-earmark-text" aria-hidden="true"></i>
+                        <span>{{ 'nav.documents'|trans }}</span>
+                    </a></li>
                     <li><a href="{{ path('app_change_request_index') }}" class="{% if current_route starts with 'app_change_request_' %}active{% endif %}" data-turbo-action="advance">
                         <i class="bi bi-arrow-left-right" aria-hidden="true"></i>
                         <span>{{ 'nav.change_requests'|trans }}</span>
+                    </a></li>
+                    <li><a href="{{ path('app_workflow_index') }}" class="{% if current_route starts with 'app_workflow_' %}active{% endif %}" data-turbo-action="advance">
+                        <i class="bi bi-diagram-3" aria-hidden="true"></i>
+                        <span>{{ 'nav.workflows'|trans|default('Workflows') }}</span>
                     </a></li>
                     {% endif %}
                     {% if is_module_active('incidents') %}
@@ -284,6 +312,14 @@
                         <span>{{ 'nav.audits'|trans }}</span>
                     </a></li>
                     {% endif %}
+                    <li><a href="{{ path('app_training_index') }}" class="{% if current_route starts with 'app_training_' %}active{% endif %}" data-turbo-action="advance">
+                        <i class="bi bi-book" aria-hidden="true"></i>
+                        <span>{{ 'nav.training'|trans|default('Training') }}</span>
+                    </a></li>
+                    <li><a href="{{ path('app_management_review_index') }}" class="{% if current_route starts with 'app_management_review_' %}active{% endif %}" data-turbo-action="advance">
+                        <i class="bi bi-clipboard2-check" aria-hidden="true"></i>
+                        <span>{{ 'nav.management_review'|trans|default('Management Review') }}</span>
+                    </a></li>
                     {% if is_module_active('compliance') and app.request.attributes.get('_route') is not same as('setup_wizard_index') and not (app.request.attributes.get('_route') starts with 'setup_step') %}
                     {% set compliance_frameworks = get_compliance_frameworks_quick() %}
                     <li class="has-submenu" data-controller="sidebar-dropdown" data-sidebar-dropdown-key-value="sidebar-compliance-expanded">
@@ -327,6 +363,10 @@
                             <li><a href="{{ path('app_compliance_compare') }}" class="{% if current_route == 'app_compliance_compare' %}active{% endif %}" data-turbo-action="advance">
                                 <i class="bi bi-columns" aria-hidden="true"></i>
                                 <span>{{ 'nav.compare'|trans|default('Compare') }}</span>
+                            </a></li>
+                            <li><a href="{{ path('app_mapping_quality_dashboard') }}" class="{% if current_route starts with 'app_mapping_quality_' %}active{% endif %}" data-turbo-action="advance">
+                                <i class="bi bi-star-half" aria-hidden="true"></i>
+                                <span>{{ 'nav.mapping_quality'|trans|default('Mapping Quality') }}</span>
                             </a></li>
                         </ul>
                     </li>
