@@ -14,24 +14,35 @@
     {% if crisis_teams|length == 0 %}
         <div class="alert alert-info">{{ 'crisis_team.empty'|trans }}</div>
     {% else %}
-        <div class="card"><div class="table-responsive"><table class="table table-hover mb-0">
-            <thead><tr><th scope="col">{{ 'crisis_team.field.team_name'|trans }}</th><th scope="col">{{ 'crisis_team.field.team_type'|trans }}</th><th scope="col">{{ 'crisis_team.field.team_leader'|trans }}</th><th scope="col">{{ 'common.actions'|trans }}</th></tr></thead>
-            <tbody>
-                {% for team in crisis_teams %}
-                    <tr class="{{ team.isActive ? '' : 'table-secondary' }}">
-                        <td><strong>{{ team.teamName }}</strong></td>
-                        <td><span class="badge bg-primary">{{ ('crisis_team.type.' ~ team.teamType)|trans }}</span></td>
-                        <td>{{ team.teamLeader ? team.teamLeader.email : 'N/A' }}</td>
-                        <td>
-                            <div class="btn-group btn-group-sm">
-                                <a href="{{ path('app_crisis_team_show', {id: team.id}) }}" class="btn btn-outline-primary" aria-label="{{ 'common.view'|trans }}"><i class="bi bi-eye" aria-hidden="true"></i></a>
-                                <a href="{{ path('app_crisis_team_edit', {id: team.id}) }}" class="btn btn-outline-secondary" aria-label="{{ 'common.edit'|trans }}"><i class="bi bi-pencil" aria-hidden="true"></i></a>
-                            </div>
-                        </td>
+        <div class="card">
+            {% embed '_components/_table.html.twig' with {
+                'noMargin': true
+            } %}
+                {% block table_head %}
+                    <tr>
+                        <th scope="col">{{ 'crisis_team.field.team_name'|trans }}</th>
+                        <th scope="col">{{ 'crisis_team.field.team_type'|trans }}</th>
+                        <th scope="col">{{ 'crisis_team.field.team_leader'|trans }}</th>
+                        <th scope="col">{{ 'common.actions'|trans }}</th>
                     </tr>
-                {% endfor %}
-            </tbody>
-        </table></div></div>
+                {% endblock %}
+                {% block table_body %}
+                    {% for team in crisis_teams %}
+                        <tr class="{{ team.isActive ? '' : 'table-secondary' }}">
+                            <td><strong>{{ team.teamName }}</strong></td>
+                            <td><span class="badge bg-primary">{{ ('crisis_team.type.' ~ team.teamType)|trans }}</span></td>
+                            <td>{{ team.teamLeader ? team.teamLeader.email : 'N/A' }}</td>
+                            <td>
+                                <div class="btn-group btn-group-sm">
+                                    <a href="{{ path('app_crisis_team_show', {id: team.id}) }}" class="btn btn-outline-primary" aria-label="{{ 'common.view'|trans }}"><i class="bi bi-eye" aria-hidden="true"></i></a>
+                                    <a href="{{ path('app_crisis_team_edit', {id: team.id}) }}" class="btn btn-outline-secondary" aria-label="{{ 'common.edit'|trans }}"><i class="bi bi-pencil" aria-hidden="true"></i></a>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% endblock %}
+            {% endembed %}
+        </div>
     {% endif %}
 </div>
 {% endblock %}

@@ -23,9 +23,13 @@
         {% for crumb in breadcrumbs %}
             {% if not loop.last %}
                 <li class="breadcrumb-item">
-                    <a href="{{ crumb.url }}" data-turbo-action="advance">
+                    {% if crumb.url is defined %}
+                        <a href="{{ crumb.url }}" data-turbo-action="advance">
+                            {{ crumb.label }}
+                        </a>
+                    {% else %}
                         {{ crumb.label }}
-                    </a>
+                    {% endif %}
                 </li>
             {% else %}
                 <li class="breadcrumb-item active" aria-current="page">
