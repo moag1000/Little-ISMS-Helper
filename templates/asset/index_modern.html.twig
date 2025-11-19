@@ -108,108 +108,110 @@
                    aria-label="Assets durchsuchen">
         </div>
     </div>
-    <div class="table-responsive">
-        <table class="table table-hover mb-0">
-            <caption class="visually-hidden">Liste aller Assets mit CIA-Bewertung, Risiken und Controls</caption>
-            <thead>
-                <tr>
-                    <th scope="col" class="w-40px">
-                        <input type="checkbox"
-                               class="form-check-input"
-                               data-action="bulk-actions#selectAll"
-                               data-bulk-actions-target="selectAllCheckbox"
-                               aria-label="Alle Assets auswählen">
-                    </th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Typ</th>
-                    <th scope="col" class="text-center">Confidentiality</th>
-                    <th scope="col" class="text-center">Integrity</th>
-                    <th scope="col" class="text-center">Availability</th>
-                    <th scope="col" class="text-center">Risiken</th>
-                    <th scope="col" class="text-center">Controls</th>
-                    <th scope="col" class="text-center">Aktionen</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for asset in assets %}
-                <tr data-asset-id="{{ asset.id }}">
-                    <td>
-                        <input type="checkbox"
-                               class="form-check-input"
-                               data-bulk-actions-target="item"
-                               data-action="bulk-actions#selectItem"
-                               value="{{ asset.id }}"
-                               aria-label="Asset {{ asset.name }} auswählen">
-                    </td>
-                    <td>
-                        <strong>{{ asset.name }}</strong>
-                        {% if asset.description %}
-                        <br><small class="text-muted">{{ asset.description|length > 50 ? asset.description|slice(0, 50) ~ '...' : asset.description }}</small>
+    {% embed '_components/_table.html.twig' with {
+        'class': 'table-hover mb-0',
+        'caption': 'Liste aller Assets mit CIA-Bewertung, Risiken und Controls',
+        'noMargin': true,
+        'responsive': true
+    } %}
+        {% block table_head %}
+            <tr>
+                <th scope="col" class="w-40px">
+                    <input type="checkbox"
+                           class="form-check-input"
+                           data-action="bulk-actions#selectAll"
+                           data-bulk-actions-target="selectAllCheckbox"
+                           aria-label="Alle Assets auswählen">
+                </th>
+                <th scope="col">Name</th>
+                <th scope="col">Typ</th>
+                <th scope="col" class="text-center">Confidentiality</th>
+                <th scope="col" class="text-center">Integrity</th>
+                <th scope="col" class="text-center">Availability</th>
+                <th scope="col" class="text-center">Risiken</th>
+                <th scope="col" class="text-center">Controls</th>
+                <th scope="col" class="text-center">Aktionen</th>
+            </tr>
+        {% endblock %}
+        {% block table_body %}
+            {% for asset in assets %}
+            <tr data-asset-id="{{ asset.id }}">
+                <td>
+                    <input type="checkbox"
+                           class="form-check-input"
+                           data-bulk-actions-target="item"
+                           data-action="bulk-actions#selectItem"
+                           value="{{ asset.id }}"
+                           aria-label="Asset {{ asset.name }} auswählen">
+                </td>
+                <td>
+                    <strong>{{ asset.name }}</strong>
+                    {% if asset.description %}
+                    <br><small class="text-muted">{{ asset.description|length > 50 ? asset.description|slice(0, 50) ~ '...' : asset.description }}</small>
+                    {% endif %}
+                </td>
+                <td>
+                    <span class="badge bg-secondary">{{ asset.assetType }}</span>
+                </td>
+                <td class="text-center">
+                    <span class="badge bg-{{ asset.confidentiality >= 4 ? 'danger' : (asset.confidentiality >= 3 ? 'warning' : 'success') }}">
+                        {{ asset.confidentiality }}/5
+                    </span>
+                </td>
+                <td class="text-center">
+                    <span class="badge bg-{{ asset.integrity >= 4 ? 'danger' : (asset.integrity >= 3 ? 'warning' : 'success') }}">
+                        {{ asset.integrity }}/5
+                    </span>
+                </td>
+                <td class="text-center">
+                    <span class="badge bg-{{ asset.availability >= 4 ? 'danger' : (asset.availability >= 3 ? 'warning' : 'success') }}">
+                        {{ asset.availability }}/5
+                    </span>
+                </td>
+                <td class="text-center">
+                    {% if asset.risks|length > 0 %}
+                        <a href="{{ path('app_asset_risks', {id: asset.id}) }}"
+                           class="badge bg-warning text-dark"
+                           aria-label="{{ asset.risks|length }} Risiken für Asset {{ asset.name }}">
+                            {{ asset.risks|length }}
+                        </a>
+                    {% else %}
+                        <span class="text-muted">0</span>
+                    {% endif %}
+                </td>
+                <td class="text-center">
+                    {% if asset.protectingControls|length > 0 %}
+                        <a href="{{ path('app_asset_controls', {id: asset.id}) }}"
+                           class="badge bg-success"
+                           aria-label="{{ asset.protectingControls|length }} Controls für Asset {{ asset.name }}">
+                            {{ asset.protectingControls|length }}
+                        </a>
+                    {% else %}
+                        <span class="text-muted">0</span>
+                    {% endif %}
+                </td>
+                <td class="text-center">
+                    <div class="btn-group btn-group-sm" role="group" aria-label="Aktionen für Asset {{ asset.name }}">
+                        <a href="{{ path('app_asset_show', {id: asset.id}) }}"
+                           class="btn btn-outline-primary"
+                           data-turbo-action="advance"
+                           aria-label="Asset {{ asset.name }} anzeigen">
+                            <i class="bi bi-eye" aria-hidden="true"></i>
+                        </a>
+                        {% if is_granted('ROLE_USER') %}
+                        <a href="{{ path('app_asset_edit', {id: asset.id}) }}"
+                           class="btn btn-outline-secondary"
+                           data-turbo-action="advance"
+                           aria-label="Asset {{ asset.name }} bearbeiten">
+                            <i class="bi bi-pencil" aria-hidden="true"></i>
+                        </a>
                         {% endif %}
-                    </td>
-                    <td>
-                        <span class="badge bg-secondary">{{ asset.assetType }}</span>
-                    </td>
-                    <td class="text-center">
-                        <span class="badge bg-{{ asset.confidentiality >= 4 ? 'danger' : (asset.confidentiality >= 3 ? 'warning' : 'success') }}">
-                            {{ asset.confidentiality }}/5
-                        </span>
-                    </td>
-                    <td class="text-center">
-                        <span class="badge bg-{{ asset.integrity >= 4 ? 'danger' : (asset.integrity >= 3 ? 'warning' : 'success') }}">
-                            {{ asset.integrity }}/5
-                        </span>
-                    </td>
-                    <td class="text-center">
-                        <span class="badge bg-{{ asset.availability >= 4 ? 'danger' : (asset.availability >= 3 ? 'warning' : 'success') }}">
-                            {{ asset.availability }}/5
-                        </span>
-                    </td>
-                    <td class="text-center">
-                        {% if asset.risks|length > 0 %}
-                            <a href="{{ path('app_asset_risks', {id: asset.id}) }}"
-                               class="badge bg-warning text-dark"
-                               aria-label="{{ asset.risks|length }} Risiken für Asset {{ asset.name }}">
-                                {{ asset.risks|length }}
-                            </a>
-                        {% else %}
-                            <span class="text-muted">0</span>
-                        {% endif %}
-                    </td>
-                    <td class="text-center">
-                        {% if asset.protectingControls|length > 0 %}
-                            <a href="{{ path('app_asset_controls', {id: asset.id}) }}"
-                               class="badge bg-success"
-                               aria-label="{{ asset.protectingControls|length }} Controls für Asset {{ asset.name }}">
-                                {{ asset.protectingControls|length }}
-                            </a>
-                        {% else %}
-                            <span class="text-muted">0</span>
-                        {% endif %}
-                    </td>
-                    <td class="text-center">
-                        <div class="btn-group btn-group-sm" role="group" aria-label="Aktionen für Asset {{ asset.name }}">
-                            <a href="{{ path('app_asset_show', {id: asset.id}) }}"
-                               class="btn btn-outline-primary"
-                               data-turbo-action="advance"
-                               aria-label="Asset {{ asset.name }} anzeigen">
-                                <i class="bi bi-eye" aria-hidden="true"></i>
-                            </a>
-                            {% if is_granted('ROLE_USER') %}
-                            <a href="{{ path('app_asset_edit', {id: asset.id}) }}"
-                               class="btn btn-outline-secondary"
-                               data-turbo-action="advance"
-                               aria-label="Asset {{ asset.name }} bearbeiten">
-                                <i class="bi bi-pencil" aria-hidden="true"></i>
-                            </a>
-                            {% endif %}
-                        </div>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        {% endblock %}
+    {% endembed %}
 
     {# Bulk Action Bar #}
     {% include '_components/_bulk_action_bar.html.twig' with {
