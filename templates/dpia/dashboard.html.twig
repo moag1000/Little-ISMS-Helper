@@ -1,0 +1,272 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}DPIA Dashboard{% endblock %}
+
+{% block body %}
+<div class="container-fluid mt-4">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'GDPR', icon: 'bi-shield-check' },
+            { label: 'DPIA', url: path('app_dpia_index') },
+            { label: 'Dashboard' }
+        ]
+    } %}
+
+    {% include '_components/_page_header.html.twig' with {
+        title: 'DPIA Dashboard',
+        subtitle: 'Art. 35 GDPR Compliance Overview',
+        icon: 'bi-speedometer2',
+        actions: [
+            { label: 'View All DPIAs', url: path('app_dpia_index'), variant: 'primary', icon: 'bi-list' },
+            { label: 'New DPIA', url: path('app_dpia_new'), variant: 'success', icon: 'bi-plus-lg' }
+        ]
+    } %}
+
+    {# Overall Compliance Score #}
+    <div class="card mb-4 text-center">
+        <div class="card-body">
+            <h6 class="text-muted mb-2">Overall DPIA Compliance Score</h6>
+            {% set score = compliance_score.overall_score %}
+            <h1 class="display-1 mb-0
+                {% if score >= 80 %}text-success
+                {% elseif score >= 60 %}text-warning
+                {% else %}text-danger{% endif %}">
+                {{ score }}%
+            </h1>
+            <p class="text-muted mt-2">
+                {{ compliance_score.approved_dpias }} of {{ compliance_score.total_dpias }} DPIAs approved
+                {% if compliance_score.due_for_review > 0 %}
+                    · {{ compliance_score.due_for_review }} due for review
+                {% endif %}
+            </p>
+            <div class="row mt-3">
+                <div class="col-md-4">
+                    <small class="text-muted">Completeness</small>
+                    <h4 class="mb-0">{{ compliance_score.completeness_score }}%</h4>
+                </div>
+                <div class="col-md-4">
+                    <small class="text-muted">Approval Rate</small>
+                    <h4 class="mb-0">{{ compliance_score.approval_score }}%</h4>
+                </div>
+                <div class="col-md-4">
+                    <small class="text-muted">Review Compliance</small>
+                    <h4 class="mb-0">{{ compliance_score.review_compliance_score }}%</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Key Metrics #}
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="text-muted">Total DPIAs</h6>
+                    <h2>{{ statistics.total }}</h2>
+                    <div class="mt-2">
+                        <small class="text-success"><i class="bi bi-check-circle"></i> {{ statistics.approved }} approved</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="text-muted">In Review</h6>
+                    <h2 class="text-info">{{ statistics.in_review }}</h2>
+                    <div class="mt-2">
+                        <small class="text-muted"><i class="bi bi-clock"></i> Awaiting approval</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="text-muted">High Risk</h6>
+                    <h2 class="text-danger">{{ statistics.high_risk }}</h2>
+                    <div class="mt-2">
+                        <small class="text-warning"><i class="bi bi-exclamation-triangle"></i> Requires attention</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="text-muted">Completeness</h6>
+                    <h2>{{ statistics.completeness_rate }}%</h2>
+                    <div class="progress mt-2" style="height: 10px;">
+                        <div class="progress-bar bg-success" style="width: {{ statistics.completeness_rate }}%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        {# Action Items #}
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0"><i class="bi bi-exclamation-circle"></i> Action Items</h5>
+                </div>
+                <div class="card-body">
+                    {% if incomplete|length > 0 %}
+                        <h6>Incomplete DPIAs ({{ incomplete|length }})</h6>
+                        <ul class="list-unstyled">
+                            {% for dpia in incomplete|slice(0, 5) %}
+                                <li class="mb-2">
+                                    <a href="{{ path('app_dpia_edit', {id: dpia.id}) }}">{{ dpia.referenceNumber }} - {{ dpia.title }}</a>
+                                    <span class="badge bg-warning">{{ dpia.completenessPercentage }}%</span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+
+                    {% if awaiting_dpo|length > 0 %}
+                        <h6 class="mt-3">Awaiting DPO Consultation ({{ awaiting_dpo|length }})</h6>
+                        <ul class="list-unstyled">
+                            {% for dpia in awaiting_dpo|slice(0, 5) %}
+                                <li class="mb-2">
+                                    <a href="{{ path('app_dpia_show', {id: dpia.id}) }}">{{ dpia.referenceNumber }} - {{ dpia.title }}</a>
+                                    <span class="badge bg-info">{{ dpia.status|replace({'_': ' '})|upper }}</span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+
+                    {% if requires_supervisory|length > 0 %}
+                        <h6 class="mt-3">Requires Supervisory Consultation ({{ requires_supervisory|length }})</h6>
+                        <ul class="list-unstyled">
+                            {% for dpia in requires_supervisory|slice(0, 5) %}
+                                <li class="mb-2">
+                                    <a href="{{ path('app_dpia_show', {id: dpia.id}) }}">{{ dpia.referenceNumber }} - {{ dpia.title }}</a>
+                                    <span class="badge bg-danger">Art. 36</span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+
+                    {% if due_for_review|length > 0 %}
+                        <h6 class="mt-3">Due for Review ({{ due_for_review|length }})</h6>
+                        <ul class="list-unstyled">
+                            {% for dpia in due_for_review|slice(0, 5) %}
+                                <li class="mb-2">
+                                    <a href="{{ path('app_dpia_show', {id: dpia.id}) }}">{{ dpia.referenceNumber }} - {{ dpia.title }}</a>
+                                    <small class="text-muted">{{ dpia.nextReviewDate|date('Y-m-d') }}</small>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+
+                    {% if incomplete|length == 0 and awaiting_dpo|length == 0 and requires_supervisory|length == 0 and due_for_review|length == 0 %}
+                        <p class="text-success mb-0"><i class="bi bi-check-circle"></i> No action items - all compliant!</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        {# Statistics Charts #}
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-bar-chart"></i> Statistics</h5>
+                </div>
+                <div class="card-body">
+                    <h6>By Status</h6>
+                    <ul class="list-unstyled">
+                        <li class="mb-2">
+                            <span class="badge bg-secondary">{{ statistics.draft }}</span>
+                            Draft
+                        </li>
+                        <li class="mb-2">
+                            <span class="badge bg-info">{{ statistics.in_review }}</span>
+                            In Review
+                        </li>
+                        <li class="mb-2">
+                            <span class="badge bg-success">{{ statistics.approved }}</span>
+                            Approved
+                        </li>
+                    </ul>
+
+                    <h6 class="mt-4">By Risk Level</h6>
+                    {% if statistics.risk_distribution %}
+                        <ul class="list-unstyled">
+                            {% for level, count in statistics.risk_distribution %}
+                                {% if count > 0 %}
+                                    {% set risk_color = {
+                                        'low': 'success',
+                                        'medium': 'info',
+                                        'high': 'warning',
+                                        'critical': 'danger'
+                                    }[level] %}
+                                    <li class="mb-2">
+                                        <span class="badge bg-{{ risk_color }}">{{ count }}</span>
+                                        {{ level|upper }}
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+
+                    <h6 class="mt-4">Residual Risk Distribution</h6>
+                    {% if statistics.residual_risk_distribution %}
+                        <ul class="list-unstyled">
+                            {% for level, count in statistics.residual_risk_distribution %}
+                                {% if count > 0 %}
+                                    {% set risk_color = {
+                                        'low': 'success',
+                                        'medium': 'info',
+                                        'high': 'warning',
+                                        'critical': 'danger'
+                                    }[level] %}
+                                    <li class="mb-2">
+                                        <span class="badge bg-{{ risk_color }}">{{ count }}</span>
+                                        {{ level|upper }}
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+
+                    <h6 class="mt-4">Compliance</h6>
+                    <ul class="list-unstyled">
+                        <li class="mb-2">
+                            <span class="badge bg-warning">{{ statistics.awaiting_dpo_consultation }}</span>
+                            Awaiting DPO (Art. 35(4))
+                        </li>
+                        <li class="mb-2">
+                            <span class="badge bg-danger">{{ statistics.requires_supervisory_consultation }}</span>
+                            Requires Supervisory (Art. 36)
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            {# High Risk DPIAs #}
+            {% if high_risk|length > 0 %}
+                <div class="card mb-4">
+                    <div class="card-header bg-danger text-white">
+                        <h6 class="mb-0"><i class="bi bi-exclamation-triangle-fill"></i> High Risk DPIAs</h6>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled">
+                            {% for dpia in high_risk|slice(0, 5) %}
+                                <li class="mb-2">
+                                    <a href="{{ path('app_dpia_show', {id: dpia.id}) }}">
+                                        {{ dpia.referenceNumber }} - {{ dpia.title }}
+                                    </a>
+                                    <span class="badge bg-{{ dpia.riskLevel == 'critical' ? 'danger' : 'warning' }}">
+                                        {{ dpia.riskLevel|upper }}
+                                    </span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
