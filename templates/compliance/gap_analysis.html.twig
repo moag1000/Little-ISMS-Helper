@@ -125,74 +125,76 @@
 </div>
 
 {# Gaps Table #}
-<div class="table-container">
-    <table>
-        <thead>
-            <tr>
-                <th scope="col">{{ 'compliance.field.requirement'|trans }}</th>
-                <th scope="col">{{ 'compliance.field.framework'|trans }}</th>
-                <th scope="col">{{ 'compliance.field.severity'|trans }}</th>
-                <th scope="col">{{ 'compliance.field.gap_description'|trans }}</th>
-                <th scope="col">{{ 'compliance.field.remediation'|trans }}</th>
-                <th scope="col">{{ 'compliance.field.due_date'|trans }}</th>
-                <th scope="col" class="text-center">{{ 'common.actions'|trans }}</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for gap in gaps %}
-            <tr>
-                <td>
-                    <strong>{{ gap.requirement.identifier }}</strong>
-                    <br><small class="text-muted">{{ gap.requirement.name }}</small>
-                </td>
-                <td>
-                    <span class="badge badge-info">{{ gap.framework.name }}</span>
-                </td>
-                <td>
-                    {% set severityColors = {
-                        'critical': 'danger',
-                        'high': 'warning',
-                        'medium': 'info',
-                        'low': 'secondary'
-                    } %}
-                    <span class="badge badge-{{ severityColors[gap.severity] ?? 'secondary' }}">
-                        {{ ('compliance.severity.' ~ gap.severity)|trans }}
-                    </span>
-                </td>
-                <td>
-                    <small>{{ gap.description|default('-') }}</small>
-                </td>
-                <td>
-                    <small>{{ gap.remediationPlan|default('-') }}</small>
-                </td>
-                <td>
-                    {% if gap.targetDate %}
-                        {{ gap.targetDate|date('d.m.Y') }}
-                        {% if gap.targetDate < date() %}
-                            <span class="badge badge-danger ml-xs">
-                                {{ 'compliance.badge.overdue'|trans }}
-                            </span>
-                        {% endif %}
-                    {% else %}
-                        <span class="text-muted">-</span>
+{% embed '_components/_table.html.twig' with {
+    'class': 'table-container',
+    'noMargin': true,
+    'responsive': true
+} %}
+    {% block table_head %}
+        <tr>
+            <th scope="col">{{ 'compliance.field.requirement'|trans }}</th>
+            <th scope="col">{{ 'compliance.field.framework'|trans }}</th>
+            <th scope="col">{{ 'compliance.field.severity'|trans }}</th>
+            <th scope="col">{{ 'compliance.field.gap_description'|trans }}</th>
+            <th scope="col">{{ 'compliance.field.remediation'|trans }}</th>
+            <th scope="col">{{ 'compliance.field.due_date'|trans }}</th>
+            <th scope="col" class="text-center">{{ 'common.actions'|trans }}</th>
+        </tr>
+    {% endblock %}
+    {% block table_body %}
+        {% for gap in gaps %}
+        <tr>
+            <td>
+                <strong>{{ gap.requirement.identifier }}</strong>
+                <br><small class="text-muted">{{ gap.requirement.name }}</small>
+            </td>
+            <td>
+                <span class="badge bg-info">{{ gap.framework.name }}</span>
+            </td>
+            <td>
+                {% set severityColors = {
+                    'critical': 'danger',
+                    'high': 'warning',
+                    'medium': 'info',
+                    'low': 'secondary'
+                } %}
+                <span class="badge badge-{{ severityColors[gap.severity] ?? 'secondary' }}">
+                    {{ ('compliance.severity.' ~ gap.severity)|trans }}
+                </span>
+            </td>
+            <td>
+                <small>{{ gap.description|default('-') }}</small>
+            </td>
+            <td>
+                <small>{{ gap.remediationPlan|default('-') }}</small>
+            </td>
+            <td>
+                {% if gap.targetDate %}
+                    {{ gap.targetDate|date('d.m.Y') }}
+                    {% if gap.targetDate < date() %}
+                        <span class="badge bg-danger ml-xs">
+                            {{ 'compliance.badge.overdue'|trans }}
+                        </span>
                     {% endif %}
-                </td>
-                <td class="text-center">
-                    <a href="{{ path('app_compliance_gap_show', {id: gap.id}) }}" class="btn btn-sm">
-                        👁 {{ 'common.view'|trans }}
-                    </a>
-                </td>
-            </tr>
-            {% else %}
-            <tr>
-                <td colspan="7" style="text-align: center; padding: var(--spacing-xl); color: var(--color-text-muted);">
-                    <div class="fs-2-mb-sm">✅</div>
-                    <p><strong>{{ 'compliance.message.no_gaps'|trans }}</strong></p>
-                    <p class="mt-xs">{{ 'compliance.message.no_gaps_desc'|trans }}</p>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
+                {% else %}
+                    <span class="text-muted">-</span>
+                {% endif %}
+            </td>
+            <td class="text-center">
+                <a href="{{ path('app_compliance_gap_show', {id: gap.id}) }}" class="btn btn-sm">
+                    👁 {{ 'common.view'|trans }}
+                </a>
+            </td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="7" style="text-align: center; padding: var(--spacing-xl); color: var(--color-text-muted);">
+                <div class="fs-2-mb-sm">✅</div>
+                <p><strong>{{ 'compliance.message.no_gaps'|trans }}</strong></p>
+                <p class="mt-xs">{{ 'compliance.message.no_gaps_desc'|trans }}</p>
+            </td>
+        </tr>
+        {% endfor %}
+    {% endblock %}
+{% endembed %}
 {% endblock %}

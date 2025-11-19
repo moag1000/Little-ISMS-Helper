@@ -204,52 +204,54 @@
                 <h5 class="mb-0"><i class="bi bi-clock-history"></i> Recent Breaches (Last 30 Days)</h5>
             </div>
             <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-hover mb-0">
-                        <thead>
+                {% embed '_components/_table.html.twig' with {
+                    'class': 'table-hover mb-0',
+                    'noMargin': true,
+                    'responsive': true
+                } %}
+                    {% block table_head %}
+                        <tr>
+                            <th>Reference</th>
+                            <th>Title</th>
+                            <th>Detected</th>
+                            <th>Status</th>
+                            <th>Risk</th>
+                            <th>Affected Subjects</th>
+                        </tr>
+                    {% endblock %}
+                    {% block table_body %}
+                        {% for breach in recent_breaches|slice(0, 10) %}
                             <tr>
-                                <th>Reference</th>
-                                <th>Title</th>
-                                <th>Detected</th>
-                                <th>Status</th>
-                                <th>Risk</th>
-                                <th>Affected Subjects</th>
+                                <td>
+                                    <a href="{{ path('app_data_breach_show', {id: breach.id}) }}">
+                                        {{ breach.referenceNumber }}
+                                    </a>
+                                </td>
+                                <td>{{ breach.title }}</td>
+                                <td>{{ breach.incident.detectedAt|date('Y-m-d H:i') }}</td>
+                                <td>
+                                    {% set status_class = {
+                                        'draft': 'secondary',
+                                        'under_assessment': 'info',
+                                        'authority_notified': 'success',
+                                        'subjects_notified': 'success',
+                                        'closed': 'dark'
+                                    }[breach.status] %}
+                                    <span class="badge bg-{{ status_class }}">{{ breach.status|replace({'_': ' '})|upper }}</span>
+                                </td>
+                                <td>
+                                    {% if breach.riskLevel %}
+                                        {% set risk_class = {'low': 'success', 'medium': 'info', 'high': 'warning', 'critical': 'danger'}[breach.riskLevel] %}
+                                        <span class="badge bg-{{ risk_class }}">{{ breach.riskLevel|upper }}</span>
+                                    {% else %}
+                                        <span class="text-muted">-</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ breach.affectedDataSubjects|default('-')|number_format }}</td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            {% for breach in recent_breaches|slice(0, 10) %}
-                                <tr>
-                                    <td>
-                                        <a href="{{ path('app_data_breach_show', {id: breach.id}) }}">
-                                            {{ breach.referenceNumber }}
-                                        </a>
-                                    </td>
-                                    <td>{{ breach.title }}</td>
-                                    <td>{{ breach.incident.detectedAt|date('Y-m-d H:i') }}</td>
-                                    <td>
-                                        {% set status_class = {
-                                            'draft': 'secondary',
-                                            'under_assessment': 'info',
-                                            'authority_notified': 'success',
-                                            'subjects_notified': 'success',
-                                            'closed': 'dark'
-                                        }[breach.status] %}
-                                        <span class="badge bg-{{ status_class }}">{{ breach.status|replace({'_': ' '})|upper }}</span>
-                                    </td>
-                                    <td>
-                                        {% if breach.riskLevel %}
-                                            {% set risk_class = {'low': 'success', 'medium': 'info', 'high': 'warning', 'critical': 'danger'}[breach.riskLevel] %}
-                                            <span class="badge bg-{{ risk_class }}">{{ breach.riskLevel|upper }}</span>
-                                        {% else %}
-                                            <span class="text-muted">-</span>
-                                        {% endif %}
-                                    </td>
-                                    <td>{{ breach.affectedDataSubjects|default('-')|number_format }}</td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+                        {% endfor %}
+                    {% endblock %}
+                {% endembed %}
             </div>
         </div>
     {% endif %}

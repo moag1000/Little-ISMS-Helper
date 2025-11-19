@@ -86,79 +86,80 @@
             </div>
         </div>
 
-        <div class="table-responsive">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th scope="col">Process Name</th>
-                        <th scope="col">Owner</th>
-                        <th scope="col">Criticality</th>
-                        <th scope="col">RTO</th>
-                        <th scope="col">RPO</th>
-                        <th scope="col">MTPD</th>
-                        <th scope="col">Impact</th>
-                        <th scope="col">Assets</th>
-                        <th scope="col" class="actions-column">Actions</th>
+        {% embed '_components/_table.html.twig' with {
+            'noMargin': true,
+            'responsive': true
+        } %}
+            {% block table_head %}
+                <tr>
+                    <th scope="col">Process Name</th>
+                    <th scope="col">Owner</th>
+                    <th scope="col">Criticality</th>
+                    <th scope="col">RTO</th>
+                    <th scope="col">RPO</th>
+                    <th scope="col">MTPD</th>
+                    <th scope="col">Impact</th>
+                    <th scope="col">Assets</th>
+                    <th scope="col" class="actions-column">Actions</th>
+                </tr>
+            {% endblock %}
+            {% block table_body %}
+                {% for process in processes %}
+                    <tr data-filter-target="filterableRow"
+                        data-category="{{ process.criticality }}">
+                        <td>
+                            <strong>{{ process.name }}</strong>
+                            {% if process.description %}
+                                <br><small class="text-muted">{{ process.description|length > 60 ? process.description|slice(0, 60) ~ '...' : process.description }}</small>
+                            {% endif %}
+                        </td>
+                        <td>{{ process.processOwner ?? '-' }}</td>
+                        <td>
+                            {% set criticality_colors = {
+                                'critical': 'danger',
+                                'high': 'warning',
+                                'medium': 'info',
+                                'low': 'success'
+                            } %}
+                            <span class="badge badge-{{ criticality_colors[process.criticality] ?? 'secondary' }}">
+                                {{ process.criticality|upper }}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="metric-value">{{ process.rto }}h</span>
+                        </td>
+                        <td>
+                            <span class="metric-value">{{ process.rpo }}h</span>
+                        </td>
+                        <td>
+                            <span class="metric-value">{{ process.mtpd }}h</span>
+                        </td>
+                        <td>
+                            <div class="impact-scores">
+                                <span class="tooltip-trigger" title="Financial Impact">💰 {{ process.financialImpact }}/10</span>
+                                <span class="tooltip-trigger" title="Reputational Impact">⭐ {{ process.reputationalImpact }}/10</span>
+                                <span class="tooltip-trigger" title="Operational Impact">⚙️ {{ process.operationalImpact }}/10</span>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="badge bg-info">
+                                {{ process.supportingAssets|length }} Assets
+                            </span>
+                        </td>
+                        <td class="actions-column">
+                            <a href="#" class="btn-icon" title="Edit">✏️</a>
+                            <a href="#" class="btn-icon" title="View Details">👁️</a>
+                        </td>
                     </tr>
-                </thead>
-                <tbody>
-                    {% for process in processes %}
-                        <tr data-filter-target="filterableRow"
-                            data-category="{{ process.criticality }}">
-                            <td>
-                                <strong>{{ process.name }}</strong>
-                                {% if process.description %}
-                                    <br><small class="text-muted">{{ process.description|length > 60 ? process.description|slice(0, 60) ~ '...' : process.description }}</small>
-                                {% endif %}
-                            </td>
-                            <td>{{ process.processOwner ?? '-' }}</td>
-                            <td>
-                                {% set criticality_colors = {
-                                    'critical': 'danger',
-                                    'high': 'warning',
-                                    'medium': 'info',
-                                    'low': 'success'
-                                } %}
-                                <span class="badge badge-{{ criticality_colors[process.criticality] ?? 'secondary' }}">
-                                    {{ process.criticality|upper }}
-                                </span>
-                            </td>
-                            <td>
-                                <span class="metric-value">{{ process.rto }}h</span>
-                            </td>
-                            <td>
-                                <span class="metric-value">{{ process.rpo }}h</span>
-                            </td>
-                            <td>
-                                <span class="metric-value">{{ process.mtpd }}h</span>
-                            </td>
-                            <td>
-                                <div class="impact-scores">
-                                    <span class="tooltip-trigger" title="Financial Impact">💰 {{ process.financialImpact }}/10</span>
-                                    <span class="tooltip-trigger" title="Reputational Impact">⭐ {{ process.reputationalImpact }}/10</span>
-                                    <span class="tooltip-trigger" title="Operational Impact">⚙️ {{ process.operationalImpact }}/10</span>
-                                </div>
-                            </td>
-                            <td>
-                                <span class="badge badge-info">
-                                    {{ process.supportingAssets|length }} Assets
-                                </span>
-                            </td>
-                            <td class="actions-column">
-                                <a href="#" class="btn-icon" title="Edit">✏️</a>
-                                <a href="#" class="btn-icon" title="View Details">👁️</a>
-                            </td>
-                        </tr>
-                    {% else %}
-                        <tr>
-                            <td colspan="9" class="text-center text-muted">
-                                No business processes defined yet. Start by adding your first critical process.
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
+                {% else %}
+                    <tr>
+                        <td colspan="9" class="text-center text-muted">
+                            No business processes defined yet. Start by adding your first critical process.
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% endblock %}
+        {% endembed %}
 
         <div data-filter-target="noResults" class="no-results d-none">
             <p>No processes match your search criteria.</p>
