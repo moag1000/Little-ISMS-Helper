@@ -588,7 +588,7 @@ class DataBreachService
 
         $statistics = $this->repository->getDashboardStatistics($tenant);
         $allBreaches = $this->repository->findByTenant($tenant);
-        $overdueCount = $this->repository->countAuthorityNotificationOverdue($tenant);
+        $overdueCount = count($this->repository->findAuthorityNotificationOverdue($tenant));
 
         $total = count($allBreaches);
         if ($total === 0) {
