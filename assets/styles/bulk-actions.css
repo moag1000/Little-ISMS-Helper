@@ -101,7 +101,7 @@
 }
 
 .bulk-action-btn-danger:hover {
-    background: #c0392b;
+    filter: brightness(0.9);
 }
 
 .bulk-action-btn-success {
@@ -109,7 +109,7 @@
 }
 
 .bulk-action-btn-success:hover {
-    background: #229954;
+    filter: brightness(0.9);
 }
 
 /* Close Button */

@@ -152,15 +152,15 @@
                                         <td>
                                             <div class="btn-group btn-group-sm" role="group">
                                                 <a href="{{ path('app_business_process_show', {'id': process.id}) }}" 
-                                                   class="btn btn-outline-primary" title="Ansehen" data-turbo-frame="_top">
+                                                   class="btn btn-outline-primary" title="Ansehen" data-turbo-frame="_top" aria-label="{{ 'common.view'|trans }}">
                                                     <i class="bi bi-eye" aria-hidden="true"></i>
                                                 </a>
                                                 <a href="{{ path('app_business_process_edit', {'id': process.id}) }}" 
-                                                   class="btn btn-outline-secondary" title="Bearbeiten" data-turbo-frame="_top">
+                                                   class="btn btn-outline-secondary" title="Bearbeiten" data-turbo-frame="_top" aria-label="{{ 'common.edit'|trans }}">
                                                     <i class="bi bi-pencil" aria-hidden="true"></i>
                                                 </a>
                                                 <a href="{{ path('app_business_process_bia', {'id': process.id}) }}" 
-                                                   class="btn btn-outline-info" title="BIA" data-turbo-frame="_top">
+                                                   class="btn btn-outline-info" title="BIA" data-turbo-frame="_top" aria-label="{{ 'common.view_details'|trans }}">
                                                     <i class="bi bi-graph-up" aria-hidden="true"></i>
                                                 </a>
                                             </div>

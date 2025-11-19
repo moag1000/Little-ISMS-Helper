@@ -22,11 +22,11 @@
             <td>{{ business_process.identifiedRisks|length }}</td>
             <td>
                 <a href="{{ path('app_business_process_show', {'id': business_process.id}) }}"
-                   class="btn btn-sm btn-primary" data-turbo-frame="_top">
+                   class="btn btn-sm btn-primary" data-turbo-frame="_top" aria-label="{{ 'common.view'|trans }}">
                     <i class="bi bi-eye" aria-hidden="true"></i>
                 </a>
                 <a href="{{ path('app_business_process_edit', {'id': business_process.id}) }}"
-                   class="btn btn-sm btn-secondary" data-turbo-frame="_top">
+                   class="btn btn-sm btn-secondary" data-turbo-frame="_top" aria-label="{{ 'common.edit'|trans }}">
                     <i class="bi bi-pencil" aria-hidden="true"></i>
                 </a>
             </td>

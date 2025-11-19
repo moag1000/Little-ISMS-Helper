@@ -181,7 +181,7 @@ If you can't use the component, follow this pattern:
     {# Label #}
     <label for="user_email" class="form-label">
         {{ 'user.field.email'|trans }}
-        <span class="text-danger" aria-label="{{ 'form.required'|trans }}">*</span>
+        <span class="required" aria-label="{{ 'form.required'|trans }}">*</span>
     </label>
 
     {# Help text (optional) #}
@@ -368,7 +368,7 @@ user:
 ```html
 <!-- GOOD: Both visual and programmatic -->
 <label for="email">
-    Email <span class="text-danger" aria-label="required">*</span>
+    Email <span class="required" aria-label="required">*</span>
 </label>
 <input type="text" id="email" aria-required="true" />
 ```

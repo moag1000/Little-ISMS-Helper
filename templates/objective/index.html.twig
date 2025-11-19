@@ -42,9 +42,9 @@
                     </td>
                     <td><span class="badge bg-{{ objective.status == 'achieved' ? 'success' : (objective.status == 'in_progress' ? 'info' : 'warning') }}">{{ objective.status }}</span></td>
                     <td>
-                        <a href="{{ path('app_objective_show', {id: objective.id}) }}" class="btn btn-sm btn-outline-primary"><i class="bi bi-eye" aria-hidden="true"></i></a>
+                        <a href="{{ path('app_objective_show', {id: objective.id}) }}" class="btn btn-sm btn-outline-primary" aria-label="{{ 'common.view'|trans }}"><i class="bi bi-eye" aria-hidden="true"></i></a>
                         {% if is_granted('ROLE_ADMIN') %}
-                        <a href="{{ path('app_objective_edit', {id: objective.id}) }}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-pencil" aria-hidden="true"></i></a>
+                        <a href="{{ path('app_objective_edit', {id: objective.id}) }}" class="btn btn-sm btn-outline-secondary" aria-label="{{ 'common.edit'|trans }}"><i class="bi bi-pencil" aria-hidden="true"></i></a>
                         {% endif %}
                     </td>
                 </tr>

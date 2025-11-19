@@ -155,7 +155,7 @@
                                         <div class="btn-group btn-group-sm">
                                             <a href="{{ path('session_show', {userName: session.user.email}) }}"
                                                class="btn btn-outline-primary"
-                                               title="Details anzeigen">
+                                               title="Details anzeigen" aria-label="{{ 'common.view'|trans }}">
                                                 <i class="bi bi-eye" aria-hidden="true"></i>
                                             </a>
                                             <form method="post"
@@ -166,7 +166,7 @@
                                                 <button type="submit"
                                                         class="btn btn-outline-danger"
                                                         title="Session beenden"
-                                                        onclick="return confirm('Möchten Sie diese Sitzung wirklich beenden?')">
+                                                        onclick="return confirm('Möchten Sie diese Sitzung wirklich beenden?')" aria-label="{{ 'common.close'|trans }}">
                                                     <i class="bi bi-x-circle" aria-hidden="true"></i>
                                                 </button>
                                             </form>

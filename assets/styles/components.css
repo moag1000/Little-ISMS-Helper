@@ -326,7 +326,7 @@
 }
 
 .collapsible-header {
-    background: #fafafa;
+    background: var(--bg-secondary);
     padding: var(--spacing-md);
     cursor: pointer;
     display: flex;
@@ -336,7 +336,7 @@
 }
 
 .collapsible-header:hover {
-    background: #f0f0f0;
+    background: var(--bg-tertiary);
 }
 
 .collapsible-title {
