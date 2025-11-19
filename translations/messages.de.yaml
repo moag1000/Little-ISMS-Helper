@@ -721,6 +721,13 @@ risk:
   field:
     title: Risikotitel
     category: Risikokategorie
+    # DSGVO Risk Assessment Fields (Priority 2.2)
+    involves_personal_data: 'Betrifft personenbezogene Daten'
+    involves_special_category_data: 'Betrifft besondere Kategorien personenbezogener Daten (Art. 9 DSGVO)'
+    legal_basis: 'Rechtsgrundlage (Art. 6 DSGVO)'
+    processing_scale: 'Umfang der Verarbeitung'
+    requires_dpia: 'Datenschutz-Folgenabschätzung erforderlich (Art. 35 DSGVO)'
+    data_subject_impact: 'Auswirkungen auf betroffene Personen'
     description: Beschreibung
     threat: Bedrohung
     vulnerability: Verwundbarkeit
@@ -749,6 +756,9 @@ risk:
   placeholder:
     title: z.B. Datenverlust durch Ransomware-Angriff
     category: Kategorie auswählen...
+    legal_basis: 'Rechtsgrundlage auswählen...'
+    processing_scale: 'Verarbeitungsumfang auswählen...'
+    data_subject_impact: 'Beschreiben Sie die Auswirkungen auf Rechte und Freiheiten der betroffenen Personen...'
     description: Beschreiben Sie das Risiko detailliert...
     threat: z.B. Externe Angreifer, Malware, Social Engineering
     vulnerability: z.B. Fehlende Backups, ungepatchte Systeme
@@ -762,6 +772,12 @@ risk:
   help:
     title: Kurzer, prägnanter Titel des Risikos
     category: Wählen Sie die Kategorie für bessere Gruppierung und Reporting (ISO 27005:2022)
+    involves_personal_data: 'Aktivieren Sie dies, wenn das Risiko die Verarbeitung personenbezogener Daten betrifft (DSGVO Art. 4)'
+    involves_special_category_data: 'Aktivieren Sie dies für besondere Kategorien: rassische/ethnische Herkunft, politische Meinungen, religiöse Überzeugungen, Gewerkschaftszugehörigkeit, genetische/biometrische Daten, Gesundheitsdaten, Sexualleben (DSGVO Art. 9)'
+    legal_basis: 'Rechtsgrundlage für die Datenverarbeitung gemäß DSGVO Art. 6'
+    processing_scale: 'Umfang der Datenverarbeitung. Großflächige Verarbeitung erfordert oft eine DSFA (DSGVO Art. 35)'
+    requires_dpia: 'Eine Datenschutz-Folgenabschätzung ist erforderlich bei hohem Risiko für Rechte und Freiheiten (DSGVO Art. 35)'
+    data_subject_impact: 'Beschreiben Sie die potenziellen Auswirkungen auf die Rechte und Freiheiten der betroffenen Personen (DSGVO Art. 35.7)'
     description: Detaillierte Beschreibung des Risikos und seiner potenziellen Auswirkungen
     threat: Welche Bedrohung könnte dieses Risiko auslösen?
     vulnerability: Welche Schwachstelle könnte ausgenutzt werden?
@@ -805,6 +821,21 @@ risk:
     strategic: Strategische Risiken
     reputational: Reputationsrisiken
     security: Informationssicherheitsrisiken
+
+  # DSGVO Legal Basis (Art. 6 DSGVO) - Priority 2.2
+  legal_basis:
+    consent: 'Einwilligung (Art. 6.1.a)'
+    contract: 'Vertragserfüllung (Art. 6.1.b)'
+    legal_obligation: 'Rechtliche Verpflichtung (Art. 6.1.c)'
+    vital_interests: 'Schutz lebenswichtiger Interessen (Art. 6.1.d)'
+    public_task: 'Öffentliche Aufgabe (Art. 6.1.e)'
+    legitimate_interests: 'Berechtigte Interessen (Art. 6.1.f)'
+
+  # DSGVO Processing Scale - Priority 2.2
+  processing_scale:
+    small: 'Kleinflächig'
+    medium: 'Mittelflächig'
+    large_scale: 'Großflächig (DSFA erforderlich)'
 
   # Risk Assessment Guidance (Priority 2.3)
   guidance:
