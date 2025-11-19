@@ -4461,6 +4461,7 @@ governance:
 accessibility:
   skip_to_content: 'Zum Hauptinhalt springen'
   skip_to_navigation: 'Zur Navigation springen'
+  skip_to_filters: 'Zu den Filtern springen'
 
 # Bulk Delete Confirmation
 bulk_actions:

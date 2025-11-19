@@ -34,7 +34,7 @@
     {% if asset.description %}
     <div class="preview-section">
         <h6 class="preview-section-title">
-            <i class="bi-file-text"></i>
+            <i class="bi bi-file-text"></i>
             Beschreibung
         </h6>
         <p class="mb-0">{{ asset.description }}</p>
@@ -43,7 +43,7 @@
 
     <div class="preview-section">
         <h6 class="preview-section-title">
-            <i class="bi-shield-check"></i>
+            <i class="bi bi-shield-check"></i>
             Schutzbedarf (CIA)
         </h6>
         <div class="row">
@@ -70,7 +70,7 @@
 
     <div class="preview-section">
         <h6 class="preview-section-title">
-            <i class="bi-graph-up"></i>
+            <i class="bi bi-graph-up"></i>
             Statistiken
         </h6>
         <div class="row g-2">
@@ -91,10 +91,10 @@
 
     <div class="preview-actions">
         <a href="{{ path('app_asset_show', {id: asset.id}) }}" class="btn btn-primary btn-sm">
-            <i class="bi-arrow-right"></i> Details anzeigen
+            <i class="bi bi-arrow-right"></i> Details anzeigen
         </a>
         <a href="{{ path('app_asset_edit', {id: asset.id}) }}" class="btn btn-outline-secondary btn-sm">
-            <i class="bi-pencil"></i> Bearbeiten
+            <i class="bi bi-pencil"></i> Bearbeiten
         </a>
     </div>
 </div>

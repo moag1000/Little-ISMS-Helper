@@ -27,12 +27,12 @@
                 <div class="activity-meta">
                     {% if activity.time is defined %}
                     <span class="activity-time">
-                        <i class="bi-clock"></i> {{ activity.time }}
+                        <i class="bi bi-clock"></i> {{ activity.time }}
                     </span>
                     {% endif %}
                     {% if activity.user is defined %}
                     <span class="activity-user">
-                        <i class="bi-person"></i> {{ activity.user }}
+                        <i class="bi bi-person"></i> {{ activity.user }}
                     </span>
                     {% endif %}
                 </div>
@@ -41,7 +41,7 @@
         {% endfor %}
     {% else %}
         <div class="text-center text-muted py-4">
-            <i class="bi-inbox" style="font-size: 3rem;"></i>
+            <i class="bi bi-inbox" style="font-size: 3rem;"></i>
             <p class="mt-2">Keine Aktivitäten vorhanden</p>
         </div>
     {% endif %}
