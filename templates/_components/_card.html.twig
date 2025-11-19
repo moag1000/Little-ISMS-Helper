@@ -1,0 +1,110 @@
+{#
+/**
+ * Standardized Card Component
+ *
+ * Provides consistent card styling across the application with dark mode support.
+ * Based on UI/UX Audit Issue 3.1 - Card Standardization
+ *
+ * Parameters:
+ *   - variant: 'default'|'kpi'|'feature'|'bordered' (default: 'default')
+ *   - header: Card header content (optional)
+ *   - headerIcon: Bootstrap icon class for header (optional, e.g., 'bi-graph-up')
+ *   - title: Card title (alternative to header for simple text)
+ *   - actions: Card header actions HTML (optional)
+ *   - body: Card body content (can be passed as block)
+ *   - footer: Card footer content (optional)
+ *   - class: Additional CSS classes
+ *   - borderColor: 'primary'|'success'|'warning'|'danger'|'info' (for bordered variant)
+ *   - noPadding: Remove default body padding (default: false)
+ *   - hoverable: Add hover effect (default: false)
+ *
+ * Usage Examples:
+ *
+ * 1. Simple card with title:
+ *   {% include '_components/_card.html.twig' with {
+ *       'title': 'Risk Overview',
+ *       'headerIcon': 'bi-shield-check',
+ *       'body': '<p>Content here</p>'
+ *   } %}
+ *
+ * 2. KPI Card:
+ *   {% include '_components/_card.html.twig' with {
+ *       'variant': 'kpi',
+ *       'title': 'Total Risks',
+ *       'body': '<div class="kpi-value">42</div>'
+ *   } %}
+ *
+ * 3. Card with block content:
+ *   {% embed '_components/_card.html.twig' with {
+ *       'title': 'Asset Details',
+ *       'actions': '<button class="btn btn-sm btn-primary">Edit</button>'
+ *   } %}
+ *       {% block card_body %}
+ *           <p>Custom content here</p>
+ *       {% endblock %}
+ *   {% endembed %}
+ */
+#}
+
+{% set variant = variant|default('default') %}
+{% set hoverable = hoverable|default(false) %}
+{% set noPadding = noPadding|default(false) %}
+{% set borderColor = borderColor|default('primary') %}
+
+{# Build card classes #}
+{% set cardClasses = ['card'] %}
+{% if variant == 'kpi' %}
+    {% set cardClasses = cardClasses|merge(['kpi-card']) %}
+{% elseif variant == 'bordered' %}
+    {% set cardClasses = cardClasses|merge(['card-border-left-' ~ borderColor]) %}
+{% elseif variant == 'feature' %}
+    {% set cardClasses = cardClasses|merge(['feature-card']) %}
+{% endif %}
+
+{% if hoverable %}
+    {% set cardClasses = cardClasses|merge(['card-hoverable']) %}
+{% endif %}
+
+{% if class is defined and class %}
+    {% set cardClasses = cardClasses|merge([class]) %}
+{% endif %}
+
+<div class="{{ cardClasses|join(' ') }}">
+    {# Card Header #}
+    {% if header is defined or title is defined or actions is defined %}
+    <div class="card-header">
+        {% if header is defined %}
+            {{ header|raw }}
+        {% elseif title is defined %}
+            <h5 class="mb-0">
+                {% if headerIcon is defined %}
+                    <i class="{{ headerIcon }}" aria-hidden="true"></i>
+                {% endif %}
+                {{ title|trans }}
+            </h5>
+        {% endif %}
+
+        {% if actions is defined %}
+            <div class="card-actions">
+                {{ actions|raw }}
+            </div>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    {# Card Body #}
+    <div class="card-body{% if noPadding %} p-0{% endif %}">
+        {% if body is defined %}
+            {{ body|raw }}
+        {% else %}
+            {% block card_body %}{% endblock %}
+        {% endif %}
+    </div>
+
+    {# Card Footer #}
+    {% if footer is defined %}
+    <div class="card-footer">
+        {{ footer|raw }}
+    </div>
+    {% endif %}
+</div>
