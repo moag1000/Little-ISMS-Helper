@@ -17,8 +17,10 @@
 </div>
 
 {% if currentTenant %}
-<div class="card mb-3">
-    <div class="card-body py-2">
+{% embed '_components/_card.html.twig' with {
+    'class': 'mb-3'
+} %}
+    {% block card_body %}
         <form method="get" action="{{ path('app_asset_index') }}" class="d-flex align-items-center gap-2">
             <label for="view-filter" class="mb-0 fw-bold">
                 <i class="bi bi-eye"></i> {{ 'common.view'|trans }}:
@@ -42,8 +44,8 @@
                 <button type="submit" class="btn btn-sm btn-secondary">{{ 'common.apply'|trans }}</button>
             </noscript>
         </form>
-    </div>
-</div>
+    {% endblock %}
+{% endembed %}
 {% endif %}
 
 <div class="stats-grid mb-4">
@@ -51,7 +53,7 @@
         <div class="stat-icon"><i class="bi bi-collection"></i></div>
         <div class="stat-value">{{ detailedStats.total }}</div>
         {% if currentTenant %}
-            <small style="font-size: 11px; color: #6c757d; opacity: 0.85; display: block; margin-top: 0.5rem;">
+            <small class="text-muted d-block mt-2" style="font-size: 11px; opacity: 0.85;">
                 {{ 'corporate.stats.breakdown'|trans({'%own%': detailedStats.own, '%inherited%': detailedStats.inherited, '%subsidiaries%': detailedStats.subsidiaries}) }}
             </small>
         {% endif %}
@@ -70,11 +72,12 @@
 </div>
 
 {# Filter Section #}
-<div class="card mb-4">
-    <div class="card-header">
-        <h5><i class="bi bi-funnel"></i> {{ 'common.filters'|trans }}</h5>
-    </div>
-    <div class="card-body">
+{% embed '_components/_card.html.twig' with {
+    'title': 'common.filters',
+    'headerIcon': 'bi-funnel',
+    'class': 'mb-4'
+} %}
+    {% block card_body %}
         <form method="get" action="{{ path('app_asset_index') }}" class="row g-3" id="asset-filter-form">
             <div class="col-md-3">
                 <label for="filter-type" class="form-label">{{ 'asset.label.type'|trans }}</label>
@@ -123,8 +126,8 @@
                 </a>
             </div>
         </form>
-    </div>
-</div>
+    {% endblock %}
+{% endembed %}
 
 {# Assets Table #}
 <div class="card" data-controller="bulk-actions" data-bulk-actions-endpoint-value="/asset">
