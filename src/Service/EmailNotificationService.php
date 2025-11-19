@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Entity\Incident;
 use App\Entity\InternalAudit;
+use App\Entity\Risk;
 use App\Entity\Training;
 use App\Entity\Control;
 use App\Entity\WorkflowInstance;
@@ -254,11 +255,11 @@ class EmailNotificationService
      * Send risk acceptance approval request notification
      * Priority 2.1 - Risk Acceptance Workflow
      *
-     * @param mixed $risk Risk entity
+     * @param Risk $risk Risk entity
      * @param User $approver User who needs to approve
      * @param string $approvalLevel 'manager' or 'executive'
      */
-    public function sendRiskAcceptanceRequest($risk, User $approver, string $approvalLevel): void
+    public function sendRiskAcceptanceRequest(Risk $risk, User $approver, string $approvalLevel): void
     {
         $safeTitle = $this->sanitizeEmailSubject($risk->getTitle());
 
@@ -281,10 +282,10 @@ class EmailNotificationService
     /**
      * Send risk acceptance approval notification (informational)
      *
-     * @param mixed $risk Risk entity
+     * @param Risk $risk Risk entity
      * @param User $riskOwner Risk owner to notify
      */
-    public function sendRiskAcceptanceApproved($risk, User $riskOwner): void
+    public function sendRiskAcceptanceApproved(Risk $risk, User $riskOwner): void
     {
         $safeTitle = $this->sanitizeEmailSubject($risk->getTitle());
 
@@ -306,11 +307,11 @@ class EmailNotificationService
     /**
      * Send risk acceptance rejection notification
      *
-     * @param mixed $risk Risk entity
+     * @param Risk $risk Risk entity
      * @param User $riskOwner Risk owner to notify
      * @param string $reason Rejection reason
      */
-    public function sendRiskAcceptanceRejected($risk, User $riskOwner, string $reason): void
+    public function sendRiskAcceptanceRejected(Risk $risk, User $riskOwner, string $reason): void
     {
         $safeTitle = $this->sanitizeEmailSubject($risk->getTitle());
 
