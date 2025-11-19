@@ -47,8 +47,11 @@
         </div>
         <div class="card-content">
             {% if interested_parties|length > 0 %}
-            <table class="data-table">
-                <thead>
+            {% embed '_components/_table.html.twig' with {
+                'wrapperClass': 'card-content',
+                'noMargin': true
+            } %}
+                {% block table_head %}
                     <tr>
                         <th scope="col">{{ 'interested_party.table.name'|trans }}</th>
                         <th scope="col">{{ 'interested_party.table.type'|trans }}</th>
@@ -57,12 +60,12 @@
                         <th scope="col">{{ 'interested_party.table.last_communication'|trans }}</th>
                         <th scope="col">{{ 'interested_party.table.actions'|trans }}</th>
                     </tr>
-                </thead>
-                <tbody>
+                {% endblock %}
+                {% block table_body %}
                     {% for party in interested_parties %}
                     <tr>
                         <td><a href="{{ path('app_interested_party_show', {id: party.id}) }}">{{ party.name }}</a></td>
-                        <td><span class="badge badge-info">{{ party.partyType }}</span></td>
+                        <td><span class="badge bg-info">{{ party.partyType }}</span></td>
                         <td><span class="badge badge-{{ party.importance }}">{{ party.importance|upper }}</span></td>
                         <td>{{ party.getEngagementScore() }}</td>
                         <td>{{ party.lastCommunication ? party.lastCommunication|date('Y-m-d') : ('interested_party.never'|trans) }}</td>
@@ -72,8 +75,8 @@
                         </td>
                     </tr>
                     {% endfor %}
-                </tbody>
-            </table>
+                {% endblock %}
+            {% endembed %}
             {% else %}
             <p>{{ 'interested_party.empty.message'|trans }} <a href="{{ path('app_interested_party_new') }}">{{ 'interested_party.empty.add_first'|trans }}</a>.</p>
             {% endif %}

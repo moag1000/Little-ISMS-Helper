@@ -95,92 +95,93 @@
     <div class="card-header">
         <h3><i class="bi bi-list" aria-hidden="true"></i> {{ 'risk_appetite.list.title'|trans }} ({{ appetites|length }})</h3>
     </div>
-    <div class="table-responsive">
-        <table class="table table-hover mb-0">
-            <thead>
-                <tr>
-                    <th scope="col">{{ 'risk_appetite.field.category'|trans }}</th>
-                    <th scope="col" class="text-center">{{ 'risk_appetite.field.max_acceptable_risk'|trans }}</th>
-                    <th scope="col">{{ 'risk_appetite.field.description'|trans }}</th>
-                    <th scope="col" class="text-center">{{ 'risk_appetite.field.status'|trans }}</th>
-                    <th scope="col">{{ 'risk_appetite.field.approved_by'|trans }}</th>
-                    <th scope="col">{{ 'risk_appetite.field.approved_at'|trans }}</th>
-                    <th scope="col" class="text-center">{{ 'common.actions'|trans }}</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for appetite in appetites %}
-                <tr>
-                    <td>
-                        <strong>
-                            {% if appetite.isGlobal() %}
-                                <i class="bi bi-globe" aria-hidden="true"></i> {{ 'risk_appetite.category.global'|trans }}
-                            {% else %}
-                                <i class="bi bi-folder" aria-hidden="true"></i> {{ appetite.category }}
-                            {% endif %}
-                        </strong>
-                    </td>
-                    <td class="text-center">
-                        <span class="badge bg-{{ appetite.maxAcceptableRisk <= 6 ? 'success' : (appetite.maxAcceptableRisk <= 12 ? 'warning' : 'danger') }} fs-6">
-                            {{ appetite.maxAcceptableRisk }}
-                        </span>
-                        <br>
-                        <small class="text-muted">({{ 'risk_appetite.scale'|trans }}: 1-25)</small>
-                    </td>
-                    <td>
-                        {{ appetite.description|length > 100 ? appetite.description|slice(0, 100) ~ '...' : appetite.description }}
-                    </td>
-                    <td class="text-center">
-                        {% if appetite.isActive() %}
-                            <span class="badge bg-success">{{ 'risk_appetite.status.active'|trans }}</span>
+    {% embed '_components/_table.html.twig' with {
+        'class': 'table-hover',
+        'noMargin': true
+    } %}
+        {% block table_head %}
+            <tr>
+                <th scope="col">{{ 'risk_appetite.field.category'|trans }}</th>
+                <th scope="col" class="text-center">{{ 'risk_appetite.field.max_acceptable_risk'|trans }}</th>
+                <th scope="col">{{ 'risk_appetite.field.description'|trans }}</th>
+                <th scope="col" class="text-center">{{ 'risk_appetite.field.status'|trans }}</th>
+                <th scope="col">{{ 'risk_appetite.field.approved_by'|trans }}</th>
+                <th scope="col">{{ 'risk_appetite.field.approved_at'|trans }}</th>
+                <th scope="col" class="text-center">{{ 'common.actions'|trans }}</th>
+            </tr>
+        {% endblock %}
+        {% block table_body %}
+            {% for appetite in appetites %}
+            <tr>
+                <td>
+                    <strong>
+                        {% if appetite.isGlobal() %}
+                            <i class="bi bi-globe" aria-hidden="true"></i> {{ 'risk_appetite.category.global'|trans }}
                         {% else %}
-                            <span class="badge bg-secondary">{{ 'risk_appetite.status.inactive'|trans }}</span>
+                            <i class="bi bi-folder" aria-hidden="true"></i> {{ appetite.category }}
                         {% endif %}
-                        {% if appetite.isApproved() %}
-                            <br><span class="badge bg-info mt-1">{{ 'risk_appetite.approved'|trans }}</span>
+                    </strong>
+                </td>
+                <td class="text-center">
+                    <span class="badge bg-{{ appetite.maxAcceptableRisk <= 6 ? 'success' : (appetite.maxAcceptableRisk <= 12 ? 'warning' : 'danger') }} fs-6">
+                        {{ appetite.maxAcceptableRisk }}
+                    </span>
+                    <br>
+                    <small class="text-muted">({{ 'risk_appetite.scale'|trans }}: 1-25)</small>
+                </td>
+                <td>
+                    {{ appetite.description|length > 100 ? appetite.description|slice(0, 100) ~ '...' : appetite.description }}
+                </td>
+                <td class="text-center">
+                    {% if appetite.isActive() %}
+                        <span class="badge bg-success">{{ 'risk_appetite.status.active'|trans }}</span>
+                    {% else %}
+                        <span class="badge bg-secondary">{{ 'risk_appetite.status.inactive'|trans }}</span>
+                    {% endif %}
+                    {% if appetite.isApproved() %}
+                        <br><span class="badge bg-info mt-1">{{ 'risk_appetite.approved'|trans }}</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if appetite.approvedBy %}
+                        {{ appetite.approvedBy.fullName }}
+                    {% else %}
+                        <span class="text-muted">{{ 'common.not_approved'|trans }}</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if appetite.approvedAt %}
+                        {{ appetite.approvedAt|date('Y-m-d') }}
+                    {% else %}
+                        <span class="text-muted">-</span>
+                    {% endif %}
+                </td>
+                <td class="text-center">
+                    <div class="btn-group btn-group-sm">
+                        <a href="{{ path('app_risk_appetite_show', {id: appetite.id}) }}"
+                           class="btn btn-outline-primary"
+                           title="{{ 'common.view'|trans }}" aria-label="{{ 'common.view'|trans }}">
+                            <i class="bi bi-eye" aria-hidden="true"></i>
+                        </a>
+                        {% if is_granted('ROLE_ADMIN') %}
+                        <a href="{{ path('app_risk_appetite_edit', {id: appetite.id}) }}"
+                           class="btn btn-outline-secondary"
+                           title="{{ 'common.edit'|trans }}" aria-label="{{ 'common.edit'|trans }}">
+                            <i class="bi bi-pencil" aria-hidden="true"></i>
+                        </a>
                         {% endif %}
-                    </td>
-                    <td>
-                        {% if appetite.approvedBy %}
-                            {{ appetite.approvedBy.fullName }}
-                        {% else %}
-                            <span class="text-muted">{{ 'common.not_approved'|trans }}</span>
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if appetite.approvedAt %}
-                            {{ appetite.approvedAt|date('Y-m-d') }}
-                        {% else %}
-                            <span class="text-muted">-</span>
-                        {% endif %}
-                    </td>
-                    <td class="text-center">
-                        <div class="btn-group btn-group-sm">
-                            <a href="{{ path('app_risk_appetite_show', {id: appetite.id}) }}"
-                               class="btn btn-outline-primary"
-                               title="{{ 'common.view'|trans }}" aria-label="{{ 'common.view'|trans }}">
-                                <i class="bi bi-eye" aria-hidden="true"></i>
-                            </a>
-                            {% if is_granted('ROLE_ADMIN') %}
-                            <a href="{{ path('app_risk_appetite_edit', {id: appetite.id}) }}"
-                               class="btn btn-outline-secondary"
-                               title="{{ 'common.edit'|trans }}" aria-label="{{ 'common.edit'|trans }}">
-                                <i class="bi bi-pencil" aria-hidden="true"></i>
-                            </a>
-                            {% endif %}
-                        </div>
-                    </td>
-                </tr>
-                {% else %}
-                <tr>
-                    <td colspan="7" class="text-center text-muted">
-                        {{ 'risk_appetite.no_appetites'|trans }}
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+                    </div>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="7" class="text-center text-muted">
+                    {{ 'risk_appetite.no_appetites'|trans }}
+                </td>
+            </tr>
+            {% endfor %}
+        {% endblock %}
+    {% endembed %}
 </div>
 
 {# Risks Exceeding Appetite Warning #}
