@@ -401,6 +401,22 @@ class RiskAcceptanceWorkflowService
             'approver' => $approver->getEmail(),
         ]);
 
+        // Send email notification to risk owner
+        if ($risk->getRiskOwner()) {
+            try {
+                $this->emailService->sendRiskAcceptanceApproved(
+                    $risk,
+                    $risk->getRiskOwner(),
+                    $approver
+                );
+            } catch (\Exception $e) {
+                $this->logger->error('Failed to send approval notification', [
+                    'error' => $e->getMessage(),
+                    'risk_id' => $risk->getId(),
+                ]);
+            }
+        }
+
         return [
             'status' => 'accepted',
             'approved_by' => $approver->getFullName(),
@@ -437,6 +453,23 @@ class RiskAcceptanceWorkflowService
             'rejector' => $rejector->getEmail(),
             'reason' => $reason,
         ]);
+
+        // Send email notification to risk owner
+        if ($risk->getRiskOwner()) {
+            try {
+                $this->emailService->sendRiskAcceptanceRejected(
+                    $risk,
+                    $risk->getRiskOwner(),
+                    $reason,
+                    $rejector
+                );
+            } catch (\Exception $e) {
+                $this->logger->error('Failed to send rejection notification', [
+                    'error' => $e->getMessage(),
+                    'risk_id' => $risk->getId(),
+                ]);
+            }
+        }
 
         return [
             'status' => 'rejected',
