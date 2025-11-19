@@ -27,6 +27,16 @@ export default class extends Controller {
         this.enableDragAndDrop();
     }
 
+    disconnect() {
+        // Clean up modal instance if it exists
+        if (this.hasSettingsModalTarget) {
+            const modalInstance = bootstrap.Modal?.getInstance(this.settingsModalTarget);
+            if (modalInstance) {
+                modalInstance.dispose();
+            }
+        }
+    }
+
     // Enable drag and drop for widgets
     enableDragAndDrop() {
         this.widgetTargets.forEach((widget, index) => {
@@ -336,9 +346,34 @@ export default class extends Controller {
     // Open settings modal
     openSettings() {
         if (this.hasSettingsModalTarget) {
-            const modal = new bootstrap.Modal(this.settingsModalTarget);
-            modal.show();
+            // Wait for Bootstrap to be available before opening modal
+            this.waitForBootstrap(() => {
+                // Check if modal is already initialized
+                let modalInstance = bootstrap.Modal.getInstance(this.settingsModalTarget);
+
+                if (!modalInstance) {
+                    modalInstance = new bootstrap.Modal(this.settingsModalTarget);
+                }
+
+                modalInstance.show();
+            });
         }
+    }
+
+    // Helper function to wait for Bootstrap to be available
+    waitForBootstrap(callback, maxAttempts = 10) {
+        let attempts = 0;
+        const checkBootstrap = () => {
+            attempts++;
+            if (window.bootstrap && window.bootstrap.Modal) {
+                callback();
+            } else if (attempts < maxAttempts) {
+                setTimeout(checkBootstrap, 100);
+            } else {
+                console.error('Bootstrap could not be loaded after', maxAttempts, 'attempts');
+            }
+        };
+        checkBootstrap();
     }
 
     // Reset to defaults

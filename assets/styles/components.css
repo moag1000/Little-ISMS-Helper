@@ -64,7 +64,8 @@
 }
 
 /* Modal Styles - Cyberpunk */
-.modal {
+/* Only apply custom styles to non-Bootstrap modals (those without .fade class) */
+.modal:not(.fade) {
     display: none;
     position: fixed;
     top: 0;
@@ -74,13 +75,23 @@
     z-index: 1000;
 }
 
-.modal.modal-open {
+.modal.modal-open:not(.fade) {
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.modal-backdrop {
+/* Bootstrap Modal Overrides - Ensure Bootstrap modals work correctly */
+.modal.fade {
+    z-index: var(--z-modal, 1055);
+}
+
+.modal.fade.show {
+    display: block !important;
+}
+
+/* Custom modal backdrop - only for non-Bootstrap modals */
+.modal-backdrop:not(.fade) {
     position: fixed;
     top: 0;
     left: 0;
@@ -91,12 +102,22 @@
     z-index: 999;
 }
 
-.modal-backdrop.modal-backdrop-show {
+.modal-backdrop.modal-backdrop-show:not(.fade) {
     background-color: rgba(15, 23, 42, 0.8);
     backdrop-filter: blur(4px);
 }
 
-.modal-content {
+/* Bootstrap modal backdrop styling */
+.modal-backdrop.fade {
+    z-index: var(--z-modal-backdrop, 1050);
+}
+
+.modal-backdrop.fade.show {
+    backdrop-filter: blur(2px);
+}
+
+/* Custom modal content - only for non-Bootstrap modals */
+.modal:not(.fade) .modal-content {
     background: white;
     border-radius: var(--border-radius);
     padding: var(--spacing-xl);
@@ -113,18 +134,34 @@
     border: 2px solid var(--color-secondary);
 }
 
-[data-theme="dark"] .modal-content {
+[data-theme="dark"] .modal:not(.fade) .modal-content {
     background: var(--bg-elevated);
     color: var(--text-primary);
     border-color: var(--border-color);
 }
 
-.modal.modal-open .modal-content {
+.modal.modal-open:not(.fade) .modal-content {
     transform: scale(1);
     opacity: 1;
 }
 
-.modal-header {
+/* Bootstrap Modal Content Dark Mode Support */
+[data-theme="dark"] .modal.fade .modal-content {
+    background: var(--bg-elevated);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] .modal.fade .modal-header {
+    border-bottom-color: var(--border-color);
+}
+
+[data-theme="dark"] .modal.fade .modal-footer {
+    border-top-color: var(--border-color);
+}
+
+/* Custom modal header - only for non-Bootstrap modals */
+.modal:not(.fade) .modal-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -134,14 +171,14 @@
     border-image: linear-gradient(90deg, var(--color-secondary), var(--color-accent-pink)) 1;
 }
 
-.modal-title {
+.modal:not(.fade) .modal-title {
     font-size: 1.5rem;
     font-weight: 600;
     color: var(--color-primary);
     text-shadow: 0 0 20px rgba(6, 182, 212, 0.2);
 }
 
-.modal-close {
+.modal:not(.fade) .modal-close {
     background: none;
     border: none;
     font-size: 1.5rem;
@@ -150,7 +187,7 @@
     transition: color 0.2s;
 }
 
-.modal-close:hover {
+.modal:not(.fade) .modal-close:hover {
     color: var(--color-danger);
 }
 
