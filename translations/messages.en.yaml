@@ -693,6 +693,10 @@ risk:
     updated: Risk updated successfully.
     deleted: Risk deleted successfully.
 
+  # Validation Messages (ISO 27001 Compliance)
+  validation:
+    risk_owner_required: 'A risk owner must be assigned (ISO 27001 A.5.1/A.5.2)'
+
   # Field Labels (Form Labels)
   field:
     title: Risk Title
