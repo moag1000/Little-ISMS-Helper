@@ -74,41 +74,39 @@
                 </h5>
             </div>
             <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead>
+                {% embed '_components/_table.html.twig' %}
+                    {% block table_head %}
+                        <tr>
+                            <th scope="col">{{ 'permission.action'|trans }}</th>
+                            <th scope="col">{{ 'permission.description'|trans }}</th>
+                            <th scope="col" class="text-center">{{ 'permission.system_permission'|trans }}</th>
+                            <th scope="col" class="text-end">Aktionen</th>
+                        </tr>
+                    {% endblock %}
+                    {% block table_body %}
+                        {% for permission in permissions %}
                             <tr>
-                                <th scope="col">{{ 'permission.action'|trans }}</th>
-                                <th scope="col">{{ 'permission.description'|trans }}</th>
-                                <th scope="col" class="text-center">{{ 'permission.system_permission'|trans }}</th>
-                                <th scope="col" class="text-end">Aktionen</th>
+                                <td>
+                                    <code>{{ permission.name }}</code>
+                                </td>
+                                <td>{{ permission.description }}</td>
+                                <td class="text-center">
+                                    {% if permission.isSystemPermission %}
+                                        <span class="badge bg-info">System</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">Custom</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-end">
+                                    <a href="{{ path('permission_show', {id: permission.id}) }}"
+                                       class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-eye" aria-hidden="true"></i> Details
+                                    </a>
+                                </td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            {% for permission in permissions %}
-                                <tr>
-                                    <td>
-                                        <code>{{ permission.name }}</code>
-                                    </td>
-                                    <td>{{ permission.description }}</td>
-                                    <td class="text-center">
-                                        {% if permission.isSystemPermission %}
-                                            <span class="badge bg-info">System</span>
-                                        {% else %}
-                                            <span class="badge bg-secondary">Custom</span>
-                                        {% endif %}
-                                    </td>
-                                    <td class="text-end">
-                                        <a href="{{ path('permission_show', {id: permission.id}) }}"
-                                           class="btn btn-sm btn-outline-primary">
-                                            <i class="bi bi-eye" aria-hidden="true"></i> Details
-                                        </a>
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+                        {% endfor %}
+                    {% endblock %}
+                {% endembed %}
             </div>
         </div>
     {% endfor %}
