@@ -54,19 +54,23 @@
 
             {# Annex Details Table #}
             <div class="annex-details mt-3">
-                <table class="table table-sm">
-                    <thead>
+                {% embed '_components/_table.html.twig' with {
+                    'class': 'table-sm',
+                    'noMargin': true
+                } %}
+                    {% block table_head %}
                         <tr>
                             <th scope="col">Annex</th>
                             <th scope="col">Implemented</th>
                             <th scope="col">Total</th>
                             <th scope="col">Compliance</th>
                         </tr>
-                    </thead>
-                    <tbody data-radar-chart-target="detailsTable">
+                    {% endblock %}
+                    {% block table_body_attrs %}data-radar-chart-target="detailsTable"{% endblock %}
+                    {% block table_body %}
                         {# Will be populated by JavaScript #}
-                    </tbody>
-                </table>
+                    {% endblock %}
+                {% endembed %}
             </div>
         </div>
     </div>
