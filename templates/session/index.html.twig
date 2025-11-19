@@ -88,95 +88,96 @@
         </div>
         <div class="card-body">
             {% if sessions|length > 0 %}
-                <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th scope="col">{{ 'session.user_name'|trans }}</th>
-                                <th scope="col">{{ 'session.ip_address'|trans }}</th>
-                                <th scope="col">User Agent</th>
-                                <th scope="col">{{ 'session.last_activity'|trans }}</th>
-                                <th scope="col">{{ 'session.session_start'|trans }}</th>
-                                <th scope="col">Dauer</th>
-                                <th scope="col" class="text-end">Aktionen</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for session in sessions %}
-                                <tr>
-                                    <td>
-                                        <i class="bi bi-person" aria-hidden="true"></i>
-                                        <strong>{{ session.user.firstName }} {{ session.user.lastName }}</strong>
-                                        <br>
-                                        <small class="text-muted">{{ session.user.email }}</small>
-                                    </td>
-                                    <td>
-                                        <code>{{ session.ipAddress ?? 'N/A' }}</code>
-                                    </td>
-                                    <td>
-                                        <small class="text-muted" title="{{ session.userAgent }}">
-                                            {% if session.userAgent %}
-                                                {% if 'Chrome' in session.userAgent %}
-                                                    <i class="bi bi-browser-chrome" aria-hidden="true"></i> Chrome
-                                                {% elseif 'Firefox' in session.userAgent %}
-                                                    <i class="bi bi-browser-firefox" aria-hidden="true"></i> Firefox
-                                                {% elseif 'Safari' in session.userAgent %}
-                                                    <i class="bi bi-browser-safari" aria-hidden="true"></i> Safari
-                                                {% elseif 'Edge' in session.userAgent %}
-                                                    <i class="bi bi-browser-edge" aria-hidden="true"></i> Edge
-                                                {% else %}
-                                                    <i class="bi bi-globe" aria-hidden="true"></i> {{ session.userAgent|slice(0, 20) }}...
-                                                {% endif %}
-                                            {% else %}
-                                                N/A
-                                            {% endif %}
-                                        </small>
-                                    </td>
-                                    <td>
-                                        {% set minutes_ago = 'now'|date('U') - session.lastActivityAt.timestamp %}
-                                        {% set minutes = (minutes_ago / 60)|round %}
-                                        {% if minutes < 1 %}
-                                            <span class="badge bg-success">Jetzt aktiv</span>
-                                        {% elseif minutes < 5 %}
-                                            <span class="badge bg-info">vor {{ minutes }} Min.</span>
-                                        {% elseif minutes < 60 %}
-                                            <span class="text-muted">vor {{ minutes }} Min.</span>
+            {% embed '_components/_table.html.twig' with {
+                'class': 'table-hover',
+                'noMargin': true
+            } %}
+                {% block table_head %}
+                    <tr>
+                        <th scope="col">{{ 'session.user_name'|trans }}</th>
+                        <th scope="col">{{ 'session.ip_address'|trans }}</th>
+                        <th scope="col">User Agent</th>
+                        <th scope="col">{{ 'session.last_activity'|trans }}</th>
+                        <th scope="col">{{ 'session.session_start'|trans }}</th>
+                        <th scope="col">Dauer</th>
+                        <th scope="col" class="text-end">Aktionen</th>
+                    </tr>
+                {% endblock %}
+                {% block table_body %}
+                    {% for session in sessions %}
+                        <tr>
+                            <td>
+                                <i class="bi bi-person" aria-hidden="true"></i>
+                                <strong>{{ session.user.firstName }} {{ session.user.lastName }}</strong>
+                                <br>
+                                <small class="text-muted">{{ session.user.email }}</small>
+                            </td>
+                            <td>
+                                <code>{{ session.ipAddress ?? 'N/A' }}</code>
+                            </td>
+                            <td>
+                                <small class="text-muted" title="{{ session.userAgent }}">
+                                    {% if session.userAgent %}
+                                        {% if 'Chrome' in session.userAgent %}
+                                            <i class="bi bi-browser-chrome" aria-hidden="true"></i> Chrome
+                                        {% elseif 'Firefox' in session.userAgent %}
+                                            <i class="bi bi-browser-firefox" aria-hidden="true"></i> Firefox
+                                        {% elseif 'Safari' in session.userAgent %}
+                                            <i class="bi bi-browser-safari" aria-hidden="true"></i> Safari
+                                        {% elseif 'Edge' in session.userAgent %}
+                                            <i class="bi bi-browser-edge" aria-hidden="true"></i> Edge
                                         {% else %}
-                                            <span class="text-muted">{{ session.lastActivityAt|date('d.m.Y H:i') }}</span>
+                                            <i class="bi bi-globe" aria-hidden="true"></i> {{ session.userAgent|slice(0, 20) }}...
                                         {% endif %}
-                                    </td>
-                                    <td>
-                                        <small class="text-muted">{{ session.createdAt|date('d.m.Y H:i') }}</small>
-                                    </td>
-                                    <td>
-                                        <span class="badge bg-secondary">{{ session.formattedDuration }}</span>
-                                    </td>
-                                    <td class="text-end">
-                                        <div class="btn-group btn-group-sm">
-                                            <a href="{{ path('session_show', {userName: session.user.email}) }}"
-                                               class="btn btn-outline-primary"
-                                               title="Details anzeigen" aria-label="{{ 'common.view'|trans }}">
-                                                <i class="bi bi-eye" aria-hidden="true"></i>
-                                            </a>
-                                            <form method="post"
-                                                  action="{{ path('session_terminate_single', {sessionId: session.sessionId}) }}"
-                                                  style="display: inline;">
-                                                <input type="hidden" name="_token"
-                                                       value="{{ csrf_token('terminate_single_' ~ session.sessionId) }}">
-                                                <button type="submit"
-                                                        class="btn btn-outline-danger"
-                                                        title="Session beenden"
-                                                        onclick="return confirm('Möchten Sie diese Sitzung wirklich beenden?')" aria-label="{{ 'common.close'|trans }}">
-                                                    <i class="bi bi-x-circle" aria-hidden="true"></i>
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+                                    {% else %}
+                                        N/A
+                                    {% endif %}
+                                </small>
+                            </td>
+                            <td>
+                                {% set minutes_ago = 'now'|date('U') - session.lastActivityAt.timestamp %}
+                                {% set minutes = (minutes_ago / 60)|round %}
+                                {% if minutes < 1 %}
+                                    <span class="badge bg-success">Jetzt aktiv</span>
+                                {% elseif minutes < 5 %}
+                                    <span class="badge bg-info">vor {{ minutes }} Min.</span>
+                                {% elseif minutes < 60 %}
+                                    <span class="text-muted">vor {{ minutes }} Min.</span>
+                                {% else %}
+                                    <span class="text-muted">{{ session.lastActivityAt|date('d.m.Y H:i') }}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <small class="text-muted">{{ session.createdAt|date('d.m.Y H:i') }}</small>
+                            </td>
+                            <td>
+                                <span class="badge bg-secondary">{{ session.formattedDuration }}</span>
+                            </td>
+                            <td class="text-end">
+                                <div class="btn-group btn-group-sm">
+                                    <a href="{{ path('session_show', {userName: session.user.email}) }}"
+                                       class="btn btn-outline-primary"
+                                       title="Details anzeigen" aria-label="{{ 'common.view'|trans }}">
+                                        <i class="bi bi-eye" aria-hidden="true"></i>
+                                    </a>
+                                    <form method="post"
+                                          action="{{ path('session_terminate_single', {sessionId: session.sessionId}) }}"
+                                          style="display: inline;">
+                                        <input type="hidden" name="_token"
+                                               value="{{ csrf_token('terminate_single_' ~ session.sessionId) }}">
+                                        <button type="submit"
+                                                class="btn btn-outline-danger"
+                                                title="Session beenden"
+                                                onclick="return confirm('Möchten Sie diese Sitzung wirklich beenden?')" aria-label="{{ 'common.close'|trans }}">
+                                            <i class="bi bi-x-circle" aria-hidden="true"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% endblock %}
+            {% endembed %}
             {% else %}
                 <div class="alert alert-info">
                     <i class="bi bi-info-circle" aria-hidden="true"></i>

@@ -8,6 +8,8 @@ use App\Entity\Control;
 use App\Repository\ComplianceRequirementRepository;
 use App\Service\ComplianceAssessmentService;
 use App\Service\ComplianceMappingService;
+use App\Service\ComplianceRequirementFulfillmentService;
+use App\Service\TenantContext;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -18,6 +20,8 @@ class ComplianceAssessmentServiceTest extends TestCase
     private MockObject $requirementRepository;
     private MockObject $mappingService;
     private MockObject $entityManager;
+    private MockObject $fulfillmentService;
+    private MockObject $tenantContext;
     private ComplianceAssessmentService $service;
 
     protected function setUp(): void
@@ -25,11 +29,15 @@ class ComplianceAssessmentServiceTest extends TestCase
         $this->requirementRepository = $this->createMock(ComplianceRequirementRepository::class);
         $this->mappingService = $this->createMock(ComplianceMappingService::class);
         $this->entityManager = $this->createMock(EntityManagerInterface::class);
+        $this->fulfillmentService = $this->createMock(ComplianceRequirementFulfillmentService::class);
+        $this->tenantContext = $this->createMock(TenantContext::class);
 
         $this->service = new ComplianceAssessmentService(
             $this->requirementRepository,
             $this->mappingService,
-            $this->entityManager
+            $this->entityManager,
+            $this->fulfillmentService,
+            $this->tenantContext
         );
     }
 
