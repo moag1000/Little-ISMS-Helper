@@ -1130,27 +1130,27 @@ h3 {
 }
 
 .info-box {
-    background-color: #e8f4f8;
+    background-color: rgba(6, 182, 212, 0.1);
     border-color: var(--color-info);
-    color: #1f5f7a;
+    color: var(--text-primary);
 }
 
 .warning-box {
-    background-color: #fff3cd;
+    background-color: rgba(245, 158, 11, 0.1);
     border-color: var(--color-warning);
-    color: #856404;
+    color: var(--text-primary);
 }
 
 .success-box {
-    background-color: #d4edda;
+    background-color: rgba(16, 185, 129, 0.1);
     border-color: var(--color-success);
-    color: #155724;
+    color: var(--text-primary);
 }
 
 .danger-box {
-    background-color: #f8d7da;
+    background-color: rgba(239, 68, 68, 0.1);
     border-color: var(--color-danger);
-    color: #721c24;
+    color: var(--text-primary);
 }
 
 /* Tables with Dark Mode Support */
@@ -1416,12 +1416,12 @@ textarea.is-invalid:focus {
 .form-control {
     width: 100%;
     padding: var(--spacing-sm);
-    border: 1px solid #e2e8f0;
+    border: 1px solid var(--border-color);
     border-radius: var(--border-radius-sm);
     font-size: 1rem;
     transition: all var(--transition-normal);
-    background: white;
-    color: #1e293b;
+    background: var(--bg-primary);
+    color: var(--text-primary);
 }
 
 [data-theme="dark"] .form-control {

@@ -497,7 +497,7 @@
                                                     <input type="hidden" name="_token" value="{{ csrf_token('remove_user_' ~ tenant.id ~ '_' ~ user.id) }}">
                                                     <button type="submit"
                                                             class="btn btn-sm btn-outline-danger"
-                                                            onclick="return confirm('{{ 'tenant.users.confirm_remove'|trans({'%email%': user.email}) }}');">
+                                                            onclick="return confirm('{{ 'tenant.users.confirm_remove'|trans({'%email%': user.email}) }}');" aria-label="{{ 'common.deactivate'|trans }}">
                                                         <i class="bi bi-person-dash" aria-hidden="true"></i>
                                                     </button>
                                                 </form>
@@ -647,7 +647,7 @@
                         html += `<div class="list-group-item d-flex justify-content-between align-items-center">
                             <div><strong>${rule.scope}</strong>${rule.scopeId ? ': ' + rule.scopeId : ''}<br>
                             <span class="badge bg-${badgeColor}">${rule.governanceLabel}</span></div>
-                            <button class="btn btn-sm btn-danger" onclick="deleteRule(${rule.id}, '${rule.scope}', ${scopeIdParam})"><i class="bi bi-trash" aria-hidden="true"></i></button>
+                            <button class="btn btn-sm btn-danger" aria-label="{{ 'common.delete'|trans }}" onclick="deleteRule(${rule.id}, '${rule.scope}', ${scopeIdParam})"><i class="bi bi-trash" aria-hidden="true"></i></button>
                         </div>`;
                     });
                     html += '</div>';

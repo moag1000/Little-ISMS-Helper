@@ -281,17 +281,17 @@
                                 <div class="btn-group btn-group-sm">
                                     <a href="{{ path('app_document_download', {id: document.id}) }}"
                                        class="btn btn-sm btn-outline-success"
-                                       title="{{ 'common.download'|trans }}">
+                                       title="{{ 'common.download'|trans }}" aria-label="{{ 'common.download'|trans }}">
                                         <i class="bi bi-download" aria-hidden="true"></i>
                                     </a>
                                     <a href="{{ path('app_document_show', {id: document.id}) }}"
                                        class="btn btn-sm btn-outline-primary"
-                                       title="{{ 'common.details'|trans }}">
+                                       title="{{ 'common.details'|trans }}" aria-label="{{ 'common.view'|trans }}">
                                         <i class="bi bi-eye" aria-hidden="true"></i>
                                     </a>
                                     <a href="{{ path('app_document_edit', {id: document.id}) }}"
                                        class="btn btn-sm btn-outline-secondary"
-                                       title="{{ 'common.edit'|trans }}">
+                                       title="{{ 'common.edit'|trans }}" aria-label="{{ 'common.edit'|trans }}">
                                         <i class="bi bi-pencil" aria-hidden="true"></i>
                                     </a>
                                 </div>

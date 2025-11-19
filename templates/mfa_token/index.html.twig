@@ -130,7 +130,7 @@
                                             <div class="btn-group btn-group-sm">
                                                 <a href="{{ path('admin_mfa_show', {id: token.id}) }}"
                                                    class="btn btn-outline-primary"
-                                                   title="{{ 'common.view'|trans }}">
+                                                   title="{{ 'common.view'|trans }}" aria-label="{{ 'common.view'|trans }}">
                                                     <i class="bi bi-eye" aria-hidden="true"></i>
                                                 </a>
                                                 {% if token.isActive %}
@@ -141,7 +141,7 @@
                                                         <input type="hidden" name="_token" value="{{ csrf_token('disable_' ~ token.id) }}">
                                                         <button type="submit"
                                                                 class="btn btn-outline-warning"
-                                                                title="{{ 'mfa_token.action.disable'|trans }}">
+                                                                title="{{ 'mfa_token.action.disable'|trans }}" aria-label="{{ 'common.view'|trans }}">
                                                             <i class="bi bi-pause-circle" aria-hidden="true"></i>
                                                         </button>
                                                     </form>
@@ -153,7 +153,7 @@
                                                     <input type="hidden" name="_token" value="{{ csrf_token('delete_' ~ token.id) }}">
                                                     <button type="submit"
                                                             class="btn btn-outline-danger"
-                                                            title="{{ 'common.delete'|trans }}">
+                                                            title="{{ 'common.delete'|trans }}" aria-label="{{ 'common.delete'|trans }}">
                                                         <i class="bi bi-trash" aria-hidden="true"></i>
                                                     </button>
                                                 </form>

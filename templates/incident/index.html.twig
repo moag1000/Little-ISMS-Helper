@@ -18,8 +18,10 @@
 
     {# View Filter #}
     {% if currentTenant %}
-    <div class="card mb-3">
-        <div class="card-body py-2">
+    {% embed '_components/_card.html.twig' with {
+        'class': 'mb-3'
+    } %}
+        {% block card_body %}
             <form method="get" action="{{ path('app_incident_index') }}" class="d-flex align-items-center gap-2">
                 <label for="view-filter" class="mb-0 fw-bold">
                     <i class="bi bi-eye" aria-hidden="true"></i> {{ 'common.view'|trans }}:
@@ -43,8 +45,8 @@
                     <button type="submit" class="btn btn-sm btn-secondary">{{ 'common.apply'|trans }}</button>
                 </noscript>
             </form>
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
     {% endif %}
 
     {# KPI Cards #}
@@ -250,10 +252,10 @@
                                 </td>
                                 <td>
                                     <div class="btn-group btn-group-sm">
-                                        <a href="{{ path('app_incident_show', {id: incident.id}) }}" class="btn btn-outline-primary" title="{{ 'common.view'|trans }}">
+                                        <a href="{{ path('app_incident_show', {id: incident.id}) }}" class="btn btn-outline-primary" title="{{ 'common.view'|trans }}" aria-label="{{ 'common.view'|trans }}">
                                             <i class="bi bi-eye" aria-hidden="true"></i>
                                         </a>
-                                        <a href="{{ path('app_incident_edit', {id: incident.id}) }}" class="btn btn-outline-secondary" title="{{ 'common.edit'|trans }}">
+                                        <a href="{{ path('app_incident_edit', {id: incident.id}) }}" class="btn btn-outline-secondary" title="{{ 'common.edit'|trans }}" aria-label="{{ 'common.edit'|trans }}">
                                             <i class="bi bi-pencil" aria-hidden="true"></i>
                                         </a>
                                     </div>

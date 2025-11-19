@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\ComplianceRequirement;
 use App\Entity\ComplianceFramework;
+use App\Entity\Tenant;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -120,7 +121,71 @@ class ComplianceRequirementRepository extends ServiceEntityRepository
     }
 
     /**
-     * Get comprehensive compliance statistics for a framework.
+     * Get comprehensive statistics for a compliance framework (tenant-specific)
+     *
+     * Architecture: Tenant-aware statistics using ComplianceRequirementFulfillment
+     * - JOINs to compliance_requirement_fulfillment table with tenant context
+     * - Returns tenant-specific counts based on fulfillment data
+     *
+     * @param ComplianceFramework $framework The framework to get statistics for
+     * @param Tenant $tenant The tenant to get statistics for
+     * @return array<string, int> Statistics array with total, applicable, fulfilled, critical_gaps
+     */
+    public function getFrameworkStatisticsForTenant(ComplianceFramework $framework, Tenant $tenant): array
+    {
+        $qb = $this->createQueryBuilder('cr');
+
+        return [
+            'total' => $qb->select('COUNT(cr.id)')
+                ->where('cr.framework = :framework')
+                ->setParameter('framework', $framework)
+                ->getQuery()
+                ->getSingleScalarResult(),
+
+            'applicable' => $this->createQueryBuilder('cr')
+                ->select('COUNT(DISTINCT cr.id)')
+                ->leftJoin('App\Entity\ComplianceRequirementFulfillment', 'crf', 'WITH', 'crf.requirement = cr AND crf.tenant = :tenant')
+                ->where('cr.framework = :framework')
+                ->andWhere('crf.applicable = :applicable')
+                ->setParameter('framework', $framework)
+                ->setParameter('tenant', $tenant)
+                ->setParameter('applicable', true)
+                ->getQuery()
+                ->getSingleScalarResult(),
+
+            'fulfilled' => $this->createQueryBuilder('cr')
+                ->select('COUNT(DISTINCT cr.id)')
+                ->leftJoin('App\Entity\ComplianceRequirementFulfillment', 'crf', 'WITH', 'crf.requirement = cr AND crf.tenant = :tenant')
+                ->where('cr.framework = :framework')
+                ->andWhere('crf.applicable = :applicable')
+                ->andWhere('crf.fulfillmentPercentage >= 100')
+                ->setParameter('framework', $framework)
+                ->setParameter('tenant', $tenant)
+                ->setParameter('applicable', true)
+                ->getQuery()
+                ->getSingleScalarResult(),
+
+            'critical_gaps' => $this->createQueryBuilder('cr')
+                ->select('COUNT(DISTINCT cr.id)')
+                ->leftJoin('App\Entity\ComplianceRequirementFulfillment', 'crf', 'WITH', 'crf.requirement = cr AND crf.tenant = :tenant')
+                ->where('cr.framework = :framework')
+                ->andWhere('crf.applicable = :applicable')
+                ->andWhere('cr.priority = :priority')
+                ->andWhere('crf.fulfillmentPercentage < 100')
+                ->setParameter('framework', $framework)
+                ->setParameter('tenant', $tenant)
+                ->setParameter('applicable', true)
+                ->setParameter('priority', 'critical')
+                ->getQuery()
+                ->getSingleScalarResult(),
+        ];
+    }
+
+    /**
+     * Get comprehensive compliance statistics for a framework (DEPRECATED - uses global data)
+     *
+     * @deprecated Use getFrameworkStatisticsForTenant() instead for tenant-specific statistics
+     * This method uses deprecated global ComplianceRequirement fields instead of tenant-specific ComplianceRequirementFulfillment
      *
      * @param ComplianceFramework $framework Compliance framework entity
      * @return array<string, int> Statistics array containing:

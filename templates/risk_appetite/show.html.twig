@@ -167,7 +167,7 @@
                             {% endif %}
                         </td>
                         <td class="text-center">
-                            <a href="{{ path('app_risk_show', {id: risk.id}) }}" class="btn btn-sm btn-outline-primary">
+                            <a href="{{ path('app_risk_show', {id: risk.id}) }}" class="btn btn-sm btn-outline-primary" aria-label="{{ 'common.view'|trans }}">
                                 <i class="bi bi-eye" aria-hidden="true"></i>
                             </a>
                         </td>
@@ -225,7 +225,7 @@
                             <span class="badge bg-secondary">{{ risk.status }}</span>
                         </td>
                         <td class="text-center">
-                            <a href="{{ path('app_risk_show', {id: risk.id}) }}" class="btn btn-sm btn-outline-primary">
+                            <a href="{{ path('app_risk_show', {id: risk.id}) }}" class="btn btn-sm btn-outline-primary" aria-label="{{ 'common.view'|trans }}">
                                 <i class="bi bi-eye" aria-hidden="true"></i>
                             </a>
                         </td>

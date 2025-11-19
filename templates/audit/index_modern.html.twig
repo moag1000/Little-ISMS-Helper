@@ -265,18 +265,18 @@
                                 <div class="btn-group btn-group-sm">
                                     <a href="{{ path('app_audit_show', {id: audit.id}) }}"
                                        class="btn btn-sm btn-outline-primary"
-                                       title="Details anzeigen">
+                                       title="Details anzeigen" aria-label="{{ 'common.view'|trans }}">
                                         <i class="bi bi-eye" aria-hidden="true"></i>
                                     </a>
                                     <a href="{{ path('app_audit_edit', {id: audit.id}) }}"
                                        class="btn btn-sm btn-outline-secondary"
-                                       title="Bearbeiten">
+                                       title="Bearbeiten" aria-label="{{ 'common.edit'|trans }}">
                                         <i class="bi bi-pencil" aria-hidden="true"></i>
                                     </a>
                                     <a href="{{ path('app_audit_export_pdf', {id: audit.id}) }}"
                                        class="btn btn-sm btn-outline-success"
                                        data-turbo="false"
-                                       title="PDF Export">
+                                       title="PDF Export" aria-label="{{ 'common.view'|trans }}">
                                         <i class="bi bi-file-pdf" aria-hidden="true"></i>
                                     </a>
                                 </div>

@@ -47,7 +47,7 @@
         {% endif %}
     </div>
     {% if link %}
-        <a href="{{ link }}" class="kpi-card-link" data-turbo-action="advance">
+        <a href="{{ link }}" class="kpi-card-link" data-turbo-action="advance" aria-label="{{ 'common.view_details'|trans }}">
             <i class="bi bi-arrow-right" aria-hidden="true"></i>
         </a>
     {% endif %}
