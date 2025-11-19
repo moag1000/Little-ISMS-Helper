@@ -211,6 +211,35 @@
                     </li>
                     {% endif %}
 
+                    {# Privacy / Datenschutz (GDPR) #}
+                    <li class="nav-divider">{{ 'nav.section.privacy'|trans|default('Privacy / Datenschutz') }}</li>
+                    <li class="has-submenu" data-controller="sidebar-dropdown" data-sidebar-dropdown-key-value="sidebar-privacy-expanded">
+                        <a href="{{ path('app_processing_activity_index') }}"
+                           class="submenu-toggle {% if current_route starts with 'app_processing_activity_' or current_route starts with 'app_dpia_' or current_route starts with 'app_data_breach_' %}active{% endif %}"
+                           data-turbo-action="advance"
+                           data-action="click->sidebar-dropdown#toggle:prevent"
+                           data-sidebar-dropdown-target="toggle"
+                           aria-expanded="false">
+                            <i class="bi bi-shield-lock" aria-hidden="true"></i>
+                            <span>{{ 'nav.privacy_hub'|trans|default('Privacy Hub') }}</span>
+                            <i class="bi bi-chevron-down submenu-icon" data-sidebar-dropdown-target="icon" aria-hidden="true"></i>
+                        </a>
+                        <ul class="submenu" data-sidebar-dropdown-target="submenu">
+                            <li><a href="{{ path('app_processing_activity_index') }}" class="{% if current_route starts with 'app_processing_activity_' %}active{% endif %}" data-turbo-action="advance">
+                                <i class="bi bi-journal-text" aria-hidden="true"></i>
+                                <span>{{ 'nav.vvt'|trans|default('VVT (Art. 30)') }}</span>
+                            </a></li>
+                            <li><a href="{{ path('app_dpia_index') }}" class="{% if current_route starts with 'app_dpia_' %}active{% endif %}" data-turbo-action="advance">
+                                <i class="bi bi-clipboard-check" aria-hidden="true"></i>
+                                <span>{{ 'nav.dpia'|trans|default('DPIA (Art. 35)') }}</span>
+                            </a></li>
+                            <li><a href="{{ path('app_data_breach_index') }}" class="{% if current_route starts with 'app_data_breach_' %}active{% endif %}" data-turbo-action="advance">
+                                <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
+                                <span>{{ 'nav.data_breaches'|trans|default('Data Breaches (Art. 33/34)') }}</span>
+                            </a></li>
+                        </ul>
+                    </li>
+
                     {# Operations #}
                     {% if is_module_active('core') or is_module_active('incidents') %}
                     <li class="nav-divider">{{ 'nav.section.operations'|trans }}</li>
@@ -301,7 +330,7 @@
                         <span>{{ 'nav.audit_log'|trans }}</span>
                     </a></li>
                     {% endif %}
-                    {% if is_granted('ROLE_MANAGER') %}
+                    {% if is_granted('ROLE_MANAGER') and is_nis2_active() %}
                     <li><a href="{{ path('app_nis2_compliance_dashboard') }}" class="{% if current_route starts with 'app_nis2_compliance_' %}active{% endif %}" data-turbo-action="advance">
                         <i class="bi bi-shield-fill-exclamation" aria-hidden="true"></i>
                         <span>{{ 'nav.nis2_dashboard'|trans }}</span>
