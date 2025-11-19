@@ -337,6 +337,91 @@
                 </div>
             {% endif %}
 
+            {# CRITICAL-05: BCM Impact Analysis #}
+            <div class="detail-section">
+                <h3>📊 Business Continuity Impact</h3>
+
+                {% if incident.affectedBusinessProcesses|length > 0 %}
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <div class="card bg-light">
+                                <div class="card-body text-center">
+                                    <h5>{{ incident.affectedProcessCount }}</h5>
+                                    <small class="text-muted">Affected Processes</small>
+                                    {% if incident.hasCriticalProcessesAffected %}
+                                        <br><span class="badge bg-danger mt-1">Critical</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card bg-light">
+                                <div class="card-body text-center">
+                                    <h5>
+                                        {% set priority_class = {
+                                            'immediate': 'danger',
+                                            'high': 'warning',
+                                            'medium': 'info',
+                                            'low': 'secondary'
+                                        }[incident.suggestedRecoveryPriority] %}
+                                        <span class="badge bg-{{ priority_class }}">{{ incident.suggestedRecoveryPriority|upper }}</span>
+                                    </h5>
+                                    <small class="text-muted">Recovery Priority</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card bg-light">
+                                <div class="card-body text-center">
+                                    <h5>€{{ incident.calculateEstimatedFinancialImpact(24)|number_format(0) }}</h5>
+                                    <small class="text-muted">Est. Impact (24h)</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="data-reuse-list mb-3">
+                        {% for process in incident.affectedBusinessProcesses %}
+                            <div class="data-reuse-item">
+                                <strong>{{ process.name }}</strong>
+                                {% set crit_class = {
+                                    'critical': 'danger',
+                                    'high': 'warning',
+                                    'medium': 'info',
+                                    'low': 'secondary'
+                                }[process.criticality] %}
+                                <span class="badge bg-{{ crit_class }}">{{ process.criticality|upper }}</span>
+                                <small>RTO: {{ process.rto }}h | Owner: {{ process.processOwner }}</small>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <a href="{{ path('app_incident_bcm_impact', {id: incident.id}) }}" class="btn btn-primary">
+                            <i class="bi bi-diagram-3" aria-hidden="true"></i> Detailed BCM Impact Analysis
+                        </a>
+                        <form method="post" action="{{ path('app_incident_auto_detect_processes', {id: incident.id}) }}" style="display:inline;">
+                            <input type="hidden" name="_token" value="{{ csrf_token('auto-detect' ~ incident.id) }}">
+                            <button type="submit" class="btn btn-outline-secondary">
+                                <i class="bi bi-magic" aria-hidden="true"></i> Auto-Detect More Processes
+                            </button>
+                        </form>
+                    </div>
+                {% else %}
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle" aria-hidden="true"></i>
+                        <strong>No business processes linked yet.</strong>
+                        Link processes manually in the edit form, or use auto-detection based on affected assets.
+                    </div>
+                    <form method="post" action="{{ path('app_incident_auto_detect_processes', {id: incident.id}) }}" style="display:inline;">
+                        <input type="hidden" name="_token" value="{{ csrf_token('auto-detect' ~ incident.id) }}">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-magic" aria-hidden="true"></i> Auto-Detect Affected Processes
+                        </button>
+                    </form>
+                {% endif %}
+            </div>
+
             {# Data Reuse: Realized Risks #}
             {% if incident.realizedRisks is defined and incident.realizedRisks|length > 0 %}
                 <div class="detail-section">

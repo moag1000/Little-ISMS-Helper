@@ -7,6 +7,7 @@ use App\Form\IncidentType;
 use App\Repository\AuditLogRepository;
 use App\Repository\IncidentRepository;
 use App\Service\EmailNotificationService;
+use App\Service\IncidentBCMImpactService;
 use App\Service\PdfExportService;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -26,6 +27,7 @@ class IncidentController extends AbstractController
         private AuditLogRepository $auditLogRepository,
         private EntityManagerInterface $entityManager,
         private EmailNotificationService $emailService,
+        private IncidentBCMImpactService $bcmImpactService,
         private PdfExportService $pdfService,
         private UserRepository $userRepository,
         private TranslatorInterface $translator,
@@ -356,5 +358,96 @@ class IncidentController extends AbstractController
             'deleted' => $deleted,
             'message' => "$deleted incidents deleted successfully"
         ]);
+    }
+
+    // CRITICAL-05: BCM Integration Actions
+
+    /**
+     * Display BCM impact analysis for an incident
+     */
+    #[Route('/{id}/bcm-impact', name: 'app_incident_bcm_impact', methods: ['GET'])]
+    #[IsGranted('ROLE_USER')]
+    public function bcmImpact(Incident $incident): Response
+    {
+        $analysis = $this->bcmImpactService->analyzeBusinessImpact($incident);
+
+        return $this->render('incident/bcm_impact.html.twig', [
+            'incident' => $incident,
+            'analysis' => $analysis,
+        ]);
+    }
+
+    /**
+     * JSON API endpoint for BCM impact analysis
+     */
+    #[Route('/{id}/bcm-impact/api', name: 'app_incident_bcm_impact_api', methods: ['GET'])]
+    #[IsGranted('ROLE_USER')]
+    public function bcmImpactApi(Incident $incident, Request $request): Response
+    {
+        $downtimeHours = $request->query->get('downtime_hours');
+
+        $analysis = $this->bcmImpactService->analyzeBusinessImpact(
+            $incident,
+            $downtimeHours ? (int) $downtimeHours : null
+        );
+
+        return $this->json($analysis);
+    }
+
+    /**
+     * Auto-detect affected business processes via assets
+     */
+    #[Route('/{id}/auto-detect-processes', name: 'app_incident_auto_detect_processes', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function autoDetectProcesses(Incident $incident): Response
+    {
+        $detectedProcesses = $this->bcmImpactService->identifyAffectedProcesses($incident);
+
+        // Link detected processes to incident
+        $added = 0;
+        foreach ($detectedProcesses as $process) {
+            if (!$incident->getAffectedBusinessProcesses()->contains($process)) {
+                $incident->addAffectedBusinessProcess($process);
+                $added++;
+            }
+        }
+
+        if ($added > 0) {
+            $this->entityManager->flush();
+
+            $this->addFlash('success', $this->translator->trans(
+                'incident.bcm.auto_detect_success',
+                ['%count%' => $added],
+                'messages'
+            ));
+        } else {
+            $this->addFlash('info', $this->translator->trans(
+                'incident.bcm.no_processes_detected',
+                [],
+                'messages'
+            ));
+        }
+
+        return $this->redirectToRoute('app_incident_show', ['id' => $incident->getId()]);
+    }
+
+    /**
+     * Generate BCM impact report (PDF)
+     */
+    #[Route('/{id}/bcm-impact/report', name: 'app_incident_bcm_impact_report', methods: ['GET'])]
+    #[IsGranted('ROLE_USER')]
+    public function bcmImpactReport(Incident $incident): Response
+    {
+        $reportData = $this->bcmImpactService->generateImpactReport($incident);
+
+        $html = $this->renderView('incident/bcm_impact_report_pdf.html.twig', $reportData);
+
+        return $this->pdfService->generatePdfResponse(
+            $html,
+            sprintf('BCM_Impact_Analysis_%s_%s.pdf',
+                $incident->getIncidentNumber(),
+                date('Y-m-d')
+            )
+        );
     }
 }
