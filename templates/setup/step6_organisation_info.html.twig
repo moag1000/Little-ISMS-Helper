@@ -51,30 +51,52 @@
                     {# Organisation Info Form #}
                     {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
 
-                    <div class="mb-3">
-                        {{ form_row(form.name) }}
+                    <div class="row">
+                        <div class="col-md-12">
+                            {% include '_components/_form_field.html.twig' with {
+                                'field': form.name,
+                                'label': form.name.vars.label|default('setup.organisation.name'|trans),
+                                'required': true
+                            } %}
+                        </div>
                     </div>
 
                     {# Multi-Industry Selection for Corporate Structures #}
-                    <div class="mb-3">
-                        <div class="alert alert-light mb-2">
-                            <i class="fas fa-sitemap me-2 text-primary"></i>
-                            <small>{{ 'setup.organisation.industries_help'|trans }}</small>
+                    <div class="alert alert-light mb-2">
+                        <i class="fas fa-sitemap me-2 text-primary"></i>
+                        <small>{{ 'setup.organisation.industries_help'|trans }}</small>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            {% include '_components/_form_field.html.twig' with {
+                                'field': form.industries,
+                                'label': form.industries.vars.label|default('setup.organisation.industries'|trans)
+                            } %}
                         </div>
-                        {{ form_row(form.industries) }}
                     </div>
 
                     <div class="row">
-                        <div class="col-md-6 mb-3">
-                            {{ form_row(form.employee_count) }}
+                        <div class="col-md-6">
+                            {% include '_components/_form_field.html.twig' with {
+                                'field': form.employee_count,
+                                'label': form.employee_count.vars.label|default('setup.organisation.employee_count'|trans)
+                            } %}
                         </div>
-                        <div class="col-md-6 mb-3">
-                            {{ form_row(form.country) }}
+                        <div class="col-md-6">
+                            {% include '_components/_form_field.html.twig' with {
+                                'field': form.country,
+                                'label': form.country.vars.label|default('setup.organisation.country'|trans)
+                            } %}
                         </div>
                     </div>
 
-                    <div class="mb-3">
-                        {{ form_row(form.description) }}
+                    <div class="row">
+                        <div class="col-md-12">
+                            {% include '_components/_form_field.html.twig' with {
+                                'field': form.description,
+                                'label': form.description.vars.label|default('setup.organisation.description'|trans)
+                            } %}
+                        </div>
                     </div>
 
                     {# Information Box #}

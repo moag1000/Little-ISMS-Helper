@@ -15,80 +15,153 @@
     </div>
 </div>
 
-<div class="card">
-    <div class="card-body">
-        {{ form_start(form) }}
-            <div class="row">
-                <div class="col-md-6">
-                    {{ form_row(form.risk) }}
-                </div>
-                <div class="col-md-6">
-                    {{ form_row(form.title) }}
-                </div>
-            </div>
+{{ form_start(form) }}
 
-            <div class="row">
-                <div class="col-12">
-                    {{ form_row(form.description) }}
-                </div>
-            </div>
+{# Basic Information #}
+<fieldset class="mb-4">
+    <legend class="h5 mb-3">
+        <i class="bi bi-info-square" aria-hidden="true"></i>
+        {{ 'risk_treatment_plan.section.basic_info'|trans }}
+    </legend>
 
-            <div class="row">
-                <div class="col-md-4">
-                    {{ form_row(form.status) }}
-                </div>
-                <div class="col-md-4">
-                    {{ form_row(form.priority) }}
-                </div>
-                <div class="col-md-4">
-                    {{ form_row(form.completionPercentage) }}
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-md-4">
-                    {{ form_row(form.startDate) }}
-                </div>
-                <div class="col-md-4">
-                    {{ form_row(form.targetCompletionDate) }}
-                </div>
-                <div class="col-md-4">
-                    {{ form_row(form.actualCompletionDate) }}
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-md-6">
-                    {{ form_row(form.responsiblePerson) }}
-                </div>
-                <div class="col-md-6">
-                    {{ form_row(form.budget) }}
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-12">
-                    {{ form_row(form.controls) }}
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-12">
-                    {{ form_row(form.implementationNotes) }}
-                </div>
-            </div>
-
-            <div class="form-actions">
-                <button type="submit" class="btn btn-primary">
-                    <i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'common.create'|trans }}
-                </button>
-                <a href="{{ path('app_risk_treatment_plan_index') }}" class="btn btn-secondary">
-                    {{ 'common.cancel'|trans }}
-                </a>
-            </div>
-        {{ form_end(form) }}
+    <div class="row">
+        <div class="col-md-6">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.risk,
+                'label': form.risk.vars.label|default('risk_treatment_plan.field.risk'|trans),
+                'required': true
+            } %}
+        </div>
+        <div class="col-md-6">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.title,
+                'label': form.title.vars.label|default('risk_treatment_plan.field.title'|trans),
+                'required': true
+            } %}
+        </div>
+        <div class="col-12">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.description,
+                'label': form.description.vars.label|default('risk_treatment_plan.field.description'|trans)
+            } %}
+        </div>
     </div>
+</fieldset>
+
+{# Status & Progress #}
+<fieldset class="mb-4">
+    <legend class="h5 mb-3">
+        <i class="bi bi-graph-up" aria-hidden="true"></i>
+        {{ 'risk_treatment_plan.section.status_progress'|trans }}
+    </legend>
+
+    <div class="row">
+        <div class="col-md-4">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.status,
+                'label': form.status.vars.label|default('risk_treatment_plan.field.status'|trans)
+            } %}
+        </div>
+        <div class="col-md-4">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.priority,
+                'label': form.priority.vars.label|default('risk_treatment_plan.field.priority'|trans)
+            } %}
+        </div>
+        <div class="col-md-4">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.completionPercentage,
+                'label': form.completionPercentage.vars.label|default('risk_treatment_plan.field.completion_percentage'|trans)
+            } %}
+        </div>
+    </div>
+</fieldset>
+
+{# Timeline #}
+<fieldset class="mb-4">
+    <legend class="h5 mb-3">
+        <i class="bi bi-calendar-range" aria-hidden="true"></i>
+        {{ 'risk_treatment_plan.section.timeline'|trans }}
+    </legend>
+
+    <div class="row">
+        <div class="col-md-4">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.startDate,
+                'label': form.startDate.vars.label|default('risk_treatment_plan.field.start_date'|trans)
+            } %}
+        </div>
+        <div class="col-md-4">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.targetCompletionDate,
+                'label': form.targetCompletionDate.vars.label|default('risk_treatment_plan.field.target_completion_date'|trans)
+            } %}
+        </div>
+        <div class="col-md-4">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.actualCompletionDate,
+                'label': form.actualCompletionDate.vars.label|default('risk_treatment_plan.field.actual_completion_date'|trans)
+            } %}
+        </div>
+    </div>
+</fieldset>
+
+{# Responsibility & Resources #}
+<fieldset class="mb-4">
+    <legend class="h5 mb-3">
+        <i class="bi bi-person-badge" aria-hidden="true"></i>
+        {{ 'risk_treatment_plan.section.responsibility_resources'|trans }}
+    </legend>
+
+    <div class="row">
+        <div class="col-md-6">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.responsiblePerson,
+                'label': form.responsiblePerson.vars.label|default('risk_treatment_plan.field.responsible_person'|trans)
+            } %}
+        </div>
+        <div class="col-md-6">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.budget,
+                'label': form.budget.vars.label|default('risk_treatment_plan.field.budget'|trans)
+            } %}
+        </div>
+    </div>
+</fieldset>
+
+{# Controls & Implementation #}
+<fieldset class="mb-4">
+    <legend class="h5 mb-3">
+        <i class="bi bi-shield-check" aria-hidden="true"></i>
+        {{ 'risk_treatment_plan.section.controls_implementation'|trans }}
+    </legend>
+
+    <div class="row">
+        <div class="col-12">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.controls,
+                'label': form.controls.vars.label|default('risk_treatment_plan.field.controls'|trans)
+            } %}
+        </div>
+        <div class="col-12">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.implementationNotes,
+                'label': form.implementationNotes.vars.label|default('risk_treatment_plan.field.implementation_notes'|trans)
+            } %}
+        </div>
+    </div>
+</fieldset>
+
+<div class="form-actions">
+    <button type="submit" class="btn btn-primary">
+        <i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'common.create'|trans }}
+    </button>
+    <a href="{{ path('app_risk_treatment_plan_index') }}" class="btn btn-secondary">
+        {{ 'common.cancel'|trans }}
+    </a>
 </div>
+
+{{ form_end(form) }}
 
 <style>
 .page-header {
