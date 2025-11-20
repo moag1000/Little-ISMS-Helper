@@ -52,84 +52,85 @@
 </div>
 
 {# Pending Workflows Table #}
-<div class="table-container">
-    <table>
-        <thead>
-            <tr>
-                <th scope="col">{{ 'workflow.field.name'|trans }}</th>
-                <th scope="col">{{ 'workflow.field.definition'|trans }}</th>
-                <th scope="col">{{ 'workflow.field.current_step'|trans }}</th>
-                <th scope="col">{{ 'workflow.field.assignee'|trans }}</th>
-                <th scope="col">{{ 'workflow.field.due_date'|trans }}</th>
-                <th scope="col">{{ 'workflow.field.priority'|trans }}</th>
-                <th scope="col" class="text-center">{{ 'common.actions'|trans }}</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for instance in pendingInstances %}
-            <tr{% if instance.overdue %} class="bg-danger-light"{% endif %}>
-                <td>
-                    <strong>{{ instance.name }}</strong>
-                    {% if instance.overdue %}
-                        <span class="badge badge-danger ml-xs">
-                            {{ 'workflow.badge.overdue'|trans }}
+{% embed '_components/_table.html.twig' with {
+    'class': 'table-container',
+    'noMargin': true
+} %}
+    {% block table_head %}
+        <tr>
+            <th scope="col">{{ 'workflow.field.name'|trans }}</th>
+            <th scope="col">{{ 'workflow.field.definition'|trans }}</th>
+            <th scope="col">{{ 'workflow.field.current_step'|trans }}</th>
+            <th scope="col">{{ 'workflow.field.assignee'|trans }}</th>
+            <th scope="col">{{ 'workflow.field.due_date'|trans }}</th>
+            <th scope="col">{{ 'workflow.field.priority'|trans }}</th>
+            <th scope="col" class="text-center">{{ 'common.actions'|trans }}</th>
+        </tr>
+    {% endblock %}
+    {% block table_body %}
+        {% for instance in pendingInstances %}
+        <tr{% if instance.overdue %} class="bg-danger-light"{% endif %}>
+            <td>
+                <strong>{{ instance.name }}</strong>
+                {% if instance.overdue %}
+                    <span class="badge bg-danger ml-xs">
+                        {{ 'workflow.badge.overdue'|trans }}
+                    </span>
+                {% endif %}
+            </td>
+            <td>
+                <span class="badge bg-info">{{ instance.definition ? instance.definition.name : '-' }}</span>
+            </td>
+            <td>{{ instance.currentStep ? instance.currentStep.name : '-' }}</td>
+            <td>
+                {% if instance.assignee %}
+                    {{ instance.assignee.fullName }}
+                    {% if instance.assignee.id == app.user.id %}
+                        <span class="badge bg-success ml-xs">
+                            {{ 'workflow.badge.my_task'|trans }}
                         </span>
                     {% endif %}
-                </td>
-                <td>
-                    <span class="badge badge-info">{{ instance.definition ? instance.definition.name : '-' }}</span>
-                </td>
-                <td>{{ instance.currentStep ? instance.currentStep.name : '-' }}</td>
-                <td>
-                    {% if instance.assignee %}
-                        {{ instance.assignee.fullName }}
-                        {% if instance.assignee.id == app.user.id %}
-                            <span class="badge badge-success ml-xs">
-                                {{ 'workflow.badge.my_task'|trans }}
-                            </span>
-                        {% endif %}
-                    {% else %}
-                        <span class="text-muted-color">{{ 'workflow.message.unassigned'|trans }}</span>
+                {% else %}
+                    <span class="text-muted-color">{{ 'workflow.message.unassigned'|trans }}</span>
+                {% endif %}
+            </td>
+            <td>
+                {% if instance.dueDate %}
+                    {{ instance.dueDate|date('d.m.Y') }}
+                    {% set daysUntilDue = (instance.dueDate.timestamp - 'now'|date('U')) / 86400 %}
+                    {% if daysUntilDue < 3 and not instance.overdue %}
+                        <span class="badge bg-warning ml-xs">
+                            {{ 'workflow.badge.due_soon'|trans }}
+                        </span>
                     {% endif %}
-                </td>
-                <td>
-                    {% if instance.dueDate %}
-                        {{ instance.dueDate|date('d.m.Y') }}
-                        {% set daysUntilDue = (instance.dueDate.timestamp - 'now'|date('U')) / 86400 %}
-                        {% if daysUntilDue < 3 and not instance.overdue %}
-                            <span class="badge badge-warning ml-xs">
-                                {{ 'workflow.badge.due_soon'|trans }}
-                            </span>
-                        {% endif %}
-                    {% else %}
-                        <span class="text-muted-color">-</span>
-                    {% endif %}
-                </td>
-                <td>
-                    {% set priorityColors = {
-                        'low': 'secondary',
-                        'medium': 'info',
-                        'high': 'warning',
-                        'critical': 'danger'
-                    } %}
-                    <span class="badge badge-{{ priorityColors[instance.priority] ?? 'secondary' }}">
-                        {{ ('workflow.priority.' ~ instance.priority)|trans }}
-                    </span>
-                </td>
-                <td class="text-center">
-                    <a href="{{ path('app_workflow_instance_show', {id: instance.id}) }}" class="btn btn-sm">
-                        👁 {{ 'common.view'|trans }}
-                    </a>
-                </td>
-            </tr>
-            {% else %}
-            <tr>
-                <td colspan="7" class="text-center-p-xl-muted">
-                    {{ 'workflow.message.no_pending'|trans }}
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
+                {% else %}
+                    <span class="text-muted-color">-</span>
+                {% endif %}
+            </td>
+            <td>
+                {% set priorityColors = {
+                    'low': 'secondary',
+                    'medium': 'info',
+                    'high': 'warning',
+                    'critical': 'danger'
+                } %}
+                <span class="badge badge-{{ priorityColors[instance.priority] ?? 'secondary' }}">
+                    {{ ('workflow.priority.' ~ instance.priority)|trans }}
+                </span>
+            </td>
+            <td class="text-center">
+                <a href="{{ path('app_workflow_instance_show', {id: instance.id}) }}" class="btn btn-sm">
+                    👁 {{ 'common.view'|trans }}
+                </a>
+            </td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="7" class="text-center-p-xl-muted">
+                {{ 'workflow.message.no_pending'|trans }}
+            </td>
+        </tr>
+        {% endfor %}
+    {% endblock %}
+{% endembed %}
 {% endblock %}

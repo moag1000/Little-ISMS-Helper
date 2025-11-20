@@ -52,7 +52,11 @@ class ComplianceRequirement
      * @var Collection<int, Control>
      */
     #[ORM\ManyToMany(targetEntity: Control::class)]
-    #[ORM\JoinTable(name: 'compliance_requirement_control')]
+    #[ORM\JoinTable(
+        name: 'compliance_requirement_control',
+        joinColumns: [new ORM\JoinColumn(onDelete: 'CASCADE')],
+        inverseJoinColumns: [new ORM\JoinColumn(onDelete: 'CASCADE')]
+    )]
     private Collection $mappedControls;
 
     /**

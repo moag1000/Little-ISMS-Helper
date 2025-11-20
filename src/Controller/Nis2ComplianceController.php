@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\IncidentRepository;
 use App\Repository\MfaTokenRepository;
 use App\Repository\UserRepository;
@@ -11,6 +12,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * NIS2 Compliance Dashboard Controller
@@ -18,23 +20,52 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  * Provides real-time compliance monitoring for NIS2 Directive (EU 2022/2555)
  * Article 21: Cybersecurity Risk Management Measures
  * Article 23: Incident Reporting
+ *
+ * Note: This dashboard is only available when the NIS2 framework is installed and active.
+ * NIS2 is only mandatory for essential/important entities as defined in the directive.
  */
 #[Route('/nis2-compliance')]
 #[IsGranted('ROLE_MANAGER')]
 class Nis2ComplianceController extends AbstractController
 {
     public function __construct(
+        private readonly ComplianceFrameworkRepository $frameworkRepository,
         private readonly IncidentRepository $incidentRepository,
         private readonly MfaTokenRepository $mfaTokenRepository,
         private readonly UserRepository $userRepository,
         private readonly VulnerabilityRepository $vulnerabilityRepository,
-        private readonly PatchRepository $patchRepository
+        private readonly PatchRepository $patchRepository,
+        private readonly TranslatorInterface $translator
     ) {
     }
 
     #[Route('', name: 'app_nis2_compliance_dashboard')]
     public function dashboard(): Response
     {
+        // Check if NIS2 framework exists and is active
+        $nis2Framework = $this->frameworkRepository->findOneBy(['code' => 'NIS2']);
+
+        if (!$nis2Framework) {
+            // NIS2 framework not installed - redirect to compliance overview
+            $this->addFlash('info', $this->translator->trans(
+                'nis2.not_installed',
+                [],
+                'messages'
+            ) ?: 'NIS2 framework is not installed. If your organization is subject to NIS2, please load the framework from the compliance frameworks page.');
+
+            return $this->redirectToRoute('app_compliance_index');
+        }
+
+        if (!$nis2Framework->isActive()) {
+            // NIS2 framework exists but is deactivated - assume not relevant for this organization
+            $this->addFlash('warning', $this->translator->trans(
+                'nis2.not_active',
+                [],
+                'messages'
+            ) ?: 'NIS2 framework is deactivated. This indicates that NIS2 is not relevant for your organization. Activate it in the compliance frameworks if needed.');
+
+            return $this->redirectToRoute('app_compliance_index');
+        }
         // 1. MFA Adoption Rate (Art. 21.2.b)
         $totalUsers = $this->userRepository->count([]);
         $usersWithMfa = $this->mfaTokenRepository->createQueryBuilder('m')

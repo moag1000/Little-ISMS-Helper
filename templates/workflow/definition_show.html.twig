@@ -135,48 +135,50 @@
                 </div>
                 <div class="card-body">
                     {% if recent_instances|length > 0 %}
-                        <div class="table-responsive">
-                            <table class="table table-hover">
-                                <thead>
+                        {% embed '_components/_table.html.twig' with {
+                            'class': 'table-hover',
+                            'noMargin': true,
+                            'responsive': true
+                        } %}
+                            {% block table_head %}
+                                <tr>
+                                    <th scope="col">{{ 'workflow.instance.entity'|trans }}</th>
+                                    <th scope="col">{{ 'workflow.instance.status'|trans }}</th>
+                                    <th scope="col">{{ 'workflow.instance.current_step'|trans }}</th>
+                                    <th scope="col">{{ 'workflow.instance.created'|trans }}</th>
+                                    <th scope="col">{{ 'workflow.instance.actions'|trans }}</th>
+                                </tr>
+                            {% endblock %}
+                            {% block table_body %}
+                                {% for instance in recent_instances %}
                                     <tr>
-                                        <th scope="col">{{ 'workflow.instance.entity'|trans }}</th>
-                                        <th scope="col">{{ 'workflow.instance.status'|trans }}</th>
-                                        <th scope="col">{{ 'workflow.instance.current_step'|trans }}</th>
-                                        <th scope="col">{{ 'workflow.instance.created'|trans }}</th>
-                                        <th scope="col">{{ 'workflow.instance.actions'|trans }}</th>
+                                        <td>
+                                            {{ instance.entityType }} #{{ instance.entityId }}
+                                        </td>
+                                        <td>
+                                            {% if instance.status == 'completed' %}
+                                                <span class="badge bg-success">{{ 'workflow.status.completed'|trans }}</span>
+                                            {% elseif instance.status == 'rejected' %}
+                                                <span class="badge bg-danger">{{ 'workflow.status.rejected'|trans }}</span>
+                                            {% elseif instance.status == 'cancelled' %}
+                                                <span class="badge bg-secondary">{{ 'workflow.status.cancelled'|trans }}</span>
+                                            {% else %}
+                                                <span class="badge bg-warning">{{ 'workflow.status.pending'|trans }}</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {{ instance.currentStep ? instance.currentStep.name : '—' }}
+                                        </td>
+                                        <td>{{ instance.createdAt|date('d.m.Y H:i') }}</td>
+                                        <td>
+                                            <a href="{{ path('app_workflow_instance_show', {id: instance.id}) }}" class="btn btn-sm btn-outline-primary" aria-label="{{ 'common.view'|trans }}">
+                                                <i class="bi bi-eye" aria-hidden="true"></i>
+                                            </a>
+                                        </td>
                                     </tr>
-                                </thead>
-                                <tbody>
-                                    {% for instance in recent_instances %}
-                                        <tr>
-                                            <td>
-                                                {{ instance.entityType }} #{{ instance.entityId }}
-                                            </td>
-                                            <td>
-                                                {% if instance.status == 'completed' %}
-                                                    <span class="badge bg-success">{{ 'workflow.status.completed'|trans }}</span>
-                                                {% elseif instance.status == 'rejected' %}
-                                                    <span class="badge bg-danger">{{ 'workflow.status.rejected'|trans }}</span>
-                                                {% elseif instance.status == 'cancelled' %}
-                                                    <span class="badge bg-secondary">{{ 'workflow.status.cancelled'|trans }}</span>
-                                                {% else %}
-                                                    <span class="badge bg-warning">{{ 'workflow.status.pending'|trans }}</span>
-                                                {% endif %}
-                                            </td>
-                                            <td>
-                                                {{ instance.currentStep ? instance.currentStep.name : '—' }}
-                                            </td>
-                                            <td>{{ instance.createdAt|date('d.m.Y H:i') }}</td>
-                                            <td>
-                                                <a href="{{ path('app_workflow_instance_show', {id: instance.id}) }}" class="btn btn-sm btn-outline-primary" aria-label="{{ 'common.view'|trans }}">
-                                                    <i class="bi bi-eye" aria-hidden="true"></i>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
+                                {% endfor %}
+                            {% endblock %}
+                        {% endembed %}
                     {% else %}
                         <p class="text-muted text-center py-4">
                             <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'workflow.message.no_instances'|trans }}

@@ -135,9 +135,9 @@
                         {% set risk_class = {'low': 'success', 'medium': 'info', 'high': 'warning', 'critical': 'danger'}[dpia.residualRiskLevel] %}
                         <span class="badge badge-{{ risk_class }}">{{ dpia.residualRiskLevel|upper }}</span>
                         {% if dpia.isResidualRiskAcceptable %}
-                            <span class="badge badge-success">ACCEPTABLE</span>
+                            <span class="badge bg-success">ACCEPTABLE</span>
                         {% else %}
-                            <span class="badge badge-danger">REQUIRES SUPERVISORY CONSULTATION (Art. 36)</span>
+                            <span class="badge bg-danger">REQUIRES SUPERVISORY CONSULTATION (Art. 36)</span>
                         {% endif %}
                     </td>
                 </tr>
@@ -319,7 +319,7 @@
                 <td>DPO Consultation (Art. 35(4))</td>
                 <td>
                     {% if dpia.dpoConsultationDate %}
-                        <span class="badge badge-success">COMPLETED</span> {{ dpia.dpoConsultationDate|date('Y-m-d') }}
+                        <span class="badge bg-success">COMPLETED</span> {{ dpia.dpoConsultationDate|date('Y-m-d') }}
                         {% if dpia.dataProtectionOfficer %}
                             <br><strong>DPO:</strong> {{ dpia.dataProtectionOfficer.firstName }} {{ dpia.dataProtectionOfficer.lastName }}
                         {% endif %}
@@ -327,7 +327,7 @@
                             <br><strong>Advice:</strong> {{ dpia.dpoAdvice }}
                         {% endif %}
                     {% else %}
-                        <span class="badge badge-warning">PENDING</span>
+                        <span class="badge bg-warning">PENDING</span>
                     {% endif %}
                 </td>
             </tr>
@@ -335,12 +335,12 @@
                 <td>Data Subjects Consulted (Art. 35(9))</td>
                 <td>
                     {% if dpia.dataSubjectsConsulted %}
-                        <span class="badge badge-success">YES</span>
+                        <span class="badge bg-success">YES</span>
                         {% if dpia.dataSubjectConsultationDetails %}
                             <br>{{ dpia.dataSubjectConsultationDetails }}
                         {% endif %}
                     {% else %}
-                        <span class="badge badge-info">NO</span>
+                        <span class="badge bg-info">NO</span>
                     {% endif %}
                 </td>
             </tr>
@@ -349,15 +349,15 @@
                 <td>
                     {% if dpia.requiresSupervisoryConsultation %}
                         {% if dpia.supervisoryConsultationDate %}
-                            <span class="badge badge-success">COMPLETED</span> {{ dpia.supervisoryConsultationDate|date('Y-m-d') }}
+                            <span class="badge bg-success">COMPLETED</span> {{ dpia.supervisoryConsultationDate|date('Y-m-d') }}
                             {% if dpia.supervisoryAuthorityFeedback %}
                                 <br><strong>Feedback:</strong> {{ dpia.supervisoryAuthorityFeedback }}
                             {% endif %}
                         {% else %}
-                            <span class="badge badge-danger">REQUIRED - PENDING</span>
+                            <span class="badge bg-danger">REQUIRED - PENDING</span>
                         {% endif %}
                     {% else %}
-                        <span class="badge badge-info">NOT REQUIRED</span>
+                        <span class="badge bg-info">NOT REQUIRED</span>
                     {% endif %}
                 </td>
             </tr>
@@ -408,7 +408,7 @@
                 </tr>
                 <tr>
                     <td>Status</td>
-                    <td><span class="badge badge-success">APPROVED</span></td>
+                    <td><span class="badge bg-success">APPROVED</span></td>
                 </tr>
                 {% if dpia.approver %}
                     <tr>

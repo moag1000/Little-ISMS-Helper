@@ -1,0 +1,18 @@
+{% use "bootstrap_5_layout.html.twig" %}
+
+{#
+    Custom Symfony Form Theme extending Bootstrap 5
+
+    This theme automatically adds required field indicators (*) to all form labels.
+    Addresses UI/UX Audit Issue 2.2: Required Field Indicators
+
+    Features:
+    - Automatic "*" indicator for required fields
+    - WCAG 2.1 AA compliant with aria-label
+    - Dark mode support via existing .required CSS
+    - Inherits all Bootstrap 5 styling
+#}
+
+{% block form_label_required %}
+    <span class="required" aria-label="{{ 'form.required'|trans }}">*</span>
+{% endblock %}

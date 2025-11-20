@@ -67,12 +67,19 @@ class ComplianceAssessmentService
 
         $this->entityManager->flush();
 
+        // Calculate overall compliance from tenant-specific statistics
+        $tenant = $this->tenantContext->getCurrentTenant();
+        $stats = $this->requirementRepository->getFrameworkStatisticsForTenant($framework, $tenant);
+        $overallCompliance = $stats['applicable'] > 0
+            ? round(($stats['fulfilled'] / $stats['applicable']) * 100, 2)
+            : 0;
+
         return [
             'framework' => $framework->getName(),
             'assessment_date' => new \DateTimeImmutable(),
             'total_requirements' => count($requirements),
             'requirements_assessed' => count($assessmentResults),
-            'overall_compliance' => $framework->getCompliancePercentage(),
+            'overall_compliance' => $overallCompliance,
             'details' => $assessmentResults,
         ];
     }
@@ -222,6 +229,12 @@ class ComplianceAssessmentService
             $totalTimeSavings += $reuseValue['estimated_hours_saved'];
         }
 
+        // Calculate compliance percentage from tenant-specific statistics
+        $compliancePercentage = 0;
+        if ($stats['applicable'] > 0) {
+            $compliancePercentage = round(($stats['fulfilled'] / $stats['applicable']) * 100, 2);
+        }
+
         return [
             'framework' => [
                 'id' => $framework->getId(),
@@ -231,7 +244,7 @@ class ComplianceAssessmentService
                 'mandatory' => $framework->isMandatory(),
             ],
             'statistics' => $stats,
-            'compliance_percentage' => $framework->getCompliancePercentage(),
+            'compliance_percentage' => $compliancePercentage,
             'gaps' => [
                 'total' => count($gaps),
                 'critical' => count($criticalGaps),
@@ -317,10 +330,16 @@ class ComplianceAssessmentService
         $tenant = $this->tenantContext->getCurrentTenant();
         foreach ($frameworks as $framework) {
             $stats = $this->requirementRepository->getFrameworkStatisticsForTenant($framework, $tenant);
+
+            // Calculate compliance percentage from tenant-specific statistics
+            $compliancePercentage = $stats['applicable'] > 0
+                ? round(($stats['fulfilled'] / $stats['applicable']) * 100, 2)
+                : 0;
+
             $comparison[] = [
                 'framework' => $framework->getName(),
                 'code' => $framework->getCode(),
-                'compliance_percentage' => $framework->getCompliancePercentage(),
+                'compliance_percentage' => $compliancePercentage,
                 'total_requirements' => $stats['total'],
                 'fulfilled' => $stats['fulfilled'],
                 'gaps' => $stats['applicable'] - $stats['fulfilled'],

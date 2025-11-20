@@ -1,0 +1,490 @@
+{#
+  Standardized PDF Document Base Template
+  Compliant with ISO 27001, ISO 9001 Document Control Requirements
+
+  Usage Example:
+  --------------------------------------------------
+  {% extends 'pdf/_base_document.html.twig' %}
+
+  {% block document_id %}DOC-ISMS-001{% endblock %}
+  {% block document_title %}My Document Title{% endblock %}
+  {% block document_version %}{{ version }}{% endblock %}
+  {% block document_content %}
+    <p>Your content here</p>
+  {% endblock %}
+  --------------------------------------------------
+
+  WICHTIG: Die Dokumentenversion muss vom Controller als 'version' Variable übergeben werden!
+  Dies ist NICHT die Template-Version, sondern die Version des generierten Dokuments.
+#}
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>{% block pdf_title %}{{ document_title|default('Dokument') }}{% endblock %}</title>
+    <style>
+        /* Page Configuration */
+        @page {
+            margin: 3cm 2cm 3cm 2cm;
+            @top-left {
+                content: "{% block header_left %}{{ tenant_name|default('Organization') }}{% endblock %}";
+                font-family: DejaVu Sans, sans-serif;
+                font-size: 8pt;
+                color: #64748b;
+            }
+            @top-center {
+                content: "{% block header_center %}{{ document_title|default('') }}{% endblock %}";
+                font-family: DejaVu Sans, sans-serif;
+                font-size: 8pt;
+                color: #1a56db;
+                font-weight: bold;
+            }
+            @top-right {
+                content: "{% block header_right %}{{ classification|default('Internal') }}{% endblock %}";
+                font-family: DejaVu Sans, sans-serif;
+                font-size: 8pt;
+                color: #ef4444;
+                font-weight: bold;
+            }
+            @bottom-left {
+                content: "{% block footer_left %}{{ document_id|default('DOC-XXX') }}{% endblock %} | Version {% block footer_version %}{{ version }}{% endblock %}";
+                font-family: DejaVu Sans, sans-serif;
+                font-size: 7pt;
+                color: #64748b;
+            }
+            @bottom-center {
+                content: "{% block footer_center %}{{ tenant_name|default('Organization') }}{% endblock %}";
+                font-family: DejaVu Sans, sans-serif;
+                font-size: 7pt;
+                color: #64748b;
+            }
+            @bottom-right {
+                content: "Seite " counter(page) " von " counter(pages);
+                font-family: DejaVu Sans, sans-serif;
+                font-size: 7pt;
+                color: #64748b;
+            }
+        }
+
+        /* Base Typography */
+        body {
+            font-family: DejaVu Sans, sans-serif;
+            font-size: 10pt;
+            line-height: 1.5;
+            color: #1e293b;
+            background: white;
+        }
+
+        h1 {
+            font-size: 20pt;
+            color: #1a56db;
+            margin-bottom: 8pt;
+            padding-bottom: 8pt;
+            border-bottom: 3px solid #1a56db;
+        }
+
+        h2 {
+            font-size: 14pt;
+            color: #1a56db;
+            margin-top: 18pt;
+            margin-bottom: 10pt;
+            border-bottom: 1px solid #cbd5e1;
+            padding-bottom: 6pt;
+        }
+
+        h3 {
+            font-size: 12pt;
+            color: #334155;
+            margin-top: 14pt;
+            margin-bottom: 8pt;
+            font-weight: bold;
+        }
+
+        p {
+            margin-bottom: 8pt;
+        }
+
+        /* Document Control Block */
+        .document-control {
+            border: 2px solid #1a56db;
+            padding: 15pt;
+            margin-bottom: 25pt;
+            background: #f8fafc;
+            page-break-inside: avoid;
+        }
+
+        .document-control-header {
+            font-size: 14pt;
+            font-weight: bold;
+            color: #1a56db;
+            margin-bottom: 12pt;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        .doc-meta-grid {
+            display: table;
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .doc-meta-row {
+            display: table-row;
+        }
+
+        .doc-meta-label {
+            display: table-cell;
+            width: 35%;
+            padding: 6pt 8pt;
+            font-weight: bold;
+            background: #e2e8f0;
+            border: 1px solid #cbd5e1;
+            color: #334155;
+            font-size: 9pt;
+        }
+
+        .doc-meta-value {
+            display: table-cell;
+            padding: 6pt 8pt;
+            border: 1px solid #cbd5e1;
+            font-size: 9pt;
+        }
+
+        /* Classification Badge */
+        .classification {
+            display: inline-block;
+            padding: 3pt 10pt;
+            border-radius: 3pt;
+            font-weight: bold;
+            font-size: 8pt;
+            text-transform: uppercase;
+        }
+
+        .classification-public {
+            background: #10b981;
+            color: white;
+        }
+
+        .classification-internal {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .classification-confidential {
+            background: #ef4444;
+            color: white;
+        }
+
+        .classification-secret {
+            background: #7c3aed;
+            color: white;
+        }
+
+        /* Status Badge */
+        .status-badge {
+            display: inline-block;
+            padding: 3pt 10pt;
+            border-radius: 3pt;
+            font-weight: bold;
+            font-size: 8pt;
+            text-transform: uppercase;
+        }
+
+        .status-draft {
+            background: #64748b;
+            color: white;
+        }
+
+        .status-review {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .status-approved {
+            background: #10b981;
+            color: white;
+        }
+
+        .status-archived {
+            background: #94a3b8;
+            color: white;
+        }
+
+        /* Approval Block */
+        .approval-block {
+            margin-top: 20pt;
+            border: 1px solid #cbd5e1;
+            page-break-inside: avoid;
+        }
+
+        .approval-header {
+            background: #1a56db;
+            color: white;
+            padding: 6pt 10pt;
+            font-weight: bold;
+            font-size: 10pt;
+        }
+
+        .approval-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .approval-table td {
+            padding: 8pt;
+            border: 1px solid #cbd5e1;
+            font-size: 9pt;
+        }
+
+        .approval-table .label {
+            width: 30%;
+            background: #f1f5f9;
+            font-weight: bold;
+            color: #334155;
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15pt 0;
+            font-size: 9pt;
+        }
+
+        th {
+            background: #1a56db;
+            color: white;
+            padding: 8pt;
+            text-align: left;
+            font-weight: bold;
+            border: 1px solid #1e3a8a;
+        }
+
+        td {
+            padding: 6pt 8pt;
+            border: 1px solid #cbd5e1;
+            vertical-align: top;
+        }
+
+        tr:nth-child(even) {
+            background: #f8fafc;
+        }
+
+        /* Utility Classes */
+        .text-center {
+            text-align: center;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .text-muted {
+            color: #64748b;
+        }
+
+        .text-bold {
+            font-weight: bold;
+        }
+
+        .mb-small {
+            margin-bottom: 8pt;
+        }
+
+        .mb-medium {
+            margin-bottom: 15pt;
+        }
+
+        .mb-large {
+            margin-bottom: 25pt;
+        }
+
+        .page-break {
+            page-break-before: always;
+        }
+
+        .no-break {
+            page-break-inside: avoid;
+        }
+
+        /* Custom Content Styles */
+        {% block custom_styles %}{% endblock %}
+    </style>
+</head>
+<body>
+    {# Document Control Block - Always on first page #}
+    <div class="document-control">
+        <div class="document-control-header">
+            {% block document_type %}Dokument{% endblock %}
+        </div>
+
+        <div class="doc-meta-grid">
+            <div class="doc-meta-row">
+                <div class="doc-meta-label">Dokumenten-ID:</div>
+                <div class="doc-meta-value">{% block document_id %}{{ document_id|default('DOC-XXX-XXX') }}{% endblock %}</div>
+            </div>
+            <div class="doc-meta-row">
+                <div class="doc-meta-label">Titel:</div>
+                <div class="doc-meta-value">{% block document_title %}{{ document_title|default('Dokumententitel') }}{% endblock %}</div>
+            </div>
+            <div class="doc-meta-row">
+                <div class="doc-meta-label">Version:</div>
+                <div class="doc-meta-value">{% block document_version %}{{ version }}{% endblock %}</div>
+            </div>
+            <div class="doc-meta-row">
+                <div class="doc-meta-label">Status:</div>
+                <div class="doc-meta-value">
+                    <span class="status-badge status-{% block document_status_class %}{{ status|default('draft') }}{% endblock %}">
+                        {% block document_status %}{{ status|default('Draft')|upper }}{% endblock %}
+                    </span>
+                </div>
+            </div>
+            <div class="doc-meta-row">
+                <div class="doc-meta-label">Klassifizierung:</div>
+                <div class="doc-meta-value">
+                    <span class="classification classification-{% block classification_class %}{{ classification|default('internal')|lower }}{% endblock %}">
+                        {% block document_classification %}{{ classification|default('Internal')|upper }}{% endblock %}
+                    </span>
+                </div>
+            </div>
+            <div class="doc-meta-row">
+                <div class="doc-meta-label">Organisation:</div>
+                <div class="doc-meta-value">{% block organization_name %}{{ tenant_name|default('Organisation') }}{% endblock %}</div>
+            </div>
+            <div class="doc-meta-row">
+                <div class="doc-meta-label">Erstellt am:</div>
+                <div class="doc-meta-value">{% block created_date %}{{ created_at|default('now'|date('d.m.Y')) }}{% endblock %}</div>
+            </div>
+            <div class="doc-meta-row">
+                <div class="doc-meta-label">Erstellt von:</div>
+                <div class="doc-meta-value">{% block created_by %}{{ creator_name|default(app.user.fullName) }}{% endblock %}</div>
+            </div>
+            <div class="doc-meta-row">
+                <div class="doc-meta-label">Letzte Änderung:</div>
+                <div class="doc-meta-value">{% block modified_date %}{{ modified_at|default('now'|date('d.m.Y H:i')) }}{% endblock %}</div>
+            </div>
+            <div class="doc-meta-row">
+                <div class="doc-meta-label">Gültig bis:</div>
+                <div class="doc-meta-value">{% block valid_until %}{{ valid_until_date|default('Unbegrenzt') }}{% endblock %}</div>
+            </div>
+            <div class="doc-meta-row">
+                <div class="doc-meta-label">Nächste Prüfung:</div>
+                <div class="doc-meta-value">{% block next_review %}{{ next_review_date|default('TBD') }}{% endblock %}</div>
+            </div>
+        </div>
+    </div>
+
+    {# Optional Approval Block #}
+    {% block approval_section %}
+    {% if show_approval|default(false) %}
+    <div class="approval-block mb-large">
+        <div class="approval-header">Genehmigung & Freigabe</div>
+        <table class="approval-table">
+            <tr>
+                <td class="label">Geprüft durch:</td>
+                <td>{% block reviewer_name %}{{ reviewer|default('—') }}{% endblock %}</td>
+                <td class="label">Datum:</td>
+                <td>{% block review_date %}{{ review_date|default('—') }}{% endblock %}</td>
+            </tr>
+            <tr>
+                <td class="label">Genehmigt durch:</td>
+                <td>{% block approver_name %}{{ approver|default('—') }}{% endblock %}</td>
+                <td class="label">Datum:</td>
+                <td>{% block approval_date %}{{ approval_date|default('—') }}{% endblock %}</td>
+            </tr>
+            <tr>
+                <td class="label">Unterschrift:</td>
+                <td colspan="3">
+                    {% block signature_block %}
+                    <div style="height: 30pt; border-bottom: 1px solid #cbd5e1; margin-top: 10pt;"></div>
+                    {% endblock %}
+                </td>
+            </tr>
+        </table>
+    </div>
+    {% endif %}
+    {% endblock %}
+
+    {# Optional Distribution List #}
+    {% block distribution_section %}
+    {% if show_distribution|default(false) %}
+    <div class="no-break mb-large">
+        <h3>Verteiler</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Rolle/Abteilung</th>
+                    <th>Verteilungsart</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% block distribution_list %}
+                <tr>
+                    <td colspan="3" class="text-center text-muted">Keine Verteilerliste definiert</td>
+                </tr>
+                {% endblock %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+    {% endblock %}
+
+    {# Optional Version History #}
+    {% block version_history_section %}
+    {% if show_version_history|default(false) %}
+    <div class="no-break mb-large">
+        <h3>Versionshistorie</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 12%;">Version</th>
+                    <th style="width: 15%;">Datum</th>
+                    <th style="width: 20%;">Autor</th>
+                    <th>Änderungen</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% block version_history %}
+                <tr>
+                    <td>1.0</td>
+                    <td>{{ created_at|default('now')|date('d.m.Y') }}</td>
+                    <td>{{ creator_name|default(app.user.fullName) }}</td>
+                    <td>Initiale Version</td>
+                </tr>
+                {% endblock %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+    {% endblock %}
+
+    {# Main Document Content #}
+    <div class="page-break"></div>
+    {% block document_content %}
+    <h1>Dokumenteninhalt</h1>
+    <p class="text-muted">Bitte definieren Sie den Block 'document_content' in Ihrem Template.</p>
+    {% endblock %}
+
+    {# Optional References #}
+    {% block references_section %}
+    {% if show_references|default(false) %}
+    <div class="page-break"></div>
+    <h2>Referenzen & Verwandte Dokumente</h2>
+    {% block references_content %}
+    <p class="text-muted">Keine Referenzen definiert.</p>
+    {% endblock %}
+    {% endif %}
+    {% endblock %}
+
+    {# Footer Information #}
+    {% block footer_information %}
+    <div style="margin-top: 40pt; padding-top: 15pt; border-top: 1px solid #cbd5e1; font-size: 7pt; color: #64748b;">
+        <p class="text-center">
+            Dieses Dokument ist vertraulich und ausschließlich für den internen Gebrauch bestimmt.<br>
+            Unbefugte Weitergabe, Vervielfältigung oder Verwendung ist untersagt.
+        </p>
+    </div>
+    {% endblock %}
+</body>
+</html>

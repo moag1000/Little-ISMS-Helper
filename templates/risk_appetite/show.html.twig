@@ -138,44 +138,46 @@
     </div>
     <div class="card-body">
         <p>{{ 'risk_appetite.risks_exceeding_description'|trans }}</p>
-        <div class="table-responsive">
-            <table class="table table-sm">
-                <thead>
-                    <tr>
-                        <th scope="col">{{ 'risk.field.title'|trans }}</th>
-                        <th scope="col" class="text-center">{{ 'risk.field.score'|trans }}</th>
-                        <th scope="col" class="text-center">{{ 'risk_appetite.exceeds_by'|trans }}</th>
-                        <th scope="col">{{ 'risk.field.treatment_strategy'|trans }}</th>
-                        <th scope="col" class="text-center">{{ 'common.actions'|trans }}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for risk in risksExceedingAppetite %}
-                    <tr>
-                        <td>{{ risk.title }}</td>
-                        <td class="text-center">
-                            <span class="badge bg-danger">{{ risk.riskScore }}</span>
-                        </td>
-                        <td class="text-center">
-                            <strong class="text-danger">+{{ risk.riskScore - appetite.maxAcceptableRisk }}</strong>
-                        </td>
-                        <td>
-                            {% if risk.treatmentStrategy %}
-                                <span class="badge bg-secondary">{{ risk.treatmentStrategy }}</span>
-                            {% else %}
-                                <span class="text-muted">-</span>
-                            {% endif %}
-                        </td>
-                        <td class="text-center">
-                            <a href="{{ path('app_risk_show', {id: risk.id}) }}" class="btn btn-sm btn-outline-primary" aria-label="{{ 'common.view'|trans }}">
-                                <i class="bi bi-eye" aria-hidden="true"></i>
-                            </a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
+        {% embed '_components/_table.html.twig' with {
+            'class': 'table-sm',
+            'noMargin': true,
+            'responsive': true
+        } %}
+            {% block table_head %}
+                <tr>
+                    <th scope="col">{{ 'risk.field.title'|trans }}</th>
+                    <th scope="col" class="text-center">{{ 'risk.field.score'|trans }}</th>
+                    <th scope="col" class="text-center">{{ 'risk_appetite.exceeds_by'|trans }}</th>
+                    <th scope="col">{{ 'risk.field.treatment_strategy'|trans }}</th>
+                    <th scope="col" class="text-center">{{ 'common.actions'|trans }}</th>
+                </tr>
+            {% endblock %}
+            {% block table_body %}
+                {% for risk in risksExceedingAppetite %}
+                <tr>
+                    <td>{{ risk.title }}</td>
+                    <td class="text-center">
+                        <span class="badge bg-danger">{{ risk.riskScore }}</span>
+                    </td>
+                    <td class="text-center">
+                        <strong class="text-danger">+{{ risk.riskScore - appetite.maxAcceptableRisk }}</strong>
+                    </td>
+                    <td>
+                        {% if risk.treatmentStrategy %}
+                            <span class="badge bg-secondary">{{ risk.treatmentStrategy }}</span>
+                        {% else %}
+                            <span class="text-muted">-</span>
+                        {% endif %}
+                    </td>
+                    <td class="text-center">
+                        <a href="{{ path('app_risk_show', {id: risk.id}) }}" class="btn btn-sm btn-outline-primary" aria-label="{{ 'common.view'|trans }}">
+                            <i class="bi bi-eye" aria-hidden="true"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            {% endblock %}
+        {% endembed %}
     </div>
 </div>
 {% endif %}
@@ -188,59 +190,61 @@
     </div>
     <div class="card-body">
         <p>{{ 'risk_appetite.risks_within_description'|trans }}</p>
-        <div class="table-responsive">
-            <table class="table table-sm">
-                <thead>
-                    <tr>
-                        <th scope="col">{{ 'risk.field.title'|trans }}</th>
-                        <th scope="col" class="text-center">{{ 'risk.field.score'|trans }}</th>
-                        <th scope="col" class="text-center">{{ 'risk_appetite.appetite_percentage'|trans }}</th>
-                        <th scope="col">{{ 'risk.field.status'|trans }}</th>
-                        <th scope="col" class="text-center">{{ 'common.actions'|trans }}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for risk in risksWithinAppetite|slice(0, 10) %}
-                    <tr>
-                        <td>{{ risk.title }}</td>
-                        <td class="text-center">
-                            <span class="badge bg-{{ risk.riskScore < 4 ? 'success' : (risk.riskScore < 8 ? 'info' : 'warning') }}">
-                                {{ risk.riskScore }}
-                            </span>
-                        </td>
-                        <td class="text-center">
-                            {% set percentage = appetite.getAppetitePercentage(risk.riskScore) %}
-                            <div class="progress" style="height: 20px; min-width: 100px;">
-                                <div class="progress-bar bg-{{ percentage >= 80 ? 'warning' : 'success' }}"
-                                     role="progressbar"
-                                     style="width: {{ percentage }}%"
-                                     aria-valuenow="{{ percentage }}"
-                                     aria-valuemin="0"
-                                     aria-valuemax="100">
-                                    {{ percentage|number_format(0) }}%
-                                </div>
+        {% embed '_components/_table.html.twig' with {
+            'class': 'table-sm',
+            'noMargin': true,
+            'responsive': true
+        } %}
+            {% block table_head %}
+                <tr>
+                    <th scope="col">{{ 'risk.field.title'|trans }}</th>
+                    <th scope="col" class="text-center">{{ 'risk.field.score'|trans }}</th>
+                    <th scope="col" class="text-center">{{ 'risk_appetite.appetite_percentage'|trans }}</th>
+                    <th scope="col">{{ 'risk.field.status'|trans }}</th>
+                    <th scope="col" class="text-center">{{ 'common.actions'|trans }}</th>
+                </tr>
+            {% endblock %}
+            {% block table_body %}
+                {% for risk in risksWithinAppetite|slice(0, 10) %}
+                <tr>
+                    <td>{{ risk.title }}</td>
+                    <td class="text-center">
+                        <span class="badge bg-{{ risk.riskScore < 4 ? 'success' : (risk.riskScore < 8 ? 'info' : 'warning') }}">
+                            {{ risk.riskScore }}
+                        </span>
+                    </td>
+                    <td class="text-center">
+                        {% set percentage = appetite.getAppetitePercentage(risk.riskScore) %}
+                        <div class="progress" style="height: 20px; min-width: 100px;">
+                            <div class="progress-bar bg-{{ percentage >= 80 ? 'warning' : 'success' }}"
+                                 role="progressbar"
+                                 style="width: {{ percentage }}%"
+                                 aria-valuenow="{{ percentage }}"
+                                 aria-valuemin="0"
+                                 aria-valuemax="100">
+                                {{ percentage|number_format(0) }}%
                             </div>
-                        </td>
-                        <td>
-                            <span class="badge bg-secondary">{{ risk.status }}</span>
-                        </td>
-                        <td class="text-center">
-                            <a href="{{ path('app_risk_show', {id: risk.id}) }}" class="btn btn-sm btn-outline-primary" aria-label="{{ 'common.view'|trans }}">
-                                <i class="bi bi-eye" aria-hidden="true"></i>
-                            </a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                    {% if risksWithinAppetite|length > 10 %}
-                    <tr>
-                        <td colspan="5" class="text-center text-muted">
-                            {{ 'risk_appetite.and_more_risks'|trans({'%count%': risksWithinAppetite|length - 10}) }}
-                        </td>
-                    </tr>
-                    {% endif %}
-                </tbody>
-            </table>
-        </div>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="badge bg-secondary">{{ risk.status }}</span>
+                    </td>
+                    <td class="text-center">
+                        <a href="{{ path('app_risk_show', {id: risk.id}) }}" class="btn btn-sm btn-outline-primary" aria-label="{{ 'common.view'|trans }}">
+                            <i class="bi bi-eye" aria-hidden="true"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+                {% if risksWithinAppetite|length > 10 %}
+                <tr>
+                    <td colspan="5" class="text-center text-muted">
+                        {{ 'risk_appetite.and_more_risks'|trans({'%count%': risksWithinAppetite|length - 10}) }}
+                    </td>
+                </tr>
+                {% endif %}
+            {% endblock %}
+        {% endembed %}
     </div>
 </div>
 {% endif %}

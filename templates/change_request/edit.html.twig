@@ -1,52 +1,203 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ 'change_request.edit'|trans }} {{ change_request.changeNumber }}{% endblock %}
+{% block title %}{{ 'change_request.edit'|trans }} {{ change_request.changeNumber }} - {{ parent() }}{% endblock %}
 
 {% block body %}
-<div class="container">
-    <div class="page-header">
-        <h1>{{ 'change_request.page.edit'|trans }}: {{ change_request.changeNumber }}</h1>
-        <div class="actions">
-            <a href="{{ path('app_change_request_show', {id: change_request.id}) }}" class="btn btn-secondary">{{ 'change_request.action.view'|trans }}</a>
-            <a href="{{ path('app_change_request_index') }}" class="btn btn-secondary">{{ 'common.back'|trans }}</a>
-        </div>
-    </div>
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-lg-10 col-xl-9 mx-auto">
+            <nav aria-label="breadcrumb" class="mb-3">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="{{ path('app_change_request_index') }}" data-turbo-action="advance">
+                            <i class="bi bi-arrow-left-right" aria-hidden="true"></i> {{ 'change_request.title'|trans }}
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a href="{{ path('app_change_request_show', {id: change_request.id}) }}" data-turbo-action="advance">
+                            {{ change_request.changeNumber }}
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ 'common.edit'|trans }}</li>
+                </ol>
+            </nav>
 
-    <div class="card">
-        <div class="card-content">
-            {{ form_start(form) }}
-                {{ form_row(form.changeNumber) }}
-                {{ form_row(form.title) }}
-                {{ form_row(form.changeType) }}
-                {{ form_row(form.description) }}
-                {{ form_row(form.justification) }}
-                {{ form_row(form.requestedBy) }}
-                {{ form_row(form.requestedDate) }}
-                {{ form_row(form.priority) }}
-                {{ form_row(form.status) }}
-                {{ form_row(form.ismsImpact) }}
-                {{ form_row(form.riskAssessment) }}
-                {{ form_row(form.implementationPlan) }}
-                {{ form_row(form.rollbackPlan) }}
-                {{ form_row(form.testingRequirements) }}
-                {{ form_row(form.plannedImplementationDate) }}
-                {{ form_row(form.actualImplementationDate) }}
-                {{ form_row(form.approvedBy) }}
-                {{ form_row(form.approvedDate) }}
-                {{ form_row(form.approvalComments) }}
-                {{ form_row(form.implementedBy) }}
-                {{ form_row(form.implementationNotes) }}
-                {{ form_row(form.verifiedBy) }}
-                {{ form_row(form.verifiedDate) }}
-                {{ form_row(form.verificationResults) }}
-                {{ form_row(form.closedDate) }}
-                {{ form_row(form.closureNotes) }}
-
-                <div class="form-actions">
-                    <button type="submit" class="btn btn-primary">{{ 'change_request.action.update'|trans }}</button>
-                    <a href="{{ path('app_change_request_show', {id: change_request.id}) }}" class="btn btn-secondary">{{ 'common.cancel'|trans }}</a>
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="h3 mb-0">
+                    <i class="bi bi-pencil" aria-hidden="true"></i>
+                    {{ 'change_request.page.edit'|trans }}: {{ change_request.changeNumber }}
+                </h1>
+                <div>
+                    <a href="{{ path('app_change_request_show', {id: change_request.id}) }}" class="btn btn-outline-secondary" data-turbo-action="advance">
+                        <i class="bi bi-eye" aria-hidden="true"></i> {{ 'change_request.action.view'|trans }}
+                    </a>
                 </div>
-            {{ form_end(form) }}
+            </div>
+
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">{{ 'change_request.edit'|trans }}</h3>
+                </div>
+                <div class="card-body">
+                    {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+
+                    {# Basic Information #}
+                    <fieldset class="mb-4">
+                        <legend class="h5 mb-3">
+                            <i class="bi bi-info-square" aria-hidden="true"></i>
+                            {{ 'change_request.section.basic_info'|trans }}
+                        </legend>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                {% include '_components/_form_field.html.twig' with {'field': form.changeNumber, 'label': form.changeNumber.vars.label|default('change_request.field.change_number'|trans)} %}
+                            </div>
+                            <div class="col-md-8">
+                                {% include '_components/_form_field.html.twig' with {'field': form.title, 'label': form.title.vars.label|default('change_request.field.title'|trans), 'required': true} %}
+                            </div>
+                            <div class="col-md-12">
+                                {% include '_components/_form_field.html.twig' with {'field': form.changeType, 'label': form.changeType.vars.label|default('change_request.field.change_type'|trans)} %}
+                            </div>
+                            <div class="col-md-12">
+                                {% include '_components/_form_field.html.twig' with {'field': form.description, 'label': form.description.vars.label|default('change_request.field.description'|trans)} %}
+                            </div>
+                            <div class="col-md-12">
+                                {% include '_components/_form_field.html.twig' with {'field': form.justification, 'label': form.justification.vars.label|default('change_request.field.justification'|trans)} %}
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    {# Request Details #}
+                    <fieldset class="mb-4">
+                        <legend class="h5 mb-3">
+                            <i class="bi bi-person-badge" aria-hidden="true"></i>
+                            {{ 'change_request.section.request_details'|trans }}
+                        </legend>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% include '_components/_form_field.html.twig' with {'field': form.requestedBy, 'label': form.requestedBy.vars.label|default('change_request.field.requested_by'|trans)} %}
+                            </div>
+                            <div class="col-md-6">
+                                {% include '_components/_form_field.html.twig' with {'field': form.requestedDate, 'label': form.requestedDate.vars.label|default('change_request.field.requested_date'|trans)} %}
+                            </div>
+                            <div class="col-md-6">
+                                {% include '_components/_form_field.html.twig' with {'field': form.priority, 'label': form.priority.vars.label|default('change_request.field.priority'|trans)} %}
+                            </div>
+                            <div class="col-md-6">
+                                {% include '_components/_form_field.html.twig' with {'field': form.status, 'label': form.status.vars.label|default('change_request.field.status'|trans)} %}
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    {# Impact Assessment #}
+                    <fieldset class="mb-4">
+                        <legend class="h5 mb-3">
+                            <i class="bi bi-shield-exclamation" aria-hidden="true"></i>
+                            {{ 'change_request.section.impact_assessment'|trans }}
+                        </legend>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                {% include '_components/_form_field.html.twig' with {'field': form.ismsImpact, 'label': form.ismsImpact.vars.label|default('change_request.field.isms_impact'|trans)} %}
+                            </div>
+                            <div class="col-md-12">
+                                {% include '_components/_form_field.html.twig' with {'field': form.riskAssessment, 'label': form.riskAssessment.vars.label|default('change_request.field.risk_assessment'|trans)} %}
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    {# Implementation #}
+                    <fieldset class="mb-4">
+                        <legend class="h5 mb-3">
+                            <i class="bi bi-gear" aria-hidden="true"></i>
+                            {{ 'change_request.section.implementation'|trans }}
+                        </legend>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                {% include '_components/_form_field.html.twig' with {'field': form.implementationPlan, 'label': form.implementationPlan.vars.label|default('change_request.field.implementation_plan'|trans)} %}
+                            </div>
+                            <div class="col-md-12">
+                                {% include '_components/_form_field.html.twig' with {'field': form.rollbackPlan, 'label': form.rollbackPlan.vars.label|default('change_request.field.rollback_plan'|trans)} %}
+                            </div>
+                            <div class="col-md-12">
+                                {% include '_components/_form_field.html.twig' with {'field': form.testingRequirements, 'label': form.testingRequirements.vars.label|default('change_request.field.testing_requirements'|trans)} %}
+                            </div>
+                            <div class="col-md-6">
+                                {% include '_components/_form_field.html.twig' with {'field': form.plannedImplementationDate, 'label': form.plannedImplementationDate.vars.label|default('change_request.field.planned_implementation_date'|trans)} %}
+                            </div>
+                            <div class="col-md-6">
+                                {% include '_components/_form_field.html.twig' with {'field': form.actualImplementationDate, 'label': form.actualImplementationDate.vars.label|default('change_request.field.actual_implementation_date'|trans)} %}
+                            </div>
+                            <div class="col-md-12">
+                                {% include '_components/_form_field.html.twig' with {'field': form.implementedBy, 'label': form.implementedBy.vars.label|default('change_request.field.implemented_by'|trans)} %}
+                            </div>
+                            <div class="col-md-12">
+                                {% include '_components/_form_field.html.twig' with {'field': form.implementationNotes, 'label': form.implementationNotes.vars.label|default('change_request.field.implementation_notes'|trans)} %}
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    {# Approval #}
+                    <fieldset class="mb-4">
+                        <legend class="h5 mb-3">
+                            <i class="bi bi-check-circle" aria-hidden="true"></i>
+                            {{ 'change_request.section.approval'|trans }}
+                        </legend>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% include '_components/_form_field.html.twig' with {'field': form.approvedBy, 'label': form.approvedBy.vars.label|default('change_request.field.approved_by'|trans)} %}
+                            </div>
+                            <div class="col-md-6">
+                                {% include '_components/_form_field.html.twig' with {'field': form.approvedDate, 'label': form.approvedDate.vars.label|default('change_request.field.approved_date'|trans)} %}
+                            </div>
+                            <div class="col-md-12">
+                                {% include '_components/_form_field.html.twig' with {'field': form.approvalComments, 'label': form.approvalComments.vars.label|default('change_request.field.approval_comments'|trans)} %}
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    {# Verification & Closure #}
+                    <fieldset class="mb-4">
+                        <legend class="h5 mb-3">
+                            <i class="bi bi-clipboard-check" aria-hidden="true"></i>
+                            {{ 'change_request.section.verification_closure'|trans }}
+                        </legend>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% include '_components/_form_field.html.twig' with {'field': form.verifiedBy, 'label': form.verifiedBy.vars.label|default('change_request.field.verified_by'|trans)} %}
+                            </div>
+                            <div class="col-md-6">
+                                {% include '_components/_form_field.html.twig' with {'field': form.verifiedDate, 'label': form.verifiedDate.vars.label|default('change_request.field.verified_date'|trans)} %}
+                            </div>
+                            <div class="col-md-12">
+                                {% include '_components/_form_field.html.twig' with {'field': form.verificationResults, 'label': form.verificationResults.vars.label|default('change_request.field.verification_results'|trans)} %}
+                            </div>
+                            <div class="col-md-6">
+                                {% include '_components/_form_field.html.twig' with {'field': form.closedDate, 'label': form.closedDate.vars.label|default('change_request.field.closed_date'|trans)} %}
+                            </div>
+                            <div class="col-md-12">
+                                {% include '_components/_form_field.html.twig' with {'field': form.closureNotes, 'label': form.closureNotes.vars.label|default('change_request.field.closure_notes'|trans)} %}
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    {# Form Actions #}
+                    <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+                        <a href="{{ path('app_change_request_show', {id: change_request.id}) }}" class="btn btn-outline-secondary" data-turbo-action="advance">
+                            <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'common.cancel'|trans }}
+                        </a>
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="bi bi-save" aria-hidden="true"></i> {{ 'change_request.action.update'|trans }}
+                        </button>
+                    </div>
+
+                    {{ form_end(form) }}
+                </div>
+            </div>
         </div>
     </div>
 </div>

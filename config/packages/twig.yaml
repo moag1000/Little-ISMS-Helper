@@ -1,6 +1,6 @@
 twig:
     file_name_pattern: '*.twig'
-    form_themes: ['bootstrap_5_layout.html.twig']
+    form_themes: ['form/bootstrap_5_required.html.twig']
 
     # Security: Auto-escaping is enabled by default in Symfony to prevent XSS attacks
 

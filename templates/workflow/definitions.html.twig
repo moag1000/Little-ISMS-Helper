@@ -64,60 +64,61 @@
 </div>
 
 {# Definitions Table #}
-<div class="table-container">
-    <table>
-        <thead>
-            <tr>
-                <th scope="col">{{ 'workflow.field.definition_name'|trans }}</th>
-                <th scope="col">{{ 'workflow.field.description'|trans }}</th>
-                <th scope="col" class="text-center">{{ 'workflow.field.steps'|trans }}</th>
-                <th scope="col" class="text-center">{{ 'workflow.field.instances'|trans }}</th>
-                <th scope="col" class="text-center">{{ 'workflow.field.active'|trans }}</th>
-                <th scope="col" class="text-center">{{ 'common.actions'|trans }}</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for workflow in workflows %}
-            <tr>
-                <td>
-                    <strong>{{ workflow.name }}</strong>
-                    <br><small class="text-muted-color">{{ workflow.entityType }}</small>
-                </td>
-                <td>
-                    <small class="text-muted-color">
-                        {{ workflow.description|default('-') }}
-                    </small>
-                </td>
-                <td class="text-center">
-                    <span class="badge badge-info">{{ workflow.steps|length }}</span>
-                </td>
-                <td class="text-center">
-                    <span class="badge badge-secondary">—</span>
-                </td>
-                <td class="text-center">
-                    {% if workflow.isActive %}
-                        <span class="badge badge-success">✓</span>
-                    {% else %}
-                        <span class="badge badge-secondary">✗</span>
-                    {% endif %}
-                </td>
-                <td class="text-center">
-                    <a href="{{ path('app_workflow_definition_show', {id: workflow.id}) }}" class="btn btn-sm mr-025">
-                        👁 {{ 'common.view'|trans }}
-                    </a>
-                    <a href="{{ path('app_workflow_definition_edit', {id: workflow.id}) }}" class="btn btn-sm btn-secondary">
-                        ✏️ {{ 'common.edit'|trans }}
-                    </a>
-                </td>
-            </tr>
-            {% else %}
-            <tr>
-                <td colspan="6" class="text-center-p-xl-muted">
-                    {{ 'workflow.message.no_definitions'|trans }}
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
+{% embed '_components/_table.html.twig' with {
+    'class': 'table-container',
+    'noMargin': true
+} %}
+    {% block table_head %}
+        <tr>
+            <th scope="col">{{ 'workflow.field.definition_name'|trans }}</th>
+            <th scope="col">{{ 'workflow.field.description'|trans }}</th>
+            <th scope="col" class="text-center">{{ 'workflow.field.steps'|trans }}</th>
+            <th scope="col" class="text-center">{{ 'workflow.field.instances'|trans }}</th>
+            <th scope="col" class="text-center">{{ 'workflow.field.active'|trans }}</th>
+            <th scope="col" class="text-center">{{ 'common.actions'|trans }}</th>
+        </tr>
+    {% endblock %}
+    {% block table_body %}
+        {% for workflow in workflows %}
+        <tr>
+            <td>
+                <strong>{{ workflow.name }}</strong>
+                <br><small class="text-muted-color">{{ workflow.entityType }}</small>
+            </td>
+            <td>
+                <small class="text-muted-color">
+                    {{ workflow.description|default('-') }}
+                </small>
+            </td>
+            <td class="text-center">
+                <span class="badge bg-info">{{ workflow.steps|length }}</span>
+            </td>
+            <td class="text-center">
+                <span class="badge bg-secondary">—</span>
+            </td>
+            <td class="text-center">
+                {% if workflow.isActive %}
+                    <span class="badge bg-success">✓</span>
+                {% else %}
+                    <span class="badge bg-secondary">✗</span>
+                {% endif %}
+            </td>
+            <td class="text-center">
+                <a href="{{ path('app_workflow_definition_show', {id: workflow.id}) }}" class="btn btn-sm mr-025">
+                    👁 {{ 'common.view'|trans }}
+                </a>
+                <a href="{{ path('app_workflow_definition_edit', {id: workflow.id}) }}" class="btn btn-sm btn-secondary">
+                    ✏️ {{ 'common.edit'|trans }}
+                </a>
+            </td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="6" class="text-center-p-xl-muted">
+                {{ 'workflow.message.no_definitions'|trans }}
+            </td>
+        </tr>
+        {% endfor %}
+    {% endblock %}
+{% endembed %}
 {% endblock %}
