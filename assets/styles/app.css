@@ -162,23 +162,53 @@ body {
 /* Skip Links for Accessibility - WCAG 2.4.1 */
 .skip-link {
     position: absolute;
-    top: -40px;
+    top: -50px;
     left: 0;
-    background: var(--color-secondary);
-    color: white;
-    padding: 8px 16px;
+    background: #1e40af; /* High contrast blue - WCAG AAA compliant */
+    color: #ffffff;
+    padding: 10px 20px;
     text-decoration: none;
-    font-weight: 600;
-    border-radius: 0 0 var(--border-radius-sm) 0;
-    z-index: calc(var(--z-turbo-bar) + 1);
-    box-shadow: var(--shadow-neon);
-    transition: top var(--transition-fast);
+    font-weight: 700;
+    font-size: 0.95rem;
+    border-radius: 0 0 8px 0;
+    z-index: calc(var(--z-turbo-bar) + 10);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: top 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    opacity: 0;
+    pointer-events: none;
 }
 
-.skip-link:focus {
+.skip-link:focus,
+.skip-link:focus-visible {
     top: 0;
-    outline: 3px solid var(--color-accent-pink);
+    opacity: 1;
+    pointer-events: auto;
+    outline: 4px solid #fbbf24; /* Gold outline for high visibility */
     outline-offset: 2px;
+    box-shadow: 0 6px 20px rgba(30, 64, 175, 0.5),
+                0 0 0 4px rgba(251, 191, 36, 0.3);
+}
+
+.skip-link:hover {
+    background: #1e3a8a; /* Darker blue on hover */
+    box-shadow: 0 6px 20px rgba(30, 64, 175, 0.6);
+}
+
+/* Dark mode support for skip links */
+[data-theme="dark"] .skip-link {
+    background: #3b82f6; /* Lighter blue for dark mode */
+    color: #000000; /* Black text for better contrast */
+}
+
+[data-theme="dark"] .skip-link:focus,
+[data-theme="dark"] .skip-link:focus-visible {
+    outline-color: #fbbf24;
+    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.6),
+                0 0 0 4px rgba(251, 191, 36, 0.3);
+}
+
+[data-theme="dark"] .skip-link:hover {
+    background: #60a5fa;
 }
 
 /* Header - Cyberpunk Style with Dark Mode Support */
@@ -1246,33 +1276,63 @@ tbody td {
     margin-top: 1rem;
 }
 
-/* Badges */
+/* ==========================================
+   BADGES - Standardized Badge System
+   ==========================================
+
+   Badge Categories:
+   1. STATUS BADGES - Use Bootstrap 5 syntax: badge bg-{color}
+   2. SEVERITY BADGES - Risk/Vulnerability levels: badge-{severity}
+   3. ACTION BADGES - Audit log actions (already in ui-components.css)
+   4. SPECIAL BADGES - Custom use cases
+
+   Bootstrap 5 Status Badges (bg-success, bg-warning, etc.) are provided by Bootstrap.
+   We only add dark mode support and severity variants here.
+   ========================================== */
+
 .badge {
     display: inline-block;
     padding: var(--spacing-xs) var(--spacing-sm);
     border-radius: var(--border-radius-sm);
     font-size: 0.875rem;
     font-weight: 500;
+    transition: all 0.2s ease;
 }
 
-.badge-success {
-    background-color: #d4edda;
-    color: var(--color-success);
+/* SEVERITY BADGES - For Risks, Vulnerabilities, Incidents */
+.badge-critical {
+    background: linear-gradient(135deg, #dc2626, #991b1b);
+    color: white;
+    font-weight: 600;
+    box-shadow: 0 2px 4px rgba(220, 38, 38, 0.3);
 }
 
-.badge-warning {
-    background-color: #fff3cd;
-    color: var(--color-warning);
+.badge-high {
+    background: linear-gradient(135deg, #f97316, #ea580c);
+    color: white;
+    font-weight: 600;
+    box-shadow: 0 2px 4px rgba(249, 115, 22, 0.3);
 }
 
-.badge-danger {
-    background-color: #f8d7da;
-    color: var(--color-danger);
+.badge-medium {
+    background: linear-gradient(135deg, #eab308, #ca8a04);
+    color: #000;
+    font-weight: 600;
+    box-shadow: 0 2px 4px rgba(234, 179, 8, 0.3);
 }
 
-.badge-info {
-    background-color: #d1ecf1;
-    color: var(--color-info);
+.badge-low {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: white;
+    font-weight: 600;
+    box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3);
+}
+
+/* SPECIAL BADGES */
+.badge-neutral {
+    background: var(--bg-secondary);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
 }
 
 /* Forms with Dark Mode Support */
@@ -1323,6 +1383,78 @@ tbody td {
 
 [data-theme="dark"] .form-required-legend {
     background: var(--bg-tertiary);
+}
+
+/* ==========================================
+   FIELDSET STYLING - Issues 2.1 & 2.3
+   Semantic form sections with card-like appearance
+   ========================================== */
+
+/* Fieldset base styling - looks like card */
+fieldset {
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: 0;
+    margin-bottom: 1rem;
+    background: var(--bg-primary);
+}
+
+/* Fieldset legend - looks like card header */
+fieldset legend {
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-color);
+    padding: 0.75rem 1rem;
+    margin: 0;
+    width: 100%;
+    font-size: 1.125rem;
+    font-weight: 600;
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
+    color: var(--text-primary);
+    float: none;  /* Override browser default */
+}
+
+/* Content padding inside fieldset */
+fieldset > .row,
+fieldset > div:not(legend) {
+    padding: 1rem;
+}
+
+/* Dark Mode support for fieldsets */
+[data-theme="dark"] fieldset {
+    background: var(--bg-elevated);
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] fieldset legend {
+    background: var(--bg-secondary);
+    border-bottom-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+/* Nested rows inside fieldset don't need extra padding */
+fieldset .row .row {
+    padding: 0;
+}
+
+/* NIS2 Fieldset - Special Warning Styling */
+fieldset.nis2-fieldset {
+    border-color: #ffc107;
+}
+
+fieldset.nis2-fieldset legend.nis2-legend {
+    background: #ffc107 !important;
+    color: #212529 !important;
+    border-bottom-color: #e0a800;
+}
+
+[data-theme="dark"] fieldset.nis2-fieldset {
+    border-color: #ffc107;
+}
+
+[data-theme="dark"] fieldset.nis2-fieldset legend.nis2-legend {
+    background: #ffc107 !important;
+    color: #212529 !important;
+    border-bottom-color: #e0a800;
 }
 
 /* Invalid Field Feedback - Consistent Positioning */
@@ -2030,3 +2162,202 @@ input.is-valid:focus {
 .field-with-feedback:has(.unique-check-spinner[style*="display: block"]) .form-control {
     padding-right: calc(2.5em + 0.75rem);
 }
+
+/* ===================================================================
+   Mobile Table Responsiveness - Issue 12.2
+   Auto-wrap all tables in responsive containers on mobile devices
+   =================================================================== */
+@media (max-width: 768px) {
+    /* Make tables scrollable on mobile */
+    table:not(.no-mobile-scroll) {
+        display: block;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+        max-width: 100%;
+    }
+    
+    /* Ensure table headers stay visible during scroll */
+    table:not(.no-mobile-scroll) thead {
+        position: sticky;
+        left: 0;
+        z-index: 1;
+    }
+    
+    /* Minimum column width on mobile */
+    table:not(.no-mobile-scroll) td,
+    table:not(.no-mobile-scroll) th {
+        min-width: 100px;
+        white-space: nowrap;
+    }
+    
+    /* Allow text wrapping for specific columns */
+    table:not(.no-mobile-scroll) td.wrap,
+    table:not(.no-mobile-scroll) th.wrap {
+        white-space: normal;
+        min-width: 150px;
+    }
+}
+
+/* Dark mode adjustments for sticky headers */
+[data-theme="dark"] table thead {
+    background-color: var(--bg-elevated);
+}
+
+/* ===================================================================
+   Table Styling Standardization - Issue 4.1
+   Default styling for all tables to ensure consistency
+   =================================================================== */
+
+/* Base table styling - applies to ALL tables unless overridden */
+table:not(.no-default-style) {
+    width: 100%;
+    margin-bottom: 1rem;
+    color: var(--color-text);
+    border-collapse: collapse;
+}
+
+table:not(.no-default-style) th,
+table:not(.no-default-style) td {
+    padding: 0.75rem;
+    vertical-align: top;
+    border-bottom: 1px solid var(--color-border);
+}
+
+table:not(.no-default-style) thead th {
+    vertical-align: bottom;
+    font-weight: 600;
+    border-bottom: 2px solid var(--color-border);
+    color: var(--color-text);
+}
+
+table:not(.no-default-style) tbody tr:hover {
+    background-color: rgba(0, 0, 0, 0.02);
+}
+
+[data-theme="dark"] table:not(.no-default-style) tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Striped tables */
+table.table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(0, 0, 0, 0.02);
+}
+
+[data-theme="dark"] table.table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(255, 255, 255, 0.02);
+}
+
+/* Bordered tables */
+table.table-bordered th,
+table.table-bordered td {
+    border: 1px solid var(--color-border);
+}
+
+/* Small/compact tables */
+table.table-sm th,
+table.table-sm td {
+    padding: 0.3rem 0.5rem;
+    font-size: 0.875rem;
+}
+
+/* Borderless tables */
+table.table-borderless th,
+table.table-borderless td {
+    border: none;
+}
+
+/* Table inside cards - no extra margin */
+.card table:last-child,
+.info-box table:last-child {
+    margin-bottom: 0;
+}
+
+
+/* ===================================================================
+   Utility Classes - Issue 7.1
+   Replace common inline styles with reusable CSS classes
+   =================================================================== */
+
+/* Height Utilities */
+.h-10px { height: 10px; }
+.h-20px { height: 20px; }
+.h-25px { height: 25px; }
+.h-30px { height: 30px; }
+.h-40px { height: 40px; }
+.h-50px { height: 50px; }
+
+/* Width Utilities (percentages) */
+.w-15 { width: 15%; }
+.w-20 { width: 20%; }
+.w-25 { width: 25%; }
+.w-30 { width: 30%; }
+.w-35 { width: 35%; }
+.w-40 { width: 40%; }
+.w-45 { width: 45%; }
+.w-60 { width: 60%; }
+.w-70 { width: 70%; }
+.w-80 { width: 80%; }
+.w-90 { width: 90%; }
+.w-auto { width: auto; }
+
+/* Font Size Utilities */
+.fs-8pt { font-size: 8pt; }
+.fs-9pt { font-size: 9pt; }
+.fs-10pt { font-size: 10pt; }
+.fs-11pt { font-size: 11pt; }
+.fs-12pt { font-size: 12pt; }
+
+/* Common spacing utilities (if not in Bootstrap) */
+.mt-2rem { margin-top: 2rem; }
+.mb-2rem { margin-bottom: 2rem; }
+.mt-3rem { margin-top: 3rem; }
+.mb-3rem { margin-bottom: 3rem; }
+
+/* Display utilities (complement Bootstrap) */
+.d-inline { display: inline !important; }
+.d-inline-block { display: inline-block !important; }
+.d-flex-row { display: flex; flex-direction: row; }
+.d-flex-col { display: flex; flex-direction: column; }
+
+/* Flex utilities */
+.flex-align-center { align-items: center; }
+.flex-justify-center { justify-content: center; }
+.flex-gap-xs { gap: 0.25rem; }
+.flex-gap-sm { gap: 0.5rem; }
+.flex-gap-md { gap: 0.625rem; }
+.flex-gap-lg { gap: 1rem; }
+
+/* Cursor utilities */
+.cursor-pointer { cursor: pointer; }
+.cursor-not-allowed { cursor: not-allowed; }
+
+/* Square icon size */
+.icon-20 {
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    flex-shrink: 0;
+}
+
+.icon-24 {
+    width: 24px;
+    height: 24px;
+    display: inline-block;
+    flex-shrink: 0;
+}
+
+.icon-32 {
+    width: 32px;
+    height: 32px;
+    display: inline-block;
+    flex-shrink: 0;
+}
+
+/* White space utilities */
+.ws-nowrap { white-space: nowrap; }
+.ws-normal { white-space: normal; }
+.ws-pre-wrap { white-space: pre-wrap; }
+
+/* Flex shrink */
+.flex-shrink-0 { flex-shrink: 0; }
+

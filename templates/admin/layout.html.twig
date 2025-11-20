@@ -243,7 +243,7 @@
     <div class="admin-wrapper">
         {# Admin Sidebar Navigation #}
         <aside class="admin-sidebar" role="complementary" aria-label="Admin navigation">
-            <nav role="navigation">
+            <nav id="main-navigation" role="navigation">
                 {# Admin Dashboard #}
                 <div class="sidebar-section">
                     <ul>
@@ -417,7 +417,7 @@
         </aside>
 
         {# Admin Content Area #}
-        <main class="admin-content">
+        <main id="main-content" class="admin-content">
             {# Breadcrumb Navigation #}
             {% block breadcrumb %}
                 <nav aria-label="breadcrumb">
