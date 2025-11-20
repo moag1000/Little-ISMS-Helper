@@ -10,45 +10,123 @@
         </div>
         <div class="card-body">
             {{ form_start(form) }}
+
+            {# Basic Information #}
+            <fieldset class="mb-4">
+                <legend class="h5 mb-3">
+                    <i class="bi bi-info-square" aria-hidden="true"></i>
+                    Grundinformationen
+                </legend>
+
                 <div class="row">
-                    <div class="col-md-8 mb-3">
-                        {{ form_row(form.title) }}
+                    <div class="col-md-8">
+                        {% include '_components/_form_field.html.twig' with {
+                            'field': form.title,
+                            'label': form.title.vars.label|default('objective.field.title'|trans),
+                            'required': true
+                        } %}
                     </div>
-                    <div class="col-md-4 mb-3">
-                        {{ form_row(form.category) }}
+                    <div class="col-md-4">
+                        {% include '_components/_form_field.html.twig' with {
+                            'field': form.category,
+                            'label': form.category.vars.label|default('objective.field.category'|trans)
+                        } %}
                     </div>
-                    <div class="col-md-12 mb-3">
-                        {{ form_row(form.description) }}
-                    </div>
-                    <div class="col-md-12 mb-3">
-                        {{ form_row(form.measurableIndicators) }}
-                    </div>
-                    <div class="col-md-4 mb-3">
-                        {{ form_row(form.targetValue) }}
-                    </div>
-                    <div class="col-md-4 mb-3">
-                        {{ form_row(form.currentValue) }}
-                    </div>
-                    <div class="col-md-4 mb-3">
-                        {{ form_row(form.unit) }}
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        {{ form_row(form.responsiblePerson) }}
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        {{ form_row(form.targetDate) }}
-                    </div>
-                    <div class="col-md-12 mb-3">
-                        {{ form_row(form.status) }}
-                    </div>
-                    <div class="col-md-12 mb-3">
-                        {{ form_row(form.progressNotes) }}
+                    <div class="col-md-12">
+                        {% include '_components/_form_field.html.twig' with {
+                            'field': form.description,
+                            'label': form.description.vars.label|default('objective.field.description'|trans)
+                        } %}
                     </div>
                 </div>
-                <div class="d-flex justify-content-between mt-4">
-                    <a href="{{ path('app_objective_index') }}" class="btn btn-outline-secondary">Abbrechen</a>
-                    <button type="submit" class="btn btn-primary">Ziel erstellen</button>
+            </fieldset>
+
+            {# Measurement #}
+            <fieldset class="mb-4">
+                <legend class="h5 mb-3">
+                    <i class="bi bi-graph-up" aria-hidden="true"></i>
+                    Messbare Indikatoren
+                </legend>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        {% include '_components/_form_field.html.twig' with {
+                            'field': form.measurableIndicators,
+                            'label': form.measurableIndicators.vars.label|default('objective.field.measurable_indicators'|trans)
+                        } %}
+                    </div>
+                    <div class="col-md-4">
+                        {% include '_components/_form_field.html.twig' with {
+                            'field': form.targetValue,
+                            'label': form.targetValue.vars.label|default('objective.field.target_value'|trans)
+                        } %}
+                    </div>
+                    <div class="col-md-4">
+                        {% include '_components/_form_field.html.twig' with {
+                            'field': form.currentValue,
+                            'label': form.currentValue.vars.label|default('objective.field.current_value'|trans)
+                        } %}
+                    </div>
+                    <div class="col-md-4">
+                        {% include '_components/_form_field.html.twig' with {
+                            'field': form.unit,
+                            'label': form.unit.vars.label|default('objective.field.unit'|trans)
+                        } %}
+                    </div>
                 </div>
+            </fieldset>
+
+            {# Responsibility & Timeline #}
+            <fieldset class="mb-4">
+                <legend class="h5 mb-3">
+                    <i class="bi bi-person-badge" aria-hidden="true"></i>
+                    Verantwortlichkeit & Zeitrahmen
+                </legend>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        {% include '_components/_form_field.html.twig' with {
+                            'field': form.responsiblePerson,
+                            'label': form.responsiblePerson.vars.label|default('objective.field.responsible_person'|trans)
+                        } %}
+                    </div>
+                    <div class="col-md-6">
+                        {% include '_components/_form_field.html.twig' with {
+                            'field': form.targetDate,
+                            'label': form.targetDate.vars.label|default('objective.field.target_date'|trans)
+                        } %}
+                    </div>
+                </div>
+            </fieldset>
+
+            {# Status & Progress #}
+            <fieldset class="mb-4">
+                <legend class="h5 mb-3">
+                    <i class="bi bi-clipboard-check" aria-hidden="true"></i>
+                    Status & Fortschritt
+                </legend>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        {% include '_components/_form_field.html.twig' with {
+                            'field': form.status,
+                            'label': form.status.vars.label|default('objective.field.status'|trans)
+                        } %}
+                    </div>
+                    <div class="col-md-12">
+                        {% include '_components/_form_field.html.twig' with {
+                            'field': form.progressNotes,
+                            'label': form.progressNotes.vars.label|default('objective.field.progress_notes'|trans)
+                        } %}
+                    </div>
+                </div>
+            </fieldset>
+
+            <div class="d-flex justify-content-between pt-3 border-top">
+                <a href="{{ path('app_objective_index') }}" class="btn btn-outline-secondary">Abbrechen</a>
+                <button type="submit" class="btn btn-primary">Ziel erstellen</button>
+            </div>
+
             {{ form_end(form) }}
         </div>
     </div>
