@@ -104,12 +104,14 @@
             </td>
             <td>{{ person.department ?? '-' }}</td>
             <td class="text-center">
-                <a href="{{ path('app_person_show', {id: person.id}) }}" class="btn btn-sm mr-025">
-                    👁 {{ 'common.view'|trans }}
-                </a>
-                <a href="{{ path('app_person_edit', {id: person.id}) }}" class="btn btn-sm btn-secondary">
-                    ✏️ {{ 'common.edit'|trans }}
-                </a>
+                <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'person.actions.label'|trans({}, 'messages', 'Person Actions') }}">
+                    <a href="{{ path('app_person_show', {id: person.id}) }}" class="btn btn-outline-primary" aria-label="{{ 'common.view'|trans }} {{ person.fullName }}">
+                        <i class="bi bi-eye" aria-hidden="true"></i>
+                    </a>
+                    <a href="{{ path('app_person_edit', {id: person.id}) }}" class="btn btn-outline-secondary" aria-label="{{ 'common.edit'|trans }} {{ person.fullName }}">
+                        <i class="bi bi-pencil" aria-hidden="true"></i>
+                    </a>
+                </div>
             </td>
         </tr>
         {% else %}

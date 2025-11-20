@@ -6,7 +6,7 @@
  * Based on UI/UX Audit Issue 3.1 - Card Standardization
  *
  * Parameters:
- *   - variant: 'default'|'kpi'|'feature'|'bordered' (default: 'default')
+ *   - variant: 'default'|'kpi'|'stat'|'widget'|'feature'|'bordered' (default: 'default')
  *   - header: Card header content (optional)
  *   - headerIcon: Bootstrap icon class for header (optional, e.g., 'bi-graph-up')
  *   - title: Card title (alternative to header for simple text)
@@ -14,9 +14,16 @@
  *   - body: Card body content (can be passed as block)
  *   - footer: Card footer content (optional)
  *   - class: Additional CSS classes
- *   - borderColor: 'primary'|'success'|'warning'|'danger'|'info' (for bordered variant)
+ *   - borderColor: 'primary'|'success'|'warning'|'danger'|'info' (for bordered/kpi variant)
  *   - noPadding: Remove default body padding (default: false)
  *   - hoverable: Add hover effect (default: false)
+ *
+ * Variant Notes:
+ *   - 'kpi': Primary metric card (ui-components.css) - use for KPIs and metrics
+ *   - 'stat': Legacy alias for 'kpi' (deprecated, use 'kpi' instead)
+ *   - 'widget': Dashboard widget card (premium.css) - similar to kpi
+ *   - 'feature': Feature showcase card (premium.css) - centered content
+ *   - 'bordered': Card with left border accent
  *
  * Usage Examples:
  *
@@ -30,8 +37,8 @@
  * 2. KPI Card:
  *   {% include '_components/_card.html.twig' with {
  *       'variant': 'kpi',
- *       'title': 'Total Risks',
- *       'body': '<div class="kpi-value">42</div>'
+ *       'borderColor': 'primary',
+ *       'body': '<div class="kpi-card-content"><div class="kpi-card-value">42</div></div>'
  *   } %}
  *
  * 3. Card with block content:
@@ -54,7 +61,12 @@
 {# Build card classes #}
 {% set cardClasses = ['card'] %}
 {% if variant == 'kpi' %}
-    {% set cardClasses = cardClasses|merge(['kpi-card']) %}
+    {% set cardClasses = cardClasses|merge(['kpi-card', 'kpi-card-' ~ borderColor]) %}
+{% elseif variant == 'stat' %}
+    {# stat is deprecated alias for kpi - use stat-card class for backwards compatibility #}
+    {% set cardClasses = cardClasses|merge(['stat-card']) %}
+{% elseif variant == 'widget' %}
+    {% set cardClasses = cardClasses|merge(['widget-card']) %}
 {% elseif variant == 'bordered' %}
     {% set cardClasses = cardClasses|merge(['card-border-left-' ~ borderColor]) %}
 {% elseif variant == 'feature' %}
@@ -76,7 +88,7 @@
         {% if header is defined %}
             {{ header|raw }}
         {% elseif title is defined %}
-            <h3 class="mb-0">
+            <h5 class="mb-0">
                 {% if headerIcon is defined %}
                     <i class="{{ headerIcon }}" aria-hidden="true"></i>
                 {% endif %}

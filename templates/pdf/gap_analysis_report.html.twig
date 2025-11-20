@@ -334,7 +334,7 @@
                 <td class="text-center"><strong style="color: #f59e0b;">{{ uncovered_high|length * 5 }}</strong></td>
             </tr>
             <tr>
-                <td><span class="badge badge-warning">Medium</span></td>
+                <td><span class="badge bg-warning">Medium</span></td>
                 <td class="text-center"><strong>{{ priority_distribution.medium }}</strong></td>
                 <td class="text-center">{{ total_gaps > 0 ? ((priority_distribution.medium / total_gaps * 100)|round(1)) : 0 }}%</td>
                 <td class="text-center">-</td>
@@ -385,13 +385,13 @@
                 <td>Very low fulfillment (&lt;30%) - control missing or insufficient</td>
             </tr>
             <tr>
-                <td><span class="badge badge-warning">Incomplete Implementation</span></td>
+                <td><span class="badge bg-warning">Incomplete Implementation</span></td>
                 <td class="text-center"><strong>{{ root_cause_analysis.summary.incomplete_implementation_count }}</strong></td>
                 <td class="text-center">{{ total_gaps > 0 ? ((root_cause_analysis.summary.incomplete_implementation_count / total_gaps * 100)|round(1)) : 0 }}%</td>
                 <td>Partial fulfillment (30-80%) - implementation in progress</td>
             </tr>
             <tr>
-                <td><span class="badge badge-info">Missing Evidence</span></td>
+                <td><span class="badge bg-info">Missing Evidence</span></td>
                 <td class="text-center"><strong>{{ root_cause_analysis.summary.missing_evidence_count }}</strong></td>
                 <td class="text-center">{{ total_gaps > 0 ? ((root_cause_analysis.summary.missing_evidence_count / total_gaps * 100)|round(1)) : 0 }}%</td>
                 <td>High fulfillment (80-99%) - control exists but documentation lacking</td>
@@ -422,9 +422,9 @@
                     {% elseif pattern.dominant_root_cause == 'missing_control' %}
                         <span class="badge badge-high">Missing Control</span>
                     {% elseif pattern.dominant_root_cause == 'incomplete_implementation' %}
-                        <span class="badge badge-warning">Incomplete</span>
+                        <span class="badge bg-warning">Incomplete</span>
                     {% else %}
-                        <span class="badge badge-info">Missing Evidence</span>
+                        <span class="badge bg-info">Missing Evidence</span>
                     {% endif %}
                 </td>
                 <td class="text-center">
@@ -495,20 +495,22 @@
         </thead>
         <tbody>
             {% for gap in gaps %}
+            {% set requirement = gap.requirement %}
+            {% set gapFulfillment = gap.fulfillment %}
+            {% set fulfillmentPct = gapFulfillment ? gapFulfillment.fulfillmentPercentage : 0 %}
             <tr>
-                <td><strong>{{ gap.requirementId }}</strong></td>
-                <td>{{ (gap.description ?? '')|slice(0, 80) }}{% if (gap.description ?? '')|length > 80 %}...{% endif %}</td>
+                <td><strong>{{ requirement.requirementId }}</strong></td>
+                <td>{{ (requirement.description ?? '')|slice(0, 80) }}{% if (requirement.description ?? '')|length > 80 %}...{% endif %}</td>
                 <td class="text-center">
-                    {% set priority = gap.priority|default('medium') %}
+                    {% set priority = requirement.priority|default('medium') %}
                     <span class="badge badge-{{ priority }}">{{ priority|upper }}</span>
                 </td>
                 <td class="text-center">
-                    {% set fulfillment = gap.fulfillmentPercentage|default(0) %}
-                    <strong style="color: {% if fulfillment >= 80 %}#10b981{% elseif fulfillment >= 50 %}#f59e0b{% else %}#ef4444{% endif %};">
-                        {{ fulfillment }}%
+                    <strong style="color: {% if fulfillmentPct >= 80 %}#10b981{% elseif fulfillmentPct >= 50 %}#f59e0b{% else %}#ef4444{% endif %};">
+                        {{ fulfillmentPct }}%
                     </strong>
                 </td>
-                <td>{{ gap.category|default('N/A') }}</td>
+                <td>{{ requirement.category|default('N/A') }}</td>
             </tr>
             {% endfor %}
         </tbody>

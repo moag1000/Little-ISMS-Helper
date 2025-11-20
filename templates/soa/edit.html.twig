@@ -16,7 +16,7 @@
     <h2>{{ control.name }}</h2>
     <p class="mt-sm-text-light">{{ control.description }}</p>
     <div class="mt-2">
-        <span class="badge badge-info">{{ control.category }}</span>
+        <span class="badge bg-info">{{ control.category }}</span>
     </div>
 </div>
 
@@ -74,7 +74,7 @@
                 class="flex-1"
                 oninput="document.getElementById('percentageValue').textContent = this.value + '%'"
             >
-            <span id="percentageValue" class="badge badge-info badge-fs-1-p-sm-md">
+            <span id="percentageValue" class="badge bg-info badge-fs-1-p-sm-md">
                 {{ control.implementationPercentage }}%
             </span>
         </div>

@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Incident;
 use App\Form\IncidentType;
 use App\Repository\AuditLogRepository;
+use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\IncidentRepository;
 use App\Service\EmailNotificationService;
 use App\Service\IncidentBCMImpactService;
@@ -25,6 +26,7 @@ class IncidentController extends AbstractController
     public function __construct(
         private IncidentRepository $incidentRepository,
         private AuditLogRepository $auditLogRepository,
+        private ComplianceFrameworkRepository $frameworkRepository,
         private EntityManagerInterface $entityManager,
         private EmailNotificationService $emailService,
         private IncidentBCMImpactService $bcmImpactService,
@@ -224,14 +226,32 @@ class IncidentController extends AbstractController
      *
      * Generates a NIS2-compliant incident report according to Article 23
      * of Directive (EU) 2022/2555 for submission to competent authorities.
+     *
+     * Note: Only available when NIS2 framework is installed and active.
      */
     #[Route('/{id}/nis2-report.pdf', name: 'app_incident_nis2_report', requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_USER')]
     public function downloadNis2Report(Request $request, Incident $incident): Response
     {
+        // Check if NIS2 framework exists and is active
+        $nis2Framework = $this->frameworkRepository->findOneBy(['code' => 'NIS2']);
+
+        if (!$nis2Framework || !$nis2Framework->isActive()) {
+            $this->addFlash('warning', $this->translator->trans(
+                'nis2.report_not_available',
+                [],
+                'messages'
+            ) ?: 'NIS2 reporting is not available. The NIS2 framework must be installed and active.');
+            return $this->redirectToRoute('app_incident_show', ['id' => $incident->getId()]);
+        }
+
         // Verify that the incident requires NIS2 reporting
         if (!$incident->requiresNis2Reporting()) {
-            $this->addFlash('warning', 'This incident does not require NIS2 reporting.');
+            $this->addFlash('warning', $this->translator->trans(
+                'nis2.incident_not_reportable',
+                [],
+                'messages'
+            ) ?: 'This incident does not require NIS2 reporting (severity must be high/critical or have cross-border impact).');
             return $this->redirectToRoute('app_incident_show', ['id' => $incident->getId()]);
         }
 

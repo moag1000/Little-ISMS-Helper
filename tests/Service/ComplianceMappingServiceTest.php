@@ -40,6 +40,16 @@ class ComplianceMappingServiceTest extends TestCase
         $this->fulfillmentService = $this->createMock(ComplianceRequirementFulfillmentService::class);
         $this->tenantContext = $this->createMock(TenantContext::class);
 
+        // Mock getCurrentTenant to return a Tenant entity
+        $mockTenant = $this->createMock(\App\Entity\Tenant::class);
+        $mockTenant->method('getId')->willReturn(1);
+        $this->tenantContext->method('getCurrentTenant')->willReturn($mockTenant);
+
+        // Mock fulfillmentService to return a ComplianceRequirementFulfillment entity
+        $mockFulfillment = $this->createMock(\App\Entity\ComplianceRequirementFulfillment::class);
+        $mockFulfillment->method('getFulfillmentPercentage')->willReturn(0);
+        $this->fulfillmentService->method('getOrCreateFulfillment')->willReturn($mockFulfillment);
+
         $this->service = new ComplianceMappingService(
             $this->controlRepo,
             $this->assetRepo,
@@ -107,7 +117,7 @@ class ComplianceMappingServiceTest extends TestCase
         $requirement = $this->createMock(ComplianceRequirement::class);
         $requirement->method('getRequirementId')->willReturn('REQ-001');
         $requirement->method('getTitle')->willReturn('Test Requirement');
-        $requirement->method('getFulfillmentPercentage')->willReturn(0);
+        // Note: getFulfillmentPercentage() doesn't exist - fulfillment is calculated by ComplianceRequirementFulfillmentService
         $requirement->method('getDataSourceMapping')->willReturn(null);
         $requirement->method('getMappedControls')->willReturn(new ArrayCollection());
 
@@ -137,7 +147,6 @@ class ComplianceMappingServiceTest extends TestCase
         $requirement = $this->createMock(ComplianceRequirement::class);
         $requirement->method('getRequirementId')->willReturn('REQ-001');
         $requirement->method('getTitle')->willReturn('Test Requirement');
-        $requirement->method('getFulfillmentPercentage')->willReturn(65);
         $requirement->method('getDataSourceMapping')->willReturn([]);
         $requirement->method('getMappedControls')->willReturn(new ArrayCollection([$control1, $control2]));
 
@@ -155,7 +164,6 @@ class ComplianceMappingServiceTest extends TestCase
         $requirement = $this->createMock(ComplianceRequirement::class);
         $requirement->method('getRequirementId')->willReturn('REQ-002');
         $requirement->method('getTitle')->willReturn('Asset Requirement');
-        $requirement->method('getFulfillmentPercentage')->willReturn(50);
         $requirement->method('getDataSourceMapping')->willReturn([
             'asset_types' => ['server', 'database']
         ]);
@@ -191,7 +199,6 @@ class ComplianceMappingServiceTest extends TestCase
         $requirement = $this->createMock(ComplianceRequirement::class);
         $requirement->method('getRequirementId')->willReturn('REQ-003');
         $requirement->method('getTitle')->willReturn('BCM Requirement');
-        $requirement->method('getFulfillmentPercentage')->willReturn(75);
         $requirement->method('getDataSourceMapping')->willReturn(['bcm_required' => true]);
         $requirement->method('getMappedControls')->willReturn(new ArrayCollection());
 
@@ -213,7 +220,6 @@ class ComplianceMappingServiceTest extends TestCase
         $requirement = $this->createMock(ComplianceRequirement::class);
         $requirement->method('getRequirementId')->willReturn('REQ-004');
         $requirement->method('getTitle')->willReturn('Incident Requirement');
-        $requirement->method('getFulfillmentPercentage')->willReturn(60);
         $requirement->method('getDataSourceMapping')->willReturn(['incident_management' => true]);
         $requirement->method('getMappedControls')->willReturn(new ArrayCollection());
 
@@ -242,7 +248,6 @@ class ComplianceMappingServiceTest extends TestCase
         $requirement = $this->createMock(ComplianceRequirement::class);
         $requirement->method('getRequirementId')->willReturn('REQ-005');
         $requirement->method('getTitle')->willReturn('Audit Requirement');
-        $requirement->method('getFulfillmentPercentage')->willReturn(80);
         $requirement->method('getDataSourceMapping')->willReturn(['audit_evidence' => true]);
         $requirement->method('getMappedControls')->willReturn(new ArrayCollection());
 
@@ -277,7 +282,6 @@ class ComplianceMappingServiceTest extends TestCase
         $requirement = $this->createMock(ComplianceRequirement::class);
         $requirement->method('getRequirementId')->willReturn('REQ-006');
         $requirement->method('getTitle')->willReturn('Multi-Source Requirement');
-        $requirement->method('getFulfillmentPercentage')->willReturn(90);
         $requirement->method('getDataSourceMapping')->willReturn([
             'asset_types' => ['server'],
             'bcm_required' => true,
@@ -310,7 +314,6 @@ class ComplianceMappingServiceTest extends TestCase
         $requirement = $this->createMock(ComplianceRequirement::class);
         $requirement->method('getRequirementId')->willReturn('REQ-007');
         $requirement->method('getTitle')->willReturn('Medium Confidence');
-        $requirement->method('getFulfillmentPercentage')->willReturn(50);
         $requirement->method('getDataSourceMapping')->willReturn([
             'asset_types' => ['server'],
             'bcm_required' => true
@@ -333,7 +336,6 @@ class ComplianceMappingServiceTest extends TestCase
         $requirement = $this->createMock(ComplianceRequirement::class);
         $requirement->method('getRequirementId')->willReturn('REQ-008');
         $requirement->method('getTitle')->willReturn('Low Confidence');
-        $requirement->method('getFulfillmentPercentage')->willReturn(20);
         $requirement->method('getDataSourceMapping')->willReturn([
             'asset_types' => ['server'],
             'bcm_required' => true,
@@ -379,7 +381,6 @@ class ComplianceMappingServiceTest extends TestCase
         $requirement = $this->createMock(ComplianceRequirement::class);
         $requirement->method('getRequirementId')->willReturn('REQ-009');
         $requirement->method('getTitle')->willReturn('No Sources');
-        $requirement->method('getFulfillmentPercentage')->willReturn(0);
         $requirement->method('getDataSourceMapping')->willReturn(null);
         $requirement->method('getMappedControls')->willReturn(new ArrayCollection());
 
@@ -402,7 +403,6 @@ class ComplianceMappingServiceTest extends TestCase
         $requirement = $this->createMock(ComplianceRequirement::class);
         $requirement->method('getRequirementId')->willReturn('REQ-010');
         $requirement->method('getTitle')->willReturn('Multi-Source Value');
-        $requirement->method('getFulfillmentPercentage')->willReturn(80);
         $requirement->method('getDataSourceMapping')->willReturn([
             'asset_types' => ['server'],
             'bcm_required' => true,
@@ -428,7 +428,6 @@ class ComplianceMappingServiceTest extends TestCase
         $requirement = $this->createMock(ComplianceRequirement::class);
         $requirement->method('getRequirementId')->willReturn('REQ-011');
         $requirement->method('getTitle')->willReturn('No Controls');
-        $requirement->method('getFulfillmentPercentage')->willReturn(0);
         $requirement->method('getDataSourceMapping')->willReturn([]);
         $requirement->method('getMappedControls')->willReturn(new ArrayCollection());
 
@@ -443,7 +442,6 @@ class ComplianceMappingServiceTest extends TestCase
         $requirement = $this->createMock(ComplianceRequirement::class);
         $requirement->method('getRequirementId')->willReturn('REQ-012');
         $requirement->method('getTitle')->willReturn('No Assets');
-        $requirement->method('getFulfillmentPercentage')->willReturn(0);
         $requirement->method('getDataSourceMapping')->willReturn(['asset_types' => ['server']]);
         $requirement->method('getMappedControls')->willReturn(new ArrayCollection());
 
@@ -462,7 +460,6 @@ class ComplianceMappingServiceTest extends TestCase
         $requirement = $this->createMock(ComplianceRequirement::class);
         $requirement->method('getRequirementId')->willReturn('REQ-013');
         $requirement->method('getTitle')->willReturn('No BCM');
-        $requirement->method('getFulfillmentPercentage')->willReturn(0);
         $requirement->method('getDataSourceMapping')->willReturn(['bcm_required' => true]);
         $requirement->method('getMappedControls')->willReturn(new ArrayCollection());
 
@@ -483,7 +480,6 @@ class ComplianceMappingServiceTest extends TestCase
         $requirement = $this->createMock(ComplianceRequirement::class);
         $requirement->method('getRequirementId')->willReturn('REQ-014');
         $requirement->method('getTitle')->willReturn('No Incidents');
-        $requirement->method('getFulfillmentPercentage')->willReturn(0);
         $requirement->method('getDataSourceMapping')->willReturn(['incident_management' => true]);
         $requirement->method('getMappedControls')->willReturn(new ArrayCollection());
 
@@ -503,7 +499,6 @@ class ComplianceMappingServiceTest extends TestCase
         $requirement = $this->createMock(ComplianceRequirement::class);
         $requirement->method('getRequirementId')->willReturn('REQ-015');
         $requirement->method('getTitle')->willReturn('No Audits');
-        $requirement->method('getFulfillmentPercentage')->willReturn(0);
         $requirement->method('getDataSourceMapping')->willReturn(['audit_evidence' => true]);
         $requirement->method('getMappedControls')->willReturn(new ArrayCollection());
 

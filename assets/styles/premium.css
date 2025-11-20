@@ -104,6 +104,15 @@
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
 }
 
+.hero-icon {
+    font-size: 15rem;
+    color: rgba(255, 255, 255, 0.2);
+}
+
+[data-theme="dark"] .hero-icon {
+    color: rgba(255, 255, 255, 0.1);
+}
+
 /* ===============================
    Dashboard Widgets
    =============================== */
