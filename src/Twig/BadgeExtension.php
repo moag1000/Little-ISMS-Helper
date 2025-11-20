@@ -134,6 +134,8 @@ class BadgeExtension extends AbstractExtension
             new TwigFunction('badge_action', [$this, 'getActionBadgeClass']),
             new TwigFunction('badge_classification', [$this, 'getClassificationBadgeClass']),
             new TwigFunction('badge_score', [$this, 'getScoreBadgeClass']),
+            new TwigFunction('badge_completion', [$this, 'getCompletionBadgeClass']),
+            new TwigFunction('badge_priority', [$this, 'getPriorityBadgeClass']),
         ];
     }
 
@@ -241,6 +243,54 @@ class BadgeExtension extends AbstractExtension
             $color = 'success';
         }
 
+        return "badge bg-{$color}";
+    }
+
+    /**
+     * Get Bootstrap badge class for completion/fulfillment percentage
+     *
+     * Maps completion percentages to semantic colors (inverted from score):
+     * - 100%: success (green) - fully complete
+     * - 75-99%: info (blue) - mostly complete
+     * - 50-74%: warning (yellow) - partially complete
+     * - 0-49%: danger (red) - incomplete
+     *
+     * @param int|float $percentage Completion percentage (0-100)
+     * @return string Bootstrap badge class
+     */
+    public function getCompletionBadgeClass(int|float $percentage): string
+    {
+        if ($percentage >= 100) {
+            $color = 'success';
+        } elseif ($percentage >= 75) {
+            $color = 'info';
+        } elseif ($percentage >= 50) {
+            $color = 'warning';
+        } else {
+            $color = 'danger';
+        }
+
+        return "badge bg-{$color}";
+    }
+
+    /**
+     * Get Bootstrap badge class for priority level
+     *
+     * @param string $priority Priority level (critical/high/medium/low)
+     * @return string Bootstrap badge class
+     */
+    public function getPriorityBadgeClass(string $priority): string
+    {
+        $priority = strtolower($priority);
+
+        $priorityMap = [
+            'critical' => 'danger',
+            'high' => 'warning',
+            'medium' => 'info',
+            'low' => 'secondary',
+        ];
+
+        $color = $priorityMap[$priority] ?? 'secondary';
         return "badge bg-{$color}";
     }
 }

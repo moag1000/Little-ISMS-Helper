@@ -48,8 +48,7 @@
                         </div>
                         <div class="col-md-6">
                             <p><strong>Priority:</strong>
-                                {% set priorityClass = requirement.priority == 'critical' ? 'danger' : (requirement.priority == 'high' ? 'warning' : 'secondary') %}
-                                <span class="badge bg-{{ priorityClass }}">{{ requirement.priority }}</span>
+                                <span class="{{ badge_priority(requirement.priority) }}">{{ requirement.priority }}</span>
                             </p>
                             <p><strong>Type:</strong> <span class="badge bg-info">{{ requirement.requirementType }}</span></p>
                             <p><strong>Applicable:</strong>
@@ -129,7 +128,6 @@
                             {% for subReq in requirement.detailedRequirements %}
                                 {% set subFulfillment = sub_requirement_fulfillments[subReq.id] %}
                                 {% set subPct = subFulfillment ? subFulfillment.fulfillmentPercentage : 0 %}
-                                {% set subBadge = subPct >= 100 ? 'success' : (subPct >= 75 ? 'info' : (subPct >= 50 ? 'warning' : 'danger')) %}
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
                                     <div>
                                         <strong>{{ subReq.requirementId }}</strong> - {{ subReq.title }}
@@ -137,7 +135,7 @@
                                         <small class="text-muted">{{ subReq.description|u.truncate(100, '...') }}</small>
                                     </div>
                                     <div>
-                                        <span class="badge bg-{{ subBadge }} rounded-pill">
+                                        <span class="{{ badge_completion(subPct) }} rounded-pill">
                                             {{ subPct }}%
                                         </span>
                                     </div>
@@ -165,8 +163,7 @@
 
                     <div class="text-center mb-3">
                         <div class="progress" style="height: 30px;">
-                            {% set statusBadge = fulfillment.fulfillmentPercentage >= 100 ? 'success' : (fulfillment.fulfillmentPercentage >= 75 ? 'info' : (fulfillment.fulfillmentPercentage >= 50 ? 'warning' : 'danger')) %}
-                            <div class="progress-bar bg-{{ statusBadge }}"
+                            <div class="progress-bar {{ badge_completion(fulfillment.fulfillmentPercentage)|replace({'badge ': ''}) }}"
                                  role="progressbar"
                                  style="width: {{ fulfillment.fulfillmentPercentage }}%"
                                  aria-valuenow="{{ fulfillment.fulfillmentPercentage }}"
@@ -175,7 +172,7 @@
                                 <strong>{{ fulfillment.fulfillmentPercentage }}%</strong>
                             </div>
                         </div>
-                        <small class="text-muted">Status: <span class="badge bg-{{ statusBadge }}">{{ fulfillment.status }}</span></small>
+                        <small class="text-muted">Status: <span class="{{ badge_completion(fulfillment.fulfillmentPercentage) }}">{{ fulfillment.status }}</span></small>
                     </div>
 
                     {% if calculated_fulfillment != fulfillment.fulfillmentPercentage %}
