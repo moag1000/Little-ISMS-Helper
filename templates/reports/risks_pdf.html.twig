@@ -56,9 +56,9 @@
                 <td>{{ risk.impact }}</td>
                 <td><span class="score-badge score-{{ riskLevel }}">{{ risk.riskScore }}</span></td>
                 <td>{{ riskLevel|upper }}</td>
-                <td>{{ risk.treatmentPlan|slice(0, 25)|default('-') }}{% if risk.treatmentPlan|length > 25 %}...{% endif %}</td>
+                <td>{{ risk.treatmentDescription|slice(0, 25)|default('-') }}{% if risk.treatmentDescription|length > 25 %}...{% endif %}</td>
                 <td>{{ risk.status }}</td>
-                <td>{{ risk.owner ? risk.owner.email|slice(0, 20) : '-' }}</td>
+                <td>{{ risk.riskOwner ? risk.riskOwner.email|slice(0, 20) : '-' }}</td>
             </tr>
             {% endfor %}
         </tbody>
