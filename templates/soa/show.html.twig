@@ -7,7 +7,7 @@
     <div>
         <h1>{{ control.controlId }}: {{ control.name }}</h1>
         <div class="mt-2">
-            <span class="badge badge-info">{{ control.category }}</span>
+            <span class="badge bg-info">{{ control.category }}</span>
         </div>
     </div>
     <div class="button-group">
@@ -35,7 +35,7 @@
         <div class="stat-item">
             <strong class="fs-15">
                 {% if control.applicable %}
-                    <span class="badge badge-success fs-12">✓ Anwendbar</span>
+                    <span class="badge bg-success fs-12">✓ Anwendbar</span>
                 {% else %}
                     <span class="badge badge-neutral-lg">✗ Nicht anwendbar</span>
                 {% endif %}
@@ -47,11 +47,11 @@
         <div class="stat-item">
             <strong class="fs-15">
                 {% if control.implementationStatus == 'implemented' %}
-                    <span class="badge badge-success fs-12">✅ Implementiert</span>
+                    <span class="badge bg-success fs-12">✅ Implementiert</span>
                 {% elseif control.implementationStatus == 'in_progress' %}
-                    <span class="badge badge-warning fs-12">🔄 In Arbeit</span>
+                    <span class="badge bg-warning fs-12">🔄 In Arbeit</span>
                 {% elseif control.implementationStatus == 'not_started' %}
-                    <span class="badge badge-danger fs-12">⏸ Nicht begonnen</span>
+                    <span class="badge bg-danger fs-12">⏸ Nicht begonnen</span>
                 {% else %}
                     <span class="badge badge-neutral-lg">N/A</span>
                 {% endif %}
@@ -147,7 +147,7 @@
         {% for asset in control.protectedAssets %}
             <div class="data-reuse-item">
                 <strong>{{ asset.name }}</strong>
-                <span class="badge badge-info">{{ asset.assetType }}</span>
+                <span class="badge bg-info">{{ asset.assetType }}</span>
                 <small>CIA: {{ asset.confidentialityValue }}/{{ asset.integrityValue }}/{{ asset.availabilityValue }}</small>
             </div>
         {% endfor %}
@@ -164,7 +164,7 @@
         {% for risk in control.risks %}
             <div class="data-reuse-item">
                 <strong>{{ risk.title }}</strong>
-                <span class="badge badge-risk-{{ risk.inherentRiskLevel >= 16 ? 'high' : (risk.inherentRiskLevel >= 9 ? 'medium' : 'low') }}">
+                <span class="{{ badge_score(risk.inherentRiskLevel, 16, 9) }}">
                     Risk Level: {{ risk.inherentRiskLevel }}
                 </span>
                 <small>Status: {{ risk.status|upper }}</small>
@@ -188,7 +188,7 @@
         {% for incident in control.incidents %}
             <div class="data-reuse-item">
                 <strong>{{ incident.title }}</strong>
-                <span class="badge badge-severity-{{ incident.severity }}">
+                <span class="{{ badge_severity(incident.severity) }}">
                     {{ incident.severity|upper }}
                 </span>
                 <small>{{ incident.detectedAt|date('Y-m-d') }}</small>
@@ -212,7 +212,7 @@
         {% for training in control.trainings %}
             <div class="data-reuse-item">
                 <strong>{{ training.title }}</strong>
-                <span class="badge badge-{{ training.status }}">{{ training.status|upper }}</span>
+                <span class="{{ badge_status(training.status) }}">{{ training.status|upper }}</span>
                 {% if training.completionDate %}
                     <small>Abgeschlossen: {{ training.completionDate|date('Y-m-d') }}</small>
                 {% endif %}
