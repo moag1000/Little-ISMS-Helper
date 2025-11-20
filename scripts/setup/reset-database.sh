@@ -240,134 +240,186 @@ empty_database() {
         done
         DROP_SQL="$DROP_SQL SET FOREIGN_KEY_CHECKS = 1;"
 
-            # Execute all DROP statements in one go
-            info "Executing DROP statements for all tables..."
-            DROP_OUTPUT=$(php bin/console dbal:run-sql "$DROP_SQL" 2>&1)
-            DROP_EXIT=$?
+        # Execute all DROP statements in one go
+        info "Executing DROP statements for all tables..."
+        DROP_OUTPUT=$(php bin/console dbal:run-sql "$DROP_SQL" 2>&1)
+        DROP_EXIT=$?
 
-            if [ $DROP_EXIT -eq 0 ]; then
-                success "All tables dropped successfully"
+        if [ $DROP_EXIT -eq 0 ]; then
+            success "All tables dropped successfully"
 
-                # Verify all tables are gone
-                VERIFY_RAW=$(php bin/console dbal:run-sql "SELECT COUNT(*) as count FROM information_schema.tables WHERE table_schema = '$DB_NAME';" 2>&1)
-                REMAINING=$(echo "$VERIFY_RAW" | grep -v "^+" | grep -v "^|" | grep -v "count" | grep -v "^$" | grep -v "rows" | grep -v "\[" | grep -v "!" | grep -v "^-*$" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | grep -v "^$" | grep -v "^-*$" | head -1)
+            # Verify all tables are gone using the same reliable COUNT method
+            VERIFY_RAW=$(php bin/console dbal:run-sql "SELECT COUNT(*) as cnt FROM information_schema.tables WHERE table_schema = '$DB_NAME';" 2>&1)
+            REMAINING=$(echo "$VERIFY_RAW" | grep -oE '[0-9]+' | tail -1)
 
-                if [ "$REMAINING" = "0" ]; then
-                    success "✓ Verified: Database is completely empty (0 tables remaining)"
-                else
-                    warning "⚠ Warning: $REMAINING table(s) may still exist - attempting forced cleanup..."
+            if [ -z "$REMAINING" ]; then
+                REMAINING="unknown"
+            fi
 
-                    # Force drop any remaining tables
-                    REMAINING_TABLES=$(php bin/console dbal:run-sql "SELECT table_name FROM information_schema.tables WHERE table_schema = '$DB_NAME';" 2>&1 | grep -v "^+" | grep -v "^|" | grep -v "table_name" | grep -v "^$" | grep -v "rows" | grep -v "\[" | grep -v "!" | grep -v "^-*$" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | grep -v "^$")
-
-                    if [ ! -z "$REMAINING_TABLES" ]; then
-                        FORCE_DROP="SET FOREIGN_KEY_CHECKS = 0;"
-                        while IFS= read -r TABLE; do
-                            TABLE=$(echo "$TABLE" | xargs)
-                            if [ ! -z "$TABLE" ]; then
-                                FORCE_DROP="$FORCE_DROP DROP TABLE IF EXISTS \`$TABLE\`;"
-                                info "  Force dropping: $TABLE"
-                            fi
-                        done <<< "$REMAINING_TABLES"
-                        FORCE_DROP="$FORCE_DROP SET FOREIGN_KEY_CHECKS = 1;"
-                        php bin/console dbal:run-sql "$FORCE_DROP" 2>&1 > /dev/null
-                        success "Forced cleanup completed"
-                    fi
-                fi
+            if [ "$REMAINING" = "0" ]; then
+                success "✓ Verified: Database is completely empty (0 tables remaining)"
             else
-                error "Failed to drop tables: $DROP_OUTPUT"
-                error "Attempting alternative cleanup method..."
+                warning "⚠ Warning: $REMAINING table(s) still exist - attempting forced cleanup..."
 
-                # Alternative: Drop database and recreate (more aggressive)
-                warning "Falling back to drop/create database..."
-                php bin/console doctrine:database:drop --force 2>&1 && \
-                php bin/console doctrine:database:create 2>&1
+                # Get remaining tables using GROUP_CONCAT again
+                REMAINING_LIST_RAW=$(php bin/console dbal:run-sql "SELECT GROUP_CONCAT(table_name SEPARATOR '|') as tables FROM information_schema.tables WHERE table_schema = '$DB_NAME';" 2>&1)
+                REMAINING_LIST=$(echo "$REMAINING_LIST_RAW" | grep -v "^\[" | grep -v "^+" | grep -v "^-" | grep -v "tables" | grep -v "rows affected" | grep "|" | head -1)
 
-                if [ $? -eq 0 ]; then
-                    success "Database dropped and recreated successfully"
-                else
-                    error "Failed to drop/create database"
-                    return 1
+                if [ ! -z "$REMAINING_LIST" ]; then
+                    IFS='|' read -ra REMAINING_TABLES <<< "$REMAINING_LIST"
+
+                    FORCE_DROP="SET FOREIGN_KEY_CHECKS = 0;"
+                    for TABLE in "${REMAINING_TABLES[@]}"; do
+                        TABLE=$(echo "$TABLE" | xargs)
+                        if [ ! -z "$TABLE" ]; then
+                            FORCE_DROP="$FORCE_DROP DROP TABLE IF EXISTS \`$TABLE\`;"
+                            info "  Force dropping: $TABLE"
+                        fi
+                    done
+                    FORCE_DROP="$FORCE_DROP SET FOREIGN_KEY_CHECKS = 1;"
+
+                    php bin/console dbal:run-sql "$FORCE_DROP" 2>&1 > /dev/null
+                    success "Forced cleanup completed"
+
+                    # Final verification
+                    FINAL_COUNT_RAW=$(php bin/console dbal:run-sql "SELECT COUNT(*) as cnt FROM information_schema.tables WHERE table_schema = '$DB_NAME';" 2>&1)
+                    FINAL_COUNT=$(echo "$FINAL_COUNT_RAW" | grep -oE '[0-9]+' | tail -1)
+
+                    if [ "$FINAL_COUNT" = "0" ]; then
+                        success "✓ Final verification: Database is now empty"
+                    else
+                        error "✗ Still $FINAL_COUNT table(s) remaining - falling back to drop/create"
+                        php bin/console doctrine:database:drop --force 2>&1 > /dev/null && \
+                        php bin/console doctrine:database:create 2>&1 > /dev/null
+                        success "Database dropped and recreated"
+                    fi
                 fi
             fi
         else
-            success "Database is already empty (no tables found)"
+            error "Failed to drop tables: $DROP_OUTPUT"
+            error "Attempting alternative cleanup method..."
+
+            # Alternative: Drop database and recreate (more aggressive)
+            warning "Falling back to drop/create database..."
+            php bin/console doctrine:database:drop --force 2>&1 && \
+            php bin/console doctrine:database:create 2>&1
+
+            if [ $? -eq 0 ]; then
+                success "Database dropped and recreated successfully"
+            else
+                error "Failed to drop/create database"
+                return 1
+            fi
         fi
     elif [ "$DB_TYPE" = "postgresql" ]; then
         info "Dropping PostgreSQL database tables (will be recreated by migrations)..."
 
-        # Get ALL table names including doctrine_migration_versions
-        TABLES_RAW=$(php bin/console dbal:run-sql "SELECT tablename FROM pg_tables WHERE schemaname = 'public' ORDER BY tablename;" 2>&1)
+        # Use a more reliable method to count tables first
+        TABLE_COUNT_RAW=$(php bin/console dbal:run-sql "SELECT COUNT(*) as cnt FROM pg_tables WHERE schemaname = 'public';" 2>&1)
+        TABLE_COUNT=$(echo "$TABLE_COUNT_RAW" | grep -oE '[0-9]+' | tail -1)
 
-        # Extract table names from output (skip header lines, status messages, etc.)
-        # Filter status messages that may have leading spaces, then trim whitespace
-        TABLES=$(echo "$TABLES_RAW" | grep -v "^+" | grep -v "^|" | grep -v "tablename" | grep -v "^$" | grep -v "rows" | grep -v "\[" | grep -v "!" | grep -v "^-*$" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | grep -v "^$" | grep -v "^-*$")
+        if [ -z "$TABLE_COUNT" ] || [ "$TABLE_COUNT" = "0" ]; then
+            success "Database is already empty (no tables found)"
+            return 0
+        fi
 
-        if [ ! -z "$TABLES" ]; then
-            TABLE_COUNT=$(echo "$TABLES" | wc -l | xargs)
-            info "Found $TABLE_COUNT tables to drop (including migration history)"
+        info "Found $TABLE_COUNT tables to drop (including migration history)"
 
-            # Build a single SQL statement with all DROP commands
-            # CASCADE ensures all dependent objects are dropped too
-            DROP_SQL=""
-            while IFS= read -r TABLE; do
-                TABLE=$(echo "$TABLE" | xargs)
-                if [ ! -z "$TABLE" ]; then
-                    DROP_SQL="$DROP_SQL DROP TABLE IF EXISTS \"$TABLE\" CASCADE;"
-                fi
-            done <<< "$TABLES"
+        # Get ALL table names using array_agg (PostgreSQL equivalent of GROUP_CONCAT)
+        TABLES_LIST_RAW=$(php bin/console dbal:run-sql "SELECT string_agg(tablename, '|') as tables FROM pg_tables WHERE schemaname = 'public';" 2>&1)
 
-            # Execute all DROP statements in one go
-            info "Executing DROP statements for all tables..."
-            DROP_OUTPUT=$(php bin/console dbal:run-sql "$DROP_SQL" 2>&1)
-            DROP_EXIT=$?
+        # Extract the actual list of tables
+        TABLES_LIST=$(echo "$TABLES_LIST_RAW" | grep -v "^\[" | grep -v "^+" | grep -v "^-" | grep -v "tables" | grep -v "rows" | grep "|" | head -1)
 
-            if [ $DROP_EXIT -eq 0 ]; then
-                success "All tables dropped successfully"
+        if [ -z "$TABLES_LIST" ]; then
+            error "Could not extract table names from database"
+            return 1
+        fi
 
-                # Verify all tables are gone
-                VERIFY_RAW=$(php bin/console dbal:run-sql "SELECT COUNT(*) as count FROM pg_tables WHERE schemaname = 'public';" 2>&1)
-                REMAINING=$(echo "$VERIFY_RAW" | grep -v "^+" | grep -v "^|" | grep -v "count" | grep -v "^$" | grep -v "rows" | grep -v "\[" | grep -v "!" | grep -v "^-*$" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | grep -v "^$" | grep -v "^-*$" | head -1)
+        # Convert pipe-separated list to array
+        IFS='|' read -ra TABLES <<< "$TABLES_LIST"
 
-                if [ "$REMAINING" = "0" ]; then
-                    success "✓ Verified: Database is completely empty (0 tables remaining)"
-                else
-                    warning "⚠ Warning: $REMAINING table(s) may still exist - attempting forced cleanup..."
+        # Build a single SQL statement with all DROP commands
+        # CASCADE ensures all dependent objects are dropped too
+        DROP_SQL=""
+        for TABLE in "${TABLES[@]}"; do
+            # Remove any leading/trailing whitespace
+            TABLE=$(echo "$TABLE" | xargs)
+            if [ ! -z "$TABLE" ]; then
+                DROP_SQL="$DROP_SQL DROP TABLE IF EXISTS \"$TABLE\" CASCADE;"
+                info "  Will drop: $TABLE"
+            fi
+        done
 
-                    # Force drop any remaining tables
-                    REMAINING_TABLES=$(php bin/console dbal:run-sql "SELECT tablename FROM pg_tables WHERE schemaname = 'public';" 2>&1 | grep -v "^+" | grep -v "^|" | grep -v "tablename" | grep -v "^$" | grep -v "rows" | grep -v "\[" | grep -v "!" | grep -v "^-*$" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | grep -v "^$")
+        # Execute all DROP statements in one go
+        info "Executing DROP statements for all tables..."
+        DROP_OUTPUT=$(php bin/console dbal:run-sql "$DROP_SQL" 2>&1)
+        DROP_EXIT=$?
 
-                    if [ ! -z "$REMAINING_TABLES" ]; then
-                        FORCE_DROP=""
-                        while IFS= read -r TABLE; do
-                            TABLE=$(echo "$TABLE" | xargs)
-                            if [ ! -z "$TABLE" ]; then
-                                FORCE_DROP="$FORCE_DROP DROP TABLE IF EXISTS \"$TABLE\" CASCADE;"
-                                info "  Force dropping: $TABLE"
-                            fi
-                        done <<< "$REMAINING_TABLES"
-                        php bin/console dbal:run-sql "$FORCE_DROP" 2>&1 > /dev/null
-                        success "Forced cleanup completed"
-                    fi
-                fi
+        if [ $DROP_EXIT -eq 0 ]; then
+            success "All tables dropped successfully"
+
+            # Verify all tables are gone using the same reliable COUNT method
+            VERIFY_RAW=$(php bin/console dbal:run-sql "SELECT COUNT(*) as cnt FROM pg_tables WHERE schemaname = 'public';" 2>&1)
+            REMAINING=$(echo "$VERIFY_RAW" | grep -oE '[0-9]+' | tail -1)
+
+            if [ -z "$REMAINING" ]; then
+                REMAINING="unknown"
+            fi
+
+            if [ "$REMAINING" = "0" ]; then
+                success "✓ Verified: Database is completely empty (0 tables remaining)"
             else
-                error "Failed to drop tables: $DROP_OUTPUT"
-                error "Attempting alternative cleanup method..."
+                warning "⚠ Warning: $REMAINING table(s) still exist - attempting forced cleanup..."
 
-                # Alternative: Drop database and recreate (more aggressive)
-                warning "Falling back to drop/create database..."
-                php bin/console doctrine:database:drop --force 2>&1 && \
-                php bin/console doctrine:database:create 2>&1
+                # Get remaining tables using string_agg again
+                REMAINING_LIST_RAW=$(php bin/console dbal:run-sql "SELECT string_agg(tablename, '|') as tables FROM pg_tables WHERE schemaname = 'public';" 2>&1)
+                REMAINING_LIST=$(echo "$REMAINING_LIST_RAW" | grep -v "^\[" | grep -v "^+" | grep -v "^-" | grep -v "tables" | grep -v "rows" | grep "|" | head -1)
 
-                if [ $? -eq 0 ]; then
-                    success "Database dropped and recreated successfully"
-                else
-                    error "Failed to drop/create database"
-                    return 1
+                if [ ! -z "$REMAINING_LIST" ]; then
+                    IFS='|' read -ra REMAINING_TABLES <<< "$REMAINING_LIST"
+
+                    FORCE_DROP=""
+                    for TABLE in "${REMAINING_TABLES[@]}"; do
+                        TABLE=$(echo "$TABLE" | xargs)
+                        if [ ! -z "$TABLE" ]; then
+                            FORCE_DROP="$FORCE_DROP DROP TABLE IF EXISTS \"$TABLE\" CASCADE;"
+                            info "  Force dropping: $TABLE"
+                        fi
+                    done
+
+                    php bin/console dbal:run-sql "$FORCE_DROP" 2>&1 > /dev/null
+                    success "Forced cleanup completed"
+
+                    # Final verification
+                    FINAL_COUNT_RAW=$(php bin/console dbal:run-sql "SELECT COUNT(*) as cnt FROM pg_tables WHERE schemaname = 'public';" 2>&1)
+                    FINAL_COUNT=$(echo "$FINAL_COUNT_RAW" | grep -oE '[0-9]+' | tail -1)
+
+                    if [ "$FINAL_COUNT" = "0" ]; then
+                        success "✓ Final verification: Database is now empty"
+                    else
+                        error "✗ Still $FINAL_COUNT table(s) remaining - falling back to drop/create"
+                        php bin/console doctrine:database:drop --force 2>&1 > /dev/null && \
+                        php bin/console doctrine:database:create 2>&1 > /dev/null
+                        success "Database dropped and recreated"
+                    fi
                 fi
             fi
         else
-            success "Database is already empty (no tables found)"
+            error "Failed to drop tables: $DROP_OUTPUT"
+            error "Attempting alternative cleanup method..."
+
+            # Alternative: Drop database and recreate (more aggressive)
+            warning "Falling back to drop/create database..."
+            php bin/console doctrine:database:drop --force 2>&1 && \
+            php bin/console doctrine:database:create 2>&1
+
+            if [ $? -eq 0 ]; then
+                success "Database dropped and recreated successfully"
+            else
+                error "Failed to drop/create database"
+                return 1
+            fi
         fi
     fi
 }
