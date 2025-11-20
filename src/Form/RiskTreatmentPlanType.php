@@ -156,7 +156,7 @@ class RiskTreatmentPlanType extends AbstractType
                 'label' => 'risk_treatment_plan.field.controls',
                 'class' => Control::class,
                 'choice_label' => function(Control $control) {
-                    return $control->getControlId() . ': ' . $control->getTitle();
+                    return $control->getControlId() . ': ' . $control->getName();
                 },
                 'multiple' => true,
                 'required' => false,
