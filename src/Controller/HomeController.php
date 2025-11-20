@@ -87,6 +87,12 @@ class HomeController extends AbstractController
 
         // Risk Review Data (ISO 27001:2022 Clause 6.1.3.d)
         $tenant = $this->tenantContext->getCurrentTenant();
+
+        // Guard: If user has no tenant assigned, show error
+        if (!$tenant) {
+            throw $this->createAccessDeniedException('No tenant assigned to user. Please contact administrator.');
+        }
+
         $overdueReviews = $this->riskReviewService->getOverdueReviews($tenant);
         $upcomingReviews = $this->riskReviewService->getUpcomingReviews($tenant, 30);
 
