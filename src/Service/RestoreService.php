@@ -690,6 +690,28 @@ class RestoreService
 
                     $value = $data[$fieldName] ?? null;
 
+                    // Apply default values for missing fields in Risk entity (backward compatibility)
+                    if ($entityName === 'Risk' && $value === null) {
+                        switch ($fieldName) {
+                            case 'category':
+                                $value = 'operational'; // Default risk category
+                                $this->logger->debug('Using default value for Risk.category', [
+                                    'entity_index' => $index,
+                                    'default' => $value,
+                                ]);
+                                break;
+                            case 'involvesPersonalData':
+                            case 'involvesSpecialCategoryData':
+                            case 'requiresDPIA':
+                                $value = false; // Default: no personal data involved
+                                $this->logger->debug("Using default value for Risk.{$fieldName}", [
+                                    'entity_index' => $index,
+                                    'default' => $value,
+                                ]);
+                                break;
+                        }
+                    }
+
                     // Convert ISO 8601 strings back to DateTime/DateTimeImmutable
                     $type = $metadata->getTypeOfField($fieldName);
                     if (in_array($type, ['datetime', 'datetime_immutable', 'date', 'date_immutable', 'time', 'time_immutable'])) {
