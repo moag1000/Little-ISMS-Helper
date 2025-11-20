@@ -149,14 +149,7 @@
                 <code>{{ document.version }}</code>
             </td>
             <td>
-                {% set statusColors = {
-                    'draft': 'secondary',
-                    'review': 'warning',
-                    'approved': 'success',
-                    'archived': 'info',
-                    'obsolete': 'danger'
-                } %}
-                <span class="badge badge-{{ statusColors[document.status] ?? 'secondary' }}">
+                <span class="{{ badge_status(document.status) }}">
                     {{ ('document.status.' ~ document.status)|trans }}
                 </span>
             </td>

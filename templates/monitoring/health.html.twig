@@ -62,7 +62,7 @@
                     <dl class="row mb-0">
                         <dt class="col-sm-4">Status:</dt>
                         <dd class="col-sm-8">
-                            <span class="badge bg-{{ health_checks.database.status == 'healthy' ? 'success' : 'danger' }}">
+                            <span class="{{ badge_status(health_checks.database.status) }}">
                                 {{ health_checks.database.status|upper }}
                             </span>
                         </dd>
@@ -183,14 +183,14 @@
 
                         <dt class="col-sm-5">Environment:</dt>
                         <dd class="col-sm-7">
-                            <span class="badge bg-{{ health_checks.symfony.environment == 'prod' ? 'success' : 'warning' }}">
+                            <span class="{{ health_checks.symfony.environment == 'prod' ? 'badge bg-success' : 'badge bg-warning' }}">
                                 {{ health_checks.symfony.environment|upper }}
                             </span>
                         </dd>
 
                         <dt class="col-sm-5">Debug Mode:</dt>
                         <dd class="col-sm-7">
-                            <span class="badge bg-{{ health_checks.symfony.debug ? 'warning' : 'success' }}">
+                            <span class="{{ health_checks.symfony.debug ? 'badge bg-warning' : 'badge bg-success' }}">
                                 {{ health_checks.symfony.debug ? 'ON' : 'OFF' }}
                             </span>
                         </dd>
@@ -211,7 +211,7 @@
                     <dl class="row mb-0">
                         <dt class="col-sm-4">Status:</dt>
                         <dd class="col-sm-8">
-                            <span class="badge bg-{{ health_checks.cache.status == 'healthy' ? 'success' : 'danger' }}">
+                            <span class="{{ badge_status(health_checks.cache.status) }}">
                                 {{ health_checks.cache.status|upper }}
                             </span>
                         </dd>
@@ -261,7 +261,7 @@
                     <dl class="row mb-0">
                         <dt class="col-sm-4">Status:</dt>
                         <dd class="col-sm-8">
-                            <span class="badge bg-{{ health_checks.logs.status == 'healthy' ? 'success' : 'danger' }}">
+                            <span class="{{ badge_status(health_checks.logs.status) }}">
                                 {{ health_checks.logs.status|upper }}
                             </span>
                         </dd>
@@ -381,7 +381,7 @@
                     <dl class="row mb-0">
                         <dt class="col-sm-5">Status:</dt>
                         <dd class="col-sm-7">
-                            <span class="badge bg-{{ health_checks.composer.status == 'healthy' ? 'success' : 'danger' }}">
+                            <span class="{{ badge_status(health_checks.composer.status) }}">
                                 {{ health_checks.composer.status|upper }}
                             </span>
                         </dd>
