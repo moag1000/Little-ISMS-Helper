@@ -41,93 +41,139 @@
                     {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
 
                     {# Basic Information #}
-                    <div class="card mb-4">
-                        <div class="card-header bg-light">
-                            <h3 class="mb-0"><i class="bi bi-info-square" aria-hidden="true"></i> {{ 'management_review.section.basic_info'|trans }}</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-8 mb-3">
-                                    {{ form_row(form.title) }}
-                                </div>
-                                <div class="col-md-4 mb-3">
-                                    {{ form_row(form.reviewDate) }}
-                                </div>
-                                <div class="col-md-12 mb-3">
-                                    {{ form_row(form.participants) }}
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    {{ form_row(form.status) }}
-                                </div>
+                    <fieldset class="mb-4">
+                        <legend class="h5 mb-3">
+                            <i class="bi bi-info-square" aria-hidden="true"></i>
+                            {{ 'management_review.section.basic_info'|trans }}
+                        </legend>
+
+                        <div class="row">
+                            <div class="col-md-8">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.title,
+                                    'label': form.title.vars.label|default('management_review.field.title'|trans),
+                                    'required': true
+                                } %}
+                            </div>
+                            <div class="col-md-4">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.reviewDate,
+                                    'label': form.reviewDate.vars.label|default('management_review.field.review_date'|trans)
+                                } %}
+                            </div>
+                            <div class="col-md-12">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.participants,
+                                    'label': form.participants.vars.label|default('management_review.field.participants'|trans)
+                                } %}
+                            </div>
+                            <div class="col-md-6">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.status,
+                                    'label': form.status.vars.label|default('management_review.field.status'|trans)
+                                } %}
                             </div>
                         </div>
-                    </div>
+                    </fieldset>
 
                     {# Inputs to the Review (Clause 9.3.2) #}
-                    <div class="card mb-4">
-                        <div class="card-header bg-light">
-                            <h3 class="mb-0"><i class="bi bi-inbox" aria-hidden="true"></i> {{ 'management_review.section.inputs'|trans }}</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-12 mb-3">
-                                    {{ form_row(form.changesRelevantToISMS) }}
-                                </div>
-                                <div class="col-md-12 mb-3">
-                                    {{ form_row(form.feedbackFromInterestedParties) }}
-                                </div>
-                                <div class="col-md-12 mb-3">
-                                    {{ form_row(form.auditResults) }}
-                                </div>
-                                <div class="col-md-12 mb-3">
-                                    {{ form_row(form.performanceEvaluation) }}
-                                </div>
+                    <fieldset class="mb-4">
+                        <legend class="h5 mb-3">
+                            <i class="bi bi-inbox" aria-hidden="true"></i>
+                            {{ 'management_review.section.inputs'|trans }}
+                        </legend>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.changesRelevantToISMS,
+                                    'label': form.changesRelevantToISMS.vars.label|default('management_review.field.changes_relevant_to_isms'|trans)
+                                } %}
+                            </div>
+                            <div class="col-md-12">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.feedbackFromInterestedParties,
+                                    'label': form.feedbackFromInterestedParties.vars.label|default('management_review.field.feedback_from_interested_parties'|trans)
+                                } %}
+                            </div>
+                            <div class="col-md-12">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.auditResults,
+                                    'label': form.auditResults.vars.label|default('management_review.field.audit_results'|trans)
+                                } %}
+                            </div>
+                            <div class="col-md-12">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.performanceEvaluation,
+                                    'label': form.performanceEvaluation.vars.label|default('management_review.field.performance_evaluation'|trans)
+                                } %}
                             </div>
                         </div>
-                    </div>
+                    </fieldset>
 
                     {# Status of Previous Actions #}
-                    <div class="card mb-4">
-                        <div class="card-header bg-light">
-                            <h3 class="mb-0"><i class="bi bi-arrow-clockwise" aria-hidden="true"></i> {{ 'management_review.section.followup'|trans }}</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-12 mb-3">
-                                    {{ form_row(form.previousReviewActions) }}
-                                </div>
-                                <div class="col-md-12 mb-3">
-                                    {{ form_row(form.nonConformitiesStatus) }}
-                                </div>
-                                <div class="col-md-12 mb-3">
-                                    {{ form_row(form.correctiveActionsStatus) }}
-                                </div>
+                    <fieldset class="mb-4">
+                        <legend class="h5 mb-3">
+                            <i class="bi bi-arrow-clockwise" aria-hidden="true"></i>
+                            {{ 'management_review.section.followup'|trans }}
+                        </legend>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.previousReviewActions,
+                                    'label': form.previousReviewActions.vars.label|default('management_review.field.previous_review_actions'|trans)
+                                } %}
+                            </div>
+                            <div class="col-md-12">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.nonConformitiesStatus,
+                                    'label': form.nonConformitiesStatus.vars.label|default('management_review.field.non_conformities_status'|trans)
+                                } %}
+                            </div>
+                            <div class="col-md-12">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.correctiveActionsStatus,
+                                    'label': form.correctiveActionsStatus.vars.label|default('management_review.field.corrective_actions_status'|trans)
+                                } %}
                             </div>
                         </div>
-                    </div>
+                    </fieldset>
 
                     {# Outputs from the Review (Clause 9.3.3) #}
-                    <div class="card mb-4">
-                        <div class="card-header bg-light">
-                            <h3 class="mb-0"><i class="bi bi-send" aria-hidden="true"></i> {{ 'management_review.section.outputs'|trans }}</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-12 mb-3">
-                                    {{ form_row(form.opportunitiesForImprovement) }}
-                                </div>
-                                <div class="col-md-12 mb-3">
-                                    {{ form_row(form.resourceNeeds) }}
-                                </div>
-                                <div class="col-md-12 mb-3">
-                                    {{ form_row(form.decisions) }}
-                                </div>
-                                <div class="col-md-12 mb-3">
-                                    {{ form_row(form.actionItems) }}
-                                </div>
+                    <fieldset class="mb-4">
+                        <legend class="h5 mb-3">
+                            <i class="bi bi-send" aria-hidden="true"></i>
+                            {{ 'management_review.section.outputs'|trans }}
+                        </legend>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.opportunitiesForImprovement,
+                                    'label': form.opportunitiesForImprovement.vars.label|default('management_review.field.opportunities_for_improvement'|trans)
+                                } %}
+                            </div>
+                            <div class="col-md-12">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.resourceNeeds,
+                                    'label': form.resourceNeeds.vars.label|default('management_review.field.resource_needs'|trans)
+                                } %}
+                            </div>
+                            <div class="col-md-12">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.decisions,
+                                    'label': form.decisions.vars.label|default('management_review.field.decisions'|trans)
+                                } %}
+                            </div>
+                            <div class="col-md-12">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.actionItems,
+                                    'label': form.actionItems.vars.label|default('management_review.field.action_items'|trans)
+                                } %}
                             </div>
                         </div>
-                    </div>
+                    </fieldset>
 
                     {# Form Actions #}
                     <div class="d-flex justify-content-between align-items-center pt-3 border-top">
