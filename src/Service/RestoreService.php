@@ -328,7 +328,7 @@ class RestoreService
                 $this->auditLogger->logImport(
                     'Backup',
                     $totalRestored,
-                    sprintf('Restored backup from %s. Statistics: %s', $backup['metadata']['created_at'], json_encode($this->statistics))
+                    sprintf('Restored backup from %s. Statistics: %s', $backup['metadata']['created_at'] ?? 'unknown', json_encode($this->statistics))
                 );
             }
 
