@@ -159,13 +159,7 @@
                 <span class="badge bg-info">{{ ('bcm.type.' ~ asset.type)|trans }}</span>
             </td>
             <td>
-                {% set criticalityColors = {
-                    'critical': 'danger',
-                    'high': 'warning',
-                    'medium': 'info',
-                    'low': 'secondary'
-                } %}
-                <span class="badge badge-{{ criticalityColors[asset.criticality] ?? 'secondary' }}">
+                <span class="{{ badge_severity(asset.criticality) }}">
                     {{ ('bcm.criticality.' ~ asset.criticality)|trans }}
                 </span>
             </td>
@@ -290,13 +284,7 @@
                 <br><small class="text-muted">{{ item.description }}</small>
             </div>
             <div>
-                {% set priorityColors = {
-                    'critical': 'danger',
-                    'high': 'warning',
-                    'medium': 'info',
-                    'low': 'secondary'
-                } %}
-                <span class="badge badge-{{ priorityColors[item.priority] ?? 'secondary' }}">
+                <span class="{{ badge_priority(item.priority) }}">
                     {{ ('bcm.priority.' ~ item.priority)|trans }}
                 </span>
             </div>

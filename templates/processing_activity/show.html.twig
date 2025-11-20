@@ -53,12 +53,7 @@
             <div class="card">
                 <div class="card-body text-center">
                     <h6 class="text-muted mb-2">Status</h6>
-                    {% set status_class = {
-                        'draft': 'secondary',
-                        'active': 'success',
-                        'archived': 'dark'
-                    }[processing_activity.status] %}
-                    <h3 class="mb-0"><span class="badge bg-{{ status_class }}">{{ processing_activity.status|upper }}</span></h3>
+                    <h3 class="mb-0"><span class="{{ badge_status(processing_activity.status) }}">{{ processing_activity.status|upper }}</span></h3>
                 </div>
             </div>
         </div>
@@ -67,13 +62,7 @@
                 <div class="card-body text-center">
                     <h6 class="text-muted mb-2">Risk Level</h6>
                     {% if processing_activity.riskLevel %}
-                        {% set risk_class = {
-                            'low': 'success',
-                            'medium': 'info',
-                            'high': 'warning',
-                            'critical': 'danger'
-                        }[processing_activity.riskLevel] %}
-                        <h3 class="mb-0"><span class="badge bg-{{ risk_class }}">{{ processing_activity.riskLevel|upper }}</span></h3>
+                        <h3 class="mb-0"><span class="{{ badge_risk(processing_activity.riskLevel) }}">{{ processing_activity.riskLevel|upper }}</span></h3>
                     {% else %}
                         <h3 class="mb-0 text-muted">—</h3>
                     {% endif %}
