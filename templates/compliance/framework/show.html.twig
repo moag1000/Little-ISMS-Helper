@@ -152,6 +152,8 @@
                                         <div class="accordion-body">
                                             <div class="list-group">
                                                 {% for req in requirements %}
+                                                    {% set reqFulfillment = requirement_fulfillments[req.id] %}
+                                                    {% set reqPct = reqFulfillment ? reqFulfillment.fulfillmentPercentage : 0 %}
                                                     <a href="{{ path('app_compliance_requirement_show', {id: req.id}) }}"
                                                        class="list-group-item list-group-item-action">
                                                         <div class="d-flex justify-content-between align-items-center">
@@ -159,8 +161,8 @@
                                                                 <strong>{{ req.requirementId }}</strong> - {{ req.title }}
                                                             </div>
                                                             <div>
-                                                                <span class="badge bg-{{ req.fulfillmentStatusBadge }}">
-                                                                    {{ req.fulfillmentPercentage }}%
+                                                                <span class="{{ badge_completion(reqPct) }}">
+                                                                    {{ reqPct }}%
                                                                 </span>
                                                             </div>
                                                         </div>

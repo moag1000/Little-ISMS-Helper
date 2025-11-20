@@ -28,11 +28,11 @@
             <div class="row">
                 <div class="col-md-5">
                     <h6 class="text-muted">Source Requirement</h6>
-                    <h5><span class="badge badge-primary">{{ mapping.sourceRequirement.framework.code }}</span> {{ mapping.sourceRequirement.requirementId }}</h5>
+                    <h5><span class="badge bg-primary">{{ mapping.sourceRequirement.framework.code }}</span> {{ mapping.sourceRequirement.requirementId }}</h5>
                     <p><strong>{{ mapping.sourceRequirement.title }}</strong></p>
                     <p class="text-muted small">{{ mapping.sourceRequirement.description|slice(0, 200) }}...</p>
                     {% if mapping.sourceRequirement.category %}
-                        <span class="badge badge-info">{{ mapping.sourceRequirement.category }}</span>
+                        <span class="badge bg-info">{{ mapping.sourceRequirement.category }}</span>
                     {% endif %}
                     {% if mapping.sourceRequirement.priority %}
                         <span class="badge badge-{{ mapping.sourceRequirement.priority == 'critical' ? 'danger' : (mapping.sourceRequirement.priority == 'high' ? 'warning' : 'secondary') }}">
@@ -45,11 +45,11 @@
                 </div>
                 <div class="col-md-5">
                     <h6 class="text-muted">Target Requirement</h6>
-                    <h2><span class="badge badge-success">{{ mapping.targetRequirement.framework.code }}</span> {{ mapping.targetRequirement.requirementId }}</h2>
+                    <h2><span class="badge bg-success">{{ mapping.targetRequirement.framework.code }}</span> {{ mapping.targetRequirement.requirementId }}</h2>
                     <p><strong>{{ mapping.targetRequirement.title }}</strong></p>
                     <p class="text-muted small">{{ mapping.targetRequirement.description|slice(0, 200) }}...</p>
                     {% if mapping.targetRequirement.category %}
-                        <span class="badge badge-info">{{ mapping.targetRequirement.category }}</span>
+                        <span class="badge bg-info">{{ mapping.targetRequirement.category }}</span>
                     {% endif %}
                     {% if mapping.targetRequirement.priority %}
                         <span class="badge badge-{{ mapping.targetRequirement.priority == 'critical' ? 'danger' : (mapping.targetRequirement.priority == 'high' ? 'warning' : 'secondary') }}">
@@ -71,7 +71,7 @@
                 <div class="card-body">
                     <div class="mb-3">
                         <small class="text-muted">Original (Heuristik)</small>
-                        <h4><span class="badge badge-secondary">{{ mapping.mappingPercentage }}%</span></h4>
+                        <h4><span class="badge bg-secondary">{{ mapping.mappingPercentage }}%</span></h4>
                     </div>
                     {% if mapping.calculatedPercentage is not null %}
                     <div class="mb-3">
@@ -84,13 +84,13 @@
                     {% if mapping.manualPercentage is not null %}
                     <div>
                         <small class="text-muted">Manuell überschrieben</small>
-                        <h4><span class="badge badge-info">{{ mapping.manualPercentage }}%</span></h4>
+                        <h4><span class="badge bg-info">{{ mapping.manualPercentage }}%</span></h4>
                     </div>
                     {% endif %}
                     <hr>
                     <div>
                         <strong>Final:</strong>
-                        <h3><span class="badge badge-primary">{{ mapping.finalPercentage }}%</span></h3>
+                        <h3><span class="badge bg-primary">{{ mapping.finalPercentage }}%</span></h3>
                     </div>
                 </div>
             </div>
@@ -131,7 +131,7 @@
                     </div>
                     {% if mapping.requiresReview %}
                         <div class="mt-2">
-                            <span class="badge badge-warning">⚠️ Requires Review</span>
+                            <span class="badge bg-warning">⚠️ Requires Review</span>
                         </div>
                     {% endif %}
                 </div>
@@ -209,7 +209,7 @@
                         <span>
                             <span class="badge badge-{{ gap.statusBadgeClass }}">{{ gap.status }}</span>
                             {% if gap.percentageImpact > 0 %}
-                                <span class="badge badge-danger">-{{ gap.percentageImpact }}%</span>
+                                <span class="badge bg-danger">-{{ gap.percentageImpact }}%</span>
                             {% endif %}
                         </span>
                     </div>
@@ -221,7 +221,7 @@
                         <div class="mb-2">
                             <small class="text-muted">Fehlende Keywords:</small><br>
                             {% for keyword in gap.missingKeywords|slice(0, 10) %}
-                                <span class="badge badge-light">{{ keyword }}</span>
+                                <span class="badge bg-light">{{ keyword }}</span>
                             {% endfor %}
                             {% if gap.missingKeywords|length > 10 %}
                                 <span class="text-muted">... +{{ gap.missingKeywords|length - 10 }} mehr</span>
