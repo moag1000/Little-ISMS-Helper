@@ -285,6 +285,7 @@
             </tr>
         {% endblock %}
         {% block table_body %}
+            {% import '_macros/inheritance_badge.html.twig' as inheritance %}
             {% for risk in risks %}
             {% set riskScore = risk.getRiskScore() %}
             {% set residual = risk.getResidualRiskLevel() %}

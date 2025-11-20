@@ -208,6 +208,7 @@
     'theadClass': 'table-light',
     'wrapperClass': 'table-container'
 } %}
+    {% import '_macros/inheritance_badge.html.twig' as inheritance %}
     {% block table_head %}
         <tr>
             <th scope="col" style="min-width: 100px;">Control ID</th>
@@ -220,6 +221,7 @@
         </tr>
     {% endblock %}
     {% block table_body %}
+        {% import '_macros/inheritance_badge.html.twig' as inheritance %}
         {% for control in controls %}
         <tr data-filter-target="filterableRow" data-category="{{ control.category }}" data-status="{{ control.implementationStatus }}">
             <td><strong>{{ control.controlId }}</strong></td>
@@ -228,11 +230,11 @@
                 {{ inheritance.small_badge(control, currentTenant) }}
             </td>
             <td>
-                <span class="badge badge-info">{{ control.category }}</span>
+                <span class="badge bg-info">{{ control.category }}</span>
             </td>
             <td class="text-center">
                 {% if control.applicable %}
-                    <span class="badge badge-success">✓ Ja</span>
+                    <span class="badge bg-success">✓ Ja</span>
                 {% else %}
                     <span class="badge badge-neutral">✗ Nein</span>
                 {% endif %}
@@ -240,11 +242,11 @@
             <td>
                 {% if control.applicable %}
                     {% if control.implementationStatus == 'implemented' %}
-                        <span class="badge badge-success">✅ Implementiert</span>
+                        <span class="badge bg-success">✅ Implementiert</span>
                     {% elseif control.implementationStatus == 'in_progress' %}
-                        <span class="badge badge-warning">🔄 In Arbeit</span>
+                        <span class="badge bg-warning">🔄 In Arbeit</span>
                     {% elseif control.implementationStatus == 'not_started' %}
-                        <span class="badge badge-danger">⏸ Nicht begonnen</span>
+                        <span class="badge bg-danger">⏸ Nicht begonnen</span>
                     {% else %}
                         <span class="badge badge-neutral">N/A</span>
                     {% endif %}

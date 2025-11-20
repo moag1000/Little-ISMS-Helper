@@ -230,6 +230,7 @@
                 {% endblock %}
                 {% block table_body_attrs %}id="documentTableBody"{% endblock %}
                 {% block table_body %}
+                    {% import '_macros/inheritance_badge.html.twig' as inheritance %}
                     {% for document in documents %}
                     <tr class="document-row"
                         data-category="{{ document.category|lower }}"
