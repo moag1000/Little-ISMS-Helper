@@ -3301,6 +3301,11 @@ risk_treatment_plan:
     confirm: 'Behandlungsplan löschen'
 
   section:
+    basic_info: 'Grundinformationen'
+    status_progress: 'Status & Fortschritt'
+    timeline: 'Zeitplan'
+    responsibility_resources: 'Verantwortlichkeit & Ressourcen'
+    controls_implementation: 'Maßnahmen & Umsetzung'
     details: 'Plandetails'
     controls: 'Zugeordnete Maßnahmen'
     history: 'Änderungsverlauf'
