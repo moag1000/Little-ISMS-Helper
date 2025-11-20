@@ -154,17 +154,17 @@
                     <span class="badge bg-secondary">{{ asset.assetType }}</span>
                 </td>
                 <td class="text-center">
-                    <span class="badge bg-{{ asset.confidentiality >= 4 ? 'danger' : (asset.confidentiality >= 3 ? 'warning' : 'success') }}">
+                    <span class="{{ badge_score(asset.confidentiality) }}">
                         {{ asset.confidentiality }}/5
                     </span>
                 </td>
                 <td class="text-center">
-                    <span class="badge bg-{{ asset.integrity >= 4 ? 'danger' : (asset.integrity >= 3 ? 'warning' : 'success') }}">
+                    <span class="{{ badge_score(asset.integrity) }}">
                         {{ asset.integrity }}/5
                     </span>
                 </td>
                 <td class="text-center">
-                    <span class="badge bg-{{ asset.availability >= 4 ? 'danger' : (asset.availability >= 3 ? 'warning' : 'success') }}">
+                    <span class="{{ badge_score(asset.availability) }}">
                         {{ asset.availability }}/5
                     </span>
                 </td>

@@ -47,7 +47,7 @@
     <div class="card">
         <div class="card-header">
             <h2>{{ 'asset.details.title'|trans }}</h2>
-            <span class="badge badge-{{ asset.status }}">{{ asset.status|upper }}</span>
+            <span class="{{ badge_status(asset.status) }}">{{ asset.status|upper }}</span>
         </div>
         <div class="card-content">
             <div class="detail-grid">
@@ -98,8 +98,16 @@
                         <span class="value">{{ asset.totalValue ~ ' EUR' }}</span>
                     </div>
                     <div class="detail-item">
-                        <span class="label">{{ 'asset.label.risk_score'|trans }}</span>
-                        <span class="value">{{ asset.riskScore }}</span>
+                        <span class="label">{{ 'asset.label.risks'|trans }}</span>
+                        <span class="value">
+                            {% if asset.risks|length > 0 %}
+                                <a href="#related-risks" class="{{ badge_score(asset.risks|length, 5, 3) }}">
+                                    {{ asset.risks|length }}
+                                </a>
+                            {% else %}
+                                <span class="text-muted">0</span>
+                            {% endif %}
+                        </span>
                     </div>
                 </div>
             </div>
@@ -112,7 +120,7 @@
                             <div class="detail-item">
                                 <span class="label">{{ 'asset.label.data_classification'|trans }}</span>
                                 <span class="value">
-                                    <span class="badge badge-classification-{{ asset.dataClassification }}">
+                                    <span class="{{ badge_classification(asset.dataClassification) }}">
                                         {{ ('asset.classification.' ~ asset.dataClassification)|trans|upper }}
                                     </span>
                                 </span>
@@ -188,7 +196,7 @@
                         {% for control in asset.protectingControls %}
                             <div class="control-item">
                                 <strong>{{ control.controlId }}</strong>: {{ control.name }}
-                                <span class="badge badge-{{ control.implementationStatus }}">
+                                <span class="{{ badge_status(control.implementationStatus) }}">
                                     {{ control.implementationStatus|upper }}
                                 </span>
                                 <small>({{ control.implementationPercentage }}%)</small>
@@ -206,7 +214,7 @@
                         {% for risk in asset.risks %}
                             <div class="risk-item">
                                 <strong>{{ risk.title }}</strong>
-                                <span class="badge badge-risk-{{ risk.inherentRiskLevel >= 16 ? 'high' : (risk.inherentRiskLevel >= 9 ? 'medium' : 'low') }}">
+                                <span class="{{ badge_score(risk.inherentRiskLevel, 16, 9) }}">
                                     Risk Level: {{ risk.inherentRiskLevel }}
                                 </span>
                                 <small>Status: {{ risk.status|upper }}</small>
@@ -224,7 +232,7 @@
                         {% for incident in asset.incidents %}
                             <div class="incident-item">
                                 <strong>{{ incident.title }}</strong>
-                                <span class="badge badge-severity-{{ incident.severity }}">
+                                <span class="{{ badge_severity(incident.severity) }}">
                                     {{ incident.severity|upper }}
                                 </span>
                                 <small>{{ incident.detectedAt|date('Y-m-d') }}</small>
@@ -242,7 +250,7 @@
                         {% for log in auditLogs %}
                             <div class="audit-log-item">
                                 <div class="audit-log-header">
-                                    <span class="badge badge-action-{{ log.action }}">
+                                    <span class="{{ badge_action(log.action) }}">
                                         {{ log.action|upper }}
                                     </span>
                                     <small class="text-muted">{{ log.createdAt|date('Y-m-d H:i:s') }}</small>
@@ -311,13 +319,7 @@
     align-items: center;
     gap: 0.5rem;
 }
-.badge-risk-high { background: #ef4444; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; }
-.badge-risk-medium { background: #f59e0b; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; }
-.badge-risk-low { background: #10b981; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; }
-.badge-severity-critical { background: #7f1d1d; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; }
-.badge-severity-high { background: #ef4444; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; }
-.badge-severity-medium { background: #f59e0b; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; }
-.badge-severity-low { background: #10b981; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; }
+/* Badge styles now handled by BadgeExtension helper functions */
 /* Audit Log Styles */
 .audit-log-list { display: flex; flex-direction: column; gap: 0.75rem; }
 .audit-log-item {
