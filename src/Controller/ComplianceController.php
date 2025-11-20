@@ -83,6 +83,9 @@ class ComplianceController extends AbstractController
         $activeModules = $this->moduleConfigurationService->getActiveModules();
 
         $tenant = $this->tenantContext->getCurrentTenant();
+        if (!$tenant) {
+            throw $this->createAccessDeniedException('No tenant assigned to user. Please contact administrator.');
+        }
 
         // Load tenant-specific fulfillments for all requirements (batch)
         // Including detailed requirements (nested)
@@ -723,6 +726,9 @@ class ComplianceController extends AbstractController
 
         // Get current tenant for fulfillment data
         $tenant = $this->tenantContext->getCurrentTenant();
+        if (!$tenant) {
+            throw $this->createAccessDeniedException('No tenant assigned to user. Please contact administrator.');
+        }
 
         // Analyze gaps and get fulfillment data
         $gapAnalysis = [];
