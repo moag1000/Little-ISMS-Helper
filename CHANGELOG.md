@@ -7,24 +7,161 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Fixed
-- **Database Migrations** - Fixed missing ProcessingActivity table creation (required for GDPR VVT/ROPA)
-- **Database Reset Script** - Improved table detection reliability using COUNT(*) instead of SHOW TABLES parsing
-- **Test Suite** - Fixed 32 PHPUnit errors by removing mocks for non-existent entity methods
-- **Production Errors** - Added null tenant checks in controllers to prevent TypeError when user has no tenant assigned
-- **Backup Restore** - Added default values for new Risk fields (category, GDPR flags) for backward compatibility with old backups
-- **Test Warnings** - Suppressed expected PHP warnings in backup/restore tests
-
-### Improved
-- **Test Coverage** - Expanded test suite to 1618 tests with 4711 assertions (100% passing)
-- **Error Handling** - Better user feedback when tenant assignment is missing
-- **Data Migration** - No data loss when restoring old backups missing new Risk entity fields
-
 ### Planned
 - JWT Authentication for REST API
 - Advanced API filters and search
 - Real-time notifications via WebSocket
 - Mobile Progressive Web App (PWA)
+
+---
+
+## [1.10.0] - 2025-11-20
+
+### Added
+
+#### Risk Management (6 Priorities)
+
+#### Priority 1.4: Risk Owner Mandatory (ISO 27001 Compliance)
+- **Mandatory Risk Owner** - All risks must have an assigned owner (ISO 27001 requirement)
+- **Validation** - Form validation ensures risk owner is set
+- **Migration Support** - Existing risks updated to require owner
+
+#### Priority 1.5: Periodic Review Workflow (ISO 27001 Clause 6.1.3.d)
+- **Automated Review Tracking** - Periodic risk review reminders
+- **Review Date Management** - Track last and next review dates
+- **Overdue Notifications** - Alert on overdue risk reviews
+- **Dashboard Widgets** - Overdue and upcoming review visibility
+
+#### Priority 2.1: Risk Acceptance Workflow
+- **Risk Acceptance Process** - Formal risk acceptance workflow
+- **Acceptance Documentation** - Track acceptance decisions and justifications
+- **Management Approval** - Workflow for management sign-off
+- **Audit Trail** - Complete acceptance history
+
+#### Priority 2.2: GDPR/DSGVO Risk Fields (High Impact)
+- **Personal Data Flags** - Track if risk involves personal data
+- **Special Category Data** - Flag for Art. 9 GDPR special categories
+- **DPIA Requirement** - Automatic DPIA requirement detection
+- **Risk Categories** - Financial, operational, compliance, strategic, reputational, security
+
+#### Priority 2.3: Risk Assessment Guidance
+- **Interactive Guidance** - Step-by-step risk assessment help
+- **Best Practices** - ISO 27005 aligned guidance
+- **Context Help** - Field-level tooltips and explanations
+
+#### Priority 2.4: Treatment Plan Monitoring
+- **Treatment Plan Widgets** - Dashboard monitoring for treatment plans
+- **Overdue Tracking** - Identify overdue treatment plans
+- **Progress Monitoring** - Track treatment plan completion
+- **Approaching Deadlines** - 7-day warning for due plans
+
+#### Multi-Subject Risk Support
+- **Extended Risk Relationships** - Risks can now be linked to:
+  - Assets (existing)
+  - Persons (new)
+  - Locations (new)
+  - Suppliers (new)
+- **Flexible Risk Modeling** - Better real-world risk representation
+- **Template Updates** - All risk templates support multi-subject display
+
+#### GDPR/DSGVO Features
+
+#### CRITICAL-06: ProcessingActivity (VVT/ROPA - Art. 30 GDPR)
+- **Complete VVT/ROPA Implementation** - Article 30 GDPR compliance
+- **ProcessingActivity Entity** - Full data processing registry
+- **VVT Controller** - CRUD operations for processing activities
+- **VVT Service** - Business logic for Art. 30 compliance
+- **PDF Export** - Professional VVT/ROPA reports
+- **UI Integration** - Complete user interface
+
+#### CRITICAL-07: DPIA (Data Protection Impact Assessment)
+- **DPIA Entity** - Complete DPIA implementation
+- **DPIA Workflow** - Structured assessment process
+- **Risk Scoring** - Automated DPIA risk calculation
+- **Threshold Triggers** - Automatic DPIA requirement detection
+- **DPIA Templates** - Index, show, and form templates
+- **Integration** - Links to ProcessingActivity and Risks
+
+#### CRITICAL-08: DataBreach (72h Notification Requirement)
+- **DataBreach Entity** - Art. 33/34 GDPR compliance
+- **72-Hour Tracking** - Automatic deadline calculation
+- **Severity Assessment** - Impact and likelihood scoring
+- **Notification Management** - Track authority and data subject notifications
+- **DataBreach Service** - Business logic and deadline tracking
+- **Complete UI** - Index, show, create, edit templates
+
+#### Business Continuity Management
+- **Incident ↔ BusinessProcess** - Link incidents to affected processes
+- **Impact Analysis** - Calculate incident impact on BCM
+- **IncidentBCMImpactService** - Automated impact assessment
+- **RTO/RPO Impact** - Track recovery time/point objectives
+
+#### UI/UX Improvements
+
+**Badge Standardization** (Issues 5.1 & 5.2)
+- **BadgeExtension Twig Helper** - Centralized badge rendering
+- **Consistent Styling** - Standardized colors and icons across all modules
+- **Dark Mode Support** - All badges work in light and dark themes
+- **32+ Table Migrations** - All major tables migrated to standardized components
+  - Batch 3-27 completed (Admin, GDPR, BCM, Compliance, Risk, Asset, Audit, Workflow, etc.)
+
+**Accessibility** (WCAG 2.1 AA)
+- **Form Accessibility** - Complete form migration to WCAG 2.1 AA (Issues 2.1 & 2.3)
+- **Skip Links** - Keyboard navigation improvements (Issue 13.1)
+- **Screen Reader Support** - Proper ARIA labels and descriptions
+- **Keyboard Navigation** - Full keyboard accessibility
+
+**Navigation**
+- **10 Missing Menu Entries** - Added navigation for implemented features
+- **Privacy Hub** - New GDPR/Privacy central navigation point
+- **Breadcrumb Fixes** - Improved navigation breadcrumbs
+- **Menu Organization** - Better feature discoverability
+
+#### Internationalization
+- **Risk Module** - 94+ new translations (CRITICAL-04)
+- **Risk Matrix Translations** - Complete German support
+- **Person & Risk Appetite Pages** - Fully translated
+- **Risk Treatment Plan** - All form sections translated
+- **Risk Show Page** - Replaced all hardcoded English text
+
+### Fixed
+- **Null Tenant Checks** - Prevent TypeError when user has no tenant (4 controllers)
+- **Security Event Handling** - Fixed null passport in login failures
+- **PDF Template Fixes** - Corrected Risk entity property references
+- **Form Type Fixes** - Control entity method corrections
+- **GDPR Template Fixes** - VVT, DPIA, DataBreach template corrections
+
+**Database & Migrations**
+- **ProcessingActivity Migration** - Fixed missing table (deployment blocker)
+- **Sequential Migration Fix** - Migrations now run cleanly from empty database
+- **Reset Script Reliability** - Improved table detection (COUNT vs SHOW TABLES)
+- **Foreign Key Order** - Correct entity dependency ordering
+
+**Backup & Restore**
+- **Risk Field Defaults** - Backward compatibility for old backups
+  - Default category: 'operational'
+  - Default GDPR flags: false
+- **No Data Loss** - Old backups restore successfully with sensible defaults
+
+**Testing**
+- Test coverage improved to 60% (1618 tests, 4711 assertions)
+- Fixed 32 test errors (non-existent entity method mocks)
+- Suppressed expected warnings in backup/restore tests
+
+### Changed
+- Badge styling standardized across all modules (32 batches)
+- Forms migrated to WCAG 2.1 AA accessibility standard
+- Navigation menu expanded with 10 previously missing entries
+
+### Technical Details
+- 119 commits since v1.9.1
+- 6 Risk Management priorities completed
+- 3 GDPR features completed (VVT, DPIA, DataBreach)
+- 94 German translations added
+- All changes backward compatible
+
+### Notes
+Versions 1.8.x - 1.9.1 were not documented in CHANGELOG. This release consolidates those undocumented changes.
 
 ---
 
