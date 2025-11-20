@@ -68,9 +68,23 @@ class SecurityEventSubscriber implements EventSubscriberInterface
     public function onLoginFailure(LoginFailureEvent $event): void
     {
         $passport = $event->getPassport();
-        $username = $passport->getUser()?->getUserIdentifier() ?? 'unknown';
-        $exception = $event->getException();
 
+        // Try to get username from passport, then from request, fallback to 'unknown'
+        $username = 'unknown';
+        if ($passport !== null) {
+            $username = $passport->getUser()?->getUserIdentifier() ?? 'unknown';
+        }
+
+        // If still unknown, try to get from request
+        if ($username === 'unknown') {
+            $request = $event->getRequest();
+            $username = $request->request->get('_username')
+                ?? $request->request->get('email')
+                ?? $request->request->get('username')
+                ?? 'unknown';
+        }
+
+        $exception = $event->getException();
         $this->securityLogger->logLoginFailure($username, $exception->getMessage());
     }
 
