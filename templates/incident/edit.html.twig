@@ -3,119 +3,216 @@
 {% block title %}{{ 'incident.edit'|trans }} - {{ parent() }}{% endblock %}
 
 {% block body %}
-<div class="container">
-    <nav aria-label="breadcrumb" class="mb-3">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item">
-                <a href="{{ path('app_incident_index') }}"><i class="bi bi-bug" aria-hidden="true"></i> {{ 'nav.incidents'|trans }}</a>
-            </li>
-            <li class="breadcrumb-item">
-                <a href="{{ path('app_incident_show', {id: incident.id}) }}">{{ incident.title }}</a>
-            </li>
-            <li class="breadcrumb-item active" aria-current="page">{{ 'incident.edit'|trans }}</li>
-        </ol>
-    </nav>
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-lg-10 col-xl-9 mx-auto">
+            <nav aria-label="breadcrumb" class="mb-3">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="{{ path('app_incident_index') }}" data-turbo-action="advance">
+                            <i class="bi bi-bug" aria-hidden="true"></i> {{ 'nav.incidents'|trans }}
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a href="{{ path('app_incident_show', {id: incident.id}) }}" data-turbo-action="advance">
+                            {{ incident.title }}
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ 'incident.edit'|trans }}</li>
+                </ol>
+            </nav>
 
-    <div class="page-header">
-        <h1><i class="bi bi-pencil" aria-hidden="true"></i> {{ 'incident.edit'|trans }}: {{ incident.title }}</h1>
-        <a href="{{ path('app_incident_show', {id: incident.id}) }}" class="btn btn-secondary"><i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans }}</a>
-    </div>
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="h3 mb-0">
+                    <i class="bi bi-pencil" aria-hidden="true"></i>
+                    {{ 'incident.edit'|trans }}: {{ incident.title }}
+                </h1>
+                <a href="{{ path('app_incident_show', {id: incident.id}) }}" class="btn btn-outline-secondary" data-turbo-action="advance">
+                    <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans }}
+                </a>
+            </div>
 
-    <div class="card">
-        <div class="card-content">
-            {{ form_start(form) }}
-                <div class="form-row">
-                    <div class="form-group">
-                        {{ form_label(form.title) }}
-                        {{ form_widget(form.title) }}
-                        {{ form_errors(form.title) }}
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">{{ 'incident.edit'|trans }}</h3>
+                </div>
+                <div class="card-body">
+                    {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'id': 'incident-form'}}) }}
+
+                    {# Basic Information Section #}
+                    <fieldset class="mb-4">
+                        <legend class="h5 mb-3">
+                            <i class="bi bi-info-square" aria-hidden="true"></i>
+                            {{ 'incident.section.basic_info'|trans }}
+                        </legend>
+
+                        <div class="row">
+                            <div class="col-md-8">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.title,
+                                    'label': form.title.vars.label|default('incident.field.title'|trans),
+                                    'required': true
+                                } %}
+                            </div>
+                            <div class="col-md-4">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.category,
+                                    'label': form.category.vars.label|default('incident.field.category'|trans)
+                                } %}
+                            </div>
+                            <div class="col-md-12">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.description,
+                                    'label': form.description.vars.label|default('incident.field.description'|trans)
+                                } %}
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    {# Severity & Status Section #}
+                    <fieldset class="mb-4">
+                        <legend class="h5 mb-3">
+                            <i class="bi bi-thermometer-half" aria-hidden="true"></i>
+                            {{ 'incident.section.severity_status'|trans }}
+                        </legend>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.severity,
+                                    'label': form.severity.vars.label|default('incident.field.severity'|trans),
+                                    'required': true
+                                } %}
+                            </div>
+                            <div class="col-md-6">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.status,
+                                    'label': form.status.vars.label|default('incident.field.status'|trans),
+                                    'help': 'incident.status_help'|trans
+                                } %}
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    {# Detection & Reporting Section #}
+                    <fieldset class="mb-4">
+                        <legend class="h5 mb-3">
+                            <i class="bi bi-calendar-event" aria-hidden="true"></i>
+                            {{ 'incident.section.detection_reporting'|trans }}
+                        </legend>
+
+                        <div class="row">
+                            <div class="col-md-3">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.detectedAt,
+                                    'label': form.detectedAt.vars.label|default('incident.field.detected_at'|trans)
+                                } %}
+                            </div>
+                            <div class="col-md-3">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.occurredAt,
+                                    'label': form.occurredAt.vars.label|default('incident.field.occurred_at'|trans)
+                                } %}
+                            </div>
+                            <div class="col-md-3">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.reportedBy,
+                                    'label': form.reportedBy.vars.label|default('incident.field.reported_by'|trans)
+                                } %}
+                            </div>
+                            {% if form.detectedDate is defined %}
+                            <div class="col-md-3">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.detectedDate,
+                                    'label': form.detectedDate.vars.label|default('incident.field.detected_date'|trans)
+                                } %}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </fieldset>
+
+                    {# Affected Systems & Assets Section #}
+                    <fieldset class="mb-4">
+                        <legend class="h5 mb-3">
+                            <i class="bi bi-hdd-network" aria-hidden="true"></i>
+                            {{ 'incident.section.affected_systems'|trans }}
+                        </legend>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.affectedSystems,
+                                    'label': form.affectedSystems.vars.label|default('incident.field.affected_systems'|trans)
+                                } %}
+                            </div>
+                            {% if form.affectedAssets is defined %}
+                            <div class="col-md-12">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.affectedAssets,
+                                    'label': form.affectedAssets.vars.label|default('incident.field.affected_assets'|trans)
+                                } %}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </fieldset>
+
+                    {# Analysis & Resolution Section #}
+                    <fieldset class="mb-4">
+                        <legend class="h5 mb-3">
+                            <i class="bi bi-search" aria-hidden="true"></i>
+                            {{ 'incident.analysis_resolution'|trans }}
+                        </legend>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.rootCause,
+                                    'label': form.rootCause.vars.label|default('incident.field.root_cause'|trans)
+                                } %}
+                            </div>
+                            <div class="col-md-12">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.correctiveActions,
+                                    'label': form.correctiveActions.vars.label|default('incident.field.corrective_actions'|trans)
+                                } %}
+                            </div>
+                            <div class="col-md-12">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.lessonsLearned,
+                                    'label': form.lessonsLearned.vars.label|default('incident.field.lessons_learned'|trans)
+                                } %}
+                            </div>
+                            <div class="col-md-6">
+                                {% if form.closedDate is defined %}
+                                    {% include '_components/_form_field.html.twig' with {
+                                        'field': form.closedDate,
+                                        'label': form.closedDate.vars.label|default('incident.field.closed_date'|trans)
+                                    } %}
+                                {% elseif form.closedAt is defined %}
+                                    {% include '_components/_form_field.html.twig' with {
+                                        'field': form.closedAt,
+                                        'label': form.closedAt.vars.label|default('incident.field.closed_at'|trans)
+                                    } %}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    {# Form Actions #}
+                    <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+                        <a href="{{ path('app_incident_show', {id: incident.id}) }}"
+                           class="btn btn-outline-secondary"
+                           data-turbo-action="advance">
+                            <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'common.cancel'|trans }}
+                        </a>
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="bi bi-save" aria-hidden="true"></i> {{ 'incident.update'|trans }}
+                        </button>
                     </div>
-                    <div class="form-group">
-                        {{ form_label(form.category) }}
-                        {{ form_widget(form.category) }}
-                        {{ form_errors(form.category) }}
-                    </div>
-                </div>
 
-                <div class="form-group">
-                    {{ form_label(form.description) }}
-                    {{ form_widget(form.description) }}
-                    {{ form_errors(form.description) }}
+                    {{ form_end(form) }}
                 </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        {{ form_label(form.severity) }}
-                        {{ form_widget(form.severity) }}
-                        {{ form_errors(form.severity) }}
-                    </div>
-                    <div class="form-group">
-                        {{ form_label(form.status) }}
-                        {{ form_widget(form.status) }}
-                        {{ form_errors(form.status) }}
-                        <small class="help-text">{{ 'incident.status_help'|trans }}</small>
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        {{ form_label(form.detectedAt) }}
-                        {{ form_widget(form.detectedAt) }}
-                        {{ form_errors(form.detectedAt) }}
-                    </div>
-                    <div class="form-group">
-                        {{ form_label(form.occurredAt) }}
-                        {{ form_widget(form.occurredAt) }}
-                        {{ form_errors(form.occurredAt) }}
-                    </div>
-                    <div class="form-group">
-                        {{ form_label(form.reportedBy) }}
-                        {{ form_widget(form.reportedBy) }}
-                        {{ form_errors(form.reportedBy) }}
-                    </div>
-                    <div class="form-group">
-                        {{ form_label(form.detectedDate) }}
-                        {{ form_widget(form.detectedDate) }}
-                        {{ form_errors(form.detectedDate) }}
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    {{ form_label(form.affectedSystems) }}
-                    {{ form_widget(form.affectedSystems) }}
-                    {{ form_errors(form.affectedSystems) }}
-                </div>
-
-                <h2><i class="bi bi-search" aria-hidden="true"></i> {{ 'incident.analysis_resolution'|trans }}</h2>
-                <div class="form-group">
-                    {{ form_label(form.rootCause) }}
-                    {{ form_widget(form.rootCause) }}
-                    {{ form_errors(form.rootCause) }}
-                </div>
-
-                <div class="form-group">
-                    {{ form_label(form.correctiveActions) }}
-                    {{ form_widget(form.correctiveActions) }}
-                    {{ form_errors(form.correctiveActions) }}
-                </div>
-
-                <div class="form-group">
-                    {{ form_label(form.lessonsLearned) }}
-                    {{ form_widget(form.lessonsLearned) }}
-                    {{ form_errors(form.lessonsLearned) }}
-                </div>
-
-                <div class="form-group">
-                    {{ form_label(form.closedDate) }}
-                    {{ form_widget(form.closedDate) }}
-                    {{ form_errors(form.closedDate) }}
-                </div>
-
-                <div class="form-actions">
-                    <button type="submit" class="btn btn-primary"><i class="bi bi-save" aria-hidden="true"></i> {{ 'incident.update'|trans }}</button>
-                    <a href="{{ path('app_incident_show', {id: incident.id}) }}" class="btn btn-secondary"><i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'common.cancel'|trans }}</a>
-                </div>
-            {{ form_end(form) }}
+            </div>
         </div>
     </div>
 </div>

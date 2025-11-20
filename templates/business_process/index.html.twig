@@ -149,7 +149,7 @@
                                     <td>{{ process.mtpd }}h</td>
                                     <td>
                                         {% set score = process.businessImpactScore %}
-                                        <span class="badge bg-{{ score >= 4 ? 'danger' : (score >= 3 ? 'warning' : 'success') }}">
+                                        <span class="{{ badge_score(score) }}">
                                             {{ score }}/5
                                         </span>
                                     </td>

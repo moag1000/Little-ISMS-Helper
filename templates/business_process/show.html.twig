@@ -279,7 +279,7 @@
                                 <tr>
                                     <td>{{ risk.title }}</td>
                                     <td>
-                                        <span class="badge bg-{{ risk.status == 'active' ? 'warning' : 'success' }}">
+                                        <span class="{{ badge_status(risk.status) }}">
                                             {{ risk.status }}
                                         </span>
                                     </td>

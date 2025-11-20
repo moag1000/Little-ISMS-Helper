@@ -60,19 +60,19 @@
             <div class="matrix-legend">
                 <h2>Risk Levels</h2>
                 <div class="legend-items" style="display: flex; flex-direction: row; flex-wrap: wrap; gap: 1rem; justify-content: center; align-items: center; margin-top: 1rem;">
-                    <div class="legend-item" style="display: flex; flex-direction: row; align-items: center; gap: 0.625rem; padding: 0.5rem 1rem; background: white; border: 1px solid #e5e7eb; border-radius: 6px; white-space: nowrap; position: relative;">
+                    <div class="legend-item" style="display: flex; flex-direction: row; align-items: center; gap: 0.625rem; padding: 0.5rem 1rem; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 6px; white-space: nowrap; position: relative;">
                         <span class="legend-color risk-critical" style="width: 20px; height: 20px; display: inline-block; flex-shrink: 0;"></span>
                         <span style="display: inline-block;">Critical (20-25)</span>
                     </div>
-                    <div class="legend-item" style="display: flex; flex-direction: row; align-items: center; gap: 0.625rem; padding: 0.5rem 1rem; background: white; border: 1px solid #e5e7eb; border-radius: 6px; white-space: nowrap; position: relative;">
+                    <div class="legend-item" style="display: flex; flex-direction: row; align-items: center; gap: 0.625rem; padding: 0.5rem 1rem; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 6px; white-space: nowrap; position: relative;">
                         <span class="legend-color risk-high" style="width: 20px; height: 20px; display: inline-block; flex-shrink: 0;"></span>
                         <span style="display: inline-block;">High (12-19)</span>
                     </div>
-                    <div class="legend-item" style="display: flex; flex-direction: row; align-items: center; gap: 0.625rem; padding: 0.5rem 1rem; background: white; border: 1px solid #e5e7eb; border-radius: 6px; white-space: nowrap; position: relative;">
+                    <div class="legend-item" style="display: flex; flex-direction: row; align-items: center; gap: 0.625rem; padding: 0.5rem 1rem; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 6px; white-space: nowrap; position: relative;">
                         <span class="legend-color risk-medium" style="width: 20px; height: 20px; display: inline-block; flex-shrink: 0;"></span>
                         <span style="display: inline-block;">Medium (6-11)</span>
                     </div>
-                    <div class="legend-item" style="display: flex; flex-direction: row; align-items: center; gap: 0.625rem; padding: 0.5rem 1rem; background: white; border: 1px solid #e5e7eb; border-radius: 6px; white-space: nowrap; position: relative;">
+                    <div class="legend-item" style="display: flex; flex-direction: row; align-items: center; gap: 0.625rem; padding: 0.5rem 1rem; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 6px; white-space: nowrap; position: relative;">
                         <span class="legend-color risk-low" style="width: 20px; height: 20px; display: inline-block; flex-shrink: 0;"></span>
                         <span style="display: inline-block;">Low (1-5)</span>
                     </div>
@@ -101,7 +101,7 @@
     transform: rotate(180deg);
     font-weight: bold;
     font-size: 18px;
-    color: #374151;
+    color: var(--text-primary);
     margin-right: 0.5rem;
 }
 
@@ -109,7 +109,7 @@
     text-align: center;
     font-weight: bold;
     font-size: 18px;
-    color: #374151;
+    color: var(--text-primary);
     margin-top: 0.5rem;
     width: 100%;
 }
@@ -136,7 +136,7 @@
     justify-content: center;
     font-weight: 600;
     font-size: 14px;
-    color: #6b7280;
+    color: var(--color-text-muted);
 }
 
 .x-axis-labels .axis-label {
@@ -149,7 +149,7 @@
     grid-template-columns: repeat(5, 100px);
     grid-template-rows: repeat(5, 100px);
     gap: 2px;
-    background: #e5e7eb;
+    background: var(--border-color);
     padding: 2px;
 }
 
@@ -158,8 +158,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: white;
-    border: 1px solid #d1d5db;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
     cursor: pointer;
     transition: transform 0.2s;
 }
@@ -200,7 +200,7 @@
 .matrix-legend {
     margin-top: 2rem;
     padding: 1rem;
-    background: #f9fafb;
+    background: var(--bg-secondary);
     border-radius: 8px;
     width: 100%;
 }
@@ -222,8 +222,8 @@
     align-items: center !important;
     gap: 0.625rem !important;
     padding: 0.5rem 1rem !important;
-    background: white !important;
-    border: 1px solid #e5e7eb !important;
+    background: var(--bg-primary) !important;
+    border: 1px solid var(--border-color) !important;
     border-radius: 6px !important;
     font-size: 0.875rem !important;
     font-weight: 500 !important;
