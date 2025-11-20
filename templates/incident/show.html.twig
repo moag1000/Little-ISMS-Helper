@@ -8,7 +8,7 @@
         <h1>{{ incident.title }}</h1>
         <div class="actions">
             <a href="{{ path('app_incident_edit', {id: incident.id}) }}" class="btn btn-primary">Edit</a>
-            {% if incident.requiresNis2Reporting %}
+            {% if is_nis2_active() and incident.requiresNis2Reporting %}
                 <a href="{{ path('app_incident_nis2_report', {id: incident.id}) }}" class="btn btn-success" data-turbo="false" title="{{ 'incident.action.download_nis2_report'|trans|default('Download NIS2 Report') }}">
                     <i class="bi bi-file-earmark-pdf" aria-hidden="true"></i> NIS2 Report (PDF)
                 </a>
@@ -27,11 +27,11 @@
         <div class="card-header">
             <h2>Incident #{{ incident.incidentNumber }}</h2>
             <div class="badges">
-                <span class="badge badge-{{ incident.severity }}">{{ incident.severity|upper }}</span>
-                <span class="badge badge-status-{{ incident.status }}">{{ incident.status|upper|replace({'_': ' '}) }}</span>
-                {% if incident.requiresNis2Reporting %}
+                <span class="{{ badge_severity(incident.severity) }}">{{ incident.severity|upper }}</span>
+                <span class="{{ badge_status(incident.status) }}">{{ incident.status|upper|replace({'_': ' '}) }}</span>
+                {% if is_nis2_active() and incident.requiresNis2Reporting %}
                     {% set nis2Status = incident.nis2ComplianceStatus %}
-                    <span class="badge badge-nis2-{{ nis2Status }}">
+                    <span class="{{ badge_nis2(nis2Status) }}">
                         <i class="bi bi-shield-check" aria-hidden="true"></i>
                         {{ ('incident.nis2_compliance.' ~ nis2Status)|trans }}
                     </span>
@@ -61,7 +61,7 @@
             </div>
 
             {# NIS2 Article 23 Reporting Timeline #}
-            {% if incident.requiresNis2Reporting and incident.detectedAt %}
+            {% if is_nis2_active() and incident.requiresNis2Reporting and incident.detectedAt %}
                 <div class="detail-section nis2-timeline-section">
                     <h3>
                         <i class="bi bi-clock-history" aria-hidden="true"></i>
@@ -281,7 +281,7 @@
                         {% for log in auditLogs %}
                         <div class="audit-log-entry">
                             <div class="audit-log-header">
-                                <span class="badge bg-{{ log.action == 'create' ? 'success' : (log.action == 'update' ? 'info' : 'danger') }}">
+                                <span class="{{ badge_action(log.action) }}">
                                     {{ log.action|upper }}
                                 </span>
                                 <span class="text-muted">
@@ -326,7 +326,7 @@
                         {% for asset in incident.affectedAssets %}
                             <div class="data-reuse-item">
                                 <strong>{{ asset.name }}</strong>
-                                <span class="badge badge-info">{{ asset.assetType }}</span>
+                                <span class="badge bg-info">{{ asset.assetType }}</span>
                                 <small>CIA: {{ asset.confidentialityValue }}/{{ asset.integrityValue }}/{{ asset.availabilityValue }}</small>
                                 {% if asset.monetaryValue %}
                                     <small class="text-danger">Value: €{{ asset.monetaryValue }}</small>

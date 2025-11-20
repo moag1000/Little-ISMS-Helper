@@ -233,12 +233,12 @@
                                 </span>
                             </td>
                             <td>
-                                <span class="badge badge-severity-{{ incident.severity }}">
+                                <span class="{{ badge_severity(incident.severity) }}">
                                     {{ ('incident.severity.' ~ incident.severity)|trans }}
                                 </span>
                             </td>
                             <td>
-                                <span class="badge badge-status-{{ incident.status }}">
+                                <span class="{{ badge_status(incident.status) }}">
                                     {{ ('incident.status.' ~ incident.status)|trans }}
                                 </span>
                             </td>
@@ -246,7 +246,7 @@
                             <td>
                                 {% if is_nis2_active() and incident.requiresNis2Reporting %}
                                     {% set nis2Status = incident.nis2ComplianceStatus %}
-                                    <span class="badge badge-nis2-{{ nis2Status }}" title="{{ ('incident.nis2_compliance.' ~ nis2Status)|trans }}">
+                                    <span class="{{ badge_nis2(nis2Status) }}" title="{{ ('incident.nis2_compliance.' ~ nis2Status)|trans }}">
                                         {% if nis2Status == 'compliant' %}
                                             <i class="bi bi-check-circle-fill" aria-hidden="true"></i>
                                         {% elseif nis2Status == 'overdue' %}
