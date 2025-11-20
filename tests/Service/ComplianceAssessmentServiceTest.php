@@ -32,6 +32,18 @@ class ComplianceAssessmentServiceTest extends TestCase
         $this->fulfillmentService = $this->createMock(ComplianceRequirementFulfillmentService::class);
         $this->tenantContext = $this->createMock(TenantContext::class);
 
+        // Mock getCurrentTenant to return a Tenant entity
+        $mockTenant = $this->createMock(\App\Entity\Tenant::class);
+        $mockTenant->method('getId')->willReturn(1);
+        $this->tenantContext->method('getCurrentTenant')->willReturn($mockTenant);
+
+        // Mock fulfillmentService to return a ComplianceRequirementFulfillment entity
+        $mockFulfillment = $this->createMock(\App\Entity\ComplianceRequirementFulfillment::class);
+        $mockFulfillment->method('isApplicable')->willReturn(true);
+        $mockFulfillment->method('getId')->willReturn(1);
+        $mockFulfillment->method('getFulfillmentPercentage')->willReturn(0);
+        $this->fulfillmentService->method('getOrCreateFulfillment')->willReturn($mockFulfillment);
+
         $this->service = new ComplianceAssessmentService(
             $this->requirementRepository,
             $this->mappingService,
@@ -48,6 +60,9 @@ class ComplianceAssessmentServiceTest extends TestCase
         $this->requirementRepository->method('findByFramework')
             ->with($framework)
             ->willReturn([]);
+
+        $this->requirementRepository->method('getFrameworkStatisticsForTenant')
+            ->willReturn(['applicable' => 0, 'fulfilled' => 0]);
 
         $result = $this->service->assessFramework($framework);
 
@@ -67,19 +82,17 @@ class ComplianceAssessmentServiceTest extends TestCase
         $this->requirementRepository->method('findByFramework')
             ->willReturn([$req1, $req2]);
 
+        $this->requirementRepository->method('getFrameworkStatisticsForTenant')
+            ->willReturn(['applicable' => 2, 'fulfilled' => 2, 'total' => 2]);
+
         $this->mappingService->method('getDataReuseAnalysis')
             ->willReturn([
                 'sources' => ['controls' => ['contribution' => 80]],
                 'confidence' => 'high',
             ]);
 
-        $req1->expects($this->once())
-            ->method('setFulfillmentPercentage')
-            ->with(80);
-
-        $req2->expects($this->once())
-            ->method('setFulfillmentPercentage')
-            ->with(80);
+        // Note: setFulfillmentPercentage() doesn't exist on ComplianceRequirement
+        // Fulfillment is managed by ComplianceRequirementFulfillmentService
 
         $this->entityManager->expects($this->once())
             ->method('flush');
@@ -94,9 +107,23 @@ class ComplianceAssessmentServiceTest extends TestCase
     public function testAssessRequirementNotApplicable(): void
     {
         $requirement = $this->createRequirement('REQ-1', 'Test Req', false);
-        $requirement->method('isApplicable')->willReturn(false);
 
-        $result = $this->service->assessRequirement($requirement);
+        // Create a new service instance with a mock that returns non-applicable fulfillment
+        $mockFulfillment = $this->createMock(\App\Entity\ComplianceRequirementFulfillment::class);
+        $mockFulfillment->method('isApplicable')->willReturn(false);
+
+        $fulfillmentService = $this->createMock(ComplianceRequirementFulfillmentService::class);
+        $fulfillmentService->method('getOrCreateFulfillment')->willReturn($mockFulfillment);
+
+        $testService = new ComplianceAssessmentService(
+            $this->requirementRepository,
+            $this->mappingService,
+            $this->entityManager,
+            $fulfillmentService,
+            $this->tenantContext
+        );
+
+        $result = $testService->assessRequirement($requirement);
 
         $this->assertSame('REQ-1', $result['requirement_id']);
         $this->assertSame(0, $result['calculated_fulfillment']);
@@ -107,7 +134,6 @@ class ComplianceAssessmentServiceTest extends TestCase
     public function testAssessRequirementWithDataSources(): void
     {
         $requirement = $this->createRequirement('REQ-1', 'Test Req', true);
-        $requirement->method('isApplicable')->willReturn(true);
         $requirement->method('getMappedControls')->willReturn(new ArrayCollection());
         $requirement->method('getDataSourceMapping')->willReturn([]);
 
@@ -132,7 +158,6 @@ class ComplianceAssessmentServiceTest extends TestCase
     public function testAssessRequirementWithNoSources(): void
     {
         $requirement = $this->createRequirement('REQ-1', 'Test Req', true);
-        $requirement->method('isApplicable')->willReturn(true);
         $requirement->method('getMappedControls')->willReturn(new ArrayCollection());
         $requirement->method('getDataSourceMapping')->willReturn([]);
 
@@ -150,7 +175,6 @@ class ComplianceAssessmentServiceTest extends TestCase
     public function testAssessRequirementIdentifiesNoControlsGap(): void
     {
         $requirement = $this->createRequirement('REQ-1', 'Test Req', true);
-        $requirement->method('isApplicable')->willReturn(true);
         $requirement->method('getMappedControls')->willReturn(new ArrayCollection());
         $requirement->method('getDataSourceMapping')->willReturn([]);
 
@@ -176,7 +200,6 @@ class ComplianceAssessmentServiceTest extends TestCase
         $control->method('getImplementationPercentage')->willReturn(60);
 
         $requirement = $this->createRequirement('REQ-1', 'Test Req', true);
-        $requirement->method('isApplicable')->willReturn(true);
         $requirement->method('getMappedControls')->willReturn(new ArrayCollection([$control]));
         $requirement->method('getDataSourceMapping')->willReturn([]);
 
@@ -204,7 +227,6 @@ class ComplianceAssessmentServiceTest extends TestCase
         $control->method('getImplementationPercentage')->willReturn(0);
 
         $requirement = $this->createRequirement('REQ-1', 'Test Req', true);
-        $requirement->method('isApplicable')->willReturn(true);
         $requirement->method('getMappedControls')->willReturn(new ArrayCollection([$control]));
         $requirement->method('getDataSourceMapping')->willReturn([]);
 
@@ -223,7 +245,6 @@ class ComplianceAssessmentServiceTest extends TestCase
     public function testAssessRequirementIdentifiesBCMGap(): void
     {
         $requirement = $this->createRequirement('REQ-1', 'Test Req', true);
-        $requirement->method('isApplicable')->willReturn(true);
         $requirement->method('getMappedControls')->willReturn(new ArrayCollection());
         $requirement->method('getDataSourceMapping')->willReturn(['bcm_required' => true]);
 
@@ -250,7 +271,6 @@ class ComplianceAssessmentServiceTest extends TestCase
     public function testAssessRequirementIdentifiesIncidentGap(): void
     {
         $requirement = $this->createRequirement('REQ-1', 'Test Req', true);
-        $requirement->method('isApplicable')->willReturn(true);
         $requirement->method('getMappedControls')->willReturn(new ArrayCollection());
         $requirement->method('getDataSourceMapping')->willReturn(['incident_management' => true]);
 
@@ -282,7 +302,6 @@ class ComplianceAssessmentServiceTest extends TestCase
         $control->method('getImplementationPercentage')->willReturn(100);
 
         $requirement = $this->createRequirement('REQ-1', 'Test Req', true);
-        $requirement->method('isApplicable')->willReturn(true);
         $requirement->method('getMappedControls')->willReturn(new ArrayCollection([$control]));
         $requirement->method('getDataSourceMapping')->willReturn([]);
 
@@ -302,12 +321,11 @@ class ComplianceAssessmentServiceTest extends TestCase
     {
         $framework = $this->createFramework('DORA', 85.0);
 
-        $this->requirementRepository->method('getFrameworkStatistics')
-            ->with($framework)
+        $this->requirementRepository->method('getFrameworkStatisticsForTenant')
             ->willReturn([
                 'total' => 100,
                 'applicable' => 90,
-                'fulfilled' => 80,
+                'fulfilled' => 77, // 77/90 ≈ 85.56%
             ]);
 
         $this->requirementRepository->method('findGapsByFramework')
@@ -328,7 +346,7 @@ class ComplianceAssessmentServiceTest extends TestCase
         $this->assertArrayHasKey('framework', $dashboard);
         $this->assertSame('DORA', $dashboard['framework']['name']);
         $this->assertArrayHasKey('statistics', $dashboard);
-        $this->assertSame(85.0, $dashboard['compliance_percentage']);
+        $this->assertSame(85.56, $dashboard['compliance_percentage']); // 77/90 * 100
         $this->assertArrayHasKey('gaps', $dashboard);
         $this->assertSame(2, $dashboard['gaps']['total']);
         $this->assertSame(1, $dashboard['gaps']['critical']);
@@ -339,7 +357,7 @@ class ComplianceAssessmentServiceTest extends TestCase
         $framework = $this->createFramework('NIS2', 90.0);
         $requirement = $this->createRequirement('NIS2-1', 'Req 1', true);
 
-        $this->requirementRepository->method('getFrameworkStatistics')
+        $this->requirementRepository->method('getFrameworkStatisticsForTenant')
             ->willReturn(['total' => 50, 'applicable' => 50, 'fulfilled' => 45]);
 
         $this->requirementRepository->method('findGapsByFramework')
@@ -364,7 +382,7 @@ class ComplianceAssessmentServiceTest extends TestCase
     {
         $framework = $this->createFramework('DORA', 60.0);
 
-        $this->requirementRepository->method('getFrameworkStatistics')
+        $this->requirementRepository->method('getFrameworkStatisticsForTenant')
             ->willReturn(['total' => 100, 'applicable' => 90, 'fulfilled' => 54]);
 
         $unmappedGap = $this->createMockGapRequirement('critical');
@@ -404,7 +422,7 @@ class ComplianceAssessmentServiceTest extends TestCase
     {
         $framework = $this->createFramework('ISO 27001', 100.0);
 
-        $this->requirementRepository->method('getFrameworkStatistics')
+        $this->requirementRepository->method('getFrameworkStatisticsForTenant')
             ->willReturn(['total' => 100, 'applicable' => 100, 'fulfilled' => 100]);
 
         $this->requirementRepository->method('findGapsByFramework')
@@ -429,7 +447,7 @@ class ComplianceAssessmentServiceTest extends TestCase
         $framework1 = $this->createFramework('NIS2', 85.0);
         $framework2 = $this->createFramework('DORA', 90.0);
 
-        $this->requirementRepository->method('getFrameworkStatistics')
+        $this->requirementRepository->method('getFrameworkStatisticsForTenant')
             ->willReturnCallback(function ($framework) {
                 if ($framework->getName() === 'NIS2') {
                     return ['total' => 100, 'applicable' => 90, 'fulfilled' => 76];
@@ -442,13 +460,13 @@ class ComplianceAssessmentServiceTest extends TestCase
         $this->assertCount(2, $result);
 
         $this->assertSame('NIS2', $result[0]['framework']);
-        $this->assertSame(85.0, $result[0]['compliance_percentage']);
+        $this->assertSame(84.44, $result[0]['compliance_percentage']); // 76/90 * 100 = 84.44
         $this->assertSame(100, $result[0]['total_requirements']);
         $this->assertSame(76, $result[0]['fulfilled']);
         $this->assertSame(14, $result[0]['gaps']); // 90 applicable - 76 fulfilled
 
         $this->assertSame('DORA', $result[1]['framework']);
-        $this->assertSame(90.0, $result[1]['compliance_percentage']);
+        $this->assertSame(89.33, $result[1]['compliance_percentage']); // 67/75 * 100 = 89.33
     }
 
     public function testCompareEmptyFrameworks(): void
@@ -466,7 +484,8 @@ class ComplianceAssessmentServiceTest extends TestCase
         $framework->method('getCode')->willReturn(strtoupper(str_replace(' ', '_', $name)));
         $framework->method('getVersion')->willReturn('1.0');
         $framework->method('isMandatory')->willReturn(true);
-        $framework->method('getCompliancePercentage')->willReturn($compliance);
+        // Note: getCompliancePercentage() doesn't exist on ComplianceFramework entity
+        // Compliance is calculated by ComplianceAssessmentService, not stored on entity
         return $framework;
     }
 
@@ -475,7 +494,8 @@ class ComplianceAssessmentServiceTest extends TestCase
         $requirement = $this->createMock(ComplianceRequirement::class);
         $requirement->method('getRequirementId')->willReturn($id);
         $requirement->method('getTitle')->willReturn($title);
-        $requirement->method('isApplicable')->willReturn($applicable);
+        // Note: isApplicable() doesn't exist on ComplianceRequirement entity
+        // Applicability is determined by ComplianceRequirementFulfillment entity
         return $requirement;
     }
 

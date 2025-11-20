@@ -110,12 +110,14 @@
                 {% endif %}
             </td>
             <td class="text-center">
-                <a href="{{ path('app_location_show', {id: location.id}) }}" class="btn btn-sm mr-025">
-                    👁 {{ 'common.view'|trans }}
-                </a>
-                <a href="{{ path('app_location_edit', {id: location.id}) }}" class="btn btn-sm btn-secondary">
-                    ✏️ {{ 'common.edit'|trans }}
-                </a>
+                <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'location.actions.label'|trans({}, 'messages', 'Location Actions') }}">
+                    <a href="{{ path('app_location_show', {id: location.id}) }}" class="btn btn-outline-primary" aria-label="{{ 'common.view'|trans }} {{ location.name }}">
+                        <i class="bi bi-eye" aria-hidden="true"></i>
+                    </a>
+                    <a href="{{ path('app_location_edit', {id: location.id}) }}" class="btn btn-outline-secondary" aria-label="{{ 'common.edit'|trans }} {{ location.name }}">
+                        <i class="bi bi-pencil" aria-hidden="true"></i>
+                    </a>
+                </div>
             </td>
         </tr>
         {% else %}

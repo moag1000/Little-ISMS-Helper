@@ -1,0 +1,390 @@
+{% extends 'pdf/_base_document.html.twig' %}
+
+{# Document Metadata - Version muss vom Controller übergeben werden! #}
+{% block document_id %}DOC-ISMS-SOA-001{% endblock %}
+{% block document_title %}Statement of Applicability (SoA){% endblock %}
+{% block document_type %}ISO 27001:2022 Konformitätsdokument{% endblock %}
+{% block document_version %}{{ version }}{% endblock %}
+{% block document_status %}{{ status|default('Approved') }}{% endblock %}
+{% block document_status_class %}{{ status|default('approved')|lower }}{% endblock %}
+{% block document_classification %}Confidential{% endblock %}
+{% block classification_class %}confidential{% endblock %}
+
+{# Creator Information #}
+{% block created_by %}{{ app.user.fullName }}{% endblock %}
+{% block created_date %}{{ generatedAt|date('d.m.Y') }}{% endblock %}
+{% block modified_date %}{{ generatedAt|date('d.m.Y H:i') }}{% endblock %}
+
+{# Validity #}
+{% block valid_until %}{{ generatedAt|date_modify('+1 year')|date('d.m.Y') }}{% endblock %}
+{% block next_review %}{{ generatedAt|date_modify('+6 months')|date('d.m.Y') }}{% endblock %}
+
+{# Header/Footer #}
+{% block header_center %}Statement of Applicability - ISO 27001:2022{% endblock %}
+{% block header_right %}CONFIDENTIAL{% endblock %}
+{% block footer_version %}{{ version }}{% endblock %}
+
+{# Show Approval Section #}
+{% set show_approval = true %}
+{% block reviewer_name %}{{ reviewer|default('ISMS-Verantwortlicher') }}{% endblock %}
+{% block review_date %}{{ generatedAt|date('d.m.Y') }}{% endblock %}
+{% block approver_name %}{{ approver|default('Geschäftsführung') }}{% endblock %}
+{% block approval_date %}{{ approval_date|default(generatedAt|date('d.m.Y')) }}{% endblock %}
+
+{# Show Version History - Beispieldaten! Echte Versionsdaten vom Controller übergeben! #}
+{% set show_version_history = true %}
+{% block version_history %}
+{# Beispiel-Versionsverlauf - durch echte Daten vom Controller ersetzen:
+   {% for versionEntry in versionHistory %}
+   <tr>
+       <td>{{ versionEntry.version }}</td>
+       <td>{{ versionEntry.date|date('d.m.Y') }}</td>
+       <td>{{ versionEntry.author }}</td>
+       <td>{{ versionEntry.changes }}</td>
+   </tr>
+   {% endfor %}
+#}
+<tr>
+    <td>1.0</td>
+    <td>{{ generatedAt|date_modify('-6 months')|date('d.m.Y') }}</td>
+    <td>ISMS Team</td>
+    <td>Initiale Version nach ISO 27001:2022</td>
+</tr>
+<tr>
+    <td>1.5</td>
+    <td>{{ generatedAt|date_modify('-3 months')|date('d.m.Y') }}</td>
+    <td>{{ app.user.fullName }}</td>
+    <td>Aktualisierung Controls A.8 und A.11</td>
+</tr>
+<tr>
+    <td>2.0</td>
+    <td>{{ generatedAt|date('d.m.Y') }}</td>
+    <td>{{ app.user.fullName }}</td>
+    <td>Vollständige Überprüfung aller Controls, Status-Update</td>
+</tr>
+{% endblock %}
+
+{# Custom Styles for SoA #}
+{% block custom_styles %}
+.stats-grid {
+    display: table;
+    width: 100%;
+    margin-bottom: 20pt;
+    border: 1px solid #cbd5e1;
+    border-collapse: collapse;
+}
+
+.stats-row {
+    display: table-row;
+}
+
+.stats-cell {
+    display: table-cell;
+    padding: 10pt;
+    text-align: center;
+    border: 1px solid #cbd5e1;
+    width: 25%;
+}
+
+.stats-label {
+    font-size: 8pt;
+    color: #64748b;
+    text-transform: uppercase;
+    font-weight: bold;
+    margin-bottom: 5pt;
+}
+
+.stats-value {
+    font-size: 18pt;
+    color: #1a56db;
+    font-weight: bold;
+}
+
+.control-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 15pt;
+    font-size: 8pt;
+}
+
+.control-table th {
+    background-color: #1a56db;
+    color: white;
+    padding: 6pt;
+    text-align: left;
+    font-weight: bold;
+    border: 1px solid #1e3a8a;
+}
+
+.control-table td {
+    padding: 5pt;
+    border: 1px solid #cbd5e1;
+    vertical-align: top;
+}
+
+.control-table tr:nth-child(even) {
+    background-color: #f8fafc;
+}
+
+.control-id {
+    font-weight: bold;
+    color: #1a56db;
+    white-space: nowrap;
+}
+
+.badge {
+    display: inline-block;
+    padding: 2pt 6pt;
+    border-radius: 3pt;
+    font-size: 7pt;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.badge-implemented {
+    background-color: #10b981;
+    color: white;
+}
+
+.badge-partial {
+    background-color: #f59e0b;
+    color: white;
+}
+
+.badge-not-implemented {
+    background-color: #ef4444;
+    color: white;
+}
+
+.badge-planned {
+    background-color: #3b82f6;
+    color: white;
+}
+
+.badge-applicable {
+    background-color: #10b981;
+    color: white;
+}
+
+.badge-not-applicable {
+    background-color: #6b7280;
+    color: white;
+}
+
+.category-header {
+    background-color: #e0e7ff;
+    padding: 8pt;
+    margin-top: 15pt;
+    margin-bottom: 8pt;
+    border-left: 4px solid #1a56db;
+    font-weight: bold;
+    font-size: 10pt;
+    color: #1e3a8a;
+}
+
+.percentage {
+    font-weight: bold;
+    color: #059669;
+}
+{% endblock %}
+
+{# Main Document Content #}
+{% block document_content %}
+
+{# Executive Summary #}
+<h1>Statement of Applicability (SoA)</h1>
+<p class="text-center text-muted mb-medium">
+    ISO 27001:2022 Annex A - Anwendbarkeitserklärung der Controls
+</p>
+
+<div class="mb-large">
+    <h2>Zusammenfassung</h2>
+    <p>
+        Dieses Dokument beschreibt die Anwendbarkeit und den Implementierungsstatus der ISO 27001:2022
+        Annex A Controls für das Informationssicherheits-Managementsystem (ISMS) der Organisation
+        <strong>{{ tenant_name|default('Organisation') }}</strong>.
+    </p>
+    <p>
+        Die nachfolgenden Controls wurden auf Basis einer Risikoanalyse und unter Berücksichtigung
+        rechtlicher, regulatorischer und vertraglicher Anforderungen bewertet.
+    </p>
+</div>
+
+{# Statistics Overview #}
+<h2>Implementierungsübersicht</h2>
+<div class="stats-grid">
+    <div class="stats-row">
+        <div class="stats-cell">
+            <div class="stats-label">Gesamt Controls</div>
+            <div class="stats-value">{{ stats.total }}</div>
+        </div>
+        <div class="stats-cell">
+            <div class="stats-label">Anwendbar</div>
+            <div class="stats-value">{{ stats.applicable }}</div>
+        </div>
+        <div class="stats-cell">
+            <div class="stats-label">Implementiert</div>
+            <div class="stats-value">{{ stats.implemented }}</div>
+        </div>
+        <div class="stats-cell">
+            <div class="stats-label">Compliance-Rate</div>
+            <div class="stats-value">
+                <span class="percentage">{{ ((stats.implemented / stats.applicable) * 100)|round }}%</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mb-large">
+    <p><strong>Implementierungsstatus:</strong></p>
+    <ul>
+        <li>Vollständig implementiert: {{ stats.implemented }} Controls</li>
+        <li>Teilweise implementiert: {{ stats.partial }} Controls</li>
+        <li>Geplant: {{ stats.planned }} Controls</li>
+        <li>Nicht implementiert: {{ stats.notImplemented }} Controls</li>
+        <li>Nicht anwendbar: {{ stats.notApplicable }} Controls (mit Begründung)</li>
+    </ul>
+</div>
+
+{# Controls by Category #}
+<div class="page-break"></div>
+<h2>Controls nach Kategorien</h2>
+
+{% for categoryName, categoryControls in controlsByCategory %}
+<div class="category-header">{{ categoryName }}</div>
+
+<table class="control-table">
+    <thead>
+        <tr>
+            <th style="width: 10%;">Control ID</th>
+            <th style="width: 25%;">Name</th>
+            <th style="width: 35%;">Beschreibung</th>
+            <th style="width: 10%;" class="text-center">Anwendbar</th>
+            <th style="width: 10%;" class="text-center">Status</th>
+            <th style="width: 10%;" class="text-center">Progress</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for control in categoryControls %}
+        <tr>
+            <td class="control-id">{{ control.controlId }}</td>
+            <td><strong>{{ control.name }}</strong></td>
+            <td class="text-muted">{{ control.description|slice(0, 200) }}{% if control.description|length > 200 %}...{% endif %}</td>
+            <td class="text-center">
+                {% if control.applicable %}
+                    <span class="badge badge-applicable">✓ Ja</span>
+                {% else %}
+                    <span class="badge badge-not-applicable">✗ Nein</span>
+                {% endif %}
+            </td>
+            <td class="text-center">
+                {% if control.applicable %}
+                    {% if control.implementationStatus == 'implemented' %}
+                        <span class="badge badge-implemented">Implementiert</span>
+                    {% elseif control.implementationStatus == 'partial' %}
+                        <span class="badge badge-partial">Teilweise</span>
+                    {% elseif control.implementationStatus == 'planned' %}
+                        <span class="badge badge-planned">Geplant</span>
+                    {% else %}
+                        <span class="badge badge-not-implemented">Offen</span>
+                    {% endif %}
+                {% else %}
+                    <span class="badge badge-not-applicable">N/A</span>
+                {% endif %}
+            </td>
+            <td class="text-center">
+                {% if control.applicable %}
+                    <strong>{{ control.implementationPercentage }}%</strong>
+                {% else %}
+                    —
+                {% endif %}
+            </td>
+        </tr>
+        {% if not control.applicable and control.justification %}
+        <tr>
+            <td colspan="6" style="background-color: #fef3c7; padding: 5pt;">
+                <strong>Begründung für Nicht-Anwendbarkeit:</strong> {{ control.justification }}
+            </td>
+        </tr>
+        {% endif %}
+        {% endfor %}
+    </tbody>
+</table>
+{% endfor %}
+
+{# Detailed Justifications #}
+<div class="page-break"></div>
+<h2>Detaillierte Begründungen</h2>
+
+<h3>Nicht anwendbare Controls</h3>
+{% set hasNonApplicable = false %}
+{% for control in allControls %}
+    {% if not control.applicable %}
+        {% set hasNonApplicable = true %}
+        <div class="no-break mb-medium">
+            <p><strong>{{ control.controlId }} - {{ control.name }}</strong></p>
+            <p class="text-muted" style="margin-left: 15pt;">
+                <em>Begründung:</em> {{ control.justification|default('Keine Begründung angegeben') }}
+            </p>
+        </div>
+    {% endif %}
+{% endfor %}
+{% if not hasNonApplicable %}
+<p class="text-muted">Alle Controls sind anwendbar.</p>
+{% endif %}
+
+<h3>Geplante Implementierungen</h3>
+{% set hasPlanned = false %}
+{% for control in allControls %}
+    {% if control.applicable and control.implementationStatus == 'planned' %}
+        {% set hasPlanned = true %}
+        <div class="no-break mb-medium">
+            <p><strong>{{ control.controlId }} - {{ control.name }}</strong></p>
+            <p class="text-muted" style="margin-left: 15pt;">
+                <em>Ziel-Implementierungsdatum:</em> {{ control.targetDate|default('TBD')|date('d.m.Y') }}<br>
+                <em>Verantwortlich:</em> {{ control.responsiblePerson|default('Nicht zugewiesen') }}
+            </p>
+        </div>
+    {% endif %}
+{% endfor %}
+{% if not hasPlanned %}
+<p class="text-muted">Keine geplanten Implementierungen.</p>
+{% endif %}
+
+{% endblock %}
+
+{# References Section #}
+{% set show_references = true %}
+{% block references_content %}
+<table>
+    <thead>
+        <tr>
+            <th style="width: 20%;">Dokument</th>
+            <th style="width: 15%;">Typ</th>
+            <th>Beschreibung</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>ISO/IEC 27001:2022</td>
+            <td>Standard</td>
+            <td>Information security, cybersecurity and privacy protection — Information security management systems — Requirements</td>
+        </tr>
+        <tr>
+            <td>ISO/IEC 27002:2022</td>
+            <td>Standard</td>
+            <td>Information security controls</td>
+        </tr>
+        <tr>
+            <td>ISMS-POL-001</td>
+            <td>Policy</td>
+            <td>Informationssicherheitspolitik</td>
+        </tr>
+        <tr>
+            <td>ISMS-RISK-001</td>
+            <td>Risk Assessment</td>
+            <td>Aktuelle Risikoanalyse</td>
+        </tr>
+    </tbody>
+</table>
+{% endblock %}

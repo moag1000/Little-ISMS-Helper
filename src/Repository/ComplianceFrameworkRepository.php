@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\ComplianceFramework;
+use App\Service\TenantContext;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -20,8 +21,11 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class ComplianceFrameworkRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
-    {
+    public function __construct(
+        ManagerRegistry $registry,
+        private readonly ComplianceRequirementRepository $requirementRepository,
+        private readonly TenantContext $tenantContext
+    ) {
         parent::__construct($registry, ComplianceFramework::class);
     }
 
@@ -79,23 +83,34 @@ class ComplianceFrameworkRepository extends ServiceEntityRepository
     /**
      * Get compliance overview with statistics for all active frameworks.
      *
+     * Note: Uses tenant-specific fulfillment data from ComplianceRequirementFulfillment.
+     *
      * @return array<array{id: int, code: string, name: string, mandatory: bool, total_requirements: int, applicable_requirements: int, fulfilled_requirements: int, compliance_percentage: float}>
      */
     public function getComplianceOverview(): array
     {
         $frameworks = $this->findActiveFrameworks();
+        $tenant = $this->tenantContext->getCurrentTenant();
         $overview = [];
 
         foreach ($frameworks as $framework) {
+            // Get tenant-specific statistics
+            $stats = $this->requirementRepository->getFrameworkStatisticsForTenant($framework, $tenant);
+
+            // Calculate compliance percentage
+            $compliancePercentage = $stats['applicable'] > 0
+                ? round(($stats['fulfilled'] / $stats['applicable']) * 100, 2)
+                : 0;
+
             $overview[] = [
                 'id' => $framework->getId(),
                 'code' => $framework->getCode(),
                 'name' => $framework->getName(),
                 'mandatory' => $framework->isMandatory(),
-                'total_requirements' => $framework->getRequirements()->count(),
-                'applicable_requirements' => $framework->getApplicableRequirementsCount(),
-                'fulfilled_requirements' => $framework->getFulfilledRequirementsCount(),
-                'compliance_percentage' => $framework->getCompliancePercentage(),
+                'total_requirements' => $stats['total'],
+                'applicable_requirements' => $stats['applicable'],
+                'fulfilled_requirements' => $stats['fulfilled'],
+                'compliance_percentage' => $compliancePercentage,
             ];
         }
 

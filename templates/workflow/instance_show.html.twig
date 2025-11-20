@@ -17,7 +17,7 @@
                 {{ ('workflow.status.' ~ instance.status)|trans }}
             </span>
             {% if instance.overdue %}
-                <span class="badge badge-danger ml-xs">
+                <span class="badge bg-danger ml-xs">
                     {{ 'workflow.badge.overdue'|trans }}
                 </span>
             {% endif %}
@@ -103,9 +103,9 @@
                     <h3 class="fs-11-mb-xs">
                         {{ loop.index }}. {{ step.name }}
                         {% if step.id == instance.currentStep.id %}
-                            <span class="badge badge-primary">{{ 'workflow.badge.current'|trans }}</span>
+                            <span class="badge bg-primary">{{ 'workflow.badge.current'|trans }}</span>
                         {% elseif step in instance.completedSteps %}
-                            <span class="badge badge-success">✓ {{ 'workflow.badge.completed'|trans }}</span>
+                            <span class="badge bg-success">✓ {{ 'workflow.badge.completed'|trans }}</span>
                         {% endif %}
                     </h3>
                     {% if step.description %}
@@ -142,31 +142,34 @@
     <h2>{{ 'workflow.section.activity_log'|trans }}</h2>
 
     {% if instance.activities|length > 0 %}
-    <div class="table-container mt-3">
-        <table>
-            <thead>
+    <div class="mt-3">
+        {% embed '_components/_table.html.twig' with {
+            'class': 'table-container',
+            'noMargin': true
+        } %}
+            {% block table_head %}
                 <tr>
                     <th scope="col">{{ 'workflow.activity.timestamp'|trans }}</th>
                     <th scope="col">{{ 'workflow.activity.user'|trans }}</th>
                     <th scope="col">{{ 'workflow.activity.action'|trans }}</th>
                     <th scope="col">{{ 'workflow.activity.details'|trans }}</th>
                 </tr>
-            </thead>
-            <tbody>
+            {% endblock %}
+            {% block table_body %}
                 {% for activity in instance.activities|reverse %}
                 <tr>
                     <td>{{ activity.createdAt|date('d.m.Y H:i:s') }}</td>
                     <td>{{ activity.user.fullName }}</td>
                     <td>
-                        <span class="badge badge-info">{{ ('workflow.action.' ~ activity.action)|trans }}</span>
+                        <span class="badge bg-info">{{ ('workflow.action.' ~ activity.action)|trans }}</span>
                     </td>
                     <td>
                         <small class="text-muted">{{ activity.details }}</small>
                     </td>
                 </tr>
                 {% endfor %}
-            </tbody>
-        </table>
+            {% endblock %}
+        {% endembed %}
     </div>
     {% else %}
     <p class="text-muted-mt-sm">

@@ -55,53 +55,56 @@
                 </h5>
             </div>
             <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-bordered table-hover mb-0">
-                        <thead class="sticky-top">
+                {% embed '_components/_table.html.twig' with {
+                    'class': 'table-bordered table-hover mb-0',
+                    'theadClass': 'sticky-top',
+                    'noMargin': true,
+                    'responsive': true
+                } %}
+                    {% block table_head %}
+                        <tr>
+                            <th scope="col" style="width: 30%">Berechtigung</th>
+                            {% for role in roles %}
+                                <th scope="col" class="text-center" style="width: {{ 70 / roles|length }}%">
+                                    <div>{{ role.name }}</div>
+                                    {% if role.isSystemRole %}
+                                        <span class="badge bg-warning text-dark">System</span>
+                                    {% endif %}
+                                </th>
+                            {% endfor %}
+                        </tr>
+                    {% endblock %}
+                    {% block table_body %}
+                        {% set current_category = null %}
+                        {% for permission_id, data in comparison_matrix %}
+                            {% if current_category != data.category %}
+                                {% set current_category = data.category %}
+                                <tr class="table-secondary">
+                                    <td colspan="{{ roles|length + 1 }}" class="fw-bold">
+                                        <i class="bi bi-folder" aria-hidden="true"></i> {{ data.category|title }}
+                                    </td>
+                                </tr>
+                            {% endif %}
                             <tr>
-                                <th scope="col" style="width: 30%">Berechtigung</th>
+                                <td>
+                                    <code>{{ data.permission.name }}</code>
+                                    <br>
+                                    <small class="text-muted">{{ data.permission.description }}</small>
+                                </td>
                                 {% for role in roles %}
-                                    <th scope="col" class="text-center" style="width: {{ 70 / roles|length }}%">
-                                        <div>{{ role.name }}</div>
-                                        {% if role.isSystemRole %}
-                                            <span class="badge bg-warning text-dark">System</span>
+                                    {% set has_permission = data.roles[role.id] ?? false %}
+                                    <td class="text-center {{ has_permission ? 'table-success' : 'table-light' }}">
+                                        {% if has_permission %}
+                                            <i class="bi bi-check-circle-fill text-success fs-4" aria-hidden="true"></i>
+                                        {% else %}
+                                            <i class="bi bi-x-circle text-muted fs-4" aria-hidden="true"></i>
                                         {% endif %}
-                                    </th>
+                                    </td>
                                 {% endfor %}
                             </tr>
-                        </thead>
-                        <tbody>
-                            {% set current_category = null %}
-                            {% for permission_id, data in comparison_matrix %}
-                                {% if current_category != data.category %}
-                                    {% set current_category = data.category %}
-                                    <tr class="table-secondary">
-                                        <td colspan="{{ roles|length + 1 }}" class="fw-bold">
-                                            <i class="bi bi-folder" aria-hidden="true"></i> {{ data.category|title }}
-                                        </td>
-                                    </tr>
-                                {% endif %}
-                                <tr>
-                                    <td>
-                                        <code>{{ data.permission.name }}</code>
-                                        <br>
-                                        <small class="text-muted">{{ data.permission.description }}</small>
-                                    </td>
-                                    {% for role in roles %}
-                                        {% set has_permission = data.roles[role.id] ?? false %}
-                                        <td class="text-center {{ has_permission ? 'table-success' : 'table-light' }}">
-                                            {% if has_permission %}
-                                                <i class="bi bi-check-circle-fill text-success fs-4" aria-hidden="true"></i>
-                                            {% else %}
-                                                <i class="bi bi-x-circle text-muted fs-4" aria-hidden="true"></i>
-                                            {% endif %}
-                                        </td>
-                                    {% endfor %}
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+                        {% endfor %}
+                    {% endblock %}
+                {% endembed %}
             </div>
         </div>
 

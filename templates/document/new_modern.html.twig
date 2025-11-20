@@ -26,7 +26,7 @@
             <div class="card mb-4" data-controller="file-upload">
                 <div class="card-header">
                     <h2 class="mb-0">
-                        <i class="bi bi-cloud-arrow-up"></i>
+                        <i class="bi bi-cloud-arrow-up" aria-hidden="true"></i>
                         Dateien auswählen
                     </h2>
                 </div>
@@ -36,12 +36,12 @@
                          data-file-upload-target="dropzone"
                          data-action="click->file-upload#triggerFileInput">
                         <div class="dropzone-content">
-                            <i class="bi-cloud-arrow-up-fill dropzone-icon"></i>
+                            <i class="bi-cloud-arrow-up-fill dropzone-icon" aria-hidden="true"></i>
                             <h3 class="dropzone-title">Dateien hierher ziehen</h3>
                             <p class="dropzone-subtitle">oder klicken Sie hier, um Dateien auszuwählen</p>
                             <div class="dropzone-info">
                                 <small class="text-muted">
-                                    <i class="bi-info-circle me-1"></i>
+                                    <i class="bi-info-circle me-1" aria-hidden="true"></i>
                                     Max. Dateigröße: 10 MB | Erlaubte Formate: PDF, Word, Excel, Bilder, Text
                                 </small>
                             </div>
@@ -67,7 +67,7 @@
             <div class="card">
                 <div class="card-header">
                     <h2 class="mb-0">
-                        <i class="bi bi-list-ul"></i>
+                        <i class="bi bi-list-ul" aria-hidden="true"></i>
                         Dokumentdetails
                     </h2>
                 </div>
@@ -133,14 +133,14 @@
                     {# Form Actions #}
                     <div class="d-flex gap-3 justify-content-between mt-5">
                         <a href="{{ path('app_document_index') }}" class="btn btn-outline-secondary">
-                            <i class="bi-x-circle me-2"></i>
+                            <i class="bi-x-circle me-2" aria-hidden="true"></i>
                             Abbrechen
                         </a>
                         <button type="submit"
                                 class="btn btn-primary"
                                 data-file-upload-target="uploadButton"
                                 disabled>
-                            <i class="bi-cloud-upload me-2"></i>
+                            <i class="bi-cloud-upload me-2" aria-hidden="true"></i>
                             Dateien hochladen
                         </button>
                     </div>
@@ -153,7 +153,7 @@
             <div class="card mt-4 border-info">
                 <div class="card-body">
                     <h5 class="card-title">
-                        <i class="bi-lightbulb text-info"></i>
+                        <i class="bi-lightbulb text-info" aria-hidden="true"></i>
                         Tipps zum Hochladen
                     </h5>
                     <ul class="mb-0">
