@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- **Database Migrations** - Fixed missing ProcessingActivity table creation (required for GDPR VVT/ROPA)
+- **Database Reset Script** - Improved table detection reliability using COUNT(*) instead of SHOW TABLES parsing
+- **Test Suite** - Fixed 32 PHPUnit errors by removing mocks for non-existent entity methods
+- **Production Errors** - Added null tenant checks in controllers to prevent TypeError when user has no tenant assigned
+- **Backup Restore** - Added default values for new Risk fields (category, GDPR flags) for backward compatibility with old backups
+- **Test Warnings** - Suppressed expected PHP warnings in backup/restore tests
+
+### Improved
+- **Test Coverage** - Expanded test suite to 1618 tests with 4711 assertions (100% passing)
+- **Error Handling** - Better user feedback when tenant assignment is missing
+- **Data Migration** - No data loss when restoring old backups missing new Risk entity fields
+
 ### Planned
 - JWT Authentication for REST API
 - Advanced API filters and search
