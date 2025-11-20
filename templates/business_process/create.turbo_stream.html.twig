@@ -11,7 +11,7 @@
                 </a>
             </td>
             <td>
-                <span class="badge bg-{% if business_process.criticality == 'critical' %}danger{% elseif business_process.criticality == 'high' %}warning{% elseif business_process.criticality == 'medium' %}info{% else %}secondary{% endif %}">
+                <span class="{{ badge_risk(business_process.criticality) }}">
                     {{ business_process.criticality }}
                 </span>
             </td>
