@@ -309,12 +309,12 @@
                     <span class="badge bg-secondary">{{ risk.threat }}</span>
                 </td>
                 <td class="text-center">
-                    <span class="badge bg-{{ risk.probability >= 4 ? 'danger' : (risk.probability >= 3 ? 'warning' : 'success') }}">
+                    <span class="{{ badge_score(risk.probability) }}">
                         {{ risk.probability }}/5
                     </span>
                 </td>
                 <td class="text-center">
-                    <span class="badge bg-{{ risk.impact >= 4 ? 'danger' : (risk.impact >= 3 ? 'warning' : 'success') }}">
+                    <span class="{{ badge_score(risk.impact) }}">
                         {{ risk.impact }}/5
                     </span>
                 </td>
