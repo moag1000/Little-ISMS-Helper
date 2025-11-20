@@ -86,6 +86,7 @@
             {% embed '_components/_table.html.twig' with {
                 'noMargin': true
             } %}
+                {% import '_macros/inheritance_badge.html.twig' as inheritance %}
                 {% block table_head %}
                     <tr>
                         <th scope="col">{{ 'patch.field.patch_id'|trans }}</th>
@@ -96,6 +97,7 @@
                     </tr>
                 {% endblock %}
                 {% block table_body %}
+                    {% import '_macros/inheritance_badge.html.twig' as inheritance %}
                     {% for patch in patches %}
                         <tr>
                             <td><code>{{ patch.patchId }}</code></td>

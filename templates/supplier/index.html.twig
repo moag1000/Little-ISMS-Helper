@@ -126,6 +126,7 @@
                     </tr>
                 {% endblock %}
                 {% block table_body %}
+                    {% import '_macros/inheritance_badge.html.twig' as inheritance %}
                     {% for supplier in suppliers %}
                     <tr data-supplier-id="{{ supplier.id }}">
                         <td>
