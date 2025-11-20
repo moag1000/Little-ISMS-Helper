@@ -257,7 +257,7 @@
                                     <a href="{{ path('app_dpia_show', {id: dpia.id}) }}">
                                         {{ dpia.referenceNumber }} - {{ dpia.title }}
                                     </a>
-                                    <span class="badge bg-{{ dpia.riskLevel == 'critical' ? 'danger' : 'warning' }}">
+                                    <span class="{{ badge_risk(dpia.riskLevel) }}">
                                         {{ dpia.riskLevel|upper }}
                                     </span>
                                 </li>

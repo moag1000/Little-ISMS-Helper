@@ -77,6 +77,14 @@ class BadgeExtension extends AbstractExtension
         'optional' => 'info',
         'confirmed' => 'primary',
         'postponed' => 'warning',
+
+        // Health/monitoring statuses
+        'healthy' => 'success',
+        'unhealthy' => 'danger',
+
+        // Document statuses
+        'review' => 'warning',
+        'obsolete' => 'danger',
     ];
 
     /**
