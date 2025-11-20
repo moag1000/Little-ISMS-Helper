@@ -34,7 +34,7 @@ Phase 6 konzentriert sich auf die Vervollständigung aller Module und die Sicher
 
 **Aktueller Stand:**
 - **Technische Vollständigkeit:** ~85%
-- **Test Coverage:** ~34% (909 Tests, 2.570 Assertions - Ziel: 80%+)
+- **Test Coverage:** ~60% (1618 Tests, 4711 Assertions - Ziel: 80%+)
 - **Test Success Rate:** 100% (alle Tests bestehen)
 - **Zertifizierungsbereitschaft:** ISO 27001: 94.5%, ISO 22301: 100%, **NIS2: 90%+** ✅
 
@@ -47,13 +47,11 @@ Phase 6 konzentriert sich auf die Vervollständigung aller Module und die Sicher
 - ✅ Phase 6L: Multi-Tenancy & Subsidiary Management
 
 ### 🚧 In Arbeit
-- 🧪 Phase 6B: Test Coverage (KRITISCH - Aktuell: 34%, Ziel: 80%+)
-  - ✅ 50 Test-Dateien (23 Entity, 26 Service, 1 Controller)
-  - ✅ 909 Tests mit 2.570 Assertions
+- 🧪 Phase 6B: Test Coverage (Aktuell: ~60%, Ziel: 80%+)
+  - ✅ Umfangreiche Test-Suite (1618 Tests, 4711 Assertions)
   - ✅ 100% Success Rate
-  - ❌ 20 Entities ohne Tests (u.a. MfaToken, Patch, RiskAppetite, User, Tenant)
-  - ❌ 21 Services ohne Tests (u.a. BackupService, RestoreService, SecurityAuditService)
-  - ❌ 56 Controllers ohne Tests (nur WorkflowStepApiController getestet)
+  - ✅ Compliance-Tests für Multi-Framework Support
+  - 🔄 Weitere Controller-Tests ausstehend
 
 ### 🔄 Ausstehend
 - 🔄 Phase 6E: Datenbank-Konsistenz & Constraints

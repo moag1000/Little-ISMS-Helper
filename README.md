@@ -11,7 +11,7 @@
 [![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](LICENSE)
 [![ISO 27001:2022](https://img.shields.io/badge/ISO-27001%3A2022-blue)](https://www.iso.org/standard/27001)
-[![Tests](https://img.shields.io/badge/Tests-122%20passing-success)](tests/)
+[![Tests](https://img.shields.io/badge/Tests-1618%20passing-success)](tests/)
 
 [Features](#-funktionen) • [Quick Start](#-quick-start-mit-docker) • [Dokumentation](#-dokumentation) • [Roadmap](#-roadmap) • [Contributing](#-beitragen)
 
@@ -339,7 +339,7 @@ Professionelles Admin Portal zur zentralen Verwaltung aller administrativen Aufg
 | **Database** | PostgreSQL 16 / MySQL 8.0+ |
 | **API** | API Platform 4.2, OpenAPI 3.0, Swagger UI |
 | **Export** | Dompdf 3.1 (PDF), PhpSpreadsheet 5.2 (Excel) |
-| **Testing** | PHPUnit 12.4 (122 tests passing) |
+| **Testing** | PHPUnit 12.4 (1618 tests, 4711 assertions) |
 | **CI/CD** | GitHub Actions (4 parallel jobs) |
 | **Deployment** | Docker, Docker Compose, Nginx |
 
@@ -352,7 +352,7 @@ Professionelles Admin Portal zur zentralen Verwaltung aller administrativen Aufg
 - **Controllers:** 38 Controllers
 - **Templates:** 197 Twig Templates
 - **Translations:** 2,905 keys (DE + EN)
-- **Tests:** 122 tests, 228 assertions (100% passing)
+- **Tests:** 1618 tests, 4711 assertions (100% passing)
 - **API Endpoints:** 30 REST Endpoints
 - **Report Types:** 11 (6 PDF + 5 Excel)
 - **Compliance Frameworks:** 8 (ISO 27001, ISO 22301, ISO 19011, ISO 31000, ISO 27005, DORA, TISAX, NIS2, BSI)
