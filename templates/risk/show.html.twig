@@ -49,7 +49,7 @@
     <div class="card">
         <div class="card-header">
             <h2>Risk Details</h2>
-            <span class="badge bg-{{ riskClass == 'critical' ? 'danger' : (riskClass == 'high' ? 'warning' : (riskClass == 'medium' ? 'info' : 'success')) }}">
+            <span class="{{ badge_risk(riskClass) }}">
                 {{ riskClass|upper }} ({{ risk.inherentRiskLevel }})
             </span>
         </div>
@@ -135,7 +135,7 @@
                         {% for control in risk.controls %}
                             <div class="control-item">
                                 <strong>{{ control.controlId }}</strong>: {{ control.name }}
-                                <span class="badge badge-{{ control.implementationStatus }}">
+                                <span class="{{ badge_status(control.implementationStatus) }}">
                                     {{ control.implementationStatus|upper }}
                                 </span>
                                 <small>({{ control.implementationPercentage }}%)</small>
@@ -157,7 +157,7 @@
                         {% for incident in risk.incidents %}
                             <div class="incident-item">
                                 <strong>{{ incident.title }}</strong>
-                                <span class="badge badge-severity-{{ incident.severity }}">
+                                <span class="{{ badge_severity(incident.severity) }}">
                                     {{ incident.severity|upper }}
                                 </span>
                                 <small>{{ incident.detectedAt|date('Y-m-d') }}</small>
@@ -193,7 +193,7 @@
                                 {% endif %}
                                 {% if risk.asset.dataClassification %}
                                     <p><strong>Classification:</strong>
-                                        <span class="badge bg-{{ risk.asset.dataClassification == 'public' ? 'success' : (risk.asset.dataClassification == 'internal' ? 'info' : (risk.asset.dataClassification == 'confidential' ? 'warning' : 'danger')) }}">
+                                        <span class="{{ badge_classification(risk.asset.dataClassification) }}">
                                             {{ risk.asset.dataClassification|upper }}
                                         </span>
                                     </p>
@@ -257,7 +257,7 @@
                                 {% endif %}
                                 {% if risk.supplier.riskLevel %}
                                     <p><strong>Supplier Risk Level:</strong>
-                                        <span class="badge bg-{{ risk.supplier.riskLevel == 'low' ? 'success' : (risk.supplier.riskLevel == 'medium' ? 'warning' : 'danger') }}">
+                                        <span class="{{ badge_risk(risk.supplier.riskLevel) }}">
                                             {{ risk.supplier.riskLevel|upper }}
                                         </span>
                                     </p>
@@ -279,7 +279,7 @@
                         {% for log in auditLogs %}
                             <div class="audit-log-item">
                                 <div class="audit-log-header">
-                                    <span class="badge badge-action-{{ log.action }}">
+                                    <span class="{{ badge_action(log.action) }}">
                                         {{ log.action|upper }}
                                     </span>
                                     <small class="text-muted">{{ log.createdAt|date('Y-m-d H:i:s') }}</small>
@@ -413,9 +413,7 @@
     color: #10b981;
     font-weight: 500;
 }
-.badge-action-insert { background: #10b981; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; }
-.badge-action-update { background: #3b82f6; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; }
-.badge-action-delete { background: #ef4444; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; }
+/* Badge action styles now handled by BadgeExtension helper functions */
 
 /* Dark Mode Support */
 @media (prefers-color-scheme: dark) {
