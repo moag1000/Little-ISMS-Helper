@@ -572,7 +572,9 @@ asset:
   confirm:
     delete: Sind Sie sicher, dass Sie dieses Asset löschen möchten?
 
-  title:
+  title: Asset
+
+  titles:
     _default: Assets
     bcm_insights: 'BCM-Einblicke für Assets'
 
@@ -588,6 +590,7 @@ asset:
   action:
     bcm_insights: BCM-Einblicke
     view_critical: 'Kritische Assets anzeigen'
+    view_details: 'Asset-Details anzeigen'
 
   stats:
     total_assets: 'Gesamt-Assets'
@@ -634,6 +637,7 @@ asset:
     confidentiality: Vertraulichkeit
     integrity: Integrität
     availability: Verfügbarkeit
+    classification: Klassifizierung
     data_classification: Datenklassifizierung
     acceptable_use_policy: Nutzungsrichtlinie
     handling_instructions: Handhabungshinweise
@@ -874,6 +878,38 @@ risk:
     inherent: 'Bewertung des Risikos ohne Berücksichtigung bestehender Maßnahmen (inhärentes Risiko)'
     residual: 'Bewertung des Risikos nach Implementierung von Maßnahmen (Restrisiko)'
 
+  # Delete Confirmation
+  delete:
+    confirm_message: 'Sind Sie sicher, dass Sie dieses Risiko löschen möchten?'
+
+  # Assessment Labels
+  assessment:
+    inherent_risk: Inhärentes Risiko
+    residual_risk: Restrisiko
+    probability: Wahrscheinlichkeit
+    impact: Auswirkung
+    level: Stufe
+    score: Score
+
+  # Additional Field Labels
+  not_reviewed: Nicht überprüft
+  incidents: Vorfälle
+  next_review: Nächste Überprüfung
+  created: Erstellt
+  last_review: Letzte Überprüfung
+
+  # Realization Warning
+  realization:
+    warning: 'Dieses Risiko wurde %count% Mal realisiert.'
+    review_suggestion: 'Erwägen Sie eine Überprüfung der Wahrscheinlichkeitsbewertung.'
+
+  # Risk Subject Hints
+  subject:
+    asset:
+      monetary_value_hint: 'Die Auswirkungsberechnung kann vom monetären Wert des Assets abgeleitet werden'
+    location:
+      city_country: 'Stadt/Land'
+
   # Treatment Strategies
   treatment:
     mitigate: Mindern
@@ -949,16 +985,21 @@ risk:
   # Sections
   section:
     basic_info: Grundinformationen
+    details: Risikodetails
+    description: Beschreibung
     gdpr_assessment: 'DSGVO/GDPR Datenschutz-Bewertung'
     inherent_risk: 'Inhärente Risikobewertung (Brutto-Risiko)'
     residual_risk: 'Restrisikobewertung (Netto-Risiko)'
     treatment: 'Risikobehandlung'
+    treatment_strategy: Behandlungsstrategie
     acceptance: 'Risikoakzeptanz (ISO 27005)'
     status: 'Status & Review'
     risk_owner: 'Risikoverantwortlicher'
     mitigating_controls: 'Mindernde Maßnahmen'
     realization_history: 'Realisierungsverlauf'
+    risk_subject: Risikoobjekt
     affected_asset: 'Betroffenes Asset'
+    history: Risikoverlauf
 control:
   section:
     protected_assets: Geschützte Assets
@@ -1666,7 +1707,8 @@ document:
   table:
     uploaded_by: 'Hochgeladen von'
 person:
-  title:
+  title: Person
+  titles:
     _default: Personenverwaltung
     list: Personen
     show: Person anzeigen
@@ -1690,6 +1732,7 @@ person:
     overview: 'Verwalten Sie Mitarbeiter, Auftragnehmer, Besucher und andere Personen in Ihrer Organisation.'
   action:
     create: Person anlegen
+    view_details: 'Personendetails anzeigen'
   stats:
     total: Personen gesamt
     employees: Mitarbeiter
@@ -1753,7 +1796,8 @@ person:
     updated: Person erfolgreich aktualisiert.
     deleted: Person erfolgreich gelöscht.
 location:
-  title:
+  title: Standort
+  titles:
     _default: Standortverwaltung
     list: Standorte
     show: Standort anzeigen
@@ -1767,6 +1811,7 @@ location:
     overview: 'Verwalten Sie physische Standorte, Gebäude und Räume Ihrer Organisation für Sicherheits- und Asset-Management.'
   action:
     create: Standort anlegen
+    view_details: 'Standortdetails anzeigen'
   stats:
     total: Standorte gesamt
     buildings: Gebäude
@@ -2003,6 +2048,7 @@ supplier:
     add_new: Neuen Lieferanten hinzufügen
     view: Ansehen
     edit: Bearbeiten
+    view_details: 'Lieferantendetails anzeigen'
   statistics:
     title: Statistiken
     total: Lieferanten insgesamt
@@ -2031,6 +2077,7 @@ supplier:
   contact_person: Ansprechpartner
   field:
     contact_person: Ansprechpartner
+    contact: Kontakt
     name: Lieferantenname
     email: E-Mail
     phone: Telefon
@@ -2039,6 +2086,7 @@ supplier:
     service_provided: Bereitgestellte Dienstleistung
     criticality: Kritikalität
     status: Status
+    risk_level: Risikostufe
     security_score: Sicherheits-Score (0-100)
     last_security_assessment: Letzte Sicherheitsbewertung
     next_assessment_date: Nächstes Bewertungsdatum
@@ -4615,6 +4663,9 @@ action:
   delete: Löschen
   delete_selected: Ausgewählte löschen
   label: Aktion
+  edit: Bearbeiten
+  back_to_list: Zurück zur Liste
+  view_all: Alle anzeigen
 
 # Form Translations
 form:
