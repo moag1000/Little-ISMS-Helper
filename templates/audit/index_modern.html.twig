@@ -247,23 +247,23 @@
                         </td>
                         <td>
                             {% if audit.status == 'planned' %}
-                                <span class="badge bg-info">
+                                <span class="{{ badge_status(audit.status) }}">
                                     <i class="bi bi-calendar3" aria-hidden="true"></i> Geplant
                                 </span>
                             {% elseif audit.status == 'in_progress' %}
-                                <span class="badge bg-warning">
+                                <span class="{{ badge_status(audit.status) }}">
                                     <i class="bi bi-hourglass-split" aria-hidden="true"></i> In Bearbeitung
                                 </span>
                             {% elseif audit.status == 'completed' %}
-                                <span class="badge bg-success">
+                                <span class="{{ badge_status(audit.status) }}">
                                     <i class="bi bi-check-circle" aria-hidden="true"></i> Abgeschlossen
                                 </span>
                             {% elseif audit.status == 'cancelled' %}
-                                <span class="badge bg-secondary">
+                                <span class="{{ badge_status(audit.status) }}">
                                     <i class="bi bi-x-circle" aria-hidden="true"></i> Abgebrochen
                                 </span>
                             {% else %}
-                                <span class="badge bg-secondary">{{ audit.status }}</span>
+                                <span class="{{ badge_status(audit.status) }}">{{ audit.status }}</span>
                             {% endif %}
                         </td>
                         <td class="w-text-right">

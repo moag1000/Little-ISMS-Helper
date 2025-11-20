@@ -23,13 +23,7 @@
                     <h4 class="mb-0">
                         <i class="bi bi-clipboard-check" aria-hidden="true"></i> {{ audit.title }}
                     </h4>
-                    {% set statusClass = {
-                        'planned': 'info',
-                        'in_progress': 'warning',
-                        'completed': 'success',
-                        'cancelled': 'danger'
-                    } %}
-                    <span class="badge bg-{{ statusClass[audit.status] ?? 'secondary' }} fs-6">
+                    <span class="{{ badge_status(audit.status) }} fs-6">
                         {{ ('audit.status.' ~ audit.status)|trans }}
                     </span>
                 </div>
@@ -151,13 +145,7 @@
                     <div class="mb-4">
                         <h6 class="text-muted mb-2">{{ 'audit.overall_result'|trans }}</h6>
                         <p>
-                            {% set resultClass = {
-                                'passed': 'success',
-                                'passed_with_observations': 'info',
-                                'failed': 'danger',
-                                'not_applicable': 'secondary'
-                            } %}
-                            <span class="badge bg-{{ resultClass[audit.overallResult] ?? 'secondary' }} fs-6">
+                            <span class="{{ badge_status(audit.overallResult) }} fs-6">
                                 {{ ('audit.result.' ~ audit.overallResult)|trans }}
                             </span>
                         </p>
@@ -363,13 +351,7 @@
                         {% if audit.overallResult %}
                         <dt class="col-sm-6 text-muted">{{ 'audit.result'|trans }}</dt>
                         <dd class="col-sm-6 text-end">
-                            {% set resultClass = {
-                                'passed': 'success',
-                                'passed_with_observations': 'info',
-                                'failed': 'danger',
-                                'not_applicable': 'secondary'
-                            } %}
-                            <span class="badge bg-{{ resultClass[audit.overallResult] ?? 'secondary' }}">
+                            <span class="{{ badge_status(audit.overallResult) }}">
                                 {{ ('audit.result.' ~ audit.overallResult)|trans }}
                             </span>
                         </dd>
@@ -415,7 +397,7 @@
                 {% for log in auditLogs %}
                 <div class="audit-log-entry">
                     <div class="audit-log-header">
-                        <span class="badge bg-{{ log.action == 'create' ? 'success' : (log.action == 'update' ? 'info' : 'danger') }}">
+                        <span class="{{ badge_action(log.action) }}">
                             {{ log.action|upper }}
                         </span>
                         <span class="text-muted">
