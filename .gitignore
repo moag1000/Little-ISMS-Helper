@@ -41,3 +41,6 @@ PR_DESCRIPTION.md
 ###> claude-code ###
 .claude.md
 ###< claude-code ###
+
+# JetBrains IDE
+.idea/
