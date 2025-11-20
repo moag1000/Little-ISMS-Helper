@@ -4,226 +4,318 @@
 
 {% block body %}
 <div class="container-fluid py-4">
-    <nav aria-label="breadcrumb" class="mb-4">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item">
-                <a href="{{ path('app_audit_index') }}" data-turbo-action="advance">
-                    <i class="bi bi-clipboard-check" aria-hidden="true"></i> {{ 'audit.title'|trans }}
-                </a>
-            </li>
-            <li class="breadcrumb-item">
-                <a href="{{ path('app_audit_show', {id: audit.id}) }}" data-turbo-action="advance">
-                    {{ audit.title }}
-                </a>
-            </li>
-            <li class="breadcrumb-item active" aria-current="page">{{ 'common.edit'|trans }}</li>
-        </ol>
-    </nav>
-
     <div class="row">
         <div class="col-lg-10 col-xl-9 mx-auto">
+            <nav aria-label="breadcrumb" class="mb-3">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="{{ path('app_audit_index') }}" data-turbo-action="advance">
+                            <i class="bi bi-clipboard-check" aria-hidden="true"></i> {{ 'audit.title'|trans }}
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a href="{{ path('app_audit_show', {id: audit.id}) }}" data-turbo-action="advance">
+                            {{ audit.title }}
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ 'common.edit'|trans }}</li>
+                </ol>
+            </nav>
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="h3 mb-0">
+                    <i class="bi bi-pencil" aria-hidden="true"></i>
+                    {{ 'audit.edit'|trans }}: {{ audit.title }}
+                </h1>
+                <div>
+                    <a href="{{ path('app_audit_show', {id: audit.id}) }}" class="btn btn-outline-secondary" data-turbo-action="advance">
+                        <i class="bi bi-eye" aria-hidden="true"></i> {{ 'common.view'|trans }}
+                    </a>
+                </div>
+            </div>
+
+            <div class="alert alert-info mb-4" role="alert">
+                <h4 class="alert-heading h6">
+                    <i class="bi bi-info-circle-fill" aria-hidden="true"></i> {{ 'audit.iso_27001_requirement'|trans }}
+                </h4>
+                <p class="mb-0 small">
+                    {{ 'audit.iso_27001_clause_info'|trans }}
+                </p>
+            </div>
+
             <div class="card shadow">
                 <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0">
-                        <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'audit.edit'|trans }}: {{ audit.title }}
-                    </h4>
+                    <h3 class="mb-0">{{ 'audit.edit'|trans }}</h3>
                 </div>
                 <div class="card-body">
-                    <div class="alert alert-info mb-4" role="alert">
-                        <h4 class="alert-heading">
-                            <i class="bi bi-info-circle-fill" aria-hidden="true"></i> {{ 'audit.iso_27001_requirement'|trans }}
-                        </h6>
-                        <p class="mb-0 small">
-                            {{ 'audit.iso_27001_clause_info'|trans }}
-                        </p>
-                    </div>
-
-                    {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+                    {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'id': 'audit-form'}}) }}
 
                     {# Basic Information Section #}
-                    <div class="card mb-4">
-                        <div class="card-header bg-light">
-                            <h3 class="mb-0"><i class="bi bi-info-square" aria-hidden="true"></i> {{ 'audit.section.basic_info'|trans }}</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-12 mb-3">
-                                    {{ form_row(form.title) }}
+                    <fieldset class="mb-4">
+                        <legend class="h5 mb-3">
+                            <i class="bi bi-info-square" aria-hidden="true"></i>
+                            {{ 'audit.section.basic_info'|trans }}
+                        </legend>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.title,
+                                    'label': form.title.vars.label|default('audit.field.title'|trans),
+                                    'required': true
+                                } %}
+                            </div>
+                            <div class="col-md-12">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.scope,
+                                    'label': form.scope.vars.label|default('audit.field.scope'|trans)
+                                } %}
+                            </div>
+                            <div class="col-md-6">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.scopeType,
+                                    'label': form.scopeType.vars.label|default('audit.field.scope_type'|trans)
+                                } %}
+                            </div>
+                            <div class="col-md-6">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.auditType,
+                                    'label': form.auditType.vars.label|default('audit.field.audit_type'|trans)
+                                } %}
+                            </div>
+                            <div class="col-md-12" id="subsidiaries-container" style="display: none;">
+                                <div class="alert alert-info">
+                                    <i class="bi bi-info-circle" aria-hidden="true"></i>
+                                    <strong>Konzernaudit:</strong> Wählen Sie die Tochtergesellschaften aus, die in dieses Audit einbezogen werden sollen.
+                                    Bei "Konzernweites Audit" sollten alle relevanten Tochtergesellschaften ausgewählt werden.
                                 </div>
-                                <div class="col-md-12 mb-3">
-                                    {{ form_row(form.scope) }}
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    {{ form_row(form.scopeType) }}
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    {{ form_row(form.auditType) }}
-                                </div>
-                                <div class="col-md-12 mb-3" id="subsidiaries-container" style="display: none;">
-                                    <div class="alert alert-info">
-                                        <i class="bi bi-info-circle" aria-hidden="true"></i>
-                                        <strong>Konzernaudit:</strong> Wählen Sie die Tochtergesellschaften aus, die in dieses Audit einbezogen werden sollen.
-                                        Bei "Konzernweites Audit" sollten alle relevanten Tochtergesellschaften ausgewählt werden.
-                                    </div>
-                                    {{ form_row(form.auditedSubsidiaries) }}
-                                </div>
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.auditedSubsidiaries,
+                                    'label': form.auditedSubsidiaries.vars.label|default('audit.field.audited_subsidiaries'|trans)
+                                } %}
                             </div>
                         </div>
-                    </div>
+                    </fieldset>
 
                     {# Framework & Standards Section #}
-                    <div class="card mb-4">
-                        <div class="card-header bg-light">
-                            <h3 class="mb-0"><i class="bi bi-shield-check" aria-hidden="true"></i> {{ 'audit.section.frameworks'|trans }}</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    {{ form_row(form.framework) }}
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    {{ form_row(form.standard) }}
-                                </div>
+                    <fieldset class="mb-4">
+                        <legend class="h5 mb-3">
+                            <i class="bi bi-shield-check" aria-hidden="true"></i>
+                            {{ 'audit.section.frameworks'|trans }}
+                        </legend>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.framework,
+                                    'label': form.framework.vars.label|default('audit.field.framework'|trans)
+                                } %}
+                            </div>
+                            <div class="col-md-6">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.standard,
+                                    'label': form.standard.vars.label|default('audit.field.standard'|trans)
+                                } %}
                             </div>
                         </div>
-                    </div>
+                    </fieldset>
 
                     {# Schedule Section #}
-                    <div class="card mb-4">
-                        <div class="card-header bg-light">
-                            <h3 class="mb-0"><i class="bi bi-calendar-event" aria-hidden="true"></i> {{ 'audit.section.schedule'|trans }}</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    {{ form_row(form.plannedDate) }}
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    {{ form_row(form.actualDate) }}
-                                </div>
+                    <fieldset class="mb-4">
+                        <legend class="h5 mb-3">
+                            <i class="bi bi-calendar-event" aria-hidden="true"></i>
+                            {{ 'audit.section.schedule'|trans }}
+                        </legend>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.plannedDate,
+                                    'label': form.plannedDate.vars.label|default('audit.field.planned_date'|trans)
+                                } %}
+                            </div>
+                            <div class="col-md-6">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.actualDate,
+                                    'label': form.actualDate.vars.label|default('audit.field.actual_date'|trans)
+                                } %}
                             </div>
                         </div>
-                    </div>
+                    </fieldset>
 
                     {# Team & Responsibilities Section #}
-                    <div class="card mb-4">
-                        <div class="card-header bg-light">
-                            <h3 class="mb-0"><i class="bi bi-people" aria-hidden="true"></i> {{ 'audit.section.team'|trans }}</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    {{ form_row(form.leadAuditor) }}
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    {{ form_row(form.auditTeam) }}
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    {{ form_row(form.auditee) }}
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    {{ form_row(form.department) }}
-                                </div>
+                    <fieldset class="mb-4">
+                        <legend class="h5 mb-3">
+                            <i class="bi bi-people" aria-hidden="true"></i>
+                            {{ 'audit.section.team'|trans }}
+                        </legend>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.leadAuditor,
+                                    'label': form.leadAuditor.vars.label|default('audit.field.lead_auditor'|trans)
+                                } %}
+                            </div>
+                            <div class="col-md-6">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.auditTeam,
+                                    'label': form.auditTeam.vars.label|default('audit.field.audit_team'|trans)
+                                } %}
+                            </div>
+                            <div class="col-md-6">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.auditee,
+                                    'label': form.auditee.vars.label|default('audit.field.auditee'|trans)
+                                } %}
+                            </div>
+                            <div class="col-md-6">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.department,
+                                    'label': form.department.vars.label|default('audit.field.department'|trans)
+                                } %}
                             </div>
                         </div>
-                    </div>
+                    </fieldset>
 
                     {# Status & Results Section #}
-                    <div class="card mb-4">
-                        <div class="card-header bg-light">
-                            <h3 class="mb-0"><i class="bi bi-flag" aria-hidden="true"></i> {{ 'audit.section.status'|trans }}</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    {{ form_row(form.status) }}
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    {{ form_row(form.overallResult) }}
-                                </div>
+                    <fieldset class="mb-4">
+                        <legend class="h5 mb-3">
+                            <i class="bi bi-flag" aria-hidden="true"></i>
+                            {{ 'audit.section.status'|trans }}
+                        </legend>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.status,
+                                    'label': form.status.vars.label|default('audit.field.status'|trans)
+                                } %}
+                            </div>
+                            <div class="col-md-6">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.overallResult,
+                                    'label': form.overallResult.vars.label|default('audit.field.overall_result'|trans)
+                                } %}
                             </div>
                         </div>
-                    </div>
+                    </fieldset>
 
                     {# Objectives & Criteria Section #}
-                    <div class="card mb-4">
-                        <div class="card-header bg-light">
-                            <h3 class="mb-0"><i class="bi bi-bullseye" aria-hidden="true"></i> {{ 'audit.section.objectives'|trans }}</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-12 mb-3">
-                                    {{ form_row(form.objectives) }}
-                                </div>
-                                <div class="col-md-12 mb-3">
-                                    {{ form_row(form.auditCriteria) }}
-                                </div>
-                                <div class="col-md-12 mb-3">
-                                    {{ form_row(form.methodology) }}
-                                </div>
+                    <fieldset class="mb-4">
+                        <legend class="h5 mb-3">
+                            <i class="bi bi-bullseye" aria-hidden="true"></i>
+                            {{ 'audit.section.objectives'|trans }}
+                        </legend>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.objectives,
+                                    'label': form.objectives.vars.label|default('audit.field.objectives'|trans)
+                                } %}
+                            </div>
+                            <div class="col-md-12">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.auditCriteria,
+                                    'label': form.auditCriteria.vars.label|default('audit.field.audit_criteria'|trans)
+                                } %}
+                            </div>
+                            <div class="col-md-12">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.methodology,
+                                    'label': form.methodology.vars.label|default('audit.field.methodology'|trans)
+                                } %}
                             </div>
                         </div>
-                    </div>
+                    </fieldset>
 
                     {# Findings Section #}
-                    <div class="card mb-4">
-                        <div class="card-header bg-light">
-                            <h3 class="mb-0"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'audit.section.findings'|trans }}</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-12 mb-3">
-                                    {{ form_row(form.findings) }}
-                                </div>
-                                <div class="col-md-12 mb-3">
-                                    {{ form_row(form.nonconformities) }}
-                                </div>
-                                <div class="col-md-12 mb-3">
-                                    {{ form_row(form.observations) }}
-                                </div>
+                    <fieldset class="mb-4">
+                        <legend class="h5 mb-3">
+                            <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+                            {{ 'audit.section.findings'|trans }}
+                        </legend>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.findings,
+                                    'label': form.findings.vars.label|default('audit.field.findings'|trans)
+                                } %}
+                            </div>
+                            <div class="col-md-12">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.nonconformities,
+                                    'label': form.nonconformities.vars.label|default('audit.field.nonconformities'|trans)
+                                } %}
+                            </div>
+                            <div class="col-md-12">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.observations,
+                                    'label': form.observations.vars.label|default('audit.field.observations'|trans)
+                                } %}
                             </div>
                         </div>
-                    </div>
+                    </fieldset>
 
                     {# Recommendations & Follow-up Section #}
-                    <div class="card mb-4">
-                        <div class="card-header bg-light">
-                            <h3 class="mb-0"><i class="bi bi-lightbulb" aria-hidden="true"></i> {{ 'audit.section.recommendations'|trans }}</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-12 mb-3">
-                                    {{ form_row(form.recommendations) }}
-                                </div>
-                                <div class="col-md-12 mb-3">
-                                    {{ form_row(form.correctiveActions) }}
-                                </div>
-                                <div class="col-md-12 mb-3">
-                                    {{ form_row(form.followUpActions) }}
-                                </div>
+                    <fieldset class="mb-4">
+                        <legend class="h5 mb-3">
+                            <i class="bi bi-lightbulb" aria-hidden="true"></i>
+                            {{ 'audit.section.recommendations'|trans }}
+                        </legend>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.recommendations,
+                                    'label': form.recommendations.vars.label|default('audit.field.recommendations'|trans)
+                                } %}
+                            </div>
+                            <div class="col-md-12">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.correctiveActions,
+                                    'label': form.correctiveActions.vars.label|default('audit.field.corrective_actions'|trans)
+                                } %}
+                            </div>
+                            <div class="col-md-12">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.followUpActions,
+                                    'label': form.followUpActions.vars.label|default('audit.field.follow_up_actions'|trans)
+                                } %}
                             </div>
                         </div>
-                    </div>
+                    </fieldset>
 
                     {# Documentation Section #}
-                    <div class="card mb-4">
-                        <div class="card-header bg-light">
-                            <h3 class="mb-0"><i class="bi bi-file-earmark-text" aria-hidden="true"></i> {{ 'audit.section.documentation'|trans }}</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-12 mb-3">
-                                    {{ form_row(form.evidenceCollected) }}
-                                </div>
-                                <div class="col-md-12 mb-3">
-                                    {{ form_row(form.summary) }}
-                                </div>
-                                <div class="col-md-12 mb-3">
-                                    {{ form_row(form.notes) }}
-                                </div>
+                    <fieldset class="mb-4">
+                        <legend class="h5 mb-3">
+                            <i class="bi bi-file-earmark-text" aria-hidden="true"></i>
+                            {{ 'audit.section.documentation'|trans }}
+                        </legend>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.evidenceCollected,
+                                    'label': form.evidenceCollected.vars.label|default('audit.field.evidence_collected'|trans)
+                                } %}
+                            </div>
+                            <div class="col-md-12">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.summary,
+                                    'label': form.summary.vars.label|default('audit.field.summary'|trans)
+                                } %}
+                            </div>
+                            <div class="col-md-12">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.notes,
+                                    'label': form.notes.vars.label|default('audit.field.notes'|trans)
+                                } %}
                             </div>
                         </div>
-                    </div>
+                    </fieldset>
 
                     {# Form Actions #}
                     <div class="d-flex justify-content-between align-items-center pt-3 border-top">
@@ -251,7 +343,7 @@
             {# Metadata Card #}
             <div class="card shadow mt-4">
                 <div class="card-header bg-light">
-                    <h3 class="mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'common.metadata'|trans }}</h3>
+                    <h3 class="h6 mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'common.metadata'|trans }}</h3>
                 </div>
                 <div class="card-body">
                     <dl class="row mb-0">
@@ -283,44 +375,50 @@
 </style>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const scopeTypeSelect = document.querySelector('[data-corporate-scope]');
-        const subsidiariesContainer = document.getElementById('subsidiaries-container');
-        const subsidiariesSelect = document.querySelector('[data-corporate-subsidiaries]');
+document.addEventListener('DOMContentLoaded', function() {
+    const scopeTypeSelect = document.querySelector('[data-corporate-scope]');
+    const subsidiariesContainer = document.getElementById('subsidiaries-container');
+    const subsidiariesSelect = document.querySelector('[data-corporate-subsidiaries]');
 
-        if (!scopeTypeSelect) {
-            return; // Exit if scope type field not found
-        }
+    if (!scopeTypeSelect) {
+        return; // Exit if scope type field not found
+    }
 
-        function toggleSubsidiariesField() {
-            const selectedScope = scopeTypeSelect.value;
-            const isCorporateScope = selectedScope === 'corporate_wide' || selectedScope === 'corporate_subsidiaries';
+    function toggleSubsidiariesField() {
+        const selectedScope = scopeTypeSelect.value;
+        const isCorporateScope = selectedScope === 'corporate_wide' || selectedScope === 'corporate_subsidiaries';
 
-            if (isCorporateScope) {
-                subsidiariesContainer.style.display = 'block';
+        if (isCorporateScope) {
+            subsidiariesContainer.style.display = 'block';
 
-                // Auto-select all for corporate_wide
-                if (selectedScope === 'corporate_wide' && subsidiariesSelect) {
-                    for (let option of subsidiariesSelect.options) {
-                        option.selected = true;
-                    }
+            // Auto-select all for corporate_wide
+            if (selectedScope === 'corporate_wide' && subsidiariesSelect) {
+                for (let option of subsidiariesSelect.options) {
+                    option.selected = true;
                 }
-            } else {
-                subsidiariesContainer.style.display = 'none';
-                // Deselect all when hiding
-                if (subsidiariesSelect) {
-                    for (let option of subsidiariesSelect.options) {
-                        option.selected = false;
-                    }
+            }
+        } else {
+            subsidiariesContainer.style.display = 'none';
+            // Deselect all when hiding
+            if (subsidiariesSelect) {
+                for (let option of subsidiariesSelect.options) {
+                    option.selected = false;
                 }
             }
         }
+    }
 
-        // Run on page load to show field if already corporate scope
-        toggleSubsidiariesField();
+    // Run on page load to show field if already corporate scope
+    toggleSubsidiariesField();
 
-        // Run on scope type change
-        scopeTypeSelect.addEventListener('change', toggleSubsidiariesField);
-    });
+    // Run on scope type change
+    scopeTypeSelect.addEventListener('change', toggleSubsidiariesField);
+});
+
+// Also handle Turbo navigation
+document.addEventListener('turbo:load', function() {
+    const event = new Event('DOMContentLoaded');
+    document.dispatchEvent(event);
+});
 </script>
 {% endblock %}

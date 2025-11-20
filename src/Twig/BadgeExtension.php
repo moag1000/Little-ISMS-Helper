@@ -64,6 +64,13 @@ class BadgeExtension extends AbstractExtension
         'scheduled' => 'info',
         'completed' => 'success',
         'cancelled' => 'secondary',
+        'reported' => 'primary',
+
+        // Audit results
+        'passed' => 'success',
+        'passed_with_observations' => 'info',
+        'failed' => 'danger',
+        'not_applicable' => 'secondary',
 
         // Training statuses
         'mandatory' => 'danger',
