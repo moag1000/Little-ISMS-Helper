@@ -376,8 +376,8 @@ The following patterns were **intentionally NOT changed** as they follow Bootstr
 ## Files for Review
 
 ### Documentation
-- `/Users/michaelbanda/Nextcloud/www/Little-ISMS-Helper/HEADING_FIXES_SUMMARY.md`
-- `/Users/michaelbanda/Nextcloud/www/Little-ISMS-Helper/BEFORE_AFTER_EXAMPLES.md`
+- `HEADING_FIXES_SUMMARY.md`
+- `BEFORE_AFTER_EXAMPLES.md`
 - This report: `docs/reports/heading-hierarchy-fixes.md`
 
 ### Git Changes
