@@ -259,7 +259,7 @@ class BackupService
 
         // Decompress if needed
         if (str_ends_with($filepath, '.gz')) {
-            $json = gzdecode(file_get_contents($filepath));
+            $json = @gzdecode(file_get_contents($filepath)); // Suppress warning for intentionally corrupted test files
             if ($json === false) {
                 throw new \RuntimeException('Failed to decompress backup file');
             }
