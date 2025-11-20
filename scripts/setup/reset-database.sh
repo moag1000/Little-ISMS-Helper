@@ -201,28 +201,44 @@ empty_database() {
     elif [ "$DB_TYPE" = "mysql" ]; then
         info "Dropping MySQL database tables (will be recreated by migrations)..."
 
-        # First pass: Get ALL table names including doctrine_migration_versions
-        TABLES_RAW=$(php bin/console dbal:run-sql "SELECT table_name FROM information_schema.tables WHERE table_schema = '$DB_NAME' ORDER BY table_name;" 2>&1)
+        # Use a more reliable method to count tables first
+        TABLE_COUNT_RAW=$(php bin/console dbal:run-sql "SELECT COUNT(*) as cnt FROM information_schema.tables WHERE table_schema = '$DB_NAME';" 2>&1)
+        TABLE_COUNT=$(echo "$TABLE_COUNT_RAW" | grep -oE '[0-9]+' | tail -1)
 
-        # Extract table names from output (skip header lines, status messages, etc.)
-        # Filter status messages that may have leading spaces, then trim whitespace
-        TABLES=$(echo "$TABLES_RAW" | grep -v "^+" | grep -v "^|" | grep -v "table_name" | grep -v "^$" | grep -v "rows" | grep -v "\[" | grep -v "!" | grep -v "^-*$" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | grep -v "^$" | grep -v "^-*$")
+        if [ -z "$TABLE_COUNT" ] || [ "$TABLE_COUNT" = "0" ]; then
+            success "Database is already empty (no tables found)"
+            return 0
+        fi
 
-        if [ ! -z "$TABLES" ]; then
-            TABLE_COUNT=$(echo "$TABLES" | wc -l | xargs)
-            info "Found $TABLE_COUNT tables to drop (including migration history)"
+        info "Found $TABLE_COUNT tables to drop (including migration history)"
 
-            # Build a single SQL statement with all DROP commands
-            # Drop ALL tables at once with FOREIGN_KEY_CHECKS disabled
-            DROP_SQL="SET FOREIGN_KEY_CHECKS = 0;"
-            while IFS= read -r TABLE; do
-                # Remove any leading/trailing whitespace or special characters
-                TABLE=$(echo "$TABLE" | xargs)
-                if [ ! -z "$TABLE" ]; then
-                    DROP_SQL="$DROP_SQL DROP TABLE IF EXISTS \`$TABLE\`;"
-                fi
-            done <<< "$TABLES"
-            DROP_SQL="$DROP_SQL SET FOREIGN_KEY_CHECKS = 1;"
+        # Get ALL table names using a simple format
+        # Using GROUP_CONCAT to get all tables in one row, easier to parse
+        TABLES_LIST_RAW=$(php bin/console dbal:run-sql "SELECT GROUP_CONCAT(table_name SEPARATOR '|') as tables FROM information_schema.tables WHERE table_schema = '$DB_NAME';" 2>&1)
+
+        # Extract the actual list of tables (grep for lines that don't contain status markers)
+        TABLES_LIST=$(echo "$TABLES_LIST_RAW" | grep -v "^\[" | grep -v "^+" | grep -v "^-" | grep -v "tables" | grep -v "rows affected" | grep "|" | head -1)
+
+        if [ -z "$TABLES_LIST" ]; then
+            error "Could not extract table names from database"
+            return 1
+        fi
+
+        # Convert pipe-separated list to array
+        IFS='|' read -ra TABLES <<< "$TABLES_LIST"
+
+        # Build a single SQL statement with all DROP commands
+        # Drop ALL tables at once with FOREIGN_KEY_CHECKS disabled
+        DROP_SQL="SET FOREIGN_KEY_CHECKS = 0;"
+        for TABLE in "${TABLES[@]}"; do
+            # Remove any leading/trailing whitespace
+            TABLE=$(echo "$TABLE" | xargs)
+            if [ ! -z "$TABLE" ]; then
+                DROP_SQL="$DROP_SQL DROP TABLE IF EXISTS \`$TABLE\`;"
+                info "  Will drop: $TABLE"
+            fi
+        done
+        DROP_SQL="$DROP_SQL SET FOREIGN_KEY_CHECKS = 1;"
 
             # Execute all DROP statements in one go
             info "Executing DROP statements for all tables..."
