@@ -630,9 +630,14 @@ asset:
     status: Status
     acquisition_value: Anschaffungswert
     current_value: Aktueller Wert
+    monetary_value: Geldwert
     confidentiality: Vertraulichkeit
     integrity: Integrität
     availability: Verfügbarkeit
+    data_classification: Datenklassifizierung
+    acceptable_use_policy: Nutzungsrichtlinie
+    handling_instructions: Handhabungshinweise
+    return_date: Rückgabedatum
     asset_name: 'Asset-Name'
     business_criticality: 'Geschäftskritikalität'
     rto: 'RTO'
@@ -647,6 +652,9 @@ asset:
     description: Detaillierte Beschreibung des Assets
     owner: Wählen Sie den verantwortlichen Besitzer
     location: Wählen Sie den Standort
+    data_classification: 'Wählen Sie die Datenklassifizierung...'
+    acceptable_use_policy: 'z.B. Nur für interne Zwecke, keine externe Weitergabe'
+    handling_instructions: 'z.B. Verschlüsselung erforderlich, sichere Löschung bei Entsorgung'
   type:
     information: Information
     software: Software
@@ -659,13 +667,20 @@ asset:
     owner: Die Person oder Abteilung, die für dieses Asset verantwortlich ist
     acquisition_value: Der ursprüngliche Anschaffungswert des Assets
     current_value: Der aktuelle geschätzte Wert des Assets
+    monetary_value: Der finanzielle Wert des Assets für Risikobewertungen
     confidentiality: Bewerten Sie die Vertraulichkeitsanforderungen (1=niedrig, 5=hoch)
     integrity: Bewerten Sie die Integritätsanforderungen (1=niedrig, 5=hoch)
     availability: Bewerten Sie die Verfügbarkeitsanforderungen (1=niedrig, 5=hoch)
+    data_classification: Klassifizierung nach Vertraulichkeitsstufe gemäß Informationssicherheitsrichtlinie
+    acceptable_use_policy: Richtlinien für die zulässige Nutzung dieses Assets
+    handling_instructions: Spezielle Anweisungen für den Umgang, die Speicherung und Entsorgung
+    return_date: Geplantes Rückgabedatum für temporär zugewiesene Assets
     status: Der aktuelle Betriebsstatus des Assets
   status:
     active: Aktiv
     inactive: Inaktiv
+    in_use: In Nutzung
+    returned: Zurückgegeben
     retired: Stillgelegt
     disposed: Entsorgt
   label:
@@ -1693,12 +1708,17 @@ person:
     name: Name
     type: Typ
     person_type: Personentyp
-    email: E-Mail
-    phone: Telefon
     badge_id: Ausweisnummer
     company: Firma
+    email: E-Mail
+    phone: Telefon
     department: Abteilung
     job_title: Berufsbezeichnung
+    linked_user: Verknüpfter Benutzer
+    active: Aktiv
+    access_valid_from: Zugang gültig ab
+    access_valid_until: Zugang gültig bis
+    notes: Notizen
   section:
     basic_info: Grundinformationen
     details: Details
@@ -1709,9 +1729,22 @@ person:
   message:
     no_persons: Noch keine Personen vorhanden. Erstellen Sie die erste Person.
   placeholder:
+    full_name: 'z.B. Max Mustermann'
     name: 'z.B. Max Mustermann'
+    badge_id: 'z.B. BADGE-12345'
+    company: 'z.B. Beispiel GmbH'
+    email: 'z.B. max.mustermann@example.com'
+    phone: 'z.B. +49 30 12345678'
+    department: 'z.B. IT-Abteilung'
+    job_title: 'z.B. Senior Developer'
+    linked_user: 'Wählen Sie einen Benutzer...'
+    notes: 'Zusätzliche Hinweise und Notizen'
     badge: 'z.B. BADGE-12345'
   help:
+    badge_id: Eindeutige Ausweiskennung für physische Zutrittskontrolle
+    linked_user: Verknüpfen Sie diese Person mit einem Benutzer-Account für zusätzliche Berechtigungen
+    access_valid_from: Startdatum für gültigen Zugang (bei temporären Zugängen)
+    access_valid_until: Enddatum für gültigen Zugang (bei temporären Zugängen)
     badge: Eindeutige Ausweiskennung für physische Zutrittskontrolle
   confirm:
     delete: 'Möchten Sie diese Person wirklich löschen?'
@@ -1779,13 +1812,26 @@ location:
     location_type: Standorttyp
     type: Typ
     code: Code
+    parent_location: Übergeordneter Standort
     description: Beschreibung
+    address: Adresse
     city: Stadt
+    country: Land
+    postal_code: Postleitzahl
+    security_level: Sicherheitsstufe
+    requires_badge_access: Ausweiszugang erforderlich
+    requires_escort: Begleitung erforderlich
+    camera_monitored: Kameraüberwacht
+    access_control_system: Zugangskontrollsystem
+    responsible_person: Verantwortliche Person
+    capacity: Kapazität (Personen)
+    square_meters: Quadratmeter
+    active: Aktiv
+    notes: Notizen
     parent: Übergeordneter Standort
     badge_access: Ausweiszugang erforderlich
     status: Status
     access_control: Zugangskontrollsystem
-    security_level: Sicherheitsstufe
   section:
     details: Details
     address: Adresse
@@ -1798,9 +1844,22 @@ location:
   placeholder:
     name: 'z.B. Hauptgebäude A'
     code: 'z.B. HQ-A-01'
+    parent_location: 'Wählen Sie den übergeordneten Standort...'
+    description: 'Detaillierte Beschreibung des Standorts'
+    address: 'z.B. Musterstraße 123'
+    city: 'z.B. Berlin'
+    country: 'z.B. Deutschland'
+    postal_code: 'z.B. 10115'
+    access_control_system: 'z.B. RFID Badge System XYZ'
+    responsible_person: 'z.B. Max Mustermann'
+    capacity: 'z.B. 50'
+    square_meters: 'z.B. 250.00'
+    notes: 'Zusätzliche Hinweise und Notizen'
   help:
     type: Wählen Sie den Standorttyp (Gebäude, Raum, Rechenzentrum etc.)
     code: Eindeutiger Code zur Identifikation des Standorts
+    parent_location: Ordnen Sie diesen Standort einem übergeordneten Standort zu (z.B. Raum in Gebäude)
+    capacity: Maximale Anzahl an Personen, die sich gleichzeitig am Standort aufhalten können
     parent: Ordnen Sie diesen Standort einem übergeordneten Standort zu (z.B. Raum in Gebäude)
   confirm:
     delete: 'Möchten Sie diesen Standort wirklich löschen? Untergeordnete Standorte werden ebenfalls entfernt.'
@@ -1993,6 +2052,19 @@ supplier:
     certifications: Weitere Zertifizierungen
     has_dpa: Datenverarbeitungsvereinbarung unterzeichnet
     dpa_signed_date: DPA-Unterzeichnungsdatum
+  placeholder:
+    name: 'z.B. Acme Corporation GmbH'
+    description: 'Kurze Beschreibung des Lieferanten und seiner Rolle'
+    contact_person: 'z.B. Max Mustermann'
+    email: 'z.B. kontakt@lieferant.de'
+    phone: 'z.B. +49 30 12345678'
+    address: 'z.B. Musterstraße 123, 10115 Berlin'
+    service_provided: 'z.B. Cloud-Hosting und Serverinfrastruktur'
+    security_score: 'z.B. 85'
+    assessment_findings: 'Zusammenfassung der Bewertungsergebnisse und festgestellten Schwachstellen'
+    non_conformities: 'Liste der festgestellten Nichtkonformitäten und Abweichungen'
+    security_requirements: 'Spezifische Sicherheitsanforderungen für diesen Lieferanten'
+    certifications: 'z.B. ISO 9001, SOC 2 Type II'
   success:
     created: Lieferant erfolgreich erstellt.
     updated: Lieferant erfolgreich aktualisiert.
@@ -3148,6 +3220,12 @@ risk_appetite:
     is_active: 'Nur eine Risikobereitschaft pro Kategorie sollte aktiv sein'
     approved_by: 'Person, die diese Risikobereitschaft genehmigt hat (ISO 27005 Compliance)'
     approved_at: 'Zeitpunkt der formalen Genehmigung'
+
+  validation:
+    category_max_length: 'Die Kategorie darf maximal 100 Zeichen lang sein'
+    max_acceptable_risk_required: 'Das maximale akzeptable Risiko muss angegeben werden'
+    max_acceptable_risk_range: 'Der Risiko-Score muss zwischen 1 und 25 liegen'
+    description_required: 'Eine Beschreibung ist erforderlich'
 
 # Risk Treatment Plan (ISO 27005:2022)
 risk_treatment_plan:
