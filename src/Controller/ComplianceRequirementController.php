@@ -43,6 +43,9 @@ class ComplianceRequirementController extends AbstractController
 
         $frameworks = $this->frameworkRepository->findAll();
         $tenant = $this->tenantContext->getCurrentTenant();
+        if (!$tenant) {
+            throw $this->createAccessDeniedException('No tenant assigned to user. Please contact administrator.');
+        }
 
         // Load tenant-specific fulfillments for all requirements (batch)
         $fulfillments = [];
@@ -98,6 +101,9 @@ class ComplianceRequirementController extends AbstractController
     public function show(ComplianceRequirement $requirement): Response
     {
         $tenant = $this->tenantContext->getCurrentTenant();
+        if (!$tenant) {
+            throw $this->createAccessDeniedException('No tenant assigned to user. Please contact administrator.');
+        }
 
         // Get or create tenant-specific fulfillment
         $fulfillment = $this->fulfillmentService->getOrCreateFulfillment($tenant, $requirement);
@@ -182,6 +188,10 @@ class ComplianceRequirementController extends AbstractController
         }
 
         $tenant = $this->tenantContext->getCurrentTenant();
+        if (!$tenant) {
+            $this->addFlash('error', 'No tenant assigned to user. Please contact administrator.');
+            return $this->redirectToRoute('app_compliance_requirement_show', ['id' => $requirement->getId()]);
+        }
 
         // Get or create tenant-specific fulfillment
         $fulfillment = $this->fulfillmentService->getOrCreateFulfillment($tenant, $requirement);
