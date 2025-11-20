@@ -62,6 +62,7 @@
                 </div>
             </div>
         </div>
+        {% if is_nis2_active() %}
         <div class="col-md-3">
             <div class="card border-danger">
                 <div class="card-body text-center">
@@ -76,6 +77,7 @@
                 </div>
             </div>
         </div>
+        {% endif %}
         <div class="col-md-3">
             <div class="card border-info">
                 <div class="card-body text-center">
@@ -202,6 +204,7 @@
             {% embed '_components/_table.html.twig' with {
                 'noMargin': true
             } %}
+                {% import '_macros/inheritance_badge.html.twig' as inheritance %}
                 {% block table_head %}
                     <tr>
                         <th scope="col">{{ 'incident.field.title'|trans }}</th>
@@ -214,6 +217,7 @@
                     </tr>
                 {% endblock %}
                 {% block table_body %}
+                    {% import '_macros/inheritance_badge.html.twig' as inheritance %}
                     {% for incident in allIncidents %}
                         <tr>
                             <td>
@@ -240,7 +244,7 @@
                             </td>
                             <td>{{ incident.detectedAt|date('d.m.Y H:i') }}</td>
                             <td>
-                                {% if incident.requiresNis2Reporting %}
+                                {% if is_nis2_active() and incident.requiresNis2Reporting %}
                                     {% set nis2Status = incident.nis2ComplianceStatus %}
                                     <span class="badge badge-nis2-{{ nis2Status }}" title="{{ ('incident.nis2_compliance.' ~ nis2Status)|trans }}">
                                         {% if nis2Status == 'compliant' %}

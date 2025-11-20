@@ -141,6 +141,7 @@
     {% embed '_components/_table.html.twig' with {
         'noMargin': true
     } %}
+        {% import '_macros/inheritance_badge.html.twig' as inheritance %}
         {% block table_head %}
             <tr>
                 <th scope="col" class="w-40px">
@@ -161,6 +162,7 @@
             </tr>
         {% endblock %}
         {% block table_body %}
+            {% import '_macros/inheritance_badge.html.twig' as inheritance %}
             {% for asset in assets %}
             <tr data-asset-id="{{ asset.id }}">
                 <td>
