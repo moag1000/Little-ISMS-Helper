@@ -33,7 +33,7 @@
                 <h5>📈 By Priority</h5>
                 {% for priority in remediation_effort.by_priority %}
                     <div>
-                        <span class="badge badge-{{ priority.priority == 'critical' ? 'danger' : (priority.priority == 'high' ? 'warning' : 'info') }}">
+                        <span class="{{ badge_priority(priority.priority) }}">
                             {{ priority.priority|upper }}
                         </span>
                         {{ priority.count }} ({{ priority.effort }}h)
@@ -107,7 +107,7 @@
                                 <strong>{{ stat.count }}</strong>
                             </div>
                             <div class="progress" style="height: 20px;">
-                                <div class="progress-bar bg-{{ stat.priority == 'critical' ? 'danger' : (stat.priority == 'high' ? 'warning' : 'info') }}"
+                                <div class="progress-bar {{ badge_priority(stat.priority)|replace({'badge ': ''}) }}"
                                      style="width: {% set total = gap_stats_by_priority|map(s => s.count)|reduce((carry, v) => carry + v, 0) %}{% if total > 0 %}{{ (stat.count / total * 100)|round }}{% else %}0{% endif %}%">
                                 </div>
                             </div>
