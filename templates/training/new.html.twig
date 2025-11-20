@@ -4,145 +4,196 @@
 
 {% block body %}
 <div class="container-fluid py-4">
-    <nav aria-label="breadcrumb" class="mb-4">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item">
-                <a href="{{ path('app_training_index') }}" data-turbo-action="advance">
-                    <i class="bi bi-mortarboard" aria-hidden="true"></i> {{ 'training.title'|trans }}
-                </a>
-            </li>
-            <li class="breadcrumb-item active" aria-current="page">{{ 'training.new'|trans }}</li>
-        </ol>
-    </nav>
-
     <div class="row">
         <div class="col-lg-10 col-xl-9 mx-auto">
+            <nav aria-label="breadcrumb" class="mb-3">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="{{ path('app_training_index') }}" data-turbo-action="advance">
+                            <i class="bi bi-mortarboard" aria-hidden="true"></i> {{ 'training.title'|trans }}
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ 'training.new'|trans }}</li>
+                </ol>
+            </nav>
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="h3 mb-0">
+                    <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'training.new'|trans }}
+                </h1>
+                <a href="{{ path('app_training_index') }}" class="btn btn-outline-secondary" data-turbo-action="advance">
+                    <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans }}
+                </a>
+            </div>
+
+            <div class="alert alert-info mb-4" role="alert">
+                <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'training.new_help'|trans }}
+            </div>
+
             <div class="card shadow">
                 <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0">
-                        <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'training.new'|trans }}
-                    </h4>
+                    <h3 class="mb-0">{{ 'training.new'|trans }}</h3>
                 </div>
                 <div class="card-body">
-                    <p class="text-muted mb-4">
-                        <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'training.new_help'|trans }}
-                    </p>
-
-                    {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+                    {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'id': 'training-form'}}) }}
 
                     {# Basic Information Section #}
-                    <div class="card mb-4">
-                        <div class="card-header bg-light">
-                            <h3 class="mb-0"><i class="bi bi-info-square" aria-hidden="true"></i> {{ 'training.section.basic_info'|trans }}</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-12 mb-3">
-                                    {{ form_row(form.title) }}
-                                </div>
-                                <div class="col-md-12 mb-3">
-                                    {{ form_row(form.description) }}
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    {{ form_row(form.trainingType) }}
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    {{ form_row(form.deliveryMethod) }}
-                                </div>
+                    <fieldset class="mb-4">
+                        <legend class="h5 mb-3">
+                            <i class="bi bi-info-square" aria-hidden="true"></i>
+                            {{ 'training.section.basic_info'|trans }}
+                        </legend>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.title,
+                                    'label': form.title.vars.label|default('training.field.title'|trans),
+                                    'required': true
+                                } %}
+                            </div>
+                            <div class="col-md-12">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.description,
+                                    'label': form.description.vars.label|default('training.field.description'|trans)
+                                } %}
+                            </div>
+                            <div class="col-md-6">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.trainingType,
+                                    'label': form.trainingType.vars.label|default('training.field.training_type'|trans)
+                                } %}
+                            </div>
+                            <div class="col-md-6">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.deliveryMethod,
+                                    'label': form.deliveryMethod.vars.label|default('training.field.delivery_method'|trans)
+                                } %}
                             </div>
                         </div>
-                    </div>
+                    </fieldset>
 
                     {# Schedule & Location Section #}
-                    <div class="card mb-4">
-                        <div class="card-header bg-light">
-                            <h3 class="mb-0"><i class="bi bi-calendar-event" aria-hidden="true"></i> {{ 'training.section.schedule'|trans }}</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    {{ form_row(form.scheduledDate) }}
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    {{ form_row(form.duration) }}
-                                </div>
-                                <div class="col-md-12 mb-3">
-                                    {{ form_row(form.location) }}
-                                </div>
+                    <fieldset class="mb-4">
+                        <legend class="h5 mb-3">
+                            <i class="bi bi-calendar-event" aria-hidden="true"></i>
+                            {{ 'training.section.schedule'|trans }}
+                        </legend>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.scheduledDate,
+                                    'label': form.scheduledDate.vars.label|default('training.field.scheduled_date'|trans)
+                                } %}
+                            </div>
+                            <div class="col-md-6">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.duration,
+                                    'label': form.duration.vars.label|default('training.field.duration'|trans)
+                                } %}
+                            </div>
+                            <div class="col-md-12">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.location,
+                                    'label': form.location.vars.label|default('training.field.location'|trans)
+                                } %}
                             </div>
                         </div>
-                    </div>
+                    </fieldset>
 
                     {# Trainer & Participants Section #}
-                    <div class="card mb-4">
-                        <div class="card-header bg-light">
-                            <h3 class="mb-0"><i class="bi bi-people" aria-hidden="true"></i> {{ 'training.section.people'|trans }}</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    {{ form_row(form.trainer) }}
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    {{ form_row(form.targetAudience) }}
-                                </div>
-                                <div class="col-md-12 mb-3">
-                                    {{ form_row(form.participants) }}
-                                </div>
+                    <fieldset class="mb-4">
+                        <legend class="h5 mb-3">
+                            <i class="bi bi-people" aria-hidden="true"></i>
+                            {{ 'training.section.people'|trans }}
+                        </legend>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.trainer,
+                                    'label': form.trainer.vars.label|default('training.field.trainer'|trans)
+                                } %}
+                            </div>
+                            <div class="col-md-6">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.targetAudience,
+                                    'label': form.targetAudience.vars.label|default('training.field.target_audience'|trans)
+                                } %}
+                            </div>
+                            <div class="col-md-12">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.participants,
+                                    'label': form.participants.vars.label|default('training.field.participants'|trans)
+                                } %}
                             </div>
                         </div>
-                    </div>
+                    </fieldset>
 
                     {# Status & Requirements Section #}
-                    <div class="card mb-4">
-                        <div class="card-header bg-light">
-                            <h3 class="mb-0"><i class="bi bi-flag" aria-hidden="true"></i> {{ 'training.section.status'|trans }}</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    {{ form_row(form.status) }}
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    {{ form_row(form.mandatory) }}
-                                </div>
+                    <fieldset class="mb-4" id="status-fieldset">
+                        <legend class="h5 mb-3">
+                            <i class="bi bi-flag" aria-hidden="true"></i>
+                            {{ 'training.section.status'|trans }}
+                        </legend>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.status,
+                                    'label': form.status.vars.label|default('training.field.status'|trans)
+                                } %}
+                            </div>
+                            <div class="col-md-6">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.mandatory,
+                                    'label': form.mandatory.vars.label|default('training.field.mandatory'|trans)
+                                } %}
                             </div>
                         </div>
-                    </div>
+                    </fieldset>
 
                     {# ISO 27001 Controls Section #}
-                    <div class="card mb-4">
-                        <div class="card-header bg-light">
-                            <h3 class="mb-0"><i class="bi bi-shield-check" aria-hidden="true"></i> {{ 'training.section.controls'|trans }}</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-12 mb-3">
-                                    {{ form_row(form.relatedControls) }}
-                                    <div class="form-text">
-                                        <i class="bi bi-lightbulb" aria-hidden="true"></i> {{ 'training.controls_help'|trans }}
-                                    </div>
-                                </div>
+                    <fieldset class="mb-4">
+                        <legend class="h5 mb-3">
+                            <i class="bi bi-shield-check" aria-hidden="true"></i>
+                            {{ 'training.section.controls'|trans }}
+                        </legend>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.relatedControls,
+                                    'label': form.relatedControls.vars.label|default('training.field.related_controls'|trans),
+                                    'help': 'training.controls_help'|trans
+                                } %}
                             </div>
                         </div>
-                    </div>
+                    </fieldset>
 
                     {# Materials & Feedback Section #}
-                    <div class="card mb-4">
-                        <div class="card-header bg-light">
-                            <h3 class="mb-0"><i class="bi bi-file-earmark-text" aria-hidden="true"></i> {{ 'training.section.materials'|trans }}</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-12 mb-3">
-                                    {{ form_row(form.materials) }}
-                                </div>
-                                <div class="col-md-12 mb-3">
-                                    {{ form_row(form.feedback) }}
-                                </div>
+                    <fieldset class="mb-4">
+                        <legend class="h5 mb-3">
+                            <i class="bi bi-file-earmark-text" aria-hidden="true"></i>
+                            {{ 'training.section.materials'|trans }}
+                        </legend>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.materials,
+                                    'label': form.materials.vars.label|default('training.field.materials'|trans)
+                                } %}
+                            </div>
+                            <div class="col-md-12">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.feedback,
+                                    'label': form.feedback.vars.label|default('training.field.feedback'|trans)
+                                } %}
                             </div>
                         </div>
-                    </div>
+                    </fieldset>
 
                     {# Form Actions #}
                     <div class="d-flex justify-content-between align-items-center pt-3 border-top">
@@ -177,15 +228,17 @@
 
 <script>
     document.addEventListener('turbo:load', function() {
-        // Add visual feedback for mandatory checkbox
+        // Add visual feedback for mandatory checkbox - adapted for fieldset
         const mandatoryInputs = document.querySelectorAll('input[name*="[mandatory]"]');
         mandatoryInputs.forEach(function(input) {
             input.addEventListener('change', function() {
-                const card = this.closest('.card');
-                if (this.value === '1') {
-                    card.classList.add('border-warning');
-                } else {
-                    card.classList.remove('border-warning');
+                const fieldset = document.getElementById('status-fieldset');
+                if (fieldset) {
+                    if (this.value === '1' || this.checked) {
+                        fieldset.classList.add('border-warning');
+                    } else {
+                        fieldset.classList.remove('border-warning');
+                    }
                 }
             });
         });

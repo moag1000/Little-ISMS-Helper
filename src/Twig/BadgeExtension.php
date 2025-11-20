@@ -75,6 +75,8 @@ class BadgeExtension extends AbstractExtension
         // Training statuses
         'mandatory' => 'danger',
         'optional' => 'info',
+        'confirmed' => 'primary',
+        'postponed' => 'warning',
     ];
 
     /**
