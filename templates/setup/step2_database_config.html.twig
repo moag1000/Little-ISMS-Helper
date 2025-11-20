@@ -74,64 +74,66 @@
                     {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
 
                     <div class="row">
-                        <div class="col-md-6 mb-3">
-                            {{ form_row(form.type, {
+                        <div class="col-md-6">
+                            {% include '_components/_form_field.html.twig' with {
+                                'field': form.type,
                                 'label': 'setup.database.type'|trans,
-                                'attr': {'class': 'form-select'}
-                            }) }}
+                                'required': true
+                            } %}
                         </div>
-                        <div class="col-md-6 mb-3">
-                            {{ form_row(form.name, {
+                        <div class="col-md-6">
+                            {% include '_components/_form_field.html.twig' with {
+                                'field': form.name,
                                 'label': 'setup.database.name'|trans,
-                                'attr': {'class': 'form-control'}
-                            }) }}
+                                'required': true
+                            } %}
                         </div>
                     </div>
 
                     {# MySQL/PostgreSQL specific fields (hidden for SQLite) #}
                     <div id="server-fields">
                         <div class="row">
-                            <div class="col-md-6 mb-3">
-                                {{ form_row(form.host, {
-                                    'label': 'setup.database.host'|trans,
-                                    'attr': {'class': 'form-control'}
-                                }) }}
+                            <div class="col-md-6">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.host,
+                                    'label': 'setup.database.host'|trans
+                                } %}
                             </div>
-                            <div class="col-md-6 mb-3">
-                                {{ form_row(form.port, {
-                                    'label': 'setup.database.port'|trans,
-                                    'attr': {'class': 'form-control'}
-                                }) }}
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                {{ form_row(form.user, {
-                                    'label': 'setup.database.user'|trans,
-                                    'attr': {'class': 'form-control'}
-                                }) }}
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                {{ form_row(form.password, {
-                                    'label': 'setup.database.password'|trans,
-                                    'attr': {'class': 'form-control'}
-                                }) }}
+                            <div class="col-md-6">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.port,
+                                    'label': 'setup.database.port'|trans
+                                } %}
                             </div>
                         </div>
 
                         <div class="row">
-                            <div class="col-md-6 mb-3">
-                                {{ form_row(form.serverVersion, {
-                                    'label': 'setup.database.server_version'|trans,
-                                    'attr': {'class': 'form-control'}
-                                }) }}
+                            <div class="col-md-6">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.user,
+                                    'label': 'setup.database.user'|trans
+                                } %}
                             </div>
-                            <div class="col-md-6 mb-3" id="unix-socket-field">
-                                {{ form_row(form.unixSocket, {
-                                    'label': 'setup.database.unix_socket'|trans,
-                                    'attr': {'class': 'form-control'}
-                                }) }}
+                            <div class="col-md-6">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.password,
+                                    'label': 'setup.database.password'|trans
+                                } %}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.serverVersion,
+                                    'label': 'setup.database.server_version'|trans
+                                } %}
+                            </div>
+                            <div class="col-md-6" id="unix-socket-field">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.unixSocket,
+                                    'label': 'setup.database.unix_socket'|trans
+                                } %}
                             </div>
                         </div>
                     </div>

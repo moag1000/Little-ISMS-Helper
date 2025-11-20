@@ -15,52 +15,82 @@
     </div>
 </div>
 
-<div class="card">
-    <div class="card-body">
-        {{ form_start(form) }}
-            <div class="row">
-                <div class="col-md-6">
-                    {{ form_row(form.category) }}
-                    <small class="text-muted">{{ 'risk_appetite.help.category_empty'|trans }}</small>
-                </div>
-                <div class="col-md-6">
-                    {{ form_row(form.maxAcceptableRisk) }}
-                </div>
-            </div>
+{{ form_start(form) }}
 
-            <div class="row">
-                <div class="col-12">
-                    {{ form_row(form.description) }}
-                </div>
-            </div>
+{# Risk Definition #}
+<fieldset class="mb-4">
+    <legend class="h5 mb-3">
+        <i class="bi bi-bar-chart" aria-hidden="true"></i>
+        {{ 'risk_appetite.section.definition'|trans }}
+    </legend>
 
-            <div class="row">
-                <div class="col-md-4">
-                    {{ form_row(form.isActive) }}
-                </div>
-                <div class="col-md-4">
-                    {{ form_row(form.approvedBy) }}
-                </div>
-                <div class="col-md-4">
-                    {{ form_row(form.approvedAt) }}
-                </div>
-            </div>
-
-            <div class="alert alert-info mt-3">
-                <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'risk_appetite.info.iso27005'|trans }}
-            </div>
-
-            <div class="form-actions">
-                <button type="submit" class="btn btn-primary">
-                    <i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'common.create'|trans }}
-                </button>
-                <a href="{{ path('app_risk_appetite_index') }}" class="btn btn-secondary">
-                    {{ 'common.cancel'|trans }}
-                </a>
-            </div>
-        {{ form_end(form) }}
+    <div class="row">
+        <div class="col-md-6">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.category,
+                'label': form.category.vars.label|default('risk_appetite.field.category'|trans),
+                'help': 'risk_appetite.help.category_empty'|trans,
+                'required': true
+            } %}
+        </div>
+        <div class="col-md-6">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.maxAcceptableRisk,
+                'label': form.maxAcceptableRisk.vars.label|default('risk_appetite.field.max_acceptable_risk'|trans)
+            } %}
+        </div>
+        <div class="col-12">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.description,
+                'label': form.description.vars.label|default('risk_appetite.field.description'|trans)
+            } %}
+        </div>
     </div>
+</fieldset>
+
+{# Approval Information #}
+<fieldset class="mb-4">
+    <legend class="h5 mb-3">
+        <i class="bi bi-check-circle" aria-hidden="true"></i>
+        {{ 'risk_appetite.section.approval'|trans }}
+    </legend>
+
+    <div class="row">
+        <div class="col-md-4">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.isActive,
+                'label': form.isActive.vars.label|default('risk_appetite.field.is_active'|trans)
+            } %}
+        </div>
+        <div class="col-md-4">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.approvedBy,
+                'label': form.approvedBy.vars.label|default('risk_appetite.field.approved_by'|trans)
+            } %}
+        </div>
+        <div class="col-md-4">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.approvedAt,
+                'label': form.approvedAt.vars.label|default('risk_appetite.field.approved_at'|trans)
+            } %}
+        </div>
+    </div>
+</fieldset>
+
+<div class="alert alert-info">
+    <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'risk_appetite.info.iso27005'|trans }}
 </div>
+
+<div class="form-actions">
+    <button type="submit" class="btn btn-primary">
+        <i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'common.create'|trans }}
+    </button>
+    <a href="{{ path('app_risk_appetite_index') }}" class="btn btn-secondary">
+        {{ 'common.cancel'|trans }}
+    </a>
+</div>
+
+{{ form_end(form) }}
 
 <style>
 .page-header {

@@ -1,223 +1,354 @@
 {{ form_start(form) }}
 
-<div class="card">
-    <div class="card-body">
-        {# Section 1: Basic Information #}
-        <h5 class="border-bottom pb-2 mb-3">
-            <i class="bi bi-info-circle" aria-hidden="true"></i> Basic Information (Art. 30(1)(a))
-        </h5>
-        <div class="row">
-            <div class="col-md-6">
-                {{ form_row(form.name) }}
-            </div>
-            <div class="col-md-6">
-                {{ form_row(form.status) }}
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                {{ form_row(form.description) }}
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6">
-                {{ form_row(form.purposes) }}
-            </div>
-            <div class="col-md-6">
-                {{ form_row(form.legalBasis) }}
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                {{ form_row(form.legalBasisDetails) }}
-            </div>
-        </div>
+{# Section 1: Basic Information #}
+<fieldset class="mb-4">
+    <legend class="h5 mb-3">
+        <i class="bi bi-info-circle" aria-hidden="true"></i>
+        Basic Information (Art. 30(1)(a))
+    </legend>
 
-        {# Section 2: Data Subjects #}
-        <h5 class="border-bottom pb-2 mb-3 mt-4">
-            <i class="bi bi-people" aria-hidden="true"></i> Data Subjects (Art. 30(1)(b))
-        </h5>
-        <div class="row">
-            <div class="col-md-8">
-                {{ form_row(form.dataSubjectCategories) }}
-            </div>
-            <div class="col-md-4">
-                {{ form_row(form.estimatedDataSubjectsCount) }}
-            </div>
+    <div class="row">
+        <div class="col-md-6">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.name,
+                'label': form.name.vars.label|default('processing_activity.field.name'|trans),
+                'required': true
+            } %}
         </div>
-
-        {# Section 3: Personal Data #}
-        <h5 class="border-bottom pb-2 mb-3 mt-4">
-            <i class="bi bi-database" aria-hidden="true"></i> Personal Data (Art. 30(1)(c))
-        </h5>
-        <div class="row">
-            <div class="col-md-12">
-                {{ form_row(form.personalDataCategories) }}
-            </div>
+        <div class="col-md-6">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.status,
+                'label': form.status.vars.label|default('processing_activity.field.status'|trans)
+            } %}
         </div>
-        <div class="row">
-            <div class="col-md-6">
-                {{ form_row(form.processesSpecialCategories) }}
-            </div>
-            <div class="col-md-6">
-                {{ form_row(form.processesCriminalData) }}
-            </div>
+        <div class="col-md-12">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.description,
+                'label': form.description.vars.label|default('processing_activity.field.description'|trans)
+            } %}
         </div>
-        <div class="row">
-            <div class="col-md-6">
-                {{ form_row(form.specialCategoriesDetails) }}
-            </div>
-            <div class="col-md-6">
-                {{ form_row(form.legalBasisSpecialCategories) }}
-            </div>
+        <div class="col-md-6">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.purposes,
+                'label': form.purposes.vars.label|default('processing_activity.field.purposes'|trans)
+            } %}
         </div>
-
-        {# Section 4: Recipients & Transfers #}
-        <h5 class="border-bottom pb-2 mb-3 mt-4">
-            <i class="bi bi-arrow-left-right" aria-hidden="true"></i> Recipients & Transfers (Art. 30(1)(d-e))
-        </h5>
-        <div class="row">
-            <div class="col-md-6">
-                {{ form_row(form.recipientCategories) }}
-            </div>
-            <div class="col-md-6">
-                {{ form_row(form.hasThirdCountryTransfer) }}
-            </div>
+        <div class="col-md-6">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.legalBasis,
+                'label': form.legalBasis.vars.label|default('processing_activity.field.legal_basis'|trans)
+            } %}
         </div>
-        <div class="row">
-            <div class="col-md-12">
-                {{ form_row(form.recipientDetails) }}
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6">
-                {{ form_row(form.thirdCountries) }}
-            </div>
-            <div class="col-md-6">
-                {{ form_row(form.transferSafeguards) }}
-            </div>
-        </div>
-
-        {# Section 5: Retention #}
-        <h5 class="border-bottom pb-2 mb-3 mt-4">
-            <i class="bi bi-calendar-check" aria-hidden="true"></i> Retention (Art. 30(1)(f))
-        </h5>
-        <div class="row">
-            <div class="col-md-8">
-                {{ form_row(form.retentionPeriod) }}
-            </div>
-            <div class="col-md-4">
-                {{ form_row(form.retentionPeriodDays) }}
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                {{ form_row(form.retentionLegalBasis) }}
-            </div>
-        </div>
-
-        {# Section 6: TOMs #}
-        <h5 class="border-bottom pb-2 mb-3 mt-4">
-            <i class="bi bi-shield-lock" aria-hidden="true"></i> Security Measures (Art. 30(1)(g))
-        </h5>
-        <div class="row">
-            <div class="col-md-12">
-                {{ form_row(form.technicalOrganizationalMeasures) }}
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                {{ form_row(form.implementedControls) }}
-            </div>
-        </div>
-
-        {# Section 7: Organization #}
-        <h5 class="border-bottom pb-2 mb-3 mt-4">
-            <i class="bi bi-building" aria-hidden="true"></i> Organization
-        </h5>
-        <div class="row">
-            <div class="col-md-4">
-                {{ form_row(form.responsibleDepartment) }}
-            </div>
-            <div class="col-md-4">
-                {{ form_row(form.contactPerson) }}
-            </div>
-            <div class="col-md-4">
-                {{ form_row(form.dataProtectionOfficer) }}
-            </div>
-        </div>
-
-        {# Section 8: Processors & Joint Controllers #}
-        <h5 class="border-bottom pb-2 mb-3 mt-4">
-            <i class="bi bi-diagram-3" aria-hidden="true"></i> Processors & Joint Controllers
-        </h5>
-        <div class="row">
-            <div class="col-md-6">
-                {{ form_row(form.involvesProcessors) }}
-            </div>
-            <div class="col-md-6">
-                {{ form_row(form.isJointController) }}
-            </div>
-        </div>
-
-        {# Section 9: Risk & DPIA #}
-        <h5 class="border-bottom pb-2 mb-3 mt-4">
-            <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> Risk Assessment (Art. 35)
-        </h5>
-        <div class="row">
-            <div class="col-md-4">
-                {{ form_row(form.isHighRisk) }}
-            </div>
-            <div class="col-md-4">
-                {{ form_row(form.dpiaCompleted) }}
-            </div>
-            <div class="col-md-4">
-                {{ form_row(form.dpiaDate) }}
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                {{ form_row(form.riskLevel) }}
-            </div>
-        </div>
-
-        {# Section 10: Automated Decision-Making #}
-        <h5 class="border-bottom pb-2 mb-3 mt-4">
-            <i class="bi bi-cpu" aria-hidden="true"></i> Automated Decision-Making (Art. 22)
-        </h5>
-        <div class="row">
-            <div class="col-md-12">
-                {{ form_row(form.hasAutomatedDecisionMaking) }}
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                {{ form_row(form.automatedDecisionMakingDetails) }}
-            </div>
-        </div>
-
-        {# Section 11: Additional Info #}
-        <h5 class="border-bottom pb-2 mb-3 mt-4">
-            <i class="bi bi-three-dots" aria-hidden="true"></i> Additional Information
-        </h5>
-        <div class="row">
-            <div class="col-md-12">
-                {{ form_row(form.dataSources) }}
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-4">
-                {{ form_row(form.startDate) }}
-            </div>
-            <div class="col-md-4">
-                {{ form_row(form.endDate) }}
-            </div>
-            <div class="col-md-4">
-                {{ form_row(form.nextReviewDate) }}
-            </div>
+        <div class="col-md-12">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.legalBasisDetails,
+                'label': form.legalBasisDetails.vars.label|default('processing_activity.field.legal_basis_details'|trans)
+            } %}
         </div>
     </div>
-</div>
+</fieldset>
+
+{# Section 2: Data Subjects #}
+<fieldset class="mb-4">
+    <legend class="h5 mb-3">
+        <i class="bi bi-people" aria-hidden="true"></i>
+        Data Subjects (Art. 30(1)(b))
+    </legend>
+
+    <div class="row">
+        <div class="col-md-8">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.dataSubjectCategories,
+                'label': form.dataSubjectCategories.vars.label|default('processing_activity.field.data_subject_categories'|trans)
+            } %}
+        </div>
+        <div class="col-md-4">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.estimatedDataSubjectsCount,
+                'label': form.estimatedDataSubjectsCount.vars.label|default('processing_activity.field.estimated_data_subjects_count'|trans)
+            } %}
+        </div>
+    </div>
+</fieldset>
+
+{# Section 3: Personal Data #}
+<fieldset class="mb-4">
+    <legend class="h5 mb-3">
+        <i class="bi bi-database" aria-hidden="true"></i>
+        Personal Data (Art. 30(1)(c))
+    </legend>
+
+    <div class="row">
+        <div class="col-md-12">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.personalDataCategories,
+                'label': form.personalDataCategories.vars.label|default('processing_activity.field.personal_data_categories'|trans)
+            } %}
+        </div>
+        <div class="col-md-6">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.processesSpecialCategories,
+                'label': form.processesSpecialCategories.vars.label|default('processing_activity.field.processes_special_categories'|trans)
+            } %}
+        </div>
+        <div class="col-md-6">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.processesCriminalData,
+                'label': form.processesCriminalData.vars.label|default('processing_activity.field.processes_criminal_data'|trans)
+            } %}
+        </div>
+        <div class="col-md-6">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.specialCategoriesDetails,
+                'label': form.specialCategoriesDetails.vars.label|default('processing_activity.field.special_categories_details'|trans)
+            } %}
+        </div>
+        <div class="col-md-6">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.legalBasisSpecialCategories,
+                'label': form.legalBasisSpecialCategories.vars.label|default('processing_activity.field.legal_basis_special_categories'|trans)
+            } %}
+        </div>
+    </div>
+</fieldset>
+
+{# Section 4: Recipients & Transfers #}
+<fieldset class="mb-4">
+    <legend class="h5 mb-3">
+        <i class="bi bi-arrow-left-right" aria-hidden="true"></i>
+        Recipients & Transfers (Art. 30(1)(d-e))
+    </legend>
+
+    <div class="row">
+        <div class="col-md-6">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.recipientCategories,
+                'label': form.recipientCategories.vars.label|default('processing_activity.field.recipient_categories'|trans)
+            } %}
+        </div>
+        <div class="col-md-6">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.hasThirdCountryTransfer,
+                'label': form.hasThirdCountryTransfer.vars.label|default('processing_activity.field.has_third_country_transfer'|trans)
+            } %}
+        </div>
+        <div class="col-md-12">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.recipientDetails,
+                'label': form.recipientDetails.vars.label|default('processing_activity.field.recipient_details'|trans)
+            } %}
+        </div>
+        <div class="col-md-6">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.thirdCountries,
+                'label': form.thirdCountries.vars.label|default('processing_activity.field.third_countries'|trans)
+            } %}
+        </div>
+        <div class="col-md-6">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.transferSafeguards,
+                'label': form.transferSafeguards.vars.label|default('processing_activity.field.transfer_safeguards'|trans)
+            } %}
+        </div>
+    </div>
+</fieldset>
+
+{# Section 5: Retention #}
+<fieldset class="mb-4">
+    <legend class="h5 mb-3">
+        <i class="bi bi-calendar-check" aria-hidden="true"></i>
+        Retention (Art. 30(1)(f))
+    </legend>
+
+    <div class="row">
+        <div class="col-md-8">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.retentionPeriod,
+                'label': form.retentionPeriod.vars.label|default('processing_activity.field.retention_period'|trans)
+            } %}
+        </div>
+        <div class="col-md-4">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.retentionPeriodDays,
+                'label': form.retentionPeriodDays.vars.label|default('processing_activity.field.retention_period_days'|trans)
+            } %}
+        </div>
+        <div class="col-md-12">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.retentionLegalBasis,
+                'label': form.retentionLegalBasis.vars.label|default('processing_activity.field.retention_legal_basis'|trans)
+            } %}
+        </div>
+    </div>
+</fieldset>
+
+{# Section 6: Security Measures (TOMs) #}
+<fieldset class="mb-4">
+    <legend class="h5 mb-3">
+        <i class="bi bi-shield-lock" aria-hidden="true"></i>
+        Security Measures (Art. 30(1)(g))
+    </legend>
+
+    <div class="row">
+        <div class="col-md-12">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.technicalOrganizationalMeasures,
+                'label': form.technicalOrganizationalMeasures.vars.label|default('processing_activity.field.technical_organizational_measures'|trans)
+            } %}
+        </div>
+        <div class="col-md-12">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.implementedControls,
+                'label': form.implementedControls.vars.label|default('processing_activity.field.implemented_controls'|trans)
+            } %}
+        </div>
+    </div>
+</fieldset>
+
+{# Section 7: Organization #}
+<fieldset class="mb-4">
+    <legend class="h5 mb-3">
+        <i class="bi bi-building" aria-hidden="true"></i>
+        Organization
+    </legend>
+
+    <div class="row">
+        <div class="col-md-4">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.responsibleDepartment,
+                'label': form.responsibleDepartment.vars.label|default('processing_activity.field.responsible_department'|trans)
+            } %}
+        </div>
+        <div class="col-md-4">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.contactPerson,
+                'label': form.contactPerson.vars.label|default('processing_activity.field.contact_person'|trans)
+            } %}
+        </div>
+        <div class="col-md-4">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.dataProtectionOfficer,
+                'label': form.dataProtectionOfficer.vars.label|default('processing_activity.field.data_protection_officer'|trans)
+            } %}
+        </div>
+    </div>
+</fieldset>
+
+{# Section 8: Processors & Joint Controllers #}
+<fieldset class="mb-4">
+    <legend class="h5 mb-3">
+        <i class="bi bi-diagram-3" aria-hidden="true"></i>
+        Processors & Joint Controllers
+    </legend>
+
+    <div class="row">
+        <div class="col-md-6">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.involvesProcessors,
+                'label': form.involvesProcessors.vars.label|default('processing_activity.field.involves_processors'|trans)
+            } %}
+        </div>
+        <div class="col-md-6">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.isJointController,
+                'label': form.isJointController.vars.label|default('processing_activity.field.is_joint_controller'|trans)
+            } %}
+        </div>
+    </div>
+</fieldset>
+
+{# Section 9: Risk Assessment & DPIA #}
+<fieldset class="mb-4">
+    <legend class="h5 mb-3">
+        <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+        Risk Assessment (Art. 35)
+    </legend>
+
+    <div class="row">
+        <div class="col-md-4">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.isHighRisk,
+                'label': form.isHighRisk.vars.label|default('processing_activity.field.is_high_risk'|trans)
+            } %}
+        </div>
+        <div class="col-md-4">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.dpiaCompleted,
+                'label': form.dpiaCompleted.vars.label|default('processing_activity.field.dpia_completed'|trans)
+            } %}
+        </div>
+        <div class="col-md-4">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.dpiaDate,
+                'label': form.dpiaDate.vars.label|default('processing_activity.field.dpia_date'|trans)
+            } %}
+        </div>
+        <div class="col-md-12">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.riskLevel,
+                'label': form.riskLevel.vars.label|default('processing_activity.field.risk_level'|trans)
+            } %}
+        </div>
+    </div>
+</fieldset>
+
+{# Section 10: Automated Decision-Making #}
+<fieldset class="mb-4">
+    <legend class="h5 mb-3">
+        <i class="bi bi-cpu" aria-hidden="true"></i>
+        Automated Decision-Making (Art. 22)
+    </legend>
+
+    <div class="row">
+        <div class="col-md-12">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.hasAutomatedDecisionMaking,
+                'label': form.hasAutomatedDecisionMaking.vars.label|default('processing_activity.field.has_automated_decision_making'|trans)
+            } %}
+        </div>
+        <div class="col-md-12">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.automatedDecisionMakingDetails,
+                'label': form.automatedDecisionMakingDetails.vars.label|default('processing_activity.field.automated_decision_making_details'|trans)
+            } %}
+        </div>
+    </div>
+</fieldset>
+
+{# Section 11: Additional Information #}
+<fieldset class="mb-4">
+    <legend class="h5 mb-3">
+        <i class="bi bi-three-dots" aria-hidden="true"></i>
+        Additional Information
+    </legend>
+
+    <div class="row">
+        <div class="col-md-12">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.dataSources,
+                'label': form.dataSources.vars.label|default('processing_activity.field.data_sources'|trans)
+            } %}
+        </div>
+        <div class="col-md-4">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.startDate,
+                'label': form.startDate.vars.label|default('processing_activity.field.start_date'|trans)
+            } %}
+        </div>
+        <div class="col-md-4">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.endDate,
+                'label': form.endDate.vars.label|default('processing_activity.field.end_date'|trans)
+            } %}
+        </div>
+        <div class="col-md-4">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.nextReviewDate,
+                'label': form.nextReviewDate.vars.label|default('processing_activity.field.next_review_date'|trans)
+            } %}
+        </div>
+    </div>
+</fieldset>
 
 <div class="mt-4 mb-4">
     <button type="submit" class="btn btn-primary">

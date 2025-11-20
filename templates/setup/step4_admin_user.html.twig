@@ -76,42 +76,47 @@
                     {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
 
                     <div class="row">
-                        <div class="col-md-6 mb-3">
-                            {{ form_row(form.firstName, {
+                        <div class="col-md-6">
+                            {% include '_components/_form_field.html.twig' with {
+                                'field': form.firstName,
                                 'label': 'setup.admin.first_name'|trans,
-                                'attr': {'class': 'form-control'}
-                            }) }}
+                                'required': true
+                            } %}
                         </div>
-                        <div class="col-md-6 mb-3">
-                            {{ form_row(form.lastName, {
+                        <div class="col-md-6">
+                            {% include '_components/_form_field.html.twig' with {
+                                'field': form.lastName,
                                 'label': 'setup.admin.last_name'|trans,
-                                'attr': {'class': 'form-control'}
-                            }) }}
+                                'required': true
+                            } %}
                         </div>
-                    </div>
-
-                    <div class="mb-3">
-                        {{ form_row(form.email, {
-                            'label': 'setup.admin.email'|trans,
-                            'attr': {'class': 'form-control'}
-                        }) }}
-                        <small class="form-text text-muted">
-                            {{ 'setup.admin.email_help'|trans }}
-                        </small>
                     </div>
 
                     <div class="row">
-                        <div class="col-md-6 mb-3">
-                            {{ form_row(form.password.first, {
-                                'label': 'setup.admin.password'|trans,
-                                'attr': {'class': 'form-control'}
-                            }) }}
+                        <div class="col-md-12">
+                            {% include '_components/_form_field.html.twig' with {
+                                'field': form.email,
+                                'label': 'setup.admin.email'|trans,
+                                'help': 'setup.admin.email_help'|trans,
+                                'required': true
+                            } %}
                         </div>
-                        <div class="col-md-6 mb-3">
-                            {{ form_row(form.password.second, {
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            {% include '_components/_form_field.html.twig' with {
+                                'field': form.password.first,
+                                'label': 'setup.admin.password'|trans,
+                                'required': true
+                            } %}
+                        </div>
+                        <div class="col-md-6">
+                            {% include '_components/_form_field.html.twig' with {
+                                'field': form.password.second,
                                 'label': 'setup.admin.password_confirm'|trans,
-                                'attr': {'class': 'form-control'}
-                            }) }}
+                                'required': true
+                            } %}
                         </div>
                     </div>
 

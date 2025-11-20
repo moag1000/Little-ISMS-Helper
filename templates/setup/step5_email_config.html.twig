@@ -53,30 +53,52 @@
                     {# Email Configuration Form #}
                     {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
 
-                    <div class="mb-3">
-                        {{ form_row(form.transport) }}
+                    <div class="row">
+                        <div class="col-md-12">
+                            {% include '_components/_form_field.html.twig' with {
+                                'field': form.transport,
+                                'label': form.transport.vars.label|default('setup.email.transport'|trans)
+                            } %}
+                        </div>
                     </div>
 
                     <div id="smtp-config" class="smtp-config-fields">
                         <div class="row">
-                            <div class="col-md-8 mb-3">
-                                {{ form_row(form.host) }}
+                            <div class="col-md-8">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.host,
+                                    'label': form.host.vars.label|default('setup.email.host'|trans)
+                                } %}
                             </div>
-                            <div class="col-md-4 mb-3">
-                                {{ form_row(form.port) }}
+                            <div class="col-md-4">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.port,
+                                    'label': form.port.vars.label|default('setup.email.port'|trans)
+                                } %}
                             </div>
-                        </div>
-
-                        <div class="mb-3">
-                            {{ form_row(form.encryption) }}
                         </div>
 
                         <div class="row">
-                            <div class="col-md-6 mb-3">
-                                {{ form_row(form.username) }}
+                            <div class="col-md-12">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.encryption,
+                                    'label': form.encryption.vars.label|default('setup.email.encryption'|trans)
+                                } %}
                             </div>
-                            <div class="col-md-6 mb-3">
-                                {{ form_row(form.password) }}
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.username,
+                                    'label': form.username.vars.label|default('setup.email.username'|trans)
+                                } %}
+                            </div>
+                            <div class="col-md-6">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.password,
+                                    'label': form.password.vars.label|default('setup.email.password'|trans)
+                                } %}
                             </div>
                         </div>
                     </div>
@@ -85,12 +107,23 @@
 
                     <h5 class="mb-3">{{ 'setup.email.sender_info'|trans }}</h5>
 
-                    <div class="mb-3">
-                        {{ form_row(form.from_address) }}
+                    <div class="row">
+                        <div class="col-md-12">
+                            {% include '_components/_form_field.html.twig' with {
+                                'field': form.from_address,
+                                'label': form.from_address.vars.label|default('setup.email.from_address'|trans),
+                                'required': true
+                            } %}
+                        </div>
                     </div>
 
-                    <div class="mb-3">
-                        {{ form_row(form.from_name) }}
+                    <div class="row">
+                        <div class="col-md-12">
+                            {% include '_components/_form_field.html.twig' with {
+                                'field': form.from_name,
+                                'label': form.from_name.vars.label|default('setup.email.from_name'|trans)
+                            } %}
+                        </div>
                     </div>
 
                     {# Navigation #}
