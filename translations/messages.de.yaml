@@ -1000,6 +1000,23 @@ risk:
     risk_subject: Risikoobjekt
     affected_asset: 'Betroffenes Asset'
     history: Risikoverlauf
+
+  # Risk Matrix
+  matrix:
+    title: 'Risikobewertungsmatrix'
+    back_to_risks: 'Zurück zu Risiken'
+    header: '5x5 Risikomatrix'
+    description: 'Visuelle Darstellung der Risiken basierend auf Wahrscheinlichkeit und Auswirkung'
+    impact: 'Auswirkung'
+    probability: 'Wahrscheinlichkeit'
+    cell_title: 'Wahrscheinlichkeit: %probability%, Auswirkung: %impact%, Score: %score%'
+    legend_title: 'Risikostufen'
+    level:
+      critical: 'Kritisch (20-25)'
+      high: 'Hoch (12-19)'
+      medium: 'Mittel (6-11)'
+      low: 'Niedrig (1-5)'
+
 control:
   section:
     protected_assets: Geschützte Assets
@@ -1733,6 +1750,8 @@ person:
   action:
     create: Person anlegen
     view_details: 'Personendetails anzeigen'
+  actions:
+    label: 'Aktionen für Person'
   stats:
     total: Personen gesamt
     employees: Mitarbeiter
@@ -3206,8 +3225,13 @@ risk_appetite:
     confirm: 'Risikobereitschaft löschen'
 
   section:
+    definition: 'Definition der Risikobereitschaft'
+    approval: 'Genehmigungsinformationen'
     details: 'Details'
     history: 'Änderungsverlauf'
+
+  info:
+    iso27005: 'Die Risikobereitschaft definiert das maximale Risikoniveau, das Ihre Organisation gemäß ISO 27005:2022 zu akzeptieren bereit ist.'
 
   stats:
     total: 'Gesamt'
@@ -3241,9 +3265,6 @@ risk_appetite:
   and_more_risks: 'und %count% weitere Risiken'
   acceptance_rate: 'Akzeptanzrate'
   appetite_percentage: 'Risikobereitschaft (%)'
-
-  info:
-    iso27005: 'Gemäß ISO 27005:2022 sollte die Risikobereitschaft formal vom Management genehmigt werden'
 
   field:
     category: Kategorie

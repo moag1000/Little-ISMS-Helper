@@ -1,18 +1,18 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Risk Assessment Matrix{% endblock %}
+{% block title %}{{ 'risk.matrix.title'|trans }}{% endblock %}
 
 {% block body %}
 <div class="container">
     <div class="page-header">
-        <h1>Risk Assessment Matrix</h1>
-        <a href="{{ path('app_risk_index') }}" class="btn btn-secondary">Back to Risks</a>
+        <h1>{{ 'risk.matrix.title'|trans }}</h1>
+        <a href="{{ path('app_risk_index') }}" class="btn btn-secondary">{{ 'risk.matrix.back_to_risks'|trans }}</a>
     </div>
 
     <div class="card">
         <div class="card-header">
-            <h2>5x5 Risk Matrix</h2>
-            <p>Visual representation of risks based on probability and impact</p>
+            <h2>{{ 'risk.matrix.header'|trans }}</h2>
+            <p>{{ 'risk.matrix.description'|trans }}</p>
         </div>
 
         <div class="card-content"
@@ -21,7 +21,7 @@
 
             <div class="risk-matrix-container">
                 <div class="matrix-wrapper">
-                    <div class="y-label-vertical">Impact</div>
+                    <div class="y-label-vertical">{{ 'risk.matrix.impact'|trans }}</div>
 
                     <div class="y-axis-labels">
                         {% for i in 5..1 %}
@@ -39,7 +39,7 @@
                                     <div class="matrix-cell risk-{{ level }}"
                                          data-probability="{{ probability }}"
                                          data-impact="{{ impact }}"
-                                         title="Probability: {{ probability }}, Impact: {{ impact }}, Score: {{ score }}">
+                                         title="{{ 'risk.matrix.cell_title'|trans({'%probability%': probability, '%impact%': impact, '%score%': score}) }}">
                                         <span class="cell-score">{{ score }}</span>
                                     </div>
                                 {% endfor %}
@@ -52,29 +52,29 @@
                             {% endfor %}
                         </div>
 
-                        <div class="x-label-horizontal">Probability</div>
+                        <div class="x-label-horizontal">{{ 'risk.matrix.probability'|trans }}</div>
                     </div>
                 </div>
             </div>
 
             <div class="matrix-legend">
-                <h2>Risk Levels</h2>
+                <h2>{{ 'risk.matrix.legend_title'|trans }}</h2>
                 <div class="legend-items" style="display: flex; flex-direction: row; flex-wrap: wrap; gap: 1rem; justify-content: center; align-items: center; margin-top: 1rem;">
                     <div class="legend-item" style="display: flex; flex-direction: row; align-items: center; gap: 0.625rem; padding: 0.5rem 1rem; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 6px; white-space: nowrap; position: relative;">
                         <span class="legend-color risk-critical" style="width: 20px; height: 20px; display: inline-block; flex-shrink: 0;"></span>
-                        <span style="display: inline-block;">Critical (20-25)</span>
+                        <span style="display: inline-block;">{{ 'risk.matrix.level.critical'|trans }}</span>
                     </div>
                     <div class="legend-item" style="display: flex; flex-direction: row; align-items: center; gap: 0.625rem; padding: 0.5rem 1rem; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 6px; white-space: nowrap; position: relative;">
                         <span class="legend-color risk-high" style="width: 20px; height: 20px; display: inline-block; flex-shrink: 0;"></span>
-                        <span style="display: inline-block;">High (12-19)</span>
+                        <span style="display: inline-block;">{{ 'risk.matrix.level.high'|trans }}</span>
                     </div>
                     <div class="legend-item" style="display: flex; flex-direction: row; align-items: center; gap: 0.625rem; padding: 0.5rem 1rem; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 6px; white-space: nowrap; position: relative;">
                         <span class="legend-color risk-medium" style="width: 20px; height: 20px; display: inline-block; flex-shrink: 0;"></span>
-                        <span style="display: inline-block;">Medium (6-11)</span>
+                        <span style="display: inline-block;">{{ 'risk.matrix.level.medium'|trans }}</span>
                     </div>
                     <div class="legend-item" style="display: flex; flex-direction: row; align-items: center; gap: 0.625rem; padding: 0.5rem 1rem; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 6px; white-space: nowrap; position: relative;">
                         <span class="legend-color risk-low" style="width: 20px; height: 20px; display: inline-block; flex-shrink: 0;"></span>
-                        <span style="display: inline-block;">Low (1-5)</span>
+                        <span style="display: inline-block;">{{ 'risk.matrix.level.low'|trans }}</span>
                     </div>
                 </div>
             </div>
