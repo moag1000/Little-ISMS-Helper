@@ -86,15 +86,13 @@
                                 </td>
                                 <td>{{ requirement.category|default('-') }}</td>
                                 <td>
-                                    {% set priorityClass = requirement.priority == 'critical' ? 'danger' : (requirement.priority == 'high' ? 'warning' : 'secondary') %}
-                                    <span class="badge bg-{{ priorityClass }}">{{ requirement.priority }}</span>
+                                    <span class="{{ badge_priority(requirement.priority) }}">{{ requirement.priority }}</span>
                                 </td>
                                 <td>
                                     {% set fulfillment = fulfillments[requirement.id] %}
                                     <div class="d-flex align-items-center">
                                         <div class="progress flex-grow-1 me-2" style="height: 20px; min-width: 100px;">
-                                            {% set statusBadge = fulfillment.fulfillmentPercentage >= 100 ? 'success' : (fulfillment.fulfillmentPercentage >= 75 ? 'info' : (fulfillment.fulfillmentPercentage >= 50 ? 'warning' : 'danger')) %}
-                                            <div class="progress-bar bg-{{ statusBadge }}"
+                                            <div class="progress-bar {{ badge_completion(fulfillment.fulfillmentPercentage)|replace({'badge ': ''}) }}"
                                                  role="progressbar"
                                                  style="width: {{ fulfillment.fulfillmentPercentage }}%"
                                                  aria-valuenow="{{ fulfillment.fulfillmentPercentage }}"

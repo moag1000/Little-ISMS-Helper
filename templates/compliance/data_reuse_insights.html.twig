@@ -140,8 +140,7 @@
                     {% endfor %}
                 </td>
                 <td class="text-center">
-                    {% set qualityColor = element.qualityScore >= 80 ? 'success' : (element.qualityScore >= 60 ? 'warning' : 'danger') %}
-                    <span class="badge badge-{{ qualityColor }}">{{ element.qualityScore }}%</span>
+                    <span class="{{ badge_score(element.qualityScore, 80, 60) }}">{{ element.qualityScore }}%</span>
                 </td>
             </tr>
             {% else %}

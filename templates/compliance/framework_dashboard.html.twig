@@ -137,12 +137,12 @@
 
     {# Module Dependencies - NEW! #}
     {% if framework.requiredModules|length > 0 %}
-    <div class="card" style="margin-bottom: var(--spacing-lg);">
+    <div class="card mb-4">
         <div class="card-header">
             <h2>🔧 {{ 'compliance.required_modules'|trans }}</h2>
         </div>
         <div class="card-body">
-            <p class="text-muted" style="margin-bottom: var(--spacing-md);">
+            <p class="text-muted mb-3">
                 This framework requires the following ISMS modules to be activated for full compliance.
             </p>
             <div class="modules-grid">
@@ -287,9 +287,9 @@
                             <span class="label">{{ 'compliance.mandatory'|trans }}:</span>
                             <span class="value">
                                 {% if framework.mandatory %}
-                                    <span class="badge badge-danger">{{ 'compliance.label.yes'|trans }}</span>
+                                    <span class="badge bg-danger">{{ 'compliance.label.yes'|trans }}</span>
                                 {% else %}
-                                    <span class="badge badge-success">{{ 'compliance.label.no'|trans }}</span>
+                                    <span class="badge bg-success">{{ 'compliance.label.no'|trans }}</span>
                                 {% endif %}
                             </span>
                         </div>
@@ -362,7 +362,7 @@
                                     <span class="requirement-id">{{ requirement.requirementId }}</span>
                                     <span class="requirement-title">{{ requirement.title }}</span>
                                     {% if requirement.hasDetailedRequirements() %}
-                                        <span class="badge badge-info">
+                                        <span class="badge bg-info">
                                             {{ requirement.detailedRequirements|length }} Details
                                         </span>
                                     {% endif %}
@@ -430,10 +430,12 @@
                                     </span>
                                 </div>
                                 <div class="gap-progress">
+                                    {% set gapFulfillment = fulfillments[gap.id] %}
+                                    {% set fulfillmentPct = gapFulfillment ? gapFulfillment.fulfillmentPercentage : 0 %}
                                     <div class="progress-bar">
-                                        <div class="progress-fill bg-danger" style="width: {{ gap.fulfillmentPercentage }}%;"></div>
+                                        <div class="progress-fill bg-danger" style="width: {{ fulfillmentPct }}%;"></div>
                                     </div>
-                                    <span>{{ gap.fulfillmentPercentage }}{{ 'compliance.gaps.fulfilled_percentage'|trans }}</span>
+                                    <span>{{ fulfillmentPct }}{{ 'compliance.gaps.fulfilled_percentage'|trans }}</span>
                                 </div>
                             </div>
                         {% endfor %}
