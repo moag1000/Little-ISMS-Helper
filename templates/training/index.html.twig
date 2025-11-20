@@ -141,6 +141,7 @@
             {% embed '_components/_table.html.twig' with {
                 'noMargin': false
             } %}
+                {% import '_macros/inheritance_badge.html.twig' as inheritance %}
                 {% block table_head %}
                     <tr>
                         <th scope="col">{{ 'training.title'|trans }}</th>
@@ -214,6 +215,7 @@
             {% embed '_components/_table.html.twig' with {
                 'variant': 'striped'
             } %}
+                {% import '_macros/inheritance_badge.html.twig' as inheritance %}
                 {% block table_head %}
                     <tr>
                         <th scope="col" class="w-40px">
@@ -259,14 +261,7 @@
                         <td>{{ training.scheduledDate|date('d.m.Y H:i') }}</td>
                         <td>{{ training.duration }} {{ 'training.minutes'|trans }}</td>
                         <td>
-                            {% set statusClass = {
-                                'planned': 'info',
-                                'confirmed': 'primary',
-                                'completed': 'success',
-                                'cancelled': 'danger',
-                                'postponed': 'warning'
-                            } %}
-                            <span class="badge bg-{{ statusClass[training.status] ?? 'secondary' }}">
+                            <span class="{{ badge_status(training.status) }}">
                                 {{ ('training.status.' ~ training.status)|trans }}
                             </span>
                         </td>

@@ -23,14 +23,7 @@
                     <h4 class="mb-0">
                         <i class="bi bi-mortarboard" aria-hidden="true"></i> {{ training.title }}
                     </h4>
-                    {% set statusClass = {
-                        'planned': 'info',
-                        'confirmed': 'primary',
-                        'completed': 'success',
-                        'cancelled': 'danger',
-                        'postponed': 'warning'
-                    } %}
-                    <span class="badge bg-{{ statusClass[training.status] ?? 'secondary' }} fs-6">
+                    <span class="{{ badge_status(training.status) }} fs-6">
                         {{ ('training.status.' ~ training.status)|trans }}
                     </span>
                 </div>
@@ -242,7 +235,7 @@
                                     <h4 class="mb-1">{{ control.controlId }}</h4>
                                     <p class="mb-1 small text-muted">{{ control.name }}</p>
                                 </div>
-                                <span class="badge bg-{{ control.implementationStatus == 'implemented' ? 'success' : (control.implementationStatus == 'in_progress' ? 'warning' : 'secondary') }} rounded-pill">
+                                <span class="{{ badge_status(control.implementationStatus) }} rounded-pill">
                                     {{ control.implementationStatus|upper }}
                                 </span>
                             </div>
