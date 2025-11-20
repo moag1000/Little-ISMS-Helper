@@ -108,25 +108,27 @@ elif [[ $DB_URL == mysql* ]]; then
     DB_TYPE="mysql"
     # Extract actual database name from URL: mysql://user:pass@host:port/dbname
     DB_NAME_FROM_URL=$(echo "$DB_URL" | sed -n 's|.*://[^/]*/\([^?]*\).*|\1|p')
-    if [ ! -z "$DB_NAME_FROM_URL" ]; then
+    # Only use extracted name if it's not a variable reference (${...})
+    if [ ! -z "$DB_NAME_FROM_URL" ] && [[ ! "$DB_NAME_FROM_URL" =~ ^\$\{.*\}$ ]]; then
         DB_NAME="$DB_NAME_FROM_URL"
         info "Database type: MySQL/MariaDB"
         info "Actual database name from URL: $DB_NAME"
     else
         info "Database type: MySQL/MariaDB"
-        warning "Could not extract database name from URL, using DB_NAME from env: $DB_NAME"
+        info "Using DB_NAME from env: $DB_NAME (URL uses variable interpolation)"
     fi
 elif [[ $DB_URL == postgresql* ]]; then
     DB_TYPE="postgresql"
     # Extract actual database name from URL: postgresql://user:pass@host:port/dbname
     DB_NAME_FROM_URL=$(echo "$DB_URL" | sed -n 's|.*://[^/]*/\([^?]*\).*|\1|p')
-    if [ ! -z "$DB_NAME_FROM_URL" ]; then
+    # Only use extracted name if it's not a variable reference (${...})
+    if [ ! -z "$DB_NAME_FROM_URL" ] && [[ ! "$DB_NAME_FROM_URL" =~ ^\$\{.*\}$ ]]; then
         DB_NAME="$DB_NAME_FROM_URL"
         info "Database type: PostgreSQL"
         info "Actual database name from URL: $DB_NAME"
     else
         info "Database type: PostgreSQL"
-        warning "Could not extract database name from URL, using DB_NAME from env: $DB_NAME"
+        info "Using DB_NAME from env: $DB_NAME (URL uses variable interpolation)"
     fi
 else
     error "Unknown database type in DATABASE_URL"
@@ -203,7 +205,7 @@ empty_database() {
 
         # Get table names excluding doctrine_migration_versions
         # Using a more reliable method that works with dbal:run-sql output format
-        TABLES_RAW=$(php bin/console dbal:run-sql "SELECT table_name FROM information_schema.tables WHERE table_schema = '$DB_NAME' AND table_name != 'doctrine_migration_versions' ORDER BY table_name;" 2>&1)
+        TABLES_RAW=$(php bin/console dbal:run-sql "SELECT table_name FROM information_schema.tables WHERE table_schema = '$DB_NAME' AND table_name <> 'doctrine_migration_versions' ORDER BY table_name" 2>&1)
 
         # Extract table names from output (skip header lines, status messages, etc.)
         # Filter status messages that may have leading spaces, then trim whitespace
@@ -256,7 +258,7 @@ empty_database() {
     elif [ "$DB_TYPE" = "postgresql" ]; then
         info "Dropping PostgreSQL database tables (will be recreated by migrations)..."
         # Get list of tables excluding doctrine_migration_versions
-        TABLES_RAW=$(php bin/console dbal:run-sql "SELECT tablename FROM pg_tables WHERE schemaname = 'public' AND tablename != 'doctrine_migration_versions' ORDER BY tablename;" 2>&1)
+        TABLES_RAW=$(php bin/console dbal:run-sql "SELECT tablename FROM pg_tables WHERE schemaname = 'public' AND tablename <> 'doctrine_migration_versions' ORDER BY tablename" 2>&1)
 
         # Extract table names from output (skip header lines, status messages, etc.)
         # Filter status messages that may have leading spaces, then trim whitespace
