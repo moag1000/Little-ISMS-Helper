@@ -108,6 +108,7 @@
             <div class="card-body">
                 {% if business_processes|length > 0 %}
                     {% embed '_components/_table.html.twig' %}
+                        {% import '_macros/inheritance_badge.html.twig' as inheritance %}
                         {% block table_head %}
                             <tr>
                                 <th scope="col">Name</th>
@@ -122,6 +123,7 @@
                         {% endblock %}
                         {% block table_body_attrs %}id="business-processes-table-body"{% endblock %}
                         {% block table_body %}
+                            {% import '_macros/inheritance_badge.html.twig' as inheritance %}
                             {% for process in business_processes %}
                                 <tr id="business-process-{{ process.id }}">
                                     <td>
