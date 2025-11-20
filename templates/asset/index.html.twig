@@ -184,7 +184,7 @@
                 <td>{{ asset.owner }}</td>
                 <td class="text-center">
                     {% if asset.dataClassification %}
-                        <span class="badge badge-classification-{{ asset.dataClassification }}">
+                        <span class="{{ badge_classification(asset.dataClassification) }}">
                             {{ ('asset.classification.' ~ asset.dataClassification)|trans|upper }}
                         </span>
                     {% else %}
@@ -193,13 +193,13 @@
                 </td>
                 <td class="text-center">
                     <small>
-                        <span class="badge bg-{{ asset.confidentialityValue >= 4 ? 'danger' : (asset.confidentialityValue >= 3 ? 'warning' : 'success') }}">
+                        <span class="{{ badge_score(asset.confidentialityValue) }}">
                             C:{{ asset.confidentialityValue }}
                         </span>
-                        <span class="badge bg-{{ asset.integrityValue >= 4 ? 'danger' : (asset.integrityValue >= 3 ? 'warning' : 'success') }}">
+                        <span class="{{ badge_score(asset.integrityValue) }}">
                             I:{{ asset.integrityValue }}
                         </span>
-                        <span class="badge bg-{{ asset.availabilityValue >= 4 ? 'danger' : (asset.availabilityValue >= 3 ? 'warning' : 'success') }}">
+                        <span class="{{ badge_score(asset.availabilityValue) }}">
                             A:{{ asset.availabilityValue }}
                         </span>
                     </small>
@@ -208,7 +208,7 @@
                     {% if recommendations[asset.id] is defined %}
                         {% set recData = recommendations[asset.id] %}
                         {% if recData.risk_count > 0 %}
-                            <a href="{{ path('app_risk_index') }}?asset={{ asset.id }}" class="badge bg-{{ recData.risk_count >= 5 ? 'danger' : (recData.risk_count >= 3 ? 'warning' : 'info') }}" title="{{ recData.risk_count }} {{ 'asset.label.risks'|trans }}">
+                            <a href="{{ path('app_risk_index') }}?asset={{ asset.id }}" class="{{ badge_score(recData.risk_count, 5, 3) }}" title="{{ recData.risk_count }} {{ 'asset.label.risks'|trans }}">
                                 {{ recData.risk_count }}
                             </a>
                         {% else %}
@@ -219,7 +219,7 @@
                     {% endif %}
                 </td>
                 <td>
-                    <span class="badge bg-{{ asset.status == 'active' ? 'success' : (asset.status == 'inactive' ? 'warning' : 'secondary') }}">
+                    <span class="{{ badge_status(asset.status) }}">
                         {{ asset.status|upper }}
                     </span>
                 </td>
