@@ -47,6 +47,23 @@ class SoAReportService
         // Group controls by category for better PDF structure
         $controlsByCategory = $this->groupControlsByCategory($controls);
 
+        // Calculate version from latest control update date (Format: Year.Month.Day)
+        $latestUpdate = null;
+        foreach ($controls as $control) {
+            $updateDate = $control->getUpdatedAt() ?? $control->getCreatedAt();
+            if ($latestUpdate === null || ($updateDate !== null && $updateDate > $latestUpdate)) {
+                $latestUpdate = $updateDate;
+            }
+        }
+
+        // Use current date if no controls have been updated
+        if ($latestUpdate === null) {
+            $latestUpdate = new \DateTime();
+        }
+
+        // Format version as Year.Month.Day (e.g., 2025.11.20)
+        $version = $latestUpdate->format('Y.m.d');
+
         $data = [
             'controls' => $controls,
             'controlsByCategory' => $controlsByCategory,
@@ -54,6 +71,7 @@ class SoAReportService
             'categoryStats' => $categoryStats,
             'generatedAt' => new \DateTime(),
             'totalControls' => 93,
+            'version' => $version,
         ];
 
         return $this->pdfExportService->generatePdf(

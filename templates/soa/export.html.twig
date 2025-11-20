@@ -331,25 +331,25 @@
             <tr>
                 <td><strong>{{ control.controlId }}</strong></td>
                 <td>{{ control.name }}</td>
-                <td><span class="badge badge-info">{{ control.category }}</span></td>
+                <td><span class="badge bg-info">{{ control.category }}</span></td>
                 <td class="text-center">
                     {% if control.applicable %}
-                        <span class="badge badge-success">✓</span>
+                        <span class="badge bg-success">✓</span>
                     {% else %}
-                        <span class="badge badge-secondary">✗</span>
+                        <span class="badge bg-secondary">✗</span>
                     {% endif %}
                 </td>
                 <td>
                     {% if control.applicable %}
                         {% if control.implementationStatus == 'implemented' %}
-                            <span class="badge badge-success">Implementiert</span>
+                            <span class="badge bg-success">Implementiert</span>
                         {% elseif control.implementationStatus == 'in_progress' %}
-                            <span class="badge badge-warning">In Arbeit</span>
+                            <span class="badge bg-warning">In Arbeit</span>
                         {% elseif control.implementationStatus == 'not_started' %}
-                            <span class="badge badge-danger">Nicht begonnen</span>
+                            <span class="badge bg-danger">Nicht begonnen</span>
                         {% endif %}
                     {% else %}
-                        <span class="badge badge-secondary">N/A</span>
+                        <span class="badge bg-secondary">N/A</span>
                     {% endif %}
                 </td>
                 <td class="text-center">
@@ -371,11 +371,11 @@
     <div class="control-detail">
         <div class="control-header">
             <h2>{{ control.controlId }}: {{ control.name }}</h2>
-            <span class="badge badge-info">{{ control.category }}</span>
+            <span class="badge bg-info">{{ control.category }}</span>
             {% if control.applicable %}
-                <span class="badge badge-success">Anwendbar</span>
+                <span class="badge bg-success">Anwendbar</span>
             {% else %}
-                <span class="badge badge-secondary">Nicht anwendbar</span>
+                <span class="badge bg-secondary">Nicht anwendbar</span>
             {% endif %}
         </div>
 
@@ -400,11 +400,11 @@
                 <div class="detail-label">Implementierungsstatus:</div>
                 <div class="detail-value">
                     {% if control.implementationStatus == 'implemented' %}
-                        <span class="badge badge-success">✅ Implementiert</span> - {{ control.implementationPercentage }}%
+                        <span class="badge bg-success">✅ Implementiert</span> - {{ control.implementationPercentage }}%
                     {% elseif control.implementationStatus == 'in_progress' %}
-                        <span class="badge badge-warning">🔄 In Arbeit</span> - {{ control.implementationPercentage }}%
+                        <span class="badge bg-warning">🔄 In Arbeit</span> - {{ control.implementationPercentage }}%
                     {% elseif control.implementationStatus == 'not_started' %}
-                        <span class="badge badge-danger">⏸ Nicht begonnen</span> - {{ control.implementationPercentage }}%
+                        <span class="badge bg-danger">⏸ Nicht begonnen</span> - {{ control.implementationPercentage }}%
                     {% endif %}
                 </div>
             </div>

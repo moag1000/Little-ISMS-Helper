@@ -244,15 +244,15 @@
             <tr class="no-break">
                 <td><strong>{{ req.requirementId }}</strong></td>
                 <td style="font-size: 8pt;">{{ req.title|length > 50 ? (req.title|slice(0, 50) ~ '...') : req.title }}</td>
-                <td><span class="badge badge-info">{{ req.category ?? '-' }}</span></td>
+                <td><span class="badge bg-info">{{ req.category ?? '-' }}</span></td>
                 <td class="text-center">{{ (analysis.reusable_data ?? [])|length }}</td>
                 <td class="text-center">
                     {% if value.reuse_percentage >= 80 %}
-                        <span class="badge badge-success">{{ value.reuse_percentage|round }}%</span>
+                        <span class="badge bg-success">{{ value.reuse_percentage|round }}%</span>
                     {% elseif value.reuse_percentage >= 50 %}
-                        <span class="badge badge-warning">{{ value.reuse_percentage|round }}%</span>
+                        <span class="badge bg-warning">{{ value.reuse_percentage|round }}%</span>
                     {% else %}
-                        <span class="badge badge-secondary">{{ value.reuse_percentage|round }}%</span>
+                        <span class="badge bg-secondary">{{ value.reuse_percentage|round }}%</span>
                     {% endif %}
                 </td>
                 <td class="text-center">{{ value.estimated_hours_saved|round(1) }}</td>
@@ -301,7 +301,7 @@
                 <td><strong>{{ req.requirementId }}</strong></td>
                 <td style="font-size: 8pt;">{{ req.title }}</td>
                 <td style="font-size: 7pt;">{{ sources|slice(0, 3)|join(', ') }}</td>
-                <td class="text-center"><span class="badge badge-success">{{ value.reuse_percentage|round }}%</span></td>
+                <td class="text-center"><span class="badge bg-success">{{ value.reuse_percentage|round }}%</span></td>
                 <td class="text-center"><strong>{{ value.estimated_hours_saved|round(1) }}</strong></td>
             </tr>
             {% endfor %}
@@ -355,7 +355,7 @@
                     Implement Quick Wins ({{ quick_wins|length }} req.), identify existing data/evidence, create cross-references
                 </td>
                 <td class="text-center"><strong>{{ quick_wins|reduce((carry, item) => carry + item.value.estimated_hours_saved, 0)|round(1) }}h</strong></td>
-                <td class="text-center"><span class="badge badge-success">Start Now</span></td>
+                <td class="text-center"><span class="badge bg-success">Start Now</span></td>
             </tr>
             <tr>
                 <td><strong>Week 3-8</strong></td>
@@ -363,7 +363,7 @@
                     Leverage mid-term potentials ({{ medium_reuse|length }} req.), adapt/reuse templates, implement common controls
                 </td>
                 <td class="text-center"><strong>{{ medium_reuse|reduce((carry, item) => carry + item.value.estimated_hours_saved, 0)|round(1) }}h</strong></td>
-                <td class="text-center"><span class="badge badge-warning">Planning</span></td>
+                <td class="text-center"><span class="badge bg-warning">Planning</span></td>
             </tr>
             <tr>
                 <td><strong>Month 3-6</strong></td>
@@ -371,7 +371,7 @@
                     Build data repository, establish standardization & versioning, establish automation
                 </td>
                 <td class="text-center"><strong>Long-term 30-50%</strong></td>
-                <td class="text-center"><span class="badge badge-info">Vision</span></td>
+                <td class="text-center"><span class="badge bg-info">Vision</span></td>
             </tr>
         </tbody>
     </table>

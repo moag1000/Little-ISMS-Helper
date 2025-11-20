@@ -273,28 +273,28 @@
         </thead>
         <tbody>
             <tr>
-                <td><span class="badge badge-success">Excellent</span></td>
+                <td><span class="badge bg-success">Excellent</span></td>
                 <td class="text-center">90-100%</td>
                 <td class="text-center"><strong>{{ quality_distribution.excellent }}</strong></td>
                 <td class="text-center">{{ total_mappings > 0 ? ((quality_distribution.excellent / total_mappings * 100)|round(1)) : 0 }}%</td>
                 <td>Precise mappings, high reliability</td>
             </tr>
             <tr>
-                <td><span class="badge badge-info">Good</span></td>
+                <td><span class="badge bg-info">Good</span></td>
                 <td class="text-center">70-89%</td>
                 <td class="text-center"><strong>{{ quality_distribution.good }}</strong></td>
                 <td class="text-center">{{ total_mappings > 0 ? ((quality_distribution.good / total_mappings * 100)|round(1)) : 0 }}%</td>
                 <td>Solid mappings with minor deviations</td>
             </tr>
             <tr>
-                <td><span class="badge badge-warning">Medium</span></td>
+                <td><span class="badge bg-warning">Medium</span></td>
                 <td class="text-center">50-69%</td>
                 <td class="text-center"><strong>{{ quality_distribution.medium }}</strong></td>
                 <td class="text-center">{{ total_mappings > 0 ? ((quality_distribution.medium / total_mappings * 100)|round(1)) : 0 }}%</td>
                 <td>Partial alignment, review recommended</td>
             </tr>
             <tr>
-                <td><span class="badge badge-danger">Weak</span></td>
+                <td><span class="badge bg-danger">Weak</span></td>
                 <td class="text-center">&lt;50%</td>
                 <td class="text-center"><strong>{{ quality_distribution.weak }}</strong></td>
                 <td class="text-center">{{ total_mappings > 0 ? ((quality_distribution.weak / total_mappings * 100)|round(1)) : 0 }}%</td>
@@ -406,9 +406,9 @@
                     {% if rel.priority_multiplier >= 2 %}
                         <span class="badge badge-critical">High</span>
                     {% elseif rel.priority_multiplier >= 1.5 %}
-                        <span class="badge badge-warning">Medium</span>
+                        <span class="badge bg-warning">Medium</span>
                     {% else %}
-                        <span class="badge badge-info">Normal</span>
+                        <span class="badge bg-info">Normal</span>
                     {% endif %}
                 </td>
                 <td>
@@ -500,21 +500,21 @@
                 <td>Implement Top {{ (quick_wins ?? [])|slice(0, 5)|length }} Quick Wins, start combined audits</td>
                 <td class="text-center">4 weeks</td>
                 <td class="text-center">{% if quick_wins is defined and quick_wins|length > 0 %}{{ quick_wins|slice(0, 5)|reduce((carry, rel) => carry + rel.effort_estimate, 0) }}h{% else %}20-30h{% endif %}</td>
-                <td class="text-center"><span class="badge badge-success">Very High</span></td>
+                <td class="text-center"><span class="badge bg-success">Very High</span></td>
             </tr>
             <tr>
                 <td><strong>Phase 2 (Week 5-12)</strong></td>
                 <td>Optimize High-Impact Relationships (Score ≥ 50), improve mapping quality, increase coverage</td>
                 <td class="text-center">8 weeks</td>
                 <td class="text-center">40-60h</td>
-                <td class="text-center"><span class="badge badge-info">High</span></td>
+                <td class="text-center"><span class="badge bg-info">High</span></td>
             </tr>
             <tr>
                 <td><strong>Phase 3 (Week 13-24)</strong></td>
                 <td>Establish Compliance Hub with ROI Dashboard, automated tracking, continuous optimization</td>
                 <td class="text-center">12 weeks</td>
                 <td class="text-center">80-120h</td>
-                <td class="text-center"><span class="badge badge-warning">Very High (long-term)</span></td>
+                <td class="text-center"><span class="badge bg-warning">Very High (long-term)</span></td>
             </tr>
         </tbody>
     </table>
