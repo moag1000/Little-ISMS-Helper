@@ -1,4 +1,6 @@
 {% extends 'base.html.twig' %}
+{% trans_default_domain 'compliance' %}
+{% import '_macros/cards.html.twig' as cards %}
 
 {% block title %}{{ 'compliance.title.transitive'|trans }} - Little ISMS Helper{% endblock %}
 
@@ -10,54 +12,34 @@
     </div>
     <div class="button-group">
         <button id="createAllMappingsBtn" class="btn btn-primary">
-            🔗 Fehlende Mappings ergänzen
+            🔗 {{ 'compliance.action.create_missing_mappings'|trans({}, 'compliance') }}
         </button>
         <a href="{{ path('app_compliance_export_transitive_pdf') }}" class="btn btn-danger" data-turbo="false">
-            📄 PDF Report
+            📄 {{ 'compliance.action.export_pdf'|trans({}, 'compliance') }}
         </a>
         <a href="{{ path('app_compliance_export_transitive_excel') }}" class="btn btn-success" data-turbo="false">
-            📊 Excel Export
+            📊 {{ 'compliance.action.export_excel'|trans({}, 'compliance') }}
         </a>
         <a href="{{ path('app_compliance_export_transitive') }}" class="btn btn-secondary" data-turbo="false">
-            📄 CSV Export
+            📄 {{ 'compliance.action.export_csv'|trans({}, 'compliance') }}
         </a>
     </div>
 </div>
 
 {# Statistics Cards - Prominently displayed #}
 <div class="kpi-grid mb-2">
-    <div class="kpi-card">
-        <div class="icon icon-large">🔗</div>
-        <div class="kpi-label">{{ 'compliance.stats.total_relationships'|trans }}</div>
-        <div>
-            <span class="kpi-value-primary">{{ total_relationships }}</span>
-        </div>
+    <div class="col-auto">
+        {{ cards.kpi_card('compliance.stats.total_relationships'|trans, total_relationships, null, null, 'primary', null) }}
     </div>
-
-    <div class="kpi-card">
-        <div class="icon icon-large">✅</div>
-        <div class="kpi-label">{{ 'compliance.stats.transitive_compliance'|trans }}</div>
-        <div>
-            <span class="kpi-value-success">{{ transitive_compliance }}</span>
-        </div>
+    <div class="col-auto">
+        {{ cards.kpi_card('compliance.stats.transitive_compliance'|trans, transitive_compliance, null, null, 'success', null) }}
     </div>
-
-    <div class="kpi-card">
-        <div class="icon icon-large">📈</div>
-        <div class="kpi-label">{{ 'compliance.stats.leverage_rate'|trans }}</div>
-        <div>
-            {% set leverageRate = total_relationships > 0 ? (transitive_compliance / total_relationships * 100)|round : 0 %}
-            <span class="kpi-value-info">{{ leverageRate }}</span>
-            <span class="kpi-unit">%</span>
-        </div>
+    <div class="col-auto">
+        {% set leverageRate = total_relationships > 0 ? (transitive_compliance / total_relationships * 100)|round : 0 %}
+        {{ cards.kpi_card('compliance.stats.leverage_rate'|trans, leverageRate ~ '%', null, null, 'info', null) }}
     </div>
-
-    <div class="kpi-card">
-        <div class="icon icon-large">🎯</div>
-        <div class="kpi-label">{{ 'compliance.stats.frameworks_leveraged'|trans }}</div>
-        <div>
-            <span class="kpi-value-warning">{{ frameworks_leveraged }}</span>
-        </div>
+    <div class="col-auto">
+        {{ cards.kpi_card('compliance.stats.frameworks_leveraged'|trans, frameworks_leveraged, null, null, 'warning', null) }}
     </div>
 </div>
 
