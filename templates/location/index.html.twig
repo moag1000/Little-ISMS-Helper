@@ -3,6 +3,8 @@
 {% block title %}{{ 'location.title.list'|trans }} - Little ISMS Helper{% endblock %}
 
 {% block body %}
+{% import '_macros/cards.html.twig' as cards %}
+
 <div class="page-header">
     <div>
         <h1>{{ 'location.title.list'|trans }}</h1>
@@ -17,36 +19,17 @@
 
 {# Statistics Cards #}
 <div class="kpi-grid">
-    <div class="kpi-card">
-        <div class="icon">📍</div>
-        <div class="label">{{ 'location.stats.total'|trans }}</div>
-        <div>
-            <span class="value">{{ locations|length }}</span>
-        </div>
+    <div class="col-auto">
+        {{ cards.kpi_card('location.stats.total'|trans, locations|length, null, null, null, null) }}
     </div>
-
-    <div class="kpi-card">
-        <div class="icon">🏢</div>
-        <div class="label">{{ 'location.stats.buildings'|trans }}</div>
-        <div>
-            <span class="value">{{ locations|filter(l => l.locationType == 'building')|length }}</span>
-        </div>
+    <div class="col-auto">
+        {{ cards.kpi_card('location.stats.buildings'|trans, locations|filter(l => l.locationType == 'building')|length, null, null, 'primary', null) }}
     </div>
-
-    <div class="kpi-card">
-        <div class="icon">🚪</div>
-        <div class="label">{{ 'location.stats.rooms'|trans }}</div>
-        <div>
-            <span class="value">{{ locations|filter(l => l.locationType == 'room')|length }}</span>
-        </div>
+    <div class="col-auto">
+        {{ cards.kpi_card('location.stats.rooms'|trans, locations|filter(l => l.locationType == 'room')|length, null, null, 'info', null) }}
     </div>
-
-    <div class="kpi-card">
-        <div class="icon">🔒</div>
-        <div class="label">{{ 'location.stats.secure'|trans }}</div>
-        <div>
-            <span class="value">{{ locations|filter(l => l.requiresBadgeAccess)|length }}</span>
-        </div>
+    <div class="col-auto">
+        {{ cards.kpi_card('location.stats.secure'|trans, locations|filter(l => l.requiresBadgeAccess)|length, null, null, 'success', null) }}
     </div>
 </div>
 
