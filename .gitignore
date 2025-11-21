@@ -44,3 +44,8 @@ PR_DESCRIPTION.md
 
 # JetBrains IDE
 .idea/
+
+###> temporary analysis & utility files ###
+/docs/
+fix_specific_headings.php
+###< temporary analysis & utility files ###
