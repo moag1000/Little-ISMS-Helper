@@ -2,29 +2,6 @@
 
 {% block title %}{{ 'context_management.title'|trans }} - {{ 'app.title'|trans }}{% endblock %}
 
-{# Macro for KPI Card #}
-{% macro kpi_card(title, value, subtitle, progress_value, progress_color, border_class) %}
-    <div class="card shadow-sm h-100 {{ border_class|default('') }}">
-        <div class="card-body">
-            <h6 class="text-muted mb-2">{{ title }}</h6>
-            <h2 class="mb-0 {{ progress_color ? 'text-' ~ progress_color : '' }}">{{ value }}</h2>
-            {% if subtitle %}
-                <small class="{{ progress_color ? 'text-' ~ progress_color : 'text-muted' }}">{{ subtitle }}</small>
-            {% endif %}
-            {% if progress_value is not null %}
-                <div class="progress mt-2" style="height: 6px;">
-                    <div class="progress-bar {{ progress_color ? 'bg-' ~ progress_color : '' }}"
-                         role="progressbar"
-                         style="width: {{ progress_value }}%"
-                         aria-valuenow="{{ progress_value }}"
-                         aria-valuemin="0"
-                         aria-valuemax="100"></div>
-                </div>
-            {% endif %}
-        </div>
-    </div>
-{% endmacro %}
-
 {% block body %}
 <div class="container-fluid py-4">
     {# Page Header #}
@@ -96,13 +73,13 @@
     </div>
     {% endif %}
 
-    {% import _self as macros %}
+    {% import '_macros/cards.html.twig' as cards %}
 
     {# KPI Cards #}
     <div class="row mb-4">
         {# Completeness Card #}
         <div class="col-md-3 mb-3">
-            {{ macros.kpi_card(
+            {{ cards.kpi_card(
                 'context.kpi.completeness'|trans,
                 completeness ~ '%',
                 null,
@@ -113,7 +90,7 @@
 
         {# Active Objectives Card #}
         <div class="col-md-3 mb-3">
-            {{ macros.kpi_card(
+            {{ cards.kpi_card(
                 'context.kpi.active_goals'|trans,
                 statistics.active,
                 'context.kpi.of_total'|trans({'%total%': statistics.total}),
@@ -124,7 +101,7 @@
 
         {# Achieved Objectives Card #}
         <div class="col-md-3 mb-3">
-            {{ macros.kpi_card(
+            {{ cards.kpi_card(
                 'context.kpi.achieved_goals'|trans,
                 statistics.achieved,
                 statistics.total > 0 ? ('context.kpi.success_rate'|trans({'%rate%': ((statistics.achieved / statistics.total) * 100)|round})) : null,
@@ -137,7 +114,7 @@
         <div class="col-md-3 mb-3">
             {% if daysUntilReview is not null %}
                 {% if daysUntilReview > 0 %}
-                    {{ macros.kpi_card(
+                    {{ cards.kpi_card(
                         'context.kpi.next_review'|trans,
                         daysUntilReview,
                         'context.review_status.days_remaining'|trans,
@@ -146,7 +123,7 @@
                         isReviewDue ? 'border-warning' : ''
                     ) }}
                 {% elseif daysUntilReview == 0 %}
-                    {{ macros.kpi_card(
+                    {{ cards.kpi_card(
                         'context.kpi.next_review'|trans,
                         'context.review_status.today'|trans,
                         'context.review_status.due'|trans,
@@ -155,7 +132,7 @@
                         'border-warning'
                     ) }}
                 {% else %}
-                    {{ macros.kpi_card(
+                    {{ cards.kpi_card(
                         'context.kpi.next_review'|trans,
                         daysUntilReview|abs,
                         'context.review_status.days_overdue'|trans,
@@ -165,7 +142,7 @@
                     ) }}
                 {% endif %}
             {% else %}
-                {{ macros.kpi_card(
+                {{ cards.kpi_card(
                     'context.kpi.next_review'|trans,
                     '—',
                     'context.review_status.not_scheduled'|trans,
