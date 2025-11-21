@@ -3,6 +3,8 @@
 {% block title %}DPIA Dashboard{% endblock %}
 
 {% block body %}
+{% import '_macros/cards.html.twig' as cards %}
+
 <div class="container-fluid mt-4">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
@@ -59,48 +61,16 @@
     {# Key Metrics #}
     <div class="row mb-4">
         <div class="col-md-3">
-            <div class="card">
-                <div class="card-body">
-                    <h6 class="text-muted">Total DPIAs</h6>
-                    <h2>{{ statistics.total }}</h2>
-                    <div class="mt-2">
-                        <small class="text-success"><i class="bi bi-check-circle"></i> {{ statistics.approved }} approved</small>
-                    </div>
-                </div>
-            </div>
+            {{ cards.kpi_card('Total DPIAs', statistics.total, statistics.approved ~ ' approved', null, null, null) }}
         </div>
         <div class="col-md-3">
-            <div class="card">
-                <div class="card-body">
-                    <h6 class="text-muted">In Review</h6>
-                    <h2 class="text-info">{{ statistics.in_review }}</h2>
-                    <div class="mt-2">
-                        <small class="text-muted"><i class="bi bi-clock"></i> Awaiting approval</small>
-                    </div>
-                </div>
-            </div>
+            {{ cards.kpi_card('In Review', statistics.in_review, 'Awaiting approval', null, 'info', null) }}
         </div>
         <div class="col-md-3">
-            <div class="card">
-                <div class="card-body">
-                    <h6 class="text-muted">High Risk</h6>
-                    <h2 class="text-danger">{{ statistics.high_risk }}</h2>
-                    <div class="mt-2">
-                        <small class="text-warning"><i class="bi bi-exclamation-triangle"></i> Requires attention</small>
-                    </div>
-                </div>
-            </div>
+            {{ cards.kpi_card('High Risk', statistics.high_risk, 'Requires attention', null, 'danger', null) }}
         </div>
         <div class="col-md-3">
-            <div class="card">
-                <div class="card-body">
-                    <h6 class="text-muted">Completeness</h6>
-                    <h2>{{ statistics.completeness_rate }}%</h2>
-                    <div class="progress mt-2" style="height: 10px;">
-                        <div class="progress-bar bg-success" style="width: {{ statistics.completeness_rate }}%"></div>
-                    </div>
-                </div>
-            </div>
+            {{ cards.kpi_card('Completeness', statistics.completeness_rate ~ '%', null, statistics.completeness_rate, 'success', null) }}
         </div>
     </div>
 
