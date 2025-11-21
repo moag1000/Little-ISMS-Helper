@@ -64,13 +64,14 @@
 </tr>
 {% endblock %}
 
-{# Custom Styles for SoA #}
+{# Custom Styles for SoA - Cyberpunk InfoSec Theme #}
 {% block custom_styles %}
 .stats-grid {
     display: table;
     width: 100%;
     margin-bottom: 20pt;
-    border: 1px solid #cbd5e1;
+    border: 3px solid transparent;
+    border-image: linear-gradient(90deg, #06b6d4 0%, #ec4899 50%, #8b5cf6 100%) 1;
     border-collapse: collapse;
 }
 
@@ -80,24 +81,35 @@
 
 .stats-cell {
     display: table-cell;
-    padding: 10pt;
+    padding: 12pt;
     text-align: center;
     border: 1px solid #cbd5e1;
     width: 25%;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+}
+
+.stats-cell:first-child {
+    border-left: 3px solid #06b6d4;
+}
+
+.stats-cell:last-child {
+    border-right: 3px solid #8b5cf6;
 }
 
 .stats-label {
     font-size: 8pt;
-    color: #64748b;
+    color: #0f172a;
     text-transform: uppercase;
     font-weight: bold;
-    margin-bottom: 5pt;
+    margin-bottom: 6pt;
+    letter-spacing: 0.5pt;
 }
 
 .stats-value {
-    font-size: 18pt;
-    color: #1a56db;
+    font-size: 20pt;
+    color: #06b6d4;
     font-weight: bold;
+    text-shadow: 0 0 1pt rgba(6, 182, 212, 0.3);
 }
 
 .control-table {
@@ -105,15 +117,18 @@
     border-collapse: collapse;
     margin-bottom: 15pt;
     font-size: 8pt;
+    border: 2px solid #cbd5e1;
 }
 
 .control-table th {
-    background-color: #1a56db;
-    color: white;
+    background: linear-gradient(90deg, #0f172a 0%, #1e293b 100%);
+    color: #06b6d4;
     padding: 6pt;
     text-align: left;
     font-weight: bold;
     border: 1px solid #1e3a8a;
+    text-transform: uppercase;
+    letter-spacing: 0.3pt;
 }
 
 .control-table td {
@@ -123,12 +138,12 @@
 }
 
 .control-table tr:nth-child(even) {
-    background-color: #f8fafc;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
 }
 
 .control-id {
     font-weight: bold;
-    color: #1a56db;
+    color: #06b6d4;
     white-space: nowrap;
 }
 
@@ -139,52 +154,63 @@
     font-size: 7pt;
     font-weight: bold;
     text-transform: uppercase;
+    letter-spacing: 0.3pt;
+    border: 1.5pt solid transparent;
 }
 
 .badge-implemented {
-    background-color: #10b981;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    border-color: #059669;
     color: white;
 }
 
 .badge-partial {
-    background-color: #f59e0b;
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    border-color: #d97706;
     color: white;
 }
 
 .badge-not-implemented {
-    background-color: #ef4444;
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    border-color: #dc2626;
     color: white;
 }
 
 .badge-planned {
-    background-color: #3b82f6;
+    background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+    border-color: #0891b2;
     color: white;
 }
 
 .badge-applicable {
-    background-color: #10b981;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    border-color: #059669;
     color: white;
 }
 
 .badge-not-applicable {
-    background-color: #6b7280;
+    background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+    border-color: #4b5563;
     color: white;
 }
 
 .category-header {
-    background-color: #e0e7ff;
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
     padding: 8pt;
     margin-top: 15pt;
     margin-bottom: 8pt;
-    border-left: 4px solid #1a56db;
+    border-left: 4px solid transparent;
+    border-image: linear-gradient(180deg, #06b6d4 0%, #ec4899 100%) 1;
     font-weight: bold;
     font-size: 10pt;
-    color: #1e3a8a;
+    color: #0f172a;
+    text-transform: uppercase;
+    letter-spacing: 0.5pt;
 }
 
 .percentage {
     font-weight: bold;
-    color: #059669;
+    color: #06b6d4;
 }
 {% endblock %}
 

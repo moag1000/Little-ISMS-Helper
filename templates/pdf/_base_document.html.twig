@@ -66,7 +66,7 @@
             }
         }
 
-        /* Base Typography */
+        /* Base Typography - Cyberpunk InfoSec Style */
         body {
             font-family: DejaVu Sans, sans-serif;
             font-size: 10pt;
@@ -77,49 +77,74 @@
 
         h1 {
             font-size: 20pt;
-            color: #1a56db;
+            color: #0f172a;
             margin-bottom: 8pt;
             padding-bottom: 8pt;
-            border-bottom: 3px solid #1a56db;
+            border-bottom: 3px solid transparent;
+            border-image: linear-gradient(90deg, #06b6d4 0%, #ec4899 50%, #8b5cf6 100%) 1;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5pt;
         }
 
         h2 {
             font-size: 14pt;
-            color: #1a56db;
+            color: #06b6d4;
             margin-top: 18pt;
             margin-bottom: 10pt;
-            border-bottom: 1px solid #cbd5e1;
+            border-bottom: 2px solid #06b6d4;
             padding-bottom: 6pt;
+            padding-left: 10pt;
+            border-left: 4px solid #ec4899;
+            font-weight: bold;
         }
 
         h3 {
             font-size: 12pt;
-            color: #334155;
+            color: #0f172a;
             margin-top: 14pt;
             margin-bottom: 8pt;
             font-weight: bold;
+            padding-left: 8pt;
+            border-left: 3px solid #8b5cf6;
         }
 
         p {
             margin-bottom: 8pt;
         }
 
-        /* Document Control Block */
+        /* Document Control Block - Cyberpunk Style */
         .document-control {
-            border: 2px solid #1a56db;
+            border: 3px solid transparent;
+            border-image: linear-gradient(135deg, #06b6d4 0%, #ec4899 50%, #8b5cf6 100%) 1;
             padding: 15pt;
             margin-bottom: 25pt;
-            background: #f8fafc;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
             page-break-inside: avoid;
+            position: relative;
+        }
+
+        .document-control::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4pt;
+            background: linear-gradient(90deg, #06b6d4 0%, #ec4899 50%, #8b5cf6 100%);
         }
 
         .document-control-header {
             font-size: 14pt;
             font-weight: bold;
-            color: #1a56db;
+            color: #0f172a;
             margin-bottom: 12pt;
+            margin-top: 4pt;
             text-align: center;
             text-transform: uppercase;
+            letter-spacing: 1pt;
+            border-bottom: 2px solid #06b6d4;
+            padding-bottom: 8pt;
         }
 
         .doc-meta-grid {
@@ -137,10 +162,14 @@
             width: 35%;
             padding: 6pt 8pt;
             font-weight: bold;
-            background: #e2e8f0;
-            border: 1px solid #cbd5e1;
-            color: #334155;
+            background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
+            border: 1px solid #94a3b8;
+            border-left: 3px solid #06b6d4;
+            color: #0f172a;
             font-size: 9pt;
+            text-transform: uppercase;
+            letter-spacing: 0.3pt;
+            font-size: 8pt;
         }
 
         .doc-meta-value {
@@ -148,81 +177,98 @@
             padding: 6pt 8pt;
             border: 1px solid #cbd5e1;
             font-size: 9pt;
+            background: white;
         }
 
-        /* Classification Badge */
+        /* Classification Badge - Cyberpunk Neon Style */
         .classification {
             display: inline-block;
-            padding: 3pt 10pt;
-            border-radius: 3pt;
+            padding: 4pt 12pt;
+            border-radius: 2pt;
             font-weight: bold;
             font-size: 8pt;
             text-transform: uppercase;
+            letter-spacing: 0.5pt;
+            border: 2px solid;
         }
 
         .classification-public {
-            background: #10b981;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
             color: white;
+            border-color: #10b981;
         }
 
         .classification-internal {
-            background: #f59e0b;
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
             color: white;
+            border-color: #f59e0b;
         }
 
         .classification-confidential {
-            background: #ef4444;
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
             color: white;
+            border-color: #ef4444;
         }
 
         .classification-secret {
-            background: #7c3aed;
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
             color: white;
+            border-color: #8b5cf6;
         }
 
-        /* Status Badge */
+        /* Status Badge - Cyberpunk Neon Style */
         .status-badge {
             display: inline-block;
-            padding: 3pt 10pt;
-            border-radius: 3pt;
+            padding: 4pt 12pt;
+            border-radius: 2pt;
             font-weight: bold;
             font-size: 8pt;
             text-transform: uppercase;
+            letter-spacing: 0.5pt;
+            border: 2px solid;
         }
 
         .status-draft {
-            background: #64748b;
+            background: linear-gradient(135deg, #64748b 0%, #475569 100%);
             color: white;
+            border-color: #64748b;
         }
 
         .status-review {
-            background: #3b82f6;
+            background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
             color: white;
+            border-color: #06b6d4;
         }
 
         .status-approved {
-            background: #10b981;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
             color: white;
+            border-color: #10b981;
         }
 
         .status-archived {
-            background: #94a3b8;
+            background: linear-gradient(135deg, #94a3b8 0%, #64748b 100%);
             color: white;
+            border-color: #94a3b8;
         }
 
-        /* Approval Block */
+        /* Approval Block - Cyberpunk Style */
         .approval-block {
             margin-top: 20pt;
-            border: 1px solid #cbd5e1;
+            border: 2px solid #06b6d4;
             page-break-inside: avoid;
+            border-radius: 4pt;
         }
 
         .approval-header {
-            background: #1a56db;
-            color: white;
-            padding: 6pt 10pt;
+            background: linear-gradient(90deg, #0f172a 0%, #1e293b 100%);
+            color: #06b6d4;
+            padding: 8pt 12pt;
             font-weight: bold;
             font-size: 10pt;
+            text-transform: uppercase;
+            letter-spacing: 0.5pt;
+            border-bottom: 3px solid #06b6d4;
         }
 
         .approval-table {
@@ -238,36 +284,45 @@
 
         .approval-table .label {
             width: 30%;
-            background: #f1f5f9;
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
             font-weight: bold;
-            color: #334155;
+            color: #0f172a;
+            border-left: 3px solid #ec4899;
         }
 
-        /* Tables */
+        /* Tables - Cyberpunk Style */
         table {
             width: 100%;
             border-collapse: collapse;
             margin: 15pt 0;
             font-size: 9pt;
+            border: 2px solid #cbd5e1;
         }
 
         th {
-            background: #1a56db;
-            color: white;
-            padding: 8pt;
+            background: linear-gradient(90deg, #0f172a 0%, #1e293b 100%);
+            color: #06b6d4;
+            padding: 10pt 8pt;
             text-align: left;
             font-weight: bold;
-            border: 1px solid #1e3a8a;
+            border: 1px solid #334155;
+            text-transform: uppercase;
+            letter-spacing: 0.3pt;
+            font-size: 8pt;
         }
 
         td {
-            padding: 6pt 8pt;
+            padding: 7pt 8pt;
             border: 1px solid #cbd5e1;
             vertical-align: top;
         }
 
         tr:nth-child(even) {
-            background: #f8fafc;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        }
+
+        tr:hover {
+            background: #e0f2fe;
         }
 
         /* Utility Classes */
