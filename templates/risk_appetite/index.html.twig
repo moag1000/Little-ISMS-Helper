@@ -3,6 +3,8 @@
 {% block title %}{{ 'risk_appetite.title'|trans }} - {{ 'app.title'|trans }}{% endblock %}
 
 {% block body %}
+{% import '_macros/cards.html.twig' as cards %}
+
 <div class="page-header">
     <div>
         <h1><i class="bi bi-speedometer2" aria-hidden="true"></i> {{ 'risk_appetite.title'|trans }}</h1>
@@ -18,36 +20,22 @@
 </div>
 
 <div class="stats-grid mb-4">
-    <div class="stat-card">
-        <div class="stat-icon"><i class="bi bi-collection" aria-hidden="true"></i></div>
-        <div class="stat-value">{{ appetites|length }}</div>
-        <div class="stat-label">{{ 'risk_appetite.stats.total'|trans }}</div>
+    <div class="col-auto">
+        {{ cards.kpi_card('risk_appetite.stats.total'|trans, appetites|length, null, null, null, null) }}
     </div>
-
     {% if globalAppetite %}
-    <div class="stat-card">
-        <div class="stat-icon"><i class="bi bi-globe" aria-hidden="true"></i></div>
-        <div class="stat-value">{{ globalAppetite.maxAcceptableRisk }}</div>
-        <div class="stat-label">{{ 'risk_appetite.stats.global_threshold'|trans }}</div>
+    <div class="col-auto">
+        {{ cards.kpi_card('risk_appetite.stats.global_threshold'|trans, globalAppetite.maxAcceptableRisk, null, null, 'primary', null) }}
     </div>
     {% endif %}
-
-    <div class="stat-card">
-        <div class="stat-icon"><i class="bi bi-folder" aria-hidden="true"></i></div>
-        <div class="stat-value">{{ categories|length }}</div>
-        <div class="stat-label">{{ 'risk_appetite.stats.categories'|trans }}</div>
+    <div class="col-auto">
+        {{ cards.kpi_card('risk_appetite.stats.categories'|trans, categories|length, null, null, 'info', null) }}
     </div>
-
-    <div class="stat-card">
-        <div class="stat-icon"><i class="bi bi-graph-up-arrow" aria-hidden="true"></i></div>
-        <div class="stat-value">{{ totalRisks }}</div>
-        <div class="stat-label">{{ 'risk_appetite.stats.total_risks'|trans }}</div>
+    <div class="col-auto">
+        {{ cards.kpi_card('risk_appetite.stats.total_risks'|trans, totalRisks, null, null, 'success', null) }}
     </div>
-
-    <div class="stat-card {{ risksExceedingAppetite|length > 0 ? 'bg-danger text-white' : '' }}">
-        <div class="stat-icon"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i></div>
-        <div class="stat-value">{{ risksExceedingAppetite|length }}</div>
-        <div class="stat-label">{{ 'risk_appetite.stats.exceeding'|trans }}</div>
+    <div class="col-auto">
+        {{ cards.kpi_card('risk_appetite.stats.exceeding'|trans, risksExceedingAppetite|length, null, null, risksExceedingAppetite|length > 0 ? 'danger' : null, null) }}
     </div>
 </div>
 
