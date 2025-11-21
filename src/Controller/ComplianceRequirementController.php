@@ -43,15 +43,18 @@ class ComplianceRequirementController extends AbstractController
 
         $frameworks = $this->frameworkRepository->findAll();
         $tenant = $this->tenantContext->getCurrentTenant();
-        if (!$tenant) {
+        if (!$tenant && !$this->isGranted('ROLE_SUPER_ADMIN')) {
             throw $this->createAccessDeniedException('No tenant assigned to user. Please contact administrator.');
         }
 
         // Load tenant-specific fulfillments for all requirements (batch)
+        // For SUPER_ADMIN without tenant, show empty fulfillments
         $fulfillments = [];
-        foreach ($requirements as $requirement) {
-            $fulfillment = $this->fulfillmentService->getOrCreateFulfillment($tenant, $requirement);
-            $fulfillments[$requirement->getId()] = $fulfillment;
+        if ($tenant) {
+            foreach ($requirements as $requirement) {
+                $fulfillment = $this->fulfillmentService->getOrCreateFulfillment($tenant, $requirement);
+                $fulfillments[$requirement->getId()] = $fulfillment;
+            }
         }
 
         return $this->render('compliance/requirement/index.html.twig', [
@@ -101,12 +104,12 @@ class ComplianceRequirementController extends AbstractController
     public function show(ComplianceRequirement $requirement): Response
     {
         $tenant = $this->tenantContext->getCurrentTenant();
-        if (!$tenant) {
+        if (!$tenant && !$this->isGranted('ROLE_SUPER_ADMIN')) {
             throw $this->createAccessDeniedException('No tenant assigned to user. Please contact administrator.');
         }
 
-        // Get or create tenant-specific fulfillment
-        $fulfillment = $this->fulfillmentService->getOrCreateFulfillment($tenant, $requirement);
+        // Get or create tenant-specific fulfillment (null for SUPER_ADMIN without tenant)
+        $fulfillment = $tenant ? $this->fulfillmentService->getOrCreateFulfillment($tenant, $requirement) : null;
 
         // Calculate fulfillment from controls (legacy method for comparison)
         $calculatedFulfillment = $requirement->calculateFulfillmentFromControls();
@@ -188,8 +191,14 @@ class ComplianceRequirementController extends AbstractController
         }
 
         $tenant = $this->tenantContext->getCurrentTenant();
-        if (!$tenant) {
+        if (!$tenant && !$this->isGranted('ROLE_SUPER_ADMIN')) {
             $this->addFlash('error', 'No tenant assigned to user. Please contact administrator.');
+            return $this->redirectToRoute('app_compliance_requirement_show', ['id' => $requirement->getId()]);
+        }
+
+        // SUPER_ADMIN without tenant cannot update fulfillment
+        if (!$tenant) {
+            $this->addFlash('error', 'Cannot update fulfillment without tenant assignment.');
             return $this->redirectToRoute('app_compliance_requirement_show', ['id' => $requirement->getId()]);
         }
 
