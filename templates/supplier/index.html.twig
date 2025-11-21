@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% import '_macros/inheritance_badge.html.twig' as inheritance %}
+{% import '_macros/cards.html.twig' as cards %}
 
 {% block title %}{{ 'supplier.title'|trans }}{% endblock %}
 
@@ -41,30 +42,23 @@
     {% endif %}
 
     {% if statistics %}
-    <div class="info-box">
-        <h2>{{ 'supplier.statistics.title'|trans }}</h2>
-        <div class="stats-grid">
-            <div class="stat-item">
-                <span class="stat-label">{{ 'supplier.statistics.total'|trans }}</span>
-                <span class="stat-value">{{ detailedStats.total }}</span>
-                {% if currentTenant %}
-                    <small style="font-size: 11px; color: #6c757d; opacity: 0.85; display: block; margin-top: 0.25rem;">
-                        {{ 'corporate.stats.breakdown'|trans({'%own%': detailedStats.own, '%inherited%': detailedStats.inherited, '%subsidiaries%': detailedStats.subsidiaries}) }}
-                    </small>
-                {% endif %}
-            </div>
-            <div class="stat-item">
-                <span class="stat-label">{{ 'supplier.statistics.critical'|trans }}</span>
-                <span class="stat-value critical">{{ statistics.critical }}</span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-label">{{ 'supplier.statistics.overdue_assessments'|trans }}</span>
-                <span class="stat-value warning">{{ statistics.overdue_assessments }}</span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-label">{{ 'supplier.statistics.non_compliant'|trans }}</span>
-                <span class="stat-value danger">{{ statistics.non_compliant }}</span>
-            </div>
+    <div class="row mb-4">
+        <div class="col-md-3">
+            {% if currentTenant %}
+                {% set subtitle = 'corporate.stats.breakdown'|trans({'%own%': detailedStats.own, '%inherited%': detailedStats.inherited, '%subsidiaries%': detailedStats.subsidiaries}) %}
+                {{ cards.kpi_card('supplier.statistics.total'|trans, detailedStats.total, subtitle, null, 'primary', null) }}
+            {% else %}
+                {{ cards.kpi_card('supplier.statistics.total'|trans, detailedStats.total, null, null, 'primary', null) }}
+            {% endif %}
+        </div>
+        <div class="col-md-3">
+            {{ cards.kpi_card('supplier.statistics.critical'|trans, statistics.critical, null, null, 'danger', null) }}
+        </div>
+        <div class="col-md-3">
+            {{ cards.kpi_card('supplier.statistics.overdue_assessments'|trans, statistics.overdue_assessments, null, null, 'warning', null) }}
+        </div>
+        <div class="col-md-3">
+            {{ cards.kpi_card('supplier.statistics.non_compliant'|trans, statistics.non_compliant, null, null, 'danger', null) }}
         </div>
     </div>
     {% endif %}
