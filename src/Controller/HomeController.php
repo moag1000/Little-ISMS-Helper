@@ -88,8 +88,8 @@ class HomeController extends AbstractController
         // Risk Review Data (ISO 27001:2022 Clause 6.1.3.d)
         $tenant = $this->tenantContext->getCurrentTenant();
 
-        // Guard: If user has no tenant assigned, only allow SUPER_ADMIN
-        if (!$tenant && !$this->isGranted('ROLE_SUPER_ADMIN')) {
+        // Guard: If user has no tenant assigned, only allow ADMIN
+        if (!$tenant && !$this->isGranted('ROLE_ADMIN')) {
             throw $this->createAccessDeniedException('No tenant assigned to user. Please contact administrator.');
         }
 
