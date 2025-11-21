@@ -53,42 +53,45 @@ Little ISMS Helper unterstützt Organisationen bei der **Implementierung und Ver
 
 **Empfohlener Weg – keine PHP/Composer-Installation nötig!**
 
-### Option 1: Docker Hub Image (schnellste Methode)
+### 🚀 Production Deployment (Empfohlen)
 
-```bash
-# 1. docker-compose.yml herunterladen
-wget https://raw.githubusercontent.com/moag1000/Little-ISMS-Helper/main/docker-compose.yml
-
-# 2. Services starten
-docker-compose up -d
-
-# 3. Status prüfen
-docker-compose ps
-```
-
-### Option 2: Lokal bauen
+**All-in-One Container** mit embedded MariaDB - nur 1 Container, 1 Volume
 
 ```bash
 # 1. Repository klonen
 git clone https://github.com/moag1000/Little-ISMS-Helper.git
 cd Little-ISMS-Helper
 
-# 2. Docker-Container starten
+# 2. Production Container starten
+docker-compose -f docker-compose.prod.yml up -d
+
+# 3. Status prüfen
+docker-compose -f docker-compose.prod.yml ps
+```
+
+**Fertig!** 🎉 Öffnen Sie: `http://localhost/setup`
+
+- ✅ **1 Container** - App mit embedded MariaDB
+- ✅ **1 Volume** - Alle Daten in `isms_data`
+- ✅ **Auto-Config** - DB-Passwort wird automatisch generiert
+- ✅ **Production-Ready** - Resource Limits & Health Checks
+
+📖 **Vollständige Dokumentation:** [DOCKER_PRODUCTION.md](docs/deployment/DOCKER_PRODUCTION.md)
+
+### 🛠️ Development Setup
+
+**Multi-Container** mit PostgreSQL, MailHog & pgAdmin für Entwicklung
+
+```bash
+# 1. Repository klonen
+git clone https://github.com/moag1000/Little-ISMS-Helper.git
+cd Little-ISMS-Helper
+
+# 2. Development Services starten
 docker-compose up -d
 ```
 
-**Fertig!** 🎉 Öffnen Sie: `http://localhost:8000/setup`
-
-Der **10-Schritte Deployment Wizard** führt Sie durch die komplette Einrichtung – keine manuelle Konfiguration nötig!
-
-#### Datenbank-Konfiguration im Wizard (Schritt 1)
-
-- **Typ**: PostgreSQL
-- **Host**: `db`
-- **Port**: `5432`
-- **Datenbank**: `little_isms`
-- **User**: `isms_user`
-- **Passwort**: `isms_password`
+Öffnen: `http://localhost:8000/setup`
 
 #### Enthaltene Services
 
