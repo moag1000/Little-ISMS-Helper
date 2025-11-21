@@ -3,6 +3,8 @@
 {% block title %}{{ 'workflow.title.pending'|trans }} - Little ISMS Helper{% endblock %}
 
 {% block body %}
+{% import '_macros/cards.html.twig' as cards %}
+
 <div class="page-header">
     <div>
         <h1>{{ 'workflow.title.pending'|trans }}</h1>
@@ -17,37 +19,18 @@
 
 {# Statistics Cards #}
 <div class="kpi-grid">
-    <div class="kpi-card">
-        <div class="icon">⏳</div>
-        <div class="label">{{ 'workflow.stats.pending'|trans }}</div>
-        <div>
-            <span class="value">{{ pendingInstances|length }}</span>
-        </div>
+    <div class="col-auto">
+        {{ cards.kpi_card('workflow.stats.pending'|trans, pendingInstances|length, null, null, 'warning', null) }}
     </div>
-
-    <div class="kpi-card">
-        <div class="icon">⚠️</div>
-        <div class="label">{{ 'workflow.stats.overdue'|trans }}</div>
-        <div>
-            <span class="value">{{ pendingInstances|filter(i => i.overdue)|length }}</span>
-        </div>
+    <div class="col-auto">
+        {{ cards.kpi_card('workflow.stats.overdue'|trans, pendingInstances|filter(i => i.overdue)|length, null, null, 'danger', null) }}
     </div>
-
-    <div class="kpi-card">
-        <div class="icon">👤</div>
-        <div class="label">{{ 'workflow.stats.my_tasks'|trans }}</div>
-        <div>
-            <span class="value">{{ pendingInstances|filter(i => i.assignee and i.assignee.id == app.user.id)|length }}</span>
-        </div>
+    <div class="col-auto">
+        {{ cards.kpi_card('workflow.stats.my_tasks'|trans, pendingInstances|filter(i => i.assignee and i.assignee.id == app.user.id)|length, null, null, 'success', null) }}
     </div>
-
-    <div class="kpi-card">
-        <div class="icon">📅</div>
-        <div class="label">{{ 'workflow.stats.due_this_week'|trans }}</div>
-        <div>
-            {% set weekEnd = 'now'|date_modify('+7 days') %}
-            <span class="value">{{ pendingInstances|filter(i => i.dueDate and i.dueDate <= weekEnd)|length }}</span>
-        </div>
+    <div class="col-auto">
+        {% set weekEnd = 'now'|date_modify('+7 days') %}
+        {{ cards.kpi_card('workflow.stats.due_this_week'|trans, pendingInstances|filter(i => i.dueDate and i.dueDate <= weekEnd)|length, null, null, 'info', null) }}
     </div>
 </div>
 

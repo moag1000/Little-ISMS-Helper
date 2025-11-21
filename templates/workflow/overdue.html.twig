@@ -3,6 +3,8 @@
 {% block title %}{{ 'workflow.title.overdue'|trans }} - Little ISMS Helper{% endblock %}
 
 {% block body %}
+{% import '_macros/cards.html.twig' as cards %}
+
 <div class="page-header">
     <div>
         <h1>{{ 'workflow.title.overdue'|trans }}</h1>
@@ -25,48 +27,29 @@
 
 {# Statistics Cards #}
 <div class="kpi-grid">
-    <div class="kpi-card border-left-danger">
-        <div class="icon">⚠️</div>
-        <div class="label">{{ 'workflow.stats.overdue'|trans }}</div>
-        <div>
-            <span class="value text-danger">{{ overdueInstances|length }}</span>
-        </div>
+    <div class="col-auto">
+        {{ cards.kpi_card('workflow.stats.overdue'|trans, overdueInstances|length, null, null, 'danger', 'border-danger') }}
     </div>
-
-    <div class="kpi-card">
-        <div class="icon">👤</div>
-        <div class="label">{{ 'workflow.stats.my_overdue'|trans }}</div>
-        <div>
-            <span class="value">{{ overdueInstances|filter(i => i.assignee and i.assignee.id == app.user.id)|length }}</span>
-        </div>
+    <div class="col-auto">
+        {{ cards.kpi_card('workflow.stats.my_overdue'|trans, overdueInstances|filter(i => i.assignee and i.assignee.id == app.user.id)|length, null, null, 'warning', null) }}
     </div>
-
-    <div class="kpi-card">
-        <div class="icon">📅</div>
-        <div class="label">{{ 'workflow.stats.overdue_days_avg'|trans }}</div>
-        <div>
-            {% set totalDaysOverdue = 0 %}
-            {% for instance in overdueInstances %}
-                {% set daysOverdue = ('now'|date('U') - instance.dueDate.timestamp) / 86400 %}
-                {% set totalDaysOverdue = totalDaysOverdue + daysOverdue %}
-            {% endfor %}
-            <span class="value">{{ overdueInstances|length > 0 ? (totalDaysOverdue / overdueInstances|length)|round : 0 }}</span>
-        </div>
+    <div class="col-auto">
+        {% set totalDaysOverdue = 0 %}
+        {% for instance in overdueInstances %}
+            {% set daysOverdue = ('now'|date('U') - instance.dueDate.timestamp) / 86400 %}
+            {% set totalDaysOverdue = totalDaysOverdue + daysOverdue %}
+        {% endfor %}
+        {{ cards.kpi_card('workflow.stats.overdue_days_avg'|trans, overdueInstances|length > 0 ? (totalDaysOverdue / overdueInstances|length)|round : 0, null, null, 'info', null) }}
     </div>
-
-    <div class="kpi-card">
-        <div class="icon">🔴</div>
-        <div class="label">{{ 'workflow.stats.critical_overdue'|trans }}</div>
-        <div>
-            {% set criticalOverdue = 0 %}
-            {% for instance in overdueInstances %}
-                {% set daysOverdue = ('now'|date('U') - instance.dueDate.timestamp) / 86400 %}
-                {% if daysOverdue > 7 %}
-                    {% set criticalOverdue = criticalOverdue + 1 %}
-                {% endif %}
-            {% endfor %}
-            <span class="value text-danger">{{ criticalOverdue }}</span>
-        </div>
+    <div class="col-auto">
+        {% set criticalOverdue = 0 %}
+        {% for instance in overdueInstances %}
+            {% set daysOverdue = ('now'|date('U') - instance.dueDate.timestamp) / 86400 %}
+            {% if daysOverdue > 7 %}
+                {% set criticalOverdue = criticalOverdue + 1 %}
+            {% endif %}
+        {% endfor %}
+        {{ cards.kpi_card('workflow.stats.critical_overdue'|trans, criticalOverdue, null, null, 'danger', null) }}
     </div>
 </div>
 
