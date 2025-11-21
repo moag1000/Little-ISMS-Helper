@@ -265,10 +265,17 @@ class IncidentController extends AbstractController
             date('Ymd-His')
         );
 
+        // Generate version from last update date (Format: Year.Month.Day)
+        $lastUpdate = $incident->getUpdatedAt() ?? $incident->getCreatedAt() ?? new \DateTime();
+        $version = $lastUpdate->format('Y.m.d');
+
         // Generate PDF
         $pdf = $this->pdfService->generatePdf(
             'incident/nis2_report_pdf.html.twig',
-            ['incident' => $incident],
+            [
+                'incident' => $incident,
+                'version' => $version,
+            ],
             ['orientation' => 'portrait', 'paper' => 'A4']
         );
 
