@@ -16,23 +16,28 @@
         .header {
             text-align: center;
             margin-bottom: 30px;
-            border-bottom: 2px solid #dc3545;
+            border-bottom: 3px solid transparent;
+            border-image: linear-gradient(90deg, #06b6d4 0%, #ec4899 50%, #8b5cf6 100%) 1;
             padding-bottom: 15px;
         }
         .header h1 {
-            color: #dc3545;
+            color: #0f172a;
             margin: 0;
             font-size: 24pt;
+            text-transform: uppercase;
+            letter-spacing: 0.5pt;
         }
         .header p {
             margin: 5px 0;
             color: #666;
         }
         .meta-info {
-            background: #f8f9fa;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
             padding: 15px;
             margin-bottom: 20px;
-            border-left: 4px solid #dc3545;
+            border: 2px solid #cbd5e1;
+            border-left-width: 4px;
+            border-left-color: #06b6d4;
         }
         .meta-info table {
             width: 100%;
@@ -50,17 +55,20 @@
             page-break-inside: avoid;
         }
         .section h2 {
-            color: #dc3545;
-            border-bottom: 1px solid #dc3545;
+            color: #06b6d4;
+            border-bottom: 2px solid #06b6d4;
             padding-bottom: 5px;
             margin-top: 0;
             font-size: 14pt;
+            padding-left: 10pt;
+            border-left: 4px solid #ec4899;
         }
         .section h3 {
-            color: #666;
+            color: #1e293b;
             font-size: 12pt;
             margin-top: 15px;
             margin-bottom: 8px;
+            font-weight: bold;
         }
         .badge {
             display: inline-block;
@@ -69,12 +77,30 @@
             font-size: 9pt;
             font-weight: bold;
             color: white;
+            letter-spacing: 0.3pt;
+            border: 1.5pt solid transparent;
         }
-        .badge-danger { background: #dc3545; }
-        .badge-warning { background: #ffc107; color: #333; }
-        .badge-success { background: #28a745; }
-        .badge-info { background: #17a2b8; }
-        .badge-secondary { background: #6c757d; }
+        .badge-danger {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            border-color: #dc2626;
+        }
+        .badge-warning {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            border-color: #d97706;
+            color: white;
+        }
+        .badge-success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border-color: #059669;
+        }
+        .badge-info {
+            background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+            border-color: #0891b2;
+        }
+        .badge-secondary {
+            background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+            border-color: #4b5563;
+        }
         .table {
             width: 100%;
             border-collapse: collapse;
@@ -87,8 +113,11 @@
             text-align: left;
         }
         .table th {
-            background: #f8f9fa;
+            background: linear-gradient(90deg, #0f172a 0%, #1e293b 100%);
+            color: #06b6d4;
             font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.3pt;
         }
         .alert {
             padding: 12px 15px;
