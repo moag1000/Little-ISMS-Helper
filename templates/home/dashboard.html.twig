@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_macros/cards.html.twig' as cards %}
 
 {% block title %}{{ 'nav.dashboard'|trans }} - {{ 'app.title'|trans }}{% endblock %}
 
@@ -13,13 +14,8 @@
 
 <div class="kpi-grid">
     {% for kpi in kpis %}
-    <div class="kpi-card">
-        <div class="icon">{{ kpi.icon }}</div>
-        <div class="label">{{ kpi.name }}</div>
-        <div>
-            <span class="value">{{ kpi.value }}</span>
-            <span class="unit">{{ kpi.unit }}</span>
-        </div>
+    <div class="col-auto">
+        {{ cards.kpi_card(kpi.name, kpi.value ~ (kpi.unit ? ' ' ~ kpi.unit : ''), null, null, null, null) }}
     </div>
     {% endfor %}
 </div>
