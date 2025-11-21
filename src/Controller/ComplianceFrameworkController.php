@@ -102,10 +102,16 @@ class ComplianceFrameworkController extends AbstractController
     {
         // Calculate statistics using tenant-specific fulfillment data
         $tenant = $this->tenantContext->getCurrentTenant();
-        if (!$tenant) {
+        if (!$tenant && !$this->isGranted('ROLE_SUPER_ADMIN')) {
             throw $this->createAccessDeniedException('No tenant assigned to user. Please contact administrator.');
         }
-        $stats = $this->requirementRepository->getFrameworkStatisticsForTenant($framework, $tenant);
+
+        // For SUPER_ADMIN without tenant, show empty statistics
+        if ($tenant) {
+            $stats = $this->requirementRepository->getFrameworkStatisticsForTenant($framework, $tenant);
+        } else {
+            $stats = ['total' => 0, 'applicable' => 0, 'fulfilled' => 0];
+        }
 
         $totalRequirements = $stats['total'];
         $applicableRequirements = $stats['applicable'];
