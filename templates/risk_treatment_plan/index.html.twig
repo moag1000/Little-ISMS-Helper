@@ -3,6 +3,8 @@
 {% block title %}{{ 'risk_treatment_plan.title'|trans }} - {{ 'app.title'|trans }}{% endblock %}
 
 {% block body %}
+{% import '_macros/cards.html.twig' as cards %}
+
 <div class="page-header">
     <div>
         <h1><i class="bi bi-clipboard-check" aria-hidden="true"></i> {{ 'risk_treatment_plan.title'|trans }}</h1>
@@ -16,40 +18,23 @@
 </div>
 
 <div class="stats-grid mb-4">
-    <div class="stat-card">
-        <div class="stat-icon"><i class="bi bi-collection" aria-hidden="true"></i></div>
-        <div class="stat-value">{{ stats.total }}</div>
-        <div class="stat-label">{{ 'risk_treatment_plan.stats.total'|trans }}</div>
+    <div class="col-auto">
+        {{ cards.kpi_card('risk_treatment_plan.stats.total'|trans, stats.total, null, null, 'primary', null) }}
     </div>
-
-    <div class="stat-card">
-        <div class="stat-icon"><i class="bi bi-clock-history" aria-hidden="true"></i></div>
-        <div class="stat-value">{{ stats.planned }}</div>
-        <div class="stat-label">{{ 'risk_treatment_plan.stats.planned'|trans }}</div>
+    <div class="col-auto">
+        {{ cards.kpi_card('risk_treatment_plan.stats.planned'|trans, stats.planned, null, null, 'secondary', null) }}
     </div>
-
-    <div class="stat-card">
-        <div class="stat-icon"><i class="bi bi-play-circle" aria-hidden="true"></i></div>
-        <div class="stat-value">{{ stats.in_progress }}</div>
-        <div class="stat-label">{{ 'risk_treatment_plan.stats.in_progress'|trans }}</div>
+    <div class="col-auto">
+        {{ cards.kpi_card('risk_treatment_plan.stats.in_progress'|trans, stats.in_progress, null, null, 'info', null) }}
     </div>
-
-    <div class="stat-card">
-        <div class="stat-icon"><i class="bi bi-check-circle" aria-hidden="true"></i></div>
-        <div class="stat-value">{{ stats.completed }}</div>
-        <div class="stat-label">{{ 'risk_treatment_plan.stats.completed'|trans }}</div>
+    <div class="col-auto">
+        {{ cards.kpi_card('risk_treatment_plan.stats.completed'|trans, stats.completed, null, null, 'success', null) }}
     </div>
-
-    <div class="stat-card">
-        <div class="stat-icon"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i></div>
-        <div class="stat-value">{{ overduePlans|length }}</div>
-        <div class="stat-label">{{ 'risk_treatment_plan.stats.overdue'|trans }}</div>
+    <div class="col-auto">
+        {{ cards.kpi_card('risk_treatment_plan.stats.overdue'|trans, overduePlans|length, null, null, 'danger', null) }}
     </div>
-
-    <div class="stat-card">
-        <div class="stat-icon"><i class="bi bi-percent" aria-hidden="true"></i></div>
-        <div class="stat-value">{{ stats.avg_completion|number_format(0) }}%</div>
-        <div class="stat-label">{{ 'risk_treatment_plan.stats.avg_completion'|trans }}</div>
+    <div class="col-auto">
+        {{ cards.kpi_card('risk_treatment_plan.stats.avg_completion'|trans, stats.avg_completion|number_format(0) ~ '%', null, stats.avg_completion, 'warning', null) }}
     </div>
 </div>
 
