@@ -1,0 +1,301 @@
+{#
+  Reusable Card Macros for Little-ISMS-Helper
+
+  This file contains standardized Twig macros for common card patterns
+  used throughout the application. Import in your templates with:
+
+  {% import '_macros/cards.html.twig' as cards %}
+
+  Usage examples at the end of this file.
+#}
+
+{#
+  Health Status Card
+  Used for: System health monitoring, service status displays
+
+  Parameters:
+  - title: Card title/heading
+  - icon: Bootstrap icon class (without 'bi-' prefix)
+  - status: Status value (e.g., 'healthy', 'warning', 'error')
+  - border_color: Bootstrap color class for border/header (e.g., 'success', 'danger')
+  - content: HTML content for card body (use {% set %} block)
+  - actions: Optional HTML for action buttons (use {% set %} block)
+#}
+{% macro status_card(title, icon, status, border_color, content, actions) %}
+    <div class="card h-100 border-{{ border_color }}">
+        <div class="card-header bg-{{ border_color }} text-white">
+            <h3 class="mb-0">
+                <i class="bi bi-{{ icon }}" aria-hidden="true"></i> {{ title }}
+            </h3>
+        </div>
+        <div class="card-body">
+            {{ content|raw }}
+            {% if actions %}
+                <div class="mt-3">
+                    {{ actions|raw }}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endmacro %}
+
+{#
+  Stat Card
+  Used for: Dashboard KPI statistics, metric displays
+
+  Parameters:
+  - icon: Bootstrap icon class (full class with 'bi bi-')
+  - bg_color: Bootstrap background color class (e.g., 'bg-primary')
+  - title: Card title text
+  - value: Main value/number to display
+  - change_icon: Bootstrap icon for change indicator
+  - change_text: Text for change indicator
+  - change_type: CSS class for change type ('positive', 'negative', or empty)
+#}
+{% macro stat_card(icon, bg_color, title, value, change_icon, change_text, change_type) %}
+    <div class="stat-card">
+        <div class="stat-card-icon {{ bg_color }}" aria-hidden="true">
+            <i class="{{ icon }}" aria-hidden="true"></i>
+        </div>
+        <div class="stat-card-title">{{ title }}</div>
+        <div class="stat-card-value">{{ value }}</div>
+        <div class="stat-card-change {{ change_type|default('') }}">
+            {% if change_icon %}
+                <i class="{{ change_icon }}" aria-hidden="true"></i>
+            {% endif %}
+            <span>{{ change_text }}</span>
+        </div>
+    </div>
+{% endmacro %}
+
+{#
+  KPI Card
+  Used for: Context KPIs, performance metrics with optional progress bars
+
+  Parameters:
+  - title: Card title text
+  - value: Main value to display
+  - subtitle: Optional subtitle/description text
+  - progress_value: Optional progress bar percentage (0-100)
+  - progress_color: Optional Bootstrap color for progress bar and text
+  - border_class: Optional border class (e.g., 'border-warning')
+#}
+{% macro kpi_card(title, value, subtitle, progress_value, progress_color, border_class) %}
+    <div class="card shadow-sm h-100 {{ border_class|default('') }}">
+        <div class="card-body">
+            <h6 class="text-muted mb-2">{{ title }}</h6>
+            <h2 class="mb-0 {{ progress_color ? 'text-' ~ progress_color : '' }}">{{ value }}</h2>
+            {% if subtitle %}
+                <small class="{{ progress_color ? 'text-' ~ progress_color : 'text-muted' }}">{{ subtitle }}</small>
+            {% endif %}
+            {% if progress_value is not null %}
+                <div class="progress mt-2" style="height: 6px;">
+                    <div class="progress-bar {{ progress_color ? 'bg-' ~ progress_color : '' }}"
+                         role="progressbar"
+                         style="width: {{ progress_value }}%"
+                         aria-valuenow="{{ progress_value }}"
+                         aria-valuemin="0"
+                         aria-valuemax="100"></div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endmacro %}
+
+{#
+  Widget Card
+  Used for: Dashboard widgets, chart containers, activity feeds
+
+  Parameters:
+  - widget_id: Unique widget identifier for dashboard customizer
+  - title: Widget title text
+  - icon: Bootstrap icon class (full class with 'bi bi-')
+  - actions: Optional HTML for header action buttons
+  - content: HTML content for widget body
+  - border_class: Optional border class (e.g., 'border-warning')
+  - header_bg_class: Optional header background class (e.g., 'bg-warning-subtle')
+  - badge_text: Optional badge text for header
+  - badge_class: Optional badge color class (e.g., 'bg-warning')
+#}
+{% macro widget_card(widget_id, title, icon, actions, content, border_class, header_bg_class, badge_text, badge_class) %}
+    <div class="widget-card mb-4 {{ border_class|default('') }}"
+         data-widget-id="{{ widget_id }}"
+         data-dashboard-customizer-target="widget">
+        <div class="widget-header {{ header_bg_class|default('') }}">
+            <h3 class="widget-title {{ border_class ? 'text-' ~ border_class|replace({'border-': ''}) : '' }}">
+                <i class="{{ icon }}" aria-hidden="true"></i>
+                {{ title }}
+            </h3>
+            {% if badge_text %}
+                <span class="badge {{ badge_class|default('bg-secondary') }}">{{ badge_text }}</span>
+            {% endif %}
+            {% if actions %}
+                <div class="widget-actions">
+                    {{ actions|raw }}
+                </div>
+            {% endif %}
+        </div>
+        {{ content|raw }}
+    </div>
+{% endmacro %}
+
+{#
+  Report Card
+  Used for: Report download cards with description and action buttons
+
+  Parameters:
+  - title: Report title
+  - icon: Bootstrap icon class (without 'bi-' prefix)
+  - header_bg: Bootstrap background color class (e.g., 'bg-primary')
+  - header_text: Text color class for header (e.g., 'text-white', 'text-dark')
+  - description: Report description text
+  - features: Array or list of feature items
+  - pdf_url: URL for PDF download
+  - excel_url: URL for Excel download
+#}
+{% macro report_card(title, icon, header_bg, header_text, description, features, pdf_url, excel_url) %}
+    <div class="card h-100 shadow-sm">
+        <div class="card-header {{ header_bg }} {{ header_text }}">
+            <h3 class="mb-0"><i class="bi bi-{{ icon }}" aria-hidden="true"></i> {{ title }}</h3>
+        </div>
+        <div class="card-body">
+            <p class="text-muted">{{ description }}</p>
+            {% if features %}
+                <ul class="small mb-3">
+                    {% for feature in features %}
+                        <li>{{ feature }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+        <div class="card-footer bg-light">
+            <div class="d-grid gap-2">
+                {% if pdf_url %}
+                    <a href="{{ pdf_url }}" class="btn btn-sm btn-outline-danger" data-turbo="false">
+                        <i class="bi bi-file-pdf" aria-hidden="true"></i> Download PDF
+                    </a>
+                {% endif %}
+                {% if excel_url %}
+                    <a href="{{ excel_url }}" class="btn btn-sm btn-outline-success" data-turbo="false">
+                        <i class="bi bi-file-excel" aria-hidden="true"></i> Download Excel
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endmacro %}
+
+{#
+  Simple Card
+  Used for: Generic content cards, info boxes
+
+  Parameters:
+  - title: Card title/heading
+  - icon: Optional Bootstrap icon class (without 'bi-' prefix)
+  - content: HTML content for card body
+  - footer: Optional HTML for card footer
+  - header_class: Optional header background class
+  - border_class: Optional border class
+  - actions: Optional HTML for header action buttons
+#}
+{% macro simple_card(title, icon, content, footer, header_class, border_class, actions) %}
+    <div class="card shadow-sm {{ border_class|default('') }}">
+        <div class="card-header {{ header_class|default('bg-white') }} d-flex justify-content-between align-items-center">
+            <h3 class="mb-0">
+                {% if icon %}
+                    <i class="bi bi-{{ icon }}" aria-hidden="true"></i>
+                {% endif %}
+                {{ title }}
+            </h3>
+            {% if actions %}
+                {{ actions|raw }}
+            {% endif %}
+        </div>
+        <div class="card-body">
+            {{ content|raw }}
+        </div>
+        {% if footer %}
+            <div class="card-footer">
+                {{ footer|raw }}
+            </div>
+        {% endif %}
+    </div>
+{% endmacro %}
+
+{# ============================================================================
+   USAGE EXAMPLES
+   ============================================================================
+
+1. Health Status Card:
+
+   {% import '_macros/cards.html.twig' as cards %}
+
+   {% set db_content %}
+       <dl class="row mb-0">
+           <dt class="col-sm-4">Status:</dt>
+           <dd class="col-sm-8"><span class="badge bg-success">HEALTHY</span></dd>
+       </dl>
+   {% endset %}
+
+   {{ cards.status_card('Database', 'database', 'healthy', 'success', db_content) }}
+
+2. Stat Card:
+
+   {% import '_macros/cards.html.twig' as cards %}
+
+   {{ cards.stat_card(
+       'bi bi-server',
+       'bg-primary',
+       'Total Assets',
+       142,
+       'bi bi-arrow-up',
+       '12 critical',
+       'positive'
+   ) }}
+
+3. KPI Card:
+
+   {% import '_macros/cards.html.twig' as cards %}
+
+   {{ cards.kpi_card(
+       'Completeness',
+       '85%',
+       'On track',
+       85,
+       'success',
+       null
+   ) }}
+
+4. Widget Card:
+
+   {% import '_macros/cards.html.twig' as cards %}
+
+   {% set chart_content %}
+       <div class="chart-container">
+           <canvas data-controller="chart"></canvas>
+       </div>
+   {% endset %}
+
+   {{ cards.widget_card(
+       'risk-chart',
+       'Risk Distribution',
+       'bi bi-pie-chart',
+       null,
+       chart_content
+   ) }}
+
+5. Simple Card:
+
+   {% import '_macros/cards.html.twig' as cards %}
+
+   {% set isms_content %}
+       <p>ISMS scope and context information...</p>
+   {% endset %}
+
+   {{ cards.simple_card(
+       'ISMS Context',
+       'building',
+       isms_content
+   ) }}
+
+#}
