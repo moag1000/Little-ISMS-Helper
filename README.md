@@ -208,8 +208,12 @@ Für Produktions-Deployments beachten Sie:
 - **Management Review** - ISO 27001 Clause 9.3
 
 ### 🔐 Risk & Asset Management
-- **Asset Management** - CIA-Bewertung, ISO 27001 Fields
-- **Risk Assessment** - 5x5 Matrix Visualisierung
+- **Risk Assessment** - 5x5 Matrix, ISO 27005 Guidance, GDPR Integration
+- **Risk Owner Management** - Mandatory assignment (ISO 27001)
+- **Periodic Review Workflow** - Automated reminders (ISO 27001 Clause 6.1.3.d)
+- **Risk Acceptance Process** - Formal approval workflow with audit trail
+- **Treatment Plan Monitoring** - Progress tracking & dashboard widgets
+- **Asset Management** - CIA-Bewertung, Multi-Subject (Asset/Person/Location/Supplier)
 - **Vulnerability Management** - CVE/CVSS Tracking (NIS2)
 - **Patch Management** - Deployment Tracking (NIS2)
 - **Incident Management** - Vorfallsbehandlung & GDPR Data Breach
@@ -224,6 +228,7 @@ Für Produktions-Deployments beachten Sie:
 <td width="50%">
 
 ### 👥 User Management
+- **Multi-Tenancy** - Vollständige Mandantentrennung mit Corporate Structure
 - **RBAC** - Role-Based Access Control, 50+ Permissions
 - **Multi-Auth** - Local, Azure OAuth, SAML
 - **MFA** - TOTP with Backup Codes (WebAuthn & SMS planned)
@@ -355,7 +360,7 @@ Professionelles Admin Portal zur zentralen Verwaltung aller administrativen Aufg
 - **Tests:** 1618 tests, 4711 assertions (100% passing)
 - **API Endpoints:** 30 REST Endpoints
 - **Report Types:** 11 (6 PDF + 5 Excel)
-- **Compliance Frameworks:** 8 (ISO 27001, ISO 22301, ISO 19011, ISO 31000, ISO 27005, DORA, TISAX, NIS2, BSI)
+- **Compliance Frameworks:** 9 (ISO 27001, ISO 22301, ISO 19011, ISO 31000, ISO 27005, DORA, TISAX, NIS2, BSI IT-Grundschutz)
 
 ### ISO 27001:2022 Compliance: 96% ✅
 
@@ -372,7 +377,7 @@ Professionelles Admin Portal zur zentralen Verwaltung aller administrativen Aufg
 | ISO 27005:2022 | ✅ Vollständig | 100% |
 | DORA | ✅ Vollständig | 85% |
 | TISAX/VDA ISA | ✅ Vollständig | 75% |
-| NIS2 Directive | 🚧 In Arbeit | 40% |
+| NIS2 Directive | ✅ Vollständig | 90% |
 | BSI IT-Grundschutz | 🚧 In Arbeit | 50% |
 
 ---
@@ -388,28 +393,31 @@ Professionelles Admin Portal zur zentralen Verwaltung aller administrativen Aufg
 - **Phase 3:** User Management & Security - RBAC, Multi-Auth, Audit Logging
 - **Phase 4:** CRUD & Workflows - Vollständige CRUD, Workflow-Engine, Risk Matrix
 - **Phase 5:** Reporting & Integration - PDF/Excel Export, REST API, Notifications
-- **Phase 6L:** Unified Admin Panel - 16 Admin-Funktionen, zentrale Navigation
+- **Phase 6A-6H:** Module Completeness
+  - 6A: Form Types (5/6 abgeschlossen)
+  - 6C: Workflow Management
+  - 6D: Compliance Detail Management
+  - 6F: ISO 27001 Inhaltliche Vervollständigung
+  - 6H: NIS2 Compliance (90%+ compliant)
+  - 6L: Multi-Tenancy & Unified Admin Panel
 
 ### 🚧 In Entwicklung
 
-**Phase 6: Module Completeness & Quality Assurance (~80% abgeschlossen)**
+**Phase 6: Module Completeness & Quality Assurance (~85% abgeschlossen)**
 
-- 🔥 Form Types & Test Coverage (KRITISCH)
-- 🏛️ ISO 27001 Inhaltliche Vervollständigung
-- 🇪🇺 NIS2 Directive Compliance (KRITISCH)
+- 🧪 Test Coverage (Aktuell: 60% → Ziel: 80%+)
 - 🇩🇪 BSI IT-Grundschutz Integration
-- 🎯 Module UI Completeness
+- 🎯 Advanced Compliance Features
 
 **Erwartete Vollständigkeit nach Phase 6:**
 - Technisch: 95%+
 - ISO 27001: 98%+
-- NIS2 Compliance: 95%+
 - Test Coverage: 80%+
 
 ### 📅 Zukünftige Phasen
 
-- **Phase 7:** Enterprise Features - Multi-Tenancy, Advanced Analytics, Mobile PWA
-- **Backlog:** JWT Auth, Real-time Notifications, Custom Report Builder
+- **Phase 7:** Advanced Analytics & Management Reporting - Executive Dashboards, Predictive Analytics, Custom Report Builder
+- **Backlog:** Mobile PWA, JWT Auth, Real-time Notifications, AI-gestützte Features
 
 ---
 
