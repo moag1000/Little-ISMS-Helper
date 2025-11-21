@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_macros/cards.html.twig' as cards %}
 
 {% block title %}{{ 'compliance.title.gap_analysis'|trans }} - Little ISMS Helper{% endblock %}
 
@@ -10,51 +11,31 @@
     </div>
     <div class="button-group">
         <a href="{{ path('app_compliance_export_gaps_pdf', {id: framework.id}) }}" class="btn btn-danger" data-turbo="false">
-            📄 PDF Report
+            📄 {{ 'compliance.action.export_pdf'|trans }}
         </a>
         <a href="{{ path('app_compliance_export_gaps_excel', {id: framework.id}) }}" class="btn btn-success" data-turbo="false">
-            📊 Excel Export
+            📊 {{ 'compliance.action.export_excel'|trans }}
         </a>
         <a href="{{ path('app_compliance_export_gaps', {id: framework.id}) }}" class="btn btn-secondary" data-turbo="false">
-            📄 CSV Export
+            📄 {{ 'compliance.action.export_csv'|trans }}
         </a>
     </div>
 </div>
 
 {# Statistics Cards #}
 <div class="kpi-grid">
-    <div class="kpi-card">
-        <div class="icon">📋</div>
-        <div class="label">{{ 'compliance.stats.total_requirements'|trans }}</div>
-        <div>
-            <span class="value">{{ totalRequirements }}</span>
-        </div>
+    <div class="col-auto">
+        {{ cards.kpi_card('compliance.stats.total_requirements'|trans, totalRequirements, null, null, null, null) }}
     </div>
-
-    <div class="kpi-card">
-        <div class="icon">✅</div>
-        <div class="label">{{ 'compliance.stats.met_requirements'|trans }}</div>
-        <div>
-            <span class="value">{{ metRequirements }}</span>
-        </div>
+    <div class="col-auto">
+        {{ cards.kpi_card('compliance.stats.met_requirements'|trans, metRequirements, null, null, 'success', null) }}
     </div>
-
-    <div class="kpi-card border-left-danger">
-        <div class="icon">⚠️</div>
-        <div class="label">{{ 'compliance.stats.gaps_identified'|trans }}</div>
-        <div>
-            <span class="value text-danger">{{ gaps|length }}</span>
-        </div>
+    <div class="col-auto">
+        {{ cards.kpi_card('compliance.stats.gaps_identified'|trans, gaps|length, null, null, 'danger', 'border-danger') }}
     </div>
-
-    <div class="kpi-card">
-        <div class="icon">📈</div>
-        <div class="label">{{ 'compliance.stats.compliance_score'|trans }}</div>
-        <div>
-            {% set score = totalRequirements > 0 ? (metRequirements / totalRequirements * 100)|round : 0 %}
-            <span class="value">{{ score }}</span>
-            <span class="unit">%</span>
-        </div>
+    <div class="col-auto">
+        {% set score = totalRequirements > 0 ? (metRequirements / totalRequirements * 100)|round : 0 %}
+        {{ cards.kpi_card('compliance.stats.compliance_score'|trans, score ~ '%', null, null, null, null) }}
     </div>
 </div>
 
