@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_macros/cards.html.twig' as cards %}
 
 {% block title %}{{ 'change_request.title'|trans }}{% endblock %}
 
@@ -10,25 +11,18 @@
     </div>
 
     {% if statistics %}
-    <div class="info-box">
-        <h2>{{ 'change_request.statistics.title'|trans }}</h2>
-        <div class="stats-grid">
-            <div class="stat-item">
-                <span class="stat-label">{{ 'change_request.statistics.total'|trans }}</span>
-                <span class="stat-value">{{ statistics.total }}</span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-label">{{ 'change_request.statistics.pending_approval'|trans }}</span>
-                <span class="stat-value warning">{{ statistics.pending_approval }}</span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-label">{{ 'change_request.statistics.in_implementation'|trans }}</span>
-                <span class="stat-value">{{ statistics.in_implementation }}</span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-label">{{ 'change_request.statistics.overdue'|trans }}</span>
-                <span class="stat-value danger">{{ statistics.overdue }}</span>
-            </div>
+    <div class="row mb-4">
+        <div class="col-md-3">
+            {{ cards.kpi_card('change_request.statistics.total'|trans, statistics.total, null, null, 'primary', null) }}
+        </div>
+        <div class="col-md-3">
+            {{ cards.kpi_card('change_request.statistics.pending_approval'|trans, statistics.pending_approval, null, null, 'warning', null) }}
+        </div>
+        <div class="col-md-3">
+            {{ cards.kpi_card('change_request.statistics.in_implementation'|trans, statistics.in_implementation, null, null, 'info', null) }}
+        </div>
+        <div class="col-md-3">
+            {{ cards.kpi_card('change_request.statistics.overdue'|trans, statistics.overdue, null, null, 'danger', null) }}
         </div>
     </div>
     {% endif %}

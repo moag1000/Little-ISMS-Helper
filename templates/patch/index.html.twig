@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% import '_macros/inheritance_badge.html.twig' as inheritance %}
+{% import '_macros/cards.html.twig' as cards %}
 
 {% block title %}{{ 'patch.title'|trans }} - {{ parent() }}{% endblock %}
 
@@ -47,33 +48,18 @@
 
     <div class="row mb-4">
         <div class="col-md-4">
-            <div class="card">
-                <div class="card-body text-center">
-                    <h3>{{ pending_count }}</h3>
-                    <p class="mb-0">{{ 'patch.kpi.pending'|trans }}</p>
-                </div>
-            </div>
+            {{ cards.kpi_card('patch.kpi.pending'|trans, pending_count, null, null, 'warning', null) }}
         </div>
         <div class="col-md-4">
-            <div class="card border-success">
-                <div class="card-body text-center">
-                    <h3 class="text-success">{{ deployment_stats.deployed ?? 0 }}</h3>
-                    <p class="mb-0">{{ 'patch.kpi.deployed'|trans }}</p>
-                </div>
-            </div>
+            {{ cards.kpi_card('patch.kpi.deployed'|trans, deployment_stats.deployed ?? 0, null, null, 'success', 'border-success') }}
         </div>
         <div class="col-md-4">
-            <div class="card">
-                <div class="card-body text-center">
-                    <h3>{{ detailedStats.total }}</h3>
-                    {% if currentTenant %}
-                        <p class="mb-0" style="font-size: 11px; color: #6c757d; opacity: 0.85;">
-                            {{ 'corporate.stats.breakdown'|trans({'%own%': detailedStats.own, '%inherited%': detailedStats.inherited, '%subsidiaries%': detailedStats.subsidiaries}) }}
-                        </p>
-                    {% endif %}
-                    <p class="mb-0">{{ 'patch.kpi.total'|trans }}</p>
-                </div>
-            </div>
+            {% if currentTenant %}
+                {% set subtitle = 'corporate.stats.breakdown'|trans({'%own%': detailedStats.own, '%inherited%': detailedStats.inherited, '%subsidiaries%': detailedStats.subsidiaries}) %}
+                {{ cards.kpi_card('patch.kpi.total'|trans, detailedStats.total, subtitle, null, null, null) }}
+            {% else %}
+                {{ cards.kpi_card('patch.kpi.total'|trans, detailedStats.total, null, null, null, null) }}
+            {% endif %}
         </div>
     </div>
 
