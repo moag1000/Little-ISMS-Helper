@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_macros/cards.html.twig' as cards %}
 
 {% block title %}{{ 'bcm.title.critical'|trans }} - Little ISMS Helper{% endblock %}
 
@@ -28,37 +29,17 @@
 
 {# Statistics Cards #}
 <div class="kpi-grid">
-    <div class="kpi-card border-left-danger">
-        <div class="icon">🔴</div>
-        <div class="label">{{ 'bcm.stats.critical_assets'|trans }}</div>
-        <div>
-            <span class="value text-danger">{{ criticalAssets|length }}</span>
-        </div>
+    <div class="col-auto">
+        {{ cards.kpi_card('bcm.stats.critical_assets'|trans, criticalAssets|length, null, null, 'danger', 'border-danger') }}
     </div>
-
-    <div class="kpi-card">
-        <div class="icon">🎯</div>
-        <div class="label">{{ 'bcm.stats.critical_processes'|trans }}</div>
-        <div>
-            <span class="value">{{ criticalProcesses|length }}</span>
-        </div>
+    <div class="col-auto">
+        {{ cards.kpi_card('bcm.stats.critical_processes'|trans, criticalProcesses|length, null, null, 'primary', null) }}
     </div>
-
-    <div class="kpi-card">
-        <div class="icon">⏱️</div>
-        <div class="label">{{ 'bcm.stats.avg_rto'|trans }}</div>
-        <div>
-            <span class="value">{{ avgRTO|round(1) }}</span>
-            <span class="unit">h</span>
-        </div>
+    <div class="col-auto">
+        {{ cards.kpi_card('bcm.stats.avg_rto'|trans, avgRTO|round(1) ~ 'h', null, null, 'info', null) }}
     </div>
-
-    <div class="kpi-card">
-        <div class="icon">⚠️</div>
-        <div class="label">{{ 'bcm.stats.missing_recovery_plans'|trans }}</div>
-        <div>
-            <span class="value">{{ assetsWithoutRecoveryPlan }}</span>
-        </div>
+    <div class="col-auto">
+        {{ cards.kpi_card('bcm.stats.missing_recovery_plans'|trans, assetsWithoutRecoveryPlan, null, null, 'warning', null) }}
     </div>
 </div>
 
