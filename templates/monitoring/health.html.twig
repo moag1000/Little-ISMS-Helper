@@ -20,6 +20,25 @@
     </style>
 {% endblock %}
 
+{# Macro for Status Health Card #}
+{% macro status_card(title, icon, status, border_color, content, actions) %}
+    <div class="card h-100 border-{{ border_color }}">
+        <div class="card-header bg-{{ border_color }} text-white">
+            <h3 class="mb-0">
+                <i class="bi bi-{{ icon }}" aria-hidden="true"></i> {{ title }}
+            </h3>
+        </div>
+        <div class="card-body">
+            {{ content|raw }}
+            {% if actions %}
+                <div class="mt-3">
+                    {{ actions|raw }}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endmacro %}
+
 {% block admin_content %}
     <div class="mb-3">
         <a href="{{ path('monitoring_health_json') }}" class="btn btn-outline-secondary" target="_blank">
@@ -49,553 +68,499 @@
         </div>
     </div>
 
+    {% import _self as macros %}
     <div class="row">
         {# Database Health #}
         <div class="col-md-6 mb-4">
-            <div class="card h-100 border-{{ health_checks.database.status == 'healthy' ? 'success' : 'danger' }}">
-                <div class="card-header bg-{{ health_checks.database.status == 'healthy' ? 'success' : 'danger' }} text-white">
-                    <h3 class="mb-0">
-                        <i class="bi bi-database" aria-hidden="true"></i> Database
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <dl class="row mb-0">
-                        <dt class="col-sm-4">Status:</dt>
-                        <dd class="col-sm-8">
-                            <span class="{{ badge_status(health_checks.database.status) }}">
-                                {{ health_checks.database.status|upper }}
-                            </span>
-                        </dd>
+            {% set db_status = health_checks.database.status %}
+            {% set db_color = db_status == 'healthy' ? 'success' : 'danger' %}
+            {% set db_content %}
+                <dl class="row mb-0">
+                    <dt class="col-sm-4">Status:</dt>
+                    <dd class="col-sm-8">
+                        <span class="{{ badge_status(db_status) }}">
+                            {{ db_status|upper }}
+                        </span>
+                    </dd>
 
-                        {% if health_checks.database.response_time is defined %}
-                            <dt class="col-sm-4">Response Time:</dt>
-                            <dd class="col-sm-8">{{ health_checks.database.response_time }}</dd>
+                    {% if health_checks.database.response_time is defined %}
+                        <dt class="col-sm-4">Response Time:</dt>
+                        <dd class="col-sm-8">{{ health_checks.database.response_time }}</dd>
 
-                            <dt class="col-sm-4">Driver:</dt>
-                            <dd class="col-sm-8"><code>{{ health_checks.database.driver }}</code></dd>
-                        {% endif %}
+                        <dt class="col-sm-4">Driver:</dt>
+                        <dd class="col-sm-8"><code>{{ health_checks.database.driver }}</code></dd>
+                    {% endif %}
 
-                        {% if health_checks.database.error is defined %}
-                            <dt class="col-sm-4">Error:</dt>
-                            <dd class="col-sm-8 text-danger">{{ health_checks.database.error }}</dd>
-                        {% endif %}
-                    </dl>
-                </div>
-            </div>
+                    {% if health_checks.database.error is defined %}
+                        <dt class="col-sm-4">Error:</dt>
+                        <dd class="col-sm-8 text-danger">{{ health_checks.database.error }}</dd>
+                    {% endif %}
+                </dl>
+            {% endset %}
+            {{ macros.status_card('Database', 'database', db_status, db_color, db_content) }}
         </div>
 
         {# Disk Space #}
         <div class="col-md-6 mb-4">
-            <div class="card h-100 border-{{ health_checks.disk.status == 'healthy' ? 'success' : 'warning' }}">
-                <div class="card-header bg-{{ health_checks.disk.status == 'healthy' ? 'success' : 'warning' }} text-white">
-                    <h3 class="mb-0">
-                        <i class="bi bi-hdd" aria-hidden="true"></i> Disk Space
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <dl class="row mb-3">
-                        <dt class="col-sm-4">Free:</dt>
-                        <dd class="col-sm-8">{{ health_checks.disk.free }}</dd>
+            {% set disk_status = health_checks.disk.status %}
+            {% set disk_color = disk_status == 'healthy' ? 'success' : 'warning' %}
+            {% set disk_content %}
+                <dl class="row mb-3">
+                    <dt class="col-sm-4">Free:</dt>
+                    <dd class="col-sm-8">{{ health_checks.disk.free }}</dd>
 
-                        <dt class="col-sm-4">Used:</dt>
-                        <dd class="col-sm-8">{{ health_checks.disk.used }}</dd>
+                    <dt class="col-sm-4">Used:</dt>
+                    <dd class="col-sm-8">{{ health_checks.disk.used }}</dd>
 
-                        <dt class="col-sm-4">Total:</dt>
-                        <dd class="col-sm-8">{{ health_checks.disk.total }}</dd>
-                    </dl>
+                    <dt class="col-sm-4">Total:</dt>
+                    <dd class="col-sm-8">{{ health_checks.disk.total }}</dd>
+                </dl>
 
-                    <div class="progress" style="height: 25px;">
-                        <div class="progress-bar bg-{{ health_checks.disk.percentage > 90 ? 'danger' : (health_checks.disk.percentage > 75 ? 'warning' : 'success') }}"
-                             role="progressbar"
-                             style="width: {{ health_checks.disk.percentage }}%"
-                             aria-valuenow="{{ health_checks.disk.percentage }}"
-                             aria-valuemin="0"
-                             aria-valuemax="100">
-                            {{ health_checks.disk.percentage }}%
-                        </div>
+                <div class="progress" style="height: 25px;">
+                    <div class="progress-bar bg-{{ health_checks.disk.percentage > 90 ? 'danger' : (health_checks.disk.percentage > 75 ? 'warning' : 'success') }}"
+                         role="progressbar"
+                         style="width: {{ health_checks.disk.percentage }}%"
+                         aria-valuenow="{{ health_checks.disk.percentage }}"
+                         aria-valuemin="0"
+                         aria-valuemax="100">
+                        {{ health_checks.disk.percentage }}%
                     </div>
-
-                    {% if health_checks.disk.percentage > 75 and is_granted('MONITORING_MANAGE') %}
-                        <div class="mt-3">
-                            <button class="btn btn-sm btn-warning auto-fix-btn"
-                                    onclick="autoFix('optimize-disk', this)">
-                                <i class="bi bi-tools" aria-hidden="true"></i> Optimize Disk Space
-                            </button>
-                            <div id="fix-result-optimize-disk"></div>
-                        </div>
-                    {% endif %}
                 </div>
-            </div>
+            {% endset %}
+            {% set disk_actions %}
+                {% if health_checks.disk.percentage > 75 and is_granted('MONITORING_MANAGE') %}
+                    <button class="btn btn-sm btn-warning auto-fix-btn"
+                            onclick="autoFix('optimize-disk', this)">
+                        <i class="bi bi-tools" aria-hidden="true"></i> Optimize Disk Space
+                    </button>
+                    <div id="fix-result-optimize-disk"></div>
+                {% endif %}
+            {% endset %}
+            {{ macros.status_card('Disk Space', 'hdd', disk_status, disk_color, disk_content, disk_actions) }}
         </div>
 
         {# PHP Info #}
         <div class="col-md-6 mb-4">
-            <div class="card h-100 border-{{ health_checks.php.status == 'healthy' ? 'success' : 'danger' }}">
-                <div class="card-header bg-{{ health_checks.php.status == 'healthy' ? 'success' : 'danger' }} text-white">
-                    <h3 class="mb-0">
-                        <i class="bi bi-code-slash" aria-hidden="true"></i> PHP
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <dl class="row mb-0">
-                        <dt class="col-sm-5">Version:</dt>
-                        <dd class="col-sm-7"><code>{{ health_checks.php.version }}</code></dd>
+            {% set php_status = health_checks.php.status %}
+            {% set php_color = php_status == 'healthy' ? 'success' : 'danger' %}
+            {% set php_content %}
+                <dl class="row mb-0">
+                    <dt class="col-sm-5">Version:</dt>
+                    <dd class="col-sm-7"><code>{{ health_checks.php.version }}</code></dd>
 
-                        <dt class="col-sm-5">Memory Limit:</dt>
-                        <dd class="col-sm-7"><code>{{ health_checks.php.memory_limit }}</code></dd>
+                    <dt class="col-sm-5">Memory Limit:</dt>
+                    <dd class="col-sm-7"><code>{{ health_checks.php.memory_limit }}</code></dd>
 
-                        <dt class="col-sm-5">Max Execution:</dt>
-                        <dd class="col-sm-7"><code>{{ health_checks.php.max_execution_time }}s</code></dd>
+                    <dt class="col-sm-5">Max Execution:</dt>
+                    <dd class="col-sm-7"><code>{{ health_checks.php.max_execution_time }}s</code></dd>
 
-                        <dt class="col-sm-5">Extensions:</dt>
-                        <dd class="col-sm-7">
-                            <span class="badge bg-success">{{ health_checks.php.loaded_extensions|length }} loaded</span>
-                            {% if health_checks.php.missing_extensions|length > 0 %}
-                                <span class="badge bg-danger">{{ health_checks.php.missing_extensions|length }} missing</span>
-                            {% endif %}
-                        </dd>
-
+                    <dt class="col-sm-5">Extensions:</dt>
+                    <dd class="col-sm-7">
+                        <span class="badge bg-success">{{ health_checks.php.loaded_extensions|length }} loaded</span>
                         {% if health_checks.php.missing_extensions|length > 0 %}
-                            <dt class="col-sm-5">Missing:</dt>
-                            <dd class="col-sm-7">
-                                {% for ext in health_checks.php.missing_extensions %}
-                                    <code class="text-danger">{{ ext }}</code>{% if not loop.last %}, {% endif %}
-                                {% endfor %}
-                            </dd>
+                            <span class="badge bg-danger">{{ health_checks.php.missing_extensions|length }} missing</span>
                         {% endif %}
-                    </dl>
-                </div>
-            </div>
+                    </dd>
+
+                    {% if health_checks.php.missing_extensions|length > 0 %}
+                        <dt class="col-sm-5">Missing:</dt>
+                        <dd class="col-sm-7">
+                            {% for ext in health_checks.php.missing_extensions %}
+                                <code class="text-danger">{{ ext }}</code>{% if not loop.last %}, {% endif %}
+                            {% endfor %}
+                        </dd>
+                    {% endif %}
+                </dl>
+            {% endset %}
+            {{ macros.status_card('PHP', 'code-slash', php_status, php_color, php_content) }}
         </div>
 
         {# Symfony Info #}
         <div class="col-md-6 mb-4">
-            <div class="card h-100 border-success">
-                <div class="card-header bg-success text-white">
-                    <h3 class="mb-0">
-                        <i class="bi bi-gear" aria-hidden="true"></i> Symfony
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <dl class="row mb-0">
-                        <dt class="col-sm-5">Version:</dt>
-                        <dd class="col-sm-7"><code>{{ health_checks.symfony.version }}</code></dd>
+            {% set symfony_status = 'healthy' %}
+            {% set symfony_color = 'success' %}
+            {% set symfony_content %}
+                <dl class="row mb-0">
+                    <dt class="col-sm-5">Version:</dt>
+                    <dd class="col-sm-7"><code>{{ health_checks.symfony.version }}</code></dd>
 
-                        <dt class="col-sm-5">Environment:</dt>
-                        <dd class="col-sm-7">
-                            <span class="{{ health_checks.symfony.environment == 'prod' ? 'badge bg-success' : 'badge bg-warning' }}">
-                                {{ health_checks.symfony.environment|upper }}
-                            </span>
-                        </dd>
+                    <dt class="col-sm-5">Environment:</dt>
+                    <dd class="col-sm-7">
+                        <span class="{{ health_checks.symfony.environment == 'prod' ? 'badge bg-success' : 'badge bg-warning' }}">
+                            {{ health_checks.symfony.environment|upper }}
+                        </span>
+                    </dd>
 
-                        <dt class="col-sm-5">Debug Mode:</dt>
-                        <dd class="col-sm-7">
-                            <span class="{{ health_checks.symfony.debug ? 'badge bg-warning' : 'badge bg-success' }}">
-                                {{ health_checks.symfony.debug ? 'ON' : 'OFF' }}
-                            </span>
-                        </dd>
-                    </dl>
-                </div>
-            </div>
+                    <dt class="col-sm-5">Debug Mode:</dt>
+                    <dd class="col-sm-7">
+                        <span class="{{ health_checks.symfony.debug ? 'badge bg-warning' : 'badge bg-success' }}">
+                            {{ health_checks.symfony.debug ? 'ON' : 'OFF' }}
+                        </span>
+                    </dd>
+                </dl>
+            {% endset %}
+            {{ macros.status_card('Symfony', 'gear', symfony_status, symfony_color, symfony_content) }}
         </div>
 
         {# Cache #}
         <div class="col-md-6 mb-4">
-            <div class="card h-100 border-{{ health_checks.cache.status == 'healthy' ? 'success' : 'danger' }}">
-                <div class="card-header bg-{{ health_checks.cache.status == 'healthy' ? 'success' : 'danger' }} text-white">
-                    <h3 class="mb-0">
-                        <i class="bi bi-lightning" aria-hidden="true"></i> Cache
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <dl class="row mb-0">
-                        <dt class="col-sm-4">Status:</dt>
-                        <dd class="col-sm-8">
-                            <span class="{{ badge_status(health_checks.cache.status) }}">
-                                {{ health_checks.cache.status|upper }}
-                            </span>
-                        </dd>
+            {% set cache_status = health_checks.cache.status %}
+            {% set cache_color = cache_status == 'healthy' ? 'success' : 'danger' %}
+            {% set cache_content %}
+                <dl class="row mb-0">
+                    <dt class="col-sm-4">Status:</dt>
+                    <dd class="col-sm-8">
+                        <span class="{{ badge_status(health_checks.cache.status) }}">
+                            {{ health_checks.cache.status|upper }}
+                        </span>
+                    </dd>
 
-                        <dt class="col-sm-4">Directory:</dt>
-                        <dd class="col-sm-8"><code class="small">{{ health_checks.cache.directory }}</code></dd>
+                    <dt class="col-sm-4">Directory:</dt>
+                    <dd class="col-sm-8"><code class="small">{{ health_checks.cache.directory }}</code></dd>
 
-                        <dt class="col-sm-4">Writable:</dt>
-                        <dd class="col-sm-8">
-                            {% if health_checks.cache.writable %}
-                                <i class="bi bi-check-circle text-success" aria-hidden="true"></i> Yes
-                            {% else %}
-                                <i class="bi bi-x-circle text-danger" aria-hidden="true"></i> No
-                            {% endif %}
-                        </dd>
-                    </dl>
-
-                    {% if is_granted('MONITORING_MANAGE') %}
-                        <div class="mt-3">
-                            {% if not health_checks.cache.writable %}
-                                <button class="btn btn-sm btn-danger auto-fix-btn"
-                                        onclick="autoFix('cache', this)">
-                                    <i class="bi bi-wrench" aria-hidden="true"></i> Fix Permissions
-                                </button>
-                            {% endif %}
-                            <button class="btn btn-sm btn-primary auto-fix-btn"
-                                    onclick="autoFix('clear-cache', this)">
-                                <i class="bi bi-trash" aria-hidden="true"></i> Clear Cache
-                            </button>
-                            <div id="fix-result-cache"></div>
-                            <div id="fix-result-clear-cache"></div>
-                        </div>
+                    <dt class="col-sm-4">Writable:</dt>
+                    <dd class="col-sm-8">
+                        {% if health_checks.cache.writable %}
+                            <i class="bi bi-check-circle text-success" aria-hidden="true"></i> Yes
+                        {% else %}
+                            <i class="bi bi-x-circle text-danger" aria-hidden="true"></i> No
+                        {% endif %}
+                    </dd>
+                </dl>
+            {% endset %}
+            {% set cache_actions %}
+                {% if is_granted('MONITORING_MANAGE') %}
+                    {% if not health_checks.cache.writable %}
+                        <button class="btn btn-sm btn-danger auto-fix-btn"
+                                onclick="autoFix('cache', this)">
+                            <i class="bi bi-wrench" aria-hidden="true"></i> Fix Permissions
+                        </button>
                     {% endif %}
-                </div>
-            </div>
+                    <button class="btn btn-sm btn-primary auto-fix-btn"
+                            onclick="autoFix('clear-cache', this)">
+                        <i class="bi bi-trash" aria-hidden="true"></i> Clear Cache
+                    </button>
+                    <div id="fix-result-cache"></div>
+                    <div id="fix-result-clear-cache"></div>
+                {% endif %}
+            {% endset %}
+            {{ macros.status_card('Cache', 'lightning', cache_status, cache_color, cache_content, cache_actions) }}
         </div>
 
         {# Logs #}
         <div class="col-md-6 mb-4">
-            <div class="card h-100 border-{{ health_checks.logs.status == 'healthy' ? 'success' : 'danger' }}">
-                <div class="card-header bg-{{ health_checks.logs.status == 'healthy' ? 'success' : 'danger' }} text-white">
-                    <h3 class="mb-0">
-                        <i class="bi bi-file-text" aria-hidden="true"></i> Logs
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <dl class="row mb-0">
-                        <dt class="col-sm-4">Status:</dt>
-                        <dd class="col-sm-8">
-                            <span class="{{ badge_status(health_checks.logs.status) }}">
-                                {{ health_checks.logs.status|upper }}
-                            </span>
-                        </dd>
+            {% set logs_status = health_checks.logs.status %}
+            {% set logs_color = logs_status == 'healthy' ? 'success' : 'danger' %}
+            {% set logs_content %}
+                <dl class="row mb-0">
+                    <dt class="col-sm-4">Status:</dt>
+                    <dd class="col-sm-8">
+                        <span class="{{ badge_status(health_checks.logs.status) }}">
+                            {{ health_checks.logs.status|upper }}
+                        </span>
+                    </dd>
 
-                        <dt class="col-sm-4">Directory:</dt>
-                        <dd class="col-sm-8"><code class="small">{{ health_checks.logs.directory }}</code></dd>
+                    <dt class="col-sm-4">Directory:</dt>
+                    <dd class="col-sm-8"><code class="small">{{ health_checks.logs.directory }}</code></dd>
 
-                        <dt class="col-sm-4">Writable:</dt>
-                        <dd class="col-sm-8">
-                            {% if health_checks.logs.writable %}
-                                <i class="bi bi-check-circle text-success" aria-hidden="true"></i> Yes
-                            {% else %}
-                                <i class="bi bi-x-circle text-danger" aria-hidden="true"></i> No
-                            {% endif %}
-                        </dd>
-                    </dl>
-
-                    {% if is_granted('MONITORING_MANAGE') %}
-                        <div class="mt-3">
-                            {% if not health_checks.logs.writable %}
-                                <button class="btn btn-sm btn-danger auto-fix-btn"
-                                        onclick="autoFix('logs', this)">
-                                    <i class="bi bi-wrench" aria-hidden="true"></i> Fix Permissions
-                                </button>
-                            {% endif %}
-                            <button class="btn btn-sm btn-warning auto-fix-btn"
-                                    onclick="autoFix('clean-logs', this)">
-                                <i class="bi bi-trash" aria-hidden="true"></i> Clean Old Logs
-                            </button>
-                            <button class="btn btn-sm btn-info auto-fix-btn"
-                                    onclick="autoFix('rotate-logs', this)">
-                                <i class="bi bi-arrow-repeat" aria-hidden="true"></i> Rotate Logs
-                            </button>
-                            <div id="fix-result-logs"></div>
-                            <div id="fix-result-clean-logs"></div>
-                            <div id="fix-result-rotate-logs"></div>
-                        </div>
+                    <dt class="col-sm-4">Writable:</dt>
+                    <dd class="col-sm-8">
+                        {% if health_checks.logs.writable %}
+                            <i class="bi bi-check-circle text-success" aria-hidden="true"></i> Yes
+                        {% else %}
+                            <i class="bi bi-x-circle text-danger" aria-hidden="true"></i> No
+                        {% endif %}
+                    </dd>
+                </dl>
+            {% endset %}
+            {% set logs_actions %}
+                {% if is_granted('MONITORING_MANAGE') %}
+                    {% if not health_checks.logs.writable %}
+                        <button class="btn btn-sm btn-danger auto-fix-btn"
+                                onclick="autoFix('logs', this)">
+                            <i class="bi bi-wrench" aria-hidden="true"></i> Fix Permissions
+                        </button>
                     {% endif %}
-                </div>
-            </div>
+                    <button class="btn btn-sm btn-warning auto-fix-btn"
+                            onclick="autoFix('clean-logs', this)">
+                        <i class="bi bi-trash" aria-hidden="true"></i> Clean Old Logs
+                    </button>
+                    <button class="btn btn-sm btn-info auto-fix-btn"
+                            onclick="autoFix('rotate-logs', this)">
+                        <i class="bi bi-arrow-repeat" aria-hidden="true"></i> Rotate Logs
+                    </button>
+                    <div id="fix-result-logs"></div>
+                    <div id="fix-result-clean-logs"></div>
+                    <div id="fix-result-rotate-logs"></div>
+                {% endif %}
+            {% endset %}
+            {{ macros.status_card('Logs', 'file-text', logs_status, logs_color, logs_content, logs_actions) }}
         </div>
 
         {# File Permissions #}
         {% if health_checks.permissions is defined %}
         <div class="col-md-6 mb-4">
-            <div class="card h-100 border-{{ health_checks.permissions.status == 'healthy' ? 'success' : 'danger' }}">
-                <div class="card-header bg-{{ health_checks.permissions.status == 'healthy' ? 'success' : 'danger' }} text-white">
-                    <h3 class="mb-0">
-                        <i class="bi bi-shield-lock" aria-hidden="true"></i> File Permissions
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <dl class="row mb-0">
-                        <dt class="col-sm-5">var/ Writable:</dt>
-                        <dd class="col-sm-7">
-                            {% if health_checks.permissions.var_writable %}
-                                <i class="bi bi-check-circle text-success" aria-hidden="true"></i> Yes
-                            {% else %}
-                                <i class="bi bi-x-circle text-danger" aria-hidden="true"></i> No
-                            {% endif %}
-                        </dd>
-
-                        <dt class="col-sm-5">uploads/ Writable:</dt>
-                        <dd class="col-sm-7">
-                            {% if health_checks.permissions.uploads_writable is null %}
-                                <span class="text-muted">N/A</span>
-                            {% elseif health_checks.permissions.uploads_writable %}
-                                <i class="bi bi-check-circle text-success" aria-hidden="true"></i> Yes
-                            {% else %}
-                                <i class="bi bi-x-circle text-danger" aria-hidden="true"></i> No
-                            {% endif %}
-                        </dd>
-
-                        {% if health_checks.permissions.issues|length > 0 %}
-                            <dt class="col-sm-5">Issues:</dt>
-                            <dd class="col-sm-7">
-                                {% for issue in health_checks.permissions.issues %}
-                                    <span class="badge bg-danger">{{ issue }}</span><br>
-                                {% endfor %}
-                            </dd>
+            {% set perms_status = health_checks.permissions.status %}
+            {% set perms_color = perms_status == 'healthy' ? 'success' : 'danger' %}
+            {% set perms_content %}
+                <dl class="row mb-0">
+                    <dt class="col-sm-5">var/ Writable:</dt>
+                    <dd class="col-sm-7">
+                        {% if health_checks.permissions.var_writable %}
+                            <i class="bi bi-check-circle text-success" aria-hidden="true"></i> Yes
+                        {% else %}
+                            <i class="bi bi-x-circle text-danger" aria-hidden="true"></i> No
                         {% endif %}
-                    </dl>
+                    </dd>
 
-                    {% if is_granted('MONITORING_MANAGE') and health_checks.permissions.status != 'healthy' %}
-                        <div class="mt-3">
-                            {% if not health_checks.permissions.var_writable %}
-                                <button class="btn btn-sm btn-danger auto-fix-btn"
-                                        onclick="autoFix('var-permissions', this)">
-                                    <i class="bi bi-wrench" aria-hidden="true"></i> Fix var/ Permissions
-                                </button>
-                            {% endif %}
-                            {% if health_checks.permissions.uploads_writable is not null and not health_checks.permissions.uploads_writable %}
-                                <button class="btn btn-sm btn-danger auto-fix-btn"
-                                        onclick="autoFix('uploads-permissions', this)">
-                                    <i class="bi bi-wrench" aria-hidden="true"></i> Fix uploads/ Permissions
-                                </button>
-                            {% endif %}
-                            <div id="fix-result-var-permissions"></div>
-                            <div id="fix-result-uploads-permissions"></div>
-                        </div>
+                    <dt class="col-sm-5">uploads/ Writable:</dt>
+                    <dd class="col-sm-7">
+                        {% if health_checks.permissions.uploads_writable is null %}
+                            <span class="text-muted">N/A</span>
+                        {% elseif health_checks.permissions.uploads_writable %}
+                            <i class="bi bi-check-circle text-success" aria-hidden="true"></i> Yes
+                        {% else %}
+                            <i class="bi bi-x-circle text-danger" aria-hidden="true"></i> No
+                        {% endif %}
+                    </dd>
+
+                    {% if health_checks.permissions.issues|length > 0 %}
+                        <dt class="col-sm-5">Issues:</dt>
+                        <dd class="col-sm-7">
+                            {% for issue in health_checks.permissions.issues %}
+                                <span class="badge bg-danger">{{ issue }}</span><br>
+                            {% endfor %}
+                        </dd>
                     {% endif %}
-                </div>
-            </div>
+                </dl>
+            {% endset %}
+            {% set perms_actions %}
+                {% if is_granted('MONITORING_MANAGE') and health_checks.permissions.status != 'healthy' %}
+                    {% if not health_checks.permissions.var_writable %}
+                        <button class="btn btn-sm btn-danger auto-fix-btn"
+                                onclick="autoFix('var-permissions', this)">
+                            <i class="bi bi-wrench" aria-hidden="true"></i> Fix var/ Permissions
+                        </button>
+                    {% endif %}
+                    {% if health_checks.permissions.uploads_writable is not null and not health_checks.permissions.uploads_writable %}
+                        <button class="btn btn-sm btn-danger auto-fix-btn"
+                                onclick="autoFix('uploads-permissions', this)">
+                            <i class="bi bi-wrench" aria-hidden="true"></i> Fix uploads/ Permissions
+                        </button>
+                    {% endif %}
+                    <div id="fix-result-var-permissions"></div>
+                    <div id="fix-result-uploads-permissions"></div>
+                {% endif %}
+            {% endset %}
+            {{ macros.status_card('File Permissions', 'shield-lock', perms_status, perms_color, perms_content, perms_actions) }}
         </div>
         {% endif %}
 
         {# Composer Dependencies #}
         {% if health_checks.composer is defined %}
         <div class="col-md-6 mb-4">
-            <div class="card h-100 border-{{ health_checks.composer.status == 'healthy' ? 'success' : 'danger' }}">
-                <div class="card-header bg-{{ health_checks.composer.status == 'healthy' ? 'success' : 'danger' }} text-white">
-                    <h3 class="mb-0">
-                        <i class="bi bi-box-seam" aria-hidden="true"></i> Composer
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <dl class="row mb-0">
-                        <dt class="col-sm-5">Status:</dt>
-                        <dd class="col-sm-7">
-                            <span class="{{ badge_status(health_checks.composer.status) }}">
-                                {{ health_checks.composer.status|upper }}
-                            </span>
-                        </dd>
+            {% set composer_status = health_checks.composer.status %}
+            {% set composer_color = composer_status == 'healthy' ? 'success' : 'danger' %}
+            {% set composer_content %}
+                <dl class="row mb-0">
+                    <dt class="col-sm-5">Status:</dt>
+                    <dd class="col-sm-7">
+                        <span class="{{ badge_status(health_checks.composer.status) }}">
+                            {{ health_checks.composer.status|upper }}
+                        </span>
+                    </dd>
 
-                        <dt class="col-sm-5">composer.lock:</dt>
-                        <dd class="col-sm-7">
-                            {% if health_checks.composer.lock_exists %}
-                                <i class="bi bi-check-circle text-success" aria-hidden="true"></i> Exists
-                            {% else %}
-                                <i class="bi bi-x-circle text-danger" aria-hidden="true"></i> Missing
-                            {% endif %}
-                        </dd>
+                    <dt class="col-sm-5">composer.lock:</dt>
+                    <dd class="col-sm-7">
+                        {% if health_checks.composer.lock_exists %}
+                            <i class="bi bi-check-circle text-success" aria-hidden="true"></i> Exists
+                        {% else %}
+                            <i class="bi bi-x-circle text-danger" aria-hidden="true"></i> Missing
+                        {% endif %}
+                    </dd>
 
-                        <dt class="col-sm-5">vendor/:</dt>
-                        <dd class="col-sm-7">
-                            {% if health_checks.composer.vendor_exists %}
-                                <i class="bi bi-check-circle text-success" aria-hidden="true"></i> Exists
-                            {% else %}
-                                <i class="bi bi-x-circle text-danger" aria-hidden="true"></i> Missing
-                            {% endif %}
-                        </dd>
+                    <dt class="col-sm-5">vendor/:</dt>
+                    <dd class="col-sm-7">
+                        {% if health_checks.composer.vendor_exists %}
+                            <i class="bi bi-check-circle text-success" aria-hidden="true"></i> Exists
+                        {% else %}
+                            <i class="bi bi-x-circle text-danger" aria-hidden="true"></i> Missing
+                        {% endif %}
+                    </dd>
 
-                        <dt class="col-sm-5">Message:</dt>
-                        <dd class="col-sm-7">{{ health_checks.composer.message }}</dd>
-                    </dl>
-
-                    {% if is_granted('MONITORING_MANAGE') and health_checks.composer.status != 'healthy' %}
-                        <div class="mt-3">
-                            <button class="btn btn-sm btn-danger auto-fix-btn"
-                                    onclick="autoFix('composer-install', this)">
-                                <i class="bi bi-download" aria-hidden="true"></i> Run Composer Install
-                            </button>
-                            <div id="fix-result-composer-install"></div>
-                        </div>
-                    {% endif %}
-                </div>
-            </div>
+                    <dt class="col-sm-5">Message:</dt>
+                    <dd class="col-sm-7">{{ health_checks.composer.message }}</dd>
+                </dl>
+            {% endset %}
+            {% set composer_actions %}
+                {% if is_granted('MONITORING_MANAGE') and health_checks.composer.status != 'healthy' %}
+                    <button class="btn btn-sm btn-danger auto-fix-btn"
+                            onclick="autoFix('composer-install', this)">
+                        <i class="bi bi-download" aria-hidden="true"></i> Run Composer Install
+                    </button>
+                    <div id="fix-result-composer-install"></div>
+                {% endif %}
+            {% endset %}
+            {{ macros.status_card('Composer', 'box-seam', composer_status, composer_color, composer_content, composer_actions) }}
         </div>
         {% endif %}
 
         {# Environment Variables #}
         {% if health_checks.environment is defined %}
         <div class="col-md-6 mb-4">
-            <div class="card h-100 border-{{ health_checks.environment.status == 'healthy' ? 'success' : 'danger' }}">
-                <div class="card-header bg-{{ health_checks.environment.status == 'healthy' ? 'success' : 'danger' }} text-white">
-                    <h3 class="mb-0">
-                        <i class="bi bi-file-earmark-text" aria-hidden="true"></i> Environment
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <dl class="row mb-0">
-                        <dt class="col-sm-5">.env File:</dt>
-                        <dd class="col-sm-7">
-                            {% if health_checks.environment.env_file_exists %}
-                                <i class="bi bi-check-circle text-success" aria-hidden="true"></i> Exists
-                            {% else %}
-                                <i class="bi bi-x-circle text-danger" aria-hidden="true"></i> Missing
-                            {% endif %}
-                        </dd>
-
-                        <dt class="col-sm-5">.env.local File:</dt>
-                        <dd class="col-sm-7">
-                            {% if health_checks.environment.env_local_exists %}
-                                <i class="bi bi-check-circle text-success" aria-hidden="true"></i> Exists
-                            {% else %}
-                                <span class="text-muted">Not used</span>
-                            {% endif %}
-                        </dd>
-
-                        {% if health_checks.environment.missing_vars|length > 0 %}
-                            <dt class="col-sm-5">Missing Vars:</dt>
-                            <dd class="col-sm-7">
-                                {% for var in health_checks.environment.missing_vars %}
-                                    <code class="text-danger">{{ var }}</code>{% if not loop.last %}, {% endif %}
-                                {% endfor %}
-                            </dd>
+            {% set env_status = health_checks.environment.status %}
+            {% set env_color = env_status == 'healthy' ? 'success' : 'danger' %}
+            {% set env_content %}
+                <dl class="row mb-0">
+                    <dt class="col-sm-5">.env File:</dt>
+                    <dd class="col-sm-7">
+                        {% if health_checks.environment.env_file_exists %}
+                            <i class="bi bi-check-circle text-success" aria-hidden="true"></i> Exists
                         {% else %}
-                            <dt class="col-sm-5">All Required Vars:</dt>
-                            <dd class="col-sm-7">
-                                <i class="bi bi-check-circle text-success" aria-hidden="true"></i> Present
-                            </dd>
+                            <i class="bi bi-x-circle text-danger" aria-hidden="true"></i> Missing
                         {% endif %}
-                    </dl>
-                </div>
-            </div>
+                    </dd>
+
+                    <dt class="col-sm-5">.env.local File:</dt>
+                    <dd class="col-sm-7">
+                        {% if health_checks.environment.env_local_exists %}
+                            <i class="bi bi-check-circle text-success" aria-hidden="true"></i> Exists
+                        {% else %}
+                            <span class="text-muted">Not used</span>
+                        {% endif %}
+                    </dd>
+
+                    {% if health_checks.environment.missing_vars|length > 0 %}
+                        <dt class="col-sm-5">Missing Vars:</dt>
+                        <dd class="col-sm-7">
+                            {% for var in health_checks.environment.missing_vars %}
+                                <code class="text-danger">{{ var }}</code>{% if not loop.last %}, {% endif %}
+                            {% endfor %}
+                        </dd>
+                    {% else %}
+                        <dt class="col-sm-5">All Required Vars:</dt>
+                        <dd class="col-sm-7">
+                            <i class="bi bi-check-circle text-success" aria-hidden="true"></i> Present
+                        </dd>
+                    {% endif %}
+                </dl>
+            {% endset %}
+            {{ macros.status_card('Environment', 'file-earmark-text', env_status, env_color, env_content) }}
         </div>
         {% endif %}
 
         {# PHP Configuration #}
         {% if health_checks.php_config is defined %}
         <div class="col-md-6 mb-4">
-            <div class="card h-100 border-{{ health_checks.php_config.status == 'healthy' ? 'success' : 'warning' }}">
-                <div class="card-header bg-{{ health_checks.php_config.status == 'healthy' ? 'success' : 'warning' }} text-white">
-                    <h3 class="mb-0">
-                        <i class="bi bi-sliders" aria-hidden="true"></i> PHP Configuration
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <dl class="row mb-0">
-                        <dt class="col-sm-5">OPcache:</dt>
-                        <dd class="col-sm-7">
-                            {% if health_checks.php_config.opcache_enabled %}
-                                <i class="bi bi-check-circle text-success" aria-hidden="true"></i> Enabled
-                            {% else %}
-                                <i class="bi bi-x-circle text-warning" aria-hidden="true"></i> Disabled
-                            {% endif %}
-                        </dd>
-
-                        <dt class="col-sm-5">Memory Limit:</dt>
-                        <dd class="col-sm-7">
-                            <code>{{ health_checks.php_config.memory_limit }}</code>
-                            {% if health_checks.php_config.memory_sufficient %}
-                                <i class="bi bi-check-circle text-success" aria-hidden="true"></i>
-                            {% else %}
-                                <i class="bi bi-exclamation-triangle text-warning" aria-hidden="true"></i>
-                            {% endif %}
-                        </dd>
-
-                        {% if health_checks.php_config.issues|length > 0 %}
-                            <dt class="col-sm-5">Issues:</dt>
-                            <dd class="col-sm-7">
-                                {% for issue in health_checks.php_config.issues %}
-                                    <span class="badge bg-warning">{{ issue }}</span><br>
-                                {% endfor %}
-                            </dd>
+            {% set phpconf_status = health_checks.php_config.status %}
+            {% set phpconf_color = phpconf_status == 'healthy' ? 'success' : 'warning' %}
+            {% set phpconf_content %}
+                <dl class="row mb-0">
+                    <dt class="col-sm-5">OPcache:</dt>
+                    <dd class="col-sm-7">
+                        {% if health_checks.php_config.opcache_enabled %}
+                            <i class="bi bi-check-circle text-success" aria-hidden="true"></i> Enabled
+                        {% else %}
+                            <i class="bi bi-x-circle text-warning" aria-hidden="true"></i> Disabled
                         {% endif %}
-                    </dl>
-                </div>
-            </div>
+                    </dd>
+
+                    <dt class="col-sm-5">Memory Limit:</dt>
+                    <dd class="col-sm-7">
+                        <code>{{ health_checks.php_config.memory_limit }}</code>
+                        {% if health_checks.php_config.memory_sufficient %}
+                            <i class="bi bi-check-circle text-success" aria-hidden="true"></i>
+                        {% else %}
+                            <i class="bi bi-exclamation-triangle text-warning" aria-hidden="true"></i>
+                        {% endif %}
+                    </dd>
+
+                    {% if health_checks.php_config.issues|length > 0 %}
+                        <dt class="col-sm-5">Issues:</dt>
+                        <dd class="col-sm-7">
+                            {% for issue in health_checks.php_config.issues %}
+                                <span class="badge bg-warning">{{ issue }}</span><br>
+                            {% endfor %}
+                        </dd>
+                    {% endif %}
+                </dl>
+            {% endset %}
+            {{ macros.status_card('PHP Configuration', 'sliders', phpconf_status, phpconf_color, phpconf_content) }}
         </div>
         {% endif %}
 
         {# Session Storage #}
         {% if health_checks.sessions is defined %}
         <div class="col-md-6 mb-4">
-            <div class="card h-100 border-{{ health_checks.sessions.status == 'healthy' ? 'success' : 'danger' }}">
-                <div class="card-header bg-{{ health_checks.sessions.status == 'healthy' ? 'success' : 'danger' }} text-white">
-                    <h3 class="mb-0">
-                        <i class="bi bi-key" aria-hidden="true"></i> Sessions
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <dl class="row mb-0">
-                        <dt class="col-sm-5">Handler:</dt>
-                        <dd class="col-sm-7"><code>{{ health_checks.sessions.handler }}</code></dd>
+            {% set sessions_status = health_checks.sessions.status %}
+            {% set sessions_color = sessions_status == 'healthy' ? 'success' : 'danger' %}
+            {% set sessions_content %}
+                <dl class="row mb-0">
+                    <dt class="col-sm-5">Handler:</dt>
+                    <dd class="col-sm-7"><code>{{ health_checks.sessions.handler }}</code></dd>
 
-                        <dt class="col-sm-5">Save Path:</dt>
-                        <dd class="col-sm-7"><code class="small">{{ health_checks.sessions.save_path }}</code></dd>
+                    <dt class="col-sm-5">Save Path:</dt>
+                    <dd class="col-sm-7"><code class="small">{{ health_checks.sessions.save_path }}</code></dd>
 
-                        <dt class="col-sm-5">Writable:</dt>
-                        <dd class="col-sm-7">
-                            {% if health_checks.sessions.writable %}
-                                <i class="bi bi-check-circle text-success" aria-hidden="true"></i> Yes
-                            {% else %}
-                                <i class="bi bi-x-circle text-danger" aria-hidden="true"></i> No
-                            {% endif %}
-                        </dd>
-                    </dl>
-
-                    {% if is_granted('MONITORING_MANAGE') and not health_checks.sessions.writable %}
-                        <div class="mt-3">
-                            <button class="btn btn-sm btn-danger auto-fix-btn"
-                                    onclick="autoFix('session-permissions', this)">
-                                <i class="bi bi-wrench" aria-hidden="true"></i> Fix Permissions
-                            </button>
-                            <div id="fix-result-session-permissions"></div>
-                        </div>
-                    {% endif %}
-                </div>
-            </div>
+                    <dt class="col-sm-5">Writable:</dt>
+                    <dd class="col-sm-7">
+                        {% if health_checks.sessions.writable %}
+                            <i class="bi bi-check-circle text-success" aria-hidden="true"></i> Yes
+                        {% else %}
+                            <i class="bi bi-x-circle text-danger" aria-hidden="true"></i> No
+                        {% endif %}
+                    </dd>
+                </dl>
+            {% endset %}
+            {% set sessions_actions %}
+                {% if is_granted('MONITORING_MANAGE') and not health_checks.sessions.writable %}
+                    <button class="btn btn-sm btn-danger auto-fix-btn"
+                            onclick="autoFix('session-permissions', this)">
+                        <i class="bi bi-wrench" aria-hidden="true"></i> Fix Permissions
+                    </button>
+                    <div id="fix-result-session-permissions"></div>
+                {% endif %}
+            {% endset %}
+            {{ macros.status_card('Sessions', 'key', sessions_status, sessions_color, sessions_content, sessions_actions) }}
         </div>
         {% endif %}
 
         {# Uploads Directory #}
         {% if health_checks.uploads is defined %}
         <div class="col-md-6 mb-4">
-            <div class="card h-100 border-success">
-                <div class="card-header bg-success text-white">
-                    <h3 class="mb-0">
-                        <i class="bi bi-cloud-upload" aria-hidden="true"></i> Uploads
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <dl class="row mb-0">
-                        <dt class="col-sm-5">Directory:</dt>
-                        <dd class="col-sm-7"><code class="small">{{ health_checks.uploads.directory }}</code></dd>
+            {% set uploads_status = 'healthy' %}
+            {% set uploads_color = 'success' %}
+            {% set uploads_content %}
+                <dl class="row mb-0">
+                    <dt class="col-sm-5">Directory:</dt>
+                    <dd class="col-sm-7"><code class="small">{{ health_checks.uploads.directory }}</code></dd>
 
-                        <dt class="col-sm-5">Current Size:</dt>
-                        <dd class="col-sm-7">{{ health_checks.uploads.size }}</dd>
+                    <dt class="col-sm-5">Current Size:</dt>
+                    <dd class="col-sm-7">{{ health_checks.uploads.size }}</dd>
 
-                        <dt class="col-sm-5">Free Space:</dt>
-                        <dd class="col-sm-7">{{ health_checks.uploads.free_space }}</dd>
+                    <dt class="col-sm-5">Free Space:</dt>
+                    <dd class="col-sm-7">{{ health_checks.uploads.free_space }}</dd>
 
-                        <dt class="col-sm-5">Writable:</dt>
-                        <dd class="col-sm-7">
-                            {% if health_checks.uploads.writable %}
-                                <i class="bi bi-check-circle text-success" aria-hidden="true"></i> Yes
-                            {% else %}
-                                <i class="bi bi-x-circle text-danger" aria-hidden="true"></i> No
-                            {% endif %}
-                        </dd>
-                    </dl>
-
-                    {% if is_granted('MONITORING_MANAGE') %}
-                        <div class="mt-3">
-                            <button class="btn btn-sm btn-warning auto-fix-btn"
-                                    onclick="autoFix('clean-uploads', this)">
-                                <i class="bi bi-trash" aria-hidden="true"></i> Clean Old Uploads
-                            </button>
-                            <div id="fix-result-clean-uploads"></div>
-                        </div>
-                    {% endif %}
-                </div>
-            </div>
+                    <dt class="col-sm-5">Writable:</dt>
+                    <dd class="col-sm-7">
+                        {% if health_checks.uploads.writable %}
+                            <i class="bi bi-check-circle text-success" aria-hidden="true"></i> Yes
+                        {% else %}
+                            <i class="bi bi-x-circle text-danger" aria-hidden="true"></i> No
+                        {% endif %}
+                    </dd>
+                </dl>
+            {% endset %}
+            {% set uploads_actions %}
+                {% if is_granted('MONITORING_MANAGE') %}
+                    <button class="btn btn-sm btn-warning auto-fix-btn"
+                            onclick="autoFix('clean-uploads', this)">
+                        <i class="bi bi-trash" aria-hidden="true"></i> Clean Old Uploads
+                    </button>
+                    <div id="fix-result-clean-uploads"></div>
+                {% endif %}
+            {% endset %}
+            {{ macros.status_card('Uploads', 'cloud-upload', uploads_status, uploads_color, uploads_content, uploads_actions) }}
         </div>
         {% endif %}
     </div>
