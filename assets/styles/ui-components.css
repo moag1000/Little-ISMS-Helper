@@ -855,6 +855,24 @@
     max-width: 400px;
 }
 
+/* Dark Mode - Empty State */
+[data-theme="dark"] .empty-state {
+    background: var(--bg-secondary);
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] .empty-state-icon {
+    background: var(--bg-elevated);
+}
+
+[data-theme="dark"] .empty-state-title {
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .empty-state-description {
+    color: var(--text-secondary);
+}
+
 /* ====================
    Floating Toolbar
    ==================== */
@@ -896,6 +914,12 @@
 .floating-toolbar .dropdown-item kbd {
     font-size: 11px;
     padding: 2px 6px;
+}
+
+/* Dark Mode - Floating Toolbar */
+[data-theme="dark"] .floating-toolbar {
+    background: var(--bg-elevated);
+    border-color: var(--border-color);
 }
 
 /* ====================
@@ -1153,6 +1177,11 @@
     left: 0;
     background: white;
     z-index: 5;
+}
+
+/* Dark Mode - Sticky Table Cells */
+[data-theme="dark"] .td-sticky-left {
+    background: var(--bg-elevated);
 }
 
 .th-left-fs-09 {
@@ -1423,6 +1452,11 @@
     background: #f0f0f0;
 }
 
+/* Dark Mode - Table Headers */
+[data-theme="dark"] .tr-header {
+    background: var(--bg-secondary);
+}
+
 .th-stats-left {
     padding: 0.5rem;
     text-align: left;
@@ -1502,6 +1536,12 @@
     color: #666;
 }
 
+/* Dark Mode - Badge Neutral */
+[data-theme="dark"] .badge-neutral {
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
+}
+
 .text-center-block-light {
     text-align: center;
     display: block;
@@ -1534,6 +1574,12 @@
     background: #f0f0f0;
     color: #666;
     font-size: 1.2rem;
+}
+
+/* Dark Mode - Badge Neutral Large */
+[data-theme="dark"] .badge-neutral-lg {
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
 }
 
 .progress-lg {
@@ -1946,6 +1992,11 @@
     border-radius: 4px;
 }
 
+/* Dark Mode - Filter Container */
+[data-theme="dark"] .filter-container {
+    background: var(--bg-secondary);
+}
+
 .table-full {
     width: 100%;
     border-collapse: collapse;
@@ -1953,6 +2004,11 @@
 
 .bg-gray-f0 {
     background: #f0f0f0;
+}
+
+/* Dark Mode - Background Utilities */
+[data-theme="dark"] .bg-gray-f0 {
+    background: var(--bg-secondary);
 }
 
 .mx-1rem {
