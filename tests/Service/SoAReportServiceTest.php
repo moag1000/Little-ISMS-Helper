@@ -64,7 +64,7 @@ class SoAReportServiceTest extends TestCase
         $this->pdfExportService->expects($this->once())
             ->method('generatePdf')
             ->with(
-                'soa/report_pdf.html.twig',
+                'soa/report_pdf_v2.html.twig',
                 $this->callback(function ($data) {
                     return isset($data['controls'])
                         && isset($data['controlsByCategory'])
@@ -94,7 +94,7 @@ class SoAReportServiceTest extends TestCase
         $this->pdfExportService->expects($this->once())
             ->method('generatePdf')
             ->with(
-                'soa/report_pdf.html.twig',
+                'soa/report_pdf_v2.html.twig',
                 $this->anything(),
                 ['orientation' => 'landscape', 'paper' => 'A3']
             )
