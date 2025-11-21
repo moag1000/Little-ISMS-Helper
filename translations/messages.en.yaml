@@ -4346,6 +4346,7 @@ setup:
     docker_password_info: 'The password has been automatically generated and is already pre-filled in the form:'
     docker_password_location: 'Saved in: /var/www/html/var/mysql_credentials.txt'
     config_loaded: 'Database configuration loaded from .env.local. Fields have been pre-filled with existing values.'
+    docker_auto_configured: 'Docker deployment detected: Database has been automatically configured. Proceeding to step 3.'
 
   admin:
     title: 'Create Administrator'
