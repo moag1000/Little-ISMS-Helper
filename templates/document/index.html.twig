@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% import '_macros/inheritance_badge.html.twig' as inheritance %}
+{% import '_macros/cards.html.twig' as cards %}
 
 {% block title %}Documents{% endblock %}
 
@@ -11,13 +12,11 @@
     </div>
 
     <div class="stats-grid">
-        <div class="stat-card">
-            <h3>Total Documents</h3>
-            <p class="stat-value">{{ stats.total }}</p>
+        <div class="col-auto">
+            {{ cards.kpi_card('Total Documents', stats.total, null, null, 'primary', null) }}
         </div>
-        <div class="stat-card">
-            <h3>Total Size</h3>
-            <p class="stat-value">{{ (stats.total_size / 1024 / 1024)|number_format(2) }} MB</p>
+        <div class="col-auto">
+            {{ cards.kpi_card('Total Size', (stats.total_size / 1024 / 1024)|number_format(2) ~ ' MB', null, null, 'info', null) }}
         </div>
     </div>
 
