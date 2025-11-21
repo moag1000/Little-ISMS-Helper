@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% import '_macros/inheritance_badge.html.twig' as inheritance %}
+{% import '_macros/cards.html.twig' as cards %}
 
 {% block title %}Statement of Applicability - Little ISMS Helper{% endblock %}
 
@@ -62,48 +63,27 @@
 
 {# KPI Cards #}
 <div class="kpi-grid">
-    <div class="kpi-card">
-        <div class="icon">📋</div>
-        <div class="label">Gesamt Controls</div>
-        <div>
-            <span class="value">{{ detailedStats.total }}</span>
-            {% if currentTenant %}
-                <div style="font-size: 11px; color: #6c757d; opacity: 0.85; margin-top: 0.5rem;">
-                    {{ 'corporate.stats.breakdown'|trans({'%own%': detailedStats.own, '%inherited%': detailedStats.inherited, '%subsidiaries%': detailedStats.subsidiaries}) }}
-                </div>
-            {% endif %}
-        </div>
+    <div class="col-auto">
+        {% if currentTenant %}
+            {% set subtitle = 'corporate.stats.breakdown'|trans({'%own%': detailedStats.own, '%inherited%': detailedStats.inherited, '%subsidiaries%': detailedStats.subsidiaries}) %}
+            {{ cards.kpi_card('Gesamt Controls', detailedStats.total, subtitle, null, 'primary', null) }}
+        {% else %}
+            {{ cards.kpi_card('Gesamt Controls', detailedStats.total, null, null, 'primary', null) }}
+        {% endif %}
     </div>
-
-    <div class="kpi-card">
-        <div class="icon">✅</div>
-        <div class="label">Anwendbare Controls</div>
-        <div>
-            <span class="value">{{ controls|filter(c => c.applicable)|length }}</span>
-        </div>
+    <div class="col-auto">
+        {{ cards.kpi_card('Anwendbare Controls', controls|filter(c => c.applicable)|length, null, null, 'success', null) }}
     </div>
-
-    <div class="kpi-card">
-        <div class="icon">🚀</div>
-        <div class="label">Implementierte Controls</div>
-        <div>
-            {% set implemented = controls|filter(c => c.applicable and c.implementationStatus == 'implemented')|length %}
-            {% set applicable = controls|filter(c => c.applicable)|length %}
-            <span class="value">{{ implemented }}</span>
-            <span class="unit">von {{ applicable }}</span>
-        </div>
+    <div class="col-auto">
+        {% set implemented = controls|filter(c => c.applicable and c.implementationStatus == 'implemented')|length %}
+        {% set applicable = controls|filter(c => c.applicable)|length %}
+        {{ cards.kpi_card('Implementierte Controls', implemented, 'von ' ~ applicable, null, 'info', null) }}
     </div>
-
-    <div class="kpi-card">
-        <div class="icon">📈</div>
-        <div class="label">Compliance-Rate</div>
-        <div>
-            {% set applicable = controls|filter(c => c.applicable)|length %}
-            {% set implemented = controls|filter(c => c.applicable and c.implementationStatus == 'implemented')|length %}
-            {% set percentage = applicable > 0 ? (implemented / applicable * 100)|round : 0 %}
-            <span class="value">{{ percentage }}</span>
-            <span class="unit">%</span>
-        </div>
+    <div class="col-auto">
+        {% set applicable = controls|filter(c => c.applicable)|length %}
+        {% set implemented = controls|filter(c => c.applicable and c.implementationStatus == 'implemented')|length %}
+        {% set percentage = applicable > 0 ? (implemented / applicable * 100)|round : 0 %}
+        {{ cards.kpi_card('Compliance-Rate', percentage ~ '%', null, percentage, 'warning', null) }}
     </div>
 </div>
 
