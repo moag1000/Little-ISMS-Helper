@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_macros/cards.html.twig' as cards %}
 
 {% block title %}BCM Data Reuse Insights{% endblock %}
 
@@ -18,36 +19,17 @@
 
     {# Summary Cards #}
     <div class="kpi-grid">
-        <div class="kpi-card">
-            <div class="kpi-icon bg-gradient-primary">📊</div>
-            <div class="kpi-content">
-                <div class="kpi-value">{{ total_processes }}</div>
-                <div class="kpi-label">Business Processes</div>
-            </div>
+        <div class="col-auto">
+            {{ cards.kpi_card('Business Processes', total_processes, null, null, 'primary', null) }}
         </div>
-
-        <div class="kpi-card">
-            <div class="kpi-icon bg-gradient-success">✓</div>
-            <div class="kpi-content">
-                <div class="kpi-value">{{ assets_influenced }}</div>
-                <div class="kpi-label">Assets Influenced</div>
-            </div>
+        <div class="col-auto">
+            {{ cards.kpi_card('Assets Influenced', assets_influenced, null, null, 'success', null) }}
         </div>
-
-        <div class="kpi-card">
-            <div class="kpi-icon bg-gradient-info">🔄</div>
-            <div class="kpi-content">
-                <div class="kpi-value">{{ insights|length }}</div>
-                <div class="kpi-label">Recommendations</div>
-            </div>
+        <div class="col-auto">
+            {{ cards.kpi_card('Recommendations', insights|length, null, null, 'info', null) }}
         </div>
-
-        <div class="kpi-card">
-            <div class="kpi-icon bg-gradient-warning">💡</div>
-            <div class="kpi-content">
-                <div class="kpi-value">{{ (assets_influenced > 0 ? (assets_influenced / total_processes * 100)|number_format(0) : 0) }}%</div>
-                <div class="kpi-label">Data Reuse Rate</div>
-            </div>
+        <div class="col-auto">
+            {{ cards.kpi_card('Data Reuse Rate', (assets_influenced > 0 ? (assets_influenced / total_processes * 100)|number_format(0) : 0) ~ '%', null, null, 'warning', null) }}
         </div>
     </div>
 
