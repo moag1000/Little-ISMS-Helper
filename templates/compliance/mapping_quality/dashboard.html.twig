@@ -20,6 +20,8 @@
 {% endblock %}
 
 {% block body %}
+{% import '_macros/cards.html.twig' as cards %}
+
 <div class="container">
     <div class="page-header">
         <div>
@@ -71,37 +73,16 @@
     {% if quality_stats.total_mappings > 0 %}
     <div class="row mb-4">
         <div class="col-md-3">
-            <div class="card stat-card">
-                <div class="card-body text-center">
-                    <h3 class="text-primary">{{ quality_stats.total_mappings }}</h3>
-                    <p class="text-muted mb-0">Total Mappings</p>
-                </div>
-            </div>
+            {{ cards.kpi_card('Total Mappings', quality_stats.total_mappings, null, null, 'primary') }}
         </div>
         <div class="col-md-3">
-            <div class="card stat-card">
-                <div class="card-body text-center">
-                    <h3 class="text-success">{{ quality_stats.analyzed_mappings }}</h3>
-                    <p class="text-muted mb-0">Analysiert</p>
-                    <small class="text-success">{{ quality_stats.analysis_coverage }}%</small>
-                </div>
-            </div>
+            {{ cards.kpi_card('Analysiert', quality_stats.analyzed_mappings, quality_stats.analysis_coverage ~ '%', null, 'success') }}
         </div>
         <div class="col-md-3">
-            <div class="card stat-card">
-                <div class="card-body text-center">
-                    <h3 class="text-warning">{{ quality_stats.requires_review }}</h3>
-                    <p class="text-muted mb-0">Benötigt Review</p>
-                </div>
-            </div>
+            {{ cards.kpi_card('Benötigt Review', quality_stats.requires_review, null, null, 'warning') }}
         </div>
         <div class="col-md-3">
-            <div class="card stat-card">
-                <div class="card-body text-center">
-                    <h3 class="text-danger">{{ quality_stats.with_unresolved_gaps }}</h3>
-                    <p class="text-muted mb-0">Mit Gaps</p>
-                </div>
-            </div>
+            {{ cards.kpi_card('Mit Gaps', quality_stats.with_unresolved_gaps, null, null, 'danger') }}
         </div>
     </div>
 
