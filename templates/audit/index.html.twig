@@ -3,6 +3,8 @@
 {% block title %}{{ 'audit_management.title'|trans }} - {{ 'app.title'|trans }}{% endblock %}
 
 {% block body %}
+{% import '_macros/cards.html.twig' as cards %}
+
 <div class="page-header">
     <div>
         <h1><i class="bi bi-clipboard-check" aria-hidden="true"></i> {{ 'audit_management.title'|trans }}</h1>
@@ -16,16 +18,11 @@
 </div>
 
 <div class="stats-grid mb-4">
-    <div class="stat-card">
-        <div class="stat-icon"><i class="bi bi-calendar-event" aria-hidden="true"></i></div>
-        <div class="stat-value">{{ upcoming|length }}</div>
-        <div class="stat-label">{{ 'audit_management.planned_audits'|trans }}</div>
+    <div class="col-auto">
+        {{ cards.kpi_card('audit_management.planned_audits'|trans, upcoming|length, null, null, 'info', null) }}
     </div>
-
-    <div class="stat-card">
-        <div class="stat-icon"><i class="bi bi-collection" aria-hidden="true"></i></div>
-        <div class="stat-value">{{ audits|length }}</div>
-        <div class="stat-label">{{ 'audit_management.total_audits'|trans }}</div>
+    <div class="col-auto">
+        {{ cards.kpi_card('audit_management.total_audits'|trans, audits|length, null, null, 'primary', null) }}
     </div>
 </div>
 
