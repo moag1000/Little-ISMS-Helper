@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_macros/cards.html.twig' as cards %}
 
 {% block title %}BC Exercises{% endblock %}
 
@@ -10,21 +11,15 @@
     </div>
 
     {% if statistics %}
-    <div class="info-box">
-        <h2>Statistics</h2>
-        <div class="stats-grid">
-            <div class="stat-item">
-                <span class="stat-label">Total Exercises:</span>
-                <span class="stat-value">{{ statistics.total }}</span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-label">Completed:</span>
-                <span class="stat-value">{{ statistics.completed }}</span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-label">Planned:</span>
-                <span class="stat-value">{{ statistics.planned }}</span>
-            </div>
+    <div class="row mb-4">
+        <div class="col-md-4">
+            {{ cards.kpi_card('Total Exercises', statistics.total, null, null, 'primary', null) }}
+        </div>
+        <div class="col-md-4">
+            {{ cards.kpi_card('Completed', statistics.completed, null, null, 'success', null) }}
+        </div>
+        <div class="col-md-4">
+            {{ cards.kpi_card('Planned', statistics.planned, null, null, 'info', null) }}
         </div>
     </div>
     {% endif %}
