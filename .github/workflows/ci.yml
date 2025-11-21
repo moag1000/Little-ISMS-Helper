@@ -272,9 +272,9 @@ jobs:
             echo "=== APP CONTAINER LOGS ==="
             docker compose logs app --tail=100
             echo "=== DATABASE LOGS ==="
-            docker compose logs database --tail=50
+            docker compose logs db --tail=50
             echo "=== MAILER LOGS ==="
-            docker compose logs mailer --tail=50
+            docker compose logs mailhog --tail=50
             echo "=== CHECKING PROCESSES IN APP CONTAINER ==="
             docker compose exec -T app ps aux || true
             echo "=== CHECKING NGINX ERROR LOG ==="
