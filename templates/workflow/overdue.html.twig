@@ -73,7 +73,7 @@
     {% block table_body %}
         {% for instance in overdueInstances %}
         {% set daysOverdue = ('now'|date('U') - instance.dueDate.timestamp) / 86400 %}
-        <tr style="{% if daysOverdue > 7 %}background-color: #ffebee;{% else %}background-color: var(--color-warning-light);{% endif %}">
+        <tr class="{% if daysOverdue > 7 %}table-danger{% else %}table-warning{% endif %}">
             <td>
                 <strong>{{ instance.name }}</strong>
                 {% if daysOverdue > 7 %}
