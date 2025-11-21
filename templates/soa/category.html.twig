@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_macros/cards.html.twig' as cards %}
 
 {% block title %}{{ category }} Controls - Statement of Applicability - Little ISMS Helper{% endblock %}
 
@@ -15,43 +16,22 @@
 
 {# Statistics Cards #}
 <div class="kpi-grid kpi-grid-responsive">
-    <div class="kpi-card">
-        <div class="icon">📋</div>
-        <div class="label">Gesamt Controls</div>
-        <div>
-            <span class="value">{{ controls|length }}</span>
-        </div>
+    <div class="col-auto">
+        {{ cards.kpi_card('Gesamt Controls', controls|length, null, null, 'primary', null) }}
     </div>
-
-    <div class="kpi-card">
-        <div class="icon">✅</div>
-        <div class="label">Anwendbar</div>
-        <div>
-            <span class="value">{{ controls|filter(c => c.applicable)|length }}</span>
-        </div>
+    <div class="col-auto">
+        {{ cards.kpi_card('Anwendbar', controls|filter(c => c.applicable)|length, null, null, 'success', null) }}
     </div>
-
-    <div class="kpi-card">
-        <div class="icon">🚀</div>
-        <div class="label">Implementiert</div>
-        <div>
-            {% set implemented = controls|filter(c => c.applicable and c.implementationStatus == 'implemented')|length %}
-            {% set applicable = controls|filter(c => c.applicable)|length %}
-            <span class="value">{{ implemented }}</span>
-            <span class="unit">von {{ applicable }}</span>
-        </div>
+    <div class="col-auto">
+        {% set implemented = controls|filter(c => c.applicable and c.implementationStatus == 'implemented')|length %}
+        {% set applicable = controls|filter(c => c.applicable)|length %}
+        {{ cards.kpi_card('Implementiert', implemented, 'von ' ~ applicable, null, 'info', null) }}
     </div>
-
-    <div class="kpi-card">
-        <div class="icon">📈</div>
-        <div class="label">Compliance-Rate</div>
-        <div>
-            {% set applicable = controls|filter(c => c.applicable)|length %}
-            {% set implemented = controls|filter(c => c.applicable and c.implementationStatus == 'implemented')|length %}
-            {% set percentage = applicable > 0 ? (implemented / applicable * 100)|round : 0 %}
-            <span class="value">{{ percentage }}</span>
-            <span class="unit">%</span>
-        </div>
+    <div class="col-auto">
+        {% set applicable = controls|filter(c => c.applicable)|length %}
+        {% set implemented = controls|filter(c => c.applicable and c.implementationStatus == 'implemented')|length %}
+        {% set percentage = applicable > 0 ? (implemented / applicable * 100)|round : 0 %}
+        {{ cards.kpi_card('Compliance-Rate', percentage ~ '%', null, percentage, 'warning', null) }}
     </div>
 </div>
 
