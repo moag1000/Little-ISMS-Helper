@@ -1,5 +1,3 @@
-version: '3.8'
-
 # 🔒 PRODUCTION Docker Compose Configuration - Self-Contained (embedded MariaDB)
 # ⚠️ WICHTIG: Vor Produktion-Deployment:
 # 1. Ändern Sie MYSQL_PASSWORD via Environment Variable (oder leer lassen für auto-generiert)
