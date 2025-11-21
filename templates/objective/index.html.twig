@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_macros/cards.html.twig' as cards %}
 
 {% block title %}ISMS Objectives - {{ parent() }}{% endblock %}
 
@@ -13,10 +14,18 @@
 
     <turbo-frame id="objective-stats">
         <div class="row mb-4">
-            <div class="col-md-3"><div class="card border-primary"><div class="card-body"><h6 class="text-muted">Total</h6><h3>{{ statistics.total }}</h3></div></div></div>
-            <div class="col-md-3"><div class="card border-info"><div class="card-body"><h6 class="text-muted">Active</h6><h3>{{ statistics.active }}</h3></div></div></div>
-            <div class="col-md-3"><div class="card border-success"><div class="card-body"><h6 class="text-muted">Achieved</h6><h3>{{ statistics.achieved }}</h3></div></div></div>
-            <div class="col-md-3"><div class="card border-warning"><div class="card-body"><h6 class="text-muted">Delayed</h6><h3>{{ statistics.delayed }}</h3></div></div></div>
+            <div class="col-md-3">
+                {{ cards.kpi_card('Total', statistics.total, null, null, 'primary', 'border-primary') }}
+            </div>
+            <div class="col-md-3">
+                {{ cards.kpi_card('Active', statistics.active, null, null, 'info', 'border-info') }}
+            </div>
+            <div class="col-md-3">
+                {{ cards.kpi_card('Achieved', statistics.achieved, null, null, 'success', 'border-success') }}
+            </div>
+            <div class="col-md-3">
+                {{ cards.kpi_card('Delayed', statistics.delayed, null, null, 'warning', 'border-warning') }}
+            </div>
         </div>
     </turbo-frame>
 
