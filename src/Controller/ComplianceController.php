@@ -83,22 +83,25 @@ class ComplianceController extends AbstractController
         $activeModules = $this->moduleConfigurationService->getActiveModules();
 
         $tenant = $this->tenantContext->getCurrentTenant();
-        if (!$tenant) {
+        if (!$tenant && !$this->isGranted('ROLE_SUPER_ADMIN')) {
             throw $this->createAccessDeniedException('No tenant assigned to user. Please contact administrator.');
         }
 
         // Load tenant-specific fulfillments for all requirements (batch)
         // Including detailed requirements (nested)
+        // For SUPER_ADMIN without tenant, show empty fulfillments
         $fulfillments = [];
-        foreach ($requirements as $requirement) {
-            $fulfillment = $this->fulfillmentService->getOrCreateFulfillment($tenant, $requirement);
-            $fulfillments[$requirement->getId()] = $fulfillment;
+        if ($tenant) {
+            foreach ($requirements as $requirement) {
+                $fulfillment = $this->fulfillmentService->getOrCreateFulfillment($tenant, $requirement);
+                $fulfillments[$requirement->getId()] = $fulfillment;
 
-            // Also load fulfillments for detailed requirements
-            if ($requirement->hasDetailedRequirements()) {
-                foreach ($requirement->getDetailedRequirements() as $detailedRequirement) {
-                    $detailedFulfillment = $this->fulfillmentService->getOrCreateFulfillment($tenant, $detailedRequirement);
-                    $fulfillments[$detailedRequirement->getId()] = $detailedFulfillment;
+                // Also load fulfillments for detailed requirements
+                if ($requirement->hasDetailedRequirements()) {
+                    foreach ($requirement->getDetailedRequirements() as $detailedRequirement) {
+                        $detailedFulfillment = $this->fulfillmentService->getOrCreateFulfillment($tenant, $detailedRequirement);
+                        $fulfillments[$detailedRequirement->getId()] = $detailedFulfillment;
+                    }
                 }
             }
         }
@@ -726,11 +729,12 @@ class ComplianceController extends AbstractController
 
         // Get current tenant for fulfillment data
         $tenant = $this->tenantContext->getCurrentTenant();
-        if (!$tenant) {
+        if (!$tenant && !$this->isGranted('ROLE_SUPER_ADMIN')) {
             throw $this->createAccessDeniedException('No tenant assigned to user. Please contact administrator.');
         }
 
         // Analyze gaps and get fulfillment data
+        // For SUPER_ADMIN without tenant, skip fulfillment data
         $gapAnalysis = [];
         $gapFulfillments = [];
         $severityCounts = ['critical' => 0, 'high' => 0, 'medium' => 0, 'low' => 0];
@@ -740,9 +744,11 @@ class ComplianceController extends AbstractController
             $priority = $gap->getPriority() ?? 'low';
             $severityCounts[$priority]++;
 
-            // Get tenant-specific fulfillment for this gap
-            $fulfillment = $this->fulfillmentService->getOrCreateFulfillment($tenant, $gap);
-            $gapFulfillments[$gap->getId()] = $fulfillment;
+            // Get tenant-specific fulfillment for this gap (only if tenant exists)
+            if ($tenant) {
+                $fulfillment = $this->fulfillmentService->getOrCreateFulfillment($tenant, $gap);
+                $gapFulfillments[$gap->getId()] = $fulfillment;
+            }
 
             $gapAnalysis[] = [
                 'requirement' => $gap,
