@@ -43,7 +43,7 @@ class ComplianceRequirementController extends AbstractController
 
         $frameworks = $this->frameworkRepository->findAll();
         $tenant = $this->tenantContext->getCurrentTenant();
-        if (!$tenant && !$this->isGranted('ROLE_SUPER_ADMIN')) {
+        if (!$tenant && !$this->isGranted('ROLE_ADMIN')) {
             throw $this->createAccessDeniedException('No tenant assigned to user. Please contact administrator.');
         }
 
@@ -104,7 +104,7 @@ class ComplianceRequirementController extends AbstractController
     public function show(ComplianceRequirement $requirement): Response
     {
         $tenant = $this->tenantContext->getCurrentTenant();
-        if (!$tenant && !$this->isGranted('ROLE_SUPER_ADMIN')) {
+        if (!$tenant && !$this->isGranted('ROLE_ADMIN')) {
             throw $this->createAccessDeniedException('No tenant assigned to user. Please contact administrator.');
         }
 
@@ -191,7 +191,7 @@ class ComplianceRequirementController extends AbstractController
         }
 
         $tenant = $this->tenantContext->getCurrentTenant();
-        if (!$tenant && !$this->isGranted('ROLE_SUPER_ADMIN')) {
+        if (!$tenant && !$this->isGranted('ROLE_ADMIN')) {
             $this->addFlash('error', 'No tenant assigned to user. Please contact administrator.');
             return $this->redirectToRoute('app_compliance_requirement_show', ['id' => $requirement->getId()]);
         }

@@ -83,7 +83,7 @@ class ComplianceController extends AbstractController
         $activeModules = $this->moduleConfigurationService->getActiveModules();
 
         $tenant = $this->tenantContext->getCurrentTenant();
-        if (!$tenant && !$this->isGranted('ROLE_SUPER_ADMIN')) {
+        if (!$tenant && !$this->isGranted('ROLE_ADMIN')) {
             throw $this->createAccessDeniedException('No tenant assigned to user. Please contact administrator.');
         }
 
@@ -729,7 +729,7 @@ class ComplianceController extends AbstractController
 
         // Get current tenant for fulfillment data
         $tenant = $this->tenantContext->getCurrentTenant();
-        if (!$tenant && !$this->isGranted('ROLE_SUPER_ADMIN')) {
+        if (!$tenant && !$this->isGranted('ROLE_ADMIN')) {
             throw $this->createAccessDeniedException('No tenant assigned to user. Please contact administrator.');
         }
 
