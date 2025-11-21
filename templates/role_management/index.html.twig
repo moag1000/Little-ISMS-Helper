@@ -3,6 +3,8 @@
 {% block title %}{{ 'role_management.title.list'|trans }} - Little ISMS Helper{% endblock %}
 
 {% block admin_content %}
+{% import '_macros/cards.html.twig' as cards %}
+
 <div class="page-header">
     <div>
         <h1>{{ 'role_management.title.list'|trans }}</h1>
@@ -17,40 +19,21 @@
 
 {# Statistics Cards #}
 <div class="kpi-grid">
-    <div class="kpi-card">
-        <div class="icon">🔐</div>
-        <div class="label">{{ 'role_management.stats.total'|trans }}</div>
-        <div>
-            <span class="value">{{ roles|length }}</span>
-        </div>
+    <div class="col-auto">
+        {{ cards.kpi_card('role_management.stats.total'|trans, roles|length, null, null, null, null) }}
     </div>
-
-    <div class="kpi-card">
-        <div class="icon">⚙️</div>
-        <div class="label">{{ 'role_management.stats.system_roles'|trans }}</div>
-        <div>
-            <span class="value">{{ roles|filter(r => r.systemRole)|length }}</span>
-        </div>
+    <div class="col-auto">
+        {{ cards.kpi_card('role_management.stats.system_roles'|trans, roles|filter(r => r.systemRole)|length, null, null, 'info', null) }}
     </div>
-
-    <div class="kpi-card">
-        <div class="icon">👥</div>
-        <div class="label">{{ 'role_management.stats.with_users'|trans }}</div>
-        <div>
-            <span class="value">{{ roles|filter(r => r.users|length > 0)|length }}</span>
-        </div>
+    <div class="col-auto">
+        {{ cards.kpi_card('role_management.stats.with_users'|trans, roles|filter(r => r.users|length > 0)|length, null, null, 'success', null) }}
     </div>
-
-    <div class="kpi-card">
-        <div class="icon">🔑</div>
-        <div class="label">{{ 'role_management.stats.avg_permissions'|trans }}</div>
-        <div>
-            {% set totalPerms = 0 %}
-            {% for role in roles %}
-                {% set totalPerms = totalPerms + role.permissions|length %}
-            {% endfor %}
-            <span class="value">{{ roles|length > 0 ? (totalPerms / roles|length)|round : 0 }}</span>
-        </div>
+    <div class="col-auto">
+        {% set totalPerms = 0 %}
+        {% for role in roles %}
+            {% set totalPerms = totalPerms + role.permissions|length %}
+        {% endfor %}
+        {{ cards.kpi_card('role_management.stats.avg_permissions'|trans, roles|length > 0 ? (totalPerms / roles|length)|round : 0, null, null, 'warning', null) }}
     </div>
 </div>
 
