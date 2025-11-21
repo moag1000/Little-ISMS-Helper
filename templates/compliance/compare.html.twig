@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_macros/cards.html.twig' as cards %}
 
 {% block title %}{{ 'compliance.title.compare'|trans }} - Little ISMS Helper{% endblock %}
 
@@ -11,17 +12,17 @@
     <div class="button-group">
         {% if selectedFramework1 and selectedFramework2 %}
         <button id="createMappingsBtn" class="btn btn-primary" data-framework1="{{ selectedFramework1.id }}" data-framework2="{{ selectedFramework2.id }}">
-            🔗 Mappings erstellen
+            🔗 {{ 'compliance.action.create_mappings'|trans({}, 'compliance') }}
         </button>
         {% endif %}
         <a href="{{ path('app_compliance_export_comparison_pdf', {framework1: selectedFramework1 ? selectedFramework1.id : '', framework2: selectedFramework2 ? selectedFramework2.id : ''}) }}" class="btn btn-danger" data-turbo="false" {% if not selectedFramework1 or not selectedFramework2 %}disabled{% endif %}>
-            📄 PDF Report
+            📄 {{ 'compliance.action.export_pdf'|trans({}, 'compliance') }}
         </a>
         <a href="{{ path('app_compliance_export_comparison_excel', {framework1: selectedFramework1 ? selectedFramework1.id : '', framework2: selectedFramework2 ? selectedFramework2.id : ''}) }}" class="btn btn-success" data-turbo="false" {% if not selectedFramework1 or not selectedFramework2 %}disabled{% endif %}>
-            📊 Excel Export
+            📊 {{ 'compliance.action.export_excel'|trans({}, 'compliance') }}
         </a>
         <a href="{{ path('app_compliance_export_comparison', {framework1: selectedFramework1 ? selectedFramework1.id : '', framework2: selectedFramework2 ? selectedFramework2.id : ''}) }}" class="btn btn-secondary" data-turbo="false" {% if not selectedFramework1 or not selectedFramework2 %}disabled{% endif %}>
-            📄 CSV Export
+            📄 {{ 'compliance.action.export_csv'|trans({}, 'compliance') }}
         </a>
     </div>
 </div>
@@ -56,7 +57,7 @@
         </div>
 
         <button type="submit" class="btn btn-primary">
-            🔍 {{ 'compliance.action.compare'|trans }}
+            🔍 {{ 'compliance.action.compare'|trans({}, 'compliance') }}
         </button>
     </form>
 </div>
@@ -64,40 +65,18 @@
 {% if selectedFramework1 and selectedFramework2 %}
 {# Comparison Overview #}
 <div class="kpi-grid">
-    <div class="kpi-card">
-        <div class="icon">📋</div>
-        <div class="label">{{ selectedFramework1.name }}</div>
-        <div>
-            <span class="value">{{ framework1Requirements }}</span>
-            <span class="unit">{{ 'compliance.unit.requirements'|trans }}</span>
-        </div>
+    <div class="col-auto">
+        {{ cards.kpi_card(selectedFramework1.name, framework1Requirements ~ ' ' ~ ('compliance.unit.requirements'|trans), null, null, null, null) }}
     </div>
-
-    <div class="kpi-card">
-        <div class="icon">📋</div>
-        <div class="label">{{ selectedFramework2.name }}</div>
-        <div>
-            <span class="value">{{ framework2Requirements }}</span>
-            <span class="unit">{{ 'compliance.unit.requirements'|trans }}</span>
-        </div>
+    <div class="col-auto">
+        {{ cards.kpi_card(selectedFramework2.name, framework2Requirements ~ ' ' ~ ('compliance.unit.requirements'|trans), null, null, null, null) }}
     </div>
-
-    <div class="kpi-card">
-        <div class="icon">🔗</div>
-        <div class="label">{{ 'compliance.stats.common_requirements'|trans }}</div>
-        <div>
-            <span class="value">{{ commonRequirements }}</span>
-        </div>
+    <div class="col-auto">
+        {{ cards.kpi_card('compliance.stats.common_requirements'|trans, commonRequirements, null, null, null, null) }}
     </div>
-
-    <div class="kpi-card">
-        <div class="icon">📊</div>
-        <div class="label">{{ 'compliance.stats.overlap_percentage'|trans }}</div>
-        <div>
-            {% set overlap = ((commonRequirements / framework1Requirements * 100) + (commonRequirements / framework2Requirements * 100)) / 2 %}
-            <span class="value">{{ overlap|round }}</span>
-            <span class="unit">%</span>
-        </div>
+    <div class="col-auto">
+        {% set overlap = ((commonRequirements / framework1Requirements * 100) + (commonRequirements / framework2Requirements * 100)) / 2 %}
+        {{ cards.kpi_card('compliance.stats.overlap_percentage'|trans, overlap|round ~ '%', null, null, null, null) }}
     </div>
 </div>
 

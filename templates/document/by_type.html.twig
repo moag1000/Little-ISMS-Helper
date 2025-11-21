@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_macros/cards.html.twig' as cards %}
 
 {% block title %}{{ 'document.title.by_type'|trans }} - Little ISMS Helper{% endblock %}
 
@@ -20,36 +21,17 @@
 
 {# Statistics Cards #}
 <div class="kpi-grid">
-    <div class="kpi-card">
-        <div class="icon">📄</div>
-        <div class="label">{{ 'document.stats.total'|trans }}</div>
-        <div>
-            <span class="value">{{ totalDocuments }}</span>
-        </div>
+    <div class="col-auto">
+        {{ cards.kpi_card('document.stats.total'|trans, totalDocuments, null, null, null, null) }}
     </div>
-
-    <div class="kpi-card">
-        <div class="icon">📁</div>
-        <div class="label">{{ 'document.stats.document_types'|trans }}</div>
-        <div>
-            <span class="value">{{ documentTypes|length }}</span>
-        </div>
+    <div class="col-auto">
+        {{ cards.kpi_card('document.stats.document_types'|trans, documentTypes|length, null, null, null, null) }}
     </div>
-
-    <div class="kpi-card">
-        <div class="icon">⚠️</div>
-        <div class="label">{{ 'document.stats.expiring_soon'|trans }}</div>
-        <div>
-            <span class="value">{{ expiringSoonCount }}</span>
-        </div>
+    <div class="col-auto">
+        {{ cards.kpi_card('document.stats.expiring_soon'|trans, expiringSoonCount, null, null, 'warning', null) }}
     </div>
-
-    <div class="kpi-card">
-        <div class="icon">📊</div>
-        <div class="label">{{ 'document.stats.avg_per_type'|trans }}</div>
-        <div>
-            <span class="value">{{ documentTypes|length > 0 ? (totalDocuments / documentTypes|length)|round : 0 }}</span>
-        </div>
+    <div class="col-auto">
+        {{ cards.kpi_card('document.stats.avg_per_type'|trans, documentTypes|length > 0 ? (totalDocuments / documentTypes|length)|round : 0, null, null, null, null) }}
     </div>
 </div>
 

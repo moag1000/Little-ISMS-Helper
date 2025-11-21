@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_macros/cards.html.twig' as cards %}
 
 {% block title %}{{ 'compliance.title.data_reuse'|trans }} - Little ISMS Helper{% endblock %}
 
@@ -10,52 +11,31 @@
     </div>
     <div class="button-group">
         <a href="{{ path('app_compliance_export_reuse_pdf', {id: framework.id}) }}" class="btn btn-danger" data-turbo="false">
-            📄 PDF Report
+            📄 {{ 'compliance.action.export_pdf'|trans({}, 'compliance') }}
         </a>
         <a href="{{ path('app_compliance_export_reuse_excel', {id: framework.id}) }}" class="btn btn-success" data-turbo="false">
-            📊 Excel Export
+            📊 {{ 'compliance.action.export_excel'|trans({}, 'compliance') }}
         </a>
         <a href="{{ path('app_compliance_export_reuse', {id: framework.id}) }}" class="btn btn-secondary" data-turbo="false">
-            📄 CSV Export
+            📄 {{ 'compliance.action.export_csv'|trans({}, 'compliance') }}
         </a>
     </div>
 </div>
 
 {# Statistics Cards #}
 <div class="kpi-grid">
-    <div class="kpi-card">
-        <div class="icon">📊</div>
-        <div class="label">{{ 'compliance.stats.total_data_points'|trans }}</div>
-        <div>
-            <span class="value">{{ totalDataPoints }}</span>
-        </div>
+    <div class="col-auto">
+        {{ cards.kpi_card('compliance.stats.total_data_points'|trans, totalDataPoints, null, null, null, null) }}
     </div>
-
-    <div class="kpi-card">
-        <div class="icon">🔄</div>
-        <div class="label">{{ 'compliance.stats.reused_data'|trans }}</div>
-        <div>
-            <span class="value">{{ reusedDataPoints }}</span>
-        </div>
+    <div class="col-auto">
+        {{ cards.kpi_card('compliance.stats.reused_data'|trans, reusedDataPoints, null, null, null, null) }}
     </div>
-
-    <div class="kpi-card">
-        <div class="icon">📈</div>
-        <div class="label">{{ 'compliance.stats.reuse_rate'|trans }}</div>
-        <div>
-            {% set reuseRate = totalDataPoints > 0 ? (reusedDataPoints / totalDataPoints * 100)|round : 0 %}
-            <span class="value">{{ reuseRate }}</span>
-            <span class="unit">%</span>
-        </div>
+    <div class="col-auto">
+        {% set reuseRate = totalDataPoints > 0 ? (reusedDataPoints / totalDataPoints * 100)|round : 0 %}
+        {{ cards.kpi_card('compliance.stats.reuse_rate'|trans, reuseRate ~ '%', null, null, null, null) }}
     </div>
-
-    <div class="kpi-card">
-        <div class="icon">💾</div>
-        <div class="label">{{ 'compliance.stats.effort_saved'|trans }}</div>
-        <div>
-            <span class="value">{{ effortSavedHours }}</span>
-            <span class="unit">h</span>
-        </div>
+    <div class="col-auto">
+        {{ cards.kpi_card('compliance.stats.effort_saved'|trans, effortSavedHours ~ 'h', null, null, null, null) }}
     </div>
 </div>
 
