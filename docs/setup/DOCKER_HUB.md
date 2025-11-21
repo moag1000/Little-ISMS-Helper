@@ -129,15 +129,16 @@ Der Workflow führt folgende Schritte aus:
 Tests passed → Build production image → Push to Docker Hub → Tag with metadata
 ```
 
-## Automatisches Logo-Upload
+## Automatisches Docker Hub Update
 
-Das Repository-Logo wird **automatisch zu Docker Hub hochgeladen** beim Push zum `main` Branch!
+Das Repository-Logo **und die README/Overview** werden **automatisch zu Docker Hub hochgeladen** bei jedem Release Tag (v*)!
 
 ### Wie funktioniert's?
 
 - ✅ Script: `.github/scripts/upload-dockerhub-logo.sh`
 - ✅ Logo: `public/logo-512.png` (512x512 PNG)
-- ✅ Trigger: Push zu `main` Branch
+- ✅ README: `README.md` → Docker Hub Overview Tab
+- ✅ Trigger: Git Tag `v*` (z.B. v1.10.1)
 - ✅ Fehler-tolerant: Build schlägt nicht fehl, wenn Upload nicht funktioniert
 
 ### Manueller Upload (falls nötig)
