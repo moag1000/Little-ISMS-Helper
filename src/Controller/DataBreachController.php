@@ -387,8 +387,13 @@ class DataBreachController extends AbstractController
     #[Route('/{id}/export/pdf', name: 'export_pdf', methods: ['GET'])]
     public function exportPdf(DataBreach $breach): Response
     {
+        // Generate version from last update date (Format: Year.Month.Day)
+        $lastUpdate = $breach->getUpdatedAt() ?? $breach->getCreatedAt() ?? new \DateTime();
+        $version = $lastUpdate->format('Y.m.d');
+
         $pdf = $this->pdfService->generatePdf('data_breach/data_breach_pdf.html.twig', [
             'breach' => $breach,
+            'version' => $version,
         ]);
 
         $filename = sprintf(

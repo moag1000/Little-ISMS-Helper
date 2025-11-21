@@ -75,7 +75,7 @@ class SoAReportService
         ];
 
         return $this->pdfExportService->generatePdf(
-            'soa/report_pdf.html.twig',
+            'soa/report_pdf_v2.html.twig',
             $data,
             array_merge(['orientation' => 'portrait', 'paper' => 'A4'], $options)
         );

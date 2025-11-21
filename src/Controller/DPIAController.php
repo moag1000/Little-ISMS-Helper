@@ -434,9 +434,14 @@ class DPIAController extends AbstractController
         // Close session to prevent blocking
         $request->getSession()->save();
 
+        // Generate version from last update date (Format: Year.Month.Day)
+        $lastUpdate = $dpia->getUpdatedAt() ?? $dpia->getCreatedAt() ?? new \DateTime();
+        $version = $lastUpdate->format('Y.m.d');
+
         $pdf = $this->pdfService->generatePdf('dpia/dpia_pdf.html.twig', [
             'dpia' => $dpia,
             'report' => $complianceReport,
+            'version' => $version,
         ]);
 
         $filename = sprintf(
