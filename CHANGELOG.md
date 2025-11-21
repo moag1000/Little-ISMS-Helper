@@ -15,6 +15,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.10.1] - 2025-11-21
+
+### Fixed
+**Critical Hotfix: Admin Login After Database Reset**
+
+- **ROLE_ADMIN Tenant Deadlock** - Admin can now access system without tenant assignment
+  - Changed tenant checks from `ROLE_SUPER_ADMIN` to `ROLE_ADMIN` in 4 controllers
+  - Prevents "No tenant assigned to user" error after `./reset-database.sh`
+  - Admin can manage tenants and assign themselves without deadlock
+- **CSRF Token Errors After Updates** - Auto-clear sessions after `composer update`
+  - Added `clear-sessions` script to composer.json
+  - Prevents "Invalid CSRF token" errors after database reset/updates
+  - Sessions automatically cleaned on composer post-update-cmd
+
+### Changed
+- HomeController: Allow ROLE_ADMIN without tenant (empty review/treatment data)
+- ComplianceController: Allow ROLE_ADMIN without tenant (empty fulfillments)
+- ComplianceFrameworkController: Allow ROLE_ADMIN without tenant (empty statistics)
+- ComplianceRequirementController: Allow ROLE_ADMIN without tenant (read-only access)
+
+### Technical
+- Composer script: `clear-sessions` removes all session files
+- Backward compatible: Regular users still require tenant assignment
+- Admin behavior: Can view system but sees no tenant-specific data until assigned
+
+---
+
 ## [1.10.0] - 2025-11-20
 
 ### Added
