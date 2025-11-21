@@ -283,6 +283,20 @@
     font-size: 0.9rem;
 }
 
+/* Dark Mode - Notifications */
+[data-theme="dark"] .notification {
+    background: var(--bg-elevated);
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .notification-title {
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .notification-body {
+    color: var(--text-secondary);
+}
+
 /* Filter Panel */
 .filter-panel {
     background: white;
@@ -323,6 +337,23 @@
     outline: none;
     border-color: var(--color-secondary);
     box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+/* Dark Mode - Filter Panel */
+[data-theme="dark"] .filter-panel {
+    background: var(--bg-elevated);
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] .filter-control label {
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .filter-control input,
+[data-theme="dark"] .filter-control select {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    border-color: var(--border-color);
 }
 
 /* Search Box */
@@ -499,6 +530,28 @@
 .dropdown-menu a:hover,
 .dropdown-menu button:hover {
     background-color: var(--color-bg);
+}
+
+/* Dark Mode - Dropdown */
+[data-theme="dark"] .dropdown-toggle {
+    background: var(--bg-elevated);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] .dropdown-menu {
+    background: var(--bg-elevated);
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] .dropdown-menu a,
+[data-theme="dark"] .dropdown-menu button {
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .dropdown-menu a:hover,
+[data-theme="dark"] .dropdown-menu button:hover {
+    background-color: var(--bg-secondary);
 }
 
 /* Tooltip */
