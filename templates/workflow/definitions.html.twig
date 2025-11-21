@@ -3,6 +3,8 @@
 {% block title %}{{ 'workflow.title.definitions'|trans }} - Little ISMS Helper{% endblock %}
 
 {% block body %}
+{% import '_macros/cards.html.twig' as cards %}
+
 <div class="page-header">
     <div>
         <h1>{{ 'workflow.title.definitions'|trans }}</h1>
@@ -20,46 +22,27 @@
 
 {# Statistics Cards #}
 <div class="kpi-grid">
-    <div class="kpi-card">
-        <div class="icon">📋</div>
-        <div class="label">{{ 'workflow.stats.total_definitions'|trans }}</div>
-        <div>
-            <span class="value">{{ workflows|length }}</span>
-        </div>
+    <div class="col-auto">
+        {{ cards.kpi_card('workflow.stats.total_definitions'|trans, workflows|length, null, null, 'primary', null) }}
     </div>
-
-    <div class="kpi-card">
-        <div class="icon">✅</div>
-        <div class="label">{{ 'workflow.stats.active_definitions'|trans }}</div>
-        <div>
-            <span class="value">{{ workflows|filter(w => w.isActive)|length }}</span>
-        </div>
+    <div class="col-auto">
+        {{ cards.kpi_card('workflow.stats.active_definitions'|trans, workflows|filter(w => w.isActive)|length, null, null, 'success', null) }}
     </div>
-
-    <div class="kpi-card">
-        <div class="icon">🔄</div>
-        <div class="label">{{ 'workflow.stats.avg_steps'|trans }}</div>
-        <div>
-            {% set totalSteps = 0 %}
-            {% for workflow in workflows %}
-                {% set totalSteps = totalSteps + workflow.steps|length %}
-            {% endfor %}
-            <span class="value">{{ workflows|length > 0 ? (totalSteps / workflows|length)|round : 0 }}</span>
-        </div>
+    <div class="col-auto">
+        {% set totalSteps = 0 %}
+        {% for workflow in workflows %}
+            {% set totalSteps = totalSteps + workflow.steps|length %}
+        {% endfor %}
+        {{ cards.kpi_card('workflow.stats.avg_steps'|trans, workflows|length > 0 ? (totalSteps / workflows|length)|round : 0, null, null, 'info', null) }}
     </div>
-
-    <div class="kpi-card">
-        <div class="icon">📊</div>
-        <div class="label">{{ 'workflow.stats.entity_types'|trans }}</div>
-        <div>
-            {% set entityTypes = [] %}
-            {% for w in workflows %}
-                {% if w.entityType not in entityTypes %}
-                    {% set entityTypes = entityTypes|merge([w.entityType]) %}
-                {% endif %}
-            {% endfor %}
-            <span class="value">{{ entityTypes|length }}</span>
-        </div>
+    <div class="col-auto">
+        {% set entityTypes = [] %}
+        {% for w in workflows %}
+            {% if w.entityType not in entityTypes %}
+                {% set entityTypes = entityTypes|merge([w.entityType]) %}
+            {% endif %}
+        {% endfor %}
+        {{ cards.kpi_card('workflow.stats.entity_types'|trans, entityTypes|length, null, null, 'secondary', null) }}
     </div>
 </div>
 

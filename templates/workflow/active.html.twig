@@ -3,6 +3,8 @@
 {% block title %}{{ 'workflow.title.active'|trans }} - Little ISMS Helper{% endblock %}
 
 {% block body %}
+{% import '_macros/cards.html.twig' as cards %}
+
 <div class="page-header">
     <div>
         <h1>{{ 'workflow.title.active'|trans }}</h1>
@@ -17,41 +19,22 @@
 
 {# Statistics Cards #}
 <div class="kpi-grid">
-    <div class="kpi-card">
-        <div class="icon">🔄</div>
-        <div class="label">{{ 'workflow.stats.active'|trans }}</div>
-        <div>
-            <span class="value">{{ activeInstances|length }}</span>
-        </div>
+    <div class="col-auto">
+        {{ cards.kpi_card('workflow.stats.active'|trans, activeInstances|length, null, null, 'info', null) }}
     </div>
-
-    <div class="kpi-card">
-        <div class="icon">📈</div>
-        <div class="label">{{ 'workflow.stats.avg_progress'|trans }}</div>
-        <div>
-            {% set totalProgress = 0 %}
-            {% for instance in activeInstances %}
-                {% set totalProgress = totalProgress + (instance.completedSteps|length / instance.definition.steps|length * 100) %}
-            {% endfor %}
-            <span class="value">{{ activeInstances|length > 0 ? (totalProgress / activeInstances|length)|round : 0 }}</span>
-            <span class="unit">%</span>
-        </div>
+    <div class="col-auto">
+        {% set totalProgress = 0 %}
+        {% for instance in activeInstances %}
+            {% set totalProgress = totalProgress + (instance.completedSteps|length / instance.definition.steps|length * 100) %}
+        {% endfor %}
+        {% set avgProgress = activeInstances|length > 0 ? (totalProgress / activeInstances|length)|round : 0 %}
+        {{ cards.kpi_card('workflow.stats.avg_progress'|trans, avgProgress ~ '%', null, avgProgress, 'primary', null) }}
     </div>
-
-    <div class="kpi-card">
-        <div class="icon">⚠️</div>
-        <div class="label">{{ 'workflow.stats.overdue'|trans }}</div>
-        <div>
-            <span class="value">{{ activeInstances|filter(i => i.overdue)|length }}</span>
-        </div>
+    <div class="col-auto">
+        {{ cards.kpi_card('workflow.stats.overdue'|trans, activeInstances|filter(i => i.overdue)|length, null, null, 'danger', null) }}
     </div>
-
-    <div class="kpi-card">
-        <div class="icon">👤</div>
-        <div class="label">{{ 'workflow.stats.my_workflows'|trans }}</div>
-        <div>
-            <span class="value">{{ activeInstances|filter(i => i.assignee and i.assignee.id == app.user.id)|length }}</span>
-        </div>
+    <div class="col-auto">
+        {{ cards.kpi_card('workflow.stats.my_workflows'|trans, activeInstances|filter(i => i.assignee and i.assignee.id == app.user.id)|length, null, null, 'success', null) }}
     </div>
 </div>
 
