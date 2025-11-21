@@ -1,19 +1,19 @@
 {% extends 'base.html.twig' %}
 {% import '_macros/inheritance_badge.html.twig' as inheritance %}
 
-{% block title %}{{ 'incident_management.title'|trans }} - {{ 'app.title'|trans }}{% endblock %}
+{% block title %}{{ 'incident_management.title'|trans({}, 'incidents') }} - {{ 'app.title'|trans }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'incident_management.title'|trans }}</h1>
+        <h1><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'incident_management.title'|trans({}, 'incidents') }}</h1>
         <a href="{{ path('app_incident_new') }}" class="btn btn-primary">
-            <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'incident.action.report_new'|trans|default('Report New Incident') }}
+            <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'incident.action.report_new'|trans({}, 'incidents')|default('Report New Incident') }}
         </a>
     </div>
 
     <p class="text-muted mb-4">
-        {{ 'incident_management.description'|trans }}
+        {{ 'incident_management.description'|trans({}, 'incidents') }}
     </p>
 
     {# Skip link for filters section - WCAG 2.4.1 #}
@@ -58,7 +58,7 @@
             <div class="card border-warning">
                 <div class="card-body text-center">
                     <h3 class="text-warning">{{ openIncidents|length }}</h3>
-                    <p class="mb-0">{{ 'incident_management.open_incidents'|trans }}</p>
+                    <p class="mb-0">{{ 'incident_management.open_incidents'|trans({}, 'incidents') }}</p>
                 </div>
             </div>
         </div>
@@ -73,7 +73,7 @@
                         {% endif %}
                     {% endfor %}
                     <h3 class="text-danger">{{ nis2Count }}</h3>
-                    <p class="mb-0">{{ 'incident.kpi.nis2_attention'|trans|default('NIS2 Requiring Attention') }}</p>
+                    <p class="mb-0">{{ 'incident.kpi.nis2_attention'|trans({}, 'incidents')|default('NIS2 Requiring Attention') }}</p>
                 </div>
             </div>
         </div>
@@ -82,7 +82,7 @@
             <div class="card border-info">
                 <div class="card-body text-center">
                     <h3 class="text-info">{{ categoryStats|length }}</h3>
-                    <p class="mb-0">{{ 'incident.kpi.categories'|trans|default('Categories') }}</p>
+                    <p class="mb-0">{{ 'incident.kpi.categories'|trans({}, 'incidents')|default('Categories') }}</p>
                 </div>
             </div>
         </div>
@@ -91,11 +91,11 @@
                 <div class="card-body text-center">
                     <h3>{{ detailedStats.total }}</h3>
                     {% if currentTenant %}
-                        <p class="mb-0" style="font-size: 11px; color: #6c757d; opacity: 0.85;">
+                        <p class="mb-0 text-muted small" style="font-size: 11px; opacity: 0.85;">
                             {{ 'corporate.stats.breakdown'|trans({'%own%': detailedStats.own, '%inherited%': detailedStats.inherited, '%subsidiaries%': detailedStats.subsidiaries}) }}
                         </p>
                     {% endif %}
-                    <p class="mb-0">{{ 'incident_management.total_recorded'|trans }}</p>
+                    <p class="mb-0">{{ 'incident_management.total_recorded'|trans({}, 'incidents') }}</p>
                 </div>
             </div>
         </div>

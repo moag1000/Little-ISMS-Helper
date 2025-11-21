@@ -65,7 +65,7 @@
                                     <span id="training-total-count">{{ detailedStats.total }}</span>
                                 </h3>
                                 {% if currentTenant %}
-                                    <small style="font-size: 11px; color: #6c757d; opacity: 0.85; display: block;">
+                                    <small class="text-muted d-block" style="font-size: 11px; opacity: 0.85;">
                                         {{ 'corporate.stats.breakdown'|trans({'%own%': detailedStats.own, '%inherited%': detailedStats.inherited, '%subsidiaries%': detailedStats.subsidiaries}) }}
                                     </small>
                                 {% endif %}
