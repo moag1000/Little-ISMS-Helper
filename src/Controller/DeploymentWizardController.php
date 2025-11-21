@@ -126,8 +126,10 @@ class DeploymentWizardController extends AbstractController
         if ($isDockerStandalone && file_exists($envLocalPath)) {
             $envVars = $this->envWriter->readEnvLocal();
             if (!empty($envVars['DATABASE_URL'])) {
-                // Database already configured - mark as done and skip to step 3
+                // Database already configured by init-mysql.sh - mark as done
                 $session->set('setup_database_configured', true);
+                // init-mysql.sh also runs migrations, so mark schema as created
+                $session->set('setup_schema_created', true);
                 $this->addFlash('info', $this->translator->trans('setup.database.docker_auto_configured'));
                 return $this->redirectToRoute('setup_step3_restore_backup');
             }
