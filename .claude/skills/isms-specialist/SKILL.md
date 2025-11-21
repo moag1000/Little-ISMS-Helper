@@ -439,14 +439,23 @@ Automatically engage when the user mentions:
 **Regulation (EU) 2022/2554** - Digital Operational Resilience Act
 - **Adopted**: December 14, 2022
 - **Published**: Official Journal L 333, December 27, 2022
-- **Application Date**: January 17, 2025 (mandatory compliance)
+- **Application Date**: January 17, 2025 (✅ **IN FORCE since January 2025**)
 - **Official Text**: https://eur-lex.europa.eu/eli/reg/2022/2554/oj
+- **Current Status (November 2025)**: Fully enforced, active supervision ongoing
 
 **Scope**:
 - Banks, insurance companies, investment firms
 - Payment institutions, e-money institutions
 - Crypto-asset service providers
 - **ICT third-party service providers** (critical/important services to financial entities)
+
+**Enforcement Status:**
+- ✅ DORA fully applicable since January 17, 2025
+- ✅ Critical ICT third-party providers (CTPPs) designated: **November 18, 2025**
+- ✅ 19 CTPPs identified: AWS, Google Cloud, Microsoft, Oracle, SAP, Deutsche Telekom, etc.
+- ✅ Active supervision: On-site inspections, reporting obligations, annual risk analyses
+- ⚠️  Penalties active: Up to 2% of global turnover for financial entities, up to €5M for CTPPs
+- 🔴 EU Commission opened infringement procedures (March 2025) against 13 Member States for incomplete transposition
 
 ### Core Pillars
 
@@ -573,8 +582,11 @@ Automatically engage when the user mentions:
 
 **German Implementation**:
 - **NIS2UmsuCG** (NIS2-Umsetzungs- und Cybersicherheitsstärkungsgesetz)
-- **Status**: Draft law in legislative process (as of Q4 2024)
-- **Expected**: Full implementation by October 17, 2024
+- **Status (November 2025)**: ✅ **Adopted by Bundestag on November 13, 2025**
+- **Entry into Force**: Before end of 2025 (law enters into force day after promulgation)
+- **Impact**: ~29,000 companies will be obliged to implement cybersecurity measures
+- **No Transition Period**: Obligations apply immediately from law's entry into force
+- **Previous Delays**: Legislative process delayed due to early Federal elections (February 2025), requiring reintroduction of draft bill
 
 **Scope**:
 - **Essential entities**: Energy, transport, banking, health, critical infrastructure
