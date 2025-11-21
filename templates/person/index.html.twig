@@ -3,6 +3,8 @@
 {% block title %}{{ 'person.title.list'|trans }} - Little ISMS Helper{% endblock %}
 
 {% block body %}
+{% import '_macros/cards.html.twig' as cards %}
+
 <div class="page-header">
     <div>
         <h1>{{ 'person.title.list'|trans }}</h1>
@@ -17,36 +19,17 @@
 
 {# Statistics Cards #}
 <div class="kpi-grid">
-    <div class="kpi-card">
-        <div class="icon">👥</div>
-        <div class="label">{{ 'person.stats.total'|trans }}</div>
-        <div>
-            <span class="value">{{ persons|length }}</span>
-        </div>
+    <div class="col-auto">
+        {{ cards.kpi_card('person.stats.total'|trans, persons|length, null, null, null, null) }}
     </div>
-
-    <div class="kpi-card">
-        <div class="icon">👨‍💼</div>
-        <div class="label">{{ 'person.stats.employees'|trans }}</div>
-        <div>
-            <span class="value">{{ persons|filter(p => p.personType == 'employee')|length }}</span>
-        </div>
+    <div class="col-auto">
+        {{ cards.kpi_card('person.stats.employees'|trans, persons|filter(p => p.personType == 'employee')|length, null, null, 'success', null) }}
     </div>
-
-    <div class="kpi-card">
-        <div class="icon">🔧</div>
-        <div class="label">{{ 'person.stats.contractors'|trans }}</div>
-        <div>
-            <span class="value">{{ persons|filter(p => p.personType == 'contractor')|length }}</span>
-        </div>
+    <div class="col-auto">
+        {{ cards.kpi_card('person.stats.contractors'|trans, persons|filter(p => p.personType == 'contractor')|length, null, null, 'info', null) }}
     </div>
-
-    <div class="kpi-card">
-        <div class="icon">🎫</div>
-        <div class="label">{{ 'person.stats.with_badge'|trans }}</div>
-        <div>
-            <span class="value">{{ persons|filter(p => p.badgeId)|length }}</span>
-        </div>
+    <div class="col-auto">
+        {{ cards.kpi_card('person.stats.with_badge'|trans, persons|filter(p => p.badgeId)|length, null, null, 'warning', null) }}
     </div>
 </div>
 
