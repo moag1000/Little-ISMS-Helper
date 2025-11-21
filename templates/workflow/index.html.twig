@@ -3,6 +3,8 @@
 {% block title %}{{ 'workflow.title.list'|trans }} - Little ISMS Helper{% endblock %}
 
 {% block body %}
+{% import '_macros/cards.html.twig' as cards %}
+
 <div class="page-header">
     <div>
         <h1>{{ 'workflow.title.list'|trans }}</h1>
@@ -20,36 +22,17 @@
 
 {# Statistics Cards #}
 <div class="kpi-grid">
-    <div class="kpi-card">
-        <div class="icon">📊</div>
-        <div class="label">{{ 'workflow.stats.total'|trans }}</div>
-        <div>
-            <span class="value">{{ instances|length }}</span>
-        </div>
+    <div class="col-auto">
+        {{ cards.kpi_card('workflow.stats.total'|trans, instances|length, null, null, null, null) }}
     </div>
-
-    <div class="kpi-card">
-        <div class="icon">🔄</div>
-        <div class="label">{{ 'workflow.stats.active'|trans }}</div>
-        <div>
-            <span class="value">{{ instances|filter(i => i.status == 'active')|length }}</span>
-        </div>
+    <div class="col-auto">
+        {{ cards.kpi_card('workflow.stats.active'|trans, instances|filter(i => i.status == 'active')|length, null, null, 'info', null) }}
     </div>
-
-    <div class="kpi-card">
-        <div class="icon">⏳</div>
-        <div class="label">{{ 'workflow.stats.pending'|trans }}</div>
-        <div>
-            <span class="value">{{ instances|filter(i => i.status == 'pending')|length }}</span>
-        </div>
+    <div class="col-auto">
+        {{ cards.kpi_card('workflow.stats.pending'|trans, instances|filter(i => i.status == 'pending')|length, null, null, 'warning', null) }}
     </div>
-
-    <div class="kpi-card">
-        <div class="icon">⚠️</div>
-        <div class="label">{{ 'workflow.stats.overdue'|trans }}</div>
-        <div>
-            <span class="value">{{ instances|filter(i => i.overdue)|length }}</span>
-        </div>
+    <div class="col-auto">
+        {{ cards.kpi_card('workflow.stats.overdue'|trans, instances|filter(i => i.overdue)|length, null, null, 'danger', null) }}
     </div>
 </div>
 
