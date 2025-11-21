@@ -110,6 +110,9 @@
             "@php -r '$files = glob(\"public/assets/*/*.{js,css,map,json}\", GLOB_BRACE) ?: []; foreach ($files as $f) { if (is_file($f)) @unlink($f); }'",
             "@php -r '$files = glob(\"public/assets/*/*/*.{js,css,map,json}\", GLOB_BRACE) ?: []; foreach ($files as $f) { if (is_file($f)) @unlink($f); }'"
         ],
+        "clear-sessions": [
+            "@php -r '$files = glob(\"var/sessions/sess_*\") ?: []; foreach ($files as $f) { if (is_file($f)) @unlink($f); } echo \"Sessions cleared.\\n\";'"
+        ],
         "post-install-cmd": [
             "@setup-directories",
             "@clean-assets",
@@ -118,6 +121,7 @@
         "post-update-cmd": [
             "@setup-directories",
             "@clean-assets",
+            "@clear-sessions",
             "@auto-scripts"
         ]
     },
