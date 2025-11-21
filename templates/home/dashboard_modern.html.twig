@@ -2,6 +2,45 @@
 
 {% block title %}Dashboard{% endblock %}
 
+{# Macros for Dashboard Cards #}
+{% macro stat_card(icon, bg_color, title, value, change_icon, change_text, change_type) %}
+    <div class="stat-card">
+        <div class="stat-card-icon {{ bg_color }}" aria-hidden="true">
+            <i class="{{ icon }}" aria-hidden="true"></i>
+        </div>
+        <div class="stat-card-title">{{ title }}</div>
+        <div class="stat-card-value">{{ value }}</div>
+        <div class="stat-card-change {{ change_type|default('') }}">
+            {% if change_icon %}
+                <i class="{{ change_icon }}" aria-hidden="true"></i>
+            {% endif %}
+            <span>{{ change_text }}</span>
+        </div>
+    </div>
+{% endmacro %}
+
+{% macro widget_card(widget_id, title, icon, actions, content, border_class, header_bg_class, badge_text, badge_class) %}
+    <div class="widget-card mb-4 {{ border_class|default('') }}"
+         data-widget-id="{{ widget_id }}"
+         data-dashboard-customizer-target="widget">
+        <div class="widget-header {{ header_bg_class|default('') }}">
+            <h3 class="widget-title {{ border_class ? 'text-' ~ border_class|replace({'border-': ''}) : '' }}">
+                <i class="{{ icon }}" aria-hidden="true"></i>
+                {{ title }}
+            </h3>
+            {% if badge_text %}
+                <span class="badge {{ badge_class|default('bg-secondary') }}">{{ badge_text }}</span>
+            {% endif %}
+            {% if actions %}
+                <div class="widget-actions">
+                    {{ actions|raw }}
+                </div>
+            {% endif %}
+        </div>
+        {{ content|raw }}
+    </div>
+{% endmacro %}
+
 {% block body %}
 <div class="container-fluid"
      data-controller="dashboard-customizer"
@@ -29,68 +68,62 @@
         </button>
     </div>
 
+    {% import _self as macros %}
+
     {# Stats Cards Row #}
     <div class="row mb-4"
          data-widget-id="stats-cards"
          data-dashboard-customizer-target="widget">
         {# Assets Card #}
         <div class="col-lg-3 col-md-6">
-            <div class="stat-card">
-                <div class="stat-card-icon bg-primary" aria-hidden="true">
-                    <i class="bi bi-server" aria-hidden="true"></i>
-                </div>
-                <div class="stat-card-title">Registrierte Assets</div>
-                <div class="stat-card-value">{{ stats.assets_total|default(0) }}</div>
-                <div class="stat-card-change positive">
-                    <i class="bi bi-arrow-up" aria-hidden="true"></i>
-                    <span>{{ stats.assets_critical|default(0) }} kritisch</span>
-                </div>
-            </div>
+            {{ macros.stat_card(
+                'bi bi-server',
+                'bg-primary',
+                'Registrierte Assets',
+                stats.assets_total|default(0),
+                'bi bi-arrow-up',
+                stats.assets_critical|default(0) ~ ' kritisch',
+                'positive'
+            ) }}
         </div>
 
         {# Risks Card #}
         <div class="col-lg-3 col-md-6">
-            <div class="stat-card">
-                <div class="stat-card-icon bg-warning" aria-hidden="true">
-                    <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
-                </div>
-                <div class="stat-card-title">Identifizierte Risiken</div>
-                <div class="stat-card-value">{{ stats.risks_total|default(0) }}</div>
-                <div class="stat-card-change negative">
-                    <i class="bi bi-arrow-up" aria-hidden="true"></i>
-                    <span>{{ stats.risks_high|default(0) }} hoch</span>
-                </div>
-            </div>
+            {{ macros.stat_card(
+                'bi bi-exclamation-triangle',
+                'bg-warning',
+                'Identifizierte Risiken',
+                stats.risks_total|default(0),
+                'bi bi-arrow-up',
+                stats.risks_high|default(0) ~ ' hoch',
+                'negative'
+            ) }}
         </div>
 
         {# Controls Card #}
         <div class="col-lg-3 col-md-6">
-            <div class="stat-card">
-                <div class="stat-card-icon bg-success" aria-hidden="true">
-                    <i class="bi bi-shield-check" aria-hidden="true"></i>
-                </div>
-                <div class="stat-card-title">Sicherheitsmaßnahmen</div>
-                <div class="stat-card-value">{{ stats.controls_implemented|default(0) }}/{{ stats.controls_total|default(0) }}</div>
-                <div class="stat-card-change positive">
-                    <i class="bi bi-check-circle" aria-hidden="true"></i>
-                    <span>{{ stats.compliance_percentage|default(0) }}% implementiert</span>
-                </div>
-            </div>
+            {{ macros.stat_card(
+                'bi bi-shield-check',
+                'bg-success',
+                'Sicherheitsmaßnahmen',
+                stats.controls_implemented|default(0) ~ '/' ~ stats.controls_total|default(0),
+                'bi bi-check-circle',
+                stats.compliance_percentage|default(0) ~ '% implementiert',
+                'positive'
+            ) }}
         </div>
 
         {# Incidents Card #}
         <div class="col-lg-3 col-md-6">
-            <div class="stat-card">
-                <div class="stat-card-icon bg-danger" aria-hidden="true">
-                    <i class="bi bi-exclamation-circle" aria-hidden="true"></i>
-                </div>
-                <div class="stat-card-title">Offene Vorfälle</div>
-                <div class="stat-card-value">{{ stats.incidents_open|default(0) }}</div>
-                <div class="stat-card-change">
-                    <i class="bi bi-clock-history" aria-hidden="true"></i>
-                    <span>In Bearbeitung</span>
-                </div>
-            </div>
+            {{ macros.stat_card(
+                'bi bi-exclamation-circle',
+                'bg-danger',
+                'Offene Vorfälle',
+                stats.incidents_open|default(0),
+                'bi bi-clock-history',
+                'In Bearbeitung',
+                ''
+            ) }}
         </div>
     </div>
 
