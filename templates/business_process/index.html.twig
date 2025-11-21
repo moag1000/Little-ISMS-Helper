@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% import '_macros/inheritance_badge.html.twig' as inheritance %}
+{% import '_macros/cards.html.twig' as cards %}
 
 {% block title %}Business Continuity Management{% endblock %}
 
@@ -52,49 +53,21 @@
     <turbo-frame id="bcm-stats" src="{{ path('app_business_process_stats_api') }}" loading="lazy">
         <div class="row mb-4">
             <div class="col-md-3">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Gesamt</h5>
-                        <p class="display-6">
-                            <span id="bcm-total-count">{{ detailedStats.total }}</span>
-                        </p>
-                        {% if currentTenant %}
-                            <small style="font-size: 11px; color: #6c757d; opacity: 0.85; display: block; margin-top: 0.5rem;">
-                                {{ 'corporate.stats.breakdown'|trans({'%own%': detailedStats.own, '%inherited%': detailedStats.inherited, '%subsidiaries%': detailedStats.subsidiaries}) }}
-                            </small>
-                        {% endif %}
-                        <small class="text-muted">Geschäftsprozesse</small>
-                    </div>
-                </div>
+                {% if currentTenant %}
+                    {% set subtitle = 'corporate.stats.breakdown'|trans({'%own%': detailedStats.own, '%inherited%': detailedStats.inherited, '%subsidiaries%': detailedStats.subsidiaries}) %}
+                    {{ cards.kpi_card('Gesamt', detailedStats.total, subtitle, null, null, null) }}
+                {% else %}
+                    {{ cards.kpi_card('Gesamt', detailedStats.total, 'Geschäftsprozesse', null, null, null) }}
+                {% endif %}
             </div>
             <div class="col-md-3">
-                <div class="card border-danger">
-                    <div class="card-body">
-                        <h5 class="card-title">Kritisch</h5>
-                        <p class="display-6 text-danger">
-                            <span id="bcm-critical-count">{{ stats.critical }}</span>
-                        </p>
-                        <small class="text-muted">Höchste Priorität</small>
-                    </div>
-                </div>
+                {{ cards.kpi_card('Kritisch', stats.critical, 'Höchste Priorität', null, 'danger', 'border-danger') }}
             </div>
             <div class="col-md-3">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Ø RTO</h5>
-                        <p class="display-6">{{ stats.avg_rto }}h</p>
-                        <small class="text-muted">Recovery Time Objective</small>
-                    </div>
-                </div>
+                {{ cards.kpi_card('Ø RTO', stats.avg_rto ~ 'h', 'Recovery Time Objective', null, 'info', null) }}
             </div>
             <div class="col-md-3">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Mit Risiken</h5>
-                        <p class="display-6">{{ stats.processes_with_risks }}</p>
-                        <small class="text-muted">Aktive Risiken</small>
-                    </div>
-                </div>
+                {{ cards.kpi_card('Mit Risiken', stats.processes_with_risks, 'Aktive Risiken', null, 'warning', null) }}
             </div>
         </div>
     </turbo-frame>
