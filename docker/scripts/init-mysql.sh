@@ -77,7 +77,24 @@ fi
 # ALWAYS update DATABASE_URL in .env.local to ensure correct connection
 # This is critical for container restarts where the container is rebuilt
 # but the volume (with the database) persists
-echo "DATABASE_URL=\"mysql://$DB_USER:$DB_PASS@localhost/$DB_NAME?unix_socket=/run/mysqld/mysqld.sock&serverVersion=mariadb-11.4.0&charset=utf8mb4\"" > /var/www/html/.env.local
+
+# Generate APP_SECRET if .env.local doesn't exist
+if [ ! -f /var/www/html/.env.local ]; then
+    echo "APP_SECRET=$(openssl rand -hex 32)" > /var/www/html/.env.local
+    echo "APP_ENV=prod" >> /var/www/html/.env.local
+    echo ".env.local created with APP_SECRET"
+fi
+
+# Update or add DATABASE_URL (preserving other variables)
+ENV_FILE=/var/www/html/.env.local
+if grep -q "^DATABASE_URL=" "$ENV_FILE" 2>/dev/null; then
+    # Update existing DATABASE_URL
+    sed -i "s|^DATABASE_URL=.*|DATABASE_URL=\"mysql://$DB_USER:$DB_PASS@localhost/$DB_NAME?unix_socket=/run/mysqld/mysqld.sock\&serverVersion=mariadb-11.4.0\&charset=utf8mb4\"|" "$ENV_FILE"
+else
+    # Add DATABASE_URL
+    echo "DATABASE_URL=\"mysql://$DB_USER:$DB_PASS@localhost/$DB_NAME?unix_socket=/run/mysqld/mysqld.sock&serverVersion=mariadb-11.4.0&charset=utf8mb4\"" >> "$ENV_FILE"
+fi
+
 chown www-data:www-data /var/www/html/.env.local
 chmod 600 /var/www/html/.env.local
 echo "DATABASE_URL configured in .env.local"
