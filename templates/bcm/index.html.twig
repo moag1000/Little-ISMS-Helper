@@ -3,6 +3,8 @@
 {% block title %}Business Continuity Management{% endblock %}
 
 {% block body %}
+{% import '_macros/cards.html.twig' as cards %}
+
 <div class="container">
     <div class="page-header">
         <div>
@@ -21,44 +23,20 @@
 
     {# KPI Overview Cards #}
     <div class="kpi-grid">
-        <div class="kpi-card">
-            <div class="kpi-icon bg-gradient-primary">📊</div>
-            <div class="kpi-content">
-                <div class="kpi-value">{{ stats.total }}</div>
-                <div class="kpi-label">Total Processes</div>
-            </div>
+        <div class="col-auto">
+            {{ cards.kpi_card('Total Processes', stats.total, null, null, 'primary', null) }}
         </div>
-
-        <div class="kpi-card">
-            <div class="kpi-icon bg-gradient-danger">🔴</div>
-            <div class="kpi-content">
-                <div class="kpi-value">{{ stats.critical }}</div>
-                <div class="kpi-label">Critical Processes</div>
-            </div>
+        <div class="col-auto">
+            {{ cards.kpi_card('Critical Processes', stats.critical, null, null, 'danger', null) }}
         </div>
-
-        <div class="kpi-card">
-            <div class="kpi-icon bg-gradient-warning">🟠</div>
-            <div class="kpi-content">
-                <div class="kpi-value">{{ stats.high }}</div>
-                <div class="kpi-label">High Priority</div>
-            </div>
+        <div class="col-auto">
+            {{ cards.kpi_card('High Priority', stats.high, null, null, 'warning', null) }}
         </div>
-
-        <div class="kpi-card">
-            <div class="kpi-icon bg-gradient-success">⏱️</div>
-            <div class="kpi-content">
-                <div class="kpi-value">{{ stats.avg_rto|number_format(1) }}h</div>
-                <div class="kpi-label">Avg RTO</div>
-            </div>
+        <div class="col-auto">
+            {{ cards.kpi_card('Avg RTO', stats.avg_rto|number_format(1) ~ 'h', null, null, 'success', null) }}
         </div>
-
-        <div class="kpi-card">
-            <div class="kpi-icon bg-gradient-info">📅</div>
-            <div class="kpi-content">
-                <div class="kpi-value">{{ stats.avg_mtpd|number_format(1) }}h</div>
-                <div class="kpi-label">Avg MTPD</div>
-            </div>
+        <div class="col-auto">
+            {{ cards.kpi_card('Avg MTPD', stats.avg_mtpd|number_format(1) ~ 'h', null, null, 'info', null) }}
         </div>
     </div>
 

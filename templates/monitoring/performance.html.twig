@@ -6,6 +6,8 @@
 {% endblock %}
 
 {% block admin_content %}
+{% import '_macros/cards.html.twig' as cards %}
+
     <div class="mb-3">
         <a href="{{ path('monitoring_health') }}" class="btn btn-outline-secondary">
             <i class="bi bi-arrow-left" aria-hidden="true"></i> Back to Health
@@ -15,40 +17,16 @@
     {# Overview Statistics #}
     <div class="row mb-4">
         <div class="col-md-3">
-            <div class="card border-primary">
-                <div class="card-body text-center">
-                    <h5 class="card-title text-muted">Total Requests</h5>
-                    <p class="display-6 text-primary">{{ total_requests }}</p>
-                    <small>Last 24 hours</small>
-                </div>
-            </div>
+            {{ cards.kpi_card('Total Requests', total_requests, 'Last 24 hours', null, 'primary', 'border-primary') }}
         </div>
         <div class="col-md-3">
-            <div class="card border-success">
-                <div class="card-body text-center">
-                    <h5 class="card-title text-muted">Unique Users</h5>
-                    <p class="display-6 text-success">{{ unique_users }}</p>
-                    <small>Active today</small>
-                </div>
-            </div>
+            {{ cards.kpi_card('Unique Users', unique_users, 'Active today', null, 'success', 'border-success') }}
         </div>
         <div class="col-md-3">
-            <div class="card border-info">
-                <div class="card-body text-center">
-                    <h5 class="card-title text-muted">Memory Usage</h5>
-                    <p class="display-6 text-info small">{{ memory_usage }}</p>
-                    <small>Current</small>
-                </div>
-            </div>
+            {{ cards.kpi_card('Memory Usage', memory_usage, 'Current', null, 'info', 'border-info') }}
         </div>
         <div class="col-md-3">
-            <div class="card border-warning">
-                <div class="card-body text-center">
-                    <h5 class="card-title text-muted">Memory Peak</h5>
-                    <p class="display-6 text-warning small">{{ memory_peak }}</p>
-                    <small>Peak usage</small>
-                </div>
-            </div>
+            {{ cards.kpi_card('Memory Peak', memory_peak, 'Peak usage', null, 'warning', 'border-warning') }}
         </div>
     </div>
 
