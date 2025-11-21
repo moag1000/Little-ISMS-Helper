@@ -251,8 +251,12 @@ class ProcessingActivityController extends AbstractController
         // Close session to prevent blocking
         $request->getSession()->save();
 
+        // Generate version from export date (Format: Year.Month.Day)
+        $version = $exportData['generated_at']->format('Y.m.d');
+
         $pdf = $this->pdfService->generatePdf('processing_activity/vvt_pdf.html.twig', [
             'export' => $exportData,
+            'version' => $version,
         ]);
 
         $filename = sprintf(

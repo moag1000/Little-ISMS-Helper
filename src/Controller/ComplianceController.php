@@ -424,6 +424,10 @@ class ComplianceController extends AbstractController
         // Close session to prevent blocking other requests during PDF generation
         $request->getSession()->save();
 
+        // Generate version from generation date (Format: Year.Month.Day)
+        $pdfGenerationDate = new \DateTime();
+        $version = $pdfGenerationDate->format('Y.m.d');
+
         // Generate PDF
         $pdfContent = $this->pdfExportService->generatePdf('pdf/data_reuse_insights_report.html.twig', [
             'framework' => $framework,
@@ -432,7 +436,8 @@ class ComplianceController extends AbstractController
             'total_time_savings' => $totalTimeSavings,
             'total_days_savings' => round($totalTimeSavings / 8, 1),
             'avg_reuse_percentage' => $avgReusePercentage,
-            'pdf_generation_date' => new \DateTime(),
+            'pdf_generation_date' => $pdfGenerationDate,
+            'version' => $version,
         ]);
 
         $filename = sprintf('data_reuse_insights_%s_%s.pdf', $framework->getCode(), date('Y-m-d_His'));
@@ -792,6 +797,10 @@ class ComplianceController extends AbstractController
         // Close session to prevent blocking other requests during PDF generation
         $request->getSession()->save();
 
+        // Generate version from generation date (Format: Year.Month.Day)
+        $pdfGenerationDate = new \DateTime();
+        $version = $pdfGenerationDate->format('Y.m.d');
+
         // Generate PDF
         $pdfContent = $this->pdfExportService->generatePdf('pdf/gap_analysis_report.html.twig', [
             'framework' => $framework,
@@ -815,7 +824,8 @@ class ComplianceController extends AbstractController
             'root_cause_summary' => $rootCauseAnalysis['summary'],
             'category_patterns' => $rootCauseAnalysis['category_patterns'],
             'root_cause_recommendations' => $rootCauseAnalysis['recommendations'],
-            'pdf_generation_date' => new \DateTime(),
+            'pdf_generation_date' => $pdfGenerationDate,
+            'version' => $version,
         ]);
 
         $filename = sprintf('gap_analysis_%s_%s.pdf', $framework->getCode(), date('Y-m-d_His'));
@@ -1456,6 +1466,10 @@ class ComplianceController extends AbstractController
         // Close session to prevent blocking other requests during PDF generation
         $request->getSession()->save();
 
+        // Generate version from generation date (Format: Year.Month.Day)
+        $pdfGenerationDate = new \DateTime();
+        $version = $pdfGenerationDate->format('Y.m.d');
+
         // Generate PDF
         $pdfContent = $this->pdfExportService->generatePdf('pdf/transitive_compliance_report.html.twig', [
             'frameworks' => $frameworks,
@@ -1476,7 +1490,8 @@ class ComplianceController extends AbstractController
             'quality_distribution' => $qualityDistribution,
             'avg_mapping_quality' => $avgMappingQuality,
             'total_mappings' => $qualityCount,
-            'pdf_generation_date' => new \DateTime(),
+            'pdf_generation_date' => $pdfGenerationDate,
+            'version' => $version,
         ]);
 
         $filename = sprintf('transitive_compliance_report_%s.pdf', date('Y-m-d_His'));
@@ -1907,6 +1922,10 @@ class ComplianceController extends AbstractController
         // Close session to prevent blocking other requests during PDF generation
         $request->getSession()->save();
 
+        // Generate version from generation date (Format: Year.Month.Day)
+        $pdfGenerationDate = new \DateTime();
+        $version = $pdfGenerationDate->format('Y.m.d');
+
         // Generate PDF
         $pdfContent = $this->pdfExportService->generatePdf('pdf/framework_comparison_report.html.twig', [
             'framework1' => $framework1,
@@ -1931,7 +1950,8 @@ class ComplianceController extends AbstractController
             // Mapping quality distribution
             'quality_distribution' => $qualityDistribution,
             'avg_mapping_quality' => $avgMappingQuality,
-            'pdf_generation_date' => new \DateTime(),
+            'pdf_generation_date' => $pdfGenerationDate,
+            'version' => $version,
         ]);
 
         $filename = sprintf(

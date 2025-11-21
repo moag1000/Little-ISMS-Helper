@@ -51,9 +51,14 @@ class ReportController extends AbstractController
         // Close session to prevent blocking other requests during PDF generation
         $request->getSession()->save();
 
+        // Generate version from current date (Format: Year.Month.Day)
+        $generatedAt = new \DateTime();
+        $version = $generatedAt->format('Y.m.d');
+
         $pdf = $this->pdfService->generatePdf('reports/dashboard_pdf.html.twig', [
             'data' => $data,
-            'generated_at' => new \DateTime(),
+            'generated_at' => $generatedAt,
+            'version' => $version,
         ]);
 
         return new Response($pdf, 200, [
@@ -114,9 +119,21 @@ class ReportController extends AbstractController
         // Close session to prevent blocking other requests during PDF generation
         $request->getSession()->save();
 
+        // Generate version from latest risk update date (Format: Year.Month.Day)
+        $latestUpdate = null;
+        foreach ($risks as $risk) {
+            $updateDate = $risk->getUpdatedAt() ?? $risk->getCreatedAt();
+            if ($latestUpdate === null || ($updateDate !== null && $updateDate > $latestUpdate)) {
+                $latestUpdate = $updateDate;
+            }
+        }
+        $latestUpdate = $latestUpdate ?? new \DateTime();
+        $version = $latestUpdate->format('Y.m.d');
+
         $pdf = $this->pdfService->generatePdf('reports/risks_pdf.html.twig', [
             'risks' => $risks,
             'generated_at' => new \DateTime(),
+            'version' => $version,
         ]);
 
         return new Response($pdf, 200, [
@@ -169,9 +186,21 @@ class ReportController extends AbstractController
         // Close session to prevent blocking other requests during PDF generation
         $request->getSession()->save();
 
+        // Generate version from latest control update date (Format: Year.Month.Day)
+        $latestUpdate = null;
+        foreach ($controls as $control) {
+            $updateDate = $control->getUpdatedAt() ?? $control->getCreatedAt();
+            if ($latestUpdate === null || ($updateDate !== null && $updateDate > $latestUpdate)) {
+                $latestUpdate = $updateDate;
+            }
+        }
+        $latestUpdate = $latestUpdate ?? new \DateTime();
+        $version = $latestUpdate->format('Y.m.d');
+
         $pdf = $this->pdfService->generatePdf('reports/controls_pdf.html.twig', [
             'controls' => $controls,
             'generated_at' => new \DateTime(),
+            'version' => $version,
         ], ['orientation' => 'landscape']);
 
         return new Response($pdf, 200, [
@@ -223,9 +252,21 @@ class ReportController extends AbstractController
         // Close session to prevent blocking other requests during PDF generation
         $request->getSession()->save();
 
+        // Generate version from latest incident update date (Format: Year.Month.Day)
+        $latestUpdate = null;
+        foreach ($incidents as $incident) {
+            $updateDate = $incident->getUpdatedAt() ?? $incident->getCreatedAt();
+            if ($latestUpdate === null || ($updateDate !== null && $updateDate > $latestUpdate)) {
+                $latestUpdate = $updateDate;
+            }
+        }
+        $latestUpdate = $latestUpdate ?? new \DateTime();
+        $version = $latestUpdate->format('Y.m.d');
+
         $pdf = $this->pdfService->generatePdf('reports/incidents_pdf.html.twig', [
             'incidents' => $incidents,
             'generated_at' => new \DateTime(),
+            'version' => $version,
         ]);
 
         return new Response($pdf, 200, [
@@ -277,9 +318,21 @@ class ReportController extends AbstractController
         // Close session to prevent blocking other requests during PDF generation
         $request->getSession()->save();
 
+        // Generate version from latest training update date (Format: Year.Month.Day)
+        $latestUpdate = null;
+        foreach ($trainings as $training) {
+            $updateDate = $training->getUpdatedAt() ?? $training->getCreatedAt();
+            if ($latestUpdate === null || ($updateDate !== null && $updateDate > $latestUpdate)) {
+                $latestUpdate = $updateDate;
+            }
+        }
+        $latestUpdate = $latestUpdate ?? new \DateTime();
+        $version = $latestUpdate->format('Y.m.d');
+
         $pdf = $this->pdfService->generatePdf('reports/trainings_pdf.html.twig', [
             'trainings' => $trainings,
             'generated_at' => new \DateTime(),
+            'version' => $version,
         ]);
 
         return new Response($pdf, 200, [
