@@ -20,25 +20,6 @@
     </style>
 {% endblock %}
 
-{# Macro for Status Health Card #}
-{% macro status_card(title, icon, status, border_color, content, actions) %}
-    <div class="card h-100 border-{{ border_color }}">
-        <div class="card-header bg-{{ border_color }} text-white">
-            <h3 class="mb-0">
-                <i class="bi bi-{{ icon }}" aria-hidden="true"></i> {{ title }}
-            </h3>
-        </div>
-        <div class="card-body">
-            {{ content|raw }}
-            {% if actions %}
-                <div class="mt-3">
-                    {{ actions|raw }}
-                </div>
-            {% endif %}
-        </div>
-    </div>
-{% endmacro %}
-
 {% block admin_content %}
     <div class="mb-3">
         <a href="{{ path('monitoring_health_json') }}" class="btn btn-outline-secondary" target="_blank">
@@ -68,7 +49,7 @@
         </div>
     </div>
 
-    {% import _self as macros %}
+    {% import '_macros/cards.html.twig' as cards %}
     <div class="row">
         {# Database Health #}
         <div class="col-md-6 mb-4">
@@ -97,7 +78,7 @@
                     {% endif %}
                 </dl>
             {% endset %}
-            {{ macros.status_card('Database', 'database', db_status, db_color, db_content) }}
+            {{ cards.status_card('Database', 'database', db_status, db_color, db_content) }}
         </div>
 
         {# Disk Space #}
@@ -136,7 +117,7 @@
                     <div id="fix-result-optimize-disk"></div>
                 {% endif %}
             {% endset %}
-            {{ macros.status_card('Disk Space', 'hdd', disk_status, disk_color, disk_content, disk_actions) }}
+            {{ cards.status_card('Disk Space', 'hdd', disk_status, disk_color, disk_content, disk_actions) }}
         </div>
 
         {# PHP Info #}
@@ -172,7 +153,7 @@
                     {% endif %}
                 </dl>
             {% endset %}
-            {{ macros.status_card('PHP', 'code-slash', php_status, php_color, php_content) }}
+            {{ cards.status_card('PHP', 'code-slash', php_status, php_color, php_content) }}
         </div>
 
         {# Symfony Info #}
@@ -199,7 +180,7 @@
                     </dd>
                 </dl>
             {% endset %}
-            {{ macros.status_card('Symfony', 'gear', symfony_status, symfony_color, symfony_content) }}
+            {{ cards.status_card('Symfony', 'gear', symfony_status, symfony_color, symfony_content) }}
         </div>
 
         {# Cache #}
@@ -244,7 +225,7 @@
                     <div id="fix-result-clear-cache"></div>
                 {% endif %}
             {% endset %}
-            {{ macros.status_card('Cache', 'lightning', cache_status, cache_color, cache_content, cache_actions) }}
+            {{ cards.status_card('Cache', 'lightning', cache_status, cache_color, cache_content, cache_actions) }}
         </div>
 
         {# Logs #}
@@ -294,7 +275,7 @@
                     <div id="fix-result-rotate-logs"></div>
                 {% endif %}
             {% endset %}
-            {{ macros.status_card('Logs', 'file-text', logs_status, logs_color, logs_content, logs_actions) }}
+            {{ cards.status_card('Logs', 'file-text', logs_status, logs_color, logs_content, logs_actions) }}
         </div>
 
         {# File Permissions #}
@@ -352,7 +333,7 @@
                     <div id="fix-result-uploads-permissions"></div>
                 {% endif %}
             {% endset %}
-            {{ macros.status_card('File Permissions', 'shield-lock', perms_status, perms_color, perms_content, perms_actions) }}
+            {{ cards.status_card('File Permissions', 'shield-lock', perms_status, perms_color, perms_content, perms_actions) }}
         </div>
         {% endif %}
 
@@ -401,7 +382,7 @@
                     <div id="fix-result-composer-install"></div>
                 {% endif %}
             {% endset %}
-            {{ macros.status_card('Composer', 'box-seam', composer_status, composer_color, composer_content, composer_actions) }}
+            {{ cards.status_card('Composer', 'box-seam', composer_status, composer_color, composer_content, composer_actions) }}
         </div>
         {% endif %}
 
@@ -445,7 +426,7 @@
                     {% endif %}
                 </dl>
             {% endset %}
-            {{ macros.status_card('Environment', 'file-earmark-text', env_status, env_color, env_content) }}
+            {{ cards.status_card('Environment', 'file-earmark-text', env_status, env_color, env_content) }}
         </div>
         {% endif %}
 
@@ -485,7 +466,7 @@
                     {% endif %}
                 </dl>
             {% endset %}
-            {{ macros.status_card('PHP Configuration', 'sliders', phpconf_status, phpconf_color, phpconf_content) }}
+            {{ cards.status_card('PHP Configuration', 'sliders', phpconf_status, phpconf_color, phpconf_content) }}
         </div>
         {% endif %}
 
@@ -521,7 +502,7 @@
                     <div id="fix-result-session-permissions"></div>
                 {% endif %}
             {% endset %}
-            {{ macros.status_card('Sessions', 'key', sessions_status, sessions_color, sessions_content, sessions_actions) }}
+            {{ cards.status_card('Sessions', 'key', sessions_status, sessions_color, sessions_content, sessions_actions) }}
         </div>
         {% endif %}
 
@@ -560,7 +541,7 @@
                     <div id="fix-result-clean-uploads"></div>
                 {% endif %}
             {% endset %}
-            {{ macros.status_card('Uploads', 'cloud-upload', uploads_status, uploads_color, uploads_content, uploads_actions) }}
+            {{ cards.status_card('Uploads', 'cloud-upload', uploads_status, uploads_color, uploads_content, uploads_actions) }}
         </div>
         {% endif %}
     </div>
