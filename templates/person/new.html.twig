@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% trans_default_domain 'people' %}
 
 {% block title %}{{ 'person.title.create'|trans }} - Little ISMS Helper{% endblock %}
 
@@ -9,7 +10,7 @@
     </div>
     <div class="button-group">
         <a href="{{ path('app_person_index') }}" class="btn btn-secondary">
-            ← {{ 'common.back_to_list'|trans }}
+            ← {{ 'common.back_to_list'|trans({}, 'messages') }}
         </a>
     </div>
 </div>
@@ -86,10 +87,10 @@
 
     <div class="d-flex gap-2 mt-4">
         <button type="submit" class="btn btn-success">
-            💾 {{ 'common.create'|trans }}
+            💾 {{ 'common.create'|trans({}, 'messages') }}
         </button>
         <a href="{{ path('app_person_index') }}" class="btn btn-secondary">
-            ❌ {{ 'common.cancel'|trans }}
+            ❌ {{ 'common.cancel'|trans({}, 'messages') }}
         </a>
     </div>
 

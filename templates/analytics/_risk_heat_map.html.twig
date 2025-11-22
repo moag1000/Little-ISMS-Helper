@@ -7,6 +7,7 @@
    - Interactive tooltips
    - Click to view risks
 #}
+{% trans_default_domain 'analytics' %}
 
 <div class="card analytics-card heat-map-card {{ expanded is defined and expanded ? 'expanded' : '' }}"
      data-controller="heat-map"
@@ -14,22 +15,22 @@
     <div class="card-header">
         <h3 class="card-title">
             <i class="bi-grid-3x3-gap text-danger"></i>
-            Risk Heat Map
-        </h5>
+            {{ 'analytics.card.risk_heat_map'|trans }}
+        </h3>
         <div class="card-actions">
             <button class="btn btn-sm btn-outline-secondary"
                     data-action="click->heat-map#toggleFilters"
-                    title="Filter">
+                    title="{{ 'analytics.action.filter'|trans }}">
                 <i class="bi bi-funnel"></i>
             </button>
             <button class="btn btn-sm btn-outline-secondary"
                     data-action="click->heat-map#refresh"
-                    title="Refresh">
+                    title="{{ 'analytics.action.refresh'|trans }}">
                 <i class="bi bi-arrow-clockwise"></i>
             </button>
             <button class="btn btn-sm btn-outline-secondary"
                     data-action="click->heat-map#exportImage"
-                    title="Export as PNG">
+                    title="{{ 'analytics.action.export_png'|trans }}">
                 <i class="bi bi-image"></i>
             </button>
         </div>
@@ -39,79 +40,79 @@
     <div class="heat-map-filters d-none" data-heat-map-target="filters">
         <div class="filter-group">
             <label class="filter-label" for="heat-map-status-filter">
-                <i class="bi bi-check-circle"></i> Status
+                <i class="bi bi-check-circle"></i> {{ 'analytics.filter.status'|trans }}
             </label>
             <select class="form-select form-select-sm"
                     id="heat-map-status-filter"
                     data-action="change->heat-map#applyFilters"
                     data-heat-map-target="statusFilter">
-                <option value="">Alle</option>
-                <option value="open">Offen</option>
-                <option value="in_progress">In Bearbeitung</option>
-                <option value="mitigated">Mitigiert</option>
-                <option value="closed">Geschlossen</option>
+                <option value="">{{ 'analytics.filter.all'|trans }}</option>
+                <option value="open">{{ 'risks.status.open'|trans({}, 'risks')|default('Open') }}</option>
+                <option value="in_progress">{{ 'risks.status.in_progress'|trans({}, 'risks')|default('In Progress') }}</option>
+                <option value="mitigated">{{ 'risks.status.mitigated'|trans({}, 'risks')|default('Mitigated') }}</option>
+                <option value="closed">{{ 'risks.status.closed'|trans({}, 'risks')|default('Closed') }}</option>
             </select>
         </div>
         <div class="filter-group">
             <label class="filter-label" for="heat-map-category-filter">
-                <i class="bi bi-tag"></i> Kategorie
+                <i class="bi bi-tag"></i> {{ 'analytics.filter.category'|trans }}
             </label>
             <select class="form-select form-select-sm"
                     id="heat-map-category-filter"
                     data-action="change->heat-map#applyFilters"
                     data-heat-map-target="categoryFilter">
-                <option value="">Alle</option>
-                <option value="technical">Technisch</option>
-                <option value="organizational">Organisatorisch</option>
-                <option value="physical">Physisch</option>
-                <option value="compliance">Compliance</option>
+                <option value="">{{ 'analytics.filter.all'|trans }}</option>
+                <option value="technical">{{ 'risks.category.technical'|trans({}, 'risks')|default('Technical') }}</option>
+                <option value="organizational">{{ 'risks.category.organizational'|trans({}, 'risks')|default('Organizational') }}</option>
+                <option value="physical">{{ 'risks.category.physical'|trans({}, 'risks')|default('Physical') }}</option>
+                <option value="compliance">{{ 'compliance.title.transitive'|trans({}, 'compliance')|default('Compliance') }}</option>
             </select>
         </div>
         <div class="filter-group">
             <label class="filter-label" for="heat-map-time-filter">
-                <i class="bi bi-calendar"></i> Zeitraum
+                <i class="bi bi-calendar"></i> {{ 'analytics.filter.time'|trans }}
             </label>
             <select class="form-select form-select-sm"
                     id="heat-map-time-filter"
                     data-action="change->heat-map#applyFilters"
                     data-heat-map-target="timeFilter">
-                <option value="">Alle</option>
-                <option value="30">Letzte 30 Tage</option>
-                <option value="90">Letzte 90 Tage</option>
-                <option value="365">Letztes Jahr</option>
+                <option value="">{{ 'analytics.filter.all'|trans }}</option>
+                <option value="30">{{ 'common.last_30_days'|trans({}, 'messages')|default('Last 30 days') }}</option>
+                <option value="90">{{ 'common.last_90_days'|trans({}, 'messages')|default('Last 90 days') }}</option>
+                <option value="365">{{ 'common.last_year'|trans({}, 'messages')|default('Last year') }}</option>
             </select>
         </div>
         <button class="btn btn-sm btn-outline-danger"
                 data-action="click->heat-map#clearFilters">
-            <i class="bi bi-x-circle"></i> Filter zurücksetzen
+            <i class="bi bi-x-circle"></i> {{ 'analytics.action.reset_filters'|trans }}
         </button>
     </div>
     <div class="card-body">
         {# Loading State #}
         <div class="heat-map-loading d-none" data-heat-map-target="loading">
             <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">Loading...</span>
+                <span class="visually-hidden">{{ 'analytics.loading.loading'|trans }}</span>
             </div>
-            <p class="mt-2 text-muted">Loading heat map data...</p>
+            <p class="mt-2 text-muted">{{ 'analytics.loading.loading_heat_map'|trans }}</p>
         </div>
 
         {# Legend #}
         <div class="heat-map-legend">
             <div class="legend-item">
                 <span class="legend-color legend-color-critical"></span>
-                <span class="legend-label">Critical (15-25)</span>
+                <span class="legend-label">{{ 'analytics.legend.critical'|trans }}</span>
             </div>
             <div class="legend-item">
                 <span class="legend-color legend-color-high"></span>
-                <span class="legend-label">High (8-14)</span>
+                <span class="legend-label">{{ 'analytics.legend.high'|trans }}</span>
             </div>
             <div class="legend-item">
                 <span class="legend-color legend-color-medium"></span>
-                <span class="legend-label">Medium (4-7)</span>
+                <span class="legend-label">{{ 'analytics.legend.medium'|trans }}</span>
             </div>
             <div class="legend-item">
                 <span class="legend-color legend-color-low"></span>
-                <span class="legend-label">Low (1-3)</span>
+                <span class="legend-label">{{ 'analytics.legend.low'|trans }}</span>
             </div>
         </div>
 
@@ -120,10 +121,10 @@
             {# Axis Labels #}
             <div class="heat-map-axes">
                 <div class="y-axis-label">
-                    <span>Impact →</span>
+                    <span>{{ 'analytics.axes.impact'|trans }}</span>
                 </div>
                 <div class="x-axis-label">
-                    <span>← Probability</span>
+                    <span>{{ 'analytics.axes.probability'|trans }}</span>
                 </div>
             </div>
 
@@ -136,7 +137,7 @@
         {# Risk Details Modal #}
         <div class="heat-map-details d-none" data-heat-map-target="details">
             <div class="details-header">
-                <h4 data-heat-map-target="detailsTitle">Risks in this cell</h4>
+                <h4 data-heat-map-target="detailsTitle">{{ 'analytics.details.risks_in_cell'|trans }}</h4>
                 <button class="btn-close btn-sm"
                         data-action="click->heat-map#closeDetails"></button>
             </div>

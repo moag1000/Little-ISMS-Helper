@@ -32,7 +32,7 @@
         <div class="card-header bg-warning text-dark">
             <h3 class="mb-0">
                 <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'admin.data_repair.orphaned_entities'|trans }}
-            </h5>
+            </h3>
         </div>
         <div class="card-body">
             {% if orphanedAssets|length == 0 and orphanedRisks|length == 0 and orphanedIncidents|length == 0 %}
@@ -242,7 +242,7 @@
         <div class="card-header">
             <h3 class="mb-0">
                 <i class="bi bi-building" aria-hidden="true"></i> {{ 'admin.data_repair.tenant_statistics'|trans }}
-            </h5>
+            </h3>
         </div>
         <div class="card-body">
             {% embed '_components/_table.html.twig' with {
@@ -286,7 +286,7 @@
         <div class="card-header bg-warning text-dark">
             <h3 class="mb-0">
                 <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'admin.data_repair.risk_asset_assignment'|trans|default('Risk-Asset Zuordnung reparieren') }}
-            </h5>
+            </h3>
         </div>
         <div class="card-body">
             <div class="alert alert-warning">
@@ -355,7 +355,7 @@
         <div class="card-header bg-warning text-dark">
             <h3 class="mb-0">
                 <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'admin.data_repair.incident_asset_assignment'|trans|default('Incident-Asset Zuordnung reparieren') }}
-            </h5>
+            </h3>
         </div>
         <div class="card-body">
             <div class="alert alert-warning">
@@ -425,7 +425,7 @@
         <div class="card-header bg-warning text-dark">
             <h3 class="mb-0">
                 <i class="bi bi-shield-exclamation" aria-hidden="true"></i> {{ 'admin.data_repair.controls_without_risks'|trans }}
-            </h5>
+            </h3>
         </div>
         <div class="card-body">
             <div class="alert alert-warning">
@@ -439,10 +439,10 @@
             } %}
                 {% block table_head %}
                     <tr>
-                        <th scope="col">{{ 'control.field.control_id'|trans }}</th>
-                        <th scope="col">{{ 'control.field.name'|trans }}</th>
-                        <th scope="col">{{ 'control.field.category'|trans }}</th>
-                        <th scope="col">{{ 'control.field.implementation_status'|trans }}</th>
+                        <th scope="col">{{ 'controls.field.control_id'|trans({}, 'controls') }}</th>
+                        <th scope="col">{{ 'controls.field.name'|trans({}, 'controls') }}</th>
+                        <th scope="col">{{ 'controls.field.category'|trans({}, 'controls') }}</th>
+                        <th scope="col">{{ 'controls.field.implementation_status'|trans({}, 'controls') }}</th>
                         <th scope="col">{{ 'admin.data_repair.assign_risk'|trans }}</th>
                     </tr>
                 {% endblock %}
@@ -453,8 +453,8 @@
                         <td>{{ control.name }}</td>
                         <td>{{ control.category }}</td>
                         <td>
-                            <span class="badge bg-{{ control.implementationStatus == 'implemented' ? 'success' : (control.implementationStatus == 'in_progress' ? 'warning' : 'secondary') }}">
-                                {{ ('control.status.' ~ control.implementationStatus)|trans }}
+                            <span class="badge bg-{{ control.implementationStatus == 'implemented' ? 'success' : (control.implementationStatus == 'in_progress' ? 'warning' : (control.implementationStatus == 'not_started' ? 'secondary' : 'dark')) }}">
+                                {{ ('controls.status.' ~ control.implementationStatus)|trans({}, 'controls') }}
                             </span>
                         </td>
                         <td>
@@ -489,7 +489,7 @@
         <div class="card-header bg-info text-white">
             <h3 class="mb-0">
                 <i class="bi bi-shield-check" aria-hidden="true"></i> {{ 'admin.data_repair.controls_without_assets'|trans }}
-            </h5>
+            </h3>
         </div>
         <div class="card-body">
             <div class="alert alert-info">
@@ -503,10 +503,10 @@
             } %}
                 {% block table_head %}
                     <tr>
-                        <th scope="col">{{ 'control.field.control_id'|trans }}</th>
-                        <th scope="col">{{ 'control.field.name'|trans }}</th>
-                        <th scope="col">{{ 'control.field.category'|trans }}</th>
-                        <th scope="col">{{ 'control.field.implementation_status'|trans }}</th>
+                        <th scope="col">{{ 'controls.field.control_id'|trans({}, 'controls') }}</th>
+                        <th scope="col">{{ 'controls.field.name'|trans({}, 'controls') }}</th>
+                        <th scope="col">{{ 'controls.field.category'|trans({}, 'controls') }}</th>
+                        <th scope="col">{{ 'controls.field.implementation_status'|trans({}, 'controls') }}</th>
                         <th scope="col">{{ 'admin.data_repair.assign_asset'|trans }}</th>
                     </tr>
                 {% endblock %}
@@ -517,8 +517,8 @@
                         <td>{{ control.name }}</td>
                         <td>{{ control.category }}</td>
                         <td>
-                            <span class="badge bg-{{ control.implementationStatus == 'implemented' ? 'success' : (control.implementationStatus == 'in_progress' ? 'warning' : 'secondary') }}">
-                                {{ ('control.status.' ~ control.implementationStatus)|trans }}
+                            <span class="badge bg-{{ control.implementationStatus == 'implemented' ? 'success' : (control.implementationStatus == 'in_progress' ? 'warning' : (control.implementationStatus == 'not_started' ? 'secondary' : 'dark')) }}">
+                                {{ ('controls.status.' ~ control.implementationStatus)|trans({}, 'controls') }}
                             </span>
                         </td>
                         <td>
@@ -553,7 +553,7 @@
         <div class="card-header bg-danger text-white">
             <h3 class="mb-0">
                 <i class="bi bi-exclamation-octagon" aria-hidden="true"></i> {{ 'admin.data_repair.broken_references'|trans }}
-            </h5>
+            </h3>
         </div>
         <div class="card-body">
             <div class="alert alert-danger">

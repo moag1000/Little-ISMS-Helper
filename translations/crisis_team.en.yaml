@@ -1,0 +1,61 @@
+crisis_team:
+  title: Crisis Teams
+  new: New Crisis Team
+  edit: Edit Crisis Team
+  empty: No crisis teams defined yet.
+  kpi:
+    active: Active Teams
+  field:
+    team_name: Team Name
+    description: Description
+    team_type: Team Type
+    is_active: Active
+    team_leader: Team Leader
+    deputy_leader: Deputy Leader
+    primary_phone: Primary Phone
+    primary_email: Primary Email
+    meeting_location: Meeting Location
+    backup_meeting_location: Backup Meeting Location
+    virtual_meeting_url: Virtual Meeting URL
+    alert_procedures: Alert Procedures
+    decision_authority: Decision Authority
+    communication_protocols: Communication Protocols
+    training_schedule: Training Schedule
+    last_training_at: Last Training
+    next_training_at: Next Training
+    business_continuity_plans: Business Continuity Plans
+    notes: Notes
+  type:
+    operational: Operational Crisis Team
+    strategic: Strategic Crisis Team
+    technical: Technical Crisis Team
+    communication: Communication Team
+  placeholder:
+    team_name: "e.g. IT Operational Crisis Team"
+    description: Tasks and responsibilities of the crisis team
+    team_leader: Select crisis team leader
+    deputy_leader: Select deputy leader
+    meeting_location: "e.g. Conference Room 1, Building A"
+    backup_meeting_location: "e.g. Conference Room 2, Building B"
+    alert_procedures: Description of alert procedure
+    decision_authority: Who can make which decisions?
+    communication_protocols: How does the crisis team communicate internally and externally?
+    training_schedule: When do trainings and exercises take place?
+  help:
+    team_name: Name of the crisis team
+    team_type: Type of crisis team according to BSI 200-4
+    team_leader: Leader of the crisis team
+    deputy_leader: Deputy in case of leader absence
+    primary_phone: Central phone number for crisis team
+    virtual_meeting_url: Teams, Zoom, etc. for virtual meetings
+    alert_procedures: How is the crisis team alerted and activated?
+    decision_authority: Authorities and escalation paths
+    communication_protocols: Internal and external communication channels
+    training_schedule: Regular trainings and exercises
+    next_training_at: When is the next training?
+    business_continuity_plans: Assigned BCPs
+  success:
+    created: Crisis team created successfully.
+    updated: Crisis team updated successfully.
+    deleted: Crisis team deleted successfully.
+    activated: Crisis team activated successfully.

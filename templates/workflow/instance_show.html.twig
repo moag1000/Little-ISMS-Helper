@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% trans_default_domain 'workflows' %}
 
 {% block title %}{{ instance.name }} - {{ 'workflow.title.instance_show'|trans }} - Little ISMS Helper{% endblock %}
 
@@ -25,10 +26,10 @@
     </div>
     <div class="button-group">
         <a href="{{ path('app_workflow_instance_edit', {id: instance.id}) }}" class="btn btn-primary">
-            ✏️ {{ 'common.edit'|trans }}
+            ✏️ {{ 'common.edit'|trans({}, 'messages') }}
         </a>
         <a href="{{ path('app_workflow_index') }}" class="btn btn-secondary">
-            ← {{ 'common.back_to_list'|trans }}
+            ← {{ 'common.back_to_list'|trans({}, 'messages') }}
         </a>
     </div>
 </div>
@@ -194,7 +195,7 @@
     {% endif %}
 
     <a href="{{ path('app_workflow_index') }}" class="btn btn-secondary">
-        📋 {{ 'common.back_to_list'|trans }}
+        📋 {{ 'common.back_to_list'|trans({}, 'messages') }}
     </a>
 </div>
 {% endblock %}

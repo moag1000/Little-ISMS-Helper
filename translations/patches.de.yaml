@@ -1,0 +1,29 @@
+patch:
+  title: Patches
+  new: Neuer Patch
+  list: Patch‑Liste
+  empty: Keine Patches vorhanden.
+
+  kpi:
+    total: Gesamt‑Patches
+    pending: Ausstehende Patches
+    deployed: Ausgerollte Patches
+
+  field:
+    patch_id: Patch‑ID
+    title: Titel
+    patch_type: Patch‑Typ
+    status: Status
+
+  type:
+    security: Sicherheit
+    bugfix: Bugfix
+    feature: Feature
+    other: Sonstiges
+
+  status:
+    pending: Ausstehend
+    in_progress: In Bearbeitung
+    deployed: Ausgerollt
+    failed: Fehlgeschlagen
+    cancelled: Abgebrochen

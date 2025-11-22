@@ -1,0 +1,88 @@
+compliance:
+  title:
+    transitive: Transitive Compliance
+    compare: Framework Comparison
+    gap_analysis: Gap Analysis
+    data_reuse: Data Reuse
+  description:
+    transitive: Analyzes how requirements of different frameworks overlap and create leverage effects.
+    compare: Compares two compliance frameworks for overlaps and differences.
+    gap_analysis: Identifies gaps in the implementation of a framework and prioritizes remediation actions.
+    data_reuse: Analyzes reuse of data points across frameworks and highlights efficiency potential.
+    critical_gaps: Critical gaps with highest priority for immediate action.
+    high_gaps: Severe gaps with high priority.
+    medium_gaps: Medium gaps with moderate priority.
+    low_gaps: Low gaps to be addressed later.
+    reuse_matrix: Overview of where data can be reused across frameworks.
+  section:
+    framework_relationships: Framework Relationships
+    select_frameworks: Select Frameworks
+    framework_selection: Framework Selection
+    reuse_opportunities: Reuse Opportunities
+    reuse_matrix: Reuse Matrix
+    framework_coverage: Framework Coverage
+  stats:
+    total_relationships: Total Relationships
+    transitive_compliance: Transitive Coverage
+    leverage_rate: Leverage Rate
+    frameworks_leveraged: Frameworks Leveraged
+    total_requirements: Total Requirements
+    met_requirements: Met Requirements
+    gaps_identified: Gaps Identified
+    compliance_score: Compliance Score
+    common_requirements: Common Requirements
+    overlap_percentage: Overlap Percentage
+    total_data_points: Total Data Points
+    reused_data: Reused Data
+    reuse_rate: Reuse Rate
+    effort_saved: Effort Saved
+  action:
+    create_missing_mappings: Create missing mappings
+    create_mappings: Create mappings
+    compare: Compare
+    export_pdf: PDF Report
+    export_excel: Excel Export
+    export_csv: CSV Export
+  unit:
+    requirements: requirements
+  field:
+    framework_1: Framework 1
+    framework_2: Framework 2
+    select_framework: Select framework
+    total_requirements: Total requirements
+    unique_requirements: Unique requirements
+    categories: Categories
+    requirement: Requirement
+    framework: Framework
+    severity: Severity
+    gap_description: Gap description
+    remediation: Remediation
+    due_date: Due date
+    data_element: Data element
+    source: Source
+    reuse_count: Reuse count
+    used_in_frameworks: Used in frameworks
+    quality_score: Quality score
+    frameworks: Frameworks
+    time_savings: Time savings
+    total_requirements_short: Total requirements
+    reused_data: Reused data
+    new_data_needed: New data needed
+    coverage: Coverage
+  option:
+    select_framework: Select framework…
+    all_frameworks: All frameworks
+  severity:
+    critical: Critical
+    high: High
+    medium: Medium
+    low: Low
+  message:
+    no_gaps: No gaps found
+    no_gaps_desc: No implementation gaps were identified for the selected framework.
+    no_opportunities: No reuse opportunities found.
+    no_data_elements: No data elements available.
+    no_frameworks: No frameworks available.
+  badge:
+    overdue: Overdue
+    reusable: reusable

@@ -1,0 +1,39 @@
+security_reports:
+  page:
+    title: Sicherheitsberichte
+    subtitle: OWASP Top 10 Compliance Analyse
+  nav:
+    title: Navigation
+    overview: Übersicht
+    owasp_2025: OWASP 2025 RC1
+    owasp_2021: OWASP 2021
+    all_reports: Alle Reports
+  action:
+    title: Aktionen
+    regenerate: Reports neu generieren
+    print: Drucken
+    download_md: Report.md herunterladen
+  info:
+    regenerate_hint: "Führen Sie <code>php scripts/generate-security-audit.php</code> aus, um die Reports zu aktualisieren"
+  card:
+    owasp_2025_title: "OWASP Top 10:2025 RC1 (Primary)"
+    full_report: Vollständiger Security Report
+  label:
+    overall_score: Gesamtscore
+    status: Status
+    generated_at: Generiert am
+    view_report: Report anzeigen
+  severity:
+    p0: P0-URGENT
+    p1: P1-HIGH
+    p2: P2-MEDIUM
+  severity_desc:
+    p0: "Kritische Sicherheitslücken – sofort beheben"
+    p1: "Hohe Priorität – innerhalb 1 Woche beheben"
+    p2: "Mittlere Priorität – innerhalb 1 Monat"
+  legend:
+    title: Severity‑Legende
+    critical: Kritisch (P0)
+    high: Hoch (P1)
+    medium: Mittel (P2)
+    low: Niedrig (P3)

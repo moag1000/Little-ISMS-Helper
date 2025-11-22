@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% trans_default_domain 'audits' %}
 
 {% block title %}{{ 'audit.edit'|trans }} - {{ audit.title }} - {{ parent() }}{% endblock %}
 
@@ -10,7 +11,7 @@
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
                         <a href="{{ path('app_audit_index') }}" data-turbo-action="advance">
-                            <i class="bi bi-clipboard-check" aria-hidden="true"></i> {{ 'audit.title'|trans }}
+                            <i class="bi bi-clipboard-check" aria-hidden="true"></i> {{ 'audit_management.title'|trans }}
                         </a>
                     </li>
                     <li class="breadcrumb-item">
@@ -18,7 +19,7 @@
                             {{ audit.title }}
                         </a>
                     </li>
-                    <li class="breadcrumb-item active" aria-current="page">{{ 'common.edit'|trans }}</li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ 'common.edit'|trans({}, 'messages') }}</li>
                 </ol>
             </nav>
 
@@ -29,7 +30,7 @@
                 </h1>
                 <div>
                     <a href="{{ path('app_audit_show', {id: audit.id}) }}" class="btn btn-outline-secondary" data-turbo-action="advance">
-                        <i class="bi bi-eye" aria-hidden="true"></i> {{ 'common.view'|trans }}
+                        <i class="bi bi-eye" aria-hidden="true"></i> {{ 'common.view'|trans({}, 'messages') }}
                     </a>
                 </div>
             </div>
@@ -323,16 +324,16 @@
                             <a href="{{ path('app_audit_show', {id: audit.id}) }}"
                                class="btn btn-outline-secondary"
                                data-turbo-action="advance">
-                                <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans }}
+                                <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
                             </a>
                             <a href="{{ path('app_audit_index') }}"
                                class="btn btn-outline-secondary"
                                data-turbo-action="advance">
-                                <i class="bi bi-list" aria-hidden="true"></i> {{ 'common.to_list'|trans }}
+                                <i class="bi bi-list" aria-hidden="true"></i> {{ 'common.to_list'|trans({}, 'messages') }}
                             </a>
                         </div>
                         <button type="submit" class="btn btn-primary btn-lg">
-                            <i class="bi bi-save" aria-hidden="true"></i> {{ 'common.save_changes'|trans }}
+                            <i class="bi bi-save" aria-hidden="true"></i> {{ 'common.save_changes'|trans({}, 'messages') }}
                         </button>
                     </div>
 
@@ -343,17 +344,17 @@
             {# Metadata Card #}
             <div class="card shadow mt-4">
                 <div class="card-header bg-light">
-                    <h3 class="h6 mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'common.metadata'|trans }}</h3>
+                    <h3 class="h6 mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'common.metadata'|trans({}, 'messages') }}</h3>
                 </div>
                 <div class="card-body">
                     <dl class="row mb-0">
-                        <dt class="col-sm-3 text-muted">{{ 'common.created_at'|trans }}</dt>
+                        <dt class="col-sm-3 text-muted">{{ 'common.created_at'|trans({}, 'messages') }}</dt>
                         <dd class="col-sm-9">{{ audit.createdAt|date('d.m.Y H:i') }}</dd>
 
-                        <dt class="col-sm-3 text-muted">{{ 'common.updated_at'|trans }}</dt>
+                        <dt class="col-sm-3 text-muted">{{ 'common.updated_at'|trans({}, 'messages') }}</dt>
                         <dd class="col-sm-9">{{ audit.updatedAt|date('d.m.Y H:i') }}</dd>
 
-                        <dt class="col-sm-3 text-muted">{{ 'common.id'|trans }}</dt>
+                        <dt class="col-sm-3 text-muted">{{ 'common.id'|trans({}, 'messages') }}</dt>
                         <dd class="col-sm-9"><code>{{ audit.id }}</code></dd>
                     </dl>
                 </div>

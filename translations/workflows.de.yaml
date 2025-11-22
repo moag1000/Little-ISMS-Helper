@@ -1,0 +1,103 @@
+workflow:
+  title:
+    list: Workflows
+    instance_show: Workflow‑Instanz
+    active: Aktive Workflows
+    pending: Ausstehende Workflows
+    overdue: Überfällige Workflows
+    definitions: Workflow‑Definitionen
+  description:
+    overview: Übersicht über laufende, ausstehende und überfällige Workflows
+    pending: Workflows, die auf Bearbeitung oder Entscheidung warten
+    active: Aktive Workflows in Bearbeitung
+    overdue: Überfällige Workflows mit überschrittener Frist
+    active_detail: Übersicht der aktuell aktiven Workflow‑Instanzen mit Fortschritt und Zuständigkeiten
+    pending_detail: Übersicht der ausstehenden Workflow‑Instanzen mit Fristen und Prioritäten
+    overdue_detail: Übersicht der überfälligen Workflow‑Instanzen mit Ausreißern und Prioritäten
+    definitions: Verwalten und konfigurieren Sie wiederverwendbare Workflow‑Definitionen.
+  action:
+    definitions: Definitionen
+    create: Workflow anlegen
+    create_definition: Definition anlegen
+    complete_step: Schritt abschließen
+    start: Starten
+    cancel: Abbrechen
+  stats:
+    total: Gesamt‑Workflows
+    active: Aktiv
+    pending: Ausstehend
+    overdue: Überfällig
+    avg_progress: Ø Fortschritt
+    my_workflows: Meine Workflows
+    my_tasks: Meine Aufgaben
+    due_this_week: Fällig diese Woche
+    my_overdue: Meine Überfälligen
+    overdue_days_avg: Ø Tage überfällig
+    critical_overdue: Kritisch überfällig (> 7 Tage)
+    total_definitions: Gesamt‑Definitionen
+    active_definitions: Aktive Definitionen
+    avg_steps: Ø Schritte pro Definition
+    entity_types: Abgedeckte Entitätstypen
+  section:
+    overview: Übersicht
+    steps: Schritte
+    activity_log: Aktivitätsprotokoll
+    pending: Ausstehend
+    active: Aktiv
+    overdue: Überfällig
+    recent_instances: Letzte Instanzen
+  field:
+    name: Name
+    definition: Definition
+    definition_name: Definitionsname
+    description: Beschreibung
+    steps: Schritte
+    instances: Instanzen
+    active: Aktiv
+    current_step: Aktueller Schritt
+    status: Status
+    assignee: Zuständig
+    due_date: Fällig am
+    created_at: Erstellt am
+    completed_at: Abgeschlossen am
+    progress: Fortschritt
+    priority: Priorität
+    days_overdue: Tage überfällig
+  priority:
+    low: Niedrig
+    medium: Mittel
+    high: Hoch
+    critical: Kritisch
+  status:
+    pending: Ausstehend
+    active: Aktiv
+    completed: Abgeschlossen
+    cancelled: Abgebrochen
+  badge:
+    overdue: Überfällig
+    my_task: Meine Aufgabe
+    due_soon: Bald fällig
+    critical: Kritisch
+    current: Aktuell
+    completed: Abgeschlossen
+  message:
+    no_instances: Keine Workflow‑Instanzen vorhanden.
+    no_active: Keine aktiven Workflows vorhanden.
+    no_pending: Keine ausstehenden Workflows vorhanden.
+    unassigned: Nicht zugewiesen
+    no_overdue: Keine überfälligen Workflows — gut gemacht!
+    no_overdue_desc: Alle Workflow‑Instanzen liegen derzeit innerhalb ihrer Fristen.
+    no_definitions: Keine Workflow‑Definitionen vorhanden.
+    no_activities: Keine Aktivitäten vorhanden.
+  step: Schritt
+  warning:
+    overdue_count: '%count% überfällige(r) Workflow(s) identifiziert'
+    overdue_message: Bitte prüfen Sie Zuständigkeiten und Fristen. Priorisieren oder eskalieren Sie bei Bedarf.
+  days: Tage
+  activity:
+    timestamp: Zeitpunkt
+    user: Benutzer
+    action: Aktion
+    details: Details
+  confirm:
+    cancel: Sind Sie sicher, dass Sie diese Workflow‑Instanz abbrechen möchten?

@@ -1,0 +1,108 @@
+assets:
+  title:
+    new: Neues Asset
+    edit: Asset bearbeiten
+  action:
+    bcm_insights: BCM‑Insights
+    create: Asset anlegen
+    update: Änderungen speichern
+  details:
+    title: Asset‑Details
+  section:
+    basic_info: Grundinformationen
+    assignment: Zuordnung
+    financial: Finanzielle Informationen
+    cia_values: CIA‑Bewertung (Schutzbedarf)
+    valuation: Bewertung
+    compliance: Compliance
+    cia_triad: CIA‑Triade
+    handling_instructions: Umgangshinweise
+    acceptable_use_policy: Richtlinie zur akzeptablen Nutzung
+    protection_analysis: Schutzbedarfsanalyse
+    protecting_controls: Schutzmaßnahmen
+    related_risks: Zugehörige Risiken
+    related_incidents: Zugehörige Incidents
+    history: Historie
+  field:
+    name: Name
+    type: Asset‑Typ
+    description: Beschreibung
+    owner: Eigentümer
+    location: Standort
+    acquisition_value: Anschaffungswert
+    current_value: Aktueller Wert
+    confidentiality: Vertraulichkeit
+    integrity: Integrität
+    availability: Verfügbarkeit
+  help:
+    name: Eindeutiger Name des Assets
+    type: Kategorie des Assets (Hardware, Software, Daten, etc.)
+    description: Detaillierte Beschreibung des Assets und seiner Funktion
+    owner: Verantwortliche Person für dieses Asset
+    location: Physischer oder logischer Standort des Assets
+    acquisition_value: Ursprünglicher Kaufpreis oder Anschaffungskosten
+    current_value: Geschätzter aktueller Marktwert
+    confidentiality: Schutzbedarf bzgl. Vertraulichkeit der Informationen
+    integrity: Schutzbedarf bzgl. Unversehrtheit und Korrektheit der Daten
+    availability: Schutzbedarf bzgl. ständiger Erreichbarkeit und Nutzbarkeit
+  cia_help: "Bewerten Sie den Schutzbedarf nach Vertraulichkeit, Integrität und Verfügbarkeit (1=sehr niedrig, 5=sehr hoch)"
+  label:
+    type: Typ
+    owner: Eigentümer
+    location: Standort
+    status: Status
+    status_generic: Status
+    risk_level: Risikoniveau
+    acquisition_value: Anschaffungswert
+    current_value: Aktueller Wert
+    monetary_value: Monetärer Wert
+    total_value: Gesamtwert
+    risks: Risiken
+    data_classification: Datenklassifizierung
+    return_date: Rückgabedatum
+    confidentiality: Vertraulichkeit
+    integrity: Integrität
+    availability: Verfügbarkeit
+  classification:
+    public: Öffentlich
+    internal: Intern
+    confidential: Vertraulich
+    secret: Geheim
+  confirm:
+    delete: Dieses Asset wirklich löschen?
+  warning:
+    delete_irreversible: "Das Löschen dieses Assets kann nicht rückgängig gemacht werden. Zugehörige Verknüpfungen können entfernt werden."
+  modern:
+    breadcrumb: Assets
+    header:
+      title: Asset Management
+      subtitle: Verwaltung von IT-Assets und Informationswerten gemäß ISO 27001
+      action:
+        new: Neues Asset
+        export: Export
+    kpi:
+      total: Gesamt-Assets
+      critical: Kritische Assets
+      avg_cia: Ø CIA-Score
+      with_risks: Assets mit Risiken
+      unit:
+        out_of_5: '/ 5'
+    chart:
+      type_distribution: Verteilung nach Asset-Typ
+    empty:
+      title: Noch keine Assets vorhanden
+      description: Legen Sie Ihr erstes Asset an, um mit dem Asset Management zu beginnen. Assets sind die Grundlage für Ihr ISMS.
+      action_create_first: Erstes Asset erstellen
+    table:
+      title_all: Alle Assets
+      caption: Liste aller Assets mit CIA-Bewertung, Risiken und Controls
+      search_placeholder: Suche...
+      head:
+        name: Name
+        type: Typ
+        confidentiality: Vertraulichkeit
+        integrity: Integrität
+        availability: Verfügbarkeit
+        risks: Risiken
+        controls: Maßnahmen
+        actions: Aktionen

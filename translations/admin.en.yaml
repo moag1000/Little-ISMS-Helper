@@ -1,0 +1,72 @@
+admin:
+  title: Administration
+  breadcrumb:
+    home: Admin Dashboard
+  section:
+    user_access: Users & Access
+    system_config: System Configuration
+    modules: Modules & Features
+    monitoring: Monitoring & Logs
+    navigation: Navigation
+    data_management: Data Management
+    licensing: Licensing
+  nav:
+    tenants: Tenants
+    users: Users
+    roles: Roles
+    settings: Settings
+    compliance: Compliance Frameworks
+    audit_log: Audit Log
+    back_to_app: Back to Application
+    dashboard: Dashboard
+    corporate_structure: Corporate Structures
+    permissions: Permissions
+    sessions: Sessions
+    mfa: MFA Management
+    module_management: Module Management
+    compliance_management: Compliance Management
+    system_health: System Health
+    backup: Backup
+    export: Export
+    import: Import
+    data_repair: Data Repair
+    license_management: License Management
+  dashboard:
+    title: Admin Dashboard
+    subtitle: Central administration and system overview
+    alerts:
+      title: System Alerts
+      item: item
+      items: items
+      view: View
+    stats:
+      users: Users
+      active: Active
+      inactive: Inactive
+      manage: Manage
+      active_sessions: Active Sessions
+      last_24h: Last 24 hours
+      database: Database Size
+      total_records: Total Records
+      across_modules: Across all modules
+    modules:
+      title: Modules Overview
+      module: Module
+      records: Records
+      action: Action
+      assets: Assets
+      risks: Risks
+      compliance: Compliance
+      incidents: Incidents
+      audits: Audits
+      trainings: Trainings
+    quick_actions:
+      title: Quick Actions
+      add_user: Add user
+      add_role: Add role
+      view_logs: View logs
+      manage_compliance: Manage compliance
+    activity:
+      title: Activity
+      empty: No recent activity.
+      view_all: View all

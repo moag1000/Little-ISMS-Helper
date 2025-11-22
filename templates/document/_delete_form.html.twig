@@ -1,7 +1,8 @@
+{% trans_default_domain 'documents' %}
 <form method="post" action="{{ path('app_document_delete', {id: document.id}) }}" onsubmit="return confirm('{{ 'document.confirm.delete'|trans }}');">
     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ document.id) }}">
     <button type="submit" class="btn btn-danger">
         <i class="bi bi-trash" aria-hidden="true"></i>
-        {{ 'common.delete'|trans }}
+        {{ 'common.delete'|trans({}, 'messages') }}
     </button>
 </form>

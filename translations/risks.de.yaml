@@ -1,0 +1,21 @@
+risks:
+  modern:
+    breadcrumb: Risikomanagement
+    header:
+      title: Risikomanagement
+      subtitle: Identifikation, Bewertung und Behandlung von Informationssicherheitsrisiken
+      action:
+        new: Neues Risiko
+        matrix: Risikomatrix
+        export_pdf: PDF Report
+        export_excel: Excel Export
+        export_csv: CSV Export
+    kpi:
+      total: Identifizierte Risiken
+      critical: Kritische Risiken
+      high: Hohe Risiken
+      avg_residual: Durchschn. Restrisiko
+      unit:
+        max: '/ 25'
+    matrix_overview: Risikomatrix-Übersicht
+    view_full_matrix: Vollständige Matrix anzeigen

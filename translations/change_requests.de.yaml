@@ -1,0 +1,66 @@
+change_request:
+  title: Änderungsanträge
+  page:
+    title: Änderungsanträge
+    new: Neuer Änderungsantrag
+  new: Neuer Änderungsantrag
+  action:
+    create: Neuen Änderungsantrag erstellen
+    view: Anzeigen
+    edit: Bearbeiten
+  statistics:
+    total: Gesamt‑Anträge
+    pending_approval: Ausstehende Freigaben
+    in_implementation: In Umsetzung
+    overdue: Überfällig
+  alert:
+    pending_approval: Ausstehende Freigaben
+    overdue: Überfällige Änderungsanträge
+  list:
+    title: 'Änderungsanträge (%count%)'
+  table:
+    change_number: Antrags‑Nr.
+    title: Titel
+    type: Typ
+    priority: Priorität
+    status: Status
+    complexity: Komplexität
+    requested: Beantragt am
+    actions: Aktionen
+  empty:
+    message: Keine Änderungsanträge vorhanden.
+    create_first: Ersten Antrag anlegen
+  section:
+    basic_info: Basisinformationen
+    request_details: Antragsteller & Details
+    impact_assessment: Auswirkungen & Bewertung
+    implementation: Umsetzung
+    approval: Freigabe
+    verification_closure: Verifikation & Abschluss
+  field:
+    change_number: Antrags‑Nr.
+    title: Titel
+    change_type: Änderungstyp
+    description: Beschreibung
+    justification: Begründung
+    requested_by: Beantragt von
+    requested_date: Beantragt am
+    priority: Priorität
+    status: Status
+    isms_impact: ISMS‑Auswirkung
+    risk_assessment: Risikobewertung
+    implementation_plan: Umsetzungsplan
+    rollback_plan: Rollback‑Plan
+    testing_requirements: Testanforderungen
+    planned_implementation_date: Geplantes Umsetzungsdatum
+    actual_implementation_date: Tatsächliches Umsetzungsdatum
+    implemented_by: Umgesetzt von
+    implementation_notes: Umsetzungsnotizen
+    approved_by: Freigegeben von
+    approved_date: Freigegeben am
+    approval_comments: Freigabe‑Bemerkungen
+    verified_by: Verifiziert von
+    verified_date: Verifiziert am
+    verification_results: Verifikationsergebnisse
+    closed_date: Abschlussdatum
+    closure_notes: Abschlussnotizen

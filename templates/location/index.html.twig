@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% trans_default_domain 'locations' %}
 
 {% block title %}{{ 'location.title.list'|trans }} - Little ISMS Helper{% endblock %}
 
@@ -45,7 +46,7 @@
             <th scope="col">{{ 'location.field.city'|trans }}</th>
             <th scope="col">{{ 'location.field.security_level'|trans }}</th>
             <th scope="col" class="text-center">{{ 'location.field.badge_access'|trans }}</th>
-            <th scope="col" class="text-center">{{ 'common.actions'|trans }}</th>
+            <th scope="col" class="text-center">{{ 'common.actions'|trans({}, 'messages') }}</th>
         </tr>
     {% endblock %}
     {% block table_body %}
@@ -93,11 +94,11 @@
                 {% endif %}
             </td>
             <td class="text-center">
-                <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'location.actions.label'|trans({}, 'messages', 'Location Actions') }}">
-                    <a href="{{ path('app_location_show', {id: location.id}) }}" class="btn btn-outline-primary" aria-label="{{ 'common.view'|trans }} {{ location.name }}">
+                <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'location.actions.label'|trans }}">
+                    <a href="{{ path('app_location_show', {id: location.id}) }}" class="btn btn-outline-primary" aria-label="{{ 'common.view'|trans({}, 'messages') }} {{ location.name }}">
                         <i class="bi bi-eye" aria-hidden="true"></i>
                     </a>
-                    <a href="{{ path('app_location_edit', {id: location.id}) }}" class="btn btn-outline-secondary" aria-label="{{ 'common.edit'|trans }} {{ location.name }}">
+                    <a href="{{ path('app_location_edit', {id: location.id}) }}" class="btn btn-outline-secondary" aria-label="{{ 'common.edit'|trans({}, 'messages') }} {{ location.name }}">
                         <i class="bi bi-pencil" aria-hidden="true"></i>
                     </a>
                 </div>
