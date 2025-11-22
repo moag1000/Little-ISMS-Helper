@@ -3,6 +3,7 @@
 namespace App\Tests\Entity;
 
 use App\Entity\ManagementReview;
+use App\Entity\User;
 use PHPUnit\Framework\TestCase;
 
 class ManagementReviewTest extends TestCase
@@ -14,7 +15,8 @@ class ManagementReviewTest extends TestCase
         $this->assertNull($review->getId());
         $this->assertNull($review->getTitle());
         $this->assertNull($review->getReviewDate());
-        $this->assertNull($review->getParticipants());
+        $this->assertInstanceOf(\Doctrine\Common\Collections\Collection::class, $review->getParticipants());
+        $this->assertCount(0, $review->getParticipants());
         $this->assertNull($review->getChangesRelevantToISMS());
         $this->assertNull($review->getFeedbackFromInterestedParties());
         $this->assertNull($review->getAuditResults());
@@ -49,14 +51,26 @@ class ManagementReviewTest extends TestCase
         $this->assertEquals($date, $review->getReviewDate());
     }
 
-    public function testSetAndGetParticipants(): void
+    public function testAddAndRemoveParticipants(): void
     {
         $review = new ManagementReview();
-        $participants = 'CEO, CIO, CISO, IT Manager, Compliance Officer';
+        $user1 = new User();
+        $user2 = new User();
 
-        $review->setParticipants($participants);
+        // initially empty
+        $this->assertCount(0, $review->getParticipants());
 
-        $this->assertEquals($participants, $review->getParticipants());
+        // add participants
+        $review->addParticipant($user1);
+        $review->addParticipant($user2);
+        $this->assertCount(2, $review->getParticipants());
+        $this->assertTrue($review->getParticipants()->contains($user1));
+        $this->assertTrue($review->getParticipants()->contains($user2));
+
+        // remove one
+        $review->removeParticipant($user1);
+        $this->assertCount(1, $review->getParticipants());
+        $this->assertFalse($review->getParticipants()->contains($user1));
     }
 
     public function testSetAndGetChangesRelevantToISMS(): void

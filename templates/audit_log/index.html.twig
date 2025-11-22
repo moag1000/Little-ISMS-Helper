@@ -1,8 +1,9 @@
 {% extends 'admin/layout.html.twig' %}
+{% trans_default_domain 'audit_log' %}
 
-{% block admin_title %}Audit Log - Revisionssicheres Protokoll{% endblock %}
+{% block admin_title %}{{ 'audit_log.page.title'|trans }}{% endblock %}
 {% block admin_subtitle %}
-    <p class="text-muted">Vollständige Protokollierung aller Aktivitäten im ISMS zur Sicherstellung der Revisionssicherheit</p>
+    <p class="text-muted">{{ 'audit_log.page.subtitle'|trans }}</p>
 {% endblock %}
 
 {% block stylesheets %}
@@ -37,12 +38,12 @@
 {% block admin_content %}
 
 <div class="info-box">
-    <h3>Statistik</h3>
-    <p><strong>Gesamt Protokolleinträge:</strong> {{ totalLogs }}</p>
-    <p><strong>Letzte 24 Stunden:</strong> {{ recentActivity|length }} Aktivitäten</p>
+    <h3>{{ 'audit_log.section.statistics'|trans }}</h3>
+    <p><strong>{{ 'audit_log.stats.total_logs'|trans }}:</strong> {{ totalLogs }}</p>
+    <p><strong>{{ 'audit_log.stats.last_24h'|trans }}:</strong> {{ recentActivity|length }} {{ 'common.activities'|trans({}, 'messages') }}</p>
 
     {% if actionStats|length > 0 %}
-    <p><strong>Aktionen:</strong></p>
+    <p><strong>{{ 'audit_log.stats.actions'|trans }}:</strong></p>
     <ul>
         {% for stat in actionStats %}
         <li>{{ stat.action|capitalize }}: {{ stat.count }}</li>
@@ -51,7 +52,7 @@
     {% endif %}
 
     {% if entityTypeStats|length > 0 %}
-    <p><strong>Entitätstypen:</strong></p>
+    <p><strong>{{ 'audit_log.stats.entity_types'|trans }}:</strong></p>
     <ul>
         {% for stat in entityTypeStats %}
         <li>{{ stat.entityType }}: {{ stat.count }}</li>
@@ -61,16 +62,16 @@
 </div>
 
 {# Skip link for filters section - WCAG 2.4.1 #}
-<a href="#filter-section" class="skip-link">{{ 'accessibility.skip_to_filters'|trans }}</a>
+<a href="#filter-section" class="skip-link">{{ 'accessibility.skip_to_filters'|trans({}, 'messages') }}</a>
 
 <div class="filter-container" id="filter-section" tabindex="-1">
-    <h3>Filter</h3>
-    <form method="get" action="{{ path('app_audit_log_index') }}" role="search" aria-label="Filter">
+    <h3>{{ 'audit_log.section.filters'|trans }}</h3>
+    <form method="get" action="{{ path('app_audit_log_index') }}" role="search" aria-label="{{ 'audit_log.section.filters'|trans }}">
         <div class="d-grid grid-responsive-200 gap-1 mb-md">
             <div>
-                <label for="entityType">Entitätstyp:</label>
+                <label for="entityType">{{ 'audit_log.filter.entity_type'|trans }}:</label>
                 <select name="entityType" id="entityType" class="form-control">
-                    <option value="">Alle</option>
+                    <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
                     {% for entityType in entityTypes %}
                     <option value="{{ entityType }}" {% if filters.entityType|default('') == entityType %}selected{% endif %}>
                         {{ entityType }}
@@ -80,9 +81,9 @@
             </div>
 
             <div>
-                <label for="action">Aktion:</label>
+                <label for="action">{{ 'audit_log.filter.action'|trans }}:</label>
                 <select name="action" id="action" class="form-control">
-                    <option value="">Alle</option>
+                    <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
                     {% for action in actions %}
                     <option value="{{ action }}" {% if filters.action|default('') == action %}selected{% endif %}>
                         {{ action|capitalize }}
@@ -92,32 +93,32 @@
             </div>
 
             <div>
-                <label for="userName">Benutzer:</label>
+                <label for="userName">{{ 'audit_log.filter.user'|trans }}:</label>
                 <input type="text" name="userName" id="userName" value="{{ filters.userName ?? '' }}" class="form-control">
             </div>
 
             <div>
-                <label for="dateFrom">Von Datum:</label>
+                <label for="dateFrom">{{ 'audit_log.filter.date_from'|trans }}:</label>
                 <input type="date" name="dateFrom" id="dateFrom" value="{{ filters.dateFrom ?? '' }}" class="form-control">
             </div>
 
             <div>
-                <label for="dateTo">Bis Datum:</label>
+                <label for="dateTo">{{ 'audit_log.filter.date_to'|trans }}:</label>
                 <input type="date" name="dateTo" id="dateTo" value="{{ filters.dateTo ?? '' }}" class="form-control">
             </div>
         </div>
 
         <div class="d-flex gap-1">
-            <button type="submit" class="btn btn-primary">Filtern</button>
-            <a href="{{ path('app_audit_log_index') }}" class="btn">Filter zurücksetzen</a>
-            <a href="{{ path('app_audit_log_statistics') }}" class="btn">Statistiken</a>
+            <button type="submit" class="btn btn-primary">{{ 'audit_log.filter.apply'|trans }}</button>
+            <a href="{{ path('app_audit_log_index') }}" class="btn">{{ 'audit_log.filter.reset'|trans }}</a>
+            <a href="{{ path('app_audit_log_statistics') }}" class="btn">{{ 'audit_log.filter.statistics'|trans }}</a>
         </div>
     </form>
 </div>
 
 {% if auditLogs|length > 0 %}
 <div class="mt-2">
-    <h2>Protokolleinträge</h2>
+    <h2>{{ 'audit_log.section.entries'|trans }}</h2>
 
     {# Tab Navigation #}
     <ul class="nav nav-tabs mt-md" role="tablist">
@@ -127,7 +128,7 @@
                     data-bs-target="#table-view"
                     type="button"
                     role="tab">
-                <i class="bi bi-table"></i> Tabelle
+                <i class="bi bi-table"></i> {{ 'audit_log.section.table'|trans }}
             </button>
         </li>
         <li class="nav-item" role="presentation">
@@ -136,7 +137,7 @@
                     data-bs-target="#timeline-view"
                     type="button"
                     role="tab">
-                <i class="bi bi-clock-history"></i> Timeline
+                <i class="bi bi-clock-history"></i> {{ 'audit_log.section.timeline'|trans }}
             </button>
         </li>
     </ul>
@@ -150,12 +151,12 @@
             } %}
                 {% block table_head %}
                     <tr>
-                        <th scope="col" class="table-cell text-left">Zeitstempel</th>
-                        <th scope="col" class="table-cell text-left">Aktion</th>
-                        <th scope="col" class="table-cell text-left">Entität</th>
-                        <th scope="col" class="table-cell text-left">Benutzer</th>
-                        <th scope="col" class="table-cell text-left">Beschreibung</th>
-                        <th scope="col" class="table-cell text-left">Details</th>
+                        <th scope="col" class="table-cell text-left">{{ 'audit_log.table.timestamp'|trans }}</th>
+                        <th scope="col" class="table-cell text-left">{{ 'audit_log.table.action'|trans }}</th>
+                        <th scope="col" class="table-cell text-left">{{ 'audit_log.table.entity'|trans }}</th>
+                        <th scope="col" class="table-cell text-left">{{ 'audit_log.table.user'|trans }}</th>
+                        <th scope="col" class="table-cell text-left">{{ 'audit_log.table.description'|trans }}</th>
+                        <th scope="col" class="table-cell text-left">{{ 'audit_log.table.details'|trans }}</th>
                     </tr>
                 {% endblock %}
                 {% block table_body %}
@@ -188,7 +189,7 @@
                         <td class="table-cell">
                             <a href="{{ path('app_audit_log_detail', {id: log.id}) }}"
                                class="link-primary">
-                                Details anzeigen
+                                {{ 'audit_log.table.view_details'|trans }}
                             </a>
                         </td>
                     </tr>
@@ -209,21 +210,21 @@
     <div class="mt-2 text-center">
         <div class="pagination">
             {% if currentPage > 1 %}
-                <a href="{{ path('app_audit_log_index', filters|merge({page: currentPage - 1})) }}">« Zurück</a>
+                <a href="{{ path('app_audit_log_index', filters|merge({page: currentPage - 1})) }}">{{ 'audit_log.pagination.prev'|trans }}</a>
             {% endif %}
 
-            <span class="mx-1rem">Seite {{ currentPage }} von {{ totalPages }}</span>
+            <span class="mx-1rem">{{ 'audit_log.pagination.page_counter'|trans({'%current%': currentPage, '%total%': totalPages}) }}</span>
 
             {% if currentPage < totalPages %}
-                <a href="{{ path('app_audit_log_index', filters|merge({page: currentPage + 1})) }}">Weiter »</a>
+                <a href="{{ path('app_audit_log_index', filters|merge({page: currentPage + 1})) }}">{{ 'audit_log.pagination.next'|trans }}</a>
             {% endif %}
         </div>
     </div>
     {% endif %}
 </div>
 {% else %}
-<div class="info-box mt-2">
-    <p>Keine Protokolleinträge gefunden.</p>
+<div class="alert alert-info mt-2" role="status">
+    {{ 'audit_log.message.no_entries'|trans }}
 </div>
 {% endif %}
 {% endblock %}

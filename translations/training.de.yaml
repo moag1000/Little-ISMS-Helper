@@ -1,0 +1,74 @@
+training:
+  title: Schulungen
+  new: Neue Schulung
+  edit: Schulung bearbeiten
+  create: Schulung anlegen
+  create_first: Erste Schulung anlegen
+  description: Beschreibung
+  minutes: Minuten
+  type: Typ
+  delivery_method: Durchführungsart
+  delivery:
+    online: Online
+    on_site: Vor Ort
+    hybrid: Hybrid
+  location: Ort
+  scheduled_date: Geplantes Datum
+  duration: Dauer
+  trainer: Trainer
+  target_audience: Zielgruppe
+  audience:
+    all_employees: Alle Mitarbeitenden
+    it_staff: IT‑Mitarbeitende
+    management: Management
+  participants: Teilnehmende
+  status:
+    planned: Geplant
+    in_progress: In Bearbeitung
+    completed: Abgeschlossen
+    cancelled: Abgebrochen
+  status_values:
+    planned: Geplant
+    in_progress: In Bearbeitung
+    completed: Abgeschlossen
+    cancelled: Abgebrochen
+  mandatory: Verpflichtend
+  mandatory_label: Pflichtschulung
+  mandatory_training: Pflichtschulung
+  mandatory_info: Diese Schulung ist verpflichtend und muss von allen zugewiesenen Personen absolviert werden.
+  statistics:
+    total: Gesamt‑Schulungen
+    upcoming: Bevorstehend
+    completed: Abgeschlossen
+    mandatory: Pflichtschulungen
+  upcoming_trainings: Bevorstehende Schulungen
+  all_trainings: Alle Schulungen
+  no_trainings: Keine Schulungen vorhanden.
+  section:
+    basic_info: Basisinformationen
+    schedule: Termin & Ort
+    people: Trainer & Teilnehmende
+    controls: Zugeordnete Maßnahmen
+    materials: Materialien
+  materials: Materialien
+  feedback: Feedback
+  covered_controls: Abgedeckte Maßnahmen
+  field:
+    title: Titel
+    description: Beschreibung
+    training_type: Schulungstyp
+    delivery_method: Durchführungsart
+    scheduled_date: Geplantes Datum
+    duration: Dauer (Minuten)
+    location: Ort
+    trainer: Trainer
+    target_audience: Zielgruppe
+    participants: Teilnehmende
+    status: Status
+    mandatory: Verpflichtend
+    related_controls: Zugeordnete Maßnahmen
+  new_help: Planen Sie eine neue Schulung und informieren Sie die Zielgruppe rechtzeitig.
+  edit_help: Bearbeiten Sie Details, Termin oder Zielgruppe dieser Schulung.
+  participants_count: Teilnehmer
+  confirm_delete: Schulung löschen bestätigen
+  delete_warning: "Möchten Sie die Schulung '%title%' wirklich löschen?"

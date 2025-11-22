@@ -55,6 +55,8 @@ class ManagementReviewType extends AbstractType
                     return $user->getFirstName() . ' ' . $user->getLastName();
                 },
                 'multiple' => true,
+                // wichtig für ManyToMany-Collections, damit add/remove-Methoden genutzt werden
+                'by_reference' => false,
                 'required' => false,
                 'attr' => [
                     'class' => 'form-select',
@@ -78,6 +80,33 @@ class ManagementReviewType extends AbstractType
                     'rows' => 4,
                 ],
                 'help' => 'Bewertung der ISMS-Performance und KPIs',
+            ])
+            ->add('changesRelevantToISMS', TextareaType::class, [
+                'label' => 'management_review.field.changes_relevant_to_isms',
+                'required' => false,
+                'attr' => [
+                    'class' => 'form-control',
+                    'rows' => 3,
+                ],
+                'help' => 'Änderungen, die für das ISMS relevant sind (z. B. gesetzliche, organisatorische, technologische)',
+            ])
+            ->add('feedbackFromInterestedParties', TextareaType::class, [
+                'label' => 'management_review.field.feedback_from_interested_parties',
+                'required' => false,
+                'attr' => [
+                    'class' => 'form-control',
+                    'rows' => 3,
+                ],
+                'help' => 'Rückmeldungen interessierter Parteien (Kunden, Partner, Behörden, Mitarbeitende)',
+            ])
+            ->add('auditResults', TextareaType::class, [
+                'label' => 'management_review.field.audit_results',
+                'required' => false,
+                'attr' => [
+                    'class' => 'form-control',
+                    'rows' => 3,
+                ],
+                'help' => 'Ergebnisse interner/externer Audits seit dem letzten Review',
             ])
             ->add('nonconformitiesReview', TextareaType::class, [
                 'label' => 'management_review.field.nonconformities_review',
@@ -124,6 +153,33 @@ class ManagementReviewType extends AbstractType
                 ],
                 'help' => 'Änderungen in internen/externen Anforderungen',
             ])
+            ->add('previousReviewActions', TextareaType::class, [
+                'label' => 'management_review.field.previous_review_actions',
+                'required' => false,
+                'attr' => [
+                    'class' => 'form-control',
+                    'rows' => 3,
+                ],
+                'help' => 'Status der Maßnahmen aus dem vorherigen Management Review',
+            ])
+            ->add('nonConformitiesStatus', TextareaType::class, [
+                'label' => 'management_review.field.non_conformities_status',
+                'required' => false,
+                'attr' => [
+                    'class' => 'form-control',
+                    'rows' => 3,
+                ],
+                'help' => 'Übersicht offener Nichtkonformitäten und deren Bearbeitungsstand',
+            ])
+            ->add('correctiveActionsStatus', TextareaType::class, [
+                'label' => 'management_review.field.corrective_actions_status',
+                'required' => false,
+                'attr' => [
+                    'class' => 'form-control',
+                    'rows' => 3,
+                ],
+                'help' => 'Status der Korrekturmaßnahmen (geplant, in Bearbeitung, abgeschlossen)',
+            ])
             ->add('improvementOpportunities', TextareaType::class, [
                 'label' => 'management_review.field.improvement_opportunities',
                 'required' => false,
@@ -132,6 +188,15 @@ class ManagementReviewType extends AbstractType
                     'rows' => 4,
                 ],
                 'help' => 'Identifizierte Chancen zur Verbesserung des ISMS',
+            ])
+            ->add('opportunitiesForImprovement', TextareaType::class, [
+                'label' => 'management_review.field.opportunities_for_improvement',
+                'required' => false,
+                'attr' => [
+                    'class' => 'form-control',
+                    'rows' => 4,
+                ],
+                'help' => 'Verbesserungsmöglichkeiten (Alias-Feld, kompatibel mit bestehendem Template)',
             ])
             ->add('decisions', TextareaType::class, [
                 'label' => 'management_review.field.decisions',
@@ -151,8 +216,8 @@ class ManagementReviewType extends AbstractType
                 ],
                 'help' => 'Konkrete Maßnahmen mit Verantwortlichkeiten und Fristen',
             ])
-            ->add('resourcesNeeded', TextareaType::class, [
-                'label' => 'management_review.field.resources_needed',
+            ->add('resourceNeeds', TextareaType::class, [
+                'label' => 'management_review.field.resource_needs',
                 'required' => false,
                 'attr' => [
                     'class' => 'form-control',

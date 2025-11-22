@@ -172,12 +172,12 @@
             <div class="d-grid gap-2">
                 {% if pdf_url %}
                     <a href="{{ pdf_url }}" class="btn btn-sm btn-outline-danger" data-turbo="false">
-                        <i class="bi bi-file-pdf" aria-hidden="true"></i> Download PDF
+                        <i class="bi bi-file-pdf" aria-hidden="true"></i> {{ 'reports.action.download_pdf'|trans({}, 'reports') }}
                     </a>
                 {% endif %}
                 {% if excel_url %}
                     <a href="{{ excel_url }}" class="btn btn-sm btn-outline-success" data-turbo="false">
-                        <i class="bi bi-file-excel" aria-hidden="true"></i> Download Excel
+                        <i class="bi bi-file-excel" aria-hidden="true"></i> {{ 'reports.action.download_excel'|trans({}, 'reports') }}
                     </a>
                 {% endif %}
             </div>

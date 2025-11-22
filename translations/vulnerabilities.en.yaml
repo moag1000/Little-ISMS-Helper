@@ -1,0 +1,37 @@
+vulnerability:
+  title: Vulnerabilities
+  new: New Vulnerability
+  list: Vulnerability List
+  empty: No vulnerabilities available.
+  section:
+    details: Details
+
+  kpi:
+    total: Total Vulnerabilities
+    critical: Critical Vulnerabilities
+    high: High Vulnerabilities
+    overdue: Overdue Remediations
+
+  field:
+    cve_id: CVE ID
+    title: Title
+    severity: Severity
+    status: Status
+    affected_assets: Affected Assets
+    cvss_score: CVSS Score
+    description: Description
+    discovered_date: Discovered Date
+    responsible_person: Responsible Person
+
+  severity:
+    critical: Critical
+    high: High
+    medium: Medium
+    low: Low
+
+  status:
+    open: Open
+    in_progress: In Progress
+    mitigated: Mitigated
+    resolved: Resolved
+    closed: Closed

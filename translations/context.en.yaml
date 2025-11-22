@@ -1,0 +1,115 @@
+context_management:
+  title: ISMS Context
+  description: Overview and maintenance of the organizational context according to ISO 27001 (Clauses 4.1–4.3).
+
+context:
+  link:
+    edit: Edit context
+    create: Create context
+  info:
+    iso_clause: "ISO 27001: Context of the organization"
+    iso_description: "Clauses 4.1–4.3: External/internal issues, interested parties and scope."
+    subtitle: "ISO 27001 Clause 4: Understanding the organization and its context"
+    box_title: What belongs to the ISMS context?
+    clause41_title: "Clause 4.1 – Understanding the organization"
+    clause41_items:
+      external_issues: External issues (market, technology, compliance)
+      internal_issues: Internal issues (strategy, culture, processes)
+      scope: ISMS scope
+      exclusions: Exclusions and justifications
+    clause42_title: "Clause 4.2 – Interested parties"
+    clause42_items:
+      identify: Identification of all relevant parties
+      requirements: Their information security requirements
+      legal_regulatory: Legal and regulatory obligations
+      contractual: Contractual requirements
+    clause43_title: "Clause 4.3 – ISMS scope"
+    clause43_items:
+      boundaries: Physical and organizational boundaries
+      locations_processes: Included locations and processes
+      justified_exclusions: Justified exclusions
+    clause44_title: "Clause 4.4 – ISMS"
+    clause44_items:
+      policy_objectives: ISMS policy and objectives
+      roles_responsibilities: Roles and responsibilities
+      processes: Processes and their interactions
+  kpi:
+    completeness: Context completeness
+    active_goals: Active objectives
+    of_total: "of %total% total"
+    achieved_goals: Achieved objectives
+    success_rate: "Success rate: %rate%%"
+    next_review: Next review
+    days_since_review: Days since review
+    last_review: Last review
+    days_until_review: Days until review
+  review_status:
+    days_remaining: Days remaining
+    today: Due today
+    due: Due soon
+    days_overdue: Days overdue
+    not_scheduled: Not scheduled
+  section:
+    organization: Organization
+    scope: Scope
+    context_analysis: Context analysis
+    stakeholders: Interested parties
+    interested_parties: Interested parties
+    interested_parties_and_requirements: Interested parties & their requirements
+    compliance: Compliance requirements
+    legal_requirements: Legal requirements
+    regulatory_requirements: Regulatory requirements
+    contractual_obligations: Contractual obligations
+    requirements: Requirements
+    history: History
+    objectives: ISMS Objectives
+  field:
+    organization_name: Organization name
+    isms_scope: ISMS scope
+    scope_exclusions: Scope exclusions
+    external_issues: External issues
+    internal_issues: Internal issues
+    interested_parties: Interested parties
+    interested_parties_requirements: Requirements of interested parties
+    legal_requirements: Legal requirements
+    regulatory_requirements: Regulatory requirements
+    contractual_obligations: Contractual obligations
+    isms_policy: ISMS policy
+    roles_and_responsibilities: Roles & responsibilities
+    last_review_date: Last review date
+    next_review_date: Next review date
+  unit:
+    day: day
+    days: days
+  help:
+    organization_name: Name of the organization
+    isms_scope: "ISO 27001 Clause 4.3: Define boundaries and applicability"
+    scope_exclusions: Areas explicitly excluded from the ISMS
+    external_issues: "ISO 27001 Clause 4.1: External factors"
+    internal_issues: "ISO 27001 Clause 4.1: Internal factors"
+    interested_parties: "ISO 27001 Clause 4.2: Stakeholders with ISMS requirements"
+    interested_parties_requirements: Specific requirements from stakeholders
+    legal_requirements: Legal obligations and regulatory framework
+    regulatory_requirements: Industry regulations and standards
+    contractual_obligations: Contractual security requirements
+    isms_policy: "ISO 27001 Clause 5.2: Information security policy"
+    roles_and_responsibilities: "ISO 27001 Clause 5.3: ISMS roles and responsibilities"
+    last_review_date: When was the ISMS context last reviewed?
+    next_review_date: "Recommendation: annual review"
+  action:
+    edit_context: Edit context
+    create_context: Create ISMS context
+    view_all_objectives: "View all %count% objectives"
+    manage_objectives: Manage objectives
+  message:
+    overdue_review_title: Context review overdue!
+    overdue_review_text: "The next review was scheduled for %date% (by %days% days overdue). Please update the ISMS context."
+    upcoming_review_title: Context review due soon
+    upcoming_review_text: "The next review is scheduled for %date% (in %days% days)."
+    no_context_topics: No context topics captured
+    no_interested_parties: No interested parties captured
+    no_requirements: Not captured
+    no_objectives: No active ISMS objectives defined yet.
+  empty:
+    title: No ISMS context defined yet
+    description: "First capture the organizational context according to ISO 27001 Clause 4. This is the foundation for your information security management system."

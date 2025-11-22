@@ -1,18 +1,19 @@
 {% extends 'base.html.twig' %}
+{% trans_default_domain 'suppliers' %}
 
-{% block title %}New Supplier{% endblock %}
+{% block title %}{{ 'supplier.page.new_title'|trans }}{% endblock %}
 
 {% block body %}
 <div class="container">
     <div class="page-header">
-        <h1>Add New Supplier</h1>
-        <a href="{{ path('app_supplier_index') }}" class="btn btn-secondary">Back to Suppliers</a>
+        <h1>{{ 'supplier.page.new_title'|trans }}</h1>
+        <a href="{{ path('app_supplier_index') }}" class="btn btn-secondary">{{ 'common.back'|trans({}, 'messages') }}</a>
     </div>
 
     <div class="card">
         <div class="card-content">
             {{ form_start(form) }}
-                <h3>Basic Information</h3>
+                <h3>{{ 'supplier.section.details'|trans }}</h3>
                 <div class="form-row">
                     <div class="form-group">
                         {{ form_label(form.name) }}
@@ -43,7 +44,7 @@
                     {{ form_errors(form.serviceProvided) }}
                 </div>
 
-                <h2>Contact Information</h2>
+                <h2>{{ 'supplier.section.contact_info'|trans }}</h2>
                 <div class="form-row">
                     <div class="form-group">
                         {{ form_label(form.contactPerson) }}
@@ -68,7 +69,7 @@
                     {{ form_errors(form.address) }}
                 </div>
 
-                <h3>Security Assessment</h3>
+                <h3>{{ 'supplier.section.security_assessment'|trans }}</h3>
                 <div class="form-row">
                     <div class="form-group">
                         {{ form_label(form.securityScore) }}
@@ -105,7 +106,7 @@
                     {{ form_errors(form.securityRequirements) }}
                 </div>
 
-                <h3>Certifications & Compliance</h3>
+                <h3>{{ 'supplier.section.certifications_compliance'|trans }}</h3>
                 <div class="form-row">
                     <div class="form-group">
                         {{ form_label(form.hasISO27001) }}
@@ -137,7 +138,7 @@
                     </div>
                 </div>
 
-                <h3>Contract Information</h3>
+                <h3>{{ 'supplier.section.contract_info'|trans }}</h3>
                 <div class="form-row">
                     <div class="form-group">
                         {{ form_label(form.contractStartDate) }}
@@ -152,8 +153,8 @@
                 </div>
 
                 <div class="form-actions">
-                    <button type="submit" class="btn btn-primary">Create Supplier</button>
-                    <a href="{{ path('app_supplier_index') }}" class="btn btn-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-primary">{{ 'supplier.action.create'|trans }}</button>
+                    <a href="{{ path('app_supplier_index') }}" class="btn btn-secondary">{{ 'common.cancel'|trans({}, 'messages') }}</a>
                 </div>
             {{ form_end(form) }}
         </div>

@@ -9,19 +9,21 @@
     - Required field indicators
 #}
 
+{% trans_default_domain 'assets' %}
+
 {# Basic Information Section #}
 <fieldset class="mb-4">
     <legend class="h5 mb-3">
         <i class="bi bi-info-circle" aria-hidden="true"></i>
-        {{ 'asset.section.basic_info'|trans|default('Grundinformationen') }}
+        {{ 'assets.section.basic_info'|trans|default('Grundinformationen') }}
     </legend>
 
     <div class="row">
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.name,
-                'label': 'asset.field.name'|trans|default('Name'),
-                'help': 'asset.help.name'|trans|default('Eindeutiger Name des Assets'),
+                'label': 'assets.field.name'|trans|default('Name'),
+                'help': 'assets.help.name'|trans|default('Eindeutiger Name des Assets'),
                 'required': true
             } %}
         </div>
@@ -29,8 +31,8 @@
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.assetType,
-                'label': 'asset.field.type'|trans|default('Asset-Typ'),
-                'help': 'asset.help.type'|trans|default('Kategorie des Assets (Hardware, Software, Daten, etc.)'),
+                'label': 'assets.field.type'|trans|default('Asset-Typ'),
+                'help': 'assets.help.type'|trans|default('Kategorie des Assets (Hardware, Software, Daten, etc.)'),
                 'required': true
             } %}
         </div>
@@ -40,8 +42,8 @@
         <div class="col-12">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.description,
-                'label': 'asset.field.description'|trans|default('Beschreibung'),
-                'help': 'asset.help.description'|trans|default('Detaillierte Beschreibung des Assets und seiner Funktion')
+                'label': 'assets.field.description'|trans|default('Beschreibung'),
+                'help': 'assets.help.description'|trans|default('Detaillierte Beschreibung des Assets und seiner Funktion')
             } %}
         </div>
     </div>
@@ -51,23 +53,23 @@
 <fieldset class="mb-4">
     <legend class="h5 mb-3">
         <i class="bi bi-person-badge" aria-hidden="true"></i>
-        {{ 'asset.section.assignment'|trans|default('Zuordnung') }}
+        {{ 'assets.section.assignment'|trans|default('Zuordnung') }}
     </legend>
 
     <div class="row">
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.owner,
-                'label': 'asset.field.owner'|trans|default('Eigentümer'),
-                'help': 'asset.help.owner'|trans|default('Verantwortliche Person für dieses Asset')
+                'label': 'assets.field.owner'|trans|default('Eigentümer'),
+                'help': 'assets.help.owner'|trans|default('Verantwortliche Person für dieses Asset')
             } %}
         </div>
 
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.location,
-                'label': 'asset.field.location'|trans|default('Standort'),
-                'help': 'asset.help.location'|trans|default('Physischer oder logischer Standort des Assets')
+                'label': 'assets.field.location'|trans|default('Standort'),
+                'help': 'assets.help.location'|trans|default('Physischer oder logischer Standort des Assets')
             } %}
         </div>
     </div>
@@ -77,23 +79,23 @@
 <fieldset class="mb-4">
     <legend class="h5 mb-3">
         <i class="bi bi-currency-dollar" aria-hidden="true"></i>
-        {{ 'asset.section.financial'|trans|default('Finanzielle Informationen') }}
+        {{ 'assets.section.financial'|trans|default('Finanzielle Informationen') }}
     </legend>
 
     <div class="row">
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.acquisitionValue,
-                'label': 'asset.field.acquisition_value'|trans|default('Anschaffungswert'),
-                'help': 'asset.help.acquisition_value'|trans|default('Ursprünglicher Kaufpreis oder Anschaffungskosten')
+                'label': 'assets.field.acquisition_value'|trans|default('Anschaffungswert'),
+                'help': 'assets.help.acquisition_value'|trans|default('Ursprünglicher Kaufpreis oder Anschaffungskosten')
             } %}
         </div>
 
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.currentValue,
-                'label': 'asset.field.current_value'|trans|default('Aktueller Wert'),
-                'help': 'asset.help.current_value'|trans|default('Geschätzter aktueller Marktwert')
+                'label': 'assets.field.current_value'|trans|default('Aktueller Wert'),
+                'help': 'assets.help.current_value'|trans|default('Geschätzter aktueller Marktwert')
             } %}
         </div>
     </div>
@@ -103,36 +105,36 @@
 <fieldset class="mb-4">
     <legend class="h5 mb-3">
         <i class="bi bi-shield-lock" aria-hidden="true"></i>
-        {{ 'asset.section.cia_values'|trans|default('CIA-Bewertung (Schutzbedarf)') }}
+        {{ 'assets.section.cia_values'|trans|default('CIA-Bewertung (Schutzbedarf)') }}
     </legend>
 
     <div class="alert alert-info" role="status">
         <i class="bi bi-info-circle" aria-hidden="true"></i>
-        {{ 'asset.cia_help'|trans|default('Bewerten Sie den Schutzbedarf nach Vertraulichkeit, Integrität und Verfügbarkeit (1=sehr niedrig, 5=sehr hoch)') }}
+        {{ 'assets.cia_help'|trans|default('Bewerten Sie den Schutzbedarf nach Vertraulichkeit, Integrität und Verfügbarkeit (1=sehr niedrig, 5=sehr hoch)') }}
     </div>
 
     <div class="row">
         <div class="col-md-4">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.confidentialityValue,
-                'label': 'asset.field.confidentiality'|trans|default('Vertraulichkeit'),
-                'help': 'asset.help.confidentiality'|trans|default('Schutzbedarf bzgl. Vertraulichkeit der Informationen')
+                'label': 'assets.field.confidentiality'|trans|default('Vertraulichkeit'),
+                'help': 'assets.help.confidentiality'|trans|default('Schutzbedarf bzgl. Vertraulichkeit der Informationen')
             } %}
         </div>
 
         <div class="col-md-4">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.integrityValue,
-                'label': 'asset.field.integrity'|trans|default('Integrität'),
-                'help': 'asset.help.integrity'|trans|default('Schutzbedarf bzgl. Unversehrtheit und Korrektheit der Daten')
+                'label': 'assets.field.integrity'|trans|default('Integrität'),
+                'help': 'assets.help.integrity'|trans|default('Schutzbedarf bzgl. Unversehrtheit und Korrektheit der Daten')
             } %}
         </div>
 
         <div class="col-md-4">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.availabilityValue,
-                'label': 'asset.field.availability'|trans|default('Verfügbarkeit'),
-                'help': 'asset.help.availability'|trans|default('Schutzbedarf bzgl. ständiger Erreichbarkeit und Nutzbarkeit')
+                'label': 'assets.field.availability'|trans|default('Verfügbarkeit'),
+                'help': 'assets.help.availability'|trans|default('Schutzbedarf bzgl. ständiger Erreichbarkeit und Nutzbarkeit')
             } %}
         </div>
     </div>
@@ -143,11 +145,11 @@
     <a href="{{ path('app_asset_index') }}"
        class="btn btn-secondary">
         <i class="bi bi-x-circle" aria-hidden="true"></i>
-        {{ 'common.cancel'|trans }}
+        {{ 'common.cancel'|trans({}, 'messages') }}
     </a>
 
     <button type="submit" class="btn btn-primary">
         <i class="{{ button_icon|default('bi-save') }}" aria-hidden="true"></i>
-        {{ button_label|default('common.save'|trans) }}
+        {{ button_label|default('common.save'|trans({}, 'messages')) }}
     </button>
 </div>

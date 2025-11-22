@@ -1,0 +1,102 @@
+incident_management:
+  title: Vorfälle
+  description: Erfassen, klassifizieren und verwalten Sie Sicherheitsvorfälle sowie NIS2‑Meldungen.
+  open_incidents: Offene Vorfälle
+  total_recorded: Insgesamt erfasste Vorfälle
+
+incident:
+  new: Neuer Vorfall
+  create: Vorfall erstellen
+  action:
+    report_new: Neuen Vorfall melden
+    edit: Bearbeiten
+    back_to_list: Zurück zur Liste
+    delete: Löschen
+    download_nis2_report: NIS2-Report herunterladen
+  kpi:
+    nis2_attention: NIS2 erfordert Aufmerksamkeit
+    categories: Kategorien
+  section:
+    basic_info: Basisinformationen
+    severity_status: Schweregrad & Status
+    detection_reporting: Erkennung & Meldung
+    affected_systems: Betroffene Systeme & Assets
+    analysis: Analyse & Maßnahmen
+    nis2_reporting: NIS2‑Meldung
+    nis2_info: Aktivieren Sie diesen Abschnitt, wenn der Vorfall NIS2‑relevant ist.
+  modern:
+    breadcrumb: Vorfallsmanagement
+    header:
+      title: Vorfallsmanagement
+      subtitle: Dokumentation und Behandlung von Informationssicherheitsvorfällen
+      action:
+        report: Vorfall melden
+        export: Export
+    kpi:
+      total: Gesamte Vorfälle
+      open: Offene Vorfälle
+      critical: Kritische Vorfälle
+      avg_resolution: Ø Lösungszeit
+      unit:
+        days: Tage
+  status:
+    open: Offen
+    in_progress: In Bearbeitung
+    resolved: Gelöst
+    closed: Abgeschlossen
+  nis2_timeline:
+    title: NIS2 Meldezeitplan (Artikel 23)
+    description: Gemäß NIS2-Richtlinie (EU 2022/2555) müssen bedeutende Vorfälle innerhalb definierter Fristen gemeldet werden.
+  timeline:
+    early_warning: Frühwarnung (24h)
+    detailed_notification: Detaillierte Meldung (72h)
+    final_report: Abschlussbericht (1 Monat)
+    deadline: Frist
+    reported: Gemeldet
+    reported_at: Gemeldet am
+    overdue: Überfällig
+    hours_remaining: '%hours% Stunden verbleibend'
+    days_remaining: '%days% Tage verbleibend'
+  field:
+    title: Titel
+    description: Beschreibung
+    category: Kategorie
+    detected: Erkannt
+    detected_at: Erkannt am
+    reported_by: Gemeldet von
+    occurred: Aufgetreten
+    occurred_at: Aufgetreten am
+    severity: Schweregrad
+    status: Status
+    affected_systems: Betroffene Systeme
+    affected_assets: Betroffene Assets
+    root_cause: Ursächliche Ursache
+    corrective_actions: Korrekturmaßnahmen
+    lessons_learned: Lessons Learned
+    closed_at: Geschlossen am
+    nis2_category: NIS2‑Kategorie
+    cross_border_impact: Grenzüberschreitende Auswirkungen
+    early_warning_reported_at: Frühwarnung gemeldet am
+    detailed_notification_reported_at: Detaillierte Meldung gemeldet am
+    final_report_submitted_at: Abschlussbericht eingereicht am
+    affected_users_count: Betroffene Nutzer (Anzahl)
+    estimated_financial_impact: Geschätzter finanzieller Schaden
+    national_authority_notified: Nationale Behörde benachrichtigt
+    authority_reference_number: Aktenzeichen der Behörde
+  nis2_compliance:
+    title: NIS2 Compliance Status
+    not_applicable: Nicht NIS2-relevant
+    compliant: Konform
+    overdue: Frist überschritten
+    awaiting_early_warning: Frühwarnung ausstehend
+    awaiting_detailed: Detaillierte Meldung ausstehend
+    awaiting_final: Abschlussbericht ausstehend
+  nis2_alert:
+    title: NIS2‑Relevanz prüfen
+    description: Prüfen Sie, ob der Vorfall unter die NIS2‑Meldepflicht fällt. Falls ja, aktivieren Sie den NIS2‑Abschnitt und pflegen Sie die Fristen.
+    early_warning: Frühwarnung innerhalb von 24 Stunden
+    detailed_notification: Detaillierte Meldung innerhalb von 72 Stunden
+    final_report: Abschlussbericht innerhalb eines Monats
+  nis2_toggle:
+    show: NIS2‑Abschnitt anzeigen
+    hide: NIS2‑Abschnitt verbergen

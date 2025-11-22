@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Statement of Applicability</title>
+    <title>{% trans_default_domain 'soa' %}{{ 'soa.page.title'|trans }}</title>
     <style>
         @page { size: A4 landscape; margin: 15mm; }
         body { font-family: 'DejaVu Sans', sans-serif; font-size: 9pt; }
@@ -54,21 +54,21 @@
 </head>
 <body>
     <div class="header">
-        <h1>Statement of Applicability (SoA)</h1>
-        <div class="subtitle">ISO/IEC 27001:2022 Annex A Controls | Generated: {{ generated_at|date('d.m.Y H:i') }}</div>
+        <h1>{{ 'soa.page.title'|trans }}</h1>
+        <div class="subtitle">ISO/IEC 27001:2022 Annex A Controls | {{ 'soa.report.generated_at'|trans({'%datetime%': generated_at|date('d.m.Y H:i')}) }}</div>
     </div>
 
     <table>
         <thead>
             <tr>
-                <th scope="col" class="w-8">Control ID</th>
-                <th scope="col" class="w-22">Name</th>
-                <th scope="col" class="w-10">Category</th>
-                <th scope="col" class="w-12">Applicability</th>
-                <th scope="col" class="w-12">Status</th>
-                <th scope="col" class="w-8">Progress</th>
-                <th scope="col" class="w-18">Justification</th>
-                <th scope="col" class="w-10">Target Date</th>
+                <th scope="col" class="w-8">{{ 'soa.table.control_id'|trans }}</th>
+                <th scope="col" class="w-22">{{ 'soa.table.name'|trans }}</th>
+                <th scope="col" class="w-10">{{ 'soa.table.category'|trans }}</th>
+                <th scope="col" class="w-12">{{ 'soa.table.applicable'|trans }}</th>
+                <th scope="col" class="w-12">{{ 'soa.table.implementation_status'|trans }}</th>
+                <th scope="col" class="w-8">{{ 'soa.table.progress'|trans }}</th>
+                <th scope="col" class="w-18">{{ 'soa.table.justification'|trans }}</th>
+                <th scope="col" class="w-10">{{ 'soa.table.target_date'|trans }}</th>
             </tr>
         </thead>
         <tbody>
@@ -76,11 +76,11 @@
             <tr>
                 <td>{{ control.controlId }}</td>
                 <td>{{ control.name|slice(0, 40) }}{% if control.name|length > 40 %}...{% endif %}</td>
-                <td>{{ control.category }}</td>
+                <td>{{ ('soa.category.' ~ control.category)|trans|default(control.category) }}</td>
                 <td class="{% if control.applicability == 'applicable' %}applicable{% else %}not-applicable{% endif %}">
-                    {{ control.applicability }}
+                    {{ control.applicability == 'applicable' ? ('soa.value.yes'|trans) : ('soa.value.no'|trans) }}
                 </td>
-                <td>{{ control.implementationStatus }}</td>
+                <td>{{ ('soa.status.' ~ control.implementationStatus)|trans|default(control.implementationStatus) }}</td>
                 <td>
                     <div class="progress-bar">
                         <div class="progress-fill" style="width: {{ control.implementationProgress }}%;"></div>
@@ -95,7 +95,7 @@
     </table>
 
     <div class="footer">
-        <p>Confidential - ISO 27001:2022 SoA | Page {PAGE_NUM}</p>
+        <p>{{ 'soa.footer.note'|trans }}</p>
     </div>
 </body>
 </html>

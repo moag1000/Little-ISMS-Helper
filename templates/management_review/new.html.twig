@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% trans_default_domain 'management_review' %}
 
 {% block title %}{{ 'management_review.new'|trans }} - {{ parent() }}{% endblock %}
 
@@ -22,7 +23,7 @@
                     <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'management_review.new'|trans }}
                 </h1>
                 <a href="{{ path('app_management_review_index') }}" class="btn btn-outline-secondary" data-turbo-action="advance">
-                    <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans }}
+                    <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
                 </a>
             </div>
 
@@ -182,7 +183,7 @@
                         <a href="{{ path('app_management_review_index') }}"
                            class="btn btn-outline-secondary"
                            data-turbo-action="advance">
-                            <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans }}
+                            <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
                         </a>
                         <button type="submit" class="btn btn-primary btn-lg">
                             <i class="bi bi-save" aria-hidden="true"></i> {{ 'management_review.create'|trans }}

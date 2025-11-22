@@ -7,6 +7,7 @@
    - Incident trends
    - Time period filtering
 #}
+{% trans_default_domain 'analytics' %}
 
 <div class="card analytics-card trend-card {{ expanded is defined and expanded ? 'expanded' : '' }}"
      data-controller="trend-chart"
@@ -14,17 +15,17 @@
     <div class="card-header">
         <h3 class="card-title">
             <i class="bi-graph-up-arrow text-info"></i>
-            Trend Analysis
-        </h5>
+            {{ 'analytics.card.trend_analysis'|trans }}
+        </h3>
         <div class="card-actions">
             <button class="btn btn-sm btn-outline-secondary"
                     data-action="click->trend-chart#refresh"
-                    title="Refresh">
+                    title="{{ 'analytics.action.refresh'|trans }}">
                 <i class="bi bi-arrow-clockwise"></i>
             </button>
             <button class="btn btn-sm btn-outline-secondary"
                     data-action="click->trend-chart#exportImage"
-                    title="Export as PNG">
+                    title="{{ 'analytics.action.export_png'|trans }}">
                 <i class="bi bi-image"></i>
             </button>
         </div>
@@ -33,9 +34,9 @@
         {# Loading State #}
         <div class="trend-loading d-none" data-trend-chart-target="loading">
             <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">Loading...</span>
+                <span class="visually-hidden">{{ 'analytics.loading.loading'|trans }}</span>
             </div>
-            <p class="mt-2 text-muted">Loading trend data...</p>
+            <p class="mt-2 text-muted">{{ 'analytics.loading.loading_trends'|trans }}</p>
         </div>
 
         {# Trend Charts Container #}
@@ -46,42 +47,42 @@
                     <button class="nav-link active"
                             data-action="click->trend-chart#showRiskTrend"
                             data-trend-chart-target="riskTab">
-                        <i class="bi bi-exclamation-triangle"></i> Risks
+                        <i class="bi bi-exclamation-triangle"></i> {{ 'analytics.trend_tabs.risks'|trans }}
                     </button>
                 </li>
                 <li class="nav-item">
                     <button class="nav-link"
                             data-action="click->trend-chart#showAssetTrend"
                             data-trend-chart-target="assetTab">
-                        <i class="bi bi-server"></i> Assets
+                        <i class="bi bi-server"></i> {{ 'analytics.trend_tabs.assets'|trans }}
                     </button>
                 </li>
                 <li class="nav-item">
                     <button class="nav-link"
                             data-action="click->trend-chart#showIncidentTrend"
                             data-trend-chart-target="incidentTab">
-                        <i class="bi bi-exclamation-circle"></i> Incidents
+                        <i class="bi bi-exclamation-circle"></i> {{ 'analytics.trend_tabs.incidents'|trans }}
                     </button>
                 </li>
             </ul>
 
             {# Risk Trend Chart #}
             <div class="trend-chart-wrapper" data-trend-chart-target="riskChart">
-                <h4 class="chart-title">Risk Trends (Last 12 Months)</h4>
+                <h4 class="chart-title">{{ 'analytics.chart_title.risk_trends_last_12'|trans }}</h4>
                 <canvas data-trend-chart-target="riskCanvas"
                         width="800"
                         height="300"></canvas>
                 <div class="chart-stats mt-3">
                     <div class="stat-item">
-                        <span class="stat-label">Total Risks:</span>
+                        <span class="stat-label">{{ 'analytics.stat_label.total_risks'|trans }}:</span>
                         <span class="stat-value" data-trend-chart-target="riskTotal">--</span>
                     </div>
                     <div class="stat-item">
-                        <span class="stat-label">High Risk:</span>
+                        <span class="stat-label">{{ 'analytics.stat_label.high_risk'|trans }}:</span>
                         <span class="stat-value text-danger" data-trend-chart-target="riskHigh">--</span>
                     </div>
                     <div class="stat-item">
-                        <span class="stat-label">Trend:</span>
+                        <span class="stat-label">{{ 'analytics.stat_label.trend'|trans }}:</span>
                         <span class="stat-value" data-trend-chart-target="riskTrend">--</span>
                     </div>
                 </div>
@@ -89,17 +90,17 @@
 
             {# Asset Trend Chart #}
             <div class="trend-chart-wrapper d-none" data-trend-chart-target="assetChart">
-                <h4 class="chart-title">Asset Growth (Last 12 Months)</h4>
+                <h4 class="chart-title">{{ 'analytics.chart_title.asset_growth_last_12'|trans }}</h4>
                 <canvas data-trend-chart-target="assetCanvas"
                         width="800"
                         height="300"></canvas>
                 <div class="chart-stats mt-3">
                     <div class="stat-item">
-                        <span class="stat-label">Total Assets:</span>
+                        <span class="stat-label">{{ 'analytics.stat_label.total_assets'|trans }}:</span>
                         <span class="stat-value" data-trend-chart-target="assetTotal">--</span>
                     </div>
                     <div class="stat-item">
-                        <span class="stat-label">Growth:</span>
+                        <span class="stat-label">{{ 'analytics.stat_label.growth'|trans }}:</span>
                         <span class="stat-value" data-trend-chart-target="assetGrowth">--</span>
                     </div>
                 </div>
@@ -107,21 +108,21 @@
 
             {# Incident Trend Chart #}
             <div class="trend-chart-wrapper d-none" data-trend-chart-target="incidentChart">
-                <h4 class="chart-title">Incident Trends (Last 12 Months)</h4>
+                <h4 class="chart-title">{{ 'analytics.chart_title.incident_trends_last_12'|trans }}</h4>
                 <canvas data-trend-chart-target="incidentCanvas"
                         width="800"
                         height="300"></canvas>
                 <div class="chart-stats mt-3">
                     <div class="stat-item">
-                        <span class="stat-label">Total Incidents:</span>
+                        <span class="stat-label">{{ 'analytics.stat_label.total_incidents'|trans }}:</span>
                         <span class="stat-value" data-trend-chart-target="incidentTotal">--</span>
                     </div>
                     <div class="stat-item">
-                        <span class="stat-label">Critical:</span>
+                        <span class="stat-label">{{ 'analytics.stat_label.critical'|trans }}:</span>
                         <span class="stat-value text-danger" data-trend-chart-target="incidentCritical">--</span>
                     </div>
                     <div class="stat-item">
-                        <span class="stat-label">Avg/Month:</span>
+                        <span class="stat-label">{{ 'analytics.stat_label.avg_per_month'|trans }}:</span>
                         <span class="stat-value" data-trend-chart-target="incidentAvg">--</span>
                     </div>
                 </div>

@@ -1,0 +1,72 @@
+admin:
+  title: Administration
+  breadcrumb:
+    home: Admin Dashboard
+  section:
+    user_access: Benutzer & Zugriff
+    system_config: Systemkonfiguration
+    modules: Module & Features
+    monitoring: Überwachung & Logs
+    navigation: Navigation
+    data_management: Daten-Verwaltung
+    licensing: Lizenzierung
+  nav:
+    tenants: Mandanten
+    users: Benutzer
+    roles: Rollen
+    settings: Einstellungen
+    compliance: Compliance-Frameworks
+    audit_log: Audit Log
+    back_to_app: Zurück zur Anwendung
+    dashboard: Dashboard
+    corporate_structure: Unternehmensstrukturen
+    permissions: Berechtigungen
+    sessions: Sitzungen
+    mfa: MFA Verwaltung
+    module_management: Modul-Verwaltung
+    compliance_management: Compliance-Verwaltung
+    system_health: System-Status
+    backup: Backup
+    export: Export
+    import: Import
+    data_repair: Daten-Reparatur
+    license_management: Lizenz-Verwaltung
+  dashboard:
+    title: Admin Dashboard
+    subtitle: Zentrale Verwaltung und Systemübersicht
+    alerts:
+      title: Systemhinweise
+      item: Element
+      items: Elemente
+      view: Ansehen
+    stats:
+      users: Benutzer
+      active: Aktiv
+      inactive: Inaktiv
+      manage: Verwalten
+      active_sessions: Aktive Sitzungen
+      last_24h: Letzte 24 Stunden
+      database: Datenbankgröße
+      total_records: Gesamt-Datensätze
+      across_modules: Über alle Module
+    modules:
+      title: Module Übersicht
+      module: Modul
+      records: Datensätze
+      action: Aktion
+      assets: Assets
+      risks: Risiken
+      compliance: Compliance
+      incidents: Vorfälle
+      audits: Audits
+      trainings: Schulungen
+    quick_actions:
+      title: Schnellaktionen
+      add_user: Benutzer anlegen
+      add_role: Rolle hinzufügen
+      view_logs: Logs ansehen
+      manage_compliance: Compliance verwalten
+    activity:
+      title: Aktivität
+      empty: Keine aktuellen Aktivitäten vorhanden.
+      view_all: Alle anzeigen

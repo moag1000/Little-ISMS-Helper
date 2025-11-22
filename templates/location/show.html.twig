@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% trans_default_domain 'locations' %}
 
 {% block title %}{{ location.name }} - {{ 'location.title.show'|trans }} - Little ISMS Helper{% endblock %}
 
@@ -15,10 +16,10 @@
     </div>
     <div class="button-group">
         <a href="{{ path('app_location_edit', {id: location.id}) }}" class="btn btn-primary">
-            ✏️ {{ 'common.edit'|trans }}
+            ✏️ {{ 'common.edit'|trans({}, 'messages') }}
         </a>
         <a href="{{ path('app_location_index') }}" class="btn btn-secondary">
-            ← {{ 'common.back_to_list'|trans }}
+            ← {{ 'common.back_to_list'|trans({}, 'messages') }}
         </a>
     </div>
 </div>
@@ -47,7 +48,7 @@
                     {{ location.parentLocation.name }}
                 </a>
             </strong>
-            <span>{{ 'location.field.parent'|trans }}</span>
+            <span>{{ 'location.field.parent_location'|trans }}</span>
         </div>
         {% endif %}
 
@@ -70,9 +71,9 @@
         <div class="stat-item">
             <strong>
                 {% if location.requiresBadgeAccess %}
-                    <span class="badge bg-success">{{ 'common.yes'|trans }}</span>
+                    <span class="badge bg-success">{{ 'common.yes'|trans({}, 'messages') }}</span>
                 {% else %}
-                    <span class="badge bg-secondary">{{ 'common.no'|trans }}</span>
+                    <span class="badge bg-secondary">{{ 'common.no'|trans({}, 'messages') }}</span>
                 {% endif %}
             </strong>
             <span>{{ 'location.field.badge_access'|trans }}</span>
@@ -115,7 +116,7 @@
                 <th scope="col">{{ 'location.field.name'|trans }}</th>
                 <th scope="col">{{ 'location.field.type'|trans }}</th>
                 <th scope="col">{{ 'location.field.security_level'|trans }}</th>
-                <th scope="col" class="text-center">{{ 'common.actions'|trans }}</th>
+                <th scope="col" class="text-center">{{ 'common.actions'|trans({}, 'messages') }}</th>
             </tr>
         {% endblock %}
         {% block table_body %}
@@ -137,7 +138,7 @@
                 </td>
                 <td class="text-center">
                     <a href="{{ path('app_location_show', {id: child.id}) }}" class="btn btn-sm">
-                        👁 {{ 'common.view'|trans }}
+                        👁 {{ 'common.view'|trans({}, 'messages') }}
                     </a>
                 </td>
             </tr>
@@ -155,9 +156,9 @@
         <div class="stat-item">
             <strong>
                 {% if location.active %}
-                    <span class="badge bg-success">{{ 'common.active'|trans }}</span>
+                    <span class="badge bg-success">{{ 'common.active'|trans({}, 'messages') }}</span>
                 {% else %}
-                    <span class="badge bg-secondary">{{ 'common.inactive'|trans }}</span>
+                    <span class="badge bg-secondary">{{ 'common.inactive'|trans({}, 'messages') }}</span>
                 {% endif %}
             </strong>
             <span>{{ 'location.field.status'|trans }}</span>
@@ -179,14 +180,14 @@
 {# Action Buttons #}
 <div class="button-group mt-xl">
     <a href="{{ path('app_location_edit', {id: location.id}) }}" class="btn btn-primary">
-        ✏️ {{ 'common.edit'|trans }}
+        ✏️ {{ 'common.edit'|trans({}, 'messages') }}
     </a>
     <a href="{{ path('app_location_index') }}" class="btn btn-secondary">
-        📋 {{ 'common.back_to_list'|trans }}
+        📋 {{ 'common.back_to_list'|trans({}, 'messages') }}
     </a>
     <form method="post" action="{{ path('app_location_delete', {id: location.id}) }}" onsubmit="return confirm('{{ 'location.confirm.delete'|trans }}');" class="d-inline">
         <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ location.id) }}">
-        <button type="submit" class="btn btn-danger">🗑️ {{ 'common.delete'|trans }}</button>
+        <button type="submit" class="btn btn-danger">🗑️ {{ 'common.delete'|trans({}, 'messages') }}</button>
     </form>
 </div>
 {% endblock %}

@@ -1,12 +1,13 @@
 {% extends 'base.html.twig' %}
+{% trans_default_domain 'patches' %}
 {% block title %}{{ patch.title }} - {{ parent() }}{% endblock %}
 {% block body %}
 <div class="container py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1>{{ patch.title }}</h1>
         <div>
-            <a href="{{ path('app_patch_edit', {id: patch.id}) }}" class="btn btn-primary">{{ 'common.edit'|trans }}</a>
-            <a href="{{ path('app_patch_index') }}" class="btn btn-outline-secondary">{{ 'common.back'|trans }}</a>
+            <a href="{{ path('app_patch_edit', {id: patch.id}) }}" class="btn btn-primary">{{ 'common.edit'|trans({}, 'messages') }}</a>
+            <a href="{{ path('app_patch_index') }}" class="btn btn-outline-secondary">{{ 'common.back'|trans({}, 'messages') }}</a>
         </div>
     </div>
     <div class="card">

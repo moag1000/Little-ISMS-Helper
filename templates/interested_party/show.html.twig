@@ -1,18 +1,19 @@
 {% extends 'base.html.twig' %}
+{% trans_default_domain 'interested_parties' %}
 
-{% block title %}{{ interested_party.name }}{% endblock %}
+{% block title %}{{ 'interested_party.page.show_title'|trans }}: {{ interested_party.name }}{% endblock %}
 
 {% block body %}
 <div class="container">
     <div class="page-header">
         <h1>{{ interested_party.name }}</h1>
         <div class="actions">
-            <a href="{{ path('app_interested_party_edit', {id: interested_party.id}) }}" class="btn btn-primary">Edit</a>
-            <a href="{{ path('app_interested_party_index') }}" class="btn btn-secondary">Back to List</a>
+            <a href="{{ path('app_interested_party_edit', {id: interested_party.id}) }}" class="btn btn-primary">{{ 'common.edit'|trans({}, 'messages') }}</a>
+            <a href="{{ path('app_interested_party_index') }}" class="btn btn-secondary">{{ 'common.back_to_list'|trans({}, 'messages') }}</a>
             {% if is_granted('ROLE_ADMIN') %}
-                <form method="post" action="{{ path('app_interested_party_delete', {id: interested_party.id}) }}" style="display:inline;" onsubmit="return confirm('Are you sure?');">
+                <form method="post" action="{{ path('app_interested_party_delete', {id: interested_party.id}) }}" style="display:inline;" onsubmit="return confirm('{{ 'interested_party.confirm.delete'|trans }}');">
                     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ interested_party.id) }}">
-                    <button type="submit" class="btn btn-danger">Delete</button>
+                    <button type="submit" class="btn btn-danger">{{ 'common.delete'|trans({}, 'messages') }}</button>
                 </form>
             {% endif %}
         </div>
@@ -20,7 +21,7 @@
 
     <div class="card">
         <div class="card-header">
-            <h2>Interested Party Details</h2>
+            <h2>{{ 'interested_party.page.show_title'|trans }}</h2>
             <div>
                 <span class="badge badge-{{ interested_party.partyType }}">{{ interested_party.partyType }}</span>
                 <span class="badge badge-{{ interested_party.importance }}">{{ interested_party.importance|upper }}</span>
@@ -28,63 +29,63 @@
         </div>
         <div class="card-content">
             <div class="alert alert-info">
-                <strong>Engagement Score: {{ interested_party.getEngagementScore() }}</strong>
+                <strong>{{ 'interested_party.engagement_score'|trans }}: {{ interested_party.getEngagementScore() }}</strong>
             </div>
 
             {% if interested_party.description %}
             <div class="detail-section">
-                <h2>Description</h2>
+                <h2>{{ 'interested_party.field.description'|trans }}</h2>
                 <p>{{ interested_party.description }}</p>
             </div>
             {% endif %}
 
             <div class="detail-section">
-                <h3>Contact Information</h3>
+                <h3>{{ 'interested_party.section.contact_info'|trans }}</h3>
                 <div class="detail-grid">
                     <div class="detail-item">
-                        <span class="label">Contact Person:</span>
-                        <span class="value">{{ interested_party.contactPerson ?? 'N/A' }}</span>
+                        <span class="label">{{ 'interested_party.field.contact_person'|trans }}:</span>
+                        <span class="value">{{ interested_party.contactPerson ?? 'common.not_available'|trans({}, 'messages') }}</span>
                     </div>
                     <div class="detail-item">
-                        <span class="label">Email:</span>
-                        <span class="value">{{ interested_party.email ?? 'N/A' }}</span>
+                        <span class="label">{{ 'interested_party.field.email'|trans }}:</span>
+                        <span class="value">{{ interested_party.email ?? 'common.not_available'|trans({}, 'messages') }}</span>
                     </div>
                     <div class="detail-item">
-                        <span class="label">Phone:</span>
-                        <span class="value">{{ interested_party.phone ?? 'N/A' }}</span>
+                        <span class="label">{{ 'interested_party.field.phone'|trans }}:</span>
+                        <span class="value">{{ interested_party.phone ?? 'common.not_available'|trans({}, 'messages') }}</span>
                     </div>
                 </div>
             </div>
 
             <div class="detail-section">
-                <h3>Requirements & Expectations</h3>
+                <h3>{{ 'interested_party.section.requirements'|trans }}</h3>
                 <p>{{ interested_party.requirements }}</p>
                 {% if interested_party.howAddressed %}
-                <h4>How Addressed</h4>
+                <h4>{{ 'interested_party.field.how_addressed'|trans }}</h4>
                 <p>{{ interested_party.howAddressed }}</p>
                 {% endif %}
             </div>
 
             <div class="detail-section">
-                <h3>Communication</h3>
+                <h3>{{ 'interested_party.section.communication'|trans }}</h3>
                 <div class="detail-grid">
                     <div class="detail-item">
-                        <span class="label">Frequency:</span>
-                        <span class="value">{{ interested_party.communicationFrequency ?? 'N/A' }}</span>
+                        <span class="label">{{ 'interested_party.field.communication_frequency'|trans }}:</span>
+                        <span class="value">{{ interested_party.communicationFrequency ?? 'common.not_available'|trans({}, 'messages') }}</span>
                     </div>
                     <div class="detail-item">
-                        <span class="label">Method:</span>
-                        <span class="value">{{ interested_party.communicationMethod ?? 'N/A' }}</span>
+                        <span class="label">{{ 'interested_party.field.communication_method'|trans }}:</span>
+                        <span class="value">{{ interested_party.communicationMethod ?? 'common.not_available'|trans({}, 'messages') }}</span>
                     </div>
                     <div class="detail-item">
-                        <span class="label">Last Communication:</span>
-                        <span class="value">{{ interested_party.lastCommunication ? interested_party.lastCommunication|date('Y-m-d') : 'Never' }}</span>
+                        <span class="label">{{ 'interested_party.field.last_communication'|trans }}:</span>
+                        <span class="value">{{ interested_party.lastCommunication ? interested_party.lastCommunication|date('Y-m-d') : 'interested_party.never'|trans }}</span>
                     </div>
                     <div class="detail-item">
-                        <span class="label">Next Communication:</span>
+                        <span class="label">{{ 'interested_party.field.next_communication'|trans }}:</span>
                         <span class="value {{ interested_party.isCommunicationOverdue() ? 'text-danger' : '' }}">
-                            {{ interested_party.nextCommunication ? interested_party.nextCommunication|date('Y-m-d') : 'Not scheduled' }}
-                            {{ interested_party.isCommunicationOverdue() ? '⚠️ OVERDUE' : '' }}
+                            {{ interested_party.nextCommunication ? interested_party.nextCommunication|date('Y-m-d') : 'interested_party.not_scheduled'|trans }}
+                            {{ interested_party.isCommunicationOverdue() ? '⚠️ ' ~ ('interested_party.badge.overdue'|trans) : '' }}
                         </span>
                     </div>
                 </div>
@@ -92,14 +93,14 @@
 
             {% if interested_party.feedback %}
             <div class="detail-section">
-                <h3>Feedback</h3>
+                <h3>{{ 'interested_party.section.feedback'|trans }}</h3>
                 <p>{{ interested_party.feedback }}</p>
             </div>
             {% endif %}
 
             {% if interested_party.satisfactionLevel %}
             <div class="detail-section">
-                <h3>Satisfaction Level</h3>
+                <h3>{{ 'interested_party.field.satisfaction_level'|trans }}</h3>
                 <div class="value-bar">
                     <div class="bar" style="width: {{ (interested_party.satisfactionLevel / 5 * 100) }}%"></div>
                 </div>
@@ -109,15 +110,15 @@
 
             {% if interested_party.issues %}
             <div class="alert alert-warning">
-                <strong>Issues/Concerns:</strong>
+                <strong>{{ 'interested_party.field.issues'|trans }}:</strong>
                 <p>{{ interested_party.issues }}</p>
             </div>
             {% endif %}
 
             <div class="detail-section">
                 <p class="text-muted">
-                    Created: {{ interested_party.createdAt|date('Y-m-d H:i') }}
-                    {% if interested_party.updatedAt %}| Last updated: {{ interested_party.updatedAt|date('Y-m-d H:i') }}{% endif %}
+                    {{ 'common.created_at'|trans({}, 'messages') }}: {{ interested_party.createdAt|date('Y-m-d H:i') }}
+                    {% if interested_party.updatedAt %}| {{ 'common.updated_at'|trans({}, 'messages') }}: {{ interested_party.updatedAt|date('Y-m-d H:i') }}{% endif %}
                 </p>
             </div>
         </div>

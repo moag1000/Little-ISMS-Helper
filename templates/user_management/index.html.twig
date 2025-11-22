@@ -1,13 +1,14 @@
 {% extends 'admin/layout.html.twig' %}
+{% trans_default_domain 'users' %}
 
-{% block title %}Benutzerverwaltung{% endblock %}
+{% block title %}{{ 'users.page.title'|trans }}{% endblock %}
 
 {% block admin_content %}
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1><i class="bi bi-people" aria-hidden="true"></i> Benutzerverwaltung</h1>
+        <h1><i class="bi bi-people" aria-hidden="true"></i> {{ 'users.page.title'|trans }}</h1>
         <a href="{{ path('user_management_new') }}" class="btn btn-primary" data-turbo-frame="_top">
-            <i class="bi bi-person-plus" aria-hidden="true"></i> Neuer Benutzer
+            <i class="bi bi-person-plus" aria-hidden="true"></i> {{ 'users.action.new_user'|trans }}
         </a>
     </div>
 
@@ -20,42 +21,42 @@
             <div class="col-md-3">
                 <div class="card border-primary">
                     <div class="card-body text-center">
-                        <h5 class="card-title text-muted">Gesamt</h5>
+                        <h5 class="card-title text-muted">{{ 'users.stats.total'|trans }}</h5>
                         <p class="display-6 text-primary">
                             <span id="user-total-count">{{ statistics.total ?? users|length }}</span>
                         </p>
-                        <small>Benutzer</small>
+                        <small>{{ 'users.stats.users'|trans }}</small>
                     </div>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="card border-success">
                     <div class="card-body text-center">
-                        <h5 class="card-title text-muted">Aktiv</h5>
+                        <h5 class="card-title text-muted">{{ 'users.stats.active'|trans }}</h5>
                         <p class="display-6 text-success">
                             <span id="user-active-count">{{ statistics.active ?? 0 }}</span>
                         </p>
-                        <small>Aktive Benutzer</small>
+                        <small>{{ 'users.stats.active_users'|trans }}</small>
                     </div>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="card border-warning">
                     <div class="card-body text-center">
-                        <h5 class="card-title text-muted">Admins</h5>
+                        <h5 class="card-title text-muted">{{ 'users.stats.admins'|trans }}</h5>
                         <p class="display-6 text-warning">
                             <span id="user-admin-count">{{ statistics.admins ?? 0 }}</span>
                         </p>
-                        <small>Administratoren</small>
+                        <small>{{ 'users.stats.administrators'|trans }}</small>
                     </div>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="card border-info">
                     <div class="card-body text-center">
-                        <h5 class="card-title text-muted">Heute aktiv</h5>
+                        <h5 class="card-title text-muted">{{ 'users.stats.today_active'|trans }}</h5>
                         <p class="display-6 text-info">{{ statistics.today_active ?? 0 }}</p>
-                        <small>Anmeldungen heute</small>
+                        <small>{{ 'users.stats.logins_today'|trans }}</small>
                     </div>
                 </div>
             </div>
@@ -67,8 +68,8 @@
         <div class="card">
             <div class="card-header bg-primary text-white">
                 <h3 class="mb-0">
-                    <i class="bi bi-list-ul" aria-hidden="true"></i> Alle Benutzer
-                </h5>
+                    <i class="bi bi-list-ul" aria-hidden="true"></i> {{ 'users.message.all_users'|trans }}
+                </h3>
             </div>
             <div class="card-body">
                 {% if users|length > 0 %}
@@ -78,13 +79,13 @@
                         {% block table_head %}
                             <tr>
                                 <th scope="col" style="width: 60px;"></th>
-                                <th scope="col">Name</th>
-                                <th scope="col">E-Mail</th>
-                                <th scope="col">Rollen</th>
-                                <th scope="col">Auth Provider</th>
-                                <th scope="col">Status</th>
-                                <th scope="col">Letzte Anmeldung</th>
-                                <th scope="col">Aktionen</th>
+                                <th scope="col">{{ 'users.table.name'|trans }}</th>
+                                <th scope="col">{{ 'users.table.email'|trans }}</th>
+                                <th scope="col">{{ 'users.table.roles'|trans }}</th>
+                                <th scope="col">{{ 'users.table.auth_provider'|trans }}</th>
+                                <th scope="col">{{ 'users.table.status'|trans }}</th>
+                                <th scope="col">{{ 'users.table.last_login'|trans }}</th>
+                                <th scope="col">{{ 'users.table.actions'|trans }}</th>
                             </tr>
                         {% endblock %}
                         {% block table_body_attrs %}id="users-table-body"{% endblock %}

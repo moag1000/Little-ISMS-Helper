@@ -1,32 +1,33 @@
 {% extends 'base.html.twig' %}
+{% trans_default_domain 'context' %}
 
-{% block title %}ISMS Context{% endblock %}
+{% block title %}{{ 'context_management.title'|trans }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid">
     {# Breadcrumb Navigation #}
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
-            { label: 'Dashboard', url: path('app_dashboard') },
-            { label: 'ISMS Context' }
+            { label: 'nav.dashboard'|trans({}, 'messages'), url: path('app_dashboard') },
+            { label: 'context_management.title'|trans }
         ]
     } %}
 
     {# Page Header #}
     {% include '_components/_page_header.html.twig' with {
-        title: 'ISMS Context',
-        subtitle: 'Organisationskontext, Geltungsbereich und interessierte Parteien gemäß ISO 27001 Clause 4',
+        title: 'context_management.title'|trans,
+        subtitle: 'context.info.subtitle'|trans,
         icon: 'bi-building',
         actions: context ? [
             {
-                label: 'Context bearbeiten',
+                label: 'context.link.edit'|trans,
                 url: path('app_context_edit'),
                 variant: 'primary',
                 icon: 'bi-pencil'
             }
         ] : [
             {
-                label: 'Context erfassen',
+                label: 'context.link.create'|trans,
                 url: path('app_context_edit'),
                 variant: 'primary',
                 icon: 'bi-plus-circle'
@@ -40,10 +41,8 @@
         <div class="d-flex align-items-center">
             <i class="bi bi-info-circle-fill icon-15-mr-md" aria-hidden="true"></i>
             <div>
-                <h6 class="mb-1"><strong>ISO/IEC 27001:2022 - Clause 4</strong></h6>
-                <p class="mb-0 small">
-                    Der ISMS-Kontext definiert die Organisation, deren Umfeld, interessierte Parteien und den Geltungsbereich des Informationssicherheits-Managementsystems.
-                </p>
+                <h6 class="mb-1"><strong>{{ 'context.info.iso_clause'|trans }}</strong></h6>
+                <p class="mb-0 small">{{ 'context.info.iso_description'|trans }}</p>
             </div>
         </div>
     </div>
@@ -64,7 +63,7 @@
     <div class="kpi-grid">
         {% include '_components/_kpi_card.html.twig' with {
             icon: 'bi-check-circle',
-            label: 'Context Vollständigkeit',
+            label: 'context.kpi.completeness'|trans,
             value: completenessPercentage,
             unit: '%',
             variant: completenessPercentage >= 75 ? 'success' : (completenessPercentage >= 50 ? 'warning' : 'danger'),
@@ -73,7 +72,7 @@
 
         {% include '_components/_kpi_card.html.twig' with {
             icon: 'bi-bullseye',
-            label: 'Aktive ISMS-Ziele',
+            label: 'context.kpi.active_goals'|trans,
             value: objectives|length,
             variant: 'info',
             link: path('app_objective_index')
@@ -81,18 +80,18 @@
 
         {% include '_components/_kpi_card.html.twig' with {
             icon: 'bi-calendar-check',
-            label: daysSinceReview ? 'Tage seit Review' : 'Letztes Review',
+            label: daysSinceReview ? 'context.kpi.days_since_review'|trans : 'context.kpi.last_review'|trans,
             value: daysSinceReview ?? '-',
-            unit: daysSinceReview ? (daysSinceReview == 1 ? 'Tag' : 'Tage') : '',
+            unit: daysSinceReview ? (daysSinceReview == 1 ? 'context.unit.day'|trans : 'context.unit.days'|trans) : '',
             variant: daysSinceReview ? (daysSinceReview > 365 ? 'danger' : (daysSinceReview > 180 ? 'warning' : 'success')) : 'secondary',
             link: null
         } %}
 
         {% include '_components/_kpi_card.html.twig' with {
             icon: 'bi-calendar-event',
-            label: daysUntilReview ? 'Tage bis Review' : 'Nächstes Review',
+            label: daysUntilReview ? 'context.kpi.days_until_review'|trans : 'context.kpi.next_review'|trans,
             value: daysUntilReview ?? '-',
-            unit: daysUntilReview ? (daysUntilReview == 1 ? 'Tag' : 'Tage') : '',
+            unit: daysUntilReview ? (daysUntilReview == 1 ? 'context.unit.day'|trans : 'context.unit.days'|trans) : '',
             variant: daysUntilReview ? (daysUntilReview < 30 ? 'warning' : (daysUntilReview < 0 ? 'danger' : 'info')) : 'secondary',
             link: null
         } %}
@@ -104,11 +103,8 @@
         <div class="d-flex align-items-center">
             <i class="bi bi-exclamation-triangle-fill icon-15-mr-md" aria-hidden="true"></i>
             <div>
-                <h6 class="mb-1"><strong>Context Review überfällig!</strong></h6>
-                <p class="mb-0">
-                    Das nächste Review war geplant für <strong>{{ context.nextReviewDate|date('d.m.Y') }}</strong>
-                    (vor {{ (daysUntilReview * -1) }} Tagen). Bitte aktualisieren Sie den ISMS-Kontext.
-                </p>
+                <h6 class="mb-1"><strong>{{ 'context.message.overdue_review_title'|trans }}</strong></h6>
+                <p class="mb-0">{{ 'context.message.overdue_review_text'|trans({'%date%': context.nextReviewDate|date('d.m.Y'), '%days%': (daysUntilReview * -1)}) }}</p>
             </div>
         </div>
     </div>
@@ -117,11 +113,8 @@
         <div class="d-flex align-items-center">
             <i class="bi bi-clock-fill icon-15-mr-md" aria-hidden="true"></i>
             <div>
-                <h6 class="mb-1"><strong>Context Review bald fällig</strong></h6>
-                <p class="mb-0">
-                    Das nächste Review ist geplant für <strong>{{ context.nextReviewDate|date('d.m.Y') }}</strong>
-                    (in {{ daysUntilReview }} Tagen).
-                </p>
+                <h6 class="mb-1"><strong>{{ 'context.message.upcoming_review_title'|trans }}</strong></h6>
+                <p class="mb-0">{{ 'context.message.upcoming_review_text'|trans({'%date%': context.nextReviewDate|date('d.m.Y'), '%days%': daysUntilReview}) }}</p>
             </div>
         </div>
     </div>
@@ -134,12 +127,12 @@
                 <div class="card-header">
                     <h2 class="mb-0">
                         <i class="bi bi-building" aria-hidden="true"></i>
-                        Organisation
+                        {{ 'context.section.organization'|trans }}
                     </h2>
                 </div>
                 <div class="card-body">
                     <div class="mb-3">
-                        <label class="text-muted small">Organisationsname</label>
+                        <label class="text-muted small">{{ 'context.field.organization_name'|trans }}</label>
                         <h4 class="mb-0">{{ context.organizationName }}</h4>
                     </div>
 
@@ -147,7 +140,7 @@
                     <div class="mb-3">
                         <label class="text-muted small">
                             <i class="bi bi-check-circle text-success" aria-hidden="true"></i>
-                            ISMS Geltungsbereich
+                            {{ 'context.field.isms_scope'|trans }}
                         </label>
                         <p class="mb-0">{{ context.ismsScope|nl2br }}</p>
                     </div>
@@ -157,7 +150,7 @@
                     <div class="mb-3">
                         <label class="text-muted small">
                             <i class="bi bi-x-circle text-danger" aria-hidden="true"></i>
-                            Ausschlüsse
+                            {{ 'context.field.scope_exclusions'|trans }}
                         </label>
                         <p class="mb-0">{{ context.scopeExclusions|nl2br }}</p>
                     </div>
@@ -168,13 +161,13 @@
                         {% if context.lastReviewDate %}
                         <div class="small text-muted mb-1">
                             <i class="bi bi-calendar-check" aria-hidden="true"></i>
-                            Letztes Review: <strong>{{ context.lastReviewDate|date('d.m.Y') }}</strong>
+                            {{ 'context.kpi.last_review'|trans }}: <strong>{{ context.lastReviewDate|date('d.m.Y') }}</strong>
                         </div>
                         {% endif %}
                         {% if context.nextReviewDate %}
                         <div class="small text-muted">
                             <i class="bi bi-calendar-event" aria-hidden="true"></i>
-                            Nächstes Review: <strong>{{ context.nextReviewDate|date('d.m.Y') }}</strong>
+                            {{ 'context.kpi.next_review'|trans }}: <strong>{{ context.nextReviewDate|date('d.m.Y') }}</strong>
                         </div>
                         {% endif %}
                     </div>
@@ -188,7 +181,7 @@
                 <div class="card-header">
                     <h2 class="mb-0">
                         <i class="bi bi-diagram-3" aria-hidden="true"></i>
-                        Kontext & Themen
+                        {{ 'context.section.context_analysis'|trans }}
                     </h2>
                 </div>
                 <div class="card-body">
@@ -196,7 +189,7 @@
                     <div class="mb-3">
                         <label class="text-muted small">
                             <i class="bi bi-globe" aria-hidden="true"></i>
-                            Externe Themen
+                            {{ 'context.field.external_issues'|trans }}
                         </label>
                         <p class="mb-0 small">{{ context.externalIssues|nl2br }}</p>
                     </div>
@@ -206,7 +199,7 @@
                     <div class="mb-3">
                         <label class="text-muted small">
                             <i class="bi bi-building" aria-hidden="true"></i>
-                            Interne Themen
+                            {{ 'context.field.internal_issues'|trans }}
                         </label>
                         <p class="mb-0 small">{{ context.internalIssues|nl2br }}</p>
                     </div>
@@ -215,7 +208,7 @@
                     {% if not context.externalIssues and not context.internalIssues %}
                     <div class="text-center py-4 text-muted">
                         <i class="bi bi-info-circle icon-2-opacity-3" aria-hidden="true"></i>
-                        <p class="small mt-2 mb-0">Keine Kontext-Themen erfasst</p>
+                        <p class="small mt-2 mb-0">{{ 'context.message.no_context_topics'|trans }}</p>
                     </div>
                     {% endif %}
                 </div>
@@ -228,7 +221,7 @@
         <div class="card-header">
             <h2 class="mb-0">
                 <i class="bi bi-people" aria-hidden="true"></i>
-                Interessierte Parteien & deren Anforderungen
+                {{ 'context.section.interested_parties_and_requirements'|trans }}
             </h2>
         </div>
         <div class="card-body">
@@ -237,13 +230,13 @@
                     {% if context.interestedParties %}
                     <label class="text-muted small mb-2">
                         <i class="bi bi-people-fill text-primary" aria-hidden="true"></i>
-                        Identifizierte interessierte Parteien
+                        {{ 'context.section.interested_parties'|trans }}
                     </label>
                     <p class="mb-0">{{ context.interestedParties|nl2br }}</p>
                     {% else %}
                     <div class="text-center py-3 text-muted">
                         <i class="bi bi-people icon-2-opacity-3" aria-hidden="true"></i>
-                        <p class="small mt-2 mb-0">Keine interessierten Parteien erfasst</p>
+                        <p class="small mt-2 mb-0">{{ 'context.message.no_interested_parties'|trans }}</p>
                     </div>
                     {% endif %}
                 </div>
@@ -251,13 +244,13 @@
                     {% if context.interestedPartiesRequirements %}
                     <label class="text-muted small mb-2">
                         <i class="bi bi-list-check text-success" aria-hidden="true"></i>
-                        Anforderungen der interessierten Parteien
+                        {{ 'context.field.interested_parties_requirements'|trans }}
                     </label>
                     <p class="mb-0">{{ context.interestedPartiesRequirements|nl2br }}</p>
                     {% else %}
                     <div class="text-center py-3 text-muted">
                         <i class="bi bi-list-check icon-2-opacity-3" aria-hidden="true"></i>
-                        <p class="small mt-2 mb-0">Keine Anforderungen erfasst</p>
+                        <p class="small mt-2 mb-0">{{ 'context.message.no_requirements'|trans }}</p>
                     </div>
                     {% endif %}
                 </div>
@@ -270,7 +263,7 @@
         <div class="card-header">
             <h2 class="mb-0">
                 <i class="bi bi-shield-check" aria-hidden="true"></i>
-                Rechtliche & regulatorische Anforderungen
+                {{ 'context.section.compliance'|trans }}
             </h2>
         </div>
         <div class="card-body">
@@ -279,12 +272,12 @@
                     <div class="requirement-box">
                         <label class="text-muted small mb-2">
                             <i class="bi bi-file-earmark-text text-warning" aria-hidden="true"></i>
-                            Gesetzliche Anforderungen
+                            {{ 'context.section.legal_requirements'|trans }}
                         </label>
                         {% if context.legalRequirements %}
                         <p class="small mb-0">{{ context.legalRequirements|nl2br }}</p>
                         {% else %}
-                        <p class="small text-muted mb-0">Nicht erfasst</p>
+                        <p class="small text-muted mb-0">{{ 'context.message.no_requirements'|trans }}</p>
                         {% endif %}
                     </div>
                 </div>
@@ -292,12 +285,12 @@
                     <div class="requirement-box">
                         <label class="text-muted small mb-2">
                             <i class="bi bi-file-earmark-ruled text-info" aria-hidden="true"></i>
-                            Regulatorische Anforderungen
+                            {{ 'context.section.regulatory_requirements'|trans }}
                         </label>
                         {% if context.regulatoryRequirements %}
                         <p class="small mb-0">{{ context.regulatoryRequirements|nl2br }}</p>
                         {% else %}
-                        <p class="small text-muted mb-0">Nicht erfasst</p>
+                        <p class="small text-muted mb-0">{{ 'context.message.no_requirements'|trans }}</p>
                         {% endif %}
                     </div>
                 </div>
@@ -305,12 +298,12 @@
                     <div class="requirement-box">
                         <label class="text-muted small mb-2">
                             <i class="bi bi-file-earmark-check text-success" aria-hidden="true"></i>
-                            Vertragliche Verpflichtungen
+                            {{ 'context.section.contractual_obligations'|trans }}
                         </label>
                         {% if context.contractualObligations %}
                         <p class="small mb-0">{{ context.contractualObligations|nl2br }}</p>
                         {% else %}
-                        <p class="small text-muted mb-0">Nicht erfasst</p>
+                        <p class="small text-muted mb-0">{{ 'context.message.no_requirements'|trans }}</p>
                         {% endif %}
                     </div>
                 </div>
@@ -325,7 +318,7 @@
                 <div class="card-header">
                     <h2 class="mb-0">
                         <i class="bi bi-file-earmark-text" aria-hidden="true"></i>
-                        ISMS Policy
+                        {{ 'context.field.isms_policy'|trans }}
                     </h2>
                 </div>
                 <div class="card-body">
@@ -334,7 +327,7 @@
                     {% else %}
                     <div class="text-center py-4 text-muted">
                         <i class="bi bi-file-earmark-text icon-3-opacity-3" aria-hidden="true"></i>
-                        <p class="small mt-2 mb-0">ISMS Policy noch nicht erfasst</p>
+                        <p class="small mt-2 mb-0">{{ 'context.message.no_requirements'|trans }}</p>
                     </div>
                     {% endif %}
                 </div>
@@ -346,7 +339,7 @@
                 <div class="card-header">
                     <h2 class="mb-0">
                         <i class="bi bi-person-badge" aria-hidden="true"></i>
-                        Rollen & Verantwortlichkeiten
+                        {{ 'context.field.roles_and_responsibilities'|trans }}
                     </h2>
                 </div>
                 <div class="card-body">
@@ -355,7 +348,7 @@
                     {% else %}
                     <div class="text-center py-4 text-muted">
                         <i class="bi bi-person-badge icon-3-opacity-3" aria-hidden="true"></i>
-                        <p class="small mt-2 mb-0">Rollen & Verantwortlichkeiten noch nicht erfasst</p>
+                        <p class="small mt-2 mb-0">{{ 'context.message.no_requirements'|trans }}</p>
                     </div>
                     {% endif %}
                 </div>
@@ -369,10 +362,10 @@
         <div class="card-header d-flex justify-content-between align-items-center">
             <h2 class="mb-0">
                 <i class="bi bi-target" aria-hidden="true"></i>
-                Aktive ISMS-Ziele
+                {{ 'context.section.objectives'|trans }}
             </h2>
             <a href="{{ path('app_objective_index') }}" class="btn btn-sm btn-outline-primary">
-                Alle Ziele anzeigen
+                {{ 'context.action.manage_objectives'|trans }}
                 <i class="bi bi-arrow-right" aria-hidden="true"></i>
             </a>
         </div>
@@ -384,12 +377,12 @@
             } %}
                 {% block table_head %}
                     <tr>
-                        <th scope="col">Titel</th>
-                        <th scope="col">Kategorie</th>
-                        <th scope="col">Verantwortlich</th>
-                        <th scope="col">Zieldatum</th>
-                        <th scope="col">Status</th>
-                        <th scope="col">Aktionen</th>
+                        <th scope="col">{{ 'common.title'|trans({}, 'messages') }}</th>
+                        <th scope="col">{{ 'common.category'|trans({}, 'messages') }}</th>
+                        <th scope="col">{{ 'common.responsible'|trans({}, 'messages') }}</th>
+                        <th scope="col">{{ 'common.target_date'|trans({}, 'messages') }}</th>
+                        <th scope="col">{{ 'common.status'|trans({}, 'messages') }}</th>
+                        <th scope="col">{{ 'common.actions'|trans({}, 'messages') }}</th>
                     </tr>
                 {% endblock %}
                 {% block table_body %}
@@ -419,7 +412,7 @@
                         </td>
                         <td>
                             <a href="{{ path('app_objective_show', {id: objective.id}) }}"
-                               class="btn btn-sm btn-outline-primary" aria-label="{{ 'common.view'|trans }}">
+                               class="btn btn-sm btn-outline-primary" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
                                 <i class="bi bi-eye" aria-hidden="true"></i>
                             </a>
                         </td>
@@ -430,7 +423,7 @@
             {% if objectives|length > 5 %}
             <div class="text-center mt-3">
                 <a href="{{ path('app_objective_index') }}" class="btn btn-sm btn-outline-secondary">
-                    Alle {{ objectives|length }} Ziele anzeigen
+                    {{ 'context.action.view_all_objectives'|trans({'%count%': objectives|length}) }}
                 </a>
             </div>
             {% endif %}
@@ -441,15 +434,15 @@
         <div class="card-header">
             <h2 class="mb-0">
                 <i class="bi bi-target" aria-hidden="true"></i>
-                ISMS-Ziele
+                {{ 'context.section.objectives'|trans }}
             </h2>
         </div>
         <div class="card-body">
             <div class="alert alert-info mb-0">
                 <i class="bi bi-info-circle" aria-hidden="true"></i>
-                Noch keine aktiven ISMS-Ziele definiert.
+                {{ 'context.message.no_objectives'|trans }}
                 <a href="{{ path('app_objective_index') }}" class="alert-link">
-                    Ziele verwalten
+                    {{ 'context.action.manage_objectives'|trans }}
                 </a>
             </div>
         </div>
@@ -460,10 +453,10 @@
     {# Empty State - No Context #}
     {% include '_components/_empty_state.html.twig' with {
         icon: 'bi-building',
-        title: 'Noch kein ISMS-Kontext definiert',
-        description: 'Erfassen Sie zunächst den Organisationskontext gemäß ISO 27001 Clause 4. Dies ist die Grundlage für Ihr Informationssicherheits-Managementsystem.',
+        title: 'context.empty.title'|trans,
+        description: 'context.empty.description'|trans,
         action: {
-            label: 'ISMS-Kontext erfassen',
+            label: 'context.action.create_context'|trans,
             url: path('app_context_edit'),
             icon: 'bi-plus-circle'
         }
@@ -474,45 +467,45 @@
         <div class="card-header bg-light">
             <h3 class="mb-0">
                 <i class="bi bi-lightbulb" aria-hidden="true"></i>
-                Was gehört zum ISMS-Kontext?
-            </h5>
+                {{ 'context.info.box_title'|trans }}
+            </h3>
         </div>
         <div class="card-body">
             <div class="row">
                 <div class="col-md-6">
-                    <h4><i class="bi bi-1-circle text-primary" aria-hidden="true"></i> Clause 4.1 - Verstehen der Organisation</h4>
+                    <h4><i class="bi bi-1-circle text-primary" aria-hidden="true"></i> {{ 'context.info.clause41_title'|trans }}</h4>
                     <ul class="small">
-                        <li>Externe Themen (Markt, Technologie, Compliance)</li>
-                        <li>Interne Themen (Strategie, Kultur, Prozesse)</li>
-                        <li>ISMS-Geltungsbereich</li>
-                        <li>Ausschlüsse und Begründungen</li>
+                        <li>{{ 'context.info.clause41_items.external_issues'|trans }}</li>
+                        <li>{{ 'context.info.clause41_items.internal_issues'|trans }}</li>
+                        <li>{{ 'context.info.clause41_items.scope'|trans }}</li>
+                        <li>{{ 'context.info.clause41_items.exclusions'|trans }}</li>
                     </ul>
                 </div>
                 <div class="col-md-6">
-                    <h4><i class="bi bi-2-circle text-primary" aria-hidden="true"></i> Clause 4.2 - Interessierte Parteien</h4>
+                    <h4><i class="bi bi-2-circle text-primary" aria-hidden="true"></i> {{ 'context.info.clause42_title'|trans }}</h4>
                     <ul class="small">
-                        <li>Identifikation aller relevanten Parteien</li>
-                        <li>Deren Anforderungen an Informationssicherheit</li>
-                        <li>Gesetzliche und regulatorische Verpflichtungen</li>
-                        <li>Vertragliche Anforderungen</li>
+                        <li>{{ 'context.info.clause42_items.identify'|trans }}</li>
+                        <li>{{ 'context.info.clause42_items.requirements'|trans }}</li>
+                        <li>{{ 'context.info.clause42_items.legal_regulatory'|trans }}</li>
+                        <li>{{ 'context.info.clause42_items.contractual'|trans }}</li>
                     </ul>
                 </div>
             </div>
             <div class="row mt-3">
                 <div class="col-md-6">
-                    <h4><i class="bi bi-3-circle text-primary" aria-hidden="true"></i> Clause 4.3 - ISMS-Geltungsbereich</h4>
+                    <h4><i class="bi bi-3-circle text-primary" aria-hidden="true"></i> {{ 'context.info.clause43_title'|trans }}</h4>
                     <ul class="small">
-                        <li>Physische und organisatorische Grenzen</li>
-                        <li>Einbezogene Standorte und Prozesse</li>
-                        <li>Begründete Ausschlüsse</li>
+                        <li>{{ 'context.info.clause43_items.boundaries'|trans }}</li>
+                        <li>{{ 'context.info.clause43_items.locations_processes'|trans }}</li>
+                        <li>{{ 'context.info.clause43_items.justified_exclusions'|trans }}</li>
                     </ul>
                 </div>
                 <div class="col-md-6">
-                    <h4><i class="bi bi-4-circle text-primary" aria-hidden="true"></i> Clause 4.4 - ISMS</h4>
+                    <h4><i class="bi bi-4-circle text-primary" aria-hidden="true"></i> {{ 'context.info.clause44_title'|trans }}</h4>
                     <ul class="small">
-                        <li>ISMS Policy und Ziele</li>
-                        <li>Rollen und Verantwortlichkeiten</li>
-                        <li>Prozesse und deren Wechselwirkungen</li>
+                        <li>{{ 'context.info.clause44_items.policy_objectives'|trans }}</li>
+                        <li>{{ 'context.info.clause44_items.roles_responsibilities'|trans }}</li>
+                        <li>{{ 'context.info.clause44_items.processes'|trans }}</li>
                     </ul>
                 </div>
             </div>

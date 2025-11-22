@@ -1,12 +1,13 @@
 {% extends 'base.html.twig' %}
+{% trans_default_domain 'objectives' %}
 
-{% block title %}{{ objective.title }} - {{ parent() }}{% endblock %}
+{% block title %}{{ objective.title }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid py-4">
     <nav aria-label="breadcrumb" class="mb-4">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{{ path('app_objective_index') }}">ISMS Objectives</a></li>
+            <li class="breadcrumb-item"><a href="{{ path('app_objective_index') }}">{{ 'objectives.page.title'|trans }}</a></li>
             <li class="breadcrumb-item active">{{ objective.title }}</li>
         </ol>
     </nav>
@@ -16,37 +17,37 @@
             <div class="card shadow mb-4">
                 <div class="card-header bg-primary text-white d-flex justify-content-between">
                     <h4 class="mb-0">{{ objective.title }}</h4>
-                    <span class="badge bg-{{ objective.status == 'achieved' ? 'success' : 'info' }} fs-6">{{ objective.status }}</span>
+                    <span class="badge bg-{{ objective.status == 'achieved' ? 'success' : 'info' }} fs-6">{{ ('objectives.status.' ~ objective.status)|trans }}</span>
                 </div>
                 <div class="card-body">
                     <p class="lead">{{ objective.description }}</p>
-                    
+
                     <div class="row mb-3">
-                        <div class="col-md-6"><h6 class="text-muted">Category</h6><p>{{ objective.category }}</p></div>
-                        <div class="col-md-6"><h6 class="text-muted">Responsible</h6><p>{{ objective.responsiblePerson }}</p></div>
+                        <div class="col-md-6"><h6 class="text-muted">{{ 'objectives.field.category'|trans }}</h6><p>{{ objective.category }}</p></div>
+                        <div class="col-md-6"><h6 class="text-muted">{{ 'objectives.field.responsible_person'|trans }}</h6><p>{{ objective.responsiblePerson }}</p></div>
                     </div>
 
                     <div class="row mb-3">
-                        <div class="col-md-6"><h6 class="text-muted">Target Date</h6><p>{{ objective.targetDate|date('d.m.Y') }}</p></div>
-                        <div class="col-md-6"><h6 class="text-muted">Achieved Date</h6><p>{{ objective.achievedDate ? objective.achievedDate|date('d.m.Y') : '-' }}</p></div>
+                        <div class="col-md-6"><h6 class="text-muted">{{ 'objectives.field.target_date'|trans }}</h6><p>{{ objective.targetDate|date('d.m.Y') }}</p></div>
+                        <div class="col-md-6"><h6 class="text-muted">{{ 'objectives.field.achieved_date'|trans }}</h6><p>{{ objective.achievedDate ? objective.achievedDate|date('d.m.Y') : '-' }}</p></div>
                     </div>
 
                     {% if objective.measurableIndicators %}
-                    <h6 class="text-muted">Measurable Indicators</h6>
+                    <h6 class="text-muted">{{ 'objectives.field.measurable_indicators'|trans }}</h6>
                     <p>{{ objective.measurableIndicators|nl2br }}</p>
                     {% endif %}
 
-                    <h6 class="text-muted">Progress</h6>
+                    <h6 class="text-muted">{{ 'objectives.table.progress'|trans }}</h6>
                     <div class="progress mb-2" style="height: 30px;">
                         <div class="progress-bar {% if objective.progressPercentage >= 75 %}bg-success{% elseif objective.progressPercentage >= 50 %}bg-warning{% else %}bg-danger{% endif %}"
                              style="width: {{ objective.progressPercentage }}%">
                             {{ objective.progressPercentage }}%
                         </div>
                     </div>
-                    <p><strong>Current:</strong> {{ objective.currentValue }} {{ objective.unit }} / <strong>Target:</strong> {{ objective.targetValue }} {{ objective.unit }}</p>
+                    <p><strong>{{ 'objectives.label.current'|trans }}:</strong> {{ objective.currentValue }} {{ objective.unit }} / <strong>{{ 'objectives.label.target'|trans }}:</strong> {{ objective.targetValue }} {{ objective.unit }}</p>
 
                     {% if objective.progressNotes %}
-                    <h6 class="text-muted mt-3">Progress Notes</h6>
+                    <h6 class="text-muted mt-3">{{ 'objectives.field.progress_notes'|trans }}</h6>
                     <div class="alert alert-info">{{ objective.progressNotes|nl2br }}</div>
                     {% endif %}
                 </div>
@@ -55,24 +56,24 @@
 
         <div class="col-lg-4">
             <div class="card shadow mb-4">
-                <div class="card-header bg-light"><h5 class="mb-0">Actions</h5></div>
+                <div class="card-header bg-light"><h5 class="mb-0">{{ 'common.actions'|trans({}, 'messages') }}</h5></div>
                 <div class="card-body">
                     <div class="d-grid gap-2">
                         {% if is_granted('ROLE_ADMIN') %}
-                        <a href="{{ path('app_objective_edit', {id: objective.id}) }}" class="btn btn-primary">Edit</a>
+                        <a href="{{ path('app_objective_edit', {id: objective.id}) }}" class="btn btn-primary">{{ 'common.edit'|trans({}, 'messages') }}</a>
                         {% endif %}
-                        <a href="{{ path('app_objective_index') }}" class="btn btn-outline-secondary">Back to List</a>
+                        <a href="{{ path('app_objective_index') }}" class="btn btn-outline-secondary">{{ 'common.back_to_list'|trans({}, 'messages') }}</a>
                     </div>
                 </div>
             </div>
 
             <div class="card shadow">
-                <div class="card-header bg-light"><h5 class="mb-0">Metadata</h5></div>
+                <div class="card-header bg-light"><h5 class="mb-0">{{ 'common.metadata'|trans({}, 'messages') }}</h5></div>
                 <div class="card-body">
                     <dl class="row mb-0 small">
-                        <dt class="col-sm-5">Created</dt><dd class="col-sm-7">{{ objective.createdAt|date('d.m.Y H:i') }}</dd>
-                        <dt class="col-sm-5">Updated</dt><dd class="col-sm-7">{{ objective.updatedAt ? objective.updatedAt|date('d.m.Y H:i') : '-' }}</dd>
-                        <dt class="col-sm-5">ID</dt><dd class="col-sm-7"><code>{{ objective.id }}</code></dd>
+                        <dt class="col-sm-5">{{ 'common.created_at'|trans({}, 'messages') }}</dt><dd class="col-sm-7">{{ objective.createdAt|date('d.m.Y H:i') }}</dd>
+                        <dt class="col-sm-5">{{ 'common.updated_at'|trans({}, 'messages') }}</dt><dd class="col-sm-7">{{ objective.updatedAt ? objective.updatedAt|date('d.m.Y H:i') : '-' }}</dd>
+                        <dt class="col-sm-5">{{ 'common.id'|trans({}, 'messages') }}</dt><dd class="col-sm-7"><code>{{ objective.id }}</code></dd>
                     </dl>
                 </div>
             </div>

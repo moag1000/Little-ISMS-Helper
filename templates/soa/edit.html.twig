@@ -1,15 +1,17 @@
 {% extends 'base.html.twig' %}
+{% trans_default_domain 'soa' %}
 
-{% block title %}Control bearbeiten - {{ control.controlId }} - Little ISMS Helper{% endblock %}
+{% block title %}{{ 'soa.action.edit'|trans }} - {{ control.controlId }} - Little ISMS Helper{% endblock %}
 
 {% block body %}
 <div class="page-header">
     <div>
-        <h1>Control bearbeiten: {{ control.controlId }}</h1>
+        <h1>{{ 'soa.action.edit'|trans }}: {{ control.controlId }}</h1>
     </div>
     <div class="button-group">
-        <a href="{{ path('app_soa_index') }}" class="btn btn-secondary">← Zurück zur Übersicht</a>
+        <a href="{{ path('app_soa_index') }}" class="btn btn-secondary">← {{ 'common.back_to_list'|trans({}, 'messages') }}</a>
     </div>
+
 </div>
 
 <div class="info-box mb-4">
@@ -24,44 +26,44 @@
     <div class="form-group">
         <label class="form-label label-checkbox">
             <input type="checkbox" name="applicable" value="1" {% if control.applicable %}checked{% endif %} class="checkbox-lg">
-            <span>Control ist anwendbar für diese Organisation</span>
+            <span>{{ 'soa.field.applicable'|trans }}</span>
         </label>
         <small class="small-muted-block">
-            Markieren Sie dieses Control als anwendbar, wenn es für Ihr ISMS relevant ist.
+            {{ 'soa.help.applicable'|trans }}
         </small>
     </div>
 
     <div class="form-group">
         <label class="form-label" for="justification">
-            Begründung für Anwendbarkeit/Nicht-Anwendbarkeit *
+            {{ 'soa.field.justification'|trans }} *
         </label>
         <textarea
             name="justification"
             id="justification"
             rows="4"
             class="form-control"
-            placeholder="Erklären Sie, warum dieses Control anwendbar oder nicht anwendbar ist..."
+            placeholder="{{ 'soa.placeholder.justification'|trans }}"
         >{{ control.justification }}</textarea>
         <small class="small-muted-block">
-            Eine klare Begründung ist für Audits und Compliance-Nachweise wichtig.
+            {{ 'soa.help.justification'|trans }}
         </small>
     </div>
 
     <div class="form-group">
         <label class="form-label" for="implementationStatus">
-            Implementierungsstatus
+            {{ 'soa.field.status'|trans }}
         </label>
         <select name="implementationStatus" id="implementationStatus" class="form-control">
-            <option value="not_started" {% if control.implementationStatus == 'not_started' %}selected{% endif %}>Nicht begonnen</option>
-            <option value="in_progress" {% if control.implementationStatus == 'in_progress' %}selected{% endif %}>In Arbeit</option>
-            <option value="implemented" {% if control.implementationStatus == 'implemented' %}selected{% endif %}>Implementiert</option>
-            <option value="not_applicable" {% if control.implementationStatus == 'not_applicable' %}selected{% endif %}>Nicht anwendbar</option>
+            <option value="not_started" {% if control.implementationStatus == 'not_started' %}selected{% endif %}>{{ 'soa.status.not_started'|trans }}</option>
+            <option value="in_progress" {% if control.implementationStatus == 'in_progress' %}selected{% endif %}>{{ 'soa.status.in_progress'|trans }}</option>
+            <option value="implemented" {% if control.implementationStatus == 'implemented' %}selected{% endif %}>{{ 'soa.status.implemented'|trans }}</option>
+            <option value="not_applicable" {% if control.implementationStatus == 'not_applicable' %}selected{% endif %}>{{ 'soa.status.not_applicable'|trans }}</option>
         </select>
     </div>
 
     <div class="form-group">
         <label class="form-label" for="implementationPercentage">
-            Implementierungsgrad (%)
+            {{ 'soa.field.implementation_percentage'|trans }}
         </label>
         <div class="flex-center-gap-md">
             <input
@@ -87,23 +89,23 @@
 
     <div class="form-group">
         <label class="form-label" for="implementationNotes">
-            Implementierungsnotizen
+            {{ 'soa.field.implementation_notes'|trans }}
         </label>
         <textarea
             name="implementationNotes"
             id="implementationNotes"
             rows="6"
             class="form-control"
-            placeholder="Beschreiben Sie, wie dieses Control implementiert wurde oder wird..."
+            placeholder="{{ 'soa.placeholder.implementation_notes'|trans }}"
         >{{ control.implementationNotes }}</textarea>
         <small class="small-muted-block">
-            Dokumentieren Sie technische Details, verwendete Tools, Prozesse, etc.
+            {{ 'soa.help.implementation_notes'|trans }}
         </small>
     </div>
 
     <div class="form-group">
         <label class="form-label" for="responsiblePerson">
-            Verantwortliche Person
+            {{ 'soa.field.responsible_person'|trans }}
         </label>
         <input
             type="text"
@@ -111,13 +113,13 @@
             id="responsiblePerson"
             value="{{ control.responsiblePerson }}"
             class="form-control"
-            placeholder="z.B. Max Mustermann (IT-Sicherheitsbeauftragter)"
+            placeholder="{{ 'soa.placeholder.responsible_person'|trans }}"
         >
     </div>
 
     <div class="form-group">
         <label class="form-label" for="targetDate">
-            Zieldatum für vollständige Implementierung
+            {{ 'soa.field.target_date'|trans }}
         </label>
         <input
             type="date"
@@ -130,10 +132,10 @@
 
     <div class="d-flex gap-2 mt-4">
         <button type="submit" class="btn btn-success">
-            💾 Änderungen speichern
+            💾 {{ 'common.save_changes'|trans({}, 'messages') }}
         </button>
         <a href="{{ path('app_soa_show', {id: control.id}) }}" class="btn btn-secondary">
-            ❌ Abbrechen
+            ❌ {{ 'common.cancel'|trans({}, 'messages') }}
         </a>
     </div>
 </form>

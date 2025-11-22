@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% trans_default_domain 'risk_appetite' %}
 
 {% block title %}{{ appetite.displayName }} - {{ 'risk_appetite.title'|trans }}{% endblock %}
 
@@ -28,11 +29,11 @@
     <div class="button-group">
         {% if is_granted('ROLE_ADMIN') %}
         <a href="{{ path('app_risk_appetite_edit', {id: appetite.id}) }}" class="btn btn-primary">
-            <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'common.edit'|trans }}
+            <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
         </a>
         {% endif %}
         <a href="{{ path('app_risk_appetite_index') }}" class="btn btn-secondary">
-            <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans }}
+            <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
         </a>
     </div>
 </div>
@@ -99,7 +100,7 @@
                     {% if appetite.approvedBy %}
                         {{ appetite.approvedBy.fullName }} ({{ appetite.approvedBy.email }})
                     {% else %}
-                        <span class="text-warning">{{ 'common.not_approved'|trans }}</span>
+                        <span class="text-warning">{{ 'common.not_approved'|trans({}, 'messages') }}</span>
                     {% endif %}
                 </div>
             </div>
@@ -110,7 +111,7 @@
                     {% if appetite.approvedAt %}
                         {{ appetite.approvedAt|date('Y-m-d H:i:s') }}
                     {% else %}
-                        <span class="text-warning">{{ 'common.not_approved'|trans }}</span>
+                        <span class="text-warning">{{ 'common.not_approved'|trans({}, 'messages') }}</span>
                     {% endif %}
                 </div>
 
