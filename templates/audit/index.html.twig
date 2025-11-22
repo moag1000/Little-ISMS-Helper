@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% trans_default_domain 'audits' %}
 
 {% block title %}{{ 'audit_management.title'|trans }} - {{ 'app.title'|trans }}{% endblock %}
 
@@ -27,7 +28,7 @@
 </div>
 
 {# Skip link for filters section - WCAG 2.4.1 #}
-<a href="#filter-section" class="skip-link">{{ 'accessibility.skip_to_filters'|trans }}</a>
+<a href="#filter-section" class="skip-link">{{ 'accessibility.skip_to_filters'|trans({}, 'messages') }}</a>
 
 {# Filter Section #}
 {% embed '_components/_card.html.twig' with {
@@ -36,12 +37,12 @@
     'class': 'mb-4'
 } %}
     {% block card_body %}
-        <form method="get" action="{{ path('app_audit_index') }}" class="row g-3" role="search" aria-label="{{ 'common.filters'|trans }}">
+        <form method="get" action="{{ path('app_audit_index') }}" class="row g-3" role="search" aria-label="{{ 'common.filters'|trans({}, 'messages') }}">
             <div id="filter-section" tabindex="-1"></div>
             <div class="col-md-3">
                 <label for="filter-status" class="form-label">{{ 'audit.field.status'|trans }}</label>
                 <select class="form-select" id="filter-status" name="status" onchange="this.form.submit()">
-                    <option value="">{{ 'common.all'|trans }}</option>
+                    <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
                     <option value="planned" {{ app.request.get('status') == 'planned' ? 'selected' : '' }}>{{ 'audit.status.planned'|trans }}</option>
                     <option value="in_progress" {{ app.request.get('status') == 'in_progress' ? 'selected' : '' }}>{{ 'audit.status.in_progress'|trans }}</option>
                     <option value="completed" {{ app.request.get('status') == 'completed' ? 'selected' : '' }}>{{ 'audit.status.completed'|trans }}</option>
@@ -52,7 +53,7 @@
             <div class="col-md-3">
                 <label for="filter-scope-type" class="form-label">{{ 'audit.field.scope_type'|trans }}</label>
                 <select class="form-select" id="filter-scope-type" name="scope_type" onchange="this.form.submit()">
-                    <option value="">{{ 'common.all'|trans }}</option>
+                    <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
                     <option value="full_isms" {{ app.request.get('scope_type') == 'full_isms' ? 'selected' : '' }}>{{ 'audit.scope_type.full_isms'|trans }}</option>
                     <option value="compliance_framework" {{ app.request.get('scope_type') == 'compliance_framework' ? 'selected' : '' }}>{{ 'audit.scope_type.compliance_framework'|trans }}</option>
                     <option value="asset" {{ app.request.get('scope_type') == 'asset' ? 'selected' : '' }}>{{ 'audit.scope_type.asset'|trans }}</option>
@@ -66,18 +67,18 @@
             </div>
 
             <div class="col-md-2">
-                <label for="filter-date-from" class="form-label">{{ 'common.date_from'|trans }}</label>
+                <label for="filter-date-from" class="form-label">{{ 'common.date_from'|trans({}, 'messages') }}</label>
                 <input type="date" class="form-control" id="filter-date-from" name="date_from" value="{{ app.request.get('date_from') }}" onchange="this.form.submit()">
             </div>
 
             <div class="col-md-2">
-                <label for="filter-date-to" class="form-label">{{ 'common.date_to'|trans }}</label>
+                <label for="filter-date-to" class="form-label">{{ 'common.date_to'|trans({}, 'messages') }}</label>
                 <input type="date" class="form-control" id="filter-date-to" name="date_to" value="{{ app.request.get('date_to') }}" onchange="this.form.submit()">
             </div>
 
             <div class="col-md-2 d-flex align-items-end">
                 <a href="{{ path('app_audit_index') }}" class="btn btn-secondary w-100">
-                    <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'common.reset'|trans }}
+                    <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'common.reset'|trans({}, 'messages') }}
                 </a>
             </div>
         </form>
@@ -102,7 +103,7 @@
                         <th scope="col">{{ 'audit.field.planned_date'|trans }}</th>
                         <th scope="col">{{ 'audit.field.status'|trans }}</th>
                         <th scope="col">{{ 'audit.field.lead_auditor'|trans }}</th>
-                        <th scope="col" class="text-center">{{ 'common.actions'|trans }}</th>
+                        <th scope="col" class="text-center">{{ 'common.actions'|trans({}, 'messages') }}</th>
                     </tr>
                 {% endblock %}
                 {% block table_body %}
@@ -117,7 +118,7 @@
                             {% if audit.auditedSubsidiaries|length > 0 %}
                             <br>
                             <small class="text-muted">
-                                <i class="bi bi-building" aria-hidden="true"></i> {{ audit.auditedSubsidiaries|length }} {{ 'common.subsidiaries'|trans }}
+                                <i class="bi bi-building" aria-hidden="true"></i> {{ audit.auditedSubsidiaries|length }} {{ 'common.subsidiaries'|trans({}, 'messages') }}
                             </small>
                             {% endif %}
                         </td>
@@ -129,12 +130,12 @@
                         </td>
                         <td>{{ audit.leadAuditor }}</td>
                         <td class="text-center">
-                            <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'audit.actions.label'|trans({}, 'messages', 'Audit Actions') }}">
-                                <a href="{{ path('app_audit_show', {id: audit.id}) }}" class="btn btn-outline-primary" aria-label="{{ 'common.view'|trans }} {{ audit.title }}">
+                            <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'audit.actions.label'|trans }}">
+                                <a href="{{ path('app_audit_show', {id: audit.id}) }}" class="btn btn-outline-primary" aria-label="{{ 'common.view'|trans({}, 'messages') }} {{ audit.title }}">
                                     <i class="bi bi-eye" aria-hidden="true"></i>
                                 </a>
                                 {% if is_granted('ROLE_USER') %}
-                                <a href="{{ path('app_audit_edit', {id: audit.id}) }}" class="btn btn-outline-secondary" aria-label="{{ 'common.edit'|trans }} {{ audit.title }}">
+                                <a href="{{ path('app_audit_edit', {id: audit.id}) }}" class="btn btn-outline-secondary" aria-label="{{ 'common.edit'|trans({}, 'messages') }} {{ audit.title }}">
                                     <i class="bi bi-pencil" aria-hidden="true"></i>
                                 </a>
                                 {% endif %}
@@ -151,47 +152,4 @@
         {% endif %}
     {% endblock %}
 {% endembed %}
-
-<style>
-.stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: var(--spacing-lg);
-}
-
-.stat-card {
-    background: var(--color-white);
-    border: 1px solid var(--color-border);
-    border-radius: var(--border-radius);
-    padding: var(--spacing-lg);
-    text-align: center;
-    transition: all var(--transition-normal);
-}
-
-.stat-card:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
-}
-
-.stat-icon {
-    font-size: 2.5rem;
-    color: var(--color-secondary);
-    margin-bottom: var(--spacing-sm);
-}
-
-.stat-value {
-    font-size: 2rem;
-    font-weight: bold;
-    color: var(--color-primary);
-}
-
-.stat-label {
-    color: var(--color-text-light);
-    margin-top: var(--spacing-xs);
-}
-
-.mb-4 {
-    margin-bottom: var(--spacing-xl);
-}
-</style>
 {% endblock %}
