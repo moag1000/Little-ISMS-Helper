@@ -1,0 +1,66 @@
+change_request:
+  title: Change Requests
+  page:
+    title: Change Requests
+    new: New Change Request
+  new: New Change Request
+  action:
+    create: Create Change Request
+    view: View
+    edit: Edit
+  statistics:
+    total: Total Requests
+    pending_approval: Pending Approval
+    in_implementation: In Implementation
+    overdue: Overdue
+  alert:
+    pending_approval: Pending approvals
+    overdue: Overdue change requests
+  list:
+    title: 'Change Requests (%count%)'
+  table:
+    change_number: Request No.
+    title: Title
+    type: Type
+    priority: Priority
+    status: Status
+    complexity: Complexity
+    requested: Requested on
+    actions: Actions
+  empty:
+    message: No change requests available.
+    create_first: Create the first request
+  section:
+    basic_info: Basic Information
+    request_details: Requester & Details
+    impact_assessment: Impact & Assessment
+    implementation: Implementation
+    approval: Approval
+    verification_closure: Verification & Closure
+  field:
+    change_number: Request No.
+    title: Title
+    change_type: Change Type
+    description: Description
+    justification: Justification
+    requested_by: Requested by
+    requested_date: Requested date
+    priority: Priority
+    status: Status
+    isms_impact: ISMS Impact
+    risk_assessment: Risk Assessment
+    implementation_plan: Implementation Plan
+    rollback_plan: Rollback Plan
+    testing_requirements: Testing Requirements
+    planned_implementation_date: Planned Implementation Date
+    actual_implementation_date: Actual Implementation Date
+    implemented_by: Implemented by
+    implementation_notes: Implementation Notes
+    approved_by: Approved by
+    approved_date: Approved date
+    approval_comments: Approval Comments
+    verified_by: Verified by
+    verified_date: Verified date
+    verification_results: Verification Results
+    closed_date: Closed date
+    closure_notes: Closure Notes

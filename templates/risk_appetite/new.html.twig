@@ -1,16 +1,17 @@
 {% extends 'base.html.twig' %}
+{% trans_default_domain 'risk_appetite' %}
 
-{% block title %}{{ 'risk_appetite.new'|trans }} - {{ 'app.title'|trans }}{% endblock %}
+{% block title %}{{ 'risk_appetite.new'|trans }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
 {% block body %}
 <div class="page-header">
     <div>
         <h1><i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'risk_appetite.new'|trans }}</h1>
-        <p class="text-muted">{{ 'risk_appetite.new.description'|trans }}</p>
+        <p class="text-muted">{{ 'risk_appetite.new_description'|trans }}</p>
     </div>
     <div class="button-group">
         <a href="{{ path('app_risk_appetite_index') }}" class="btn btn-secondary">
-            <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans }}
+            <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
         </a>
     </div>
 </div>
@@ -83,10 +84,10 @@
 
 <div class="form-actions">
     <button type="submit" class="btn btn-primary">
-        <i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'common.create'|trans }}
+        <i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'common.create'|trans({}, 'messages') }}
     </button>
     <a href="{{ path('app_risk_appetite_index') }}" class="btn btn-secondary">
-        {{ 'common.cancel'|trans }}
+        {{ 'common.cancel'|trans({}, 'messages') }}
     </a>
 </div>
 

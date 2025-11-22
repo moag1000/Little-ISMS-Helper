@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
+{% trans_default_domain 'context' %}
 
-{% block title %}{{ 'context_management.title'|trans }} - {{ 'app.title'|trans }}{% endblock %}
+{% block title %}{{ 'context_management.title'|trans }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid py-4">
@@ -24,7 +25,7 @@
         <div>
             {% if tenant is defined and tenant %}
                 <a href="{{ path('tenant_management_show', {id: tenant.id}) }}" class="btn btn-outline-secondary">
-                    <i class="bi bi-building" aria-hidden="true"></i> {{ 'tenant.link.view'|trans|default('Mandant anzeigen') }}
+                    <i class="bi bi-building" aria-hidden="true"></i> {{ 'tenant.link.view'|trans({}, 'messages') }}
                 </a>
             {% endif %}
             {% if is_granted('ROLE_ADMIN') %}
@@ -33,12 +34,12 @@
                         <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'context.link.edit'|trans }}
                     </a>
                 {% else %}
-                    <button class="btn btn-primary" disabled title="{{ 'corporate.inheritance.cannot_edit_inherited'|trans }}">
+                    <button class="btn btn-primary" disabled title="{{ 'corporate.inheritance.cannot_edit_inherited'|trans({}, 'messages') }}">
                         <i class="bi bi-lock" aria-hidden="true"></i> {{ 'context.link.edit'|trans }}
                     </button>
                 {% endif %}
                 <a href="{{ path('app_objective_new') }}" class="btn btn-success">
-                    <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'objective.link.new'|trans }}
+                    <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'objective.link.new'|trans({}, 'messages') }}
                 </a>
             {% endif %}
         </div>
@@ -56,9 +57,9 @@
         <div class="d-flex align-items-start">
             <i class="bi bi-diagram-3 me-2 mt-1" aria-hidden="true"></i>
             <div>
-                <strong>{{ 'corporate.inheritance.isms_context_inherited'|trans }}</strong><br>
+                <strong>{{ 'corporate.inheritance.isms_context_inherited'|trans({}, 'messages') }}</strong><br>
                 <span class="small">
-                    {{ 'corporate.inheritance.from'|trans }}:
+                    {{ 'corporate.inheritance.from'|trans({}, 'messages') }}:
                     {% if inheritanceInfo.inheritedFrom %}
                         <a href="{{ path('tenant_management_show', {id: inheritanceInfo.inheritedFrom.id}) }}" class="alert-link">
                             {{ inheritanceInfo.inheritedFrom.name }}
@@ -66,7 +67,7 @@
                     {% endif %}
                 </span><br>
                 <span class="small text-muted">
-                    {{ 'corporate.inheritance.edit_at_parent'|trans }}
+                    {{ 'corporate.inheritance.edit_at_parent'|trans({}, 'messages') }}
                 </span>
             </div>
         </div>
@@ -340,8 +341,8 @@
                 <div class="card-header bg-white">
                     <h3 class="mb-0">
                         <i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'context.section.history'|trans|default('Context History') }}
-                        ({{ totalAuditLogs }} {{ 'audit_log.entries'|trans|default('entries') }})
-                    </h5>
+                        ({{ totalAuditLogs }} {{ 'audit_log.entries'|trans({}, 'audit_log') }})
+                    </h3>
                 </div>
                 <div class="card-body">
                     <div class="audit-log-list">
@@ -380,7 +381,7 @@
                     {% if totalAuditLogs > 10 %}
                     <div class="text-center mt-3">
                         <small class="text-muted">
-                            {{ 'audit_log.showing_recent'|trans({'%count%': 10, '%total%': totalAuditLogs})|default('Showing 10 most recent of ' ~ totalAuditLogs ~ ' total entries') }}
+                            {{ 'audit_log.showing_recent'|trans({'%count%': 10, '%total%': totalAuditLogs}, 'audit_log') }}
                         </small>
                     </div>
                     {% endif %}

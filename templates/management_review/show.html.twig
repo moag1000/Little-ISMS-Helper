@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% trans_default_domain 'management_review' %}
 
 {% block title %}{{ review.title }} - {{ parent() }}{% endblock %}
 
@@ -37,13 +38,13 @@
                     <div class="row mb-4">
                         <div class="col-md-6">
                             <h6 class="text-muted mb-2">
-                                <i class="bi bi-calendar-event" aria-hidden="true"></i> {{ 'management_review.review_date'|trans }}
+                                <i class="bi bi-calendar-event" aria-hidden="true"></i> {{ 'management_review.field.review_date'|trans }}
                             </h6>
                             <p class="fs-5">{{ review.reviewDate|date('d.m.Y') }}</p>
                         </div>
                         <div class="col-md-6">
                             <h6 class="text-muted mb-2">
-                                <i class="bi bi-people" aria-hidden="true"></i> {{ 'management_review.participants'|trans }}
+                                <i class="bi bi-people" aria-hidden="true"></i> {{ 'management_review.field.participants'|trans }}
                             </h6>
                             <p>{{ review.participants ?? '-' }}</p>
                         </div>
@@ -56,7 +57,7 @@
                 <div class="card-header bg-light">
                     <h3 class="mb-0">
                         <i class="bi bi-inbox" aria-hidden="true"></i> {{ 'management_review.section.inputs'|trans }}
-                    </h5>
+                    </h3>
                 </div>
                 <div class="card-body">
                     {% if review.changesRelevantToISMS %}
@@ -94,7 +95,7 @@
                 <div class="card-header bg-light">
                     <h3 class="mb-0">
                         <i class="bi bi-arrow-clockwise" aria-hidden="true"></i> {{ 'management_review.section.followup'|trans }}
-                    </h5>
+                    </h3>
                 </div>
                 <div class="card-body">
                     {% if review.previousReviewActions %}
@@ -125,7 +126,7 @@
                 <div class="card-header bg-success text-white">
                     <h3 class="mb-0">
                         <i class="bi bi-send" aria-hidden="true"></i> {{ 'management_review.section.outputs'|trans }}
-                    </h5>
+                    </h3>
                 </div>
                 <div class="card-body">
                     {% if review.opportunitiesForImprovement %}
@@ -169,7 +170,7 @@
             {# Action Buttons #}
             <div class="card shadow mb-4">
                 <div class="card-header bg-light">
-                    <h3 class="mb-0"><i class="bi bi-tools" aria-hidden="true"></i> {{ 'common.actions'|trans }}</h3>
+                    <h3 class="mb-0"><i class="bi bi-tools" aria-hidden="true"></i> {{ 'common.actions'|trans({}, 'messages') }}</h3>
                 </div>
                 <div class="card-body">
                     <div class="d-grid gap-2">
@@ -177,14 +178,14 @@
                         <a href="{{ path('app_management_review_edit', {id: review.id}) }}"
                            class="btn btn-primary"
                            data-turbo-action="advance">
-                            <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'common.edit'|trans }}
+                            <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
                         </a>
                         {% endif %}
 
                         <a href="{{ path('app_management_review_index') }}"
                            class="btn btn-outline-secondary"
                            data-turbo-action="advance">
-                            <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back_to_list'|trans }}
+                            <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back_to_list'|trans({}, 'messages') }}
                         </a>
 
                         {% if is_granted('ROLE_ADMIN') %}
@@ -193,7 +194,7 @@
                                 class="btn btn-outline-danger"
                                 data-bs-toggle="modal"
                                 data-bs-target="#deleteModal">
-                            <i class="bi bi-trash" aria-hidden="true"></i> {{ 'common.delete'|trans }}
+                            <i class="bi bi-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}
                         </button>
                         {% endif %}
                     </div>
@@ -231,17 +232,17 @@
             {# Metadata #}
             <div class="card shadow mb-4">
                 <div class="card-header bg-light">
-                    <h3 class="mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'common.metadata'|trans }}</h3>
+                    <h3 class="mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'common.metadata'|trans({}, 'messages') }}</h3>
                 </div>
                 <div class="card-body">
                     <dl class="row mb-0 small">
-                        <dt class="col-sm-5 text-muted">{{ 'common.created_at'|trans }}</dt>
+                        <dt class="col-sm-5 text-muted">{{ 'common.created_at'|trans({}, 'messages') }}</dt>
                         <dd class="col-sm-7">{{ review.createdAt|date('d.m.Y H:i') }}</dd>
 
-                        <dt class="col-sm-5 text-muted">{{ 'common.updated_at'|trans }}</dt>
+                        <dt class="col-sm-5 text-muted">{{ 'common.updated_at'|trans({}, 'messages') }}</dt>
                         <dd class="col-sm-7">{{ review.updatedAt ? review.updatedAt|date('d.m.Y H:i') : '-' }}</dd>
 
-                        <dt class="col-sm-5 text-muted">{{ 'common.id'|trans }}</dt>
+                        <dt class="col-sm-5 text-muted">{{ 'common.id'|trans({}, 'messages') }}</dt>
                         <dd class="col-sm-7"><code>{{ review.id }}</code></dd>
                     </dl>
                 </div>
@@ -263,16 +264,16 @@
             </div>
             <div class="modal-body">
                 <p>{{ 'management_review.delete_warning'|trans({'%title%': review.title}) }}</p>
-                <p class="text-muted"><small>{{ 'common.action_irreversible'|trans }}</small></p>
+                <p class="text-muted"><small>{{ 'common.action_irreversible'|trans({}, 'messages') }}</small></p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    {{ 'common.cancel'|trans }}
+                    {{ 'common.cancel'|trans({}, 'messages') }}
                 </button>
                 <form method="post" action="{{ path('app_management_review_delete', {id: review.id}) }}" style="display: inline;">
                     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ review.id) }}">
                     <button type="submit" class="btn btn-danger">
-                        <i class="bi bi-trash" aria-hidden="true"></i> {{ 'common.delete'|trans }}
+                        <i class="bi bi-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}
                     </button>
                 </form>
             </div>

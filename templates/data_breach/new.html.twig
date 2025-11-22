@@ -1,29 +1,30 @@
 {% extends 'base.html.twig' %}
+{% trans_default_domain 'privacy' %}
 
-{% block title %}New Data Breach{% endblock %}
+{% block title %}{{ 'privacy.data_breach.page.new_title'|trans }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid mt-4">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
-            { label: 'Privacy', icon: 'bi-shield-lock' },
-            { label: 'Data Breaches', url: path('app_data_breach_index') },
-            { label: 'New Data Breach' }
+            { label: 'privacy.breadcrumb.privacy'|trans, icon: 'bi-shield-lock' },
+            { label: 'privacy.breadcrumb.data_breaches'|trans, url: path('app_data_breach_index') },
+            { label: 'privacy.data_breach.page.new_title'|trans }
         ]
     } %}
 
     {% include '_components/_page_header.html.twig' with {
-        title: 'New Data Breach',
-        subtitle: 'Register personal data breach per Art. 33/34 GDPR',
+        title: 'privacy.data_breach.page.new_title'|trans,
+        subtitle: 'privacy.data_breach.page.new_subtitle'|trans,
         icon: 'bi-exclamation-triangle-fill',
         actions: [
-            { label: 'Cancel', url: path('app_data_breach_index'), variant: 'secondary', icon: 'bi-x-lg' }
+            { label: 'common.cancel'|trans({}, 'messages'), url: path('app_data_breach_index'), variant: 'secondary', icon: 'bi-x-lg' }
         ]
     } %}
 
     <div class="card">
         <div class="card-header">
-            <h5 class="mb-0"><i class="bi bi-clipboard-check"></i> Data Breach Form</h5>
+            <h5 class="mb-0"><i class="bi bi-clipboard-check"></i> {{ 'privacy.data_breach.form.title'|trans }}</h5>
         </div>
         <div class="card-body">
             {{ form_start(form) }}
@@ -31,10 +32,10 @@
 
                 <div class="mt-4">
                     <button type="submit" class="btn btn-danger">
-                        <i class="bi bi-save"></i> Create Data Breach
+                        <i class="bi bi-save"></i> {{ 'privacy.data_breach.action.create'|trans }}
                     </button>
                     <a href="{{ path('app_data_breach_index') }}" class="btn btn-secondary">
-                        <i class="bi bi-x-lg"></i> Cancel
+                        <i class="bi bi-x-lg"></i> {{ 'common.cancel'|trans({}, 'messages') }}
                     </a>
                 </div>
             {{ form_end(form) }}

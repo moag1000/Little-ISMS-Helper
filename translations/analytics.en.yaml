@@ -1,0 +1,70 @@
+analytics:
+  page:
+    title: Analytics Dashboard
+    subtitle: Advanced data analysis and visualizations
+  action:
+    export: Export
+    export_risks_csv: Export risks CSV
+    export_assets_csv: Export assets CSV
+    export_compliance_csv: Export compliance CSV
+    print_dashboard: Print dashboard
+    filter: Filter
+    refresh: Refresh
+    export_png: Export as PNG
+    reset_filters: Reset filters
+  filter:
+    period:
+      last_6_months: Last 6 months
+      last_12_months: Last 12 months
+      last_24_months: Last 24 months
+    status: Status
+    category: Category
+    time: Time period
+    all: All
+  tabs:
+    overview: Overview
+    heat_map: Risk Heat Map
+    compliance_radar: Compliance Radar
+    trends: Trends
+  card:
+    risk_heat_map: Risk Heat Map
+    compliance_radar: Compliance Radar
+    trend_analysis: Trend Analysis
+  loading:
+    loading: Loading...
+    loading_heat_map: Loading heat map data...
+    loading_compliance: Loading compliance data...
+    loading_trends: Loading trend data...
+  legend:
+    critical: Critical (15-25)
+    high: High (8-14)
+    medium: Medium (4-7)
+    low: Low (1-3)
+  axes:
+    impact: Impact →
+    probability: ← Probability
+  details:
+    risks_in_cell: Risks in this cell
+  overall_compliance: Overall Compliance
+  table:
+    annex: Annex
+    implemented: Implemented
+    total: Total
+    compliance: Compliance
+  trend_tabs:
+    risks: Risks
+    assets: Assets
+    incidents: Incidents
+  chart_title:
+    risk_trends_last_12: Risk Trends (Last 12 Months)
+    asset_growth_last_12: Asset Growth (Last 12 Months)
+    incident_trends_last_12: Incident Trends (Last 12 Months)
+  stat_label:
+    total_risks: Total Risks
+    high_risk: High Risk
+    trend: Trend
+    total_assets: Total Assets
+    growth: Growth
+    total_incidents: Total Incidents
+    critical: Critical
+    avg_per_month: Avg/Month

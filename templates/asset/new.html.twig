@@ -1,22 +1,23 @@
 {% extends 'base.html.twig' %}
+{% trans_default_domain 'assets' %}
 
-{% block title %}{{ 'asset.new'|trans }} - {{ parent() }}{% endblock %}
+{% block title %}{{ 'assets.title.new'|trans }} - {{ parent() }}{% endblock %}
 
 {% block body %}
 {# Breadcrumb Navigation #}
 {% include '_components/_breadcrumb.html.twig' with {
     breadcrumbs: [
-        { label: 'nav.assets'|trans, url: path('app_asset_index'), icon: 'bi-cpu' },
-        { label: 'asset.new'|trans }
+        { label: 'nav.assets'|trans({}, 'messages'), url: path('app_asset_index'), icon: 'bi-cpu' },
+        { label: 'assets.title.new'|trans }
     ]
 } %}
 
 {# Page Header #}
 {% include '_components/_page_header.html.twig' with {
-    title: 'asset.new'|trans,
+    title: 'assets.title.new'|trans,
     icon: 'bi-plus-circle',
     actions: [
-        { label: 'common.back'|trans, url: path('app_asset_index'), variant: 'secondary', icon: 'bi-arrow-left' }
+        { label: 'common.back'|trans({}, 'messages'), url: path('app_asset_index'), variant: 'secondary', icon: 'bi-arrow-left' }
     ]
 } %}
 
@@ -24,7 +25,7 @@
     <div class="card-body">
         {{ form_start(form) }}
             {% include 'asset/_form.html.twig' with {
-                'button_label': 'asset.create'|trans,
+                'button_label': 'assets.action.create'|trans,
                 'button_icon': 'bi-save'
             } %}
         {{ form_end(form) }}

@@ -1,21 +1,22 @@
 {% extends 'base.html.twig' %}
+{% trans_default_domain 'bc_plans' %}
 
-{% block title %}{{ 'bc_plan.new'|trans }} - {{ parent() }}{% endblock %}
+{% block title %}{{ 'bc_plans.action.add_new'|trans }} - {{ parent() }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid py-4">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
-            { label: 'nav.bcm'|trans|default('BCM'), url: path('app_bc_plan_index'), icon: 'bi-shield-exclamation' },
-            { label: 'bc_plan.title'|trans|default('BC Plans'), url: path('app_bc_plan_index') },
-            { label: 'bc_plan.new'|trans|default('New Plan') }
+            { label: 'nav.bcm'|trans({}, 'messages')|default('BCM'), url: path('app_bc_plan_index'), icon: 'bi-shield-exclamation' },
+            { label: 'bc_plans.page.title'|trans|default('BC Plans'), url: path('app_bc_plan_index') },
+            { label: 'bc_plans.action.add_new'|trans|default('New Plan') }
         ]
     } %}
 
     {% include '_components/_page_header.html.twig' with {
-        title: 'bc_plan.create'|trans|default('Create BC Plan'),
+        title: 'bc_plans.action.add_new'|trans|default('Create BC Plan'),
         icon: 'bi-plus-circle',
-        actions: [{ label: 'common.back'|trans, url: path('app_bc_plan_index'), variant: 'secondary', icon: 'bi-arrow-left' }]
+        actions: [{ label: 'common.back'|trans({}, 'messages'), url: path('app_bc_plan_index'), variant: 'secondary', icon: 'bi-arrow-left' }]
     } %}
 
     <div class="row">
@@ -96,8 +97,8 @@
 
                     {# Form Actions #}
                     <div class="form-actions d-flex gap-2 justify-content-between pt-3 border-top">
-                        <a href="{{ path('app_bc_plan_index') }}" class="btn btn-secondary"><i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'common.cancel'|trans }}</a>
-                        <button type="submit" class="btn btn-primary btn-lg"><i class="bi bi-save" aria-hidden="true"></i> {{ 'bc_plan.create'|trans }}</button>
+                        <a href="{{ path('app_bc_plan_index') }}" class="btn btn-secondary"><i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'common.cancel'|trans({}, 'messages') }}</a>
+                        <button type="submit" class="btn btn-primary btn-lg"><i class="bi bi-save" aria-hidden="true"></i> {{ 'bc_plans.action.add_new'|trans }}</button>
                     </div>
 
                     {{ form_end(form) }}

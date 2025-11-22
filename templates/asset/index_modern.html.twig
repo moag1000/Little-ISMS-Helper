@@ -1,23 +1,24 @@
 {% extends 'base.html.twig' %}
+{% trans_default_domain 'assets' %}
 
-{% block title %}Asset Management - {{ 'app.title'|trans }}{% endblock %}
+{% block title %}{{ 'assets.modern.header.title'|trans }} - {{ 'app.title'|trans }}{% endblock %}
 
 {% block body %}
 {# Breadcrumb Navigation #}
 {% include '_components/_breadcrumb.html.twig' with {
     breadcrumbs: [
-        { label: 'Assets' }
+        { label: 'assets.modern.breadcrumb'|trans }
     ]
 } %}
 
 {# Page Header with Actions #}
 {% include '_components/_page_header.html.twig' with {
-    title: 'Asset Management',
-    subtitle: 'Verwaltung von IT-Assets und Informationswerten gemäß ISO 27001',
+    title: 'assets.modern.header.title'|trans,
+    subtitle: 'assets.modern.header.subtitle'|trans,
     icon: 'bi-server',
     actions: [
-        { label: 'Neues Asset', url: path('app_asset_new'), variant: 'primary', icon: 'bi-plus-circle' },
-        { label: 'Export', url: path('app_asset_export'), variant: 'secondary', icon: 'bi-download', turbo: false }
+        { label: 'assets.modern.header.action.new'|trans, url: path('app_asset_new'), variant: 'primary', icon: 'bi-plus-circle' },
+        { label: 'assets.modern.header.action.export'|trans, url: path('app_asset_export'), variant: 'secondary', icon: 'bi-download', turbo: false }
     ]
 } %}
 
@@ -25,7 +26,7 @@
 <div class="kpi-grid d-grid grid-responsive-250 gap-4 my-2rem">
     {% include '_components/_kpi_card.html.twig' with {
         icon: 'bi-server',
-        label: 'Total Assets',
+        label: 'assets.modern.kpi.total'|trans,
         value: detailedStats.total,
         detail: currentTenant ? ('corporate.stats.breakdown'|trans({'%own%': detailedStats.own, '%inherited%': detailedStats.inherited, '%subsidiaries%': detailedStats.subsidiaries})) : null,
         variant: 'primary',
@@ -35,7 +36,7 @@
     {% set criticalAssets = assets|filter(a => a.confidentiality >= 4 or a.integrity >= 4 or a.availability >= 4)|length %}
     {% include '_components/_kpi_card.html.twig' with {
         icon: 'bi-shield-exclamation',
-        label: 'Critical Assets',
+        label: 'assets.modern.kpi.critical'|trans,
         value: criticalAssets,
         variant: 'danger',
         link: '#filter-critical'
@@ -44,16 +45,16 @@
     {% set avgCIA = (assets|reduce((carry, asset) => carry + asset.confidentiality + asset.integrity + asset.availability, 0) / (assets|length * 3))|round(1) %}
     {% include '_components/_kpi_card.html.twig' with {
         icon: 'bi-bar-chart',
-        label: 'Avg CIA Score',
+        label: 'assets.modern.kpi.avg_cia'|trans,
         value: avgCIA,
-        unit: '/ 5',
+        unit: 'assets.modern.kpi.unit.out_of_5'|trans,
         variant: 'info'
     } %}
 
     {% set assetsWithRisks = assets|filter(a => a.risks|length > 0)|length %}
     {% include '_components/_kpi_card.html.twig' with {
         icon: 'bi-exclamation-triangle',
-        label: 'Assets with Risks',
+        label: 'assets.modern.kpi.with_risks'|trans,
         value: assetsWithRisks,
         unit: '/ ' ~ assets|length,
         variant: 'warning'
@@ -64,7 +65,7 @@
 {% if typeStats|length > 0 %}
 <div class="card mb-4">
     <div class="card-header">
-        <h3><i class="bi bi-pie-chart" aria-hidden="true"></i> Verteilung nach Asset-Typ</h3>
+        <h3><i class="bi bi-pie-chart" aria-hidden="true"></i> {{ 'assets.modern.chart.type_distribution'|trans }}</h3>
     </div>
     <div class="card-body">
         <div class="row">
@@ -91,26 +92,26 @@
 {% if assets|length == 0 %}
     {% include '_components/_empty_state.html.twig' with {
         icon: 'bi-server',
-        title: 'Noch keine Assets vorhanden',
-        description: 'Legen Sie Ihr erstes Asset an, um mit dem Asset Management zu beginnen. Assets sind die Grundlage für Ihr ISMS.',
-        action: { label: 'Erstes Asset erstellen', url: path('app_asset_new'), icon: 'bi-plus-circle' }
+        title: 'assets.modern.empty.title'|trans,
+        description: 'assets.modern.empty.description'|trans,
+        action: { label: 'assets.modern.empty.action_create_first'|trans, url: path('app_asset_new'), icon: 'bi-plus-circle' }
     } %}
 {% else %}
-<div class="card" data-controller="bulk-actions" data-bulk-actions-endpoint-value="/asset" data-bulk-actions-entity-label="Assets">
+<div class="card" data-controller="bulk-actions" data-bulk-actions-endpoint-value="/asset" data-bulk-actions-entity-label="{{ 'assets.modern.breadcrumb'|trans }}">
     <div class="card-header d-flex justify-content-between align-items-center">
-        <h3 class="mb-0"><i class="bi bi-list" aria-hidden="true"></i> Alle Assets ({{ assets|length }})</h3>
+        <h3 class="mb-0"><i class="bi bi-list" aria-hidden="true"></i> {{ 'assets.modern.table.title_all'|trans }} ({{ assets|length }})</h3>
         <div>
-            <label for="asset-search" class="visually-hidden">Assets durchsuchen</label>
+            <label for="asset-search" class="visually-hidden">{{ 'assets.modern.breadcrumb'|trans }} durchsuchen</label>
             <input type="search"
                    class="form-control form-control-sm w-200px"
-                   placeholder="Suche..."
+                   placeholder="{{ 'assets.modern.table.search_placeholder'|trans }}"
                    id="asset-search"
-                   aria-label="Assets durchsuchen">
+                   aria-label="{{ 'assets.modern.breadcrumb'|trans }} durchsuchen">
         </div>
     </div>
     {% embed '_components/_table.html.twig' with {
         'class': 'table-hover mb-0',
-        'caption': 'Liste aller Assets mit CIA-Bewertung, Risiken und Controls',
+        'caption': 'assets.modern.table.caption'|trans,
         'noMargin': true,
         'responsive': true
     } %}
@@ -121,16 +122,16 @@
                            class="form-check-input"
                            data-action="bulk-actions#selectAll"
                            data-bulk-actions-target="selectAllCheckbox"
-                           aria-label="Alle Assets auswählen">
+                           aria-label="{{ 'assets.modern.table.title_all'|trans }} auswählen">
                 </th>
-                <th scope="col">Name</th>
-                <th scope="col">Typ</th>
-                <th scope="col" class="text-center">Confidentiality</th>
-                <th scope="col" class="text-center">Integrity</th>
-                <th scope="col" class="text-center">Availability</th>
-                <th scope="col" class="text-center">Risiken</th>
-                <th scope="col" class="text-center">Controls</th>
-                <th scope="col" class="text-center">Aktionen</th>
+                <th scope="col">{{ 'assets.modern.table.head.name'|trans }}</th>
+                <th scope="col">{{ 'assets.modern.table.head.type'|trans }}</th>
+                <th scope="col" class="text-center">{{ 'assets.modern.table.head.confidentiality'|trans }}</th>
+                <th scope="col" class="text-center">{{ 'assets.modern.table.head.integrity'|trans }}</th>
+                <th scope="col" class="text-center">{{ 'assets.modern.table.head.availability'|trans }}</th>
+                <th scope="col" class="text-center">{{ 'assets.modern.table.head.risks'|trans }}</th>
+                <th scope="col" class="text-center">{{ 'assets.modern.table.head.controls'|trans }}</th>
+                <th scope="col" class="text-center">{{ 'assets.modern.table.head.actions'|trans }}</th>
             </tr>
         {% endblock %}
         {% block table_body %}
@@ -191,7 +192,7 @@
                     {% endif %}
                 </td>
                 <td class="text-center">
-                    <div class="btn-group btn-group-sm" role="group" aria-label="Aktionen für Asset {{ asset.name }}">
+                    <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'assets.modern.table.head.actions'|trans }} für Asset {{ asset.name }}">
                         <a href="{{ path('app_asset_show', {id: asset.id}) }}"
                            class="btn btn-outline-primary"
                            data-turbo-action="advance"

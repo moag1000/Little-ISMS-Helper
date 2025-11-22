@@ -4,8 +4,11 @@ namespace App\Entity;
 
 use App\Entity\Tenant;
 use App\Repository\ManagementReviewRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\User;
 
 #[ORM\Entity(repositoryClass: ManagementReviewRepository::class)]
 class ManagementReview
@@ -21,8 +24,8 @@ class ManagementReview
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $reviewDate = null;
 
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
-    private ?string $participants = null;
+    #[ORM\ManyToMany(targetEntity: User::class)]
+    private Collection $participants;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $changesRelevantToISMS = null;
@@ -36,6 +39,7 @@ class ManagementReview
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $performanceEvaluation = null;
 
+    // Bestehendes Feld bleibt für Abwärtskompatibilität erhalten
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $nonConformitiesStatus = null;
 
@@ -66,14 +70,43 @@ class ManagementReview
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $updatedAt = null;
 
-    
+
     #[ORM\ManyToOne(targetEntity: Tenant::class)]
     #[ORM\JoinColumn(nullable: true)]
     private ?Tenant $tenant = null;
 
+    // Neue, formularkompatible Felder (Option B)
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    private ?User $reviewedBy = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $nonconformitiesReview = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $incidentsReview = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $risksReview = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $objectivesReview = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $contextChanges = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $summary = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $improvementOpportunities = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $resourcesNeeded = null;
+
 public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
+        $this->participants = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -103,14 +136,25 @@ public function __construct()
         return $this;
     }
 
-    public function getParticipants(): ?string
+    /**
+     * @return Collection<int, User>
+     */
+    public function getParticipants(): Collection
     {
         return $this->participants;
     }
 
-    public function setParticipants(?string $participants): static
+    public function addParticipant(User $user): static
     {
-        $this->participants = $participants;
+        if (!$this->participants->contains($user)) {
+            $this->participants->add($user);
+        }
+        return $this;
+    }
+
+    public function removeParticipant(User $user): static
+    {
+        $this->participants->removeElement($user);
         return $this;
     }
 
@@ -276,6 +320,105 @@ public function __construct()
     public function setTenant(?Tenant $tenant): static
     {
         $this->tenant = $tenant;
+        return $this;
+    }
+
+    public function getReviewedBy(): ?User
+    {
+        return $this->reviewedBy;
+    }
+
+    public function setReviewedBy(?User $reviewedBy): static
+    {
+        $this->reviewedBy = $reviewedBy;
+        return $this;
+    }
+
+    public function getNonconformitiesReview(): ?string
+    {
+        return $this->nonconformitiesReview;
+    }
+
+    public function setNonconformitiesReview(?string $nonconformitiesReview): static
+    {
+        $this->nonconformitiesReview = $nonconformitiesReview;
+        return $this;
+    }
+
+    public function getIncidentsReview(): ?string
+    {
+        return $this->incidentsReview;
+    }
+
+    public function setIncidentsReview(?string $incidentsReview): static
+    {
+        $this->incidentsReview = $incidentsReview;
+        return $this;
+    }
+
+    public function getRisksReview(): ?string
+    {
+        return $this->risksReview;
+    }
+
+    public function setRisksReview(?string $risksReview): static
+    {
+        $this->risksReview = $risksReview;
+        return $this;
+    }
+
+    public function getObjectivesReview(): ?string
+    {
+        return $this->objectivesReview;
+    }
+
+    public function setObjectivesReview(?string $objectivesReview): static
+    {
+        $this->objectivesReview = $objectivesReview;
+        return $this;
+    }
+
+    public function getContextChanges(): ?string
+    {
+        return $this->contextChanges;
+    }
+
+    public function setContextChanges(?string $contextChanges): static
+    {
+        $this->contextChanges = $contextChanges;
+        return $this;
+    }
+
+    public function getSummary(): ?string
+    {
+        return $this->summary;
+    }
+
+    public function setSummary(?string $summary): static
+    {
+        $this->summary = $summary;
+        return $this;
+    }
+
+    public function getImprovementOpportunities(): ?string
+    {
+        return $this->improvementOpportunities;
+    }
+
+    public function setImprovementOpportunities(?string $improvementOpportunities): static
+    {
+        $this->improvementOpportunities = $improvementOpportunities;
+        return $this;
+    }
+
+    public function getResourcesNeeded(): ?string
+    {
+        return $this->resourcesNeeded;
+    }
+
+    public function setResourcesNeeded(?string $resourcesNeeded): static
+    {
+        $this->resourcesNeeded = $resourcesNeeded;
         return $this;
     }
 }

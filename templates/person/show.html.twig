@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% trans_default_domain 'people' %}
 
 {% block title %}{{ person.fullName }} - {{ 'person.title.show'|trans }} - Little ISMS Helper{% endblock %}
 
@@ -25,10 +26,10 @@
     </div>
     <div class="button-group">
         <a href="{{ path('app_person_edit', {id: person.id}) }}" class="btn btn-primary">
-            ✏️ {{ 'common.edit'|trans }}
+            ✏️ {{ 'common.edit'|trans({}, 'messages') }}
         </a>
         <a href="{{ path('app_person_index') }}" class="btn btn-secondary">
-            ← {{ 'common.back_to_list'|trans }}
+            ← {{ 'common.back_to_list'|trans({}, 'messages') }}
         </a>
     </div>
 </div>
@@ -119,14 +120,14 @@
 {# Action Buttons #}
 <div class="button-group mt-xl">
     <a href="{{ path('app_person_edit', {id: person.id}) }}" class="btn btn-primary">
-        ✏️ {{ 'common.edit'|trans }}
+        ✏️ {{ 'common.edit'|trans({}, 'messages') }}
     </a>
     <a href="{{ path('app_person_index') }}" class="btn btn-secondary">
-        📋 {{ 'common.back_to_list'|trans }}
+        📋 {{ 'common.back_to_list'|trans({}, 'messages') }}
     </a>
     <form method="post" action="{{ path('app_person_delete', {id: person.id}) }}" onsubmit="return confirm('{{ 'person.confirm.delete'|trans }}');" class="d-inline">
         <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ person.id) }}">
-        <button type="submit" class="btn btn-danger">🗑️ {{ 'common.delete'|trans }}</button>
+        <button type="submit" class="btn btn-danger">🗑️ {{ 'common.delete'|trans({}, 'messages') }}</button>
     </form>
 </div>
 {% endblock %}

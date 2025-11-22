@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% trans_default_domain 'incidents' %}
 
 {% block title %}{{ incident.title }}{% endblock %}
 
@@ -7,17 +8,17 @@
     <div class="page-header">
         <h1>{{ incident.title }}</h1>
         <div class="actions">
-            <a href="{{ path('app_incident_edit', {id: incident.id}) }}" class="btn btn-primary">Edit</a>
+            <a href="{{ path('app_incident_edit', {id: incident.id}) }}" class="btn btn-primary">{{ 'incident.action.edit'|trans }}</a>
             {% if is_nis2_active() and incident.requiresNis2Reporting %}
-                <a href="{{ path('app_incident_nis2_report', {id: incident.id}) }}" class="btn btn-success" data-turbo="false" title="{{ 'incident.action.download_nis2_report'|trans|default('Download NIS2 Report') }}">
-                    <i class="bi bi-file-earmark-pdf" aria-hidden="true"></i> NIS2 Report (PDF)
+                <a href="{{ path('app_incident_nis2_report', {id: incident.id}) }}" class="btn btn-success" data-turbo="false" title="{{ 'incident.action.download_nis2_report'|trans }}">
+                    <i class="bi bi-file-earmark-pdf" aria-hidden="true"></i> {{ 'incident.action.download_nis2_report'|trans }}
                 </a>
             {% endif %}
-            <a href="{{ path('app_incident_index') }}" class="btn btn-secondary">Back to List</a>
+            <a href="{{ path('app_incident_index') }}" class="btn btn-secondary">{{ 'incident.action.back_to_list'|trans }}</a>
             {% if is_granted('ROLE_ADMIN') %}
                 <form method="post" action="{{ path('app_incident_delete', {id: incident.id}) }}" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this incident?');">
                     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ incident.id) }}">
-                    <button type="submit" class="btn btn-danger">Delete</button>
+                    <button type="submit" class="btn btn-danger">{{ 'incident.action.delete'|trans }}</button>
                 </form>
             {% endif %}
         </div>
@@ -41,20 +42,20 @@
         <div class="card-content">
             <div class="detail-grid">
                 <div class="detail-item">
-                    <span class="label">Category:</span>
+                    <span class="label">{{ 'incident.field.category'|trans }}:</span>
                     <span class="value">{{ incident.category|upper|replace({'_': ' '}) }}</span>
                 </div>
                 <div class="detail-item">
-                    <span class="label">Detected:</span>
+                    <span class="label">{{ 'incident.field.detected'|trans }}:</span>
                     <span class="value">{{ incident.detectedAt ? incident.detectedAt|date('d.m.Y H:i') : 'N/A' }}</span>
                 </div>
                 <div class="detail-item">
-                    <span class="label">Reported By:</span>
+                    <span class="label">{{ 'incident.field.reported_by'|trans }}:</span>
                     <span class="value">{{ incident.reportedBy ?? 'N/A' }}</span>
                 </div>
                 {% if incident.occurredAt %}
                 <div class="detail-item">
-                    <span class="label">Occurred:</span>
+                    <span class="label">{{ 'incident.field.occurred'|trans }}:</span>
                     <span class="value">{{ incident.occurredAt|date('d.m.Y H:i') }}</span>
                 </div>
                 {% endif %}

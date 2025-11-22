@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% trans_default_domain 'suppliers' %}
 {% import '_macros/inheritance_badge.html.twig' as inheritance %}
 {% import '_macros/cards.html.twig' as cards %}
 
@@ -16,25 +17,25 @@
         <div class="card-body py-2">
             <form method="get" action="{{ path('app_supplier_index') }}" class="d-flex align-items-center gap-2">
                 <label for="view-filter" class="mb-0 fw-bold">
-                    <i class="bi bi-eye" aria-hidden="true"></i> {{ 'common.view'|trans }}:
+                    <i class="bi bi-eye" aria-hidden="true"></i> {{ 'common.view'|trans({}, 'messages') }}:
                 </label>
                 <select class="form-select form-select-sm" style="width: auto;" id="view-filter" name="view" onchange="this.form.submit()">
                     <option value="own" {{ inheritanceInfo.currentView == 'own' ? 'selected' : '' }}>
-                        {{ 'corporate.view.own_only'|trans }}
+                        {{ 'corporate.view.own_only'|trans({}, 'messages') }}
                     </option>
                     {% if inheritanceInfo.hasParent %}
                     <option value="inherited" {{ inheritanceInfo.currentView == 'inherited' ? 'selected' : '' }}>
-                        {{ 'corporate.view.including_inherited'|trans }}
+                        {{ 'corporate.view.including_inherited'|trans({}, 'messages') }}
                     </option>
                     {% endif %}
                     {% if inheritanceInfo.hasSubsidiaries %}
                     <option value="subsidiaries" {{ inheritanceInfo.currentView == 'subsidiaries' ? 'selected' : '' }}>
-                        {{ 'corporate.view.including_subsidiaries'|trans }}
+                        {{ 'corporate.view.including_subsidiaries'|trans({}, 'messages') }}
                     </option>
                     {% endif %}
                 </select>
                 <noscript>
-                    <button type="submit" class="btn btn-sm btn-secondary">{{ 'common.apply'|trans }}</button>
+                    <button type="submit" class="btn btn-sm btn-secondary">{{ 'common.apply'|trans({}, 'messages') }}</button>
                 </noscript>
             </form>
         </div>
@@ -108,7 +109,7 @@
                                    class="form-check-input"
                                    data-action="bulk-actions#selectAll"
                                    data-bulk-actions-target="selectAllCheckbox"
-                                   aria-label="{{ 'common.select_all'|trans }}">
+                                   aria-label="{{ 'common.select_all'|trans({}, 'messages') }}">
                         </th>
                         <th scope="col">{{ 'supplier.table.name'|trans }}</th>
                         <th scope="col">{{ 'supplier.table.service_provided'|trans }}</th>
@@ -129,7 +130,7 @@
                                    data-bulk-actions-target="item"
                                    data-action="bulk-actions#selectItem"
                                    value="{{ supplier.id }}"
-                                   aria-label="{{ 'common.select'|trans }} {{ supplier.name }}">
+                                   aria-label="{{ 'common.select'|trans({}, 'messages') }} {{ supplier.name }}">
                         </td>
                         <td>
                             <a href="{{ path('app_supplier_show', {id: supplier.id}) }}">{{ supplier.name }}</a>

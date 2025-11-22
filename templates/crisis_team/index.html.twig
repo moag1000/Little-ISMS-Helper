@@ -1,7 +1,8 @@
 {% extends 'base.html.twig' %}
+{% trans_default_domain 'crisis_team' %}
 {% import '_macros/cards.html.twig' as cards %}
 
-{% block title %}{{ 'crisis_team.title'|trans }} - {{ parent() }}{% endblock %}
+{% block title %}{{ 'crisis_team.title'|trans }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 {% block body %}
 <div class="container-fluid py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
@@ -31,7 +32,7 @@
                         <th scope="col">{{ 'crisis_team.field.team_name'|trans }}</th>
                         <th scope="col">{{ 'crisis_team.field.team_type'|trans }}</th>
                         <th scope="col">{{ 'crisis_team.field.team_leader'|trans }}</th>
-                        <th scope="col">{{ 'common.actions'|trans }}</th>
+                        <th scope="col">{{ 'common.actions'|trans({}, 'messages') }}</th>
                     </tr>
                 {% endblock %}
                 {% block table_body %}
@@ -39,11 +40,11 @@
                         <tr class="{{ team.isActive ? '' : 'table-secondary' }}">
                             <td><strong>{{ team.teamName }}</strong></td>
                             <td><span class="badge bg-primary">{{ ('crisis_team.type.' ~ team.teamType)|trans }}</span></td>
-                            <td>{{ team.teamLeader ? team.teamLeader.email : 'N/A' }}</td>
+                            <td>{{ team.teamLeader ? team.teamLeader.email : 'not_assigned'|trans({}, 'messages') }}</td>
                             <td>
                                 <div class="btn-group btn-group-sm">
-                                    <a href="{{ path('app_crisis_team_show', {id: team.id}) }}" class="btn btn-outline-primary" aria-label="{{ 'common.view'|trans }}"><i class="bi bi-eye" aria-hidden="true"></i></a>
-                                    <a href="{{ path('app_crisis_team_edit', {id: team.id}) }}" class="btn btn-outline-secondary" aria-label="{{ 'common.edit'|trans }}"><i class="bi bi-pencil" aria-hidden="true"></i></a>
+                                    <a href="{{ path('app_crisis_team_show', {id: team.id}) }}" class="btn btn-outline-primary" title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}"><i class="bi bi-eye" aria-hidden="true"></i></a>
+                                    <a href="{{ path('app_crisis_team_edit', {id: team.id}) }}" class="btn btn-outline-secondary" title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}"><i class="bi bi-pencil" aria-hidden="true"></i></a>
                                 </div>
                             </td>
                         </tr>

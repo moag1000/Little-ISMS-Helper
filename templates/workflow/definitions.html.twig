@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% trans_default_domain 'workflows' %}
 
 {% block title %}{{ 'workflow.title.definitions'|trans }} - Little ISMS Helper{% endblock %}
 
@@ -12,7 +13,7 @@
     </div>
     <div class="button-group">
         <a href="{{ path('app_workflow_index') }}" class="btn btn-secondary">
-            ← {{ 'common.back'|trans }}
+            ← {{ 'common.back'|trans({}, 'messages') }}
         </a>
         <a href="{{ path('app_workflow_definition_new') }}" class="btn btn-primary">
             ➕ {{ 'workflow.action.create_definition'|trans }}
@@ -58,7 +59,7 @@
             <th scope="col" class="text-center">{{ 'workflow.field.steps'|trans }}</th>
             <th scope="col" class="text-center">{{ 'workflow.field.instances'|trans }}</th>
             <th scope="col" class="text-center">{{ 'workflow.field.active'|trans }}</th>
-            <th scope="col" class="text-center">{{ 'common.actions'|trans }}</th>
+            <th scope="col" class="text-center">{{ 'common.actions'|trans({}, 'messages') }}</th>
         </tr>
     {% endblock %}
     {% block table_body %}
@@ -88,10 +89,10 @@
             </td>
             <td class="text-center">
                 <a href="{{ path('app_workflow_definition_show', {id: workflow.id}) }}" class="btn btn-sm mr-025">
-                    👁 {{ 'common.view'|trans }}
+                    👁 {{ 'common.view'|trans({}, 'messages') }}
                 </a>
                 <a href="{{ path('app_workflow_definition_edit', {id: workflow.id}) }}" class="btn btn-sm btn-secondary">
-                    ✏️ {{ 'common.edit'|trans }}
+                    ✏️ {{ 'common.edit'|trans({}, 'messages') }}
                 </a>
             </td>
         </tr>

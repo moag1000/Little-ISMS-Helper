@@ -87,7 +87,10 @@ def verify_merged_sections(data, section_checks):
 
 
 def main():
-    base_path = Path('/home/user/Little-ISMS-Helper/translations')
+    # Determine repo root based on this script location to avoid hard-coded paths
+    script_path = Path(__file__).resolve()
+    repo_root = script_path.parents[2] if script_path.parts[-3:] else script_path.parent.parent
+    base_path = repo_root / 'translations'
     de_file = base_path / 'messages.de.yaml'
     en_file = base_path / 'messages.en.yaml'
 

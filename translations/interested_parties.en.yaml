@@ -1,0 +1,66 @@
+interested_party:
+  title: Interested Parties
+  page:
+    title: Manage Interested Parties
+    new_title: New Interested Party
+    edit_title: Edit Interested Party
+    show_title: Interested Party Details
+  action:
+    add_new: Add New Party
+    create: Create Interested Party
+    update: Save Changes
+    delete: Delete
+    view: View
+    edit: Edit
+    back_to_list: Back to List
+  iso_reference: "ISO 27001 Clause 4.2: Understanding the needs and expectations of interested parties"
+  alert:
+    overdue_communications: Overdue communication activities
+  next_communication: Next communication
+  high_importance:
+    title: High-importance parties
+  engagement_score: Engagement score
+  list:
+    title: "List ({{ count }})"
+  table:
+    name: Name
+    type: Type
+    importance: Importance
+    engagement_score: Engagement score
+    last_communication: Last communication
+    actions: Actions
+  never: Never
+  not_scheduled: Not scheduled
+  badge:
+    overdue: Overdue
+  section:
+    basic_info: Basic information
+    contact_info: Contact information
+    requirements: Requirements & Expectations
+    communication: Communication
+    feedback: Feedback & Satisfaction
+    meta: Metadata
+  field:
+    name: Name
+    party_type: Party type
+    importance: Importance
+    description: Description
+    contact_person: Contact person
+    email: Email
+    phone: Phone
+    requirements: Requirements
+    how_addressed: How addressed
+    communication_frequency: Communication frequency
+    communication_method: Communication method
+    last_communication: Last communication
+    next_communication: Next communication
+    feedback: Feedback
+    satisfaction_level: Satisfaction level
+    issues: Issues/Concerns
+    created_at: Created at
+    updated_at: Updated at
+  empty:
+    message: No interested parties found.
+    add_first: Add first party
+  confirm:
+    delete: Are you sure you want to delete this interested party?
