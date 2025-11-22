@@ -1,0 +1,101 @@
+privacy:
+  breadcrumb:
+    privacy: Datenschutz
+    data_breaches: Datenschutzverletzungen
+  data_breach:
+    title: Datenschutzverletzungen
+    management: Verwaltung von Datenschutzverletzungen
+    subtitle: Art. 33/34 DSGVO – 72‑Stunden Meldepflicht
+    show:
+      page_title: "Datenschutzverletzung - %ref%"
+    page:
+      new_title: Neue Datenschutzverletzung
+      new_subtitle: Personenbezogene Datenschutzverletzung gemäß Art. 33/34 DSGVO erfassen
+      edit_title: Datenschutzverletzung bearbeiten
+      edit_subtitle: '%ref% – %title%'
+    actions:
+      dashboard: Dashboard
+      new: Neue Datenschutzverletzung
+    action:
+      create: Datenschutzverletzung anlegen
+      update: Datenschutzverletzung aktualisieren
+      export_pdf: PDF exportieren
+      submit_for_assessment: Zur Bewertung einreichen
+      edit: Vorfall bearbeiten
+      notify_authority: Aufsichtsbehörde benachrichtigen
+      notify_subjects: Betroffene Personen benachrichtigen
+      record_exemption: Ausnahme dokumentieren (Art. 34(3))
+      close_investigation: Untersuchung abschließen
+      reopen: Wiedereröffnen
+      delete: Löschen
+    form:
+      title: Formular Datenschutzverletzung
+    alert:
+      overdue_title: 'KRITISCH: Überfällige Meldungen'
+      overdue_text: '<strong>%count%</strong> Datenschutzverletzung(en) hat/haben die 72‑Stunden‑Frist zur Meldung an die Aufsichtsbehörde (Art. 33 Abs. 1 DSGVO) überschritten.'
+      view_overdue: Überfällige Fälle jetzt anzeigen
+    score:
+      heading: DSGVO Art. 33/34 Compliance‑Score
+      notification_compliance: Melde‑Compliance
+      timeliness: Pünktlichkeits‑Score
+      completeness: Vollständigkeit
+      summary: '%total% Gesamtfälle · %subjects% betroffene Personen'
+    kpi:
+      total_breaches: Gesamtfälle
+      high_critical_risk: hoch/kritisch Risiko
+      pending_authority: Ausstehend Behörde
+      deadline_72h: 72h‑Frist
+      special_categories: Besondere Kategorien
+      art9_data: Art. 9 Daten
+    section:
+      status_workflow: Status & Workflow
+      linked_incident: Verknüpfter Sicherheitsvorfall
+      authority: 'Art. 33 - Aufsichtsbehörde'
+      subjects: 'Art. 34 - Betroffene Personen'
+      nature: 'Art. 33(3) - Art der Verletzung'
+      consequences: 'Art. 33(3)(b-d) - Folgen & Maßnahmen'
+    field:
+      status: Status
+      completeness: Vollständigkeit
+      assessor: Bewertende Person
+      affected_subjects: Betroffene Personen
+      risk_level: Risikostufe
+      created: Erstellt
+      incident: Vorfall
+      detected: Erkannt
+      severity: Schweregrad
+      processing_activity: Verarbeitungstätigkeit (VVT)
+      notification_required: Meldung erforderlich
+      notified: Benachrichtigt
+      authority: Behörde
+      reference: Aktenzeichen
+      method: Methode
+      delay_reason: Grund der Verzögerung
+      not_yet_notified: Noch nicht benachrichtigt
+      deadline: Frist
+      time_remaining: Verbleibende Zeit
+      overdue_by: ÜBERFÄLLIG um
+      hours: Stunden
+      yes: Ja
+      no: Nein
+      high_risk: Ja (Hohes Risiko)
+      subjects_notified: Benachrichtigte Personen
+      exemption_reason: Ausnahme
+      data_categories: Datenkategorien
+      data_subject_categories: Kategorien betroffener Personen
+      special_categories_affected: 'Besondere Kategorien personenbezogener Daten betroffen (Art. 9 DSGVO)'
+      criminal_data_affected: 'Daten zu strafrechtlichen Verurteilungen betroffen (Art. 10 DSGVO)'
+      likely_consequences: Wahrscheinliche Folgen (Art. 33(3)(b))
+      measures_taken: Ergriffene Maßnahmen (Art. 33(3)(c))
+      measures_planned: Geplante Maßnahmen zur Abhilfe (Art. 33(3)(d))
+    status:
+      draft: Entwurf
+      under_assessment: In Bewertung
+      authority_notified: Behörde benachrichtigt
+      subjects_notified: Betroffene benachrichtigt
+      closed: Abgeschlossen
+    risk:
+      low: Niedrig
+      medium: Mittel
+      high: Hoch
+      critical: Kritisch

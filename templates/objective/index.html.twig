@@ -1,51 +1,52 @@
 {% extends 'base.html.twig' %}
+{% trans_default_domain 'objectives' %}
 {% import '_macros/cards.html.twig' as cards %}
 
-{% block title %}ISMS Objectives - {{ parent() }}{% endblock %}
+{% block title %}{{ 'objectives.page.title'|trans }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h2"><i class="bi bi-target" aria-hidden="true"></i> ISMS Objectives</h1>
+        <h1 class="h2"><i class="bi bi-target" aria-hidden="true"></i> {{ 'objectives.page.title'|trans }}</h1>
         {% if is_granted('ROLE_ADMIN') %}
-        <a href="{{ path('app_objective_new') }}" class="btn btn-primary"><i class="bi bi-plus-circle" aria-hidden="true"></i> New Objective</a>
+        <a href="{{ path('app_objective_new') }}" class="btn btn-primary"><i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'objectives.action.add_new'|trans }}</a>
         {% endif %}
     </div>
 
     <turbo-frame id="objective-stats">
         <div class="row mb-4">
             <div class="col-md-3">
-                {{ cards.kpi_card('Total', statistics.total, null, null, 'primary', 'border-primary') }}
+                {{ cards.kpi_card(('objectives.stats.total'|trans), statistics.total, null, null, 'primary', 'border-primary') }}
             </div>
             <div class="col-md-3">
-                {{ cards.kpi_card('Active', statistics.active, null, null, 'info', 'border-info') }}
+                {{ cards.kpi_card(('objectives.stats.active'|trans), statistics.active, null, null, 'info', 'border-info') }}
             </div>
             <div class="col-md-3">
-                {{ cards.kpi_card('Achieved', statistics.achieved, null, null, 'success', 'border-success') }}
+                {{ cards.kpi_card(('objectives.stats.achieved'|trans), statistics.achieved, null, null, 'success', 'border-success') }}
             </div>
             <div class="col-md-3">
-                {{ cards.kpi_card('Delayed', statistics.delayed, null, null, 'warning', 'border-warning') }}
+                {{ cards.kpi_card(('objectives.stats.delayed'|trans), statistics.delayed, null, null, 'warning', 'border-warning') }}
             </div>
         </div>
     </turbo-frame>
 
     <div class="card">
-        <div class="card-header bg-primary text-white"><h5 class="mb-0">All Objectives</h5></div>
+        <div class="card-header bg-primary text-white"><h5 class="mb-0">{{ 'objectives.list.title'|trans({'%count%': objectives|length}) }}</h5></div>
         <div class="card-body">
             {% if objectives|length == 0 %}
-            <div class="alert alert-info">No objectives defined yet.</div>
+            <div class="alert alert-info">{{ 'objectives.message.no_objectives'|trans }}</div>
             {% else %}
             {% embed '_components/_table.html.twig' with {
                 'noMargin': true
             } %}
                 {% block table_head %}
                     <tr>
-                        <th scope="col">Title</th>
-                        <th scope="col">Category</th>
-                        <th scope="col">Target</th>
-                        <th scope="col">Progress</th>
-                        <th scope="col">Status</th>
-                        <th scope="col">Actions</th>
+                        <th scope="col">{{ 'objectives.table.title'|trans }}</th>
+                        <th scope="col">{{ 'objectives.table.category'|trans }}</th>
+                        <th scope="col">{{ 'objectives.table.target_date'|trans }}</th>
+                        <th scope="col">{{ 'objectives.table.progress'|trans }}</th>
+                        <th scope="col">{{ 'objectives.table.status'|trans }}</th>
+                        <th scope="col">{{ 'common.actions'|trans({}, 'messages') }}</th>
                     </tr>
                 {% endblock %}
                 {% block table_body %}
@@ -60,15 +61,14 @@
                                      style="width: {{ objective.progressPercentage }}%">{{ objective.progressPercentage }}%</div>
                             </div>
                         </td>
-                        <td><span class="badge bg-{{ objective.status == 'achieved' ? 'success' : (objective.status == 'in_progress' ? 'info' : 'warning') }}">{{ objective.status }}</span></td>
+                        <td><span class="badge bg-{{ objective.status == 'achieved' ? 'success' : (objective.status == 'in_progress' ? 'info' : 'warning') }}">{{ ('objectives.status.' ~ objective.status)|trans }}</span></td>
                         <td>
-                            <a href="{{ path('app_objective_show', {id: objective.id}) }}" class="btn btn-sm btn-outline-primary" aria-label="{{ 'common.view'|trans }}"><i class="bi bi-eye" aria-hidden="true"></i></a>
+                            <a href="{{ path('app_objective_show', {id: objective.id}) }}" class="btn btn-sm btn-outline-primary" aria-label="{{ 'common.view'|trans({}, 'messages') }}" title="{{ 'common.view'|trans({}, 'messages') }}"><i class="bi bi-eye" aria-hidden="true"></i></a>
                             {% if is_granted('ROLE_ADMIN') %}
-                            <a href="{{ path('app_objective_edit', {id: objective.id}) }}" class="btn btn-sm btn-outline-secondary" aria-label="{{ 'common.edit'|trans }}"><i class="bi bi-pencil" aria-hidden="true"></i></a>
+                            <a href="{{ path('app_objective_edit', {id: objective.id}) }}" class="btn btn-sm btn-outline-secondary" aria-label="{{ 'common.edit'|trans({}, 'messages') }}" title="{{ 'common.edit'|trans({}, 'messages') }}"><i class="bi bi-pencil" aria-hidden="true"></i></a>
                             {% endif %}
                         </td>
                     </tr>
-                    {% endfor %}
                 {% endblock %}
             {% endembed %}
             {% endif %}

@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% trans_default_domain 'documents' %}
 {% import '_macros/inheritance_badge.html.twig' as inheritance %}
 
 {% block title %}{{ 'document.title'|trans }}{% endblock %}
@@ -8,7 +9,7 @@
     {# Breadcrumb Navigation #}
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
-            { label: 'common.dashboard'|trans, url: path('app_dashboard') },
+            { label: 'common.dashboard'|trans({}, 'messages'), url: path('app_dashboard') },
             { label: 'document.title'|trans }
         ]
     } %}
@@ -34,25 +35,25 @@
         <div class="card-body py-2">
             <form method="get" action="{{ path('app_document_index') }}" class="d-flex align-items-center gap-2">
                 <label for="view-filter" class="mb-0 fw-bold">
-                    <i class="bi bi-eye" aria-hidden="true"></i> {{ 'common.view'|trans }}:
+                    <i class="bi bi-eye" aria-hidden="true"></i> {{ 'common.view'|trans({}, 'messages') }}:
                 </label>
                 <select class="form-select form-select-sm" style="width: auto;" id="view-filter" name="view" onchange="this.form.submit()">
                     <option value="own" {{ inheritanceInfo.currentView == 'own' ? 'selected' : '' }}>
-                        {{ 'corporate.view.own_only'|trans }}
+                        {{ 'corporate.view.own_only'|trans({}, 'messages') }}
                     </option>
                     {% if inheritanceInfo.hasParent %}
                     <option value="inherited" {{ inheritanceInfo.currentView == 'inherited' ? 'selected' : '' }}>
-                        {{ 'corporate.view.including_inherited'|trans }}
+                        {{ 'corporate.view.including_inherited'|trans({}, 'messages') }}
                     </option>
                     {% endif %}
                     {% if inheritanceInfo.hasSubsidiaries %}
                     <option value="subsidiaries" {{ inheritanceInfo.currentView == 'subsidiaries' ? 'selected' : '' }}>
-                        {{ 'corporate.view.including_subsidiaries'|trans }}
+                        {{ 'corporate.view.including_subsidiaries'|trans({}, 'messages') }}
                     </option>
                     {% endif %}
                 </select>
                 <noscript>
-                    <button type="submit" class="btn btn-sm btn-secondary">{{ 'common.apply'|trans }}</button>
+                    <button type="submit" class="btn btn-sm btn-secondary">{{ 'common.apply'|trans({}, 'messages') }}</button>
                 </noscript>
             </form>
         </div>
@@ -73,7 +74,7 @@
             icon: 'bi-file-earmark-text',
             label: 'document.kpi.total_documents'|trans,
             value: total,
-            detail: currentTenant ? ('corporate.stats.breakdown'|trans({'%own%': detailedStats.own, '%inherited%': detailedStats.inherited, '%subsidiaries%': detailedStats.subsidiaries})) : null,
+            detail: currentTenant ? ('corporate.stats.breakdown'|trans({'%own%': detailedStats.own, '%inherited%': detailedStats.inherited, '%subsidiaries%': detailedStats.subsidiaries}, 'messages')) : null,
             variant: 'primary',
             link: null
         } %}
@@ -176,7 +177,7 @@
                 <i class="bi bi-list-ul" aria-hidden="true"></i>
                 {{ 'document.section.all_documents'|trans }}
                 <span class="bulk-selected-badge" data-bulk-actions-target="countBadge" class="d-none">
-                    <span data-bulk-actions-target="count">0</span> {{ 'common.selected'|trans }}
+                    <span data-bulk-actions-target="count">0</span> {{ 'common.selected'|trans({}, 'messages') }}
                 </span>
             </h2>
 
@@ -184,7 +185,7 @@
             <div class="d-flex gap-2">
                 <select class="form-select form-select-sm" id="categoryFilter" class="w-auto">
                     <option value="">{{ 'document.filter.all_categories'|trans }}</option>
-                    {% set categories = [] %}
+                {% set categories = [] %}
                     {% for doc in documents %}
                         {% if doc.category not in categories %}
                             {% set categories = categories|merge([doc.category]) %}
@@ -217,15 +218,15 @@
                             <input type="checkbox"
                                    data-action="bulk-actions#selectAll"
                                    data-bulk-actions-target="selectAllCheckbox"
-                                   aria-label="{{ 'bulk_actions.select_all'|trans|default('Alle auswählen') }}">
+                                   aria-label="{{ 'bulk_actions.select_all'|trans({}, 'messages')|default('Alle auswählen') }}">
                         </th>
                         <th scope="col" class="w-50px"><span class="visually-hidden">{{ 'document.table.icon'|trans|default('Dateityp') }}</span></th>
-                        <th scope="col">{{ 'common.name'|trans }}</th>
-                        <th scope="col" class="w-150px">{{ 'common.category'|trans }}</th>
-                        <th scope="col" class="w-100px">{{ 'common.size'|trans }}</th>
+                        <th scope="col">{{ 'common.name'|trans({}, 'messages') }}</th>
+                        <th scope="col" class="w-150px">{{ 'common.category'|trans({}, 'messages') }}</th>
+                        <th scope="col" class="w-100px">{{ 'common.size'|trans({}, 'messages') }}</th>
                         <th scope="col" class="w-150px">{{ 'document.table.uploaded_by'|trans }}</th>
-                        <th scope="col" class="w-130px">{{ 'common.date'|trans }}</th>
-                        <th scope="col" class="w-180px text-right">{{ 'common.actions'|trans }}</th>
+                        <th scope="col" class="w-130px">{{ 'common.date'|trans({}, 'messages') }}</th>
+                        <th scope="col" class="w-180px text-right">{{ 'common.actions'|trans({}, 'messages') }}</th>
                     </tr>
                 {% endblock %}
                 {% block table_body_attrs %}id="documentTableBody"{% endblock %}
@@ -287,17 +288,17 @@
                             <div class="btn-group btn-group-sm">
                                 <a href="{{ path('app_document_download', {id: document.id}) }}"
                                    class="btn btn-sm btn-outline-success"
-                                   title="{{ 'common.download'|trans }}" aria-label="{{ 'common.download'|trans }}">
+                                   title="{{ 'common.download'|trans({}, 'messages') }}" aria-label="{{ 'common.download'|trans({}, 'messages') }}">
                                     <i class="bi bi-download" aria-hidden="true"></i>
                                 </a>
                                 <a href="{{ path('app_document_show', {id: document.id}) }}"
                                    class="btn btn-sm btn-outline-primary"
-                                   title="{{ 'common.details'|trans }}" aria-label="{{ 'common.view'|trans }}">
+                                   title="{{ 'common.details'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
                                     <i class="bi bi-eye" aria-hidden="true"></i>
                                 </a>
                                 <a href="{{ path('app_document_edit', {id: document.id}) }}"
                                    class="btn btn-sm btn-outline-secondary"
-                                   title="{{ 'common.edit'|trans }}" aria-label="{{ 'common.edit'|trans }}">
+                                   title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
                                     <i class="bi bi-pencil" aria-hidden="true"></i>
                                 </a>
                             </div>

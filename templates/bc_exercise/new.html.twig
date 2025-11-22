@@ -1,24 +1,25 @@
 {% extends 'base.html.twig' %}
+{% trans_default_domain 'bc_exercises' %}
 
-{% block title %}{{ 'bc_exercise.new'|trans }} - {{ parent() }}{% endblock %}
+{% block title %}{{ 'bc_exercises.action.add_new'|trans }} - {{ parent() }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid py-4">
     {# Breadcrumb Navigation #}
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
-            { label: 'nav.bcm'|trans|default('BCM'), url: path('app_bc_exercise_index'), icon: 'bi-shield-exclamation' },
-            { label: 'bc_exercise.title'|trans|default('BC Exercises'), url: path('app_bc_exercise_index') },
-            { label: 'bc_exercise.new'|trans|default('New Exercise') }
+            { label: 'nav.bcm'|trans({}, 'messages')|default('BCM'), url: path('app_bc_exercise_index'), icon: 'bi-shield-exclamation' },
+            { label: 'bc_exercises.page.title'|trans|default('BC Exercises'), url: path('app_bc_exercise_index') },
+            { label: 'bc_exercises.action.add_new'|trans|default('New Exercise') }
         ]
     } %}
 
     {# Page Header #}
     {% include '_components/_page_header.html.twig' with {
-        title: 'bc_exercise.create'|trans|default('Create BC Exercise'),
+        title: 'bc_exercises.action.add_new'|trans|default('Create BC Exercise'),
         icon: 'bi-plus-circle',
         actions: [
-            { label: 'common.back'|trans, url: path('app_bc_exercise_index'), variant: 'secondary', icon: 'bi-arrow-left' }
+            { label: 'common.back'|trans({}, 'messages'), url: path('app_bc_exercise_index'), variant: 'secondary', icon: 'bi-arrow-left' }
         ]
     } %}
 
@@ -32,13 +33,13 @@
                     <fieldset class="mb-4">
                         <legend class="h5 mb-3">
                             <i class="bi bi-info-square" aria-hidden="true"></i>
-                            {{ 'bc_exercise.section.basic_info'|trans|default('Basic Information') }}
+                            {{ 'bc_exercises.section.details'|trans|default('Basic Information') }}
                         </legend>
 
                         {% include '_components/_form_field.html.twig' with {
                             'field': form.name,
-                            'label': 'bc_exercise.field.name'|trans|default('Exercise Name'),
-                            'help': 'bc_exercise.help.name'|trans|default('Descriptive name for the exercise'),
+                            'label': 'bc_exercises.table.name'|trans|default('Exercise Name'),
+                            'help': 'bc_exercises.section.details'|trans|default('Descriptive name for the exercise'),
                             'required': true
                         } %}
 
@@ -46,29 +47,29 @@
                             <div class="col-md-6">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.exerciseType,
-                                    'label': 'bc_exercise.field.exercise_type'|trans|default('Exercise Type'),
-                                    'help': 'bc_exercise.help.exercise_type'|trans|default('Type of business continuity exercise')
+                                    'label': 'bc_exercises.table.type'|trans|default('Exercise Type'),
+                                    'help': 'bc_exercises.section.scenario'|trans|default('Type of business continuity exercise')
                                 } %}
                             </div>
                             <div class="col-md-6">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.status,
-                                    'label': 'bc_exercise.field.status'|trans|default('Status'),
-                                    'help': 'bc_exercise.help.status'|trans|default('Current status of the exercise')
+                                    'label': 'bc_exercises.table.status'|trans|default('Status'),
+                                    'help': 'bc_exercises.table.status'|trans|default('Current status of the exercise')
                                 } %}
                             </div>
                         </div>
 
                         {% include '_components/_form_field.html.twig' with {
                             'field': form.description,
-                            'label': 'bc_exercise.field.description'|trans|default('Description'),
-                            'help': 'bc_exercise.help.description'|trans|default('Detailed description of the exercise')
+                            'label': 'bc_exercises.section.details'|trans|default('Description'),
+                            'help': 'bc_exercises.section.details'|trans|default('Detailed description of the exercise')
                         } %}
 
                         {% include '_components/_form_field.html.twig' with {
                             'field': form.scope,
-                            'label': 'bc_exercise.field.scope'|trans|default('Scope'),
-                            'help': 'bc_exercise.help.scope'|trans|default('Scope and boundaries of the exercise')
+                            'label': 'bc_exercises.section.scope_objectives'|trans|default('Scope'),
+                            'help': 'bc_exercises.section.scope_objectives'|trans|default('Scope and boundaries of the exercise')
                         } %}
                     </fieldset>
 
@@ -76,34 +77,34 @@
                     <fieldset class="mb-4">
                         <legend class="h5 mb-3">
                             <i class="bi bi-calendar-event" aria-hidden="true"></i>
-                            {{ 'bc_exercise.section.planning'|trans|default('Planning') }}
+                            {{ 'bc_exercises.section.scenario'|trans|default('Planning') }}
                         </legend>
 
                         {% include '_components/_form_field.html.twig' with {
                             'field': form.objectives,
-                            'label': 'bc_exercise.field.objectives'|trans|default('Objectives'),
-                            'help': 'bc_exercise.help.objectives'|trans|default('Goals and objectives of the exercise')
+                            'label': 'bc_exercises.section.scope_objectives'|trans|default('Objectives'),
+                            'help': 'bc_exercises.section.scope_objectives'|trans|default('Goals and objectives of the exercise')
                         } %}
 
                         {% include '_components/_form_field.html.twig' with {
                             'field': form.scenario,
-                            'label': 'bc_exercise.field.scenario'|trans|default('Scenario'),
-                            'help': 'bc_exercise.help.scenario'|trans|default('The scenario to be tested')
+                            'label': 'bc_exercises.section.scenario'|trans|default('Scenario'),
+                            'help': 'bc_exercises.section.scenario'|trans|default('The scenario to be tested')
                         } %}
 
                         <div class="row">
                             <div class="col-md-6">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.exerciseDate,
-                                    'label': 'bc_exercise.field.exercise_date'|trans|default('Exercise Date'),
-                                    'help': 'bc_exercise.help.exercise_date'|trans|default('Scheduled date for the exercise')
+                                    'label': 'bc_exercises.field.exercise_date'|trans|default('Exercise Date'),
+                                    'help': 'bc_exercises.field.exercise_date'|trans|default('Scheduled date for the exercise')
                                 } %}
                             </div>
                             <div class="col-md-6">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.durationHours,
-                                    'label': 'bc_exercise.field.duration_hours'|trans|default('Duration (Hours)'),
-                                    'help': 'bc_exercise.help.duration_hours'|trans|default('Expected duration in hours')
+                                    'label': 'bc_exercises.field.duration'|trans|default('Duration (Hours)'),
+                                    'help': 'bc_exercises.field.duration_hours'|trans|default('Expected duration in hours')
                                 } %}
                             </div>
                         </div>

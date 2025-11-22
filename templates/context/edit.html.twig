@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
+{% trans_default_domain 'context' %}
 
-{% block title %}{{ 'context.edit.title'|trans|default('Edit ISMS Context') }} - {{ parent() }}{% endblock %}
+{% block title %}{{ 'context.edit.title'|trans|default('Edit ISMS Context') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid py-4">
@@ -8,23 +9,23 @@
         breadcrumbs: [
             { label: 'context_management.title'|trans|default('ISMS Context'), url: path('app_context_index'), icon: 'bi-building' },
             { label: context.organizationName, url: path('app_context_index') },
-            { label: 'common.edit'|trans|default('Edit') }
+            { label: 'common.edit'|trans({}, 'messages')|default('Edit') }
         ]
     } %}
 
     {% include '_components/_page_header.html.twig' with {
         title: 'context.edit.title'|trans|default('Edit ISMS Context'),
-        subtitle: 'ISO 27001 Clause 4: Understanding the organization and its context',
+        subtitle: 'context.info.subtitle'|trans,
         icon: 'bi-building',
         actions: [
-            { label: 'common.back'|trans, url: path('app_context_index'), variant: 'secondary', icon: 'bi-arrow-left' }
+            { label: 'common.back'|trans({}, 'messages'), url: path('app_context_index'), variant: 'secondary', icon: 'bi-arrow-left' }
         ]
     } %}
 
     {% if tenant is defined and tenant %}
         <div class="alert alert-secondary mb-4">
             <i class="bi bi-info-circle" aria-hidden="true"></i>
-            <strong>{{ 'tenant.isms_context.linked_to'|trans|default('Linked to Tenant') }}:</strong>
+            <strong>{{ 'tenant.isms_context.linked_to'|trans({}, 'messages')|default('Linked to Tenant') }}:</strong>
             {{ tenant.name }} ({{ tenant.code }})
         </div>
     {% endif %}
@@ -90,8 +91,8 @@
 
                     {# Form Actions #}
                     <div class="form-actions d-flex gap-2 justify-content-between pt-3 border-top">
-                        <a href="{{ path('app_context_index') }}" class="btn btn-secondary"><i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'common.cancel'|trans }}</a>
-                        <button type="submit" class="btn btn-primary btn-lg"><i class="bi bi-save" aria-hidden="true"></i> {{ 'common.save'|trans }}</button>
+                        <a href="{{ path('app_context_index') }}" class="btn btn-secondary"><i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'common.cancel'|trans({}, 'messages') }}</a>
+                        <button type="submit" class="btn btn-primary btn-lg"><i class="bi bi-save" aria-hidden="true"></i> {{ 'common.save'|trans({}, 'messages') }}</button>
                     </div>
 
                     {{ form_end(form) }}

@@ -1,27 +1,28 @@
 {% extends 'base.html.twig' %}
+{% trans_default_domain 'risks' %}
 {% import '_macros/inheritance_badge.html.twig' as inheritance %}
 
-{% block title %}Risikomanagement - {{ 'app.title'|trans }}{% endblock %}
+{% block title %}{{ 'risks.modern.header.title'|trans }} - {{ 'app.title'|trans }}{% endblock %}
 
 {% block body %}
 {# Breadcrumb Navigation #}
 {% include '_components/_breadcrumb.html.twig' with {
     breadcrumbs: [
-        { label: 'Risikomanagement' }
+        { label: 'risks.modern.breadcrumb'|trans }
     ]
 } %}
 
 {# Page Header with Actions #}
 {% include '_components/_page_header.html.twig' with {
-    title: 'Risikomanagement',
-    subtitle: 'Identifikation, Bewertung und Behandlung von Informationssicherheitsrisiken',
+    title: 'risks.modern.header.title'|trans,
+    subtitle: 'risks.modern.header.subtitle'|trans,
     icon: 'bi-exclamation-triangle',
     actions: [
-        { label: 'Neues Risiko', url: path('app_risk_new'), variant: 'primary', icon: 'bi-plus-circle' },
-        { label: 'Risikomatrix', url: path('app_risk_matrix'), variant: 'info', icon: 'bi-grid-3x3' },
-        { label: 'PDF Report', url: path('app_risk_export_pdf'), variant: 'danger', icon: 'bi-file-pdf', turbo: false },
-        { label: 'Excel Export', url: path('app_risk_export_excel'), variant: 'success', icon: 'bi-file-earmark-excel', turbo: false },
-        { label: 'CSV Export', url: path('app_risk_export'), variant: 'secondary', icon: 'bi-download', turbo: false }
+        { label: 'risks.modern.header.action.new'|trans, url: path('app_risk_new'), variant: 'primary', icon: 'bi-plus-circle' },
+        { label: 'risks.modern.header.action.matrix'|trans, url: path('app_risk_matrix'), variant: 'info', icon: 'bi-grid-3x3' },
+        { label: 'risks.modern.header.action.export_pdf'|trans, url: path('app_risk_export_pdf'), variant: 'danger', icon: 'bi-file-pdf', turbo: false },
+        { label: 'risks.modern.header.action.export_excel'|trans, url: path('app_risk_export_excel'), variant: 'success', icon: 'bi-file-earmark-excel', turbo: false },
+        { label: 'risks.modern.header.action.export_csv'|trans, url: path('app_risk_export'), variant: 'secondary', icon: 'bi-download', turbo: false }
     ]
 } %}
 
@@ -60,7 +61,7 @@
 <div class="kpi-grid d-grid grid-responsive-250 gap-4 my-2rem">
     {% include '_components/_kpi_card.html.twig' with {
         icon: 'bi-exclamation-triangle',
-        label: 'Identifizierte Risiken',
+        label: 'risks.modern.kpi.total'|trans,
         value: detailedStats.total,
         detail: currentTenant ? ('corporate.stats.breakdown'|trans({'%own%': detailedStats.own, '%inherited%': detailedStats.inherited, '%subsidiaries%': detailedStats.subsidiaries})) : null,
         variant: 'primary',
@@ -71,7 +72,7 @@
     {% set criticalRisks = risks|filter(r => r.getRiskScore() >= 20)|length %}
     {% include '_components/_kpi_card.html.twig' with {
         icon: 'bi-shield-fill-exclamation',
-        label: 'Kritische Risiken',
+        label: 'risks.modern.kpi.critical'|trans,
         value: criticalRisks,
         variant: 'danger',
         trend: criticalRisks > 0 ? '-' : '+0',
@@ -81,7 +82,7 @@
     {% set highRisks = risks|filter(r => r.getRiskScore() >= 12 and r.getRiskScore() < 20)|length %}
     {% include '_components/_kpi_card.html.twig' with {
         icon: 'bi-exclamation-circle',
-        label: 'Hohe Risiken',
+        label: 'risks.modern.kpi.high'|trans,
         value: highRisks,
         variant: 'warning',
         link: '#filter-high'
@@ -90,18 +91,18 @@
     {% set avgResidualRisk = risks|length > 0 ? (risks|reduce((carry, risk) => carry + risk.getResidualRiskLevel(), 0) / risks|length)|round(1) : 0 %}
     {% include '_components/_kpi_card.html.twig' with {
         icon: 'bi-graph-down',
-        label: 'Durchschn. Restrisiko',
+        label: 'risks.modern.kpi.avg_residual'|trans,
         value: avgResidualRisk,
-        unit: '/ 25',
+        unit: 'risks.modern.kpi.unit.max'|trans,
         variant: avgResidualRisk < 8 ? 'success' : 'warning'
     } %}
 </div>
 
 {# Risk Matrix Overview #}
 {% embed '_components/_card.html.twig' with {
-    'title': 'Risikomatrix-Übersicht',
+    'title': 'risks.modern.matrix_overview',
     'headerIcon': 'bi-grid-3x3',
-    'actions': '<a href="' ~ path('app_risk_matrix') ~ '" class="btn btn-sm btn-outline-primary">Vollständige Matrix anzeigen <i class="bi bi-arrow-right" aria-hidden="true"></i></a>',
+    'actions': '<a href="' ~ path('app_risk_matrix') ~ '" class="btn btn-sm btn-outline-primary">' ~ ('risks.modern.view_full_matrix'|trans) ~ ' <i class="bi bi-arrow-right" aria-hidden="true"></i></a>',
     'class': 'mb-4'
 } %}
     {% block card_body %}

@@ -1,8 +1,9 @@
 {% extends 'base.html.twig' %}
+{% trans_default_domain 'soa' %}
 {% import '_macros/inheritance_badge.html.twig' as inheritance %}
 {% import '_macros/cards.html.twig' as cards %}
 
-{% block title %}Statement of Applicability - Little ISMS Helper{% endblock %}
+{% block title %}{{ 'soa.page.title'|trans }} - Little ISMS Helper{% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
@@ -12,18 +13,18 @@
 {% block body %}
 <div class="page-header">
     <div>
-        <h1>Statement of Applicability (SoA)</h1>
-        <p class="text-muted">ISO/IEC 27001:2022 Annex A Controls - Übersicht und Anwendbarkeitserklärung</p>
+        <h1>{{ 'soa.page.title'|trans }}</h1>
+        <p class="text-muted">{{ 'soa.page.subtitle'|trans }}</p>
     </div>
     <div class="button-group">
-        <a href="{{ path('app_soa_export') }}" class="btn btn-outline-success" data-turbo="false" title="{{ 'soa.export.html'|trans }}">
-            <i class="bi bi-file-earmark-text" aria-hidden="true"></i> HTML
+        <a href="{{ path('app_soa_export') }}" class="btn btn-outline-success" data-turbo="false" title="{{ 'soa.action.export_html'|trans }}">
+            <i class="bi bi-file-earmark-text" aria-hidden="true"></i> {{ 'soa.action.export_html'|trans }}
         </a>
-        <a href="{{ path('app_soa_export_pdf') }}" class="btn btn-success" data-turbo="false" title="{{ 'soa.export.pdf'|trans }}">
-            <i class="bi bi-file-earmark-pdf" aria-hidden="true"></i> PDF Export
+        <a href="{{ path('app_soa_export_pdf') }}" class="btn btn-success" data-turbo="false" title="{{ 'soa.action.export_pdf'|trans }}">
+            <i class="bi bi-file-earmark-pdf" aria-hidden="true"></i> {{ 'soa.action.export_pdf'|trans }}
         </a>
-        <a href="{{ path('app_soa_preview_pdf') }}" class="btn btn-outline-primary" title="{{ 'soa.preview.pdf'|trans }}" target="_blank">
-            <i class="bi bi-eye" aria-hidden="true"></i> Vorschau
+        <a href="{{ path('app_soa_preview_pdf') }}" class="btn btn-outline-primary" title="{{ 'soa.action.preview_pdf'|trans }}" target="_blank">
+            <i class="bi bi-eye" aria-hidden="true"></i> {{ 'soa.action.preview_pdf'|trans }}
         </a>
     </div>
 </div>
@@ -36,25 +37,25 @@
     {% block card_body %}
         <form method="get" action="{{ path('app_soa_index') }}" class="d-flex align-items-center gap-2">
             <label for="view-filter" class="mb-0 fw-bold">
-                <i class="bi bi-eye" aria-hidden="true"></i> {{ 'common.view'|trans }}:
+                <i class="bi bi-eye" aria-hidden="true"></i> {{ 'common.view'|trans({}, 'messages') }}:
             </label>
             <select class="form-select form-select-sm" style="width: auto;" id="view-filter" name="view" onchange="this.form.submit()">
                 <option value="own" {{ inheritanceInfo.currentView == 'own' ? 'selected' : '' }}>
-                    {{ 'corporate.view.own_only'|trans }}
+                    {{ 'corporate.view.own_only'|trans({}, 'messages') }}
                 </option>
                 {% if inheritanceInfo.hasParent %}
                 <option value="inherited" {{ inheritanceInfo.currentView == 'inherited' ? 'selected' : '' }}>
-                    {{ 'corporate.view.including_inherited'|trans }}
+                    {{ 'corporate.view.including_inherited'|trans({}, 'messages') }}
                 </option>
                 {% endif %}
                 {% if inheritanceInfo.hasSubsidiaries %}
                 <option value="subsidiaries" {{ inheritanceInfo.currentView == 'subsidiaries' ? 'selected' : '' }}>
-                    {{ 'corporate.view.including_subsidiaries'|trans }}
+                    {{ 'corporate.view.including_subsidiaries'|trans({}, 'messages') }}
                 </option>
                 {% endif %}
             </select>
             <noscript>
-                <button type="submit" class="btn btn-sm btn-secondary">{{ 'common.apply'|trans }}</button>
+                <button type="submit" class="btn btn-sm btn-secondary">{{ 'common.apply'|trans({}, 'messages') }}</button>
             </noscript>
         </form>
     {% endblock %}
@@ -65,30 +66,30 @@
 <div class="kpi-grid">
     <div class="col-auto">
         {% if currentTenant %}
-            {% set subtitle = 'corporate.stats.breakdown'|trans({'%own%': detailedStats.own, '%inherited%': detailedStats.inherited, '%subsidiaries%': detailedStats.subsidiaries}) %}
-            {{ cards.kpi_card('Gesamt Controls', detailedStats.total, subtitle, null, 'primary', null) }}
+            {% set subtitle = 'corporate.stats.breakdown'|trans({'%own%': detailedStats.own, '%inherited%': detailedStats.inherited, '%subsidiaries%': detailedStats.subsidiaries}, 'messages') %}
+            {{ cards.kpi_card(('soa.kpi.total_controls'|trans), detailedStats.total, subtitle, null, 'primary', null) }}
         {% else %}
-            {{ cards.kpi_card('Gesamt Controls', detailedStats.total, null, null, 'primary', null) }}
+            {{ cards.kpi_card(('soa.kpi.total_controls'|trans), detailedStats.total, null, null, 'primary', null) }}
         {% endif %}
     </div>
     <div class="col-auto">
-        {{ cards.kpi_card('Anwendbare Controls', controls|filter(c => c.applicable)|length, null, null, 'success', null) }}
+        {{ cards.kpi_card(('soa.kpi.applicable_controls'|trans), controls|filter(c => c.applicable)|length, null, null, 'success', null) }}
     </div>
     <div class="col-auto">
         {% set implemented = controls|filter(c => c.applicable and c.implementationStatus == 'implemented')|length %}
         {% set applicable = controls|filter(c => c.applicable)|length %}
-        {{ cards.kpi_card('Implementierte Controls', implemented, 'von ' ~ applicable, null, 'info', null) }}
+        {{ cards.kpi_card(('soa.kpi.implemented_controls'|trans), implemented, ('soa.kpi.of'|trans) ~ ' ' ~ applicable, null, 'info', null) }}
     </div>
     <div class="col-auto">
         {% set applicable = controls|filter(c => c.applicable)|length %}
         {% set implemented = controls|filter(c => c.applicable and c.implementationStatus == 'implemented')|length %}
         {% set percentage = applicable > 0 ? (implemented / applicable * 100)|round : 0 %}
-        {{ cards.kpi_card('Compliance-Rate', percentage ~ '%', null, percentage, 'warning', null) }}
+        {{ cards.kpi_card(('soa.kpi.compliance_rate'|trans), percentage ~ '%', null, percentage, 'warning', null) }}
     </div>
 </div>
 
 {# Category Overview #}
-<h2>Nach Kategorie</h2>
+<h2>{{ 'soa.section.by_category'|trans }}</h2>
 
 <div class="module-grid">
     {% set categories = {
@@ -105,19 +106,19 @@
 
         <div class="card">
             <div class="fs-2-mb-sm">{{ icon }}</div>
-            <h2>{{ category }} Controls</h2>
+            <h2>{{ ('soa.category.' ~ category)|trans }} {{ 'soa.label.controls'|trans }}</h2>
             <div class="stats-grid mt-2">
                 <div class="stat-item">
                     <strong>{{ cat_controls|length }}</strong>
-                    <span>Gesamt</span>
+                    <span>{{ 'soa.kpi.total_controls'|trans }}</span>
                 </div>
                 <div class="stat-item">
                     <strong>{{ applicable_controls|length }}</strong>
-                    <span>Anwendbar</span>
+                    <span>{{ 'soa.kpi.applicable_controls'|trans }}</span>
                 </div>
                 <div class="stat-item">
                     <strong>{{ implemented_controls|length }}</strong>
-                    <span>Implementiert</span>
+                    <span>{{ 'soa.kpi.implemented_controls'|trans }}</span>
                 </div>
             </div>
 
@@ -129,24 +130,24 @@
             </div>
 
             <div class="mt-2">
-                <a href="{{ path('app_soa_by_category', {category: category}) }}" class="btn btn-sm">Details anzeigen</a>
+                <a href="{{ path('app_soa_by_category', {category: category}) }}" class="btn btn-sm">{{ 'soa.action.view_details'|trans }}</a>
             </div>
         </div>
     {% endfor %}
 </div>
 
 {# Filter and Table #}
-<h2>Alle Controls</h2>
+<h2>{{ 'soa.section.all_controls'|trans }}</h2>
 
 <div class="filter-panel" data-controller="filter">
     <div class="filter-controls">
         <div class="filter-control">
-            <label for="search">Suche</label>
+            <label for="search">{{ 'soa.filter.search'|trans }}</label>
             <div class="search-box">
                 <input
                     type="text"
                     id="search"
-                    placeholder="Control ID, Name oder Beschreibung durchsuchen..."
+                    placeholder="{{ 'soa.filter.search_placeholder'|trans }}"
                     data-filter-target="searchInput"
                     data-action="input->filter#filterRows"
                 >
@@ -154,30 +155,30 @@
         </div>
 
         <div class="filter-control">
-            <label for="category-filter">Kategorie</label>
+            <label for="category-filter">{{ 'soa.filter.category'|trans }}</label>
             <select id="category-filter" class="form-control" data-action="change->filter#filterByCategory">
-                <option value="">Alle Kategorien</option>
-                <option value="Organizational">Organizational</option>
-                <option value="People">People</option>
-                <option value="Physical">Physical</option>
-                <option value="Technological">Technological</option>
+                <option value="">{{ 'soa.filter.all_categories'|trans }}</option>
+                <option value="Organizational">{{ 'soa.category.Organizational'|trans }}</option>
+                <option value="People">{{ 'soa.category.People'|trans }}</option>
+                <option value="Physical">{{ 'soa.category.Physical'|trans }}</option>
+                <option value="Technological">{{ 'soa.category.Technological'|trans }}</option>
             </select>
         </div>
 
         <div class="filter-control">
-            <label for="status-filter">Status</label>
+            <label for="status-filter">{{ 'soa.filter.status'|trans }}</label>
             <select id="status-filter" class="form-control" data-action="change->filter#filterByStatus">
-                <option value="">Alle Status</option>
-                <option value="implemented">Implementiert</option>
-                <option value="in_progress">In Arbeit</option>
-                <option value="not_started">Nicht begonnen</option>
-                <option value="not_applicable">Nicht anwendbar</option>
+                <option value="">{{ 'soa.filter.all_status'|trans }}</option>
+                <option value="implemented">{{ 'soa.status.implemented'|trans }}</option>
+                <option value="in_progress">{{ 'soa.status.in_progress'|trans }}</option>
+                <option value="not_started">{{ 'soa.status.not_started'|trans }}</option>
+                <option value="not_applicable">{{ 'soa.status.not_applicable'|trans }}</option>
             </select>
         </div>
 
         <div class="filter-control justify-end">
             <button type="button" class="btn btn-secondary" data-action="click->filter#reset">
-                🔄 Filter zurücksetzen
+                🔄 {{ 'soa.filter.reset'|trans }}
             </button>
         </div>
     </div>
@@ -191,13 +192,13 @@
     {% import '_macros/inheritance_badge.html.twig' as inheritance %}
     {% block table_head %}
         <tr>
-            <th scope="col" style="min-width: 100px;">Control ID</th>
-            <th scope="col" style="min-width: 250px;">Name</th>
-            <th scope="col" style="min-width: 120px;">Kategorie</th>
-            <th scope="col" class="text-center" style="min-width: 100px;">Anwendbar</th>
-            <th scope="col" style="min-width: 150px;">Implementierungsstatus</th>
-            <th scope="col" class="text-center" style="min-width: 120px;">Fortschritt</th>
-            <th scope="col" class="text-center" style="min-width: 180px;">Aktionen</th>
+            <th scope="col" style="min-width: 100px;">{{ 'soa.table.control_id'|trans }}</th>
+            <th scope="col" style="min-width: 250px;">{{ 'soa.table.name'|trans }}</th>
+            <th scope="col" style="min-width: 120px;">{{ 'soa.table.category'|trans }}</th>
+            <th scope="col" class="text-center" style="min-width: 100px;">{{ 'soa.table.applicable'|trans }}</th>
+            <th scope="col" style="min-width: 150px;">{{ 'soa.table.implementation_status'|trans }}</th>
+            <th scope="col" class="text-center" style="min-width: 120px;">{{ 'soa.table.progress'|trans }}</th>
+            <th scope="col" class="text-center" style="min-width: 180px;">{{ 'soa.table.actions'|trans }}</th>
         </tr>
     {% endblock %}
     {% block table_body %}
@@ -210,28 +211,28 @@
                 {{ inheritance.small_badge(control, currentTenant) }}
             </td>
             <td>
-                <span class="badge bg-info">{{ control.category }}</span>
+                <span class="badge bg-info">{{ ('soa.category.' ~ control.category)|trans }}</span>
             </td>
             <td class="text-center">
                 {% if control.applicable %}
-                    <span class="badge bg-success">✓ Ja</span>
+                    <span class="badge bg-success">✓ {{ 'soa.value.yes'|trans }}</span>
                 {% else %}
-                    <span class="badge badge-neutral">✗ Nein</span>
+                    <span class="badge badge-neutral">✗ {{ 'soa.value.no'|trans }}</span>
                 {% endif %}
             </td>
             <td>
                 {% if control.applicable %}
                     {% if control.implementationStatus == 'implemented' %}
-                        <span class="badge bg-success">✅ Implementiert</span>
+                        <span class="badge bg-success">✅ {{ 'soa.status.implemented'|trans }}</span>
                     {% elseif control.implementationStatus == 'in_progress' %}
-                        <span class="badge bg-warning">🔄 In Arbeit</span>
+                        <span class="badge bg-warning">🔄 {{ 'soa.status.in_progress'|trans }}</span>
                     {% elseif control.implementationStatus == 'not_started' %}
-                        <span class="badge bg-danger">⏸ Nicht begonnen</span>
+                        <span class="badge bg-danger">⏸ {{ 'soa.status.not_started'|trans }}</span>
                     {% else %}
-                        <span class="badge badge-neutral">N/A</span>
+                        <span class="badge badge-neutral">{{ 'soa.value.na'|trans }}</span>
                     {% endif %}
                 {% else %}
-                    <span class="badge badge-neutral">Nicht anwendbar</span>
+                    <span class="badge badge-neutral">{{ 'soa.status.not_applicable'|trans }}</span>
                 {% endif %}
             </td>
             <td>
@@ -247,8 +248,8 @@
             </td>
             <td class="text-center">
                 <div class="btn-group btn-group-sm">
-                    <a href="{{ path('app_soa_show', {id: control.id}) }}" class="btn btn-outline-primary">👁 Details</a>
-                    <a href="{{ path('app_soa_edit', {id: control.id}) }}" class="btn btn-outline-secondary">✏️ Bearbeiten</a>
+                    <a href="{{ path('app_soa_show', {id: control.id}) }}" class="btn btn-outline-primary" title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">👁 {{ 'common.view'|trans({}, 'messages') }}</a>
+                    <a href="{{ path('app_soa_edit', {id: control.id}) }}" class="btn btn-outline-secondary" title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">✏️ {{ 'common.edit'|trans({}, 'messages') }}</a>
                 </div>
             </td>
         </tr>
@@ -257,6 +258,6 @@
 {% endembed %}
 
 <div data-filter-target="noResults" class="hidden text-center-p-xl-muted">
-    <p>Keine Controls gefunden, die den Filterkriterien entsprechen.</p>
+    <p>{{ 'soa.message.no_controls_filtered'|trans }}</p>
 </div>
 {% endblock %}

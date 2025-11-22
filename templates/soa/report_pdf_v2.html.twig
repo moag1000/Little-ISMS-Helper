@@ -1,34 +1,26 @@
 {% extends 'pdf/_base_document.html.twig' %}
+{% trans_default_domain 'soa' %}
 
-{# Document Metadata - Version muss vom Controller übergeben werden! #}
+{# Document Metadata #}
 {% block document_id %}DOC-ISMS-SOA-001{% endblock %}
-{% block document_title %}Statement of Applicability (SoA){% endblock %}
-{% block document_type %}ISO 27001:2022 Konformitätsdokument{% endblock %}
+{% block document_title %}{{ 'page.title'|trans }}{% endblock %}
+{% block document_type %}{{ 'report.document_type'|trans }}{% endblock %}
 {% block document_version %}{{ version }}{% endblock %}
-{% block document_status %}{{ status|default('Approved') }}{% endblock %}
+{% block document_status %}{{ status|default(('status.approved'|trans)) }}{% endblock %}
 {% block document_status_class %}{{ status|default('approved')|lower }}{% endblock %}
-{% block document_classification %}Confidential{% endblock %}
+{% block document_classification %}{{ 'label.classification_confidential'|trans }}{% endblock %}
 {% block classification_class %}confidential{% endblock %}
 
-{# Creator Information #}
-{% block created_by %}{{ app.user.fullName }}{% endblock %}
-{% block created_date %}{{ generatedAt|date('d.m.Y') }}{% endblock %}
-{% block modified_date %}{{ generatedAt|date('d.m.Y H:i') }}{% endblock %}
-
-{# Validity #}
-{% block valid_until %}{{ generatedAt|date_modify('+1 year')|date('d.m.Y') }}{% endblock %}
-{% block next_review %}{{ generatedAt|date_modify('+6 months')|date('d.m.Y') }}{% endblock %}
-
 {# Header/Footer #}
-{% block header_center %}Statement of Applicability - ISO 27001:2022{% endblock %}
-{% block header_right %}CONFIDENTIAL{% endblock %}
+{% block header_center %}{{ 'report.header_center'|trans }}{% endblock %}
+{% block header_right %}{{ 'label.classification_confidential_upper'|trans }}{% endblock %}
 {% block footer_version %}{{ version }}{% endblock %}
 
 {# Show Approval Section #}
 {% set show_approval = true %}
-{% block reviewer_name %}{{ reviewer|default('ISMS-Verantwortlicher') }}{% endblock %}
+{% block reviewer_name %}{{ app.user.fullName|default(('report.default_reviewer'|trans)) }}{% endblock %}
 {% block review_date %}{{ generatedAt|date('d.m.Y') }}{% endblock %}
-{% block approver_name %}{{ approver|default('Geschäftsführung') }}{% endblock %}
+{% block approver_name %}{{ approver|default(('report.default_approver'|trans)) }}{% endblock %}
 {% block approval_date %}{{ approval_date|default(generatedAt|date('d.m.Y')) }}{% endblock %}
 
 {# Show Version History - Beispieldaten! Echte Versionsdaten vom Controller übergeben! #}

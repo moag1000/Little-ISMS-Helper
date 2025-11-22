@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% trans_default_domain 'risk_treatment_plan' %}
 
 {% block title %}{{ plan.title }} - {{ 'risk_treatment_plan.title'|trans }}{% endblock %}
 
@@ -17,10 +18,10 @@
     </div>
     <div class="button-group">
         <a href="{{ path('app_risk_treatment_plan_edit', {id: plan.id}) }}" class="btn btn-primary">
-            <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'common.edit'|trans }}
+            <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
         </a>
         <a href="{{ path('app_risk_treatment_plan_index') }}" class="btn btn-secondary">
-            <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans }}
+            <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
         </a>
     </div>
 </div>
@@ -104,7 +105,7 @@
                     {% if plan.responsiblePerson %}
                         {{ plan.responsiblePerson.fullName }} ({{ plan.responsiblePerson.email }})
                     {% else %}
-                        <span class="text-muted">{{ 'common.not_assigned'|trans }}</span>
+                        <span class="text-muted">{{ 'common.not_assigned'|trans({}, 'messages') }}</span>
                     {% endif %}
                 </div>
 
@@ -175,9 +176,9 @@
         } %}
             {% block table_head %}
                 <tr>
-                    <th scope="col">{{ 'control.field.control_id'|trans }}</th>
-                    <th scope="col">{{ 'control.field.title'|trans }}</th>
-                    <th scope="col">{{ 'control.field.status'|trans }}</th>
+                    <th scope="col">{{ 'controls.field.control_id'|trans({}, 'controls') }}</th>
+                    <th scope="col">{{ 'controls.field.title'|trans({}, 'controls') }}</th>
+                    <th scope="col">{{ 'controls.field.status'|trans({}, 'controls') }}</th>
                 </tr>
             {% endblock %}
             {% block table_body %}
@@ -188,8 +189,8 @@
                     </td>
                     <td>{{ control.title }}</td>
                     <td>
-                        <span class="badge bg-{{ control.implementationStatus == 'implemented' ? 'success' : (control.implementationStatus == 'partial' ? 'warning' : 'secondary') }}">
-                            {{ control.implementationStatus|upper }}
+                        <span class="badge bg-{{ control.implementationStatus == 'implemented' ? 'success' : (control.implementationStatus == 'in_progress' ? 'warning' : (control.implementationStatus == 'not_started' ? 'secondary' : 'dark')) }}">
+                            {{ ('controls.status.' ~ control.implementationStatus)|trans({}, 'controls') }}
                         </span>
                     </td>
                 </tr>
@@ -204,7 +205,7 @@
 {% if auditLogs is defined and auditLogs|length > 0 %}
 <div class="card mb-4">
     <div class="card-header">
-        <h3><i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'risk_treatment_plan.section.history'|trans }} ({{ totalAuditLogs }} {{ 'audit_log.entries'|trans }})</h3>
+        <h3><i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'risk_treatment_plan.section.history'|trans }} ({{ totalAuditLogs }} {{ 'audit_log.entries'|trans({}, 'audit_log') }})</h3>
     </div>
     <div class="card-body">
         <div class="audit-log-list">
@@ -242,7 +243,7 @@
         </div>
         {% if totalAuditLogs > 10 %}
         <div class="text-center mt-3">
-            <small class="text-muted">{{ 'audit_log.showing_recent'|trans({'%count%': 10, '%total%': totalAuditLogs}) }}</small>
+            <small class="text-muted">{{ 'audit_log.showing_recent'|trans({'%count%': 10, '%total%': totalAuditLogs}, 'audit_log') }}</small>
         </div>
         {% endif %}
     </div>
@@ -253,14 +254,14 @@
 {% if is_granted('ROLE_ADMIN') %}
 <div class="card border-danger">
     <div class="card-header bg-danger text-white">
-        <h3><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'common.danger_zone'|trans }}</h3>
+        <h3><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'common.danger_zone'|trans({}, 'messages') }}</h3>
     </div>
     <div class="card-body">
         <p>{{ 'risk_treatment_plan.delete.warning'|trans }}</p>
         <form method="post" action="{{ path('app_risk_treatment_plan_delete', {id: plan.id}) }}" onsubmit="return confirm('{{ 'risk_treatment_plan.delete.confirm'|trans }}');">
             <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ plan.id) }}">
             <button type="submit" class="btn btn-danger">
-                <i class="bi bi-trash" aria-hidden="true"></i> {{ 'common.delete'|trans }}
+                <i class="bi bi-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}
             </button>
         </form>
     </div>

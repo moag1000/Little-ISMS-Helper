@@ -1,0 +1,72 @@
+bcm:
+  title:
+    critical: Critical Business Continuity
+  description:
+    critical: Overview of critical assets and processes including RTO/RPO and action needs
+    critical_level: Immediate business outage in case of loss or failure. Highest priority for emergency actions.
+    high_level: Significant business impact within a short time. Rapid recovery planning required.
+    medium_level: Noticeable impact with buffer. Mid-term measures sufficient.
+    action_items: Recommended actions to improve recoverability and reduce downtime.
+  action:
+    view_insights: View insights
+    export: Export
+    plan: Recovery plan
+  warning:
+    critical_assets_count: '%count% critical assets identified'
+    critical_message: Please review RTO/RPO, recovery plans and test status of these assets.
+  stats:
+    critical_assets: Critical Assets
+    critical_processes: Critical Processes
+    avg_rto: Avg. RTO
+    missing_recovery_plans: Missing Recovery Plans
+  section:
+    criticality_overview: Criticality Overview
+    critical_assets_list: List of Critical Assets
+    critical_processes: Critical Business Processes
+    action_items: Action Items
+  field:
+    assets: Assets
+    asset_name: Asset Name
+    type: Type
+    criticality: Criticality
+    rto: RTO
+    rpo: RPO
+    recovery_plan: Recovery Plan
+    last_tested: Last tested
+    process_name: Process Name
+    department: Department
+    dependent_assets: Dependent Assets
+    mtd: MTD
+    maximum_tolerable_downtime: Maximum tolerable downtime
+    impact_of_loss: Impact of loss
+    avg_rto: Avg. RTO
+  badge:
+    no_recovery_plan: No recovery plan
+    immediate: Immediate
+    exists: exists
+    missing: missing
+    test_overdue: Test overdue
+  message:
+    never_tested: Never tested
+    no_critical_assets: No critical assets — well done!
+    no_critical_processes: No critical processes
+  type:
+    information: Information
+    software: Software
+    hardware: Hardware
+    service: Service
+    personnel: Personnel
+    physical: Physical
+  criticality:
+    critical: Critical
+    high: High
+    medium: Medium
+  impact:
+    critical: Critical
+    high: High
+    medium: Medium
+    low: Low
+  priority:
+    high: High
+    medium: Medium
+    low: Low

@@ -1,33 +1,34 @@
 {% extends 'base.html.twig' %}
+{% trans_default_domain 'reports' %}
 
-{% block title %}Reports & Exports - {{ parent() }}{% endblock %}
+{% block title %}{{ 'reports.page.title'|trans }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
 {% block body %}
 {% import '_macros/cards.html.twig' as cards %}
 
 <div class="container-fluid py-4">
     <h1 class="h2 mb-4">
-        <i class="bi bi-file-earmark-bar-graph" aria-hidden="true"></i> Reports & Exports
+        <i class="bi bi-file-earmark-bar-graph" aria-hidden="true"></i> {{ 'reports.page.title'|trans }}
     </h1>
 
     <div class="alert alert-info mb-4">
-        <i class="bi bi-info-circle" aria-hidden="true"></i> Generate comprehensive reports in PDF or Excel format for compliance documentation and management reviews.
+        <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'reports.page.subtitle'|trans }}
     </div>
 
     <div class="row">
         {# Dashboard Report #}
         <div class="col-md-6 col-lg-4 mb-4">
             {{ cards.report_card(
-                'Dashboard Summary',
+                'reports.card.dashboard.title'|trans,
                 'speedometer2',
                 'bg-primary',
                 'text-white',
-                'Comprehensive ISMS overview with all key metrics and statistics.',
+                'reports.card.dashboard.description'|trans,
                 [
-                    'Assets & Risks Overview',
-                    'Control Implementation Status',
-                    'Incident Summary',
-                    'Compliance Percentage'
+                    'reports.card.dashboard.features.feature_1'|trans,
+                    'reports.card.dashboard.features.feature_2'|trans,
+                    'reports.card.dashboard.features.feature_3'|trans,
+                    'reports.card.dashboard.features.feature_4'|trans
                 ],
                 path('app_reports_dashboard_pdf'),
                 path('app_reports_dashboard_excel')
@@ -37,16 +38,16 @@
         {# Risk Register #}
         <div class="col-md-6 col-lg-4 mb-4">
             {{ cards.report_card(
-                'Risk Register',
+                'reports.card.risks.title'|trans,
                 'exclamation-triangle',
                 'bg-danger',
                 'text-white',
-                'Complete risk assessment documentation with likelihood, impact, and treatment plans.',
+                'reports.card.risks.description'|trans,
                 [
-                    'All identified risks',
-                    'Risk scores & levels',
-                    'Treatment strategies',
-                    'Risk owners'
+                    'reports.card.risks.features.feature_1'|trans,
+                    'reports.card.risks.features.feature_2'|trans,
+                    'reports.card.risks.features.feature_3'|trans,
+                    'reports.card.risks.features.feature_4'|trans
                 ],
                 path('app_reports_risks_pdf'),
                 path('app_reports_risks_excel')
@@ -56,16 +57,16 @@
         {# Statement of Applicability #}
         <div class="col-md-6 col-lg-4 mb-4">
             {{ cards.report_card(
-                'Statement of Applicability',
+                'reports.card.soa.title'|trans,
                 'shield-check',
                 'bg-success',
                 'text-white',
-                'ISO 27001 Annex A controls documentation with applicability justification.',
+                'reports.card.soa.description'|trans,
                 [
-                    'All 93 ISO 27001:2022 controls',
-                    'Applicability status',
-                    'Implementation progress',
-                    'Justifications'
+                    'reports.card.soa.features.feature_1'|trans,
+                    'reports.card.soa.features.feature_2'|trans,
+                    'reports.card.soa.features.feature_3'|trans,
+                    'reports.card.soa.features.feature_4'|trans
                 ],
                 path('app_reports_controls_pdf'),
                 path('app_reports_controls_excel')
@@ -75,16 +76,16 @@
         {# Incident Log #}
         <div class="col-md-6 col-lg-4 mb-4">
             {{ cards.report_card(
-                'Incident Log',
+                'reports.card.incidents.title'|trans,
                 'bell',
                 'bg-warning',
                 'text-dark',
-                'Complete incident management records with timeline and resolutions.',
+                'reports.card.incidents.description'|trans,
                 [
-                    'All security incidents',
-                    'Severity classifications',
-                    'Response timelines',
-                    'Resolution status'
+                    'reports.card.incidents.features.feature_1'|trans,
+                    'reports.card.incidents.features.feature_2'|trans,
+                    'reports.card.incidents.features.feature_3'|trans,
+                    'reports.card.incidents.features.feature_4'|trans
                 ],
                 path('app_reports_incidents_pdf'),
                 path('app_reports_incidents_excel')
@@ -94,16 +95,16 @@
         {# Training Log #}
         <div class="col-md-6 col-lg-4 mb-4">
             {{ cards.report_card(
-                'Training Log',
+                'reports.card.training.title'|trans,
                 'mortarboard',
                 'bg-info',
                 'text-white',
-                'Security awareness and training documentation with attendance records.',
+                'reports.card.training.description'|trans,
                 [
-                    'All conducted trainings',
-                    'Participant lists',
-                    'Training types & methods',
-                    'Mandatory trainings'
+                    'reports.card.training.features.feature_1'|trans,
+                    'reports.card.training.features.feature_2'|trans,
+                    'reports.card.training.features.feature_3'|trans,
+                    'reports.card.training.features.feature_4'|trans
                 ],
                 path('app_reports_trainings_pdf'),
                 path('app_reports_trainings_excel')
@@ -114,21 +115,21 @@
         <div class="col-md-6 col-lg-4 mb-4">
             <div class="card h-100 shadow-sm border-secondary" style="opacity: 0.7;">
                 <div class="card-header bg-secondary text-white">
-                    <h3 class="mb-0"><i class="bi bi-file-earmark-plus" aria-hidden="true"></i> Custom Reports</h3>
+                    <h3 class="mb-0"><i class="bi bi-file-earmark-plus" aria-hidden="true"></i> {{ 'reports.custom.title'|trans }}</h3>
                 </div>
                 <div class="card-body">
-                    <p class="text-muted">Additional custom reports coming soon:</p>
+                    <p class="text-muted">{{ 'reports.custom.subtitle'|trans }}</p>
                     <ul class="small mb-3">
-                        <li>Audit Summary Reports</li>
-                        <li>Management Review Reports</li>
-                        <li>Asset Inventory</li>
-                        <li>Compliance Gap Analysis</li>
+                        <li>{{ 'reports.custom.items.item_1'|trans }}</li>
+                        <li>{{ 'reports.custom.items.item_2'|trans }}</li>
+                        <li>{{ 'reports.custom.items.item_3'|trans }}</li>
+                        <li>{{ 'reports.custom.items.item_4'|trans }}</li>
                     </ul>
                 </div>
                 <div class="card-footer bg-light">
                     <div class="d-grid">
                         <button class="btn btn-sm btn-outline-secondary" disabled>
-                            <i class="bi bi-hourglass-split" aria-hidden="true"></i> Coming Soon
+                            <i class="bi bi-hourglass-split" aria-hidden="true"></i> {{ 'reports.custom.coming_soon'|trans }}
                         </button>
                     </div>
                 </div>
@@ -142,26 +143,26 @@
             {% set best_practices_content %}
                 <div class="row">
                     <div class="col-md-6">
-                        <h4>For Audits & Compliance:</h4>
+                        <h4>{{ 'reports.best_practices.audits.title'|trans }}</h4>
                         <ul class="small">
-                            <li>Generate Statement of Applicability before audits</li>
-                            <li>Include Risk Register in management reviews</li>
-                            <li>Document incident trends over time</li>
-                            <li>Track training completion rates</li>
+                            <li>{{ 'reports.best_practices.audits.items.item_1'|trans }}</li>
+                            <li>{{ 'reports.best_practices.audits.items.item_2'|trans }}</li>
+                            <li>{{ 'reports.best_practices.audits.items.item_3'|trans }}</li>
+                            <li>{{ 'reports.best_practices.audits.items.item_4'|trans }}</li>
                         </ul>
                     </div>
                     <div class="col-md-6">
-                        <h4>For Management Reporting:</h4>
+                        <h4>{{ 'reports.best_practices.management.title'|trans }}</h4>
                         <ul class="small">
-                            <li>Use Dashboard Summary for executive overviews</li>
-                            <li>Highlight high-risk items from Risk Register</li>
-                            <li>Show control implementation progress</li>
-                            <li>Report on mandatory training completion</li>
+                            <li>{{ 'reports.best_practices.management.items.item_1'|trans }}</li>
+                            <li>{{ 'reports.best_practices.management.items.item_2'|trans }}</li>
+                            <li>{{ 'reports.best_practices.management.items.item_3'|trans }}</li>
+                            <li>{{ 'reports.best_practices.management.items.item_4'|trans }}</li>
                         </ul>
                     </div>
                 </div>
             {% endset %}
-            {{ cards.simple_card('Best Practices for Reports', 'lightbulb', best_practices_content, null, 'bg-light') }}
+            {{ cards.simple_card('reports.section.best_practices'|trans, 'lightbulb', best_practices_content, null, 'bg-light') }}
         </div>
     </div>
 </div>

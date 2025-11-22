@@ -1,0 +1,61 @@
+crisis_team:
+  title: Krisenstäbe
+  new: Neuer Krisenstab
+  edit: Krisenstab bearbeiten
+  empty: Noch keine Krisenstäbe definiert.
+  kpi:
+    active: Aktive Teams
+  field:
+    team_name: Teamname
+    description: Beschreibung
+    team_type: Team-Typ
+    is_active: Aktiv
+    team_leader: Teamleiter
+    deputy_leader: Stellvertreter
+    primary_phone: Primäre Telefonnummer
+    primary_email: Primäre E-Mail
+    meeting_location: Versammlungsort
+    backup_meeting_location: Alternativer Versammlungsort
+    virtual_meeting_url: Virtuelle Meeting-URL
+    alert_procedures: Alarmierungsverfahren
+    decision_authority: Entscheidungsbefugnisse
+    communication_protocols: Kommunikationsprotokolle
+    training_schedule: Trainingsplan
+    last_training_at: Letztes Training
+    next_training_at: Nächstes Training
+    business_continuity_plans: Business Continuity Pläne
+    notes: Notizen
+  type:
+    operational: Operativer Krisenstab
+    strategic: Strategischer Krisenstab
+    technical: Technischer Krisenstab
+    communication: Kommunikationsstab
+  placeholder:
+    team_name: "z.B. Operativer Krisenstab IT"
+    description: Aufgaben und Verantwortlichkeiten des Krisenstabs
+    team_leader: Leiter des Krisenstabs auswählen
+    deputy_leader: Stellvertretender Leiter auswählen
+    meeting_location: "z.B. Konferenzraum 1, Gebäude A"
+    backup_meeting_location: "z.B. Konferenzraum 2, Gebäude B"
+    alert_procedures: Beschreibung des Alarmierungsverfahrens
+    decision_authority: Wer darf welche Entscheidungen treffen?
+    communication_protocols: Wie kommuniziert der Krisenstab intern und extern?
+    training_schedule: Wann finden Trainings und Übungen statt?
+  help:
+    team_name: Bezeichnung des Krisenstabs
+    team_type: Art des Krisenstabs nach BSI 200-4
+    team_leader: Leiter des Krisenstabs
+    deputy_leader: Stellvertreter bei Abwesenheit des Leiters
+    primary_phone: Zentrale Rufnummer für Krisenstab
+    virtual_meeting_url: Teams, Zoom, etc. für virtuelle Treffen
+    alert_procedures: Wie wird der Krisenstab alarmiert und aktiviert?
+    decision_authority: Befugnisse und Eskalationswege
+    communication_protocols: Interne und externe Kommunikationswege
+    training_schedule: Regelmäßige Trainings und Übungen
+    next_training_at: Wann findet das nächste Training statt?
+    business_continuity_plans: Zugeordnete BCPs
+  success:
+    created: Krisenstab erfolgreich erstellt.
+    updated: Krisenstab erfolgreich aktualisiert.
+    deleted: Krisenstab erfolgreich gelöscht.
+    activated: Krisenstab erfolgreich aktiviert.

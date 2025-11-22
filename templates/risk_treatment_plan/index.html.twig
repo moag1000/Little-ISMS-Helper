@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
+{% trans_default_domain 'risk_treatment_plan' %}
 
-{% block title %}{{ 'risk_treatment_plan.title'|trans }} - {{ 'app.title'|trans }}{% endblock %}
+{% block title %}{{ 'risk_treatment_plan.title'|trans }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
 {% block body %}
 {% import '_macros/cards.html.twig' as cards %}
@@ -39,19 +40,19 @@
 </div>
 
 {# Skip link for filters section - WCAG 2.4.1 #}
-<a href="#filter-section" class="skip-link">{{ 'accessibility.skip_to_filters'|trans }}</a>
+<a href="#filter-section" class="skip-link">{{ 'accessibility.skip_to_filters'|trans({}, 'messages') }}</a>
 
 {# Filter Section #}
 <div class="card mb-4">
     <div class="card-header">
-        <h3><i class="bi bi-funnel" aria-hidden="true"></i> {{ 'common.filters'|trans }}</h3>
+        <h3><i class="bi bi-funnel" aria-hidden="true"></i> {{ 'common.filters'|trans({}, 'messages') }}</h3>
     </div>
     <div class="card-body" id="filter-section" tabindex="-1">
-        <form method="get" action="{{ path('app_risk_treatment_plan_index') }}" class="row g-3" role="search" aria-label="{{ 'common.filters'|trans }}">
+        <form method="get" action="{{ path('app_risk_treatment_plan_index') }}" class="row g-3" role="search" aria-label="{{ 'common.filters'|trans({}, 'messages') }}">
             <div class="col-md-3">
                 <label for="filter-status" class="form-label">{{ 'risk_treatment_plan.field.status'|trans }}</label>
                 <select class="form-select" id="filter-status" name="status" onchange="this.form.submit()">
-                    <option value="">{{ 'common.all'|trans }}</option>
+                    <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
                     <option value="planned" {{ app.request.get('status') == 'planned' ? 'selected' : '' }}>{{ 'risk_treatment_plan.status.planned'|trans }}</option>
                     <option value="in_progress" {{ app.request.get('status') == 'in_progress' ? 'selected' : '' }}>{{ 'risk_treatment_plan.status.in_progress'|trans }}</option>
                     <option value="completed" {{ app.request.get('status') == 'completed' ? 'selected' : '' }}>{{ 'risk_treatment_plan.status.completed'|trans }}</option>
@@ -62,7 +63,7 @@
             <div class="col-md-3">
                 <label for="filter-priority" class="form-label">{{ 'risk_treatment_plan.field.priority'|trans }}</label>
                 <select class="form-select" id="filter-priority" name="priority" onchange="this.form.submit()">
-                    <option value="">{{ 'common.all'|trans }}</option>
+                    <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
                     <option value="critical" {{ app.request.get('priority') == 'critical' ? 'selected' : '' }}>{{ 'risk_treatment_plan.priority.critical'|trans }}</option>
                     <option value="high" {{ app.request.get('priority') == 'high' ? 'selected' : '' }}>{{ 'risk_treatment_plan.priority.high'|trans }}</option>
                     <option value="medium" {{ app.request.get('priority') == 'medium' ? 'selected' : '' }}>{{ 'risk_treatment_plan.priority.medium'|trans }}</option>
@@ -73,21 +74,21 @@
                 <label for="filter-responsible" class="form-label">{{ 'risk_treatment_plan.field.responsible_person'|trans }}</label>
                 <input type="text" class="form-control" id="filter-responsible" name="responsible_person"
                        value="{{ app.request.get('responsible_person') }}"
-                       placeholder="{{ 'common.search'|trans }}...">
+                       placeholder="{{ 'common.search'|trans({}, 'messages') }}...">
             </div>
             <div class="col-md-3">
                 <label for="filter-overdue" class="form-label">{{ 'risk_treatment_plan.filter.overdue'|trans }}</label>
                 <select class="form-select" id="filter-overdue" name="overdue_only" onchange="this.form.submit()">
-                    <option value="">{{ 'common.all'|trans }}</option>
+                    <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
                     <option value="1" {{ app.request.get('overdue_only') == '1' ? 'selected' : '' }}>{{ 'risk_treatment_plan.filter.overdue_only'|trans }}</option>
                 </select>
             </div>
             <div class="col-12">
                 <button type="submit" class="btn btn-primary">
-                    <i class="bi bi-search" aria-hidden="true"></i> {{ 'common.filter'|trans }}
+                    <i class="bi bi-search" aria-hidden="true"></i> {{ 'common.filter'|trans({}, 'messages') }}
                 </button>
                 <a href="{{ path('app_risk_treatment_plan_index') }}" class="btn btn-secondary">
-                    <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'common.reset'|trans }}
+                    <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'common.reset'|trans({}, 'messages') }}
                 </a>
             </div>
         </form>
@@ -111,7 +112,7 @@
                 <th scope="col">{{ 'risk_treatment_plan.field.responsible_person'|trans }}</th>
                 <th scope="col" class="text-center">{{ 'risk_treatment_plan.field.completion'|trans }}</th>
                 <th scope="col">{{ 'risk_treatment_plan.field.target_date'|trans }}</th>
-                <th scope="col" class="text-center">{{ 'common.actions'|trans }}</th>
+                <th scope="col" class="text-center">{{ 'common.actions'|trans({}, 'messages') }}</th>
             </tr>
         {% endblock %}
         {% block table_body %}
@@ -179,12 +180,12 @@
                     <div class="btn-group btn-group-sm">
                         <a href="{{ path('app_risk_treatment_plan_show', {id: plan.id}) }}"
                            class="btn btn-outline-primary"
-                           title="{{ 'common.view'|trans }}" aria-label="{{ 'common.view'|trans }}">
+                           title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
                             <i class="bi bi-eye" aria-hidden="true"></i>
                         </a>
                         <a href="{{ path('app_risk_treatment_plan_edit', {id: plan.id}) }}"
                            class="btn btn-outline-secondary"
-                           title="{{ 'common.edit'|trans }}" aria-label="{{ 'common.edit'|trans }}">
+                           title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
                             <i class="bi bi-pencil" aria-hidden="true"></i>
                         </a>
                     </div>

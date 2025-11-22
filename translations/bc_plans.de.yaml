@@ -1,0 +1,43 @@
+bc_plans:
+  page:
+    title: Business-Continuity-Pläne
+    header: Business-Continuity-Pläne
+    subtitle: ISO 22301:2019 Business Continuity Management
+  action:
+    add_new: Neuen BC‑Plan anlegen
+  alert:
+    overdue_tests: ⚠️ Überfällige BC‑Plan‑Tests
+    overdue_reviews: ⚠️ Überfällige BC‑Plan‑Reviews
+  section:
+    details: BC‑Plan Details
+    testing_review: Tests & Reviews
+    review_notes: Review‑Notizen
+    communication_plan: Kommunikationsplan
+    alternative_site: Alternativstandort
+    related_risks: Zugehörige Risiken
+  table:
+    name: Name
+    business_process: Geschäftsprozess
+    owner: Verantwortlich
+    status: Status
+    readiness: Bereitschaft
+    last_tested: Zuletzt getestet
+    actions: Aktionen
+  field:
+    business_process: Geschäftsprozess
+    plan_owner: Verantwortlich
+    version: Version
+    last_tested: Zuletzt getestet
+    next_test: Nächster Test
+    last_review: Letztes Review
+    next_review: Nächstes Review
+    address: Adresse
+    capacity: Kapazität
+  badge:
+    overdue: ÜBERFÄLLIG
+  message:
+    not_scheduled: Nicht geplant
+    never: Nie
+    no_plans: Keine BC‑Pläne gefunden.
+    create_first: Erstellen Sie Ihren ersten BC‑Plan
+    readiness_score: "Bereitschafts‑Score: %score%%"

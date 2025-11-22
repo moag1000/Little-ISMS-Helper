@@ -1,0 +1,96 @@
+workflow:
+  title:
+    list: Workflows
+    instance_show: Workflow Instance
+    active: Active Workflows
+    pending: Pending Workflows
+    overdue: Overdue Workflows
+    definitions: Workflow Definitions
+  description:
+    overview: Overview of running, pending and overdue workflows
+    pending: Workflows waiting for processing or decision
+    active: Active workflows in progress
+    overdue: Overdue workflows with missed deadlines
+    active_detail: Overview of currently active workflow instances with progress and responsibilities
+    pending_detail: Overview of pending workflow instances with deadlines and priorities
+    overdue_detail: Overview of overdue workflow instances with outliers and priorities
+    definitions: Manage and configure reusable workflow definitions.
+  action:
+    definitions: Definitions
+    create: Create workflow
+    create_definition: Create definition
+    complete_step: Complete step
+    start: Start
+    cancel: Cancel
+  stats:
+    total: Total Workflows
+    active: Active
+    pending: Pending
+    overdue: Overdue
+    avg_progress: Avg. progress
+    my_workflows: My workflows
+    my_tasks: My tasks
+    due_this_week: Due this week
+    my_overdue: My overdue
+    overdue_days_avg: Avg. days overdue
+    critical_overdue: Critically overdue (> 7 days)
+    total_definitions: Total definitions
+    active_definitions: Active definitions
+    avg_steps: Avg. steps per definition
+    entity_types: Covered entity types
+  section:
+    overview: Overview
+    steps: Steps
+    activity_log: Activity Log
+    pending: Pending
+    active: Active
+    overdue: Overdue
+    recent_instances: Recent Instances
+  field:
+    name: Name
+    definition: Definition
+    definition_name: Definition name
+    description: Description
+    steps: Steps
+    instances: Instances
+    active: Active
+    current_step: Current step
+    status: Status
+    assignee: Assignee
+    due_date: Due date
+    created_at: Created at
+    completed_at: Completed at
+    progress: Progress
+    priority: Priority
+    days_overdue: Days overdue
+  priority:
+    low: Low
+    medium: Medium
+    high: High
+    critical: Critical
+  status:
+    pending: Pending
+    active: Active
+    completed: Completed
+    cancelled: Cancelled
+  badge:
+    overdue: Overdue
+    my_task: My Task
+    due_soon: Due soon
+    critical: Critical
+    current: Current
+    completed: Completed
+  message:
+    no_instances: No workflow instances available.
+    no_active: No active workflows available.
+    no_pending: No pending workflows available.
+    unassigned: Unassigned
+    no_overdue: No overdue workflows — great!
+    no_overdue_desc: All workflow instances are currently within their deadlines.
+    no_definitions: No workflow definitions available.
+    no_activities: No activities available.
+  warning:
+    overdue_count: '%count% overdue workflow(s) identified'
+    overdue_message: Please review assignees and deadlines. Consider re‑prioritizing or escalating.
+  days: days
+  step: Step

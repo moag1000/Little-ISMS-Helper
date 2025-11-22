@@ -6,6 +6,7 @@
    - Shows compliance % per ISO 27001 Annex
    - Overall compliance score
 #}
+{% trans_default_domain 'analytics' %}
 
 <div class="card analytics-card radar-card {{ expanded is defined and expanded ? 'expanded' : '' }}"
      data-controller="radar-chart"
@@ -13,17 +14,17 @@
     <div class="card-header">
         <h3 class="card-title">
             <i class="bi-diagram-3 text-success"></i>
-            Compliance Radar
-        </h5>
+            {{ 'analytics.card.compliance_radar'|trans }}
+        </h3>
         <div class="card-actions">
             <button class="btn btn-sm btn-outline-secondary"
                     data-action="click->radar-chart#refresh"
-                    title="Refresh">
+                    title="{{ 'analytics.action.refresh'|trans }}">
                 <i class="bi bi-arrow-clockwise"></i>
             </button>
             <button class="btn btn-sm btn-outline-secondary"
                     data-action="click->radar-chart#exportImage"
-                    title="Export as PNG">
+                    title="{{ 'analytics.action.export_png'|trans }}">
                 <i class="bi bi-image"></i>
             </button>
         </div>
@@ -32,16 +33,16 @@
         {# Loading State #}
         <div class="radar-loading d-none" data-radar-chart-target="loading">
             <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">Loading...</span>
+                <span class="visually-hidden">{{ 'analytics.loading.loading'|trans }}</span>
             </div>
-            <p class="mt-2 text-muted">Loading compliance data...</p>
+            <p class="mt-2 text-muted">{{ 'analytics.loading.loading_compliance'|trans }}</p>
         </div>
 
         {# Radar Chart Container #}
         <div class="radar-container" data-radar-chart-target="container">
             {# Overall Compliance Score #}
             <div class="overall-compliance mb-3" data-radar-chart-target="overall">
-                <div class="compliance-label">Overall Compliance</div>
+                <div class="compliance-label">{{ 'analytics.overall_compliance'|trans }}</div>
                 <div class="compliance-value" data-radar-chart-target="overallValue">
                     <span class="value">--</span>%
                 </div>
@@ -60,10 +61,10 @@
                 } %}
                     {% block table_head %}
                         <tr>
-                            <th scope="col">Annex</th>
-                            <th scope="col">Implemented</th>
-                            <th scope="col">Total</th>
-                            <th scope="col">Compliance</th>
+                            <th scope="col">{{ 'analytics.table.annex'|trans }}</th>
+                            <th scope="col">{{ 'analytics.table.implemented'|trans }}</th>
+                            <th scope="col">{{ 'analytics.table.total'|trans }}</th>
+                            <th scope="col">{{ 'analytics.table.compliance'|trans }}</th>
                         </tr>
                     {% endblock %}
                     {% block table_body_attrs %}data-radar-chart-target="detailsTable"{% endblock %}

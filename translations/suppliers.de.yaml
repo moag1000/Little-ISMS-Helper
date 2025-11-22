@@ -1,0 +1,86 @@
+supplier:
+  title: Lieferanten
+  page:
+    title: Lieferantenmanagement
+    new_title: "Neuen Lieferanten anlegen"
+    edit_title: "Lieferant bearbeiten: %name%"
+  action:
+    add_new: Neuen Lieferanten anlegen
+    view: Anzeigen
+    edit: Bearbeiten
+    create: Anlegen
+    update: Aktualisieren
+  statistics:
+    total: Gesamt-Lieferanten
+    critical: Kritische Lieferanten
+    overdue_assessments: Überfällige Bewertungen
+    non_compliant: Nicht konform
+  alert:
+    overdue_assessments: Überfällige Bewertungen
+    non_compliant: Nicht-konforme Lieferanten
+  next_assessment: Nächste Bewertung
+  not_scheduled: Nicht geplant
+  risk_score: Risiko-Score
+  list:
+    title: 'Lieferantenliste (%count%)'
+  table:
+    name: Name
+    service_provided: Erbrachte Leistung
+    criticality: Kritikalität
+    status: Status
+    risk_score: Risiko-Score
+    iso27001: ISO 27001
+    actions: Aktionen
+  empty:
+    message: Keine Lieferanten vorhanden.
+    add_first: Ersten Lieferanten anlegen
+
+  # Zusätzliche Schlüssel für die Detailansicht (show)
+  section:
+    details: Details
+    description: Beschreibung
+    contact_info: Kontaktinformationen
+    security_assessment: Sicherheitsbewertung
+    certifications_compliance: Zertifizierungen & Compliance
+    contract_info: Vertragsinformationen
+    related_assets: Zugeordnete Assets
+    related_risks: Zugeordnete Risiken
+  field:
+    service_provided: Erbrachte Leistung
+    criticality: Kritikalität
+    status: Status
+    contact_person: Ansprechpartner
+    email: E-Mail
+    phone: Telefon
+    address: Adresse
+    security_score: Sicherheits‑Score
+    last_assessment: Letzte Bewertung
+    next_assessment: Nächste Bewertung
+    assessment_findings: Bewertungsergebnisse
+    non_conformities: Nichtkonformitäten
+    iso27001_certified: ISO 27001 zertifiziert
+    iso22301_certified: ISO 22301 zertifiziert
+    dpa: Auftragsverarbeitungsvertrag (AVV)
+    dpa_signed_date: AVV unterschrieben am
+    other_certifications: Weitere Zertifizierungen
+    contract_start: Vertragsbeginn
+    contract_end: Vertragsende
+    security_requirements: Sicherheitsanforderungen
+  badge:
+    overdue: Überfällig
+  value:
+    yes: Ja
+    no: Nein
+    signed: Unterzeichnet
+    not_signed: Nicht unterzeichnet
+    not_assessed: Nicht bewertet
+    never: Nie
+    not_scheduled: Nicht geplant
+    na: k.A.
+  confirm:
+    delete: Möchten Sie diesen Lieferanten wirklich löschen?
+  risk:
+    message:
+      critical: Kritisches Risiko – sofortige Maßnahmen erforderlich
+      high: Hohes Risiko – Überprüfung erforderlich
+      acceptable: Akzeptables Risikoniveau

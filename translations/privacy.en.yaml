@@ -1,0 +1,101 @@
+privacy:
+  breadcrumb:
+    privacy: Privacy
+    data_breaches: Data Breaches
+  data_breach:
+    title: Data Breaches
+    management: Data Breach Management
+    subtitle: Art. 33/34 GDPR – 72-hour notification requirement
+    show:
+      page_title: "Data Breach - %ref%"
+    page:
+      new_title: New Data Breach
+      new_subtitle: Register personal data breach per Art. 33/34 GDPR
+      edit_title: Edit Data Breach
+      edit_subtitle: '%ref% – %title%'
+    actions:
+      dashboard: Dashboard
+      new: New Data Breach
+    action:
+      create: Create Data Breach
+      update: Update Data Breach
+      export_pdf: Export PDF
+      submit_for_assessment: Submit for Assessment
+      edit: Edit Breach
+      notify_authority: Notify Supervisory Authority
+      notify_subjects: Notify Data Subjects
+      record_exemption: Record Exemption (Art. 34(3))
+      close_investigation: Close Investigation
+      reopen: Reopen
+      delete: Delete
+    form:
+      title: Data Breach Form
+    alert:
+      overdue_title: 'CRITICAL: Overdue Notifications'
+      overdue_text: '<strong>%count%</strong> data breach(es) exceeded the 72-hour supervisory authority notification deadline (Art. 33(1) GDPR).'
+      view_overdue: View overdue breaches immediately
+    score:
+      heading: GDPR Art. 33/34 Compliance Score
+      notification_compliance: Notification Compliance
+      timeliness: Timeliness Score
+      completeness: Completeness
+      summary: '%total% total breach(es) · %subjects% affected data subjects'
+    kpi:
+      total_breaches: Total Breaches
+      high_critical_risk: high/critical risk
+      pending_authority: Pending Authority
+      deadline_72h: 72h deadline
+      special_categories: Special Categories
+      art9_data: Art. 9 data
+    section:
+      status_workflow: Status & Workflow
+      linked_incident: Linked Security Incident
+      authority: 'Art. 33 - Supervisory Authority'
+      subjects: 'Art. 34 - Data Subjects'
+      nature: 'Art. 33(3) - Nature of the Breach'
+      consequences: 'Art. 33(3)(b-d) - Consequences & Measures'
+    field:
+      status: Status
+      completeness: Completeness
+      assessor: Assessor
+      affected_subjects: Affected Data Subjects
+      risk_level: Risk Level
+      created: Created
+      incident: Incident
+      detected: Detected
+      severity: Severity
+      processing_activity: Processing Activity (RoPA)
+      notification_required: Notification Required
+      notified: Notified
+      authority: Authority
+      reference: Reference
+      method: Method
+      delay_reason: Delay Reason
+      not_yet_notified: Not yet notified
+      deadline: Deadline
+      time_remaining: Time Remaining
+      overdue_by: OVERDUE by
+      hours: hours
+      yes: Yes
+      no: No
+      high_risk: Yes (High Risk)
+      subjects_notified: Subjects Notified
+      exemption_reason: Exemption
+      data_categories: Data Categories
+      data_subject_categories: Data Subject Categories
+      special_categories_affected: 'Special categories of data affected (Art. 9 GDPR)'
+      criminal_data_affected: 'Criminal conviction data affected (Art. 10 GDPR)'
+      likely_consequences: Likely Consequences (Art. 33(3)(b))
+      measures_taken: Measures Taken (Art. 33(3)(c))
+      measures_planned: Measures Planned to Address the Breach (Art. 33(3)(d))
+    status:
+      draft: Draft
+      under_assessment: Under Assessment
+      authority_notified: Authority notified
+      subjects_notified: Subjects notified
+      closed: Closed
+    risk:
+      low: Low
+      medium: Medium
+      high: High
+      critical: Critical

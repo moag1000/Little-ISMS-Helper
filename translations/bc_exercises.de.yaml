@@ -1,0 +1,51 @@
+bc_exercises:
+  page:
+    title: BC-Übungen & Tests
+    header: BC-Übungen & Tests
+  action:
+    add_new: Neue Übung anlegen
+    edit: Übung bearbeiten
+  stats:
+    total: Gesamtübungen
+    completed: Abgeschlossen
+    planned: Geplant
+  section:
+    upcoming: Bevorstehende Übungen
+    incomplete_reports: Unvollständige Berichte
+    details: Übungsdetails
+    scope_objectives: Umfang & Ziele
+    scenario: Übungsszenario
+    participants: Teilnehmende
+    results: Ergebnisse
+    what_went_well: Was lief gut (WWW)
+    improvements: Verbesserungsbereiche (AFI)
+    findings: Feststellungen
+    action_items: Maßnahmen
+    lessons_learned: Lessons Learned
+    plan_updates_required: Planaktualisierungen erforderlich
+    related_plans: Zugehörige BC-Pläne
+  table:
+    name: Name
+    type: Typ
+    date: Datum
+    status: Status
+    effectiveness: Wirksamkeit
+  field:
+    exercise_date: Übungsdatum
+    duration: Dauer
+    duration_hours: Stunden
+    facilitator: Moderator
+    observers: Beobachter
+    success_rating: Erfolgsbewertung
+    report_completed: Bericht abgeschlossen
+    report_date: Berichtsdatum
+  badge:
+    yes: Ja
+    no: Nein
+  message:
+    no_exercises: Keine BC‑Übungen gefunden.
+    schedule_first: Planen Sie Ihre erste Übung
+    incomplete_reports: Unvollständige Berichte
+    upcoming: Bevorstehende Übungen
+    confirm_delete: Soll diese Übung wirklich gelöscht werden?
+    na: k. A.

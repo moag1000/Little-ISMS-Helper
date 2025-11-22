@@ -1,0 +1,88 @@
+compliance:
+  title:
+    transitive: Transitive Compliance
+    compare: Framework‑Vergleich
+    gap_analysis: Gap‑Analyse
+    data_reuse: Daten‑Wiederverwendung
+  description:
+    transitive: Analysiert, wie Anforderungen verschiedener Frameworks sich gegenseitig abdecken und Hebeleffekte erzeugen.
+    compare: Vergleicht zwei Compliance‑Frameworks hinsichtlich Überschneidungen und Unterschiede.
+    gap_analysis: Identifiziert Lücken (Gaps) in der Umsetzung eines Frameworks und priorisiert Maßnahmen.
+    data_reuse: Analysiert die Wiederverwendung von Datenpunkten über Frameworks hinweg und zeigt Effizienzpotenziale.
+    critical_gaps: Kritische Lücken mit höchster Priorität für sofortige Maßnahmen.
+    high_gaps: Schwere Lücken mit hoher Priorität.
+    medium_gaps: Mittlere Lücken mit moderater Priorität.
+    low_gaps: Geringe Lücken, nachgelagert behandeln.
+    reuse_matrix: Übersicht, in welchen Frameworks Daten wiederverwendet werden können.
+  section:
+    framework_relationships: Beziehungen zwischen Frameworks
+    select_frameworks: Frameworks auswählen
+    framework_selection: Framework auswählen
+    reuse_opportunities: Wiederverwendungs‑Möglichkeiten
+    reuse_matrix: Reuse‑Matrix
+    framework_coverage: Framework‑Abdeckung
+  stats:
+    total_relationships: Gesamte Beziehungen
+    transitive_compliance: Transitive Abdeckung
+    leverage_rate: Hebelrate
+    frameworks_leveraged: Genutzte Frameworks
+    total_requirements: Gesamtanforderungen
+    met_requirements: Erfüllte Anforderungen
+    gaps_identified: Identifizierte Gaps
+    compliance_score: Compliance‑Score
+    common_requirements: Gemeinsame Anforderungen
+    overlap_percentage: Überlappung
+    total_data_points: Gesamte Datenpunkte
+    reused_data: Wiederverwendete Daten
+    reuse_rate: Reuse‑Rate
+    effort_saved: Eingesparter Aufwand
+  action:
+    create_missing_mappings: Fehlende Mappings ergänzen
+    create_mappings: Mappings erstellen
+    compare: Vergleichen
+    export_pdf: PDF Report
+    export_excel: Excel Export
+    export_csv: CSV Export
+  unit:
+    requirements: Anforderungen
+  field:
+    framework_1: Framework 1
+    framework_2: Framework 2
+    select_framework: Framework auswählen
+    total_requirements: Gesamtanforderungen
+    unique_requirements: Einzigartige Anforderungen
+    categories: Kategorien
+    requirement: Anforderung
+    framework: Framework
+    severity: Schweregrad
+    gap_description: Gap‑Beschreibung
+    remediation: Abhilfe
+    due_date: Fällig bis
+    data_element: Datenelement
+    source: Quelle
+    reuse_count: Reuse‑Anzahl
+    used_in_frameworks: Verwendet in Frameworks
+    quality_score: Qualitäts‑Score
+    frameworks: Frameworks
+    time_savings: Zeitersparnis
+    total_requirements_short: Anforderungen gesamt
+    reused_data: Wiederverwendete Daten
+    new_data_needed: Neue Daten benötigt
+    coverage: Abdeckung
+  option:
+    select_framework: Framework wählen…
+    all_frameworks: Alle Frameworks
+  severity:
+    critical: Kritisch
+    high: Hoch
+    medium: Mittel
+    low: Niedrig
+  message:
+    no_gaps: Keine Gaps gefunden
+    no_gaps_desc: Für das ausgewählte Framework wurden keine Umsetzungs‑Lücken identifiziert.
+    no_opportunities: Keine Wiederverwendungs‑Möglichkeiten gefunden.
+    no_data_elements: Keine Datenelemente vorhanden.
+    no_frameworks: Keine Frameworks vorhanden.
+  badge:
+    overdue: Überfällig
+    reusable: wiederverwendbar

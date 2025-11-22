@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% trans_default_domain 'people' %}
 
 {% block title %}{{ 'person.title.list'|trans }} - Little ISMS Helper{% endblock %}
 
@@ -45,7 +46,7 @@
             <th scope="col">{{ 'person.field.company'|trans }}</th>
             <th scope="col">{{ 'person.field.email'|trans }}</th>
             <th scope="col">{{ 'person.field.department'|trans }}</th>
-            <th scope="col" class="text-center">{{ 'common.actions'|trans }}</th>
+            <th scope="col" class="text-center">{{ 'common.actions'|trans({}, 'messages') }}</th>
         </tr>
     {% endblock %}
     {% block table_body %}
@@ -87,11 +88,11 @@
             </td>
             <td>{{ person.department ?? '-' }}</td>
             <td class="text-center">
-                <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'person.actions.label'|trans({}, 'messages', 'Person Actions') }}">
-                    <a href="{{ path('app_person_show', {id: person.id}) }}" class="btn btn-outline-primary" aria-label="{{ 'common.view'|trans }} {{ person.fullName }}">
+                <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'person.actions.label'|trans }}">
+                    <a href="{{ path('app_person_show', {id: person.id}) }}" class="btn btn-outline-primary" aria-label="{{ 'common.view'|trans({}, 'messages') }} {{ person.fullName }}">
                         <i class="bi bi-eye" aria-hidden="true"></i>
                     </a>
-                    <a href="{{ path('app_person_edit', {id: person.id}) }}" class="btn btn-outline-secondary" aria-label="{{ 'common.edit'|trans }} {{ person.fullName }}">
+                    <a href="{{ path('app_person_edit', {id: person.id}) }}" class="btn btn-outline-secondary" aria-label="{{ 'common.edit'|trans({}, 'messages') }} {{ person.fullName }}">
                         <i class="bi bi-pencil" aria-hidden="true"></i>
                     </a>
                 </div>

@@ -1,0 +1,21 @@
+risks:
+  modern:
+    breadcrumb: Risk Management
+    header:
+      title: Risk Management
+      subtitle: Identification, assessment, and treatment of information security risks
+      action:
+        new: New Risk
+        matrix: Risk Matrix
+        export_pdf: PDF Report
+        export_excel: Excel Export
+        export_csv: CSV Export
+    kpi:
+      total: Identified Risks
+      critical: Critical Risks
+      high: High Risks
+      avg_residual: Avg. Residual Risk
+      unit:
+        max: '/ 25'
+    matrix_overview: Risk Matrix Overview
+    view_full_matrix: View full matrix

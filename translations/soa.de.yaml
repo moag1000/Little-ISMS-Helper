@@ -1,0 +1,123 @@
+soa:
+  page:
+    title: Anwendbarkeitserklärung (SoA)
+    subtitle: ISO/IEC 27001:2022 Anhang A Controls – Übersicht und Anwendbarkeit
+  action:
+    export_html: HTML Export
+    export_pdf: PDF Export
+    preview_pdf: Vorschau
+    view_details: Details anzeigen
+    edit: Control bearbeiten
+    back_to_category: "Zurück zu %category%"
+  filter:
+    view: Ansicht
+    search: Suche
+    search_placeholder: Control‑ID, Name oder Beschreibung durchsuchen …
+    category: Kategorie
+    status: Status
+    all_categories: Alle Kategorien
+    all_status: Alle Status
+    reset: Filter zurücksetzen
+  kpi:
+    total_controls: Gesamt Controls
+    applicable_controls: Anwendbare Controls
+    implemented_controls: Implementierte Controls
+    in_progress_controls: In Arbeit
+    not_started_controls: Nicht begonnen
+    compliance_rate: Compliance‑Rate
+    of: von
+  section:
+    by_category: Nach Kategorie
+    all_controls: Alle Controls
+    implementation_overview: Implementierungsübersicht
+    controls_by_category: Controls nach Kategorie
+    detailed_assessment: Detaillierte Control‑Bewertung
+    description: Beschreibung
+    applicability_status: Anwendbarkeitsstatus
+    justification: Begründung
+    implementation_details: Implementierungsdetails
+    implementation_notes: Implementierungsnotizen
+    data_reuse_protected_assets: "Geschützte Assets (%count%)"
+    data_reuse_related_risks: "Mitigierte Risiken (%count%)"
+    data_reuse_related_incidents: "Zugeordnete Incidents (%count%)"
+    metadata: Metadaten
+  category:
+    Organizational: Organisational
+    People: Personenbezogen
+    Physical: Physisch
+    Technological: Technologisch
+  table:
+    control_id: Control ID
+    name: Name
+    category: Kategorie
+    count: Anzahl
+    applicable: Anwendbar
+    implementation_status: Implementierungsstatus
+    progress: Fortschritt
+    justification: Begründung
+    justification_notes: Begründung / Notizen
+    target_date: Zieldatum
+    actions: Aktionen
+  status:
+    implemented: Implementiert
+    in_progress: In Arbeit
+    partial: Teilweise
+    planned: Geplant
+    not_started: Nicht begonnen
+    not_applicable: Nicht anwendbar
+    approved: Freigegeben
+  value:
+    yes: Ja
+    no: Nein
+    na: N/A
+  label:
+    controls: Controls
+    control_coverage: "Control Coverage:"
+    incidents: Incidents
+    review_required: "Review erforderlich:"
+    not_applicable_prefix: "Nicht anwendbar:"
+    responsible: "Verantwortlich:"
+    linked_risks: "Zugeordnete Risiken:"
+    classification_confidential: Vertraulich
+    classification_confidential_upper: VERTRAULICH
+  message:
+    no_controls_filtered: Keine Controls gefunden, die den Filterkriterien entsprechen.
+    no_justification: Keine Begründung angegeben.
+    no_implementation_notes: Keine Implementierungsnotizen vorhanden.
+    control_coverage: "Dieses Control schützt %count% Asset(s) mit Gesamtwert %value%."
+    high_risk_assets: "davon sind High‑Risk Assets."
+    related_risks_info: "Dieses Control trägt zur Behandlung der folgenden Risiken bei:"
+    related_incidents_count: "stehen in Beziehung zu diesem Control."
+    review_required: Bitte Control‑Effektivität überprüfen.
+  report:
+    document_type: ISO 27001:2022 Konformitätsdokument
+    header_center: "Statement of Applicability - ISO 27001:2022"
+    default_reviewer: ISMS‑Verantwortlicher
+    default_approver: Geschäftsführung
+    generated_at: "Generiert: %datetime%"
+  footer:
+    note: "Vertraulich - ISO 27001:2022 SoA | Seite {PAGE_NUM}"
+  help:
+    applicable: Markieren Sie dieses Control als anwendbar, wenn es für Ihr ISMS relevant ist.
+    justification: Eine klare Begründung ist für Audits und Compliance‑Nachweise wichtig.
+    implementation_notes: Dokumentieren Sie technische Details, verwendete Tools und Prozesse.
+  placeholder:
+    justification: "Begründen Sie, warum dieses Control anwendbar oder nicht anwendbar ist …"
+    implementation_notes: "Beschreiben Sie, wie dieses Control implementiert wurde oder wird …"
+    responsible_person: "z. B. Max Mustermann (IT‑Sicherheitsbeauftragter)"
+  field:
+    applicable: Anwendbar
+    justification: Begründung
+    implementation_percentage: Implementierungsgrad
+    implementation_notes: Implementierungsnotizen
+    responsible_person: Verantwortliche Person
+    unassigned: Nicht zugewiesen
+    target_date: Zieldatum
+    not_set: Nicht festgelegt
+    cia: CIA
+    risk_level: Risiko‑Level
+    status: Status
+    created_at: Erstellt am
+    updated_at: Zuletzt aktualisiert
+    last_review: Letztes Review
+    next_review: Nächstes Review
