@@ -169,24 +169,59 @@ tbody tr:hover {
     background-color: var(--bg-secondary);
 }
 
-/* Forms */
-input,
+/* Forms - Enhanced for Bootstrap 5 Form Components */
+input:not([type="checkbox"]):not([type="radio"]),
 textarea,
 select,
-.form-control {
+.form-control,
+.form-select {
     background-color: var(--bg-primary);
     color: var(--text-primary);
     border-color: var(--border-color);
 }
 
-input:focus,
+input:focus:not([type="checkbox"]):not([type="radio"]),
 textarea:focus,
 select:focus,
-.form-control:focus {
+.form-control:focus,
+.form-select:focus {
     background-color: var(--bg-primary);
     color: var(--text-primary);
     border-color: var(--color-primary);
     box-shadow: 0 0 0 0.2rem rgba(6, 182, 212, 0.25);
+}
+
+/* Form Check Controls (Checkboxes & Radios) */
+.form-check-input {
+    background-color: var(--bg-primary);
+    border-color: var(--border-color);
+}
+
+.form-check-input:checked {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+}
+
+.form-check-label {
+    color: var(--text-primary);
+}
+
+/* Input Group Components */
+.input-group-text {
+    background-color: var(--bg-secondary);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+/* Form Floating Labels */
+.form-floating > label {
+    color: var(--text-muted);
+}
+
+.form-floating > .form-control:focus ~ label,
+.form-floating > .form-control:not(:placeholder-shown) ~ label,
+.form-floating > .form-select ~ label {
+    color: var(--color-primary);
 }
 
 /* Buttons */
@@ -625,6 +660,48 @@ button {
 [data-theme="dark"] input[type="radio"]:checked {
     background-color: var(--color-primary);
     border-color: var(--color-primary);
+}
+
+/* Form Check Labels Dark Mode */
+[data-theme="dark"] .form-check-label {
+    color: var(--text-primary);
+}
+
+/* Input Group Components Dark Mode */
+[data-theme="dark"] .input-group-text {
+    background-color: var(--bg-tertiary);
+    border-color: var(--border-color);
+    color: var(--text-secondary);
+}
+
+/* Form Floating Labels Dark Mode */
+[data-theme="dark"] .form-floating > label {
+    color: var(--text-muted);
+}
+
+[data-theme="dark"] .form-floating > .form-control:focus ~ label,
+[data-theme="dark"] .form-floating > .form-control:not(:placeholder-shown) ~ label,
+[data-theme="dark"] .form-floating > .form-select ~ label {
+    color: var(--color-primary);
+}
+
+/* Invalid/Valid Form Feedback Dark Mode */
+[data-theme="dark"] .invalid-feedback {
+    color: var(--color-danger);
+}
+
+[data-theme="dark"] .valid-feedback {
+    color: var(--color-success);
+}
+
+[data-theme="dark"] .form-control.is-invalid,
+[data-theme="dark"] .form-select.is-invalid {
+    border-color: var(--color-danger);
+}
+
+[data-theme="dark"] .form-control.is-valid,
+[data-theme="dark"] .form-select.is-valid {
+    border-color: var(--color-success);
 }
 
 /* ===============================
