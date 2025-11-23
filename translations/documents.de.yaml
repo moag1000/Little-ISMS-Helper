@@ -41,10 +41,8 @@ document:
     upload_first: Laden Sie Ihr erstes Dokument hoch, um zu starten
   confirm:
     delete: "Dieses Dokument wirklich löschen? Dieser Vorgang kann nicht rückgängig gemacht werden."
-  # Page titles
   new: Neues Dokument
   edit: Dokument bearbeiten
-  # Form fields
   field:
     name: Name
     description: Beschreibung

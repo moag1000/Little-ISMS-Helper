@@ -1,12 +1,12 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'locations' %}
 
-{% block title %}{{ 'location.title.edit'|trans }} - {{ location.name }} - Little ISMS Helper{% endblock %}
+{% block title %}{{ 'location.title.edit'|trans({}, 'messages') }} - {{ location.name }} - Little ISMS Helper{% endblock %}
 
 {% block body %}
 <div class="page-header">
     <div>
-        <h1>{{ 'location.title.edit'|trans }}: {{ location.name }}</h1>
+        <h1>{{ 'location.title.edit'|trans({}, 'messages') }}: {{ location.name }}</h1>
     </div>
     <div class="button-group">
         <a href="{{ path('app_location_show', {id: location.id}) }}" class="btn btn-secondary">
@@ -42,7 +42,7 @@
         {{ form_errors(form.description) }}
     </div>
 
-    <h2 class="h3-mt-lg">{{ 'location.section.address'|trans }}</h2>
+    <h2 class="h3-mt-lg">{{ 'location.section.address'|trans({}, 'messages') }}</h2>
 
     <div class="form-group">
         {{ form_label(form.address) }}
@@ -68,7 +68,7 @@
         {{ form_errors(form.country) }}
     </div>
 
-    <h3 class="h3-mt-lg">{{ 'location.section.hierarchy'|trans }}</h3>
+    <h3 class="h3-mt-lg">{{ 'location.section.hierarchy'|trans({}, 'messages') }}</h3>
 
     <div class="form-group">
         {{ form_label(form.parentLocation) }}
@@ -76,7 +76,7 @@
         {{ form_errors(form.parentLocation) }}
     </div>
 
-    <h3 class="h3-mt-lg">{{ 'location.section.security'|trans }}</h3>
+    <h3 class="h3-mt-lg">{{ 'location.section.security'|trans({}, 'messages') }}</h3>
 
     <div class="form-group">
         {{ form_label(form.securityLevel) }}

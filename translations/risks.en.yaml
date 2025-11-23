@@ -19,3 +19,18 @@ risks:
         max: '/ 25'
     matrix_overview: Risk Matrix Overview
     view_full_matrix: View full matrix
+    status:
+      open: Open
+      in_progress: In Progress
+      mitigated: Mitigated
+      resolved: Resolved
+      closed: Closed
+    category:
+      technical: technical
+      business: business
+      legal: legal
+      privacy: privacy
+      other: other
+      organizational: organizational
+      financial: financial
+      physical: physical

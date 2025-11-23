@@ -202,7 +202,7 @@
                                        min="0" max="100" step="5" value="{{ fulfillment.fulfillmentPercentage }}"
                                        style="cursor: pointer;"
                                        data-bs-toggle="tooltip" data-bs-placement="top"
-                                       title="Drag to adjust how well this requirement is fulfilled (0-100%). Color indicates status: red < 50% < yellow < 75% < green.">
+                                       title="{{ 'common.tooltip.fulfillment_slider'|trans({}, 'messages') }}">
 
                                 {# Hidden input for form submission #}
                                 <input type="hidden" id="fulfillmentPercentage" name="fulfillmentPercentage" value="{{ fulfillment.fulfillmentPercentage }}">
@@ -224,13 +224,13 @@
                                         title="Planning phase - Requirements analyzed, plan drafted">25%</button>
                                 <button type="button" class="btn btn-sm btn-outline-secondary flex-fill" onclick="setFulfillment(50)"
                                         data-bs-toggle="tooltip" data-bs-placement="bottom"
-                                        title="In progress - Implementation started, partially complete">50%</button>
+                                        title="{{ 'common.tooltip.status_in_progress'|trans({}, 'messages') }}">50%</button>
                                 <button type="button" class="btn btn-sm btn-outline-secondary flex-fill" onclick="setFulfillment(75)"
                                         data-bs-toggle="tooltip" data-bs-placement="bottom"
                                         title="Nearly complete - Most requirements met, minor gaps remain">75%</button>
                                 <button type="button" class="btn btn-sm btn-outline-success flex-fill" onclick="setFulfillment(100)"
                                         data-bs-toggle="tooltip" data-bs-placement="bottom"
-                                        title="Fully implemented - All aspects of this requirement are met">100%</button>
+                                        title="{{ 'common.tooltip.status_fully_implemented'|trans({}, 'messages') }}">100%</button>
                             </div>
                         </div>
 

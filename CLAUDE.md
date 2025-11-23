@@ -7,6 +7,7 @@ Guidelines for Claude Code in this repository.
 **Before EVERY commit:**
 - Update relevant documentation (prefer editing existing files over creating new ones)
 - Run `php bin/console lint:twig templates/` for template validation
+- Optional: Run `python3 scripts/quality/check_translation_issues.py` for translation quality check
 
 **Before EVERY push, verify:**
 1. No syntax errors: `find src -name "*.php" -print0 | xargs -0 -n1 php -l`
@@ -54,6 +55,7 @@ php bin/console lint:twig templates/  # validate all templates
 - `src/Security/Voter/` - Authorization voters
 - `templates/` - Twig templates
 - `assets/controllers/` - Stimulus JS controllers
+- `translations/` - Translation files (97 YAML files organized by domain)
 
 **Key Services:**
 - `RiskService`, `AssetService`, `ControlService` - Core CRUD
@@ -71,7 +73,8 @@ php bin/console lint:twig templates/  # validate all templates
 3. Service for logic → `src/Service/`
 4. Controller → `src/Controller/`
 5. Templates → `templates/`
-6. Tests → `tests/`
+6. Translations → `translations/[domain].{de,en}.yaml` (see Translation Domains below)
+7. Tests → `tests/`
 
 **Modal Pattern (Important):**
 Bootstrap loaded async via ES Module. For inline scripts:
@@ -92,6 +95,58 @@ Custom modals (like command palette) use CSS classes instead of Bootstrap Modal 
 **Routes:**
 - Locale-prefixed: `/{locale}/dashboard` (de, en)
 - Admin routes: `/admin/` or `/{locale}/admin/`
+
+**Translation Domains:**
+The application uses domain-specific translation files instead of monolithic `messages.*.yaml` files.
+
+Structure:
+- `translations/` contains 97 YAML files (49 domains × 2 languages)
+- Each functional area has its own domain: `nav`, `mfa`, `tenant`, `role_management`, etc.
+- `messages.{de,en}.yaml` remains as fallback for common/cross-domain terms
+
+Usage in Twig templates:
+```twig
+{# ALWAYS specify the domain explicitly #}
+{{ 'nav.dashboard'|trans({}, 'nav') }}
+{{ 'tenant.title.edit'|trans({}, 'tenant') }}
+{{ 'mfa.setup_totp.title'|trans({}, 'mfa') }}
+
+{# messages domain for common terms #}
+{{ 'common.save'|trans({}, 'messages') }}
+```
+
+Available domains (49 total):
+- **Navigation:** nav, dashboard, ui
+- **Access Control:** mfa, role_management, session, users
+- **ISMS Core:** assets, risks, controls, incidents, audits, soa, context
+- **BCM:** bcm, bc_plans, bc_exercises, crisis_team
+- **Compliance:** compliance, privacy, interested_parties, objectives
+- **Management:** tenant, admin, management_review, analytics, reports
+- **Operations:** documents, workflows, training, change_requests, patches
+- **Resources:** suppliers, locations, people, physical_access
+- **Technical:** monitoring, crypto, vulnerabilities, threat, bulk_delete, field
+- **Validators:** validators (form validation messages)
+
+When adding new features:
+1. Check if a relevant domain exists
+2. If yes: add translations to that domain file
+3. If no: create new `[feature].{de,en}.yaml` files
+4. Use explicit domain parameter in all `|trans()` calls
+
+Benefits:
+- Faster translation lookups (no fallback searching)
+- Better IDE autocomplete support
+- Clearer organization and maintenance
+- Reduced merge conflicts
+
+Translation Quality:
+- Use `scripts/quality/check_translation_issues.py` to find:
+  - Hardcoded text that should be translated
+  - Missing domain parameters in |trans calls
+  - Untranslated HTML attributes (title, aria-label, placeholder)
+  - Invalid or missing translation domains
+- Run before commits to maintain translation quality
+- See `scripts/README.md` for details
 
 ## Coding Standards
 

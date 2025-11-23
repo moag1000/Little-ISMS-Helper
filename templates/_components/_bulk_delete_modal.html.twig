@@ -32,7 +32,7 @@
                     {{ 'bulk_delete.confirm.title'|trans({}, 'bulk_delete')|default('Confirm Bulk Delete') }}
                 </h5>
                 <button type="button" class="btn-close btn-close-white" aria-label="{{ 'action.close'|trans({}, 'messages') }}" data-bs-dismiss="modal"
-                        aria-label="{{ 'action.close'|trans|default('Close') }}">
+                        aria-label="{{ 'action.close'|trans({}, 'messages')|default('Close') }}">
                 </button>
             </div>
 
@@ -87,7 +87,7 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                     <i class="bi bi-x-circle" aria-hidden="true"></i>
-                    {{ 'action.cancel'|trans|default('Cancel') }}
+                    {{ 'action.cancel'|trans({}, 'messages')|default('Cancel') }}
                 </button>
                 <button type="button"
                         class="btn btn-danger"
@@ -96,7 +96,7 @@
                         data-delete-route="{{ delete_route }}"
                         aria-describedby="{{ modal_id }}ConfirmHelp">
                     <i class="bi bi-trash" aria-hidden="true"></i>
-                    {{ 'action.delete_selected'|trans|default('Delete Selected') }}
+                    {{ 'action.delete_selected'|trans({}, 'messages')|default('Delete Selected') }}
                 </button>
             </div>
         </div>

@@ -1,0 +1,36 @@
+threat:
+  title: Bedrohungsinformationen
+  name: Bedrohung
+  threat_type: Bedrohungstyp
+  severity: Schweregrad
+  source: Quelle
+  cve_id: CVE-ID
+  affected_systems: Betroffene Systeme
+  affected_assets: Betroffene Assets
+  indicators: Indikatoren
+  mitigation_recommendations: Empfohlene Gegenmaßnahmen
+  status: Status
+  detection_date: Erkennungsdatum
+  mitigation_date: Maßnahmendatum
+  actions_taken: Ergriffene Maßnahmen
+  affects_organization: Betrifft Organisation
+  cvss_score: CVSS-Score
+  references: Referenzen
+  assigned_to: Zugewiesen an
+  type:
+    malware: Malware
+    phishing: Phishing
+    vulnerability: Schwachstelle
+    data_breach: Datenschutzvorfall
+    ddos: DDoS
+    insider_threat: Insider-Bedrohung
+    ransomware: Ransomware
+    apt: APT
+    zero_day: Zero-Day
+    other: Sonstiges
+  status_type:
+    new: Neu
+    analyzing: In Analyse
+    mitigated: Behoben
+    monitoring: Überwacht
+    closed: Geschlossen

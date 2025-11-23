@@ -15,22 +15,22 @@
     <div class="card-header">
         <h3 class="card-title">
             <i class="bi-grid-3x3-gap text-danger"></i>
-            {{ 'analytics.card.risk_heat_map'|trans }}
+            {{ 'analytics.card.risk_heat_map'|trans({}, 'messages') }}
         </h3>
         <div class="card-actions">
             <button class="btn btn-sm btn-outline-secondary"
                     data-action="click->heat-map#toggleFilters"
-                    title="{{ 'analytics.action.filter'|trans }}">
+                    title="{{ 'analytics.action.filter'|trans({}, 'messages') }}">
                 <i class="bi bi-funnel"></i>
             </button>
             <button class="btn btn-sm btn-outline-secondary"
                     data-action="click->heat-map#refresh"
-                    title="{{ 'analytics.action.refresh'|trans }}">
+                    title="{{ 'analytics.action.refresh'|trans({}, 'messages') }}">
                 <i class="bi bi-arrow-clockwise"></i>
             </button>
             <button class="btn btn-sm btn-outline-secondary"
                     data-action="click->heat-map#exportImage"
-                    title="{{ 'analytics.action.export_png'|trans }}">
+                    title="{{ 'analytics.action.export_png'|trans({}, 'messages') }}">
                 <i class="bi bi-image"></i>
             </button>
         </div>
@@ -40,13 +40,13 @@
     <div class="heat-map-filters d-none" data-heat-map-target="filters">
         <div class="filter-group">
             <label class="filter-label" for="heat-map-status-filter">
-                <i class="bi bi-check-circle"></i> {{ 'analytics.filter.status'|trans }}
+                <i class="bi bi-check-circle"></i> {{ 'analytics.filter.status'|trans({}, 'messages') }}
             </label>
             <select class="form-select form-select-sm"
                     id="heat-map-status-filter"
                     data-action="change->heat-map#applyFilters"
                     data-heat-map-target="statusFilter">
-                <option value="">{{ 'analytics.filter.all'|trans }}</option>
+                <option value="">{{ 'analytics.filter.all'|trans({}, 'messages') }}</option>
                 <option value="open">{{ 'risks.status.open'|trans({}, 'risks')|default('Open') }}</option>
                 <option value="in_progress">{{ 'risks.status.in_progress'|trans({}, 'risks')|default('In Progress') }}</option>
                 <option value="mitigated">{{ 'risks.status.mitigated'|trans({}, 'risks')|default('Mitigated') }}</option>
@@ -55,13 +55,13 @@
         </div>
         <div class="filter-group">
             <label class="filter-label" for="heat-map-category-filter">
-                <i class="bi bi-tag"></i> {{ 'analytics.filter.category'|trans }}
+                <i class="bi bi-tag"></i> {{ 'analytics.filter.category'|trans({}, 'messages') }}
             </label>
             <select class="form-select form-select-sm"
                     id="heat-map-category-filter"
                     data-action="change->heat-map#applyFilters"
                     data-heat-map-target="categoryFilter">
-                <option value="">{{ 'analytics.filter.all'|trans }}</option>
+                <option value="">{{ 'analytics.filter.all'|trans({}, 'messages') }}</option>
                 <option value="technical">{{ 'risks.category.technical'|trans({}, 'risks')|default('Technical') }}</option>
                 <option value="organizational">{{ 'risks.category.organizational'|trans({}, 'risks')|default('Organizational') }}</option>
                 <option value="physical">{{ 'risks.category.physical'|trans({}, 'risks')|default('Physical') }}</option>
@@ -70,13 +70,13 @@
         </div>
         <div class="filter-group">
             <label class="filter-label" for="heat-map-time-filter">
-                <i class="bi bi-calendar"></i> {{ 'analytics.filter.time'|trans }}
+                <i class="bi bi-calendar"></i> {{ 'analytics.filter.time'|trans({}, 'messages') }}
             </label>
             <select class="form-select form-select-sm"
                     id="heat-map-time-filter"
                     data-action="change->heat-map#applyFilters"
                     data-heat-map-target="timeFilter">
-                <option value="">{{ 'analytics.filter.all'|trans }}</option>
+                <option value="">{{ 'analytics.filter.all'|trans({}, 'messages') }}</option>
                 <option value="30">{{ 'common.last_30_days'|trans({}, 'messages')|default('Last 30 days') }}</option>
                 <option value="90">{{ 'common.last_90_days'|trans({}, 'messages')|default('Last 90 days') }}</option>
                 <option value="365">{{ 'common.last_year'|trans({}, 'messages')|default('Last year') }}</option>
@@ -84,35 +84,35 @@
         </div>
         <button class="btn btn-sm btn-outline-danger"
                 data-action="click->heat-map#clearFilters">
-            <i class="bi bi-x-circle"></i> {{ 'analytics.action.reset_filters'|trans }}
+            <i class="bi bi-x-circle"></i> {{ 'analytics.action.reset_filters'|trans({}, 'messages') }}
         </button>
     </div>
     <div class="card-body">
         {# Loading State #}
         <div class="heat-map-loading d-none" data-heat-map-target="loading">
             <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">{{ 'analytics.loading.loading'|trans }}</span>
+                <span class="visually-hidden">{{ 'analytics.loading.loading'|trans({}, 'messages') }}</span>
             </div>
-            <p class="mt-2 text-muted">{{ 'analytics.loading.loading_heat_map'|trans }}</p>
+            <p class="mt-2 text-muted">{{ 'analytics.loading.loading_heat_map'|trans({}, 'messages') }}</p>
         </div>
 
         {# Legend #}
         <div class="heat-map-legend">
             <div class="legend-item">
                 <span class="legend-color legend-color-critical"></span>
-                <span class="legend-label">{{ 'analytics.legend.critical'|trans }}</span>
+                <span class="legend-label">{{ 'analytics.legend.critical'|trans({}, 'messages') }}</span>
             </div>
             <div class="legend-item">
                 <span class="legend-color legend-color-high"></span>
-                <span class="legend-label">{{ 'analytics.legend.high'|trans }}</span>
+                <span class="legend-label">{{ 'analytics.legend.high'|trans({}, 'messages') }}</span>
             </div>
             <div class="legend-item">
                 <span class="legend-color legend-color-medium"></span>
-                <span class="legend-label">{{ 'analytics.legend.medium'|trans }}</span>
+                <span class="legend-label">{{ 'analytics.legend.medium'|trans({}, 'messages') }}</span>
             </div>
             <div class="legend-item">
                 <span class="legend-color legend-color-low"></span>
-                <span class="legend-label">{{ 'analytics.legend.low'|trans }}</span>
+                <span class="legend-label">{{ 'analytics.legend.low'|trans({}, 'messages') }}</span>
             </div>
         </div>
 
@@ -121,10 +121,10 @@
             {# Axis Labels #}
             <div class="heat-map-axes">
                 <div class="y-axis-label">
-                    <span>{{ 'analytics.axes.impact'|trans }}</span>
+                    <span>{{ 'analytics.axes.impact'|trans({}, 'messages') }}</span>
                 </div>
                 <div class="x-axis-label">
-                    <span>{{ 'analytics.axes.probability'|trans }}</span>
+                    <span>{{ 'analytics.axes.probability'|trans({}, 'messages') }}</span>
                 </div>
             </div>
 
@@ -137,7 +137,7 @@
         {# Risk Details Modal #}
         <div class="heat-map-details d-none" data-heat-map-target="details">
             <div class="details-header">
-                <h4 data-heat-map-target="detailsTitle">{{ 'analytics.details.risks_in_cell'|trans }}</h4>
+                <h4 data-heat-map-target="detailsTitle">{{ 'analytics.details.risks_in_cell'|trans({}, 'messages') }}</h4>
                 <button class="btn-close btn-sm"
                         data-action="click->heat-map#closeDetails"></button>
             </div>

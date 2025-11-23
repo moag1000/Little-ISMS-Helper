@@ -1,13 +1,13 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'objectives' %}
 
-{% block title %}{{ 'objectives.title.new'|trans }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+{% block title %}{{ 'objectives.title.new'|trans({}, 'messages') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid py-4">
     <div class="card shadow">
         <div class="card-header bg-primary text-white">
-            <h4 class="mb-0">{{ 'objectives.title.new'|trans }}</h4>
+            <h4 class="mb-0">{{ 'objectives.title.new'|trans({}, 'messages') }}</h4>
         </div>
         <div class="card-body">
             {{ form_start(form) }}
@@ -16,14 +16,14 @@
             <fieldset class="mb-4">
                 <legend class="h5 mb-3">
                     <i class="bi bi-info-square" aria-hidden="true"></i>
-                    {{ 'objectives.section.basic_info'|trans }}
+                    {{ 'objectives.section.basic_info'|trans({}, 'messages') }}
                 </legend>
 
                 <div class="row">
                     <div class="col-md-8">
                         {% include '_components/_form_field.html.twig' with {
                             'field': form.title,
-                            'label': form.title.vars.label|default('objectives.field.title'|trans),
+                            'label': form.title.vars.label|default('objectives.field.title'|trans({}, 'messages')),
                             'required': true,
                             'domain': 'objectives'
                         } %}
@@ -31,14 +31,14 @@
                     <div class="col-md-4">
                         {% include '_components/_form_field.html.twig' with {
                             'field': form.category,
-                            'label': form.category.vars.label|default('objectives.field.category'|trans),
+                            'label': form.category.vars.label|default('objectives.field.category'|trans({}, 'messages')),
                             'domain': 'objectives'
                         } %}
                     </div>
                     <div class="col-md-12">
                         {% include '_components/_form_field.html.twig' with {
                             'field': form.description,
-                            'label': form.description.vars.label|default('objectives.field.description'|trans),
+                            'label': form.description.vars.label|default('objectives.field.description'|trans({}, 'messages')),
                             'domain': 'objectives'
                         } %}
                     </div>
@@ -49,35 +49,35 @@
             <fieldset class="mb-4">
                 <legend class="h5 mb-3">
                     <i class="bi bi-graph-up" aria-hidden="true"></i>
-                    {{ 'objectives.section.measurement'|trans }}
+                    {{ 'objectives.section.measurement'|trans({}, 'messages') }}
                 </legend>
 
                 <div class="row">
                     <div class="col-md-12">
                         {% include '_components/_form_field.html.twig' with {
                             'field': form.measurableIndicators,
-                            'label': form.measurableIndicators.vars.label|default('objectives.field.measurable_indicators'|trans),
+                            'label': form.measurableIndicators.vars.label|default('objectives.field.measurable_indicators'|trans({}, 'messages')),
                             'domain': 'objectives'
                         } %}
                     </div>
                     <div class="col-md-4">
                         {% include '_components/_form_field.html.twig' with {
                             'field': form.targetValue,
-                            'label': form.targetValue.vars.label|default('objectives.field.target_value'|trans),
+                            'label': form.targetValue.vars.label|default('objectives.field.target_value'|trans({}, 'messages')),
                             'domain': 'objectives'
                         } %}
                     </div>
                     <div class="col-md-4">
                         {% include '_components/_form_field.html.twig' with {
                             'field': form.currentValue,
-                            'label': form.currentValue.vars.label|default('objectives.field.current_value'|trans),
+                            'label': form.currentValue.vars.label|default('objectives.field.current_value'|trans({}, 'messages')),
                             'domain': 'objectives'
                         } %}
                     </div>
                     <div class="col-md-4">
                         {% include '_components/_form_field.html.twig' with {
                             'field': form.unit,
-                            'label': form.unit.vars.label|default('objectives.field.unit'|trans),
+                            'label': form.unit.vars.label|default('objectives.field.unit'|trans({}, 'messages')),
                             'domain': 'objectives'
                         } %}
                     </div>
@@ -88,21 +88,21 @@
             <fieldset class="mb-4">
                 <legend class="h5 mb-3">
                     <i class="bi bi-person-badge" aria-hidden="true"></i>
-                    {{ 'objectives.section.responsibility'|trans }}
+                    {{ 'objectives.section.responsibility'|trans({}, 'messages') }}
                 </legend>
 
                 <div class="row">
                     <div class="col-md-6">
                         {% include '_components/_form_field.html.twig' with {
                             'field': form.responsiblePerson,
-                            'label': form.responsiblePerson.vars.label|default('objectives.field.responsible_person'|trans),
+                            'label': form.responsiblePerson.vars.label|default('objectives.field.responsible_person'|trans({}, 'messages')),
                             'domain': 'objectives'
                         } %}
                     </div>
                     <div class="col-md-6">
                         {% include '_components/_form_field.html.twig' with {
                             'field': form.targetDate,
-                            'label': form.targetDate.vars.label|default('objectives.field.target_date'|trans),
+                            'label': form.targetDate.vars.label|default('objectives.field.target_date'|trans({}, 'messages')),
                             'domain': 'objectives'
                         } %}
                     </div>
@@ -113,21 +113,21 @@
             <fieldset class="mb-4">
                 <legend class="h5 mb-3">
                     <i class="bi bi-clipboard-check" aria-hidden="true"></i>
-                    {{ 'objectives.section.status_progress'|trans }}
+                    {{ 'objectives.section.status_progress'|trans({}, 'messages') }}
                 </legend>
 
                 <div class="row">
                     <div class="col-md-12">
                         {% include '_components/_form_field.html.twig' with {
                             'field': form.status,
-                            'label': form.status.vars.label|default('objectives.field.status'|trans),
+                            'label': form.status.vars.label|default('objectives.field.status'|trans({}, 'messages')),
                             'domain': 'objectives'
                         } %}
                     </div>
                     <div class="col-md-12">
                         {% include '_components/_form_field.html.twig' with {
                             'field': form.progressNotes,
-                            'label': form.progressNotes.vars.label|default('objectives.field.progress_notes'|trans),
+                            'label': form.progressNotes.vars.label|default('objectives.field.progress_notes'|trans({}, 'messages')),
                             'domain': 'objectives'
                         } %}
                     </div>
@@ -136,7 +136,7 @@
 
             <div class="d-flex justify-content-between pt-3 border-top">
                 <a href="{{ path('app_objective_index') }}" class="btn btn-outline-secondary">{{ 'common.cancel'|trans({}, 'messages') }}</a>
-                <button type="submit" class="btn btn-primary">{{ 'objectives.action.create'|trans }}</button>
+                <button type="submit" class="btn btn-primary">{{ 'objectives.action.create'|trans({}, 'messages') }}</button>
             </div>
 
             {{ form_end(form) }}

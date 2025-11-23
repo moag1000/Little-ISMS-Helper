@@ -1,20 +1,20 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'risk_appetite' %}
 
-{% block title %}{{ 'risk_appetite.title'|trans }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+{% block title %}{{ 'risk_appetite.title'|trans({}, 'risks') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
 {% block body %}
 {% import '_macros/cards.html.twig' as cards %}
 
 <div class="page-header">
     <div>
-        <h1><i class="bi bi-speedometer2" aria-hidden="true"></i> {{ 'risk_appetite.title'|trans }}</h1>
-        <p class="text-muted">{{ 'risk_appetite.description'|trans }}</p>
+        <h1><i class="bi bi-speedometer2" aria-hidden="true"></i> {{ 'risk_appetite.title'|trans({}, 'risks') }}</h1>
+        <p class="text-muted">{{ 'risk_appetite.description'|trans({}, 'risks') }}</p>
     </div>
     <div class="button-group">
         {% if is_granted('ROLE_ADMIN') %}
         <a href="{{ path('app_risk_appetite_new') }}" class="btn btn-primary">
-            <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'risk_appetite.new'|trans }}
+            <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'risk_appetite.new'|trans({}, 'risks') }}
         </a>
         {% endif %}
     </div>
@@ -22,21 +22,21 @@
 
 <div class="stats-grid mb-4">
     <div class="col-auto">
-        {{ cards.kpi_card('risk_appetite.stats.total'|trans, appetites|length, null, null, null, null) }}
+        {{ cards.kpi_card('risk_appetite.stats.total'|trans({}, 'risks'), appetites|length, null, null, null, null) }}
     </div>
     {% if globalAppetite %}
     <div class="col-auto">
-        {{ cards.kpi_card('risk_appetite.stats.global_threshold'|trans, globalAppetite.maxAcceptableRisk, null, null, 'primary', null) }}
+        {{ cards.kpi_card('risk_appetite.stats.global_threshold'|trans({}, 'risks'), globalAppetite.maxAcceptableRisk, null, null, 'primary', null) }}
     </div>
     {% endif %}
     <div class="col-auto">
-        {{ cards.kpi_card('risk_appetite.stats.categories'|trans, categories|length, null, null, 'info', null) }}
+        {{ cards.kpi_card('risk_appetite.stats.categories'|trans({}, 'risks'), categories|length, null, null, 'info', null) }}
     </div>
     <div class="col-auto">
-        {{ cards.kpi_card('risk_appetite.stats.total_risks'|trans, totalRisks, null, null, 'success', null) }}
+        {{ cards.kpi_card('risk_appetite.stats.total_risks'|trans({}, 'risks'), totalRisks, null, null, 'success', null) }}
     </div>
     <div class="col-auto">
-        {{ cards.kpi_card('risk_appetite.stats.exceeding'|trans, risksExceedingAppetite|length, null, null, risksExceedingAppetite|length > 0 ? 'danger' : null, null) }}
+        {{ cards.kpi_card('risk_appetite.stats.exceeding'|trans({}, 'risks'), risksExceedingAppetite|length, null, null, risksExceedingAppetite|length > 0 ? 'danger' : null, null) }}
     </div>
 </div>
 
@@ -54,17 +54,17 @@
                 <label for="filter-category" class="form-label">{{ 'risk_appetite.field.category'|trans({}, 'risk_appetite') }}</label>
                 <select class="form-select" id="filter-category" name="category" onchange="this.form.submit()">
                     <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
-                    <option value="global" {{ app.request.get('category') == 'global' ? 'selected' : '' }}>{{ 'risk_appetite.category.global'|trans }}</option>
+                    <option value="global" {{ app.request.get('category') == 'global' ? 'selected' : '' }}>{{ 'risk_appetite.category.global'|trans({}, 'risks') }}</option>
                     {% for cat in categories %}
                         <option value="{{ cat }}" {{ app.request.get('category') == cat ? 'selected' : '' }}>{{ cat }}</option>
                     {% endfor %}
                 </select>
             </div>
             <div class="col-md-6">
-                <label for="filter-active" class="form-label">{{ 'risk_appetite.field.status'|trans }}</label>
+                <label for="filter-active" class="form-label">{{ 'risk_appetite.field.status'|trans({}, 'risks') }}</label>
                 <select class="form-select" id="filter-active" name="active_only" onchange="this.form.submit()">
                     <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
-                    <option value="1" {{ app.request.get('active_only') == '1' ? 'selected' : '' }}>{{ 'risk_appetite.filter.active_only'|trans }}</option>
+                    <option value="1" {{ app.request.get('active_only') == '1' ? 'selected' : '' }}>{{ 'risk_appetite.filter.active_only'|trans({}, 'risks') }}</option>
                 </select>
             </div>
             <div class="col-12">
@@ -82,7 +82,7 @@
 {# Risk Appetites Table #}
 <div class="card">
     <div class="card-header">
-        <h3><i class="bi bi-list" aria-hidden="true"></i> {{ 'risk_appetite.list.title'|trans }} ({{ appetites|length }})</h3>
+        <h3><i class="bi bi-list" aria-hidden="true"></i> {{ 'risk_appetite.list.title'|trans({}, 'risks') }} ({{ appetites|length }})</h3>
     </div>
     {% embed '_components/_table.html.twig' with {
         'class': 'table-hover',
@@ -105,7 +105,7 @@
                 <td>
                     <strong>
                         {% if appetite.isGlobal() %}
-                            <i class="bi bi-globe" aria-hidden="true"></i> {{ 'risk_appetite.category.global'|trans }}
+                            <i class="bi bi-globe" aria-hidden="true"></i> {{ 'risk_appetite.category.global'|trans({}, 'risks') }}
                         {% else %}
                             <i class="bi bi-folder" aria-hidden="true"></i> {{ appetite.category }}
                         {% endif %}
@@ -116,26 +116,26 @@
                         {{ appetite.maxAcceptableRisk }}
                     </span>
                     <br>
-                    <small class="text-muted">({{ 'risk_appetite.scale'|trans }}: 1-25)</small>
+                    <small class="text-muted">({{ 'risk_appetite.scale'|trans({}, 'risks') }}: 1-25)</small>
                 </td>
                 <td>
                     {{ appetite.description|length > 100 ? appetite.description|slice(0, 100) ~ '...' : appetite.description }}
                 </td>
                 <td class="text-center">
                     {% if appetite.isActive() %}
-                        <span class="badge bg-success">{{ 'risk_appetite.status.active'|trans }}</span>
+                        <span class="badge bg-success">{{ 'risk_appetite.status.active'|trans({}, 'risks') }}</span>
                     {% else %}
-                        <span class="badge bg-secondary">{{ 'risk_appetite.status.inactive'|trans }}</span>
+                        <span class="badge bg-secondary">{{ 'risk_appetite.status.inactive'|trans({}, 'risks') }}</span>
                     {% endif %}
                     {% if appetite.isApproved() %}
-                        <br><span class="badge bg-info mt-1">{{ 'risk_appetite.approved'|trans }}</span>
+                        <br><span class="badge bg-info mt-1">{{ 'risk_appetite.approved'|trans({}, 'risks') }}</span>
                     {% endif %}
                 </td>
                 <td>
                     {% if appetite.approvedBy %}
                         {{ appetite.approvedBy.fullName }}
                     {% else %}
-                        <span class="text-muted">{{ 'common.not_approved'|trans }}</span>
+                        <span class="text-muted">{{ 'common.not_approved'|trans({}, 'messages') }}</span>
                     {% endif %}
                 </td>
                 <td>
@@ -149,13 +149,13 @@
                     <div class="btn-group btn-group-sm">
                         <a href="{{ path('app_risk_appetite_show', {id: appetite.id}) }}"
                            class="btn btn-outline-primary"
-                           title="{{ 'common.view'|trans }}" aria-label="{{ 'common.view'|trans }}">
+                           title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
                             <i class="bi bi-eye" aria-hidden="true"></i>
                         </a>
                         {% if is_granted('ROLE_ADMIN') %}
                         <a href="{{ path('app_risk_appetite_edit', {id: appetite.id}) }}"
                            class="btn btn-outline-secondary"
-                           title="{{ 'common.edit'|trans }}" aria-label="{{ 'common.edit'|trans }}">
+                           title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
                             <i class="bi bi-pencil" aria-hidden="true"></i>
                         </a>
                         {% endif %}
@@ -177,22 +177,22 @@
 {% if risksExceedingAppetite|length > 0 %}
 <div class="card border-danger mt-4">
     <div class="card-header bg-danger text-white">
-        <h3><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'risk_appetite.exceeding.title'|trans }}</h3>
+        <h3><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'risk_appetite.exceeding.title'|trans({}, 'risks') }}</h3>
     </div>
     <div class="card-body">
-        <p>{{ 'risk_appetite.exceeding.description'|trans({'%count%': risksExceedingAppetite|length}) }}</p>
+        <p>{{ 'risk_appetite.exceeding.description'|trans({'%count%': risksExceedingAppetite|length}, 'risks') }}</p>
         <ul>
             {% for risk in risksExceedingAppetite|slice(0, 5) %}
             <li>
                 <a href="{{ path('app_risk_show', {id: risk.id}) }}">{{ risk.title }}</a>
                 - Score: {{ risk.riskScore }}
                 {% if globalAppetite %}
-                    ({{ 'risk_appetite.exceeds_by'|trans }}: {{ risk.riskScore - globalAppetite.maxAcceptableRisk }})
+                    ({{ 'risk_appetite.exceeds_by'|trans({}, 'risks') }}: {{ risk.riskScore - globalAppetite.maxAcceptableRisk }})
                 {% endif %}
             </li>
             {% endfor %}
             {% if risksExceedingAppetite|length > 5 %}
-            <li class="text-muted">{{ 'risk_appetite.and_more'|trans({'%count%': risksExceedingAppetite|length - 5}) }}</li>
+            <li class="text-muted">{{ 'risk_appetite.and_more'|trans({'%count%': risksExceedingAppetite|length - 5}, 'risks') }}</li>
             {% endif %}
         </ul>
     </div>

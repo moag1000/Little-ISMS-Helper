@@ -272,17 +272,17 @@
                         <td>{{ comparison.target_framework }}</td>
                         <td class="text-center">{{ comparison.mapping_count }}</td>
                         <td class="text-center">
-                            <span class="badge {% if comparison.avg_percentage >= 75 %}badge-success{% elseif comparison.avg_percentage >= 50 %}badge-warning{% else %}badge-danger{% endif %}">
+                            <span class="badge {% if ... %}bg-success{% elseif comparison.avg_percentage >= 50 %}badge-warning{% else %}bg-danger{% endif %}">
                                 {{ comparison.avg_percentage|round }}%
                             </span>
                         </td>
                         <td class="text-center">
-                            <span class="badge {% if comparison.avg_quality >= 75 %}badge-success{% elseif comparison.avg_quality >= 50 %}badge-warning{% else %}badge-danger{% endif %}">
+                            <span class="badge {% if ... %}bg-success{% elseif comparison.avg_quality >= 50 %}badge-warning{% else %}bg-danger{% endif %}">
                                 {{ comparison.avg_quality|round }}
                             </span>
                         </td>
                         <td class="text-center">
-                            <span class="badge {% if comparison.avg_confidence >= 80 %}badge-success{% elseif comparison.avg_confidence >= 60 %}badge-warning{% else %}badge-danger{% endif %}">
+                            <span class="badge {% if ... %}bg-success{% elseif comparison.avg_confidence >= 60 %}badge-warning{% else %}bg-danger{% endif %}">
                                 {{ comparison.avg_confidence|round }}
                             </span>
                         </td>

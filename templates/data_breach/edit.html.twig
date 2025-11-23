@@ -1,22 +1,22 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'privacy' %}
 
-{% block title %}{{ 'privacy.data_breach.page.edit_title'|trans }} - {{ breach.referenceNumber }}{% endblock %}
+{% block title %}{{ 'privacy.data_breach.page.edit_title'|trans({}, 'privacy') }} - {{ breach.referenceNumber }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid mt-4">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
-            { label: 'privacy.breadcrumb.privacy'|trans, icon: 'bi-shield-lock' },
-            { label: 'privacy.breadcrumb.data_breaches'|trans, url: path('app_data_breach_index') },
+            { label: 'privacy.breadcrumb.privacy'|trans({}, 'privacy'), icon: 'bi-shield-lock' },
+            { label: 'privacy.breadcrumb.data_breaches'|trans({}, 'privacy'), url: path('app_data_breach_index') },
             { label: breach.referenceNumber, url: path('app_data_breach_show', {id: breach.id}) },
-            { label: 'privacy.data_breach.page.edit_title'|trans }
+            { label: 'privacy.data_breach.page.edit_title'|trans({}, 'privacy') }
         ]
     } %}
 
     {% include '_components/_page_header.html.twig' with {
-        title: 'privacy.data_breach.page.edit_title'|trans,
-        subtitle: 'privacy.data_breach.page.edit_subtitle'|trans({'%ref%': breach.referenceNumber, '%title%': breach.title}),
+        title: 'privacy.data_breach.page.edit_title'|trans({}, 'privacy'),
+        subtitle: 'privacy.data_breach.page.edit_subtitle'|trans({'%ref%': breach.referenceNumber, '%title%': breach.title}, 'privacy'),
         icon: 'bi-pencil',
         actions: [
             { label: 'common.cancel'|trans({}, 'messages'), url: path('app_data_breach_show', {id: breach.id}), variant: 'secondary', icon: 'bi-x-lg' }
@@ -25,7 +25,7 @@
 
     <div class="card">
         <div class="card-header">
-            <h5 class="mb-0"><i class="bi bi-clipboard-check"></i> {{ 'privacy.data_breach.form.title'|trans }}</h5>
+            <h5 class="mb-0"><i class="bi bi-clipboard-check"></i> {{ 'privacy.data_breach.form.title'|trans({}, 'privacy') }}</h5>
         </div>
         <div class="card-body">
             {{ form_start(form) }}
@@ -33,7 +33,7 @@
 
                 <div class="mt-4">
                     <button type="submit" class="btn btn-success">
-                        <i class="bi bi-save"></i> {{ 'privacy.data_breach.action.update'|trans }}
+                        <i class="bi bi-save"></i> {{ 'privacy.data_breach.action.update'|trans({}, 'privacy') }}
                     </button>
                     <a href="{{ path('app_data_breach_show', {id: breach.id}) }}" class="btn btn-secondary">
                         <i class="bi bi-x-lg"></i> {{ 'common.cancel'|trans({}, 'messages') }}

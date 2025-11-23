@@ -1,0 +1,36 @@
+threat:
+  title: Threat Intelligence
+  name: Threat
+  threat_type: Threat Type
+  severity: Severity
+  source: Source
+  cve_id: CVE ID
+  affected_systems: Affected Systems
+  affected_assets: Affected Assets
+  indicators: Indicators
+  mitigation_recommendations: Mitigation Recommendations
+  status: Status
+  detection_date: Detection Date
+  mitigation_date: Mitigation Date
+  actions_taken: Actions Taken
+  affects_organization: Affects Organization
+  cvss_score: CVSS Score
+  references: References
+  assigned_to: Assigned To
+  type:
+    malware: Malware
+    phishing: Phishing
+    vulnerability: Vulnerability
+    data_breach: Data Breach
+    ddos: DDoS
+    insider_threat: Insider Threat
+    ransomware: Ransomware
+    apt: APT
+    zero_day: Zero Day
+    other: Other
+  status_type:
+    new: New
+    analyzing: Analyzing
+    mitigated: Mitigated
+    monitoring: Monitoring
+    closed: Closed

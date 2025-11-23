@@ -1,56 +1,56 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ 'compliance.framework.title'|trans }}{% endblock %}
+{% block title %}{{ 'compliance.framework.title'|trans({}, 'compliance') }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h1><i class="bi bi-shield-check" aria-hidden="true"></i> {{ 'compliance.framework.heading'|trans }}</h1>
-            <p class="text-muted">{{ 'compliance.framework.description'|trans }}</p>
+            <h1><i class="bi bi-shield-check" aria-hidden="true"></i> {{ 'compliance.framework.heading'|trans({}, 'compliance') }}</h1>
+            <p class="text-muted">{{ 'compliance.framework.description'|trans({}, 'compliance') }}</p>
         </div>
         <div>
             {% if is_granted('ROLE_ADMIN') %}
                 <a href="{{ path('app_compliance_framework_new') }}" class="btn btn-success">
-                    <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'compliance.framework.action.new'|trans }}
+                    <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'compliance.framework.action.new'|trans({}, 'compliance') }}
                 </a>
             {% endif %}
             <a href="{{ path('app_compliance_index') }}" class="btn btn-outline-secondary">
-                <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans }}
+                <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
             </a>
         </div>
     </div>
 
     {# Skip link for filters section - WCAG 2.4.1 #}
-    <a href="#filter-section" class="skip-link">{{ 'accessibility.skip_to_filters'|trans }}</a>
+    <a href="#filter-section" class="skip-link">{{ 'accessibility.skip_to_filters'|trans({}, 'messages') }}</a>
 
     {# Filters #}
     <div class="card mb-4">
         <div class="card-header">
-            <i class="bi bi-funnel" aria-hidden="true"></i> {{ 'common.filters'|trans }}
+            <i class="bi bi-funnel" aria-hidden="true"></i> {{ 'common.filters'|trans({}, 'messages') }}
         </div>
         <div class="card-body" id="filter-section" tabindex="-1">
-            <form method="get" class="row g-3" role="search" aria-label="{{ 'common.filters'|trans }}">
+            <form method="get" class="row g-3" role="search" aria-label="{{ 'common.filters'|trans({}, 'messages') }}">
                 <div class="col-md-3">
-                    <label class="form-label" for="filter-active">{{ 'compliance.framework.field.active'|trans }}</label>
+                    <label class="form-label" for="filter-active">{{ 'compliance.framework.field.active'|trans({}, 'compliance') }}</label>
                     <select name="active" id="filter-active" class="form-select">
-                        <option value="">{{ 'common.all'|trans }}</option>
-                        <option value="1" {{ filters.active == '1' ? 'selected' }}>{{ 'common.yes'|trans }}</option>
-                        <option value="0" {{ filters.active == '0' ? 'selected' }}>{{ 'common.no'|trans }}</option>
+                        <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
+                        <option value="1" {{ filters.active == '1' ? 'selected' }}>{{ 'common.yes'|trans({}, 'messages') }}</option>
+                        <option value="0" {{ filters.active == '0' ? 'selected' }}>{{ 'common.no'|trans({}, 'messages') }}</option>
                     </select>
                 </div>
                 <div class="col-md-3">
-                    <label class="form-label" for="filter-mandatory">{{ 'compliance.framework.field.mandatory'|trans }}</label>
+                    <label class="form-label" for="filter-mandatory">{{ 'compliance.framework.field.mandatory'|trans({}, 'compliance') }}</label>
                     <select name="mandatory" id="filter-mandatory" class="form-select">
-                        <option value="">{{ 'common.all'|trans }}</option>
-                        <option value="1" {{ filters.mandatory == '1' ? 'selected' }}>{{ 'common.yes'|trans }}</option>
-                        <option value="0" {{ filters.mandatory == '0' ? 'selected' }}>{{ 'common.no'|trans }}</option>
+                        <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
+                        <option value="1" {{ filters.mandatory == '1' ? 'selected' }}>{{ 'common.yes'|trans({}, 'messages') }}</option>
+                        <option value="0" {{ filters.mandatory == '0' ? 'selected' }}>{{ 'common.no'|trans({}, 'messages') }}</option>
                     </select>
                 </div>
                 <div class="col-md-3">
-                    <label class="form-label" for="filter-industry">{{ 'compliance.framework.field.industry'|trans }}</label>
+                    <label class="form-label" for="filter-industry">{{ 'compliance.framework.field.industry'|trans({}, 'compliance') }}</label>
                     <select name="industry" id="filter-industry" class="form-select">
-                        <option value="">{{ 'common.all'|trans }}</option>
+                        <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
                         {% for industry in industries %}
                             <option value="{{ industry }}" {{ filters.industry == industry ? 'selected' }}>{{ industry }}</option>
                         {% endfor %}
@@ -58,10 +58,10 @@
                 </div>
                 <div class="col-md-3 d-flex align-items-end">
                     <button type="submit" class="btn btn-primary me-2">
-                        <i class="bi bi-search" aria-hidden="true"></i> {{ 'common.filter'|trans }}
+                        <i class="bi bi-search" aria-hidden="true"></i> {{ 'common.filter'|trans({}, 'messages') }}
                     </button>
                     <a href="{{ path('app_compliance_framework_index') }}" class="btn btn-outline-secondary">
-                        <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'common.reset'|trans }}
+                        <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'common.reset'|trans({}, 'messages') }}
                     </a>
                 </div>
             </form>
@@ -71,8 +71,8 @@
     {# Frameworks List #}
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
-            <span><i class="bi bi-list" aria-hidden="true"></i> {{ 'compliance.framework.list'|trans }}</span>
-            <span class="badge bg-primary">{{ frameworks|length }} {{ 'common.items'|trans }}</span>
+            <span><i class="bi bi-list" aria-hidden="true"></i> {{ 'compliance.framework.list'|trans({}, 'compliance') }}</span>
+            <span class="badge bg-primary">{{ frameworks|length }} {{ 'common.items'|trans({}, 'messages') }}</span>
         </div>
         <div class="card-body">
             {% if frameworks|length > 0 %}
@@ -81,15 +81,15 @@
                 } %}
                     {% block table_head %}
                         <tr>
-                            <th scope="col">{{ 'compliance.framework.field.code'|trans }}</th>
-                            <th scope="col">{{ 'compliance.framework.field.name'|trans }}</th>
-                            <th scope="col">{{ 'compliance.framework.field.version'|trans }}</th>
-                            <th scope="col">{{ 'compliance.framework.field.industry'|trans }}</th>
-                            <th scope="col">{{ 'compliance.framework.field.mandatory'|trans }}</th>
-                            <th scope="col">{{ 'compliance.framework.field.status'|trans }}</th>
-                            <th scope="col">{{ 'compliance.framework.field.requirements'|trans }}</th>
-                            <th scope="col">{{ 'compliance.framework.field.compliance'|trans }}</th>
-                            <th scope="col">{{ 'common.actions'|trans }}</th>
+                            <th scope="col">{{ 'compliance.framework.field.code'|trans({}, 'compliance') }}</th>
+                            <th scope="col">{{ 'compliance.framework.field.name'|trans({}, 'compliance') }}</th>
+                            <th scope="col">{{ 'compliance.framework.field.version'|trans({}, 'compliance') }}</th>
+                            <th scope="col">{{ 'compliance.framework.field.industry'|trans({}, 'compliance') }}</th>
+                            <th scope="col">{{ 'compliance.framework.field.mandatory'|trans({}, 'compliance') }}</th>
+                            <th scope="col">{{ 'compliance.framework.field.status'|trans({}, 'compliance') }}</th>
+                            <th scope="col">{{ 'compliance.framework.field.requirements'|trans({}, 'compliance') }}</th>
+                            <th scope="col">{{ 'compliance.framework.field.compliance'|trans({}, 'compliance') }}</th>
+                            <th scope="col">{{ 'common.actions'|trans({}, 'messages') }}</th>
                         </tr>
                     {% endblock %}
                     {% block table_body %}
@@ -105,16 +105,16 @@
                                 <td>{{ framework.applicableIndustry }}</td>
                                 <td>
                                     {% if framework.mandatory %}
-                                        <span class="badge bg-danger">{{ 'common.yes'|trans }}</span>
+                                        <span class="badge bg-danger">{{ 'common.yes'|trans({}, 'messages') }}</span>
                                     {% else %}
-                                        <span class="badge bg-secondary">{{ 'common.no'|trans }}</span>
+                                        <span class="badge bg-secondary">{{ 'common.no'|trans({}, 'messages') }}</span>
                                     {% endif %}
                                 </td>
                                 <td>
                                     {% if framework.active %}
-                                        <span class="badge bg-success">{{ 'common.active'|trans }}</span>
+                                        <span class="badge bg-success">{{ 'common.active'|trans({}, 'messages') }}</span>
                                     {% else %}
-                                        <span class="badge bg-secondary">{{ 'common.inactive'|trans }}</span>
+                                        <span class="badge bg-secondary">{{ 'common.inactive'|trans({}, 'messages') }}</span>
                                     {% endif %}
                                 </td>
                                 <td>
@@ -136,16 +136,16 @@
                                 <td>
                                     <div class="btn-group btn-group-sm">
                                         <a href="{{ path('app_compliance_framework_show', {id: framework.id}) }}"
-                                           class="btn btn-outline-primary" title="{{ 'common.view'|trans }}" aria-label="{{ 'common.view'|trans }}">
+                                           class="btn btn-outline-primary" title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
                                             <i class="bi bi-eye" aria-hidden="true"></i>
                                         </a>
                                         <a href="{{ path('app_compliance_framework', {id: framework.id}) }}"
-                                           class="btn btn-outline-info" title="{{ 'compliance.framework.action.dashboard'|trans }}" aria-label="{{ 'common.view'|trans }}">
+                                           class="btn btn-outline-info" title="{{ 'compliance.framework.action.dashboard'|trans({}, 'compliance') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
                                             <i class="bi bi-speedometer2" aria-hidden="true"></i>
                                         </a>
                                         {% if is_granted('ROLE_ADMIN') %}
                                             <a href="{{ path('app_compliance_framework_edit', {id: framework.id}) }}"
-                                               class="btn btn-outline-warning" title="{{ 'common.edit'|trans }}" aria-label="{{ 'common.edit'|trans }}">
+                                               class="btn btn-outline-warning" title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
                                                 <i class="bi bi-pencil" aria-hidden="true"></i>
                                             </a>
                                         {% endif %}
@@ -158,10 +158,10 @@
             {% else %}
                 <div class="text-center py-5">
                     <i class="bi bi-shield-x fs-1 text-muted" aria-hidden="true"></i>
-                    <p class="mt-3 text-muted">{{ 'compliance.framework.empty'|trans }}</p>
+                    <p class="mt-3 text-muted">{{ 'compliance.framework.empty'|trans({}, 'compliance') }}</p>
                     {% if is_granted('ROLE_ADMIN') %}
                         <a href="{{ path('app_compliance_framework_new') }}" class="btn btn-success">
-                            <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'compliance.framework.action.new'|trans }}
+                            <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'compliance.framework.action.new'|trans({}, 'compliance') }}
                         </a>
                     {% endif %}
                 </div>

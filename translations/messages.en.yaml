@@ -3,59 +3,6 @@ app:
   subtitle: Information Security Management according to ISO 27001
   footer: Little ISMS Helper - Your Partner for Information Security according to ISO 27001
   powered_by: Powered by Symfony %version%
-nav:
-  home: Home
-  dashboard: Dashboard
-  context: ISMS Context
-  analytics: Analytics
-  interested_parties: Interested Parties
-  soa: SoA
-  assets: Assets
-  suppliers: Suppliers
-  risks: Risks
-  change_requests: Change Requests
-  bcm: BCM
-  bc_plans: BC Plans
-  bc_exercises: BC Exercises
-  incidents: Incidents
-  audits: Audits
-  compliance: Compliance
-  audit_log: Audit Log
-  nis2_dashboard: 'NIS2 Dashboard'
-  vulnerabilities: 'Vulnerabilities'
-  patches: 'Patches'
-  users: Users
-  documents: Documents
-  assets_risk_hub: 'Assets & Risks'
-  risk_matrix: 'Risk Matrix'
-  bcm_hub: 'BCM Hub'
-  compliance_overview: 'Overview'
-  frameworks: 'Frameworks'
-  tools: 'Tools'
-  cross_framework: 'Cross-Framework'
-  compare: 'Compare'
-  mapping_quality: 'Mapping Quality'
-  locations: 'Locations'
-  people: 'People'
-  risk_appetite: 'Risk Appetite'
-  risk_treatment_plans: 'Treatment Plans'
-  crisis_team: 'Crisis Team'
-  workflows: 'Workflows'
-  training: 'Training'
-  management_review: 'Management Review'
-  admin_portal: 'Admin Portal'
-  privacy_hub: 'Privacy Hub'
-  vvt: 'RoPA (Art. 30)'
-  dpia: 'DPIA (Art. 35)'
-  data_breaches: 'Data Breaches (Art. 33/34)'
-  section:
-    isms_core: 'ISMS Core'
-    assets_risk: 'Assets & Risk'
-    bcm: 'Business Continuity'
-    privacy: 'Privacy'
-    operations: 'Operations'
-    compliance: 'Compliance'
-    admin: 'Admin'
 breadcrumb:
   home: 'Home'
 login:
@@ -111,342 +58,12 @@ home:
       action: Go to Documents
   development_notice: This feature is under development
   go_to_dashboard: Go to Dashboard
-# Phase 6L-A: Admin Panel Translation Keys
-admin:
-  title: Administration
-  breadcrumb:
-    home: Admin Dashboard
-  section:
-    user_access: Users & Access
-    system_config: System Configuration
-    modules: Modules & Features
-    monitoring: Monitoring & Logs
-    navigation: Navigation
-    data_management: Data Management
-    licensing: Licensing
-  nav:
-    tenants: Tenants
-    users: Users
-    roles: Roles
-    settings: Settings
-    compliance: Compliance Frameworks
-    audit_log: Audit Log
-    back_to_app: Back to Application
-    dashboard: Dashboard
-    corporate_structure: Corporate Structures
-    permissions: Permissions
-    sessions: Sessions
-    mfa: MFA Management
-    module_management: Module Management
-    compliance_management: Compliance Management
-    system_health: System Health
-    backup: Backup
-    export: Export
-    import: Import
-    data_repair: Data Repair
-    license_management: License Management
-  data_repair:
-    title: Data Repair
-    description: Repair broken tenant associations after backup/restore
-    orphaned_entities: Orphaned Entities
-    no_orphans: All entities are correctly assigned to a tenant.
-    orphans_found: Entities without tenant assignment were found. These must be assigned to a tenant.
-    orphaned_assets: Orphaned Assets
-    orphaned_risks: Orphaned Risks
-    orphaned_incidents: Orphaned Incidents
-    orphaned_assets_list: List of Orphaned Assets
-    orphaned_risks_list: List of Orphaned Risks
-    orphaned_incidents_list: List of Orphaned Incidents
-    assign_to_tenant: Assign to Tenant
-    select_tenant: Select tenant...
-    entity_type: Entity Type
-    all_orphans: All orphaned entities
-    assets_only: Assets only
-    risks_only: Risks only
-    incidents_only: Incidents only
-    assign_orphans: Assign Orphaned Entities
-    tenant_not_found: Tenant not found
-    invalid_entity_type: Invalid entity type
-    assigned_count: '%count% entities were successfully assigned to %tenant%.'
-    entity_not_found: Entity not found
-    entity_reassigned: '%entity% was successfully assigned to %tenant%.'
-    tenant_statistics: Tenant Statistics
-    risk_asset_assignment: Repair Risk-Asset Assignment
-    risk_asset_assignment_desc: The following risks have no asset assigned and should be corrected.
-    incident_asset_assignment: Repair Incident-Asset Assignment
-    incident_asset_assignment_desc: The following incidents have no assets assigned and should be corrected.
-    current_asset: Current Asset
-    assign_to_asset: Assign New Asset
-    no_asset: No Asset
-    select_asset: Select asset...
-    asset_not_found: Asset not found
-    controls_without_risks: Controls Without Risk or Framework Assignment
-    controls_without_risks_desc: The following applicable controls have neither risks nor compliance framework assignments. Controls should be linked to either risks or frameworks.
-    controls_without_assets: Controls Without Asset Assignment
-    controls_without_assets_desc: The following applicable controls protect no assets. This is informational and may be normal depending on the control type.
-    controls_count: '{%count%} control(s) found'
-    broken_references: Broken References
-    broken_references_desc: The following records reference non-existent entities. These references must be manually cleaned up.
-    issue: Issue
-    assign_risk: Assign Risk
-    select_risk: Select risk...
-    assign_asset: Assign Asset
-  dashboard:
-    title: Admin Dashboard
-    subtitle: Central administration and system overview
-    alerts:
-      title: System Alerts
-      item: item
-      items: items
-      view: View
-    stats:
-      users: Users
-      active: Active
-      inactive: Inactive
-      manage: Manage
-      active_sessions: Active Sessions
-      last_24h: Last 24 hours
-      database: Database Size
-      total_records: Total Records
-      across_modules: Across all modules
-    modules:
-      title: Module Statistics
-      module: Module
-      records: Records
-      action: Action
-      assets: Assets
-      risks: Risks
-      controls: Controls
-      incidents: Incidents
-      audits: Audits
-      compliance: Compliance
-      trainings: Trainings
-    quick_actions:
-      title: Quick Actions
-      add_user: Add User
-      add_role: Add Role
-      view_logs: View Logs
-      manage_compliance: Manage Compliance
-    activity:
-      title: Recent Activity
-      empty: No recent activity
-      view_all: View All Activity
-  alert:
-    inactive_users: Inactive users
-    unverified_users: Unverified users
-    large_database: Large database (GB)
-  # Phase 6L-B: System Settings Translation Keys
-  settings:
-    title: System Settings
-    subtitle: Configuration and management of system settings
-    configure: Configure
-    saved: Settings saved successfully
-    help: Help
-    info: Information
-    info_title: Notice
-    info_text: Changes to system settings take effect immediately and are stored in the database.
-    application:
-      title: Application Settings
-      description: Language, timezone, display options
-      locale_settings: Language Settings
-      display_settings: Display Settings
-      locale: Default Language
-      default_locale: Default Language
-      default_locale_help: The default language for new users and the system
-      supported_locales: Supported Languages
-      supported_locales_help: Which languages can users select?
-      timezone: Timezone
-      timezone_help: Default timezone for date and time displays
-      items_per_page: Items per Page
-      items_per_page_help: Number of items in lists (10-100)
-      date_format: Date Format
-      date_format_help: Format for date displays
-      datetime_format: Date/Time Format
-      datetime_format_help: Format for date/time displays
-      help_text: These settings affect the application display for all users.
-    security:
-      title: Security Settings
-      description: Sessions, passwords, authentication
-      session_settings: Session Settings
-      password_settings: Password Settings
-      auth_settings: Authentication Settings
-      session_lifetime: Session Lifetime
-      session_lifetime_help: Maximum session duration in seconds (5-1440 min)
-      remember_me_lifetime: Remember Me Lifetime
-      remember_me_help: Duration for "Remember Me" in seconds
-      password_min_length: Minimum Password Length
-      password_min_length_help: Minimum number of characters for passwords (6-20)
-      max_login_attempts: Max. Login Attempts
-      max_login_attempts_help: Number of failed login attempts before lockout
-      lockout_duration: Lockout Duration
-      lockout_duration_help: Account lockout duration after too many failed attempts
-      require_2fa: Require Two-Factor Authentication
-      require_2fa_help: All users must enable 2FA
-      warning: Changes to security settings can affect all users. Please proceed with caution.
-    features:
-      title: Feature Flags
-      description: Enable/disable experimental features
-      intro: Enable or disable experimental features for the entire system.
-      dark_mode: Dark Mode
-      dark_mode_help: Allows users to switch to dark theme
-      global_search: Global Search
-      global_search_help: Search function across all modules
-      quick_view: Quick View
-      quick_view_help: Quick view modals for records
-      notifications: Notifications
-      notifications_help: System notifications and alerts
-      audit_log: Audit Logging
-      audit_log_help: Automatic logging of all changes
-      info_text: Feature flags allow gradual introduction or testing of new features.
-dashboard:
-  title: ISMS Dashboard
-  subtitle: Overview of your information security status
-  kpis: Key Performance Indicators
-  compliance_status: Compliance Status
-  implementation_status: Implementation Status
-  quick_access: Quick Access
-  next_steps: Next Steps
-  success:
-    settings_imported: Dashboard settings successfully imported!
-  error:
-    import_failed: Error importing settings. Please check the file.
-  overdue_reviews:
-    title: 'Overdue Risk Reviews'
-    description: '%count% risks require review (ISO 27001:2022 Clause 6.1.3.d)'
-    last_review: 'Last Review'
-    never_reviewed: 'Never Reviewed'
-    view_all: 'View All %count%'
-  upcoming_reviews:
-    title: 'Upcoming Risk Reviews'
-    description: 'Risks that need to be reviewed within the next 30 days'
-  overdue_treatment_plans:
-    title: 'Overdue Treatment Plans'
-    description: '%count% treatment plans are overdue (ISO 27001:2022 Clause 6.1.3)'
-    due_date: 'Due Date'
-    days_overdue: 'days overdue'
-    view_all: 'View %count% more'
-  approaching_treatment_plans:
-    title: 'Approaching Deadlines'
-    description: 'Treatment plans with deadlines within the next 7 days'
-    days_remaining: 'days remaining'
 assets: Assets
 risks: Risks
 controls: Controls
 incidents: Incidents
 audits: Audits
 compliance_label: Compliance
-# Phase 6K Translation Update
-training:
-  title: Training
-  all_trainings: All Trainings
-  new: New Training
-  new_help: Create a new training for employees
-  create: Create Training
-  create_first: Create your first training
-  edit: Edit Training
-  edit_help: Edit training details
-  mandatory: Mandatory
-  mandatory_label: Mandatory Training
-  mandatory_training: Mandatory Training
-  mandatory_info: This training is mandatory for all participants.
-  no_participants: No participants registered yet.
-  no_trainings: No trainings available. Create the first training.
-  no_trainings_found: No trainings found
-  participant_count: Participant Count
-  participants_count: Participants
-  participants_label: Participants
-  upcoming_trainings: Upcoming Trainings
-  location: Location
-  covered_controls: Covered Controls
-  compliance_coverage: Compliance Coverage
-  controls_help: Select controls covered by this training
-  description: Description
-  statistics:
-    total: Total Trainings
-    upcoming: Upcoming
-    completed: Completed
-    mandatory: Mandatory
-  delivery:
-    in_person: In-Person
-    online: Online
-    hybrid: Hybrid
-    self_paced: Self-Paced
-  delivery_method: Delivery Method
-  type: Training Type
-  type_values:
-    awareness: Awareness
-    technical: Technical
-    compliance: Compliance
-    security: Security
-    other: Other
-  status: Status
-  status_values:
-    planned: Planned
-    confirmed: Confirmed
-    completed: Completed
-    cancelled: Cancelled
-    postponed: Postponed
-  scheduled_date: Scheduled Date
-  duration: Duration
-  minutes: Minutes
-  trainer: Trainer
-  target_audience: Target Audience
-  audience:
-    all_staff: All Staff
-    it_staff: IT Staff
-    management: Management
-    specific_department: Specific Department
-  participants: Participants
-  materials: Training Materials
-  feedback: Feedback
-  confirm_delete: Confirm Delete Training
-  delete_warning: Are you sure you want to delete this training? This action cannot be undone.
-  field:
-    title: Training Title
-    description: Description
-    training_type: Training Type
-    delivery_method: Delivery Method
-    scheduled_date: Scheduled Date & Time
-    duration: Duration (Minutes)
-    location: Location / Meeting Link
-    trainer: Trainer / Conducting Person
-    target_audience: Target Audience
-    participants: Participants
-    status: Status
-    mandatory: Mandatory
-    related_controls: Related Controls
-    materials: Training Materials
-    feedback: Feedback / Notes
-  placeholder:
-    date: Select date and time
-    delivery: Select delivery method
-    duration: Duration in minutes
-    location: e.g. Conference Room 1 or https://...
-    participants: Select participants
-    status: Select status
-    title: e.g. Security Awareness Training 2024
-    trainer: Name of trainer
-    type: Select training type
-  section:
-    attendance: Attendance & Participants
-    basic_info: Basic Information
-    details: Training Details
-    schedule: Schedule
-    people: People
-    status: Status
-    controls: Related Controls
-    materials: Training Materials
-  show:
-    title: Training Details
-  table:
-    trainer: Trainer
-  success:
-    created: Training created successfully.
-    updated: Training updated successfully.
-    deleted: Training deleted successfully.
-  validation:
-    title_required: Please enter a title.
-    date_required: Please select a date.
 users: Users
 settings: Settings
 profile: Profile
@@ -465,7 +82,6 @@ details: Details
 close: Close
 confirm: Confirm
 back: Back
-# Phase 6K Translation Update - Common UI
 common:
   overview: Overview
   name: Name
@@ -487,8 +103,6 @@ common:
   reset: Reset
   metadata: Metadata
   action_irreversible: This action cannot be undone.
-  'true': true
-  'false': false
   yes: Yes
   no: No
   note: Note
@@ -555,6 +169,35 @@ common:
   duplicate: Duplicate
   quick_actions: Quick Actions
   select: Select
+  last_30_days: Last 30 Days
+  last_90_days: Last 90 Days
+  last_year: Last Year
+  not_available: Not Available
+  title: Title
+  responsible: Responsible
+  target_date: Target Date
+  export_pdf: Export PDF
+  pdf_export: PDF Export
+  search_processes: Search processes...
+  reset_all_filters: Reset all filters
+  export_format_selection: Export format selection
+  tooltip:
+    go_to_module_management: Go to module management to activate this module
+    framework_dashboard_description: Opens the framework dashboard with workflow steps, progress tracking, and recommended next actions
+    reload_to_see_framework: Reload the page to see the framework in the loaded list
+    framework_loaded_success: The framework has been successfully loaded into your system with all requirements.
+    opens_requirements_list: Opens the requirements list filtered by this framework
+    requirements_sorted_by_fulfillment: Shows requirements sorted by fulfillment (lowest first) so you can focus on gaps
+    reach_100_percent: Reach 100% by implementing all applicable requirements. Track your progress and address any remaining gaps.
+    view_gap_analysis: View detailed gap analysis with recommendations for improvement
+    activate_module: Activate this module in the module management
+    fulfillment_slider: Drag to adjust how well this requirement is fulfilled (0-100%). Color indicates status: red < 50% < yellow < 75% < green.
+    status_in_progress: In progress - Implementation started, partially complete
+    status_fully_implemented: Fully implemented - All aspects of this requirement are met
+  placeholder:
+    case_number_from_authority: Case number from authority
+    explain_deadline_exceeded: Explain why the 72-hour deadline was exceeded...
+    explain_breach_reopened: Explain why this breach is being reopened...
 asset:
   new: New Asset
   create: Create Asset
@@ -564,11 +207,9 @@ asset:
     title: Asset Details
   confirm:
     delete: Are you sure you want to delete this asset?
-
   title:
     _default: Assets
     bcm_insights: 'BCM Insights for Assets'
-
   description:
     bcm_insights: 'Analysis of business-critical assets and their impact on business continuity'
     critical_impact: 'Critical Impact: Immediate business failure if lost'
@@ -577,11 +218,9 @@ asset:
     low_impact: 'Low Impact: Minimal or delayed impact'
     rto_analysis: 'Distribution of assets by their Recovery Time Objectives'
     dependencies: 'Analysis of asset dependencies and potential single points of failure'
-
   action:
     bcm_insights: BCM Insights
     view_critical: 'View Critical Assets'
-
   stats:
     total_assets: 'Total Assets'
     critical_assets: 'Critical Assets'
@@ -590,7 +229,6 @@ asset:
     with_dependencies: 'With Dependencies'
     avg_dependencies: 'Avg. Dependencies'
     single_points_failure: 'Single Points of Failure'
-
   section:
     cia_triad: CIA Triad
     valuation: Valuation
@@ -675,25 +313,20 @@ asset:
     integrity: Integrity
     availability: Availability
     return_date: 'Return Date'
-
   impact:
     critical: 'Critical'
     high: 'High'
     medium: 'Medium'
     low: 'Low'
-
   rto:
     immediate: 'Immediate (< 4h)'
     urgent: 'Urgent (4-24h)'
     standard: 'Standard (1-3 days)'
     flexible: 'Flexible (> 3 days)'
-
   badge:
     business_critical: 'Business Critical'
-
   message:
     no_critical_assets: 'No critical assets found'
-
   success:
     created: Asset created successfully.
     updated: Asset updated successfully.
@@ -710,26 +343,17 @@ risk:
   impact_help: Severity of impact if occurs (1=Negligible, 5=Catastrophic)
   residual_assessment: Residual Risk Assessment
   residual_help: Assess the remaining risk after implementing security controls
-
-  # Confirm Messages
   confirm:
     delete: Delete Risk
-
-  # Success Messages
   success:
     created: Risk created successfully.
     updated: Risk updated successfully.
     deleted: Risk deleted successfully.
-
-  # Validation Messages (ISO 27001 Compliance)
   validation:
     risk_owner_required: 'A risk owner must be assigned (ISO 27001 A.5.1/A.5.2)'
-
-  # Field Labels (Form Labels)
   field:
     title: Risk Title
     category: Risk Category
-    # GDPR Risk Assessment Fields (Priority 2.2)
     involves_personal_data: 'Involves Personal Data'
     involves_special_category_data: 'Involves Special Category Data (Art. 9 GDPR)'
     legal_basis: 'Legal Basis (Art. 6 GDPR)'
@@ -756,14 +380,10 @@ risk:
     status: Status
     review_date: Review Date
     score: Risk Score
-
-  # Deprecated Labels (kept for compatibility)
   label:
     title: Risk Title
     risk_owner: Risk Owner
     inherent_risk: Inherent Risk
-
-  # Placeholders
   placeholder:
     title: e.g. Data loss from ransomware attack
     category: Select risk category...
@@ -781,8 +401,6 @@ risk:
     treatment_description: Describe planned measures...
     acceptance_approved_by: e.g. John Doe (CEO)
     acceptance_justification: Justification for risk acceptance...
-
-  # Help Text
   help:
     title: Short, concise risk title
     category: 'Select the risk category for better grouping and reporting (ISO 27005:2022 Section 8.2.3)'
@@ -814,15 +432,11 @@ risk:
     review_date: Date of next risk review
     inherent: 'Assessment of risk without considering existing controls (inherent risk)'
     residual: 'Assessment of risk after implementing controls (residual risk)'
-
-  # Treatment Strategies
   treatment:
     mitigate: Mitigate
     transfer: Transfer
     accept: Accept
     avoid: Avoid
-
-  # Status Values
   status:
     identified: Identified
     assessed: Assessed
@@ -830,8 +444,6 @@ risk:
     monitored: Monitored
     closed: Closed
     accepted: Accepted
-
-  # Risk Categories (ISO 27005:2022 Section 8.2.3)
   category:
     financial: Financial Risks
     operational: Operational Risks
@@ -839,8 +451,6 @@ risk:
     strategic: Strategic Risks
     reputational: Reputational Risks
     security: Information Security Risks
-
-  # GDPR Legal Basis (Art. 6 GDPR) - Priority 2.2
   legal_basis:
     consent: 'Consent (Art. 6.1.a)'
     contract: 'Contract Performance (Art. 6.1.b)'
@@ -848,14 +458,10 @@ risk:
     vital_interests: 'Vital Interests (Art. 6.1.d)'
     public_task: 'Public Task (Art. 6.1.e)'
     legitimate_interests: 'Legitimate Interests (Art. 6.1.f)'
-
-  # GDPR Processing Scale - Priority 2.2
   processing_scale:
     small: 'Small Scale'
     medium: 'Medium Scale'
     large_scale: 'Large Scale (DPIA required)'
-
-  # Risk Assessment Guidance (Priority 2.3)
   guidance:
     title: 'Assessment Guide'
     intro: 'Use these tables as a reference for assessing likelihood and impact.'
@@ -886,8 +492,6 @@ risk:
       major_desc: '€100,000-500,000 damage, > 3 days interruption, significant reputational damage.'
       catastrophic: 'Catastrophic'
       catastrophic_desc: '> €500,000 damage, existential threat, severe reputational damage, possible legal consequences.'
-
-  # Sections
   section:
     basic_info: Basic Information
     gdpr_assessment: 'GDPR Data Protection Assessment'
@@ -900,8 +504,6 @@ risk:
     mitigating_controls: 'Mitigating Controls'
     realization_history: 'Realization History'
     affected_asset: 'Affected Asset'
-
-  # Risk Acceptance Workflow (Priority 2.1 - ISO 27005:2022 Section 8.4.4)
   acceptance:
     title: 'Formal Risk Acceptance'
     request: 'Request Acceptance'
@@ -933,7 +535,6 @@ risk:
       justification_required: 'A justification is required'
       reason_required: 'A rejection reason is required'
       no_approver: 'No approver found for level %level%'
-
 control:
   section:
     protected_assets: Protected Assets
@@ -966,7 +567,6 @@ control:
     verified: Verified
   success:
     updated: Control updated successfully.
-# Phase 6K Translation Update - Audit Module
 audit:
   title: Audits
   new: New Audit
@@ -1080,109 +680,37 @@ audit:
     created: Audit created successfully.
     updated: Audit updated successfully.
     deleted: Audit deleted successfully.
-
-# ISMS Context (ISO 27001 Clause 4)
-context:
-  title: ISMS Context
-  field:
-    organization_name: Organization Name
-    isms_scope: ISMS Scope
-    scope_exclusions: Scope Exclusions
-    external_issues: External Issues
-    internal_issues: Internal Issues
-    interested_parties: Interested Parties
-    interested_parties_requirements: Interested Parties Requirements
-    legal_requirements: Legal Requirements
-    regulatory_requirements: Regulatory Requirements
-    contractual_obligations: Contractual Obligations
-    isms_policy: ISMS Policy
-    roles_and_responsibilities: Roles and Responsibilities
-    last_review_date: Last Review Date
-    next_review_date: Next Review Date
-  validation:
-    organization_name_required: Please enter an organization name.
-    name_max_length: The name may not exceed {{ limit }} characters.
-  success:
-    created: ISMS Context created successfully.
-    updated: ISMS Context updated successfully.
-  kpi:
-    completeness: Completeness
-    active_goals: Active Goals
-    achieved_goals: Achieved Goals
-    next_review: Next Review
-    of_total: of %total%
-    success_rate: '%rate%% Success Rate'
-  review_status:
-    today: Today
-    due: Review due
-    days_remaining: Days remaining
-    days_overdue: Days overdue
-    not_scheduled: Not Scheduled
-  section:
-    history: Context Review History
-    title: ISMS Context
-    organization: Organization
-    exclusions: Exclusions
-    policy: ISMS Policy
-    external_issues: External Issues
-    internal_issues: Internal Issues
-    interested_parties: Interested Parties
-    requirements: Requirements
-    legal_requirements: Legal Requirements
-    regulatory_requirements: Regulatory Requirements
-    contractual_obligations: Contractual Obligations
-  link:
-    edit: Edit ISMS Context
-    create_now: Create Now
-  info:
-    iso_clause: 'ISO 27001 Clause 4:'
-    iso_description: Understanding the Organization and its Context
-
 framework: Framework
 requirement: Requirement
 soa_title: Statement of Applicability
 bia: Business Impact Analysis
 roles:
-  ROLE_USER: User
-  ROLE_AUDITOR: Auditor
-  ROLE_MANAGER: Manager
-  ROLE_ADMIN: Administrator
-  ROLE_SUPER_ADMIN: Super Administrator
 asset_management:
   title: Asset Management
   description: Management of IT assets and information values according to ISO 27001
   statistics: Statistics
   active_assets: Active Assets
   distribution_by_type: Distribution by Type
-
-# Risk Management
 risk_management:
   title: Risk Management
   description: Identification, assessment and treatment of information security risks
   high_risks: High Risks
   risk_value_threshold: Risks with risk value ≥ 12
   total_identified: Total Identified Risks
-
-# Incident Management
 incident_management:
   title: Incident Management
   description: Documentation and handling of information security incidents
   open_incidents: Open Incidents
   closed_incidents: Closed Incidents
   total_recorded: Total Recorded Incidents
-
-# Context Management
 context_management:
   title: ISMS Context
   description: Definition of organizational context, scope and ISMS objectives
   isms_scope: ISMS Scope
   no_context_defined: No ISMS context defined yet. Please define the organizational
-    context first.
   isms_objectives: ISMS Objectives
   active_objectives: Active Objectives
   no_objectives: No ISMS objectives defined yet.
-
-# Audit Management
 audit_management:
   title: Internal Audit
   description: Planning and execution of internal ISMS audits according to ISO 27001
@@ -1190,146 +718,6 @@ audit_management:
   total_audits: Total Audits
   audits_list: Audits List
   no_audits: No audits available
-
-# BCM
-bcm:
-  title:
-    _default: Business Continuity Management
-    critical: 'Critical Assets & Processes'
-  description:
-    _default: Business continuity management and emergency preparedness
-    critical: 'Overview of business-critical assets and processes with their recovery requirements'
-    critical_level: 'Critical: Immediate impact on business operations. RTO < 4 hours.'
-    high_level: 'High: Significant impact on business operations. RTO < 24 hours.'
-    medium_level: 'Medium: Moderate impact. RTO < 72 hours.'
-    action_items: 'Priority actions to improve business continuity'
-
-  action:
-    view_insights: 'View Insights'
-    export: 'Export'
-    plan: 'Create Plan'
-
-  warning:
-    critical_assets_count: '%count% critical assets require attention'
-    critical_message: 'Critical assets without recovery plans found'
-
-  stats:
-    critical_assets: 'Critical Assets'
-    critical_processes: 'Critical Processes'
-    avg_rto: 'Avg. RTO'
-    missing_recovery_plans: 'Missing Recovery Plans'
-
-  section:
-    criticality_overview: 'Criticality Overview'
-    critical_assets_list: 'Critical Assets'
-    critical_processes: 'Critical Business Processes'
-    action_items: 'Actions Required'
-
-  criticality:
-    critical: 'Critical'
-    high: 'High'
-    medium: 'Medium'
-
-  field:
-    assets: 'Assets'
-    avg_rto: 'Avg. RTO'
-    asset_name: 'Asset Name'
-    type: 'Type'
-    criticality: 'Criticality'
-    rto: 'RTO'
-    rpo: 'RPO'
-    recovery_plan: 'Recovery Plan'
-    last_tested: 'Last Tested'
-    process_name: 'Process Name'
-    department: 'Department'
-    dependent_assets: 'Dependent Assets'
-    mtd: 'MTD'
-    impact_of_loss: 'Impact of Loss'
-    maximum_tolerable_downtime: 'Maximum Tolerable Downtime'
-
-  badge:
-    no_recovery_plan: 'No Plan'
-    immediate: 'Immediate'
-    exists: 'Exists'
-    missing: 'Missing'
-    test_overdue: 'Test Overdue'
-
-  message:
-    never_tested: 'Never tested'
-    no_critical_assets: 'No critical assets found'
-    no_critical_processes: 'No critical processes found'
-
-# Role Management
-role_management:
-  title:
-    list: 'Roles & Permissions'
-    create: 'Create Role'
-    edit: 'Edit Role'
-    show: 'Role Details'
-
-  description:
-    overview: 'Manage user roles and their permissions for access control'
-
-  action:
-    create: 'Create New Role'
-
-  section:
-    basic_info: 'Basic Information'
-    permissions: 'Permissions'
-    details: 'Role Details'
-    users: 'Assigned Users'
-
-  field:
-    name: 'Role Name'
-    description: 'Description'
-    users: 'Users'
-    permissions: 'Permissions'
-    type: 'Type'
-
-  placeholder:
-    name: 'e.g. Security Officer'
-    description: 'Description of the role and its responsibilities...'
-
-  help:
-    active: 'Active roles can be assigned to users'
-    permissions: 'Select the permissions this role should have'
-
-  permission:
-    name: 'Permission'
-    resource: 'Resource'
-    action: 'Action'
-
-  user:
-    name: 'Name'
-    email: 'Email'
-    assigned_date: 'Assigned On'
-
-  badge:
-    system: 'System'
-    custom: 'Custom'
-
-  type:
-    system: 'System Role'
-    custom: 'Custom Role'
-
-  stats:
-    total: 'Total Roles'
-    system_roles: 'System Roles'
-    with_users: 'With Users'
-    avg_permissions: 'Avg. Permissions'
-
-  message:
-    no_permissions: 'No permissions assigned to this role'
-    no_users: 'No users assigned to this role'
-    no_roles: 'No roles created yet'
-
-  warning:
-    system_role: 'System Role'
-    system_role_desc: 'This is a system role and cannot be deleted. Only permissions can be modified.'
-
-  confirm:
-    delete: 'Are you sure you want to delete this role? All user assignments will be removed.'
-
 compliance_management:
   title: Compliance Management
   description: Management of compliance requirements
@@ -1348,7 +736,6 @@ activity:
   system: System
   security_team: Security Team
   new_risk: New Risk
-# Phase 6K Translation Update - Incident Module
 incident:
   new: New Incident
   create: Create Incident
@@ -1497,13 +884,11 @@ incident:
 document:
   doc_title: 'Documents'
   title: 'Documents'
-  'title.by_type': 'Documents by Type'
   subtitle: 'Document Management'
   new: 'New Document'
   edit: 'Edit Document'
   update: 'Update Document'
   upload: 'Upload Document'
-
   section:
     basic_info: 'Document Information'
     file_upload: 'File Upload'
@@ -1515,7 +900,6 @@ document:
     type_overview: 'Type Overview'
     type_statistics: 'Type Statistics'
     types_overview: 'Types Overview'
-
   field:
     name: Document Name
     description: Description
@@ -1534,11 +918,9 @@ document:
     total_documents: 'Total Documents'
     overdue_reviews: 'Overdue Reviews'
     type_name: 'Type Name'
-
   placeholder:
     name: e.g. Information Security Policy 2024
     description: Brief description of the document...
-
   help:
     name: 'Unique name of the document'
     description: 'Detailed description of the document content and purpose'
@@ -1546,13 +928,10 @@ document:
     file: 'Choose a file to upload'
     file_edit: 'Upload new file (optional)'
     edit_file: 'Leave blank to keep the existing file'
-
   file_help: 'Allowed file types: PDF, Word, Excel, Images, Text'
   edit_file_help: 'Upload a new file to replace the existing one'
-
   validation:
     mime_types: Please upload a valid document (PDF, Word, Excel, Image or Text file)
-
   type:
     asset: Asset Documentation
     risk: Risk Assessment
@@ -1567,7 +946,6 @@ document:
     tables: Tables
     excel: 'Excel Documents'
     other: Other
-
   label:
     type: Type
     file_name: File Name
@@ -1577,40 +955,30 @@ document:
     uploaded_at: Uploaded At
     last_updated: Last Updated
     related_entity: 'Related Entity'
-
   action:
     create: 'Create Document'
     upload: 'Upload Document'
-
   badge:
     confidential: 'Confidential'
     controlled: 'Controlled'
     due_soon: 'Due Soon'
     overdue: 'Overdue'
-
   confirm:
     delete: 'Do you really want to delete this document?'
-
   delete_warning: 'Deleting this document cannot be undone.'
-
   description:
     by_type: 'Documents by Type'
-
   details:
     title: 'Document Details'
-
   error:
     upload_failed: 'File upload failed'
     too_many_uploads: 'Too many uploads. Please try again later.'
-
   filter:
     all_categories: 'All Categories'
     search_placeholder: 'Search documents...'
-
   kpi:
     total_documents: 'Total Documents'
     total_size: 'Total Size'
-
   message:
     no_documents: 'No documents available'
     no_documents_for_type: 'No documents for this type'
@@ -1618,10 +986,8 @@ document:
     no_results: 'No results found'
     no_types: 'No document types defined'
     upload_first: 'Upload your first document'
-
   option:
     all_types: 'All Types'
-
   stats:
     active_documents: 'Active Documents'
     avg_per_type: 'Average per Type'
@@ -1631,12 +997,10 @@ document:
     overdue_reviews: 'Overdue Reviews'
     total: 'Total'
     total_documents: 'Total Documents'
-
   success:
     deleted: 'Document deleted successfully'
     updated: 'Document updated successfully'
     uploaded: 'Document uploaded successfully'
-
   table:
     uploaded_by: 'Uploaded By'
 person:
@@ -1797,134 +1161,6 @@ location:
     created: Location created successfully.
     updated: Location updated successfully.
     deleted: Location deleted successfully.
-physical_access:
-  title: Physical Access Control
-  name: Access Log
-  person: Person
-  location: Location
-  access_type: Access Type
-  access_time: Access Time
-  exit_time: Exit Time
-  authentication_method: Authentication Method
-  purpose: Purpose
-  escorted_by: Escorted By
-  authorized: Authorized
-  notes: Notes
-  alert_level: Alert Level
-  after_hours: After Hours
-  door_or_gate: Door/Gate
-  type:
-    entry: Entry
-    exit: Exit
-    entry_exit: Entry/Exit
-  auth_method:
-    badge: Badge
-    biometric: Biometric
-    pin: PIN
-    key: Key
-    escort: Escort
-    manual: Manual
-    other: Other
-  alert:
-    none: None
-    low: Low
-    medium: Medium
-    high: High
-    critical: Critical
-threat:
-  title: Threat Intelligence
-  name: Threat
-  threat_type: Threat Type
-  severity: Severity
-  source: Source
-  cve_id: CVE ID
-  affected_systems: Affected Systems
-  affected_assets: Affected Assets
-  indicators: Indicators
-  mitigation_recommendations: Mitigation Recommendations
-  status: Status
-  detection_date: Detection Date
-  mitigation_date: Mitigation Date
-  actions_taken: Actions Taken
-  affects_organization: Affects Organization
-  cvss_score: CVSS Score
-  references: References
-  assigned_to: Assigned To
-  type:
-    malware: Malware
-    phishing: Phishing
-    vulnerability: Vulnerability
-    data_breach: Data Breach
-    ddos: DDoS
-    insider_threat: Insider Threat
-    ransomware: Ransomware
-    apt: APT
-    zero_day: Zero Day
-    other: Other
-  status_type:
-    new: New
-    analyzing: Analyzing
-    mitigated: Mitigated
-    monitoring: Monitoring
-    closed: Closed
-crypto:
-  title: Cryptographic Operations
-  name: Cryptographic Operation
-  operation_type: Operation Type
-  algorithm: Algorithm
-  key_length: Key Length
-  key_identifier: Key Identifier
-  purpose: Purpose
-  data_classification: Data Classification
-  application_component: Application Component
-  related_asset: Related Asset
-  status: Status
-  error_message: Error Message
-  timestamp: Timestamp
-  ip_address: IP Address
-  metadata: Metadata
-  compliance_relevant: Compliance Relevant
-  type:
-    encryption: Encryption
-    decryption: Decryption
-    signing: Signing
-    verification: Verification
-    key_generation: Key Generation
-    key_exchange: Key Exchange
-    hashing: Hashing
-    other: Other
-  status_type:
-    success: Success
-    failed: Failed
-    pending: Pending
-    in_progress: In Progress
-field:
-  id: ID
-  name: Name
-  title: Title
-  description: Description
-  status: Status
-  type: Type
-  date: Date
-  created_at: Created At
-  updated_at: Updated At
-  tenant: Tenant
-  user: User
-  location: Location
-  person: Person
-  responsible: Responsible
-  responsible_person: Responsible Person
-  contact_person: Contact Person
-  notes: Notes
-  active: Active
-  email: Email
-  phone: Phone
-  address: Address
-  city: City
-  country: Country
-  postal_code: Postal Code
-  company: Company
-  department: Department
 supplier:
   title: Supplier Management
   page:
@@ -2036,23 +1272,6 @@ interested_party:
     created: Interested party created successfully.
     updated: Interested party updated successfully.
     deleted: Interested party deleted successfully.
-ui:
-  location: Location
-  responsible: Responsible
-  contact: Contact
-  details: Details
-  overview: Overview
-  new: New
-  add: Add
-  remove: Remove
-  select: Select
-  none: None
-  all: All
-  'true': true
-  'false': false
-  optional: Optional
-  required: Required
-  n_a: N/A
 workflow:
   title:
     list: 'Workflows'
@@ -2061,16 +1280,13 @@ workflow:
     pending: 'Pending Workflows'
     overdue: 'Overdue Workflows'
     instance_show: 'Workflow Details'
-
   step: 'Step'
   days: 'Days'
-
   action:
     start: 'Start Workflow'
     cancel: 'Cancel Workflow'
     complete_step: 'Complete Step'
     definitions: 'Manage Definitions'
-
   badge:
     completed: 'Completed'
     critical: 'Critical'
@@ -2078,10 +1294,8 @@ workflow:
     due_soon: 'Due Soon'
     overdue: 'Overdue'
     my_task: 'My Task'
-
   confirm:
     cancel: 'Do you really want to cancel this workflow?'
-
   description:
     active: 'Active Workflows'
     active_detail: 'Workflows currently in progress'
@@ -2091,7 +1305,6 @@ workflow:
     overview: 'Workflow Overview'
     pending: 'Pending Workflows'
     pending_detail: 'Workflows awaiting action'
-
   field:
     assignee: 'Assignee'
     completed_at: 'Completed At'
@@ -2101,7 +1314,6 @@ workflow:
     due_date: 'Due Date'
     priority: 'Priority'
     progress: 'Progress'
-
   message:
     no_active: 'No active workflows'
     no_activities: 'No activities'
@@ -2109,14 +1321,12 @@ workflow:
     no_overdue_desc: 'All workflows are on schedule'
     no_pending: 'No pending workflows'
     unassigned: 'Unassigned'
-
   section:
     active: 'Active Workflows'
     activity_log: 'Activity Log'
     overdue: 'Overdue'
     overview: 'Overview'
     pending: 'Pending'
-
   stats:
     active: 'Active'
     avg_progress: 'Average Progress'
@@ -2129,28 +1339,23 @@ workflow:
     overdue_days_avg: 'Average Days Overdue'
     pending: 'Pending'
     total: 'Total'
-
   activity:
     action: 'Action'
     details: 'Details'
     timestamp: 'Timestamp'
     user: 'User'
-
   warning:
     overdue_count: '{{ count }} overdue workflows'
     overdue_message: 'You have overdue workflows that require attention'
     rejected: 'Workflow step rejected'
-
   success:
     approved: Workflow step approved successfully.
     started: Workflow started successfully.
-
   error:
     not_authorized_approve: You are not authorized to approve this step.
     not_authorized_reject: You are not authorized to reject this step.
     comments_required: Comments are required when rejecting a workflow step.
     not_found: No workflow found for this entity type.
-
   info:
     cancelled: Workflow instance cancelled.
     no_active_workflow: No active workflow found for this entity.
@@ -2344,90 +1549,6 @@ bc_exercise:
     created: BC exercise created successfully.
     updated: BC exercise updated successfully.
     deleted: BC exercise deleted successfully.
-management_review:
-  title: 'Management Reviews'
-  new: 'New Management Review'
-  create: 'Create Management Review'
-  edit: 'Edit Management Review'
-  all_reviews: 'All Reviews'
-  no_reviews: 'No management reviews available'
-  create_first: 'Create your first management review'
-
-  review_date: 'Review Date'
-  participants: 'Participants'
-  status: 'Status'
-
-  confirm_delete: 'Do you really want to delete this management review?'
-  delete_warning: 'This action cannot be undone.'
-
-  clause_93: 'ISO 27001:2022 Clause 9.3'
-  clause_93_description: 'Management Review by Top Management'
-  iso_clause_93_info: 'Requirements according to ISO 27001:2022 Clause 9.3'
-  iso_clause_info: 'This section fulfills the requirements of ISO 27001:2022 Clause 9.3'
-  iso_requirement: 'ISO Requirement'
-
-  section:
-    basic_info: 'Basic Information'
-    inputs: 'Review Inputs'
-    outputs: 'Review Outputs'
-    followup: 'Follow-up'
-
-  inputs_label: 'Review Inputs (according to ISO 27001:2022 Clause 9.3)'
-  outputs_label: 'Review Outputs (according to ISO 27001:2022 Clause 9.3)'
-  action_items_label: 'Actions and Improvements'
-
-  input_1: 'Status of actions from previous management reviews'
-  input_2: 'Changes in external and internal issues that are relevant to the ISMS'
-  input_3: 'Feedback on information security performance'
-  input_4: 'Feedback from interested parties'
-
-  performance_evaluation: 'Performance evaluation including trends in:'
-  nonconformities_status: 'Nonconformities and corrective actions'
-  audit_results: 'Results of monitoring and measurement'
-  corrective_actions_status: 'Status of corrective actions'
-  previous_review_actions: 'Actions from previous reviews'
-  changes_relevant_to_isms: 'Changes relevant to the ISMS'
-  feedback_from_interested_parties: 'Feedback from interested parties'
-  opportunities_for_improvement: 'Opportunities for continual improvement'
-
-  output_1: 'Opportunities for continual improvement'
-  output_2: 'Any need for changes to the information security management system'
-  output_3: 'Resource needs'
-
-  management_decisions: 'Management Decisions'
-  decisions: 'Decisions'
-  action_items: 'Actions'
-  resource_needs: 'Resource Needs'
-
-  statistics:
-    total: 'Total'
-    completed: 'Completed'
-    planned: 'Planned'
-    this_year: 'This Year'
-
-  success:
-    created: 'Management review created successfully'
-    updated: 'Management review updated successfully'
-    deleted: 'Management review deleted successfully'
-
-  field:
-    title: Review Title
-    review_date: Review Date
-    reviewed_by: Reviewed By
-    participants: Participants
-    status: Status
-    performance_evaluation: Performance Evaluation
-    nonconformities_review: Non-Conformities Review
-    incidents_review: Security Incidents Review
-    risks_review: Risks Review
-    objectives_review: ISMS Objectives Review
-    context_changes: Context Changes
-    improvement_opportunities: Improvement Opportunities
-    decisions: Management Decisions
-    action_items: Action Items
-    resources_needed: Resources Needed
-    summary: Summary
-
 objective:
   field:
     title: Title
@@ -2495,14 +1616,12 @@ user:
   create: 'Create User'
   save_changes: 'Save Changes'
   edit_suffix: 'edit'
-
   section:
     basic_info: 'Basic Information'
     tenant: 'Tenant Assignment'
     authentication: 'Authentication'
     roles: 'Roles & Permissions'
     status: 'Status'
-
   field:
     first_name: First Name
     last_name: Last Name
@@ -2526,7 +1645,6 @@ user:
     created_at: 'Created at'
     updated_at: 'Last updated'
     last_login: 'Last login'
-
   help:
     first_name: 'User first name'
     last_name: 'User last name'
@@ -2538,13 +1656,10 @@ user:
     tenant: 'Tenant this user is assigned to'
     password: 'Secure password for the user'
     password_edit: 'Leave blank to keep the current password'
-
   auth_provider:
     local: 'Local'
-
   message:
     no_custom_roles: 'No custom roles available.'
-
   placeholder:
     tenant: Not assigned to any tenant
   error:
@@ -2635,24 +1750,29 @@ role:
     readonly: Read-Only User
 error:
   csrf_invalid: Invalid CSRF token.
-audit_log:
-  title: Audit Log Details
-  entries: Log Entries
-  showing_recent: Showing recent entries
-  entry: 'Log Entry #{{ id }}'
-  old_values: Old Values
-  new_values: New Values
-  changes: Changes
-  view_all: View All
-  field:
-    timestamp: Timestamp
-    action: Action
-    entity_type: Entity Type
-    entity_id: Entity ID
-    user: User
-    ip_address: IP Address
-    user_agent: User Agent
-    description: Description
+  generic:
+    title: Error
+    heading: Oops!
+    subheading: Something Went Wrong
+    message: We encountered an error while processing your request.
+    help: Please try again or contact support if the problem persists.
+  403:
+    title: Access Denied
+    heading: Access Denied
+    message: You don't have permission to access this resource.
+  404:
+    title: Page Not Found
+    heading: Page Not Found
+    message: Sorry, the page you are looking for does not exist.
+  500:
+    title: Server Error
+    heading: Internal Server Error
+    message: Something went wrong on our end. We're working to fix it.
+    help: Please try again later.
+  action:
+    homepage: Go to Homepage
+    back: Go Back
+    login: Login
 entity_history:
   title: Entity History
   section: History
@@ -2665,586 +1785,12 @@ preferences:
   error:
     import_failed: Error importing settings
 clause:
-  '4': 'Context of the Organization'
-  '5': 'Leadership'
-  '6': 'Planning'
-  '7': 'Support'
-  '8': 'Operation'
-  '9': 'Performance Evaluation'
-  '10': 'Improvement'
-compliance:
-  manage_frameworks: Manage Frameworks
-  manage_frameworks_subtitle: Load and manage available compliance frameworks
-  framework_statistics: Framework Statistics
-  total_available: Available
-  loaded: Loaded
-  not_loaded: Not Loaded
-  mandatory_missing: Mandatory Missing
-  available_frameworks: Available Frameworks
-  no_frameworks_loaded: No compliance frameworks loaded yet
-  add_frameworks: Add Frameworks
-  load_framework: Load Framework
-  already_loaded: Already Loaded
-  successfully_loaded: Successfully Loaded
-  load_failed: Load Failed
-  loading: Loading
-  confirm_load: Do you really want to load this framework?
-  delete_framework: Delete Framework
-  deleting: Deleting
-  successfully_deleted: Successfully Deleted
-  delete_failed: Delete Failed
-  error: Error
-  version: Version
-  industry: Industry
-  regulatory_body: Regulatory Body
-  mandatory: Mandatory
-  required_modules: Required Modules
-  industry.automotive: Automotive Industry
-  industry.financial_services: Financial Services
-  industry.all_sectors: All Sectors
-  title:
-    transitive: Transitive Compliance
-    compare: Compare Frameworks
-    gaps: 'Gap Analysis'
-    gap_analysis: 'Gap Analysis'
-    data_reuse: 'Data Reuse'
-  description:
-    transitive: Leverage existing compliance work across multiple frameworks for maximum efficiency
-    matrix: Shows how fulfilling requirements in one framework helps satisfy requirements in other frameworks
-    compare: Compare two compliance frameworks side-by-side to understand their differences, overlaps, and unique requirements
-    unique_requirements: Requirements that are unique to this framework and not covered by the other
-    gap_analysis: 'Identify compliance gaps and prioritize actions'
-    data_reuse: 'Leverage existing data across multiple frameworks'
-    reuse_matrix: 'Matrix of reusable data across frameworks'
-    critical_gaps: 'Critical compliance gaps'
-    high_gaps: 'High priority gaps'
-    medium_gaps: 'Medium priority gaps'
-    low_gaps: 'Low priority gaps'
-  action:
-    export_transitive: Export Transitive Analysis
-    export_comparison: Export Comparison
-    compare: Compare Frameworks
-  stats:
-    total_relationships: Total Framework Relationships
-    transitive_compliance: Transitive Compliance Benefits
-    leverage_rate: Leverage Rate
-    frameworks_leveraged: Frameworks Leveraged
-    common_requirements: Common Requirements
-    overlap_percentage: Overlap Percentage
-    total_mappings: Total Mappings
-    full_exceeds: Full/Exceeds
-    partial_mappings: Partial Mappings
-    bidirectional_mappings: Bidirectional
-    total_data_points: Total Data Points
-    reused_data: Reused Data
-    reuse_rate: Reuse Rate
-    effort_saved: Effort Saved
-    time_saved_hours: Time Saved (Hours)
-    total_requirements: 'Total Requirements'
-    met_requirements: 'Met Requirements'
-    gaps_identified: 'Gaps Identified'
-    compliance_score: 'Compliance Score'
-  unit:
-    requirements: Requirements
-  info:
-    transitive_title: What is Transitive Compliance?
-    transitive_desc: Transitive compliance means that when you fulfill a requirement in one framework (e.g., ISO 27001), you automatically or partially fulfill requirements in other frameworks (e.g., TISAX, NIS2). This allows you to leverage your compliance work across multiple standards.
-  section:
-    framework_relationships: Framework Relationships
-    compliance_matrix: Transitive Compliance Matrix
-    leverage_opportunities: Compliance Leverage Opportunities
-    cross_framework_mappings: Cross-Framework Requirement Mappings
-    mapping_explanation: Understanding Requirement Mappings
-    select_frameworks: Select Frameworks to Compare
-    framework_selection: 'Framework Selection'
-    framework_coverage: 'Framework Coverage'
-    reuse_matrix: 'Reuse Matrix'
-    reuse_opportunities: 'Reuse Opportunities'
-    detailed_comparison: Detailed Comparison
-    unique_to: "Unique to"
-    gap_details: Gap Details
-    recommendations: Recommendations
-  explanation:
-    what_are_mappings_title: "🎯 What are Mappings?"
-    what_are_mappings: "Mappings show how requirements from one framework relate to requirements in another framework. For example, a TISAX requirement might fully satisfy a DORA requirement."
-    mapping_types_title: "📊 Mapping Types"
-    mapping_types_exceeds: "Exceeds (>100%): Source exceeds target"
-    mapping_types_full: "Full (100%): Source fully satisfies target"
-    mapping_types_partial: "Partial (50-99%): Source partially satisfies target"
-    mapping_types_weak: "Weak (<50%): Weak relationship"
-    bidirectional_title: "🔄 Bidirectional Mappings"
-    bidirectional: "Some requirements mutually satisfy each other. This means work done for one framework automatically benefits the other framework as well."
-    strategic_value_title: "💡 Strategic Value"
-    strategic_value: "Use these mappings to identify which frameworks have the most overlap and prioritize compliance efforts for maximum multi-framework benefit."
-  field:
-    mapped: Mapped Requirements
-    coverage: Coverage
-    framework: Framework
-    framework_1: First Framework
-    framework_2: Second Framework
-    source_requirement: Source Requirement
-    source_framework: Source Framework
-    target_requirements: Target Requirements
-    target_frameworks: Target Frameworks
-    leverage_impact: Leverage Impact
-    mapping_type: Mapping Type
-    mapping_strength: Mapping Strength
-    bidirectional: Bidirectional
-    requirement: Requirement
-    category: Category
-    mapping: Mapping
-    match_quality: Match Quality
-    total_requirements: Total Requirements
-    unique_requirements: Unique Requirements
-    categories: Categories
-    frameworks: 'Frameworks'
-    select_framework: 'Select Framework'
-    severity: 'Severity'
-    gap_description: 'Gap Description'
-    remediation: 'Remediation'
-    due_date: 'Due Date'
-    assessment: 'Assessment'
-    gap_reason: 'Gap Reason'
-    risk_level: 'Risk Level'
-    data_element: 'Data Element'
-    source: 'Source'
-    used_in_frameworks: 'Used in Frameworks'
-    reuse_count: 'Reuse Count'
-    reused_data: 'Reused Data'
-    new_data_needed: 'New Data Needed'
-    time_savings: 'Time Savings'
-    quality_score: 'Quality Score'
-  option:
-    select_framework: -- Select a framework --
-    all_frameworks: 'All Frameworks'
-  severity:
-    critical: 'Critical'
-    high: 'High'
-    medium: 'Medium'
-    low: 'Low'
-  badge:
-    mapped: Mapped
-    no_mapping: No Mapping
-    overdue: 'Overdue'
-    reusable: 'Reusable'
-  message:
-    no_relationships: No framework relationships found yet
-    no_leverage_opportunities: No leverage opportunities identified yet
-    no_mappings: No cross-framework mappings available
-    no_comparison_data: No comparison data available. Please select two frameworks to compare.
-    no_unique: No unique requirements found
-    more_requirements: "+ %count% more requirements"
-    no_opportunities: No reuse opportunities found
-    no_gaps: No gaps found - All requirements fulfilled!
-    no_frameworks: 'No frameworks available'
-    no_gaps_desc: 'All requirements are fulfilled'
-    no_data_elements: 'No data elements available'
-  mapping:
-    type:
-      full: Full Coverage
-      partial: Partial Coverage
-      weak: Weak Coverage
-      exceeds: Exceeds Requirements
-    strength:
-      high: High (≥75%)
-      medium: Medium (50-74%)
-      low: Low (<50%)
-  # Phase 6K Translation Update - Compliance Module
-  page_title: Multi-Framework Compliance
-  page_subtitle: Maximum data leverage across standards
-  details_label: Details
-  filter: Filter
-  framework_info: Framework Information
-  recommendations: Recommendations
-  search: Search...
-  benefits:
-    title: Why Multi-Framework Compliance Matters
-    data_reuse:
-      title: Maximum Data Reuse
-      description: Capture data once in your ISMS and automatically leverage it for TISAX, DORA, and other frameworks.
-    time_efficiency:
-      title: Time Efficiency
-      description: Save hundreds of hours by avoiding duplicate data entry and evidence collection across different standards.
-    transparency:
-      title: Transparency
-      description: See exactly how requirements from different frameworks relate to each other and to your existing controls.
-    strategic:
-      title: Strategic Compliance
-      description: Identify which frameworks have the most overlap and prioritize implementation based on multi-framework benefits.
-  button:
-    back: Back
-    compare_frameworks: Compare Frameworks
-    cross_framework: Cross-Framework Mappings
-    explore_mappings: Explore Cross-Framework Mappings
-    open_dashboard: Open Dashboard
-    reassess: Reassess
-    transitive: Transitive Compliance
-  cross_framework:
-    title: Cross-Framework Mappings
-    subtitle: How requirements map across different standards
-    back: Back to Compliance
-    coverage_matrix: Framework Coverage Matrix
-    coverage_description: Shows how much of the target framework is covered by fulfilling the source framework
-    coverage_high: ≥75% Coverage (High)
-    coverage_medium: 50-74% Coverage (Medium)
-    coverage_low: <50% Coverage (Low)
-    covered_of: "%covered% of %total% requirements covered (%percentage%%)"
-    source_target_label: "Source Framework ↓ / Target Framework →"
-    strong_mappings: "Full/Exceeds (≥100%)"
-    partial_mappings_label: "Partial (50-99%)"
-    weak_mappings: "Weak (<50%)"
-    showing_of: "Showing 20 of %total% mappings"
-    understanding_title: Understanding Cross-Framework Mappings
-    what_title: "🎯 What are Mappings?"
-    what_description: "Mappings show how requirements from one framework relate to requirements in another framework. For example, a TISAX requirement might fully satisfy a DORA requirement."
-    types_title: "📊 Mapping Types"
-    bidirectional_title: "🔄 Bidirectional Mappings"
-    bidirectional_description: "Some requirements mutually satisfy each other. This means work done for one framework automatically benefits the other framework as well."
-    strategic_title: "💡 Strategic Value"
-    strategic_description: "Use these mappings to identify which frameworks have the most overlap and prioritize compliance efforts for maximum multi-framework benefit."
-    yes_bidirectional: "🔄 Yes"
-    types:
-      exceeds: "Exceeds (>100%): Source exceeds target"
-      full: "Full (100%): Source fully satisfies target"
-      partial: "Partial (50-99%): Source partially satisfies target"
-      weak: "Weak (<50%): Weak relationship"
-    table:
-      source: Source Requirement
-      target: Target Requirement
-      type: Mapping Type
-      strength: Strength
-      bidirectional: Bidirectional
-  data_reuse:
-    title: Data Reuse Value
-    description: By reusing existing ISMS data across multiple frameworks, you save an estimated <strong>%hours% hours (%days% days)</strong> of manual compliance work!
-    hours_saved: Hours Saved
-    work_days: "That's %days% work days through smart data reuse"
-    show_details: Show Details
-  label:
-    code: Code
-    compliance: Compliance
-    days: Days
-    fulfilled: Fulfilled
-    gaps: Gaps
-    mappings_count: "mappings"
-    no: No
-    requirements: Requirements
-    showing_of: "Showing %count% of"
-    source_target_matrix: "Source ↓ / Target →"
-    time_savings: Time Savings
-    yes: Yes
-  priority:
-    all: All Priorities
-    critical: Critical
-    high: High
-    medium: Medium
-    low: Low
-  status:
-    all: All Statuses
-    fulfilled: "Fulfilled (≥100%)"
-    partial: "Partial (50-99%)"
-    gap: "Gap (<50%)"
-  tab:
-    overview: Overview
-    requirements: Requirements
-    gaps: Gaps
-    data_reuse: Data Reuse
-  gaps:
-    title: Compliance Gaps
-    none: No gaps found!
-    none_description: All applicable requirements are fully satisfied.
-    fulfilled_percentage: "% Fulfilled"
-
-  # Framework CRUD translations
-  framework:
-    title: Compliance Frameworks
-    heading: Framework Management
-    subtitle: Manage your compliance frameworks and their requirements
-    breadcrumb:
-      home: Compliance
-      frameworks: Frameworks
-      new: New Framework
-      edit: Edit Framework
-    field:
-      name: Name
-      code: Code
-      version: Version
-      description: Description
-      active: Active
-      mandatory: Mandatory
-      industry: Industry
-      regulatory_body: Regulatory Body
-      scope: Scope
-      applicable_industry: Applicable Industry
-    action:
-      new: New Framework
-      edit: Edit Framework
-      delete: Delete Framework
-      duplicate: Duplicate
-      dashboard: Dashboard
-      view: View Details
-      gap_analysis: Gap Analysis
-      assess: Start Assessment
-      back_to_list: Back to List
-    stats:
-      total_requirements: Total Requirements
-      applicable: Applicable
-      fulfilled: Fulfilled
-      compliance: Compliance Rate
-      total: Total
-      active_frameworks: Active Frameworks
-      total_frameworks: Total Frameworks
-    badge:
-      mandatory: Mandatory
-      active: Active
-      inactive: Inactive
-    flash:
-      created: Framework created successfully
-      updated: Framework updated successfully
-      deleted: Framework deleted successfully
-      activated: Framework activated
-      deactivated: Framework deactivated
-      duplicated: Framework duplicated successfully
-      delete_failed: Framework could not be deleted
-    details: Framework Details
-    requirements_by_category: Requirements by Category
-    no_requirements: No requirements defined yet
-    priority_distribution: Priority Distribution
-    filter:
-      search: Search by name or code...
-      status: Filter by status
-      industry: Filter by industry
-      all_status: All Statuses
-      all_industries: All Industries
-      active_only: Active only
-      inactive_only: Inactive only
-    confirm:
-      delete: Are you sure you want to delete this framework? All associated requirements will also be deleted.
-      duplicate: Do you want to duplicate this framework including all requirements?
-    info:
-      no_frameworks: No frameworks available yet
-      create_first: Create your first compliance framework
-    help:
-      code: Unique short code (e.g. ISO27001, TISAX, DORA)
-      version: Framework version number (e.g. 2022, 6.0.2)
-      mandatory: Mandatory frameworks must be implemented
-      scope: Description of the scope
-
-  # Requirement translations
-  requirement:
-    title: Requirements
-    action:
-      new: New Requirement
-    priority:
-      critical: Critical
-      high: High
-      medium: Medium
-      low: Low
-
-# Risk Appetite (ISO 27005:2022)
-risk_appetite:
-  title: 'Risk Appetites'
-  title_singular: 'Risk Appetite'
-  description: 'Define acceptable risk levels according to ISO 27005:2022'
-  new: 'New Risk Appetite'
-  edit: 'Edit Risk Appetite'
-  no_appetites: 'No risk appetites defined yet'
-  scale: 'Risk Scale (1-25)'
-  approved: 'Approved'
-
-  new.description: 'Define the maximum acceptable risk levels for different categories'
-
-  list:
-    title: 'Risk Appetites'
-
-  show:
-    subtitle: 'Risk Appetite Details'
-
-  success:
-    created: 'Risk appetite created successfully.'
-    updated: 'Risk appetite updated successfully.'
-    deleted: 'Risk appetite deleted successfully.'
-
-  delete:
-    warning: 'Are you sure you want to delete this risk appetite?'
-    confirm: 'Delete Risk Appetite'
-
-  section:
-    details: 'Details'
-    history: 'Change History'
-
-  stats:
-    total: 'Total'
-    global_threshold: 'Global Threshold'
-    categories: 'Categories'
-    total_risks: 'Total Risks'
-    exceeding: 'Exceeding'
-
-  category:
-    global: 'Global'
-
-  status:
-    active: 'Active'
-    inactive: 'Inactive'
-
-  filter:
-    active_only: 'Active only'
-
-  exceeding:
-    title: 'Risks Above Threshold'
-    description: 'These risks exceed the defined risk appetite and require treatment measures'
-
-  risks_exceeding_title: 'Risks exceeding the threshold'
-  risks_exceeding_description: 'These risks exceed the maximum acceptable risk level'
-  risks_within_title: 'Accepted Risks'
-  risks_within_description: 'These risks are within the defined risk appetite'
-  risks_within: 'Risks within'
-  risks_exceeding: 'Risks exceeding'
-  exceeds_by: 'Exceeds by %value%'
-  and_more: 'and %count% more'
-  and_more_risks: 'and %count% more risks'
-  acceptance_rate: 'Acceptance Rate'
-  appetite_percentage: 'Risk Appetite (%)'
-
-  info:
-    iso27005: 'According to ISO 27005:2022, risk appetite should be formally approved by management'
-
-  field:
-    category: Category
-    max_acceptable_risk: Maximum Acceptable Risk
-    description: Description
-    is_active: Active
-    status: 'Status'
-    approved_by: Approved By
-    approved_at: Approved At
-    created_at: 'Created At'
-
-  placeholder:
-    category: 'e.g. Financial Risks, Operational Risks, Compliance Risks'
-    approved_by: Select person
-    description: 'Describe the risk appetite and its rationale...'
-
-  help:
-    category_empty: 'Leave empty for global risk appetite'
-    category: 'Optional: Leave empty for global risk appetite, or specify category (e.g. "Financial Risks")'
-    max_acceptable_risk: 'Maximum risk score (1-25) on the 5×5 risk matrix. Risks above require treatment.'
-    description: 'Explanation of risk appetite, rationale, and guidelines for risk acceptance'
-    is_active: 'Only one risk appetite per category should be active'
-    approved_by: 'Person who approved this risk appetite (ISO 27005 compliance)'
-    approved_at: 'Timestamp of formal approval'
-
-# Risk Treatment Plan (ISO 27005:2022)
-risk_treatment_plan:
-  title: 'Risk Treatment Plans'
-  new: 'New Treatment Plan'
-  edit: 'Edit Treatment Plan'
-  description: 'Manage risk treatment measures according to ISO 27005'
-  no_plans: 'No risk treatment plans created yet'
-
-  new.description: 'Create a new plan to treat identified risks'
-
-  list:
-    title: 'Risk Treatment Plans'
-
-  show:
-    subtitle: 'Risk Treatment Plan Details'
-
-  success:
-    created: 'Risk treatment plan created successfully.'
-    updated: 'Risk treatment plan updated successfully.'
-    deleted: 'Risk treatment plan deleted successfully.'
-
-  delete:
-    warning: 'Are you sure you want to delete this risk treatment plan?'
-    confirm: 'Delete Treatment Plan'
-
-  section:
-    details: 'Plan Details'
-    controls: 'Assigned Controls'
-    history: 'Change History'
-
-  stats:
-    total: 'Total Plans'
-    planned: 'Planned'
-    in_progress: 'In Progress'
-    completed: 'Completed'
-    overdue: 'Overdue'
-    avg_completion: 'Avg. Completion'
-
-  filter:
-    overdue: 'Overdue'
-    overdue_only: 'Only overdue plans'
-
-  overdue: 'Overdue'
-  due_today: 'Due today'
-  days_until_target: '%count% days until target'
-  days_overdue: '%count% days overdue'
-  days_remaining: '%count% days remaining'
-
-  field:
-    risk: Risk
-    title: Title
-    description: Description
-    status: Status
-    priority: Priority
-    start_date: Start Date
-    target_date: 'Target Date'
-    target_completion_date: Target Completion Date
-    actual_completion_date: Actual Completion Date
-    budget: Budget
-    responsible_person: Responsible Person
-    controls: Controls
-    completion: 'Completion'
-    completion_percentage: Completion Percentage
-    implementation_notes: Implementation Notes
-  placeholder:
-    risk: Select risk
-    title: 'e.g. Implementation of Firewall Rules'
-    description: 'Describe the planned treatment measures...'
-    responsible_person: Select person
-    implementation_notes: 'Notes on implementation progress...'
-  help:
-    risk: 'The risk being addressed by this plan'
-    description: 'Detailed description of planned risk treatment measures'
-    status: 'Current implementation status of the plan'
-    priority: 'Priority level for implementation'
-    start_date: 'Date when implementation begins'
-    target_completion_date: 'Planned completion date'
-    actual_completion_date: 'Actual completion date (when completed)'
-    budget: 'Budget allocated for this plan in EUR'
-    responsible_person: 'Person responsible for implementing this plan'
-    controls: 'ISO 27001 controls implementing this treatment plan'
-    completion_percentage: 'Completion percentage from 0-100%'
-    implementation_notes: 'Notes on progress and implementation'
-  status:
-    planned: Planned
-    in_progress: In Progress
-    completed: Completed
-    cancelled: Cancelled
-    on_hold: On Hold
-  priority:
-    low: Low
-    medium: Medium
-    high: High
-    critical: Critical
-  validation:
-    risk_required: 'Risk is required'
-    title_required: 'Title is required'
-    title_max_length: 'Title cannot exceed {{ limit }} characters'
-    description_required: 'Description is required'
-    target_completion_date_required: 'Target completion date is required'
-    budget_positive: 'Budget must be positive or zero'
-    completion_percentage_range: 'Completion percentage must be between {{ min }} and {{ max }}'
-
-# Statement of Applicability (SoA) - Phase 6F-C
 soa:
   export:
     html: 'Export SoA as HTML'
     pdf: 'Export SoA as PDF - Professional report with all 93 controls'
   preview:
     pdf: 'Preview PDF report in browser'
-
-# Vulnerability Management (NIS2 Art. 21.2.d)
 vulnerability:
   title: Vulnerabilities
   new: New Vulnerability
@@ -3308,8 +1854,6 @@ vulnerability:
     created: Vulnerability created successfully.
     updated: Vulnerability updated successfully.
     deleted: Vulnerability deleted successfully.
-
-# Patch Management (NIS2 Art. 21.2.d)
 patch:
   title: Patches
   new: New Patch
@@ -3375,8 +1919,6 @@ patch:
     created: Patch created successfully.
     updated: Patch updated successfully.
     deleted: Patch deleted successfully.
-
-# MFA Token Management (NIS2 Art. 21.2.i)
 mfa_token:
   title: MFA Tokens
   new: New MFA Token
@@ -3414,222 +1956,6 @@ mfa_token:
     updated: MFA token updated successfully.
     deleted: MFA token deleted successfully.
     activated: Crisis team activated successfully.
-
-# Crisis Team Management (BSI IT-Grundschutz 200-4 Ch. 4.3)
-crisis_team:
-  title: Crisis Teams
-  new: New Crisis Team
-  edit: Edit Crisis Team
-  empty: No crisis teams defined yet.
-  field:
-    team_name: Team Name
-    description: Description
-    team_type: Team Type
-    is_active: Active
-    team_leader: Team Leader
-    deputy_leader: Deputy Leader
-    primary_phone: Primary Phone
-    primary_email: Primary Email
-    meeting_location: Meeting Location
-    backup_meeting_location: Backup Meeting Location
-    virtual_meeting_url: Virtual Meeting URL
-    alert_procedures: Alert Procedures
-    decision_authority: Decision Authority
-    communication_protocols: Communication Protocols
-    training_schedule: Training Schedule
-    last_training_at: Last Training
-    next_training_at: Next Training
-    business_continuity_plans: Business Continuity Plans
-    notes: Notes
-  type:
-    operational: Operational Crisis Team
-    strategic: Strategic Crisis Team
-    technical: Technical Crisis Team
-    communication: Communication Team
-  kpi:
-    active: Active Teams
-  placeholder:
-    team_name: e.g. IT Operational Crisis Team
-    description: Tasks and responsibilities of the crisis team
-    team_leader: Select crisis team leader
-    deputy_leader: Select deputy leader
-    meeting_location: e.g. Conference Room 1, Building A
-    backup_meeting_location: e.g. Conference Room 2, Building B
-    alert_procedures: Description of alert procedure
-    decision_authority: Who can make which decisions?
-    communication_protocols: How does the crisis team communicate internally and externally?
-    training_schedule: When do trainings and exercises take place?
-  help:
-    team_name: Name of the crisis team
-    team_type: Type of crisis team according to BSI 200-4
-    team_leader: Leader of the crisis team
-    deputy_leader: Deputy in case of leader absence
-    primary_phone: Central phone number for crisis team
-    virtual_meeting_url: Teams, Zoom, etc. for virtual meetings
-    alert_procedures: How is the crisis team alerted and activated?
-    decision_authority: Authorities and escalation paths
-    communication_protocols: Internal and external communication channels
-    training_schedule: Regular trainings and exercises
-    next_training_at: When is the next training?
-    business_continuity_plans: Assigned BCPs
-  success:
-    created: Crisis team created successfully.
-    updated: Crisis team updated successfully.
-    deleted: Crisis team deleted successfully.
-    activated: Crisis team activated successfully.
-
-tenant:
-  title: Tenant Management
-  'title.edit': Edit Tenant
-  'title.create': Create New Tenant
-  subtitle: Manage organizations and tenants
-  empty: No tenants available
-  stats:
-    total: Total
-    active: Active
-    inactive: Inactive
-    total_users: Total Users
-    active_users: Active Users
-    inactive_users: Inactive Users
-  filter:
-    all: All
-    active: Active
-    inactive: Inactive
-  field:
-    code: Tenant Code
-    code_help: Unique alphanumeric code (only a-z, 0-9, _, -)
-    code_auto_generated: Automatically generated from name
-    name: Name
-    name_help: Full organization name
-    description: Description
-    description_help: Optional tenant description
-    logo: Logo
-    logo_help: Tenant logo (max. 2MB, JPG/PNG/GIF/WebP)
-    azure_tenant_id: Azure Tenant ID
-    azure_tenant_id_help: Azure AD Tenant ID (UUID format) for SSO integration
-    is_active: Active
-    is_active_help: Only active tenants can sign in
-    settings: Settings (JSON)
-    settings_help: Tenant-specific settings in JSON format
-    users: Users
-    status: Status
-    created: Created
-    updated: Updated
-  placeholder:
-    code: e.g. acme-corp
-    name: e.g. ACME Corporation
-    description: Tenant description...
-    azure_tenant_id: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
-    settings: "{\n  \"branding\": {...},\n  \"features\": {...}\n}"
-  validation:
-    code_format: The code may only contain letters, numbers, underscores, and hyphens
-    azure_tenant_id_format: The Azure Tenant ID must be in UUID format
-    logo_format: The logo must be in JPG, PNG, GIF or WebP format
-  status:
-    active: Active
-    inactive: Inactive
-  action:
-    create: Create New Tenant
-    create_first: Create First Tenant
-    edit: Edit
-    delete: Delete
-    activate: Activate
-    deactivate: Deactivate
-  section:
-    information: Tenant Information
-    users: Users
-    basic_info: Basic Information
-    azure_integration: Azure Integration
-    settings: Settings
-    danger_zone: Danger Zone
-  users:
-    empty: No users in this tenant
-    showing: 'Showing %count% of %total% users'
-    manage: Manage Users
-    manage_title: Manage Users
-    add_user: Add User
-    enter_email: Enter user email address
-    add: Add
-    add_help: Enter the email address of an existing user to assign them to this tenant
-    current_users: Current Users
-    confirm_remove: Do you really want to remove user %email% from this tenant?
-    flash:
-      email_required: Email address is required
-      user_not_found: User with this email address was not found
-      already_assigned: User is already assigned to this tenant
-      user_added: User successfully added to tenant
-      user_removed: User successfully removed from tenant
-      not_assigned: User is not assigned to this tenant
-      error: Error managing users
-  form:
-    create_title: Create New Tenant
-    edit_title: Edit Tenant
-  flash:
-    created: Tenant created successfully
-    updated: Tenant updated successfully
-    deleted: Tenant deleted successfully
-    activated: Tenant activated successfully
-    deactivated: Tenant deactivated successfully
-    error: Error saving tenant
-    has_users: Tenant cannot be deleted as it still has assigned users
-    organisation_context_updated: Organisation context successfully updated
-    organisation_context_error: Error updating organisation context
-  confirm:
-    delete: Are you sure you want to delete this tenant? This action cannot be undone.
-    toggle: Do you really want to change the status of this tenant?
-  delete:
-    warning: Tenants can only be deleted when they have no assigned users.
-  tabs:
-    details: Details
-    isms_context: ISMS Context
-    users: Users
-  isms_context:
-    not_configured: ISMS Context not configured
-    configure_prompt: Configure the ISMS Context for this tenant.
-    configure_now: Configure Now
-    load_error: Error loading ISMS Context
-    view_full: View Full ISMS Context
-    linked_to: Linked to Tenant
-  organisation_context:
-    title: Organisation Context
-    header: Edit Organisation Context
-    description: Edit the industry assignment, company size and location of your organisation. This data influences compliance recommendations.
-    name_info: The organisation name is taken from the tenant configuration.
-    current_config: Current Configuration
-    active_modules: Active Modules
-    active_frameworks: Active Frameworks
-    setup_date: Setup completed on
-    last_modified: Last modified
-    impact_warning:
-      title: Impact Notice
-      message: Changes to the organisation context affect future recommendations for modules and compliance frameworks. Already activated modules remain unchanged.
-    info:
-      title: About Organisation Context
-      description: The organisation context determines which regulatory requirements are relevant to your organisation.
-      industries: Multiple selection enables corporate structures with different business areas
-      size: Company size affects NIS2 and other size-dependent regulations
-      country: Location determines national regulations (e.g. KRITIS, TKG for Germany)
-      corporate: In corporate structures, subsidiaries can cover different industries
-  link:
-    view: View Tenant
-    back_to_tenant: Back to Tenant
-  info:
-    title: About Tenants
-    text: Tenants allow managing multiple organizations in a single instance. Each user belongs to a tenant.
-    metadata: Metadata
-  no_logo: No logo available
-  help:
-    title: Help
-    code_title: Tenant Code
-    code_text: The code is a unique identifier and cannot be changed after creation. Use only lowercase letters, numbers, and hyphens.
-    azure_title: Azure Integration
-    azure_text: If you use Azure AD SSO, you can store the Azure Tenant ID here for tenant-specific authentication.
-    settings_title: Settings
-    settings_text: Tenant-specific settings in JSON format can contain individual configurations such as branding, features, or limits.
-  settings:
-    example_title: Example JSON Structure
-
-# Phase 6L-D: Extended User & Access Management
 permission:
   title: Permissions
   list: Permission List
@@ -3645,167 +1971,6 @@ permission:
     system: System
     custom: Custom
     categories: Categories
-
-session:
-  title: Sessions
-  list: Active Sessions
-  show: Session Details
-  user_name: Username
-  ip_address: IP Address
-  user_agent: User Agent
-  last_activity: Last Activity
-  session_start: Session Start
-  terminate: Terminate Session
-  statistics:
-    total: Total Active Sessions
-    today: Today
-    hours_filter: Time Filter (Hours)
-  activity_timeline: Activity Timeline
-  unique_ips: Unique IP Addresses
-  unique_devices: Unique Devices
-  error:
-    invalid_token: Invalid CSRF token
-  info:
-    termination_not_implemented: Session termination requires additional configuration (database session storage)
-
-mfa:
-  title: Two-Factor Authentication
-  tokens: MFA Tokens
-  enabled: MFA Enabled
-  disabled: MFA Disabled
-  token_type: Token Type
-  device_name: Device Name
-  enrolled_at: Enrolled At
-  last_used: Last Used
-  usage_count: Usage Count
-  is_active: Active
-  is_primary: Primary
-  action:
-    reset: Reset Token
-  error:
-    token_not_found: MFA token not found
-  success:
-    token_reset: MFA token successfully reset
-  statistics:
-    active_tokens: Active Tokens
-    by_type: By Type
-  challenge:
-    title: 'Two-Factor Authentication'
-    description: 'Please enter the verification code from your authenticator.'
-    device: 'Authentication Device'
-    device_help: 'Select the device you want to use.'
-    code: 'Verification Code'
-    code_help: 'Enter the 6-digit code from your authenticator app or an 8-digit backup code.'
-    verify: 'Verify Code'
-    success: 'Two-factor authentication successful!'
-    cancel: 'Cancel and logout'
-    backup_code_hint: 'No access to your device?'
-    using_backup_code: 'Use backup code'
-    backup_code_info: 'Enter one of your 8-digit backup codes that you received during setup. Each backup code can only be used once.'
-    help_title: 'Need help?'
-    help_text: 'Contact your administrator if you don''t have access to your authentication devices.'
-    nis2_compliance: 'NIS2-compliant Multi-Factor Authentication (Art. 21.2.b)'
-    error:
-      code_required: 'Please enter a verification code.'
-      invalid_code: 'Invalid code. Please try again.'
-      invalid_token: 'Invalid or inactive authentication device.'
-  token:
-    primary: 'Primary'
-
-# Phase 6L-E: System Monitoring & Health
-monitoring:
-  title: System Monitoring
-  health:
-    title: System Health
-    overall_status: Overall Status
-    healthy: Healthy
-    warning: Warning
-    error: Error
-    last_checked: Last Checked
-  database:
-    title: Database
-    status: Status
-    response_time: Response Time
-    driver: Driver
-    error: Error
-  disk:
-    title: Disk
-    free: Free
-    used: Used
-    total: Total
-    percentage: Percentage
-  php:
-    title: PHP
-    version: Version
-    memory_limit: Memory Limit
-    max_execution_time: Max Execution Time
-    extensions: Extensions
-    loaded: Loaded
-    missing: Missing
-  symfony:
-    title: Symfony
-    version: Version
-    environment: Environment
-    debug: Debug Mode
-  cache:
-    title: Cache
-    directory: Directory
-    writable: Writable
-  logs:
-    title: Logs
-    directory: Directory
-    writable: Writable
-  performance:
-    title: Performance Metrics
-    total_requests: Total Requests
-    unique_users: Unique Users
-    memory_usage: Memory Usage
-    memory_peak: Memory Peak
-    memory_limit: Memory Limit
-    top_actions: Top Actions
-    top_entities: Most Active Entities
-    last_24h: Last 24 Hours
-    system_resources: System Resources
-    note: Note
-  errors:
-    title: Error Logs
-    total: Total Errors
-    by_level: By Level
-    file_size: File Size
-    last_modified: Last Modified
-    log_file: Log File
-    show_entries: Show Entries
-    recent: Recent Errors
-    no_errors: No errors found!
-    no_log_file: No log file found
-    show_full: Show full log entry
-  audit_log:
-    title: Audit Log
-    total_entries: Total Entries
-    top_actions: Top Actions
-    top_entities: Top Entities
-    quick_filters: Quick Filters
-    all: All
-    today: Today
-    this_week: This Week
-    critical_actions: Critical Actions
-    entries: Entries
-    timestamp: Timestamp
-    user: User
-    action: Action
-    entity: Entity
-    ip_address: IP Address
-    details: Details
-    view: View
-    description: Description
-    changes: Changes
-    about: About Audit Log
-    about_text: The audit log tracks all significant actions in the system including create, update, and delete operations.
-  related: Related Monitoring
-  refresh: Refresh
-  back_to_health: Back to Health
-
-# Phase 6L-F: Data Management
 data:
   title: Data Management
   backup:
@@ -4056,11 +2221,6 @@ data:
       employee_count_help: Approximate number of employees
       employee_count_options:
         select: '-- Select Employee Count --'
-        1_10: '1-10'
-        11_50: '11-50'
-        51_250: '51-250'
-        251_1000: '251-1000'
-        1001_plus: '1001+'
       country: Country
       country_help: Main location of your organisation
       description: Description
@@ -4099,170 +2259,6 @@ data:
       critical_infrastructure:
         title: Critical Infrastructure Notice
         message: Your organisation belongs to critical infrastructure (energy/telecommunications). NIS2 may be relevant even for smaller companies, as the directive can cover critical sectors regardless of size.
-
-# Admin Integration - Phase 6L-G
-nav.admin.modules: 'Module Management'
-nav.admin.compliance: 'Compliance Management'
-nav.admin.licensing: 'License Management'
-
-admin.modules.title: 'Module Management'
-admin.modules.dependency_graph: 'Dependency Graph'
-admin.modules.stats.total: 'Total'
-admin.modules.stats.active: 'Active'
-admin.modules.stats.inactive: 'Inactive'
-admin.modules.stats.required: 'Required'
-admin.modules.active_modules: 'Active Modules'
-admin.modules.inactive_modules: 'Inactive Modules'
-admin.modules.status.active: 'Active'
-admin.modules.status.inactive: 'Inactive'
-admin.modules.dependencies: 'Dependencies'
-admin.modules.required_by: 'Required by'
-admin.modules.details: 'Details'
-admin.modules.confirm_deactivate: 'Really deactivate module "%name%"?'
-admin.modules.deactivate: 'Deactivate'
-admin.modules.required: 'Required'
-admin.modules.no_active: 'No active modules'
-admin.modules.activate: 'Activate'
-
-admin.compliance.statistics: 'Compliance Statistics'
-admin.compliance.total_available: 'Available'
-admin.compliance.loaded: 'Loaded'
-admin.compliance.not_loaded: 'Not Loaded'
-admin.compliance.mandatory_missing: 'Mandatory Missing'
-admin.compliance.compliance_overview: 'Compliance Overview'
-admin.compliance.framework: 'Framework'
-admin.compliance.total_requirements: 'Requirements'
-admin.compliance.assessed: 'Assessed'
-admin.compliance.compliant: 'Compliant'
-admin.compliance.compliance_rate: 'Compliance Rate'
-admin.compliance.progress: 'Progress'
-admin.compliance.no_frameworks_loaded: 'No frameworks loaded'
-
-admin.licensing.title: 'License Management'
-admin.licensing.third_party: 'Third-Party Licenses'
-admin.licensing.report: 'License Report'
-admin.licensing.summary: 'License Summary'
-
-admin.panel.title: 'Admin Panel'
-
-# Workflow Definition Management - Phase 6C
-workflow.definition.title: 'Workflow Definition'
-workflow.definition.new_title: 'New Workflow Definition'
-workflow.definition.edit_title: 'Edit Workflow Definition'
-workflow.breadcrumb.home: 'Workflows'
-workflow.breadcrumb.definitions: 'Definitions'
-workflow.breadcrumb.new: 'New'
-workflow.breadcrumb.edit: 'Edit'
-workflow.section.information: 'Workflow Information'
-workflow.section.basic_information: 'Basic Information'
-workflow.section.steps: 'Workflow Steps'
-workflow.section.recent_instances: 'Recent Instances'
-workflow.section.actions: 'Actions'
-workflow.section.statistics: 'Statistics'
-workflow.section.danger_zone: 'Danger Zone'
-workflow.field.name: 'Name'
-workflow.field.description: 'Description'
-workflow.field.entity_type: 'Entity Type'
-workflow.field.status: 'Status'
-workflow.field.created_at: 'Created at'
-workflow.field.updated_at: 'Updated at'
-workflow.field.definition_name: 'Workflow Name'
-workflow.field.steps: 'Steps'
-workflow.field.instances: 'Instances'
-workflow.field.active: 'Active'
-workflow.field.is_active: 'Active'
-workflow.status.active: 'Active'
-workflow.status.inactive: 'Inactive'
-workflow.status.completed: 'Completed'
-workflow.status.rejected: 'Rejected'
-workflow.status.cancelled: 'Cancelled'
-workflow.status.pending: 'Pending'
-workflow.action.edit: 'Edit'
-workflow.action.activate: 'Activate'
-workflow.action.deactivate: 'Deactivate'
-workflow.action.delete: 'Delete'
-workflow.action.create: 'Create'
-workflow.action.update: 'Update'
-workflow.action.create_definition: 'New Definition'
-workflow.action.delete_definition: 'Delete Definition'
-workflow.step.requires_comment: 'Comment required'
-workflow.step.requires_file: 'File required'
-workflow.message.no_steps: 'No workflow steps defined'
-workflow.message.no_instances: 'No workflow instances available'
-workflow.message.no_definitions: 'No workflow definitions available'
-workflow.instance.entity: 'Entity'
-workflow.instance.status: 'Status'
-workflow.instance.current_step: 'Current Step'
-workflow.instance.created: 'Created'
-workflow.instance.actions: 'Actions'
-workflow.stats.steps: 'Number of Steps'
-workflow.stats.total_instances: 'Total Instances'
-workflow.stats.total_definitions: 'Total Definitions'
-workflow.stats.active_definitions: 'Active Definitions'
-workflow.stats.avg_steps: 'Avg. Steps'
-workflow.stats.entity_types: 'Entity Types'
-workflow.success.definition_created: 'Workflow definition successfully created'
-workflow.success.definition_updated: 'Workflow definition successfully updated'
-workflow.success.definition_deleted: 'Workflow definition successfully deleted'
-workflow.success.definition_activated: 'Workflow definition activated'
-workflow.success.definition_deactivated: 'Workflow definition deactivated'
-workflow.error.has_active_instances: 'Cannot delete workflow: {count} active instance(s) exist'
-workflow.confirm.delete: 'Really delete workflow definition?'
-workflow.help.name: 'Unique name for this workflow definition'
-workflow.help.description: 'Optional description of the workflow purpose'
-workflow.help.entity_type: 'Entity type this workflow applies to'
-workflow.help.is_active: 'When deactivated, no new workflow instances can be started'
-workflow.help.delete_warning: 'Deleting a workflow definition cannot be undone. Active instances prevent deletion.'
-workflow.info.steps_note_title: 'Note about Workflow Steps'
-workflow.info.steps_note_text: 'Workflow steps must be configured separately after creating the definition.'
-workflow.placeholder.name: 'e.g. Risk Assessment Approval'
-workflow.placeholder.description: 'e.g. Approval process for risk assessments'
-workflow.action.builder: 'Step Builder'
-workflow.action.back: 'Back'
-workflow.builder.title: 'Workflow Builder'
-workflow.builder.heading: 'Workflow Step Builder'
-workflow.builder.breadcrumb: 'Step Builder'
-workflow.builder.steps: 'Workflow Steps'
-workflow.builder.add_step: 'Add Step'
-workflow.builder.new_step: 'Add New Step'
-workflow.builder.templates: 'Quick Templates'
-workflow.builder.templates_help: 'Apply pre-configured workflow templates'
-workflow.builder.info: 'Workflow Information'
-workflow.builder.help: 'Quick Help'
-workflow.builder.drag_help: 'Drag steps by the grip handle to reorder them. Changes are saved automatically.'
-workflow.builder.help_drag: 'Drag to reorder steps'
-workflow.builder.help_edit: 'Edit step details'
-workflow.builder.help_duplicate: 'Create a copy of step'
-workflow.builder.help_delete: 'Remove step from workflow'
-workflow.builder.help_template: 'Apply pre-built workflow templates'
-workflow.step.name: 'Step Name'
-workflow.step.type: 'Step Type'
-workflow.step.description: 'Description'
-workflow.step.approver_role: 'Approver Role'
-workflow.step.days_to_complete: 'Days to Complete (SLA)'
-workflow.step.days_help: 'Number of days allowed to complete this step'
-workflow.step.is_required: 'This step is required'
-workflow.step.type.approval: 'Approval'
-workflow.step.type.notification: 'Notification'
-workflow.step.type.auto_action: 'Auto Action'
-workflow.template.risk_assessment: 'Risk Assessment'
-workflow.template.risk_assessment_desc: 'Standard risk assessment and approval workflow'
-workflow.template.control_implementation: 'Control Implementation'
-workflow.template.control_implementation_desc: 'Security control implementation approval'
-workflow.template.incident_response: 'Incident Response'
-workflow.template.incident_response_desc: 'Security incident handling workflow'
-workflow.template.document_review: 'Document Review'
-workflow.template.document_review_desc: 'Document review and approval process'
-workflow.template.change_request: 'Change Request'
-workflow.template.change_request_desc: 'System change approval workflow'
-role.user: 'User'
-role.manager: 'Manager'
-role.iso_officer: 'ISO Officer'
-role.risk_manager: 'Risk Manager'
-role.auditor: 'Auditor'
-role.admin: 'Administrator'
-
-# Setup Wizard Translations
 setup:
   welcome:
     title: 'Welcome to Little ISMS Helper'
@@ -4291,18 +2287,14 @@ setup:
       database: 'MySQL, PostgreSQL or SQLite database'
       permissions: 'Write permissions in installation directory'
       duration: 'Estimated duration: 5-10 minutes'
-
   progress:
     title: 'Progress'
     step: 'Step %current% of %total%'
-
   navigation:
     next: 'Next'
     back: 'Back'
-
   state:
     recovery_detected: 'A previous setup session was detected. You can continue from there.'
-
   database:
     title: 'Database Connection'
     header: 'Database Configuration'
@@ -4346,7 +2338,6 @@ setup:
     docker_password_location: 'Saved in: /var/www/html/var/mysql_credentials.txt'
     config_loaded: 'Database configuration loaded from .env.local. Fields have been pre-filled with existing values.'
     docker_auto_configured: 'Docker deployment detected: Database has been automatically configured. Proceeding to step 3.'
-
   admin:
     title: 'Create Administrator'
     header: 'Administrator Account'
@@ -4373,7 +2364,6 @@ setup:
     next_steps:
       title: 'Next Steps'
       description: 'After completing the setup, you can log in with this account.'
-
   email:
     title: 'Email Configuration'
     header: 'Configure SMTP Server'
@@ -4391,7 +2381,6 @@ setup:
       notifications: 'Automatic notifications for important events'
       reminders: 'Reminders for pending tasks and reviews'
       reports: 'Sending reports and summaries'
-    # Form field labels (used by EmailConfigurationType)
     transport: 'Transport Method'
     transport_help: 'Select the method for sending emails'
     host: 'SMTP Server'
@@ -4408,18 +2397,10 @@ setup:
     from_address_help: 'Email address from which messages are sent'
     from_name: 'Sender Name'
     from_name_help: 'Name displayed as the sender'
-    # Choice labels for ChoiceType fields
-    transport.smtp: 'SMTP Server'
-    transport.sendmail: 'Sendmail'
-    transport.native: 'Native Mailer'
-    encryption.none: 'None'
-    encryption.tls: 'TLS (recommended)'
-    encryption.ssl: 'SSL'
     test:
       button: 'Send Test Email'
       success: 'Test email sent successfully'
       failed: 'Test email could not be sent'
-
   organisation:
     title: 'Organization Data'
     header: 'Your Organization'
@@ -4438,31 +2419,9 @@ setup:
     industries_min: 'Please select at least one industry'
     industry_help: 'Your industry determines which compliance frameworks are relevant to you'
     industry_required: 'Please select an industry'
-    industry.select: 'Please select...'
-    industry.automotive: 'Automotive Industry'
-    industry.financial_services: 'Financial Services'
-    industry.healthcare: 'Healthcare'
-    industry.pharmaceutical: 'Pharmaceutical & Life Sciences'
-    industry.digital_health: 'Digital Health Applications'
-    industry.manufacturing: 'Manufacturing'
-    industry.it_services: 'IT Services'
-    industry.cloud_services: 'Cloud Services'
-    industry.energy: 'Energy Supply'
-    industry.telecommunications: 'Telecommunications'
-    industry.critical_infrastructure: 'Critical Infrastructure'
-    industry.retail: 'Retail'
-    industry.public_sector: 'Public Sector'
-    industry.education: 'Education'
-    industry.other: 'Other'
     employee_count: 'Number of Employees'
     employee_count_help: 'Company size determines regulatory requirements (e.g. NIS2)'
     employee_count_required: 'Please select the number of employees'
-    employee_count.select: 'Please select...'
-    employee_count.1_10: '1-10 employees'
-    employee_count.11_50: '11-50 employees'
-    employee_count.51_250: '51-250 employees'
-    employee_count.251_1000: '251-1000 employees'
-    employee_count.1001_plus: 'More than 1000 employees'
     country: 'Country'
     country_help: 'Your location determines applicable regulations (e.g. GDPR for EU)'
     description_label: 'Description'
@@ -4478,7 +2437,6 @@ setup:
       description: 'Your industry and size determine which compliance requirements apply to you.'
       reporting: 'Automatically adapt compliance reports'
       recommendations: 'Provide industry-specific recommendations'
-
   compliance:
     title: 'Compliance Frameworks'
     header: 'Compliance Framework Selection'
@@ -4501,23 +2459,16 @@ setup:
       message: 'You can adjust the framework selection later in the settings.'
     details:
       title: 'Framework Details'
-
   error:
     configure_database_first: 'Please configure the database connection first'
     create_admin_first: 'Please create an administrator account first'
-
-# Status Translations
 status:
   in_progress: In Progress
   not_started: Not Started
-
-# Action Translations
 action:
   new_asset: New Asset
   assess_risk: Assess Risk
   report_incident: Report Incident
-
-# Form Translations
 form:
   complete_asset_inventory: Complete asset inventory
   conduct_risk_analysis: Conduct risk analysis
@@ -4657,35 +2608,14 @@ corporate:
     confirm_propagate: 'Do you really want to distribute these changes to all subsidiaries?'
     propagate_error: 'Error distributing changes'
   inherited: 'Inherited'
-
-# Governance Model Labels
 governance:
   hierarchical: 'Hierarchical'
   shared: 'Shared'
   independent: 'Independent'
-
-# Accessibility
 accessibility:
   skip_to_content: 'Skip to main content'
   skip_to_navigation: 'Skip to navigation'
   skip_to_filters: 'Skip to filters'
-
-# Bulk Delete Confirmation
-bulk_delete:
-  confirm:
-    title: 'Confirm Deletion'
-    warning: 'This action cannot be undone.'
-  selection:
-    title: 'Selected Entries'
-  dependencies:
-    title: 'Affected Dependencies'
-    list: 'List of affected dependencies'
-  loading: 'Checking dependencies...'
-
-# MFA Login Challenge (NIS2 Compliance)
-# MFA Login Challenge translations merged into main mfa section (line 3437)
-
-# NIS2 Notifications
 nis2:
   notification:
     early_warning: 'NIS2 Early Warning for incident "%incident%" due in %hours% hours. Deadline: %deadline%'
@@ -4736,8 +2666,6 @@ nis2:
       view_patches: 'View Patches'
       manage_mfa: 'Manage MFA'
   article: 'NIS2 Art. %article%'
-
-# Data Breach Management (Art. 33/34 GDPR)
 data_breach:
   form:
     title: 'Title'
@@ -4760,3 +2688,29 @@ data_breach:
     root_cause: 'Root Cause'
     lessons_learned: 'Lessons Learned'
     data_protection_officer: 'Data Protection Officer'
+Customer: Customer
+Shareholder: Shareholder
+Employee: Employee
+Regulator: Regulator
+Supplier: Supplier
+Partner: Partner
+Public: Public
+Media: Media
+Government: Government
+Competitor: Competitor
+Other: Other
+Critical: Critical
+High: High
+Medium: Medium
+Low: Low
+Daily: Daily
+Weekly: Weekly
+Monthly: Monthly
+Yearly: Annually
+Quarterly: Quarterly
+Annually: Annually
+As Needed: As Needed
+Active: Active
+Inactive: Inactive
+Evaluation: Evaluation
+Terminated: Terminated

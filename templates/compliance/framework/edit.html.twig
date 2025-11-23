@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ 'compliance.framework.edit.title'|trans }} - {{ framework.name }}{% endblock %}
+{% block title %}{{ 'compliance.framework.edit.title'|trans({}, 'compliance') }} - {{ framework.name }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid mt-4">
@@ -9,7 +9,7 @@
             <div class="card">
                 <div class="card-header bg-warning">
                     <h3 class="mb-0">
-                        <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'compliance.framework.edit.heading'|trans }}
+                        <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'compliance.framework.edit.heading'|trans({}, 'compliance') }}
                         <small class="text-muted">{{ framework.name }}</small>
                     </h3>
                 </div>
@@ -20,27 +20,27 @@
                     <fieldset class="mb-4">
                         <legend class="h5 mb-3">
                             <i class="bi bi-tag" aria-hidden="true"></i>
-                            {{ 'compliance.framework.section.identification'|trans }}
+                            {{ 'compliance.framework.section.identification'|trans({}, 'compliance') }}
                         </legend>
 
                         <div class="row">
                             <div class="col-md-6">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.code,
-                                    'label': 'compliance.framework.field.code'|trans,
+                                    'label': 'compliance.framework.field.code'|trans({}, 'compliance'),
                                     'required': true
                                 } %}
                             </div>
                             <div class="col-md-6">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.version,
-                                    'label': 'compliance.framework.field.version'|trans
+                                    'label': 'compliance.framework.field.version'|trans({}, 'compliance')
                                 } %}
                             </div>
                             <div class="col-md-12">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.name,
-                                    'label': 'compliance.framework.field.name'|trans,
+                                    'label': 'compliance.framework.field.name'|trans({}, 'compliance'),
                                     'required': true
                                 } %}
                             </div>
@@ -51,32 +51,32 @@
                     <fieldset class="mb-4">
                         <legend class="h5 mb-3">
                             <i class="bi bi-info-square" aria-hidden="true"></i>
-                            {{ 'compliance.framework.section.details'|trans }}
+                            {{ 'compliance.framework.section.details'|trans({}, 'compliance') }}
                         </legend>
 
                         <div class="row">
                             <div class="col-md-12">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.description,
-                                    'label': 'compliance.framework.field.description'|trans
+                                    'label': 'compliance.framework.field.description'|trans({}, 'compliance')
                                 } %}
                             </div>
                             <div class="col-md-6">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.applicableIndustry,
-                                    'label': 'compliance.framework.field.industry'|trans
+                                    'label': 'compliance.framework.field.industry'|trans({}, 'compliance')
                                 } %}
                             </div>
                             <div class="col-md-6">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.regulatoryBody,
-                                    'label': 'compliance.framework.field.regulatory_body'|trans
+                                    'label': 'compliance.framework.field.regulatory_body'|trans({}, 'compliance')
                                 } %}
                             </div>
                             <div class="col-md-12">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.scopeDescription,
-                                    'label': 'compliance.framework.field.scope'|trans
+                                    'label': 'compliance.framework.field.scope'|trans({}, 'compliance')
                                 } %}
                             </div>
                         </div>
@@ -86,20 +86,20 @@
                     <fieldset class="mb-4">
                         <legend class="h5 mb-3">
                             <i class="bi bi-gear" aria-hidden="true"></i>
-                            {{ 'compliance.framework.section.configuration'|trans }}
+                            {{ 'compliance.framework.section.configuration'|trans({}, 'compliance') }}
                         </legend>
 
                         <div class="row">
                             <div class="col-md-4">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.mandatory,
-                                    'label': 'compliance.framework.field.mandatory'|trans
+                                    'label': 'compliance.framework.field.mandatory'|trans({}, 'compliance')
                                 } %}
                             </div>
                             <div class="col-md-4">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.active,
-                                    'label': 'compliance.framework.field.active'|trans
+                                    'label': 'compliance.framework.field.active'|trans({}, 'compliance')
                                 } %}
                             </div>
                         </div>
@@ -107,10 +107,10 @@
 
                     <div class="d-flex gap-2 pt-3 border-top">
                         <button type="submit" class="btn btn-warning">
-                            <i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'common.save'|trans }}
+                            <i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'common.save'|trans({}, 'messages') }}
                         </button>
                         <a href="{{ path('app_compliance_framework_show', {id: framework.id}) }}" class="btn btn-outline-secondary">
-                            <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'common.cancel'|trans }}
+                            <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'common.cancel'|trans({}, 'messages') }}
                         </a>
                     </div>
 
@@ -121,17 +121,17 @@
         <div class="col-lg-4">
             <div class="card mb-3">
                 <div class="card-header bg-secondary text-white">
-                    <h6 class="mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'compliance.framework.info'|trans }}</h6>
+                    <h6 class="mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'compliance.framework.info'|trans({}, 'compliance') }}</h6>
                 </div>
                 <div class="card-body">
                     <dl class="row mb-0">
-                        <dt class="col-sm-6">{{ 'common.created_at'|trans }}</dt>
+                        <dt class="col-sm-6">{{ 'common.created_at'|trans({}, 'messages') }}</dt>
                         <dd class="col-sm-6">{{ framework.createdAt|date('d.m.Y H:i') }}</dd>
 
-                        <dt class="col-sm-6">{{ 'common.updated_at'|trans }}</dt>
+                        <dt class="col-sm-6">{{ 'common.updated_at'|trans({}, 'messages') }}</dt>
                         <dd class="col-sm-6">{{ framework.updatedAt ? framework.updatedAt|date('d.m.Y H:i') : '-' }}</dd>
 
-                        <dt class="col-sm-6">{{ 'compliance.framework.field.requirements'|trans }}</dt>
+                        <dt class="col-sm-6">{{ 'compliance.framework.field.requirements'|trans({}, 'compliance') }}</dt>
                         <dd class="col-sm-6"><span class="badge bg-info">{{ framework.requirements|length }}</span></dd>
                     </dl>
                 </div>
@@ -140,14 +140,14 @@
             {% if is_granted('ROLE_ADMIN') %}
             <div class="card border-danger">
                 <div class="card-header bg-danger text-white">
-                    <h6 class="mb-0"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'common.danger_zone'|trans }}</h6>
+                    <h6 class="mb-0"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'common.danger_zone'|trans({}, 'messages') }}</h6>
                 </div>
                 <div class="card-body">
                     <form method="post" action="{{ path('app_compliance_framework_delete', {id: framework.id}) }}"
-                          onsubmit="return confirm('{{ 'compliance.framework.confirm.delete'|trans }}');">
+                          onsubmit="return confirm('{{ 'compliance.framework.confirm.delete'|trans({}, 'compliance') }}');">
                         <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ framework.id) }}">
                         <button type="submit" class="btn btn-outline-danger w-100">
-                            <i class="bi bi-trash" aria-hidden="true"></i> {{ 'common.delete'|trans }}
+                            <i class="bi bi-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}
                         </button>
                     </form>
                 </div>

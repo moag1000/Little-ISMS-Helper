@@ -1,0 +1,31 @@
+dashboard:
+  title: ISMS Dashboard
+  subtitle: Overview of your information security status
+  kpis: Key Performance Indicators
+  compliance_status: Compliance Status
+  implementation_status: Implementation Status
+  quick_access: Quick Access
+  next_steps: Next Steps
+  success:
+    settings_imported: Dashboard settings successfully imported!
+  error:
+    import_failed: Error importing settings. Please check the file.
+  overdue_reviews:
+    title: 'Overdue Risk Reviews'
+    description: '%count% risks require review (ISO 27001:2022 Clause 6.1.3.d)'
+    last_review: 'Last Review'
+    never_reviewed: 'Never Reviewed'
+    view_all: 'View All %count%'
+  upcoming_reviews:
+    title: 'Upcoming Risk Reviews'
+    description: 'Risks that need to be reviewed within the next 30 days'
+  overdue_treatment_plans:
+    title: 'Overdue Treatment Plans'
+    description: '%count% treatment plans are overdue (ISO 27001:2022 Clause 6.1.3)'
+    due_date: 'Due Date'
+    days_overdue: 'days overdue'
+    view_all: 'View %count% more'
+  approaching_treatment_plans:
+    title: 'Approaching Deadlines'
+    description: 'Treatment plans with deadlines within the next 7 days'
+    days_remaining: 'days remaining'

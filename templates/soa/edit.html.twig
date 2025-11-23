@@ -1,12 +1,12 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'soa' %}
 
-{% block title %}{{ 'soa.action.edit'|trans }} - {{ control.controlId }} - Little ISMS Helper{% endblock %}
+{% block title %}{{ 'soa.action.edit'|trans({}, 'messages') }} - {{ control.controlId }} - Little ISMS Helper{% endblock %}
 
 {% block body %}
 <div class="page-header">
     <div>
-        <h1>{{ 'soa.action.edit'|trans }}: {{ control.controlId }}</h1>
+        <h1>{{ 'soa.action.edit'|trans({}, 'messages') }}: {{ control.controlId }}</h1>
     </div>
     <div class="button-group">
         <a href="{{ path('app_soa_index') }}" class="btn btn-secondary">← {{ 'common.back_to_list'|trans({}, 'messages') }}</a>
@@ -26,44 +26,44 @@
     <div class="form-group">
         <label class="form-label label-checkbox">
             <input type="checkbox" name="applicable" value="1" {% if control.applicable %}checked{% endif %} class="checkbox-lg">
-            <span>{{ 'soa.field.applicable'|trans }}</span>
+            <span>{{ 'soa.field.applicable'|trans({}, 'messages') }}</span>
         </label>
         <small class="small-muted-block">
-            {{ 'soa.help.applicable'|trans }}
+            {{ 'soa.help.applicable'|trans({}, 'messages') }}
         </small>
     </div>
 
     <div class="form-group">
         <label class="form-label" for="justification">
-            {{ 'soa.field.justification'|trans }} *
+            {{ 'soa.field.justification'|trans({}, 'messages') }} *
         </label>
         <textarea
             name="justification"
             id="justification"
             rows="4"
             class="form-control"
-            placeholder="{{ 'soa.placeholder.justification'|trans }}"
+            placeholder="{{ 'soa.placeholder.justification'|trans({}, 'messages') }}"
         >{{ control.justification }}</textarea>
         <small class="small-muted-block">
-            {{ 'soa.help.justification'|trans }}
+            {{ 'soa.help.justification'|trans({}, 'messages') }}
         </small>
     </div>
 
     <div class="form-group">
         <label class="form-label" for="implementationStatus">
-            {{ 'soa.field.status'|trans }}
+            {{ 'soa.field.status'|trans({}, 'messages') }}
         </label>
         <select name="implementationStatus" id="implementationStatus" class="form-control">
-            <option value="not_started" {% if control.implementationStatus == 'not_started' %}selected{% endif %}>{{ 'soa.status.not_started'|trans }}</option>
-            <option value="in_progress" {% if control.implementationStatus == 'in_progress' %}selected{% endif %}>{{ 'soa.status.in_progress'|trans }}</option>
-            <option value="implemented" {% if control.implementationStatus == 'implemented' %}selected{% endif %}>{{ 'soa.status.implemented'|trans }}</option>
-            <option value="not_applicable" {% if control.implementationStatus == 'not_applicable' %}selected{% endif %}>{{ 'soa.status.not_applicable'|trans }}</option>
+            <option value="not_started" {% if control.implementationStatus == 'not_started' %}selected{% endif %}>{{ 'soa.status.not_started'|trans({}, 'messages') }}</option>
+            <option value="in_progress" {% if control.implementationStatus == 'in_progress' %}selected{% endif %}>{{ 'soa.status.in_progress'|trans({}, 'messages') }}</option>
+            <option value="implemented" {% if control.implementationStatus == 'implemented' %}selected{% endif %}>{{ 'soa.status.implemented'|trans({}, 'messages') }}</option>
+            <option value="not_applicable" {% if control.implementationStatus == 'not_applicable' %}selected{% endif %}>{{ 'soa.status.not_applicable'|trans({}, 'messages') }}</option>
         </select>
     </div>
 
     <div class="form-group">
         <label class="form-label" for="implementationPercentage">
-            {{ 'soa.field.implementation_percentage'|trans }}
+            {{ 'soa.field.implementation_percentage'|trans({}, 'messages') }}
         </label>
         <div class="flex-center-gap-md">
             <input
@@ -89,23 +89,23 @@
 
     <div class="form-group">
         <label class="form-label" for="implementationNotes">
-            {{ 'soa.field.implementation_notes'|trans }}
+            {{ 'soa.field.implementation_notes'|trans({}, 'messages') }}
         </label>
         <textarea
             name="implementationNotes"
             id="implementationNotes"
             rows="6"
             class="form-control"
-            placeholder="{{ 'soa.placeholder.implementation_notes'|trans }}"
+            placeholder="{{ 'soa.placeholder.implementation_notes'|trans({}, 'messages') }}"
         >{{ control.implementationNotes }}</textarea>
         <small class="small-muted-block">
-            {{ 'soa.help.implementation_notes'|trans }}
+            {{ 'soa.help.implementation_notes'|trans({}, 'messages') }}
         </small>
     </div>
 
     <div class="form-group">
         <label class="form-label" for="responsiblePerson">
-            {{ 'soa.field.responsible_person'|trans }}
+            {{ 'soa.field.responsible_person'|trans({}, 'messages') }}
         </label>
         <input
             type="text"
@@ -113,13 +113,13 @@
             id="responsiblePerson"
             value="{{ control.responsiblePerson }}"
             class="form-control"
-            placeholder="{{ 'soa.placeholder.responsible_person'|trans }}"
+            placeholder="{{ 'soa.placeholder.responsible_person'|trans({}, 'messages') }}"
         >
     </div>
 
     <div class="form-group">
         <label class="form-label" for="targetDate">
-            {{ 'soa.field.target_date'|trans }}
+            {{ 'soa.field.target_date'|trans({}, 'messages') }}
         </label>
         <input
             type="date"

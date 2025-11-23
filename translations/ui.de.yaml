@@ -1,0 +1,17 @@
+ui:
+  location: Standort
+  responsible: Verantwortlich
+  contact: Kontakt
+  details: Details
+  overview: Übersicht
+  new: Neu
+  add: Hinzufügen
+  remove: Entfernen
+  select: Auswählen
+  none: Keine
+  all: Alle
+  'true': Ja
+  'false': Nein
+  optional: Optional
+  required: Erforderlich
+  n_a: N/A

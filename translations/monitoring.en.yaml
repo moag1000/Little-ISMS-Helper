@@ -1,0 +1,91 @@
+monitoring:
+  title: System Monitoring
+  health:
+    title: System Health
+    overall_status: Overall Status
+    healthy: Healthy
+    warning: Warning
+    error: Error
+    last_checked: Last Checked
+  database:
+    title: Database
+    status: Status
+    response_time: Response Time
+    driver: Driver
+    error: Error
+  disk:
+    title: Disk
+    free: Free
+    used: Used
+    total: Total
+    percentage: Percentage
+  php:
+    title: PHP
+    version: Version
+    memory_limit: Memory Limit
+    max_execution_time: Max Execution Time
+    extensions: Extensions
+    loaded: Loaded
+    missing: Missing
+  symfony:
+    title: Symfony
+    version: Version
+    environment: Environment
+    debug: Debug Mode
+  cache:
+    title: Cache
+    directory: Directory
+    writable: Writable
+  logs:
+    title: Logs
+    directory: Directory
+    writable: Writable
+  performance:
+    title: Performance Metrics
+    total_requests: Total Requests
+    unique_users: Unique Users
+    memory_usage: Memory Usage
+    memory_peak: Memory Peak
+    memory_limit: Memory Limit
+    top_actions: Top Actions
+    top_entities: Most Active Entities
+    last_24h: Last 24 Hours
+    system_resources: System Resources
+    note: Note
+  errors:
+    title: Error Logs
+    total: Total Errors
+    by_level: By Level
+    file_size: File Size
+    last_modified: Last Modified
+    log_file: Log File
+    show_entries: Show Entries
+    recent: Recent Errors
+    no_errors: No errors found!
+    no_log_file: No log file found
+    show_full: Show full log entry
+  audit_log:
+    title: Audit Log
+    total_entries: Total Entries
+    top_actions: Top Actions
+    top_entities: Top Entities
+    quick_filters: Quick Filters
+    all: All
+    today: Today
+    this_week: This Week
+    critical_actions: Critical Actions
+    entries: Entries
+    timestamp: Timestamp
+    user: User
+    action: Action
+    entity: Entity
+    ip_address: IP Address
+    details: Details
+    view: View
+    description: Description
+    changes: Changes
+    about: About Audit Log
+    about_text: The audit log tracks all significant actions in the system including create, update, and delete operations.
+  related: Related Monitoring
+  refresh: Refresh
+  back_to_health: Back to Health

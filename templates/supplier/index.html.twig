@@ -3,13 +3,13 @@
 {% import '_macros/inheritance_badge.html.twig' as inheritance %}
 {% import '_macros/cards.html.twig' as cards %}
 
-{% block title %}{{ 'supplier.title'|trans }}{% endblock %}
+{% block title %}{{ 'supplier.title'|trans({}, 'messages') }}{% endblock %}
 
 {% block body %}
 <div class="container">
     <div class="page-header">
-        <h1>{{ 'supplier.page.title'|trans }}</h1>
-        <a href="{{ path('app_supplier_new') }}" class="btn btn-primary">{{ 'supplier.action.add_new'|trans }}</a>
+        <h1>{{ 'supplier.page.title'|trans({}, 'messages') }}</h1>
+        <a href="{{ path('app_supplier_new') }}" class="btn btn-primary">{{ 'supplier.action.add_new'|trans({}, 'messages') }}</a>
     </div>
 
     {% if currentTenant %}
@@ -46,32 +46,32 @@
     <div class="row mb-4">
         <div class="col-md-3">
             {% if currentTenant %}
-                {% set subtitle = 'corporate.stats.breakdown'|trans({'%own%': detailedStats.own, '%inherited%': detailedStats.inherited, '%subsidiaries%': detailedStats.subsidiaries}) %}
-                {{ cards.kpi_card('supplier.statistics.total'|trans, detailedStats.total, subtitle, null, 'primary', null) }}
+                {% set subtitle = 'corporate.stats.breakdown'|trans({'%own%': detailedStats.own, '%inherited%': detailedStats.inherited, '%subsidiaries%': detailedStats.subsidiaries}, 'tenant') %}
+                {{ cards.kpi_card('supplier.statistics.total'|trans({}, 'messages'), detailedStats.total, subtitle, null, 'primary', null) }}
             {% else %}
-                {{ cards.kpi_card('supplier.statistics.total'|trans, detailedStats.total, null, null, 'primary', null) }}
+                {{ cards.kpi_card('supplier.statistics.total'|trans({}, 'messages'), detailedStats.total, null, null, 'primary', null) }}
             {% endif %}
         </div>
         <div class="col-md-3">
-            {{ cards.kpi_card('supplier.statistics.critical'|trans, statistics.critical, null, null, 'danger', null) }}
+            {{ cards.kpi_card('supplier.statistics.critical'|trans({}, 'messages'), statistics.critical, null, null, 'danger', null) }}
         </div>
         <div class="col-md-3">
-            {{ cards.kpi_card('supplier.statistics.overdue_assessments'|trans, statistics.overdue_assessments, null, null, 'warning', null) }}
+            {{ cards.kpi_card('supplier.statistics.overdue_assessments'|trans({}, 'messages'), statistics.overdue_assessments, null, null, 'warning', null) }}
         </div>
         <div class="col-md-3">
-            {{ cards.kpi_card('supplier.statistics.non_compliant'|trans, statistics.non_compliant, null, null, 'danger', null) }}
+            {{ cards.kpi_card('supplier.statistics.non_compliant'|trans({}, 'messages'), statistics.non_compliant, null, null, 'danger', null) }}
         </div>
     </div>
     {% endif %}
 
     {% if overdueAssessments|length > 0 %}
     <div class="alert alert-warning">
-        <h4>⚠️ {{ 'supplier.alert.overdue_assessments'|trans }}</h4>
+        <h4>⚠️ {{ 'supplier.alert.overdue_assessments'|trans({}, 'messages') }}</h4>
         <ul>
             {% for supplier in overdueAssessments %}
             <li>
                 <a href="{{ path('app_supplier_show', {id: supplier.id}) }}">{{ supplier.name }}</a>
-                - {{ 'supplier.next_assessment'|trans }}: {{ supplier.nextAssessmentDate ? supplier.nextAssessmentDate|date('Y-m-d') : ('supplier.not_scheduled'|trans) }}
+                - {{ 'supplier.next_assessment'|trans({}, 'messages') }}: {{ supplier.nextAssessmentDate ? supplier.nextAssessmentDate|date('Y-m-d') : ('supplier.not_scheduled'|trans({}, 'messages')) }}
             </li>
             {% endfor %}
         </ul>
@@ -80,12 +80,12 @@
 
     {% if nonCompliant|length > 0 %}
     <div class="alert alert-danger">
-        <h4>🚨 {{ 'supplier.alert.non_compliant'|trans }}</h4>
+        <h4>🚨 {{ 'supplier.alert.non_compliant'|trans({}, 'messages') }}</h4>
         <ul>
             {% for supplier in nonCompliant %}
             <li>
                 <a href="{{ path('app_supplier_show', {id: supplier.id}) }}">{{ supplier.name }}</a>
-                - {{ 'supplier.risk_score'|trans }}: {{ supplier.calculateRiskScore() }}
+                - {{ 'supplier.risk_score'|trans({}, 'messages') }}: {{ supplier.calculateRiskScore() }}
             </li>
             {% endfor %}
         </ul>
@@ -111,13 +111,13 @@
                                    data-bulk-actions-target="selectAllCheckbox"
                                    aria-label="{{ 'common.select_all'|trans({}, 'messages') }}">
                         </th>
-                        <th scope="col">{{ 'supplier.table.name'|trans }}</th>
-                        <th scope="col">{{ 'supplier.table.service_provided'|trans }}</th>
-                        <th scope="col">{{ 'supplier.table.criticality'|trans }}</th>
-                        <th scope="col">{{ 'supplier.table.status'|trans }}</th>
-                        <th scope="col">{{ 'supplier.table.risk_score'|trans }}</th>
-                        <th scope="col">{{ 'supplier.table.iso27001'|trans }}</th>
-                        <th scope="col">{{ 'supplier.table.actions'|trans }}</th>
+                        <th scope="col">{{ 'supplier.table.name'|trans({}, 'messages') }}</th>
+                        <th scope="col">{{ 'supplier.table.service_provided'|trans({}, 'messages') }}</th>
+                        <th scope="col">{{ 'supplier.table.criticality'|trans({}, 'messages') }}</th>
+                        <th scope="col">{{ 'supplier.table.status'|trans({}, 'messages') }}</th>
+                        <th scope="col">{{ 'supplier.table.risk_score'|trans({}, 'messages') }}</th>
+                        <th scope="col">{{ 'supplier.table.iso27001'|trans({}, 'messages') }}</th>
+                        <th scope="col">{{ 'supplier.table.actions'|trans({}, 'messages') }}</th>
                     </tr>
                 {% endblock %}
                 {% block table_body %}
@@ -147,15 +147,15 @@
                         </td>
                         <td>{{ supplier.hasISO27001 ? '✓' : '✗' }}</td>
                         <td>
-                            <a href="{{ path('app_supplier_show', {id: supplier.id}) }}" class="btn btn-sm btn-secondary">{{ 'supplier.action.view'|trans }}</a>
-                            <a href="{{ path('app_supplier_edit', {id: supplier.id}) }}" class="btn btn-sm btn-primary">{{ 'supplier.action.edit'|trans }}</a>
+                            <a href="{{ path('app_supplier_show', {id: supplier.id}) }}" class="btn btn-sm btn-secondary">{{ 'supplier.action.view'|trans({}, 'messages') }}</a>
+                            <a href="{{ path('app_supplier_edit', {id: supplier.id}) }}" class="btn btn-sm btn-primary">{{ 'supplier.action.edit'|trans({}, 'messages') }}</a>
                         </td>
                     </tr>
                     {% endfor %}
                 {% endblock %}
             {% endembed %}
             {% else %}
-            <p>{{ 'supplier.empty.message'|trans }} <a href="{{ path('app_supplier_new') }}">{{ 'supplier.empty.add_first'|trans }}</a>.</p>
+            <p>{{ 'supplier.empty.message'|trans({}, 'messages') }} <a href="{{ path('app_supplier_new') }}">{{ 'supplier.empty.add_first'|trans({}, 'messages') }}</a>.</p>
             {% endif %}
         </div>
 

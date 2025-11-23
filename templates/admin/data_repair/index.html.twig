@@ -1,15 +1,15 @@
 {% extends 'admin/layout.html.twig' %}
 
-{% block title %}{{ 'admin.data_repair.title'|trans }} - {{ 'admin.panel.title'|trans }}{% endblock %}
+{% block title %}{{ 'admin.data_repair.title'|trans({}, 'admin') }} - {{ 'admin.panel.title'|trans({}, 'admin') }}{% endblock %}
 
 {% block admin_content %}
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h1 class="h3 mb-0">
-                <i class="bi bi-tools" aria-hidden="true"></i> {{ 'admin.data_repair.title'|trans }}
+                <i class="bi bi-tools" aria-hidden="true"></i> {{ 'admin.data_repair.title'|trans({}, 'admin') }}
             </h1>
-            <p class="text-muted mb-0">{{ 'admin.data_repair.description'|trans }}</p>
+            <p class="text-muted mb-0">{{ 'admin.data_repair.description'|trans({}, 'admin') }}</p>
         </div>
     </div>
 
@@ -31,17 +31,17 @@
     <div class="card mb-4">
         <div class="card-header bg-warning text-dark">
             <h3 class="mb-0">
-                <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'admin.data_repair.orphaned_entities'|trans }}
+                <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'admin.data_repair.orphaned_entities'|trans({}, 'admin') }}
             </h3>
         </div>
         <div class="card-body">
             {% if orphanedAssets|length == 0 and orphanedRisks|length == 0 and orphanedIncidents|length == 0 %}
                 <div class="alert alert-success mb-0">
-                    <i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'admin.data_repair.no_orphans'|trans }}
+                    <i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'admin.data_repair.no_orphans'|trans({}, 'admin') }}
                 </div>
             {% else %}
                 <div class="alert alert-warning">
-                    <strong>{{ 'common.warning'|trans }}:</strong> {{ 'admin.data_repair.orphans_found'|trans }}
+                    <strong>{{ 'common.warning'|trans({}, 'messages') }}:</strong> {{ 'admin.data_repair.orphans_found'|trans({}, 'admin') }}
                 </div>
 
                 <div class="row mb-3">
@@ -49,7 +49,7 @@
                         <div class="card text-center">
                             <div class="card-body">
                                 <h3 class="text-danger">{{ orphanedAssets|length }}</h3>
-                                <p class="mb-0">{{ 'admin.data_repair.orphaned_assets'|trans }}</p>
+                                <p class="mb-0">{{ 'admin.data_repair.orphaned_assets'|trans({}, 'admin') }}</p>
                             </div>
                         </div>
                     </div>
@@ -57,7 +57,7 @@
                         <div class="card text-center">
                             <div class="card-body">
                                 <h3 class="text-danger">{{ orphanedRisks|length }}</h3>
-                                <p class="mb-0">{{ 'admin.data_repair.orphaned_risks'|trans }}</p>
+                                <p class="mb-0">{{ 'admin.data_repair.orphaned_risks'|trans({}, 'admin') }}</p>
                             </div>
                         </div>
                     </div>
@@ -65,7 +65,7 @@
                         <div class="card text-center">
                             <div class="card-body">
                                 <h3 class="text-danger">{{ orphanedIncidents|length }}</h3>
-                                <p class="mb-0">{{ 'admin.data_repair.orphaned_incidents'|trans }}</p>
+                                <p class="mb-0">{{ 'admin.data_repair.orphaned_incidents'|trans({}, 'admin') }}</p>
                             </div>
                         </div>
                     </div>
@@ -76,26 +76,26 @@
                     <input type="hidden" name="_token" value="{{ csrf_token('assign_orphans') }}">
                     <div class="row align-items-end">
                         <div class="col-md-4">
-                            <label for="tenant_id" class="form-label">{{ 'admin.data_repair.assign_to_tenant'|trans }}</label>
+                            <label for="tenant_id" class="form-label">{{ 'admin.data_repair.assign_to_tenant'|trans({}, 'admin') }}</label>
                             <select name="tenant_id" id="tenant_id" class="form-select" required>
-                                <option value="">{{ 'admin.data_repair.select_tenant'|trans }}</option>
+                                <option value="">{{ 'admin.data_repair.select_tenant'|trans({}, 'admin') }}</option>
                                 {% for tenant in tenants %}
                                     <option value="{{ tenant.id }}">{{ tenant.name }}</option>
                                 {% endfor %}
                             </select>
                         </div>
                         <div class="col-md-4">
-                            <label for="entity_type" class="form-label">{{ 'admin.data_repair.entity_type'|trans }}</label>
+                            <label for="entity_type" class="form-label">{{ 'admin.data_repair.entity_type'|trans({}, 'admin') }}</label>
                             <select name="entity_type" id="entity_type" class="form-select" required>
-                                <option value="all">{{ 'admin.data_repair.all_orphans'|trans }}</option>
-                                <option value="assets">{{ 'admin.data_repair.assets_only'|trans }} ({{ orphanedAssets|length }})</option>
-                                <option value="risks">{{ 'admin.data_repair.risks_only'|trans }} ({{ orphanedRisks|length }})</option>
-                                <option value="incidents">{{ 'admin.data_repair.incidents_only'|trans }} ({{ orphanedIncidents|length }})</option>
+                                <option value="all">{{ 'admin.data_repair.all_orphans'|trans({}, 'admin') }}</option>
+                                <option value="assets">{{ 'admin.data_repair.assets_only'|trans({}, 'admin') }} ({{ orphanedAssets|length }})</option>
+                                <option value="risks">{{ 'admin.data_repair.risks_only'|trans({}, 'admin') }} ({{ orphanedRisks|length }})</option>
+                                <option value="incidents">{{ 'admin.data_repair.incidents_only'|trans({}, 'admin') }} ({{ orphanedIncidents|length }})</option>
                             </select>
                         </div>
                         <div class="col-md-4">
                             <button type="submit" class="btn btn-warning w-100">
-                                <i class="bi bi-arrow-right-circle" aria-hidden="true"></i> {{ 'admin.data_repair.assign_orphans'|trans }}
+                                <i class="bi bi-arrow-right-circle" aria-hidden="true"></i> {{ 'admin.data_repair.assign_orphans'|trans({}, 'admin') }}
                             </button>
                         </div>
                     </div>
@@ -104,7 +104,7 @@
                 {# Detailed Lists #}
                 {% if orphanedAssets|length > 0 %}
                 <div class="mb-4">
-                    <h2>{{ 'admin.data_repair.orphaned_assets_list'|trans }}</h2>
+                    <h2>{{ 'admin.data_repair.orphaned_assets_list'|trans({}, 'admin') }}</h2>
                     {% embed '_components/_table.html.twig' with {
                         'class': 'table-sm table-striped',
                         'responsive': true,
@@ -113,9 +113,9 @@
                         {% block table_head %}
                             <tr>
                                 <th scope="col">ID</th>
-                                <th scope="col">{{ 'common.name'|trans }}</th>
-                                <th scope="col">{{ 'asset.label.type'|trans }}</th>
-                                <th scope="col">{{ 'common.actions'|trans }}</th>
+                                <th scope="col">{{ 'common.name'|trans({}, 'messages') }}</th>
+                                <th scope="col">{{ 'asset.label.type'|trans({}, 'assets') }}</th>
+                                <th scope="col">{{ 'common.actions'|trans({}, 'messages') }}</th>
                             </tr>
                         {% endblock %}
                         {% block table_body %}
@@ -133,7 +133,7 @@
                                                     <option value="{{ tenant.id }}">{{ tenant.name }}</option>
                                                 {% endfor %}
                                             </select>
-                                            <button type="submit" class="btn btn-sm btn-outline-primary" aria-label="{{ 'common.apply'|trans }}">
+                                            <button type="submit" class="btn btn-sm btn-outline-primary" aria-label="{{ 'common.apply'|trans({}, 'messages') }}">
                                                 <i class="bi bi-check" aria-hidden="true"></i>
                                             </button>
                                         </div>
@@ -148,7 +148,7 @@
 
                 {% if orphanedRisks|length > 0 %}
                 <div class="mb-4">
-                    <h4>{{ 'admin.data_repair.orphaned_risks_list'|trans }}</h4>
+                    <h4>{{ 'admin.data_repair.orphaned_risks_list'|trans({}, 'admin') }}</h4>
                     {% embed '_components/_table.html.twig' with {
                         'class': 'table-sm table-striped',
                         'responsive': true,
@@ -157,9 +157,9 @@
                         {% block table_head %}
                             <tr>
                                 <th scope="col">ID</th>
-                                <th scope="col">{{ 'risk.label.title'|trans }}</th>
-                                <th scope="col">{{ 'risk.label.inherent_risk'|trans }}</th>
-                                <th scope="col">{{ 'common.actions'|trans }}</th>
+                                <th scope="col">{{ 'risk.label.title'|trans({}, 'risks') }}</th>
+                                <th scope="col">{{ 'risk.label.inherent_risk'|trans({}, 'risks') }}</th>
+                                <th scope="col">{{ 'common.actions'|trans({}, 'messages') }}</th>
                             </tr>
                         {% endblock %}
                         {% block table_body %}
@@ -177,7 +177,7 @@
                                                     <option value="{{ tenant.id }}">{{ tenant.name }}</option>
                                                 {% endfor %}
                                             </select>
-                                            <button type="submit" class="btn btn-sm btn-outline-primary" aria-label="{{ 'common.apply'|trans }}">
+                                            <button type="submit" class="btn btn-sm btn-outline-primary" aria-label="{{ 'common.apply'|trans({}, 'messages') }}">
                                                 <i class="bi bi-check" aria-hidden="true"></i>
                                             </button>
                                         </div>
@@ -192,7 +192,7 @@
 
                 {% if orphanedIncidents|length > 0 %}
                 <div class="mb-4">
-                    <h4>{{ 'admin.data_repair.orphaned_incidents_list'|trans }}</h4>
+                    <h4>{{ 'admin.data_repair.orphaned_incidents_list'|trans({}, 'admin') }}</h4>
                     {% embed '_components/_table.html.twig' with {
                         'class': 'table-sm table-striped',
                         'responsive': true,
@@ -201,9 +201,9 @@
                         {% block table_head %}
                             <tr>
                                 <th scope="col">ID</th>
-                                <th scope="col">{{ 'incident.label.title'|trans }}</th>
-                                <th scope="col">{{ 'incident.label.severity'|trans }}</th>
-                                <th scope="col">{{ 'common.actions'|trans }}</th>
+                                <th scope="col">{{ 'incident.label.title'|trans({}, 'incidents') }}</th>
+                                <th scope="col">{{ 'incident.label.severity'|trans({}, 'incidents') }}</th>
+                                <th scope="col">{{ 'common.actions'|trans({}, 'messages') }}</th>
                             </tr>
                         {% endblock %}
                         {% block table_body %}
@@ -221,7 +221,7 @@
                                                     <option value="{{ tenant.id }}">{{ tenant.name }}</option>
                                                 {% endfor %}
                                             </select>
-                                            <button type="submit" class="btn btn-sm btn-outline-primary" aria-label="{{ 'common.apply'|trans }}">
+                                            <button type="submit" class="btn btn-sm btn-outline-primary" aria-label="{{ 'common.apply'|trans({}, 'messages') }}">
                                                 <i class="bi bi-check" aria-hidden="true"></i>
                                             </button>
                                         </div>
@@ -241,7 +241,7 @@
     <div class="card">
         <div class="card-header">
             <h3 class="mb-0">
-                <i class="bi bi-building" aria-hidden="true"></i> {{ 'admin.data_repair.tenant_statistics'|trans }}
+                <i class="bi bi-building" aria-hidden="true"></i> {{ 'admin.data_repair.tenant_statistics'|trans({}, 'admin') }}
             </h3>
         </div>
         <div class="card-body">
@@ -256,7 +256,7 @@
                         <th scope="col" class="text-center">{{ 'nav.assets'|trans({}, 'nav') }}</th>
                         <th scope="col" class="text-center">{{ 'nav.risks'|trans({}, 'nav') }}</th>
                         <th scope="col" class="text-center">{{ 'nav.incidents'|trans({}, 'nav') }}</th>
-                        <th scope="col" class="text-center">{{ 'common.all'|trans }}</th>
+                        <th scope="col" class="text-center">{{ 'common.all'|trans({}, 'messages') }}</th>
                     </tr>
                 {% endblock %}
                 {% block table_body %}
@@ -285,12 +285,12 @@
     <div class="card mt-4">
         <div class="card-header bg-warning text-dark">
             <h3 class="mb-0">
-                <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'admin.data_repair.risk_asset_assignment'|trans|default('Risk-Asset Zuordnung reparieren') }}
+                <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'admin.data_repair.risk_asset_assignment'|trans({}, 'admin')|default('Risk-Asset Zuordnung reparieren') }}
             </h3>
         </div>
         <div class="card-body">
             <div class="alert alert-warning">
-                <strong>{{ 'common.warning'|trans }}:</strong> {{ 'admin.data_repair.risk_asset_assignment_desc'|trans|default('Folgende Risiken haben kein Asset zugewiesen und sollten korrigiert werden.') }}
+                <strong>{{ 'common.warning'|trans({}, 'messages') }}:</strong> {{ 'admin.data_repair.risk_asset_assignment_desc'|trans({}, 'admin')|default('Folgende Risiken haben kein Asset zugewiesen und sollten korrigiert werden.') }}
             </div>
             {% embed '_components/_table.html.twig' with {
                 'class': 'table-sm table-striped',
@@ -300,9 +300,9 @@
                 {% block table_head %}
                     <tr>
                         <th scope="col">ID</th>
-                        <th scope="col">{{ 'risk.label.title'|trans }}</th>
-                        <th scope="col">{{ 'admin.data_repair.current_asset'|trans|default('Aktuelles Asset') }}</th>
-                        <th scope="col">{{ 'admin.data_repair.assign_to_asset'|trans|default('Neues Asset zuweisen') }}</th>
+                        <th scope="col">{{ 'risk.label.title'|trans({}, 'risks') }}</th>
+                        <th scope="col">{{ 'admin.data_repair.current_asset'|trans({}, 'admin')|default('Aktuelles Asset') }}</th>
+                        <th scope="col">{{ 'admin.data_repair.assign_to_asset'|trans({}, 'admin')|default('Neues Asset zuweisen') }}</th>
                     </tr>
                 {% endblock %}
                 {% block table_body %}
@@ -319,7 +319,7 @@
                             {% if risk.asset %}
                                 <span class="badge bg-success">{{ risk.asset.name }}</span>
                             {% else %}
-                                <span class="badge bg-danger">{{ 'admin.data_repair.no_asset'|trans|default('Kein Asset') }}</span>
+                                <span class="badge bg-danger">{{ 'admin.data_repair.no_asset'|trans({}, 'admin')|default('Kein Asset') }}</span>
                             {% endif %}
                         </td>
                         <td>
@@ -327,14 +327,14 @@
                                 <input type="hidden" name="_token" value="{{ csrf_token('assign_asset_' ~ risk.id) }}">
                                 <div class="input-group input-group-sm">
                                     <select name="asset_id" class="form-select form-select-sm" required>
-                                        <option value="">{{ 'admin.data_repair.select_asset'|trans|default('Asset auswählen...') }}</option>
+                                        <option value="">{{ 'admin.data_repair.select_asset'|trans({}, 'admin')|default('Asset auswählen...') }}</option>
                                         {% for asset in allAssets %}
                                             <option value="{{ asset.id }}"{% if risk.asset and risk.asset.id == asset.id %} selected{% endif %}>
                                                 {{ asset.name }} ({{ asset.tenant ? asset.tenant.name : 'Kein Tenant' }})
                                             </option>
                                         {% endfor %}
                                     </select>
-                                    <button type="submit" class="btn btn-sm btn-outline-info" aria-label="{{ 'common.view_details'|trans }}">
+                                    <button type="submit" class="btn btn-sm btn-outline-info" aria-label="{{ 'common.view_details'|trans({}, 'messages') }}">
                                         <i class="bi bi-arrow-right" aria-hidden="true"></i>
                                     </button>
                                 </div>
@@ -354,12 +354,12 @@
     <div class="card mt-4">
         <div class="card-header bg-warning text-dark">
             <h3 class="mb-0">
-                <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'admin.data_repair.incident_asset_assignment'|trans|default('Incident-Asset Zuordnung reparieren') }}
+                <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'admin.data_repair.incident_asset_assignment'|trans({}, 'admin')|default('Incident-Asset Zuordnung reparieren') }}
             </h3>
         </div>
         <div class="card-body">
             <div class="alert alert-warning">
-                <strong>{{ 'common.warning'|trans }}:</strong> {{ 'admin.data_repair.incident_asset_assignment_desc'|trans|default('Folgende Incidents haben keine Assets zugewiesen und sollten korrigiert werden.') }}
+                <strong>{{ 'common.warning'|trans({}, 'messages') }}:</strong> {{ 'admin.data_repair.incident_asset_assignment_desc'|trans({}, 'admin')|default('Folgende Incidents haben keine Assets zugewiesen und sollten korrigiert werden.') }}
             </div>
             {% embed '_components/_table.html.twig' with {
                 'class': 'table-sm table-striped',
@@ -369,9 +369,9 @@
                 {% block table_head %}
                     <tr>
                         <th scope="col">ID</th>
-                        <th scope="col">{{ 'incident.label.title'|trans }}</th>
-                        <th scope="col">{{ 'admin.data_repair.current_asset'|trans|default('Aktuelles Asset') }}</th>
-                        <th scope="col">{{ 'admin.data_repair.assign_to_asset'|trans|default('Neues Asset zuweisen') }}</th>
+                        <th scope="col">{{ 'incident.label.title'|trans({}, 'incidents') }}</th>
+                        <th scope="col">{{ 'admin.data_repair.current_asset'|trans({}, 'admin')|default('Aktuelles Asset') }}</th>
+                        <th scope="col">{{ 'admin.data_repair.assign_to_asset'|trans({}, 'admin')|default('Neues Asset zuweisen') }}</th>
                     </tr>
                 {% endblock %}
                 {% block table_body %}
@@ -390,7 +390,7 @@
                                     <span class="badge bg-success">{{ asset.name }}</span>
                                 {% endfor %}
                             {% else %}
-                                <span class="badge bg-danger">{{ 'admin.data_repair.no_asset'|trans|default('Kein Asset') }}</span>
+                                <span class="badge bg-danger">{{ 'admin.data_repair.no_asset'|trans({}, 'admin')|default('Kein Asset') }}</span>
                             {% endif %}
                         </td>
                         <td>
@@ -398,14 +398,14 @@
                                 <input type="hidden" name="_token" value="{{ csrf_token('assign_asset_' ~ incident.id) }}">
                                 <div class="input-group input-group-sm">
                                     <select name="asset_id" class="form-select form-select-sm" required>
-                                        <option value="">{{ 'admin.data_repair.select_asset'|trans|default('Asset auswählen...') }}</option>
+                                        <option value="">{{ 'admin.data_repair.select_asset'|trans({}, 'admin')|default('Asset auswählen...') }}</option>
                                         {% for asset in allAssets %}
                                             <option value="{{ asset.id }}">
                                                 {{ asset.name }} ({{ asset.tenant ? asset.tenant.name : 'Kein Tenant' }})
                                             </option>
                                         {% endfor %}
                                     </select>
-                                    <button type="submit" class="btn btn-sm btn-outline-info" aria-label="{{ 'common.view_details'|trans }}">
+                                    <button type="submit" class="btn btn-sm btn-outline-info" aria-label="{{ 'common.view_details'|trans({}, 'messages') }}">
                                         <i class="bi bi-arrow-right" aria-hidden="true"></i>
                                     </button>
                                 </div>
@@ -424,14 +424,14 @@
     <div class="card mt-4">
         <div class="card-header bg-warning text-dark">
             <h3 class="mb-0">
-                <i class="bi bi-shield-exclamation" aria-hidden="true"></i> {{ 'admin.data_repair.controls_without_risks'|trans }}
+                <i class="bi bi-shield-exclamation" aria-hidden="true"></i> {{ 'admin.data_repair.controls_without_risks'|trans({}, 'admin') }}
             </h3>
         </div>
         <div class="card-body">
             <div class="alert alert-warning">
-                <strong>{{ 'common.warning'|trans }}:</strong> {{ 'admin.data_repair.controls_without_risks_desc'|trans }}
+                <strong>{{ 'common.warning'|trans({}, 'messages') }}:</strong> {{ 'admin.data_repair.controls_without_risks_desc'|trans({}, 'admin') }}
             </div>
-            <p class="text-muted">{{ 'admin.data_repair.controls_count'|trans({'%count%': controlsWithoutRisks|length}) }}</p>
+            <p class="text-muted">{{ 'admin.data_repair.controls_count'|trans({'%count%': controlsWithoutRisks|length}, 'admin') }}</p>
             {% embed '_components/_table.html.twig' with {
                 'class': 'table-sm table-striped',
                 'responsive': true,
@@ -443,7 +443,7 @@
                         <th scope="col">{{ 'controls.field.name'|trans({}, 'controls') }}</th>
                         <th scope="col">{{ 'controls.field.category'|trans({}, 'controls') }}</th>
                         <th scope="col">{{ 'controls.field.implementation_status'|trans({}, 'controls') }}</th>
-                        <th scope="col">{{ 'admin.data_repair.assign_risk'|trans }}</th>
+                        <th scope="col">{{ 'admin.data_repair.assign_risk'|trans({}, 'admin') }}</th>
                     </tr>
                 {% endblock %}
                 {% block table_body %}
@@ -462,14 +462,14 @@
                                 <input type="hidden" name="_token" value="{{ csrf_token('assign_risk_' ~ control.id) }}">
                                 <div class="input-group input-group-sm">
                                     <select name="risk_id" class="form-select form-select-sm" required>
-                                        <option value="">{{ 'admin.data_repair.select_risk'|trans }}</option>
+                                        <option value="">{{ 'admin.data_repair.select_risk'|trans({}, 'admin') }}</option>
                                         {% for risk in allRisks %}
                                             <option value="{{ risk.id }}">
                                                 {{ risk.title }} ({{ risk.tenant ? risk.tenant.name : 'Kein Tenant' }})
                                             </option>
                                         {% endfor %}
                                     </select>
-                                    <button type="submit" class="btn btn-sm btn-outline-warning" aria-label="{{ 'common.view'|trans }}">
+                                    <button type="submit" class="btn btn-sm btn-outline-warning" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
                                         <i class="bi bi-link" aria-hidden="true"></i>
                                     </button>
                                 </div>
@@ -488,14 +488,14 @@
     <div class="card mt-4">
         <div class="card-header bg-info text-white">
             <h3 class="mb-0">
-                <i class="bi bi-shield-check" aria-hidden="true"></i> {{ 'admin.data_repair.controls_without_assets'|trans }}
+                <i class="bi bi-shield-check" aria-hidden="true"></i> {{ 'admin.data_repair.controls_without_assets'|trans({}, 'admin') }}
             </h3>
         </div>
         <div class="card-body">
             <div class="alert alert-info">
-                <strong>{{ 'common.info'|trans }}:</strong> {{ 'admin.data_repair.controls_without_assets_desc'|trans }}
+                <strong>{{ 'common.info'|trans({}, 'messages') }}:</strong> {{ 'admin.data_repair.controls_without_assets_desc'|trans({}, 'admin') }}
             </div>
-            <p class="text-muted">{{ 'admin.data_repair.controls_count'|trans({'%count%': controlsWithoutAssets|length}) }}</p>
+            <p class="text-muted">{{ 'admin.data_repair.controls_count'|trans({'%count%': controlsWithoutAssets|length}, 'admin') }}</p>
             {% embed '_components/_table.html.twig' with {
                 'class': 'table-sm table-striped',
                 'responsive': true,
@@ -507,7 +507,7 @@
                         <th scope="col">{{ 'controls.field.name'|trans({}, 'controls') }}</th>
                         <th scope="col">{{ 'controls.field.category'|trans({}, 'controls') }}</th>
                         <th scope="col">{{ 'controls.field.implementation_status'|trans({}, 'controls') }}</th>
-                        <th scope="col">{{ 'admin.data_repair.assign_asset'|trans }}</th>
+                        <th scope="col">{{ 'admin.data_repair.assign_asset'|trans({}, 'admin') }}</th>
                     </tr>
                 {% endblock %}
                 {% block table_body %}
@@ -526,14 +526,14 @@
                                 <input type="hidden" name="_token" value="{{ csrf_token('assign_asset_to_control_' ~ control.id) }}">
                                 <div class="input-group input-group-sm">
                                     <select name="asset_id" class="form-select form-select-sm" required>
-                                        <option value="">{{ 'admin.data_repair.select_asset'|trans }}</option>
+                                        <option value="">{{ 'admin.data_repair.select_asset'|trans({}, 'admin') }}</option>
                                         {% for asset in allAssets %}
                                             <option value="{{ asset.id }}">
                                                 {{ asset.name }} ({{ asset.tenant ? asset.tenant.name : 'Kein Tenant' }})
                                             </option>
                                         {% endfor %}
                                     </select>
-                                    <button type="submit" class="btn btn-sm btn-outline-info" aria-label="{{ 'common.view'|trans }}">
+                                    <button type="submit" class="btn btn-sm btn-outline-info" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
                                         <i class="bi bi-link" aria-hidden="true"></i>
                                     </button>
                                 </div>
@@ -552,12 +552,12 @@
     <div class="card mt-4">
         <div class="card-header bg-danger text-white">
             <h3 class="mb-0">
-                <i class="bi bi-exclamation-octagon" aria-hidden="true"></i> {{ 'admin.data_repair.broken_references'|trans }}
+                <i class="bi bi-exclamation-octagon" aria-hidden="true"></i> {{ 'admin.data_repair.broken_references'|trans({}, 'admin') }}
             </h3>
         </div>
         <div class="card-body">
             <div class="alert alert-danger">
-                <strong>{{ 'common.error'|trans }}:</strong> {{ 'admin.data_repair.broken_references_desc'|trans }}
+                <strong>{{ 'common.error'|trans({}, 'messages') }}:</strong> {{ 'admin.data_repair.broken_references_desc'|trans({}, 'admin') }}
             </div>
             {% embed '_components/_table.html.twig' with {
                 'class': 'table-sm table-striped',
@@ -566,10 +566,10 @@
             } %}
                 {% block table_head %}
                     <tr>
-                        <th scope="col">{{ 'admin.data_repair.entity_type'|trans }}</th>
+                        <th scope="col">{{ 'admin.data_repair.entity_type'|trans({}, 'admin') }}</th>
                         <th scope="col">ID</th>
-                        <th scope="col">{{ 'common.name'|trans }}</th>
-                        <th scope="col">{{ 'admin.data_repair.issue'|trans }}</th>
+                        <th scope="col">{{ 'common.name'|trans({}, 'messages') }}</th>
+                        <th scope="col">{{ 'admin.data_repair.issue'|trans({}, 'admin') }}</th>
                     </tr>
                 {% endblock %}
                 {% block table_body %}

@@ -2,13 +2,13 @@
 {% trans_default_domain 'compliance' %}
 {% import '_macros/cards.html.twig' as cards %}
 
-{% block title %}{{ 'compliance.title.compare'|trans }} - Little ISMS Helper{% endblock %}
+{% block title %}{{ 'compliance.title.compare'|trans({}, 'compliance') }} - Little ISMS Helper{% endblock %}
 
 {% block body %}
 <div class="page-header">
     <div>
-        <h1>{{ 'compliance.title.compare'|trans }}</h1>
-        <p class="text-muted">{{ 'compliance.description.compare'|trans }}</p>
+        <h1>{{ 'compliance.title.compare'|trans({}, 'compliance') }}</h1>
+        <p class="text-muted">{{ 'compliance.description.compare'|trans({}, 'compliance') }}</p>
     </div>
     <div class="button-group">
         {% if selectedFramework1 and selectedFramework2 %}
@@ -30,13 +30,13 @@
 
 {# Framework Selection #}
 <div class="card mb-4">
-    <h2>{{ 'compliance.section.select_frameworks'|trans }}</h2>
+    <h2>{{ 'compliance.section.select_frameworks'|trans({}, 'compliance') }}</h2>
 
     <form method="get" action="{{ path('app_compliance_compare') }}" class="mt-md">
         <div class="form-group">
-            <label for="framework1">{{ 'compliance.field.framework_1'|trans }}</label>
+            <label for="framework1">{{ 'compliance.field.framework_1'|trans({}, 'compliance') }}</label>
             <select name="framework1" id="framework1" class="form-select" required>
-                <option value="">{{ 'compliance.option.select_framework'|trans }}</option>
+                <option value="">{{ 'compliance.option.select_framework'|trans({}, 'compliance') }}</option>
                 {% for framework in frameworks %}
                     <option value="{{ framework.id }}" {% if selectedFramework1 and selectedFramework1.id == framework.id %}selected{% endif %}>
                         {{ framework.name }}
@@ -46,9 +46,9 @@
         </div>
 
         <div class="form-group">
-            <label for="framework2">{{ 'compliance.field.framework_2'|trans }}</label>
+            <label for="framework2">{{ 'compliance.field.framework_2'|trans({}, 'compliance') }}</label>
             <select name="framework2" id="framework2" class="form-select" required>
-                <option value="">{{ 'compliance.option.select_framework'|trans }}</option>
+                <option value="">{{ 'compliance.option.select_framework'|trans({}, 'compliance') }}</option>
                 {% for framework in frameworks %}
                     <option value="{{ framework.id }}" {% if selectedFramework2 and selectedFramework2.id == framework.id %}selected{% endif %}>
                         {{ framework.name }}
@@ -67,17 +67,17 @@
 {# Comparison Overview #}
 <div class="kpi-grid">
     <div class="col-auto">
-        {{ cards.kpi_card(selectedFramework1.name, framework1Requirements ~ ' ' ~ ('compliance.unit.requirements'|trans), null, null, null, null) }}
+        {{ cards.kpi_card(selectedFramework1.name, framework1Requirements ~ ' ' ~ ('compliance.unit.requirements'|trans({}, 'compliance')), null, null, null, null) }}
     </div>
     <div class="col-auto">
-        {{ cards.kpi_card(selectedFramework2.name, framework2Requirements ~ ' ' ~ ('compliance.unit.requirements'|trans), null, null, null, null) }}
+        {{ cards.kpi_card(selectedFramework2.name, framework2Requirements ~ ' ' ~ ('compliance.unit.requirements'|trans({}, 'compliance')), null, null, null, null) }}
     </div>
     <div class="col-auto">
-        {{ cards.kpi_card('compliance.stats.common_requirements'|trans, commonRequirements, null, null, null, null) }}
+        {{ cards.kpi_card('compliance.stats.common_requirements'|trans({}, 'compliance'), commonRequirements, null, null, null, null) }}
     </div>
     <div class="col-auto">
         {% set overlap = ((commonRequirements / framework1Requirements * 100) + (commonRequirements / framework2Requirements * 100)) / 2 %}
-        {{ cards.kpi_card('compliance.stats.overlap_percentage'|trans, overlap|round ~ '%', null, null, null, null) }}
+        {{ cards.kpi_card('compliance.stats.overlap_percentage'|trans({}, 'compliance'), overlap|round ~ '%', null, null, null, null) }}
     </div>
 </div>
 
@@ -92,15 +92,15 @@
         <div class="stats-grid mt-3" style="grid-template-columns: 1fr;">
             <div class="stat-item">
                 <strong>{{ framework1Requirements }}</strong>
-                <span>{{ 'compliance.field.total_requirements'|trans }}</span>
+                <span>{{ 'compliance.field.total_requirements'|trans({}, 'compliance') }}</span>
             </div>
             <div class="stat-item">
                 <strong>{{ framework1UniqueRequirements }}</strong>
-                <span>{{ 'compliance.field.unique_requirements'|trans }}</span>
+                <span>{{ 'compliance.field.unique_requirements'|trans({}, 'compliance') }}</span>
             </div>
             <div class="stat-item">
                 <strong>{{ framework1Categories|length }}</strong>
-                <span>{{ 'compliance.field.categories'|trans }}</span>
+                <span>{{ 'compliance.field.categories'|trans({}, 'compliance') }}</span>
             </div>
         </div>
     </div>
@@ -114,22 +114,22 @@
         <div class="stats-grid mt-3" style="grid-template-columns: 1fr;">
             <div class="stat-item">
                 <strong>{{ framework2Requirements }}</strong>
-                <span>{{ 'compliance.field.total_requirements'|trans }}</span>
+                <span>{{ 'compliance.field.total_requirements'|trans({}, 'compliance') }}</span>
             </div>
             <div class="stat-item">
                 <strong>{{ framework2UniqueRequirements }}</strong>
-                <span>{{ 'compliance.field.unique_requirements'|trans }}</span>
+                <span>{{ 'compliance.field.unique_requirements'|trans({}, 'compliance') }}</span>
             </div>
             <div class="stat-item">
                 <strong>{{ framework2Categories|length }}</strong>
-                <span>{{ 'compliance.field.categories'|trans }}</span>
+                <span>{{ 'compliance.field.categories'|trans({}, 'compliance') }}</span>
             </div>
         </div>
     </div>
 </div>
 
 {# Detailed Comparison Table #}
-<h2>{{ 'compliance.section.detailed_comparison'|trans }}</h2>
+<h2>{{ 'compliance.section.detailed_comparison'|trans({}, 'compliance') }}</h2>
 
 {% embed '_components/_table.html.twig' with {
     'class': 'table-container',
@@ -138,12 +138,12 @@
 } %}
     {% block table_head %}
         <tr>
-            <th scope="col">{{ selectedFramework1.name }} {{ 'compliance.field.requirement'|trans }}</th>
-            <th scope="col">{{ 'compliance.field.category'|trans }}</th>
-            <th scope="col" class="text-center">{{ 'compliance.field.mapping'|trans }}</th>
-            <th scope="col">{{ selectedFramework2.name }} {{ 'compliance.field.requirement'|trans }}</th>
-            <th scope="col">{{ 'compliance.field.category'|trans }}</th>
-            <th scope="col" class="text-center">{{ 'compliance.field.match_quality'|trans }}</th>
+            <th scope="col">{{ selectedFramework1.name }} {{ 'compliance.field.requirement'|trans({}, 'compliance') }}</th>
+            <th scope="col">{{ 'compliance.field.category'|trans({}, 'compliance') }}</th>
+            <th scope="col" class="text-center">{{ 'compliance.field.mapping'|trans({}, 'compliance') }}</th>
+            <th scope="col">{{ selectedFramework2.name }} {{ 'compliance.field.requirement'|trans({}, 'compliance') }}</th>
+            <th scope="col">{{ 'compliance.field.category'|trans({}, 'compliance') }}</th>
+            <th scope="col" class="text-center">{{ 'compliance.field.match_quality'|trans({}, 'compliance') }}</th>
         </tr>
     {% endblock %}
     {% block table_body %}
@@ -158,9 +158,9 @@
             </td>
             <td class="text-center">
                 {% if comparison.mapped %}
-                    <span class="badge bg-success">✓ {{ 'compliance.badge.mapped'|trans }}</span>
+                    <span class="badge bg-success">✓ {{ 'compliance.badge.mapped'|trans({}, 'compliance') }}</span>
                 {% else %}
-                    <span class="badge bg-secondary">- {{ 'compliance.badge.no_mapping'|trans }}</span>
+                    <span class="badge bg-secondary">- {{ 'compliance.badge.no_mapping'|trans({}, 'compliance') }}</span>
                 {% endif %}
             </td>
             <td>
@@ -190,7 +190,7 @@
         {% else %}
         <tr>
             <td colspan="6" class="text-center-p-xl">
-                {{ 'compliance.message.no_comparison_data'|trans }}
+                {{ 'compliance.message.no_comparison_data'|trans({}, 'compliance') }}
             </td>
         </tr>
         {% endfor %}
@@ -200,9 +200,9 @@
 {# Unique Requirements #}
 <div class="module-grid mt-4">
     <div class="card">
-        <h3>{{ 'compliance.section.unique_to'|trans }} {{ selectedFramework1.name }}</h3>
+        <h3>{{ 'compliance.section.unique_to'|trans({}, 'compliance') }} {{ selectedFramework1.name }}</h3>
         <p class="text-muted-mt-xs-mb-md">
-            {{ 'compliance.description.unique_requirements'|trans }}
+            {{ 'compliance.description.unique_requirements'|trans({}, 'compliance') }}
         </p>
 
         {% if framework1Unique|length > 0 %}
@@ -214,19 +214,19 @@
             {% endfor %}
             {% if framework1Unique|length > 10 %}
             <li class="py-xs-text-muted">
-                {{ 'compliance.message.more_requirements'|trans({'%count%': framework1Unique|length - 10}) }}
+                {{ 'compliance.message.more_requirements'|trans({'%count%': framework1Unique|length - 10}, 'compliance') }}
             </li>
             {% endif %}
         </ul>
         {% else %}
-        <p class="text-muted">{{ 'compliance.message.no_unique'|trans }}</p>
+        <p class="text-muted">{{ 'compliance.message.no_unique'|trans({}, 'compliance') }}</p>
         {% endif %}
     </div>
 
     <div class="card">
-        <h3>{{ 'compliance.section.unique_to'|trans }} {{ selectedFramework2.name }}</h3>
+        <h3>{{ 'compliance.section.unique_to'|trans({}, 'compliance') }} {{ selectedFramework2.name }}</h3>
         <p class="text-muted-mt-xs-mb-md">
-            {{ 'compliance.description.unique_requirements'|trans }}
+            {{ 'compliance.description.unique_requirements'|trans({}, 'compliance') }}
         </p>
 
         {% if framework2Unique|length > 0 %}
@@ -238,12 +238,12 @@
             {% endfor %}
             {% if framework2Unique|length > 10 %}
             <li class="py-xs-text-muted">
-                {{ 'compliance.message.more_requirements'|trans({'%count%': framework2Unique|length - 10}) }}
+                {{ 'compliance.message.more_requirements'|trans({'%count%': framework2Unique|length - 10}, 'compliance') }}
             </li>
             {% endif %}
         </ul>
         {% else %}
-        <p class="text-muted">{{ 'compliance.message.no_unique'|trans }}</p>
+        <p class="text-muted">{{ 'compliance.message.no_unique'|trans({}, 'compliance') }}</p>
         {% endif %}
     </div>
 </div>

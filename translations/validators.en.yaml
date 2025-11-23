@@ -1,6 +1,3 @@
-# Validator Translations - English (en)
-
-# Setup Validators
 setup:
   admin:
     email_required: 'Please enter an email address.'
@@ -12,28 +9,21 @@ setup:
     password_required: 'Please enter a password.'
     password_min: 'The password must be at least {{ limit }} characters long.'
     password_strength: 'The password must contain at least one uppercase letter, one lowercase letter, and one digit.'
-
   database:
     name_invalid: 'The database name contains invalid characters.'
-
   organisation:
     name_required: 'Please enter an organization name.'
     name_min: 'The organization name must be at least {{ limit }} characters long.'
     industry_required: 'Please select an industry.'
     employee_count_required: 'Please select the employee count.'
-
-# Document Validators
 document:
   validation:
     mime_types: 'Please upload a valid document (PDF, Word, Excel, Image or Text file).'
-
-# Workflow Validators
 workflow:
   validation:
     name_required: 'Please enter a workflow name.'
     name_max_length: 'The workflow name cannot exceed {{ limit }} characters.'
     entity_type_required: 'Please select an entity type.'
-
 workflow_instance:
   validation:
     workflow_required: 'Please select a workflow definition.'
@@ -41,8 +31,6 @@ workflow_instance:
     entity_type_max_length: 'The entity type cannot exceed {{ limit }} characters.'
     entity_id_required: 'Please enter an entity ID.'
     status_required: 'Please select a status.'
-
-# Compliance Validators
 compliance_framework:
   validation:
     code_required: 'Please enter a framework code.'
@@ -54,7 +42,6 @@ compliance_framework:
     applicable_industry_required: 'Please select the applicable industry.'
     regulatory_body_required: 'Please enter the regulatory body.'
     regulatory_body_max_length: 'The regulatory body cannot exceed {{ limit }} characters.'
-
 compliance_requirement:
   validation:
     framework_required: 'Please select a compliance framework.'
@@ -68,7 +55,6 @@ compliance_requirement:
     requirement_type_required: 'Please select a requirement type.'
     fulfillment_percentage_required: 'Please enter the fulfillment percentage.'
     fulfillment_percentage_range: 'The fulfillment percentage must be between {{ min }} and {{ max }}.'
-
 compliance_mapping:
   validation:
     source_requirement_required: 'Please select a source requirement.'
@@ -78,37 +64,12 @@ compliance_mapping:
     mapping_percentage_range: 'The mapping percentage must be between {{ min }} and {{ max }}.'
     confidence_required: 'Please select a confidence level.'
     verified_by_max_length: 'The verified by field cannot exceed {{ limit }} characters.'
-
-# Role Validators
-'This role name is already in use': 'This role name is already in use.'
-
-# Asset Validators
-'Asset name is required': 'Please enter an asset name.'
-'Asset name cannot exceed {{ limit }} characters': 'The asset name cannot exceed {{ limit }} characters.'
-'Asset type is required': 'Please select an asset type.'
-'Asset type cannot exceed {{ limit }} characters': 'The asset type cannot exceed {{ limit }} characters.'
-'Asset owner is required': 'Please select an asset owner.'
-'Owner cannot exceed {{ limit }} characters': 'The owner cannot exceed {{ limit }} characters.'
-'Location cannot exceed {{ limit }} characters': 'The location cannot exceed {{ limit }} characters.'
-'Confidentiality value is required': 'Please enter a confidentiality value.'
-'Confidentiality value must be between {{ min }} and {{ max }}': 'The confidentiality value must be between {{ min }} and {{ max }}.'
-'Integrity value is required': 'Please enter an integrity value.'
-'Integrity value must be between {{ min }} and {{ max }}': 'The integrity value must be between {{ min }} and {{ max }}.'
-'Availability value is required': 'Please enter an availability value.'
-'Availability value must be between {{ min }} and {{ max }}': 'The availability value must be between {{ min }} and {{ max }}.'
-'Data classification must be one of: {{ choices }}': 'The data classification must be one of: {{ choices }}.'
-'Status is required': 'Please select a status.'
-'Status must be one of: {{ choices }}': 'The status must be one of: {{ choices }}.'
-
-# Risk Appetite Validators
 risk_appetite:
   validation:
     category_max_length: 'Category name cannot exceed {{ limit }} characters'
     max_acceptable_risk_required: 'Maximum acceptable risk is required'
     max_acceptable_risk_range: 'Maximum acceptable risk must be between {{ min }} and {{ max }}'
     description_required: 'Description is required'
-
-# Risk Treatment Plan Validators
 risk_treatment_plan:
   validation:
     risk_required: 'Risk is required'
@@ -117,14 +78,10 @@ risk_treatment_plan:
     description_required: 'Description is required'
     target_completion_date_required: 'Target completion date is required'
     completion_percentage_range: 'Completion percentage must be between {{ min }} and {{ max }}'
-
-# Training Validators
 training:
   validation:
     title_required: 'Please enter a title.'
     date_required: 'Please select a date.'
-
-# Objective Validators
 objective:
   validation:
     title_required: 'Title is required'
@@ -135,17 +92,6 @@ objective:
     name_max_length: 'Name cannot exceed {{ limit }} characters'
     target_date_required: 'Target date is required'
     status_required: 'Status is required'
-
-# Control Validators
-'Control ID is required': 'Control ID is required'
-'Control ID cannot exceed {{ limit }} characters': 'Control ID cannot exceed {{ limit }} characters'
-'Control ID must follow ISO 27001 format (e.g., 5.1, 8.3)': 'Control ID must follow ISO 27001 format (e.g., 5.1, 8.3)'
-'Control name is required': 'Control name is required'
-'Control name cannot exceed {{ limit }} characters': 'Control name cannot exceed {{ limit }} characters'
-'Control description is required': 'Control description is required'
-'Control category is required': 'Control category is required'
-
-# Risk Validators
 risk:
   validation:
     category_required: 'A risk category must be selected'
@@ -153,151 +99,19 @@ risk:
     legal_basis_invalid: 'Invalid legal basis according to Art. 6 GDPR'
     processing_scale_invalid: 'Invalid processing scale'
     risk_owner_required: 'A risk owner must be assigned'
-
-'Risk title is required': 'Risk title is required'
-'Risk title cannot exceed {{ limit }} characters': 'Risk title cannot exceed {{ limit }} characters'
-'Risk description is required': 'Risk description is required'
-'Risk must be associated with an asset': 'Risk must be associated with an asset'
-'Risk is required': 'Risk is required'
-'Risk appetite description is required': 'Risk appetite description is required'
-
-# Audit Validators
 audit:
   validation:
     title_required: 'Please enter a title.'
     date_required: 'Please select a date.'
-
-# Incident Validators
-'Incident number is required': 'Incident number is required'
-'Incident number cannot exceed {{ limit }} characters': 'Incident number cannot exceed {{ limit }} characters'
-'Incident title is required': 'Incident title is required'
-'Incident description is required': 'Incident description is required'
-'Incident category is required': 'Incident category is required'
-
-# Audit Validators (Additional)
-'Planned date is required': 'Planned date is required'
-'Lead auditor is required': 'Lead auditor is required'
-'Lead auditor name cannot exceed {{ limit }} characters': 'Lead auditor name cannot exceed {{ limit }} characters'
-
-# User/Account Validators
-'There is already an account with this email': 'There is already an account with this email'
-
-# Change Request Validators
-'Change title is required': 'Change title is required'
-'Justification is required': 'Justification is required'
-
-# Business Continuity Plan Validators
-'Plan name is required': 'Plan name is required'
-'Business process is required': 'Business process is required'
-'Activation criteria must be defined': 'Activation criteria must be defined'
-'Recovery procedures must be documented': 'Recovery procedures must be documented'
-
-# Tenant Validators
 tenant:
   validation:
     code_format: 'Tenant code must match the required format'
     azure_tenant_id_format: 'Azure Tenant ID must be a valid GUID'
     logo_format: 'The logo must be in JPG, PNG, GIF or WebP format'
-
-# User Validators
 user:
   validation:
     avatar_format: 'The profile picture must be in JPG, PNG, GIF or WebP format'
-
-# Risk Appetite Validators (Additional)
-'Category name cannot exceed {{ limit }} characters': 'Category name cannot exceed {{ limit }} characters'
-'Maximum acceptable risk level is required': 'Maximum acceptable risk level is required'
-'Maximum acceptable risk must be between {{ min }} and {{ max }}': 'Maximum acceptable risk must be between {{ min }} and {{ max }}'
-
-# Context Validators
 context:
   validation:
     organization_name_required: 'Please enter an organization name.'
     name_max_length: 'Name cannot exceed {{ limit }} characters.'
-
-# Person Validators (German strings as keys - keep original)
-'Bitte geben Sie einen Vornamen ein.': 'Please enter a first name.'
-'Der Vorname darf maximal {{ limit }} Zeichen lang sein.': 'First name cannot exceed {{ limit }} characters.'
-'Bitte geben Sie einen Nachnamen ein.': 'Please enter a last name.'
-'Der Nachname darf maximal {{ limit }} Zeichen lang sein.': 'Last name cannot exceed {{ limit }} characters.'
-'Bitte geben Sie eine E-Mail-Adresse ein.': 'Please enter an email address.'
-'Bitte geben Sie eine gültige E-Mail-Adresse ein.': 'Please enter a valid email address.'
-'Das Passwort muss mindestens {{ limit }} Zeichen lang sein.': 'Password must be at least {{ limit }} characters long.'
-
-# BC Exercise Validators
-'Exercise name is required': 'Exercise name is required'
-'Scope must be defined': 'Scope must be defined'
-'Objectives must be defined': 'Objectives must be defined'
-'Participants must be documented': 'Participants must be documented'
-
-# Tenant Validators (Additional)
-'This tenant code is already in use': 'This tenant code is already in use'
-
-# Permission Validators
-'This permission name is already in use': 'This permission name is already in use'
-
-# Risk Validators (Additional)
-'Probability is required': 'Probability is required'
-'Probability must be between {{ min }} and {{ max }}': 'Probability must be between {{ min }} and {{ max }}'
-'Impact is required': 'Impact is required'
-'Impact must be between {{ min }} and {{ max }}': 'Impact must be between {{ min }} and {{ max }}'
-'Residual probability must be between {{ min }} and {{ max }}': 'Residual probability must be between {{ min }} and {{ max }}'
-'Residual impact must be between {{ min }} and {{ max }}': 'Residual impact must be between {{ min }} and {{ max }}'
-'Treatment strategy is required': 'Treatment strategy is required'
-'Treatment strategy must be one of: {{ choices }}': 'Treatment strategy must be one of: {{ choices }}'
-
-# Training Validators (Additional)
-'Training title is required': 'Training title is required'
-'Title cannot exceed {{ limit }} characters': 'Title cannot exceed {{ limit }} characters'
-'Training type is required': 'Training type is required'
-'Training type cannot exceed {{ limit }} characters': 'Training type cannot exceed {{ limit }} characters'
-'Scheduled date is required': 'Scheduled date is required'
-'Trainer name is required': 'Trainer name is required'
-'Trainer name cannot exceed {{ limit }} characters': 'Trainer name cannot exceed {{ limit }} characters'
-
-# Generic Validators
-'Title is required': 'Title is required'
-'Description is required': 'Description is required'
-'Priority is required': 'Priority is required'
-'Priority must be one of: {{ choices }}': 'Priority must be one of: {{ choices }}'
-'Target completion date is required': 'Target completion date is required'
-'Completion percentage must be between {{ min }} and {{ max }}': 'Completion percentage must be between {{ min }} and {{ max }}'
-
-# Interested Party Validators (Additional)
-'Party name is required': 'Party name is required'
-'Requirements must be documented': 'Requirements must be documented'
-
-# Category Validators
-'Category cannot exceed {{ limit }} characters': 'Category cannot exceed {{ limit }} characters'
-
-# Incident Validators (Additional)
-'Severity is required': 'Severity is required'
-'Severity must be one of: {{ choices }}': 'Severity must be one of: {{ choices }}'
-'Detection date is required': 'Detection date is required'
-'Reporter name is required': 'Reporter name is required'
-'Reporter name cannot exceed {{ limit }} characters': 'Reporter name cannot exceed {{ limit }} characters'
-'Assignee name cannot exceed {{ limit }} characters': 'Assignee name cannot exceed {{ limit }} characters'
-'Data breach flag is required': 'Data breach flag is required'
-'Notification required flag is required': 'Notification required flag is required'
-'NIS2 category must be one of: {{ choices }}': 'NIS2 category must be one of: {{ choices }}'
-
-# Control Validators (Additional)
-'Applicable flag is required': 'Applicable flag is required'
-'Implementation status is required': 'Implementation status is required'
-'Implementation status must be one of: {{ choices }}': 'Implementation status must be one of: {{ choices }}'
-'Implementation percentage must be between {{ min }} and {{ max }}': 'Implementation percentage must be between {{ min }} and {{ max }}'
-'Responsible person cannot exceed {{ limit }} characters': 'Responsible person cannot exceed {{ limit }} characters'
-
-# Supplier Validators (Additional)
-'Supplier name is required': 'Supplier name is required'
-'Invalid email address': 'Invalid email address'
-'Service description is required': 'Service description is required'
-
-# Setting Validators
-'This setting already exists in this category': 'This setting already exists in this category'
-
-# Audit Validators (Additional)
-'Audit number is required': 'Audit number is required'
-'Audit number cannot exceed {{ limit }} characters': 'Audit number cannot exceed {{ limit }} characters'
-'Audit title is required': 'Audit title is required'
-'Scope type must be one of: {{ choices }}': 'Scope type must be one of: {{ choices }}'

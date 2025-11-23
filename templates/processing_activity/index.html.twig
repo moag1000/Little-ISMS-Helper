@@ -198,12 +198,12 @@
                                     <div class="btn-group btn-group-sm" role="group">
                                         <a href="{{ path('app_processing_activity_show', {id: pa.id}) }}"
                                            class="btn btn-outline-primary"
-                                           title="View">
+                                           title="{{ 'common.view'|trans({}, 'messages') }}">
                                             <i class="bi bi-eye" aria-hidden="true"></i>
                                         </a>
                                         <a href="{{ path('app_processing_activity_edit', {id: pa.id}) }}"
                                            class="btn btn-outline-secondary"
-                                           title="Edit">
+                                           title="{{ 'common.edit'|trans({}, 'messages') }}">
                                             <i class="bi bi-pencil" aria-hidden="true"></i>
                                         </a>
                                     </div>

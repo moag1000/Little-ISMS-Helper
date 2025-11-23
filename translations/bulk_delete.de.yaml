@@ -1,0 +1,15 @@
+bulk_delete:
+  confirm:
+    title: 'Löschen bestätigen'
+    warning: 'Diese Aktion kann nicht rückgängig gemacht werden.'
+  confirm_help: 'Geben Sie "DELETE" ein, um das Löschen zu bestätigen'
+  selected_items: 'Ausgewählte Elemente'
+  understand: 'Ich verstehe die Konsequenzen'
+  warning: 'Warnung: Diese Aktion kann nicht rückgängig gemacht werden'
+  will_be_deleted: 'werden gelöscht'
+  selection:
+    title: 'Ausgewählte Einträge'
+  dependencies:
+    title: 'Betroffene Verknüpfungen'
+    list: 'Liste der betroffenen Verknüpfungen'
+  loading: 'Abhängigkeiten werden geprüft...'

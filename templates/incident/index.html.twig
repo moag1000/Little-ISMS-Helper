@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 {% import '_macros/inheritance_badge.html.twig' as inheritance %}
 
-{% block title %}{{ 'incident_management.title'|trans({}, 'incidents') }} - {{ 'app.title'|trans }}{% endblock %}
+{% block title %}{{ 'incident_management.title'|trans({}, 'incidents') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid py-4">
@@ -17,7 +17,7 @@
     </p>
 
     {# Skip link for filters section - WCAG 2.4.1 #}
-    <a href="#filter-section" class="skip-link">{{ 'accessibility.skip_to_filters'|trans }}</a>
+    <a href="#filter-section" class="skip-link">{{ 'accessibility.skip_to_filters'|trans({}, 'messages') }}</a>
 
     {# View Filter #}
     {% if currentTenant %}
@@ -27,25 +27,25 @@
         {% block card_body %}
             <form method="get" action="{{ path('app_incident_index') }}" class="d-flex align-items-center gap-2">
                 <label for="view-filter" class="mb-0 fw-bold">
-                    <i class="bi bi-eye" aria-hidden="true"></i> {{ 'common.view'|trans }}:
+                    <i class="bi bi-eye" aria-hidden="true"></i> {{ 'common.view'|trans({}, 'messages') }}:
                 </label>
                 <select class="form-select form-select-sm" style="width: auto;" id="view-filter" name="view" onchange="this.form.submit()">
                     <option value="own" {{ inheritanceInfo.currentView == 'own' ? 'selected' : '' }}>
-                        {{ 'corporate.view.own_only'|trans }}
+                        {{ 'corporate.view.own_only'|trans({}, 'tenant') }}
                     </option>
                     {% if inheritanceInfo.hasParent %}
                     <option value="inherited" {{ inheritanceInfo.currentView == 'inherited' ? 'selected' : '' }}>
-                        {{ 'corporate.view.including_inherited'|trans }}
+                        {{ 'corporate.view.including_inherited'|trans({}, 'tenant') }}
                     </option>
                     {% endif %}
                     {% if inheritanceInfo.hasSubsidiaries %}
                     <option value="subsidiaries" {{ inheritanceInfo.currentView == 'subsidiaries' ? 'selected' : '' }}>
-                        {{ 'corporate.view.including_subsidiaries'|trans }}
+                        {{ 'corporate.view.including_subsidiaries'|trans({}, 'tenant') }}
                     </option>
                     {% endif %}
                 </select>
                 <noscript>
-                    <button type="submit" class="btn btn-sm btn-secondary">{{ 'common.apply'|trans }}</button>
+                    <button type="submit" class="btn btn-sm btn-secondary">{{ 'common.apply'|trans({}, 'messages') }}</button>
                 </noscript>
             </form>
         {% endblock %}
@@ -92,7 +92,7 @@
                     <h3>{{ detailedStats.total }}</h3>
                     {% if currentTenant %}
                         <p class="mb-0 text-muted small" style="font-size: 11px; opacity: 0.85;">
-                            {{ 'corporate.stats.breakdown'|trans({'%own%': detailedStats.own, '%inherited%': detailedStats.inherited, '%subsidiaries%': detailedStats.subsidiaries}) }}
+                            {{ 'corporate.stats.breakdown'|trans({'%own%': detailedStats.own, '%inherited%': detailedStats.inherited, '%subsidiaries%': detailedStats.subsidiaries}, 'tenant') }}
                         </p>
                     {% endif %}
                     <p class="mb-0">{{ 'incident_management.total_recorded'|trans({}, 'incidents') }}</p>
@@ -108,22 +108,22 @@
         'class': 'mb-4'
     } %}
         {% block card_body %}
-            <form method="get" action="{{ path('app_incident_index') }}" class="row g-3" role="search" aria-label="{{ 'common.filters'|trans }}">
+            <form method="get" action="{{ path('app_incident_index') }}" class="row g-3" role="search" aria-label="{{ 'common.filters'|trans({}, 'messages') }}">
                 <div id="filter-section" tabindex="-1"></div>
                 <div class="col-md-2">
-                    <label for="filter-severity" class="form-label">{{ 'incident.field.severity'|trans }}</label>
+                    <label for="filter-severity" class="form-label">{{ 'incident.field.severity'|trans({}, 'incidents') }}</label>
                     <select class="form-select" id="filter-severity" name="severity" onchange="this.form.submit()">
-                        <option value="">{{ 'common.all'|trans }}</option>
-                        <option value="low" {{ app.request.get('severity') == 'low' ? 'selected' : '' }}>{{ 'incident.severity.low'|trans }}</option>
-                        <option value="medium" {{ app.request.get('severity') == 'medium' ? 'selected' : '' }}>{{ 'incident.severity.medium'|trans }}</option>
-                        <option value="high" {{ app.request.get('severity') == 'high' ? 'selected' : '' }}>{{ 'incident.severity.high'|trans }}</option>
-                        <option value="critical" {{ app.request.get('severity') == 'critical' ? 'selected' : '' }}>{{ 'incident.severity.critical'|trans }}</option>
+                        <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
+                        <option value="low" {{ app.request.get('severity') == 'low' ? 'selected' : '' }}>{{ 'incident.severity.low'|trans({}, 'incidents') }}</option>
+                        <option value="medium" {{ app.request.get('severity') == 'medium' ? 'selected' : '' }}>{{ 'incident.severity.medium'|trans({}, 'incidents') }}</option>
+                        <option value="high" {{ app.request.get('severity') == 'high' ? 'selected' : '' }}>{{ 'incident.severity.high'|trans({}, 'incidents') }}</option>
+                        <option value="critical" {{ app.request.get('severity') == 'critical' ? 'selected' : '' }}>{{ 'incident.severity.critical'|trans({}, 'incidents') }}</option>
                     </select>
                 </div>
                 <div class="col-md-3">
-                    <label for="filter-category" class="form-label">{{ 'incident.field.category'|trans }}</label>
+                    <label for="filter-category" class="form-label">{{ 'incident.field.category'|trans({}, 'incidents') }}</label>
                     <select class="form-select" id="filter-category" name="category" onchange="this.form.submit()">
-                        <option value="">{{ 'common.all'|trans }}</option>
+                        <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
                         {% if categoryStats|length > 0 %}
                             {% for stat in categoryStats %}
                                 <option value="{{ stat.category }}" {{ app.request.get('category') == stat.category ? 'selected' : '' }}>
@@ -134,36 +134,36 @@
                     </select>
                 </div>
                 <div class="col-md-2">
-                    <label for="filter-status" class="form-label">{{ 'incident.field.status'|trans }}</label>
+                    <label for="filter-status" class="form-label">{{ 'incident.field.status'|trans({}, 'incidents') }}</label>
                     <select class="form-select" id="filter-status" name="status" onchange="this.form.submit()">
-                        <option value="">{{ 'common.all'|trans }}</option>
-                        <option value="reported" {{ app.request.get('status') == 'reported' ? 'selected' : '' }}>{{ 'incident.status.reported'|trans }}</option>
-                        <option value="in_investigation" {{ app.request.get('status') == 'in_investigation' ? 'selected' : '' }}>{{ 'incident.status.in_investigation'|trans }}</option>
-                        <option value="in_resolution" {{ app.request.get('status') == 'in_resolution' ? 'selected' : '' }}>{{ 'incident.status.in_resolution'|trans }}</option>
-                        <option value="resolved" {{ app.request.get('status') == 'resolved' ? 'selected' : '' }}>{{ 'incident.status.resolved'|trans }}</option>
-                        <option value="closed" {{ app.request.get('status') == 'closed' ? 'selected' : '' }}>{{ 'incident.status.closed'|trans }}</option>
+                        <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
+                        <option value="reported" {{ app.request.get('status') == 'reported' ? 'selected' : '' }}>{{ 'incident.status.reported'|trans({}, 'incidents') }}</option>
+                        <option value="in_investigation" {{ app.request.get('status') == 'in_investigation' ? 'selected' : '' }}>{{ 'incident.status.in_investigation'|trans({}, 'incidents') }}</option>
+                        <option value="in_resolution" {{ app.request.get('status') == 'in_resolution' ? 'selected' : '' }}>{{ 'incident.status.in_resolution'|trans({}, 'incidents') }}</option>
+                        <option value="resolved" {{ app.request.get('status') == 'resolved' ? 'selected' : '' }}>{{ 'incident.status.resolved'|trans({}, 'incidents') }}</option>
+                        <option value="closed" {{ app.request.get('status') == 'closed' ? 'selected' : '' }}>{{ 'incident.status.closed'|trans({}, 'incidents') }}</option>
                     </select>
                 </div>
                 <div class="col-md-2">
-                    <label for="filter-data-breach" class="form-label">{{ 'incident.filter.data_breach'|trans|default('Data Breach') }}</label>
+                    <label for="filter-data-breach" class="form-label">{{ 'incident.filter.data_breach'|trans({}, 'incidents')|default('Data Breach') }}</label>
                     <select class="form-select" id="filter-data-breach" name="data_breach_only" onchange="this.form.submit()">
-                        <option value="">{{ 'common.all'|trans }}</option>
-                        <option value="1" {{ app.request.get('data_breach_only') == '1' ? 'selected' : '' }}>{{ 'incident.filter.data_breach_only'|trans|default('Data Breach Only') }}</option>
+                        <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
+                        <option value="1" {{ app.request.get('data_breach_only') == '1' ? 'selected' : '' }}>{{ 'incident.filter.data_breach_only'|trans({}, 'incidents')|default('Data Breach Only') }}</option>
                     </select>
                 </div>
                 <div class="col-md-2">
                     <label for="filter-nis2" class="form-label">NIS2</label>
                     <select class="form-select" id="filter-nis2" name="nis2_only" onchange="this.form.submit()">
-                        <option value="">{{ 'common.all'|trans }}</option>
-                        <option value="1" {{ app.request.get('nis2_only') == '1' ? 'selected' : '' }}>{{ 'incident.filter.nis2_only'|trans|default('NIS2 Only') }}</option>
+                        <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
+                        <option value="1" {{ app.request.get('nis2_only') == '1' ? 'selected' : '' }}>{{ 'incident.filter.nis2_only'|trans({}, 'incidents')|default('NIS2 Only') }}</option>
                     </select>
                 </div>
                 <div class="col-12">
                     <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-search" aria-hidden="true"></i> {{ 'common.filter'|trans }}
+                        <i class="bi bi-search" aria-hidden="true"></i> {{ 'common.filter'|trans({}, 'messages') }}
                     </button>
                     <a href="{{ path('app_incident_index') }}" class="btn btn-secondary">
-                        <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'common.reset'|trans }}
+                        <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'common.reset'|trans({}, 'messages') }}
                     </a>
                 </div>
             </form>
@@ -194,12 +194,12 @@
     {# Incidents Table #}
     {% if allIncidents|length == 0 %}
         <div class="alert alert-info">
-            <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'incident.empty'|trans|default('No incidents recorded yet.') }}
+            <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'incident.empty'|trans({}, 'incidents')|default('No incidents recorded yet.') }}
         </div>
     {% else %}
         <div class="card">
             <div class="card-header">
-                <h3 class="mb-0">{{ 'incident.list.title'|trans|default('All Incidents') }}</h3>
+                <h3 class="mb-0">{{ 'incident.list.title'|trans({}, 'incidents')|default('All Incidents') }}</h3>
             </div>
             {% embed '_components/_table.html.twig' with {
                 'noMargin': true
@@ -207,13 +207,13 @@
                 {% import '_macros/inheritance_badge.html.twig' as inheritance %}
                 {% block table_head %}
                     <tr>
-                        <th scope="col">{{ 'incident.field.title'|trans }}</th>
-                        <th scope="col">{{ 'incident.field.category'|trans }}</th>
-                        <th scope="col">{{ 'incident.field.severity'|trans }}</th>
-                        <th scope="col">{{ 'incident.field.status'|trans }}</th>
-                        <th scope="col">{{ 'incident.field.detected_at'|trans }}</th>
+                        <th scope="col">{{ 'incident.field.title'|trans({}, 'incidents') }}</th>
+                        <th scope="col">{{ 'incident.field.category'|trans({}, 'incidents') }}</th>
+                        <th scope="col">{{ 'incident.field.severity'|trans({}, 'incidents') }}</th>
+                        <th scope="col">{{ 'incident.field.status'|trans({}, 'incidents') }}</th>
+                        <th scope="col">{{ 'incident.field.detected_at'|trans({}, 'incidents') }}</th>
                         <th scope="col">NIS2</th>
-                        <th scope="col">{{ 'common.actions'|trans }}</th>
+                        <th scope="col">{{ 'common.actions'|trans({}, 'messages') }}</th>
                     </tr>
                 {% endblock %}
                 {% block table_body %}
@@ -257,15 +257,15 @@
                                         {{ ('incident.nis2_compliance.' ~ nis2Status)|trans }}
                                     </span>
                                 {% else %}
-                                    <span class="badge bg-secondary" title="{{ 'incident.nis2_compliance.not_applicable'|trans }}">N/A</span>
+                                    <span class="badge bg-secondary" title="{{ 'incident.nis2_compliance.not_applicable'|trans({}, 'incidents') }}">N/A</span>
                                 {% endif %}
                             </td>
                             <td>
                                 <div class="btn-group btn-group-sm">
-                                    <a href="{{ path('app_incident_show', {id: incident.id}) }}" class="btn btn-outline-primary" title="{{ 'common.view'|trans }}" aria-label="{{ 'common.view'|trans }}">
+                                    <a href="{{ path('app_incident_show', {id: incident.id}) }}" class="btn btn-outline-primary" title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
                                         <i class="bi bi-eye" aria-hidden="true"></i>
                                     </a>
-                                    <a href="{{ path('app_incident_edit', {id: incident.id}) }}" class="btn btn-outline-secondary" title="{{ 'common.edit'|trans }}" aria-label="{{ 'common.edit'|trans }}">
+                                    <a href="{{ path('app_incident_edit', {id: incident.id}) }}" class="btn btn-outline-secondary" title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
                                         <i class="bi bi-pencil" aria-hidden="true"></i>
                                     </a>
                                 </div>

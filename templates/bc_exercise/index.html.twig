@@ -2,32 +2,32 @@
 {% trans_default_domain 'bc_exercises' %}
 {% import '_macros/cards.html.twig' as cards %}
 
-{% block title %}{{ 'bc_exercises.page.title'|trans }}{% endblock %}
+{% block title %}{{ 'bc_exercises.page.title'|trans({}, 'bcm') }}{% endblock %}
 
 {% block body %}
 <div class="container">
     <div class="page-header">
-        <h1>{{ 'bc_exercises.page.header'|trans }}</h1>
-        <a href="{{ path('app_bc_exercise_new') }}" class="btn btn-primary">{{ 'bc_exercises.action.add_new'|trans }}</a>
+        <h1>{{ 'bc_exercises.page.header'|trans({}, 'bcm') }}</h1>
+        <a href="{{ path('app_bc_exercise_new') }}" class="btn btn-primary">{{ 'bc_exercises.action.add_new'|trans({}, 'bcm') }}</a>
     </div>
 
     {% if statistics %}
     <div class="row mb-4">
         <div class="col-md-4">
-            {{ cards.kpi_card(('bc_exercises.stats.total'|trans), statistics.total, null, null, 'primary', null) }}
+            {{ cards.kpi_card(('bc_exercises.stats.total'|trans({}, 'bcm')), statistics.total, null, null, 'primary', null) }}
         </div>
         <div class="col-md-4">
-            {{ cards.kpi_card(('bc_exercises.stats.completed'|trans), statistics.completed, null, null, 'success', null) }}
+            {{ cards.kpi_card(('bc_exercises.stats.completed'|trans({}, 'bcm')), statistics.completed, null, null, 'success', null) }}
         </div>
         <div class="col-md-4">
-            {{ cards.kpi_card(('bc_exercises.stats.planned'|trans), statistics.planned, null, null, 'info', null) }}
+            {{ cards.kpi_card(('bc_exercises.stats.planned'|trans({}, 'bcm')), statistics.planned, null, null, 'info', null) }}
         </div>
     </div>
     {% endif %}
 
     {% if upcoming|length > 0 %}
     <div class="info-box">
-        <h2>{{ 'bc_exercises.section.upcoming'|trans }}</h2>
+        <h2>{{ 'bc_exercises.section.upcoming'|trans({}, 'bcm') }}</h2>
         <ul>
             {% for exercise in upcoming %}
             <li>
@@ -41,7 +41,7 @@
 
     {% if incomplete_reports|length > 0 %}
     <div class="alert alert-warning">
-        <h4>⚠️ {{ 'bc_exercises.section.incomplete_reports'|trans }}</h4>
+        <h4>⚠️ {{ 'bc_exercises.section.incomplete_reports'|trans({}, 'bcm') }}</h4>
         <ul>
             {% for exercise in incomplete_reports %}
             <li>
@@ -54,7 +54,7 @@
 
     <div class="card">
         <div class="card-header">
-            <h2>{{ 'bc_exercises.page.header'|trans }} ({{ bc_exercises|length }})</h2>
+            <h2>{{ 'bc_exercises.page.header'|trans({}, 'bcm') }} ({{ bc_exercises|length }})</h2>
         </div>
         <div class="card-content">
             {% if bc_exercises|length > 0 %}
@@ -64,11 +64,11 @@
             } %}
                 {% block table_head %}
                     <tr>
-                        <th scope="col">{{ 'bc_exercises.table.name'|trans }}</th>
-                        <th scope="col">{{ 'bc_exercises.table.type'|trans }}</th>
-                        <th scope="col">{{ 'bc_exercises.table.date'|trans }}</th>
-                        <th scope="col">{{ 'bc_exercises.table.status'|trans }}</th>
-                        <th scope="col">{{ 'bc_exercises.table.effectiveness'|trans }}</th>
+                        <th scope="col">{{ 'bc_exercises.table.name'|trans({}, 'bcm') }}</th>
+                        <th scope="col">{{ 'bc_exercises.table.type'|trans({}, 'bcm') }}</th>
+                        <th scope="col">{{ 'bc_exercises.table.date'|trans({}, 'bcm') }}</th>
+                        <th scope="col">{{ 'bc_exercises.table.status'|trans({}, 'bcm') }}</th>
+                        <th scope="col">{{ 'bc_exercises.table.effectiveness'|trans({}, 'bcm') }}</th>
                         <th scope="col">{{ 'common.actions'|trans({}, 'messages') }}</th>
                     </tr>
                 {% endblock %}
@@ -83,7 +83,7 @@
                             {% if exercise.status == 'completed' %}
                                 {{ exercise.getEffectivenessScore() }}%
                             {% else %}
-                                {{ 'bc_exercises.message.na'|trans }}
+                                {{ 'bc_exercises.message.na'|trans({}, 'bcm') }}
                             {% endif %}
                         </td>
                         <td>
@@ -95,7 +95,7 @@
                 {% endblock %}
             {% endembed %}
             {% else %}
-            <p>{{ 'bc_exercises.message.no_exercises'|trans }}. <a href="{{ path('app_bc_exercise_new') }}">{{ 'bc_exercises.message.schedule_first'|trans }}</a>.</p>
+            <p>{{ 'bc_exercises.message.no_exercises'|trans({}, 'bcm') }}. <a href="{{ path('app_bc_exercise_new') }}">{{ 'bc_exercises.message.schedule_first'|trans({}, 'bcm') }}</a>.</p>
             {% endif %}
         </div>
     </div>

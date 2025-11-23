@@ -11,10 +11,8 @@ risk_treatment_plan:
   days_overdue: days overdue
   due_today: Due today
   days_remaining: days remaining
-
   action:
     add_new: Add new
-
   stats:
     total: Total
     planned: Planned
@@ -22,14 +20,11 @@ risk_treatment_plan:
     completed: Completed
     overdue: Overdue
     avg_completion: Avg. completion
-
   list:
     title: Treatment Plans
-
   filter:
     overdue: Overdue
     overdue_only: Overdue only
-
   section:
     details: Details
     controls: Linked Controls
@@ -39,7 +34,6 @@ risk_treatment_plan:
     timeline: Timeline
     responsibility_resources: Responsibility & Resources
     controls_implementation: Controls & Implementation
-
   field:
     title: Title
     risk: Risk
@@ -56,20 +50,17 @@ risk_treatment_plan:
     budget: Budget
     implementation_notes: Implementation notes
     controls: Controls
-
   status:
     planned: Planned
     in_progress: In progress
     completed: Completed
     on_hold: On hold
     cancelled: Cancelled
-
   priority:
     critical: Critical
     high: High
     medium: Medium
     low: Low
-
   message:
     no_plans: No treatment plans found.
   delete:

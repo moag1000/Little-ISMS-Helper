@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ 'setup.email.title'|trans }} - Deployment Wizard{% endblock %}
+{% block title %}{{ 'setup.email.title'|trans({}, 'messages') }} - Deployment Wizard{% endblock %}
 
 {% block head %}
     {{ parent() }}
@@ -27,8 +27,8 @@
             <div class="card mb-4">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center mb-2">
-                        <h4 class="mb-0">{{ 'setup.progress.title'|trans }}</h4>
-                        <small class="text-muted">{{ 'setup.progress.step'|trans({'%current%': 5, '%total%': 11}) }}</small>
+                        <h4 class="mb-0">{{ 'setup.progress.title'|trans({}, 'messages') }}</h4>
+                        <small class="text-muted">{{ 'setup.progress.step'|trans({'%current%': 5, '%total%': 11}, 'messages') }}</small>
                     </div>
                     <div class="progress" style="height: 10px;">
                         <div class="progress-bar" role="progressbar" style="width: 30%;" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
@@ -40,14 +40,14 @@
                 <div class="card-header bg-primary text-white">
                     <h2 class="mb-0">
                         <i class="fas fa-envelope me-2"></i>
-                        {{ 'setup.email.header'|trans }}
+                        {{ 'setup.email.header'|trans({}, 'messages') }}
                     </h2>
                 </div>
                 <div class="card-body p-4">
                     <div class="alert alert-info mb-4">
                         <i class="fas fa-info-circle me-2"></i>
-                        <strong>{{ 'setup.email.optional.title'|trans }}</strong>
-                        <p class="mb-0">{{ 'setup.email.optional.message'|trans }}</p>
+                        <strong>{{ 'setup.email.optional.title'|trans({}, 'messages') }}</strong>
+                        <p class="mb-0">{{ 'setup.email.optional.message'|trans({}, 'messages') }}</p>
                     </div>
 
                     {# Email Configuration Form #}
@@ -57,7 +57,7 @@
                         <div class="col-md-12">
                             {% include '_components/_form_field.html.twig' with {
                                 'field': form.transport,
-                                'label': form.transport.vars.label|default('setup.email.transport'|trans)
+                                'label': form.transport.vars.label|default('setup.email.transport'|trans({}, 'messages'))
                             } %}
                         </div>
                     </div>
@@ -67,13 +67,13 @@
                             <div class="col-md-8">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.host,
-                                    'label': form.host.vars.label|default('setup.email.host'|trans)
+                                    'label': form.host.vars.label|default('setup.email.host'|trans({}, 'messages'))
                                 } %}
                             </div>
                             <div class="col-md-4">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.port,
-                                    'label': form.port.vars.label|default('setup.email.port'|trans)
+                                    'label': form.port.vars.label|default('setup.email.port'|trans({}, 'messages'))
                                 } %}
                             </div>
                         </div>
@@ -82,7 +82,7 @@
                             <div class="col-md-12">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.encryption,
-                                    'label': form.encryption.vars.label|default('setup.email.encryption'|trans)
+                                    'label': form.encryption.vars.label|default('setup.email.encryption'|trans({}, 'messages'))
                                 } %}
                             </div>
                         </div>
@@ -91,13 +91,13 @@
                             <div class="col-md-6">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.username,
-                                    'label': form.username.vars.label|default('setup.email.username'|trans)
+                                    'label': form.username.vars.label|default('setup.email.username'|trans({}, 'messages'))
                                 } %}
                             </div>
                             <div class="col-md-6">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.password,
-                                    'label': form.password.vars.label|default('setup.email.password'|trans)
+                                    'label': form.password.vars.label|default('setup.email.password'|trans({}, 'messages'))
                                 } %}
                             </div>
                         </div>
@@ -105,13 +105,13 @@
 
                     <hr class="my-4">
 
-                    <h5 class="mb-3">{{ 'setup.email.sender_info'|trans }}</h5>
+                    <h5 class="mb-3">{{ 'setup.email.sender_info'|trans({}, 'messages') }}</h5>
 
                     <div class="row">
                         <div class="col-md-12">
                             {% include '_components/_form_field.html.twig' with {
                                 'field': form.from_address,
-                                'label': form.from_address.vars.label|default('setup.email.from_address'|trans),
+                                'label': form.from_address.vars.label|default('setup.email.from_address'|trans({}, 'messages')),
                                 'required': true
                             } %}
                         </div>
@@ -121,7 +121,7 @@
                         <div class="col-md-12">
                             {% include '_components/_form_field.html.twig' with {
                                 'field': form.from_name,
-                                'label': form.from_name.vars.label|default('setup.email.from_name'|trans)
+                                'label': form.from_name.vars.label|default('setup.email.from_name'|trans({}, 'messages'))
                             } %}
                         </div>
                     </div>
@@ -130,12 +130,12 @@
                     <div class="d-flex justify-content-between mt-4">
                         <a href="{{ path('setup_step4_admin_user') }}" class="btn btn-outline-secondary">
                             <i class="fas fa-arrow-left me-2"></i>
-                            {{ 'setup.navigation.back'|trans }}
+                            {{ 'setup.navigation.back'|trans({}, 'messages') }}
                         </a>
 
                         <div class="btn-group">
                             <button type="submit" class="btn btn-primary">
-                                {{ 'setup.navigation.next'|trans }}
+                                {{ 'setup.navigation.next'|trans({}, 'messages') }}
                                 <i class="fas fa-arrow-right ms-2"></i>
                             </button>
                         </div>
@@ -149,7 +149,7 @@
                             <input type="hidden" name="_token" value="{{ csrf_token('setup_email_skip') }}">
                             <button type="submit" class="btn btn-sm btn-outline-secondary">
                                 <i class="fas fa-forward me-1"></i>
-                                {{ 'setup.email.skip_button'|trans }}
+                                {{ 'setup.email.skip_button'|trans({}, 'messages') }}
                             </button>
                         </form>
                     </div>
@@ -161,15 +161,15 @@
                 <div class="card-body">
                     <h5 class="card-title">
                         <i class="fas fa-lightbulb text-info me-2"></i>
-                        {{ 'setup.email.info.title'|trans }}
+                        {{ 'setup.email.info.title'|trans({}, 'messages') }}
                     </h5>
                     <p class="text-muted mb-2">
-                        {{ 'setup.email.info.description'|trans }}
+                        {{ 'setup.email.info.description'|trans({}, 'messages') }}
                     </p>
                     <ul class="text-muted mb-0">
-                        <li>{{ 'setup.email.info.notifications'|trans }}</li>
-                        <li>{{ 'setup.email.info.reminders'|trans }}</li>
-                        <li>{{ 'setup.email.info.reports'|trans }}</li>
+                        <li>{{ 'setup.email.info.notifications'|trans({}, 'messages') }}</li>
+                        <li>{{ 'setup.email.info.reminders'|trans({}, 'messages') }}</li>
+                        <li>{{ 'setup.email.info.reports'|trans({}, 'messages') }}</li>
                     </ul>
                 </div>
             </div>

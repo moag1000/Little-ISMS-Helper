@@ -270,12 +270,12 @@
                             <div class="btn-group btn-group-sm">
                                 <a href="{{ path('app_audit_show', {id: audit.id}) }}"
                                    class="btn btn-sm btn-outline-primary"
-                                   title="Details anzeigen" aria-label="{{ 'common.view'|trans }}">
+                                   title="Details anzeigen" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
                                     <i class="bi bi-eye" aria-hidden="true"></i>
                                 </a>
                                 <a href="{{ path('app_audit_edit', {id: audit.id}) }}"
                                    class="btn btn-sm btn-outline-secondary"
-                                   title="Bearbeiten" aria-label="{{ 'common.edit'|trans }}">
+                                   title="Bearbeiten" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
                                     <i class="bi bi-pencil" aria-hidden="true"></i>
                                 </a>
                                 <a href="{{ path('app_audit_export_pdf', {id: audit.id}) }}"

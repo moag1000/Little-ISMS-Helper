@@ -1299,11 +1299,31 @@ tbody td {
     transition: all 0.2s ease;
 }
 
+.badge-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
 .badge-lg {
     padding: 0.5rem 1rem;
     font-size: 1rem;
     font-weight: 700;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Badge spacing utilities */
+.badge + .badge {
+    margin-left: 0.25rem;
+}
+
+/* Icon in badge spacing */
+.badge .bi {
+    margin-right: 0.25rem;
+}
+
+.badge .bi:only-child {
+    margin-right: 0;
 }
 
 /* SEVERITY BADGES - For Risks, Vulnerabilities, Incidents */

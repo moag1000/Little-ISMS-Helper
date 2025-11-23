@@ -12,15 +12,15 @@
 
 {% macro badge(item, currentTenant) %}
     {% if item.tenant is defined and currentTenant is not null and item.tenant.id != currentTenant.id %}
-        <span class="badge bg-info" title="{{ 'corporate.inheritance.inherited_from'|trans }}: {{ item.tenant.name }}">
-            <i class="bi bi-building" aria-hidden="true"></i> {{ 'corporate.inherited'|trans }}
+        <span class="badge bg-info" title="{{ 'corporate.inheritance.inherited_from'|trans({}, 'tenant') }}: {{ item.tenant.name }}">
+            <i class="bi bi-building" aria-hidden="true"></i> {{ 'corporate.inherited'|trans({}, 'tenant') }}
         </span>
     {% endif %}
 {% endmacro %}
 
 {% macro small_badge(item, currentTenant) %}
     {% if item.tenant is defined and currentTenant is not null and item.tenant.id != currentTenant.id %}
-        <span class="badge bg-info badge-sm" title="{{ 'corporate.inheritance.inherited_from'|trans }}: {{ item.tenant.name }}">
+        <span class="badge bg-info badge-sm" title="{{ 'corporate.inheritance.inherited_from'|trans({}, 'tenant') }}: {{ item.tenant.name }}">
             <i class="bi bi-building" aria-hidden="true"></i>
         </span>
     {% endif %}

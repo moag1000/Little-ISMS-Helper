@@ -1,17 +1,17 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'patches' %}
-{% block title %}{{ 'patch.new'|trans }} - {{ parent() }}{% endblock %}
+{% block title %}{{ 'patch.new'|trans({}, 'messages') }} - {{ parent() }}{% endblock %}
 {% block body %}
 <div class="container py-4">
     <nav aria-label="breadcrumb" class="mb-4">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{{ path('app_patch_index') }}">{{ 'patch.title'|trans }}</a></li>
-            <li class="breadcrumb-item active">{{ 'patch.new'|trans }}</li>
+            <li class="breadcrumb-item"><a href="{{ path('app_patch_index') }}">{{ 'patch.title'|trans({}, 'messages') }}</a></li>
+            <li class="breadcrumb-item active">{{ 'patch.new'|trans({}, 'messages') }}</li>
         </ol>
     </nav>
     <div class="card">
         <div class="card-header bg-primary text-white">
-            <h4 class="mb-0"><i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'patch.new'|trans }}</h4>
+            <h4 class="mb-0"><i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'patch.new'|trans({}, 'messages') }}</h4>
         </div>
         <div class="card-body">
             {{ form_start(form) }}

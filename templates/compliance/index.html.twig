@@ -1,31 +1,31 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ 'compliance.page_title'|trans }}{% endblock %}
+{% block title %}{{ 'compliance.page_title'|trans({}, 'compliance') }}{% endblock %}
 
 {% block body %}
 <div class="container">
     <div class="page-header">
         <div>
-            <h1>🎯 {{ 'compliance.page_title'|trans }}</h1>
-            <p class="text-muted">{{ 'compliance.page_subtitle'|trans }}</p>
+            <h1>🎯 {{ 'compliance.page_title'|trans({}, 'compliance') }}</h1>
+            <p class="text-muted">{{ 'compliance.page_subtitle'|trans({}, 'compliance') }}</p>
         </div>
         <div class="button-group">
             {% if is_granted('ROLE_ADMIN') %}
             <a href="{{ path('admin_compliance_index') }}" class="btn btn-primary">
-                <span class="icon">⚙️</span> {{ 'compliance.manage_frameworks'|trans }}
+                <span class="icon">⚙️</span> {{ 'compliance.manage_frameworks'|trans({}, 'compliance') }}
             </a>
             {% endif %}
             <a href="{{ path('app_mapping_quality_dashboard') }}" class="btn btn-success">
                 <span class="icon">🔍</span> Mapping Quality
             </a>
             <a href="{{ path('app_compliance_cross_framework') }}" class="btn btn-secondary">
-                <span class="icon">🔗</span> {{ 'compliance.button.cross_framework'|trans }}
+                <span class="icon">🔗</span> {{ 'compliance.button.cross_framework'|trans({}, 'compliance') }}
             </a>
             <a href="{{ path('app_compliance_transitive') }}" class="btn btn-secondary">
-                <span class="icon">📊</span> {{ 'compliance.button.transitive'|trans }}
+                <span class="icon">📊</span> {{ 'compliance.button.transitive'|trans({}, 'compliance') }}
             </a>
             <a href="{{ path('app_compliance_compare') }}" class="btn btn-secondary">
-                <span class="icon">⚖️</span> {{ 'compliance.button.compare_frameworks'|trans }}
+                <span class="icon">⚖️</span> {{ 'compliance.button.compare_frameworks'|trans({}, 'compliance') }}
             </a>
         </div>
     </div>
@@ -34,8 +34,8 @@
     {% if frameworks|length > 0 %}
     <div class="quick-access-bar">
         <div class="quick-access-header">
-            <h2>{{ 'compliance.quick_access'|trans|default('Quick Access') }}</h2>
-            <span class="quick-access-hint">{{ 'compliance.quick_access_hint'|trans|default('Click to jump directly to framework') }}</span>
+            <h2>{{ 'compliance.quick_access'|trans({}, 'compliance')|default('Quick Access') }}</h2>
+            <span class="quick-access-hint">{{ 'compliance.quick_access_hint'|trans({}, 'compliance')|default('Click to jump directly to framework') }}</span>
         </div>
         <div class="quick-access-items">
             {% for item in overview %}
@@ -61,9 +61,9 @@
 
     {# Data Reuse Value Highlight #}
     <div class="alert alert-success alert-gradient-success">
-        <h2 class="h3-m0-mb-sm">💎 {{ 'compliance.data_reuse.title'|trans }}</h2>
+        <h2 class="h3-m0-mb-sm">💎 {{ 'compliance.data_reuse.title'|trans({}, 'compliance') }}</h2>
         <p class="text-lg-m0">
-            {{ 'compliance.data_reuse.description'|trans({'%hours%': total_time_savings, '%days%': total_days_savings})|raw }}
+            {{ 'compliance.data_reuse.description'|trans({'%hours%': total_time_savings, '%days%': total_days_savings}, 'compliance')|raw }}
         </p>
     </div>
 
@@ -78,7 +78,7 @@
                         <p class="framework-subtitle">{{ item.name|length > 40 ? item.name|slice(0, 40) ~ '...' : item.name }}</p>
                     </div>
                     {% if framework and framework.mandatory %}
-                        <span class="badge bg-light">{{ 'compliance.mandatory'|trans }}</span>
+                        <span class="badge bg-light">{{ 'compliance.mandatory'|trans({}, 'compliance') }}</span>
                     {% endif %}
                 </div>
 
@@ -96,36 +96,36 @@
                             />
                             <text x="18" y="20.35" class="percentage">{{ item.compliance_percentage }}%</text>
                         </svg>
-                        <div class="compliance-label">{{ 'compliance.label.compliance'|trans }}</div>
+                        <div class="compliance-label">{{ 'compliance.label.compliance'|trans({}, 'compliance') }}</div>
                     </div>
 
                     {# Quick Stats - Minimal #}
                     <div class="quick-stats">
                         <div class="quick-stat">
                             <span class="quick-value">{{ item.fulfilled_requirements }}/{{ item.applicable_requirements }}</span>
-                            <span class="quick-label">{{ 'compliance.label.fulfilled'|trans }}</span>
+                            <span class="quick-label">{{ 'compliance.label.fulfilled'|trans({}, 'compliance') }}</span>
                         </div>
                         <div class="quick-stat">
                             <span class="quick-value text-danger-color">{{ item.applicable_requirements - item.fulfilled_requirements }}</span>
-                            <span class="quick-label">{{ 'compliance.label.gaps'|trans }}</span>
+                            <span class="quick-label">{{ 'compliance.label.gaps'|trans({}, 'compliance') }}</span>
                         </div>
                     </div>
 
                     {# Single Action Button #}
                     <a href="{{ path('app_compliance_framework', {id: item.id}) }}" class="btn btn-block btn-primary">
-                        {{ 'compliance.button.open_dashboard'|trans }} →
+                        {{ 'compliance.button.open_dashboard'|trans({}, 'compliance') }} →
                     </a>
                 </div>
             </div>
         {% else %}
             <div class="col-span-all text-center p-xl">
-                <p class="text-muted">{{ 'compliance.no_frameworks_loaded'|trans }}</p>
+                <p class="text-muted">{{ 'compliance.no_frameworks_loaded'|trans({}, 'compliance') }}</p>
                 {% if is_granted('ROLE_ADMIN') %}
                 <a href="{{ path('admin_compliance_index') }}" class="btn btn-primary btn-lg">
-                    <span class="icon">⚙️</span> {{ 'compliance.add_frameworks'|trans }}
+                    <span class="icon">⚙️</span> {{ 'compliance.add_frameworks'|trans({}, 'compliance') }}
                 </a>
                 {% else %}
-                <p class="text-muted"><small>{{ 'compliance.contact_admin_to_add_frameworks'|trans }}</small></p>
+                <p class="text-muted"><small>{{ 'compliance.contact_admin_to_add_frameworks'|trans({}, 'compliance') }}</small></p>
                 {% endif %}
             </div>
         {% endfor %}
@@ -135,34 +135,34 @@
     {% if mapping_stats.total_mappings > 0 %}
         <div class="card mt-lg">
             <div class="card-header">
-                <h2>🔗 {{ 'compliance.cross_framework.title'|trans }}</h2>
+                <h2>🔗 {{ 'compliance.cross_framework.title'|trans({}, 'compliance') }}</h2>
             </div>
             <div class="card-body">
                 <div class="stats-grid">
                     <div class="stat-box">
                         <div class="stat-icon">📊</div>
                         <div class="stat-number">{{ mapping_stats.total_mappings }}</div>
-                        <div class="stat-text">{{ 'compliance.stats.total_mappings'|trans }}</div>
+                        <div class="stat-text">{{ 'compliance.stats.total_mappings'|trans({}, 'compliance') }}</div>
                     </div>
                     <div class="stat-box">
                         <div class="stat-icon">✅</div>
                         <div class="stat-number">{{ mapping_stats.full_mappings + mapping_stats.exceeds_mappings }}</div>
-                        <div class="stat-text">{{ 'compliance.stats.full_exceeds'|trans }}</div>
+                        <div class="stat-text">{{ 'compliance.stats.full_exceeds'|trans({}, 'compliance') }}</div>
                     </div>
                     <div class="stat-box">
                         <div class="stat-icon">⚠️</div>
                         <div class="stat-number">{{ mapping_stats.partial_mappings }}</div>
-                        <div class="stat-text">{{ 'compliance.stats.partial_mappings'|trans }}</div>
+                        <div class="stat-text">{{ 'compliance.stats.partial_mappings'|trans({}, 'compliance') }}</div>
                     </div>
                     <div class="stat-box">
                         <div class="stat-icon">🔄</div>
                         <div class="stat-number">{{ mapping_stats.bidirectional_mappings }}</div>
-                        <div class="stat-text">{{ 'compliance.stats.bidirectional_mappings'|trans }}</div>
+                        <div class="stat-text">{{ 'compliance.stats.bidirectional_mappings'|trans({}, 'compliance') }}</div>
                     </div>
                 </div>
                 <p class="text-center mt-md">
                     <a href="{{ path('app_compliance_cross_framework') }}" class="btn btn-primary">
-                        {{ 'compliance.button.explore_mappings'|trans }} →
+                        {{ 'compliance.button.explore_mappings'|trans({}, 'compliance') }} →
                     </a>
                 </p>
             </div>
@@ -172,29 +172,29 @@
     {# Benefits Explanation #}
     <div class="card mt-lg">
         <div class="card-header">
-            <h2>{{ 'compliance.benefits.title'|trans }}</h2>
+            <h2>{{ 'compliance.benefits.title'|trans({}, 'compliance') }}</h2>
         </div>
         <div class="card-body">
             <div class="benefits-grid">
                 <div class="benefit-item">
                     <div class="benefit-icon">🔄</div>
-                    <strong>{{ 'compliance.benefits.data_reuse.title'|trans }}</strong>
-                    <p>{{ 'compliance.benefits.data_reuse.description'|trans }}</p>
+                    <strong>{{ 'compliance.benefits.data_reuse.title'|trans({}, 'compliance') }}</strong>
+                    <p>{{ 'compliance.benefits.data_reuse.description'|trans({}, 'compliance') }}</p>
                 </div>
                 <div class="benefit-item">
                     <div class="benefit-icon">⏱️</div>
-                    <strong>{{ 'compliance.benefits.time_efficiency.title'|trans }}</strong>
-                    <p>{{ 'compliance.benefits.time_efficiency.description'|trans }}</p>
+                    <strong>{{ 'compliance.benefits.time_efficiency.title'|trans({}, 'compliance') }}</strong>
+                    <p>{{ 'compliance.benefits.time_efficiency.description'|trans({}, 'compliance') }}</p>
                 </div>
                 <div class="benefit-item">
                     <div class="benefit-icon">📊</div>
-                    <strong>{{ 'compliance.benefits.transparency.title'|trans }}</strong>
-                    <p>{{ 'compliance.benefits.transparency.description'|trans }}</p>
+                    <strong>{{ 'compliance.benefits.transparency.title'|trans({}, 'compliance') }}</strong>
+                    <p>{{ 'compliance.benefits.transparency.description'|trans({}, 'compliance') }}</p>
                 </div>
                 <div class="benefit-item">
                     <div class="benefit-icon">🎯</div>
-                    <strong>{{ 'compliance.benefits.strategic.title'|trans }}</strong>
-                    <p>{{ 'compliance.benefits.strategic.description'|trans }}</p>
+                    <strong>{{ 'compliance.benefits.strategic.title'|trans({}, 'compliance') }}</strong>
+                    <p>{{ 'compliance.benefits.strategic.description'|trans({}, 'compliance') }}</p>
                 </div>
             </div>
         </div>

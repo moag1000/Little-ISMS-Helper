@@ -1,20 +1,20 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'bc_plans' %}
 
-{% block title %}{{ 'bc_plans.action.add_new'|trans }} - {{ parent() }}{% endblock %}
+{% block title %}{{ 'bc_plans.action.add_new'|trans({}, 'bcm') }} - {{ parent() }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid py-4">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
             { label: 'nav.bcm'|trans({}, 'nav', 'nav')|default('BCM'), url: path('app_bc_plan_index'), icon: 'bi-shield-exclamation' },
-            { label: 'bc_plans.page.title'|trans|default('BC Plans'), url: path('app_bc_plan_index') },
-            { label: 'bc_plans.action.add_new'|trans|default('New Plan') }
+            { label: 'bc_plans.page.title'|trans({}, 'bcm')|default('BC Plans'), url: path('app_bc_plan_index') },
+            { label: 'bc_plans.action.add_new'|trans({}, 'bcm')|default('New Plan') }
         ]
     } %}
 
     {% include '_components/_page_header.html.twig' with {
-        title: 'bc_plans.action.add_new'|trans|default('Create BC Plan'),
+        title: 'bc_plans.action.add_new'|trans({}, 'bcm')|default('Create BC Plan'),
         icon: 'bi-plus-circle',
         actions: [{ label: 'common.back'|trans({}, 'messages'), url: path('app_bc_plan_index'), variant: 'secondary', icon: 'bi-arrow-left' }]
     } %}
@@ -27,78 +27,78 @@
 
                     {# Basic Information #}
                     <fieldset class="mb-4">
-                        <legend class="h5 mb-3"><i class="bi bi-info-square" aria-hidden="true"></i> {{ 'bc_plan.section.basic_info'|trans|default('Basic Information') }}</legend>
-                        {% include '_components/_form_field.html.twig' with {'field': form.name, 'label': 'bc_plan.field.name'|trans|default('Plan Name'), 'help': 'bc_plan.help.name'|trans|default('Name of the BC plan'), 'required': true} %}
-                        {% include '_components/_form_field.html.twig' with {'field': form.businessProcess, 'label': 'bc_plan.field.business_process'|trans|default('Business Process'), 'help': 'bc_plan.help.business_process'|trans|default('Associated business process')} %}
-                        {% include '_components/_form_field.html.twig' with {'field': form.description, 'label': 'bc_plan.field.description'|trans|default('Description'), 'help': 'bc_plan.help.description'|trans|default('Detailed plan description')} %}
+                        <legend class="h5 mb-3"><i class="bi bi-info-square" aria-hidden="true"></i> {{ 'bc_plan.section.basic_info'|trans({}, 'bcm')|default('Basic Information') }}</legend>
+                        {% include '_components/_form_field.html.twig' with {'field': form.name, 'label': 'bc_plan.field.name'|trans({}, 'bcm')|default('Plan Name'), 'help': 'bc_plan.help.name'|trans({}, 'bcm')|default('Name of the BC plan'), 'required': true} %}
+                        {% include '_components/_form_field.html.twig' with {'field': form.businessProcess, 'label': 'bc_plan.field.business_process'|trans({}, 'bcm')|default('Business Process'), 'help': 'bc_plan.help.business_process'|trans({}, 'bcm')|default('Associated business process')} %}
+                        {% include '_components/_form_field.html.twig' with {'field': form.description, 'label': 'bc_plan.field.description'|trans({}, 'bcm')|default('Description'), 'help': 'bc_plan.help.description'|trans({}, 'bcm')|default('Detailed plan description')} %}
                         <div class="row">
-                            <div class="col-md-6">{% include '_components/_form_field.html.twig' with {'field': form.planOwner, 'label': 'bc_plan.field.plan_owner'|trans|default('Plan Owner'), 'help': 'bc_plan.help.plan_owner'|trans|default('Person responsible for the plan')} %}</div>
-                            <div class="col-md-6">{% include '_components/_form_field.html.twig' with {'field': form.status, 'label': 'bc_plan.field.status'|trans|default('Status'), 'help': 'bc_plan.help.status'|trans|default('Current status of the plan')} %}</div>
+                            <div class="col-md-6">{% include '_components/_form_field.html.twig' with {'field': form.planOwner, 'label': 'bc_plan.field.plan_owner'|trans({}, 'bcm')|default('Plan Owner'), 'help': 'bc_plan.help.plan_owner'|trans({}, 'bcm')|default('Person responsible for the plan')} %}</div>
+                            <div class="col-md-6">{% include '_components/_form_field.html.twig' with {'field': form.status, 'label': 'bc_plan.field.status'|trans({}, 'bcm')|default('Status'), 'help': 'bc_plan.help.status'|trans({}, 'bcm')|default('Current status of the plan')} %}</div>
                         </div>
                     </fieldset>
 
                     {# Team #}
                     <fieldset class="mb-4">
-                        <legend class="h5 mb-3"><i class="bi bi-people" aria-hidden="true"></i> {{ 'bc_plan.section.team'|trans|default('Team') }}</legend>
-                        {% include '_components/_form_field.html.twig' with {'field': form.bcTeam, 'label': 'bc_plan.field.bc_team'|trans|default('BC Team'), 'help': 'bc_plan.help.bc_team'|trans|default('Team members responsible for BC')} %}
+                        <legend class="h5 mb-3"><i class="bi bi-people" aria-hidden="true"></i> {{ 'bc_plan.section.team'|trans({}, 'bcm')|default('Team') }}</legend>
+                        {% include '_components/_form_field.html.twig' with {'field': form.bcTeam, 'label': 'bc_plan.field.bc_team'|trans({}, 'bcm')|default('BC Team'), 'help': 'bc_plan.help.bc_team'|trans({}, 'bcm')|default('Team members responsible for BC')} %}
                     </fieldset>
 
                     {# Activation & Response #}
                     <fieldset class="mb-4">
-                        <legend class="h5 mb-3"><i class="bi bi-lightning" aria-hidden="true"></i> {{ 'bc_plan.section.activation'|trans|default('Activation & Response') }}</legend>
-                        {% include '_components/_form_field.html.twig' with {'field': form.activationCriteria, 'label': 'bc_plan.field.activation_criteria'|trans|default('Activation Criteria'), 'help': 'bc_plan.help.activation_criteria'|trans|default('Conditions that trigger plan activation')} %}
-                        {% include '_components/_form_field.html.twig' with {'field': form.rolesAndResponsibilities, 'label': 'bc_plan.field.roles_responsibilities'|trans|default('Roles & Responsibilities'), 'help': 'bc_plan.help.roles_responsibilities'|trans|default('Who does what during an incident')} %}
-                        {% include '_components/_form_field.html.twig' with {'field': form.recoveryProcedures, 'label': 'bc_plan.field.recovery_procedures'|trans|default('Recovery Procedures'), 'help': 'bc_plan.help.recovery_procedures'|trans|default('Step-by-step recovery process')} %}
+                        <legend class="h5 mb-3"><i class="bi bi-lightning" aria-hidden="true"></i> {{ 'bc_plan.section.activation'|trans({}, 'bcm')|default('Activation & Response') }}</legend>
+                        {% include '_components/_form_field.html.twig' with {'field': form.activationCriteria, 'label': 'bc_plan.field.activation_criteria'|trans({}, 'bcm')|default('Activation Criteria'), 'help': 'bc_plan.help.activation_criteria'|trans({}, 'bcm')|default('Conditions that trigger plan activation')} %}
+                        {% include '_components/_form_field.html.twig' with {'field': form.rolesAndResponsibilities, 'label': 'bc_plan.field.roles_responsibilities'|trans({}, 'bcm')|default('Roles & Responsibilities'), 'help': 'bc_plan.help.roles_responsibilities'|trans({}, 'bcm')|default('Who does what during an incident')} %}
+                        {% include '_components/_form_field.html.twig' with {'field': form.recoveryProcedures, 'label': 'bc_plan.field.recovery_procedures'|trans({}, 'bcm')|default('Recovery Procedures'), 'help': 'bc_plan.help.recovery_procedures'|trans({}, 'bcm')|default('Step-by-step recovery process')} %}
                     </fieldset>
 
                     {# Communication #}
                     <fieldset class="mb-4">
-                        <legend class="h5 mb-3"><i class="bi bi-chat-dots" aria-hidden="true"></i> {{ 'bc_plan.section.communication'|trans|default('Communication') }}</legend>
-                        {% include '_components/_form_field.html.twig' with {'field': form.communicationPlan, 'label': 'bc_plan.field.communication_plan'|trans|default('Communication Plan'), 'help': 'bc_plan.help.communication_plan'|trans|default('Overall communication strategy')} %}
+                        <legend class="h5 mb-3"><i class="bi bi-chat-dots" aria-hidden="true"></i> {{ 'bc_plan.section.communication'|trans({}, 'bcm')|default('Communication') }}</legend>
+                        {% include '_components/_form_field.html.twig' with {'field': form.communicationPlan, 'label': 'bc_plan.field.communication_plan'|trans({}, 'bcm')|default('Communication Plan'), 'help': 'bc_plan.help.communication_plan'|trans({}, 'bcm')|default('Overall communication strategy')} %}
                         <div class="row">
-                            <div class="col-md-6">{% include '_components/_form_field.html.twig' with {'field': form.internalCommunication, 'label': 'bc_plan.field.internal_communication'|trans|default('Internal Communication'), 'help': 'bc_plan.help.internal_communication'|trans|default('Internal stakeholder communication')} %}</div>
-                            <div class="col-md-6">{% include '_components/_form_field.html.twig' with {'field': form.externalCommunication, 'label': 'bc_plan.field.external_communication'|trans|default('External Communication'), 'help': 'bc_plan.help.external_communication'|trans|default('External stakeholder communication')} %}</div>
+                            <div class="col-md-6">{% include '_components/_form_field.html.twig' with {'field': form.internalCommunication, 'label': 'bc_plan.field.internal_communication'|trans({}, 'bcm')|default('Internal Communication'), 'help': 'bc_plan.help.internal_communication'|trans({}, 'bcm')|default('Internal stakeholder communication')} %}</div>
+                            <div class="col-md-6">{% include '_components/_form_field.html.twig' with {'field': form.externalCommunication, 'label': 'bc_plan.field.external_communication'|trans({}, 'bcm')|default('External Communication'), 'help': 'bc_plan.help.external_communication'|trans({}, 'bcm')|default('External stakeholder communication')} %}</div>
                         </div>
                     </fieldset>
 
                     {# Alternative Site #}
                     <fieldset class="mb-4">
-                        <legend class="h5 mb-3"><i class="bi bi-building" aria-hidden="true"></i> {{ 'bc_plan.section.alternative_site'|trans|default('Alternative Site') }}</legend>
-                        {% include '_components/_form_field.html.twig' with {'field': form.alternativeSite, 'label': 'bc_plan.field.alternative_site'|trans|default('Alternative Site'), 'help': 'bc_plan.help.alternative_site'|trans|default('Backup location details')} %}
+                        <legend class="h5 mb-3"><i class="bi bi-building" aria-hidden="true"></i> {{ 'bc_plan.section.alternative_site'|trans({}, 'bcm')|default('Alternative Site') }}</legend>
+                        {% include '_components/_form_field.html.twig' with {'field': form.alternativeSite, 'label': 'bc_plan.field.alternative_site'|trans({}, 'bcm')|default('Alternative Site'), 'help': 'bc_plan.help.alternative_site'|trans({}, 'bcm')|default('Backup location details')} %}
                         <div class="row">
-                            <div class="col-md-6">{% include '_components/_form_field.html.twig' with {'field': form.alternativeSiteAddress, 'label': 'bc_plan.field.alternative_site_address'|trans|default('Address'), 'help': 'bc_plan.help.alternative_site_address'|trans|default('Physical address of alternative site')} %}</div>
-                            <div class="col-md-6">{% include '_components/_form_field.html.twig' with {'field': form.alternativeSiteCapacity, 'label': 'bc_plan.field.alternative_site_capacity'|trans|default('Capacity'), 'help': 'bc_plan.help.alternative_site_capacity'|trans|default('Maximum capacity of the site')} %}</div>
+                            <div class="col-md-6">{% include '_components/_form_field.html.twig' with {'field': form.alternativeSiteAddress, 'label': 'bc_plan.field.alternative_site_address'|trans({}, 'bcm')|default('Address'), 'help': 'bc_plan.help.alternative_site_address'|trans({}, 'bcm')|default('Physical address of alternative site')} %}</div>
+                            <div class="col-md-6">{% include '_components/_form_field.html.twig' with {'field': form.alternativeSiteCapacity, 'label': 'bc_plan.field.alternative_site_capacity'|trans({}, 'bcm')|default('Capacity'), 'help': 'bc_plan.help.alternative_site_capacity'|trans({}, 'bcm')|default('Maximum capacity of the site')} %}</div>
                         </div>
                     </fieldset>
 
                     {# Backup & Recovery #}
                     <fieldset class="mb-4">
-                        <legend class="h5 mb-3"><i class="bi bi-hdd" aria-hidden="true"></i> {{ 'bc_plan.section.backup_recovery'|trans|default('Backup & Recovery') }}</legend>
+                        <legend class="h5 mb-3"><i class="bi bi-hdd" aria-hidden="true"></i> {{ 'bc_plan.section.backup_recovery'|trans({}, 'bcm')|default('Backup & Recovery') }}</legend>
                         <div class="row">
-                            <div class="col-md-6">{% include '_components/_form_field.html.twig' with {'field': form.backupProcedures, 'label': 'bc_plan.field.backup_procedures'|trans|default('Backup Procedures'), 'help': 'bc_plan.help.backup_procedures'|trans|default('Data backup procedures')} %}</div>
-                            <div class="col-md-6">{% include '_components/_form_field.html.twig' with {'field': form.restoreProcedures, 'label': 'bc_plan.field.restore_procedures'|trans|default('Restore Procedures'), 'help': 'bc_plan.help.restore_procedures'|trans|default('Data restoration procedures')} %}</div>
+                            <div class="col-md-6">{% include '_components/_form_field.html.twig' with {'field': form.backupProcedures, 'label': 'bc_plan.field.backup_procedures'|trans({}, 'bcm')|default('Backup Procedures'), 'help': 'bc_plan.help.backup_procedures'|trans({}, 'bcm')|default('Data backup procedures')} %}</div>
+                            <div class="col-md-6">{% include '_components/_form_field.html.twig' with {'field': form.restoreProcedures, 'label': 'bc_plan.field.restore_procedures'|trans({}, 'bcm')|default('Restore Procedures'), 'help': 'bc_plan.help.restore_procedures'|trans({}, 'bcm')|default('Data restoration procedures')} %}</div>
                         </div>
                     </fieldset>
 
                     {# Version & Review #}
                     <fieldset class="mb-4">
-                        <legend class="h5 mb-3"><i class="bi bi-calendar-check" aria-hidden="true"></i> {{ 'bc_plan.section.version_review'|trans|default('Version & Review') }}</legend>
+                        <legend class="h5 mb-3"><i class="bi bi-calendar-check" aria-hidden="true"></i> {{ 'bc_plan.section.version_review'|trans({}, 'bcm')|default('Version & Review') }}</legend>
                         <div class="row">
-                            <div class="col-md-4">{% include '_components/_form_field.html.twig' with {'field': form.version, 'label': 'bc_plan.field.version'|trans|default('Version'), 'help': 'bc_plan.help.version'|trans|default('Plan version number')} %}</div>
-                            <div class="col-md-4">{% include '_components/_form_field.html.twig' with {'field': form.lastTested, 'label': 'bc_plan.field.last_tested'|trans|default('Last Tested'), 'help': 'bc_plan.help.last_tested'|trans|default('Date of last test')} %}</div>
-                            <div class="col-md-4">{% include '_components/_form_field.html.twig' with {'field': form.nextTestDate, 'label': 'bc_plan.field.next_test_date'|trans|default('Next Test'), 'help': 'bc_plan.help.next_test_date'|trans|default('Scheduled next test date')} %}</div>
+                            <div class="col-md-4">{% include '_components/_form_field.html.twig' with {'field': form.version, 'label': 'bc_plan.field.version'|trans({}, 'bcm')|default('Version'), 'help': 'bc_plan.help.version'|trans({}, 'bcm')|default('Plan version number')} %}</div>
+                            <div class="col-md-4">{% include '_components/_form_field.html.twig' with {'field': form.lastTested, 'label': 'bc_plan.field.last_tested'|trans({}, 'bcm')|default('Last Tested'), 'help': 'bc_plan.help.last_tested'|trans({}, 'bcm')|default('Date of last test')} %}</div>
+                            <div class="col-md-4">{% include '_components/_form_field.html.twig' with {'field': form.nextTestDate, 'label': 'bc_plan.field.next_test_date'|trans({}, 'bcm')|default('Next Test'), 'help': 'bc_plan.help.next_test_date'|trans({}, 'bcm')|default('Scheduled next test date')} %}</div>
                         </div>
                         <div class="row">
-                            <div class="col-md-6">{% include '_components/_form_field.html.twig' with {'field': form.lastReviewDate, 'label': 'bc_plan.field.last_review_date'|trans|default('Last Review'), 'help': 'bc_plan.help.last_review_date'|trans|default('Date of last review')} %}</div>
-                            <div class="col-md-6">{% include '_components/_form_field.html.twig' with {'field': form.nextReviewDate, 'label': 'bc_plan.field.next_review_date'|trans|default('Next Review'), 'help': 'bc_plan.help.next_review_date'|trans|default('Scheduled next review date')} %}</div>
+                            <div class="col-md-6">{% include '_components/_form_field.html.twig' with {'field': form.lastReviewDate, 'label': 'bc_plan.field.last_review_date'|trans({}, 'bcm')|default('Last Review'), 'help': 'bc_plan.help.last_review_date'|trans({}, 'bcm')|default('Date of last review')} %}</div>
+                            <div class="col-md-6">{% include '_components/_form_field.html.twig' with {'field': form.nextReviewDate, 'label': 'bc_plan.field.next_review_date'|trans({}, 'bcm')|default('Next Review'), 'help': 'bc_plan.help.next_review_date'|trans({}, 'bcm')|default('Scheduled next review date')} %}</div>
                         </div>
-                        {% include '_components/_form_field.html.twig' with {'field': form.reviewNotes, 'label': 'bc_plan.field.review_notes'|trans|default('Review Notes'), 'help': 'bc_plan.help.review_notes'|trans|default('Notes from the last review')} %}
+                        {% include '_components/_form_field.html.twig' with {'field': form.reviewNotes, 'label': 'bc_plan.field.review_notes'|trans({}, 'bcm')|default('Review Notes'), 'help': 'bc_plan.help.review_notes'|trans({}, 'bcm')|default('Notes from the last review')} %}
                     </fieldset>
 
                     {# Form Actions #}
                     <div class="form-actions d-flex gap-2 justify-content-between pt-3 border-top">
                         <a href="{{ path('app_bc_plan_index') }}" class="btn btn-secondary"><i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'common.cancel'|trans({}, 'messages') }}</a>
-                        <button type="submit" class="btn btn-primary btn-lg"><i class="bi bi-save" aria-hidden="true"></i> {{ 'bc_plans.action.add_new'|trans }}</button>
+                        <button type="submit" class="btn btn-primary btn-lg"><i class="bi bi-save" aria-hidden="true"></i> {{ 'bc_plans.action.add_new'|trans({}, 'bcm') }}</button>
                     </div>
 
                     {{ form_end(form) }}

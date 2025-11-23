@@ -1,16 +1,16 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'context' %}
 
-{% block title %}{{ 'context_management.title'|trans }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+{% block title %}{{ 'context_management.title'|trans({}, 'messages') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid py-4">
     {# Page Header #}
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h1 class="h3 mb-1">{{ 'context_management.title'|trans }}</h1>
+            <h1 class="h3 mb-1">{{ 'context_management.title'|trans({}, 'messages') }}</h1>
             <p class="text-muted mb-0">
-                {{ 'context_management.description'|trans }}
+                {{ 'context_management.description'|trans({}, 'messages') }}
                 {% if tenant is defined and tenant %}
                     <br>
                     <small>
@@ -31,11 +31,11 @@
             {% if is_granted('ROLE_ADMIN') %}
                 {% if canEdit is defined and canEdit %}
                     <a href="{{ path('app_context_edit') }}" class="btn btn-primary">
-                        <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'context.link.edit'|trans }}
+                        <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'context.link.edit'|trans({}, 'messages') }}
                     </a>
                 {% else %}
                     <button class="btn btn-primary" disabled title="{{ 'corporate.inheritance.cannot_edit_inherited'|trans({}, 'messages') }}">
-                        <i class="bi bi-lock" aria-hidden="true"></i> {{ 'context.link.edit'|trans }}
+                        <i class="bi bi-lock" aria-hidden="true"></i> {{ 'context.link.edit'|trans({}, 'messages') }}
                     </button>
                 {% endif %}
                 <a href="{{ path('app_objective_new') }}" class="btn btn-success">
@@ -48,7 +48,7 @@
     {# ISO 27001 Info Box #}
     <div class="alert alert-info mb-4">
         <i class="bi bi-info-circle" aria-hidden="true"></i>
-        <strong>{{ 'context.info.iso_clause'|trans }}</strong> {{ 'context.info.iso_description'|trans }}
+        <strong>{{ 'context.info.iso_clause'|trans({}, 'messages') }}</strong> {{ 'context.info.iso_description'|trans({}, 'messages') }}
     </div>
 
     {# Corporate Inheritance Alert #}
@@ -81,7 +81,7 @@
         {# Completeness Card #}
         <div class="col-md-3 mb-3">
             {{ cards.kpi_card(
-                'context.kpi.completeness'|trans,
+                'context.kpi.completeness'|trans({}, 'messages'),
                 completeness ~ '%',
                 null,
                 completeness,
@@ -92,9 +92,9 @@
         {# Active Objectives Card #}
         <div class="col-md-3 mb-3">
             {{ cards.kpi_card(
-                'context.kpi.active_goals'|trans,
+                'context.kpi.active_goals'|trans({}, 'messages'),
                 statistics.active,
-                'context.kpi.of_total'|trans({'%total%': statistics.total}),
+                'context.kpi.of_total'|trans({'%total%': statistics.total}, 'messages'),
                 null,
                 null
             ) }}
@@ -103,9 +103,9 @@
         {# Achieved Objectives Card #}
         <div class="col-md-3 mb-3">
             {{ cards.kpi_card(
-                'context.kpi.achieved_goals'|trans,
+                'context.kpi.achieved_goals'|trans({}, 'messages'),
                 statistics.achieved,
-                statistics.total > 0 ? ('context.kpi.success_rate'|trans({'%rate%': ((statistics.achieved / statistics.total) * 100)|round})) : null,
+                statistics.total > 0 ? ('context.kpi.success_rate'|trans({'%rate%': ((statistics.achieved / statistics.total) * 100)|round}, 'messages')) : null,
                 null,
                 'success'
             ) }}
@@ -116,27 +116,27 @@
             {% if daysUntilReview is not null %}
                 {% if daysUntilReview > 0 %}
                     {{ cards.kpi_card(
-                        'context.kpi.next_review'|trans,
+                        'context.kpi.next_review'|trans({}, 'messages'),
                         daysUntilReview,
-                        'context.review_status.days_remaining'|trans,
+                        'context.review_status.days_remaining'|trans({}, 'messages'),
                         null,
                         null,
                         isReviewDue ? 'border-warning' : ''
                     ) }}
                 {% elseif daysUntilReview == 0 %}
                     {{ cards.kpi_card(
-                        'context.kpi.next_review'|trans,
-                        'context.review_status.today'|trans,
-                        'context.review_status.due'|trans,
+                        'context.kpi.next_review'|trans({}, 'messages'),
+                        'context.review_status.today'|trans({}, 'messages'),
+                        'context.review_status.due'|trans({}, 'messages'),
                         null,
                         'warning',
                         'border-warning'
                     ) }}
                 {% else %}
                     {{ cards.kpi_card(
-                        'context.kpi.next_review'|trans,
+                        'context.kpi.next_review'|trans({}, 'messages'),
                         daysUntilReview|abs,
-                        'context.review_status.days_overdue'|trans,
+                        'context.review_status.days_overdue'|trans({}, 'messages'),
                         null,
                         'danger',
                         'border-warning'
@@ -144,9 +144,9 @@
                 {% endif %}
             {% else %}
                 {{ cards.kpi_card(
-                    'context.kpi.next_review'|trans,
+                    'context.kpi.next_review'|trans({}, 'messages'),
                     '—',
-                    'context.review_status.not_scheduled'|trans,
+                    'context.review_status.not_scheduled'|trans({}, 'messages'),
                     null,
                     null,
                     isReviewDue ? 'border-warning' : ''
@@ -206,7 +206,7 @@
                             <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
                             {{ 'context_management.no_context_defined'|trans({}, 'messages') }}
                             {% if is_granted('ROLE_ADMIN') and canEdit is defined and canEdit %}
-                                <a href="{{ path('app_context_edit') }}" class="alert-link">{{ 'context.link.create_now'|trans }}</a>
+                                <a href="{{ path('app_context_edit') }}" class="alert-link">{{ 'context.link.create_now'|trans({}, 'messages') }}</a>
                             {% endif %}
                         </div>
                     {% endif %}
@@ -340,7 +340,7 @@
             <div class="card shadow-sm">
                 <div class="card-header bg-white">
                     <h3 class="mb-0">
-                        <i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'context.section.history'|trans|default('Context History') }}
+                        <i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'context.section.history'|trans({}, 'messages')|default('Context History') }}
                         ({{ totalAuditLogs }} {{ 'audit_log.section.entries'|trans({}, 'audit_log') }})
                     </h3>
                 </div>

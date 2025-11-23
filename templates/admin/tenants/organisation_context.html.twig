@@ -115,12 +115,12 @@
                     <div class="d-flex justify-content-between mt-4">
                         <a href="{{ path('tenant_management_show', {id: tenant.id}) }}" class="btn btn-outline-secondary">
                             <i class="bi bi-arrow-left me-2" aria-hidden="true"></i>
-                            {{ 'common.back'|trans }}
+                            {{ 'common.back'|trans({}, 'messages') }}
                         </a>
 
                         <button type="submit" class="btn btn-primary">
                             <i class="bi bi-check-lg me-2" aria-hidden="true"></i>
-                            {{ 'common.save'|trans }}
+                            {{ 'common.save'|trans({}, 'messages') }}
                         </button>
                     </div>
 

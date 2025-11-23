@@ -1,12 +1,12 @@
 {% extends 'admin/layout.html.twig' %}
 
-{% block admin_title %}{{ 'permission.title'|trans }}{% endblock %}
+{% block admin_title %}{{ 'permission.title'|trans({}, 'messages') }}{% endblock %}
 {% block admin_subtitle %}
-    <p class="text-muted">{{ 'permission.subtitle'|trans }}</p>
+    <p class="text-muted">{{ 'permission.subtitle'|trans({}, 'messages') }}</p>
 {% endblock %}
 
 {% block breadcrumb_items %}
-    <li class="breadcrumb-item active" aria-current="page">{{ 'admin.nav.permissions'|trans }}</li>
+    <li class="breadcrumb-item active" aria-current="page">{{ 'admin.nav.permissions'|trans({}, 'admin') }}</li>
 {% endblock %}
 
 {% block admin_content %}
@@ -15,7 +15,7 @@
         <div class="col-md-3">
             <div class="card border-primary">
                 <div class="card-body text-center">
-                    <h5 class="card-title text-muted">{{ 'permission.statistics.total'|trans }}</h5>
+                    <h5 class="card-title text-muted">{{ 'permission.statistics.total'|trans({}, 'messages') }}</h5>
                     <p class="display-6 text-primary">{{ statistics.total }}</p>
                 </div>
             </div>
@@ -23,7 +23,7 @@
         <div class="col-md-3">
             <div class="card border-success">
                 <div class="card-body text-center">
-                    <h5 class="card-title text-muted">{{ 'permission.statistics.system'|trans }}</h5>
+                    <h5 class="card-title text-muted">{{ 'permission.statistics.system'|trans({}, 'messages') }}</h5>
                     <p class="display-6 text-success">{{ statistics.system }}</p>
                 </div>
             </div>
@@ -31,7 +31,7 @@
         <div class="col-md-3">
             <div class="card border-info">
                 <div class="card-body text-center">
-                    <h5 class="card-title text-muted">{{ 'permission.statistics.custom'|trans }}</h5>
+                    <h5 class="card-title text-muted">{{ 'permission.statistics.custom'|trans({}, 'messages') }}</h5>
                     <p class="display-6 text-info">{{ statistics.custom }}</p>
                 </div>
             </div>
@@ -39,7 +39,7 @@
         <div class="col-md-3">
             <div class="card border-warning">
                 <div class="card-body text-center">
-                    <h5 class="card-title text-muted">{{ 'permission.statistics.categories'|trans }}</h5>
+                    <h5 class="card-title text-muted">{{ 'permission.statistics.categories'|trans({}, 'messages') }}</h5>
                     <p class="display-6 text-warning">{{ statistics.categories_count }}</p>
                 </div>
             </div>
@@ -77,9 +77,9 @@
                 {% embed '_components/_table.html.twig' %}
                     {% block table_head %}
                         <tr>
-                            <th scope="col">{{ 'permission.action'|trans }}</th>
-                            <th scope="col">{{ 'permission.description'|trans }}</th>
-                            <th scope="col" class="text-center">{{ 'permission.system_permission'|trans }}</th>
+                            <th scope="col">{{ 'permission.action'|trans({}, 'messages') }}</th>
+                            <th scope="col">{{ 'permission.description'|trans({}, 'messages') }}</th>
+                            <th scope="col" class="text-center">{{ 'permission.system_permission'|trans({}, 'messages') }}</th>
                             <th scope="col" class="text-end">Aktionen</th>
                         </tr>
                     {% endblock %}

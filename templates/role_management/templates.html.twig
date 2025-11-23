@@ -1,11 +1,11 @@
 {% extends 'admin/layout.html.twig' %}
 
-{% block title %}{{ 'role.templates.title'|trans }}{% endblock %}
+{% block title %}{{ 'role.templates.title'|trans({}, 'role_management') }}{% endblock %}
 
 {% block admin_content %}
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1><i class="bi bi-file-earmark-text" aria-hidden="true"></i> {{ 'role.templates.title'|trans }}</h1>
+        <h1><i class="bi bi-file-earmark-text" aria-hidden="true"></i> {{ 'role.templates.title'|trans({}, 'role_management') }}</h1>
         <a href="{{ path('role_management_index') }}" class="btn btn-outline-secondary">
             <i class="bi bi-arrow-left" aria-hidden="true"></i> Zurück
         </a>
@@ -14,7 +14,7 @@
     {# Description #}
     <div class="alert alert-info mb-4">
         <i class="bi bi-info-circle" aria-hidden="true"></i>
-        <strong>{{ 'role.templates.description'|trans }}</strong>
+        <strong>{{ 'role.templates.description'|trans({}, 'role_management') }}</strong>
         <p class="mb-0 mt-2">
             Wählen Sie eine vordefinierte Rollenvorlage aus und passen Sie optional den Namen an.
             Die Vorlage enthält bereits eine sinnvolle Kombination von Berechtigungen für den jeweiligen Anwendungsfall.
@@ -85,7 +85,7 @@
 
                                 <div class="mb-3">
                                     <label for="custom_name_{{ key }}" class="form-label">
-                                        {{ 'role.templates.custom_name'|trans }}
+                                        {{ 'role.templates.custom_name'|trans({}, 'role_management') }}
                                     </label>
                                     <input type="text"
                                            class="form-control"

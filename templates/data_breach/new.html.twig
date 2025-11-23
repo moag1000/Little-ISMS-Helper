@@ -1,21 +1,21 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'privacy' %}
 
-{% block title %}{{ 'privacy.data_breach.page.new_title'|trans }}{% endblock %}
+{% block title %}{{ 'privacy.data_breach.page.new_title'|trans({}, 'privacy') }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid mt-4">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
-            { label: 'privacy.breadcrumb.privacy'|trans, icon: 'bi-shield-lock' },
-            { label: 'privacy.breadcrumb.data_breaches'|trans, url: path('app_data_breach_index') },
-            { label: 'privacy.data_breach.page.new_title'|trans }
+            { label: 'privacy.breadcrumb.privacy'|trans({}, 'privacy'), icon: 'bi-shield-lock' },
+            { label: 'privacy.breadcrumb.data_breaches'|trans({}, 'privacy'), url: path('app_data_breach_index') },
+            { label: 'privacy.data_breach.page.new_title'|trans({}, 'privacy') }
         ]
     } %}
 
     {% include '_components/_page_header.html.twig' with {
-        title: 'privacy.data_breach.page.new_title'|trans,
-        subtitle: 'privacy.data_breach.page.new_subtitle'|trans,
+        title: 'privacy.data_breach.page.new_title'|trans({}, 'privacy'),
+        subtitle: 'privacy.data_breach.page.new_subtitle'|trans({}, 'privacy'),
         icon: 'bi-exclamation-triangle-fill',
         actions: [
             { label: 'common.cancel'|trans({}, 'messages'), url: path('app_data_breach_index'), variant: 'secondary', icon: 'bi-x-lg' }
@@ -24,7 +24,7 @@
 
     <div class="card">
         <div class="card-header">
-            <h5 class="mb-0"><i class="bi bi-clipboard-check"></i> {{ 'privacy.data_breach.form.title'|trans }}</h5>
+            <h5 class="mb-0"><i class="bi bi-clipboard-check"></i> {{ 'privacy.data_breach.form.title'|trans({}, 'privacy') }}</h5>
         </div>
         <div class="card-body">
             {{ form_start(form) }}
@@ -32,7 +32,7 @@
 
                 <div class="mt-4">
                     <button type="submit" class="btn btn-danger">
-                        <i class="bi bi-save"></i> {{ 'privacy.data_breach.action.create'|trans }}
+                        <i class="bi bi-save"></i> {{ 'privacy.data_breach.action.create'|trans({}, 'privacy') }}
                     </button>
                     <a href="{{ path('app_data_breach_index') }}" class="btn btn-secondary">
                         <i class="bi bi-x-lg"></i> {{ 'common.cancel'|trans({}, 'messages') }}
