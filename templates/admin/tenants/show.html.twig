@@ -3,7 +3,7 @@
 {% block admin_title %}{{ tenant.name }}{% endblock %}
 
 {% block breadcrumb_items %}
-    <li class="breadcrumb-item"><a href="{{ path('tenant_management_index') }}">{{ 'tenant.title'|trans }}</a></li>
+    <li class="breadcrumb-item"><a href="{{ path('tenant_management_index') }}">{{ 'tenant.title'|trans({}, 'tenant') }}</a></li>
     <li class="breadcrumb-item active">{{ tenant.code }}</li>
 {% endblock %}
 
@@ -28,11 +28,11 @@
                     <code class="text-primary">{{ tenant.code }}</code>
                     {% if tenant.isActive %}
                         <span class="badge bg-success ms-2">
-                            <i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'tenant.status.active'|trans }}
+                            <i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'tenant.status.active'|trans({}, 'tenant') }}
                         </span>
                     {% else %}
                         <span class="badge bg-secondary ms-2">
-                            <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'tenant.status.inactive'|trans }}
+                            <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'tenant.status.inactive'|trans({}, 'tenant') }}
                         </span>
                     {% endif %}
                 </p>
@@ -46,12 +46,12 @@
                 <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'common.edit'|trans }}
             </a>
             <a href="{{ path('tenant_management_organisation_context', {id: tenant.id}) }}" class="btn btn-info">
-                <i class="bi bi-building-gear" aria-hidden="true"></i> {{ 'tenant.organisation_context.title'|trans }}
+                <i class="bi bi-building-gear" aria-hidden="true"></i> {{ 'tenant.organisation_context.title'|trans({}, 'tenant') }}
             </a>
             <form method="post" action="{{ path('tenant_management_toggle', {id: tenant.id}) }}" class="d-inline">
                 <button type="submit"
                         class="btn btn-{% if tenant.isActive %}warning{% else %}success{% endif %}"
-                        onclick="return confirm('{{ 'tenant.confirm.toggle'|trans }}');">
+                        onclick="return confirm('{{ 'tenant.confirm.toggle'|trans({}, 'tenant') }}');">
                     <i class="bi bi-{% if tenant.isActive %}pause{% else %}play{% endif %}-circle" aria-hidden="true"></i>
                     {{ (tenant.isActive ? 'tenant.action.deactivate' : 'tenant.action.activate')|trans }}
                 </button>
@@ -69,7 +69,7 @@
                             <i class="bi bi-people text-primary fs-3" aria-hidden="true"></i>
                         </div>
                         <div>
-                            <h6 class="text-muted mb-1">{{ 'tenant.stats.total_users'|trans }}</h6>
+                            <h6 class="text-muted mb-1">{{ 'tenant.stats.total_users'|trans({}, 'tenant') }}</h6>
                             <h3 class="mb-0">{{ userCount }}</h3>
                         </div>
                     </div>
@@ -84,7 +84,7 @@
                             <i class="bi bi-person-check text-success fs-3" aria-hidden="true"></i>
                         </div>
                         <div>
-                            <h6 class="text-muted mb-1">{{ 'tenant.stats.active_users'|trans }}</h6>
+                            <h6 class="text-muted mb-1">{{ 'tenant.stats.active_users'|trans({}, 'tenant') }}</h6>
                             <h3 class="mb-0">{{ activeUsers }}</h3>
                         </div>
                     </div>
@@ -99,7 +99,7 @@
                             <i class="bi bi-person-x text-secondary fs-3" aria-hidden="true"></i>
                         </div>
                         <div>
-                            <h6 class="text-muted mb-1">{{ 'tenant.stats.inactive_users'|trans }}</h6>
+                            <h6 class="text-muted mb-1">{{ 'tenant.stats.inactive_users'|trans({}, 'tenant') }}</h6>
                             <h3 class="mb-0">{{ inactiveUsers }}</h3>
                         </div>
                     </div>
@@ -112,17 +112,17 @@
     <ul class="nav nav-tabs mb-4" id="tenantTabs" role="tablist">
         <li class="nav-item" role="presentation">
             <button class="nav-link active" id="details-tab" data-bs-toggle="tab" data-bs-target="#details" type="button" role="tab">
-                <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'tenant.tabs.details'|trans }}
+                <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'tenant.tabs.details'|trans({}, 'tenant') }}
             </button>
         </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link" id="isms-context-tab" data-bs-toggle="tab" data-bs-target="#isms-context" type="button" role="tab">
-                <i class="bi bi-building-gear" aria-hidden="true"></i> {{ 'tenant.tabs.isms_context'|trans }}
+                <i class="bi bi-building-gear" aria-hidden="true"></i> {{ 'tenant.tabs.isms_context'|trans({}, 'tenant') }}
             </button>
         </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link" id="users-tab" data-bs-toggle="tab" data-bs-target="#users" type="button" role="tab">
-                <i class="bi bi-people" aria-hidden="true"></i> {{ 'tenant.tabs.users'|trans }}
+                <i class="bi bi-people" aria-hidden="true"></i> {{ 'tenant.tabs.users'|trans({}, 'tenant') }}
                 <span class="badge bg-primary ms-1">{{ userCount }}</span>
             </button>
         </li>
@@ -139,7 +139,7 @@
                 <div class="card-header bg-white">
                     <h3 class="card-title mb-0">
                         <i class="bi bi-info-circle text-primary" aria-hidden="true"></i>
-                        {{ 'tenant.section.information'|trans }}
+                        {{ 'tenant.section.information'|trans({}, 'tenant') }}
                     </h5>
                 </div>
                 <div class="card-body">
@@ -149,7 +149,7 @@
                     } %}
                         {% block table_body %}
                             <tr>
-                                <th scope="row" style="width: 40%;">{{ 'tenant.field.logo'|trans }}</th>
+                                <th scope="row" style="width: 40%;">{{ 'tenant.field.logo'|trans({}, 'tenant') }}</th>
                                 <td>
                                     {% if tenant.logoPath %}
                                         <img src="{{ asset(tenant.logoPath) }}"
@@ -157,20 +157,20 @@
                                              class="rounded"
                                              style="width: 60px; height: 60px; object-fit: contain;">
                                     {% else %}
-                                        <span class="text-muted">{{ 'tenant.no_logo'|trans }}</span>
+                                        <span class="text-muted">{{ 'tenant.no_logo'|trans({}, 'tenant') }}</span>
                                     {% endif %}
                                 </td>
                             </tr>
                             <tr>
-                                <th scope="row" style="width: 40%;">{{ 'tenant.field.code'|trans }}</th>
+                                <th scope="row" style="width: 40%;">{{ 'tenant.field.code'|trans({}, 'tenant') }}</th>
                                 <td><code class="text-primary">{{ tenant.code }}</code></td>
                             </tr>
                             <tr>
-                                <th scope="row">{{ 'tenant.field.name'|trans }}</th>
+                                <th scope="row">{{ 'tenant.field.name'|trans({}, 'tenant') }}</th>
                                 <td>{{ tenant.name }}</td>
                             </tr>
                             <tr>
-                                <th scope="row">{{ 'tenant.field.azure_tenant_id'|trans }}</th>
+                                <th scope="row">{{ 'tenant.field.azure_tenant_id'|trans({}, 'tenant') }}</th>
                                 <td>
                                     {% if tenant.azureTenantId %}
                                         <code class="text-muted small">{{ tenant.azureTenantId }}</code>
@@ -180,22 +180,22 @@
                                 </td>
                             </tr>
                             <tr>
-                                <th scope="row">{{ 'tenant.field.status'|trans }}</th>
+                                <th scope="row">{{ 'tenant.field.status'|trans({}, 'tenant') }}</th>
                                 <td>
                                     {% if tenant.isActive %}
-                                        <span class="badge bg-success">{{ 'tenant.status.active'|trans }}</span>
+                                        <span class="badge bg-success">{{ 'tenant.status.active'|trans({}, 'tenant') }}</span>
                                     {% else %}
-                                        <span class="badge bg-secondary">{{ 'tenant.status.inactive'|trans }}</span>
+                                        <span class="badge bg-secondary">{{ 'tenant.status.inactive'|trans({}, 'tenant') }}</span>
                                     {% endif %}
                                 </td>
                             </tr>
                             <tr>
-                                <th scope="row">{{ 'tenant.field.created'|trans }}</th>
+                                <th scope="row">{{ 'tenant.field.created'|trans({}, 'tenant') }}</th>
                                 <td>{{ tenant.createdAt|date('d.m.Y H:i') }}</td>
                             </tr>
                             {% if tenant.updatedAt %}
                                 <tr>
-                                    <th scope="row">{{ 'tenant.field.updated'|trans }}</th>
+                                    <th scope="row">{{ 'tenant.field.updated'|trans({}, 'tenant') }}</th>
                                     <td>{{ tenant.updatedAt|date('d.m.Y H:i') }}</td>
                                 </tr>
                             {% endif %}
@@ -313,7 +313,7 @@
 
                     {% if tenant.settings %}
                         <hr>
-                        <h6 class="text-muted mb-2">{{ 'tenant.field.settings'|trans }}</h6>
+                        <h6 class="text-muted mb-2">{{ 'tenant.field.settings'|trans({}, 'tenant') }}</h6>
                         <pre class="bg-light p-3 rounded small"><code>{{ tenant.settings|json_encode(constant('JSON_PRETTY_PRINT') b-or constant('JSON_UNESCAPED_UNICODE')) }}</code></pre>
                     {% endif %}
                 </div>
@@ -346,11 +346,11 @@
                     <div class="d-flex justify-content-between align-items-center">
                         <h3 class="card-title mb-0">
                             <i class="bi bi-people text-primary" aria-hidden="true"></i>
-                            {{ 'tenant.section.users'|trans }}
+                            {{ 'tenant.section.users'|trans({}, 'tenant') }}
                             <span class="badge bg-primary ms-2">{{ userCount }}</span>
                         </h5>
                         <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#manageUsersModal">
-                            <i class="bi bi-person-plus" aria-hidden="true"></i> {{ 'tenant.users.manage'|trans }}
+                            <i class="bi bi-person-plus" aria-hidden="true"></i> {{ 'tenant.users.manage'|trans({}, 'tenant') }}
                         </button>
                     </div>
                 </div>
@@ -358,7 +358,7 @@
                     {% if userCount == 0 %}
                         <div class="text-center text-muted py-4">
                             <i class="bi bi-people" style="font-size: 3rem;" aria-hidden="true"></i>
-                            <p class="mt-2">{{ 'tenant.users.empty'|trans }}</p>
+                            <p class="mt-2">{{ 'tenant.users.empty'|trans({}, 'tenant') }}</p>
                         </div>
                     {% else %}
                         <div class="list-group list-group-flush">
@@ -386,7 +386,7 @@
                         {% if userCount > 10 %}
                             <div class="text-center mt-3">
                                 <small class="text-muted">
-                                    {{ 'tenant.users.showing'|trans({'%count%': 10, '%total%': userCount}) }}
+                                    {{ 'tenant.users.showing'|trans({'%count%': 10, '%total%': userCount}, 'tenant') }}
                                 </small>
                             </div>
                         {% endif %}
@@ -406,21 +406,21 @@
             <div class="card-header bg-danger text-white">
                 <h3 class="card-title mb-0">
                     <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
-                    {{ 'tenant.section.danger_zone'|trans }}
+                    {{ 'tenant.section.danger_zone'|trans({}, 'tenant') }}
                 </h5>
             </div>
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <h4 class="mb-1">{{ 'tenant.action.delete'|trans }}</h4>
-                        <p class="text-muted small mb-0">{{ 'tenant.delete.warning'|trans }}</p>
+                        <h4 class="mb-1">{{ 'tenant.action.delete'|trans({}, 'tenant') }}</h4>
+                        <p class="text-muted small mb-0">{{ 'tenant.delete.warning'|trans({}, 'tenant') }}</p>
                     </div>
                     <form method="post" action="{{ path('tenant_management_delete', {id: tenant.id}) }}" class="d-inline">
                         <input type="hidden" name="_token" value="{{ csrf_token('delete_tenant_' ~ tenant.id) }}">
                         <button type="submit"
                                 class="btn btn-danger"
-                                onclick="return confirm('{{ 'tenant.confirm.delete'|trans }}');">
-                            <i class="bi bi-trash" aria-hidden="true"></i> {{ 'tenant.action.delete'|trans }}
+                                onclick="return confirm('{{ 'tenant.confirm.delete'|trans({}, 'tenant') }}');">
+                            <i class="bi bi-trash" aria-hidden="true"></i> {{ 'tenant.action.delete'|trans({}, 'tenant') }}
                         </button>
                     </form>
                 </div>
@@ -434,15 +434,15 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">
-                        <i class="bi bi-people" aria-hidden="true"></i> {{ 'tenant.users.manage_title'|trans }}
+                        <i class="bi bi-people" aria-hidden="true"></i> {{ 'tenant.users.manage_title'|trans({}, 'tenant') }}
                     </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
                 </div>
                 <div class="modal-body">
                     {# Add User Section #}
                     <div class="mb-4">
                         <h4 class="border-bottom pb-2 mb-3">
-                            <i class="bi bi-person-plus" aria-hidden="true"></i> {{ 'tenant.users.add_user'|trans }}
+                            <i class="bi bi-person-plus" aria-hidden="true"></i> {{ 'tenant.users.add_user'|trans({}, 'tenant') }}
                         </h6>
                         <form method="post" action="{{ path('tenant_management_add_user', {id: tenant.id}) }}" id="addUserForm">
                             <input type="hidden" name="_token" value="{{ csrf_token('add_user_' ~ tenant.id) }}">
@@ -450,14 +450,14 @@
                                 <input type="email"
                                        class="form-control"
                                        name="user_email"
-                                       placeholder="{{ 'tenant.users.enter_email'|trans }}"
+                                       placeholder="{{ 'tenant.users.enter_email'|trans({}, 'tenant') }}"
                                        required>
                                 <button type="submit" class="btn btn-primary">
-                                    <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'tenant.users.add'|trans }}
+                                    <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'tenant.users.add'|trans({}, 'tenant') }}
                                 </button>
                             </div>
                             <small class="form-text text-muted">
-                                {{ 'tenant.users.add_help'|trans }}
+                                {{ 'tenant.users.add_help'|trans({}, 'tenant') }}
                             </small>
                         </form>
                     </div>
@@ -465,12 +465,12 @@
                     {# Current Users List #}
                     <div>
                         <h4 class="border-bottom pb-2 mb-3">
-                            <i class="bi bi-people-fill" aria-hidden="true"></i> {{ 'tenant.users.current_users'|trans }} ({{ userCount }})
+                            <i class="bi bi-people-fill" aria-hidden="true"></i> {{ 'tenant.users.current_users'|trans({}, 'tenant') }} ({{ userCount }})
                         </h6>
                         {% if userCount == 0 %}
                             <div class="text-center text-muted py-3">
                                 <i class="bi bi-people" style="font-size: 2rem;" aria-hidden="true"></i>
-                                <p class="mt-2 mb-0">{{ 'tenant.users.empty'|trans }}</p>
+                                <p class="mt-2 mb-0">{{ 'tenant.users.empty'|trans({}, 'tenant') }}</p>
                             </div>
                         {% else %}
                             <div class="list-group list-group-flush" style="max-height: 400px; overflow-y: auto;">
@@ -504,7 +504,7 @@
                                                     <input type="hidden" name="_token" value="{{ csrf_token('remove_user_' ~ tenant.id ~ '_' ~ user.id) }}">
                                                     <button type="submit"
                                                             class="btn btn-sm btn-outline-danger"
-                                                            onclick="return confirm('{{ 'tenant.users.confirm_remove'|trans({'%email%': user.email}) }}');" aria-label="{{ 'common.deactivate'|trans }}">
+                                                            onclick="return confirm('{{ 'tenant.users.confirm_remove'|trans({'%email%': user.email}, 'tenant') }}');" aria-label="{{ 'common.deactivate'|trans }}">
                                                         <i class="bi bi-person-dash" aria-hidden="true"></i>
                                                     </button>
                                                 </form>
@@ -532,7 +532,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">{{ 'corporate.granular.modal.title'|trans }}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
@@ -809,10 +809,10 @@
                         container.innerHTML = `
                             <div class="alert alert-info">
                                 <i class="bi bi-info-circle" aria-hidden="true"></i>
-                                <strong>{{ 'tenant.isms_context.not_configured'|trans }}</strong><br>
-                                <p class="mb-0 mt-2">{{ 'tenant.isms_context.configure_prompt'|trans }}</p>
+                                <strong>{{ 'tenant.isms_context.not_configured'|trans({}, 'tenant') }}</strong><br>
+                                <p class="mb-0 mt-2">{{ 'tenant.isms_context.configure_prompt'|trans({}, 'tenant') }}</p>
                                 <a href="${escapeHtml(data.editUrl) || '{{ path('app_context_edit') }}'}" class="btn btn-primary mt-3">
-                                    <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'tenant.isms_context.configure_now'|trans }}
+                                    <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'tenant.isms_context.configure_now'|trans({}, 'tenant') }}
                                 </a>
                             </div>
                         `;
@@ -920,7 +920,7 @@
                     html += `
                         <div class="text-center mt-4">
                             <a href="{{ path('app_context_index') }}" class="btn btn-outline-primary">
-                                <i class="bi bi-arrow-right-circle" aria-hidden="true"></i> {{ 'tenant.isms_context.view_full'|trans }}
+                                <i class="bi bi-arrow-right-circle" aria-hidden="true"></i> {{ 'tenant.isms_context.view_full'|trans({}, 'tenant') }}
                             </a>
                         </div>
                     `;
@@ -929,7 +929,7 @@
                 })
                 .catch(error => {
                     console.error('Error loading ISMS context:', error);
-                    let errorMessage = '{{ 'tenant.isms_context.load_error'|trans }}';
+                    let errorMessage = '{{ 'tenant.isms_context.load_error'|trans({}, 'tenant') }}';
 
                     // Provide more specific error info for debugging
                     if (error.message) {

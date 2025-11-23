@@ -7,7 +7,7 @@
     {# Breadcrumb Navigation #}
     <nav aria-label="breadcrumb" class="compliance-breadcrumb">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{{ path('app_compliance_index') }}">{{ 'nav.compliance'|trans }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ path('app_compliance_index') }}">{{ 'nav.compliance'|trans({}, 'nav') }}</a></li>
             <li class="breadcrumb-item active" aria-current="page">{{ framework.code }}</li>
         </ol>
     </nav>
@@ -74,7 +74,7 @@
         <div class="workflow-steps">
             <div class="workflow-step {% if dashboard.statistics.total > 0 %}completed{% endif %}"
                  data-bs-toggle="tooltip" data-bs-placement="top"
-                 title="The framework has been successfully loaded into your system with all requirements.">
+                 title="{{ 'common.tooltip.framework_loaded_success'|trans({}, 'messages') }}">
                 <div class="step-icon">{% if dashboard.statistics.total > 0 %}✅{% else %}1️⃣{% endif %}</div>
                 <div class="step-content">
                     <h2>Framework Loaded</h2>
@@ -92,7 +92,7 @@
                     {% if dashboard.statistics.applicable < dashboard.statistics.total %}
                         <a href="{{ path('app_compliance_requirement_index') }}?framework={{ framework.id }}" class="step-action"
                            data-bs-toggle="tooltip" data-bs-placement="right"
-                           title="Opens the requirements list filtered by this framework">
+                           title="{{ 'common.tooltip.opens_requirements_list'|trans({}, 'messages') }}">
                             → Review Requirements
                         </a>
                     {% endif %}
@@ -109,7 +109,7 @@
                     {% if dashboard.gaps.total > 0 %}
                         <a href="{{ path('app_compliance_requirement_index') }}?framework={{ framework.id }}&sort=fulfillment" class="step-action"
                            data-bs-toggle="tooltip" data-bs-placement="right"
-                           title="Shows requirements sorted by fulfillment (lowest first) so you can focus on gaps">
+                           title="{{ 'common.tooltip.requirements_sorted_by_fulfillment'|trans({}, 'messages') }}">
                             → Implement Requirements
                         </a>
                     {% endif %}
@@ -118,7 +118,7 @@
 
             <div class="workflow-step {% if dashboard.compliance_percentage >= 75 %}active{% endif %} {% if dashboard.compliance_percentage == 100 %}completed{% endif %}"
                  data-bs-toggle="tooltip" data-bs-placement="top"
-                 title="Reach 100% by implementing all applicable requirements. Track your progress and address any remaining gaps.">
+                 title="{{ 'common.tooltip.reach_100_percent'|trans({}, 'messages') }}">
                 <div class="step-icon">{% if dashboard.compliance_percentage == 100 %}✅{% else %}{% if dashboard.compliance_percentage >= 75 %}🔄{% else %}4️⃣{% endif %}{% endif %}</div>
                 <div class="step-content">
                     <h3>Achieve 100% Compliance</h3>
@@ -126,7 +126,7 @@
                     {% if dashboard.compliance_percentage < 100 %}
                         <a href="{{ path('app_compliance_gaps', {id: framework.id}) }}" class="step-action"
                            data-bs-toggle="tooltip" data-bs-placement="right"
-                           title="View detailed gap analysis with recommendations for improvement">
+                           title="{{ 'common.tooltip.view_gap_analysis'|trans({}, 'messages') }}">
                             → View {{ dashboard.gaps.total }} Gaps
                         </a>
                     {% endif %}

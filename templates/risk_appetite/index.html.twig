@@ -51,7 +51,7 @@
     <div class="card-body" id="filter-section" tabindex="-1">
         <form method="get" action="{{ path('app_risk_appetite_index') }}" class="row g-3" role="search" aria-label="{{ 'common.filters'|trans({}, 'messages') }}">
             <div class="col-md-6">
-                <label for="filter-category" class="form-label">{{ 'risk_appetite.field.category'|trans }}</label>
+                <label for="filter-category" class="form-label">{{ 'risk_appetite.field.category'|trans({}, 'risk_appetite') }}</label>
                 <select class="form-select" id="filter-category" name="category" onchange="this.form.submit()">
                     <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
                     <option value="global" {{ app.request.get('category') == 'global' ? 'selected' : '' }}>{{ 'risk_appetite.category.global'|trans }}</option>
@@ -90,12 +90,12 @@
     } %}
         {% block table_head %}
             <tr>
-                <th scope="col">{{ 'risk_appetite.field.category'|trans }}</th>
-                <th scope="col" class="text-center">{{ 'risk_appetite.field.max_acceptable_risk'|trans }}</th>
-                <th scope="col">{{ 'risk_appetite.field.description'|trans }}</th>
-                <th scope="col" class="text-center">{{ 'risk_appetite.field.status'|trans }}</th>
-                <th scope="col">{{ 'risk_appetite.field.approved_by'|trans }}</th>
-                <th scope="col">{{ 'risk_appetite.field.approved_at'|trans }}</th>
+                <th scope="col">{{ 'risk_appetite.field.category'|trans({}, 'risk_appetite') }}</th>
+                <th scope="col" class="text-center">{{ 'risk_appetite.field.max_acceptable_risk'|trans({}, 'risk_appetite') }}</th>
+                <th scope="col">{{ 'risk_appetite.field.description'|trans({}, 'risk_appetite') }}</th>
+                <th scope="col" class="text-center">{{ 'risk_appetite.field.status'|trans({}, 'risk_appetite') }}</th>
+                <th scope="col">{{ 'risk_appetite.field.approved_by'|trans({}, 'risk_appetite') }}</th>
+                <th scope="col">{{ 'risk_appetite.field.approved_at'|trans({}, 'risk_appetite') }}</th>
                 <th scope="col" class="text-center">{{ 'common.actions'|trans({}, 'messages') }}</th>
             </tr>
         {% endblock %}
@@ -165,7 +165,7 @@
             {% else %}
             <tr>
                 <td colspan="7" class="text-center text-muted">
-                    {{ 'risk_appetite.no_appetites'|trans }}
+                    {{ 'risk_appetite.no_appetites'|trans({}, 'risk_appetite') }}
                 </td>
             </tr>
             {% endfor %}

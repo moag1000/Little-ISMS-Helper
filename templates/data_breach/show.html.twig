@@ -352,7 +352,7 @@
                 <input type="hidden" name="_token" value="{{ csrf_token('notify_authority' ~ breach.id) }}">
                 <div class="modal-header">
                     <h5 class="modal-title">{{ 'privacy.data_breach.action.notify_authority'|trans }} (Art. 33 GDPR)</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
@@ -414,7 +414,7 @@
                 <input type="hidden" name="_token" value="{{ csrf_token('notify_subjects' ~ breach.id) }}">
                 <div class="modal-header">
                     <h5 class="modal-title">{{ 'privacy.data_breach.action.notify_subjects'|trans }} (Art. 34 GDPR)</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
@@ -449,7 +449,7 @@
                 <input type="hidden" name="_token" value="{{ csrf_token('exemption' ~ breach.id) }}">
                 <div class="modal-header">
                     <h5 class="modal-title">{{ 'privacy.data_breach.action.record_exemption'|trans }}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
@@ -479,7 +479,7 @@
                 <input type="hidden" name="_token" value="{{ csrf_token('reopen' ~ breach.id) }}">
                 <div class="modal-header">
                     <h5 class="modal-title">{{ 'privacy.data_breach.action.reopen'|trans }}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">

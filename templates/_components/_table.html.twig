@@ -28,8 +28,8 @@
  *    {% embed '_components/_table.html.twig' %}
  *        {% block table_head %}
  *            <tr>
- *                <th scope="col">{{ 'field.name'|trans }}</th>
- *                <th scope="col">{{ 'field.status'|trans }}</th>
+ *                <th scope="col">{{ 'field.name'|trans({}, 'field') }}</th>
+ *                <th scope="col">{{ 'field.status'|trans({}, 'field') }}</th>
  *            </tr>
  *        {% endblock %}
  *        {% block table_body %}

@@ -1,10 +1,77 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'bc_plans' %}
+
+{% block title %}{{ 'bc_plans.page.title'|trans }}{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="page-header">
+        <h1>{{ 'bc_plans.page.header'|trans }}</h1>
+        <a href="{{ path('app_bc_plan_new') }}" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> {{ 'bc_plans.action.add_new'|trans }}
+        </a>
+    </div>
+
+    <p class="text-muted mb-2">
+        {{ 'bc_plans.page.subtitle'|trans }}
+    </p>
+
+    {% if overdue_tests|length > 0 %}
+    <div class="alert alert-warning">
+        <h2>{{ 'bc_plans.alert.overdue_tests'|trans }}</h2>
+        <ul>
+            {% for plan in overdue_tests %}
+            <li>
+                <a href="{{ path('app_bc_plan_show', {id: plan.id}) }}">{{ plan.name }}</a>
+                - {{ 'bc_plans.field.next_test'|trans }}: {{ plan.nextTestDate ? plan.nextTestDate|date('Y-m-d') : ('bc_plans.message.not_scheduled'|trans) }}
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    {% if overdue_reviews|length > 0 %}
+    <div class="alert alert-warning">
+        <h4>{{ 'bc_plans.alert.overdue_reviews'|trans }}</h4>
+        <ul>
+            {% for plan in overdue_reviews %}
+            <li>
+                <a href="{{ path('app_bc_plan_show', {id: plan.id}) }}">{{ plan.name }}</a>
+                - {{ 'bc_plans.field.next_review'|trans }}: {{ plan.nextReviewDate ? plan.nextReviewDate|date('Y-m-d') : ('bc_plans.message.not_scheduled'|trans) }}
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <div class="card">
+        <div class="card-header">
+            <h2>{{ 'bc_plans.page.header'|trans }} ({{ bc_plans|length }})</h2>
+        </div>
+        <div class="card-content">
+            {% if bc_plans|length > 0 %}
+            {% embed '_components/_table.html.twig' with {
+                'wrapperClass': 'card-content',
+                'noMargin': true
+            } %}
+                {% block table_head %}
+                    <tr>
+                        <th scope="col">{{ 'bc_plans.table.name'|trans }}</th>
+                        <th scope="col">{{ 'bc_plans.table.business_process'|trans }}</th>
+                        <th scope="col">{{ 'bc_plans.table.owner'|trans }}</th>
+                        <th scope="col">{{ 'bc_plans.table.status'|trans }}</th>
+                        <th scope="col">{{ 'bc_plans.table.readiness'|trans }}</th>
+                        <th scope="col">{{ 'bc_plans.table.last_tested'|trans }}</th>
+                        <th scope="col">{{ 'bc_plans.table.actions'|trans }}</th>
+                    </tr>
+                {% endblock %}
                 {% block table_body %}
                     {% for plan in bc_plans %}
                     <tr>
                         <td><a href="{{ path('app_bc_plan_show', {id: plan.id}) }}">{{ plan.name }}</a></td>
                         <td>{{ plan.businessProcess ? plan.businessProcess.name : '-' }}</td>
                         <td>{{ plan.planOwner }}</td>
-                        <td><span class="badge badge-{{ plan.status }}">{{ plan.status }}</span></td>
+                        <td><span class="badge badge-{{ plan.status }}">{{ plan.status|upper }}</span></td>
                         <td>
                             {% set readiness = plan.getReadinessScore() %}
                             <span class="badge badge-{{ readiness >= 80 ? 'success' : (readiness >= 60 ? 'warning' : 'danger') }}">
@@ -13,10 +80,17 @@
                         </td>
                         <td>{{ plan.lastTested ? plan.lastTested|date('Y-m-d') : ('bc_plans.message.never'|trans) }}</td>
                         <td>
-                            <a href="{{ path('app_bc_plan_show', {id: plan.id}) }}" class="btn btn-sm btn-secondary">{{ 'common.view'|trans({}, 'messages') }}</a>
-                            <a href="{{ path('app_bc_plan_edit', {id: plan.id}) }}" class="btn btn-sm btn-primary">{{ 'common.edit'|trans({}, 'messages') }}</a>
+                            <div class="btn-group btn-group-sm">
+                                <a href="{{ path('app_bc_plan_show', {id: plan.id}) }}" class="btn btn-outline-primary" title="{{ 'action.view'|trans({}, 'messages') }}">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                <a href="{{ path('app_bc_plan_edit', {id: plan.id}) }}" class="btn btn-outline-secondary" title="{{ 'action.edit'|trans({}, 'messages') }}">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                            </div>
                         </td>
                     </tr>
+                    {% endfor %}
                 {% endblock %}
             {% endembed %}
             {% else %}

@@ -46,7 +46,7 @@
     <template>
         <div class="alert alert-success alert-dismissible fade show" role="alert">
             <i class="bi bi-check-circle" aria-hidden="true"></i> <strong>Erfolg!</strong> Geschäftsprozess "{{ business_process.name }}" wurde erstellt.
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
         </div>
     </template>
 </turbo-stream>

@@ -2,14 +2,14 @@
 
 {% block admin_title %}
     {% if isEdit %}
-        {{ 'tenant.title.edit'|trans }}
+        {{ 'tenant.title.edit'|trans({}, 'tenant') }}
     {% else %}
-        {{ 'tenant.title.create'|trans }}
+        {{ 'tenant.title.create'|trans({}, 'tenant') }}
     {% endif %}
 {% endblock %}
 
 {% block breadcrumb_items %}
-    <li class="breadcrumb-item"><a href="{{ path('tenant_management_index') }}">{{ 'tenant.title'|trans }}</a></li>
+    <li class="breadcrumb-item"><a href="{{ path('tenant_management_index') }}">{{ 'tenant.title'|trans({}, 'tenant') }}</a></li>
     {% if isEdit %}
         <li class="breadcrumb-item"><a href="{{ path('tenant_management_show', {id: tenant.id}) }}">{{ tenant.code }}</a></li>
         <li class="breadcrumb-item active">{{ 'common.edit'|trans }}</li>
@@ -26,9 +26,9 @@
                     <h3 class="card-title mb-0">
                         <i class="bi bi-building text-primary" aria-hidden="true"></i>
                         {% if isEdit %}
-                            {{ 'tenant.form.edit_title'|trans }}
+                            {{ 'tenant.form.edit_title'|trans({}, 'tenant') }}
                         {% else %}
-                            {{ 'tenant.form.create_title'|trans }}
+                            {{ 'tenant.form.create_title'|trans({}, 'tenant') }}
                         {% endif %}
                     </h5>
                 </div>
@@ -36,31 +36,31 @@
                     {{ form_start(form) }}
                         {# Basic Information #}
                         <fieldset class="mb-4">
-                            <legend class="h6 border-bottom pb-2 mb-3">{{ 'tenant.section.basic_info'|trans }}</legend>
+                            <legend class="h6 border-bottom pb-2 mb-3">{{ 'tenant.section.basic_info'|trans({}, 'tenant') }}</legend>
 
                             {% include '_components/_form_field.html.twig' with {
                                 'field': form.name,
-                                'label': 'tenant.field.name'|trans|default('Name'),
-                                'help': 'tenant.help.name'|trans|default('Name des Tenants'),
+                                'label': 'tenant.field.name'|trans({}, 'tenant')|default('Name'),
+                                'help': 'tenant.help.name'|trans({}, 'tenant')|default('Name des Tenants'),
                                 'required': true
                             } %}
 
                             {% include '_components/_form_field.html.twig' with {
                                 'field': form.code,
-                                'label': 'tenant.field.code'|trans|default('Code'),
-                                'help': 'tenant.field.code_auto_generated'|trans|default('Automatisch generiert aus dem Namen')
+                                'label': 'tenant.field.code'|trans({}, 'tenant')|default('Code'),
+                                'help': 'tenant.field.code_auto_generated'|trans({}, 'tenant')|default('Automatisch generiert aus dem Namen')
                             } %}
 
                             {% include '_components/_form_field.html.twig' with {
                                 'field': form.description,
-                                'label': 'tenant.field.description'|trans|default('Beschreibung'),
-                                'help': 'tenant.help.description'|trans|default('Beschreibung des Tenants')
+                                'label': 'tenant.field.description'|trans({}, 'tenant')|default('Beschreibung'),
+                                'help': 'tenant.help.description'|trans({}, 'tenant')|default('Beschreibung des Tenants')
                             } %}
 
                             {% include '_components/_form_field.html.twig' with {
                                 'field': form.logoFile,
-                                'label': 'tenant.field.logo'|trans|default('Logo'),
-                                'help': 'tenant.help.logo'|trans|default('Tenant-Logo hochladen')
+                                'label': 'tenant.field.logo'|trans({}, 'tenant')|default('Logo'),
+                                'help': 'tenant.help.logo'|trans({}, 'tenant')|default('Tenant-Logo hochladen')
                             } %}
                         </fieldset>
 
@@ -70,8 +70,8 @@
 
                             {% include '_components/_form_field.html.twig' with {
                                 'field': form.parent,
-                                'label': 'tenant.field.parent'|trans|default('Parent Tenant'),
-                                'help': 'tenant.help.parent'|trans|default('Übergeordneter Tenant in der Unternehmensstruktur')
+                                'label': 'tenant.field.parent'|trans({}, 'tenant')|default('Parent Tenant'),
+                                'help': 'tenant.help.parent'|trans({}, 'tenant')|default('Übergeordneter Tenant in der Unternehmensstruktur')
                             } %}
 
                             {# Switch field - special handling #}
@@ -86,25 +86,25 @@
 
                             {% include '_components/_form_field.html.twig' with {
                                 'field': form.corporateNotes,
-                                'label': 'tenant.field.corporate_notes'|trans|default('Corporate Notes'),
-                                'help': 'tenant.help.corporate_notes'|trans|default('Notizen zur Unternehmensstruktur')
+                                'label': 'tenant.field.corporate_notes'|trans({}, 'tenant')|default('Corporate Notes'),
+                                'help': 'tenant.help.corporate_notes'|trans({}, 'tenant')|default('Notizen zur Unternehmensstruktur')
                             } %}
                         </fieldset>
 
                         {# Azure Integration #}
                         <fieldset class="mb-4">
-                            <legend class="h6 border-bottom pb-2 mb-3">{{ 'tenant.section.azure_integration'|trans }}</legend>
+                            <legend class="h6 border-bottom pb-2 mb-3">{{ 'tenant.section.azure_integration'|trans({}, 'tenant') }}</legend>
 
                             {% include '_components/_form_field.html.twig' with {
                                 'field': form.azureTenantId,
-                                'label': 'tenant.field.azure_tenant_id'|trans|default('Azure Tenant ID'),
-                                'help': 'tenant.help.azure_tenant_id'|trans|default('Azure AD Tenant ID für SSO Integration')
+                                'label': 'tenant.field.azure_tenant_id'|trans({}, 'tenant')|default('Azure Tenant ID'),
+                                'help': 'tenant.help.azure_tenant_id'|trans({}, 'tenant')|default('Azure AD Tenant ID für SSO Integration')
                             } %}
                         </fieldset>
 
                         {# Settings #}
                         <fieldset class="mb-4">
-                            <legend class="h6 border-bottom pb-2 mb-3">{{ 'tenant.section.settings'|trans }}</legend>
+                            <legend class="h6 border-bottom pb-2 mb-3">{{ 'tenant.section.settings'|trans({}, 'tenant') }}</legend>
 
                             {# Switch field - special handling #}
                             <div class="form-group mb-3">
@@ -118,11 +118,11 @@
 
                             {% include '_components/_form_field.html.twig' with {
                                 'field': form.settings,
-                                'label': 'tenant.field.settings'|trans|default('Settings (JSON)'),
-                                'help': 'tenant.help.settings'|trans|default('Tenant-spezifische Einstellungen im JSON-Format')
+                                'label': 'tenant.field.settings'|trans({}, 'tenant')|default('Settings (JSON)'),
+                                'help': 'tenant.help.settings'|trans({}, 'tenant')|default('Tenant-spezifische Einstellungen im JSON-Format')
                             } %}
                             <div class="form-text mt-2">
-                                <strong>{{ 'tenant.settings.example_title'|trans }}</strong><br>
+                                <strong>{{ 'tenant.settings.example_title'|trans({}, 'tenant') }}</strong><br>
                                 <pre class="bg-light p-2 rounded small mb-0"><code>{
   "branding": {
     "primaryColor": "#0d6efd",
@@ -147,7 +147,7 @@
                                 {% if isEdit %}
                                     {{ 'common.save'|trans }}
                                 {% else %}
-                                    {{ 'tenant.action.create'|trans }}
+                                    {{ 'tenant.action.create'|trans({}, 'tenant') }}
                                 {% endif %}
                             </button>
                         </div>
@@ -160,28 +160,28 @@
         <div class="col-lg-4">
             <div class="card">
                 <div class="card-header bg-white">
-                    <h6 class="card-title mb-0">{{ 'tenant.help.title'|trans }}</h6>
+                    <h6 class="card-title mb-0">{{ 'tenant.help.title'|trans({}, 'tenant') }}</h6>
                 </div>
                 <div class="card-body">
-                    <h6 class="text-muted small mb-2">{{ 'tenant.help.code_title'|trans }}</h6>
-                    <p class="small">{{ 'tenant.help.code_text'|trans }}</p>
+                    <h6 class="text-muted small mb-2">{{ 'tenant.help.code_title'|trans({}, 'tenant') }}</h6>
+                    <p class="small">{{ 'tenant.help.code_text'|trans({}, 'tenant') }}</p>
 
                     <hr>
 
-                    <h6 class="text-muted small mb-2">{{ 'tenant.help.azure_title'|trans }}</h6>
-                    <p class="small">{{ 'tenant.help.azure_text'|trans }}</p>
+                    <h6 class="text-muted small mb-2">{{ 'tenant.help.azure_title'|trans({}, 'tenant') }}</h6>
+                    <p class="small">{{ 'tenant.help.azure_text'|trans({}, 'tenant') }}</p>
 
                     <hr>
 
-                    <h6 class="text-muted small mb-2">{{ 'tenant.help.settings_title'|trans }}</h6>
-                    <p class="small">{{ 'tenant.help.settings_text'|trans }}</p>
+                    <h6 class="text-muted small mb-2">{{ 'tenant.help.settings_title'|trans({}, 'tenant') }}</h6>
+                    <p class="small">{{ 'tenant.help.settings_text'|trans({}, 'tenant') }}</p>
                 </div>
             </div>
 
             {% if isEdit %}
                 <div class="card mt-3">
                     <div class="card-header bg-white">
-                        <h6 class="card-title mb-0">{{ 'tenant.info.metadata'|trans }}</h6>
+                        <h6 class="card-title mb-0">{{ 'tenant.info.metadata'|trans({}, 'tenant') }}</h6>
                     </div>
                     <div class="card-body">
                         {% embed '_components/_table.html.twig' with {
@@ -200,7 +200,7 @@
                                     </tr>
                                 {% endif %}
                                 <tr>
-                                    <th scope="row" class="text-muted small">{{ 'tenant.field.users'|trans }}</th>
+                                    <th scope="row" class="text-muted small">{{ 'tenant.field.users'|trans({}, 'tenant') }}</th>
                                     <td class="small">
                                         <span class="badge bg-info">{{ tenant.users|length }}</span>
                                     </td>

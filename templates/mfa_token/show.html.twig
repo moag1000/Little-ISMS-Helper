@@ -2,7 +2,7 @@
 
 {% block admin_title %}{{ mfa_token.tokenTypeName }}{% endblock %}
 {% block admin_subtitle %}
-    <p class="text-muted">{{ 'mfa_token.details.subtitle'|trans|default('Details und Verwaltung des MFA-Tokens') }}</p>
+    <p class="text-muted">{{ 'mfa_token.details.subtitle'|trans({}, 'mfa')|default('Details und Verwaltung des MFA-Tokens') }}</p>
 {% endblock %}
 
 {% block admin_content %}
@@ -17,18 +17,18 @@
             {# Token Details #}
             <div class="card mb-4">
                 <div class="card-header">
-                    <h3 class="mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'mfa_token.details.title'|trans }}</h3>
+                    <h3 class="mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'mfa_token.details.title'|trans({}, 'mfa') }}</h3>
                 </div>
                 <div class="card-body">
                     <dl class="row">
-                        <dt class="col-sm-4">{{ 'mfa_token.field.user'|trans }}</dt>
+                        <dt class="col-sm-4">{{ 'mfa_token.field.user'|trans({}, 'mfa') }}</dt>
                         <dd class="col-sm-8">
                             <i class="bi bi-person-circle" aria-hidden="true"></i>
                             {{ mfa_token.user.firstName }} {{ mfa_token.user.lastName }}
                             <span class="text-muted">({{ mfa_token.user.email }})</span>
                         </dd>
 
-                        <dt class="col-sm-4">{{ 'mfa_token.field.token_type'|trans }}</dt>
+                        <dt class="col-sm-4">{{ 'mfa_token.field.token_type'|trans({}, 'mfa') }}</dt>
                         <dd class="col-sm-8">
                             <span class="badge bg-primary">
                                 {% if mfa_token.tokenType == 'totp' %}
@@ -40,30 +40,30 @@
                             </span>
                         </dd>
 
-                        <dt class="col-sm-4">{{ 'mfa_token.field.device_name'|trans }}</dt>
+                        <dt class="col-sm-4">{{ 'mfa_token.field.device_name'|trans({}, 'mfa') }}</dt>
                         <dd class="col-sm-8">
                             <i class="bi bi-{{ mfa_token.tokenType == 'totp' ? 'phone' : 'key' }}" aria-hidden="true"></i>
                             {{ mfa_token.deviceName ?? 'N/A' }}
                         </dd>
 
-                        <dt class="col-sm-4">{{ 'mfa_token.field.status'|trans }}</dt>
+                        <dt class="col-sm-4">{{ 'mfa_token.field.status'|trans({}, 'mfa') }}</dt>
                         <dd class="col-sm-8">
                             {% if mfa_token.isActive %}
                                 <span class="badge bg-success">
-                                    <i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'mfa_token.status.active'|trans }}
+                                    <i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'mfa_token.status.active'|trans({}, 'mfa') }}
                                 </span>
                             {% else %}
                                 <span class="badge bg-secondary">
-                                    <i class="bi bi-dash-circle" aria-hidden="true"></i> {{ 'mfa_token.status.inactive'|trans }}
+                                    <i class="bi bi-dash-circle" aria-hidden="true"></i> {{ 'mfa_token.status.inactive'|trans({}, 'mfa') }}
                                 </span>
                             {% endif %}
                         </dd>
 
-                        <dt class="col-sm-4">{{ 'mfa_token.field.is_primary'|trans }}</dt>
+                        <dt class="col-sm-4">{{ 'mfa_token.field.is_primary'|trans({}, 'mfa') }}</dt>
                         <dd class="col-sm-8">
                             {% if mfa_token.isPrimary %}
                                 <span class="badge bg-warning">
-                                    <i class="bi bi-star-fill" aria-hidden="true"></i> {{ 'mfa_token.primary'|trans }}
+                                    <i class="bi bi-star-fill" aria-hidden="true"></i> {{ 'mfa_token.primary'|trans({}, 'mfa') }}
                                 </span>
                             {% else %}
                                 <span class="text-muted">{{ 'common.no'|trans }}</span>
@@ -76,41 +76,41 @@
             {# Usage Statistics #}
             <div class="card mb-4">
                 <div class="card-header">
-                    <h3 class="mb-0"><i class="bi bi-graph-up" aria-hidden="true"></i> {{ 'mfa_token.usage.title'|trans }}</h3>
+                    <h3 class="mb-0"><i class="bi bi-graph-up" aria-hidden="true"></i> {{ 'mfa_token.usage.title'|trans({}, 'mfa') }}</h3>
                 </div>
                 <div class="card-body">
                     <dl class="row">
-                        <dt class="col-sm-4">{{ 'mfa_token.field.enrolled_at'|trans }}</dt>
+                        <dt class="col-sm-4">{{ 'mfa_token.field.enrolled_at'|trans({}, 'mfa') }}</dt>
                         <dd class="col-sm-8">
                             <i class="bi bi-calendar-check" aria-hidden="true"></i>
                             {{ mfa_token.enrolledAt|date('Y-m-d H:i:s') }}
                             <small class="text-muted">({{ mfa_token.enrolledAt|date('r') }})</small>
                         </dd>
 
-                        <dt class="col-sm-4">{{ 'mfa_token.field.last_used'|trans }}</dt>
+                        <dt class="col-sm-4">{{ 'mfa_token.field.last_used'|trans({}, 'mfa') }}</dt>
                         <dd class="col-sm-8">
                             {% if mfa_token.lastUsedAt %}
                                 <i class="bi bi-clock" aria-hidden="true"></i>
                                 {{ mfa_token.lastUsedAt|date('Y-m-d H:i:s') }}
                                 <small class="text-muted">({{ mfa_token.lastUsedAt|date('r') }})</small>
                             {% else %}
-                                <span class="text-muted">{{ 'mfa_token.never_used'|trans }}</span>
+                                <span class="text-muted">{{ 'mfa_token.never_used'|trans({}, 'mfa') }}</span>
                             {% endif %}
                         </dd>
 
-                        <dt class="col-sm-4">{{ 'mfa_token.field.usage_count'|trans }}</dt>
+                        <dt class="col-sm-4">{{ 'mfa_token.field.usage_count'|trans({}, 'mfa') }}</dt>
                         <dd class="col-sm-8">
                             <span class="badge bg-info">{{ mfa_token.usageCount }}</span>
-                            {{ 'mfa_token.usage.times'|trans }}
+                            {{ 'mfa_token.usage.times'|trans({}, 'mfa') }}
                         </dd>
 
                         {% if mfa_token.expiresAt %}
-                            <dt class="col-sm-4">{{ 'mfa_token.field.expires_at'|trans }}</dt>
+                            <dt class="col-sm-4">{{ 'mfa_token.field.expires_at'|trans({}, 'mfa') }}</dt>
                             <dd class="col-sm-8">
                                 <i class="bi bi-calendar-x" aria-hidden="true"></i>
                                 {{ mfa_token.expiresAt|date('Y-m-d H:i:s') }}
                                 {% if mfa_token.isExpired %}
-                                    <span class="badge bg-danger ms-2">{{ 'mfa_token.status.expired'|trans }}</span>
+                                    <span class="badge bg-danger ms-2">{{ 'mfa_token.status.expired'|trans({}, 'mfa') }}</span>
                                 {% endif %}
                             </dd>
                         {% endif %}
@@ -122,12 +122,12 @@
             {% if mfa_token.tokenType == 'totp' %}
                 <div class="card mb-4 border-warning">
                     <div class="card-header bg-warning">
-                        <h3 class="mb-0"><i class="bi bi-key-fill" aria-hidden="true"></i> {{ 'mfa_token.backup_codes.title'|trans }}</h3>
+                        <h3 class="mb-0"><i class="bi bi-key-fill" aria-hidden="true"></i> {{ 'mfa_token.backup_codes.title'|trans({}, 'mfa') }}</h3>
                     </div>
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <div>
-                                <strong>{{ 'mfa_token.backup_codes.remaining'|trans }}:</strong>
+                                <strong>{{ 'mfa_token.backup_codes.remaining'|trans({}, 'mfa') }}:</strong>
                                 <span class="badge bg-{{ remaining_backup_codes > 2 ? 'success' : (remaining_backup_codes > 0 ? 'warning' : 'danger') }}">
                                     {{ remaining_backup_codes }} / 10
                                 </span>
@@ -136,8 +136,8 @@
                                 <input type="hidden" name="_token" value="{{ csrf_token('regenerate_backup_' ~ mfa_token.id) }}">
                                 <button type="submit"
                                         class="btn btn-warning btn-sm"
-                                        onclick="return confirm('{{ 'mfa_token.backup_codes.regenerate_confirm'|trans }}');">
-                                    <i class="bi bi-arrow-clockwise" aria-hidden="true"></i> {{ 'mfa_token.backup_codes.regenerate'|trans }}
+                                        onclick="return confirm('{{ 'mfa_token.backup_codes.regenerate_confirm'|trans({}, 'mfa') }}');">
+                                    <i class="bi bi-arrow-clockwise" aria-hidden="true"></i> {{ 'mfa_token.backup_codes.regenerate'|trans({}, 'mfa') }}
                                 </button>
                             </form>
                         </div>
@@ -146,15 +146,15 @@
                             <div class="alert alert-{{ remaining_backup_codes == 0 ? 'danger' : 'warning' }}">
                                 <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
                                 {% if remaining_backup_codes == 0 %}
-                                    {{ 'mfa_token.backup_codes.no_codes_left'|trans }}
+                                    {{ 'mfa_token.backup_codes.no_codes_left'|trans({}, 'mfa') }}
                                 {% else %}
-                                    {{ 'mfa_token.backup_codes.low_codes'|trans }}
+                                    {{ 'mfa_token.backup_codes.low_codes'|trans({}, 'mfa') }}
                                 {% endif %}
                             </div>
                         {% endif %}
 
                         <p class="small text-muted mb-0">
-                            {{ 'mfa_token.backup_codes.description'|trans }}
+                            {{ 'mfa_token.backup_codes.description'|trans({}, 'mfa') }}
                         </p>
                     </div>
                 </div>
@@ -174,8 +174,8 @@
                                 <input type="hidden" name="_token" value="{{ csrf_token('disable_' ~ mfa_token.id) }}">
                                 <button type="submit"
                                         class="btn btn-warning w-100"
-                                        onclick="return confirm('{{ 'mfa_token.confirm_disable'|trans }}');">
-                                    <i class="bi bi-pause-circle" aria-hidden="true"></i> {{ 'mfa_token.action.disable'|trans }}
+                                        onclick="return confirm('{{ 'mfa_token.confirm_disable'|trans({}, 'mfa') }}');">
+                                    <i class="bi bi-pause-circle" aria-hidden="true"></i> {{ 'mfa_token.action.disable'|trans({}, 'mfa') }}
                                 </button>
                             </form>
                         {% endif %}
@@ -184,7 +184,7 @@
                             <input type="hidden" name="_token" value="{{ csrf_token('delete_' ~ mfa_token.id) }}">
                             <button type="submit"
                                     class="btn btn-danger w-100"
-                                    onclick="return confirm('{{ 'mfa_token.confirm_delete'|trans }}');">
+                                    onclick="return confirm('{{ 'mfa_token.confirm_delete'|trans({}, 'mfa') }}');">
                                 <i class="bi bi-trash" aria-hidden="true"></i> {{ 'common.delete'|trans }}
                             </button>
                         </form>

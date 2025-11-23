@@ -34,7 +34,7 @@
     <template>
         <div class="alert alert-info alert-dismissible fade show" role="alert">
             <i class="bi bi-info-circle" aria-hidden="true"></i> <strong>Gelöscht!</strong> Der Geschäftsprozess wurde erfolgreich gelöscht.
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
         </div>
     </template>
 </turbo-stream>

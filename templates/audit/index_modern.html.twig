@@ -281,7 +281,7 @@
                                 <a href="{{ path('app_audit_export_pdf', {id: audit.id}) }}"
                                    class="btn btn-sm btn-outline-success"
                                    data-turbo="false"
-                                   title="PDF Export" aria-label="{{ 'common.view'|trans }}">
+                                   title="{{ 'common.pdf_export'|trans({}, 'messages') }}" aria-label="{{ 'common.export_pdf'|trans({}, 'messages') }}">
                                     <i class="bi bi-file-pdf" aria-hidden="true"></i>
                                 </a>
                             </div>

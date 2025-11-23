@@ -2,7 +2,7 @@
 
 {# Security: Custom 404 Not Found error page (prevents information disclosure) #}
 
-{% block title %}Page Not Found{% endblock %}
+{% block title %}{{ 'error.404.title'|trans({}, 'messages') }}{% endblock %}
 
 {% block body %}
 <div class="container mt-5">
@@ -10,16 +10,16 @@
         <div class="col-md-8 text-center">
             <div class="error-template">
                 <h1 class="display-1">404</h1>
-                <h2>Page Not Found</h2>
+                <h2>{{ 'error.404.heading'|trans({}, 'messages') }}</h2>
                 <div class="error-details mt-4">
-                    <p class="lead">Sorry, the page you are looking for does not exist.</p>
+                    <p class="lead">{{ 'error.404.message'|trans({}, 'messages') }}</p>
                 </div>
                 <div class="error-actions mt-4">
                     <a href="{{ path('app_home') }}" class="btn btn-primary btn-lg">
-                        <i class="fas fa-home"></i> Go to Homepage
+                        <i class="fas fa-home"></i> {{ 'error.action.homepage'|trans({}, 'messages') }}
                     </a>
                     <a href="javascript:history.back()" class="btn btn-outline-secondary btn-lg">
-                        <i class="fas fa-arrow-left"></i> Go Back
+                        <i class="fas fa-arrow-left"></i> {{ 'error.action.back'|trans({}, 'messages') }}
                     </a>
                 </div>
             </div>

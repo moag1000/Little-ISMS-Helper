@@ -30,20 +30,23 @@
             {% include '_components/_form_field.html.twig' with {
                 'field': form.risk,
                 'label': form.risk.vars.label|default('risk_treatment_plan.field.risk'|trans),
-                'required': true
+                'required': true,
+                'domain': 'risk_treatment_plan'
             } %}
         </div>
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.title,
                 'label': form.title.vars.label|default('risk_treatment_plan.field.title'|trans),
-                'required': true
+                'required': true,
+                'domain': 'risk_treatment_plan'
             } %}
         </div>
         <div class="col-12">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.description,
-                'label': form.description.vars.label|default('risk_treatment_plan.field.description'|trans)
+                'label': form.description.vars.label|default('risk_treatment_plan.field.description'|trans),
+                'domain': 'risk_treatment_plan'
             } %}
         </div>
     </div>
@@ -60,19 +63,22 @@
         <div class="col-md-4">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.status,
-                'label': form.status.vars.label|default('risk_treatment_plan.field.status'|trans)
+                'label': form.status.vars.label|default('risk_treatment_plan.field.status'|trans),
+                'domain': 'risk_treatment_plan'
             } %}
         </div>
         <div class="col-md-4">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.priority,
-                'label': form.priority.vars.label|default('risk_treatment_plan.field.priority'|trans)
+                'label': form.priority.vars.label|default('risk_treatment_plan.field.priority'|trans),
+                'domain': 'risk_treatment_plan'
             } %}
         </div>
         <div class="col-md-4">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.completionPercentage,
-                'label': form.completionPercentage.vars.label|default('risk_treatment_plan.field.completion_percentage'|trans)
+                'label': form.completionPercentage.vars.label|default('risk_treatment_plan.field.completion_percentage'|trans),
+                'domain': 'risk_treatment_plan'
             } %}
         </div>
     </div>
@@ -89,19 +95,22 @@
         <div class="col-md-4">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.startDate,
-                'label': form.startDate.vars.label|default('risk_treatment_plan.field.start_date'|trans)
+                'label': form.startDate.vars.label|default('risk_treatment_plan.field.start_date'|trans),
+                'domain': 'risk_treatment_plan'
             } %}
         </div>
         <div class="col-md-4">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.targetCompletionDate,
-                'label': form.targetCompletionDate.vars.label|default('risk_treatment_plan.field.target_completion_date'|trans)
+                'label': form.targetCompletionDate.vars.label|default('risk_treatment_plan.field.target_completion_date'|trans),
+                'domain': 'risk_treatment_plan'
             } %}
         </div>
         <div class="col-md-4">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.actualCompletionDate,
-                'label': form.actualCompletionDate.vars.label|default('risk_treatment_plan.field.actual_completion_date'|trans)
+                'label': form.actualCompletionDate.vars.label|default('risk_treatment_plan.field.actual_completion_date'|trans),
+                'domain': 'risk_treatment_plan'
             } %}
         </div>
     </div>
@@ -118,13 +127,15 @@
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.responsiblePerson,
-                'label': form.responsiblePerson.vars.label|default('risk_treatment_plan.field.responsible_person'|trans)
+                'label': form.responsiblePerson.vars.label|default('risk_treatment_plan.field.responsible_person'|trans),
+                'domain': 'risk_treatment_plan'
             } %}
         </div>
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.budget,
-                'label': form.budget.vars.label|default('risk_treatment_plan.field.budget'|trans)
+                'label': form.budget.vars.label|default('risk_treatment_plan.field.budget'|trans),
+                'domain': 'risk_treatment_plan'
             } %}
         </div>
     </div>
@@ -141,13 +152,15 @@
         <div class="col-12">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.controls,
-                'label': form.controls.vars.label|default('risk_treatment_plan.field.controls'|trans)
+                'label': form.controls.vars.label|default('risk_treatment_plan.field.controls'|trans),
+                'domain': 'risk_treatment_plan'
             } %}
         </div>
         <div class="col-12">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.implementationNotes,
-                'label': form.implementationNotes.vars.label|default('risk_treatment_plan.field.implementation_notes'|trans)
+                'label': form.implementationNotes.vars.label|default('risk_treatment_plan.field.implementation_notes'|trans),
+                'domain': 'risk_treatment_plan'
             } %}
         </div>
     </div>

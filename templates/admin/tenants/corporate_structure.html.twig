@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block breadcrumb_items %}
-    <li class="breadcrumb-item"><a href="{{ path('tenant_management_index') }}">{{ 'tenant.title'|trans }}</a></li>
+    <li class="breadcrumb-item"><a href="{{ path('tenant_management_index') }}">{{ 'tenant.title'|trans({}, 'tenant') }}</a></li>
     <li class="breadcrumb-item active">{{ 'corporate.title'|trans }}</li>
 {% endblock %}
 
@@ -134,8 +134,8 @@
                 } %}
                     {% block table_head %}
                         <tr>
-                            <th scope="col">{{ 'tenant.field.code'|trans }}</th>
-                            <th scope="col">{{ 'tenant.field.name'|trans }}</th>
+                            <th scope="col">{{ 'tenant.field.code'|trans({}, 'tenant') }}</th>
+                            <th scope="col">{{ 'tenant.field.name'|trans({}, 'tenant') }}</th>
                             <th scope="col">{{ 'corporate.field.actions'|trans }}</th>
                         </tr>
                     {% endblock %}
@@ -176,7 +176,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">{{ 'corporate.modal.set_parent.title'|trans }}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
                 </div>
                 <form method="post" id="setParentForm">
                     <div class="modal-body">
@@ -226,12 +226,12 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">{{ 'corporate.modal.update_governance.title'|trans }}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
                 </div>
                 <form method="post" id="updateGovernanceForm">
                     <div class="modal-body">
                         <div class="mb-3">
-                            <label class="form-label" for="governanceTenantName">{{ 'tenant.field.name'|trans }}</label>
+                            <label class="form-label" for="governanceTenantName">{{ 'tenant.field.name'|trans({}, 'tenant') }}</label>
                             <input type="text" class="form-control" id="governanceTenantName" readonly>
                             <input type="hidden" id="governanceTenantId">
                         </div>

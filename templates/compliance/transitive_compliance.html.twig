@@ -174,7 +174,7 @@
                                         {% set mapping = mapping_matrix[sourceFramework.id][targetFramework.id] ?? null %}
                                         {% if mapping and mapping.coverage > 0 %}
                                             {% set percentage = mapping.coverage|round %}
-                                            <span class="badge" style="padding: 0.5rem 1rem; font-size: 1rem; font-weight: 700; background: {% if percentage >= 75 %}var(--color-success){% elseif percentage >= 50 %}var(--color-warning){% else %}var(--color-danger){% endif %}; color: white; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                                            <span class="badge badge-lg badge-{% if percentage >= 75 %}success{% elseif percentage >= 50 %}warning{% else %}danger{% endif %}">
                                                 {{ percentage }}%
                                             </span>
                                         {% else %}
