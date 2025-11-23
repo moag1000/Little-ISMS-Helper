@@ -23,7 +23,7 @@
             {% endif %}
             <a href="{{ path('app_risk_index') }}" class="btn btn-secondary">{{ 'action.back_to_list'|trans }}</a>
             {% if is_granted('ROLE_ADMIN') and (canEdit is not defined or canEdit) %}
-                <form method="post" action="{{ path('app_risk_delete', {id: risk.id}) }}" style="display:inline;" onsubmit="return confirm('{{ 'risk.delete.confirm_message'|trans }}');">
+                <form method="post" action="{{ path('app_risk_delete', {id: risk.id}) }}" class="d-inline" onsubmit="return confirm('{{ 'risk.delete.confirm_message'|trans }}');">
                     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ risk.id) }}">
                     <button type="submit" class="btn btn-danger">{{ 'action.delete'|trans }}</button>
                 </form>
@@ -79,8 +79,8 @@
             <div class="risk-assessment-grid">
                 <div class="assessment-card">
                     <h3>{{ 'risk.assessment.inherent_risk'|trans }}</h3>
-                    <div class="risk-matrix-mini">
-                        <div class="risk-score risk-level-{{ riskClass }}" style="padding: 1rem; border-radius: 8px; text-align: center;">
+                    <div class="risk-matrix-mini risk-level-{{ riskClass }}">
+                        <div class="risk-score">
                             {{ risk.inherentRiskLevel }}
                         </div>
                         <div class="risk-components">
@@ -96,8 +96,8 @@
                 {% set residualClass = risk.residualRiskLevel >= 20 ? 'critical' : (risk.residualRiskLevel >= 12 ? 'high' : (risk.residualRiskLevel >= 6 ? 'medium' : 'low')) %}
                 <div class="assessment-card">
                     <h3>{{ 'risk.assessment.residual_risk'|trans }}</h3>
-                    <div class="risk-matrix-mini">
-                        <div class="risk-score risk-level-{{ residualClass }}" style="padding: 1rem; border-radius: 8px; text-align: center;">
+                    <div class="risk-matrix-mini risk-level-{{ residualClass }}">
+                        <div class="risk-score">
                             {{ risk.residualRiskLevel }}
                         </div>
                         <div class="risk-components">

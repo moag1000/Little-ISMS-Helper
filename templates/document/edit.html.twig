@@ -7,7 +7,7 @@
 {# Breadcrumb Navigation #}
 {% include '_components/_breadcrumb.html.twig' with {
     breadcrumbs: [
-        { label: 'nav.documents'|trans({}, 'messages'), url: path('app_document_index'), icon: 'bi-file-earmark-text' },
+        { label: 'nav.documents'|trans({}, 'nav', 'nav'), url: path('app_document_index'), icon: 'bi-file-earmark-text' },
         { label: document.name, url: path('app_document_show', {id: document.id}) },
         { label: 'document.edit'|trans }
     ]

@@ -1,16 +1,16 @@
 {% extends 'base.html.twig' %}
 {% import '_macros/cards.html.twig' as cards %}
 
-{% block title %}{{ 'nav.dashboard'|trans }} - {{ 'app.title'|trans }}{% endblock %}
+{% block title %}{{ 'nav.dashboard'|trans({}, 'nav') }} - {{ 'app.title'|trans }}{% endblock %}
 
 {% block body %}
-<h1>{{ 'dashboard.title'|trans }}</h1>
+<h1>{{ 'dashboard.title'|trans({}, 'dashboard') }}</h1>
 
 <p class="text-muted mb-2">
-    {{ 'dashboard.subtitle'|trans }}
+    {{ 'dashboard.subtitle'|trans({}, 'dashboard') }}
 </p>
 
-<h2>{{ 'dashboard.kpis'|trans }}</h2>
+<h2>{{ 'dashboard.kpis'|trans({}, 'dashboard') }}</h2>
 
 <div class="kpi-grid">
     {% for kpi in kpis %}
@@ -20,10 +20,10 @@
     {% endfor %}
 </div>
 
-<h2 class="mt-3">{{ 'dashboard.compliance_status'|trans }}</h2>
+<h2 class="mt-3">{{ 'dashboard.compliance_status'|trans({}, 'dashboard') }}</h2>
 
 <div class="info-box">
-    <h2 class="mb-md">{{ 'dashboard.implementation_status'|trans }}</h2>
+    <h2 class="mb-md">{{ 'dashboard.implementation_status'|trans({}, 'dashboard') }}</h2>
     <div class="mb-sm">
         <strong>Clause 4 - {{ 'clause.4'|trans }}:</strong> <span class="status-in-progress">{{ 'status.in_progress'|trans }}</span>
     </div>
@@ -47,16 +47,22 @@
     </div>
 </div>
 
-<h2 class="mt-3">{{ 'dashboard.quick_access'|trans }}</h2>
+<h2 class="mt-3">{{ 'dashboard.quick_access'|trans({}, 'dashboard') }}</h2>
 
 <div class="d-flex gap-1 mt-md">
-    <a href="#" class="btn">{{ 'action.new_asset'|trans }}</a>
-    <a href="#" class="btn btn-secondary">{{ 'action.assess_risk'|trans }}</a>
-    <a href="#" class="btn btn-secondary">{{ 'action.report_incident'|trans }}</a>
+    <a href="#" class="btn btn-primary">
+        <i class="bi bi-plus-circle"></i> {{ 'action.new_asset'|trans }}
+    </a>
+    <a href="#" class="btn btn-secondary">
+        <i class="bi bi-shield-exclamation"></i> {{ 'action.assess_risk'|trans }}
+    </a>
+    <a href="#" class="btn btn-secondary">
+        <i class="bi bi-exclamation-triangle"></i> {{ 'action.report_incident'|trans }}
+    </a>
 </div>
 
 <div class="warning-box mt-3">
-    <p><strong>{{ 'dashboard.next_steps'|trans }}:</strong></p>
+    <p><strong>{{ 'dashboard.next_steps'|trans({}, 'dashboard') }}:</strong></p>
     <ul class="ml-lg mt-sm">
         <li>{{ 'form.complete_asset_inventory'|trans }}</li>
         <li>{{ 'form.conduct_risk_analysis'|trans }}</li>

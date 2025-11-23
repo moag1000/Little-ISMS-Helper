@@ -6,7 +6,7 @@
 {# Breadcrumb Navigation #}
 {% include '_components/_breadcrumb.html.twig' with {
     breadcrumbs: [
-        { label: 'nav.risks'|trans, url: path('app_risk_index'), icon: 'bi-exclamation-triangle' },
+        { label: 'nav.risks'|trans({}, 'nav'), url: path('app_risk_index'), icon: 'bi-exclamation-triangle' },
         { label: risk.title, url: path('app_risk_show', {id: risk.id}) },
         { label: 'risk.edit'|trans }
     ]

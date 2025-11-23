@@ -2,7 +2,7 @@
 
 {% block admin_title %}{{ user_name }}{% endblock %}
 {% block admin_subtitle %}
-    <p class="text-muted">{{ 'session.user_activity'|trans }}</p>
+    <p class="text-muted">{{ 'session.user_activity'|trans({}, 'session') }}</p>
 {% endblock %}
 
 {% block breadcrumb_items %}
@@ -30,7 +30,7 @@
         <div class="col-md-4">
             <div class="card border-info">
                 <div class="card-body text-center">
-                    <h5 class="card-title text-muted">{{ 'session.unique_ips'|trans }}</h5>
+                    <h5 class="card-title text-muted">{{ 'session.unique_ips'|trans({}, 'session') }}</h5>
                     <p class="display-6 text-info">{{ ip_addresses|length }}</p>
                 </div>
             </div>
@@ -38,7 +38,7 @@
         <div class="col-md-4">
             <div class="card border-success">
                 <div class="card-body text-center">
-                    <h5 class="card-title text-muted">{{ 'session.unique_devices'|trans }}</h5>
+                    <h5 class="card-title text-muted">{{ 'session.unique_devices'|trans({}, 'session') }}</h5>
                     <p class="display-6 text-success">{{ user_agents|length }}</p>
                 </div>
             </div>
@@ -63,7 +63,7 @@
     <div class="card">
         <div class="card-header bg-primary text-white">
             <h3 class="mb-0">
-                <i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'session.activity_timeline'|trans }}
+                <i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'session.activity_timeline'|trans({}, 'session') }}
             </h5>
         </div>
         <div class="card-body">

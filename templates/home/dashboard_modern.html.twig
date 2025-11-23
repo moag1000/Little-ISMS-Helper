@@ -144,13 +144,13 @@
                 <div class="widget-header bg-warning-subtle">
                     <h3 class="widget-title text-warning">
                         <i class="bi bi-calendar-x" aria-hidden="true"></i>
-                        {{ 'dashboard.overdue_reviews.title'|trans }}
+                        {{ 'dashboard.overdue_reviews.title'|trans({}, 'dashboard') }}
                     </h3>
                     <span class="badge bg-warning">{{ overdue_reviews|length }}</span>
                 </div>
                 <div class="widget-body p-3">
                     <p class="text-muted mb-3">
-                        {{ 'dashboard.overdue_reviews.description'|trans({ '%count%': overdue_reviews|length }) }}
+                        {{ 'dashboard.overdue_reviews.description'|trans({ '%count%': overdue_reviews|length }, 'dashboard') }}
                     </p>
                     <ul class="list-unstyled mb-0">
                         {% for risk in overdue_reviews|slice(0, 5) %}
@@ -163,10 +163,10 @@
                                     <div class="small text-muted">
                                         {% if risk.reviewDate %}
                                             <i class="bi bi-calendar-event" aria-hidden="true"></i>
-                                            {{ 'dashboard.overdue_reviews.last_review'|trans }}: {{ risk.reviewDate|date('d.m.Y') }}
+                                            {{ 'dashboard.overdue_reviews.last_review'|trans({}, 'dashboard') }}: {{ risk.reviewDate|date('d.m.Y') }}
                                         {% else %}
                                             <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
-                                            {{ 'dashboard.overdue_reviews.never_reviewed'|trans }}
+                                            {{ 'dashboard.overdue_reviews.never_reviewed'|trans({}, 'dashboard') }}
                                         {% endif %}
                                     </div>
                                 </div>
@@ -181,7 +181,7 @@
                         <div class="text-center mt-3">
                             <a href="{{ path('app_risk_index') }}" class="btn btn-sm btn-outline-warning">
                                 <i class="bi bi-arrow-right" aria-hidden="true"></i>
-                                {{ 'dashboard.overdue_reviews.view_all'|trans({ '%count%': overdue_reviews|length - 5 }) }}
+                                {{ 'dashboard.overdue_reviews.view_all'|trans({ '%count%': overdue_reviews|length - 5 }, 'dashboard') }}
                             </a>
                         </div>
                     {% endif %}
@@ -197,13 +197,13 @@
                 <div class="widget-header bg-info-subtle">
                     <h3 class="widget-title text-info">
                         <i class="bi bi-calendar-check" aria-hidden="true"></i>
-                        {{ 'dashboard.upcoming_reviews.title'|trans }}
+                        {{ 'dashboard.upcoming_reviews.title'|trans({}, 'dashboard') }}
                     </h3>
                     <span class="badge bg-info">{{ upcoming_reviews|length }}</span>
                 </div>
                 <div class="widget-body p-3">
                     <p class="text-muted mb-3 small">
-                        {{ 'dashboard.upcoming_reviews.description'|trans }}
+                        {{ 'dashboard.upcoming_reviews.description'|trans({}, 'dashboard') }}
                     </p>
                     <ul class="list-unstyled mb-0">
                         {% for risk in upcoming_reviews|slice(0, 3) %}
@@ -234,13 +234,13 @@
                 <div class="widget-header bg-danger-subtle">
                     <h3 class="widget-title text-danger">
                         <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
-                        {{ 'dashboard.overdue_treatment_plans.title'|trans }}
+                        {{ 'dashboard.overdue_treatment_plans.title'|trans({}, 'dashboard') }}
                     </h3>
                     <span class="badge bg-danger">{{ overdue_treatment_plans|length }}</span>
                 </div>
                 <div class="widget-body p-3">
                     <p class="text-muted mb-3 small">
-                        {{ 'dashboard.overdue_treatment_plans.description'|trans({ '%count%': overdue_treatment_plans|length }) }}
+                        {{ 'dashboard.overdue_treatment_plans.description'|trans({ '%count%': overdue_treatment_plans|length }, 'dashboard') }}
                     </p>
                     <ul class="list-unstyled mb-0">
                         {% for plan in overdue_treatment_plans|slice(0, 5) %}
@@ -252,9 +252,9 @@
                                     </a>
                                     <div class="small text-muted">
                                         <i class="bi bi-calendar-x" aria-hidden="true"></i>
-                                        {{ 'dashboard.overdue_treatment_plans.due_date'|trans }}: {{ plan.targetCompletionDate|date('d.m.Y') }}
+                                        {{ 'dashboard.overdue_treatment_plans.due_date'|trans({}, 'dashboard') }}: {{ plan.targetCompletionDate|date('d.m.Y') }}
                                         {% set daysOverdue = date().diff(plan.targetCompletionDate).days %}
-                                        <span class="text-danger">({{ daysOverdue }} {{ 'dashboard.overdue_treatment_plans.days_overdue'|trans }})</span>
+                                        <span class="text-danger">({{ daysOverdue }} {{ 'dashboard.overdue_treatment_plans.days_overdue'|trans({}, 'dashboard') }})</span>
                                     </div>
                                     <div class="progress mt-1" style="height: 4px;">
                                         <div class="progress-bar bg-danger" role="progressbar"
@@ -275,7 +275,7 @@
                         <div class="text-center mt-3">
                             <a href="{{ path('app_risk_treatment_plan_index') }}" class="btn btn-sm btn-outline-danger">
                                 <i class="bi bi-arrow-right" aria-hidden="true"></i>
-                                {{ 'dashboard.overdue_treatment_plans.view_all'|trans({ '%count%': overdue_treatment_plans|length - 5 }) }}
+                                {{ 'dashboard.overdue_treatment_plans.view_all'|trans({ '%count%': overdue_treatment_plans|length - 5 }, 'dashboard') }}
                             </a>
                         </div>
                     {% endif %}
@@ -291,13 +291,13 @@
                 <div class="widget-header bg-warning-subtle">
                     <h3 class="widget-title text-warning">
                         <i class="bi bi-clock-history" aria-hidden="true"></i>
-                        {{ 'dashboard.approaching_treatment_plans.title'|trans }}
+                        {{ 'dashboard.approaching_treatment_plans.title'|trans({}, 'dashboard') }}
                     </h3>
                     <span class="badge bg-warning">{{ approaching_treatment_plans|length }}</span>
                 </div>
                 <div class="widget-body p-3">
                     <p class="text-muted mb-3 small">
-                        {{ 'dashboard.approaching_treatment_plans.description'|trans }}
+                        {{ 'dashboard.approaching_treatment_plans.description'|trans({}, 'dashboard') }}
                     </p>
                     <ul class="list-unstyled mb-0">
                         {% for plan in approaching_treatment_plans|slice(0, 3) %}
@@ -311,7 +311,7 @@
                                         <i class="bi bi-calendar-event" aria-hidden="true"></i>
                                         {{ plan.targetCompletionDate|date('d.m.Y') }}
                                         {% set daysRemaining = date().diff(plan.targetCompletionDate).days %}
-                                        <span>({{ daysRemaining }} {{ 'dashboard.approaching_treatment_plans.days_remaining'|trans }})</span>
+                                        <span>({{ daysRemaining }} {{ 'dashboard.approaching_treatment_plans.days_remaining'|trans({}, 'dashboard') }})</span>
                                     </div>
                                     <div class="progress mt-1" style="height: 4px;">
                                         <div class="progress-bar" role="progressbar"

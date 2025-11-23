@@ -28,11 +28,10 @@
             <div class="modal-header bg-danger text-white">
                 <h5 class="modal-title d-flex align-items-center gap-2" id="bulkDeleteModalTitle">
                     <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
-                    <span>{{ 'bulk_delete.confirm.title'|trans|default('Löschen bestätigen') }}</span>
+                    <span>{{ 'bulk_delete.confirm.title'|trans({}, 'bulk_delete')|default('Löschen bestätigen') }}</span>
                 </h5>
                 <button type="button"
-                        class="btn-close btn-close-white"
-                        data-bs-dismiss="modal"
+                        class="btn-close btn-close-white" aria-label="{{ 'action.close'|trans({}, 'messages') }}" data-bs-dismiss="modal"
                         data-action="click->bulk-delete-confirmation#cancel"
                         aria-label="{{ 'action.close'|trans|default('Schließen') }}">
                 </button>
@@ -50,7 +49,7 @@
                             {# Dynamic message will be inserted here #}
                         </p>
                         <p class="mb-0 small text-muted">
-                            {{ 'bulk_delete.confirm.warning'|trans|default('Diese Aktion kann nicht rückgängig gemacht werden.') }}
+                            {{ 'bulk_delete.confirm.warning'|trans({}, 'bulk_delete')|default('Diese Aktion kann nicht rückgängig gemacht werden.') }}
                         </p>
                     </div>
                 </div>
@@ -58,7 +57,7 @@
                 {# Selection summary #}
                 <div class="mb-3">
                     <h6 class="fw-semibold mb-2">
-                        {{ 'bulk_delete.selection.title'|trans|default('Ausgewählte Einträge') }}
+                        {{ 'bulk_delete.selection.title'|trans({}, 'bulk_delete')|default('Ausgewählte Einträge') }}
                     </h6>
                     <div class="d-flex align-items-center gap-2 p-2 bg-light rounded">
                         <i class="bi bi-check2-square text-primary" aria-hidden="true"></i>
@@ -72,12 +71,12 @@
                 {# Dependencies and impact (dynamically populated) #}
                 <div data-bulk-delete-confirmation-target="dependencies" class="d-none">
                     <h6 class="fw-semibold mb-2">
-                        {{ 'bulk_delete.dependencies.title'|trans|default('Betroffene Verknüpfungen') }}
+                        {{ 'bulk_delete.dependencies.title'|trans({}, 'bulk_delete')|default('Betroffene Verknüpfungen') }}
                     </h6>
                     <div class="alert alert-info" role="status">
                         <ul class="mb-0 ps-3"
                             data-bulk-delete-confirmation-target="dependencyList"
-                            aria-label="{{ 'bulk_delete.dependencies.list'|trans|default('Liste der betroffenen Verknüpfungen') }}">
+                            aria-label="{{ 'bulk_delete.dependencies.list'|trans({}, 'bulk_delete')|default('Liste der betroffenen Verknüpfungen') }}">
                             {# Dependencies will be injected here #}
                         </ul>
                     </div>
@@ -89,7 +88,7 @@
                         <span class="visually-hidden">{{ 'common.loading'|trans|default('Lädt...') }}</span>
                     </div>
                     <p class="mt-2 text-muted small">
-                        {{ 'bulk_delete.loading'|trans|default('Abhängigkeiten werden geprüft...') }}
+                        {{ 'bulk_delete.loading'|trans({}, 'bulk_delete')|default('Abhängigkeiten werden geprüft...') }}
                     </p>
                 </div>
 

@@ -46,7 +46,7 @@
                     <div class="quick-access-code">{{ item.code }}</div>
                     <div class="quick-access-progress">
                         <div class="progress-bar-mini">
-                            <div class="progress-fill-mini" style="width: {{ item.compliance_percentage }}%; background: {{ item.compliance_percentage >= 75 ? '#28a745' : (item.compliance_percentage >= 50 ? '#ffc107' : '#dc3545') }};"></div>
+                            <div class="progress-fill-mini progress-{% if item.compliance_percentage >= 75 %}success{% elseif item.compliance_percentage >= 50 %}warning{% else %}danger{% endif %}" style="width: {{ item.compliance_percentage }}%;"></div>
                         </div>
                         <span class="progress-text">{{ item.compliance_percentage }}%</span>
                     </div>
@@ -72,7 +72,7 @@
         {% for item in overview %}
             {% set framework = frameworks|filter(f => f.id == item.id)|first %}
             <div class="framework-card">
-                <div class="framework-header" style="background: {{ (framework and framework.mandatory) ? 'var(--gradient-danger)' : 'var(--gradient-primary)' }};">
+                <div class="framework-header {% if framework and framework.mandatory %}bg-gradient-danger{% else %}bg-gradient-primary{% endif %}">
                     <div>
                         <h3>{{ item.code }}</h3>
                         <p class="framework-subtitle">{{ item.name|length > 40 ? item.name|slice(0, 40) ~ '...' : item.name }}</p>

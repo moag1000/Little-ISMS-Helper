@@ -1,11 +1,11 @@
 {% extends 'admin/layout.html.twig' %}
 
-{% block title %}{{ 'role_management.title.create'|trans }} - Little ISMS Helper{% endblock %}
+{% block title %}{{ 'role_management.title.create'|trans({}, 'role_management') }} - Little ISMS Helper{% endblock %}
 
 {% block admin_content %}
 <div class="page-header">
     <div>
-        <h1>{{ 'role_management.title.create'|trans }}</h1>
+        <h1>{{ 'role_management.title.create'|trans({}, 'role_management') }}</h1>
     </div>
     <div class="button-group">
         <a href="{{ path('role_management_index') }}" class="btn btn-secondary">
@@ -17,17 +17,17 @@
 <div class="card">
     {{ form_start(form) }}
 
-    <h3>{{ 'role_management.section.basic_info'|trans }}</h3>
+    <h3>{{ 'role_management.section.basic_info'|trans({}, 'role_management') }}</h3>
 
     <div class="form-group">
         {{ form_label(form.name) }}
-        {{ form_widget(form.name, {'attr': {'class': 'form-control', 'placeholder': 'role_management.placeholder.name'|trans}}) }}
+        {{ form_widget(form.name, {'attr': {'class': 'form-control', 'placeholder': 'role_management.placeholder.name'|trans({}, 'role_management')}}) }}
         {{ form_errors(form.name) }}
     </div>
 
     <div class="form-group">
         {{ form_label(form.description) }}
-        {{ form_widget(form.description, {'attr': {'class': 'form-control', 'rows': 3, 'placeholder': 'role_management.placeholder.description'|trans}}) }}
+        {{ form_widget(form.description, {'attr': {'class': 'form-control', 'rows': 3, 'placeholder': 'role_management.placeholder.description'|trans({}, 'role_management')}}) }}
         {{ form_errors(form.description) }}
     </div>
 
@@ -38,18 +38,18 @@
         </div>
         {{ form_errors(form.active) }}
         <small class="small-muted-block">
-            {{ 'role_management.help.active'|trans }}
+            {{ 'role_management.help.active'|trans({}, 'role_management') }}
         </small>
     </div>
 
-    <h2 class="h3-mt-lg">{{ 'role_management.section.permissions'|trans }}</h2>
+    <h2 class="h3-mt-lg">{{ 'role_management.section.permissions'|trans({}, 'role_management') }}</h2>
 
     <div class="form-group">
         {{ form_label(form.permissions) }}
         {{ form_widget(form.permissions, {'attr': {'class': 'form-control', 'size': 10}}) }}
         {{ form_errors(form.permissions) }}
         <small class="small-muted-block">
-            {{ 'role_management.help.permissions'|trans }}
+            {{ 'role_management.help.permissions'|trans({}, 'role_management') }}
         </small>
     </div>
 

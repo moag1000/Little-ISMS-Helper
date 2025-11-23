@@ -1,14 +1,14 @@
 {% extends 'admin/layout.html.twig' %}
 
-{% block admin_title %}{{ 'mfa_token.edit'|trans }}{% endblock %}
+{% block admin_title %}{{ 'mfa_token.edit'|trans({}, 'mfa') }}{% endblock %}
 {% block admin_subtitle %}
-    <p class="text-muted">{{ 'mfa_token.edit.subtitle'|trans|default('MFA-Token bearbeiten') }}</p>
+    <p class="text-muted">{{ 'mfa_token.edit.subtitle'|trans({}, 'mfa')|default('MFA-Token bearbeiten') }}</p>
 {% endblock %}
 
 {% block admin_content %}
     <div class="card">
         <div class="card-header bg-primary text-white">
-            <h4 class="mb-0">{{ 'mfa_token.edit'|trans }}</h4>
+            <h4 class="mb-0">{{ 'mfa_token.edit'|trans({}, 'mfa') }}</h4>
         </div>
         <div class="card-body">
             {{ form_start(form) }}

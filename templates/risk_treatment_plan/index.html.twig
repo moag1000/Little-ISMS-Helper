@@ -105,13 +105,13 @@
     } %}
         {% block table_head %}
             <tr>
-                <th scope="col">{{ 'risk_treatment_plan.field.title'|trans }}</th>
-                <th scope="col">{{ 'risk_treatment_plan.field.risk'|trans }}</th>
-                <th scope="col" class="text-center">{{ 'risk_treatment_plan.field.status'|trans }}</th>
-                <th scope="col" class="text-center">{{ 'risk_treatment_plan.field.priority'|trans }}</th>
-                <th scope="col">{{ 'risk_treatment_plan.field.responsible_person'|trans }}</th>
-                <th scope="col" class="text-center">{{ 'risk_treatment_plan.field.completion'|trans }}</th>
-                <th scope="col">{{ 'risk_treatment_plan.field.target_date'|trans }}</th>
+                <th scope="col">{{ 'risk_treatment_plan.field.title'|trans({}, 'risk_treatment_plan') }}</th>
+                <th scope="col">{{ 'risk_treatment_plan.field.risk'|trans({}, 'risk_treatment_plan') }}</th>
+                <th scope="col" class="text-center">{{ 'risk_treatment_plan.field.status'|trans({}, 'risk_treatment_plan') }}</th>
+                <th scope="col" class="text-center">{{ 'risk_treatment_plan.field.priority'|trans({}, 'risk_treatment_plan') }}</th>
+                <th scope="col">{{ 'risk_treatment_plan.field.responsible_person'|trans({}, 'risk_treatment_plan') }}</th>
+                <th scope="col" class="text-center">{{ 'risk_treatment_plan.field.completion'|trans({}, 'risk_treatment_plan') }}</th>
+                <th scope="col">{{ 'risk_treatment_plan.field.target_date'|trans({}, 'risk_treatment_plan') }}</th>
                 <th scope="col" class="text-center">{{ 'common.actions'|trans({}, 'messages') }}</th>
             </tr>
         {% endblock %}
@@ -122,7 +122,7 @@
                     <strong>{{ plan.title }}</strong>
                     {% if plan.isOverdue() %}
                         <span class="badge bg-danger ms-2">
-                            <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'risk_treatment_plan.overdue'|trans }}
+                            <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'risk_treatment_plan.overdue'|trans({}, 'risk_treatment_plan') }}
                         </span>
                     {% endif %}
                 </td>
@@ -168,11 +168,11 @@
                     <small class="text-muted">
                         {% set daysUntil = plan.daysUntilTarget %}
                         {% if daysUntil < 0 %}
-                            <span class="text-danger">{{ daysUntil|abs }} {{ 'risk_treatment_plan.days_overdue'|trans }}</span>
+                            <span class="text-danger">{{ daysUntil|abs }} {{ 'risk_treatment_plan.days_overdue'|trans({}, 'risk_treatment_plan') }}</span>
                         {% elseif daysUntil == 0 %}
-                            <span class="text-warning">{{ 'risk_treatment_plan.due_today'|trans }}</span>
+                            <span class="text-warning">{{ 'risk_treatment_plan.due_today'|trans({}, 'risk_treatment_plan') }}</span>
                         {% else %}
-                            {{ daysUntil }} {{ 'risk_treatment_plan.days_remaining'|trans }}
+                            {{ daysUntil }} {{ 'risk_treatment_plan.days_remaining'|trans({}, 'risk_treatment_plan') }}
                         {% endif %}
                     </small>
                 </td>
@@ -194,7 +194,8 @@
             {% else %}
             <tr>
                 <td colspan="8" class="text-center text-muted">
-                    {{ 'risk_treatment_plan.no_plans'|trans }}
+                    {{ 'risk_treatment_plan.no_plans'|trans({}, 'risk_treatment_plan') }}
+
                 </td>
             </tr>
             {% endfor %}

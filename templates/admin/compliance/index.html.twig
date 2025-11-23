@@ -49,12 +49,12 @@
 
     {# Available Frameworks #}
     <div class="frameworks-container">
-        <h2 style="margin-bottom: var(--spacing-lg);">{{ 'compliance.available_frameworks'|trans }}</h2>
+        <h2 class="mb-2">{{ 'compliance.available_frameworks'|trans }}</h2>
 
         <div class="framework-cards-grid">
             {% for framework in available_frameworks %}
                 <div class="framework-card {% if framework.loaded %}loaded{% endif %}">
-                    <div class="framework-card-header" style="background: {% if framework.mandatory %}var(--gradient-danger){% else %}var(--gradient-primary){% endif %};">
+                    <div class="framework-card-header {% if framework.mandatory %}bg-gradient-danger{% else %}bg-gradient-primary{% endif %}">
                         <div class="framework-icon">{{ framework.icon }}</div>
                         <div class="framework-title">
                             <h3>{{ framework.code }}</h3>
@@ -112,8 +112,8 @@
                                                 {% if not isActive %}
                                                     <a href="{{ path('admin_modules_index') }}" class="module-activate-link"
                                                        data-bs-toggle="tooltip" data-bs-placement="right"
-                                                       title="Go to module management to activate this module">
-                                                        Activate →
+                                                       title="{{ 'common.tooltip.go_to_module_management'|trans({}, 'messages') }}">
+                                                        {{ 'common.activate'|trans({}, 'messages') }} →
                                                     </a>
                                                 {% endif %}
                                             </div>
@@ -128,10 +128,9 @@
                                 <button class="btn btn-success btn-block" disabled>
                                     <span class="icon">✅</span> {{ 'compliance.already_loaded'|trans }}
                                 </button>
-                                <button class="btn btn-danger btn-block delete-framework-btn"
+                                <button class="btn btn-danger btn-block mt-1 delete-framework-btn"
                                         data-framework-code="{{ framework.code }}"
-                                        data-framework-name="{{ framework.name }}"
-                                        style="margin-top: var(--spacing-sm);">
+                                        data-framework-name="{{ framework.name }}">
                                     <span class="icon">🗑️</span> {{ 'compliance.delete_framework'|trans }}
                                 </button>
                             {% else %}
@@ -386,14 +385,16 @@ function initializeFrameworkButtons() {
                             <button class="btn btn-success btn-block" disabled>
                                 <span class="icon">✅</span> {{ 'compliance.successfully_loaded'|trans }}
                             </button>
-                            <a href="/{{ app.request.locale }}/compliance/framework/${result.framework_id}" class="btn btn-primary btn-block" style="margin-top: var(--spacing-sm);"
+                            <a href="/{{ app.request.locale }}/compliance/framework/${result.framework_id}" class="btn btn-primary btn-block mt-1"
                                data-bs-toggle="tooltip" data-bs-placement="right"
-                               data-bs-title="Opens the framework dashboard with workflow steps, progress tracking, and recommended next actions">
+                               data-bs-title="{{ 'common.tooltip.framework_dashboard_description'|trans({}, 'messages') }}"
+                               title="{{ 'common.tooltip.framework_dashboard_description'|trans({}, 'messages') }}">
                                 <span class="icon">🚀</span> Start Working →
                             </a>
-                            <button class="btn btn-secondary btn-block" onclick="window.location.reload()" style="margin-top: var(--spacing-sm);"
+                            <button class="btn btn-secondary btn-block mt-1" onclick="window.location.reload()"
                                     data-bs-toggle="tooltip" data-bs-placement="right"
-                                    data-bs-title="Reload the page to see the framework in the loaded list">
+                                    data-bs-title="{{ 'common.tooltip.reload_to_see_framework'|trans({}, 'messages') }}"
+                                    title="{{ 'common.tooltip.reload_to_see_framework'|trans({}, 'messages') }}">
                                 <span class="icon">🔄</span> {{ 'common.reload'|trans }}
                             </button>
                         `;

@@ -1,8 +1,8 @@
 {% extends 'admin/layout.html.twig' %}
 
-{% block admin_title %}{{ 'mfa_token.setup_totp.title'|trans }}{% endblock %}
+{% block admin_title %}{{ 'mfa_token.setup_totp.title'|trans({}, 'mfa') }}{% endblock %}
 {% block admin_subtitle %}
-    <p class="text-muted">{{ 'mfa_token.setup_totp.subtitle'|trans|default('Einrichtung eines neuen TOTP-Authentifikators') }}</p>
+    <p class="text-muted">{{ 'mfa_token.setup_totp.subtitle'|trans({}, 'mfa')|default('Einrichtung eines neuen TOTP-Authentifikators') }}</p>
 {% endblock %}
 
 {% block admin_content %}
@@ -16,10 +16,10 @@
         <div class="col-lg-8">
             <div class="card mb-4">
                 <div class="card-header bg-primary text-white">
-                    <h3 class="mb-0"><i class="bi bi-qr-code" aria-hidden="true"></i> {{ 'mfa_token.setup_totp.step1'|trans }}</h3>
+                    <h3 class="mb-0"><i class="bi bi-qr-code" aria-hidden="true"></i> {{ 'mfa_token.setup_totp.step1'|trans({}, 'mfa') }}</h3>
                 </div>
                 <div class="card-body">
-                    <p class="lead">{{ 'mfa_token.setup_totp.scan_instructions'|trans }}</p>
+                    <p class="lead">{{ 'mfa_token.setup_totp.scan_instructions'|trans({}, 'mfa') }}</p>
 
                     <div class="text-center mb-4">
                         <img src="data:image/png;base64,{{ qr_code }}"
@@ -29,8 +29,8 @@
                     </div>
 
                     <div class="alert alert-info">
-                        <h4><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'mfa_token.setup_totp.manual_entry'|trans }}</h4>
-                        <p class="mb-2">{{ 'mfa_token.setup_totp.manual_instructions'|trans }}</p>
+                        <h4><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'mfa_token.setup_totp.manual_entry'|trans({}, 'mfa') }}</h4>
+                        <p class="mb-2">{{ 'mfa_token.setup_totp.manual_instructions'|trans({}, 'mfa') }}</p>
                         <div class="input-group">
                             <input type="text"
                                    class="form-control font-monospace"
@@ -46,23 +46,23 @@
                     </div>
 
                     <div class="alert alert-secondary">
-                        <strong><i class="bi bi-person" aria-hidden="true"></i> {{ 'mfa_token.field.user'|trans }}:</strong> {{ user.email }}<br>
-                        <strong><i class="bi bi-phone" aria-hidden="true"></i> {{ 'mfa_token.field.device_name'|trans }}:</strong> {{ mfa_token.deviceName }}
+                        <strong><i class="bi bi-person" aria-hidden="true"></i> {{ 'mfa_token.field.user'|trans({}, 'mfa') }}:</strong> {{ user.email }}<br>
+                        <strong><i class="bi bi-phone" aria-hidden="true"></i> {{ 'mfa_token.field.device_name'|trans({}, 'mfa') }}:</strong> {{ mfa_token.deviceName }}
                     </div>
                 </div>
             </div>
 
             <div class="card mb-4">
                 <div class="card-header bg-success text-white">
-                    <h3 class="mb-0"><i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'mfa_token.setup_totp.step2'|trans }}</h3>
+                    <h3 class="mb-0"><i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'mfa_token.setup_totp.step2'|trans({}, 'mfa') }}</h3>
                 </div>
                 <div class="card-body">
-                    <p class="lead">{{ 'mfa_token.setup_totp.verify_instructions'|trans }}</p>
+                    <p class="lead">{{ 'mfa_token.setup_totp.verify_instructions'|trans({}, 'mfa') }}</p>
 
                     <form id="verify-form" onsubmit="return verifyCode(event)">
                         <div class="mb-3">
                             <label for="verification-code" class="form-label">
-                                {{ 'mfa_token.field.verification_code'|trans }}
+                                {{ 'mfa_token.field.verification_code'|trans({}, 'mfa') }}
                             </label>
                             <input type="text"
                                    class="form-control form-control-lg text-center font-monospace"
@@ -74,13 +74,13 @@
                                    required
                                    autocomplete="off"
                                    autofocus>
-                            <div class="form-text">{{ 'mfa_token.setup_totp.code_help'|trans }}</div>
+                            <div class="form-text">{{ 'mfa_token.setup_totp.code_help'|trans({}, 'mfa') }}</div>
                         </div>
 
                         <div id="verify-feedback"></div>
 
                         <button type="submit" class="btn btn-success btn-lg w-100" id="verify-btn">
-                            <i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'mfa_token.setup_totp.verify_button'|trans }}
+                            <i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'mfa_token.setup_totp.verify_button'|trans({}, 'mfa') }}
                         </button>
                     </form>
                 </div>
@@ -90,15 +90,15 @@
         <div class="col-lg-4">
             <div class="card border-warning">
                 <div class="card-header bg-warning">
-                    <h3 class="mb-0"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'mfa_token.backup_codes.title'|trans }}</h3>
+                    <h3 class="mb-0"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'mfa_token.backup_codes.title'|trans({}, 'mfa') }}</h3>
                 </div>
                 <div class="card-body">
                     <div class="alert alert-danger">
-                        <strong><i class="bi bi-shield-exclamation" aria-hidden="true"></i> {{ 'mfa_token.backup_codes.warning'|trans }}</strong>
-                        <p class="mb-0 small">{{ 'mfa_token.backup_codes.warning_text'|trans }}</p>
+                        <strong><i class="bi bi-shield-exclamation" aria-hidden="true"></i> {{ 'mfa_token.backup_codes.warning'|trans({}, 'mfa') }}</strong>
+                        <p class="mb-0 small">{{ 'mfa_token.backup_codes.warning_text'|trans({}, 'mfa') }}</p>
                     </div>
 
-                    <p class="small">{{ 'mfa_token.backup_codes.description'|trans }}</p>
+                    <p class="small">{{ 'mfa_token.backup_codes.description'|trans({}, 'mfa') }}</p>
 
                     <div class="bg-light p-3 rounded border font-monospace small" style="max-height: 300px; overflow-y: auto;">
                         {% for code in backup_codes %}
@@ -112,12 +112,12 @@
                         <button type="button"
                                 class="btn btn-outline-primary btn-sm"
                                 onclick="copyBackupCodes()">
-                            <i class="bi bi-clipboard" aria-hidden="true"></i> {{ 'mfa_token.backup_codes.copy_all'|trans }}
+                            <i class="bi bi-clipboard" aria-hidden="true"></i> {{ 'mfa_token.backup_codes.copy_all'|trans({}, 'mfa') }}
                         </button>
                         <button type="button"
                                 class="btn btn-outline-secondary btn-sm"
                                 onclick="printBackupCodes()">
-                            <i class="bi bi-printer" aria-hidden="true"></i> {{ 'mfa_token.backup_codes.print'|trans }}
+                            <i class="bi bi-printer" aria-hidden="true"></i> {{ 'mfa_token.backup_codes.print'|trans({}, 'mfa') }}
                         </button>
                     </div>
                 </div>
@@ -172,7 +172,7 @@
         printWindow.document.write(`
             <html>
             <head>
-                <title>{{ 'mfa_token.backup_codes.title'|trans }} - {{ user.email }}</title>
+                <title>{{ 'mfa_token.backup_codes.title'|trans({}, 'mfa') }} - {{ user.email }}</title>
                 <style>
                     body { font-family: monospace; padding: 20px; }
                     h1 { font-size: 18px; }
@@ -181,14 +181,14 @@
                 </style>
             </head>
             <body>
-                <h1>{{ 'mfa_token.backup_codes.title'|trans }}</h1>
-                <p><strong>{{ 'mfa_token.field.user'|trans }}:</strong> {{ user.email }}</p>
+                <h1>{{ 'mfa_token.backup_codes.title'|trans({}, 'mfa') }}</h1>
+                <p><strong>{{ 'mfa_token.field.user'|trans({}, 'mfa') }}:</strong> {{ user.email }}</p>
                 <p><strong>{{ 'common.date'|trans }}:</strong> ${new Date().toLocaleString()}</p>
                 <div class="warning">
-                    <strong>{{ 'mfa_token.backup_codes.warning'|trans }}</strong><br>
-                    {{ 'mfa_token.backup_codes.warning_text'|trans }}
+                    <strong>{{ 'mfa_token.backup_codes.warning'|trans({}, 'mfa') }}</strong><br>
+                    {{ 'mfa_token.backup_codes.warning_text'|trans({}, 'mfa') }}
                 </div>
-                <h2>{{ 'mfa_token.backup_codes.codes'|trans }}</h2>
+                <h2>{{ 'mfa_token.backup_codes.codes'|trans({}, 'mfa') }}</h2>
                 ${codes.map((code, i) => '<div class="code">' + (i+1) + '. ' + code + '</div>').join('')}
             </body>
             </html>
@@ -240,7 +240,7 @@
                 `;
 
                 btn.disabled = false;
-                btn.innerHTML = '<i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'mfa_token.setup_totp.verify_button'|trans }}';
+                btn.innerHTML = '<i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'mfa_token.setup_totp.verify_button'|trans({}, 'mfa') }}';
 
                 // Clear code field for retry
                 document.getElementById('verification-code').value = '';
@@ -255,7 +255,7 @@
             `;
 
             btn.disabled = false;
-            btn.innerHTML = '<i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'mfa_token.setup_totp.verify_button'|trans }}';
+            btn.innerHTML = '<i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'mfa_token.setup_totp.verify_button'|trans({}, 'mfa') }}';
         });
 
         return false;

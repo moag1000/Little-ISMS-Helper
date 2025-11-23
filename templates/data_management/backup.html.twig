@@ -435,7 +435,7 @@
                                 <strong>${result.message}</strong><br>
                                 Datei: ${result.filename}<br>
                                 <small>Gesicherte Einträge: ${Object.values(result.statistics).reduce((a, b) => a + b, 0)}</small>
-                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
                             </div>
                         `;
                         // Reload page after 2 seconds to show new backup (Turbo-compatible)
@@ -450,7 +450,7 @@
                         createBackupStatus.innerHTML = `
                             <div class="alert alert-danger alert-dismissible fade show">
                                 <i class="bi bi-x-circle" aria-hidden="true"></i> ${result.message}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
                             </div>
                         `;
                     }
@@ -458,7 +458,7 @@
                     createBackupStatus.innerHTML = `
                         <div class="alert alert-danger alert-dismissible fade show">
                             <i class="bi bi-x-circle" aria-hidden="true"></i> Fehler: ${error.message}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
                         </div>
                     `;
                 } finally {
@@ -502,7 +502,7 @@
                         uploadBackupStatus.innerHTML = `
                             <div class="alert alert-success alert-dismissible fade show">
                                 <i class="bi bi-check-circle" aria-hidden="true"></i> ${result.message}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
                             </div>
                         `;
                         fileInput.value = '';
@@ -518,7 +518,7 @@
                         uploadBackupStatus.innerHTML = `
                             <div class="alert alert-danger alert-dismissible fade show">
                                 <i class="bi bi-x-circle" aria-hidden="true"></i> ${result.message}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
                             </div>
                         `;
                     }
@@ -526,7 +526,7 @@
                     uploadBackupStatus.innerHTML = `
                         <div class="alert alert-danger alert-dismissible fade show">
                             <i class="bi bi-x-circle" aria-hidden="true"></i> Fehler: ${error.message}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
                         </div>
                     `;
                 } finally {

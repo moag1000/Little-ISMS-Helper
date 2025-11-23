@@ -2,7 +2,7 @@
 
 {# Security: Custom 500 Internal Server Error page (prevents information disclosure) #}
 
-{% block title %}Server Error{% endblock %}
+{% block title %}{{ 'error.500.title'|trans({}, 'messages') }}{% endblock %}
 
 {% block body %}
 <div class="container mt-5">
@@ -10,14 +10,14 @@
         <div class="col-md-8 text-center">
             <div class="error-template">
                 <h1 class="display-1">500</h1>
-                <h2>Internal Server Error</h2>
+                <h2>{{ 'error.500.heading'|trans({}, 'messages') }}</h2>
                 <div class="error-details mt-4">
-                    <p class="lead">Something went wrong on our end. We're working to fix it.</p>
-                    <p>Please try again later.</p>
+                    <p class="lead">{{ 'error.500.message'|trans({}, 'messages') }}</p>
+                    <p>{{ 'error.500.help'|trans({}, 'messages') }}</p>
                 </div>
                 <div class="error-actions mt-4">
                     <a href="{{ path('app_home') }}" class="btn btn-primary btn-lg">
-                        <i class="fas fa-home"></i> Go to Homepage
+                        <i class="fas fa-home"></i> {{ 'error.action.homepage'|trans({}, 'messages') }}
                     </a>
                 </div>
             </div>
