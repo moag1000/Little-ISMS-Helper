@@ -315,7 +315,7 @@
 }
 
 .activity-item:hover {
-    background: #f8f9fa;
+    background: var(--bg-secondary);
     margin: 0 -10px;
     padding: 15px 10px;
     border-radius: 8px;
@@ -776,8 +776,8 @@
 }
 
 .global-search-shortcuts kbd {
-    background: #f8f9fa;
-    border: 1px solid #dee2e6;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
     border-radius: 4px;
     padding: 2px 6px;
     font-family: monospace;
@@ -804,7 +804,7 @@
     text-transform: uppercase;
     letter-spacing: 0.5px;
     color: #6c757d;
-    background: #f8f9fa;
+    background: var(--bg-secondary);
     border-radius: 6px;
     margin-bottom: 8px;
 }
@@ -837,7 +837,7 @@
     width: 40px;
     height: 40px;
     border-radius: 8px;
-    background: #f8f9fa;
+    background: var(--bg-secondary);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -892,7 +892,7 @@
 .global-search-footer {
     padding: 12px 20px;
     border-top: 1px solid #f0f0f0;
-    background: #f8f9fa;
+    background: var(--bg-secondary);
     border-bottom-left-radius: 12px;
     border-bottom-right-radius: 12px;
 }
@@ -972,14 +972,14 @@
 .quick-view-footer {
     padding: 15px 20px;
     border-top: 1px solid #f0f0f0;
-    background: #f8f9fa;
+    background: var(--bg-secondary);
     border-bottom-left-radius: 12px;
     border-bottom-right-radius: 12px;
 }
 
 .quick-view-footer kbd {
     background: #fff;
-    border: 1px solid #dee2e6;
+    border: 1px solid var(--border-color);
     border-radius: 3px;
     padding: 2px 6px;
     font-family: monospace;
@@ -1015,7 +1015,7 @@
 .cia-badge {
     text-align: center;
     padding: 15px;
-    background: #f8f9fa;
+    background: var(--bg-secondary);
     border-radius: 8px;
 }
 
@@ -1036,7 +1036,7 @@
 .stat-mini {
     text-align: center;
     padding: 12px;
-    background: #f8f9fa;
+    background: var(--bg-secondary);
     border-radius: 8px;
 }
 
@@ -1055,7 +1055,7 @@
 .risk-metric {
     text-align: center;
     padding: 15px;
-    background: #f8f9fa;
+    background: var(--bg-secondary);
     border-radius: 8px;
 }
 
@@ -1118,7 +1118,7 @@
     align-items: center;
     gap: 6px;
     padding: 8px 16px;
-    border: 1px solid #dee2e6;
+    border: 1px solid var(--border-color);
     background: white;
     border-radius: 8px;
     font-size: 0.85rem;
@@ -1150,7 +1150,7 @@
 }
 
 .filter-preset-clear:hover {
-    background: #dc3545;
+    background: var(--color-danger, #dc3545);
     color: white;
     border-color: #dc3545;
 }
