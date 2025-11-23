@@ -8,7 +8,7 @@
     {# Breadcrumb Navigation #}
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
-            { label: 'nav.bcm'|trans({}, 'messages')|default('BCM'), url: path('app_bc_exercise_index'), icon: 'bi-shield-exclamation' },
+            { label: 'nav.bcm'|trans({}, 'nav', 'nav')|default('BCM'), url: path('app_bc_exercise_index'), icon: 'bi-shield-exclamation' },
             { label: 'bc_exercises.page.title'|trans|default('BC Exercises'), url: path('app_bc_exercise_index') },
             { label: bc_exercise.name, url: path('app_bc_exercise_show', {id: bc_exercise.id}) },
             { label: 'common.edit'|trans({}, 'messages')|default('Edit') }

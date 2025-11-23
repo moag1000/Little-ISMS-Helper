@@ -2,7 +2,7 @@
 {% trans_default_domain 'risks' %}
 {% import '_macros/inheritance_badge.html.twig' as inheritance %}
 
-{% block title %}{{ 'risks.modern.header.title'|trans }} - {{ 'app.title'|trans }}{% endblock %}
+{% block title %}{{ 'risks.modern.header.title'|trans }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
 {% block body %}
 {# Breadcrumb Navigation #}
@@ -32,25 +32,25 @@
     <div class="card-body py-2">
         <form method="get" action="{{ path('app_risk_index') }}" class="d-flex align-items-center gap-2">
             <label for="view-filter" class="mb-0 fw-bold">
-                <i class="bi bi-eye" aria-hidden="true"></i> {{ 'common.view'|trans }}:
+                <i class="bi bi-eye" aria-hidden="true"></i> {{ 'common.view'|trans({}, 'messages') }}:
             </label>
             <select class="form-select form-select-sm" style="width: auto;" id="view-filter" name="view" onchange="this.form.submit()">
                 <option value="own" {{ inheritanceInfo.currentView == 'own' ? 'selected' : '' }}>
-                    {{ 'corporate.view.own_only'|trans }}
+                    {{ 'corporate.view.own_only'|trans({}, 'messages') }}
                 </option>
                 {% if inheritanceInfo.hasParent %}
                 <option value="inherited" {{ inheritanceInfo.currentView == 'inherited' ? 'selected' : '' }}>
-                    {{ 'corporate.view.including_inherited'|trans }}
+                    {{ 'corporate.view.including_inherited'|trans({}, 'messages') }}
                 </option>
                 {% endif %}
                 {% if inheritanceInfo.hasSubsidiaries %}
                 <option value="subsidiaries" {{ inheritanceInfo.currentView == 'subsidiaries' ? 'selected' : '' }}>
-                    {{ 'corporate.view.including_subsidiaries'|trans }}
+                    {{ 'corporate.view.including_subsidiaries'|trans({}, 'messages') }}
                 </option>
                 {% endif %}
             </select>
             <noscript>
-                <button type="submit" class="btn btn-sm btn-secondary">{{ 'common.apply'|trans }}</button>
+                <button type="submit" class="btn btn-sm btn-secondary">{{ 'common.apply'|trans({}, 'messages') }}</button>
             </noscript>
         </form>
     </div>
@@ -63,7 +63,7 @@
         icon: 'bi-exclamation-triangle',
         label: 'risks.modern.kpi.total'|trans,
         value: detailedStats.total,
-        detail: currentTenant ? ('corporate.stats.breakdown'|trans({'%own%': detailedStats.own, '%inherited%': detailedStats.inherited, '%subsidiaries%': detailedStats.subsidiaries})) : null,
+        detail: currentTenant ? ('corporate.stats.breakdown'|trans({'%own%': detailedStats.own, '%inherited%': detailedStats.inherited, '%subsidiaries%': detailedStats.subsidiaries}, 'messages')) : null,
         variant: 'primary',
         link: '#all-risks'
     } %}
@@ -102,7 +102,7 @@
 {% embed '_components/_card.html.twig' with {
     'title': 'risks.modern.matrix_overview',
     'headerIcon': 'bi-grid-3x3',
-    'actions': '<a href="' ~ path('app_risk_matrix') ~ '" class="btn btn-sm btn-outline-primary">' ~ ('risks.modern.view_full_matrix'|trans) ~ ' <i class="bi bi-arrow-right" aria-hidden="true"></i></a>',
+    'actions': '<a href="' ~ path('app_risk_matrix') ~ '" class="btn btn-sm btn-outline-primary">' ~ ('risks.modern.view_full_matrix'|trans({}, 'risks')) ~ ' <i class="bi bi-arrow-right" aria-hidden="true"></i></a>',
     'class': 'mb-4'
 } %}
     {% block card_body %}

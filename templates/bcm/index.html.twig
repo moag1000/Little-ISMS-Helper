@@ -50,7 +50,7 @@
             <div class="filter-panel">
                 <input type="text"
                        class="search-input"
-                       placeholder="Search processes..."
+                       placeholder="{{ 'common.search_processes'|trans({}, 'messages') }}"
                        data-filter-target="searchInput"
                        data-action="input->filter#filterRows">
 
@@ -125,8 +125,8 @@
                             </span>
                         </td>
                         <td class="actions-column">
-                            <a href="#" class="btn-icon" title="Edit">✏️</a>
-                            <a href="#" class="btn-icon" title="View Details">👁️</a>
+                            <a href="#" class="btn-icon" title="{{ 'common.edit'|trans({}, 'messages') }}">✏️</a>
+                            <a href="#" class="btn-icon" title="{{ 'common.view_details'|trans({}, 'messages') }}">👁️</a>
                         </td>
                     </tr>
                 {% else %}

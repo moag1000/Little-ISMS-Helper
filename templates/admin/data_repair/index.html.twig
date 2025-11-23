@@ -16,14 +16,14 @@
     {% for message in app.flashes('success') %}
         <div class="alert alert-success alert-dismissible fade show" role="alert">
             {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
         </div>
     {% endfor %}
 
     {% for message in app.flashes('error') %}
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
             {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
         </div>
     {% endfor %}
 
@@ -252,10 +252,10 @@
             } %}
                 {% block table_head %}
                     <tr>
-                        <th scope="col">{{ 'tenant.name'|trans }}</th>
-                        <th scope="col" class="text-center">{{ 'nav.assets'|trans }}</th>
-                        <th scope="col" class="text-center">{{ 'nav.risks'|trans }}</th>
-                        <th scope="col" class="text-center">{{ 'nav.incidents'|trans }}</th>
+                        <th scope="col">{{ 'tenant.name'|trans({}, 'tenant') }}</th>
+                        <th scope="col" class="text-center">{{ 'nav.assets'|trans({}, 'nav') }}</th>
+                        <th scope="col" class="text-center">{{ 'nav.risks'|trans({}, 'nav') }}</th>
+                        <th scope="col" class="text-center">{{ 'nav.incidents'|trans({}, 'nav') }}</th>
                         <th scope="col" class="text-center">{{ 'common.all'|trans }}</th>
                     </tr>
                 {% endblock %}

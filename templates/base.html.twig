@@ -71,7 +71,7 @@
                 {% if not is_setup_route %}
                 <button class="mobile-menu-btn"
                         data-action="click->sidebar-toggle#toggle"
-                        aria-label="Toggle navigation menu"
+                        aria-label="{{ 'nav.toggle_menu'|trans({}, 'nav') }}"
                         aria-expanded="false"
                         data-sidebar-toggle-target="menuBtn">
                     <span></span>
@@ -111,46 +111,46 @@
         {# Sidebar Navigation #}
         {# Hide sidebar during setup to avoid database access before DB is configured #}
         {% if not is_setup_route %}
-        <aside class="app-sidebar" role="complementary" aria-label="Main navigation" data-sidebar-toggle-target="sidebar">
+        <aside class="app-sidebar" role="complementary" aria-label="{{ 'nav.main_navigation'|trans({}, 'nav') }}" data-sidebar-toggle-target="sidebar">
             <nav id="main-navigation" role="navigation">
                 <ul>
                     <li><a href="{{ path('app_home') }}" class="{% if current_route starts with 'app_home' %}active{% endif %}" {% if current_route starts with 'app_home' %}aria-current="page"{% endif %} data-turbo-action="advance">
                         <i class="bi bi-house" aria-hidden="true"></i>
-                        <span>{{ 'nav.home'|trans }}</span>
+                        <span>{{ 'nav.home'|trans({}, 'nav') }}</span>
                     </a></li>
                     <li><a href="{{ path('app_dashboard') }}" class="{% if current_route starts with 'app_dashboard' %}active{% endif %}" data-turbo-action="advance">
                         <i class="bi bi-speedometer2" aria-hidden="true"></i>
-                        <span>{{ 'nav.dashboard'|trans }}</span>
+                        <span>{{ 'nav.dashboard'|trans({}, 'nav') }}</span>
                     </a></li>
                     <li><a href="{{ path('app_analytics_dashboard') }}" class="{% if current_route starts with 'app_analytics_' %}active{% endif %}" data-turbo-action="advance">
                         <i class="bi bi-graph-up" aria-hidden="true"></i>
-                        <span>{{ 'nav.analytics'|trans }}</span>
+                        <span>{{ 'nav.analytics'|trans({}, 'nav') }}</span>
                     </a></li>
 
                     {# ISMS Core #}
                     {% if is_module_active('core') or is_module_active('controls') %}
-                    <li class="nav-divider">{{ 'nav.section.isms_core'|trans }}</li>
+                    <li class="nav-divider">{{ 'nav.section.isms_core'|trans({}, 'nav') }}</li>
                     {% endif %}
                     {% if is_module_active('core') %}
                     <li><a href="{{ path('app_context_index') }}" class="{% if current_route starts with 'app_context_' %}active{% endif %}" data-turbo-action="advance">
                         <i class="bi bi-diagram-3" aria-hidden="true"></i>
-                        <span>{{ 'nav.context'|trans }}</span>
+                        <span>{{ 'nav.context'|trans({}, 'nav') }}</span>
                     </a></li>
                     <li><a href="{{ path('app_interested_party_index') }}" class="{% if current_route starts with 'app_interested_party_' %}active{% endif %}" data-turbo-action="advance">
                         <i class="bi bi-people-fill" aria-hidden="true"></i>
-                        <span>{{ 'nav.interested_parties'|trans }}</span>
+                        <span>{{ 'nav.interested_parties'|trans({}, 'nav') }}</span>
                     </a></li>
                     {% endif %}
                     {% if is_module_active('controls') %}
                     <li><a href="{{ path('app_soa_index') }}" class="{% if current_route starts with 'app_soa_' %}active{% endif %}" data-turbo-action="advance">
                         <i class="bi bi-shield-check" aria-hidden="true"></i>
-                        <span>{{ 'nav.soa'|trans }}</span>
+                        <span>{{ 'nav.soa'|trans({}, 'nav') }}</span>
                     </a></li>
                     {% endif %}
 
                     {# Assets & Risk #}
                     {% if is_module_active('assets') or is_module_active('risks') %}
-                    <li class="nav-divider">{{ 'nav.section.assets_risk'|trans }}</li>
+                    <li class="nav-divider">{{ 'nav.section.assets_risk'|trans({}, 'nav') }}</li>
                     <li class="has-submenu" data-controller="sidebar-dropdown" data-sidebar-dropdown-key-value="sidebar-assets-risk-expanded">
                         <a href="{{ path('app_asset_index') }}"
                            class="submenu-toggle {% if current_route starts with 'app_asset_' or current_route starts with 'app_supplier_' or current_route starts with 'app_location_' or current_route starts with 'app_person_' or current_route starts with 'app_risk_' %}active{% endif %}"
@@ -159,44 +159,44 @@
                            data-sidebar-dropdown-target="toggle"
                            aria-expanded="false">
                             <i class="bi bi-box-seam" aria-hidden="true"></i>
-                            <span>{{ 'nav.assets_risk_hub'|trans|default('Assets & Risks') }}</span>
+                            <span>{{ 'nav.assets_risk_hub'|trans({}, 'nav')|default('Assets & Risks') }}</span>
                             <i class="bi bi-chevron-down submenu-icon" data-sidebar-dropdown-target="icon" aria-hidden="true"></i>
                         </a>
                         <ul class="submenu" data-sidebar-dropdown-target="submenu">
                             {% if is_module_active('assets') %}
                             <li><a href="{{ path('app_asset_index') }}" class="{% if current_route starts with 'app_asset_' %}active{% endif %}" data-turbo-action="advance">
                                 <i class="bi bi-cpu" aria-hidden="true"></i>
-                                <span>{{ 'nav.assets'|trans }}</span>
+                                <span>{{ 'nav.assets'|trans({}, 'nav') }}</span>
                             </a></li>
                             <li><a href="{{ path('app_supplier_index') }}" class="{% if current_route starts with 'app_supplier_' %}active{% endif %}" data-turbo-action="advance">
                                 <i class="bi bi-truck" aria-hidden="true"></i>
-                                <span>{{ 'nav.suppliers'|trans }}</span>
+                                <span>{{ 'nav.suppliers'|trans({}, 'nav') }}</span>
                             </a></li>
                             <li><a href="{{ path('app_location_index') }}" class="{% if current_route starts with 'app_location_' %}active{% endif %}" data-turbo-action="advance">
                                 <i class="bi bi-geo-alt" aria-hidden="true"></i>
-                                <span>{{ 'nav.locations'|trans }}</span>
+                                <span>{{ 'nav.locations'|trans({}, 'nav') }}</span>
                             </a></li>
                             <li><a href="{{ path('app_person_index') }}" class="{% if current_route starts with 'app_person_' %}active{% endif %}" data-turbo-action="advance">
                                 <i class="bi bi-person" aria-hidden="true"></i>
-                                <span>{{ 'nav.people'|trans }}</span>
+                                <span>{{ 'nav.people'|trans({}, 'nav') }}</span>
                             </a></li>
                             {% endif %}
                             {% if is_module_active('risks') %}
                             <li><a href="{{ path('app_risk_index') }}" class="{% if current_route starts with 'app_risk_' %}active{% endif %}" data-turbo-action="advance">
                                 <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
-                                <span>{{ 'nav.risks'|trans }}</span>
+                                <span>{{ 'nav.risks'|trans({}, 'nav') }}</span>
                             </a></li>
                             <li><a href="{{ path('app_risk_matrix') }}" class="{% if current_route == 'app_risk_matrix' %}active{% endif %}" data-turbo-action="advance">
                                 <i class="bi bi-grid-3x3" aria-hidden="true"></i>
-                                <span>{{ 'nav.risk_matrix'|trans|default('Risk Matrix') }}</span>
+                                <span>{{ 'nav.risk_matrix'|trans({}, 'nav')|default('Risk Matrix') }}</span>
                             </a></li>
                             <li><a href="{{ path('app_risk_appetite_index') }}" class="{% if current_route starts with 'app_risk_appetite_' %}active{% endif %}" data-turbo-action="advance">
                                 <i class="bi bi-speedometer" aria-hidden="true"></i>
-                                <span>{{ 'nav.risk_appetite'|trans|default('Risk Appetite') }}</span>
+                                <span>{{ 'nav.risk_appetite'|trans({}, 'nav')|default('Risk Appetite') }}</span>
                             </a></li>
                             <li><a href="{{ path('app_risk_treatment_plan_index') }}" class="{% if current_route starts with 'app_risk_treatment_plan_' %}active{% endif %}" data-turbo-action="advance">
                                 <i class="bi bi-clipboard-data" aria-hidden="true"></i>
-                                <span>{{ 'nav.risk_treatment_plans'|trans|default('Treatment Plans') }}</span>
+                                <span>{{ 'nav.risk_treatment_plans'|trans({}, 'nav')|default('Treatment Plans') }}</span>
                             </a></li>
                             {% endif %}
                         </ul>
@@ -205,7 +205,7 @@
 
                     {# BCM #}
                     {% if is_module_active('bcm') %}
-                    <li class="nav-divider">{{ 'nav.section.bcm'|trans }}</li>
+                    <li class="nav-divider">{{ 'nav.section.bcm'|trans({}, 'nav') }}</li>
                     <li class="has-submenu" data-controller="sidebar-dropdown" data-sidebar-dropdown-key-value="sidebar-bcm-expanded">
                         <a href="{{ path('app_business_process_index') }}"
                            class="submenu-toggle {% if current_route starts with 'app_business_process_' or current_route starts with 'app_bc_plan_' or current_route starts with 'app_bc_exercise_' or current_route starts with 'app_crisis_team_' %}active{% endif %}"
@@ -214,32 +214,32 @@
                            data-sidebar-dropdown-target="toggle"
                            aria-expanded="false">
                             <i class="bi bi-shield-shaded" aria-hidden="true"></i>
-                            <span>{{ 'nav.bcm_hub'|trans|default('BCM Hub') }}</span>
+                            <span>{{ 'nav.bcm_hub'|trans({}, 'nav')|default('BCM Hub') }}</span>
                             <i class="bi bi-chevron-down submenu-icon" data-sidebar-dropdown-target="icon" aria-hidden="true"></i>
                         </a>
                         <ul class="submenu" data-sidebar-dropdown-target="submenu">
                             <li><a href="{{ path('app_business_process_index') }}" class="{% if current_route starts with 'app_business_process_' %}active{% endif %}" data-turbo-action="advance">
                                 <i class="bi bi-diagram-2" aria-hidden="true"></i>
-                                <span>{{ 'nav.bcm'|trans }}</span>
+                                <span>{{ 'nav.bcm'|trans({}, 'nav') }}</span>
                             </a></li>
                             <li><a href="{{ path('app_bc_plan_index') }}" class="{% if current_route starts with 'app_bc_plan_' %}active{% endif %}" data-turbo-action="advance">
                                 <i class="bi bi-file-earmark-text" aria-hidden="true"></i>
-                                <span>{{ 'nav.bc_plans'|trans }}</span>
+                                <span>{{ 'nav.bc_plans'|trans({}, 'nav') }}</span>
                             </a></li>
                             <li><a href="{{ path('app_bc_exercise_index') }}" class="{% if current_route starts with 'app_bc_exercise_' %}active{% endif %}" data-turbo-action="advance">
                                 <i class="bi bi-flag" aria-hidden="true"></i>
-                                <span>{{ 'nav.bc_exercises'|trans }}</span>
+                                <span>{{ 'nav.bc_exercises'|trans({}, 'nav') }}</span>
                             </a></li>
                             <li><a href="{{ path('app_crisis_team_index') }}" class="{% if current_route starts with 'app_crisis_team_' %}active{% endif %}" data-turbo-action="advance">
                                 <i class="bi bi-person-badge" aria-hidden="true"></i>
-                                <span>{{ 'nav.crisis_team'|trans|default('Crisis Team') }}</span>
+                                <span>{{ 'nav.crisis_team'|trans({}, 'nav')|default('Crisis Team') }}</span>
                             </a></li>
                         </ul>
                     </li>
                     {% endif %}
 
                     {# Privacy / Datenschutz (GDPR) #}
-                    <li class="nav-divider">{{ 'nav.section.privacy'|trans|default('Privacy / Datenschutz') }}</li>
+                    <li class="nav-divider">{{ 'nav.section.privacy'|trans({}, 'nav')|default('Privacy / Datenschutz') }}</li>
                     <li class="has-submenu" data-controller="sidebar-dropdown" data-sidebar-dropdown-key-value="sidebar-privacy-expanded">
                         <a href="{{ path('app_processing_activity_index') }}"
                            class="submenu-toggle {% if current_route starts with 'app_processing_activity_' or current_route starts with 'app_dpia_' or current_route starts with 'app_data_breach_' %}active{% endif %}"
@@ -248,77 +248,77 @@
                            data-sidebar-dropdown-target="toggle"
                            aria-expanded="false">
                             <i class="bi bi-shield-lock" aria-hidden="true"></i>
-                            <span>{{ 'nav.privacy_hub'|trans|default('Privacy Hub') }}</span>
+                            <span>{{ 'nav.privacy_hub'|trans({}, 'nav')|default('Privacy Hub') }}</span>
                             <i class="bi bi-chevron-down submenu-icon" data-sidebar-dropdown-target="icon" aria-hidden="true"></i>
                         </a>
                         <ul class="submenu" data-sidebar-dropdown-target="submenu">
                             <li><a href="{{ path('app_processing_activity_index') }}" class="{% if current_route starts with 'app_processing_activity_' %}active{% endif %}" data-turbo-action="advance">
                                 <i class="bi bi-journal-text" aria-hidden="true"></i>
-                                <span>{{ 'nav.vvt'|trans|default('VVT (Art. 30)') }}</span>
+                                <span>{{ 'nav.vvt'|trans({}, 'nav')|default('VVT (Art. 30)') }}</span>
                             </a></li>
                             <li><a href="{{ path('app_dpia_index') }}" class="{% if current_route starts with 'app_dpia_' %}active{% endif %}" data-turbo-action="advance">
                                 <i class="bi bi-clipboard-check" aria-hidden="true"></i>
-                                <span>{{ 'nav.dpia'|trans|default('DPIA (Art. 35)') }}</span>
+                                <span>{{ 'nav.dpia'|trans({}, 'nav')|default('DPIA (Art. 35)') }}</span>
                             </a></li>
                             <li><a href="{{ path('app_data_breach_index') }}" class="{% if current_route starts with 'app_data_breach_' %}active{% endif %}" data-turbo-action="advance">
                                 <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
-                                <span>{{ 'nav.data_breaches'|trans|default('Data Breaches (Art. 33/34)') }}</span>
+                                <span>{{ 'nav.data_breaches'|trans({}, 'nav')|default('Data Breaches (Art. 33/34)') }}</span>
                             </a></li>
                         </ul>
                     </li>
 
                     {# Operations #}
                     {% if is_module_active('core') or is_module_active('incidents') %}
-                    <li class="nav-divider">{{ 'nav.section.operations'|trans }}</li>
+                    <li class="nav-divider">{{ 'nav.section.operations'|trans({}, 'nav') }}</li>
                     {% endif %}
                     {% if is_module_active('core') %}
                     <li><a href="{{ path('app_document_index') }}" class="{% if current_route starts with 'app_document_' %}active{% endif %}" data-turbo-action="advance">
                         <i class="bi bi-file-earmark-text" aria-hidden="true"></i>
-                        <span>{{ 'nav.documents'|trans }}</span>
+                        <span>{{ 'nav.documents'|trans({}, 'nav') }}</span>
                     </a></li>
                     <li><a href="{{ path('app_change_request_index') }}" class="{% if current_route starts with 'app_change_request_' %}active{% endif %}" data-turbo-action="advance">
                         <i class="bi bi-arrow-left-right" aria-hidden="true"></i>
-                        <span>{{ 'nav.change_requests'|trans }}</span>
+                        <span>{{ 'nav.change_requests'|trans({}, 'nav') }}</span>
                     </a></li>
                     <li><a href="{{ path('app_workflow_index') }}" class="{% if current_route starts with 'app_workflow_' %}active{% endif %}" data-turbo-action="advance">
                         <i class="bi bi-diagram-3" aria-hidden="true"></i>
-                        <span>{{ 'nav.workflows'|trans|default('Workflows') }}</span>
+                        <span>{{ 'nav.workflows'|trans({}, 'nav')|default('Workflows') }}</span>
                     </a></li>
                     {% endif %}
                     {% if is_module_active('incidents') %}
                     <li><a href="{{ path('app_incident_index') }}" class="{% if current_route starts with 'app_incident_' %}active{% endif %}" data-turbo-action="advance">
                         <i class="bi bi-bug" aria-hidden="true"></i>
-                        <span>{{ 'nav.incidents'|trans }}</span>
+                        <span>{{ 'nav.incidents'|trans({}, 'nav') }}</span>
                     </a></li>
                     {% endif %}
                     {% if is_granted('ROLE_MANAGER') %}
                     <li><a href="{{ path('app_vulnerability_index') }}" class="{% if current_route starts with 'app_vulnerability_' %}active{% endif %}" data-turbo-action="advance">
                         <i class="bi bi-bug-fill" aria-hidden="true"></i>
-                        <span>{{ 'nav.vulnerabilities'|trans }}</span>
+                        <span>{{ 'nav.vulnerabilities'|trans({}, 'nav') }}</span>
                     </a></li>
                     <li><a href="{{ path('app_patch_index') }}" class="{% if current_route starts with 'app_patch_' %}active{% endif %}" data-turbo-action="advance">
                         <i class="bi bi-bandaid-fill" aria-hidden="true"></i>
-                        <span>{{ 'nav.patches'|trans }}</span>
+                        <span>{{ 'nav.patches'|trans({}, 'nav') }}</span>
                     </a></li>
                     {% endif %}
 
                     {# Compliance #}
                     {% if is_module_active('audits') or is_module_active('compliance') or is_module_active('audit_logging') %}
-                    <li class="nav-divider">{{ 'nav.section.compliance'|trans }}</li>
+                    <li class="nav-divider">{{ 'nav.section.compliance'|trans({}, 'nav') }}</li>
                     {% endif %}
                     {% if is_module_active('audits') %}
                     <li><a href="{{ path('app_audit_index') }}" class="{% if current_route starts with 'app_audit_' and not current_route starts with 'app_audit_log_' %}active{% endif %}" data-turbo-action="advance">
                         <i class="bi bi-clipboard-check" aria-hidden="true"></i>
-                        <span>{{ 'nav.audits'|trans }}</span>
+                        <span>{{ 'nav.audits'|trans({}, 'nav') }}</span>
                     </a></li>
                     {% endif %}
                     <li><a href="{{ path('app_training_index') }}" class="{% if current_route starts with 'app_training_' %}active{% endif %}" data-turbo-action="advance">
                         <i class="bi bi-book" aria-hidden="true"></i>
-                        <span>{{ 'nav.training'|trans|default('Training') }}</span>
+                        <span>{{ 'nav.training'|trans({}, 'nav')|default('Training') }}</span>
                     </a></li>
                     <li><a href="{{ path('app_management_review_index') }}" class="{% if current_route starts with 'app_management_review_' %}active{% endif %}" data-turbo-action="advance">
                         <i class="bi bi-clipboard2-check" aria-hidden="true"></i>
-                        <span>{{ 'nav.management_review'|trans|default('Management Review') }}</span>
+                        <span>{{ 'nav.management_review'|trans({}, 'nav')|default('Management Review') }}</span>
                     </a></li>
                     {% if is_module_active('compliance') and app.request.attributes.get('_route') is not same as('setup_wizard_index') and not (app.request.attributes.get('_route') starts with 'setup_step') %}
                     {% set compliance_frameworks = get_compliance_frameworks_quick() %}
@@ -330,17 +330,17 @@
                            data-sidebar-dropdown-target="toggle"
                            aria-expanded="false">
                             <i class="bi bi-check-circle" aria-hidden="true"></i>
-                            <span>{{ 'nav.compliance'|trans }}</span>
+                            <span>{{ 'nav.compliance'|trans({}, 'nav') }}</span>
                             <i class="bi bi-chevron-down submenu-icon" data-sidebar-dropdown-target="icon" aria-hidden="true"></i>
                         </a>
                         <ul class="submenu" data-sidebar-dropdown-target="submenu">
                             <li><a href="{{ path('app_compliance_index') }}" class="{% if current_route == 'app_compliance_index' %}active{% endif %}" data-turbo-action="advance">
                                 <i class="bi bi-grid" aria-hidden="true"></i>
-                                <span>{{ 'nav.compliance_overview'|trans|default('Overview') }}</span>
+                                <span>{{ 'nav.compliance_overview'|trans({}, 'nav')|default('Overview') }}</span>
                             </a></li>
                             {% if compliance_frameworks|length > 0 %}
                             <li class="submenu-divider">
-                                <span>{{ 'nav.frameworks'|trans|default('Frameworks') }}</span>
+                                <span>{{ 'nav.frameworks'|trans({}, 'nav')|default('Frameworks') }}</span>
                             </li>
                             {% for framework in compliance_frameworks %}
                             <li><a href="{{ path('app_compliance_framework', {id: framework.id}) }}"
@@ -354,19 +354,19 @@
                             {% endfor %}
                             {% endif %}
                             <li class="submenu-divider">
-                                <span>{{ 'nav.tools'|trans|default('Tools') }}</span>
+                                <span>{{ 'nav.tools'|trans({}, 'nav')|default('Tools') }}</span>
                             </li>
                             <li><a href="{{ path('app_compliance_cross_framework') }}" class="{% if current_route == 'app_compliance_cross_framework' %}active{% endif %}" data-turbo-action="advance">
                                 <i class="bi bi-link-45deg" aria-hidden="true"></i>
-                                <span>{{ 'nav.cross_framework'|trans|default('Cross-Framework') }}</span>
+                                <span>{{ 'nav.cross_framework'|trans({}, 'nav')|default('Cross-Framework') }}</span>
                             </a></li>
                             <li><a href="{{ path('app_compliance_compare') }}" class="{% if current_route == 'app_compliance_compare' %}active{% endif %}" data-turbo-action="advance">
                                 <i class="bi bi-columns" aria-hidden="true"></i>
-                                <span>{{ 'nav.compare'|trans|default('Compare') }}</span>
+                                <span>{{ 'nav.compare'|trans({}, 'nav')|default('Compare') }}</span>
                             </a></li>
                             <li><a href="{{ path('app_mapping_quality_dashboard') }}" class="{% if current_route starts with 'app_mapping_quality_' %}active{% endif %}" data-turbo-action="advance">
                                 <i class="bi bi-star-half" aria-hidden="true"></i>
-                                <span>{{ 'nav.mapping_quality'|trans|default('Mapping Quality') }}</span>
+                                <span>{{ 'nav.mapping_quality'|trans({}, 'nav')|default('Mapping Quality') }}</span>
                             </a></li>
                         </ul>
                     </li>
@@ -374,22 +374,22 @@
                     {% if is_module_active('audit_logging') %}
                     <li><a href="{{ path('app_audit_log_index') }}" class="{% if current_route starts with 'app_audit_log_' %}active{% endif %}" data-turbo-action="advance">
                         <i class="bi bi-journal-text" aria-hidden="true"></i>
-                        <span>{{ 'nav.audit_log'|trans }}</span>
+                        <span>{{ 'nav.audit_log'|trans({}, 'nav') }}</span>
                     </a></li>
                     {% endif %}
                     {% if is_granted('ROLE_MANAGER') and is_nis2_active() %}
                     <li><a href="{{ path('app_nis2_compliance_dashboard') }}" class="{% if current_route starts with 'app_nis2_compliance_' %}active{% endif %}" data-turbo-action="advance">
                         <i class="bi bi-shield-fill-exclamation" aria-hidden="true"></i>
-                        <span>{{ 'nav.nis2_dashboard'|trans }}</span>
+                        <span>{{ 'nav.nis2_dashboard'|trans({}, 'nav') }}</span>
                     </a></li>
                     {% endif %}
 
                     {% if is_granted('ROLE_ADMIN') %}
                     {# Admin #}
-                    <li class="nav-divider">{{ 'nav.section.admin'|trans }}</li>
+                    <li class="nav-divider">{{ 'nav.section.admin'|trans({}, 'nav') }}</li>
                     <li><a href="{{ path('admin_dashboard') }}" class="{% if current_route starts with 'admin_' or current_route starts with 'user_management_' or current_route starts with 'role_management_' or current_route starts with 'tenant_management_' %}active{% endif %}" data-turbo-action="advance">
                         <i class="bi bi-gear-fill" aria-hidden="true"></i>
-                        <span>{{ 'nav.admin_portal'|trans }}</span>
+                        <span>{{ 'nav.admin_portal'|trans({}, 'nav') }}</span>
                     </a></li>
                     {% endif %}
                 </ul>
@@ -407,7 +407,7 @@
                             {% for message in messages %}
                                 <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
                                     {{ message|raw }}
-                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'common.close'|trans }}"></button>
                                 </div>
                             {% endfor %}
                         {% endfor %}
@@ -460,8 +460,8 @@
     <script>
         window.translations = {
             dashboard: {
-                settings_imported: "{{ 'dashboard.success.settings_imported'|trans|raw }}",
-                import_failed: "{{ 'dashboard.error.import_failed'|trans|raw }}"
+                settings_imported: "{{ 'dashboard.success.settings_imported'|trans({}, 'dashboard')|raw }}",
+                import_failed: "{{ 'dashboard.error.import_failed'|trans({}, 'dashboard')|raw }}"
             },
             preferences: {
                 imported: "{{ 'preferences.success.imported'|trans|raw }}",

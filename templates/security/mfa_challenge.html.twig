@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ 'mfa.challenge.title'|trans }}{% endblock %}
+{% block title %}{{ 'mfa.challenge.title'|trans({}, 'mfa') }}{% endblock %}
 
 {% block body %}
 <div class="container">
@@ -10,7 +10,7 @@
                 <div class="card-header bg-primary text-white">
                     <h4 class="mb-0">
                         <i class="bi bi-shield-lock" aria-hidden="true"></i>
-                        {{ 'mfa.challenge.title'|trans }}
+                        {{ 'mfa.challenge.title'|trans({}, 'mfa') }}
                     </h4>
                 </div>
                 <div class="card-body">
@@ -22,13 +22,13 @@
                     {% endif %}
 
                     <p class="text-muted mb-4">
-                        {{ 'mfa.challenge.description'|trans }}
+                        {{ 'mfa.challenge.description'|trans({}, 'mfa') }}
                     </p>
 
                     <form method="post" action="{{ path('app_mfa_verify', {_locale: app.request.locale}) }}">
                         <div class="mb-3">
                             <label for="token_id" class="form-label">
-                                {{ 'mfa.challenge.device'|trans }}
+                                {{ 'mfa.challenge.device'|trans({}, 'mfa') }}
                             </label>
                             <select name="token_id" id="token_id" class="form-select" required>
                                 {% for token in mfaTokens %}
@@ -40,19 +40,19 @@
                                         {% endif %}
                                         {{ token.deviceName }}
                                         {% if token.isPrimary %}
-                                            ({{ 'mfa.token.primary'|trans }})
+                                            ({{ 'mfa.token.primary'|trans({}, 'mfa') }})
                                         {% endif %}
                                     </option>
                                 {% endfor %}
                             </select>
                             <small class="form-text text-muted">
-                                {{ 'mfa.challenge.device_help'|trans }}
+                                {{ 'mfa.challenge.device_help'|trans({}, 'mfa') }}
                             </small>
                         </div>
 
                         <div class="mb-3">
                             <label for="code" class="form-label">
-                                {{ 'mfa.challenge.code'|trans }}
+                                {{ 'mfa.challenge.code'|trans({}, 'mfa') }}
                             </label>
                             <input
                                 type="text"
@@ -68,7 +68,7 @@
                                 required
                             >
                             <small class="form-text text-muted">
-                                {{ 'mfa.challenge.code_help'|trans }}
+                                {{ 'mfa.challenge.code_help'|trans({}, 'mfa') }}
                             </small>
                         </div>
 
@@ -78,7 +78,7 @@
                                     data-controller="button-loading"
                                     data-action="button-loading#start">
                                 <i class="bi bi-check-circle" aria-hidden="true"></i>
-                                {{ 'mfa.challenge.verify'|trans }}
+                                {{ 'mfa.challenge.verify'|trans({}, 'mfa') }}
                             </button>
                         </div>
                     </form>
@@ -87,14 +87,14 @@
 
                     <div class="text-center">
                         <p class="text-muted small mb-2">
-                            {{ 'mfa.challenge.backup_code_hint'|trans }}
+                            {{ 'mfa.challenge.backup_code_hint'|trans({}, 'mfa') }}
                         </p>
                         <details class="small">
                             <summary class="text-primary" style="cursor: pointer;">
-                                {{ 'mfa.challenge.using_backup_code'|trans }}
+                                {{ 'mfa.challenge.using_backup_code'|trans({}, 'mfa') }}
                             </summary>
                             <div class="mt-2 text-muted">
-                                <p>{{ 'mfa.challenge.backup_code_info'|trans }}</p>
+                                <p>{{ 'mfa.challenge.backup_code_info'|trans({}, 'mfa') }}</p>
                             </div>
                         </details>
                     </div>
@@ -104,20 +104,20 @@
                     <div class="text-center">
                         <a href="{{ path('app_logout') }}" class="btn btn-link btn-sm text-danger">
                             <i class="bi bi-box-arrow-right" aria-hidden="true"></i>
-                            {{ 'mfa.challenge.cancel'|trans }}
+                            {{ 'mfa.challenge.cancel'|trans({}, 'mfa') }}
                         </a>
                     </div>
                 </div>
                 <div class="card-footer text-muted small text-center">
                     <i class="bi bi-shield-check" aria-hidden="true"></i>
-                    {{ 'mfa.challenge.nis2_compliance'|trans }}
+                    {{ 'mfa.challenge.nis2_compliance'|trans({}, 'mfa') }}
                 </div>
             </div>
 
             <div class="alert alert-info mt-3">
                 <i class="bi bi-info-circle" aria-hidden="true"></i>
-                <strong>{{ 'mfa.challenge.help_title'|trans }}</strong><br>
-                {{ 'mfa.challenge.help_text'|trans }}
+                <strong>{{ 'mfa.challenge.help_title'|trans({}, 'mfa') }}</strong><br>
+                {{ 'mfa.challenge.help_text'|trans({}, 'mfa') }}
             </div>
         </div>
     </div>

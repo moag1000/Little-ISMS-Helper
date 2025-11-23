@@ -219,7 +219,7 @@
                 <input type="hidden" name="_token" value="{{ csrf_token('approve' ~ dpia.id) }}">
                 <div class="modal-header">
                     <h5 class="modal-title">Approve DPIA</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
@@ -244,7 +244,7 @@
                 <input type="hidden" name="_token" value="{{ csrf_token('reject' ~ dpia.id) }}">
                 <div class="modal-header">
                     <h5 class="modal-title">Reject DPIA</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
@@ -269,7 +269,7 @@
                 <input type="hidden" name="_token" value="{{ csrf_token('revision' ~ dpia.id) }}">
                 <div class="modal-header">
                     <h5 class="modal-title">Request Revision</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">

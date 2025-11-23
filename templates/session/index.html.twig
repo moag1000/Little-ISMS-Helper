@@ -1,8 +1,8 @@
 {% extends 'admin/layout.html.twig' %}
 
-{% block admin_title %}{{ 'session.list'|trans }}{% endblock %}
+{% block admin_title %}{{ 'session.list'|trans({}, 'session') }}{% endblock %}
 {% block admin_subtitle %}
-    <p class="text-muted">{{ 'session.subtitle'|trans }}</p>
+    <p class="text-muted">{{ 'session.subtitle'|trans({}, 'session') }}</p>
 {% endblock %}
 
 {% block breadcrumb_items %}
@@ -15,7 +15,7 @@
         <div class="col-md-3">
             <div class="card border-primary">
                 <div class="card-body text-center">
-                    <h5 class="card-title text-muted">{{ 'session.statistics.total'|trans }}</h5>
+                    <h5 class="card-title text-muted">{{ 'session.statistics.total'|trans({}, 'session') }}</h5>
                     <p class="display-6 text-primary">{{ statistics.total_active }}</p>
                     <small>Aktive Sitzungen</small>
                 </div>
@@ -24,7 +24,7 @@
         <div class="col-md-3">
             <div class="card border-success">
                 <div class="card-body text-center">
-                    <h5 class="card-title text-muted">{{ 'session.statistics.today'|trans }}</h5>
+                    <h5 class="card-title text-muted">{{ 'session.statistics.today'|trans({}, 'session') }}</h5>
                     <p class="display-6 text-success">{{ statistics.total_last_24h }}</p>
                     <small>Letzte 24h</small>
                 </div>
@@ -94,11 +94,11 @@
             } %}
                 {% block table_head %}
                     <tr>
-                        <th scope="col">{{ 'session.user_name'|trans }}</th>
-                        <th scope="col">{{ 'session.ip_address'|trans }}</th>
+                        <th scope="col">{{ 'session.user_name'|trans({}, 'session') }}</th>
+                        <th scope="col">{{ 'session.ip_address'|trans({}, 'session') }}</th>
                         <th scope="col">User Agent</th>
-                        <th scope="col">{{ 'session.last_activity'|trans }}</th>
-                        <th scope="col">{{ 'session.session_start'|trans }}</th>
+                        <th scope="col">{{ 'session.last_activity'|trans({}, 'session') }}</th>
+                        <th scope="col">{{ 'session.session_start'|trans({}, 'session') }}</th>
                         <th scope="col">Dauer</th>
                         <th scope="col" class="text-end">Aktionen</th>
                     </tr>

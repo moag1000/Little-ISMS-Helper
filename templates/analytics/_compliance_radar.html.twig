@@ -61,10 +61,10 @@
                 } %}
                     {% block table_head %}
                         <tr>
-                            <th scope="col">{{ 'analytics.table.annex'|trans }}</th>
-                            <th scope="col">{{ 'analytics.table.implemented'|trans }}</th>
-                            <th scope="col">{{ 'analytics.table.total'|trans }}</th>
-                            <th scope="col">{{ 'analytics.table.compliance'|trans }}</th>
+                            <th scope="col">{{ 'analytics.table.annex'|trans({}, 'analytics') }}</th>
+                            <th scope="col">{{ 'analytics.table.implemented'|trans({}, 'analytics') }}</th>
+                            <th scope="col">{{ 'analytics.table.total'|trans({}, 'analytics') }}</th>
+                            <th scope="col">{{ 'analytics.table.compliance'|trans({}, 'analytics') }}</th>
                         </tr>
                     {% endblock %}
                     {% block table_body_attrs %}data-radar-chart-target="detailsTable"{% endblock %}

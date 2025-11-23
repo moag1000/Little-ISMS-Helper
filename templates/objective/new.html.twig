@@ -24,19 +24,22 @@
                         {% include '_components/_form_field.html.twig' with {
                             'field': form.title,
                             'label': form.title.vars.label|default('objectives.field.title'|trans),
-                            'required': true
+                            'required': true,
+                            'domain': 'objectives'
                         } %}
                     </div>
                     <div class="col-md-4">
                         {% include '_components/_form_field.html.twig' with {
                             'field': form.category,
-                            'label': form.category.vars.label|default('objectives.field.category'|trans)
+                            'label': form.category.vars.label|default('objectives.field.category'|trans),
+                            'domain': 'objectives'
                         } %}
                     </div>
                     <div class="col-md-12">
                         {% include '_components/_form_field.html.twig' with {
                             'field': form.description,
-                            'label': form.description.vars.label|default('objectives.field.description'|trans)
+                            'label': form.description.vars.label|default('objectives.field.description'|trans),
+                            'domain': 'objectives'
                         } %}
                     </div>
                 </div>
@@ -53,25 +56,29 @@
                     <div class="col-md-12">
                         {% include '_components/_form_field.html.twig' with {
                             'field': form.measurableIndicators,
-                            'label': form.measurableIndicators.vars.label|default('objectives.field.measurable_indicators'|trans)
+                            'label': form.measurableIndicators.vars.label|default('objectives.field.measurable_indicators'|trans),
+                            'domain': 'objectives'
                         } %}
                     </div>
                     <div class="col-md-4">
                         {% include '_components/_form_field.html.twig' with {
                             'field': form.targetValue,
-                            'label': form.targetValue.vars.label|default('objectives.field.target_value'|trans)
+                            'label': form.targetValue.vars.label|default('objectives.field.target_value'|trans),
+                            'domain': 'objectives'
                         } %}
                     </div>
                     <div class="col-md-4">
                         {% include '_components/_form_field.html.twig' with {
                             'field': form.currentValue,
-                            'label': form.currentValue.vars.label|default('objectives.field.current_value'|trans)
+                            'label': form.currentValue.vars.label|default('objectives.field.current_value'|trans),
+                            'domain': 'objectives'
                         } %}
                     </div>
                     <div class="col-md-4">
                         {% include '_components/_form_field.html.twig' with {
                             'field': form.unit,
-                            'label': form.unit.vars.label|default('objectives.field.unit'|trans)
+                            'label': form.unit.vars.label|default('objectives.field.unit'|trans),
+                            'domain': 'objectives'
                         } %}
                     </div>
                 </div>
@@ -88,13 +95,15 @@
                     <div class="col-md-6">
                         {% include '_components/_form_field.html.twig' with {
                             'field': form.responsiblePerson,
-                            'label': form.responsiblePerson.vars.label|default('objectives.field.responsible_person'|trans)
+                            'label': form.responsiblePerson.vars.label|default('objectives.field.responsible_person'|trans),
+                            'domain': 'objectives'
                         } %}
                     </div>
                     <div class="col-md-6">
                         {% include '_components/_form_field.html.twig' with {
                             'field': form.targetDate,
-                            'label': form.targetDate.vars.label|default('objectives.field.target_date'|trans)
+                            'label': form.targetDate.vars.label|default('objectives.field.target_date'|trans),
+                            'domain': 'objectives'
                         } %}
                     </div>
                 </div>
@@ -111,13 +120,15 @@
                     <div class="col-md-12">
                         {% include '_components/_form_field.html.twig' with {
                             'field': form.status,
-                            'label': form.status.vars.label|default('objectives.field.status'|trans)
+                            'label': form.status.vars.label|default('objectives.field.status'|trans),
+                            'domain': 'objectives'
                         } %}
                     </div>
                     <div class="col-md-12">
                         {% include '_components/_form_field.html.twig' with {
                             'field': form.progressNotes,
-                            'label': form.progressNotes.vars.label|default('objectives.field.progress_notes'|trans)
+                            'label': form.progressNotes.vars.label|default('objectives.field.progress_notes'|trans),
+                            'domain': 'objectives'
                         } %}
                     </div>
                 </div>

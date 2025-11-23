@@ -8,7 +8,7 @@
     {# Breadcrumb Navigation #}
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
-            { label: 'nav.dashboard'|trans({}, 'messages'), url: path('app_dashboard') },
+            { label: 'nav.dashboard'|trans({}, 'nav', 'nav'), url: path('app_dashboard') },
             { label: 'context_management.title'|trans }
         ]
     } %}

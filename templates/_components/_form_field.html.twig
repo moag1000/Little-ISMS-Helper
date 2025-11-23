@@ -30,7 +30,7 @@
 <div class="form-group mb-3">
     {# Label with required indicator #}
     <label for="{{ field_id }}" class="form-label">
-        {{ label }}
+        {{ label|trans }}
         {% if is_required %}
             <span class="required" aria-label="{{ 'form.required'|trans }}">*</span>
         {% endif %}

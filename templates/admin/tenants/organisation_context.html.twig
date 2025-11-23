@@ -1,13 +1,13 @@
 {% extends 'admin/layout.html.twig' %}
 
 {% block admin_title %}
-    {{ 'tenant.organisation_context.title'|trans }}
+    {{ 'tenant.organisation_context.title'|trans({}, 'tenant') }}
 {% endblock %}
 
 {% block breadcrumb_items %}
-    <li class="breadcrumb-item"><a href="{{ path('tenant_management_index') }}">{{ 'tenant.title'|trans }}</a></li>
+    <li class="breadcrumb-item"><a href="{{ path('tenant_management_index') }}">{{ 'tenant.title'|trans({}, 'tenant') }}</a></li>
     <li class="breadcrumb-item"><a href="{{ path('tenant_management_show', {id: tenant.id}) }}">{{ tenant.code }}</a></li>
-    <li class="breadcrumb-item active">{{ 'tenant.organisation_context.title'|trans }}</li>
+    <li class="breadcrumb-item active">{{ 'tenant.organisation_context.title'|trans({}, 'tenant') }}</li>
 {% endblock %}
 
 {% block admin_content %}
@@ -17,21 +17,21 @@
                 <div class="card-header bg-white">
                     <h3 class="card-title mb-0">
                         <i class="bi bi-building-gear text-primary" aria-hidden="true"></i>
-                        {{ 'tenant.organisation_context.header'|trans }}
+                        {{ 'tenant.organisation_context.header'|trans({}, 'tenant') }}
                     </h5>
                 </div>
                 <div class="card-body">
                     <p class="text-muted mb-4">
-                        {{ 'tenant.organisation_context.description'|trans }}
+                        {{ 'tenant.organisation_context.description'|trans({}, 'tenant') }}
                     </p>
 
                     {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
 
                     {# Organisation Name (read-only, from tenant) #}
                     <div class="mb-3">
-                        <label class="form-label" for="tenant-name-display">{{ 'tenant.field.name'|trans }}</label>
+                        <label class="form-label" for="tenant-name-display">{{ 'tenant.field.name'|trans({}, 'tenant') }}</label>
                         <input type="text" class="form-control" id="tenant-name-display" value="{{ tenant.name }}" disabled>
-                        <div class="form-text">{{ 'tenant.organisation_context.name_info'|trans }}</div>
+                        <div class="form-text">{{ 'tenant.organisation_context.name_info'|trans({}, 'tenant') }}</div>
                     </div>
 
                     {# Industries Multi-Select #}
@@ -39,7 +39,7 @@
                         <div class="col-md-12">
                             {% include '_components/_form_field.html.twig' with {
                                 'field': form.industries,
-                                'label': form.industries.vars.label|default('tenant.organisation_context.field.industries'|trans)
+                                'label': form.industries.vars.label|default('tenant.organisation_context.field.industries'|trans({}, 'tenant'))
                             } %}
                         </div>
                     </div>
@@ -48,13 +48,13 @@
                         <div class="col-md-6">
                             {% include '_components/_form_field.html.twig' with {
                                 'field': form.employee_count,
-                                'label': form.employee_count.vars.label|default('tenant.organisation_context.field.employee_count'|trans)
+                                'label': form.employee_count.vars.label|default('tenant.organisation_context.field.employee_count'|trans({}, 'tenant'))
                             } %}
                         </div>
                         <div class="col-md-6">
                             {% include '_components/_form_field.html.twig' with {
                                 'field': form.country,
-                                'label': form.country.vars.label|default('tenant.organisation_context.field.country'|trans)
+                                'label': form.country.vars.label|default('tenant.organisation_context.field.country'|trans({}, 'tenant'))
                             } %}
                         </div>
                     </div>
@@ -63,7 +63,7 @@
                         <div class="col-md-12">
                             {% include '_components/_form_field.html.twig' with {
                                 'field': form.description,
-                                'label': form.description.vars.label|default('tenant.organisation_context.field.description'|trans)
+                                'label': form.description.vars.label|default('tenant.organisation_context.field.description'|trans({}, 'tenant'))
                             } %}
                         </div>
                     </div>
@@ -73,30 +73,30 @@
                     <div class="alert alert-info">
                         <h4 class="alert-heading">
                             <i class="bi bi-info-circle me-2" aria-hidden="true"></i>
-                            {{ 'tenant.organisation_context.current_config'|trans }}
+                            {{ 'tenant.organisation_context.current_config'|trans({}, 'tenant') }}
                         </h6>
                         <ul class="mb-0">
                             {% if current_settings.selected_modules is defined and current_settings.selected_modules %}
                             <li>
-                                <strong>{{ 'tenant.organisation_context.active_modules'|trans }}:</strong>
+                                <strong>{{ 'tenant.organisation_context.active_modules'|trans({}, 'tenant') }}:</strong>
                                 {{ current_settings.selected_modules|join(', ') }}
                             </li>
                             {% endif %}
                             {% if current_settings.selected_frameworks is defined and current_settings.selected_frameworks %}
                             <li>
-                                <strong>{{ 'tenant.organisation_context.active_frameworks'|trans }}:</strong>
+                                <strong>{{ 'tenant.organisation_context.active_frameworks'|trans({}, 'tenant') }}:</strong>
                                 {{ current_settings.selected_frameworks|join(', ') }}
                             </li>
                             {% endif %}
                             {% if current_settings.setup_completed_at is defined %}
                             <li>
-                                <strong>{{ 'tenant.organisation_context.setup_date'|trans }}:</strong>
+                                <strong>{{ 'tenant.organisation_context.setup_date'|trans({}, 'tenant') }}:</strong>
                                 {{ current_settings.setup_completed_at|date('d.m.Y H:i') }}
                             </li>
                             {% endif %}
                             {% if current_settings.last_modified_at is defined %}
                             <li>
-                                <strong>{{ 'tenant.organisation_context.last_modified'|trans }}:</strong>
+                                <strong>{{ 'tenant.organisation_context.last_modified'|trans({}, 'tenant') }}:</strong>
                                 {{ current_settings.last_modified_at|date('d.m.Y H:i') }}
                             </li>
                             {% endif %}
@@ -107,8 +107,8 @@
                     {# Impact Warning #}
                     <div class="alert alert-warning">
                         <i class="bi bi-exclamation-triangle me-2" aria-hidden="true"></i>
-                        <strong>{{ 'tenant.organisation_context.impact_warning.title'|trans }}</strong>
-                        <p class="mb-0 mt-2">{{ 'tenant.organisation_context.impact_warning.message'|trans }}</p>
+                        <strong>{{ 'tenant.organisation_context.impact_warning.title'|trans({}, 'tenant') }}</strong>
+                        <p class="mb-0 mt-2">{{ 'tenant.organisation_context.impact_warning.message'|trans({}, 'tenant') }}</p>
                     </div>
 
                     {# Form Actions #}
@@ -135,18 +135,18 @@
                 <div class="card-header bg-info bg-opacity-10">
                     <h6 class="card-title mb-0">
                         <i class="bi bi-lightbulb text-info me-2" aria-hidden="true"></i>
-                        {{ 'tenant.organisation_context.info.title'|trans }}
+                        {{ 'tenant.organisation_context.info.title'|trans({}, 'tenant') }}
                     </h6>
                 </div>
                 <div class="card-body">
                     <p class="small text-muted">
-                        {{ 'tenant.organisation_context.info.description'|trans }}
+                        {{ 'tenant.organisation_context.info.description'|trans({}, 'tenant') }}
                     </p>
                     <ul class="small text-muted mb-0">
-                        <li>{{ 'tenant.organisation_context.info.industries'|trans }}</li>
-                        <li>{{ 'tenant.organisation_context.info.size'|trans }}</li>
-                        <li>{{ 'tenant.organisation_context.info.country'|trans }}</li>
-                        <li>{{ 'tenant.organisation_context.info.corporate'|trans }}</li>
+                        <li>{{ 'tenant.organisation_context.info.industries'|trans({}, 'tenant') }}</li>
+                        <li>{{ 'tenant.organisation_context.info.size'|trans({}, 'tenant') }}</li>
+                        <li>{{ 'tenant.organisation_context.info.country'|trans({}, 'tenant') }}</li>
+                        <li>{{ 'tenant.organisation_context.info.corporate'|trans({}, 'tenant') }}</li>
                     </ul>
                 </div>
             </div>
