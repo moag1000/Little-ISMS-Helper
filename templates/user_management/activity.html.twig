@@ -1,13 +1,13 @@
 {% extends 'admin/layout.html.twig' %}
 
-{% block title %}{{ user.fullName }} - {{ 'user.activity.title'|trans }}{% endblock %}
+{% block title %}{{ user.fullName }} - {{ 'user.activity.title'|trans({}, 'users') }}{% endblock %}
 
 {% block admin_content %}
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1>
             <i class="bi bi-activity" aria-hidden="true"></i>
-            {{ 'user.activity.title'|trans }}: {{ user.fullName }}
+            {{ 'user.activity.title'|trans({}, 'users') }}: {{ user.fullName }}
         </h1>
         <a href="{{ path('user_management_show', {id: user.id}) }}" class="btn btn-outline-secondary">
             <i class="bi bi-arrow-left" aria-hidden="true"></i> Zurück
@@ -19,7 +19,7 @@
         <div class="col-md-6">
             <div class="card border-primary">
                 <div class="card-body text-center">
-                    <h5 class="card-title text-muted">{{ 'user.activity.total'|trans }}</h5>
+                    <h5 class="card-title text-muted">{{ 'user.activity.total'|trans({}, 'users') }}</h5>
                     <p class="display-6 text-primary">{{ total_activities }}</p>
                 </div>
             </div>
@@ -27,7 +27,7 @@
         <div class="col-md-6">
             <div class="card border-info">
                 <div class="card-body">
-                    <h5 class="card-title text-muted">{{ 'user.activity.by_action'|trans }}</h5>
+                    <h5 class="card-title text-muted">{{ 'user.activity.by_action'|trans({}, 'users') }}</h5>
                     {% for action, count in action_counts %}
                         <div class="d-flex justify-content-between">
                             <span class="badge bg-primary">{{ action }}</span>

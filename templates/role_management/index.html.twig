@@ -48,7 +48,7 @@
             <th scope="col" class="text-center">{{ 'role_management.field.permissions'|trans({}, 'role_management') }}</th>
             <th scope="col" class="text-center">{{ 'role_management.field.users'|trans({}, 'role_management') }}</th>
             <th scope="col" class="text-center">{{ 'role_management.field.type'|trans({}, 'role_management') }}</th>
-            <th scope="col" class="text-center">{{ 'common.actions'|trans }}</th>
+            <th scope="col" class="text-center">{{ 'common.actions'|trans({}, 'messages') }}</th>
         </tr>
     {% endblock %}
     {% block table_body %}
@@ -83,10 +83,10 @@
             <td class="text-center">
                 <div class="btn-group btn-group-sm">
                     <a href="{{ path('role_management_show', {id: role.id}) }}" class="btn btn-outline-primary">
-                        👁 {{ 'common.view'|trans }}
+                        👁 {{ 'common.view'|trans({}, 'messages') }}
                     </a>
                     <a href="{{ path('role_management_edit', {id: role.id}) }}" class="btn btn-outline-secondary">
-                        ✏️ {{ 'common.edit'|trans }}
+                        ✏️ {{ 'common.edit'|trans({}, 'messages') }}
                     </a>
                 </div>
             </td>

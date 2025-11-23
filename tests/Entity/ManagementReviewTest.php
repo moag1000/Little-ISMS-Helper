@@ -4,6 +4,7 @@ namespace App\Tests\Entity;
 
 use App\Entity\ManagementReview;
 use App\Entity\User;
+use Doctrine\Common\Collections\Collection;
 use PHPUnit\Framework\TestCase;
 
 class ManagementReviewTest extends TestCase
@@ -15,7 +16,7 @@ class ManagementReviewTest extends TestCase
         $this->assertNull($review->getId());
         $this->assertNull($review->getTitle());
         $this->assertNull($review->getReviewDate());
-        $this->assertInstanceOf(\Doctrine\Common\Collections\Collection::class, $review->getParticipants());
+        $this->assertInstanceOf(Collection::class, $review->getParticipants());
         $this->assertCount(0, $review->getParticipants());
         $this->assertNull($review->getChangesRelevantToISMS());
         $this->assertNull($review->getFeedbackFromInterestedParties());
@@ -223,7 +224,8 @@ class ManagementReviewTest extends TestCase
 
         $review->setTitle('Annual ISMS Management Review 2024');
         $review->setReviewDate(new \DateTime('2024-12-15'));
-        $review->setParticipants('CEO, CIO, CISO, Compliance Team');
+        // Note: participants is a Collection, not a string property
+        // Skip setParticipants() as it doesn't exist (participants is a many-to-many relation)
         $review->setChangesRelevantToISMS('New NIS2 requirements, cloud migration');
         $review->setAuditResults('All audits passed successfully');
         $review->setPerformanceEvaluation('KPIs met or exceeded');
@@ -236,6 +238,7 @@ class ManagementReviewTest extends TestCase
         $this->assertEquals('completed', $review->getStatus());
         $this->assertStringContainsString('NIS2', $review->getChangesRelevantToISMS());
         $this->assertStringContainsString('Approve', $review->getDecisions());
+        $this->assertInstanceOf(Collection::class, $review->getParticipants());
     }
 
     public function testManagementReviewStatusLifecycle(): void

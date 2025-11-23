@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ 'setup.welcome.title'|trans }} - Deployment Wizard{% endblock %}
+{% block title %}{{ 'setup.welcome.title'|trans({}, 'messages') }} - Deployment Wizard{% endblock %}
 
 {% block body %}
 <div class="container mt-5">
@@ -20,15 +20,15 @@
                 <div class="card-header bg-primary text-white">
                     <h1 class="mb-0">
                         <i class="fas fa-magic me-2"></i>
-                        {{ 'setup.welcome.header'|trans }}
+                        {{ 'setup.welcome.header'|trans({}, 'messages') }}
                     </h1>
                 </div>
                 <div class="card-body p-5">
                     <div class="text-center mb-5">
                         <i class="fas fa-shield-alt text-primary" style="font-size: 4rem;"></i>
-                        <h2 class="mt-3">{{ 'setup.welcome.greeting'|trans }}</h2>
+                        <h2 class="mt-3">{{ 'setup.welcome.greeting'|trans({}, 'messages') }}</h2>
                         <p class="lead text-muted">
-                            {{ 'setup.welcome.description'|trans }}
+                            {{ 'setup.welcome.description'|trans({}, 'messages') }}
                         </p>
                     </div>
 
@@ -37,15 +37,15 @@
                             <div class="card h-100 border-primary">
                                 <div class="card-body">
                                     <i class="fas fa-list-check text-primary fa-2x mb-3"></i>
-                                    <h5>{{ 'setup.welcome.steps.title'|trans }}</h5>
+                                    <h5>{{ 'setup.welcome.steps.title'|trans({}, 'messages') }}</h5>
                                     <ul class="list-unstyled">
-                                        <li><i class="fas fa-check text-success me-2"></i>{{ 'setup.welcome.steps.database'|trans }}</li>
-                                        <li><i class="fas fa-check text-success me-2"></i>{{ 'setup.welcome.steps.admin'|trans }}</li>
-                                        <li><i class="fas fa-check text-success me-2"></i>{{ 'setup.welcome.steps.requirements'|trans }}</li>
-                                        <li><i class="fas fa-check text-success me-2"></i>{{ 'setup.welcome.steps.modules'|trans }}</li>
-                                        <li><i class="fas fa-check text-success me-2"></i>{{ 'setup.welcome.steps.migrations'|trans }}</li>
-                                        <li><i class="fas fa-check text-success me-2"></i>{{ 'setup.welcome.steps.base_data'|trans }}</li>
-                                        <li><i class="fas fa-check text-success me-2"></i>{{ 'setup.welcome.steps.sample_data'|trans }}</li>
+                                        <li><i class="fas fa-check text-success me-2"></i>{{ 'setup.welcome.steps.database'|trans({}, 'messages') }}</li>
+                                        <li><i class="fas fa-check text-success me-2"></i>{{ 'setup.welcome.steps.admin'|trans({}, 'messages') }}</li>
+                                        <li><i class="fas fa-check text-success me-2"></i>{{ 'setup.welcome.steps.requirements'|trans({}, 'messages') }}</li>
+                                        <li><i class="fas fa-check text-success me-2"></i>{{ 'setup.welcome.steps.modules'|trans({}, 'messages') }}</li>
+                                        <li><i class="fas fa-check text-success me-2"></i>{{ 'setup.welcome.steps.migrations'|trans({}, 'messages') }}</li>
+                                        <li><i class="fas fa-check text-success me-2"></i>{{ 'setup.welcome.steps.base_data'|trans({}, 'messages') }}</li>
+                                        <li><i class="fas fa-check text-success me-2"></i>{{ 'setup.welcome.steps.sample_data'|trans({}, 'messages') }}</li>
                                     </ul>
                                 </div>
                             </div>
@@ -54,12 +54,12 @@
                             <div class="card h-100 border-info">
                                 <div class="card-body">
                                     <i class="fas fa-clock text-info fa-2x mb-3"></i>
-                                    <h5>{{ 'setup.welcome.requirements.title'|trans }}</h5>
+                                    <h5>{{ 'setup.welcome.requirements.title'|trans({}, 'messages') }}</h5>
                                     <ul class="list-unstyled">
-                                        <li><i class="fas fa-hourglass-half text-info me-2"></i>{{ 'setup.welcome.requirements.duration'|trans }}</li>
-                                        <li><i class="fas fa-database text-info me-2"></i>{{ 'setup.welcome.requirements.database'|trans }}</li>
-                                        <li><i class="fas fa-server text-info me-2"></i>{{ 'setup.welcome.requirements.php'|trans }}</li>
-                                        <li><i class="fas fa-folder text-info me-2"></i>{{ 'setup.welcome.requirements.permissions'|trans }}</li>
+                                        <li><i class="fas fa-hourglass-half text-info me-2"></i>{{ 'setup.welcome.requirements.duration'|trans({}, 'messages') }}</li>
+                                        <li><i class="fas fa-database text-info me-2"></i>{{ 'setup.welcome.requirements.database'|trans({}, 'messages') }}</li>
+                                        <li><i class="fas fa-server text-info me-2"></i>{{ 'setup.welcome.requirements.php'|trans({}, 'messages') }}</li>
+                                        <li><i class="fas fa-folder text-info me-2"></i>{{ 'setup.welcome.requirements.permissions'|trans({}, 'messages') }}</li>
                                     </ul>
                                 </div>
                             </div>
@@ -70,15 +70,15 @@
                         <div class="card-body">
                             <h5 class="card-title">
                                 <i class="fas fa-info-circle me-2"></i>
-                                {{ 'setup.welcome.info.title'|trans }}
+                                {{ 'setup.welcome.info.title'|trans({}, 'messages') }}
                             </h5>
                             <p class="text-muted mb-2">
-                                {{ 'setup.welcome.info.description'|trans }}
+                                {{ 'setup.welcome.info.description'|trans({}, 'messages') }}
                             </p>
                             <ul class="mb-0">
-                                <li>{{ 'setup.welcome.info.point1'|trans }}</li>
-                                <li>{{ 'setup.welcome.info.point2'|trans }}</li>
-                                <li>{{ 'setup.welcome.info.point3'|trans }}</li>
+                                <li>{{ 'setup.welcome.info.point1'|trans({}, 'messages') }}</li>
+                                <li>{{ 'setup.welcome.info.point2'|trans({}, 'messages') }}</li>
+                                <li>{{ 'setup.welcome.info.point3'|trans({}, 'messages') }}</li>
                             </ul>
                         </div>
                     </div>
@@ -86,7 +86,7 @@
                     <div class="d-grid">
                         <a href="{{ path('setup_step1_requirements') }}" class="btn btn-lg btn-primary">
                             <i class="fas fa-play me-2"></i>
-                            {{ 'setup.welcome.start_button'|trans }}
+                            {{ 'setup.welcome.start_button'|trans({}, 'messages') }}
                         </a>
                     </div>
                 </div>

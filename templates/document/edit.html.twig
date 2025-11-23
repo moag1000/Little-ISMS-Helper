@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'documents' %}
 
-{% block title %}{{ 'document.edit'|trans }} - {{ parent() }}{% endblock %}
+{% block title %}{{ 'document.edit'|trans({}, 'documents') }} - {{ parent() }}{% endblock %}
 
 {% block body %}
 {# Breadcrumb Navigation #}
@@ -9,13 +9,13 @@
     breadcrumbs: [
         { label: 'nav.documents'|trans({}, 'nav', 'nav'), url: path('app_document_index'), icon: 'bi-file-earmark-text' },
         { label: document.name, url: path('app_document_show', {id: document.id}) },
-        { label: 'document.edit'|trans }
+        { label: 'document.edit'|trans({}, 'documents') }
     ]
 } %}
 
 {# Page Header #}
 {% include '_components/_page_header.html.twig' with {
-    title: 'document.edit'|trans ~ ': ' ~ document.name,
+    title: 'document.edit'|trans({}, 'documents') ~ ': ' ~ document.name,
     icon: 'bi-pencil',
     actions: [
         { label: 'common.back'|trans({}, 'messages'), url: path('app_document_show', {id: document.id}), variant: 'secondary', icon: 'bi-arrow-left' }
@@ -26,7 +26,7 @@
     <div class="card-body">
         {{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
             {% include 'document/_form.html.twig' with {
-                'button_label': 'document.action.update'|trans,
+                'button_label': 'document.action.update'|trans({}, 'documents'),
                 'button_icon': 'bi-check-circle',
                 'is_edit_mode': true
             } %}
@@ -44,7 +44,7 @@
     </div>
     <div class="card-body">
         <p class="text-muted">
-            {{ 'document.delete_warning'|trans|default('Das Löschen dieses Dokuments kann nicht rückgängig gemacht werden.') }}
+            {{ 'document.delete_warning'|trans({}, 'documents')|default('Das Löschen dieses Dokuments kann nicht rückgängig gemacht werden.') }}
         </p>
         {{ include('document/_delete_form.html.twig') }}
     </div>

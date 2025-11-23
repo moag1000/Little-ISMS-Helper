@@ -1,24 +1,24 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'incidents' %}
 
-{% block title %}{{ 'incident.modern.header.title'|trans }} - {{ 'app.title'|trans }}{% endblock %}
+{% block title %}{{ 'incident.modern.header.title'|trans({}, 'incidents') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
 {% block body %}
 {# Breadcrumb Navigation #}
 {% include '_components/_breadcrumb.html.twig' with {
     breadcrumbs: [
-        { label: 'incident.modern.breadcrumb'|trans }
+        { label: 'incident.modern.breadcrumb'|trans({}, 'incidents') }
     ]
 } %}
 
 {# Page Header with Actions #}
 {% include '_components/_page_header.html.twig' with {
-    title: 'incident.modern.header.title'|trans,
-    subtitle: 'incident.modern.header.subtitle'|trans,
+    title: 'incident.modern.header.title'|trans({}, 'incidents'),
+    subtitle: 'incident.modern.header.subtitle'|trans({}, 'incidents'),
     icon: 'bi-bug',
     actions: [
-        { label: 'incident.modern.header.action.report'|trans, url: path('app_incident_new'), variant: 'danger', icon: 'bi-exclamation-circle' },
-        { label: 'incident.modern.header.action.export'|trans, url: path('app_incident_export'), variant: 'secondary', icon: 'bi-download', turbo: false }
+        { label: 'incident.modern.header.action.report'|trans({}, 'incidents'), url: path('app_incident_new'), variant: 'danger', icon: 'bi-exclamation-circle' },
+        { label: 'incident.modern.header.action.export'|trans({}, 'incidents'), url: path('app_incident_export'), variant: 'secondary', icon: 'bi-download', turbo: false }
     ]
 } %}
 
@@ -26,14 +26,14 @@
 <div class="kpi-grid kpi-grid-responsive">
     {% include '_components/_kpi_card.html.twig' with {
         icon: 'bi-bug',
-        label: 'incident.modern.kpi.total'|trans,
+        label: 'incident.modern.kpi.total'|trans({}, 'incidents'),
         value: allIncidents|length,
         variant: 'primary'
     } %}
 
     {% include '_components/_kpi_card.html.twig' with {
         icon: 'bi-exclamation-circle',
-        label: 'incident.modern.kpi.open'|trans,
+        label: 'incident.modern.kpi.open'|trans({}, 'incidents'),
         value: openIncidents|length,
         variant: openIncidents|length > 0 ? 'danger' : 'success',
         link: '#filter-open'
@@ -42,7 +42,7 @@
     {% set criticalIncidents = allIncidents|filter(i => i.severity == 'critical')|length %}
     {% include '_components/_kpi_card.html.twig' with {
         icon: 'bi-shield-fill-exclamation',
-        label: 'incident.modern.kpi.critical'|trans,
+        label: 'incident.modern.kpi.critical'|trans({}, 'incidents'),
         value: criticalIncidents,
         variant: 'warning'
     } %}
@@ -52,9 +52,9 @@
         : 0 %}
     {% include '_components/_kpi_card.html.twig' with {
         icon: 'bi-clock-history',
-        label: 'incident.modern.kpi.avg_resolution'|trans,
+        label: 'incident.modern.kpi.avg_resolution'|trans({}, 'incidents'),
         value: avgResolutionDays,
-        unit: 'incident.modern.kpi.unit.days'|trans,
+        unit: 'incident.modern.kpi.unit.days'|trans({}, 'incidents'),
         variant: 'info'
     } %}
 </div>
@@ -62,15 +62,15 @@
 {# Status Overview #}
 <div class="card mb-4">
     <div class="card-header">
-        <h3 class="mb-0"><i class="bi bi-kanban" aria-hidden="true"></i> {{ 'incident_management.title'|trans }}</h3>
+        <h3 class="mb-0"><i class="bi bi-kanban" aria-hidden="true"></i> {{ 'incident_management.title'|trans({}, 'incidents') }}</h3>
     </div>
     <div class="card-body">
         <div class="row">
             {% set statuses = {
-                'open': { label: 'incident.status.open'|trans, icon: 'bi-circle', color: 'danger' },
-                'in_progress': { label: 'incident.status.in_progress'|trans, icon: 'bi-arrow-repeat', color: 'warning' },
-                'resolved': { label: 'incident.status.resolved'|trans, icon: 'bi-check-circle', color: 'success' },
-                'closed': { label: 'incident.status.closed'|trans, icon: 'bi-check-circle-fill', color: 'secondary' }
+                'open': { label: 'incident.status.open'|trans({}, 'incidents'), icon: 'bi-circle', color: 'danger' },
+                'in_progress': { label: 'incident.status.in_progress'|trans({}, 'incidents'), icon: 'bi-arrow-repeat', color: 'warning' },
+                'resolved': { label: 'incident.status.resolved'|trans({}, 'incidents'), icon: 'bi-check-circle', color: 'success' },
+                'closed': { label: 'incident.status.closed'|trans({}, 'incidents'), icon: 'bi-check-circle-fill', color: 'secondary' }
             } %}
             {% for status, data in statuses %}
                 {% set count = allIncidents|filter(i => i.status == status)|length %}
@@ -265,14 +265,14 @@
                         <a href="{{ path('app_incident_show', {id: incident.id}) }}"
                            class="btn btn-outline-primary"
                            data-turbo-action="advance"
-                           title="Anzeigen" aria-label="{{ 'common.view'|trans }}">
+                           title="Anzeigen" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
                             <i class="bi bi-eye" aria-hidden="true"></i>
                         </a>
                         {% if is_granted('ROLE_USER') and incident.status != 'closed' %}
                         <a href="{{ path('app_incident_edit', {id: incident.id}) }}"
                            class="btn btn-outline-secondary"
                            data-turbo-action="advance"
-                           title="Bearbeiten" aria-label="{{ 'common.edit'|trans }}">
+                           title="Bearbeiten" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
                             <i class="bi bi-pencil" aria-hidden="true"></i>
                         </a>
                         {% endif %}

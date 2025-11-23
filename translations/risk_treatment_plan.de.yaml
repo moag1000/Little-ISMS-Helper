@@ -11,10 +11,8 @@ risk_treatment_plan:
   days_overdue: Tage überfällig
   due_today: Heute fällig
   days_remaining: Tage verbleibend
-
   action:
     add_new: Neu anlegen
-
   stats:
     total: Gesamt
     planned: Geplant
@@ -22,14 +20,11 @@ risk_treatment_plan:
     completed: Abgeschlossen
     overdue: Überfällig
     avg_completion: Ø‑Fertigstellungsgrad
-
   list:
     title: Behandlungspläne
-
   filter:
     overdue: Überfälligkeit
     overdue_only: Nur überfällige
-
   section:
     details: Details
     controls: Zugeordnete Maßnahmen
@@ -39,7 +34,6 @@ risk_treatment_plan:
     timeline: Zeitplan
     responsibility_resources: Verantwortlichkeiten & Ressourcen
     controls_implementation: Maßnahmen & Umsetzung
-
   field:
     title: Titel
     risk: Risiko
@@ -56,22 +50,20 @@ risk_treatment_plan:
     budget: Budget
     implementation_notes: Umsetzungsnotizen
     controls: Maßnahmen (Controls)
-
   status:
     planned: Geplant
     in_progress: In Bearbeitung
     completed: Abgeschlossen
     on_hold: Angehalten
     cancelled: Abgebrochen
-
   priority:
     critical: Kritisch
     high: Hoch
     medium: Mittel
     low: Niedrig
-
   message:
     no_plans: Keine Behandlungspläne gefunden.
   delete:
     warning: Diese Aktion kann nicht rückgängig gemacht werden. Möchten Sie den Behandlungsplan wirklich löschen?
     confirm: Sind Sie sicher, dass Sie diesen Behandlungsplan löschen möchten?
+  no_plans: Keine Risikobehandlungspläne vorhanden.

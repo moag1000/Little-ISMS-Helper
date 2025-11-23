@@ -36,7 +36,7 @@
                                    class="form-check-input"
                                    data-action="bulk-actions#selectAll"
                                    data-bulk-actions-target="selectAllCheckbox"
-                                   aria-label="{{ 'common.select_all'|trans }}">
+                                   aria-label="{{ 'common.select_all'|trans({}, 'messages') }}">
                         </th>
                         <th scope="col">Name</th>
                         <th scope="col">Type</th>
@@ -56,7 +56,7 @@
                                        data-bulk-actions-target="item"
                                        data-action="bulk-actions#selectItem"
                                        value="{{ document.id }}"
-                                       aria-label="{{ 'common.select'|trans }} {{ document.name }}">
+                                       aria-label="{{ 'common.select'|trans({}, 'messages') }} {{ document.name }}">
                             </td>
                             <td>
                                 <a href="{{ path('app_document_show', {id: document.id}) }}">

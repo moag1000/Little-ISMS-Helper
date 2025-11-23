@@ -1,36 +1,36 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'privacy' %}
 
-{% block title %}{{ 'privacy.data_breach.management'|trans }}{% endblock %}
+{% block title %}{{ 'privacy.data_breach.management'|trans({}, 'privacy') }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid mt-4">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
-            { label: 'privacy.breadcrumb.privacy'|trans, icon: 'bi-shield-lock' },
-            { label: 'privacy.breadcrumb.data_breaches'|trans }
+            { label: 'privacy.breadcrumb.privacy'|trans({}, 'privacy'), icon: 'bi-shield-lock' },
+            { label: 'privacy.breadcrumb.data_breaches'|trans({}, 'privacy') }
         ]
     } %}
 
     {% include '_components/_page_header.html.twig' with {
-        title: 'privacy.data_breach.management'|trans,
-        subtitle: 'privacy.data_breach.subtitle'|trans,
+        title: 'privacy.data_breach.management'|trans({}, 'privacy'),
+        subtitle: 'privacy.data_breach.subtitle'|trans({}, 'privacy'),
         icon: 'bi-exclamation-triangle-fill',
         actions: [
-            { label: 'privacy.data_breach.actions.dashboard'|trans, url: path('app_data_breach_dashboard'), variant: 'primary', icon: 'bi-speedometer2' },
-            { label: 'privacy.data_breach.actions.new'|trans, url: path('app_data_breach_new'), variant: 'danger', icon: 'bi-plus-lg' }
+            { label: 'privacy.data_breach.actions.dashboard'|trans({}, 'privacy'), url: path('app_data_breach_dashboard'), variant: 'primary', icon: 'bi-speedometer2' },
+            { label: 'privacy.data_breach.actions.new'|trans({}, 'privacy'), url: path('app_data_breach_new'), variant: 'danger', icon: 'bi-plus-lg' }
         ]
     } %}
 
     {# CRITICAL: Overdue Notifications Alert #}
     {% if compliance_score.overdue_notifications > 0 %}
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <h5 class="alert-heading"><i class="bi bi-exclamation-triangle-fill"></i> {{ 'privacy.data_breach.alert.overdue_title'|trans }}</h5>
-            <p>{{ 'privacy.data_breach.alert.overdue_text'|trans({'%count%': compliance_score.overdue_notifications})|raw }}</p>
+            <h5 class="alert-heading"><i class="bi bi-exclamation-triangle-fill"></i> {{ 'privacy.data_breach.alert.overdue_title'|trans({}, 'privacy') }}</h5>
+            <p>{{ 'privacy.data_breach.alert.overdue_text'|trans({'%count%': compliance_score.overdue_notifications}, 'privacy')|raw }}</p>
             <hr>
             <p class="mb-0">
                 <a href="{{ path('app_data_breach_index', {filter: 'overdue'}) }}" class="alert-link">
-                    {{ 'privacy.data_breach.alert.view_overdue'|trans }}
+                    {{ 'privacy.data_breach.alert.view_overdue'|trans({}, 'privacy') }}
                 </a>
             </p>
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
@@ -40,7 +40,7 @@
     {# Overall Compliance Score #}
     <div class="card mb-4 text-center">
         <div class="card-body">
-            <h6 class="text-muted mb-2">{{ 'privacy.data_breach.score.heading'|trans }}</h6>
+            <h6 class="text-muted mb-2">{{ 'privacy.data_breach.score.heading'|trans({}, 'privacy') }}</h6>
             {% set score = compliance_score.overall_score %}
             <h1 class="display-1 mb-0
                 {% if score >= 80 %}text-success
@@ -50,22 +50,22 @@
             </h1>
             <div class="row mt-4">
                 <div class="col-md-4">
-                    <small class="text-muted">{{ 'privacy.data_breach.score.notification_compliance'|trans }}</small>
+                    <small class="text-muted">{{ 'privacy.data_breach.score.notification_compliance'|trans({}, 'privacy') }}</small>
                     <h4>{{ compliance_score.notification_compliance }}%</h4>
                 </div>
                 <div class="col-md-4">
-                    <small class="text-muted">{{ 'privacy.data_breach.score.timeliness'|trans }}</small>
+                    <small class="text-muted">{{ 'privacy.data_breach.score.timeliness'|trans({}, 'privacy') }}</small>
                     <h4 class="{% if compliance_score.timeliness_score < 80 %}text-danger{% else %}text-success{% endif %}">
                         {{ compliance_score.timeliness_score }}%
                     </h4>
                 </div>
                 <div class="col-md-4">
-                    <small class="text-muted">{{ 'privacy.data_breach.score.completeness'|trans }}</small>
+                    <small class="text-muted">{{ 'privacy.data_breach.score.completeness'|trans({}, 'privacy') }}</small>
                     <h4>{{ compliance_score.completeness_score }}%</h4>
                 </div>
             </div>
             <p class="text-muted mt-3">
-                {{ 'privacy.data_breach.score.summary'|trans({'%total%': statistics.total, '%subjects%': compliance_score.total_affected_subjects}) }}
+                {{ 'privacy.data_breach.score.summary'|trans({'%total%': statistics.total, '%subjects%': compliance_score.total_affected_subjects}, 'privacy') }}
             </p>
         </div>
     </div>
@@ -75,10 +75,10 @@
         <div class="col-md-3">
             <div class="card">
                 <div class="card-body">
-                    <h6 class="text-muted">{{ 'privacy.data_breach.kpi.total_breaches'|trans }}</h6>
+                    <h6 class="text-muted">{{ 'privacy.data_breach.kpi.total_breaches'|trans({}, 'privacy') }}</h6>
                     <h2>{{ statistics.total }}</h2>
                     <div class="mt-2">
-                        <small class="text-danger"><i class="bi bi-exclamation-triangle"></i> {{ statistics.high_risk + statistics.critical_risk }} {{ 'privacy.data_breach.kpi.high_critical_risk'|trans }}</small>
+                        <small class="text-danger"><i class="bi bi-exclamation-triangle"></i> {{ statistics.high_risk + statistics.critical_risk }} {{ 'privacy.data_breach.kpi.high_critical_risk'|trans({}, 'privacy') }}</small>
                     </div>
                 </div>
             </div>
@@ -86,10 +86,10 @@
         <div class="col-md-3">
             <div class="card border-warning">
                 <div class="card-body">
-                    <h6 class="text-muted">{{ 'privacy.data_breach.kpi.pending_authority'|trans }}</h6>
+                    <h6 class="text-muted">{{ 'privacy.data_breach.kpi.pending_authority'|trans({}, 'privacy') }}</h6>
                     <h2 class="text-warning">{{ statistics.requires_authority_notification - statistics.authority_notified }}</h2>
                     <div class="mt-2">
-                        <small class="text-muted"><i class="bi bi-clock"></i> {{ 'privacy.data_breach.kpi.deadline_72h'|trans }}</small>
+                        <small class="text-muted"><i class="bi bi-clock"></i> {{ 'privacy.data_breach.kpi.deadline_72h'|trans({}, 'privacy') }}</small>
                     </div>
                 </div>
             </div>
@@ -97,10 +97,10 @@
         <div class="col-md-3">
             <div class="card">
                 <div class="card-body">
-                    <h6 class="text-muted">{{ 'privacy.data_breach.kpi.special_categories'|trans }}</h6>
+                    <h6 class="text-muted">{{ 'privacy.data_breach.kpi.special_categories'|trans({}, 'privacy') }}</h6>
                     <h2 class="text-info">{{ statistics.special_categories_affected }}</h2>
                     <div class="mt-2">
-                        <small class="text-muted"><i class="bi bi-shield-lock"></i> {{ 'privacy.data_breach.kpi.art9_data'|trans }}</small>
+                        <small class="text-muted"><i class="bi bi-shield-lock"></i> {{ 'privacy.data_breach.kpi.art9_data'|trans({}, 'privacy') }}</small>
                     </div>
                 </div>
             </div>
@@ -271,19 +271,19 @@
                                     <div class="btn-group btn-group-sm">
                                         <a href="{{ path('app_data_breach_show', {id: breach.id}) }}"
                                            class="btn btn-outline-primary"
-                                           title="View" aria-label="View">
+                                           title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
                                             <i class="bi bi-eye" aria-hidden="true"></i>
                                         </a>
                                         {% if breach.status in ['draft', 'under_assessment'] %}
                                             <a href="{{ path('app_data_breach_edit', {id: breach.id}) }}"
                                                class="btn btn-outline-secondary"
-                                               title="Edit" aria-label="Edit">
+                                               title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
                                                 <i class="bi bi-pencil" aria-hidden="true"></i>
                                             </a>
                                         {% endif %}
                                         <a href="{{ path('app_data_breach_export_pdf', {id: breach.id}) }}"
                                            class="btn btn-outline-success"
-                                           title="Export PDF" aria-label="Export PDF">
+                                           title="{{ 'common.export_pdf'|trans({}, 'messages') }}" aria-label="{{ 'common.export_pdf'|trans({}, 'messages') }}">
                                             <i class="bi bi-file-pdf" aria-hidden="true"></i>
                                         </a>
                                     </div>

@@ -1,19 +1,19 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'interested_parties' %}
 
-{% block title %}{{ 'interested_party.page.new_title'|trans }}{% endblock %}
+{% block title %}{{ 'interested_party.page.new_title'|trans({}, 'messages') }}{% endblock %}
 
 {% block body %}
 <div class="container">
     <div class="page-header">
-        <h1>{{ 'interested_party.page.new_title'|trans }}</h1>
+        <h1>{{ 'interested_party.page.new_title'|trans({}, 'messages') }}</h1>
         <a href="{{ path('app_interested_party_index') }}" class="btn btn-secondary">{{ 'common.back_to_list'|trans({}, 'messages') }}</a>
     </div>
 
     <div class="card">
         <div class="card-content">
             {{ form_start(form) }}
-                <h3>{{ 'interested_party.section.basic_info'|trans }}</h3>
+                <h3>{{ 'interested_party.section.basic_info'|trans({}, 'messages') }}</h3>
                 <div class="form-row">
                     <div class="form-group">
                         {{ form_label(form.name) }}
@@ -38,7 +38,7 @@
                     {{ form_errors(form.description) }}
                 </div>
 
-                <h2>{{ 'interested_party.section.contact_info'|trans }}</h2>
+                <h2>{{ 'interested_party.section.contact_info'|trans({}, 'messages') }}</h2>
                 <div class="form-row">
                     <div class="form-group">
                         {{ form_label(form.contactPerson) }}
@@ -57,7 +57,7 @@
                     </div>
                 </div>
 
-                <h3>{{ 'interested_party.section.requirements'|trans }}</h3>
+                <h3>{{ 'interested_party.section.requirements'|trans({}, 'messages') }}</h3>
                 <div class="form-group">
                     {{ form_label(form.requirements) }}
                     {{ form_widget(form.requirements) }}
@@ -70,7 +70,7 @@
                     {{ form_errors(form.howAddressed) }}
                 </div>
 
-                <h3>{{ 'interested_party.section.communication'|trans }}</h3>
+                <h3>{{ 'interested_party.section.communication'|trans({}, 'messages') }}</h3>
                 <div class="form-row">
                     <div class="form-group">
                         {{ form_label(form.communicationFrequency) }}
@@ -97,7 +97,7 @@
                     </div>
                 </div>
 
-                <h3>{{ 'interested_party.section.feedback'|trans }}</h3>
+                <h3>{{ 'interested_party.section.feedback'|trans({}, 'messages') }}</h3>
                 <div class="form-group">
                     {{ form_label(form.feedback) }}
                     {{ form_widget(form.feedback) }}
@@ -118,7 +118,7 @@
                 </div>
 
                 <div class="form-actions">
-                    <button type="submit" class="btn btn-primary">{{ 'interested_party.action.create'|trans }}</button>
+                    <button type="submit" class="btn btn-primary">{{ 'interested_party.action.create'|trans({}, 'messages') }}</button>
                     <a href="{{ path('app_interested_party_index') }}" class="btn btn-secondary">{{ 'common.cancel'|trans({}, 'messages') }}</a>
                 </div>
             {{ form_end(form) }}

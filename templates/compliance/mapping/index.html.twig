@@ -74,11 +74,11 @@
                             <td>
                                 <div class="btn-group btn-group-sm">
                                     <a href="{{ path('app_compliance_mapping_show', {id: mapping.id}) }}"
-                                       class="btn btn-outline-primary" title="View" aria-label="{{ 'common.view'|trans }}">
+                                       class="btn btn-outline-primary" title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
                                         <i class="bi bi-eye" aria-hidden="true"></i>
                                     </a>
                                     <a href="{{ path('app_compliance_mapping_edit', {id: mapping.id}) }}"
-                                       class="btn btn-outline-secondary" title="Edit" aria-label="{{ 'common.edit'|trans }}">
+                                       class="btn btn-outline-secondary" title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
                                         <i class="bi bi-pencil" aria-hidden="true"></i>
                                     </a>
                                 </div>

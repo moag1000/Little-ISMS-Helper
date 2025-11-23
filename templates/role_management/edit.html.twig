@@ -9,7 +9,7 @@
     </div>
     <div class="button-group">
         <a href="{{ path('role_management_show', {id: role.id}) }}" class="btn btn-secondary">
-            ← {{ 'common.back'|trans }}
+            ← {{ 'common.back'|trans({}, 'messages') }}
         </a>
     </div>
 </div>
@@ -56,10 +56,10 @@
 
     <div class="d-flex gap-2 mt-4">
         <button type="submit" class="btn btn-success">
-            💾 {{ 'common.save'|trans }}
+            💾 {{ 'common.save'|trans({}, 'messages') }}
         </button>
         <a href="{{ path('role_management_show', {id: role.id}) }}" class="btn btn-secondary">
-            ❌ {{ 'common.cancel'|trans }}
+            ❌ {{ 'common.cancel'|trans({}, 'messages') }}
         </a>
     </div>
 

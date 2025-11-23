@@ -14,5 +14,5 @@
 #}
 
 {% block form_label_required %}
-    <span class="required" aria-label="{{ 'form.required'|trans }}">*</span>
+    <span class="required" aria-label="{{ 'form.required'|trans({}, 'messages') }}">*</span>
 {% endblock %}

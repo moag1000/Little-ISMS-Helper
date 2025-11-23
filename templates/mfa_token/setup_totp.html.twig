@@ -8,7 +8,7 @@
 {% block admin_content %}
     <div class="mb-4">
         <a href="{{ path('admin_mfa_index') }}" class="btn btn-outline-secondary">
-            <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans }}
+            <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
         </a>
     </div>
 
@@ -40,7 +40,7 @@
                             <button class="btn btn-outline-secondary"
                                     type="button"
                                     onclick="copyToClipboard('secret-key')">
-                                <i class="bi bi-clipboard" aria-hidden="true"></i> {{ 'common.copy'|trans }}
+                                <i class="bi bi-clipboard" aria-hidden="true"></i> {{ 'common.copy'|trans({}, 'messages') }}
                             </button>
                         </div>
                     </div>
@@ -137,7 +137,7 @@
         // Show feedback
         const btn = event.target.closest('button');
         const originalHTML = btn.innerHTML;
-        btn.innerHTML = '<i class="bi bi-check" aria-hidden="true"></i> {{ 'common.copied'|trans }}';
+        btn.innerHTML = '<i class="bi bi-check" aria-hidden="true"></i> {{ 'common.copied'|trans({}, 'messages') }}';
         btn.classList.add('btn-success');
         btn.classList.remove('btn-outline-secondary');
 
@@ -155,7 +155,7 @@
         navigator.clipboard.writeText(text).then(() => {
             const btn = event.target.closest('button');
             const originalHTML = btn.innerHTML;
-            btn.innerHTML = '<i class="bi bi-check" aria-hidden="true"></i> {{ 'common.copied'|trans }}';
+            btn.innerHTML = '<i class="bi bi-check" aria-hidden="true"></i> {{ 'common.copied'|trans({}, 'messages') }}';
             btn.classList.add('btn-success');
 
             setTimeout(() => {
@@ -183,7 +183,7 @@
             <body>
                 <h1>{{ 'mfa_token.backup_codes.title'|trans({}, 'mfa') }}</h1>
                 <p><strong>{{ 'mfa_token.field.user'|trans({}, 'mfa') }}:</strong> {{ user.email }}</p>
-                <p><strong>{{ 'common.date'|trans }}:</strong> ${new Date().toLocaleString()}</p>
+                <p><strong>{{ 'common.date'|trans({}, 'messages') }}:</strong> ${new Date().toLocaleString()}</p>
                 <div class="warning">
                     <strong>{{ 'mfa_token.backup_codes.warning'|trans({}, 'mfa') }}</strong><br>
                     {{ 'mfa_token.backup_codes.warning_text'|trans({}, 'mfa') }}
@@ -209,7 +209,7 @@
 
         // Disable button during verification
         btn.disabled = true;
-        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>{{ 'common.verifying'|trans }}...';
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>{{ 'common.verifying'|trans({}, 'messages') }}...';
 
         // Send verification request
         fetch('{{ path('admin_mfa_verify', {id: mfa_token.id}) }}', {
@@ -250,7 +250,7 @@
         .catch(error => {
             feedback.innerHTML = `
                 <div class="alert alert-danger">
-                    <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'common.error'|trans }}: ${error.message}
+                    <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'common.error'|trans({}, 'messages') }}: ${error.message}
                 </div>
             `;
 

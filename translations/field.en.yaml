@@ -1,0 +1,27 @@
+field:
+  id: ID
+  name: Name
+  title: Title
+  description: Description
+  status: Status
+  type: Type
+  date: Date
+  created_at: Created At
+  updated_at: Updated At
+  tenant: Tenant
+  user: User
+  location: Location
+  person: Person
+  responsible: Responsible
+  responsible_person: Responsible Person
+  contact_person: Contact Person
+  notes: Notes
+  active: Active
+  email: Email
+  phone: Phone
+  address: Address
+  city: City
+  country: Country
+  postal_code: Postal Code
+  company: Company
+  department: Department

@@ -8,7 +8,7 @@
 {% block admin_content %}
     <div class="mb-4">
         <a href="{{ path('admin_mfa_show', {id: mfa_token.id}) }}" class="btn btn-outline-secondary">
-            <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans }}
+            <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
         </a>
     </div>
 
@@ -36,7 +36,7 @@
                     <div class="alert alert-info">
                         <strong><i class="bi bi-person" aria-hidden="true"></i> {{ 'mfa_token.field.user'|trans({}, 'mfa') }}:</strong> {{ mfa_token.user.email }}<br>
                         <strong><i class="bi bi-phone" aria-hidden="true"></i> {{ 'mfa_token.field.device_name'|trans({}, 'mfa') }}:</strong> {{ mfa_token.deviceName }}<br>
-                        <strong><i class="bi bi-calendar" aria-hidden="true"></i> {{ 'common.generated'|trans }}:</strong> {{ 'now'|date('Y-m-d H:i:s') }}
+                        <strong><i class="bi bi-calendar" aria-hidden="true"></i> {{ 'common.generated'|trans({}, 'messages') }}:</strong> {{ 'now'|date('Y-m-d H:i:s') }}
                     </div>
 
                     <div class="row">
@@ -102,7 +102,7 @@
         navigator.clipboard.writeText(text).then(() => {
             const btn = event.target.closest('button');
             const originalHTML = btn.innerHTML;
-            btn.innerHTML = '<i class="bi bi-check" aria-hidden="true"></i> {{ 'common.copied'|trans }}';
+            btn.innerHTML = '<i class="bi bi-check" aria-hidden="true"></i> {{ 'common.copied'|trans({}, 'messages') }}';
             btn.classList.remove('btn-primary');
             btn.classList.add('btn-success');
 
@@ -112,7 +112,7 @@
                 btn.classList.add('btn-primary');
             }, 2000);
         }).catch(err => {
-            alert('{{ 'common.copy_failed'|trans }}: ' + err);
+            alert('{{ 'common.copy_failed'|trans({}, 'messages') }}: ' + err);
         });
     }
 
@@ -182,7 +182,7 @@
                 <div class="info">
                     <p><strong>{{ 'mfa_token.field.user'|trans({}, 'mfa') }}:</strong> ${userEmail}</p>
                     <p><strong>{{ 'mfa_token.field.device_name'|trans({}, 'mfa') }}:</strong> {{ mfa_token.deviceName }}</p>
-                    <p><strong>{{ 'common.generated'|trans }}:</strong> ${new Date().toLocaleString()}</p>
+                    <p><strong>{{ 'common.generated'|trans({}, 'messages') }}:</strong> ${new Date().toLocaleString()}</p>
                 </div>
 
                 <div class="warning">
@@ -258,7 +258,7 @@
         // Show success feedback
         const btn = event.target.closest('button');
         const originalHTML = btn.innerHTML;
-        btn.innerHTML = '<i class="bi bi-check" aria-hidden="true"></i> {{ 'common.downloaded'|trans }}';
+        btn.innerHTML = '<i class="bi bi-check" aria-hidden="true"></i> {{ 'common.downloaded'|trans({}, 'messages') }}';
         btn.classList.add('btn-success');
         btn.classList.remove('btn-outline-secondary');
 

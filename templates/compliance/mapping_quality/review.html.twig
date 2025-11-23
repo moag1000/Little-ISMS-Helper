@@ -76,7 +76,7 @@
                     {% if mapping.calculatedPercentage is not null %}
                     <div class="mb-3">
                         <small class="text-muted">Berechnet (Automatisch)</small>
-                        <h4><span class="badge {% if mapping.calculatedPercentage >= 75 %}badge-success{% elseif mapping.calculatedPercentage >= 50 %}badge-warning{% else %}badge-danger{% endif %}">
+                        <h4><span class="badge {% if ... %}bg-success{% elseif mapping.calculatedPercentage >= 50 %}badge-warning{% else %}bg-danger{% endif %}">
                             {{ mapping.calculatedPercentage }}%
                         </span></h4>
                     </div>

@@ -1,29 +1,29 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'audits' %}
 
-{% block title %}{{ 'audit_management.title'|trans }} - {{ 'app.title'|trans }}{% endblock %}
+{% block title %}{{ 'audit_management.title'|trans({}, 'audits') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
 {% block body %}
 {% import '_macros/cards.html.twig' as cards %}
 
 <div class="page-header">
     <div>
-        <h1><i class="bi bi-clipboard-check" aria-hidden="true"></i> {{ 'audit_management.title'|trans }}</h1>
-        <p class="text-muted">{{ 'audit_management.description'|trans }}</p>
+        <h1><i class="bi bi-clipboard-check" aria-hidden="true"></i> {{ 'audit_management.title'|trans({}, 'audits') }}</h1>
+        <p class="text-muted">{{ 'audit_management.description'|trans({}, 'audits') }}</p>
     </div>
     <div class="button-group">
         <a href="{{ path('app_audit_new') }}" class="btn btn-primary">
-            <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'audit.new'|trans }}
+            <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'audit.new'|trans({}, 'audits') }}
         </a>
     </div>
 </div>
 
 <div class="stats-grid mb-4">
     <div class="col-auto">
-        {{ cards.kpi_card('audit_management.planned_audits'|trans, upcoming|length, null, null, 'info', null) }}
+        {{ cards.kpi_card('audit_management.planned_audits'|trans({}, 'audits'), upcoming|length, null, null, 'info', null) }}
     </div>
     <div class="col-auto">
-        {{ cards.kpi_card('audit_management.total_audits'|trans, audits|length, null, null, 'primary', null) }}
+        {{ cards.kpi_card('audit_management.total_audits'|trans({}, 'audits'), audits|length, null, null, 'primary', null) }}
     </div>
 </div>
 
@@ -40,29 +40,29 @@
         <form method="get" action="{{ path('app_audit_index') }}" class="row g-3" role="search" aria-label="{{ 'common.filters'|trans({}, 'messages') }}">
             <div id="filter-section" tabindex="-1"></div>
             <div class="col-md-3">
-                <label for="filter-status" class="form-label">{{ 'audit.field.status'|trans }}</label>
+                <label for="filter-status" class="form-label">{{ 'audit.field.status'|trans({}, 'audits') }}</label>
                 <select class="form-select" id="filter-status" name="status" onchange="this.form.submit()">
                     <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
-                    <option value="planned" {{ app.request.get('status') == 'planned' ? 'selected' : '' }}>{{ 'audit.status.planned'|trans }}</option>
-                    <option value="in_progress" {{ app.request.get('status') == 'in_progress' ? 'selected' : '' }}>{{ 'audit.status.in_progress'|trans }}</option>
-                    <option value="completed" {{ app.request.get('status') == 'completed' ? 'selected' : '' }}>{{ 'audit.status.completed'|trans }}</option>
-                    <option value="reported" {{ app.request.get('status') == 'reported' ? 'selected' : '' }}>{{ 'audit.status.reported'|trans }}</option>
+                    <option value="planned" {{ app.request.get('status') == 'planned' ? 'selected' : '' }}>{{ 'audit.status.planned'|trans({}, 'audits') }}</option>
+                    <option value="in_progress" {{ app.request.get('status') == 'in_progress' ? 'selected' : '' }}>{{ 'audit.status.in_progress'|trans({}, 'audits') }}</option>
+                    <option value="completed" {{ app.request.get('status') == 'completed' ? 'selected' : '' }}>{{ 'audit.status.completed'|trans({}, 'audits') }}</option>
+                    <option value="reported" {{ app.request.get('status') == 'reported' ? 'selected' : '' }}>{{ 'audit.status.reported'|trans({}, 'audits') }}</option>
                 </select>
             </div>
 
             <div class="col-md-3">
-                <label for="filter-scope-type" class="form-label">{{ 'audit.field.scope_type'|trans }}</label>
+                <label for="filter-scope-type" class="form-label">{{ 'audit.field.scope_type'|trans({}, 'audits') }}</label>
                 <select class="form-select" id="filter-scope-type" name="scope_type" onchange="this.form.submit()">
                     <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
-                    <option value="full_isms" {{ app.request.get('scope_type') == 'full_isms' ? 'selected' : '' }}>{{ 'audit.scope_type.full_isms'|trans }}</option>
-                    <option value="compliance_framework" {{ app.request.get('scope_type') == 'compliance_framework' ? 'selected' : '' }}>{{ 'audit.scope_type.compliance_framework'|trans }}</option>
-                    <option value="asset" {{ app.request.get('scope_type') == 'asset' ? 'selected' : '' }}>{{ 'audit.scope_type.asset'|trans }}</option>
-                    <option value="asset_type" {{ app.request.get('scope_type') == 'asset_type' ? 'selected' : '' }}>{{ 'audit.scope_type.asset_type'|trans }}</option>
-                    <option value="asset_group" {{ app.request.get('scope_type') == 'asset_group' ? 'selected' : '' }}>{{ 'audit.scope_type.asset_group'|trans }}</option>
-                    <option value="location" {{ app.request.get('scope_type') == 'location' ? 'selected' : '' }}>{{ 'audit.scope_type.location'|trans }}</option>
-                    <option value="department" {{ app.request.get('scope_type') == 'department' ? 'selected' : '' }}>{{ 'audit.scope_type.department'|trans }}</option>
-                    <option value="corporate_wide" {{ app.request.get('scope_type') == 'corporate_wide' ? 'selected' : '' }}>{{ 'audit.scope_type.corporate_wide'|trans }}</option>
-                    <option value="corporate_subsidiaries" {{ app.request.get('scope_type') == 'corporate_subsidiaries' ? 'selected' : '' }}>{{ 'audit.scope_type.corporate_subsidiaries'|trans }}</option>
+                    <option value="full_isms" {{ app.request.get('scope_type') == 'full_isms' ? 'selected' : '' }}>{{ 'audit.scope_type.full_isms'|trans({}, 'audits') }}</option>
+                    <option value="compliance_framework" {{ app.request.get('scope_type') == 'compliance_framework' ? 'selected' : '' }}>{{ 'audit.scope_type.compliance_framework'|trans({}, 'audits') }}</option>
+                    <option value="asset" {{ app.request.get('scope_type') == 'asset' ? 'selected' : '' }}>{{ 'audit.scope_type.asset'|trans({}, 'audits') }}</option>
+                    <option value="asset_type" {{ app.request.get('scope_type') == 'asset_type' ? 'selected' : '' }}>{{ 'audit.scope_type.asset_type'|trans({}, 'audits') }}</option>
+                    <option value="asset_group" {{ app.request.get('scope_type') == 'asset_group' ? 'selected' : '' }}>{{ 'audit.scope_type.asset_group'|trans({}, 'audits') }}</option>
+                    <option value="location" {{ app.request.get('scope_type') == 'location' ? 'selected' : '' }}>{{ 'audit.scope_type.location'|trans({}, 'audits') }}</option>
+                    <option value="department" {{ app.request.get('scope_type') == 'department' ? 'selected' : '' }}>{{ 'audit.scope_type.department'|trans({}, 'audits') }}</option>
+                    <option value="corporate_wide" {{ app.request.get('scope_type') == 'corporate_wide' ? 'selected' : '' }}>{{ 'audit.scope_type.corporate_wide'|trans({}, 'audits') }}</option>
+                    <option value="corporate_subsidiaries" {{ app.request.get('scope_type') == 'corporate_subsidiaries' ? 'selected' : '' }}>{{ 'audit.scope_type.corporate_subsidiaries'|trans({}, 'audits') }}</option>
                 </select>
             </div>
 
@@ -97,12 +97,12 @@
             } %}
                 {% block table_head %}
                     <tr>
-                        <th scope="col">{{ 'audit.field.audit_number'|trans }}</th>
-                        <th scope="col">{{ 'audit.field.title'|trans }}</th>
-                        <th scope="col">{{ 'audit.field.scope_type'|trans }}</th>
-                        <th scope="col">{{ 'audit.field.planned_date'|trans }}</th>
-                        <th scope="col">{{ 'audit.field.status'|trans }}</th>
-                        <th scope="col">{{ 'audit.field.lead_auditor'|trans }}</th>
+                        <th scope="col">{{ 'audit.field.audit_number'|trans({}, 'audits') }}</th>
+                        <th scope="col">{{ 'audit.field.title'|trans({}, 'audits') }}</th>
+                        <th scope="col">{{ 'audit.field.scope_type'|trans({}, 'audits') }}</th>
+                        <th scope="col">{{ 'audit.field.planned_date'|trans({}, 'audits') }}</th>
+                        <th scope="col">{{ 'audit.field.status'|trans({}, 'audits') }}</th>
+                        <th scope="col">{{ 'audit.field.lead_auditor'|trans({}, 'audits') }}</th>
                         <th scope="col" class="text-center">{{ 'common.actions'|trans({}, 'messages') }}</th>
                     </tr>
                 {% endblock %}
@@ -130,7 +130,7 @@
                         </td>
                         <td>{{ audit.leadAuditor }}</td>
                         <td class="text-center">
-                            <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'audit.actions.label'|trans }}">
+                            <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'audit.actions.label'|trans({}, 'audits') }}">
                                 <a href="{{ path('app_audit_show', {id: audit.id}) }}" class="btn btn-outline-primary" aria-label="{{ 'common.view'|trans({}, 'messages') }} {{ audit.title }}">
                                     <i class="bi bi-eye" aria-hidden="true"></i>
                                 </a>
@@ -147,7 +147,7 @@
             {% endembed %}
         {% else %}
             <div class="alert alert-info">
-                <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'audit_management.no_audits'|trans }}
+                <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'audit_management.no_audits'|trans({}, 'audits') }}
             </div>
         {% endif %}
     {% endblock %}

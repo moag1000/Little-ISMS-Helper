@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ 'incident.edit'|trans }} - {{ parent() }}{% endblock %}
+{% block title %}{{ 'incident.edit'|trans({}, 'incidents') }} - {{ parent() }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid py-4">
@@ -18,23 +18,23 @@
                             {{ incident.title }}
                         </a>
                     </li>
-                    <li class="breadcrumb-item active" aria-current="page">{{ 'incident.edit'|trans }}</li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ 'incident.edit'|trans({}, 'incidents') }}</li>
                 </ol>
             </nav>
 
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h1 class="h3 mb-0">
                     <i class="bi bi-pencil" aria-hidden="true"></i>
-                    {{ 'incident.edit'|trans }}: {{ incident.title }}
+                    {{ 'incident.edit'|trans({}, 'incidents') }}: {{ incident.title }}
                 </h1>
                 <a href="{{ path('app_incident_show', {id: incident.id}) }}" class="btn btn-outline-secondary" data-turbo-action="advance">
-                    <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans }}
+                    <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
                 </a>
             </div>
 
             <div class="card shadow">
                 <div class="card-header bg-primary text-white">
-                    <h3 class="mb-0">{{ 'incident.edit'|trans }}</h3>
+                    <h3 class="mb-0">{{ 'incident.edit'|trans({}, 'incidents') }}</h3>
                 </div>
                 <div class="card-body">
                     {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'id': 'incident-form'}}) }}
@@ -43,27 +43,27 @@
                     <fieldset class="mb-4">
                         <legend class="h5 mb-3">
                             <i class="bi bi-info-square" aria-hidden="true"></i>
-                            {{ 'incident.section.basic_info'|trans }}
+                            {{ 'incident.section.basic_info'|trans({}, 'incidents') }}
                         </legend>
 
                         <div class="row">
                             <div class="col-md-8">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.title,
-                                    'label': form.title.vars.label|default('incident.field.title'|trans),
+                                    'label': form.title.vars.label|default('incident.field.title'|trans({}, 'incidents')),
                                     'required': true
                                 } %}
                             </div>
                             <div class="col-md-4">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.category,
-                                    'label': form.category.vars.label|default('incident.field.category'|trans)
+                                    'label': form.category.vars.label|default('incident.field.category'|trans({}, 'incidents'))
                                 } %}
                             </div>
                             <div class="col-md-12">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.description,
-                                    'label': form.description.vars.label|default('incident.field.description'|trans)
+                                    'label': form.description.vars.label|default('incident.field.description'|trans({}, 'incidents'))
                                 } %}
                             </div>
                         </div>
@@ -73,22 +73,22 @@
                     <fieldset class="mb-4">
                         <legend class="h5 mb-3">
                             <i class="bi bi-thermometer-half" aria-hidden="true"></i>
-                            {{ 'incident.section.severity_status'|trans }}
+                            {{ 'incident.section.severity_status'|trans({}, 'incidents') }}
                         </legend>
 
                         <div class="row">
                             <div class="col-md-6">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.severity,
-                                    'label': form.severity.vars.label|default('incident.field.severity'|trans),
+                                    'label': form.severity.vars.label|default('incident.field.severity'|trans({}, 'incidents')),
                                     'required': true
                                 } %}
                             </div>
                             <div class="col-md-6">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.status,
-                                    'label': form.status.vars.label|default('incident.field.status'|trans),
-                                    'help': 'incident.status_help'|trans
+                                    'label': form.status.vars.label|default('incident.field.status'|trans({}, 'incidents')),
+                                    'help': 'incident.status_help'|trans({}, 'incidents')
                                 } %}
                             </div>
                         </div>
@@ -98,33 +98,33 @@
                     <fieldset class="mb-4">
                         <legend class="h5 mb-3">
                             <i class="bi bi-calendar-event" aria-hidden="true"></i>
-                            {{ 'incident.section.detection_reporting'|trans }}
+                            {{ 'incident.section.detection_reporting'|trans({}, 'incidents') }}
                         </legend>
 
                         <div class="row">
                             <div class="col-md-3">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.detectedAt,
-                                    'label': form.detectedAt.vars.label|default('incident.field.detected_at'|trans)
+                                    'label': form.detectedAt.vars.label|default('incident.field.detected_at'|trans({}, 'incidents'))
                                 } %}
                             </div>
                             <div class="col-md-3">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.occurredAt,
-                                    'label': form.occurredAt.vars.label|default('incident.field.occurred_at'|trans)
+                                    'label': form.occurredAt.vars.label|default('incident.field.occurred_at'|trans({}, 'incidents'))
                                 } %}
                             </div>
                             <div class="col-md-3">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.reportedBy,
-                                    'label': form.reportedBy.vars.label|default('incident.field.reported_by'|trans)
+                                    'label': form.reportedBy.vars.label|default('incident.field.reported_by'|trans({}, 'incidents'))
                                 } %}
                             </div>
                             {% if form.detectedDate is defined %}
                             <div class="col-md-3">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.detectedDate,
-                                    'label': form.detectedDate.vars.label|default('incident.field.detected_date'|trans)
+                                    'label': form.detectedDate.vars.label|default('incident.field.detected_date'|trans({}, 'incidents'))
                                 } %}
                             </div>
                             {% endif %}
@@ -135,21 +135,21 @@
                     <fieldset class="mb-4">
                         <legend class="h5 mb-3">
                             <i class="bi bi-hdd-network" aria-hidden="true"></i>
-                            {{ 'incident.section.affected_systems'|trans }}
+                            {{ 'incident.section.affected_systems'|trans({}, 'incidents') }}
                         </legend>
 
                         <div class="row">
                             <div class="col-md-12">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.affectedSystems,
-                                    'label': form.affectedSystems.vars.label|default('incident.field.affected_systems'|trans)
+                                    'label': form.affectedSystems.vars.label|default('incident.field.affected_systems'|trans({}, 'incidents'))
                                 } %}
                             </div>
                             {% if form.affectedAssets is defined %}
                             <div class="col-md-12">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.affectedAssets,
-                                    'label': form.affectedAssets.vars.label|default('incident.field.affected_assets'|trans)
+                                    'label': form.affectedAssets.vars.label|default('incident.field.affected_assets'|trans({}, 'incidents'))
                                 } %}
                             </div>
                             {% endif %}
@@ -160,38 +160,38 @@
                     <fieldset class="mb-4">
                         <legend class="h5 mb-3">
                             <i class="bi bi-search" aria-hidden="true"></i>
-                            {{ 'incident.analysis_resolution'|trans }}
+                            {{ 'incident.analysis_resolution'|trans({}, 'incidents') }}
                         </legend>
 
                         <div class="row">
                             <div class="col-md-12">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.rootCause,
-                                    'label': form.rootCause.vars.label|default('incident.field.root_cause'|trans)
+                                    'label': form.rootCause.vars.label|default('incident.field.root_cause'|trans({}, 'incidents'))
                                 } %}
                             </div>
                             <div class="col-md-12">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.correctiveActions,
-                                    'label': form.correctiveActions.vars.label|default('incident.field.corrective_actions'|trans)
+                                    'label': form.correctiveActions.vars.label|default('incident.field.corrective_actions'|trans({}, 'incidents'))
                                 } %}
                             </div>
                             <div class="col-md-12">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.lessonsLearned,
-                                    'label': form.lessonsLearned.vars.label|default('incident.field.lessons_learned'|trans)
+                                    'label': form.lessonsLearned.vars.label|default('incident.field.lessons_learned'|trans({}, 'incidents'))
                                 } %}
                             </div>
                             <div class="col-md-6">
                                 {% if form.closedDate is defined %}
                                     {% include '_components/_form_field.html.twig' with {
                                         'field': form.closedDate,
-                                        'label': form.closedDate.vars.label|default('incident.field.closed_date'|trans)
+                                        'label': form.closedDate.vars.label|default('incident.field.closed_date'|trans({}, 'incidents'))
                                     } %}
                                 {% elseif form.closedAt is defined %}
                                     {% include '_components/_form_field.html.twig' with {
                                         'field': form.closedAt,
-                                        'label': form.closedAt.vars.label|default('incident.field.closed_at'|trans)
+                                        'label': form.closedAt.vars.label|default('incident.field.closed_at'|trans({}, 'incidents'))
                                     } %}
                                 {% endif %}
                             </div>
@@ -203,10 +203,10 @@
                         <a href="{{ path('app_incident_show', {id: incident.id}) }}"
                            class="btn btn-outline-secondary"
                            data-turbo-action="advance">
-                            <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'common.cancel'|trans }}
+                            <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'common.cancel'|trans({}, 'messages') }}
                         </a>
                         <button type="submit" class="btn btn-primary btn-lg">
-                            <i class="bi bi-save" aria-hidden="true"></i> {{ 'incident.update'|trans }}
+                            <i class="bi bi-save" aria-hidden="true"></i> {{ 'incident.update'|trans({}, 'incidents') }}
                         </button>
                     </div>
 

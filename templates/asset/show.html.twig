@@ -22,10 +22,10 @@
                     <i class="bi bi-lock" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
                 </button>
             {% endif %}
-            <a href="{{ path('app_asset_bcm_insights', {id: asset.id}) }}" class="btn btn-secondary">{{ 'assets.action.bcm_insights'|trans }}</a>
+            <a href="{{ path('app_asset_bcm_insights', {id: asset.id}) }}" class="btn btn-secondary">{{ 'assets.action.bcm_insights'|trans({}, 'assets') }}</a>
             <a href="{{ path('app_asset_index') }}" class="btn btn-secondary">{{ 'common.back_to_list'|trans({}, 'messages') }}</a>
             {% if is_granted('ROLE_ADMIN') and (canEdit is not defined or canEdit) %}
-                <form method="post" action="{{ path('app_asset_delete', {id: asset.id}) }}" style="display:inline;" onsubmit="return confirm('{{ 'assets.confirm.delete'|trans }}');">
+                <form method="post" action="{{ path('app_asset_delete', {id: asset.id}) }}" style="display:inline;" onsubmit="return confirm('{{ 'assets.confirm.delete'|trans({}, 'assets') }}');">
                     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ asset.id) }}">
                     <button type="submit" class="btn btn-danger">{{ 'common.delete'|trans({}, 'messages') }}</button>
                 </form>
@@ -47,25 +47,25 @@
 
     <div class="card">
         <div class="card-header">
-            <h2>{{ 'assets.details.title'|trans }}</h2>
+            <h2>{{ 'assets.details.title'|trans({}, 'assets') }}</h2>
             <span class="{{ badge_status(asset.status) }}">{{ asset.status|upper }}</span>
         </div>
         <div class="card-content">
             <div class="detail-grid">
                 <div class="detail-item">
-                    <span class="label">{{ 'assets.label.type'|trans }}</span>
+                    <span class="label">{{ 'assets.label.type'|trans({}, 'assets') }}</span>
                     <span class="value">{{ asset.assetType }}</span>
                 </div>
                 <div class="detail-item">
-                    <span class="label">{{ 'assets.label.owner'|trans }}</span>
+                    <span class="label">{{ 'assets.label.owner'|trans({}, 'assets') }}</span>
                     <span class="value">{{ asset.owner }}</span>
                 </div>
                 <div class="detail-item">
-                    <span class="label">{{ 'assets.label.location'|trans }}</span>
+                    <span class="label">{{ 'assets.label.location'|trans({}, 'assets') }}</span>
                     <span class="value">{{ asset.location }}</span>
                 </div>
                 <div class="detail-item">
-                    <span class="label">{{ 'assets.label.status'|trans }}</span>
+                    <span class="label">{{ 'assets.label.status'|trans({}, 'assets') }}</span>
                     <span class="value">{{ asset.status|upper }}</span>
                 </div>
             </div>
@@ -78,28 +78,28 @@
             {% endif %}
 
             <div class="detail-section">
-                <h3>{{ 'assets.section.valuation'|trans }}</h3>
+                <h3>{{ 'assets.section.valuation'|trans({}, 'assets') }}</h3>
                 <div class="detail-grid">
                     <div class="detail-item">
-                        <span class="label">{{ 'assets.label.acquisition_value'|trans }}</span>
+                        <span class="label">{{ 'assets.label.acquisition_value'|trans({}, 'assets') }}</span>
                         <span class="value">{{ asset.acquisitionValue ? asset.acquisitionValue ~ ' EUR' : 'N/A' }}</span>
                     </div>
                     <div class="detail-item">
-                        <span class="label">{{ 'assets.label.current_value'|trans }}</span>
+                        <span class="label">{{ 'assets.label.current_value'|trans({}, 'assets') }}</span>
                         <span class="value">{{ asset.currentValue ? asset.currentValue ~ ' EUR' : 'N/A' }}</span>
                     </div>
                     {% if asset.monetaryValue %}
                         <div class="detail-item">
-                            <span class="label">{{ 'assets.label.monetary_value'|trans }}</span>
+                            <span class="label">{{ 'assets.label.monetary_value'|trans({}, 'assets') }}</span>
                             <span class="value">{{ asset.monetaryValue ~ ' EUR' }}</span>
                         </div>
                     {% endif %}
                     <div class="detail-item">
-                        <span class="label">{{ 'assets.label.total_value'|trans }}</span>
+                        <span class="label">{{ 'assets.label.total_value'|trans({}, 'assets') }}</span>
                         <span class="value">{{ asset.totalValue ~ ' EUR' }}</span>
                     </div>
                     <div class="detail-item">
-                        <span class="label">{{ 'assets.label.risks'|trans }}</span>
+                        <span class="label">{{ 'assets.label.risks'|trans({}, 'assets') }}</span>
                         <span class="value">
                             {% if asset.risks|length > 0 %}
                                 <a href="#related-risks" class="{{ badge_score(asset.risks|length, 5, 3) }}">
@@ -115,11 +115,11 @@
 
             {% if asset.dataClassification or asset.returnDate %}
                 <div class="detail-section">
-                    <h3>{{ 'assets.section.compliance'|trans }}</h3>
+                    <h3>{{ 'assets.section.compliance'|trans({}, 'assets') }}</h3>
                     <div class="detail-grid">
                         {% if asset.dataClassification %}
                             <div class="detail-item">
-                                <span class="label">{{ 'assets.label.data_classification'|trans }}</span>
+                                <span class="label">{{ 'assets.label.data_classification'|trans({}, 'assets') }}</span>
                                 <span class="value">
                                     <span class="{{ badge_classification(asset.dataClassification) }}">
                                         {{ ('assets.classification.' ~ asset.dataClassification)|trans|upper }}
@@ -129,7 +129,7 @@
                         {% endif %}
                         {% if asset.returnDate %}
                             <div class="detail-item">
-                                <span class="label">{{ 'assets.label.return_date'|trans }}</span>
+                                <span class="label">{{ 'assets.label.return_date'|trans({}, 'assets') }}</span>
                                 <span class="value">{{ asset.returnDate|date('Y-m-d') }}</span>
                             </div>
                         {% endif %}
@@ -138,24 +138,24 @@
             {% endif %}
 
             <div class="detail-section">
-                <h3>{{ 'assets.section.cia_triad'|trans }}</h3>
+                <h3>{{ 'assets.section.cia_triad'|trans({}, 'assets') }}</h3>
                 <div class="cia-values">
                     <div class="cia-item">
-                        <span class="label">{{ 'assets.label.confidentiality'|trans }}</span>
+                        <span class="label">{{ 'assets.label.confidentiality'|trans({}, 'assets') }}</span>
                         <div class="value-bar">
                             <div class="bar" style="width: {{ (asset.confidentialityValue / 5 * 100) }}%"></div>
                         </div>
                         <span class="value">{{ asset.confidentialityValue }}/5</span>
                     </div>
                     <div class="cia-item">
-                        <span class="label">{{ 'assets.label.integrity'|trans }}</span>
+                        <span class="label">{{ 'assets.label.integrity'|trans({}, 'assets') }}</span>
                         <div class="value-bar">
                             <div class="bar" style="width: {{ (asset.integrityValue / 5 * 100) }}%"></div>
                         </div>
                         <span class="value">{{ asset.integrityValue }}/5</span>
                     </div>
                     <div class="cia-item">
-                        <span class="label">{{ 'assets.label.availability'|trans }}</span>
+                        <span class="label">{{ 'assets.label.availability'|trans({}, 'assets') }}</span>
                         <div class="value-bar">
                             <div class="bar" style="width: {{ (asset.availabilityValue / 5 * 100) }}%"></div>
                         </div>
@@ -166,7 +166,7 @@
 
             {% if asset.handlingInstructions %}
                 <div class="detail-section">
-                    <h3>{{ 'assets.section.handling_instructions'|trans }}</h3>
+                    <h3>{{ 'assets.section.handling_instructions'|trans({}, 'assets') }}</h3>
                     <div class="instruction-box">
                         {{ asset.handlingInstructions|nl2br }}
                     </div>
@@ -175,7 +175,7 @@
 
             {% if asset.acceptableUsePolicy %}
                 <div class="detail-section">
-                    <h3>{{ 'assets.section.acceptable_use_policy'|trans }}</h3>
+                    <h3>{{ 'assets.section.acceptable_use_policy'|trans({}, 'assets') }}</h3>
                     <div class="policy-box">
                         {{ asset.acceptableUsePolicy|nl2br }}
                     </div>
@@ -184,7 +184,7 @@
 
             {% if analysis %}
                 <div class="detail-section">
-                    <h3>{{ 'assets.section.protection_analysis'|trans }}</h3>
+                    <h3>{{ 'assets.section.protection_analysis'|trans({}, 'assets') }}</h3>
                     <p>{{ analysis.availability.recommendation }}</p>
                 </div>
             {% endif %}
@@ -192,7 +192,7 @@
             {# Data Reuse: Protecting Controls #}
             {% if asset.protectingControls is defined and asset.protectingControls|length > 0 %}
                 <div class="detail-section">
-                    <h3>{{ 'assets.section.protecting_controls'|trans }} ({{ asset.protectingControls|length }})</h3>
+                    <h3>{{ 'assets.section.protecting_controls'|trans({}, 'assets') }} ({{ asset.protectingControls|length }})</h3>
                     <div class="controls-list">
                         {% for control in asset.protectingControls %}
                             <div class="control-item">
@@ -210,7 +210,7 @@
             {# Data Reuse: Related Risks #}
             {% if asset.risks is defined and asset.risks|length > 0 %}
                 <div class="detail-section">
-                    <h3>{{ 'assets.section.related_risks'|trans }} ({{ asset.risks|length }})</h3>
+                    <h3>{{ 'assets.section.related_risks'|trans({}, 'assets') }} ({{ asset.risks|length }})</h3>
                     <div class="risks-list">
                         {% for risk in asset.risks %}
                             <div class="risk-item">
@@ -228,7 +228,7 @@
             {# Data Reuse: Related Incidents #}
             {% if asset.incidents is defined and asset.incidents|length > 0 %}
                 <div class="detail-section">
-                    <h3>{{ 'assets.section.related_incidents'|trans }} ({{ asset.incidents|length }})</h3>
+                    <h3>{{ 'assets.section.related_incidents'|trans({}, 'assets') }} ({{ asset.incidents|length }})</h3>
                     <div class="incidents-list">
                         {% for incident in asset.incidents %}
                             <div class="incident-item">
@@ -246,7 +246,7 @@
             {# Asset History: Audit Log #}
             {% if auditLogs is defined and auditLogs|length > 0 %}
                 <div class="detail-section">
-                    <h3>{{ 'assets.section.history'|trans }} ({{ totalAuditLogs }} {{ 'audit_log.entries'|trans({}, 'messages') }})</h3>
+                    <h3>{{ 'assets.section.history'|trans({}, 'assets') }} ({{ totalAuditLogs }} {{ 'audit_log.entries'|trans({}, 'messages') }})</h3>
                     <div class="audit-log-list">
                         {% for log in auditLogs %}
                             <div class="audit-log-item">
@@ -281,7 +281,7 @@
                     {% if totalAuditLogs > 10 %}
                         <div class="text-center mt-3">
                             <a href="{{ path('app_audit_log_index', {entity: 'Asset', entityId: asset.id}) }}" class="btn btn-sm btn-outline-secondary">
-                                <i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'audit_log.view_all'|trans }} ({{ totalAuditLogs }})
+                                <i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'audit_log.view_all'|trans({}, 'audits') }} ({{ totalAuditLogs }})
                             </a>
                         </div>
                     {% endif %}

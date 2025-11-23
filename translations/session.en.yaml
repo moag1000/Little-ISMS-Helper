@@ -1,0 +1,22 @@
+session:
+  title: Sessions
+  list: Active Sessions
+  show: Session Details
+  user_name: Username
+  ip_address: IP Address
+  user_agent: User Agent
+  last_activity: Last Activity
+  session_start: Session Start
+  terminate: Terminate Session
+  statistics:
+    total: Total Active Sessions
+    today: Today
+    hours_filter: Time Filter (Hours)
+  activity_timeline: Activity Timeline
+  unique_ips: Unique IP Addresses
+  unique_devices: Unique Devices
+  error:
+    invalid_token: Invalid CSRF token
+  info:
+    termination_not_implemented: Session termination requires additional configuration (database session storage)
+

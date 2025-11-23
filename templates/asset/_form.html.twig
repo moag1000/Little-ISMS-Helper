@@ -15,15 +15,15 @@
 <fieldset class="mb-4">
     <legend class="h5 mb-3">
         <i class="bi bi-info-circle" aria-hidden="true"></i>
-        {{ 'assets.section.basic_info'|trans|default('Grundinformationen') }}
+        {{ 'assets.section.basic_info'|trans({}, 'assets')|default('Grundinformationen') }}
     </legend>
 
     <div class="row">
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.name,
-                'label': 'assets.field.name'|trans|default('Name'),
-                'help': 'assets.help.name'|trans|default('Eindeutiger Name des Assets'),
+                'label': 'assets.field.name'|trans({}, 'assets')|default('Name'),
+                'help': 'assets.help.name'|trans({}, 'assets')|default('Eindeutiger Name des Assets'),
                 'required': true
             } %}
         </div>
@@ -31,8 +31,8 @@
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.assetType,
-                'label': 'assets.field.type'|trans|default('Asset-Typ'),
-                'help': 'assets.help.type'|trans|default('Kategorie des Assets (Hardware, Software, Daten, etc.)'),
+                'label': 'assets.field.type'|trans({}, 'assets')|default('Asset-Typ'),
+                'help': 'assets.help.type'|trans({}, 'assets')|default('Kategorie des Assets (Hardware, Software, Daten, etc.)'),
                 'required': true
             } %}
         </div>
@@ -42,8 +42,8 @@
         <div class="col-12">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.description,
-                'label': 'assets.field.description'|trans|default('Beschreibung'),
-                'help': 'assets.help.description'|trans|default('Detaillierte Beschreibung des Assets und seiner Funktion')
+                'label': 'assets.field.description'|trans({}, 'assets')|default('Beschreibung'),
+                'help': 'assets.help.description'|trans({}, 'assets')|default('Detaillierte Beschreibung des Assets und seiner Funktion')
             } %}
         </div>
     </div>
@@ -53,23 +53,23 @@
 <fieldset class="mb-4">
     <legend class="h5 mb-3">
         <i class="bi bi-person-badge" aria-hidden="true"></i>
-        {{ 'assets.section.assignment'|trans|default('Zuordnung') }}
+        {{ 'assets.section.assignment'|trans({}, 'assets')|default('Zuordnung') }}
     </legend>
 
     <div class="row">
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.owner,
-                'label': 'assets.field.owner'|trans|default('Eigentümer'),
-                'help': 'assets.help.owner'|trans|default('Verantwortliche Person für dieses Asset')
+                'label': 'assets.field.owner'|trans({}, 'assets')|default('Eigentümer'),
+                'help': 'assets.help.owner'|trans({}, 'assets')|default('Verantwortliche Person für dieses Asset')
             } %}
         </div>
 
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.location,
-                'label': 'assets.field.location'|trans|default('Standort'),
-                'help': 'assets.help.location'|trans|default('Physischer oder logischer Standort des Assets')
+                'label': 'assets.field.location'|trans({}, 'assets')|default('Standort'),
+                'help': 'assets.help.location'|trans({}, 'assets')|default('Physischer oder logischer Standort des Assets')
             } %}
         </div>
     </div>
@@ -79,23 +79,23 @@
 <fieldset class="mb-4">
     <legend class="h5 mb-3">
         <i class="bi bi-currency-dollar" aria-hidden="true"></i>
-        {{ 'assets.section.financial'|trans|default('Finanzielle Informationen') }}
+        {{ 'assets.section.financial'|trans({}, 'assets')|default('Finanzielle Informationen') }}
     </legend>
 
     <div class="row">
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.acquisitionValue,
-                'label': 'assets.field.acquisition_value'|trans|default('Anschaffungswert'),
-                'help': 'assets.help.acquisition_value'|trans|default('Ursprünglicher Kaufpreis oder Anschaffungskosten')
+                'label': 'assets.field.acquisition_value'|trans({}, 'assets')|default('Anschaffungswert'),
+                'help': 'assets.help.acquisition_value'|trans({}, 'assets')|default('Ursprünglicher Kaufpreis oder Anschaffungskosten')
             } %}
         </div>
 
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.currentValue,
-                'label': 'assets.field.current_value'|trans|default('Aktueller Wert'),
-                'help': 'assets.help.current_value'|trans|default('Geschätzter aktueller Marktwert')
+                'label': 'assets.field.current_value'|trans({}, 'assets')|default('Aktueller Wert'),
+                'help': 'assets.help.current_value'|trans({}, 'assets')|default('Geschätzter aktueller Marktwert')
             } %}
         </div>
     </div>
@@ -105,36 +105,36 @@
 <fieldset class="mb-4">
     <legend class="h5 mb-3">
         <i class="bi bi-shield-lock" aria-hidden="true"></i>
-        {{ 'assets.section.cia_values'|trans|default('CIA-Bewertung (Schutzbedarf)') }}
+        {{ 'assets.section.cia_values'|trans({}, 'assets')|default('CIA-Bewertung (Schutzbedarf)') }}
     </legend>
 
     <div class="alert alert-info" role="status">
         <i class="bi bi-info-circle" aria-hidden="true"></i>
-        {{ 'assets.cia_help'|trans|default('Bewerten Sie den Schutzbedarf nach Vertraulichkeit, Integrität und Verfügbarkeit (1=sehr niedrig, 5=sehr hoch)') }}
+        {{ 'assets.cia_help'|trans({}, 'assets')|default('Bewerten Sie den Schutzbedarf nach Vertraulichkeit, Integrität und Verfügbarkeit (1=sehr niedrig, 5=sehr hoch)') }}
     </div>
 
     <div class="row">
         <div class="col-md-4">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.confidentialityValue,
-                'label': 'assets.field.confidentiality'|trans|default('Vertraulichkeit'),
-                'help': 'assets.help.confidentiality'|trans|default('Schutzbedarf bzgl. Vertraulichkeit der Informationen')
+                'label': 'assets.field.confidentiality'|trans({}, 'assets')|default('Vertraulichkeit'),
+                'help': 'assets.help.confidentiality'|trans({}, 'assets')|default('Schutzbedarf bzgl. Vertraulichkeit der Informationen')
             } %}
         </div>
 
         <div class="col-md-4">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.integrityValue,
-                'label': 'assets.field.integrity'|trans|default('Integrität'),
-                'help': 'assets.help.integrity'|trans|default('Schutzbedarf bzgl. Unversehrtheit und Korrektheit der Daten')
+                'label': 'assets.field.integrity'|trans({}, 'assets')|default('Integrität'),
+                'help': 'assets.help.integrity'|trans({}, 'assets')|default('Schutzbedarf bzgl. Unversehrtheit und Korrektheit der Daten')
             } %}
         </div>
 
         <div class="col-md-4">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.availabilityValue,
-                'label': 'assets.field.availability'|trans|default('Verfügbarkeit'),
-                'help': 'assets.help.availability'|trans|default('Schutzbedarf bzgl. ständiger Erreichbarkeit und Nutzbarkeit')
+                'label': 'assets.field.availability'|trans({}, 'assets')|default('Verfügbarkeit'),
+                'help': 'assets.help.availability'|trans({}, 'assets')|default('Schutzbedarf bzgl. ständiger Erreichbarkeit und Nutzbarkeit')
             } %}
         </div>
     </div>

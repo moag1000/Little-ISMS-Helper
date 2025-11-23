@@ -46,7 +46,6 @@ management_review:
     in_progress: In Progress
     completed: Completed
     cancelled: Cancelled
-  # Aliases used directly by templates (non-field labels/sections)
   changes_relevant_to_isms: Changes relevant to the ISMS
   feedback_from_interested_parties: Feedback from interested parties
   audit_results: Audit results

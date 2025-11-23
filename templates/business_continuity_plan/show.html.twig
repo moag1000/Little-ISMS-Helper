@@ -21,26 +21,26 @@
 
     <div class="card">
         <div class="card-header">
-            <h2>{{ 'bc_plans.section.details'|trans }}</h2>
+            <h2>{{ 'bc_plans.section.details'|trans({}, 'bcm') }}</h2>
             <span class="badge badge-{{ bc_plan.status }}">{{ bc_plan.status }}</span>
         </div>
         <div class="card-content">
             {% set readiness = bc_plan.getReadinessScore() %}
             <div class="alert alert-{{ readiness >= 80 ? 'success' : (readiness >= 60 ? 'info' : 'warning') }}">
-                <strong>{{ 'bc_plans.message.readiness_score'|trans({'%score%': readiness}) }}</strong>
+                <strong>{{ 'bc_plans.message.readiness_score'|trans({'%score%': readiness}, 'bcm') }}</strong>
             </div>
 
             <div class="detail-grid">
                 <div class="detail-item">
-                    <span class="label">{{ 'bc_plans.field.business_process'|trans }}:</span>
+                    <span class="label">{{ 'bc_plans.field.business_process'|trans({}, 'bcm') }}:</span>
                     <span class="value"><a href="{{ path('app_business_process_show', {id: bc_plan.businessProcess.id}) }}">{{ bc_plan.businessProcess.name }}</a></span>
                 </div>
                 <div class="detail-item">
-                    <span class="label">{{ 'bc_plans.field.plan_owner'|trans }}:</span>
+                    <span class="label">{{ 'bc_plans.field.plan_owner'|trans({}, 'bcm') }}:</span>
                     <span class="value">{{ bc_plan.planOwner }}</span>
                 </div>
                 <div class="detail-item">
-                    <span class="label">{{ 'bc_plans.field.version'|trans }}:</span>
+                    <span class="label">{{ 'bc_plans.field.version'|trans({}, 'bcm') }}:</span>
                     <span class="value">{{ bc_plan.version }}</span>
                 </div>
             </div>
@@ -77,28 +77,28 @@
             {% endif %}
 
             <div class="detail-section">
-                <h3>{{ 'bc_plans.section.testing_review'|trans }}</h3>
+                <h3>{{ 'bc_plans.section.testing_review'|trans({}, 'bcm') }}</h3>
                 <div class="detail-grid">
                     <div class="detail-item">
-                        <span class="label">{{ 'bc_plans.field.last_tested'|trans }}:</span>
-                        <span class="value">{{ bc_plan.lastTested ? bc_plan.lastTested|date('Y-m-d') : ('bc_plans.message.never'|trans) }}</span>
+                        <span class="label">{{ 'bc_plans.field.last_tested'|trans({}, 'bcm') }}:</span>
+                        <span class="value">{{ bc_plan.lastTested ? bc_plan.lastTested|date('Y-m-d') : ('bc_plans.message.never'|trans({}, 'bcm')) }}</span>
                     </div>
                     <div class="detail-item">
-                        <span class="label">{{ 'bc_plans.field.next_test'|trans }}:</span>
+                        <span class="label">{{ 'bc_plans.field.next_test'|trans({}, 'bcm') }}:</span>
                         <span class="value {{ bc_plan.isTestOverdue() ? 'text-danger' : '' }}">
-                            {{ bc_plan.nextTestDate ? bc_plan.nextTestDate|date('Y-m-d') : ('bc_plans.message.not_scheduled'|trans) }}
-                            {{ bc_plan.isTestOverdue() ? ('bc_plans.badge.overdue'|trans) : '' }}
+                            {{ bc_plan.nextTestDate ? bc_plan.nextTestDate|date('Y-m-d') : ('bc_plans.message.not_scheduled'|trans({}, 'bcm')) }}
+                            {{ bc_plan.isTestOverdue() ? ('bc_plans.badge.overdue'|trans({}, 'bcm')) : '' }}
                         </span>
                     </div>
                     <div class="detail-item">
-                        <span class="label">{{ 'bc_plans.field.last_review'|trans }}:</span>
-                        <span class="value">{{ bc_plan.lastReviewDate ? bc_plan.lastReviewDate|date('Y-m-d') : ('bc_plans.message.never'|trans) }}</span>
+                        <span class="label">{{ 'bc_plans.field.last_review'|trans({}, 'bcm') }}:</span>
+                        <span class="value">{{ bc_plan.lastReviewDate ? bc_plan.lastReviewDate|date('Y-m-d') : ('bc_plans.message.never'|trans({}, 'bcm')) }}</span>
                     </div>
                     <div class="detail-item">
-                        <span class="label">{{ 'bc_plans.field.next_review'|trans }}:</span>
+                        <span class="label">{{ 'bc_plans.field.next_review'|trans({}, 'bcm') }}:</span>
                         <span class="value {{ bc_plan.isReviewOverdue() ? 'text-danger' : '' }}">
-                            {{ bc_plan.nextReviewDate ? bc_plan.nextReviewDate|date('Y-m-d') : ('bc_plans.message.not_scheduled'|trans) }}
-                            {{ bc_plan.isReviewOverdue() ? ('bc_plans.badge.overdue'|trans) : '' }}
+                            {{ bc_plan.nextReviewDate ? bc_plan.nextReviewDate|date('Y-m-d') : ('bc_plans.message.not_scheduled'|trans({}, 'bcm')) }}
+                            {{ bc_plan.isReviewOverdue() ? ('bc_plans.badge.overdue'|trans({}, 'bcm')) : '' }}
                         </span>
                     </div>
                 </div>
@@ -106,34 +106,34 @@
 
             {% if bc_plan.reviewNotes %}
             <div class="detail-section">
-                <h3>{{ 'bc_plans.section.review_notes'|trans }}</h3>
+                <h3>{{ 'bc_plans.section.review_notes'|trans({}, 'bcm') }}</h3>
                 <p>{{ bc_plan.reviewNotes }}</p>
             </div>
             {% endif %}
 
             {% if bc_plan.communicationPlan %}
             <div class="detail-section">
-                <h3>{{ 'bc_plans.section.communication_plan'|trans }}</h3>
+                <h3>{{ 'bc_plans.section.communication_plan'|trans({}, 'bcm') }}</h3>
                 <p>{{ bc_plan.communicationPlan|nl2br }}</p>
             </div>
             {% endif %}
 
             {% if bc_plan.alternativeSite %}
             <div class="detail-section">
-                <h3>{{ 'bc_plans.section.alternative_site'|trans }}</h3>
+                <h3>{{ 'bc_plans.section.alternative_site'|trans({}, 'bcm') }}</h3>
                 <p>{{ bc_plan.alternativeSite }}</p>
                 {% if bc_plan.alternativeSiteAddress %}
-                    <p><strong>{{ 'bc_plans.field.address'|trans }}:</strong> {{ bc_plan.alternativeSiteAddress }}</p>
+                    <p><strong>{{ 'bc_plans.field.address'|trans({}, 'bcm') }}:</strong> {{ bc_plan.alternativeSiteAddress }}</p>
                 {% endif %}
                 {% if bc_plan.alternativeSiteCapacity %}
-                    <p><strong>{{ 'bc_plans.field.capacity'|trans }}:</strong> {{ bc_plan.alternativeSiteCapacity }}</p>
+                    <p><strong>{{ 'bc_plans.field.capacity'|trans({}, 'bcm') }}:</strong> {{ bc_plan.alternativeSiteCapacity }}</p>
                 {% endif %}
             </div>
             {% endif %}
 
             {% if bc_plan.relatedRisks|length > 0 %}
             <div class="detail-section">
-                <h3>{{ 'bc_plans.section.related_risks'|trans }} ({{ bc_plan.relatedRisks|length }})</h3>
+                <h3>{{ 'bc_plans.section.related_risks'|trans({}, 'bcm') }} ({{ bc_plan.relatedRisks|length }})</h3>
                 <ul>
                     {% for risk in bc_plan.relatedRisks %}
                     <li><a href="{{ path('app_risk_show', {id: risk.id}) }}">{{ risk.title }}</a></li>

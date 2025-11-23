@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'context' %}
 
-{% block title %}{{ 'context_management.title'|trans }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+{% block title %}{{ 'context_management.title'|trans({}, 'messages') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid">
@@ -9,25 +9,25 @@
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
             { label: 'nav.dashboard'|trans({}, 'nav', 'nav'), url: path('app_dashboard') },
-            { label: 'context_management.title'|trans }
+            { label: 'context_management.title'|trans({}, 'messages') }
         ]
     } %}
 
     {# Page Header #}
     {% include '_components/_page_header.html.twig' with {
-        title: 'context_management.title'|trans,
-        subtitle: 'context.info.subtitle'|trans,
+        title: 'context_management.title'|trans({}, 'messages'),
+        subtitle: 'context.info.subtitle'|trans({}, 'messages'),
         icon: 'bi-building',
         actions: context ? [
             {
-                label: 'context.link.edit'|trans,
+                label: 'context.link.edit'|trans({}, 'messages'),
                 url: path('app_context_edit'),
                 variant: 'primary',
                 icon: 'bi-pencil'
             }
         ] : [
             {
-                label: 'context.link.create'|trans,
+                label: 'context.link.create'|trans({}, 'messages'),
                 url: path('app_context_edit'),
                 variant: 'primary',
                 icon: 'bi-plus-circle'
@@ -41,8 +41,8 @@
         <div class="d-flex align-items-center">
             <i class="bi bi-info-circle-fill icon-15-mr-md" aria-hidden="true"></i>
             <div>
-                <h6 class="mb-1"><strong>{{ 'context.info.iso_clause'|trans }}</strong></h6>
-                <p class="mb-0 small">{{ 'context.info.iso_description'|trans }}</p>
+                <h6 class="mb-1"><strong>{{ 'context.info.iso_clause'|trans({}, 'messages') }}</strong></h6>
+                <p class="mb-0 small">{{ 'context.info.iso_description'|trans({}, 'messages') }}</p>
             </div>
         </div>
     </div>
@@ -63,7 +63,7 @@
     <div class="kpi-grid">
         {% include '_components/_kpi_card.html.twig' with {
             icon: 'bi-check-circle',
-            label: 'context.kpi.completeness'|trans,
+            label: 'context.kpi.completeness'|trans({}, 'messages'),
             value: completenessPercentage,
             unit: '%',
             variant: completenessPercentage >= 75 ? 'success' : (completenessPercentage >= 50 ? 'warning' : 'danger'),
@@ -72,7 +72,7 @@
 
         {% include '_components/_kpi_card.html.twig' with {
             icon: 'bi-bullseye',
-            label: 'context.kpi.active_goals'|trans,
+            label: 'context.kpi.active_goals'|trans({}, 'messages'),
             value: objectives|length,
             variant: 'info',
             link: path('app_objective_index')
@@ -80,18 +80,18 @@
 
         {% include '_components/_kpi_card.html.twig' with {
             icon: 'bi-calendar-check',
-            label: daysSinceReview ? 'context.kpi.days_since_review'|trans : 'context.kpi.last_review'|trans,
+            label: daysSinceReview ? 'context.kpi.days_since_review'|trans({}, 'messages') : 'context.kpi.last_review'|trans({}, 'messages'),
             value: daysSinceReview ?? '-',
-            unit: daysSinceReview ? (daysSinceReview == 1 ? 'context.unit.day'|trans : 'context.unit.days'|trans) : '',
+            unit: daysSinceReview ? (daysSinceReview == 1 ? 'context.unit.day'|trans({}, 'messages') : 'context.unit.days'|trans({}, 'messages')) : '',
             variant: daysSinceReview ? (daysSinceReview > 365 ? 'danger' : (daysSinceReview > 180 ? 'warning' : 'success')) : 'secondary',
             link: null
         } %}
 
         {% include '_components/_kpi_card.html.twig' with {
             icon: 'bi-calendar-event',
-            label: daysUntilReview ? 'context.kpi.days_until_review'|trans : 'context.kpi.next_review'|trans,
+            label: daysUntilReview ? 'context.kpi.days_until_review'|trans({}, 'messages') : 'context.kpi.next_review'|trans({}, 'messages'),
             value: daysUntilReview ?? '-',
-            unit: daysUntilReview ? (daysUntilReview == 1 ? 'context.unit.day'|trans : 'context.unit.days'|trans) : '',
+            unit: daysUntilReview ? (daysUntilReview == 1 ? 'context.unit.day'|trans({}, 'messages') : 'context.unit.days'|trans({}, 'messages')) : '',
             variant: daysUntilReview ? (daysUntilReview < 30 ? 'warning' : (daysUntilReview < 0 ? 'danger' : 'info')) : 'secondary',
             link: null
         } %}
@@ -103,8 +103,8 @@
         <div class="d-flex align-items-center">
             <i class="bi bi-exclamation-triangle-fill icon-15-mr-md" aria-hidden="true"></i>
             <div>
-                <h6 class="mb-1"><strong>{{ 'context.message.overdue_review_title'|trans }}</strong></h6>
-                <p class="mb-0">{{ 'context.message.overdue_review_text'|trans({'%date%': context.nextReviewDate|date('d.m.Y'), '%days%': (daysUntilReview * -1)}) }}</p>
+                <h6 class="mb-1"><strong>{{ 'context.message.overdue_review_title'|trans({}, 'messages') }}</strong></h6>
+                <p class="mb-0">{{ 'context.message.overdue_review_text'|trans({'%date%': context.nextReviewDate|date('d.m.Y'), '%days%': (daysUntilReview * -1)}, 'messages') }}</p>
             </div>
         </div>
     </div>
@@ -113,8 +113,8 @@
         <div class="d-flex align-items-center">
             <i class="bi bi-clock-fill icon-15-mr-md" aria-hidden="true"></i>
             <div>
-                <h6 class="mb-1"><strong>{{ 'context.message.upcoming_review_title'|trans }}</strong></h6>
-                <p class="mb-0">{{ 'context.message.upcoming_review_text'|trans({'%date%': context.nextReviewDate|date('d.m.Y'), '%days%': daysUntilReview}) }}</p>
+                <h6 class="mb-1"><strong>{{ 'context.message.upcoming_review_title'|trans({}, 'messages') }}</strong></h6>
+                <p class="mb-0">{{ 'context.message.upcoming_review_text'|trans({'%date%': context.nextReviewDate|date('d.m.Y'), '%days%': daysUntilReview}, 'messages') }}</p>
             </div>
         </div>
     </div>
@@ -127,12 +127,12 @@
                 <div class="card-header">
                     <h2 class="mb-0">
                         <i class="bi bi-building" aria-hidden="true"></i>
-                        {{ 'context.section.organization'|trans }}
+                        {{ 'context.section.organization'|trans({}, 'messages') }}
                     </h2>
                 </div>
                 <div class="card-body">
                     <div class="mb-3">
-                        <label class="text-muted small">{{ 'context.field.organization_name'|trans }}</label>
+                        <label class="text-muted small">{{ 'context.field.organization_name'|trans({}, 'messages') }}</label>
                         <h4 class="mb-0">{{ context.organizationName }}</h4>
                     </div>
 
@@ -140,7 +140,7 @@
                     <div class="mb-3">
                         <label class="text-muted small">
                             <i class="bi bi-check-circle text-success" aria-hidden="true"></i>
-                            {{ 'context.field.isms_scope'|trans }}
+                            {{ 'context.field.isms_scope'|trans({}, 'messages') }}
                         </label>
                         <p class="mb-0">{{ context.ismsScope|nl2br }}</p>
                     </div>
@@ -150,7 +150,7 @@
                     <div class="mb-3">
                         <label class="text-muted small">
                             <i class="bi bi-x-circle text-danger" aria-hidden="true"></i>
-                            {{ 'context.field.scope_exclusions'|trans }}
+                            {{ 'context.field.scope_exclusions'|trans({}, 'messages') }}
                         </label>
                         <p class="mb-0">{{ context.scopeExclusions|nl2br }}</p>
                     </div>
@@ -161,13 +161,13 @@
                         {% if context.lastReviewDate %}
                         <div class="small text-muted mb-1">
                             <i class="bi bi-calendar-check" aria-hidden="true"></i>
-                            {{ 'context.kpi.last_review'|trans }}: <strong>{{ context.lastReviewDate|date('d.m.Y') }}</strong>
+                            {{ 'context.kpi.last_review'|trans({}, 'messages') }}: <strong>{{ context.lastReviewDate|date('d.m.Y') }}</strong>
                         </div>
                         {% endif %}
                         {% if context.nextReviewDate %}
                         <div class="small text-muted">
                             <i class="bi bi-calendar-event" aria-hidden="true"></i>
-                            {{ 'context.kpi.next_review'|trans }}: <strong>{{ context.nextReviewDate|date('d.m.Y') }}</strong>
+                            {{ 'context.kpi.next_review'|trans({}, 'messages') }}: <strong>{{ context.nextReviewDate|date('d.m.Y') }}</strong>
                         </div>
                         {% endif %}
                     </div>
@@ -181,7 +181,7 @@
                 <div class="card-header">
                     <h2 class="mb-0">
                         <i class="bi bi-diagram-3" aria-hidden="true"></i>
-                        {{ 'context.section.context_analysis'|trans }}
+                        {{ 'context.section.context_analysis'|trans({}, 'messages') }}
                     </h2>
                 </div>
                 <div class="card-body">
@@ -189,7 +189,7 @@
                     <div class="mb-3">
                         <label class="text-muted small">
                             <i class="bi bi-globe" aria-hidden="true"></i>
-                            {{ 'context.field.external_issues'|trans }}
+                            {{ 'context.field.external_issues'|trans({}, 'messages') }}
                         </label>
                         <p class="mb-0 small">{{ context.externalIssues|nl2br }}</p>
                     </div>
@@ -199,7 +199,7 @@
                     <div class="mb-3">
                         <label class="text-muted small">
                             <i class="bi bi-building" aria-hidden="true"></i>
-                            {{ 'context.field.internal_issues'|trans }}
+                            {{ 'context.field.internal_issues'|trans({}, 'messages') }}
                         </label>
                         <p class="mb-0 small">{{ context.internalIssues|nl2br }}</p>
                     </div>
@@ -208,7 +208,7 @@
                     {% if not context.externalIssues and not context.internalIssues %}
                     <div class="text-center py-4 text-muted">
                         <i class="bi bi-info-circle icon-2-opacity-3" aria-hidden="true"></i>
-                        <p class="small mt-2 mb-0">{{ 'context.message.no_context_topics'|trans }}</p>
+                        <p class="small mt-2 mb-0">{{ 'context.message.no_context_topics'|trans({}, 'messages') }}</p>
                     </div>
                     {% endif %}
                 </div>
@@ -221,7 +221,7 @@
         <div class="card-header">
             <h2 class="mb-0">
                 <i class="bi bi-people" aria-hidden="true"></i>
-                {{ 'context.section.interested_parties_and_requirements'|trans }}
+                {{ 'context.section.interested_parties_and_requirements'|trans({}, 'messages') }}
             </h2>
         </div>
         <div class="card-body">
@@ -230,13 +230,13 @@
                     {% if context.interestedParties %}
                     <label class="text-muted small mb-2">
                         <i class="bi bi-people-fill text-primary" aria-hidden="true"></i>
-                        {{ 'context.section.interested_parties'|trans }}
+                        {{ 'context.section.interested_parties'|trans({}, 'messages') }}
                     </label>
                     <p class="mb-0">{{ context.interestedParties|nl2br }}</p>
                     {% else %}
                     <div class="text-center py-3 text-muted">
                         <i class="bi bi-people icon-2-opacity-3" aria-hidden="true"></i>
-                        <p class="small mt-2 mb-0">{{ 'context.message.no_interested_parties'|trans }}</p>
+                        <p class="small mt-2 mb-0">{{ 'context.message.no_interested_parties'|trans({}, 'messages') }}</p>
                     </div>
                     {% endif %}
                 </div>
@@ -244,13 +244,13 @@
                     {% if context.interestedPartiesRequirements %}
                     <label class="text-muted small mb-2">
                         <i class="bi bi-list-check text-success" aria-hidden="true"></i>
-                        {{ 'context.field.interested_parties_requirements'|trans }}
+                        {{ 'context.field.interested_parties_requirements'|trans({}, 'messages') }}
                     </label>
                     <p class="mb-0">{{ context.interestedPartiesRequirements|nl2br }}</p>
                     {% else %}
                     <div class="text-center py-3 text-muted">
                         <i class="bi bi-list-check icon-2-opacity-3" aria-hidden="true"></i>
-                        <p class="small mt-2 mb-0">{{ 'context.message.no_requirements'|trans }}</p>
+                        <p class="small mt-2 mb-0">{{ 'context.message.no_requirements'|trans({}, 'messages') }}</p>
                     </div>
                     {% endif %}
                 </div>
@@ -263,7 +263,7 @@
         <div class="card-header">
             <h2 class="mb-0">
                 <i class="bi bi-shield-check" aria-hidden="true"></i>
-                {{ 'context.section.compliance'|trans }}
+                {{ 'context.section.compliance'|trans({}, 'messages') }}
             </h2>
         </div>
         <div class="card-body">
@@ -272,12 +272,12 @@
                     <div class="requirement-box">
                         <label class="text-muted small mb-2">
                             <i class="bi bi-file-earmark-text text-warning" aria-hidden="true"></i>
-                            {{ 'context.section.legal_requirements'|trans }}
+                            {{ 'context.section.legal_requirements'|trans({}, 'messages') }}
                         </label>
                         {% if context.legalRequirements %}
                         <p class="small mb-0">{{ context.legalRequirements|nl2br }}</p>
                         {% else %}
-                        <p class="small text-muted mb-0">{{ 'context.message.no_requirements'|trans }}</p>
+                        <p class="small text-muted mb-0">{{ 'context.message.no_requirements'|trans({}, 'messages') }}</p>
                         {% endif %}
                     </div>
                 </div>
@@ -285,12 +285,12 @@
                     <div class="requirement-box">
                         <label class="text-muted small mb-2">
                             <i class="bi bi-file-earmark-ruled text-info" aria-hidden="true"></i>
-                            {{ 'context.section.regulatory_requirements'|trans }}
+                            {{ 'context.section.regulatory_requirements'|trans({}, 'messages') }}
                         </label>
                         {% if context.regulatoryRequirements %}
                         <p class="small mb-0">{{ context.regulatoryRequirements|nl2br }}</p>
                         {% else %}
-                        <p class="small text-muted mb-0">{{ 'context.message.no_requirements'|trans }}</p>
+                        <p class="small text-muted mb-0">{{ 'context.message.no_requirements'|trans({}, 'messages') }}</p>
                         {% endif %}
                     </div>
                 </div>
@@ -298,12 +298,12 @@
                     <div class="requirement-box">
                         <label class="text-muted small mb-2">
                             <i class="bi bi-file-earmark-check text-success" aria-hidden="true"></i>
-                            {{ 'context.section.contractual_obligations'|trans }}
+                            {{ 'context.section.contractual_obligations'|trans({}, 'messages') }}
                         </label>
                         {% if context.contractualObligations %}
                         <p class="small mb-0">{{ context.contractualObligations|nl2br }}</p>
                         {% else %}
-                        <p class="small text-muted mb-0">{{ 'context.message.no_requirements'|trans }}</p>
+                        <p class="small text-muted mb-0">{{ 'context.message.no_requirements'|trans({}, 'messages') }}</p>
                         {% endif %}
                     </div>
                 </div>
@@ -318,7 +318,7 @@
                 <div class="card-header">
                     <h2 class="mb-0">
                         <i class="bi bi-file-earmark-text" aria-hidden="true"></i>
-                        {{ 'context.field.isms_policy'|trans }}
+                        {{ 'context.field.isms_policy'|trans({}, 'messages') }}
                     </h2>
                 </div>
                 <div class="card-body">
@@ -327,7 +327,7 @@
                     {% else %}
                     <div class="text-center py-4 text-muted">
                         <i class="bi bi-file-earmark-text icon-3-opacity-3" aria-hidden="true"></i>
-                        <p class="small mt-2 mb-0">{{ 'context.message.no_requirements'|trans }}</p>
+                        <p class="small mt-2 mb-0">{{ 'context.message.no_requirements'|trans({}, 'messages') }}</p>
                     </div>
                     {% endif %}
                 </div>
@@ -339,7 +339,7 @@
                 <div class="card-header">
                     <h2 class="mb-0">
                         <i class="bi bi-person-badge" aria-hidden="true"></i>
-                        {{ 'context.field.roles_and_responsibilities'|trans }}
+                        {{ 'context.field.roles_and_responsibilities'|trans({}, 'messages') }}
                     </h2>
                 </div>
                 <div class="card-body">
@@ -348,7 +348,7 @@
                     {% else %}
                     <div class="text-center py-4 text-muted">
                         <i class="bi bi-person-badge icon-3-opacity-3" aria-hidden="true"></i>
-                        <p class="small mt-2 mb-0">{{ 'context.message.no_requirements'|trans }}</p>
+                        <p class="small mt-2 mb-0">{{ 'context.message.no_requirements'|trans({}, 'messages') }}</p>
                     </div>
                     {% endif %}
                 </div>
@@ -362,10 +362,10 @@
         <div class="card-header d-flex justify-content-between align-items-center">
             <h2 class="mb-0">
                 <i class="bi bi-target" aria-hidden="true"></i>
-                {{ 'context.section.objectives'|trans }}
+                {{ 'context.section.objectives'|trans({}, 'messages') }}
             </h2>
             <a href="{{ path('app_objective_index') }}" class="btn btn-sm btn-outline-primary">
-                {{ 'context.action.manage_objectives'|trans }}
+                {{ 'context.action.manage_objectives'|trans({}, 'messages') }}
                 <i class="bi bi-arrow-right" aria-hidden="true"></i>
             </a>
         </div>
@@ -423,7 +423,7 @@
             {% if objectives|length > 5 %}
             <div class="text-center mt-3">
                 <a href="{{ path('app_objective_index') }}" class="btn btn-sm btn-outline-secondary">
-                    {{ 'context.action.view_all_objectives'|trans({'%count%': objectives|length}) }}
+                    {{ 'context.action.view_all_objectives'|trans({'%count%': objectives|length}, 'messages') }}
                 </a>
             </div>
             {% endif %}
@@ -434,15 +434,15 @@
         <div class="card-header">
             <h2 class="mb-0">
                 <i class="bi bi-target" aria-hidden="true"></i>
-                {{ 'context.section.objectives'|trans }}
+                {{ 'context.section.objectives'|trans({}, 'messages') }}
             </h2>
         </div>
         <div class="card-body">
             <div class="alert alert-info mb-0">
                 <i class="bi bi-info-circle" aria-hidden="true"></i>
-                {{ 'context.message.no_objectives'|trans }}
+                {{ 'context.message.no_objectives'|trans({}, 'messages') }}
                 <a href="{{ path('app_objective_index') }}" class="alert-link">
-                    {{ 'context.action.manage_objectives'|trans }}
+                    {{ 'context.action.manage_objectives'|trans({}, 'messages') }}
                 </a>
             </div>
         </div>
@@ -453,10 +453,10 @@
     {# Empty State - No Context #}
     {% include '_components/_empty_state.html.twig' with {
         icon: 'bi-building',
-        title: 'context.empty.title'|trans,
-        description: 'context.empty.description'|trans,
+        title: 'context.empty.title'|trans({}, 'messages'),
+        description: 'context.empty.description'|trans({}, 'messages'),
         action: {
-            label: 'context.action.create_context'|trans,
+            label: 'context.action.create_context'|trans({}, 'messages'),
             url: path('app_context_edit'),
             icon: 'bi-plus-circle'
         }
@@ -467,45 +467,45 @@
         <div class="card-header bg-light">
             <h3 class="mb-0">
                 <i class="bi bi-lightbulb" aria-hidden="true"></i>
-                {{ 'context.info.box_title'|trans }}
+                {{ 'context.info.box_title'|trans({}, 'messages') }}
             </h3>
         </div>
         <div class="card-body">
             <div class="row">
                 <div class="col-md-6">
-                    <h4><i class="bi bi-1-circle text-primary" aria-hidden="true"></i> {{ 'context.info.clause41_title'|trans }}</h4>
+                    <h4><i class="bi bi-1-circle text-primary" aria-hidden="true"></i> {{ 'context.info.clause41_title'|trans({}, 'messages') }}</h4>
                     <ul class="small">
-                        <li>{{ 'context.info.clause41_items.external_issues'|trans }}</li>
-                        <li>{{ 'context.info.clause41_items.internal_issues'|trans }}</li>
-                        <li>{{ 'context.info.clause41_items.scope'|trans }}</li>
-                        <li>{{ 'context.info.clause41_items.exclusions'|trans }}</li>
+                        <li>{{ 'context.info.clause41_items.external_issues'|trans({}, 'messages') }}</li>
+                        <li>{{ 'context.info.clause41_items.internal_issues'|trans({}, 'messages') }}</li>
+                        <li>{{ 'context.info.clause41_items.scope'|trans({}, 'messages') }}</li>
+                        <li>{{ 'context.info.clause41_items.exclusions'|trans({}, 'messages') }}</li>
                     </ul>
                 </div>
                 <div class="col-md-6">
-                    <h4><i class="bi bi-2-circle text-primary" aria-hidden="true"></i> {{ 'context.info.clause42_title'|trans }}</h4>
+                    <h4><i class="bi bi-2-circle text-primary" aria-hidden="true"></i> {{ 'context.info.clause42_title'|trans({}, 'messages') }}</h4>
                     <ul class="small">
-                        <li>{{ 'context.info.clause42_items.identify'|trans }}</li>
-                        <li>{{ 'context.info.clause42_items.requirements'|trans }}</li>
-                        <li>{{ 'context.info.clause42_items.legal_regulatory'|trans }}</li>
-                        <li>{{ 'context.info.clause42_items.contractual'|trans }}</li>
+                        <li>{{ 'context.info.clause42_items.identify'|trans({}, 'messages') }}</li>
+                        <li>{{ 'context.info.clause42_items.requirements'|trans({}, 'messages') }}</li>
+                        <li>{{ 'context.info.clause42_items.legal_regulatory'|trans({}, 'messages') }}</li>
+                        <li>{{ 'context.info.clause42_items.contractual'|trans({}, 'messages') }}</li>
                     </ul>
                 </div>
             </div>
             <div class="row mt-3">
                 <div class="col-md-6">
-                    <h4><i class="bi bi-3-circle text-primary" aria-hidden="true"></i> {{ 'context.info.clause43_title'|trans }}</h4>
+                    <h4><i class="bi bi-3-circle text-primary" aria-hidden="true"></i> {{ 'context.info.clause43_title'|trans({}, 'messages') }}</h4>
                     <ul class="small">
-                        <li>{{ 'context.info.clause43_items.boundaries'|trans }}</li>
-                        <li>{{ 'context.info.clause43_items.locations_processes'|trans }}</li>
-                        <li>{{ 'context.info.clause43_items.justified_exclusions'|trans }}</li>
+                        <li>{{ 'context.info.clause43_items.boundaries'|trans({}, 'messages') }}</li>
+                        <li>{{ 'context.info.clause43_items.locations_processes'|trans({}, 'messages') }}</li>
+                        <li>{{ 'context.info.clause43_items.justified_exclusions'|trans({}, 'messages') }}</li>
                     </ul>
                 </div>
                 <div class="col-md-6">
-                    <h4><i class="bi bi-4-circle text-primary" aria-hidden="true"></i> {{ 'context.info.clause44_title'|trans }}</h4>
+                    <h4><i class="bi bi-4-circle text-primary" aria-hidden="true"></i> {{ 'context.info.clause44_title'|trans({}, 'messages') }}</h4>
                     <ul class="small">
-                        <li>{{ 'context.info.clause44_items.policy_objectives'|trans }}</li>
-                        <li>{{ 'context.info.clause44_items.roles_responsibilities'|trans }}</li>
-                        <li>{{ 'context.info.clause44_items.processes'|trans }}</li>
+                        <li>{{ 'context.info.clause44_items.policy_objectives'|trans({}, 'messages') }}</li>
+                        <li>{{ 'context.info.clause44_items.roles_responsibilities'|trans({}, 'messages') }}</li>
+                        <li>{{ 'context.info.clause44_items.processes'|trans({}, 'messages') }}</li>
                     </ul>
                 </div>
             </div>

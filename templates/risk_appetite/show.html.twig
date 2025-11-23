@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'risk_appetite' %}
 
-{% block title %}{{ appetite.displayName }} - {{ 'risk_appetite.title'|trans }}{% endblock %}
+{% block title %}{{ appetite.displayName }} - {{ 'risk_appetite.title'|trans({}, 'risks') }}{% endblock %}
 
 {% block body %}
 <div class="page-header">
@@ -9,20 +9,20 @@
         <h1>
             <i class="bi bi-speedometer2" aria-hidden="true"></i>
             {% if appetite.isGlobal() %}
-                <i class="bi bi-globe" aria-hidden="true"></i> {{ 'risk_appetite.category.global'|trans }}
+                <i class="bi bi-globe" aria-hidden="true"></i> {{ 'risk_appetite.category.global'|trans({}, 'risks') }}
             {% else %}
-                {{ appetite.category }} {{ 'risk_appetite.title_singular'|trans }}
+                {{ appetite.category }} {{ 'risk_appetite.title_singular'|trans({}, 'risks') }}
             {% endif %}
         </h1>
         <p class="text-muted">
-            {{ 'risk_appetite.show.subtitle'|trans }}
+            {{ 'risk_appetite.show.subtitle'|trans({}, 'risks') }}
             {% if appetite.isActive() %}
-                <span class="badge bg-success ms-2">{{ 'risk_appetite.status.active'|trans }}</span>
+                <span class="badge bg-success ms-2">{{ 'risk_appetite.status.active'|trans({}, 'risks') }}</span>
             {% else %}
-                <span class="badge bg-secondary ms-2">{{ 'risk_appetite.status.inactive'|trans }}</span>
+                <span class="badge bg-secondary ms-2">{{ 'risk_appetite.status.inactive'|trans({}, 'risks') }}</span>
             {% endif %}
             {% if appetite.isApproved() %}
-                <span class="badge bg-info ms-2">{{ 'risk_appetite.approved'|trans }}</span>
+                <span class="badge bg-info ms-2">{{ 'risk_appetite.approved'|trans({}, 'risks') }}</span>
             {% endif %}
         </p>
     </div>
@@ -42,30 +42,30 @@
 <div class="row mb-4">
     <div class="col-md-3">
         <div class="info-card">
-            <div class="info-label">{{ 'risk_appetite.field.max_acceptable_risk'|trans }}</div>
+            <div class="info-label">{{ 'risk_appetite.field.max_acceptable_risk'|trans({}, 'risks') }}</div>
             <div class="info-value">
                 <span class="badge bg-{{ appetite.maxAcceptableRisk <= 6 ? 'success' : (appetite.maxAcceptableRisk <= 12 ? 'warning' : 'danger') }} fs-3">
                     {{ appetite.maxAcceptableRisk }}
                 </span>
             </div>
-            <small class="text-muted">{{ 'risk_appetite.scale'|trans }}: 1-25</small>
+            <small class="text-muted">{{ 'risk_appetite.scale'|trans({}, 'risks') }}: 1-25</small>
         </div>
     </div>
     <div class="col-md-3">
         <div class="info-card {{ risksWithinAppetite|length > 0 ? 'bg-success text-white' : '' }}">
-            <div class="info-label">{{ 'risk_appetite.risks_within'|trans }}</div>
+            <div class="info-label">{{ 'risk_appetite.risks_within'|trans({}, 'risks') }}</div>
             <div class="info-value">{{ risksWithinAppetite|length }}</div>
         </div>
     </div>
     <div class="col-md-3">
         <div class="info-card {{ risksExceedingAppetite|length > 0 ? 'bg-danger text-white' : '' }}">
-            <div class="info-label">{{ 'risk_appetite.risks_exceeding'|trans }}</div>
+            <div class="info-label">{{ 'risk_appetite.risks_exceeding'|trans({}, 'risks') }}</div>
             <div class="info-value">{{ risksExceedingAppetite|length }}</div>
         </div>
     </div>
     <div class="col-md-3">
         <div class="info-card">
-            <div class="info-label">{{ 'risk_appetite.acceptance_rate'|trans }}</div>
+            <div class="info-label">{{ 'risk_appetite.acceptance_rate'|trans({}, 'risks') }}</div>
             <div class="info-value">
                 {% set totalRisks = risksWithinAppetite|length + risksExceedingAppetite|length %}
                 {% if totalRisks > 0 %}
@@ -81,22 +81,22 @@
 {# Appetite Details #}
 <div class="card mb-4">
     <div class="card-header">
-        <h3><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'risk_appetite.section.details'|trans }}</h3>
+        <h3><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'risk_appetite.section.details'|trans({}, 'risks') }}</h3>
     </div>
     <div class="card-body">
         <div class="row">
             <div class="col-md-6">
                 <div class="detail-item">
-                    <strong>{{ 'risk_appetite.field.category'|trans }}:</strong>
+                    <strong>{{ 'risk_appetite.field.category'|trans({}, 'risks') }}:</strong>
                     {% if appetite.isGlobal() %}
-                        <span class="badge bg-primary">{{ 'risk_appetite.category.global'|trans }}</span>
+                        <span class="badge bg-primary">{{ 'risk_appetite.category.global'|trans({}, 'risks') }}</span>
                     {% else %}
                         {{ appetite.category }}
                     {% endif %}
                 </div>
 
                 <div class="detail-item">
-                    <strong>{{ 'risk_appetite.field.approved_by'|trans }}:</strong>
+                    <strong>{{ 'risk_appetite.field.approved_by'|trans({}, 'risks') }}:</strong>
                     {% if appetite.approvedBy %}
                         {{ appetite.approvedBy.fullName }} ({{ appetite.approvedBy.email }})
                     {% else %}
@@ -107,7 +107,7 @@
 
             <div class="col-md-6">
                 <div class="detail-item">
-                    <strong>{{ 'risk_appetite.field.approved_at'|trans }}:</strong>
+                    <strong>{{ 'risk_appetite.field.approved_at'|trans({}, 'risks') }}:</strong>
                     {% if appetite.approvedAt %}
                         {{ appetite.approvedAt|date('Y-m-d H:i:s') }}
                     {% else %}
@@ -116,7 +116,7 @@
                 </div>
 
                 <div class="detail-item">
-                    <strong>{{ 'risk_appetite.field.created_at'|trans }}:</strong>
+                    <strong>{{ 'risk_appetite.field.created_at'|trans({}, 'risks') }}:</strong>
                     {{ appetite.createdAt|date('Y-m-d H:i:s') }}
                 </div>
             </div>
@@ -125,7 +125,7 @@
         <hr>
 
         <div class="detail-item">
-            <strong>{{ 'risk_appetite.field.description'|trans }}:</strong>
+            <strong>{{ 'risk_appetite.field.description'|trans({}, 'risks') }}:</strong>
             <div class="mt-2">{{ appetite.description|nl2br }}</div>
         </div>
     </div>
@@ -135,10 +135,10 @@
 {% if risksExceedingAppetite|length > 0 %}
 <div class="card border-danger mb-4">
     <div class="card-header bg-danger text-white">
-        <h3><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'risk_appetite.risks_exceeding_title'|trans }} ({{ risksExceedingAppetite|length }})</h3>
+        <h3><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'risk_appetite.risks_exceeding_title'|trans({}, 'risks') }} ({{ risksExceedingAppetite|length }})</h3>
     </div>
     <div class="card-body">
-        <p>{{ 'risk_appetite.risks_exceeding_description'|trans }}</p>
+        <p>{{ 'risk_appetite.risks_exceeding_description'|trans({}, 'risks') }}</p>
         {% embed '_components/_table.html.twig' with {
             'class': 'table-sm',
             'noMargin': true,
@@ -146,11 +146,11 @@
         } %}
             {% block table_head %}
                 <tr>
-                    <th scope="col">{{ 'risk.field.title'|trans }}</th>
-                    <th scope="col" class="text-center">{{ 'risk.field.score'|trans }}</th>
-                    <th scope="col" class="text-center">{{ 'risk_appetite.exceeds_by'|trans }}</th>
-                    <th scope="col">{{ 'risk.field.treatment_strategy'|trans }}</th>
-                    <th scope="col" class="text-center">{{ 'common.actions'|trans }}</th>
+                    <th scope="col">{{ 'risk.field.title'|trans({}, 'risks') }}</th>
+                    <th scope="col" class="text-center">{{ 'risk.field.score'|trans({}, 'risks') }}</th>
+                    <th scope="col" class="text-center">{{ 'risk_appetite.exceeds_by'|trans({}, 'risks') }}</th>
+                    <th scope="col">{{ 'risk.field.treatment_strategy'|trans({}, 'risks') }}</th>
+                    <th scope="col" class="text-center">{{ 'common.actions'|trans({}, 'messages') }}</th>
                 </tr>
             {% endblock %}
             {% block table_body %}
@@ -171,7 +171,7 @@
                         {% endif %}
                     </td>
                     <td class="text-center">
-                        <a href="{{ path('app_risk_show', {id: risk.id}) }}" class="btn btn-sm btn-outline-primary" aria-label="{{ 'common.view'|trans }}">
+                        <a href="{{ path('app_risk_show', {id: risk.id}) }}" class="btn btn-sm btn-outline-primary" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
                             <i class="bi bi-eye" aria-hidden="true"></i>
                         </a>
                     </td>
@@ -187,10 +187,10 @@
 {% if risksWithinAppetite|length > 0 %}
 <div class="card border-success mb-4">
     <div class="card-header bg-success text-white">
-        <h3><i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'risk_appetite.risks_within_title'|trans }} ({{ risksWithinAppetite|length }})</h3>
+        <h3><i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'risk_appetite.risks_within_title'|trans({}, 'risks') }} ({{ risksWithinAppetite|length }})</h3>
     </div>
     <div class="card-body">
-        <p>{{ 'risk_appetite.risks_within_description'|trans }}</p>
+        <p>{{ 'risk_appetite.risks_within_description'|trans({}, 'risks') }}</p>
         {% embed '_components/_table.html.twig' with {
             'class': 'table-sm',
             'noMargin': true,
@@ -198,11 +198,11 @@
         } %}
             {% block table_head %}
                 <tr>
-                    <th scope="col">{{ 'risk.field.title'|trans }}</th>
-                    <th scope="col" class="text-center">{{ 'risk.field.score'|trans }}</th>
-                    <th scope="col" class="text-center">{{ 'risk_appetite.appetite_percentage'|trans }}</th>
-                    <th scope="col">{{ 'risk.field.status'|trans }}</th>
-                    <th scope="col" class="text-center">{{ 'common.actions'|trans }}</th>
+                    <th scope="col">{{ 'risk.field.title'|trans({}, 'risks') }}</th>
+                    <th scope="col" class="text-center">{{ 'risk.field.score'|trans({}, 'risks') }}</th>
+                    <th scope="col" class="text-center">{{ 'risk_appetite.appetite_percentage'|trans({}, 'risks') }}</th>
+                    <th scope="col">{{ 'risk.field.status'|trans({}, 'risks') }}</th>
+                    <th scope="col" class="text-center">{{ 'common.actions'|trans({}, 'messages') }}</th>
                 </tr>
             {% endblock %}
             {% block table_body %}
@@ -231,7 +231,7 @@
                         <span class="badge bg-secondary">{{ risk.status }}</span>
                     </td>
                     <td class="text-center">
-                        <a href="{{ path('app_risk_show', {id: risk.id}) }}" class="btn btn-sm btn-outline-primary" aria-label="{{ 'common.view'|trans }}">
+                        <a href="{{ path('app_risk_show', {id: risk.id}) }}" class="btn btn-sm btn-outline-primary" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
                             <i class="bi bi-eye" aria-hidden="true"></i>
                         </a>
                     </td>
@@ -240,7 +240,7 @@
                 {% if risksWithinAppetite|length > 10 %}
                 <tr>
                     <td colspan="5" class="text-center text-muted">
-                        {{ 'risk_appetite.and_more_risks'|trans({'%count%': risksWithinAppetite|length - 10}) }}
+                        {{ 'risk_appetite.and_more_risks'|trans({'%count%': risksWithinAppetite|length - 10}, 'risks') }}
                     </td>
                 </tr>
                 {% endif %}
@@ -254,7 +254,7 @@
 {% if auditLogs is defined and auditLogs|length > 0 %}
 <div class="card mb-4">
     <div class="card-header">
-        <h3><i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'risk_appetite.section.history'|trans }} ({{ totalAuditLogs }} {{ 'audit_log.entries'|trans }})</h3>
+        <h3><i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'risk_appetite.section.history'|trans({}, 'risks') }} ({{ totalAuditLogs }} {{ 'audit_log.entries'|trans({}, 'audits') }})</h3>
     </div>
     <div class="card-body">
         <div class="audit-log-list">
@@ -292,7 +292,7 @@
         </div>
         {% if totalAuditLogs > 10 %}
         <div class="text-center mt-3">
-            <small class="text-muted">{{ 'audit_log.showing_recent'|trans({'%count%': 10, '%total%': totalAuditLogs}) }}</small>
+            <small class="text-muted">{{ 'audit_log.showing_recent'|trans({'%count%': 10, '%total%': totalAuditLogs}, 'audits') }}</small>
         </div>
         {% endif %}
     </div>
@@ -303,14 +303,14 @@
 {% if is_granted('ROLE_ADMIN') %}
 <div class="card border-danger">
     <div class="card-header bg-danger text-white">
-        <h3><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'common.danger_zone'|trans }}</h3>
+        <h3><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'common.danger_zone'|trans({}, 'messages') }}</h3>
     </div>
     <div class="card-body">
-        <p>{{ 'risk_appetite.delete.warning'|trans }}</p>
-        <form method="post" action="{{ path('app_risk_appetite_delete', {id: appetite.id}) }}" onsubmit="return confirm('{{ 'risk_appetite.delete.confirm'|trans }}');">
+        <p>{{ 'risk_appetite.delete.warning'|trans({}, 'risks') }}</p>
+        <form method="post" action="{{ path('app_risk_appetite_delete', {id: appetite.id}) }}" onsubmit="return confirm('{{ 'risk_appetite.delete.confirm'|trans({}, 'risks') }}');">
             <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ appetite.id) }}">
             <button type="submit" class="btn btn-danger">
-                <i class="bi bi-trash" aria-hidden="true"></i> {{ 'common.delete'|trans }}
+                <i class="bi bi-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}
             </button>
         </form>
     </div>

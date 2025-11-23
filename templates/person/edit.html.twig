@@ -1,12 +1,12 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'people' %}
 
-{% block title %}{{ 'person.title.edit'|trans }} - {{ person.fullName }} - Little ISMS Helper{% endblock %}
+{% block title %}{{ 'person.title.edit'|trans({}, 'messages') }} - {{ person.fullName }} - Little ISMS Helper{% endblock %}
 
 {% block body %}
 <div class="page-header">
     <div>
-        <h1>{{ 'person.title.edit'|trans }}: {{ person.fullName }}</h1>
+        <h1>{{ 'person.title.edit'|trans({}, 'messages') }}: {{ person.fullName }}</h1>
     </div>
     <div class="button-group">
         <a href="{{ path('app_person_show', {id: person.id}) }}" class="btn btn-secondary">
@@ -18,7 +18,7 @@
 <div class="card">
     {{ form_start(form) }}
 
-    <h3>{{ 'person.section.basic_info'|trans }}</h3>
+    <h3>{{ 'person.section.basic_info'|trans({}, 'messages') }}</h3>
 
     <div class="form-group">
         {{ form_label(form.fullName) }}
@@ -38,7 +38,7 @@
         {{ form_errors(form.badgeId) }}
     </div>
 
-    <h2 style="margin-top: var(--spacing-lg);">{{ 'person.section.organization'|trans }}</h2>
+    <h2 style="margin-top: var(--spacing-lg);">{{ 'person.section.organization'|trans({}, 'messages') }}</h2>
 
     <div class="form-group">
         {{ form_label(form.company) }}
@@ -58,7 +58,7 @@
         {{ form_errors(form.jobTitle) }}
     </div>
 
-    <h3 style="margin-top: var(--spacing-lg);">{{ 'person.section.contact'|trans }}</h3>
+    <h3 style="margin-top: var(--spacing-lg);">{{ 'person.section.contact'|trans({}, 'messages') }}</h3>
 
     <div class="form-group">
         {{ form_label(form.email) }}
@@ -73,7 +73,7 @@
     </div>
 
     {% if form.notes is defined %}
-    <h3 style="margin-top: var(--spacing-lg);">{{ 'person.section.additional'|trans }}</h3>
+    <h3 style="margin-top: var(--spacing-lg);">{{ 'person.section.additional'|trans({}, 'messages') }}</h3>
 
     <div class="form-group">
         {{ form_label(form.notes) }}

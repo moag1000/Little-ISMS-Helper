@@ -1,34 +1,34 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'reports' %}
 
-{% block title %}{{ 'reports.page.title'|trans }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+{% block title %}{{ 'reports.page.title'|trans({}, 'messages') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
 {% block body %}
 {% import '_macros/cards.html.twig' as cards %}
 
 <div class="container-fluid py-4">
     <h1 class="h2 mb-4">
-        <i class="bi bi-file-earmark-bar-graph" aria-hidden="true"></i> {{ 'reports.page.title'|trans }}
+        <i class="bi bi-file-earmark-bar-graph" aria-hidden="true"></i> {{ 'reports.page.title'|trans({}, 'messages') }}
     </h1>
 
     <div class="alert alert-info mb-4">
-        <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'reports.page.subtitle'|trans }}
+        <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'reports.page.subtitle'|trans({}, 'messages') }}
     </div>
 
     <div class="row">
         {# Dashboard Report #}
         <div class="col-md-6 col-lg-4 mb-4">
             {{ cards.report_card(
-                'reports.card.dashboard.title'|trans,
+                'reports.card.dashboard.title'|trans({}, 'messages'),
                 'speedometer2',
                 'bg-primary',
                 'text-white',
-                'reports.card.dashboard.description'|trans,
+                'reports.card.dashboard.description'|trans({}, 'messages'),
                 [
-                    'reports.card.dashboard.features.feature_1'|trans,
-                    'reports.card.dashboard.features.feature_2'|trans,
-                    'reports.card.dashboard.features.feature_3'|trans,
-                    'reports.card.dashboard.features.feature_4'|trans
+                    'reports.card.dashboard.features.feature_1'|trans({}, 'messages'),
+                    'reports.card.dashboard.features.feature_2'|trans({}, 'messages'),
+                    'reports.card.dashboard.features.feature_3'|trans({}, 'messages'),
+                    'reports.card.dashboard.features.feature_4'|trans({}, 'messages')
                 ],
                 path('app_reports_dashboard_pdf'),
                 path('app_reports_dashboard_excel')
@@ -38,16 +38,16 @@
         {# Risk Register #}
         <div class="col-md-6 col-lg-4 mb-4">
             {{ cards.report_card(
-                'reports.card.risks.title'|trans,
+                'reports.card.risks.title'|trans({}, 'messages'),
                 'exclamation-triangle',
                 'bg-danger',
                 'text-white',
-                'reports.card.risks.description'|trans,
+                'reports.card.risks.description'|trans({}, 'messages'),
                 [
-                    'reports.card.risks.features.feature_1'|trans,
-                    'reports.card.risks.features.feature_2'|trans,
-                    'reports.card.risks.features.feature_3'|trans,
-                    'reports.card.risks.features.feature_4'|trans
+                    'reports.card.risks.features.feature_1'|trans({}, 'messages'),
+                    'reports.card.risks.features.feature_2'|trans({}, 'messages'),
+                    'reports.card.risks.features.feature_3'|trans({}, 'messages'),
+                    'reports.card.risks.features.feature_4'|trans({}, 'messages')
                 ],
                 path('app_reports_risks_pdf'),
                 path('app_reports_risks_excel')
@@ -57,16 +57,16 @@
         {# Statement of Applicability #}
         <div class="col-md-6 col-lg-4 mb-4">
             {{ cards.report_card(
-                'reports.card.soa.title'|trans,
+                'reports.card.soa.title'|trans({}, 'messages'),
                 'shield-check',
                 'bg-success',
                 'text-white',
-                'reports.card.soa.description'|trans,
+                'reports.card.soa.description'|trans({}, 'messages'),
                 [
-                    'reports.card.soa.features.feature_1'|trans,
-                    'reports.card.soa.features.feature_2'|trans,
-                    'reports.card.soa.features.feature_3'|trans,
-                    'reports.card.soa.features.feature_4'|trans
+                    'reports.card.soa.features.feature_1'|trans({}, 'messages'),
+                    'reports.card.soa.features.feature_2'|trans({}, 'messages'),
+                    'reports.card.soa.features.feature_3'|trans({}, 'messages'),
+                    'reports.card.soa.features.feature_4'|trans({}, 'messages')
                 ],
                 path('app_reports_controls_pdf'),
                 path('app_reports_controls_excel')
@@ -76,16 +76,16 @@
         {# Incident Log #}
         <div class="col-md-6 col-lg-4 mb-4">
             {{ cards.report_card(
-                'reports.card.incidents.title'|trans,
+                'reports.card.incidents.title'|trans({}, 'messages'),
                 'bell',
                 'bg-warning',
                 'text-dark',
-                'reports.card.incidents.description'|trans,
+                'reports.card.incidents.description'|trans({}, 'messages'),
                 [
-                    'reports.card.incidents.features.feature_1'|trans,
-                    'reports.card.incidents.features.feature_2'|trans,
-                    'reports.card.incidents.features.feature_3'|trans,
-                    'reports.card.incidents.features.feature_4'|trans
+                    'reports.card.incidents.features.feature_1'|trans({}, 'messages'),
+                    'reports.card.incidents.features.feature_2'|trans({}, 'messages'),
+                    'reports.card.incidents.features.feature_3'|trans({}, 'messages'),
+                    'reports.card.incidents.features.feature_4'|trans({}, 'messages')
                 ],
                 path('app_reports_incidents_pdf'),
                 path('app_reports_incidents_excel')
@@ -95,16 +95,16 @@
         {# Training Log #}
         <div class="col-md-6 col-lg-4 mb-4">
             {{ cards.report_card(
-                'reports.card.training.title'|trans,
+                'reports.card.training.title'|trans({}, 'messages'),
                 'mortarboard',
                 'bg-info',
                 'text-white',
-                'reports.card.training.description'|trans,
+                'reports.card.training.description'|trans({}, 'messages'),
                 [
-                    'reports.card.training.features.feature_1'|trans,
-                    'reports.card.training.features.feature_2'|trans,
-                    'reports.card.training.features.feature_3'|trans,
-                    'reports.card.training.features.feature_4'|trans
+                    'reports.card.training.features.feature_1'|trans({}, 'messages'),
+                    'reports.card.training.features.feature_2'|trans({}, 'messages'),
+                    'reports.card.training.features.feature_3'|trans({}, 'messages'),
+                    'reports.card.training.features.feature_4'|trans({}, 'messages')
                 ],
                 path('app_reports_trainings_pdf'),
                 path('app_reports_trainings_excel')
@@ -115,21 +115,21 @@
         <div class="col-md-6 col-lg-4 mb-4">
             <div class="card h-100 shadow-sm border-secondary" style="opacity: 0.7;">
                 <div class="card-header bg-secondary text-white">
-                    <h3 class="mb-0"><i class="bi bi-file-earmark-plus" aria-hidden="true"></i> {{ 'reports.custom.title'|trans }}</h3>
+                    <h3 class="mb-0"><i class="bi bi-file-earmark-plus" aria-hidden="true"></i> {{ 'reports.custom.title'|trans({}, 'messages') }}</h3>
                 </div>
                 <div class="card-body">
-                    <p class="text-muted">{{ 'reports.custom.subtitle'|trans }}</p>
+                    <p class="text-muted">{{ 'reports.custom.subtitle'|trans({}, 'messages') }}</p>
                     <ul class="small mb-3">
-                        <li>{{ 'reports.custom.items.item_1'|trans }}</li>
-                        <li>{{ 'reports.custom.items.item_2'|trans }}</li>
-                        <li>{{ 'reports.custom.items.item_3'|trans }}</li>
-                        <li>{{ 'reports.custom.items.item_4'|trans }}</li>
+                        <li>{{ 'reports.custom.items.item_1'|trans({}, 'messages') }}</li>
+                        <li>{{ 'reports.custom.items.item_2'|trans({}, 'messages') }}</li>
+                        <li>{{ 'reports.custom.items.item_3'|trans({}, 'messages') }}</li>
+                        <li>{{ 'reports.custom.items.item_4'|trans({}, 'messages') }}</li>
                     </ul>
                 </div>
                 <div class="card-footer bg-light">
                     <div class="d-grid">
                         <button class="btn btn-sm btn-outline-secondary" disabled>
-                            <i class="bi bi-hourglass-split" aria-hidden="true"></i> {{ 'reports.custom.coming_soon'|trans }}
+                            <i class="bi bi-hourglass-split" aria-hidden="true"></i> {{ 'reports.custom.coming_soon'|trans({}, 'messages') }}
                         </button>
                     </div>
                 </div>
@@ -143,26 +143,26 @@
             {% set best_practices_content %}
                 <div class="row">
                     <div class="col-md-6">
-                        <h4>{{ 'reports.best_practices.audits.title'|trans }}</h4>
+                        <h4>{{ 'reports.best_practices.audits.title'|trans({}, 'messages') }}</h4>
                         <ul class="small">
-                            <li>{{ 'reports.best_practices.audits.items.item_1'|trans }}</li>
-                            <li>{{ 'reports.best_practices.audits.items.item_2'|trans }}</li>
-                            <li>{{ 'reports.best_practices.audits.items.item_3'|trans }}</li>
-                            <li>{{ 'reports.best_practices.audits.items.item_4'|trans }}</li>
+                            <li>{{ 'reports.best_practices.audits.items.item_1'|trans({}, 'messages') }}</li>
+                            <li>{{ 'reports.best_practices.audits.items.item_2'|trans({}, 'messages') }}</li>
+                            <li>{{ 'reports.best_practices.audits.items.item_3'|trans({}, 'messages') }}</li>
+                            <li>{{ 'reports.best_practices.audits.items.item_4'|trans({}, 'messages') }}</li>
                         </ul>
                     </div>
                     <div class="col-md-6">
-                        <h4>{{ 'reports.best_practices.management.title'|trans }}</h4>
+                        <h4>{{ 'reports.best_practices.management.title'|trans({}, 'messages') }}</h4>
                         <ul class="small">
-                            <li>{{ 'reports.best_practices.management.items.item_1'|trans }}</li>
-                            <li>{{ 'reports.best_practices.management.items.item_2'|trans }}</li>
-                            <li>{{ 'reports.best_practices.management.items.item_3'|trans }}</li>
-                            <li>{{ 'reports.best_practices.management.items.item_4'|trans }}</li>
+                            <li>{{ 'reports.best_practices.management.items.item_1'|trans({}, 'messages') }}</li>
+                            <li>{{ 'reports.best_practices.management.items.item_2'|trans({}, 'messages') }}</li>
+                            <li>{{ 'reports.best_practices.management.items.item_3'|trans({}, 'messages') }}</li>
+                            <li>{{ 'reports.best_practices.management.items.item_4'|trans({}, 'messages') }}</li>
                         </ul>
                     </div>
                 </div>
             {% endset %}
-            {{ cards.simple_card('reports.section.best_practices'|trans, 'lightbulb', best_practices_content, null, 'bg-light') }}
+            {{ cards.simple_card('reports.section.best_practices'|trans({}, 'messages'), 'lightbulb', best_practices_content, null, 'bg-light') }}
         </div>
     </div>
 </div>

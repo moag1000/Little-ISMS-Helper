@@ -9,42 +9,42 @@
             <h1>
                 <i class="bi bi-shield-check" aria-hidden="true"></i> {{ framework.name }}
                 {% if framework.active %}
-                    <span class="badge bg-success">{{ 'common.active'|trans }}</span>
+                    <span class="badge bg-success">{{ 'common.active'|trans({}, 'messages') }}</span>
                 {% else %}
-                    <span class="badge bg-secondary">{{ 'common.inactive'|trans }}</span>
+                    <span class="badge bg-secondary">{{ 'common.inactive'|trans({}, 'messages') }}</span>
                 {% endif %}
                 {% if framework.mandatory %}
-                    <span class="badge bg-danger">{{ 'compliance.framework.badge.mandatory'|trans }}</span>
+                    <span class="badge bg-danger">{{ 'compliance.framework.badge.mandatory'|trans({}, 'compliance') }}</span>
                 {% endif %}
             </h1>
             <p class="text-muted">
-                <code>{{ framework.code }}</code> | {{ 'compliance.framework.field.version'|trans }}: {{ framework.version }}
+                <code>{{ framework.code }}</code> | {{ 'compliance.framework.field.version'|trans({}, 'compliance') }}: {{ framework.version }}
             </p>
         </div>
         <div>
             <a href="{{ path('app_compliance_framework', {id: framework.id}) }}" class="btn btn-info">
-                <i class="bi bi-speedometer2" aria-hidden="true"></i> {{ 'compliance.framework.action.dashboard'|trans }}
+                <i class="bi bi-speedometer2" aria-hidden="true"></i> {{ 'compliance.framework.action.dashboard'|trans({}, 'compliance') }}
             </a>
             {% if is_granted('ROLE_ADMIN') %}
                 <a href="{{ path('app_compliance_framework_edit', {id: framework.id}) }}" class="btn btn-warning">
-                    <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'common.edit'|trans }}
+                    <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
                 </a>
                 <form method="post" action="{{ path('app_compliance_framework_toggle', {id: framework.id}) }}" class="d-inline">
                     <input type="hidden" name="_token" value="{{ csrf_token('toggle' ~ framework.id) }}">
                     <button type="submit" class="btn btn-{{ framework.active ? 'secondary' : 'success' }}">
                         <i class="bi bi-{{ framework.active ? 'pause-circle' : 'play-circle' }}" aria-hidden="true"></i>
-                        {{ framework.active ? 'common.deactivate'|trans : 'common.activate'|trans }}
+                        {{ framework.active ? 'common.deactivate'|trans({}, 'messages') : 'common.activate'|trans({}, 'messages') }}
                     </button>
                 </form>
                 <form method="post" action="{{ path('app_compliance_framework_duplicate', {id: framework.id}) }}" class="d-inline">
                     <input type="hidden" name="_token" value="{{ csrf_token('duplicate' ~ framework.id) }}">
                     <button type="submit" class="btn btn-outline-secondary">
-                        <i class="bi bi-copy" aria-hidden="true"></i> {{ 'common.duplicate'|trans }}
+                        <i class="bi bi-copy" aria-hidden="true"></i> {{ 'common.duplicate'|trans({}, 'messages') }}
                     </button>
                 </form>
             {% endif %}
             <a href="{{ path('app_compliance_framework_index') }}" class="btn btn-outline-secondary">
-                <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans }}
+                <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
             </a>
         </div>
     </div>
@@ -55,7 +55,7 @@
             <div class="card bg-primary text-white">
                 <div class="card-body text-center">
                     <h2>{{ total_requirements }}</h2>
-                    <p class="mb-0">{{ 'compliance.framework.stats.total_requirements'|trans }}</p>
+                    <p class="mb-0">{{ 'compliance.framework.stats.total_requirements'|trans({}, 'compliance') }}</p>
                 </div>
             </div>
         </div>
@@ -63,7 +63,7 @@
             <div class="card bg-info text-white">
                 <div class="card-body text-center">
                     <h2>{{ applicable_requirements }}</h2>
-                    <p class="mb-0">{{ 'compliance.framework.stats.applicable'|trans }}</p>
+                    <p class="mb-0">{{ 'compliance.framework.stats.applicable'|trans({}, 'compliance') }}</p>
                 </div>
             </div>
         </div>
@@ -71,7 +71,7 @@
             <div class="card bg-success text-white">
                 <div class="card-body text-center">
                     <h2>{{ fulfilled_requirements }}</h2>
-                    <p class="mb-0">{{ 'compliance.framework.stats.fulfilled'|trans }}</p>
+                    <p class="mb-0">{{ 'compliance.framework.stats.fulfilled'|trans({}, 'compliance') }}</p>
                 </div>
             </div>
         </div>
@@ -79,7 +79,7 @@
             <div class="card {% if compliance_percentage >= 80 %}bg-success{% elseif compliance_percentage >= 50 %}bg-warning{% else %}bg-danger{% endif %} text-white">
                 <div class="card-body text-center">
                     <h2>{{ compliance_percentage|round }}%</h2>
-                    <p class="mb-0">{{ 'compliance.framework.stats.compliance'|trans }}</p>
+                    <p class="mb-0">{{ 'compliance.framework.stats.compliance'|trans({}, 'compliance') }}</p>
                 </div>
             </div>
         </div>
@@ -95,33 +95,33 @@
             } %}
                 {% block card_body %}
                     {% if framework.description %}
-                        <h4>{{ 'compliance.framework.field.description'|trans }}</h4>
+                        <h4>{{ 'compliance.framework.field.description'|trans({}, 'compliance') }}</h4>
                         <p>{{ framework.description }}</p>
                     {% endif %}
 
                     <div class="row">
                         <div class="col-md-6">
                             <dl>
-                                <dt>{{ 'compliance.framework.field.industry'|trans }}</dt>
+                                <dt>{{ 'compliance.framework.field.industry'|trans({}, 'compliance') }}</dt>
                                 <dd>{{ framework.applicableIndustry }}</dd>
 
-                                <dt>{{ 'compliance.framework.field.regulatory_body'|trans }}</dt>
+                                <dt>{{ 'compliance.framework.field.regulatory_body'|trans({}, 'compliance') }}</dt>
                                 <dd>{{ framework.regulatoryBody }}</dd>
                             </dl>
                         </div>
                         <div class="col-md-6">
                             <dl>
-                                <dt>{{ 'common.created_at'|trans }}</dt>
+                                <dt>{{ 'common.created_at'|trans({}, 'messages') }}</dt>
                                 <dd>{{ framework.createdAt|date('d.m.Y H:i') }}</dd>
 
-                                <dt>{{ 'common.updated_at'|trans }}</dt>
+                                <dt>{{ 'common.updated_at'|trans({}, 'messages') }}</dt>
                                 <dd>{{ framework.updatedAt ? framework.updatedAt|date('d.m.Y H:i') : '-' }}</dd>
                             </dl>
                         </div>
                     </div>
 
                     {% if framework.scopeDescription %}
-                        <h2>{{ 'compliance.framework.field.scope'|trans }}</h2>
+                        <h2>{{ 'compliance.framework.field.scope'|trans({}, 'compliance') }}</h2>
                         <p>{{ framework.scopeDescription }}</p>
                     {% endif %}
                 {% endblock %}
@@ -131,7 +131,7 @@
             {% embed '_components/_card.html.twig' with {
                 'title': 'compliance.framework.requirements_by_category',
                 'headerIcon': 'bi-list-check',
-                'actions': '<a href="' ~ path('app_compliance_requirement_index', {framework: framework.id}) ~ '" class="btn btn-sm btn-outline-primary"><i class="bi bi-list" aria-hidden="true"></i> ' ~ 'common.view_all'|trans ~ '</a>',
+                'actions': '<a href="' ~ path('app_compliance_requirement_index', {framework: framework.id}) ~ '" class="btn btn-sm btn-outline-primary"><i class="bi bi-list" aria-hidden="true"></i> ' ~ 'common.view_all'|trans({}, 'messages') ~ '</a>',
                 'class': 'mb-4'
             } %}
                 {% block card_body %}
@@ -177,10 +177,10 @@
                     {% else %}
                         <div class="text-center py-4">
                             <i class="bi bi-list-check fs-1 text-muted" aria-hidden="true"></i>
-                            <p class="mt-2 text-muted">{{ 'compliance.framework.no_requirements'|trans }}</p>
+                            <p class="mt-2 text-muted">{{ 'compliance.framework.no_requirements'|trans({}, 'compliance') }}</p>
                             {% if is_granted('ROLE_ADMIN') %}
                                 <a href="{{ path('app_compliance_requirement_new', {framework: framework.id}) }}" class="btn btn-success">
-                                    <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'compliance.requirement.action.new'|trans }}
+                                    <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'compliance.requirement.action.new'|trans({}, 'compliance') }}
                                 </a>
                             {% endif %}
                         </div>
@@ -199,7 +199,7 @@
                 {% block card_body %}
                     <div class="mb-3">
                         <div class="d-flex justify-content-between mb-1">
-                            <span class="badge bg-danger">{{ 'compliance.requirement.priority.critical'|trans }}</span>
+                            <span class="badge bg-danger">{{ 'compliance.requirement.priority.critical'|trans({}, 'compliance') }}</span>
                             <span>{{ priority_distribution.critical }}</span>
                         </div>
                         <div class="progress" style="height: 10px;">
@@ -208,7 +208,7 @@
                     </div>
                     <div class="mb-3">
                         <div class="d-flex justify-content-between mb-1">
-                            <span class="badge bg-warning text-dark">{{ 'compliance.requirement.priority.high'|trans }}</span>
+                            <span class="badge bg-warning text-dark">{{ 'compliance.requirement.priority.high'|trans({}, 'compliance') }}</span>
                             <span>{{ priority_distribution.high }}</span>
                         </div>
                         <div class="progress" style="height: 10px;">
@@ -217,7 +217,7 @@
                     </div>
                     <div class="mb-3">
                         <div class="d-flex justify-content-between mb-1">
-                            <span class="badge bg-info">{{ 'compliance.requirement.priority.medium'|trans }}</span>
+                            <span class="badge bg-info">{{ 'compliance.requirement.priority.medium'|trans({}, 'compliance') }}</span>
                             <span>{{ priority_distribution.medium }}</span>
                         </div>
                         <div class="progress" style="height: 10px;">
@@ -226,7 +226,7 @@
                     </div>
                     <div>
                         <div class="d-flex justify-content-between mb-1">
-                            <span class="badge bg-secondary">{{ 'compliance.requirement.priority.low'|trans }}</span>
+                            <span class="badge bg-secondary">{{ 'compliance.requirement.priority.low'|trans({}, 'compliance') }}</span>
                             <span>{{ priority_distribution.low }}</span>
                         </div>
                         <div class="progress" style="height: 10px;">
@@ -244,13 +244,13 @@
                 {% block card_body %}
                 <div class="d-grid gap-2">
                     <a href="{{ path('app_compliance_requirement_new', {framework: framework.id}) }}" class="btn btn-outline-success">
-                        <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'compliance.requirement.action.new'|trans }}
+                        <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'compliance.requirement.action.new'|trans({}, 'compliance') }}
                     </a>
                     <a href="{{ path('app_compliance_gaps', {id: framework.id}) }}" class="btn btn-outline-warning">
-                        <i class="bi bi-search" aria-hidden="true"></i> {{ 'compliance.framework.action.gap_analysis'|trans }}
+                        <i class="bi bi-search" aria-hidden="true"></i> {{ 'compliance.framework.action.gap_analysis'|trans({}, 'compliance') }}
                     </a>
                     <a href="{{ path('app_compliance_assess', {id: framework.id}) }}" class="btn btn-outline-info">
-                        <i class="bi bi-clipboard-check" aria-hidden="true"></i> {{ 'compliance.framework.action.assess'|trans }}
+                        <i class="bi bi-clipboard-check" aria-hidden="true"></i> {{ 'compliance.framework.action.assess'|trans({}, 'compliance') }}
                     </a>
                 </div>
                 {% endblock %}

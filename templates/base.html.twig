@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="turbo-cache-control" content="no-cache">
-    <title>{% block title %}{{ 'app.title'|trans }}{% endblock %}</title>
+    <title>{% block title %}{{ 'app.title'|trans({}, 'messages') }}{% endblock %}</title>
     <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
 
     {% block importmap %}
@@ -62,8 +62,8 @@
 {% set is_setup_route = app.request.attributes.get('_route') starts with 'setup_' %}
 <body data-turbo="true" data-controller="modal-manager{{ is_setup_route ? '' : ' sidebar-toggle' }}">
     {# Skip Links for Accessibility - WCAG 2.4.1 #}
-    <a href="#main-content" class="skip-link">{{ 'accessibility.skip_to_content'|trans }}</a>
-    <a href="#main-navigation" class="skip-link">{{ 'accessibility.skip_to_navigation'|trans }}</a>
+    <a href="#main-content" class="skip-link">{{ 'accessibility.skip_to_content'|trans({}, 'messages') }}</a>
+    <a href="#main-navigation" class="skip-link">{{ 'accessibility.skip_to_navigation'|trans({}, 'messages') }}</a>
 
     <header class="header" role="banner">
         <div class="header-container">
@@ -81,8 +81,8 @@
                 {% endif %}
                 <img src="{{ asset('favicon.svg') }}" alt="Little ISMS Helper Logo" width="40" height="40">
                 <div>
-                    <h1>{{ 'app.title'|trans }}</h1>
-                    <p>{{ 'app.subtitle'|trans }}</p>
+                    <h1>{{ 'app.title'|trans({}, 'messages') }}</h1>
+                    <p>{{ 'app.subtitle'|trans({}, 'messages') }}</p>
                 </div>
             </div>
             <div class="header-actions">
@@ -407,7 +407,7 @@
                             {% for message in messages %}
                                 <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
                                     {{ message|raw }}
-                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'common.close'|trans }}"></button>
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'common.close'|trans({}, 'messages') }}"></button>
                                 </div>
                             {% endfor %}
                         {% endfor %}
@@ -420,9 +420,9 @@
     </div>
 
     <footer class="footer" role="contentinfo">
-        <p>{{ 'app.footer'|trans }}</p>
+        <p>{{ 'app.footer'|trans({}, 'messages') }}</p>
         <p class="footer-text-small">
-            {{ 'app.powered_by'|trans({'%version%': constant('Symfony\\Component\\HttpKernel\\Kernel::VERSION')}) }}
+            {{ 'app.powered_by'|trans({'%version%': constant('Symfony\\Component\\HttpKernel\\Kernel::VERSION')}, 'messages') }}
             <span class="opacity-50">• Press <kbd>?</kbd> for shortcuts • <kbd>⌘K</kbd> to search</span>
             <span class="opacity-70"> • <a href="{{ path('app_reports_overview') }}" class="text-inherit text-decoration-none"><i class="bi bi-file-earmark-bar-graph" aria-hidden="true"></i> Reports</a></span>
         </p>
@@ -464,8 +464,8 @@
                 import_failed: "{{ 'dashboard.error.import_failed'|trans({}, 'dashboard')|raw }}"
             },
             preferences: {
-                imported: "{{ 'preferences.success.imported'|trans|raw }}",
-                import_failed: "{{ 'preferences.error.import_failed'|trans|raw }}"
+                imported: "{{ 'preferences.success.imported'|trans({}, 'messages')|raw }}",
+                import_failed: "{{ 'preferences.error.import_failed'|trans({}, 'messages')|raw }}"
             }
         };
     </script>
