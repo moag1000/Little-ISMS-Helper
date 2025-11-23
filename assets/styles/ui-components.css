@@ -4,6 +4,37 @@
    ============================================ */
 
 /* ====================
+   Risk Score Display
+   ==================== */
+.risk-score {
+    padding: 1rem;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.risk-level-critical .risk-score {
+    background-color: var(--color-danger, #dc2626);
+    color: white;
+}
+
+.risk-level-high .risk-score {
+    background-color: var(--color-warning, #f97316);
+    color: white;
+}
+
+.risk-level-medium .risk-score {
+    background-color: var(--color-info, #facc15);
+    color: #000;
+}
+
+.risk-level-low .risk-score {
+    background-color: var(--color-success, #3b82f6);
+    color: white;
+}
+
+/* ====================
    Breadcrumb
    ==================== */
 .breadcrumb-nav {
@@ -653,12 +684,12 @@
 /* Table utilities */
 .table-cell {
     padding: 0.75rem;
-    border: 1px solid #ddd;
+    border: 1px solid var(--border-color);
 }
 
 .table-cell-sm {
     padding: 0.5rem;
-    border: 1px solid #ddd;
+    border: 1px solid var(--border-color);
 }
 
 .table-cell-fw-bold {
@@ -668,9 +699,9 @@
 
 .table-cell-header {
     padding: 0.5rem;
-    border: 1px solid #ddd;
+    border: 1px solid var(--border-color);
     font-weight: bold;
-    background: #f8f9fa;
+    background: var(--bg-secondary);
 }
 
 .table-collapse {
@@ -1449,7 +1480,7 @@
 }
 
 .tr-header {
-    background: #f0f0f0;
+    background: var(--bg-secondary);
 }
 
 /* Dark Mode - Table Headers */
@@ -1460,24 +1491,24 @@
 .th-stats-left {
     padding: 0.5rem;
     text-align: left;
-    border: 1px solid #ddd;
+    border: 1px solid var(--border-color);
 }
 
 .th-stats-right {
     padding: 0.5rem;
     text-align: right;
-    border: 1px solid #ddd;
+    border: 1px solid var(--border-color);
 }
 
 .td-stats {
     padding: 0.5rem;
-    border: 1px solid #ddd;
+    border: 1px solid var(--border-color);
 }
 
 .td-stats-right {
     padding: 0.5rem;
     text-align: right;
-    border: 1px solid #ddd;
+    border: 1px solid var(--border-color);
 }
 
 .grid-2-col-gap-mt {
@@ -1532,7 +1563,7 @@
 
 /* SOA Index Utilities */
 .badge-neutral {
-    background: #f0f0f0;
+    background: var(--bg-secondary);
     color: #666;
 }
 
@@ -1571,7 +1602,7 @@
 }
 
 .badge-neutral-lg {
-    background: #f0f0f0;
+    background: var(--bg-secondary);
     color: #666;
     font-size: 1.2rem;
 }
@@ -1835,7 +1866,7 @@
     padding: 0.5rem 1rem;
     font-size: 1rem;
     font-weight: 700;
-    background: #f3f4f6;
+    background: var(--bg-secondary);
     color: #6b7280;
     border-radius: 4px;
     border: 2px dashed #d1d5db;
@@ -1988,7 +2019,7 @@
 .filter-container {
     margin: 2rem 0;
     padding: 1rem;
-    background: #f5f5f5;
+    background: var(--bg-secondary);
     border-radius: 4px;
 }
 
@@ -2003,7 +2034,7 @@
 }
 
 .bg-gray-f0 {
-    background: #f0f0f0;
+    background: var(--bg-secondary);
 }
 
 /* Dark Mode - Background Utilities */
@@ -2272,68 +2303,68 @@
    Audit Log Badges
    ==================== */
 .badge-create {
-    background: #28a745;
+    background: var(--color-success, #28a745);
     color: white;
 }
 
 .badge-update {
-    background: #ffc107;
+    background: var(--color-warning, #ffc107);
     color: #000;
 }
 
 .badge-delete {
-    background: #dc3545;
+    background: var(--color-danger, #dc3545);
     color: white;
 }
 
 .badge-view {
-    background: #17a2b8;
+    background: var(--color-info, #17a2b8);
     color: white;
 }
 
 .badge-export {
-    background: #6c757d;
+    background: var(--color-secondary, #6c757d);
     color: white;
 }
 
 .badge-import {
-    background: #6f42c1;
+    background: var(--color-purple, #6f42c1);
     color: white;
 }
 
 /* Dark Mode - Audit Log Badges */
 [data-theme="dark"] .badge-create {
-    background: #10b981;
+    background: var(--color-success, #10b981);
     color: #0f172a;
     box-shadow: 0 0 8px rgba(16, 185, 129, 0.3);
 }
 
 [data-theme="dark"] .badge-update {
-    background: #f59e0b;
+    background: var(--color-warning, #f59e0b);
     color: #0f172a;
     box-shadow: 0 0 8px rgba(245, 158, 11, 0.3);
 }
 
 [data-theme="dark"] .badge-delete {
-    background: #ef4444;
+    background: var(--color-danger, #ef4444);
     color: white;
     box-shadow: 0 0 8px rgba(239, 68, 68, 0.3);
 }
 
 [data-theme="dark"] .badge-view {
-    background: #06b6d4;
+    background: var(--color-info, #06b6d4);
     color: #0f172a;
     box-shadow: 0 0 8px rgba(6, 182, 212, 0.3);
 }
 
 [data-theme="dark"] .badge-export {
-    background: #64748b;
+    background: var(--color-secondary, #64748b);
     color: white;
     box-shadow: 0 0 8px rgba(100, 116, 139, 0.3);
 }
 
 [data-theme="dark"] .badge-import {
-    background: #8b5cf6;
+    background: var(--color-purple, #8b5cf6);
     color: white;
     box-shadow: 0 0 8px rgba(139, 92, 246, 0.3);
 }
