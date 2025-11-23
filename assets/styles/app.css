@@ -208,7 +208,7 @@ body {
 }
 
 [data-theme="dark"] .skip-link:hover {
-    background: #60a5fa;
+    background: var(--color-primary, #60a5fa);
 }
 
 /* Header - Cyberpunk Style with Dark Mode Support */
@@ -1299,6 +1299,13 @@ tbody td {
     transition: all 0.2s ease;
 }
 
+.badge-lg {
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    font-weight: 700;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
 /* SEVERITY BADGES - For Risks, Vulnerabilities, Incidents */
 .badge-critical {
     background: linear-gradient(135deg, #dc2626, #991b1b);
@@ -1442,7 +1449,7 @@ fieldset.nis2-fieldset {
 }
 
 fieldset.nis2-fieldset legend.nis2-legend {
-    background: #ffc107 !important;
+    background: var(--color-warning, #ffc107) !important;
     color: #212529 !important;
     border-bottom-color: #e0a800;
 }
@@ -1452,7 +1459,7 @@ fieldset.nis2-fieldset legend.nis2-legend {
 }
 
 [data-theme="dark"] fieldset.nis2-fieldset legend.nis2-legend {
-    background: #ffc107 !important;
+    background: var(--color-warning, #ffc107) !important;
     color: #212529 !important;
     border-bottom-color: #e0a800;
 }
@@ -1617,6 +1624,19 @@ textarea.form-control {
 @keyframes shimmer {
     0% { left: -100%; }
     100% { left: 100%; }
+}
+
+/* Progress Fill Color Variants */
+.progress-fill-mini.progress-success {
+    background: var(--color-success, #28a745) !important;
+}
+
+.progress-fill-mini.progress-warning {
+    background: var(--color-warning, #ffc107) !important;
+}
+
+.progress-fill-mini.progress-danger {
+    background: var(--color-danger, #dc3545) !important;
 }
 
 /* Stats Grid */
