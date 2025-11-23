@@ -25,7 +25,7 @@
         <div>
             {% if tenant is defined and tenant %}
                 <a href="{{ path('tenant_management_show', {id: tenant.id}) }}" class="btn btn-outline-secondary">
-                    <i class="bi bi-building" aria-hidden="true"></i> {{ 'tenant.link.view'|trans({}, 'messages') }}
+                    <i class="bi bi-building" aria-hidden="true"></i> {{ 'tenant.link.view'|trans({}, 'tenant') }}
                 </a>
             {% endif %}
             {% if is_granted('ROLE_ADMIN') %}
@@ -161,15 +161,15 @@
         <div class="col-lg-8 mb-4">
             <div class="card shadow-sm">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                    <h3 class="mb-0">{{ 'context.section.title'|trans }}</h3>
+                    <h3 class="mb-0">{{ 'context.section.title'|trans({}, 'context') }}</h3>
                     {% if is_granted('ROLE_ADMIN') %}
                         {% if canEdit is defined and canEdit %}
                             <a href="{{ path('app_context_edit') }}" class="btn btn-sm btn-outline-primary">
-                                <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'common.edit'|trans }}
+                                <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
                             </a>
                         {% else %}
-                            <button class="btn btn-sm btn-outline-secondary" disabled title="{{ 'corporate.inheritance.cannot_edit_inherited'|trans }}">
-                                <i class="bi bi-lock" aria-hidden="true"></i> {{ 'common.edit'|trans }}
+                            <button class="btn btn-sm btn-outline-secondary" disabled title="{{ 'corporate.inheritance.cannot_edit_inherited'|trans({}, 'messages') }}">
+                                <i class="bi bi-lock" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
                             </button>
                         {% endif %}
                     {% endif %}
@@ -177,34 +177,34 @@
                 <div class="card-body">
                     {% if context and context.organizationName %}
                         <div class="mb-3">
-                            <h6 class="text-muted">{{ 'context.section.organization'|trans }}</h6>
+                            <h6 class="text-muted">{{ 'context.section.organization'|trans({}, 'context') }}</h6>
                             <p class="mb-0">{{ context.organizationName }}</p>
                         </div>
 
                         {% if context.ismsScope %}
                             <div class="mb-3">
-                                <h6 class="text-muted">{{ 'context_management.isms_scope'|trans }}</h6>
+                                <h6 class="text-muted">{{ 'context_management.isms_scope'|trans({}, 'messages') }}</h6>
                                 <p class="mb-0">{{ context.ismsScope|nl2br }}</p>
                             </div>
                         {% endif %}
 
                         {% if context.scopeExclusions %}
                             <div class="mb-3">
-                                <h6 class="text-muted">{{ 'context.section.exclusions'|trans }}</h6>
+                                <h6 class="text-muted">{{ 'context.section.exclusions'|trans({}, 'context') }}</h6>
                                 <p class="mb-0">{{ context.scopeExclusions|nl2br }}</p>
                             </div>
                         {% endif %}
 
                         {% if context.ismsPolicy %}
                             <div class="mb-3">
-                                <h6 class="text-muted">{{ 'context.section.policy'|trans }}</h6>
+                                <h6 class="text-muted">{{ 'context.section.policy'|trans({}, 'context') }}</h6>
                                 <p class="mb-0">{{ context.ismsPolicy|length > 200 ? context.ismsPolicy|slice(0, 200) ~ '...' : context.ismsPolicy|nl2br }}</p>
                             </div>
                         {% endif %}
                     {% else %}
                         <div class="alert alert-warning">
                             <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
-                            {{ 'context_management.no_context_defined'|trans }}
+                            {{ 'context_management.no_context_defined'|trans({}, 'messages') }}
                             {% if is_granted('ROLE_ADMIN') and canEdit is defined and canEdit %}
                                 <a href="{{ path('app_context_edit') }}" class="alert-link">{{ 'context.link.create_now'|trans }}</a>
                             {% endif %}
@@ -218,32 +218,32 @@
         <div class="col-lg-4 mb-4">
             <div class="card shadow-sm">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                    <h3 class="mb-0">{{ 'context_management.isms_objectives'|trans }}</h3>
+                    <h3 class="mb-0">{{ 'context_management.isms_objectives'|trans({}, 'messages') }}</h3>
                     <a href="{{ path('app_objective_index') }}" class="btn btn-sm btn-outline-secondary">
-                        {{ 'common.show_all'|trans }} <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                        {{ 'common.show_all'|trans({}, 'messages') }} <i class="bi bi-arrow-right" aria-hidden="true"></i>
                     </a>
                 </div>
                 <div class="card-body">
                     <div class="mb-3">
                         <div class="d-flex justify-content-between mb-1">
-                            <span class="text-muted">{{ 'objective.status.total'|trans }}</span>
+                            <span class="text-muted">{{ 'objectives.status.total'|trans({}, 'objectives') }}</span>
                             <strong>{{ statistics.total }}</strong>
                         </div>
                         <div class="d-flex justify-content-between mb-1">
-                            <span class="text-muted">{{ 'objective.status.active'|trans }}</span>
+                            <span class="text-muted">{{ 'objectives.status.active'|trans({}, 'objectives') }}</span>
                             <span class="badge bg-primary">{{ statistics.active }}</span>
                         </div>
                         <div class="d-flex justify-content-between mb-1">
-                            <span class="text-muted">{{ 'objective.status.achieved'|trans }}</span>
+                            <span class="text-muted">{{ 'objectives.status.achieved'|trans({}, 'objectives') }}</span>
                             <span class="badge bg-success">{{ statistics.achieved }}</span>
                         </div>
                         <div class="d-flex justify-content-between mb-1">
-                            <span class="text-muted">{{ 'objective.status.delayed'|trans }}</span>
+                            <span class="text-muted">{{ 'objectives.status.delayed'|trans({}, 'objectives') }}</span>
                             <span class="badge bg-danger">{{ statistics.delayed }}</span>
                         </div>
                         {% if statistics.at_risk is defined %}
                             <div class="d-flex justify-content-between mb-1">
-                                <span class="text-muted">{{ 'objective.status.at_risk'|trans }}</span>
+                                <span class="text-muted">{{ 'objectives.status.at_risk'|trans({}, 'objectives') }}</span>
                                 <span class="badge bg-warning">{{ statistics.at_risk }}</span>
                             </div>
                         {% endif %}
@@ -252,7 +252,7 @@
                     {% if is_granted('ROLE_ADMIN') %}
                         <div class="d-grid mt-3">
                             <a href="{{ path('app_objective_new') }}" class="btn btn-success">
-                                <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'objective.link.create_new'|trans }}
+                                <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'objective.link.create_new'|trans({}, 'messages') }}
                             </a>
                         </div>
                     {% endif %}
@@ -269,7 +269,7 @@
                 <div class="col-md-6 mb-4">
                     <div class="card shadow-sm h-100">
                         <div class="card-header bg-white">
-                            <h6 class="mb-0">{{ 'context.section.external_issues'|trans }}</h6>
+                            <h6 class="mb-0">{{ 'context.section.external_issues'|trans({}, 'messages') }}</h6>
                         </div>
                         <div class="card-body">
                             <p class="mb-0">{{ context.externalIssues|nl2br }}</p>
@@ -283,7 +283,7 @@
                 <div class="col-md-6 mb-4">
                     <div class="card shadow-sm h-100">
                         <div class="card-header bg-white">
-                            <h6 class="mb-0">{{ 'context.section.internal_issues'|trans }}</h6>
+                            <h6 class="mb-0">{{ 'context.section.internal_issues'|trans({}, 'messages') }}</h6>
                         </div>
                         <div class="card-body">
                             <p class="mb-0">{{ context.internalIssues|nl2br }}</p>
@@ -297,7 +297,7 @@
                 <div class="col-md-6 mb-4">
                     <div class="card shadow-sm h-100">
                         <div class="card-header bg-white">
-                            <h6 class="mb-0">{{ 'context.section.interested_parties'|trans }}</h6>
+                            <h6 class="mb-0">{{ 'context.section.interested_parties'|trans({}, 'messages') }}</h6>
                         </div>
                         <div class="card-body">
                             <p class="mb-0">{{ context.interestedParties|nl2br }}</p>
@@ -311,19 +311,19 @@
                 <div class="col-md-6 mb-4">
                     <div class="card shadow-sm h-100">
                         <div class="card-header bg-white">
-                            <h6 class="mb-0">{{ 'context.section.requirements'|trans }}</h6>
+                            <h6 class="mb-0">{{ 'context.section.requirements'|trans({}, 'messages') }}</h6>
                         </div>
                         <div class="card-body">
                             {% if context.legalRequirements %}
-                                <h6 class="text-muted small">{{ 'context.section.legal_requirements'|trans }}</h6>
+                                <h6 class="text-muted small">{{ 'context.section.legal_requirements'|trans({}, 'messages') }}</h6>
                                 <p class="mb-2">{{ context.legalRequirements|nl2br }}</p>
                             {% endif %}
                             {% if context.regulatoryRequirements %}
-                                <h6 class="text-muted small">{{ 'context.section.regulatory_requirements'|trans }}</h6>
+                                <h6 class="text-muted small">{{ 'context.section.regulatory_requirements'|trans({}, 'messages') }}</h6>
                                 <p class="mb-2">{{ context.regulatoryRequirements|nl2br }}</p>
                             {% endif %}
                             {% if context.contractualObligations %}
-                                <h6 class="text-muted small">{{ 'context.section.contractual_obligations'|trans }}</h6>
+                                <h6 class="text-muted small">{{ 'context.section.contractual_obligations'|trans({}, 'messages') }}</h6>
                                 <p class="mb-0">{{ context.contractualObligations|nl2br }}</p>
                             {% endif %}
                         </div>
@@ -341,7 +341,7 @@
                 <div class="card-header bg-white">
                     <h3 class="mb-0">
                         <i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'context.section.history'|trans|default('Context History') }}
-                        ({{ totalAuditLogs }} {{ 'audit_log.entries'|trans({}, 'audit_log') }})
+                        ({{ totalAuditLogs }} {{ 'audit_log.section.entries'|trans({}, 'audit_log') }})
                     </h3>
                 </div>
                 <div class="card-body">

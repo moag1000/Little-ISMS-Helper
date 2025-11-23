@@ -1,18 +1,18 @@
 {% extends 'admin/layout.html.twig' %}
 
-{% block title %}{{ 'role_management.title.list'|trans }} - Little ISMS Helper{% endblock %}
+{% block title %}{{ 'role_management.title.list'|trans({}, 'role_management') }} - Little ISMS Helper{% endblock %}
 
 {% block admin_content %}
 {% import '_macros/cards.html.twig' as cards %}
 
 <div class="page-header">
     <div>
-        <h1>{{ 'role_management.title.list'|trans }}</h1>
-        <p class="text-muted">{{ 'role_management.description.overview'|trans }}</p>
+        <h1>{{ 'role_management.title.list'|trans({}, 'role_management') }}</h1>
+        <p class="text-muted">{{ 'role_management.description.overview'|trans({}, 'role_management') }}</p>
     </div>
     <div class="button-group">
         <a href="{{ path('role_management_new') }}" class="btn btn-primary">
-            ➕ {{ 'role_management.action.create'|trans }}
+            ➕ {{ 'role_management.action.create'|trans({}, 'role_management') }}
         </a>
     </div>
 </div>
@@ -20,20 +20,20 @@
 {# Statistics Cards #}
 <div class="kpi-grid">
     <div class="col-auto">
-        {{ cards.kpi_card('role_management.stats.total'|trans, roles|length, null, null, null, null) }}
+        {{ cards.kpi_card('role_management.stats.total'|trans({}, 'role_management'), roles|length, null, null, null, null) }}
     </div>
     <div class="col-auto">
-        {{ cards.kpi_card('role_management.stats.system_roles'|trans, roles|filter(r => r.systemRole)|length, null, null, 'info', null) }}
+        {{ cards.kpi_card('role_management.stats.system_roles'|trans({}, 'role_management'), roles|filter(r => r.systemRole)|length, null, null, 'info', null) }}
     </div>
     <div class="col-auto">
-        {{ cards.kpi_card('role_management.stats.with_users'|trans, roles|filter(r => r.users|length > 0)|length, null, null, 'success', null) }}
+        {{ cards.kpi_card('role_management.stats.with_users'|trans({}, 'role_management'), roles|filter(r => r.users|length > 0)|length, null, null, 'success', null) }}
     </div>
     <div class="col-auto">
         {% set totalPerms = 0 %}
         {% for role in roles %}
             {% set totalPerms = totalPerms + role.permissions|length %}
         {% endfor %}
-        {{ cards.kpi_card('role_management.stats.avg_permissions'|trans, roles|length > 0 ? (totalPerms / roles|length)|round : 0, null, null, 'warning', null) }}
+        {{ cards.kpi_card('role_management.stats.avg_permissions'|trans({}, 'role_management'), roles|length > 0 ? (totalPerms / roles|length)|round : 0, null, null, 'warning', null) }}
     </div>
 </div>
 
@@ -43,11 +43,11 @@
 } %}
     {% block table_head %}
         <tr>
-            <th scope="col">{{ 'role_management.field.name'|trans }}</th>
-            <th scope="col">{{ 'role_management.field.description'|trans }}</th>
-            <th scope="col" class="text-center">{{ 'role_management.field.permissions'|trans }}</th>
-            <th scope="col" class="text-center">{{ 'role_management.field.users'|trans }}</th>
-            <th scope="col" class="text-center">{{ 'role_management.field.type'|trans }}</th>
+            <th scope="col">{{ 'role_management.field.name'|trans({}, 'role_management') }}</th>
+            <th scope="col">{{ 'role_management.field.description'|trans({}, 'role_management') }}</th>
+            <th scope="col" class="text-center">{{ 'role_management.field.permissions'|trans({}, 'role_management') }}</th>
+            <th scope="col" class="text-center">{{ 'role_management.field.users'|trans({}, 'role_management') }}</th>
+            <th scope="col" class="text-center">{{ 'role_management.field.type'|trans({}, 'role_management') }}</th>
             <th scope="col" class="text-center">{{ 'common.actions'|trans }}</th>
         </tr>
     {% endblock %}
@@ -58,7 +58,7 @@
                 <strong>{{ role.name }}</strong>
                 {% if role.systemRole %}
                     <span class="badge bg-info ml-xs">
-                        {{ 'role_management.badge.system'|trans }}
+                        {{ 'role_management.badge.system'|trans({}, 'role_management') }}
                     </span>
                 {% endif %}
             </td>
@@ -75,9 +75,9 @@
             </td>
             <td class="text-center">
                 {% if role.systemRole %}
-                    <span class="badge bg-info">{{ 'role_management.type.system'|trans }}</span>
+                    <span class="badge bg-info">{{ 'role_management.type.system'|trans({}, 'role_management') }}</span>
                 {% else %}
-                    <span class="badge bg-secondary">{{ 'role_management.type.custom'|trans }}</span>
+                    <span class="badge bg-secondary">{{ 'role_management.type.custom'|trans({}, 'role_management') }}</span>
                 {% endif %}
             </td>
             <td class="text-center">
@@ -94,7 +94,7 @@
         {% else %}
         <tr>
             <td colspan="6" class="text-center-p-xl-muted">
-                {{ 'role_management.message.no_roles'|trans }}
+                {{ 'role_management.message.no_roles'|trans({}, 'role_management') }}
             </td>
         </tr>
         {% endfor %}

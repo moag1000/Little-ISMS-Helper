@@ -7,7 +7,7 @@
 {# Breadcrumb Navigation #}
 {% include '_components/_breadcrumb.html.twig' with {
     breadcrumbs: [
-        { label: 'nav.assets'|trans({}, 'messages'), url: path('app_asset_index'), icon: 'bi-cpu' },
+        { label: 'nav.assets'|trans({}, 'nav', 'nav'), url: path('app_asset_index'), icon: 'bi-cpu' },
         { label: asset.name, url: path('app_asset_show', {id: asset.id}) },
         { label: 'assets.title.edit'|trans }
     ]

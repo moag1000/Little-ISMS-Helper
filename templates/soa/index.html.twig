@@ -192,13 +192,13 @@
     {% import '_macros/inheritance_badge.html.twig' as inheritance %}
     {% block table_head %}
         <tr>
-            <th scope="col" style="min-width: 100px;">{{ 'soa.table.control_id'|trans }}</th>
-            <th scope="col" style="min-width: 250px;">{{ 'soa.table.name'|trans }}</th>
-            <th scope="col" style="min-width: 120px;">{{ 'soa.table.category'|trans }}</th>
-            <th scope="col" class="text-center" style="min-width: 100px;">{{ 'soa.table.applicable'|trans }}</th>
-            <th scope="col" style="min-width: 150px;">{{ 'soa.table.implementation_status'|trans }}</th>
-            <th scope="col" class="text-center" style="min-width: 120px;">{{ 'soa.table.progress'|trans }}</th>
-            <th scope="col" class="text-center" style="min-width: 180px;">{{ 'soa.table.actions'|trans }}</th>
+            <th scope="col" style="min-width: 100px;">{{ 'soa.table.control_id'|trans({}, 'soa') }}</th>
+            <th scope="col" style="min-width: 250px;">{{ 'soa.table.name'|trans({}, 'soa') }}</th>
+            <th scope="col" style="min-width: 120px;">{{ 'soa.table.category'|trans({}, 'soa') }}</th>
+            <th scope="col" class="text-center" style="min-width: 100px;">{{ 'soa.table.applicable'|trans({}, 'soa') }}</th>
+            <th scope="col" style="min-width: 150px;">{{ 'soa.table.implementation_status'|trans({}, 'soa') }}</th>
+            <th scope="col" class="text-center" style="min-width: 120px;">{{ 'soa.table.progress'|trans({}, 'soa') }}</th>
+            <th scope="col" class="text-center" style="min-width: 180px;">{{ 'soa.table.actions'|trans({}, 'soa') }}</th>
         </tr>
     {% endblock %}
     {% block table_body %}

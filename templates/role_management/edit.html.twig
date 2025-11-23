@@ -1,11 +1,11 @@
 {% extends 'admin/layout.html.twig' %}
 
-{% block title %}{{ 'role_management.title.edit'|trans }} - {{ role.name }} - Little ISMS Helper{% endblock %}
+{% block title %}{{ 'role_management.title.edit'|trans({}, 'role_management') }} - {{ role.name }} - Little ISMS Helper{% endblock %}
 
 {% block admin_content %}
 <div class="page-header">
     <div>
-        <h1>{{ 'role_management.title.edit'|trans }}: {{ role.name }}</h1>
+        <h1>{{ 'role_management.title.edit'|trans({}, 'role_management') }}: {{ role.name }}</h1>
     </div>
     <div class="button-group">
         <a href="{{ path('role_management_show', {id: role.id}) }}" class="btn btn-secondary">
@@ -17,7 +17,7 @@
 <div class="card">
     {{ form_start(form) }}
 
-    <h3>{{ 'role_management.section.basic_info'|trans }}</h3>
+    <h3>{{ 'role_management.section.basic_info'|trans({}, 'role_management') }}</h3>
 
     <div class="form-group">
         {{ form_label(form.name) }}
@@ -41,12 +41,12 @@
 
     {% if role.systemRole %}
     <div class="info-box alert-warning-border">
-        <p><strong>{{ 'role_management.warning.system_role'|trans }}</strong></p>
-        <p class="mt-xs">{{ 'role_management.warning.system_role_desc'|trans }}</p>
+        <p><strong>{{ 'role_management.warning.system_role'|trans({}, 'role_management') }}</strong></p>
+        <p class="mt-xs">{{ 'role_management.warning.system_role_desc'|trans({}, 'role_management') }}</p>
     </div>
     {% endif %}
 
-    <h2 class="h3-mt-lg">{{ 'role_management.section.permissions'|trans }}</h2>
+    <h2 class="h3-mt-lg">{{ 'role_management.section.permissions'|trans({}, 'role_management') }}</h2>
 
     <div class="form-group">
         {{ form_label(form.permissions) }}

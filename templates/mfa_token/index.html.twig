@@ -1,8 +1,8 @@
 {% extends 'admin/layout.html.twig' %}
 
-{% block admin_title %}{{ 'mfa_token.title'|trans }}{% endblock %}
+{% block admin_title %}{{ 'mfa_token.title'|trans({}, 'mfa') }}{% endblock %}
 {% block admin_subtitle %}
-    <p class="text-muted">{{ 'mfa_token.subtitle'|trans|default('Verwaltung der Multi-Faktor-Authentifizierung für alle Benutzer') }}</p>
+    <p class="text-muted">{{ 'mfa_token.subtitle'|trans({}, 'mfa')|default('Verwaltung der Multi-Faktor-Authentifizierung für alle Benutzer') }}</p>
 {% endblock %}
 
 {% block admin_content %}
@@ -12,7 +12,7 @@
             <div class="card border-success">
                 <div class="card-body text-center">
                     <h3 class="text-success">{{ active_count }}</h3>
-                    <p class="mb-0"><i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'mfa_token.kpi.active'|trans }}</p>
+                    <p class="mb-0"><i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'mfa_token.kpi.active'|trans({}, 'mfa') }}</p>
                 </div>
             </div>
         </div>
@@ -36,7 +36,7 @@
             <div class="card">
                 <div class="card-body text-center">
                     <h3 class="text-secondary">{{ tokens_by_user|length }}</h3>
-                    <p class="mb-0"><i class="bi bi-people" aria-hidden="true"></i> {{ 'mfa_token.kpi.users'|trans }}</p>
+                    <p class="mb-0"><i class="bi bi-people" aria-hidden="true"></i> {{ 'mfa_token.kpi.users'|trans({}, 'mfa') }}</p>
                 </div>
             </div>
         </div>
@@ -45,7 +45,7 @@
     {# Users with MFA Tokens #}
     {% if tokens_by_user|length == 0 %}
         <div class="alert alert-info">
-            <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'mfa_token.empty'|trans }}
+            <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'mfa_token.empty'|trans({}, 'mfa') }}
         </div>
     {% else %}
         {% for user_id, user_data in tokens_by_user %}
@@ -60,7 +60,7 @@
                         <div class="btn-group">
                             <a href="{{ path('admin_mfa_setup_totp', {id: user_data.user.id}) }}"
                                class="btn btn-sm btn-outline-primary">
-                                <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'mfa_token.setup_new'|trans }}
+                                <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'mfa_token.setup_new'|trans({}, 'mfa') }}
                             </a>
                         </div>
                     </div>
@@ -73,12 +73,12 @@
                     } %}
                         {% block table_head %}
                             <tr>
-                                <th scope="col" style="width: 50px;">{{ 'mfa_token.field.status'|trans }}</th>
-                                <th scope="col">{{ 'mfa_token.field.token_type'|trans }}</th>
-                                <th scope="col">{{ 'mfa_token.field.device_name'|trans }}</th>
-                                <th scope="col">{{ 'mfa_token.field.enrolled_at'|trans }}</th>
-                                <th scope="col">{{ 'mfa_token.field.last_used'|trans }}</th>
-                                <th scope="col">{{ 'mfa_token.field.usage_count'|trans }}</th>
+                                <th scope="col" style="width: 50px;">{{ 'mfa_token.field.status'|trans({}, 'mfa') }}</th>
+                                <th scope="col">{{ 'mfa_token.field.token_type'|trans({}, 'mfa') }}</th>
+                                <th scope="col">{{ 'mfa_token.field.device_name'|trans({}, 'mfa') }}</th>
+                                <th scope="col">{{ 'mfa_token.field.enrolled_at'|trans({}, 'mfa') }}</th>
+                                <th scope="col">{{ 'mfa_token.field.last_used'|trans({}, 'mfa') }}</th>
+                                <th scope="col">{{ 'mfa_token.field.usage_count'|trans({}, 'mfa') }}</th>
                                 <th scope="col" style="width: 150px;">{{ 'common.actions'|trans }}</th>
                             </tr>
                         {% endblock %}
@@ -87,11 +87,11 @@
                                 <tr class="{{ token.isActive ? '' : 'table-secondary' }}">
                                     <td>
                                         {% if token.isActive %}
-                                            <span class="badge bg-success" title="{{ 'mfa_token.status.active'|trans }}">
+                                            <span class="badge bg-success" title="{{ 'mfa_token.status.active'|trans({}, 'mfa') }}">
                                                 <i class="bi bi-check-circle" aria-hidden="true"></i>
                                             </span>
                                         {% else %}
-                                            <span class="badge bg-secondary" title="{{ 'mfa_token.status.inactive'|trans }}">
+                                            <span class="badge bg-secondary" title="{{ 'mfa_token.status.inactive'|trans({}, 'mfa') }}">
                                                 <i class="bi bi-dash-circle" aria-hidden="true"></i>
                                             </span>
                                         {% endif %}
@@ -123,7 +123,7 @@
                                                 {{ token.lastUsedAt|date('Y-m-d H:i') }}
                                             </small>
                                         {% else %}
-                                            <span class="text-muted">{{ 'mfa_token.never_used'|trans }}</span>
+                                            <span class="text-muted">{{ 'mfa_token.never_used'|trans({}, 'mfa') }}</span>
                                         {% endif %}
                                     </td>
                                     <td>
@@ -140,11 +140,11 @@
                                                 <form method="post"
                                                       action="{{ path('admin_mfa_disable', {id: token.id}) }}"
                                                       style="display: inline;"
-                                                      onsubmit="return confirm('{{ 'mfa_token.confirm_disable'|trans }}');">
+                                                      onsubmit="return confirm('{{ 'mfa_token.confirm_disable'|trans({}, 'mfa') }}');">
                                                     <input type="hidden" name="_token" value="{{ csrf_token('disable_' ~ token.id) }}">
                                                     <button type="submit"
                                                             class="btn btn-outline-warning"
-                                                            title="{{ 'mfa_token.action.disable'|trans }}" aria-label="{{ 'common.view'|trans }}">
+                                                            title="{{ 'mfa_token.action.disable'|trans({}, 'mfa') }}" aria-label="{{ 'common.view'|trans }}">
                                                         <i class="bi bi-pause-circle" aria-hidden="true"></i>
                                                     </button>
                                                 </form>
@@ -152,7 +152,7 @@
                                             <form method="post"
                                                   action="{{ path('admin_mfa_delete', {id: token.id}) }}"
                                                   style="display: inline;"
-                                                  onsubmit="return confirm('{{ 'mfa_token.confirm_delete'|trans }}');">
+                                                  onsubmit="return confirm('{{ 'mfa_token.confirm_delete'|trans({}, 'mfa') }}');">
                                                 <input type="hidden" name="_token" value="{{ csrf_token('delete_' ~ token.id) }}">
                                                 <button type="submit"
                                                         class="btn btn-outline-danger"

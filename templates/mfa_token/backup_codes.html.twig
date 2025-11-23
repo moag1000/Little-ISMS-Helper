@@ -1,8 +1,8 @@
 {% extends 'admin/layout.html.twig' %}
 
-{% block admin_title %}{{ 'mfa_token.backup_codes.title'|trans }}{% endblock %}
+{% block admin_title %}{{ 'mfa_token.backup_codes.title'|trans({}, 'mfa') }}{% endblock %}
 {% block admin_subtitle %}
-    <p class="text-muted">{{ 'mfa_token.backup_codes.subtitle'|trans|default('Backup-Codes für Notfallzugriff') }}</p>
+    <p class="text-muted">{{ 'mfa_token.backup_codes.subtitle'|trans({}, 'mfa')|default('Backup-Codes für Notfallzugriff') }}</p>
 {% endblock %}
 
 {% block admin_content %}
@@ -16,26 +16,26 @@
         <div class="col-lg-8 offset-lg-2">
             <div class="alert alert-danger">
                 <h4 class="alert-heading">
-                    <i class="bi bi-shield-exclamation" aria-hidden="true"></i> {{ 'mfa_token.backup_codes.warning'|trans }}
+                    <i class="bi bi-shield-exclamation" aria-hidden="true"></i> {{ 'mfa_token.backup_codes.warning'|trans({}, 'mfa') }}
                 </h4>
-                <p>{{ 'mfa_token.backup_codes.warning_text'|trans }}</p>
+                <p>{{ 'mfa_token.backup_codes.warning_text'|trans({}, 'mfa') }}</p>
                 <hr>
                 <p class="mb-0">
-                    <strong>{{ 'mfa_token.backup_codes.onetime_display'|trans }}</strong>
+                    <strong>{{ 'mfa_token.backup_codes.onetime_display'|trans({}, 'mfa') }}</strong>
                 </p>
             </div>
 
             <div class="card border-warning mb-4">
                 <div class="card-header bg-warning">
                     <div class="d-flex justify-content-between align-items-center">
-                        <h3 class="mb-0">{{ 'mfa_token.backup_codes.codes'|trans }}</h3>
-                        <span class="badge bg-dark">{{ backup_codes|length }} {{ 'mfa_token.backup_codes.codes_count'|trans }}</span>
+                        <h3 class="mb-0">{{ 'mfa_token.backup_codes.codes'|trans({}, 'mfa') }}</h3>
+                        <span class="badge bg-dark">{{ backup_codes|length }} {{ 'mfa_token.backup_codes.codes_count'|trans({}, 'mfa') }}</span>
                     </div>
                 </div>
                 <div class="card-body">
                     <div class="alert alert-info">
-                        <strong><i class="bi bi-person" aria-hidden="true"></i> {{ 'mfa_token.field.user'|trans }}:</strong> {{ mfa_token.user.email }}<br>
-                        <strong><i class="bi bi-phone" aria-hidden="true"></i> {{ 'mfa_token.field.device_name'|trans }}:</strong> {{ mfa_token.deviceName }}<br>
+                        <strong><i class="bi bi-person" aria-hidden="true"></i> {{ 'mfa_token.field.user'|trans({}, 'mfa') }}:</strong> {{ mfa_token.user.email }}<br>
+                        <strong><i class="bi bi-phone" aria-hidden="true"></i> {{ 'mfa_token.field.device_name'|trans({}, 'mfa') }}:</strong> {{ mfa_token.deviceName }}<br>
                         <strong><i class="bi bi-calendar" aria-hidden="true"></i> {{ 'common.generated'|trans }}:</strong> {{ 'now'|date('Y-m-d H:i:s') }}
                     </div>
 
@@ -54,17 +54,17 @@
                         <button type="button"
                                 class="btn btn-primary"
                                 onclick="copyBackupCodes()">
-                            <i class="bi bi-clipboard" aria-hidden="true"></i> {{ 'mfa_token.backup_codes.copy_all'|trans }}
+                            <i class="bi bi-clipboard" aria-hidden="true"></i> {{ 'mfa_token.backup_codes.copy_all'|trans({}, 'mfa') }}
                         </button>
                         <button type="button"
                                 class="btn btn-outline-secondary"
                                 onclick="printBackupCodes()">
-                            <i class="bi bi-printer" aria-hidden="true"></i> {{ 'mfa_token.backup_codes.print'|trans }}
+                            <i class="bi bi-printer" aria-hidden="true"></i> {{ 'mfa_token.backup_codes.print'|trans({}, 'mfa') }}
                         </button>
                         <button type="button"
                                 class="btn btn-outline-secondary"
                                 onclick="downloadBackupCodes()">
-                            <i class="bi bi-download" aria-hidden="true"></i> {{ 'mfa_token.backup_codes.download'|trans }}
+                            <i class="bi bi-download" aria-hidden="true"></i> {{ 'mfa_token.backup_codes.download'|trans({}, 'mfa') }}
                         </button>
                     </div>
                 </div>
@@ -72,17 +72,17 @@
 
             <div class="card">
                 <div class="card-body">
-                    <h5><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'mfa_token.backup_codes.usage_title'|trans }}</h5>
+                    <h5><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'mfa_token.backup_codes.usage_title'|trans({}, 'mfa') }}</h5>
                     <ul>
-                        <li>{{ 'mfa_token.backup_codes.usage_1'|trans }}</li>
-                        <li>{{ 'mfa_token.backup_codes.usage_2'|trans }}</li>
-                        <li>{{ 'mfa_token.backup_codes.usage_3'|trans }}</li>
-                        <li>{{ 'mfa_token.backup_codes.usage_4'|trans }}</li>
+                        <li>{{ 'mfa_token.backup_codes.usage_1'|trans({}, 'mfa') }}</li>
+                        <li>{{ 'mfa_token.backup_codes.usage_2'|trans({}, 'mfa') }}</li>
+                        <li>{{ 'mfa_token.backup_codes.usage_3'|trans({}, 'mfa') }}</li>
+                        <li>{{ 'mfa_token.backup_codes.usage_4'|trans({}, 'mfa') }}</li>
                     </ul>
 
                     <div class="alert alert-warning">
                         <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
-                        {{ 'mfa_token.backup_codes.regenerate_warning'|trans }}
+                        {{ 'mfa_token.backup_codes.regenerate_warning'|trans({}, 'mfa') }}
                     </div>
                 </div>
             </div>
@@ -122,7 +122,7 @@
         printWindow.document.write(`
             <html>
             <head>
-                <title>{{ 'mfa_token.backup_codes.title'|trans }} - ${userEmail}</title>
+                <title>{{ 'mfa_token.backup_codes.title'|trans({}, 'mfa') }} - ${userEmail}</title>
                 <style>
                     body {
                         font-family: Arial, sans-serif;
@@ -177,20 +177,20 @@
                 </style>
             </head>
             <body>
-                <h1>{{ 'mfa_token.backup_codes.title'|trans }}</h1>
+                <h1>{{ 'mfa_token.backup_codes.title'|trans({}, 'mfa') }}</h1>
 
                 <div class="info">
-                    <p><strong>{{ 'mfa_token.field.user'|trans }}:</strong> ${userEmail}</p>
-                    <p><strong>{{ 'mfa_token.field.device_name'|trans }}:</strong> {{ mfa_token.deviceName }}</p>
+                    <p><strong>{{ 'mfa_token.field.user'|trans({}, 'mfa') }}:</strong> ${userEmail}</p>
+                    <p><strong>{{ 'mfa_token.field.device_name'|trans({}, 'mfa') }}:</strong> {{ mfa_token.deviceName }}</p>
                     <p><strong>{{ 'common.generated'|trans }}:</strong> ${new Date().toLocaleString()}</p>
                 </div>
 
                 <div class="warning">
-                    <strong>⚠️ {{ 'mfa_token.backup_codes.warning'|trans }}</strong><br>
-                    {{ 'mfa_token.backup_codes.warning_text'|trans }}
+                    <strong>⚠️ {{ 'mfa_token.backup_codes.warning'|trans({}, 'mfa') }}</strong><br>
+                    {{ 'mfa_token.backup_codes.warning_text'|trans({}, 'mfa') }}
                 </div>
 
-                <h2>{{ 'mfa_token.backup_codes.codes'|trans }} (${backupCodes.length})</h2>
+                <h2>{{ 'mfa_token.backup_codes.codes'|trans({}, 'mfa') }} (${backupCodes.length})</h2>
                 <div class="codes">
                     ${backupCodes.map((code, i) =>
                         '<div class="code-item"><span class="code-number">' + (i+1) + '</span>' + code + '</div>'
@@ -198,12 +198,12 @@
                 </div>
 
                 <div class="info">
-                    <h2>{{ 'mfa_token.backup_codes.usage_title'|trans }}</h2>
+                    <h2>{{ 'mfa_token.backup_codes.usage_title'|trans({}, 'mfa') }}</h2>
                     <ul>
-                        <li>{{ 'mfa_token.backup_codes.usage_1'|trans }}</li>
-                        <li>{{ 'mfa_token.backup_codes.usage_2'|trans }}</li>
-                        <li>{{ 'mfa_token.backup_codes.usage_3'|trans }}</li>
-                        <li>{{ 'mfa_token.backup_codes.usage_4'|trans }}</li>
+                        <li>{{ 'mfa_token.backup_codes.usage_1'|trans({}, 'mfa') }}</li>
+                        <li>{{ 'mfa_token.backup_codes.usage_2'|trans({}, 'mfa') }}</li>
+                        <li>{{ 'mfa_token.backup_codes.usage_3'|trans({}, 'mfa') }}</li>
+                        <li>{{ 'mfa_token.backup_codes.usage_4'|trans({}, 'mfa') }}</li>
                     </ul>
                 </div>
             </body>

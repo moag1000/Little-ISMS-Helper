@@ -6,8 +6,8 @@
 {% block body %}
 <div class="page-header">
     <div>
-        <h1><i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'risk_appetite.new'|trans }}</h1>
-        <p class="text-muted">{{ 'risk_appetite.new_description'|trans }}</p>
+        <h1><i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'risk_appetite.new'|trans({}, 'risk_appetite') }}</h1>
+        <p class="text-muted">{{ 'risk_appetite.new_description'|trans({}, 'risk_appetite') }}</p>
     </div>
     <div class="button-group">
         <a href="{{ path('app_risk_appetite_index') }}" class="btn btn-secondary">
@@ -22,7 +22,7 @@
 <fieldset class="mb-4">
     <legend class="h5 mb-3">
         <i class="bi bi-bar-chart" aria-hidden="true"></i>
-        {{ 'risk_appetite.section.definition'|trans }}
+        {{ 'risk_appetite.section.definition'|trans({}, 'risk_appetite') }}
     </legend>
 
     <div class="row">
@@ -31,19 +31,22 @@
                 'field': form.category,
                 'label': form.category.vars.label|default('risk_appetite.field.category'|trans),
                 'help': 'risk_appetite.help.category_empty'|trans,
-                'required': true
+                'required': true,
+                'domain': 'risk_appetite'
             } %}
         </div>
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.maxAcceptableRisk,
-                'label': form.maxAcceptableRisk.vars.label|default('risk_appetite.field.max_acceptable_risk'|trans)
+                'label': form.maxAcceptableRisk.vars.label|default('risk_appetite.field.max_acceptable_risk'|trans),
+                'domain': 'risk_appetite'
             } %}
         </div>
         <div class="col-12">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.description,
-                'label': form.description.vars.label|default('risk_appetite.field.description'|trans)
+                'label': form.description.vars.label|default('risk_appetite.field.description'|trans({}, 'risk_appetite')),
+                'domain': 'risk_appetite'
             } %}
         </div>
     </div>
@@ -53,33 +56,36 @@
 <fieldset class="mb-4">
     <legend class="h5 mb-3">
         <i class="bi bi-check-circle" aria-hidden="true"></i>
-        {{ 'risk_appetite.section.approval'|trans }}
+        {{ 'risk_appetite.section.approval'|trans({}, 'risk_appetite') }}
     </legend>
 
     <div class="row">
         <div class="col-md-4">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.isActive,
-                'label': form.isActive.vars.label|default('risk_appetite.field.is_active'|trans)
+                'label': form.isActive.vars.label|default('risk_appetite.field.is_active'|trans ),
+                'domain': 'risk_appetite'
             } %}
         </div>
         <div class="col-md-4">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.approvedBy,
-                'label': form.approvedBy.vars.label|default('risk_appetite.field.approved_by'|trans)
+                'label': form.approvedBy.vars.label|default('risk_appetite.field.approved_by'|trans ),
+                'domain': 'risk_appetite'
             } %}
         </div>
         <div class="col-md-4">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.approvedAt,
-                'label': form.approvedAt.vars.label|default('risk_appetite.field.approved_at'|trans)
+                'label': form.approvedAt.vars.label|default('risk_appetite.field.approved_at'|trans ),
+                'domain': 'risk_appetite'
             } %}
         </div>
     </div>
 </fieldset>
 
 <div class="alert alert-info">
-    <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'risk_appetite.info.iso27005'|trans }}
+    <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'risk_appetite.info.iso27005'|trans  }}
 </div>
 
 <div class="form-actions">
